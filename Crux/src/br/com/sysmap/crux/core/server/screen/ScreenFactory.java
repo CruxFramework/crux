@@ -218,14 +218,13 @@ public class ScreenFactory
 		}
 		try
 		{
-			Constructor<? extends ServerFormatter> c = serverFormatter.getConstructor(String[].class);
+			Constructor<? extends ServerFormatter> c = serverFormatter.getConstructor(new Class<?>[]{String[].class});
 			String[] params = RegexpPatterns.REGEXP_COMMA.split(formatterParams);
-			Object[] par = new String[params.length];
 			for (int i = 0; i < params.length; i++) 
 			{
-				par[i] = params[i].trim();
+				params[i] = params[i].trim();
 			}
-			return c.newInstance(par);
+			return c.newInstance(new Object[]{params});
 		}
 		catch (Throwable e) 
 		{
