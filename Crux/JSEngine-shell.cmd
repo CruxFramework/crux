@@ -1,1 +1,0 @@
-@java -cp "%~dp0\src;%~dp0\bin;C:/Documents and Settings/Thiago/Mes documents/ufmg/dissertacao/implementacoes/terceiros/gwt-windows-1.4.61/gwt-user.jar;C:/Documents and Settings/Thiago/Mes documents/ufmg/dissertacao/implementacoes/terceiros/gwt-windows-1.4.61/gwt-dev-windows.jar" com.google.gwt.dev.GWTShell -out "%~dp0\www" %* br.com.sysmap.crux.core.JSEngine/JSEngine.html
