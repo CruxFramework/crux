@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<crux xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      xsi:noNamespaceSchemaLocation="../../Crux/xsd/crux.xsd"
+      module="br.com.sysmap.crux.ext.CruxBasicComponents">
+  <component id="textArea" 
+  			 clientClass="br.com.sysmap.crux.ext.client.component.TextArea"
+  			 clientConstructorParams="id, new com.google.gwt.user.client.ui.TextArea()"
+  			 serverClass="br.com.sysmap.crux.ext.server.component.TextArea" 
+  			 serverRendererClass="br.com.sysmap.crux.ext.server.component.TextAreaRenderer" />
+  <component id="htmlPanel" 
+  			 clientClass="br.com.sysmap.crux.ext.client.component.HTMLContainer"
+             clientConstructorParams="id"
+             serverClass="br.com.sysmap.crux.core.server.screen.Container" />
+</crux>
