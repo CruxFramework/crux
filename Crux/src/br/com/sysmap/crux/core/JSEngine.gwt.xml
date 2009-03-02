@@ -1,0 +1,64 @@
+<module>
+
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+    <inherits name="com.google.gwt.http.HTTP"/>
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='com.google.gwt.xml.XML' />
+	<inherits name='com.google.gwt.json.JSON' />
+
+	<!-- Property for generators locate the screen.           -->
+	<define-property name="screenID" values="unknown"/>
+	<property-provider name="screenID" >
+		<![CDATA[
+				try
+				{
+					var ret = __gwt_getMetaProperty("screenID");
+					if (ret == null) 
+			        {
+						return "unknown";
+					}
+			
+					return ret;
+				}
+				catch(e)
+				{
+					return "unknown";
+				}
+		]]>
+	</property-provider>
+
+	<!-- Specify the app entry point class.                   -->
+	<entry-point class='br.com.sysmap.crux.core.client.JSEngine'/>
+
+	<!-- Servlet used to handle RPC event calls.              -->
+	<servlet path="/rpc" class="br.com.sysmap.crux.core.server.event.EventServerRPCServlet"/>
+
+	<!-- Servlet used to handle AUTO event calls.             -->
+	<servlet path="/auto" class="br.com.sysmap.crux.core.server.event.EventServerAUTOServlet"/>
+
+	<!-- Default implementation class for EventProcessorFactory -->
+	<replace-with class="br.com.sysmap.crux.core.client.event.EventProcessorFactoryImpl">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.event.IEventProcessorFactory" />
+	</replace-with>
+	
+	<!-- Specify the generator for crux config.               -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.CruxConfigGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.config.CruxConfig" />
+	</generate-with>
+
+	<!-- Specify the generator for registered client handlers.-->
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientEventHandlersGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers" />
+	</generate-with>
+
+	<!-- Specify the generator for registered components.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredComponentsGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.component.RegisteredComponents" />
+	</generate-with>
+	
+	<!-- Specify the generator for registered formatters.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientFormattersGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters" />
+	</generate-with>
+	
+</module>

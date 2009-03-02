@@ -1,0 +1,71 @@
+FEITOS
+------------------------------------
+REJEITADO - REQUISITO  - Isso criaria um modelo confuso de programação. - Permimtir que um controlador, ao tratar um evento no servidor, possa registrar um evento para acontecer no 
+            cliente, quando a resposta terminar de ser renderizada (tipo deferredCommand).
+REJEITADO - MELHORIA  - O mecanismo de bean é para uma amarracao com o servidor  - Permitir atualizar componentes ligados a um bean mediante sua atualização via metodo client.
+REJEITADO - MELHORIA  - Foi implementado por delegação  - Screen possui um root do tipo Container - Fazer a screen herdar a container e colocar as coisas comuns na container.
+FEITO - REQUISITO  - Implementar mecanismo para registro de componentes, informando o alias, as classes client e server para o componente.
+FEITO - MELHORIA  - Cache de busca de URLs para scanners
+FEITO - REQUISITO  - Escrever interfaces para component, container e classes de renderizacao e parser.
+FEITO - REQUISITO  - Adicionar eventos aos componentes do lado server.           
+FEITO - REQUISITO  - Permitir que cada arquivo jar possa conter um arquivo Crux.properties, no estilo do Struts2.
+			Este deve permitir alterar propriedades do framework e permitir registrar novos componentes (nome/classe).
+FEITO - REQUISITO  - Definir mecanismo de renderização para os componentes (em eventos server / auto). Tratamento de Dirty para auto
+FEITO - REQUISITO  - Implementar a Factory de Screens no lado do servidor.
+FEITO - REQUISITO  - Criar classe utilitaria para renderizacao de parametros (tratar encode, aspas, quebras de linha, etc.).           
+FEITO - ESQUISITO - O InitializerListener esta inicializando os controllers do lado server, no entanto, a classe inicializada nao sera usada necessariamente, 
+            pois a factory de controllers é configuravel. Rever esta inicializacao.
+FEITO - REQUISITO - Registro das classes utilizadas na pagina na classe RegisteredComponents e RegisteredClientHandlers (CruxInitializer+ generator)
+FEITO - REQUISITO - Criar propriedade para identificar modo de desenvolvimento e modo de producao. Pode ficar no web.xml, pois producao e desenvolvimento possuirao 
+            web.xml diferentes.
+CANCELADO - Foi implementado um scanner por interface, ja que o uso da interface sera necessario para o codigo no cliente nao precisaria adicionar interface + annotation - REQUISITO  - Implementar annotation para identificacao dos clienthandlers e um generator para remover estas annotations
+FEITO - ERRO - Na screenfactory clonar a screen antes de retornar
+FEITO - REQUISITO  - Definir mecanismo para persistir estado dos componentes da tela entre requisiçoes.
+FEITO - REQUISITO - Atualizar componentes com base no serverBind, caso dto seja modificado no server.
+FEITO - MELHORIA  - Garantir que o componente esta contido no seu parent (fisicamente, no DOM).
+FEITO - ERRO - Decidir se deve sempre recuperar a screen no lado server (getScreen)
+CANCELADO - REQUISITO - Na serialização do componente enviar os filhos, caso o componente seja um container.
+FEITO - ERRO - Resolver questão da exposição do widget no component. arrumar um jeito de adicionar componentes ao panel
+ou arrumar alternativa para controlar alteração das propriedades para serialização
+FEITO - REQUISITO - Chamar o metodo confirmSerialization da component na screenserialization... Decidir o melhor momento.
+FEITO - MELHORIA - migrar para gwt 1.5
+FEITO - MELHORIA - utilizar annotations nos lugares das interfaces para tratadores cliente
+FEITO - MELHORIA - restringir acesso a atributos e métodos do componente no cliente (getWidget, principalmente)
+FEITO - MELHORIA - remover as interfaces component e container e renomear componentBase 
+				 e containerBase
+FEITO - REQUISITO - setBeanProperty na screen cliente
+FEITO - MELHORIA  - Trocar tipo default de evento para client 
+FEITO - REFACTORY  - rever a questao da criacao do evento... hj esta na Component, mas a screen tbm vai precisar lançar eventos no load.. talvez mover para event
+FEITO - REQUISITO - Alterar mecanismo de internacionalizacao no servidor. o locale nao pode ser usado na hora de criar a proxy e pronto.... deve receber como parametro        
+
+------------------------------------
+
+
+
+
+
+
+PENDENTES
+------------------------------------
+MELHORIA  - Permitir que componentes ligados a mesma propriedade do mesmo bean do 
+            servidor sejam atualizados mediante mudanças em um deles (mecanismo deve poder ser ligado/desligado).       
+REQUISITO  - Criar evento do tipo server.
+REQUISITO  - Evento Load para tela/componentes.
+REQUISITO  - Definir comportamento em tempo de desenho para os componentes.
+REQUISITO  - Analizar forma de colocar propriedades na screen e eventos (tipo load). Usar uma tag screen x utilizar
+            mecanismos do GWT
+MELHORIA  - Implementar o método de tradução de um elemento Jericho para um elemento DOM.
+REQUISITO  - Adicionar demais atributos aos componentes (atualmente suporta apenas id, value e serverBind). Atualizar, o renderer, o parser e componentes cliente e servidor
+REQUISITO  - Chamar o compilador GWT na screenFactory sempre que refizer o deploy (hot deploy habilitado). Deve poder desligar este mecanismo (para o hosted mode nao faz sentido)
+MELHORIA  - No mecanismo de configuracao via properties, permitir que o arquivo contido na raiz sorescreva apenas as propriedades que estiverem contidas nele.
+REQUISITO - Definir mecanismo para conversao de tipos no bind de parametros e no parser de componentes.
+MELHORIA  - criar bats para criar estrutura do projeto
+MELHORIA  - criar build ant para deploy
+REQUISITO - Na serialização do componente (client) enviar todos os atributos de estado, caso a serializacao delegue o controle para o cliente.
+MELHORIA  - terminar de processar o elemento screen... ver eventos de load e close
+REQUISITO - Permitir que páginas possam ser adicionadas dentro de sub-diretorios
+REQUISITO - Criar arquivo de descrição do modulo para novas paginas    
+REQUISITO - Criar o arquivo de descrição do modulo GWT para uma dada screen. Definir quando e como ?
+REQUISITO - Tratar mensagem de validação lançada no lado server e validar antes de disparar para eventos server-auto e server-rpc, se possivel.
+            
+            

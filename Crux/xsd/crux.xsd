@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+	<!-- Element Definitions -->
+	<xs:element name="crux" type="cruxT">
+		<xs:annotation>
+			<xs:documentation>Element Root for Crux Configuration File</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	
+	<xs:element name="component" type="componentT">
+		<xs:annotation>
+			<xs:documentation>Information for component registration in crux framework</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+
+	<!-- Type Definitions -->
+	<xs:complexType name="cruxT">
+		<xs:choice maxOccurs="unbounded" minOccurs="1">
+			<xs:element ref="component"/>
+		</xs:choice>
+		<xs:attribute name="module" type="xs:string" use="required"/>		
+	</xs:complexType>
+
+	<xs:complexType name="componentT">
+		<xs:attribute name="clientClass" type="xs:string" default="br.com.sysmap.crux.core.client.component.Component"/>		
+		<xs:attribute name="clientConstructorParams" type="xs:string" default=" "/>		
+		<xs:attribute name="id" type="xs:string" use="required"/>		
+		<xs:attribute name="serverClass" type="xs:string" default="br.com.sysmap.crux.core.server.screen.Component"/>		
+		<xs:attribute name="serverParserClass" type="xs:string" default="br.com.sysmap.crux.core.server.screen.ComponentParserImpl"/>		
+		<xs:attribute name="serverRendererClass" type="xs:string" default="br.com.sysmap.crux.core.server.screen.ComponentRendererImpl"/>		
+		<xs:attribute name="parserInput" type="parserType" default="jericho"/>		
+	</xs:complexType>
+
+	<xs:simpleType name="parserType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="dom" />
+			<xs:enumeration value="jericho" />
+			<xs:enumeration value="string" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

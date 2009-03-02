@@ -1,0 +1,241 @@
+package br.com.sysmap.crux.core.client.component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.formatter.ClientFormatter;
+import br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters;
+import br.com.sysmap.crux.core.client.utils.DOMUtils;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.RootPanel;
+
+/**
+ * Factory for CRUX screen. Based in the componentName (extracted form class attribute), 
+ * determine witch class to create for all screen components.
+ * @author Thiago
+ *
+ */
+public class ScreenFactory {
+	
+	private static ScreenFactory instance = null;
+	 
+	private Screen screen = null;
+	private RegisteredClientFormatters registeredClientFormatters = null;
+	private RegisteredComponents registeredComponents = null;
+	
+	private ScreenFactory()
+	{
+		this.registeredComponents = (RegisteredComponents) GWT.create(RegisteredComponents.class);
+		this.registeredClientFormatters = (RegisteredClientFormatters) GWT.create(RegisteredClientFormatters.class);
+	}
+	
+	/**
+	 * Retrieve the ScreenFactory instance.
+	 * Is not synchronized, but it is not a problem. The screen is always build on a single thread
+	 * @return
+	 */
+	public static ScreenFactory getInstance()
+	{
+		if (instance == null)
+		{
+			instance = new ScreenFactory();
+		}
+		return instance;
+	}
+	
+	/**
+	 * Get the screen associated with current page. If not created yet, create it.
+	 * @return
+	 */
+	public Screen getScreen()
+	{
+		if (screen == null)
+		{
+			screen = create();
+		}
+		return screen;
+	}
+	
+	private Screen create()
+	{
+		Screen screen = new Screen(getScreenId());
+		Element body = RootPanel.getBodyElement();
+		NodeList<Element> componentCandidates = body.getElementsByTagName("span");
+		List<Element> components = new ArrayList<Element>();
+		Element screenElement = null;
+		
+		for (int i=0; i<componentCandidates.getLength(); i++)
+		{
+			if (isValidComponent(componentCandidates.getItem(i)))
+			{
+				try 
+				{
+					createComponent(componentCandidates.getItem(i), screen);
+					components.add(componentCandidates.getItem(i));
+				}
+				catch (InterfaceConfigException e) 
+				{
+					GWT.log(e.getLocalizedMessage(), e);
+					componentCandidates.getItem(i).setInnerText(JSEngine.messages.screenFactoryGenericErrorCreateComponent(e.getLocalizedMessage()));
+				}
+			}
+			else if (isScreenDefinitions(componentCandidates.getItem(i)))
+			{
+				screenElement = componentCandidates.getItem(i);
+				screen.parse(screenElement);
+			}
+		}
+		if (screenElement != null)
+		{
+			clearScreenMetaTag(screenElement);
+		}
+		clearComponentsMetaTags(components);
+		return screen;
+	}
+	
+	private void clearScreenMetaTag(Element screenElement)
+	{
+		while (screenElement.hasChildNodes())
+		{
+			Node child = screenElement.getFirstChild();
+			screenElement.removeChild(child);
+			screenElement.getParentNode().appendChild(child);
+		}
+		Node parent = screenElement.getParentNode();
+		if (parent != null)
+		{
+			parent.removeChild(screenElement);
+		}
+	}
+	
+	private void clearComponentsMetaTags(List<Element> components)
+	{
+		for (Element element : components) 
+		{
+			String componentId = element.getAttribute("id");
+			if (componentId != null && componentId.trim().length() >= 0)
+			{
+				element = DOM.getElementById(componentId); // Evita que elementos reanexados ao DOM sejam esquecidos
+				Element parent;
+				if (element != null && (parent = element.getParentElement())!= null)
+				{
+					parent.removeChild(element);
+				}
+			}
+		}
+	}
+	
+	private String getScreenId()
+	{
+		String fileName = DOMUtils.getDocumentName();
+		int indexBeg = fileName.indexOf(GWT.getModuleName());
+		int indexEnd = fileName.indexOf("?");
+		int begin = (indexBeg == -1) ? 0 : indexBeg;
+		int end = (indexEnd == -1) ? fileName.length() : indexEnd;
+		return fileName.substring(begin, end);
+	}
+
+	private Component newComponent(Element element, String componentId) throws InterfaceConfigException
+	{
+		Component component = registeredComponents.createComponent(componentId, element.getAttribute("_type"));
+		component.render(element);
+		return component;
+	}
+	
+	private boolean isScreenDefinitions(Element element)
+	{
+		if ("span".equalsIgnoreCase(element.getTagName()))
+		{
+			String type = element.getAttribute("_type");
+			if (type != null && "screen".equals(type))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isValidComponent(Element element)
+	{
+		if ("span".equalsIgnoreCase(element.getTagName()))
+		{
+			String type = element.getAttribute("_type");
+			if (type != null && type.trim().length() > 0 && !"screen".equals(type))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private Container getParent(Element element, Screen screen) throws InterfaceConfigException
+	{
+		Element elementParent = element.getParentElement();
+		while (elementParent != null && !"body".equalsIgnoreCase(elementParent.getTagName()))
+		{
+			if (isValidComponent(elementParent))
+			{
+				String id = elementParent.getAttribute("id");
+				Component parent = screen.getComponent(id); 
+					
+				if (!(parent instanceof Container))
+				{
+					throw new InterfaceConfigException(JSEngine.messages.screenFactoryInvalidComponentParent(element.getAttribute("id")));
+				}
+				return (Container)parent;
+			}
+			elementParent = elementParent.getParentElement();
+		}
+			
+		return null;	
+	}
+	
+	private Component createComponent(Element element, Screen screen) throws InterfaceConfigException
+	{
+		String componentId = element.getAttribute("id");
+		if (componentId == null || componentId.trim().length() == 0)
+		{
+			throw new InterfaceConfigException(JSEngine.messages.screenFactoryComponentIdRequired());
+		}
+		Component component = screen.getComponent(componentId);
+		if (component != null)
+		{
+			return component;
+		}
+		
+		Container parent = getParent(element, screen);
+		
+		component = newComponent(element, componentId);
+		if (component == null)
+		{
+			throw new InterfaceConfigException(JSEngine.messages.screenFactoryErrorCreateComponent(componentId));
+		}
+		screen.addComponent(component);
+		String serverBind = element.getAttribute("_serverBind");
+		if (serverBind != null && serverBind.trim().length() > 0)
+		{
+			screen.addBeanProperty(serverBind, component.getId());
+		}
+		if (parent != null)
+		{
+			parent.addComponent(component);
+		}
+		else
+		{
+			ComponentPanel panel = new ComponentPanel(element.getParentElement());
+			panel.add(component.widget);
+		}
+		return component;
+	}
+	
+	public ClientFormatter getClientFormatter(String formatter)
+	{
+		return this.registeredClientFormatters.getClientFormatter(formatter);
+	}
+}
