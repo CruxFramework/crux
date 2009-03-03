@@ -145,7 +145,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		sourceWriter.println("public void invoke(String metodo, br.com.sysmap.crux.core.client.component.Screen screen, String idSender) throws Exception{ ");
 		sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
 		generateParametersSetters(logger, handlerClass, sourceWriter);
-		Method[] methods = handlerClass.getMethods();
+		Method[] methods = handlerClass.getMethods(); 
 
 		boolean first = true;
 		for (Method method: methods) 
@@ -206,8 +206,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		
 		if(method.getName().equals("notify") ||
            method.getName().equals("notifyAll") ||
-		   method.getName().equals("wait") ||
-		   method.getName().startsWith("get") || method.getName().startsWith("is"))
+		   method.getName().equals("wait"))
 		{
 			return false;
 		}
