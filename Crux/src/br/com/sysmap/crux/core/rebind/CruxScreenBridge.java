@@ -1,10 +1,5 @@
 package br.com.sysmap.crux.core.rebind;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * A Bridge class for allow Generators to know the name of the module 
@@ -18,7 +13,7 @@ import java.io.PrintWriter;
 public class CruxScreenBridge 
 {
 	private static CruxScreenBridge instance = new CruxScreenBridge();
-	private File file = null;
+	public String lastPage = null;
 	private CruxScreenBridge() 
 	{
 	}
@@ -33,39 +28,22 @@ public class CruxScreenBridge
 	}
 	
 	/** 
-	 * Inform the name of the last page client requested. This is used
+	 * Inform the name of the last page the client requested. This is used
 	 * only in hosted mode of GWT, when we will have only the developer
 	 * working on a page.
-	 * @throws IOException 
 	 */
-	public void registerLastPageRequested(String lastPage) throws IOException
+	public void registerLastPageRequested(String lastPage)
 	{
-		file = File.createTempFile("bridgeFile", null);
-		file.deleteOnExit();
-		PrintWriter writer = new PrintWriter(file);
-		writer.println(lastPage);
-		writer.flush();
-		writer.close();
+		this.lastPage = lastPage;
 	}
 	
 	/**
 	 * Return the last page requested by client.
 	 * @return
-	 * @throws IOException 
 	 */
-	public String getLastPageRequested() throws IOException
+	public String getLastPageRequested() 
 	{
-		if (file != null)
-		{
-			BufferedReader reader = new BufferedReader(new FileReader(file));
-			String lastPage = reader.readLine();
-			reader.close();
-			return lastPage;
-		}
-		else
-		{
-			return null;
-		}
+		return this.lastPage;
 	}
 	
 }
