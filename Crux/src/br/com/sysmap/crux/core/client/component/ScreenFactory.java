@@ -28,6 +28,7 @@ public class ScreenFactory {
 	private Screen screen = null;
 	private RegisteredClientFormatters registeredClientFormatters = null;
 	private RegisteredComponents registeredComponents = null;
+	private String screenId = null;
 	
 	private ScreenFactory()
 	{
@@ -131,14 +132,18 @@ public class ScreenFactory {
 		}
 	}
 	
-	private String getScreenId()
+	public String getScreenId()
 	{
-		String fileName = DOMUtils.getDocumentName();
-		int indexBeg = fileName.indexOf(GWT.getModuleName());
-		int indexEnd = fileName.indexOf("?");
-		int begin = (indexBeg == -1) ? 0 : indexBeg;
-		int end = (indexEnd == -1) ? fileName.length() : indexEnd;
-		return fileName.substring(begin, end);
+		if (screenId == null)
+		{
+			String fileName = DOMUtils.getDocumentName();
+			int indexBeg = fileName.indexOf(GWT.getModuleName());
+			int indexEnd = fileName.indexOf("?");
+			int begin = (indexBeg == -1) ? 0 : indexBeg;
+			int end = (indexEnd == -1) ? fileName.length() : indexEnd;
+			screenId = fileName.substring(begin, end);
+		}
+		return screenId;
 	}
 
 	private Component newComponent(Element element, String componentId) throws InterfaceConfigException

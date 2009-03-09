@@ -3,11 +3,9 @@ package br.com.sysmap.crux.core.rebind;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.screen.Screen;
 import br.com.sysmap.crux.core.server.screen.ScreenFactory;
-import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.PropertyOracle;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -25,12 +23,10 @@ public abstract class AbstractRegisteredElementsGenerator extends Generator
 			TypeOracle typeOracle = context.getTypeOracle(); 
 			JClassType classType = typeOracle.getType(typeName);
 			
-			PropertyOracle properties = context.getPropertyOracle();
-			String screenID = properties.getPropertyValue(logger, "screenID");
+			String screenID; 
 			try
 			{
-				screenID = RegexpPatterns.REGEXP_LINE.matcher(screenID).replaceAll(".");
-				screenID = screenID+"/"+screenID.substring(screenID.lastIndexOf(".")+1)+".html";
+				screenID = CruxScreenBridge.getInstance().getLastPageRequested();
 			}
 			catch (Throwable e) 
 			{

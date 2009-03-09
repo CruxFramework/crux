@@ -6,27 +6,6 @@
 	<inherits name='com.google.gwt.xml.XML' />
 	<inherits name='com.google.gwt.json.JSON' />
 
-	<!-- Property for generators locate the screen.           -->
-	<define-property name="screenID" values="unknown"/>
-	<property-provider name="screenID" >
-		<![CDATA[
-				try
-				{
-					var ret = __gwt_getMetaProperty("screenID");
-					if (ret == null) 
-			        {
-						return "unknown";
-					}
-			
-					return ret;
-				}
-				catch(e)
-				{
-					return "unknown";
-				}
-		]]>
-	</property-provider>
-
 	<!-- Specify the app entry point class.                   -->
 	<entry-point class='br.com.sysmap.crux.core.client.JSEngine'/>
 
