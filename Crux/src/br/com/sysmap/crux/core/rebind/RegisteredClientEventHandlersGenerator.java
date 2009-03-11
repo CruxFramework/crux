@@ -305,7 +305,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 		try 
 		{
-			method = controller.getMethod("setScreen", new Class[]{Screen.class});
+			method = controller.getMethod("setScreen", new Class[]{br.com.sysmap.crux.core.client.component.Screen.class});
 			if (method != null)
 			{
 				sourceWriter.println("wrapper.setScreen(screen);");
