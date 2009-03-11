@@ -61,7 +61,7 @@ public interface ServerMessages
 	String screenFactoryNotInitialized();
 	String screenFactoryFormatterNotFound(String formatter);
 	String screenFactoryErrorCreatingFormatter(String formatter);
-	String screenFactoryDuplicateServerBind(String property);
+	String screenFactoryDuplicateProperty(String property);
 	String screenFactoryScreeResourceNotFound(String screenId);
 	String screenStateManagerErrorCloningScreen(String screenId, String errMsg);
 	String screenStateManagerInitializerUsingDefaultFactory();

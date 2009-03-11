@@ -237,10 +237,10 @@ public class ScreenFactory {
 			throw new InterfaceConfigException(JSEngine.messages.screenFactoryErrorCreateComponent(componentId));
 		}
 		screen.addComponent(component);
-		String serverBind = element.getAttribute("_serverBind");
-		if (serverBind != null && serverBind.trim().length() > 0)
+		String property = element.getAttribute("_property");
+		if (property != null && property.trim().length() > 0)
 		{
-			screen.addBeanProperty(serverBind, component.getId());
+			screen.addProperty(property, component.getId());
 		}
 		if (parent != null)
 		{

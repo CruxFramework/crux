@@ -103,24 +103,24 @@ public class Screen
 		components.put(component.getId(), component);
 	}
 
-	void addBeanProperty(String name, String componentId)
+	void addProperty(String name, String componentId)
 	{
 		Component component = components.get(componentId);
 		if (component != null) 
 		{
-			if (component.getServerBind() != null)
+			if (component.getProperty() != null)
 			{
-				beansProperties.remove(component.getServerBind());
+				beansProperties.remove(component.getProperty());
 			}
 			if (name != null && name.length() > 0)
 			{
 				beansProperties.put(name, componentId);
 			}
-			component.setServerBind(name);
+			component.setProperty(name);
 		}
 	}
 
-	public Object getBeanProperty(String name)
+	public Object getProperty(String name)
 	{
 		try 
 		{

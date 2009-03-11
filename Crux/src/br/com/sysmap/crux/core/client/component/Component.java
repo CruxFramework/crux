@@ -48,7 +48,7 @@ public class Component
 	private int hashValue = 0;
 	protected Widget widget;
 	protected String id;
-	protected String serverBind;
+	protected String property;
 	protected String width;
 	protected String height;
 	protected String formatter;
@@ -273,8 +273,8 @@ public class Component
 				((HasName)widget).setName(name);
 		}
 		
-		String serverBind = element.getAttribute("_serverBind");
-		ScreenFactory.getInstance().getScreen().addBeanProperty(serverBind, getId());
+		String property = element.getAttribute("_property");
+		ScreenFactory.getInstance().getScreen().addProperty(property, getId());
 	}
 	
 	protected String getSerializedValue() 
@@ -317,14 +317,14 @@ public class Component
 		}
 	}
 
-	public String getServerBind() 
+	public String getProperty() 
 	{
-		return this.serverBind;
+		return this.property;
 	}
 
-	protected void setServerBind(String serverBind) 
+	protected void setProperty(String property) 
 	{
-		this.serverBind = serverBind;	
+		this.property = property;	
 	}
 	
 	public boolean equals(Object obj) 

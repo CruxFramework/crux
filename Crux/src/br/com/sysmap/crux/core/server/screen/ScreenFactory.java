@@ -180,7 +180,7 @@ public class ScreenFactory
 	private void checkAndRegisterComponentFormatter(Component component, Screen screen) throws ScreenConfigException
 	{
 		String formatterString = component.getFormatter();
-		String property = component.getServerBind();
+		String property = component.getProperty();
 		if (formatterString != null && formatterString.length() > 0 && property != null && property.length() > 0)
 		{
 			String formatterParams = null;
@@ -207,7 +207,7 @@ public class ScreenFactory
 			{
 				if (screen.containsFormatter(property))
 				{
-					throw new ScreenConfigException(messages.screenFactoryDuplicateServerBind(property));
+					throw new ScreenConfigException(messages.screenFactoryDuplicateProperty(property));
 				}
 				Class<? extends ServerFormatter> serverFormatter = formatter.getServerFormatter();
 				if (serverFormatter != null)

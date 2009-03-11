@@ -42,8 +42,8 @@ public class ComponentRendererImpl implements ComponentRenderer
 			writer.print(" id='"+HtmlUtils.filterValue(component.getId())+"'");
 		if (component.type != null)
 			writer.print(" _type='"+RegexpPatterns.REGEXP_INVALID_HTML_CHARS.matcher(component.type).replaceAll("")+"'");
-		if (component.serverBind != null)
-			writer.print(" _serverBind='"+HtmlUtils.filterValue(component.serverBind)+"'");
+		if (component.property != null)
+			writer.print(" _property='"+HtmlUtils.filterValue(component.property)+"'");
 		if (component.width != null)
 			writer.print(" _width='"+RegexpPatterns.REGEXP_INVALID_HTML_CHARS.matcher(component.width).replaceAll("")+"'");
 		if (component.height != null)

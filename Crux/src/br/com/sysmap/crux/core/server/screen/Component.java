@@ -27,7 +27,7 @@ public class Component implements Cloneable
 	protected Screen screen;
 	protected Container parent;
 	protected String type;
-	protected String serverBind;
+	protected String property;
 	protected String width;
 	protected String height;
 	protected String className;
@@ -153,20 +153,20 @@ public class Component implements Cloneable
 		this.type = type;
 	}
 
-	public String getServerBind() 
+	public String getProperty() 
 	{
-		return serverBind;
+		return property;
 	}
 
-	public void setServerBind(String serverBind) 
+	public void setProperty(String property) 
 	{
 		if (isCheckChanges() &&
-			((serverBind != null && this.serverBind == null) || (serverBind == null && this.serverBind != null) ||
-			 (serverBind != null && this.serverBind != null && !serverBind.equals(this.serverBind))))
+			((property != null && this.property == null) || (property == null && this.property != null) ||
+			 (property != null && this.property != null && !property.equals(this.property))))
 		{
 			dirty = true;
 		}
-		this.serverBind = serverBind;
+		this.property = property;
 	}
 
 	public String getWidth() 
