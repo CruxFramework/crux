@@ -19,6 +19,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Represent a CRUX component at the application's server side. 
+ * @author Thiago Bustamante
+ */
 public class Component implements Cloneable
 {
 	private int hashValue = 0;
@@ -30,6 +34,8 @@ public class Component implements Cloneable
 	protected String property;
 	protected String width;
 	protected String height;
+	protected boolean visible;
+	protected String tooltip;
 	protected String className;
 	protected String formatter;
 	protected String style;
@@ -199,6 +205,19 @@ public class Component implements Cloneable
 		this.height = height;
 	}
 
+	public String getTooltip() {
+		return tooltip;
+	}
+
+	public void setTooltip(String tooltip) {
+		if (isCheckChanges() &&
+			((tooltip != null && this.tooltip == null) || (tooltip == null && this.tooltip != null) || (tooltip != null && this.tooltip != null && !tooltip.equals(this.tooltip))))
+		{
+			dirty = true;
+		}
+		this.tooltip = tooltip;
+	}
+
 	public String getClassName() 
 	{
 		return className;
@@ -213,6 +232,20 @@ public class Component implements Cloneable
 			dirty = true;
 		}
 		this.className = className;
+	}
+
+	public boolean isVisible() 
+	{
+		return visible;
+	}
+
+	public void setVisible(boolean visible) 
+	{
+		if (isCheckChanges() && (visible != visible))
+		{
+			dirty = true;
+		}
+		this.visible = visible;
 	}
 
 	public String getStyle() 

@@ -40,8 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represent a CRUX component at the application's client side. 
- * @author Thiago
- *
+ * @author Thiago Bustamante
  */
 public class Component
 {
@@ -52,10 +51,17 @@ public class Component
 	protected String width;
 	protected String height;
 	protected String formatter;
-	ClientFormatter clientFormatter = null;
+	protected String tooltip;
+	protected ClientFormatter clientFormatter = null;
+	protected boolean visible;
 	
 	protected Map<String, String> modifiedProperties = new HashMap<String, String>();
 	
+	/**
+	 * Constructor
+	 * @param id identifies the component. Components can be retrieved form the Screen object using this field.
+	 * @param widget GWT widget wrapped by this class. 
+	 */
 	public Component(String id, Widget widget) 
 	{
 		if (widget == null) throw new NullPointerException();
@@ -63,35 +69,62 @@ public class Component
 		this.widget = widget;
 	}
 	
+	/**
+	 * Builds an Event object from the page DOM element representing the component (Its <span> tag)
+	 * @param element
+	 * @param evtId
+	 * @return
+	 */
 	protected Event getComponentEvent(Element element, String evtId)
 	{
 		String evt = element.getAttribute(evtId);
 		return EventFactory.getEvent(evtId, evt);
 	}
 	
+	/**
+	 * Builds an Event object from the XML DOM element representing the component (Its <span> tag)
+	 * @param element
+	 * @param evtId
+	 * @return
+	 */
 	protected Event getComponentEvent(com.google.gwt.xml.client.Element element, String evtId)
 	{
 		String evt = element.getAttribute(evtId);
 		return EventFactory.getEvent(evtId, evt);
 	}
 	
+	/**
+	 * 
+	 * @return id
+	 */
 	public String getId() 
 	{
 		return this.id;
 	}
 	
+	/**
+	 * Render component into the screen
+	 * @param element
+	 */
 	protected void render(Element element) 
 	{
 		renderAttributes(element);
 		attachEvents(element);
-		
 	}
 
+	/**
+	 * Update the component with information sent by server.
+	 * @param element
+	 */
 	protected void update(com.google.gwt.xml.client.Element element) 
 	{
 		updateAttributes(element);
 	}
 	
+	/**
+	 * Render component attributes
+	 * @param element page DOM element representing the component (Its <span> tag)
+	 */
 	protected void renderAttributes(Element element)
 	{
 		String width = element.getAttribute("_width");
@@ -102,6 +135,14 @@ public class Component
 		if (height != null && height.trim().length() > 0)
 			widget.setHeight(height);
 		
+		String visible = element.getAttribute("_visible");
+		if (visible != null && visible.trim().length() > 0)
+			widget.setVisible(Boolean.parseBoolean(visible));
+
+		String tooltip = element.getAttribute("_tooltip");
+		if (tooltip != null && tooltip.trim().length() > 0)
+			widget.setTitle(tooltip);
+
 		String classAttr = element.getAttribute("_class");
 		if (classAttr != null && classAttr.trim().length() > 0)
 			widget.setStyleName(classAttr);
@@ -149,6 +190,10 @@ public class Component
 		}
 	}
 	
+	/**
+	 * Render component events
+	 * @param element page DOM element representing the component (Its <span> tag)
+	 */
 	protected void attachEvents(Element element)
 	{
 		if (widget instanceof SourcesClickEvents)
@@ -226,6 +271,10 @@ public class Component
 		}
 	}
 
+	/**
+	 * update component attibutes
+	 * @param element page XML element representing the component (Its <span> tag)
+	 */
 	protected void updateAttributes(com.google.gwt.xml.client.Element element) 
 	{
 		String width = element.getAttribute("_width");
@@ -235,7 +284,15 @@ public class Component
 		String height = element.getAttribute("_height");
 		if (height != null && height.trim().length() > 0)
 			widget.setHeight(height);
+
+		String visible = element.getAttribute("_visible");
+		if (visible != null && visible.trim().length() > 0)
+			widget.setVisible(Boolean.parseBoolean(visible));
 		
+		String tooltip = element.getAttribute("_tooltip");
+		if (tooltip != null && tooltip.trim().length() > 0)
+			widget.setTitle(tooltip);
+
 		String classAttr = element.getAttribute("_class");
 		if (classAttr != null && classAttr.trim().length() > 0)
 			widget.setStyleName(classAttr);
@@ -277,6 +334,10 @@ public class Component
 		ScreenFactory.getInstance().getScreen().addProperty(property, getId());
 	}
 	
+	/**
+	 * Return the component value without any format changes. Used for value serialization in server calls
+	 * @return
+	 */
 	protected String getSerializedValue() 
 	{
 		if (widget instanceof HasText)
@@ -286,6 +347,10 @@ public class Component
 		return null;
 	}
 
+	/**
+	 * Return the component value applying any format changes performed by it's formatter
+	 * @return
+	 */
 	public Object getValue() throws InvalidFormatException 
 	{
 		if (widget instanceof HasText)
@@ -301,6 +366,10 @@ public class Component
 		return null;
 	}
 
+	/**
+	 * Set the component value applying any format changes performed by it's formatter
+	 * @return
+	 */
 	public void setValue(Object value) 
 	{
 		if (widget instanceof HasText)
@@ -317,11 +386,19 @@ public class Component
 		}
 	}
 
+	/**
+	 * Return property associated with this component
+	 * @return
+	 */
 	public String getProperty() 
 	{
 		return this.property;
 	}
 
+	/**
+	 * Associate a property with this component
+	 * @return
+	 */
 	protected void setProperty(String property) 
 	{
 		this.property = property;	
@@ -350,6 +427,10 @@ public class Component
         return this.hashValue;
     }
 
+	/**
+	 * Serializes the component to be sent to server.
+	 * @param builder
+	 */
 	protected void serialize(StringBuilder builder) 
 	{
 		if (modifiedProperties.size()>0)
@@ -367,16 +448,27 @@ public class Component
 		}
 	}
 
+	/**
+	 * Called by ScreenSerialization to inform that the component serialization was done successfully 
+	 */
 	protected void confirmSerialization()
 	{
 		modifiedProperties.clear();
 	}
 
+	/**
+	 * Return component's width
+	 * @return
+	 */
 	public String getWidth() 
 	{
 		return width;
 	}
 
+	/**
+	 * Set component's width
+	 * @return
+	 */
 	public void setWidth(String width) 
 	{
 		if ((this.width != null && width == null) || (this.width == null && width != null) ||
@@ -388,11 +480,19 @@ public class Component
 		}
 	}
 
+	/**
+	 * Return component's className
+	 * @return
+	 */
 	public void getClassName()
 	{
 		widget.getStyleName();
 	}
 	
+	/**
+	 * Set component's className
+	 * @return
+	 */
 	public void setClassName(String className) 
 	{
 		String classNameAtual = widget.getStyleName();
@@ -405,11 +505,19 @@ public class Component
 		}
 	}
 
+	/**
+	 * Return component's height
+	 * @return
+	 */
 	public String getHeight() 
 	{
 		return height;
 	}
 
+	/**
+	 * Set component's height
+	 * @return
+	 */
 	public void setHeight(String height) 
 	{
 		if ((this.height != null && height == null) || (this.height == null && height != null) ||
@@ -419,5 +527,88 @@ public class Component
 			widget.setHeight(height);
 			this.height = height;
 		}
+	}
+	
+	/**
+	 * Return the component's visibility
+	 * @return
+	 */
+	public boolean isVilible()
+	{
+		return visible;
+	}
+	
+	/**
+	 * Set the component's visibility
+	 * @return
+	 */
+	public void setVisible(boolean visible)
+	{
+		if (this.visible != visible)
+		{
+			modifiedProperties.put("visible", Boolean.toString(visible));
+			widget.setVisible(visible);
+			this.visible = visible;
+		}
+	}
+	
+	/**
+	 * Return component's tooltip
+	 * @return
+	 */
+	public String getTooltip() 
+	{
+		return tooltip;
+	}
+
+	/**
+	 * Set component's tooltip
+	 * @return
+	 */
+	public void setTooltip(String tooltip) 
+	{
+		if ((this.tooltip != null && tooltip == null) || (this.tooltip == null && tooltip != null) ||
+			(this.tooltip != null && tooltip != null && !this.tooltip.equals(tooltip)))
+		{
+			modifiedProperties.put("tooltip", (tooltip!=null)?tooltip:"");
+			widget.setTitle(tooltip);
+			this.tooltip = tooltip;
+		}
+	}
+	
+	/**
+	 * Return the component's offset width in pixels
+	 * @return
+	 */
+	public int getOffsetWidth()
+	{
+		return widget.getOffsetWidth();
+	}
+	
+	/**
+	 * Return the component's offset height in pixels
+	 * @return
+	 */
+	public int getOffsetHeight() 
+	{	
+		return widget.getOffsetHeight();
+	}
+	
+	/**
+	 * Return the object's absolute left position in pixels
+	 * @return
+	 */
+	public int getAbsoluteLeft() 
+	{
+		return widget.getAbsoluteLeft();
+	}
+	
+	/**
+	 * Return the object's absolute top position in pixels
+	 * @return
+	 */
+	public int getAbsoluteTop() 
+	{
+		return widget.getAbsoluteTop();
 	}
 }
