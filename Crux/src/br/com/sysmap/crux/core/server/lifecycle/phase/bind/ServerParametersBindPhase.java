@@ -32,12 +32,12 @@ import br.com.sysmap.crux.core.server.screen.Screen;
  * @author Thiago
  *
  */
-public class AutoParametersBindPhase extends AbstractParametersBindPhase 
+public class ServerParametersBindPhase extends AbstractParametersBindPhase 
 {
 	private static final String PARAM_SCREEN_PREFIX = "screen.";
 	protected static final String PARAM_COMPONENT_PREFIX = "c(";
 
-	private static final Log logger = LogFactory.getLog(AutoParametersBindPhase.class);
+	private static final Log logger = LogFactory.getLog(ServerParametersBindPhase.class);
 
 	@Override
 	public void execute(PhaseContext context) throws PhaseException 

@@ -107,18 +107,18 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 	}
 	
 	/**
-	 * Create a eventProcessor for a SERVER AUTO event.
+	 * Create a eventProcessor for a SERVER event.
 	 * @param event
 	 * @return
 	 */
-	protected EventProcessor createServerAutoEventProcessor(final Event event)
+	protected EventProcessor createServerEventProcessor(final Event event)
 	{
 		return new EventProcessor()
 		{
 			public void processEvent(final Screen screen, String idSender)
 			{
 				if (event.isSync()) screen.blockToUser();
-				String moduleRelativeURL = GWT.getModuleBaseURL() + "auto";
+				String moduleRelativeURL = GWT.getModuleBaseURL() + "submit";
 				String postData = "idSender="+URL.encodeComponent(idSender!=null?idSender:"")+
 				                  "&evtCall="+URL.encodeComponent(event.getEvtCall())+
 				                  "&screenId="+URL.encodeComponent(screen.getId())+
@@ -129,7 +129,7 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 					public void onError(Request request, Throwable exception) 
 					{
 						if (event.isSync()) screen.unblockToUser();
-						Window.alert(JSEngine.messages.eventProcessorServerAutoError());
+						Window.alert(JSEngine.messages.eventProcessorServerError());
 					}
 
 					public void onResponseReceived(Request request, Response response) 
@@ -137,7 +137,7 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 						if (response.getStatusCode() != 200) 
 						{
 							if (event.isSync()) screen.unblockToUser();
-							Window.alert(JSEngine.messages.eventProcessorServerAutoError());
+							Window.alert(JSEngine.messages.eventProcessorServerError());
 							return;
 						}
 						screenSerialization.confirmSerialization(screen);
@@ -154,18 +154,18 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 				catch (Exception e) 
 				{
 					if (event.isSync()) screen.unblockToUser();
-					Window.alert(JSEngine.messages.eventProcessorServerAutoError());
+					Window.alert(JSEngine.messages.eventProcessorServerError());
 				}
 			}
 		};
 	}
 	
 	/**
-	 * Create a eventProcessor for a SERVER RPC event.
+	 * Create a eventProcessor for a RPC event.
 	 * @param event
 	 * @return
 	 */
-	protected EventProcessor createSeverRPCEventProcessor(final Event event)
+	protected EventProcessor createRPCEventProcessor(final Event event)
 	{
 		return new EventProcessor()
 		{
@@ -184,7 +184,7 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 					public void onError(Request request, Throwable exception) 
 					{
 						if (event.isSync()) screen.unblockToUser();
-						Window.alert(JSEngine.messages.eventProcessorServerRPCError());
+						Window.alert(JSEngine.messages.eventProcessorRPCError());
 					}
 
 					public void onResponseReceived(Request request, Response response) 
@@ -192,7 +192,7 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 						if (response.getStatusCode() != 200) 
 						{
 							if (event.isSync()) screen.unblockToUser();
-							Window.alert(JSEngine.messages.eventProcessorServerRPCError());
+							Window.alert(JSEngine.messages.eventProcessorRPCError());
 							return;
 						}
 						String evtCallback = event.getEvtCallback();
@@ -270,8 +270,23 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 				catch (Exception e)
 				{
 					if (event.isSync()) screen.unblockToUser();
-					Window.alert(JSEngine.messages.eventProcessorServerRPCError());
+					Window.alert(JSEngine.messages.eventProcessorRPCError());
 				}
+			}
+		};
+	}
+
+	/**
+	 * Create a eventProcessor for a SUBMIT event.
+	 * @param event
+	 * @return
+	 */
+	protected EventProcessor createSubmitEventProcessor(final Event event)
+	{
+		return new EventProcessor()
+		{
+			public void processEvent(final Screen screen, String idSender)
+			{
 			}
 		};
 	}
@@ -288,13 +303,17 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 		{
 			return createClientEventProcessor(event);
 		}
-		else if (EventFactory.TYPE_SERVER_AUTO.equals(event.getType()))
+		else if (EventFactory.TYPE_SERVER.equals(event.getType()))
 		{
-			return createServerAutoEventProcessor(event);
+			return createServerEventProcessor(event);
 		}
-		else if (EventFactory.TYPE_SERVER_RPC.equals(event.getType()))
+		else if (EventFactory.TYPE_SUBMIT.equals(event.getType()))
 		{
-			return createSeverRPCEventProcessor(event);
+			return createSubmitEventProcessor(event);
+		}
+		else if (EventFactory.TYPE_RPC.equals(event.getType()))
+		{
+			return createRPCEventProcessor(event);
 		}
 		
 		throw new InterfaceConfigException(JSEngine.messages.eventProcessorFactoryInvalidEventType(event.getId(), event.getEvtCall(), event.getType()));

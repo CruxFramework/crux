@@ -10,10 +10,10 @@
 	<entry-point class='br.com.sysmap.crux.core.client.JSEngine'/>
 
 	<!-- Servlet used to handle RPC event calls.              -->
-	<servlet path="/rpc" class="br.com.sysmap.crux.core.server.event.EventServerRPCServlet"/>
+	<servlet path="/rpc" class="br.com.sysmap.crux.core.server.event.EventRPCServlet"/>
 
-	<!-- Servlet used to handle AUTO event calls.             -->
-	<servlet path="/auto" class="br.com.sysmap.crux.core.server.event.EventServerAUTOServlet"/>
+	<!-- Servlet used to handle SUBMIT event calls.             -->
+	<servlet path="/submit" class="br.com.sysmap.crux.core.server.event.EventServerServlet"/>
 
 	<!-- Default implementation class for EventProcessorFactory -->
 	<replace-with class="br.com.sysmap.crux.core.client.event.EventProcessorFactoryImpl">

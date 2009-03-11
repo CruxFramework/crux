@@ -24,8 +24,8 @@ public interface ServerMessages
 	String annotationScannerBuildIndex();
 	String annotationScannerBuildIndexError(String errMsg);
 	String annotationScannerIndexNotFound();
-	String autoResponseRenderComponentError(String errMsg);
-	String autoResponseRenderPhaseError(String errMsg);
+	String serverResponseRenderComponentError(String errMsg);
+	String serverResponseRenderPhaseError(String errMsg);
 	String clientHandlersCallbackInitializeError(String errMsg);
 	String clientHandlersHandlerInitializeError(String errMsg);
 	String componentConfigParserError(String errMsg);

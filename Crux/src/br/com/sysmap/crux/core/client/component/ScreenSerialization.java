@@ -148,7 +148,7 @@ public class ScreenSerialization
 		catch (DOMParseException e) 
 		{
 			GWT.log(e.getLocalizedMessage(), e);
-			Window.alert(JSEngine.messages.eventProcessorServerAutoResponseParserError());
+			Window.alert(JSEngine.messages.eventProcessorServerResponseParserError());
 		}
 	}
 	

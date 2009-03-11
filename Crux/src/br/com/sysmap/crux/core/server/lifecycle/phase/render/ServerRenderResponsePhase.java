@@ -34,19 +34,19 @@ import br.com.sysmap.crux.core.server.screen.Screen;
 import br.com.sysmap.crux.core.server.screen.config.ComponentConfig;
 
 /**
- * Render the response for an AUTO event
+ * Render the response for an SERVER event
  * @author Thiago
  *
  */
-public class AutoRenderResponsePhase extends AbstractRenderResponsePhase implements Phase 
+public class ServerRenderResponsePhase extends AbstractRenderResponsePhase implements Phase 
 {
-	private static final Log logger = LogFactory.getLog(AutoRenderResponsePhase.class);
+	private static final Log logger = LogFactory.getLog(ServerRenderResponsePhase.class);
 	private ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
 	@Override
 	public void execute(PhaseContext context) throws PhaseException 
 	{
-		if (logger.isDebugEnabled()) logger.debug("AutoResponseRenderPhase => rendering response");
+		if (logger.isDebugEnabled()) logger.debug("rendering response");
 		try 
 		{
 			context.getResponse().setContentType("text/plain;charset=iso-8859-1");
@@ -67,7 +67,7 @@ public class AutoRenderResponsePhase extends AbstractRenderResponsePhase impleme
 		} 
 		catch (IOException e) 
 		{
-			throw new PhaseException(messages.autoResponseRenderPhaseError(e.getLocalizedMessage()), e);
+			throw new PhaseException(messages.serverResponseRenderPhaseError(e.getLocalizedMessage()), e);
 		}
 	}
 	
@@ -118,7 +118,7 @@ public class AutoRenderResponsePhase extends AbstractRenderResponsePhase impleme
 			}
 			catch (Throwable e) 
 			{
-				logger.error(messages.autoResponseRenderComponentError(e.getLocalizedMessage()), e);
+				logger.error(messages.serverResponseRenderComponentError(e.getLocalizedMessage()), e);
 			}
 		}
 	}

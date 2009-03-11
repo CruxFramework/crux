@@ -26,5 +26,5 @@ import br.com.sysmap.crux.core.server.lifecycle.Phase;
 @Target(ElementType.TYPE)
 public @interface DispatchPhase 
 {
-	Class<? extends Phase> value() default br.com.sysmap.crux.core.server.lifecycle.phase.dispatch.AutoDispatchPhase.class;
+	Class<? extends Phase> value() default br.com.sysmap.crux.core.server.lifecycle.phase.dispatch.ServerDispatchPhase.class;
 }

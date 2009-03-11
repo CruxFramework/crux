@@ -26,5 +26,5 @@ import br.com.sysmap.crux.core.server.lifecycle.Phase;
 @Target(ElementType.TYPE)
 public @interface ParametersBindPhase 
 {
-	Class<? extends Phase> value() default br.com.sysmap.crux.core.server.lifecycle.phase.bind.AutoParametersBindPhase.class;
+	Class<? extends Phase> value() default br.com.sysmap.crux.core.server.lifecycle.phase.bind.ServerParametersBindPhase.class;
 }

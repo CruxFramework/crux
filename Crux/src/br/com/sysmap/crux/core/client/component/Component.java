@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.SourcesFocusEvents;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Base class for build concrete CRUX components
+ * Represent a CRUX component at the application's client side. 
  * @author Thiago
  *
  */

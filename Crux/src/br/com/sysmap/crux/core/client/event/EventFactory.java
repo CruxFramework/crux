@@ -22,9 +22,10 @@ import com.google.gwt.core.client.GWT;
 
 public class EventFactory 
 {
-	public static final String TYPE_SERVER_AUTO = "server-auto";
-	public static final String TYPE_SERVER_RPC = "server-rpc";
+	public static final String TYPE_SUBMIT = "submit";
+	public static final String TYPE_SERVER = "server";
 	public static final String TYPE_CLIENT = "client";
+	public static final String TYPE_RPC = "rpc";
 	
 	public static final String SYNC_TYPE_SYNCHRONOUS = "synchronous";
 	public static final String SYNC_TYPE_ASSYNCHRONOUS = "assynchronous";

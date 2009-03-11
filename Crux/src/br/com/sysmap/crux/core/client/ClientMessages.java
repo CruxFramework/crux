@@ -33,9 +33,9 @@ public interface ClientMessages extends Messages
 	String eventProcessorRPCCallbackNotFound(String handler);
 	String eventProcessorRPCCallbackError(String callback);
 	String eventProcessorClientError(String call);
-	String eventProcessorServerAutoError();
-	String eventProcessorServerRPCError();
-	String eventProcessorServerAutoResponseParserError();
+	String eventProcessorServerError();
+	String eventProcessorRPCError();
+	String eventProcessorServerResponseParserError();
 	String eventProcessorServerJsonError(String errorCode, String errorMessage);
 	String eventProcessorServerJsonInvalidResponse();
 	

@@ -27,13 +27,13 @@ import br.com.sysmap.crux.core.server.lifecycle.PhaseException;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 /**
- * Dispatcher for handle crux auto events at the server side.
+ * Dispatcher for handle crux server events.
  * @author Thiago
  *
  */
-public class AutoDispatchPhase extends AbstractDispatchPhase
+public class ServerDispatchPhase extends AbstractDispatchPhase
 {
-	private static final Log logger = LogFactory.getLog(AutoDispatchPhase.class);
+	private static final Log logger = LogFactory.getLog(ServerDispatchPhase.class);
 	private ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
 	@Override

@@ -17,21 +17,19 @@ package br.com.sysmap.crux.core.server.event;
 
 import br.com.sysmap.crux.core.server.lifecycle.BaseServlet;
 import br.com.sysmap.crux.core.server.lifecycle.annotation.DispatchPhase;
-import br.com.sysmap.crux.core.server.lifecycle.annotation.ParametersBindPhase;
 import br.com.sysmap.crux.core.server.lifecycle.annotation.RenderResponsePhase;
-import br.com.sysmap.crux.core.server.lifecycle.phase.bind.RPCParametersBindPhase;
-import br.com.sysmap.crux.core.server.lifecycle.phase.dispatch.RPCDispatchPhase;
-import br.com.sysmap.crux.core.server.lifecycle.phase.render.RPCRenderResponsePhase;
+import br.com.sysmap.crux.core.server.lifecycle.phase.dispatch.ServerDispatchPhase;
+import br.com.sysmap.crux.core.server.lifecycle.phase.render.ServerRenderResponsePhase;
 
 /**
- * Servlet para processamento de chamadas RPC (implementadas via protocolo JSON).
+ * Servlet to handle SERVER requests. This kind of event will make the server process a method call and send 
+ * back to the client an update block for each modified component.
  * @author Thiago
  *
  */
-@ParametersBindPhase(RPCParametersBindPhase.class)
-@DispatchPhase(RPCDispatchPhase.class)
-@RenderResponsePhase(RPCRenderResponsePhase.class)
-public class EventServerRPCServlet extends BaseServlet
+@DispatchPhase(ServerDispatchPhase.class)
+@RenderResponsePhase(ServerRenderResponsePhase.class)
+public class EventServerServlet extends BaseServlet
 {
-	private static final long serialVersionUID = -2881555465895895737L;
+	private static final long serialVersionUID = -7786236115297341839L;
 }

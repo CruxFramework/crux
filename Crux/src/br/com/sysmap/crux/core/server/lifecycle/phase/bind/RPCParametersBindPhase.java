@@ -34,7 +34,7 @@ import br.com.sysmap.crux.core.server.screen.Screen;
  */
 public class RPCParametersBindPhase extends AbstractParametersBindPhase
 {
-	private static final Log logger = LogFactory.getLog(AutoParametersBindPhase.class);
+	private static final Log logger = LogFactory.getLog(RPCParametersBindPhase.class);
 	private ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
 	@Override
