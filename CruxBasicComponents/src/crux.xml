@@ -2,6 +2,36 @@
 <crux xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
       xsi:noNamespaceSchemaLocation="../../Crux/xsd/crux.xsd"
       module="br.com.sysmap.crux.ext.CruxBasicComponents">
+  <component id="button" 
+             clientClass="br.com.sysmap.crux.ext.client.component.FocusComponent"
+  			 clientConstructorParams="id, new com.google.gwt.user.client.ui.Button()" 
+  			 serverClass="br.com.sysmap.crux.ext.server.component.FocusComponent"
+  			 serverRendererClass="br.com.sysmap.crux.ext.server.component.FocusComponentRenderer"
+  			 />
+  <component id="textBox" 
+             clientClass="br.com.sysmap.crux.ext.client.component.FocusComponent"
+             clientConstructorParams="id, new com.google.gwt.user.client.ui.TextBox()"
+             serverClass="br.com.sysmap.crux.ext.server.component.FocusComponent"
+  			 serverRendererClass="br.com.sysmap.crux.ext.server.component.FocusComponentRenderer"
+  			 />
+  <component id="label" clientConstructorParams="id, new com.google.gwt.user.client.ui.Label()"/>
+  <component id="passwordTextBox" clientConstructorParams="id, new com.google.gwt.user.client.ui.PasswordTextBox()"/>
+  <component id="simplePanel" 
+  			 clientClass="br.com.sysmap.crux.core.client.component.Container"
+             clientConstructorParams="id, new com.google.gwt.user.client.ui.SimplePanel()" 
+             serverClass="br.com.sysmap.crux.core.server.screen.Container" />
+  <component id="scrollPanel" 
+  			 clientClass="br.com.sysmap.crux.core.client.component.Container"
+             clientConstructorParams="id, new com.google.gwt.user.client.ui.ScrollPanel()"
+             serverClass="br.com.sysmap.crux.core.server.screen.Container" />
+  <component id="absolutePanel" 
+  			 clientClass="br.com.sysmap.crux.core.client.component.Container"
+             clientConstructorParams="id, new com.google.gwt.user.client.ui.AbsolutePanel()"
+             serverClass="br.com.sysmap.crux.core.server.screen.Container" />
+  <component id="stackPanel" 
+  			 clientClass="br.com.sysmap.crux.core.client.component.Container"
+             clientConstructorParams="id, new com.google.gwt.user.client.ui.StackPanel()"
+             serverClass="br.com.sysmap.crux.core.server.screen.Container" />
   <component id="textArea" 
   			 clientClass="br.com.sysmap.crux.ext.client.component.TextArea"
   			 clientConstructorParams="id, new com.google.gwt.user.client.ui.TextArea()"

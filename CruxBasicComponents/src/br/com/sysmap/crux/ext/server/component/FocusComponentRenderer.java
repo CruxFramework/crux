@@ -18,16 +18,19 @@ package br.com.sysmap.crux.ext.server.component;
 import java.io.PrintWriter;
 
 import br.com.sysmap.crux.core.server.screen.Component;
+import br.com.sysmap.crux.core.server.screen.ComponentRendererImpl;
+import br.com.sysmap.crux.core.utils.HtmlUtils;
 
-public class TextAreaRenderer extends FocusComponentRenderer
+public class FocusComponentRenderer extends ComponentRendererImpl 
 {
 	@Override
 	protected void renderAttributes(Component component, PrintWriter writer) 
 	{
 		super.renderAttributes(component, writer);
-		TextArea textArea = (TextArea)component;
-		if (textArea.rows > 0)
-			writer.print(" _rows='"+textArea.rows+"'");
-
+		FocusComponent focusComponent = (FocusComponent)component;
+		if (focusComponent.accessKey == ' ')
+			writer.print(" _accessKey='"+HtmlUtils.filterValue(focusComponent.accessKey)+"'");
+		writer.print(" _tabIndex='"+focusComponent.tabIndex+"'");
+		writer.print(" _enabled='"+focusComponent.enabled+"'");
 	}
 }
