@@ -35,6 +35,10 @@ public class EventFactory
 	public static final String EVENT_FOCUS = "_onfocus";
 	public static final String EVENT_BLUR = "_onblur";
 	public static final String EVENT_LOAD = "_onload";
+	public static final String EVENT_KEY_DOWN = "_onkeydown";
+	public static final String EVENT_KEY_PRESS = "_onkeypress";
+	public static final String EVENT_KEY_UP = "_onkeyup";
+	
 
 	public static final String EVENT_CLOSE = "_onclose";
 	public static final String EVENT_CLOSING = "_onclosing";

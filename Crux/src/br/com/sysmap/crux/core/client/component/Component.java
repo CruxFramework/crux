@@ -28,14 +28,10 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasName;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.SourcesChangeEvents;
-import com.google.gwt.user.client.ui.SourcesClickEvents;
-import com.google.gwt.user.client.ui.SourcesFocusEvents;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -196,21 +192,6 @@ public class Component
 	 */
 	protected void attachEvents(Element element)
 	{
-		if (widget instanceof SourcesClickEvents)
-		{
-			final Event event = getComponentEvent(element, EventFactory.EVENT_CLICK);
-			if (event != null)
-			{
-				ClickListener listener = new ClickListener()
-				{
-					public void onClick(Widget sender) 
-					{
-						EventFactory.callEvent(event, getId());
-					}
-				};
-				((SourcesClickEvents)widget).addClickListener(listener);
-			}
-		}
 		if (widget instanceof SourcesChangeEvents)
 		{
 			final Event event = getComponentEvent(element, EventFactory.EVENT_CHANGE);
@@ -224,49 +205,6 @@ public class Component
 					}
 				};
 				((SourcesChangeEvents)widget).addChangeListener(listener);
-			}
-		}
-		if (widget instanceof SourcesFocusEvents)
-		{
-			if (clientFormatter != null && widget instanceof HasText)
-			{
-				((SourcesFocusEvents)widget).addFocusListener(new FocusListener()
-				{
-					public void onFocus(Widget sender) 
-					{
-					}
-					public void onLostFocus(Widget sender) 
-					{
-						try 
-						{
-							setValue(getValue());
-						} 
-						catch (InvalidFormatException e) 
-						{
-							Window.alert(e.getLocalizedMessage());
-							setValue(null);
-						}
-					}
-				});
-			}
-
-			final Event eventFocus = getComponentEvent(element, EventFactory.EVENT_FOCUS);
-			final Event eventBlur = getComponentEvent(element, EventFactory.EVENT_BLUR);
-			if (eventFocus != null || eventBlur != null)
-			{
-				FocusListener listener = new FocusListener()
-				{
-					public void onFocus(Widget sender) 
-					{
-						if (eventFocus != null) EventFactory.callEvent(eventFocus, getId());
-					}
-
-					public void onLostFocus(Widget sender) 
-					{
-						if (eventBlur != null) EventFactory.callEvent(eventBlur, getId());
-					}
-				};
-				((SourcesFocusEvents)widget).addFocusListener(listener);
 			}
 		}
 	}
