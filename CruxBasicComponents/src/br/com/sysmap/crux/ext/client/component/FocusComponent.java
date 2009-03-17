@@ -31,132 +31,189 @@ import com.google.gwt.user.client.ui.SourcesClickEvents;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Components that can receive focus
+ * This is the base class for components that can receive focus. 
  * 
  * @author Thiago Bustamante
  *
  */
-public class FocusComponent extends Component {
+public class FocusComponent extends Component 
+{
 	protected FocusWidget focusWidget;
-	
+	protected char accessKey;
+
+	/**
+	 * Constructor
+	 * @param id
+	 * @param widget
+	 */
 	public FocusComponent(String id, FocusWidget widget) 
 	{
 		super(id, widget);
 		focusWidget = (FocusWidget)widget;
 	}
 
+	/**
+	 * Return the component tabIndex
+	 * @return tabIndex
+	 */
 	public int getTabIndex() 
 	{
 		return focusWidget.getTabIndex();
 	}
-	
+
+	/**
+	 * Return true if the component is enabled
+	 * @return enabled
+	 */
 	public boolean isEnabled() 
 	{
 		return focusWidget.isEnabled();
 	}
-	
-	public void setAccessKey(char key) 
+
+	/**
+	 * Return the component accessKey
+	 * @return accessKey
+	 */
+	public void setAccessKey(char accessKey) 
 	{
-		focusWidget.setAccessKey(key);
+		if (this.accessKey != accessKey)
+		{
+			modifiedProperties.put("accessKey", Character.toString(accessKey));
+			focusWidget.setAccessKey(accessKey);
+			this.accessKey = accessKey;
+		}
 	}
-	
+
+	/**
+	 * Set the component enabled property
+	 * @param enabled
+	 */
 	public void setEnabled(boolean enabled) 
 	{
-		focusWidget.setEnabled(enabled);
+		if (focusWidget.isEnabled() != enabled)
+		{
+			modifiedProperties.put("enabled", Boolean.toString(enabled));
+			focusWidget.setEnabled(enabled);
+		}
 	}
-	
-	 public void setFocus(boolean focused) 
-	 {
-		 focusWidget.setFocus(focused);
-	 }
 
-	 public void setTabIndex(int index) 
-	 {
-		 focusWidget.setTabIndex(index);
-	 }
-	 
-	 protected void renderAttributes(Element element)
-	 {
-		 super.renderAttributes(element);
-		 
-		 String tabIndex = element.getAttribute("_tabIndex");
-		 if (tabIndex != null && tabIndex.trim().length() > 0)
-			 focusWidget.setTabIndex(Integer.parseInt(tabIndex));
+	/**
+	 * Put the focus on component or remove the focus from it
+	 * @param focused
+	 */
+	public void setFocus(boolean focused) 
+	{
+		focusWidget.setFocus(focused);
+	}
 
-		 String enabled = element.getAttribute("_enabled");
-		 if (enabled != null && enabled.trim().length() > 0)
-			 focusWidget.setEnabled(Boolean.parseBoolean(enabled));
-			
-		 String accessKey = element.getAttribute("_accessKey");
-		 if (accessKey != null && accessKey.trim().length() == 1)
-			 focusWidget.setAccessKey(accessKey.charAt(0));
-	 }
-	 
-	 protected void attachEvents(Element element)
-	 {	 
-		 super.attachEvents(element);
-		 
-		 if (clientFormatter != null && widget instanceof HasText)
-		 {
-			 focusWidget.addFocusListener(new FocusListener()
-			 {
-				 public void onFocus(Widget sender) 
-				 {
-				 }
-				 public void onLostFocus(Widget sender) 
-				 {
-					 try 
-					 {
-						 setValue(getValue());
-					 } 
-					 catch (InvalidFormatException e) 
-					 {
-						 Window.alert(e.getLocalizedMessage());
-						 setValue(null);
-					 }
-				 }
-			 });
-		 }
+	/**
+	 * Set the component tabIndex
+	 * @param tabIndex
+	 */
+	public void setTabIndex(int tabIndex) 
+	{
+		if (focusWidget.getTabIndex() != tabIndex)
+		{
+			modifiedProperties.put("tabIndex", Integer.toString(tabIndex));
+			focusWidget.setTabIndex(tabIndex);
+		}
+	}
 
-		 final Event eventFocus = getComponentEvent(element, EventFactory.EVENT_FOCUS);
-		 final Event eventBlur = getComponentEvent(element, EventFactory.EVENT_BLUR);
-		 if (eventFocus != null || eventBlur != null)
-		 {
-			 FocusListener listener = new FocusListener()
-			 {
-				 public void onFocus(Widget sender) 
-				 {
-					 if (eventFocus != null) EventFactory.callEvent(eventFocus, getId());
-				 }
+	/**
+	 * Render component attributes
+	 * @see #Component.renderAttributes
+	 */
+	protected void renderAttributes(Element element)
+	{
+		super.renderAttributes(element);
 
-				 public void onLostFocus(Widget sender) 
-				 {
-					 if (eventBlur != null) EventFactory.callEvent(eventBlur, getId());
-				 }
-			 };
-			 focusWidget.addFocusListener(listener);
-		 }
+		String tabIndex = element.getAttribute("_tabIndex");
+		if (tabIndex != null && tabIndex.trim().length() > 0)
+		{
+			focusWidget.setTabIndex(Integer.parseInt(tabIndex));
+		}
+		String enabled = element.getAttribute("_enabled");
+		if (enabled != null && enabled.trim().length() > 0)
+		{
+			focusWidget.setEnabled(Boolean.parseBoolean(enabled));
+		}
+		String accessKey = element.getAttribute("_accessKey");
+		if (accessKey != null && accessKey.trim().length() == 1)
+		{
+			this.accessKey = accessKey.charAt(0);
+			focusWidget.setAccessKey(this.accessKey);
+		}
+	}
 
-		 final Event eventClick = getComponentEvent(element, EventFactory.EVENT_CLICK);
-		 if (eventClick != null)
-		 {
-			 ClickListener listener = new ClickListener()
-			 {
-				 public void onClick(Widget sender) 
-				 {
-					 EventFactory.callEvent(eventClick, getId());
-				 }
-			 };
-			 ((SourcesClickEvents)widget).addClickListener(listener);
-		 }
+	/**
+	 * Render component events
+	 * @see #Component.attachEvents
+	 */
+	protected void attachEvents(Element element)
+	{	 
+		super.attachEvents(element);
 
-		 final Event eventKeyDown = getComponentEvent(element, EventFactory.EVENT_KEY_DOWN);
-		 final Event eventKeyPress = getComponentEvent(element, EventFactory.EVENT_KEY_PRESS);
-		 final Event eventKeyUp = getComponentEvent(element, EventFactory.EVENT_KEY_UP);
-		 if (eventKeyDown != null || eventKeyPress != null || eventKeyUp != null)
-		 {
-			 KeyboardListener listener = new KeyboardListener()
-			 {
+		if (clientFormatter != null && widget instanceof HasText)
+		{
+			focusWidget.addFocusListener(new FocusListener()
+			{
+				public void onFocus(Widget sender) 
+				{
+				}
+				public void onLostFocus(Widget sender) 
+				{
+					try 
+					{
+						setValue(getValue());
+					} 
+					catch (InvalidFormatException e) 
+					{
+						Window.alert(e.getLocalizedMessage());
+						setValue(null);
+					}
+				}
+			});
+		}
+
+		final Event eventFocus = getComponentEvent(element, EventFactory.EVENT_FOCUS);
+		final Event eventBlur = getComponentEvent(element, EventFactory.EVENT_BLUR);
+		if (eventFocus != null || eventBlur != null)
+		{
+			FocusListener listener = new FocusListener()
+			{
+				public void onFocus(Widget sender) 
+				{
+					if (eventFocus != null) EventFactory.callEvent(eventFocus, getId());
+				}
+
+				public void onLostFocus(Widget sender) 
+				{
+					if (eventBlur != null) EventFactory.callEvent(eventBlur, getId());
+				}
+			};
+			focusWidget.addFocusListener(listener);
+		}
+
+		final Event eventClick = getComponentEvent(element, EventFactory.EVENT_CLICK);
+		if (eventClick != null)
+		{
+			ClickListener listener = new ClickListener()
+			{
+				public void onClick(Widget sender) 
+				{
+					EventFactory.callEvent(eventClick, getId());
+				}
+			};
+			((SourcesClickEvents)widget).addClickListener(listener);
+		}
+
+		final Event eventKeyDown = getComponentEvent(element, EventFactory.EVENT_KEY_DOWN);
+		final Event eventKeyPress = getComponentEvent(element, EventFactory.EVENT_KEY_PRESS);
+		final Event eventKeyUp = getComponentEvent(element, EventFactory.EVENT_KEY_UP);
+		if (eventKeyDown != null || eventKeyPress != null || eventKeyUp != null)
+		{
+			KeyboardListener listener = new KeyboardListener()
+			{
 				public void onKeyDown(Widget sender, char keyCode, int modifiers) 
 				{
 					if (eventKeyDown != null) EventFactory.callEvent(eventKeyDown, getId());
@@ -171,9 +228,34 @@ public class FocusComponent extends Component {
 				{
 					if (eventKeyUp != null) EventFactory.callEvent(eventKeyUp, getId());
 				}
-			 };
-			 focusWidget.addKeyboardListener(listener);
-		 }
-	 }
+			};
+			focusWidget.addKeyboardListener(listener);
+		}
+	}
+	
+	/**
+	 * Update component attributes
+	 * @see #Component.renderAttributes
+	 */
+	protected void updateAttributes(com.google.gwt.xml.client.Element element)
+	{
+		super.updateAttributes(element);
 
+		String tabIndex = element.getAttribute("_tabIndex");
+		if (tabIndex != null && tabIndex.trim().length() > 0)
+		{
+			focusWidget.setTabIndex(Integer.parseInt(tabIndex));
+		}
+		String enabled = element.getAttribute("_enabled");
+		if (enabled != null && enabled.trim().length() > 0)
+		{
+			focusWidget.setEnabled(Boolean.parseBoolean(enabled));
+		}
+		String accessKey = element.getAttribute("_accessKey");
+		if (accessKey != null && accessKey.trim().length() == 1)
+		{
+			this.accessKey = accessKey.charAt(0);
+			focusWidget.setAccessKey(this.accessKey);
+		}
+	}
 }

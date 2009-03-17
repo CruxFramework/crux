@@ -13,31 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.ext.client.component;
+package br.com.sysmap.crux.ext.server.component;
 
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.FocusWidget;
+import java.io.PrintWriter;
+
+import br.com.sysmap.crux.core.server.screen.Component;
 
 /**
- * A TextArea Component
- * 
+ * Renderer for CheckBox
  * @author Thiago Bustamante
  *
  */
-public class TextArea extends FocusComponent
+public class CheckBoxRenderer extends FocusComponentRenderer 
 {
-	public TextArea(String id, FocusWidget widget) 
+	@Override
+	protected void renderAttributes(Component component, PrintWriter writer) 
 	{
-		super(id, widget);
-	}
-
-	protected void renderAttributes(Element element) 
-	{
-		super.renderAttributes(element);
-		String rows = element.getAttribute("_rows");
-		if (rows != null && rows.trim().length() > 0)
-		{
-			((com.google.gwt.user.client.ui.TextArea)widget).setVisibleLines(Integer.parseInt(rows));
-		}
+		super.renderAttributes(component, writer);
+		CheckBox checkboxComponent = (CheckBox)component;
+		writer.print(" _checked='"+checkboxComponent.checked+"'");
 	}
 }

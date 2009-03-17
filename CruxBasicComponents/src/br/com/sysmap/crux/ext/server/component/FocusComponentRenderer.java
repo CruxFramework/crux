@@ -21,6 +21,11 @@ import br.com.sysmap.crux.core.server.screen.Component;
 import br.com.sysmap.crux.core.server.screen.ComponentRendererImpl;
 import br.com.sysmap.crux.core.utils.HtmlUtils;
 
+/**
+ * Renderer for FocusComponents
+ * @author Thiago Bustamante
+ *
+ */
 public class FocusComponentRenderer extends ComponentRendererImpl 
 {
 	@Override
@@ -28,7 +33,7 @@ public class FocusComponentRenderer extends ComponentRendererImpl
 	{
 		super.renderAttributes(component, writer);
 		FocusComponent focusComponent = (FocusComponent)component;
-		if (focusComponent.accessKey == ' ')
+		if (focusComponent.accessKey != ' ')
 			writer.print(" _accessKey='"+HtmlUtils.filterValue(focusComponent.accessKey)+"'");
 		writer.print(" _tabIndex='"+focusComponent.tabIndex+"'");
 		writer.print(" _enabled='"+focusComponent.enabled+"'");

@@ -13,31 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.ext.client.component;
-
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.FocusWidget;
+package br.com.sysmap.crux.ext.server.component;
 
 /**
- * A TextArea Component
  * 
  * @author Thiago Bustamante
  *
  */
-public class TextArea extends FocusComponent
+public class CheckBox extends FocusComponent
 {
-	public TextArea(String id, FocusWidget widget) 
+	protected boolean checked = true;
+
+	public boolean isChecked() 
 	{
-		super(id, widget);
+		return checked;
 	}
 
-	protected void renderAttributes(Element element) 
+	public void setChecked(boolean checked) 
 	{
-		super.renderAttributes(element);
-		String rows = element.getAttribute("_rows");
-		if (rows != null && rows.trim().length() > 0)
+		if (isCheckChanges() && (checked != this.checked))
 		{
-			((com.google.gwt.user.client.ui.TextArea)widget).setVisibleLines(Integer.parseInt(rows));
+			dirty = true;
 		}
+		this.checked = checked;
 	}
 }
