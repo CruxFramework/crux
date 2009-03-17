@@ -164,7 +164,6 @@ public class ScreenFactory {
 	private Component newComponent(Element element, String componentId) throws InterfaceConfigException
 	{
 		Component component = registeredComponents.createComponent(componentId, element.getAttribute("_type"));
-		component.render(element);
 		return component;
 	}
 	
@@ -237,11 +236,8 @@ public class ScreenFactory {
 			throw new InterfaceConfigException(JSEngine.messages.screenFactoryErrorCreateComponent(componentId));
 		}
 		screen.addComponent(component);
-		String property = element.getAttribute("_property");
-		if (property != null && property.trim().length() > 0)
-		{
-			screen.addProperty(property, component.getId());
-		}
+		component.render(element);
+
 		if (parent != null)
 		{
 			parent.addComponent(component);

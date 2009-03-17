@@ -43,15 +43,14 @@ public class Component
 	private int hashValue = 0;
 	protected Widget widget;
 	protected String id;
-	protected String property;
+	protected String property = null;
 	protected String width;
 	protected String height;
 	protected String formatter;
-	protected String tooltip;
 	protected ClientFormatter clientFormatter = null;
-	protected boolean visible;
-	
 	protected Map<String, String> modifiedProperties = new HashMap<String, String>();
+
+	protected Screen screen = null;
 	
 	/**
 	 * Constructor
@@ -65,6 +64,24 @@ public class Component
 		this.widget = widget;
 	}
 	
+	/**
+	 * Return screen that contains this component
+	 * @return
+	 */
+	public Screen getScreen() 
+	{
+		return screen;
+	}
+
+	/**
+	 * Set screen that contains this component
+	 * @return
+	 */
+	protected void setScreen(Screen screen) 
+	{
+		this.screen = screen;
+	}
+
 	/**
 	 * Builds an Event object from the page DOM element representing the component (Its <span> tag)
 	 * @param element
@@ -125,20 +142,27 @@ public class Component
 	{
 		String width = element.getAttribute("_width");
 		if (width != null && width.trim().length() > 0)
-			widget.setWidth(width);
-		
+		{
+			this.width = width;
+			widget.setWidth(this.width);
+		}
 		String height = element.getAttribute("_height");
 		if (height != null && height.trim().length() > 0)
-			widget.setHeight(height);
-		
+		{
+			this.height = height;
+			widget.setHeight(this.height);
+		}
 		String visible = element.getAttribute("_visible");
 		if (visible != null && visible.trim().length() > 0)
+		{
 			widget.setVisible(Boolean.parseBoolean(visible));
-
+		}
 		String tooltip = element.getAttribute("_tooltip");
 		if (tooltip != null && tooltip.trim().length() > 0)
+		{
 			widget.setTitle(tooltip);
-
+		}
+		
 		String classAttr = element.getAttribute("_class");
 		if (classAttr != null && classAttr.trim().length() > 0)
 			widget.setStyleName(classAttr);
@@ -163,6 +187,13 @@ public class Component
 				Window.alert(JSEngine.messages.componentFormatterNotFound(formatter));
 			}
 		}		
+
+		String property = element.getAttribute("_property");
+		if (property != null && property.trim().length() > 0)
+		{
+			setProperty(element.getAttribute("_property"), false);
+		}
+		
 		if (widget instanceof HasHTML)
 		{
 			String innerHtml = element.getInnerHTML();
@@ -268,8 +299,7 @@ public class Component
 				((HasName)widget).setName(name);
 		}
 		
-		String property = element.getAttribute("_property");
-		ScreenFactory.getInstance().getScreen().addProperty(property, getId());
+		setProperty(element.getAttribute("_property"), false);
 	}
 	
 	/**
@@ -335,12 +365,33 @@ public class Component
 
 	/**
 	 * Associate a property with this component
-	 * @return
 	 */
-	protected void setProperty(String property) 
+	protected void setProperty(String property, boolean saveChanges) 
 	{
-		this.property = property;	
+		if ((this.property != null && property == null) || (this.property == null && property != null) ||
+			(this.property != null && property != null && !this.property.equals(property)))
+		{
+			this.property = property;	
+			if (widget instanceof HasName)
+			{
+				((HasName)widget).setName(property);
+			}
+			this.screen.addProperty(property, getId());
+			if (saveChanges)
+			{
+				modifiedProperties.put("property", (property!=null)?property:"");
+			}
+		}		
 	}
+	
+	/**
+	 * Associate a property with this component
+	 */
+	public void setProperty(String property)
+	{
+		setProperty(property, true);
+	}
+	
 	
 	public boolean equals(Object obj) 
 	{
@@ -473,7 +524,7 @@ public class Component
 	 */
 	public boolean isVilible()
 	{
-		return visible;
+		return widget.isVisible();
 	}
 	
 	/**
@@ -482,11 +533,10 @@ public class Component
 	 */
 	public void setVisible(boolean visible)
 	{
-		if (this.visible != visible)
+		if (visible != widget.isVisible())
 		{
 			modifiedProperties.put("visible", Boolean.toString(visible));
 			widget.setVisible(visible);
-			this.visible = visible;
 		}
 	}
 	
@@ -496,7 +546,7 @@ public class Component
 	 */
 	public String getTooltip() 
 	{
-		return tooltip;
+		return widget.getTitle();
 	}
 
 	/**
@@ -505,12 +555,12 @@ public class Component
 	 */
 	public void setTooltip(String tooltip) 
 	{
-		if ((this.tooltip != null && tooltip == null) || (this.tooltip == null && tooltip != null) ||
-			(this.tooltip != null && tooltip != null && !this.tooltip.equals(tooltip)))
+		String oldTootip = widget.getTitle();
+		if ((oldTootip != null && tooltip == null) || (oldTootip == null && tooltip != null) ||
+			(oldTootip != null && tooltip != null && !oldTootip.equals(tooltip)))
 		{
 			modifiedProperties.put("tooltip", (tooltip!=null)?tooltip:"");
 			widget.setTitle(tooltip);
-			this.tooltip = tooltip;
 		}
 	}
 	

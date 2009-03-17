@@ -101,6 +101,7 @@ public class Screen
 	void addComponent(Component component)
 	{
 		components.put(component.getId(), component);
+		component.setScreen(this);
 	}
 
 	void addProperty(String name, String componentId)
@@ -116,7 +117,6 @@ public class Screen
 			{
 				beansProperties.put(name, componentId);
 			}
-			component.setProperty(name);
 		}
 	}
 
