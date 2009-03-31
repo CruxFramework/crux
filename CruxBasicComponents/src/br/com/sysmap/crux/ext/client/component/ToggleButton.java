@@ -42,11 +42,7 @@ public class ToggleButton extends CustomButton
 	
 	public void setDown(boolean down)
 	{
-		if (toggleButtonWidget.isDown() != down)
-		{
-			modifiedProperties.put("down", Boolean.toString(down));
-			toggleButtonWidget.setDown(down);
-		}
+		toggleButtonWidget.setDown(down);
 	}
 	
 	/**
@@ -63,19 +59,4 @@ public class ToggleButton extends CustomButton
 			toggleButtonWidget.setDown(Boolean.parseBoolean(down));
 		}
 	}
-	
-	/**
-	 * Update component attributes
-	 * @see #Component.renderAttributes
-	 */
-	protected void updateAttributes(com.google.gwt.xml.client.Element element)
-	{
-		super.updateAttributes(element);
-
-		String down = element.getAttribute("_down");
-		if (down != null && down.trim().length() > 0)
-		{
-			toggleButtonWidget.setDown(Boolean.parseBoolean(down));
-		}
-	}	
 }

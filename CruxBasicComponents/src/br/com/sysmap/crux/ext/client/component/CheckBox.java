@@ -62,11 +62,7 @@ public class CheckBox extends FocusComponent
 	 */
 	public void setChecked(boolean checked)
 	{
-		if (checkboxWidget.isChecked() != checked)
-		{
-			modifiedProperties.put("checked", Boolean.toString(checked));
-			checkboxWidget.setChecked(checked);
-		}		
+		checkboxWidget.setChecked(checked);
 	}
 	
 	/**
@@ -76,21 +72,6 @@ public class CheckBox extends FocusComponent
 	protected void renderAttributes(Element element)
 	{
 		super.renderAttributes(element);
-		String checked = element.getAttribute("_checked");
-		if (checked != null && checked.trim().length() > 0)
-		{
-			checkboxWidget.setChecked(Boolean.parseBoolean(checked));
-		}
-	}
-
-	/**
-	 * Update component attributes
-	 * @see #Component.renderAttributes
-	 */
-	protected void updateAttributes(com.google.gwt.xml.client.Element element)
-	{
-		super.updateAttributes(element);
-
 		String checked = element.getAttribute("_checked");
 		if (checked != null && checked.trim().length() > 0)
 		{

@@ -74,11 +74,19 @@ public class FocusComponent extends Component
 	 * Return the component accessKey
 	 * @return accessKey
 	 */
+	public char getAccessKey() 
+	{
+		return accessKey;
+	}
+
+	/**
+	 * Set the component accessKey
+	 * @param accessKey
+	 */
 	public void setAccessKey(char accessKey) 
 	{
 		if (this.accessKey != accessKey)
 		{
-			modifiedProperties.put("accessKey", Character.toString(accessKey));
 			focusWidget.setAccessKey(accessKey);
 			this.accessKey = accessKey;
 		}
@@ -90,11 +98,7 @@ public class FocusComponent extends Component
 	 */
 	public void setEnabled(boolean enabled) 
 	{
-		if (focusWidget.isEnabled() != enabled)
-		{
-			modifiedProperties.put("enabled", Boolean.toString(enabled));
-			focusWidget.setEnabled(enabled);
-		}
+		focusWidget.setEnabled(enabled);
 	}
 
 	/**
@@ -112,11 +116,7 @@ public class FocusComponent extends Component
 	 */
 	public void setTabIndex(int tabIndex) 
 	{
-		if (focusWidget.getTabIndex() != tabIndex)
-		{
-			modifiedProperties.put("tabIndex", Integer.toString(tabIndex));
-			focusWidget.setTabIndex(tabIndex);
-		}
+		focusWidget.setTabIndex(tabIndex);
 	}
 
 	/**
@@ -230,32 +230,6 @@ public class FocusComponent extends Component
 				}
 			};
 			focusWidget.addKeyboardListener(listener);
-		}
-	}
-	
-	/**
-	 * Update component attributes
-	 * @see #Component.renderAttributes
-	 */
-	protected void updateAttributes(com.google.gwt.xml.client.Element element)
-	{
-		super.updateAttributes(element);
-
-		String tabIndex = element.getAttribute("_tabIndex");
-		if (tabIndex != null && tabIndex.trim().length() > 0)
-		{
-			focusWidget.setTabIndex(Integer.parseInt(tabIndex));
-		}
-		String enabled = element.getAttribute("_enabled");
-		if (enabled != null && enabled.trim().length() > 0)
-		{
-			focusWidget.setEnabled(Boolean.parseBoolean(enabled));
-		}
-		String accessKey = element.getAttribute("_accessKey");
-		if (accessKey != null && accessKey.trim().length() == 1)
-		{
-			this.accessKey = accessKey.charAt(0);
-			focusWidget.setAccessKey(this.accessKey);
 		}
 	}
 }
