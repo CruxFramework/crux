@@ -24,7 +24,6 @@ import java.util.Map;
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
 import br.com.sysmap.crux.core.server.event.clienthandlers.ClientControllers;
 import br.com.sysmap.crux.core.server.screen.Component;
-import br.com.sysmap.crux.core.server.screen.Container;
 import br.com.sysmap.crux.core.server.screen.Event;
 import br.com.sysmap.crux.core.server.screen.Screen;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
@@ -97,15 +96,6 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			Event event = events.next();
 			generateEventHandlerBlock(logger,sourceWriter, component.getId(), event, addedHandler);
 			generateEventCallbackBlock(logger,sourceWriter, component.getId(), event, addedCallback);
-		}
-		if (component instanceof Container)
-		{
-			Iterator<Component> iterator = ((Container)component).iterateComponents();
-			while (iterator.hasNext())
-			{
-				Component child = iterator.next();
-				generateEventHandlersForComponent(logger, sourceWriter, child, addedHandler, addedCallback);
-			}
 		}
 	}
 	

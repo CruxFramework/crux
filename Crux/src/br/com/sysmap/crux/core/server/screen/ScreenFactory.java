@@ -47,6 +47,13 @@ import br.com.sysmap.crux.core.server.screen.formatter.Formatters;
 import br.com.sysmap.crux.core.server.screen.formatter.ServerFormatter;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
+/**
+ * Factory for screens at the application's server side. It is necessary for GWT generators 
+ * and for parameters binding.
+ *  
+ * @author Thiago Bustamante
+ *
+ */
 public class ScreenFactory 
 {
 	private static final Log logger = LogFactory.getLog(ScreenFactory.class);
@@ -55,12 +62,23 @@ public class ScreenFactory
 	private static ScreenFactory instance;
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
+	/**
+	 * Return the singleton instance. It must be first initialized with getInstance(ServletContext) method.
+	 * @return
+	 * @throws ScreenConfigException
+	 */
 	public static ScreenFactory getInstance() throws ScreenConfigException
 	{
 		if (instance == null)
 			throw new ScreenConfigException(messages.screenFactoryNotInitialized());
 		return instance;
 	}
+	
+	/**
+	 * Singleton method
+	 * @param servletContext
+	 * @return
+	 */
 	public static ScreenFactory getInstance(ServletContext servletContext)
 	{
 		if (instance == null)
@@ -80,12 +98,17 @@ public class ScreenFactory
 		}
 		return instance;
 	}
+	
 	private boolean hotDeploy;
 	private boolean developmentMode = false;
 	private ServletContext servletContext;
 	private Map<String, Screen> screenCache = new HashMap<String, Screen>();
 	private Map<String, Long> screenModified = new HashMap<String, Long>();
 
+	/**
+	 * Private Constructor
+	 * @param servletContext
+	 */
 	private ScreenFactory(ServletContext servletContext)
 	{
 		this.servletContext = servletContext;
@@ -93,32 +116,11 @@ public class ScreenFactory
 		this.developmentMode = ("development".equals(servletContext.getInitParameter("mode")));
 	}
 	
-	private Container getParent(Source source, Element element, Screen screen) throws ScreenConfigException
-	{
-		Element elementParent = element.getParentElement();
-		while (elementParent != null && !"body".equalsIgnoreCase(elementParent.getName()))
-		{
-			if (isValidComponent(elementParent))
-			{
-				Component parent = screen.getComponent(elementParent.getAttributeValue("id")); 
-				
-				if (parent == null)
-				{
-					parent = createComponent(source, elementParent, screen);
-				}
-				
-				if (!(parent instanceof Container))
-				{
-					throw new ScreenConfigException(messages.screenFactoryInvalidComponentParent(element.getAttributeValue("id")));
-				}
-				return (Container)parent;
-			}
-			elementParent = elementParent.getParentElement();
-		}
-			
-		return null;	
-	}
-	
+	/**
+	 * Test if a target HTML element represents a Screen definition for Crux.
+	 * @param element
+	 * @return
+	 */
 	private boolean isScreenDefinitions(Element element)
 	{
 		if ("span".equalsIgnoreCase(element.getName()))
@@ -132,6 +134,11 @@ public class ScreenFactory
 		return false;
 	}
 
+	/**
+	 * Test if a target HTML element represents a component definition for Crux.
+	 * @param element
+	 * @return
+	 */
 	private boolean isValidComponent(Element element)
 	{
 		if ("span".equalsIgnoreCase(element.getName()))
@@ -144,7 +151,16 @@ public class ScreenFactory
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Creates a component based in its &lt;span&gt; tag definition.
+	 * 
+	 * @param source
+	 * @param element
+	 * @param screen
+	 * @return
+	 * @throws ScreenConfigException
+	 */
 	private Component createComponent(Source source, Element element, Screen screen) throws ScreenConfigException
 	{
 		String componentId = element.getAttributeValue("id");
@@ -155,10 +171,8 @@ public class ScreenFactory
 		Component component = screen.getComponent(componentId);
 		if (component != null)
 		{
-			return component;
+			throw new ScreenConfigException(messages.screenFactoryErrorDuplicatedComponent(componentId));
 		}
-		
-		Container parent = getParent(source, element, screen);
 		
 		component = newComponent(element, componentId);
 		if (component == null)
@@ -167,16 +181,16 @@ public class ScreenFactory
 		}
 		
 		screen.addComponent(component);
-		if (parent != null)
-		{
-			parent.addComponent(component);
-		}
-		
 		checkAndRegisterComponentFormatter(component, screen);
-		
 		return component;
 	}
 	
+	/**
+	 * Register a formatter associated to component property, if it is defined.
+	 * @param component
+	 * @param screen
+	 * @throws ScreenConfigException
+	 */
 	private void checkAndRegisterComponentFormatter(Component component, Screen screen) throws ScreenConfigException
 	{
 		String formatterString = component.getFormatter();
@@ -224,7 +238,14 @@ public class ScreenFactory
 			}
 		}
 	}
-	
+
+	/**
+	 * Creates a ServerFormatter based in formatter class and component declared parameters.
+	 * @param serverFormatter
+	 * @param formatterParams
+	 * @return
+	 * @throws Exception
+	 */
 	private ServerFormatter getServerFormatter(Class<? extends ServerFormatter> serverFormatter, String formatterParams) throws Exception
 	{
 		if (formatterParams == null)
@@ -247,6 +268,11 @@ public class ScreenFactory
 		}
 	}
 	
+	/**
+	 * Verify the date of the last modification on screen file
+	 * @param url
+	 * @return
+	 */
 	private long getLastModified(URL url)
     {
         File file;
@@ -262,6 +288,12 @@ public class ScreenFactory
         return file.lastModified();
     }
 
+	/**
+	 * Factory method for screens.
+	 * @param id
+	 * @return
+	 * @throws ScreenConfigException
+	 */
 	public Screen getScreen(String id) throws ScreenConfigException
 	{
 		try 
@@ -354,6 +386,14 @@ public class ScreenFactory
 			throw new ScreenConfigException(messages.screenFactoryErrorRetrievingScreen(id, e.getLocalizedMessage()), e);
 		}
 	}
+	
+	/**
+	 * Builds a new component, based on its &lt;span&gt; tag definition.
+	 * @param element
+	 * @param componentId
+	 * @return
+	 * @throws ScreenConfigException
+	 */
 	private Component newComponent(Element element, String componentId) throws ScreenConfigException
 	{
 		String type = element.getAttributeValue("_type");
@@ -389,6 +429,13 @@ public class ScreenFactory
 		} 
 	}
 	
+	/**
+	 * Parse the HTML page and build the Crux Screen. 
+	 * @param id
+	 * @param url
+	 * @return
+	 * @throws IOException
+	 */
 	private Screen parseScreen(String id, URL url) throws IOException
 	{
 		Screen screen = new Screen(id);
@@ -419,6 +466,11 @@ public class ScreenFactory
 		return screen;
 	}
 	
+	/**
+	 * Parse screen element
+	 * @param screen
+	 * @param compCandidate
+	 */
 	private void parseScreenElement(Screen screen, Element compCandidate) 
 	{
 		Element elem = (Element) compCandidate;
@@ -454,6 +506,11 @@ public class ScreenFactory
 		}
 	}
 	
+	/**
+	 * Convert a Jericho element to a DOM element
+	 * @param element
+	 * @return
+	 */
 	private org.w3c.dom.Element toDomElment(Element element)
 	{
 		return null;

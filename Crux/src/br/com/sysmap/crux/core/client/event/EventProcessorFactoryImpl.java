@@ -107,60 +107,6 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 	}
 	
 	/**
-	 * Create a eventProcessor for a SERVER event.
-	 * @param event
-	 * @return
-	 */
-	protected EventProcessor createServerEventProcessor(final Event event)
-	{
-		return new EventProcessor()
-		{
-			public void processEvent(final Screen screen, String idSender)
-			{
-				if (event.isSync()) screen.blockToUser();
-				String moduleRelativeURL = GWT.getModuleBaseURL() + "submit";
-				String postData = "idSender="+URL.encodeComponent(idSender!=null?idSender:"")+
-				                  "&evtCall="+URL.encodeComponent(event.getEvtCall())+
-				                  "&screenId="+URL.encodeComponent(screen.getId())+
-				                  "&"+screenSerialization.getPostData(screen);
-				
-				RequestCallback callback = new RequestCallback()
-				{
-					public void onError(Request request, Throwable exception) 
-					{
-						if (event.isSync()) screen.unblockToUser();
-						Window.alert(JSEngine.messages.eventProcessorServerError());
-					}
-
-					public void onResponseReceived(Request request, Response response) 
-					{
-						if (response.getStatusCode() != 200) 
-						{
-							if (event.isSync()) screen.unblockToUser();
-							Window.alert(JSEngine.messages.eventProcessorServerError());
-							return;
-						}
-						screenSerialization.confirmSerialization(screen);
-						screenSerialization.updateScreen(screen, response.getText());
-						if (event.isSync()) screen.unblockToUser();
-					}
-				};
-				try
-				{
-					RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, moduleRelativeURL);
-					builder.setHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8");
-					builder.sendRequest(postData, callback);
-				}
-				catch (Exception e) 
-				{
-					if (event.isSync()) screen.unblockToUser();
-					Window.alert(JSEngine.messages.eventProcessorServerError());
-				}
-			}
-		};
-	}
-	
-	/**
 	 * Create a eventProcessor for a RPC event.
 	 * @param event
 	 * @return
@@ -177,7 +123,7 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 				postData.append("idSender="+URL.encodeComponent(idSender!=null?idSender:"")+
 								"&screenId="+URL.encodeComponent(screen.getId())+
 						        "&evtCall="+URL.encodeComponent(event.getEvtCall())+
-								"&"+screenSerialization.getDTOPostData(screen));
+								"&"+screenSerialization.getPostData(screen));
 
 				RequestCallback callback = new RequestCallback()
 				{
@@ -195,68 +141,49 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 							Window.alert(JSEngine.messages.eventProcessorRPCError());
 							return;
 						}
-						String evtCallback = event.getEvtCallback();
-						if (evtCallback == null || evtCallback.trim().length() == 0)
+						try
 						{
-							if (event.isSync()) screen.unblockToUser();
-							return;
-						}
-						int dotPos = evtCallback.indexOf('.');
-						if (dotPos > 0)
-						{
-							String evtHandler = evtCallback.substring(0, dotPos);
-							String method = evtCallback.substring(dotPos+1);
-							EventClientCallbackInvoker callback = (EventClientCallbackInvoker)registeredClientEventHandlers.getEventCallback(evtHandler);
-							if (callback == null)
+							JSONValue jsonValue = JSONParser.parse(response.getText());
+							JSONObject object = jsonValue.isObject();
+							if (object != null)
 							{
-								if (event.isSync()) screen.unblockToUser();
-								Window.alert(JSEngine.messages.eventProcessorRPCCallbackNotFound(evtHandler));
-								return;
-							}
-							try
-							{
-								JSONValue jsonValue = JSONParser.parse(response.getText());
-								JSONObject object = jsonValue.isObject();
-								if (object != null)
+								if ((jsonValue = object.get("error")) != null)
 								{
-									if ((jsonValue = object.get("error")) != null)
+									object = jsonValue.isObject();
+									String errorCode = object.get("code").toString();
+									String errorMsg = object.get("msg").toString();
+									if ("595".equals(errorCode))
 									{
-										object = jsonValue.isObject();
-										String errorCode = object.get("code").toString();
-										String errorMsg = object.get("msg").toString();
-										if ("595".equals(errorCode))
-										{
-											Window.alert(errorMsg);
-										}
-										else
-										{
-											Window.alert(JSEngine.messages.eventProcessorServerJsonError(errorCode, errorMsg));
-										}
+										Window.alert(errorMsg);
 									}
 									else
 									{
-										if ((jsonValue = object.get("dtoChanges")) != null)
-										{
-											screenSerialization.updateScreen(screen, jsonValue.isString().stringValue());
-										}
-										if ((jsonValue = object.get("result")) != null)
-										{
-											callback.invoke(method, screen, idSender, jsonValue);
-										}
-										else
-										{
-											Window.alert(JSEngine.messages.eventProcessorServerJsonInvalidResponse());
-										}
+										Window.alert(JSEngine.messages.eventProcessorServerJsonError(errorCode, errorMsg));
 									}
 								}
-								if (event.isSync()) screen.unblockToUser();
+								else
+								{
+									if ((jsonValue = object.get("dtoChanges")) != null)
+									{
+										screenSerialization.updateScreen(screen, jsonValue.isString().stringValue());
+									}
+									if ((jsonValue = object.get("result")) != null)
+									{
+										invokeCallbackMethod(event, screen, idSender, jsonValue);
+									}
+									else
+									{
+										Window.alert(JSEngine.messages.eventProcessorServerJsonInvalidResponse());
+									}
+								}
 							}
-							catch (Exception e)
-							{
-								GWT.log(e.getLocalizedMessage(), e);
-								if (event.isSync()) screen.unblockToUser();
-								Window.alert(JSEngine.messages.eventProcessorRPCCallbackError(evtCallback));
-							}
+							if (event.isSync()) screen.unblockToUser();
+						}
+						catch (Exception e)
+						{
+							GWT.log(e.getLocalizedMessage(), e);
+							if (event.isSync()) screen.unblockToUser();
+							Window.alert(JSEngine.messages.eventProcessorRPCResultProcessingError());
 						}
 					}
 				};
@@ -274,6 +201,39 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 				}
 			}
 		};
+	}
+	
+	private void invokeCallbackMethod(Event event, Screen screen, String idSender, JSONValue jsonValue)
+	{
+		String evtCallback = event.getEvtCallback();
+		try
+		{
+			if (evtCallback == null || evtCallback.trim().length() == 0)
+			{
+				if (event.isSync()) screen.unblockToUser();
+				return;
+			}
+			int dotPos = evtCallback.indexOf('.');
+			if (dotPos > 0)
+			{
+				String evtHandler = evtCallback.substring(0, dotPos);
+				String method = evtCallback.substring(dotPos+1);
+				EventClientCallbackInvoker callback = (EventClientCallbackInvoker)registeredClientEventHandlers.getEventCallback(evtHandler);
+				if (callback == null)
+				{
+					if (event.isSync()) screen.unblockToUser();
+					Window.alert(JSEngine.messages.eventProcessorRPCCallbackNotFound(evtHandler));
+					return;
+				}
+				callback.invoke(method, screen, idSender, jsonValue);
+			}
+		}
+		catch (Exception e)
+		{
+			GWT.log(e.getLocalizedMessage(), e);
+			if (event.isSync()) screen.unblockToUser();
+			Window.alert(JSEngine.messages.eventProcessorRPCCallbackError(evtCallback));
+		}
 	}
 
 	/**
@@ -302,10 +262,6 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 		if (EventFactory.TYPE_CLIENT.equals(event.getType()))
 		{
 			return createClientEventProcessor(event);
-		}
-		else if (EventFactory.TYPE_SERVER.equals(event.getType()))
-		{
-			return createServerEventProcessor(event);
 		}
 		else if (EventFactory.TYPE_SUBMIT.equals(event.getType()))
 		{

@@ -15,9 +15,19 @@
  */
 package br.com.sysmap.crux.core.server.lifecycle.phase.dispatch;
 
+import java.lang.reflect.Method;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import br.com.sysmap.crux.core.client.event.ValidateException;
+import br.com.sysmap.crux.core.client.event.annotation.Validate;
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.json.JsonResult;
 import br.com.sysmap.crux.core.server.json.JsonSerializer;
+import br.com.sysmap.crux.core.server.lifecycle.Phase;
 import br.com.sysmap.crux.core.server.lifecycle.PhaseContext;
 import br.com.sysmap.crux.core.server.lifecycle.PhaseException;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
@@ -27,8 +37,11 @@ import br.com.sysmap.crux.core.utils.RegexpPatterns;
  * @author Thiago
  *
  */
-public class RPCDispatchPhase extends AbstractDispatchPhase
+public class RPCDispatchPhase implements Phase
 {
+	private static final Log logger = LogFactory.getLog(RPCDispatchPhase.class);
+	private ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
+
 	@Override
 	public void execute(PhaseContext context) throws PhaseException 
 	{
@@ -38,7 +51,7 @@ public class RPCDispatchPhase extends AbstractDispatchPhase
 			String evtCall = dispatchData.getEvtCall();
 			String[] call = RegexpPatterns.REGEXP_DOT.split(evtCall);
 				
-			Object controller = getController(call[0]);
+			Object controller = ControllerFactoryInitializer.getControllerFactory().getController(call[0]);
 			bindControllerParameters(controller, dispatchData);
 
 			Class<?>[] parametersTypes = {};
@@ -55,6 +68,50 @@ public class RPCDispatchPhase extends AbstractDispatchPhase
 		{
 			context.setCycleResult(null);
 			throw new PhaseException(e);
+		}
+	}
+	
+	protected Object dispatch(Object controller, String methodName, Class<?>[] parametersTypes, Object[] parametersValues) throws Exception 
+	{
+			Method method = controller.getClass().getMethod(methodName, parametersTypes);
+			validateMethod(method, controller);
+			return method.invoke(controller, parametersValues);
+	}
+	
+	protected void bindControllerParameters(Object controller, DispatchData dispatchData)
+	{
+		for (String key: dispatchData.getParameters())
+		{
+			try
+			{
+				BeanUtils.copyProperty(controller, key, dispatchData.getParameter(key));
+			}
+			catch (Throwable e) 
+			{
+				if (logger.isInfoEnabled()) logger.info(messages.dispatchPhasePropertyNotBound(key));
+			}
+		}
+	}
+
+	protected void validateMethod(Method method, Object controller) throws Exception
+	{
+		Validate annot = method.getAnnotation(Validate.class);
+		if (annot != null)
+		{
+			String validateMethod = annot.value();
+			if (validateMethod == null || validateMethod.length() == 0)
+			{
+				validateMethod = "validate"+ method.getName();
+			}
+			try 
+			{
+				Method validate = controller.getClass().getMethod(validateMethod, new Class<?>[]{});
+				validate.invoke(controller, new Object[]{});
+			} 
+			catch (Exception e) 
+			{
+				throw new ValidateException (e.getLocalizedMessage());
+			} 
 		}
 	}
 }

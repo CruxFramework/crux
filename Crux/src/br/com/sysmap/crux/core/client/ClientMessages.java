@@ -32,6 +32,7 @@ public interface ClientMessages extends Messages
 	String eventProcessorClientHandlerNotFound(String handler);
 	String eventProcessorRPCCallbackNotFound(String handler);
 	String eventProcessorRPCCallbackError(String callback);
+	String eventProcessorRPCResultProcessingError();
 	String eventProcessorClientError(String call);
 	String eventProcessorServerError();
 	String eventProcessorRPCError();

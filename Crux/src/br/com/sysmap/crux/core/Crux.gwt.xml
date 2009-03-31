@@ -12,19 +12,11 @@
 	<!-- Servlet used to handle RPC event calls.              -->
 	<servlet path="/rpc" class="br.com.sysmap.crux.core.server.event.EventRPCServlet"/>
 
-	<!-- Servlet used to handle SUBMIT event calls.             -->
-	<servlet path="/submit" class="br.com.sysmap.crux.core.server.event.EventServerServlet"/>
-
 	<!-- Default implementation class for EventProcessorFactory -->
 	<replace-with class="br.com.sysmap.crux.core.client.event.EventProcessorFactoryImpl">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.event.IEventProcessorFactory" />
 	</replace-with>
 	
-	<!-- Specify the generator for crux config.               -->
-	<generate-with class="br.com.sysmap.crux.core.rebind.CruxConfigGenerator">
-		<when-type-assignable class="br.com.sysmap.crux.core.client.config.CruxConfig" />
-	</generate-with>
-
 	<!-- Specify the generator for registered client handlers.-->
 	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientEventHandlersGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers" />

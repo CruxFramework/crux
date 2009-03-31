@@ -15,9 +15,6 @@
  */
 package br.com.sysmap.crux.core.client.component;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import br.com.sysmap.crux.core.client.JSEngine;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
@@ -48,7 +45,6 @@ public class Component
 	protected String height;
 	protected String formatter;
 	protected ClientFormatter clientFormatter = null;
-	protected Map<String, String> modifiedProperties = new HashMap<String, String>();
 
 	protected Screen screen = null;
 	
@@ -126,15 +122,6 @@ public class Component
 	}
 
 	/**
-	 * Update the component with information sent by server.
-	 * @param element
-	 */
-	protected void update(com.google.gwt.xml.client.Element element) 
-	{
-		updateAttributes(element);
-	}
-	
-	/**
 	 * Render component attributes
 	 * @param element page DOM element representing the component (Its <span> tag)
 	 */
@@ -191,7 +178,7 @@ public class Component
 		String property = element.getAttribute("_property");
 		if (property != null && property.trim().length() > 0)
 		{
-			setProperty(element.getAttribute("_property"), false);
+			setProperty(element.getAttribute("_property"));
 		}
 		
 		if (widget instanceof HasHTML)
@@ -238,68 +225,6 @@ public class Component
 				((SourcesChangeEvents)widget).addChangeListener(listener);
 			}
 		}
-	}
-
-	/**
-	 * update component attibutes
-	 * @param element page XML element representing the component (Its <span> tag)
-	 */
-	protected void updateAttributes(com.google.gwt.xml.client.Element element) 
-	{
-		String width = element.getAttribute("_width");
-		if (width != null && width.trim().length() > 0)
-			widget.setWidth(width);
-		
-		String height = element.getAttribute("_height");
-		if (height != null && height.trim().length() > 0)
-			widget.setHeight(height);
-
-		String visible = element.getAttribute("_visible");
-		if (visible != null && visible.trim().length() > 0)
-			widget.setVisible(Boolean.parseBoolean(visible));
-		
-		String tooltip = element.getAttribute("_tooltip");
-		if (tooltip != null && tooltip.trim().length() > 0)
-			widget.setTitle(tooltip);
-
-		String classAttr = element.getAttribute("_class");
-		if (classAttr != null && classAttr.trim().length() > 0)
-			widget.setStyleName(classAttr);
-		
-		String style = element.getAttribute("_style");
-		if (style != null && style.trim().length() > 0)
-		{	
-			String[] styleAttributes = style.split(";");
-			for (int i=0; i<styleAttributes.length; i++)
-			{
-				String[] attr = styleAttributes[i].split(":");
-				if (attr != null && attr.length == 2)
-					DOM.setStyleAttribute(widget.getElement(), attr[0], attr[1]);
-			}
-		}
-		
-		if (widget instanceof HasHTML)
-		{
-			String innerHtml = element.getNodeValue();
-			if (innerHtml != null && innerHtml.trim().length() > 0)
-			{
-				((HasHTML)widget).setHTML(innerHtml);
-			}
-		}
-		if (widget instanceof HasText)
-		{
-			String text = element.getAttribute("_value");
-			if (text != null && text.trim().length() > 0)
-				((HasText)widget).setText(text);
-		}
-		if (widget instanceof HasName)
-		{
-			String name = element.getAttribute("_name");
-			if (name != null && name.trim().length() > 0)
-				((HasName)widget).setName(name);
-		}
-		
-		setProperty(element.getAttribute("_property"), false);
 	}
 	
 	/**
@@ -366,32 +291,15 @@ public class Component
 	/**
 	 * Associate a property with this component
 	 */
-	protected void setProperty(String property, boolean saveChanges) 
+	protected void setProperty(String property) 
 	{
-		if ((this.property != null && property == null) || (this.property == null && property != null) ||
-			(this.property != null && property != null && !this.property.equals(property)))
+		this.property = property;	
+		if (widget instanceof HasName)
 		{
-			this.property = property;	
-			if (widget instanceof HasName)
-			{
-				((HasName)widget).setName(property);
-			}
-			this.screen.addProperty(property, getId());
-			if (saveChanges)
-			{
-				modifiedProperties.put("property", (property!=null)?property:"");
-			}
-		}		
+			((HasName)widget).setName(property);
+		}
+		this.screen.addProperty(property, getId());
 	}
-	
-	/**
-	 * Associate a property with this component
-	 */
-	public void setProperty(String property)
-	{
-		setProperty(property, true);
-	}
-	
 	
 	public boolean equals(Object obj) 
 	{
@@ -417,35 +325,6 @@ public class Component
     }
 
 	/**
-	 * Serializes the component to be sent to server.
-	 * @param builder
-	 */
-	protected void serialize(StringBuilder builder) 
-	{
-		if (modifiedProperties.size()>0)
-		{
-			boolean first = true;
-			for (String property : modifiedProperties.keySet()) 
-			{
-				if (!first)
-				{
-					builder.append("&");
-				}
-				first = false;
-				ScreenSerialization.buildPostParameter(builder, "c("+getId()+")."+property, modifiedProperties.get(property));
-			}
-		}
-	}
-
-	/**
-	 * Called by ScreenSerialization to inform that the component serialization was done successfully 
-	 */
-	protected void confirmSerialization()
-	{
-		modifiedProperties.clear();
-	}
-
-	/**
 	 * Return component's width
 	 * @return
 	 */
@@ -460,13 +339,8 @@ public class Component
 	 */
 	public void setWidth(String width) 
 	{
-		if ((this.width != null && width == null) || (this.width == null && width != null) ||
-			(this.width != null && width != null && !this.width.equals(width)))
-		{
-			modifiedProperties.put("width", (width!=null)?width:"");
-			widget.setWidth(width);
-			this.width = width;
-		}
+		widget.setWidth(width);
+		this.width = width;
 	}
 
 	/**
@@ -484,14 +358,7 @@ public class Component
 	 */
 	public void setClassName(String className) 
 	{
-		String classNameAtual = widget.getStyleName();
-		
-		if ((classNameAtual != null && className == null) || (classNameAtual == null && className != null) ||
-			(classNameAtual != null && className != null && !classNameAtual.equals(className)))
-		{
-			modifiedProperties.put("className", (className!=null)?className:"");
-			widget.setStyleName(className);
-		}
+		widget.setStyleName(className);
 	}
 
 	/**
@@ -509,13 +376,8 @@ public class Component
 	 */
 	public void setHeight(String height) 
 	{
-		if ((this.height != null && height == null) || (this.height == null && height != null) ||
-			(this.height != null && height != null && !this.height.equals(height)))
-		{
-			modifiedProperties.put("height", (height!=null)?height:"");
-			widget.setHeight(height);
-			this.height = height;
-		}
+		widget.setHeight(height);
+		this.height = height;
 	}
 	
 	/**
@@ -533,11 +395,7 @@ public class Component
 	 */
 	public void setVisible(boolean visible)
 	{
-		if (visible != widget.isVisible())
-		{
-			modifiedProperties.put("visible", Boolean.toString(visible));
-			widget.setVisible(visible);
-		}
+		widget.setVisible(visible);
 	}
 	
 	/**
@@ -555,13 +413,7 @@ public class Component
 	 */
 	public void setTooltip(String tooltip) 
 	{
-		String oldTootip = widget.getTitle();
-		if ((oldTootip != null && tooltip == null) || (oldTootip == null && tooltip != null) ||
-			(oldTootip != null && tooltip != null && !oldTootip.equals(tooltip)))
-		{
-			modifiedProperties.put("tooltip", (tooltip!=null)?tooltip:"");
-			widget.setTitle(tooltip);
-		}
+		widget.setTitle(tooltip);
 	}
 	
 	/**

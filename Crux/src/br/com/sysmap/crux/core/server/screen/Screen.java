@@ -21,123 +21,128 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.server.screen.formatter.ServerFormatter;
 
-public class Screen implements Cloneable
+/**
+ * Represents a Crux Screen at the application's server side. Used for GWT Generators and 
+ * request parameter binding.
+ * 
+ * @author Thiago Bustamante
+ */
+public class Screen 
 {
 	protected String id;
-	protected boolean checkChanges = false;
-	protected Container root;
-	protected boolean manageHistory = false;
 	protected static Map<String, ServerFormatter> formatters = new HashMap<String, ServerFormatter>();
+	protected Map<String, Component> components = new HashMap<String, Component>();
+	protected Map<String, Event> events = new HashMap<String, Event>();
 	
 	public Screen(String id) 
 	{
-		this(id, new Container(null));
-	}
-	
-	public Screen(String id, Container root) 
-	{
 		this.id = id;
-		this.root = root;
-		root.screen = this;
 	}
 
+	/**
+	 * Return Component associated with the given id
+	 * @param componentId
+	 * @return
+	 */
 	public Component getComponent(String componentId)
 	{
-		return root.getComponent(componentId);
+		if (componentId == null) return null;
+		return components.get(componentId);
 	}
 
+	/**
+	 * Iterate over components
+	 * @return
+	 */
 	public Iterator<Component> iterateComponents() 
 	{
-		return root.iterateComponents();
+		return components.values().iterator();
 	}
 
+	/**
+	 * Add a new component to screen
+	 * @param component
+	 */
 	protected void addComponent(Component component)
 	{
-		root.addComponent(component);
+		if (component != null)
+		{
+			components.put(component.getId(), component);
+		}
 	}
 	
+	/**
+	 * Return screen identifier
+	 * @return
+	 */
 	public String getId() 
 	{
 		return id;
 	}
 
-	public boolean isCheckChanges() 
-	{
-		return checkChanges;
-	}
-
-	public void setCheckChanges(boolean checkChanges) 
-	{
-		this.checkChanges = checkChanges;
-	}
-	
-	public boolean isManageHistory() {
-		return manageHistory;
-	}
-
-	public void setManageHistory(boolean manageHistory) {
-		if (isCheckChanges() && this.manageHistory != manageHistory )
-		{
-			root.dirty = true;
-		}
-		this.manageHistory = manageHistory;
-	}
-
-	@Override
-	protected Object clone() throws CloneNotSupportedException 
-	{
-		Screen result = (Screen)super.clone(); 
-		result.root = (Container)this.root.clone();
-		updateComponentScreen(result, result.root);
-		return result; 
-	}
-	
-	private void updateComponentScreen(Screen screen, Component component)
-	{
-		component.screen = screen;
-		
-		if (component instanceof Container)
-		{
-			for (Component child : ((Container)component).components.values()) 
-			{
-				updateComponentScreen(screen, child);
-			}
-		}
-	}
-	
-	public boolean isDirty()
-	{
-		return root.isDirty();
-	}
-	
+	/**
+	 * Add a new event to screen
+	 * @param event
+	 */
 	protected void addEvent(Event event)
 	{
-		root.addEvent(event);
+		if (event != null)
+		{
+			events.put(event.getId(), event);
+		}
 	}
 	
+	/**
+	 * Return a event associated with the given id
+	 * @param evtId
+	 * @return
+	 */
 	public Event getEvent(String evtId)
 	{
-		return root.getEvent(evtId);
+		return events.get(evtId);
 	}
 	
+	/**
+	 * Iterate over screen events
+	 * @return
+	 */
 	public Iterator<Event> iterateEvents()
 	{
-		return root.iterateEvents();
+		return events.values().iterator();
 	}
 	
+	/**
+	 * Return a formatter associated with the given property, if one is registered
+	 * @param property
+	 * @return
+	 */
 	public ServerFormatter getFormatter(String property)
 	{
-		return formatters.get(property);
+		ServerFormatter formatter = formatters.get(property);
+		if (formatter != null)
+		{
+			formatter = formatter.clone();
+		}
+		return formatter;
 	}
 	
-	public void setFormatter(String property, ServerFormatter formatter)
+	/**
+	 * Associate a formatter for a given component property
+	 * @param property
+	 * @param formatter
+	 */
+	void setFormatter(String property, ServerFormatter formatter)
 	{
 		formatters.put(property, formatter);
 	}
 	
+	/**
+	 * Verify if exists a formatter for the given property
+	 * @param property
+	 * @return
+	 */
 	public boolean containsFormatter(String property)
 	{
 		return formatters.containsKey(property);
 	}
-	
 }

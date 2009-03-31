@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.server.screen.Component;
-import br.com.sysmap.crux.core.server.screen.Container;
 import br.com.sysmap.crux.core.server.screen.Screen;
 import br.com.sysmap.crux.core.server.screen.config.ComponentConfig;
 
@@ -87,17 +86,5 @@ public class RegisteredComponentsGenerator extends AbstractRegisteredElementsGen
 			sourceWriter.println("}");
 			added.put(type, true);
 		}
-		
-		if (component instanceof Container)
-		{
-			Iterator<Component> iterator = ((Container)component).iterateComponents();
-			while (iterator.hasNext())
-			{
-				Component child = iterator.next();
-				generateCreateComponentBlock(sourceWriter, child, added, false);
-			}
-		}
 	}
-	
-	
 }

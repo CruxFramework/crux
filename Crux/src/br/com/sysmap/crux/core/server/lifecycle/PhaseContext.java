@@ -35,7 +35,6 @@ public class PhaseContext
 	private Map<String, Object> attributes = new HashMap<String, Object>();
 	private DispatchData dispatchData;
 	private boolean interruptCycle = false;
-	private Screen screen;
 	private Object dto;
 	private String interruptMessage;
 	
@@ -101,14 +100,6 @@ public class PhaseContext
 		return interruptMessage;
 	}
 
-	public Screen getScreen() {
-		return screen;
-	}
-
-	public void setScreen(Screen screen) {
-		this.screen = screen;
-	}
-
 	public Object getDto() {
 		return dto;
 	}
@@ -124,7 +115,6 @@ public class PhaseContext
 		cycleResult = null;
 		dispatchData = null;
 		interruptCycle = false;
-		screen = null;
 		dto = null;
 		request = null;
 		response = null;

@@ -41,26 +41,10 @@ public class ScreenSerialization
 	public String getPostData(Screen screen)
 	{
 		StringBuilder builder = new StringBuilder();
-		
-		boolean notFirst = screen.serialize(builder);
-		if (notFirst)
-			builder.append("&");
 		buildBeansPostData(screen, builder);
 		return builder.toString();
 	}
 
-	/**
-	 * Serialize the screen, sending only data. This method does not send component 
-	 * tree structure information.
-	 * @return
-	 */
-	public String getDTOPostData(Screen screen)
-	{
-		StringBuilder builder = new StringBuilder();
-		buildBeansPostData(screen, builder);
-		return builder.toString();
-	}
-	
 	/**
 	 * Construct post data for server DTO bound to components.
 	 * @param screen
@@ -124,24 +108,6 @@ public class ScreenSerialization
 					{
 						updateDTOs(screen, element);
 					}
-					else if ("_components_".equals(componentId))
-					{
-						updateComponents(screen, element);
-					}
-					else if ("_screen_".equals(componentId))
-					{
-						screen.update(element);
-					}
-					else if ("_interrupt_error_".equals(componentId))
-					{
-						Window.alert(element.getAttribute("_value"));
-						break;
-					}
-					else if ("_server_error_".equals(componentId))
-					{
-						Window.alert(JSEngine.messages.screenSerializationServerError(element.getAttribute("_value")));
-						break;
-					}
 				}
 			}
 		}
@@ -165,32 +131,5 @@ public class ScreenSerialization
 				screen.setBeanProperty(key, value);
 			}			
 		}
-	}
-	
-	protected void updateComponents(Screen screen, Element componentsElement)
-	{
-		NodeList children = componentsElement.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++)
-		{
-			if (children.item(i).getNodeType() == Node.ELEMENT_NODE)
-			{
-				Element element = (Element)children.item(i);
-				String componentId = element.getAttribute("id");
-				Component component = screen.getComponent(componentId);
-				if (component == null)
-				{
-					Window.alert(JSEngine.messages.screenSerializationInvalidComponent(componentId));
-				}
-				else
-				{
-					component.update(element);
-				}
-			}
-		}
-	}
-
-	public void confirmSerialization(Screen screen) 
-	{
-		screen.confirmSerialization();
 	}
 }

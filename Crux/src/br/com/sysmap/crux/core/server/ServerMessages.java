@@ -54,7 +54,7 @@ public interface ServerMessages
 	String screenFactoryCheckFileUpdateError(String errMsg);
 	String screenFactoryComponentIdRequired();
 	String screenFactoryErrorCreateComponent(String componentId);
-	String screenFactoryErrorCreateComponentParent(String parentId, String componentId);
+	String screenFactoryErrorDuplicatedComponent(String componentId);
 	String screenFactoryErrorRetrievingScreen(String screenId, String errMsg);
 	String screenFactoryGenericErrorCreateComponent(String screenId, String errMsg);
 	String screenFactoryInvalidComponentParent(String componentId);

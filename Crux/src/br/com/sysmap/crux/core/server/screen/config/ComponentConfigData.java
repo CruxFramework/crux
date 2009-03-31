@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.core.server.screen.config;
 
 import br.com.sysmap.crux.core.server.screen.ComponentParser;
-import br.com.sysmap.crux.core.server.screen.ComponentRenderer;
 
 public class ComponentConfigData 
 {
@@ -26,7 +25,6 @@ public class ComponentConfigData
 	
 	protected String clientClass;
 	protected String serverClass;
-	protected ComponentRenderer componentRenderer;
 	protected ComponentParser componentParser;
 	protected String parserInput;
 	protected String clientConstructorParams;
@@ -34,14 +32,12 @@ public class ComponentConfigData
 	public ComponentConfigData(String clientClass, 
 							   String clientConstructorParams,
 			                   String serverClass, 
-							   ComponentRenderer componentRenderer, 
 							   ComponentParser componentParser,
 							   String parserInput) 
 	{
 		this.clientClass = clientClass;
 		this.clientConstructorParams = clientConstructorParams;
 		this.serverClass = serverClass;
-		this.componentRenderer = componentRenderer;
 		this.componentParser = componentParser;
 		this.parserInput = parserInput;
 	}
@@ -61,14 +57,6 @@ public class ComponentConfigData
 	public void setServerClass(String serverClass) 
 	{
 		this.serverClass = serverClass;
-	}
-	public ComponentRenderer getComponentRenderer() 
-	{
-		return componentRenderer;
-	}
-	public void setComponentRenderer(ComponentRenderer componentRenderer) 
-	{
-		this.componentRenderer = componentRenderer;
 	}
 	public ComponentParser getComponentParser() 
 	{

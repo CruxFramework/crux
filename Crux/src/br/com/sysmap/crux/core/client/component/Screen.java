@@ -18,7 +18,6 @@ package br.com.sysmap.crux.core.client.component;
 import java.util.HashMap;
 import java.util.Map;
 
-import br.com.sysmap.crux.core.client.JSEngine;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
@@ -47,8 +46,6 @@ public class Screen
 	protected boolean manageHistory = false;
 	protected IFrameElement historyFrame = null;
 	
-	protected Map<String, String> modifiedProperties = new HashMap<String, String>();
-
 	public Screen(String id) 
 	{
 		this.id = id;
@@ -66,7 +63,6 @@ public class Screen
 	public void setManageHistory(boolean manageHistory) {
 		if (this.manageHistory != manageHistory)
 		{
-			modifiedProperties.put("manageHistory", ""+manageHistory);
 			this.manageHistory = manageHistory;
 			Element body = RootPanel.getBodyElement();
 			if (manageHistory)
@@ -243,54 +239,6 @@ public class Screen
 		if (manageHistoryStr != null)
 		{
 			setManageHistory("true".equals(manageHistoryStr));
-		}
-	}
-	
-	/**
-	 * Construct post data for component tree structure.
-	 * @param screen
-	 * @param builder
-	 * @return true if any component was serialized.
-	 */
-	protected boolean serialize(StringBuilder builder) 
-	{
-		boolean first = true;
-		for (Component component : components.values()) 
-		{
-			if (!first)
-				builder.append("&");
-			first = false;
-			component.serialize(builder);
-		}
-		
-		if (modifiedProperties.size()>0)
-		{
-			for (String property : modifiedProperties.keySet()) 
-			{
-				if (!first)
-				{
-					builder.append("&");
-				}
-				first = false;
-				ScreenSerialization.buildPostParameter(builder, "screen."+property, modifiedProperties.get(property));
-			}
-		}
-		return !first;
-	}
-
-	/**
-	 * Confirm that server received the screen serialization
-	 * @param screen
-	 */
-	protected void confirmSerialization() 
-	{
-		if (!JSEngine.cruxConfig.clientMustPreserveState())
-		{
-			modifiedProperties.clear();
-			for (Component component : components.values()) 
-			{
-				component.confirmSerialization();
-			}
 		}
 	}
 }

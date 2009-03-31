@@ -18,12 +18,13 @@ package br.com.sysmap.crux.core.server.screen.formatter;
 import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
 
 /**
- * 
- * @author thiago
+ * Formatter for request parameters used at the application's server side.
+ * @author Thiago Bustamante
  */
-public interface ServerFormatter
+public interface ServerFormatter extends Cloneable
 {
 	String format(Object input);
 	Object unformat(String input) throws InvalidFormatException;
 	String mask(String input);
+	ServerFormatter clone();
 }

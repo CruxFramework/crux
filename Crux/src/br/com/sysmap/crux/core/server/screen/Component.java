@@ -27,18 +27,9 @@ public class Component implements Cloneable
 {
 	private int hashValue = 0;
 	protected String id;
-	protected boolean dirty = false;
-	protected Screen screen;
-	protected Container parent;
 	protected String type;
 	protected String property;
-	protected String width;
-	protected String height;
-	protected boolean visible;
-	protected String tooltip;
-	protected String className;
 	protected String formatter;
-	protected String style;
 
 	protected Map<String, Event> events = new HashMap<String, Event>();
 	
@@ -56,10 +47,6 @@ public class Component implements Cloneable
 	{
 		if (event != null)
 		{
-			if (isCheckChanges())
-			{
-				dirty = true;
-			}
 			events.put(event.getId(), event);
 		}
 	}
@@ -94,16 +81,6 @@ public class Component implements Cloneable
 		this.id = id;
 	}
 	
-	public Container getParent() 
-	{
-		return parent;
-	}
-
-	public Screen getScreen() 
-	{
-		return screen;
-	}
-	
 	public int hashCode()
     {
         if (this.hashValue == 0)
@@ -116,38 +93,6 @@ public class Component implements Cloneable
         }
         return this.hashValue;
     }
-
-	protected boolean isCheckChanges()
-	{
-		return (screen!=null && screen.isCheckChanges());
-	}
-
-	public boolean isDirty() 
-	{
-		if(!dirty)
-		{
-			Container aParent = parent;
-			while(aParent != null)
-			{
-				if(aParent.isDirty())
-				{
-					return true;
-				}
-				aParent = aParent.parent;
-			}
-		}
-		return dirty;
-	}
-	
-	void setParent(Container parent) 
-	{
-		this.parent = parent;
-	}
-	
-	void setScreen(Screen screen) 
-	{
-		this.screen = screen;
-	}
 
 	public String getType() 
 	{
@@ -166,103 +111,9 @@ public class Component implements Cloneable
 
 	public void setProperty(String property) 
 	{
-		if (isCheckChanges() &&
-			((property != null && this.property == null) || (property == null && this.property != null) ||
-			 (property != null && this.property != null && !property.equals(this.property))))
-		{
-			dirty = true;
-		}
 		this.property = property;
 	}
 
-	public String getWidth() 
-	{
-		return width;
-	}
-
-	public void setWidth(String width) 
-	{
-		if (isCheckChanges() &&
-			((width != null && this.width == null) || (width == null && this.width != null) || (width != null && this.width != null && !width.equals(this.width))))
-		{
-			dirty = true;
-		}
-		this.width = width;
-	}
-
-	public String getHeight() 
-	{
-		return height;
-	}
-
-	public void setHeight(String height) 
-	{
-		if (isCheckChanges() &&
-			((height != null && this.height == null) || (height == null && this.height != null) || (height != null && this.height != null && !height.equals(this.height))))
-		{
-			dirty = true;
-		}
-		this.height = height;
-	}
-
-	public String getTooltip() {
-		return tooltip;
-	}
-
-	public void setTooltip(String tooltip) {
-		if (isCheckChanges() &&
-			((tooltip != null && this.tooltip == null) || (tooltip == null && this.tooltip != null) || (tooltip != null && this.tooltip != null && !tooltip.equals(this.tooltip))))
-		{
-			dirty = true;
-		}
-		this.tooltip = tooltip;
-	}
-
-	public String getClassName() 
-	{
-		return className;
-	}
-
-	public void setClassName(String className) 
-	{
-		if (isCheckChanges() &&
-			((className != null && this.className == null) || (className == null && this.className != null) || 
-			 (className != null && this.className != null && !className.equals(this.className))))
-		{
-			dirty = true;
-		}
-		this.className = className;
-	}
-
-	public boolean isVisible() 
-	{
-		return visible;
-	}
-
-	public void setVisible(boolean visible) 
-	{
-		if (isCheckChanges() && (visible != visible))
-		{
-			dirty = true;
-		}
-		this.visible = visible;
-	}
-
-	public String getStyle() 
-	{
-		return style;
-	}
-
-	public void setStyle(String style) 
-	{
-		if (isCheckChanges() &&
-			((style != null && this.style == null) || (style == null && this.style != null) || (style != null && this.style != null && !style.equals(this.style))))
-		{
-			dirty = true;
-		}
-		this.style = style;
-	} 
-	
 	public String getFormatter() 
 	{
 		return formatter;
@@ -270,11 +121,6 @@ public class Component implements Cloneable
 
 	public void setFormatter(String formatter) 
 	{
-		if (isCheckChanges() &&
-			((formatter != null && this.formatter == null) || (formatter == null && this.formatter != null) || (formatter != null && this.formatter != null && !formatter.equals(this.formatter))))
-		{
-			dirty = true;
-		}
 		this.formatter = formatter;
 	}
 

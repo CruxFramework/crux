@@ -37,7 +37,6 @@ import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ComponentConfigScanner;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 import br.com.sysmap.crux.core.server.screen.ComponentParser;
-import br.com.sysmap.crux.core.server.screen.ComponentRenderer;
 import br.com.sysmap.crux.core.server.screen.config.parser.ComponentT;
 import br.com.sysmap.crux.core.server.screen.config.parser.CruxT;
 
@@ -91,12 +90,10 @@ public class ComponentConfig
 			for (ComponentT component : crux.getComponent())
 			{
 				ComponentParser componentParser = (ComponentParser) Class.forName(component.getServerParserClass()).newInstance();	
-				ComponentRenderer componentRenderer = (ComponentRenderer) Class.forName(component.getServerRendererClass()).newInstance();	
 				
 				ComponentConfigData data = new ComponentConfigData(component.getClientClass(),
 																   component.getClientConstructorParams(), 
 																   component.getServerClass(), 
-																   componentRenderer, 
 																   componentParser,
 																   component.getParserInput().value());
 				config.put(component.getId(), data);
@@ -128,17 +125,6 @@ public class ComponentConfig
 		ComponentConfigData data = config.get(id);
 		if (data == null) return null;
 		return data.getComponentParser();
-	}
-
-	public static ComponentRenderer getComponentRenderer(String id)
-	{
-		if (config == null)
-		{
-			initializeComponentConfig();
-		}
-		ComponentConfigData data = config.get(id);
-		if (data == null) return null;
-		return data.getComponentRenderer();
 	}
 
 	public static String getClientClass(String id)

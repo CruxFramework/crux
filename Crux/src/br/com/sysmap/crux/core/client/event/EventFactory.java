@@ -23,7 +23,6 @@ import com.google.gwt.core.client.GWT;
 public class EventFactory 
 {
 	public static final String TYPE_SUBMIT = "submit";
-	public static final String TYPE_SERVER = "server";
 	public static final String TYPE_CLIENT = "client";
 	public static final String TYPE_RPC = "rpc";
 	

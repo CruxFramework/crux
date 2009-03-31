@@ -27,7 +27,6 @@
 		<xs:attribute name="id" type="xs:string" use="required"/>		
 		<xs:attribute name="serverClass" type="xs:string" default="br.com.sysmap.crux.core.server.screen.Component"/>		
 		<xs:attribute name="serverParserClass" type="xs:string" default="br.com.sysmap.crux.core.server.screen.ComponentParserImpl"/>		
-		<xs:attribute name="serverRendererClass" type="xs:string" default="br.com.sysmap.crux.core.server.screen.ComponentRendererImpl"/>		
 		<xs:attribute name="parserInput" type="parserType" default="jericho"/>		
 	</xs:complexType>
 

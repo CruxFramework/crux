@@ -26,5 +26,5 @@ import br.com.sysmap.crux.core.server.lifecycle.Phase;
 @Target(ElementType.TYPE)
 public @interface RenderResponsePhase 
 {
-	Class<? extends Phase> value() default br.com.sysmap.crux.core.server.lifecycle.phase.render.ServerRenderResponsePhase.class;
+	Class<? extends Phase> value() default br.com.sysmap.crux.core.server.lifecycle.phase.render.RPCRenderResponsePhase.class;
 }
