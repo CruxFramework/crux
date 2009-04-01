@@ -50,13 +50,13 @@ public class ComponentParserImpl implements ComponentParser
 			{
 				setEvent(component, attrName, attr.getValue());
 			}
-			else if (attrName.equals("_class"))
+			else if (attrName.equals("_property"))
 			{
-				setProperty(component, "className", attr.getValue());
+				setProperty(component, "property", attr.getValue());
 			}
-			else
+			else if (attrName.equals("_formatter"))
 			{
-				setProperty(component, attrName.substring(1), attr.getValue());
+				setProperty(component, "formatter", attr.getValue());
 			}
 		}
 	}
