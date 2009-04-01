@@ -28,13 +28,11 @@ public interface ClientMessages extends Messages
 	String eventProcessorFactoryInvalidEventType(String evtId, String evtCall, String evtType);
 	
 	//  event
-	String eventProcessorRPCFailure(String errMsg);
 	String eventProcessorClientHandlerNotFound(String handler);
 	String eventProcessorRPCCallbackNotFound(String handler);
 	String eventProcessorRPCCallbackError(String callback);
 	String eventProcessorRPCResultProcessingError();
 	String eventProcessorClientError(String call);
-	String eventProcessorServerError();
 	String eventProcessorRPCError();
 	String eventProcessorServerResponseParserError();
 	String eventProcessorServerJsonError(String errorCode, String errorMessage);
@@ -43,15 +41,9 @@ public interface ClientMessages extends Messages
 	//  screenFactory
 	String screenFactoryGenericErrorCreateComponent(String errMsg);
 	
-	// screenSerialization
-	String screenSerializationParserError(String errMsg);
-	String screenSerializationServerError(String errMsg);
-	String screenSerializationInvalidComponent(String componentId);
-	
 	//  component
 	String screenFactoryComponentIdRequired();
 	String screenFactoryInvalidComponentParent(String componentId);
 	String screenFactoryErrorCreateComponent(String componentId);
-	
 	String componentFormatterNotFound(String formatterId);
 }

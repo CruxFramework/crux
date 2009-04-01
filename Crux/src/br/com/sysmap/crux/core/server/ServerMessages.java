@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.server;
 /**
  * Contains all server messages used by Crux Framework
- * @author Thiago
+ * @author Thiago Bustamante
  *
  */
 public interface ServerMessages 
@@ -24,8 +24,6 @@ public interface ServerMessages
 	String annotationScannerBuildIndex();
 	String annotationScannerBuildIndexError(String errMsg);
 	String annotationScannerIndexNotFound();
-	String serverResponseRenderComponentError(String errMsg);
-	String serverResponseRenderPhaseError(String errMsg);
 	String clientHandlersCallbackInitializeError(String errMsg);
 	String clientHandlersHandlerInitializeError(String errMsg);
 	String componentConfigParserError(String errMsg);
@@ -48,7 +46,6 @@ public interface ServerMessages
 	String parametersBindPhaseErrorPopulatingBean(String parName, String errMsg);
 	String parametersBindPhaseInvalidScreenRequested(String screenId);
 	String rpcResponseRenderPhaseError(String errMsg);
-	String rpcResponseRenderComponentError(String errMsg);
 	String scannerURLSErrorSearchingClassesDir(String errMsg);
 	String scannerURLSErrorSearchingLibDir(String errMsg);
 	String screenFactoryCheckFileUpdateError(String errMsg);
@@ -57,14 +54,11 @@ public interface ServerMessages
 	String screenFactoryErrorDuplicatedComponent(String componentId);
 	String screenFactoryErrorRetrievingScreen(String screenId, String errMsg);
 	String screenFactoryGenericErrorCreateComponent(String screenId, String errMsg);
-	String screenFactoryInvalidComponentParent(String componentId);
 	String screenFactoryNotInitialized();
 	String screenFactoryFormatterNotFound(String formatter);
 	String screenFactoryErrorCreatingFormatter(String formatter);
 	String screenFactoryDuplicateProperty(String property);
 	String screenFactoryScreeResourceNotFound(String screenId);
-	String screenStateManagerErrorCloningScreen(String screenId, String errMsg);
-	String screenStateManagerInitializerUsingDefaultFactory();
 	String screenPropertyError(String property, String componentId);
 	String formattersFormatterInitializeError(String errMsg);
 }
