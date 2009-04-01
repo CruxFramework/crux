@@ -23,8 +23,8 @@ import org.json.JSONObject;
 public class JsonResult
 {
     private Object result = null;
+    private Object dtoChanges;
     private int errorCode;
-    private String dtoChanges;
     
     public final static int CODE_SUCCESS = 0;
     public final static int CODE_REMOTE_EXCEPTION = 490;
@@ -50,7 +50,7 @@ public class JsonResult
         if (errorCode == CODE_SUCCESS)
         {
             o.put("result", result);
-            if (dtoChanges != null && dtoChanges.length() > 0)
+            if (dtoChanges != null)
             {
                 o.put("dtoChanges", dtoChanges);
             }
@@ -92,11 +92,11 @@ public class JsonResult
 		this.errorCode = errorCode;
 	}
 
-	public String getDtoChanges() {
+	public Object getDtoChanges() {
 		return dtoChanges;
 	}
 
-	public void setDtoChanges(String dtoChanges) {
+	public void setDtoChanges(Object dtoChanges) {
 		this.dtoChanges = dtoChanges;
 	}
 }

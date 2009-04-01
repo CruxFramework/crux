@@ -19,13 +19,8 @@ import br.com.sysmap.crux.core.client.JSEngine;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
-import com.google.gwt.xml.client.XMLParser;
-import com.google.gwt.xml.client.impl.DOMParseException;
 
 /**
  * Helper class to serialize screen data in communications between client and server.
@@ -91,45 +86,20 @@ public class ScreenSerialization
 	 * @param screen
 	 * @param responseText
 	 */
-	public void updateScreen(Screen screen, String responseText)
+	public void updateScreen(Screen screen, JSONArray changes)
 	{
 		try
 		{
-			Document document = XMLParser.parse(responseText);
-			NodeList children = document.getDocumentElement().getChildNodes();
-			
-			for (int i = 0; i < children.getLength(); i++)
+			for (int i=0; i<changes.size(); i++)
 			{
-				if (children.item(i).getNodeType() == Node.ELEMENT_NODE)
-				{
-					Element element = (Element)children.item(i);
-					String componentId = element.getAttribute("id");
-					if ("_dtos_".equals(componentId))
-					{
-						updateDTOs(screen, element);
-					}
-				}
+				JSONArray property = changes.get(i).isArray();
+				screen.setBeanProperty(property.get(0).isString().stringValue(), property.get(1).isString().stringValue());
 			}
 		}
-		catch (DOMParseException e) 
+		catch (Exception e) 
 		{
 			GWT.log(e.getLocalizedMessage(), e);
 			Window.alert(JSEngine.messages.eventProcessorServerResponseParserError());
-		}
-	}
-	
-	protected void updateDTOs(Screen screen, Element dtosElement)
-	{
-		NodeList children = dtosElement.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++)
-		{
-			if (children.item(i).getNodeType() == Node.ELEMENT_NODE)
-			{
-				Element element = (Element)children.item(i);
-				String key = element.getAttribute("id");
-				String value = element.getAttribute("value");
-				screen.setBeanProperty(key, value);
-			}			
 		}
 	}
 }

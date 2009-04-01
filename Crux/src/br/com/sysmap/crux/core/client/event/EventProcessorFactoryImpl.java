@@ -165,7 +165,7 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 								{
 									if ((jsonValue = object.get("dtoChanges")) != null)
 									{
-										screenSerialization.updateScreen(screen, jsonValue.isString().stringValue());
+										screenSerialization.updateScreen(screen, jsonValue.isArray());
 									}
 									if ((jsonValue = object.get("result")) != null)
 									{

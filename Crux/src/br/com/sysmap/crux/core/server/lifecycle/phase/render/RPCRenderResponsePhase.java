@@ -16,8 +16,8 @@
 package br.com.sysmap.crux.core.server.lifecycle.phase.render;
 
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.json.JsonResult;
+import br.com.sysmap.crux.core.server.json.JsonSerializer;
 import br.com.sysmap.crux.core.server.lifecycle.Phase;
 import br.com.sysmap.crux.core.server.lifecycle.PhaseContext;
 import br.com.sysmap.crux.core.server.lifecycle.PhaseException;
@@ -95,28 +96,11 @@ public class RPCRenderResponsePhase implements Phase
 	 * @param dto
 	 * @param dispatchData 
 	 * @param writer
+	 * @throws Exception 
 	 */
-	protected String getDtoChanges(Object dto, DispatchData dispatchData) 
+	protected Object getDtoChanges(Object dto, DispatchData dispatchData) throws Exception 
 	{
-		StringWriter strWriter = new StringWriter();
-		PrintWriter writer = new PrintWriter(strWriter);
-		renderDtos(dto, dispatchData, writer);
-		String updateScreen = strWriter.toString();
-		if (updateScreen.length() > 0)
-		{
-			return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><span><span id=\"_dtos_\">"+updateScreen+"</span></span>";
-		}
-		return null;
-	}
-	
-	/**
-	 * Render all dirty properties
-	 * @param dto
-	 * @param dispatchData 
-	 * @param writer
-	 */
-	protected void renderDtos(Object dto, DispatchData dispatchData, PrintWriter writer) 
-	{
+		List<String[]> changes = new ArrayList<String[]>();
 		for (String key : dispatchData.getParameters()) 
 		{
 			try
@@ -125,11 +109,11 @@ public class RPCRenderResponsePhase implements Phase
 				String propValue = BeanUtils.getProperty(dto, key);
 				if (propValue == null && propValueAnt != null)
 				{
-					writer.println("<span id=\""+key+"\" value=\"\" ></span>");
+					changes.add(new String[]{key,""});
 				}
 				else if (propValue != null && (propValueAnt == null || !propValueAnt.equals(propValue)))
 				{
-					writer.println("<span id=\""+key+"\" value=\""+HtmlUtils.filterValue(propValue)+"\" ></span>");
+					changes.add(new String[]{key,HtmlUtils.filterValue(propValue)});
 				}
 			}
 			catch (Throwable e) 
@@ -137,5 +121,11 @@ public class RPCRenderResponsePhase implements Phase
 				// Se o DTO não tiver uma propriedade declarada, isto não é um erro.
 			}			
 		}
+		if (changes.size() == 0)
+		{
+			return null;
+		}
+		
+		return JsonSerializer.objMarshall(changes.toArray(new String[0][0]));
 	}
 }
