@@ -65,7 +65,6 @@ public class JsonSerializer extends JSONSerializer
     {
         return getInstance().marshall( new SerializerState(), obj);      
     }
-       
     
     /**
      * 
@@ -99,9 +98,5 @@ public class JsonSerializer extends JSONSerializer
             throw new UnmarshallException(messages.jsonSerializerParserError());
         }
         return getInstance().unmarshall(new SerializerState(), clazz, json);
-
     }
-    
-    
-
 }

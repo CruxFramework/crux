@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
+import br.com.sysmap.crux.core.rebind.jsonparser.JSONParser;
 import br.com.sysmap.crux.core.server.event.clienthandlers.ClientControllers;
 import br.com.sysmap.crux.core.server.screen.Component;
 import br.com.sysmap.crux.core.server.screen.Event;
@@ -34,8 +35,17 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
+/**
+ * Creates a Mechanism to work around the lack of reflection support in GWT. This class provides
+ * implementations of ClientHandlerInvoker and ClientCallbackInvoker. These implementations are used
+ * by EventProcessorFactories to call methods by their names.
+ * @author Thiago Bustamante
+ */
 public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredElementsGenerator
 {
+	/**
+	 * Generate the class
+	 */
 	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, Screen screen) 
 	{
 		String packageName = classType.getPackage().getName();
@@ -48,6 +58,8 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
 		composer.addImport("com.google.gwt.core.client.GWT");
+		composer.addImport("com.google.gwt.json.client.JSONValue");
+		composer.addImport("br.com.sysmap.crux.core.client.component.Screen");
 		composer.addImplementedInterface("br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers");
 		
 		SourceWriter sourceWriter = null;
@@ -72,6 +84,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		context.commit(logger, printWriter);
 	}
 	
+	/**
+	 * Generate constructor. At this point the maps with handlers and callbacks are built. The list is 
+	 * constructed looping all components to just include controllers that are used on the screen.
+	 * @param logger
+	 * @param sourceWriter
+	 * @param screen
+	 * @param implClassName
+	 */
 	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, Screen screen, String implClassName) 
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");
@@ -86,7 +106,16 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 
 		}
 		sourceWriter.println("}");
-	} 
+	}
+	
+	/**
+	 * For each component, create the inclusion block for controllers used by it.
+	 * @param logger
+	 * @param sourceWriter
+	 * @param component
+	 * @param addedHandler
+	 * @param addedCallback
+	 */
 	protected void generateEventHandlersForComponent(TreeLogger logger,SourceWriter sourceWriter, Component component, Map<String, Boolean> addedHandler, Map<String, Boolean> addedCallback)
 	{
 		Iterator<Event> events = component.iterateEvents();
@@ -99,6 +128,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 	}
 	
+	/**
+	 * Generate the block to include event handler object.
+	 * @param logger
+	 * @param sourceWriter
+	 * @param componentId
+	 * @param event
+	 * @param added
+	 */
 	protected void generateEventHandlerBlock(TreeLogger logger, SourceWriter sourceWriter, String componentId, Event event, Map<String, Boolean> added)
 	{
 		String evtCall = event.getEvtCall();
@@ -119,6 +156,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 	}
 	
+	/**
+	 * Generate the block to include event callback handler object.
+	 * @param logger
+	 * @param sourceWriter
+	 * @param componentId
+	 * @param event
+	 * @param added
+	 */
 	protected void generateEventCallbackBlock(TreeLogger logger, SourceWriter sourceWriter, String componentId, Event event, Map<String, Boolean> added)
 	{
 		String evtCallback = event.getEvtCallback();
@@ -142,12 +187,19 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 	}
 	
+	/**
+	 * Create a new class to invoke the eventHandler method by its name
+	 * @param logger
+	 * @param sourceWriter
+	 * @param handlerClass
+	 * @return
+	 */
 	protected String generateEventHandlerInvokerClass(TreeLogger logger, SourceWriter sourceWriter, Class<?> handlerClass)
 	{
 		String className = handlerClass.getSimpleName();
 		sourceWriter.println("class "+className+"Wrapper extends " + handlerClass.getName()
 				+ " implements br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker{");
-		sourceWriter.println("public void invoke(String metodo, br.com.sysmap.crux.core.client.component.Screen screen, String idSender) throws Exception{ ");
+		sourceWriter.println("public void invoke(String metodo, Screen screen, String idSender) throws Exception{ ");
 		sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
 		generateParametersSetters(logger, handlerClass, sourceWriter);
 		Method[] methods = handlerClass.getMethods(); 
@@ -196,6 +248,12 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		return className+"Wrapper";
 	}
 	
+	/**
+	 * Verify if a method must be included in the list of callable methods in the 
+	 * generated invoker class
+	 * @param method
+	 * @return
+	 */
 	protected boolean isHandlerMethodSignatureValid(Method method)
 	{
 		Class<?>[] parameters = method.getParameterTypes();
@@ -218,12 +276,19 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		return true;
 	}
 
+	/**
+	 * Create a new class to invoke the event callback method by its name
+	 * @param logger
+	 * @param sourceWriter
+	 * @param callbackClass
+	 * @return
+	 */
 	protected String generateEventCallbackInvokerClass(TreeLogger logger, SourceWriter sourceWriter, Class<?> callbackClass)
 	{
 		String className = callbackClass.getSimpleName();
 		sourceWriter.println("class "+className+"Wrapper extends " + callbackClass.getName() 
 							+ " implements br.com.sysmap.crux.core.client.event.EventClientCallbackInvoker{");
-		sourceWriter.println("public void invoke(String metodo, br.com.sysmap.crux.core.client.component.Screen screen, String idSender, com.google.gwt.json.client.JSONValue result) throws Exception{ ");
+		sourceWriter.println("public void invoke(String metodo, Screen screen, String idSender, JSONValue result) throws Exception{ ");
 		sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
 		generateParametersSetters(logger, callbackClass, sourceWriter);
 		
@@ -239,7 +304,9 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 					sourceWriter.print("else ");
 				}
 				sourceWriter.println("if (\""+method.getName()+"\".equals(metodo)) {");
-				sourceWriter.println("wrapper."+method.getName()+"(result);");
+				JSONParser.getInstance().generateParameterDeserialisationBlock(method, sourceWriter, "result", "_v");
+				sourceWriter.println("wrapper."+method.getName()+"(_v);");
+				//sourceWriter.println("wrapper."+method.getName()+"(result);");
 				sourceWriter.println("}");
 
 				first = false;
@@ -257,6 +324,12 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		return className+"Wrapper";
 	}
 	
+	/**
+	 * Verify if a method must be included in the list of callable methods in the 
+	 * generated invoker class
+	 * @param method
+	 * @return
+	 */
 	protected boolean isCallbackMethodSignatureValid(Method method)
 	{
 		Class<?>[] parameters = method.getParameterTypes();
@@ -271,13 +344,20 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			return false;
 		}
 
-		if(!parameters[0].getName().equals("com.google.gwt.json.client.JSONValue"))
+		if (method.getName().equals("wait"))
 		{
 			return false;
 		}
+		
 		return true;
 	}
 	
+	/**
+	 * Generate the property setters block in the generated classes
+	 * @param logger
+	 * @param controller
+	 * @param sourceWriter
+	 */
 	protected void generateParametersSetters(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
 	{
 		Method method;
