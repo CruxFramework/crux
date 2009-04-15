@@ -17,6 +17,7 @@ package br.com.sysmap.crux.core.rebind.jsonparser;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -92,11 +93,6 @@ public class JSONArrayParser
 	 */
 	void generateDeserialisationForArray(Class<?> param, SourceWriter sourceWriter, String resultVariable) 
 	{
-		if (!param.isArray())
-		{
-			throw new ClassCastException();
-			// TODO arrumar mensagem
-		}
 		generateArrayInstantiation(param, sourceWriter, resultVariable);
 		generateArrayPopulation(param, sourceWriter, resultVariable);
 	}
@@ -153,7 +149,7 @@ public class JSONArrayParser
 	{
 		sourceWriter.print("null;");
 		
-		sourceWriter.print("{");
+		sourceWriter.print("if(jsonValue != null && jsonValue.isArray() != null){");
 
 		sourceWriter.print("java.util.List<Integer> dimensions"+resultVariable+" = new java.util.ArrayList<Integer>();");
 		sourceWriter.print("com.google.gwt.json.client.JSONArray jarr"+resultVariable+";");
@@ -213,6 +209,7 @@ public class JSONArrayParser
 	 */
 	private void generateArrayPopulation(Class<?> compType, SourceWriter sourceWriter, int numDim, String resultVariable) 
 	{
+		sourceWriter.print("if(jsonValue != null && jsonValue.isArray() != null){");
 		for (int i = 0; i < numDim; i++) 
 		{
 			if (i == 0)
@@ -254,6 +251,7 @@ public class JSONArrayParser
 		{
 			sourceWriter.print("}");	
 		}
+		sourceWriter.print("}");	
 	}
 
 	/**
@@ -327,6 +325,10 @@ public class JSONArrayParser
 		while ((type = param.getGenericComponentType()) instanceof GenericArrayType)
 		{
 			param = (GenericArrayType)type;
+		}
+		if (type instanceof TypeVariable)
+		{
+			type = JSONParser.getInstance().getClassForTypeariable((TypeVariable<?>)type); 
 		}
 		return (Class<?>) type;
 	}

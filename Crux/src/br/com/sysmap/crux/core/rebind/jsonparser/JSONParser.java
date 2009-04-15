@@ -19,10 +19,17 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayDeque;
 import java.util.Date;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -35,6 +42,9 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public class JSONParser 
 {
+	protected GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
+	private Deque<Map<String, Type>> genericTypes = new ArrayDeque<Map<String,Type>>();
+	
 	/**
 	 * Singleton instance
 	 */
@@ -54,6 +64,58 @@ public class JSONParser
 	public static JSONParser getInstance()
 	{
 		return instance;
+	}
+	
+	/**
+	 * Add a generic type info for a specific generic declaration
+	 * @param key
+	 * @param value
+	 */
+	void setGenericTypeInfo(String key, Type value)
+	{
+		genericTypes.getFirst().put(key, value);
+	}
+	
+	/**
+	 * Return the generic type info for a specific generic declaration
+	 * @param key
+	 * @return
+	 */
+	Type getGenericTypeInfo(String key)
+	{
+		for (Map<String, Type> context : genericTypes) 
+		{
+			if (context.containsKey(key))
+			{
+				Type type = context.get(key);
+				if (type instanceof TypeVariable)
+				{
+					if (key.equals(((TypeVariable<?>)type).getName()))
+					{
+						continue;
+					}
+				}
+				
+				return context.get(key);
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Create a new context to sole generic type declarations 
+	 */
+	void createGenericScope()
+	{
+		genericTypes.push(new HashMap<String, Type>());		
+	}
+	
+	/**
+	 * Destroy the current generic context 
+	 */
+	void destroyGenericScope()
+	{
+		genericTypes.remove();		
 	}
 	
 	/**
@@ -98,8 +160,7 @@ public class JSONParser
 		}
 		catch (Throwable e)
 		{
-//TODO arrumar as mensagens aki
-			throw new ClassCastException();
+			throw new JSONParserException(e.getLocalizedMessage(), e);
 		}
 	}
 
@@ -124,7 +185,7 @@ public class JSONParser
 			{
 				JSONSetParser.getInstance().generateDeserialisation(parameterizedType, sourceWriter, resultDeserialisedVariable);
 			}
-			if (Map.class.isAssignableFrom((Class<?>) parameterizedType.getRawType()))
+			else if (Map.class.isAssignableFrom((Class<?>) parameterizedType.getRawType()))
 			{
 				JSONMapParser.getInstance().generateDeserialisation(parameterizedType, sourceWriter, resultDeserialisedVariable);
 			}
@@ -140,9 +201,17 @@ public class JSONParser
 		}
 		else
 		{
-			Class<?> param = (Class<?>) paramType;
+			Class<?> param;
+			if (paramType instanceof TypeVariable)
+			{
+				param = getClassForTypeariable((TypeVariable<?>)paramType); 
+			}
+			else
+			{
+				param = (Class<?>) paramType;
+			}
 
-			if (param.isPrimitive())
+			if (isPrimitive(param))
 			{
 				generateDeserialisationForPrimitives(param, sourceWriter);
 			}
@@ -152,7 +221,7 @@ public class JSONParser
 			}
 			else if (Date.class.isAssignableFrom(param))
 			{
-
+				generateDeserialisationForDates(param, sourceWriter);
 			}
 			else if (List.class.isAssignableFrom(param))
 			{
@@ -162,7 +231,7 @@ public class JSONParser
 			{
 				JSONSetParser.getInstance().generateDeserialisation(paramType, sourceWriter, resultDeserialisedVariable);
 			}
-			if (Map.class.isAssignableFrom(param))
+			else if (Map.class.isAssignableFrom(param))
 			{
 				JSONMapParser.getInstance().generateDeserialisation(paramType, sourceWriter, resultDeserialisedVariable);
 			}
@@ -182,6 +251,19 @@ public class JSONParser
 	}
 
 	/**
+	 * Return true if the class argument represent a primitive type or a type wrapper class
+	 * @param param
+	 * @return
+	 */
+	boolean isPrimitive(Class<?> param) 
+	{
+		return ((param.isPrimitive()) ||
+			    (Number.class.isAssignableFrom(param)) ||
+			    (Boolean.class.isAssignableFrom(param)) || 
+			    (Character.class.isAssignableFrom(param)));
+	}
+
+	/**
 	 * Deserialise enum types arguments
 	 * 
 	 * @param param
@@ -189,13 +271,7 @@ public class JSONParser
 	 */
 	private void generateDeserialisationForEnum(Class<?> param, SourceWriter sourceWriter) 
 	{
-		if (!param.isEnum())
-		{
-			throw new ClassCastException();
-			// TODO arrumar mensagem
-		}
-		
-		sourceWriter.print(param.getName()+".valueOf(jsonValue.isString().stringValue())");
+		sourceWriter.print("(jsonValue.isString()==null?null:"+param.getName()+".valueOf(jsonValue.isString().stringValue()))");
 	}
 
 	/**
@@ -205,35 +281,67 @@ public class JSONParser
 	 */
 	private void generateDeserialisationForPrimitives(Class<?> parameterType, SourceWriter sourceWriter)
 	{
-		if (parameterType.getName().equals("java.lang.Boolean") || parameterType.getName().equals("boolean"))
+		if (parameterType.getName().equals("java.lang.Boolean"))
+		{
+			sourceWriter.print("(jsonValue.isBoolean()==null?null:new Boolean(jsonValue.isBoolean().booleanValue()))");
+		}
+		else if (parameterType.getName().equals("java.lang.Character"))
+		{
+			sourceWriter.print("(jsonValue.isString()==null?null:new Character(jsonValue.isString().stringValue().charAt(0)))");
+		}
+		else if (parameterType.getName().equals("java.lang.Byte"))
+		{
+			sourceWriter.print("(jsonValue.isNumber()==null?null:new Byte(jsonValue.isNumber().toString()))");
+		}
+		else if (parameterType.getName().equals("java.lang.Short"))
+		{
+			sourceWriter.print("(jsonValue.isNumber()==null?null:new Short(jsonValue.isNumber().toString()))");
+		}
+		else if (parameterType.getName().equals("java.lang.Integer"))
+		{
+			sourceWriter.print("(jsonValue.isNumber()==null?null:new Integer(jsonValue.isNumber().toString()))");
+		}
+		else if (parameterType.getName().equals("java.lang.Long"))
+		{
+			sourceWriter.print("(jsonValue.isNumber()==null?null:new Long(jsonValue.isNumber().toString()))");
+		}
+		else if (parameterType.getName().equals("java.lang.Float"))
+		{
+			sourceWriter.print("(jsonValue.isNumber()==null?null:new Float(jsonValue.isNumber().toString()))");
+		}
+		else if (parameterType.getName().equals("java.lang.Double"))
+		{
+			sourceWriter.print("(jsonValue.isNumber()==null?null:new Double(jsonValue.isNumber().toString()))");
+		}
+		else if (parameterType.getName().equals("boolean"))
 		{
 			sourceWriter.print("new Boolean(jsonValue.isBoolean().booleanValue())");
 		}
-		else if (parameterType.getName().equals("java.lang.Character") || parameterType.getName().equals("char"))
+		else if (parameterType.getName().equals("char"))
 		{
 			sourceWriter.print("new Character(jsonValue.isString().stringValue().charAt(0))");
 		}
-		else if (parameterType.getName().equals("java.lang.Byte") || parameterType.getName().equals("byte"))
+		else if (parameterType.getName().equals("byte"))
 		{
 			sourceWriter.print("new Byte(jsonValue.isNumber().toString())");
 		}
-		else if (parameterType.getName().equals("java.lang.Short") || parameterType.getName().equals("short"))
+		else if (parameterType.getName().equals("short"))
 		{
 			sourceWriter.print("new Short(jsonValue.isNumber().toString())");
 		}
-		else if (parameterType.getName().equals("java.lang.Integer") || parameterType.getName().equals("int"))
+		else if (parameterType.getName().equals("int"))
 		{
 			sourceWriter.print("new Integer(jsonValue.isNumber().toString())");
 		}
-		else if (parameterType.getName().equals("java.lang.Long") || parameterType.getName().equals("long"))
+		else if (parameterType.getName().equals("long"))
 		{
 			sourceWriter.print("new Long(jsonValue.isNumber().toString())");
 		}
-		else if (parameterType.getName().equals("java.lang.Float") || parameterType.getName().equals("float"))
+		else if (parameterType.getName().equals("float"))
 		{
 			sourceWriter.print("new Float(jsonValue.isNumber().toString())");
 		}
-		else if (parameterType.getName().equals("java.lang.Double") || parameterType.getName().equals("double"))
+		else if (parameterType.getName().equals("double"))
 		{
 			sourceWriter.print("new Double(jsonValue.isNumber().toString())");
 		}
@@ -250,10 +358,26 @@ public class JSONParser
 			(!"java.lang.StringBuilder".equals(parameterType.getName())) &&
 			(!"java.lang.StringBuffer".equals(parameterType.getName())))
 		{
-			throw new ClassCastException("unupported Type");
-			//TODO arrumar mensagem
+			throw new ClassCastException(messages.errorJsonParserCharSequenceNotSupported());
 		}
-		sourceWriter.print("new "+parameterType.getName()+"(jsonValue.isString().stringValue())");
+		sourceWriter.print("(jsonValue.isString() == null?null:new "+parameterType.getName()+"(jsonValue.isString().stringValue()))");
+	}
+	
+	/**
+	 * Deserialise Strings, StringBuilders and StringBuffers arguments.
+	 * @param parameterType
+	 * @param sourceWriter
+	 */
+	private void generateDeserialisationForDates(Class<?> parameterType, SourceWriter sourceWriter)
+	{
+		if ((!"java.util.Date".equals(parameterType.getName())) &&
+			(!"java.sql.Date".equals(parameterType.getName())) &&
+			(!"java.sql.Timestamp".equals(parameterType.getName())))
+		{
+			throw new ClassCastException(messages.errorJsonParserDateNotSupported());
+		}
+		sourceWriter.print("(jsonValue.isObject() == null?null:new "+parameterType.getName()+
+				           "(new Long(jsonValue.isObject().get(\"time\").isNumber().toString())))");
 	}
 	
 	/**
@@ -290,6 +414,11 @@ public class JSONParser
 			{
 				JSONArrayParser.getInstance().generateArrayDeclaration((GenericArrayType)type, sourceWriter);
 			}
+			else if (type instanceof TypeVariable)
+			{
+				Class<?> parameterArgClass = getClassForTypeariable((TypeVariable<?>)type); 
+				sourceWriter.print(parameterArgClass.getName());
+			}
 			else
 			{
 				Class<?> parameterArgClass = (Class<?>) type;
@@ -298,5 +427,44 @@ public class JSONParser
 			first = false;
 		}
 		sourceWriter.print(">");
+	}
+	
+	/**
+	 * Extracts the bound <code>Type</code> for a given TypeVariable.
+	 */
+	private Type extractBoundForTypeVariable(TypeVariable<?> typeVariable) 
+	{
+		Type[] bounds = typeVariable.getBounds();
+		if (bounds.length == 0) 
+		{
+			return Object.class;
+		}
+		Type bound = bounds[0];
+		if (bound instanceof TypeVariable) 
+		{
+			bound = extractBoundForTypeVariable((TypeVariable<?>) bound);
+		}
+		return bound;
+	}
+	
+	/**
+	 * get class for a typeVariable
+	 * @param typeVariable
+	 * @return
+	 */
+	Class<?> getClassForTypeariable(TypeVariable<?> typeVariable)
+	{
+		Type type = getGenericTypeInfo((typeVariable.getName()));
+		while ((type != null) && (type instanceof TypeVariable)) 
+		{
+			type = getGenericTypeInfo(((TypeVariable<?>)type).getName());
+		}
+
+		Class<?> result = (Class<?>) type;
+		if (result == null)
+		{
+			result = (Class<?>) extractBoundForTypeVariable(typeVariable);  
+		}
+		return result;
 	}
 }

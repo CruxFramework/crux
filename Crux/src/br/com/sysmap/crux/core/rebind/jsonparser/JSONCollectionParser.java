@@ -3,11 +3,24 @@ package br.com.sysmap.crux.core.rebind.jsonparser;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 import com.google.gwt.user.rebind.SourceWriter;
 
 public class JSONCollectionParser extends JSONComplexTypeParser
 {
+	/**
+	 * Generate the code for test if serialisation must be done. Avoid NullPointerExceptions
+	 * @param sourceWriter
+	 */
+	@Override
+	protected void generateTestForNullChecking(SourceWriter sourceWriter)
+	{
+		sourceWriter.print("(jsonValue != null && jsonValue.isObject() != null && " +
+				"jsonValue.isObject().get(\"list\") != null && " +
+				"jsonValue.isObject().get(\"list\").isArray() != null)");
+	}
+	
 	/**
 	 * Generate code for populate the collection content.
 	 * @param parameterType
@@ -17,8 +30,6 @@ public class JSONCollectionParser extends JSONComplexTypeParser
 	@Override
 	protected void generatePopulation(Type parameterType, SourceWriter sourceWriter, String listName)
 	{
-		sourceWriter.print("{");
-
 		sourceWriter.print("com.google.gwt.json.client.JSONArray jA"+listName+"_l = jsonValue.isObject().get(\"list\").isArray();");
 		
 		sourceWriter.print("for (int i"+listName+"_l=0; i"+listName+"_l < jA"+listName+"_l.size(); i"+listName+"_l++)");
@@ -37,6 +48,11 @@ public class JSONCollectionParser extends JSONComplexTypeParser
 			else if (parameterArgType instanceof GenericArrayType)
 			{
 				JSONArrayParser.getInstance().generateArrayDeclaration((GenericArrayType)parameterArgType, sourceWriter);
+			}
+			else if (parameterArgType instanceof TypeVariable)
+			{
+				Class<?> parameterArgClass = JSONParser.getInstance().getClassForTypeariable((TypeVariable<?>)parameterArgType); 
+				sourceWriter.print(parameterArgClass.getName());
 			}
 			else
 			{
@@ -60,8 +76,6 @@ public class JSONCollectionParser extends JSONComplexTypeParser
 		}
 		sourceWriter.print(";");
 		sourceWriter.print(listName+".add("+listName+"_l);");
-		sourceWriter.print("}");
-
 		sourceWriter.print("}");
 	} 
 

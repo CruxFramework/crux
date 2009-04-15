@@ -18,6 +18,7 @@ package br.com.sysmap.crux.core.rebind.jsonparser;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -46,6 +47,18 @@ public class JSONMapParser extends JSONComplexTypeParser
 	}
 	
 	/**
+	 * Generate the code for test if serialisation must be done. Avoid NullPointerExceptions
+	 * @param sourceWriter
+	 */
+	@Override
+	protected void generateTestForNullChecking(SourceWriter sourceWriter)
+	{
+		sourceWriter.print("(jsonValue != null && jsonValue.isObject() != null && " +
+				"jsonValue.isObject().get(\"map\") != null && " +
+				"jsonValue.isObject().get(\"map\").isObject() != null)");
+	}
+	
+	/**
 	 * Generate code for populate the collection content.
 	 * @param parameterType
 	 * @param sourceWriter
@@ -70,10 +83,10 @@ public class JSONMapParser extends JSONComplexTypeParser
 			Type keyArgType = ((ParameterizedType)parameterType).getActualTypeArguments()[0];
 			if ((keyArgType instanceof ParameterizedType) 
 				||(keyArgType instanceof GenericArrayType)
-				||(!(CharSequence.class.isAssignableFrom((Class<?>)keyArgType)) && (!((Class<?>)keyArgType).isPrimitive())))
+				||(!(CharSequence.class.isAssignableFrom((Class<?>)keyArgType)) && 
+					(!JSONParser.getInstance().isPrimitive((Class<?>)keyArgType))))
 			{
-				throw new ClassCastException("unsupported type");
-				//TODO: Arrumar mensagem.
+				throw new ClassCastException(messages.errorJsonParserInvalidKeyForMap());
 			}
 			
 			keyClass = ((Class<?>)keyArgType);
@@ -89,6 +102,11 @@ public class JSONMapParser extends JSONComplexTypeParser
 			else if (parameterArgType instanceof GenericArrayType)
 			{
 				JSONArrayParser.getInstance().generateArrayDeclaration((GenericArrayType)parameterArgType, sourceWriter);
+			}
+			else if (parameterArgType instanceof TypeVariable)
+			{
+				Class<?> parameterArgClass = JSONParser.getInstance().getClassForTypeariable((TypeVariable<?>)parameterArgType); 
+				sourceWriter.print(parameterArgClass.getName());
 			}
 			else
 			{

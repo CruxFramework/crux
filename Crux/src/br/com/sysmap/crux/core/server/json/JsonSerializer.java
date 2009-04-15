@@ -63,7 +63,14 @@ public class JsonSerializer extends JSONSerializer
      */
     public static Object objMarshall(Object obj) throws Exception
     {
-        return getInstance().marshall( new SerializerState(), obj);      
+        if (obj != null && obj.getClass().isEnum())
+        {
+        	// Prevents a bug in com.metaparadigm.jsonrpc.JSONSerializer for enum types serialisation.
+        	// For these types, JSONSerializer fails in a circular looping.
+        	return getInstance().marshall( new SerializerState(), obj.toString());
+        }
+    	
+    	return getInstance().marshall( new SerializerState(), obj);      
     }
     
     /**

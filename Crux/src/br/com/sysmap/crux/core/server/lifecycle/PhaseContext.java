@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.sysmap.crux.core.server.lifecycle.phase.dispatch.DispatchData;
-import br.com.sysmap.crux.core.server.screen.Screen;
 
 
 public class PhaseContext 

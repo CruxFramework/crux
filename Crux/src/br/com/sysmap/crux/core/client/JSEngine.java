@@ -45,4 +45,3 @@ public class JSEngine implements EntryPoint
 		}
 	}
 }
-// TODO: Explicitar na documentação todos os pontos de extensão.

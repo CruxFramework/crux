@@ -17,6 +17,10 @@ package br.com.sysmap.crux.core.rebind.jsonparser;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -29,6 +33,8 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public abstract class JSONComplexTypeParser 
 {
+	protected GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
+
 	String defaultClass;
 
 	/**
@@ -37,19 +43,34 @@ public abstract class JSONComplexTypeParser
 	 * @param sourceWriter
 	 * @param listName
 	 */
-	void generateDeserialisation(Type parameterType, SourceWriter sourceWriter, String listName)
+	void generateDeserialisation(Type parameterType, SourceWriter sourceWriter, String listName) 
 	{
+		sourceWriter.print("(");
+		generateTestForNullChecking(sourceWriter);
+		sourceWriter.print("?");
 		generateInstantiation(parameterType, sourceWriter);
+		sourceWriter.print(":null)");
 		sourceWriter.print(";");
+		sourceWriter.print("if (");
+		generateTestForNullChecking(sourceWriter);
+		sourceWriter.print(")");
+		sourceWriter.print("{");
 		generatePopulation(parameterType, sourceWriter, listName);
+		sourceWriter.print("}");
 	}
+	
+	/**
+	 * Generate the code for test if serialisation must be done. Avoid NullPointerExceptions
+	 * @param sourceWriter
+	 */
+	protected abstract void generateTestForNullChecking(SourceWriter sourceWriter);
 	
 	/**
 	 * Generate the code for collection instantiation
 	 * @param parameterType
 	 * @param sourceWriter
 	 */
-	private void generateInstantiation(Type parameterType, SourceWriter sourceWriter)
+	protected void generateInstantiation(Type parameterType, SourceWriter sourceWriter)
 	{
 		sourceWriter.print("new ");
 		if (parameterType instanceof ParameterizedType)
@@ -63,8 +84,7 @@ public abstract class JSONComplexTypeParser
 				}
 				else
 				{
-					throw new ClassCastException("unsupported type");
-					//TODO arrumar mensagem
+					throw new ClassCastException(messages.errorJsonParserPolymorphismNotSupported());
 				}
 			}
 			else
@@ -74,7 +94,17 @@ public abstract class JSONComplexTypeParser
 		}
 		else
 		{
-			if (((Class<?>)parameterType).isInterface())
+			Class<?> parameterClass;
+			if (parameterType instanceof TypeVariable)
+			{
+				parameterClass = JSONParser.getInstance().getClassForTypeariable((TypeVariable<?>)parameterType); 
+			}
+			else
+			{
+				parameterClass = (Class<?>) parameterType;
+			}
+			
+			if (parameterClass.isInterface())
 			{
 				if (defaultClass != null)
 				{
@@ -82,13 +112,12 @@ public abstract class JSONComplexTypeParser
 				}
 				else
 				{
-					throw new ClassCastException("unsupported type");
-					//TODO arrumar mensagem
+					throw new ClassCastException(messages.errorJsonParserPolymorphismNotSupported());
 				}
 			}
 			else
 			{
-				sourceWriter.print(((Class<?>)parameterType).getName());
+				sourceWriter.print(parameterClass.getName());
 			}
 		}
 		sourceWriter.print("()");

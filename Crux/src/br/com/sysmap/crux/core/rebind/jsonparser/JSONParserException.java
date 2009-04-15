@@ -15,35 +15,30 @@
  */
 package br.com.sysmap.crux.core.rebind.jsonparser;
 
-
 /**
- * Helper Class used by Generators to deserialise objects returned by server before they
- * are passed to callback handlers.
- * 
+ * Error in json parsing 
  * @author Thiago Bustamante
- *
  */
-public class JSONListParser extends JSONCollectionParser
+public class JSONParserException extends RuntimeException 
 {
-	/**
-	 * Singleton instance
-	 */
-	private static JSONListParser instance = new JSONListParser();
-	
-	/**
-	 * Private constructor
-	 */
-	private JSONListParser() 
+	private static final long serialVersionUID = -2810091546611789898L;
+
+	public JSONParserException() 
 	{
-		defaultClass = "java.util.ArrayList";
 	}
 
-	/**
-	 * Singleton method
-	 * @return
-	 */
-	public static JSONListParser getInstance()
+	public JSONParserException(String message) 
 	{
-		return instance;
+		super(message);
+	}
+
+	public JSONParserException(Throwable cause) 
+	{
+		super(cause);
+	}
+
+	public JSONParserException(String message, Throwable cause) 
+	{
+		super(message, cause);
 	}
 }

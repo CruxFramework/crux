@@ -29,4 +29,9 @@ public interface GeneratorMessages
 	String errorGeneratingRegisteredElement(String errMsg);
 	String errorGeneratingRegisteredElementInvalidScreenID();
 	String errorinvokingGeneratedMethod();
+	
+	String errorJsonParserInvalidKeyForMap();
+	String errorJsonParserPolymorphismNotSupported();
+	String errorJsonParserCharSequenceNotSupported();
+	String errorJsonParserDateNotSupported();
 }

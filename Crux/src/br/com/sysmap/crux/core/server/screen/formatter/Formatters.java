@@ -70,15 +70,15 @@ public class Formatters
 			{
 				try 
 				{
-					Class<?> controllerClass = Class.forName(formatter);
-					FormatterName annot = controllerClass.getAnnotation(FormatterName.class);
+					Class<?> formatterClass = Class.forName(formatter);
+					FormatterName annot = formatterClass.getAnnotation(FormatterName.class);
 					if (annot != null)
 					{
-						formatters.put(annot.value(), (Formatter)controllerClass.newInstance());
+						formatters.put(annot.value(), (Formatter)formatterClass.newInstance());
 					}
 					else
 					{
-						formatters.put(controllerClass.getSimpleName(), (Formatter)controllerClass.newInstance());
+						formatters.put(formatterClass.getSimpleName(), (Formatter)formatterClass.newInstance());
 					}
 				} 
 				catch (Throwable e) 

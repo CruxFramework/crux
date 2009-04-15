@@ -16,8 +16,12 @@
 package br.com.sysmap.crux.core.rebind.jsonparser;
 
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -53,6 +57,16 @@ public class JSONObjectParser extends JSONComplexTypeParser
 	}
 	
 	/**
+	 * Generate the code for test if serialisation must be done. Avoid NullPointerExceptions
+	 * @param sourceWriter
+	 */
+	@Override
+	protected void generateTestForNullChecking(SourceWriter sourceWriter)
+	{
+		sourceWriter.print("(jsonValue != null && jsonValue.isObject() != null)");
+	}	
+	
+	/**
 	 * Generate code for populate the collection content.
 	 * @param parameterType
 	 * @param sourceWriter
@@ -61,45 +75,52 @@ public class JSONObjectParser extends JSONComplexTypeParser
 	@Override
 	protected void generatePopulation(Type parameterType, SourceWriter sourceWriter, String objName)
 	{
+		JSONParser.getInstance().createGenericScope();
+		
 		sourceWriter.print("{");
 
 		sourceWriter.print("com.google.gwt.json.client.JSONObject jO"+objName+"_o = jsonValue.isObject();");
-		
-		sourceWriter.print("for (String str"+objName+"_o: jO"+objName+"_o.keySet())");
-		sourceWriter.print("{");
-		sourceWriter.print("jsonValue=jO"+objName+"_o.get(str"+objName+"_o);");
-		
-		Class<?> keyClass = null;
-		
+
+		Class<?> objectClass;
 		if (parameterType instanceof ParameterizedType)
 		{
-			// Key
-			Type keyArgType = ((ParameterizedType)parameterType).getActualTypeArguments()[0];
-			if ((keyArgType instanceof ParameterizedType) 
-				||(keyArgType instanceof GenericArrayType)
-				||(!(CharSequence.class.isAssignableFrom((Class<?>)keyArgType)) && (!((Class<?>)keyArgType).isPrimitive())))
+			objectClass = (Class<?>) ((ParameterizedType)parameterType).getRawType();
+		}
+		else
+		{
+			objectClass = (Class<?>)parameterType;
+		}
+
+		TypeVariable<?>[] typeParameters = objectClass.getTypeParameters();
+
+		for (int i=0; i<typeParameters.length; i++) 
+		{
+			TypeVariable<?> typeVariable = typeParameters[i];
+			if (parameterType instanceof ParameterizedType &&
+				((ParameterizedType)parameterType).getActualTypeArguments().length > 0)
 			{
-				throw new ClassCastException("unsupported type");
-				//TODO: Arrumar mensagem.
+				JSONParser.getInstance().setGenericTypeInfo(typeVariable.getName(), ((ParameterizedType)parameterType).getActualTypeArguments()[i]);
 			}
-			
-			keyClass = ((Class<?>)keyArgType);
-			
-			// Value
-			Type parameterArgType = ((ParameterizedType)parameterType).getActualTypeArguments()[1];
-			
-			if (parameterArgType instanceof ParameterizedType)
+		}
+
+		Map<String, Type> properties = describe(objectClass);
+
+		for (String property : properties.keySet()) 
+		{
+			sourceWriter.print("jsonValue=jO"+objName+"_o.get(\""+property+"\");");
+			Type propertyType = properties.get(property);
+			if (propertyType instanceof ParameterizedType)
 			{
-				ParameterizedType parameterizedType = (ParameterizedType)parameterArgType;
+				ParameterizedType parameterizedType = (ParameterizedType)propertyType;
 				JSONParser.getInstance().generateDeserialisationForParameterizedTypes(parameterizedType, sourceWriter, null);
 			}
-			else if (parameterArgType instanceof GenericArrayType)
+			else if (propertyType instanceof GenericArrayType)
 			{
-				JSONArrayParser.getInstance().generateArrayDeclaration((GenericArrayType)parameterArgType, sourceWriter);
+				JSONArrayParser.getInstance().generateArrayDeclaration((GenericArrayType)propertyType, sourceWriter);
 			}
 			else
 			{
-				Class<?> param = (Class<?>) parameterArgType;
+				Class<?> param = (Class<?>) propertyType;
 				if (param.isArray())
 				{
 					JSONArrayParser.getInstance().generateArrayDeclaration(param, sourceWriter);
@@ -109,19 +130,36 @@ public class JSONObjectParser extends JSONComplexTypeParser
 					sourceWriter.print(param.getName());
 				}
 			}
-			sourceWriter.print(" "+objName+"_o=");
-			JSONParser.getInstance().generateParameterDeserialisationForType(parameterArgType, sourceWriter, objName+"_o");
-		}
-		else
-		{
-			keyClass = String.class;
-			sourceWriter.print("Object "+objName+"_o=");
-			JSONParser.getInstance().generateParameterDeserialisationForType(Object.class, sourceWriter, objName+"_o");
-		}
-		sourceWriter.print(";");
-		sourceWriter.print(objName+".put(new "+keyClass.getName()+"(str"+objName+"_o),"+objName+"_o);");
-		sourceWriter.print("}");
 
+			sourceWriter.print(" "+objName+"_o"+property+"=");
+			JSONParser.getInstance().generateParameterDeserialisationForType(propertyType, sourceWriter, objName+"_o"+property);
+			sourceWriter.print(";");
+			String prop = Character.toUpperCase(property.charAt(0)) + property.substring(1);
+			sourceWriter.print(objName+".set"+prop+"("+objName+"_o"+property+");");
+		}
 		sourceWriter.print("}");
+		
+		JSONParser.getInstance().destroyGenericScope();
+	}
+
+	/**
+	 * Return a map with writable properties for specified class
+	 * @param objectClass
+	 * @return
+	 */
+	private Map<String, Type> describe(Class<?> objectClass) 
+	{
+		Map<String, Type> properties = new HashMap<String, Type>();
+		for (Method method : objectClass.getMethods()) 
+		{
+			if (method.getParameterTypes().length == 1 && method.getName().startsWith("set"))
+			{
+				String methodName = method.getName().substring(3);
+				methodName = Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
+				properties.put(methodName, method.getGenericParameterTypes()[0]);
+			}
+		}
+
+		return properties;
 	} 
 }
