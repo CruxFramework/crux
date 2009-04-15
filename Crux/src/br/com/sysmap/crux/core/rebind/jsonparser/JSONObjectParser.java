@@ -86,6 +86,10 @@ public class JSONObjectParser extends JSONComplexTypeParser
 		{
 			objectClass = (Class<?>) ((ParameterizedType)parameterType).getRawType();
 		}
+		else if (parameterType instanceof TypeVariable)
+		{
+			objectClass = JSONParser.getInstance().getClassForTypeariable((TypeVariable<?>)parameterType); 
+		}
 		else
 		{
 			objectClass = (Class<?>)parameterType;
