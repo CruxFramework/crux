@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import br.com.sysmap.crux.core.server.screen.formatter.ServerFormatter;
-
 /**
  * Represents a Crux Screen at the application's server side. Used for GWT Generators and 
  * request parameter binding.
@@ -30,7 +28,6 @@ import br.com.sysmap.crux.core.server.screen.formatter.ServerFormatter;
 public class Screen 
 {
 	protected String id;
-	protected static Map<String, ServerFormatter> formatters = new HashMap<String, ServerFormatter>();
 	protected Map<String, Component> components = new HashMap<String, Component>();
 	protected Map<String, Event> events = new HashMap<String, Event>();
 	
@@ -109,40 +106,5 @@ public class Screen
 	public Iterator<Event> iterateEvents()
 	{
 		return events.values().iterator();
-	}
-	
-	/**
-	 * Return a formatter associated with the given property, if one is registered
-	 * @param property
-	 * @return
-	 */
-	public ServerFormatter getFormatter(String property)
-	{
-		ServerFormatter formatter = formatters.get(property);
-		if (formatter != null)
-		{
-			formatter = formatter.clone();
-		}
-		return formatter;
-	}
-	
-	/**
-	 * Associate a formatter for a given component property
-	 * @param property
-	 * @param formatter
-	 */
-	void setFormatter(String property, ServerFormatter formatter)
-	{
-		formatters.put(property, formatter);
-	}
-	
-	/**
-	 * Verify if exists a formatter for the given property
-	 * @param property
-	 * @return
-	 */
-	public boolean containsFormatter(String property)
-	{
-		return formatters.containsKey(property);
 	}
 }

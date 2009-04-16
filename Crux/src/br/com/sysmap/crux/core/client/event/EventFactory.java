@@ -22,10 +22,6 @@ import com.google.gwt.core.client.GWT;
 
 public class EventFactory 
 {
-	public static final String TYPE_SUBMIT = "submit";
-	public static final String TYPE_CLIENT = "client";
-	public static final String TYPE_RPC = "rpc";
-	
 	public static final String SYNC_TYPE_SYNCHRONOUS = "synchronous";
 	public static final String SYNC_TYPE_ASSYNCHRONOUS = "assynchronous";
 	
@@ -52,25 +48,15 @@ public class EventFactory
 				String[] evtProps = evt.split("\\|");
 				if (evtProps.length == 0) return null;
 				
-				String callback = null;
-				String type = TYPE_CLIENT;
 				String call = evtProps[0];
 				boolean sync = false; 
 				
 				if (evtProps.length>1 && evtProps[1].length() > 0)
 				{
-					type = evtProps[1];
-				}
-				if (evtProps.length>2 && evtProps[2].length() > 0)
-				{
-					callback = evtProps[2];
-				}
-				if (evtProps.length>3 && evtProps[3].length() > 0)
-				{
-					sync = SYNC_TYPE_SYNCHRONOUS.equals(evtProps[3]);
+					sync = SYNC_TYPE_SYNCHRONOUS.equals(evtProps[1]);
 				}
 
-				return new Event(evtId, type, call, callback, sync);
+				return new Event(evtId, call, sync);
 			}
 		}
 		catch (Throwable e)

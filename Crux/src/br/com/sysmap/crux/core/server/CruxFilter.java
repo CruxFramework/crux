@@ -51,6 +51,10 @@ public class CruxFilter implements Filter
 	{
 		HttpServletRequest request = (HttpServletRequest) req;
         String pathInfo = request.getPathInfo();
+		if (pathInfo == null)
+		{
+			pathInfo = request.getRequestURI();
+		}
 		if (pathInfo != null && pathInfo.length() > 0)
 		{
 			if (!pathInfo.endsWith("hosted.html"))

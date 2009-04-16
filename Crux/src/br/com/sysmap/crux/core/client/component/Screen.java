@@ -20,15 +20,17 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
-import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.WindowCloseListener;
-import com.google.gwt.user.client.WindowResizeListener;
+import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -41,7 +43,6 @@ public class Screen
 {
 	protected String id;
 	protected Map<String, Component> components = new HashMap<String, Component>(30);
-	protected Map<String, String> beansProperties = new HashMap<String, String>();
 	protected Element blockDiv;
 	protected boolean manageHistory = false;
 	protected IFrameElement historyFrame = null;
@@ -100,61 +101,6 @@ public class Screen
 		component.setScreen(this);
 	}
 
-	void addProperty(String name, String componentId)
-	{
-		Component component = components.get(componentId);
-		if (component != null) 
-		{
-			if (component.getProperty() != null)
-			{
-				beansProperties.remove(component.getProperty());
-			}
-			if (name != null && name.length() > 0)
-			{
-				beansProperties.put(name, componentId);
-			}
-		}
-	}
-
-	public Object getProperty(String name)
-	{
-		try 
-		{
-			String compId = beansProperties.get(name);
-			if (compId != null)
-			{
-				Component component = components.get(compId);
-				if (component != null) return component.getValue();
-			}
-		} 
-		catch (InvalidFormatException e) 
-		{
-			Window.alert(e.getLocalizedMessage());
-		}
-		return null;
-	}
-
-	protected String getSerializedBeanProperty(String name)
-	{
-		String compId = beansProperties.get(name);
-		if (compId != null)
-		{
-			Component component = components.get(compId);
-			if (component != null) return component.getSerializedValue();
-		}
-		return null;
-	}
-
-	public void setBeanProperty(String name, Object value)
-	{
-		String compId = beansProperties.get(name);
-		if (compId != null)
-		{
-			Component component = components.get(compId);
-			if (component != null) component.setValue(value);
-		}
-	}
-	
 	public void blockToUser()
 	{
 		if (blockDiv == null)
@@ -194,29 +140,33 @@ public class Screen
 		{
 			setManageHistory("true".equals(manageHistoryStr));
 		}
-		final Event eventClose = EventFactory.getEvent(EventFactory.EVENT_CLOSE, element.getAttribute(EventFactory.EVENT_CLOSE));
 		final Event eventClosing = EventFactory.getEvent(EventFactory.EVENT_CLOSING, element.getAttribute(EventFactory.EVENT_CLOSING));
-		if (eventClosing != null || eventClose != null)
+		if (eventClosing != null)
 		{
-			Window.addWindowCloseListener(new WindowCloseListener(){
-				public void onWindowClosed() 
+			Window.addWindowClosingHandler(new Window.ClosingHandler(){
+				public void onWindowClosing(ClosingEvent closingEvent) 
 				{
-					if (eventClose != null) EventFactory.callEvent(eventClose, getId());
+					EventFactory.callEvent(eventClosing, getId());
 				}
-	
-				public String onWindowClosing() 
+			});
+		}
+
+		final Event eventClose = EventFactory.getEvent(EventFactory.EVENT_CLOSE, element.getAttribute(EventFactory.EVENT_CLOSE));
+		if (eventClose != null)
+		{
+			Window.addCloseHandler(new CloseHandler<Window>(){
+				public void onClose(CloseEvent<Window> event) 
 				{
-					if (eventClose != null) EventFactory.callEvent(eventClose, getId());
-					return null;
-				}
+					EventFactory.callEvent(eventClose, getId());				}
 			});
 		}
 
 		final Event eventResized = EventFactory.getEvent(EventFactory.EVENT_RESIZED, element.getAttribute(EventFactory.EVENT_RESIZED));
 		if (eventResized != null)
 		{
-			Window.addWindowResizeListener(new WindowResizeListener(){
-				public void onWindowResized(int width, int height) 
+			Window.addResizeHandler(new ResizeHandler(){
+				@Override
+				public void onResize(ResizeEvent event) 
 				{
 					EventFactory.callEvent(eventResized, getId());
 				}
@@ -230,15 +180,6 @@ public class Screen
 					EventFactory.callEvent(eventLoad, getId());
 				}
 			}.schedule(1);
-		}
-	}
-
-	protected void update(com.google.gwt.xml.client.Element element) 
-	{
-		String manageHistoryStr = element.getAttribute("_manageHistory");
-		if (manageHistoryStr != null)
-		{
-			setManageHistory("true".equals(manageHistoryStr));
 		}
 	}
 }

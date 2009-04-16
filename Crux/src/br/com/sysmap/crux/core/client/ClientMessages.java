@@ -24,19 +24,9 @@ import com.google.gwt.i18n.client.Messages;
  */
 public interface ClientMessages extends Messages
 {
-	//  eventFactory
-	String eventProcessorFactoryInvalidEventType(String evtId, String evtCall, String evtType);
-	
 	//  event
 	String eventProcessorClientHandlerNotFound(String handler);
-	String eventProcessorRPCCallbackNotFound(String handler);
-	String eventProcessorRPCCallbackError(String callback);
-	String eventProcessorRPCResultProcessingError();
 	String eventProcessorClientError(String call);
-	String eventProcessorRPCError();
-	String eventProcessorServerResponseParserError();
-	String eventProcessorServerJsonError(String errorCode, String errorMessage);
-	String eventProcessorServerJsonInvalidResponse();
 	
 	//  screenFactory
 	String screenFactoryGenericErrorCreateComponent(String errMsg);

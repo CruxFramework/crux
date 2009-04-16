@@ -10,7 +10,7 @@
 	<entry-point class='br.com.sysmap.crux.core.client.JSEngine'/>
 
 	<!-- Servlet used to handle RPC event calls.              -->
-	<servlet path="/rpc" class="br.com.sysmap.crux.core.server.event.EventRPCServlet"/>
+	<servlet path="/rpc" class="br.com.sysmap.crux.core.server.dispatch.RemoteServiceServlet"/>
 
 	<!-- Default implementation class for EventProcessorFactory -->
 	<replace-with class="br.com.sysmap.crux.core.client.event.EventProcessorFactoryImpl">

@@ -23,5 +23,4 @@ package br.com.sysmap.crux.core.client.event;
 public interface RegisteredClientEventHandlers 
 {
 	EventClientHandlerInvoker getEventHandler(String id);
-	EventClientCallbackInvoker getEventCallback(String id);
 }

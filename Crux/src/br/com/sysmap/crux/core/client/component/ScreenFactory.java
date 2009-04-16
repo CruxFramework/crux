@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.JSEngine;
-import br.com.sysmap.crux.core.client.formatter.ClientFormatter;
+import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters;
 import br.com.sysmap.crux.core.client.utils.DOMUtils;
 
@@ -250,7 +250,7 @@ public class ScreenFactory {
 		return component;
 	}
 	
-	public ClientFormatter getClientFormatter(String formatter)
+	public Formatter getClientFormatter(String formatter)
 	{
 		return this.registeredClientFormatters.getClientFormatter(formatter);
 	}

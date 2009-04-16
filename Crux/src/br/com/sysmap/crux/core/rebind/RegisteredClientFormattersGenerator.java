@@ -51,9 +51,9 @@ public class RegisteredClientFormattersGenerator extends AbstractRegisteredEleme
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 
 		generateConstructor(logger, sourceWriter, screen, implClassName);
-		sourceWriter.println("private java.util.Map<String,ClientFormatter> clientFormatters = new java.util.HashMap<String,ClientFormatter>();");
+		sourceWriter.println("private java.util.Map<String,Formatter> clientFormatters = new java.util.HashMap<String,Formatter>();");
 
-		sourceWriter.println("public ClientFormatter getClientFormatter(String id){");
+		sourceWriter.println("public Formatter getClientFormatter(String id){");
 		sourceWriter.println("return clientFormatters.get(id);");
 		sourceWriter.println("}");
 
@@ -115,7 +115,7 @@ public class RegisteredClientFormattersGenerator extends AbstractRegisteredEleme
 			
 			if (!added.containsKey(formatter) && Formatters.getFormatter(formatterName)!= null)
 			{
-				Class<?> formatterClass = Formatters.getFormatter(formatter).getClientFormatter();
+				Class<?> formatterClass = Formatters.getFormatter(formatter);
 				sourceWriter.print("clientFormatters.put(\""+formatter+"\", new " + formatterClass.getName() + "("+parameters.toString()+"));");
 				added.put(formatter, true);
 			}
@@ -125,7 +125,4 @@ public class RegisteredClientFormattersGenerator extends AbstractRegisteredEleme
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredFormatter(componentId, e.getLocalizedMessage()), e);
 		}
 	}
-	
-	
-	
 }

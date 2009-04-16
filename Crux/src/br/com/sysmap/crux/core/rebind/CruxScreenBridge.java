@@ -15,6 +15,18 @@
  */
 package br.com.sysmap.crux.core.rebind;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.PrintWriter;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.server.ServerMessages;
+
 
 /**
  * A Bridge class for allow Generators to know the name of the module 
@@ -27,10 +39,23 @@ package br.com.sysmap.crux.core.rebind;
  */
 public class CruxScreenBridge 
 {
+	private static final Log logger = LogFactory.getLog(CruxScreenBridge.class);
 	private static CruxScreenBridge instance = new CruxScreenBridge();
-	public String lastPage = null;
+	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
+
+
+	private File bridgeFile;
+	
 	private CruxScreenBridge() 
 	{
+		String tmpDir = System.getProperty("java.io.tmpdir");
+		if (!tmpDir.endsWith("/") && !tmpDir.endsWith("\\"))
+		{
+			tmpDir += File.separator;
+		}
+		
+		bridgeFile = new File(tmpDir+"bridgeFile");
+		bridgeFile.deleteOnExit();
 	}
 
 	/**
@@ -49,7 +74,17 @@ public class CruxScreenBridge
 	 */
 	public void registerLastPageRequested(String lastPage)
 	{
-		this.lastPage = lastPage;
+		PrintWriter writer;
+		try 
+		{
+			writer = new PrintWriter(bridgeFile);
+			writer.println(lastPage);
+			writer.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			logger.error(messages.screenBridgeErrorRegisteringScreen(e.getLocalizedMessage()), e);
+		}
 	}
 	
 	/**
@@ -58,7 +93,16 @@ public class CruxScreenBridge
 	 */
 	public String getLastPageRequested() 
 	{
-		return this.lastPage;
+		try 
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(bridgeFile));
+			return reader.readLine();
+		} 
+		catch (Exception e) 
+		{
+			logger.error(messages.screenBridgeErrorRegisteringScreen(e.getLocalizedMessage()), e);
+			return null;
+		}
 	}
 	
 }

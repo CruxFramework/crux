@@ -22,8 +22,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
-import br.com.sysmap.crux.core.rebind.jsonparser.JSONParser;
-import br.com.sysmap.crux.core.server.event.clienthandlers.ClientControllers;
 import br.com.sysmap.crux.core.server.screen.Component;
 import br.com.sysmap.crux.core.server.screen.Event;
 import br.com.sysmap.crux.core.server.screen.Screen;
@@ -65,18 +63,12 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 		sourceWriter.println("private java.util.Map clientHandlers = new java.util.HashMap();");
-		sourceWriter.println("private java.util.Map clientCallbacks = new java.util.HashMap();");
 
 		generateConstructor(logger, sourceWriter, screen, implClassName);
 
 		sourceWriter.println("public EventClientHandlerInvoker getEventHandler(String id){");
 		sourceWriter.println("return (EventClientHandlerInvoker) clientHandlers.get(id);");
 		sourceWriter.println("}");
-		
-		sourceWriter.println("public EventClientCallbackInvoker getEventCallback(String id){");
-		sourceWriter.println("return (EventClientCallbackInvoker) clientCallbacks.get(id);");
-		sourceWriter.println("}");
-		
 		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
@@ -98,11 +90,10 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		
 		Iterator<Component> iterator = screen.iterateComponents();
 		Map<String, Boolean> addedHandler = new HashMap<String, Boolean>();
-		Map<String, Boolean> addedCallback = new HashMap<String, Boolean>();
 		while (iterator.hasNext())
 		{
 			Component component = iterator.next();
-			generateEventHandlersForComponent(logger, sourceWriter, component, addedHandler, addedCallback);
+			generateEventHandlersForComponent(logger, sourceWriter, component, addedHandler);
 
 		}
 		sourceWriter.println("}");
@@ -116,7 +107,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param addedHandler
 	 * @param addedCallback
 	 */
-	protected void generateEventHandlersForComponent(TreeLogger logger,SourceWriter sourceWriter, Component component, Map<String, Boolean> addedHandler, Map<String, Boolean> addedCallback)
+	protected void generateEventHandlersForComponent(TreeLogger logger,SourceWriter sourceWriter, Component component, Map<String, Boolean> addedHandler)
 	{
 		Iterator<Event> events = component.iterateEvents();
 		
@@ -124,7 +115,6 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		{
 			Event event = events.next();
 			generateEventHandlerBlock(logger,sourceWriter, component.getId(), event, addedHandler);
-			generateEventCallbackBlock(logger,sourceWriter, component.getId(), event, addedCallback);
 		}
 	}
 	
@@ -153,37 +143,6 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		catch (Throwable e) 
 		{
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandler(componentId, e.getLocalizedMessage()), e);
-		}
-	}
-	
-	/**
-	 * Generate the block to include event callback handler object.
-	 * @param logger
-	 * @param sourceWriter
-	 * @param componentId
-	 * @param event
-	 * @param added
-	 */
-	protected void generateEventCallbackBlock(TreeLogger logger, SourceWriter sourceWriter, String componentId, Event event, Map<String, Boolean> added)
-	{
-		String evtCallback = event.getEvtCallback();
-		if (evtCallback != null)
-		{
-			String callback;
-			try
-			{
-				callback = RegexpPatterns.REGEXP_DOT.split(evtCallback)[0];
-				if (!added.containsKey(callback) && ClientControllers.getClientCallback(callback)!= null)
-				{
-					String genClass = generateEventCallbackInvokerClass(logger,sourceWriter,ClientControllers.getClientCallback(callback));
-					sourceWriter.println("clientCallbacks.put(\""+callback+"\", new " + genClass + "());");
-					added.put(callback, true);
-				}
-			}
-			catch (Throwable e) 
-			{
-				logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientCallback(componentId, e.getLocalizedMessage()), e);
-			}
 		}
 	}
 	
@@ -276,82 +235,6 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		return true;
 	}
 
-	/**
-	 * Create a new class to invoke the event callback method by its name
-	 * @param logger
-	 * @param sourceWriter
-	 * @param callbackClass
-	 * @return
-	 */
-	protected String generateEventCallbackInvokerClass(TreeLogger logger, SourceWriter sourceWriter, Class<?> callbackClass)
-	{
-		String className = callbackClass.getSimpleName();
-		sourceWriter.println("class "+className+"Wrapper extends " + callbackClass.getName() 
-							+ " implements br.com.sysmap.crux.core.client.event.EventClientCallbackInvoker{");
-		sourceWriter.println("public void invoke(String metodo, Screen screen, String idSender, JSONValue result) throws Exception{ ");
-		sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
-		generateParametersSetters(logger, callbackClass, sourceWriter);
-		
-		Method[] methods = callbackClass.getMethods();
-		
-		boolean first = true;
-		for (Method method: methods) 
-		{
-			if (isCallbackMethodSignatureValid(method))
-			{
-				if (!first)
-				{
-					sourceWriter.print("else ");
-				}
-				sourceWriter.println("if (\""+method.getName()+"\".equals(metodo)) {");
-				JSONParser.getInstance().generateParameterDeserialisationBlock(method, sourceWriter, "result", "_v");
-				sourceWriter.println("wrapper."+method.getName()+"(_v);");
-				//sourceWriter.println("wrapper."+method.getName()+"(result);");
-				sourceWriter.println("}");
-
-				first = false;
-			}
-		}
-
-		if (!first)
-		{
-			sourceWriter.println(" else ");
-		}
-		sourceWriter.println("throw new Exception(\""+messages.errorinvokingGeneratedMethod()+" \"+metodo);");
-		sourceWriter.println("}");
-		sourceWriter.println("}");
-		
-		return className+"Wrapper";
-	}
-	
-	/**
-	 * Verify if a method must be included in the list of callable methods in the 
-	 * generated invoker class
-	 * @param method
-	 * @return
-	 */
-	protected boolean isCallbackMethodSignatureValid(Method method)
-	{
-		Class<?>[] parameters = method.getParameterTypes();
-		if (parameters == null || parameters.length != 1)
-		{
-			return false;
-		}
-
-		if (!method.getReturnType().getName().equals("java.lang.Void") &&
-			!method.getReturnType().getName().equals("void"))
-		{
-			return false;
-		}
-
-		if (method.getName().equals("wait"))
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
 	/**
 	 * Generate the property setters block in the generated classes
 	 * @param logger

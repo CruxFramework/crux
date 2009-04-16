@@ -17,9 +17,9 @@ package br.com.sysmap.crux.core.client.formatter;
 
 /**
  * 
- * @author thiago
+ * @author Thiago Bustamante
  */
 public interface RegisteredClientFormatters 
 {
-	ClientFormatter getClientFormatter(String id);
+	Formatter getClientFormatter(String id);
 }

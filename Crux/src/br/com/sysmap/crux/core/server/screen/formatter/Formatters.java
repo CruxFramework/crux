@@ -25,6 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
@@ -36,7 +37,7 @@ public class Formatters
 	private static final Log logger = LogFactory.getLog(Formatters.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Lock lock = new ReentrantLock();
-	private static Map<String, Formatter> formatters;
+	private static Map<String, Class<? extends Formatter>> formatters;
 	
 	public static void initialize(URL[] urls)
 	{
@@ -60,9 +61,10 @@ public class Formatters
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected static void initializeFormatters(URL[] urls)
 	{
-		formatters = new HashMap<String, Formatter>();
+		formatters = new HashMap<String, Class<? extends Formatter>>();
 		Set<String> formatterNames =  ClassScanner.getInstance(urls).searchClassesByInterface(Formatter.class);
 		if (formatterNames != null)
 		{
@@ -70,15 +72,15 @@ public class Formatters
 			{
 				try 
 				{
-					Class<?> formatterClass = Class.forName(formatter);
+					Class<? extends Formatter> formatterClass = (Class<? extends Formatter>) Class.forName(formatter);
 					FormatterName annot = formatterClass.getAnnotation(FormatterName.class);
 					if (annot != null)
 					{
-						formatters.put(annot.value(), (Formatter)formatterClass.newInstance());
+						formatters.put(annot.value(), formatterClass);
 					}
 					else
 					{
-						formatters.put(formatterClass.getSimpleName(), (Formatter)formatterClass.newInstance());
+						formatters.put(formatterClass.getSimpleName(), formatterClass);
 					}
 				} 
 				catch (Throwable e) 
@@ -89,7 +91,7 @@ public class Formatters
 		}
 	}
 
-	public static Formatter getFormatter(String name)
+	public static Class<? extends Formatter> getFormatter(String name)
 	{
 		if (formatters == null)
 		{

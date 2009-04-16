@@ -17,14 +17,10 @@ package br.com.sysmap.crux.core.server.config;
 
 public interface Crux 
 {
-	String DEFAULT_CONTROLLER_FACTORY = "br.com.sysmap.crux.core.server.lifecycle.phase.dispatch.ControllerFactoryImpl";
+	String DEFAULT_CONTROLLER_FACTORY = "br.com.sysmap.crux.core.server.dispatch.ControllerFactoryImpl";
 
 	String controllerFactory();
-	String debug();
 	String initializeControllersAtStartup();
 	String initializeFormattersAtStartup();
 	String lookupWebInfOnly();
-	String enableHotDeployForScreens();
-	String pagesHome();
-	String developmentPublicDir();
 }

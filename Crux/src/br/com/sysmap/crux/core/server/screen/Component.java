@@ -23,12 +23,11 @@ import java.util.Map;
  * Represent a CRUX component at the application's server side. 
  * @author Thiago Bustamante
  */
-public class Component implements Cloneable
+public class Component
 {
 	private int hashValue = 0;
 	protected String id;
 	protected String type;
-	protected String property;
 	protected String formatter;
 
 	protected Map<String, Event> events = new HashMap<String, Event>();
@@ -104,16 +103,6 @@ public class Component implements Cloneable
 		this.type = type;
 	}
 
-	public String getProperty() 
-	{
-		return property;
-	}
-
-	public void setProperty(String property) 
-	{
-		this.property = property;
-	}
-
 	public String getFormatter() 
 	{
 		return formatter;
@@ -122,18 +111,5 @@ public class Component implements Cloneable
 	public void setFormatter(String formatter) 
 	{
 		this.formatter = formatter;
-	}
-
-	@Override
-	protected Object clone() throws CloneNotSupportedException 
-	{
-		Component result = (Component)super.clone();
-		result.events = new HashMap<String, Event>();
-		for (String key : events.keySet()) 
-		{
-			result.addEvent((Event)events.get(key).clone());
-		}
-		
-		return result;
 	}
 }

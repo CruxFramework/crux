@@ -61,4 +61,6 @@ public interface ServerMessages
 	String screenFactoryScreeResourceNotFound(String screenId);
 	String screenPropertyError(String property, String componentId);
 	String formattersFormatterInitializeError(String errMsg);
+	String screenBridgeErrorRegisteringScreen(String errMsg);
+	String screenBridgeErrorReadingScreenId(String errMsg);
 }

@@ -18,17 +18,18 @@ package br.com.sysmap.crux.core.client.component;
 import br.com.sysmap.crux.core.client.JSEngine;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
-import br.com.sysmap.crux.core.client.formatter.ClientFormatter;
+import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasName;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.SourcesChangeEvents;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -40,11 +41,10 @@ public class Component
 	private int hashValue = 0;
 	protected Widget widget;
 	protected String id;
-	protected String property = null;
 	protected String width;
 	protected String height;
 	protected String formatter;
-	protected ClientFormatter clientFormatter = null;
+	protected Formatter clientFormatter = null;
 
 	protected Screen screen = null;
 	
@@ -85,18 +85,6 @@ public class Component
 	 * @return
 	 */
 	protected Event getComponentEvent(Element element, String evtId)
-	{
-		String evt = element.getAttribute(evtId);
-		return EventFactory.getEvent(evtId, evt);
-	}
-	
-	/**
-	 * Builds an Event object from the XML DOM element representing the component (Its <span> tag)
-	 * @param element
-	 * @param evtId
-	 * @return
-	 */
-	protected Event getComponentEvent(com.google.gwt.xml.client.Element element, String evtId)
 	{
 		String evt = element.getAttribute(evtId);
 		return EventFactory.getEvent(evtId, evt);
@@ -175,12 +163,6 @@ public class Component
 			}
 		}		
 
-		String property = element.getAttribute("_property");
-		if (property != null && property.trim().length() > 0)
-		{
-			setProperty(element.getAttribute("_property"));
-		}
-		
 		if (widget instanceof HasHTML)
 		{
 			String innerHtml = element.getInnerHTML();
@@ -208,21 +190,22 @@ public class Component
 	 * Render component events
 	 * @param element page DOM element representing the component (Its <span> tag)
 	 */
+	@SuppressWarnings("unchecked")
 	protected void attachEvents(Element element)
 	{
-		if (widget instanceof SourcesChangeEvents)
+		if (widget instanceof HasValueChangeHandlers)
 		{
 			final Event event = getComponentEvent(element, EventFactory.EVENT_CHANGE);
 			if (event != null)
 			{
-				ChangeListener listener = new ChangeListener()
+				ValueChangeHandler handler = new ValueChangeHandler()
 				{
-					public void onChange(Widget sender) 
+					public void onValueChange(ValueChangeEvent valEvent) 
 					{
 						EventFactory.callEvent(event, getId());
 					}
 				};
-				((SourcesChangeEvents)widget).addChangeListener(listener);
+				((HasValueChangeHandlers)widget).addValueChangeHandler(handler);
 			}
 		}
 	}
@@ -279,28 +262,6 @@ public class Component
 		}
 	}
 
-	/**
-	 * Return property associated with this component
-	 * @return
-	 */
-	public String getProperty() 
-	{
-		return this.property;
-	}
-
-	/**
-	 * Associate a property with this component
-	 */
-	protected void setProperty(String property) 
-	{
-		this.property = property;	
-		if (widget instanceof HasName)
-		{
-			((HasName)widget).setName(property);
-		}
-		this.screen.addProperty(property, getId());
-	}
-	
 	public boolean equals(Object obj) 
 	{
     	if (obj == null) return false;
