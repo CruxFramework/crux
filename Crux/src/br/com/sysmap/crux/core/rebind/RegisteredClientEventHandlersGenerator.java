@@ -16,11 +16,14 @@
 package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
 import br.com.sysmap.crux.core.server.screen.Component;
 import br.com.sysmap.crux.core.server.screen.Event;
@@ -30,6 +33,9 @@ import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -161,6 +167,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		sourceWriter.println("public void invoke(String metodo, Screen screen, String idSender) throws Exception{ ");
 		sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
 		generateParametersSetters(logger, handlerClass, sourceWriter);
+		generateAutoCreateFields(logger, handlerClass, sourceWriter);
 		Method[] methods = handlerClass.getMethods(); 
 
 		boolean first = true;
@@ -247,7 +254,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		try 
 		{
 			method = controller.getMethod("setIdSender", new Class[]{String.class});
-			if (method != null)
+			if (method != null && (Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())))
 			{
 				sourceWriter.println("wrapper.setIdSender(idSender);");
 			}
@@ -259,7 +266,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		try 
 		{
 			method = controller.getMethod("setScreen", new Class[]{br.com.sysmap.crux.core.client.component.Screen.class});
-			if (method != null)
+			if (method != null && (Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())))
 			{
 				sourceWriter.println("wrapper.setScreen(screen);");
 			}
@@ -267,6 +274,52 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		catch (Exception e) 
 		{
 			logger.log(TreeLogger.DEBUG, "screen ignored."); 
+		}
+	}
+	
+	/**
+	 * 
+	 * @param logger
+	 * @param controller
+	 * @param sourceWriter
+	 */
+	protected void generateAutoCreateFields(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
+	{
+		for (Field field : controller.getDeclaredFields()) 
+		{
+			if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+			{
+				if (field.getAnnotation(Create.class) != null)
+				{
+					Class<?> type = field.getType();
+					if (type.getName().endsWith("Async"))
+					{
+						try 
+						{
+							type = Class.forName(type.getName().substring(0,type.getName().length()-5));
+						} 
+						catch (Exception e) 
+						{
+							logger.log(TreeLogger.DEBUG, "screen ignored."); 
+						}
+					}
+
+					sourceWriter.println("wrapper."+field.getName()+"=GWT.create("+type.getName()+".class);");
+					if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
+					{
+						sourceWriter.println("(("+ServiceDefTarget.class.getName()+")wrapper."+field.getName()+").setServiceEntryPoint(\"rpc\");");
+					}
+				}
+			}
+			else
+			{
+				
+			}
+		}
+		
+		if (controller.getSuperclass() != null)
+		{
+			generateAutoCreateFields(logger, controller.getSuperclass(), sourceWriter);
 		}
 	}
 }

@@ -19,13 +19,13 @@ import java.lang.reflect.Method;
 
 import br.com.sysmap.crux.core.client.event.ValidateException;
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
+import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RPC;
 import com.google.gwt.user.server.rpc.RPCRequest;
 import com.google.gwt.user.server.rpc.SerializationPolicy;
-import com.google.gwt.user.server.rpc.impl.ServerSerializationStreamReader;
 
 /**
  * 
@@ -75,15 +75,12 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 	{
 		try 
 		{
-			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-			ServerSerializationStreamReader streamReader = new ServerSerializationStreamReader(classLoader, this);
-			streamReader.prepareToRead(encodedRequest);
-
-			// Read the name of the RemoteServiceServlet interface
-			String serviceIntfName = streamReader.readString();
+			// We don't need to verify or parser the encodedRequest because it will be already done by
+			// RPC.decodeRequest. So, just read the interface name directly
+			String serviceIntfName = RegexpPatterns.REGEXP_PIPE.split(encodedRequest)[5];
 			return ControllerFactoryInitializer.getControllerFactory().getController(serviceIntfName);
 		} 
-		catch (Exception e) 
+		catch (Throwable e) 
 		{
 			throw new IncompatibleRemoteServiceException(e.getLocalizedMessage(), e);
 		} 
