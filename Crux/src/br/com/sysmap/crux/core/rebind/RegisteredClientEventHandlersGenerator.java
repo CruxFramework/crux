@@ -47,6 +47,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredElementsGenerator
 {
+	
 	/**
 	 * Generate the class
 	 */
@@ -70,7 +71,9 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 		sourceWriter.println("private java.util.Map clientHandlers = new java.util.HashMap();");
 
-		generateConstructor(logger, sourceWriter, screen, implClassName);
+		Map<String, String> handlerClassNames = new HashMap<String, String>();
+		generateEventHandlersForScreen(logger, sourceWriter, screen, handlerClassNames, packageName+"."+implClassName);
+		generateConstructor(logger, sourceWriter, screen, implClassName, handlerClassNames);
 
 		sourceWriter.println("public EventClientHandlerInvoker getEventHandler(String id){");
 		sourceWriter.println("return (EventClientHandlerInvoker) clientHandlers.get(id);");
@@ -89,22 +92,36 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param sourceWriter
 	 * @param screen
 	 * @param implClassName
+	 * @para handlerClassNames
 	 */
-	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, Screen screen, String implClassName) 
+	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, Screen screen, String implClassName, 
+			Map<String, String> handlerClassNames) 
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");
-		
-		Iterator<Component> iterator = screen.iterateComponents();
-		Map<String, Boolean> addedHandler = new HashMap<String, Boolean>();
-		while (iterator.hasNext())
+		for (String handler : handlerClassNames.keySet()) 
 		{
-			Component component = iterator.next();
-			generateEventHandlersForComponent(logger, sourceWriter, component, addedHandler);
-
+			sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
 		}
 		sourceWriter.println("}");
 	}
 	
+	/**
+	 * generate wrapper classes for event handling.
+	 * @param logger
+	 * @param sourceWriter
+	 * @param screen
+	 */
+	protected void generateEventHandlersForScreen(TreeLogger logger,SourceWriter sourceWriter, Screen screen, 
+			Map<String, String> handlerClassNames, String implClassName)
+	{
+		Iterator<Component> iterator = screen.iterateComponents();
+		while (iterator.hasNext())
+		{
+			Component component = iterator.next();
+			generateEventHandlersForComponent(logger, sourceWriter, component, handlerClassNames, implClassName);
+
+		}
+	}
 	/**
 	 * For each component, create the inclusion block for controllers used by it.
 	 * @param logger
@@ -113,14 +130,15 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param addedHandler
 	 * @param addedCallback
 	 */
-	protected void generateEventHandlersForComponent(TreeLogger logger,SourceWriter sourceWriter, Component component, Map<String, Boolean> addedHandler)
+	protected void generateEventHandlersForComponent(TreeLogger logger,SourceWriter sourceWriter, Component component, 
+			Map<String, String> addedHandler, String implClassName)
 	{
 		Iterator<Event> events = component.iterateEvents();
 		
 		while (events.hasNext())
 		{
 			Event event = events.next();
-			generateEventHandlerBlock(logger,sourceWriter, component.getId(), event, addedHandler);
+			generateEventHandlerBlock(logger,sourceWriter, component.getId(), event, addedHandler, implClassName);
 		}
 	}
 	
@@ -132,7 +150,8 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param event
 	 * @param added
 	 */
-	protected void generateEventHandlerBlock(TreeLogger logger, SourceWriter sourceWriter, String componentId, Event event, Map<String, Boolean> added)
+	protected void generateEventHandlerBlock(TreeLogger logger, SourceWriter sourceWriter, String componentId, Event event, 
+			Map<String, String> added, String implClassName)
 	{
 		String evtCall = event.getEvtCall();
 		String handler;
@@ -141,9 +160,8 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			handler = RegexpPatterns.REGEXP_DOT.split(evtCall)[0];
 			if (!added.containsKey(handler) && ClientControllers.getClientHandler(handler)!= null)
 			{
-				String genClass = generateEventHandlerInvokerClass(logger,sourceWriter,ClientControllers.getClientHandler(handler));
-				sourceWriter.print("clientHandlers.put(\""+handler+"\", new " + genClass + "());");
-				added.put(handler, true);
+				String genClass = generateEventHandlerInvokerClass(logger,sourceWriter,ClientControllers.getClientHandler(handler), implClassName);
+				added.put(handler, genClass);
 			}
 		}
 		catch (Throwable e) 
@@ -159,11 +177,13 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param handlerClass
 	 * @return
 	 */
-	protected String generateEventHandlerInvokerClass(TreeLogger logger, SourceWriter sourceWriter, Class<?> handlerClass)
+	protected String generateEventHandlerInvokerClass(TreeLogger logger, SourceWriter sourceWriter, Class<?> handlerClass, String implClassName)
 	{
 		String className = handlerClass.getSimpleName();
-		sourceWriter.println("class "+className+"Wrapper extends " + handlerClass.getName()
+		sourceWriter.println("public class "+className+"Wrapper extends " + handlerClass.getName()
 				+ " implements br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker{");
+		
+		generateSetFieldsMethods(logger, handlerClass, sourceWriter, implClassName);
 		sourceWriter.println("public void invoke(String metodo, Screen screen, String idSender) throws Exception{ ");
 		sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
 		generateParametersSetters(logger, handlerClass, sourceWriter);
@@ -187,7 +207,9 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 					String validateMethod = annot.value();
 					if (validateMethod == null || validateMethod.length() == 0)
 					{
-						validateMethod = "validate"+ method.getName();
+						String methodName = method.getName();
+						methodName = Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1);
+						validateMethod = "validate"+ methodName;
 					}
 					sourceWriter.println("wrapper."+validateMethod+"();");
 				}
@@ -278,7 +300,48 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	}
 	
 	/**
+	 * Generate methods for set fields in delegate object that are declared as private or default visibility 
 	 * 
+	 * @param logger
+	 * @param controller
+	 * @param sourceWriter
+	 * @param implClassName
+	 */
+	protected void generateSetFieldsMethods(TreeLogger logger,	Class<?> controller, SourceWriter sourceWriter, String implClassName) 
+	{
+		for (Field field : controller.getDeclaredFields()) 
+		{
+			if (field.getAnnotation(Create.class) != null)
+			{
+				if ((!Modifier.isPublic(field.getModifiers()) && !Modifier.isProtected(field.getModifiers())))
+				{
+					generateSetFieldMethod(logger, controller, field.getName(), sourceWriter, implClassName);
+				}
+			}
+		}
+		
+	}
+	/**
+	 * Generate a method for set field in delegate object that are declared as private or default visibility 
+	 * @param logger
+	 * @param handlerClass
+	 * @param sourceWriter
+	 * @param implClassName
+	 */
+	protected void generateSetFieldMethod(TreeLogger logger, Class<?> controller, String fieldName,
+			SourceWriter sourceWriter, String implClassName) 
+	{
+		String className = implClassName+"$"+controller.getSimpleName()+"Wrapper";
+		
+		sourceWriter.print("public native void _setField"+fieldName+"(Object fieldValue)/*-");
+		sourceWriter.print("{");
+		sourceWriter.print("this.@"+className+"::"+fieldName+"=fieldValue;");
+		sourceWriter.print("}-*/;");
+		
+	}
+
+	/**
+	 * Create objects for fields that are annoteded with @Create
 	 * @param logger
 	 * @param controller
 	 * @param sourceWriter
@@ -287,33 +350,24 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	{
 		for (Field field : controller.getDeclaredFields()) 
 		{
-			if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+			if (field.getAnnotation(Create.class) != null)
 			{
-				if (field.getAnnotation(Create.class) != null)
-				{
-					Class<?> type = field.getType();
-					if (type.getName().endsWith("Async"))
-					{
-						try 
-						{
-							type = Class.forName(type.getName().substring(0,type.getName().length()-5));
-						} 
-						catch (Exception e) 
-						{
-							logger.log(TreeLogger.DEBUG, "screen ignored."); 
-						}
-					}
+				Class<?> type = getTypeForField(logger, field);
 
-					sourceWriter.println("wrapper."+field.getName()+"=GWT.create("+type.getName()+".class);");
-					if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
-					{
-						sourceWriter.println("(("+ServiceDefTarget.class.getName()+")wrapper."+field.getName()+").setServiceEntryPoint(\"rpc\");");
-					}
+				sourceWriter.println(field.getType().getName()+" _field"+field.getName()+"=GWT.create("+type.getName()+".class);");
+				if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+				{
+					sourceWriter.println("wrapper."+field.getName()+"=_field"+field.getName()+";");
 				}
-			}
-			else
-			{
+				else
+				{
+					sourceWriter.print("wrapper._setField"+field.getName()+"(_field"+field.getName()+");");
+				}
 				
+				if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
+				{
+					sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+").setServiceEntryPoint(\"rpc\");");
+				}
 			}
 		}
 		
@@ -321,5 +375,29 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		{
 			generateAutoCreateFields(logger, controller.getSuperclass(), sourceWriter);
 		}
+	}
+	
+	/**
+	 * Get the field type
+	 * @param logger
+	 * @param field
+	 * @return
+	 */
+	protected Class<?> getTypeForField(TreeLogger logger, Field field)
+	{
+		Class<?> type = field.getType();
+		if (type.getName().endsWith("Async"))
+		{
+			try 
+			{
+				type = Class.forName(type.getName().substring(0,type.getName().length()-5));
+			} 
+			catch (Exception e) 
+			{
+				logger.log(TreeLogger.DEBUG, "Error reading field super type."); 
+			}
+		}
+		return type;
+
 	}
 }

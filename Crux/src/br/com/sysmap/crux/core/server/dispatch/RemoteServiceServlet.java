@@ -15,10 +15,6 @@
  */
 package br.com.sysmap.crux.core.server.dispatch;
 
-import java.lang.reflect.Method;
-
-import br.com.sysmap.crux.core.client.event.ValidateException;
-import br.com.sysmap.crux.core.client.event.annotation.Validate;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
@@ -47,16 +43,8 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 			Object controller = getControllerForRequest(payload);
 			RPCRequest rpcRequest = RPC.decodeRequest(payload, controller.getClass(), this);
 			onAfterRequestDeserialized(rpcRequest);
-			try
-			{
-				validateMethod(rpcRequest.getMethod(), controller);
-				return RPC.invokeAndEncodeResponse(controller, rpcRequest.getMethod(),
-						rpcRequest.getParameters(), rpcRequest.getSerializationPolicy());
-			} 
-			catch (ValidateException ex) 
-			{
-				return RPC.encodeResponseForFailure(rpcRequest.getMethod(), ex);
-			} 
+			return RPC.invokeAndEncodeResponse(controller, rpcRequest.getMethod(),
+					rpcRequest.getParameters(), rpcRequest.getSerializationPolicy());
 		}
 		catch (IncompatibleRemoteServiceException ex) 
 		{
@@ -84,33 +72,5 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 		{
 			throw new IncompatibleRemoteServiceException(e.getLocalizedMessage(), e);
 		} 
-	}
-	
-	/**
-	 * If controller specifies a validate method, run it before invoke the method itself
-	 * @param method
-	 * @param controller
-	 * @throws ValidateException
-	 */
-	protected void validateMethod(Method method, Object controller) throws ValidateException
-	{
-		Validate annot = method.getAnnotation(Validate.class);
-		if (annot != null)
-		{
-			String validateMethod = annot.value();
-			if (validateMethod == null || validateMethod.length() == 0)
-			{
-				validateMethod = "validate"+ method.getName();
-			}
-			try 
-			{
-				Method validate = controller.getClass().getMethod(validateMethod, new Class<?>[]{});
-				validate.invoke(controller, new Object[]{});
-			} 
-			catch (Exception e) 
-			{
-				throw new ValidateException (e.getLocalizedMessage());
-			} 
-		}
 	}
 }

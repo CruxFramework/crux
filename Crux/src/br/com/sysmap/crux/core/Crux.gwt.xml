@@ -16,7 +16,7 @@
 	<replace-with class="br.com.sysmap.crux.core.client.event.EventProcessorFactoryImpl">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.event.IEventProcessorFactory" />
 	</replace-with>
-	
+
 	<!-- Specify the generator for registered client handlers.-->
 	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientEventHandlersGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers" />

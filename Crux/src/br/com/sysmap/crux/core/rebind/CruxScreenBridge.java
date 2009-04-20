@@ -100,7 +100,7 @@ public class CruxScreenBridge
 		} 
 		catch (Exception e) 
 		{
-			logger.error(messages.screenBridgeErrorRegisteringScreen(e.getLocalizedMessage()), e);
+			logger.error(messages.screenBridgeErrorReadingScreenId(e.getLocalizedMessage()), e);
 			return null;
 		}
 	}
