@@ -16,8 +16,8 @@
 package br.com.sysmap.crux.core.rebind;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.server.screen.Screen;
-import br.com.sysmap.crux.core.server.screen.ScreenFactory;
+import br.com.sysmap.crux.core.rebind.screen.Screen;
+import br.com.sysmap.crux.core.rebind.screen.ScreenFactory;
 
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;

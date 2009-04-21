@@ -13,12 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.screen;
+package br.com.sysmap.crux.core.rebind.screen;
 
-public class Event extends br.com.sysmap.crux.core.client.event.Event
+public interface ComponentParser 
 {
-	public Event(String id, String evtCall, boolean sync) 
-	{
-		super(id, evtCall, sync);
-	}
+	void parse(Component component, Object element);
 }

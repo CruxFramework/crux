@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.screen;
+package br.com.sysmap.crux.core.rebind.screen;
 
 public class ScreenConfigException extends Exception 
 {

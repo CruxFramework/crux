@@ -13,15 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.screen.formatter.annotation;
+package br.com.sysmap.crux.core.rebind.screen;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface FormatterName {
-	String value();
+public class Event extends br.com.sysmap.crux.core.client.event.Event
+{
+	public Event(String id, String evtCall, boolean sync) 
+	{
+		super(id, evtCall, sync);
+	}
 }

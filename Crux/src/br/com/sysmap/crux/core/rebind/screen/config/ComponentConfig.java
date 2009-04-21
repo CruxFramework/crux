@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.screen.config;
+package br.com.sysmap.crux.core.rebind.screen.config;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -33,12 +33,12 @@ import org.apache.commons.logging.LogFactory;
 import org.xml.sax.InputSource;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.screen.ComponentParser;
+import br.com.sysmap.crux.core.rebind.screen.config.parser.ComponentT;
+import br.com.sysmap.crux.core.rebind.screen.config.parser.CruxT;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ComponentConfigScanner;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
-import br.com.sysmap.crux.core.server.screen.ComponentParser;
-import br.com.sysmap.crux.core.server.screen.config.parser.ComponentT;
-import br.com.sysmap.crux.core.server.screen.config.parser.CruxT;
 
 public class ComponentConfig 
 {
@@ -80,7 +80,7 @@ public class ComponentConfig
 	{
 		try 
 		{
-			Unmarshaller unmarshaller = JAXBContext.newInstance("br.com.sysmap.crux.core.server.screen.config.parser").createUnmarshaller();
+			Unmarshaller unmarshaller = JAXBContext.newInstance("br.com.sysmap.crux.core.rebind.screen.config.parser").createUnmarshaller();
 			InputSource input = new InputSource(inputStream);
 			
 			CruxT crux = (CruxT)((JAXBElement<?>) unmarshaller.unmarshal(input)).getValue();

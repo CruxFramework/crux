@@ -23,9 +23,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.screen.config.ComponentConfig;
 import br.com.sysmap.crux.core.server.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.server.dispatch.ControllerFactoryInitializer;
-import br.com.sysmap.crux.core.server.screen.config.ComponentConfig;
 
 /**
  * When the application starts, register clientHandlers

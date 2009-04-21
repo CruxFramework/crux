@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import br.com.sysmap.crux.core.server.screen.Component;
-import br.com.sysmap.crux.core.server.screen.Screen;
-import br.com.sysmap.crux.core.server.screen.config.ComponentConfig;
+import br.com.sysmap.crux.core.rebind.screen.Component;
+import br.com.sysmap.crux.core.rebind.screen.Screen;
+import br.com.sysmap.crux.core.rebind.screen.config.ComponentConfig;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;

@@ -23,10 +23,10 @@
 
 	<xs:complexType name="componentT">
 		<xs:attribute name="clientClass" type="xs:string" default="br.com.sysmap.crux.core.client.component.Component"/>		
-		<xs:attribute name="clientConstructorParams" type="xs:string" default=" "/>		
+		<xs:attribute name="clientConstructorParams" type="xs:string" default="id"/>		
 		<xs:attribute name="id" type="xs:string" use="required"/>		
-		<xs:attribute name="serverClass" type="xs:string" default="br.com.sysmap.crux.core.server.screen.Component"/>		
-		<xs:attribute name="serverParserClass" type="xs:string" default="br.com.sysmap.crux.core.server.screen.ComponentParserImpl"/>		
+		<xs:attribute name="serverClass" type="xs:string" default="br.com.sysmap.crux.core.rebind.screen.Component"/>		
+		<xs:attribute name="serverParserClass" type="xs:string" default="br.com.sysmap.crux.core.rebind.screen.ComponentParserImpl"/>		
 		<xs:attribute name="parserInput" type="parserType" default="jericho"/>		
 	</xs:complexType>
 

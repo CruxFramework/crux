@@ -13,9 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.screen;
+package br.com.sysmap.crux.core.rebind.screen.formatter.annotation;
 
-public interface ComponentParser 
-{
-	void parse(Component component, Object element);
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface FormatterName {
+	String value();
 }

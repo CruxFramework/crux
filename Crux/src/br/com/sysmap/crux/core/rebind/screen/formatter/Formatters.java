@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.screen.formatter;
+package br.com.sysmap.crux.core.rebind.screen.formatter;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -27,10 +27,10 @@ import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.screen.formatter.annotation.FormatterName;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
-import br.com.sysmap.crux.core.server.screen.formatter.annotation.FormatterName;
 
 public class Formatters 
 {

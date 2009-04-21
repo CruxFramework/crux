@@ -21,9 +21,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
-import br.com.sysmap.crux.core.server.screen.Component;
-import br.com.sysmap.crux.core.server.screen.Screen;
-import br.com.sysmap.crux.core.server.screen.formatter.Formatters;
+import br.com.sysmap.crux.core.rebind.screen.Component;
+import br.com.sysmap.crux.core.rebind.screen.Screen;
+import br.com.sysmap.crux.core.rebind.screen.formatter.Formatters;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.core.ext.GeneratorContext;

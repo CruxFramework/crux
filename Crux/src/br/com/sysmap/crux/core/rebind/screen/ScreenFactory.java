@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.screen;
+package br.com.sysmap.crux.core.rebind.screen;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,9 +32,9 @@ import au.id.jericho.lib.html.Attributes;
 import au.id.jericho.lib.html.Element;
 import au.id.jericho.lib.html.Source;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.screen.config.ComponentConfig;
+import br.com.sysmap.crux.core.rebind.screen.config.ComponentConfigData;
 import br.com.sysmap.crux.core.server.ServerMessages;
-import br.com.sysmap.crux.core.server.screen.config.ComponentConfig;
-import br.com.sysmap.crux.core.server.screen.config.ComponentConfigData;
 
 /**
  * Factory for screens at the application's server side. It is necessary for GWT generators 

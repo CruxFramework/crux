@@ -13,9 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.screen.config;
+package br.com.sysmap.crux.core.rebind.screen.config;
 
-import br.com.sysmap.crux.core.server.screen.ComponentParser;
+import br.com.sysmap.crux.core.rebind.screen.ComponentParser;
 
 public class ComponentConfigData 
 {

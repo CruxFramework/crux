@@ -25,9 +25,9 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
-import br.com.sysmap.crux.core.server.screen.Component;
-import br.com.sysmap.crux.core.server.screen.Event;
-import br.com.sysmap.crux.core.server.screen.Screen;
+import br.com.sysmap.crux.core.rebind.screen.Component;
+import br.com.sysmap.crux.core.rebind.screen.Event;
+import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.core.ext.GeneratorContext;
