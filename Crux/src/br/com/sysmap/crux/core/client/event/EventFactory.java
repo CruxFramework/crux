@@ -33,6 +33,12 @@ public class EventFactory
 	public static final String EVENT_KEY_DOWN = "_onkeydown";
 	public static final String EVENT_KEY_PRESS = "_onkeypress";
 	public static final String EVENT_KEY_UP = "_onkeyup";
+	public static final String EVENT_MOUSE_DOWN = "_onmousedown";
+	public static final String EVENT_MOUSE_MOVE = "_onmousemove";
+	public static final String EVENT_MOUSE_UP = "_onmouseup";
+	public static final String EVENT_MOUSE_OUT = "_onmouseout";
+	public static final String EVENT_MOUSE_OVER = "_onmouseover";
+	public static final String EVENT_MOUSE_WHEEL = "_onmousewheel";
 	
 
 	public static final String EVENT_CLOSE = "_onclose";

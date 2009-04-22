@@ -15,12 +15,15 @@
  */
 package br.com.sysmap.crux.core.client.component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -39,13 +42,16 @@ import com.google.gwt.user.client.ui.RootPanel;
  * @author Thiago
  *
  */
-public class Screen 
+public class Screen
 {
 	protected String id;
 	protected Map<String, Component> components = new HashMap<String, Component>(30);
 	protected Element blockDiv;
 	protected boolean manageHistory = false;
 	protected IFrameElement historyFrame = null;
+	protected List<ScreenLoadHandler> loadHandlers = new ArrayList<ScreenLoadHandler>();
+		
+	
 	
 	public Screen(String id) 
 	{
@@ -175,11 +181,50 @@ public class Screen
 		final Event eventLoad = EventFactory.getEvent(EventFactory.EVENT_LOAD, element.getAttribute(EventFactory.EVENT_LOAD));
 		if (eventLoad != null)
 		{
-			new Timer(){
-				public void run() {
+			addLoadHandler(new ScreenLoadHandler(){
+				@Override
+				public void onLoad() 
+				{
 					EventFactory.callEvent(eventLoad, getId());
 				}
-			}.schedule(1);
+			});
+		}
+	}
+
+	/**
+	 * Adds an event handler that is called only once, when the screen is loaded
+	 * @param handler
+	 */
+	void addLoadHandler(final ScreenLoadHandler handler) 
+	{
+		loadHandlers.add(handler);
+	}
+
+	/**
+	 * Fires the load event. This method has no effect when called more than one time.
+	 */
+	void fireLoadEvent() 
+	{
+		if (loadHandlers.size() > 0)
+		{
+			new Timer()
+			{
+				public void run() 
+				{
+					for (ScreenLoadHandler handler : loadHandlers) 
+					{
+						try 
+						{
+							handler.onLoad();
+						} 
+						catch (RuntimeException e) 
+						{
+							GWT.log(e.getLocalizedMessage(), e);
+						}
+					}
+					loadHandlers.clear();
+				}
+			}.schedule(100); // Waits for browser starts the rendering process 
 		}
 	}
 }

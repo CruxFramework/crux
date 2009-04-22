@@ -27,19 +27,45 @@ import javax.servlet.http.HttpServletRequest;
 
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 
+import com.google.gwt.dev.HostedMode;
+
 /**
  * Used to save the path to the current HTML page. This information is necessary
  * to generate the client handlers and formatters.
  * 
- * @author Thiago
+ * @author Thiago Bustamante
  */
 public class CruxFilter implements Filter 
 {
+	private boolean production = true;
+	
 	@Override
 	public void init(FilterConfig arg0) throws ServletException 
 	{
+		production = !isHostedMode();
 	}
 
+	/**
+	 * Determine if we are running in GWT Hosted Mode
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	private boolean isHostedMode()
+	{
+		Exception utilException = new Exception();
+		try
+		{
+			StackTraceElement[] stackTrace = utilException.getStackTrace();
+			StackTraceElement stackTraceElement = stackTrace[stackTrace.length -1];
+			return (stackTraceElement.getClassName().equals(HostedMode.class.getName()) ||
+					stackTraceElement.getClassName().equals(com.google.gwt.dev.GWTShell.class.getName()) );
+		}
+		catch (Throwable e) 
+		{
+			return false;
+		}
+	}
+	
 	@Override
 	public void destroy() 
 	{
@@ -47,25 +73,33 @@ public class CruxFilter implements Filter
 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) 
-		throws IOException, ServletException 
+	throws IOException, ServletException 
 	{
-		HttpServletRequest request = (HttpServletRequest) req;
-        String pathInfo = request.getPathInfo();
-		if (pathInfo == null)
+		if (production)
 		{
-			pathInfo = request.getRequestURI();
-		}
-		if (pathInfo != null && pathInfo.length() > 0)
-		{
-			if (!pathInfo.endsWith("hosted.html"))
-			{
-				CruxScreenBridge.getInstance().registerLastPageRequested(pathInfo.substring(1));
-			}
+			chain.doFilter(req, resp);
 		}
 		else
 		{
-			CruxScreenBridge.getInstance().registerLastPageRequested("");
+			HttpServletRequest request = (HttpServletRequest) req;
+			String pathInfo = request.getPathInfo();
+			if (pathInfo == null)
+			{
+				pathInfo = request.getRequestURI();
+			}
+			if (pathInfo != null && pathInfo.length() > 0)
+			{
+				if (!pathInfo.endsWith("hosted.html"))
+				{
+					CruxScreenBridge.getInstance().registerLastPageRequested(pathInfo.substring(1));
+				}
+			}
+			else
+			{
+				CruxScreenBridge.getInstance().registerLastPageRequested("");
+			}
+			chain.doFilter(req, resp);
+
 		}
-		chain.doFilter(req, resp);
 	}
 }

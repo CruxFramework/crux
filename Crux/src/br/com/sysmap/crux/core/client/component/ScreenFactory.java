@@ -112,6 +112,7 @@ public class ScreenFactory {
 			clearScreenMetaTag(screenElement);
 		}
 		clearComponentsMetaTags(components);
+		screen.fireLoadEvent();
 		return screen;
 	}
 	

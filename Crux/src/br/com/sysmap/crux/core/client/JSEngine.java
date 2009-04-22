@@ -22,8 +22,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 
 /**
- * CRUX Client Engine. Use <code>span</code> tags as templates for components 
- * to build the interface. 
+ * CRUX Client Engine. It starts a ScreenFactory to search HTML page for span tags declaring components. 
  */
 public class JSEngine implements EntryPoint 
 {
@@ -37,6 +36,7 @@ public class JSEngine implements EntryPoint
 		try 
 		{
 			messages = (ClientMessages) GWT.create(ClientMessages.class);
+			br.com.sysmap.crux.core.client.event.EventProcessorFactory.getInstance();
 			br.com.sysmap.crux.core.client.component.ScreenFactory.getInstance().getScreen();
 		} 
 		catch (Throwable e) 

@@ -211,16 +211,12 @@ public class Component
 	}
 	
 	/**
-	 * Return the component value without any format changes. Used for value serialization in server calls
-	 * @return
+	 * Adds an event handler, called whe the screen is completely loaded
+	 * @param loadHandler
 	 */
-	protected String getSerializedValue() 
+	protected void addScreenLoadedHandler(ScreenLoadHandler loadHandler)
 	{
-		if (widget instanceof HasText)
-		{
-			return ((HasText)widget).getText();
-		}
-		return null;
+		getScreen().addLoadHandler(loadHandler);
 	}
 
 	/**
@@ -322,6 +318,24 @@ public class Component
 		widget.setStyleName(className);
 	}
 
+	/**
+	 * Adds a secondary style class
+	 * @param style
+	 */
+	public void addClassName(String style) 
+	{
+		widget.addStyleName(style);
+	}
+
+	/**
+	 * Removes a style class name
+	 * @param style
+	 */
+	public void removeStyleName(String style)
+	{
+		widget.removeStyleName(style);
+	}
+	
 	/**
 	 * Return component's height
 	 * @return
