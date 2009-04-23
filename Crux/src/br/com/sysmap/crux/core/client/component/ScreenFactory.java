@@ -164,7 +164,7 @@ public class ScreenFactory {
 
 	private Component newComponent(Element element, String componentId) throws InterfaceConfigException
 	{
-		Component component = registeredComponents.createComponent(componentId, element.getAttribute("_type"));
+		Component component = registeredComponents.createComponent(componentId, element);
 		return component;
 	}
 	

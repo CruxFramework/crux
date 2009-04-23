@@ -57,7 +57,8 @@ public class RegisteredComponentsGenerator extends AbstractRegisteredElementsGen
 	
 	protected void generateCreateMethod(SourceWriter sourceWriter, Screen screen) 
 	{
-		sourceWriter.println("public Component createComponent(String id, String componentName) throws InterfaceConfigException{ ");
+		sourceWriter.println("public Component createComponent(String id, com.google.gwt.dom.client.Element element) throws InterfaceConfigException{ ");
+		sourceWriter.println("String componentName = element.getAttribute(\"_type\");");
 		
 		Iterator<Component> iterator = screen.iterateComponents();
 		boolean first = true;

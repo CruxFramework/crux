@@ -30,7 +30,9 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
@@ -211,11 +213,16 @@ public class Screen
 			{
 				public void run() 
 				{
-					for (ScreenLoadHandler handler : loadHandlers) 
+					for (final ScreenLoadHandler handler : loadHandlers) 
 					{
 						try 
 						{
-							handler.onLoad();
+							DeferredCommand.addCommand(new Command() {
+						        public void execute() 
+						        {
+						        	handler.onLoad();
+						        }
+						      });							
 						} 
 						catch (RuntimeException e) 
 						{
@@ -224,7 +231,7 @@ public class Screen
 					}
 					loadHandlers.clear();
 				}
-			}.schedule(100); // Waits for browser starts the rendering process 
+			}.schedule(1); // Waits for browser starts the rendering process
 		}
 	}
 }

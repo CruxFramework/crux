@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.core.client.component;
 
+import com.google.gwt.dom.client.Element;
 /**
  * Interface for keep the registered components
  * @author Thiago
@@ -22,5 +23,5 @@ package br.com.sysmap.crux.core.client.component;
  */
 public interface RegisteredComponents 
 {
-	Component createComponent(String id, String componentName) throws InterfaceConfigException;
+	Component createComponent(String id, Element element) throws InterfaceConfigException;
 }

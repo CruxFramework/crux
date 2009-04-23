@@ -15,18 +15,14 @@
  */
 package br.com.sysmap.crux.core.client.component;
 
-import br.com.sysmap.crux.core.client.JSEngine;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
-import br.com.sysmap.crux.core.client.formatter.Formatter;
-import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasName;
 import com.google.gwt.user.client.ui.HasText;
@@ -43,8 +39,6 @@ public class Component
 	protected String id;
 	protected String width;
 	protected String height;
-	protected String formatter;
-	protected Formatter clientFormatter = null;
 
 	protected Screen screen = null;
 	
@@ -153,16 +147,7 @@ public class Component
 					DOM.setStyleAttribute(widget.getElement(), attr[0], attr[1]);
 			}
 		}
-		formatter = element.getAttribute("_formatter");
-		if (formatter != null && formatter.trim().length() > 0)
-		{
-			clientFormatter = ScreenFactory.getInstance().getClientFormatter(formatter);
-			if (clientFormatter == null)
-			{
-				Window.alert(JSEngine.messages.componentFormatterNotFound(formatter));
-			}
-		}		
-
+		
 		if (widget instanceof HasHTML)
 		{
 			String innerHtml = element.getInnerHTML();
@@ -174,7 +159,7 @@ public class Component
 		}
 		if (widget instanceof HasText)
 		{
-			String text = element.getAttribute("_value");
+			String text = element.getAttribute("_text");
 			if (text != null && text.trim().length() > 0)
 				((HasText)widget).setText(text);
 		}
@@ -211,51 +196,12 @@ public class Component
 	}
 	
 	/**
-	 * Adds an event handler, called whe the screen is completely loaded
+	 * Adds an event handler, called when the screen is completely loaded
 	 * @param loadHandler
 	 */
 	protected void addScreenLoadedHandler(ScreenLoadHandler loadHandler)
 	{
 		getScreen().addLoadHandler(loadHandler);
-	}
-
-	/**
-	 * Return the component value applying any format changes performed by it's formatter
-	 * @return
-	 */
-	public Object getValue() throws InvalidFormatException 
-	{
-		if (widget instanceof HasText)
-		{
-			String text = ((HasText)widget).getText();
-			if (clientFormatter != null)
-			{
-				return clientFormatter.unformat(text);
-			}
-			return text;
-		}
-		
-		return null;
-	}
-
-	/**
-	 * Set the component value applying any format changes performed by it's formatter
-	 * @return
-	 */
-	public void setValue(Object value) 
-	{
-		if (widget instanceof HasText)
-		{
-			if (clientFormatter != null)
-			{
-				String text = clientFormatter.mask(clientFormatter.format(value));
-				((HasText)widget).setText(text);
-			}
-			else
-			{
-				((HasText)widget).setText(value!=null?value.toString():"");
-			}
-		}
 	}
 
 	public boolean equals(Object obj) 
