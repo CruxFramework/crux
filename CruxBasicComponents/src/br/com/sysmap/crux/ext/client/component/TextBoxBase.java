@@ -17,16 +17,13 @@ package br.com.sysmap.crux.ext.client.component;
 
 import br.com.sysmap.crux.core.client.JSEngine;
 import br.com.sysmap.crux.core.client.component.ScreenFactory;
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TextBoxBase.TextAlignConstant;
 
@@ -115,20 +112,7 @@ public abstract class TextBoxBase extends FocusComponent
 			});
 		}
 		
-		final Event eventChange = getComponentEvent(element, EventFactory.EVENT_CHANGE);
-		if (eventChange != null)
-		{
-			textBoxBaseWidget.addValueChangeHandler(new ValueChangeHandler<String>()
-			{
-				@Override
-				public void onValueChange(ValueChangeEvent<String> event) 
-				{
-					EventFactory.callEvent(eventChange, getId());
-				}
-			});
-		}
-		
-		
+		ChangeEvtBind.bindValueEvent(element, textBoxBaseWidget, getId());
 		super.attachEvents(element);
 	}
 	

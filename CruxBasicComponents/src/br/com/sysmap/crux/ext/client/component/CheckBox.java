@@ -15,13 +15,10 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 /**
  * CheckBox Component.
@@ -98,19 +95,7 @@ public class CheckBox extends ButtonBase
 	protected void attachEvents(Element element) 
 	{
 		super.attachEvents(element);
-		final Event eventChange = getComponentEvent(element, EventFactory.EVENT_CHANGE);
-		if (eventChange != null)
-		{
-			checkboxWidget.addValueChangeHandler(new ValueChangeHandler<Boolean>()
-			{
-				@Override
-				public void onValueChange(ValueChangeEvent<Boolean> event) 
-				{
-					EventFactory.callEvent(eventChange, getId());
-				}
-			});
-		}
-	
+		ChangeEvtBind.bindValueEvent(element, checkboxWidget, getId());
 	}
 	
 	public String getFormValue() throws InvalidFormatException 

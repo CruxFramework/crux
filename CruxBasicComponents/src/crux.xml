@@ -19,6 +19,8 @@
   <component id="frame" clientClass="br.com.sysmap.crux.ext.client.component.Frame"/>
   <component id="namedFrame" clientClass="br.com.sysmap.crux.ext.client.component.NamedFrame" clientConstructorParams="id, element"/>
   <component id="hidden" clientClass="br.com.sysmap.crux.ext.client.component.Hidden"/>
+  <component id="hyperlink" clientClass="br.com.sysmap.crux.ext.client.component.Hyperlink"/>
+  <component id="inlineHyperlink" clientClass="br.com.sysmap.crux.ext.client.component.InlineHyperlink"/>
 
 
 

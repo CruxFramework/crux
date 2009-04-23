@@ -16,34 +16,12 @@
 package br.com.sysmap.crux.ext.client.component;
 
 import br.com.sysmap.crux.core.client.component.Component;
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.FocusEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.ui.FocusWidget;
 
 /**
@@ -144,17 +122,17 @@ public class FocusComponent extends Component
 		super.renderAttributes(element);
 
 		String tabIndex = element.getAttribute("_tabIndex");
-		if (tabIndex != null && tabIndex.trim().length() > 0)
+		if (tabIndex != null && tabIndex.length() > 0)
 		{
 			focusWidget.setTabIndex(Integer.parseInt(tabIndex));
 		}
 		String enabled = element.getAttribute("_enabled");
-		if (enabled != null && enabled.trim().length() > 0)
+		if (enabled != null && enabled.length() > 0)
 		{
 			focusWidget.setEnabled(Boolean.parseBoolean(enabled));
 		}
 		String accessKey = element.getAttribute("_accessKey");
-		if (accessKey != null && accessKey.trim().length() == 1)
+		if (accessKey != null && accessKey.length() == 1)
 		{
 			this.accessKey = accessKey.charAt(0);
 			focusWidget.setAccessKey(this.accessKey);
@@ -169,161 +147,9 @@ public class FocusComponent extends Component
 	{	 
 		super.attachEvents(element);
 
-		final Event eventFocus = getComponentEvent(element, EventFactory.EVENT_FOCUS);
-		if (eventFocus != null)
-		{
-			focusWidget.addFocusHandler(new FocusHandler()
-			{
-				@Override
-				public void onFocus(FocusEvent event) 
-				{
-					EventFactory.callEvent(eventFocus, getId());
-				}
-			});
-		}
-		
-		final Event eventBlur = getComponentEvent(element, EventFactory.EVENT_BLUR);
-		if (eventBlur != null)
-		{
-			focusWidget.addBlurHandler(new BlurHandler()
-			{
-				@Override
-				public void onBlur(BlurEvent event) 
-				{
-					EventFactory.callEvent(eventBlur, getId());
-				}
-			});
-		}
-
-		final Event eventClick = getComponentEvent(element, EventFactory.EVENT_CLICK);
-		if (eventClick != null)
-		{
-			ClickHandler handler = new ClickHandler()
-			{
-				@Override
-				public void onClick(ClickEvent event) 
-				{
-					EventFactory.callEvent(eventClick, getId());
-				}
-			};
-			focusWidget.addClickHandler(handler);
-		}
-
-		final Event eventKeyDown = getComponentEvent(element, EventFactory.EVENT_KEY_DOWN);
-		if (eventKeyDown != null)
-		{
-			focusWidget.addKeyDownHandler(new KeyDownHandler()
-			{
-				@Override
-				public void onKeyDown(KeyDownEvent event) 
-				{
-					EventFactory.callEvent(eventKeyDown, getId());
-				}
-			});
-		}
-
-		final Event eventKeyPress = getComponentEvent(element, EventFactory.EVENT_KEY_PRESS);
-		if (eventKeyPress != null)
-		{
-			focusWidget.addKeyPressHandler(new KeyPressHandler()
-			{
-				@Override
-				public void onKeyPress(KeyPressEvent event) 
-				{
-					EventFactory.callEvent(eventKeyPress, getId());
-				}
-			});
-		}
-		
-		final Event eventKeyUp = getComponentEvent(element, EventFactory.EVENT_KEY_UP);
-		if (eventKeyUp != null)
-		{
-			focusWidget.addKeyUpHandler(new KeyUpHandler()
-			{
-				@Override
-				public void onKeyUp(KeyUpEvent event) 
-				{
-					EventFactory.callEvent(eventKeyUp, getId());
-				}
-			});
-		}
-
-		final Event eventMouseDown = getComponentEvent(element, EventFactory.EVENT_MOUSE_DOWN);
-		if (eventMouseDown != null)
-		{
-			focusWidget.addMouseDownHandler(new MouseDownHandler()
-			{
-				@Override
-				public void onMouseDown(MouseDownEvent event) 
-				{
-					EventFactory.callEvent(eventMouseDown, getId());
-				}
-			});
-		}
-	
-		final Event eventMouseMove = getComponentEvent(element, EventFactory.EVENT_MOUSE_MOVE);
-		if (eventMouseMove != null)
-		{
-			focusWidget.addMouseMoveHandler(new MouseMoveHandler()
-			{
-				@Override
-				public void onMouseMove(MouseMoveEvent event) 
-				{
-					EventFactory.callEvent(eventMouseMove, getId());
-				}
-			});
-		}
-
-		final Event eventMouseOut = getComponentEvent(element, EventFactory.EVENT_MOUSE_OUT);
-		if (eventMouseOut != null)
-		{
-			focusWidget.addMouseOutHandler(new MouseOutHandler()
-			{
-				@Override
-				public void onMouseOut(MouseOutEvent event) 
-				{
-					EventFactory.callEvent(eventMouseOut, getId());					
-				}
-			});
-		}
-	
-		final Event eventMouseOver = getComponentEvent(element, EventFactory.EVENT_MOUSE_OVER);
-		if (eventMouseOver != null)
-		{
-			focusWidget.addMouseOverHandler(new MouseOverHandler()
-			{
-				@Override
-				public void onMouseOver(MouseOverEvent event) 
-				{
-					EventFactory.callEvent(eventMouseOver, getId());					
-				}
-			});
-		}
-
-		final Event eventMouseUp = getComponentEvent(element, EventFactory.EVENT_MOUSE_UP);
-		if (eventMouseUp != null)
-		{
-			focusWidget.addMouseUpHandler(new MouseUpHandler()
-			{
-				@Override
-				public void onMouseUp(MouseUpEvent event) 
-				{
-					EventFactory.callEvent(eventMouseUp, getId());					
-				}
-			});
-		}
-
-		final Event eventMouseWheel = getComponentEvent(element, EventFactory.EVENT_MOUSE_WHEEL);
-		if (eventMouseWheel != null)
-		{
-			focusWidget.addMouseWheelHandler(new MouseWheelHandler()
-			{
-				@Override
-				public void onMouseWheel(MouseWheelEvent event) 
-				{
-					EventFactory.callEvent(eventMouseWheel, getId());					
-				}
-			});
-		}
+		FocusEvtBind.bindEvents(element, focusWidget, getId());
+		ClickEvtBind.bindEvent(element, focusWidget, getId());
+		KeyEvtBind.bindEvents(element, focusWidget, getId());
+		MouseEvtBind.bindEvents(element, focusWidget, getId());
 	}
 }

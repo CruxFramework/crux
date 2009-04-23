@@ -15,8 +15,7 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
@@ -135,18 +134,7 @@ public class ListBox extends FocusComponent
 	{
 		super.attachEvents(element);
 		
-		final Event eventChange = getComponentEvent(element, EventFactory.EVENT_CHANGE);
-		if (eventChange != null)
-		{
-			listBoxWidget.addChangeHandler(new ChangeHandler()
-			{
-				@Override
-				public void onChange(ChangeEvent event) 
-				{
-					EventFactory.callEvent(eventChange, getId());
-				}
-			});
-		}
+		ChangeEvtBind.bindEvent(element, listBoxWidget, getId());
 	}
 
 	/**
