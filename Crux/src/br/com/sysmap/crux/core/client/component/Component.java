@@ -15,13 +15,7 @@
  */
 package br.com.sysmap.crux.core.client.component;
 
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
-
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasName;
@@ -70,18 +64,6 @@ public class Component
 	protected void setScreen(Screen screen) 
 	{
 		this.screen = screen;
-	}
-
-	/**
-	 * Builds an Event object from the page DOM element representing the component (Its <span> tag)
-	 * @param element
-	 * @param evtId
-	 * @return
-	 */
-	protected Event getComponentEvent(Element element, String evtId)
-	{
-		String evt = element.getAttribute(evtId);
-		return EventFactory.getEvent(evtId, evt);
 	}
 	
 	/**
@@ -175,24 +157,9 @@ public class Component
 	 * Render component events
 	 * @param element page DOM element representing the component (Its <span> tag)
 	 */
-	@SuppressWarnings("unchecked")
 	protected void attachEvents(Element element)
 	{
-		if (widget instanceof HasValueChangeHandlers)
-		{
-			final Event event = getComponentEvent(element, EventFactory.EVENT_CHANGE);
-			if (event != null)
-			{
-				ValueChangeHandler handler = new ValueChangeHandler()
-				{
-					public void onValueChange(ValueChangeEvent valEvent) 
-					{
-						EventFactory.callEvent(event, getId());
-					}
-				};
-				((HasValueChangeHandlers)widget).addValueChangeHandler(handler);
-			}
-		}
+
 	}
 	
 	/**
