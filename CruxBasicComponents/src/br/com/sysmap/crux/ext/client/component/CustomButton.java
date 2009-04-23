@@ -24,13 +24,14 @@ import com.google.gwt.user.client.ui.CustomButton.Face;
  * 
  * @author Thiago Bustamante
  */
-public class CustomButton extends FocusComponent 
+public abstract class CustomButton extends ButtonBase 
 {
 	public static final String FACE_DOWN_DISABLED = "downDisabled";
 	public static final String FACE_UP_DISABLED = "upDisabled";
 	public static final String FACE_UP_HOVERING = "upHovering";
 	public static final String FACE_DOWN_HOVERING = "downHovering";
 	public static final String FACE_DOWN = "down";
+	public static final String FACE_UP = "up";
 	
 	public static final String FACE_TYPE_HTML = "html";
 	public static final String FACE_TYPE_TEXT = "text";
@@ -156,7 +157,7 @@ public class CustomButton extends FocusComponent
 	 */
 	protected Face getFace(String face)
 	{
-		if (face == null || face.trim().length() == 0 || "up".equals(face))
+		if (face == null || face.trim().length() == 0 || FACE_UP.equals(face))
 		{
 			return getUpFace();
 		}

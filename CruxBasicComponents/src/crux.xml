@@ -2,24 +2,29 @@
 <crux xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
       xsi:noNamespaceSchemaLocation="../../Crux/xsd/crux.xsd"
       module="br.com.sysmap.crux.ext.CruxBasicComponents">
-  <component id="button" 
-             clientClass="br.com.sysmap.crux.ext.client.component.FocusComponent"
-  			 clientConstructorParams="id, new com.google.gwt.user.client.ui.Button()" 
-  			 />
-  <component id="checkBox" 
-             clientClass="br.com.sysmap.crux.ext.client.component.CheckBox"
-  			 clientConstructorParams="id, new com.google.gwt.user.client.ui.CheckBox()" 
-  			 />
-  <component id="radioButton" 
-             clientClass="br.com.sysmap.crux.ext.client.component.CheckBox"
-  			 clientConstructorParams="id, new com.google.gwt.user.client.ui.RadioButton()" 
-  			 />
-  <component id="textBox" 
-             clientClass="br.com.sysmap.crux.ext.client.component.FocusComponent"
-             clientConstructorParams="id, new com.google.gwt.user.client.ui.TextBox()"
-  			 />
+  <component id="anchor" clientClass="br.com.sysmap.crux.ext.client.component.Anchor" />
+  <component id="button" clientClass="br.com.sysmap.crux.ext.client.component.Button" />
+  <component id="checkBox" clientClass="br.com.sysmap.crux.ext.client.component.CheckBox" />
+  <component id="radioButton" clientClass="br.com.sysmap.crux.ext.client.component.RadioButton" />
+  <component id="toggleButton" clientClass="br.com.sysmap.crux.ext.client.component.ToggleButton" />
+  <component id="pushButton" clientClass="br.com.sysmap.crux.ext.client.component.PushButton" />
+  <component id="listBox" clientClass="br.com.sysmap.crux.ext.client.component.ListBox" />
+  <component id="richTextArea" clientClass="br.com.sysmap.crux.ext.client.component.RichTextArea" />
+  <component id="simpleCheckBox" clientClass="br.com.sysmap.crux.ext.client.component.SimpleCheckBox" />
+  <component id="simpleRadioButton" clientClass="br.com.sysmap.crux.ext.client.component.SimpleRadioButton" />
+  <component id="textBox" clientClass="br.com.sysmap.crux.ext.client.component.TextBox" />
+  <component id="textArea" clientClass="br.com.sysmap.crux.ext.client.component.TextArea" />
+  <component id="passwordTextBox" clientClass="br.com.sysmap.crux.ext.client.component.PasswordTextBox"/>
+  <component id="fileUpload" clientClass="br.com.sysmap.crux.ext.client.component.FileUpload"/>
+  <component id="frame" clientClass="br.com.sysmap.crux.ext.client.component.Frame"/>
+  <component id="namedFrame" clientClass="br.com.sysmap.crux.ext.client.component.NamedFrame" clientConstructorParams="id, element"/>
+  <component id="hidden" clientClass="br.com.sysmap.crux.ext.client.component.Hidden"/>
+
+
+
+
+
   <component id="label" clientConstructorParams="id, new com.google.gwt.user.client.ui.Label()"/>
-  <component id="passwordTextBox" clientConstructorParams="id, new com.google.gwt.user.client.ui.PasswordTextBox()"/>
   <component id="simplePanel" 
   			 clientClass="br.com.sysmap.crux.core.client.component.Container"
              clientConstructorParams="id, new com.google.gwt.user.client.ui.SimplePanel()"  />
@@ -32,9 +37,6 @@
   <component id="stackPanel" 
   			 clientClass="br.com.sysmap.crux.core.client.component.Container"
              clientConstructorParams="id, new com.google.gwt.user.client.ui.StackPanel()" />
-  <component id="textArea" 
-  			 clientClass="br.com.sysmap.crux.ext.client.component.TextArea"
-  			 clientConstructorParams="id, new com.google.gwt.user.client.ui.TextArea()" />
   <component id="htmlPanel" 
   			 clientClass="br.com.sysmap.crux.ext.client.component.HTMLContainer"
              clientConstructorParams="id" />

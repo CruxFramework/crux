@@ -15,8 +15,9 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.i18n.client.HasDirection.Direction;
+
 
 /**
  * A TextArea Component
@@ -24,20 +25,93 @@ import com.google.gwt.user.client.ui.FocusWidget;
  * @author Thiago Bustamante
  *
  */
-public class TextArea extends FocusComponent
+public class TextArea extends TextBoxBase
 {
-	public TextArea(String id, FocusWidget widget) 
+	protected com.google.gwt.user.client.ui.TextArea textAreaWidget;
+	
+	public TextArea(String id) 
 	{
-		super(id, widget);
+		this(id, new com.google.gwt.user.client.ui.TextArea());
 	}
 
+	public TextArea(String id, com.google.gwt.user.client.ui.TextArea widget) 
+	{
+		super(id, widget);
+		this.textAreaWidget = widget;
+	}
+	
+	@Override
 	protected void renderAttributes(Element element) 
 	{
 		super.renderAttributes(element);
-		String rows = element.getAttribute("_rows");
-		if (rows != null && rows.trim().length() > 0)
+
+		String characterWidth = element.getAttribute("_characterWidth");
+		if (characterWidth != null && characterWidth.trim().length() > 0)
 		{
-			((com.google.gwt.user.client.ui.TextArea)widget).setVisibleLines(Integer.parseInt(rows));
+			textAreaWidget.setCharacterWidth(Integer.parseInt(characterWidth));
+		}
+		String direction = element.getAttribute("_direction");
+		if (direction != null && direction.trim().length() > 0)
+		{
+			setDirection(Direction.valueOf(direction));
+		}
+		String visibleLines = element.getAttribute("_visibleLines");
+		if (visibleLines != null && visibleLines.trim().length() > 0)
+		{
+			textAreaWidget.setVisibleLines(Integer.parseInt(visibleLines));
 		}
 	}
+
+	/**
+	 * Gets the requested width of the text box (this is not an exact value, as
+	 * not all characters are created equal).
+	 * 
+	 * @return the requested width, in characters
+	 */
+	public int getCharacterWidth() 
+	{
+		return textAreaWidget.getCharacterWidth();
+	}
+
+	public Direction getDirection() 
+	{
+		return textAreaWidget.getDirection();
+	}	
+
+	/**
+	 * Gets the number of text lines that are visible.
+	 * 
+	 * @return the number of visible lines
+	 */
+	public int getVisibleLines() 
+	{
+		return textAreaWidget.getVisibleLines();
+	}
+
+	/**
+	 * Sets the requested width of the text box (this is not an exact value, as
+	 * not all characters are created equal).
+	 * 
+	 * @param width the requested width, in characters
+	 */
+	public void setCharacterWidth(int width) 
+	{
+		textAreaWidget.setCharacterWidth(width);
+	}
+
+	public void setDirection(Direction direction) 
+	{
+		textAreaWidget.setDirection(direction);
+	}
+
+	/**
+	 * Sets the number of text lines that are visible.
+	 * 
+	 * @param lines the number of visible lines
+	 */
+	public void setVisibleLines(int lines) 
+	{
+		textAreaWidget.setVisibleLines(lines);
+	}
+
 }

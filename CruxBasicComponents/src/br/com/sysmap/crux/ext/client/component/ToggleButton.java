@@ -18,12 +18,13 @@ package br.com.sysmap.crux.ext.client.component;
 import com.google.gwt.dom.client.Element;
 
 /**
- * 
+ * Represents a Toggle Button
  * @author Thiago Bustamante
  */
 public class ToggleButton extends CustomButton 
 {
 	protected com.google.gwt.user.client.ui.ToggleButton toggleButtonWidget;
+	
 	public ToggleButton(String id) 
 	{
 		this(id, new com.google.gwt.user.client.ui.ToggleButton());

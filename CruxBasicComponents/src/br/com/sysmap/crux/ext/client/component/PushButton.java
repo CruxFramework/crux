@@ -15,14 +15,20 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
+
 /**
- * 
+ * Represents a Push Button
  * @author Thiago Bustamante
  */
 public class PushButton extends CustomButton 
 {
 	public PushButton(String id) 
 	{
-		super(id, new com.google.gwt.user.client.ui.PushButton());
+		this(id, new com.google.gwt.user.client.ui.PushButton());
+	}
+
+	public PushButton(String id, com.google.gwt.user.client.ui.PushButton widget) 
+	{
+		super(id, widget);
 	}
 }

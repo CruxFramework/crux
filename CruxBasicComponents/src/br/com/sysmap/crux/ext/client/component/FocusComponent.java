@@ -18,17 +18,33 @@ package br.com.sysmap.crux.ext.client.component;
 import br.com.sysmap.crux.core.client.component.Component;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
-import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.FocusListener;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.ui.FocusWidget;
-import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.SourcesClickEvents;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the base class for components that can receive focus. 
@@ -153,83 +169,161 @@ public class FocusComponent extends Component
 	{	 
 		super.attachEvents(element);
 
-		if (clientFormatter != null && widget instanceof HasText)
+		final Event eventFocus = getComponentEvent(element, EventFactory.EVENT_FOCUS);
+		if (eventFocus != null)
 		{
-			focusWidget.addFocusListener(new FocusListener()
+			focusWidget.addFocusHandler(new FocusHandler()
 			{
-				public void onFocus(Widget sender) 
+				@Override
+				public void onFocus(FocusEvent event) 
 				{
-				}
-				public void onLostFocus(Widget sender) 
-				{
-					try 
-					{
-						setValue(getValue());
-					} 
-					catch (InvalidFormatException e) 
-					{
-						Window.alert(e.getLocalizedMessage());
-						setValue(null);
-					}
+					EventFactory.callEvent(eventFocus, getId());
 				}
 			});
 		}
-
-		final Event eventFocus = getComponentEvent(element, EventFactory.EVENT_FOCUS);
+		
 		final Event eventBlur = getComponentEvent(element, EventFactory.EVENT_BLUR);
-		if (eventFocus != null || eventBlur != null)
+		if (eventBlur != null)
 		{
-			FocusListener listener = new FocusListener()
+			focusWidget.addBlurHandler(new BlurHandler()
 			{
-				public void onFocus(Widget sender) 
+				@Override
+				public void onBlur(BlurEvent event) 
 				{
-					if (eventFocus != null) EventFactory.callEvent(eventFocus, getId());
+					EventFactory.callEvent(eventBlur, getId());
 				}
-
-				public void onLostFocus(Widget sender) 
-				{
-					if (eventBlur != null) EventFactory.callEvent(eventBlur, getId());
-				}
-			};
-			focusWidget.addFocusListener(listener);
+			});
 		}
 
 		final Event eventClick = getComponentEvent(element, EventFactory.EVENT_CLICK);
 		if (eventClick != null)
 		{
-			ClickListener listener = new ClickListener()
+			ClickHandler handler = new ClickHandler()
 			{
-				public void onClick(Widget sender) 
+				@Override
+				public void onClick(ClickEvent event) 
 				{
 					EventFactory.callEvent(eventClick, getId());
 				}
 			};
-			((SourcesClickEvents)widget).addClickListener(listener);
+			focusWidget.addClickHandler(handler);
 		}
 
 		final Event eventKeyDown = getComponentEvent(element, EventFactory.EVENT_KEY_DOWN);
-		final Event eventKeyPress = getComponentEvent(element, EventFactory.EVENT_KEY_PRESS);
-		final Event eventKeyUp = getComponentEvent(element, EventFactory.EVENT_KEY_UP);
-		if (eventKeyDown != null || eventKeyPress != null || eventKeyUp != null)
+		if (eventKeyDown != null)
 		{
-			KeyboardListener listener = new KeyboardListener()
+			focusWidget.addKeyDownHandler(new KeyDownHandler()
 			{
-				public void onKeyDown(Widget sender, char keyCode, int modifiers) 
+				@Override
+				public void onKeyDown(KeyDownEvent event) 
 				{
-					if (eventKeyDown != null) EventFactory.callEvent(eventKeyDown, getId());
+					EventFactory.callEvent(eventKeyDown, getId());
 				}
+			});
+		}
 
-				public void onKeyPress(Widget sender, char keyCode,	int modifiers) 
+		final Event eventKeyPress = getComponentEvent(element, EventFactory.EVENT_KEY_PRESS);
+		if (eventKeyPress != null)
+		{
+			focusWidget.addKeyPressHandler(new KeyPressHandler()
+			{
+				@Override
+				public void onKeyPress(KeyPressEvent event) 
 				{
-					if (eventKeyPress != null) EventFactory.callEvent(eventKeyPress, getId());
+					EventFactory.callEvent(eventKeyPress, getId());
 				}
+			});
+		}
+		
+		final Event eventKeyUp = getComponentEvent(element, EventFactory.EVENT_KEY_UP);
+		if (eventKeyUp != null)
+		{
+			focusWidget.addKeyUpHandler(new KeyUpHandler()
+			{
+				@Override
+				public void onKeyUp(KeyUpEvent event) 
+				{
+					EventFactory.callEvent(eventKeyUp, getId());
+				}
+			});
+		}
 
-				public void onKeyUp(Widget sender, char keyCode, int modifiers) 
+		final Event eventMouseDown = getComponentEvent(element, EventFactory.EVENT_MOUSE_DOWN);
+		if (eventMouseDown != null)
+		{
+			focusWidget.addMouseDownHandler(new MouseDownHandler()
+			{
+				@Override
+				public void onMouseDown(MouseDownEvent event) 
 				{
-					if (eventKeyUp != null) EventFactory.callEvent(eventKeyUp, getId());
+					EventFactory.callEvent(eventMouseDown, getId());
 				}
-			};
-			focusWidget.addKeyboardListener(listener);
+			});
+		}
+	
+		final Event eventMouseMove = getComponentEvent(element, EventFactory.EVENT_MOUSE_MOVE);
+		if (eventMouseMove != null)
+		{
+			focusWidget.addMouseMoveHandler(new MouseMoveHandler()
+			{
+				@Override
+				public void onMouseMove(MouseMoveEvent event) 
+				{
+					EventFactory.callEvent(eventMouseMove, getId());
+				}
+			});
+		}
+
+		final Event eventMouseOut = getComponentEvent(element, EventFactory.EVENT_MOUSE_OUT);
+		if (eventMouseOut != null)
+		{
+			focusWidget.addMouseOutHandler(new MouseOutHandler()
+			{
+				@Override
+				public void onMouseOut(MouseOutEvent event) 
+				{
+					EventFactory.callEvent(eventMouseOut, getId());					
+				}
+			});
+		}
+	
+		final Event eventMouseOver = getComponentEvent(element, EventFactory.EVENT_MOUSE_OVER);
+		if (eventMouseOver != null)
+		{
+			focusWidget.addMouseOverHandler(new MouseOverHandler()
+			{
+				@Override
+				public void onMouseOver(MouseOverEvent event) 
+				{
+					EventFactory.callEvent(eventMouseOver, getId());					
+				}
+			});
+		}
+
+		final Event eventMouseUp = getComponentEvent(element, EventFactory.EVENT_MOUSE_UP);
+		if (eventMouseUp != null)
+		{
+			focusWidget.addMouseUpHandler(new MouseUpHandler()
+			{
+				@Override
+				public void onMouseUp(MouseUpEvent event) 
+				{
+					EventFactory.callEvent(eventMouseUp, getId());					
+				}
+			});
+		}
+
+		final Event eventMouseWheel = getComponentEvent(element, EventFactory.EVENT_MOUSE_WHEEL);
+		if (eventMouseWheel != null)
+		{
+			focusWidget.addMouseWheelHandler(new MouseWheelHandler()
+			{
+				@Override
+				public void onMouseWheel(MouseWheelEvent event) 
+				{
+					EventFactory.callEvent(eventMouseWheel, getId());					
+				}
+			});
 		}
 	}
 }

@@ -15,15 +15,20 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
+import br.com.sysmap.crux.core.client.event.Event;
+import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
+
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 /**
  * CheckBox Component.
  * @author Thiago Bustamante
  *
  */
-public class CheckBox extends FocusComponent 
+public class CheckBox extends ButtonBase 
 {
 	protected com.google.gwt.user.client.ui.CheckBox checkboxWidget;
 	
@@ -33,7 +38,7 @@ public class CheckBox extends FocusComponent
 	 */
 	public CheckBox(String id) 
 	{
-		super(id, new com.google.gwt.user.client.ui.CheckBox());
+		this(id, new com.google.gwt.user.client.ui.CheckBox());
 	}
 	
 	/**
@@ -41,7 +46,7 @@ public class CheckBox extends FocusComponent
 	 * @param id
 	 * @param widget
 	 */
-	public CheckBox(String id, FocusWidget widget) 
+	public CheckBox(String id, com.google.gwt.user.client.ui.ButtonBase widget) 
 	{
 		super(id, widget);
 		this.checkboxWidget = (com.google.gwt.user.client.ui.CheckBox) widget;
@@ -51,31 +56,71 @@ public class CheckBox extends FocusComponent
 	 * Return true if the component is checked
 	 * @return
 	 */
-	public boolean isChecked()
+	public Boolean getValue()
 	{
-		return checkboxWidget.isChecked();
+		return checkboxWidget.getValue();
+	}
+
+	/**
+	 * Check or uncheck component
+	 * @param checked
+	 */
+	public void setValue(Boolean checked)
+	{
+		setValue(checked, false);
 	}
 	
 	/**
 	 * Check or uncheck component
 	 * @param checked
 	 */
-	public void setChecked(boolean checked)
+	public void setValue(Boolean checked, boolean fireEvents)
 	{
-		checkboxWidget.setChecked(checked);
+		checkboxWidget.setValue(checked, fireEvents);
 	}
 	
 	/**
 	 * Render component attributes
 	 * @see #Component.renderAttributes
 	 */
+	@Override
 	protected void renderAttributes(Element element)
 	{
 		super.renderAttributes(element);
 		String checked = element.getAttribute("_checked");
 		if (checked != null && checked.trim().length() > 0)
 		{
-			checkboxWidget.setChecked(Boolean.parseBoolean(checked));
+			checkboxWidget.setValue(Boolean.parseBoolean(checked));
 		}
 	}
+	
+	@Override
+	protected void attachEvents(Element element) 
+	{
+		super.attachEvents(element);
+		final Event eventChange = getComponentEvent(element, EventFactory.EVENT_CHANGE);
+		if (eventChange != null)
+		{
+			checkboxWidget.addValueChangeHandler(new ValueChangeHandler<Boolean>()
+			{
+				@Override
+				public void onValueChange(ValueChangeEvent<Boolean> event) 
+				{
+					EventFactory.callEvent(eventChange, getId());
+				}
+			});
+		}
+	
+	}
+	
+	public String getFormValue() throws InvalidFormatException 
+	{
+		return checkboxWidget.getFormValue();
+	}
+	
+	public void setName(String name) 
+	{
+		checkboxWidget.setName(name);
+	}
+
 }
