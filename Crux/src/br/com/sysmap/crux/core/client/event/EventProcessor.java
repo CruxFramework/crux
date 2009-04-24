@@ -23,6 +23,38 @@ import br.com.sysmap.crux.core.client.component.Screen;
  * @author Thiago
  *
  */
-public interface EventProcessor {
-	void processEvent(Screen screen, String idSender);
+public abstract class EventProcessor 
+{
+	boolean _hasReturn = false;
+	Object _returnValue = null;
+	Throwable _exception = null;
+	String _validationMessage = null;
+
+	abstract void processEvent(Screen screen, String idSender);
+	
+	public Throwable exception() 
+	{
+		return _exception;
+	}
+
+	public boolean hasException() 
+	{
+		return _exception != null;
+	}
+
+	public boolean hasReturn() 
+	{
+		return _hasReturn;
+	}
+
+	public Object returnValue() 
+	{
+		return _returnValue;
+	}
+
+	public String validationMessage() 
+	{
+		return _validationMessage;
+	}
+	
 }

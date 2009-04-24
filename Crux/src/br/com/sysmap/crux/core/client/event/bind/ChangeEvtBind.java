@@ -49,7 +49,7 @@ public class ChangeEvtBind extends EvtBind
 		}
 	}
 
-	public static <I> void bindEvent(Element element, HasChangeHandlers widget, final String componentId)
+	public static void bindEvent(Element element, HasChangeHandlers widget, final String componentId)
 	{
 		final Event eventChange = getComponentEvent(element, EventFactory.EVENT_CHANGE);
 		if (eventChange != null)

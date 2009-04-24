@@ -39,8 +39,13 @@ public class Container extends Component
 	public void addComponent(Component component)
 	{
 		components.put(component.getId(), component);
-		if (widget instanceof Panel)
-			((Panel)widget).add(component.widget);
+		addWidget(component.widget);
+	}
+	
+	public void removeComponent(Component component)
+	{
+		components.remove(component.getId());
+		removeWidget(component.widget);
 	}
 	
 	public Component getComponent (String id)
@@ -63,4 +68,17 @@ public class Container extends Component
 	{
 		return (component.widget!=null?component.widget:null);
 	}
+	
+	protected void addWidget(Widget widget)
+	{
+		if (this.widget instanceof Panel)
+			((Panel)this.widget).add(widget);	
+	}
+	
+	protected void removeWidget(Widget widget)
+	{
+		if (this.widget instanceof Panel)
+			((Panel)this.widget).remove(widget);	
+	}
+	
 }

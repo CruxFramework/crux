@@ -184,7 +184,8 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 				+ " implements br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker{");
 		
 		generateSetFieldsMethods(logger, handlerClass, sourceWriter, implClassName);
-		sourceWriter.println("public void invoke(String metodo, Screen screen, String idSender) throws Exception{ ");
+		sourceWriter.println("public void invoke(String metodo, Screen screen, String idSender, EventProcessor eventProcessor) throws Exception{ ");
+		sourceWriter.println("boolean __runMethod = true;");
 		sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
 		generateParametersSetters(logger, handlerClass, sourceWriter);
 		generateAutoCreateFields(logger, handlerClass, sourceWriter);
@@ -212,14 +213,29 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 						validateMethod = "validate"+ methodName;
 					}
 					sourceWriter.println("wrapper."+validateMethod+"();");
-				}
-				sourceWriter.println("wrapper."+method.getName()+"();");
-				if (annot != null)
-				{
 					sourceWriter.println("}catch (Throwable e){");
-					sourceWriter.println("com.google.gwt.user.client.Window.alert(e.getMessage());");
+					sourceWriter.println("__runMethod = false;");
+					sourceWriter.println("eventProcessor._validationMessage = e.getMessage();");
 					sourceWriter.println("}");
 				}
+				sourceWriter.println("if (__runMethod){");
+				sourceWriter.println("try{");
+				
+				if (!method.getReturnType().getName().equals("void") && 
+					!method.getReturnType().getName().equals("java.lang.Void"))
+				{
+					sourceWriter.println("eventProcessor._hasReturn = true;");
+					sourceWriter.println("eventProcessor._returnValue = wrapper."+method.getName()+"();");
+				}
+				else
+				{
+					sourceWriter.println("wrapper."+method.getName()+"();");
+				}
+				sourceWriter.println("}catch (Throwable e){");
+				sourceWriter.println("eventProcessor._exception = e;");
+				sourceWriter.println("}");
+				
+				sourceWriter.println("}");
 				sourceWriter.println("}");
 
 				first = false;
@@ -249,18 +265,11 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		{
 			return false;
 		}
-		if (!method.getReturnType().getName().equals("java.lang.Void") &&
-			!method.getReturnType().getName().equals("void"))
+		if (method.getDeclaringClass().equals(Object.class))
 		{
 			return false;
 		}
 		
-		if(method.getName().equals("notify") ||
-           method.getName().equals("notifyAll") ||
-		   method.getName().equals("wait"))
-		{
-			return false;
-		}
 		return true;
 	}
 

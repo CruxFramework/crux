@@ -19,23 +19,30 @@ import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.logical.shared.HasOpenHandlers;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 
 /**
- * Helper Class for events binding
+ * Helper Class for open events binding
  * @author Thiago Bustamante
  *
  */
-public class EvtBind 
+public class OpenEvtBind extends EvtBind
 {
-	/**
-	 * Builds an Event object from the page DOM element representing the component (Its <span> tag)
-	 * @param element
-	 * @param evtId
-	 * @return
-	 */
-	public static Event getComponentEvent(Element element, String evtId)
+	public static <I> void bindEvent(Element element, HasOpenHandlers<I> widget, final String componentId)
 	{
-		String evt = element.getAttribute(evtId);
-		return EventFactory.getEvent(evtId, evt);
+		final Event eventChange = getComponentEvent(element, EventFactory.EVENT_CHANGE);
+		if (eventChange != null)
+		{
+			widget.addOpenHandler(new OpenHandler<I>()
+			{
+				@Override
+				public void onOpen(OpenEvent<I> event) 
+				{
+					EventFactory.callEvent(eventChange, componentId);
+				}
+			});
+		}
 	}
 }

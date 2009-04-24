@@ -92,34 +92,34 @@ public class Component
 	protected void renderAttributes(Element element)
 	{
 		String width = element.getAttribute("_width");
-		if (width != null && width.trim().length() > 0)
+		if (width != null && width.length() > 0)
 		{
 			this.width = width;
 			widget.setWidth(this.width);
 		}
 		String height = element.getAttribute("_height");
-		if (height != null && height.trim().length() > 0)
+		if (height != null && height.length() > 0)
 		{
 			this.height = height;
 			widget.setHeight(this.height);
 		}
 		String visible = element.getAttribute("_visible");
-		if (visible != null && visible.trim().length() > 0)
+		if (visible != null && visible.length() > 0)
 		{
 			widget.setVisible(Boolean.parseBoolean(visible));
 		}
 		String tooltip = element.getAttribute("_tooltip");
-		if (tooltip != null && tooltip.trim().length() > 0)
+		if (tooltip != null && tooltip.length() > 0)
 		{
 			widget.setTitle(tooltip);
 		}
 		
 		String classAttr = element.getAttribute("_class");
-		if (classAttr != null && classAttr.trim().length() > 0)
+		if (classAttr != null && classAttr.length() > 0)
 			widget.setStyleName(classAttr);
 		
 		String style = element.getAttribute("_style");
-		if (style != null && style.trim().length() > 0)
+		if (style != null && style.length() > 0)
 		{
 			String[] styleAttributes = style.split(";");
 			for (int i=0; i<styleAttributes.length; i++)
@@ -133,7 +133,7 @@ public class Component
 		if (widget instanceof HasHTML)
 		{
 			String innerHtml = element.getInnerHTML();
-			if (innerHtml != null && innerHtml.trim().length() > 0)
+			if (innerHtml != null && innerHtml.length() > 0)
 			{
 				((HasHTML)widget).setHTML(innerHtml);
 				element.setInnerHTML("");
@@ -142,13 +142,13 @@ public class Component
 		if (widget instanceof HasText)
 		{
 			String text = element.getAttribute("_text");
-			if (text != null && text.trim().length() > 0)
+			if (text != null && text.length() > 0)
 				((HasText)widget).setText(text);
 		}
 		if (widget instanceof HasName)
 		{
 			String name = element.getAttribute("_name");
-			if (name != null && name.trim().length() > 0)
+			if (name != null && name.length() > 0)
 				((HasName)widget).setName(name);
 		}
 	}
@@ -195,10 +195,11 @@ public class Component
     }
 
 	/**
-	 * Return component's width
+	 * Return component's width string. This is the same string declared in component's span tag.
+	 * Ex: '10px;' or '95%;'
 	 * @return
 	 */
-	public String getWidth() 
+	public String getWidthStr() 
 	{
 		return width;
 	}
@@ -250,10 +251,11 @@ public class Component
 	}
 	
 	/**
-	 * Return component's height
+	 * Return component's height string. This is the same string declared in component's span tag.
+	 * Ex: '10px;' or '95%;'
 	 * @return
 	 */
-	public String getHeight() 
+	public String getHeightStr() 
 	{
 		return height;
 	}

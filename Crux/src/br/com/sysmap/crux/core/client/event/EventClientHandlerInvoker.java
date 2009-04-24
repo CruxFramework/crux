@@ -19,5 +19,5 @@ import br.com.sysmap.crux.core.client.component.Screen;
 
 public interface EventClientHandlerInvoker 
 {
-	void invoke(String metodo, Screen screen, String idSender) throws Exception;
+	void invoke(String metodo, Screen screen, String idSender, EventProcessor eventProcessor) throws Exception;
 }

@@ -20,7 +20,6 @@ import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.Screen;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -36,7 +35,7 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 	{
 		this.registeredClientEventHandlers = (RegisteredClientEventHandlers)GWT.create(RegisteredClientEventHandlers.class);
 	}
-
+	
 	/**
 	 * Create a eventProcessor for a CLIENT event.
 	 * @param event
@@ -60,36 +59,16 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 						Window.alert(JSEngine.messages.eventProcessorClientHandlerNotFound(evtHandler));
 						return;
 					}
-						if (event.isSync())
-						{
-							try
-							{
-								handler.invoke(method, screen, idSender);
-							}
-							catch (Exception e) 
-							{
-								GWT.log(e.getLocalizedMessage(), e);
-								Window.alert(JSEngine.messages.eventProcessorClientError(evtCall));
-							}
-						}
-						else
-						{
-							new Timer()
-							{
-								public void run() 
-								{
-									try
-									{
-										handler.invoke(method, screen, idSender);
-									}
-									catch (Exception e) 
-									{
-										GWT.log(e.getLocalizedMessage(), e);
-										Window.alert(JSEngine.messages.eventProcessorClientError(evtCall));
-									}
-								}
-							}.schedule(1);
-						}
+					try
+					{
+						handler.invoke(method, screen, idSender, this);
+					}
+					catch (Exception e) 
+					{
+						_exception = e;
+						GWT.log(e.getLocalizedMessage(), e);
+						Window.alert(JSEngine.messages.eventProcessorClientError(evtCall));
+					}
 				}
 			}
 		};

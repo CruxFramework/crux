@@ -15,10 +15,12 @@
  */
 package br.com.sysmap.crux.core.client.event;
 
+import br.com.sysmap.crux.core.client.JSEngine;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.ScreenFactory;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 
 public class EventFactory 
 {
@@ -39,11 +41,11 @@ public class EventFactory
 	public static final String EVENT_MOUSE_OUT = "_onmouseout";
 	public static final String EVENT_MOUSE_OVER = "_onmouseover";
 	public static final String EVENT_MOUSE_WHEEL = "_onmousewheel";
-	
-
 	public static final String EVENT_CLOSE = "_onclose";
 	public static final String EVENT_CLOSING = "_onclosing";
 	public static final String EVENT_RESIZED = "_onresized";
+	public static final String EVENT_ERROR = "_onerror";
+	public static final String EVENT_LOAD_IMAGES = "_onloadimage";
 
 	public static Event getEvent(String evtId, String evt)
 	{
@@ -72,17 +74,31 @@ public class EventFactory
 		return null;
 	}
 	
-	public static void callEvent(Event event, String idSender)
+	public static Object callEvent(Event event, String idSender)
 	{
 		try 
 		{
 			EventProcessor processor = br.com.sysmap.crux.core.client.event.EventProcessorFactory.getInstance().createEventProcessor(event);
 			processor.processEvent(ScreenFactory.getInstance().getScreen(), idSender);
+			if (processor.hasException())
+			{
+				GWT.log(processor.exception().getLocalizedMessage(), processor.exception());
+				Window.alert(JSEngine.messages.eventProcessorClientError(event.getEvtCall()));
+			}
+			else if (processor.validationMessage() != null)
+			{
+				Window.alert(processor.validationMessage());
+			}
+			else if (processor.hasReturn())
+			{
+				return processor.returnValue();
+			}
 		}
 		catch (InterfaceConfigException e) 
 		{
 			GWT.log(e.getLocalizedMessage(), e);
 		}
+		return null;
 		
 	}
 	
