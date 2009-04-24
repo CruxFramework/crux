@@ -23,6 +23,7 @@ public class HTMLContainer extends Container{
 		element.setInnerHTML("");
 	}
 	
+	@Override
 	public void addComponent(Component component)
 	{
 		components.put(component.getId(), component);

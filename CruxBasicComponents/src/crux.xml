@@ -21,12 +21,19 @@
   <component id="hidden" clientClass="br.com.sysmap.crux.ext.client.component.Hidden"/>
   <component id="hyperlink" clientClass="br.com.sysmap.crux.ext.client.component.Hyperlink"/>
   <component id="inlineHyperlink" clientClass="br.com.sysmap.crux.ext.client.component.InlineHyperlink"/>
+  <component id="image" clientClass="br.com.sysmap.crux.ext.client.component.Image"/>
+  <component id="label" clientClass="br.com.sysmap.crux.ext.client.component.Label"/>
+  <component id="html" clientClass="br.com.sysmap.crux.ext.client.component.HTML"/>
+  <component id="inlineLabel" clientClass="br.com.sysmap.crux.ext.client.component.InlineLabel"/>
+  <component id="inlineHtml" clientClass="br.com.sysmap.crux.ext.client.component.InlineHTML"/>
+  <component id="menuBar" clientClass="br.com.sysmap.crux.ext.client.component.MenuBar" clientConstructorParams="id, element"/>
+  <component id="tree" clientClass="br.com.sysmap.crux.ext.client.component.Tree" clientConstructorParams="id, element"/>
 
 
 
 
 
-  <component id="label" clientConstructorParams="id, new com.google.gwt.user.client.ui.Label()"/>
+
   <component id="simplePanel" 
   			 clientClass="br.com.sysmap.crux.core.client.component.Container"
              clientConstructorParams="id, new com.google.gwt.user.client.ui.SimplePanel()"  />

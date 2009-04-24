@@ -94,8 +94,8 @@ public class ListBox extends FocusComponent
 	{
 		if ("span".equalsIgnoreCase(element.getTagName()))
 		{
-			String type = element.getAttribute("_item");
-			if (type != null && type.trim().length() > 0)
+			String item = element.getAttribute("_item");
+			if (item != null && item.length() > 0)
 			{
 				return true;
 			}
@@ -104,7 +104,7 @@ public class ListBox extends FocusComponent
 	}
 	
 	/**
-	 * Process Face declaration for customButton
+	 * Process Item declaration for ListBox
 	 * @param element
 	 */
 	protected void processItemDeclaration(Element element, int index)

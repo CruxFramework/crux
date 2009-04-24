@@ -15,8 +15,6 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
-import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
-
 import com.google.gwt.dom.client.Element;
 
 /**
