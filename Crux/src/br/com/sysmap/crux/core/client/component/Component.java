@@ -341,4 +341,18 @@ public class Component
 	{
 		return widget.getAbsoluteTop();
 	}
+	
+	/**
+	 * Used by components that need to create new components as children, like tree. Tree can container 
+	 * multiple components.
+	 * 
+	 * @param element
+	 * @param componentId
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	protected Component createChildComponent(Element element, String componentId) throws InterfaceConfigException
+	{
+		return ScreenFactory.getInstance().newComponent(element, componentId);
+	}
 }

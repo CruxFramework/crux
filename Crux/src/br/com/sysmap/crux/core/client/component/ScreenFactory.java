@@ -73,14 +73,14 @@ public class ScreenFactory {
 	{
 		if (screen == null)
 		{
-			screen = create();
+			create();
 		}
 		return screen;
 	}
 	
-	private Screen create()
+	private void create()
 	{
-		Screen screen = new Screen(getScreenId());
+		screen = new Screen(getScreenId());
 		Element body = RootPanel.getBodyElement();
 		NodeList<Element> componentCandidates = body.getElementsByTagName("span");
 		List<Element> components = new ArrayList<Element>();
@@ -113,7 +113,6 @@ public class ScreenFactory {
 		}
 		clearComponentsMetaTags(components);
 		screen.fireLoadEvent();
-		return screen;
 	}
 	
 	private void clearScreenMetaTag(Element screenElement)
@@ -162,9 +161,16 @@ public class ScreenFactory {
 		return screenId;
 	}
 
-	private Component newComponent(Element element, String componentId) throws InterfaceConfigException
+	Component newComponent(Element element, String componentId) throws InterfaceConfigException
 	{
 		Component component = registeredComponents.createComponent(componentId, element);
+		if (component == null)
+		{
+			throw new InterfaceConfigException(JSEngine.messages.screenFactoryErrorCreateComponent(componentId));
+		}
+		screen.addComponent(component);
+		component.render(element);
+		
 		return component;
 	}
 	
@@ -232,12 +238,6 @@ public class ScreenFactory {
 		Container parent = getParent(element, screen);
 		
 		component = newComponent(element, componentId);
-		if (component == null)
-		{
-			throw new InterfaceConfigException(JSEngine.messages.screenFactoryErrorCreateComponent(componentId));
-		}
-		screen.addComponent(component);
-		component.render(element);
 
 		if (parent != null)
 		{
