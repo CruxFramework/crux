@@ -15,10 +15,13 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import br.com.sysmap.crux.core.client.component.Component;
 import br.com.sysmap.crux.core.client.component.Container;
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
@@ -29,11 +32,11 @@ import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.OpenEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.TreeImages;
-import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -44,6 +47,8 @@ public class Tree extends Container
 {
 	protected com.google.gwt.user.client.ui.Tree treeWidget;
 	protected char accessKey;
+	protected Map<com.google.gwt.user.client.ui.TreeItem,Component> componentsForItens = 
+							new HashMap<com.google.gwt.user.client.ui.TreeItem, Component>();
 	
 	public Tree(String id, Element element) 
 	{
@@ -113,8 +118,15 @@ public class Tree extends Container
 			setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
 		}
 		
-		renderTreeItens(element);
+		try
+		{
+			renderTreeItens(element);
 
+		} 
+		catch (InterfaceConfigException e1) 
+		{
+			GWT.log(e1.getLocalizedMessage(), e1);
+		}
 	}
 	
 	@Override
@@ -143,7 +155,7 @@ public class Tree extends Container
 	 */
 	public TreeItem addItem(String itemText) 
 	{
-		return treeWidget.addItem(itemText);
+		return new TreeItem(treeWidget.addItem(itemText), this);
 	}
 
 	/**
@@ -153,7 +165,7 @@ public class Tree extends Container
 	 */
 	public void addItem(TreeItem item) 
 	{
-		treeWidget.addItem(item);
+		treeWidget.addItem(item.treeItem);
 	}
 
 	/**
@@ -164,7 +176,9 @@ public class Tree extends Container
 	 */
 	public TreeItem addItem(Component component) 
 	{
-		return treeWidget.addItem(getComponentWidget(component));
+		TreeItem ret = new TreeItem(treeWidget.addItem(getComponentWidget(component)), this);
+		addComponentForItem(ret.treeItem, component);
+		return ret;
 	}
 	
 
@@ -174,6 +188,7 @@ public class Tree extends Container
 	public void clear() 
 	{
 		treeWidget.clear();
+		componentsForItens.clear();
 	}
 
 	/**
@@ -193,7 +208,7 @@ public class Tree extends Container
 	 */
 	public TreeItem getItem(int index) 
 	{
-		return treeWidget.getItem(index);
+		return new TreeItem(treeWidget.getItem(index), this);
 	}
 
 	/**
@@ -213,7 +228,7 @@ public class Tree extends Container
 	 */
 	public TreeItem getSelectedItem() 
 	{
-		return treeWidget.getSelectedItem();
+		return new TreeItem(treeWidget.getSelectedItem(), this);
 	}
 
 	public int getTabIndex() 
@@ -239,7 +254,8 @@ public class Tree extends Container
 	 */
 	public void removeItem(TreeItem item) 
 	{
-		treeWidget.removeItem(item);
+		treeWidget.removeItem(item.treeItem);
+		removeComponentForItem(item.treeItem);
 	}
 
 	/**
@@ -248,6 +264,7 @@ public class Tree extends Container
 	public void removeItems() 
 	{
 		treeWidget.removeItems();
+		componentsForItens.clear();
 	}	
 
 	public void setAccessKey(char key) 
@@ -273,7 +290,7 @@ public class Tree extends Container
 	 */
 	public void setSelectedItem(TreeItem item) 
 	{
-		treeWidget.setSelectedItem(item);
+		treeWidget.setSelectedItem(item.treeItem);
 	}
 
 	/**
@@ -285,7 +302,7 @@ public class Tree extends Container
 	 */
 	public void setSelectedItem(TreeItem item, boolean fireEvents) 
 	{
-		treeWidget.setSelectedItem(item, fireEvents);
+		treeWidget.setSelectedItem(item.treeItem, fireEvents);
 	}
 
 	public void setTabIndex(int index) 
@@ -300,7 +317,28 @@ public class Tree extends Container
 	 */
 	public Iterator<TreeItem> treeItemIterator() 
 	{
-		return treeWidget.treeItemIterator();
+		final Iterator<com.google.gwt.user.client.ui.TreeItem> it = treeWidget.treeItemIterator();
+		final Tree tree = this;
+		return new Iterator<TreeItem>()
+		{
+			@Override
+			public boolean hasNext() 
+			{
+				return it.hasNext();
+			}
+
+			@Override
+			public TreeItem next() 
+			{
+				return new TreeItem(it.next(), tree);
+			}
+
+			@Override
+			public void remove() 
+			{
+				it.remove();
+			}
+		};
 	}
 
 	/**
@@ -315,13 +353,14 @@ public class Tree extends Container
 	/**
 	 * Populate the tree with declared itens
 	 * @param element
+	 * @throws InterfaceConfigException 
 	 */
-	protected void renderTreeItens(Element element)
+	protected void renderTreeItens(Element element) throws InterfaceConfigException
 	{
 		renderTreeItens(element, null);
 	}
 	
-	protected void renderTreeItens(Element element, TreeItem parent)
+	protected void renderTreeItens(Element element, TreeItem parent) throws InterfaceConfigException
 	{
 		NodeList<Node> itensCandidates = element.getChildNodes();
 		for (int i=0; i<itensCandidates.getLength(); i++)
@@ -335,16 +374,31 @@ public class Tree extends Container
 		}
 	}
 	
-	protected TreeItem renderTreeItem(Element e, TreeItem parent)
+	protected TreeItem renderTreeItem(Element e, TreeItem parent) throws InterfaceConfigException
 	{
-		String text = e.getAttribute("_text");
-		if (parent != null)
+		String type = e.getAttribute("_type");
+		if (type != null && type.length() > 0)
 		{
-			return parent.addItem(text);
+			if (parent != null)
+			{
+				return parent.addItem(createChildComponent(e, e.getAttribute("id")));
+			}
+			else
+			{
+				return addItem(createChildComponent(e, e.getAttribute("id")));
+			}
 		}
 		else
 		{
-			return addItem(text);
+			String text = e.getAttribute("_text");
+			if (parent != null)
+			{
+				return parent.addItem(text);
+			}
+			else
+			{
+				return addItem(text);
+			}
 		}
 	}
 
@@ -360,13 +414,37 @@ public class Tree extends Container
 			Element element = (Element)node;
 			if ("span".equalsIgnoreCase(element.getTagName()))
 			{
-				String type = element.getAttribute("_text");
-				if (type != null && type.length() > 0)
+				String text = element.getAttribute("_text");
+				String type = element.getAttribute("_type");
+				String id = element.getAttribute("id");
+				if ((text != null && text.length() > 0) || 
+					((type != null && type.length() > 0) && (id != null && id.length() > 0)))
 				{
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	protected Widget getComponentWidget(Component component)
+	{
+		return super.getComponentWidget(component);
+	}
+	
+	protected Component getComponent(com.google.gwt.user.client.ui.TreeItem treeItem)
+	{
+		return componentsForItens.get(treeItem);
+	}
+	
+	protected void addComponentForItem(com.google.gwt.user.client.ui.TreeItem treeItem, Component component)
+	{
+		componentsForItens.put(treeItem, component);
+	}
+
+	protected void removeComponentForItem(com.google.gwt.user.client.ui.TreeItem treeItem)
+	{
+		componentsForItens.remove(treeItem);
 	}
 }
