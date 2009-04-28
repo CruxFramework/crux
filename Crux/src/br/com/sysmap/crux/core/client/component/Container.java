@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -27,11 +26,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago
  *
  */
-public class Container extends Component 
+public abstract class Container extends Component 
 {
 	protected Map<String, Component> components = new HashMap<String, Component>(30);
 
-	public Container(String id, Widget widget) 
+	protected Container(String id, Widget widget) 
 	{
 		super(id, widget);
 	}
@@ -58,6 +57,12 @@ public class Container extends Component
 		return components.values().iterator();
 	}
 	
+	public void clear()
+	{
+		components.clear();
+		clearWidgetChildren(this.widget);
+	}
+	
 	/**
 	 * Provide access to component's widget. Used for container subclasses that
 	 * need to access widgets of their children. 
@@ -69,16 +74,9 @@ public class Container extends Component
 		return (component.widget!=null?component.widget:null);
 	}
 	
-	protected void addWidget(Widget widget)
-	{
-		if (this.widget instanceof Panel)
-			((Panel)this.widget).add(widget);	
-	}
+	protected abstract void addWidget(Widget widget);
 	
-	protected void removeWidget(Widget widget)
-	{
-		if (this.widget instanceof Panel)
-			((Panel)this.widget).remove(widget);	
-	}
-	
+	protected abstract void removeWidget(Widget widget);
+
+	protected abstract void clearWidgetChildren(Widget widget);
 }

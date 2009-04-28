@@ -135,7 +135,7 @@ public class ScreenFactory {
 		for (Element element : components) 
 		{
 			String componentId = element.getAttribute("id");
-			if (componentId != null && componentId.trim().length() >= 0)
+			if (componentId != null && componentId.length() >= 0)
 			{
 				element = DOM.getElementById(componentId); // Evita que elementos reanexados ao DOM sejam esquecidos
 				Element parent;
@@ -192,7 +192,7 @@ public class ScreenFactory {
 		if ("span".equalsIgnoreCase(element.getTagName()))
 		{
 			String type = element.getAttribute("_type");
-			if (type != null && type.trim().length() > 0 && !"screen".equals(type))
+			if (type != null && type.length() > 0 && !"screen".equals(type))
 			{
 				return true;
 			}
@@ -225,7 +225,7 @@ public class ScreenFactory {
 	private Component createComponent(Element element, Screen screen) throws InterfaceConfigException
 	{
 		String componentId = element.getAttribute("id");
-		if (componentId == null || componentId.trim().length() == 0)
+		if (componentId == null || componentId.length() == 0)
 		{
 			throw new InterfaceConfigException(JSEngine.messages.screenFactoryComponentIdRequired());
 		}

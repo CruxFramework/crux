@@ -41,7 +41,7 @@ public class Component
 	 * @param id identifies the component. Components can be retrieved form the Screen object using this field.
 	 * @param widget GWT widget wrapped by this class. 
 	 */
-	public Component(String id, Widget widget) 
+	protected Component(String id, Widget widget) 
 	{
 		if (widget == null) throw new NullPointerException();
 		this.id = id;

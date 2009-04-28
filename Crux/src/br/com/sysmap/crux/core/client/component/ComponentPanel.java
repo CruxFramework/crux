@@ -19,6 +19,11 @@ package br.com.sysmap.crux.core.client.component;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+/**
+ * A basic container used to wrap crux components, in case they are orphans
+ * @author Thiago Bustamante
+ *
+ */
 public class ComponentPanel extends SimplePanel
 {
 	public ComponentPanel(Element element)
