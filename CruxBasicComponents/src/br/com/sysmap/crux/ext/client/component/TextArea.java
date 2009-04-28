@@ -34,7 +34,7 @@ public class TextArea extends TextBoxBase
 		this(id, new com.google.gwt.user.client.ui.TextArea());
 	}
 
-	public TextArea(String id, com.google.gwt.user.client.ui.TextArea widget) 
+	protected TextArea(String id, com.google.gwt.user.client.ui.TextArea widget) 
 	{
 		super(id, widget);
 		this.textAreaWidget = widget;

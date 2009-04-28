@@ -28,7 +28,7 @@ public class RadioButton extends CheckBox
 		this(id, new com.google.gwt.user.client.ui.RadioButton(""));
 	}
 
-	public RadioButton(String id, com.google.gwt.user.client.ui.RadioButton widget) 
+	protected RadioButton(String id, com.google.gwt.user.client.ui.RadioButton widget) 
 	{
 		super(id, widget);
 	}

@@ -40,7 +40,7 @@ public class FocusComponent extends Component
 	 * @param id
 	 * @param widget
 	 */
-	public FocusComponent(String id, FocusWidget widget) 
+	protected FocusComponent(String id, FocusWidget widget) 
 	{
 		super(id, widget);
 		focusWidget = (FocusWidget)widget;

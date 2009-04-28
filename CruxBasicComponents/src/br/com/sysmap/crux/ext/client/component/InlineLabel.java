@@ -30,7 +30,7 @@ public class InlineLabel extends Label
 		this(id, new com.google.gwt.user.client.ui.InlineLabel());
 	}
 
-	public InlineLabel(String id, com.google.gwt.user.client.ui.InlineLabel widget) 
+	protected InlineLabel(String id, com.google.gwt.user.client.ui.InlineLabel widget) 
 	{
 		super(id, widget);
 		labelWidget = widget;

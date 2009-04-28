@@ -33,7 +33,7 @@ public class Anchor extends FocusComponent
 		this(id, new com.google.gwt.user.client.ui.Anchor());
 	}
 
-	public Anchor(String id, com.google.gwt.user.client.ui.Anchor widget) 
+	protected Anchor(String id, com.google.gwt.user.client.ui.Anchor widget) 
 	{
 		super(id, widget);
 		this.anchorWidget = widget;

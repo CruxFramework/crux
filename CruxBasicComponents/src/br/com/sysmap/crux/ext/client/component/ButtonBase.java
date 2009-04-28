@@ -24,7 +24,7 @@ public abstract class ButtonBase extends FocusComponent
 {
 	protected com.google.gwt.user.client.ui.ButtonBase buttonBase;
 	
-	public ButtonBase(String id, com.google.gwt.user.client.ui.ButtonBase widget) 
+	protected ButtonBase(String id, com.google.gwt.user.client.ui.ButtonBase widget) 
 	{
 		super(id, widget);
 		buttonBase = widget;

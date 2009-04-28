@@ -28,15 +28,14 @@
   <component id="inlineHtml" clientClass="br.com.sysmap.crux.ext.client.component.InlineHTML"/>
   <component id="menuBar" clientClass="br.com.sysmap.crux.ext.client.component.MenuBar" clientConstructorParams="id, element"/>
   <component id="tree" clientClass="br.com.sysmap.crux.ext.client.component.Tree" clientConstructorParams="id, element"/>
+  <component id="simplePanel" clientClass="br.com.sysmap.crux.ext.client.component.SimplePanel"/>
+  <component id="decoratorPanel" clientClass="br.com.sysmap.crux.ext.client.component.DecoratorPanel"/>
+  <component id="focusPanel" clientClass="br.com.sysmap.crux.ext.client.component.FocusPanel"/>
+  <component id="horizontalSplitPanel" clientClass="br.com.sysmap.crux.ext.client.component.HorizontalSplitPanel" clientConstructorParams="id, element"/>
+  <component id="VerticalSplitPanel" clientClass="br.com.sysmap.crux.ext.client.component.VerticalSplitPanel" clientConstructorParams="id, element"/>
 
 
 
-
-
-
-  <component id="simplePanel" 
-  			 clientClass="br.com.sysmap.crux.core.client.component.Container"
-             clientConstructorParams="id, new com.google.gwt.user.client.ui.SimplePanel()"  />
   <component id="scrollPanel" 
   			 clientClass="br.com.sysmap.crux.core.client.component.Container"
              clientConstructorParams="id, new com.google.gwt.user.client.ui.ScrollPanel()" />

@@ -29,7 +29,7 @@ public class PasswordTextBox extends TextBox
 		this(id, new com.google.gwt.user.client.ui.PasswordTextBox());
 	}
 
-	public PasswordTextBox(String id, com.google.gwt.user.client.ui.PasswordTextBox widget) 
+	protected PasswordTextBox(String id, com.google.gwt.user.client.ui.PasswordTextBox widget) 
 	{
 		super(id, widget);
 		this.passwordTextBoxWidget = widget;

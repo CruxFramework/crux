@@ -32,7 +32,7 @@ public class Frame extends Component
 		this(id, new com.google.gwt.user.client.ui.Frame());
 	}
 
-	public Frame(String id, com.google.gwt.user.client.ui.Frame widget) 
+	protected Frame(String id, com.google.gwt.user.client.ui.Frame widget) 
 	{
 		super(id, widget);
 		this.frameWidget = widget;

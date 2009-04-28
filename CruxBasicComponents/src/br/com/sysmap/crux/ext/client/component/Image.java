@@ -35,7 +35,7 @@ public class Image extends Component
 		this(id, new com.google.gwt.user.client.ui.Image());
 	}
 
-	public Image(String id, com.google.gwt.user.client.ui.Image widget) 
+	protected Image(String id, com.google.gwt.user.client.ui.Image widget) 
 	{
 		super(id, widget);
 		this.imageWidget = widget;

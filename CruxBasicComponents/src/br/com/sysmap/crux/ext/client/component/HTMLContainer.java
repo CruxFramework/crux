@@ -11,11 +11,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class HTMLContainer extends Container{
 
-	public HTMLContainer(String id, Widget widget) 
-	{
-		super(id, widget);
-	}
-
 	public HTMLContainer(String id)
 	{
 		super(id, new HTMLPanel(DOM.getInnerHTML(DOM.getElementById(id))));
@@ -23,6 +18,11 @@ public class HTMLContainer extends Container{
 		element.setInnerHTML("");
 	}
 	
+	protected HTMLContainer(String id, Widget widget) 
+	{
+		super(id, widget);
+	}
+
 	@Override
 	public void addComponent(Component component)
 	{
@@ -30,6 +30,24 @@ public class HTMLContainer extends Container{
 		Element element = DOM.getElementById(component.getId());
 		ComponentPanel panel = new ComponentPanel(element.getParentElement());
 		panel.add(getComponentWidget(component));
+	}
+
+	@Override
+	protected void addWidget(Widget widget) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void clearWidgetChildren(Widget widget) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void removeWidget(Widget widget) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -39,7 +39,7 @@ public abstract class CustomButton extends ButtonBase
 	
 	protected com.google.gwt.user.client.ui.CustomButton customButtonWidget;
 
-	public CustomButton(String id, com.google.gwt.user.client.ui.CustomButton widget) 
+	protected CustomButton(String id, com.google.gwt.user.client.ui.CustomButton widget) 
 	{
 		super(id, widget);
 		customButtonWidget = (com.google.gwt.user.client.ui.CustomButton) widget;

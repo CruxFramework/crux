@@ -55,14 +55,24 @@ public class Tree extends Container
 		this(id, createTreeWidget(id, element));
 	}
 
-	public Tree(String id, com.google.gwt.user.client.ui.Tree widget) 
+	public Tree(String id, boolean useLeafImages, TreeImages treeImages) 
+	{
+		this(id, new com.google.gwt.user.client.ui.Tree(treeImages, useLeafImages));
+	}
+	
+	public Tree(String id) 
+	{
+		this(id, new com.google.gwt.user.client.ui.Tree());
+	}
+
+	protected Tree(String id, com.google.gwt.user.client.ui.Tree widget) 
 	{
 		super(id, widget);
 		this.treeWidget = widget;
 	}
 
 	/**
-	 * Creates the MenuBar widget
+	 * Creates the Tree widget
 	 * @param element
 	 * @return
 	 */
@@ -181,16 +191,6 @@ public class Tree extends Container
 		return ret;
 	}
 	
-
-	/**
-	 * Clears all tree items from the current tree.
-	 */
-	public void clear() 
-	{
-		treeWidget.clear();
-		componentsForItens.clear();
-	}
-
 	/**
 	 * Ensures that the currently-selected item is visible, opening its parents
 	 * and scrolling the tree as necessary.
@@ -446,5 +446,12 @@ public class Tree extends Container
 	protected void removeComponentForItem(com.google.gwt.user.client.ui.TreeItem treeItem)
 	{
 		componentsForItens.remove(treeItem);
+	}
+
+	@Override
+	protected void clearWidgetChildren(Widget widget) 
+	{
+		this.treeWidget.clear();
+		componentsForItens.clear();
 	}
 }

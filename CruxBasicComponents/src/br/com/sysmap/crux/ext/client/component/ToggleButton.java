@@ -30,7 +30,7 @@ public class ToggleButton extends CustomButton
 		this(id, new com.google.gwt.user.client.ui.ToggleButton());
 	}
 	
-	public ToggleButton(String id, com.google.gwt.user.client.ui.ToggleButton toggleButton) 
+	protected ToggleButton(String id, com.google.gwt.user.client.ui.ToggleButton toggleButton) 
 	{
 		super (id, toggleButton);
 		this.toggleButtonWidget = toggleButton;

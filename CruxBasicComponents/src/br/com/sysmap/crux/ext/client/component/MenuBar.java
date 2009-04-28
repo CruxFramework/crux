@@ -45,7 +45,17 @@ public class MenuBar extends Component
 		this(id, createMenuBarWidget(id, element));
 	}
 
-	public MenuBar(String id, com.google.gwt.user.client.ui.MenuBar widget) 
+	public MenuBar(String id, boolean vertical, MenuBarImages menuBarImages) 
+	{
+		this(id, new com.google.gwt.user.client.ui.MenuBar(vertical, menuBarImages));
+	}
+
+	public MenuBar(String id, boolean vertical) 
+	{
+		this(id, new com.google.gwt.user.client.ui.MenuBar(vertical));
+	}
+
+	protected MenuBar(String id, com.google.gwt.user.client.ui.MenuBar widget) 
 	{
 		super(id, widget);
 		this.menuBarWidget = widget;

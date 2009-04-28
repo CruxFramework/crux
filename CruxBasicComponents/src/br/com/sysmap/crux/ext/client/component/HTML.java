@@ -30,7 +30,7 @@ public class HTML extends Label
 		this(id, new com.google.gwt.user.client.ui.HTML());
 	}
 
-	public HTML(String id, com.google.gwt.user.client.ui.HTML widget) 
+	protected HTML(String id, com.google.gwt.user.client.ui.HTML widget) 
 	{
 		super(id, widget);
 		htmlWidget = widget;

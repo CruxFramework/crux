@@ -32,7 +32,12 @@ public class ListBox extends FocusComponent
 {
 	protected com.google.gwt.user.client.ui.ListBox listBoxWidget;
 
-	public ListBox(String id, com.google.gwt.user.client.ui.ListBox widget) 
+	public ListBox(String id) 
+	{
+		this(id, new com.google.gwt.user.client.ui.ListBox());
+	}
+
+	protected ListBox(String id, com.google.gwt.user.client.ui.ListBox widget) 
 	{
 		super(id, widget);
 		this.listBoxWidget = widget;

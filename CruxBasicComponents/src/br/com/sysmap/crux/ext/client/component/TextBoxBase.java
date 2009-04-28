@@ -38,7 +38,7 @@ public abstract class TextBoxBase extends FocusComponent
 	protected com.google.gwt.user.client.ui.TextBoxBase textBoxBaseWidget;
 	protected Formatter clientFormatter = null;
 	
-	public TextBoxBase(String id, com.google.gwt.user.client.ui.TextBoxBase widget) 
+	protected TextBoxBase(String id, com.google.gwt.user.client.ui.TextBoxBase widget) 
 	{
 		super(id, widget);
 		this.textBoxBaseWidget = widget;

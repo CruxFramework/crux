@@ -32,7 +32,7 @@ public class Hidden extends Component
 		this(id, new com.google.gwt.user.client.ui.Hidden());
 	}
 
-	public Hidden(String id, com.google.gwt.user.client.ui.Hidden widget) 
+	protected Hidden(String id, com.google.gwt.user.client.ui.Hidden widget) 
 	{
 		super(id, widget);
 		this.hiddenWidget = widget;

@@ -28,7 +28,7 @@ public class InlineHyperlink extends Hyperlink
 		this(id, new com.google.gwt.user.client.ui.InlineHyperlink());
 	}
 
-	public InlineHyperlink(String id, com.google.gwt.user.client.ui.InlineHyperlink widget) 
+	protected InlineHyperlink(String id, com.google.gwt.user.client.ui.InlineHyperlink widget) 
 	{
 		super(id, widget);
 	}

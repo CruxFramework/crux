@@ -34,7 +34,7 @@ public class Hyperlink extends Component
 		super(id, new com.google.gwt.user.client.ui.Hyperlink());
 	}
 
-	public Hyperlink(String id, com.google.gwt.user.client.ui.Hyperlink widget) 
+	protected Hyperlink(String id, com.google.gwt.user.client.ui.Hyperlink widget) 
 	{
 		super(id, widget);
 		this.hyperlinkWidget = widget;

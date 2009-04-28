@@ -28,7 +28,7 @@ public class SimpleRadioButton extends SimpleCheckBox
 
 	}
 
-	public SimpleRadioButton(String id, com.google.gwt.user.client.ui.SimpleRadioButton widget) 
+	protected SimpleRadioButton(String id, com.google.gwt.user.client.ui.SimpleRadioButton widget) 
 	{
 		super(id, widget);
 	}

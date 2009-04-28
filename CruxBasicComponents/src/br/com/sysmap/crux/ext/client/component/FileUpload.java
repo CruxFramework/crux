@@ -30,7 +30,7 @@ public class FileUpload extends Component
 		this(id, new com.google.gwt.user.client.ui.FileUpload());
 	}
 
-	public FileUpload(String id, com.google.gwt.user.client.ui.FileUpload widget) 
+	protected FileUpload(String id, com.google.gwt.user.client.ui.FileUpload widget) 
 	{
 		super(id, widget);
 		this.fileUploadWidget = widget;

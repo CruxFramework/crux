@@ -31,7 +31,12 @@ public class NamedFrame extends Frame
 		this(id, new com.google.gwt.user.client.ui.NamedFrame(element.getAttribute("_name")));
 	}
 
-	public NamedFrame(String id, com.google.gwt.user.client.ui.NamedFrame widget) 
+	public NamedFrame(String id, String name) 
+	{
+		this(id, new com.google.gwt.user.client.ui.NamedFrame(name));
+	}
+
+	protected NamedFrame(String id, com.google.gwt.user.client.ui.NamedFrame widget) 
 	{
 		super(id, widget);
 		this.namedFrameWidget = widget;

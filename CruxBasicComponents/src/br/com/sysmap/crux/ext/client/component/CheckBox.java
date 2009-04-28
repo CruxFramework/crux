@@ -43,7 +43,7 @@ public class CheckBox extends ButtonBase
 	 * @param id
 	 * @param widget
 	 */
-	public CheckBox(String id, com.google.gwt.user.client.ui.ButtonBase widget) 
+	protected CheckBox(String id, com.google.gwt.user.client.ui.ButtonBase widget) 
 	{
 		super(id, widget);
 		this.checkboxWidget = (com.google.gwt.user.client.ui.CheckBox) widget;

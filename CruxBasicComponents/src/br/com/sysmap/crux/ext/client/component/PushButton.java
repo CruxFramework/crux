@@ -27,7 +27,7 @@ public class PushButton extends CustomButton
 		this(id, new com.google.gwt.user.client.ui.PushButton());
 	}
 
-	public PushButton(String id, com.google.gwt.user.client.ui.PushButton widget) 
+	protected PushButton(String id, com.google.gwt.user.client.ui.PushButton widget) 
 	{
 		super(id, widget);
 	}

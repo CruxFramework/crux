@@ -41,7 +41,7 @@ public class RichTextArea extends FocusComponent
 		this(id, new com.google.gwt.user.client.ui.RichTextArea());
 	}
 
-	public RichTextArea(String id, com.google.gwt.user.client.ui.RichTextArea widget) 
+	protected RichTextArea(String id, com.google.gwt.user.client.ui.RichTextArea widget) 
 	{
 		super(id, widget);
 		this.richTextAreaWidget = widget;

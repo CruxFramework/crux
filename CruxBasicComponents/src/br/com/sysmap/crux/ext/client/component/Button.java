@@ -28,7 +28,7 @@ public class Button extends ButtonBase
 		this(id, new com.google.gwt.user.client.ui.Button());
 	}
 	
-	public Button(String id, com.google.gwt.user.client.ui.Button widget) 
+	protected Button(String id, com.google.gwt.user.client.ui.Button widget) 
 	{
 		super(id, widget);
 		this.button = widget;

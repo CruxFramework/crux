@@ -17,22 +17,18 @@ package br.com.sysmap.crux.ext.client.component;
 
 
 /**
- * Represents an InlineHTML Component
+ * Represents a DecoratorPanel
  * @author Thiago Bustamante
- *
  */
-public class InlineHTML extends HTML
+public class DecoratorPanel extends SimplePanel
 {
-	protected com.google.gwt.user.client.ui.InlineHTML htmlWidget;
-	
-	public InlineHTML(String id) 
+	public DecoratorPanel(String id)
 	{
-		this(id, new com.google.gwt.user.client.ui.InlineHTML());
+		this(id, new com.google.gwt.user.client.ui.DecoratorPanel());
 	}
-
-	protected InlineHTML(String id, com.google.gwt.user.client.ui.InlineHTML widget) 
+	
+	protected DecoratorPanel(String id, com.google.gwt.user.client.ui.DecoratorPanel widget) 
 	{
 		super(id, widget);
-		htmlWidget = widget;
 	}
 }

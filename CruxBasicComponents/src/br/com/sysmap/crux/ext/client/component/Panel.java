@@ -15,24 +15,41 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
+import br.com.sysmap.crux.core.client.component.Container;
+
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Represents an InlineHTML Component
+ * Base class for all panels
  * @author Thiago Bustamante
- *
  */
-public class InlineHTML extends HTML
+public class Panel extends Container
 {
-	protected com.google.gwt.user.client.ui.InlineHTML htmlWidget;
+	protected com.google.gwt.user.client.ui.Panel panelWidget;
 	
-	public InlineHTML(String id) 
-	{
-		this(id, new com.google.gwt.user.client.ui.InlineHTML());
-	}
-
-	protected InlineHTML(String id, com.google.gwt.user.client.ui.InlineHTML widget) 
+	protected Panel(String id, com.google.gwt.user.client.ui.Panel widget) 
 	{
 		super(id, widget);
-		htmlWidget = widget;
+		this.panelWidget = widget;
 	}
+	
+	@Override
+	protected void addWidget(Widget widget)
+	{
+		this.panelWidget.add(widget);	
+	}
+	
+	@Override
+	protected void removeWidget(Widget widget)
+	{
+		this.panelWidget.remove(widget);	
+	}
+
+	@Override
+	protected void clearWidgetChildren(Widget widget)
+	{
+		this.panelWidget.clear();
+	}
+	
+
 }

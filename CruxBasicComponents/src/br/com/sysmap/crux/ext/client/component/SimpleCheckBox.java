@@ -31,7 +31,7 @@ public class SimpleCheckBox extends FocusComponent
 		this(id, new com.google.gwt.user.client.ui.SimpleCheckBox());
 	}
 
-	public SimpleCheckBox(String id, com.google.gwt.user.client.ui.SimpleCheckBox widget) 
+	protected SimpleCheckBox(String id, com.google.gwt.user.client.ui.SimpleCheckBox widget) 
 	{
 		super(id, widget);
 		this.simpleCheckBoxWidget = widget;

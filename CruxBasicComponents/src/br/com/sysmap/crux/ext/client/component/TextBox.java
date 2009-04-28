@@ -31,7 +31,7 @@ public class TextBox extends TextBoxBase
 		this(id, new com.google.gwt.user.client.ui.TextBox());
 	}
 
-	public TextBox(String id, com.google.gwt.user.client.ui.TextBox widget) 
+	protected TextBox(String id, com.google.gwt.user.client.ui.TextBox widget) 
 	{
 		super(id, widget);
 		this.textBoxWidget = widget;

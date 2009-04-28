@@ -38,7 +38,7 @@ public class Label extends Component
 		this(id, new com.google.gwt.user.client.ui.Label());
 	}
 
-	public Label(String id, com.google.gwt.user.client.ui.Label widget) 
+	protected Label(String id, com.google.gwt.user.client.ui.Label widget) 
 	{
 		super(id, widget);
 		labelWidget = widget;
