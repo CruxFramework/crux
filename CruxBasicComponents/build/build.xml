@@ -17,6 +17,7 @@
   <property name="javadocdir" value="dist/javadoc" />
   <property name="final.name" value="crux-basic-components"/>
   <property name="testbenchmarkpath" value="dist/report/junit/benchmark" />
+  <property name="cruxdistdir" value="../Crux/dist"/>
  
   <path id="build.classpath">
     <fileset dir="${libdir}">
@@ -39,6 +40,11 @@
         <pathelement location="${srcdir}" />
       </src>
       <classpath refid="build.classpath" />
+    	<classpath>
+    	    <fileset dir="${cruxdistdir}">
+    	      <include name="**/*.jar" />
+    	    </fileset>
+    	</classpath>
     </javac>
   </target>
 	

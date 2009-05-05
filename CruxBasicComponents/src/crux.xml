@@ -31,14 +31,19 @@
   <component id="simplePanel" clientClass="br.com.sysmap.crux.ext.client.component.SimplePanel"/>
   <component id="decoratorPanel" clientClass="br.com.sysmap.crux.ext.client.component.DecoratorPanel"/>
   <component id="focusPanel" clientClass="br.com.sysmap.crux.ext.client.component.FocusPanel"/>
+  <component id="formPanel" clientClass="br.com.sysmap.crux.ext.client.component.FormPanel" clientConstructorParams="id, element"/>
+  <component id="simpleLazyPanel" clientClass="br.com.sysmap.crux.ext.client.component.SimpleLazyPanel" />
+  <component id="popupPanel" clientClass="br.com.sysmap.crux.ext.client.component.PopupPanel" clientConstructorParams="id, element"/>
+  <component id="decoratedPopupPanel" clientClass="br.com.sysmap.crux.ext.client.component.DecoratedPopupPanel" clientConstructorParams="id, element"/>
   <component id="horizontalSplitPanel" clientClass="br.com.sysmap.crux.ext.client.component.HorizontalSplitPanel" clientConstructorParams="id, element"/>
   <component id="VerticalSplitPanel" clientClass="br.com.sysmap.crux.ext.client.component.VerticalSplitPanel" clientConstructorParams="id, element"/>
-
-
-
-  <component id="scrollPanel" 
-  			 clientClass="br.com.sysmap.crux.core.client.component.Container"
-             clientConstructorParams="id, new com.google.gwt.user.client.ui.ScrollPanel()" />
+  <component id="scrollPanel" clientClass="br.com.sysmap.crux.core.client.component.ScrollPanel" />
+  
+  
+  
+  
+  
+  
   <component id="absolutePanel" 
   			 clientClass="br.com.sysmap.crux.core.client.component.Container"
              clientConstructorParams="id, new com.google.gwt.user.client.ui.AbsolutePanel()" />

@@ -12,6 +12,6 @@
 	<classpathentry kind="lib" path="lib/jsonrpc-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/scannotation-1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/crux-core.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Crux"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

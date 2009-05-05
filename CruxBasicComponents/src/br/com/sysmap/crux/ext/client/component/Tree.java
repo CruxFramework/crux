@@ -15,9 +15,9 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 import br.com.sysmap.crux.core.client.component.Component;
 import br.com.sysmap.crux.core.client.component.Container;
@@ -47,8 +47,7 @@ public class Tree extends Container
 {
 	protected com.google.gwt.user.client.ui.Tree treeWidget;
 	protected char accessKey;
-	protected Map<com.google.gwt.user.client.ui.TreeItem,Component> componentsForItens = 
-							new HashMap<com.google.gwt.user.client.ui.TreeItem, Component>();
+	protected List<TreeItem> itens = new ArrayList<TreeItem>();
 	
 	public Tree(String id, Element element) 
 	{
@@ -165,7 +164,9 @@ public class Tree extends Container
 	 */
 	public TreeItem addItem(String itemText) 
 	{
-		return new TreeItem(treeWidget.addItem(itemText), this);
+		TreeItem ret = new TreeItem(treeWidget.addItem(itemText), this);
+		itens.add(ret);
+		return ret;
 	}
 
 	/**
@@ -175,6 +176,7 @@ public class Tree extends Container
 	 */
 	public void addItem(TreeItem item) 
 	{
+		itens.add(item);
 		treeWidget.addItem(item.treeItem);
 	}
 
@@ -187,7 +189,7 @@ public class Tree extends Container
 	public TreeItem addItem(Component component) 
 	{
 		TreeItem ret = new TreeItem(treeWidget.addItem(getComponentWidget(component)), this);
-		addComponentForItem(ret.treeItem, component);
+		itens.add(ret);
 		return ret;
 	}
 	
@@ -255,7 +257,7 @@ public class Tree extends Container
 	public void removeItem(TreeItem item) 
 	{
 		treeWidget.removeItem(item.treeItem);
-		removeComponentForItem(item.treeItem);
+		itens.remove(item);
 	}
 
 	/**
@@ -264,7 +266,7 @@ public class Tree extends Container
 	public void removeItems() 
 	{
 		treeWidget.removeItems();
-		componentsForItens.clear();
+		itens.clear();
 	}	
 
 	public void setAccessKey(char key) 
@@ -433,25 +435,10 @@ public class Tree extends Container
 		return super.getComponentWidget(component);
 	}
 	
-	protected Component getComponent(com.google.gwt.user.client.ui.TreeItem treeItem)
-	{
-		return componentsForItens.get(treeItem);
-	}
-	
-	protected void addComponentForItem(com.google.gwt.user.client.ui.TreeItem treeItem, Component component)
-	{
-		componentsForItens.put(treeItem, component);
-	}
-
-	protected void removeComponentForItem(com.google.gwt.user.client.ui.TreeItem treeItem)
-	{
-		componentsForItens.remove(treeItem);
-	}
-
 	@Override
 	protected void clearWidgetChildren(Widget widget) 
 	{
 		this.treeWidget.clear();
-		componentsForItens.clear();
+		itens.clear();
 	}
 }

@@ -15,7 +15,10 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
+import br.com.sysmap.crux.core.client.component.Component;
+
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represents a NamedFrame Component
@@ -51,4 +54,11 @@ public class NamedFrame extends Frame
 	{
 		return namedFrameWidget.getName();
 	}
+	
+	@Override
+	protected Widget getComponentWidget(Component component)
+	{
+		return super.getComponentWidget(component);
+	}
+	
 }

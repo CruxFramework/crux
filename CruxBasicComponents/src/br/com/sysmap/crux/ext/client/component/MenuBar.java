@@ -15,7 +15,11 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.component.Component;
+import br.com.sysmap.crux.core.client.component.UIObject;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
@@ -25,8 +29,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.MenuItem;
-import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.MenuBar.MenuBarImages;
 /**
  * Represents a MenuBar component
@@ -39,6 +41,7 @@ public class MenuBar extends Component
 	public static final String ITEM_TYPE_TEXT = "text";
 	
 	protected com.google.gwt.user.client.ui.MenuBar menuBarWidget;
+	protected List<UIObject> itens = new ArrayList<UIObject>();
 	
 	public MenuBar(String id, Element element) 
 	{
@@ -256,7 +259,10 @@ public class MenuBar extends Component
 	 */
 	public MenuItem addItem(MenuItem item) 
 	{
-		return menuBarWidget.addItem(item);
+		menuBarWidget.addItem(item.menuItem);
+		itens.add(item);
+		item.setParentMenu(this);
+		return item;
 	}
 
 	/**
@@ -270,7 +276,7 @@ public class MenuBar extends Component
 	 */
 	public MenuItem addItem(String text, boolean asHTML, Command cmd) 
 	{
-		return menuBarWidget.addItem(text, asHTML, cmd);
+		return addItem(new MenuItem(menuBarWidget.addItem(text, asHTML, cmd)));
 	}
 
 	/**
@@ -284,7 +290,7 @@ public class MenuBar extends Component
 	 */
 	public MenuItem addItem(String text, boolean asHTML, MenuBar popup) 
 	{
-		return menuBarWidget.addItem(text, asHTML, popup.menuBarWidget);
+		return addItem(new MenuItem(menuBarWidget.addItem(text, asHTML, popup.menuBarWidget)));
 	}
 
 	/**
@@ -297,7 +303,7 @@ public class MenuBar extends Component
 	 */
 	public MenuItem addItem(String text, Command cmd) 
 	{
-		return menuBarWidget.addItem(text, cmd);
+		return addItem(new MenuItem(menuBarWidget.addItem(text, cmd)));
 	}
 
 	/**
@@ -310,7 +316,7 @@ public class MenuBar extends Component
 	 */
 	public MenuItem addItem(String text, MenuBar popup) 
 	{
-		return menuBarWidget.addItem(text, popup.menuBarWidget);
+		return addItem(new MenuItem(menuBarWidget.addItem(text, popup.menuBarWidget)));
 	}
 
 	/**
@@ -321,7 +327,7 @@ public class MenuBar extends Component
 	 */
 	public MenuItemSeparator addSeparator() 
 	{
-		return menuBarWidget.addSeparator();
+		return addSeparator(new MenuItemSeparator());
 	}
 
 	/**
@@ -333,7 +339,9 @@ public class MenuBar extends Component
 	 */
 	public MenuItemSeparator addSeparator(MenuItemSeparator separator) 
 	{
-		return menuBarWidget.addSeparator();
+		menuBarWidget.addSeparator(separator.itemSeparator);
+		itens.add(separator);
+		return separator;
 	}
 
 	/**
@@ -342,6 +350,7 @@ public class MenuBar extends Component
 	public void clearItems() 
 	{
 		menuBarWidget.clearItems();
+		itens.clear();
 	}
 
 	/**
@@ -362,7 +371,7 @@ public class MenuBar extends Component
 	 */
 	public int getItemIndex(MenuItem item) 
 	{
-		return menuBarWidget.getItemIndex(item);
+		return menuBarWidget.getItemIndex(item.menuItem);
 	}
 
 	/**
@@ -373,7 +382,7 @@ public class MenuBar extends Component
 	 */
 	public int getSeparatorIndex(MenuItemSeparator item) 
 	{
-		return menuBarWidget.getSeparatorIndex(item);
+		return itens.indexOf(item);
 	}
 
 	/**
@@ -388,7 +397,9 @@ public class MenuBar extends Component
 	public MenuItem insertItem(MenuItem item, int beforeIndex)
 	throws IndexOutOfBoundsException 
 	{
-		return menuBarWidget.insertItem(item, beforeIndex);
+		menuBarWidget.insertItem(item.menuItem, beforeIndex);
+		itens.add(beforeIndex, item);
+		return item;
 	}
 
 	/**
@@ -402,7 +413,7 @@ public class MenuBar extends Component
 	 */
 	public MenuItemSeparator insertSeparator(int beforeIndex) 
 	{
-		return menuBarWidget.insertSeparator(beforeIndex);
+		return insertSeparator(new MenuItemSeparator(), beforeIndex);
 	}
 
 	/**
@@ -415,11 +426,13 @@ public class MenuBar extends Component
 	 * @throws IndexOutOfBoundsException if <code>beforeIndex</code> is out of
 	 *           range
 	 */
-	public MenuItemSeparator insertSeparator(MenuItemSeparator separator,
-			int beforeIndex) throws IndexOutOfBoundsException 
-			{
-		return menuBarWidget.insertSeparator(separator, beforeIndex);
-			}
+	public MenuItemSeparator insertSeparator(MenuItemSeparator separator, int beforeIndex) 
+		throws IndexOutOfBoundsException 
+	{
+		menuBarWidget.insertSeparator(separator.itemSeparator, beforeIndex);
+		itens.add(beforeIndex, separator);
+		return separator;
+	}
 
 	public boolean isAnimationEnabled() 
 	{
@@ -433,7 +446,8 @@ public class MenuBar extends Component
 	 */
 	public void removeItem(MenuItem item) 
 	{
-		menuBarWidget.removeItem(item);
+		menuBarWidget.removeItem(item.menuItem);
+		itens.remove(item);
 	}
 
 	/**
@@ -443,7 +457,8 @@ public class MenuBar extends Component
 	 */
 	public void removeSeparator(MenuItemSeparator separator) 
 	{
-		menuBarWidget.removeSeparator(separator);
+		menuBarWidget.removeSeparator(separator.itemSeparator);
+		itens.remove(separator);
 	}
 
 	public void setAnimationEnabled(boolean enable) 
@@ -461,6 +476,4 @@ public class MenuBar extends Component
 	{
 		menuBarWidget.setAutoOpen(autoOpen);
 	}
-
-	
 }

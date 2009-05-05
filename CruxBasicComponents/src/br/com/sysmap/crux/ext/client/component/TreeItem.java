@@ -15,265 +15,289 @@
  */
 package br.com.sysmap.crux.ext.client.component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.component.Component;
+import br.com.sysmap.crux.core.client.component.UIObject;
 
 
 /**
  * Represents a Tree Item
  * @author Thiago Bustamante
  */
-public class TreeItem 
+public class TreeItem extends UIObject
 {
 	protected com.google.gwt.user.client.ui.TreeItem treeItem;
 	protected Tree tree;
-	
+	protected List<TreeItem> itens = new ArrayList<TreeItem>();
+	protected Component component;
+
 	TreeItem(com.google.gwt.user.client.ui.TreeItem treeItem, Tree tree)
 	{
+		super(treeItem);
+
 		this.treeItem = treeItem;
 		this.tree = tree;
 	}
 
-	 /**
-	   * Adds a child tree item containing the specified text.
-	   * 
-	   * @param itemText the text to be added
-	   * @return the item that was added
-	   */
-	  public TreeItem addItem(String itemText) 
-	  {
-	    return new TreeItem(treeItem.addItem(itemText), tree);
-	  }
+	public TreeItem(Tree tree)
+	{
+		this(new com.google.gwt.user.client.ui.TreeItem(), tree);
+	}
+	
+	public TreeItem(Tree tree, String html)
+	{
+		this(new com.google.gwt.user.client.ui.TreeItem(html), tree);
+	}
 
-	  /**
-	   * Adds another item as a child to this one.
-	   * 
-	   * @param item the item to be added
-	   */
-	  public void addItem(TreeItem item) 
-	  {
-		  treeItem.addItem(item.treeItem);
-	  }
+	public TreeItem(Component component, Tree tree)
+	{
+		this(tree);
+		setComponent(component);
+	}
+	
+	/**
+	 * Adds a child tree item containing the specified text.
+	 * 
+	 * @param itemText the text to be added
+	 * @return the item that was added
+	 */
+	public TreeItem addItem(String itemText) 
+	{
+		TreeItem ret = new TreeItem(treeItem.addItem(itemText), tree);
+		itens.add(ret);
+		return ret;
+	}
 
-	  /**
-	   * Adds a child tree item containing the specified widget.
-	   * 
-	   * @param component the component to be added
-	   * @return the item that was added
-	   */
-	  public TreeItem addItem(Component component) 
-	  {
-		  com.google.gwt.user.client.ui.TreeItem item = new com.google.gwt.user.client.ui.TreeItem(tree.getComponentWidget(component));
-		  TreeItem result = new TreeItem(item, tree);
-		  addItem(result);
-		  tree.addComponentForItem(result.treeItem, component);
-		  return result;
-	  }
+	/**
+	 * Adds another item as a child to this one.
+	 * 
+	 * @param item the item to be added
+	 */
+	public void addItem(TreeItem item) 
+	{
+		treeItem.addItem(item.treeItem);
+		itens.add(item);
+	}
 
-	  /**
-	   * Gets the child at the specified index.
-	   * 
-	   * @param index the index to be retrieved
-	   * @return the item at that index
-	   */
+	/**
+	 * Adds a child tree item containing the specified widget.
+	 * 
+	 * @param component the component to be added
+	 * @return the item that was added
+	 */
+	public TreeItem addItem(Component component) 
+	{
+		TreeItem result = new TreeItem(component, tree);
+		addItem(result);
+		return result;
+	}
 
-	  public TreeItem getChild(int index) 
-	  {
-		  return new TreeItem(treeItem.getChild(index), tree);
-	  }
+	/**
+	 * Gets the child at the specified index.
+	 * 
+	 * @param index the index to be retrieved
+	 * @return the item at that index
+	 */
 
-	  /**
-	   * Gets the number of children contained in this item.
-	   * 
-	   * @return this item's child count.
-	   */
+	public TreeItem getChild(int index) 
+	{
+		return new TreeItem(treeItem.getChild(index), tree);
+	}
 
-	  public int getChildCount() 
-	  {
-		  return treeItem.getChildCount();
-	  }
+	/**
+	 * Gets the number of children contained in this item.
+	 * 
+	 * @return this item's child count.
+	 */
 
-	  /**
-	   * Gets the index of the specified child item.
-	   * 
-	   * @param child the child item to be found
-	   * @return the child's index, or <code>-1</code> if none is found
-	   */
+	public int getChildCount() 
+	{
+		return treeItem.getChildCount();
+	}
 
-	  public int getChildIndex(TreeItem child) 
-	  {
-	    return treeItem.getChildIndex(child.treeItem);
-	  }
+	/**
+	 * Gets the index of the specified child item.
+	 * 
+	 * @param child the child item to be found
+	 * @return the child's index, or <code>-1</code> if none is found
+	 */
 
-	  public String getHTML() 
-	  {
-	    return treeItem.getHTML();
-	  }
+	public int getChildIndex(TreeItem child) 
+	{
+		return treeItem.getChildIndex(child.treeItem);
+	}
 
-	  /**
-	   * Gets this item's parent.
-	   * 
-	   * @return the parent item
-	   */
-	  public TreeItem getParentItem() 
-	  {
-	    return new TreeItem(treeItem.getParentItem(), tree);
-	  }
+	public String getHTML() 
+	{
+		return treeItem.getHTML();
+	}
 
-	  /**
-	   * Gets whether this item's children are displayed.
-	   * 
-	   * @return <code>true</code> if the item is open
-	   */
-	  public boolean getState() 
-	  {
-	    return treeItem.getState();
-	  }
+	/**
+	 * Gets this item's parent.
+	 * 
+	 * @return the parent item
+	 */
+	public TreeItem getParentItem() 
+	{
+		return new TreeItem(treeItem.getParentItem(), tree);
+	}
 
-	  public String getText() 
-	  {
-	    return treeItem.getText();
-	  }
+	/**
+	 * Gets whether this item's children are displayed.
+	 * 
+	 * @return <code>true</code> if the item is open
+	 */
+	public boolean getState() 
+	{
+		return treeItem.getState();
+	}
 
-	  /**
-	   * Gets the tree that contains this item.
-	   * 
-	   * @return the containing tree
-	   */
-	  public final Tree getTree() 
-	  {
-		  return tree;
-	  }
+	public String getText() 
+	{
+		return treeItem.getText();
+	}
 
-	  /**
-	   * Gets the user-defined object associated with this item.
-	   * 
-	   * @return the item's user-defined object
-	   */
-	  public Object getUserObject() 
-	  {
-	    return treeItem.getUserObject();
-	  }
+	/**
+	 * Gets the tree that contains this item.
+	 * 
+	 * @return the containing tree
+	 */
+	public final Tree getTree() 
+	{
+		return tree;
+	}
 
-	  /**
-	   * Gets the <code>Widget</code> associated with this tree item.
-	   * 
-	   * @return the widget
-	   */
-	  public Component getComponent() 
-	  {
-	    return tree.getComponent(this.treeItem);
-	  }
+	/**
+	 * Gets the user-defined object associated with this item.
+	 * 
+	 * @return the item's user-defined object
+	 */
+	public Object getUserObject() 
+	{
+		return treeItem.getUserObject();
+	}
 
-	  /**
-	   * Determines whether this item is currently selected.
-	   * 
-	   * @return <code>true</code> if it is selected
-	   */
-	  public boolean isSelected() 
-	  {
-	    return treeItem.isSelected();
-	  }
+	/**
+	 * Gets the <code>Component</code> associated with this tree item.
+	 * 
+	 * @return the component
+	 */
+	public Component getComponent() 
+	{
+		return component;
+	}
 
-	  /**
-	   * Removes this item from its tree.
-	   */
-	  public void remove() 
-	  {
-		  treeItem.remove();
-		  tree.removeComponentForItem(treeItem);
-	  }
+	/**
+	 * Determines whether this item is currently selected.
+	 * 
+	 * @return <code>true</code> if it is selected
+	 */
+	public boolean isSelected() 
+	{
+		return treeItem.isSelected();
+	}
 
-	  /**
-	   * Removes one of this item's children.
-	   * 
-	   * @param item the item to be removed
-	   */
+	/**
+	 * Removes this item from its tree.
+	 */
+	public void remove() 
+	{
+		tree.removeItem(this);
+	}
 
-	  public void removeItem(TreeItem item) 
-	  {
-		  treeItem.removeItem(item.treeItem);
-		  tree.removeComponentForItem(item.treeItem);
-	  }
+	/**
+	 * Removes one of this item's children.
+	 * 
+	 * @param item the item to be removed
+	 */
 
-	  /**
-	   * Removes all of this item's children.
-	   */
-	  public void removeItems() 
-	  {
-		  while (getChildCount() > 0)
-		  {
-		      removeItem(getChild(0));
-		  }
-	  }
+	public void removeItem(TreeItem item) 
+	{
+		treeItem.removeItem(item.treeItem);
+		itens.remove(item);
+	}
 
-	  public void setHTML(String html) 
-	  {
-		  treeItem.setHTML(html);
-	  }
+	/**
+	 * Removes all of this item's children.
+	 */
+	public void removeItems() 
+	{
+		treeItem.removeItems();
+		itens.clear();
+	}
 
-	  /**
-	   * Selects or deselects this item.
-	   * 
-	   * @param selected <code>true</code> to select the item, <code>false</code> to
-	   *          deselect it
-	   */
-	  public void setSelected(boolean selected) 
-	  {
-		  treeItem.setSelected(selected);
-	  }
+	public void setHTML(String html) 
+	{
+		setComponent(null);
+		treeItem.setHTML(html);
+	}
 
-	  /**
-	   * Sets whether this item's children are displayed.
-	   * 
-	   * @param open whether the item is open
-	   */
-	  public void setState(boolean open) 
-	  {
-	    treeItem.setState(open);
-	  }
+	/**
+	 * Selects or deselects this item.
+	 * 
+	 * @param selected <code>true</code> to select the item, <code>false</code> to
+	 *          deselect it
+	 */
+	public void setSelected(boolean selected) 
+	{
+		treeItem.setSelected(selected);
+	}
 
-	  /**
-	   * Sets whether this item's children are displayed.
-	   * 
-	   * @param open whether the item is open
-	   * @param fireEvents <code>true</code> to allow open/close events to be
-	   */
-	  public void setState(boolean open, boolean fireEvents) 
-	  {
-		  treeItem.setState(open, fireEvents);
-	  }
+	/**
+	 * Sets whether this item's children are displayed.
+	 * 
+	 * @param open whether the item is open
+	 */
+	public void setState(boolean open) 
+	{
+		treeItem.setState(open);
+	}
 
-	  public void setText(String text) 
-	  {
-		  treeItem.setText(text);
-	  }
+	/**
+	 * Sets whether this item's children are displayed.
+	 * 
+	 * @param open whether the item is open
+	 * @param fireEvents <code>true</code> to allow open/close events to be
+	 */
+	public void setState(boolean open, boolean fireEvents) 
+	{
+		treeItem.setState(open, fireEvents);
+	}
 
-	  /**
-	   * Sets the user-defined object associated with this item.
-	   * 
-	   * @param userObj the item's user-defined object
-	   */
-	  public void setUserObject(Object userObj) 
-	  {
-	    treeItem.setUserObject(userObj);
-	  }
+	public void setText(String text) 
+	{
+		setComponent(null);
+		treeItem.setText(text);
+	}
 
-	  /**
-	   * Sets the current widget. Any existing child widget will be removed.
-	   * 
-	   * @param newWidget Widget to set
-	   */
-	  public void setComponent(Component component) 
-	  {
-		  if (component != null)
-		  {
-			  treeItem.setWidget(tree.getComponentWidget(component));
-			  tree.componentsForItens.put(treeItem, component);
-		  }
-		  else
-		  {
-			  treeItem.setWidget(null);
-			  tree.componentsForItens.remove(treeItem);
-		  }
-	  }
+	/**
+	 * Sets the user-defined object associated with this item.
+	 * 
+	 * @param userObj the item's user-defined object
+	 */
+	public void setUserObject(Object userObj) 
+	{
+		treeItem.setUserObject(userObj);
+	}
+
+	/**
+	 * Sets the current component. Any existing child component will be removed.
+	 * 
+	 * @param component Component to set
+	 */
+	public void setComponent(Component component) 
+	{
+		if (component != null)
+		{
+			treeItem.setWidget(tree.getComponentWidget(component));
+			this.component = component;
+		}
+		else
+		{
+			treeItem.setWidget(null);
+			this.component = null;
+		}
+	}
 }

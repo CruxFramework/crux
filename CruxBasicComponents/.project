@@ -3,6 +3,7 @@
 	<name>CruxBasicComponents</name>
 	<comment></comment>
 	<projects>
+		<project>Crux</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
