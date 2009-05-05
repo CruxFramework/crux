@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.dispatch;
+package br.com.sysmap.crux.core.i18n;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -21,36 +21,41 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.config.ConfigurationFactory;
 
-public class ControllerFactoryInitializer 
+/**
+ * Initialises the LocaleResolver class
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
+ */
+public class LocaleResolverInitialiser 
 {
-	private static final Log logger = LogFactory.getLog(ControllerFactoryInitializer.class);
-	private static ControllerFactory controllerFactory;
+	protected static LocaleResolver localeResolver;
 	private static final Lock lock = new ReentrantLock();
+	private static final Log logger = LogFactory.getLog(LocaleResolverInitialiser.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
-	public static ControllerFactory getControllerFactory() throws InstantiationException, IllegalAccessException, ClassNotFoundException
+	
+	public static LocaleResolver getLocaleResolver()
 	{
-		if (controllerFactory != null) return controllerFactory;
+		if (localeResolver != null) return localeResolver;
 		
+		lock.lock();
 		try
 		{
-			lock.lock();
-			if (controllerFactory != null) return controllerFactory;
-			controllerFactory = (ControllerFactory) Class.forName(ConfigurationFactory.getConfiguration().controllerFactory()).newInstance(); 
+			if (localeResolver != null) return localeResolver;
+			localeResolver = (LocaleResolver) Class.forName(ConfigurationFactory.getConfiguration().localeResolver()).newInstance(); 
 		}
-		catch (Throwable e)
+		catch (Exception e) 
 		{
-			logger.error(messages.controllerFactoryInitializerError(e.getMessage()), e);
+			logger.error(messages.localeResolverInitialisationError(e.getMessage()), e);
 		}
 		finally
 		{
 			lock.unlock();
 		}
-		return controllerFactory;
+		return localeResolver;
+		
 	}
-
 }

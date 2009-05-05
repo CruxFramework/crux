@@ -13,24 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.config;
+package br.com.sysmap.crux.core.i18n;
 
-import br.com.sysmap.crux.core.i18n.DefaultMessage;
+import java.util.Locale;
 
-public interface Crux 
+/**
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
+ */
+public interface LocaleResolver 
 {
-	@DefaultMessage("br.com.sysmap.crux.core.server.dispatch.ControllerFactoryImpl")
-	String controllerFactory();
-	
-	@DefaultMessage("true")
-	String initializeControllersAtStartup();
-	
-	@DefaultMessage("true")
-	String initializeFormattersAtStartup();
-	
-	@DefaultMessage("false")
-	String lookupWebInfOnly();
-	
-	@DefaultMessage("br.com.sysmap.crux.core.i18n.LocaleResolverImpl")
-	String localeResolver();
+	Locale getUserLocale();
 }

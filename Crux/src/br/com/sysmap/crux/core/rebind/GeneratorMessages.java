@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.rebind;
 
+import br.com.sysmap.crux.core.i18n.DefaultMessage;
+
 /**
  * Messages from generator.
  * @author Thiago
@@ -22,16 +24,21 @@ package br.com.sysmap.crux.core.rebind;
  */
 public interface GeneratorMessages 
 {
+	@DefaultMessage("[generator 001] - Component not registered: ")
 	String errorGeneratingRegisteredComponentsNotRegistered();
+
+	@DefaultMessage("[generator 002] - Error for register client event handler. Component: {0}. Error:{1}")
 	String errorGeneratingRegisteredClientHandler(String component, String errMesg);
-	String errorGeneratingRegisteredClientCallback(String component, String errMesg);
+
+	@DefaultMessage("[generator 003] - Error for register client formatter. Component: {0}. Error:{1}")
 	String errorGeneratingRegisteredFormatter(String component, String errMesg);
+
+	@DefaultMessage("[generator 004] - Error for register client class {0}:")
 	String errorGeneratingRegisteredElement(String errMsg);
+
+	@DefaultMessage("[generator 005] - Error retrieving screen Identifier.")
 	String errorGeneratingRegisteredElementInvalidScreenID();
+
+	@DefaultMessage("[controller 001] - Method Not Found: ")
 	String errorinvokingGeneratedMethod();
-	
-	String errorJsonParserInvalidKeyForMap();
-	String errorJsonParserPolymorphismNotSupported();
-	String errorJsonParserCharSequenceNotSupported();
-	String errorJsonParserDateNotSupported();
 }
