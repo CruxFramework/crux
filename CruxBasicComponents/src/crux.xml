@@ -2,41 +2,41 @@
 <crux xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
       xsi:noNamespaceSchemaLocation="../../Crux/xsd/crux.xsd"
       module="br.com.sysmap.crux.ext.CruxBasicComponents">
-  <component id="anchor" clientClass="br.com.sysmap.crux.ext.client.component.Anchor" />
-  <component id="button" clientClass="br.com.sysmap.crux.ext.client.component.Button" />
-  <component id="checkBox" clientClass="br.com.sysmap.crux.ext.client.component.CheckBox" />
-  <component id="radioButton" clientClass="br.com.sysmap.crux.ext.client.component.RadioButton" />
-  <component id="toggleButton" clientClass="br.com.sysmap.crux.ext.client.component.ToggleButton" />
-  <component id="pushButton" clientClass="br.com.sysmap.crux.ext.client.component.PushButton" />
-  <component id="listBox" clientClass="br.com.sysmap.crux.ext.client.component.ListBox" />
-  <component id="richTextArea" clientClass="br.com.sysmap.crux.ext.client.component.RichTextArea" />
-  <component id="simpleCheckBox" clientClass="br.com.sysmap.crux.ext.client.component.SimpleCheckBox" />
-  <component id="simpleRadioButton" clientClass="br.com.sysmap.crux.ext.client.component.SimpleRadioButton" />
-  <component id="textBox" clientClass="br.com.sysmap.crux.ext.client.component.TextBox" />
-  <component id="textArea" clientClass="br.com.sysmap.crux.ext.client.component.TextArea" />
-  <component id="passwordTextBox" clientClass="br.com.sysmap.crux.ext.client.component.PasswordTextBox"/>
-  <component id="fileUpload" clientClass="br.com.sysmap.crux.ext.client.component.FileUpload"/>
-  <component id="frame" clientClass="br.com.sysmap.crux.ext.client.component.Frame"/>
-  <component id="namedFrame" clientClass="br.com.sysmap.crux.ext.client.component.NamedFrame" clientConstructorParams="id, element"/>
-  <component id="hidden" clientClass="br.com.sysmap.crux.ext.client.component.Hidden"/>
-  <component id="hyperlink" clientClass="br.com.sysmap.crux.ext.client.component.Hyperlink"/>
-  <component id="inlineHyperlink" clientClass="br.com.sysmap.crux.ext.client.component.InlineHyperlink"/>
-  <component id="image" clientClass="br.com.sysmap.crux.ext.client.component.Image"/>
-  <component id="label" clientClass="br.com.sysmap.crux.ext.client.component.Label"/>
-  <component id="html" clientClass="br.com.sysmap.crux.ext.client.component.HTML"/>
-  <component id="inlineLabel" clientClass="br.com.sysmap.crux.ext.client.component.InlineLabel"/>
-  <component id="inlineHtml" clientClass="br.com.sysmap.crux.ext.client.component.InlineHTML"/>
-  <component id="menuBar" clientClass="br.com.sysmap.crux.ext.client.component.MenuBar" clientConstructorParams="id, element"/>
-  <component id="tree" clientClass="br.com.sysmap.crux.ext.client.component.Tree" clientConstructorParams="id, element"/>
-  <component id="simplePanel" clientClass="br.com.sysmap.crux.ext.client.component.SimplePanel"/>
-  <component id="decoratorPanel" clientClass="br.com.sysmap.crux.ext.client.component.DecoratorPanel"/>
-  <component id="focusPanel" clientClass="br.com.sysmap.crux.ext.client.component.FocusPanel"/>
-  <component id="formPanel" clientClass="br.com.sysmap.crux.ext.client.component.FormPanel" clientConstructorParams="id, element"/>
-  <component id="simpleLazyPanel" clientClass="br.com.sysmap.crux.ext.client.component.SimpleLazyPanel" />
-  <component id="popupPanel" clientClass="br.com.sysmap.crux.ext.client.component.PopupPanel" clientConstructorParams="id, element"/>
-  <component id="decoratedPopupPanel" clientClass="br.com.sysmap.crux.ext.client.component.DecoratedPopupPanel" clientConstructorParams="id, element"/>
-  <component id="horizontalSplitPanel" clientClass="br.com.sysmap.crux.ext.client.component.HorizontalSplitPanel" clientConstructorParams="id, element"/>
-  <component id="VerticalSplitPanel" clientClass="br.com.sysmap.crux.ext.client.component.VerticalSplitPanel" clientConstructorParams="id, element"/>
+  <component id="anchor" clientClass="br.com.sysmap.crux.basic.client.Anchor" />
+  <component id="button" clientClass="br.com.sysmap.crux.basic.client.Button" />
+  <component id="checkBox" clientClass="br.com.sysmap.crux.basic.client.CheckBox" />
+  <component id="radioButton" clientClass="br.com.sysmap.crux.basic.client.RadioButton" />
+  <component id="toggleButton" clientClass="br.com.sysmap.crux.basic.client.ToggleButton" />
+  <component id="pushButton" clientClass="br.com.sysmap.crux.basic.client.PushButton" />
+  <component id="listBox" clientClass="br.com.sysmap.crux.basic.client.ListBox" />
+  <component id="richTextArea" clientClass="br.com.sysmap.crux.basic.client.RichTextArea" />
+  <component id="simpleCheckBox" clientClass="br.com.sysmap.crux.basic.client.SimpleCheckBox" />
+  <component id="simpleRadioButton" clientClass="br.com.sysmap.crux.basic.client.SimpleRadioButton" />
+  <component id="textBox" clientClass="br.com.sysmap.crux.basic.client.TextBox" />
+  <component id="textArea" clientClass="br.com.sysmap.crux.basic.client.TextArea" />
+  <component id="passwordTextBox" clientClass="br.com.sysmap.crux.basic.client.PasswordTextBox"/>
+  <component id="fileUpload" clientClass="br.com.sysmap.crux.basic.client.FileUpload"/>
+  <component id="frame" clientClass="br.com.sysmap.crux.basic.client.Frame"/>
+  <component id="namedFrame" clientClass="br.com.sysmap.crux.basic.client.NamedFrame" clientConstructorParams="id, element"/>
+  <component id="hidden" clientClass="br.com.sysmap.crux.basic.client.Hidden"/>
+  <component id="hyperlink" clientClass="br.com.sysmap.crux.basic.client.Hyperlink"/>
+  <component id="inlineHyperlink" clientClass="br.com.sysmap.crux.basic.client.InlineHyperlink"/>
+  <component id="image" clientClass="br.com.sysmap.crux.basic.client.Image"/>
+  <component id="label" clientClass="br.com.sysmap.crux.basic.client.Label"/>
+  <component id="html" clientClass="br.com.sysmap.crux.basic.client.HTML"/>
+  <component id="inlineLabel" clientClass="br.com.sysmap.crux.basic.client.InlineLabel"/>
+  <component id="inlineHtml" clientClass="br.com.sysmap.crux.basic.client.InlineHTML"/>
+  <component id="menuBar" clientClass="br.com.sysmap.crux.basic.client.MenuBar" clientConstructorParams="id, element"/>
+  <component id="tree" clientClass="br.com.sysmap.crux.basic.client.Tree" clientConstructorParams="id, element"/>
+  <component id="simplePanel" clientClass="br.com.sysmap.crux.basic.client.SimplePanel"/>
+  <component id="decoratorPanel" clientClass="br.com.sysmap.crux.basic.client.DecoratorPanel"/>
+  <component id="focusPanel" clientClass="br.com.sysmap.crux.basic.client.FocusPanel"/>
+  <component id="formPanel" clientClass="br.com.sysmap.crux.basic.client.FormPanel" clientConstructorParams="id, element"/>
+  <component id="simpleLazyPanel" clientClass="br.com.sysmap.crux.basic.client.SimpleLazyPanel" />
+  <component id="popupPanel" clientClass="br.com.sysmap.crux.basic.client.PopupPanel" clientConstructorParams="id, element"/>
+  <component id="decoratedPopupPanel" clientClass="br.com.sysmap.crux.basic.client.DecoratedPopupPanel" clientConstructorParams="id, element"/>
+  <component id="horizontalSplitPanel" clientClass="br.com.sysmap.crux.basic.client.HorizontalSplitPanel" clientConstructorParams="id, element"/>
+  <component id="VerticalSplitPanel" clientClass="br.com.sysmap.crux.basic.client.VerticalSplitPanel" clientConstructorParams="id, element"/>
   <component id="scrollPanel" clientClass="br.com.sysmap.crux.core.client.component.ScrollPanel" />
   
   
@@ -51,6 +51,6 @@
   			 clientClass="br.com.sysmap.crux.core.client.component.Container"
              clientConstructorParams="id, new com.google.gwt.user.client.ui.StackPanel()" />
   <component id="htmlPanel" 
-  			 clientClass="br.com.sysmap.crux.ext.client.component.HTMLContainer"
+  			 clientClass="br.com.sysmap.crux.basic.client.HTMLContainer"
              clientConstructorParams="id" />
 </crux>
