@@ -26,14 +26,11 @@ import com.google.gwt.user.client.ui.Widget;
  * Represent a CRUX component at the application's client side. 
  * @author Thiago Bustamante
  */
-public class Component
+public abstract class Component extends UIObject
 {
 	private int hashValue = 0;
 	protected Widget widget;
 	protected String id;
-	protected String width;
-	protected String height;
-
 	protected Screen screen = null;
 	
 	/**
@@ -43,7 +40,7 @@ public class Component
 	 */
 	protected Component(String id, Widget widget) 
 	{
-		if (widget == null) throw new NullPointerException();
+		super(widget);
 		this.id = id;
 		this.widget = widget;
 	}
@@ -94,30 +91,28 @@ public class Component
 		String width = element.getAttribute("_width");
 		if (width != null && width.length() > 0)
 		{
-			this.width = width;
-			widget.setWidth(this.width);
+			setWidth(width);
 		}
 		String height = element.getAttribute("_height");
 		if (height != null && height.length() > 0)
 		{
-			this.height = height;
-			widget.setHeight(this.height);
+			setHeight(height);
 		}
 		String visible = element.getAttribute("_visible");
 		if (visible != null && visible.length() > 0)
 		{
-			widget.setVisible(Boolean.parseBoolean(visible));
+			setVisible(Boolean.parseBoolean(visible));
 		}
 		String tooltip = element.getAttribute("_tooltip");
 		if (tooltip != null && tooltip.length() > 0)
 		{
-			widget.setTitle(tooltip);
+			setTitle(tooltip);
 		}
-		
 		String classAttr = element.getAttribute("_class");
 		if (classAttr != null && classAttr.length() > 0)
-			widget.setStyleName(classAttr);
-		
+		{
+			setStyleName(classAttr);
+		}
 		String style = element.getAttribute("_style");
 		if (style != null && style.length() > 0)
 		{
@@ -195,154 +190,6 @@ public class Component
     }
 
 	/**
-	 * Return component's width string. This is the same string declared in component's span tag.
-	 * Ex: '10px;' or '95%;'
-	 * @return
-	 */
-	public String getWidthStr() 
-	{
-		return width;
-	}
-
-	/**
-	 * Set component's width
-	 * @return
-	 */
-	public void setWidth(String width) 
-	{
-		widget.setWidth(width);
-		this.width = width;
-	}
-
-	/**
-	 * Return component's className
-	 * @return
-	 */
-	public void getClassName()
-	{
-		widget.getStyleName();
-	}
-	
-	/**
-	 * Set component's className
-	 * @return
-	 */
-	public void setClassName(String className) 
-	{
-		widget.setStyleName(className);
-	}
-
-	/**
-	 * Adds a secondary style class
-	 * @param style
-	 */
-	public void addClassName(String style) 
-	{
-		widget.addStyleName(style);
-	}
-
-	/**
-	 * Removes a style class name
-	 * @param style
-	 */
-	public void removeStyleName(String style)
-	{
-		widget.removeStyleName(style);
-	}
-	
-	/**
-	 * Return component's height string. This is the same string declared in component's span tag.
-	 * Ex: '10px;' or '95%;'
-	 * @return
-	 */
-	public String getHeightStr() 
-	{
-		return height;
-	}
-
-	/**
-	 * Set component's height
-	 * @return
-	 */
-	public void setHeight(String height) 
-	{
-		widget.setHeight(height);
-		this.height = height;
-	}
-	
-	/**
-	 * Return the component's visibility
-	 * @return
-	 */
-	public boolean isVilible()
-	{
-		return widget.isVisible();
-	}
-	
-	/**
-	 * Set the component's visibility
-	 * @return
-	 */
-	public void setVisible(boolean visible)
-	{
-		widget.setVisible(visible);
-	}
-	
-	/**
-	 * Return component's tooltip
-	 * @return
-	 */
-	public String getTooltip() 
-	{
-		return widget.getTitle();
-	}
-
-	/**
-	 * Set component's tooltip
-	 * @return
-	 */
-	public void setTooltip(String tooltip) 
-	{
-		widget.setTitle(tooltip);
-	}
-	
-	/**
-	 * Return the component's offset width in pixels
-	 * @return
-	 */
-	public int getOffsetWidth()
-	{
-		return widget.getOffsetWidth();
-	}
-	
-	/**
-	 * Return the component's offset height in pixels
-	 * @return
-	 */
-	public int getOffsetHeight() 
-	{	
-		return widget.getOffsetHeight();
-	}
-	
-	/**
-	 * Return the object's absolute left position in pixels
-	 * @return
-	 */
-	public int getAbsoluteLeft() 
-	{
-		return widget.getAbsoluteLeft();
-	}
-	
-	/**
-	 * Return the object's absolute top position in pixels
-	 * @return
-	 */
-	public int getAbsoluteTop() 
-	{
-		return widget.getAbsoluteTop();
-	}
-	
-	/**
 	 * Used by components that need to create new components as children, like tree. Tree can container 
 	 * multiple components.
 	 * 
@@ -355,4 +202,15 @@ public class Component
 	{
 		return ScreenFactory.getInstance().newComponent(element, componentId);
 	}
+	
+	/**
+	 * Provide access to component's widget. Used for component subclasses that
+	 * need to access widgets of their children. 
+	 * @param component
+	 * @return
+	 */
+	protected Widget getComponentWidget(Component component)
+	{
+		return (component.widget!=null?component.widget:null);
+	}	
 }

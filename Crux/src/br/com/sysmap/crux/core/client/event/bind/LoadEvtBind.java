@@ -27,7 +27,7 @@ import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 
 /**
- * 
+ * Helper Class for load events binding
  * @author Thiago Bustamante
  */
 public class LoadEvtBind extends EvtBind 

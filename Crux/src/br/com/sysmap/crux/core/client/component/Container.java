@@ -63,17 +63,6 @@ public abstract class Container extends Component
 		clearWidgetChildren(this.widget);
 	}
 	
-	/**
-	 * Provide access to component's widget. Used for container subclasses that
-	 * need to access widgets of their children. 
-	 * @param component
-	 * @return
-	 */
-	protected Widget getComponentWidget(Component component)
-	{
-		return (component.widget!=null?component.widget:null);
-	}
-	
 	protected abstract void addWidget(Widget widget);
 	
 	protected abstract void removeWidget(Widget widget);
