@@ -40,19 +40,19 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 		String horizontalAlignment = element.getAttribute("_horizontalAlignment");
 		if (horizontalAlignment != null && horizontalAlignment.trim().length() > 0)
 		{
-			if (HasHorizontalAlignment.ALIGN_CENTER.equals(horizontalAlignment))
+			if (HasHorizontalAlignment.ALIGN_CENTER.getTextAlignString().equals(horizontalAlignment))
 			{
 				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			}
-			else if (HasHorizontalAlignment.ALIGN_DEFAULT.equals(horizontalAlignment))
+			else if (HasHorizontalAlignment.ALIGN_DEFAULT.getTextAlignString().equals(horizontalAlignment))
 			{
 				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_DEFAULT);
 			}
-			else if (HasHorizontalAlignment.ALIGN_LEFT.equals(horizontalAlignment))
+			else if (HasHorizontalAlignment.ALIGN_LEFT.getTextAlignString().equals(horizontalAlignment))
 			{
 				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 			}
-			else if (HasHorizontalAlignment.ALIGN_RIGHT.equals(horizontalAlignment))
+			else if (HasHorizontalAlignment.ALIGN_RIGHT.getTextAlignString().equals(horizontalAlignment))
 			{
 				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			}

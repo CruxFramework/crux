@@ -15,10 +15,69 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.StackPanel;
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class StackPanelFactory {
+public class StackPanelFactory extends ComplexPanelFactory<StackPanel>
+{
+	@Override
+	public void add(StackPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
+	{
+		Element childElementParent = childElement.getParentElement();
+		// there's no stack text. 
+		if (parentElement.getId().equals(childElementParent.getId()))
+		{
+			parent.add(child);
+		}
+		else 
+		{
+			String stackText = childElementParent.getAttribute("_widgetTitle");
+			// stack text as text
+			if (stackText != null && stackText.trim().length() > 0)
+			{
+				parent.add(child, stackText);
+			}
+			// stack text as html
+			else
+			{
+				Element stackTextSpan = childElementParent.getFirstChildElement();
+				if (stackTextSpan != null && !isWidget(stackTextSpan))
+				{
+					parent.add(child, stackTextSpan.getInnerHTML(), true);
+				}
+				else
+				{
+					throw new InterfaceConfigException();
+					//TODO: colocar mensagem
+				}
+			}
+			parentElement.removeChild(childElementParent);
+		}
+	}
 
+	@Override
+	protected StackPanel instantiateWidget(Element element, String widgetId) 
+	{
+		return new StackPanel();
+	}
+
+	@Override
+	protected void processAttributes(StackPanel widget, Element element, String widgetId) 
+	{
+		super.processAttributes(widget, element, widgetId);
+		
+		String visibleStack = element.getAttribute("_visibleStack");
+		if (visibleStack != null && visibleStack.length() > 0)
+		{
+			widget.showStack(Integer.parseInt(visibleStack));
+		}
+	}
+	
 }

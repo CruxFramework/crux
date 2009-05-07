@@ -39,4 +39,9 @@
   <widget id="VerticalSplitPanel" clientClass="br.com.sysmap.crux.basic.client.VerticalSplitPanelFactory"/>
   <widget id="scrollPanel" clientClass="br.com.sysmap.crux.basic.client.ScrollPanelFactory" />
   <widget id="htmlPanel" clientClass="br.com.sysmap.crux.basic.client.HTMLPanelFactory" />
+  <widget id="stackPanel" clientClass="br.com.sysmap.crux.basic.client.StackPanelFactory" />
+  <widget id="decoratedStackPanel" clientClass="br.com.sysmap.crux.basic.client.DecoratedStackPanelFactory" />
+  <widget id="flowPanel" clientClass="br.com.sysmap.crux.basic.client.FlowPanelFactory" />
+  <widget id="deckPanel" clientClass="br.com.sysmap.crux.basic.client.DeckPanelFactory" />
+  <widget id="dockPanel" clientClass="br.com.sysmap.crux.basic.client.DockPanelFactory" />
 </crux>
