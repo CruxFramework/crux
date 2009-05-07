@@ -18,72 +18,40 @@ package br.com.sysmap.crux.basic.client;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class AbsolutePanelFactory extends CellPanelFactory<VerticalPanel>
+public class AbsolutePanelFactory extends ComplexPanelFactory<AbsolutePanel>
 {
 
 	@Override
-	protected VerticalPanel instantiateWidget(Element element, String widgetId)
+	protected AbsolutePanel instantiateWidget(Element element, String widgetId)
 	{
-		return new VerticalPanel();
+		return new AbsolutePanel();
 	}
 
 	@Override
-	public void add(VerticalPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
+	public void add(AbsolutePanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
 	{
-		parent.add(child);
-		super.add(parent, child, parentElement, childElement);
-	}
-	
-	@Override
-	protected void processAttributes(VerticalPanel widget, Element element, String widgetId)
-	{
-		super.processAttributes(widget, element, widgetId);
-		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");
-		if (cellHorizontalAlignment != null && cellHorizontalAlignment.trim().length() > 0)
+		Element childElementParent = childElement.getParentElement();
+		// there're cell attributes . 
+		if (!parentElement.getId().equals(childElementParent.getId()))
 		{
-			if (HasHorizontalAlignment.ALIGN_CENTER.getTextAlignString().equals(cellHorizontalAlignment))
+			String left = childElementParent.getAttribute("_left");
+			String top = childElementParent.getAttribute("_top");
+			if (left != null && left.length() > 0 && top != null && top.length() > 0)
 			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+				parent.add(child, Integer.parseInt(left), Integer.parseInt(top));
 			}
-			else if (HasHorizontalAlignment.ALIGN_DEFAULT.getTextAlignString().equals(cellHorizontalAlignment))
+			else
 			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_DEFAULT);
+				parent.add(child);
 			}
-			else if (HasHorizontalAlignment.ALIGN_LEFT.getTextAlignString().equals(cellHorizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-			}
-			else if (HasHorizontalAlignment.ALIGN_RIGHT.getTextAlignString().equals(cellHorizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-			}
-		}			
-		
-		String cellVerticalAlignment = element.getAttribute("_verticalAlignment");
-		if (cellVerticalAlignment != null && cellVerticalAlignment.trim().length() > 0)
-		{
-			if (HasVerticalAlignment.ALIGN_BOTTOM.getVerticalAlignString().equals(cellVerticalAlignment))
-			{
-				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
-			}
-			else if (HasVerticalAlignment.ALIGN_MIDDLE.getVerticalAlignString().equals(cellVerticalAlignment))
-			{
-				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-			}
-			else if (HasVerticalAlignment.ALIGN_TOP.getVerticalAlignString().equals(cellVerticalAlignment))
-			{
-				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-			}
-		}	
-		
+			parentElement.removeChild(childElementParent);
+		}		
 	}
 }

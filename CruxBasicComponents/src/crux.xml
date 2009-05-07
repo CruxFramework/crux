@@ -44,4 +44,7 @@
   <widget id="flowPanel" clientClass="br.com.sysmap.crux.basic.client.FlowPanelFactory" />
   <widget id="deckPanel" clientClass="br.com.sysmap.crux.basic.client.DeckPanelFactory" />
   <widget id="dockPanel" clientClass="br.com.sysmap.crux.basic.client.DockPanelFactory" />
+  <widget id="horizontalPanel" clientClass="br.com.sysmap.crux.basic.client.HorizontalPanelFactory" />
+  <widget id="verticalPanel" clientClass="br.com.sysmap.crux.basic.client.VerticalPanelFactory" />
+  <widget id="absolutePanel" clientClass="br.com.sysmap.crux.basic.client.AbsolutePanelFactory" />
 </crux>
