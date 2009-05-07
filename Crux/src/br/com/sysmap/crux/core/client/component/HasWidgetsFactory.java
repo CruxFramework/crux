@@ -34,8 +34,9 @@ public abstract class HasWidgetsFactory<T extends Widget> extends WidgetFactory<
 	 * @param child
 	 * @param parentElement
 	 * @param childElement
+	 * @throws InterfaceConfigException 
 	 */
-	public abstract void add(T parent,  Widget child, Element parentElement, Element childElement);	
+	public abstract void add(T parent,  Widget child, Element parentElement, Element childElement) throws InterfaceConfigException;	
 	
 	/**
 	 * Returns the element which is the father of the given one. If it does not have an id, creates a random for it
@@ -62,5 +63,15 @@ public abstract class HasWidgetsFactory<T extends Widget> extends WidgetFactory<
 	private static String generateNewId() 
 	{
 		return "_crux_" + (++currentId );
+	}
+	
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	protected boolean isWidget(Element element)
+	{
+		return ScreenFactory.getInstance().isValidWidget(element);
 	}
 }

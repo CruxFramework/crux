@@ -194,7 +194,7 @@ public class ScreenFactory {
 		return false;
 	}
 
-	private boolean isValidWidget(Element element)
+	boolean isValidWidget(Element element)
 	{
 		if ("span".equalsIgnoreCase(element.getTagName()))
 		{
