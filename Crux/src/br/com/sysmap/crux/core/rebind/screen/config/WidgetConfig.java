@@ -33,36 +33,36 @@ import org.apache.commons.logging.LogFactory;
 import org.xml.sax.InputSource;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.screen.ComponentParser;
-import br.com.sysmap.crux.core.rebind.screen.config.parser.ComponentT;
+import br.com.sysmap.crux.core.rebind.screen.WidgetParser;
 import br.com.sysmap.crux.core.rebind.screen.config.parser.CruxT;
+import br.com.sysmap.crux.core.rebind.screen.config.parser.WidgetT;
 import br.com.sysmap.crux.core.server.ServerMessages;
-import br.com.sysmap.crux.core.server.scan.ComponentConfigScanner;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
+import br.com.sysmap.crux.core.server.scan.WidgetConfigScanner;
 
-public class ComponentConfig 
+public class WidgetConfig 
 {
-	private static Map<String, ComponentConfigData> config = null;
+	private static Map<String, WidgetConfigData> config = null;
 	private static Set<String> registeredLibraries = null;
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
-	private static final Log logger = LogFactory.getLog(ComponentConfig.class);
+	private static final Log logger = LogFactory.getLog(WidgetConfig.class);
 	private static final Lock lock = new ReentrantLock();
 
-	public static void initializeComponentConfig()
+	public static void initializeWidgetConfig()
 	{
-		initializeComponentConfig(ScannerURLS.getURLsForSearch(null));
+		initializeWidgetConfig(ScannerURLS.getURLsForSearch(null));
 	}
 	
-	public static void initializeComponentConfig(URL[] urls)
+	public static void initializeWidgetConfig(URL[] urls)
 	{
 		if (config != null) return;
 		lock.lock();
 		try
 		{
 			if (config != null) return;
-			config = new HashMap<String, ComponentConfigData>(100);
+			config = new HashMap<String, WidgetConfigData>(100);
 			registeredLibraries = new HashSet<String>();
-			ComponentConfigScanner.getInstance().scanArchives(urls);
+			WidgetConfigScanner.getInstance().scanArchives(urls);
 		}
 		catch (RuntimeException e) 
 		{
@@ -87,21 +87,20 @@ public class ComponentConfig
 			
 			registeredLibraries.add(crux.getModule());
 			
-			for (ComponentT component : crux.getComponent())
+			for (WidgetT widget : crux.getWidget())
 			{
-				ComponentParser componentParser = (ComponentParser) Class.forName(component.getServerParserClass()).newInstance();	
+				WidgetParser widgetParser = (WidgetParser) Class.forName(widget.getServerParserClass()).newInstance();	
 				
-				ComponentConfigData data = new ComponentConfigData(component.getClientClass(),
-																   component.getClientConstructorParams(), 
-																   component.getServerClass(), 
-																   componentParser,
-																   component.getParserInput().value());
-				config.put(component.getId(), data);
+				WidgetConfigData data = new WidgetConfigData(widget.getClientClass(),
+																   widget.getServerClass(), 
+																   widgetParser,
+																   widget.getParserInput().value());
+				config.put(widget.getId(), data);
 			}
 		} 
 		catch (Throwable e) 
 		{
-			logger.error(messages.componentConfigParserError(e.getLocalizedMessage()),e);
+			logger.error(messages.widgetConfigParserError(e.getLocalizedMessage()),e);
 		}
 	}
 	
@@ -109,53 +108,42 @@ public class ComponentConfig
 	{
 		if (config == null)
 		{
-			initializeComponentConfig();
+			initializeWidgetConfig();
 		}
-		ComponentConfigData data = config.get(id);
+		WidgetConfigData data = config.get(id);
 		if (data == null) return null;
 		return data.getServerClass();
 	}
 
-	public static ComponentParser getComponentParser(String id)
+	public static WidgetParser getWidgetParser(String id)
 	{
 		if (config == null)
 		{
-			initializeComponentConfig();
+			initializeWidgetConfig();
 		}
-		ComponentConfigData data = config.get(id);
+		WidgetConfigData data = config.get(id);
 		if (data == null) return null;
-		return data.getComponentParser();
+		return data.getWidgetParser();
 	}
 
 	public static String getClientClass(String id)
 	{
 		if (config == null)
 		{
-			initializeComponentConfig();
+			initializeWidgetConfig();
 		}
-		ComponentConfigData data = config.get(id);
+		WidgetConfigData data = config.get(id);
 		if (data == null) return null;
 		return data.getClientClass();
-	}
-
-	public static String getClientConstructorParams(String id)
-	{
-		if (config == null)
-		{
-			initializeComponentConfig();
-		}
-		ComponentConfigData data = config.get(id);
-		if (data == null) return null;
-		return data.getClientConstructorParams();
 	}
 
 	public static String getParserInput(String id)
 	{
 		if (config == null)
 		{
-			initializeComponentConfig();
+			initializeWidgetConfig();
 		}
-		ComponentConfigData data = config.get(id);
+		WidgetConfigData data = config.get(id);
 		if (data == null) return null;
 		return data.getParserInput();
 	}
@@ -164,7 +152,7 @@ public class ComponentConfig
 	{
 		if (registeredLibraries == null)
 		{
-			initializeComponentConfig();
+			initializeWidgetConfig();
 		}
 		
 		return registeredLibraries;

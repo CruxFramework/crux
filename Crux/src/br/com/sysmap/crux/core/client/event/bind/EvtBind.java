@@ -26,14 +26,14 @@ import com.google.gwt.dom.client.Element;
  *
  */
 public class EvtBind 
-{
+{ 
 	/**
-	 * Builds an Event object from the page DOM element representing the component (Its <span> tag)
+	 * Builds an Event object from the page DOM element representing the widget (Its &lt;span&gt; tag)
 	 * @param element
 	 * @param evtId
 	 * @return
 	 */
-	public static Event getComponentEvent(Element element, String evtId)
+	public static Event getWidgetEvent(Element element, String evtId)
 	{
 		String evt = element.getAttribute(evtId);
 		return EventFactory.getEvent(evtId, evt);

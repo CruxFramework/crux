@@ -21,9 +21,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
-import br.com.sysmap.crux.core.server.config.ConfigurationFactory;
 
 public class ControllerFactoryInitializer 
 {
@@ -40,7 +40,7 @@ public class ControllerFactoryInitializer
 		{
 			lock.lock();
 			if (controllerFactory != null) return controllerFactory;
-			controllerFactory = (ControllerFactory) Class.forName(ConfigurationFactory.getConfiguration().controllerFactory()).newInstance(); 
+			controllerFactory = (ControllerFactory) Class.forName(ConfigurationFactory.getConfigurations().controllerFactory()).newInstance(); 
 		}
 		catch (Throwable e)
 		{

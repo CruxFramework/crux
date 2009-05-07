@@ -40,82 +40,76 @@ import com.google.gwt.event.dom.client.MouseWheelHandler;
  */
 public class MouseEvtBind extends EvtBind
 {
-	public static void bindEvents(Element element, HasAllMouseHandlers widget, final String componentId)
+	public static void bindEvents(Element element, HasAllMouseHandlers widget, final String widgetId)
 	{
-		final Event eventMouseDown = getComponentEvent(element, EventFactory.EVENT_MOUSE_DOWN);
+		final Event eventMouseDown = getWidgetEvent(element, EventFactory.EVENT_MOUSE_DOWN);
 		if (eventMouseDown != null)
 		{
 			widget.addMouseDownHandler(new MouseDownHandler()
 			{
-				@Override
 				public void onMouseDown(MouseDownEvent event) 
 				{
-					EventFactory.callEvent(eventMouseDown, componentId);
+					EventFactory.callEvent(eventMouseDown, widgetId);
 				}
 			});
 		}
 	
-		final Event eventMouseMove = getComponentEvent(element, EventFactory.EVENT_MOUSE_MOVE);
+		final Event eventMouseMove = getWidgetEvent(element, EventFactory.EVENT_MOUSE_MOVE);
 		if (eventMouseMove != null)
 		{
 			widget.addMouseMoveHandler(new MouseMoveHandler()
 			{
-				@Override
 				public void onMouseMove(MouseMoveEvent event) 
 				{
-					EventFactory.callEvent(eventMouseMove, componentId);
+					EventFactory.callEvent(eventMouseMove, widgetId);
 				}
 			});
 		}
 
-		final Event eventMouseOut = getComponentEvent(element, EventFactory.EVENT_MOUSE_OUT);
+		final Event eventMouseOut = getWidgetEvent(element, EventFactory.EVENT_MOUSE_OUT);
 		if (eventMouseOut != null)
 		{
 			widget.addMouseOutHandler(new MouseOutHandler()
 			{
-				@Override
 				public void onMouseOut(MouseOutEvent event) 
 				{
-					EventFactory.callEvent(eventMouseOut, componentId);					
+					EventFactory.callEvent(eventMouseOut, widgetId);					
 				}
 			});
 		}
 	
-		final Event eventMouseOver = getComponentEvent(element, EventFactory.EVENT_MOUSE_OVER);
+		final Event eventMouseOver = getWidgetEvent(element, EventFactory.EVENT_MOUSE_OVER);
 		if (eventMouseOver != null)
 		{
 			widget.addMouseOverHandler(new MouseOverHandler()
 			{
-				@Override
 				public void onMouseOver(MouseOverEvent event) 
 				{
-					EventFactory.callEvent(eventMouseOver, componentId);					
+					EventFactory.callEvent(eventMouseOver, widgetId);					
 				}
 			});
 		}
 
-		final Event eventMouseUp = getComponentEvent(element, EventFactory.EVENT_MOUSE_UP);
+		final Event eventMouseUp = getWidgetEvent(element, EventFactory.EVENT_MOUSE_UP);
 		if (eventMouseUp != null)
 		{
 			widget.addMouseUpHandler(new MouseUpHandler()
 			{
-				@Override
 				public void onMouseUp(MouseUpEvent event) 
 				{
-					EventFactory.callEvent(eventMouseUp, componentId);					
+					EventFactory.callEvent(eventMouseUp, widgetId);					
 				}
 			});
 		}
 
-		final Event eventMouseWheel = getComponentEvent(element, EventFactory.EVENT_MOUSE_WHEEL);
+		final Event eventMouseWheel = getWidgetEvent(element, EventFactory.EVENT_MOUSE_WHEEL);
 		if (eventMouseWheel != null)
 		{
 			widget.addMouseWheelHandler(new MouseWheelHandler()
 			{
-				@Override
 				public void onMouseWheel(MouseWheelEvent event) 
 				{
-					EventFactory.callEvent(eventMouseWheel, componentId);					
+					EventFactory.callEvent(eventMouseWheel, widgetId);					
 				}
 			});
 		}

@@ -28,11 +28,13 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Factory for CRUX screen. Based in the componentName (extracted form class attribute), 
- * determine witch class to create for all screen components.
+ * Factory for CRUX screen. Based in the type (extracted from _type attribute in widget declaration span tag), 
+ * determine witch class to create for all screen widgets.
  * @author Thiago
  *
  */
@@ -42,12 +44,12 @@ public class ScreenFactory {
 	 
 	private Screen screen = null;
 	private RegisteredClientFormatters registeredClientFormatters = null;
-	private RegisteredComponents registeredComponents = null;
+	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private String screenId = null;
 	
 	private ScreenFactory()
 	{
-		this.registeredComponents = (RegisteredComponents) GWT.create(RegisteredComponents.class);
+		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 		this.registeredClientFormatters = (RegisteredClientFormatters) GWT.create(RegisteredClientFormatters.class);
 	}
 	
@@ -82,28 +84,28 @@ public class ScreenFactory {
 	{
 		screen = new Screen(getScreenId());
 		Element body = RootPanel.getBodyElement();
-		NodeList<Element> componentCandidates = body.getElementsByTagName("span");
-		List<Element> components = new ArrayList<Element>();
+		NodeList<Element> widgetCandidates = body.getElementsByTagName("span");
+		List<Element> widgets = new ArrayList<Element>();
 		Element screenElement = null;
 		
-		for (int i=0; i<componentCandidates.getLength(); i++)
+		for (int i=0; i<widgetCandidates.getLength(); i++)
 		{
-			if (isValidComponent(componentCandidates.getItem(i)))
+			if (isValidWidget(widgetCandidates.getItem(i)))
 			{
 				try 
 				{
-					createComponent(componentCandidates.getItem(i), screen);
-					components.add(componentCandidates.getItem(i));
+					createWidget(widgetCandidates.getItem(i), screen);
+					widgets.add(widgetCandidates.getItem(i));
 				}
 				catch (InterfaceConfigException e) 
 				{
 					GWT.log(e.getLocalizedMessage(), e);
-					componentCandidates.getItem(i).setInnerText(JSEngine.messages.screenFactoryGenericErrorCreateComponent(e.getLocalizedMessage()));
+					widgetCandidates.getItem(i).setInnerText(JSEngine.messages.screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
 				}
 			}
-			else if (isScreenDefinitions(componentCandidates.getItem(i)))
+			else if (isScreenDefinitions(widgetCandidates.getItem(i)))
 			{
-				screenElement = componentCandidates.getItem(i);
+				screenElement = widgetCandidates.getItem(i);
 				screen.parse(screenElement);
 			}
 		}
@@ -111,7 +113,7 @@ public class ScreenFactory {
 		{
 			clearScreenMetaTag(screenElement);
 		}
-		clearComponentsMetaTags(components);
+		clearWidgetsMetaTags(widgets);
 		screen.fireLoadEvent();
 	}
 	
@@ -130,14 +132,14 @@ public class ScreenFactory {
 		}
 	}
 	
-	private void clearComponentsMetaTags(List<Element> components)
+	private void clearWidgetsMetaTags(List<Element> widgets)
 	{
-		for (Element element : components) 
+		for (Element element : widgets) 
 		{
-			String componentId = element.getAttribute("id");
-			if (componentId != null && componentId.length() >= 0)
+			String widgetId = element.getId();
+			if (widgetId != null && widgetId.length() >= 0)
 			{
-				element = DOM.getElementById(componentId); // Evita que elementos reanexados ao DOM sejam esquecidos
+				element = DOM.getElementById(widgetId); // Evita que elementos reanexados ao DOM sejam esquecidos
 				Element parent;
 				if (element != null && (parent = element.getParentElement())!= null)
 				{
@@ -161,17 +163,22 @@ public class ScreenFactory {
 		return screenId;
 	}
 
-	Component newComponent(Element element, String componentId) throws InterfaceConfigException
+	Widget newWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
-		Component component = registeredComponents.createComponent(componentId, element);
-		if (component == null)
+		String type = element.getAttribute("_type");
+		WidgetFactory<? extends Widget> widgetFactory = registeredWidgetFactories.getWidgetFactory(type);
+		if (widgetFactory == null)
 		{
-			throw new InterfaceConfigException(JSEngine.messages.screenFactoryErrorCreateComponent(componentId));
+			throw new InterfaceConfigException(JSEngine.messages.screenFactoryWidgetFactoryNotFound(type));
 		}
-		screen.addComponent(component);
-		component.render(element);
 		
-		return component;
+		Widget widget = widgetFactory.createWidget(element, widgetId); 
+		if (widget == null)
+		{
+			throw new InterfaceConfigException(JSEngine.messages.screenFactoryErrorCreateWidget(widgetId));
+		}
+		
+		return widget;
 	}
 	
 	private boolean isScreenDefinitions(Element element)
@@ -187,7 +194,7 @@ public class ScreenFactory {
 		return false;
 	}
 
-	private boolean isValidComponent(Element element)
+	private boolean isValidWidget(Element element)
 	{
 		if ("span".equalsIgnoreCase(element.getTagName()))
 		{
@@ -200,21 +207,14 @@ public class ScreenFactory {
 		return false;
 	}
 	
-	private Container getParent(Element element, Screen screen) throws InterfaceConfigException
+	private Element getParentElement(Element element) 
 	{
 		Element elementParent = element.getParentElement();
 		while (elementParent != null && !"body".equalsIgnoreCase(elementParent.getTagName()))
 		{
-			if (isValidComponent(elementParent))
+			if (isValidWidget(elementParent))
 			{
-				String id = elementParent.getAttribute("id");
-				Component parent = screen.getComponent(id); 
-					
-				if (!(parent instanceof Container))
-				{
-					throw new InterfaceConfigException(JSEngine.messages.screenFactoryInvalidComponentParent(element.getAttribute("id")));
-				}
-				return (Container)parent;
+				return elementParent;
 			}
 			elementParent = elementParent.getParentElement();
 		}
@@ -222,33 +222,53 @@ public class ScreenFactory {
 		return null;	
 	}
 	
-	private Component createComponent(Element element, Screen screen) throws InterfaceConfigException
+	private Widget getParentWidget(Element element, Screen screen) throws InterfaceConfigException
 	{
-		String componentId = element.getAttribute("id");
-		if (componentId == null || componentId.length() == 0)
+		String id = element.getId();
+		Widget parent = screen.getWidget(id); 
+
+		if (!(parent instanceof HasWidgets))
 		{
-			throw new InterfaceConfigException(JSEngine.messages.screenFactoryComponentIdRequired());
+			throw new InterfaceConfigException(JSEngine.messages.screenFactoryInvalidWidgetParent(element.getId()));
 		}
-		Component component = screen.getComponent(componentId);
-		if (component != null)
+		return parent;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Widget createWidget(Element element, Screen screen) throws InterfaceConfigException
+	{
+		String widgetId = element.getId();
+		if (widgetId == null || widgetId.length() == 0)
 		{
-			return component;
+			throw new InterfaceConfigException(JSEngine.messages.screenFactoryWidgetIdRequired());
+		}
+		Widget widget = screen.getWidget(widgetId);
+		if (widget != null)
+		{
+			return widget;
 		}
 		
-		Container parent = getParent(element, screen);
+		Widget parent = null;
+		Element parentElement = getParentElement(element);
+		if (parentElement != null)
+		{
+			parent = getParentWidget(parentElement, screen);
+		}
 		
-		component = newComponent(element, componentId);
+		widget = newWidget(element, widgetId);
 
 		if (parent != null)
 		{
-			parent.addComponent(component);
+			HasWidgetsFactory<Widget> parentWidgetFactory = (HasWidgetsFactory<Widget>) registeredWidgetFactories.
+															getWidgetFactory(parentElement.getAttribute("_type"));
+			parentWidgetFactory.add(parent, widget, parentElement, element);
 		}
 		else
 		{
-			ComponentPanel panel = new ComponentPanel(element.getParentElement());
-			panel.add(component.widget);
+			CruxWidgetPanel panel = new CruxWidgetPanel(element.getParentElement());
+			panel.add(widget);
 		}
-		return component;
+		return widget;
 	}
 	
 	public Formatter getClientFormatter(String formatter)

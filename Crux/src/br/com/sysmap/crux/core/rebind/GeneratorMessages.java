@@ -24,14 +24,14 @@ import br.com.sysmap.crux.core.i18n.DefaultMessage;
  */
 public interface GeneratorMessages 
 {
-	@DefaultMessage("[generator 001] - Component not registered: ")
-	String errorGeneratingRegisteredComponentsNotRegistered();
+	@DefaultMessage("[generator 001] - WidgetFactory not registered: ")
+	String errorGeneratingRegisteredWidgetFactoryNotRegistered();
 
-	@DefaultMessage("[generator 002] - Error for register client event handler. Component: {0}. Error:{1}")
-	String errorGeneratingRegisteredClientHandler(String component, String errMesg);
+	@DefaultMessage("[generator 002] - Error for register client event handler. WidgetFactory: {0}. Error:{1}")
+	String errorGeneratingRegisteredClientHandler(String widget, String errMesg);
 
-	@DefaultMessage("[generator 003] - Error for register client formatter. Component: {0}. Error:{1}")
-	String errorGeneratingRegisteredFormatter(String component, String errMesg);
+	@DefaultMessage("[generator 003] - Error for register client formatter. WidgetFactory: {0}. Error:{1}")
+	String errorGeneratingRegisteredFormatter(String widget, String errMesg);
 
 	@DefaultMessage("[generator 004] - Error for register client class {0}:")
 	String errorGeneratingRegisteredElement(String errMsg);

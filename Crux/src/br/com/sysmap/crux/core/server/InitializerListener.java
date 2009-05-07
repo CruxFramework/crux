@@ -22,14 +22,14 @@ import javax.servlet.ServletContextListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.screen.config.ComponentConfig;
-import br.com.sysmap.crux.core.server.config.ConfigurationFactory;
+import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.dispatch.ControllerFactoryInitializer;
 
 /**
  * When the application starts, register clientHandlers
- * and components into this module. 
+ * and widgets into this module. 
  * 
  * @author Thiago
  *
@@ -39,17 +39,15 @@ public class InitializerListener implements ServletContextListener
 	private static final Log logger = LogFactory.getLog(InitializerListener.class);
 	private ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
-	@Override
 	public void contextDestroyed(ServletContextEvent contextEvent) 
 	{
 	}
 
-	@Override
 	public void contextInitialized(ServletContextEvent contextEvent) 
 	{
 		try
 		{
-			ConfigurationFactory.getConfiguration();
+			ConfigurationFactory.getConfigurations();
 			ServletContext contexto = contextEvent.getServletContext();
 			initialize(contexto);
 		}
@@ -61,13 +59,13 @@ public class InitializerListener implements ServletContextListener
 	
 	protected void initialize(ServletContext contexto) throws Exception
 	{
-		ComponentConfig.initializeComponentConfig();
+		WidgetConfig.initializeWidgetConfig();
 		if (logger.isInfoEnabled())
 		{
-			logger.info(messages.initializerListenerComponentsRegistered());
+			logger.info(messages.initializerListenerWidgetsRegistered());
 		}
 		
-		if ("true".equals(ConfigurationFactory.getConfiguration().initializeControllersAtStartup()))
+		if ("true".equals(ConfigurationFactory.getConfigurations().initializeControllersAtStartup()))
 		{
 			ControllerFactoryInitializer.getControllerFactory().initialize(contexto);
 			if (logger.isInfoEnabled())

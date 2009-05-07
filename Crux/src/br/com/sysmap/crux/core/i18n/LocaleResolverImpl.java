@@ -23,7 +23,6 @@ import java.util.Locale;
  */
 public class LocaleResolverImpl implements LocaleResolver 
 {
-	@Override
 	public Locale getUserLocale() 
 	{
 		return Locale.getDefault();

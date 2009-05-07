@@ -21,8 +21,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
-import br.com.sysmap.crux.core.server.config.ConfigurationFactory;
 
 /**
  * Initialises the LocaleResolver class
@@ -45,7 +45,7 @@ public class LocaleResolverInitialiser
 		try
 		{
 			if (localeResolver != null) return localeResolver;
-			localeResolver = (LocaleResolver) Class.forName(ConfigurationFactory.getConfiguration().localeResolver()).newInstance(); 
+			localeResolver = (LocaleResolver) Class.forName(ConfigurationFactory.getConfigurations().localeResolver()).newInstance(); 
 		}
 		catch (Exception e) 
 		{

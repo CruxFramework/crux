@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import br.com.sysmap.crux.core.rebind.screen.Component;
+import br.com.sysmap.crux.core.rebind.screen.Widget;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
-import br.com.sysmap.crux.core.rebind.screen.config.ComponentConfig;
+import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -30,7 +30,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
-public class RegisteredComponentsGenerator extends AbstractRegisteredElementsGenerator
+public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElementsGenerator
 {
 	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, Screen screen) 
 	{
@@ -43,48 +43,48 @@ public class RegisteredComponentsGenerator extends AbstractRegisteredElementsGen
 		if (printWriter == null) return;
 
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
-		composer.addImplementedInterface("br.com.sysmap.crux.core.client.component.RegisteredComponents");
+		composer.addImplementedInterface("br.com.sysmap.crux.core.client.component.RegisteredWidgetFactories");
+		composer.addImport("com.google.gwt.user.client.ui.Widget");
+		
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
+		sourceWriter.println("private java.util.Map<String, WidgetFactory<? extends Widget>> widgetFactories = new java.util.HashMap<String, WidgetFactory<? extends Widget>>();");
 
-		generateCreateMethod(sourceWriter, screen);
+		generateConstructor(sourceWriter, screen, implClassName);
 
+		sourceWriter.println("public WidgetFactory<? extends Widget> getWidgetFactory(String type) throws InterfaceConfigException{ ");
+		sourceWriter.println("if (!widgetFactories.containsKey(type)) {");
+		sourceWriter.println("throw new InterfaceConfigException(\""+messages.errorGeneratingRegisteredWidgetFactoryNotRegistered()+" \" +type);");
+		sourceWriter.println("}");
+		sourceWriter.println("return widgetFactories.get(type);");
+		sourceWriter.println("}");
+		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 
 		context.commit(logger, printWriter);
 	}
 	
-	protected void generateCreateMethod(SourceWriter sourceWriter, Screen screen) 
+	protected void generateConstructor(SourceWriter sourceWriter, Screen screen, String implClassName) 
 	{
-		sourceWriter.println("public Component createComponent(String id, com.google.gwt.dom.client.Element element) throws InterfaceConfigException{ ");
-		sourceWriter.println("String componentName = element.getAttribute(\"_type\");");
+		sourceWriter.println("public "+implClassName+"(){ ");
 		
-		Iterator<Component> iterator = screen.iterateComponents();
-		boolean first = true;
+		Iterator<Widget> iterator = screen.iterateWidgets();
 		Map<String, Boolean> added = new HashMap<String, Boolean>();
 		while (iterator.hasNext())
 		{
-			Component component = iterator.next();
-			generateCreateComponentBlock(sourceWriter, component, added, first);
-			first = false;
+			Widget widget = iterator.next();
+			generateCreateWidgetBlock(sourceWriter, widget, added);
 		}
-		sourceWriter.println("throw new InterfaceConfigException(\""+messages.errorGeneratingRegisteredComponentsNotRegistered()+" \" +componentName);");
 		sourceWriter.println("}");
 	} 
 	
-	protected void generateCreateComponentBlock(SourceWriter sourceWriter, Component component, Map<String, Boolean> added, boolean first)
+	protected void generateCreateWidgetBlock(SourceWriter sourceWriter, Widget widget, Map<String, Boolean> added)
 	{
-		String type = component.getType();
+		String type = widget.getType();
 		if (!added.containsKey(type))
 		{
-			if (!first)
-			{
-				sourceWriter.print("else ");
-			}
-			sourceWriter.println("if (\""+type+"\".equals(componentName)) {");
-			sourceWriter.println("return new "+ComponentConfig.getClientClass(type)+"("+ComponentConfig.getClientConstructorParams(type)+");");
-			sourceWriter.println("}");
+			sourceWriter.println("widgetFactories.put(\""+type+"\", new "+WidgetConfig.getClientClass(type)+"());");
 			added.put(type, true);
 		}
 	}

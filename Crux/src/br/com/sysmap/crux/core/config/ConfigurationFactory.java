@@ -13,31 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.i18n;
+package br.com.sysmap.crux.core.config;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.PropertyResourceBundle;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import br.com.sysmap.crux.core.config.AbstractPropertiesFactory;
-import br.com.sysmap.crux.core.config.ConstantsInvocationHandler;
+import br.com.sysmap.crux.core.i18n.MessageException;
 
 /**
- * Factory for messages. Receive an Interface and use it's name to look for 
+ * Factory for configuration parameters. Receive an Interface and use it's name to look for 
  * resource bundles in the classpath. Each interface's method is used as key 
  * in that property file.
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  *
  */
-public class MessagesFactory extends AbstractPropertiesFactory
+public class ConfigurationFactory extends AbstractPropertiesFactory
 {
-	protected static final MessagesFactory instance = new MessagesFactory();
+	protected static final ConfigurationFactory instance = new ConfigurationFactory();
 	
-	private MessagesFactory() 
+	private ConfigurationFactory() 
 	{
 	}
 	
@@ -48,15 +43,15 @@ public class MessagesFactory extends AbstractPropertiesFactory
 	 * @throws MessageException
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getMessages(final Class<T> targetInterface) throws MessageException
+	public static Crux getConfigurations() throws MessageException
 	{
-		return instance.getConstantsFromProperties(targetInterface);
+		return instance.getConstantsFromProperties(Crux.class);
 	}
 
 	@Override
 	protected ConstantsInvocationHandler getInvocationHandler(Class<?> targetInterface) 
 	{
-		return new MessagesInvocationHandler(targetInterface);
+		return new ConfigurationInvocationHandler(targetInterface);
 	}
 
 }
@@ -66,12 +61,9 @@ public class MessagesFactory extends AbstractPropertiesFactory
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  */
-class MessagesInvocationHandler extends ConstantsInvocationHandler
+class ConfigurationInvocationHandler extends ConstantsInvocationHandler
 {
-	Map<Locale, PropertyResourceBundle> localeMessages = new HashMap<Locale, PropertyResourceBundle>();
-	private static final Lock propertiesLock = new ReentrantLock(true);	
-	
-	public MessagesInvocationHandler(Class<?> targetInterface) 
+	public ConfigurationInvocationHandler(Class<?> targetInterface) 
 	{
 		super(targetInterface);
 	}
@@ -79,25 +71,6 @@ class MessagesInvocationHandler extends ConstantsInvocationHandler
 	@Override
 	protected <T> PropertyResourceBundle getPropertiesForLocale(final Class<T> targetInterface) 
 	{
-		Locale userLocale = LocaleResolverInitialiser.getLocaleResolver().getUserLocale();
-		PropertyResourceBundle properties = null;
-		if (!localeMessages.containsKey(userLocale))
-		{
-			propertiesLock.lock();
-			try
-			{
-				properties = loadProperties(targetInterface, userLocale);
-				localeMessages.put(userLocale, properties);
-			}
-			finally
-			{
-				propertiesLock.unlock();	
-			}
-		}
-		else
-		{
-			properties = localeMessages.get(userLocale);
-		}
-		return properties;
+		return loadProperties(targetInterface, Locale.getDefault());
 	}
 }

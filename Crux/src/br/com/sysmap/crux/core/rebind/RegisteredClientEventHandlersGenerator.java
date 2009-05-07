@@ -25,7 +25,7 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
-import br.com.sysmap.crux.core.rebind.screen.Component;
+import br.com.sysmap.crux.core.rebind.screen.Widget;
 import br.com.sysmap.crux.core.rebind.screen.Event;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
@@ -87,7 +87,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	
 	/**
 	 * Generate constructor. At this point the maps with handlers and callbacks are built. The list is 
-	 * constructed looping all components to just include controllers that are used on the screen.
+	 * constructed looping all widgets to just include controllers that are used on the screen.
 	 * @param logger
 	 * @param sourceWriter
 	 * @param screen
@@ -114,31 +114,31 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	protected void generateEventHandlersForScreen(TreeLogger logger,SourceWriter sourceWriter, Screen screen, 
 			Map<String, String> handlerClassNames, String implClassName)
 	{
-		Iterator<Component> iterator = screen.iterateComponents();
+		Iterator<Widget> iterator = screen.iterateWidgets();
 		while (iterator.hasNext())
 		{
-			Component component = iterator.next();
-			generateEventHandlersForComponent(logger, sourceWriter, component, handlerClassNames, implClassName);
+			Widget widget = iterator.next();
+			generateEventHandlersForWidget(logger, sourceWriter, widget, handlerClassNames, implClassName);
 
 		}
 	}
 	/**
-	 * For each component, create the inclusion block for controllers used by it.
+	 * For each widget, create the inclusion block for controllers used by it.
 	 * @param logger
 	 * @param sourceWriter
-	 * @param component
+	 * @param widget
 	 * @param addedHandler
 	 * @param addedCallback
 	 */
-	protected void generateEventHandlersForComponent(TreeLogger logger,SourceWriter sourceWriter, Component component, 
+	protected void generateEventHandlersForWidget(TreeLogger logger,SourceWriter sourceWriter, Widget widget, 
 			Map<String, String> addedHandler, String implClassName)
 	{
-		Iterator<Event> events = component.iterateEvents();
+		Iterator<Event> events = widget.iterateEvents();
 		
 		while (events.hasNext())
 		{
 			Event event = events.next();
-			generateEventHandlerBlock(logger,sourceWriter, component.getId(), event, addedHandler, implClassName);
+			generateEventHandlerBlock(logger,sourceWriter, widget.getId(), event, addedHandler, implClassName);
 		}
 	}
 	
@@ -146,11 +146,11 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * Generate the block to include event handler object.
 	 * @param logger
 	 * @param sourceWriter
-	 * @param componentId
+	 * @param widgetId
 	 * @param event
 	 * @param added
 	 */
-	protected void generateEventHandlerBlock(TreeLogger logger, SourceWriter sourceWriter, String componentId, Event event, 
+	protected void generateEventHandlerBlock(TreeLogger logger, SourceWriter sourceWriter, String widgetId, Event event, 
 			Map<String, String> added, String implClassName)
 	{
 		String evtCall = event.getEvtCall();
@@ -166,7 +166,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 		catch (Throwable e) 
 		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandler(componentId, e.getLocalizedMessage()), e);
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandler(widgetId, e.getLocalizedMessage()), e);
 		}
 	}
 	

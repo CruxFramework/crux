@@ -3,8 +3,6 @@
 	<!-- Inherit the core Web Toolkit stuff.                  -->
     <inherits name="com.google.gwt.http.HTTP"/>
 	<inherits name='com.google.gwt.user.User'/>
-	<inherits name='com.google.gwt.xml.XML' />
-	<inherits name='com.google.gwt.json.JSON' />
 
 	<!-- Specify the app entry point class.                   -->
 	<entry-point class='br.com.sysmap.crux.core.client.JSEngine'/>
@@ -23,8 +21,8 @@
 	</generate-with>
 
 	<!-- Specify the generator for registered components.     -->
-	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredComponentsGenerator">
-		<when-type-assignable class="br.com.sysmap.crux.core.client.component.RegisteredComponents" />
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredWidgetFactoriesGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.component.RegisteredWidgetFactories" />
 	</generate-with>
 	
 	<!-- Specify the generator for registered formatters.     -->

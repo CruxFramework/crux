@@ -30,17 +30,16 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
  */
 public class SelectionEvtBind extends EvtBind
 {
-	public static <I> void bindEvent(Element element, HasSelectionHandlers<I> widget, final String componentId)
+	public static <I> void bindEvent(Element element, HasSelectionHandlers<I> widget, final String widgetId)
 	{
-		final Event eventChange = getComponentEvent(element, EventFactory.EVENT_CHANGE);
+		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_CHANGE);
 		if (eventChange != null)
 		{
 			widget.addSelectionHandler(new SelectionHandler<I>()
 			{
-				@Override
 				public void onSelection(SelectionEvent<I> event) 
 				{
-					EventFactory.callEvent(eventChange, componentId);
+					EventFactory.callEvent(eventChange, widgetId);
 				}
 			});
 		}

@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
-import br.com.sysmap.crux.core.rebind.screen.Component;
+import br.com.sysmap.crux.core.rebind.screen.Widget;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.formatter.Formatters;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
@@ -67,28 +67,28 @@ public class RegisteredClientFormattersGenerator extends AbstractRegisteredEleme
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");
 		
-		Iterator<Component> iterator = screen.iterateComponents();
+		Iterator<Widget> iterator = screen.iterateWidgets();
 		Map<String, Boolean> addedHandler = new HashMap<String, Boolean>();
 		Map<String, Boolean> addedCallback = new HashMap<String, Boolean>();
 		while (iterator.hasNext())
 		{
-			Component component = iterator.next();
-			generateFormattersForComponent(logger, sourceWriter, component, addedHandler, addedCallback);
+			Widget widget = iterator.next();
+			generateFormattersForWidget(logger, sourceWriter, widget, addedHandler, addedCallback);
 		}
 		sourceWriter.println("}");
 	} 
 	
-	protected void generateFormattersForComponent(TreeLogger logger,SourceWriter sourceWriter, Component component, Map<String, Boolean> addedHandler, Map<String, Boolean> addedCallback)
+	protected void generateFormattersForWidget(TreeLogger logger,SourceWriter sourceWriter, Widget widget, Map<String, Boolean> addedHandler, Map<String, Boolean> addedCallback)
 	{
-		String formatter = component.getFormatter();
+		String formatter = widget.getFormatter();
 		
 		if (formatter != null && formatter.length()>0)
 		{
-			generateFormatterBlock(logger,sourceWriter, component.getId(), formatter, addedCallback);
+			generateFormatterBlock(logger,sourceWriter, widget.getId(), formatter, addedCallback);
 		}
 	}
 	
-	protected void generateFormatterBlock(TreeLogger logger, SourceWriter sourceWriter, String componentId, String formatter, Map<String, Boolean> added)
+	protected void generateFormatterBlock(TreeLogger logger, SourceWriter sourceWriter, String widgetId, String formatter, Map<String, Boolean> added)
 	{
 		try
 		{
@@ -122,7 +122,7 @@ public class RegisteredClientFormattersGenerator extends AbstractRegisteredEleme
 		}
 		catch (Throwable e) 
 		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredFormatter(componentId, e.getLocalizedMessage()), e);
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredFormatter(widgetId, e.getLocalizedMessage()), e);
 		}
 	}
 }

@@ -15,13 +15,14 @@
  */
 package br.com.sysmap.crux.core.client.component;
 
-import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.Widget;
+
 /**
- * Interface for keep the registered components
+ * Interface for keep the registered widgets
  * @author Thiago
  *
  */
-public interface RegisteredComponents 
+public interface RegisteredWidgetFactories 
 {
-	Component createComponent(String id, Element element) throws InterfaceConfigException;
+	WidgetFactory<? extends Widget> getWidgetFactory(String type) throws InterfaceConfigException;
 }

@@ -15,9 +15,9 @@
  */
 package br.com.sysmap.crux.core.rebind.screen.config;
 
-import br.com.sysmap.crux.core.rebind.screen.ComponentParser;
+import br.com.sysmap.crux.core.rebind.screen.WidgetParser;
 
-public class ComponentConfigData 
+public class WidgetConfigData 
 {
 	public static final String PARSER_INPUT_DOM = "dom";
 	public static final String PARSER_INPUT_JERICHO = "jericho";
@@ -25,20 +25,17 @@ public class ComponentConfigData
 	
 	protected String clientClass;
 	protected String serverClass;
-	protected ComponentParser componentParser;
+	protected WidgetParser widgetParser;
 	protected String parserInput;
-	protected String clientConstructorParams;
 
-	public ComponentConfigData(String clientClass, 
-							   String clientConstructorParams,
+	public WidgetConfigData(String clientClass, 							
 			                   String serverClass, 
-							   ComponentParser componentParser,
+							   WidgetParser widgetParser,
 							   String parserInput) 
 	{
 		this.clientClass = clientClass;
-		this.clientConstructorParams = clientConstructorParams;
 		this.serverClass = serverClass;
-		this.componentParser = componentParser;
+		this.widgetParser = widgetParser;
 		this.parserInput = parserInput;
 	}
 	
@@ -58,13 +55,13 @@ public class ComponentConfigData
 	{
 		this.serverClass = serverClass;
 	}
-	public ComponentParser getComponentParser() 
+	public WidgetParser getWidgetParser() 
 	{
-		return componentParser;
+		return widgetParser;
 	}
-	public void setComponentParser(ComponentParser componentParser) 
+	public void setWidgetParser(WidgetParser widgetParser) 
 	{
-		this.componentParser = componentParser;
+		this.widgetParser = widgetParser;
 	}
 	public String getParserInput() 
 	{
@@ -73,13 +70,5 @@ public class ComponentConfigData
 	public void setParserInput(String parserInput) 
 	{
 		this.parserInput = parserInput;
-	}
-	public String getClientConstructorParams() 
-	{
-		return clientConstructorParams;
-	}
-	public void setClientConstructorParams(String clientConstructorParams) 
-	{
-		this.clientConstructorParams = clientConstructorParams;
 	}
 }

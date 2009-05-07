@@ -34,43 +34,40 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
  */
 public class KeyEvtBind extends EvtBind
 {
-	public static void bindEvents(Element element, HasAllKeyHandlers widget, final String componentId)
+	public static void bindEvents(Element element, HasAllKeyHandlers widget, final String widgetId)
 	{
-		final Event eventKeyDown = getComponentEvent(element, EventFactory.EVENT_KEY_DOWN);
+		final Event eventKeyDown = getWidgetEvent(element, EventFactory.EVENT_KEY_DOWN);
 		if (eventKeyDown != null)
 		{
 			widget.addKeyDownHandler(new KeyDownHandler()
 			{
-				@Override
 				public void onKeyDown(KeyDownEvent event) 
 				{
-					EventFactory.callEvent(eventKeyDown, componentId);
+					EventFactory.callEvent(eventKeyDown, widgetId);
 				}
 			});
 		}
 
-		final Event eventKeyPress = getComponentEvent(element, EventFactory.EVENT_KEY_PRESS);
+		final Event eventKeyPress = getWidgetEvent(element, EventFactory.EVENT_KEY_PRESS);
 		if (eventKeyPress != null)
 		{
 			widget.addKeyPressHandler(new KeyPressHandler()
 			{
-				@Override
 				public void onKeyPress(KeyPressEvent event) 
 				{
-					EventFactory.callEvent(eventKeyPress, componentId);
+					EventFactory.callEvent(eventKeyPress, widgetId);
 				}
 			});
 		}
 		
-		final Event eventKeyUp = getComponentEvent(element, EventFactory.EVENT_KEY_UP);
+		final Event eventKeyUp = getWidgetEvent(element, EventFactory.EVENT_KEY_UP);
 		if (eventKeyUp != null)
 		{
 			widget.addKeyUpHandler(new KeyUpHandler()
 			{
-				@Override
 				public void onKeyUp(KeyUpEvent event) 
 				{
-					EventFactory.callEvent(eventKeyUp, componentId);
+					EventFactory.callEvent(eventKeyUp, widgetId);
 				}
 			});
 		}

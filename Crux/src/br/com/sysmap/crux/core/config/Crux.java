@@ -13,22 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.component;
+package br.com.sysmap.crux.core.config;
 
+import br.com.sysmap.crux.core.i18n.DefaultMessage;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.SimplePanel;
-
-/**
- * A basic container used to wrap crux components, in case they are orphans
- * @author Thiago Bustamante
- *
- */
-public class ComponentPanel extends SimplePanel
+public interface Crux 
 {
-	public ComponentPanel(Element element)
-	{
-		super(element);
-		onAttach();
-	}
+	@DefaultMessage("br.com.sysmap.crux.core.server.dispatch.ControllerFactoryImpl")
+	String controllerFactory();
+	
+	@DefaultMessage("true")
+	String initializeControllersAtStartup();
+	
+	@DefaultMessage("true")
+	String initializeFormattersAtStartup();
+	
+	@DefaultMessage("false")
+	String lookupWebInfOnly();
+	
+	@DefaultMessage("br.com.sysmap.crux.core.i18n.LocaleResolverImpl")
+	String localeResolver();
 }

@@ -19,13 +19,12 @@ import java.net.URL;
 
 import javax.servlet.ServletContext;
 
-import br.com.sysmap.crux.core.server.config.ConfigurationFactory;
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 
 
 public class ControllerFactoryImpl implements ControllerFactory 
 {
-	@Override
 	public Object getController(String controllerName) 
 	{
 		try 
@@ -38,10 +37,9 @@ public class ControllerFactoryImpl implements ControllerFactory
 		} 
 	}
 
-	@Override
 	public void initialize(ServletContext context) 
 	{
-		boolean lookupWebInfOnly = ("true".equals(ConfigurationFactory.getConfiguration().lookupWebInfOnly()));
+		boolean lookupWebInfOnly = ("true".equals(ConfigurationFactory.getConfigurations().lookupWebInfOnly()));
 		URL[] urls = ScannerURLS.getURLsForSearch(lookupWebInfOnly?context:null);
 		Controllers.initialize(urls);
 	}

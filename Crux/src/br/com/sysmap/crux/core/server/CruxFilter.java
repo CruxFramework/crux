@@ -39,7 +39,6 @@ public class CruxFilter implements Filter
 {
 	private boolean production = true;
 	
-	@Override
 	public void init(FilterConfig arg0) throws ServletException 
 	{
 		production = !isHostedMode();
@@ -66,12 +65,10 @@ public class CruxFilter implements Filter
 		}
 	}
 	
-	@Override
 	public void destroy() 
 	{
 	}
 
-	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) 
 	throws IOException, ServletException 
 	{

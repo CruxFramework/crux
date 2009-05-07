@@ -30,17 +30,16 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
  */
 public class ClickEvtBind extends EvtBind
 {
-	public static void bindEvent(Element element, HasClickHandlers widget, final String componentId)
+	public static void bindEvent(Element element, HasClickHandlers widget, final String widgetId)
 	{
-		final Event eventClick = getComponentEvent(element, EventFactory.EVENT_CLICK);
+		final Event eventClick = getWidgetEvent(element, EventFactory.EVENT_CLICK);
 		if (eventClick != null)
 		{
 			ClickHandler handler = new ClickHandler()
 			{
-				@Override
 				public void onClick(ClickEvent event) 
 				{
-					EventFactory.callEvent(eventClick, componentId);
+					EventFactory.callEvent(eventClick, widgetId);
 				}
 			};
 			widget.addClickHandler(handler);

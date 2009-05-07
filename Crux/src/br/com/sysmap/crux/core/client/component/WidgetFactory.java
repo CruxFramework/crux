@@ -23,95 +23,69 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Represent a CRUX component at the application's client side. 
+ * Factory for gwt widgets. It creates widgets based on a span tag contained
+ * in the host HTML page. It provides a declarative way to create widgets.
+ * 
+ * The following example shows how to create a widget in a declarative way:
+ * 
+ *  &lt;span id="myWidgetId" _type="textBox" 
+ *                           _onclick="myControlClass.myethod" &gt; 
+ *  &lt;/span&gt;
  * @author Thiago Bustamante
  */
-public abstract class Component extends UIObject
-{
-	private int hashValue = 0;
-	protected Widget widget;
-	protected String id;
-	protected Screen screen = null;
-	
+public abstract class WidgetFactory <T extends Widget>
+{	
 	/**
-	 * Constructor
-	 * @param id identifies the component. Components can be retrieved form the Screen object using this field.
-	 * @param widget GWT widget wrapped by this class. 
-	 */
-	protected Component(String id, Widget widget) 
-	{
-		super(widget);
-		this.id = id;
-		this.widget = widget;
-	}
-	
-	/**
-	 * Return screen that contains this component
+	 * Return the current screen 
 	 * @return
 	 */
 	public Screen getScreen() 
 	{
-		return screen;
-	}
-
-	/**
-	 * Set screen that contains this component
-	 * @return
-	 */
-	protected void setScreen(Screen screen) 
-	{
-		this.screen = screen;
+		return ScreenFactory.getInstance().getScreen();
 	}
 	
-	/**
-	 * 
-	 * @return id
-	 */
-	public String getId() 
+	public T createWidget(Element element, String widgetId)
 	{
-		return this.id;
+		T widget = instantiateWidget(element, widgetId);
+		getScreen().addWidget(widgetId, widget);
+		processAttributes(widget, element, widgetId);
+		processEvents(widget, element, widgetId);
+		return widget;
 	}
 	
-	/**
-	 * Render component into the screen
-	 * @param element
-	 */
-	protected void render(Element element) 
-	{
-		renderAttributes(element);
-		attachEvents(element);
-	}
+	protected abstract T instantiateWidget(Element element, String widgetId);
+	
 
 	/**
-	 * Render component attributes
-	 * @param element page DOM element representing the component (Its <span> tag)
+	 * Process widget attributes
+	 * @param element page DOM element representing the widget (Its &lt;span&gt; tag)
 	 */
-	protected void renderAttributes(Element element)
+	protected void processAttributes(T widget, Element element, String widgetId)
 	{
 		String width = element.getAttribute("_width");
 		if (width != null && width.length() > 0)
 		{
-			setWidth(width);
+			widget.setWidth(width);
 		}
 		String height = element.getAttribute("_height");
 		if (height != null && height.length() > 0)
 		{
-			setHeight(height);
+			widget.setHeight(height);
 		}
 		String visible = element.getAttribute("_visible");
 		if (visible != null && visible.length() > 0)
 		{
-			setVisible(Boolean.parseBoolean(visible));
+			widget.setVisible(Boolean.parseBoolean(visible));
 		}
 		String tooltip = element.getAttribute("_tooltip");
 		if (tooltip != null && tooltip.length() > 0)
 		{
-			setTitle(tooltip);
+			widget.setTitle(tooltip);
 		}
 		String classAttr = element.getAttribute("_class");
 		if (classAttr != null && classAttr.length() > 0)
 		{
-			setStyleName(classAttr);
+			widget.setStyleName(classAttr);
 		}
 		String style = element.getAttribute("_style");
 		if (style != null && style.length() > 0)
@@ -149,10 +123,10 @@ public abstract class Component extends UIObject
 	}
 	
 	/**
-	 * Render component events
-	 * @param element page DOM element representing the component (Its <span> tag)
+	 * Process widget events
+	 * @param element page DOM element representing the widget (Its &lt;span&gt; tag)
 	 */
-	protected void attachEvents(Element element)
+	protected void processEvents(T widget, Element element, String widgetId)
 	{
 
 	}
@@ -166,51 +140,16 @@ public abstract class Component extends UIObject
 		getScreen().addLoadHandler(loadHandler);
 	}
 
-	public boolean equals(Object obj) 
-	{
-    	if (obj == null) return false;
-    	if (!(obj instanceof Component)) return false;
-    	
-    	String compId1 = getId();
-    	String compId2 = ((Component)obj).getId();
-    	return (compId1 == null?compId2==null:compId1.equals(compId2));
-    }
-    
-	public int hashCode()
-    {
-        if (this.hashValue == 0)
-        {
-            int result = 17;
-            String compStr = this.getId();
-            int idComp = compStr == null ? 0 : compStr.hashCode();
-            result = result * 37 + idComp;
-            this.hashValue = result;
-        }
-        return this.hashValue;
-    }
-
 	/**
-	 * Used by components that need to create new components as children, like tree. Tree can container 
-	 * multiple components.
+	 * Used by widgets that need to create new widgets as children, like tree. 
 	 * 
 	 * @param element
-	 * @param componentId
+	 * @param widgetId
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	protected Component createChildComponent(Element element, String componentId) throws InterfaceConfigException
+	protected Widget createChildWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
-		return ScreenFactory.getInstance().newComponent(element, componentId);
+		return ScreenFactory.getInstance().newWidget(element, widgetId);
 	}
-	
-	/**
-	 * Provide access to component's widget. Used for component subclasses that
-	 * need to access widgets of their children. 
-	 * @param component
-	 * @return
-	 */
-	protected Widget getComponentWidget(Component component)
-	{
-		return (component.widget!=null?component.widget:null);
-	}	
 }

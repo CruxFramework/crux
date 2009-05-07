@@ -22,7 +22,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 
 /**
- * CRUX Client Engine. It starts a ScreenFactory to search HTML page for span tags declaring components. 
+ * CRUX Client Engine. It starts a ScreenFactory to search HTML page for span tags declaring widgets. 
  */
 public class JSEngine implements EntryPoint 
 {

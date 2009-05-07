@@ -31,17 +31,16 @@ import com.google.gwt.event.dom.client.ScrollEvent;
  */
 public class ScrollEvtBind extends EvtBind
 {
-	public static void bindEvent(Element element, HasScrollHandlers widget, final String componentId)
+	public static void bindEvent(Element element, HasScrollHandlers widget, final String widgetId)
 	{
-		final Event eventScroll = getComponentEvent(element, EventFactory.EVENT_SCROLL);
+		final Event eventScroll = getWidgetEvent(element, EventFactory.EVENT_SCROLL);
 		if (eventScroll != null)
 		{
 			ScrollHandler handler = new ScrollHandler()
 			{
-				@Override
 				public void onScroll(ScrollEvent event) 
 				{
-					EventFactory.callEvent(eventScroll, componentId);
+					EventFactory.callEvent(eventScroll, widgetId);
 				}
 			};
 			widget.addScrollHandler(handler);

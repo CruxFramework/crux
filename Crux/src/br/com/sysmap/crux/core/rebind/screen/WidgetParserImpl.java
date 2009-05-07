@@ -25,13 +25,12 @@ import au.id.jericho.lib.html.Element;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 
-public class ComponentParserImpl implements ComponentParser
+public class WidgetParserImpl implements WidgetParser
 {
-	private static final Log logger = LogFactory.getLog(ComponentParserImpl.class);
+	private static final Log logger = LogFactory.getLog(WidgetParserImpl.class);
 	private ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
-	@Override
-	public void parse(Component component, Object element) 
+	public void parse(Widget widget, Object element) 
 	{
 		Element elem = (Element) element;
 		
@@ -48,34 +47,34 @@ public class ComponentParserImpl implements ComponentParser
 			
 			if (attrName.startsWith("_on"))
 			{
-				setEvent(component, attrName, attr.getValue());
+				setEvent(widget, attrName, attr.getValue());
 			}
 			else if (attrName.equals("_formatter"))
 			{
-				setProperty(component, "formatter", attr.getValue());
+				setProperty(widget, "formatter", attr.getValue());
 			}
 		}
 	}
 	
-	protected void setProperty(Component component, String propName, String value)
+	protected void setProperty(Widget widget, String propName, String value)
 	{
 		try 
 		{
-			BeanUtils.copyProperty(component, propName, value);
+			BeanUtils.copyProperty(widget, propName, value);
 		} 
 		catch (Throwable e) 
 		{
-			if (logger.isDebugEnabled()) logger.debug(messages.componentParserImplComponentPropertyError(propName, component.getId()));
+			if (logger.isDebugEnabled()) logger.debug(messages.widgetParserImplWidgetPropertyError(propName, widget.getId()));
 		} 
 	}
 
-	protected void setEvent(Component component, String evtName, String value)
+	protected void setEvent(Widget widget, String evtName, String value)
 	{
 		Event event = EventFactory.getEvent(evtName, value);
 		
 		if (event != null)
 		{
-			component.addEvent(event);
+			widget.addEvent(event);
 		}
 	}
 	

@@ -31,16 +31,18 @@ public interface ClientMessages extends Messages
 	String eventProcessorClientError(String call);
 	
 	//  screenFactory
-	@DefaultMessage("[screenFactory 001] - Error Creating component: ''{0}''. See Log for more detail.")
-	String screenFactoryGenericErrorCreateComponent(String errMsg);
-	
-	//  component
-	@DefaultMessage("[component - 001] - The id attribute is required for CRUX Components.")
-	String screenFactoryComponentIdRequired();
-	@DefaultMessage("[component - 002] - The component ''{0}'' only can be attached in a container or directly in the screen.")
-	String screenFactoryInvalidComponentParent(String componentId);
-	@DefaultMessage("[component - 003] - Can not create component ''{0}''. Verify the component type.")
-	String screenFactoryErrorCreateComponent(String componentId);
-	@DefaultMessage("[component - 004] - Formatter ''{0}'' not found.")
-	String componentFormatterNotFound(String formatterId);
+	@DefaultMessage("[screenFactory 001] - Error Creating widget: ''{0}''. See Log for more detail.")
+	String screenFactoryGenericErrorCreateWidget(String errMsg);
+	@DefaultMessage("[screenFactory 002] - Can not found widgetFactory for type: ''{0}''.")
+	String screenFactoryWidgetFactoryNotFound(String type);
+
+	//  widget
+	@DefaultMessage("[widget - 001] - The id attribute is required for CRUX widgets.")
+	String screenFactoryWidgetIdRequired();
+	@DefaultMessage("[widget - 002] - The widget ''{0}'' can not be attached in widget that does not implement HasWidgets.")
+	String screenFactoryInvalidWidgetParent(String widgetId);
+	@DefaultMessage("[widget - 003] - Can not create widget ''{0}''. Verify the widget type.")
+	String screenFactoryErrorCreateWidget(String widgetId);
+	@DefaultMessage("[widget - 004] - Formatter ''{0}'' not found.")
+	String widgetFormatterNotFound(String formatterId);
 }

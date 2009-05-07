@@ -26,16 +26,16 @@ import org.scannotation.archiveiterator.IteratorFactory;
 import org.scannotation.archiveiterator.StreamIterator;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.screen.config.ComponentConfig;
+import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.ServerMessages;
 
-public class ComponentConfigScanner 
+public class WidgetConfigScanner 
 {
-	private static final Log logger = LogFactory.getLog(ComponentConfigScanner.class);
-	private static final ComponentConfigScanner instance = new ComponentConfigScanner();
+	private static final Log logger = LogFactory.getLog(WidgetConfigScanner.class);
+	private static final WidgetConfigScanner instance = new WidgetConfigScanner();
 	private ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	
-	private ComponentConfigScanner() 
+	private WidgetConfigScanner() 
 	{
 	}
 	
@@ -76,11 +76,11 @@ public class ComponentConfigScanner
 
 				StreamIterator it = IteratorFactory.create(url, filter);
 				InputStream stream;
-				while ((stream = it.next()) != null) ComponentConfig.parseCruxConfigFile(stream);
+				while ((stream = it.next()) != null) WidgetConfig.parseCruxConfigFile(stream);
 			}
 			catch (IOException e)
 			{
-				throw new ComponentConfigScannerException(messages.componentConfigScannerInitializationError(e.getLocalizedMessage()), e);
+				throw new WidgetConfigScannerException(messages.widgetConfigScannerInitializationError(e.getLocalizedMessage()), e);
 			}
 		}
 	}
@@ -101,7 +101,7 @@ public class ComponentConfigScanner
 		return false;
 	}
 
-	public static ComponentConfigScanner getInstance()
+	public static WidgetConfigScanner getInstance()
 	{
 		return instance;
 	}

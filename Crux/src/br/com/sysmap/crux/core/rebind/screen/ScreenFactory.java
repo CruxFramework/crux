@@ -32,8 +32,8 @@ import au.id.jericho.lib.html.Attributes;
 import au.id.jericho.lib.html.Element;
 import au.id.jericho.lib.html.Source;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.screen.config.ComponentConfig;
-import br.com.sysmap.crux.core.rebind.screen.config.ComponentConfigData;
+import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
+import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfigData;
 import br.com.sysmap.crux.core.server.ServerMessages;
 
 /**
@@ -88,11 +88,11 @@ public class ScreenFactory
 	}
 
 	/**
-	 * Test if a target HTML element represents a component definition for Crux.
+	 * Test if a target HTML element represents a widget definition for Crux.
 	 * @param element
 	 * @return
 	 */
-	private boolean isValidComponent(Element element)
+	private boolean isValidWidget(Element element)
 	{
 		if ("span".equalsIgnoreCase(element.getName()))
 		{
@@ -106,7 +106,7 @@ public class ScreenFactory
 	}
 
 	/**
-	 * Creates a component based in its &lt;span&gt; tag definition.
+	 * Creates a widget based in its &lt;span&gt; tag definition.
 	 * 
 	 * @param source
 	 * @param element
@@ -114,27 +114,27 @@ public class ScreenFactory
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	private Component createComponent(Source source, Element element, Screen screen) throws ScreenConfigException
+	private Widget createWidget(Source source, Element element, Screen screen) throws ScreenConfigException
 	{
-		String componentId = element.getAttributeValue("id");
-		if (componentId == null || componentId.trim().length() == 0)
+		String widgetId = element.getAttributeValue("id");
+		if (widgetId == null || widgetId.trim().length() == 0)
 		{
-			throw new ScreenConfigException(messages.screenFactoryComponentIdRequired());
+			throw new ScreenConfigException(messages.screenFactoryWidgetIdRequired());
 		}
-		Component component = screen.getComponent(componentId);
-		if (component != null)
+		Widget widget = screen.getWidget(widgetId);
+		if (widget != null)
 		{
-			throw new ScreenConfigException(messages.screenFactoryErrorDuplicatedComponent(componentId));
-		}
-		
-		component = newComponent(element, componentId);
-		if (component == null)
-		{
-			throw new ScreenConfigException(messages.screenFactoryErrorCreateComponent(componentId));
+			throw new ScreenConfigException(messages.screenFactoryErrorDuplicatedWidget(widgetId));
 		}
 		
-		screen.addComponent(component);
-		return component;
+		widget = newWidget(element, widgetId);
+		if (widget == null)
+		{
+			throw new ScreenConfigException(messages.screenFactoryErrorCreateWidget(widgetId));
+		}
+		
+		screen.addWidget(widget);
+		return widget;
 	}
 	
 	/**
@@ -182,44 +182,44 @@ public class ScreenFactory
 	}
 	
 	/**
-	 * Builds a new component, based on its &lt;span&gt; tag definition.
+	 * Builds a new widget, based on its &lt;span&gt; tag definition.
 	 * @param element
-	 * @param componentId
+	 * @param widgetId
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	private Component newComponent(Element element, String componentId) throws ScreenConfigException
+	private Widget newWidget(Element element, String widgetId) throws ScreenConfigException
 	{
 		String type = element.getAttributeValue("_type");
-		String className = ComponentConfig.getServerClass(type);
-		ComponentParser parser = ComponentConfig.getComponentParser(type);
-		String parserInput = ComponentConfig.getParserInput(type);
+		String className = WidgetConfig.getServerClass(type);
+		WidgetParser parser = WidgetConfig.getWidgetParser(type);
+		String parserInput = WidgetConfig.getParserInput(type);
 		if (className == null || parser == null || parserInput == null)
 		{
-			throw new ScreenConfigException(messages.screenFactoryErrorCreateComponent(componentId));
+			throw new ScreenConfigException(messages.screenFactoryErrorCreateWidget(widgetId));
 		}
 		try 
 		{
-			Component component = (Component) Class.forName(className).newInstance();
-			component.setId(componentId);
-			component.setType(type);
-			if (ComponentConfigData.PARSER_INPUT_DOM.equals(parserInput))
+			Widget widget = (Widget) Class.forName(className).newInstance();
+			widget.setId(widgetId);
+			widget.setType(type);
+			if (WidgetConfigData.PARSER_INPUT_DOM.equals(parserInput))
 			{
-				parser.parse(component, toDomElment(element));
+				parser.parse(widget, toDomElment(element));
 			}
-			else if (ComponentConfigData.PARSER_INPUT_STRING.equals(parserInput))
+			else if (WidgetConfigData.PARSER_INPUT_STRING.equals(parserInput))
 			{
-				parser.parse(component, element.toString());
+				parser.parse(widget, element.toString());
 			}
 			else
 			{
-				parser.parse(component, element);
+				parser.parse(widget, element);
 			}
-			return component;
+			return widget;
 		} 
 		catch (Throwable e) 
 		{
-			throw new ScreenConfigException(messages.screenFactoryErrorCreateComponent(componentId), e);
+			throw new ScreenConfigException(messages.screenFactoryErrorCreateWidget(widgetId), e);
 		} 
 	}
 	
@@ -240,15 +240,15 @@ public class ScreenFactory
 		for (Object object : elementList) 
 		{
 			Element compCandidate = (Element) object;
-			if (isValidComponent(compCandidate))
+			if (isValidWidget(compCandidate))
 			{
 				try 
 				{
-					createComponent(source, compCandidate, screen);
+					createWidget(source, compCandidate, screen);
 				} 
 				catch (ScreenConfigException e) 
 				{
-					logger.error(messages.screenFactoryGenericErrorCreateComponent(id, e.getLocalizedMessage()));
+					logger.error(messages.screenFactoryGenericErrorCreateWidget(id, e.getLocalizedMessage()));
 				}
 			}
 			else if (isScreenDefinitions(compCandidate))

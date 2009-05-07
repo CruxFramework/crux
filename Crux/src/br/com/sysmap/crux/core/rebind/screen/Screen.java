@@ -28,7 +28,7 @@ import java.util.Map;
 public class Screen 
 {
 	protected String id;
-	protected Map<String, Component> components = new HashMap<String, Component>();
+	protected Map<String, Widget> widgets = new HashMap<String, Widget>();
 	protected Map<String, Event> events = new HashMap<String, Event>();
 	
 	public Screen(String id) 
@@ -37,34 +37,34 @@ public class Screen
 	}
 
 	/**
-	 * Return Component associated with the given id
-	 * @param componentId
+	 * Return WidgetFactory associated with the given id
+	 * @param widgetId
 	 * @return
 	 */
-	public Component getComponent(String componentId)
+	public Widget getWidget(String widgetId)
 	{
-		if (componentId == null) return null;
-		return components.get(componentId);
+		if (widgetId == null) return null;
+		return widgets.get(widgetId);
 	}
 
 	/**
-	 * Iterate over components
+	 * Iterate over widgets
 	 * @return
 	 */
-	public Iterator<Component> iterateComponents() 
+	public Iterator<Widget> iterateWidgets() 
 	{
-		return components.values().iterator();
+		return widgets.values().iterator();
 	}
 
 	/**
-	 * Add a new component to screen
-	 * @param component
+	 * Add a new widget to screen
+	 * @param widget
 	 */
-	protected void addComponent(Component component)
+	protected void addWidget(Widget widget)
 	{
-		if (component != null)
+		if (widget != null)
 		{
-			components.put(component.getId(), component);
+			widgets.put(widget.getId(), widget);
 		}
 	}
 	

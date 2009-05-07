@@ -30,17 +30,16 @@ import com.google.gwt.event.logical.shared.OpenHandler;
  */
 public class OpenEvtBind extends EvtBind
 {
-	public static <I> void bindEvent(Element element, HasOpenHandlers<I> widget, final String componentId)
+	public static <I> void bindEvent(Element element, HasOpenHandlers<I> widget, final String widgetId)
 	{
-		final Event eventChange = getComponentEvent(element, EventFactory.EVENT_CHANGE);
+		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_CHANGE);
 		if (eventChange != null)
 		{
 			widget.addOpenHandler(new OpenHandler<I>()
 			{
-				@Override
 				public void onOpen(OpenEvent<I> event) 
 				{
-					EventFactory.callEvent(eventChange, componentId);
+					EventFactory.callEvent(eventChange, widgetId);
 				}
 			});
 		}

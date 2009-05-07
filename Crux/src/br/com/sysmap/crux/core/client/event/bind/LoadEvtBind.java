@@ -32,33 +32,31 @@ import com.google.gwt.event.dom.client.LoadHandler;
  */
 public class LoadEvtBind extends EvtBind 
 {
-	public static void bindLoadEvent(Element element, HasLoadHandlers widget, final String componentId)
+	public static void bindLoadEvent(Element element, HasLoadHandlers widget, final String widgetId)
 	{
-		final Event eventLoad = getComponentEvent(element, EventFactory.EVENT_LOAD);
+		final Event eventLoad = getWidgetEvent(element, EventFactory.EVENT_LOAD);
 		if (eventLoad != null)
 		{
 			widget.addLoadHandler(new LoadHandler()
 			{
-				@Override
 				public void onLoad(LoadEvent event) 
 				{
-					EventFactory.callEvent(eventLoad, componentId);
+					EventFactory.callEvent(eventLoad, widgetId);
 				}
 			});
 		}
 	}
 
-	public static void bindErrorEvent(Element element, HasErrorHandlers widget, final String componentId)
+	public static void bindErrorEvent(Element element, HasErrorHandlers widget, final String widgetId)
 	{
-		final Event eventError = getComponentEvent(element, EventFactory.EVENT_ERROR);
+		final Event eventError = getWidgetEvent(element, EventFactory.EVENT_ERROR);
 		if (eventError != null)
 		{
 			widget.addErrorHandler(new ErrorHandler()
 			{
-				@Override
 				public void onError(ErrorEvent event) 
 				{
-					EventFactory.callEvent(eventError, componentId);
+					EventFactory.callEvent(eventError, widgetId);
 				}
 			});
 		}

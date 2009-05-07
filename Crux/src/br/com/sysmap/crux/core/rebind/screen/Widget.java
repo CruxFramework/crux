@@ -20,10 +20,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Represent a CRUX component at the application's server side. 
+ * Represent a CRUX Widget at the application's server side. 
  * @author Thiago Bustamante
  */
-public class Component
+public class Widget
 {
 	private int hashValue = 0;
 	protected String id;
@@ -33,11 +33,11 @@ public class Component
 	protected Map<String, Event> events = new HashMap<String, Event>();
 	
 	
-	public Component() 
+	public Widget() 
 	{
 	}
 
-	public Component(String id) 
+	public Widget(String id) 
 	{
 		this.id = id;
 	}
@@ -63,10 +63,10 @@ public class Component
 	public boolean equals(Object obj) 
 	{
     	if (obj == null) return false;
-    	if (!(obj instanceof Component)) return false;
+    	if (!(obj instanceof Widget)) return false;
     	
     	String compId1 = getId();
-    	String compId2 = ((Component)obj).getId();
+    	String compId2 = ((Widget)obj).getId();
     	return (compId1 == null?compId2==null:compId1.equals(compId2));
     }
 

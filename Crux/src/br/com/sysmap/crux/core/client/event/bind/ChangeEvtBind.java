@@ -33,33 +33,31 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  */
 public class ChangeEvtBind extends EvtBind
 {
-	public static <I> void bindValueEvent(Element element, HasValueChangeHandlers<I> widget, final String componentId)
+	public static <I> void bindValueEvent(Element element, HasValueChangeHandlers<I> widget, final String widgetId)
 	{
-		final Event eventChange = getComponentEvent(element, EventFactory.EVENT_CHANGE);
+		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_CHANGE);
 		if (eventChange != null)
 		{
 			widget.addValueChangeHandler(new ValueChangeHandler<I>()
 			{
-				@Override
 				public void onValueChange(ValueChangeEvent<I> event) 
 				{
-					EventFactory.callEvent(eventChange, componentId);
+					EventFactory.callEvent(eventChange, widgetId);
 				}
 			});
 		}
 	}
 
-	public static void bindEvent(Element element, HasChangeHandlers widget, final String componentId)
+	public static void bindEvent(Element element, HasChangeHandlers widget, final String widgetId)
 	{
-		final Event eventChange = getComponentEvent(element, EventFactory.EVENT_CHANGE);
+		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_CHANGE);
 		if (eventChange != null)
 		{
 			widget.addChangeHandler(new ChangeHandler()
 			{
-				@Override
 				public void onChange(ChangeEvent event) 
 				{
-					EventFactory.callEvent(eventChange, componentId);
+					EventFactory.callEvent(eventChange, widgetId);
 				}
 			});
 		}

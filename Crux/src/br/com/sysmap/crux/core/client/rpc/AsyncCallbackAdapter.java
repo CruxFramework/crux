@@ -27,7 +27,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public abstract class AsyncCallbackAdapter<T> implements AsyncCallback<T>
 {
-	@Override
 	public void onFailure(Throwable e) 
 	{
 		GWT.log(e.getLocalizedMessage(), e);

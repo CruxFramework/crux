@@ -13,9 +13,29 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind.screen;
+package br.com.sysmap.crux.core.server.scan;
 
-public interface ComponentParser 
+public class WidgetConfigScannerException extends RuntimeException 
 {
-	void parse(Component component, Object element);
+	private static final long serialVersionUID = 6810738683779587271L;
+
+	public WidgetConfigScannerException() 
+	{
+	}
+
+	public WidgetConfigScannerException(String message) 
+	{
+		super(message);
+	}
+
+	public WidgetConfigScannerException(Throwable cause) 
+	{
+		super(cause);
+	}
+
+	public WidgetConfigScannerException(String message, Throwable cause) 
+	{
+		super(message, cause);
+	}
+
 }

@@ -17,6 +17,7 @@ package br.com.sysmap.crux.core.client.component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -37,9 +38,10 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Abstraction for the entire page. It encapsulate all the components, containers and 
+ * Abstraction for the entire page. It encapsulate all the widgets, containers and 
  * datasources.
  * @author Thiago
  *
@@ -47,7 +49,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class Screen
 {
 	protected String id;
-	protected Map<String, Component> components = new HashMap<String, Component>(30);
+	protected Map<String, Widget> widgets = new HashMap<String, Widget>(30);
 	protected Element blockDiv;
 	protected boolean manageHistory = false;
 	protected IFrameElement historyFrame = null;
@@ -98,15 +100,24 @@ public class Screen
 		}
 	}
 
-	public Component getComponent(String id)
+	public Widget getWidget(String id)
 	{
-		return components.get(id);
+		return widgets.get(id);
 	}
 	
-	void addComponent(Component component)
+	void addWidget(String id, Widget widget)
 	{
-		components.put(component.getId(), component);
-		component.setScreen(this);
+		widgets.put(id, widget);
+	}
+
+	public Iterator<String> iteratorWidgetsIds()
+	{
+		return widgets.keySet().iterator();
+	}
+	
+	public Iterator<Widget> iteratorWidgets()
+	{
+		return widgets.values().iterator();
 	}
 
 	public void blockToUser()
@@ -165,7 +176,8 @@ public class Screen
 			Window.addCloseHandler(new CloseHandler<Window>(){
 				public void onClose(CloseEvent<Window> event) 
 				{
-					EventFactory.callEvent(eventClose, getId());				}
+					EventFactory.callEvent(eventClose, getId());				
+				}
 			});
 		}
 
@@ -173,7 +185,6 @@ public class Screen
 		if (eventResized != null)
 		{
 			Window.addResizeHandler(new ResizeHandler(){
-				@Override
 				public void onResize(ResizeEvent event) 
 				{
 					EventFactory.callEvent(eventResized, getId());
@@ -184,7 +195,6 @@ public class Screen
 		if (eventLoad != null)
 		{
 			addLoadHandler(new ScreenLoadHandler(){
-				@Override
 				public void onLoad() 
 				{
 					EventFactory.callEvent(eventLoad, getId());

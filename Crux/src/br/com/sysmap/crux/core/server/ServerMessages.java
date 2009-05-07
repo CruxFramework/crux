@@ -36,14 +36,14 @@ public interface ServerMessages
 	@DefaultMessage("[clientHandlers 001] - Error initializing clientHandler: {0}.")
 	String clientHandlersHandlerInitializeError(String errMsg);
 
-	@DefaultMessage("[componentConfig - 001] - Error parsing crux configuration file: {0}.")
-	String componentConfigParserError(String errMsg);
+	@DefaultMessage("[widgetConfig - 001] - Error parsing crux configuration file: {0}.")
+	String widgetConfigParserError(String errMsg);
 
-	@DefaultMessage("[componentConfigScanner 001] - Error initializing componentConfigScanner: {0}.")
-	String componentConfigScannerInitializationError(String errMsg);
+	@DefaultMessage("[widgetConfigScanner 001] - Error initializing widgetConfigScanner: {0}.")
+	String widgetConfigScannerInitializationError(String errMsg);
 
-	@DefaultMessage("[componentParserImpl - 001] - Error setting property {0} for component {1}.")
-	String componentParserImplComponentPropertyError(String property, String componentId);
+	@DefaultMessage("[widgetParserImpl - 001] - Error setting property {0} for widget {1}.")
+	String widgetParserImplWidgetPropertyError(String property, String widgetId);
 
 	@DefaultMessage("[controllers 001] - Error initializing controllers: {0}.")
 	String controllersInitializeError(String errMsg);
@@ -51,8 +51,8 @@ public interface ServerMessages
 	@DefaultMessage("[controllers 002] - Error initializing controllerFactory: {0}.")
 	String controllerFactoryInitializerError(String errMsg);
 
-	@DefaultMessage("[initializerListener - 001] - Components registered.")
-	String initializerListenerComponentsRegistered();
+	@DefaultMessage("[initializerListener - 001] - Widgets registered.")
+	String initializerListenerWidgetsRegistered();
 
 	@DefaultMessage("[initializerListener - 002] - Server Controllers registered.")
 	String initializerListenerControllersRegistered();
@@ -63,26 +63,26 @@ public interface ServerMessages
 	@DefaultMessage("[scannerURLS - 001] - Error searching /WEB-INF/lib dir: {0}.")
 	String scannerURLSErrorSearchingLibDir(String errMsg);
 
-	@DefaultMessage("[screenFactory - 004] - The id attribute is required for CRUX Components.")
-	String screenFactoryComponentIdRequired();
+	@DefaultMessage("[screenFactory - 004] - The id attribute is required for CRUX Widgets.")
+	String screenFactoryWidgetIdRequired();
 
-	@DefaultMessage("[screenFactory - 005] - Can not create component ''{0}''. Verify the component type.")
-	String screenFactoryErrorCreateComponent(String componentId);
+	@DefaultMessage("[screenFactory - 005] - Can not create widget {0}. Verify the widget type.")
+	String screenFactoryErrorCreateWidget(String widgetId);
 
-	@DefaultMessage("[screenFactory - 006] - Error creating component. Duplicated identifier: {0}.")
-	String screenFactoryErrorDuplicatedComponent(String componentId);
+	@DefaultMessage("[screenFactory - 006] - Error creating widget. Duplicated identifier: {0}.")
+	String screenFactoryErrorDuplicatedWidget(String widgetId);
 
 	@DefaultMessage("[screenFactory 002] - Error retrieving screen {0}. Error: {1}.")
 	String screenFactoryErrorRetrievingScreen(String screenId, String errMsg);
 
-	@DefaultMessage("[screenFactory 003] - Error Creating component {0}. Error: {1}.")
-	String screenFactoryGenericErrorCreateComponent(String screenId, String errMsg);
+	@DefaultMessage("[screenFactory 003] - Error Creating widget {0}. Error: {1}.")
+	String screenFactoryGenericErrorCreateWidget(String screenId, String errMsg);
 
 	@DefaultMessage("[screenFactory 001] - Screen {0} not found!")
 	String screenFactoryScreeResourceNotFound(String screenId);
 
-	@DefaultMessage("[Screen - 001] - Error setting property {0} for component {1}.")
-	String screenPropertyError(String property, String componentId);
+	@DefaultMessage("[Screen - 001] - Error setting property {0} for widget {1}.")
+	String screenPropertyError(String property, String widgetId);
 
 	@DefaultMessage("[formatters 002] - Error initializing formatter: {0}.")
 	String formattersFormatterInitializeError(String errMsg);
