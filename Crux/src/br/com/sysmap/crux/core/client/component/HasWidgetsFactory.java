@@ -60,7 +60,7 @@ public abstract class HasWidgetsFactory<T extends Widget> extends WidgetFactory<
 	 * Creates a sequential id
 	 * @return
 	 */
-	private static String generateNewId() 
+	protected static String generateNewId() 
 	{
 		return "_crux_" + (++currentId );
 	}

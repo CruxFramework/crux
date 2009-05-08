@@ -44,7 +44,7 @@ public abstract class WidgetFactory <T extends Widget>
 		return ScreenFactory.getInstance().getScreen();
 	}
 	
-	public T createWidget(Element element, String widgetId)
+	public T createWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		T widget = instantiateWidget(element, widgetId);
 		getScreen().addWidget(widgetId, widget);
@@ -59,8 +59,9 @@ public abstract class WidgetFactory <T extends Widget>
 	/**
 	 * Process widget attributes
 	 * @param element page DOM element representing the widget (Its &lt;span&gt; tag)
+	 * @throws InterfaceConfigException 
 	 */
-	protected void processAttributes(T widget, Element element, String widgetId)
+	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		String width = element.getAttribute("_width");
 		if (width != null && width.length() > 0)
@@ -82,10 +83,10 @@ public abstract class WidgetFactory <T extends Widget>
 		{
 			widget.setTitle(tooltip);
 		}
-		String classAttr = element.getAttribute("_class");
-		if (classAttr != null && classAttr.length() > 0)
+		String styleName = element.getAttribute("_styleName");
+		if (styleName != null && styleName.length() > 0)
 		{
-			widget.setStyleName(classAttr);
+			widget.setStyleName(styleName);
 		}
 		String style = element.getAttribute("_style");
 		if (style != null && style.length() > 0)
@@ -125,8 +126,9 @@ public abstract class WidgetFactory <T extends Widget>
 	/**
 	 * Process widget events
 	 * @param element page DOM element representing the widget (Its &lt;span&gt; tag)
+	 * @throws InterfaceConfigException
 	 */
-	protected void processEvents(T widget, Element element, String widgetId)
+	protected void processEvents(T widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 
 	}
