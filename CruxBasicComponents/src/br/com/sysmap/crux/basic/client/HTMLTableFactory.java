@@ -261,9 +261,29 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		}	
 	}
 	
-	protected abstract void addCell(T widget, Widget child, int indexRow, int indexCol);
-	
-	protected abstract void addCell(T widget, String text, int indexRow, int indexCol);
+	protected void addCell(T widget, Widget child, int indexRow, int indexCol)
+	{
+		prepareCell(widget, indexRow, indexCol);
+		widget.setWidget(indexRow, indexCol, child);
+	}
 
-	protected abstract void addCell(T widget, String text, boolean asHTML, int indexRow, int indexCol);
+	protected void addCell(T widget, String text, int indexRow, int indexCol)
+	{
+		prepareCell(widget, indexRow, indexCol);
+		widget.setText(indexRow, indexCol, text);
+	}
+
+	protected void addCell(T widget, String text, boolean asHTML, int indexRow, int indexCol)
+	{
+		if (asHTML)
+		{
+			widget.setHTML(indexRow, indexCol, text);
+		}
+		else
+		{
+			widget.setText(indexRow, indexCol, text);
+		}
+	}	
+	
+	protected abstract void prepareCell(T widget, int indexRow, int indexCol);
 }

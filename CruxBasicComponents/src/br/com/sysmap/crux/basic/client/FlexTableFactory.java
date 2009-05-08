@@ -16,36 +16,38 @@
 package br.com.sysmap.crux.basic.client;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.FlexTable;
 
 /**
- * Factory for Grid widget
+ * Factory for FlexTable widget
  * @author Thiago Bustamante
  */
-public class GridFactory extends HTMLTableFactory<Grid>
+public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 {
 
 	@Override
-	protected Grid instantiateWidget(Element element, String widgetId)
+	protected FlexTable instantiateWidget(Element element, String widgetId)
 	{
-		return new Grid();
+		return new FlexTable();
 	}
 
 	@Override
-	protected void prepareCell(Grid widget, int indexRow, int indexCol)
+	protected void prepareCell(FlexTable widget, int indexRow, int indexCol)
 	{
 		if (indexRow < 0 || indexCol < 0)
 		{
 			throw new IndexOutOfBoundsException();
 			//TODO: colocar mensagem
 		}
-		if (widget.getRowCount() < indexRow)
+		int r = 0;
+		while (widget.getRowCount() < indexRow+1)
 		{
-			widget.resizeRows(indexRow+1);
+			widget.insertRow(r++);
 		}
-		if (widget.getColumnCount() < indexCol)
+		
+		if (widget.getCellCount(indexRow) < indexCol +1)
 		{
-			widget.resizeColumns(indexCol + 1);
+			widget.addCell(indexRow);
 		}
 	}
 }
