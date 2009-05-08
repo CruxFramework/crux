@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <crux xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-      xsi:noNamespaceSchemaLocation="../../Crux/xsd/crux.xsd"
+      xsi:noNamespaceSchemaLocation="http://www.sysmap.com.br/crux/1.0"
       module="br.com.sysmap.crux.basic.CruxBasicComponents">
   <widget id="anchor" clientClass="br.com.sysmap.crux.basic.client.AnchorFactory" />
   <widget id="button" clientClass="br.com.sysmap.crux.basic.client.ButtonFactory" />
