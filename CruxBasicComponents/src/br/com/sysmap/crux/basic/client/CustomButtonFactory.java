@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.CustomButton;
@@ -42,9 +44,10 @@ public abstract class CustomButtonFactory<T extends CustomButton> extends FocusW
 
 	/**
 	 * Render component attributes
+	 * @throws InterfaceConfigException 
 	 * @see #WidgetFactory.processAttributes
 	 */
-	protected void processAttributes(T widget, Element element, String widgetId)
+	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 		

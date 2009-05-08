@@ -17,7 +17,6 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -31,17 +30,10 @@ public abstract class SplitPanelFactory <T extends Panel> extends PanelFactory<T
 {
 
 	@Override
-	protected void processAttributes(T widget, Element element, String widgetId) 
+	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException 
 	{
 		super.processAttributes(widget, element, widgetId);
-		try 
-		{
-			renderSplitItens(widget, element);
-		}
-		catch (InterfaceConfigException e) 
-		{
-			GWT.log(e.getLocalizedMessage(), e);
-		}
+		renderSplitItens(widget, element);
 	}
 	
 	/**

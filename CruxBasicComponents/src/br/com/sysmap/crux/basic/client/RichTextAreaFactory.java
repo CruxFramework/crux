@@ -18,6 +18,7 @@ package br.com.sysmap.crux.basic.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 
 import com.google.gwt.dom.client.Element;
@@ -41,7 +42,7 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 	}
 	
 	@Override
-	protected void processAttributes(final RichTextArea widget, Element element, String widgetId) 
+	protected void processAttributes(final RichTextArea widget, Element element, String widgetId) throws InterfaceConfigException 
 	{
 		super.processAttributes(widget, element, widgetId);
 		final Map<String, String> declaredProperties = readDeclaredProperties(element);

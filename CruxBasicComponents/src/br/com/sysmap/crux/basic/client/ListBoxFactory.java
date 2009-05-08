@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 
 import com.google.gwt.dom.client.Element;
@@ -40,7 +41,7 @@ public class ListBoxFactory extends FocusWidgetFactory<ListBox>
 	}
 	
 	@Override
-	protected void processAttributes(ListBox widget, Element element, String widgetId)
+	protected void processAttributes(ListBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		renderListItens(widget, element);
 				
@@ -112,7 +113,7 @@ public class ListBoxFactory extends FocusWidgetFactory<ListBox>
 	}
 		
 	@Override
-	protected void processEvents(ListBox widget, Element element, String widgetId)
+	protected void processEvents(ListBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
 		

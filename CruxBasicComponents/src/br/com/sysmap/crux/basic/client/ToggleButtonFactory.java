@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.ToggleButton;
 
@@ -27,9 +29,10 @@ public class ToggleButtonFactory extends CustomButtonFactory<ToggleButton>
 	
 	/**
 	 * Render component attributes
+	 * @throws InterfaceConfigException 
 	 * @see #WidgetFactory.renderAttributes
 	 */
-	protected void processAttributes(ToggleButton widget, Element element, String widgetId)
+	protected void processAttributes(ToggleButton widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 

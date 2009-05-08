@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.LoadEvtBind;
@@ -30,7 +31,7 @@ import com.google.gwt.user.client.ui.Image;
 public class ImageFactory extends WidgetFactory<Image>
 {
 	@Override
-	protected void processAttributes(Image widget, Element element, String widgetId)
+	protected void processAttributes(Image widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 
@@ -52,7 +53,7 @@ public class ImageFactory extends WidgetFactory<Image>
 	}
 	
 	@Override
-	protected void processEvents(Image widget, Element element, String widgetId)
+	protected void processEvents(Image widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
 

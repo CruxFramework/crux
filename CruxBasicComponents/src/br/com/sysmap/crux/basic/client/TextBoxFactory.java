@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.user.client.ui.TextBox;
@@ -26,7 +28,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class TextBoxFactory extends TextBoxBaseFactory<TextBox>
 {	
 	@Override
-	protected void processAttributes(TextBox widget, Element element, String widgetId)
+	protected void processAttributes(TextBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 

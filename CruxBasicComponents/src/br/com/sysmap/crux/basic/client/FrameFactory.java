@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
 
 import com.google.gwt.dom.client.Element;
@@ -27,7 +28,7 @@ import com.google.gwt.user.client.ui.Frame;
 public class FrameFactory extends WidgetFactory<Frame>
 {
 	@Override
-	protected void processAttributes(Frame widget, Element element, String widgetId)
+	protected void processAttributes(Frame widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 

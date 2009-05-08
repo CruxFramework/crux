@@ -69,7 +69,7 @@ public class StackPanelFactory extends ComplexPanelFactory<StackPanel>
 	}
 
 	@Override
-	protected void processAttributes(StackPanel widget, Element element, String widgetId) 
+	protected void processAttributes(StackPanel widget, Element element, String widgetId) throws InterfaceConfigException 
 	{
 		super.processAttributes(widget, element, widgetId);
 		

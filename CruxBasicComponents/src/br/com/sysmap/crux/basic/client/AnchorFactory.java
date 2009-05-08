@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.user.client.ui.Anchor;
@@ -27,7 +29,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 public class AnchorFactory extends FocusWidgetFactory<Anchor>
 {
 	@Override
-	protected void processAttributes(Anchor widget, Element element, String widgetId)
+	protected void processAttributes(Anchor widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 		

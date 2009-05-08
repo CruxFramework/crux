@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
@@ -32,7 +33,7 @@ import com.google.gwt.user.client.ui.Label;
 public class LabelFactory extends WidgetFactory<Label>
 {
 	@Override
-	protected void processAttributes(Label widget, Element element, String widgetId)
+	protected void processAttributes(Label widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 
@@ -71,7 +72,7 @@ public class LabelFactory extends WidgetFactory<Label>
 	}
 	
 	@Override
-	protected void processEvents(Label widget, Element element, String widgetId)
+	protected void processEvents(Label widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
 		

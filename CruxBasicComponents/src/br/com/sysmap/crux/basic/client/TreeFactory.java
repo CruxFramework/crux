@@ -27,7 +27,6 @@ import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.OpenEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
@@ -63,7 +62,7 @@ public class TreeFactory extends HasWidgetsFactory<Tree>
 	}
 	
 	@Override
-	protected void processAttributes(Tree widget, Element element, String widgetId) 
+	protected void processAttributes(Tree widget, Element element, String widgetId) throws InterfaceConfigException 
 	{
 		super.processAttributes(widget, element, widgetId);
 		
@@ -94,19 +93,11 @@ public class TreeFactory extends HasWidgetsFactory<Tree>
 			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
 		}
 		
-		try
-		{
-			renderTreeItens(widget, element);
-
-		} 
-		catch (InterfaceConfigException e1) 
-		{
-			GWT.log(e1.getLocalizedMessage(), e1);
-		}
+		renderTreeItens(widget, element);
 	}
 	
 	@Override
-	protected void processEvents(Tree widget, Element element, String widgetId)
+	protected void processEvents(Tree widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
 		
@@ -199,6 +190,6 @@ public class TreeFactory extends HasWidgetsFactory<Tree>
 	@Override
 	public void add(Tree parent, Widget child, Element parentElement, Element childElement) 
 	{
-		parent.add(child);
+		// Does not need to add the child because it was already attached in processAttributes method
 	}	
 }

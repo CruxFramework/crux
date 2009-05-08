@@ -87,7 +87,7 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 	}
 	
 	@Override
-	protected void processAttributes(DockPanel widget, Element element, String widgetId)
+	protected void processAttributes(DockPanel widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");

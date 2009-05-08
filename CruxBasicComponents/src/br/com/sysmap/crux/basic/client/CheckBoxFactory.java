@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 
 import com.google.gwt.dom.client.Element;
@@ -29,10 +30,11 @@ public class CheckBoxFactory extends FocusWidgetFactory<CheckBox>
 {
 	/**
 	 * process widget attributes
+	 * @throws InterfaceConfigException 
 	 * @see #WidgetFactory.processAttributes
 	 */
 	@Override
-	protected void processAttributes(CheckBox widget, Element element, String widgetId)
+	protected void processAttributes(CheckBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 		String checked = element.getAttribute("_checked");
@@ -43,7 +45,7 @@ public class CheckBoxFactory extends FocusWidgetFactory<CheckBox>
 	}
 	
 	@Override
-	protected void processEvents(CheckBox widget, Element element, String widgetId)
+	protected void processEvents(CheckBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
 		ChangeEvtBind.bindValueEvent(element, widget, widgetId);

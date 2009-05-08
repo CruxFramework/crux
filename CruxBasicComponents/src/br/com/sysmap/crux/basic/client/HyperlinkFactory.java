@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 
@@ -29,7 +30,7 @@ public class HyperlinkFactory extends WidgetFactory<Hyperlink>
 {
 
 	@Override
-	protected void processAttributes(Hyperlink widget, Element element, String widgetId) 
+	protected void processAttributes(Hyperlink widget, Element element, String widgetId) throws InterfaceConfigException 
 	{
 		super.processAttributes(widget, element, widgetId);
 
@@ -42,7 +43,7 @@ public class HyperlinkFactory extends WidgetFactory<Hyperlink>
 	}
 	
 	@Override
-	protected void processEvents(Hyperlink widget, Element element, String widgetId)
+	protected void processEvents(Hyperlink widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
 

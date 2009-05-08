@@ -40,7 +40,7 @@ public class DeckPanelFactory extends ComplexPanelFactory<DeckPanel>
 	}
 
 	@Override
-	protected void processAttributes(DeckPanel widget, Element element, String widgetId) 
+	protected void processAttributes(DeckPanel widget, Element element, String widgetId) throws InterfaceConfigException 
 	{
 		super.processAttributes(widget, element, widgetId);
 		

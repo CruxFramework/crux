@@ -44,7 +44,7 @@ public class HorizontalPanelFactory extends CellPanelFactory<HorizontalPanel>
 	}
 	
 	@Override
-	protected void processAttributes(HorizontalPanel widget, Element element, String widgetId)
+	protected void processAttributes(HorizontalPanel widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");

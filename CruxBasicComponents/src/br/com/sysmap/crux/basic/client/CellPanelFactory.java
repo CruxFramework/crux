@@ -91,7 +91,7 @@ public abstract class CellPanelFactory <T extends CellPanel> extends ComplexPane
 	}
 	
 	@Override
-	protected void processAttributes(T widget, Element element, String widgetId)
+	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 

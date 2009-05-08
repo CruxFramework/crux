@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.FocusEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
@@ -31,7 +32,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class FocusPanelFactory extends SimplePanelFactory
 {
 	@Override
-	protected void processEvents(SimplePanel widget, Element element, String widgetId) 
+	protected void processEvents(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException 
 	{
 		super.processEvents(widget, element, widgetId);
 		FocusPanel focusPanel = (FocusPanel) widget; 
@@ -44,7 +45,7 @@ public class FocusPanelFactory extends SimplePanelFactory
 	}
 	
 	@Override
-	protected void processAttributes(SimplePanel widget, Element element, String widgetId) 
+	protected void processAttributes(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException 
 	{
 		super.processAttributes(widget, element, widgetId);
 		FocusPanel focusPanel = (FocusPanel) widget; 

@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
@@ -35,7 +36,7 @@ public class FormPanelFactory extends SimplePanelFactory
 {
 	
 	@Override
-	protected void processAttributes(SimplePanel widget, Element element, String widgetId) 
+	protected void processAttributes(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException 
 	{
 		super.processAttributes(widget, element, widgetId);
 		FormPanel formPanel = (FormPanel)widget;
@@ -58,7 +59,7 @@ public class FormPanelFactory extends SimplePanelFactory
 	}
 	
 	@Override
-	protected void processEvents(SimplePanel widget, Element element, final String widgetId) 
+	protected void processEvents(SimplePanel widget, Element element, final String widgetId) throws InterfaceConfigException 
 	{
 		super.processEvents(widget, element, widgetId);
 		FormPanel formPanel = (FormPanel)widget;

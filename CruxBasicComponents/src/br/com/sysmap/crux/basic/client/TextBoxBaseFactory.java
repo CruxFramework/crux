@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 
 import com.google.gwt.dom.client.Element;
@@ -29,7 +30,7 @@ import com.google.gwt.user.client.ui.TextBoxBase;
 public abstract class TextBoxBaseFactory<T extends TextBoxBase> extends FocusWidgetFactory<T>
 {	
 	@Override
-	protected void processAttributes(T widget, Element element, String widgetId)
+	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 		String value = element.getAttribute("_value");
@@ -65,7 +66,7 @@ public abstract class TextBoxBaseFactory<T extends TextBoxBase> extends FocusWid
 	}
 	
 	@Override
-	protected void processEvents(T widget, Element element, String widgetId)
+	protected void processEvents(T widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		ChangeEvtBind.bindValueEvent(element, widget, widgetId);
 		super.processEvents(widget, element, widgetId);

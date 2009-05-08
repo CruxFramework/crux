@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
@@ -58,7 +59,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	}
 	
 	@Override
-	protected void processAttributes(MenuBar widget, Element element, String widgetId)
+	protected void processAttributes(MenuBar widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 		
@@ -78,7 +79,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	}
 	
 	@Override
-	protected void processEvents(MenuBar widget, Element element, String widgetId)
+	protected void processEvents(MenuBar widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
 		
