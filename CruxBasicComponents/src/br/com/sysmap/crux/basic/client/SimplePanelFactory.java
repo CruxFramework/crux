@@ -32,7 +32,9 @@ public class SimplePanelFactory extends PanelFactory<SimplePanel>
 		return new SimplePanel();
 	}
 
-	@Override
+	/**
+	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 */
 	public void add(SimplePanel parent, Widget child, Element parentElement, Element childElement) 
 	{
 		parent.add(child);

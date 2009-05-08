@@ -34,7 +34,9 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago Bustamante
  */
 public abstract class WidgetFactory <T extends Widget>
-{	
+{
+	private static int currentId = 0;
+	
 	/**
 	 * Return the current screen 
 	 * @return
@@ -153,5 +155,65 @@ public abstract class WidgetFactory <T extends Widget>
 	protected Widget createChildWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		return ScreenFactory.getInstance().newWidget(element, widgetId);
+	}
+	
+
+	/**
+	 * Creates a sequential id
+	 * @return
+	 */
+	protected static String generateNewId() 
+	{
+		return "_crux_" + (++currentId );
+	}
+	
+	/**
+	 * Returns the element which is the father of the given one. If it does not have an id, creates a random for it
+	 * @param child
+	 * @return
+	 */
+	protected Element getParentElement(Element child)
+	{
+		Element parent = child.getParentElement();
+		
+		String id = parent.getId();
+		if(id == null || id.trim().length() == 0)
+		{
+			parent.setId(generateNewId());
+		}
+		
+		return parent;
+	}
+	
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	protected boolean isWidget(Element element)
+	{
+		return ScreenFactory.getInstance().isValidWidget(element);
+	}
+	
+	
+	/**
+	 * If the next child element is a span, returns it. Otherwise, raises error.
+	 * If there is no child element and <code>acceptsNull</code> is false, raises error.
+	 * @param element
+	 * @param acceptsNull
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	protected Element ensureNextChildSpan(Element element, boolean acceptsNull) throws InterfaceConfigException
+	{
+		Element firstChild = element.getFirstChildElement();
+		
+		if((firstChild == null && !acceptsNull) || !firstChild.getTagName().equalsIgnoreCase("span"))
+		{
+			throw new InterfaceConfigException();
+			// TODO - Gessé - add message
+		}
+		
+		return firstChild;	
 	}
 }

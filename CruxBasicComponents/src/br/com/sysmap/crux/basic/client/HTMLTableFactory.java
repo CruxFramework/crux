@@ -32,7 +32,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactory<T>
 {
-	@Override
+	/**
+	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 */
 	public void add(T parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
 	{
 		// Does not need to add the child because it was already attached in processAttributes method

@@ -15,15 +15,14 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
 
-import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.Composite;
 
 /**
- * Base factory class for all panels
- * @author Thiago Bustamante
+ * Represents an ImageFactory component
+ * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public abstract class PanelFactory <T extends Panel> extends WidgetFactory<T> implements HasWidgetsFactory<T>
+public abstract class CompositeFactory<T extends Composite> extends WidgetFactory<T>
 {
 }

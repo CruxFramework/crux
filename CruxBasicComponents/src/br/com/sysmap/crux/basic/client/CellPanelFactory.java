@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class CellPanelFactory <T extends CellPanel> extends ComplexPanelFactory<T>
 {
-	@Override
 	public void add(T parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
 	{
 		Element childElementParent = childElement.getParentElement();

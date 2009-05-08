@@ -17,6 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.component.WidgetFactory;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
@@ -39,9 +40,8 @@ import com.google.gwt.user.client.ui.Widget;
  * Represents a TreeFactory WidgetFactory
  * @author Thiago Bustamante
  */
-public class TreeFactory extends HasWidgetsFactory<Tree>
+public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactory<Tree>
 {
-	@Override
 	protected Tree instantiateWidget(Element element, String widgetId) 
 	{
 		Event eventLoadImage = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_IMAGES);
@@ -187,7 +187,6 @@ public class TreeFactory extends HasWidgetsFactory<Tree>
 		return false;
 	}
 
-	@Override
 	public void add(Tree parent, Widget child, Element parentElement, Element childElement) 
 	{
 		// Does not need to add the child because it was already attached in processAttributes method

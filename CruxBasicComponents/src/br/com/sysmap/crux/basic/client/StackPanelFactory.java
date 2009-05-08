@@ -27,7 +27,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class StackPanelFactory extends ComplexPanelFactory<StackPanel>
 {
-	@Override
+	/**
+	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 */
 	public void add(StackPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
 	{
 		Element childElementParent = childElement.getParentElement();

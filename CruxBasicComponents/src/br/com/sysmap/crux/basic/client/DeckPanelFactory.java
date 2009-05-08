@@ -27,7 +27,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DeckPanelFactory extends ComplexPanelFactory<DeckPanel>
 {
-	@Override
+	/**
+	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 */
 	public void add(DeckPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
 	{
 			parent.add(child);

@@ -24,10 +24,8 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago
  *
  */
-public abstract class HasWidgetsFactory<T extends Widget> extends WidgetFactory<T> 
+public interface HasWidgetsFactory<T extends Widget>
 {
-	private static int currentId = 0;
-
 	/**
 	 * Gives to factory the opportunity to add a child widget
 	 * @param parent
@@ -37,41 +35,4 @@ public abstract class HasWidgetsFactory<T extends Widget> extends WidgetFactory<
 	 * @throws InterfaceConfigException 
 	 */
 	public abstract void add(T parent,  Widget child, Element parentElement, Element childElement) throws InterfaceConfigException;	
-	
-	/**
-	 * Returns the element which is the father of the given one. If it does not have an id, creates a random for it
-	 * @param child
-	 * @return
-	 */
-	protected Element getParentElement(Element child)
-	{
-		Element parent = child.getParentElement();
-		
-		String id = parent.getId();
-		if(id == null || id.trim().length() == 0)
-		{
-			parent.setId(generateNewId());
-		}
-		
-		return parent;
-	}
-
-	/**
-	 * Creates a sequential id
-	 * @return
-	 */
-	protected static String generateNewId() 
-	{
-		return "_crux_" + (++currentId );
-	}
-	
-	/**
-	 * 
-	 * @param element
-	 * @return
-	 */
-	protected boolean isWidget(Element element)
-	{
-		return ScreenFactory.getInstance().isValidWidget(element);
-	}
 }
