@@ -94,10 +94,9 @@ public class ScreenFactory {
 			{
 				try 
 				{
-					createWidget(widgetCandidates.getItem(i), screen);
-					widgets.add(widgetCandidates.getItem(i));
+					createWidget(widgetCandidates.getItem(i), screen, widgets);
 				}
-				catch (InterfaceConfigException e) 
+				catch (Throwable e) 
 				{
 					GWT.log(e.getLocalizedMessage(), e);
 					widgetCandidates.getItem(i).setInnerText(JSEngine.messages.screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
@@ -227,7 +226,7 @@ public class ScreenFactory {
 		String id = element.getId();
 		Widget parent = screen.getWidget(id); 
 
-		if (!(parent instanceof HasWidgets))
+		if (parent != null && !(parent instanceof HasWidgets))
 		{
 			throw new InterfaceConfigException(JSEngine.messages.screenFactoryInvalidWidgetParent(element.getId()));
 		}
@@ -235,7 +234,7 @@ public class ScreenFactory {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Widget createWidget(Element element, Screen screen) throws InterfaceConfigException
+	private Widget createWidget(Element element, Screen screen, List<Element> widgetsElementsAdded) throws InterfaceConfigException
 	{
 		String widgetId = element.getId();
 		if (widgetId == null || widgetId.length() == 0)
@@ -253,6 +252,10 @@ public class ScreenFactory {
 		if (parentElement != null)
 		{
 			parent = getParentWidget(parentElement, screen);
+			if (parent == null)
+			{
+				parent = createWidget(parentElement, screen, widgetsElementsAdded);
+			}
 		}
 		
 		widget = newWidget(element, widgetId);
@@ -268,6 +271,7 @@ public class ScreenFactory {
 			CruxWidgetPanel panel = new CruxWidgetPanel(element.getParentElement());
 			panel.add(widget);
 		}
+		widgetsElementsAdded.add(element);
 		return widget;
 	}
 	

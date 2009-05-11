@@ -45,7 +45,7 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 			widget.insertRow(r++);
 		}
 		
-		if (widget.getCellCount(indexRow) < indexCol +1)
+		if (widget.getCellCount(indexRow) < indexCol+1)
 		{
 			widget.addCell(indexRow);
 		}

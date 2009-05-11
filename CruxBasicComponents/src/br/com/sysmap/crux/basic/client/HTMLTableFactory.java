@@ -113,19 +113,22 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 
 	protected void renderCell(T widget, Element e, int indexRow, int indexCol) throws InterfaceConfigException
 	{
-		String type = e.getAttribute("_type");
 		String text = e.getAttribute("_text");
-		if (type != null && type.length() > 0)
-		{
-			addCell(widget, createChildWidget(e, e.getId()),indexRow, indexCol);
-		}
-		else if (text != null && text.length() >0)
+		if (text != null && text.length() >0)
 		{
 			addCell(widget, text, indexRow, indexCol);
 		}
 		else
 		{
-			addCell(widget, e.getInnerHTML(), true, indexRow, indexCol);
+			Element widgetChild = ensureNextChildSpan(e, true);
+			if (widgetChild != null && isWidget(widgetChild))
+			{
+				addCell(widget, createChildWidget(widgetChild, widgetChild.getId()),indexRow, indexCol);
+			}
+			else
+			{
+				addCell(widget, e.getInnerHTML(), true, indexRow, indexCol);
+			}
 		}
 	}
 
@@ -271,12 +274,12 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 
 	protected void addCell(T widget, String text, int indexRow, int indexCol)
 	{
-		prepareCell(widget, indexRow, indexCol);
-		widget.setText(indexRow, indexCol, text);
+		addCell(widget, text, false, indexRow, indexCol);
 	}
 
 	protected void addCell(T widget, String text, boolean asHTML, int indexRow, int indexCol)
 	{
+		prepareCell(widget, indexRow, indexCol);
 		if (asHTML)
 		{
 			widget.setHTML(indexRow, indexCol, text);

@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.StackPanel;
@@ -60,7 +61,6 @@ public class StackPanelFactory extends ComplexPanelFactory<StackPanel>
 					//TODO: colocar mensagem
 				}
 			}
-			parentElement.removeChild(childElementParent);
 		}
 	}
 
@@ -71,14 +71,20 @@ public class StackPanelFactory extends ComplexPanelFactory<StackPanel>
 	}
 
 	@Override
-	protected void processAttributes(StackPanel widget, Element element, String widgetId) throws InterfaceConfigException 
+	protected void processAttributes(final StackPanel widget, final Element element, String widgetId) throws InterfaceConfigException 
 	{
 		super.processAttributes(widget, element, widgetId);
 		
-		String visibleStack = element.getAttribute("_visibleStack");
+		final String visibleStack = element.getAttribute("_visibleStack");
 		if (visibleStack != null && visibleStack.length() > 0)
 		{
-			widget.showStack(Integer.parseInt(visibleStack));
+			addScreenLoadedHandler(new ScreenLoadHandler()
+			{
+				public void onLoad()
+				{
+					widget.showStack(Integer.parseInt(visibleStack));
+				}
+			});
 		}
 	}
 	

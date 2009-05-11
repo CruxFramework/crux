@@ -39,11 +39,11 @@ public class GridFactory extends HTMLTableFactory<Grid>
 			throw new IndexOutOfBoundsException();
 			//TODO: colocar mensagem
 		}
-		if (widget.getRowCount() < indexRow)
+		if (widget.getRowCount() < indexRow+1)
 		{
 			widget.resizeRows(indexRow+1);
 		}
-		if (widget.getColumnCount() < indexCol)
+		if (widget.getColumnCount() < indexCol+1)
 		{
 			widget.resizeColumns(indexCol + 1);
 		}

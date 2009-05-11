@@ -49,5 +49,6 @@
   <widget id="absolutePanel" clientClass="br.com.sysmap.crux.basic.client.AbsolutePanelFactory" />
   <widget id="grid" clientClass="br.com.sysmap.crux.basic.client.GridFactory" />
   <widget id="flexTable" clientClass="br.com.sysmap.crux.basic.client.FlexTableFactory" />
+  <widget id="tabPanel" clientClass="br.com.sysmap.crux.basic.client.TabPanelFactory" />
   
 </crux>

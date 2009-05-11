@@ -53,7 +53,6 @@ public class AbsolutePanelFactory extends ComplexPanelFactory<AbsolutePanel>
 			{
 				parent.add(child);
 			}
-			parentElement.removeChild(childElementParent);
 		}		
 	}
 }

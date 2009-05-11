@@ -85,7 +85,6 @@ public abstract class CellPanelFactory <T extends CellPanel> extends ComplexPane
 				parent.setCellWidth(child, cellWidth);
 			}
 			
-			parentElement.removeChild(childElementParent);
 		}
 	}
 	
