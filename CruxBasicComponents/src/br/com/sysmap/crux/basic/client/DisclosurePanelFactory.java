@@ -47,12 +47,58 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> im
 			widget.setOpen(Boolean.parseBoolean(open));
 		}
 		
-		List<Element> childSpans = ensureChildrenSpan(element, true);
-		for (int i = 0; i < childSpans.size(); i++)
+		String animationEnabled = element.getAttribute("_animationEnabled");
+		if (animationEnabled != null && animationEnabled.trim().length() > 0)
 		{
-			
+			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
 		}
 		
+		addChildWidgets(widget, element);
+		
+	}
+
+	/**
+	 * @param widget
+	 * @param element
+	 * @throws InterfaceConfigException
+	 */
+	private void addChildWidgets(DisclosurePanel widget, Element element) throws InterfaceConfigException
+	{
+		List<Element> childSpans = ensureChildrenSpans(element, true);
+		
+		if(childSpans.size() <= 2)
+		{
+			for (int i = 0; i < childSpans.size(); i++)
+			{
+				Element childElement = ensureWidget(childSpans.get(0));
+				Widget childWidget = createChildWidget(childElement, childElement.getId());
+				
+				// contains widgets for header and body 
+				if(childSpans.size() > 1)
+				{
+					// it's the header
+					if(i == 0)
+					{
+						widget.setHeader(childWidget);
+					}
+					
+					// it's the body
+					else
+					{
+						widget.setContent(childWidget);
+					}
+				}
+				else
+				{
+					widget.setContent(childWidget);
+				}
+			}
+		}
+		else
+		{
+			// TODO - Gessé - add message
+			throw new InterfaceConfigException();
+		}
 	}
 	
 	@Override

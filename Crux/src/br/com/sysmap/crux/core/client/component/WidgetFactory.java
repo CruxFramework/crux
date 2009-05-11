@@ -263,7 +263,7 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	protected List<Element> ensureChildrenSpan(Element element, boolean acceptsNoChild) throws InterfaceConfigException
+	protected List<Element> ensureChildrenSpans(Element element, boolean acceptsNoChild) throws InterfaceConfigException
 	{
 		List<Element> childSpans = new ArrayList<Element>();
 		
@@ -274,10 +274,10 @@ public abstract class WidgetFactory <T extends Widget>
 			for (int i = 0; i < childNodes.getLength(); i++)
 			{
 				Node node = childNodes.getItem(i);
+				
 				if(node instanceof Element)
 				{
-					Element elem =  (Element) node;
-					ensureSpan(elem);
+					Element elem =  ensureSpan((Element) node);
 					childSpans.add(elem);
 				}
 			}
@@ -290,5 +290,22 @@ public abstract class WidgetFactory <T extends Widget>
 		}
 		
 		return childSpans;	
+	}
+	
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 * @throws InterfaceConfigException 
+	 */
+	protected Element ensureWidget(Element element) throws InterfaceConfigException
+	{
+		if(isWidget(element))
+		{
+			return element;
+		}
+		
+		// TODO - Gessé - add message
+		throw new InterfaceConfigException();
 	}
 }
