@@ -277,10 +277,8 @@ public abstract class WidgetFactory <T extends Widget>
 				if(node instanceof Element)
 				{
 					Element elem =  (Element) node;
-					if(isSpan(elem))
-					{
-						childSpans.add(elem);
-					}				
+					ensureSpan(elem);
+					childSpans.add(elem);
 				}
 			}
 		}
