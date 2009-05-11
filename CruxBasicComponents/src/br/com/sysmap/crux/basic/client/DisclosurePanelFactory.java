@@ -54,7 +54,6 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> im
 		}
 		
 		addChildWidgets(widget, element);
-		
 	}
 
 	/**
