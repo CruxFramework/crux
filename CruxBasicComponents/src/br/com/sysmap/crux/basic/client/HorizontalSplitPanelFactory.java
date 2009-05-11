@@ -48,6 +48,11 @@ public class HorizontalSplitPanelFactory extends SplitPanelFactory<HorizontalSpl
 	protected void renderSplitItem(HorizontalSplitPanel widget, Element element) throws InterfaceConfigException
 	{
 		String position = element.getAttribute("_position");
+		if (position == null || position.length() == 0)
+		{
+			throw new InterfaceConfigException();
+			//TODO: add message;
+		}
 		String id = element.getId();
 
 		Element e = getComponentChildElement(element);

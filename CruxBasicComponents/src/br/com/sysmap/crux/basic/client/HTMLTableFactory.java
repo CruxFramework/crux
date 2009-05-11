@@ -16,16 +16,17 @@
 package br.com.sysmap.crux.basic.client;
 
 
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
+
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
@@ -81,33 +82,27 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 	 */
 	protected void renderRows(T widget, Element element) throws InterfaceConfigException
 	{
-		NodeList<Node> itensCandidates = element.getChildNodes();
+		List<Element> itensCandidates = ensureChildrenSpan(element, true);
 		int validRows = 0;
-		for (int i=0; i<itensCandidates.getLength(); i++)
+		for (int i=0; i<itensCandidates.size(); i++)
 		{
-			if (isValidRow(itensCandidates.getItem(i)))
-			{
-				Element e = (Element)itensCandidates.getItem(i);
-				renderRow(widget, e, validRows);
-				processAttributesForRow(widget, e, validRows);
-				validRows++;
-			}
+			Element e = (Element)itensCandidates.get(i);
+			renderRow(widget, e, validRows);
+			processAttributesForRow(widget, e, validRows);
+			validRows++;
 		}
 	}
 	
 	protected void renderRow(T widget, Element element, int index) throws InterfaceConfigException
 	{
-		NodeList<Node> itensCandidates = element.getChildNodes();
+		List<Element> itensCandidates = ensureChildrenSpan(element, false);
 		int validCells = 0;
-		for (int i=0; i<itensCandidates.getLength(); i++)
+		for (int i=0; i<itensCandidates.size(); i++)
 		{
-			if (isValidColumn(itensCandidates.getItem(i)))
-			{
-				Element e = (Element)itensCandidates.getItem(i);
-				renderCell(widget, e, index, validCells);
-				processAttributesForCell(widget, e, index, validCells);
-				validCells++;
-			}
+			Element e = (Element)itensCandidates.get(i);
+			renderCell(widget, e, index, validCells);
+			processAttributesForCell(widget, e, index, validCells);
+			validCells++;
 		}
 	}
 
@@ -130,42 +125,6 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 				addCell(widget, e.getInnerHTML(), true, indexRow, indexCol);
 			}
 		}
-	}
-
-	/**
-	 * Verify if the span tag found is a valid column declaration for html panel
-	 * @param node
-	 * @return
-	 */
-	protected boolean isValidRow(Node node)
-	{
-		if (node instanceof Element)
-		{
-			Element element = (Element)node;
-			if ("span".equalsIgnoreCase(element.getTagName()))
-			{
-				return (element.getChildNodes().getLength() > 0);
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Verify if the span tag found is a valid column declaration for html panel
-	 * @param node
-	 * @return
-	 */
-	protected boolean isValidColumn(Node node)
-	{
-		if (node instanceof Element)
-		{
-			Element element = (Element)node;
-			if ("span".equalsIgnoreCase(element.getTagName()))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	protected void processAttributesForRow(T widget, Element element, int index)

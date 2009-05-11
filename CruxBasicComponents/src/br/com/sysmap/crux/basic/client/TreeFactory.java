@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
@@ -29,8 +31,6 @@ import br.com.sysmap.crux.core.client.event.bind.OpenEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -99,7 +99,7 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
 		}
 		
-		renderTreeItens(widget, element);
+		processTreeItens(widget, element);
 	}
 	
 	@Override
@@ -121,26 +121,23 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 	 * @param element
 	 * @throws InterfaceConfigException 
 	 */
-	protected void renderTreeItens(Tree widget, Element element) throws InterfaceConfigException
+	protected void processTreeItens(Tree widget, Element element) throws InterfaceConfigException
 	{
-		renderTreeItens(widget, element, null);
+		processTreeItens(widget, element, null);
 	}
 	
-	protected void renderTreeItens(Tree widget, Element element, TreeItem parent) throws InterfaceConfigException
+	protected void processTreeItens(Tree widget, Element element, TreeItem parent) throws InterfaceConfigException
 	{
-		NodeList<Node> itensCandidates = element.getChildNodes();
-		for (int i=0; i<itensCandidates.getLength(); i++)
+		List<Element> itensCandidates = ensureChildrenSpan(element, true);
+		for (int i=0; i<itensCandidates.size(); i++)
 		{
-			if (isValidItem(itensCandidates.getItem(i)))
-			{
-				Element e = (Element)itensCandidates.getItem(i);
-				TreeItem item = renderTreeItem(widget, e, parent);
-				renderTreeItens(widget, e, item);
-			}
+			Element e = (Element)itensCandidates.get(i);
+			TreeItem item = processTreeItem(widget, e, parent);
+			processTreeItens(widget, e, item);
 		}
 	}
 	
-	protected TreeItem renderTreeItem(Tree widget, Element e, TreeItem parent) throws InterfaceConfigException
+	protected TreeItem processTreeItem(Tree widget, Element e, TreeItem parent) throws InterfaceConfigException
 	{
 		String type = e.getAttribute("_type");
 		if (type != null && type.length() > 0)
@@ -157,6 +154,11 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 		else
 		{
 			String text = e.getAttribute("_text");
+			if (text == null || text.length() == 0)
+			{
+				throw new InterfaceConfigException();
+				//TODO: add message
+			}
 			if (parent != null)
 			{
 				return parent.addItem(text);
@@ -166,31 +168,6 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 				return widget.addItem(text);
 			}
 		}
-	}
-
-	/**
-	 * Verify if the span tag found is a valid item declaration for trees
-	 * @param element
-	 * @return
-	 */
-	protected boolean isValidItem(Node node)
-	{
-		if (node instanceof Element)
-		{
-			Element element = (Element)node;
-			if ("span".equalsIgnoreCase(element.getTagName()))
-			{
-				String text = element.getAttribute("_text");
-				String type = element.getAttribute("_type");
-				String id = element.getId();
-				if ((text != null && text.length() > 0) || 
-					((type != null && type.length() > 0) && (id != null && id.length() > 0)))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	public void add(Tree parent, Widget child, Element parentElement, Element childElement) 

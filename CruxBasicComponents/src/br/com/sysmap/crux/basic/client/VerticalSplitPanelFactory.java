@@ -49,6 +49,11 @@ public class VerticalSplitPanelFactory extends SplitPanelFactory<VerticalSplitPa
 	protected void renderSplitItem(VerticalSplitPanel widget, Element element) throws InterfaceConfigException
 	{
 		String position = element.getAttribute("_position");
+		if (position == null || position.length() == 0)
+		{
+			throw new InterfaceConfigException();
+			//TODO: add message;
+		}
 		String id = element.getId();
 
 		Element e = getComponentChildElement(element);

@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
 import br.com.sysmap.crux.core.client.event.Event;
@@ -23,8 +25,6 @@ import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuBar.MenuBarImages;
@@ -75,7 +75,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
 		}
 		
-		renderMenuItens(widget, widgetId, element);
+		processMenuItens(widget, widgetId, element);
 	}
 	
 	@Override
@@ -89,59 +89,41 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	/**
 	 * Populate the menuBar with declared itens
 	 * @param element
+	 * @throws InterfaceConfigException 
 	 */
-	protected void renderMenuItens(MenuBar widget, String widgetId, Element element)
+	protected void processMenuItens(MenuBar widget, String widgetId, Element element) throws InterfaceConfigException
 	{
-		NodeList<Node> itensCandidates = element.getChildNodes();
-		for (int i=0; i<itensCandidates.getLength(); i++)
+		List<Element> itensCandidates = ensureChildrenSpan(element, true);
+		for (int i=0; i<itensCandidates.size(); i++)
 		{
-			if (isValidItem(itensCandidates.getItem(i)))
+			Element e = (Element)itensCandidates.get(i);
+			String type = e.getAttribute("_itemType");
+			if (type == null || type.length() == 0)
 			{
-				Element e = (Element)itensCandidates.getItem(i);
-				String type = e.getAttribute("_itemType");
-				if (type.equals(ITEM_TYPE_TEXT))
-				{
-					processItemTextDeclaration(widget, widgetId, e, i);
-				}
-				else if (type.equals(ITEM_TYPE_SEPARATOR))
-				{
-					processItemSeparatorMenuDeclaration(widget, e, i);
-				}
-				else if (type.equals(ITEM_TYPE_HTML))
-				{
-					processItemHTMLDeclaration(widget, widgetId, e, i);
-				}	
+				throw new InterfaceConfigException();
+				//TODO: add message
 			}
+			if (type.equals(ITEM_TYPE_TEXT))
+			{
+				processItemTextDeclaration(widget, widgetId, e, i);
+			}
+			else if (type.equals(ITEM_TYPE_SEPARATOR))
+			{
+				processItemSeparatorMenuDeclaration(widget, e, i);
+			}
+			else if (type.equals(ITEM_TYPE_HTML))
+			{
+				processItemHTMLDeclaration(widget, widgetId, e, i);
+			}	
 		}
 	}
 
 	/**
-	 * Verify if the span tag found is a valid item declaration for menuBars
-	 * @param element
-	 * @return
-	 */
-	protected boolean isValidItem(Node node)
-	{
-		if (node instanceof Element)
-		{
-			Element element = (Element)node;
-			if ("span".equalsIgnoreCase(element.getTagName()))
-			{
-				String type = element.getAttribute("_itemType");
-				if (type != null && type.length() > 0)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	/**
 	 * Process Item declaration for MenuBarFactory
 	 * @param element
+	 * @throws InterfaceConfigException 
 	 */
-	protected void processItemTextDeclaration(MenuBar widget, String widgetId, Element element, int index)
+	protected void processItemTextDeclaration(MenuBar widget, String widgetId, Element element, int index) throws InterfaceConfigException
 	{
 		String caption = element.getAttribute("_caption");
 		if (caption != null && caption.length() > 0)
@@ -212,14 +194,15 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	 * Creates a subMenu, based on inner span tags
 	 * @param element
 	 * @return
+	 * @throws InterfaceConfigException 
 	 */
-	protected MenuBar getSubMenu(MenuBar widget, Element element)
+	protected MenuBar getSubMenu(MenuBar widget, Element element) throws InterfaceConfigException
 	{
 		String subMenuId = element.getId();
 		MenuBar subMenu = instantiateWidget(element, subMenuId);
 		subMenu.setAutoOpen(widget.getAutoOpen());
 		subMenu.setAnimationEnabled(widget.isAnimationEnabled());
-		renderMenuItens(subMenu, subMenuId, element);
+		processMenuItens(subMenu, subMenuId, element);
 		return subMenu;
 	}
 }

@@ -15,11 +15,11 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -43,56 +43,28 @@ public abstract class SplitPanelFactory <T extends Panel> extends PanelFactory<T
 	 */
 	protected void renderSplitItens(T widget, Element element) throws InterfaceConfigException
 	{
-		NodeList<Node> itensCandidates = element.getChildNodes();
-		for (int i=0; i<itensCandidates.getLength(); i++)
+		List<Element> itensCandidates = ensureChildrenSpan(element, false);
+		for (int i=0; i<itensCandidates.size(); i++)
 		{
-			if (isValidItem(itensCandidates.getItem(i)))
-			{
-				Element e = (Element)itensCandidates.getItem(i);
-				renderSplitItem(widget, e);
-			}
+			Element e = (Element)itensCandidates.get(i);
+			renderSplitItem(widget, e);
 		}
 	}	
 	
 	protected abstract void renderSplitItem(T widget, Element element) throws InterfaceConfigException;
 	
-	protected Element getComponentChildElement(Element element)
+	protected Element getComponentChildElement(Element element) throws InterfaceConfigException
 	{
-		NodeList<Node> itensCandidates = element.getChildNodes();
-		for (int i = 0; i<itensCandidates.getLength(); i++)
+		List<Element> itensCandidates = ensureChildrenSpan(element, true);
+		for (int i = 0; i<itensCandidates.size(); i++)
 		{
-			if (itensCandidates.getItem(i) instanceof Element)
+			Element e = itensCandidates.get(i);
+			String type = e.getAttribute("_type");
+			if (type != null && type.length() > 0 && !type.equals("screen"))
 			{
-				Element e = (Element)itensCandidates.getItem(i);
-				String type = e.getAttribute("_type");
-				if (type != null && type.length() > 0 && !type.equals("screen"))
-				{
-					return e;
-				}
+				return e;
 			}
 		}
 		return null;
 	}
-
-	/**
-	 * Verify if the span tag found is a valid item declaration for splitPanel
-	 * @param element
-	 * @return
-	 */
-	protected boolean isValidItem(Node node)
-	{
-		if (node instanceof Element)
-		{
-			Element element = (Element)node;
-			if ("span".equalsIgnoreCase(element.getTagName()))
-			{
-				String position = element.getAttribute("_position");
-				if (position != null && position.length() > 0)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}	
 }

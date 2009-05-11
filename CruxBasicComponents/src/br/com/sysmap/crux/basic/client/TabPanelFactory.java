@@ -19,11 +19,14 @@ import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.event.bind.BeforeSelectionEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.TabBar.Tab;
 
 /**
  * Factory for TabPanel widgets
@@ -92,6 +95,23 @@ public class TabPanelFactory extends CompositeFactory<TabPanel> implements HasWi
 					parent.add(child, titleWidget);
 				}
 			}
+			String enabled = childElementParent.getAttribute("_enabled");
+			int tabCount = parent.getTabBar().getTabCount();
+			if (enabled != null && enabled.length() >0)
+			{
+				parent.getTabBar().setTabEnabled(tabCount-1, Boolean.parseBoolean(enabled));
+			}
+
+			Tab currentTab = parent.getTabBar().getTab(tabCount-1);
+			
+			String wordWrap = childElementParent.getAttribute("_wordWrap");
+			if (wordWrap != null && wordWrap.trim().length() > 0)
+			{
+				currentTab.setWordWrap(Boolean.parseBoolean(wordWrap));
+			}
+
+			ClickEvtBind.bindEvent(childElementParent, currentTab, parentElement.getId());
+			KeyEvtBind.bindEvents(childElementParent, currentTab, parentElement.getId());
 		}
 	}
 	
