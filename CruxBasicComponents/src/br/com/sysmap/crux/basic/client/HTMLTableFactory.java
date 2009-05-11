@@ -120,7 +120,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		}
 		else
 		{
-			Element widgetChild = ensureNextChildSpan(e, true);
+			Element widgetChild = ensureFirstChildSpan(e, true);
 			if (widgetChild != null && isWidget(widgetChild))
 			{
 				addCell(widget, createChildWidget(widgetChild, widgetChild.getId()),indexRow, indexCol);

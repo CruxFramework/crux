@@ -58,8 +58,6 @@ public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implemen
 			{
 				widget.setCaptionHTML(firstChild.getInnerHTML());
 			}
-			
-			element.removeChild(firstChild);
 		}
 	}
 	
