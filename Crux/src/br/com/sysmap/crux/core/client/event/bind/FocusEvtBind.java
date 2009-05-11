@@ -32,7 +32,7 @@ import com.google.gwt.event.dom.client.HasAllFocusHandlers;
  */
 public class FocusEvtBind extends EvtBind
 {
-	public static void bindEvents(Element element, HasAllFocusHandlers widget, final String widgetId)
+	public static void bindEvents(Element element, HasAllFocusHandlers widget)
 	{
 		final Event eventFocus = getWidgetEvent(element, EventFactory.EVENT_FOCUS);
 		if (eventFocus != null)
@@ -41,7 +41,7 @@ public class FocusEvtBind extends EvtBind
 			{
 				public void onFocus(FocusEvent event) 
 				{
-					EventFactory.callEvent(eventFocus, widgetId);
+					EventFactory.callEvent(eventFocus, event);
 				}
 			});
 		}
@@ -53,7 +53,7 @@ public class FocusEvtBind extends EvtBind
 			{
 				public void onBlur(BlurEvent event) 
 				{
-					EventFactory.callEvent(eventBlur, widgetId);
+					EventFactory.callEvent(eventBlur, event);
 				}
 			});
 		}

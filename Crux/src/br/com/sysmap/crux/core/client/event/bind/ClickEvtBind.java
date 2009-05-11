@@ -30,7 +30,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
  */
 public class ClickEvtBind extends EvtBind
 {
-	public static void bindEvent(Element element, HasClickHandlers widget, final String widgetId)
+	public static void bindEvent(Element element, HasClickHandlers widget)
 	{
 		final Event eventClick = getWidgetEvent(element, EventFactory.EVENT_CLICK);
 		if (eventClick != null)
@@ -39,7 +39,7 @@ public class ClickEvtBind extends EvtBind
 			{
 				public void onClick(ClickEvent event) 
 				{
-					EventFactory.callEvent(eventClick, widgetId);
+					EventFactory.callEvent(eventClick, event);
 				}
 			};
 			widget.addClickHandler(handler);

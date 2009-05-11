@@ -13,13 +13,38 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.event;
+package br.com.sysmap.crux.core.client.component;
+
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public interface EventClientHandlerInvoker 
+/**
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
+public class ScreenLoadEvent extends GwtEvent<ScreenLoadHandler>
 {
-	void invoke(String metodo, GwtEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
+	protected static final Type<ScreenLoadHandler> TYPE = new Type<ScreenLoadHandler>();
 
-	void invoke(String method, CruxEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
+	
+	protected ScreenLoadEvent()
+	{
+	}
+	
+	@Override
+	protected void dispatch(ScreenLoadHandler handler)
+	{
+		handler.onLoad(this);
+	}
+
+	@Override
+	public Type<ScreenLoadHandler> getAssociatedType()
+	{
+		return TYPE;
+	}
+
+	public static <T> void fire(Screen source) 
+	{
+		source.fireEvent(new ScreenLoadEvent());
+	}	
 }

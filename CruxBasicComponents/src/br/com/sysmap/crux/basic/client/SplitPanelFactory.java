@@ -43,7 +43,7 @@ public abstract class SplitPanelFactory <T extends Panel> extends PanelFactory<T
 	 */
 	protected void renderSplitItens(T widget, Element element) throws InterfaceConfigException
 	{
-		List<Element> itensCandidates = ensureChildrenSpan(element, false);
+		List<Element> itensCandidates = ensureChildrenSpans(element, false);
 		for (int i=0; i<itensCandidates.size(); i++)
 		{
 			Element e = (Element)itensCandidates.get(i);
@@ -55,7 +55,7 @@ public abstract class SplitPanelFactory <T extends Panel> extends PanelFactory<T
 	
 	protected Element getComponentChildElement(Element element) throws InterfaceConfigException
 	{
-		List<Element> itensCandidates = ensureChildrenSpan(element, true);
+		List<Element> itensCandidates = ensureChildrenSpans(element, true);
 		for (int i = 0; i<itensCandidates.size(); i++)
 		{
 			Element e = itensCandidates.get(i);

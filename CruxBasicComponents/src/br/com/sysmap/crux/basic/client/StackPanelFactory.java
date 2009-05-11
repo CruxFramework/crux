@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.component.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 
 import com.google.gwt.dom.client.Element;
@@ -80,7 +81,7 @@ public class StackPanelFactory extends ComplexPanelFactory<StackPanel>
 		{
 			addScreenLoadedHandler(new ScreenLoadHandler()
 			{
-				public void onLoad()
+				public void onLoad(ScreenLoadEvent event)
 				{
 					widget.showStack(Integer.parseInt(visibleStack));
 				}

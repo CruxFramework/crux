@@ -18,6 +18,7 @@ package br.com.sysmap.crux.basic.client;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.component.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.event.bind.BeforeSelectionEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
@@ -47,7 +48,7 @@ public class TabBarFactory extends CompositeFactory<TabBar>
 		{
 			addScreenLoadedHandler(new ScreenLoadHandler()
 			{
-				public void onLoad()
+				public void onLoad(ScreenLoadEvent event)
 				{
 					widget.selectTab(Integer.parseInt(visibleTab));
 				}
@@ -63,7 +64,7 @@ public class TabBarFactory extends CompositeFactory<TabBar>
 
 	protected void processTabs(TabBar widget, Element element, String widgetId) throws InterfaceConfigException 
 	{
-		List<Element> tabs = ensureChildrenSpan(element, true);
+		List<Element> tabs = ensureChildrenSpans(element, true);
 		for (Element tabElement : tabs)
 		{
 			processTab(widget, tabElement, widgetId);
@@ -107,8 +108,8 @@ public class TabBarFactory extends CompositeFactory<TabBar>
 			currentTab.setWordWrap(Boolean.parseBoolean(wordWrap));
 		}
 
-		ClickEvtBind.bindEvent(element, currentTab, widgetId);
-		KeyEvtBind.bindEvents(element, currentTab, widgetId);
+		ClickEvtBind.bindEvent(element, currentTab);
+		KeyEvtBind.bindEvents(element, currentTab);
 	}
 	
 	@Override
@@ -116,7 +117,7 @@ public class TabBarFactory extends CompositeFactory<TabBar>
 	{
 		super.processEvents(widget, element, widgetId);
 		
-		BeforeSelectionEvtBind.bindEvent(element, widget, widgetId);
-		SelectionEvtBind.bindEvent(element, widget, widgetId);
+		BeforeSelectionEvtBind.bindEvent(element, widget);
+		SelectionEvtBind.bindEvent(element, widget);
 	}
 }

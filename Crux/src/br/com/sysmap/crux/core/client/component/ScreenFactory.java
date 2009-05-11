@@ -113,7 +113,7 @@ public class ScreenFactory {
 			clearScreenMetaTag(screenElement);
 		}
 		clearWidgetsMetaTags(widgets);
-		screen.fireLoadEvent();
+		screen.load();
 	}
 	
 	private void clearScreenMetaTag(Element screenElement)

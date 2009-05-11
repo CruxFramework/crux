@@ -117,6 +117,6 @@ public class ListBoxFactory extends FocusWidgetFactory<ListBox>
 	{
 		super.processEvents(widget, element, widgetId);
 		
-		ChangeEvtBind.bindEvent(element, widget, widgetId);
+		ChangeEvtBind.bindEvent(element, widget);
 	}
 }

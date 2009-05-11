@@ -57,10 +57,10 @@ public class ImageFactory extends WidgetFactory<Image>
 	{
 		super.processEvents(widget, element, widgetId);
 
-		ClickEvtBind.bindEvent(element, widget, widgetId);
-		MouseEvtBind.bindEvents(element, widget, widgetId);
-		LoadEvtBind.bindLoadEvent(element, widget, widgetId);
-		LoadEvtBind.bindErrorEvent(element, widget, widgetId);
+		ClickEvtBind.bindEvent(element, widget);
+		MouseEvtBind.bindEvents(element, widget);
+		LoadEvtBind.bindLoadEvent(element, widget);
+		LoadEvtBind.bindErrorEvent(element, widget);
 	}
 
 	@Override

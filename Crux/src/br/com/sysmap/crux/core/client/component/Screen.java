@@ -15,10 +15,8 @@
  */
 package br.com.sysmap.crux.core.client.component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.event.Event;
@@ -31,6 +29,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
@@ -53,13 +52,12 @@ public class Screen
 	protected Element blockDiv;
 	protected boolean manageHistory = false;
 	protected IFrameElement historyFrame = null;
-	protected List<ScreenLoadHandler> loadHandlers = new ArrayList<ScreenLoadHandler>();
-		
-	
+	protected HandlerManager handlerManager;
 	
 	public Screen(String id) 
 	{
 		this.id = id;
+		this.handlerManager = new HandlerManager(this);
 	}
 	
 	public String getId() 
@@ -165,7 +163,7 @@ public class Screen
 			Window.addWindowClosingHandler(new Window.ClosingHandler(){
 				public void onWindowClosing(ClosingEvent closingEvent) 
 				{
-					EventFactory.callEvent(eventClosing, getId());
+					EventFactory.callEvent(eventClosing, closingEvent);
 				}
 			});
 		}
@@ -176,7 +174,7 @@ public class Screen
 			Window.addCloseHandler(new CloseHandler<Window>(){
 				public void onClose(CloseEvent<Window> event) 
 				{
-					EventFactory.callEvent(eventClose, getId());				
+					EventFactory.callEvent(eventClose, event);				
 				}
 			});
 		}
@@ -187,7 +185,7 @@ public class Screen
 			Window.addResizeHandler(new ResizeHandler(){
 				public void onResize(ResizeEvent event) 
 				{
-					EventFactory.callEvent(eventResized, getId());
+					EventFactory.callEvent(eventResized, event);
 				}
 			});
 		}
@@ -195,9 +193,9 @@ public class Screen
 		if (eventLoad != null)
 		{
 			addLoadHandler(new ScreenLoadHandler(){
-				public void onLoad() 
+				public void onLoad(ScreenLoadEvent screenLoadEvent) 
 				{
-					EventFactory.callEvent(eventLoad, getId());
+					EventFactory.callEvent(eventLoad, screenLoadEvent);
 				}
 			});
 		}
@@ -209,28 +207,28 @@ public class Screen
 	 */
 	void addLoadHandler(final ScreenLoadHandler handler) 
 	{
-		loadHandlers.add(handler);
+		handlerManager.addHandler(ScreenLoadEvent.TYPE, handler);
 	}
 
 	/**
 	 * Fires the load event. This method has no effect when called more than one time.
 	 */
-	void fireLoadEvent() 
+	void load() 
 	{
-		if (loadHandlers.size() > 0)
+		if (handlerManager.getHandlerCount(ScreenLoadEvent.TYPE) > 0)
 		{
 			new Timer()
 			{
 				public void run() 
 				{
-					for (final ScreenLoadHandler handler : loadHandlers) 
+					for (int i=0; i < handlerManager.getHandlerCount(ScreenLoadEvent.TYPE); i++) 
 					{
 						try 
 						{
 							DeferredCommand.addCommand(new Command() {
 						        public void execute() 
 						        {
-						        	handler.onLoad();
+						        	ScreenLoadEvent.fire(Screen.this);
 						        }
 						      });							
 						} 
@@ -239,9 +237,25 @@ public class Screen
 							GWT.log(e.getLocalizedMessage(), e);
 						}
 					}
-					loadHandlers.clear();
 				}
 			}.schedule(1); // Waits for browser starts the rendering process
 		}
+	}
+
+		/**
+	 * Fires the load event. This method has no effect when called more than one time.
+	 */
+	void fireEvent(ScreenLoadEvent event) 
+	{
+		handlerManager.fireEvent(event);
+	}
+	
+	/**
+	 * Gets the current screen
+	 * @return
+	 */
+	public static Screen get()
+	{
+		return ScreenFactory.getInstance().getScreen();
 	}
 }

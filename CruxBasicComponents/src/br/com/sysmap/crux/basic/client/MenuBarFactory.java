@@ -52,8 +52,11 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 		Event eventLoadImage = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_IMAGES);
 		if (eventLoadImage != null)
 		{
-			MenuBarImages menuBarImages = (MenuBarImages) EventFactory.callEvent(eventLoadImage, widgetId);
-			return new MenuBar(vertical, menuBarImages);
+			LoadImagesEvent<MenuBar> loadEvent = new LoadImagesEvent<MenuBar>(widgetId);
+			MenuBarImages menuBarImages = (MenuBarImages) EventFactory.callEvent(eventLoadImage, loadEvent);
+			MenuBar ret = new MenuBar(vertical, menuBarImages);
+			loadEvent.setSource(ret);
+			return ret;
 		}
 		return new MenuBar(vertical);
 	}
@@ -83,7 +86,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	{
 		super.processEvents(widget, element, widgetId);
 		
-		CloseEvtBind.bindEvent(element, widget, widgetId);
+		CloseEvtBind.bindEvent(element, widget);
 	}
 
 	/**
@@ -93,7 +96,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	 */
 	protected void processMenuItens(MenuBar widget, String widgetId, Element element) throws InterfaceConfigException
 	{
-		List<Element> itensCandidates = ensureChildrenSpan(element, true);
+		List<Element> itensCandidates = ensureChildrenSpans(element, true);
 		for (int i=0; i<itensCandidates.size(); i++)
 		{
 			Element e = (Element)itensCandidates.get(i);
@@ -128,7 +131,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 		String caption = element.getAttribute("_caption");
 		if (caption != null && caption.length() > 0)
 		{
-			Command command = getCommand(element, widgetId);
+			Command command = getCommand(widget, element, widgetId);
 			if (command != null)
 			{
 				widget.addItem(caption, command);
@@ -149,7 +152,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 		String caption = element.getInnerHTML();
 		if (caption != null && caption.length() > 0)
 		{
-			Command command = getCommand(element, widgetId);
+			Command command = getCommand(widget, element, widgetId);
 			if (command != null)
 			{
 				widget.addItem(caption, true, command);
@@ -171,7 +174,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	 * @param element
 	 * @return
 	 */
-	protected Command getCommand(Element element, final String widgetId)
+	protected Command getCommand(final MenuBar widget,Element element, final String widgetId)
 	{
 		final Event evt = EvtBind.getWidgetEvent(element, "_onexecute");
 		if (evt != null)
@@ -180,7 +183,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 			{
 				public void execute() 
 				{
-					EventFactory.callEvent(evt, widgetId);
+					EventFactory.callEvent(evt, new ExecuteEvent<MenuBar>(widget, widgetId));
 				}
 			};
 		}

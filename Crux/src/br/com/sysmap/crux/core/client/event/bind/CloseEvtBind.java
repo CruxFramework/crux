@@ -30,7 +30,7 @@ import com.google.gwt.event.logical.shared.HasCloseHandlers;
  */
 public class CloseEvtBind extends EvtBind
 {
-	public static <I> void bindEvent(Element element, HasCloseHandlers<I> widget, final String widgetId)
+	public static <I> void bindEvent(Element element, HasCloseHandlers<I> widget)
 	{
 		final Event eventClose = getWidgetEvent(element, EventFactory.EVENT_CLOSE);
 		if (eventClose != null)
@@ -39,7 +39,7 @@ public class CloseEvtBind extends EvtBind
 			{
 				public void onClose(CloseEvent<I> event) 
 				{
-					EventFactory.callEvent(eventClose, widgetId);
+					EventFactory.callEvent(eventClose, event);
 				}
 			});
 		}

@@ -30,7 +30,7 @@ import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
  */
 public class BeforeSelectionEvtBind extends EvtBind
 {
-	public static <I> void bindEvent(Element element, HasBeforeSelectionHandlers<I> widget, final String widgetId)
+	public static <I> void bindEvent(Element element, HasBeforeSelectionHandlers<I> widget)
 	{
 		final Event eventBeforeSelection = getWidgetEvent(element, EventFactory.EVENT_BEFORE_SELECTION);
 		if (eventBeforeSelection != null)
@@ -39,7 +39,7 @@ public class BeforeSelectionEvtBind extends EvtBind
 			{
 				public void onBeforeSelection(BeforeSelectionEvent<I> event)
 				{
-					EventFactory.callEvent(eventBeforeSelection, widgetId);
+					EventFactory.callEvent(eventBeforeSelection, event);
 				}
 			});
 		}

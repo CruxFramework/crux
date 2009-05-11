@@ -20,7 +20,6 @@ import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.VerticalSplitPanel;
 import com.google.gwt.user.client.ui.VerticalSplitPanelImages;
@@ -38,9 +37,11 @@ public class VerticalSplitPanelFactory extends SplitPanelFactory<VerticalSplitPa
 		Event eventLoadImage = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_IMAGES);
 		if (eventLoadImage != null)
 		{
-			VerticalSplitPanelImages splitImages = (VerticalSplitPanelImages) EventFactory.callEvent(eventLoadImage, widgetId);
-
-			return new com.google.gwt.user.client.ui.VerticalSplitPanel(splitImages);
+			LoadImagesEvent<VerticalSplitPanel> loadEvent = new LoadImagesEvent<VerticalSplitPanel>(widgetId);
+			VerticalSplitPanelImages splitImages = (VerticalSplitPanelImages) EventFactory.callEvent(eventLoadImage, loadEvent);
+			VerticalSplitPanel ret = new com.google.gwt.user.client.ui.VerticalSplitPanel(splitImages);
+			loadEvent.setSource(ret);
+			return ret;
 		}
 		return new com.google.gwt.user.client.ui.VerticalSplitPanel();
 	}

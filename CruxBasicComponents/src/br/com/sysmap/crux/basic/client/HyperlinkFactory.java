@@ -47,7 +47,7 @@ public class HyperlinkFactory extends WidgetFactory<Hyperlink>
 	{
 		super.processEvents(widget, element, widgetId);
 
-		ClickEvtBind.bindEvent(element, widget, widgetId);
+		ClickEvtBind.bindEvent(element, widget);
 	}
 
 	@Override

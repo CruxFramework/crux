@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.component.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.event.bind.ScrollEvtBind;
 
@@ -78,7 +79,7 @@ public class ScrollPanelFactory extends SimplePanelFactory
 		{
 			addScreenLoadedHandler(new ScreenLoadHandler()
 			{
-				public void onLoad() 
+				public void onLoad(ScreenLoadEvent event) 
 				{
 					Widget c = getScreen().getWidget(ensureVisible);
 					if (c == null)
@@ -98,7 +99,7 @@ public class ScrollPanelFactory extends SimplePanelFactory
 		super.processEvents(widget, element, widgetId);
 	
 		final ScrollPanel scrollPanel = (ScrollPanel)widget; 
-		ScrollEvtBind.bindEvent(element, scrollPanel, widgetId);
+		ScrollEvtBind.bindEvent(element, scrollPanel);
 	}
 
 }

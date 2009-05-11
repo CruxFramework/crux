@@ -24,15 +24,17 @@ import java.util.Iterator;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.controller.Create;
+import br.com.sysmap.crux.core.client.event.CruxEvent;
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
-import br.com.sysmap.crux.core.rebind.screen.Widget;
 import br.com.sysmap.crux.core.rebind.screen.Event;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
+import br.com.sysmap.crux.core.rebind.screen.Widget;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -65,6 +67,8 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		composer.addImport("com.google.gwt.core.client.GWT");
 		composer.addImport("com.google.gwt.json.client.JSONValue");
 		composer.addImport("br.com.sysmap.crux.core.client.component.Screen");
+		composer.addImport("br.com.sysmap.crux.core.client.event.CruxEvent");
+		composer.addImport("com.google.gwt.event.shared.GwtEvent");
 		composer.addImplementedInterface("br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers");
 		
 		SourceWriter sourceWriter = null;
@@ -184,10 +188,17 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 				+ " implements br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker{");
 		
 		generateSetFieldsMethods(logger, handlerClass, sourceWriter, implClassName);
-		sourceWriter.println("public void invoke(String metodo, Screen screen, String idSender, EventProcessor eventProcessor) throws Exception{ ");
+		sourceWriter.println("public void invoke(String metodo, GwtEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception{ ");
+		sourceWriter.println("invokeEvent(metodo, sourceEvent, eventProcessor);");
+		sourceWriter.println("}");
+
+		sourceWriter.println("public void invoke(String metodo, CruxEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception{ ");
+		sourceWriter.println("invokeEvent(metodo, sourceEvent, eventProcessor);");
+		sourceWriter.println("}");
+		
+		sourceWriter.println("public void invokeEvent(String metodo, Object sourceEvent, EventProcessor eventProcessor) throws Exception{ ");
 		sourceWriter.println("boolean __runMethod = true;");
 		sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
-		generateParametersSetters(logger, handlerClass, sourceWriter);
 		generateAutoCreateFields(logger, handlerClass, sourceWriter);
 		Method[] methods = handlerClass.getMethods(); 
 
@@ -225,12 +236,10 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 					!method.getReturnType().getName().equals("java.lang.Void"))
 				{
 					sourceWriter.println("eventProcessor._hasReturn = true;");
-					sourceWriter.println("eventProcessor._returnValue = wrapper."+method.getName()+"();");
+					sourceWriter.println("eventProcessor._returnValue = ");
 				}
-				else
-				{
-					sourceWriter.println("wrapper."+method.getName()+"();");
-				}
+				generateMethodCall(method, sourceWriter);
+				
 				sourceWriter.println("}catch (Throwable e){");
 				sourceWriter.println("eventProcessor._exception = e;");
 				sourceWriter.println("}");
@@ -252,6 +261,24 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		return className+"Wrapper";
 	}
 	
+	/** 
+	 * Generates the handler method call.
+	 * @param method
+	 * @param sourceWriter
+	 */
+	private void generateMethodCall(Method method, SourceWriter sourceWriter)
+	{
+		Class<?>[] params = method.getParameterTypes();
+		if (params != null && params.length == 1)
+		{
+			sourceWriter.print("wrapper."+method.getName()+"(("+params[0].getName()+")sourceEvent);");
+		}
+		else 
+		{
+			sourceWriter.print("wrapper."+method.getName()+"();");
+		}
+	}
+	
 	/**
 	 * Verify if a method must be included in the list of callable methods in the 
 	 * generated invoker class
@@ -261,51 +288,24 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	protected boolean isHandlerMethodSignatureValid(Method method)
 	{
 		Class<?>[] parameters = method.getParameterTypes();
-		if (parameters != null && parameters.length != 0)
+		if (parameters != null && parameters.length != 0 && parameters.length != 1)
 		{
 			return false;
 		}
+		if (parameters != null && parameters.length == 1)
+		{
+			if (!GwtEvent.class.isAssignableFrom(parameters[0]) && !CruxEvent.class.isAssignableFrom(parameters[0]))
+			{
+				return false;
+			}
+		}
+		
 		if (method.getDeclaringClass().equals(Object.class))
 		{
 			return false;
 		}
 		
 		return true;
-	}
-
-	/**
-	 * Generate the property setters block in the generated classes
-	 * @param logger
-	 * @param controller
-	 * @param sourceWriter
-	 */
-	protected void generateParametersSetters(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
-	{
-		Method method;
-		try 
-		{
-			method = controller.getMethod("setIdSender", new Class[]{String.class});
-			if (method != null && (Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())))
-			{
-				sourceWriter.println("wrapper.setIdSender(idSender);");
-			}
-		} 
-		catch (Exception e) 
-		{
-			logger.log(TreeLogger.DEBUG, "idSender ignored."); 
-		}
-		try 
-		{
-			method = controller.getMethod("setScreen", new Class[]{br.com.sysmap.crux.core.client.component.Screen.class});
-			if (method != null && (Modifier.isPublic(method.getModifiers()) || Modifier.isProtected(method.getModifiers())))
-			{
-				sourceWriter.println("wrapper.setScreen(screen);");
-			}
-		} 
-		catch (Exception e) 
-		{
-			logger.log(TreeLogger.DEBUG, "screen ignored."); 
-		}
 	}
 	
 	/**

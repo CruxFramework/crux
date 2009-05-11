@@ -108,8 +108,11 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> im
 		
 		if (eventLoadImages != null)
 		{
-			DisclosurePanelImages images = (DisclosurePanelImages) EventFactory.callEvent(eventLoadImages, widgetId);
-			return new DisclosurePanel(images, headerText, false);
+			LoadImagesEvent<DisclosurePanel> loadEvent = new LoadImagesEvent<DisclosurePanel>(widgetId);
+			DisclosurePanelImages images = (DisclosurePanelImages) EventFactory.callEvent(eventLoadImages, loadEvent);
+			DisclosurePanel ret = new DisclosurePanel(images, headerText, false);
+			loadEvent.setSource(ret);
+			return ret;
 		}
 		
 		return new DisclosurePanel(headerText, false);
@@ -127,7 +130,7 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> im
 	protected void processEvents(DisclosurePanel widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
-		CloseEvtBind.bindEvent(element, widget, widgetId);
-		OpenEvtBind.bindEvent(element, widget, widgetId);
+		CloseEvtBind.bindEvent(element, widget);
+		OpenEvtBind.bindEvent(element, widget);
 	}
 }

@@ -40,7 +40,7 @@ import com.google.gwt.event.dom.client.MouseWheelHandler;
  */
 public class MouseEvtBind extends EvtBind
 {
-	public static void bindEvents(Element element, HasAllMouseHandlers widget, final String widgetId)
+	public static void bindEvents(Element element, HasAllMouseHandlers widget)
 	{
 		final Event eventMouseDown = getWidgetEvent(element, EventFactory.EVENT_MOUSE_DOWN);
 		if (eventMouseDown != null)
@@ -49,7 +49,7 @@ public class MouseEvtBind extends EvtBind
 			{
 				public void onMouseDown(MouseDownEvent event) 
 				{
-					EventFactory.callEvent(eventMouseDown, widgetId);
+					EventFactory.callEvent(eventMouseDown, event);
 				}
 			});
 		}
@@ -61,7 +61,7 @@ public class MouseEvtBind extends EvtBind
 			{
 				public void onMouseMove(MouseMoveEvent event) 
 				{
-					EventFactory.callEvent(eventMouseMove, widgetId);
+					EventFactory.callEvent(eventMouseMove, event);
 				}
 			});
 		}
@@ -73,7 +73,7 @@ public class MouseEvtBind extends EvtBind
 			{
 				public void onMouseOut(MouseOutEvent event) 
 				{
-					EventFactory.callEvent(eventMouseOut, widgetId);					
+					EventFactory.callEvent(eventMouseOut, event);					
 				}
 			});
 		}
@@ -85,7 +85,7 @@ public class MouseEvtBind extends EvtBind
 			{
 				public void onMouseOver(MouseOverEvent event) 
 				{
-					EventFactory.callEvent(eventMouseOver, widgetId);					
+					EventFactory.callEvent(eventMouseOver, event);					
 				}
 			});
 		}
@@ -97,7 +97,7 @@ public class MouseEvtBind extends EvtBind
 			{
 				public void onMouseUp(MouseUpEvent event) 
 				{
-					EventFactory.callEvent(eventMouseUp, widgetId);					
+					EventFactory.callEvent(eventMouseUp, event);					
 				}
 			});
 		}
@@ -109,7 +109,7 @@ public class MouseEvtBind extends EvtBind
 			{
 				public void onMouseWheel(MouseWheelEvent event) 
 				{
-					EventFactory.callEvent(eventMouseWheel, widgetId);					
+					EventFactory.callEvent(eventMouseWheel, event);					
 				}
 			});
 		}

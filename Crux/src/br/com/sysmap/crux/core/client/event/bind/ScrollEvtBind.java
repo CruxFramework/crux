@@ -31,7 +31,7 @@ import com.google.gwt.event.dom.client.ScrollEvent;
  */
 public class ScrollEvtBind extends EvtBind
 {
-	public static void bindEvent(Element element, HasScrollHandlers widget, final String widgetId)
+	public static void bindEvent(Element element, HasScrollHandlers widget)
 	{
 		final Event eventScroll = getWidgetEvent(element, EventFactory.EVENT_SCROLL);
 		if (eventScroll != null)
@@ -40,7 +40,7 @@ public class ScrollEvtBind extends EvtBind
 			{
 				public void onScroll(ScrollEvent event) 
 				{
-					EventFactory.callEvent(eventScroll, widgetId);
+					EventFactory.callEvent(eventScroll, event);
 				}
 			};
 			widget.addScrollHandler(handler);

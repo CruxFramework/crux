@@ -17,9 +17,9 @@ package br.com.sysmap.crux.core.client.event;
 
 import br.com.sysmap.crux.core.client.JSEngine;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.component.Screen;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.Window;
 
 /**
@@ -45,7 +45,7 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 	{
 		return new EventProcessor()
 		{
-			public void processEvent(final Screen screen, final String idSender)
+			public void processEvent(GwtEvent<?> sourceEvent)
 			{
 				final String evtCall = event.getEvtCall();
 				int dotPos = evtCall.indexOf('.');
@@ -61,7 +61,34 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 					}
 					try
 					{
-						handler.invoke(method, screen, idSender, this);
+						handler.invoke(method, sourceEvent, this);
+					}
+					catch (Exception e) 
+					{
+						_exception = e;
+						GWT.log(e.getLocalizedMessage(), e);
+						Window.alert(JSEngine.messages.eventProcessorClientError(evtCall));
+					}
+				}
+			}
+
+			public void processEvent(CruxEvent<?> sourceEvent)
+			{
+				final String evtCall = event.getEvtCall();
+				int dotPos = evtCall.indexOf('.');
+				if (dotPos > 0 && dotPos < evtCall.length()-1)
+				{
+					String evtHandler = evtCall.substring(0, dotPos);
+					final String method = evtCall.substring(dotPos+1);
+					final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)registeredClientEventHandlers.getEventHandler(evtHandler);
+					if (handler == null)
+					{
+						Window.alert(JSEngine.messages.eventProcessorClientHandlerNotFound(evtHandler));
+						return;
+					}
+					try
+					{
+						handler.invoke(method, sourceEvent, this);
 					}
 					catch (Exception e) 
 					{

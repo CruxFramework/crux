@@ -76,6 +76,6 @@ public class PopupPanelFactory extends SimplePanelFactory
 		super.processEvents(widget, element, widgetId);
 		
 		PopupPanel popupPanel = (PopupPanel)widget;
-		CloseEvtBind.bindEvent(element, popupPanel, widgetId);
+		CloseEvtBind.bindEvent(element, popupPanel);
 	}
 }

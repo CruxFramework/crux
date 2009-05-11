@@ -71,7 +71,7 @@ public class FormPanelFactory extends SimplePanelFactory
 			{
 				public void onSubmitComplete(SubmitCompleteEvent event) 
 				{
-					EventFactory.callEvent(eventSubmitComplete, widgetId);
+					EventFactory.callEvent(eventSubmitComplete, event);
 				}
 			});
 		}
@@ -83,7 +83,7 @@ public class FormPanelFactory extends SimplePanelFactory
 			{
 				public void onSubmit(SubmitEvent event) 
 				{
-					EventFactory.callEvent(eventSubmit, widgetId);
+					EventFactory.callEvent(eventSubmit, event);
 				}
 			});
 		}

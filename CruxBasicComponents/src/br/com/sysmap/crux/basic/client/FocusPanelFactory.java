@@ -37,10 +37,10 @@ public class FocusPanelFactory extends SimplePanelFactory
 		super.processEvents(widget, element, widgetId);
 		FocusPanel focusPanel = (FocusPanel) widget; 
 		
-		FocusEvtBind.bindEvents(element, focusPanel, widgetId);
-		ClickEvtBind.bindEvent(element, focusPanel, widgetId);
-		KeyEvtBind.bindEvents(element, focusPanel, widgetId);
-		MouseEvtBind.bindEvents(element, focusPanel, widgetId);
+		FocusEvtBind.bindEvents(element, focusPanel);
+		ClickEvtBind.bindEvent(element, focusPanel);
+		KeyEvtBind.bindEvents(element, focusPanel);
+		MouseEvtBind.bindEvents(element, focusPanel);
 		
 	}
 	

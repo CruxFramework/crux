@@ -78,9 +78,9 @@ public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetF
 	{	 
 		super.processEvents(widget, element, widgetId);
 
-		FocusEvtBind.bindEvents(element, widget, widgetId);
-		ClickEvtBind.bindEvent(element, widget, widgetId);
-		KeyEvtBind.bindEvents(element, widget, widgetId);
-		MouseEvtBind.bindEvents(element, widget, widgetId);
+		FocusEvtBind.bindEvents(element, widget);
+		ClickEvtBind.bindEvent(element, widget);
+		KeyEvtBind.bindEvents(element, widget);
+		MouseEvtBind.bindEvents(element, widget);
 	}
 }

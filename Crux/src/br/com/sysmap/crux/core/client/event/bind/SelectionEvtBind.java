@@ -30,7 +30,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
  */
 public class SelectionEvtBind extends EvtBind
 {
-	public static <I> void bindEvent(Element element, HasSelectionHandlers<I> widget, final String widgetId)
+	public static <I> void bindEvent(Element element, HasSelectionHandlers<I> widget)
 	{
 		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_CHANGE);
 		if (eventChange != null)
@@ -39,7 +39,7 @@ public class SelectionEvtBind extends EvtBind
 			{
 				public void onSelection(SelectionEvent<I> event) 
 				{
-					EventFactory.callEvent(eventChange, widgetId);
+					EventFactory.callEvent(eventChange, event);
 				}
 			});
 		}

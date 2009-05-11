@@ -15,11 +15,30 @@
  */
 package br.com.sysmap.crux.core.client.event;
 
-import com.google.gwt.event.shared.GwtEvent;
-
-public interface EventClientHandlerInvoker 
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ * @param <T>
+ */
+public class CruxEvent<T>
 {
-	void invoke(String metodo, GwtEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
+	protected T source;
+	protected String senderId;
 
-	void invoke(String method, CruxEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
+	protected CruxEvent(T source, String senderId)
+	{
+		this.source = source;
+		this.senderId = senderId;
+	}
+	
+	public T getSource()
+	{
+		return source;
+	}
+	
+	public String getSenderId()
+	{
+		return senderId;
+	}
 }

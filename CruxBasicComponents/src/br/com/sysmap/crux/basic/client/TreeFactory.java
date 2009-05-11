@@ -47,7 +47,8 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 		Event eventLoadImage = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_IMAGES);
 		if (eventLoadImage != null)
 		{
-			TreeImages treeImages = (TreeImages) EventFactory.callEvent(eventLoadImage, widgetId);
+			LoadImagesEvent<Tree> loadEvent = new LoadImagesEvent<Tree>(widgetId);
+			TreeImages treeImages = (TreeImages) EventFactory.callEvent(eventLoadImage, loadEvent);
 
 			String useLeafImagesStr = element.getAttribute("_useLeafImages");
 			boolean useLeafImages = true;
@@ -56,7 +57,9 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 				useLeafImages = (Boolean.parseBoolean(useLeafImagesStr));
 			}
 			
-			return new Tree(treeImages, useLeafImages);
+			Tree ret = new Tree(treeImages, useLeafImages);
+			loadEvent.setSource(ret);
+			return ret;
 		}
 		return new Tree();
 	}
@@ -107,12 +110,12 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 	{
 		super.processEvents(widget, element, widgetId);
 		
-		FocusEvtBind.bindEvents(element, widget, widgetId);
-		OpenEvtBind.bindEvent(element, widget, widgetId);
-		CloseEvtBind.bindEvent(element, widget, widgetId);
-		MouseEvtBind.bindEvents(element, widget, widgetId);
-		KeyEvtBind.bindEvents(element, widget, widgetId);
-		SelectionEvtBind.bindEvent(element, widget, widgetId);
+		FocusEvtBind.bindEvents(element, widget);
+		OpenEvtBind.bindEvent(element, widget);
+		CloseEvtBind.bindEvent(element, widget);
+		MouseEvtBind.bindEvents(element, widget);
+		KeyEvtBind.bindEvents(element, widget);
+		SelectionEvtBind.bindEvent(element, widget);
 	}
 
 	
@@ -128,7 +131,7 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 	
 	protected void processTreeItens(Tree widget, Element element, TreeItem parent) throws InterfaceConfigException
 	{
-		List<Element> itensCandidates = ensureChildrenSpan(element, true);
+		List<Element> itensCandidates = ensureChildrenSpans(element, true);
 		for (int i=0; i<itensCandidates.size(); i++)
 		{
 			Element e = (Element)itensCandidates.get(i);

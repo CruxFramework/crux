@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.core.client.event;
 
-import br.com.sysmap.crux.core.client.component.Screen;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Abstraction for a event processor. Each processor process events according with the 
@@ -30,8 +30,10 @@ public abstract class EventProcessor
 	Throwable _exception = null;
 	String _validationMessage = null;
 
-	abstract void processEvent(Screen screen, String idSender);
+	abstract void processEvent(GwtEvent<?> sourceEvent);
 	
+	abstract void processEvent(CruxEvent<?> sourceEvent);
+
 	public Throwable exception() 
 	{
 		return _exception;

@@ -48,7 +48,7 @@ public class CheckBoxFactory extends FocusWidgetFactory<CheckBox>
 	protected void processEvents(CheckBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
-		ChangeEvtBind.bindValueEvent(element, widget, widgetId);
+		ChangeEvtBind.bindValueEvent(element, widget);
 	}
 
 	@Override

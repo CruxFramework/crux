@@ -10,5 +10,5 @@ public interface ScreenLoadHandler extends EventHandler {
   /**
    * Called when Screen is completely loaded.
    */
-  void onLoad();
+  void onLoad(ScreenLoadEvent screenLoadEvent);
 }

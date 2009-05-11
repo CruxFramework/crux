@@ -46,7 +46,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 	{
 		super.processEvents(widget, element, widgetId);
 
-		ClickEvtBind.bindEvent(element, widget, widgetId);		
+		ClickEvtBind.bindEvent(element, widget);		
 	}
 	
 	@Override
@@ -82,7 +82,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 	 */
 	protected void renderRows(T widget, Element element) throws InterfaceConfigException
 	{
-		List<Element> itensCandidates = ensureChildrenSpan(element, true);
+		List<Element> itensCandidates = ensureChildrenSpans(element, true);
 		int validRows = 0;
 		for (int i=0; i<itensCandidates.size(); i++)
 		{
@@ -95,7 +95,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 	
 	protected void renderRow(T widget, Element element, int index) throws InterfaceConfigException
 	{
-		List<Element> itensCandidates = ensureChildrenSpan(element, false);
+		List<Element> itensCandidates = ensureChildrenSpans(element, false);
 		int validCells = 0;
 		for (int i=0; i<itensCandidates.size(); i++)
 		{

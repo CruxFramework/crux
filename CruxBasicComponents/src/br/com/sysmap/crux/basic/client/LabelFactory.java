@@ -76,8 +76,8 @@ public class LabelFactory extends WidgetFactory<Label>
 	{
 		super.processEvents(widget, element, widgetId);
 		
-		ClickEvtBind.bindEvent(element, widget, widgetId);
-		MouseEvtBind.bindEvents(element, widget, widgetId);
+		ClickEvtBind.bindEvent(element, widget);
+		MouseEvtBind.bindEvents(element, widget);
 	}
 
 	@Override

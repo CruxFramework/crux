@@ -68,7 +68,7 @@ public abstract class TextBoxBaseFactory<T extends TextBoxBase> extends FocusWid
 	@Override
 	protected void processEvents(T widget, Element element, String widgetId) throws InterfaceConfigException
 	{
-		ChangeEvtBind.bindValueEvent(element, widget, widgetId);
+		ChangeEvtBind.bindValueEvent(element, widget);
 		super.processEvents(widget, element, widgetId);
 	}	
 }

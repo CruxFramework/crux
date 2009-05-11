@@ -15,53 +15,46 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.component.ScreenLoadEvent;
-import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
-import br.com.sysmap.crux.core.client.event.bind.BeforeSelectionEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.TabBar.Tab;
+import com.google.gwt.user.datepicker.client.DateBox;
 
 /**
  * Factory for TabPanel widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
-public class TabPanelFactory extends CompositeFactory<TabPanel> implements HasWidgetsFactory<TabPanel>
+public class DateBoxFactory extends CompositeFactory<DateBox> 
 {
 	@Override
-	protected void processAttributes(final TabPanel widget, Element element, String widgetId) throws InterfaceConfigException
+	protected void processAttributes(final DateBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 		
-		String animationEnabled = element.getAttribute("_animationEnabled");
-		if (animationEnabled != null && animationEnabled.length() > 0)
+		String tabIndex = element.getAttribute("_tabIndex");
+		if (tabIndex != null && tabIndex.length() > 0)
 		{
-			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
+			widget.setTabIndex(Integer.parseInt(tabIndex));
 		}
-		final String visibleTab = element.getAttribute("_visibleTab");
-		if (visibleTab != null && visibleTab.length() > 0)
+		String enabled = element.getAttribute("_enabled");
+		if (enabled != null && enabled.length() > 0)
 		{
-			addScreenLoadedHandler(new ScreenLoadHandler()
-			{
-				public void onLoad(ScreenLoadEvent event)
-				{
-					widget.selectTab(Integer.parseInt(visibleTab));
-				}
-			});
+			widget.setEnabled(Boolean.parseBoolean(enabled));
+		}
+		String accessKey = element.getAttribute("_accessKey");
+		if (accessKey != null && accessKey.length() == 1)
+		{
+			widget.setAccessKey(accessKey.charAt(0));
 		}
 	}
 	
 	@Override
-	protected TabPanel instantiateWidget(Element element, String widgetId) 
+	protected DateBox instantiateWidget(Element element, String widgetId) 
 	{
-		return new TabPanel();
+		return new DateBox();
 	}
 
 	/**
@@ -97,31 +90,19 @@ public class TabPanelFactory extends CompositeFactory<TabPanel> implements HasWi
 				}
 			}
 			String enabled = childElementParent.getAttribute("_enabled");
-			int tabCount = parent.getTabBar().getTabCount();
 			if (enabled != null && enabled.length() >0)
 			{
+				int tabCount = parent.getTabBar().getTabCount();
 				parent.getTabBar().setTabEnabled(tabCount-1, Boolean.parseBoolean(enabled));
 			}
-
-			Tab currentTab = parent.getTabBar().getTab(tabCount-1);
-			
-			String wordWrap = childElementParent.getAttribute("_wordWrap");
-			if (wordWrap != null && wordWrap.trim().length() > 0)
-			{
-				currentTab.setWordWrap(Boolean.parseBoolean(wordWrap));
-			}
-
-			ClickEvtBind.bindEvent(childElementParent, currentTab);
-			KeyEvtBind.bindEvents(childElementParent, currentTab);
 		}
 	}
 	
 	@Override
-	protected void processEvents(TabPanel widget, Element element, String widgetId) throws InterfaceConfigException
+	protected void processEvents(DateBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
 		
-		BeforeSelectionEvtBind.bindEvent(element, widget);
-		SelectionEvtBind.bindEvent(element, widget);
+		ChangeEvtBind.bindValueEvent(element, widget);
 	}
 }

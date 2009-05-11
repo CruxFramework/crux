@@ -30,7 +30,7 @@ import com.google.gwt.event.logical.shared.OpenHandler;
  */
 public class OpenEvtBind extends EvtBind
 {
-	public static <I> void bindEvent(Element element, HasOpenHandlers<I> widget, final String widgetId)
+	public static <I> void bindEvent(Element element, HasOpenHandlers<I> widget)
 	{
 		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_CHANGE);
 		if (eventChange != null)
@@ -39,7 +39,7 @@ public class OpenEvtBind extends EvtBind
 			{
 				public void onOpen(OpenEvent<I> event) 
 				{
-					EventFactory.callEvent(eventChange, widgetId);
+					EventFactory.callEvent(eventChange, event);
 				}
 			});
 		}

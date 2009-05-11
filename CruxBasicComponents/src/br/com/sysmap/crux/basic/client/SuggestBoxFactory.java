@@ -100,8 +100,11 @@ public class SuggestBoxFactory extends CompositeFactory<SuggestBox>
 		
 		if (eventLoadOracle != null)
 		{
-			SuggestOracle oracle = (SuggestOracle) EventFactory.callEvent(eventLoadOracle, widgetId);
-			return new SuggestBox(oracle);
+			LoadOracleEvent<SuggestBox> loadOracleEvent = new LoadOracleEvent<SuggestBox>(widgetId);
+			SuggestOracle oracle = (SuggestOracle) EventFactory.callEvent(eventLoadOracle, loadOracleEvent);
+			SuggestBox ret = new SuggestBox(oracle);
+			loadOracleEvent.setSource(ret);
+			return ret;
 		}
 		
 		return new SuggestBox();
@@ -112,8 +115,8 @@ public class SuggestBoxFactory extends CompositeFactory<SuggestBox>
 	{
 		super.processEvents(widget, element, widgetId);
 		
-		ChangeEvtBind.bindValueEvent(element, widget, widgetId);
-		SelectionEvtBind.bindEvent(element, widget, widgetId);
-		KeyEvtBind.bindEvents(element, widget, widgetId);		
+		ChangeEvtBind.bindValueEvent(element, widget);
+		SelectionEvtBind.bindEvent(element, widget);
+		KeyEvtBind.bindEvents(element, widget);		
 	}
 }

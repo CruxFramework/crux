@@ -13,13 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.event;
+package br.com.sysmap.crux.basic.client;
 
-import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.ui.Widget;
 
-public interface EventClientHandlerInvoker 
+import br.com.sysmap.crux.core.client.event.CruxEvent;
+
+/**
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
+public class LoadOracleEvent<T extends Widget> extends CruxEvent<T>
 {
-	void invoke(String metodo, GwtEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
 
-	void invoke(String method, CruxEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
+	protected LoadOracleEvent(String senderId)
+	{
+		super(null, senderId);
+	}
+	
+	void setSource(T source)
+	{
+		this.source = source;
+	}
 }
