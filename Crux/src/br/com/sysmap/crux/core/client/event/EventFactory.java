@@ -46,6 +46,7 @@ public class EventFactory
 	public static final String EVENT_RESIZED = "_onresized";
 	public static final String EVENT_ERROR = "_onerror";
 	public static final String EVENT_LOAD_IMAGES = "_onloadimage";
+	public static final String EVENT_LOAD_ORACLE = "_onloadoracle";
 	public static final String EVENT_SCROLL = "_onscroll";
 	public static final String EVENT_BEFORE_SELECTION = "_onbeforeselection";
 	

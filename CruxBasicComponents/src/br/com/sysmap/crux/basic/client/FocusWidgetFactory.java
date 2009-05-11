@@ -48,15 +48,23 @@ public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetF
 		{
 			widget.setTabIndex(Integer.parseInt(tabIndex));
 		}
+		
 		String enabled = element.getAttribute("_enabled");
 		if (enabled != null && enabled.length() > 0)
 		{
 			widget.setEnabled(Boolean.parseBoolean(enabled));
 		}
+		
 		String accessKey = element.getAttribute("_accessKey");
 		if (accessKey != null && accessKey.length() == 1)
 		{
 			widget.setAccessKey(accessKey.charAt(0));
+		}
+		
+		String focus = element.getAttribute("_focus");
+		if (focus != null && focus.trim().length() > 0)
+		{
+			widget.setFocus(Boolean.parseBoolean(focus));
 		}
 	}
 

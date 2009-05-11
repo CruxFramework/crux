@@ -15,7 +15,12 @@
  */
 package br.com.sysmap.crux.core.client.component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasName;
@@ -195,6 +200,37 @@ public abstract class WidgetFactory <T extends Widget>
 		return ScreenFactory.getInstance().isValidWidget(element);
 	}
 	
+	/**
+	 * Returns true if an element is a span
+	 * @param element
+	 * @param acceptsNull
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	protected boolean isSpan(Element element) throws InterfaceConfigException
+	{
+		return element != null && element.getTagName().equalsIgnoreCase("span");
+	}
+	
+	/**
+	 * Returns the element if it is a span. Raises error otherwise.
+	 * @param element
+	 * @param acceptsNull
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	protected Element ensureSpan(Element element) throws InterfaceConfigException
+	{
+		if(isSpan(element))
+		{
+			return element;
+		}
+		else
+		{
+			throw new InterfaceConfigException();
+			// TODO - Gessé - Add message
+		}
+	}
 	
 	/**
 	 * If the next child element is a span, returns it. Otherwise, raises error.
@@ -204,16 +240,57 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	protected Element ensureNextChildSpan(Element element, boolean acceptsNull) throws InterfaceConfigException
+	protected Element ensureFirstChildSpan(Element element, boolean acceptsNoChild) throws InterfaceConfigException
 	{
 		Element firstChild = element.getFirstChildElement();
 		
-		if((firstChild == null && !acceptsNull) || !firstChild.getTagName().equalsIgnoreCase("span"))
+		if((!acceptsNoChild && firstChild == null) || (firstChild != null && !isSpan(element)))
 		{
-			throw new InterfaceConfigException();
 			// TODO - Gessé - add message
+			throw new InterfaceConfigException();			
+		}
+		else
+		{
+			return firstChild;
+		}	
+	}
+	
+	/**
+	 * If there are any span elements among the child nodes of the given one, returns those spans.
+	 * If there are no child spans and <code>acceptsNoChild</code> is false, raises error.
+	 * @param element
+	 * @param acceptsNull
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	protected List<Element> ensureChildrenSpan(Element element, boolean acceptsNoChild) throws InterfaceConfigException
+	{
+		List<Element> childSpans = new ArrayList<Element>();
+		
+		NodeList<Node> childNodes = element.getChildNodes();
+		
+		if(childNodes != null)
+		{
+			for (int i = 0; i < childNodes.getLength(); i++)
+			{
+				Node node = childNodes.getItem(i);
+				if(node instanceof Element)
+				{
+					Element elem =  (Element) node;
+					if(isSpan(elem))
+					{
+						childSpans.add(elem);
+					}				
+				}
+			}
 		}
 		
-		return firstChild;	
+		if(childSpans.size() == 0 && !acceptsNoChild)
+		{
+			// TODO - Gessé - add message
+			throw new InterfaceConfigException();
+		}
+		
+		return childSpans;	
 	}
 }

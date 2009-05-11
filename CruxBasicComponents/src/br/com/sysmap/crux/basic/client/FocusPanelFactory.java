@@ -55,10 +55,17 @@ public class FocusPanelFactory extends SimplePanelFactory
 		{
 			focusPanel.setTabIndex(Integer.parseInt(tabIndex));
 		}
+		
 		String accessKey = element.getAttribute("_accessKey");
 		if (accessKey != null && accessKey.length() == 1)
 		{
 			focusPanel.setAccessKey(accessKey.charAt(0));
+		}
+		
+		String focus = element.getAttribute("_focus");
+		if (focus != null && focus.trim().length() > 0)
+		{
+			focusPanel.setFocus(Boolean.parseBoolean(focus));
 		}
 	}
 	

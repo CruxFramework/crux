@@ -33,7 +33,7 @@ public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implemen
 	{
 		super.processAttributes(widget, element, widgetId);
 		
-		Element firstChild = ensureNextChildSpan(element, true);
+		Element firstChild = ensureFirstChildSpan(element, true);
 		
 		// Is text content
 		if(firstChild == null)
@@ -45,7 +45,7 @@ public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implemen
 		// Is complex content
 		else
 		{
-			Element complexContent = ensureNextChildSpan(element, true);
+			Element complexContent = ensureFirstChildSpan(element, true);
 			
 			// Is widget content
 			if(complexContent != null && isWidget(complexContent))
@@ -58,6 +58,8 @@ public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implemen
 			{
 				widget.setCaptionHTML(firstChild.getInnerHTML());
 			}
+			
+			element.removeChild(firstChild);
 		}
 	}
 	

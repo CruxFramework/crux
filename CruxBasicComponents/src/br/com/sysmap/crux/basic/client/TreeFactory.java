@@ -87,6 +87,12 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 			widget.setAccessKey(accessKey.charAt(0));
 		}
 		
+		String focus = element.getAttribute("_focus");
+		if (focus != null && focus.trim().length() > 0)
+		{
+			widget.setFocus(Boolean.parseBoolean(focus));
+		}
+		
 		String animationEnabled = element.getAttribute("_animationEnabled");
 		if (animationEnabled != null && animationEnabled.length() > 0)
 		{
