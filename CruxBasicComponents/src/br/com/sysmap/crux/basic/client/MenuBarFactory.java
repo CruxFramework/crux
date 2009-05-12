@@ -54,9 +54,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 		{
 			LoadImagesEvent<MenuBar> loadEvent = new LoadImagesEvent<MenuBar>(widgetId);
 			MenuBarImages menuBarImages = (MenuBarImages) EventFactory.callEvent(eventLoadImage, loadEvent);
-			MenuBar ret = new MenuBar(vertical, menuBarImages);
-			loadEvent.setSource(ret);
-			return ret;
+			return new MenuBar(vertical, menuBarImages);
 		}
 		return new MenuBar(vertical);
 	}

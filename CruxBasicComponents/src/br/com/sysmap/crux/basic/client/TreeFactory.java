@@ -57,9 +57,7 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 				useLeafImages = (Boolean.parseBoolean(useLeafImagesStr));
 			}
 			
-			Tree ret = new Tree(treeImages, useLeafImages);
-			loadEvent.setSource(ret);
-			return ret;
+			return new Tree(treeImages, useLeafImages);
 		}
 		return new Tree();
 	}

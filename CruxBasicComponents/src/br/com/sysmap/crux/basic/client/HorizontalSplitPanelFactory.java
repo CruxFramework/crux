@@ -39,9 +39,7 @@ public class HorizontalSplitPanelFactory extends SplitPanelFactory<HorizontalSpl
 		{
 			LoadImagesEvent<HorizontalSplitPanel> loadEvent = new LoadImagesEvent<HorizontalSplitPanel>(widgetId);
 			HorizontalSplitPanelImages splitImages = (HorizontalSplitPanelImages) EventFactory.callEvent(eventLoadImage, loadEvent);
-			HorizontalSplitPanel ret =new HorizontalSplitPanel(splitImages);
-			loadEvent.setSource(ret);
-			return ret;
+			return new HorizontalSplitPanel(splitImages);
 		}
 		return new HorizontalSplitPanel();
 	}

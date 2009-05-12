@@ -39,9 +39,7 @@ public class VerticalSplitPanelFactory extends SplitPanelFactory<VerticalSplitPa
 		{
 			LoadImagesEvent<VerticalSplitPanel> loadEvent = new LoadImagesEvent<VerticalSplitPanel>(widgetId);
 			VerticalSplitPanelImages splitImages = (VerticalSplitPanelImages) EventFactory.callEvent(eventLoadImage, loadEvent);
-			VerticalSplitPanel ret = new com.google.gwt.user.client.ui.VerticalSplitPanel(splitImages);
-			loadEvent.setSource(ret);
-			return ret;
+			return new com.google.gwt.user.client.ui.VerticalSplitPanel(splitImages);
 		}
 		return new com.google.gwt.user.client.ui.VerticalSplitPanel();
 	}

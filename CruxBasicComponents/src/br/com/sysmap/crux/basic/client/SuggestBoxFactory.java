@@ -102,9 +102,7 @@ public class SuggestBoxFactory extends CompositeFactory<SuggestBox>
 		{
 			LoadOracleEvent<SuggestBox> loadOracleEvent = new LoadOracleEvent<SuggestBox>(widgetId);
 			SuggestOracle oracle = (SuggestOracle) EventFactory.callEvent(eventLoadOracle, loadOracleEvent);
-			SuggestBox ret = new SuggestBox(oracle);
-			loadOracleEvent.setSource(ret);
-			return ret;
+			return new SuggestBox(oracle);
 		}
 		
 		return new SuggestBox();

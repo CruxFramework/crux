@@ -110,9 +110,7 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> im
 		{
 			LoadImagesEvent<DisclosurePanel> loadEvent = new LoadImagesEvent<DisclosurePanel>(widgetId);
 			DisclosurePanelImages images = (DisclosurePanelImages) EventFactory.callEvent(eventLoadImages, loadEvent);
-			DisclosurePanel ret = new DisclosurePanel(images, headerText, false);
-			loadEvent.setSource(ret);
-			return ret;
+			return new DisclosurePanel(images, headerText, false);
 		}
 		
 		return new DisclosurePanel(headerText, false);

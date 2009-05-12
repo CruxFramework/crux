@@ -15,13 +15,20 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import java.util.Date;
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.event.Event;
+import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.datepicker.client.DateBox;
+import com.google.gwt.user.datepicker.client.DatePicker;
+import com.google.gwt.user.datepicker.client.DateBox.Format;
 
 /**
  * Factory for TabPanel widgets
@@ -29,6 +36,19 @@ import com.google.gwt.user.datepicker.client.DateBox;
  */
 public class DateBoxFactory extends CompositeFactory<DateBox> 
 {
+	public static final String SHORT_TIME_PATTERN = "shortTime";
+	public static final String SHORT_DATE_TIME_PATTERN = "shortDateTime";
+	public static final String SHORT_DATE_PATTERN = "shortDate";
+	public static final String MEDIUM_TIME_PATTERN = "mediumTime";
+	public static final String MEDIUM_DATE_TIME_PATTERN = "mediumDateTime";
+	public static final String MEDIUM_DATE_PATTERN = "mediumDate";
+	public static final String LONG_TIME_PATTERN = "longTime";
+	public static final String LONG_DATE_TIME_PATTERN = "longDateTime";
+	public static final String LONG_DATE_PATTERN = "longDate";
+	public static final String FULL_TIME_PATTERN = "fullTime";
+	public static final String FULL_DATE_TIME_PATTERN = "fullDateTime";
+	public static final String FULL_DATE_PATTERN = "fullDate";
+
 	@Override
 	protected void processAttributes(final DateBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{
@@ -49,55 +69,143 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 		{
 			widget.setAccessKey(accessKey.charAt(0));
 		}
+		String focus = element.getAttribute("_focus");
+		if (focus != null && focus.trim().length() > 0)
+		{
+			widget.setFocus(Boolean.parseBoolean(focus));
+		}
+		super.processAttributes(widget, element, widgetId);
+		String value = element.getAttribute("_value");
+		if (value != null && value.length() > 0)
+		{
+			boolean reportError = true;
+			String reportFormatError = element.getAttribute("_reportFormatError");
+			if (reportFormatError != null && reportFormatError.length() > 0)
+			{
+				reportError = Boolean.parseBoolean(reportFormatError);
+			}
+			
+			Date date = widget.getFormat().parse(widget, value, reportError);
+			widget.setValue(date);
+		}		
 	}
 	
 	@Override
-	protected DateBox instantiateWidget(Element element, String widgetId) 
+	protected DateBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
 	{
-		return new DateBox();
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(TabPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
-	{
-		Element childElementParent = childElement.getParentElement();
-		if (parentElement.getId().equals(childElementParent.getId()))
+		List<Element> children = ensureChildrenSpans(element, true);
+		if (children.size() > 0)
 		{
-			parent.add(child);
-		}
-		else 
-		{
-			String tabText = childElementParent.getAttribute("_widgetTitle");
-			// tab caption as text
-			if (tabText != null && tabText.trim().length() > 0)
+			Format format = null;
+			DatePicker picker = null;
+			String pattern = null;
+			for (Element childElement : children)
 			{
-				parent.add(child, tabText);
+				if (isWidget(childElement))
+				{
+					picker = (DatePicker) createChildWidget(element, widgetId);
+				}
+				else 
+				{
+					pattern = childElement.getInnerHTML();
+				}
 			}
-			// tab caption as html
+			if (pattern == null)
+			{
+				pattern = element.getAttribute("_pattern");
+			}
+			if (pattern != null)
+			{
+				format = new DateBox.DefaultFormat(getDateTimeFormat(pattern));
+			}
 			else
 			{
-				Element tabTextSpan = childElementParent.getFirstChildElement();
-				if (tabTextSpan != null && !isWidget(tabTextSpan))
+				Event eventLoadFormat = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_FORMAT);
+				
+				if (eventLoadFormat != null)
 				{
-					parent.add(child, tabTextSpan.getInnerHTML(), true);
+					LoadFormatEvent<DateBox> loadFormatEvent = new LoadFormatEvent<DateBox>(widgetId);
+					format = (Format) EventFactory.callEvent(eventLoadFormat, loadFormatEvent);
 				}
-				else
+				else 
 				{
-					Widget titleWidget = createChildWidget(tabTextSpan, tabTextSpan.getId());
-					parent.add(child, titleWidget);
+					throw new InterfaceConfigException();
+					// TODO: add message
 				}
 			}
-			String enabled = childElementParent.getAttribute("_enabled");
-			if (enabled != null && enabled.length() >0)
-			{
-				int tabCount = parent.getTabBar().getTabCount();
-				parent.getTabBar().setTabEnabled(tabCount-1, Boolean.parseBoolean(enabled));
-			}
+			return new DateBox(picker, null, format);
+		}
+		else
+		{
+			return new DateBox();
 		}
 	}
 	
+	/**
+	 * Gets a DateTimeFormat object based on the patternString parameter. 
+	 * @param patternString
+	 * @return
+	 */
+	protected DateTimeFormat getDateTimeFormat(String patternString)
+	{
+		DateTimeFormat result;
+		
+		if (FULL_DATE_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getFullDateFormat();
+		}
+		else if (FULL_DATE_TIME_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getFullDateTimeFormat();
+		}
+		else if (FULL_TIME_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getFullTimeFormat();
+		}
+		else if (LONG_DATE_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getLongDateFormat();
+		}
+		else if (LONG_DATE_TIME_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getLongDateTimeFormat();
+		}
+		else if (LONG_TIME_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getLongTimeFormat();
+		}
+		else if (MEDIUM_DATE_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getMediumDateFormat();
+		}
+		else if (MEDIUM_DATE_TIME_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getMediumDateTimeFormat();
+		}
+		else if (MEDIUM_TIME_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getMediumTimeFormat();
+		}
+		else if (SHORT_DATE_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getShortDateFormat();
+		}
+		else if (SHORT_DATE_TIME_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getShortDateTimeFormat();
+		}
+		else if (SHORT_TIME_PATTERN.equals(patternString))
+		{
+			result = DateTimeFormat.getShortTimeFormat();
+		}
+		else
+		{
+			result = DateTimeFormat.getFormat(patternString);
+		}
+		
+		return result;
+	}
+
 	@Override
 	protected void processEvents(DateBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{

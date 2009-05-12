@@ -61,7 +61,7 @@ public abstract class WidgetFactory <T extends Widget>
 		return widget;
 	}
 	
-	protected abstract T instantiateWidget(Element element, String widgetId);
+	protected abstract T instantiateWidget(Element element, String widgetId) throws InterfaceConfigException;
 	
 
 	/**

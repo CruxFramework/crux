@@ -30,9 +30,4 @@ public class LoadImagesEvent<T extends Widget> extends CruxEvent<T>
 	{
 		super(null, senderId);
 	}
-	
-	void setSource(T source)
-	{
-		this.source = source;
-	}
 }
