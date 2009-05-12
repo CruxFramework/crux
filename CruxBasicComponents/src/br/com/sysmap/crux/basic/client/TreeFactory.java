@@ -30,6 +30,7 @@ import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.OpenEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeImages;
@@ -42,6 +43,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactory<Tree>
 {
+	protected BasicMessages messages = GWT.create(BasicMessages.class);
+	
 	protected Tree instantiateWidget(Element element, String widgetId) 
 	{
 		Event eventLoadImage = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_IMAGES);
@@ -157,8 +160,7 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 			String text = e.getAttribute("_text");
 			if (text == null || text.length() == 0)
 			{
-				throw new InterfaceConfigException();
-				//TODO: add message
+				throw new InterfaceConfigException(messages.treeInvalidTreeItem(e.getId()));
 			}
 			if (parent != null)
 			{

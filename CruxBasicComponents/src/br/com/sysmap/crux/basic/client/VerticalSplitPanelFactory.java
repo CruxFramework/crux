@@ -50,8 +50,7 @@ public class VerticalSplitPanelFactory extends SplitPanelFactory<VerticalSplitPa
 		String position = element.getAttribute("_position");
 		if (position == null || position.length() == 0)
 		{
-			throw new InterfaceConfigException();
-			//TODO: add message;
+			throw new InterfaceConfigException(messages.verticalSplitPanelInvalidPosition(element.getId()));
 		}
 		String id = element.getId();
 
@@ -66,6 +65,10 @@ public class VerticalSplitPanelFactory extends SplitPanelFactory<VerticalSplitPa
 			else if (position.equals("bottom"))
 			{
 				widget.setBottomWidget(createChildWidget(e, id));
+			}
+			else
+			{
+				throw new InterfaceConfigException(messages.verticalSplitPanelInvalidPosition(element.getId()));
 			}
 		}
 	}

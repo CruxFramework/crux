@@ -20,6 +20,7 @@ import br.com.sysmap.crux.core.client.component.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.event.bind.ScrollEvtBind;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -31,6 +32,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ScrollPanelFactory extends SimplePanelFactory 
 {
+	protected BasicMessages messages = GWT.create(BasicMessages.class);
+
 	@Override
 	protected SimplePanel instantiateWidget(Element element, String widgetId) 
 	{
@@ -38,7 +41,7 @@ public class ScrollPanelFactory extends SimplePanelFactory
 	}
 	
 	@Override
-	protected void processAttributes(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException
+	protected void processAttributes(SimplePanel widget, Element element, final String widgetId) throws InterfaceConfigException
 	{
 		super.processAttributes(widget, element, widgetId);
 		
@@ -84,8 +87,7 @@ public class ScrollPanelFactory extends SimplePanelFactory
 					Widget c = getScreen().getWidget(ensureVisible);
 					if (c == null)
 					{
-						throw new NullPointerException();
-						//TODO: colocar mensagem
+						throw new NullPointerException(messages.scrollPanelWidgetNotFound(widgetId, ensureVisible));
 					}
 					scrollPanel.ensureVisible(c);
 				}

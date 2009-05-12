@@ -17,6 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -29,6 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DockPanelFactory extends CellPanelFactory<DockPanel>
 {
+	protected BasicMessages messages = GWT.create(BasicMessages.class);
 
 	@Override
 	protected DockPanel instantiateWidget(Element element, String widgetId)
@@ -74,8 +76,7 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 			}
 			else
 			{
-				throw new InterfaceConfigException();
-				// TODO: colocar mensagens
+				throw new InterfaceConfigException(messages.dockPanelInvalidDirection(childElement.getId(), parentElement.getId()));
 			}
 			
 			super.add(parent, child, parentElement, childElement);

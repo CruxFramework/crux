@@ -32,12 +32,11 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 	}
 
 	@Override
-	protected void prepareCell(FlexTable widget, int indexRow, int indexCol)
+	protected void prepareCell(FlexTable widget, int indexRow, int indexCol, String widgetId)
 	{
 		if (indexRow < 0 || indexCol < 0)
 		{
-			throw new IndexOutOfBoundsException();
-			//TODO: colocar mensagem
+			throw new IndexOutOfBoundsException(messages.flexTableInvalidRowColIndexes(widgetId));
 		}
 		int r = 0;
 		while (widget.getRowCount() < indexRow+1)

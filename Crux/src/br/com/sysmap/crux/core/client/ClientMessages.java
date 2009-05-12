@@ -45,4 +45,12 @@ public interface ClientMessages extends Messages
 	String screenFactoryErrorCreateWidget(String widgetId);
 	@DefaultMessage("[widget - 004] - Formatter ''{0}'' not found.")
 	String widgetFormatterNotFound(String formatterId);
+	@DefaultMessage("[widget - 005] - The span element must contains children.")
+	String widgetFactoryEnsureChildrenSpansEmpty();
+	@DefaultMessage("[widget - 006] - The span element must contains at least one child.")
+	String widgetFactoryEnsureFirstChildSpanOrphanElement();
+	@DefaultMessage("[widget - 007] - The span element does not represents a widget.")
+	String widgetFactoryEnsureWidgetFail();
+	@DefaultMessage("[widget - 008] - The element is not a span.")
+	String widgetFactoryEnsureSpanFail();
 }

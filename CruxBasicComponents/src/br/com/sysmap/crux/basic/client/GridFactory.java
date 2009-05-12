@@ -32,12 +32,11 @@ public class GridFactory extends HTMLTableFactory<Grid>
 	}
 
 	@Override
-	protected void prepareCell(Grid widget, int indexRow, int indexCol)
+	protected void prepareCell(Grid widget, int indexRow, int indexCol, String widgetId)
 	{
 		if (indexRow < 0 || indexCol < 0)
 		{
-			throw new IndexOutOfBoundsException();
-			//TODO: colocar mensagem
+			throw new IndexOutOfBoundsException(messages.gridInvalidRowColIndexes(widgetId));
 		}
 		if (widget.getRowCount() < indexRow+1)
 		{

@@ -19,6 +19,7 @@ import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.StackPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,6 +30,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class StackPanelFactory extends ComplexPanelFactory<StackPanel>
 {
+	protected BasicMessages messages = GWT.create(BasicMessages.class);
+	
 	/**
 	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
 	 */
@@ -58,8 +61,7 @@ public class StackPanelFactory extends ComplexPanelFactory<StackPanel>
 				}
 				else
 				{
-					throw new InterfaceConfigException();
-					//TODO: colocar mensagem
+					throw new InterfaceConfigException(messages.stackPanelIvalidChild(childElement.getId(), parentElement.getId()));
 				}
 			}
 		}

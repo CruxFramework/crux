@@ -21,6 +21,7 @@ import java.util.List;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -33,6 +34,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactory<T>
 {
+	protected BasicMessages messages = GWT.create(BasicMessages.class);
+	
 	/**
 	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
 	 */
@@ -72,7 +75,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 			widget.setCellSpacing(Integer.parseInt(cellSpacing));
 		}
 
-		renderRows(widget, element);		
+		renderRows(widget, element, widgetId);		
 	}
 
 	/**
@@ -80,49 +83,49 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 	 * @param element
 	 * @throws InterfaceConfigException 
 	 */
-	protected void renderRows(T widget, Element element) throws InterfaceConfigException
+	protected void renderRows(T widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		List<Element> itensCandidates = ensureChildrenSpans(element, true);
 		int validRows = 0;
 		for (int i=0; i<itensCandidates.size(); i++)
 		{
 			Element e = (Element)itensCandidates.get(i);
-			renderRow(widget, e, validRows);
+			renderRow(widget, e, validRows, widgetId);
 			processAttributesForRow(widget, e, validRows);
 			validRows++;
 		}
 	}
 	
-	protected void renderRow(T widget, Element element, int index) throws InterfaceConfigException
+	protected void renderRow(T widget, Element element, int index, String widgetId) throws InterfaceConfigException
 	{
 		List<Element> itensCandidates = ensureChildrenSpans(element, false);
 		int validCells = 0;
 		for (int i=0; i<itensCandidates.size(); i++)
 		{
 			Element e = (Element)itensCandidates.get(i);
-			renderCell(widget, e, index, validCells);
+			renderCell(widget, e, index, validCells, widgetId);
 			processAttributesForCell(widget, e, index, validCells);
 			validCells++;
 		}
 	}
 
-	protected void renderCell(T widget, Element e, int indexRow, int indexCol) throws InterfaceConfigException
+	protected void renderCell(T widget, Element e, int indexRow, int indexCol, String widgetId) throws InterfaceConfigException
 	{
 		String text = e.getAttribute("_text");
 		if (text != null && text.length() >0)
 		{
-			addCell(widget, text, indexRow, indexCol);
+			addCell(widget, text, indexRow, indexCol, widgetId);
 		}
 		else
 		{
 			Element widgetChild = ensureFirstChildSpan(e, true);
 			if (widgetChild != null && isWidget(widgetChild))
 			{
-				addCell(widget, createChildWidget(widgetChild, widgetChild.getId()),indexRow, indexCol);
+				addCell(widget, createChildWidget(widgetChild, widgetChild.getId()),indexRow, indexCol, widgetId);
 			}
 			else
 			{
-				addCell(widget, e.getInnerHTML(), true, indexRow, indexCol);
+				addCell(widget, e.getInnerHTML(), true, indexRow, indexCol, widgetId);
 			}
 		}
 	}
@@ -225,20 +228,20 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		}	
 	}
 	
-	protected void addCell(T widget, Widget child, int indexRow, int indexCol)
+	protected void addCell(T widget, Widget child, int indexRow, int indexCol, String widgetId)
 	{
-		prepareCell(widget, indexRow, indexCol);
+		prepareCell(widget, indexRow, indexCol, widgetId);
 		widget.setWidget(indexRow, indexCol, child);
 	}
 
-	protected void addCell(T widget, String text, int indexRow, int indexCol)
+	protected void addCell(T widget, String text, int indexRow, int indexCol, String widgetId)
 	{
-		addCell(widget, text, false, indexRow, indexCol);
+		addCell(widget, text, false, indexRow, indexCol, widgetId);
 	}
 
-	protected void addCell(T widget, String text, boolean asHTML, int indexRow, int indexCol)
+	protected void addCell(T widget, String text, boolean asHTML, int indexRow, int indexCol, String widgetId)
 	{
-		prepareCell(widget, indexRow, indexCol);
+		prepareCell(widget, indexRow, indexCol, widgetId);
 		if (asHTML)
 		{
 			widget.setHTML(indexRow, indexCol, text);
@@ -249,5 +252,5 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		}
 	}	
 	
-	protected abstract void prepareCell(T widget, int indexRow, int indexCol);
+	protected abstract void prepareCell(T widget, int indexRow, int indexCol, String widgetId);
 }

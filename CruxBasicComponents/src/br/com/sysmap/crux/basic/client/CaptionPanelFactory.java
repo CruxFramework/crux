@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * TODO - Gessé - Comment this
+ * Factory for CaptionPanel widgets
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implements HasWidgetsFactory<CaptionPanel>

@@ -18,6 +18,7 @@ package br.com.sysmap.crux.core.client.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.JSEngine;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -228,8 +229,7 @@ public abstract class WidgetFactory <T extends Widget>
 		}
 		else
 		{
-			throw new InterfaceConfigException();
-			// TODO - Gessé - Add message
+			throw new InterfaceConfigException(JSEngine.messages.widgetFactoryEnsureSpanFail());
 		}
 	}
 	
@@ -247,8 +247,7 @@ public abstract class WidgetFactory <T extends Widget>
 		
 		if((!acceptsNoChild && firstChild == null) || (firstChild != null && !isSpan(element)))
 		{
-			// TODO - Gessé - add message
-			throw new InterfaceConfigException();			
+			throw new InterfaceConfigException(JSEngine.messages.widgetFactoryEnsureFirstChildSpanOrphanElement());			
 		}
 		else
 		{
@@ -286,8 +285,7 @@ public abstract class WidgetFactory <T extends Widget>
 		
 		if(childSpans.size() == 0 && !acceptsNoChild)
 		{
-			// TODO - Gessé - add message
-			throw new InterfaceConfigException();
+			throw new InterfaceConfigException(JSEngine.messages.widgetFactoryEnsureChildrenSpansEmpty());
 		}
 		
 		return childSpans;	
@@ -306,7 +304,6 @@ public abstract class WidgetFactory <T extends Widget>
 			return element;
 		}
 		
-		// TODO - Gessé - add message
-		throw new InterfaceConfigException();
+		throw new InterfaceConfigException(JSEngine.messages.widgetFactoryEnsureWidgetFail());
 	}
 }

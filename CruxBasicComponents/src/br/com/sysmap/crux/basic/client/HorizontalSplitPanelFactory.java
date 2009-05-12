@@ -50,8 +50,7 @@ public class HorizontalSplitPanelFactory extends SplitPanelFactory<HorizontalSpl
 		String position = element.getAttribute("_position");
 		if (position == null || position.length() == 0)
 		{
-			throw new InterfaceConfigException();
-			//TODO: add message;
+			throw new InterfaceConfigException(messages.horizontalSplitPanelInvalidPosition(element.getId()));
 		}
 		String id = element.getId();
 
@@ -65,6 +64,10 @@ public class HorizontalSplitPanelFactory extends SplitPanelFactory<HorizontalSpl
 			else if (position.equals("right"))
 			{				
 				widget.setRightWidget(createChildWidget(e, id));
+			}
+			else
+			{
+				throw new InterfaceConfigException(messages.horizontalSplitPanelInvalidPosition(element.getId()));
 			}
 		}
 	}

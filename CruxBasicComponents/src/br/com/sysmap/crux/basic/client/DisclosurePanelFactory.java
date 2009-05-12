@@ -25,17 +25,20 @@ import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.event.bind.OpenEvtBind;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.DisclosurePanelImages;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * TODO - Gessé - Comment this
+ * Factory for DisclosurePanel widgets
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> implements HasWidgetsFactory<DisclosurePanel>
 {
+	protected BasicMessages messages = GWT.create(BasicMessages.class);
+	
 	@Override
 	protected void processAttributes(DisclosurePanel widget, Element element, String widgetId) throws InterfaceConfigException
 	{
@@ -95,8 +98,7 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> im
 		}
 		else
 		{
-			// TODO - Gessé - add message
-			throw new InterfaceConfigException();
+			throw new InterfaceConfigException(messages.disclosurePanelInvalidChildrenElements(element.getId()));
 		}
 	}
 	

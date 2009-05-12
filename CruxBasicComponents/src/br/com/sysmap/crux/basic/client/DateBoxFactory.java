@@ -24,10 +24,12 @@ import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
+import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
 import com.google.gwt.user.datepicker.client.DateBox.Format;
 
 /**
@@ -129,8 +131,7 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 				}
 				else 
 				{
-					throw new InterfaceConfigException();
-					// TODO: add message
+					format = GWT.create(DefaultFormat.class);
 				}
 			}
 			return new DateBox(picker, null, format);

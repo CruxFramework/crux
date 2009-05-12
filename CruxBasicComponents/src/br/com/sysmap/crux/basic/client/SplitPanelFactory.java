@@ -19,6 +19,7 @@ import java.util.List;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.ui.Panel;
  */
 public abstract class SplitPanelFactory <T extends Panel> extends PanelFactory<T>
 {
+	protected BasicMessages messages = GWT.create(BasicMessages.class);
 
 	@Override
 	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException 

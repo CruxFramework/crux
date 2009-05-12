@@ -24,6 +24,7 @@ import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -38,6 +39,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	public static final String ITEM_TYPE_SEPARATOR = "separator";
 	public static final String ITEM_TYPE_TEXT = "text";
 	
+	protected BasicMessages messages = GWT.create(BasicMessages.class);
 	
 	@Override
 	protected MenuBar instantiateWidget(Element element, String widgetId) 
@@ -101,8 +103,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 			String type = e.getAttribute("_itemType");
 			if (type == null || type.length() == 0)
 			{
-				throw new InterfaceConfigException();
-				//TODO: add message
+				throw new InterfaceConfigException(messages.menuBarItemTypeEmpty(widgetId));
 			}
 			if (type.equals(ITEM_TYPE_TEXT))
 			{
