@@ -53,5 +53,6 @@
   <widget id="decoratedTabPanel" clientClass="br.com.sysmap.crux.basic.client.DecoratedTabPanelFactory" />
   <widget id="tabBar" clientClass="br.com.sysmap.crux.basic.client.TabBarFactory" />
   <widget id="decoratedTabBar" clientClass="br.com.sysmap.crux.basic.client.DecoratedTabBarFactory" />
+  <widget id="dateBox" clientClass="br.com.sysmap.crux.basic.client.dateBoxFactory" />
   
 </crux>
