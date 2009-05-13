@@ -127,16 +127,21 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 	 */
 	protected void processTreeItens(Tree widget, Element element) throws InterfaceConfigException
 	{
-		processTreeItens(widget, element, null);
+		List<Element> itens = ensureChildrenSpans(element, true);
+		for (Element e : itens)
+		{
+			processTreeItens(widget, e, null);
+		}
 	}
 	
 	protected void processTreeItens(Tree widget, Element element, TreeItem parent) throws InterfaceConfigException
 	{
-		List<Element> itensCandidates = ensureChildrenSpans(element, true);
-		for (int i=0; i<itensCandidates.size(); i++)
+		List<Element> itens = ensureChildrenSpans(element, false);
+		TreeItem item = processTreeItem(widget, itens.get(0), parent);
+
+		for (int i=1; i<itens.size(); i++)
 		{
-			Element e = (Element)itensCandidates.get(i);
-			TreeItem item = processTreeItem(widget, e, parent);
+			Element e = (Element)itens.get(i);
 			processTreeItens(widget, e, item);
 		}
 	}
