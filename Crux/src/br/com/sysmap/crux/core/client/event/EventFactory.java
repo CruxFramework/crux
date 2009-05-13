@@ -50,6 +50,7 @@ public class EventFactory
 	public static final String EVENT_LOAD_FORMAT = "_onloadformat";
 	public static final String EVENT_SCROLL = "_onscroll";
 	public static final String EVENT_BEFORE_SELECTION = "_onbeforeselection";
+	public static final String EVENT_SELECTION = "_onselection";
 	public static final String EVENT_LOAD_WIDGET = "_onloadwidget";
 	public static final String EVENT_EXECUTE_EVENT = "_onexecute";
 	public static final String EVENT_SUBMIT_COMPLETE = "_onsubmitcomplete";

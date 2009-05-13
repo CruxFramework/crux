@@ -32,7 +32,7 @@ public class SelectionEvtBind extends EvtBind
 {
 	public static <I> void bindEvent(Element element, HasSelectionHandlers<I> widget)
 	{
-		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_CHANGE);
+		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_SELECTION);
 		if (eventChange != null)
 		{
 			widget.addSelectionHandler(new SelectionHandler<I>()
