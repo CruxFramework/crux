@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://www.sysmap.com.br/crux/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" 
-           elementFormDefault="qualified" targetNamespace="http://www.sysmap.com.br/crux/1.0" >
+<xs:schema 
+	xmlns="http://www.sysmap.com.br/crux/config/1.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	attributeFormDefault="unqualified" 
+	elementFormDefault="qualified" 
+	targetNamespace="http://www.sysmap.com.br/crux/config/1.0">
+	
 	<!-- Element Definitions -->
 	<xs:element name="crux" type="cruxT">
 		<xs:annotation>
