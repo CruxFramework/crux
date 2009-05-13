@@ -138,11 +138,28 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 	{
 		List<Element> itens = ensureChildrenSpans(element, false);
 		TreeItem item = processTreeItem(widget, itens.get(0), parent);
+		
+		processItemAttributes(element, item);
 
 		for (int i=1; i<itens.size(); i++)
 		{
 			Element e = (Element)itens.get(i);
 			processTreeItens(widget, e, item);
+		}
+	}
+
+	private void processItemAttributes(Element element, TreeItem item)
+	{
+		String selected = element.getAttribute("_selected");
+		if (selected != null && selected.trim().length() > 0)
+		{
+			item.setSelected(Boolean.parseBoolean(selected));
+		}
+		
+		String state = element.getAttribute("_state");
+		if (selected != null && selected.trim().length() > 0)
+		{
+			item.setState(Boolean.parseBoolean(state));
 		}
 	}
 	
