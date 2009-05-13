@@ -15,6 +15,11 @@
  */
 package br.com.sysmap.crux.core.server;
 
+import java.io.File;
+import java.net.URL;
+
+import javax.servlet.ServletContext;
+
 import com.google.gwt.dev.HostedMode;
 
 /**
@@ -43,5 +48,11 @@ public class Environment
 			return false;
 		}
 	}
-
+	
+	public static File getWebBaseDir(ServletContext context) throws Exception
+	{
+		URL urlClassesDir = context.getResource("/");
+		File result = new File(urlClassesDir.toURI());
+		return result;
+	}
 }
