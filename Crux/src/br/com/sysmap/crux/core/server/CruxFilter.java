@@ -27,8 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 
-import com.google.gwt.dev.HostedMode;
-
 /**
  * Used to save the path to the current HTML page. This information is necessary
  * to generate the client handlers and formatters.
@@ -41,28 +39,7 @@ public class CruxFilter implements Filter
 	
 	public void init(FilterConfig arg0) throws ServletException 
 	{
-		production = !isHostedMode();
-	}
-
-	/**
-	 * Determine if we are running in GWT Hosted Mode
-	 * @return
-	 */
-	@SuppressWarnings("deprecation")
-	private boolean isHostedMode()
-	{
-		Exception utilException = new Exception();
-		try
-		{
-			StackTraceElement[] stackTrace = utilException.getStackTrace();
-			StackTraceElement stackTraceElement = stackTrace[stackTrace.length -1];
-			return (stackTraceElement.getClassName().equals(HostedMode.class.getName()) ||
-					stackTraceElement.getClassName().equals(com.google.gwt.dev.GWTShell.class.getName()) );
-		}
-		catch (Throwable e) 
-		{
-			return false;
-		}
+		production = !Environment.isHostedMode();
 	}
 	
 	public void destroy() 
