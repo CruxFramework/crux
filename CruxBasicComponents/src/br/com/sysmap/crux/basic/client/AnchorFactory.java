@@ -18,6 +18,7 @@ package br.com.sysmap.crux.basic.client;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -76,7 +77,29 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 		if (wordWrap != null && wordWrap.trim().length() > 0)
 		{
 			widget.setWordWrap(Boolean.parseBoolean(wordWrap));
+		}		
+		
+		setTextOrHtml(widget, element);
+	}
+
+	private void setTextOrHtml(Anchor widget, Element element) throws InterfaceConfigException
+	{
+		Node child = element.getFirstChild();
+		if(child != null && child instanceof Element)
+		{
+			Element childElem = (Element) child;
+			if(isSpan(childElem))
+			{
+				String text = childElem.getAttribute("_text");
+				if(text != null && text.length() > 0)
+				{
+					widget.setText(text);
+					return;
+				}
+			}
 		}
+		
+		widget.setHTML(element.getInnerHTML());
 	}
 
 	@Override
