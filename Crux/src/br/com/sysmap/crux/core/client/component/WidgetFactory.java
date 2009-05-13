@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.event.Event;
+import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -139,7 +142,17 @@ public abstract class WidgetFactory <T extends Widget>
 	 */
 	protected void processEvents(T widget, Element element, String widgetId) throws InterfaceConfigException
 	{
-
+		final Event eventLoad = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_WIDGET);
+		if (eventLoad != null)
+		{
+			addScreenLoadedHandler(new ScreenLoadHandler()
+			{
+				public void onLoad(ScreenLoadEvent event)
+				{
+					EventFactory.callEvent(eventLoad, event);
+				}
+			});
+		}
 	}
 	
 	/**

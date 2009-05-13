@@ -175,7 +175,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	 */
 	protected Command getCommand(final MenuBar widget,Element element, final String widgetId)
 	{
-		final Event evt = EvtBind.getWidgetEvent(element, "_onexecute");
+		final Event evt = EvtBind.getWidgetEvent(element, EventFactory.EVENT_EXECUTE_EVENT);
 		if (evt != null)
 		{
 			return new Command()

@@ -26,7 +26,6 @@ import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
@@ -38,18 +37,6 @@ import com.google.gwt.user.datepicker.client.DateBox.Format;
  */
 public class DateBoxFactory extends CompositeFactory<DateBox> 
 {
-	public static final String SHORT_TIME_PATTERN = "shortTime";
-	public static final String SHORT_DATE_TIME_PATTERN = "shortDateTime";
-	public static final String SHORT_DATE_PATTERN = "shortDate";
-	public static final String MEDIUM_TIME_PATTERN = "mediumTime";
-	public static final String MEDIUM_DATE_TIME_PATTERN = "mediumDateTime";
-	public static final String MEDIUM_DATE_PATTERN = "mediumDate";
-	public static final String LONG_TIME_PATTERN = "longTime";
-	public static final String LONG_DATE_TIME_PATTERN = "longDateTime";
-	public static final String LONG_DATE_PATTERN = "longDate";
-	public static final String FULL_TIME_PATTERN = "fullTime";
-	public static final String FULL_DATE_TIME_PATTERN = "fullDateTime";
-	public static final String FULL_DATE_PATTERN = "fullDate";
 
 	@Override
 	protected void processAttributes(final DateBox widget, Element element, String widgetId) throws InterfaceConfigException
@@ -76,7 +63,7 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 		{
 			widget.setFocus(Boolean.parseBoolean(focus));
 		}
-		super.processAttributes(widget, element, widgetId);
+
 		String value = element.getAttribute("_value");
 		if (value != null && value.length() > 0)
 		{
@@ -118,7 +105,7 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 			}
 			if (pattern != null)
 			{
-				format = new DateBox.DefaultFormat(getDateTimeFormat(pattern));
+				format = new DateBox.DefaultFormat(DateFormatUtil.getDateTimeFormat(pattern));
 			}
 			else
 			{
@@ -142,71 +129,6 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 		}
 	}
 	
-	/**
-	 * Gets a DateTimeFormat object based on the patternString parameter. 
-	 * @param patternString
-	 * @return
-	 */
-	protected DateTimeFormat getDateTimeFormat(String patternString)
-	{
-		DateTimeFormat result;
-		
-		if (FULL_DATE_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getFullDateFormat();
-		}
-		else if (FULL_DATE_TIME_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getFullDateTimeFormat();
-		}
-		else if (FULL_TIME_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getFullTimeFormat();
-		}
-		else if (LONG_DATE_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getLongDateFormat();
-		}
-		else if (LONG_DATE_TIME_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getLongDateTimeFormat();
-		}
-		else if (LONG_TIME_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getLongTimeFormat();
-		}
-		else if (MEDIUM_DATE_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getMediumDateFormat();
-		}
-		else if (MEDIUM_DATE_TIME_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getMediumDateTimeFormat();
-		}
-		else if (MEDIUM_TIME_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getMediumTimeFormat();
-		}
-		else if (SHORT_DATE_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getShortDateFormat();
-		}
-		else if (SHORT_DATE_TIME_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getShortDateTimeFormat();
-		}
-		else if (SHORT_TIME_PATTERN.equals(patternString))
-		{
-			result = DateTimeFormat.getShortTimeFormat();
-		}
-		else
-		{
-			result = DateTimeFormat.getFormat(patternString);
-		}
-		
-		return result;
-	}
-
 	@Override
 	protected void processEvents(DateBox widget, Element element, String widgetId) throws InterfaceConfigException
 	{

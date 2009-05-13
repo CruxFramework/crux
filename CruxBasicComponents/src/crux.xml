@@ -54,5 +54,8 @@
   <widget id="tabBar" clientClass="br.com.sysmap.crux.basic.client.TabBarFactory" />
   <widget id="decoratedTabBar" clientClass="br.com.sysmap.crux.basic.client.DecoratedTabBarFactory" />
   <widget id="dateBox" clientClass="br.com.sysmap.crux.basic.client.dateBoxFactory" />
-  
+  <widget id="captionPanel" clientClass="br.com.sysmap.crux.basic.client.CaptionPanelFactory" />
+  <widget id="disclosurePanel" clientClass="br.com.sysmap.crux.basic.client.DisclosurePanelFactory" />
+  <widget id="suggestBox" clientClass="br.com.sysmap.crux.basic.client.SuggestBoxFactory" />
+  <widget id="datePicker" clientClass="br.com.sysmap.crux.basic.client.DatePickerFactory" />
 </crux>

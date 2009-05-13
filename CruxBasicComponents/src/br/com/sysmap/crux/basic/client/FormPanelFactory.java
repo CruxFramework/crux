@@ -64,7 +64,7 @@ public class FormPanelFactory extends SimplePanelFactory
 		super.processEvents(widget, element, widgetId);
 		FormPanel formPanel = (FormPanel)widget;
 		
-		final Event eventSubmitComplete = EvtBind.getWidgetEvent(element, "_onsubmitcomplete");
+		final Event eventSubmitComplete = EvtBind.getWidgetEvent(element, EventFactory.EVENT_SUBMIT_COMPLETE);
 		if (eventSubmitComplete != null)
 		{
 			formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler()
@@ -76,7 +76,7 @@ public class FormPanelFactory extends SimplePanelFactory
 			});
 		}
 		
-		final Event eventSubmit = EvtBind.getWidgetEvent(element, "_onsubmit");
+		final Event eventSubmit = EvtBind.getWidgetEvent(element, EventFactory.EVENT_SUBMIT);
 		if (eventSubmitComplete != null)
 		{
 			formPanel.addSubmitHandler(new SubmitHandler()
