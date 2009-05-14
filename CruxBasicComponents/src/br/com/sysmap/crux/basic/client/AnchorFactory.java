@@ -78,28 +78,6 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 		{
 			widget.setWordWrap(Boolean.parseBoolean(wordWrap));
 		}		
-		
-		setTextOrHtml(widget, element);
-	}
-
-	private void setTextOrHtml(Anchor widget, Element element) throws InterfaceConfigException
-	{
-		Node child = element.getFirstChild();
-		if(child != null && child instanceof Element)
-		{
-			Element childElem = (Element) child;
-			if(isSpan(childElem))
-			{
-				String text = childElem.getAttribute("_text");
-				if(text != null && text.length() > 0)
-				{
-					widget.setText(text);
-					return;
-				}
-			}
-		}
-		
-		widget.setHTML(element.getInnerHTML());
 	}
 
 	@Override
