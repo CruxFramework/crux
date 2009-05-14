@@ -82,6 +82,11 @@
         <pathelement path="${srcdir}" />     
         <pathelement path="${testsrcdir}" />     
       </classpath>
+    	<classpath>
+    	    <fileset dir="${cruxdistdir}">
+    	      <include name="**/*.jar" />
+    	    </fileset>
+    	</classpath>
       <batchtest todir="${testreportxml}">
         <fileset dir="${testsrcdir}">
         	<include name="**/*Test*.java"/>
