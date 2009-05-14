@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.dispatch;
+package br.com.sysmap.crux.core.rebind.screen;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -25,37 +25,37 @@ import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 
-public class ControllerFactoryInitializer 
+public class ScreenResourceResolverInitializer 
 {
-	private static final Log logger = LogFactory.getLog(ControllerFactoryInitializer.class);
-	private static ControllerFactory controllerFactory;
+	private static final Log logger = LogFactory.getLog(ScreenResourceResolverInitializer.class);
+	private static ScreenResourceResolver screenResourceResolver;
 	private static final Lock lock = new ReentrantLock();
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
-	public static ControllerFactory getControllerFactory()
+	public static ScreenResourceResolver getScreenResourceResolver()
 	{
-		if (controllerFactory != null) return controllerFactory;
+		if (screenResourceResolver != null) return screenResourceResolver;
 		
 		try
 		{
 			lock.lock();
-			if (controllerFactory != null) return controllerFactory;
-			controllerFactory = (ControllerFactory) Class.forName(ConfigurationFactory.getConfigurations().controllerFactory()).newInstance(); 
+			if (screenResourceResolver != null) return screenResourceResolver;
+			screenResourceResolver = (ScreenResourceResolver) Class.forName(ConfigurationFactory.getConfigurations().screenResourceResolver()).newInstance(); 
 		}
 		catch (Throwable e)
 		{
-			logger.error(messages.controllerFactoryInitializerError(e.getMessage()), e);
+			logger.error(messages.screenResourceResolverInitializerError(e.getMessage()), e);
 		}
 		finally
 		{
 			lock.unlock();
 		}
-		return controllerFactory;
+		return screenResourceResolver;
 	}
 
-	public static void registerControllerFactory(ControllerFactory controllerFactory)
+	public static void registerScreenResourceResolver(ScreenResourceResolver screenResourceResolver)
 	{
-		ControllerFactoryInitializer.controllerFactory = controllerFactory;
+		ScreenResourceResolverInitializer.screenResourceResolver = screenResourceResolver;
 	}
 	
 	

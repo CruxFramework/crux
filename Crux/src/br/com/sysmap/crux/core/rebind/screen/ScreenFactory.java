@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.rebind.screen;
 
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,8 +153,8 @@ public class ScreenFactory
 				return screen;
 			}
 
-			URL url = getClass().getResource("/"+id);
-			if (url == null)
+			InputStream stream = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(id);
+			if (stream == null)
 			{
 				throw new ScreenConfigException(messages.screenFactoryScreeResourceNotFound(id));
 			}
@@ -164,7 +164,7 @@ public class ScreenFactory
 			{
 				if (screenCache.get(id) == null)
 				{
-					screen = parseScreen(id, url);
+					screen = parseScreen(id, stream);
 					screenCache.put(id, screen);
 				}
 			}
@@ -226,14 +226,14 @@ public class ScreenFactory
 	/**
 	 * Parse the HTML page and build the Crux Screen. 
 	 * @param id
-	 * @param url
+	 * @param stream
 	 * @return
 	 * @throws IOException
 	 */
-	private Screen parseScreen(String id, URL url) throws IOException
+	private Screen parseScreen(String id, InputStream stream) throws IOException
 	{
 		Screen screen = new Screen(id);
-		Source source = new Source(url);
+		Source source = new Source(stream);
 		source.fullSequentialParse();
 		List<?> elementList = source.findAllElements("span");
 		

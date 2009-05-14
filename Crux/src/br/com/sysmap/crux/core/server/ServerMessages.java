@@ -94,5 +94,8 @@ public interface ServerMessages
 	String screenBridgeErrorReadingScreenId(String errMsg);
 
 	@DefaultMessage("[localeResolver - 001] - Error initializing LocaleResolver: {0}.")
-	String localeResolverInitialisationError(String errMsg);	
+	String localeResolverInitialisationError(String errMsg);
+
+	@DefaultMessage("[screenResolver - 001] - Error initializing ScreenResolver: {0}.")
+	String screenResourceResolverInitializerError(String message);	
 }

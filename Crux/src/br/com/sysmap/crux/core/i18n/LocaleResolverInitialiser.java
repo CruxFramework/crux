@@ -56,6 +56,12 @@ public class LocaleResolverInitialiser
 			lock.unlock();
 		}
 		return localeResolver;
-		
 	}
+
+
+	public static void registerLocaleResolver(LocaleResolver localeResolver)
+	{
+		LocaleResolverInitialiser.localeResolver = localeResolver;
+	}
+	
 }
