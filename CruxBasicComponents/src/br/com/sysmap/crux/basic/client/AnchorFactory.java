@@ -18,7 +18,6 @@ package br.com.sysmap.crux.basic.client;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -77,7 +76,7 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 		if (wordWrap != null && wordWrap.trim().length() > 0)
 		{
 			widget.setWordWrap(Boolean.parseBoolean(wordWrap));
-		}		
+		} 
 	}
 
 	@Override
