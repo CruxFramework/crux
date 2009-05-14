@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.server;
 
+import java.io.File;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -24,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.dispatch.ControllerFactoryInitializer;
 
@@ -59,6 +62,10 @@ public class InitializerListener implements ServletContextListener
 	
 	protected void initialize(ServletContext contexto) throws Exception
 	{
+		File webBaseDirFile = new File(contexto.getResource("/").toURI());
+		String webBaseDir = webBaseDirFile.getCanonicalPath();
+		CruxScreenBridge.getInstance().registerWebBaseDir(webBaseDir);
+		
 		WidgetConfig.initializeWidgetConfig();
 		// Initialise the isHosted static variable.
 		Environment.isHostedMode();

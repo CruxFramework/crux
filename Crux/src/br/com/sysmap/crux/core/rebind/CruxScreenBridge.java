@@ -32,7 +32,7 @@ import br.com.sysmap.crux.core.server.ServerMessages;
  * A Bridge class for allow Generators to know the name of the module 
  * that starts the generation process. Crux Generators need this information
  * to obtain better performance for method handlers in client side of 
- * applications.
+ * applications. 
  * 
  * @author Thiago
  *
@@ -43,8 +43,11 @@ public class CruxScreenBridge
 	private static CruxScreenBridge instance = new CruxScreenBridge();
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
-
-	private File bridgeFile;
+	//Woww :) Thanks to GWT different JVMs for generators, 
+	//the only way to obtain these informations is using a bridge in file system
+	private File screenRequestedBridgeFile;
+	private File screenResolverBridgeFile;
+	private File webBaseDirBridgeFile;
 	
 	private CruxScreenBridge() 
 	{
@@ -54,8 +57,12 @@ public class CruxScreenBridge
 			tmpDir += File.separator;
 		}
 		
-		bridgeFile = new File(tmpDir+"bridgeFile");
-		bridgeFile.deleteOnExit();
+		screenRequestedBridgeFile = new File(tmpDir+"screenRequestedBridgeFile");
+		screenRequestedBridgeFile.deleteOnExit();
+		screenResolverBridgeFile = new File(tmpDir+"screenResolverBridgeFile");
+		screenResolverBridgeFile.deleteOnExit();
+		webBaseDirBridgeFile = new File(tmpDir+"webBaseDirBridgeFile");
+		webBaseDirBridgeFile.deleteOnExit();
 	}
 
 	/**
@@ -77,7 +84,7 @@ public class CruxScreenBridge
 		PrintWriter writer;
 		try 
 		{
-			writer = new PrintWriter(bridgeFile);
+			writer = new PrintWriter(screenRequestedBridgeFile);
 			writer.println(lastPage);
 			writer.close();
 		} 
@@ -95,7 +102,7 @@ public class CruxScreenBridge
 	{
 		try 
 		{
-			BufferedReader reader = new BufferedReader(new FileReader(bridgeFile));
+			BufferedReader reader = new BufferedReader(new FileReader(screenRequestedBridgeFile));
 			return reader.readLine();
 		} 
 		catch (Exception e) 
@@ -104,5 +111,76 @@ public class CruxScreenBridge
 			return null;
 		}
 	}
+
+	/** 
+	 * Inform the name of resource resolver to use.
+	 */
+	public void registerScreenResourceResolver(String resourceResolver)
+	{
+		PrintWriter writer;
+		try 
+		{
+			writer = new PrintWriter(screenResolverBridgeFile);
+			writer.println(resourceResolver);
+			writer.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			logger.error(messages.screenBridgeErrorRegisteringScreenResolver(e.getLocalizedMessage()), e);
+		}
+	}
 	
+	/**
+	 * Return the screen resource resolver.
+	 * @return
+	 */
+	public String getScreenResourceResolver() 
+	{
+		try 
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(screenResolverBridgeFile));
+			return reader.readLine();
+		} 
+		catch (Exception e) 
+		{
+			logger.error(messages.screenBridgeErrorReadingScreenResolver(e.getLocalizedMessage()), e);
+			return null;
+		}
+	}
+	
+	/** 
+	 * Inform the web base dir.
+	 */
+	public void registerWebBaseDir(String webBaseDir)
+	{
+		PrintWriter writer;
+		try 
+		{
+			writer = new PrintWriter(webBaseDirBridgeFile);
+			writer.println(webBaseDir);
+			writer.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			logger.error(messages.screenBridgeErrorRegisteringWebBaseDir(e.getLocalizedMessage()), e);
+		}
+	}
+	
+	/**
+	 * Return the web base dir.
+	 * @return
+	 */
+	public String getWebBaseDir() 
+	{
+		try 
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(webBaseDirBridgeFile));
+			return reader.readLine();
+		} 
+		catch (Exception e) 
+		{
+			logger.error(messages.screenBridgeErrorReadingwebBaseDir(e.getLocalizedMessage()), e);
+			return null;
+		}
+	}
 }

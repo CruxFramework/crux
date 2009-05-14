@@ -87,15 +87,27 @@ public interface ServerMessages
 	@DefaultMessage("[formatters 002] - Error initializing formatter: {0}.")
 	String formattersFormatterInitializeError(String errMsg);
 
+	@DefaultMessage("[localeResolver - 001] - Error initializing LocaleResolver: {0}.")
+	String localeResolverInitialisationError(String errMsg);
+
+	@DefaultMessage("[screenResolver - 001] - Error initializing ScreenResolver: {0}.")
+	String screenResourceResolverInitializerError(String message);
+
 	@DefaultMessage("[screenBridge - 001] - Error registering screen: {0}.")
 	String screenBridgeErrorRegisteringScreen(String errMsg);
 
 	@DefaultMessage("[screenBridge - 002] - Error reading screen id: {0}.")
 	String screenBridgeErrorReadingScreenId(String errMsg);
 
-	@DefaultMessage("[localeResolver - 001] - Error initializing LocaleResolver: {0}.")
-	String localeResolverInitialisationError(String errMsg);
+	@DefaultMessage("[screenBridge - 003] - Error registering screen resolver: {0}.")
+	String screenBridgeErrorRegisteringScreenResolver(String localizedMessage);
 
-	@DefaultMessage("[screenResolver - 001] - Error initializing ScreenResolver: {0}.")
-	String screenResourceResolverInitializerError(String message);	
+	@DefaultMessage("[screenBridge - 004] - Error reading screen resolver: {0}.")
+	String screenBridgeErrorReadingScreenResolver(String localizedMessage);
+
+	@DefaultMessage("[screenBridge - 003] - Error registering eb base dir: {0}.")
+	String screenBridgeErrorRegisteringWebBaseDir(String localizedMessage);	
+
+	@DefaultMessage("[screenBridge - 006] - Error reading web base dir: {0}.")
+	String screenBridgeErrorReadingwebBaseDir(String localizedMessage);
 }

@@ -16,11 +16,10 @@
 package br.com.sysmap.crux.core.server;
 
 import java.io.File;
-import java.net.URL;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.servlet.ServletContext;
+import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 
 import com.google.gwt.dev.HostedMode;
 
@@ -69,10 +68,13 @@ public class Environment
 		return isHostedMode;
 	}
 
-	public static File getWebBaseDir(ServletContext context) throws Exception
+	/**
+	 * Gets the web base dir
+	 * @return
+	 * @throws Exception
+	 */
+	public static File getWebBaseDir() throws Exception
 	{
-		URL urlClassesDir = context.getResource("/");
-		File result = new File(urlClassesDir.toURI());
-		return result;
+		return new File(CruxScreenBridge.getInstance().getWebBaseDir());
 	}
 }

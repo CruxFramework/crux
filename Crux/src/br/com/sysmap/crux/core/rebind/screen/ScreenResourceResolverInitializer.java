@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.server.ServerMessages;
 
 public class ScreenResourceResolverInitializer 
@@ -40,7 +41,12 @@ public class ScreenResourceResolverInitializer
 		{
 			lock.lock();
 			if (screenResourceResolver != null) return screenResourceResolver;
-			screenResourceResolver = (ScreenResourceResolver) Class.forName(ConfigurationFactory.getConfigurations().screenResourceResolver()).newInstance(); 
+			String resourceClassName = CruxScreenBridge.getInstance().getScreenResourceResolver();
+			if (resourceClassName == null || resourceClassName.length() ==0)
+			{
+				resourceClassName = ConfigurationFactory.getConfigurations().screenResourceResolver();
+			}
+			screenResourceResolver = (ScreenResourceResolver) Class.forName(resourceClassName).newInstance(); 
 		}
 		catch (Throwable e)
 		{
@@ -53,11 +59,8 @@ public class ScreenResourceResolverInitializer
 		return screenResourceResolver;
 	}
 
-	public static void registerScreenResourceResolver(ScreenResourceResolver screenResourceResolver)
+	public static void registerScreenResourceResolver(String resolverClassName)
 	{
-		ScreenResourceResolverInitializer.screenResourceResolver = screenResourceResolver;
+		CruxScreenBridge.getInstance().registerScreenResourceResolver(resolverClassName);
 	}
-	
-	
-
 }
