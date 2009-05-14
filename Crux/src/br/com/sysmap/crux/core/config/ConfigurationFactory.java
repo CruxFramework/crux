@@ -42,7 +42,6 @@ public class ConfigurationFactory extends AbstractPropertiesFactory
 	 * @return
 	 * @throws MessageException
 	 */
-	@SuppressWarnings("unchecked")
 	public static Crux getConfigurations() throws MessageException
 	{
 		return instance.getConstantsFromProperties(Crux.class);

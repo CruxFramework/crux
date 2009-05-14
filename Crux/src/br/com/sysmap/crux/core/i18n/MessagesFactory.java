@@ -47,7 +47,6 @@ public class MessagesFactory extends AbstractPropertiesFactory
 	 * @return
 	 * @throws MessageException
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T getMessages(final Class<T> targetInterface) throws MessageException
 	{
 		return instance.getConstantsFromProperties(targetInterface);
