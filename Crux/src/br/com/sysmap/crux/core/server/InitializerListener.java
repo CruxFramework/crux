@@ -60,6 +60,8 @@ public class InitializerListener implements ServletContextListener
 	protected void initialize(ServletContext contexto) throws Exception
 	{
 		WidgetConfig.initializeWidgetConfig();
+		// Initialise the isHosted static variable.
+		Environment.isHostedMode();
 		if (logger.isInfoEnabled())
 		{
 			logger.info(messages.initializerListenerWidgetsRegistered());
