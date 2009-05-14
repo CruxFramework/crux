@@ -66,7 +66,7 @@ public class HorizontalPanelFactory extends CellPanelFactory<HorizontalPanel>
 			{
 				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			}
-		}			
+		}
 		
 		String cellVerticalAlignment = element.getAttribute("_verticalAlignment");
 		if (cellVerticalAlignment != null && cellVerticalAlignment.trim().length() > 0)
