@@ -53,6 +53,6 @@ public interface ClientMessages extends Messages
 	String widgetFactoryEnsureWidgetFail();
 	@DefaultMessage("[widget - 008] - The element is not a span.")
 	String widgetFactoryEnsureSpanFail();
-	@DefaultMessage("[widget - 009] - The widget ''{0}'' was added to a pure HTML node. If you don''t use panels to add a widget, crux can not ensure an order for this widget in case of more than one added to the same HTML node.")
+	@DefaultMessage("[widget - 009] - The widget ''{0}'' was added to a pure HTML node where already exists other children. In this case, crux can not ensure an order for this widget. To solve this, If you must use panels as widget parent.")
 	String screenFactoryNonDeterministicWidgetPositionInParent(String widgetId);
 }
