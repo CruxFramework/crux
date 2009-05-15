@@ -268,6 +268,7 @@ public class ScreenFactory {
 		}
 		else
 		{
+			GWT.log(JSEngine.messages.screenFactoryNonDeterministicWidgetPositionInParent(widgetId), null);
 			CruxWidgetPanel panel = new CruxWidgetPanel(element.getParentElement());
 			panel.add(widget);
 		}
