@@ -268,7 +268,10 @@ public class ScreenFactory {
 		}
 		else
 		{
-			GWT.log(JSEngine.messages.screenFactoryNonDeterministicWidgetPositionInParent(widgetId), null);
+			if (hasMoreThanOneChild(element.getParentElement()))
+			{
+				GWT.log(JSEngine.messages.screenFactoryNonDeterministicWidgetPositionInParent(widgetId), null);
+			}
 			CruxWidgetPanel panel = new CruxWidgetPanel(element.getParentElement());
 			panel.add(widget);
 		}
@@ -276,6 +279,25 @@ public class ScreenFactory {
 		return widget;
 	}
 	
+	private boolean hasMoreThanOneChild(Element element)
+	{
+		int parentChildrenCount = 0;
+		NodeList<Node> children = element.getChildNodes(); 
+		for (int i=0; i< children.getLength(); i++)
+		{
+			if (children.getItem(i) instanceof Element)
+			{
+				parentChildrenCount++;
+				if (parentChildrenCount > 1)
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
 	public Formatter getClientFormatter(String formatter)
 	{
 		return this.registeredClientFormatters.getClientFormatter(formatter);
