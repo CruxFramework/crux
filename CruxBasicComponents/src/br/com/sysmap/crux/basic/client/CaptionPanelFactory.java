@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory for CaptionPanel widgets
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
  */
 public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implements HasWidgetsFactory<CaptionPanel>
 {

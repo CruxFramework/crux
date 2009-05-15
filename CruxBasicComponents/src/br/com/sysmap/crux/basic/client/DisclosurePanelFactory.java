@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory for DisclosurePanel widgets
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
  */
 public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> implements HasWidgetsFactory<DisclosurePanel>
 {
