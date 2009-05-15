@@ -19,7 +19,7 @@ import java.util.Locale;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- * @author Gesse S. F. Dafe <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  */
 public class LocaleResolverImpl implements LocaleResolver 
 {

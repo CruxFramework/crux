@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
@@ -24,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory for CaptionPanel widgets
- * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implements HasWidgetsFactory<CaptionPanel>
 {
@@ -35,28 +37,27 @@ public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implemen
 		
 		Element firstChild = ensureFirstChildSpan(element, true);
 		
-		// Is text content
+		// It's a text caption
 		if(firstChild == null)
 		{
 			String captionText = element.getAttribute("_text");
 			widget.setCaptionText(captionText);
 		}
 		
-		// Is complex content
-		else
+		List<Element> children = ensureChildrenSpans(element, true);
+		
+		for (Element child : children)
 		{
-			Element complexContent = ensureFirstChildSpan(element, true);
-			
-			// Is widget content
-			if(complexContent != null && isWidget(complexContent))
-			{
-				widget.setContentWidget(createChildWidget(complexContent, complexContent.getId()));
-			}
-			
-			// Is HTML content
-			else
+			// It's an HTML caption
+			if(!isWidget(firstChild))
 			{
 				widget.setCaptionHTML(firstChild.getInnerHTML());
+			}
+			
+			// Is a widget content
+			else
+			{
+				widget.setContentWidget(createChildWidget(child, child.getId()));
 			}
 		}
 	}

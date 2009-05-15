@@ -25,7 +25,7 @@ import br.com.sysmap.crux.core.i18n.MessageException;
  * resource bundles in the classpath. Each interface's method is used as key 
  * in that property file.
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- * @author Gesse S. F. Dafe <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  *
  */
 public class ConfigurationFactory extends AbstractPropertiesFactory
@@ -58,7 +58,7 @@ public class ConfigurationFactory extends AbstractPropertiesFactory
 /**
  * Dynamic proxy for message resources.
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- * @author Gesse S. F. Dafe <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  */
 class ConfigurationInvocationHandler extends ConstantsInvocationHandler
 {

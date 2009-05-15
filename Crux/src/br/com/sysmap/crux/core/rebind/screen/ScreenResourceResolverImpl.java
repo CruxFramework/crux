@@ -19,17 +19,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.server.ServerMessages;
+
 /**
  * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
 public class ScreenResourceResolverImpl implements ScreenResourceResolver
 {
+	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
-	public InputStream getScreenResource(String screenId) throws IOException
+	public InputStream getScreenResource(String screenId) throws InterfaceConfigException
 	{
-		URL url = getClass().getResource("/"+screenId);
-		return url.openStream();
+		try
+		{
+			URL url = getClass().getResource("/"+screenId);
+			return url.openStream();
+		}
+		catch (IOException e)
+		{
+			throw new InterfaceConfigException(messages.screenResourceResolverFindResourceError(screenId, e.getMessage()), e);
+		}
 	}
 
 }

@@ -15,8 +15,9 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
-import java.io.IOException;
 import java.io.InputStream;
+
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -28,7 +29,7 @@ public interface ScreenResourceResolver
 	 * Gets the resource for a given screenId
 	 * @param id
 	 * @return
-	 * @throws IOException 
+	 * @throws InterfaceConfigException 
 	 */
-	InputStream getScreenResource(String screenId) throws IOException;
+	InputStream getScreenResource(String screenId) throws InterfaceConfigException;
 }

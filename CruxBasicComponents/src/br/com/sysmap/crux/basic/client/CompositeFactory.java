@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  * Represents an ImageFactory component
- * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public abstract class CompositeFactory<T extends Composite> extends WidgetFactory<T>
 {

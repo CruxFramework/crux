@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 
 /**
  * Factory for SuggestBox widget
- * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class SuggestBoxFactory extends CompositeFactory<SuggestBox>
 {

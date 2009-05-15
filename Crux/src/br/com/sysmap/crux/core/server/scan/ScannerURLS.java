@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.core.server.scan;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -59,7 +58,13 @@ public abstract class ScannerURLS
 				{
 					logger.error(messages.scannerURLSErrorSearchingLibDir(e.getLocalizedMessage()), e);
 				}
-				urls = Arrays.copyOf((urls!=null?urls:new URL[0]), (urls!=null?urls.length:0)+1);
+				
+				urls = urls != null ? urls : new URL[0];
+				URL[] tempUrls = new URL[urls.length + 1];
+				System.arraycopy(urls, 0, tempUrls, tempUrls.length - 2, tempUrls.length + 1);
+				
+				urls = tempUrls;		
+				
 				try
 				{
 					urls[urls.length -1] = WarUrlFinder.findWebInfClassesPath(context);
@@ -74,6 +79,7 @@ public abstract class ScannerURLS
 		{
 			lock.unlock();
 		}
+		
 		return urls;
 	}
 }

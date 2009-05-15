@@ -92,6 +92,9 @@ public interface ServerMessages
 
 	@DefaultMessage("[screenResolver - 001] - Error initializing ScreenResolver: {0}.")
 	String screenResourceResolverInitializerError(String message);
+	
+	@DefaultMessage("[screenResolver - 002] - Error obtaining screen resource. Screen id: {0}. Message: {1}")
+	String screenResourceResolverFindResourceError(String screenId, String message);
 
 	@DefaultMessage("[screenBridge - 001] - Error registering screen: {0}.")
 	String screenBridgeErrorRegisteringScreen(String errMsg);

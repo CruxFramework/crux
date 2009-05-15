@@ -14,7 +14,7 @@ import br.com.sysmap.crux.core.i18n.MessageException;
 /**
  * Dynamic proxy for message resources.
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- * @author Gesse S. F. Dafe <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  */
 public abstract class ConstantsInvocationHandler implements InvocationHandler
 {
@@ -30,7 +30,7 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 		try
 		{
 			PropertyResourceBundle properties = getPropertiesForLocale(targetInterface);
-			if (properties != null && properties.containsKey(method.getName()))
+			if (properties != null && properties.getString(method.getName()) != null)
 			{
 				return MessageFormat.format(properties.getString(method.getName()),args);
 			}
