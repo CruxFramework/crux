@@ -58,4 +58,5 @@
   <widget id="disclosurePanel" clientClass="br.com.sysmap.crux.basic.client.DisclosurePanelFactory" />
   <widget id="suggestBox" clientClass="br.com.sysmap.crux.basic.client.SuggestBoxFactory" />
   <widget id="datePicker" clientClass="br.com.sysmap.crux.basic.client.DatePickerFactory" />
+  <widget id="dialogBox" clientClass="br.com.sysmap.crux.basic.client.DialogBoxFactory" />
 </crux>
