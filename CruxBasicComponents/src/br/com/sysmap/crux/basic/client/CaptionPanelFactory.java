@@ -36,7 +36,10 @@ public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implemen
 		super.processAttributes(widget, element, widgetId);
 		
 		String captionText = element.getAttribute("_text");
-		widget.setCaptionText(captionText);
+		if (captionText != null && captionText.length() > 0)
+		{
+			widget.setCaptionText(captionText);
+		}
 
 		List<Element> children = ensureChildrenSpans(element, true);
 		
