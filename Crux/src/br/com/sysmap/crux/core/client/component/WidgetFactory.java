@@ -115,7 +115,7 @@ public abstract class WidgetFactory <T extends Widget>
 		if (widget instanceof HasHTML)
 		{
 			String innerHtml = element.getInnerHTML();
-			if (innerHtml != null && innerHtml.trim().length() > 0)
+			if (innerHtml != null && innerHtml.length() > 0)
 			{
 				((HasHTML)widget).setHTML(innerHtml);
 				element.setInnerHTML("");
@@ -220,11 +220,10 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @param element
 	 * @param acceptsNull
 	 * @return
-	 * @throws InterfaceConfigException
 	 */
-	protected boolean isSpan(Element element) throws InterfaceConfigException
+	private boolean isSpan(Element element) 
 	{
-		return element != null && element.getTagName().equalsIgnoreCase("span");
+		return element != null && element.getTagName() != null && element.getTagName().equalsIgnoreCase("span");
 	}
 	
 	/**
@@ -234,7 +233,7 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	protected Element ensureSpan(Element element) throws InterfaceConfigException
+	private Element ensureSpan(Element element) throws InterfaceConfigException
 	{
 		if(isSpan(element))
 		{
@@ -257,6 +256,11 @@ public abstract class WidgetFactory <T extends Widget>
 	protected Element ensureFirstChildSpan(Element element, boolean acceptsNoChild) throws InterfaceConfigException
 	{
 		Element firstChild = element.getFirstChildElement();
+		
+		while (firstChild!= null && firstChild.getTagName() == null)
+		{
+			firstChild = firstChild.getNextSiblingElement();
+		}
 		
 		if((!acceptsNoChild && firstChild == null) || (firstChild != null && !isSpan(element)))
 		{
@@ -288,7 +292,7 @@ public abstract class WidgetFactory <T extends Widget>
 			{
 				Node node = childNodes.getItem(i);
 				
-				if(node instanceof Element)
+				if(node instanceof Element && ((Element)node).getTagName() != null)
 				{
 					Element elem =  ensureSpan((Element) node);
 					childSpans.add(elem);

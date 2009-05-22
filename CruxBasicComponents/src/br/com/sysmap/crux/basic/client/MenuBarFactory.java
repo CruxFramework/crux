@@ -135,7 +135,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 			{
 				widget.addItem(caption, command);
 			}
-			else if (element.getChildNodes().getLength() > 0)
+			else if (ensureChildrenSpans(element, true).size() > 0)
 			{
 				widget.addItem(caption, getSubMenu(widget, element));
 			}
@@ -149,7 +149,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	protected void processItemHTMLDeclaration(MenuBar widget, String widgetId, Element element, int index)
 	{
 		String caption = element.getInnerHTML();
-		if (caption != null && caption.trim().length() > 0)
+		if (caption != null && caption.length() > 0)
 		{
 			Command command = getCommand(widget, element, widgetId);
 			if (command != null)

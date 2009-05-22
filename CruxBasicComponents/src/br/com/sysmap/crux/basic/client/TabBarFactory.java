@@ -82,7 +82,7 @@ public class TabBarFactory extends CompositeFactory<TabBar>
 		// tab caption as html
 		else
 		{
-			Element tabTextSpan = element.getFirstChildElement();
+			Element tabTextSpan = ensureFirstChildSpan(element, true); 
 			if (tabTextSpan != null && !isWidget(tabTextSpan))
 			{
 				widget.addTab(tabTextSpan.getInnerHTML(), true);

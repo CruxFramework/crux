@@ -54,7 +54,7 @@ public class StackPanelFactory extends ComplexPanelFactory<StackPanel>
 			// stack text as html
 			else
 			{
-				Element stackTextSpan = childElementParent.getFirstChildElement();
+				Element stackTextSpan = ensureFirstChildSpan(childElementParent, true);
 				if (stackTextSpan != null && !isWidget(stackTextSpan))
 				{
 					parent.add(child, stackTextSpan.getInnerHTML(), true);

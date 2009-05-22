@@ -85,7 +85,7 @@ public class TabPanelFactory extends CompositeFactory<TabPanel> implements HasWi
 			// tab caption as html
 			else
 			{
-				Element tabTextSpan = childElementParent.getFirstChildElement();
+				Element tabTextSpan = ensureFirstChildSpan(childElementParent, true); 
 				if (tabTextSpan != null && !isWidget(tabTextSpan))
 				{
 					parent.add(child, tabTextSpan.getInnerHTML(), true);

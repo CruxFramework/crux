@@ -92,14 +92,14 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 			{
 				if (isWidget(childElement))
 				{
-					picker = (DatePicker) createChildWidget(element, widgetId);
+					picker = (DatePicker) createChildWidget(childElement, widgetId);
 				}
 				else 
 				{
 					pattern = childElement.getInnerHTML();
 				}
 			}
-			if (pattern == null || pattern.trim().length() == 0)
+			if (pattern == null || pattern.length() == 0)
 			{
 				pattern = element.getAttribute("_pattern");
 			}
