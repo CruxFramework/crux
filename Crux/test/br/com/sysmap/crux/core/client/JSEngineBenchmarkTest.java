@@ -22,9 +22,12 @@ public class JSEngineBenchmarkTest extends Benchmark{
 	   * NOT an empty JS object, for example.
 	   *
 	   */
-	  public void testJavaObjectAlloc() {
-	    for ( int i = 0; i < numAllocs; ++i ) {
-	      Object obj = new Object();
+	  public void testJavaObjectAlloc() 
+	  {
+	    for ( int i = 0; i < numAllocs; ++i ) 
+	    {
+	    	@SuppressWarnings("unused")
+	    	Object obj = new Object();
 	    }
 	  }
 
