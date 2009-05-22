@@ -344,7 +344,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 
 					if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
 					{
-						sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+").setServiceEntryPoint(\"crux/rpc\");");
+						sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+").setServiceEntryPoint(\"crux.rpc\");");
 					}
 				}
 			}
