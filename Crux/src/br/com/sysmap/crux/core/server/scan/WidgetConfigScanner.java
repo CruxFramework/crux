@@ -61,7 +61,7 @@ public class WidgetConfigScanner
 			{
 				public boolean accepts(String filename)
 				{
-					if (filename.endsWith("crux.xml"))
+					if (filename.endsWith("crux-widgets.xml"))
 					{
 						if (filename.startsWith("/")) filename = filename.substring(1);
 						if (!ignoreScan(filename.replace('/', '.'))) return true;
