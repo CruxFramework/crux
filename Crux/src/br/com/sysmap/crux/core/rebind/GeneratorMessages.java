@@ -41,4 +41,7 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[controller 001] - Method Not Found: ")
 	String errorinvokingGeneratedMethod();
+
+	@DefaultMessage("[generator 006] - property {0} can could not be created. This is not visible neither has a getter/setter method.")
+	String registeredClientEventHandlerPropertyNotFound(String name);
 }

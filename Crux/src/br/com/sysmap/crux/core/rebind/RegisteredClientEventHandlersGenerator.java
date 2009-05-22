@@ -19,11 +19,14 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.controller.Create;
+import br.com.sysmap.crux.core.client.controller.ScreenBind;
+import br.com.sysmap.crux.core.client.controller.ValueObject;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
 import br.com.sysmap.crux.core.rebind.screen.Event;
@@ -69,6 +72,9 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		composer.addImport("br.com.sysmap.crux.core.client.component.Screen");
 		composer.addImport("br.com.sysmap.crux.core.client.event.CruxEvent");
 		composer.addImport("com.google.gwt.event.shared.GwtEvent");
+		composer.addImport("com.google.gwt.user.client.ui.HasValue");
+		composer.addImport("com.google.gwt.user.client.ui.Widget");
+		
 		composer.addImplementedInterface("br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers");
 		
 		SourceWriter sourceWriter = null;
@@ -187,7 +193,6 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		sourceWriter.println("public class "+className+"Wrapper extends " + handlerClass.getName()
 				+ " implements br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker{");
 		
-		generateSetFieldsMethods(logger, handlerClass, sourceWriter, implClassName);
 		sourceWriter.println("public void invoke(String metodo, GwtEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception{ ");
 		sourceWriter.println("invokeEvent(metodo, sourceEvent, eventProcessor);");
 		sourceWriter.println("}");
@@ -199,6 +204,8 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		sourceWriter.println("public void invokeEvent(String metodo, Object sourceEvent, EventProcessor eventProcessor) throws Exception{ ");
 		sourceWriter.println("boolean __runMethod = true;");
 		sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
+		sourceWriter.println("Widget __wid = null;");
+		
 		generateAutoCreateFields(logger, handlerClass, sourceWriter);
 		Method[] methods = handlerClass.getMethods(); 
 
@@ -255,6 +262,10 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			sourceWriter.println(" else ");
 		}
 		sourceWriter.println("throw new Exception(\""+messages.errorinvokingGeneratedMethod()+" \"+metodo);");
+		if (!first)
+		{
+			generateScreenUpdateWidgets(logger, handlerClass, sourceWriter);
+		}
 		sourceWriter.println("}");
 		sourceWriter.println("}");
 		
@@ -309,48 +320,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	}
 	
 	/**
-	 * Generate methods for set fields in delegate object that are declared as private or default visibility 
-	 * 
-	 * @param logger
-	 * @param controller
-	 * @param sourceWriter
-	 * @param implClassName
-	 */
-	protected void generateSetFieldsMethods(TreeLogger logger,	Class<?> controller, SourceWriter sourceWriter, String implClassName) 
-	{
-		for (Field field : controller.getDeclaredFields()) 
-		{
-			if (field.getAnnotation(Create.class) != null)
-			{
-				if ((!Modifier.isPublic(field.getModifiers()) && !Modifier.isProtected(field.getModifiers())))
-				{
-					generateSetFieldMethod(logger, controller, field.getName(), sourceWriter, implClassName);
-				}
-			}
-		}
-		
-	}
-	/**
-	 * Generate a method for set field in delegate object that are declared as private or default visibility 
-	 * @param logger
-	 * @param handlerClass
-	 * @param sourceWriter
-	 * @param implClassName
-	 */
-	protected void generateSetFieldMethod(TreeLogger logger, Class<?> controller, String fieldName,
-			SourceWriter sourceWriter, String implClassName) 
-	{
-		String className = implClassName+"$"+controller.getSimpleName()+"Wrapper";
-		
-		sourceWriter.print("public native void _setField"+fieldName+"(Object fieldValue)/*-");
-		sourceWriter.print("{");
-		sourceWriter.print("this.@"+className+"::"+fieldName+"=fieldValue;");
-		sourceWriter.print("}-*/;");
-		
-	}
-
-	/**
-	 * Create objects for fields that are annoteded with @Create
+	 * Create objects for fields that are annotated with @Create
 	 * @param logger
 	 * @param controller
 	 * @param sourceWriter
@@ -363,19 +333,19 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			{
 				Class<?> type = getTypeForField(logger, field);
 
-				sourceWriter.println(field.getType().getName()+" _field"+field.getName()+"=GWT.create("+type.getName()+".class);");
-				if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+				if (type.getAnnotation(ValueObject.class) != null)
 				{
-					sourceWriter.println("wrapper."+field.getName()+"=_field"+field.getName()+";");
+					generateDTOFieldPopulation(logger, "wrapper", controller, field,sourceWriter);
 				}
 				else
 				{
-					sourceWriter.print("wrapper._setField"+field.getName()+"(_field"+field.getName()+");");
-				}
-				
-				if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
-				{
-					sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+").setServiceEntryPoint(\"crux/rpc\");");
+					sourceWriter.println(field.getType().getName()+" _field"+field.getName()+"=GWT.create("+type.getName()+".class);");
+					generateFieldValueSet(logger, controller, field, "wrapper", "_field"+field.getName(), sourceWriter);
+
+					if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
+					{
+						sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+").setServiceEntryPoint(\"crux/rpc\");");
+					}
 				}
 			}
 		}
@@ -385,7 +355,311 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			generateAutoCreateFields(logger, controller.getSuperclass(), sourceWriter);
 		}
 	}
+
+	/**
+	 * Generates the code for DTO population from screen. 
+	 * 
+	 * @param logger
+	 * @param resultVariable
+	 * @param voClass
+	 * @param sourceWriter
+	 */
+	protected void generateScreenOrDTOPopulation(TreeLogger logger, String resultVariable, Class<?> voClass, SourceWriter sourceWriter, boolean populateScreen)
+	{
+		for (Field field : voClass.getDeclaredFields()) 
+		{
+			if ((populateScreen && isPropertyVisibleToRead(voClass, field)) || 
+				(!populateScreen && isPropertyVisibleToWrite(voClass, field)))
+			{
+				ValueObject valueObject = voClass.getAnnotation(ValueObject.class);
+				ScreenBind screenBind = field.getAnnotation(ScreenBind.class); 
+				if (valueObject != null && valueObject.bindWidgetByFieldName() || screenBind != null)
+				{
+					generateScreenOrDTOPopulationField(logger, resultVariable, voClass, field, sourceWriter, populateScreen);
+				}
+			}
+		}
+	}
 	
+	/**
+	 * Generates the code for DTO field population from a screen widget.
+	 * 
+	 * @param logger
+	 * @param parentVariable
+	 * @param voClass
+	 * @param field
+	 * @param sourceWriter
+	 */
+	protected void generateDTOFieldPopulation(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter)
+	{
+		generateScreenOrDTOPopulationField(logger, parentVariable, voClass, field, sourceWriter, false);
+	}
+
+	/**
+	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
+	 * 
+	 * @param logger
+	 * @param voClass
+	 * @param field
+	 * @param parentVariable
+	 * @param sourceWriter
+	 */
+	protected String getFieldValueGet(TreeLogger logger, Class<?> voClass, Field field, String parentVariable)
+	{
+		if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+		{
+			return parentVariable+"."+field.getName();
+		}
+		else
+		{
+			String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+			try
+			{
+				if (voClass.getMethod(getterMethodName, new Class<?>[]{}) != null)
+				{
+					return (parentVariable+"."+getterMethodName+"()");
+				}
+			}
+			catch (Exception e)
+			{
+				logger.log(TreeLogger.ERROR, messages.registeredClientEventHandlerPropertyNotFound(field.getName()));
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Generates a property set block. First try to set the field directly, then try to use a javabean setter method.
+	 * 
+	 * @param logger
+	 * @param voClass
+	 * @param field
+	 * @param parentVariable
+	 * @param valueVariable
+	 * @param sourceWriter
+	 */
+	protected void generateFieldValueSet(TreeLogger logger, Class<?> voClass, Field field, String parentVariable,  String valueVariable, SourceWriter sourceWriter)
+	{
+		if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+		{
+			sourceWriter.println(parentVariable+"."+field.getName()+"="+valueVariable+";");
+		}
+		else
+		{
+			String setterMethodName = "set"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+			try
+			{
+				if (voClass.getMethod(setterMethodName, new Class<?>[]{field.getType()}) != null)
+				{
+					sourceWriter.println(parentVariable+"."+setterMethodName+"("+valueVariable+");");
+				}
+			}
+			catch (Exception e)
+			{
+				logger.log(TreeLogger.ERROR, messages.registeredClientEventHandlerPropertyNotFound(field.getName()));
+			}
+		}
+	}
+
+	/**
+	 * Verify if the given field is a visible property
+	 * @param voClass
+	 * @param field
+	 * @return
+	 */
+	protected boolean isPropertyVisibleToWrite(Class<?> voClass, Field field)
+	{
+		if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+		{
+			return true;
+		}
+		else
+		{
+			String setterMethodName = "set"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+			try
+			{
+				return (voClass.getMethod(setterMethodName, new Class<?>[]{field.getType()}) != null);
+			}
+			catch (Exception e)
+			{
+				return false;
+			}
+		}
+	}
+
+	/**
+	 * Verify if the given field is a visible property
+	 * @param voClass
+	 * @param field
+	 * @return
+	 */
+	protected boolean isPropertyVisibleToRead(Class<?> voClass, Field field)
+	{
+		if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+		{
+			return true;
+		}
+		else
+		{
+			String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+			try
+			{
+				return (voClass.getMethod(getterMethodName, new Class<?>[]{}) != null);
+			}
+			catch (Exception e)
+			{
+				return false;
+			}
+		}
+	}
+
+	protected void generateScreenUpdateWidgets(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
+	{
+		for (Field field : controller.getDeclaredFields()) 
+		{
+			if (field.getAnnotation(Create.class) != null)
+			{
+				Class<?> type = field.getType();
+
+				if (type.getAnnotation(ValueObject.class) != null)
+				{
+					generateScreenWidgetPopulation(logger, "wrapper", controller, field,sourceWriter);
+				}
+			}
+		}
+		
+		if (controller.getSuperclass() != null)
+		{
+			generateScreenUpdateWidgets(logger, controller.getSuperclass(), sourceWriter);
+		}
+	}
+	
+	/**
+	 * Generates the code for screen widget population from a DTO field.
+	 * 
+	 * @param logger
+	 * @param parentVariable
+	 * @param voClass
+	 * @param field
+	 * @param sourceWriter
+	 */
+	protected void generateScreenWidgetPopulation(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter)
+	{
+		generateScreenOrDTOPopulationField(logger, parentVariable, voClass, field, sourceWriter, true);
+	}
+	
+	/**
+	 * Generates the code for screen widget population from a DTO field.
+	 * 
+	 * @param logger
+	 * @param parentVariable
+	 * @param voClass
+	 * @param field
+	 * @param sourceWriter
+	 */
+	protected void generateScreenOrDTOPopulationField(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen)
+	{
+		Class<?> type = field.getType();
+		String name = null;
+		if (field.getAnnotation(ScreenBind.class) != null)
+		{
+			name = field.getAnnotation(ScreenBind.class).value();
+		}
+		if (name == null)
+		{
+			name = field.getName();
+		}
+		
+		if ((type.isPrimitive()) ||
+                (Number.class.isAssignableFrom(type)) ||
+                (Boolean.class.isAssignableFrom(type)) || 
+                (Character.class.isAssignableFrom(type)) ||
+                (CharSequence.class.isAssignableFrom(type)) ||
+                (Date.class.isAssignableFrom(type)) ||
+                (type.isEnum())) 
+		{
+			String valueVariable = "__wid";
+			sourceWriter.println(valueVariable + "= Screen.get().getWidget(\""+name+"\");");
+			sourceWriter.println("if ("+valueVariable+" != null && "+valueVariable+" instanceof HasValue){");
+			if (populateScreen)
+			{
+				sourceWriter.println("((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").setValue("
+						            + getFieldValueGet(logger, voClass, field, parentVariable)+");");
+			}
+			else
+			{
+				generateFieldValueSet(logger, voClass, field, parentVariable, "((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").getValue()", sourceWriter);
+			}
+			sourceWriter.println("}");
+		}
+		else if (type.getAnnotation(ValueObject.class) != null)
+		{
+			if (!populateScreen)
+			{
+				generateFieldValueSet(logger, voClass, field, parentVariable, "new "+type.getName()+"()", sourceWriter);
+			}
+			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable);
+			if (parentVariable != null)
+			{
+				generateScreenOrDTOPopulation(logger, parentVariable, type, sourceWriter, populateScreen);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Returns a string to be used in generic code block, according with the given type 
+	 * @param type
+	 * @return
+	 */
+	protected String getGenericDeclForType(Class<?> type)
+	{
+		if (type.isEnum())
+		{
+			return "String";
+		}
+		else if (type.isPrimitive())
+		{
+			if (type.getName().equals("boolean"))
+			{
+				return "Boolean";
+			}
+			else if (type.getName().equals("char"))
+			{
+				return "Character";
+			}
+			else if (type.getName().equals("byte"))
+			{
+				return "Byte";
+			}
+			else if (type.getName().equals("short"))
+			{
+				return "Short";
+			}
+			else if (type.getName().equals("int"))
+			{
+				return "Integer";
+			}
+			else if (type.getName().equals("long"))
+			{
+				return "Long";
+			}
+			else if (type.getName().equals("float"))
+			{
+				return "Float";
+			}
+			else if (type.getName().equals("double"))
+			{
+				return "Double";
+			}
+			return "?";
+		}
+		else
+		{
+			return type.getName();
+		}
+	}
+
 	/**
 	 * Get the field type
 	 * @param logger
@@ -407,6 +681,5 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			}
 		}
 		return type;
-
 	}
 }

@@ -21,20 +21,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to inform generators to instantiate automatically the field.
- * This annotation has two major proposes:
- * 1) It is used to makes the rpc mechanism painless. If an interface that extends
- * RemoteService (not annotated with @RemoteServiceRelativePath) is the type
- * for the field, the serviceEntryPoint is mapped to rpc (Crux default servlet)
- * 
- * 2)It is used to create DTOs that binds screen information and populate them automatically.
- * In that case, they can use the annotation @ScreenBind to inform the name of the widget (or element) 
- * that will provide the value for each object field. 
- * @author Thiago Bustamante
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface Create 
+public @interface ScreenBind
 {
+	String value() default "";
 }
