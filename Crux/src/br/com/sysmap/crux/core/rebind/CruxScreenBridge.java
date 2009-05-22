@@ -143,7 +143,8 @@ public class CruxScreenBridge
 		} 
 		catch (Exception e) 
 		{
-			logger.error(messages.screenBridgeErrorReadingScreenResolver(e.getLocalizedMessage()), e);
+			logger.info(messages.screenBridgeErrorReadingScreenResolver(), e);
+			// it is not an error... If none registered, just use default screenResourceResolver
 			return null;
 		}
 	}
