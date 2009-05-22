@@ -149,7 +149,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	protected void processItemHTMLDeclaration(MenuBar widget, String widgetId, Element element, int index)
 	{
 		String caption = element.getInnerHTML();
-		if (caption != null && caption.length() > 0)
+		if (caption != null && caption.trim().length() > 0)
 		{
 			Command command = getCommand(widget, element, widgetId);
 			if (command != null)

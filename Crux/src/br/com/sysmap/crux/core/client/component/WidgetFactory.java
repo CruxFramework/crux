@@ -115,7 +115,7 @@ public abstract class WidgetFactory <T extends Widget>
 		if (widget instanceof HasHTML)
 		{
 			String innerHtml = element.getInnerHTML();
-			if (innerHtml != null && innerHtml.length() > 0)
+			if (innerHtml != null && innerHtml.trim().length() > 0)
 			{
 				((HasHTML)widget).setHTML(innerHtml);
 				element.setInnerHTML("");

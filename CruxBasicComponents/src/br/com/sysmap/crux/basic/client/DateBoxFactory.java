@@ -99,11 +99,11 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 					pattern = childElement.getInnerHTML();
 				}
 			}
-			if (pattern == null)
+			if (pattern == null || pattern.trim().length() == 0)
 			{
 				pattern = element.getAttribute("_pattern");
 			}
-			if (pattern != null)
+			if (pattern != null && pattern.trim().length() > 0)
 			{
 				format = new DateBox.DefaultFormat(DateFormatUtil.getDateTimeFormat(pattern));
 			}

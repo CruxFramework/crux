@@ -39,7 +39,7 @@ public class Service
 		
 		if (result.getServiceEntryPoint() == null)
 		{
-			result.setServiceEntryPoint("rpc");
+			result.setServiceEntryPoint("crux/rpc");
 		}
 		return result;
 	}
