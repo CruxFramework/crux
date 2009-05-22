@@ -105,10 +105,10 @@ public interface ServerMessages
 	@DefaultMessage("[screenBridge - 003] - Error registering screen resolver: {0}.")
 	String screenBridgeErrorRegisteringScreenResolver(String localizedMessage);
 
-	@DefaultMessage("[screenBridge - 004] - Error reading screen resolver: {0}.")
-	String screenBridgeErrorReadingScreenResolver(String localizedMessage);
+	@DefaultMessage("[screenBridge - 004] - Error reading screen resolver. Using default.")
+	String screenBridgeErrorReadingScreenResolver();
 
-	@DefaultMessage("[screenBridge - 003] - Error registering eb base dir: {0}.")
+	@DefaultMessage("[screenBridge - 005] - Error registering eb base dir: {0}.")
 	String screenBridgeErrorRegisteringWebBaseDir(String localizedMessage);	
 
 	@DefaultMessage("[screenBridge - 006] - Error reading web base dir: {0}.")
