@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<crux 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.sysmap.com.br/crux/1.0" 
+	module="br.com.sysmap.crux.basic.CruxAdvancedWidgets">
+	
+	<widget id="decoratedPanel" clientClass="br.com.sysmap.crux.advanced.decoratedpanel.DecoratedPanel" />
+	<widget id="collapsePanel" clientClass="br.com.sysmap.crux.advanced.collapsepanel.CollapsePanel" />
+
+</crux>

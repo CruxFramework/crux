@@ -1,0 +1,3 @@
+<module>
+    <inherits name="br.com.sysmap.crux.core.Crux"/>
+</module>
