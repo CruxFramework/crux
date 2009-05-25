@@ -6,7 +6,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Image;
 
 /**
  * Panel based on a 3x3 table, with collapse/expand feature. Similar to GWT's DisclosurePanel
@@ -39,8 +38,5 @@ public class CollapsePanel extends DecoratedPanel
 		super(width, height);
 		AbstractImagePrototype proto = expanded ? images.collapse() : images.expand();
 		DOM.appendChild(getTopRightCell(), proto.createElement().<Element> cast());
-		
-		
-		Image image = new Image()
 	}
 }
