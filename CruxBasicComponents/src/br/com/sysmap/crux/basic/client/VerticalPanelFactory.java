@@ -66,7 +66,7 @@ public class VerticalPanelFactory extends CellPanelFactory<VerticalPanel>
 			{
 				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			}
-		}			
+		}
 		
 		String cellVerticalAlignment = element.getAttribute("_verticalAlignment");
 		if (cellVerticalAlignment != null && cellVerticalAlignment.trim().length() > 0)
@@ -83,7 +83,6 @@ public class VerticalPanelFactory extends CellPanelFactory<VerticalPanel>
 			{
 				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 			}
-		}	
-		
+		}
 	}
 }
