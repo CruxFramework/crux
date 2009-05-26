@@ -19,12 +19,8 @@ import java.net.URL;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.servlet.ServletContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.scannotation.ClasspathUrlFinder;
-import org.scannotation.WarUrlFinder;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
@@ -37,37 +33,35 @@ public abstract class ScannerURLS
 	private static final Log logger = LogFactory.getLog(ScannerURLS.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	
-	public static URL[] getURLsForSearch(ServletContext context)
+	public static URL[] getURLsForSearch()
 	{
 		if (urls != null) return urls;
 		lock.lock();
 		if (urls != null) return urls;
 		try
 		{
-			if (context == null)
+			try
 			{
-				urls = ClasspathUrlFinder.findClassPaths(); 
+				urls = ClasspathUtil.findWebInfLibJars();
 			}
-			else
+			catch (Throwable e) 
 			{
-				try
-				{
-					urls = WarUrlFinder.findWebInfLibClasspaths(context);
-				}
-				catch (Throwable e) 
-				{
-					logger.error(messages.scannerURLSErrorSearchingLibDir(e.getLocalizedMessage()), e);
-				}
-				
+				logger.error(messages.scannerURLSErrorSearchingLibDir(e.getLocalizedMessage()), e);
+			}
+
+			URL webInfClasses = ClasspathUtil.findWebInfClassesPath();
+
+			if (webInfClasses != null)
+			{
 				urls = urls != null ? urls : new URL[0];
 				URL[] tempUrls = new URL[urls.length + 1];
-				System.arraycopy(urls, 0, tempUrls, tempUrls.length - 2, tempUrls.length + 1);
-				
+				System.arraycopy(urls, 0, tempUrls, 0, urls.length);
+
 				urls = tempUrls;		
-				
+
 				try
 				{
-					urls[urls.length -1] = WarUrlFinder.findWebInfClassesPath(context);
+					urls[urls.length -1] = webInfClasses;
 				}
 				catch (Throwable e) 
 				{

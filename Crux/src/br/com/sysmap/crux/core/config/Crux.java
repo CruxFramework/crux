@@ -28,9 +28,6 @@ public interface Crux
 	@DefaultMessage("true")
 	String initializeFormattersAtStartup();
 	
-	@DefaultMessage("false")
-	String lookupWebInfOnly();
-	
 	@DefaultMessage("br.com.sysmap.crux.core.i18n.LocaleResolverImpl")
 	String localeResolver();
 

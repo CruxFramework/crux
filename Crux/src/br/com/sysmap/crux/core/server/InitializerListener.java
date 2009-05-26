@@ -67,8 +67,8 @@ public class InitializerListener implements ServletContextListener
 		CruxScreenBridge.getInstance().registerWebBaseDir(webBaseDir);
 		
 		WidgetConfig.initializeWidgetConfig();
-		// Initialise the isHosted static variable.
-		Environment.isHostedMode();
+		// Initialise the isProduction static variable.
+		Environment.isProduction();
 		if (logger.isInfoEnabled())
 		{
 			logger.info(messages.initializerListenerWidgetsRegistered());

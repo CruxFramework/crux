@@ -91,7 +91,7 @@ public class ClientControllers
 	{
 		if (clientHandlers == null)
 		{
-			initialize(ScannerURLS.getURLsForSearch(null));
+			initialize(ScannerURLS.getURLsForSearch());
 		}
 		return clientHandlers.get(name);
 	}

@@ -50,7 +50,7 @@ public class WidgetConfig
 
 	public static void initializeWidgetConfig()
 	{
-		initializeWidgetConfig(ScannerURLS.getURLsForSearch(null));
+		initializeWidgetConfig(ScannerURLS.getURLsForSearch());
 	}
 	
 	public static void initializeWidgetConfig(URL[] urls)

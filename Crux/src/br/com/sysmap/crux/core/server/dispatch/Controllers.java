@@ -54,7 +54,7 @@ public class Controllers
 	{
 		if (Controllers.urls == null)
 		{
-			initialize(ScannerURLS.getURLsForSearch(null));
+			initialize(ScannerURLS.getURLsForSearch());
 		}
 		try 
 		{

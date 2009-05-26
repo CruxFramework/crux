@@ -36,10 +36,12 @@ import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 public class CruxFilter implements Filter 
 {
 	private boolean production = true;
+	FilterConfig config = null;
 	
-	public void init(FilterConfig arg0) throws ServletException 
+	public void init(FilterConfig config) throws ServletException 
 	{
-		production = !Environment.isHostedMode();
+		production = Environment.isProduction();
+		this.config = config;
 	}
 	
 	public void destroy() 
@@ -65,7 +67,22 @@ public class CruxFilter implements Filter
 			{
 				if (!pathInfo.endsWith("hosted.html"))
 				{
-					CruxScreenBridge.getInstance().registerLastPageRequested(pathInfo.substring(1));
+					if (pathInfo.startsWith("/"))
+					{
+						pathInfo = pathInfo.substring(1);
+					}
+
+					String contextPath = config.getServletContext().getContextPath().replaceAll("\\/", "");
+					if (pathInfo.startsWith(contextPath))
+					{
+						pathInfo = pathInfo.substring(contextPath.length());
+					}
+					
+					if (pathInfo.startsWith("/"))
+					{
+						pathInfo = pathInfo.substring(1);
+					}
+					CruxScreenBridge.getInstance().registerLastPageRequested(pathInfo);
 				}
 			}
 			else

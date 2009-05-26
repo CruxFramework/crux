@@ -95,7 +95,7 @@ public class Formatters
 	{
 		if (formatters == null)
 		{
-			initialize(ScannerURLS.getURLsForSearch(null));
+			initialize(ScannerURLS.getURLsForSearch());
 		}
 		
 		if (name == null)

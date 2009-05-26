@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.core.server;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -29,34 +31,47 @@ import com.google.gwt.dev.HostedMode;
  */
 public class Environment
 {
-	private static Boolean isHostedMode = null;
+	private static Boolean isProduction = null;
 	private static final Lock lock = new ReentrantLock();
 
 	/**
-	 * Determine if we are running in GWT Hosted Mode
+	 * Determine if we are running in GWT Hosted Mode 
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public static boolean isHostedMode()
+	public static boolean isProduction()
 	{
-		if (isHostedMode == null)
+		if (isProduction == null)
 		{
 			lock.lock();
 			try
 			{
-				if (isHostedMode == null)
+				if (isProduction == null)
 				{
 					Exception utilException = new Exception();
 					try
 					{
 						StackTraceElement[] stackTrace = utilException.getStackTrace();
 						StackTraceElement stackTraceElement = stackTrace[stackTrace.length -1];
-						isHostedMode = (stackTraceElement.getClassName().equals(HostedMode.class.getName()) ||
-								stackTraceElement.getClassName().equals(com.google.gwt.dev.GWTShell.class.getName()) );
+						isProduction = (!stackTraceElement.getClassName().equals(HostedMode.class.getName()) &&
+								!stackTraceElement.getClassName().equals(com.google.gwt.dev.GWTShell.class.getName()) );
+
+						if (isProduction)
+						{
+							List<String> inputArgs = ManagementFactory.getRuntimeMXBean().getInputArguments();
+							for (String arg : inputArgs)
+							{
+								if (arg.contains("-Xdebug") || arg.contains("-agentlib:jdwp"))
+								{
+									isProduction = false;
+									break;
+								}
+							}							
+						}
 					}
 					catch (Throwable e) 
 					{
-						isHostedMode = false;
+						isProduction = true;
 					}
 				}
 			}
@@ -65,7 +80,7 @@ public class Environment
 				lock.unlock();
 			}
 		}
-		return isHostedMode;
+		return isProduction;
 	}
 
 	/**

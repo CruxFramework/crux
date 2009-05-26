@@ -19,7 +19,6 @@ import java.net.URL;
 
 import javax.servlet.ServletContext;
 
-import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 
 
@@ -39,8 +38,7 @@ public class ControllerFactoryImpl implements ControllerFactory
 
 	public void initialize(ServletContext context) 
 	{
-		boolean lookupWebInfOnly = ("true".equals(ConfigurationFactory.getConfigurations().lookupWebInfOnly()));
-		URL[] urls = ScannerURLS.getURLsForSearch(lookupWebInfOnly?context:null);
+		URL[] urls = ScannerURLS.getURLsForSearch();
 		Controllers.initialize(urls);
 	}
 }
