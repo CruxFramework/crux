@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.sysmap.com.br/crux/advanced-widgets/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.sysmap.com.br/crux/advanced-widgets/1.0" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:basic="http://www.sysmap.com.br/crux/ui/1.0">
+
+	<xs:import schemaLocation="crux-ui.xsd" namespace="http://www.sysmap.com.br/crux/ui/1.0" />
+
+	<xs:element name="decoratedPanel" type="DecoratedPanel" />
+	<xs:element name="collapsePanel" type="CollapsePanel" />
+
+	<!--
+	=====================================================================================
+		Every widget must be placed here
+	===================================================================================== 
+	-->
+	<xs:group name="widgets">
+		<xs:choice>
+			<xs:element ref="decoratedPanel" />
+			<xs:element ref="collapsePanel" />
+		</xs:choice>
+	</xs:group>
+
+
+	<!--
+	=====================================================================================
+		Panels
+	===================================================================================== 
+	-->
+	<xs:complexType name="DecoratedPanel">
+		<xs:complexContent>
+			<xs:extension base="basic:AbstractWidget">
+				<xs:choice minOccurs="0">
+					<xs:element name="widget">
+						<xs:complexType>
+							<xs:group ref="basic:widgets" />
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="text" type="xs:string" />
+					<xs:element name="html" type="xs:anyType" />
+				</xs:choice>
+				<xs:attributeGroup ref="basic:BorderWidth" />
+				<xs:attributeGroup ref="basic:Spacing" />
+				<xs:attributeGroup ref="basic:HorizontalAlignment" />
+				<xs:attributeGroup ref="basic:VerticalAlignment" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CollapsePanel">
+		<xs:complexContent>
+			<xs:extension base="DecoratedPanel">
+				<xs:attribute name="collapsible" type="xs:boolean" default="true"/>
+				<xs:attribute name="collapsed" type="xs:boolean" default="false"/>
+				<xs:attribute name="onBeforeCollapse"/>
+				<xs:attribute name="onBeforeExpand"/>				
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>
