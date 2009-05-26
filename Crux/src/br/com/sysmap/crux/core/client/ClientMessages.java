@@ -55,4 +55,8 @@ public interface ClientMessages extends Messages
 	String widgetFactoryEnsureSpanFail();
 	@DefaultMessage("[widget - 009] - The widget ''{0}'' was added to a pure HTML node where already exists other children. In this case, crux can not ensure an order for this widget. To solve this, If you must use panels as widget parent.")
 	String screenFactoryNonDeterministicWidgetPositionInParent(String widgetId);
+	
+	@DefaultMessage("[callback - 001] - An Invalid controller was passed to AsyncCallbackAdapter.")
+	String asyncCallbackInvalidHandlerError();
+	
 }

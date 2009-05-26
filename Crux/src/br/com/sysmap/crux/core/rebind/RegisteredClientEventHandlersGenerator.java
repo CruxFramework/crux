@@ -282,9 +282,12 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		sourceWriter.println("throw new Exception(\""+messages.errorinvokingGeneratedMethod()+" \"+metodo);");
 		if (!first)
 		{
-			generateScreenUpdateWidgets(logger, handlerClass, sourceWriter);
+			//generateScreenUpdateWidgets(logger, handlerClass, sourceWriter);
+			sourceWriter.println("wrapper.updateScreenWidgets();");
 		}
 		sourceWriter.println("}");
+		
+		generateScreenUpdateWidgetsFunction(logger, handlerClass, sourceWriter);
 		sourceWriter.println("}");
 		
 		return className+"Wrapper";
@@ -531,7 +534,28 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 	}
 
-	protected void generateScreenUpdateWidgets(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
+	/**
+	 * 
+	 * @param logger
+	 * @param controller
+	 * @param sourceWriter
+	 */
+	protected void generateScreenUpdateWidgetsFunction(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
+	{
+		sourceWriter.println("public void updateScreenWidgets(){");
+		sourceWriter.println("Widget __wid = null;");
+		generateScreenUpdateWidgets(logger, "this", controller, sourceWriter);
+		sourceWriter.println("}");
+	}
+	
+	/**
+	 * 
+	 * @param logger
+	 * @param controllerVariable
+	 * @param controller
+	 * @param sourceWriter
+	 */
+	protected void generateScreenUpdateWidgets(TreeLogger logger, String controllerVariable, Class<?> controller, SourceWriter sourceWriter)
 	{
 		for (Field field : controller.getDeclaredFields()) 
 		{
@@ -541,14 +565,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 
 				if (type.getAnnotation(ValueObject.class) != null)
 				{
-					generateScreenWidgetPopulation(logger, "wrapper", controller, field,sourceWriter);
+					generateScreenWidgetPopulation(logger, controllerVariable, controller, field,sourceWriter);
 				}
 			}
 		}
 		
 		if (controller.getSuperclass() != null)
 		{
-			generateScreenUpdateWidgets(logger, controller.getSuperclass(), sourceWriter);
+			generateScreenUpdateWidgets(logger, controllerVariable, controller.getSuperclass(), sourceWriter);
 		}
 	}
 	

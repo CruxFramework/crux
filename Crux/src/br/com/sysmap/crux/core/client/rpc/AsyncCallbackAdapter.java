@@ -15,19 +15,67 @@
  */
 package br.com.sysmap.crux.core.client.rpc;
 
+import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * Adapter class that provides a simple error handling mechanism.
+ * Adapter class that provides a simple error handling mechanism and automatically update screen
+ * widgets after processing server results.
  * @author Thiago Bustamante
  *
  * @param <T>
  */
 public abstract class AsyncCallbackAdapter<T> implements AsyncCallback<T>
 {
-	public void onFailure(Throwable e) 
+	EventClientHandlerInvoker eventHandler;
+	public AsyncCallbackAdapter(Object eventHandler)
+	{
+		if (!(eventHandler instanceof EventClientHandlerInvoker))
+		{
+			throw new ClassCastException(JSEngine.messages.asyncCallbackInvalidHandlerError());
+		}
+		this.eventHandler = (EventClientHandlerInvoker) eventHandler;
+	}
+	
+	public final void onSuccess(T result)
+	{
+		try
+		{
+			onComplete(result);
+		}
+		finally
+		{
+			this.eventHandler.updateScreenWidgets();
+		}
+	}
+	
+	public final void onFailure(Throwable e) 
+	{
+		try
+		{
+			onError(e);
+		}
+		finally
+		{
+			this.eventHandler.updateScreenWidgets();
+		}
+	}
+	
+	/**
+	 * Override this method to handle result received for a remote call
+	 * @param result
+	 */
+	public abstract void onComplete(T result);
+	
+	/**
+	 * Override this method to add specific error handling for a remote call
+	 * @param e
+	 */
+	public void onError(Throwable e)
 	{
 		GWT.log(e.getLocalizedMessage(), e);
 		Window.alert(e.getLocalizedMessage());

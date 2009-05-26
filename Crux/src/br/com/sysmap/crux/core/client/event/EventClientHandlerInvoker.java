@@ -22,4 +22,6 @@ public interface EventClientHandlerInvoker
 	void invoke(String metodo, GwtEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
 
 	void invoke(String method, CruxEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
+	
+	void updateScreenWidgets();
 }
