@@ -1,3 +1,4 @@
 <module>
     <inherits name="br.com.sysmap.crux.core.Crux"/>
+    <stylesheet src="skin/lightblue/style.css"/>
 </module>

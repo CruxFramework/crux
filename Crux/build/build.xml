@@ -34,7 +34,7 @@
   </target>
 	
   <target name="compile" description="o Compile the code" depends="init">
-    <javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*">
+    <javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*" encoding="8859_1">
       <src>
         <pathelement location="${srcdir}" />
       </src>
