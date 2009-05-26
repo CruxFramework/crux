@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
  */
 public class DecoratedPanel extends CellPanel
 {
-	public static final String STYLE_NAME = "crux-DecoratedPanel" ;
+	public static final String DEFAULT_STYLE_NAME = "crux-DecoratedPanel" ;
 	
 	private Element topLine;
 	private Element topLeftCell;
@@ -45,9 +45,9 @@ public class DecoratedPanel extends CellPanel
 	private Element bottomCenterCell;
 	private Element bottomRightCell;
 	
-	public DecoratedPanel(String width, String height)
+	public DecoratedPanel(String width, String height, String styleName)
 	{
-		getTable().setClassName(STYLE_NAME);
+		getTable().setClassName(styleName != null && styleName.trim().length() > 0 ? styleName : DEFAULT_STYLE_NAME);
 		getTable().setPropertyString("width", width);
 		getTable().setPropertyString("height", height);
 		
@@ -80,6 +80,8 @@ public class DecoratedPanel extends CellPanel
 	    DOM.appendChild(bottomLine, bottomCenterCell);
 	    DOM.appendChild(bottomLine, bottomRightCell);
 	    DOM.appendChild(getBody(), bottomLine);
+	    
+	    setSpacing(0);
 	}
 	
 	/**

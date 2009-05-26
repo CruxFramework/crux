@@ -5,6 +5,7 @@
 
 	<xs:element name="decoratedPanel" type="DecoratedPanel" />
 	<xs:element name="collapsePanel" type="CollapsePanel" />
+	<xs:element name="titlePanel" type="TitlePanel" />
 
 	<!--
 	=====================================================================================
@@ -15,27 +16,35 @@
 		<xs:choice>
 			<xs:element ref="decoratedPanel" />
 			<xs:element ref="collapsePanel" />
+			<xs:element ref="titlePanel" />
 		</xs:choice>
 	</xs:group>
 
+	<!--
+	=====================================================================================
+		Common
+	===================================================================================== 
+	-->
+	<xs:group name="WidgetComplexContent">
+		<xs:choice>
+			<xs:element name="widget">
+				<xs:complexType>
+					<xs:group ref="basic:widgets" />
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="text" type="xs:string" />
+			<xs:element name="html" type="xs:anyType" />
+		</xs:choice>
+	</xs:group>
 
 	<!--
 	=====================================================================================
 		Panels
 	===================================================================================== 
 	-->
-	<xs:complexType name="DecoratedPanel">
+	<xs:complexType name="AbstractDecoratedPanel">
 		<xs:complexContent>
 			<xs:extension base="basic:AbstractWidget">
-				<xs:choice minOccurs="0">
-					<xs:element name="widget">
-						<xs:complexType>
-							<xs:group ref="basic:widgets" />
-						</xs:complexType>
-					</xs:element>
-					<xs:element name="text" type="xs:string" />
-					<xs:element name="html" type="xs:anyType" />
-				</xs:choice>
 				<xs:attributeGroup ref="basic:BorderWidth" />
 				<xs:attributeGroup ref="basic:Spacing" />
 				<xs:attributeGroup ref="basic:HorizontalAlignment" />
@@ -43,10 +52,37 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	
+	<xs:complexType name="DecoratedPanel">
+		<xs:complexContent>
+			<xs:extension base="AbstractDecoratedPanel">
+				<xs:group ref="WidgetComplexContent"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="TitlePanel">
+		<xs:complexContent>
+			<xs:extension base="AbstractDecoratedPanel">
+				<xs:sequence minOccurs="0">
+					<xs:element minOccurs="0" name="title">
+						<xs:complexType>
+							<xs:group ref="WidgetComplexContent"/>
+						</xs:complexType>	
+					</xs:element>
+					<xs:element minOccurs="0" name="body">
+						<xs:complexType>
+							<xs:group ref="WidgetComplexContent"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
 	<xs:complexType name="CollapsePanel">
 		<xs:complexContent>
-			<xs:extension base="DecoratedPanel">
+			<xs:extension base="TitlePanel">
 				<xs:attribute name="collapsible" type="xs:boolean" default="true"/>
 				<xs:attribute name="collapsed" type="xs:boolean" default="false"/>
 				<xs:attribute name="onBeforeCollapse"/>

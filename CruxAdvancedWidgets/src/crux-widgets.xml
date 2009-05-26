@@ -5,6 +5,7 @@
 	module="br.com.sysmap.crux.basic.CruxAdvancedWidgets">
 	
 	<widget id="decoratedPanel" clientClass="br.com.sysmap.crux.advanced.client.decoratedpanel.DecoratedPanelFactory" />
+	<widget id="titlePanel" clientClass="br.com.sysmap.crux.advanced.client.titlepanel.TitlePanelFactory" />
 	<widget id="collapsePanel" clientClass="br.com.sysmap.crux.advanced.client.collapsepanel.CollapsePanelFactory" />
 
 </crux>

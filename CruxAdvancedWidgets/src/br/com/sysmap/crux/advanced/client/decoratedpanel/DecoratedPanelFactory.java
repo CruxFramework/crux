@@ -15,74 +15,30 @@
  */
 package br.com.sysmap.crux.advanced.client.decoratedpanel;
 
-import br.com.sysmap.crux.basic.client.CellPanelFactory;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory for Decorated Panel widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class DecoratedPanelFactory extends CellPanelFactory<DecoratedPanel>
+public class DecoratedPanelFactory extends AbstractDecoratedPanelFactory<DecoratedPanel>
 {
 	@Override
 	protected DecoratedPanel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		String height = element.getAttribute("_height");
 		String width = element.getAttribute("_width");
-		return new DecoratedPanel(width, height);
+		String styleName = element.getAttribute("_styleName");
+		return new DecoratedPanel(width, height, styleName);
 	}
 
 	@Override
-	protected void processAttributes(DecoratedPanel widget, Element element, String widgetId) throws InterfaceConfigException
+	protected void processChildrenTags(DecoratedPanel widget, Element element, String widgetId) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");
-		
-		if (cellHorizontalAlignment != null && cellHorizontalAlignment.trim().length() > 0)
-		{
-			if (HasHorizontalAlignment.ALIGN_CENTER.getTextAlignString().equals(cellHorizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-			}
-			else if (HasHorizontalAlignment.ALIGN_DEFAULT.getTextAlignString().equals(cellHorizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_DEFAULT);
-			}
-			else if (HasHorizontalAlignment.ALIGN_LEFT.getTextAlignString().equals(cellHorizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-			}
-			else if (HasHorizontalAlignment.ALIGN_RIGHT.getTextAlignString().equals(cellHorizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-			}
-		}
-		
-		String cellVerticalAlignment = element.getAttribute("_verticalAlignment");
-		if (cellVerticalAlignment != null && cellVerticalAlignment.trim().length() > 0)
-		{
-			if (HasVerticalAlignment.ALIGN_BOTTOM.getVerticalAlignString().equals(cellVerticalAlignment))
-			{
-				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
-			}
-			else if (HasVerticalAlignment.ALIGN_MIDDLE.getVerticalAlignString().equals(cellVerticalAlignment))
-			{
-				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-			}
-			else if (HasVerticalAlignment.ALIGN_TOP.getVerticalAlignString().equals(cellVerticalAlignment))
-			{
-				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-			}
-		}
-		
-		
 		Element child = ensureFirstChildSpan(element, true);
-		
 		if(child != null)
 		{
 			String type = child.getAttribute("_contentType");
@@ -96,7 +52,8 @@ public class DecoratedPanelFactory extends CellPanelFactory<DecoratedPanel>
 			}
 			else if("widget".equals(type))
 			{
-				Widget childWidget = createChildWidget(child, element.getId());
+				Element widgetElement = ensureFirstChildSpan(child, false);
+				Widget childWidget = createChildWidget(ensureWidget(widgetElement), widgetElement.getId());
 				widget.setContentWidget(childWidget);
 				super.add(widget, childWidget, element, child);
 			}

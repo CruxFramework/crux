@@ -31,6 +31,9 @@
 						<xsl:when test="local-name() = 'widget'">
 							<xsl:apply-templates select="child::*" />
 						</xsl:when>
+						<xsl:when test="local-name() = 'text'">
+							<xsl:apply-templates select="text()" />
+						</xsl:when>
 						<xsl:otherwise>
 							<xsl:copy-of select="child::*" copy-namespaces="no"/>
 						</xsl:otherwise>					

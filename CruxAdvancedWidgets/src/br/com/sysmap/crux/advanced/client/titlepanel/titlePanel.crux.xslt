@@ -16,21 +16,14 @@
 <xsl:stylesheet version="2.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:adv="http://www.sysmap.com.br/crux/advanced-widgets/1.0"
-	xmlns:crux="http://www.sysmap.com.br/crux/ui/1.0"
 	xmlns:html="http://www.w3.org/1999/xhtml"
 	exclude-result-prefixes="#all">
 
 	<xsl:param name="xhtmlNS" select="'http://www.w3.org/1999/xhtml'"></xsl:param>
 
-	<xsl:template name="collapsePanel" match="adv:collapsePanel">
+	<xsl:template name="titlePanel" match="adv:titlePanel">
 		<xsl:element name="span" namespace="{$xhtmlNS}">
 			<xsl:call-template name="widgetAttributes"/>
-			<xsl:if test="string-length(@collapsible) > 0">
-				<xsl:attribute name="_collapsible" select="@collapsible"/>
-			</xsl:if>
-			<xsl:if test="string-length(@collapsed) > 0">
-				<xsl:attribute name="_collapsed" select="@collapsed"/>
-			</xsl:if>			
 			<xsl:for-each select="child::*">
 				<xsl:element name="span" namespace="{$xhtmlNS}">
 					<xsl:attribute name="_part" select="local-name()"/>

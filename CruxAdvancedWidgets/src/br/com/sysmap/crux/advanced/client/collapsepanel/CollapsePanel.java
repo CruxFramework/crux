@@ -15,18 +15,19 @@
  */
 package br.com.sysmap.crux.advanced.client.collapsepanel;
 
-import br.com.sysmap.crux.advanced.client.decoratedpanel.DecoratedPanel;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseHandler;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeExpandEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeExpandHandler;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.CollapseOrExpandEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.HasBeforeCollapseAndBeforeExpandHandlers;
+import br.com.sysmap.crux.advanced.client.titlepanel.TitlePanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Image;
 
@@ -34,7 +35,7 @@ import com.google.gwt.user.client.ui.Image;
  * Panel based on a 3x3 table, with collapse/expand feature. Similar to GWT's DisclosurePanel
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class CollapsePanel extends DecoratedPanel implements HasBeforeCollapseAndBeforeExpandHandlers
+public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBeforeExpandHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-CollapsePanel" ;
 	private boolean collapsible = false;
@@ -65,6 +66,7 @@ public class CollapsePanel extends DecoratedPanel implements HasBeforeCollapseAn
 		Image image = proto.createImage();
 		image.addClickHandler(new ExpandButtonClickHandler());
 		add(image, getTopRightCell());
+		DOM.setStyleAttribute(image.getElement(), "marginRight", "4px");
 		return image;
 	}
 
@@ -78,14 +80,12 @@ public class CollapsePanel extends DecoratedPanel implements HasBeforeCollapseAn
 	 */
 	public CollapsePanel(String width, String height, String styleName, boolean collapsible, boolean collapsed, CollapsePanelImages images)
 	{
-		super(width, collapsible ? "" : height);
+		super(width, collapsible ? "" : height, styleName != null && styleName.trim().length() > 0 ? styleName : DEFAULT_STYLE_NAME);
 		this.images = images;
 		this.collapsed = collapsed;
 		this.image = createCollapseExpandImage();
 		
-		getTable().setClassName(styleName != null && styleName.trim().length() > 0 ? styleName : DEFAULT_STYLE_NAME);		
 		setCollapsible(collapsible);
-		setSpacing(0);
 	}
 	
 	/**
