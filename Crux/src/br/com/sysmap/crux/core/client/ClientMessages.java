@@ -39,7 +39,7 @@ public interface ClientMessages extends Messages
 	//  widget
 	@DefaultMessage("[widget - 001] - The id attribute is required for CRUX widgets.")
 	String screenFactoryWidgetIdRequired();
-	@DefaultMessage("[widget - 002] - The widget ''{0}'' can not be attached in widget that does not implement HasWidgets.")
+	@DefaultMessage("[widget - 002] - The widget ''{0}'' does not implement HasWidgets and can not contains any other widget.")
 	String screenFactoryInvalidWidgetParent(String widgetId);
 	@DefaultMessage("[widget - 003] - Can not create widget ''{0}''. Verify the widget type.")
 	String screenFactoryErrorCreateWidget(String widgetId);
