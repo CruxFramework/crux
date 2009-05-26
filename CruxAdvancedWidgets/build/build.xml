@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="dist" name="Crux-Advanced-Widgets" basedir="../">
+
+	<tstamp>
+		<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />
+	</tstamp>
+
+	<property name="srcdir" value="src" />
+	<property name="libdir" value="lib" />
+	<property name="classesdir" value="bin" />
+	<property name="distdir" value="dist" />
+	<property name="final.name" value="crux-advanced-widgets" />
+	<property name="cruxdistdir" value="../Crux/dist" />
+	<property name="cruxbasiccomponentsdir" value="../CruxBasicComponents/dist" />
+
+	<path id="build.classpath">
+		<fileset dir="${libdir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${cruxdistdir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${cruxbasiccomponentsdir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init" description="o Initializes">
+		<delete dir="${classesdir}" failonerror="no"/>
+		<delete dir="${distdir}" failonerror="no"/>
+		<mkdir dir="${classesdir}" />
+		<mkdir dir="${distdir}" />
+	</target>
+
+	<target name="compile" description="o Compile the code" depends="init">
+		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*">
+			<src>
+				<pathelement location="${srcdir}" />
+			</src>
+			<classpath refid="build.classpath" />
+			<classpath>
+				<fileset dir="${cruxdistdir}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+
+		</javac>
+	</target>
+
+	<target name="dist" description="o Create a distribution" depends="compile">
+		<jar jarfile="${distdir}/${final.name}.jar">
+			<fileset dir="${classesdir}" excludes="**/public/*" />
+			<fileset dir="${srcdir}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+	</target>
+
+</project>
