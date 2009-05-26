@@ -28,6 +28,7 @@ import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.ScreenBind;
 import br.com.sysmap.crux.core.client.controller.ValueObject;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
+import br.com.sysmap.crux.core.client.event.annotation.Controller;
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
 import br.com.sysmap.crux.core.rebind.screen.Event;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
@@ -193,6 +194,13 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		sourceWriter.println("public class "+className+"Wrapper extends " + handlerClass.getName()
 				+ " implements br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker{");
 		
+		Controller controllerAnnot = handlerClass.getAnnotation(Controller.class);
+		boolean singleton = (controllerAnnot != null && controllerAnnot.statefull());
+		if (singleton)
+		{
+			sourceWriter.println(className+"Wrapper wrapper = null;");
+		}
+
 		sourceWriter.println("public void invoke(String metodo, GwtEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception{ ");
 		sourceWriter.println("invokeEvent(metodo, sourceEvent, eventProcessor);");
 		sourceWriter.println("}");
@@ -203,7 +211,17 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		
 		sourceWriter.println("public void invokeEvent(String metodo, Object sourceEvent, EventProcessor eventProcessor) throws Exception{ ");
 		sourceWriter.println("boolean __runMethod = true;");
-		sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
+		
+		if (singleton)
+		{
+			sourceWriter.println("if (this.wrapper == null)");
+			sourceWriter.println("this.wrapper = new "+className+"Wrapper();");
+		}
+		else
+		{
+			sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
+		}
+		
 		sourceWriter.println("Widget __wid = null;");
 		
 		generateAutoCreateFields(logger, handlerClass, sourceWriter);
