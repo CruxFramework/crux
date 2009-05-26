@@ -1,0 +1,57 @@
+.crux-CollapsePanel
+{
+	margin-bottom: 6px;
+}
+.crux-CollapsePanel .topLeftCell 
+{
+	height:24px;
+	width:5px;
+	font-size: 0px;
+	background: url(decorated_panel_blue.gif) no-repeat top left;
+}
+.crux-CollapsePanel .topCenterCell 
+{
+	font-size: 11px;
+	font-weight: bold;
+	color: #0066CC;
+	text-align: left;
+	font-family: Verdana, Arial, Helvetica;
+	background: url(decorated_panel_blue.gif) no-repeat top center;
+}
+.crux-CollapsePanel .topRightCell
+{
+	width:5px;
+	font-size: 0px;
+	background: url(decorated_panel_blue.gif) no-repeat top right;
+}
+.crux-CollapsePanel .middleLeftCell
+{
+	font-size: 0px;
+	background: url(decorated_panel_blue.gif) no-repeat center left;
+}
+.crux-CollapsePanel .middleCenterCell
+{
+	font-size: 0px;
+	background: url(decorated_panel_blue.gif) no-repeat center center;
+}
+.crux-CollapsePanel .middleRightCell
+{
+	font-size: 0px;
+	background: url(decorated_panel_blue.gif) no-repeat center right;
+}
+.crux-CollapsePanel .bottomLeftCell
+{
+	font-size: 0px;
+	height:5px;
+	background: url(decorated_panel_blue.gif) no-repeat bottom left;
+}
+.crux-CollapsePanel .bottomCenterCell
+{
+	font-size: 0px;
+	background: url(decorated_panel_blue.gif) no-repeat bottom center;
+}
+.crux-CollapsePanel .bottomRightCell
+{
+	font-size: 0px;
+	background: url(decorated_panel_blue.gif) no-repeat bottom right;
+}
