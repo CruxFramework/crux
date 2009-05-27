@@ -20,6 +20,7 @@ import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 /**
@@ -76,7 +77,14 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 		if (wordWrap != null && wordWrap.trim().length() > 0)
 		{
 			widget.setWordWrap(Boolean.parseBoolean(wordWrap));
-		} 
+		}
+		
+		String innerHtml = element.getInnerHTML();
+		if (innerHtml != null && innerHtml.length() > 0)
+		{
+			((HasHTML)widget).setHTML(innerHtml);
+			element.setInnerHTML("");
+		}		
 	}
 
 	@Override

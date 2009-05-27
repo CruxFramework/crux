@@ -23,6 +23,7 @@ import br.com.sysmap.crux.core.client.component.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.RichTextArea.BasicFormatter;
 import com.google.gwt.user.client.ui.RichTextArea.ExtendedFormatter;
@@ -58,6 +59,13 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 				initExtendedFormatterOptions(widget, declaredProperties);
 			}
 		});
+
+		String innerHtml = element.getInnerHTML();
+		if (innerHtml != null && innerHtml.length() > 0)
+		{
+			((HasHTML)widget).setHTML(innerHtml);
+			element.setInnerHTML("");
+		}		
 	}
 	
 	/**

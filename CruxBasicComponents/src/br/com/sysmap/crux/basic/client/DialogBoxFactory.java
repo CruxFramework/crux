@@ -15,8 +15,12 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HasHTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -41,5 +45,18 @@ public class DialogBoxFactory extends DecoratedPopupPanelFactory
 		}
 
 		return new DialogBox(autoHide, modal);
-	}	
+	}
+	
+	@Override
+	protected void processAttributes(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException
+	{
+		super.processAttributes(widget, element, widgetId);
+
+		String innerHtml = element.getInnerHTML();
+		if (innerHtml != null && innerHtml.length() > 0)
+		{
+			((HasHTML)widget).setHTML(innerHtml);
+			element.setInnerHTML("");
+		}
+	}
 }

@@ -15,8 +15,11 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HasHTML;
 
 /**
  * Represents a ButtonFactory component
@@ -29,5 +32,19 @@ public class ButtonFactory extends FocusWidgetFactory<Button>
 	protected Button instantiateWidget(Element element, String widgetId) 
 	{
 		return new Button();
+	}
+	
+	@Override
+	protected void processAttributes(Button widget, Element element, String widgetId) throws InterfaceConfigException
+	{
+		super.processAttributes(widget, element, widgetId);
+
+		String innerHtml = element.getInnerHTML();
+		if (innerHtml != null && innerHtml.length() > 0)
+		{
+			((HasHTML)widget).setHTML(innerHtml);
+			element.setInnerHTML("");
+		}
+
 	}
 }

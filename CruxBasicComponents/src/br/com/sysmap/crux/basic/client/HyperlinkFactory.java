@@ -20,6 +20,7 @@ import br.com.sysmap.crux.core.client.component.WidgetFactory;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 
 /**
@@ -40,6 +41,12 @@ public class HyperlinkFactory extends WidgetFactory<Hyperlink>
 			widget.setTargetHistoryToken(targetHistoryToken);
 		}
 		
+		String innerHtml = element.getInnerHTML();
+		if (innerHtml != null && innerHtml.length() > 0)
+		{
+			((HasHTML)widget).setHTML(innerHtml);
+			element.setInnerHTML("");
+		}
 	}
 	
 	@Override

@@ -20,6 +20,7 @@ import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.HasHTML;
 
 /**
  * CheckBoxFactory WidgetFactory.
@@ -41,6 +42,13 @@ public class CheckBoxFactory extends FocusWidgetFactory<CheckBox>
 		if (checked != null && checked.trim().length() > 0)
 		{
 			widget.setValue(Boolean.parseBoolean(checked));
+		}
+
+		String innerHtml = element.getInnerHTML();
+		if (innerHtml != null && innerHtml.length() > 0)
+		{
+			((HasHTML)widget).setHTML(innerHtml);
+			element.setInnerHTML("");
 		}
 	}
 	
