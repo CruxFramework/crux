@@ -23,9 +23,9 @@
   <widget id="inlineHyperlink" clientClass="br.com.sysmap.crux.basic.client.InlineHyperlinkFactory"/>
   <widget id="image" clientClass="br.com.sysmap.crux.basic.client.ImageFactory"/>
   <widget id="label" clientClass="br.com.sysmap.crux.basic.client.LabelFactory"/>
-  <widget id="html" clientClass="br.com.sysmap.crux.basic.client.HTMLFactory"/>
+  <widget id="HTML" clientClass="br.com.sysmap.crux.basic.client.HTMLFactory"/>
   <widget id="inlineLabel" clientClass="br.com.sysmap.crux.basic.client.InlineLabelFactory"/>
-  <widget id="inlineHtml" clientClass="br.com.sysmap.crux.basic.client.InlineHTMLFactory"/>
+  <widget id="inlineHTML" clientClass="br.com.sysmap.crux.basic.client.InlineHTMLFactory"/>
   <widget id="menuBar" clientClass="br.com.sysmap.crux.basic.client.MenuBarFactory"/>
   <widget id="tree" clientClass="br.com.sysmap.crux.basic.client.TreeFactory"/>
   <widget id="simplePanel" clientClass="br.com.sysmap.crux.basic.client.SimplePanelFactory"/>
@@ -38,7 +38,7 @@
   <widget id="horizontalSplitPanel" clientClass="br.com.sysmap.crux.basic.client.HorizontalSplitPanelFactory"/>
   <widget id="VerticalSplitPanel" clientClass="br.com.sysmap.crux.basic.client.VerticalSplitPanelFactory"/>
   <widget id="scrollPanel" clientClass="br.com.sysmap.crux.basic.client.ScrollPanelFactory" />
-  <widget id="htmlPanel" clientClass="br.com.sysmap.crux.basic.client.HTMLPanelFactory" />
+  <widget id="HTMLPanel" clientClass="br.com.sysmap.crux.basic.client.HTMLPanelFactory" />
   <widget id="stackPanel" clientClass="br.com.sysmap.crux.basic.client.StackPanelFactory" />
   <widget id="decoratedStackPanel" clientClass="br.com.sysmap.crux.basic.client.DecoratedStackPanelFactory" />
   <widget id="flowPanel" clientClass="br.com.sysmap.crux.basic.client.FlowPanelFactory" />

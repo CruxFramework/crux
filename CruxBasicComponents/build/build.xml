@@ -35,7 +35,7 @@
   </target>
 	
   <target name="compile" description="o Compile the code" depends="init">
-    <javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*">
+    <javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*" encoding="8859_1">
       <src>
         <pathelement location="${srcdir}" />
       </src>
@@ -56,7 +56,7 @@
   </target>
 	
   <target name="clean" description="o Clean up the generated directories">
-    <delete dir="${distdir}" />
+    <delete dir="${distdir}" failonerror="false"/>
   </target>
 	
   <target name="dist" description="o Create a distribution" depends="jar, test, javadoc">

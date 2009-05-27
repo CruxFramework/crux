@@ -15,10 +15,11 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.CustomButton;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.CustomButton.Face;
@@ -51,12 +52,13 @@ public abstract class CustomButtonFactory<T extends CustomButton> extends FocusW
 	{
 		super.processAttributes(widget, element, widgetId);
 		
-		NodeList<Element> facesCandidates = element.getElementsByTagName("span");
-		for (int i=0; i<facesCandidates.getLength(); i++)
+		List<Element> facesCandidates = ensureChildrenSpans(element, true);
+		
+		for (Element child : facesCandidates)
 		{
-			if (isValidFace(facesCandidates.getItem(i)))
+			if (isValidFace(child))
 			{
-				processFaceDeclaration(widget, facesCandidates.getItem(i));
+				processFaceDeclaration(widget, child);
 			}
 		}
 	}	
