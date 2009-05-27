@@ -125,7 +125,7 @@ public class ScreenFactory {
 		{
 			Node child = screenElement.getFirstChild();
 			screenElement.removeChild(child);
-			screenElement.getParentNode().appendChild(child);
+			screenElement.getParentNode().insertBefore(child, screenElement);
 		}
 		Node parent = screenElement.getParentNode();
 		if (parent != null)

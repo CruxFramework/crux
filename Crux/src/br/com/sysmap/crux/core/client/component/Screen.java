@@ -157,6 +157,11 @@ public class Screen
 		{
 			setManageHistory("true".equals(manageHistoryStr));
 		}
+		String title = element.getAttribute("_title");
+		if (title != null && title.length() >0)
+		{
+			Window.setTitle(ScreenFactory.getInstance().getDeclaredMessage(title));
+		}
 		final Event eventClosing = EventFactory.getEvent(EventFactory.EVENT_CLOSING, element.getAttribute(EventFactory.EVENT_CLOSING));
 		if (eventClosing != null)
 		{
