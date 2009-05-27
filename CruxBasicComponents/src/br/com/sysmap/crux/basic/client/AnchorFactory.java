@@ -80,10 +80,10 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 		}
 		
 		String innerHtml = element.getInnerHTML();
-		if (innerHtml != null && innerHtml.length() > 0)
+		String text = element.getAttribute("_text");
+		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{
 			((HasHTML)widget).setHTML(innerHtml);
-			element.setInnerHTML("");
 		}		
 	}
 

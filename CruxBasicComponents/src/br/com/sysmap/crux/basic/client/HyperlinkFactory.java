@@ -42,10 +42,10 @@ public class HyperlinkFactory extends WidgetFactory<Hyperlink>
 		}
 		
 		String innerHtml = element.getInnerHTML();
-		if (innerHtml != null && innerHtml.length() > 0)
+		String text = element.getAttribute("_text");
+		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{
 			((HasHTML)widget).setHTML(innerHtml);
-			element.setInnerHTML("");
 		}
 	}
 	
