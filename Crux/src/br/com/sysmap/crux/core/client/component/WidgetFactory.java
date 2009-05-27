@@ -27,7 +27,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasName;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
@@ -112,15 +111,6 @@ public abstract class WidgetFactory <T extends Widget>
 			}
 		}
 		
-		if (widget instanceof HasHTML)
-		{
-			String innerHtml = element.getInnerHTML();
-			if (innerHtml != null && innerHtml.length() > 0)
-			{
-				((HasHTML)widget).setHTML(innerHtml);
-				element.setInnerHTML("");
-			}
-		}
 		if (widget instanceof HasText)
 		{
 			String text = element.getAttribute("_text");
