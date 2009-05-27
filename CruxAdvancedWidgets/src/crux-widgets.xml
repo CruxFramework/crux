@@ -8,5 +8,6 @@
 	<widget id="titlePanel" clientClass="br.com.sysmap.crux.advanced.client.titlepanel.TitlePanelFactory" />
 	<widget id="collapsePanel" clientClass="br.com.sysmap.crux.advanced.client.collapsepanel.CollapsePanelFactory" />
 	<widget id="decoratedButton" clientClass="br.com.sysmap.crux.advanced.client.decoratedbutton.DecoratedButtonFactory" />
+	<widget id="transferList" clientClass="br.com.sysmap.crux.advanced.client.transferlist.TransferListFactory"/>
 
 </crux>

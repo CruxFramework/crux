@@ -1,4 +1,21 @@
 /******************************************************************************
+	Transfer List
+*******************************************************************************/
+.crux-TransferList .leftList, .crux-TransferList .rightList
+{
+	width: 180px;
+	border: solid 1px #93989C;
+	font-size:11px;
+} 
+.crux-TransferList .moveToRight, .crux-TransferList .moveToLeft
+{
+	width: 136px;
+	height: 20px;
+	border:	solid 0px;
+	background: url(transfer-list-button.gif) no-repeat top left;
+}
+
+/******************************************************************************
 	Decorated Button
 *******************************************************************************/
 .crux-DecoratedButton, .crux-DecoratedButton-down-hovering, .crux-DecoratedButton .html-face

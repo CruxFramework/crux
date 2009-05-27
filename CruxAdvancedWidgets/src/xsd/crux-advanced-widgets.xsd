@@ -7,6 +7,7 @@
 	<xs:element name="collapsePanel" type="CollapsePanel" />
 	<xs:element name="titlePanel" type="TitlePanel" />
 	<xs:element name="decoratedButton" type="DecoratedButton" />
+	<xs:element name="transferList" type="TransferList" />
 
 	<!--
 	=====================================================================================
@@ -19,6 +20,7 @@
 			<xs:element ref="collapsePanel" />
 			<xs:element ref="titlePanel" />
 			<xs:element ref="decoratedButton"/>
+			<xs:element ref="transferList"/>
 		</xs:choice>
 	</xs:group>
 
@@ -92,6 +94,21 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	
+	<!--
+	=====================================================================================
+		Inputs
+	===================================================================================== 
+	-->
+	<xs:complexType name="TransferList">
+		<xs:complexContent>
+			<xs:extension base="basic:AbstractWidget">
+				<xs:attribute name="leftToRightButtonText"/>
+				<xs:attribute name="rightToLeftButtonText"/>
+				<xs:attribute name="visibleItemCount" type="xs:positiveInteger"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
 	
 	<!--
 	=====================================================================================

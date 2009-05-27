@@ -103,6 +103,20 @@ public class Screen
 		return widgets.get(id);
 	}
 	
+	/**
+	 * Generic version of <code>getWidget</code> method
+	 * @param <T>
+	 * @param id
+	 * @param clazz
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T extends Widget> T getWidget(String id, Class<T> clazz)
+	{
+		Widget w = widgets.get(id);
+		return (T) w;
+	}
+	
 	void addWidget(String id, Widget widget)
 	{
 		widgets.put(id, widget);
