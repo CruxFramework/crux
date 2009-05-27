@@ -30,9 +30,6 @@ public interface ServerMessages
 	@DefaultMessage("[annotationScanner 003] - Error creating index of annotations: {0}.")
 	String annotationScannerBuildIndexError(String errMsg);
 
-	@DefaultMessage("[annotationScanner 002] - Index not created. Run the buildIndex method first.")
-	String annotationScannerIndexNotFound();
-
 	@DefaultMessage("[clientHandlers 001] - Error initializing clientHandler: {0}.")
 	String clientHandlersHandlerInitializeError(String errMsg);
 
@@ -113,4 +110,7 @@ public interface ServerMessages
 
 	@DefaultMessage("[screenBridge - 006] - Error reading web base dir: {0}.")
 	String screenBridgeErrorReadingwebBaseDir(String localizedMessage);
+
+	@DefaultMessage("[messages 001] - Error initializing messagesClasses: {0}.")
+	Object messagesClassesInitializeError(String localizedMessage);
 }

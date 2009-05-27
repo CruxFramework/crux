@@ -39,9 +39,12 @@ public interface GeneratorMessages
 	@DefaultMessage("[generator 005] - Error retrieving screen Identifier.")
 	String errorGeneratingRegisteredElementInvalidScreenID();
 
-	@DefaultMessage("[controller 001] - Method Not Found: ")
-	String errorinvokingGeneratedMethod();
-
 	@DefaultMessage("[generator 006] - property {0} can could not be created. This is not visible neither has a getter/setter method.")
 	String registeredClientEventHandlerPropertyNotFound(String name);
+
+	@DefaultMessage("[generator 007] - Error generating class for declared message {0}.")
+	String errorGeneratingDeclaredMessagesClassNotFound(String string);
+
+	@DefaultMessage("[controller 001] - Method Not Found: ")
+	String errorinvokingGeneratedMethod();
 }

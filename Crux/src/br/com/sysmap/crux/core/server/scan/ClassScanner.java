@@ -35,45 +35,33 @@ public class ClassScanner
 	private static final Lock lock = new ReentrantLock();
 
 	private ScannerDB scannerDB;
-	private boolean indexBuilt = false;
-	private static final ClassScanner instance = new ClassScanner();
+	private static ClassScanner instance = null;
 	
-	private ClassScanner() 
+	private ClassScanner(URL[] urls) 
 	{
 		scannerDB = new ScannerDB();
-		scannerDB.setIgnoredPackages(new String[]{"javax", "java", "sun", "com.sun", "org.apache", "com.google", "javassist", "br.com.sysmap.crux.core", "org.json", "com.metaparadigm", "junit"});
+		scannerDB.setIgnoredPackages(new String[]{"javax", "java", "sun", "com.sun", "org.apache", 
+												  "javassist", "br.com.sysmap.crux.core", 
+												  "org.json", "com.metaparadigm", "junit"});
 		scannerDB.setScanFieldAnnotations(false);
 		scannerDB.setScanMethodAnnotations(false);
 		scannerDB.setScanParameterAnnotations(false);
 		scannerDB.setScanClassAnnotations(true);
+		buildIndex(urls);
 	}
 	
 	
 	private void buildIndex(URL[] urls) throws ClassScannerException
 	{
-		if (indexBuilt)
-		{
-			return;
-		}
-		lock.lock();
 		try
 		{
-			if (indexBuilt)
-			{
-				return;
-			}
 			if (logger.isInfoEnabled())logger.info(messages.annotationScannerBuildIndex());
 
 			scannerDB.scanArchives(urls);
-			indexBuilt = true;
 		}
 		catch (IOException e)
 		{
 			throw new ClassScannerException(messages.annotationScannerBuildIndexError(e.getLocalizedMessage()), e);
-		}
-		finally
-		{
-			lock.unlock();
 		}
 	}
 	
@@ -83,12 +71,7 @@ public class ClassScanner
 	 * @return
 	 */
 	public Set<String> searchClassesByAnnotation(Class<? extends Annotation> annotationClass)
-	{
-		if (!indexBuilt)
-		{
-			throw new ClassScannerException(messages.annotationScannerIndexNotFound());
-		}
-		
+	{		
 		return scannerDB.getAnnotationIndex().get(annotationClass.getName());
 	}
 	
@@ -99,11 +82,6 @@ public class ClassScanner
 	 */
 	public Set<String> searchClassesByInterface(Class<?> interfaceClass)
 	{
-		if (!indexBuilt)
-		{
-			throw new ClassScannerException(messages.annotationScannerIndexNotFound());
-		}
-		
 		return scannerDB.getInterfacesIndex().get(interfaceClass.getName());
 	}
 	
@@ -113,9 +91,20 @@ public class ClassScanner
 	 */
 	public static ClassScanner getInstance(URL[] urls)
 	{
-		if (!instance.indexBuilt)
+		if (instance == null)
 		{
-			instance.buildIndex(urls);
+			lock.lock();
+			try
+			{
+				if (instance == null)
+				{
+					instance = new ClassScanner(urls);
+				}
+			}
+			finally
+			{
+				lock.unlock();
+			}
 		}
 		return instance;
 	}

@@ -125,7 +125,7 @@ public abstract class WidgetFactory <T extends Widget>
 		{
 			String text = element.getAttribute("_text");
 			if (text != null && text.length() > 0)
-				((HasText)widget).setText(text);
+				((HasText)widget).setText(ScreenFactory.getInstance().getDeclaredMessage(text));
 		}
 		if (widget instanceof HasName)
 		{

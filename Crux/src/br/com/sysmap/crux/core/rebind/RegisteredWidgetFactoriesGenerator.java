@@ -32,6 +32,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 
 public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElementsGenerator
 {
+	@Override
 	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, Screen screen) 
 	{
 		String packageName = classType.getPackage().getName();

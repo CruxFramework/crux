@@ -21,6 +21,7 @@ import java.util.List;
 import br.com.sysmap.crux.core.client.JSEngine;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters;
+import br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages;
 import br.com.sysmap.crux.core.client.utils.DOMUtils;
 
 import com.google.gwt.core.client.GWT;
@@ -45,12 +46,14 @@ public class ScreenFactory {
 	private Screen screen = null;
 	private RegisteredClientFormatters registeredClientFormatters = null;
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
+	private DeclaredI18NMessages declaredI18NMessages = null;
 	private String screenId = null;
 	
 	private ScreenFactory()
 	{
 		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 		this.registeredClientFormatters = (RegisteredClientFormatters) GWT.create(RegisteredClientFormatters.class);
+		this.declaredI18NMessages = GWT.create(DeclaredI18NMessages.class);
 	}
 	
 	/**
@@ -302,4 +305,10 @@ public class ScreenFactory {
 	{
 		return this.registeredClientFormatters.getClientFormatter(formatter);
 	}
+	
+	public String getDeclaredMessage(String key)
+	{
+		return this.declaredI18NMessages.getMessage(key);
+	}
+	
 }

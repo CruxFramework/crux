@@ -30,4 +30,8 @@
 		<when-type-assignable class="br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters" />
 	</generate-with>
 	
+	<!-- Specify the generator for resolve declared i18n messages .-->
+	<generate-with class="br.com.sysmap.crux.core.rebind.DeclaredI18NMessagesGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages" />
+	</generate-with>
 </module>

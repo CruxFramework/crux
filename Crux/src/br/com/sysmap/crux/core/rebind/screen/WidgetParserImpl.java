@@ -53,6 +53,10 @@ public class WidgetParserImpl implements WidgetParser
 			{
 				setProperty(widget, "formatter", attr.getValue());
 			}
+			else if (attrName.equals("_text"))
+			{
+				setProperty(widget, "text", attr.getValue());
+			}
 		}
 	}
 	
