@@ -10,6 +10,7 @@
 	
 	<xs:import schemaLocation="crux-advanced-widgets.xsd" namespace="http://www.sysmap.com.br/crux/advanced-widgets/1.0"/>
 	
+	<xs:element name="screen" type="Screen"/>
 	<xs:element name="suggestBox" type="SuggestBox"/>
 	<xs:element name="captionPanel" type="CaptionPanel"/>
 	<xs:element name="dialogBox" type="DialogBox"/>
@@ -416,6 +417,27 @@
 	<xs:attributeGroup name="Url">
 		<xs:attribute name="url"/>
 	</xs:attributeGroup>
+	
+	<!--
+	=====================================================================================
+		Screen
+	===================================================================================== 
+	-->	
+	<xs:group name="ScreenContent">
+		<xs:choice>
+			<xs:any minOccurs="0" maxOccurs="unbounded"/>
+		</xs:choice>
+	</xs:group>
+		
+	<xs:complexType name="Screen" mixed="true">
+		<xs:group ref="ScreenContent" />
+		<xs:attribute name="manageHistory" type="xs:boolean" default="false"/>
+		<xs:attribute name="title" type="xs:string"/>
+		<xs:attribute name="onClosing" type="xs:string"/>
+		<xs:attribute name="onClose" type="xs:string"/>
+		<xs:attribute name="onResized" type="xs:string"/>
+		<xs:attribute name="onLoad" type="xs:string"/>
+	</xs:complexType>
 	
 	<!--
 	=====================================================================================

@@ -1,4 +1,43 @@
 /******************************************************************************
+	Decorated Button
+*******************************************************************************/
+.crux-DecoratedButton, .crux-DecoratedButton-down-hovering, .crux-DecoratedButton .html-face
+{
+	display: inline;
+}
+.crux-DecoratedButton, .crux-DecoratedButton-down-hovering, .crux-DecoratedButton .html-face-table
+{
+	height: 18px;
+}
+.crux-DecoratedButton-down-hovering .centerCell
+{
+	padding-top: 2px;
+}
+.crux-DecoratedButton .leftCell
+{
+	width:2px;
+	font-size: 0px;
+	background: url(decorated-button-left.gif) no-repeat top left;
+}
+.crux-DecoratedButton .centerCell
+{
+	color:#FFFFFF;
+	font-family:Arial,Verdana,Helvetica;
+	font-weight: bold;
+	font-size:11px;
+	background: url(decorated-button-center.gif) repeat-x top center;
+	padding-left: 3px;
+	padding-right: 3px;
+	cursor: pointer;
+}
+.crux-DecoratedButton .rightCell
+{
+	width:2px;
+	font-size: 0px;
+	background: url(decorated-button-right.gif) repeat-x top right;
+}
+
+/******************************************************************************
 	Title Panel
 *******************************************************************************/
 .crux-TitlePanel

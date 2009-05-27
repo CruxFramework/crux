@@ -7,5 +7,6 @@
 	<widget id="decoratedPanel" clientClass="br.com.sysmap.crux.advanced.client.decoratedpanel.DecoratedPanelFactory" />
 	<widget id="titlePanel" clientClass="br.com.sysmap.crux.advanced.client.titlepanel.TitlePanelFactory" />
 	<widget id="collapsePanel" clientClass="br.com.sysmap.crux.advanced.client.collapsepanel.CollapsePanelFactory" />
+	<widget id="decoratedButton" clientClass="br.com.sysmap.crux.advanced.client.decoratedbutton.DecoratedButtonFactory" />
 
 </crux>
