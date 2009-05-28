@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 
 public abstract class ScannerURLS 
 {
@@ -42,14 +43,14 @@ public abstract class ScannerURLS
 		{
 			try
 			{
-				urls = ClasspathUtil.findWebInfLibJars();
+				urls = ClassPathResolverInitializer.getClassPathResolver().findWebInfLibJars();
 			}
 			catch (Throwable e) 
 			{
 				logger.error(messages.scannerURLSErrorSearchingLibDir(e.getLocalizedMessage()), e);
 			}
 
-			URL webInfClasses = ClasspathUtil.findWebInfClassesPath();
+			URL webInfClasses = ClassPathResolverInitializer.getClassPathResolver().findWebInfClassesPath();
 
 			if (webInfClasses != null)
 			{

@@ -33,4 +33,7 @@ public interface Crux
 
 	@DefaultMessage("br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverImpl")
 	String screenResourceResolver();
+
+	@DefaultMessage("br.com.sysmap.crux.core.server.classpath.ClassPathResolverImpl")
+	String classPathResolver();
 }

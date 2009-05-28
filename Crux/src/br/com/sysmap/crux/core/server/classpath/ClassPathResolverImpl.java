@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.scan;
+package br.com.sysmap.crux.core.server.classpath;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -25,30 +25,23 @@ import java.util.List;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class ClasspathUtil
+public class ClassPathResolverImpl implements ClassPathResolver
 {
 	// This very ugly code exists to solve an issue in weblogic, 
 	// where is impossible to find the lib directory URL in zipped war
-	private static final String A_RESOUCE_FROM_WEBINF_LIB = "/"+ClasspathUtil.class.getName().replaceAll("\\.", "/")+".class";
+	private static final String A_RESOUCE_FROM_WEBINF_LIB = "/"+ClassPathResolverImpl.class.getName().replaceAll("\\.", "/")+".class";
 
 	/**
 	 * @param context
 	 * @return
 	 */
-	public static URL findWebInfClassesPath()
+	public URL findWebInfClassesPath()
 	{
 		try
 		{
-			URL url = findWebInfLibPath();
-			String path = url.toString();
-			int lastSlash = path.lastIndexOf("/");
-			path = path.substring(0, lastSlash);
-			lastSlash = path.lastIndexOf("/");
-			path = path.substring(0, lastSlash) + "/classes/"; 
-			URL ret = new URL(path);
-			if (new File(ret.toURI()).exists())
-				return ret;
-			return null;
+			URL url = findWebBaseDir();
+			File webRootFile = new File(url.toURI());
+			return new File(webRootFile, "WEB-INF/classes").toURI().toURL();
 		}
 		catch (Exception e)
 		{
@@ -60,11 +53,11 @@ public class ClasspathUtil
 	 * @param context
 	 * @return
 	 */
-	public static URL findWebInfLibPath()
+	public URL findWebInfLibPath()
 	{
 		try
 		{
-			URL url = new ClasspathUtil().getClass().getResource(A_RESOUCE_FROM_WEBINF_LIB);
+			URL url = new ClassPathResolverImpl().getClass().getResource(A_RESOUCE_FROM_WEBINF_LIB);
 			String path = url.toString().replace(A_RESOUCE_FROM_WEBINF_LIB, "");
 			if (path.endsWith("!"))
 			{
@@ -97,7 +90,7 @@ public class ClasspathUtil
 	 * 
 	 * @return
 	 */
-	public static URL[] findWebInfLibJars()
+	public URL[] findWebInfLibJars()
 	{		
 		try
 		{
@@ -120,4 +113,20 @@ public class ClasspathUtil
 		}
 	}
 
+	public URL findWebBaseDir()
+	{
+		try
+		{
+			URL url = findWebInfLibPath();
+			File webInfClassesFile = new File(url.toURI());
+			File webRoot = webInfClassesFile.getParentFile().getParentFile();
+			return webRoot.toURI().toURL();
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+	
+	
 }

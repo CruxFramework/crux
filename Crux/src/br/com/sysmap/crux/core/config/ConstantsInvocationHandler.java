@@ -30,24 +30,21 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 		try
 		{
 			PropertyResourceBundle properties = getPropertiesForLocale(targetInterface);
-			if (properties != null && properties.getString(method.getName()) != null)
+			if (properties != null)
 			{
 				return MessageFormat.format(properties.getString(method.getName()),args);
-			}
-			else
-			{
-				DefaultMessage annot = method.getAnnotation(DefaultMessage.class);
-				if (annot != null)
-				{
-					return MessageFormat.format(annot.value(),args);
-				}
-				return null;
 			}
 		}
 		catch (Throwable e)
 		{
-			return null;
+			// if property does not contains method key, use default
 		}
+		DefaultMessage annot = method.getAnnotation(DefaultMessage.class);
+		if (annot != null)
+		{
+			return MessageFormat.format(annot.value(),args);
+		}
+		return null;
 	}
 	
 	protected abstract <T> PropertyResourceBundle getPropertiesForLocale(final Class<T> targetInterface); 

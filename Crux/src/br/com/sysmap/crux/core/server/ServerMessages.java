@@ -113,4 +113,7 @@ public interface ServerMessages
 
 	@DefaultMessage("[messages 001] - Error initializing messagesClasses: {0}.")
 	Object messagesClassesInitializeError(String localizedMessage);
+
+	@DefaultMessage("[classpath 001] - Error initializing classPathResolver: {0}.")
+	Object classPathResolverInitializerError(String message);
 }

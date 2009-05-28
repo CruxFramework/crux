@@ -125,6 +125,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	protected void generateEventHandlersForScreen(TreeLogger logger,SourceWriter sourceWriter, Screen screen, 
 			Map<String, String> handlerClassNames, String implClassName)
 	{
+		Iterator<Event> events = screen.iterateEvents();
+		
+		while (events.hasNext())
+		{
+			Event event = events.next();
+			generateEventHandlerBlock(logger,sourceWriter, screen.getId(), event, handlerClassNames, implClassName);
+		}
+		
 		Iterator<Widget> iterator = screen.iterateWidgets();
 		while (iterator.hasNext())
 		{
@@ -133,6 +141,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 
 		}
 	}
+
 	/**
 	 * For each widget, create the inclusion block for controllers used by it.
 	 * @param logger

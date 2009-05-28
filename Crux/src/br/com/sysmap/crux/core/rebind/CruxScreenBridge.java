@@ -43,11 +43,10 @@ public class CruxScreenBridge
 	private static CruxScreenBridge instance = new CruxScreenBridge();
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
-	//Woww :) Thanks to GWT different JVMs for generators, 
-	//the only way to obtain these informations is using a bridge in file system
+	//Woww :) How GWT generators and the application server run in different JVMs, 
+	//the only way to obtain these informations is using a bridge in file system.
 	private File screenRequestedBridgeFile;
 	private File screenResolverBridgeFile;
-	private File webBaseDirBridgeFile;
 	
 	private CruxScreenBridge() 
 	{
@@ -58,11 +57,9 @@ public class CruxScreenBridge
 		}
 		
 		screenRequestedBridgeFile = new File(tmpDir+"screenRequestedBridgeFile");
-		screenRequestedBridgeFile.deleteOnExit();
+//		screenRequestedBridgeFile.deleteOnExit();
 		screenResolverBridgeFile = new File(tmpDir+"screenResolverBridgeFile");
-		screenResolverBridgeFile.deleteOnExit();
-		webBaseDirBridgeFile = new File(tmpDir+"webBaseDirBridgeFile");
-		webBaseDirBridgeFile.deleteOnExit();
+//		screenResolverBridgeFile.deleteOnExit();
 	}
 
 	/**
@@ -145,42 +142,6 @@ public class CruxScreenBridge
 		{
 			logger.info(messages.screenBridgeErrorReadingScreenResolver(), e);
 			// it is not an error... If none registered, just use default screenResourceResolver
-			return null;
-		}
-	}
-	
-	/** 
-	 * Inform the web base dir.
-	 */
-	public void registerWebBaseDir(String webBaseDir)
-	{
-		PrintWriter writer;
-		try 
-		{
-			writer = new PrintWriter(webBaseDirBridgeFile);
-			writer.println(webBaseDir);
-			writer.close();
-		} 
-		catch (FileNotFoundException e) 
-		{
-			logger.error(messages.screenBridgeErrorRegisteringWebBaseDir(e.getLocalizedMessage()), e);
-		}
-	}
-	
-	/**
-	 * Return the web base dir.
-	 * @return
-	 */
-	public String getWebBaseDir() 
-	{
-		try 
-		{
-			BufferedReader reader = new BufferedReader(new FileReader(webBaseDirBridgeFile));
-			return reader.readLine();
-		} 
-		catch (Exception e) 
-		{
-			logger.error(messages.screenBridgeErrorReadingwebBaseDir(e.getLocalizedMessage()), e);
 			return null;
 		}
 	}

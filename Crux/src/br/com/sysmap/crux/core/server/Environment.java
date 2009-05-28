@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 
 import com.google.gwt.dev.HostedMode;
 
@@ -90,6 +90,6 @@ public class Environment
 	 */
 	public static File getWebBaseDir() throws Exception
 	{
-		return new File(CruxScreenBridge.getInstance().getWebBaseDir());
+		return new File(ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir().toURI());
 	}
 }
