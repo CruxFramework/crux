@@ -74,6 +74,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		composer.addImport("br.com.sysmap.crux.core.client.event.CruxEvent");
 		composer.addImport("com.google.gwt.event.shared.GwtEvent");
 		composer.addImport("com.google.gwt.user.client.ui.HasValue");
+		composer.addImport("com.google.gwt.user.client.ui.HasText");
 		composer.addImport("com.google.gwt.user.client.ui.Widget");
 		
 		composer.addImplementedInterface("br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers");
@@ -231,9 +232,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
 		}
 		
-		sourceWriter.println("Widget __wid = null;");
-		
 		generateAutoCreateFields(logger, handlerClass, sourceWriter);
+
+		if (controllerAnnot != null && controllerAnnot.autoBind())
+		{
+			sourceWriter.println("wrapper.updateControllerObjects();");
+		}
+
+		
 		Method[] methods = handlerClass.getMethods(); 
 
 		boolean first = true;
@@ -289,14 +295,19 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			sourceWriter.println(" else ");
 		}
 		sourceWriter.println("throw new Exception(\""+messages.errorinvokingGeneratedMethod()+" \"+metodo);");
-		if (!first)
+		if (!first && controllerAnnot != null && controllerAnnot.autoBind())
 		{
-			//generateScreenUpdateWidgets(logger, handlerClass, sourceWriter);
 			sourceWriter.println("wrapper.updateScreenWidgets();");
 		}
 		sourceWriter.println("}");
 		
 		generateScreenUpdateWidgetsFunction(logger, handlerClass, sourceWriter);
+		generateControllerUpdateObjectsFunction(logger, handlerClass, sourceWriter);
+		
+		sourceWriter.println("public boolean isAutoBindEnabled(){");
+		sourceWriter.println("return "+(controllerAnnot != null && controllerAnnot.autoBind())+";");
+		sourceWriter.println("}");
+				
 		sourceWriter.println("}");
 		
 		return className+"Wrapper";
@@ -363,19 +374,12 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			{
 				Class<?> type = getTypeForField(logger, field);
 
-				if (type.getAnnotation(ValueObject.class) != null)
-				{
-					generateDTOFieldPopulation(logger, "wrapper", controller, field,sourceWriter);
-				}
-				else
-				{
-					sourceWriter.println(field.getType().getName()+" _field"+field.getName()+"=GWT.create("+type.getName()+".class);");
-					generateFieldValueSet(logger, controller, field, "wrapper", "_field"+field.getName(), sourceWriter);
+				sourceWriter.println(field.getType().getName()+" _field"+field.getName()+"=GWT.create("+type.getName()+".class);");
+				generateFieldValueSet(logger, controller, field, "wrapper", "_field"+field.getName(), sourceWriter);
 
-					if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
-					{
-						sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+").setServiceEntryPoint(\"crux.rpc\");");
-					}
+				if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
+				{
+					sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+").setServiceEntryPoint(\"crux.rpc\");");
 				}
 			}
 		}
@@ -560,6 +564,48 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	/**
 	 * 
 	 * @param logger
+	 * @param controller
+	 * @param sourceWriter
+	 */
+	protected void generateControllerUpdateObjectsFunction(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
+	{
+		sourceWriter.println("public void updateControllerObjects(){");
+		sourceWriter.println("Widget __wid = null;");
+		generateControllerUpdateObjects(logger, "this", controller, sourceWriter);
+		sourceWriter.println("}");
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param controllerVariable
+	 * @param controller
+	 * @param sourceWriter
+	 */
+	protected void generateControllerUpdateObjects(TreeLogger logger, String controllerVariable, Class<?> controller, SourceWriter sourceWriter)
+	{
+		for (Field field : controller.getDeclaredFields()) 
+		{
+			if (field.getAnnotation(Create.class) != null)
+			{
+				Class<?> type = field.getType();
+
+				if (type.getAnnotation(ValueObject.class) != null)
+				{
+					generateDTOFieldPopulation(logger, controllerVariable, controller, field,sourceWriter);
+				}
+			}
+		}
+		
+		if (controller.getSuperclass() != null)
+		{
+			generateControllerUpdateObjects(logger, controllerVariable, controller.getSuperclass(), sourceWriter);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param logger
 	 * @param controllerVariable
 	 * @param controller
 	 * @param sourceWriter
@@ -642,12 +688,25 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 				generateFieldValueSet(logger, voClass, field, parentVariable, "((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").getValue()", sourceWriter);
 			}
 			sourceWriter.println("}");
+			sourceWriter.println("else if ("+valueVariable+" != null && "+valueVariable+" instanceof HasText){");
+			if (populateScreen)
+			{
+				sourceWriter.println("Object o = " +getFieldValueGet(logger, voClass, field, parentVariable)+";");
+				sourceWriter.println("((HasText)"+valueVariable+").setText(\"\"+(o!=null?o:\"\"));");
+			}
+			else
+			{
+				generateFieldValueSet(logger, voClass, field, parentVariable, "((HasText)"+valueVariable+").getText()", sourceWriter);
+			}
+			sourceWriter.println("}");
 		}
 		else if (type.getAnnotation(ValueObject.class) != null)
 		{
 			if (!populateScreen)
 			{
+				sourceWriter.println("if (" +getFieldValueGet(logger, voClass, field, parentVariable)+"==null){");
 				generateFieldValueSet(logger, voClass, field, parentVariable, "new "+type.getName()+"()", sourceWriter);
+				sourceWriter.println("}");
 			}
 			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable);
 			if (parentVariable != null)

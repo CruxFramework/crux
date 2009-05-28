@@ -25,4 +25,5 @@ import java.lang.annotation.Target;
 public @interface Controller {
 	String value();
 	boolean statefull() default true;
+	boolean autoBind() default true;
 }

@@ -49,7 +49,10 @@ public abstract class AsyncCallbackAdapter<T> implements AsyncCallback<T>
 		}
 		finally
 		{
-			this.eventHandler.updateScreenWidgets();
+			if (eventHandler.isAutoBindEnabled())
+			{
+				this.eventHandler.updateScreenWidgets();
+			}
 		}
 	}
 	
@@ -61,7 +64,10 @@ public abstract class AsyncCallbackAdapter<T> implements AsyncCallback<T>
 		}
 		finally
 		{
-			this.eventHandler.updateScreenWidgets();
+			if (eventHandler.isAutoBindEnabled())
+			{
+				this.eventHandler.updateScreenWidgets();
+			}
 		}
 	}
 	

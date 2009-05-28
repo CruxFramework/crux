@@ -58,5 +58,8 @@ public interface ClientMessages extends Messages
 	
 	@DefaultMessage("[callback - 001] - An Invalid controller was passed to AsyncCallbackAdapter.")
 	String asyncCallbackInvalidHandlerError();
+
+	@DefaultMessage("[screen - 001] - An Invalid controller was passed to update screen or DTOs.")
+	String screenInvalidHandlerError();
 	
 }

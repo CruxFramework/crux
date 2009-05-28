@@ -24,4 +24,8 @@ public interface EventClientHandlerInvoker
 	void invoke(String method, CruxEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
 	
 	void updateScreenWidgets();
+
+	void updateControllerObjects();
+	
+	boolean isAutoBindEnabled();
 }

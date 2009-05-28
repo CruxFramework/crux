@@ -19,7 +19,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.JSEngine;
 import br.com.sysmap.crux.core.client.event.Event;
+import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.EventFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -276,5 +278,39 @@ public class Screen
 	public static Screen get()
 	{
 		return ScreenFactory.getInstance().getScreen();
+	}
+	
+	/**
+	 * Update widgets on screen that have the same id of fields mapped with ValueObject
+	 * @param eventHandler
+	 */
+	public void updateScreenWidgets(Object eventHandler)
+	{
+		if (eventHandler != null)
+		{
+			if (!(eventHandler instanceof EventClientHandlerInvoker))
+			{
+				throw new ClassCastException(JSEngine.messages.screenInvalidHandlerError());
+			}
+
+			((EventClientHandlerInvoker) eventHandler).updateScreenWidgets();
+		}
+	}
+	
+	/**
+	 * Update fields mapped with ValueObject from widgets that have similar names.
+	 * @param eventHandler
+	 */
+	public void updateControllerObjects(Object eventHandler)
+	{
+		if (eventHandler != null)
+		{
+			if (!(eventHandler instanceof EventClientHandlerInvoker))
+			{
+				throw new ClassCastException(JSEngine.messages.screenInvalidHandlerError());
+			}
+			((EventClientHandlerInvoker) eventHandler).updateControllerObjects();
+
+		}
 	}
 }
