@@ -1,0 +1,12 @@
+/******************************************************************************
+	Label
+*******************************************************************************/
+.gwt-Label 
+{
+	color: #4E4E4E;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+	padding-top: 5px;
+	display: inline;
+}

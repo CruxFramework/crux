@@ -90,6 +90,7 @@ public class DecoratedPanel extends CellPanel
 	 */
 	public void setContentWidget(Widget w)
 	{
+		cleanEmptySpaces(middleCenterCell);
 		add(w, middleCenterCell);
 	}
 	
@@ -99,6 +100,7 @@ public class DecoratedPanel extends CellPanel
 	 */
 	public void setContentText(String text)
 	{
+		cleanEmptySpaces(middleCenterCell);
 		middleCenterCell.setInnerText(text);
 	}
 	
@@ -108,7 +110,21 @@ public class DecoratedPanel extends CellPanel
 	 */
 	public void setContentHtml(String html)
 	{
+		cleanEmptySpaces(middleCenterCell);
 		middleCenterCell.setInnerHTML(html);
+	}
+
+	/**
+	 * @param middleCenterCell2
+	 */
+	private void cleanEmptySpaces(Element cell)
+	{
+		String text = cell.getInnerText();
+		
+		if(text != null && text.trim().length() == 0)
+		{
+			cell.setInnerText("");
+		}
 	}
 
 	/**
