@@ -18,23 +18,23 @@
 /******************************************************************************
 	Decorated Button
 *******************************************************************************/
-.crux-DecoratedButton, .crux-DecoratedButton-down-hovering, .crux-DecoratedButton .html-face
-{
-	display: inline;
-}
-.crux-DecoratedButton, .crux-DecoratedButton-down-hovering, .crux-DecoratedButton .html-face-table
+.crux-DecoratedButton
 {
 	height: 18px;
 }
-.crux-DecoratedButton-down-hovering .centerCell
+.crux-DecoratedButton-down .centerCell
 {
 	padding-top: 2px;
 }
-.crux-DecoratedButton .leftCell
+.crux-DecoratedButton .leftCell 
 {
 	width:2px;
 	font-size: 0px;
 	background: url(decorated-button-left.gif) no-repeat top left;
+}
+.crux-DecoratedButton-disabled .leftCell
+{
+	background: url(decorated-button-left-disabled.gif) no-repeat top left;
 }
 .crux-DecoratedButton .centerCell
 {
@@ -47,11 +47,22 @@
 	padding-right: 3px;
 	cursor: pointer;
 }
+.crux-DecoratedButton-disabled .centerCell
+{
+	background: url(decorated-button-center-disabled.gif) repeat-x top center;
+	font-family:Arial,Verdana,Helvetica;
+	font-weight: bold;
+	font-size:11px;
+}
 .crux-DecoratedButton .rightCell
 {
 	width:2px;
 	font-size: 0px;
 	background: url(decorated-button-right.gif) repeat-x top right;
+}
+.crux-DecoratedButton .rightCell
+{
+	background: url(decorated-button-right-disabled.gif) no-repeat top right;
 }
 
 /******************************************************************************
