@@ -87,7 +87,16 @@ public class DeclaredI18NMessagesGenerator extends AbstractRegisteredElementsGen
 	
 	protected void generateGetMessageBlock(TreeLogger logger, SourceWriter sourceWriter, Widget widget, Map<String, Boolean> added)
 	{
-		String text = widget.getText();
+		Iterator<String> iterator = widget.iterateProperties();
+		while (iterator.hasNext())
+		{
+			String property = (String) iterator.next();
+			generateGetMessageBlockForProperty(logger, sourceWriter, added, property);
+		}
+	}
+
+	protected void generateGetMessageBlockForProperty(TreeLogger logger, SourceWriter sourceWriter, Map<String, Boolean> added, String text)
+	{
 		if (text != null && isKeyReference(text))
 		{
 			String[] messageParts = getKeyMessageParts(text);

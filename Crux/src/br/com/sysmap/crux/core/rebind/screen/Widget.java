@@ -32,6 +32,7 @@ public class Widget
 	protected String text;
 
 	protected Map<String, Event> events = new HashMap<String, Event>();
+	protected Map<String, String> properties = new HashMap<String, String>();
 	
 	
 	public Widget() 
@@ -51,6 +52,24 @@ public class Widget
 		}
 	}
 	
+	public String getProperty(String propId)
+	{
+		return properties.get(propId);
+	}
+	
+	public Iterator<String> iterateProperties()
+	{
+		return properties.values().iterator();
+	}
+	
+	protected void addProperty(String id, String value)
+	{
+		if (id != null)
+		{
+			properties.put(id, value);
+		}
+	}
+	
 	public Event getEvent(String evtId)
 	{
 		return events.get(evtId);
@@ -60,7 +79,7 @@ public class Widget
 	{
 		return events.values().iterator();
 	}
-	
+
 	public boolean equals(Object obj) 
 	{
     	if (obj == null) return false;
@@ -112,15 +131,5 @@ public class Widget
 	public void setFormatter(String formatter) 
 	{
 		this.formatter = formatter;
-	}
-
-	public String getText()
-	{
-		return text;
-	}
-
-	public void setText(String text)
-	{
-		this.text = text;
 	}
 }
