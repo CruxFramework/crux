@@ -45,7 +45,7 @@
 	background: url(decorated-button-center.gif) repeat-x top center;
 	padding-left: 3px;
 	padding-right: 3px;
-	cursor: pointer;
+	cursor: default;
 }
 .crux-DecoratedButton-disabled .centerCell
 {
@@ -86,6 +86,12 @@
 	color: #0066CC;
 	text-align: left;
 	font-family: Verdana, Arial, Helvetica;
+	background: url(title-panel-blue.gif) no-repeat top center;
+}
+.crux-TitlePanel .topCenterRightCell 
+{
+	width: 0px;
+	font-size: 0px;
 	background: url(title-panel-blue.gif) no-repeat top center;
 }
 .crux-TitlePanel .topRightCell
@@ -148,6 +154,12 @@
 	font-family: Verdana, Arial, Helvetica;
 	background: url(title-panel-blue.gif) no-repeat top center;
 }
+.crux-CollapsePanel .topCenterRightCell 
+{
+	width: 11px;
+	font-size: 0px;
+	background: url(title-panel-blue.gif) no-repeat top center;
+}
 .crux-CollapsePanel .topRightCell
 {
 	width:5px;
@@ -201,6 +213,12 @@
 }
 .crux-DecoratedPanel .topCenterCell 
 {
+	font-size: 0px;
+	background: url(decorated-panel-bold-gray.gif) no-repeat top center;
+}
+.crux-DecoratedPanel .topCenterRightCell 
+{
+	width: 0px;
 	font-size: 0px;
 	background: url(decorated-panel-bold-gray.gif) no-repeat top center;
 }

@@ -33,6 +33,7 @@ public class DecoratedPanel extends CellPanel
 	private Element topLine;
 	private Element topLeftCell;
 	private Element topCenterCell;
+	private Element topCenterRightCell;
 	private Element topRightCell;
 	
 	private Element middleLine;
@@ -54,20 +55,24 @@ public class DecoratedPanel extends CellPanel
 		topLine = DOM.createTR();
 		topLeftCell = createTd("topLeftCell");
 		topCenterCell = createTd("topCenterCell");
+		topCenterRightCell = createTd("topCenterRightCell");
 		topRightCell = createTd("topRightCell");
 		
 		middleLine = DOM.createTR();
 		middleLeftCell = createTd("middleLeftCell");
 		middleCenterCell = createTd("middleCenterCell");
+		middleCenterCell.setPropertyInt("colSpan", 2);
 		middleRightCell = createTd("middleRightCell");
 		
 		bottomLine = DOM.createTR();
 		bottomLeftCell = createTd("bottomLeftCell");
 		bottomCenterCell = createTd("bottomCenterCell");
+		bottomCenterCell.setPropertyInt("colSpan", 2);
 		bottomRightCell = createTd("bottomRightCell");
 		
 		DOM.appendChild(topLine, topLeftCell);
 		DOM.appendChild(topLine, topCenterCell);
+		DOM.appendChild(topLine, topCenterRightCell);
 		DOM.appendChild(topLine, topRightCell);
 		DOM.appendChild(getBody(), topLine);
 	   	    
@@ -236,6 +241,14 @@ public class DecoratedPanel extends CellPanel
 	public Element getBottomRightCell()
 	{
 		return bottomRightCell;
+	}
+	
+	/**
+	 * @return the topCenterRightCell
+	 */
+	public Element getTopCenterRightCell()
+	{
+		return topCenterRightCell;
 	}
 
 	/**

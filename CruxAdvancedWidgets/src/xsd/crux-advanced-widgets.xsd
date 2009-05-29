@@ -105,6 +105,8 @@
 			<xs:extension base="basic:AbstractWidget">
 				<xs:attribute name="leftToRightButtonText"/>
 				<xs:attribute name="rightToLeftButtonText"/>
+				<xs:attribute name="leftListLabel"/>
+				<xs:attribute name="rightListLabel"/>
 				<xs:attribute name="visibleItemCount" type="xs:positiveInteger"/>
 			</xs:extension>
 		</xs:complexContent>

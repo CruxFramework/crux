@@ -33,6 +33,12 @@
 			<xsl:if test="string-length(@visibleItemCount) > 0">
 				<xsl:attribute name="_visibleItemCount" select="@visibleItemCount"/>
 			</xsl:if>
+			<xsl:if test="string-length(@leftListLabel) > 0">
+				<xsl:attribute name="_leftListLabel" select="@leftListLabel"/>
+			</xsl:if>
+			<xsl:if test="string-length(@rightListLabel) > 0">
+				<xsl:attribute name="_rightListLabel" select="@rightListLabel"/>
+			</xsl:if>
 		</xsl:element> 
 	</xsl:template>
 	

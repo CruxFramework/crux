@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -41,6 +42,10 @@ public class TransferList extends Composite
 	private ListBox rightList;
 	private Button moveToRightButton;
 	private Button moveToLeftButton;
+
+	private Label leftListLabel;
+
+	private Label rightListLabel;
 	
 	/**
 	 * TODO - Gessé - Comment this
@@ -126,18 +131,26 @@ public class TransferList extends Composite
 	{
 		HorizontalPanel panel = new HorizontalPanel();
 		panel.setStyleName(DEFAULT_STYLE_NAME);
-				
+		
+		VerticalPanel vPanelLeft = new VerticalPanel();
+		this.leftListLabel = new Label();
 		this.leftList = new ListBox(true);
 		this.leftList.setStyleName("leftList");
-		panel.add(this.leftList);	
+		vPanelLeft.add(this.leftListLabel);
+		vPanelLeft.add(this.leftList);
+		panel.add(vPanelLeft);
 		
 		VerticalPanel commandsPanel = createCommands();
 		panel.add(commandsPanel);
 		panel.setCellVerticalAlignment(commandsPanel, HasVerticalAlignment.ALIGN_MIDDLE);
 		
+		VerticalPanel vPanelRight = new VerticalPanel();
+		this.rightListLabel = new Label();
 		this.rightList = new ListBox(true);
 		this.rightList.setStyleName("rightList");
-		panel.add(this.rightList);
+		vPanelRight.add(this.rightListLabel);
+		vPanelRight.add(this.rightList);
+		panel.add(vPanelRight);
 		
 		return panel;
 	}
@@ -212,6 +225,22 @@ public class TransferList extends Composite
 	public void setMoveToLeftButtonText(String text)
 	{
 		this.moveToLeftButton.setText(text);
+	}
+	
+	/**
+	 * @param label
+	 */
+	public void setLeftListLabel(String label)
+	{
+		this.leftListLabel.setText(label);
+	}
+	
+	/**
+	 * @param label
+	 */
+	public void setRightListLabel(String label)
+	{
+		this.rightListLabel.setText(label);
 	}
 	
 	/**

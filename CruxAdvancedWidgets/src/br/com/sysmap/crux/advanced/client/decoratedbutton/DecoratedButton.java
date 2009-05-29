@@ -70,11 +70,14 @@ public class DecoratedButton extends FocusWidget implements HasText
 		TableCellElement tdLeft = DOM.createTD().cast();
 		tdLeft.setClassName("leftCell");
 		tdLeft.setInnerHTML("&nbsp;");
+		makeUnselectable(tdLeft);
 		tr.appendChild(tdLeft);
 
 		TableCellElement tdCenter = DOM.createTD().cast();
 		tdCenter.setClassName("centerCell");
+		tdCenter.setPropertyBoolean("noWrap", true);
 		tdCenter.setAlign("center");
+		makeUnselectable(tdCenter);
 		tr.appendChild(tdCenter);
 
 		this.faceText = tdCenter;
@@ -82,9 +85,19 @@ public class DecoratedButton extends FocusWidget implements HasText
 		TableCellElement tdRight = DOM.createTD().cast();
 		tdRight.setClassName("rightCell");
 		tdRight.setInnerHTML("&nbsp;");
+		makeUnselectable(tdRight);
 		tr.appendChild(tdRight);
 
 		return table;
+	}
+
+	/**
+	 * @param element
+	 */
+	private void makeUnselectable(TableCellElement element)
+	{
+		element.setPropertyString("unselectable", "on");
+		element.getStyle().setProperty("MozUserSelect", "none");
 	}
 
 	public void setText(String text)

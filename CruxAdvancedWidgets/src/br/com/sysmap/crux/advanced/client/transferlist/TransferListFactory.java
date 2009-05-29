@@ -39,12 +39,30 @@ public class TransferListFactory extends CompositeFactory<TransferList>
 		super.processAttributes(widget, element, widgetId);
 		
 		String leftToRightButtonText = element.getAttribute("_leftToRightButtonText");
+		if(leftToRightButtonText != null && leftToRightButtonText.length() > 0)
+		{
+			widget.setMoveToRightButtonText(ScreenFactory.getInstance().getDeclaredMessage(leftToRightButtonText));
+		}
+		
 		String rightToLeftButtonText = element.getAttribute("_rightToLeftButtonText");
+		if(rightToLeftButtonText != null && rightToLeftButtonText.length() > 0)
+		{
+			widget.setMoveToLeftButtonText(ScreenFactory.getInstance().getDeclaredMessage(rightToLeftButtonText));
+		}
+		
+		String leftListLabel = element.getAttribute("_leftListLabel");
+		if(leftListLabel != null && leftListLabel.length() > 0)
+		{
+			widget.setLeftListLabel(ScreenFactory.getInstance().getDeclaredMessage(leftListLabel));
+		}
+		
+		String rightListLabel = element.getAttribute("_rightListLabel");
+		if(rightListLabel != null && rightListLabel.length() > 0)
+		{
+			widget.setRightListLabel(ScreenFactory.getInstance().getDeclaredMessage(rightListLabel));
+		}	
+		
 		String visibleItems = element.getAttribute("_visibleItemCount");
-		
-		widget.setMoveToLeftButtonText(ScreenFactory.getInstance().getDeclaredMessage(rightToLeftButtonText));
-		widget.setMoveToRightButtonText(ScreenFactory.getInstance().getDeclaredMessage(leftToRightButtonText));
-		
 		if(visibleItems != null && visibleItems.length() > 0)
 		{
 			widget.setVisibleItemCount(Integer.parseInt(visibleItems));
