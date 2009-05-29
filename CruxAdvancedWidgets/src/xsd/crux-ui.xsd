@@ -452,6 +452,7 @@
 		<xs:attribute name="tooltip"/>
 		<xs:attribute name="styleName"/>
 		<xs:attribute name="style"/>
+		<xs:attribute name="onLoadWidget"/>
 	</xs:complexType>
 	
 	<xs:complexType name="AbstractHtmlInput">
