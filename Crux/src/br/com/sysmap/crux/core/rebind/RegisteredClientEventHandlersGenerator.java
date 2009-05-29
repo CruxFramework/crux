@@ -662,7 +662,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		{
 			name = field.getAnnotation(ScreenBind.class).value();
 		}
-		if (name == null)
+		if (name == null || name.length() == 0)
 		{
 			name = field.getName();
 		}
