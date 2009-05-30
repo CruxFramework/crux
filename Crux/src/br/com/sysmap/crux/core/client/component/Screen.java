@@ -242,21 +242,18 @@ public class Screen
 			{
 				public void run() 
 				{
-					for (int i=0; i < handlerManager.getHandlerCount(ScreenLoadEvent.TYPE); i++) 
+					try 
 					{
-						try 
-						{
-							DeferredCommand.addCommand(new Command() {
-						        public void execute() 
-						        {
-						        	ScreenLoadEvent.fire(Screen.this);
-						        }
-						      });							
-						} 
-						catch (RuntimeException e) 
-						{
-							GWT.log(e.getLocalizedMessage(), e);
-						}
+						DeferredCommand.addCommand(new Command() {
+							public void execute() 
+							{
+								ScreenLoadEvent.fire(Screen.this);
+							}
+						});							
+					} 
+					catch (RuntimeException e) 
+					{
+						GWT.log(e.getLocalizedMessage(), e);
 					}
 				}
 			}.schedule(1); // Waits for browser starts the rendering process

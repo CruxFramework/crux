@@ -224,15 +224,17 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		
 		if (singleton)
 		{
-			sourceWriter.println("if (this.wrapper == null)");
+			sourceWriter.println("if (this.wrapper == null){");
 			sourceWriter.println("this.wrapper = new "+className+"Wrapper();");
+			generateAutoCreateFields(logger, handlerClass, sourceWriter);
+			sourceWriter.println("}");
 		}
 		else
 		{
 			sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
+			generateAutoCreateFields(logger, handlerClass, sourceWriter);
 		}
 		
-		generateAutoCreateFields(logger, handlerClass, sourceWriter);
 
 		if (controllerAnnot != null && controllerAnnot.autoBind())
 		{
@@ -692,7 +694,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			if (populateScreen)
 			{
 				sourceWriter.println("Object o = " +getFieldValueGet(logger, voClass, field, parentVariable)+";");
-				sourceWriter.println("((HasText)"+valueVariable+").setText(\"\"+(o!=null?o:\"\"));");
+				sourceWriter.println("((HasText)"+valueVariable+").setText(String.valueOf(o!=null?o:\"\"));");
 			}
 			else
 			{
