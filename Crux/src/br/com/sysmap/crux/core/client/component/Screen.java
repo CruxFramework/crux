@@ -119,9 +119,23 @@ public class Screen
 		return (T) w;
 	}
 	
-	void addWidget(String id, Widget widget)
+	public void addWidget(String id, Widget widget)
 	{
 		widgets.put(id, widget);
+	}
+	
+	public void removeWidget(String id)
+	{
+		removeWidget(id, true);
+	}
+
+	public void removeWidget(String id, boolean removeFromDOM)
+	{
+		Widget widget = widgets.remove(id);
+		if (widget != null && removeFromDOM)
+		{
+			widget.removeFromParent();
+		}
 	}
 
 	public Iterator<String> iteratorWidgetsIds()
@@ -310,4 +324,23 @@ public class Screen
 
 		}
 	}
+	
+	public static Widget get(String id)
+	{
+		return Screen.get().getWidget(id);
+	}
+	
+	/**
+	 * Generic version of <code>getWidget</code> method
+	 * @param <T>
+	 * @param id
+	 * @param clazz
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Widget> T get(String id, Class<T> clazz)
+	{
+		return Screen.get().getWidget(id, clazz);
+	}
+	
 }
