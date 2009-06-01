@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
-import java.io.IOException;
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -36,9 +36,14 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 		try
 		{
 			URL url = getClass().getResource("/"+screenId);
+			if (url == null)
+			{
+				url = new File(screenId).toURI().toURL();
+			}
+			
 			return url.openStream();
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			throw new InterfaceConfigException(messages.screenResourceResolverFindResourceError(screenId, e.getMessage()), e);
 		}
