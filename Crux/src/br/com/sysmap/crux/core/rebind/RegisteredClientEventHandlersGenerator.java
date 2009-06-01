@@ -341,6 +341,11 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 */
 	protected boolean isHandlerMethodSignatureValid(Method method)
 	{
+		if (!Modifier.isPublic(method.getModifiers()))
+		{
+			return false;
+		}
+		
 		Class<?>[] parameters = method.getParameterTypes();
 		if (parameters != null && parameters.length != 0 && parameters.length != 1)
 		{
