@@ -35,10 +35,16 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 	{
 		try
 		{
-			URL url = getClass().getResource("/"+screenId);
+			URL url = getClass().getResource(screenId);
+			
 			if (url == null)
 			{
-				url = new File(screenId).toURI().toURL();
+				url = getClass().getResource("/" + screenId);
+				
+				if (url == null)
+				{
+					url = new File(screenId).toURI().toURL();
+				}
 			}
 			
 			return url.openStream();
