@@ -283,15 +283,6 @@ public class Screen
 	}
 	
 	/**
-	 * Gets the current screen
-	 * @return
-	 */
-	public static Screen get()
-	{
-		return ScreenFactory.getInstance().getScreen();
-	}
-	
-	/**
 	 * Update widgets on screen that have the same id of fields mapped with ValueObject
 	 * @param eventHandler
 	 */
@@ -325,6 +316,20 @@ public class Screen
 		}
 	}
 	
+	/**
+	 * Gets the current screen
+	 * @return
+	 */
+	public static Screen get()
+	{
+		return ScreenFactory.getInstance().getScreen();
+	}
+	
+	/**
+	 * Gets a widget on the current screen
+	 * @param id
+	 * @return
+	 */
 	public static Widget get(String id)
 	{
 		return Screen.get().getWidget(id);
@@ -341,6 +346,25 @@ public class Screen
 	public static <T extends Widget> T get(String id, Class<T> clazz)
 	{
 		return Screen.get().getWidget(id, clazz);
+	}
+	
+	/**
+	 * Remove a widget on the current screen
+	 * @param id
+	 */
+	public static void remove(String id)
+	{
+		Screen.get().removeWidget(id);
+	}
+	
+	/**
+	 * Remove a widget on the current screen
+	 * @param id
+	 * @param removeFromDOM
+	 */
+	public static void remove(String id, boolean removeFromDOM)
+	{
+		Screen.get().removeWidget(id, removeFromDOM);
 	}
 	
 }
