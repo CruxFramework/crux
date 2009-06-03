@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.component.Serializer.SerializationException;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.EventFactory;
@@ -382,10 +383,31 @@ public class Screen
 		InvokeControllerEvent controllerEvent = new InvokeControllerEvent();
 		if (serializedData != null)
 		{
-			// TODO: implementar deserializador
-			controllerEvent.setData(serializedData);
+			try
+			{
+				controllerEvent.setData(Serializer.deserialize(serializedData));
+			}
+			catch (SerializationException e)
+			{
+				GWT.log(e.getLocalizedMessage(), e);
+				Window.alert(e.getLocalizedMessage());
+			}
 		}
 		
 		EventFactory.callEvent(event, controllerEvent);		
+	}
+	
+	private native void callTopControllerAccessor(String call, String serializedData)/*-{
+		$wnd.top._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+
+	public void invokeControllerOnTop(String call) throws SerializationException
+	{
+		invokeControllerOnTop(call, null);
+	}
+
+	public void invokeControllerOnTop(String call, Object param) throws SerializationException
+	{
+		callTopControllerAccessor(call, Serializer.serialize(param));
 	}
 }
