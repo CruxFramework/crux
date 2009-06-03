@@ -22,24 +22,39 @@ package br.com.sysmap.crux.core.client.event;
 public class Event 
 {
 	private String id;
-	private String evtCall;
-	private boolean sync;
+	private String controller;
+	private String method;
 	
-	public Event(String id, String evtCall, boolean sync) {
+	
+	public Event(String id, String controller, String method) 
+	{
 		this.id = id;
-		this.evtCall = evtCall;
-		this.sync = sync;
+		this.controller = controller;
+		this.method = method;
 	}
 	
-	public String getId() {
+	public String getId() 
+	{
 		return id;
 	}
 
-	public String getEvtCall() {
-		return evtCall;
+	public String getController()
+	{
+		return controller;
 	}
 
-	public boolean isSync() {
-		return sync;
+	public void setController(String controller)
+	{
+		this.controller = controller;
+	}
+
+	public String getMethod()
+	{
+		return method;
+	}
+
+	public void setMethod(String method)
+	{
+		this.method = method;
 	}
 }

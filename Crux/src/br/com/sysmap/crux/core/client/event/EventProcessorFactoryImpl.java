@@ -47,55 +47,41 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 		{
 			public void processEvent(GwtEvent<?> sourceEvent)
 			{
-				final String evtCall = event.getEvtCall();
-				int dotPos = evtCall.indexOf('.');
-				if (dotPos > 0 && dotPos < evtCall.length()-1)
+				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)registeredClientEventHandlers.getEventHandler(event.getController());
+				if (handler == null)
 				{
-					String evtHandler = evtCall.substring(0, dotPos);
-					final String method = evtCall.substring(dotPos+1);
-					final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)registeredClientEventHandlers.getEventHandler(evtHandler);
-					if (handler == null)
-					{
-						Window.alert(JSEngine.messages.eventProcessorClientHandlerNotFound(evtHandler));
-						return;
-					}
-					try
-					{
-						handler.invoke(method, sourceEvent, this);
-					}
-					catch (Exception e) 
-					{
-						_exception = e;
-						GWT.log(e.getLocalizedMessage(), e);
-						Window.alert(JSEngine.messages.eventProcessorClientError(evtCall));
-					}
+					Window.alert(JSEngine.messages.eventProcessorClientHandlerNotFound(event.getController()));
+					return;
+				}
+				try
+				{
+					handler.invoke(event.getMethod(), sourceEvent, this);
+				}
+				catch (Exception e) 
+				{
+					_exception = e;
+					GWT.log(e.getLocalizedMessage(), e);
+					Window.alert(JSEngine.messages.eventProcessorClientError(event.getController()+"."+event.getMethod()));
 				}
 			}
 
 			public void processEvent(CruxEvent<?> sourceEvent)
 			{
-				final String evtCall = event.getEvtCall();
-				int dotPos = evtCall.indexOf('.');
-				if (dotPos > 0 && dotPos < evtCall.length()-1)
+				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)registeredClientEventHandlers.getEventHandler(event.getController());
+				if (handler == null)
 				{
-					String evtHandler = evtCall.substring(0, dotPos);
-					final String method = evtCall.substring(dotPos+1);
-					final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)registeredClientEventHandlers.getEventHandler(evtHandler);
-					if (handler == null)
-					{
-						Window.alert(JSEngine.messages.eventProcessorClientHandlerNotFound(evtHandler));
-						return;
-					}
-					try
-					{
-						handler.invoke(method, sourceEvent, this);
-					}
-					catch (Exception e) 
-					{
-						_exception = e;
-						GWT.log(e.getLocalizedMessage(), e);
-						Window.alert(JSEngine.messages.eventProcessorClientError(evtCall));
-					}
+					Window.alert(JSEngine.messages.eventProcessorClientHandlerNotFound(event.getController()));
+					return;
+				}
+				try
+				{
+					handler.invoke(event.getMethod(), sourceEvent, this);
+				}
+				catch (Exception e) 
+				{
+					_exception = e;
+					GWT.log(e.getLocalizedMessage(), e);
+					Window.alert(JSEngine.messages.eventProcessorClientError(event.getController()+"."+event.getMethod()));
 				}
 			}
 		};

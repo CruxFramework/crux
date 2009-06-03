@@ -60,6 +60,7 @@ public class Screen
 	{
 		this.id = id;
 		this.handlerManager = new HandlerManager(this);
+		createControllerAccessor(this);
 	}
 	
 	public String getId() 
@@ -367,4 +368,24 @@ public class Screen
 		Screen.get().removeWidget(id, removeFromDOM);
 	}
 	
+	private native void createControllerAccessor(Screen handler)/*-{
+		$wnd._cruxScreenControllerAccessor = function(call, serializedData){
+			handler.@br.com.sysmap.crux.core.client.component.Screen::invokeController(Ljava/lang/String;Ljava/lang/String;)(call, serializedData);
+		};
+	}-*/;
+	
+	
+	@SuppressWarnings("unused") // called by native code
+	private void invokeController(String call, String serializedData)
+	{
+		Event event = EventFactory.getEvent("_onInvokeController", call);
+		InvokeControllerEvent controllerEvent = new InvokeControllerEvent();
+		if (serializedData != null)
+		{
+			// TODO: implementar deserializador
+			controllerEvent.setData(serializedData);
+		}
+		
+		EventFactory.callEvent(event, controllerEvent);		
+	}
 }

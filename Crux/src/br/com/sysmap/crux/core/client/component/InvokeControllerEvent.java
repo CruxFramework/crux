@@ -13,26 +13,34 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind.screen;
+package br.com.sysmap.crux.core.client.component;
+
+import br.com.sysmap.crux.core.client.event.CruxEvent;
 
 /**
- * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
  */
-public class EventFactory  
+public class InvokeControllerEvent extends CruxEvent<Screen>
 {
-	public static Event getEvent(String evtId, String evt)
+	private Object data;
+	
+	/**
+	 * @param source
+	 * @param senderId
+	 */
+	InvokeControllerEvent()
 	{
-		if (evtId != null && evtId.trim().length() > 0 && evt != null && evt.trim().length() > 0)
-		{
-			int dotPos = evt.indexOf('.');
-			if (dotPos > 0 && dotPos < evt.length()-1)
-			{
-				String evtHandler = evt.substring(0, dotPos);
-				final String method = evt.substring(dotPos+1);				
-				return new Event(evtId, evtHandler, method);
-			}
-		}
-		return null;
+		super(Screen.get(), Screen.get().getId());
+	}
+
+	public Object getData()
+	{
+		return data;
+	}
+
+	void setData(Object data)
+	{
+		this.data = data;
 	}
 }

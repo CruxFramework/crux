@@ -60,20 +60,23 @@ public class EventFactory
 	{
 		try
 		{
-			if (evt != null && evt.trim().length() > 0)
+			if (evtId != null && evtId.trim().length() > 0 && evt != null && evt.trim().length() > 0)
 			{
-				String[] evtProps = evt.split("\\|");
-				if (evtProps.length == 0) return null;
-				
-				String call = evtProps[0];
-				boolean sync = false; 
-				
-				if (evtProps.length>1 && evtProps[1].length() > 0)
+				int dotPos = evt.indexOf('.');
+				if (dotPos > 0 && dotPos < evt.length()-1)
 				{
-					sync = SYNC_TYPE_SYNCHRONOUS.equals(evtProps[1]);
+					String evtHandler = evt.substring(0, dotPos);
+					final String method = evt.substring(dotPos+1);				
+					return new Event(evtId, evtHandler, method);
 				}
-
-				return new Event(evtId, call, sync);
+				else
+				{
+					throw new EventException(JSEngine.messages.eventFactoryInvalidHandlerMethodDeclaration());
+				}
+			}
+			else
+			{
+				throw new EventException(JSEngine.messages.eventFactoryEmptyEvent());
 			}
 		}
 		catch (Throwable e)
@@ -119,7 +122,7 @@ public class EventFactory
 		if (processor.hasException())
 		{
 			GWT.log(processor.exception().getLocalizedMessage(), processor.exception());
-			Window.alert(JSEngine.messages.eventProcessorClientError(event.getEvtCall()));
+			Window.alert(JSEngine.messages.eventProcessorClientError(event.getController()+"."+event.getMethod()));
 		}
 		else if (processor.validationMessage() != null)
 		{

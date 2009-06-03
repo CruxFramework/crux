@@ -33,7 +33,6 @@ import br.com.sysmap.crux.core.client.event.annotation.Validate;
 import br.com.sysmap.crux.core.rebind.screen.Event;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.Widget;
-import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -174,11 +173,9 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	protected void generateEventHandlerBlock(TreeLogger logger, SourceWriter sourceWriter, String widgetId, Event event, 
 			Map<String, String> added, String implClassName)
 	{
-		String evtCall = event.getEvtCall();
-		String handler;
 		try
 		{
-			handler = RegexpPatterns.REGEXP_DOT.split(evtCall)[0];
+			String handler = event.getController();
 			if (!added.containsKey(handler) && ClientControllers.getClientHandler(handler)!= null)
 			{
 				String genClass = generateEventHandlerInvokerClass(logger,sourceWriter,ClientControllers.getClientHandler(handler), implClassName);

@@ -13,26 +13,42 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind.screen;
+package br.com.sysmap.crux.core.client.event;
 
 /**
- * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
  */
-public class EventFactory  
+public class EventException extends RuntimeException
 {
-	public static Event getEvent(String evtId, String evt)
+	private static final long serialVersionUID = -1494786840509633213L;
+
+	public EventException()
 	{
-		if (evtId != null && evtId.trim().length() > 0 && evt != null && evt.trim().length() > 0)
-		{
-			int dotPos = evt.indexOf('.');
-			if (dotPos > 0 && dotPos < evt.length()-1)
-			{
-				String evtHandler = evt.substring(0, dotPos);
-				final String method = evt.substring(dotPos+1);				
-				return new Event(evtId, evtHandler, method);
-			}
-		}
-		return null;
+	}
+
+	/**
+	 * @param message
+	 */
+	public EventException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public EventException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public EventException(String message, Throwable cause)
+	{
+		super(message, cause);
 	}
 }

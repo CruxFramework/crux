@@ -17,8 +17,8 @@ package br.com.sysmap.crux.core.rebind.screen;
 
 public class Event extends br.com.sysmap.crux.core.client.event.Event
 {
-	public Event(String id, String evtCall, boolean sync) 
+	public Event(String id, String controller, String method) 
 	{
-		super(id, evtCall, sync);
+		super(id, controller, method);
 	}
 }

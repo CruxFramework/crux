@@ -29,6 +29,10 @@ public interface ClientMessages extends Messages
 	String eventProcessorClientHandlerNotFound(String handler);
 	@DefaultMessage("[event 002] - Error running client method ''{0}''.")
 	String eventProcessorClientError(String call);
+	@DefaultMessage("[event 003] - Event has no handler.")
+	String eventFactoryEmptyEvent();
+	@DefaultMessage("[event 004] - Invalid declaration for handler method. Correct syntaxe is ''handlerClass.method'' .")
+	String eventFactoryInvalidHandlerMethodDeclaration();
 	
 	//  screenFactory
 	@DefaultMessage("[screenFactory 001] - Error Creating widget: ''{0}''. See Log for more detail.")
@@ -61,5 +65,4 @@ public interface ClientMessages extends Messages
 
 	@DefaultMessage("[screen - 001] - An Invalid controller was passed to update screen or DTOs.")
 	String screenInvalidHandlerError();
-	
 }
