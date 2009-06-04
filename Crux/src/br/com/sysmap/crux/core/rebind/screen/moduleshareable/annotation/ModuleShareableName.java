@@ -13,15 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.component;
+package br.com.sysmap.crux.core.rebind.screen.moduleshareable.annotation;
 
-/**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- *
- */
-public interface ModuleShareable
-{
-	String serialize();
-	Object deserialize(String serializedData);
-	Object[] newArray(int size);
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface ModuleShareableName {
+	String value();
 }

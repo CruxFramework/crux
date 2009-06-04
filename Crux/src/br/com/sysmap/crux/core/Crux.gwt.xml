@@ -32,8 +32,8 @@
 	</generate-with>
 	
 	<!-- Specify the generator for registered module serializers .-->
-	<generate-with class="br.com.sysmap.crux.core.client.component.ModuleComunicationTypeSerializersGenerator">
-		<when-type-assignable class="br.com.sysmap.crux.core.client.component.ModuleComunicationTypeSerializers" />
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredModuleShareablesGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.component.RegisteredModuleShareables" />
 	</generate-with>
 
 	<!-- Specify the generator for resolve declared i18n messages .-->

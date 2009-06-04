@@ -15,8 +15,10 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +32,8 @@ public class Screen
 	protected String id;
 	protected Map<String, Widget> widgets = new HashMap<String, Widget>();
 	protected Map<String, Event> events = new HashMap<String, Event>();
+	protected List<String> controllers = new ArrayList<String>();
+	protected List<String> serializers = new ArrayList<String>();
 	
 	public Screen(String id) 
 	{
@@ -106,5 +110,47 @@ public class Screen
 	public Iterator<Event> iterateEvents()
 	{
 		return events.values().iterator();
+	}
+
+	/**
+	 * Import a controller into screen
+	 * @param event
+	 */
+	protected void addController(String controller)
+	{
+		if (controller != null)
+		{
+			controllers.add(controller);
+		}
+	}
+	
+	/**
+	 * Iterate over screen controllers
+	 * @return
+	 */
+	public Iterator<String> iterateControllers()
+	{
+		return controllers.iterator();
+	}
+
+	/**
+	 * Import a serializer for a ModuleShareable into screen
+	 * @param event
+	 */
+	protected void addSerializer(String serializer)
+	{
+		if (serializer != null)
+		{
+			serializers.add(serializer);
+		}
+	}
+	
+	/**
+	 * Iterate over screen serializers
+	 * @return
+	 */
+	public Iterator<String> iterateSerializers()
+	{
+		return serializers.iterator();
 	}
 }

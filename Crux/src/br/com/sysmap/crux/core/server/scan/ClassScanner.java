@@ -41,8 +41,8 @@ public class ClassScanner
 	{
 		scannerDB = new ScannerDB();
 		scannerDB.setIgnoredPackages(new String[]{"javax", "java", "sun", "com.sun", "org.apache", 
-												  "javassist", "br.com.sysmap.crux.core", 
-												  "org.json", "com.metaparadigm", "junit"});
+												  "javassist", "org.json", "net.sf.saxon", 
+												  "com.metaparadigm", "junit"});
 		scannerDB.setScanFieldAnnotations(false);
 		scannerDB.setScanMethodAnnotations(false);
 		scannerDB.setScanParameterAnnotations(false);

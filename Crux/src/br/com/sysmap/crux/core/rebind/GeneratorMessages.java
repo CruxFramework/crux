@@ -27,10 +27,10 @@ public interface GeneratorMessages
 	@DefaultMessage("[generator 001] - WidgetFactory not registered: ")
 	String errorGeneratingRegisteredWidgetFactoryNotRegistered();
 
-	@DefaultMessage("[generator 002] - Error for register client event handler. WidgetFactory: {0}. Error:{1}")
+	@DefaultMessage("[generator 002] - Error for register client event handler. Controller: {0}. Error:{1}")
 	String errorGeneratingRegisteredClientHandler(String widget, String errMesg);
 
-	@DefaultMessage("[generator 003] - Error for register client formatter. WidgetFactory: {0}. Error:{1}")
+	@DefaultMessage("[generator 003] - Error for register client formatter. Widget: {0}. Error:{1}")
 	String errorGeneratingRegisteredFormatter(String widget, String errMesg);
 
 	@DefaultMessage("[generator 004] - Error for register client class {0}:")
@@ -47,4 +47,7 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[controller 001] - Method Not Found: ")
 	String errorinvokingGeneratedMethod();
+
+	@DefaultMessage("[generator 008] - Error for register ModuleShareable serializer. Serializer: {0}. Error:{1}")
+	String errorGeneratingRegisteredModuleShareable(String serializer, String localizedMessage);
 }

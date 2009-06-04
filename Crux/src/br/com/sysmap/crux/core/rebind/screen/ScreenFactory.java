@@ -35,6 +35,7 @@ import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfigData;
 import br.com.sysmap.crux.core.server.ServerMessages;
+import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 /**
  * Factory for screens at the application's server side. It is necessary for GWT generators 
@@ -275,7 +276,31 @@ public class ScreenFactory
 			Attribute attr = (Attribute)object;
 			String attrName = attr.getName();
 			
-			if (!attrName.equals("id") && !attrName.equals("_type"))
+			if(attrName.equals("_useEventHandler"))
+			{
+				String handlerStr =  attr.getValue();
+				if (handlerStr != null)
+				{
+					String[] handlers = RegexpPatterns.REGEXP_COMMA.split(handlerStr);
+					for (String handler : handlers)
+					{
+						screen.addController(handler.trim());
+					}
+				}
+			}
+			else if(attrName.equals("_useModuleShareable"))
+			{
+				String serializerStr =  attr.getValue();
+				if (serializerStr != null)
+				{
+					String[] serializers = RegexpPatterns.REGEXP_COMMA.split(serializerStr);
+					for (String serializer : serializers)
+					{
+						screen.addSerializer(serializer.trim());
+					}
+				}
+			}
+			else if (!attrName.equals("id") && !attrName.equals("_type"))
 			{
 				if (attrName.startsWith("_on"))
 				{

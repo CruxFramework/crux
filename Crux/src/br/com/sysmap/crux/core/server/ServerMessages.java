@@ -81,7 +81,7 @@ public interface ServerMessages
 	@DefaultMessage("[Screen - 001] - Error setting property {0} for widget {1}.")
 	String screenPropertyError(String property, String widgetId);
 
-	@DefaultMessage("[formatters 002] - Error initializing formatter: {0}.")
+	@DefaultMessage("[formatters 001] - Error initializing formatter: {0}.")
 	String formattersFormatterInitializeError(String errMsg);
 
 	@DefaultMessage("[localeResolver - 001] - Error initializing LocaleResolver: {0}.")
@@ -116,4 +116,7 @@ public interface ServerMessages
 
 	@DefaultMessage("[classpath 001] - Error initializing classPathResolver: {0}.")
 	Object classPathResolverInitializerError(String message);
+
+	@DefaultMessage("[serializers 001] - Error initializing serializer: {0}.")
+	Object serializersSerializersInitializeError(String localizedMessage);
 }

@@ -30,9 +30,7 @@ import br.com.sysmap.crux.core.client.controller.ValueObject;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
 import br.com.sysmap.crux.core.client.event.annotation.Controller;
 import br.com.sysmap.crux.core.client.event.annotation.Validate;
-import br.com.sysmap.crux.core.rebind.screen.Event;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
-import br.com.sysmap.crux.core.rebind.screen.Widget;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -125,41 +123,13 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	protected void generateEventHandlersForScreen(TreeLogger logger,SourceWriter sourceWriter, Screen screen, 
 			Map<String, String> handlerClassNames, String implClassName)
 	{
-		Iterator<Event> events = screen.iterateEvents();
+		Iterator<String> controllers = screen.iterateControllers();
 		
-		while (events.hasNext())
+		while (controllers.hasNext())
 		{
-			Event event = events.next();
-			generateEventHandlerBlock(logger,sourceWriter, screen.getId(), event, handlerClassNames, implClassName);
-		}
-		
-		Iterator<Widget> iterator = screen.iterateWidgets();
-		while (iterator.hasNext())
-		{
-			Widget widget = iterator.next();
-			generateEventHandlersForWidget(logger, sourceWriter, widget, handlerClassNames, implClassName);
-
-		}
-	}
-
-	/**
-	 * For each widget, create the inclusion block for controllers used by it.
-	 * @param logger
-	 * @param sourceWriter
-	 * @param widget
-	 * @param addedHandler
-	 * @param addedCallback
-	 */
-	protected void generateEventHandlersForWidget(TreeLogger logger,SourceWriter sourceWriter, Widget widget, 
-			Map<String, String> addedHandler, String implClassName)
-	{
-		Iterator<Event> events = widget.iterateEvents();
-		
-		while (events.hasNext())
-		{
-			Event event = events.next();
-			generateEventHandlerBlock(logger,sourceWriter, widget.getId(), event, addedHandler, implClassName);
-		}
+			String controller = controllers.next();
+			generateEventHandlerBlock(logger,sourceWriter, controller, handlerClassNames, implClassName);
+		}		
 	}
 	
 	/**
@@ -170,21 +140,20 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param event
 	 * @param added
 	 */
-	protected void generateEventHandlerBlock(TreeLogger logger, SourceWriter sourceWriter, String widgetId, Event event, 
+	protected void generateEventHandlerBlock(TreeLogger logger, SourceWriter sourceWriter, String controller, 
 			Map<String, String> added, String implClassName)
 	{
 		try
 		{
-			String handler = event.getController();
-			if (!added.containsKey(handler) && ClientControllers.getClientHandler(handler)!= null)
+			if (!added.containsKey(controller) && ClientControllers.getClientHandler(controller)!= null)
 			{
-				String genClass = generateEventHandlerInvokerClass(logger,sourceWriter,ClientControllers.getClientHandler(handler), implClassName);
-				added.put(handler, genClass);
+				String genClass = generateEventHandlerInvokerClass(logger,sourceWriter,ClientControllers.getClientHandler(controller), implClassName);
+				added.put(controller, genClass);
 			}
 		}
 		catch (Throwable e) 
 		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandler(widgetId, e.getLocalizedMessage()), e);
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandler(controller, e.getLocalizedMessage()), e);
 		}
 	}
 	

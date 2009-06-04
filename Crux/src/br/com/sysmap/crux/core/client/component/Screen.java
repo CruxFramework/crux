@@ -55,11 +55,13 @@ public class Screen
 	protected boolean manageHistory = false;
 	protected IFrameElement historyFrame = null;
 	protected HandlerManager handlerManager;
+	protected ModuleComunicationSerializer serializer = null;
 	
 	public Screen(String id) 
 	{
 		this.id = id;
 		this.handlerManager = new HandlerManager(this);
+		this.serializer = new ModuleComunicationSerializer();
 		createControllerAccessor(this);
 	}
 	
@@ -384,7 +386,7 @@ public class Screen
 		{
 			try
 			{
-				controllerEvent.setData(ModuleComunicationSerializer.deserialize(serializedData));
+				controllerEvent.setData(serializer.deserialize(serializedData));
 			}
 			catch (ModuleComunicationException e)
 			{
@@ -416,7 +418,7 @@ public class Screen
 
 	public static void invokeControllerOnTop(String call, Object param) throws ModuleComunicationException
 	{
-		callTopControllerAccessor(call, ModuleComunicationSerializer.serialize(param));
+		callTopControllerAccessor(call, Screen.get().serializer.serialize(param));
 	}
 
 	public static  void invokeControllerOnOpener(String call) throws ModuleComunicationException
@@ -426,7 +428,7 @@ public class Screen
 
 	public static void invokeControllerOnOpener(String call, Object param) throws ModuleComunicationException
 	{
-		callOpenerControllerAccessor(call, ModuleComunicationSerializer.serialize(param));
+		callOpenerControllerAccessor(call, Screen.get().serializer.serialize(param));
 	}
 
 	public static void invokeControllerOnParent(String call) throws ModuleComunicationException
@@ -436,6 +438,6 @@ public class Screen
 
 	public static void invokeControllerOnParent(String call, Object param) throws ModuleComunicationException
 	{
-		callParentControllerAccessor(call, ModuleComunicationSerializer.serialize(param));
+		callParentControllerAccessor(call, Screen.get().serializer.serialize(param));
 	}
 }

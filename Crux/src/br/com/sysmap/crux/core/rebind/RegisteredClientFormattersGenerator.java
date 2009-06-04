@@ -68,23 +68,22 @@ public class RegisteredClientFormattersGenerator extends AbstractRegisteredEleme
 		sourceWriter.println("public "+implClassName+"(){ ");
 		
 		Iterator<Widget> iterator = screen.iterateWidgets();
-		Map<String, Boolean> addedHandler = new HashMap<String, Boolean>();
-		Map<String, Boolean> addedCallback = new HashMap<String, Boolean>();
+		Map<String, Boolean> added = new HashMap<String, Boolean>();
 		while (iterator.hasNext())
 		{
 			Widget widget = iterator.next();
-			generateFormattersForWidget(logger, sourceWriter, widget, addedHandler, addedCallback);
+			generateFormattersForWidget(logger, sourceWriter, widget, added);
 		}
 		sourceWriter.println("}");
 	} 
 	
-	protected void generateFormattersForWidget(TreeLogger logger,SourceWriter sourceWriter, Widget widget, Map<String, Boolean> addedHandler, Map<String, Boolean> addedCallback)
+	protected void generateFormattersForWidget(TreeLogger logger,SourceWriter sourceWriter, Widget widget, Map<String, Boolean> added)
 	{
 		String formatter = widget.getFormatter();
 		
 		if (formatter != null && formatter.length()>0)
 		{
-			generateFormatterBlock(logger,sourceWriter, widget.getId(), formatter, addedCallback);
+			generateFormatterBlock(logger,sourceWriter, widget.getId(), formatter, added);
 		}
 	}
 	
