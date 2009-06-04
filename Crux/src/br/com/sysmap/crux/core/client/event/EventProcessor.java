@@ -32,7 +32,7 @@ public abstract class EventProcessor
 
 	abstract void processEvent(GwtEvent<?> sourceEvent);
 	
-	abstract void processEvent(CruxEvent<?> sourceEvent);
+	abstract void processEvent(CruxEvent<?> sourceEvent, boolean fromOutOfModule);
 
 	public Throwable exception() 
 	{

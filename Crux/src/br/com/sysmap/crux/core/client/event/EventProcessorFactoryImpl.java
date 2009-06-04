@@ -65,7 +65,7 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 				}
 			}
 
-			public void processEvent(CruxEvent<?> sourceEvent)
+			public void processEvent(CruxEvent<?> sourceEvent, boolean fromOutOfModule)
 			{
 				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)registeredClientEventHandlers.getEventHandler(event.getController());
 				if (handler == null)
@@ -75,7 +75,7 @@ public class EventProcessorFactoryImpl implements IEventProcessorFactory{
 				}
 				try
 				{
-					handler.invoke(event.getMethod(), sourceEvent, this);
+					handler.invoke(event.getMethod(), sourceEvent, fromOutOfModule, this);
 				}
 				catch (Exception e) 
 				{

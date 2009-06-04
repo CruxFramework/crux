@@ -26,6 +26,7 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
+import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.ScreenBind;
 import br.com.sysmap.crux.core.client.controller.Validate;
 import br.com.sysmap.crux.core.client.controller.ValueObject;
@@ -178,14 +179,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 
 		sourceWriter.println("public void invoke(String metodo, GwtEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception{ ");
-		sourceWriter.println("invokeEvent(metodo, sourceEvent, eventProcessor);");
+		sourceWriter.println("invokeEvent(metodo, sourceEvent, false, eventProcessor);");
 		sourceWriter.println("}");
 
-		sourceWriter.println("public void invoke(String metodo, CruxEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception{ ");
-		sourceWriter.println("invokeEvent(metodo, sourceEvent, eventProcessor);");
+		sourceWriter.println("public void invoke(String metodo, CruxEvent<?> sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception{ ");
+		sourceWriter.println("invokeEvent(metodo, sourceEvent, fromOutOfModule, eventProcessor);");
 		sourceWriter.println("}");
 		
-		sourceWriter.println("public void invokeEvent(String metodo, Object sourceEvent, EventProcessor eventProcessor) throws Exception{ ");
+		sourceWriter.println("public void invokeEvent(String metodo, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception{ ");
 		sourceWriter.println("boolean __runMethod = true;");
 		
 		if (singleton)
@@ -219,7 +220,16 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 				{
 					sourceWriter.print("else ");
 				}
-				sourceWriter.println("if (\""+method.getName()+"\".equals(metodo)) {");
+				
+				ExposeOutOfModule exposesAnnot = method.getAnnotation(ExposeOutOfModule.class);
+				if (exposesAnnot != null && exposesAnnot.value())
+				{
+					sourceWriter.println("if (\""+method.getName()+"\".equals(metodo)) {");
+				}
+				else
+				{
+					sourceWriter.println("if (\""+method.getName()+"\".equals(metodo) && !fromOutOfModule) {");
+				}
 				Validate annot = method.getAnnotation(Validate.class);
 				if (annot != null)
 				{

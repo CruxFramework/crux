@@ -84,10 +84,15 @@ public class EventFactory
 
 	public static Object callEvent(Event event, CruxEvent<?> sourceEvent)
 	{
+		return callEvent(event, sourceEvent, false);
+	}
+	
+	public static Object callEvent(Event event, CruxEvent<?> sourceEvent, boolean fromOutOfModule)
+	{
 		try 
 		{
 			EventProcessor processor = br.com.sysmap.crux.core.client.event.EventProcessorFactory.getInstance().createEventProcessor(event);
-			processor.processEvent(sourceEvent);
+			processor.processEvent(sourceEvent, fromOutOfModule);
 			return processEventResult(event, processor);
 		}
 		catch (InterfaceConfigException e) 
@@ -96,7 +101,6 @@ public class EventFactory
 		}
 		return null;
 	}
-	
 	
 	public static Object callEvent(Event event, GwtEvent<?> sourceEvent)
 	{

@@ -13,19 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.event;
+package br.com.sysmap.crux.core.client.controller;
 
-import com.google.gwt.event.shared.GwtEvent;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface EventClientHandlerInvoker 
-{
-	void invoke(String metodo, GwtEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
-
-	void invoke(String method, CruxEvent<?> sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception;
-	
-	void updateScreenWidgets();
-
-	void updateControllerObjects();
-	
-	boolean isAutoBindEnabled();
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface ExposeOutOfModule {
+	boolean value() default true;
 }

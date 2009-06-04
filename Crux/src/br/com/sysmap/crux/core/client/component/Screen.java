@@ -396,7 +396,7 @@ public class Screen
 			}
 		}
 		
-		EventFactory.callEvent(event, controllerEvent);		
+		EventFactory.callEvent(event, controllerEvent, true);		
 	}
 	
 	private static native void callTopControllerAccessor(String call, String serializedData)/*-{
