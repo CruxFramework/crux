@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.JSEngine;
-import br.com.sysmap.crux.core.client.component.Serializer.SerializationException;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.EventFactory;
@@ -385,29 +384,58 @@ public class Screen
 		{
 			try
 			{
-				controllerEvent.setData(Serializer.deserialize(serializedData));
+				controllerEvent.setData(ModuleComunicationSerializer.deserialize(serializedData));
 			}
-			catch (SerializationException e)
+			catch (ModuleComunicationException e)
 			{
 				GWT.log(e.getLocalizedMessage(), e);
 				Window.alert(e.getLocalizedMessage());
+				return;
 			}
 		}
 		
 		EventFactory.callEvent(event, controllerEvent);		
 	}
 	
-	private native void callTopControllerAccessor(String call, String serializedData)/*-{
+	private static native void callTopControllerAccessor(String call, String serializedData)/*-{
 		$wnd.top._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;
 
-	public void invokeControllerOnTop(String call) throws SerializationException
+	private static native void callOpenerControllerAccessor(String call, String serializedData)/*-{
+		$wnd.opener._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+
+	private static native void callParentControllerAccessor(String call, String serializedData)/*-{
+		$wnd.parent._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+
+	public static void invokeControllerOnTop(String call) throws ModuleComunicationException
 	{
 		invokeControllerOnTop(call, null);
 	}
 
-	public void invokeControllerOnTop(String call, Object param) throws SerializationException
+	public static void invokeControllerOnTop(String call, Object param) throws ModuleComunicationException
 	{
-		callTopControllerAccessor(call, Serializer.serialize(param));
+		callTopControllerAccessor(call, ModuleComunicationSerializer.serialize(param));
+	}
+
+	public static  void invokeControllerOnOpener(String call) throws ModuleComunicationException
+	{
+		invokeControllerOnOpener(call, null);
+	}
+
+	public static void invokeControllerOnOpener(String call, Object param) throws ModuleComunicationException
+	{
+		callOpenerControllerAccessor(call, ModuleComunicationSerializer.serialize(param));
+	}
+
+	public static void invokeControllerOnParent(String call) throws ModuleComunicationException
+	{
+		invokeControllerOnParent(call, null);
+	}
+
+	public static void invokeControllerOnParent(String call, Object param) throws ModuleComunicationException
+	{
+		callParentControllerAccessor(call, ModuleComunicationSerializer.serialize(param));
 	}
 }

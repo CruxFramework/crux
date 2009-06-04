@@ -3,6 +3,7 @@
 	<!-- Inherit the core Web Toolkit stuff.                  -->
     <inherits name="com.google.gwt.http.HTTP"/>
 	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='com.google.gwt.xml.XML'/>
 
 	<!-- Specify the app entry point class.                   -->
 	<entry-point class='br.com.sysmap.crux.core.client.JSEngine'/>
@@ -30,6 +31,11 @@
 		<when-type-assignable class="br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters" />
 	</generate-with>
 	
+	<!-- Specify the generator for registered module serializers .-->
+	<generate-with class="br.com.sysmap.crux.core.client.component.ModuleComunicationTypeSerializersGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.component.ModuleComunicationTypeSerializers" />
+	</generate-with>
+
 	<!-- Specify the generator for resolve declared i18n messages .-->
 	<generate-with class="br.com.sysmap.crux.core.rebind.DeclaredI18NMessagesGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages" />

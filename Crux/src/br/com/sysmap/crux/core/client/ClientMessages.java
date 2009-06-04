@@ -29,9 +29,7 @@ public interface ClientMessages extends Messages
 	String eventProcessorClientHandlerNotFound(String handler);
 	@DefaultMessage("[event 002] - Error running client method ''{0}''.")
 	String eventProcessorClientError(String call);
-	@DefaultMessage("[event 003] - Event has no handler.")
-	String eventFactoryEmptyEvent();
-	@DefaultMessage("[event 004] - Invalid declaration for handler method. Correct syntaxe is ''handlerClass.method'' .")
+	@DefaultMessage("[event 003] - Invalid declaration for handler method. Correct syntaxe is ''handlerClass.method'' .")
 	String eventFactoryInvalidHandlerMethodDeclaration();
 	
 	//  screenFactory
@@ -65,4 +63,7 @@ public interface ClientMessages extends Messages
 
 	@DefaultMessage("[screen - 001] - An Invalid controller was passed to update screen or DTOs.")
 	String screenInvalidHandlerError();
+
+	@DefaultMessage("[moduleComunication - 001] - Type ''{0}'' can not be shared between modules. Only primitives (and its wrappers), Strings, Dates, Arrays (not multidimesional) and classes implementing ModuleShareable can be used.")
+	String moduleComunicationInvalidParamType(String name);
 }

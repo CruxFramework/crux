@@ -74,10 +74,6 @@ public class EventFactory
 					throw new EventException(JSEngine.messages.eventFactoryInvalidHandlerMethodDeclaration());
 				}
 			}
-			else
-			{
-				throw new EventException(JSEngine.messages.eventFactoryEmptyEvent());
-			}
 		}
 		catch (Throwable e)
 		{
