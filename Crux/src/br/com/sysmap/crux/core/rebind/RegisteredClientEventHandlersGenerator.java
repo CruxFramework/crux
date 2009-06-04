@@ -24,12 +24,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.ScreenBind;
+import br.com.sysmap.crux.core.client.controller.Validate;
 import br.com.sysmap.crux.core.client.controller.ValueObject;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
-import br.com.sysmap.crux.core.client.event.annotation.Controller;
-import br.com.sysmap.crux.core.client.event.annotation.Validate;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 
 import com.google.gwt.core.ext.GeneratorContext;
