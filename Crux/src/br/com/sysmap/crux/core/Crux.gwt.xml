@@ -36,6 +36,11 @@
 		<when-type-assignable class="br.com.sysmap.crux.core.client.component.RegisteredModuleShareables" />
 	</generate-with>
 
+	<!-- Specify the generator for screen wrappers.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.ScreenWrapperGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.component.ScreenWrapper" />
+	</generate-with>
+
 	<!-- Specify the generator for resolve declared i18n messages .-->
 	<generate-with class="br.com.sysmap.crux.core.rebind.DeclaredI18NMessagesGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages" />
