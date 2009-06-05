@@ -31,7 +31,7 @@ public class InvokeControllerEvent extends CruxEvent<Screen>
 	 */
 	InvokeControllerEvent()
 	{
-		super(Screen.get(), Screen.get().getId());
+		super(Screen.get(), Screen.getId());
 	}
 
 	public Object getData()

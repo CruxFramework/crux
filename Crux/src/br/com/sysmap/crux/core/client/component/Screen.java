@@ -57,7 +57,7 @@ public class Screen
 	protected HandlerManager handlerManager;
 	protected ModuleComunicationSerializer serializer = null;
 	
-	public Screen(String id) 
+	protected Screen(String id) 
 	{
 		this.id = id;
 		this.handlerManager = new HandlerManager(this);
@@ -65,16 +65,16 @@ public class Screen
 		createControllerAccessor(this);
 	}
 	
-	public String getId() 
+	protected String getIdentifier() 
 	{
 		return id;
 	}
 	
-	public boolean isManageHistory() {
+	protected boolean isManageHistory() {
 		return manageHistory;
 	}
 
-	public void setManageHistory(boolean manageHistory) {
+	protected void setManageHistory(boolean manageHistory) {
 		if (this.manageHistory != manageHistory)
 		{
 			this.manageHistory = manageHistory;
@@ -103,7 +103,7 @@ public class Screen
 		}
 	}
 
-	public Widget getWidget(String id)
+	protected Widget getWidget(String id)
 	{
 		return widgets.get(id);
 	}
@@ -116,23 +116,23 @@ public class Screen
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Widget> T getWidget(String id, Class<T> clazz)
+	protected <T extends Widget> T getWidget(String id, Class<T> clazz)
 	{
 		Widget w = widgets.get(id);
 		return (T) w;
 	}
 	
-	public void addWidget(String id, Widget widget)
+	protected void addWidget(String id, Widget widget)
 	{
 		widgets.put(id, widget);
 	}
 	
-	public void removeWidget(String id)
+	protected void removeWidget(String id)
 	{
 		removeWidget(id, true);
 	}
 
-	public void removeWidget(String id, boolean removeFromDOM)
+	protected void removeWidget(String id, boolean removeFromDOM)
 	{
 		Widget widget = widgets.remove(id);
 		if (widget != null && removeFromDOM)
@@ -141,17 +141,17 @@ public class Screen
 		}
 	}
 
-	public Iterator<String> iteratorWidgetsIds()
+	protected Iterator<String> iteratorWidgetsIds()
 	{
 		return widgets.keySet().iterator();
 	}
 	
-	public Iterator<Widget> iteratorWidgets()
+	protected Iterator<Widget> iteratorWidgets()
 	{
 		return widgets.values().iterator();
 	}
 
-	public void blockToUser()
+	protected void showBlockDiv()
 	{
 		if (blockDiv == null)
 		{
@@ -172,7 +172,7 @@ public class Screen
 		}
 	}
 	
-	public void unblockToUser()
+	protected void hideBlockDiv()
 	{
 		if (blockDiv != null)
 		{
@@ -183,6 +183,10 @@ public class Screen
 		}
 	}
 	
+	/**
+	 * 
+	 * @param element
+	 */
 	protected void parse(Element element) 
 	{
 		String manageHistoryStr = element.getAttribute("_manageHistory");
@@ -243,7 +247,7 @@ public class Screen
 	 * Adds an event handler that is called only once, when the screen is loaded
 	 * @param handler
 	 */
-	void addLoadHandler(final ScreenLoadHandler handler) 
+	protected void addLoadHandler(final ScreenLoadHandler handler) 
 	{
 		handlerManager.addHandler(ScreenLoadEvent.TYPE, handler);
 	}
@@ -251,7 +255,7 @@ public class Screen
 	/**
 	 * Fires the load event. This method has no effect when called more than one time.
 	 */
-	void load() 
+	protected void load() 
 	{
 		if (handlerManager.getHandlerCount(ScreenLoadEvent.TYPE) > 0)
 		{
@@ -277,10 +281,10 @@ public class Screen
 		}
 	}
 
-		/**
+	/**
 	 * Fires the load event. This method has no effect when called more than one time.
 	 */
-	void fireEvent(ScreenLoadEvent event) 
+	protected void fireEvent(ScreenLoadEvent event) 
 	{
 		handlerManager.fireEvent(event);
 	}
@@ -289,7 +293,7 @@ public class Screen
 	 * Update widgets on screen that have the same id of fields mapped with ValueObject
 	 * @param eventHandler
 	 */
-	public void updateScreenWidgets(Object eventHandler)
+	protected void updateScreenWidgets(Object eventHandler)
 	{
 		if (eventHandler != null)
 		{
@@ -306,7 +310,7 @@ public class Screen
 	 * Update fields mapped with ValueObject from widgets that have similar names.
 	 * @param eventHandler
 	 */
-	public void updateControllerObjects(Object eventHandler)
+	protected void updateControllerObjects(Object eventHandler)
 	{
 		if (eventHandler != null)
 		{
@@ -317,6 +321,34 @@ public class Screen
 			((EventClientHandlerInvoker) eventHandler).updateControllerObjects();
 
 		}
+	}
+
+	private native void createControllerAccessor(Screen handler)/*-{
+		$wnd._cruxScreenControllerAccessor = function(call, serializedData){
+			handler.@br.com.sysmap.crux.core.client.component.Screen::invokeController(Ljava/lang/String;Ljava/lang/String;)(call, serializedData);
+		};
+	}-*/;
+
+	@SuppressWarnings("unused") // called by native code
+	private void invokeController(String call, String serializedData)
+	{
+		Event event = EventFactory.getEvent("_onInvokeController", call);
+		InvokeControllerEvent controllerEvent = new InvokeControllerEvent();
+		if (serializedData != null)
+		{
+			try
+			{
+				controllerEvent.setData(serializer.deserialize(serializedData));
+			}
+			catch (ModuleComunicationException e)
+			{
+				GWT.log(e.getLocalizedMessage(), e);
+				Window.alert(e.getLocalizedMessage());
+				return;
+			}
+		}
+
+		EventFactory.callEvent(event, controllerEvent, true);		
 	}
 	
 	/**
@@ -339,18 +371,45 @@ public class Screen
 	}
 	
 	/**
-	 * Generic version of <code>getWidget</code> method
+	 * 
 	 * @param <T>
 	 * @param id
 	 * @param clazz
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T extends Widget> T get(String id, Class<T> clazz)
 	{
 		return Screen.get().getWidget(id, clazz);
 	}
 	
+	/**
+	 * 
+	 * @param id
+	 * @param widget
+	 */
+	public static void add(String id, Widget widget)
+	{
+		Screen.get().addWidget(id, widget);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static Iterator<String> iterateWidgetsIds()
+	{
+		return Screen.get().iteratorWidgetsIds();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static Iterator<Widget> iterateWidgets()
+	{
+		return Screen.get().iteratorWidgets();
+	}
+
 	/**
 	 * Remove a widget on the current screen
 	 * @param id
@@ -370,74 +429,141 @@ public class Screen
 		Screen.get().removeWidget(id, removeFromDOM);
 	}
 	
-	private native void createControllerAccessor(Screen handler)/*-{
-		$wnd._cruxScreenControllerAccessor = function(call, serializedData){
-			handler.@br.com.sysmap.crux.core.client.component.Screen::invokeController(Ljava/lang/String;Ljava/lang/String;)(call, serializedData);
-		};
-	}-*/;
-	
-	
-	@SuppressWarnings("unused") // called by native code
-	private void invokeController(String call, String serializedData)
+	/**
+	 * Update widgets on screen that have the same id of fields mapped with ValueObject
+	 * 
+	 * @param eventHandler
+	 */
+	public static void updateScreen(Object eventHandler)
 	{
-		Event event = EventFactory.getEvent("_onInvokeController", call);
-		InvokeControllerEvent controllerEvent = new InvokeControllerEvent();
-		if (serializedData != null)
-		{
-			try
-			{
-				controllerEvent.setData(serializer.deserialize(serializedData));
-			}
-			catch (ModuleComunicationException e)
-			{
-				GWT.log(e.getLocalizedMessage(), e);
-				Window.alert(e.getLocalizedMessage());
-				return;
-			}
-		}
-		
-		EventFactory.callEvent(event, controllerEvent, true);		
+		Screen.get().updateScreenWidgets(eventHandler);
 	}
 	
-	private static native void callTopControllerAccessor(String call, String serializedData)/*-{
-		$wnd.top._cruxScreenControllerAccessor(call, serializedData);
-	}-*/;
+	/**
+	 * Update fields mapped with ValueObject from widgets that have similar names.
+	 * 
+	 * @param eventHandler
+	 */
+	public void updateController(Object eventHandler)
+	{
+		Screen.get().updateControllerObjects(eventHandler);
+	}
 
-	private static native void callOpenerControllerAccessor(String call, String serializedData)/*-{
-		$wnd.opener._cruxScreenControllerAccessor(call, serializedData);
-	}-*/;
+	/**
+	 * 
+	 */
+	public static void blockToUser()
+	{
+		Screen.get().showBlockDiv();
+	}
+	
+	/**
+	 * 
+	 */
+	public static void unblockToUser()
+	{
+		Screen.get().hideBlockDiv();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getId() 
+	{
+		return Screen.get().getIdentifier();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean isHistoryManaged() 
+	{
+		return Screen.get().isManageHistory();
+	}
 
-	private static native void callParentControllerAccessor(String call, String serializedData)/*-{
-		$wnd.parent._cruxScreenControllerAccessor(call, serializedData);
-	}-*/;
-
+	/**
+	 * 
+	 * @param manageHistory
+	 */
+	public static void setHistoryManaged(boolean manageHistory) 
+	{
+		Screen.get().setManageHistory(manageHistory);
+	}
+	
+	/**
+	 * 
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
 	public static void invokeControllerOnTop(String call) throws ModuleComunicationException
 	{
 		invokeControllerOnTop(call, null);
 	}
 
+	/**
+	 * 
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
 	public static void invokeControllerOnTop(String call, Object param) throws ModuleComunicationException
 	{
 		callTopControllerAccessor(call, Screen.get().serializer.serialize(param));
 	}
 
+	/**
+	 * 
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
 	public static  void invokeControllerOnOpener(String call) throws ModuleComunicationException
 	{
 		invokeControllerOnOpener(call, null);
 	}
 
+	/**
+	 * 
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
 	public static void invokeControllerOnOpener(String call, Object param) throws ModuleComunicationException
 	{
 		callOpenerControllerAccessor(call, Screen.get().serializer.serialize(param));
 	}
 
+	/**
+	 * 
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
 	public static void invokeControllerOnParent(String call) throws ModuleComunicationException
 	{
 		invokeControllerOnParent(call, null);
 	}
 
+	/**
+	 * 
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
 	public static void invokeControllerOnParent(String call, Object param) throws ModuleComunicationException
 	{
 		callParentControllerAccessor(call, Screen.get().serializer.serialize(param));
 	}
+	
+	private static native void callTopControllerAccessor(String call, String serializedData)/*-{
+		$wnd.top._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+	
+	private static native void callOpenerControllerAccessor(String call, String serializedData)/*-{
+		$wnd.opener._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+	
+	private static native void callParentControllerAccessor(String call, String serializedData)/*-{
+		$wnd.parent._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
 }

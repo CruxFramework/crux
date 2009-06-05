@@ -659,7 +659,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
                 (type.isEnum())) 
 		{
 			String valueVariable = "__wid";
-			sourceWriter.println(valueVariable + "= Screen.get().getWidget(\""+name+"\");");
+			sourceWriter.println(valueVariable + "= Screen.get(\""+name+"\");");
 			sourceWriter.println("if ("+valueVariable+" != null && "+valueVariable+" instanceof HasValue){");
 			if (populateScreen)
 			{

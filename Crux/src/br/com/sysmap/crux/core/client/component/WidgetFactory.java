@@ -46,19 +46,10 @@ public abstract class WidgetFactory <T extends Widget>
 {
 	private static int currentId = 0;
 	
-	/**
-	 * Return the current screen 
-	 * @return
-	 */
-	public Screen getScreen() 
-	{
-		return ScreenFactory.getInstance().getScreen();
-	}
-	
 	public T createWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		T widget = instantiateWidget(element, widgetId);
-		getScreen().addWidget(widgetId, widget);
+		Screen.add(widgetId, widget);
 		processAttributes(widget, element, widgetId);
 		processEvents(widget, element, widgetId);
 		return widget;
@@ -151,7 +142,7 @@ public abstract class WidgetFactory <T extends Widget>
 	 */
 	protected void addScreenLoadedHandler(ScreenLoadHandler loadHandler)
 	{
-		getScreen().addLoadHandler(loadHandler);
+		Screen.get().addLoadHandler(loadHandler);
 	}
 
 	/**
