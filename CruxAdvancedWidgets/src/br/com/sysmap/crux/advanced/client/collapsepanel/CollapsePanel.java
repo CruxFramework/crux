@@ -19,7 +19,7 @@ import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseEve
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseHandler;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeExpandEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeExpandHandler;
-import br.com.sysmap.crux.advanced.client.event.collapseexpand.CollapseOrExpandEvent;
+import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseOrBeforeExpandEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.HasBeforeCollapseAndBeforeExpandHandlers;
 import br.com.sysmap.crux.advanced.client.titlepanel.TitlePanel;
 
@@ -183,7 +183,7 @@ class ExpandButtonClickHandler implements ClickHandler
 		Image img = (Image) event.getSource();
 		CollapsePanel panel = (CollapsePanel) img.getParent();
 		boolean collapsed = panel.isCollapsed();
-		CollapseOrExpandEvent preEvent = null;
+		BeforeCollapseOrBeforeExpandEvent preEvent = null;
 		
 		if(!collapsed)
 		{

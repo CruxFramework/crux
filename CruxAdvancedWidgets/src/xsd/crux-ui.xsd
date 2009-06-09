@@ -1029,7 +1029,7 @@
 				</xs:sequence>
 				<xs:attributeGroup ref="OnSelection"/>
 				<xs:attributeGroup ref="OnBeforeSelection"/>
-				<xs:attribute name="visibleTab" type="xs:positiveInteger"/>
+				<xs:attribute name="visibleTab" type="xs:int"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1072,7 +1072,7 @@
 				<xs:attributeGroup ref="OnSelection"/>
 				<xs:attributeGroup ref="OnBeforeSelection"/>
 				<xs:attributeGroup ref="AnimationEnabled"/>
-				<xs:attribute name="visibleTab" type="xs:positiveInteger"/>
+				<xs:attribute name="visibleTab" type="xs:int"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1511,8 +1511,9 @@
 	<xs:complexType name="HtmlMenuItem">
 		<xs:complexContent>
 			<xs:extension base="AbstractMenuItem">
-				<xs:sequence minOccurs="0">
-					<xs:any maxOccurs="unbounded"/>
+				<xs:sequence minOccurs="1">
+					<xs:element name="caption" type="MenuItemHtmlCaption" minOccurs="1"/>
+					<xs:element name="items" type="MenuItems" maxOccurs="1" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1523,9 +1524,24 @@
 	<xs:complexType name="TextMenuItem">
 		<xs:complexContent>
 			<xs:extension base="AbstractMenuItem">
-				<xs:attribute name="caption"/>
+				<xs:sequence minOccurs="1">
+					<xs:element name="caption" type="xs:string" minOccurs="1"/>
+					<xs:element name="items" type="MenuItems" maxOccurs="1" minOccurs="0"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="MenuItemHtmlCaption">
+		<xs:sequence minOccurs="0">
+			<xs:any maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="MenuItems">
+		<xs:sequence minOccurs="1">
+			<xs:element name="menuBar" type="MenuBar" maxOccurs="1" minOccurs="1"/>
+		</xs:sequence>
 	</xs:complexType>
 	
 </xs:schema>

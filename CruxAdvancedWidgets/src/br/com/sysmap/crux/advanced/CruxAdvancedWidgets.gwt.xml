@@ -1,5 +1,3 @@
 <module>
     <inherits name="br.com.sysmap.crux.core.Crux"/>
-    <stylesheet src="skin/default/adv-style.css"/>
-    <stylesheet src="skin/default/basic-style.css"/>
 </module>

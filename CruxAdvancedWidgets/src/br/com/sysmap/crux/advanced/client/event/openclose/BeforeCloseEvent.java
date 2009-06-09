@@ -13,27 +13,27 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.advanced.client.event.collapseexpand;
+package br.com.sysmap.crux.advanced.client.event.openclose;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> implements BeforeCollapseOrBeforeExpandEvent
+public class BeforeCloseEvent extends GwtEvent<BeforeCloseHandler> implements BeforeOpenOrBeforeCloseEvent
 {
-	private static Type<BeforeCollapseHandler> TYPE = new Type<BeforeCollapseHandler>();
+	private static Type<BeforeCloseHandler> TYPE = new Type<BeforeCloseHandler>();
 
 	private boolean canceled;
 
 	/**
-	 * Creates a new before selection event.
+	 * 
 	 */
-	protected BeforeCollapseEvent()
+	protected BeforeCloseEvent()
 	{
 	}
 
 	/**
 	 * @return
 	 */
-	public static Type<BeforeCollapseHandler> getType()
+	public static Type<BeforeCloseHandler> getType()
 	{
 		return TYPE;
 	}
@@ -43,21 +43,21 @@ public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> impleme
 	 * @param source
 	 * @return
 	 */
-	public static BeforeCollapseEvent fire(HasBeforeCollapseHandlers source)
+	public static BeforeCloseEvent fire(HasBeforeCloseHandlers source)
 	{
-		BeforeCollapseEvent event = new BeforeCollapseEvent();
+		BeforeCloseEvent event = new BeforeCloseEvent();
 		source.fireEvent(event);
 		return event;
 	}
 
 	@Override
-	protected void dispatch(BeforeCollapseHandler handler)
+	protected void dispatch(BeforeCloseHandler handler)
 	{
-		handler.onBeforeCollapse(this);
+		handler.onBeforeClose(this);
 	}
 
 	@Override
-	public Type<BeforeCollapseHandler> getAssociatedType()
+	public Type<BeforeCloseHandler> getAssociatedType()
 	{
 		return TYPE;
 	}
@@ -70,8 +70,8 @@ public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> impleme
 		return canceled;
 	}
 
-	/**
-	 * Cancel the before selection event.
+	/* (non-Javadoc)
+	 * @see br.com.sysmap.crux.advanced.client.event.openclose.BeforeOpenOrBeforeCloseEvent#cancel()
 	 */
 	public void cancel()
 	{

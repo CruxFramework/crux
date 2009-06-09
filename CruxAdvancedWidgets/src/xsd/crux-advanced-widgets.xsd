@@ -8,6 +8,7 @@
 	<xs:element name="titlePanel" type="TitlePanel" />
 	<xs:element name="decoratedButton" type="DecoratedButton" />
 	<xs:element name="transferList" type="TransferList" />
+	<xs:element name="dynaTabs" type="DynaTabs" />
 
 	<!--
 	=====================================================================================
@@ -21,6 +22,7 @@
 			<xs:element ref="titlePanel" />
 			<xs:element ref="decoratedButton"/>
 			<xs:element ref="transferList"/>
+			<xs:element ref="dynaTabs"/>
 		</xs:choice>
 	</xs:group>
 
@@ -93,6 +95,31 @@
 				<xs:attribute name="onBeforeExpand"/>				
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+	
+	<!--
+	=====================================================================================
+		Window
+	===================================================================================== 
+	-->
+	<xs:complexType name="DynaTabs">
+		<xs:complexContent>
+			<xs:extension base="basic:AbstractWidget">
+				<xs:sequence minOccurs="0">
+					<xs:element name="tab" type="DynaTab" maxOccurs="unbounded"/>
+				</xs:sequence>				
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="DynaTab">
+		<xs:attribute name="url" use="required"/>
+		<xs:attribute name="id" use="required"/>
+		<xs:attribute name="label"/>
+		<xs:attribute name="closeable" type="xs:boolean"/>
+		<xs:attribute name="onBeforeFocus"/>
+		<xs:attribute name="onBeforeBlur"/>
+		<xs:attribute name="onBeforeClose"/>											
 	</xs:complexType>
 	
 	<!--

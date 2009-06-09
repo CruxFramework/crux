@@ -13,27 +13,27 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.advanced.client.event.collapseexpand;
+package br.com.sysmap.crux.advanced.client.event.focusblur;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> implements BeforeCollapseOrBeforeExpandEvent
+public class BeforeBlurEvent extends GwtEvent<BeforeBlurHandler> implements BeforeFocusOrBeforeBlurEvent
 {
-	private static Type<BeforeCollapseHandler> TYPE = new Type<BeforeCollapseHandler>();
+	private static Type<BeforeBlurHandler> TYPE = new Type<BeforeBlurHandler>();
 
 	private boolean canceled;
 
 	/**
-	 * Creates a new before selection event.
+	 * 
 	 */
-	protected BeforeCollapseEvent()
+	protected BeforeBlurEvent()
 	{
 	}
 
 	/**
 	 * @return
 	 */
-	public static Type<BeforeCollapseHandler> getType()
+	public static Type<BeforeBlurHandler> getType()
 	{
 		return TYPE;
 	}
@@ -43,21 +43,21 @@ public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> impleme
 	 * @param source
 	 * @return
 	 */
-	public static BeforeCollapseEvent fire(HasBeforeCollapseHandlers source)
+	public static BeforeBlurEvent fire(HasBeforeBlurHandlers source)
 	{
-		BeforeCollapseEvent event = new BeforeCollapseEvent();
+		BeforeBlurEvent event = new BeforeBlurEvent();
 		source.fireEvent(event);
 		return event;
 	}
 
 	@Override
-	protected void dispatch(BeforeCollapseHandler handler)
+	protected void dispatch(BeforeBlurHandler handler)
 	{
-		handler.onBeforeCollapse(this);
+		handler.onBeforeBlur(this);
 	}
 
 	@Override
-	public Type<BeforeCollapseHandler> getAssociatedType()
+	public Type<BeforeBlurHandler> getAssociatedType()
 	{
 		return TYPE;
 	}
@@ -70,8 +70,8 @@ public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> impleme
 		return canceled;
 	}
 
-	/**
-	 * Cancel the before selection event.
+	/* (non-Javadoc)
+	 * @see br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusOrBeforeBlurEvent#cancel()
 	 */
 	public void cancel()
 	{

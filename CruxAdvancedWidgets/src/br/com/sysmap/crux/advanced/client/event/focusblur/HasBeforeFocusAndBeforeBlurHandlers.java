@@ -13,9 +13,8 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.advanced.client.event.collapseexpand;
+package br.com.sysmap.crux.advanced.client.event.focusblur;
 
-public interface CollapseOrExpandEvent
+public interface HasBeforeFocusAndBeforeBlurHandlers extends HasBeforeBlurHandlers, HasBeforeFocusHandlers 
 {
-	boolean isCanceled();
 }

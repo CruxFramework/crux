@@ -13,27 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.advanced.client.event.collapseexpand;
+package br.com.sysmap.crux.advanced.client.event.focusblur;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> implements BeforeCollapseOrBeforeExpandEvent
+public class BeforeFocusEvent extends GwtEvent<BeforeFocusHandler> implements BeforeFocusOrBeforeBlurEvent
 {
-	private static Type<BeforeCollapseHandler> TYPE = new Type<BeforeCollapseHandler>();
+	private static Type<BeforeFocusHandler> TYPE = new Type<BeforeFocusHandler>();
 
 	private boolean canceled;
 
-	/**
-	 * Creates a new before selection event.
-	 */
-	protected BeforeCollapseEvent()
+	protected BeforeFocusEvent()
 	{
 	}
 
 	/**
 	 * @return
 	 */
-	public static Type<BeforeCollapseHandler> getType()
+	public static Type<BeforeFocusHandler> getType()
 	{
 		return TYPE;
 	}
@@ -43,21 +40,21 @@ public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> impleme
 	 * @param source
 	 * @return
 	 */
-	public static BeforeCollapseEvent fire(HasBeforeCollapseHandlers source)
+	public static BeforeFocusEvent fire(HasBeforeFocusHandlers source)
 	{
-		BeforeCollapseEvent event = new BeforeCollapseEvent();
+		BeforeFocusEvent event = new BeforeFocusEvent();
 		source.fireEvent(event);
 		return event;
 	}
 
 	@Override
-	protected void dispatch(BeforeCollapseHandler handler)
+	protected void dispatch(BeforeFocusHandler handler)
 	{
-		handler.onBeforeCollapse(this);
+		handler.onBeforeFocus(this);
 	}
 
 	@Override
-	public Type<BeforeCollapseHandler> getAssociatedType()
+	public Type<BeforeFocusHandler> getAssociatedType()
 	{
 		return TYPE;
 	}
@@ -71,7 +68,7 @@ public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> impleme
 	}
 
 	/**
-	 * Cancel the before selection event.
+	 * @see br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusOrBeforeBlurEvent#cancel()
 	 */
 	public void cancel()
 	{

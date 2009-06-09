@@ -17,7 +17,7 @@ package br.com.sysmap.crux.advanced.client.event.collapseexpand;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class BeforeExpandEvent extends GwtEvent<BeforeExpandHandler> implements CollapseOrExpandEvent
+public class BeforeExpandEvent extends GwtEvent<BeforeExpandHandler> implements BeforeCollapseOrBeforeExpandEvent
 {
 	private static Type<BeforeExpandHandler> TYPE = new Type<BeforeExpandHandler>();
 

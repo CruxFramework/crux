@@ -13,27 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.advanced.client.event.collapseexpand;
+package br.com.sysmap.crux.advanced.client.event.openclose;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> implements BeforeCollapseOrBeforeExpandEvent
+public class BeforeOpenEvent extends GwtEvent<BeforeOpenHandler> implements BeforeOpenOrBeforeCloseEvent
 {
-	private static Type<BeforeCollapseHandler> TYPE = new Type<BeforeCollapseHandler>();
+	private static Type<BeforeOpenHandler> TYPE = new Type<BeforeOpenHandler>();
 
 	private boolean canceled;
 
-	/**
-	 * Creates a new before selection event.
-	 */
-	protected BeforeCollapseEvent()
+	protected BeforeOpenEvent()
 	{
 	}
 
 	/**
 	 * @return
 	 */
-	public static Type<BeforeCollapseHandler> getType()
+	public static Type<BeforeOpenHandler> getType()
 	{
 		return TYPE;
 	}
@@ -43,21 +40,21 @@ public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> impleme
 	 * @param source
 	 * @return
 	 */
-	public static BeforeCollapseEvent fire(HasBeforeCollapseHandlers source)
+	public static BeforeOpenEvent fire(HasBeforeOpenHandlers source)
 	{
-		BeforeCollapseEvent event = new BeforeCollapseEvent();
+		BeforeOpenEvent event = new BeforeOpenEvent();
 		source.fireEvent(event);
 		return event;
 	}
 
 	@Override
-	protected void dispatch(BeforeCollapseHandler handler)
+	protected void dispatch(BeforeOpenHandler handler)
 	{
-		handler.onBeforeCollapse(this);
+		handler.onBeforeOpen(this);
 	}
 
 	@Override
-	public Type<BeforeCollapseHandler> getAssociatedType()
+	public Type<BeforeOpenHandler> getAssociatedType()
 	{
 		return TYPE;
 	}
@@ -71,7 +68,7 @@ public class BeforeCollapseEvent extends GwtEvent<BeforeCollapseHandler> impleme
 	}
 
 	/**
-	 * Cancel the before selection event.
+	 * @see br.com.sysmap.crux.advanced.client.event.openclose.BeforeOpenOrBeforeCloseEvent#cancel()
 	 */
 	public void cancel()
 	{

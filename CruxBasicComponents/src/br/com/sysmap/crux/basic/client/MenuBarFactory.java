@@ -101,6 +101,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 		{
 			Element e = (Element)itensCandidates.get(i);
 			String type = e.getAttribute("_itemType");
+			
 			if (type == null || type.length() == 0)
 			{
 				throw new InterfaceConfigException(messages.menuBarItemTypeEmpty(widgetId));
@@ -127,35 +128,72 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	 */
 	protected void processItemTextDeclaration(MenuBar widget, String widgetId, Element element, int index) throws InterfaceConfigException
 	{
-		String caption = element.getAttribute("_caption");
-		if (caption != null && caption.length() > 0)
+		List<Element> children = ensureChildrenSpans(element, true);
+		
+		String caption = null ;
+		Command command = null;
+		MenuBar itens = null;
+		
+		// has caption
+		if(children.size() > 0)
 		{
-			Command command = getCommand(widget, element, widgetId);
-			if (command != null)
-			{
-				widget.addItem(caption, command);
-			}
-			else if (ensureChildrenSpans(element, true).size() > 0)
-			{
-				widget.addItem(caption, getSubMenu(widget, element));
-			}
+			Element child = children.get(0);
+			caption = child.getInnerText(); 
+			command = getCommand(widget, element, widgetId);
+		}
+		
+		// has items
+		if(children.size() > 1)
+		{
+			Element child = children.get(1);
+			itens = getSubMenu(widget, ensureFirstChildSpan(child, false));
+		}		
+		
+		if (command != null)
+		{
+			widget.addItem(caption, command);
+		}
+		else if(itens != null)
+		{
+			widget.addItem(caption, itens);
 		}
 	}
 
 	/**
 	 * Process Item declaration for MenuBarFactory
 	 * @param element
+	 * @throws InterfaceConfigException 
 	 */
-	protected void processItemHTMLDeclaration(MenuBar widget, String widgetId, Element element, int index)
+	protected void processItemHTMLDeclaration(MenuBar widget, String widgetId, Element element, int index) throws InterfaceConfigException
 	{
-		String caption = element.getInnerHTML();
-		if (caption != null && caption.length() > 0)
+		List<Element> children = ensureChildrenSpans(element, true);
+		
+		String caption = null ;
+		Command command = null;
+		MenuBar itens = null;
+		
+		// has caption
+		if(children.size() > 0)
 		{
-			Command command = getCommand(widget, element, widgetId);
-			if (command != null)
-			{
-				widget.addItem(caption, true, command);
-			}
+			Element child = children.get(0);
+			caption = child.getInnerHTML(); 
+			command = getCommand(widget, element, widgetId);
+		}
+		
+		// has items
+		if(children.size() > 1)
+		{
+			Element child = children.get(1);
+			itens = getSubMenu(widget, ensureFirstChildSpan(child, false));
+		}		
+		
+		if (command != null)
+		{
+			widget.addItem(caption, true, command);
+		}
+		else if(itens != null)
+		{
+			widget.addItem(caption, true, itens);
 		}
 	}
 
@@ -201,10 +239,9 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	protected MenuBar getSubMenu(MenuBar widget, Element element) throws InterfaceConfigException
 	{
 		String subMenuId = element.getId();
-		MenuBar subMenu = instantiateWidget(element, subMenuId);
+		MenuBar subMenu = (MenuBar) createChildWidget(element, subMenuId);	
 		subMenu.setAutoOpen(widget.getAutoOpen());
 		subMenu.setAnimationEnabled(widget.isAnimationEnabled());
-		processMenuItens(subMenu, subMenuId, element);
 		return subMenu;
 	}
 }

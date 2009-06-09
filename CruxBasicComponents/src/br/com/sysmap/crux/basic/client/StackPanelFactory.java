@@ -38,8 +38,12 @@ public class StackPanelFactory extends ComplexPanelFactory<StackPanel>
 	public void add(StackPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
 	{
 		Element childElementParent = childElement.getParentElement();
+		
+		String parentId = parentElement.getId();
+		String childParentId = childElementParent.getId();
+		
 		// there's no stack text. 
-		if (parentElement.getId().equals(childElementParent.getId()))
+		if (parentId.equals(childParentId))
 		{
 			parent.add(child);
 		}
