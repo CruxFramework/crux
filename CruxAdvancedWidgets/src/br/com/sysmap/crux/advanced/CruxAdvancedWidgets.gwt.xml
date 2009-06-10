@@ -1,3 +1,8 @@
 <module>
     <inherits name="br.com.sysmap.crux.core.Crux"/>
+    <replace-with
+    	class="br.com.sysmap.crux.advanced.client.maskedtextbox.MaskedInput.PasteEventHandlerOperaImpl">
+    	<when-type-is class="br.com.sysmap.crux.advanced.client.maskedtextbox.MaskedInput.PasteEventHandlerImpl" />
+    	<when-property-is name="user.agent" value="opera" />
+    </replace-with>
 </module>

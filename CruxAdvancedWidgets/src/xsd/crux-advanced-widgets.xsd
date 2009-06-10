@@ -9,6 +9,7 @@
 	<xs:element name="decoratedButton" type="DecoratedButton" />
 	<xs:element name="transferList" type="TransferList" />
 	<xs:element name="dynaTabs" type="DynaTabs" />
+	<xs:element name="maskedTextBox" type="MaskedTextBox" />
 
 	<!--
 	=====================================================================================
@@ -23,6 +24,7 @@
 			<xs:element ref="decoratedButton"/>
 			<xs:element ref="transferList"/>
 			<xs:element ref="dynaTabs"/>
+			<xs:element ref="maskedTextBox"/>
 		</xs:choice>
 	</xs:group>
 
@@ -135,6 +137,14 @@
 				<xs:attribute name="leftListLabel"/>
 				<xs:attribute name="rightListLabel"/>
 				<xs:attribute name="visibleItemCount" type="xs:positiveInteger"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
+	
+	<xs:complexType name="MaskedTextBox">
+		<xs:complexContent>
+			<xs:extension base="basic:TextBox">
+				<xs:attribute name="formatter"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>	

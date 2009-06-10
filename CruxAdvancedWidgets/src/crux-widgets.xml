@@ -10,5 +10,6 @@
 	<widget id="decoratedButton" clientClass="br.com.sysmap.crux.advanced.client.decoratedbutton.DecoratedButtonFactory" />
 	<widget id="transferList" clientClass="br.com.sysmap.crux.advanced.client.transferlist.TransferListFactory"/>
 	<widget id="dynaTabs" clientClass="br.com.sysmap.crux.advanced.client.dynatabs.DynaTabsFactory"/>
+	<widget id="maskedTextBox" clientClass="br.com.sysmap.crux.advanced.client.maskedtextbox.MaskedTextBoxFactory"/>
 
 </crux>
