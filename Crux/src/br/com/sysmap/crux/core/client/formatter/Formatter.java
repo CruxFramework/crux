@@ -23,8 +23,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface Formatter
 {
-	String format(Object input);
+	String format(Object input) throws InvalidFormatException;
 	Object unformat(String input) throws InvalidFormatException;
+	boolean hasMask();
 	void applyMask(Widget widget);
 	void removeMask(Widget widget);
 }
