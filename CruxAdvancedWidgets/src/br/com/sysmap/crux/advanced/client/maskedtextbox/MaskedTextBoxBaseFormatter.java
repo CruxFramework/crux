@@ -29,7 +29,7 @@ public abstract class MaskedTextBoxBaseFormatter implements Formatter
 
 	public void applyMask(Widget widget)
 	{
-		if (widget instanceof MaskedTextBox)
+		if (hasMask() && (widget instanceof MaskedTextBox))
 		{
 			maskedInput = new MaskedInput((MaskedTextBox) widget, getMask(), getPlaceHolder());
 		}		
@@ -46,6 +46,11 @@ public abstract class MaskedTextBoxBaseFormatter implements Formatter
 	protected char getPlaceHolder()
 	{
 		return '_';
+	}
+	
+	public boolean hasMask()
+	{
+		return true;
 	}
 	
 	protected abstract String getMask();

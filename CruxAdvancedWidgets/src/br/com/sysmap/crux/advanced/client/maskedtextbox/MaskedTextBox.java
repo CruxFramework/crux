@@ -18,6 +18,9 @@ package br.com.sysmap.crux.advanced.client.maskedtextbox;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.TextBox;
@@ -31,6 +34,8 @@ public class MaskedTextBox extends TextBox
 {
 	private static int currentId = 0;
 	private Formatter formatter;
+	private HandlerRegistration addBlurHandler;
+	private boolean masked;
 	
 	/**
 	 * 
@@ -98,19 +103,45 @@ public class MaskedTextBox extends TextBox
 	 * @param formatter
 	 * @param applyMask
 	 */
-	public void setFormatter(Formatter formatter, boolean applyMask)
+	public void setFormatter(final Formatter formatter, boolean applyMask)
 	{
-		this.formatter = formatter;
-		if (this.formatter != null && applyMask)
+		if (this.formatter != null)
 		{
-			DeferredCommand.addCommand(new Command() 
+			if (addBlurHandler != null)
 			{
-				public void execute()
-				{
-					MaskedTextBox.this.formatter.applyMask(MaskedTextBox.this);
-				}
-			});
+				addBlurHandler.removeHandler();
+			}
+			if (this.masked)
+			{
+				this.formatter.removeMask(this);
+			}
 		}
+		
+		if (formatter != null)
+		{
+			if (applyMask && formatter.hasMask())
+			{
+				DeferredCommand.addCommand(new Command() 
+				{
+					public void execute()
+					{
+						formatter.applyMask(MaskedTextBox.this);
+					}
+				});
+			}
+			else
+			{
+				addBlurHandler = addBlurHandler(new BlurHandler()
+				{
+					public void onBlur(BlurEvent event)
+					{
+						setFormattedValue(getUnformattedValue());
+					}
+				});
+			}
+		}
+		this.formatter = formatter;
+		this.masked = applyMask || this.formatter == null;
 	}
 
 	/**
