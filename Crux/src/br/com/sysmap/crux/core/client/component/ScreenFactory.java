@@ -52,7 +52,6 @@ public class ScreenFactory {
 	private ScreenFactory()
 	{
 		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
-		this.registeredClientFormatters = (RegisteredClientFormatters) GWT.create(RegisteredClientFormatters.class);
 		this.declaredI18NMessages = GWT.create(DeclaredI18NMessages.class);
 	}
 	
@@ -303,6 +302,11 @@ public class ScreenFactory {
 
 	public Formatter getClientFormatter(String formatter)
 	{
+		if (this.registeredClientFormatters == null)
+		{
+			this.registeredClientFormatters = (RegisteredClientFormatters) GWT.create(RegisteredClientFormatters.class);
+		}
+
 		return this.registeredClientFormatters.getClientFormatter(formatter);
 	}
 	

@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.client.formatter;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * 
  * @author Thiago
@@ -23,5 +25,6 @@ public interface Formatter
 {
 	String format(Object input);
 	Object unformat(String input) throws InvalidFormatException;
-	String mask(String input);
+	void applyMask(Widget widget);
+	void removeMask(Widget widget);
 }
