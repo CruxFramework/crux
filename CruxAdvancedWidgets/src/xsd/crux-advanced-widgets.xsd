@@ -10,6 +10,8 @@
 	<xs:element name="transferList" type="TransferList" />
 	<xs:element name="dynaTabs" type="DynaTabs" />
 	<xs:element name="maskedTextBox" type="MaskedTextBox" />
+	<xs:element name="stackMenu" type="StackMenu" />
+	<xs:element name="filter" type="Filter" />
 
 	<!--
 	=====================================================================================
@@ -25,6 +27,8 @@
 			<xs:element ref="transferList"/>
 			<xs:element ref="dynaTabs"/>
 			<xs:element ref="maskedTextBox"/>
+			<xs:element ref="stackMenu"/>
+			<xs:element ref="filter"/>
 		</xs:choice>
 	</xs:group>
 
@@ -139,7 +143,27 @@
 				<xs:attribute name="visibleItemCount" type="xs:positiveInteger"/>
 			</xs:extension>
 		</xs:complexContent>
-	</xs:complexType>	
+	</xs:complexType>
+	
+	<xs:complexType name="Filter">
+		<xs:complexContent>
+			<xs:restriction base="basic:SuggestBox">
+				<xs:attributeGroup ref="basic:AccessKey"/>
+				<xs:attributeGroup ref="basic:Focus"/>
+				<xs:attributeGroup ref="basic:TabIndex"/>
+				<xs:attributeGroup ref="basic:Text"/>
+				<xs:attributeGroup ref="basic:Value"/>
+				<xs:attributeGroup ref="basic:AnimationEnabled"/>
+				<xs:attributeGroup ref="basic:OnChange"/>
+				<xs:attributeGroup ref="basic:OnSelection"/>
+				<xs:attributeGroup ref="basic:KeyEvents"/>
+				<xs:attribute name="popupStyleName"/>
+				<xs:attribute name="limit" type="xs:positiveInteger"/>
+				<xs:attribute name="autoSelectEnabled" type="xs:boolean"/>
+				<xs:attribute name="filterable" use="required"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
 	
 	<xs:complexType name="MaskedTextBox">
 		<xs:complexContent>
@@ -165,6 +189,29 @@
 				<xs:attributeGroup ref="basic:MouseEvents"/>
 				<xs:attributeGroup ref="basic:KeyEvents"/>
 				<xs:attributeGroup ref="basic:Value"/>		
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="StackMenu">
+		<xs:complexContent>
+			<xs:extension base="basic:AbstractWidget">
+				<xs:sequence minOccurs="0">
+					<xs:element name="item" type="StackMenuItem" maxOccurs="unbounded" />
+				</xs:sequence>		
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="StackMenuItem">
+		<xs:complexContent>
+			<xs:extension base="basic:AbstractWidget">
+				<xs:sequence minOccurs="0">
+					<xs:element name="item" type="StackMenuItem" maxOccurs="unbounded" />
+				</xs:sequence>
+				<xs:attributeGroup ref="basic:ClickEvents"/>
+				<xs:attribute name="label" use="required"/>
+				<xs:attribute name="open" default="false" type="xs:boolean"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
