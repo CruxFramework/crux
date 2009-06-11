@@ -492,6 +492,11 @@ public class Screen
 		Screen.get().setManageHistory(manageHistory);
 	}
 	
+	public static ModuleComunicationSerializer getModuleShareableSerializer()
+	{
+		return Screen.get().serializer;
+	}
+	
 	/**
 	 * 
 	 * @param call

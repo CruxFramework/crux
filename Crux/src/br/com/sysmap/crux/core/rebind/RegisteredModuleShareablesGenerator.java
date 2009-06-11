@@ -72,6 +72,11 @@ public class RegisteredModuleShareablesGenerator extends AbstractRegisteredEleme
 		sourceWriter.println("return serializers.get(type);");
 		sourceWriter.println("}");
 
+		sourceWriter.println("public void registerModuleShareable(String type, ModuleShareable moduleShareable){");
+		sourceWriter.println("serializers.put(type, moduleShareable);");
+		sourceWriter.println("}");
+
+		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 

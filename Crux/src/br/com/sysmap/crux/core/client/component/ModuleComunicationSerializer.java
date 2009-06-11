@@ -31,16 +31,21 @@ import com.google.gwt.xml.client.XMLParser;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-class ModuleComunicationSerializer
+public class ModuleComunicationSerializer
 {	
 	private RegisteredModuleShareables registeredSerializers;
 
 	/**
 	 * Constructor
 	 */
-	ModuleComunicationSerializer()
+	public ModuleComunicationSerializer()
 	{
 		this.registeredSerializers = GWT.create(RegisteredModuleShareables.class);
+	}
+	
+	public void registerModuleShareable(String type, ModuleShareable moduleShareable)
+	{
+		this.registeredSerializers.registerModuleShareable(type, moduleShareable);
 	}
 	
 	/**
@@ -49,7 +54,7 @@ class ModuleComunicationSerializer
 	 * @return
 	 * @throws ModuleComunicationException
 	 */
-	String serialize(Object param) throws ModuleComunicationException
+	public String serialize(Object param) throws ModuleComunicationException
 	{
 		Document document = XMLParser.createDocument();
 
@@ -69,7 +74,7 @@ class ModuleComunicationSerializer
 	 * @return
 	 * @throws ModuleComunicationException
 	 */
-	Object deserialize(String serializedData) throws ModuleComunicationException
+	public Object deserialize(String serializedData) throws ModuleComunicationException
 	{
 		if (serializedData != null && serializedData.length() > 0)
 		{

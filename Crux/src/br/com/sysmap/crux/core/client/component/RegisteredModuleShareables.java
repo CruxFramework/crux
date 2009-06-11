@@ -22,4 +22,5 @@ package br.com.sysmap.crux.core.client.component;
 public interface RegisteredModuleShareables
 {
 	ModuleShareable getModuleShareable(String type);
+	void registerModuleShareable(String type, ModuleShareable moduleShareable);
 }
