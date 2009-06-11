@@ -32,6 +32,8 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class MaskedTextBox extends TextBox
 {
+	public static final String DEFAULT_STYLE_NAME = "crux-MaskedTextBox" ;
+
 	private static int currentId = 0;
 	private Formatter formatter;
 	private HandlerRegistration addBlurHandler;
@@ -78,6 +80,7 @@ public class MaskedTextBox extends TextBox
 			textBox.getElement().setId(generateNewId());
 		}
 		setFormatter(formatter);
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	/**
