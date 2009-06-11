@@ -80,7 +80,7 @@ public class StackMenu extends Composite implements Filterable<StackMenuItem>
 		
 		for (final StackMenuItem item : items)
 		{
-			addMatchingMenuItem(item, query, result);
+			addMatchingMenuItem(item, query, result, "");
 		}
 		
 		return result;
@@ -91,21 +91,24 @@ public class StackMenu extends Composite implements Filterable<StackMenuItem>
 	 * @param result
 	 * @param item
 	 */
-	private void addMatchingMenuItem(final StackMenuItem item, String query, List<FilterResult<StackMenuItem>> result)
+	private void addMatchingMenuItem(final StackMenuItem item, String query, List<FilterResult<StackMenuItem>> result, String currentPath)
 	{
 		String label = item.getLabel();
 		
-		if(label != null && label.toUpperCase().contains(query.toUpperCase()))
+		currentPath = currentPath + (currentPath.length() > 0 ? " > " : "") + label;
+		
+		if(item.hasAction() && label != null && label.toUpperCase().contains(query.toUpperCase()))
 		{
-			FilterResult<StackMenuItem> resultItem = new FilterResult<StackMenuItem>(item, label);
-			result.add(resultItem);
 			
-			if(item.getSubItems().size() > 0)
+			FilterResult<StackMenuItem> resultItem = new FilterResult<StackMenuItem>(item, currentPath);
+			result.add(resultItem);
+		}
+		
+		if(item.getSubItems().size() > 0)
+		{
+			for (StackMenuItem subItem : item.getSubItems())
 			{
-				for (StackMenuItem subItem : item.getSubItems())
-				{
-					addMatchingMenuItem(subItem, query, result);
-				}
+				addMatchingMenuItem(subItem, query, result, currentPath);
 			}
 		}
 	}

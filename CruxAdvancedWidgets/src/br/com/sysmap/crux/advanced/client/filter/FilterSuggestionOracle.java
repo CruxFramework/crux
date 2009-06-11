@@ -32,12 +32,20 @@ class FilterSuggestOracle extends SuggestOracle
 	private Filterable filterable;
 
 	/**
+	 * 
+	 */
+	public FilterSuggestOracle()
+	{
+	}
+	
+	/**
 	 * @param filterable
 	 */
 	public FilterSuggestOracle(Filterable<?> filterable)
 	{
 		this.filterable = filterable;
-	}
+	}	
+	
 	
 	@Override
 	public void requestSuggestions(Request request, Callback callback)
@@ -56,5 +64,21 @@ class FilterSuggestOracle extends SuggestOracle
 		}	
 		
 		callback.onSuggestionsReady(request, new Response(suggestions));
+	}
+
+	/**
+	 * @param filterable the filterable to set
+	 */
+	public void setFilterable(Filterable filterable)
+	{
+		this.filterable = filterable;
+	}
+
+	/**
+	 * @return the filterable
+	 */
+	public Filterable getFilterable()
+	{
+		return filterable;
 	}
 }

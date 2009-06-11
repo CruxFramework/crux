@@ -18,7 +18,6 @@ package br.com.sysmap.crux.advanced.client.filter;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 
 /**
@@ -28,16 +27,16 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 @SuppressWarnings("unchecked")
 public class Filter extends SuggestBox
 {
-	private Filterable filterable;
+	private static final String DEFAULT_STYLE_NAME = "crux-Filter";
 
 	/**
 	 * @param filterable
 	 */
-	public Filter(Filterable filterable)
+	public Filter()
 	{
-		super (getOracle(filterable));
-		this.filterable = filterable;
+		super (new FilterSuggestOracle());
 		addSelectionHandler(createSelectionHandler());
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	/**
@@ -51,7 +50,7 @@ public class Filter extends SuggestBox
 			{
 				Suggestion suggestion = event.getSelectedItem();
 				FilterSuggestion filterSuggestion = (FilterSuggestion) suggestion;
-				filterable.onSelectItem(filterSuggestion.getValue());
+				getFilterSuggestOracle().getFilterable().onSelectItem(filterSuggestion.getValue());
 			}			
 		};		
 	}
@@ -60,8 +59,20 @@ public class Filter extends SuggestBox
 	 * @param filterable
 	 * @return
 	 */
-	private static SuggestOracle getOracle(Filterable filterable)
+	public void setFilterable(Filterable<?> filterable)
 	{
-		return new FilterSuggestOracle(filterable);
+		FilterSuggestOracle oracle = getFilterSuggestOracle();
+		if(oracle != null && filterable != null)
+		{
+			oracle.setFilterable(filterable);
+		}		
+	}
+	
+	/**
+	 * @return
+	 */
+	protected FilterSuggestOracle getFilterSuggestOracle()
+	{
+		return (FilterSuggestOracle) getSuggestOracle();
 	}
 }

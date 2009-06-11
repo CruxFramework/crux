@@ -37,6 +37,8 @@ public class StackMenuItem extends Composite implements HasClickHandlers
 	private boolean open = false;
 	private boolean hasAction = false;	
 	
+	private StackMenuItem parent;
+	
 	private VerticalPanel wrappingCanvas;
 	private FlowPanel subItemsCanvas;
 	private List<StackMenuItem> subItems = new ArrayList<StackMenuItem>();
@@ -77,6 +79,7 @@ public class StackMenuItem extends Composite implements HasClickHandlers
 		subItems.add(subItem);
 		subItemsCanvas.add(subItem);
 		itemCaption.showSubItensIndicator(true);
+		subItem.setParent(this);
 	}
 
 	/**
@@ -115,6 +118,7 @@ public class StackMenuItem extends Composite implements HasClickHandlers
 		subItems.remove(subItem);
 		subItemsCanvas.remove(subItem);
 		setDefaultClickHandler();
+		subItem.setParent(null);
 		
 		if(this.subItems.size() == 0)
 		{
@@ -211,6 +215,22 @@ public class StackMenuItem extends Composite implements HasClickHandlers
 	public List<StackMenuItem> getSubItems()
 	{
 		return subItems;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	public StackMenuItem getParent()
+	{
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	private void setParent(StackMenuItem parent)
+	{
+		this.parent = parent;
 	}
 }
 
