@@ -14,4 +14,5 @@
 	<widget id="stackMenu" clientClass="br.com.sysmap.crux.advanced.client.stackmenu.StackMenuFactory"/>
 	<widget id="stackMenuItem" clientClass="br.com.sysmap.crux.advanced.client.stackmenu.StackMenuItemFactory"/>
 	<widget id="filter" clientClass="br.com.sysmap.crux.advanced.client.filter.FilterFactory"/>
+	<widget id="scrollBanner" clientClass="br.com.sysmap.crux.advanced.client.scrollbanner.ScrollBannerFactory"/>
 </crux>

@@ -15,8 +15,15 @@
  */
 package br.com.sysmap.crux.advanced.client.filter;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasBlurHandlers;
+import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 
@@ -25,7 +32,7 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @SuppressWarnings("unchecked")
-public class Filter extends SuggestBox
+public class Filter extends SuggestBox implements HasFocusHandlers, HasBlurHandlers
 {
 	private static final String DEFAULT_STYLE_NAME = "crux-Filter";
 
@@ -37,6 +44,42 @@ public class Filter extends SuggestBox
 		super (new FilterSuggestOracle());
 		addSelectionHandler(createSelectionHandler());
 		setStyleName(DEFAULT_STYLE_NAME);
+		addFocusHandler(createFocusHandler());
+		addBlurHandler(createBlurHandler());
+	}
+
+	/**
+	 * @return
+	 */
+	private FocusHandler createFocusHandler()
+	{
+		return new FocusHandler()
+		{
+			public void onFocus(FocusEvent event)
+			{
+				removeStyleDependentName("focused");
+				addStyleDependentName("focused");
+			}			
+		};
+	}
+
+	/**
+	 * @return
+	 */
+	private BlurHandler createBlurHandler()
+	{
+		final Filter filter = this;
+		
+		return new BlurHandler()
+		{
+			public void onBlur(BlurEvent event)
+			{
+				if(filter.getValue().trim().length() == 0)
+				{
+					removeStyleDependentName("focused");
+				}
+			}
+		};
 	}
 
 	/**
@@ -74,5 +117,21 @@ public class Filter extends SuggestBox
 	protected FilterSuggestOracle getFilterSuggestOracle()
 	{
 		return (FilterSuggestOracle) getSuggestOracle();
+	}
+
+	/**
+	 * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
+	 */
+	public HandlerRegistration addFocusHandler(FocusHandler handler)
+	{
+		return addDomHandler(handler, FocusEvent.getType());
+	}
+	
+	/**
+	 * @see com.google.gwt.event.dom.client.HasBlurHandlers#addBlurHandler(com.google.gwt.event.dom.client.BlurHandler)
+	 */
+	public HandlerRegistration addBlurHandler(BlurHandler handler)
+	{
+		return addDomHandler(handler, BlurEvent.getType());
 	}
 }

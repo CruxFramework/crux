@@ -12,6 +12,7 @@
 	<xs:element name="maskedTextBox" type="MaskedTextBox" />
 	<xs:element name="stackMenu" type="StackMenu" />
 	<xs:element name="filter" type="Filter" />
+	<xs:element name="scrollBanner" type="ScrollBanner" />
 
 	<!--
 	=====================================================================================
@@ -29,6 +30,7 @@
 			<xs:element ref="maskedTextBox"/>
 			<xs:element ref="stackMenu"/>
 			<xs:element ref="filter"/>
+			<xs:element ref="scrollBanner"/>
 		</xs:choice>
 	</xs:group>
 
@@ -147,7 +149,7 @@
 	
 	<xs:complexType name="Filter">
 		<xs:complexContent>
-			<xs:restriction base="basic:SuggestBox">
+			<xs:extension base="basic:AbstractWidget">
 				<xs:attributeGroup ref="basic:AccessKey"/>
 				<xs:attributeGroup ref="basic:Focus"/>
 				<xs:attributeGroup ref="basic:TabIndex"/>
@@ -161,7 +163,7 @@
 				<xs:attribute name="limit" type="xs:positiveInteger"/>
 				<xs:attribute name="autoSelectEnabled" type="xs:boolean"/>
 				<xs:attribute name="filterable" use="required"/>
-			</xs:restriction>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	
@@ -171,7 +173,23 @@
 				<xs:attribute name="formatter"/>
 			</xs:extension>
 		</xs:complexContent>
-	</xs:complexType>	
+	</xs:complexType>
+	
+	<!--
+	=====================================================================================
+		Output
+	===================================================================================== 
+	-->
+	<xs:complexType name="ScrollBanner">
+		<xs:complexContent>
+			<xs:extension base="basic:AbstractWidget">
+				<xs:sequence minOccurs="0">
+					<xs:element name="message" type="xs:string" maxOccurs="unbounded"/>			
+				</xs:sequence>
+				<xs:attribute name="messageScrollingPeriod" type="xs:positiveInteger"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	
 	<!--
 	=====================================================================================
