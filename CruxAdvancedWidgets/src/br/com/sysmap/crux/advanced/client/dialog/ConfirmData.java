@@ -97,7 +97,10 @@ public class ConfirmData implements ModuleShareable
 		Element data = document.createElement("data");
 		document.appendChild(data);
 		
-		data.setAttribute("title", title);
+		if (title != null)
+		{
+			data.setAttribute("title", title);
+		}
 		data.setAttribute("message", message);
 		data.setAttribute("styleName", styleName);
 		
