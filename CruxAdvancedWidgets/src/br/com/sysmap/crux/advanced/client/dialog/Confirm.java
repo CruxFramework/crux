@@ -26,12 +26,15 @@ import br.com.sysmap.crux.advanced.client.event.dialog.HasOkHandlers;
 import br.com.sysmap.crux.advanced.client.event.dialog.OkEvent;
 import br.com.sysmap.crux.advanced.client.event.dialog.OkHandler;
 
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Widget;
+
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class Confirm implements HasCancelHandlers, HasOkHandlers
+public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Confirm" ;
 	private static ConfirmController confirmController = null;
@@ -46,6 +49,7 @@ public class Confirm implements HasCancelHandlers, HasOkHandlers
 	 */
 	public Confirm()
 	{
+		setElement(DOM.createSpan());
 		this.handlerManager = new HandlerManager(this);
 	}
 
