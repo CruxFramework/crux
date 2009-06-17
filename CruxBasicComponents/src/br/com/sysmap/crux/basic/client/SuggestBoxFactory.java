@@ -17,7 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
@@ -96,12 +96,12 @@ public class SuggestBoxFactory extends CompositeFactory<SuggestBox>
 	@Override
 	protected SuggestBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
 	{
-		Event eventLoadOracle = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_ORACLE);
+		Event eventLoadOracle = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_ORACLE);
 		
 		if (eventLoadOracle != null)
 		{
 			LoadOracleEvent<SuggestBox> loadOracleEvent = new LoadOracleEvent<SuggestBox>(widgetId);
-			SuggestOracle oracle = (SuggestOracle) EventFactory.callEvent(eventLoadOracle, loadOracleEvent);
+			SuggestOracle oracle = (SuggestOracle) Events.callEvent(eventLoadOracle, loadOracleEvent);
 			return new SuggestBox(oracle);
 		}
 		

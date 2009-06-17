@@ -20,7 +20,7 @@ import java.util.List;
 import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.event.bind.OpenEvtBind;
@@ -106,12 +106,12 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> im
 	protected DisclosurePanel instantiateWidget(Element element, String widgetId) 
 	{
 		String headerText = element.getAttribute("_headerText");
-		Event eventLoadImages = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_IMAGES);
+		Event eventLoadImages = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
 		
 		if (eventLoadImages != null)
 		{
 			LoadImagesEvent<DisclosurePanel> loadEvent = new LoadImagesEvent<DisclosurePanel>(widgetId);
-			DisclosurePanelImages images = (DisclosurePanelImages) EventFactory.callEvent(eventLoadImages, loadEvent);
+			DisclosurePanelImages images = (DisclosurePanelImages) Events.callEvent(eventLoadImages, loadEvent);
 			return new DisclosurePanel(images, headerText, false);
 		}
 		

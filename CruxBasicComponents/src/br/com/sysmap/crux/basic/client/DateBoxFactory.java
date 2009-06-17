@@ -20,7 +20,7 @@ import java.util.List;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
@@ -109,12 +109,12 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 			}
 			else
 			{
-				Event eventLoadFormat = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_FORMAT);
+				Event eventLoadFormat = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_FORMAT);
 				
 				if (eventLoadFormat != null)
 				{
 					LoadFormatEvent<DateBox> loadFormatEvent = new LoadFormatEvent<DateBox>(widgetId);
-					format = (Format) EventFactory.callEvent(eventLoadFormat, loadFormatEvent);
+					format = (Format) Events.callEvent(eventLoadFormat, loadFormatEvent);
 				}
 				else 
 				{

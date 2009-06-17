@@ -17,7 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.dom.client.Element;
@@ -34,11 +34,11 @@ public class VerticalSplitPanelFactory extends SplitPanelFactory<VerticalSplitPa
 	@Override
 	protected VerticalSplitPanel instantiateWidget(Element element, String widgetId) 
 	{
-		Event eventLoadImage = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_IMAGES);
+		Event eventLoadImage = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
 		if (eventLoadImage != null)
 		{
 			LoadImagesEvent<VerticalSplitPanel> loadEvent = new LoadImagesEvent<VerticalSplitPanel>(widgetId);
-			VerticalSplitPanelImages splitImages = (VerticalSplitPanelImages) EventFactory.callEvent(eventLoadImage, loadEvent);
+			VerticalSplitPanelImages splitImages = (VerticalSplitPanelImages) Events.callEvent(eventLoadImage, loadEvent);
 			return new com.google.gwt.user.client.ui.VerticalSplitPanel(splitImages);
 		}
 		return new com.google.gwt.user.client.ui.VerticalSplitPanel();

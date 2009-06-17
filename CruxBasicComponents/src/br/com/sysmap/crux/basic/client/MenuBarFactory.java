@@ -20,7 +20,7 @@ import java.util.List;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
@@ -51,11 +51,11 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 			vertical = (Boolean.parseBoolean(verticalStr));
 		}
 
-		Event eventLoadImage = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_IMAGES);
+		Event eventLoadImage = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
 		if (eventLoadImage != null)
 		{
 			LoadImagesEvent<MenuBar> loadEvent = new LoadImagesEvent<MenuBar>(widgetId);
-			MenuBarImages menuBarImages = (MenuBarImages) EventFactory.callEvent(eventLoadImage, loadEvent);
+			MenuBarImages menuBarImages = (MenuBarImages) Events.callEvent(eventLoadImage, loadEvent);
 			return new MenuBar(vertical, menuBarImages);
 		}
 		return new MenuBar(vertical);
@@ -213,14 +213,14 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	 */
 	protected Command getCommand(final MenuBar widget,Element element, final String widgetId)
 	{
-		final Event evt = EvtBind.getWidgetEvent(element, EventFactory.EVENT_EXECUTE_EVENT);
+		final Event evt = EvtBind.getWidgetEvent(element, Events.EVENT_EXECUTE_EVENT);
 		if (evt != null)
 		{
 			return new Command()
 			{
 				public void execute() 
 				{
-					EventFactory.callEvent(evt, new ExecuteEvent<MenuBar>(widget, widgetId));
+					Events.callEvent(evt, new ExecuteEvent<MenuBar>(widget, widgetId));
 				}
 			};
 		}

@@ -21,7 +21,7 @@ import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.event.bind.FocusEvtBind;
@@ -47,11 +47,11 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 	
 	protected Tree instantiateWidget(Element element, String widgetId) 
 	{
-		Event eventLoadImage = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_IMAGES);
+		Event eventLoadImage = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
 		if (eventLoadImage != null)
 		{
 			LoadImagesEvent<Tree> loadEvent = new LoadImagesEvent<Tree>(widgetId);
-			TreeImages treeImages = (TreeImages) EventFactory.callEvent(eventLoadImage, loadEvent);
+			TreeImages treeImages = (TreeImages) Events.callEvent(eventLoadImage, loadEvent);
 
 			String useLeafImagesStr = element.getAttribute("_useLeafImages");
 			boolean useLeafImages = true;

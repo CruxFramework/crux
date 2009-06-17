@@ -17,7 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.dom.client.Element;
@@ -64,26 +64,26 @@ public class FormPanelFactory extends SimplePanelFactory
 		super.processEvents(widget, element, widgetId);
 		FormPanel formPanel = (FormPanel)widget;
 		
-		final Event eventSubmitComplete = EvtBind.getWidgetEvent(element, EventFactory.EVENT_SUBMIT_COMPLETE);
+		final Event eventSubmitComplete = EvtBind.getWidgetEvent(element, Events.EVENT_SUBMIT_COMPLETE);
 		if (eventSubmitComplete != null)
 		{
 			formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler()
 			{
 				public void onSubmitComplete(SubmitCompleteEvent event) 
 				{
-					EventFactory.callEvent(eventSubmitComplete, event);
+					Events.callEvent(eventSubmitComplete, event);
 				}
 			});
 		}
 		
-		final Event eventSubmit = EvtBind.getWidgetEvent(element, EventFactory.EVENT_SUBMIT);
+		final Event eventSubmit = EvtBind.getWidgetEvent(element, Events.EVENT_SUBMIT);
 		if (eventSubmitComplete != null)
 		{
 			formPanel.addSubmitHandler(new SubmitHandler()
 			{
 				public void onSubmit(SubmitEvent event) 
 				{
-					EventFactory.callEvent(eventSubmit, event);
+					Events.callEvent(eventSubmit, event);
 				}
 			});
 		}
