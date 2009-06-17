@@ -34,29 +34,40 @@ import br.com.sysmap.crux.advanced.client.event.dialog.OkHandler;
 public class Confirm implements HasCancelHandlers, HasOkHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Confirm" ;
-	private ConfirmController confirmController = null;
+	private static ConfirmController confirmController = null;
 	private String title;
 	private String message;
 	private String styleName;
 	private HandlerManager handlerManager;
-	private static Confirm confirm;
+	protected static Confirm confirm;
 	
+	/**
+	 * 
+	 */
 	public Confirm()
 	{
 		this.handlerManager = new HandlerManager(this);
-		this.confirmController = new ConfirmController(); 
 	}
 
+	/**
+	 * 
+	 */
 	public HandlerRegistration addCancelHandler(CancelHandler handler)
 	{
 		return handlerManager.addHandler(CancelEvent.getType(), handler);
 	}
 
+	/**
+	 * 
+	 */
 	public void fireEvent(GwtEvent<?> event)
 	{
 		handlerManager.fireEvent(event);
 	}
 
+	/**
+	 * 
+	 */
 	public HandlerRegistration addOkHandler(OkHandler handler)
 	{
 		return handlerManager.addHandler(OkEvent.getType(), handler);
@@ -92,9 +103,17 @@ public class Confirm implements HasCancelHandlers, HasOkHandlers
 		this.styleName = styleName;
 	}
 
+	/**
+	 * 
+	 */
 	public void show()
 	{
-		confirmController.showConfirm(this, new ConfirmData(title, message, styleName!=null?styleName:DEFAULT_STYLE_NAME));
+		if (confirmController == null)
+		{
+			confirmController = new ConfirmController(); 
+		}
+		confirm = this;
+		confirmController.showConfirm(new ConfirmData(title, message, styleName!=null?styleName:DEFAULT_STYLE_NAME));
 	}
 	
 	/**
@@ -119,10 +138,7 @@ public class Confirm implements HasCancelHandlers, HasOkHandlers
 	 */
 	public static void show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, String styleName)
 	{
-		if (confirm == null)
-		{
-			confirm = new Confirm(); 
-		}
+		Confirm confirm = new Confirm(); 
 		confirm.setTitle(title);
 		confirm.setMessage(message);
 		confirm.setStyleName(styleName);

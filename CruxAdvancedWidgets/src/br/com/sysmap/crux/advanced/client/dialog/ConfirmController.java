@@ -42,7 +42,6 @@ import com.google.gwt.user.client.ui.Label;
 public class ConfirmController 
 {
 	private ModuleComunicationSerializer serializer;
-	private Confirm confirm;
 	
 	public ConfirmController()
 	{
@@ -57,8 +56,7 @@ public class ConfirmController
 	@ExposeOutOfModule
 	public void onOk()
 	{
-		OkEvent.fire(confirm);
-		confirm = null;
+		OkEvent.fire(Confirm.confirm);
 	}
 
 	/**
@@ -68,19 +66,17 @@ public class ConfirmController
 	@ExposeOutOfModule
 	public void onCancel()
 	{
-		CancelEvent.fire(confirm);
-		confirm = null;
+		CancelEvent.fire(Confirm.confirm);
 	}
 
 	/**
 	 * Invoke showConfirm on top. It is required to handle multi-frame pages.
 	 * @param data
 	 */
-	public void showConfirm(Confirm confirm, ConfirmData data)
+	public void showConfirm(ConfirmData data)
 	{
 		try
 		{
-			this.confirm = confirm;
 			showConfirmOnTop("confirmController.showConfirmHandler", serializer.serialize(data));
 		}
 		catch (ModuleComunicationException e)
@@ -168,8 +164,9 @@ public class ConfirmController
 	 * @param serializedData
 	 */
 	private native void okClick()/*-{
-		$wnd.top._confirm_origin._cruxScreenControllerAccessor("confirmController.onOk", null);
+		var o = $wnd.top._confirm_origin;
 		$wnd.top._confirm_origin = null;
+		o._cruxScreenControllerAccessor("confirmController.onOk", null);
 	}-*/;
 
 	/**
@@ -178,7 +175,8 @@ public class ConfirmController
 	 * @param serializedData
 	 */
 	private native void cancelClick()/*-{
-		$wnd.top._confirm_origin._cruxScreenControllerAccessor("confirmController.onCancel", null);
+		var o = $wnd.top._confirm_origin;
 		$wnd.top._confirm_origin = null;
+		o._cruxScreenControllerAccessor("confirmController.onCancel", null);
 	}-*/;
 }
