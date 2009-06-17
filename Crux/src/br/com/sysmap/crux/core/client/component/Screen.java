@@ -22,7 +22,7 @@ import java.util.Map;
 import br.com.sysmap.crux.core.client.JSEngine;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -199,45 +199,45 @@ public class Screen
 		{
 			Window.setTitle(ScreenFactory.getInstance().getDeclaredMessage(title));
 		}
-		final Event eventClosing = EventFactory.getEvent(EventFactory.EVENT_CLOSING, element.getAttribute(EventFactory.EVENT_CLOSING));
+		final Event eventClosing = Events.getEvent(Events.EVENT_CLOSING, element.getAttribute(Events.EVENT_CLOSING));
 		if (eventClosing != null)
 		{
 			Window.addWindowClosingHandler(new Window.ClosingHandler(){
 				public void onWindowClosing(ClosingEvent closingEvent) 
 				{
-					EventFactory.callEvent(eventClosing, closingEvent);
+					Events.callEvent(eventClosing, closingEvent);
 				}
 			});
 		}
 
-		final Event eventClose = EventFactory.getEvent(EventFactory.EVENT_CLOSE, element.getAttribute(EventFactory.EVENT_CLOSE));
+		final Event eventClose = Events.getEvent(Events.EVENT_CLOSE, element.getAttribute(Events.EVENT_CLOSE));
 		if (eventClose != null)
 		{
 			Window.addCloseHandler(new CloseHandler<Window>(){
 				public void onClose(CloseEvent<Window> event) 
 				{
-					EventFactory.callEvent(eventClose, event);				
+					Events.callEvent(eventClose, event);				
 				}
 			});
 		}
 
-		final Event eventResized = EventFactory.getEvent(EventFactory.EVENT_RESIZED, element.getAttribute(EventFactory.EVENT_RESIZED));
+		final Event eventResized = Events.getEvent(Events.EVENT_RESIZED, element.getAttribute(Events.EVENT_RESIZED));
 		if (eventResized != null)
 		{
 			Window.addResizeHandler(new ResizeHandler(){
 				public void onResize(ResizeEvent event) 
 				{
-					EventFactory.callEvent(eventResized, event);
+					Events.callEvent(eventResized, event);
 				}
 			});
 		}
-		final Event eventLoad = EventFactory.getEvent(EventFactory.EVENT_LOAD, element.getAttribute(EventFactory.EVENT_LOAD));
+		final Event eventLoad = Events.getEvent(Events.EVENT_LOAD, element.getAttribute(Events.EVENT_LOAD));
 		if (eventLoad != null)
 		{
 			addLoadHandler(new ScreenLoadHandler(){
 				public void onLoad(ScreenLoadEvent screenLoadEvent) 
 				{
-					EventFactory.callEvent(eventLoad, screenLoadEvent);
+					Events.callEvent(eventLoad, screenLoadEvent);
 				}
 			});
 		}
@@ -332,7 +332,7 @@ public class Screen
 	@SuppressWarnings("unused") // called by native code
 	private void invokeController(String call, String serializedData)
 	{
-		Event event = EventFactory.getEvent("_onInvokeController", call);
+		Event event = Events.getEvent("_onInvokeController", call);
 		InvokeControllerEvent controllerEvent = new InvokeControllerEvent();
 		if (serializedData != null)
 		{
@@ -348,7 +348,7 @@ public class Screen
 			}
 		}
 
-		EventFactory.callEvent(event, controllerEvent, true);		
+		Events.callEvent(event, controllerEvent, true);		
 	}
 	
 	/**

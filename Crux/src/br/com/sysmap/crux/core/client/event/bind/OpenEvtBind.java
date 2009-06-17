@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasOpenHandlers;
@@ -32,14 +32,14 @@ public class OpenEvtBind extends EvtBind
 {
 	public static <I> void bindEvent(Element element, HasOpenHandlers<I> widget)
 	{
-		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_CHANGE);
+		final Event eventChange = getWidgetEvent(element, Events.EVENT_CHANGE);
 		if (eventChange != null)
 		{
 			widget.addOpenHandler(new OpenHandler<I>()
 			{
 				public void onOpen(OpenEvent<I> event) 
 				{
-					EventFactory.callEvent(eventChange, event);
+					Events.callEvent(eventChange, event);
 				}
 			});
 		}

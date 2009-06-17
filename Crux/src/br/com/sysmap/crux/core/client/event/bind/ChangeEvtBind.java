@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -35,14 +35,14 @@ public class ChangeEvtBind extends EvtBind
 {
 	public static <I> void bindValueEvent(Element element, HasValueChangeHandlers<I> widget)
 	{
-		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_CHANGE);
+		final Event eventChange = getWidgetEvent(element, Events.EVENT_CHANGE);
 		if (eventChange != null)
 		{
 			widget.addValueChangeHandler(new ValueChangeHandler<I>()
 			{
 				public void onValueChange(ValueChangeEvent<I> event) 
 				{
-					EventFactory.callEvent(eventChange, event);
+					Events.callEvent(eventChange, event);
 				}
 			});
 		}
@@ -50,14 +50,14 @@ public class ChangeEvtBind extends EvtBind
 
 	public static void bindEvent(Element element, HasChangeHandlers widget)
 	{
-		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_CHANGE);
+		final Event eventChange = getWidgetEvent(element, Events.EVENT_CHANGE);
 		if (eventChange != null)
 		{
 			widget.addChangeHandler(new ChangeHandler()
 			{
 				public void onChange(ChangeEvent event) 
 				{
-					EventFactory.callEvent(eventChange, event);
+					Events.callEvent(eventChange, event);
 				}
 			});
 		}

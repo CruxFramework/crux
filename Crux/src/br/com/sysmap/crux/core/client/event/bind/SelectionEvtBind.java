@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -32,14 +32,14 @@ public class SelectionEvtBind extends EvtBind
 {
 	public static <I> void bindEvent(Element element, HasSelectionHandlers<I> widget)
 	{
-		final Event eventChange = getWidgetEvent(element, EventFactory.EVENT_SELECTION);
+		final Event eventChange = getWidgetEvent(element, Events.EVENT_SELECTION);
 		if (eventChange != null)
 		{
 			widget.addSelectionHandler(new SelectionHandler<I>()
 			{
 				public void onSelection(SelectionEvent<I> event) 
 				{
-					EventFactory.callEvent(eventChange, event);
+					Events.callEvent(eventChange, event);
 				}
 			});
 		}

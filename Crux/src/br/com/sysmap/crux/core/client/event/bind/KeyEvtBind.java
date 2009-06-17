@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.HasAllKeyHandlers;
@@ -36,38 +36,38 @@ public class KeyEvtBind extends EvtBind
 {
 	public static void bindEvents(Element element, HasAllKeyHandlers widget)
 	{
-		final Event eventKeyDown = getWidgetEvent(element, EventFactory.EVENT_KEY_DOWN);
+		final Event eventKeyDown = getWidgetEvent(element, Events.EVENT_KEY_DOWN);
 		if (eventKeyDown != null)
 		{
 			widget.addKeyDownHandler(new KeyDownHandler()
 			{
 				public void onKeyDown(KeyDownEvent event) 
 				{
-					EventFactory.callEvent(eventKeyDown, event);
+					Events.callEvent(eventKeyDown, event);
 				}
 			});
 		}
 
-		final Event eventKeyPress = getWidgetEvent(element, EventFactory.EVENT_KEY_PRESS);
+		final Event eventKeyPress = getWidgetEvent(element, Events.EVENT_KEY_PRESS);
 		if (eventKeyPress != null)
 		{
 			widget.addKeyPressHandler(new KeyPressHandler()
 			{
 				public void onKeyPress(KeyPressEvent event) 
 				{
-					EventFactory.callEvent(eventKeyPress, event);
+					Events.callEvent(eventKeyPress, event);
 				}
 			});
 		}
 		
-		final Event eventKeyUp = getWidgetEvent(element, EventFactory.EVENT_KEY_UP);
+		final Event eventKeyUp = getWidgetEvent(element, Events.EVENT_KEY_UP);
 		if (eventKeyUp != null)
 		{
 			widget.addKeyUpHandler(new KeyUpHandler()
 			{
 				public void onKeyUp(KeyUpEvent event) 
 				{
-					EventFactory.callEvent(eventKeyUp, event);
+					Events.callEvent(eventKeyUp, event);
 				}
 			});
 		}

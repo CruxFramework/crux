@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -32,14 +32,14 @@ public class CloseEvtBind extends EvtBind
 {
 	public static <I> void bindEvent(Element element, HasCloseHandlers<I> widget)
 	{
-		final Event eventClose = getWidgetEvent(element, EventFactory.EVENT_CLOSE);
+		final Event eventClose = getWidgetEvent(element, Events.EVENT_CLOSE);
 		if (eventClose != null)
 		{
 			widget.addCloseHandler(new CloseHandler<I>()
 			{
 				public void onClose(CloseEvent<I> event) 
 				{
-					EventFactory.callEvent(eventClose, event);
+					Events.callEvent(eventClose, event);
 				}
 			});
 		}

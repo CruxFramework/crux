@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
@@ -32,14 +32,14 @@ public class BeforeSelectionEvtBind extends EvtBind
 {
 	public static <I> void bindEvent(Element element, HasBeforeSelectionHandlers<I> widget)
 	{
-		final Event eventBeforeSelection = getWidgetEvent(element, EventFactory.EVENT_BEFORE_SELECTION);
+		final Event eventBeforeSelection = getWidgetEvent(element, Events.EVENT_BEFORE_SELECTION);
 		if (eventBeforeSelection != null)
 		{
 			widget.addBeforeSelectionHandler(new BeforeSelectionHandler<I>()
 			{
 				public void onBeforeSelection(BeforeSelectionEvent<I> event)
 				{
-					EventFactory.callEvent(eventBeforeSelection, event);
+					Events.callEvent(eventBeforeSelection, event);
 				}
 			});
 		}

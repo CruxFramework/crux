@@ -36,7 +36,6 @@ public class JSEngine implements EntryPoint
 		try 
 		{
 			messages = (ClientMessages) GWT.create(ClientMessages.class);
-			br.com.sysmap.crux.core.client.event.EventProcessorFactory.getInstance();
 			br.com.sysmap.crux.core.client.component.ScreenFactory.getInstance().getScreen();
 		} 
 		catch (Throwable e) 

@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ErrorEvent;
@@ -34,14 +34,14 @@ public class LoadEvtBind extends EvtBind
 {
 	public static void bindLoadEvent(Element element, HasLoadHandlers widget)
 	{
-		final Event eventLoad = getWidgetEvent(element, EventFactory.EVENT_LOAD);
+		final Event eventLoad = getWidgetEvent(element, Events.EVENT_LOAD);
 		if (eventLoad != null)
 		{
 			widget.addLoadHandler(new LoadHandler()
 			{
 				public void onLoad(LoadEvent event) 
 				{
-					EventFactory.callEvent(eventLoad, event);
+					Events.callEvent(eventLoad, event);
 				}
 			});
 		}
@@ -49,14 +49,14 @@ public class LoadEvtBind extends EvtBind
 
 	public static void bindErrorEvent(Element element, HasErrorHandlers widget)
 	{
-		final Event eventError = getWidgetEvent(element, EventFactory.EVENT_ERROR);
+		final Event eventError = getWidgetEvent(element, Events.EVENT_ERROR);
 		if (eventError != null)
 		{
 			widget.addErrorHandler(new ErrorHandler()
 			{
 				public void onError(ErrorEvent event) 
 				{
-					EventFactory.callEvent(eventError, event);
+					Events.callEvent(eventError, event);
 				}
 			});
 		}

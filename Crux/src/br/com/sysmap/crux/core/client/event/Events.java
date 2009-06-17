@@ -22,7 +22,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.Window;
 
-public class EventFactory 
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ */
+public class Events 
 {
 	public static final String SYNC_TYPE_SYNCHRONOUS = "synchronous";
 	public static final String SYNC_TYPE_ASSYNCHRONOUS = "assynchronous";
@@ -56,6 +60,15 @@ public class EventFactory
 	public static final String EVENT_SUBMIT_COMPLETE = "_onsubmitcomplete";
 	public static final String EVENT_SUBMIT = "_onsubmit";
 	
+	private static RegisteredClientEventHandlers registeredClientEventHandlers;
+	
+	
+	/**
+	 * Create an event object.
+	 * @param evtId
+	 * @param evt
+	 * @return
+	 */
 	public static Event getEvent(String evtId, String evt)
 	{
 		try
@@ -82,16 +95,29 @@ public class EventFactory
 		return null;
 	}
 
+	/**
+	 * Dispatch an event call.
+	 * @param event
+	 * @param sourceEvent
+	 * @return
+	 */
 	public static Object callEvent(Event event, CruxEvent<?> sourceEvent)
 	{
 		return callEvent(event, sourceEvent, false);
 	}
 	
+	/**
+	 * Dispatch an event call.
+	 * @param event
+	 * @param sourceEvent
+	 * @param fromOutOfModule
+	 * @return
+	 */
 	public static Object callEvent(Event event, CruxEvent<?> sourceEvent, boolean fromOutOfModule)
 	{
 		try 
 		{
-			EventProcessor processor = br.com.sysmap.crux.core.client.event.EventProcessorFactory.getInstance().createEventProcessor(event);
+			EventProcessor processor = createEventProcessor(event);
 			processor.processEvent(sourceEvent, fromOutOfModule);
 			return processEventResult(event, processor);
 		}
@@ -102,11 +128,17 @@ public class EventFactory
 		return null;
 	}
 	
+	/**
+	 * Dispatch an event call.
+	 * @param event
+	 * @param sourceEvent
+	 * @return
+	 */
 	public static Object callEvent(Event event, GwtEvent<?> sourceEvent)
 	{
 		try 
 		{
-			EventProcessor processor = br.com.sysmap.crux.core.client.event.EventProcessorFactory.getInstance().createEventProcessor(event);
+			EventProcessor processor = createEventProcessor(event);
 			processor.processEvent(sourceEvent);
 			return processEventResult(event, processor);
 		}
@@ -117,6 +149,12 @@ public class EventFactory
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param event
+	 * @param processor
+	 * @return
+	 */
 	protected static Object processEventResult(Event event, EventProcessor processor)
 	{
 		if (processor.hasException())
@@ -135,4 +173,66 @@ public class EventFactory
 		return null;
 	}
 	
+	/**
+	 * Create a EventProcessor for the event.
+	 * @param event
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	protected static EventProcessor createEventProcessor(final Event event) throws InterfaceConfigException
+	{
+		getRegisteredClientEventHandlers();
+
+		return new EventProcessor()
+		{
+			public void processEvent(GwtEvent<?> sourceEvent)
+			{
+				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)getRegisteredClientEventHandlers().getEventHandler(event.getController());
+				if (handler == null)
+				{
+					Window.alert(JSEngine.messages.eventProcessorClientHandlerNotFound(event.getController()));
+					return;
+				}
+				try
+				{
+					handler.invoke(event.getMethod(), sourceEvent, this);
+				}
+				catch (Exception e) 
+				{
+					_exception = e;
+					GWT.log(e.getLocalizedMessage(), e);
+					Window.alert(JSEngine.messages.eventProcessorClientError(event.getController()+"."+event.getMethod()));
+				}
+			}
+
+			public void processEvent(CruxEvent<?> sourceEvent, boolean fromOutOfModule)
+			{
+				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)getRegisteredClientEventHandlers().getEventHandler(event.getController());
+				if (handler == null)
+				{
+					Window.alert(JSEngine.messages.eventProcessorClientHandlerNotFound(event.getController()));
+					return;
+				}
+				try
+				{
+					handler.invoke(event.getMethod(), sourceEvent, fromOutOfModule, this);
+				}
+				catch (Exception e) 
+				{
+					_exception = e;
+					GWT.log(e.getLocalizedMessage(), e);
+					Window.alert(JSEngine.messages.eventProcessorClientError(event.getController()+"."+event.getMethod()));
+				}
+			}
+		};
+	}
+
+	protected static RegisteredClientEventHandlers getRegisteredClientEventHandlers()
+	{
+		if (registeredClientEventHandlers == null)
+		{
+			registeredClientEventHandlers = (RegisteredClientEventHandlers)GWT.create(RegisteredClientEventHandlers.class);
+		}
+		return registeredClientEventHandlers;
+	}
 }

@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasHighlightHandlers;
@@ -39,7 +39,7 @@ public class HighlightEvtBind extends EvtBind
 			{
 				public void onHighlight(HighlightEvent<V> event)
 				{
-					EventFactory.callEvent(eventHighlight, event);
+					Events.callEvent(eventHighlight, event);
 				}
 			});
 		}

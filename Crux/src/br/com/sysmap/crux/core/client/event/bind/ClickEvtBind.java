@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,14 +32,14 @@ public class ClickEvtBind extends EvtBind
 {
 	public static void bindEvent(Element element, HasClickHandlers widget)
 	{
-		final Event eventClick = getWidgetEvent(element, EventFactory.EVENT_CLICK);
+		final Event eventClick = getWidgetEvent(element, Events.EVENT_CLICK);
 		if (eventClick != null)
 		{
 			ClickHandler handler = new ClickHandler()
 			{
 				public void onClick(ClickEvent event) 
 				{
-					EventFactory.callEvent(eventClick, event);
+					Events.callEvent(eventClick, event);
 				}
 			};
 			widget.addClickHandler(handler);

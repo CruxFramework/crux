@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.HasShowRangeHandlers;
@@ -39,7 +39,7 @@ public class ShowRangeEvtBind extends EvtBind
 			{
 				public void onShowRange(ShowRangeEvent<V> event)
 				{
-					EventFactory.callEvent(eventShowRange, event);
+					Events.callEvent(eventShowRange, event);
 				}
 			});
 		}		

@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 
@@ -36,6 +36,6 @@ public class EvtBind
 	public static Event getWidgetEvent(Element element, String evtId)
 	{
 		String evt = element.getAttribute(evtId);
-		return EventFactory.getEvent(evtId, evt);
+		return Events.getEvent(evtId, evt);
 	}
 }

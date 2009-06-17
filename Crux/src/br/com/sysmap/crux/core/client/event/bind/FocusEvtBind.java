@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event.bind;
 
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -34,26 +34,26 @@ public class FocusEvtBind extends EvtBind
 {
 	public static void bindEvents(Element element, HasAllFocusHandlers widget)
 	{
-		final Event eventFocus = getWidgetEvent(element, EventFactory.EVENT_FOCUS);
+		final Event eventFocus = getWidgetEvent(element, Events.EVENT_FOCUS);
 		if (eventFocus != null)
 		{
 			widget.addFocusHandler(new FocusHandler()
 			{
 				public void onFocus(FocusEvent event) 
 				{
-					EventFactory.callEvent(eventFocus, event);
+					Events.callEvent(eventFocus, event);
 				}
 			});
 		}
 		
-		final Event eventBlur = getWidgetEvent(element, EventFactory.EVENT_BLUR);
+		final Event eventBlur = getWidgetEvent(element, Events.EVENT_BLUR);
 		if (eventBlur != null)
 		{
 			widget.addBlurHandler(new BlurHandler()
 			{
 				public void onBlur(BlurEvent event) 
 				{
-					EventFactory.callEvent(eventBlur, event);
+					Events.callEvent(eventBlur, event);
 				}
 			});
 		}
