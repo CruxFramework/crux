@@ -953,6 +953,8 @@
 				<xs:attributeGroup ref="Focus"/>
 				<xs:attributeGroup ref="OnLoadImage"/>
 				<xs:attributeGroup ref="OnSelection"/>
+				<xs:attributeGroup ref="OnOpen"/>
+				<xs:attributeGroup ref="OnClose"/>
 				<xs:attributeGroup ref="MouseEvents"/>
 				<xs:attributeGroup ref="KeyEvents"/>
 				<xs:attributeGroup ref="FocusEvents"/>
