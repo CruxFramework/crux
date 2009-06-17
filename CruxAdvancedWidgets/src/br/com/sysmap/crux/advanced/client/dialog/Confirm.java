@@ -15,16 +15,87 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
+
+import br.com.sysmap.crux.advanced.client.event.dialog.CancelEvent;
+import br.com.sysmap.crux.advanced.client.event.dialog.CancelHandler;
+import br.com.sysmap.crux.advanced.client.event.dialog.HasCancelHandlers;
+import br.com.sysmap.crux.advanced.client.event.dialog.HasOkHandlers;
+import br.com.sysmap.crux.advanced.client.event.dialog.OkEvent;
+import br.com.sysmap.crux.advanced.client.event.dialog.OkHandler;
+
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class Confirm
+public class Confirm implements HasCancelHandlers, HasOkHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Confirm" ;
-	private static ConfirmController confirmController = null;
+	private ConfirmController confirmController = null;
+	private String title;
+	private String message;
+	private String styleName;
+	private HandlerManager handlerManager;
+	private static Confirm confirm;
 	
+	public Confirm()
+	{
+		this.handlerManager = new HandlerManager(this);
+		this.confirmController = new ConfirmController(); 
+	}
+
+	public HandlerRegistration addCancelHandler(CancelHandler handler)
+	{
+		return handlerManager.addHandler(CancelEvent.getType(), handler);
+	}
+
+	public void fireEvent(GwtEvent<?> event)
+	{
+		handlerManager.fireEvent(event);
+	}
+
+	public HandlerRegistration addOkHandler(OkHandler handler)
+	{
+		return handlerManager.addHandler(OkEvent.getType(), handler);
+	}	
+	
+	public String getTitle()
+	{
+		return title;
+	}
+
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
+
+	public String getMessage()
+	{
+		return message;
+	}
+
+	public void setMessage(String message)
+	{
+		this.message = message;
+	}
+
+	public String getStyleName()
+	{
+		return styleName;
+	}
+
+	public void setStyleName(String styleName)
+	{
+		this.styleName = styleName;
+	}
+
+	public void show()
+	{
+		confirmController.showConfirm(this, new ConfirmData(title, message, styleName!=null?styleName:DEFAULT_STYLE_NAME));
+	}
 	
 	/**
 	 * 
@@ -33,9 +104,9 @@ public class Confirm
 	 * @param okCall
 	 * @param cancelCall
 	 */
-	public static void show(String title, String message, String okCall, String cancelCall)
+	public static void show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler)
 	{
-		show(title, message, okCall, cancelCall, DEFAULT_STYLE_NAME);
+		show(title, message, okHandler, cancelHandler, DEFAULT_STYLE_NAME);
 	}
 	
 	/**
@@ -46,13 +117,23 @@ public class Confirm
 	 * @param cancelCall
 	 * @param styleName
 	 */
-	public static void show(String title, String message, String okCall, String cancelCall, String styleName)
+	public static void show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, String styleName)
 	{
-		if (confirmController == null)
+		if (confirm == null)
 		{
-			confirmController = new ConfirmController(); 
+			confirm = new Confirm(); 
 		}
-		confirmController.showConfirm(new ConfirmData(title, message, okCall, cancelCall, styleName));
-	}
-
+		confirm.setTitle(title);
+		confirm.setMessage(message);
+		confirm.setStyleName(styleName);
+		if (okHandler != null)
+		{
+			confirm.addOkHandler(okHandler);
+		}
+		if (cancelHandler != null)
+		{
+			confirm.addCancelHandler(cancelHandler);
+		}
+		confirm.show();
+	}	
 }

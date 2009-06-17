@@ -30,8 +30,6 @@ import br.com.sysmap.crux.core.rebind.screen.moduleshareable.annotation.ModuleSh
 public class ConfirmData implements ModuleShareable
 {
 	private String styleName;
-	private String ok;
-	private String cancel;
 	private String title;
 	private String message;
 
@@ -39,11 +37,9 @@ public class ConfirmData implements ModuleShareable
 	{
 	}
 	
-	public ConfirmData(String title, String message, String ok, String cancel, String styleName)
+	public ConfirmData(String title, String message, String styleName)
 	{
 		this.styleName = styleName;
-		this.ok = ok;
-		this.cancel = cancel;
 		this.title = title;
 		this.message = message;
 	}
@@ -58,26 +54,6 @@ public class ConfirmData implements ModuleShareable
 		this.styleName = styleName;
 	}
 
-	public String getOk()
-	{
-		return ok;
-	}
-
-	public void setOk(String ok)
-	{
-		this.ok = ok;
-	}
-
-	public String getCancel()
-	{
-		return cancel;
-	}
-
-	public void setCancel(String cancel)
-	{
-		this.cancel = cancel;
-	}
-	
 	public String getTitle()
 	{
 		return title;
@@ -104,7 +80,7 @@ public class ConfirmData implements ModuleShareable
 		{
 			Document root = XMLParser.parse(serializedData);
 			Element data = root.getDocumentElement();
-			return new ConfirmData(data.getAttribute("title"), data.getAttribute("message"), data.getAttribute("ok"), data.getAttribute("cancel"), data.getAttribute("styleName"));
+			return new ConfirmData(data.getAttribute("title"), data.getAttribute("message"), data.getAttribute("styleName"));
 		}
 		return null;
 	}
@@ -123,8 +99,6 @@ public class ConfirmData implements ModuleShareable
 		
 		data.setAttribute("title", title);
 		data.setAttribute("message", message);
-		data.setAttribute("ok", ok);
-		data.setAttribute("cancel", cancel);
 		data.setAttribute("styleName", styleName);
 		
 		return document.toString();

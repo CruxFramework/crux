@@ -17,7 +17,7 @@ package br.com.sysmap.crux.advanced.client.event.collapseexpand;
 
 import br.com.sysmap.crux.advanced.client.event.Events;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.dom.client.Element;
@@ -37,7 +37,7 @@ public class BeforeCollapseOrExpandEvtBind extends EvtBind
 			{
 				public void onBeforeCollapse(BeforeCollapseEvent event)
 				{
-					EventFactory.callEvent(beforeCollapseEvent, event);
+					br.com.sysmap.crux.core.client.event.Events.callEvent(beforeCollapseEvent, event);
 				}
 			});
 		}
@@ -49,7 +49,7 @@ public class BeforeCollapseOrExpandEvtBind extends EvtBind
 			{
 				public void onBeforeExpand(BeforeExpandEvent event)
 				{
-					EventFactory.callEvent(beforeExpandEvent, event);
+					br.com.sysmap.crux.core.client.event.Events.callEvent(beforeExpandEvent, event);
 				}
 			});
 		}

@@ -19,7 +19,6 @@ import java.util.List;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.component.WidgetFactory;
-import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
 
 import com.google.gwt.dom.client.Element;
 

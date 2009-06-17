@@ -20,7 +20,7 @@ import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseOrE
 import br.com.sysmap.crux.advanced.client.titlepanel.TitlePanelFactory;
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.dom.client.Element;
@@ -52,11 +52,11 @@ public class CollapsePanelFactory extends TitlePanelFactory<CollapsePanel>
 			collapsed = Boolean.parseBoolean(strCollapsed);
 		}
 		
-		Event eventLoadImages = EvtBind.getWidgetEvent(element, EventFactory.EVENT_LOAD_IMAGES);
+		Event eventLoadImages = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
 		if (eventLoadImages != null)
 		{
 			LoadImagesEvent<CollapsePanel> loadEvent = new LoadImagesEvent<CollapsePanel>(widgetId);
-			CollapsePanelImages images = (CollapsePanelImages) EventFactory.callEvent(eventLoadImages, loadEvent);
+			CollapsePanelImages images = (CollapsePanelImages) Events.callEvent(eventLoadImages, loadEvent);
 			return new CollapsePanel(width, height, styleName, collapsible, collapsed, images);
 		}
 		

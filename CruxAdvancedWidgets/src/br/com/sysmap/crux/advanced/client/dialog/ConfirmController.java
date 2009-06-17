@@ -15,14 +15,14 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
+import br.com.sysmap.crux.advanced.client.event.dialog.CancelEvent;
+import br.com.sysmap.crux.advanced.client.event.dialog.OkEvent;
 import br.com.sysmap.crux.core.client.component.InvokeControllerEvent;
 import br.com.sysmap.crux.core.client.component.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.component.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.component.Screen;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -39,12 +39,10 @@ import com.google.gwt.user.client.ui.Label;
  *
  */
 @Controller("confirmController")
-public class ConfirmController
+public class ConfirmController 
 {
-	private static final String EVENT_CANCEL = "oncancel";
-	private static final String EVENT_OK = "onok";
-	
 	private ModuleComunicationSerializer serializer;
+	private Confirm confirm;
 	
 	public ConfirmController()
 	{
@@ -57,11 +55,10 @@ public class ConfirmController
 	 * @param controllerEvent
 	 */
 	@ExposeOutOfModule
-	public void onOk(InvokeControllerEvent controllerEvent)
+	public void onOk()
 	{
-		String handler = (String) controllerEvent.getData();
-		Event event = EventFactory.getEvent(EVENT_OK, handler);
-		EventFactory.callEvent(event, new OkEvent());
+		OkEvent.fire(confirm);
+		confirm = null;
 	}
 
 	/**
@@ -69,21 +66,21 @@ public class ConfirmController
 	 * @param controllerEvent
 	 */
 	@ExposeOutOfModule
-	public void onCancel(InvokeControllerEvent controllerEvent)
+	public void onCancel()
 	{
-		String handler = (String) controllerEvent.getData();
-		Event event = EventFactory.getEvent(EVENT_CANCEL, handler);
-		EventFactory.callEvent(event, new CancelEvent());
+		CancelEvent.fire(confirm);
+		confirm = null;
 	}
 
 	/**
 	 * Invoke showConfirm on top. It is required to handle multi-frame pages.
 	 * @param data
 	 */
-	public void showConfirm(ConfirmData data)
+	public void showConfirm(Confirm confirm, ConfirmData data)
 	{
 		try
 		{
+			this.confirm = confirm;
 			showConfirmOnTop("confirmController.showConfirmHandler", serializer.serialize(data));
 		}
 		catch (ModuleComunicationException e)
@@ -117,9 +114,9 @@ public class ConfirmController
 			{
 				try
 				{
-					okClick(serializer.serialize(data.getOk()));
+					okClick();
 				}
-				catch (ModuleComunicationException e)
+				catch (Throwable e)
 				{
 					GWT.log(e.getMessage(), e);
 				}
@@ -135,9 +132,9 @@ public class ConfirmController
 			{
 				try
 				{
-					cancelClick(serializer.serialize(data.getCancel()));
+					cancelClick();
 				}
-				catch (ModuleComunicationException e)
+				catch (Throwable e)
 				{
 					GWT.log(e.getMessage(), e);
 				}
@@ -170,8 +167,8 @@ public class ConfirmController
 	 * @param call
 	 * @param serializedData
 	 */
-	private native void okClick(String serializedData)/*-{
-		$wnd.top._confirm_origin._cruxScreenControllerAccessor("confirmController.onOk", serializedData);
+	private native void okClick()/*-{
+		$wnd.top._confirm_origin._cruxScreenControllerAccessor("confirmController.onOk", null);
 		$wnd.top._confirm_origin = null;
 	}-*/;
 
@@ -180,8 +177,8 @@ public class ConfirmController
 	 * @param call
 	 * @param serializedData
 	 */
-	private native void cancelClick(String serializedData)/*-{
-		$wnd.top._confirm_origin._cruxScreenControllerAccessor("confirmController.onCancel", serializedData);
+	private native void cancelClick()/*-{
+		$wnd.top._confirm_origin._cruxScreenControllerAccessor("confirmController.onCancel", null);
 		$wnd.top._confirm_origin = null;
 	}-*/;
 }

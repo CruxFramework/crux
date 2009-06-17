@@ -13,19 +13,53 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.advanced.client.dialog;
+package br.com.sysmap.crux.advanced.client.event.dialog;
 
-import br.com.sysmap.crux.core.client.event.CruxEvent;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class CancelEvent extends CruxEvent<Object>
+public class CancelEvent extends GwtEvent<CancelHandler>
 {
+	private static Type<CancelHandler> TYPE = new Type<CancelHandler>();
+	
 	protected CancelEvent()
 	{
-		super(null, null);
 	}
+
+	@Override
+	protected void dispatch(CancelHandler handler)
+	{
+		handler.onCancel(this);
+	}
+
+	@Override
+	public Type<CancelHandler> getAssociatedType()
+	{
+		return TYPE;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static Type<CancelHandler> getType()
+	{
+		return TYPE;
+	}
+	
+	/**
+	 * @param <I>
+	 * @param source
+	 * @return
+	 */
+	public static CancelEvent fire(HasCancelHandlers source)
+	{
+		CancelEvent event = new CancelEvent();
+		source.fireEvent(event);
+		return event;
+	}	
 }

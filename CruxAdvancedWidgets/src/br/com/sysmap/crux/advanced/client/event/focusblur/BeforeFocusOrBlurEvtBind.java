@@ -17,7 +17,6 @@ package br.com.sysmap.crux.advanced.client.event.focusblur;
 
 import br.com.sysmap.crux.advanced.client.event.Events;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.dom.client.Element;
@@ -47,7 +46,7 @@ public class BeforeFocusOrBlurEvtBind extends EvtBind
 			{
 				public void onBeforeFocus(BeforeFocusEvent event)
 				{
-					EventFactory.callEvent(beforeFocusEvent, event);
+					br.com.sysmap.crux.core.client.event.Events.callEvent(beforeFocusEvent, event);
 				}
 			});
 		}
@@ -66,7 +65,7 @@ public class BeforeFocusOrBlurEvtBind extends EvtBind
 			{
 				public void onBeforeBlur(BeforeBlurEvent event)
 				{
-					EventFactory.callEvent(beforeBlurEvent, event);
+					br.com.sysmap.crux.core.client.event.Events.callEvent(beforeBlurEvent, event);
 				}
 			});
 		}

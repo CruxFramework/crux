@@ -17,7 +17,6 @@ package br.com.sysmap.crux.advanced.client.event.openclose;
 
 import br.com.sysmap.crux.advanced.client.event.Events;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventFactory;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.dom.client.Element;
@@ -47,7 +46,7 @@ public class BeforeOpenOrCloseEvtBind extends EvtBind
 			{
 				public void onBeforeClose(BeforeCloseEvent event)
 				{
-					EventFactory.callEvent(beforeCloseEvent, event);
+					br.com.sysmap.crux.core.client.event.Events.callEvent(beforeCloseEvent, event);
 				}
 			});
 		}
@@ -66,7 +65,7 @@ public class BeforeOpenOrCloseEvtBind extends EvtBind
 			{
 				public void onBeforeOpen(BeforeOpenEvent event)
 				{
-					EventFactory.callEvent(beforeOpenEvent, event);
+					br.com.sysmap.crux.core.client.event.Events.callEvent(beforeOpenEvent, event);
 				}
 			});
 		}

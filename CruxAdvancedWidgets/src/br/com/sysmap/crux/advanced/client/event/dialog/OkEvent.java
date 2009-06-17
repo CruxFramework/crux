@@ -13,19 +13,53 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.advanced.client.dialog;
+package br.com.sysmap.crux.advanced.client.event.dialog;
 
-import br.com.sysmap.crux.core.client.event.CruxEvent;
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class OkEvent extends CruxEvent<Object>
+public class OkEvent extends GwtEvent<OkHandler>
 {
+	private static Type<OkHandler> TYPE = new Type<OkHandler>();
+	
 	protected OkEvent()
 	{
-		super(null, null);
 	}
+
+	@Override
+	protected void dispatch(OkHandler handler)
+	{
+		handler.onOk(this);
+	}
+
+	@Override
+	public Type<OkHandler> getAssociatedType()
+	{
+		return TYPE;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static Type<OkHandler> getType()
+	{
+		return TYPE;
+	}
+	
+	/**
+	 * @param <I>
+	 * @param source
+	 * @return
+	 */
+	public static OkEvent fire(HasOkHandlers source)
+	{
+		OkEvent event = new OkEvent();
+		source.fireEvent(event);
+		return event;
+	}	
 }
