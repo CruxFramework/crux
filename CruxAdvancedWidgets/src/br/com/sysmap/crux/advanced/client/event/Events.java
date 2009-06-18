@@ -14,6 +14,9 @@ public class Events
 	
 	public static final String BEFORE_CLOSE = "_onbeforeclose";
 	public static final String BEFORE_OPEN = "_onbeforeopen";
+
 	public static final String CANCEL = "_oncancel";
 	public static final String OK = "_onok";	
+	
+	public static final String TIMEOUT = "_ontimeout";
 }

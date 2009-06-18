@@ -14,6 +14,7 @@
 	<xs:element name="filter" type="Filter" />
 	<xs:element name="scrollBanner" type="ScrollBanner" />
 	<xs:element name="confirm" type="Confirm" />
+	<xs:element name="timer" type="Timer" />
 
 	<!--
 	=====================================================================================
@@ -33,6 +34,7 @@
 			<xs:element ref="filter"/>
 			<xs:element ref="scrollBanner"/>
 			<xs:element ref="confirm"/>
+			<xs:element ref="timer"/>
 		</xs:choice>
 	</xs:group>
 
@@ -201,6 +203,24 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	
+	<xs:complexType name="Timer">
+		<xs:complexContent>
+			<xs:extension base="basic:AbstractWidget">
+				<xs:sequence minOccurs="0">
+					<xs:element name="onTimeout" type="OnTimeout" maxOccurs="unbounded"/>			
+				</xs:sequence>
+				<xs:attribute name="initial" type="xs:nonNegativeInteger" default="0"/>
+				<xs:attribute name="regressive" type="xs:boolean" default="false"/>
+				<xs:attribute name="start" type="xs:boolean" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="OnTimeout">
+		<xs:attribute name="time" use="required" type="xs:positiveInteger"/>
+		<xs:attribute name="execute" use="required"/>
+	</xs:complexType>	
 	
 	<!--
 	=====================================================================================

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="dist" name="Crux-Advanced-Widgets" basedir="../">
+<project default="jar" name="Crux-Advanced-Widgets" basedir="../">
 
 	<tstamp>
 		<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />
@@ -48,7 +48,7 @@
 		</javac>
 	</target>
 
-	<target name="dist" description="o Create a distribution" depends="compile">
+	<target name="jar" description="o Create a distribution" depends="compile">
 		<jar jarfile="${distdir}/${final.name}.jar">
 			<fileset dir="${classesdir}" excludes="**/public/*" />
 			<fileset dir="${srcdir}">
