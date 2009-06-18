@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
+import br.com.sysmap.crux.advanced.client.decoratedbutton.DecoratedButton;
 import br.com.sysmap.crux.advanced.client.event.dialog.CancelEvent;
 import br.com.sysmap.crux.advanced.client.event.dialog.OkEvent;
 import br.com.sysmap.crux.core.client.component.InvokeControllerEvent;
@@ -29,9 +30,9 @@ import br.com.sysmap.crux.core.client.controller.Global;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -105,30 +106,42 @@ public class ConfirmController
 		dialogBox.setAnimationEnabled(data.isAnimationEnabled());
 		
 		DockPanel dockPanel = new DockPanel();
-		dockPanel.add(new Label(data.getMessage()), DockPanel.CENTER);
+		dockPanel.add(createMessageLabel(data), DockPanel.CENTER);
 		
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.setSpacing(10);
+		horizontalPanel.add(createOkButton(dialogBox));
+		horizontalPanel.add(createCancelButton(dialogBox));
 		
-		Button okButton = new Button();
-		okButton.setText(messages.confirmOkLabel());
-		okButton.addClickHandler(new ClickHandler()
-		{
-			public void onClick(ClickEvent event)
-			{
-				try
-				{
-					okClick();
-				}
-				catch (Throwable e)
-				{
-					GWT.log(e.getMessage(), e);
-				}
-				dialogBox.hide();
-			}
-		});
+		dockPanel.add(horizontalPanel, DockPanel.SOUTH);
+		dockPanel.setCellHorizontalAlignment(horizontalPanel, HasHorizontalAlignment.ALIGN_CENTER);
+		
+		dialogBox.add(dockPanel);
+		dialogBox.center();
+		dialogBox.show();
+	}
 
-		Button cancelButton = new Button();
+	/**
+	 * @param data
+	 * @return
+	 */
+	private Label createMessageLabel(final ConfirmData data)
+	{
+		Label label = new Label(data.getMessage());
+		label.setStyleName("message");
+		return label;
+	}
+
+	/**
+	 * @param dialogBox
+	 * @return
+	 */
+	private DecoratedButton createCancelButton(final DialogBox dialogBox)
+	{
+		DecoratedButton cancelButton = new DecoratedButton();
 		cancelButton.setText(messages.confirmCancelLabel());
+		cancelButton.addStyleName("button");
+		cancelButton.addStyleName("cancelButton");
 		cancelButton.addClickHandler(new ClickHandler()
 		{
 			public void onClick(ClickEvent event)
@@ -144,15 +157,35 @@ public class ConfirmController
 				dialogBox.hide();
 			}
 		});
+		return cancelButton;
+	}
 
-		horizontalPanel.add(okButton);
-		horizontalPanel.add(cancelButton);
-		
-		dockPanel.add(horizontalPanel, DockPanel.SOUTH);
-		
-		dialogBox.add(dockPanel);
-		dialogBox.center();
-		dialogBox.show();
+	/**
+	 * @param dialogBox
+	 * @return
+	 */
+	private DecoratedButton createOkButton(final DialogBox dialogBox)
+	{
+		DecoratedButton okButton = new DecoratedButton();
+		okButton.setText(messages.confirmOkLabel());
+		okButton.addStyleName("button");
+		okButton.addStyleName("okButton");
+		okButton.addClickHandler(new ClickHandler()
+		{
+			public void onClick(ClickEvent event)
+			{
+				try
+				{
+					okClick();
+				}
+				catch (Throwable e)
+				{
+					GWT.log(e.getMessage(), e);
+				}
+				dialogBox.hide();
+			}
+		});
+		return okButton;
 	}
 
 	/**

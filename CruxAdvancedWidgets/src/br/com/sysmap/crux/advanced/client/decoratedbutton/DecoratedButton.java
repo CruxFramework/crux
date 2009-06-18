@@ -15,17 +15,12 @@
  */
 package br.com.sysmap.crux.advanced.client.decoratedbutton;
 
-import br.com.sysmap.crux.advanced.client.util.TextSelectionUtils;
-
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.TableCellElement;
-import com.google.gwt.dom.client.TableElement;
-import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Accessibility;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HasText;
 
@@ -37,70 +32,34 @@ import com.google.gwt.user.client.ui.HasText;
 public class DecoratedButton extends FocusWidget implements HasText
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-DecoratedButton";
-	private TableElement faceBox;
-	private TableCellElement faceText;
+	
+	private FocusPanel widget;
+	private DecoratedButtonFace face;
 	private boolean allowClick;
-	private String baseStyleName = DEFAULT_STYLE_NAME;
 
 	public DecoratedButton()
 	{
-		super();
-		this.faceBox = createElement();
-		super.setElement(faceBox);
+		this.face = new DecoratedButtonFace();
+		this.widget = new FocusPanel(face);
+		this.setElement(widget.getElement());
 		sinkEvents(Event.ONCLICK | Event.MOUSEEVENTS | Event.FOCUSEVENTS | Event.KEYEVENTS);
 		Accessibility.setRole(getElement(), Accessibility.ROLE_BUTTON);
 	}
 
 	/**
-	 * @param text
-	 * @param face
-	 * @return
+	 * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
 	 */
-	private TableElement createElement()
-	{
-		TableElement table = DOM.createTable().cast();
-		table.setCellSpacing(0);
-		table.setCellPadding(0);
-		table.setClassName(DEFAULT_STYLE_NAME);
-
-		Element tableBody = DOM.createTBody();
-		table.appendChild(tableBody);
-
-		TableRowElement tr = DOM.createTR().cast();
-		tableBody.appendChild(tr);
-
-		TableCellElement tdLeft = DOM.createTD().cast();
-		tdLeft.setClassName("leftCell");
-		tdLeft.setInnerHTML("&nbsp;");
-		TextSelectionUtils.makeUnselectable(tdLeft);
-		tr.appendChild(tdLeft);
-
-		TableCellElement tdCenter = DOM.createTD().cast();
-		tdCenter.setClassName("centerCell");
-		tdCenter.setPropertyBoolean("noWrap", true);
-		tdCenter.setAlign("center");
-		TextSelectionUtils.makeUnselectable(tdCenter);
-		tr.appendChild(tdCenter);
-
-		this.faceText = tdCenter;
-
-		TableCellElement tdRight = DOM.createTD().cast();
-		tdRight.setClassName("rightCell");
-		tdRight.setInnerHTML("&nbsp;");
-		TextSelectionUtils.makeUnselectable(tdRight);
-		tr.appendChild(tdRight);
-
-		return table;
-	}
-
 	public void setText(String text)
 	{
-		this.faceText.setInnerText(text);
+		this.face.setText(text);
 	}
 
+	/**
+	 * @see com.google.gwt.user.client.ui.HasText#getText()
+	 */
 	public String getText()
 	{
-		return this.faceText.getInnerText();
+		return this.face.getText();
 	}
 
 	@Override
@@ -123,16 +82,16 @@ public class DecoratedButton extends FocusWidget implements HasText
 		}
 		else if(type == Event.ONMOUSEUP)
 		{
-			this.faceBox.setClassName(this.baseStyleName);
+			this.face.removeStyleDependentName("down");
 			onClick();
 		}		
 		else if (type == Event.ONMOUSEDOWN)
 		{
-			this.faceBox.setClassName(this.baseStyleName + " " + this.baseStyleName + "-down");
+			this.face.addStyleDependentName("down");
 		}
 		else if (type == Event.ONMOUSEOUT)
 		{
-			this.faceBox.setClassName(this.baseStyleName);
+			this.face.removeStyleDependentName("down");
 		}
 		else if (wasClickByKeyEvent(event))
 		{
@@ -174,20 +133,17 @@ public class DecoratedButton extends FocusWidget implements HasText
 	}
 	
 	@Override
-	public void setStyleName(String style)
-	{
-		if(this.baseStyleName.equals(DEFAULT_STYLE_NAME) || style.indexOf(" ") < 0)
-		{
-			this.baseStyleName = style;
-		}
-		
-		super.setStyleName(style);
-	}
-	
-	@Override
 	public void setEnabled(boolean enabled)
 	{
-		this.faceBox.setClassName(this.baseStyleName + " " + this.baseStyleName + (enabled ? "" : "-disabled"));
+		if(enabled)
+		{
+			this.face.removeStyleDependentName("disabled");
+		}
+		else
+		{
+			this.face.addStyleDependentName("disabled");
+		}
+		
 		super.setEnabled(enabled);
 	}
 }

@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.SuggestOracle;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @SuppressWarnings("unchecked")
-class FilterSuggestOracle extends SuggestOracle
+public class FilterSuggestOracle extends SuggestOracle
 {
 	private Filterable filterable;
 
