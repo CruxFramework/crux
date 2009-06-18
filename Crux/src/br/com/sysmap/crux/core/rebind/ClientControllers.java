@@ -16,7 +16,10 @@
 package br.com.sysmap.crux.core.rebind;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -26,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.client.controller.Controller;
+import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
@@ -42,6 +46,7 @@ public class ClientControllers
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Lock lock = new ReentrantLock();
 	private static Map<String, Class<?>> clientHandlers;
+	private static List<String> globalClientHandlers;
 	
 	public static void initialize(URL[] urls)
 	{
@@ -68,6 +73,7 @@ public class ClientControllers
 	protected static void initializeClientHandlers(URL[] urls)
 	{
 		clientHandlers = new HashMap<String, Class<?>>();
+		globalClientHandlers = new ArrayList<String>();
 		Set<String> controllerNames =  ClassScanner.getInstance(urls).searchClassesByAnnotation(Controller.class);
 		if (controllerNames != null)
 		{
@@ -78,6 +84,10 @@ public class ClientControllers
 					Class<?> controllerClass = Class.forName(controller);
 					Controller annot = controllerClass.getAnnotation(Controller.class);
 					clientHandlers.put(annot.value(), controllerClass);
+					if (controllerClass.getAnnotation(Global.class) != null)
+					{
+						globalClientHandlers.add(annot.value());
+					}
 				} 
 				catch (ClassNotFoundException e) 
 				{
@@ -95,4 +105,14 @@ public class ClientControllers
 		}
 		return clientHandlers.get(name);
 	}
+	
+	public static Iterator<String> iterateGlobalClientHandler()
+	{
+		if (globalClientHandlers == null)
+		{
+			initialize(ScannerURLS.getURLsForSearch());
+		}
+		return globalClientHandlers.iterator();
+	}
+	
 }

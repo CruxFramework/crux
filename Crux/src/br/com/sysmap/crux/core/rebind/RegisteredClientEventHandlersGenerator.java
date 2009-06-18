@@ -131,6 +131,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			String controller = controllers.next();
 			generateEventHandlerBlock(logger,sourceWriter, controller, handlerClassNames, implClassName);
 		}		
+
+		controllers = ClientControllers.iterateGlobalClientHandler();
+		
+		while (controllers.hasNext())
+		{
+			String controller = controllers.next();
+			generateEventHandlerBlock(logger,sourceWriter, controller, handlerClassNames, implClassName);
+		}		
 	}
 	
 	/**
