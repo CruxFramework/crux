@@ -15,16 +15,14 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
-import br.com.sysmap.crux.advanced.client.event.dialog.CancelEvent;
 import br.com.sysmap.crux.advanced.client.event.dialog.CancelHandler;
-import br.com.sysmap.crux.advanced.client.event.dialog.HasCancelHandlers;
-import br.com.sysmap.crux.advanced.client.event.dialog.HasOkHandlers;
-import br.com.sysmap.crux.advanced.client.event.dialog.OkEvent;
 import br.com.sysmap.crux.advanced.client.event.dialog.OkHandler;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -32,40 +30,28 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers, HasAnimation
+public class Popup extends Widget implements HasCloseHandlers<Popup>
 {
-	public static final String DEFAULT_STYLE_NAME = "crux-Confirm" ;
+	public static final String DEFAULT_STYLE_NAME = "crux-Popup" ;
 	private static ConfirmController confirmController = null;
 	private String title;
 	private String message;
 	private String styleName;
-	private boolean animationEnabled;
-	protected static Confirm confirm;
+	protected static Popup popup;
 	
 	/**
 	 * 
 	 */
-	public Confirm()
+	public Popup()
 	{
 		setElement(DOM.createSpan());
 	}
 
-	/**
-	 * 
-	 */
-	public HandlerRegistration addCancelHandler(CancelHandler handler)
+	public HandlerRegistration addCloseHandler(CloseHandler<Popup> handler)
 	{
-		return addHandler(handler, CancelEvent.getType());
-	}
-
-	/**
-	 * 
-	 */
-	public HandlerRegistration addOkHandler(OkHandler handler)
-	{
-		return addHandler(handler, OkEvent.getType());
+		return addHandler(handler, CloseEvent.getType());
 	}	
-	
+
 	public String getTitle()
 	{
 		return title;
@@ -95,16 +81,6 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 	{
 		this.styleName = styleName;
 	}
-	
-	public boolean isAnimationEnabled()
-	{
-		return animationEnabled;
-	}
-
-	public void setAnimationEnabled(boolean animationEnabled)
-	{
-		this.animationEnabled = animationEnabled;
-	}	
 
 	/**
 	 * 
@@ -115,8 +91,8 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 		{
 			confirmController = new ConfirmController(); 
 		}
-		confirm = this;
-		confirmController.showConfirm(new ConfirmData(title, message, styleName!=null?styleName:DEFAULT_STYLE_NAME, animationEnabled));
+		popup = this;
+	//	confirmController.showConfirm(new ConfirmData(title, message, styleName!=null?styleName:DEFAULT_STYLE_NAME));
 	}
 	
 	/**
@@ -128,7 +104,7 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 	 */
 	public static void show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler)
 	{
-		show(title, message, okHandler, cancelHandler, DEFAULT_STYLE_NAME, false);
+		show(title, message, okHandler, cancelHandler, DEFAULT_STYLE_NAME);
 	}
 	
 	/**
@@ -139,13 +115,12 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 	 * @param cancelCall
 	 * @param styleName
 	 */
-	public static void show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, String styleName, boolean animationEnabled)
+	public static void show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, String styleName)
 	{
-		Confirm confirm = new Confirm(); 
+/*		Popup confirm = new Popup(); 
 		confirm.setTitle(title);
 		confirm.setMessage(message);
 		confirm.setStyleName(styleName);
-		confirm.setAnimationEnabled(animationEnabled);
 		if (okHandler != null)
 		{
 			confirm.addOkHandler(okHandler);
@@ -154,6 +129,6 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 		{
 			confirm.addCancelHandler(cancelHandler);
 		}
-		confirm.show();
+		confirm.show();*/
 	}
 }

@@ -52,6 +52,12 @@ public class ConfirmFactory extends WidgetFactory<Confirm>
 		{
 			widget.setMessage(ScreenFactory.getInstance().getDeclaredMessage(message));
 		}
+
+		String animationEnabled = element.getAttribute("_animationEnabled");
+		if (animationEnabled != null && animationEnabled.length() > 0)
+		{
+			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
+		}
 	}
 	
 	@Override

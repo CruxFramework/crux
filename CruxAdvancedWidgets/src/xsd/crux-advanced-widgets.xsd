@@ -133,11 +133,12 @@
 	</xs:complexType>
 	
 	<xs:complexType name="Confirm">
+		<xs:attributeGroup ref="basic:AnimationEnabled"/>												
 		<xs:attribute name="id" use="required"/>
 		<xs:attribute name="message" use="required"/>
 		<xs:attribute name="title"/>
 		<xs:attribute name="onOk"/>
-		<xs:attribute name="onCancel"/>											
+		<xs:attribute name="onCancel"/>	
 	</xs:complexType>
 
 	<!--

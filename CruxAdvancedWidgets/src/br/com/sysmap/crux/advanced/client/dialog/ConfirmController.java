@@ -92,7 +92,7 @@ public class ConfirmController
 	}
 	
 	/**
-	 * Handler method to be invoked on top. That method shows the confirm dialog.
+	 * Handler method to be invoked on top. That method shows the popup dialog.
 	 * @param controllerEvent
 	 */
 	@ExposeOutOfModule
@@ -102,6 +102,7 @@ public class ConfirmController
 		
 		final DialogBox dialogBox = new DialogBox(false, true);
 		dialogBox.setStyleName(data.getStyleName());
+		dialogBox.setAnimationEnabled(data.isAnimationEnabled());
 		
 		DockPanel dockPanel = new DockPanel();
 		dockPanel.add(new Label(data.getMessage()), DockPanel.CENTER);

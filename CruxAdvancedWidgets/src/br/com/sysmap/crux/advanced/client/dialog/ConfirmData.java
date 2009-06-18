@@ -32,16 +32,18 @@ public class ConfirmData implements ModuleShareable
 	private String styleName;
 	private String title;
 	private String message;
+	private boolean animationEnabled;
 
 	public ConfirmData()
 	{
 	}
 	
-	public ConfirmData(String title, String message, String styleName)
+	public ConfirmData(String title, String message, String styleName, boolean animationEnabled)
 	{
 		this.styleName = styleName;
 		this.title = title;
 		this.message = message;
+		this.animationEnabled = animationEnabled;
 	}
 
 	public String getStyleName()
@@ -74,13 +76,24 @@ public class ConfirmData implements ModuleShareable
 		this.message = message;
 	}
 
+	public boolean isAnimationEnabled()
+	{
+		return animationEnabled;
+	}
+
+	public void setAnimationEnabled(boolean animationEnabled)
+	{
+		this.animationEnabled = animationEnabled;
+	}
+
 	public Object deserialize(String serializedData)
 	{
 		if (serializedData != null && serializedData.length() > 0)
 		{
 			Document root = XMLParser.parse(serializedData);
 			Element data = root.getDocumentElement();
-			return new ConfirmData(data.getAttribute("title"), data.getAttribute("message"), data.getAttribute("styleName"));
+			return new ConfirmData(data.getAttribute("title"), data.getAttribute("message"), 
+								   data.getAttribute("styleName"), Boolean.parseBoolean(data.getAttribute("animationEnabled")));
 		}
 		return null;
 	}
@@ -103,6 +116,7 @@ public class ConfirmData implements ModuleShareable
 		}
 		data.setAttribute("message", message);
 		data.setAttribute("styleName", styleName);
+		data.setAttribute("animationEnabled", Boolean.toString(animationEnabled));
 		
 		return document.toString();
 	}
