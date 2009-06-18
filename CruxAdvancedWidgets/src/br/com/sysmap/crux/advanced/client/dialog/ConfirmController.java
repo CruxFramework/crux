@@ -23,6 +23,7 @@ import br.com.sysmap.crux.core.client.component.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.component.Screen;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
+import br.com.sysmap.crux.core.client.controller.Global;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -38,6 +39,7 @@ import com.google.gwt.user.client.ui.Label;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
+@Global
 @Controller("confirmController")
 public class ConfirmController 
 {
