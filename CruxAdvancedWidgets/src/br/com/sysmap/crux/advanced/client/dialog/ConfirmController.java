@@ -22,6 +22,7 @@ import br.com.sysmap.crux.core.client.component.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.component.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.component.Screen;
 import br.com.sysmap.crux.core.client.controller.Controller;
+import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Global;
 
@@ -44,6 +45,9 @@ import com.google.gwt.user.client.ui.Label;
 public class ConfirmController 
 {
 	private ModuleComunicationSerializer serializer;
+	
+	@Create
+	protected DialogMessages messages;
 	
 	public ConfirmController()
 	{
@@ -105,7 +109,7 @@ public class ConfirmController
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		
 		Button okButton = new Button();
-		okButton.setText("Ok");//TODO: internacionalizar
+		okButton.setText(messages.confirmOkLabel());
 		okButton.addClickHandler(new ClickHandler()
 		{
 			public void onClick(ClickEvent event)
@@ -123,7 +127,7 @@ public class ConfirmController
 		});
 
 		Button cancelButton = new Button();
-		cancelButton.setText("Cancel");//TODO: internacionalizar
+		cancelButton.setText(messages.confirmCancelLabel());
 		cancelButton.addClickHandler(new ClickHandler()
 		{
 			public void onClick(ClickEvent event)
