@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Label;
  *
  */
 @Global
-@Controller("confirmController")
+@Controller("__confirm")
 public class ConfirmController 
 {
 	private ModuleComunicationSerializer serializer;
@@ -84,7 +84,7 @@ public class ConfirmController
 	{
 		try
 		{
-			showConfirmOnTop("confirmController.showConfirmHandler", serializer.serialize(data));
+			showConfirmOnTop(serializer.serialize(data));
 		}
 		catch (ModuleComunicationException e)
 		{
@@ -193,9 +193,9 @@ public class ConfirmController
 	 * @param call
 	 * @param serializedData
 	 */
-	private native void showConfirmOnTop(String call, String serializedData)/*-{
+	private native void showConfirmOnTop(String serializedData)/*-{
 		$wnd.top._confirm_origin = $wnd;
-		$wnd.top._cruxScreenControllerAccessor(call, serializedData);
+		$wnd.top._cruxScreenControllerAccessor("__confirm.showConfirmHandler", serializedData);
 	}-*/;
 
 	/**
@@ -206,7 +206,7 @@ public class ConfirmController
 	private native void okClick()/*-{
 		var o = $wnd.top._confirm_origin;
 		$wnd.top._confirm_origin = null;
-		o._cruxScreenControllerAccessor("confirmController.onOk", null);
+		o._cruxScreenControllerAccessor("__confirm.onOk", null);
 	}-*/;
 
 	/**
@@ -217,6 +217,6 @@ public class ConfirmController
 	private native void cancelClick()/*-{
 		var o = $wnd.top._confirm_origin;
 		$wnd.top._confirm_origin = null;
-		o._cruxScreenControllerAccessor("confirmController.onCancel", null);
+		o._cruxScreenControllerAccessor("__confirm.onCancel", null);
 	}-*/;
 }

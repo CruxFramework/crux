@@ -90,6 +90,14 @@ public class DecoratedPanel extends CellPanel
 	}
 	
 	/**
+	 * @param widget
+	 */
+	public void setControlWidget(Widget widget)
+	{
+		add(widget, getTopCenterRightCell());
+	}
+	
+	/**
 	 * Adds a widget to the body of the panel (middle center cell)
 	 * @param w
 	 */

@@ -15,14 +15,12 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
-import br.com.sysmap.crux.advanced.client.event.dialog.CancelHandler;
-import br.com.sysmap.crux.advanced.client.event.dialog.OkHandler;
-
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -30,13 +28,15 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class Popup extends Widget implements HasCloseHandlers<Popup>
+public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Popup" ;
-	private static ConfirmController confirmController = null;
+	private static PopupController popupController = null;
 	private String title;
-	private String message;
+	private String url;
 	private String styleName;
+	private boolean animationEnabled;
+	private boolean closeable = true;
 	protected static Popup popup;
 	
 	/**
@@ -62,16 +62,6 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>
 		this.title = title;
 	}
 
-	public String getMessage()
-	{
-		return message;
-	}
-
-	public void setMessage(String message)
-	{
-		this.message = message;
-	}
-
 	public String getStyleName()
 	{
 		return styleName;
@@ -82,53 +72,100 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>
 		this.styleName = styleName;
 	}
 
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
+	
+	public boolean isAnimationEnabled()
+	{
+		return animationEnabled;
+	}
+
+	public void setAnimationEnabled(boolean animationEnabled)
+	{
+		this.animationEnabled = animationEnabled;
+	}
+	
+	public boolean isCloseable()
+	{
+		return closeable;
+	}
+
+	public void setCloseable(boolean closeable)
+	{
+		this.closeable = closeable;
+	}
+
 	/**
 	 * 
 	 */
 	public void show()
 	{
-		if (confirmController == null)
+		if (popupController == null)
 		{
-			confirmController = new ConfirmController(); 
+			popupController = new PopupController(); 
 		}
 		popup = this;
-	//	confirmController.showConfirm(new ConfirmData(title, message, styleName!=null?styleName:DEFAULT_STYLE_NAME));
+		popupController.showPopup(new PopupData(title, url, styleName!=null?styleName:DEFAULT_STYLE_NAME, animationEnabled, closeable));
 	}
 	
 	/**
 	 * 
-	 * @param title
-	 * @param message
-	 * @param okCall
-	 * @param cancelCall
 	 */
-	public static void show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler)
+	public void hide()
 	{
-		show(title, message, okHandler, cancelHandler, DEFAULT_STYLE_NAME);
+		if (popupController != null && popup != null)
+		{
+			popupController.hide();
+			popup = null;
+		}
 	}
 	
 	/**
 	 * 
 	 * @param title
-	 * @param message
-	 * @param okCall
-	 * @param cancelCall
+	 * @param url
+	 * @param closeHandler
+	 */
+	public static void show(String title, String url,  CloseHandler<Popup> closeHandler)
+	{
+		show(title, url, closeHandler, DEFAULT_STYLE_NAME, false, true);
+	}
+	
+	/**
+	 * 
+	 * @param title
+	 * @param url
+	 * @param closeHandler
 	 * @param styleName
+	 * @param animationEnabled
 	 */
-	public static void show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, String styleName)
+	public static void show(String title, String url, CloseHandler<Popup> closeHandler, String styleName, boolean animationEnabled, boolean closeable)
 	{
-/*		Popup confirm = new Popup(); 
-		confirm.setTitle(title);
-		confirm.setMessage(message);
-		confirm.setStyleName(styleName);
-		if (okHandler != null)
+		Popup popup = new Popup(); 
+		popup.setTitle(title);
+		popup.setUrl(url);
+		popup.setStyleName(styleName);
+		popup.setAnimationEnabled(animationEnabled);
+		if (closeHandler != null)
 		{
-			confirm.addOkHandler(okHandler);
+			popup.addCloseHandler(closeHandler);
 		}
-		if (cancelHandler != null)
+		
+		popup.show();
+	}
+	
+	public static void close ()
+	{
+		if (popup != null)
 		{
-			confirm.addCancelHandler(cancelHandler);
+			popup.hide();
 		}
-		confirm.show();*/
 	}
 }
