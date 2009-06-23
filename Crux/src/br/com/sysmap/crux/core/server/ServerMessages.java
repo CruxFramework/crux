@@ -69,6 +69,9 @@ public interface ServerMessages
 	@DefaultMessage("[screenFactory - 006] - Error creating widget. Duplicated identifier: {0}.")
 	String screenFactoryErrorDuplicatedWidget(String widgetId);
 
+	@DefaultMessage("[screenFactory 007] - Multiple modules in the same html page is not allowed in CRUX.")
+	String screenFactoryErrorMultipleModulesOnPage();
+	
 	@DefaultMessage("[screenFactory 002] - Error retrieving screen {0}. Error: {1}.")
 	String screenFactoryErrorRetrievingScreen(String screenId, String errMsg);
 
@@ -119,4 +122,7 @@ public interface ServerMessages
 
 	@DefaultMessage("[serializers 001] - Error initializing serializer: {0}.")
 	Object serializersSerializersInitializeError(String localizedMessage);
+
+	@DefaultMessage("[screenResourceScanner 001] - Error initializing screenResourceScanner: {0}.")
+	String screenResourceScannerInitializationError(String localizedMessage);
 }

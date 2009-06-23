@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a Crux Screen at the application's server side. Used for GWT Generators and 
- * request parameter binding.
+ * Represents a Crux Screen at the application's server side. Used for GWT Generators.
  * 
  * @author Thiago Bustamante
  */
@@ -34,10 +33,12 @@ public class Screen
 	protected Map<String, Event> events = new HashMap<String, Event>();
 	protected List<String> controllers = new ArrayList<String>();
 	protected List<String> serializers = new ArrayList<String>();
+	protected String module;
 	
-	public Screen(String id) 
+	public Screen(String id, String module) 
 	{
 		this.id = id;
+		this.module = module;
 	}
 
 	/**
@@ -79,6 +80,11 @@ public class Screen
 	public String getId() 
 	{
 		return id;
+	}
+	
+	public String getModule()
+	{
+		return module;
 	}
 
 	/**

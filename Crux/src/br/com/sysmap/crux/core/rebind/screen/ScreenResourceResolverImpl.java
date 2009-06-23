@@ -16,11 +16,14 @@
 package br.com.sysmap.crux.core.rebind.screen;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Set;
 
 import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.server.Environment;
 import br.com.sysmap.crux.core.server.ServerMessages;
 
 /**
@@ -35,19 +38,33 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 	{
 		try
 		{
-			URL url = getClass().getResource(screenId);
-			
-			if (url == null)
+			File input = new File(Environment.getWebBaseDir(), screenId);
+
+			if (input != null && input.exists())
 			{
-				url = getClass().getResource("/" + screenId);
-				
-				if (url == null)
+				return new FileInputStream(input);
+			}
+			else 
+			{
+				input = new File(screenId);
+
+				if (input != null && input.exists())
 				{
-					url = new File(screenId).toURI().toURL();
+					return new FileInputStream(input);
+				}
+				else
+				{
+					URL url = getClass().getResource("/"+screenId);
+					if (url != null)
+					{
+						return url.openStream();
+					}
+					else
+					{
+						return null;
+					}
 				}
 			}
-			
-			return url.openStream();
 		}
 		catch (Exception e)
 		{
@@ -55,4 +72,8 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 		}
 	}
 
+	public Set<String> getAllScreenIDs(String module) throws ScreenConfigException
+	{
+		return new ScreenResourcesScannerImpl().getPages(module);
+	}
 }

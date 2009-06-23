@@ -22,6 +22,7 @@ import java.lang.reflect.Modifier;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.controller.Controller;
@@ -55,7 +56,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	/**
 	 * Generate the class
 	 */
-	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, Screen screen) 
+	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens) 
 	{
 		String packageName = classType.getPackage().getName();
 		String className = classType.getSimpleSourceName();
@@ -82,8 +83,11 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		sourceWriter.println("private java.util.Map clientHandlers = new java.util.HashMap();");
 
 		Map<String, String> handlerClassNames = new HashMap<String, String>();
-		generateEventHandlersForScreen(logger, sourceWriter, screen, handlerClassNames, packageName+"."+implClassName);
-		generateConstructor(logger, sourceWriter, screen, implClassName, handlerClassNames);
+		for (Screen screen : screens)
+		{
+			generateEventHandlersForScreen(logger, sourceWriter, screen, handlerClassNames, packageName+"."+implClassName);
+		}
+		generateConstructor(logger, sourceWriter, implClassName, handlerClassNames);
 
 		sourceWriter.println("public EventClientHandlerInvoker getEventHandler(String id){");
 		sourceWriter.println("return (EventClientHandlerInvoker) clientHandlers.get(id);");
@@ -100,11 +104,10 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * constructed looping all widgets to just include controllers that are used on the screen.
 	 * @param logger
 	 * @param sourceWriter
-	 * @param screen
 	 * @param implClassName
 	 * @para handlerClassNames
 	 */
-	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, Screen screen, String implClassName, 
+	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, String implClassName, 
 			Map<String, String> handlerClassNames) 
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");

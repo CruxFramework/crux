@@ -18,6 +18,7 @@ package br.com.sysmap.crux.core.rebind;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.i18n.MessageClasses;
@@ -37,7 +38,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 public class DeclaredI18NMessagesGenerator extends AbstractRegisteredElementsGenerator
 {
 	@Override
-	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, Screen screen)
+	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens)
 	{
 		String packageName = classType.getPackage().getName();
 		String className = classType.getSimpleSourceName();
@@ -55,7 +56,7 @@ public class DeclaredI18NMessagesGenerator extends AbstractRegisteredElementsGen
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 		sourceWriter.println("private java.util.Map<String, String> messages = new java.util.HashMap<String, String>();");
 
-		generateConstructor(logger, sourceWriter, screen, implClassName);
+		generateConstructor(logger, sourceWriter, screens, implClassName);
 
 		sourceWriter.println("public String getMessage(String key) { ");
 		sourceWriter.println("if (!messages.containsKey(key)) {");
@@ -70,17 +71,21 @@ public class DeclaredI18NMessagesGenerator extends AbstractRegisteredElementsGen
 		context.commit(logger, printWriter);
 	}
 
-	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, Screen screen, String implClassName) 
+	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, List<Screen> screens, String implClassName) 
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");
 		
 		sourceWriter.println("String msg;");
-		Iterator<Widget> iterator = screen.iterateWidgets();
 		Map<String, Boolean> added = new HashMap<String, Boolean>();
-		while (iterator.hasNext())
+
+		for (Screen screen : screens)
 		{
-			Widget widget = iterator.next();
-			generateGetMessageBlock(logger, sourceWriter, widget, added);
+			Iterator<Widget> iterator = screen.iterateWidgets();
+			while (iterator.hasNext())
+			{
+				Widget widget = iterator.next();
+				generateGetMessageBlock(logger, sourceWriter, widget, added);
+			}
 		}
 		sourceWriter.println("}");
 	} 

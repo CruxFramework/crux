@@ -18,6 +18,7 @@ package br.com.sysmap.crux.core.rebind;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.component.serializer.ByteSerializer;
@@ -50,7 +51,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 public class RegisteredModuleShareablesGenerator extends AbstractRegisteredElementsGenerator
 {
 	@Override
-	protected void generateClass(TreeLogger logger, GeneratorContext context,JClassType classType, Screen screen) 
+	protected void generateClass(TreeLogger logger, GeneratorContext context,JClassType classType, List<Screen> screens) 
 	{
 		String packageName = classType.getPackage().getName();
 		String className = classType.getSimpleSourceName();
@@ -65,7 +66,7 @@ public class RegisteredModuleShareablesGenerator extends AbstractRegisteredEleme
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 
-		generateConstructor(logger, sourceWriter, screen, implClassName);
+		generateConstructor(logger, sourceWriter, screens, implClassName);
 		sourceWriter.println("private java.util.Map<String,ModuleShareable> serializers = new java.util.HashMap<String,ModuleShareable>();");
 
 		sourceWriter.println("public ModuleShareable getModuleShareable(String type){");
@@ -83,19 +84,21 @@ public class RegisteredModuleShareablesGenerator extends AbstractRegisteredEleme
 		context.commit(logger, printWriter);
 	}
 	
-	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, Screen screen, String implClassName) 
+	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, List<Screen> screens, String implClassName) 
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");
 
-		Iterator<String> iterator = screen.iterateSerializers();
 		Map<String, Boolean> added = new HashMap<String, Boolean>();
-		
 		generateDefaultSerializersBlock(sourceWriter);
 		
-		while (iterator.hasNext())
+		for (Screen screen : screens)
 		{
-			String serializer = iterator.next();
-			generateSerialisersBlock(logger, sourceWriter, serializer, added);
+			Iterator<String> iterator = screen.iterateSerializers();
+			while (iterator.hasNext())
+			{
+				String serializer = iterator.next();
+				generateSerialisersBlock(logger, sourceWriter, serializer, added);
+			}
 		}
 		sourceWriter.println("}");
 	}

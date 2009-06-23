@@ -36,4 +36,7 @@ public interface Crux
 
 	@DefaultMessage("br.com.sysmap.crux.core.server.classpath.ClassPathResolverImpl")
 	String classPathResolver();
+
+	@DefaultMessage("false")
+	String singleModule();
 }

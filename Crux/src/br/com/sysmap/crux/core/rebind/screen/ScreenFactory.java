@@ -230,12 +230,15 @@ public class ScreenFactory
 	 * @param stream
 	 * @return
 	 * @throws IOException
+	 * @throws ScreenConfigException 
 	 */
-	private Screen parseScreen(String id, InputStream stream) throws IOException
+	private Screen parseScreen(String id, InputStream stream) throws IOException, ScreenConfigException
 	{
-		Screen screen = new Screen(id);
 		Source source = new Source(stream);
 		source.fullSequentialParse();
+
+		Screen screen = new Screen(id, getScreenModule(source.findAllElements("script")));
+		
 		List<?> elementList = source.findAllElements("span");
 		
 		for (Object object : elementList) 
@@ -261,6 +264,39 @@ public class ScreenFactory
 		return screen;
 	}
 	
+	private String getScreenModule(List<?> scriptList) throws ScreenConfigException
+	{
+		String result = null;
+		for (Object object : scriptList)
+		{
+			Element element = (Element)object;
+			
+			String src = element.getAttributeValue("src");
+			
+			if (src.endsWith(".nocache.js"))
+			{
+				if (result != null)
+				{
+					throw new ScreenConfigException(messages.screenFactoryErrorMultipleModulesOnPage());
+				}
+				
+				int lastSlash = src.lastIndexOf("/");
+				
+				if(lastSlash >= 0)
+				{
+					int firstDotAfterSlash = src.indexOf(".", lastSlash);
+					result = src.substring(lastSlash + 1, firstDotAfterSlash);
+				}
+				else
+				{
+					int firstDot = src.indexOf(".");
+					result = src.substring(0, firstDot);
+				}
+			}
+		}
+		return result;
+	}
+
 	/**
 	 * Parse screen element
 	 * @param screen

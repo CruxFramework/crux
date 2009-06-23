@@ -18,6 +18,7 @@ package br.com.sysmap.crux.core.rebind;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.rebind.screen.Widget;
@@ -33,7 +34,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElementsGenerator
 {
 	@Override
-	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, Screen screen) 
+	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens) 
 	{
 		String packageName = classType.getPackage().getName();
 		String className = classType.getSimpleSourceName();
@@ -51,7 +52,7 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 		sourceWriter.println("private java.util.Map<String, WidgetFactory<? extends Widget>> widgetFactories = new java.util.HashMap<String, WidgetFactory<? extends Widget>>();");
 
-		generateConstructor(sourceWriter, screen, implClassName);
+		generateConstructor(sourceWriter, screens, implClassName);
 
 		sourceWriter.println("public WidgetFactory<? extends Widget> getWidgetFactory(String type) throws InterfaceConfigException{ ");
 		sourceWriter.println("if (!widgetFactories.containsKey(type)) {");
@@ -66,16 +67,20 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 		context.commit(logger, printWriter);
 	}
 	
-	protected void generateConstructor(SourceWriter sourceWriter, Screen screen, String implClassName) 
+	protected void generateConstructor(SourceWriter sourceWriter, List<Screen> screens, String implClassName) 
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");
 		
-		Iterator<Widget> iterator = screen.iterateWidgets();
 		Map<String, Boolean> added = new HashMap<String, Boolean>();
-		while (iterator.hasNext())
+
+		for (Screen screen : screens)
 		{
-			Widget widget = iterator.next();
-			generateCreateWidgetBlock(sourceWriter, widget, added);
+			Iterator<Widget> iterator = screen.iterateWidgets();
+			while (iterator.hasNext())
+			{
+				Widget widget = iterator.next();
+				generateCreateWidgetBlock(sourceWriter, widget, added);
+			}
 		}
 		sourceWriter.println("}");
 	} 

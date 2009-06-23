@@ -15,9 +15,15 @@
  */
 package br.com.sysmap.crux.core.rebind;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
+import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
 import br.com.sysmap.crux.core.rebind.screen.ScreenFactory;
+import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -26,10 +32,18 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
 public abstract class AbstractRegisteredElementsGenerator extends Generator
 {
 	protected GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 	
+	/**
+	 * 
+	 */
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException 
 	{
@@ -38,21 +52,11 @@ public abstract class AbstractRegisteredElementsGenerator extends Generator
 			TypeOracle typeOracle = context.getTypeOracle(); 
 			JClassType classType = typeOracle.getType(typeName);
 			
-			String screenID; 
-			try
-			{
-				screenID = CruxScreenBridge.getInstance().getLastPageRequested();
-			}
-			catch (Throwable e) 
-			{
-				logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredElementInvalidScreenID(),e);
-				throw new UnableToCompleteException();
-			}
-			Screen screen = ScreenFactory.getInstance().getScreen(screenID);
+			List<Screen> screens = getScreens(logger);
 			
 			String packageName = classType.getPackage().getName();
 			String className = classType.getSimpleSourceName() + "Impl";
-			generateClass(logger, context, classType, screen);
+			generateClass(logger, context, classType, screens);
 			return packageName + "." + className;
 		} 
 		catch (Throwable e) 
@@ -61,6 +65,56 @@ public abstract class AbstractRegisteredElementsGenerator extends Generator
 			throw new UnableToCompleteException();
 		}
 	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @return
+	 * @throws UnableToCompleteException
+	 * @throws ScreenConfigException
+	 */
+	protected List<Screen> getScreens(TreeLogger logger) throws UnableToCompleteException, ScreenConfigException
+	{
+		List<Screen> screens = new ArrayList<Screen>();
+
+		Screen requestedScreen = getRequestedScreen(logger);
+		Set<String> screenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(requestedScreen.getModule());
+		for (String screenID : screenIDs)
+		{
+			screens.add(ScreenFactory.getInstance().getScreen(screenID));
+		}
+		return screens;
+	}
 	
-	protected abstract void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, Screen screen);
+	/**
+	 * 
+	 * @param logger
+	 * @return
+	 * @throws UnableToCompleteException
+	 * @throws ScreenConfigException
+	 */
+	protected Screen getRequestedScreen(TreeLogger logger) throws UnableToCompleteException, ScreenConfigException
+	{
+		String screenID; 
+		try
+		{
+			screenID = CruxScreenBridge.getInstance().getLastPageRequested();
+		}
+		catch (Throwable e) 
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredElementInvalidScreenID(),e);
+			throw new UnableToCompleteException();
+		}
+		Screen screen = ScreenFactory.getInstance().getScreen(screenID);
+		return screen;
+	}
+	
+	/**
+	 * 
+	 * @param logger
+	 * @param context
+	 * @param classType
+	 * @param screens
+	 */
+	protected abstract void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens);
 }

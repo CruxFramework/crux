@@ -15,29 +15,31 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
-import java.io.InputStream;
-import java.util.Set;
-
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
-
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface ScreenResourceResolver
+public class ScreenResourcesScannerException extends RuntimeException
 {
-	/**
-	 * Gets the resource for a given screenId
-	 * @param id
-	 * @return
-	 * @throws InterfaceConfigException 
-	 */
-	InputStream getScreenResource(String screenId) throws InterfaceConfigException;
-	
-	/**
-	 * List all Crux screen IDs
-	 * @return
-	 * @throws ScreenConfigException 
-	 */
-	Set<String> getAllScreenIDs(String module) throws ScreenConfigException;
+	private static final long serialVersionUID = -1599986004331398551L;
+
+	public ScreenResourcesScannerException()
+	{
+		super();
+	}
+
+	public ScreenResourcesScannerException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
+
+	public ScreenResourcesScannerException(String message)
+	{
+		super(message);
+	}
+
+	public ScreenResourcesScannerException(Throwable cause)
+	{
+		super(cause);
+	}
 }
