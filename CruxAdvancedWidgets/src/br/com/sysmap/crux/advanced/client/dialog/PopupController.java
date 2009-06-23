@@ -72,6 +72,8 @@ public class PopupController
 	 */
 	public void showPopup(PopupData data)
 	{
+		Screen.blockToUser("crux-PopupScreenBlocker");
+		
 		try
 		{
 			showPopupOnTop(serializer.serialize(data));
@@ -80,8 +82,6 @@ public class PopupController
 		{
 			GWT.log(e.getMessage(), e);
 		}
-		
-		Screen.blockToUser("crux-PopupScreenBlocker");
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class PopupController
 	@ExposeOutOfModule
 	public void showPopupHandler(InvokeControllerEvent controllerEvent)
 	{
-		Screen.blockToUser("crux-PopupScreenBlocker");
+		//Screen.blockToUser("crux-PopupScreenBlocker");
 		
 		try
 		{
@@ -151,7 +151,7 @@ public class PopupController
 		catch (Exception e) 
 		{
 			GWT.log(e.getMessage(), e);
-			Screen.unblockToUser();
+			//Screen.unblockToUser();
 		}
 	}
 

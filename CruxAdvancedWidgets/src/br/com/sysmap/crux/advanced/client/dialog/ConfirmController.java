@@ -84,6 +84,8 @@ public class ConfirmController
 	 */
 	public void showConfirm(ConfirmData data)
 	{
+		Screen.blockToUser("crux-ConfirmScreenBlocker");
+		
 		try
 		{
 			showConfirmOnTop(serializer.serialize(data));
@@ -91,9 +93,7 @@ public class ConfirmController
 		catch (ModuleComunicationException e)
 		{
 			GWT.log(e.getMessage(), e);
-		}
-		
-		Screen.blockToUser("crux-ConfirmScreenBlocker");
+		}	
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class ConfirmController
 	@ExposeOutOfModule
 	public void showConfirmHandler(InvokeControllerEvent controllerEvent)
 	{
-		Screen.blockToUser("crux-ConfirmScreenBlocker");
+		//Screen.blockToUser("crux-ConfirmScreenBlocker");
 		
 		try
 		{
@@ -131,7 +131,7 @@ public class ConfirmController
 		catch (Exception e)
 		{
 			GWT.log(e.getMessage(), e);
-			Screen.unblockToUser();
+			//Screen.unblockToUser();
 		}
 	}
 

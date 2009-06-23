@@ -155,14 +155,26 @@ public class Screen
 	{
 		if (blockDiv == null)
 		{
+			Element body = RootPanel.getBodyElement();
+			int width = body.getScrollWidth();
+			int height = body.getScrollHeight();
+			
+			if(body.getClientWidth() > width)
+			{
+				width = body.getClientWidth();
+			}
+			
+			if(body.getClientHeight() > height)
+			{
+				height = body.getClientHeight();
+			}
+			
 			blockDiv = DOM.createDiv();
 			blockDiv.getStyle().setProperty("position","absolute");
 			blockDiv.getStyle().setPropertyPx("top", 0);
 			blockDiv.getStyle().setPropertyPx("left", 0);
-			blockDiv.getStyle().setPropertyPx("height", Window.getClientHeight());
-			blockDiv.getStyle().setPropertyPx("width", Window.getClientWidth());
-			
-			Element body = RootPanel.getBodyElement();
+			blockDiv.getStyle().setPropertyPx("width", width);
+			blockDiv.getStyle().setPropertyPx("height", height);
 			
 			if(blockingDivStyleName != null)
 			{
@@ -174,11 +186,11 @@ public class Screen
 				blockDiv.getStyle().setProperty("backgroundColor", "white");
 				blockDiv.getStyle().setProperty("opacity", ".01");
 				blockDiv.getStyle().setProperty("filter", "alpha(opacity=1)");
-				
+
 				body.getStyle().setProperty("cursor", "wait");
 			}
-						
-			body.appendChild(blockDiv);			
+			
+			body.appendChild(blockDiv);
 		}
 	}
 	
