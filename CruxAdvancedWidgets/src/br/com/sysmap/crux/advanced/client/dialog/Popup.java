@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
+import br.com.sysmap.crux.core.client.component.Screen;
+
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -35,6 +37,8 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimati
 	private String title;
 	private String url;
 	private String styleName;
+	private String width = "400";
+	private String height = "300";
 	private boolean animationEnabled;
 	private boolean closeable = true;
 	protected static Popup popup;
@@ -112,7 +116,7 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimati
 			popupController = new PopupController(); 
 		}
 		popup = this;
-		popupController.showPopup(new PopupData(title, url, styleName!=null?styleName:DEFAULT_STYLE_NAME, animationEnabled, closeable));
+		popupController.showPopup(new PopupData(title, url, width, height, styleName!=null ? styleName : DEFAULT_STYLE_NAME, animationEnabled, closeable));
 	}
 	
 	/**
@@ -135,7 +139,7 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimati
 	 */
 	public static void show(String title, String url,  CloseHandler<Popup> closeHandler)
 	{
-		show(title, url, closeHandler, DEFAULT_STYLE_NAME, false, true);
+		show(title, url, null, null, closeHandler, DEFAULT_STYLE_NAME, false, true);
 	}
 	
 	/**
@@ -146,12 +150,23 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimati
 	 * @param styleName
 	 * @param animationEnabled
 	 */
-	public static void show(String title, String url, CloseHandler<Popup> closeHandler, String styleName, boolean animationEnabled, boolean closeable)
+	public static void show(String title, String url, String width, String height, CloseHandler<Popup> closeHandler, String styleName, boolean animationEnabled, boolean closeable)
 	{
 		Popup popup = new Popup(); 
 		popup.setTitle(title);
 		popup.setUrl(url);
 		popup.setStyleName(styleName);
+		popup.setCloseable(closeable);
+		
+		if(width != null)
+		{
+			popup.setWidth(width);
+		}
+		if(height != null)
+		{
+			popup.setHeight(height);
+		}			
+		
 		popup.setAnimationEnabled(animationEnabled);
 		if (closeHandler != null)
 		{
@@ -167,5 +182,37 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimati
 		{
 			popup.hide();
 		}
+	}
+
+	/**
+	 * @return the width
+	 */
+	public String getWidth()
+	{
+		return width;
+	}
+
+	/**
+	 * @param width the width to set
+	 */
+	public void setWidth(String width)
+	{
+		this.width = width;
+	}
+
+	/**
+	 * @return the height
+	 */
+	public String getHeight()
+	{
+		return height;
+	}
+
+	/**
+	 * @param height the height to set
+	 */
+	public void setHeight(String height)
+	{
+		this.height = height;
 	}
 }

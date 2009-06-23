@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
-import br.com.sysmap.crux.advanced.client.titlepanel.TitlePanel;
 import br.com.sysmap.crux.core.client.component.InvokeControllerEvent;
 import br.com.sysmap.crux.core.client.component.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.component.ModuleComunicationSerializer;
@@ -30,7 +29,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Label;
@@ -46,7 +44,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 public class PopupController 
 {
 	private ModuleComunicationSerializer serializer;
-	private DialogBox dialogBox;
+	private CustomDialogBox dialogBox;
 	
 	@Create
 	protected DialogMessages messages;
@@ -64,6 +62,7 @@ public class PopupController
 	@ExposeOutOfModule
 	public void onClose()
 	{
+		Screen.unblockToUser();
 		CloseEvent.fire(Popup.popup, Popup.popup);
 	}
 
@@ -81,6 +80,8 @@ public class PopupController
 		{
 			GWT.log(e.getMessage(), e);
 		}
+		
+		Screen.blockToUser("crux-PopupScreenBlocker");
 	}
 	
 	/**
@@ -90,46 +91,68 @@ public class PopupController
 	@ExposeOutOfModule
 	public void showPopupHandler(InvokeControllerEvent controllerEvent)
 	{
-		final PopupData data = (PopupData) controllerEvent.getData();
+		Screen.blockToUser("crux-PopupScreenBlocker");
 		
-		dialogBox = new DialogBox(false, true);
-		dialogBox.setStyleName(data.getStyleName());
-		dialogBox.setAnimationEnabled(data.isAnimationEnabled());
-
-		dialogBox.addCloseHandler(new CloseHandler<PopupPanel>()
+		try
 		{
-			public void onClose(CloseEvent<PopupPanel> event)
+			final PopupData data = (PopupData) controllerEvent.getData();
+			
+			dialogBox = new CustomDialogBox(false, true);
+			dialogBox.setStyleName(data.getStyleName());
+			dialogBox.setAnimationEnabled(data.isAnimationEnabled());
+			dialogBox.setWidth(data.getWidth());
+			dialogBox.setHeight(data.getHeight());		
+	
+			dialogBox.addCloseHandler(new CloseHandler<PopupPanel>()
 			{
-				closePopup();
+				public void onClose(CloseEvent<PopupPanel> event)
+				{
+					closePopup();
+				}
+			});
+			
+			Frame frame = new Frame(data.getUrl());
+			frame.setStyleName("frame");
+			frame.setHeight("100%");
+			frame.setWidth("100%");
+			frame.getElement().setPropertyString("frameBorder", "no");
+			frame.getElement().setPropertyInt("border", 0);
+			frame.getElement().setPropertyInt("marginWidth", 0);
+			frame.getElement().setPropertyInt("marginHeight", 0);
+			frame.getElement().setPropertyInt("vspace", 0);
+			frame.getElement().setPropertyInt("hspace", 0);
+	
+			if(data.isCloseable())
+			{
+				FocusPanel focusPanel = new FocusPanel();
+				focusPanel.setStyleName("closeButton");
+				focusPanel.addClickHandler(new ClickHandler()
+				{
+					public void onClick(ClickEvent event)
+					{
+						hide();
+					}
+				});
+				Label label = new Label(" ");
+				label.getElement().getStyle().setProperty("fontSize", "0px");
+				label.getElement().getStyle().setProperty("fontFamily", "monospace");
+				focusPanel.add(label);
+				
+				dialogBox.setTopRightWidget(focusPanel);
 			}
-		});
-		
-		TitlePanel titlePanel = new TitlePanel("100%", "100%", null);
-		Frame frame = new Frame(data.getUrl());
-
-		titlePanel.setContentWidget(frame);
-		titlePanel.setTitleText(data.getTitle());
-
-		FocusPanel focusPanel = new FocusPanel();
-		focusPanel.setStyleName("closeButton");
-		focusPanel.addClickHandler(new ClickHandler()
+			
+	
+			dialogBox.setText(data.getTitle());
+			dialogBox.setWidget(frame);		
+			dialogBox.center();
+			
+			dialogBox.show();
+		}
+		catch (Exception e) 
 		{
-			public void onClick(ClickEvent event)
-			{
-				hide();
-			}
-		});
-		Label label = new Label(" ");
-		label.getElement().getStyle().setProperty("fontSize", "0px");
-		label.getElement().getStyle().setProperty("fontFamily", "monospace");
-		focusPanel.add(label);
-		
-		titlePanel.setControlWidget(focusPanel);
-		
-		dialogBox.setWidget(titlePanel);
-		
-		dialogBox.center();
-		dialogBox.show();
+			GWT.log(e.getMessage(), e);
+			Screen.unblockToUser();
+		}
 	}
 
 	/**
@@ -148,6 +171,8 @@ public class PopupController
 	@ExposeOutOfModule
 	public void hidePopupHandler(InvokeControllerEvent controllerEvent)
 	{
+		Screen.unblockToUser();
+		
 		if (dialogBox != null)
 		{
 			dialogBox.hide();

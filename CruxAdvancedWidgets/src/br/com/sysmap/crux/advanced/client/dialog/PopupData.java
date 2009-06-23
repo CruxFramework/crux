@@ -34,16 +34,20 @@ public class PopupData implements ModuleShareable
 	private String url;
 	private boolean animationEnabled;
 	private boolean closeable;
+	private String width;
+	private String height;
 
 	public PopupData()
 	{
 	}
 	
-	public PopupData(String title, String url, String styleName, boolean animationEnabled, boolean closeable)
+	public PopupData(String title, String url, String width, String height, String styleName, boolean animationEnabled, boolean closeable)
 	{
 		this.styleName = styleName;
 		this.title = title;
 		this.url = url;
+		this.width = width;
+		this.height = height;
 		this.animationEnabled = animationEnabled;
 		this.closeable = closeable;
 	}
@@ -106,6 +110,8 @@ public class PopupData implements ModuleShareable
 			Element data = root.getDocumentElement();
 			return new PopupData(data.getAttribute("title"), 
 								 data.getAttribute("url"), 
+								 data.getAttribute("width"),
+								 data.getAttribute("height"),
 								 data.getAttribute("styleName"), 
 								 Boolean.parseBoolean(data.getAttribute("animationEnabled")),
 								 Boolean.parseBoolean(data.getAttribute("closeable")));
@@ -131,9 +137,43 @@ public class PopupData implements ModuleShareable
 		}
 		data.setAttribute("url", url);
 		data.setAttribute("styleName", styleName);
+		data.setAttribute("width", width);
+		data.setAttribute("height", height);
 		data.setAttribute("animationEnabled", Boolean.toString(animationEnabled));
 		data.setAttribute("closeable", Boolean.toString(closeable));
 		
 		return document.toString();
+	}
+
+	/**
+	 * @return the width
+	 */
+	public String getWidth()
+	{
+		return width;
+	}
+
+	/**
+	 * @param width the width to set
+	 */
+	public void setWidth(String width)
+	{
+		this.width = width;
+	}
+
+	/**
+	 * @return the height
+	 */
+	public String getHeight()
+	{
+		return height;
+	}
+
+	/**
+	 * @param height the height to set
+	 */
+	public void setHeight(String height)
+	{
+		this.height = height;
 	}
 }

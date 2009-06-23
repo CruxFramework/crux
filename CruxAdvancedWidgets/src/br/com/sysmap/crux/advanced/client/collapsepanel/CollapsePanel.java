@@ -65,7 +65,7 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 		AbstractImagePrototype proto = collapsed ? images.expand() : images.collapse();
 		Image image = proto.createImage();
 		image.addClickHandler(new ExpandButtonClickHandler());
-		add(image, getTopCenterRightCell());
+		setTopRightWidget(image);
 		DOM.setStyleAttribute(image.getElement(), "marginRight", "4px");
 		return image;
 	}

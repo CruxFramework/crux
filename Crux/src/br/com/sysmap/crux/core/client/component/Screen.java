@@ -151,7 +151,7 @@ public class Screen
 		return widgets.values().iterator();
 	}
 
-	protected void showBlockDiv()
+	protected void showBlockDiv(String blockingDivStyleName)
 	{
 		if (blockDiv == null)
 		{
@@ -161,14 +161,24 @@ public class Screen
 			blockDiv.getStyle().setPropertyPx("left", 0);
 			blockDiv.getStyle().setPropertyPx("height", Window.getClientHeight());
 			blockDiv.getStyle().setPropertyPx("width", Window.getClientWidth());
-			blockDiv.getStyle().setProperty("zIndex", "99999");
-			blockDiv.getStyle().setProperty("backgroundColor", "white");
-			blockDiv.getStyle().setProperty("opacity", ".01");
-			blockDiv.getStyle().setProperty("cursor", "wait");
-			blockDiv.getStyle().setProperty("filter", "alpha(opacity=1)");
+			
 			Element body = RootPanel.getBodyElement();
-			body.appendChild(blockDiv);
-			body.getStyle().setProperty("cursor", "wait");
+			
+			if(blockingDivStyleName != null)
+			{
+				blockDiv.setClassName(blockingDivStyleName);
+			}
+			else
+			{
+				blockDiv.getStyle().setProperty("cursor", "wait");
+				blockDiv.getStyle().setProperty("backgroundColor", "white");
+				blockDiv.getStyle().setProperty("opacity", ".01");
+				blockDiv.getStyle().setProperty("filter", "alpha(opacity=1)");
+				
+				body.getStyle().setProperty("cursor", "wait");
+			}
+						
+			body.appendChild(blockDiv);			
 		}
 	}
 	
@@ -454,7 +464,15 @@ public class Screen
 	 */
 	public static void blockToUser()
 	{
-		Screen.get().showBlockDiv();
+		Screen.get().showBlockDiv(null);
+	}
+	
+	/**
+	 * 
+	 */
+	public static void blockToUser(String blockingDivStyleName)
+	{
+		Screen.get().showBlockDiv(blockingDivStyleName);
 	}
 	
 	/**

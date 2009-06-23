@@ -63,6 +63,7 @@ public class ConfirmController
 	@ExposeOutOfModule
 	public void onOk()
 	{
+		Screen.unblockToUser();
 		OkEvent.fire(Confirm.confirm);
 	}
 
@@ -73,6 +74,7 @@ public class ConfirmController
 	@ExposeOutOfModule
 	public void onCancel()
 	{
+		Screen.unblockToUser();
 		CancelEvent.fire(Confirm.confirm);
 	}
 
@@ -90,6 +92,8 @@ public class ConfirmController
 		{
 			GWT.log(e.getMessage(), e);
 		}
+		
+		Screen.blockToUser("crux-ConfirmScreenBlocker");
 	}
 	
 	/**
@@ -99,26 +103,36 @@ public class ConfirmController
 	@ExposeOutOfModule
 	public void showConfirmHandler(InvokeControllerEvent controllerEvent)
 	{
-		final ConfirmData data = (ConfirmData) controllerEvent.getData();
+		Screen.blockToUser("crux-ConfirmScreenBlocker");
 		
-		final DialogBox dialogBox = new DialogBox(false, true);
-		dialogBox.setStyleName(data.getStyleName());
-		dialogBox.setAnimationEnabled(data.isAnimationEnabled());
-		
-		DockPanel dockPanel = new DockPanel();
-		dockPanel.add(createMessageLabel(data), DockPanel.CENTER);
-		
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.setSpacing(10);
-		horizontalPanel.add(createOkButton(dialogBox));
-		horizontalPanel.add(createCancelButton(dialogBox));
-		
-		dockPanel.add(horizontalPanel, DockPanel.SOUTH);
-		dockPanel.setCellHorizontalAlignment(horizontalPanel, HasHorizontalAlignment.ALIGN_CENTER);
-		
-		dialogBox.add(dockPanel);
-		dialogBox.center();
-		dialogBox.show();
+		try
+		{
+			final ConfirmData data = (ConfirmData) controllerEvent.getData();
+			
+			final DialogBox dialogBox = new DialogBox(false, true);
+			dialogBox.setStyleName(data.getStyleName());
+			dialogBox.setAnimationEnabled(data.isAnimationEnabled());
+			
+			DockPanel dockPanel = new DockPanel();
+			dockPanel.add(createMessageLabel(data), DockPanel.CENTER);
+			
+			HorizontalPanel horizontalPanel = new HorizontalPanel();
+			horizontalPanel.setSpacing(10);
+			horizontalPanel.add(createOkButton(dialogBox));
+			horizontalPanel.add(createCancelButton(dialogBox));
+			
+			dockPanel.add(horizontalPanel, DockPanel.SOUTH);
+			dockPanel.setCellHorizontalAlignment(horizontalPanel, HasHorizontalAlignment.ALIGN_CENTER);
+			
+			dialogBox.add(dockPanel);
+			dialogBox.center();
+			dialogBox.show();
+		}
+		catch (Exception e)
+		{
+			GWT.log(e.getMessage(), e);
+			Screen.unblockToUser();
+		}
 	}
 
 	/**
@@ -148,13 +162,21 @@ public class ConfirmController
 			{
 				try
 				{
+					dialogBox.hide();
+				}
+				finally
+				{				
+					Screen.unblockToUser();
+				}
+				
+				try
+				{
 					cancelClick();
 				}
 				catch (Throwable e)
 				{
 					GWT.log(e.getMessage(), e);
 				}
-				dialogBox.hide();
 			}
 		});
 		return cancelButton;
@@ -176,13 +198,21 @@ public class ConfirmController
 			{
 				try
 				{
+					dialogBox.hide();
+				}
+				finally
+				{				
+					Screen.unblockToUser();
+				}
+				
+				try
+				{
 					okClick();
 				}
 				catch (Throwable e)
 				{
 					GWT.log(e.getMessage(), e);
-				}
-				dialogBox.hide();
+				}			
 			}
 		});
 		return okButton;

@@ -18,6 +18,8 @@ package br.com.sysmap.crux.advanced.client.decoratedpanel;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CellPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
@@ -33,10 +35,10 @@ public class DecoratedPanel extends CellPanel
 	private Element topLine;
 	private Element topLeftCell;
 	private Element topCenterCell;
-	private Element topCenterRightCell;
 	private Element topRightCell;
 	
 	private Element middleLine;
+	
 	private Element middleLeftCell;
 	private Element middleCenterCell;
 	private Element middleRightCell;
@@ -50,35 +52,49 @@ public class DecoratedPanel extends CellPanel
 	{
 		getTable().setClassName(styleName != null && styleName.trim().length() > 0 ? styleName : DEFAULT_STYLE_NAME);
 		getTable().setPropertyString("width", width);
-		getTable().setPropertyString("height", height);
+		getTable().getStyle().setProperty("height", height);
 		
 		topLine = DOM.createTR();
-		topLeftCell = createTd("topLeftCell");
-		topCenterCell = createTd("topCenterCell");
-		topCenterRightCell = createTd("topCenterRightCell");
-		topRightCell = createTd("topRightCell");
+		topLeftCell = createTd("topLeftCell", true);
+		topCenterCell = createTd("topCenterCell", true);
+		topRightCell = createTd("topRightCell", true);
 		
 		middleLine = DOM.createTR();
-		middleLeftCell = createTd("middleLeftCell");
-		middleCenterCell = createTd("middleCenterCell");
-		middleCenterCell.setPropertyInt("colSpan", 2);
-		middleRightCell = createTd("middleRightCell");
+		
+		Element wrapper = DOM.createTable().cast();
+		wrapper.setPropertyInt("cellSpacing", 0);
+		wrapper.setPropertyInt("cellPadding", 0);
+		wrapper.setPropertyString("width", "100%");
+		wrapper.getStyle().setProperty("height", "100%");
+	    Element wrapperBody = DOM.createTBody();
+	    Element wrapperLine = DOM.createTR();
+	    
+	    Element middleLineTD = createTd("", false);
+	    middleLineTD.setPropertyInt("colSpan", 4);		
+	    middleLineTD.getStyle().setProperty("padding", "0px");
+	    middleLineTD.appendChild(wrapper);
+		
+		middleLeftCell = createTd("middleLeftCell", true);
+		middleCenterCell = createTd("middleCenterCell", false);
+		middleRightCell = createTd("middleRightCell", true);
 		
 		bottomLine = DOM.createTR();
-		bottomLeftCell = createTd("bottomLeftCell");
-		bottomCenterCell = createTd("bottomCenterCell");
-		bottomCenterCell.setPropertyInt("colSpan", 2);
-		bottomRightCell = createTd("bottomRightCell");
+		bottomLeftCell = createTd("bottomLeftCell", true);
+		bottomCenterCell = createTd("bottomCenterCell", true);
+		bottomRightCell = createTd("bottomRightCell", true);
 		
 		DOM.appendChild(topLine, topLeftCell);
 		DOM.appendChild(topLine, topCenterCell);
-		DOM.appendChild(topLine, topCenterRightCell);
 		DOM.appendChild(topLine, topRightCell);
 		DOM.appendChild(getBody(), topLine);
 	   	    
-	    DOM.appendChild(middleLine, middleLeftCell);
-	    DOM.appendChild(middleLine, middleCenterCell);
-	    DOM.appendChild(middleLine, middleRightCell);
+	    DOM.appendChild(wrapperLine, middleLeftCell);
+	    DOM.appendChild(wrapperLine, middleCenterCell);
+	    DOM.appendChild(wrapperLine, middleRightCell);
+	    DOM.appendChild(wrapperBody, wrapperLine);
+	    DOM.appendChild(wrapper, wrapperBody);
+	    DOM.appendChild(middleLineTD, wrapper);
+	    DOM.appendChild(middleLine, middleLineTD);
 	    DOM.appendChild(getBody(), middleLine);
 	    	    
 	    DOM.appendChild(bottomLine, bottomLeftCell);
@@ -92,9 +108,11 @@ public class DecoratedPanel extends CellPanel
 	/**
 	 * @param widget
 	 */
-	public void setControlWidget(Widget widget)
+	public void setTopRightWidget(Widget widget)
 	{
-		add(widget, getTopCenterRightCell());
+		add(widget, getTopRightCell());
+		setCellVerticalAlignment(widget, HasVerticalAlignment.ALIGN_MIDDLE);
+		setCellHorizontalAlignment(widget, HasHorizontalAlignment.ALIGN_RIGHT);
 	}
 	
 	/**
@@ -145,11 +163,14 @@ public class DecoratedPanel extends CellPanel
 	 * @param styleName
 	 * @return
 	 */
-	private Element createTd(String styleName)
+	private Element createTd(String styleName, boolean fillWithBlank)
 	{
 		Element td = DOM.createTD();
 		td.setClassName(styleName);
-		td.setInnerHTML("&nbsp;");
+		if(fillWithBlank)
+		{
+			td.setInnerHTML("&nbsp;");
+		}
 		td.setPropertyString("align", "center");
 		td.setPropertyString("valign", "middle");		
 		return td;
@@ -251,14 +272,6 @@ public class DecoratedPanel extends CellPanel
 		return bottomRightCell;
 	}
 	
-	/**
-	 * @return the topCenterRightCell
-	 */
-	public Element getTopCenterRightCell()
-	{
-		return topCenterRightCell;
-	}
-
 	/**
 	 * @param align
 	 */
