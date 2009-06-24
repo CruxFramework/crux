@@ -20,6 +20,9 @@ package br.com.sysmap.crux.core.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.DOM;
+
 
 /**
  * CRUX Client Engine. It starts a ScreenFactory to search HTML page for span tags declaring widgets. 
@@ -41,6 +44,24 @@ public class JSEngine implements EntryPoint
 		catch (Throwable e) 
 		{
 			GWT.log(e.getLocalizedMessage(), e);
+		}
+		
+		stopLoadingProgressBar();
+	}
+	
+	/**
+	 * 
+	 */
+	protected void stopLoadingProgressBar()
+	{
+		Element loadElement = DOM.getElementById("cruxSplashScreen");
+		if (loadElement != null)
+		{
+			Element parent = loadElement.getParentElement();
+			if (parent != null)
+			{
+				parent.removeChild(loadElement);
+			}
 		}
 	}
 }
