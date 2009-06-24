@@ -68,6 +68,7 @@
 	<xs:element name="simpleLazyPanel" type="SimpleLazyPanel"/>
 	<xs:element name="simpleCheckBox" type="SimpleCheckBox"/>
 	<xs:element name="simpleRadioButton" type="SimpleRadioButton"/>
+	<xs:element name="splashScreen" type="SplashScreen"/>
 	
 	<!--
 	=====================================================================================
@@ -418,6 +419,15 @@
 		<xs:attribute name="url"/>
 	</xs:attributeGroup>
 	
+	<!--
+	=====================================================================================
+		SplashScreen
+	===================================================================================== 
+	-->	
+	<xs:complexType name="SplashScreen">
+		<xs:attribute name="style" type="xs:string"/>
+	</xs:complexType>
+
 	<!--
 	=====================================================================================
 		Screen
