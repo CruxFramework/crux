@@ -72,8 +72,6 @@ public class PopupController
 	 */
 	public void showPopup(PopupData data)
 	{
-		Screen.blockToUser("crux-PopupScreenBlocker");
-		
 		try
 		{
 			showPopupOnTop(serializer.serialize(data));
@@ -91,18 +89,18 @@ public class PopupController
 	@ExposeOutOfModule
 	public void showPopupHandler(InvokeControllerEvent controllerEvent)
 	{
-		//Screen.blockToUser("crux-PopupScreenBlocker");
+		Screen.blockToUser("crux-PopupScreenBlocker");
 		
 		try
 		{
 			final PopupData data = (PopupData) controllerEvent.getData();
-			
+
 			dialogBox = new CustomDialogBox(false, true);
 			dialogBox.setStyleName(data.getStyleName());
 			dialogBox.setAnimationEnabled(data.isAnimationEnabled());
 			dialogBox.setWidth(data.getWidth());
-			dialogBox.setHeight(data.getHeight());		
-	
+			dialogBox.setHeight(data.getHeight());
+
 			dialogBox.addCloseHandler(new CloseHandler<PopupPanel>()
 			{
 				public void onClose(CloseEvent<PopupPanel> event)
@@ -110,7 +108,7 @@ public class PopupController
 					closePopup();
 				}
 			});
-			
+
 			Frame frame = new Frame(data.getUrl());
 			frame.setStyleName("frame");
 			frame.setHeight("100%");
@@ -121,8 +119,8 @@ public class PopupController
 			frame.getElement().setPropertyInt("marginHeight", 0);
 			frame.getElement().setPropertyInt("vspace", 0);
 			frame.getElement().setPropertyInt("hspace", 0);
-	
-			if(data.isCloseable())
+
+			if (data.isCloseable())
 			{
 				FocusPanel focusPanel = new FocusPanel();
 				focusPanel.setStyleName("closeButton");
@@ -137,22 +135,21 @@ public class PopupController
 				label.getElement().getStyle().setProperty("fontSize", "0px");
 				label.getElement().getStyle().setProperty("fontFamily", "monospace");
 				focusPanel.add(label);
-				
+
 				dialogBox.setTopRightWidget(focusPanel);
 			}
-			
-	
+
 			dialogBox.setText(data.getTitle());
-			dialogBox.setWidget(frame);		
+			dialogBox.setWidget(frame);
 			dialogBox.center();
-			
+
 			dialogBox.show();
 		}
-		catch (Exception e) 
+		catch (Exception e)
 		{
 			GWT.log(e.getMessage(), e);
-			//Screen.unblockToUser();
-		}
+			Screen.unblockToUser();
+		}		
 	}
 
 	/**
@@ -171,8 +168,6 @@ public class PopupController
 	@ExposeOutOfModule
 	public void hidePopupHandler(InvokeControllerEvent controllerEvent)
 	{
-		Screen.unblockToUser();
-		
 		if (dialogBox != null)
 		{
 			dialogBox.hide();

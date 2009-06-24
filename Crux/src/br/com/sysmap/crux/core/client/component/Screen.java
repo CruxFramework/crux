@@ -15,8 +15,10 @@
  */
 package br.com.sysmap.crux.core.client.component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.JSEngine;
@@ -51,7 +53,7 @@ public class Screen
 {
 	protected String id;
 	protected Map<String, Widget> widgets = new HashMap<String, Widget>(30);
-	protected Element blockDiv;
+	protected List<Element> blockingDivs = new ArrayList<Element>();
 	protected boolean manageHistory = false;
 	protected IFrameElement historyFrame = null;
 	protected HandlerManager handlerManager;
@@ -151,57 +153,91 @@ public class Screen
 		return widgets.values().iterator();
 	}
 
+	/**
+	 * Creates and shows a DIV over the screen contents
+	 * @param blockingDivStyleName
+	 */
 	protected void showBlockDiv(String blockingDivStyleName)
 	{
-		if (blockDiv == null)
+		if(blockingDivs.size() > 0)
 		{
-			Element body = RootPanel.getBodyElement();
-			int width = body.getScrollWidth();
-			int height = body.getScrollHeight();
-			
-			if(body.getClientWidth() > width)
-			{
-				width = body.getClientWidth();
-			}
-			
-			if(body.getClientHeight() > height)
-			{
-				height = body.getClientHeight();
-			}
-			
-			blockDiv = DOM.createDiv();
-			blockDiv.getStyle().setProperty("position","absolute");
-			blockDiv.getStyle().setPropertyPx("top", 0);
-			blockDiv.getStyle().setPropertyPx("left", 0);
-			blockDiv.getStyle().setPropertyPx("width", width);
-			blockDiv.getStyle().setPropertyPx("height", height);
-			
-			if(blockingDivStyleName != null)
-			{
-				blockDiv.setClassName(blockingDivStyleName);
-			}
-			else
-			{
-				blockDiv.getStyle().setProperty("cursor", "wait");
-				blockDiv.getStyle().setProperty("backgroundColor", "white");
-				blockDiv.getStyle().setProperty("opacity", ".01");
-				blockDiv.getStyle().setProperty("filter", "alpha(opacity=1)");
-
-				body.getStyle().setProperty("cursor", "wait");
-			}
-			
-			body.appendChild(blockDiv);
+			Element blockingDiv = blockingDivs.get(blockingDivs.size() - 1);
+			blockingDiv.getStyle().setProperty("display", "none");
 		}
+		
+		Element body = RootPanel.getBodyElement();		
+		Element blockingDiv = createBlockingDiv(blockingDivStyleName, body);
+		blockingDivs.add(blockingDiv);
+		body.appendChild(blockingDiv);
+	}
+
+	/**
+	 * Creates a DIV element to display over the screen contents
+	 * @param blockingDivStyleName
+	 * @param body
+	 * @return
+	 */
+	private Element createBlockingDiv(String blockingDivStyleName, Element body)
+	{
+		Element blockingDiv = DOM.createDiv();
+		
+		int width = body.getScrollWidth();
+		int height = body.getScrollHeight();
+		
+		if(body.getClientWidth() > width)
+		{
+			width = body.getClientWidth();
+		}
+		
+		if(body.getClientHeight() > height)
+		{
+			height = body.getClientHeight();
+		}	
+		
+		blockingDiv.getStyle().setProperty("position","absolute");
+		blockingDiv.getStyle().setPropertyPx("top", 0);
+		blockingDiv.getStyle().setPropertyPx("left", 0);
+		blockingDiv.getStyle().setPropertyPx("width", width);
+		blockingDiv.getStyle().setPropertyPx("height", height);
+		
+		if(blockingDivStyleName != null)
+		{
+			blockingDiv.setClassName(blockingDivStyleName);
+		}
+		else
+		{
+			blockingDiv.getStyle().setProperty("cursor", "wait");
+			blockingDiv.getStyle().setProperty("backgroundColor", "white");
+			blockingDiv.getStyle().setProperty("opacity", ".01");
+			blockingDiv.getStyle().setProperty("filter", "alpha(opacity=1)");
+
+			body.getStyle().setProperty("cursor", "wait");
+		}
+		
+		return blockingDiv;
 	}
 	
+	/**
+	 * Hides the DIV that is blocking the Screen contents
+	 */
 	protected void hideBlockDiv()
 	{
-		if (blockDiv != null)
+		if(blockingDivs.size() > 0)
 		{
+			int last = blockingDivs.size() - 1;
+			
+			Element blockingDiv = blockingDivs.get(last);
+			blockingDivs.remove(last);
+			
 			Element body = RootPanel.getBodyElement();
-			body.removeChild(blockDiv);
-			blockDiv = null;
+			body.removeChild(blockingDiv);
 			body.getStyle().setProperty("cursor", "");
+		}
+		
+		if(blockingDivs.size() > 0)
+		{
+			Element blockingDiv = blockingDivs.get(blockingDivs.size() - 1);
+			blockingDiv.getStyle().setProperty("display", "block");
 		}
 	}
 	
