@@ -110,6 +110,7 @@ public class DecoratedPanel extends CellPanel
 	 */
 	public void setTopRightWidget(Widget widget)
 	{
+		getTopRightCell().setInnerText("");
 		add(widget, getTopRightCell());
 		setCellVerticalAlignment(widget, HasVerticalAlignment.ALIGN_MIDDLE);
 		setCellHorizontalAlignment(widget, HasHorizontalAlignment.ALIGN_RIGHT);

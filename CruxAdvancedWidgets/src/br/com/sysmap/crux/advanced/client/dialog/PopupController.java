@@ -95,7 +95,7 @@ public class PopupController
 		{
 			final PopupData data = (PopupData) controllerEvent.getData();
 
-			dialogBox = new CustomDialogBox(false, true);
+			dialogBox = new CustomDialogBox(false, true, true);
 			dialogBox.setStyleName(data.getStyleName());
 			dialogBox.setAnimationEnabled(data.isAnimationEnabled());
 			dialogBox.setWidth(data.getWidth());
