@@ -18,6 +18,8 @@
  */
 package br.com.sysmap.crux.core.client;
 
+import br.com.sysmap.crux.core.client.config.CruxClientConfig;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -30,6 +32,7 @@ import com.google.gwt.user.client.DOM;
 public class JSEngine implements EntryPoint 
 {
 	public static ClientMessages messages;
+	public static CruxClientConfig config;
 	
 	/**
 	 * This is the entry point method. Called when the page is loaded.
@@ -38,7 +41,8 @@ public class JSEngine implements EntryPoint
 	{
 		try 
 		{
-			messages = (ClientMessages) GWT.create(ClientMessages.class);
+			messages = GWT.create(ClientMessages.class);
+			config = GWT.create(CruxClientConfig.class);
 			br.com.sysmap.crux.core.client.component.ScreenFactory.getInstance().getScreen();
 		} 
 		catch (Throwable e) 

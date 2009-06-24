@@ -39,4 +39,7 @@ public interface Crux
 
 	@DefaultMessage("false")
 	String singleModule();
+	
+	@DefaultMessage("true")
+	String wrapSiblingWidgets();
 }

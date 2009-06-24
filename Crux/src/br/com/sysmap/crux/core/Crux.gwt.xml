@@ -40,4 +40,9 @@
 	<generate-with class="br.com.sysmap.crux.core.rebind.DeclaredI18NMessagesGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages" />
 	</generate-with>
+
+	<!-- Specify the generator for client configurations .-->
+	<generate-with class="br.com.sysmap.crux.core.rebind.CruxClientConfigGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.config.CruxClientConfig" />
+	</generate-with>
 </module>
