@@ -104,4 +104,11 @@ public class DOMUtils {
 	public static native String getDocumentName()/*-{
 		return $doc.location.href;
 	}-*/;
+	
+	public static native Element getPreviousSiblingElement(Element elem) /*-{
+	   var sib = elem.previousSibling;
+	   while (sib && sib.nodeType != 1)
+	      sib = sib.previousSibling;
+	   return sib;
+    }-*/;	
 }

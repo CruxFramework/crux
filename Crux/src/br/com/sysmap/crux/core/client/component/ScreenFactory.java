@@ -271,7 +271,7 @@ public class ScreenFactory {
 		else
 		{
 			Element panelElement;
-			boolean parentHasMoreThanOneChild = element.getNextSiblingElement() != null;
+			boolean parentHasMoreThanOneChild = (element.getNextSiblingElement() != null || DOMUtils.getPreviousSiblingElement(element) != null);
 			if (JSEngine.config.wrapSiblingWidgets() && parentHasMoreThanOneChild)
 			{
 				panelElement = DOM.createSpan();
