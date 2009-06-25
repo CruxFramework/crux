@@ -15,8 +15,6 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
-import br.com.sysmap.crux.core.client.component.Screen;
-
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;

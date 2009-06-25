@@ -25,10 +25,6 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -41,16 +37,13 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.MouseListener;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * TODO - Gessé - Comment this
  * 
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-@SuppressWarnings("deprecation")
-public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasText, MouseListener
+public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasText
 {
 	private boolean hideContentOnDragging;
 
@@ -69,12 +62,11 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		@Override
 		public void onAttach()
 		{
-			// TODO Auto-generated method stub
 			super.onAttach();
 		}
 	}
 
-	private class MouseHandler implements MouseDownHandler, MouseUpHandler, MouseOutHandler, MouseOverHandler, MouseMoveHandler
+	private class MouseHandler implements MouseDownHandler, MouseUpHandler, MouseMoveHandler
 	{
 
 		public void onMouseDown(MouseDownEvent event)
@@ -85,16 +77,6 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		public void onMouseMove(MouseMoveEvent event)
 		{
 			continueDragging(event);
-		}
-
-		public void onMouseOut(MouseOutEvent event)
-		{
-			CustomDialogBox.this.onMouseLeave(caption);
-		}
-
-		public void onMouseOver(MouseOverEvent event)
-		{
-			CustomDialogBox.this.onMouseEnter(caption);
 		}
 
 		public void onMouseUp(MouseUpEvent event)
@@ -145,8 +127,6 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		addDomHandler(mouseHandler, MouseDownEvent.getType());
 		addDomHandler(mouseHandler, MouseUpEvent.getType());
 		addDomHandler(mouseHandler, MouseMoveEvent.getType());
-		addDomHandler(mouseHandler, MouseOverEvent.getType());
-		addDomHandler(mouseHandler, MouseOutEvent.getType());
 	}
 
 	/**
@@ -204,65 +184,6 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 	}
 
 	/**
-	 * @deprecated Use {@link #beginDragging} and {@link #getCaption} instead
-	 */
-	@Deprecated
-	public void onMouseDown(Widget sender, int x, int y)
-	{
-		dragging = true;
-		DOM.setCapture(getElement());
-		dragStartX = x;
-		dragStartY = y;
-	}
-
-	/**
-	 * @deprecated Use {@link Caption#addMouseOverHandler} instead
-	 */
-	@Deprecated
-	public void onMouseEnter(Widget sender)
-	{
-	}
-
-	/**
-	 * @deprecated Use {@link Caption#addMouseOutHandler} instead
-	 */
-	@Deprecated
-	public void onMouseLeave(Widget sender)
-	{
-	}
-
-	/**
-	 * @deprecated Use {@link #continueDragging} and {@link #getCaption} instead
-	 */
-	@Deprecated
-	public void onMouseMove(Widget sender, int x, int y)
-	{
-		if (dragging)
-		{
-			int absX = x + getAbsoluteLeft();
-			int absY = y + getAbsoluteTop();
-
-			if (absX < clientLeft || absX >= windowWidth || absY < clientTop)
-			{
-				return;
-			}
-
-			setPopupPosition(absX - dragStartX, absY - dragStartY);
-
-			if (hideContentOnDragging)
-			{
-				Node node = getMiddleCenterCell().getFirstChild();
-				if (node instanceof Element)
-				{
-					Element elem = (Element) node;
-					elem.getStyle().setProperty("visibility", "hidden");
-					makeTransparent(true, getElement());
-				}
-			}
-		}
-	}
-
-	/**
 	 * @param transparent
 	 * @param elements
 	 */
@@ -277,24 +198,6 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		{
 			element.getStyle().setProperty("opacity", "1");
 			element.getStyle().setProperty("filter", "alpha(opacity=100)");
-		}
-	}
-
-	@Deprecated
-	public void onMouseUp(Widget sender, int x, int y)
-	{
-		dragging = false;
-		DOM.releaseCapture(getElement());
-
-		if (hideContentOnDragging)
-		{
-			Node node = getMiddleCenterCell().getFirstChild();
-			if (node instanceof Element)
-			{
-				Element elem = (Element) node;
-				elem.getStyle().setProperty("visibility", "visible");
-				makeTransparent(false, getElement());
-			}
 		}
 	}
 
@@ -326,12 +229,37 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 
 	protected void beginDragging(MouseDownEvent event)
 	{
-		onMouseDown(caption, event.getX(), event.getY());
+		dragging = true;
+		DOM.setCapture(getElement());
+		dragStartX =  event.getX();
+		dragStartY = event.getY();
 	}
 
 	protected void continueDragging(MouseMoveEvent event)
 	{
-		onMouseMove(caption, event.getX(), event.getY());
+		if (dragging)
+		{
+			int absX = event.getX() + getAbsoluteLeft();
+			int absY = event.getY() + getAbsoluteTop();
+
+			if (absX < clientLeft || absX >= windowWidth || absY < clientTop)
+			{
+				return;
+			}
+
+			setPopupPosition(absX - dragStartX, absY - dragStartY);
+
+			if (hideContentOnDragging)
+			{
+				Node node = getMiddleCenterCell().getFirstChild();
+				if (node instanceof Element)
+				{
+					Element elem = (Element) node;
+					elem.getStyle().setProperty("visibility", "hidden");
+					makeTransparent(true, getElement());
+				}
+			}
+		}
 	}
 
 	@Override
@@ -350,7 +278,20 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 
 	protected void endDragging(MouseUpEvent event)
 	{
-		onMouseUp(caption, event.getX(), event.getY());
+		dragging = false;
+		DOM.releaseCapture(getElement());
+
+		if (hideContentOnDragging)
+		{
+			Node node = getMiddleCenterCell().getFirstChild();
+			if (node instanceof Element)
+			{
+				Element elem = (Element) node;
+				elem.getStyle().setProperty("visibility", "visible");
+				makeTransparent(false, getElement());
+			}
+		}
+		
 	}
 
 	@Override
