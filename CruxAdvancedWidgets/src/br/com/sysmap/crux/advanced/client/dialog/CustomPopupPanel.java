@@ -197,4 +197,13 @@ public class CustomPopupPanel extends PopupPanel
 	{
 		return panel.getBottomRightCell();
 	}	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Widget getContentWidget()
+	{
+		return panel.getContentWidget();
+	}
 }

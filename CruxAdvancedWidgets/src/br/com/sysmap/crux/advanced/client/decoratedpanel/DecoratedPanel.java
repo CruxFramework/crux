@@ -47,6 +47,7 @@ public class DecoratedPanel extends CellPanel
 	private Element bottomLeftCell;
 	private Element bottomCenterCell;
 	private Element bottomRightCell;
+	private Widget contentWidget;
 	
 	public DecoratedPanel(String width, String height, String styleName)
 	{
@@ -124,8 +125,18 @@ public class DecoratedPanel extends CellPanel
 	{
 		cleanEmptySpaces(middleCenterCell);
 		add(w, middleCenterCell);
+		contentWidget = w;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public Widget getContentWidget()
+	{
+		return contentWidget;
+	}
+
 	/**
 	 * Adds text to the body of the panel (middle center cell)
 	 * @param text

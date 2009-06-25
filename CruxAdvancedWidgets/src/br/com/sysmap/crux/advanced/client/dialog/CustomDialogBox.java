@@ -19,7 +19,6 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
@@ -251,13 +250,8 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 
 			if (hideContentOnDragging)
 			{
-				Node node = getMiddleCenterCell().getFirstChild();
-				if (node instanceof Element)
-				{
-					Element elem = (Element) node;
-					elem.getStyle().setProperty("visibility", "hidden");
-					makeTransparent(true, getElement());
-				}
+				getContentWidget().setVisible(false);
+				makeTransparent(true, getElement());
 			}
 		}
 	}
@@ -283,13 +277,8 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 
 		if (hideContentOnDragging)
 		{
-			Node node = getMiddleCenterCell().getFirstChild();
-			if (node instanceof Element)
-			{
-				Element elem = (Element) node;
-				elem.getStyle().setProperty("visibility", "visible");
-				makeTransparent(false, getElement());
-			}
+			getContentWidget().setVisible(true);
+			makeTransparent(false, getElement());
 		}
 		
 	}
