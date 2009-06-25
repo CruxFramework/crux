@@ -271,7 +271,7 @@ public class ScreenFactory {
 		else
 		{
 			Element panelElement;
-			boolean parentHasMoreThanOneChild = hasMoreThanOneChild(element.getParentElement());
+			boolean parentHasMoreThanOneChild = element.getNextSiblingElement() != null;
 			if (JSEngine.config.wrapSiblingWidgets() && parentHasMoreThanOneChild)
 			{
 				panelElement = DOM.createSpan();
@@ -293,25 +293,6 @@ public class ScreenFactory {
 		return widget;
 	}
 	
-	private boolean hasMoreThanOneChild(Element element)
-	{
-		int parentChildrenCount = 0;
-		NodeList<Node> children = element.getChildNodes(); 
-		for (int i=0; i< children.getLength(); i++)
-		{
-			if (children.getItem(i) instanceof Element)
-			{
-				parentChildrenCount++;
-				if (parentChildrenCount > 1)
-				{
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-
 	public Formatter getClientFormatter(String formatter)
 	{
 		if (this.registeredClientFormatters == null)
