@@ -23,8 +23,8 @@ package br.com.sysmap.crux.core.rebind.screen;
  */
 public class ScreenResourcesScannerImpl extends ScreenResourcesScanner
 {
-	protected String getExtension()
+	protected boolean accepts(String fileName)
 	{
-		return ".html";
+		return fileName != null && fileName.endsWith(".html") && !fileName.endsWith(".cache.html") && !fileName.endsWith(".nocache.html");
 	}
 }

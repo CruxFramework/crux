@@ -166,7 +166,10 @@ public class ScreenFactory
 				if (screenCache.get(id) == null)
 				{
 					screen = parseScreen(id, stream);
-					screenCache.put(id, screen);
+					if(screen != null)
+					{
+						screenCache.put(id, screen);
+					}
 				}
 			}
 			finally
@@ -234,32 +237,38 @@ public class ScreenFactory
 	 */
 	private Screen parseScreen(String id, InputStream stream) throws IOException, ScreenConfigException
 	{
+		Screen screen = null;
 		Source source = new Source(stream);
 		source.fullSequentialParse();
 
-		Screen screen = new Screen(id, getScreenModule(source.findAllElements("script")));
+		String screenModule = getScreenModule(source.findAllElements("script"));
 		
-		List<?> elementList = source.findAllElements("span");
-		
-		for (Object object : elementList) 
+		if(screenModule != null)
 		{
-			Element compCandidate = (Element) object;
-			if (isValidWidget(compCandidate))
+			screen = new Screen(id, screenModule);
+			
+			List<?> elementList = source.findAllElements("span");
+			
+			for (Object object : elementList) 
 			{
-				try 
+				Element compCandidate = (Element) object;
+				if (isValidWidget(compCandidate))
 				{
-					createWidget(source, compCandidate, screen);
-				} 
-				catch (ScreenConfigException e) 
-				{
-					logger.error(messages.screenFactoryGenericErrorCreateWidget(id, e.getLocalizedMessage()));
+					try 
+					{
+						createWidget(source, compCandidate, screen);
+					} 
+					catch (ScreenConfigException e) 
+					{
+						logger.error(messages.screenFactoryGenericErrorCreateWidget(id, e.getLocalizedMessage()));
+					}
 				}
-			}
-			else if (isScreenDefinitions(compCandidate))
-			{
-				parseScreenElement(screen,compCandidate);
-			}
-		} 
+				else if (isScreenDefinitions(compCandidate))
+				{
+					parseScreenElement(screen,compCandidate);
+				}
+			} 
+		}
 		
 		return screen;
 	}
@@ -273,7 +282,7 @@ public class ScreenFactory
 			
 			String src = element.getAttributeValue("src");
 			
-			if (src.endsWith(".nocache.js"))
+			if (src != null && src.endsWith(".nocache.js"))
 			{
 				if (result != null)
 				{

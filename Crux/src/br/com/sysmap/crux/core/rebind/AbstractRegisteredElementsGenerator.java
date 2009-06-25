@@ -78,11 +78,20 @@ public abstract class AbstractRegisteredElementsGenerator extends Generator
 		List<Screen> screens = new ArrayList<Screen>();
 
 		Screen requestedScreen = getRequestedScreen(logger);
-		Set<String> screenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(requestedScreen.getModule());
-		for (String screenID : screenIDs)
+		
+		if(requestedScreen != null)
 		{
-			screens.add(ScreenFactory.getInstance().getScreen(screenID));
+			Set<String> screenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(requestedScreen.getModule());
+			for (String screenID : screenIDs)
+			{
+				Screen screen = ScreenFactory.getInstance().getScreen(screenID);
+				if(screen != null)
+				{
+					screens.add(screen);
+				}
+			}
 		}
+		
 		return screens;
 	}
 	

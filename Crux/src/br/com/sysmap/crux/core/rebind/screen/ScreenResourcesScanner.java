@@ -47,11 +47,12 @@ public abstract class ScreenResourcesScanner
 	{
 		URL url = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
 		final Set<String> screens = new HashSet<String>();
+		final ScreenResourcesScanner scanner = this;
 		Filter filter = new Filter()
 		{
 			public boolean accepts(String filename)
 			{
-				if (filename.endsWith(getExtension()))
+				if (scanner.accepts(filename))
 				{
 					if (filename.startsWith("/"))
 					{
@@ -90,13 +91,16 @@ public abstract class ScreenResourcesScanner
 					for (String screenID : archives)
 					{
 						Screen screen = ScreenFactory.getInstance().getScreen(screenID);
-						Set<String> pages = pagesPerModule.get(screen.getModule());
-						if (pages == null)
+						if(screen != null)
 						{
-							pages = new HashSet<String>();
-							pagesPerModule.put(module, pages);
+							Set<String> pages = pagesPerModule.get(screen.getModule());
+							if (pages == null)
+							{
+								pages = new HashSet<String>();
+								pagesPerModule.put(screen.getModule(), pages);
+							}
+							pages.add(screenID);
 						}
-						pages.add(screenID);
 					}
 				}
 			}
@@ -110,5 +114,5 @@ public abstract class ScreenResourcesScanner
 	}
 	
 
-	protected abstract String getExtension();
+	protected abstract boolean accepts(String fileName);
 }
