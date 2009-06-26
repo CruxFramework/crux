@@ -383,7 +383,8 @@ public class Screen
 
 	private native void createControllerAccessor(Screen handler)/*-{
 		$wnd._cruxScreenControllerAccessor = function(call, serializedData){
-			return handler.@br.com.sysmap.crux.core.client.component.Screen::invokeController(Ljava/lang/String;Ljava/lang/String;)(call, serializedData);
+			var a = handler.@br.com.sysmap.crux.core.client.component.Screen::invokeController(Ljava/lang/String;Ljava/lang/String;)(call, serializedData);
+			return a?a:null;
 		};
 	}-*/;
 
@@ -398,8 +399,6 @@ public class Screen
 			try
 			{
 				controllerEvent.setData(serializer.deserialize(serializedData));
-				Object result = Events.callEvent(event, controllerEvent, true);
-				return serializer.serialize(result); 
 			}
 			catch (ModuleComunicationException e)
 			{
@@ -409,7 +408,17 @@ public class Screen
 			}
 		}
 		
-		return null;
+		Object result = Events.callEvent(event, controllerEvent, true);
+		try
+		{
+			return serializer.serialize(result); 
+		}
+		catch (ModuleComunicationException e)
+		{
+			GWT.log(e.getLocalizedMessage(), e);
+			Window.alert(e.getLocalizedMessage());
+			return null;
+		}
 	}
 	
 	/**
