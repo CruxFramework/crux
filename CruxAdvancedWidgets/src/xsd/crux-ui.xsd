@@ -444,7 +444,7 @@
 		<xs:attribute name="manageHistory" type="xs:boolean" default="false"/>
 		<xs:attribute name="title" type="xs:string"/>
 		<xs:attribute name="useEventHandler" type="xs:string"/>
-		<xs:attribute name="useModuleShareable" type="xs:string"/>
+		<xs:attribute name="useSerializable" type="xs:string"/>
 		<xs:attribute name="onClosing" type="xs:string"/>
 		<xs:attribute name="onClose" type="xs:string"/>
 		<xs:attribute name="onResized" type="xs:string"/>

@@ -19,15 +19,15 @@ import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.XMLParser;
 
-import br.com.sysmap.crux.core.client.component.ModuleShareable;
-import br.com.sysmap.crux.core.rebind.screen.moduleshareable.annotation.ModuleShareableName;
+import br.com.sysmap.crux.core.client.component.CruxSerializable;
+import br.com.sysmap.crux.core.rebind.screen.moduleshareable.annotation.SerializableName;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-@ModuleShareableName("confirmData")	
-public class ConfirmData implements ModuleShareable
+@SerializableName("confirmData")	
+public class ConfirmData implements CruxSerializable
 {
 	private String styleName;
 	private String title;

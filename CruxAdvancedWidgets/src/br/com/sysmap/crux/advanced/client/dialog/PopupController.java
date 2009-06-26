@@ -51,8 +51,8 @@ public class PopupController
 	
 	public PopupController()
 	{
-		this.serializer = Screen.getModuleShareableSerializer();
-		this.serializer.registerModuleShareable(PopupData.class.getName(), new PopupData());
+		this.serializer = Screen.getCruxSerializer();
+		this.serializer.registerCruxSerializable(PopupData.class.getName(), new PopupData());
 	}
 
 	/**

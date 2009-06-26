@@ -52,8 +52,8 @@ public class ConfirmController
 	
 	public ConfirmController()
 	{
-		this.serializer = Screen.getModuleShareableSerializer();
-		this.serializer.registerModuleShareable(ConfirmData.class.getName(), new ConfirmData());
+		this.serializer = Screen.getCruxSerializer();
+		this.serializer.registerCruxSerializable(ConfirmData.class.getName(), new ConfirmData());
 	}
 
 	/**
