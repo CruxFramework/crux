@@ -41,6 +41,7 @@ public class DecoratedButton extends FocusWidget implements HasText
 	{
 		this.face = new DecoratedButtonFace();
 		this.widget = new FocusPanel(face);
+		this.widget.getElement().setPropertyString("display", "inline");
 		this.setElement(widget.getElement());
 		sinkEvents(Event.ONCLICK | Event.MOUSEEVENTS | Event.FOCUSEVENTS | Event.KEYEVENTS);
 		Accessibility.setRole(getElement(), Accessibility.ROLE_BUTTON);
