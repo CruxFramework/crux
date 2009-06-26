@@ -570,7 +570,7 @@ public class Screen
 		Screen.get().setManageHistory(manageHistory);
 	}
 	
-	public static ModuleComunicationSerializer getModuleShareableSerializer()
+	public static ModuleComunicationSerializer getCruxSerializer()
 	{
 		return Screen.get().serializer;
 	}

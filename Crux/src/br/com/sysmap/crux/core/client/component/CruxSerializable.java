@@ -19,7 +19,7 @@ package br.com.sysmap.crux.core.client.component;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface ModuleShareable
+public interface CruxSerializable
 {
 	String serialize();
 	Object deserialize(String serializedData);

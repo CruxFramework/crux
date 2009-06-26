@@ -17,13 +17,13 @@ package br.com.sysmap.crux.core.client.component.serializer;
 
 import java.sql.Timestamp;
 
-import br.com.sysmap.crux.core.client.component.ModuleShareable;
+import br.com.sysmap.crux.core.client.component.CruxSerializable;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class TimestampSerializer implements ModuleShareable
+public class TimestampSerializer implements CruxSerializable
 {
 
 	public Object deserialize(String serializedData)

@@ -48,8 +48,8 @@ public interface GeneratorMessages
 	@DefaultMessage("[controller 001] - Method Not Found: ")
 	String errorinvokingGeneratedMethod();
 
-	@DefaultMessage("[generator 008] - Error for register ModuleShareable serializer. Serializer: {0}. Error:{1}")
-	String errorGeneratingRegisteredModuleShareable(String serializer, String localizedMessage);
+	@DefaultMessage("[generator 008] - Error for register CruxSerializable serializer. Serializer: {0}. Error:{1}")
+	String errorGeneratingRegisteredCruxSerializable(String serializer, String localizedMessage);
 
 	@DefaultMessage("[generator 009] - Error for generating screen wrapper: {0}.")
 	String errorGeneratingScreenWrapper(String localizedMessage);

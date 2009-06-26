@@ -333,7 +333,7 @@ public class ScreenFactory
 					}
 				}
 			}
-			else if(attrName.equals("_useModuleShareable"))
+			else if(attrName.equals("_useSerializable"))
 			{
 				String serializerStr =  attr.getValue();
 				if (serializerStr != null)

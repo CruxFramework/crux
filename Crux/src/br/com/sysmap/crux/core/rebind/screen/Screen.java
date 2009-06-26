@@ -140,7 +140,7 @@ public class Screen
 	}
 
 	/**
-	 * Import a serializer for a ModuleShareable into screen
+	 * Import a serializer for a CruxSerializable into screen
 	 * @param event
 	 */
 	protected void addSerializer(String serializer)

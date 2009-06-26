@@ -64,6 +64,6 @@ public interface ClientMessages extends Messages
 	@DefaultMessage("[screen - 001] - An Invalid controller was passed to update screen or DTOs.")
 	String screenInvalidHandlerError();
 
-	@DefaultMessage("[moduleComunication - 001] - Type ''{0}'' can not be shared between modules. Only primitives (and its wrappers), Strings, Dates, Arrays (not multidimesional) and classes implementing ModuleShareable can be used.")
+	@DefaultMessage("[moduleComunication - 001] - Type ''{0}'' can not be shared between modules. Only primitives (and its wrappers), Strings, Dates, Arrays (not multidimesional) and classes implementing CruxSerializable can be used.")
 	String moduleComunicationInvalidParamType(String name);
 }

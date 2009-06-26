@@ -48,7 +48,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class RegisteredModuleShareablesGenerator extends AbstractRegisteredElementsGenerator
+public class RegisteredCruxSerializablesGenerator extends AbstractRegisteredElementsGenerator
 {
 	@Override
 	protected void generateClass(TreeLogger logger, GeneratorContext context,JClassType classType, List<Screen> screens) 
@@ -62,18 +62,18 @@ public class RegisteredModuleShareablesGenerator extends AbstractRegisteredEleme
 		if (printWriter == null) return;
 
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
-		composer.addImplementedInterface("br.com.sysmap.crux.core.client.component.RegisteredModuleShareables");
+		composer.addImplementedInterface("br.com.sysmap.crux.core.client.component.RegisteredCruxSerializables");
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 
 		generateConstructor(logger, sourceWriter, screens, implClassName);
-		sourceWriter.println("private java.util.Map<String,ModuleShareable> serializers = new java.util.HashMap<String,ModuleShareable>();");
+		sourceWriter.println("private java.util.Map<String,CruxSerializable> serializers = new java.util.HashMap<String,CruxSerializable>();");
 
-		sourceWriter.println("public ModuleShareable getModuleShareable(String type){");
+		sourceWriter.println("public CruxSerializable getCruxSerializable(String type){");
 		sourceWriter.println("return serializers.get(type);");
 		sourceWriter.println("}");
 
-		sourceWriter.println("public void registerModuleShareable(String type, ModuleShareable moduleShareable){");
+		sourceWriter.println("public void registerCruxSerializable(String type, CruxSerializable moduleShareable){");
 		sourceWriter.println("serializers.put(type, moduleShareable);");
 		sourceWriter.println("}");
 
@@ -124,16 +124,16 @@ public class RegisteredModuleShareablesGenerator extends AbstractRegisteredEleme
 	{
 		try
 		{
-			if (!added.containsKey(serializer) && Serializers.getModuleShareable(serializer)!= null)
+			if (!added.containsKey(serializer) && Serializers.getCruxSerializable(serializer)!= null)
 			{
-				Class<?> serializerClass = Serializers.getModuleShareable(serializer);
+				Class<?> serializerClass = Serializers.getCruxSerializable(serializer);
 				sourceWriter.print("serializers.put(\""+serializerClass.getName()+"\", new " + serializerClass.getName() + "());");
 				added.put(serializer, true);
 			}
 		}
 		catch (Throwable e) 
 		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredModuleShareable(serializer, e.getLocalizedMessage()), e);
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredCruxSerializable(serializer, e.getLocalizedMessage()), e);
 		}
 	}
 }

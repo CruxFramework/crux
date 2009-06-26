@@ -25,9 +25,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import br.com.sysmap.crux.core.client.component.ModuleShareable;
+import br.com.sysmap.crux.core.client.component.CruxSerializable;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.screen.moduleshareable.annotation.ModuleShareableName;
+import br.com.sysmap.crux.core.rebind.screen.moduleshareable.annotation.SerializableName;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
@@ -37,7 +37,7 @@ public class Serializers
 	private static final Log logger = LogFactory.getLog(Serializers.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Lock lock = new ReentrantLock();
-	private static Map<String, Class<? extends ModuleShareable>> serializers;
+	private static Map<String, Class<? extends CruxSerializable>> serializers;
 	
 	public static void initialize(URL[] urls)
 	{
@@ -64,16 +64,16 @@ public class Serializers
 	@SuppressWarnings("unchecked")
 	protected static void initializeSerializers(URL[] urls)
 	{
-		serializers = new HashMap<String, Class<? extends ModuleShareable>>();
-		Set<String> serializerNames =  ClassScanner.getInstance(urls).searchClassesByInterface(ModuleShareable.class);
+		serializers = new HashMap<String, Class<? extends CruxSerializable>>();
+		Set<String> serializerNames =  ClassScanner.getInstance(urls).searchClassesByInterface(CruxSerializable.class);
 		if (serializerNames != null)
 		{
 			for (String serializer : serializerNames) 
 			{
 				try 
 				{
-					Class<? extends ModuleShareable> serializerClass = (Class<? extends ModuleShareable>) Class.forName(serializer);
-					ModuleShareableName annot = serializerClass.getAnnotation(ModuleShareableName.class);
+					Class<? extends CruxSerializable> serializerClass = (Class<? extends CruxSerializable>) Class.forName(serializer);
+					SerializableName annot = serializerClass.getAnnotation(SerializableName.class);
 					if (annot != null)
 					{
 						serializers.put(annot.value(), serializerClass);
@@ -91,7 +91,7 @@ public class Serializers
 		}
 	}
 
-	public static Class<? extends ModuleShareable> getModuleShareable(String name)
+	public static Class<? extends CruxSerializable> getCruxSerializable(String name)
 	{
 		if (serializers == null)
 		{

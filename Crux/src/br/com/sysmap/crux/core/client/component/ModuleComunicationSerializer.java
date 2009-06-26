@@ -33,19 +33,19 @@ import com.google.gwt.xml.client.XMLParser;
  */
 public class ModuleComunicationSerializer
 {	
-	private RegisteredModuleShareables registeredSerializers;
+	private RegisteredCruxSerializables registeredSerializables;
 
 	/**
 	 * Constructor
 	 */
 	public ModuleComunicationSerializer()
 	{
-		this.registeredSerializers = GWT.create(RegisteredModuleShareables.class);
+		this.registeredSerializables = GWT.create(RegisteredCruxSerializables.class);
 	}
 	
-	public void registerModuleShareable(String type, ModuleShareable moduleShareable)
+	public void registerCruxSerializable(String type, CruxSerializable serializable)
 	{
-		this.registeredSerializers.registerModuleShareable(type, moduleShareable);
+		this.registeredSerializables.registerCruxSerializable(type, serializable);
 	}
 	
 	/**
@@ -137,9 +137,9 @@ public class ModuleComunicationSerializer
 		{
 			return Long.toString(((Date)param).getTime());
 		}
-		else if (param instanceof ModuleShareable)
+		else if (param instanceof CruxSerializable)
 		{
-			return ((ModuleShareable)param).serialize();
+			return ((CruxSerializable)param).serialize();
 		}
 		throw new ModuleComunicationException(JSEngine.messages.moduleComunicationInvalidParamType(param.getClass().getName()));
 	}
@@ -199,7 +199,7 @@ public class ModuleComunicationSerializer
 	 */
 	private Object getParamObject(String value, String type) throws ModuleComunicationException
 	{
-		ModuleShareable serializer = registeredSerializers.getModuleShareable(type);
+		CruxSerializable serializer = registeredSerializables.getCruxSerializable(type);
 		if (serializer != null)
 		{
 			return serializer.deserialize(value);
@@ -216,7 +216,7 @@ public class ModuleComunicationSerializer
 	 */
 	private Object[] getParamObjectArray(String type, int size) throws ModuleComunicationException
 	{
-		ModuleShareable serializer = registeredSerializers.getModuleShareable(type);
+		CruxSerializable serializer = registeredSerializables.getCruxSerializable(type);
 		if (serializer != null)
 		{
 			return serializer.newArray(size);

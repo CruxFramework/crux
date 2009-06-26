@@ -27,8 +27,8 @@
 	</generate-with>
 	
 	<!-- Specify the generator for registered module serializers .-->
-	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredModuleShareablesGenerator">
-		<when-type-assignable class="br.com.sysmap.crux.core.client.component.RegisteredModuleShareables" />
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredCruxSerializablesGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.component.RegisteredCruxSerializables" />
 	</generate-with>
 
 	<!-- Specify the generator for screen wrappers.     -->

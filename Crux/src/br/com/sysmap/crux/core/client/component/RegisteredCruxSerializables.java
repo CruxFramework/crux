@@ -19,8 +19,8 @@ package br.com.sysmap.crux.core.client.component;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface RegisteredModuleShareables
+public interface RegisteredCruxSerializables
 {
-	ModuleShareable getModuleShareable(String type);
-	void registerModuleShareable(String type, ModuleShareable moduleShareable);
+	CruxSerializable getCruxSerializable(String type);
+	void registerCruxSerializable(String type, CruxSerializable serializable);
 }
