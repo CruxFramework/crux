@@ -383,30 +383,33 @@ public class Screen
 
 	private native void createControllerAccessor(Screen handler)/*-{
 		$wnd._cruxScreenControllerAccessor = function(call, serializedData){
-			handler.@br.com.sysmap.crux.core.client.component.Screen::invokeController(Ljava/lang/String;Ljava/lang/String;)(call, serializedData);
+			return handler.@br.com.sysmap.crux.core.client.component.Screen::invokeController(Ljava/lang/String;Ljava/lang/String;)(call, serializedData);
 		};
 	}-*/;
 
 	@SuppressWarnings("unused") // called by native code
-	private void invokeController(String call, String serializedData)
+	private String invokeController(String call, String serializedData)
 	{
 		Event event = Events.getEvent("_onInvokeController", call);
 		InvokeControllerEvent controllerEvent = new InvokeControllerEvent();
+		
 		if (serializedData != null)
 		{
 			try
 			{
 				controllerEvent.setData(serializer.deserialize(serializedData));
+				Object result = Events.callEvent(event, controllerEvent, true);
+				return serializer.serialize(result); 
 			}
 			catch (ModuleComunicationException e)
 			{
 				GWT.log(e.getLocalizedMessage(), e);
 				Window.alert(e.getLocalizedMessage());
-				return;
+				return null;
 			}
 		}
-
-		Events.callEvent(event, controllerEvent, true);		
+		
+		return null;
 	}
 	
 	/**
@@ -570,7 +573,28 @@ public class Screen
 	 */
 	public static void invokeControllerOnTop(String call) throws ModuleComunicationException
 	{
-		invokeControllerOnTop(call, null);
+		invokeControllerOnTop(call, null, Object.class);
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T invokeControllerOnTop(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.get().serializer.deserialize(callTopControllerAccessor(call, Screen.get().serializer.serialize(param)));
+	}
+
+	/**
+	 * 
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
+	public static void invokeControllerOnOpener(String call) throws ModuleComunicationException
+	{
+		invokeControllerOnOpener(call, null, Object.class);
 	}
 
 	/**
@@ -579,62 +603,89 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
-	public static void invokeControllerOnTop(String call, Object param) throws ModuleComunicationException
+	@SuppressWarnings("unchecked")
+	public static <T> T  invokeControllerOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
-		callTopControllerAccessor(call, Screen.get().serializer.serialize(param));
+		return (T) Screen.get().serializer.deserialize(callOpenerControllerAccessor(call, Screen.get().serializer.serialize(param)));
 	}
 
 	/**
-	 * 
-	 * @param call
-	 * @throws ModuleComunicationException
-	 */
-	public static  void invokeControllerOnOpener(String call) throws ModuleComunicationException
-	{
-		invokeControllerOnOpener(call, null);
-	}
-
-	/**
-	 * 
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	public static void invokeControllerOnOpener(String call, Object param) throws ModuleComunicationException
-	{
-		callOpenerControllerAccessor(call, Screen.get().serializer.serialize(param));
-	}
-
-	/**
-	 * 
 	 * @param call
 	 * @throws ModuleComunicationException
 	 */
 	public static void invokeControllerOnParent(String call) throws ModuleComunicationException
 	{
-		invokeControllerOnParent(call, null);
+		invokeControllerOnParent(call, null, Object.class);
 	}
 
 	/**
-	 * 
 	 * @param call
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
-	public static void invokeControllerOnParent(String call, Object param) throws ModuleComunicationException
+	@SuppressWarnings("unchecked")
+	public static <T> T  invokeControllerOnParent(String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
-		callParentControllerAccessor(call, Screen.get().serializer.serialize(param));
+		return (T) Screen.get().serializer.deserialize(callParentControllerAccessor(call, Screen.get().serializer.serialize(param)));
 	}
 	
-	private static native void callTopControllerAccessor(String call, String serializedData)/*-{
-		$wnd.top._cruxScreenControllerAccessor(call, serializedData);
+	/**
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
+	public static void invokeControllerOnSelf(String call)
+	{
+		invokeControllerOnSelf(call, null, Object.class);
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T invokeControllerOnSelf(String call, Object param, Class<T> resultType)
+	{
+		try
+		{
+			Event event = Events.getEvent("_onInvokeController", call);
+			InvokeControllerEvent controllerEvent = new InvokeControllerEvent();
+			controllerEvent.setData(param);
+			Object result = Events.callEvent(event, controllerEvent, false);
+			return (T) result; 
+		}
+		catch (RuntimeException e)
+		{
+			GWT.log(e.getLocalizedMessage(), e);
+			Window.alert(e.getLocalizedMessage());
+			return null;
+		}
+	}
+	
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	private static native String callTopControllerAccessor(String call, String serializedData)/*-{
+		return $wnd.top._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;
 	
-	private static native void callOpenerControllerAccessor(String call, String serializedData)/*-{
-		$wnd.opener._cruxScreenControllerAccessor(call, serializedData);
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	private static native String callOpenerControllerAccessor(String call, String serializedData)/*-{
+		return $wnd.opener._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;
 	
-	private static native void callParentControllerAccessor(String call, String serializedData)/*-{
-		$wnd.parent._cruxScreenControllerAccessor(call, serializedData);
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	private static native String callParentControllerAccessor(String call, String serializedData)/*-{
+		return $wnd.parent._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;
 }
