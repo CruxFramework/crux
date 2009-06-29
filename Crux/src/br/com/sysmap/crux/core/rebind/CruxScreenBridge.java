@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
+import br.com.sysmap.crux.core.utils.FileSystemUtils;
 
 
 /**
@@ -50,16 +51,10 @@ public class CruxScreenBridge
 	
 	private CruxScreenBridge() 
 	{
-		String tmpDir = System.getProperty("java.io.tmpdir");
-		if (!tmpDir.endsWith("/") && !tmpDir.endsWith("\\"))
-		{
-			tmpDir += File.separator;
-		}
+		String tmpDir = FileSystemUtils.getTempDir();
 		
 		screenRequestedBridgeFile = new File(tmpDir+"screenRequestedBridgeFile");
-//		screenRequestedBridgeFile.deleteOnExit();
 		screenResolverBridgeFile = new File(tmpDir+"screenResolverBridgeFile");
-//		screenResolverBridgeFile.deleteOnExit();
 	}
 
 	/**
