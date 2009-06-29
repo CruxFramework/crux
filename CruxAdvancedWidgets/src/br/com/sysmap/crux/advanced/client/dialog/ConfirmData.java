@@ -114,8 +114,14 @@ public class ConfirmData implements CruxSerializable
 		{
 			data.setAttribute("title", title);
 		}
-		data.setAttribute("message", message);
-		data.setAttribute("styleName", styleName);
+		if (message != null)
+		{
+			data.setAttribute("message", message);
+		}
+		if (styleName != null)
+		{
+			data.setAttribute("styleName", styleName);
+		}
 		data.setAttribute("animationEnabled", Boolean.toString(animationEnabled));
 		
 		return document.toString();

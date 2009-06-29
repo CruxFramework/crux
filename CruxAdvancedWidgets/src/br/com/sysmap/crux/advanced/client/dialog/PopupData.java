@@ -135,10 +135,22 @@ public class PopupData implements CruxSerializable
 		{
 			data.setAttribute("title", title);
 		}
-		data.setAttribute("url", url);
-		data.setAttribute("styleName", styleName);
-		data.setAttribute("width", width);
-		data.setAttribute("height", height);
+		if (url != null)
+		{
+			data.setAttribute("url", url);
+		}
+		if (styleName != null)
+		{
+			data.setAttribute("styleName", styleName);
+		}
+		if (width != null)
+		{
+			data.setAttribute("width", width);
+		}
+		if (height != null)
+		{
+			data.setAttribute("height", height);
+		}
 		data.setAttribute("animationEnabled", Boolean.toString(animationEnabled));
 		data.setAttribute("closeable", Boolean.toString(closeable));
 		
