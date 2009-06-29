@@ -90,6 +90,12 @@ public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 			propertyName = Character.toLowerCase(propertyName.charAt(0)) + propertyName.substring(1);
 			String returnTypeDeclaration = getParameterDeclaration(returnType);
 			sourceWriter.println("public "+returnTypeDeclaration+" " + name+"(){");
+			
+			if (returnType.isPrimitive())
+			{
+				returnTypeDeclaration = getClassNameForPrimitive(returnType);
+			}
+			
 			sourceWriter.println("return ("+ returnTypeDeclaration+") "+ContextManager.class.getName()
 								 +".getContextHandler().readData(\""+propertyName+"\");");
 			sourceWriter.println("}");
@@ -170,6 +176,48 @@ public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 			result.append("?");
 		}
 		return result.toString();
+	}
+
+	/**
+	 * 
+	 * @param parameterClass
+	 * @return
+	 */
+	private String getClassNameForPrimitive(Class<?> parameterClass)
+	{
+		if ("int".equals(parameterClass.getName()))
+		{
+			return Integer.class.getName();
+		}
+		else if ("short".equals(parameterClass.getName()))
+		{
+			return Short.class.getName();
+		}
+		else if ("long".equals(parameterClass.getName()))
+		{
+			return Long.class.getName();
+		}
+		else if ("byte".equals(parameterClass.getName()))
+		{
+			return Byte.class.getName();
+		}
+		else if ("float".equals(parameterClass.getName()))
+		{
+			return Float.class.getName();
+		}
+		else if ("double".equals(parameterClass.getName()))
+		{
+			return Double.class.getName();
+		}
+		else if ("char".equals(parameterClass.getName()))
+		{
+			return Character.class.getName();
+		}
+		else if ("boolean".equals(parameterClass.getName()))
+		{
+			return Boolean.class.getName();
+		}
+		return null;
 	}
 
 	/**
