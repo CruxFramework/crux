@@ -45,4 +45,14 @@
 	<generate-with class="br.com.sysmap.crux.core.rebind.CruxClientConfigGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.config.CruxClientConfig" />
 	</generate-with>
+
+	<!-- Specify the default implementation to ContextHandler.-->
+	<replace-with class="br.com.sysmap.crux.core.client.context.CookieContextHandler">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.context.ContextHandler" />
+	</replace-with>
+
+	<!-- Specify the generator for context wrappers.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.ContextGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.context.Context" />
+	</generate-with>
 </module>

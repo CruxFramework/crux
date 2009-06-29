@@ -576,15 +576,16 @@ public class Screen
 	}
 	
 	/**
-	 * 
 	 * @param call
+	 * @param param
 	 * @throws ModuleComunicationException
 	 */
-	public static void invokeControllerOnTop(String call) throws ModuleComunicationException
+	@SuppressWarnings("unchecked")
+	public static void invokeControllerOnTop(String call, Object param) throws ModuleComunicationException
 	{
-		invokeControllerOnTop(call, null, Object.class);
+		invokeControllerOnTop(call, param, Object.class);
 	}
-
+	
 	/**
 	 * @param call
 	 * @param param
@@ -597,13 +598,35 @@ public class Screen
 	}
 
 	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@SuppressWarnings("unchecked")
+	public static void invokeControllerOnAbsoluteTop(String call, Object param) throws ModuleComunicationException
+	{
+		invokeControllerOnAbsoluteTop(call, param, Object.class);
+	}
+	
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T invokeControllerOnAbsoluteTop(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.get().serializer.deserialize(callAbsoluteTopControllerAccessor(call, Screen.get().serializer.serialize(param)));
+	}
+
+	/**
 	 * 
 	 * @param call
 	 * @throws ModuleComunicationException
 	 */
-	public static void invokeControllerOnOpener(String call) throws ModuleComunicationException
+	public static void invokeControllerOnOpener(String call, Object param) throws ModuleComunicationException
 	{
-		invokeControllerOnOpener(call, null, Object.class);
+		invokeControllerOnOpener(call, param, Object.class);
 	}
 
 	/**
@@ -622,9 +645,9 @@ public class Screen
 	 * @param call
 	 * @throws ModuleComunicationException
 	 */
-	public static void invokeControllerOnParent(String call) throws ModuleComunicationException
+	public static void invokeControllerOnParent(String call, Object param) throws ModuleComunicationException
 	{
-		invokeControllerOnParent(call, null, Object.class);
+		invokeControllerOnParent(call, param, Object.class);
 	}
 
 	/**
@@ -642,9 +665,9 @@ public class Screen
 	 * @param call
 	 * @throws ModuleComunicationException
 	 */
-	public static void invokeControllerOnSelf(String call)
+	public static void invokeControllerOnSelf(String call, Object param)
 	{
-		invokeControllerOnSelf(call, null, Object.class);
+		invokeControllerOnSelf(call, param, Object.class);
 	}
 
 	/**
@@ -670,6 +693,22 @@ public class Screen
 			return null;
 		}
 	}
+	
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	private static native String callAbsoluteTopControllerAccessor(String call, String serializedData)/*-{
+		var who = $wnd.top;
+		var op = $wnd.opener;
+		while (op != null)
+		{
+			who = op.top;
+			op = op.opener;
+		}
+		return who._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
 	
 	/**
 	 * @param call

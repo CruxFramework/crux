@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.component.serializer.BooleanSerializer;
 import br.com.sysmap.crux.core.client.component.serializer.ByteSerializer;
 import br.com.sysmap.crux.core.client.component.serializer.CharacterSerializer;
 import br.com.sysmap.crux.core.client.component.serializer.DateSerializer;
@@ -105,6 +106,7 @@ public class RegisteredCruxSerializablesGenerator extends AbstractRegisteredElem
 
 	private void generateDefaultSerializersBlock(SourceWriter sourceWriter)
 	{
+		sourceWriter.print("serializers.put(\"java.lang.Boolean\", new " + BooleanSerializer.class.getName() + "());");
 		sourceWriter.print("serializers.put(\"java.lang.Byte\", new " + ByteSerializer.class.getName() + "());");
 		sourceWriter.print("serializers.put(\"java.lang.Character\", new " + CharacterSerializer.class.getName() + "());");
 		sourceWriter.print("serializers.put(\"java.util.Date\", new " + DateSerializer.class.getName() + "());");

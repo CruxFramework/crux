@@ -179,7 +179,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	protected String generateEventHandlerInvokerClass(TreeLogger logger, SourceWriter sourceWriter, Class<?> handlerClass, String implClassName)
 	{
 		String className = handlerClass.getSimpleName();
-		sourceWriter.println("public class "+className+"Wrapper extends " + handlerClass.getName()
+		sourceWriter.println("public class "+className+"Wrapper extends " + getClassSourceName(handlerClass)
 				+ " implements br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker{");
 		
 		Controller controllerAnnot = handlerClass.getAnnotation(Controller.class);

@@ -118,6 +118,13 @@ public abstract class AbstractRegisteredElementsGenerator extends Generator
 		return screen;
 	}
 	
+	protected String getClassSourceName(Class<?> handlerClass)
+	{
+		String sourceName = handlerClass.getName();
+		sourceName = sourceName.replace('$','.');
+		return sourceName;
+	}
+	
 	/**
 	 * 
 	 * @param logger
