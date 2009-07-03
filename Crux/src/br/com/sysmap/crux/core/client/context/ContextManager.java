@@ -38,17 +38,6 @@ public class ContextManager
 		}
 		return contextHandler;
 	}
-
-	/**
-	 * 
-	 * @param <T>
-	 * @param contextClass
-	 * @return
-	 */
-	public static <T extends Context> T getContext(Class<?> contextClass)
-	{
-		return GWT.<T> create(contextClass);
-	}
 	
 	/**
 	 * 

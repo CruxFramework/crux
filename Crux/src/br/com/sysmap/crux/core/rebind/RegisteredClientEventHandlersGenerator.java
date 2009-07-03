@@ -367,16 +367,16 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			if (field.getAnnotation(Create.class) != null)
 			{
 				String fieldTypeName = field.getType().getName();
-				if (fieldTypeName.startsWith(controller.getName()+"$"))
+				if (fieldTypeName.indexOf("$") > 0)
 				{
-					fieldTypeName = fieldTypeName.replace(controller.getName()+"$", "");
+					fieldTypeName = fieldTypeName.replace('$', '.');
 				}
 
 				Class<?> type = getTypeForField(logger, field);
 				String typeName = type.getName();
-				if (typeName.startsWith(controller.getName()+"$"))
+				if (typeName.indexOf("$") > 0)
 				{
-					typeName = typeName.replace(controller.getName()+"$", "");
+					typeName = typeName.replace('$', '.');
 				}
 				sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=GWT.create("+typeName+".class);");
 				generateFieldValueSet(logger, controller, field, "wrapper", "_field"+field.getName(), sourceWriter);
