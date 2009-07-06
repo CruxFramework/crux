@@ -321,7 +321,7 @@ public class ScreenFactory
 			Attribute attr = (Attribute)object;
 			String attrName = attr.getName();
 			
-			if(attrName.equals("_useEventHandler"))
+			if(attrName.equals("_usecontroller"))
 			{
 				String handlerStr =  attr.getValue();
 				if (handlerStr != null)
@@ -333,7 +333,7 @@ public class ScreenFactory
 					}
 				}
 			}
-			else if(attrName.equals("_useSerializable"))
+			else if(attrName.equals("_useserializable"))
 			{
 				String serializerStr =  attr.getValue();
 				if (serializerStr != null)
