@@ -17,7 +17,6 @@ package br.com.sysmap.crux.advanced.client.event.dialog;
 
 import br.com.sysmap.crux.advanced.client.event.Events;
 import br.com.sysmap.crux.core.client.event.Event;
-
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 
 import com.google.gwt.dom.client.Element;

@@ -17,9 +17,9 @@ package br.com.sysmap.crux.advanced.client.collapsepanel;
 
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseHandler;
+import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseOrBeforeExpandEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeExpandEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeExpandHandler;
-import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseOrBeforeExpandEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.HasBeforeCollapseAndBeforeExpandHandlers;
 import br.com.sysmap.crux.advanced.client.titlepanel.TitlePanel;
 
