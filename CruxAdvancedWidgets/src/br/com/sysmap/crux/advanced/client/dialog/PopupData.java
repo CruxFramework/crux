@@ -20,7 +20,7 @@ import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.XMLParser;
 
 import br.com.sysmap.crux.core.client.component.CruxSerializable;
-import br.com.sysmap.crux.core.rebind.screen.moduleshareable.annotation.SerializableName;
+import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
