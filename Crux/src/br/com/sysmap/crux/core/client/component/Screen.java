@@ -33,13 +33,18 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -54,7 +59,6 @@ public class Screen
 	protected String id;
 	protected Map<String, Widget> widgets = new HashMap<String, Widget>(30);
 	protected List<Element> blockingDivs = new ArrayList<Element>();
-	protected boolean manageHistory = false;
 	protected IFrameElement historyFrame = null;
 	protected HandlerManager handlerManager;
 	protected ModuleComunicationSerializer serializer = null;
@@ -72,36 +76,19 @@ public class Screen
 		return id;
 	}
 	
-	protected boolean isManageHistory() {
-		return manageHistory;
-	}
-
-	protected void setManageHistory(boolean manageHistory) {
-		if (this.manageHistory != manageHistory)
+	protected void prepareHistoryFrame() 
+	{
+		Element body = RootPanel.getBodyElement();
+		if (historyFrame == null)
 		{
-			this.manageHistory = manageHistory;
-			Element body = RootPanel.getBodyElement();
-			if (manageHistory)
-			{
-				if (historyFrame == null)
-				{
-					historyFrame = DOM.createIFrame().cast();
-					historyFrame.setSrc("javascript:''");
-					historyFrame.setId("__gwt_historyFrame");
-					historyFrame.getStyle().setProperty("width", Integer.toString(body.getClientWidth()));
-					historyFrame.getStyle().setProperty("height", Integer.toString(body.getClientHeight()));
-					historyFrame.getStyle().setProperty("border", "0");
-					body.appendChild(historyFrame);
-				}
-			}
-			else
-			{
-				if (historyFrame != null)
-				{
-					body.removeChild(historyFrame);
-					historyFrame = null;
-				}			
-			}
+			historyFrame = DOM.createIFrame().cast();
+			historyFrame.setSrc("javascript:''");
+			historyFrame.setId("__gwt_historyFrame");
+			historyFrame.getStyle().setProperty("width", Integer.toString(body.getClientWidth()));
+			historyFrame.getStyle().setProperty("height", Integer.toString(body.getClientHeight()));
+			historyFrame.getStyle().setProperty("border", "0");
+			body.appendChild(historyFrame);
+		    History.fireCurrentHistoryState();
 		}
 	}
 
@@ -240,6 +227,78 @@ public class Screen
 			blockingDiv.getStyle().setProperty("display", "block");
 		}
 	}
+
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	protected HandlerRegistration addWindowClosingHandler(ClosingHandler handler) 
+	{
+		return Window.addWindowClosingHandler(handler);
+	}	
+	
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	protected HandlerRegistration addWindowCloseHandler(CloseHandler<Window> handler) 
+	{
+		return Window.addCloseHandler(handler);
+	}
+
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	protected HandlerRegistration addWindowResizeHandler(ResizeHandler handler) 
+	{
+		return Window.addResizeHandler(handler);
+	}	
+	
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	protected HandlerRegistration addWindowHistoryChangedHandler(ValueChangeHandler<String> handler) 
+	{
+		if (historyFrame == null)
+		{
+			prepareHistoryFrame();
+		}
+		return History.addValueChangeHandler(handler);
+	}	
+
+	/**
+	 * 
+	 * @param token
+	 */
+	protected void addTokenToHistory(String token)
+	{
+		History.newItem(token);
+	}
+
+	/**
+	 * 
+	 * @param token
+	 * @param issueEvent
+	 */
+	protected void addTokenToHistory(String token, boolean issueEvent)
+	{
+		History.newItem(token, issueEvent);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected String getCurrentHistoryToken()
+	{
+		return History.getToken();
+	}
 	
 	/**
 	 * 
@@ -247,20 +306,27 @@ public class Screen
 	 */
 	protected void parse(Element element) 
 	{
-		String manageHistoryStr = element.getAttribute("_manageHistory");
-		if (manageHistoryStr != null)
-		{
-			setManageHistory("true".equals(manageHistoryStr));
-		}
 		String title = element.getAttribute("_title");
 		if (title != null && title.length() >0)
 		{
 			Window.setTitle(ScreenFactory.getInstance().getDeclaredMessage(title));
 		}
+
+		final Event eventHistory = Events.getEvent(Events.EVENT_HISTORY_CHANGED, element.getAttribute(Events.EVENT_HISTORY_CHANGED));
+		if (eventHistory != null)
+		{
+			addWindowHistoryChangedHandler(new ValueChangeHandler<String>(){
+				public void onValueChange(ValueChangeEvent<String> historyEvent)
+				{
+					Events.callEvent(eventHistory, historyEvent);
+				}
+			});
+		}
+
 		final Event eventClosing = Events.getEvent(Events.EVENT_CLOSING, element.getAttribute(Events.EVENT_CLOSING));
 		if (eventClosing != null)
 		{
-			Window.addWindowClosingHandler(new Window.ClosingHandler(){
+			addWindowClosingHandler(new Window.ClosingHandler(){
 				public void onWindowClosing(ClosingEvent closingEvent) 
 				{
 					Events.callEvent(eventClosing, closingEvent);
@@ -271,7 +337,7 @@ public class Screen
 		final Event eventClose = Events.getEvent(Events.EVENT_CLOSE, element.getAttribute(Events.EVENT_CLOSE));
 		if (eventClose != null)
 		{
-			Window.addCloseHandler(new CloseHandler<Window>(){
+			addWindowCloseHandler(new CloseHandler<Window>(){
 				public void onClose(CloseEvent<Window> event) 
 				{
 					Events.callEvent(eventClose, event);				
@@ -282,7 +348,7 @@ public class Screen
 		final Event eventResized = Events.getEvent(Events.EVENT_RESIZED, element.getAttribute(Events.EVENT_RESIZED));
 		if (eventResized != null)
 		{
-			Window.addResizeHandler(new ResizeHandler(){
+			addWindowResizeHandler(new ResizeHandler(){
 				public void onResize(ResizeEvent event) 
 				{
 					Events.callEvent(eventResized, event);
@@ -552,27 +618,77 @@ public class Screen
 		return Screen.get().getIdentifier();
 	}
 	
+	public static ModuleComunicationSerializer getCruxSerializer()
+	{
+		return Screen.get().serializer;
+	}
+	
 	/**
 	 * 
+	 * @param handler
 	 * @return
 	 */
-	public static boolean isHistoryManaged() 
+	public static HandlerRegistration addClosingHandler(ClosingHandler handler) 
 	{
-		return Screen.get().isManageHistory();
+		return Screen.get().addWindowClosingHandler(handler);
+	}	
+	
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	public static HandlerRegistration addCloseHandler(CloseHandler<Window> handler) 
+	{
+		return Screen.get().addWindowCloseHandler(handler);
 	}
 
 	/**
 	 * 
-	 * @param manageHistory
+	 * @param handler
+	 * @return
 	 */
-	public static void setHistoryManaged(boolean manageHistory) 
+	public static HandlerRegistration addResizeHandler(ResizeHandler handler) 
 	{
-		Screen.get().setManageHistory(manageHistory);
+		return Screen.get().addWindowResizeHandler(handler);
+	}		
+	
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	public static HandlerRegistration addHistoryChangedHandler(ValueChangeHandler<String> handler) 
+	{
+		return Screen.get().addWindowHistoryChangedHandler(handler);
+	}		
+	
+	/**
+	 * 
+	 * @param token
+	 */
+	public static void addToHistory(String token)
+	{
+		Screen.get().addTokenToHistory(token);
+	}
+
+	/**
+	 * 
+	 * @param token
+	 * @param issueEvent
+	 */
+	public static void addToHistory(String token, boolean issueEvent)
+	{
+		Screen.get().addTokenToHistory(token, issueEvent);
 	}
 	
-	public static ModuleComunicationSerializer getCruxSerializer()
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getCurrentHistoryItem()
 	{
-		return Screen.get().serializer;
+		return Screen.get().getCurrentHistoryToken();
 	}
 	
 	/**

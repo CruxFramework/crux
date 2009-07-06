@@ -59,6 +59,7 @@ public class Events
 	public static final String EVENT_EXECUTE_EVENT = "_onexecute";
 	public static final String EVENT_SUBMIT_COMPLETE = "_onsubmitcomplete";
 	public static final String EVENT_SUBMIT = "_onsubmit";
+	public static final String EVENT_HISTORY_CHANGED = "_onhistorychanged";
 	
 	private static RegisteredClientEventHandlers registeredClientEventHandlers;
 	

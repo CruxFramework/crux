@@ -36,7 +36,7 @@ import br.com.sysmap.crux.core.client.component.serializer.StringBuilderSerializ
 import br.com.sysmap.crux.core.client.component.serializer.StringSerializer;
 import br.com.sysmap.crux.core.client.component.serializer.TimestampSerializer;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
-import br.com.sysmap.crux.core.rebind.screen.moduleshareable.Serializers;
+import br.com.sysmap.crux.core.rebind.screen.serializable.Serializers;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
