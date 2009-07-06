@@ -53,4 +53,10 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 009] - Error for generating screen wrapper: {0}.")
 	String errorGeneratingScreenWrapper(String localizedMessage);
+
+	@DefaultMessage("[generator 010] - Error for generating context wrapper: Invalid Method signature: {0}.")
+	String errorContextWrapperInvalidSignature(String method);
+
+	@DefaultMessage("[generator 010] - Error for generating context wrapper: Primitive Parameter not allowed: {0}.")
+	String errorContextWrapperPrimitiveParamterNotAllowed(String method);
 }

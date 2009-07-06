@@ -85,8 +85,9 @@ public class Screen
 			historyFrame = DOM.createIFrame().cast();
 			historyFrame.setSrc("javascript:''");
 			historyFrame.setId("__gwt_historyFrame");
-			historyFrame.getStyle().setProperty("width", Integer.toString(body.getClientWidth()));
-			historyFrame.getStyle().setProperty("height", Integer.toString(body.getClientHeight()));
+			historyFrame.getStyle().setProperty("position", "absolute");
+			historyFrame.getStyle().setProperty("width", "0");
+			historyFrame.getStyle().setProperty("height", "0");
 			historyFrame.getStyle().setProperty("border", "0");
 			body.appendChild(historyFrame);
 		    History.fireCurrentHistoryState();

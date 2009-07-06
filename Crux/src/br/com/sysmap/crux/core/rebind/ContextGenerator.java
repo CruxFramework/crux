@@ -35,23 +35,32 @@ import com.google.gwt.user.rebind.SourceWriter;
 public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 {
 	/**
+	 * @throws ContextGeneratorException 
 	 * 
 	 */
-	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter)
+	@Override
+	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws ContextGeneratorException
 	{
 		Class<?> returnType = method.getReturnType();
 		String name = method.getName();
-		if (name.startsWith("get") && method.getParameterTypes().length == 0)
+		if (name.startsWith("get") && method.getParameterTypes().length == 0 && 
+		   (!method.getReturnType().getName().equals("void") && !method.getReturnType().getName().equals("java.lang.Void")))
 		{
-			generateGetter(sourceWriter, returnType, name, 3);
+			generateGetter(method, sourceWriter, returnType, name, 3);
 		}
-		else if (name.startsWith("is") && method.getParameterTypes().length == 0)
+		else if (name.startsWith("is") && method.getParameterTypes().length == 0 && 
+				(!method.getReturnType().getName().equals("void") && !method.getReturnType().getName().equals("java.lang.Void")))
 		{
-			generateGetter(sourceWriter, returnType, name, 2);
+			generateGetter(method, sourceWriter, returnType, name, 2);
 		}
-		else if (name.startsWith("set") && method.getParameterTypes().length == 1)
+		else if (name.startsWith("set") && method.getParameterTypes().length == 1 && 
+				(method.getReturnType().getName().equals("void") || method.getReturnType().getName().equals("java.lang.Void")))
 		{
 			generateSetter(method, sourceWriter, name);
+		}
+		else
+		{
+			throw new ContextGeneratorException(messages.errorContextWrapperInvalidSignature(method.toGenericString()));
 		}
 	}
 
@@ -60,17 +69,25 @@ public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 	 * @param method
 	 * @param sourceWriter
 	 * @param name
+	 * @throws ContextGeneratorException 
 	 */
-	private void generateSetter(Method method, SourceWriter sourceWriter, String name)
+	private void generateSetter(Method method, SourceWriter sourceWriter, String name) throws ContextGeneratorException
 	{
 		Type parameterType = method.getGenericParameterTypes()[0];
+		if ((parameterType instanceof Class) && ((Class<?>)parameterType).isPrimitive())
+		{
+			throw new ContextGeneratorException(messages.errorContextWrapperPrimitiveParamterNotAllowed(method.toGenericString()));
+		}
 		String propertyName = name.substring(3);
 		if (propertyName.length() > 0)
 		{
 			propertyName = Character.toLowerCase(propertyName.charAt(0)) + propertyName.substring(1);
 			sourceWriter.println("public void " + name+"("+getParameterDeclaration(parameterType)+" value){");
-			sourceWriter.println(ContextManager.class.getName()
-								 +".getContextHandler().writeData(\""+propertyName+"\", value);");
+			sourceWriter.println("if (value == null){");
+			sourceWriter.println(ContextManager.class.getName()+".getContextHandler().eraseData(\""+propertyName+"\");");
+			sourceWriter.println("} else {");
+			sourceWriter.println(ContextManager.class.getName()+".getContextHandler().writeData(\""+propertyName+"\", value);");
+			sourceWriter.println("}");
 			sourceWriter.println("}");
 		}
 	}
@@ -81,21 +98,21 @@ public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 	 * @param returnType
 	 * @param name
 	 * @param prefixLength
+	 * @throws ContextGeneratorException 
 	 */
-	private void generateGetter(SourceWriter sourceWriter, Class<?> returnType, String name, int prefixLength)
+	private void generateGetter(Method method, SourceWriter sourceWriter, Class<?> returnType, String name, int prefixLength) throws ContextGeneratorException
 	{
+		if (returnType.isPrimitive())
+		{
+			throw new ContextGeneratorException(messages.errorContextWrapperPrimitiveParamterNotAllowed(method.toGenericString()));
+		}
+
 		String propertyName = name.substring(prefixLength);
 		if (propertyName.length() > 0)
 		{
 			propertyName = Character.toLowerCase(propertyName.charAt(0)) + propertyName.substring(1);
 			String returnTypeDeclaration = getParameterDeclaration(returnType);
 			sourceWriter.println("public "+returnTypeDeclaration+" " + name+"(){");
-			
-			if (returnType.isPrimitive())
-			{
-				returnTypeDeclaration = getClassNameForPrimitive(returnType);
-			}
-			
 			sourceWriter.println("return ("+ returnTypeDeclaration+") "+ContextManager.class.getName()
 								 +".getContextHandler().readData(\""+propertyName+"\");");
 			sourceWriter.println("}");
@@ -176,48 +193,6 @@ public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 			result.append("?");
 		}
 		return result.toString();
-	}
-
-	/**
-	 * 
-	 * @param parameterClass
-	 * @return
-	 */
-	private String getClassNameForPrimitive(Class<?> parameterClass)
-	{
-		if ("int".equals(parameterClass.getName()))
-		{
-			return Integer.class.getName();
-		}
-		else if ("short".equals(parameterClass.getName()))
-		{
-			return Short.class.getName();
-		}
-		else if ("long".equals(parameterClass.getName()))
-		{
-			return Long.class.getName();
-		}
-		else if ("byte".equals(parameterClass.getName()))
-		{
-			return Byte.class.getName();
-		}
-		else if ("float".equals(parameterClass.getName()))
-		{
-			return Float.class.getName();
-		}
-		else if ("double".equals(parameterClass.getName()))
-		{
-			return Double.class.getName();
-		}
-		else if ("char".equals(parameterClass.getName()))
-		{
-			return Character.class.getName();
-		}
-		else if ("boolean".equals(parameterClass.getName()))
-		{
-			return Boolean.class.getName();
-		}
-		return null;
 	}
 
 	/**

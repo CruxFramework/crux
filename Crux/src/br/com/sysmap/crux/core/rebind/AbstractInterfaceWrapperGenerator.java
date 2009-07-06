@@ -57,7 +57,7 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 		}
 	}
 
-	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, String packageName, String className) throws ClassNotFoundException 
+	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, String packageName, String className) throws ClassNotFoundException, ContextGeneratorException 
 	{
 		PrintWriter printWriter = context.tryCreate(logger, packageName, className);
 		// if printWriter is null, source code has ALREADY been generated, return
@@ -95,7 +95,7 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 		
 	}
 
-	private void generateMethodWrappers(TreeLogger logger, Class<?> interfaceClass, SourceWriter sourceWriter)
+	private void generateMethodWrappers(TreeLogger logger, Class<?> interfaceClass, SourceWriter sourceWriter) throws ContextGeneratorException
 	{
 		for (Method method : interfaceClass.getMethods())
 		{
@@ -103,5 +103,5 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 		}
 	}
 
-	protected abstract void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter);
+	protected abstract void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws ContextGeneratorException;
 }
