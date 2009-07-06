@@ -62,6 +62,15 @@ public class StackMenu extends Composite implements Filterable<StackMenuItem>
 		items.remove(item);
 		panel.remove(item);
 	}
+	
+	/**
+	 * 
+	 */
+	public void clear()
+	{
+		items.clear();
+		panel.clear();
+	}
 
 	/**
 	 * @return the items

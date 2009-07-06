@@ -77,7 +77,7 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 		this.frame.getElement().setPropertyString("border", "0");
 		this.frame.getElement().setPropertyString("id", id + ".window");
 		this.frame.getElement().setPropertyString("name", id + ".window");
-		
+
 		tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
 	}
 
