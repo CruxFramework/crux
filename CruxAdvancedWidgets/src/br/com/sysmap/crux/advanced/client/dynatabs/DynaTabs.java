@@ -15,21 +15,18 @@
  */
 package br.com.sysmap.crux.advanced.client.dynatabs;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusEvent;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -67,9 +64,10 @@ public class DynaTabs extends Composite
 
 		if (!this.tabs.containsKey(tabId))
 		{
-			tab = new Tab(tabId, label, url, closeable, reloadIfAlreadyOpen, tabPanel.getWidgetCount());
-			this.tabs.put(tabId, tab);
-			tabPanel.add(tab, new FlapPanel(this, tabId, label, closeable));
+			FlapPanel flapPanel = new FlapPanel(this, tabId, label, closeable);
+			tab = new Tab(tabId, label, url, closeable, reloadIfAlreadyOpen, tabPanel.getWidgetCount(), flapPanel);
+			this.tabs.put(tabId, tab);			
+			tabPanel.add(tab, flapPanel);
 		}
 
 		focusTab(tabId);
@@ -107,7 +105,7 @@ public class DynaTabs extends Composite
 	/**
 	 * @return
 	 */
-	public int getSelectedTabIndex()
+	public int getFocusedTabIndex()
 	{
 		return tabPanel.getTabBar().getSelectedTab();
 	}
@@ -115,7 +113,7 @@ public class DynaTabs extends Composite
 	/**
 	 * @return
 	 */
-	public Tab getSelectedTab()
+	public Tab getFocusedTab()
 	{
 		int index = tabPanel.getTabBar().getSelectedTab();
 
@@ -132,7 +130,7 @@ public class DynaTabs extends Composite
 	 */
 	public void focusTab(String tabId)
 	{
-		Tab selectedTab = getSelectedTab();
+		Tab selectedTab = getFocusedTab();
 
 		if (selectedTab == null || !selectedTab.getId().equals(tabId))
 		{
@@ -169,62 +167,28 @@ public class DynaTabs extends Composite
 		{
 			int index = getTabIndex(tabId);
 			this.tabPanel.remove(index);
-
+			this.tabs.remove(tabId);
+			
 			if (this.tabPanel.getWidgetCount() > 0)
 			{
 				int indexToFocus = index == 0 ? 0 : index - 1;
 				this.tabPanel.selectTab(indexToFocus);
 			}
 		}
-	}
-}
-
-/**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
- */
-class FlapPanel extends Composite
-{
-	private SimpleDecoratedPanel panel;
+	}	
 	
-	public FlapPanel(DynaTabs tabs, String tabId, String tabLabel, boolean closeable)
-	{
-		panel = new SimpleDecoratedPanel();
-		panel.setContentWidget(createFlapController(tabs, tabId, tabLabel, closeable));
-		initWidget(panel);	
-	}
-
 	/**
 	 * @return
 	 */
-	private Widget createFlapController(final DynaTabs tabs, final String tabId, String tabLabel, boolean closeable)
+	public List<Tab> getTabs()
 	{
-		HorizontalPanel flap = new HorizontalPanel();
-		flap.setSpacing(0);
-
-		Label title = new Label(tabLabel);
-		title.setStyleName("flapLabel");
-		flap.add(title);
-
-		FocusPanel closeButton = new FocusPanel();
-		Label empty = new Label("");
-		empty.getElement().getStyle().setProperty("fontSize", "1px");
-		closeButton.add(empty);
-		closeButton.setStyleName("flapCloseButton");
-		closeButton.addClickHandler(new ClickHandler()
+		List<Tab> result = new ArrayList<Tab>(this.tabs.size());
+		for (Tab tab : this.tabs.values())
 		{
-			public void onClick(ClickEvent event)
-			{
-				tabs.closeTab(tabId);
-			}
-		});
-
-		closeButton.setVisible(closeable);
-		
-		flap.add(closeButton);
-		
-		return flap;
-	}	
+			result.add(tab);
+		}
+		return result;
+	}
 }
 
 /**

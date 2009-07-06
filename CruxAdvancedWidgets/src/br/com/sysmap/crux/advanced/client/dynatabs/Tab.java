@@ -23,7 +23,11 @@ import br.com.sysmap.crux.advanced.client.event.focusblur.HasBeforeFocusAndBefor
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.advanced.client.event.openclose.HasBeforeCloseHandlers;
+import br.com.sysmap.crux.advanced.client.js.JSWindow;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
@@ -43,8 +47,9 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	private boolean closeable;
 	private Frame frame;
 	private int insertionIndex;
-
 	private HandlerManager handlerManager;
+	private TabInternalJSObjects tabObjetcs;
+	private FlapPanel flapPanel; 
 
 	/**
 	 * Constructor
@@ -55,7 +60,7 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	 * @param closeable
 	 * @param reloadIfExists
 	 */
-	Tab(String id, String label, String url, boolean closeable, boolean reloadIfExists, int insertionIndex)
+	Tab(String id, String label, String url, boolean closeable, boolean reloadIfExists, int insertionIndex, FlapPanel flapPanel)
 	{
 		this.handlerManager = new HandlerManager(this);
 
@@ -64,10 +69,16 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 		this.url = url;
 		this.closeable = closeable;
 		this.insertionIndex = insertionIndex;
+		this.flapPanel = flapPanel;
+		
 		this.frame = new Frame(url);
 		this.frame.setHeight("100%");
 		this.frame.getElement().setPropertyString("frameBorder", "no");
-		this.frame.getElement().setPropertyString("border", "0");		
+		this.frame.getElement().setPropertyString("border", "0");
+		this.frame.getElement().setPropertyString("id", id + ".window");
+		this.frame.getElement().setPropertyString("name", id + ".window");
+		
+		tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
 	}
 
 	/**
@@ -84,6 +95,7 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	public void setLabel(String label)
 	{
 		this.label = label;
+		this.flapPanel.getFlapController().setTabTitle(label);
 	}
 
 	/**
@@ -145,5 +157,15 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	public HandlerRegistration addBeforeCloseHandler(BeforeCloseHandler handler)
 	{
 		return handlerManager.addHandler(BeforeCloseEvent.getType(), handler);
+	}
+	
+	public JSWindow getInternalWindow()
+	{
+		return tabObjetcs.getTabWindow(getFrame().getElement().<IFrameElement> cast());
+	}
+	
+	public Document getInternalDocument()
+	{
+		return tabObjetcs.getTabDocument(getFrame().getElement().<IFrameElement> cast());
 	}
 }
