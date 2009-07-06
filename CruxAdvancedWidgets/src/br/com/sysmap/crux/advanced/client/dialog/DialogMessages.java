@@ -28,4 +28,7 @@ public interface DialogMessages extends Messages
 
 	@DefaultMessage("Cancel")
 	String confirmCancelLabel();
+	
+	@DefaultMessage("Ok")
+	String messageBoxOkLabel();	
 }
