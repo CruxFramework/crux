@@ -25,4 +25,5 @@ public interface ContextHandler
 	Object readData(String key);
 	void initializeContext();
 	void eraseData(String key);
+	void clearContext();
 }

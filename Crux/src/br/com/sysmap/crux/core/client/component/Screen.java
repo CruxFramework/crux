@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.Events;
@@ -689,6 +690,22 @@ public class Screen
 	public static String getCurrentHistoryItem()
 	{
 		return Screen.get().getCurrentHistoryToken();
+	}
+	
+	/**
+	 * 
+	 */
+	public static void createContext()
+	{
+		ContextManager.createContext();
+	}
+	
+	/**
+     *
+     */
+	public static void clearContext()
+	{
+		ContextManager.clearContext();
 	}
 	
 	/**

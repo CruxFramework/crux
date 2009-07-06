@@ -58,6 +58,21 @@ public class TopContextHandler implements ContextHandler
 	}
 
 	/**
+	 * 
+	 */
+	public void clearContext()
+	{
+		try
+		{
+			Screen.invokeControllerOnAbsoluteTop("__topContextController.clearData", null);
+		}
+		catch (ModuleComunicationException e)
+		{
+			GWT.log(e.getMessage(), e);
+		}
+	}
+	
+	/**
 	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#readData(java.lang.String)
 	 */
 	public Object readData(String key)
@@ -112,6 +127,12 @@ public class TopContextHandler implements ContextHandler
 		public void eraseData(InvokeControllerEvent event)
 		{
 			context.remove((String) event.getData());
+		}
+
+		@ExposeOutOfModule
+		public void clearData(InvokeControllerEvent event)
+		{
+			context.clear();
 		}
 	}
 }

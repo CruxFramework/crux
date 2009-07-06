@@ -56,14 +56,7 @@ public class CookieContextHandler implements ContextHandler
 	 */
 	public void initializeContext()
 	{
-		Collection<String> cookieNames = Cookies.getCookieNames();
-		for (String cookie : cookieNames)
-		{
-			if (cookie.startsWith(CONTEXT_PREFIX))
-			{
-				Cookies.removeCookie(cookie);
-			}
-		}
+		clearContext();
 	}
 
 	/**
@@ -104,5 +97,20 @@ public class CookieContextHandler implements ContextHandler
 	public void eraseData(String key)
 	{
 		Cookies.removeCookie(CONTEXT_PREFIX+key);
+	}
+
+	/**
+	 * 
+	 */
+	public void clearContext()
+	{
+		Collection<String> cookieNames = Cookies.getCookieNames();
+		for (String cookie : cookieNames)
+		{
+			if (cookie.startsWith(CONTEXT_PREFIX))
+			{
+				Cookies.removeCookie(cookie);
+			}
+		}
 	}
 }

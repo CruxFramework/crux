@@ -47,5 +47,10 @@ public class ContextManager
 	{
 		getContextHandler().initializeContext();
 	}
+
+	public static void clearContext()
+	{
+		getContextHandler().clearContext();
+	}
 	
 }
