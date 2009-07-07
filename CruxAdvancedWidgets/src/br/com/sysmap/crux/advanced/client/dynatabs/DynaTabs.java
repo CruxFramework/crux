@@ -140,12 +140,12 @@ public class DynaTabs extends Composite
 			{
 				if (!tab.getId().equals(tabId))
 				{
-					BeforeBlurEvent evt = BeforeBlurEvent.fire(tab);
+					BeforeBlurEvent evt = BeforeBlurEvent.fire(tab.getFlapPanel());
 					canceled = canceled || evt.isCanceled();
 				}
 				else
 				{
-					BeforeFocusEvent evt = BeforeFocusEvent.fire(tab);
+					BeforeFocusEvent evt = BeforeFocusEvent.fire(tab.getFlapPanel());
 					canceled = canceled || evt.isCanceled();
 				}
 			}
@@ -157,25 +157,52 @@ public class DynaTabs extends Composite
 		}
 	}
 
+	
 	/**
+	 * @param tabId
+	 * @param skipBeforeCloseHandlers
+	 */
+	public void closeTab(String tabId, boolean skipBeforeCloseHandlers)
+	{
+		if(skipBeforeCloseHandlers)
+		{
+			doCloseTab(tabId);
+		}
+		else
+		{
+			BeforeCloseEvent evt = BeforeCloseEvent.fire(getTab(tabId).getFlapPanel());
+			
+			if (!evt.isCanceled())
+			{
+				doCloseTab(tabId);
+			}
+		}		
+	}
+	
+	/**
+	 * Closes the tab, skipping any BeforeCloseHandler registered
 	 * @param tabId
 	 */
 	public void closeTab(String tabId)
 	{
-		BeforeCloseEvent evt = BeforeCloseEvent.fire(getTab(tabId));
-		if (!evt.isCanceled())
+		closeTab(tabId, true);
+	}
+	
+	/**
+	 * @param tabId
+	 */
+	private void doCloseTab(String tabId)
+	{
+		int index = getTabIndex(tabId);
+		this.tabPanel.remove(index);
+		this.tabs.remove(tabId);
+		
+		if (this.tabPanel.getWidgetCount() > 0)
 		{
-			int index = getTabIndex(tabId);
-			this.tabPanel.remove(index);
-			this.tabs.remove(tabId);
-			
-			if (this.tabPanel.getWidgetCount() > 0)
-			{
-				int indexToFocus = index == 0 ? 0 : index - 1;
-				this.tabPanel.selectTab(indexToFocus);
-			}
+			int indexToFocus = index == 0 ? 0 : index - 1;
+			this.tabPanel.selectTab(indexToFocus);
 		}
-	}	
+	}
 	
 	/**
 	 * @return

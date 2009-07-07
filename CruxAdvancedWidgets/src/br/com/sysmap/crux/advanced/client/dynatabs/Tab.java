@@ -15,12 +15,9 @@
  */
 package br.com.sysmap.crux.advanced.client.dynatabs;
 
-import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeBlurHandler;
-import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusEvent;
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusHandler;
 import br.com.sysmap.crux.advanced.client.event.focusblur.HasBeforeFocusAndBeforeBlurHandlers;
-import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.advanced.client.event.openclose.HasBeforeCloseHandlers;
 import br.com.sysmap.crux.advanced.client.js.JSWindow;
@@ -28,7 +25,6 @@ import br.com.sysmap.crux.advanced.client.js.JSWindow;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Frame;
@@ -47,7 +43,6 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	private boolean closeable;
 	private Frame frame;
 	private int insertionIndex;
-	private HandlerManager handlerManager;
 	private TabInternalJSObjects tabObjetcs;
 	private FlapPanel flapPanel; 
 
@@ -62,8 +57,6 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	 */
 	Tab(String id, String label, String url, boolean closeable, boolean reloadIfExists, int insertionIndex, FlapPanel flapPanel)
 	{
-		this.handlerManager = new HandlerManager(this);
-
 		this.id = id;
 		this.label = label;
 		this.url = url;
@@ -146,17 +139,17 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 
 	public HandlerRegistration addBeforeBlurHandler(BeforeBlurHandler handler)
 	{
-		return handlerManager.addHandler(BeforeBlurEvent.getType(), handler);
+		return flapPanel.addBeforeBlurHandler(handler);
 	}
 
 	public HandlerRegistration addBeforeFocusHandler(BeforeFocusHandler handler)
 	{
-		return handlerManager.addHandler(BeforeFocusEvent.getType(), handler);
+		return flapPanel.addBeforeFocusHandler(handler);
 	}
 
 	public HandlerRegistration addBeforeCloseHandler(BeforeCloseHandler handler)
 	{
-		return handlerManager.addHandler(BeforeCloseEvent.getType(), handler);
+		return flapPanel.addBeforeCloseHandler(handler);
 	}
 	
 	public JSWindow getInternalWindow()
@@ -167,5 +160,13 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	public Document getInternalDocument()
 	{
 		return tabObjetcs.getTabDocument(getFrame().getElement().<IFrameElement> cast());
+	}
+
+	/**
+	 * @return the flapPanel
+	 */
+	protected FlapPanel getFlapPanel()
+	{
+		return flapPanel;
 	}
 }

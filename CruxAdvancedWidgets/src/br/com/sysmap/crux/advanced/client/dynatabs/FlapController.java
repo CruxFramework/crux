@@ -42,7 +42,8 @@ class FlapController extends Composite
 		{
 			public void onClick(ClickEvent event)
 			{
-				tabs.closeTab(tabId);
+				event.stopPropagation();
+				tabs.closeTab(tabId, false);
 			}
 		});
 
