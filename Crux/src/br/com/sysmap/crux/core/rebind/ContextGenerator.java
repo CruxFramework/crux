@@ -15,13 +15,8 @@
  */
 package br.com.sysmap.crux.core.rebind;
 
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
 
 import br.com.sysmap.crux.core.client.context.ContextManager;
 
@@ -35,11 +30,11 @@ import com.google.gwt.user.rebind.SourceWriter;
 public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 {
 	/**
-	 * @throws ContextGeneratorException 
+	 * @throws WrapperGeneratorException 
 	 * 
 	 */
 	@Override
-	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws ContextGeneratorException
+	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws WrapperGeneratorException
 	{
 		Class<?> returnType = method.getReturnType();
 		String name = method.getName();
@@ -60,7 +55,7 @@ public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 		}
 		else
 		{
-			throw new ContextGeneratorException(messages.errorContextWrapperInvalidSignature(method.toGenericString()));
+			throw new WrapperGeneratorException(messages.errorContextWrapperInvalidSignature(method.toGenericString()));
 		}
 	}
 
@@ -69,14 +64,14 @@ public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 	 * @param method
 	 * @param sourceWriter
 	 * @param name
-	 * @throws ContextGeneratorException 
+	 * @throws WrapperGeneratorException 
 	 */
-	private void generateSetter(Method method, SourceWriter sourceWriter, String name) throws ContextGeneratorException
+	private void generateSetter(Method method, SourceWriter sourceWriter, String name) throws WrapperGeneratorException
 	{
 		Type parameterType = method.getGenericParameterTypes()[0];
 		if ((parameterType instanceof Class) && ((Class<?>)parameterType).isPrimitive())
 		{
-			throw new ContextGeneratorException(messages.errorContextWrapperPrimitiveParamterNotAllowed(method.toGenericString()));
+			throw new WrapperGeneratorException(messages.errorContextWrapperPrimitiveParamterNotAllowed(method.toGenericString()));
 		}
 		String propertyName = name.substring(3);
 		if (propertyName.length() > 0)
@@ -98,13 +93,13 @@ public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 	 * @param returnType
 	 * @param name
 	 * @param prefixLength
-	 * @throws ContextGeneratorException 
+	 * @throws WrapperGeneratorException 
 	 */
-	private void generateGetter(Method method, SourceWriter sourceWriter, Class<?> returnType, String name, int prefixLength) throws ContextGeneratorException
+	private void generateGetter(Method method, SourceWriter sourceWriter, Class<?> returnType, String name, int prefixLength) throws WrapperGeneratorException
 	{
 		if (returnType.isPrimitive())
 		{
-			throw new ContextGeneratorException(messages.errorContextWrapperPrimitiveParamterNotAllowed(method.toGenericString()));
+			throw new WrapperGeneratorException(messages.errorContextWrapperPrimitiveParamterNotAllowed(method.toGenericString()));
 		}
 
 		String propertyName = name.substring(prefixLength);
@@ -117,99 +112,5 @@ public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 								 +".getContextHandler().readData(\""+propertyName+"\");");
 			sourceWriter.println("}");
 		}
-	}
-
-	/**
-	 * 
-	 * @param parameterType
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private String getParameterDeclaration(Type parameterType)
-	{
-		StringBuilder result = new StringBuilder();
-		if (parameterType instanceof ParameterizedType)
-		{
-			ParameterizedType parameterizedType =((ParameterizedType)parameterType);
-			result.append(getParameterDeclaration(parameterizedType.getRawType()));
-			Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-			if (actualTypeArguments != null && actualTypeArguments.length > 0)
-			{
-				result.append("<");
-				for (Type type : actualTypeArguments)
-				{
-					result.append(getParameterDeclaration(type));
-				}
-				result.append(">");
-			}
-			
-		}
-		else if (parameterType instanceof GenericArrayType)
-		{
-			GenericArrayType genericArrayType = (GenericArrayType) parameterType;
-			result.append(getParameterDeclaration(genericArrayType.getGenericComponentType()));
-			result.append("[]");
-		}
-		else if (parameterType instanceof TypeVariable)
-		{
-			TypeVariable<GenericDeclaration> typeVariable = (TypeVariable<GenericDeclaration>) parameterType;
-			result.append(typeVariable.getName());
-			GenericDeclaration genericDeclaration = typeVariable.getGenericDeclaration();
-			if (genericDeclaration != null)
-			{
-				TypeVariable<?>[] typeParameters = genericDeclaration.getTypeParameters();
-				if (typeParameters != null && typeParameters.length > 0)
-				{
-					result.append("<");
-					for (Type type : typeParameters)
-					{
-						result.append(getParameterDeclaration(type));
-					}
-					result.append(">");
-				}
-				
-			}
-		}
-		else if (parameterType instanceof Class)
-		{
-			Class<?> parameterClass = ((Class<?>)parameterType);
-			if (parameterClass.isArray())
-			{
-				Class<?> componentType = parameterClass.getComponentType();
-				result.append(getParameterDeclaration(componentType));
-				int numDim = getArrayDimensions(parameterClass);
-				for (int i=0; i<numDim; i++)
-				{
-					result.append("[]");
-				}
-			}
-			else
-			{
-				result.append(parameterClass.getName());
-			}
-		}
-		else if (parameterType instanceof WildcardType)
-		{
-			result.append("?");
-		}
-		return result.toString();
-	}
-
-	/**
-	 * 
-	 * @param parameterClass
-	 * @return
-	 */
-	private int getArrayDimensions(Class<?> parameterClass)
-	{
-		String name = parameterClass.getName();
-		for (int i=0; i<name.length(); i++)
-		{
-			if (name.charAt(i) != '[')
-			{
-				return i;
-			}
-		}
-		return 0;
 	}
 }

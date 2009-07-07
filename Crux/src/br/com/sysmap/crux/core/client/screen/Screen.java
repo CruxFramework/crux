@@ -620,6 +620,10 @@ public class Screen
 		return Screen.get().getIdentifier();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public static ModuleComunicationSerializer getCruxSerializer()
 	{
 		return Screen.get().serializer;

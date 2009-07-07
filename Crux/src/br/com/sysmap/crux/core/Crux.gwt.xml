@@ -55,4 +55,9 @@
 	<generate-with class="br.com.sysmap.crux.core.rebind.ContextGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.context.Context" />
 	</generate-with>
+
+	<!-- Specify the generator for invoker wrappers.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.InvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.controller.Invoker" />
+	</generate-with>
 </module>

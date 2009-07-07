@@ -13,45 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind;
+package br.com.sysmap.crux.core.client.controller;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class ContextGeneratorException extends Exception
+public interface Invoker
 {
-	private static final long serialVersionUID = 5462090148444354827L;
 
-	/**
-	 * 
-	 */
-	public ContextGeneratorException()
-	{
-	}
-
-	/**
-	 * @param message
-	 */
-	public ContextGeneratorException(String message)
-	{
-		super(message);
-	}
-
-	/**
-	 * @param cause
-	 */
-	public ContextGeneratorException(Throwable cause)
-	{
-		super(cause);
-	}
-
-	/**
-	 * @param message
-	 * @param cause
-	 */
-	public ContextGeneratorException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
 }

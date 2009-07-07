@@ -46,7 +46,7 @@ public interface GeneratorMessages
 	String errorGeneratingDeclaredMessagesClassNotFound(String string);
 
 	@DefaultMessage("[controller 001] - Method Not Found: ")
-	String errorinvokingGeneratedMethod();
+	String errorInvokingGeneratedMethod();
 
 	@DefaultMessage("[generator 008] - Error for register CruxSerializable serializer. Serializer: {0}. Error:{1}")
 	String errorGeneratingRegisteredCruxSerializable(String serializer, String localizedMessage);
@@ -57,6 +57,12 @@ public interface GeneratorMessages
 	@DefaultMessage("[generator 010] - Error for generating context wrapper: Invalid Method signature: {0}.")
 	String errorContextWrapperInvalidSignature(String method);
 
-	@DefaultMessage("[generator 010] - Error for generating context wrapper: Primitive Parameter not allowed: {0}.")
+	@DefaultMessage("[generator 011] - Error for generating context wrapper: Primitive Parameter not allowed: {0}.")
 	String errorContextWrapperPrimitiveParamterNotAllowed(String method);
+
+	@DefaultMessage("[generator 012] - Error for generating invoker wrapper: Invalid Method signature: {0}.")
+	String errorInvokerWrapperInvalidSignature(String method);
+
+	@DefaultMessage("[generator 013] - Error for invoking method. Serialization Error.")
+	String errorInvokerWrapperSerializationError();
 }

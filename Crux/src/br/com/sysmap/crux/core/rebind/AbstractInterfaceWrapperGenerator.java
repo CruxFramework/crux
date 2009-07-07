@@ -16,17 +16,25 @@
 package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -38,6 +46,9 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 {
 	protected GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 
+	/**
+	 * 
+	 */
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException
 	{
@@ -57,7 +68,17 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 		}
 	}
 
-	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, String packageName, String className) throws ClassNotFoundException, ContextGeneratorException 
+	/**
+	 * 
+	 * @param logger
+	 * @param context
+	 * @param classType
+	 * @param packageName
+	 * @param className
+	 * @throws ClassNotFoundException
+	 * @throws WrapperGeneratorException
+	 */
+	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, String packageName, String className) throws ClassNotFoundException, WrapperGeneratorException 
 	{
 		PrintWriter printWriter = context.tryCreate(logger, packageName, className);
 		// if printWriter is null, source code has ALREADY been generated, return
@@ -66,6 +87,8 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, className);
 		composer.addImplementedInterface(classType.getName());
 		composer.addImport(Screen.class.getName());
+		composer.addImport(GWT.class.getName());
+		composer.addImport(Window.class.getName());
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 
@@ -78,6 +101,11 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 		context.commit(logger, printWriter);
 	}
 
+	/**
+	 * 
+	 * @param classType
+	 * @return
+	 */
 	protected String getClassName(JClassType classType)
 	{
 		String pkgName = classType.getPackage().getName();
@@ -95,7 +123,14 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 		
 	}
 
-	private void generateMethodWrappers(TreeLogger logger, Class<?> interfaceClass, SourceWriter sourceWriter) throws ContextGeneratorException
+	/**
+	 * 
+	 * @param logger
+	 * @param interfaceClass
+	 * @param sourceWriter
+	 * @throws WrapperGeneratorException
+	 */
+	private void generateMethodWrappers(TreeLogger logger, Class<?> interfaceClass, SourceWriter sourceWriter) throws WrapperGeneratorException
 	{
 		for (Method method : interfaceClass.getMethods())
 		{
@@ -103,5 +138,106 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 		}
 	}
 
-	protected abstract void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws ContextGeneratorException;
+	/**
+	 * 
+	 * @param parameterType
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	protected String getParameterDeclaration(Type parameterType)
+	{
+		StringBuilder result = new StringBuilder();
+		if (parameterType instanceof ParameterizedType)
+		{
+			ParameterizedType parameterizedType =((ParameterizedType)parameterType);
+			result.append(getParameterDeclaration(parameterizedType.getRawType()));
+			Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+			if (actualTypeArguments != null && actualTypeArguments.length > 0)
+			{
+				result.append("<");
+				for (Type type : actualTypeArguments)
+				{
+					result.append(getParameterDeclaration(type));
+				}
+				result.append(">");
+			}
+			
+		}
+		else if (parameterType instanceof GenericArrayType)
+		{
+			GenericArrayType genericArrayType = (GenericArrayType) parameterType;
+			result.append(getParameterDeclaration(genericArrayType.getGenericComponentType()));
+			result.append("[]");
+		}
+		else if (parameterType instanceof TypeVariable)
+		{
+			TypeVariable<GenericDeclaration> typeVariable = (TypeVariable<GenericDeclaration>) parameterType;
+			result.append(typeVariable.getName());
+			GenericDeclaration genericDeclaration = typeVariable.getGenericDeclaration();
+			if (genericDeclaration != null)
+			{
+				TypeVariable<?>[] typeParameters = genericDeclaration.getTypeParameters();
+				if (typeParameters != null && typeParameters.length > 0)
+				{
+					result.append("<");
+					for (Type type : typeParameters)
+					{
+						result.append(getParameterDeclaration(type));
+					}
+					result.append(">");
+				}
+				
+			}
+		}
+		else if (parameterType instanceof Class)
+		{
+			Class<?> parameterClass = ((Class<?>)parameterType);
+			if (parameterClass.isArray())
+			{
+				Class<?> componentType = parameterClass.getComponentType();
+				result.append(getParameterDeclaration(componentType));
+				int numDim = getArrayDimensions(parameterClass);
+				for (int i=0; i<numDim; i++)
+				{
+					result.append("[]");
+				}
+			}
+			else
+			{
+				result.append(parameterClass.getName());
+			}
+		}
+		else if (parameterType instanceof WildcardType)
+		{
+			result.append("?");
+		}
+		return result.toString();
+	}
+
+	/**
+	 * 
+	 * @param parameterClass
+	 * @return
+	 */
+	private int getArrayDimensions(Class<?> parameterClass)
+	{
+		String name = parameterClass.getName();
+		for (int i=0; i<name.length(); i++)
+		{
+			if (name.charAt(i) != '[')
+			{
+				return i;
+			}
+		}
+		return 0;
+	}
+	
+	/**
+	 * 
+	 * @param logger
+	 * @param method
+	 * @param sourceWriter
+	 * @throws WrapperGeneratorException
+	 */
+	protected abstract void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws WrapperGeneratorException;
 }

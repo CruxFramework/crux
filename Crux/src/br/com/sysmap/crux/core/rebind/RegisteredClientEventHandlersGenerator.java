@@ -283,7 +283,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		{
 			sourceWriter.println(" else ");
 		}
-		sourceWriter.println("throw new Exception(\""+messages.errorinvokingGeneratedMethod()+" \"+metodo);");
+		sourceWriter.println("throw new Exception(\""+messages.errorInvokingGeneratedMethod()+" \"+metodo);");
 		if (!first && controllerAnnot != null && controllerAnnot.autoBind())
 		{
 			sourceWriter.println("wrapper.updateScreenWidgets();");
