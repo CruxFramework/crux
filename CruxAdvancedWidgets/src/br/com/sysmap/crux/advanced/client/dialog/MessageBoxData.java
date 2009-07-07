@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
-import br.com.sysmap.crux.core.client.component.CruxSerializable;
+import br.com.sysmap.crux.core.client.screen.CruxSerializable;
 import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
 
 import com.google.gwt.xml.client.Document;

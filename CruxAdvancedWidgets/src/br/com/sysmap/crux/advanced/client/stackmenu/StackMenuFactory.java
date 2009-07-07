@@ -17,8 +17,8 @@ package br.com.sysmap.crux.advanced.client.stackmenu;
 
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.component.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 import com.google.gwt.dom.client.Element;
 

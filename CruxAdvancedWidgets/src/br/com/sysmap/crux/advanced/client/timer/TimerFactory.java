@@ -18,8 +18,8 @@ package br.com.sysmap.crux.advanced.client.timer;
 import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.event.timeout.TimeoutEvtBind;
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.component.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 import com.google.gwt.dom.client.Element;
 
@@ -30,7 +30,7 @@ import com.google.gwt.dom.client.Element;
 public class TimerFactory<T extends Timer> extends WidgetFactory<Timer>
 {
 	/**
-	 * @see br.com.sysmap.crux.core.client.component.WidgetFactory#instantiateWidget(com.google.gwt.dom.client.Element, java.lang.String)
+	 * @see br.com.sysmap.crux.core.client.screen.WidgetFactory#instantiateWidget(com.google.gwt.dom.client.Element, java.lang.String)
 	 */
 	protected Timer instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{

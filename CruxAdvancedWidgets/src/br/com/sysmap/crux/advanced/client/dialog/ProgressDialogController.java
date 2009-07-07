@@ -15,13 +15,13 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
-import br.com.sysmap.crux.core.client.component.InvokeControllerEvent;
-import br.com.sysmap.crux.core.client.component.ModuleComunicationException;
-import br.com.sysmap.crux.core.client.component.ModuleComunicationSerializer;
-import br.com.sysmap.crux.core.client.component.Screen;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Global;
+import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
+import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
+import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
+import br.com.sysmap.crux.core.client.screen.Screen;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.DialogBox;

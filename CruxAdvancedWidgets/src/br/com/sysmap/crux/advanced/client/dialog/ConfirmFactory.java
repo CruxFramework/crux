@@ -17,9 +17,9 @@ package br.com.sysmap.crux.advanced.client.dialog;
 
 import br.com.sysmap.crux.advanced.client.event.dialog.CancelEvtBind;
 import br.com.sysmap.crux.advanced.client.event.dialog.OkEvtBind;
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.component.ScreenFactory;
-import br.com.sysmap.crux.core.client.component.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 import com.google.gwt.dom.client.Element;
 

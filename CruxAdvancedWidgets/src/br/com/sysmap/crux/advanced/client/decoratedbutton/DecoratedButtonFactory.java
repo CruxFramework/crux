@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.advanced.client.decoratedbutton;
 
 import br.com.sysmap.crux.basic.client.FocusWidgetFactory;
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
 

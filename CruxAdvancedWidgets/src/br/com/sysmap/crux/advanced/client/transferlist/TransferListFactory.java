@@ -16,8 +16,8 @@
 package br.com.sysmap.crux.advanced.client.transferlist;
 
 import br.com.sysmap.crux.basic.client.CompositeFactory;
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.component.ScreenFactory;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 
 import com.google.gwt.dom.client.Element;
 
