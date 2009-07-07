@@ -44,7 +44,7 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	private Frame frame;
 	private int insertionIndex;
 	private TabInternalJSObjects tabObjetcs;
-	private FlapPanel flapPanel; 
+	private FlapPanel flapPanel;
 
 	/**
 	 * Constructor

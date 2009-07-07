@@ -23,6 +23,8 @@ import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusEvent;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
 
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CellPanel;
@@ -48,6 +50,7 @@ public class DynaTabs extends Composite
 	{
 		this.tabPanel = new TabPanel();
 		this.tabPanel.setStyleName(DEFAULT_STYLE_NAME);
+		this.tabPanel.addBeforeSelectionHandler(createBeforeSelectionHandler());
 		initWidget(tabPanel);
 	}
 
@@ -101,6 +104,15 @@ public class DynaTabs extends Composite
 	{
 		return tabs.get(tabId);
 	}
+	
+	/**
+	 * @param tabIndex
+	 * @return
+	 */
+	private String getTabId(int tabIndex)
+	{
+		return ((Tab) tabPanel.getWidget(tabIndex)).getId();
+	}
 
 	/**
 	 * @return
@@ -130,31 +142,7 @@ public class DynaTabs extends Composite
 	 */
 	public void focusTab(String tabId)
 	{
-		Tab selectedTab = getFocusedTab();
-
-		if (selectedTab == null || !selectedTab.getId().equals(tabId))
-		{
-			boolean canceled = false;
-
-			for (Tab tab : tabs.values())
-			{
-				if (!tab.getId().equals(tabId))
-				{
-					BeforeBlurEvent evt = BeforeBlurEvent.fire(tab.getFlapPanel());
-					canceled = canceled || evt.isCanceled();
-				}
-				else
-				{
-					BeforeFocusEvent evt = BeforeFocusEvent.fire(tab.getFlapPanel());
-					canceled = canceled || evt.isCanceled();
-				}
-			}
-
-			if (!canceled)
-			{
-				this.tabPanel.selectTab(getTabIndex(tabId));
-			}
-		}
+		this.tabPanel.selectTab(getTabIndex(tabId));
 	}
 
 	
@@ -215,6 +203,45 @@ public class DynaTabs extends Composite
 			result.add(tab);
 		}
 		return result;
+	}	
+	
+	/**
+	 * @param tabId
+	 */
+	private BeforeSelectionHandler<Integer> createBeforeSelectionHandler()
+	{	
+		return new BeforeSelectionHandler<Integer>()
+		{
+			public void onBeforeSelection(BeforeSelectionEvent<Integer> event)
+			{
+				Tab selectedTab = getFocusedTab();
+				String tabId = getTabId(event.getItem());
+
+				if (selectedTab == null || !selectedTab.getId().equals(tabId))
+				{
+					boolean canceled = false;
+
+					for (Tab tab : tabs.values())
+					{
+						if (!tab.getId().equals(tabId))
+						{
+							BeforeBlurEvent evt = BeforeBlurEvent.fire(tab.getFlapPanel());
+							canceled = canceled || evt.isCanceled();
+						}
+						else
+						{
+							BeforeFocusEvent evt = BeforeFocusEvent.fire(tab.getFlapPanel());
+							canceled = canceled || evt.isCanceled();
+						}
+					}
+
+					if (canceled)
+					{
+						event.cancel();
+					}
+				}
+			}			
+		};
 	}
 }
 

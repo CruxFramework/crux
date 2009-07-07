@@ -29,14 +29,12 @@ class FlapPanel extends Composite  implements HasBeforeFocusAndBeforeBlurHandler
 	 * @param tabLabel
 	 * @param closeable
 	 */
-	public FlapPanel(DynaTabs tabs, String tabId, String tabLabel, boolean closeable)
+	public FlapPanel(final DynaTabs tabs, String tabId, String tabLabel, boolean closeable)
 	{
 		panel = new SimpleDecoratedPanel();
 		flapController = new FlapController(tabs, tabId, tabLabel, closeable);
 		panel.setContentWidget(flapController);
 		initWidget(panel);
-		
-		
 	}
 
 	/**
