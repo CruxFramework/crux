@@ -13,30 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.serializer;
-
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
+package br.com.sysmap.crux.core.client.screen;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class LongSerializer implements CruxSerializable
+public interface CruxSerializable
 {
-
-	public Object deserialize(String serializedData)
-	{
-		return new Long(serializedData);
-	}
-
-	public Object[] newArray(int size)
-	{
-		return new Long[size];
-	}
-
-	public String serialize()
-	{
-		return null;
-	}
-
+	String serialize();
+	Object deserialize(String serializedData);
+	Object[] newArray(int size);
 }

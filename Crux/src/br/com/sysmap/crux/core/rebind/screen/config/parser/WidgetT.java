@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType name="widgetT">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="clientClass" type="{http://www.w3.org/2001/XMLSchema}string" default="br.com.sysmap.crux.core.client.component.WidgetFactory" />
+ *       &lt;attribute name="clientClass" type="{http://www.w3.org/2001/XMLSchema}string" default="br.com.sysmap.crux.core.client.screen.WidgetFactory" />
  *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="serverClass" type="{http://www.w3.org/2001/XMLSchema}string" default="br.com.sysmap.crux.core.rebind.screen.Widget" />
  *       &lt;attribute name="serverParserClass" type="{http://www.w3.org/2001/XMLSchema}string" default="br.com.sysmap.crux.core.rebind.screen.WidgetParserImpl" />
@@ -60,7 +60,7 @@ public class WidgetT {
      */
     public String getClientClass() {
         if (clientClass == null) {
-            return "br.com.sysmap.crux.core.client.component.WidgetFactory";
+            return "br.com.sysmap.crux.core.client.screen.WidgetFactory";
         } else {
             return clientClass;
         }

@@ -17,7 +17,7 @@ package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
 
-import br.com.sysmap.crux.core.client.component.Screen;
+import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 

@@ -17,7 +17,7 @@ package br.com.sysmap.crux.core.client.serializer;
 
 import java.sql.Date;
 
-import br.com.sysmap.crux.core.client.component.CruxSerializable;
+import br.com.sysmap.crux.core.client.screen.CruxSerializable;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>

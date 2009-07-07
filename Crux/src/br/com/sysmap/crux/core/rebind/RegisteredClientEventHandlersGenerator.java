@@ -69,7 +69,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
 		composer.addImport("com.google.gwt.core.client.GWT");
 		composer.addImport("com.google.gwt.json.client.JSONValue");
-		composer.addImport("br.com.sysmap.crux.core.client.component.Screen");
+		composer.addImport("br.com.sysmap.crux.core.client.screen.Screen");
 		composer.addImport("br.com.sysmap.crux.core.client.event.CruxEvent");
 		composer.addImport("com.google.gwt.event.shared.GwtEvent");
 		composer.addImport("com.google.gwt.user.client.ui.HasValue");

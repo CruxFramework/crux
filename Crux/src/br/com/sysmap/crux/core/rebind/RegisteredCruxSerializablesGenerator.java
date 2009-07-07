@@ -63,7 +63,7 @@ public class RegisteredCruxSerializablesGenerator extends AbstractRegisteredElem
 		if (printWriter == null) return;
 
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
-		composer.addImplementedInterface("br.com.sysmap.crux.core.client.component.RegisteredCruxSerializables");
+		composer.addImplementedInterface("br.com.sysmap.crux.core.client.screen.RegisteredCruxSerializables");
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 

@@ -13,30 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.serializer;
+package br.com.sysmap.crux.core.client.screen;
 
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * A basic container used to wrap crux widgets, in case they are orphans
+ * @author Thiago Bustamante
  *
  */
-public class LongSerializer implements CruxSerializable
+public class CruxWidgetPanel extends SimplePanel
 {
-
-	public Object deserialize(String serializedData)
+	public CruxWidgetPanel(Element element)
 	{
-		return new Long(serializedData);
+		super(element);
+		onAttach();
 	}
-
-	public Object[] newArray(int size)
-	{
-		return new Long[size];
-	}
-
-	public String serialize()
-	{
-		return null;
-	}
-
 }

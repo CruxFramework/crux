@@ -13,30 +13,34 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.serializer;
-
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
+package br.com.sysmap.crux.core.client.screen;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * Abstraction for interface configuration error.
+ * @author Thiago
  *
  */
-public class LongSerializer implements CruxSerializable
+public class InterfaceConfigException extends Exception 
 {
 
-	public Object deserialize(String serializedData)
+	private static final long serialVersionUID = 6965470165290418198L;
+
+	public InterfaceConfigException() 
 	{
-		return new Long(serializedData);
 	}
 
-	public Object[] newArray(int size)
+	public InterfaceConfigException(String message) 
 	{
-		return new Long[size];
+		super(message);
 	}
 
-	public String serialize()
+	public InterfaceConfigException(Throwable cause) 
 	{
-		return null;
+		super(cause);
 	}
 
+	public InterfaceConfigException(String message, Throwable cause) 
+	{
+		super(message, cause);
+	}
 }

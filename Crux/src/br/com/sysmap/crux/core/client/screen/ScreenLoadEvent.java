@@ -13,30 +13,38 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.serializer;
+package br.com.sysmap.crux.core.client.screen;
 
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
+
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class LongSerializer implements CruxSerializable
+public class ScreenLoadEvent extends GwtEvent<ScreenLoadHandler>
 {
+	protected static final Type<ScreenLoadHandler> TYPE = new Type<ScreenLoadHandler>();
 
-	public Object deserialize(String serializedData)
+	
+	protected ScreenLoadEvent()
 	{
-		return new Long(serializedData);
+	}
+	
+	@Override
+	protected void dispatch(ScreenLoadHandler handler)
+	{
+		handler.onLoad(this);
 	}
 
-	public Object[] newArray(int size)
+	@Override
+	public Type<ScreenLoadHandler> getAssociatedType()
 	{
-		return new Long[size];
+		return TYPE;
 	}
 
-	public String serialize()
+	public static <T> void fire(Screen source) 
 	{
-		return null;
-	}
-
+		source.fireEvent(new ScreenLoadEvent());
+	}	
 }

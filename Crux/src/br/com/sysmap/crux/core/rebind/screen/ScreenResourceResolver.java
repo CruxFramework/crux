@@ -18,7 +18,7 @@ package br.com.sysmap.crux.core.rebind.screen;
 import java.io.InputStream;
 import java.util.Set;
 
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>

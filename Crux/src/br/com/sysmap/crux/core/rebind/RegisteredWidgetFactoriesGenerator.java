@@ -45,7 +45,7 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 		if (printWriter == null) return;
 
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
-		composer.addImplementedInterface("br.com.sysmap.crux.core.client.component.RegisteredWidgetFactories");
+		composer.addImplementedInterface("br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories");
 		composer.addImport("com.google.gwt.user.client.ui.Widget");
 		
 		SourceWriter sourceWriter = null;

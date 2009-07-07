@@ -13,30 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.serializer;
+package br.com.sysmap.crux.core.client.screen;
 
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.Widget;
+
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * Base class for create new containers.
+ * @author Thiago
  *
  */
-public class LongSerializer implements CruxSerializable
+public interface HasWidgetsFactory<T extends Widget>
 {
-
-	public Object deserialize(String serializedData)
-	{
-		return new Long(serializedData);
-	}
-
-	public Object[] newArray(int size)
-	{
-		return new Long[size];
-	}
-
-	public String serialize()
-	{
-		return null;
-	}
-
+	/**
+	 * Gives to factory the opportunity to add a child widget
+	 * @param parent
+	 * @param child
+	 * @param parentElement
+	 * @param childElement
+	 * @throws InterfaceConfigException 
+	 */
+	public abstract void add(T parent,  Widget child, Element parentElement, Element childElement) throws InterfaceConfigException;	
 }

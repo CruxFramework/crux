@@ -13,30 +13,34 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.serializer;
+package br.com.sysmap.crux.core.client.screen;
 
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
+import br.com.sysmap.crux.core.client.event.CruxEvent;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class LongSerializer implements CruxSerializable
+public class InvokeControllerEvent extends CruxEvent<Screen>
 {
-
-	public Object deserialize(String serializedData)
+	private Object data;
+	
+	/**
+	 * @param source
+	 * @param senderId
+	 */
+	InvokeControllerEvent()
 	{
-		return new Long(serializedData);
+		super(Screen.get(), Screen.getId());
 	}
 
-	public Object[] newArray(int size)
+	public Object getData()
 	{
-		return new Long[size];
+		return data;
 	}
 
-	public String serialize()
+	void setData(Object data)
 	{
-		return null;
+		this.data = data;
 	}
-
 }

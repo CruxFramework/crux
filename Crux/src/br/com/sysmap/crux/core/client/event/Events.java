@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.event;
 
 import br.com.sysmap.crux.core.client.JSEngine;
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.GwtEvent;

@@ -18,8 +18,8 @@ package br.com.sysmap.crux.core.client.context;
 import java.util.Collection;
 import java.util.Date;
 
-import br.com.sysmap.crux.core.client.component.ModuleComunicationException;
-import br.com.sysmap.crux.core.client.component.Screen;
+import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
+import br.com.sysmap.crux.core.client.screen.Screen;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
