@@ -36,10 +36,7 @@ class FlapPanel extends Composite  implements HasBeforeFocusAndBeforeBlurHandler
 		panel.setContentWidget(flapController);
 		initWidget(panel);
 		
-		this.addClickHandler(handler)
-		{
-			
-		}
+		
 	}
 
 	/**
