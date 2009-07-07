@@ -103,7 +103,7 @@ public class ConfirmController
 		
 		try
 		{
-			final ConfirmData data = (ConfirmData) controllerEvent.getData();
+			final ConfirmData data = (ConfirmData) controllerEvent.getParameter();
 			
 			final DialogBox dialogBox = new DialogBox(false, true);
 			dialogBox.setStyleName(data.getStyleName());

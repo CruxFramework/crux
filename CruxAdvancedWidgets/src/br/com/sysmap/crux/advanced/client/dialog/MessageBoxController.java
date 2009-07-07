@@ -94,7 +94,7 @@ public class MessageBoxController
 		
 		try
 		{
-			final MessageBoxData data = (MessageBoxData) controllerEvent.getData();
+			final MessageBoxData data = (MessageBoxData) controllerEvent.getParameter();
 			
 			final DialogBox dialogBox = new DialogBox(false, true);
 			dialogBox.setStyleName(data.getStyleName());

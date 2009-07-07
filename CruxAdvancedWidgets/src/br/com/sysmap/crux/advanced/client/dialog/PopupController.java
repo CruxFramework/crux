@@ -93,7 +93,7 @@ public class PopupController
 		
 		try
 		{
-			final PopupData data = (PopupData) controllerEvent.getData();
+			final PopupData data = (PopupData) controllerEvent.getParameter();
 
 			dialogBox = new CustomDialogBox(false, true, true);
 			dialogBox.setStyleName(data.getStyleName());

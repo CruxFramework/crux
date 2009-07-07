@@ -86,7 +86,7 @@ public class ProgressDialogController
 			
 			try
 			{
-				final ProgressDialogData data = (ProgressDialogData) controllerEvent.getData();
+				final ProgressDialogData data = (ProgressDialogData) controllerEvent.getParameter();
 				
 				final DialogBox dialogBox = new DialogBox(false, true);
 				dialogBox.setStyleName(data.getStyleName());
