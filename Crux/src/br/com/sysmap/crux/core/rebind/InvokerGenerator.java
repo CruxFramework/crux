@@ -39,33 +39,25 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 	{
 		String name = method.getName();
 		
-		Class<?>[] parameterTypes = method.getParameterTypes();
-		if (parameterTypes.length == 0 || parameterTypes.length == 1 )
+		if (name.endsWith("OnTop"))
 		{
-			if (name.endsWith("OnTop"))
-			{
-				generateMethod(method, sourceWriter, "OnTop");
-			}
-			else if (name.endsWith("OnParent"))
-			{
-				generateMethod(method, sourceWriter, "OnParent");
-			}
-			else if (name.endsWith("OnOpener"))
-			{
-				generateMethod(method, sourceWriter, "OnOpener");
-			}
-			else if (name.endsWith("OnAbsoluteTop"))
-			{
-				generateMethod(method, sourceWriter, "OnAbsoluteTop");
-			}
-			else if (name.endsWith("OnSelf"))
-			{
-				generateMethod(method, sourceWriter, "OnSelf");
-			}
-			else
-			{
-				throw new WrapperGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.toGenericString()));
-			}
+			generateMethod(method, sourceWriter, "OnTop");
+		}
+		else if (name.endsWith("OnParent"))
+		{
+			generateMethod(method, sourceWriter, "OnParent");
+		}
+		else if (name.endsWith("OnOpener"))
+		{
+			generateMethod(method, sourceWriter, "OnOpener");
+		}
+		else if (name.endsWith("OnAbsoluteTop"))
+		{
+			generateMethod(method, sourceWriter, "OnAbsoluteTop");
+		}
+		else if (name.endsWith("OnSelf"))
+		{
+			generateMethod(method, sourceWriter, "OnSelf");
 		}
 		else
 		{
@@ -91,21 +83,22 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 		if (methodName.length() > 0)
 		{
 			String returnTypeDeclaration = getParameterDeclaration(returnType);
-			boolean hasValue = false;
-			if (method.getParameterTypes().length > 0)
+			int numParams = 0;
+			sourceWriter.print("public "+returnTypeDeclaration+" " + name+"(");
+			Type[] parameterTypes = method.getGenericParameterTypes();
+			for (Type parameterType : parameterTypes)
 			{
-				Type parameterType = method.getGenericParameterTypes()[0];
-				sourceWriter.println("public "+returnTypeDeclaration+" " + name+"("+getParameterDeclaration(parameterType)+" value){");
-				hasValue = true;
-			}
-			else
-			{
-				sourceWriter.println("public "+returnTypeDeclaration+" " + name+"(){");
-			}
+				if (numParams > 0)
+				{
+					sourceWriter.print(",");
+				}
+				sourceWriter.print(getParameterDeclaration(parameterType)+" param"+(numParams++));
+			} 
+			sourceWriter.println("){");
 			
 			if (returnType.getName().equals("void") || returnType.getName().equals("java.lang.Void"))
 			{
-				generateVoidMethodInvocation(sourceWriter, sufix, controllerName, methodName, hasValue);
+				generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, null);
 			}
 			else
 			{
@@ -113,28 +106,10 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 				{
 					returnTypeDeclaration = getClassNameForPrimitive(returnType);
 				}
-				generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, hasValue, returnTypeDeclaration);
+				generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, returnTypeDeclaration);
 			}
 			sourceWriter.println("}");
 		}
-	}
-	
-	/**
-	 * 
-	 * @param sourceWriter
-	 * @param sufix
-	 * @param controllerName
-	 * @param methodName
-	 * @param hasValue
-	 */
-	private void generateVoidMethodInvocation(SourceWriter sourceWriter, String sufix, String controllerName, String methodName, boolean hasValue)
-	{
-		sourceWriter.println("try{");
-		sourceWriter.println("Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+");");
-		sourceWriter.println("}catch(Throwable e){");
-		sourceWriter.println("GWT.log(e.getLocalizedMessage(), e);");
-		sourceWriter.println("Window.alert("+EscapeUtils.quote(messages.errorInvokerWrapperSerializationError())+");");
-		sourceWriter.println("}");
 	}
 
 	/**
@@ -143,19 +118,47 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 	 * @param sufix
 	 * @param controllerName
 	 * @param methodName
-	 * @param hasValue
+	 * @param numParams
 	 * @param returnTypeDeclaration
 	 */
 	private void generateMethodInvocation(SourceWriter sourceWriter, String sufix, String controllerName, String methodName, 
-										  boolean hasValue, String returnTypeDeclaration)
+										  int numParams, String returnTypeDeclaration)
 	{
 		sourceWriter.println("try{");
-		sourceWriter.println("return Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
+		boolean hasValue = numParams > 0;
+		if (numParams == 1)
+		{
+			sourceWriter.print("Object value = param0;");
+		}
+		else if (numParams > 1)
+		{
+			sourceWriter.print("Object[] value = new Object[]{");
+			for(int i=0; i< numParams; i++)
+			{
+				if (i>0)
+				{
+					sourceWriter.print(",");
+				}
+				sourceWriter.print("param"+i);
+			}
+			sourceWriter.print("};");
+		}
+		if (returnTypeDeclaration != null)
+		{
+			sourceWriter.println("return Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
+		}
+		else
+		{
+			sourceWriter.println("Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+");");
+		}
 		sourceWriter.println("}catch(Throwable e){");
 		sourceWriter.println("GWT.log(e.getLocalizedMessage(), e);");
 		sourceWriter.println("Window.alert("+EscapeUtils.quote(messages.errorInvokerWrapperSerializationError())+");");
 		sourceWriter.println("}");
-		sourceWriter.println("return null;");
+		if (returnTypeDeclaration != null)
+		{
+			sourceWriter.println("return null;");
+		}
 	}
 
 	/**

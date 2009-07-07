@@ -466,7 +466,7 @@ public class Screen
 		{
 			try
 			{
-				controllerEvent.setData(serializer.deserialize(serializedData));
+				controllerEvent.setParameter(serializer.deserialize(serializedData));
 			}
 			catch (ModuleComunicationException e)
 			{
@@ -820,7 +820,7 @@ public class Screen
 		{
 			Event event = Events.getEvent("_onInvokeController", call);
 			InvokeControllerEvent controllerEvent = new InvokeControllerEvent();
-			controllerEvent.setData(param);
+			controllerEvent.setParameter(param);
 			Object result = Events.callEvent(event, controllerEvent, false);
 			return (T) result; 
 		}

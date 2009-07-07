@@ -23,7 +23,7 @@ import br.com.sysmap.crux.core.client.event.CruxEvent;
  */
 public class InvokeControllerEvent extends CruxEvent<Screen>
 {
-	private Object data;
+	private Object parameter;
 	
 	/**
 	 * @param source
@@ -34,13 +34,83 @@ public class InvokeControllerEvent extends CruxEvent<Screen>
 		super(Screen.get(), Screen.getId());
 	}
 
-	public Object getData()
+	/**
+	 * 
+	 * @return
+	 */
+	public Object getParameter()
 	{
-		return data;
+		return parameter;
+	}
+	
+	/**
+	 * 
+	 * @param <T>
+	 * @param parameterClass
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getParameter(Class<T> parameterClass)
+	{
+		return (T)getParameter();
 	}
 
-	void setData(Object data)
+	/**
+	 * 
+	 * @return
+	 */
+	public Object getParameter(int index)
 	{
-		this.data = data;
+		if (parameter == null)
+		{
+			return null;
+		}
+		else if (parameter instanceof Object[])
+		{
+			return ((Object[])parameter)[index];
+		}
+		else if (index == 0)
+		{
+			return parameter;
+		}
+		throw new IndexOutOfBoundsException();
+	}
+
+	/**
+	 * 
+	 * @param <T>
+	 * @param index
+	 * @param parameterClass
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getParameter(int index, Class<T> parameterClass)
+	{
+		return (T)getParameter(index);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public int getParameterCount()
+	{
+		if (parameter == null)
+		{
+			return 0;
+		}
+		else if (parameter instanceof Object[])
+		{
+			return ((Object[])parameter).length;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+	
+	void setParameter(Object data)
+	{
+		this.parameter = data;
 	}
 }

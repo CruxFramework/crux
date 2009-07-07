@@ -113,20 +113,20 @@ public class TopContextHandler implements ContextHandler
 		@ExposeOutOfModule
 		public void writeData(InvokeControllerEvent event)
 		{
-			Object[] data = (Object[])event.getData();
+			Object[] data = (Object[])event.getParameter();
 			context.put((String) data[0], data[1]);
 		}
 		
 		@ExposeOutOfModule
 		public Object readData(InvokeControllerEvent event)
 		{
-			return context.get((String) event.getData());
+			return context.get((String) event.getParameter());
 		}
 		
 		@ExposeOutOfModule
 		public void eraseData(InvokeControllerEvent event)
 		{
-			context.remove((String) event.getData());
+			context.remove((String) event.getParameter());
 		}
 
 		@ExposeOutOfModule
