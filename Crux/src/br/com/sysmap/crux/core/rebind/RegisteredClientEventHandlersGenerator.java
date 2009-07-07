@@ -27,6 +27,7 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
+import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.ScreenBind;
 import br.com.sysmap.crux.core.client.controller.Validate;
@@ -232,8 +233,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 					sourceWriter.print("else ");
 				}
 				
-				ExposeOutOfModule exposesAnnot = method.getAnnotation(ExposeOutOfModule.class);
-				if (exposesAnnot != null && exposesAnnot.value())
+				if (method.getAnnotation(ExposeOutOfModule.class) != null)
 				{
 					sourceWriter.println("if (\""+method.getName()+"\".equals(metodo)) {");
 				}
@@ -347,6 +347,11 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 		
 		if (method.getDeclaringClass().equals(Object.class))
+		{
+			return false;
+		}
+		
+		if (method.getAnnotation(Expose.class) == null && method.getAnnotation(ExposeOutOfModule.class) == null)
 		{
 			return false;
 		}
