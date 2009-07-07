@@ -65,8 +65,21 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 		{
 			// We don't need to verify or parser the encodedRequest because it will be already done by
 			// RPC.decodeRequest. So, just read the interface name directly
-			String serviceIntfName = RegexpPatterns.REGEXP_PIPE.split(encodedRequest)[5];
-			return ControllerFactoryInitializer.getControllerFactory().getController(serviceIntfName);
+			String serviceIntfName = RegexpPatterns.REGEXP_PIPE.split(encodedRequest)[5];			
+			Object controller = ControllerFactoryInitializer.getControllerFactory().getController(serviceIntfName);
+			if (controller instanceof RequestAware)
+			{
+				((RequestAware)controller).setRequest(getThreadLocalRequest());
+			}
+			if (controller instanceof ResponseAware)
+			{
+				((ResponseAware)controller).setResponse(getThreadLocalResponse());
+			}
+			if (controller instanceof SessionAware)
+			{
+				((SessionAware)controller).setSession(getThreadLocalRequest().getSession());
+			}
+			return controller;
 		} 
 		catch (Throwable e) 
 		{
