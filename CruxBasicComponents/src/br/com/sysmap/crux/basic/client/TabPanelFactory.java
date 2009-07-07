@@ -15,14 +15,14 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.component.ScreenLoadEvent;
-import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.event.bind.BeforeSelectionEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
+import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
+import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -65,7 +65,7 @@ public class TabPanelFactory extends CompositeFactory<TabPanel> implements HasWi
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
 	 */
 	public void add(TabPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
 	{

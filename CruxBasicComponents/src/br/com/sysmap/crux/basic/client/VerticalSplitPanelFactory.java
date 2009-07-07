@@ -15,10 +15,10 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.VerticalSplitPanel;
@@ -74,7 +74,7 @@ public class VerticalSplitPanelFactory extends SplitPanelFactory<VerticalSplitPa
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
 	 */
 	public void add(VerticalSplitPanel parent, Widget child, Element parentElement, Element childElement) 
 	{

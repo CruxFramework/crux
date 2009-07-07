@@ -17,13 +17,13 @@ package br.com.sysmap.crux.basic.client;
 
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.component.ScreenLoadEvent;
-import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.event.bind.BeforeSelectionEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
+import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.TabBar;

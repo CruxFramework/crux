@@ -15,11 +15,11 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.component.Screen;
-import br.com.sysmap.crux.core.client.component.ScreenLoadEvent;
-import br.com.sysmap.crux.core.client.component.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.event.bind.ScrollEvtBind;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
+import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;

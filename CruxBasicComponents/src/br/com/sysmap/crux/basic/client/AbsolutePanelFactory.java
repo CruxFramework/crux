@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -35,7 +35,7 @@ public class AbsolutePanelFactory extends ComplexPanelFactory<AbsolutePanel>
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
 	 */
 	public void add(AbsolutePanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
 	{

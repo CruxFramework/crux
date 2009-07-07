@@ -18,7 +18,7 @@ package br.com.sysmap.crux.basic.client;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FileUpload;
 
-import br.com.sysmap.crux.core.client.component.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 /**
  * Represents a FileUploadFactory component.

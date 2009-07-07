@@ -17,7 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;

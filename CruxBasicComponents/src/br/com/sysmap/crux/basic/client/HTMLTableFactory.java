@@ -18,8 +18,8 @@ package br.com.sysmap.crux.basic.client;
 
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -37,7 +37,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 	protected BasicMessages messages = GWT.create(BasicMessages.class);
 	
 	/**
-	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
 	 */
 	public void add(T parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
 	{

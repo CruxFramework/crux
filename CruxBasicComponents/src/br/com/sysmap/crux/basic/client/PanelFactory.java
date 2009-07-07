@@ -15,8 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
-import br.com.sysmap.crux.core.client.component.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 import com.google.gwt.user.client.ui.Panel;
 

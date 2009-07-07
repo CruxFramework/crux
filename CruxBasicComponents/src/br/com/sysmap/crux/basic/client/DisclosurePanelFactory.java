@@ -17,13 +17,13 @@ package br.com.sysmap.crux.basic.client;
 
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.component.HasWidgetsFactory;
-import br.com.sysmap.crux.core.client.component.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.event.bind.OpenEvtBind;
+import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -119,7 +119,7 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> im
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.client.component.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
 	 */
 	public void add(DisclosurePanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
 	{
