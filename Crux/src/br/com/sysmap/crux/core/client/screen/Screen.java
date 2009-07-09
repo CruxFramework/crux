@@ -28,8 +28,11 @@ import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.FrameElement;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -203,9 +206,32 @@ public class Screen
 			body.getStyle().setProperty("cursor", "wait");
 		}
 		
+		blockingDiv.appendChild(createDivIframe(width, height));
+		
 		return blockingDiv;
 	}
 	
+	/**
+	 * Workaround for IE6 always-on-top list boxes 
+	 * @param height 
+	 * @param width 
+	 * @return
+	 */
+	private Node createDivIframe(int width, int height)
+	{
+		IFrameElement frame = DOM.createIFrame().cast();
+		
+		frame.getStyle().setProperty("position","absolute");
+		frame.getStyle().setPropertyPx("top", 0);
+		frame.getStyle().setPropertyPx("left", 0);
+		frame.getStyle().setProperty("width", "100%");
+		frame.getStyle().setProperty("height", "100%");
+		frame.getStyle().setProperty("opacity", ".0");
+		frame.getStyle().setProperty("filter", "alpha(opacity=0)");
+		
+		return frame;
+	}
+
 	/**
 	 * Hides the DIV that is blocking the Screen contents
 	 */
