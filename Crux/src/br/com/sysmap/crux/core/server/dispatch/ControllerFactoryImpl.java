@@ -15,11 +15,9 @@
  */
 package br.com.sysmap.crux.core.server.dispatch;
 
-import java.net.URL;
-
 import javax.servlet.ServletContext;
 
-import br.com.sysmap.crux.core.server.scan.ScannerURLS;
+import br.com.sysmap.crux.core.server.scan.ClassScanner;
 
 
 public class ControllerFactoryImpl implements ControllerFactory 
@@ -38,7 +36,6 @@ public class ControllerFactoryImpl implements ControllerFactory
 
 	public void initialize(ServletContext context) 
 	{
-		URL[] urls = ScannerURLS.getURLsForSearch();
-		Controllers.initialize(urls);
+		ClassScanner.initialize();
 	}
 }

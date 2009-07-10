@@ -26,7 +26,12 @@ import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 
-public abstract class ScannerURLS 
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
+public class ScannerURLS 
 {
 	static URL[] urls;
 	private static final Lock lock = new ReentrantLock();
@@ -34,6 +39,18 @@ public abstract class ScannerURLS
 	private static final Log logger = LogFactory.getLog(ScannerURLS.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	
+	/**
+	 * 
+	 */
+	private ScannerURLS()
+	{
+		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public static URL[] getURLsForSearch()
 	{
 		if (urls != null) return urls;

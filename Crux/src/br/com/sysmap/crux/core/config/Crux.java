@@ -25,9 +25,6 @@ public interface Crux
 	@DefaultMessage("true")
 	String initializeControllersAtStartup();
 	
-	@DefaultMessage("true")
-	String initializeFormattersAtStartup();
-	
 	@DefaultMessage("br.com.sysmap.crux.core.i18n.LocaleResolverImpl")
 	String localeResolver();
 
@@ -36,9 +33,6 @@ public interface Crux
 
 	@DefaultMessage("br.com.sysmap.crux.core.server.classpath.ClassPathResolverImpl")
 	String classPathResolver();
-
-	@DefaultMessage("false")
-	String singleModule();
 	
 	@DefaultMessage("true")
 	String wrapSiblingWidgets();

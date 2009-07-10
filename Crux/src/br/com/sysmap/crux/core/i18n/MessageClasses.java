@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.core.i18n;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +27,6 @@ import org.apache.commons.logging.LogFactory;
 import br.com.sysmap.crux.core.client.i18n.Name;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
-import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 
 import com.google.gwt.i18n.client.Messages;
 
@@ -47,7 +45,7 @@ public class MessageClasses
 	 * @param urls
 	 */
 	@SuppressWarnings("unchecked")
-	public static void initialize(URL[] urls)
+	public static void initialize()
 	{
 		if (messagesClasses == null)
 		{
@@ -57,7 +55,7 @@ public class MessageClasses
 				if (messagesClasses == null)
 				{
 					messagesClasses = new HashMap<String, Class<? extends Messages>>();
-					Set<String> messagesNames =  ClassScanner.getInstance(urls).searchClassesByInterface(Messages.class);
+					Set<String> messagesNames =  ClassScanner.searchClassesByInterface(Messages.class);
 					if (messagesNames != null)
 					{
 						for (String message : messagesNames) 
@@ -96,7 +94,7 @@ public class MessageClasses
 	{
 		if (messagesClasses == null)
 		{
-			initialize(ScannerURLS.getURLsForSearch());
+			initialize();
 		}
 		return messagesClasses.get(message);
 	}

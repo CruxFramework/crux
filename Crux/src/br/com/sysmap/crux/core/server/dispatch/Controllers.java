@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.core.server.dispatch;
 
-import java.net.URL;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -24,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
-import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 
 /**
  * Class for retrieve the controller class, based on the remote interface it implements
@@ -34,16 +32,6 @@ public class Controllers
 {
 	private static final Log logger = LogFactory.getLog(Controllers.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
-	private static URL[] urls;
-	
-	/**
-	 * Initialise the Controllers factory
-	 * @param urls
-	 */
-	public static void initialize(URL[] urls)
-	{
-		Controllers.urls = urls;
-	}
 	
 	/**
 	 * Return the controller that implements the interface informed.
@@ -52,13 +40,9 @@ public class Controllers
 	 */
 	public static Class<?> getController(String interfaceName)
 	{
-		if (Controllers.urls == null)
-		{
-			initialize(ScannerURLS.getURLsForSearch());
-		}
 		try 
 		{
-			Set<String> controllerNames =  ClassScanner.getInstance(urls).searchClassesByInterface(Class.forName(interfaceName));
+			Set<String> controllerNames =  ClassScanner.searchClassesByInterface(Class.forName(interfaceName));
 			if (controllerNames != null)
 			{
 				for (String controller : controllerNames) 

@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.core.rebind.screen.formatter;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -30,8 +29,12 @@ import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.formatter.annotation.FormatterName;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
-import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
 public class Formatters 
 {
 	private static final Log logger = LogFactory.getLog(Formatters.class);
@@ -39,7 +42,10 @@ public class Formatters
 	private static final Lock lock = new ReentrantLock();
 	private static Map<String, Class<? extends Formatter>> formatters;
 	
-	public static void initialize(URL[] urls)
+	/**
+	 * 
+	 */
+	public static void initialize()
 	{
 		if (formatters != null)
 		{
@@ -53,7 +59,7 @@ public class Formatters
 				return;
 			}
 			
-			initializeFormatters(urls);
+			initializeFormatters();
 		}
 		finally
 		{
@@ -61,11 +67,14 @@ public class Formatters
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
-	protected static void initializeFormatters(URL[] urls)
+	protected static void initializeFormatters()
 	{
 		formatters = new HashMap<String, Class<? extends Formatter>>();
-		Set<String> formatterNames =  ClassScanner.getInstance(urls).searchClassesByInterface(Formatter.class);
+		Set<String> formatterNames =  ClassScanner.searchClassesByInterface(Formatter.class);
 		if (formatterNames != null)
 		{
 			for (String formatter : formatterNames) 
@@ -91,11 +100,16 @@ public class Formatters
 		}
 	}
 
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static Class<? extends Formatter> getFormatter(String name)
 	{
 		if (formatters == null)
 		{
-			initialize(ScannerURLS.getURLsForSearch());
+			initialize();
 		}
 		
 		if (name == null)

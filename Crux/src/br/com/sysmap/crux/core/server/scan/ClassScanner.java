@@ -31,18 +31,29 @@ import br.com.sysmap.crux.core.server.ServerMessages;
 public class ClassScanner
 {
 	private static final Log logger = LogFactory.getLog(ClassScanner.class);
-	private ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
+	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Lock lock = new ReentrantLock();
 
-	private ScannerDB scannerDB;
-	private static ClassScanner instance = null;
+	private static ScannerDB scannerDB;
+
+	/**
+	 * 
+	 */
+	private ClassScanner()
+	{
+		
+	}
 	
-	private ClassScanner(URL[] urls) 
+	/**
+	 * 
+	 * @param urls
+	 */
+	public static void initialize(URL[] urls) 
 	{
 		scannerDB = new ScannerDB();
 		scannerDB.setIgnoredPackages(new String[]{"javax", "java", "sun", "com.sun", "org.apache", 
-												  "javassist", "org.json", "net.sf.saxon", 
-												  "com.metaparadigm", "junit"});
+				"javassist", "org.json", "net.sf.saxon", 
+				"com.metaparadigm", "junit"});
 		scannerDB.setScanFieldAnnotations(false);
 		scannerDB.setScanMethodAnnotations(false);
 		scannerDB.setScanParameterAnnotations(false);
@@ -50,8 +61,35 @@ public class ClassScanner
 		buildIndex(urls);
 	}
 	
-	
-	private void buildIndex(URL[] urls) throws ClassScannerException
+	/**
+	 * 
+	 * @param urls
+	 */
+	public static void initialize() 
+	{
+		if (!isInitialized())
+		{
+			lock.lock();
+			try
+			{
+				if (!isInitialized())
+				{
+					initialize(ScannerURLS.getURLsForSearch());
+				}
+			}
+			finally
+			{
+				lock.unlock();
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param urls
+	 * @throws ClassScannerException
+	 */
+	private static void buildIndex(URL[] urls) throws ClassScannerException
 	{
 		try
 		{
@@ -70,8 +108,12 @@ public class ClassScanner
 	 * @param annotationClass
 	 * @return
 	 */
-	public Set<String> searchClassesByAnnotation(Class<? extends Annotation> annotationClass)
+	public static Set<String> searchClassesByAnnotation(Class<? extends Annotation> annotationClass)
 	{		
+		if (!isInitialized())
+		{
+			initialize();
+		}
 		return scannerDB.getAnnotationIndex().get(annotationClass.getName());
 	}
 	
@@ -80,32 +122,21 @@ public class ClassScanner
 	 * @param annotationClass
 	 * @return
 	 */
-	public Set<String> searchClassesByInterface(Class<?> interfaceClass)
+	public static Set<String> searchClassesByInterface(Class<?> interfaceClass)
 	{
+		if (!isInitialized())
+		{
+			initialize();
+		}
 		return scannerDB.getInterfacesIndex().get(interfaceClass.getName());
 	}
 	
 	/**
-	 * Get a singleton instance of Annotation scanner.
+	 * return true if the scanner was already initialized.
 	 * @return
 	 */
-	public static ClassScanner getInstance(URL[] urls)
+	public static boolean isInitialized()
 	{
-		if (instance == null)
-		{
-			lock.lock();
-			try
-			{
-				if (instance == null)
-				{
-					instance = new ClassScanner(urls);
-				}
-			}
-			finally
-			{
-				lock.unlock();
-			}
-		}
-		return instance;
+		return scannerDB != null;
 	}
 }

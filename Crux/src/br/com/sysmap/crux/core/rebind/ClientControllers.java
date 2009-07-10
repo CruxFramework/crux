@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.core.rebind;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,7 +32,6 @@ import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
-import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 
 /**
  * Maps all client Handlers
@@ -48,7 +46,7 @@ public class ClientControllers
 	private static Map<String, Class<?>> clientHandlers;
 	private static List<String> globalClientHandlers;
 	
-	public static void initialize(URL[] urls)
+	public static void initialize()
 	{
 		if (clientHandlers != null)
 		{
@@ -62,7 +60,7 @@ public class ClientControllers
 				return;
 			}
 			
-			initializeClientHandlers(urls);
+			initializeClientHandlers();
 		}
 		finally
 		{
@@ -70,11 +68,11 @@ public class ClientControllers
 		}
 	}
 
-	protected static void initializeClientHandlers(URL[] urls)
+	protected static void initializeClientHandlers()
 	{
 		clientHandlers = new HashMap<String, Class<?>>();
 		globalClientHandlers = new ArrayList<String>();
-		Set<String> controllerNames =  ClassScanner.getInstance(urls).searchClassesByAnnotation(Controller.class);
+		Set<String> controllerNames =  ClassScanner.searchClassesByAnnotation(Controller.class);
 		if (controllerNames != null)
 		{
 			for (String controller : controllerNames) 
@@ -101,7 +99,7 @@ public class ClientControllers
 	{
 		if (clientHandlers == null)
 		{
-			initialize(ScannerURLS.getURLsForSearch());
+			initialize();
 		}
 		return clientHandlers.get(name);
 	}
@@ -110,7 +108,7 @@ public class ClientControllers
 	{
 		if (globalClientHandlers == null)
 		{
-			initialize(ScannerURLS.getURLsForSearch());
+			initialize();
 		}
 		return globalClientHandlers.iterator();
 	}

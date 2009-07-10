@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.core.rebind.screen.serializable;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -30,8 +29,12 @@ import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
-import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
 public class Serializers 
 {
 	private static final Log logger = LogFactory.getLog(Serializers.class);
@@ -39,7 +42,10 @@ public class Serializers
 	private static final Lock lock = new ReentrantLock();
 	private static Map<String, Class<? extends CruxSerializable>> serializers;
 	
-	public static void initialize(URL[] urls)
+	/**
+	 * 
+	 */
+	public static void initialize()
 	{
 		if (serializers != null)
 		{
@@ -53,19 +59,21 @@ public class Serializers
 				return;
 			}
 			
-			initializeSerializers(urls);
+			initializeSerializers();
 		}
 		finally
 		{
 			lock.unlock();
 		}
 	}
-	
+	/**
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
-	protected static void initializeSerializers(URL[] urls)
+	protected static void initializeSerializers()
 	{
 		serializers = new HashMap<String, Class<? extends CruxSerializable>>();
-		Set<String> serializerNames =  ClassScanner.getInstance(urls).searchClassesByInterface(CruxSerializable.class);
+		Set<String> serializerNames =  ClassScanner.searchClassesByInterface(CruxSerializable.class);
 		if (serializerNames != null)
 		{
 			for (String serializer : serializerNames) 
@@ -91,11 +99,16 @@ public class Serializers
 		}
 	}
 
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static Class<? extends CruxSerializable> getCruxSerializable(String name)
 	{
 		if (serializers == null)
 		{
-			initialize(ScannerURLS.getURLsForSearch());
+			initialize();
 		}
 		
 		if (name == null)
