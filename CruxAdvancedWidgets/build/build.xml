@@ -12,7 +12,7 @@
 	<property name="distdir" value="dist" />
 	<property name="final.name" value="crux-advanced-widgets" />
 	<property name="cruxdistdir" value="../Crux/dist" />
-	<property name="cruxbasiccomponentsdir" value="../CruxBasicComponents/dist" />
+	<property name="cruxbasicwidgetsdir" value="../CruxBasicWidgets/dist" />
 
 	<path id="build.classpath">
 		<fileset dir="${libdir}">
@@ -21,7 +21,7 @@
 		<fileset dir="${cruxdistdir}">
 			<include name="**/*.jar" />
 		</fileset>
-		<fileset dir="${cruxbasiccomponentsdir}">
+		<fileset dir="${cruxbasicwidgetsdir}">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
