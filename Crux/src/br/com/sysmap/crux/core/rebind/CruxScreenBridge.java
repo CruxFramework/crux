@@ -47,14 +47,12 @@ public class CruxScreenBridge
 	//Woww :) How GWT generators and the application server run in different JVMs, 
 	//the only way to obtain these informations is using a bridge in file system.
 	private File screenRequestedBridgeFile;
-	private File screenResolverBridgeFile;
 	
 	private CruxScreenBridge() 
 	{
 		String tmpDir = FileSystemUtils.getTempDir();
 		
 		screenRequestedBridgeFile = new File(tmpDir+"screenRequestedBridgeFile");
-		screenResolverBridgeFile = new File(tmpDir+"screenResolverBridgeFile");
 	}
 
 	/**
@@ -100,43 +98,6 @@ public class CruxScreenBridge
 		catch (Exception e) 
 		{
 			logger.error(messages.screenBridgeErrorReadingScreenId(e.getLocalizedMessage()), e);
-			return null;
-		}
-	}
-
-	/** 
-	 * Inform the name of resource resolver to use.
-	 */
-	public void registerScreenResourceResolver(String resourceResolver)
-	{
-		PrintWriter writer;
-		try 
-		{
-			writer = new PrintWriter(screenResolverBridgeFile);
-			writer.println(resourceResolver);
-			writer.close();
-		} 
-		catch (FileNotFoundException e) 
-		{
-			logger.error(messages.screenBridgeErrorRegisteringScreenResolver(e.getLocalizedMessage()), e);
-		}
-	}
-	
-	/**
-	 * Return the screen resource resolver.
-	 * @return
-	 */
-	public String getScreenResourceResolver() 
-	{
-		try 
-		{
-			BufferedReader reader = new BufferedReader(new FileReader(screenResolverBridgeFile));
-			return reader.readLine();
-		} 
-		catch (Exception e) 
-		{
-			logger.info(messages.screenBridgeErrorReadingScreenResolver(), e);
-			// it is not an error... If none registered, just use default screenResourceResolver
 			return null;
 		}
 	}

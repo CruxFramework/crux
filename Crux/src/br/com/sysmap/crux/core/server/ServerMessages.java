@@ -51,7 +51,7 @@ public interface ServerMessages
 	@DefaultMessage("[initializerListener - 001] - Widgets registered.")
 	String initializerListenerWidgetsRegistered();
 
-	@DefaultMessage("[initializerListener - 002] - Server Controllers registered.")
+	@DefaultMessage("[initializerListener - 002] - Server ScreenResourceResolverScanner registered.")
 	String initializerListenerControllersRegistered();
 
 	@DefaultMessage("[scannerURLS - 001] - Error searching /WEB-INF/classes dir: {0}.")
@@ -125,4 +125,7 @@ public interface ServerMessages
 
 	@DefaultMessage("[screenResourceScanner 001] - Error initializing screenResourceScanner: {0}.")
 	String screenResourceScannerInitializationError(String localizedMessage);
+
+	@DefaultMessage("[screenResourceResolver 001] - Using Default ScreenResourceResouver.")
+	Object screenResourceResolverUsingDefault();
 }

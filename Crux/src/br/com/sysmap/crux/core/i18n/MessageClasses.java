@@ -41,7 +41,7 @@ public class MessageClasses
 	private static Map<String, Class<? extends Messages>> messagesClasses = null;
 	private static final Lock lock = new ReentrantLock();	
 	/**
-	 * Initialise the Controllers factory
+	 * Initialise the ScreenResourceResolverScanner factory
 	 * @param urls
 	 */
 	@SuppressWarnings("unchecked")

@@ -21,11 +21,14 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.server.ServerMessages;
 
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
 public class ScreenResourceResolverInitializer 
 {
 	private static final Log logger = LogFactory.getLog(ScreenResourceResolverInitializer.class);
@@ -33,6 +36,10 @@ public class ScreenResourceResolverInitializer
 	private static final Lock lock = new ReentrantLock();
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
+	/**
+	 * 
+	 * @return
+	 */
 	public static ScreenResourceResolver getScreenResourceResolver()
 	{
 		if (screenResourceResolver != null) return screenResourceResolver;
@@ -41,12 +48,7 @@ public class ScreenResourceResolverInitializer
 		{
 			lock.lock();
 			if (screenResourceResolver != null) return screenResourceResolver;
-			String resourceClassName = CruxScreenBridge.getInstance().getScreenResourceResolver();
-			if (resourceClassName == null || resourceClassName.length() ==0)
-			{
-				resourceClassName = ConfigurationFactory.getConfigurations().screenResourceResolver();
-			}
-			screenResourceResolver = (ScreenResourceResolver) Class.forName(resourceClassName).newInstance(); 
+			screenResourceResolver = (ScreenResourceResolver) ScreenResourceResolverScanner.getScreenResolver().newInstance(); 
 		}
 		catch (Throwable e)
 		{
@@ -57,10 +59,5 @@ public class ScreenResourceResolverInitializer
 			lock.unlock();
 		}
 		return screenResourceResolver;
-	}
-
-	public static void registerScreenResourceResolver(String resolverClassName)
-	{
-		CruxScreenBridge.getInstance().registerScreenResourceResolver(resolverClassName);
 	}
 }
