@@ -16,7 +16,7 @@
 		<when-type-assignable class="br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers" />
 	</generate-with>
 
-	<!-- Specify the generator for registered components.     -->
+	<!-- Specify the generator for registered widgets.     -->
 	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredWidgetFactoriesGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories" />
 	</generate-with>
