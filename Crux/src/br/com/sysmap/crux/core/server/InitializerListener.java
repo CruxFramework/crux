@@ -23,7 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
-import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.dispatch.ControllerFactoryInitializer;
 
@@ -37,19 +36,20 @@ import br.com.sysmap.crux.core.server.dispatch.ControllerFactoryInitializer;
 public class InitializerListener implements ServletContextListener
 {
 	private static final Log logger = LogFactory.getLog(InitializerListener.class);
-	private ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
 	public void contextDestroyed(ServletContextEvent contextEvent) 
 	{
 	}
 
+	/**
+	 * 
+	 */
 	public void contextInitialized(ServletContextEvent contextEvent) 
 	{
 		try
 		{
 			ConfigurationFactory.getConfigurations();
-			ServletContext contexto = contextEvent.getServletContext();
-			initialize(contexto);
+			initialize(contextEvent.getServletContext());
 		}
 		catch (Throwable e) 
 		{
@@ -57,23 +57,20 @@ public class InitializerListener implements ServletContextListener
 		}
 	}
 	
-	protected void initialize(ServletContext contexto) throws Exception
+	/**
+	 * 
+	 * @param context
+	 * @throws Exception
+	 */
+	protected void initialize(ServletContext context) throws Exception
 	{
-		WidgetConfig.initializeWidgetConfig();
 		// Initialise the isProduction static variable.
 		Environment.isProduction();
-		if (logger.isInfoEnabled())
-		{
-			logger.info(messages.initializerListenerWidgetsRegistered());
-		}
+		WidgetConfig.initializeWidgetConfig();
 		
 		if ("true".equals(ConfigurationFactory.getConfigurations().initializeControllersAtStartup()))
 		{
-			ControllerFactoryInitializer.getControllerFactory().initialize(contexto);
-			if (logger.isInfoEnabled())
-			{
-				logger.info(messages.initializerListenerControllersRegistered());
-			}
+			ControllerFactoryInitializer.initialize(context);
 		}
 	}
 }

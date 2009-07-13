@@ -18,6 +18,8 @@ package br.com.sysmap.crux.core.server.dispatch;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.servlet.ServletContext;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,8 +32,14 @@ public class ControllerFactoryInitializer
 	private static final Log logger = LogFactory.getLog(ControllerFactoryInitializer.class);
 	private static ControllerFactory controllerFactory;
 	private static final Lock lock = new ReentrantLock();
+	private static final Lock initializeLock = new ReentrantLock();
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
-
+	private static boolean factoryInitialized = false;
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public static ControllerFactory getControllerFactory()
 	{
 		if (controllerFactory != null) return controllerFactory;
@@ -53,11 +61,50 @@ public class ControllerFactoryInitializer
 		return controllerFactory;
 	}
 
+	/**
+	 * 
+	 * @param controllerFactory
+	 */
 	public static void registerControllerFactory(ControllerFactory controllerFactory)
 	{
 		ControllerFactoryInitializer.controllerFactory = controllerFactory;
+		factoryInitialized = false;
 	}
 	
-	
+	/**
+	 * 
+	 * @param context
+	 */
+	public static void initialize(ServletContext context)
+	{
+		if (!factoryInitialized)
+		{
+			initializeLock.lock();
+			try
+			{
+				if (!factoryInitialized)
+				{
+					getControllerFactory().initialize(context);
+					if (logger.isInfoEnabled())
+					{
+						logger.info(messages.controllerFactoryInitializerControllersRegistered());
+					}
+					factoryInitialized = true;
+				}
+			}
+			finally
+			{
+				initializeLock.unlock();
+			}
+		}
+	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean isFactoryInitialized()
+	{
+		return factoryInitialized;
+	}
 }

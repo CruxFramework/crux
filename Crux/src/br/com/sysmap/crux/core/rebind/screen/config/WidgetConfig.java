@@ -63,6 +63,10 @@ public class WidgetConfig
 			config = new HashMap<String, WidgetConfigData>(100);
 			registeredLibraries = new HashSet<String>();
 			WidgetConfigScanner.getInstance().scanArchives(urls);
+			if (logger.isInfoEnabled())
+			{
+				logger.info(messages.widgetCongigWidgetsRegistered());
+			}
 		}
 		catch (RuntimeException e) 
 		{

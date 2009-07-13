@@ -19,7 +19,11 @@ import javax.servlet.ServletContext;
 
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 
-
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
 public class ControllerFactoryImpl implements ControllerFactory 
 {
 	public Object getController(String controllerName) 

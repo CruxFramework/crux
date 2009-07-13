@@ -63,6 +63,11 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 	{
 		try 
 		{
+			if (!ControllerFactoryInitializer.isFactoryInitialized())
+			{
+				ControllerFactoryInitializer.initialize(getServletContext());
+			}
+			
 			// We don't need to verify or parser the encodedRequest because it will be already done by
 			// RPC.decodeRequest. So, just read the interface name directly
 			String serviceIntfName = RegexpPatterns.REGEXP_PIPE.split(encodedRequest)[5];			
