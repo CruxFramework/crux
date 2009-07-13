@@ -39,9 +39,6 @@ public interface ServerMessages
 	@DefaultMessage("[widgetConfigScanner 001] - Error initializing widgetConfigScanner: {0}.")
 	String widgetConfigScannerInitializationError(String errMsg);
 
-	@DefaultMessage("[widgetParserImpl - 001] - Error setting property {0} for widget {1}.")
-	String widgetParserImplWidgetPropertyError(String property, String widgetId);
-
 	@DefaultMessage("[controllers 001] - Error initializing controllers: {0}.")
 	String controllersInitializeError(String errMsg);
 

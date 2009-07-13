@@ -29,7 +29,6 @@ public class Widget
 	protected String id;
 	protected String type;
 	protected String formatter;
-	protected String text;
 
 	protected Map<String, Event> events = new HashMap<String, Event>();
 	protected Map<String, String> properties = new HashMap<String, String>();

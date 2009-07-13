@@ -28,7 +28,7 @@ import br.com.sysmap.crux.core.client.i18n.Name;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 
-import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.i18n.client.LocalizableResource;
 
 /**
  * Class for retrieve the messages interface, based on the annotation Name or ont the class SimpleName, if annotation not present
@@ -38,7 +38,7 @@ public class MessageClasses
 {
 	private static final Log logger = LogFactory.getLog(MessageClasses.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
-	private static Map<String, Class<? extends Messages>> messagesClasses = null;
+	private static Map<String, Class<? extends LocalizableResource>> messagesClasses = null;
 	private static final Lock lock = new ReentrantLock();	
 	/**
 	 * Initialise the ScreenResourceResolverScanner factory
@@ -54,8 +54,8 @@ public class MessageClasses
 			{
 				if (messagesClasses == null)
 				{
-					messagesClasses = new HashMap<String, Class<? extends Messages>>();
-					Set<String> messagesNames =  ClassScanner.searchClassesByInterface(Messages.class);
+					messagesClasses = new HashMap<String, Class<? extends LocalizableResource>>();
+					Set<String> messagesNames =  ClassScanner.searchClassesByInterface(LocalizableResource.class);
 					if (messagesNames != null)
 					{
 						for (String message : messagesNames) 
@@ -64,11 +64,11 @@ public class MessageClasses
 							Name annot = messageClass.getAnnotation(Name.class);
 							if (annot!= null)
 							{
-								messagesClasses.put(annot.value(), (Class<? extends Messages>) messageClass);
+								messagesClasses.put(annot.value(), (Class<? extends LocalizableResource>) messageClass);
 							}
 							else
 							{
-								messagesClasses.put(messageClass.getSimpleName(), (Class<? extends Messages>) messageClass);
+								messagesClasses.put(messageClass.getSimpleName(), (Class<? extends LocalizableResource>) messageClass);
 							}
 						}
 					}

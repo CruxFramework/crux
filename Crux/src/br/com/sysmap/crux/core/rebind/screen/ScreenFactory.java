@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -345,27 +344,17 @@ public class ScreenFactory
 					}
 				}
 			}
-			else if (!attrName.equals("id") && !attrName.equals("_type"))
+			else if (attrName.startsWith("_on"))
 			{
-				if (attrName.startsWith("_on"))
+				Event event = EventFactory.getEvent(attrName, attr.getValue());
+				if (event != null)
 				{
-					Event event = EventFactory.getEvent(attrName, attr.getValue());
-					if (event != null)
-					{
-						screen.addEvent(event);
-					}
+					screen.addEvent(event);
 				}
-				else
-				{
-					try 
-					{
-						BeanUtils.copyProperty(this, attrName.substring(1), attr.getValue());
-					} 
-					catch (Throwable e) 
-					{
-						if (logger.isDebugEnabled()) logger.debug(messages.screenPropertyError(attrName.substring(1), screen.getId()));
-					} 
-				}
+			}
+			else if (!attrName.equals("id"))
+			{
+				if (logger.isDebugEnabled()) logger.debug(messages.screenPropertyError(attrName.substring(1), screen.getId()));
 			}
 		}
 	}
