@@ -18,6 +18,7 @@ package br.com.sysmap.crux.core.server.scan;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -124,11 +125,44 @@ public class ClassScanner
 	 */
 	public static Set<String> searchClassesByInterface(Class<?> interfaceClass)
 	{
+		if (!interfaceClass.isInterface())
+		{
+			throw new ClassScannerException(messages.annotationScannerInterfaceRequired(interfaceClass.getName()));
+		}
+		return searchClassesByInterface(interfaceClass.getName(), true);
+	}
+
+	/**
+	 * 
+	 * @param className
+	 * @param deep
+	 * @return
+	 */
+	private static Set<String> searchClassesByInterface(String className, boolean deep)
+		{
 		if (!isInitialized())
 		{
 			initialize();
 		}
-		return scannerDB.getInterfacesIndex().get(interfaceClass.getName());
+		Set<String> result = new HashSet<String>();
+		Set<String> classes = scannerDB.getInterfacesIndex().get(className);
+		
+		if (classes != null && classes.size() > 0)
+		{
+			result.addAll(classes);
+			if (deep)
+			{
+				for(String c: classes)
+				{
+					Set<String> deepInterfaces = searchClassesByInterface(c, deep);
+					if (deepInterfaces != null)
+					{
+						result.addAll(deepInterfaces);
+					}
+				}
+			}
+		}
+		return result;
 	}
 	
 	/**

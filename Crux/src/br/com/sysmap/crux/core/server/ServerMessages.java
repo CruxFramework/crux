@@ -27,8 +27,11 @@ public interface ServerMessages
 	@DefaultMessage("[annotationScanner 001] - Building index of annotations for classes.")
 	String annotationScannerBuildIndex();
 	
-	@DefaultMessage("[annotationScanner 003] - Error creating index of annotations: {0}.")
+	@DefaultMessage("[annotationScanner 002] - Error creating index of annotations: {0}.")
 	String annotationScannerBuildIndexError(String errMsg);
+
+	@DefaultMessage("[annotationScanner 003] - The class {0} is not an interface.")
+	String annotationScannerInterfaceRequired(String className);
 
 	@DefaultMessage("[clientHandlers 001] - Error initializing clientHandler: {0}.")
 	String clientHandlersHandlerInitializeError(String errMsg);
