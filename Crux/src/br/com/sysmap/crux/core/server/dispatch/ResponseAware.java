@@ -24,5 +24,4 @@ import javax.servlet.http.HttpServletResponse;
 public interface ResponseAware
 {
 	void setResponse(HttpServletResponse response);
-	HttpServletResponse getResponse();
 }
