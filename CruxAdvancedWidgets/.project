@@ -4,7 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>Crux</project>
-		<project>CruxBasicComponents</project>
+		<project>CruxBasicWidgets</project>
 		<project>CruxHtmlTags</project>
 	</projects>
 	<buildSpec>
