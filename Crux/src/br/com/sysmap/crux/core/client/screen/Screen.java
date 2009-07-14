@@ -742,7 +742,6 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
-	@SuppressWarnings("unchecked")
 	public static void invokeControllerOnTop(String call, Object param) throws ModuleComunicationException
 	{
 		invokeControllerOnTop(call, param, Object.class);
@@ -764,7 +763,6 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
-	@SuppressWarnings("unchecked")
 	public static void invokeControllerOnAbsoluteTop(String call, Object param) throws ModuleComunicationException
 	{
 		invokeControllerOnAbsoluteTop(call, param, Object.class);

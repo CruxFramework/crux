@@ -21,13 +21,13 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.scannotation.archiveiterator.Filter;
-import org.scannotation.archiveiterator.IteratorFactory;
-import org.scannotation.archiveiterator.StreamIterator;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.ServerMessages;
+import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
+import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
+import br.com.sysmap.crux.scannotation.archiveiterator.StreamIterator;
 
 public class WidgetConfigScanner 
 {

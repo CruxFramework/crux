@@ -21,8 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javassist.bytecode.ClassFile;
-
-import org.scannotation.AnnotationDB;
+import br.com.sysmap.crux.scannotation.AnnotationDB;
 
 public class ScannerDB extends AnnotationDB
 {

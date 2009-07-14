@@ -24,12 +24,11 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.scannotation.archiveiterator.Filter;
-import org.scannotation.archiveiterator.IteratorFactory;
-
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
+import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
+import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
 
 /**
  * 
