@@ -67,10 +67,6 @@ public class InitializerListener implements ServletContextListener
 		// Initialise the isProduction static variable.
 		Environment.isProduction();
 		WidgetConfig.initializeWidgetConfig();
-		
-		if ("true".equals(ConfigurationFactory.getConfigurations().initializeControllersAtStartup()))
-		{
-			ControllerFactoryInitializer.initialize(context);
-		}
+		ControllerFactoryInitializer.initialize(context);
 	}
 }

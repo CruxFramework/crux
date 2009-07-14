@@ -22,9 +22,6 @@ public interface Crux
 	@DefaultMessage("br.com.sysmap.crux.core.server.dispatch.ControllerFactoryImpl")
 	String controllerFactory();
 	
-	@DefaultMessage("true")
-	String initializeControllersAtStartup();
-	
 	@DefaultMessage("br.com.sysmap.crux.core.i18n.LocaleResolverImpl")
 	String localeResolver();
 
