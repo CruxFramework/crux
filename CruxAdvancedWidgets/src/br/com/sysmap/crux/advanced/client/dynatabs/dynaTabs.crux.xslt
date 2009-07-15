@@ -16,7 +16,7 @@
 <xsl:stylesheet version="2.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:adv="http://www.sysmap.com.br/crux/advanced-widgets/1.0"
-	xmlns:crux="http://www.sysmap.com.br/crux/ui/1.0"
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0"
 	xmlns:html="http://www.w3.org/1999/xhtml"
 	exclude-result-prefixes="#all">
 

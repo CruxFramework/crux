@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://www.sysmap.com.br/crux/advanced-widgets/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.sysmap.com.br/crux/advanced-widgets/1.0" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:basic="http://www.sysmap.com.br/crux/ui/1.0">
+<xs:schema xmlns="http://www.sysmap.com.br/crux/advanced-widgets/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.sysmap.com.br/crux/advanced-widgets/1.0" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:basic="http://www.sysmap.com.br/crux/basic-widgets/1.0">
 
-	<xs:import schemaLocation="crux-ui.xsd" namespace="http://www.sysmap.com.br/crux/ui/1.0" />
+	<xs:import schemaLocation="crux-basic-widgets.xsd" namespace="http://www.sysmap.com.br/crux/basic-widgets/1.0" />
 
 	<xs:element name="decoratedPanel" type="DecoratedPanel" />
 	<xs:element name="collapsePanel" type="CollapsePanel" />
