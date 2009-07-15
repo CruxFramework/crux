@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema 
-	xmlns="http://www.sysmap.com.br/crux/ui/1.0" 
+	xmlns="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	attributeFormDefault="unqualified" 
 	elementFormDefault="qualified" 
-	targetNamespace="http://www.sysmap.com.br/crux/ui/1.0"
+	targetNamespace="http://www.sysmap.com.br/crux/basic-widgets/1.0"
 	xmlns:xi="http://www.w3.org/2001/XInclude">
 	
 	<xs:element name="screen" type="Screen"/>
