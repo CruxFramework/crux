@@ -87,8 +87,11 @@ public interface ServerMessages
 	@DefaultMessage("[formatters 001] - Error initializing formatter: {0}.")
 	String formattersFormatterInitializeError(String errMsg);
 
-	@DefaultMessage("[localeResolver - 001] - Error initializing LocaleResolver: {0}.")
+	@DefaultMessage("[localeResolver 001] - Error initializing LocaleResolver: {0}.")
 	String localeResolverInitialisationError(String errMsg);
+
+	@DefaultMessage("[localeResolver 002] - User LocaleResolver not initialized.")
+	String localeResolverNotInitialized();
 
 	@DefaultMessage("[screenResolver - 001] - Error initializing ScreenResolver: {0}.")
 	String screenResourceResolverInitializerError(String message);
@@ -128,4 +131,5 @@ public interface ServerMessages
 
 	@DefaultMessage("[screenResourceResolver 001] - Using Default ScreenResourceResouver.")
 	Object screenResourceResolverUsingDefault();
+
 }

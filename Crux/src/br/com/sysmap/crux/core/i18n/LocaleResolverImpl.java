@@ -17,15 +17,53 @@ package br.com.sysmap.crux.core.i18n;
 
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
+import br.com.sysmap.crux.core.server.ServerMessages;
+
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  */
 public class LocaleResolverImpl implements LocaleResolver 
 {
-	public Locale getUserLocale() 
+	
+	Locale userLocale = null;
+	
+	/**
+	 * 
+	 */
+	public Locale getUserLocale() throws LocaleResolverException
 	{
-		return Locale.getDefault();
+		if (userLocale == null)
+		{
+			throw new LocaleResolverException(MessagesFactory.getMessages(ServerMessages.class).localeResolverNotInitialized());
+		}
+		return userLocale;
+	}
+
+	/**
+	 * 
+	 */
+	public void initializeUserLocale(HttpServletRequest request) 
+	{
+		String locale = request.getParameter("locale");
+		if (locale != null)
+		{
+			String[] localeParams = locale.split("_");
+			if (localeParams.length == 2)
+			{
+				userLocale = new Locale(localeParams[0], localeParams[1]); 
+			}
+			else if (localeParams.length == 1)
+			{
+				userLocale = new Locale(localeParams[0]); 
+			}
+		}
+		if (userLocale == null)
+		{
+			userLocale = Locale.getDefault();
+		}
 	}
 
 }

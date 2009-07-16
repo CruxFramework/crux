@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.server.dispatch;
 
+import br.com.sysmap.crux.core.i18n.LocaleResolver;
+import br.com.sysmap.crux.core.i18n.LocaleResolverInitialiser;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
@@ -38,8 +40,10 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 	@Override
 	public String processCall(String payload) throws SerializationException 
 	{
+		boolean localeInitializedByServlet = false;
 		try 
 		{
+			localeInitializedByServlet = initUserLocaleResolver();
 			Object controller = getControllerForRequest(payload);
 			RPCRequest rpcRequest = RPC.decodeRequest(payload, controller.getClass(), this);
 			onAfterRequestDeserialized(rpcRequest);
@@ -51,8 +55,38 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 			log("An IncompatibleRemoteServiceException was thrown while processing this call.",ex);
 			return RPC.encodeResponseForFailure(null, ex);
 		}
+		finally
+		{
+			if (localeInitializedByServlet)
+			{
+				clearUserLocaleResolver();
+			}
+		}
 	}
 	  
+	/**
+	 * 
+	 */
+	protected boolean initUserLocaleResolver()
+	{
+		if (LocaleResolverInitialiser.getLocaleResolver() == null)
+		{
+			LocaleResolverInitialiser.createLocaleResolverThreadData();
+			LocaleResolver resolver = LocaleResolverInitialiser.getLocaleResolver();
+			resolver.initializeUserLocale(getThreadLocalRequest());
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 */
+	protected void clearUserLocaleResolver()
+	{
+		LocaleResolverInitialiser.clearLocaleResolverThreadData();
+	}
+
 	/**
 	 * Return the controller that will handle this request
 	 * @param encodedRequest

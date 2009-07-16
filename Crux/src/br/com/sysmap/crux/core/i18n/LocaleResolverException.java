@@ -15,16 +15,43 @@
  */
 package br.com.sysmap.crux.core.i18n;
 
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
+ *
  */
-public interface LocaleResolver 
+public class LocaleResolverException extends RuntimeException
 {
-	void initializeUserLocale(HttpServletRequest request);
-	Locale getUserLocale() throws LocaleResolverException;
+	private static final long serialVersionUID = -2441066524518712373L;
+
+	/**
+	 * 
+	 */
+	public LocaleResolverException()
+	{
+	}
+
+	/**
+	 * @param message
+	 */
+	public LocaleResolverException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public LocaleResolverException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public LocaleResolverException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }

@@ -31,21 +31,70 @@ import br.com.sysmap.crux.core.server.ServerMessages;
  */
 public class LocaleResolverInitialiser 
 {
-	protected static LocaleResolver localeResolver;
+	protected static Class<? extends LocaleResolver> localeResolverClass;
+	protected static ThreadLocal<LocaleResolver> localeResolver = new ThreadLocal<LocaleResolver>();
 	private static final Lock lock = new ReentrantLock();
 	private static final Log logger = LogFactory.getLog(LocaleResolverInitialiser.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
-	
+	/**
+	 * 
+	 * @return
+	 */
 	public static LocaleResolver getLocaleResolver()
 	{
-		if (localeResolver != null) return localeResolver;
+		return localeResolver.get();
+	}
+
+	/**
+	 * 
+	 */
+	public static void createLocaleResolverThreadData()
+	{
+		if (localeResolverClass == null)
+		{
+			initLocaleResolverClass();
+		}
+		try
+		{
+			localeResolver.set(localeResolverClass.newInstance());
+		}
+		catch (Exception e)
+		{
+			logger.error(messages.localeResolverInitialisationError(e.getMessage()), e);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public static void clearLocaleResolverThreadData()
+	{
+		localeResolver.remove();
+	}
+	
+	/**
+	 * 
+	 * @param localeResolverClass
+	 */
+	public static void registerLocaleResolverClass(Class<? extends LocaleResolver> localeResolverClass)
+	{
+		LocaleResolverInitialiser.localeResolverClass = localeResolverClass;
+	}
+	
+	/**
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	private static void initLocaleResolverClass()
+	{
+		if (localeResolverClass != null) return;
 		
 		lock.lock();
 		try
 		{
-			if (localeResolver != null) return localeResolver;
-			localeResolver = (LocaleResolver) Class.forName(ConfigurationFactory.getConfigurations().localeResolver()).newInstance(); 
+			if (localeResolverClass != null) return;
+			localeResolverClass = (Class<? extends LocaleResolver>) Class.forName(ConfigurationFactory.getConfigurations().localeResolver()); 
 		}
 		catch (Exception e) 
 		{
@@ -55,13 +104,5 @@ public class LocaleResolverInitialiser
 		{
 			lock.unlock();
 		}
-		return localeResolver;
 	}
-
-
-	public static void registerLocaleResolver(LocaleResolver localeResolver)
-	{
-		LocaleResolverInitialiser.localeResolver = localeResolver;
-	}
-	
 }
