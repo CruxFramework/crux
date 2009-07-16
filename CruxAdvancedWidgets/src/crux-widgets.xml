@@ -16,5 +16,6 @@
 	<widget id="filter" clientClass="br.com.sysmap.crux.advanced.client.filter.FilterFactory"/>
 	<widget id="scrollBanner" clientClass="br.com.sysmap.crux.advanced.client.scrollbanner.ScrollBannerFactory"/>
 	<widget id="confirm" clientClass=" br.com.sysmap.crux.advanced.client.dialog.ConfirmFactory"/>
+	<widget id="popup" clientClass=" br.com.sysmap.crux.advanced.client.dialog.PopupFactory"/>
 	<widget id="timer" clientClass=" br.com.sysmap.crux.advanced.client.timer.TimerFactory"/>
 </crux>

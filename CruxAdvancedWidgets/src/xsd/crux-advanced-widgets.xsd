@@ -14,6 +14,7 @@
 	<xs:element name="filter" type="Filter" />
 	<xs:element name="scrollBanner" type="ScrollBanner" />
 	<xs:element name="confirm" type="Confirm" />
+	<xs:element name="popup" type="Popup" />
 	<xs:element name="timer" type="Timer" />
 
 	<!--
@@ -34,6 +35,7 @@
 			<xs:element ref="filter"/>
 			<xs:element ref="scrollBanner"/>
 			<xs:element ref="confirm"/>
+			<xs:element ref="popup"/>
 			<xs:element ref="timer"/>
 		</xs:choice>
 	</xs:group>
@@ -141,6 +143,15 @@
 		<xs:attribute name="title"/>
 		<xs:attribute name="onOk"/>
 		<xs:attribute name="onCancel"/>	
+	</xs:complexType>
+
+	<xs:complexType name="Popup">
+		<xs:attributeGroup ref="basic:AnimationEnabled"/>												
+		<xs:attribute name="id" use="required"/>
+		<xs:attribute name="url" use="required"/>
+		<xs:attribute name="title"/>
+		<xs:attribute name="closeable" type="xs:boolean"/>
+		<xs:attribute name="onClose"/>
 	</xs:complexType>
 
 	<!--
