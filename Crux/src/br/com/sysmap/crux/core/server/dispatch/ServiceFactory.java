@@ -17,29 +17,13 @@ package br.com.sysmap.crux.core.server.dispatch;
 
 import javax.servlet.ServletContext;
 
-import br.com.sysmap.crux.core.server.scan.ClassScanner;
-
 /**
  * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class ControllerFactoryImpl implements ControllerFactory 
+public interface ServiceFactory 
 {
-	public Object getController(String controllerName) 
-	{
-		try 
-		{
-			return Controllers.getController(controllerName).newInstance();
-		} 
-		catch (Exception e) 
-		{
-			throw new RuntimeException("Error creating controller "+controllerName+". Cause: "+e.getMessage(), e);
-		} 
-	}
-
-	public void initialize(ServletContext context) 
-	{
-		ClassScanner.initialize();
-	}
+	Object getService(String serviceName);
+	void initialize(ServletContext context);
 }

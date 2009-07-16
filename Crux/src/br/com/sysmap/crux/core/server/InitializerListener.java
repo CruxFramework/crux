@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
-import br.com.sysmap.crux.core.server.dispatch.ControllerFactoryInitializer;
+import br.com.sysmap.crux.core.server.dispatch.ServiceFactoryInitializer;
 
 /**
  * When the application starts, register clientHandlers
@@ -67,6 +67,6 @@ public class InitializerListener implements ServletContextListener
 		// Initialise the isProduction static variable.
 		Environment.isProduction();
 		WidgetConfig.initializeWidgetConfig();
-		ControllerFactoryInitializer.initialize(context);
+		ServiceFactoryInitializer.initialize(context);
 	}
 }

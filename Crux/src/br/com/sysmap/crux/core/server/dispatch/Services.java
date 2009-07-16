@@ -25,36 +25,36 @@ import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 
 /**
- * Class for retrieve the controller class, based on the remote interface it implements
+ * Class for retrieve the service class, based on the remote interface it implements
  * @author Thiago Bustamante
  */
-public class Controllers 
+public class Services 
 {
-	private static final Log logger = LogFactory.getLog(Controllers.class);
+	private static final Log logger = LogFactory.getLog(Services.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	
 	/**
-	 * Return the controller that implements the interface informed.
+	 * Return the service that implements the interface informed.
 	 * @param interfaceName
 	 * @return
 	 */
-	public static Class<?> getController(String interfaceName)
+	public static Class<?> getService(String interfaceName)
 	{
 		try 
 		{
-			Set<String> controllerNames =  ClassScanner.searchClassesByInterface(Class.forName(interfaceName));
-			if (controllerNames != null)
+			Set<String> serviceNames =  ClassScanner.searchClassesByInterface(Class.forName(interfaceName));
+			if (serviceNames != null)
 			{
-				for (String controller : controllerNames) 
+				for (String service : serviceNames) 
 				{
-					Class<?> controllerClass = Class.forName(controller);
-					return controllerClass;
+					Class<?> serviceClass = Class.forName(service);
+					return serviceClass;
 				}
 			}
 		} 
 		catch (ClassNotFoundException e) 
 		{
-			logger.error(messages.controllersInitializeError(e.getLocalizedMessage()),e);
+			logger.error(messages.servicesInitializeError(e.getLocalizedMessage()),e);
 		}
 		return null;
 	}

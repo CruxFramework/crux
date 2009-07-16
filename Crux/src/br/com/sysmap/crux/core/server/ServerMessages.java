@@ -45,14 +45,14 @@ public interface ServerMessages
 	@DefaultMessage("[widgetConfigScanner 001] - Error initializing widgetConfigScanner: {0}.")
 	String widgetConfigScannerInitializationError(String errMsg);
 
-	@DefaultMessage("[controllers 001] - Error initializing controllers: {0}.")
-	String controllersInitializeError(String errMsg);
+	@DefaultMessage("[services 001] - Error initializing services: {0}.")
+	String servicesInitializeError(String errMsg);
 
-	@DefaultMessage("[controllerFactoryInitializer 001] - Server controllers registered.")
-	String controllerFactoryInitializerControllersRegistered();
+	@DefaultMessage("[serviceFactoryInitializer 001] - Server services registered.")
+	String serviceFactoryInitializerServicesRegistered();
 
-	@DefaultMessage("[controllerFactoryInitializer 002] - Error initializing controllerFactory: {0}.")
-	String controllerFactoryInitializerError(String errMsg);
+	@DefaultMessage("[serviceFactoryInitializer 002] - Error initializing serviceFactory: {0}.")
+	String serviceFactoryInitializerError(String errMsg);
 
 	@DefaultMessage("[scannerURLS - 001] - Error searching /WEB-INF/classes dir: {0}.")
 	String scannerURLSErrorSearchingClassesDir(String errMsg);

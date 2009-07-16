@@ -27,10 +27,10 @@ import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 
-public class ControllerFactoryInitializer 
+public class ServiceFactoryInitializer 
 {
-	private static final Log logger = LogFactory.getLog(ControllerFactoryInitializer.class);
-	private static ControllerFactory controllerFactory;
+	private static final Log logger = LogFactory.getLog(ServiceFactoryInitializer.class);
+	private static ServiceFactory serviceFactory;
 	private static final Lock lock = new ReentrantLock();
 	private static final Lock initializeLock = new ReentrantLock();
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
@@ -40,34 +40,34 @@ public class ControllerFactoryInitializer
 	 * 
 	 * @return
 	 */
-	public static ControllerFactory getControllerFactory()
+	public static ServiceFactory getServiceFactory()
 	{
-		if (controllerFactory != null) return controllerFactory;
+		if (serviceFactory != null) return serviceFactory;
 		
 		try
 		{
 			lock.lock();
-			if (controllerFactory != null) return controllerFactory;
-			controllerFactory = (ControllerFactory) Class.forName(ConfigurationFactory.getConfigurations().controllerFactory()).newInstance(); 
+			if (serviceFactory != null) return serviceFactory;
+			serviceFactory = (ServiceFactory) Class.forName(ConfigurationFactory.getConfigurations().serviceFactory()).newInstance(); 
 		}
 		catch (Throwable e)
 		{
-			logger.error(messages.controllerFactoryInitializerError(e.getMessage()), e);
+			logger.error(messages.serviceFactoryInitializerError(e.getMessage()), e);
 		}
 		finally
 		{
 			lock.unlock();
 		}
-		return controllerFactory;
+		return serviceFactory;
 	}
 
 	/**
 	 * 
-	 * @param controllerFactory
+	 * @param serviceFactory
 	 */
-	public static void registerControllerFactory(ControllerFactory controllerFactory)
+	public static void registerServiceFactory(ServiceFactory serviceFactory)
 	{
-		ControllerFactoryInitializer.controllerFactory = controllerFactory;
+		ServiceFactoryInitializer.serviceFactory = serviceFactory;
 		factoryInitialized = false;
 	}
 	
@@ -84,10 +84,10 @@ public class ControllerFactoryInitializer
 			{
 				if (!factoryInitialized)
 				{
-					getControllerFactory().initialize(context);
+					getServiceFactory().initialize(context);
 					if (logger.isInfoEnabled())
 					{
-						logger.info(messages.controllerFactoryInitializerControllersRegistered());
+						logger.info(messages.serviceFactoryInitializerServicesRegistered());
 					}
 					factoryInitialized = true;
 				}

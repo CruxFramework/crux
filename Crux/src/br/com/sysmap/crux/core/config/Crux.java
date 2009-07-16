@@ -19,8 +19,8 @@ import br.com.sysmap.crux.core.i18n.DefaultMessage;
 
 public interface Crux 
 {
-	@DefaultMessage("br.com.sysmap.crux.core.server.dispatch.ControllerFactoryImpl")
-	String controllerFactory();
+	@DefaultMessage("br.com.sysmap.crux.core.server.dispatch.ServiceFactoryImpl")
+	String serviceFactory();
 	
 	@DefaultMessage("br.com.sysmap.crux.core.i18n.LocaleResolverImpl")
 	String localeResolver();

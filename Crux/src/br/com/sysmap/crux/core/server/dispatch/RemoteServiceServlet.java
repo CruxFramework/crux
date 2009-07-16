@@ -44,10 +44,10 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 		try 
 		{
 			localeInitializedByServlet = initUserLocaleResolver();
-			Object controller = getControllerForRequest(payload);
-			RPCRequest rpcRequest = RPC.decodeRequest(payload, controller.getClass(), this);
+			Object service = getServiceForRequest(payload);
+			RPCRequest rpcRequest = RPC.decodeRequest(payload, service.getClass(), this);
 			onAfterRequestDeserialized(rpcRequest);
-			return RPC.invokeAndEncodeResponse(controller, rpcRequest.getMethod(),
+			return RPC.invokeAndEncodeResponse(service, rpcRequest.getMethod(),
 					rpcRequest.getParameters(), rpcRequest.getSerializationPolicy());
 		}
 		catch (IncompatibleRemoteServiceException ex) 
@@ -88,37 +88,37 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 	}
 
 	/**
-	 * Return the controller that will handle this request
+	 * Return the service that will handle this request
 	 * @param encodedRequest
 	 * @return
 	 * @throws IncompatibleRemoteServiceException
 	 */
-	protected Object getControllerForRequest(String encodedRequest) throws IncompatibleRemoteServiceException
+	protected Object getServiceForRequest(String encodedRequest) throws IncompatibleRemoteServiceException
 	{
 		try 
 		{
-			if (!ControllerFactoryInitializer.isFactoryInitialized())
+			if (!ServiceFactoryInitializer.isFactoryInitialized())
 			{
-				ControllerFactoryInitializer.initialize(getServletContext());
+				ServiceFactoryInitializer.initialize(getServletContext());
 			}
 			
 			// We don't need to verify or parser the encodedRequest because it will be already done by
 			// RPC.decodeRequest. So, just read the interface name directly
 			String serviceIntfName = RegexpPatterns.REGEXP_PIPE.split(encodedRequest)[5];			
-			Object controller = ControllerFactoryInitializer.getControllerFactory().getController(serviceIntfName);
-			if (controller instanceof RequestAware)
+			Object service = ServiceFactoryInitializer.getServiceFactory().getService(serviceIntfName);
+			if (service instanceof RequestAware)
 			{
-				((RequestAware)controller).setRequest(getThreadLocalRequest());
+				((RequestAware)service).setRequest(getThreadLocalRequest());
 			}
-			if (controller instanceof ResponseAware)
+			if (service instanceof ResponseAware)
 			{
-				((ResponseAware)controller).setResponse(getThreadLocalResponse());
+				((ResponseAware)service).setResponse(getThreadLocalResponse());
 			}
-			if (controller instanceof SessionAware)
+			if (service instanceof SessionAware)
 			{
-				((SessionAware)controller).setSession(getThreadLocalRequest().getSession());
+				((SessionAware)service).setSession(getThreadLocalRequest().getSession());
 			}
-			return controller;
+			return service;
 		} 
 		catch (Throwable e) 
 		{

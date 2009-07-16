@@ -17,8 +17,29 @@ package br.com.sysmap.crux.core.server.dispatch;
 
 import javax.servlet.ServletContext;
 
-public interface ControllerFactory 
+import br.com.sysmap.crux.core.server.scan.ClassScanner;
+
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
+public class ServiceFactoryImpl implements ServiceFactory 
 {
-	Object getController(String controllerName);
-	void initialize(ServletContext context);
+	public Object getService(String serviceName) 
+	{
+		try 
+		{
+			return Services.getService(serviceName).newInstance();
+		} 
+		catch (Exception e) 
+		{
+			throw new RuntimeException("Error creating service "+serviceName+". Cause: "+e.getMessage(), e);
+		} 
+	}
+
+	public void initialize(ServletContext context) 
+	{
+		ClassScanner.initialize();
+	}
 }
