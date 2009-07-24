@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 public class Filter extends SuggestBox implements HasFocusHandlers, HasBlurHandlers
 {
 	private static final String DEFAULT_STYLE_NAME = "crux-Filter";
+	private String initialText = null;
 
 	/**
 	 * @param filterable
@@ -57,8 +58,12 @@ public class Filter extends SuggestBox implements HasFocusHandlers, HasBlurHandl
 		{
 			public void onFocus(FocusEvent event)
 			{
-				removeStyleDependentName("focused");
-				addStyleDependentName("focused");
+				if(initialText != null && initialText.equals(getText()))
+				{
+					getTextBox().setText("");
+					removeStyleDependentName("focused");
+					addStyleDependentName("focused");
+				}
 			}			
 		};
 	}
@@ -68,14 +73,13 @@ public class Filter extends SuggestBox implements HasFocusHandlers, HasBlurHandl
 	 */
 	private BlurHandler createBlurHandler()
 	{
-		final Filter filter = this;
-		
 		return new BlurHandler()
 		{
 			public void onBlur(BlurEvent event)
 			{
-				if(filter.getValue().trim().length() == 0)
+				if(initialText != null && (getText() == null || getText().length() == 0))
 				{
+					getTextBox().setText(initialText);
 					removeStyleDependentName("focused");
 				}
 			}
@@ -133,5 +137,12 @@ public class Filter extends SuggestBox implements HasFocusHandlers, HasBlurHandl
 	public HandlerRegistration addBlurHandler(BlurHandler handler)
 	{
 		return addDomHandler(handler, BlurEvent.getType());
+	}
+	
+	@Override
+	public void setText(String text)
+	{
+		this.initialText = text;
+		super.setText(text);
 	}
 }

@@ -138,7 +138,7 @@ public class MaskedTextBox extends TextBox
 				{
 					public void onBlur(BlurEvent event)
 					{
-						setFormattedValue(getUnformattedValue());
+						setUnformattedValue(getUnformattedValue());
 					}
 				});
 			}
@@ -168,7 +168,7 @@ public class MaskedTextBox extends TextBox
 	 * 
 	 * @param value
 	 */
-	public void setFormattedValue(Object value)
+	public void setUnformattedValue(Object value)
 	{
 		if (this.formatter != null)
 		{
