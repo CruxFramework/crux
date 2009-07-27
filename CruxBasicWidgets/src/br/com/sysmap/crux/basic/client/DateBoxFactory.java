@@ -85,48 +85,56 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 		List<Element> children = ensureChildrenSpans(element, true);
 		if (children.size() > 0)
 		{
-			Format format = null;
 			DatePicker picker = null;
-			String pattern = null;
+			
 			for (Element childElement : children)
 			{
 				if (isWidget(childElement))
 				{
 					picker = (DatePicker) createChildWidget(childElement, widgetId);
 				}
-				else 
-				{
-					pattern = childElement.getInnerHTML();
-				}
-			}
-			if (pattern == null || pattern.length() == 0)
-			{
-				pattern = element.getAttribute("_pattern");
-			}
-			if (pattern != null && pattern.trim().length() > 0)
-			{
-				format = new DateBox.DefaultFormat(DateFormatUtil.getDateTimeFormat(pattern));
-			}
-			else
-			{
-				Event eventLoadFormat = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_FORMAT);
-				
-				if (eventLoadFormat != null)
-				{
-					LoadFormatEvent<DateBox> loadFormatEvent = new LoadFormatEvent<DateBox>(widgetId);
-					format = (Format) Events.callEvent(eventLoadFormat, loadFormatEvent);
-				}
-				else 
-				{
-					format = GWT.create(DefaultFormat.class);
-				}
-			}
-			return new DateBox(picker, null, format);
+			}			
+			
+			return new DateBox(picker, null, getFormat(element, widgetId));
 		}
 		else
 		{
-			return new DateBox();
+			DateBox dateBox = new DateBox();
+			dateBox.setFormat(getFormat(element, widgetId));
+			return dateBox;
+		}		
+	}
+	
+	/**
+	 * @param element
+	 * @param widgetId 
+	 * @return
+	 */
+	public Format getFormat(Element element, String widgetId)
+	{
+		Format format = null;
+		String pattern = element.getAttribute("_pattern");
+		
+		if (pattern != null && pattern.trim().length() > 0)
+		{
+			format = new DateBox.DefaultFormat(DateFormatUtil.getDateTimeFormat(pattern));
 		}
+		else
+		{
+			Event eventLoadFormat = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_FORMAT);
+			
+			if (eventLoadFormat != null)
+			{
+				LoadFormatEvent<DateBox> loadFormatEvent = new LoadFormatEvent<DateBox>(widgetId);
+				format = (Format) Events.callEvent(eventLoadFormat, loadFormatEvent);
+			}
+			else 
+			{
+				format = GWT.create(DefaultFormat.class);
+			}
+		}
+		
+		return format;
 	}
 	
 	@Override

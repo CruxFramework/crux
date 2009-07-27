@@ -32,13 +32,12 @@
 				<xsl:attribute name="_reportFormatError" select="@reportFormatError"/>
 			</xsl:if>
 			
+			<xsl:if test="string-length(@pattern) > 0">
+				<xsl:attribute name="_pattern" select="@pattern"/>
+			</xsl:if>
+			
 			<xsl:for-each select="child::*">
 				<xsl:choose>
-					<xsl:when test="local-name() = 'pattern'">
-						<xsl:element name="span" namespace="{$xhtmlNS}">
-							<xsl:copy-of select="text()"></xsl:copy-of>						
-						</xsl:element>
-					</xsl:when>
 					<xsl:when test="local-name() = 'datePicker'">
 						<xsl:apply-templates select="current()"/>						
 					</xsl:when>					

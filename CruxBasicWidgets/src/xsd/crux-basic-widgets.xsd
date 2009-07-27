@@ -1168,8 +1168,8 @@
 			<xs:extension base="AbstractWidget">
 				<xs:all>
 					<xs:element name="datePicker" type="DatePicker" minOccurs="0"/>
-					<xs:element name="pattern" minOccurs="0" type="xs:string"/>
 				</xs:all>
+				<xs:attribute name="pattern" type="xs:string"/>
 				<xs:attributeGroup ref="FocusAttributes"/>
 				<xs:attributeGroup ref="Value"/>
 				<xs:attributeGroup ref="OnLoadFormat"/>
