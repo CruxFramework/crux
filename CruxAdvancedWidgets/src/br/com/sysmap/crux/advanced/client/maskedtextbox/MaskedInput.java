@@ -283,9 +283,9 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 	 */
 	private int seekNext(int pos)
 	{
-		if (pos <0)
+		if (pos < -1)
 		{
-			pos = 0;
+			pos = -1;
 		}
 		while (++pos < length)
 		{
