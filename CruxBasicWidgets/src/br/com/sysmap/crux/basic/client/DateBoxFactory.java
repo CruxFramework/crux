@@ -91,7 +91,7 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 			{
 				if (isWidget(childElement))
 				{
-					picker = (DatePicker) createChildWidget(childElement, widgetId);
+					picker = (DatePicker) createChildWidget(childElement, childElement.getId());
 				}
 			}			
 			
