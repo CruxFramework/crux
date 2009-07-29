@@ -30,8 +30,9 @@ public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel>
 	@Override
 	protected HTMLPanel instantiateWidget(Element element, String widgetId) 
 	{
-		HTMLPanel ret = new HTMLPanel(element.getInnerHTML());
+		String innerHTML = element.getInnerHTML();
 		element.setInnerHTML("");
+		HTMLPanel ret = new HTMLPanel(innerHTML);
 		return ret;
 	}
 
