@@ -1,0 +1,32 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0"
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0">
+
+	<head>
+		<title>My Page</title>
+	</head>
+
+	<body>
+		
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+		
+		<c:screen useController="controller"/>
+		
+		
+			<c:decoratorPanel id="basePanel">
+				<c:HTMLPanel id="baseHtml" width="800" height="600">
+					<table>
+						<tr>
+							<td>
+								<c:textBox id="nameTextBox"/>
+							</td>
+						</tr>
+					</table>
+				</c:HTMLPanel>
+			</c:decoratorPanel>
+				
+	</body>
+
+</html>
+

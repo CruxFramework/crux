@@ -1,0 +1,89 @@
+<project name="Crux-Showcase" basedir="../">
+
+	<property name="final.name" value="Crux-Showcase" />
+	<property name="src.dir" value="src" />
+	<property name="dist.dir" value="dist" />
+	<property name="temp.dir" value="${dist.dir}/temp" />
+	<property name="build.lib.dir" value="build/lib" />
+
+	<property name="web.root" value="war" />
+	<property name="web.inf.dir" value="${web.root}/WEB-INF" />
+	<property name="web.lib.dir" value="${web.inf.dir}/lib" />
+	<property name="target.classes.dir" value="${web.inf.dir}/classes" />
+
+	<path id="build.classpath">
+		<fileset dir="${web.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${build.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<taskdef name="cruxcompile" classname="br.com.sysmap.crux.tools.compile.CruxCompile" loaderref="build.classpath.loader" classpathref="build.classpath" />
+	<typedef name="htmlpreprocessor" classname="br.com.sysmap.crux.tools.compile.htmltags.CruxHTMLTagsPreProcessor" loaderref="build.classpath.loader" classpathref="build.classpath" />
+	<taskdef name="blockremove" classname="br.com.sysmap.crux.tools.compile.utils.BlockRemoveTask" classpathref="build.classpath" />
+
+	<!-- 
+	========================================================================================================
+		Distribuição do projeto
+	========================================================================================================
+	-->
+	<target name="dist">
+
+		<delete dir="${temp.dir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
+		<mkdir dir="${temp.dir}" />
+
+		<antcall target="compile-scripts" />
+		
+		<copydir dest="${temp.dir}/webroot" src="${web.root}">
+			<!-- use the code below for removing unnecessary crux files from the war file 
+			<exclude name="**/crux-advanced-widgets.jar" />
+			<exclude name="**/crux-basic-widgets.jar" />
+			<exclude name="**/crux-compile-task.jar" />
+			<exclude name="**/crux-html-tags.jar" />
+			<exclude name="**/crux-html-tags-compile-task.jar" />
+			-->
+			<exclude name="**/*.crux.xml" />
+		</copydir>
+
+		<blockremove beginmarker="&lt;!--antReplacementBlockBegin--&gt;" endmarker="&lt;!--antReplacementBlockEnd--&gt;" file="${temp.dir}/webroot/WEB-INF/web.xml" />
+
+		<war basedir="${temp.dir}/webroot" destfile="${temp.dir}/${final.name}.war" webxml="${web.inf.dir}/web.xml">
+			<manifest>
+				<attribute name="Class-Path" value="${final.name}.war" />
+			</manifest>
+		</war>
+		<move file="${temp.dir}/${final.name}.war" tofile="${dist.dir}/${final.name}.war" />
+		<delete dir="${temp.dir}" failonerror="no" includeemptydirs="yes" />
+	</target>
+
+	<target name="compile-scripts">
+		<cruxcompile webinfclassesdir="${target.classes.dir}">
+			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputdir="${web.root}" />
+			<fileset dir="${web.root}">
+				<include name="**/*.crux.xml" />
+			</fileset>
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${target.classes.dir}" />
+				<pathelement location="${src.dir}" />
+			</classpath>
+
+			<!-- change these two parameters if you need to modify memory settings -->
+			<jvmarg value="-Xmx768M" />
+			<jvmarg value="-Xms256M" />
+
+			<arg value="-war" />
+			<arg value="${web.root}" />
+
+			<!-- use these parameters if you want to modify GWT output settings
+			<arg value="-style"/>
+			<arg value="DETAILED"/>
+			<arg value="-logLevel"/>
+			<arg value="DEBUG"/>
+			-->
+		</cruxcompile>
+	</target>
+
+</project>

@@ -1,0 +1,7 @@
+<module rename-to='showcase'>
+	<inherits name='br.com.sysmap.crux.core.Crux'/>
+	<inherits name='br.com.sysmap.crux.basic.CruxBasicWidgets'/>
+	<inherits name='br.com.sysmap.crux.advanced.CruxAdvancedWidgets'/>
+	<inherits name='com.google.gwt.user.theme.standard.Standard'/>
+	<inherits name='br.com.sysmap.crux.themes.advanced.standard.Standard'/>
+</module>
