@@ -86,28 +86,36 @@ public class ScreenFactory {
 	{
 		screen = new Screen(getScreenId());
 		Element body = RootPanel.getBodyElement();
-		NodeList<Element> widgetCandidates = body.getElementsByTagName("span");
-		List<Element> widgets = new ArrayList<Element>();
+		NodeList<Element> spanElements = body.getElementsByTagName("span");
+		List<String> widgetIds = new ArrayList<String>();
 		Element screenElement = null;
 		
-		for (int i=0; i<widgetCandidates.getLength(); i++)
+		for (int i=0; i<spanElements.getLength(); i++)
 		{
-			if (isValidWidget(widgetCandidates.getItem(i)))
+			Element element = spanElements.getItem(i);
+			if (isScreenDefinitions(element))
 			{
-				try 
-				{
-					createWidget(widgetCandidates.getItem(i), screen, widgets);
-				}
-				catch (Throwable e) 
-				{
-					GWT.log(e.getLocalizedMessage(), e);
-					widgetCandidates.getItem(i).setInnerText(JSEngine.messages.screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
-				}
-			}
-			else if (isScreenDefinitions(widgetCandidates.getItem(i)))
-			{
-				screenElement = widgetCandidates.getItem(i);
+				screenElement = element;
 				screen.parse(screenElement);
+			}
+			else if (isValidWidget(element))
+			{
+				widgetIds.add(element.getId());
+			}
+		}
+		
+		List<Element> widgets = new ArrayList<Element>();
+		for (String elementId:  widgetIds)
+		{
+			Element element = DOM.getElementById(elementId);
+			try 
+			{
+				createWidget(element, screen, widgets);
+			}
+			catch (Throwable e) 
+			{
+				GWT.log(e.getLocalizedMessage(), e);
+				element.setInnerText(JSEngine.messages.screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
 			}
 		}
 		if (screenElement != null)
