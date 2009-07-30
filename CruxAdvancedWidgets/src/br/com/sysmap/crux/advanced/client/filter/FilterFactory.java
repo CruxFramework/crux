@@ -17,12 +17,12 @@ package br.com.sysmap.crux.advanced.client.filter;
 
 import br.com.sysmap.crux.advanced.client.AdvancedWidgetMessages;
 import br.com.sysmap.crux.basic.client.SuggestBoxFactory;
-import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -32,8 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FilterFactory extends SuggestBoxFactory
 {
-	@Create
-	AdvancedWidgetMessages messages;
+	AdvancedWidgetMessages messages = GWT.create(AdvancedWidgetMessages.class);
 	
 	@Override
 	protected Filter instantiateWidget(final Element element, String widgetId) throws InterfaceConfigException
