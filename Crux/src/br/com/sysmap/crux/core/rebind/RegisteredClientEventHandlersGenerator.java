@@ -74,6 +74,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		composer.addImport("br.com.sysmap.crux.core.client.event.CruxEvent");
 		composer.addImport("com.google.gwt.event.shared.GwtEvent");
 		composer.addImport("com.google.gwt.user.client.ui.HasValue");
+		composer.addImport("br.com.sysmap.crux.core.client.formatter.HasFormatter");
 		composer.addImport("com.google.gwt.user.client.ui.HasText");
 		composer.addImport("com.google.gwt.user.client.ui.Widget");
 		
@@ -686,27 +687,12 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		{
 			String valueVariable = "__wid";
 			sourceWriter.println(valueVariable + "= Screen.get(\""+name+"\");");
-			sourceWriter.println("if ("+valueVariable+" != null && "+valueVariable+" instanceof HasValue){");
-			if (populateScreen)
-			{
-				sourceWriter.println("((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").setValue("
-						            + getFieldValueGet(logger, voClass, field, parentVariable)+");");
-			}
-			else
-			{
-				generateFieldValueSet(logger, voClass, field, parentVariable, "((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").getValue()", sourceWriter);
-			}
-			sourceWriter.println("}");
-			sourceWriter.println("else if ("+valueVariable+" != null && "+valueVariable+" instanceof HasText){");
-			if (populateScreen)
-			{
-				sourceWriter.println("Object o = " +getFieldValueGet(logger, voClass, field, parentVariable)+";");
-				sourceWriter.println("((HasText)"+valueVariable+").setText(String.valueOf(o!=null?o:\"\"));");
-			}
-			else
-			{
-				generateFieldValueSet(logger, voClass, field, parentVariable, "((HasText)"+valueVariable+").getText()", sourceWriter);
-			}
+			sourceWriter.println("if ("+valueVariable+" != null){");
+			generateHandleHasFormatterWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+			sourceWriter.print("else ");
+			generateHandleHasValueWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+			sourceWriter.print("else ");
+			generateHandleHasTextWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, valueVariable);
 			sourceWriter.println("}");
 		}
 		else if (type.getAnnotation(ValueObject.class) != null)
@@ -724,14 +710,93 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			}
 		}
 	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param parentVariable
+	 * @param voClass
+	 * @param field
+	 * @param sourceWriter
+	 * @param populateScreen
+	 * @param valueVariable
+	 */
+	private void generateHandleHasTextWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, String valueVariable)
+	{
+		sourceWriter.println("if ("+valueVariable+" instanceof HasText){");
+		if (populateScreen)
+		{
+			sourceWriter.println("Object o = " +getFieldValueGet(logger, voClass, field, parentVariable)+";");
+			sourceWriter.println("((HasText)"+valueVariable+").setText(String.valueOf(o!=null?o:\"\"));");
+		}
+		else
+		{
+			generateFieldValueSet(logger, voClass, field, parentVariable, "((HasText)"+valueVariable+").getText()", sourceWriter);
+		}
+		sourceWriter.println("}");
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param parentVariable
+	 * @param voClass
+	 * @param field
+	 * @param sourceWriter
+	 * @param populateScreen
+	 * @param type
+	 * @param valueVariable
+	 */
+	private void generateHandleHasValueWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, Class<?> type,
+			String valueVariable)
+	{
+		sourceWriter.println("if ("+valueVariable+" instanceof HasValue){");
+		if (populateScreen)
+		{
+			sourceWriter.println("((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").setValue("
+					            + getFieldValueGet(logger, voClass, field, parentVariable)+");");
+		}
+		else
+		{
+			generateFieldValueSet(logger, voClass, field, parentVariable, "((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").getValue()", sourceWriter);
+		}
+		sourceWriter.println("}");
+	}
 	
+	/**
+	 * 
+	 * @param logger
+	 * @param parentVariable
+	 * @param voClass
+	 * @param field
+	 * @param sourceWriter
+	 * @param populateScreen
+	 * @param type
+	 * @param valueVariable
+	 */
+	private void generateHandleHasFormatterWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, Class<?> type,
+			String valueVariable)
+	{
+		sourceWriter.println("if ("+valueVariable+" instanceof HasFormatter){");
+		if (populateScreen)
+		{
+			sourceWriter.println("((HasFormatter)"+valueVariable+").setUnformattedValue("
+					            + getFieldValueGet(logger, voClass, field, parentVariable)+");");
+		}
+		else
+		{
+			generateFieldValueSet(logger, voClass, field, parentVariable, "("+getGenericDeclForType(type)+")"
+					            + "((HasFormatter)"+valueVariable+").getUnformattedValue()", sourceWriter);
+		}
+		sourceWriter.println("}");
+	}
 	
 	/**
 	 * Returns a string to be used in generic code block, according with the given type 
 	 * @param type
 	 * @return
 	 */
-	protected String getGenericDeclForType(Class<?> type)
+	private String getGenericDeclForType(Class<?> type)
 	{
 		if (type.isEnum())
 		{
@@ -785,7 +850,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param field
 	 * @return
 	 */
-	protected Class<?> getTypeForField(TreeLogger logger, Field field)
+	private Class<?> getTypeForField(TreeLogger logger, Field field)
 	{
 		Class<?> type = field.getType();
 		if (type.getName().endsWith("Async"))
