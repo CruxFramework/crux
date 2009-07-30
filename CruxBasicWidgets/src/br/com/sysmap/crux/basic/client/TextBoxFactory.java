@@ -50,7 +50,7 @@ public class TextBoxFactory extends TextBoxBaseFactory<TextBox>
 	}
 
 	@Override
-	protected TextBox instantiateWidget(Element element, String widgetId) 
+	protected TextBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
 	{
 		return new TextBox();
 	}
