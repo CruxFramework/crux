@@ -207,7 +207,7 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 	 */
 	public void onFocus(FocusEvent event)
 	{
-		focusText = textBox.getValue();
+		focusText = textBox.getText();
 		int pos = checkVal(false);
 		writeBuffer();
 		caret(pos, -1);
@@ -219,9 +219,9 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 	public void onBlur(BlurEvent event)
 	{
 		checkVal(false);
-		if (textBox.getValue() != focusText)
+		if (textBox.getText() != focusText)
 		{
-			ValueChangeEvent.fire(textBox, textBox.getValue());
+			ValueChangeEvent.fire(textBox, textBox.getText());
 		}
 	}
 
@@ -272,8 +272,8 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 	 */
 	private String writeBuffer()
 	{
-		textBox.setValue(new String(buffer));
-		return textBox.getValue();
+		textBox.setText(new String(buffer));
+		return textBox.getText();
 	}
 
 	/**
@@ -368,7 +368,7 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 	 */
 	private int checkVal(boolean allow)
 	{
-		String test = textBox.getValue();
+		String test = textBox.getText();
 		int lastMatch = -1;
 		int pos=0;
 		int i=0;
@@ -396,7 +396,7 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 		}
 		if (!allow && lastMatch+1 < partialPosition)
 		{
-			textBox.setValue("");
+			textBox.setText("");
 			clearBuffer(0, length);
 		}
 		else if (allow || lastMatch+1 >= partialPosition)
@@ -404,8 +404,8 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 			writeBuffer();
 			if (!allow)
 			{
-				String value = textBox.getValue().substring(0, lastMatch+1);
-				textBox.setValue(value);
+				String value = textBox.getText().substring(0, lastMatch+1);
+				textBox.setText(value);
 			}
 		}
 		return ((partialPosition != 0) ? i : firstNonMaskPos);
@@ -454,7 +454,7 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 		}-*/;
 
 		public native void removeNativeHandlerForPaste(MaskedInput handler, Element element)/*-{
-			element.onpaste = null;
+			element.oninput = null;
 		}-*/;
 	}
 }

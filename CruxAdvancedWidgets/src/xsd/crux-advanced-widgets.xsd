@@ -193,8 +193,17 @@
 	
 	<xs:complexType name="MaskedTextBox">
 		<xs:complexContent>
-			<xs:extension base="basic:TextBox">
+			<xs:extension base="basic:AbstractWidget">
 				<xs:attribute name="formatter"/>
+				<xs:attributeGroup ref="basic:Name"/>
+				<xs:attributeGroup ref="basic:ReadOnly"/>
+				<xs:attributeGroup ref="basic:Direction"/>				
+				<xs:attributeGroup ref="basic:OnChange"/>
+				<xs:attributeGroup ref="basic:FocusAttributes"/>
+				<xs:attributeGroup ref="basic:FocusEvents"/>
+				<xs:attributeGroup ref="basic:ClickEvents"/>
+				<xs:attributeGroup ref="basic:MouseEvents"/>
+				<xs:attributeGroup ref="basic:KeyEvents"/>		
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

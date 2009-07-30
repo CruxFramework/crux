@@ -21,4 +21,10 @@ public interface AdvancedWidgetMessages extends Messages
 {
 	@DefaultMessage("[advanced-widgets - 001] - Filterable widget ''{0}'' not found during Filter instantiation. Please, check the given filterable id.")
 	String filterableNotFoundWhenInstantiantingFilter(String filterable);
+
+	@DefaultMessage("[advanced-widgets - 002] - formattable widget must use setUnformattedValue value instead of setValue.")
+	String formattableWidgetMustUseSetUnformattedValue();
+
+	@DefaultMessage("[advanced-widgets - 003] - The attribute formatter is required for MaskedTextBox.")
+	String maskedTextBoxFormatterRequired();
 }

@@ -31,7 +31,7 @@ public abstract class MaskedTextBoxBaseFormatter implements Formatter
 	{
 		if (hasMask() && (widget instanceof MaskedTextBox))
 		{
-			maskedInput = new MaskedInput((MaskedTextBox) widget, getMask(), getPlaceHolder());
+			maskedInput = new MaskedInput(((MaskedTextBox) widget).textBox, getMask(), getPlaceHolder());
 		}		
 	}
 

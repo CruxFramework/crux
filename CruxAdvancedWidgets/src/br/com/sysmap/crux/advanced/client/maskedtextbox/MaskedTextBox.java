@@ -16,13 +16,36 @@
 package br.com.sysmap.crux.advanced.client.maskedtextbox;
 
 import br.com.sysmap.crux.core.client.formatter.Formatter;
+import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasAllFocusHandlers;
+import com.google.gwt.event.dom.client.HasAllKeyHandlers;
+import com.google.gwt.event.dom.client.HasAllMouseHandlers;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasName;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -30,7 +53,9 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class MaskedTextBox extends TextBox
+public class MaskedTextBox extends Composite implements HasFormatter, HasDirection, HasChangeHandlers, HasValueChangeHandlers<String>,
+														HasClickHandlers, HasAllFocusHandlers, HasAllKeyHandlers,
+														HasAllMouseHandlers, HasName
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-MaskedTextBox" ;
 
@@ -38,6 +63,7 @@ public class MaskedTextBox extends TextBox
 	private Formatter formatter;
 	private HandlerRegistration addBlurHandler;
 	private boolean masked;
+	protected TextBox textBox;
 	
 	/**
 	 * 
@@ -50,14 +76,6 @@ public class MaskedTextBox extends TextBox
 		return new MaskedTextBox(TextBox.wrap(element), formatter);
 	}
 
-	/**
-	 * 
-	 */
-	public MaskedTextBox()
-	{
-		this(null);
-	}
-	
 	/**
 	 * Constructor
 	 * @param formatter
@@ -80,7 +98,9 @@ public class MaskedTextBox extends TextBox
 			textBox.getElement().setId(generateNewId());
 		}
 		setFormatter(formatter);
-		setStyleName(DEFAULT_STYLE_NAME);
+		this.textBox = textBox;
+		this.textBox.setStyleName(DEFAULT_STYLE_NAME);
+		initWidget(this.textBox);
 	}
 
 	/**
@@ -144,7 +164,7 @@ public class MaskedTextBox extends TextBox
 			}
 		}
 		this.formatter = formatter;
-		this.masked = applyMask || this.formatter == null;
+		this.masked = applyMask;
 	}
 
 	/**
@@ -164,6 +184,11 @@ public class MaskedTextBox extends TextBox
 		}
 	}
 	
+	public String getValue()
+	{
+		return textBox.getValue();
+	}
+
 	/**
 	 * 
 	 * @param value
@@ -172,21 +197,14 @@ public class MaskedTextBox extends TextBox
 	{
 		if (this.formatter != null)
 		{
-			super.setValue(this.formatter.format(value));
+			textBox.setValue(this.formatter.format(value));
 		}
 		else
 		{
-			super.setValue(value!= null?value.toString():"");
+			textBox.setValue(value!= null?value.toString():"");
 		}
 	}
-	
-	@Override
-	public void setValue(String value)
-	{
-		super.setValue(value);
-		//TODO: refresh na mascara
-	}
-	
+
 	/**
 	 * Creates a sequential id
 	 * @return
@@ -194,5 +212,135 @@ public class MaskedTextBox extends TextBox
 	protected static String generateNewId() 
 	{
 		return "_mask_" + (++currentId );
+	}
+
+	public Direction getDirection()
+	{
+		return textBox.getDirection();
+	}
+
+	public void setDirection(Direction direction)
+	{
+		textBox.setDirection(direction);
+	}
+
+	public HandlerRegistration addChangeHandler(ChangeHandler handler)
+	{
+		return textBox.addChangeHandler(handler);
+	}
+
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler) 
+	{
+		return textBox.addValueChangeHandler(handler);
+	}
+	
+	public HandlerRegistration addClickHandler(ClickHandler handler)
+	{
+		return textBox.addClickHandler(handler);
+	}
+
+	public HandlerRegistration addFocusHandler(FocusHandler handler)
+	{
+		return textBox.addFocusHandler(handler);
+	}
+
+	public HandlerRegistration addBlurHandler(BlurHandler handler)
+	{
+		return textBox.addBlurHandler(handler);
+	}
+
+	public HandlerRegistration addKeyUpHandler(KeyUpHandler handler)
+	{
+		return textBox.addKeyUpHandler(handler);
+	}
+
+	public HandlerRegistration addKeyDownHandler(KeyDownHandler handler)
+	{
+		return textBox.addKeyDownHandler(handler);
+	}
+
+	public HandlerRegistration addKeyPressHandler(KeyPressHandler handler)
+	{
+		return textBox.addKeyPressHandler(handler);
+	}
+
+	public HandlerRegistration addMouseDownHandler(MouseDownHandler handler)
+	{
+		return textBox.addMouseDownHandler(handler);
+	}
+
+	public HandlerRegistration addMouseUpHandler(MouseUpHandler handler)
+	{
+		return textBox.addMouseUpHandler(handler);
+	}
+
+	public HandlerRegistration addMouseOutHandler(MouseOutHandler handler)
+	{
+		return textBox.addMouseOutHandler(handler);
+	}
+
+	public HandlerRegistration addMouseOverHandler(MouseOverHandler handler)
+	{
+		return textBox.addMouseOverHandler(handler);
+	}
+
+	public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler)
+	{
+		return textBox.addMouseMoveHandler(handler);
+	}
+
+	public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler)
+	{
+		return textBox.addMouseWheelHandler(handler);
+	}
+	
+	public boolean isReadOnly() 
+	{
+		return textBox.isReadOnly();
+	}
+
+	public void setReadOnly(boolean readOnly) 
+	{
+		textBox.setReadOnly(readOnly);
+	}
+
+	public String getName()
+	{
+		return textBox.getName();
+	}
+
+	public void setName(String name)
+	{
+		textBox.setName(name);
+	}
+	
+	public int getTabIndex() 
+	{
+		return textBox.getTabIndex();
+	}
+	
+	public boolean isEnabled() 
+	{
+		return textBox.isEnabled();  
+	}
+
+	public void setEnabled(boolean enabled) 
+	{
+		textBox.setEnabled(enabled);
+	}
+
+	public void setFocus(boolean focused) 
+	{
+		textBox.setFocus(focused);
+	}
+
+	public void setTabIndex(int index) 
+	{
+		textBox.setTabIndex(index);
+	}
+
+	public void setAccessKey(char key)
+	{
+		textBox.setAccessKey(key);
 	}
 }
