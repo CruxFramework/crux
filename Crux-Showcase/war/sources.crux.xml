@@ -1,0 +1,28 @@
+<center
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0">
+
+	<a:collapsePanel id="xmlPanel" width="98%" collapsed="true" onBeforeExpand="sourcesController.loadXmlSource">
+		<a:title>
+			<a:text>View page source</a:text>
+		</a:title>
+		<a:body>
+			<a:widget>
+				<c:textArea id="xmlSourceFrame" styleName="Source" visibleLines="15" readOnly="true" width="100%"/>
+			</a:widget>
+		</a:body>
+	</a:collapsePanel>
+	
+	<a:collapsePanel id="javaPanel" width="98%" collapsed="true" onBeforeExpand="sourcesController.loadJavaSource">
+		<a:title>
+			<a:text>View controller source</a:text>
+		</a:title>
+		<a:body>
+			<a:widget>
+				<c:textArea id="javaSourceFrame" styleName="Source" visibleLines="15" readOnly="true" width="100%"/>
+			</a:widget>
+		</a:body>
+	</a:collapsePanel>
+
+</center>

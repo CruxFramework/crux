@@ -1,23 +1,25 @@
 <html 
-	xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
 	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
 	xmlns:xi="http://www.w3.org/2001/XInclude">
 
 	<head>
 		<title>Decorated Button</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
 	</head>
 
 	<body>
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="decoratedButtonController,sourcesController" onLoad="sourcesController.loadURLs"/>
+		<c:screen useController="decoratedButtonController,sourcesController"/>
 
-		<c:dockPanel id="centeringPanel" width="100%" height="150">
-			<c:cell direction="west" verticalAlignment="middle" horizontalAlignment="right">
+		<c:dockPanel id="centeringPanel" width="100%" height="150" spacing="5">
+			<c:cell direction="west" verticalAlignment="middle" horizontalAlignment="right" width="50%">
 				<a:decoratedButton id="enabledButton" text="Enabled" onClick="decoratedButtonController.onClick"/>
 			</c:cell>
-			<c:cell direction="east" verticalAlignment="middle" horizontalAlignment="left">
+			<c:cell direction="east" verticalAlignment="middle" horizontalAlignment="left" width="50%">
 				<a:decoratedButton id="disabledButton" text="Disabled" enabled="false"/>
 			</c:cell>
 		</c:dockPanel>

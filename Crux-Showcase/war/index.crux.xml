@@ -1,32 +1,78 @@
-<html 
-	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0"
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0">
 
 	<head>
 		<title>My Page</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
 	</head>
 
 	<body>
-		
-		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
-		
-		<c:screen useController="controller"/>
-		
-		
-			<c:decoratorPanel id="basePanel">
-				<c:HTMLPanel id="baseHtml" width="800" height="600">
-					<table>
-						<tr>
-							<td>
-								<c:textBox id="nameTextBox"/>
-							</td>
-						</tr>
-					</table>
-				</c:HTMLPanel>
-			</c:decoratorPanel>
-				
-	</body>
 
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="mainController" />
+
+		<c:dockPanel id="centeringPanel" width="100%" height="100%">
+			<c:cell direction="north" height="70">
+				<c:dockPanel id="titlePanel" width="100%" spacing="5" height="100%">
+					<c:cell direction="west" width="50">
+						<c:image id="logoImg" url="style/img/crux-logo.gif"/>
+					</c:cell>
+					<c:cell direction="east">
+						<c:dockPanel id="titlesDividerPanel" spacing="0">
+							<c:cell direction="north" height="35" verticalAlignment="bottom">
+								<c:label id="titleLabel" text="Crux Framework" styleName="MainTitle"/>
+							</c:cell>
+							<c:cell direction="south" verticalAlignment="top">
+								<c:label id="secondaryTitleLabel" text="Showcase of features" styleName="SecondaryTitle"/>
+							</c:cell>
+						</c:dockPanel>
+					</c:cell>
+				</c:dockPanel>
+			</c:cell>
+			<c:cell direction="south" verticalAlignment="top" horizontalAlignment="center">
+				<c:dockPanel id="menuTabsDividerPannel" width="100%" height="100%" spacing="5">
+					<c:cell direction="west" width="160">
+						<a:stackMenu id="menu" height="400">
+							<a:item id="widgetsItem" label="Widgets" open="true">
+								<a:item id="decoratedButtonItem" label="Decorated Button" onClick="mainController.onClickDecoratedButtonItem"/>
+								<a:item id="timerItem" label="Timer" onClick="mainController.onClickTimerItem"/>
+								<a:item id="scrollBannerItem" label="Scroll Banner" onClick="mainController.onClickScrollBannerItem"/>
+							</a:item>
+							<a:item id="panelsItem" label="Panels">
+								<a:item id="decoratedPanelItem" label="Decorated Panel" onClick="mainController.onClickDecoratedPanelItem" />
+								<a:item id="titlePanelItem" label="Title Panel" onClick="mainController.onClickTitlePanelItem" />
+								<a:item id="collapsePanelItem" label="Collapse Panel" onClick="mainController.onClickCollapsePanelItem" />
+							</a:item>
+							<a:item id="listsItem" label="Lists and Menus">
+								<a:item id="transferListItem" label="Transfer List" onClick="mainController.onClickTransferListItem" />
+								<a:item id="stackMenuItem" label="Stack Menu" onClick="mainController.onClickStackMenuItem" />
+								<a:item id="filterMenuItem" label="Filter" onClick="mainController.onClickFilterItem" />
+							</a:item>
+							<a:item id="textInputItem" label="Text Input">
+								<a:item id="maskedTextBoxItem" label="Masked Text Box" onClick="mainController.onClickMaskedTextBoxItem" />
+							</a:item>
+							<a:item id="tabsItem" label="Tabs">
+								<a:item id="dynaTabsItem" label="Dyna Tabs" onClick="mainController.onClickDynaTabsItem" />
+							</a:item>
+							<a:item id="popupsItem" label="Popups">
+								<a:item id="confirmItem" label="Confirm" onClick="mainController.onClickConfirmItem" />
+								<a:item id="messageBoxItem" label="Message Box" onClick="mainController.onClickMessageBoxItem" />
+								<a:item id="popupItem" label="Popup" onClick="mainController.onClickPopupItem" />
+								<a:item id="progressDialogItem" label="Progress Dialog" onClick="mainController.onClickProgressDialogItem" />
+							</a:item>
+						</a:stackMenu>
+					</c:cell>
+					<c:cell direction="east">
+						<a:decoratedPanel id="basePanel" width="100%" height="100%">
+							<a:widget>
+								<a:dynaTabs id="tabs" height="100%" width="100%" />
+							</a:widget>
+						</a:decoratedPanel>
+					</c:cell>
+				</c:dockPanel>
+			</c:cell>
+		</c:dockPanel>
+
+	</body>
 </html>
 
