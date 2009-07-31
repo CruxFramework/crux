@@ -20,7 +20,7 @@
 			<c:cell horizontalAlignment="center" direction="north">
 				<a:collapsePanel id="collapsePanel" onBeforeExpand="collapsePanelController.onBeforeExpand" onBeforeCollapse="collapsePanelController.onBeforeCollapse" width="700" height="80" >
 					<a:title>
-						<a:text>Click the "-" icon to view the contents</a:text>
+						<a:text>Click the "-" icon to hide the contents</a:text>
 					</a:title>
 					<a:body>
 						<a:widget>
