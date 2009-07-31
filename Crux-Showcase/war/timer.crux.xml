@@ -5,7 +5,7 @@
 	xmlns:xi="http://www.w3.org/2001/XInclude">
 
 	<head>
-		<title>Decorated Button</title>
+		<title>Timer</title>
 		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
 	</head>
 
@@ -15,18 +15,22 @@
 
 		<c:screen useController="timerController,sourcesController"/>
 
-		<c:dockPanel id="centeringPanel" width="100%" height="150">
-			<c:cell direction="north" verticalAlignment="middle" horizontalAlignment="center">
-				<a:timer id="timer">
-					<a:onTimeout execute="timerController.afterThreeSeconds" time="3"/>
-					<a:onTimeout execute="timerController.afterTenSeconds" time="10"/>
-				</a:timer>
-			</c:cell>
-			<c:cell direction="center" verticalAlignment="middle" horizontalAlignment="center">
-				<c:checkBox id="threeSecondsCheckBox" text="This checkbox will be checked after 3 seconds" enabled="false"/>
-			</c:cell>
-			<c:cell direction="south" verticalAlignment="middle" horizontalAlignment="center">
-				<c:checkBox id="tenSecondsCheckBox" text="This checkbox will be checked after 10 seconds" enabled="false"/>
+		<c:dockPanel id="centeringPanel" width="100%" height="100">
+			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
+				<c:dockPanel id="widgetsPanel" spacing="5">
+					<c:cell direction="north" verticalAlignment="middle" horizontalAlignment="center">
+						<a:timer id="timer" start="true">
+							<a:onTimeout execute="timerController.afterThreeSeconds" time="3"/>
+							<a:onTimeout execute="timerController.afterTenSeconds" time="10"/>
+						</a:timer>
+					</c:cell>
+					<c:cell direction="center" verticalAlignment="middle" horizontalAlignment="left">
+						<c:checkBox id="threeSecondsCheckBox" text="This checkbox will be checked after 3 seconds"/>
+					</c:cell>
+					<c:cell direction="south" verticalAlignment="middle" horizontalAlignment="left">
+						<c:checkBox id="tenSecondsCheckBox" text="This checkbox will be checked after 10 seconds"/>
+					</c:cell>				
+				</c:dockPanel>
 			</c:cell>
 		</c:dockPanel>
 		

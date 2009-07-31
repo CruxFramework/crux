@@ -13,49 +13,62 @@ import com.google.gwt.user.client.ui.TextArea;
 @Controller(value="sourcesController")
 public class SourcesController {
 	
+	private boolean xmlLoaded;
+	private boolean javaLoaded;
+	
 	@Create
 	protected SVNServiceAsync service;
 	
 	@Expose
 	public void loadJavaSource() {
 		
-		ProgressDialog.show("Loading source...");
-		
-		String id = getScreenSimpleId();
-		String javaFileName = id.substring(0,1).toUpperCase() + id.substring(1) + "Controller.java";
-		
-		service.getJavaFile(javaFileName, false, 
-			new AsyncCallbackAdapter<String>(this){
-				public void onComplete(String result)
-				{
-					TextArea textArea = Screen.get("javaSourceFrame", TextArea.class);
-					textArea.getElement().setAttribute("wrap", "off");
-					textArea.setValue(result);
-					ProgressDialog.hide();
-				}			
-			}
-		);
+		if(!javaLoaded)
+		{
+			javaLoaded = true;
+			
+			ProgressDialog.show("Loading source...");
+			
+			String id = getScreenSimpleId();
+			String javaFileName = id.substring(0,1).toUpperCase() + id.substring(1) + "Controller.java";
+			
+			service.getJavaFile(javaFileName, false, 
+				new AsyncCallbackAdapter<String>(this){
+					public void onComplete(String result)
+					{
+						TextArea textArea = Screen.get("javaSourceFrame", TextArea.class);
+						textArea.getElement().setAttribute("wrap", "off");
+						textArea.setValue(result);
+						ProgressDialog.hide();
+					}			
+				}
+			);
+		}
 	}
 	
 	@Expose
 	public void loadXmlSource() {
 		
-		ProgressDialog.show("Loading source...");
+		if(!xmlLoaded)
+		{
+			xmlLoaded = true;
+			
+			ProgressDialog.show("Loading source...");
 		
-		String id = getScreenSimpleId();
-		String xmlFileName = id + ".crux.xml";
-		
-		service.getXmlFile(xmlFileName, false, 
-			new AsyncCallbackAdapter<String>(this){
-				public void onComplete(String result)
-				{
-					TextArea textArea = Screen.get("xmlSourceFrame", TextArea.class);
-					textArea.getElement().setAttribute("wrap", "off");
-					textArea.setValue(result);
-					ProgressDialog.hide();
-				}			
-			}
-		);
+			String id = getScreenSimpleId();
+			String xmlFileName = id + ".crux.xml";
+			
+			service.getXmlFile(xmlFileName, false, 
+				new AsyncCallbackAdapter<String>(this){
+					public void onComplete(String result)
+					{
+						TextArea textArea = Screen.get("xmlSourceFrame", TextArea.class);
+						textArea.getElement().setAttribute("wrap", "off");
+						textArea.setValue(result);
+						ProgressDialog.hide();
+					}			
+				}
+			);
+		}
 	}
 
 	private String getScreenSimpleId() {
