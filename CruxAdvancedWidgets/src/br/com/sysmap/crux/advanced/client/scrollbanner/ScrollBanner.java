@@ -45,9 +45,19 @@ public class ScrollBanner extends Composite
 	private Label messageCountLabel;
 	private FocusPanel nextMsgButton;
 	private FocusPanel previousMsgButton;
+	private int messageScrollingPeriod;
 	
-	private int currentMessageIndex = 0;
+	private int currentMessageIndex = -1;
 	private List<String> messages = new ArrayList<String>();
+
+	private Timer timer = new Timer()
+	{
+		@Override
+		public void run()
+		{
+			showNextMessage();				
+		}			
+	};
 
 	/**
 	 * @param messageScrollingInterval
@@ -55,18 +65,8 @@ public class ScrollBanner extends Composite
 	public ScrollBanner(int messageScrollingPeriod)
 	{
 		this();
-		
-		final ScrollBanner banner = this; 
-		Timer timer = new Timer()
-		{
-			@Override
-			public void run()
-			{
-				banner.showNextMessage();				
-			}			
-		};
-		
-		timer.scheduleRepeating(messageScrollingPeriod);
+		this.messageScrollingPeriod = messageScrollingPeriod;
+		timer.scheduleRepeating(this.messageScrollingPeriod);
 	}
 	
 	/**
@@ -124,6 +124,11 @@ public class ScrollBanner extends Composite
 	public void addMessage(String message)
 	{
 		this.messages.add(message);
+		
+		if(this.messages.size() == 1)
+		{
+			showNextMessage();
+		}
 	}
 	
 	/**
@@ -135,7 +140,7 @@ public class ScrollBanner extends Composite
 		{
 			currentMessageIndex = (currentMessageIndex + 1) % this.messages.size();
 			showMessage(currentMessageIndex);
-		}	
+		}
 	}
 	
 	/**
@@ -220,7 +225,9 @@ public class ScrollBanner extends Composite
 		{
 			public void onClick(ClickEvent event)
 			{
+				timer.cancel();
 				banner.showNextMessage();
+				timer.scheduleRepeating(messageScrollingPeriod);
 			}			
 		};
 	}

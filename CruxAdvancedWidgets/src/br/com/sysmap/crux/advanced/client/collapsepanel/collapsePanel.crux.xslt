@@ -31,6 +31,12 @@
 			<xsl:if test="string-length(@collapsed) > 0">
 				<xsl:attribute name="_collapsed" select="@collapsed"/>
 			</xsl:if>			
+			<xsl:if test="string-length(@onBeforeExpand) > 0">
+				<xsl:attribute name="_onbeforeexpand" select="@onBeforeExpand"/>
+			</xsl:if>
+			<xsl:if test="string-length(@onBeforeCollapse) > 0">
+				<xsl:attribute name="_onbeforecollapse" select="@onBeforeCollapse"/>
+			</xsl:if>
 			<xsl:for-each select="child::*">
 				<xsl:element name="span" namespace="{$xhtmlNS}">
 					<xsl:attribute name="_part" select="local-name()"/>
