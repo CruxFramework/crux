@@ -26,6 +26,7 @@ import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.Events;
+import br.com.sysmap.crux.core.client.formatter.Formatter;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -651,6 +652,16 @@ public class Screen
 	public static ModuleComunicationSerializer getCruxSerializer()
 	{
 		return Screen.get().serializer;
+	}
+	
+	/**
+	 * 
+	 * @param formatter
+	 * @return
+	 */
+	public static Formatter getFormatter(String formatter)
+	{
+		return ScreenFactory.getInstance().getClientFormatter(formatter);
 	}
 	
 	/**
