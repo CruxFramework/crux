@@ -31,7 +31,7 @@ public interface GeneratorMessages
 	String errorGeneratingRegisteredClientHandler(String widget, String errMesg);
 
 	@DefaultMessage("[generator 003] - Error for register client formatter. Formatter: {0}. Error:{1}")
-	String errorGeneratingRegisteredFormatter(String widget, String errMesg);
+	String errorGeneratingRegisteredFormatter(String formatter, String errMesg);
 
 	@DefaultMessage("[generator 004] - Error for register client class {0}:")
 	String errorGeneratingRegisteredElement(String errMsg);

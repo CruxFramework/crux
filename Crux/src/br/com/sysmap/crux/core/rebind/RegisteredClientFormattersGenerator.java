@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
-import br.com.sysmap.crux.core.rebind.screen.Widget;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.formatter.Formatters;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
@@ -71,27 +70,17 @@ public class RegisteredClientFormattersGenerator extends AbstractRegisteredEleme
 		
 		for (Screen screen : screens)
 		{
-			Iterator<Widget> iterator = screen.iterateWidgets();
+			Iterator<String> iterator = screen.iterateFormatters();
 			while (iterator.hasNext())
 			{
-				Widget widget = iterator.next();
-				generateFormattersForWidget(logger, sourceWriter, widget, added);
+				String formatter = iterator.next();
+				generateFormatterBlock(logger,sourceWriter, formatter, added);
 			}
 		}
 		sourceWriter.println("}");
 	} 
 	
-	protected void generateFormattersForWidget(TreeLogger logger,SourceWriter sourceWriter, Widget widget, Map<String, Boolean> added)
-	{
-		String formatter = widget.getFormatter();
-		
-		if (formatter != null && formatter.length()>0)
-		{
-			generateFormatterBlock(logger,sourceWriter, widget.getId(), formatter, added);
-		}
-	}
-	
-	protected void generateFormatterBlock(TreeLogger logger, SourceWriter sourceWriter, String widgetId, String formatter, Map<String, Boolean> added)
+	protected void generateFormatterBlock(TreeLogger logger, SourceWriter sourceWriter, String formatter, Map<String, Boolean> added)
 	{
 		try
 		{
@@ -125,7 +114,7 @@ public class RegisteredClientFormattersGenerator extends AbstractRegisteredEleme
 		}
 		catch (Throwable e) 
 		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredFormatter(widgetId, e.getLocalizedMessage()), e);
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredFormatter(formatter, e.getLocalizedMessage()), e);
 		}
 	}
 }

@@ -344,6 +344,18 @@ public class ScreenFactory
 					}
 				}
 			}
+			else if(attrName.equals("_useformatter"))
+			{
+				String formatterStr =  attr.getValue();
+				if (formatterStr != null)
+				{
+					String[] formatters = RegexpPatterns.REGEXP_COMMA.split(formatterStr);
+					for (String formatter : formatters)
+					{
+						screen.addFormatter(formatter.trim());
+					}
+				}
+			}
 			else if (attrName.startsWith("_on"))
 			{
 				Event event = EventFactory.getEvent(attrName, attr.getValue());

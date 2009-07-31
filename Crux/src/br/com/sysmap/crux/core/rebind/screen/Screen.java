@@ -33,6 +33,8 @@ public class Screen
 	protected Map<String, Event> events = new HashMap<String, Event>();
 	protected List<String> controllers = new ArrayList<String>();
 	protected List<String> serializers = new ArrayList<String>();
+	protected List<String> formatters = new ArrayList<String>();
+	
 	protected String module;
 	
 	public Screen(String id, String module) 
@@ -159,4 +161,25 @@ public class Screen
 	{
 		return serializers.iterator();
 	}
+	
+	/**
+	 * Import a formatter into screen
+	 * @param event
+	 */
+	protected void addFormatter(String formatter)
+	{
+		if (formatter != null)
+		{
+			formatters.add(formatter);
+		}
+	}
+	
+	/**
+	 * Iterate over screen formatters
+	 * @return
+	 */
+	public Iterator<String> iterateFormatters()
+	{
+		return formatters.iterator();
+	}	
 }
