@@ -18,7 +18,7 @@
 		<c:dockPanel id="centeringPanel" width="100%" height="130">
 			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
 				<a:decoratedPanel id="borders">
-					<a:widget>
+					<a:widget> 
 						<a:transferList id="transferList" leftListLabel="Left Items" 
 						                rightListLabel="Right Items" visibleItemCount="5"
 						                leftToRightButtonText="&gt;&gt;" rightToLeftButtonText="&lt;&lt;"
