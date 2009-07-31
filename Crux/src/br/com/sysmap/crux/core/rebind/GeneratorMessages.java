@@ -65,4 +65,7 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 013] - Error for invoking method. Serialization Error.")
 	String errorInvokerWrapperSerializationError();
+
+	@DefaultMessage("[generator 014] - Widget {0} not found.")
+	String errorGeneratingRegisteredClientHandlerWidgetNotFound(String name);
 }

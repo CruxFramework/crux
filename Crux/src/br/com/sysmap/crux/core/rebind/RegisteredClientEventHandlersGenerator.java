@@ -33,7 +33,10 @@ import br.com.sysmap.crux.core.client.controller.ScreenBind;
 import br.com.sysmap.crux.core.client.controller.Validate;
 import br.com.sysmap.crux.core.client.controller.ValueObject;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
+import br.com.sysmap.crux.core.client.formatter.HasFormatter;
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
+import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -42,6 +45,9 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -126,7 +132,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param sourceWriter
 	 * @param screen
 	 */
-	protected void generateEventHandlersForScreen(TreeLogger logger,SourceWriter sourceWriter, Screen screen, 
+	protected void generateEventHandlersForScreen(TreeLogger logger, SourceWriter sourceWriter, Screen screen, 
 			Map<String, String> handlerClassNames, String implClassName)
 	{
 		Iterator<String> controllers = screen.iterateControllers();
@@ -134,7 +140,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			generateEventHandlerBlock(logger,sourceWriter, controller, handlerClassNames, implClassName);
+			generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames, implClassName);
 		}		
 
 		controllers = ClientControllers.iterateGlobalClientHandler();
@@ -142,7 +148,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			generateEventHandlerBlock(logger,sourceWriter, controller, handlerClassNames, implClassName);
+			generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames, implClassName);
 		}		
 	}
 	
@@ -154,14 +160,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param event
 	 * @param added
 	 */
-	protected void generateEventHandlerBlock(TreeLogger logger, SourceWriter sourceWriter, String controller, 
+	protected void generateEventHandlerBlock(TreeLogger logger, Screen screen, SourceWriter sourceWriter, String controller, 
 			Map<String, String> added, String implClassName)
 	{
 		try
 		{
 			if (!added.containsKey(controller) && ClientControllers.getClientHandler(controller)!= null)
 			{
-				String genClass = generateEventHandlerInvokerClass(logger,sourceWriter,ClientControllers.getClientHandler(controller), implClassName);
+				String genClass = generateEventHandlerInvokerClass(logger,screen,sourceWriter,ClientControllers.getClientHandler(controller), implClassName);
 				added.put(controller, genClass);
 			}
 		}
@@ -178,7 +184,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param handlerClass
 	 * @return
 	 */
-	protected String generateEventHandlerInvokerClass(TreeLogger logger, SourceWriter sourceWriter, Class<?> handlerClass, String implClassName)
+	protected String generateEventHandlerInvokerClass(TreeLogger logger, Screen screen, SourceWriter sourceWriter, Class<?> handlerClass, String implClassName)
 	{
 		String className = handlerClass.getSimpleName();
 		sourceWriter.println("public class "+className+"Wrapper extends " + getClassSourceName(handlerClass)
@@ -291,8 +297,8 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 		sourceWriter.println("}");
 		
-		generateScreenUpdateWidgetsFunction(logger, handlerClass, sourceWriter);
-		generateControllerUpdateObjectsFunction(logger, handlerClass, sourceWriter);
+		generateScreenUpdateWidgetsFunction(logger, screen, handlerClass, sourceWriter);
+		generateControllerUpdateObjectsFunction(logger, screen, handlerClass, sourceWriter);
 		
 		sourceWriter.println("public boolean isAutoBindEnabled(){");
 		sourceWriter.println("return "+(controllerAnnot != null && controllerAnnot.autoBind())+";");
@@ -408,7 +414,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param voClass
 	 * @param sourceWriter
 	 */
-	protected void generateScreenOrDTOPopulation(TreeLogger logger, String resultVariable, Class<?> voClass, SourceWriter sourceWriter, boolean populateScreen)
+	protected void generateScreenOrDTOPopulation(TreeLogger logger, Screen screen, String resultVariable, Class<?> voClass, SourceWriter sourceWriter, boolean populateScreen)
 	{
 		for (Field field : voClass.getDeclaredFields()) 
 		{
@@ -419,7 +425,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 				ScreenBind screenBind = field.getAnnotation(ScreenBind.class); 
 				if (valueObject != null && valueObject.bindWidgetByFieldName() || screenBind != null)
 				{
-					generateScreenOrDTOPopulationField(logger, resultVariable, voClass, field, sourceWriter, populateScreen);
+					generateScreenOrDTOPopulationField(logger, screen, resultVariable, voClass, field, sourceWriter, populateScreen);
 				}
 			}
 		}
@@ -434,9 +440,9 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param field
 	 * @param sourceWriter
 	 */
-	protected void generateDTOFieldPopulation(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter)
+	protected void generateDTOFieldPopulation(TreeLogger logger, Screen screen, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter)
 	{
-		generateScreenOrDTOPopulationField(logger, parentVariable, voClass, field, sourceWriter, false);
+		generateScreenOrDTOPopulationField(logger, screen, parentVariable, voClass, field, sourceWriter, false);
 	}
 
 	/**
@@ -563,11 +569,11 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param controller
 	 * @param sourceWriter
 	 */
-	protected void generateScreenUpdateWidgetsFunction(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
+	protected void generateScreenUpdateWidgetsFunction(TreeLogger logger, Screen screen, Class<?> controller, SourceWriter sourceWriter)
 	{
 		sourceWriter.println("public void updateScreenWidgets(){");
 		sourceWriter.println("Widget __wid = null;");
-		generateScreenUpdateWidgets(logger, "this", controller, sourceWriter);
+		generateScreenUpdateWidgets(logger, screen, "this", controller, sourceWriter);
 		sourceWriter.println("}");
 	}
 	
@@ -577,11 +583,11 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param controller
 	 * @param sourceWriter
 	 */
-	protected void generateControllerUpdateObjectsFunction(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
+	protected void generateControllerUpdateObjectsFunction(TreeLogger logger, Screen screen, Class<?> controller, SourceWriter sourceWriter)
 	{
 		sourceWriter.println("public void updateControllerObjects(){");
 		sourceWriter.println("Widget __wid = null;");
-		generateControllerUpdateObjects(logger, "this", controller, sourceWriter);
+		generateControllerUpdateObjects(logger, screen, "this", controller, sourceWriter);
 		sourceWriter.println("}");
 	}
 
@@ -592,7 +598,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param controller
 	 * @param sourceWriter
 	 */
-	protected void generateControllerUpdateObjects(TreeLogger logger, String controllerVariable, Class<?> controller, SourceWriter sourceWriter)
+	protected void generateControllerUpdateObjects(TreeLogger logger, Screen screen, String controllerVariable, Class<?> controller, SourceWriter sourceWriter)
 	{
 		for (Field field : controller.getDeclaredFields()) 
 		{
@@ -602,14 +608,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 
 				if (type.getAnnotation(ValueObject.class) != null)
 				{
-					generateDTOFieldPopulation(logger, controllerVariable, controller, field,sourceWriter);
+					generateDTOFieldPopulation(logger, screen, controllerVariable, controller, field,sourceWriter);
 				}
 			}
 		}
 		
 		if (controller.getSuperclass() != null)
 		{
-			generateControllerUpdateObjects(logger, controllerVariable, controller.getSuperclass(), sourceWriter);
+			generateControllerUpdateObjects(logger, screen, controllerVariable, controller.getSuperclass(), sourceWriter);
 		}
 	}
 	
@@ -620,7 +626,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param controller
 	 * @param sourceWriter
 	 */
-	protected void generateScreenUpdateWidgets(TreeLogger logger, String controllerVariable, Class<?> controller, SourceWriter sourceWriter)
+	protected void generateScreenUpdateWidgets(TreeLogger logger, Screen screen, String controllerVariable, Class<?> controller, SourceWriter sourceWriter)
 	{
 		for (Field field : controller.getDeclaredFields()) 
 		{
@@ -630,14 +636,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 
 				if (type.getAnnotation(ValueObject.class) != null)
 				{
-					generateScreenWidgetPopulation(logger, controllerVariable, controller, field,sourceWriter);
+					generateScreenWidgetPopulation(logger, screen, controllerVariable, controller, field,sourceWriter);
 				}
 			}
 		}
 		
 		if (controller.getSuperclass() != null)
 		{
-			generateScreenUpdateWidgets(logger, controllerVariable, controller.getSuperclass(), sourceWriter);
+			generateScreenUpdateWidgets(logger, screen, controllerVariable, controller.getSuperclass(), sourceWriter);
 		}
 	}
 	
@@ -650,9 +656,9 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param field
 	 * @param sourceWriter
 	 */
-	protected void generateScreenWidgetPopulation(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter)
+	protected void generateScreenWidgetPopulation(TreeLogger logger, Screen screen, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter)
 	{
-		generateScreenOrDTOPopulationField(logger, parentVariable, voClass, field, sourceWriter, true);
+		generateScreenOrDTOPopulationField(logger, screen, parentVariable, voClass, field, sourceWriter, true);
 	}
 	
 	/**
@@ -664,7 +670,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param field
 	 * @param sourceWriter
 	 */
-	protected void generateScreenOrDTOPopulationField(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen)
+	protected void generateScreenOrDTOPopulationField(TreeLogger logger, Screen screen, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen)
 	{
 		Class<?> type = field.getType();
 		String name = null;
@@ -685,15 +691,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
                 (Date.class.isAssignableFrom(type)) ||
                 (type.isEnum())) 
 		{
-			String valueVariable = "__wid";
-			sourceWriter.println(valueVariable + "= Screen.get(\""+name+"\");");
-			sourceWriter.println("if ("+valueVariable+" != null){");
-			generateHandleHasFormatterWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
-			sourceWriter.print("else ");
-			generateHandleHasValueWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
-			sourceWriter.print("else ");
-			generateHandleHasTextWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, valueVariable);
-			sourceWriter.println("}");
+			if ("true".equals(ConfigurationFactory.getConfigurations().allowAutoBindWithNonDeclarativeWidgets()))
+			{
+				generateAutoBindHandlerForAllWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, name);
+			}
+			else
+			{
+				generateAutoBindHandlerForDeclarativeWidgetsOnly(logger, screen, parentVariable, voClass, field, sourceWriter, populateScreen, type, name);
+			}
 		}
 		else if (type.getAnnotation(ValueObject.class) != null)
 		{
@@ -706,8 +711,81 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable);
 			if (parentVariable != null)
 			{
-				generateScreenOrDTOPopulation(logger, parentVariable, type, sourceWriter, populateScreen);
+				generateScreenOrDTOPopulation(logger, screen, parentVariable, type, sourceWriter, populateScreen);
 			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param parentVariable
+	 * @param voClass
+	 * @param field
+	 * @param sourceWriter
+	 * @param populateScreen
+	 * @param type
+	 * @param name
+	 */
+	private void generateAutoBindHandlerForAllWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, Class<?> type,
+			String name)
+	{
+		String valueVariable = "__wid";
+		sourceWriter.println(valueVariable + "= Screen.get(\""+name+"\");");
+		sourceWriter.println("if ("+valueVariable+" != null){");
+		sourceWriter.println("if ("+valueVariable+" instanceof HasFormatter){");
+		generateHandleHasFormatterWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+		sourceWriter.println("}else if ("+valueVariable+" instanceof HasValue){");
+		generateHandleHasValueWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+		sourceWriter.print("}");
+		if (String.class.isAssignableFrom(type))
+		{
+			sourceWriter.println("else if ("+valueVariable+" instanceof HasText){");
+			generateHandleHasTextWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+			sourceWriter.println("}");
+		}
+		sourceWriter.println("}");
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param screen
+	 * @param parentVariable
+	 * @param voClass
+	 * @param field
+	 * @param sourceWriter
+	 * @param populateScreen
+	 * @param type
+	 * @param name
+	 */
+	private void generateAutoBindHandlerForDeclarativeWidgetsOnly(TreeLogger logger, Screen screen, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter,
+			boolean populateScreen, Class<?> type, String name)
+	{
+		try
+		{
+			Class<? extends Widget> widgetClass = getClientWidget(screen, name);
+			if (widgetClass != null)
+			{
+				String valueVariable = "__wid";
+				sourceWriter.println(valueVariable + "= Screen.get(\""+name+"\");");
+				if (HasFormatter.class.isAssignableFrom(widgetClass))
+				{
+					generateHandleHasFormatterWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+				}
+				else if (HasValue.class.isAssignableFrom(widgetClass))
+				{
+					generateHandleHasValueWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+				}
+				else if (String.class.isAssignableFrom(type) && HasText.class.isAssignableFrom(widgetClass))
+				{
+					generateHandleHasTextWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+				}
+			}
+		}
+		catch (ClassNotFoundException e)
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandlerWidgetNotFound(name), e);
 		}
 	}
 
@@ -721,9 +799,8 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param populateScreen
 	 * @param valueVariable
 	 */
-	private void generateHandleHasTextWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, String valueVariable)
+	private void generateHandleHasTextWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, Class<?> type, String valueVariable)
 	{
-		sourceWriter.println("if ("+valueVariable+" instanceof HasText){");
 		if (populateScreen)
 		{
 			sourceWriter.println("Object o = " +getFieldValueGet(logger, voClass, field, parentVariable)+";");
@@ -733,7 +810,6 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		{
 			generateFieldValueSet(logger, voClass, field, parentVariable, "((HasText)"+valueVariable+").getText()", sourceWriter);
 		}
-		sourceWriter.println("}");
 	}
 
 	/**
@@ -750,7 +826,6 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	private void generateHandleHasValueWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, Class<?> type,
 			String valueVariable)
 	{
-		sourceWriter.println("if ("+valueVariable+" instanceof HasValue){");
 		if (populateScreen)
 		{
 			sourceWriter.println("((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").setValue("
@@ -758,9 +833,8 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 		else
 		{
-			generateFieldValueSet(logger, voClass, field, parentVariable, "((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").getValue()", sourceWriter);
+			generateFieldValueSet(logger, voClass, field, parentVariable, "("+getGenericDeclForType(type)+")((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").getValue()", sourceWriter);
 		}
-		sourceWriter.println("}");
 	}
 	
 	/**
@@ -777,7 +851,6 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	private void generateHandleHasFormatterWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, Class<?> type,
 			String valueVariable)
 	{
-		sourceWriter.println("if ("+valueVariable+" instanceof HasFormatter){");
 		if (populateScreen)
 		{
 			sourceWriter.println("((HasFormatter)"+valueVariable+").setUnformattedValue("
@@ -788,7 +861,20 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			generateFieldValueSet(logger, voClass, field, parentVariable, "("+getGenericDeclForType(type)+")"
 					            + "((HasFormatter)"+valueVariable+").getUnformattedValue()", sourceWriter);
 		}
-		sourceWriter.println("}");
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Class<? extends Widget> getClientWidget(Screen screen,  String name) throws ClassNotFoundException
+	{
+		br.com.sysmap.crux.core.rebind.screen.Widget rebindWidget = screen.getWidget(name);
+		
+		if (rebindWidget != null)
+		{
+			String className = WidgetConfig.getClientClass(rebindWidget.getType());
+			return (Class<? extends Widget>) Class.forName(className);
+		}
+		
+		return null;
 	}
 	
 	/**

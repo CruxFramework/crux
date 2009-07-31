@@ -33,4 +33,7 @@ public interface Crux
 	
 	@DefaultMessage("true")
 	String wrapSiblingWidgets();
+
+	@DefaultMessage("true")
+	String allowAutoBindWithNonDeclarativeWidgets();
 }
