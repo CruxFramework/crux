@@ -1,0 +1,31 @@
+<!--
+!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+-->
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<head>
+		<title>GXT Integration</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+		<link rel="stylesheet" type="text/css" href="resources/css/gxt-all.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="gxtController,sourcesController" onLoad="gxtController.loadGXTWidgets"/>
+
+		<c:dockPanel id="centeringPanel" width="100%" height="130">
+			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
+  			   <c:simplePanel id="gxtWidgets"></c:simplePanel> 
+			</c:cell>
+		</c:dockPanel>
+		
+		<xi:include href="sources.crux.xml"/>
+		
+	</body>
+</html>

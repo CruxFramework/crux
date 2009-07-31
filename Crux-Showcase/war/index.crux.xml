@@ -60,6 +60,9 @@
 								<a:item id="popupItem" label="Popup" onClick="mainController.onClickPopupItem" />
 								<a:item id="progressDialogItem" label="Progress Dialog" onClick="mainController.onClickProgressDialogItem" />
 							</a:item>
+							<a:item id="others" label="Others">
+								<a:item id="gxtItem" label="GXT" onClick="mainController.onClickGxtItem" />
+							</a:item>
 						</a:stackMenu>
 					</c:cell>
 					<c:cell direction="east">

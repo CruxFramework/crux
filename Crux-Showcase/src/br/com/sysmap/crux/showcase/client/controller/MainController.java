@@ -14,6 +14,8 @@ public class MainController {
 	private static final String TIMER_TAB = "timer";
 	private static final String SCROLL_BANNER_TAB = "scrollBanner";
 	private static final String  TRANSFER_LIST_TAB = "transferList";
+	private static final String  GXT_TAB = "gxt";
+	private static final String  MASKED_TEXTBOX_TAB = "maskedTextBox";
 	private static final String DECORATED_PANEL_TAB = "decoratedPanel";
 	private static final String TITLE_PANEL_TAB = "titlePanel";
 	private static final String COLLAPSE_PANEL_TAB = "collapsePanel";
@@ -56,6 +58,17 @@ public class MainController {
 		screen.getTabs().openTab(TRANSFER_LIST_TAB, "Transfer List", TRANSFER_LIST_TAB + HTML, true, false);
 	}	
 
+	@Expose
+	public void onClickGxtItem(){
+		screen.getTabs().openTab(GXT_TAB, "GXT Integration", GXT_TAB + HTML, true, false);
+	}	
+	
+	@Expose
+	public void onClickMaskedTextBoxItem(){
+		screen.getTabs().openTab(MASKED_TEXTBOX_TAB, "Masked Text Box", MASKED_TEXTBOX_TAB + HTML, true, false);
+	}	
+	
+	
 	protected static interface MainScreen extends ScreenWrapper {
 		DynaTabs getTabs();
 	}
