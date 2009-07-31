@@ -6,7 +6,7 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 
 import com.google.gwt.user.client.ui.CheckBox;
 
-@Controller(value="timerController")
+@Controller("timerController")
 public class TimerController {
 	
 	@Expose

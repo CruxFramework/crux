@@ -46,7 +46,7 @@
 			<c:cell horizontalAlignment="center" direction="south">
 				<a:titlePanel id="widgetTitlePanel" width="700" height="80">
 					<a:title>
-						<a:widget><c:textBox id="textBoxWidget" text="Widget Title" style="18px"/></a:widget>
+						<a:widget><c:textBox id="textBoxWidget" text="Widget Title" style="height:18px;fontSize:9px;"/></a:widget>
 					</a:title>
 					<a:body>
 						<a:widget>

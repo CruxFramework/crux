@@ -5,7 +5,7 @@ import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
-@Controller(value="scrollBannerController")
+@Controller("scrollBannerController")
 public class ScrollBannerController {
 	
 	@Expose

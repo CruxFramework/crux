@@ -10,7 +10,7 @@ import br.com.sysmap.crux.showcase.client.remote.SVNServiceAsync;
 
 import com.google.gwt.user.client.ui.TextArea;
 
-@Controller(value="sourcesController")
+@Controller("sourcesController")
 public class SourcesController {
 	
 	private boolean xmlLoaded;
