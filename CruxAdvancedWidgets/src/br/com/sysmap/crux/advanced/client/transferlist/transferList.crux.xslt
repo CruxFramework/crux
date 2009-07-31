@@ -39,6 +39,7 @@
 			<xsl:if test="string-length(@rightListLabel) > 0">
 				<xsl:attribute name="_rightListLabel" select="@rightListLabel"/>
 			</xsl:if>
+			<xsl:value-of select="' '"/>
 		</xsl:element> 
 	</xsl:template>
 	
