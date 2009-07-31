@@ -22,7 +22,7 @@ import br.com.sysmap.crux.core.client.event.bind.FocusEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.screen.ScreenFactory;
+import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -43,7 +43,7 @@ public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
 		String formatter = element.getAttribute("_formatter");
 		if (formatter != null && formatter.length() > 0)
 		{
-			return new MaskedTextBox(ScreenFactory.getInstance().getClientFormatter(formatter));
+			return new MaskedTextBox(Screen.getFormatter(formatter));
 		}
 		throw new InterfaceConfigException(messages.maskedTextBoxFormatterRequired());
 	}
