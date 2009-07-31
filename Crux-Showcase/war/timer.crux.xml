@@ -1,0 +1,36 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<head>
+		<title>Decorated Button</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="timerController,sourcesController"/>
+
+		<c:dockPanel id="centeringPanel" width="100%" height="150">
+			<c:cell direction="north" verticalAlignment="middle" horizontalAlignment="center">
+				<a:timer id="timer">
+					<a:onTimeout execute="timerController.afterThreeSeconds" time="3"/>
+					<a:onTimeout execute="timerController.afterTenSeconds" time="10"/>
+				</a:timer>
+			</c:cell>
+			<c:cell direction="center" verticalAlignment="middle" horizontalAlignment="center">
+				<c:checkBox id="threeSecondsCheckBox" text="This checkbox will be checked after 3 seconds" enabled="false"/>
+			</c:cell>
+			<c:cell direction="south" verticalAlignment="middle" horizontalAlignment="center">
+				<c:checkBox id="tenSecondsCheckBox" text="This checkbox will be checked after 10 seconds" enabled="false"/>
+			</c:cell>
+		</c:dockPanel>
+		
+		<xi:include href="sources.crux.xml"/>
+		
+	</body>
+</html>
