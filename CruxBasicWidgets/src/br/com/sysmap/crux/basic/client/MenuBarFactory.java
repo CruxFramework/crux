@@ -157,6 +157,10 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 		{
 			widget.addItem(caption, itens);
 		}
+		else
+		{
+			GWT.log(messages.menubarItemWithoutChildrenOrCommand(caption), null);
+		}		
 	}
 
 	/**
@@ -194,6 +198,10 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 		else if(itens != null)
 		{
 			widget.addItem(caption, true, itens);
+		}
+		else
+		{
+			GWT.log(messages.menubarItemWithoutChildrenOrCommand(caption), null);
 		}
 	}
 

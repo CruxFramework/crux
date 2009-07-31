@@ -77,6 +77,6 @@ public class HorizontalSplitPanelFactory extends SplitPanelFactory<HorizontalSpl
 	 */
 	public void add(HorizontalSplitPanel parent, Widget child, Element parentElement, Element childElement) 
 	{
-		parent.add(child);
+		// TODO - does nothing, maybe we don't need extend hasWidgetFactory
 	}
 }

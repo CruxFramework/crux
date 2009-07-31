@@ -44,5 +44,7 @@ public interface BasicMessages extends Messages
 	String stackPanelIvalidChild(String idChild, String idParent);
 	@DefaultMessage("[basic-widgets - 009] - Error adding widget ''{0}'' on parent Dockpanel ''{1}''. Invalid direction.")
 	String dockPanelInvalidDirection(String id, String id2);
+	@DefaultMessage("[basic-widgets - 010] - The menu item ''{0}'' has no child items and has no command. Ignoring item...")
+	String menubarItemWithoutChildrenOrCommand(String itemCaption);
 
 }

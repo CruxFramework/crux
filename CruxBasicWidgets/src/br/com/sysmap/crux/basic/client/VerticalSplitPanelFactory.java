@@ -78,6 +78,6 @@ public class VerticalSplitPanelFactory extends SplitPanelFactory<VerticalSplitPa
 	 */
 	public void add(VerticalSplitPanel parent, Widget child, Element parentElement, Element childElement) 
 	{
-		parent.add(child);
+		// TODO - does nothing, maybe we don't need extend hasWidgetFactory 
 	}
 }
