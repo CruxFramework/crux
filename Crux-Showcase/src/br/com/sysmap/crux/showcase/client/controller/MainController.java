@@ -1,30 +1,38 @@
 package br.com.sysmap.crux.showcase.client.controller;
 
+import br.com.sysmap.crux.advanced.client.dialog.MessageBox;
+import br.com.sysmap.crux.advanced.client.dynatabs.DynaTabs;
+import br.com.sysmap.crux.basic.client.ExecuteEvent;
 import br.com.sysmap.crux.core.client.controller.Controller;
+import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
-import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.client.screen.ScreenWrapper;
 
-import com.google.gwt.user.client.ui.DecoratorPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.MenuBar;
 
-@Controller(value="controller")
+@Controller(value="mainController")
 public class MainController {
 	
+	private static final String HTML = ".html";
+	private static final String DECORATED_BUTTON_TAB = "decoratedButton";
+	
+	@Create
+	protected MainScreen screen;
+	
+	/**
+	 * @param menuBar
+	 */
 	@Expose
-	public void sayHello() 
-	{
-		
-		
-		
-		
-		
-		
-		TextBox textBox = Screen.get("nameTextBox", TextBox.class);
-		final String name = textBox.getValue();
-		Label label = Screen.get("greetingLabel", Label.class);
-		label.setText("Hello, " + name);		
+	public void onClickMenuItem(ExecuteEvent<MenuBar> event){
+		MessageBox.show("Info", "MenuItem was clicked!", null);
+	}
+	
+	@Expose
+	public void onClickDecoratedButtonItem(){
+		screen.getTabs().openTab(DECORATED_BUTTON_TAB, "Decorated Button", DECORATED_BUTTON_TAB + HTML, true, false);				
+	}
+	
+	protected static interface MainScreen extends ScreenWrapper {
+		DynaTabs getTabs();
 	}
 }
