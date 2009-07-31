@@ -44,6 +44,10 @@
 				<xsl:attribute name="_usecontroller" select="@useController"/>
 			</xsl:if>
 
+			<xsl:if test="string-length(@useFormatter) > 0">
+				<xsl:attribute name="_useformatter" select="@useFormatter"/>
+			</xsl:if>
+
 			<xsl:if test="string-length(@onHistoryChanged) > 0">
 				<xsl:attribute name="_onhistorychanged" select="@onHistoryChanged"/>
 			</xsl:if>
