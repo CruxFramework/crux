@@ -13,6 +13,7 @@ public class MainController {
 	private static final String DECORATED_BUTTON_TAB = "decoratedButton";
 	private static final String TIMER_TAB = "timer";
 	private static final String  SCROLL_BANNER_TAB = "scrollBanner";
+	private static final String  TRANSFER_LIST_TAB = "transferList";
 	
 	@Create
 	protected MainScreen screen;
@@ -32,6 +33,11 @@ public class MainController {
 		screen.getTabs().openTab(SCROLL_BANNER_TAB, "Scroll Banner", SCROLL_BANNER_TAB + HTML, true, false);
 	}	
 	
+	@Expose
+	public void onClickTransferListItem(){
+		screen.getTabs().openTab(TRANSFER_LIST_TAB, "Transfer List", TRANSFER_LIST_TAB + HTML, true, false);
+	}	
+
 	protected static interface MainScreen extends ScreenWrapper {
 		DynaTabs getTabs();
 	}
