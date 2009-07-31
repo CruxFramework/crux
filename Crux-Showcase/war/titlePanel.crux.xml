@@ -1,0 +1,64 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<head>
+		<title>Title Panel</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="sourcesController"/>
+	
+		<c:dockPanel id="centeringPanel" width="100%" spacing="5">
+			
+			<c:cell horizontalAlignment="center" direction="north">
+				<a:titlePanel id="textTitlePanel" width="700" height="80">
+					<a:title>
+						<a:text>Text Title</a:text>
+					</a:title>
+					<a:body>
+						<a:text>
+							This is a title panel with text content.
+						</a:text>
+					</a:body>
+				</a:titlePanel>
+			</c:cell>
+		
+			<c:cell horizontalAlignment="center" direction="center">
+				<a:titlePanel id="htmlTitlePanel" width="700" height="80">
+					<a:title>
+						<a:html><a href="#">HTML Title</a></a:html>
+					</a:title>
+					<a:body>
+						<a:html>
+							<h3>This is a title panel with HTML content.</h3>
+						</a:html>
+					</a:body>
+				</a:titlePanel>
+			</c:cell>
+		
+			<c:cell horizontalAlignment="center" direction="south">
+				<a:titlePanel id="widgetTitlePanel" width="700" height="80">
+					<a:title>
+						<a:widget><c:textBox id="textBoxWidget" text="Widget Title" style="18px"/></a:widget>
+					</a:title>
+					<a:body>
+						<a:widget>
+							<c:textBox id="textBox" text="This is a title panel with widget content." width="500"/>
+						</a:widget>
+					</a:body>
+				</a:titlePanel>
+			</c:cell>
+		
+		</c:dockPanel>
+		
+		<xi:include href="sources.crux.xml"/>
+		
+	</body>
+</html>
