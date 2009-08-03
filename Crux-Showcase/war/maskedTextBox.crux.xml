@@ -20,7 +20,7 @@
 				<c:verticalPanel id="vPanel">
 				    <c:button id="changeButton" text="Change mask" onClick="maskedTextBoxController.changeFormat"/>
 					<c:horizontalPanel id="hPanel">
-						<c:label id="label1" text="Phone:" />
+						<c:label id="maskedLabel" text="phone:" />
 						<a:maskedTextBox id="maskedTextBox" formatter="phone" />
 					</c:horizontalPanel>
 				</c:verticalPanel>

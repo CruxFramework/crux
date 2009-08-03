@@ -15,6 +15,7 @@ public class MainController {
 	private static final String SCROLL_BANNER_TAB = "scrollBanner";
 	private static final String  TRANSFER_LIST_TAB = "transferList";
 	private static final String  GXT_TAB = "gxt";
+	private static final String  GWT_TAB = "gwt";
 	private static final String  MASKED_TEXTBOX_TAB = "maskedTextBox";
 	private static final String DECORATED_PANEL_TAB = "decoratedPanel";
 	private static final String TITLE_PANEL_TAB = "titlePanel";
@@ -63,6 +64,11 @@ public class MainController {
 		screen.getTabs().openTab(GXT_TAB, "GXT Integration", GXT_TAB + HTML, true, false);
 	}	
 	
+	@Expose
+	public void onClickGwtItem(){
+		screen.getTabs().openTab(GWT_TAB, "GWT Widgets", GWT_TAB + HTML, true, false);
+	}	
+
 	@Expose
 	public void onClickMaskedTextBoxItem(){
 		screen.getTabs().openTab(MASKED_TEXTBOX_TAB, "Masked Text Box", MASKED_TEXTBOX_TAB + HTML, true, false);

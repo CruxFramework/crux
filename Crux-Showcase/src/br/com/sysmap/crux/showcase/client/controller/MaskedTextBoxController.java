@@ -5,23 +5,30 @@ import java.util.Date;
 import br.com.sysmap.crux.advanced.client.maskedtextbox.MaskedTextBox;
 import br.com.sysmap.crux.advanced.client.maskedtextbox.MaskedTextBoxBaseFormatter;
 import br.com.sysmap.crux.core.client.controller.Controller;
+import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.client.screen.ScreenWrapper;
 import br.com.sysmap.crux.core.rebind.screen.formatter.annotation.FormatterName;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.Label;
 
 @Controller("maskedTextBoxController")
 public class MaskedTextBoxController {
 	private String formatter = "phone";
+	@Create
+	protected MaskedScreen screen;
 	
 	@Expose
 	public void changeFormat(){
-		MaskedTextBox maskedTextBox = Screen.get("maskedTextBox", MaskedTextBox.class);
+		MaskedTextBox maskedTextBox =screen.getMaskedTextBox();
+		maskedTextBox.setUnformattedValue(null);
 		maskedTextBox.setFormatter(Screen.getFormatter("phone".equals(formatter)?"date":"phone"));
 		formatter = "phone".equals(formatter)?"date":"phone";
+		screen.getMaskedLabel().setText(formatter+":");
 	}
 	
 	@FormatterName("phone")
@@ -77,5 +84,11 @@ public class MaskedTextBoxController {
 			
 			return format.format((Date) input);
 		}
-	}	
+	}
+	
+	public static interface MaskedScreen extends ScreenWrapper
+	{
+		MaskedTextBox getMaskedTextBox();
+		Label getMaskedLabel();
+	}
 }

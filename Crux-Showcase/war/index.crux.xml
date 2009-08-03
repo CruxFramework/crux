@@ -61,6 +61,7 @@
 								<a:item id="progressDialogItem" label="Progress Dialog" onClick="mainController.onClickProgressDialogItem" />
 							</a:item>
 							<a:item id="others" label="Others">
+								<a:item id="gwtItem" label="GWT" onClick="mainController.onClickGwtItem" />
 								<a:item id="gxtItem" label="GXT" onClick="mainController.onClickGxtItem" />
 							</a:item>
 						</a:stackMenu>
