@@ -62,7 +62,6 @@ public class CruxInternalPopupController
 	@ExposeOutOfModule
 	public void onClose()
 	{
-		Screen.unblockToUser();
 		CloseEvent.fire(Popup.popup, Popup.popup);
 	}
 
@@ -170,6 +169,7 @@ public class CruxInternalPopupController
 	{
 		if (dialogBox != null)
 		{
+			Screen.unblockToUser();
 			dialogBox.hide();
 			dialogBox = null;
 		}
