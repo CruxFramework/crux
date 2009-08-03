@@ -23,6 +23,8 @@ public class MainController {
 	private static final String VALUE_BIND_TAB = "valueBind";
 	private static final String STACK_MENU_TAB = "stackMenu";
 	private static final String FILTER_TAB = "filter";
+	private static final String SCREEN_COMMUNICATION_TAB = "screenCommunication";
+	private static final String SCREEN_WRAPPER_TAB = "screenWrapper";
 	private static final String DYNA_TABS_TAB = "dynaTabs";
 	private static final String CONFIRM_TAB = "confirm";
 	private static final String MESSAGE_BOX_TAB = "messageBox";	
@@ -90,13 +92,23 @@ public class MainController {
 	@Expose
 	public void onClickMaskedTextBoxItem(){
 		screen.getTabs().openTab(MASKED_TEXTBOX_TAB, "Masked Text Box", MASKED_TEXTBOX_TAB + HTML, true, false);
-	}
+	}	
 	
 	@Expose
 	public void onClickValueBindItem(){
 		screen.getTabs().openTab(VALUE_BIND_TAB, "Value Bind", VALUE_BIND_TAB + HTML, true, false);
 	}	
 	
+	@Expose
+	public void onClickScreenWrapperItem(){
+		screen.getTabs().openTab(SCREEN_WRAPPER_TAB, "Screen Wrapper", SCREEN_WRAPPER_TAB + HTML, true, false);
+	}	
+
+	@Expose
+	public void onClickScreenCommunicationItem(){
+		screen.getTabs().openTab(SCREEN_COMMUNICATION_TAB, "Screen Communication", SCREEN_COMMUNICATION_TAB + HTML, true, false);
+	}	
+
 	@Expose
 	public void onClickDynaTabsItem(){
 		screen.getTabs().openTab(DYNA_TABS_TAB, "Dyna Tabs", DYNA_TABS_TAB + HTML, true, false);
@@ -121,7 +133,7 @@ public class MainController {
 	public void onClickProgressDialogItem(){
 		screen.getTabs().openTab(PROGRESS_DIALOG_TAB, "Progress Dialog", PROGRESS_DIALOG_TAB + HTML, true, false);
 	}
-		
+	
 	protected static interface MainScreen extends ScreenWrapper {
 		DynaTabs getTabs();
 	}
