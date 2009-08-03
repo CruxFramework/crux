@@ -20,6 +20,7 @@ public class MainController {
 	private static final String DECORATED_PANEL_TAB = "decoratedPanel";
 	private static final String TITLE_PANEL_TAB = "titlePanel";
 	private static final String COLLAPSE_PANEL_TAB = "collapsePanel";
+	private static final String VALUE_BIND_TAB = "valueBind";
 	private static final String STACK_MENU_TAB = "stackMenu";
 	private static final String FILTER_TAB = "filter";
 	
@@ -84,8 +85,13 @@ public class MainController {
 	@Expose
 	public void onClickMaskedTextBoxItem(){
 		screen.getTabs().openTab(MASKED_TEXTBOX_TAB, "Masked Text Box", MASKED_TEXTBOX_TAB + HTML, true, false);
-	}
-
+	}	
+	
+	@Expose
+	public void onClickValueBindItem(){
+		screen.getTabs().openTab(VALUE_BIND_TAB, "Value Bind", VALUE_BIND_TAB + HTML, true, false);
+	}	
+	
 	protected static interface MainScreen extends ScreenWrapper {
 		DynaTabs getTabs();
 	}

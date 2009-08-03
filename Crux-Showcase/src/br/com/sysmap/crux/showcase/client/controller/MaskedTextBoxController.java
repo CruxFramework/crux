@@ -86,8 +86,7 @@ public class MaskedTextBoxController {
 		}
 	}
 	
-	public static interface MaskedScreen extends ScreenWrapper
-	{
+	public static interface MaskedScreen extends ScreenWrapper{
 		MaskedTextBox getMaskedTextBox();
 		Label getMaskedLabel();
 	}

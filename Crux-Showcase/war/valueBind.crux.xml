@@ -1,0 +1,69 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<head>
+		<title>Scroll Banner</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="valueBindController,sourcesController"/>
+
+		<c:dockPanel id="centeringPanel" width="100%" height="130">
+			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
+				<a:decoratedPanel id="borders">
+					<a:widget>
+						<c:grid id="grid">
+							<c:row>
+								<c:cell>
+									<c:text>Name:</c:text>
+								</c:cell>
+								<c:cell>
+									<c:widget><c:textBox id="name" /></c:widget>
+								</c:cell>
+							</c:row>
+							<c:row>
+								<c:cell>
+									<c:text>Phone:</c:text>
+								</c:cell>
+								<c:cell>
+									<c:widget><a:maskedTextBox id="phone" formatter="phone"/></c:widget>
+								</c:cell>
+							</c:row>
+							<c:row>
+								<c:cell>
+									<c:text>Date of Birth:</c:text>
+								</c:cell>
+								<c:cell>
+									<c:widget><a:maskedTextBox id="dateOfBirth" formatter="date"/></c:widget>
+								</c:cell>
+							</c:row>
+							<c:row>
+								<c:cell>
+									<c:text>Another Date:</c:text>
+								</c:cell>
+								<c:cell>
+									<c:widget><c:dateBox id="date2" pattern="MM/dd/yyyy"/></c:widget>
+								</c:cell>
+							</c:row>
+							<c:row>
+								<c:cell >
+									<c:widget><c:button id="button" text="Click Me" onClick="valueBindController.onClick"/></c:widget>
+								</c:cell>
+							</c:row>
+						</c:grid>
+					</a:widget>
+				</a:decoratedPanel>
+			</c:cell>
+		</c:dockPanel>
+		
+		<xi:include href="sources.crux.xml"/>
+		
+	</body>
+</html>

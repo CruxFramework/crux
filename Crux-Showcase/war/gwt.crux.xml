@@ -15,7 +15,8 @@
 		</script>
 
 		<c:screen useController="gwtController,sourcesController" />
-
+		<c:label id="descLabel" text="Default Crux distribution supports all GWT widgets in its declarative engine. Here are some examples:"/>
+		<br/>
 		<c:dockPanel id="centeringPanel" width="100%" height="130">
 			<c:cell direction="west" horizontalAlignment="left"	verticalAlignment="top" width="33%">
 				<c:tree id="tree" onSelection="gwtController.onSelectTreeItem">
