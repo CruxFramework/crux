@@ -1,0 +1,32 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<head>
+		<title>Dyna Tabs</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="sourcesController"/>
+
+		<c:dockPanel id="centering" width="100%" spacing="5">
+			<c:cell direction="center" horizontalAlignment="center">
+				<a:dynaTabs id="dynaTabs" width="80%" height="300">
+					<a:tab url="http://www.google.com" id="google" label="Google"/>
+					<a:tab url="http://crux-framework.googlecode.com/" id="crux" label="Crux"/>
+					<a:tab url="http://www.sysmap.com.br/" id="sysmap" label="Sysmap"/>
+				</a:dynaTabs>
+			</c:cell>		
+		</c:dockPanel>
+		
+		
+		<xi:include href="sources.crux.xml"/>
+		
+	</body>
+</html>

@@ -14,15 +14,20 @@ public class MainController {
 	private static final String TIMER_TAB = "timer";
 	private static final String SCROLL_BANNER_TAB = "scrollBanner";
 	private static final String TRANSFER_LIST_TAB = "transferList";
-	private static final String  GXT_TAB = "gxt";
-	private static final String  GWT_TAB = "gwt";
-	private static final String  MASKED_TEXTBOX_TAB = "maskedTextBox";
+	private static final String GXT_TAB = "gxt";
+	private static final String GWT_TAB = "gwt";
+	private static final String MASKED_TEXTBOX_TAB = "maskedTextBox";
 	private static final String DECORATED_PANEL_TAB = "decoratedPanel";
 	private static final String TITLE_PANEL_TAB = "titlePanel";
 	private static final String COLLAPSE_PANEL_TAB = "collapsePanel";
 	private static final String VALUE_BIND_TAB = "valueBind";
 	private static final String STACK_MENU_TAB = "stackMenu";
 	private static final String FILTER_TAB = "filter";
+	private static final String DYNA_TABS_TAB = "dynaTabs";
+	private static final String CONFIRM_TAB = "confirm";
+	private static final String MESSAGE_BOX_TAB = "messageBox";	
+	private static final String POPUP_TAB = "popup";
+	private static final String PROGRESS_DIALOG_TAB = "progressDialog";
 	
 	@Create
 	protected MainScreen screen;
@@ -85,13 +90,38 @@ public class MainController {
 	@Expose
 	public void onClickMaskedTextBoxItem(){
 		screen.getTabs().openTab(MASKED_TEXTBOX_TAB, "Masked Text Box", MASKED_TEXTBOX_TAB + HTML, true, false);
-	}	
+	}
 	
 	@Expose
 	public void onClickValueBindItem(){
 		screen.getTabs().openTab(VALUE_BIND_TAB, "Value Bind", VALUE_BIND_TAB + HTML, true, false);
 	}	
 	
+	@Expose
+	public void onClickDynaTabsItem(){
+		screen.getTabs().openTab(DYNA_TABS_TAB, "Dyna Tabs", DYNA_TABS_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickConfirmItem(){
+		screen.getTabs().openTab(CONFIRM_TAB, "Confirm", CONFIRM_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickMessageBoxItem(){
+		screen.getTabs().openTab(MESSAGE_BOX_TAB, "Message Box", MESSAGE_BOX_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickPopupItem(){
+		screen.getTabs().openTab(POPUP_TAB, "Popup", POPUP_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickProgressDialogItem(){
+		screen.getTabs().openTab(PROGRESS_DIALOG_TAB, "Progress Dialog", PROGRESS_DIALOG_TAB + HTML, true, false);
+	}
+		
 	protected static interface MainScreen extends ScreenWrapper {
 		DynaTabs getTabs();
 	}

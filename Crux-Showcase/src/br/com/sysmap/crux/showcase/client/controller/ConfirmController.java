@@ -19,7 +19,7 @@ public class ConfirmController {
 		
 		Confirm.show(
 		
-			"This is a cross-frame modal confirm", "Is the truth out there?", 
+			"An Important Question", "Is the truth out there?", 
 			
 			new OkHandler(){
 				public void onOk(OkEvent event)
@@ -35,6 +35,5 @@ public class ConfirmController {
 				}
 			}
 		);
-		
 	}
 }

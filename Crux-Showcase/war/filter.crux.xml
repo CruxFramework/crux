@@ -5,7 +5,7 @@
 	xmlns:xi="http://www.w3.org/2001/XInclude">
 
 	<head>
-		<title>Stack Menu</title>
+		<title>Filter</title>
 		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
 	</head>
 
@@ -25,7 +25,7 @@
 						<a:stackMenu id="aFilteredMenu" height="250">
 							<a:item id="item_1" label="Item 1">
 								<a:item id="item_1_1" label="Item 1.1" onClick="stackMenuController.onClickItem_1_1"/>
-								<a:item id="item_1_1" label="Item 1.2">
+								<a:item id="item_1_2" label="Item 1.2">
 									<a:item id="item_1_2_1" label="Item 1.2.1" onClick="stackMenuController.onClickItem_1_2_1"/>
 									<a:item id="item_1_2_2" label="Item 1.2.2" onClick="stackMenuController.onClickItem_1_2_2"/>
 									<a:item id="item_1_2_3" label="Item 1.2.3" onClick="stackMenuController.onClickItem_1_2_3"/>
