@@ -129,7 +129,7 @@ public class RegisteredCruxSerializablesGenerator extends AbstractRegisteredElem
 			if (!added.containsKey(serializer) && Serializers.getCruxSerializable(serializer)!= null)
 			{
 				Class<?> serializerClass = Serializers.getCruxSerializable(serializer);
-				sourceWriter.print("serializers.put(\""+serializerClass.getName()+"\", new " + serializerClass.getName() + "());");
+				sourceWriter.print("serializers.put(\""+serializerClass.getName()+"\", new " + getClassSourceName(serializerClass) + "());");
 				added.put(serializer, true);
 			}
 		}

@@ -19,13 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
 import br.com.sysmap.crux.core.rebind.screen.ScreenFactory;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 
-import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
@@ -37,9 +35,8 @@ import com.google.gwt.core.ext.typeinfo.TypeOracle;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class AbstractRegisteredElementsGenerator extends Generator
+public abstract class AbstractRegisteredElementsGenerator extends AbstractGenerator
 {
-	protected GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 	
 	/**
 	 * 
@@ -116,13 +113,6 @@ public abstract class AbstractRegisteredElementsGenerator extends Generator
 		}
 		Screen screen = ScreenFactory.getInstance().getScreen(screenID);
 		return screen;
-	}
-	
-	protected String getClassSourceName(Class<?> handlerClass)
-	{
-		String sourceName = handlerClass.getName();
-		sourceName = sourceName.replace('$','.');
-		return sourceName;
 	}
 	
 	/**

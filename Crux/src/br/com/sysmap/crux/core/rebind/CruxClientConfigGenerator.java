@@ -21,7 +21,6 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 
-import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
@@ -34,7 +33,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class CruxClientConfigGenerator extends Generator
+public class CruxClientConfigGenerator extends AbstractGenerator
 {
 	protected GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 
@@ -69,29 +68,13 @@ public class CruxClientConfigGenerator extends Generator
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 
-		Class<?> interfaceClass = Class.forName(getClassName(classType));
+		Class<?> interfaceClass = Class.forName(getClassBinaryName(classType));
 		generateMethodWrappers(logger, interfaceClass, sourceWriter);
 		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 
 		context.commit(logger, printWriter);
-	}
-
-	private String getClassName(JClassType classType)
-	{
-		String pkgName = classType.getPackage().getName();
-		String simpleName = classType.getSimpleSourceName();
-		String name = classType.getName();
-		
-		if (name.equals(simpleName))
-		{
-			return pkgName + "." +name;
-		}
-		else
-		{
-			return pkgName + "." + name.substring(0, name.indexOf(simpleName)-1) + "$"+ simpleName;
-		}
 	}
 
 	private void generateMethodWrappers(TreeLogger logger, Class<?> interfaceClass, SourceWriter sourceWriter)

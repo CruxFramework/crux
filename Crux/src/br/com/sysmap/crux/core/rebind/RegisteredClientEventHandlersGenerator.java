@@ -319,7 +319,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		Class<?>[] params = method.getParameterTypes();
 		if (params != null && params.length == 1)
 		{
-			sourceWriter.print("wrapper."+method.getName()+"(("+params[0].getName()+")sourceEvent);");
+			sourceWriter.print("wrapper."+method.getName()+"(("+getClassSourceName(params[0])+")sourceEvent);");
 		}
 		else 
 		{
@@ -378,18 +378,10 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		{
 			if (field.getAnnotation(Create.class) != null)
 			{
-				String fieldTypeName = field.getType().getName();
-				if (fieldTypeName.indexOf("$") > 0)
-				{
-					fieldTypeName = fieldTypeName.replace('$', '.');
-				}
-
+				String fieldTypeName = getClassSourceName(field.getType());
 				Class<?> type = getTypeForField(logger, field);
-				String typeName = type.getName();
-				if (typeName.indexOf("$") > 0)
-				{
-					typeName = typeName.replace('$', '.');
-				}
+				String typeName = getClassSourceName(type);
+
 				sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=GWT.create("+typeName+".class);");
 				generateFieldValueSet(logger, controller, field, "wrapper", "_field"+field.getName(), sourceWriter);
 
@@ -705,7 +697,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 			if (!populateScreen)
 			{
 				sourceWriter.println("if (" +getFieldValueGet(logger, voClass, field, parentVariable)+"==null){");
-				generateFieldValueSet(logger, voClass, field, parentVariable, "new "+type.getName()+"()", sourceWriter);
+				generateFieldValueSet(logger, voClass, field, parentVariable, "new "+getClassSourceName(type)+"()", sourceWriter);
 				sourceWriter.println("}");
 			}
 			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable);
@@ -926,7 +918,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		}
 		else
 		{
-			return type.getName();
+			return getClassSourceName(type);
 		}
 	}
 

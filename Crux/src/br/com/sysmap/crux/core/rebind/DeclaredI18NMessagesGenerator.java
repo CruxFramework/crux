@@ -115,7 +115,8 @@ public class DeclaredI18NMessagesGenerator extends AbstractRegisteredElementsGen
 				}
 				else
 				{
-					sourceWriter.println("msg = (("+messagesClass.getName()+")GWT.create("+messagesClass.getName()+".class))."+messageParts[1]+"();");
+					String classSourceName = getClassSourceName(messagesClass);
+					sourceWriter.println("msg = (("+classSourceName+")GWT.create("+classSourceName+".class))."+messageParts[1]+"();");
 					sourceWriter.println("messages.put(\""+text+"\", msg);");
 				}
 				added.put(text, true);

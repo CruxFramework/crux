@@ -25,10 +25,8 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 
 import br.com.sysmap.crux.core.client.screen.Screen;
-import br.com.sysmap.crux.core.i18n.MessagesFactory;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
@@ -42,10 +40,8 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class AbstractInterfaceWrapperGenerator extends Generator
+public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerator
 {
-	protected GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
-
 	/**
 	 * 
 	 */
@@ -92,35 +88,13 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 
-		Class<?> interfaceClass = Class.forName(getClassName(classType));
+		Class<?> interfaceClass = Class.forName(getClassBinaryName(classType));
 		generateMethodWrappers(logger, interfaceClass, sourceWriter);
 		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 
 		context.commit(logger, printWriter);
-	}
-
-	/**
-	 * 
-	 * @param classType
-	 * @return
-	 */
-	protected String getClassName(JClassType classType)
-	{
-		String pkgName = classType.getPackage().getName();
-		String simpleName = classType.getSimpleSourceName();
-		String name = classType.getName();
-		
-		if (name.equals(simpleName))
-		{
-			return pkgName + "." +name;
-		}
-		else
-		{
-			return pkgName + "." + name.substring(0, name.indexOf(simpleName)-1) + "$"+ simpleName;
-		}
-		
 	}
 
 	/**
@@ -204,7 +178,7 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 			}
 			else
 			{
-				result.append(parameterClass.getName());
+				result.append(getClassSourceName(parameterClass));
 			}
 		}
 		else if (parameterType instanceof WildcardType)
@@ -221,7 +195,7 @@ public abstract class AbstractInterfaceWrapperGenerator extends Generator
 	 */
 	private int getArrayDimensions(Class<?> parameterClass)
 	{
-		String name = parameterClass.getName();
+		String name = getClassSourceName(parameterClass);
 		for (int i=0; i<name.length(); i++)
 		{
 			if (name.charAt(i) != '[')
