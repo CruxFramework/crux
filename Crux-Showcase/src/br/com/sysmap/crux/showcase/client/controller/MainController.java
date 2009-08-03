@@ -13,13 +13,15 @@ public class MainController {
 	private static final String DECORATED_BUTTON_TAB = "decoratedButton";
 	private static final String TIMER_TAB = "timer";
 	private static final String SCROLL_BANNER_TAB = "scrollBanner";
-	private static final String  TRANSFER_LIST_TAB = "transferList";
+	private static final String TRANSFER_LIST_TAB = "transferList";
 	private static final String  GXT_TAB = "gxt";
 	private static final String  GWT_TAB = "gwt";
 	private static final String  MASKED_TEXTBOX_TAB = "maskedTextBox";
 	private static final String DECORATED_PANEL_TAB = "decoratedPanel";
 	private static final String TITLE_PANEL_TAB = "titlePanel";
 	private static final String COLLAPSE_PANEL_TAB = "collapsePanel";
+	private static final String STACK_MENU_TAB = "stackMenu";
+	private static final String FILTER_TAB = "filter";
 	
 	@Create
 	protected MainScreen screen;
@@ -57,7 +59,17 @@ public class MainController {
 	@Expose
 	public void onClickTransferListItem(){
 		screen.getTabs().openTab(TRANSFER_LIST_TAB, "Transfer List", TRANSFER_LIST_TAB + HTML, true, false);
-	}	
+	}
+	
+	@Expose
+	public void onClickStackMenuItem(){
+		screen.getTabs().openTab(STACK_MENU_TAB, "Stack Menu", STACK_MENU_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickFilterItem(){
+		screen.getTabs().openTab(FILTER_TAB, "Filter", FILTER_TAB + HTML, true, false);
+	}
 
 	@Expose
 	public void onClickGxtItem(){
@@ -72,9 +84,8 @@ public class MainController {
 	@Expose
 	public void onClickMaskedTextBoxItem(){
 		screen.getTabs().openTab(MASKED_TEXTBOX_TAB, "Masked Text Box", MASKED_TEXTBOX_TAB + HTML, true, false);
-	}	
-	
-	
+	}
+
 	protected static interface MainScreen extends ScreenWrapper {
 		DynaTabs getTabs();
 	}
