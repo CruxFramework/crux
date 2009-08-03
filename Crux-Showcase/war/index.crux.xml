@@ -60,9 +60,17 @@
 								<a:item id="popupItem" label="Popup" onClick="mainController.onClickPopupItem" />
 								<a:item id="progressDialogItem" label="Progress Dialog" onClick="mainController.onClickProgressDialogItem" />
 							</a:item>
-							<a:item id="others" label="Others">
+							<a:item id="others" label="Other Widgets">
 								<a:item id="gwtItem" label="GWT" onClick="mainController.onClickGwtItem" />
 								<a:item id="gxtItem" label="GXT" onClick="mainController.onClickGxtItem" />
+							</a:item>
+							<a:item id="features" label="Other Features">
+								<a:item id="valueBindItem" label="Value Binding" onClick="mainController.onClickValueBindItem" />
+								<a:item id="screenWrapperItem" label="Screen Wrappers" onClick="mainController.onClickScreenWrapperItem" />
+								<a:item id="screenCommunicationItem" label="Screen Communication" onClick="mainController.onClickScreenCommunicationItem" />
+								<a:item id="validationItem" label="Validation" onClick="mainController.onClickValidationItem" />
+								<a:item id="serverItem" label="Server Communication" onClick="mainController.onClickServerItem" />
+								<a:item id="i18nItem" label="I18N" onClick="mainController.onClickI18NItem" />
 							</a:item>
 						</a:stackMenu>
 					</c:cell>
