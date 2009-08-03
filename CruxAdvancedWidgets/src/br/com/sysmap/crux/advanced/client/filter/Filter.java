@@ -142,7 +142,11 @@ public class Filter extends SuggestBox implements HasFocusHandlers, HasBlurHandl
 	@Override
 	public void setText(String text)
 	{
-		this.initialText = text;
+		if(this.initialText == null)
+		{
+			this.initialText = text;
+		}
+		
 		super.setText(text);
 	}
 }
