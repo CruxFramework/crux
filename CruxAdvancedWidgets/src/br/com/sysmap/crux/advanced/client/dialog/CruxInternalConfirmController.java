@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.advanced.client.dialog;
 
 import br.com.sysmap.crux.advanced.client.decoratedbutton.DecoratedButton;
+import br.com.sysmap.crux.advanced.client.event.dialog.CancelEvent;
 import br.com.sysmap.crux.advanced.client.event.dialog.OkEvent;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
@@ -36,36 +37,54 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
  */
 @Global
-@Controller("__messageBox")
-public class MessageBoxController 
+@Controller("__confirm")
+public class CruxInternalConfirmController 
 {
 	private ModuleComunicationSerializer serializer;
 	
 	@Create
 	protected DialogMessages messages;
 	
-	/**
-	 * 
-	 */
-	public MessageBoxController()
+	public CruxInternalConfirmController()
 	{
 		this.serializer = Screen.getCruxSerializer();
-		this.serializer.registerCruxSerializable(MessageBoxData.class.getName(), new MessageBoxData());
+		this.serializer.registerCruxSerializable(ConfirmData.class.getName(), new ConfirmData());
 	}
 
 	/**
-	 * Invoke showMessageBox on top. It is required to handle multi-frame pages.
+	 * Called by top window
+	 * @param controllerEvent
+	 */
+	@ExposeOutOfModule
+	public void onOk()
+	{
+		OkEvent.fire(Confirm.confirm);
+	}
+
+	/**
+	 * Called by top window
+	 * @param controllerEvent
+	 */
+	@ExposeOutOfModule
+	public void onCancel()
+	{
+		CancelEvent.fire(Confirm.confirm);
+	}
+
+	/**
+	 * Invoke showConfirm on top. It is required to handle multi-frame pages.
 	 * @param data
 	 */
-	public void showMessageBox(MessageBoxData data)
+	public void showConfirm(ConfirmData data)
 	{
 		try
 		{
-			showMessageBoxOnTop(serializer.serialize(data));
+			showConfirmOnTop(serializer.serialize(data));
 		}
 		catch (ModuleComunicationException e)
 		{
@@ -74,32 +93,22 @@ public class MessageBoxController
 	}
 	
 	/**
-	 * Called by top window
+	 * Handler method to be invoked on top. That method shows the popup dialog.
 	 * @param controllerEvent
 	 */
 	@ExposeOutOfModule
-	public void onOk()
+	public void showConfirmHandler(InvokeControllerEvent controllerEvent)
 	{
-		OkEvent.fire(MessageBox.messageBox);
-	}
-	
-	/**
-	 * Handler method to be invoked on top. That method shows the message box.
-	 * @param controllerEvent
-	 */
-	@ExposeOutOfModule
-	public void showMessageBoxHandler(InvokeControllerEvent controllerEvent)
-	{
-		Screen.blockToUser("crux-MessageBoxScreenBlocker");
+		Screen.blockToUser("crux-ConfirmScreenBlocker");
 		
 		try
 		{
-			final MessageBoxData data = (MessageBoxData) controllerEvent.getParameter();
+			final ConfirmData data = (ConfirmData) controllerEvent.getParameter();
 			
 			final DialogBox dialogBox = new DialogBox(false, true);
 			dialogBox.setStyleName(data.getStyleName());
-			dialogBox.setText(data.getTitle());
 			dialogBox.setAnimationEnabled(data.isAnimationEnabled());
+			dialogBox.setText(data.getTitle());
 			
 			DockPanel dockPanel = new DockPanel();
 			dockPanel.add(createMessageLabel(data), DockPanel.CENTER);
@@ -107,6 +116,7 @@ public class MessageBoxController
 			HorizontalPanel horizontalPanel = new HorizontalPanel();
 			horizontalPanel.setSpacing(10);
 			horizontalPanel.add(createOkButton(dialogBox));
+			horizontalPanel.add(createCancelButton(dialogBox));
 			
 			dockPanel.add(horizontalPanel, DockPanel.SOUTH);
 			dockPanel.setCellHorizontalAlignment(horizontalPanel, HasHorizontalAlignment.ALIGN_CENTER);
@@ -126,7 +136,7 @@ public class MessageBoxController
 	 * @param data
 	 * @return
 	 */
-	private Label createMessageLabel(final MessageBoxData data)
+	private Label createMessageLabel(final ConfirmData data)
 	{
 		Label label = new Label(data.getMessage());
 		label.setStyleName("message");
@@ -137,10 +147,41 @@ public class MessageBoxController
 	 * @param dialogBox
 	 * @return
 	 */
+	private DecoratedButton createCancelButton(final DialogBox dialogBox)
+	{
+		DecoratedButton cancelButton = new DecoratedButton();
+		cancelButton.setText(messages.confirmCancelLabel());
+		cancelButton.addStyleName("button");
+		cancelButton.addStyleName("cancelButton");
+		cancelButton.addClickHandler(new ClickHandler()
+		{
+			public void onClick(ClickEvent event)
+			{
+				Screen.unblockToUser();
+				
+				dialogBox.hide();
+								
+				try
+				{
+					cancelClick();
+				}
+				catch (Throwable e)
+				{
+					GWT.log(e.getMessage(), e);
+				}
+			}
+		});
+		return cancelButton;
+	}
+
+	/**
+	 * @param dialogBox
+	 * @return
+	 */
 	private DecoratedButton createOkButton(final DialogBox dialogBox)
 	{
 		DecoratedButton okButton = new DecoratedButton();
-		okButton.setText(messages.messageBoxOkLabel());
+		okButton.setText(messages.confirmOkLabel());
 		okButton.addStyleName("button");
 		okButton.addStyleName("okButton");
 		okButton.addClickHandler(new ClickHandler()
@@ -158,7 +199,7 @@ public class MessageBoxController
 				catch (Throwable e)
 				{
 					GWT.log(e.getMessage(), e);
-				}
+				}			
 			}
 		});
 		return okButton;
@@ -169,9 +210,9 @@ public class MessageBoxController
 	 * @param call
 	 * @param serializedData
 	 */
-	private native void showMessageBoxOnTop(String serializedData)/*-{
-		$wnd.top._messageBox_origin = $wnd;
-		$wnd.top._cruxScreenControllerAccessor("__messageBox.showMessageBoxHandler", serializedData);
+	private native void showConfirmOnTop(String serializedData)/*-{
+		$wnd.top._confirm_origin = $wnd;
+		$wnd.top._cruxScreenControllerAccessor("__confirm.showConfirmHandler", serializedData);
 	}-*/;
 
 	/**
@@ -180,8 +221,19 @@ public class MessageBoxController
 	 * @param serializedData
 	 */
 	private native void okClick()/*-{
-		var o = $wnd.top._messageBox_origin;
-		$wnd.top._messageBox_origin = null;
-		o._cruxScreenControllerAccessor("__messageBox.onOk", null);
+		var o = $wnd.top._confirm_origin;
+		$wnd.top._confirm_origin = null;
+		o._cruxScreenControllerAccessor("__confirm.onOk", null);
+	}-*/;
+
+	/**
+	 * 
+	 * @param call
+	 * @param serializedData
+	 */
+	private native void cancelClick()/*-{
+		var o = $wnd.top._confirm_origin;
+		$wnd.top._confirm_origin = null;
+		o._cruxScreenControllerAccessor("__confirm.onCancel", null);
 	}-*/;
 }

@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers, HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Confirm" ;
-	private static ConfirmController confirmController = null;
+	private static CruxInternalConfirmController confirmController = null;
 	private String title;
 	private String message;
 	private String styleName;
@@ -113,7 +113,7 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 	{
 		if (confirmController == null)
 		{
-			confirmController = new ConfirmController(); 
+			confirmController = new CruxInternalConfirmController(); 
 		}
 		confirm = this;
 		confirmController.showConfirm(new ConfirmData(title, message, styleName!=null?styleName:DEFAULT_STYLE_NAME, animationEnabled));

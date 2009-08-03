@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 @Global
 @Controller("__popup")
-public class PopupController 
+public class CruxInternalPopupController 
 {
 	private ModuleComunicationSerializer serializer;
 	private CustomDialogBox dialogBox;
@@ -49,7 +49,7 @@ public class PopupController
 	@Create
 	protected DialogMessages messages;
 	
-	public PopupController()
+	public CruxInternalPopupController()
 	{
 		this.serializer = Screen.getCruxSerializer();
 		this.serializer.registerCruxSerializable(PopupData.class.getName(), new PopupData());

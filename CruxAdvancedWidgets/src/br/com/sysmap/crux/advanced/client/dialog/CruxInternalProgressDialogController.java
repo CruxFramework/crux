@@ -37,12 +37,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 @Global
 @Controller("__progressDialog")
-public class ProgressDialogController 
+public class CruxInternalProgressDialogController 
 {
 	private ModuleComunicationSerializer serializer;
 	private DialogBox dialog;
 	
-	public ProgressDialogController()
+	public CruxInternalProgressDialogController()
 	{
 		this.serializer = Screen.getCruxSerializer();
 		this.serializer.registerCruxSerializable(ProgressDialogData.class.getName(), new ProgressDialogData());

@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Popup" ;
-	private static PopupController popupController = null;
+	private static CruxInternalPopupController popupController = null;
 	private String title;
 	private String url;
 	private String styleName;
@@ -111,7 +111,7 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimati
 	{
 		if (popupController == null)
 		{
-			popupController = new PopupController(); 
+			popupController = new CruxInternalPopupController(); 
 		}
 		popup = this;
 		popupController.showPopup(new PopupData(title, url, width, height, styleName!=null ? styleName : DEFAULT_STYLE_NAME, animationEnabled, closeable));

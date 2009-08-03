@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ProgressDialog extends Widget implements HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-ProgressDialog" ;
-	private static ProgressDialogController progressDialogController = null;
+	private static CruxInternalProgressDialogController progressDialogController = null;
 	private String message;
 	private String styleName;
 	private boolean animationEnabled;
@@ -78,7 +78,7 @@ public class ProgressDialog extends Widget implements HasAnimation
 	{
 		if (progressDialogController == null)
 		{
-			progressDialogController = new ProgressDialogController(); 
+			progressDialogController = new CruxInternalProgressDialogController(); 
 		}
 		progressDialog = this;
 		progressDialogController.showProgressDialog(new ProgressDialogData(message, styleName != null ? styleName : DEFAULT_STYLE_NAME, animationEnabled));
@@ -91,7 +91,7 @@ public class ProgressDialog extends Widget implements HasAnimation
 	{
 		if (progressDialogController == null)
 		{
-			progressDialogController = new ProgressDialogController(); 
+			progressDialogController = new CruxInternalProgressDialogController(); 
 		}
 		progressDialogController.hideProgressDialog();
 	}

@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class MessageBox extends Widget implements HasOkHandlers, HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-MessageBox" ;
-	private static MessageBoxController messageBoxController = null;
+	private static CruxInternalMessageBoxController messageBoxController = null;
 	private String title;
 	private String message;
 	private String styleName;
@@ -102,7 +102,7 @@ public class MessageBox extends Widget implements HasOkHandlers, HasAnimation
 	{
 		if (messageBoxController == null)
 		{
-			messageBoxController = new MessageBoxController(); 
+			messageBoxController = new CruxInternalMessageBoxController(); 
 		}
 		messageBox = this;
 		messageBoxController.showMessageBox(new MessageBoxData(title, message, styleName != null ? styleName : DEFAULT_STYLE_NAME, animationEnabled));
