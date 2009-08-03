@@ -51,6 +51,7 @@
 									<xsl:when test="local-name() = 'text'">
 										<xsl:element name="span" namespace="{$xhtmlNS}">
 											<xsl:attribute name="_text" select="text()"/>
+											<xsl:value-of select="' '"/>
 										</xsl:element>
 									</xsl:when>
 									<xsl:when test="local-name() = 'html'">
