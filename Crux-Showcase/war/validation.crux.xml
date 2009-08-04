@@ -1,0 +1,37 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<head>
+		<title>Validation</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="validationController,sourcesController" useFormatter="phone,date"/>
+
+		<c:dockPanel id="centeringPanel" width="100%" height="130">
+			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
+				<c:horizontalPanel id="vPanel" verticalAlignment="middle" spacing="3">
+					<c:cell width="250" horizontalAlignment="right">
+						<c:label id="maskedLabel" text="Ensure this is checked" />
+					</c:cell>
+					<c:cell width="10" horizontalAlignment="left">
+						<c:checkBox id="checkBox" />
+					</c:cell>
+				    <c:cell width="150" horizontalAlignment="left">
+				    	<a:decoratedButton id="changeButton" text="Click Me" onClick="validationController.onClick"/>
+				    </c:cell>
+				</c:horizontalPanel>
+			</c:cell>
+		</c:dockPanel>
+		
+		<xi:include href="sources.crux.xml"/>
+		
+	</body>
+</html>

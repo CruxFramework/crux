@@ -30,6 +30,7 @@ public class MainController {
 	private static final String MESSAGE_BOX_TAB = "messageBox";	
 	private static final String POPUP_TAB = "popup";
 	private static final String PROGRESS_DIALOG_TAB = "progressDialog";
+	private static final String VALIDATION_TAB = "validation";
 	
 	@Create
 	protected MainScreen screen;
@@ -134,6 +135,11 @@ public class MainController {
 		screen.getTabs().openTab(PROGRESS_DIALOG_TAB, "Progress Dialog", PROGRESS_DIALOG_TAB + HTML, true, false);
 	}
 	
+	@Expose
+	public void onClickValidationItem(){
+		screen.getTabs().openTab(VALIDATION_TAB, "Validation", VALIDATION_TAB + HTML, true, false);
+	}
+
 	protected static interface MainScreen extends ScreenWrapper {
 		DynaTabs getTabs();
 	}
