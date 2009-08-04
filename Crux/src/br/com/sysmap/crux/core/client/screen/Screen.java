@@ -64,7 +64,7 @@ public class Screen
 	protected List<Element> blockingDivs = new ArrayList<Element>();
 	protected IFrameElement historyFrame = null;
 	protected HandlerManager handlerManager;
-	protected ModuleComunicationSerializer serializer = null;
+	protected ModuleComunicationSerializer serializer = null;	
 	
 	protected Screen(String id) 
 	{
@@ -831,6 +831,26 @@ public class Screen
 	{
 		return (T) Screen.get().serializer.deserialize(callParentControllerAccessor(call, Screen.get().serializer.serialize(param)));
 	}
+
+	/**
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
+	public static void invokeControllerOnFrame(String frame, String call, Object param) throws ModuleComunicationException
+	{
+		invokeControllerOnFrame(frame, call, param, Object.class);
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T  invokeControllerOnFrame(String frame, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.get().serializer.deserialize(callFrameControllerAccessor(frame, call, Screen.get().serializer.serialize(param)));
+	}
 	
 	/**
 	 * @param call
@@ -907,4 +927,16 @@ public class Screen
 	private static native String callParentControllerAccessor(String call, String serializedData)/*-{
 		return $wnd.parent._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;
+	
+	/**
+	 * 
+	 * @param frame
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	private static native String callFrameControllerAccessor(String frame, String call, String serializedData)/*-{
+		return $wnd.frames[frame]._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;		
+	
 }
