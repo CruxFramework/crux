@@ -27,4 +27,7 @@ public interface AdvancedWidgetMessages extends Messages
 
 	@DefaultMessage("[advanced-widgets - 003] - The attribute formatter is required for MaskedTextBox.")
 	String maskedTextBoxFormatterRequired();
+
+	@DefaultMessage("[advanced-widgets - 003] - The formatter {0} was not found on this screen.")
+	String maskedTextBoxFormatterNotFound(String formatter);
 }
