@@ -20,7 +20,6 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Accessibility;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HasText;
 
@@ -33,16 +32,13 @@ public class DecoratedButton extends FocusWidget implements HasText
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-DecoratedButton";
 	
-	private FocusPanel widget;
 	private DecoratedButtonFace face;
 	private boolean allowClick;
 
 	public DecoratedButton()
 	{
 		this.face = new DecoratedButtonFace();
-		this.widget = new FocusPanel(face);
-		this.widget.getElement().setPropertyString("display", "inline");
-		this.setElement(widget.getElement());
+		this.setElement(this.face.getElement());
 		sinkEvents(Event.ONCLICK | Event.MOUSEEVENTS | Event.FOCUSEVENTS | Event.KEYEVENTS);
 		Accessibility.setRole(getElement(), Accessibility.ROLE_BUTTON);
 	}
