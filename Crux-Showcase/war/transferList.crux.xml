@@ -18,11 +18,11 @@
 		<c:dockPanel id="centeringPanel" width="100%" height="130" spacing="15">
 			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
 				<a:decoratedPanel id="borders">
-					<a:widget> 
+					<a:widget>
 						<a:transferList id="transferList" leftListLabel="Left Items" 
 			                rightListLabel="Right Items" visibleItemCount="5"
 			                leftToRightButtonText="&gt;&gt;" rightToLeftButtonText="&lt;&lt;"
-			                onLoadWidget="transferListController.loadItems"/>
+			                onLoadWidget="transferListController.loadItems" style="padding:5px;"/>
 					</a:widget>
 				</a:decoratedPanel>
 			</c:cell>

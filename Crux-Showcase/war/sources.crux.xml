@@ -3,24 +3,24 @@
 	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
 	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0">
 
-	<a:collapsePanel id="xmlPanel" width="98%" collapsed="true" onBeforeExpand="sourcesController.loadXmlSource">
+	<a:collapsePanel id="xmlPanel" width="98%" collapsed="true" onBeforeExpand="sourcesController.loadXmlSource" height="250">
 		<a:title>
 			<a:text>View page source</a:text>
 		</a:title>
 		<a:body>
 			<a:widget>
-				<c:textArea id="xmlSourceFrame" styleName="Source" visibleLines="15" readOnly="true" width="100%"/>
+				<c:textArea id="xmlSourceFrame" styleName="Source" readOnly="true" width="100%" height="222"/>
 			</a:widget>
 		</a:body>
 	</a:collapsePanel>
 	
-	<a:collapsePanel id="javaPanel" width="98%" collapsed="true" onBeforeExpand="sourcesController.loadJavaSource">
+	<a:collapsePanel id="javaPanel" width="98%" collapsed="true" onBeforeExpand="sourcesController.loadJavaSource" height="250">
 		<a:title>
 			<a:text>View controller source</a:text>
 		</a:title>
 		<a:body>
 			<a:widget>
-				<c:textArea id="javaSourceFrame" styleName="Source" visibleLines="15" readOnly="true" width="100%"/>
+				<c:textArea id="javaSourceFrame" styleName="Source" visibleLines="15" readOnly="true" width="100%" height="222"/>
 			</a:widget>
 		</a:body>
 	</a:collapsePanel>

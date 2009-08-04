@@ -12,24 +12,31 @@
 		<c:screen useController="mainController" />
 
 		<c:dockPanel id="centeringPanel" width="100%" height="100%">
-			<c:cell direction="north" height="70">
+			<c:cell direction="north" height="70" verticalAlignment="top">
 				<c:dockPanel id="titlePanel" width="100%" spacing="5" height="100%">
 					<c:cell direction="west" width="50">
 						<c:image id="logoImg" url="style/img/crux-logo.gif"/>
 					</c:cell>
 					<c:cell direction="east">
-						<c:dockPanel id="titlesDividerPanel" spacing="0">
-							<c:cell direction="north" height="35" verticalAlignment="bottom">
-								<c:label id="titleLabel" text="Crux Framework" styleName="MainTitle"/>
+						<c:dockPanel id="linksSeparator" width="100%">
+							<c:cell direction="west" horizontalAlignment="left" verticalAlignment="top">
+								<c:dockPanel id="titlesDividerPanel" spacing="0">
+									<c:cell direction="north" height="35" verticalAlignment="bottom">
+										<c:label id="titleLabel" text="Crux Framework" styleName="MainTitle"/>
+									</c:cell>
+									<c:cell direction="south" verticalAlignment="top">
+										<c:label id="secondaryTitleLabel" text="Showcase of features" styleName="SecondaryTitle"/>
+									</c:cell>
+								</c:dockPanel>
 							</c:cell>
-							<c:cell direction="south" verticalAlignment="top">
-								<c:label id="secondaryTitleLabel" text="Showcase of features" styleName="SecondaryTitle"/>
+							<c:cell direction="east" horizontalAlignment="right" verticalAlignment="top">
+								<c:anchor id="projectHome" href="http://crux-framework.googlecode.com/" text="Project Home"/>
 							</c:cell>
 						</c:dockPanel>
 					</c:cell>
 				</c:dockPanel>
 			</c:cell>
-			<c:cell direction="south" verticalAlignment="top" horizontalAlignment="center">
+			<c:cell direction="south" verticalAlignment="top" horizontalAlignment="center" height="100%">
 				<c:dockPanel id="menuTabsDividerPannel" width="100%" height="100%" spacing="5">
 					<c:cell direction="west" width="160">
 						<a:stackMenu id="menu" height="400">

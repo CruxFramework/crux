@@ -5,13 +5,11 @@
 
 	<head>
 		<title>GWT Widgets</title>
-		<link rel="stylesheet" type="text/css"
-			href="style/css/standard.css" />
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
 	</head>
 
 	<body>
-		<script type="text/javascript"
-			src="showcase/showcase.nocache.js">
+		<script type="text/javascript" src="showcase/showcase.nocache.js">
 		</script>
 
 		<c:screen useController="gwtController,sourcesController" />

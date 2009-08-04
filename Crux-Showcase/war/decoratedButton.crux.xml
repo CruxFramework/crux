@@ -15,14 +15,18 @@
 
 		<c:screen useController="decoratedButtonController,sourcesController"/>
 
-		<c:dockPanel id="centeringPanel" width="100%" height="150" spacing="5">
-			<c:cell direction="west" verticalAlignment="middle" horizontalAlignment="right" width="50%">
+		<center>
+
+		<c:dockPanel id="centeringPanel" height="150" spacing="5">
+			<c:cell direction="west" verticalAlignment="middle" horizontalAlignment="right">
 				<a:decoratedButton id="enabledButton" text="Enabled" onClick="decoratedButtonController.onClick"/>
 			</c:cell>
-			<c:cell direction="east" verticalAlignment="middle" horizontalAlignment="left" width="50%">
+			<c:cell direction="east" verticalAlignment="middle" horizontalAlignment="left">
 				<a:decoratedButton id="disabledButton" text="Disabled" enabled="false"/>
 			</c:cell>
 		</c:dockPanel>
+		
+		</center>
 		
 		<xi:include href="sources.crux.xml"/>
 		

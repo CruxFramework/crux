@@ -1,6 +1,5 @@
 package br.com.sysmap.crux.showcase.client.controller;
 
-import br.com.sysmap.crux.advanced.client.dialog.ProgressDialog;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
@@ -26,7 +25,7 @@ public class SourcesController {
 		{
 			javaLoaded = true;
 			
-			ProgressDialog.show("Loading source...");
+			Screen.blockToUser();
 			
 			String id = getScreenSimpleId();
 			String javaFileName = id.substring(0,1).toUpperCase() + id.substring(1) + "Controller.java";
@@ -38,7 +37,7 @@ public class SourcesController {
 						TextArea textArea = Screen.get("javaSourceFrame", TextArea.class);
 						textArea.getElement().setAttribute("wrap", "off");
 						textArea.setValue(result);
-						ProgressDialog.hide();
+						Screen.unblockToUser();
 					}			
 				}
 			);
@@ -52,7 +51,7 @@ public class SourcesController {
 		{
 			xmlLoaded = true;
 			
-			ProgressDialog.show("Loading source...");
+			Screen.blockToUser();
 		
 			String id = getScreenSimpleId();
 			String xmlFileName = id + ".crux.xml";
@@ -64,7 +63,7 @@ public class SourcesController {
 						TextArea textArea = Screen.get("xmlSourceFrame", TextArea.class);
 						textArea.getElement().setAttribute("wrap", "off");
 						textArea.setValue(result);
-						ProgressDialog.hide();
+						Screen.unblockToUser();
 					}			
 				}
 			);
