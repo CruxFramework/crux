@@ -1,6 +1,5 @@
 package br.com.sysmap.crux.showcase.client.controller;
 
-import br.com.sysmap.crux.advanced.client.dialog.ProgressDialog;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
@@ -25,8 +24,7 @@ public class FrameSourcesController {
 		{
 			xmlLoaded = true;
 			
-			ProgressDialog.show("Loading source...");
-		
+			Screen.blockToUser();
 			String xmlFileName = "innerFrame.crux.xml";
 			
 			service.getXmlFile(xmlFileName, false, 
@@ -36,7 +34,7 @@ public class FrameSourcesController {
 						TextArea textArea = Screen.get("frameSourceFrame", TextArea.class);
 						textArea.getElement().setAttribute("wrap", "off");
 						textArea.setValue(result);
-						ProgressDialog.hide();
+						Screen.unblockToUser();
 					}			
 				}
 			);
