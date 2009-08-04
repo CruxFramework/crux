@@ -19,7 +19,7 @@
 			<c:cell direction="west" horizontalAlignment="right" verticalAlignment="top" width="50%">
 				<c:dockPanel id="filterSeparator" width="100%" height="130" spacing="5">
 					<c:cell direction="north" horizontalAlignment="right" verticalAlignment="top">
-						<a:filter filterable="aFilteredMenu" id="filter" text="Search on Menu"/>
+						<a:filter filterable="aFilteredMenu" id="filter" text="Search the menu"/>
 					</c:cell>
 					<c:cell direction="south" horizontalAlignment="right" verticalAlignment="top">
 						<a:stackMenu id="aFilteredMenu" height="250">

@@ -21,11 +21,11 @@
 					<c:cell width="100" horizontalAlignment="right">
 						<c:label id="maskedLabel" text="phone:" />
 					</c:cell>
-					<c:cell width="150" horizontalAlignment="left">
-						<a:maskedTextBox id="maskedTextBox" formatter="phone"/>
+					<c:cell horizontalAlignment="left">
+						<a:maskedTextBox id="maskedTextBox" formatter="phone" width="90"/>
 					</c:cell>
-				    <c:cell width="150" horizontalAlignment="left">
-				    	<c:button id="changeButton" text="Change mask" onClick="maskedTextBoxController.changeFormat"/>
+				    <c:cell horizontalAlignment="left">
+				    	<a:decoratedButton id="changeButton" text="Change mask" onClick="maskedTextBoxController.changeFormat"/>
 				    </c:cell>
 				</c:horizontalPanel>
 			</c:cell>

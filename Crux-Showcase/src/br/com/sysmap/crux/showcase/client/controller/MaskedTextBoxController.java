@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.Label;
 
 @Controller("maskedTextBoxController")
 public class MaskedTextBoxController {
-	private String formatter = "phone";
+	private String formatter = "Phone";
 	@Create
 	protected MaskedScreen screen;
 	
@@ -26,9 +26,9 @@ public class MaskedTextBoxController {
 	public void changeFormat(){
 		MaskedTextBox maskedTextBox =screen.getMaskedTextBox();
 		maskedTextBox.setUnformattedValue(null);
-		maskedTextBox.setFormatter(Screen.getFormatter("phone".equals(formatter)?"date":"phone"));
-		formatter = "phone".equals(formatter)?"date":"phone";
-		screen.getMaskedLabel().setText(formatter+":");
+		maskedTextBox.setFormatter(Screen.getFormatter("phone".equals(formatter) ? "date" : "phone"));
+		formatter = "phone".equals(formatter) ? "Date" : "Phone";
+		screen.getMaskedLabel().setText(formatter + ":");
 	}
 	
 	@FormatterName("phone")

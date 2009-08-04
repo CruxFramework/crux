@@ -15,13 +15,17 @@
 
 		<c:screen useController="sourcesController"/>
 
-		<c:dockPanel id="centering" width="100%" spacing="5">
+		<c:dockPanel id="centering" width="100%" spacing="15">
 			<c:cell direction="center" horizontalAlignment="center">
-				<a:dynaTabs id="dynaTabs" width="80%" height="300">
-					<a:tab url="http://www.google.com" id="google" label="Google"/>
-					<a:tab url="http://crux-framework.googlecode.com/" id="crux" label="Crux"/>
-					<a:tab url="http://www.sysmap.com.br/" id="sysmap" label="Sysmap"/>
-				</a:dynaTabs>
+				<a:decoratedPanel id="border" width="80%" height="300">
+					<a:widget>
+						<a:dynaTabs id="dynaTabs" width="100%" height="100%">
+							<a:tab url="http://www.google.com" id="google" label="Google"/>
+							<a:tab url="http://crux-framework.googlecode.com/" id="crux" label="Crux"/>
+							<a:tab url="http://www.sysmap.com.br/" id="sysmap" label="Sysmap"/>
+						</a:dynaTabs>
+					</a:widget>
+				</a:decoratedPanel>
 			</c:cell>		
 		</c:dockPanel>
 		

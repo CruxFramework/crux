@@ -17,7 +17,7 @@ public class MessageBoxController {
 		
 		MessageBox.show(
 				
-			"Misterious Message For You",
+			"Message For You",
 			
 			"The truth out there.", 
 			
