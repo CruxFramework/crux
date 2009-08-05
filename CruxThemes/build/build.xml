@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="jar" name="Crux-Themes" basedir="../">
+
+	<property name="srcdir" value="src" />
+	<property name="classesdir" value="bin" />
+	<property name="distdir" value="dist" />
+	<property name="final.name" value="crux-themes" />
+
+	<path id="build.classpath">
+	</path>
+
+	<target name="init">
+		<delete dir="${classesdir}" failonerror="no"/>
+		<delete dir="${distdir}" failonerror="no"/>
+		<mkdir dir="${classesdir}" />
+		<mkdir dir="${distdir}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" encoding="8859_1">
+			<src>
+				<pathelement location="${srcdir}" />
+			</src>
+			<classpath refid="build.classpath" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar jarfile="${distdir}/${final.name}.jar">
+			<fileset dir="${classesdir}"/>
+			<fileset dir="${srcdir}">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+	</target>
+
+</project>
