@@ -19,7 +19,7 @@ public class MessageBoxController {
 				
 			"Message For You",
 			
-			"The truth out there.", 
+			"The truth is out there.", 
 			
 			new OkHandler(){
 				public void onOk(OkEvent event)
