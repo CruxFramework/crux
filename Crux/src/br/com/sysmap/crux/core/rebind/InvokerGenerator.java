@@ -59,13 +59,14 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 		{
 			generateMethod(method, sourceWriter, "OnSelf");
 		}
-		else if (name.endsWith("OnFrame") )
+		else if (name.indexOf("OnFrame") > 0)
 		{
-			Class<?>[] parameterTypes = method.getParameterTypes();
-			if (parameterTypes != null && parameterTypes.length >= 1 && String.class.isAssignableFrom(parameterTypes[0]))
+			String sufix = name.substring(name.indexOf("OnFrame"));
+			if (sufix.length() <= 7)
 			{
-				generateMethod(method, sourceWriter, "OnFrame");
+				throw new WrapperGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.toGenericString()));
 			}
+			generateMethod(method, sourceWriter, sufix);
 		}
 		else
 		{
@@ -106,14 +107,7 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 			
 			if (returnType.getName().equals("void") || returnType.getName().equals("java.lang.Void"))
 			{
-				if ("OnFrame".equals(sufix))
-				{
-					generateMethodInvocationForFrame(sourceWriter, sufix, controllerName, methodName, numParams, null);
-				}
-				else
-				{
-					generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, null);
-				}
+				generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, null);
 			}
 			else
 			{
@@ -121,14 +115,7 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 				{
 					returnTypeDeclaration = getClassNameForPrimitive(returnType);
 				}
-				if ("OnFrame".equals(sufix))
-				{
-					generateMethodInvocationForFrame(sourceWriter, sufix, controllerName, methodName, numParams, returnTypeDeclaration);
-				}
-				else
-				{
-					generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, returnTypeDeclaration);
-				}
+				generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, returnTypeDeclaration);
 			}
 			sourceWriter.println("}");
 		}
@@ -165,62 +152,42 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 			}
 			sourceWriter.print("};");
 		}
-		if (returnTypeDeclaration != null)
+		
+		String frameName = null;
+		if (sufix.startsWith("OnFrame"))
 		{
-			sourceWriter.println("return Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
-		}
-		else
-		{
-			sourceWriter.println("Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+");");
-		}
-		sourceWriter.println("}catch(Throwable e){");
-		sourceWriter.println("GWT.log(e.getLocalizedMessage(), e);");
-		sourceWriter.println("Window.alert("+EscapeUtils.quote(messages.errorInvokerWrapperSerializationError())+");");
-		sourceWriter.println("}");
-		if (returnTypeDeclaration != null)
-		{
-			sourceWriter.println("return null;");
-		}
-	}
-
-	/**
-	 * 
-	 * @param sourceWriter
-	 * @param sufix
-	 * @param controllerName
-	 * @param methodName
-	 * @param numParams
-	 * @param returnTypeDeclaration
-	 */
-	private void generateMethodInvocationForFrame(SourceWriter sourceWriter, String sufix, String controllerName, String methodName, 
-										  int numParams, String returnTypeDeclaration)
-	{
-		sourceWriter.println("try{");
-		boolean hasValue = numParams > 1;
-		if (numParams == 1)
-		{
-			sourceWriter.print("Object value = param1;");
-		}
-		else if (numParams > 1)
-		{
-			sourceWriter.print("Object[] value = new Object[]{");
-			for(int i=1; i< numParams; i++)
+			frameName = sufix.substring(7);
+			if (frameName.length()>1)
 			{
-				if (i>1)
-				{
-					sourceWriter.print(",");
-				}
-				sourceWriter.print("param"+i);
+				frameName = Character.toLowerCase(frameName.charAt(0)) + frameName.substring(1);
 			}
-			sourceWriter.print("};");
+			else
+			{
+				frameName = frameName.toLowerCase();
+			}
+			sufix = "OnFrame";
 		}
 		if (returnTypeDeclaration != null)
 		{
-			sourceWriter.println("return Screen.invokeController"+sufix+"(param0,\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
+			if ("OnFrame".equals(sufix))
+			{
+				sourceWriter.println("return Screen.invokeController"+sufix+"(\""+frameName+"\",\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
+			}
+			else
+			{
+				sourceWriter.println("return Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
+			}
 		}
 		else
 		{
-			sourceWriter.println("Screen.invokeController"+sufix+"(param0,\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+");");
+			if ("OnFrame".equals(sufix))
+			{
+				sourceWriter.println("Screen.invokeController"+sufix+"(\""+frameName+"\",\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+");");
+			}
+			else
+			{
+				sourceWriter.println("Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+");");
+			}
 		}
 		sourceWriter.println("}catch(Throwable e){");
 		sourceWriter.println("GWT.log(e.getLocalizedMessage(), e);");
