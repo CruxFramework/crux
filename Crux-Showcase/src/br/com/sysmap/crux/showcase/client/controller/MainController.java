@@ -33,6 +33,7 @@ public class MainController {
 	private static final String VALIDATION_TAB = "validation";
 	private static final String SERVER_COMMUNICATION_TAB = "serverCommunication";
 	private static final String CONTEXT_TAB = "context";
+	private static final String I18N_TAB = "i18n";
 	
 	@Create
 	protected MainScreen screen;
@@ -150,6 +151,11 @@ public class MainController {
 	@Expose
 	public void onClickServerItem(){
 		screen.getTabs().openTab(SERVER_COMMUNICATION_TAB, "Server Communication", SERVER_COMMUNICATION_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickI18NItem(){
+		screen.getTabs().openTab(I18N_TAB, "I18N", I18N_TAB + HTML, true, false);
 	}
 	
 	protected static interface MainScreen extends ScreenWrapper {
