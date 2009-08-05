@@ -12,8 +12,17 @@
 	<body>
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="sourcesController">
+		<c:screen useController="i18nController,sourcesController" onLoad="i18nController.onLoad">
 			<c:dockPanel id="centeringPanel" width="100%" height="130">
+				<c:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
+					<c:listBox id="locales" >
+						<c:item label="English" value="en"/>
+						<c:item label="Portuguese" value="pt_BR"/>
+					</c:listBox>
+				</c:cell>
+				<c:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
+					<a:decoratedButton id="button" text="${myMessages.myButton}" onClick="i18nController.clickButton"/>
+				</c:cell>
 				<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
 					<c:label id="i18nLabel" text="${myMessages.message1}"/>
 				</c:cell>

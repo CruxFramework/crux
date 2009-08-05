@@ -5,4 +5,8 @@
 	<inherits name='com.google.gwt.user.theme.standard.Standard'/>
 	<inherits name='br.com.sysmap.crux.themes.advanced.standard.Standard'/>
 	<inherits name='com.extjs.gxt.ui.GXT'/>
+	<inherits name="com.google.gwt.i18n.I18N"/>
+    <extend-property name="locale" values="pt_BR"/>
+    <extend-property name="locale" values="en"/>
+    
 </module>
