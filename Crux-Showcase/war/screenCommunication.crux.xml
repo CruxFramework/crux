@@ -14,7 +14,9 @@
 
 		<c:screen useController="screenCommunicationController,sourcesController,frameSourcesController"/>
 
-		<c:dockPanel id="centeringPanel" width="100%" height="130">
+		<center>
+		
+		<c:dockPanel id="centeringPanel" width="500" height="130" spacing="15">
 			<c:cell direction="west" horizontalAlignment="center" verticalAlignment="middle" >
 				<a:decoratedButton id="button" onClick="screenCommunicationController.changeFrame" text="Change Frame"/>
 			</c:cell>
@@ -25,12 +27,14 @@
 					</a:title>
 					<a:body>
 						<a:widget>
-							<c:namedFrame id="frame" name="frame" url="innerFrame.html" width="100%" height="100%"/>
+							<c:namedFrame id="frame" name="frame" url="innerFrame.html" width="100%" height="100%" style="border:solid 0px;"/>
 						</a:widget>
 					</a:body>
 				</a:titlePanel>
 			</c:cell>
 		</c:dockPanel>
+		
+		</center>
 		
 		<xi:include href="sources.crux.xml"/>
 
