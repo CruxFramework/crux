@@ -1,0 +1,70 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<head>
+		<title>Screen Communication</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="contextController,contextSourcesController,sourcesController"/>
+
+		<center>
+		
+		<c:dockPanel id="hPanel" width="500" height="130" spacing="15">
+			<c:cell direction="west" horizontalAlignment="center" verticalAlignment="middle">
+				<c:textBox id="message"/>
+			</c:cell>
+			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
+				<a:decoratedButton id="button" onClick="contextController.save" text="Save"/>
+			</c:cell>
+			<c:cell direction="east" horizontalAlignment="center" verticalAlignment="middle">
+				<a:titlePanel id="bordersEast" height="200" width="400">
+					<a:title>
+						<a:text>Internal Frame</a:text>
+					</a:title>
+					<a:body>
+						<a:widget>
+							<c:namedFrame id="frame" name="frame" url="contextFrame.html" width="100%" height="100%" style="border:solid 0px;"/>
+						</a:widget>
+					</a:body>
+				</a:titlePanel>
+			</c:cell>
+		</c:dockPanel>
+		
+		</center>
+		
+		<xi:include href="sources.crux.xml"/>
+
+		<center>
+		
+		<a:collapsePanel id="frameXmlPanel" width="98%" collapsed="true" onBeforeExpand="contextSourcesController.loadFrameXML">
+			<a:title>
+				<a:text>View frame page source</a:text>
+			</a:title>
+			<a:body>
+				<a:widget>
+					<c:textArea id="frameXml" styleName="Source" visibleLines="15" readOnly="true" width="100%"/>
+				</a:widget>
+			</a:body>
+		</a:collapsePanel>
+		
+		<a:collapsePanel id="frameJavaPanel" width="98%" collapsed="true" onBeforeExpand="contextSourcesController.loadFrameController">
+			<a:title>
+				<a:text>View frame controller source</a:text>
+			</a:title>
+			<a:body>
+				<a:widget>
+					<c:textArea id="frameController" styleName="Source" visibleLines="15" readOnly="true" width="100%"/>
+				</a:widget>
+			</a:body>
+		</a:collapsePanel>
+				
+		</center>
+	</body>
+</html>

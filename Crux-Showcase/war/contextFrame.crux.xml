@@ -1,0 +1,32 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
+	xmlns:xi="http://www.w3.org/2001/XInclude">
+
+	<head>
+		<title>Inner Frame</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="contextFrameController"/>
+		
+		<center>
+		
+		<c:verticalPanel id="vPanel" spacing="15" horizontalAlignment="center">
+			<c:cell>
+				<a:decoratedButton id="btn" text="Read from context" onClick="contextFrameController.readContext"/>
+			</c:cell>
+			<c:cell>
+				<c:label id="label"/>
+			</c:cell>		
+		</c:verticalPanel>			
+			
+		</center>
+ 
+	</body>
+</html>
