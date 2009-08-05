@@ -17,6 +17,11 @@ public class ContextInitializerController {
 		void setDate(Date date);
 	}
 	
+	
+	/**
+	 * Called when the main page is rendered, 
+	 * since Screen.createContext() must be called only once.    
+	 */
 	@Expose
 	public void onLoad()
 	{
