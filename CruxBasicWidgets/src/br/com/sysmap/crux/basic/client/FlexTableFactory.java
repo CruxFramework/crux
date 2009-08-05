@@ -38,13 +38,13 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 		{
 			throw new IndexOutOfBoundsException(messages.flexTableInvalidRowColIndexes(widgetId));
 		}
-		int r = 0;
+		int r = widget.getRowCount();
 		while (widget.getRowCount() < indexRow+1)
 		{
 			widget.insertRow(r++);
 		}
 		
-		if (widget.getCellCount(indexRow) < indexCol+1)
+		while (widget.getCellCount(indexRow) < indexCol+1)
 		{
 			widget.addCell(indexRow);
 		}
