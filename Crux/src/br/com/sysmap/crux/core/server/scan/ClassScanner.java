@@ -53,7 +53,7 @@ public class ClassScanner
 	{
 		scannerDB = new ScannerDB();
 		scannerDB.setIgnoredPackages(new String[]{"javax", "java", "sun", "com.sun", "org.apache", 
-				"javassist", "org.json", "net.sf.saxon", 
+				"javassist", "org.json", "net.sf.saxon", "com.extjs",
 				"com.metaparadigm", "junit", "br.com.sysmap.crux.core.rebind.screen"});
 		scannerDB.setScanFieldAnnotations(false);
 		scannerDB.setScanMethodAnnotations(false);

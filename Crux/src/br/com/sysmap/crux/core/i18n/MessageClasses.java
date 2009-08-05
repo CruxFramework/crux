@@ -68,7 +68,16 @@ public class MessageClasses
 							}
 							else
 							{
-								messagesClasses.put(messageClass.getSimpleName(), (Class<? extends LocalizableResource>) messageClass);
+								String className = messageClass.getSimpleName();
+								if (className.length() > 1)
+								{
+									className = Character.toLowerCase(className.charAt(0)) + className.substring(1);
+								}
+								else
+								{
+									className = className.toLowerCase();
+								}
+								messagesClasses.put(className, (Class<? extends LocalizableResource>) messageClass);
 							}
 						}
 					}

@@ -40,7 +40,7 @@ public class WidgetConfigScanner
 	}
 	
 	protected transient String[] ignoredPackages = {"javax", "java", "sun", "com.sun", "org.apache", 
-													"net.sf.saxon", "javassist", "org.json", 
+													"net.sf.saxon", "javassist", "org.json", "com.extjs",
 													"com.metaparadigm", "junit"};
 
 	public String[] getIgnoredPackages()
