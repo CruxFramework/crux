@@ -21,12 +21,12 @@ public class ScreenCommunicationController {
 	@Expose
 	public void changeFrame()
 	{
-		frameControllerInvoker.setMyLabelOnFrame("frame", "Modificado em "+new Date().toString());
+		frameControllerInvoker.setMyLabelOnFrameMyFrame("Modificado em "+new Date().toString());
 	}
 	
 	public static interface FrameControllerInvoker extends Invoker
 	{
-		void setMyLabelOnFrame(String frame, String text);
+		void setMyLabelOnFrameMyFrame(String text);
 	}
 	
 	@Controller("frameController")

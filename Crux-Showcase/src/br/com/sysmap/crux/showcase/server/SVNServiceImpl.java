@@ -58,6 +58,13 @@ public class SVNServiceImpl implements SVNService{
 				result = builder.toString();
 				result = StringUtils.replace(result, "\t", "    ");
 				
+				if (result.contains("<title>404 Not Found</title>"))
+				{
+					throw new FileNotFoundException();
+					// When application runs in google app engine, URL.openStream does not raise this Exception, 
+					// but return an HTML with error message. 
+				}
+				
 				cachedResources.put(url, result);
 			}
 			return escapeHtml ? StringEscapeUtils.escapeHtml(result) : result;

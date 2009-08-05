@@ -27,7 +27,7 @@
 					</a:title>
 					<a:body>
 						<a:widget>
-							<c:namedFrame id="frame" name="frame" url="innerFrame.html" width="100%" height="100%" style="border:solid 0px;"/>
+							<c:namedFrame id="frame" name="myFrame" url="innerFrame.html" width="100%" height="100%" style="border:solid 0px;"/>
 						</a:widget>
 					</a:body>
 				</a:titlePanel>
