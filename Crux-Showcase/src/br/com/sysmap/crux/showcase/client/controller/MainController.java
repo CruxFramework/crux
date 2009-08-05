@@ -31,8 +31,9 @@ public class MainController {
 	private static final String POPUP_TAB = "popup";
 	private static final String PROGRESS_DIALOG_TAB = "progressDialog";
 	private static final String VALIDATION_TAB = "validation";
+	private static final String SERVER_COMMUNICATION_TAB = "serverCommunication";
 	private static final String CONTEXT_TAB = "context";
-
+	
 	@Create
 	protected MainScreen screen;
 	
@@ -146,6 +147,11 @@ public class MainController {
 		screen.getTabs().openTab(CONTEXT_TAB, "Shared Context", CONTEXT_TAB + HTML, true, false);
 	}
 
+	@Expose
+	public void onClickServerItem(){
+		screen.getTabs().openTab(SERVER_COMMUNICATION_TAB, "Server Communication", SERVER_COMMUNICATION_TAB + HTML, true, false);
+	}
+	
 	protected static interface MainScreen extends ScreenWrapper {
 		DynaTabs getTabs();
 	}
