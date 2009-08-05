@@ -45,6 +45,7 @@
 					<xsl:if test="string-length(@selected) > 0">
 						<xsl:attribute name="_selected" select="@selected"/>
 					</xsl:if>
+					<xsl:value-of select="' '"/>
 				</xsl:element>
 			</xsl:for-each>
 
