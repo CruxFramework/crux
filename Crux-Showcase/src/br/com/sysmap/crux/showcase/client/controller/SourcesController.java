@@ -30,7 +30,7 @@ public class SourcesController {
 			String id = getScreenSimpleId();
 			String javaFileName = id.substring(0,1).toUpperCase() + id.substring(1) + "Controller.java";
 			
-			service.getJavaFile(javaFileName, false, 
+			service.getJavaControllerFile(javaFileName, false, 
 				new AsyncCallbackAdapter<String>(this){
 					public void onComplete(String result)
 					{

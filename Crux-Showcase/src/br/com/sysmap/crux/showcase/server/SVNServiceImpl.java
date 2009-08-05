@@ -19,23 +19,31 @@ public class SVNServiceImpl implements SVNService{
 	
 	private static final Log log = LogFactory.getLog(SVNServiceImpl.class);
 	
-	private String baseXmlURL = "http://crux-framework.googlecode.com/svn/trunk/Crux-Showcase/war/";
-	private String baseJavaURL = "http://crux-framework.googlecode.com/svn/trunk/Crux-Showcase/src/br/com/sysmap/crux/showcase/client/controller/";
+	private static final String BASE_XML_URL = "http://crux-framework.googlecode.com/svn/trunk/Crux-Showcase/war/";
+	private static final String BASE_MODULE_URL = "http://crux-framework.googlecode.com/svn/trunk/Crux-Showcase/src/br/com/sysmap/crux/showcase/";
+	private static final String BASE_JAVA_CONTROLLER_URL = BASE_MODULE_URL + "client/controller/";
 	
 	private static Map<String, String> cachedResources = new ConcurrentHashMap<String,String>();
 	
 	/* 
 	 * @see br.com.sysmap.crux.showcase.client.remote.SVNService#getJavaFile(java.lang.String, boolean)
 	 */
-	public String getJavaFile(String fileName, boolean escapeHtml){		
-		return loadSourceCode(baseJavaURL + fileName, escapeHtml, "java controller");
+	public String getJavaControllerFile(String fileName, boolean escapeHtml){		
+		return loadSourceCode(BASE_JAVA_CONTROLLER_URL + fileName, escapeHtml, "java controller");
 	}
 	
+	/* 
+	 * @see br.com.sysmap.crux.showcase.client.remote.SVNService#getJavaFile(java.lang.String, boolean)
+	 */
+	public String getJavaFile(String fileName, boolean escapeHtml){		
+		return loadSourceCode(BASE_MODULE_URL + fileName, escapeHtml, "java file");
+	}
+
 	/* 
 	 * @see br.com.sysmap.crux.showcase.client.remote.SVNService#getXmlFile(java.lang.String, boolean)
 	 */
 	public String getXmlFile(String fileName, boolean escapeHtml){
-		return loadSourceCode(baseXmlURL + fileName, escapeHtml, "xml page");
+		return loadSourceCode(BASE_XML_URL + fileName, escapeHtml, "xml page");
 	}
 	
 	private String loadSourceCode(final String url, boolean escapeHtml, String type){

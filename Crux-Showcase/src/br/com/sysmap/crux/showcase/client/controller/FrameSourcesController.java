@@ -35,7 +35,13 @@ public class FrameSourcesController {
 						textArea.getElement().setAttribute("wrap", "off");
 						textArea.setValue(result);
 						Screen.unblockToUser();
-					}			
+					}		
+					@Override
+					public void onError(Throwable e)
+					{
+						Screen.unblockToUser();
+						super.onError(e);
+					}
 				}
 			);
 		}
