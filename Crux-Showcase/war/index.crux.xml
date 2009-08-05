@@ -85,7 +85,7 @@
 					<c:cell direction="east">
 						<a:decoratedPanel id="basePanel" width="100%" height="100%">
 							<a:widget>
-								<a:dynaTabs id="tabs" height="100%" width="100%" />
+								<a:dynaTabs id="tabs" height="100%" width="100%"/>
 							</a:widget>
 						</a:decoratedPanel>
 					</c:cell>

@@ -19,7 +19,7 @@
 			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
 				<c:horizontalPanel id="vPanel" verticalAlignment="middle" spacing="3">
 					<c:cell width="100" horizontalAlignment="right">
-						<c:label id="maskedLabel" text="phone:" />
+						<c:label id="maskedLabel" text="Phone:" />
 					</c:cell>
 					<c:cell horizontalAlignment="left">
 						<a:maskedTextBox id="maskedTextBox" formatter="phone" width="90"/>

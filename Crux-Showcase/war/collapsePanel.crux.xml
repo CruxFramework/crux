@@ -26,7 +26,7 @@
 						<a:widget>
 							<c:dockPanel id="internalCentering" width="100%">
 								<c:cell direction="center" horizontalAlignment="center">
-									<c:image id="image" url="http://localhost:8888/style/img/crux-logo.gif"/>
+									<c:image id="image" url="style/img/crux-logo.gif"/>
 								</c:cell>							
 							</c:dockPanel>
 						</a:widget>

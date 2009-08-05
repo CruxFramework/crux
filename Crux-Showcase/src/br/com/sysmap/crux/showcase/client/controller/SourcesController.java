@@ -38,7 +38,7 @@ public class SourcesController {
 						textArea.getElement().setAttribute("wrap", "off");
 						textArea.setValue(result);
 						Screen.unblockToUser();
-					}			
+					}
 				}
 			);
 		}
@@ -58,13 +58,20 @@ public class SourcesController {
 			
 			service.getXmlFile(xmlFileName, false, 
 				new AsyncCallbackAdapter<String>(this){
+				
 					public void onComplete(String result)
 					{
 						TextArea textArea = Screen.get("xmlSourceFrame", TextArea.class);
 						textArea.getElement().setAttribute("wrap", "off");
 						textArea.setValue(result);
 						Screen.unblockToUser();
-					}			
+					}
+					
+					@Override
+					public void onError(Throwable e)
+					{
+						Screen.unblockToUser();
+					}
 				}
 			);
 		}

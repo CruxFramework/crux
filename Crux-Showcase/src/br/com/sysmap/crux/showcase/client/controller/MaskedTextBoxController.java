@@ -18,22 +18,29 @@ import com.google.gwt.user.client.ui.Label;
 
 @Controller("maskedTextBoxController")
 public class MaskedTextBoxController {
-	private String formatter = "Phone";
+	
+	private String currentFormatterName = "phone";
+	
 	@Create
 	protected MaskedScreen screen;
 	
 	@Expose
 	public void changeFormat(){
-		MaskedTextBox maskedTextBox =screen.getMaskedTextBox();
-		maskedTextBox.setUnformattedValue(null);
-		maskedTextBox.setFormatter(Screen.getFormatter("phone".equals(formatter) ? "date" : "phone"));
-		formatter = "phone".equals(formatter) ? "Date" : "Phone";
-		screen.getMaskedLabel().setText(formatter + ":");
+		
+		String newFormatterName = "phone".equals(currentFormatterName) ? "date" : "phone";
+		Formatter newFormatter = Screen.getFormatter(newFormatterName);
+		currentFormatterName = newFormatterName;
+		
+		MaskedTextBox maskedTextBox = screen.getMaskedTextBox();
+		maskedTextBox.setUnformattedValue(null);		
+		maskedTextBox.setFormatter(newFormatter);		
+		
+		swapLabel();
 	}
-	
+
 	@FormatterName("phone")
 	public static class PhoneFormatter extends MaskedTextBoxBaseFormatter implements Formatter{
-		@Override
+		
 		protected String getMask(){
 			return "(99)9999-9999";
 		}
@@ -59,9 +66,9 @@ public class MaskedTextBoxController {
 
 	@FormatterName("date")
 	public static class DateFormatter extends MaskedTextBoxBaseFormatter implements Formatter {
+
 		DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy");
 
-		@Override
 		protected String getMask(){
 			return "99/99/9999";
 		}
@@ -84,6 +91,12 @@ public class MaskedTextBoxController {
 			
 			return format.format((Date) input);
 		}
+	}
+
+	private void swapLabel()
+	{
+		String label = currentFormatterName.substring(0, 1).toUpperCase() + currentFormatterName.substring(1);
+		screen.getMaskedLabel().setText(label + ":");
 	}
 	
 	public static interface MaskedScreen extends ScreenWrapper{
