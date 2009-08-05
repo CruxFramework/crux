@@ -5,7 +5,7 @@
 	xmlns:xi="http://www.w3.org/2001/XInclude">
 
 	<head>
-		<title>Screen Communication</title>
+		<title>Shared Context</title>
 		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
 	</head>
 
@@ -15,55 +15,35 @@
 		<c:screen useController="contextController,contextSourcesController,sourcesController"/>
 
 		<center>
-		
-		<c:dockPanel id="hPanel" width="500" height="130" spacing="15">
-			<c:cell direction="west" horizontalAlignment="center" verticalAlignment="middle">
-				<c:textBox id="message"/>
-			</c:cell>
-			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
-				<a:decoratedButton id="button" onClick="contextController.save" text="Save"/>
-			</c:cell>
-			<c:cell direction="east" horizontalAlignment="center" verticalAlignment="middle">
-				<a:titlePanel id="bordersEast" height="200" width="400">
-					<a:title>
-						<a:text>Internal Frame</a:text>
-					</a:title>
-					<a:body>
-						<a:widget>
-							<c:namedFrame id="frame" name="frame" url="contextFrame.html" width="100%" height="100%" style="border:solid 0px;"/>
-						</a:widget>
-					</a:body>
-				</a:titlePanel>
-			</c:cell>
-		</c:dockPanel>
-		
-		</center>
-		
-		<xi:include href="sources.crux.xml"/>
 
-		<center>
+		<table cellspacing="15">
+			<tr>
+				<td align="center">
+					<table>
+						<tr>
+							<td width="70"><c:textBox id="message"/></td>
+							<td><a:decoratedButton id="button" onClick="contextController.save" text="Save in Context"/></td>	
+						</tr>
+					</table>
+				</td>				
+			</tr>
+			<tr>
+				<td colspan="2">
+					<a:titlePanel id="bordersEast" height="150" width="400">
+						<a:title>
+							<a:text>Internal Frame</a:text>
+						</a:title>
+						<a:body>
+							<a:widget>
+								<c:namedFrame id="frame" name="frame" url="contextFrame.html" width="100%" height="100%" style="border:solid 0px;"/>
+							</a:widget>
+						</a:body>
+					</a:titlePanel>
+				</td>
+			</tr>
+		</table>
 		
-		<a:collapsePanel id="frameXmlPanel" width="98%" collapsed="true" onBeforeExpand="contextSourcesController.loadFrameXML">
-			<a:title>
-				<a:text>View frame page source</a:text>
-			</a:title>
-			<a:body>
-				<a:widget>
-					<c:textArea id="frameXml" styleName="Source" visibleLines="15" readOnly="true" width="100%"/>
-				</a:widget>
-			</a:body>
-		</a:collapsePanel>
-		
-		<a:collapsePanel id="frameJavaPanel" width="98%" collapsed="true" onBeforeExpand="contextSourcesController.loadFrameController">
-			<a:title>
-				<a:text>View frame controller source</a:text>
-			</a:title>
-			<a:body>
-				<a:widget>
-					<c:textArea id="frameController" styleName="Source" visibleLines="15" readOnly="true" width="100%"/>
-				</a:widget>
-			</a:body>
-		</a:collapsePanel>
+		<xi:include href="contextSources.crux.xml"/>
 				
 		</center>
 	</body>

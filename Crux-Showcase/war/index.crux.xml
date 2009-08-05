@@ -6,6 +6,7 @@
 	</head>
 
 	<body>
+	
 <!-- Google analytics information - Start-->
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -20,7 +21,7 @@ pageTracker._trackPageview();
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="mainController" />
+		<c:screen useController="mainController,contextInitializerController" onLoad="contextInitializerController.onLoad" />
 
 		<c:dockPanel id="centeringPanel" width="100%" height="100%">
 			<c:cell direction="north" height="70" verticalAlignment="top">
@@ -86,7 +87,7 @@ pageTracker._trackPageview();
 								<a:item id="valueBindItem" label="Value Binding" onClick="mainController.onClickValueBindItem" />
 								<a:item id="screenWrapperItem" label="Screen Wrappers" onClick="mainController.onClickScreenWrapperItem" />
 								<a:item id="screenCommunicationItem" label="Screen Communication" onClick="mainController.onClickScreenCommunicationItem" />
-								<a:item id="contextItem" label="Common Context" onClick="mainController.onClickContextItem" />
+								<a:item id="contextItem" label="Shared Context" onClick="mainController.onClickContextItem" />
 								<a:item id="validationItem" label="Validation" onClick="mainController.onClickValidationItem" />
 								<a:item id="serverItem" label="Server Communication" onClick="mainController.onClickServerItem" />
 								<a:item id="i18nItem" label="I18N" onClick="mainController.onClickI18NItem" />

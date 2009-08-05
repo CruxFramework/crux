@@ -81,4 +81,36 @@ public class ContextSourcesController {
 			);
 		}
 	}
+	
+	@Expose
+	public void loadContextInitializer() {
+		
+		if(!controllerLoaded)
+		{
+			controllerLoaded = true;
+			
+			Screen.blockToUser();
+			
+			String fileName = "ContextInitializerController.java";
+			
+			service.getJavaFile(fileName, false, 
+					
+				new AsyncCallbackAdapter<String>(this){
+				
+					public void onComplete(String result)
+					{
+						TextArea textArea = Screen.get("contextInitializerCntr", TextArea.class);
+						textArea.getElement().setAttribute("wrap", "off");
+						textArea.setValue(result);
+						Screen.unblockToUser();
+					}
+					
+					public void onError(Throwable e)
+					{
+						Screen.unblockToUser();
+					}
+				}
+			);
+		}
+	}
 }

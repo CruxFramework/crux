@@ -6,7 +6,7 @@ import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.screen.Screen;
-import br.com.sysmap.crux.showcase.client.controller.ContextInitializer.SharedContext;
+import br.com.sysmap.crux.showcase.client.controller.ContextInitializerController.SharedContext;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
@@ -18,7 +18,7 @@ public class ContextFrameController {
 	protected SharedContext context;
 	
 	@Expose
-	public void readModifiedDate(){
+	public void readContext(){
 		
 		String message = context.getMessage();
 		Date msgDate = context.getDate();
@@ -28,12 +28,12 @@ public class ContextFrameController {
 			long messageAge = (new Date().getTime() - msgDate.getTime()) / 1000;
 			
 			Screen.get("label", Label.class).setText(
-				"Message read from context: '" + message + "'. Message age: " + messageAge + " seconds."
+				"Message read from context: '" + message + "'.\nMessage age: " + messageAge + " seconds."
 			);
 		}
 		else
 		{
-			Window.alert("Type a message and press 'Save', before clicking here.");
+			Window.alert("Type a message and press 'Save in Context', before clicking here.");
 		}
 	}
 }

@@ -21,7 +21,7 @@ public class ScreenCommunicationController {
 	@Expose
 	public void changeFrame()
 	{
-		frameControllerInvoker.setMyLabelOnFrameMyFrame("Modificado em "+new Date().toString());
+		frameControllerInvoker.setMyLabelOnFrameMyFrame("Modified at " + new Date().toString());
 	}
 	
 	public static interface FrameControllerInvoker extends Invoker
@@ -38,5 +38,5 @@ public class ScreenCommunicationController {
 			String text = event.getParameter(0, String.class);
 			Screen.get("label", Label.class).setText(text);
 		}
-	}	
+	}
 }

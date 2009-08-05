@@ -6,7 +6,7 @@ import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.screen.Screen;
-import br.com.sysmap.crux.showcase.client.controller.ContextInitializer.SharedContext;
+import br.com.sysmap.crux.showcase.client.controller.ContextInitializerController.SharedContext;
 
 import com.google.gwt.user.client.ui.TextBox;
 
