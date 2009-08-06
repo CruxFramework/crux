@@ -12,5 +12,8 @@ public interface MyMessages extends Messages
 
 	@DefaultMessage("Change Locale")
 	String myButton();
+
+	@DefaultMessage("Current Locale: ")
+	String currentLocaleLabel();
 }
 
