@@ -7,6 +7,4 @@
 	<inherits name='com.extjs.gxt.ui.GXT'/>
 	<inherits name="com.google.gwt.i18n.I18N"/>
     <extend-property name="locale" values="pt_BR"/>
-    <extend-property name="locale" values="en"/>
-    
 </module>
