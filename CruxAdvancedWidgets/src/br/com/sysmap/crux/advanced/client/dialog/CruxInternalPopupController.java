@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
@@ -24,7 +25,6 @@ import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -77,7 +77,7 @@ public class CruxInternalPopupController
 		}
 		catch (ModuleComunicationException e)
 		{
-			GWT.log(e.getMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 		}
 	}
 	
@@ -146,7 +146,7 @@ public class CruxInternalPopupController
 		}
 		catch (Exception e)
 		{
-			GWT.log(e.getMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 			Screen.unblockToUser();
 		}		
 	}

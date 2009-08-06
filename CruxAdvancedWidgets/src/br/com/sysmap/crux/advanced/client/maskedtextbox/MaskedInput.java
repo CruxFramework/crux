@@ -33,7 +33,6 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TextBox;
 
 
@@ -108,13 +107,6 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 		pasteEventHandler.addNativeHandlerForPaste(this, this.textBox.getElement());
 		
 		this.checkVal(false);
-	}
-
-	@Override
-	protected void finalize() throws Throwable
-	{
-		Window.alert("finalize é chamado");
-		super.finalize();
 	}
 	
 	/**
