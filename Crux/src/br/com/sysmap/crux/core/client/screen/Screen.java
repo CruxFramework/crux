@@ -29,9 +29,12 @@ import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.MetaElement;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -643,6 +646,41 @@ public class Screen
 	public static String getId() 
 	{
 		return Screen.get().getIdentifier();
+	}
+
+	/**
+	 * 
+	 * @return the locale specified or null
+	 */
+	public static String getLocale()
+	{
+		String locale = Window.Location.getParameter("locale");
+		if (locale == null || locale.length() == 0)
+		{
+			NodeList<Element> metas = Document.get().getElementsByTagName("meta");
+			if (metas != null)
+			{
+				for (int i=0; i< metas.getLength(); i++)
+				{
+					MetaElement meta = MetaElement.as(metas.getItem(i));
+					if ("gwt:property".equals(meta.getName()) && meta.getContent() != null && meta.getContent().startsWith("locale="))
+					{
+						locale = meta.getContent().replace("locale=", "").trim();
+						break;
+					}
+				}
+			}
+		}
+		else
+		{
+			locale = locale.trim();
+		}
+		if ("".equals(locale))
+		{
+			locale = null;
+		}
+		
+		return locale;
 	}
 	
 	/**
