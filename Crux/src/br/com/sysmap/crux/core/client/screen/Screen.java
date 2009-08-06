@@ -28,7 +28,6 @@ import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
@@ -428,7 +427,7 @@ public class Screen
 					} 
 					catch (RuntimeException e) 
 					{
-						GWT.log(e.getLocalizedMessage(), e);
+						Crux.getErrorHandler().handleError(e);
 					}
 				}
 			}.schedule(1); // Waits for browser starts the rendering process
@@ -498,8 +497,7 @@ public class Screen
 			}
 			catch (ModuleComunicationException e)
 			{
-				GWT.log(e.getLocalizedMessage(), e);
-				Window.alert(e.getLocalizedMessage());
+				Crux.getErrorHandler().handleError(e.getLocalizedMessage(), e);
 				return null;
 			}
 		}
@@ -511,8 +509,7 @@ public class Screen
 		}
 		catch (ModuleComunicationException e)
 		{
-			GWT.log(e.getLocalizedMessage(), e);
-			Window.alert(e.getLocalizedMessage());
+			Crux.getErrorHandler().handleError(e.getLocalizedMessage(),e);
 			return null;
 		}
 	}
@@ -917,8 +914,7 @@ public class Screen
 		}
 		catch (RuntimeException e)
 		{
-			GWT.log(e.getLocalizedMessage(), e);
-			Window.alert(e.getLocalizedMessage());
+			Crux.getErrorHandler().handleError(e.getLocalizedMessage(), e);
 			return null;
 		}
 	}

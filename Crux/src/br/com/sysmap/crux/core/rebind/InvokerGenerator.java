@@ -190,8 +190,7 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 			}
 		}
 		sourceWriter.println("}catch(Throwable e){");
-		sourceWriter.println("GWT.log(e.getLocalizedMessage(), e);");
-		sourceWriter.println("Window.alert("+EscapeUtils.quote(messages.errorInvokerWrapperSerializationError())+");");
+		sourceWriter.println("Crux.getErrorHandler().handleError("+EscapeUtils.quote(messages.errorInvokerWrapperSerializationError())+",e);");
 		sourceWriter.println("}");
 		if (returnTypeDeclaration != null)
 		{

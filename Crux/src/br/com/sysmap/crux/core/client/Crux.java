@@ -19,6 +19,8 @@
 package br.com.sysmap.crux.core.client;
 
 import br.com.sysmap.crux.core.client.config.CruxClientConfig;
+import br.com.sysmap.crux.core.client.errors.ErrorHandler;
+import br.com.sysmap.crux.core.client.errors.ValidationErrorHandler;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -33,6 +35,8 @@ public class Crux implements EntryPoint
 {
 	private static ClientMessages messages;
 	private static CruxClientConfig config;
+	private static ErrorHandler errorHandler;
+	private static ValidationErrorHandler validationErrorHandler;
 	
 	/**
 	 * This is the entry point method. Called when the page is loaded.
@@ -43,11 +47,16 @@ public class Crux implements EntryPoint
 		{
 			messages = GWT.create(ClientMessages.class);
 			config = GWT.create(CruxClientConfig.class);
+			errorHandler = GWT.create(ErrorHandler.class);
+			validationErrorHandler = GWT.create(ValidationErrorHandler.class);
 			br.com.sysmap.crux.core.client.screen.ScreenFactory.getInstance().getScreen();
 		} 
 		catch (Throwable e) 
 		{
-			GWT.log(e.getLocalizedMessage(), e);
+			if (Crux.errorHandler != null)
+			{
+				Crux.getErrorHandler().handleError(e);
+			}
 		}
 		
 		stopLoadingProgressBar();
@@ -85,5 +94,55 @@ public class Crux implements EntryPoint
 	public static CruxClientConfig getConfig()
 	{
 		return config;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static ErrorHandler getErrorHandler()
+	{
+		return errorHandler;
+	}
+
+	/**
+	 * 
+	 * @param errorHandler
+	 */
+	public static void setErrorHandler(ErrorHandler errorHandler)
+	{
+		if (errorHandler == null)
+		{
+			Crux.errorHandler = GWT.create(ErrorHandler.class);
+		}
+		else
+		{
+			Crux.errorHandler = errorHandler;
+		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static ValidationErrorHandler getValidationErrorHandler()
+	{
+		return validationErrorHandler;
+	}
+
+	/**
+	 * 
+	 * @param validationErrorHandler
+	 */
+	public static void setValidationErrorHandler(ValidationErrorHandler validationErrorHandler)
+	{
+		if (validationErrorHandler == null)
+		{
+			Crux.validationErrorHandler = GWT.create(ValidationErrorHandler.class);
+		}
+		else
+		{
+			Crux.validationErrorHandler = validationErrorHandler;
+		}
 	}
 }

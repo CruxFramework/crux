@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
 import com.google.gwt.core.client.GWT;
@@ -84,6 +85,7 @@ public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerato
 		composer.addImplementedInterface(classType.getName());
 		composer.addImport(Screen.class.getName());
 		composer.addImport(GWT.class.getName());
+		composer.addImport(Crux.class.getName());
 		composer.addImport(Window.class.getName());
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);

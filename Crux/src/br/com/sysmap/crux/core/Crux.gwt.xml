@@ -51,6 +51,16 @@
 		<when-type-assignable class="br.com.sysmap.crux.core.client.context.ContextHandler" />
 	</replace-with>
 
+	<!-- Specify the default implementation to ErrorHandler.-->
+	<replace-with class="br.com.sysmap.crux.core.client.errors.ErrorHandlerImpl">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.errors.ErrorHandler" />
+	</replace-with>
+
+	<!-- Specify the default implementation to ValidationErrorHandler.-->
+	<replace-with class="br.com.sysmap.crux.core.client.errors.ErrorHandlerImpl">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.errors.ValidationErrorHandler" />
+	</replace-with>
+
 	<!-- Specify the generator for context wrappers.     -->
 	<generate-with class="br.com.sysmap.crux.core.rebind.ContextGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.context.Context" />

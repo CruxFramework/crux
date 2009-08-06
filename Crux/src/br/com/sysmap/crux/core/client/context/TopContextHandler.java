@@ -17,8 +17,7 @@ package br.com.sysmap.crux.core.client.context;
 
 import java.util.HashMap;
 
-import com.google.gwt.core.client.GWT;
-
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
@@ -45,7 +44,7 @@ public class TopContextHandler implements ContextHandler
 		}
 		catch (ModuleComunicationException e)
 		{
-			GWT.log(e.getMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 		}
 	}
 
@@ -68,7 +67,7 @@ public class TopContextHandler implements ContextHandler
 		}
 		catch (ModuleComunicationException e)
 		{
-			GWT.log(e.getMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 		}
 	}
 	
@@ -83,7 +82,7 @@ public class TopContextHandler implements ContextHandler
 		}
 		catch (ModuleComunicationException e)
 		{
-			GWT.log(e.getMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 			return null;
 		}
 	}
@@ -99,7 +98,7 @@ public class TopContextHandler implements ContextHandler
 		}
 		catch (ModuleComunicationException e)
 		{
-			GWT.log(e.getMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 		}
 	}
 

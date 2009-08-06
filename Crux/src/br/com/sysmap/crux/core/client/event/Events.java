@@ -20,7 +20,6 @@ import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.Window;
 
 /**
  * 
@@ -91,7 +90,7 @@ public class Events
 		}
 		catch (Throwable e)
 		{
-			GWT.log(e.getLocalizedMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 		}
 		return null;
 	}
@@ -124,7 +123,7 @@ public class Events
 		}
 		catch (InterfaceConfigException e) 
 		{
-			GWT.log(e.getLocalizedMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 		}
 		return null;
 	}
@@ -145,7 +144,7 @@ public class Events
 		}
 		catch (InterfaceConfigException e) 
 		{
-			GWT.log(e.getLocalizedMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 		}
 		return null;
 	}
@@ -160,12 +159,12 @@ public class Events
 	{
 		if (processor.hasException())
 		{
-			GWT.log(processor.exception().getLocalizedMessage(), processor.exception());
-			Window.alert(Crux.getMessages().eventProcessorClientError(event.getController()+"."+event.getMethod()));
+			Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientError(event.getController()+"."+event.getMethod()), 
+					processor.exception());
 		}
 		else if (processor.validationMessage() != null)
 		{
-			Window.alert(processor.validationMessage());
+			Crux.getValidationErrorHandler().handleValidationError(processor.validationMessage());
 		}
 		else if (processor.hasReturn())
 		{
@@ -191,7 +190,7 @@ public class Events
 				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)getRegisteredClientEventHandlers().getEventHandler(event.getController());
 				if (handler == null)
 				{
-					Window.alert(Crux.getMessages().eventProcessorClientHandlerNotFound(event.getController()));
+					Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientHandlerNotFound(event.getController()));
 					return;
 				}
 				try
@@ -201,8 +200,6 @@ public class Events
 				catch (Exception e) 
 				{
 					_exception = e;
-					GWT.log(e.getLocalizedMessage(), e);
-					Window.alert(Crux.getMessages().eventProcessorClientError(event.getController()+"."+event.getMethod()));
 				}
 			}
 
@@ -211,7 +208,7 @@ public class Events
 				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)getRegisteredClientEventHandlers().getEventHandler(event.getController());
 				if (handler == null)
 				{
-					Window.alert(Crux.getMessages().eventProcessorClientHandlerNotFound(event.getController()));
+					Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientHandlerNotFound(event.getController()));
 					return;
 				}
 				try
@@ -221,8 +218,6 @@ public class Events
 				catch (Exception e) 
 				{
 					_exception = e;
-					GWT.log(e.getLocalizedMessage(), e);
-					Window.alert(Crux.getMessages().eventProcessorClientError(event.getController()+"."+event.getMethod()));
 				}
 			}
 		};

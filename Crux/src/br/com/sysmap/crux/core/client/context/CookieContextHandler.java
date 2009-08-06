@@ -18,10 +18,10 @@ package br.com.sysmap.crux.core.client.context;
 import java.util.Collection;
 import java.util.Date;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 
 /**
@@ -71,7 +71,7 @@ public class CookieContextHandler implements ContextHandler
 		}
 		catch (ModuleComunicationException e)
 		{
-			GWT.log(e.getMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 			return null;
 		}
 	}
@@ -87,7 +87,7 @@ public class CookieContextHandler implements ContextHandler
 		}
 		catch (ModuleComunicationException e)
 		{
-			GWT.log(e.getMessage(), e);
+			Crux.getErrorHandler().handleError(e);
 		}
 	}
 

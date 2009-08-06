@@ -114,7 +114,7 @@ public class ScreenFactory {
 			}
 			catch (Throwable e) 
 			{
-				GWT.log(e.getLocalizedMessage(), e);
+				Crux.getErrorHandler().handleError(e);
 				element.setInnerText(Crux.getMessages().screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
 			}
 		}

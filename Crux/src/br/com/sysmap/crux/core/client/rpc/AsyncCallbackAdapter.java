@@ -18,8 +18,6 @@ package br.com.sysmap.crux.core.client.rpc;
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -83,7 +81,6 @@ public abstract class AsyncCallbackAdapter<T> implements AsyncCallback<T>
 	 */
 	public void onError(Throwable e)
 	{
-		GWT.log(e.getLocalizedMessage(), e);
-		Window.alert(e.getLocalizedMessage());
+		Crux.getErrorHandler().handleError(e.getLocalizedMessage(), e);
 	}
 }
