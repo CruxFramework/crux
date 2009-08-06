@@ -64,9 +64,10 @@ public class InitializerListener implements ServletContextListener
 	 */
 	protected void initialize(ServletContext context) throws Exception
 	{
-		// Initialise the isProduction static variable.
-		Environment.isProduction();
-		WidgetConfig.initializeWidgetConfig();
+		if (!Environment.isProduction())
+		{
+			WidgetConfig.initializeWidgetConfig();
+		}
 		ServiceFactoryInitializer.initialize(context);
 	}
 }
