@@ -12,6 +12,6 @@ public class ScrollBannerController {
 	public void addMessages(){
 		ScrollBanner scrollBanner = Screen.get("scrollingMessages", ScrollBanner.class);
 		scrollBanner.addMessage("Another message. This one was added programmatically.");
-		scrollBanner.addMessage("Like the second one, this message was also was added programmatically.");
+		scrollBanner.addMessage("Like the second one, this message was also added programmatically.");
 	}
 }
