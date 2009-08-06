@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 
 @Controller("i18nController")
-public class I18NController {
+public class I18n2Controller {
 	
 	@Create
 	protected MyMessages messages;

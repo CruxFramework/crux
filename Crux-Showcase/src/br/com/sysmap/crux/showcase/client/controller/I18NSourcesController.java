@@ -34,7 +34,7 @@ public class I18NSourcesController {
 		if(!propertiesLoaded){
 			propertiesLoaded = true;
 			
-			loadFile("client/controller/MyMessages_pt_BT.properties", "propertiesSourceFrame");
+			loadFile("client/controller/MyMessages_pt_BR.properties", "propertiesSourceFrame");
 		}
 	}
 
