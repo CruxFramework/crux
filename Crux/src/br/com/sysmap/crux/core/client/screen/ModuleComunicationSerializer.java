@@ -17,7 +17,7 @@ package br.com.sysmap.crux.core.client.screen;
 
 import java.util.Date;
 
-import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.Crux;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.xml.client.Document;
@@ -141,7 +141,7 @@ public class ModuleComunicationSerializer
 		{
 			return ((CruxSerializable)param).serialize();
 		}
-		throw new ModuleComunicationException(JSEngine.messages.moduleComunicationInvalidParamType(param.getClass().getName()));
+		throw new ModuleComunicationException(Crux.getMessages().moduleComunicationInvalidParamType(param.getClass().getName()));
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class ModuleComunicationSerializer
 			{
 				if (dataType.startsWith("[["))
 				{
-					throw new ModuleComunicationException(JSEngine.messages.moduleComunicationInvalidParamType(dataType));
+					throw new ModuleComunicationException(Crux.getMessages().moduleComunicationInvalidParamType(dataType));
 				}
 				else 
 				{
@@ -204,7 +204,7 @@ public class ModuleComunicationSerializer
 		{
 			return serializer.deserialize(value);
 		}
-		throw new ModuleComunicationException(JSEngine.messages.moduleComunicationInvalidParamType(type));
+		throw new ModuleComunicationException(Crux.getMessages().moduleComunicationInvalidParamType(type));
 	}
 
 	/**

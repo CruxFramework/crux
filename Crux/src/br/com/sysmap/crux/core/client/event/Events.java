@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.core.client.event;
 
-import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.core.client.GWT;
@@ -85,7 +85,7 @@ public class Events
 				}
 				else
 				{
-					throw new EventException(JSEngine.messages.eventFactoryInvalidHandlerMethodDeclaration());
+					throw new EventException(Crux.getMessages().eventFactoryInvalidHandlerMethodDeclaration());
 				}
 			}
 		}
@@ -161,7 +161,7 @@ public class Events
 		if (processor.hasException())
 		{
 			GWT.log(processor.exception().getLocalizedMessage(), processor.exception());
-			Window.alert(JSEngine.messages.eventProcessorClientError(event.getController()+"."+event.getMethod()));
+			Window.alert(Crux.getMessages().eventProcessorClientError(event.getController()+"."+event.getMethod()));
 		}
 		else if (processor.validationMessage() != null)
 		{
@@ -191,7 +191,7 @@ public class Events
 				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)getRegisteredClientEventHandlers().getEventHandler(event.getController());
 				if (handler == null)
 				{
-					Window.alert(JSEngine.messages.eventProcessorClientHandlerNotFound(event.getController()));
+					Window.alert(Crux.getMessages().eventProcessorClientHandlerNotFound(event.getController()));
 					return;
 				}
 				try
@@ -202,7 +202,7 @@ public class Events
 				{
 					_exception = e;
 					GWT.log(e.getLocalizedMessage(), e);
-					Window.alert(JSEngine.messages.eventProcessorClientError(event.getController()+"."+event.getMethod()));
+					Window.alert(Crux.getMessages().eventProcessorClientError(event.getController()+"."+event.getMethod()));
 				}
 			}
 
@@ -211,7 +211,7 @@ public class Events
 				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)getRegisteredClientEventHandlers().getEventHandler(event.getController());
 				if (handler == null)
 				{
-					Window.alert(JSEngine.messages.eventProcessorClientHandlerNotFound(event.getController()));
+					Window.alert(Crux.getMessages().eventProcessorClientHandlerNotFound(event.getController()));
 					return;
 				}
 				try
@@ -222,7 +222,7 @@ public class Events
 				{
 					_exception = e;
 					GWT.log(e.getLocalizedMessage(), e);
-					Window.alert(JSEngine.messages.eventProcessorClientError(event.getController()+"."+event.getMethod()));
+					Window.alert(Crux.getMessages().eventProcessorClientError(event.getController()+"."+event.getMethod()));
 				}
 			}
 		};

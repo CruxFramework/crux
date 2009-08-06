@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
@@ -453,7 +453,7 @@ public class Screen
 		{
 			if (!(eventHandler instanceof EventClientHandlerInvoker))
 			{
-				throw new ClassCastException(JSEngine.messages.screenInvalidHandlerError());
+				throw new ClassCastException(Crux.getMessages().screenInvalidHandlerError());
 			}
 
 			((EventClientHandlerInvoker) eventHandler).updateScreenWidgets();
@@ -470,7 +470,7 @@ public class Screen
 		{
 			if (!(eventHandler instanceof EventClientHandlerInvoker))
 			{
-				throw new ClassCastException(JSEngine.messages.screenInvalidHandlerError());
+				throw new ClassCastException(Crux.getMessages().screenInvalidHandlerError());
 			}
 			((EventClientHandlerInvoker) eventHandler).updateControllerObjects();
 

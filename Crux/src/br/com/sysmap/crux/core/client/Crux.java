@@ -29,10 +29,10 @@ import com.google.gwt.user.client.DOM;
 /**
  * CRUX Client Engine. It starts a ScreenFactory to search HTML page for span tags declaring widgets. 
  */
-public class JSEngine implements EntryPoint 
+public class Crux implements EntryPoint 
 {
-	public static ClientMessages messages;
-	public static CruxClientConfig config;
+	private static ClientMessages messages;
+	private static CruxClientConfig config;
 	
 	/**
 	 * This is the entry point method. Called when the page is loaded.
@@ -67,5 +67,23 @@ public class JSEngine implements EntryPoint
 				parent.removeChild(loadElement);
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static ClientMessages getMessages()
+	{
+		return messages;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static CruxClientConfig getConfig()
+	{
+		return config;
 	}
 }

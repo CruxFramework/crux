@@ -6,7 +6,7 @@
 	<inherits name='com.google.gwt.xml.XML'/>
 
 	<!-- Specify the app entry point class.                   -->
-	<entry-point class='br.com.sysmap.crux.core.client.JSEngine'/>
+	<entry-point class='br.com.sysmap.crux.core.client.Crux'/>
 
 	<!-- Servlet used to handle RPC event calls.              -->
 	<servlet path="/crux.rpc" class="br.com.sysmap.crux.core.server.dispatch.RemoteServiceServlet"/>

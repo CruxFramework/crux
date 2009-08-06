@@ -8,7 +8,7 @@ public class JSEngineBenchmarkTest extends Benchmark{
 	 * Must refer to a valid module that sources this class.
 	 */
 	public String getModuleName() {
-		return "br.com.sysmap.crux.core.JSEngine";
+		return "br.com.sysmap.crux.core.Crux";
 	}
 
 	  private static final int numAllocs = 1000;

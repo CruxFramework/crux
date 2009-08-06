@@ -18,7 +18,7 @@ package br.com.sysmap.crux.core.client.screen;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters;
 import br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages;
@@ -115,7 +115,7 @@ public class ScreenFactory {
 			catch (Throwable e) 
 			{
 				GWT.log(e.getLocalizedMessage(), e);
-				element.setInnerText(JSEngine.messages.screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
+				element.setInnerText(Crux.getMessages().screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
 			}
 		}
 		if (screenElement != null)
@@ -178,13 +178,13 @@ public class ScreenFactory {
 		WidgetFactory<? extends Widget> widgetFactory = registeredWidgetFactories.getWidgetFactory(type);
 		if (widgetFactory == null)
 		{
-			throw new InterfaceConfigException(JSEngine.messages.screenFactoryWidgetFactoryNotFound(type));
+			throw new InterfaceConfigException(Crux.getMessages().screenFactoryWidgetFactoryNotFound(type));
 		}
 		
 		Widget widget = widgetFactory.createWidget(element, widgetId); 
 		if (widget == null)
 		{
-			throw new InterfaceConfigException(JSEngine.messages.screenFactoryErrorCreateWidget(widgetId));
+			throw new InterfaceConfigException(Crux.getMessages().screenFactoryErrorCreateWidget(widgetId));
 		}
 		
 		return widget;
@@ -238,7 +238,7 @@ public class ScreenFactory {
 
 		if (parent != null && !(parent instanceof HasWidgets))
 		{
-			throw new InterfaceConfigException(JSEngine.messages.screenFactoryInvalidWidgetParent(element.getId()));
+			throw new InterfaceConfigException(Crux.getMessages().screenFactoryInvalidWidgetParent(element.getId()));
 		}
 		return parent;
 	}
@@ -249,7 +249,7 @@ public class ScreenFactory {
 		String widgetId = element.getId();
 		if (widgetId == null || widgetId.length() == 0)
 		{
-			throw new InterfaceConfigException(JSEngine.messages.screenFactoryWidgetIdRequired());
+			throw new InterfaceConfigException(Crux.getMessages().screenFactoryWidgetIdRequired());
 		}
 		Widget widget = screen.getWidget(widgetId);
 		if (widget != null)
@@ -280,7 +280,7 @@ public class ScreenFactory {
 		{
 			Element panelElement;
 			boolean parentHasMoreThanOneChild = (element.getNextSiblingElement() != null || DOMUtils.getPreviousSiblingElement(element) != null);
-			if (JSEngine.config.wrapSiblingWidgets() && parentHasMoreThanOneChild)
+			if (Crux.getConfig().wrapSiblingWidgets() && parentHasMoreThanOneChild)
 			{
 				panelElement = DOM.createSpan();
 				element.getParentElement().insertBefore(panelElement, element);
@@ -289,7 +289,7 @@ public class ScreenFactory {
 			{
 				if (parentHasMoreThanOneChild)
 				{
-					GWT.log(JSEngine.messages.screenFactoryNonDeterministicWidgetPositionInParent(widgetId), null);
+					GWT.log(Crux.getMessages().screenFactoryNonDeterministicWidgetPositionInParent(widgetId), null);
 				}
 				panelElement = element.getParentElement();
 			}

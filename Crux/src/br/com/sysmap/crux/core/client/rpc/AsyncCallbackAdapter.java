@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.core.client.rpc;
 
-import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 
 import com.google.gwt.core.client.GWT;
@@ -36,7 +36,7 @@ public abstract class AsyncCallbackAdapter<T> implements AsyncCallback<T>
 	{
 		if (!(eventHandler instanceof EventClientHandlerInvoker))
 		{
-			throw new ClassCastException(JSEngine.messages.asyncCallbackInvalidHandlerError());
+			throw new ClassCastException(Crux.getMessages().asyncCallbackInvalidHandlerError());
 		}
 		this.eventHandler = (EventClientHandlerInvoker) eventHandler;
 	}

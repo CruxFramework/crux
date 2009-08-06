@@ -18,7 +18,7 @@ package br.com.sysmap.crux.core.client.screen;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.JSEngine;
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
@@ -225,7 +225,7 @@ public abstract class WidgetFactory <T extends Widget>
 		}
 		else
 		{
-			throw new InterfaceConfigException(JSEngine.messages.widgetFactoryEnsureSpanFail());
+			throw new InterfaceConfigException(Crux.getMessages().widgetFactoryEnsureSpanFail());
 		}
 	}
 	
@@ -248,7 +248,7 @@ public abstract class WidgetFactory <T extends Widget>
 		
 		if((!acceptsNoChild && firstChild == null) || (firstChild != null && !isSpan(element)))
 		{
-			throw new InterfaceConfigException(JSEngine.messages.widgetFactoryEnsureFirstChildSpanOrphanElement());			
+			throw new InterfaceConfigException(Crux.getMessages().widgetFactoryEnsureFirstChildSpanOrphanElement());			
 		}
 		else
 		{
@@ -286,7 +286,7 @@ public abstract class WidgetFactory <T extends Widget>
 		
 		if(childSpans.size() == 0 && !acceptsNoChild)
 		{
-			throw new InterfaceConfigException(JSEngine.messages.widgetFactoryEnsureChildrenSpansEmpty());
+			throw new InterfaceConfigException(Crux.getMessages().widgetFactoryEnsureChildrenSpansEmpty());
 		}
 		
 		return childSpans;	
@@ -305,6 +305,6 @@ public abstract class WidgetFactory <T extends Widget>
 			return element;
 		}
 		
-		throw new InterfaceConfigException(JSEngine.messages.widgetFactoryEnsureWidgetFail());
+		throw new InterfaceConfigException(Crux.getMessages().widgetFactoryEnsureWidgetFail());
 	}
 }
