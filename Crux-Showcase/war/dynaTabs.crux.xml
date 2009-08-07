@@ -13,22 +13,31 @@
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="sourcesController"/>
+		<c:screen useController="dynaTabsController,sourcesController"/>
 
-		<c:dockPanel id="centering" width="100%" spacing="15">
-			<c:cell direction="center" horizontalAlignment="center">
-				<a:decoratedPanel id="border" width="80%" height="300">
-					<a:widget>
-						<a:dynaTabs id="dynaTabs" width="100%" height="100%">
-							<a:tab url="http://www.google.com" id="google" label="Google"/>
-							<a:tab url="http://crux-framework.googlecode.com/" id="crux" label="Crux"/>
-							<a:tab url="http://www.sysmap.com.br/" id="sysmap" label="Sysmap"/>
-						</a:dynaTabs>
-					</a:widget>
-				</a:decoratedPanel>
-			</c:cell>		
-		</c:dockPanel>
+		<center>
 		
+		<c:horizontalPanel id="hPanel" spacing="15">
+			<c:cell>
+				<c:textBox id="url" text="http://www.google.com" width="200"/>
+			</c:cell>
+			<c:cell>
+				<a:decoratedButton id="btn" text="Open New Tab" onClick="dynaTabsController.openNewTab"/>
+			</c:cell>
+		</c:horizontalPanel>
+		
+		<a:decoratedPanel id="border" width="80%" height="300">
+			<a:widget>
+				<a:dynaTabs id="dynaTabs" width="100%" height="100%">
+					<a:tab url="http://crux-framework.googlecode.com/" id="crux" label="Crux"/>
+					<a:tab url="http://www.sysmap.com.br/" id="sysmap" label="Sysmap" closeable="false"/>
+				</a:dynaTabs>
+			</a:widget>
+		</a:decoratedPanel>
+		
+		<br/>
+		
+		</center>
 		
 		<xi:include href="sources.crux.xml"/>
 		
