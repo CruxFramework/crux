@@ -17,6 +17,7 @@ package br.com.sysmap.crux.advanced.client.maskedtextbox;
 
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
+import br.com.sysmap.crux.core.client.formatter.MaskedFormatter;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -136,19 +137,19 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 			}
 			if (this.masked)
 			{
-				this.formatter.removeMask(this);
+				((MaskedFormatter)this.formatter).removeMask(this);
 			}
 		}
 		
 		if (formatter != null)
 		{
-			if (applyMask && formatter.hasMask())
+			if (applyMask && (formatter instanceof MaskedFormatter))
 			{
 				DeferredCommand.addCommand(new Command() 
 				{
 					public void execute()
 					{
-						formatter.applyMask(MaskedTextBox.this);
+						((MaskedFormatter)formatter).applyMask(MaskedTextBox.this);
 					}
 				});
 			}
@@ -164,7 +165,7 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 			}
 		}
 		this.formatter = formatter;
-		this.masked = applyMask;
+		this.masked = applyMask && (this.formatter instanceof MaskedFormatter);
 	}
 
 	/**

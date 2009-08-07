@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.advanced.client.maskedtextbox;
 
-import br.com.sysmap.crux.core.client.formatter.Formatter;
+import br.com.sysmap.crux.core.client.formatter.MaskedFormatter;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -23,13 +23,13 @@ import com.google.gwt.user.client.ui.Widget;
  * Base class for MaskedTextBox Formatters
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
-public abstract class MaskedTextBoxBaseFormatter implements Formatter
+public abstract class MaskedTextBoxBaseFormatter implements MaskedFormatter
 {
 	private MaskedInput maskedInput;
 
 	public void applyMask(Widget widget)
 	{
-		if (hasMask() && (widget instanceof MaskedTextBox))
+		if (widget instanceof MaskedTextBox)
 		{
 			maskedInput = new MaskedInput(((MaskedTextBox) widget).textBox, getMask(), getPlaceHolder());
 		}		
@@ -37,7 +37,7 @@ public abstract class MaskedTextBoxBaseFormatter implements Formatter
 
 	public void removeMask(Widget widget)
 	{
-		if (maskedInput != null)
+		if (maskedInput != null && maskedInput.getTextBox() != null && maskedInput.getTextBox().equals(widget));
 		{
 			maskedInput.removeMask();
 		}
@@ -46,12 +46,5 @@ public abstract class MaskedTextBoxBaseFormatter implements Formatter
 	protected char getPlaceHolder()
 	{
 		return '_';
-	}
-	
-	public boolean hasMask()
-	{
-		return true;
-	}
-	
-	protected abstract String getMask();
+	}	
 }

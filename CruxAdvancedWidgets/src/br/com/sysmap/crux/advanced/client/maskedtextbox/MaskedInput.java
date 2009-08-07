@@ -109,6 +109,11 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 		this.checkVal(false);
 	}
 	
+	TextBox getTextBox()
+	{
+		return textBox;
+	}
+
 	/**
 	 * Unmask the current textBox
 	 */
