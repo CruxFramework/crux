@@ -16,7 +16,7 @@
 
 		<center>
 		
-		<c:flexTable id="centeringPanel" height="130">
+		<c:flexTable id="centeringPanel" cellSpacing="15">
 			<c:row>
 				<c:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
 					<c:text>Type your name:</c:text>				
@@ -26,7 +26,7 @@
 				<c:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
 					<c:widget><c:textBox id="name" /></c:widget>
 				</c:cell>
-				<c:cell horizontalAlignment="left" verticalAlignment="middle" width="100">
+				<c:cell horizontalAlignment="left" verticalAlignment="middle">
 					<c:widget><a:decoratedButton id="button" onClick="serverCommunicationController.callService" text="Call Server Method"/></c:widget>
 				</c:cell>
 			</c:row>
