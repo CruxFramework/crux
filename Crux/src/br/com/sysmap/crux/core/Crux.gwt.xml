@@ -70,4 +70,11 @@
 	<generate-with class="br.com.sysmap.crux.core.rebind.InvokerGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.controller.Invoker" />
 	</generate-with>
+	
+	<!-- Specify ie6 implementation for screen blocker -->
+	<replace-with
+    	class="br.com.sysmap.crux.core.client.screen.ScreenBlockerIE6">
+    	<when-type-is class="br.com.sysmap.crux.core.client.screen.ScreenBlocker" />
+   		<when-property-is name="user.agent" value="ie6" />
+    </replace-with>
 </module>

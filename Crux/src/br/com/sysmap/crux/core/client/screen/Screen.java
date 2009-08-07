@@ -28,11 +28,11 @@ import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.MetaElement;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -66,7 +66,8 @@ public class Screen
 	protected List<Element> blockingDivs = new ArrayList<Element>();
 	protected IFrameElement historyFrame = null;
 	protected HandlerManager handlerManager;
-	protected ModuleComunicationSerializer serializer = null;	
+	protected ModuleComunicationSerializer serializer = null;
+	protected ScreenBlocker screenBlocker = GWT.create(ScreenBlocker.class);
 	
 	protected Screen(String id) 
 	{
@@ -159,78 +160,9 @@ public class Screen
 		}
 		
 		Element body = RootPanel.getBodyElement();		
-		Element blockingDiv = createBlockingDiv(blockingDivStyleName, body);
+		Element blockingDiv = screenBlocker.createBlockingDiv(blockingDivStyleName, body);
 		blockingDivs.add(blockingDiv);
 		body.appendChild(blockingDiv);
-	}
-
-	/**
-	 * Creates a DIV element to display over the screen contents
-	 * @param blockingDivStyleName
-	 * @param body
-	 * @return
-	 */
-	private Element createBlockingDiv(String blockingDivStyleName, Element body)
-	{
-		Element blockingDiv = DOM.createDiv();
-		
-		int width = body.getScrollWidth();
-		int height = body.getScrollHeight();
-		
-		if(body.getClientWidth() > width)
-		{
-			width = body.getClientWidth();
-		}
-		
-		if(body.getClientHeight() > height)
-		{
-			height = body.getClientHeight();
-		}	
-		
-		blockingDiv.getStyle().setProperty("position","absolute");
-		blockingDiv.getStyle().setPropertyPx("top", 0);
-		blockingDiv.getStyle().setPropertyPx("left", 0);
-		blockingDiv.getStyle().setPropertyPx("width", width);
-		blockingDiv.getStyle().setPropertyPx("height", height);
-		
-		if(blockingDivStyleName != null)
-		{
-			blockingDiv.setClassName(blockingDivStyleName);
-		}
-		else
-		{
-			blockingDiv.getStyle().setProperty("cursor", "wait");
-			blockingDiv.getStyle().setProperty("backgroundColor", "white");
-			blockingDiv.getStyle().setProperty("opacity", ".01");
-			blockingDiv.getStyle().setProperty("filter", "alpha(opacity=1)");
-
-			body.getStyle().setProperty("cursor", "wait");
-		}
-		
-		blockingDiv.appendChild(createDivIframe(width, height));
-		
-		return blockingDiv;
-	}
-	
-	/**
-	 * Workaround for IE6 always-on-top list boxes 
-	 * @param height 
-	 * @param width 
-	 * @return
-	 */
-	private Node createDivIframe(int width, int height)
-	{
-		IFrameElement frame = DOM.createIFrame().cast();
-		
-		frame.getStyle().setProperty("position","absolute");
-		frame.getStyle().setPropertyPx("top", 0);
-		frame.getStyle().setPropertyPx("left", 0);
-		frame.getStyle().setProperty("width", "100%");
-		frame.getStyle().setProperty("height", "100%");
-		frame.getStyle().setProperty("opacity", ".0");
-		frame.getStyle().setProperty("filter", "alpha(opacity=0)");
-		
-		return frame;
 	}
 
 	/**
@@ -617,7 +549,7 @@ public class Screen
 	 */
 	public static void blockToUser()
 	{
-		Screen.get().showBlockDiv(null);
+		Screen.get().showBlockDiv("crux-DefaultScreenBlocker");
 	}
 	
 	/**
