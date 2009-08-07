@@ -68,13 +68,6 @@
 	color: #4E4E4E;
 	padding: 5px;
 }
-.crux-MessageBoxScreenBlocker
-{
-	background-color: #FAFAFA;
-	filter:alpha(opacity=80);
-	-moz-opacity: 0.80;
-	opacity: .80;
-}
 
 /******************************************************************************
 	Progress Dialog
@@ -158,13 +151,6 @@
 	padding-right: 8px;
 	padding-top: 2px;
 }
-.crux-ProgressDialogScreenBlocker
-{
-	background-color: #FAFAFA;
-	filter:alpha(opacity=80);
-	-moz-opacity: 0.80;
-	opacity: .80;
-}
 
 /******************************************************************************
 	Popup
@@ -244,13 +230,6 @@
 	margin-right: 5px;
 	cursor: pointer;
 }
-.crux-PopupScreenBlocker
-{
-	background-color: #FAFAFA;
-	filter:alpha(opacity=80);
-	-moz-opacity: 0.80;
-	opacity: .80;
-}
 
 /******************************************************************************
 	Confirm
@@ -322,13 +301,6 @@
 	color: #4E4E4E;
 	padding: 5px;
 }
-.crux-ConfirmScreenBlocker
-{
-	background-color: #FAFAFA;
-	filter:alpha(opacity=80);
-	-moz-opacity: 0.80;
-	opacity: .80;
-}
 
 /******************************************************************************
 	Timer
@@ -354,7 +326,6 @@
 	font-size: 0px;
 	cursor: pointer;
 }
-
 .crux-ScrollBanner .nextMessageButton 
 {
 	background-image: url(../img/scroll-banner-arrow-down.gif);
@@ -897,4 +868,22 @@
 {
 	font-size: 0px;
 	background: url(../img/decorated-panel.gif) no-repeat bottom right;
+}
+
+/******************************************************************************
+	Screen Blockers
+*******************************************************************************/
+.crux-DefaultScreenBlocker
+{
+	background-color: #FFFFFF;
+	opacity: .01;
+	filter:alpha(opacity=1);
+	cursor: wait;
+}
+.crux-MessageBoxScreenBlocker, .crux-ProgressDialogScreenBlocker, .crux-PopupScreenBlocker, .crux-ConfirmScreenBlocker
+{
+	background-color: #FAFAFA;
+	filter:alpha(opacity=80);
+	-moz-opacity: 0.80;
+	opacity: .80;
 }
