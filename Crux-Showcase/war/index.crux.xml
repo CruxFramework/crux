@@ -1,4 +1,8 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0">
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
+	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0"
+	xmlns:xi="http://www.w3.org/2001/XInclude">
 
 	<head>
 		<title>Crux Framework - Showcase</title>
@@ -7,19 +11,9 @@
 	</head>
 
 	<body>
-	
-<!-- Google analytics information - Start-->
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-7689544-4");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-<!-- Google analytics information - End -->
 
+		<xi:include href="analytics.crux.xml"/>
+			
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
 		<c:screen useController="mainController,contextInitializerController" onLoad="contextInitializerController.onLoad" />
