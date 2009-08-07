@@ -15,13 +15,15 @@
  */
 package br.com.sysmap.crux.core.client.formatter;
 
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * 
- * @author Thiago
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
  */
-public interface Formatter
+public interface MaskedFormatter extends Formatter
 {
-	String format(Object input) throws InvalidFormatException;
-	Object unformat(String input) throws InvalidFormatException;
+	String getMask();
+	void applyMask(Widget widget);
+	void removeMask(Widget widget);
 }
