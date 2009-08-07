@@ -13,7 +13,8 @@ import com.google.gwt.user.client.ui.TextArea;
 public class ContextSourcesController {
 	
 	private boolean xmlLoaded;
-	private boolean controllerLoaded;
+	private boolean frameControllerLoaded;
+	private boolean contextInitializationControllerLoaded;
 	
 	@Create
 	protected SVNServiceAsync service;
@@ -53,15 +54,15 @@ public class ContextSourcesController {
 	@Expose
 	public void loadFrameController() {
 		
-		if(!controllerLoaded)
+		if(!frameControllerLoaded)
 		{
-			controllerLoaded = true;
+			frameControllerLoaded = true;
 			
 			Screen.blockToUser();
 			
 			String fileName = "ContextFrameController.java";
 			
-			service.getJavaFile(fileName, false, 
+			service.getJavaControllerFile(fileName, false, 
 					
 				new AsyncCallbackAdapter<String>(this){
 				
@@ -85,15 +86,15 @@ public class ContextSourcesController {
 	@Expose
 	public void loadContextInitializer() {
 		
-		if(!controllerLoaded)
+		if(!contextInitializationControllerLoaded)
 		{
-			controllerLoaded = true;
+			contextInitializationControllerLoaded = true;
 			
 			Screen.blockToUser();
 			
 			String fileName = "ContextInitializerController.java";
 			
-			service.getJavaFile(fileName, false, 
+			service.getJavaControllerFile(fileName, false, 
 					
 				new AsyncCallbackAdapter<String>(this){
 				

@@ -23,9 +23,7 @@ public class ContextInitializerController {
 	 * since Screen.createContext() must be called only once.    
 	 */
 	@Expose
-	public void onLoad()
-	{
+	public void onLoad(){
 		Screen.createContext();
 	}
-
 }

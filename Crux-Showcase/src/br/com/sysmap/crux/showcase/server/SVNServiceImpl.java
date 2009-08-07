@@ -26,7 +26,7 @@ public class SVNServiceImpl implements SVNService{
 	private static Map<String, String> cachedResources = new ConcurrentHashMap<String,String>();
 	
 	/* 
-	 * @see br.com.sysmap.crux.showcase.client.remote.SVNService#getJavaFile(java.lang.String, boolean)
+	 * @see br.com.sysmap.crux.showcase.client.remote.SVNService#getJavaControllerFile(java.lang.String, boolean)
 	 */
 	public String getJavaControllerFile(String fileName, boolean escapeHtml){		
 		return loadSourceCode(BASE_JAVA_CONTROLLER_URL + fileName, escapeHtml, "java controller");
