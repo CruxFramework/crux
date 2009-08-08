@@ -9,6 +9,7 @@ import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
+import br.com.sysmap.crux.core.client.formatter.MaskedFormatter;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenWrapper;
 import br.com.sysmap.crux.core.rebind.screen.formatter.annotation.FormatterName;
@@ -39,9 +40,9 @@ public class MaskedTextBoxController {
 	}
 
 	@FormatterName("phone")
-	public static class PhoneFormatter extends MaskedTextBoxBaseFormatter implements Formatter{
+	public static class PhoneFormatter extends MaskedTextBoxBaseFormatter implements MaskedFormatter{
 		
-		protected String getMask(){
+		public String getMask(){
 			return "(99)9999-9999";
 		}
 
@@ -65,11 +66,11 @@ public class MaskedTextBoxController {
 	}
 
 	@FormatterName("date")
-	public static class DateFormatter extends MaskedTextBoxBaseFormatter implements Formatter {
+	public static class DateFormatter extends MaskedTextBoxBaseFormatter implements MaskedFormatter{
 
 		DateTimeFormat format = DateTimeFormat.getFormat("MM/dd/yyyy");
 
-		protected String getMask(){
+		public String getMask(){
 			return "99/99/9999";
 		}
 
