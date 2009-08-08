@@ -25,12 +25,12 @@ import com.google.gwt.i18n.client.Messages;
 public interface ClientMessages extends Messages
 {
 	//  event
-	@DefaultMessage("[event 001] - Client Handler Named ''{0}'' not found.")
-	String eventProcessorClientHandlerNotFound(String handler);
+	@DefaultMessage("[event 001] - Client Controller Named ''{0}'' not found.")
+	String eventProcessorClientControllerNotFound(String controller);
 	@DefaultMessage("[event 002] - Error running client method ''{0}''.")
 	String eventProcessorClientError(String call);
-	@DefaultMessage("[event 003] - Invalid declaration for handler method. Correct syntaxe is ''handlerClass.method'' .")
-	String eventFactoryInvalidHandlerMethodDeclaration();
+	@DefaultMessage("[event 003] - Invalid declaration for handler method ''{0}''. Correct syntaxe is <controller.method>.")
+	String eventFactoryInvalidHandlerMethodDeclaration(String evt);
 	
 	//  screenFactory
 	@DefaultMessage("[screenFactory 001] - Error Creating widget: ''{0}''. See Log for more detail.")
@@ -39,31 +39,31 @@ public interface ClientMessages extends Messages
 	String screenFactoryWidgetFactoryNotFound(String type);
 
 	//  widget
-	@DefaultMessage("[widget - 001] - The id attribute is required for CRUX widgets.")
+	@DefaultMessage("[widget 001] - The id attribute is required for CRUX widgets.")
 	String screenFactoryWidgetIdRequired();
-	@DefaultMessage("[widget - 002] - The widget ''{0}'' does not implement HasWidgets and can not contains any other widget.")
+	@DefaultMessage("[widget 002] - The widget ''{0}'' does not implement HasWidgets and can not contains any other widget.")
 	String screenFactoryInvalidWidgetParent(String widgetId);
-	@DefaultMessage("[widget - 003] - Can not create widget ''{0}''. Verify the widget type.")
+	@DefaultMessage("[widget 003] - Can not create widget ''{0}''. Verify the widget type.")
 	String screenFactoryErrorCreateWidget(String widgetId);
-	@DefaultMessage("[widget - 004] - Formatter ''{0}'' not found.")
+	@DefaultMessage("[widget 004] - Formatter ''{0}'' not found.")
 	String widgetFormatterNotFound(String formatterId);
-	@DefaultMessage("[widget - 005] - The span element must contains children.")
+	@DefaultMessage("[widget 005] - The span element must contains children.")
 	String widgetFactoryEnsureChildrenSpansEmpty();
-	@DefaultMessage("[widget - 006] - The span element must contains at least one child.")
+	@DefaultMessage("[widget 006] - The span element must contains at least one child.")
 	String widgetFactoryEnsureFirstChildSpanOrphanElement();
-	@DefaultMessage("[widget - 007] - The span element does not represents a widget.")
+	@DefaultMessage("[widget 007] - The span element does not represents a widget.")
 	String widgetFactoryEnsureWidgetFail();
-	@DefaultMessage("[widget - 008] - The element is not a span.")
+	@DefaultMessage("[widget 008] - The element is not a span.")
 	String widgetFactoryEnsureSpanFail();
-	@DefaultMessage("[widget - 009] - The widget ''{0}'' was added to a pure HTML node where already exists other children. In this case, crux can not ensure an order for this widget. To solve this, If you must use panels as widget parent or enable the wrapSiblingWidgets config property.")
+	@DefaultMessage("[widget 009] - The widget ''{0}'' was added to a pure HTML node where already exists other children. In this case, crux can not ensure an order for this widget. To solve this, If you must use panels as widget parent or enable the wrapSiblingWidgets config property.")
 	String screenFactoryNonDeterministicWidgetPositionInParent(String widgetId);
 	
-	@DefaultMessage("[callback - 001] - An Invalid controller was passed to AsyncCallbackAdapter.")
+	@DefaultMessage("[callback 001] - An Invalid controller was passed to AsyncCallbackAdapter.")
 	String asyncCallbackInvalidHandlerError();
 
-	@DefaultMessage("[screen - 001] - An Invalid controller was passed to update screen or DTOs.")
+	@DefaultMessage("[screen 001] - An Invalid controller was passed to update screen or DTOs.")
 	String screenInvalidHandlerError();
 
-	@DefaultMessage("[moduleComunication - 001] - Type ''{0}'' can not be shared between modules. Only primitives (and its wrappers), Strings, Dates, Arrays (not multidimesional) and classes implementing CruxSerializable can be used.")
+	@DefaultMessage("[moduleComunication 001] - Type ''{0}'' can not be shared between modules. Only primitives (and its wrappers), Strings, Dates, Arrays (not multidimesional) and classes implementing CruxSerializable can be used.")
 	String moduleComunicationInvalidParamType(String name);
 }

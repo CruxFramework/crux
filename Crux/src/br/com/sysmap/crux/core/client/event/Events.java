@@ -84,7 +84,7 @@ public class Events
 				}
 				else
 				{
-					throw new EventException(Crux.getMessages().eventFactoryInvalidHandlerMethodDeclaration());
+					throw new EventException(Crux.getMessages().eventFactoryInvalidHandlerMethodDeclaration(evt));
 				}
 			}
 		}
@@ -190,7 +190,7 @@ public class Events
 				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)getRegisteredClientEventHandlers().getEventHandler(event.getController());
 				if (handler == null)
 				{
-					Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientHandlerNotFound(event.getController()));
+					Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerNotFound(event.getController()));
 					return;
 				}
 				try
@@ -208,7 +208,7 @@ public class Events
 				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)getRegisteredClientEventHandlers().getEventHandler(event.getController());
 				if (handler == null)
 				{
-					Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientHandlerNotFound(event.getController()));
+					Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerNotFound(event.getController()));
 					return;
 				}
 				try
