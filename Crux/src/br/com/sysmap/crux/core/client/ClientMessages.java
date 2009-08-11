@@ -45,17 +45,13 @@ public interface ClientMessages extends Messages
 	String screenFactoryInvalidWidgetParent(String widgetId);
 	@DefaultMessage("[widget 003] - Can not create widget ''{0}''. Verify the widget type.")
 	String screenFactoryErrorCreateWidget(String widgetId);
-	@DefaultMessage("[widget 004] - Formatter ''{0}'' not found.")
-	String widgetFormatterNotFound(String formatterId);
-	@DefaultMessage("[widget 005] - The span element must contains children.")
+	@DefaultMessage("[widget 004] - The span element must contains at least one child.")
 	String widgetFactoryEnsureChildrenSpansEmpty();
-	@DefaultMessage("[widget 006] - The span element must contains at least one child.")
-	String widgetFactoryEnsureFirstChildSpanOrphanElement();
-	@DefaultMessage("[widget 007] - The span element does not represents a widget.")
+	@DefaultMessage("[widget 005] - The span element does not represents a widget.")
 	String widgetFactoryEnsureWidgetFail();
-	@DefaultMessage("[widget 008] - The element is not a span.")
+	@DefaultMessage("[widget 006] - The element is not a span.")
 	String widgetFactoryEnsureSpanFail();
-	@DefaultMessage("[widget 009] - The widget ''{0}'' was added to a pure HTML node where already exists other children. In this case, crux can not ensure an order for this widget. To solve this, If you must use panels as widget parent or enable the wrapSiblingWidgets config property.")
+	@DefaultMessage("[widget 007] - The widget ''{0}'' was added to a pure HTML node where already exists other children. In this case, crux can not ensure an order for this widget. To solve this, If you must use panels as widget parent or enable the wrapSiblingWidgets config property.")
 	String screenFactoryNonDeterministicWidgetPositionInParent(String widgetId);
 	
 	@DefaultMessage("[callback 001] - An Invalid controller was passed to AsyncCallbackAdapter.")

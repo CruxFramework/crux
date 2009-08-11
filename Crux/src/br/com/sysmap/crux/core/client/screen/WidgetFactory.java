@@ -248,7 +248,7 @@ public abstract class WidgetFactory <T extends Widget>
 		
 		if((!acceptsNoChild && firstChild == null) || (firstChild != null && !isSpan(element)))
 		{
-			throw new InterfaceConfigException(Crux.getMessages().widgetFactoryEnsureFirstChildSpanOrphanElement());			
+			throw new InterfaceConfigException(Crux.getMessages().widgetFactoryEnsureChildrenSpansEmpty());			
 		}
 		else
 		{
