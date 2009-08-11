@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.server.scan;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,28 +25,130 @@ import java.util.Set;
 import javassist.bytecode.ClassFile;
 import br.com.sysmap.crux.scannotation.AnnotationDB;
 
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
 public class ScannerDB extends AnnotationDB
 {
 	private static final long serialVersionUID = -4158104211395455896L;
 	
     protected Map<String, Set<String>> interfacesIndex = new HashMap<String, Set<String>>();
-
+    protected Map<String, String> superClasses = new HashMap<String, String>();
+    protected Map<String, Set<String>> classInterfaces = new HashMap<String, Set<String>>();
+    
+    /**
+     * 
+     * @return
+     */
     public Map<String, Set<String>> getInterfacesIndex()
 	{
 		return interfacesIndex;
 	}
 
+    /**
+     * 
+     */
+    @Override
+    public void scanArchives(URL... urls) throws IOException
+    {
+    	interfacesIndex.clear();
+    	superClasses.clear();
+    	
+    	super.scanArchives(urls);
+    	populateInterfacesFromSuperClass();
+    }
+    
     @Override
     protected void scanClass(ClassFile cf)
     {
     	super.scanClass(cf);
-    	populateInterfaces(cf.getInterfaces(), cf.getName());
+    	populateInterfaces(cf);
+    }
+    
+    protected void populateInterfaces(ClassFile cf)
+    {
+    	String className = cf.getName();
+    	String superClassName = cf.getSuperclass();
+
+    	populateInterfaces(cf.getInterfaces(), className);
+    	
+		superClasses.put(className, superClassName);
+    }
+    
+    protected void populateInterfacesFromSuperClass()
+    {
+    	Set<String> processedClasses = new HashSet<String>();
+    	for (String className : superClasses.keySet())
+		{
+    		Set<String> interfacesFromSuperClass = getInterfacesFromSuperClass(className, processedClasses);
+    		if (interfacesFromSuperClass != null)
+    		{
+    			for (String interfaceName : interfacesFromSuperClass)
+				{
+    				Set<String> classes = interfacesIndex.get(interfaceName);
+    				if (classes == null)
+    				{
+    					classes = new HashSet<String>();
+    					interfacesIndex.put(interfaceName, classes);
+    				}
+    				classes.add(className);
+				}
+    		}
+		}
+    }
+    
+    protected Set<String> getInterfacesFromSuperClass(String className, Set<String> processedClasses)
+    {
+    	if (processedClasses.contains(className))
+    	{
+    		return classInterfaces.get(className);
+    	}
+    	else
+    	{
+    		Set<String> result = new HashSet<String>();
+    		String superClassName = superClasses.get(className);
+    		if (superClassName != null)
+    		{
+    			Set<String> superClassesInterfaces = classInterfaces.get(superClassName);
+    			if (superClassesInterfaces != null)
+    			{
+    				result.addAll(superClassesInterfaces);
+    			}
+    			Set<String> interfacesFromSuperClass = getInterfacesFromSuperClass(superClassName, processedClasses);
+    			if (interfacesFromSuperClass != null && interfacesFromSuperClass.size() > 0)
+    			{
+    				result.addAll(interfacesFromSuperClass);
+    			}
+    		}
+    		Set<String> interfaces = classInterfaces.get(className);
+    		if (result.size() > 0)
+    		{
+        		if (interfaces == null)
+        		{
+        			interfaces = new HashSet<String>();
+        			classInterfaces.put(className, interfaces);
+        		}
+        		
+        		interfaces.addAll(result);
+    		}
+
+    		processedClasses.add(className);
+    		return result;
+    	}
     }
     
     protected void populateInterfaces(String[] interfaces, String className)
     {
        if (interfaces == null) return;
-       Set<String> classInterfaces = classIndex.get(className);
+       Set<String> classesIndex = classIndex.get(className);
+       Set<String> classesInterfaces = classInterfaces.get(className);
+       if (classesInterfaces == null)
+       {
+    	   classesInterfaces = new HashSet<String>();
+    	   classInterfaces.put(className, classesInterfaces);
+       }
        for (String str : interfaces)
        {
           Set<String> classes = interfacesIndex.get(str);
@@ -54,7 +158,8 @@ public class ScannerDB extends AnnotationDB
              interfacesIndex.put(str, classes);
           }
           classes.add(className);
-          classInterfaces.add(str);
+          classesIndex.add(str);
+          classesInterfaces.add(str);
        }
     }
 }
