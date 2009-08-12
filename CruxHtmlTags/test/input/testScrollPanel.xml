@@ -1,0 +1,20 @@
+<!--  
+!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+ -->
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test 123</title>
+	</head>
+
+	<body>
+		<crux:scrollPanel id="scrollable" visible="false" tooltip="It's me!" ensureVisible="anyWidget" alwaysShowScrollBars="false"
+			horizontalScrollPosition="left" verticalScrollPosition="top" style="stylin" onScroll="action">
+			<crux:button id="anyWidget"/>
+		</crux:scrollPanel>
+	</body>
+
+</html>
+

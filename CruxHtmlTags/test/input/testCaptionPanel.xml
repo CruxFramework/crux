@@ -1,0 +1,45 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test</title>
+	</head>
+
+	<body onclick="alert('Oh, shit!')">
+
+		<script type="javascript" />
+
+		<crux:captionPanel id="captionTexto" height="150px">
+			<crux:captionText>Text for the caption panel</crux:captionText>
+			<crux:widget>
+				<crux:button id="aButtonHere"></crux:button>
+			</crux:widget>			
+		</crux:captionPanel>
+		
+		<crux:captionPanel id="captionComHTML">
+			<crux:captionHtml>
+				<a href="http:anywhere.com">Some HTML here</a>
+			</crux:captionHtml>
+			<crux:widget>
+				<crux:button id="anotherButton" />
+			</crux:widget>
+		</crux:captionPanel>
+
+		<table>
+			<tr>
+				<td>
+					<div>
+						<crux:captionPanel id="captionComWidget">
+							<crux:widget>
+								<crux:button id="thereIsNoCaption"/>
+							</crux:widget>
+						</crux:captionPanel>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</body>
+
+</html>
+
