@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind.screen.formatter.annotation;
+package br.com.sysmap.crux.core.client.formatter.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
