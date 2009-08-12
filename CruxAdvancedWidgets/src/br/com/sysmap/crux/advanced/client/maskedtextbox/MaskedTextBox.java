@@ -98,9 +98,9 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 		{
 			textBox.getElement().setId(generateNewId());
 		}
-		setFormatter(formatter);
 		this.textBox = textBox;
 		this.textBox.setStyleName(DEFAULT_STYLE_NAME);
+		setFormatter(formatter);
 		initWidget(this.textBox);
 	}
 
