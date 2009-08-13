@@ -20,15 +20,13 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class ColumnMetadata<T>
+public class ColumnMetadata<T extends Comparable<T>>
 {
-	private Comparable<T> columnType;
 	private String name;
 	
-	public ColumnMetadata(String name, Comparable<T> columnType)
+	public ColumnMetadata(String name)
 	{
 		this.name = name;
-		this.columnType = columnType;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -40,10 +38,5 @@ public class ColumnMetadata<T>
 	public String getName()
 	{
 		return name;
-	}
-
-	public Comparable<T> getColumnType()
-	{
-		return columnType;
 	}
 }

@@ -43,7 +43,7 @@ public abstract class RemoteDataSource extends LocalPagedDataSource implements P
 		currentRecord = -1;
 		currentPage = 1;
 	}
-
+	
 	@Override
 	public void sort(String columnName)
 	{

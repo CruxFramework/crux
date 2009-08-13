@@ -15,16 +15,17 @@
  */
 package br.com.sysmap.crux.core.client.datasource.local;
 
-import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
+import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
+import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class LocalDataSource extends AbstractLocalDataSource<DataSourceRecord>
+public abstract class EditableLocalScrollableDataSource extends AbstractLocalScrollableDataSource<EditableDataSourceRecord> implements EditableDataSource
 {
-	public LocalDataSource(Metadata metadata)
+	public EditableLocalScrollableDataSource(Metadata metadata)
 	{
 		super(metadata);
 	}

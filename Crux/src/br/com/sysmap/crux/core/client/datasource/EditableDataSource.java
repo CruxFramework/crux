@@ -23,8 +23,8 @@ package br.com.sysmap.crux.core.client.datasource;
  */
 public interface EditableDataSource extends DataSource<EditableDataSourceRecord>
 {
-	EditableDataSourceRecord insertRecord(int beforeRecord);
+/*	EditableDataSourceRecord insertRecord(int beforeRecord);
 	EditableDataSourceRecord removeRecord(int record);
 	EditableDataSourceRecord updateRecord(int recordNumber, EditableDataSourceRecord record);
-	void flushChanges();
+	void flushChanges();*/
 }
