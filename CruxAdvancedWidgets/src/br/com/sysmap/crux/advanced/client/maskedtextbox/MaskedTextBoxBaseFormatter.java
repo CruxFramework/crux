@@ -20,7 +20,7 @@ import br.com.sysmap.crux.core.client.formatter.MaskedFormatter;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Base class for MaskedTextBox Formatters
+ * Base class for MaskedTextBox DataSources
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
 public abstract class MaskedTextBoxBaseFormatter implements MaskedFormatter
