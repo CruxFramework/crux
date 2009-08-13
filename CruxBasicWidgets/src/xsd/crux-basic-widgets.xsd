@@ -442,6 +442,7 @@
 		<xs:attribute name="useController" type="xs:string"/>
 		<xs:attribute name="useSerializable" type="xs:string"/>
 		<xs:attribute name="useFormatter" type="xs:string"/>
+		<xs:attribute name="useDataSource" type="xs:string"/>
 		<xs:attribute name="onClosing" type="xs:string"/>
 		<xs:attribute name="onClose" type="xs:string"/>
 		<xs:attribute name="onResized" type="xs:string"/>

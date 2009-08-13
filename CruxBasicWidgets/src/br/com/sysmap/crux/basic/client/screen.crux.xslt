@@ -48,6 +48,10 @@
 				<xsl:attribute name="_useformatter" select="@useFormatter"/>
 			</xsl:if>
 
+			<xsl:if test="string-length(@useDataSource) > 0">
+				<xsl:attribute name="_usedatasource" select="@useDataSource"/>
+			</xsl:if>
+
 			<xsl:if test="string-length(@onHistoryChanged) > 0">
 				<xsl:attribute name="_onhistorychanged" select="@onHistoryChanged"/>
 			</xsl:if>
