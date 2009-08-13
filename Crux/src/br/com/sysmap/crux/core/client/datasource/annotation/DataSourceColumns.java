@@ -13,16 +13,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.datasource.local;
+package br.com.sysmap.crux.core.client.datasource.annotation;
 
-import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class EditableLocalDataSource extends AbstractLocalDataSource<EditableDataSourceRecord> implements EditableDataSource
-{
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface DataSourceColumns {
+	String[] names();
+	Class<? extends Comparable<?>>[] types() default {};
 }
-

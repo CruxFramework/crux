@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.datasource.DataSource;
+import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters;
 import br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages;
@@ -46,6 +48,7 @@ public class ScreenFactory {
 	private Screen screen = null;
 	private RegisteredClientFormatters registeredClientFormatters = null;
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
+	private RegisteredDataSources registeredDataSources = null;
 	private DeclaredI18NMessages declaredI18NMessages = null;
 	private String screenId = null;
 	
@@ -53,6 +56,7 @@ public class ScreenFactory {
 	{
 		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 		this.declaredI18NMessages = GWT.create(DeclaredI18NMessages.class);
+		this.registeredDataSources = GWT.create(RegisteredDataSources.class);
 	}
 	
 	/**
@@ -316,4 +320,8 @@ public class ScreenFactory {
 		return this.declaredI18NMessages.getMessage(key);
 	}
 	
+	public DataSource<?> getDataSource(String dataSource)
+	{
+		return this.registeredDataSources.getDataSource(dataSource);
+	}
 }

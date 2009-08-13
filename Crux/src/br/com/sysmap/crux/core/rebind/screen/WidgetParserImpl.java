@@ -49,6 +49,10 @@ public class WidgetParserImpl implements WidgetParser
 			{
 				widget.setFormatter(attr.getValue());
 			}
+			else if (attrName.equals("_datasource"))
+			{
+				widget.setDataSource(attr.getValue());
+			}
 			else
 			{
 				widget.addProperty(attrName, attr.getValue());

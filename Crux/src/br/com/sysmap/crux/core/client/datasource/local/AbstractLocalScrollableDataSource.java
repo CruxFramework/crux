@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.ScrollableDataSource;
 
 /**
@@ -28,11 +27,6 @@ import br.com.sysmap.crux.core.client.datasource.ScrollableDataSource;
  */
 abstract class AbstractLocalScrollableDataSource<T extends DataSourceRecord> extends AbstractLocalDataSource<T> implements ScrollableDataSource<T>
 {		
-	public AbstractLocalScrollableDataSource(Metadata metadata)
-	{
-		super(metadata);
-	}
-	
 	public boolean hasPreviousRecord()
 	{
 		if (ensureLoaded())

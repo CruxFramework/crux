@@ -356,6 +356,18 @@ public class ScreenFactory
 					}
 				}
 			}
+			else if(attrName.equals("_usedatasource"))
+			{
+				String datasourceStr =  attr.getValue();
+				if (datasourceStr != null)
+				{
+					String[] datasources = RegexpPatterns.REGEXP_COMMA.split(datasourceStr);
+					for (String datasource : datasources)
+					{
+						screen.addDataSource(datasource.trim());
+					}
+				}
+			}
 			else if (attrName.startsWith("_on"))
 			{
 				Event event = EventFactory.getEvent(attrName, attr.getValue());

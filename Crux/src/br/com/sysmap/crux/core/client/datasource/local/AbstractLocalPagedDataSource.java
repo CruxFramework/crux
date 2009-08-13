@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.core.client.datasource.local;
 
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
 
 /**
@@ -28,11 +27,6 @@ abstract class AbstractLocalPagedDataSource<T extends DataSourceRecord> extends 
 	protected int pageSize = 10;
 	protected int currentPage = 1;
 	
-	public AbstractLocalPagedDataSource(Metadata metadata)
-	{
-		super(metadata);
-	}
-
 	public int getCurrentPage()
 	{
 		return currentPage;

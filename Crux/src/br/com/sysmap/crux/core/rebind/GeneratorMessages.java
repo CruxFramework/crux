@@ -68,4 +68,19 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 014] - Widget {0} not found.")
 	String errorGeneratingRegisteredClientHandlerWidgetNotFound(String name);
+
+	@DefaultMessage("[generator 015] - Error for register client datasource. DataSource: {0}. Error:{1}")
+	String errorGeneratingRegisteredDataSource(String dataSource, String message);
+
+	@DefaultMessage("[generator 016] - DataSource class must use annotation DataSourceColumn or DataSourceType to inform the columns structure. No information will be available through this DataSource.")
+	String errorGeneratingRegisteredDataSourceNoMetaInformation(String name);
+
+	@DefaultMessage("[generator 017] - DataSource class {0} must use only one annotation between DataSourceColumn and DataSourceType.")
+	String errorGeneratingRegisteredDataSourceConflictingMetaInformation(String name);
+
+	@DefaultMessage("[generator 018] - DataSource class {0} has invalid annotatted information.")
+	String errorGeneratingRegisteredDataSourceInvalidMetaInformation(String dataSourceClassName);
+
+	@DefaultMessage("[generator 018] - DataSource class {0} has invalid annotatted information. {} is not assignable to Comparable.")
+	String errorGeneratingRegisteredDataSourceInvalidColumnType(String dataSourceClassName, String typeName);
 }

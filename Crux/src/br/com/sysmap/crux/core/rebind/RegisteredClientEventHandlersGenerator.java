@@ -140,7 +140,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames, implClassName);
+			generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames);
 		}		
 
 		controllers = ClientControllers.iterateGlobalClientHandler();
@@ -148,7 +148,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames, implClassName);
+			generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames);
 		}		
 	}
 	
@@ -161,13 +161,13 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param added
 	 */
 	protected void generateEventHandlerBlock(TreeLogger logger, Screen screen, SourceWriter sourceWriter, String controller, 
-			Map<String, String> added, String implClassName)
+			Map<String, String> added)
 	{
 		try
 		{
 			if (!added.containsKey(controller) && ClientControllers.getClientHandler(controller)!= null)
 			{
-				String genClass = generateEventHandlerInvokerClass(logger,screen,sourceWriter,ClientControllers.getClientHandler(controller), implClassName);
+				String genClass = generateEventHandlerInvokerClass(logger,screen,sourceWriter,ClientControllers.getClientHandler(controller));
 				added.put(controller, genClass);
 			}
 		}
@@ -184,7 +184,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredEl
 	 * @param handlerClass
 	 * @return
 	 */
-	protected String generateEventHandlerInvokerClass(TreeLogger logger, Screen screen, SourceWriter sourceWriter, Class<?> handlerClass, String implClassName)
+	protected String generateEventHandlerInvokerClass(TreeLogger logger, Screen screen, SourceWriter sourceWriter, Class<?> handlerClass)
 	{
 		String className = handlerClass.getSimpleName();
 		sourceWriter.println("public class "+className+"Wrapper extends " + getClassSourceName(handlerClass)

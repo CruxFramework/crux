@@ -29,6 +29,7 @@ public class Widget
 	protected String id;
 	protected String type;
 	protected String formatter;
+	protected String dataSource;
 
 	protected Map<String, Event> events = new HashMap<String, Event>();
 	protected Map<String, String> properties = new HashMap<String, String>();
@@ -130,5 +131,15 @@ public class Widget
 	public void setFormatter(String formatter) 
 	{
 		this.formatter = formatter;
+	}
+
+	public String getDataSource()
+	{
+		return dataSource;
+	}
+
+	public void setDataSource(String dataSource)
+	{
+		this.dataSource = dataSource;
 	}
 }

@@ -31,11 +31,6 @@ abstract class AbstractLocalDataSource<T extends DataSourceRecord> implements Da
 	protected int currentRecord = -1;
 	protected boolean loaded = false;
 
-	public AbstractLocalDataSource(Metadata metadata)
-	{
-		this.metadata = metadata;
-	}
-
 	public Metadata getMetadata()
 	{
 		return metadata;

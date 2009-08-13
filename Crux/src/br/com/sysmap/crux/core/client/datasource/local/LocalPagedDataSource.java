@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.core.client.datasource.local;
 
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.Metadata;
 
 
 /**
@@ -25,8 +24,4 @@ import br.com.sysmap.crux.core.client.datasource.Metadata;
  */
 public abstract class LocalPagedDataSource extends AbstractLocalPagedDataSource<DataSourceRecord>
 {
-	public LocalPagedDataSource(Metadata metadata)
-	{
-		super(metadata);
-	}
 }

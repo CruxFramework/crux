@@ -132,4 +132,7 @@ public interface ServerMessages
 	@DefaultMessage("[screenResourceResolver 001] - Using Default ScreenResourceResouver.")
 	Object screenResourceResolverUsingDefault();
 
+	@DefaultMessage("[datasources 001] - Error initializing datasource: {0}.")
+	Object dataSourcesDataSourceInitializeError(String localizedMessage);
+
 }

@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.core.client.datasource.local;
 
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.Metadata;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -24,8 +23,4 @@ import br.com.sysmap.crux.core.client.datasource.Metadata;
  */
 public abstract class LocalScrollableDataSource extends AbstractLocalScrollableDataSource<DataSourceRecord>
 {
-	public LocalScrollableDataSource(Metadata metadata)
-	{
-		super(metadata);
-	}
 }

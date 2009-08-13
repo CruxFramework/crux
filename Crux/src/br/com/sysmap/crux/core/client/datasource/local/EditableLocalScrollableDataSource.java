@@ -17,7 +17,6 @@ package br.com.sysmap.crux.core.client.datasource.local;
 
 import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.Metadata;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -25,8 +24,4 @@ import br.com.sysmap.crux.core.client.datasource.Metadata;
  */
 public abstract class EditableLocalScrollableDataSource extends AbstractLocalScrollableDataSource<EditableDataSourceRecord> implements EditableDataSource
 {
-	public EditableLocalScrollableDataSource(Metadata metadata)
-	{
-		super(metadata);
-	}
 }

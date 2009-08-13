@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind.screen.formatter;
+package br.com.sysmap.crux.core.rebind.screen.datasource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import br.com.sysmap.crux.core.client.formatter.Formatter;
-import br.com.sysmap.crux.core.client.formatter.annotation.FormatterName;
+import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
@@ -35,31 +34,31 @@ import br.com.sysmap.crux.core.server.scan.ClassScanner;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class Formatters 
+public class DataSources 
 {
-	private static final Log logger = LogFactory.getLog(Formatters.class);
+	private static final Log logger = LogFactory.getLog(DataSources.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Lock lock = new ReentrantLock();
-	private static Map<String, Class<? extends Formatter>> formatters;
+	private static Map<String, Class<? extends DataSource<?>>> dataSources;
 	
 	/**
 	 * 
 	 */
 	public static void initialize()
 	{
-		if (formatters != null)
+		if (dataSources != null)
 		{
 			return;
 		}
 		try
 		{
 			lock.lock();
-			if (formatters != null)
+			if (dataSources != null)
 			{
 				return;
 			}
 			
-			initializeFormatters();
+			initializeDataSources();
 		}
 		finally
 		{
@@ -71,25 +70,26 @@ public class Formatters
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	protected static void initializeFormatters()
+	protected static void initializeDataSources()
 	{
-		formatters = new HashMap<String, Class<? extends Formatter>>();
-		Set<String> formatterNames =  ClassScanner.searchClassesByInterface(Formatter.class);
-		if (formatterNames != null)
+		dataSources = new HashMap<String, Class<? extends DataSource<?>>>();
+		Set<String> dataSourceNames =  ClassScanner.searchClassesByInterface(DataSource.class);
+		if (dataSourceNames != null)
 		{
-			for (String formatter : formatterNames) 
+			for (String dataSource : dataSourceNames) 
 			{
 				try 
 				{
-					Class<? extends Formatter> formatterClass = (Class<? extends Formatter>) Class.forName(formatter);
-					FormatterName annot = formatterClass.getAnnotation(FormatterName.class);
+					Class<? extends DataSource<?>> dataSourceClass = (Class<? extends DataSource<?>>) Class.forName(dataSource);
+					br.com.sysmap.crux.core.client.datasource.annotation.DataSource annot = 
+								dataSourceClass.getAnnotation(br.com.sysmap.crux.core.client.datasource.annotation.DataSource.class);
 					if (annot != null)
 					{
-						formatters.put(annot.value(), formatterClass);
+						dataSources.put(annot.value(), dataSourceClass);
 					}
 					else
 					{
-						String simpleName = formatterClass.getSimpleName();
+						String simpleName = dataSourceClass.getSimpleName();
 						if (simpleName.length() >1)
 						{
 							simpleName = Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
@@ -98,12 +98,12 @@ public class Formatters
 						{
 							simpleName = simpleName.toLowerCase();
 						}
-						formatters.put(simpleName, formatterClass);
+						dataSources.put(simpleName, dataSourceClass);
 					}
 				} 
 				catch (Throwable e) 
 				{
-					logger.error(messages.formattersFormatterInitializeError(e.getLocalizedMessage()),e);
+					logger.error(messages.dataSourcesDataSourceInitializeError(e.getLocalizedMessage()),e);
 				}
 			}
 		}
@@ -114,23 +114,13 @@ public class Formatters
 	 * @param name
 	 * @return
 	 */
-	public static Class<? extends Formatter> getFormatter(String name)
+	public static Class<? extends DataSource<?>> getDataSource(String name)
 	{
-		if (formatters == null)
+		if (dataSources == null)
 		{
 			initialize();
 		}
 		
-		if (name == null)
-		{
-			return null;
-		}
-		
-		int index = name.indexOf("(");
-		if (index > 0)
-		{
-			name = name.substring(0,index);
-		}
-		return formatters.get(name);
+		return dataSources.get(name);
 	}
 }

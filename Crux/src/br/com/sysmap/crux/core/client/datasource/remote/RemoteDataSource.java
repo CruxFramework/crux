@@ -17,7 +17,6 @@ package br.com.sysmap.crux.core.client.datasource.remote;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.local.LocalPagedDataSource;
 
@@ -27,9 +26,8 @@ import br.com.sysmap.crux.core.client.datasource.local.LocalPagedDataSource;
  */
 public abstract class RemoteDataSource extends LocalPagedDataSource implements PagedDataSource<DataSourceRecord>
 {	
-	public RemoteDataSource(Metadata metadata)
+	public RemoteDataSource()
 	{
-		super(metadata);
 		createDataObject();
 	}
 

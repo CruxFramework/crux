@@ -23,6 +23,7 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.context.ContextManager;
+import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.Events;
@@ -629,6 +630,16 @@ public class Screen
 	public static Formatter getFormatter(String formatter)
 	{
 		return ScreenFactory.getInstance().getClientFormatter(formatter);
+	}
+	
+	/**
+	 * 
+	 * @param dataSource
+	 * @return
+	 */
+	public static DataSource<?> getDataSource(String dataSource)
+	{
+		return ScreenFactory.getInstance().getDataSource(dataSource);
 	}
 	
 	/**

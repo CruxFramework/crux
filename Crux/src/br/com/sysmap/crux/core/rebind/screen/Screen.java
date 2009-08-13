@@ -34,6 +34,7 @@ public class Screen
 	protected List<String> controllers = new ArrayList<String>();
 	protected List<String> serializers = new ArrayList<String>();
 	protected List<String> formatters = new ArrayList<String>();
+	protected List<String> dataSources = new ArrayList<String>();
 	
 	protected String module;
 	
@@ -181,5 +182,26 @@ public class Screen
 	public Iterator<String> iterateFormatters()
 	{
 		return formatters.iterator();
+	}	
+
+	/**
+	 * Import a dataSource into screen
+	 * @param event
+	 */
+	protected void addDataSource(String dataSource)
+	{
+		if (dataSource != null)
+		{
+			dataSources.add(dataSource);
+		}
+	}
+	
+	/**
+	 * Iterate over screen dataSources
+	 * @return
+	 */
+	public Iterator<String> iterateDataSources()
+	{
+		return dataSources.iterator();
 	}	
 }
