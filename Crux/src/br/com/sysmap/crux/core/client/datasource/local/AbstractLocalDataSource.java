@@ -24,7 +24,7 @@ import br.com.sysmap.crux.core.client.datasource.Metadata;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-abstract class AbstractLocalDataSource<T extends DataSourceRecord> implements DataSource<T>
+abstract class AbstractLocalDataSource<T extends DataSourceRecord> implements DataSource<T>, LocalDataSource<T>
 {
 	protected Metadata metadata;
 	protected T[] data;
@@ -109,7 +109,4 @@ abstract class AbstractLocalDataSource<T extends DataSourceRecord> implements Da
 		}
 		return loaded;
 	}
-		
-	protected abstract T[] loadData();
-
 }

@@ -13,20 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.datasource.annotation;
+package br.com.sysmap.crux.core.client.datasource.local;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface DataSource {
-	String value();
-	boolean autoBind() default true;	
+public abstract class SimpleLocalDataSource extends AbstractLocalDataSource<DataSourceRecord>
+{
 }
