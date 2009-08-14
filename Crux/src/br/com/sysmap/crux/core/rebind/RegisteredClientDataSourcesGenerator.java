@@ -222,7 +222,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	{
 		try
 		{
-			Method method = dataSourceClass.getMethod("fetchData", new Class[]{Integer.class, Integer.class});
+			Method method = dataSourceClass.getMethod("fetchData", new Class[]{Integer.TYPE, Integer.TYPE});
 			Class<?> returnType = method.getReturnType();
 			
 			String returnDeclaration = getParameterDeclaration(returnType);
