@@ -24,11 +24,11 @@ import br.com.sysmap.crux.core.client.datasource.local.LocalPagedDataSource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class PagedRemoteDataSource extends LocalPagedDataSource 
+public abstract class RemotePagedDataSource extends LocalPagedDataSource 
                            implements PagedDataSource<DataSourceRecord>, 
                                       RemoteDataSource<DataSourceRecord>
 {	
-	public PagedRemoteDataSource()
+	public RemotePagedDataSource()
 	{
 		createDataObject();
 	}

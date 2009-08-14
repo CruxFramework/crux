@@ -18,15 +18,84 @@ package br.com.sysmap.crux.core.client.datasource.local;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
+import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.ScrollableDataSource;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-abstract class AbstractLocalScrollableDataSource<T extends DataSourceRecord> extends AbstractLocalDataSource<T> implements ScrollableDataSource<T>
-{		
+abstract class AbstractLocalScrollableDataSource<T extends DataSourceRecord>
+                                                   implements ScrollableDataSource<T>, LocalDataSource<T>
+{
+	protected Metadata metadata;
+	protected T[] data;
+	protected int currentRecord = -1;
+	protected boolean loaded = false;
+
+	public Metadata getMetadata()
+	{
+		return metadata;
+	}
+	
+	public Object getValue(String columnName)
+	{
+		if (currentRecord > -1)
+		{
+			DataSourceRecord dataSourceRow = data[currentRecord];
+			int position = metadata.getColumnPosition(columnName);
+			if (position > -1)
+			{
+				return dataSourceRow.get(position);
+			}
+		}
+		return null;
+	}	
+	
+	public boolean hasNextRecord()
+	{
+		if (ensureLoaded())
+		{
+			return (data != null && currentRecord < data.length -1);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public void nextRecord()
+	{
+		if (hasNextRecord())
+		{
+			currentRecord++;
+		}
+	}
+
+	public void reset()
+	{
+		if(data != null)
+		{
+			data = null;
+		}
+		currentRecord = -1;
+		loaded = false;
+	}
+	
+	public T getRecord()
+	{
+		if (ensureLoaded() && currentRecord > -1)
+		{
+			return data[currentRecord];
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	public boolean hasPreviousRecord()
 	{
 		if (ensureLoaded())
@@ -100,5 +169,23 @@ abstract class AbstractLocalScrollableDataSource<T extends DataSourceRecord> ext
 		{
 			currentRecord = getRowCount()-1;
 		}
+	}
+	
+	protected boolean ensureLoaded()
+	{
+		if (!loaded)
+		{
+			try
+			{
+				this.data = loadData();
+				loaded = true;
+			}
+			catch (RuntimeException e)
+			{
+				//TODO: colocar mensagem
+				Crux.getErrorHandler().handleError("", e);
+			}
+		}
+		return loaded;
 	}
 }
