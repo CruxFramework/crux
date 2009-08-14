@@ -116,7 +116,6 @@ public abstract class AbstractGenerator extends Generator
 					}
 					result.append(">");
 				}
-				
 			}
 		}
 		else if (parameterType instanceof Class)

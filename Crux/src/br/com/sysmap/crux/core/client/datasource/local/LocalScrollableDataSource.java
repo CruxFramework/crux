@@ -21,6 +21,6 @@ import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class LocalScrollableDataSource extends AbstractLocalScrollableDataSource<DataSourceRecord>
+public abstract class LocalScrollableDataSource extends AbstractLocalScrollableDataSource<DataSourceRecord, DataSourceRecord>
 {
 }

@@ -27,11 +27,11 @@ import br.com.sysmap.crux.core.client.datasource.ScrollableDataSource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-abstract class AbstractLocalScrollableDataSource<T extends DataSourceRecord>
-                                                   implements ScrollableDataSource<T>, LocalDataSource<T>
+abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
+                                                   implements ScrollableDataSource<R>, LocalDataSource<E>
 {
 	protected Metadata metadata;
-	protected T[] data;
+	protected R[] data;
 	protected int currentRecord = -1;
 	protected boolean loaded = false;
 
@@ -84,7 +84,7 @@ abstract class AbstractLocalScrollableDataSource<T extends DataSourceRecord>
 		loaded = false;
 	}
 	
-	public T getRecord()
+	public R getRecord()
 	{
 		if (ensureLoaded() && currentRecord > -1)
 		{
@@ -177,7 +177,7 @@ abstract class AbstractLocalScrollableDataSource<T extends DataSourceRecord>
 		{
 			try
 			{
-				this.data = loadData();
+				this.data = load();
 				loaded = true;
 			}
 			catch (RuntimeException e)
@@ -187,5 +187,13 @@ abstract class AbstractLocalScrollableDataSource<T extends DataSourceRecord>
 			}
 		}
 		return loaded;
+	}
+	
+	/*
+	 * This method is overridden by DataSourceGenerator
+	 */
+	protected R[] load()
+	{
+		return null;
 	}
 }

@@ -72,10 +72,10 @@ public interface GeneratorMessages
 	@DefaultMessage("[generator 015] - Error for register client datasource. DataSource: {0}. Error:{1}")
 	String errorGeneratingRegisteredDataSource(String dataSource, String message);
 
-	@DefaultMessage("[generator 016] - DataSource class must use annotation DataSourceColumn or DataSourceType to inform the columns structure. No information will be available through this DataSource.")
+	@DefaultMessage("[generator 016] - DataSource class {0} must use annotation DataSourceColumn or implements Bindable<T> interface")
 	String errorGeneratingRegisteredDataSourceNoMetaInformation(String name);
 
-	@DefaultMessage("[generator 017] - DataSource class {0} must use only one annotation between DataSourceColumn and DataSourceType.")
+	@DefaultMessage("[generator 017] - DataSource class {0} can not use annotation DataSourceColumn if it implements Bindable<T> interface")
 	String errorGeneratingRegisteredDataSourceConflictingMetaInformation(String name);
 
 	@DefaultMessage("[generator 018] - DataSource class {0} has invalid annotatted information.")

@@ -22,6 +22,6 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class LocalEditableScrollableDataSource extends AbstractLocalScrollableDataSource<EditableDataSourceRecord> implements EditableDataSource
+public abstract class LocalEditableScrollableDataSource extends AbstractLocalScrollableDataSource<EditableDataSourceRecord, EditableDataSourceRecord> implements EditableDataSource
 {
 }

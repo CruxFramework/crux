@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.datasource.Bindable;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
@@ -254,11 +255,12 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		DataSourceColumns columnsAnnot = dataSourceClass.getAnnotation(DataSourceColumns.class);
 		DataSourceType typeAnnot = dataSourceClass.getAnnotation(DataSourceType.class);
 		
-		if(columnsAnnot == null && typeAnnot == null)
+		boolean isBindable = Bindable.class.isAssignableFrom(dataSourceClass);
+		if(columnsAnnot == null && !isBindable)
 		{
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceNoMetaInformation(dataSourceClass.getName()), null);
 		}
-		else if(columnsAnnot != null && typeAnnot != null)
+		else if(columnsAnnot != null && isBindable)
 		{
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceConflictingMetaInformation(dataSourceClass.getName()), null);
 		}
@@ -268,9 +270,37 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		}
 		else
 		{
-			generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, dataSourceClass.getName());
+			generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, getDtoTypeFromClass(logger, dataSourceClass), dataSourceClass.getName());
 		}
 		sourceWriter.println("}");
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param dataSourceClass
+	 * @return
+	 */
+	private Class<?> getDtoTypeFromClass(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass)
+	{
+		try
+		{
+			if (LocalDataSource.class.isAssignableFrom(dataSourceClass))
+			{
+				Method method = dataSourceClass.getMethod("loadData", new Class[]{});
+				return method.getReturnType();
+			}
+			if (RemoteDataSource.class.isAssignableFrom(dataSourceClass))
+			{
+				Method method = dataSourceClass.getMethod("fetchData", new Class[]{Integer.TYPE, Integer.TYPE});
+				return method.getReturnType();
+			}
+		}
+		catch (Exception e) 
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
+		}
+		return null;
 	}
 
 	/**
@@ -281,14 +311,24 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 */
 	@SuppressWarnings("unchecked")
 	private void generateMetadataPopulationBlockFromType(TreeLogger logger, SourceWriter sourceWriter, 
-							DataSourceType typeAnnot, String dataSourceClassName)
+							DataSourceType typeAnnot, Class<?> dtoType, String dataSourceClassName)
 	{
 		List<String> names = new ArrayList<String>();
 		List<Class<? extends Comparable<?>>> types = new ArrayList<Class<? extends Comparable<?>>>();
 		
-		Class<?> dtoType = typeAnnot.value();
-		String[] includeFields = typeAnnot.includeFields();
-		String[] excludeFields = typeAnnot.excludeFields();
+		String[] includeFields;
+		String[] excludeFields;
+		if (typeAnnot != null)
+		{
+			includeFields = typeAnnot.includeFields();
+			excludeFields = typeAnnot.excludeFields();  
+		}
+		else
+		{
+			includeFields = new String[0];
+			excludeFields = new String[0];
+		}
+		
 		Field[] declaredFields = dtoType.getDeclaredFields();
 		
 		for (Field field : declaredFields)

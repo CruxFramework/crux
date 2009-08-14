@@ -22,7 +22,8 @@ import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-abstract class AbstractLocalPagedDataSource<T extends DataSourceRecord> extends AbstractLocalScrollableDataSource<T> implements PagedDataSource<T>
+abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> extends AbstractLocalScrollableDataSource<R,E> 
+                                              implements PagedDataSource<R>
 {
 	protected int pageSize = 10;
 	protected int currentPage = 1;
