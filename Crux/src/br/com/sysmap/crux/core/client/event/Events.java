@@ -159,8 +159,8 @@ public class Events
 	{
 		if (processor.hasException())
 		{
-			Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientError(event.getController()+"."+event.getMethod()), 
-					processor.exception());
+			Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientError(event.getController()+"."+event.getMethod(), 
+					processor.exception().getLocalizedMessage()), processor.exception());
 		}
 		else if (processor.validationMessage() != null)
 		{

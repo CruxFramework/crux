@@ -25,7 +25,6 @@ import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 
@@ -383,12 +382,12 @@ public class Screen
 	{
 		if (eventHandler != null)
 		{
-			if (!(eventHandler instanceof EventClientHandlerInvoker))
+			if (!(eventHandler instanceof ScreenBindableObject))
 			{
-				throw new ClassCastException(Crux.getMessages().screenInvalidHandlerError());
+				throw new ClassCastException(Crux.getMessages().screenInvalidObjectError());
 			}
 
-			((EventClientHandlerInvoker) eventHandler).updateScreenWidgets();
+			((ScreenBindableObject) eventHandler).updateScreenWidgets();
 		}
 	}
 	
@@ -400,11 +399,11 @@ public class Screen
 	{
 		if (eventHandler != null)
 		{
-			if (!(eventHandler instanceof EventClientHandlerInvoker))
+			if (!(eventHandler instanceof ScreenBindableObject))
 			{
-				throw new ClassCastException(Crux.getMessages().screenInvalidHandlerError());
+				throw new ClassCastException(Crux.getMessages().screenInvalidObjectError());
 			}
-			((EventClientHandlerInvoker) eventHandler).updateControllerObjects();
+			((ScreenBindableObject) eventHandler).updateControllerObjects();
 
 		}
 	}

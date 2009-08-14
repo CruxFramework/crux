@@ -40,7 +40,7 @@ public interface GeneratorMessages
 	String errorGeneratingRegisteredElementInvalidScreenID();
 
 	@DefaultMessage("[generator 006] - property {0} can could not be created. This is not visible neither has a getter/setter method.")
-	String registeredClientEventHandlerPropertyNotFound(String name);
+	String registeredClientObjectPropertyNotFound(String name);
 
 	@DefaultMessage("[generator 007] - Error generating class for declared message {0}.")
 	String errorGeneratingDeclaredMessagesClassNotFound(String string);
@@ -67,7 +67,7 @@ public interface GeneratorMessages
 	String errorInvokerWrapperSerializationError();
 
 	@DefaultMessage("[generator 014] - Widget {0} not found.")
-	String errorGeneratingRegisteredClientHandlerWidgetNotFound(String name);
+	String errorGeneratingRegisteredObjectWidgetNotFound(String name);
 
 	@DefaultMessage("[generator 015] - Error for register client datasource. DataSource: {0}. Error:{1}")
 	String errorGeneratingRegisteredDataSource(String dataSource, String message);

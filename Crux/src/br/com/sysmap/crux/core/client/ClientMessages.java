@@ -27,8 +27,8 @@ public interface ClientMessages extends Messages
 	//  event
 	@DefaultMessage("[event 001] - Client Controller Named ''{0}'' not found.")
 	String eventProcessorClientControllerNotFound(String controller);
-	@DefaultMessage("[event 002] - Error running client method ''{0}''.")
-	String eventProcessorClientError(String call);
+	@DefaultMessage("[event 002] - Error running client method ''{0}''. Message: ''{1}''")
+	String eventProcessorClientError(String call, String errMsg);
 	@DefaultMessage("[event 003] - Invalid declaration for handler method ''{0}''. Correct syntaxe is <controller.method>.")
 	String eventFactoryInvalidHandlerMethodDeclaration(String evt);
 	
@@ -57,8 +57,8 @@ public interface ClientMessages extends Messages
 	@DefaultMessage("[callback 001] - An Invalid controller was passed to AsyncCallbackAdapter.")
 	String asyncCallbackInvalidHandlerError();
 
-	@DefaultMessage("[screen 001] - An Invalid controller was passed to update screen or DTOs.")
-	String screenInvalidHandlerError();
+	@DefaultMessage("[screen 001] - An Invalid object was passed to update screen or DTOs.")
+	String screenInvalidObjectError();
 
 	@DefaultMessage("[moduleComunication 001] - Type ''{0}'' can not be shared between modules. Only primitives (and its wrappers), Strings, Dates, Arrays (not multidimesional) and classes implementing CruxSerializable can be used.")
 	String moduleComunicationInvalidParamType(String name);

@@ -17,7 +17,7 @@ package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,16 +30,20 @@ import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumns;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceType;
+import br.com.sysmap.crux.core.client.datasource.local.LocalDataSource;
+import br.com.sysmap.crux.core.client.datasource.remote.RemoteDataSource;
+import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
-public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElementsGenerator
+public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClientInvokableGenerator
 {
 	@Override
 	protected void generateClass(TreeLogger logger, GeneratorContext context,JClassType classType, List<Screen> screens) 
@@ -55,6 +59,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
 		composer.addImplementedInterface(RegisteredDataSources.class.getName());
 		composer.addImport(Metadata.class.getName());
+		composer.addImport(Widget.class.getName());
 		
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
@@ -151,8 +156,98 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 						Class<? extends DataSource<?>> dataSourceClass)
 	{
 		String className = dataSourceClass.getSimpleName()+"Wrapper";
-		sourceWriter.println("public class "+className+" extends " + getClassSourceName(dataSourceClass)+ "{");
+		sourceWriter.println("public class "+className+" extends " + getClassSourceName(dataSourceClass)
+				         + " implements "+ScreenBindableObject.class.getName()+"{");
 				
+		generateDataSourceClassConstructor(logger, sourceWriter, dataSourceClass, className);	
+		
+		br.com.sysmap.crux.core.client.datasource.annotation.DataSource annot = 
+				dataSourceClass.getAnnotation(br.com.sysmap.crux.core.client.datasource.annotation.DataSource.class);
+		if (annot != null && annot.autoBind())
+		{
+			if (RemoteDataSource.class.isAssignableFrom(dataSourceClass))
+			{
+				generateFetchFunction(logger, screen, dataSourceClass, sourceWriter);
+			}
+			if (LocalDataSource.class.isAssignableFrom(dataSourceClass))
+			{
+				generateLoadFunction(logger, screen, dataSourceClass, sourceWriter);
+			}
+		}
+		generateScreenUpdateWidgetsFunction(logger, screen, dataSourceClass, sourceWriter);
+		generateControllerUpdateObjectsFunction(logger, screen, dataSourceClass, sourceWriter);
+		
+		sourceWriter.println("}");
+		return className;
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param screen
+	 * @param dataSourceClass
+	 * @param sourceWriter
+	 */
+	private void generateLoadFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+			SourceWriter sourceWriter)
+	{		
+		try
+		{
+			Method method = dataSourceClass.getMethod("loadData", new Class[]{});
+			Class<?> returnType = method.getReturnType();
+			
+			String returnDeclaration = getParameterDeclaration(returnType);
+			sourceWriter.println("public "+returnDeclaration+" loadData(){");
+			sourceWriter.println("updateControllerObjects();");
+			sourceWriter.println(returnDeclaration+" ret = super.loadData();");
+			sourceWriter.println("updateScreenWidgets();");
+			sourceWriter.println("return ret;");
+			sourceWriter.println("}");
+		}
+		catch (Exception e)
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
+		}
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param screen
+	 * @param dataSourceClass
+	 * @param sourceWriter
+	 */
+	private void generateFetchFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+			SourceWriter sourceWriter)
+	{
+		try
+		{
+			Method method = dataSourceClass.getMethod("fetchData", new Class[]{Integer.class, Integer.class});
+			Class<?> returnType = method.getReturnType();
+			
+			String returnDeclaration = getParameterDeclaration(returnType);
+			sourceWriter.println("public "+returnDeclaration+" fetchData(int startRecord, int endRecord){");
+			sourceWriter.println("updateControllerObjects();");
+			sourceWriter.println(returnDeclaration+" ret = super.fetchData(startRecord, endRecord);");
+			sourceWriter.println("updateScreenWidgets();");
+			sourceWriter.println("return ret;");
+			sourceWriter.println("}");
+		}
+		catch (Exception e)
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
+		}
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param sourceWriter
+	 * @param dataSourceClass
+	 * @param className
+	 */
+	private void generateDataSourceClassConstructor(TreeLogger logger, SourceWriter sourceWriter, Class<? extends DataSource<?>> dataSourceClass, String className)
+	{
 		sourceWriter.println("public "+className+"(){");
 		sourceWriter.println("this.metadata = new Metadata();");
 		
@@ -175,11 +270,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 		{
 			generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, dataSourceClass.getName());
 		}
-		sourceWriter.println("}");	
-
-		
 		sourceWriter.println("}");
-		return className;
 	}
 
 	/**
@@ -224,7 +315,8 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 		boolean mustInclude = Comparable.class.isAssignableFrom(field.getType());
 		if (mustInclude)
 		{
-			mustInclude = checkVisibility(field, dtoType);
+			//TODO: checar por escrita tbm para editabledatasources
+			mustInclude = isPropertyVisibleToRead(dtoType, field);
 		}
 		if (mustInclude)
 		{
@@ -235,33 +327,6 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 			mustInclude = checkBlackList(field, excludeFields);
 		}
 		
-		return mustInclude;
-	}
-
-	/**
-	 * 
-	 * @param field
-	 * @param dtoType
-	 * @return
-	 */
-	private boolean checkVisibility(Field field, Class<?> dtoType)
-	{
-		boolean mustInclude = true;
-		if (!Modifier.isPublic(field.getModifiers()) && !Modifier.isProtected(field.getModifiers()))
-		{
-			String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-			try
-			{
-				if (dtoType.getMethod(getterMethodName, new Class<?>[]{}) == null)
-				{
-					mustInclude = false;
-				}
-			}
-			catch (Exception e) 
-			{
-				mustInclude = false;
-			}
-		}
 		return mustInclude;
 	}
 
