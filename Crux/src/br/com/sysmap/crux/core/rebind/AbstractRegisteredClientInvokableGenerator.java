@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.rebind;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 
@@ -206,7 +207,21 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 */
 	protected String getFieldValueGet(TreeLogger logger, Class<?> voClass, Field field, String parentVariable)
 	{
-		if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+		return getFieldValueGet(logger, voClass, field, parentVariable, true);
+	}
+	/**
+	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
+	 * 
+	 * @param logger
+	 * @param voClass
+	 * @param field
+	 * @param parentVariable
+	 * @param sourceWriter
+	 * @param allowProtected
+	 */
+	protected String getFieldValueGet(TreeLogger logger, Class<?> voClass, Field field, String parentVariable, boolean allowProtected)
+	{
+		if ((Modifier.isPublic(field.getModifiers()) || (allowProtected && Modifier.isProtected(field.getModifiers()))))
 		{
 			return parentVariable+"."+field.getName();
 		}
@@ -215,7 +230,9 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 			String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
 			try
 			{
-				if (voClass.getMethod(getterMethodName, new Class<?>[]{}) != null)
+				Method method = voClass.getMethod(getterMethodName, new Class<?>[]{});
+				if (method != null && (Modifier.isPublic(method.getModifiers()) || 
+						               (allowProtected && Modifier.isProtected(method.getModifiers()))))
 				{
 					return (parentVariable+"."+getterMethodName+"()");
 				}

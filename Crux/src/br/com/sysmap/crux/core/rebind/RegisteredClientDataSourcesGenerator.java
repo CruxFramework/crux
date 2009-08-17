@@ -282,7 +282,9 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 
 			for (String name:  columnsData.names)
 			{
-				sourceWriter.println("ret[i].addValue("+getFieldValueGet(logger, dataType, dataType.getDeclaredField(name),	"data[i]")+");");
+				sourceWriter.println("ret[i].addValue("+
+						getFieldValueGet(logger, dataType, dataType.getDeclaredField(name),	"data[i]", false)+
+						");");
 			}
 			
 			sourceWriter.println("}");
@@ -307,7 +309,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 
 		for (int i = 0; i < identifier.length; i++)
 		{
-			result.append("+"+getFieldValueGet(logger, dataType, dataType.getDeclaredField(identifier[i]), parentVariable));
+			result.append("+"+getFieldValueGet(logger, dataType, dataType.getDeclaredField(identifier[i]), parentVariable, false));
 		}
 		return result.toString();
 	}
