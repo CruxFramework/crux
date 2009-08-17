@@ -22,6 +22,7 @@ import java.util.Date;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.ScreenBind;
 import br.com.sysmap.crux.core.client.controller.ValueObject;
+import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
@@ -50,7 +51,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param controller
 	 * @param sourceWriter
 	 */
-	protected void generateAutoCreateFields(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
+	protected void generateAutoCreateFields(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter, String parentVariable)
 	{
 		for (Field field : controller.getDeclaredFields()) 
 		{
@@ -60,8 +61,17 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 				Class<?> type = getTypeForField(logger, field);
 				String typeName = getClassSourceName(type);
 
-				sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=GWT.create("+typeName+".class);");
-				generateFieldValueSet(logger, controller, field, "wrapper", "_field"+field.getName(), sourceWriter);
+				if (DataSource.class.isAssignableFrom(type))
+				{
+					String dsName = getDsName(type);
+					sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=("+fieldTypeName+")"+
+							br.com.sysmap.crux.core.client.screen.Screen.class.getName()+".getDataSource("+dsName+");");
+				}
+				else
+				{
+					sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=GWT.create("+typeName+".class);");
+				}
+				generateFieldValueSet(logger, controller, field, parentVariable, "_field"+field.getName(), sourceWriter);
 
 				if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
 				{
@@ -72,8 +82,37 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 
 		if (controller.getSuperclass() != null)
 		{
-			generateAutoCreateFields(logger, controller.getSuperclass(), sourceWriter);
+			generateAutoCreateFields(logger, controller.getSuperclass(), sourceWriter, parentVariable);
 		}
+	}
+
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 */
+	private String getDsName(Class<?> type)
+	{
+		String dsName = null;
+		br.com.sysmap.crux.core.client.datasource.annotation.DataSource annot = 
+			type.getAnnotation(br.com.sysmap.crux.core.client.datasource.annotation.DataSource.class);
+		if (annot != null)
+		{
+			dsName = annot.value();
+		}
+		else
+		{
+			dsName = type.getSimpleName();
+			if (dsName.length() >1)
+			{
+				dsName = Character.toLowerCase(dsName.charAt(0)) + dsName.substring(1);
+			}
+			else
+			{
+				dsName = dsName.toLowerCase();
+			}
+		}
+		return dsName;
 	}
 	
 	/**

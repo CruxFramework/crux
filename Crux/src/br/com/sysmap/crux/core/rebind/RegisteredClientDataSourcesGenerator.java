@@ -384,6 +384,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, getDtoTypeFromClass(logger, dataSourceClass), 
 											dataSourceClass.getName(), ret);
 		}
+		generateAutoCreateFields(logger, dataSourceClass, sourceWriter, "this");
 		sourceWriter.println("}");
 		
 		return ret;

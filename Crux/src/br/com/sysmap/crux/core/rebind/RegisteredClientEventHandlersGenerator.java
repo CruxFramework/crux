@@ -198,13 +198,13 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		{
 			sourceWriter.println("if (this.wrapper == null){");
 			sourceWriter.println("this.wrapper = new "+className+"Wrapper();");
-			generateAutoCreateFields(logger, handlerClass, sourceWriter);
+			generateAutoCreateFields(logger, handlerClass, sourceWriter, "wrapper");
 			sourceWriter.println("}");
 		}
 		else
 		{
 			sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
-			generateAutoCreateFields(logger, handlerClass, sourceWriter);
+			generateAutoCreateFields(logger, handlerClass, sourceWriter, "wrapper");
 		}
 		
 
