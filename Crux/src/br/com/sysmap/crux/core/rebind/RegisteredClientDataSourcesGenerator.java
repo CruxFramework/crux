@@ -29,7 +29,7 @@ import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumns;
-import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceType;
+import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding;
 import br.com.sysmap.crux.core.client.datasource.local.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.remote.RemoteDataSource;
 import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
@@ -272,7 +272,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		}
 		else
 		{
-			sourceWriter.println(dataTypeDeclaration+" data = "+loadDataFunctionCall+";");
+			sourceWriter.println(dataTypeDeclaration+"[] data = "+loadDataFunctionCall+";");
 			sourceWriter.println(returnDeclaration+" ret = new "+returnTypeComponentDeclaration+"[(data!=null?data.length:0)];");
 			sourceWriter.println("for (int i=0; i<data.length; i++){");
 			sourceWriter.println("ret[i] = new "+returnTypeComponentDeclaration+"(data[i]."+columnsData.identifier+");");
@@ -364,9 +364,9 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		sourceWriter.println("this.metadata = new Metadata();");
 		
 		DataSourceColumns columnsAnnot = dataSourceClass.getAnnotation(DataSourceColumns.class);
-		DataSourceType typeAnnot = dataSourceClass.getAnnotation(DataSourceType.class);
+		DataSourceBinding typeAnnot = dataSourceClass.getAnnotation(DataSourceBinding.class);
 		
-		boolean isBindable = Bindable.class.isAssignableFrom(dataSourceClass);
+		boolean isBindable = Bindable.class.isAssignableFrom(dataSourceClass) && typeAnnot != null;
 		if(columnsAnnot == null && !isBindable)
 		{
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceNoMetaInformation(dataSourceClass.getName()), null);
@@ -377,10 +377,12 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		}
 		else if(columnsAnnot != null)
 		{
+			ret.identifier = columnsAnnot.identifier();
 			generateMetadataPopulationBlockFromColumns(logger, sourceWriter, columnsAnnot, dataSourceClass.getName(), ret);
 		}
 		else
 		{
+			ret.identifier = typeAnnot.identifier();
 			generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, getDtoTypeFromClass(logger, dataSourceClass), 
 											dataSourceClass.getName(), ret);
 		}
@@ -426,7 +428,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 */
 	@SuppressWarnings("unchecked")
 	private void generateMetadataPopulationBlockFromType(TreeLogger logger, SourceWriter sourceWriter, 
-							DataSourceType typeAnnot, Class<?> dtoType, String dataSourceClassName, ColumnsData columnsData)
+							DataSourceBinding typeAnnot, Class<?> dtoType, String dataSourceClassName, ColumnsData columnsData)
 	{
 		List<String> names = new ArrayList<String>();
 		List<Class<? extends Comparable<?>>> types = new ArrayList<Class<? extends Comparable<?>>>();

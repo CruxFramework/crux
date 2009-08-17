@@ -26,7 +26,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface DataSourceType {
+public @interface DataSourceBinding {
+	String identifier();
 	String[] includeFields() default {};
 	String[] excludeFields() default {};
 }
