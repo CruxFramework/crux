@@ -62,4 +62,10 @@ public interface ClientMessages extends Messages
 
 	@DefaultMessage("[moduleComunication 001] - Type ''{0}'' can not be shared between modules. Only primitives (and its wrappers), Strings, Dates, Arrays (not multidimesional) and classes implementing CruxSerializable can be used.")
 	String moduleComunicationInvalidParamType(String name);
+
+	@DefaultMessage("[datasource - 001] - Error loading dataSource data: {0}")
+	String localDataSourceErrorLoadingData(String message);
+
+	@DefaultMessage("[datasource - 002] - Error loading dataSource remote data: {0}")
+	String remoteDataSourceErrorLoadingData(String message);
 }

@@ -122,8 +122,7 @@ public abstract class RemotePagedDataSource<T> extends LocalPagedDataSource
 			}
 			catch (RuntimeException e)
 			{
-				//TODO: colocar mensagem
-				Crux.getErrorHandler().handleError("", e);
+				Crux.getErrorHandler().handleError(messages.remoteDataSourceErrorLoadingData(e.getMessage()), e);
 			}
 		}
 		return loaded;

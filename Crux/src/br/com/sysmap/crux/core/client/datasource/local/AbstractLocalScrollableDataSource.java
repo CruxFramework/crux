@@ -18,6 +18,9 @@ package br.com.sysmap.crux.core.client.datasource.local;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import com.google.gwt.core.client.GWT;
+
+import br.com.sysmap.crux.core.client.ClientMessages;
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
@@ -34,6 +37,8 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	protected R[] data;
 	protected int currentRecord = -1;
 	protected boolean loaded = false;
+	protected ClientMessages messages = GWT.create(ClientMessages.class);
+	
 
 	public Metadata getMetadata()
 	{
@@ -182,8 +187,7 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 			}
 			catch (RuntimeException e)
 			{
-				//TODO: colocar mensagem
-				Crux.getErrorHandler().handleError("", e);
+				Crux.getErrorHandler().handleError(messages.localDataSourceErrorLoadingData(e.getMessage()), e);
 			}
 		}
 		return loaded;

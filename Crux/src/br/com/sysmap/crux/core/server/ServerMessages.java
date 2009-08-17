@@ -126,13 +126,13 @@ public interface ServerMessages
 	@DefaultMessage("[serializers 001] - Error initializing serializer: {0}.")
 	Object serializersSerializersInitializeError(String localizedMessage);
 
-	@DefaultMessage("[screenResourceScanner 001] - Error initializing screenResourceScanner: {0}.")
+	@DefaultMessage("[screenResourceScanner - 001] - Error initializing screenResourceScanner: {0}.")
 	String screenResourceScannerInitializationError(String localizedMessage);
 
-	@DefaultMessage("[screenResourceResolver 001] - Using Default ScreenResourceResouver.")
+	@DefaultMessage("[screenResourceResolver - 001] - Using Default ScreenResourceResouver.")
 	Object screenResourceResolverUsingDefault();
 
-	@DefaultMessage("[datasources 001] - Error initializing datasource: {0}.")
+	@DefaultMessage("[datasources- 001] - Error initializing datasource: {0}.")
 	Object dataSourcesDataSourceInitializeError(String localizedMessage);
 
 }
