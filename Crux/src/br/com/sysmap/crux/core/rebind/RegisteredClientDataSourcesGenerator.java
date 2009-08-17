@@ -279,7 +279,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 
 			for (String name:  columnsData.names)
 			{
-				sourceWriter.println("ret[i].addValue("+getFieldValueGet(logger, dataType, dataType.getField(name),	"data[i]")+");");
+				sourceWriter.println("ret[i].addValue("+getFieldValueGet(logger, dataType, dataType.getDeclaredField(name),	"data[i]")+");");
 			}
 			
 			sourceWriter.println("}");
