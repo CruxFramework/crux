@@ -28,7 +28,7 @@ import br.com.sysmap.crux.core.client.datasource.ScrollableDataSource;
  *
  */
 abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
-                                                   implements ScrollableDataSource<R>, LocalDataSource<E>
+                                                   implements ScrollableDataSource<R>, LocalDataSource<R,E>
 {
 	protected Metadata metadata;
 	protected R[] data;
@@ -192,7 +192,7 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	/*
 	 * This method is overridden by DataSourceGenerator
 	 */
-	protected R[] load()
+	public R[] load()
 	{
 		return null;
 	}

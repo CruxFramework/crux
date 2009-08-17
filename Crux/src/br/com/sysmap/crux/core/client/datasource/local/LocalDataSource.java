@@ -15,11 +15,14 @@
  */
 package br.com.sysmap.crux.core.client.datasource.local;
 
+import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
+
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface LocalDataSource<T>
+public interface LocalDataSource<R extends DataSourceRecord, E>
 {
-	T[] loadData();
+	E[] loadData();
+	R[] load();
 }

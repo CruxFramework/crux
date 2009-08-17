@@ -24,9 +24,9 @@ import br.com.sysmap.crux.core.client.datasource.local.LocalPagedDataSource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class RemotePagedDataSource extends LocalPagedDataSource 
+public abstract class RemotePagedDataSource<T> extends LocalPagedDataSource 
                            implements PagedDataSource<DataSourceRecord>, 
-                                      RemoteDataSource<DataSourceRecord>
+                                      RemoteDataSource<DataSourceRecord,T>
 {	
 	public RemotePagedDataSource()
 	{
@@ -117,7 +117,7 @@ public abstract class RemotePagedDataSource extends LocalPagedDataSource
 		{
 			try
 			{
-				loaded = updateFetchedData(fetchData(getRemoteStartPageRecord(), getRemoteEndPageRecord()), 
+				loaded = updateFetchedData(fetch(getRemoteStartPageRecord(), getRemoteEndPageRecord()), 
 													getStartPageRecord(), getEndPageRecord());
 			}
 			catch (RuntimeException e)
@@ -129,6 +129,11 @@ public abstract class RemotePagedDataSource extends LocalPagedDataSource
 		return loaded;
 	}
 	
+	public DataSourceRecord[] fetch(int remoteStartPageRecord, int remoteEndPageRecord)
+	{
+		return null;
+	}
+
 	/**
 	 * Get the end page record in remote (server) list of records.
 	 * @return

@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -160,20 +159,25 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		sourceWriter.println("public class "+className+" extends " + getClassSourceName(dataSourceClass)
 				         + " implements "+ScreenBindableObject.class.getName()+"{");
 				
-		generateDataSourceClassConstructor(logger, sourceWriter, dataSourceClass, className);	
+		ColumnsData columnsData = generateDataSourceClassConstructor(logger, sourceWriter, dataSourceClass, className);	
 		
+		boolean autoBind = true;
 		br.com.sysmap.crux.core.client.datasource.annotation.DataSource annot = 
 				dataSourceClass.getAnnotation(br.com.sysmap.crux.core.client.datasource.annotation.DataSource.class);
-		if (annot != null && annot.autoBind())
+
+		if (annot != null)
 		{
-			if (RemoteDataSource.class.isAssignableFrom(dataSourceClass))
-			{
-				generateFetchFunction(logger, screen, dataSourceClass, sourceWriter);
-			}
-			if (LocalDataSource.class.isAssignableFrom(dataSourceClass))
-			{
-				generateLoadFunction(logger, screen, dataSourceClass, sourceWriter);
-			}
+			autoBind = annot.autoBind();
+		}
+		if (RemoteDataSource.class.isAssignableFrom(dataSourceClass))
+		{
+			generateFetchDataFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
+			generateFetchFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
+		}
+		if (LocalDataSource.class.isAssignableFrom(dataSourceClass))
+		{
+			generateLoadDataFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
+			generateLoadFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
 		}
 		generateScreenUpdateWidgetsFunction(logger, screen, dataSourceClass, sourceWriter);
 		generateControllerUpdateObjectsFunction(logger, screen, dataSourceClass, sourceWriter);
@@ -189,8 +193,8 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param dataSourceClass
 	 * @param sourceWriter
 	 */
-	private void generateLoadFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
-			SourceWriter sourceWriter)
+	private void generateLoadDataFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+			SourceWriter sourceWriter, boolean autoBind)
 	{		
 		try
 		{
@@ -199,9 +203,113 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			
 			String returnDeclaration = getParameterDeclaration(returnType);
 			sourceWriter.println("public "+returnDeclaration+" loadData(){");
-			sourceWriter.println("updateControllerObjects();");
+			if (autoBind)
+			{
+				sourceWriter.println("updateControllerObjects();");
+			}
 			sourceWriter.println(returnDeclaration+" ret = super.loadData();");
-			sourceWriter.println("updateScreenWidgets();");
+			sourceWriter.println("return ret;");
+			sourceWriter.println("}");
+		}
+		catch (Exception e)
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
+		}
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param screen
+	 * @param dataSourceClass
+	 * @param sourceWriter
+	 */
+	private void generateLoadFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+			SourceWriter sourceWriter, ColumnsData columnsData)
+	{
+		try
+		{
+			Method method = dataSourceClass.getMethod("load", new Class[]{});
+			Class<?> returnType = method.getReturnType();
+			Class<?> returnTypeComponent = returnType.getComponentType();
+			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);
+			
+			String returnDeclaration = getParameterDeclaration(returnType);
+			String returnTypeComponentDeclaration = getParameterDeclaration(returnTypeComponent);
+			String dataTypeDeclaration = getParameterDeclaration(dataType);
+			
+			generateGenericLoadDataFunction(logger, sourceWriter, columnsData, returnType, dataType, 
+											returnDeclaration, returnTypeComponentDeclaration, 
+											dataTypeDeclaration, "load()", "loadData()");
+		}
+		catch (Exception e)
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
+		}
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param sourceWriter
+	 * @param columnsData
+	 * @param returnType
+	 * @param dataType
+	 * @param returnDeclaration
+	 * @param returnTypeComponentDeclaration
+	 * @param dataTypeDeclaration
+	 * @throws NoSuchFieldException
+	 */
+	private void generateGenericLoadDataFunction(TreeLogger logger, SourceWriter sourceWriter, ColumnsData columnsData, 
+												 Class<?> returnType, Class<?> dataType, String returnDeclaration,
+												 String returnTypeComponentDeclaration, String dataTypeDeclaration, 
+												 String loadFunctionDeclaration, String loadDataFunctionCall) throws NoSuchFieldException
+	{
+		sourceWriter.println("public "+returnDeclaration+" "+loadFunctionDeclaration+"{");
+		if (returnType.isAssignableFrom(dataType))
+		{
+			sourceWriter.println("return "+loadDataFunctionCall+";");
+		}
+		else
+		{
+			sourceWriter.println(dataTypeDeclaration+" data = "+loadDataFunctionCall+";");
+			sourceWriter.println(returnDeclaration+" ret = new "+returnTypeComponentDeclaration+"[(data!=null?data.length:0)];");
+			sourceWriter.println("for (int i=0; i<data.length; i++){");
+			sourceWriter.println("ret[i] = new "+returnTypeComponentDeclaration+"(data[i]."+columnsData.identifier+");");
+
+			for (String name:  columnsData.names)
+			{
+				sourceWriter.println("ret[i].addValue("+getFieldValueGet(logger, dataType, dataType.getField(name),	"data[i]")+");");
+			}
+			
+			sourceWriter.println("}");
+			sourceWriter.println("return ret;");
+		}
+		sourceWriter.println("}");
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param screen
+	 * @param dataSourceClass
+	 * @param sourceWriter
+	 */
+	private void generateFetchDataFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+			SourceWriter sourceWriter, boolean autoBind)
+	{
+		try
+		{
+			Method method = dataSourceClass.getMethod("fetchData", new Class[]{Integer.TYPE, Integer.TYPE});
+			Class<?> returnType = method.getReturnType();
+			
+			String returnDeclaration = getParameterDeclaration(returnType);
+			sourceWriter.println("public "+returnDeclaration+" fetchData(int startRecord, int endRecord){");
+			if (autoBind)
+			{
+				sourceWriter.println("updateControllerObjects();");
+			}
+			sourceWriter.println(returnDeclaration+" ret = super.fetchData(startRecord, endRecord);");
 			sourceWriter.println("return ret;");
 			sourceWriter.println("}");
 		}
@@ -219,27 +327,29 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param sourceWriter
 	 */
 	private void generateFetchFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
-			SourceWriter sourceWriter)
+			SourceWriter sourceWriter, ColumnsData columnsData)
 	{
 		try
 		{
-			Method method = dataSourceClass.getMethod("fetchData", new Class[]{Integer.TYPE, Integer.TYPE});
+			Method method = dataSourceClass.getMethod("fetch", new Class[]{Integer.TYPE, Integer.TYPE});
 			Class<?> returnType = method.getReturnType();
+			Class<?> returnTypeComponent = returnType.getComponentType();
+			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);
 			
 			String returnDeclaration = getParameterDeclaration(returnType);
-			sourceWriter.println("public "+returnDeclaration+" fetchData(int startRecord, int endRecord){");
-			sourceWriter.println("updateControllerObjects();");
-			sourceWriter.println(returnDeclaration+" ret = super.fetchData(startRecord, endRecord);");
-			sourceWriter.println("updateScreenWidgets();");
-			sourceWriter.println("return ret;");
-			sourceWriter.println("}");
+			String returnTypeComponentDeclaration = getParameterDeclaration(returnTypeComponent);
+			String dataTypeDeclaration = getParameterDeclaration(dataType);
+			
+			generateGenericLoadDataFunction(logger, sourceWriter, columnsData, returnType, dataType, 
+											returnDeclaration, returnTypeComponentDeclaration, 
+											dataTypeDeclaration, "fetch(int start, int end)", "fetchData(start, end)");
 		}
 		catch (Exception e)
 		{
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param logger
@@ -247,8 +357,9 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param dataSourceClass
 	 * @param className
 	 */
-	private void generateDataSourceClassConstructor(TreeLogger logger, SourceWriter sourceWriter, Class<? extends DataSource<?>> dataSourceClass, String className)
+	private ColumnsData generateDataSourceClassConstructor(TreeLogger logger, SourceWriter sourceWriter, Class<? extends DataSource<?>> dataSourceClass, String className)
 	{
+		ColumnsData ret = new ColumnsData();
 		sourceWriter.println("public "+className+"(){");
 		sourceWriter.println("this.metadata = new Metadata();");
 		
@@ -266,13 +377,16 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		}
 		else if(columnsAnnot != null)
 		{
-			generateMetadataPopulationBlockFromColumns(logger, sourceWriter, columnsAnnot, dataSourceClass.getName());
+			generateMetadataPopulationBlockFromColumns(logger, sourceWriter, columnsAnnot, dataSourceClass.getName(), ret);
 		}
 		else
 		{
-			generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, getDtoTypeFromClass(logger, dataSourceClass), dataSourceClass.getName());
+			generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, getDtoTypeFromClass(logger, dataSourceClass), 
+											dataSourceClass.getName(), ret);
 		}
 		sourceWriter.println("}");
+		
+		return ret;
 	}
 
 	/**
@@ -288,12 +402,12 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			if (LocalDataSource.class.isAssignableFrom(dataSourceClass))
 			{
 				Method method = dataSourceClass.getMethod("loadData", new Class[]{});
-				return method.getReturnType();
+				return method.getReturnType().getComponentType();
 			}
 			if (RemoteDataSource.class.isAssignableFrom(dataSourceClass))
 			{
 				Method method = dataSourceClass.getMethod("fetchData", new Class[]{Integer.TYPE, Integer.TYPE});
-				return method.getReturnType();
+				return method.getReturnType().getComponentType();
 			}
 		}
 		catch (Exception e) 
@@ -311,7 +425,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 */
 	@SuppressWarnings("unchecked")
 	private void generateMetadataPopulationBlockFromType(TreeLogger logger, SourceWriter sourceWriter, 
-							DataSourceType typeAnnot, Class<?> dtoType, String dataSourceClassName)
+							DataSourceType typeAnnot, Class<?> dtoType, String dataSourceClassName, ColumnsData columnsData)
 	{
 		List<String> names = new ArrayList<String>();
 		List<Class<? extends Comparable<?>>> types = new ArrayList<Class<? extends Comparable<?>>>();
@@ -339,8 +453,10 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 				types.add((Class<? extends Comparable<?>>) field.getType());
 			}
 		}
+		columnsData.names = names.toArray(new String[0]);
+		columnsData.types = (Class<? extends Comparable<?>>[]) types.toArray(new Class[0]);
 		
-		generateMetadaPopulationBlock(logger, sourceWriter, dataSourceClassName, names, types);
+		generateMetadaPopulationBlock(logger, sourceWriter, dataSourceClassName, columnsData);
 	}
 
 	/**
@@ -429,12 +545,12 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param dataSourceClassName
 	 */
 	private void generateMetadataPopulationBlockFromColumns(TreeLogger logger, SourceWriter sourceWriter, 
-							DataSourceColumns columnsAnnot, String dataSourceClassName)
+							DataSourceColumns columnsAnnot, String dataSourceClassName, ColumnsData columnsData)
 	{
-		List<String> names = Arrays.asList(columnsAnnot.names());
-		List<Class<? extends Comparable<?>>> types = Arrays.asList(columnsAnnot.types());
+		columnsData.names = columnsAnnot.names();
+		columnsData.types = columnsAnnot.types();
 		
-		generateMetadaPopulationBlock(logger, sourceWriter, dataSourceClassName, names, types);
+		generateMetadaPopulationBlock(logger, sourceWriter, dataSourceClassName, columnsData);
 	}
 
 	/**
@@ -446,29 +562,32 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param types
 	 */
 	private void generateMetadaPopulationBlock(TreeLogger logger, SourceWriter sourceWriter, String dataSourceClassName, 
-				List<String> names, List<Class<? extends Comparable<?>>> types)
+			                                  ColumnsData columnsData)
 	{
-		if (types.size() > 0 && (names.size() != types.size()))
+		if (columnsData.types.length > 0 && (columnsData.names.length != columnsData.types.length))
 		{
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceInvalidMetaInformation(dataSourceClassName), null);
 		}
 		
-		for (int i=0; i<names.size(); i++)
+		for (int i=0; i<columnsData.names.length; i++)
 		{
 			Class<? extends Comparable<?>> type;
-			if (types.size() > 0)
+			if (columnsData.types.length > 0)
 			{
-				type = types.get(i);
+				type = columnsData.types[i];
 			}
 			else
 			{
 				type = String.class;
 			}
-			if (!Comparable.class.isAssignableFrom(type))
-			{
-				logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceInvalidColumnType(dataSourceClassName, type.getName()), null);
-			}
-			sourceWriter.println("metadata.addColumn(new ColumnMetadata<"+getParameterDeclaration(type)+">(\""+names.get(i)+"\"));");
+			sourceWriter.println("metadata.addColumn(new ColumnMetadata<"+getParameterDeclaration(type)+">(\""+columnsData.names[i]+"\"));");
 		}
 	}	
+	
+	private static class ColumnsData
+	{
+		private String[] names;
+		private Class<? extends Comparable<?>>[] types;
+		private String identifier;
+	}
 }

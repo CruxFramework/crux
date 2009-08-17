@@ -80,7 +80,4 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 018] - DataSource class {0} has invalid annotatted information.")
 	String errorGeneratingRegisteredDataSourceInvalidMetaInformation(String dataSourceClassName);
-
-	@DefaultMessage("[generator 018] - DataSource class {0} has invalid annotatted information. {} is not assignable to Comparable.")
-	String errorGeneratingRegisteredDataSourceInvalidColumnType(String dataSourceClassName, String typeName);
 }

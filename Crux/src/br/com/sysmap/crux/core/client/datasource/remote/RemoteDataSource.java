@@ -15,12 +15,15 @@
  */
 package br.com.sysmap.crux.core.client.datasource.remote;
 
+import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
+
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface RemoteDataSource<T>
+public interface RemoteDataSource<R extends DataSourceRecord, E>
 {
-	T[] fetchData(int startRecord, int endRecord);
+	E[] fetchData(int startRecord, int endRecord);
+	R[] fetch(int startRecord, int endRecord);
 }

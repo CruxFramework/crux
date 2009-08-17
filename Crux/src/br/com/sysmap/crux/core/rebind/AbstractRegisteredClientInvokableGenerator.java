@@ -157,6 +157,39 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	}	
 
 	/**
+	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
+	 * 
+	 * @param logger
+	 * @param voClass
+	 * @param field
+	 * @param parentVariable
+	 * @param sourceWriter
+	 */
+	protected String getFieldValueGet(TreeLogger logger, Class<?> voClass, Field field, String parentVariable)
+	{
+		if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+		{
+			return parentVariable+"."+field.getName();
+		}
+		else
+		{
+			String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+			try
+			{
+				if (voClass.getMethod(getterMethodName, new Class<?>[]{}) != null)
+				{
+					return (parentVariable+"."+getterMethodName+"()");
+				}
+			}
+			catch (Exception e)
+			{
+				logger.log(TreeLogger.ERROR, messages.registeredClientObjectPropertyNotFound(field.getName()));
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Generates the code for DTO population from screen. 
 	 * 
 	 * @param logger
@@ -391,39 +424,6 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredObjectWidgetNotFound(name), e);
 		}
 	}	
-
-	/**
-	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
-	 * 
-	 * @param logger
-	 * @param voClass
-	 * @param field
-	 * @param parentVariable
-	 * @param sourceWriter
-	 */
-	private String getFieldValueGet(TreeLogger logger, Class<?> voClass, Field field, String parentVariable)
-	{
-		if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
-		{
-			return parentVariable+"."+field.getName();
-		}
-		else
-		{
-			String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-			try
-			{
-				if (voClass.getMethod(getterMethodName, new Class<?>[]{}) != null)
-				{
-					return (parentVariable+"."+getterMethodName+"()");
-				}
-			}
-			catch (Exception e)
-			{
-				logger.log(TreeLogger.ERROR, messages.registeredClientObjectPropertyNotFound(field.getName()));
-			}
-		}
-		return null;
-	}
 	
 	/**
 	 * Generates a property set block. First try to set the field directly, then try to use a javabean setter method.
