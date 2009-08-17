@@ -65,7 +65,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 				{
 					String dsName = getDsName(type);
 					sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=("+fieldTypeName+")"+
-							br.com.sysmap.crux.core.client.screen.Screen.class.getName()+".getDataSource("+dsName+");");
+							br.com.sysmap.crux.core.client.screen.Screen.class.getName()+".getDataSource(\""+dsName+"\");");
 				}
 				else
 				{
