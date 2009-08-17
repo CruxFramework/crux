@@ -35,6 +35,7 @@ import br.com.sysmap.crux.core.client.datasource.remote.RemoteDataSource;
 import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
+import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -275,7 +276,9 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			sourceWriter.println(dataTypeDeclaration+"[] data = "+loadDataFunctionCall+";");
 			sourceWriter.println(returnDeclaration+" ret = new "+returnTypeComponentDeclaration+"[(data!=null?data.length:0)];");
 			sourceWriter.println("for (int i=0; i<data.length; i++){");
-			sourceWriter.println("ret[i] = new "+returnTypeComponentDeclaration+"(data[i]."+columnsData.identifier+");");
+			sourceWriter.println("ret[i] = new "+returnTypeComponentDeclaration+"("+
+					getIdentifierDelcaration(logger, dataType, columnsData.identifier, "data[i]")
+					+");");
 
 			for (String name:  columnsData.names)
 			{
@@ -288,6 +291,27 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		sourceWriter.println("}");
 	}
 
+	/**
+	 * 
+	 * @param logger
+	 * @param dataType
+	 * @param identifiers
+	 * @param parentVariable
+	 * @return
+	 * @throws NoSuchFieldException
+	 */
+	private String getIdentifierDelcaration(TreeLogger logger, Class<?> dataType, String identifiers, String parentVariable) throws NoSuchFieldException
+	{
+		String[] identifier = RegexpPatterns.REGEXP_COMMA.split(identifiers);
+		StringBuilder result = new StringBuilder("\"\""); 
+
+		for (int i = 0; i < identifier.length; i++)
+		{
+			result.append("+"+getFieldValueGet(logger, dataType, dataType.getDeclaredField(identifier[i]), parentVariable));
+		}
+		return result.toString();
+	}
+	
 	/**
 	 * 
 	 * @param logger
