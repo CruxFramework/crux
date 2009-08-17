@@ -18,4 +18,5 @@
 	<widget id="confirm" clientClass=" br.com.sysmap.crux.advanced.client.dialog.ConfirmFactory"/>
 	<widget id="popup" clientClass=" br.com.sysmap.crux.advanced.client.dialog.PopupFactory"/>
 	<widget id="timer" clientClass=" br.com.sysmap.crux.advanced.client.timer.TimerFactory"/>
+	<widget id="pagedDataGrid" clientClass="br.com.sysmap.crux.advanced.client.grid.datagrid.PagedDataGridFactory"/>
 </crux>
