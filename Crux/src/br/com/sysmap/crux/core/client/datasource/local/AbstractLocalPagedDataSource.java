@@ -35,7 +35,7 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 
 	public int getPageCount()
 	{
-		int numRecords = getRowCount();
+		int numRecords = getRecordCount();
 		int pageSize = getPageSize();
 		
 		return (numRecords / pageSize) + (numRecords%pageSize==0?0:1);

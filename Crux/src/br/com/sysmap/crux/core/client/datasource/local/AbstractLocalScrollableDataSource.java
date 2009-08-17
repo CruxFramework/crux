@@ -157,7 +157,7 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 		firstRecord();
 	}
 	
-	public int getRowCount()
+	public int getRecordCount()
 	{
 		return (data!=null?data.length:0);
 	}
@@ -172,7 +172,7 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	{
 		if (ensureLoaded())
 		{
-			currentRecord = getRowCount()-1;
+			currentRecord = getRecordCount()-1;
 		}
 	}
 	

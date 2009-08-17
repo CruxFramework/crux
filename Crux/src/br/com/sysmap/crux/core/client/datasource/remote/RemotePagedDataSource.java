@@ -38,7 +38,7 @@ public abstract class RemotePagedDataSource<T> extends LocalPagedDataSource
 	{
 		if(data != null)
 		{
-			data = new DataSourceRecord[getRowCount()];
+			data = new DataSourceRecord[getRecordCount()];
 		}
 		currentRecord = -1;
 		currentPage = 1;
@@ -153,7 +153,7 @@ public abstract class RemotePagedDataSource<T> extends LocalPagedDataSource
 
 	protected boolean updateFetchedData(DataSourceRecord[] pageData, int startRecord, int endRecord)
 	{
-		if (pageData == null || pageData.length < (endRecord-startRecord+1) || endRecord >= getRowCount())
+		if (pageData == null || pageData.length < (endRecord-startRecord+1) || endRecord >= getRecordCount())
 		{
 			return false;
 		}
@@ -178,6 +178,6 @@ public abstract class RemotePagedDataSource<T> extends LocalPagedDataSource
 
 	protected void createDataObject()
 	{
-		this.data = new DataSourceRecord[getRowCount()];
+		this.data = new DataSourceRecord[getRecordCount()];
 	}
 }
