@@ -13,22 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.datasource.remote;
+package br.com.sysmap.crux.core.client.datasource;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
-import br.com.sysmap.crux.core.client.datasource.local.LocalPagedDataSource;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class RemotePagedDataSource<T> extends LocalPagedDataSource 
+public abstract class AbstractRemotePagedDataSource<T> extends LocalPagedDataSource 
                            implements PagedDataSource<DataSourceRecord>, 
                                       RemoteDataSource<DataSourceRecord,T>
 {	
-	public RemotePagedDataSource()
+	public AbstractRemotePagedDataSource()
 	{
 		createDataObject();
 	}

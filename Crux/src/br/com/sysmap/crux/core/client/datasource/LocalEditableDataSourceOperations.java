@@ -13,22 +13,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.datasource.local;
+package br.com.sysmap.crux.core.client.datasource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceOperations;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.EditableDataSourceRecordState;
+
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-class LocalEditableDataSourceOperations<E> extends EditableDataSourceOperations
+class LocalEditableDataSourceOperations<E>
 {
 	protected List<EditableDataSourceRecord> newRecords = new ArrayList<EditableDataSourceRecord>();
 	protected List<EditableDataSourceRecord> removedRecords = new ArrayList<EditableDataSourceRecord>();
@@ -51,7 +49,7 @@ class LocalEditableDataSourceOperations<E> extends EditableDataSourceOperations
 		checkRange(index);
 		EditableDataSourceRecord record = new EditableDataSourceRecord((EditableDataSource)this.editableDataSource, 
 																		"_newRecord"+newRecords.size());
-		setRecordAsCreated(record);
+		record.setCreated(true);
 		insertDataRecord(index, record);
 		newRecords.add(record);
 		return record;
@@ -65,7 +63,7 @@ class LocalEditableDataSourceOperations<E> extends EditableDataSourceOperations
 		checkRange(index);
 		EditableDataSourceRecord record = this.editableDataSource.data[index];
 		EditableDataSourceRecordState previousState = record.getCurrentState();
-		setRecordAsRemoved(record);
+		record.setRemoved(true);
 		removeDataRecord(index);
 		updateState(record, previousState);
 		return record;

@@ -13,23 +13,30 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.datasource.local;
+package br.com.sysmap.crux.core.client.datasource;
 
-import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.EditableDataSourceRecordState;
+
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class LocalEditableScrollableDataSource 
-				extends AbstractLocalScrollableDataSource<EditableDataSourceRecord, EditableDataSourceRecord> 
-                implements EditableDataSource
+public abstract class LocalBindableEditableScrollableDataSource<T> extends AbstractLocalScrollableDataSource<EditableDataSourceRecord, T> 
+                                                                   implements EditableDataSource, Bindable<T>
 {
-	protected LocalEditableDataSourceOperations<EditableDataSourceRecord> editableOperations = 
-			new LocalEditableDataSourceOperations<EditableDataSourceRecord>(this);
+	/* 
+	 * If we don't override the superclass' method, the LocalBindableEditablePagedDataSource.class.getMethod returns a wrong signature (inherited from super)
+	 */
+	@Override
+	public EditableDataSourceRecord[] load()
+	{
+		return super.load();
+	}
 	
+	protected LocalEditableDataSourceOperations<T> editableOperations = 
+		new LocalEditableDataSourceOperations<T>(this);
+
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#insertRecord(int)
 	 */
@@ -37,7 +44,7 @@ public abstract class LocalEditableScrollableDataSource
 	{
 		return editableOperations.insertRecord(index);
 	}
-	
+
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#removeRecord(int)
 	 */
@@ -69,7 +76,7 @@ public abstract class LocalEditableScrollableDataSource
 	{
 		return editableOperations.getRemovedRecords();
 	}
-	
+
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getUpdatedRecords()
 	 */
@@ -77,12 +84,12 @@ public abstract class LocalEditableScrollableDataSource
 	{
 		return editableOperations.getUpdatedRecords();
 	}
-	
+
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getSelectedRecords()
 	 */
 	public EditableDataSourceRecord[] getSelectedRecords()
 	{
 		return editableOperations.getSelectedRecords();
-	}
+	}	
 }

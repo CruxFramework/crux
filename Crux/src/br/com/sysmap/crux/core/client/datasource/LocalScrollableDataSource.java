@@ -13,17 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.datasource.local;
-
-import br.com.sysmap.crux.core.client.datasource.Bindable;
-import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
+package br.com.sysmap.crux.core.client.datasource;
 
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class LocalBindablePagedDataSource<T> extends AbstractLocalPagedDataSource<DataSourceRecord, T>
-													  implements Bindable<T>
+public abstract class LocalScrollableDataSource extends AbstractLocalScrollableDataSource<DataSourceRecord, DataSourceRecord>
 {
 }

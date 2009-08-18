@@ -13,32 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.datasource.local;
+package br.com.sysmap.crux.core.client.datasource;
 
-import br.com.sysmap.crux.core.client.datasource.Bindable;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.EditableDataSourceRecordState;
+
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class LocalBindableEditablePagedDataSource<T> extends AbstractLocalPagedDataSource<EditableDataSourceRecord, T> 
-                                                   implements EditableDataSource, Bindable<T>
+public abstract class LocalEditableScrollableDataSource 
+				extends AbstractLocalScrollableDataSource<EditableDataSourceRecord, EditableDataSourceRecord> 
+                implements EditableDataSource
 {
-	/* 
-	 * If we don't override the superclass' method, the LocalBindableEditablePagedDataSource.class.getMethod returns a wrong signature (inherited from super)
-	 */
-	@Override
-	public EditableDataSourceRecord[] load()
-	{
-		return super.load();
-	}	
+	protected LocalEditableDataSourceOperations<EditableDataSourceRecord> editableOperations = 
+			new LocalEditableDataSourceOperations<EditableDataSourceRecord>(this);
 	
-	protected LocalEditableDataSourceOperations<T> editableOperations = 
-		new LocalEditableDataSourceOperations<T>(this);
-
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#insertRecord(int)
 	 */
@@ -46,7 +36,7 @@ public abstract class LocalBindableEditablePagedDataSource<T> extends AbstractLo
 	{
 		return editableOperations.insertRecord(index);
 	}
-
+	
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#removeRecord(int)
 	 */
@@ -78,7 +68,7 @@ public abstract class LocalBindableEditablePagedDataSource<T> extends AbstractLo
 	{
 		return editableOperations.getRemovedRecords();
 	}
-
+	
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getUpdatedRecords()
 	 */
@@ -86,12 +76,12 @@ public abstract class LocalBindableEditablePagedDataSource<T> extends AbstractLo
 	{
 		return editableOperations.getUpdatedRecords();
 	}
-
+	
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getSelectedRecords()
 	 */
 	public EditableDataSourceRecord[] getSelectedRecords()
 	{
 		return editableOperations.getSelectedRecords();
-	}	
+	}
 }

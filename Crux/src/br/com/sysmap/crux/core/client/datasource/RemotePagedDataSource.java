@@ -13,17 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.datasource.remote;
-
-import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
-
+package br.com.sysmap.crux.core.client.datasource;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface RemoteDataSource<R extends DataSourceRecord, E>
+public class RemotePagedDataSource
 {
-	E[] fetchData(int startRecord, int endRecord);
-	R[] fetch(int startRecord, int endRecord);
+
 }

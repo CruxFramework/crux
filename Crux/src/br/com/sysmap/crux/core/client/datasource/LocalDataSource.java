@@ -15,27 +15,13 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
+
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class EditableDataSourceOperations
+public interface LocalDataSource<R extends DataSourceRecord, E>
 {
-	/**
-	 * 
-	 * @param record
-	 */
-	protected void setRecordAsCreated(EditableDataSourceRecord record)
-	{
-		record.setCreated(true);
-	}
-	
-	/**
-	 * 
-	 * @param record
-	 */
-	protected void setRecordAsRemoved(EditableDataSourceRecord record)
-	{
-		record.setRemoved(true);
-	}
+	E[] loadData();
+	R[] load();
 }

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.datasource.local;
+package br.com.sysmap.crux.core.client.datasource;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -22,9 +22,6 @@ import com.google.gwt.core.client.GWT;
 
 import br.com.sysmap.crux.core.client.ClientMessages;
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.Metadata;
-import br.com.sysmap.crux.core.client.datasource.ScrollableDataSource;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
