@@ -26,9 +26,16 @@ public abstract class LocalEditableScrollableDataSource
 				extends AbstractLocalScrollableDataSource<EditableDataSourceRecord, EditableDataSourceRecord> 
                 implements EditableDataSource
 {
-	protected LocalEditableDataSourceOperations<EditableDataSourceRecord> editableOperations = 
-			new LocalEditableDataSourceOperations<EditableDataSourceRecord>(this);
+	protected EditableDataSourceOperations<EditableDataSourceRecord> editableOperations = 
+			new EditableDataSourceOperations<EditableDataSourceRecord>(this);
 	
+	@Override
+	public void reset()
+	{
+		super.reset();
+		editableOperations.reset();
+	}
+
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#insertRecord(int)
 	 */

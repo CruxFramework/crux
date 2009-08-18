@@ -186,7 +186,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			generateFetchDataFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
 			generateFetchFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
 		}
-		if (LocalDataSource.class.isAssignableFrom(dataSourceClass))
+		else if (LocalDataSource.class.isAssignableFrom(dataSourceClass))
 		{
 			generateLoadDataFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
 			generateLoadFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);

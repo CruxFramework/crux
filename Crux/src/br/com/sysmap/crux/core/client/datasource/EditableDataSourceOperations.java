@@ -26,7 +26,7 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.Editab
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-class LocalEditableDataSourceOperations<E>
+class EditableDataSourceOperations<E>
 {
 	protected List<EditableDataSourceRecord> newRecords = new ArrayList<EditableDataSourceRecord>();
 	protected List<EditableDataSourceRecord> removedRecords = new ArrayList<EditableDataSourceRecord>();
@@ -35,7 +35,7 @@ class LocalEditableDataSourceOperations<E>
 
 	protected AbstractLocalScrollableDataSource<EditableDataSourceRecord, E> editableDataSource;
 	
-	public LocalEditableDataSourceOperations(AbstractLocalScrollableDataSource<EditableDataSourceRecord, E> editableDataSource)
+	public EditableDataSourceOperations(AbstractLocalScrollableDataSource<EditableDataSourceRecord, E> editableDataSource)
 	{
 		this.editableDataSource = editableDataSource;
 	}
@@ -159,6 +159,22 @@ class LocalEditableDataSourceOperations<E>
 	}
 	
 	/**
+	 * @return
+	 */
+	public int getNewRecordsCount()
+	{
+		return newRecords.size();
+	}
+
+	/**
+	 * @return
+	 */
+	public int getRemovedRecordsCount()
+	{
+		return removedRecords.size();
+	}
+
+	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getUpdatedRecords()
 	 */
 	public EditableDataSourceRecord[] getUpdatedRecords()
@@ -172,5 +188,18 @@ class LocalEditableDataSourceOperations<E>
 	public EditableDataSourceRecord[] getSelectedRecords()
 	{
 		return selectedRecords.toArray(new EditableDataSourceRecord[0]);
+	}
+	
+	public void reset()
+	{
+		newRecords.clear();
+		removedRecords.clear();
+		changedRecords.clear();
+		selectedRecords.clear();
+	}
+	
+	public boolean isDirty()
+	{
+		return (newRecords.size() > 0) || (removedRecords.size() > 0) || (changedRecords.size() > 0); 
 	}
 }

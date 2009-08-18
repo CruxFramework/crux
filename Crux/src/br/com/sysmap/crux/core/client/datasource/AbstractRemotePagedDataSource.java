@@ -21,13 +21,13 @@ import br.com.sysmap.crux.core.client.Crux;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class AbstractRemotePagedDataSource<T> extends LocalPagedDataSource 
-                           implements PagedDataSource<DataSourceRecord>, 
-                                      RemoteDataSource<DataSourceRecord,T>
+public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> extends AbstractLocalPagedDataSource<R, E> 
+                           implements PagedDataSource<R>, 
+                                      RemoteDataSource<R,E>
 {	
 	public AbstractRemotePagedDataSource()
 	{
-		createDataObject();
+		this.data = createDataObject(getRecordCount());
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public abstract class AbstractRemotePagedDataSource<T> extends LocalPagedDataSou
 	{
 		if(data != null)
 		{
-			data = new DataSourceRecord[getRecordCount()];
+			this.data = createDataObject(getRecordCount());
 		}
 		currentRecord = -1;
 		currentPage = 1;
@@ -46,9 +46,9 @@ public abstract class AbstractRemotePagedDataSource<T> extends LocalPagedDataSou
 	{
 		if (currentRecord > -1 && ensurePageLoaded(currentRecord))
 		{
-			DataSourceRecord[] pageData = new DataSourceRecord[pageSize];
-			int startPageRecord = getStartPageRecord();
-			int endPageRecord = getEndPageRecord();
+			R[] pageData = createDataObject(pageSize);
+			int startPageRecord = getPageStartRecord();
+			int endPageRecord = getPageEndRecord();
 			int pageSize = endPageRecord - startPageRecord + 1;
 			for (int i = 0; i<=pageSize; i++)
 			{
@@ -76,7 +76,7 @@ public abstract class AbstractRemotePagedDataSource<T> extends LocalPagedDataSou
 	@Override
 	protected boolean updateCurrentRecord()
 	{
-		int record = getStartPageRecord(); 
+		int record = getPageStartRecord(); 
 		if (ensurePageLoaded(record))
 		{
 			currentRecord = record;
@@ -92,7 +92,12 @@ public abstract class AbstractRemotePagedDataSource<T> extends LocalPagedDataSou
 	protected boolean ensureLoaded()
 	{
 		return true;
-	}	
+	}
+	
+	public E[] loadData()
+	{
+		return null;
+	}
 
 	@Override
 	protected boolean isRecordOnPage(int record)
@@ -114,8 +119,10 @@ public abstract class AbstractRemotePagedDataSource<T> extends LocalPagedDataSou
 		{
 			try
 			{
-				loaded = updateFetchedData(fetch(getRemoteStartPageRecord(), getRemoteEndPageRecord()), 
-													getStartPageRecord(), getEndPageRecord());
+				int startPageRecord = getPageStartRecord();
+				int endPageRecord = getPageEndRecord();
+				loaded = updateFetchedData(fetch(startPageRecord, endPageRecord), 
+													startPageRecord, endPageRecord);
 			}
 			catch (RuntimeException e)
 			{
@@ -125,30 +132,15 @@ public abstract class AbstractRemotePagedDataSource<T> extends LocalPagedDataSou
 		return loaded;
 	}
 	
-	public DataSourceRecord[] fetch(int remoteStartPageRecord, int remoteEndPageRecord)
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#fetch(int, int)
+	 */
+	public R[] fetch(int startRecord, int endRecord)
 	{
 		return null;
 	}
 
-	/**
-	 * Get the end page record in remote (server) list of records.
-	 * @return
-	 */
-	protected int getRemoteEndPageRecord()
-	{
-		return getEndPageRecord();
-	}
-
-	/**
-	 * Get the start page record in remote (server) list of records.
-	 * @return
-	 */
-	protected int getRemoteStartPageRecord()
-	{
-		return getStartPageRecord();
-	}
-
-	protected boolean updateFetchedData(DataSourceRecord[] pageData, int startRecord, int endRecord)
+	protected boolean updateFetchedData(R[] pageData, int startRecord, int endRecord)
 	{
 		if (pageData == null || pageData.length < (endRecord-startRecord+1) || endRecord >= getRecordCount())
 		{
@@ -169,12 +161,9 @@ public abstract class AbstractRemotePagedDataSource<T> extends LocalPagedDataSou
 	
 	protected boolean isPageLoaded(int pageNumber)
 	{
-		int startPageRecord = getStartPageRecord();
-		return (data[startPageRecord]!= null);
+		int startPageRecord = getPageStartRecord();
+		return (data.length > 0 && data[startPageRecord]!= null);
 	}
 
-	protected void createDataObject()
-	{
-		this.data = new DataSourceRecord[getRecordCount()];
-	}
+	protected abstract R[] createDataObject(int count);
 }

@@ -34,9 +34,16 @@ public abstract class LocalBindableEditablePagedDataSource<T> extends AbstractLo
 		return super.load();
 	}	
 	
-	protected LocalEditableDataSourceOperations<T> editableOperations = 
-		new LocalEditableDataSourceOperations<T>(this);
+	protected EditableDataSourceOperations<T> editableOperations = 
+		new EditableDataSourceOperations<T>(this);
 
+	@Override
+	public void reset()
+	{
+		super.reset();
+		editableOperations.reset();
+	}
+	
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#insertRecord(int)
 	 */

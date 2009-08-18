@@ -145,7 +145,7 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 	{
 		if (ensureLoaded())
 		{
-			currentRecord = getStartPageRecord();
+			currentRecord = getPageStartRecord();
 		}
 	}
 
@@ -154,7 +154,7 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 	{
 		if (ensureLoaded())
 		{
-			currentRecord = getEndPageRecord();
+			currentRecord = getPageEndRecord();
 		}
 	}
 
@@ -166,8 +166,8 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 			{
 				return false;
 			}
-			int startPageRecord = getStartPageRecord();
-			int endPageRescord = getEndPageRecord();
+			int startPageRecord = getPageStartRecord();
+			int endPageRescord = getPageEndRecord();
 			if (endPageRescord >= data.length)
 			{
 				endPageRescord = data.length-1;
@@ -180,12 +180,12 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 		}
 	}
 
-	protected int getEndPageRecord()
+	protected int getPageEndRecord()
 	{
 		return (currentPage * pageSize) - 1;
 	}
 
-	protected int getStartPageRecord()
+	protected int getPageStartRecord()
 	{
 		return (currentPage - 1) * pageSize;
 	}

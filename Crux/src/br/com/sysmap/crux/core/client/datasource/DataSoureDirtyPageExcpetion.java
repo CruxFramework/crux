@@ -19,11 +19,27 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class RemotePagedDataSource extends AbstractRemotePagedDataSource<DataSourceRecord, DataSourceRecord>
+public class DataSoureDirtyPageExcpetion extends RuntimeException
 {
-	@Override
-	protected DataSourceRecord[] createDataObject(int count)
+	private static final long serialVersionUID = 2211949587527545296L;
+
+	public DataSoureDirtyPageExcpetion()
 	{
-		return new DataSourceRecord[count];
+		super();
+	}
+
+	public DataSoureDirtyPageExcpetion(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
+
+	public DataSoureDirtyPageExcpetion(String message)
+	{
+		super(message);
+	}
+
+	public DataSoureDirtyPageExcpetion(Throwable cause)
+	{
+		super(cause);
 	}
 }
