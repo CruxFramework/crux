@@ -30,18 +30,22 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
-import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumns;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding;
+import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumns;
 import br.com.sysmap.crux.core.client.datasource.local.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.remote.RemoteDataSource;
+import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
@@ -63,7 +67,12 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		composer.addImplementedInterface(RegisteredDataSources.class.getName());
 		composer.addImport(Metadata.class.getName());
 		composer.addImport(Widget.class.getName());
-		
+		composer.addImport(GWT.class.getName());
+		composer.addImport(br.com.sysmap.crux.core.client.screen.Screen.class.getName());
+		composer.addImport(HasValue.class.getName());
+		composer.addImport(HasText.class.getName());
+		composer.addImport(HasFormatter.class.getName());
+	
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 

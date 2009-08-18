@@ -28,12 +28,17 @@ import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Validate;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
+import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -60,15 +65,14 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		if (printWriter == null) return;
 
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
-		composer.addImport("com.google.gwt.core.client.GWT");
-		composer.addImport("com.google.gwt.json.client.JSONValue");
-		composer.addImport("br.com.sysmap.crux.core.client.screen.Screen");
-		composer.addImport("br.com.sysmap.crux.core.client.event.CruxEvent");
-		composer.addImport("com.google.gwt.event.shared.GwtEvent");
-		composer.addImport("com.google.gwt.user.client.ui.HasValue");
-		composer.addImport("br.com.sysmap.crux.core.client.formatter.HasFormatter");
-		composer.addImport("com.google.gwt.user.client.ui.HasText");
-		composer.addImport("com.google.gwt.user.client.ui.Widget");
+		composer.addImport(GWT.class.getName());
+		composer.addImport(br.com.sysmap.crux.core.client.screen.Screen.class.getName());
+		composer.addImport(CruxEvent.class.getName());
+		composer.addImport(GwtEvent.class.getName());
+		composer.addImport(HasValue.class.getName());
+		composer.addImport(HasText.class.getName());
+		composer.addImport(HasFormatter.class.getName());
+		composer.addImport(Widget.class.getName());
 		
 		composer.addImplementedInterface("br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers");
 		
