@@ -24,8 +24,8 @@ import java.util.List;
  */
 public class DataSourceRecord
 {
-	private List<Object> columns = new ArrayList<Object>();
-	private Object identifier;
+	protected List<Object> columns = new ArrayList<Object>();
+	protected Object identifier;
 	
 	public DataSourceRecord(Object identifier)
 	{

@@ -15,22 +15,27 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.EditableDataSourceRecordState;
-
-
 /**
- * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface EditableDataSource extends DataSource<EditableDataSourceRecord>
+public abstract class EditableDataSourceOperations
 {
-	EditableDataSourceRecord insertRecord(int beforeRecord);
-	EditableDataSourceRecord removeRecord(int record);
-	void updateState(EditableDataSourceRecord record, EditableDataSourceRecordState previousState);
+	/**
+	 * 
+	 * @param record
+	 */
+	protected void setRecordAsCreated(EditableDataSourceRecord record)
+	{
+		record.setCreated(true);
+	}
 	
-	EditableDataSourceRecord[] getNewRecords();
-	EditableDataSourceRecord[] getRemovedRecords();
-	EditableDataSourceRecord[] getUpdatedRecords();
-	EditableDataSourceRecord[] getSelectedRecords();
+	/**
+	 * 
+	 * @param record
+	 */
+	protected void setRecordAsRemoved(EditableDataSourceRecord record)
+	{
+		record.setRemoved(true);
+	}
 }

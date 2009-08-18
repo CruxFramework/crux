@@ -17,12 +17,71 @@ package br.com.sysmap.crux.core.client.datasource.local;
 
 import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
+import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.EditableDataSourceRecordState;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
 public abstract class LocalEditablePagedDataSource extends AbstractLocalPagedDataSource<EditableDataSourceRecord, EditableDataSourceRecord> 
-                                                   implements EditableDataSource
+												   implements EditableDataSource
 {
+	protected LocalEditableDataSourceOperations<EditableDataSourceRecord> editableOperations = 
+		new LocalEditableDataSourceOperations<EditableDataSourceRecord>(this);
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#insertRecord(int)
+	 */
+	public EditableDataSourceRecord insertRecord(int index)
+	{
+		return editableOperations.insertRecord(index);
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#removeRecord(int)
+	 */
+	public EditableDataSourceRecord removeRecord(int index)
+	{
+		return editableOperations.removeRecord(index);
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#updateState(br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord, br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.EditableDataSourceRecordState)
+	 */
+	public void updateState(EditableDataSourceRecord record, EditableDataSourceRecordState previousState)
+	{
+		editableOperations.updateState(record, previousState);
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getNewRecords()
+	 */
+	public EditableDataSourceRecord[] getNewRecords()
+	{
+		return editableOperations.getNewRecords();
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getRemovedRecords()
+	 */
+	public EditableDataSourceRecord[] getRemovedRecords()
+	{
+		return editableOperations.getRemovedRecords();
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getUpdatedRecords()
+	 */
+	public EditableDataSourceRecord[] getUpdatedRecords()
+	{
+		return editableOperations.getUpdatedRecords();
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getSelectedRecords()
+	 */
+	public EditableDataSourceRecord[] getSelectedRecords()
+	{
+		return editableOperations.getSelectedRecords();
+	}	
 }

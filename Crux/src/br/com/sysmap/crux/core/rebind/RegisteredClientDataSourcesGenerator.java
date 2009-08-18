@@ -26,6 +26,8 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.datasource.Bindable;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
+import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
+import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumns;
@@ -239,8 +241,8 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			String returnTypeComponentDeclaration = getParameterDeclaration(returnTypeComponent);
 			String dataTypeDeclaration = getParameterDeclaration(dataType);
 			
-			generateGenericLoadDataFunction(logger, sourceWriter, columnsData, returnType, dataType, 
-											returnDeclaration, returnTypeComponentDeclaration, 
+			generateGenericLoadDataFunction(logger, sourceWriter, columnsData, returnTypeComponent, dataType, 
+											dataSourceClass, returnDeclaration, returnTypeComponentDeclaration, 
 											dataTypeDeclaration, "load()", "loadData()");
 		}
 		catch (Exception e)
@@ -262,12 +264,13 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @throws NoSuchFieldException
 	 */
 	private void generateGenericLoadDataFunction(TreeLogger logger, SourceWriter sourceWriter, ColumnsData columnsData, 
-												 Class<?> returnType, Class<?> dataType, String returnDeclaration,
-												 String returnTypeComponentDeclaration, String dataTypeDeclaration, 
-												 String loadFunctionDeclaration, String loadDataFunctionCall) throws NoSuchFieldException
+												 Class<?> returnTypeComponent, Class<?> dataType, Class<?> dataSourceClass, 
+												 String returnDeclaration, String returnTypeComponentDeclaration, 
+												 String dataTypeDeclaration, String loadFunctionDeclaration, 
+												 String loadDataFunctionCall) throws NoSuchFieldException
 	{
 		sourceWriter.println("public "+returnDeclaration+" "+loadFunctionDeclaration+"{");
-		if (returnType.isAssignableFrom(dataType))
+		if (returnTypeComponent.isAssignableFrom(dataType))
 		{
 			sourceWriter.println("return "+loadDataFunctionCall+";");
 		}
@@ -276,9 +279,15 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			sourceWriter.println(dataTypeDeclaration+"[] data = "+loadDataFunctionCall+";");
 			sourceWriter.println(returnDeclaration+" ret = new "+returnTypeComponentDeclaration+"[(data!=null?data.length:0)];");
 			sourceWriter.println("for (int i=0; i<data.length; i++){");
-			sourceWriter.println("ret[i] = new "+returnTypeComponentDeclaration+"("+
-					getIdentifierDelcaration(logger, dataType, columnsData.identifier, "data[i]")
-					+");");
+			sourceWriter.print("ret[i] = new "+returnTypeComponentDeclaration+"(");
+			
+			if (EditableDataSourceRecord.class.isAssignableFrom(returnTypeComponent) && 
+				EditableDataSource.class.isAssignableFrom(dataSourceClass))
+			{
+				sourceWriter.print("this,");
+			}
+			sourceWriter.print(getIdentifierDelcaration(logger, dataType, columnsData.identifier, "data[i]"));
+			sourceWriter.println(");");
 
 			for (String name:  columnsData.names)
 			{
@@ -366,8 +375,8 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			String returnTypeComponentDeclaration = getParameterDeclaration(returnTypeComponent);
 			String dataTypeDeclaration = getParameterDeclaration(dataType);
 			
-			generateGenericLoadDataFunction(logger, sourceWriter, columnsData, returnType, dataType, 
-											returnDeclaration, returnTypeComponentDeclaration, 
+			generateGenericLoadDataFunction(logger, sourceWriter, columnsData, returnTypeComponent, dataType, 
+											dataSourceClass, returnDeclaration, returnTypeComponentDeclaration, 
 											dataTypeDeclaration, "fetch(int start, int end)", "fetchData(start, end)");
 		}
 		catch (Exception e)
