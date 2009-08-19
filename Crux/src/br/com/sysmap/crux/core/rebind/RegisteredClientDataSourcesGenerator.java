@@ -107,6 +107,10 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			{
 				sourceWriter.print("else ");
 			}
+			else
+			{
+				first = false;
+			}
 			sourceWriter.println("if(\""+dataSource+"\".equals(id)){");
 			sourceWriter.println("return new " + dataSourcesClassNames.get(dataSource) + "();");
 			sourceWriter.println("}");
