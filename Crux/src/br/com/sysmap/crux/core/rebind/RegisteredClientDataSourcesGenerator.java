@@ -81,12 +81,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		{
 			generateDataSourcesForScreen(logger, sourceWriter, screen, dataSourcesClassNames);
 		}
-		generateConstructor(logger, sourceWriter, implClassName, dataSourcesClassNames);
-		sourceWriter.println("private java.util.Map<String,DataSource<?>> dataSources = new java.util.HashMap<String,DataSource<?>>();");
-
-		sourceWriter.println("public DataSource<?> getDataSource(String id){");
-		sourceWriter.println("return dataSources.get(id);");
-		sourceWriter.println("}");
+		generateGetdataSourceMethod(logger, sourceWriter, implClassName, dataSourcesClassNames);
 
 		sourceWriter.outdent();
 		sourceWriter.println("}");
@@ -101,13 +96,20 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param implClassName
 	 * @param dataSourcesClassNames
 	 */
-	private void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, String implClassName, 
+	private void generateGetdataSourceMethod(TreeLogger logger, SourceWriter sourceWriter, String implClassName, 
 			Map<String, String> dataSourcesClassNames) 
 	{
-		sourceWriter.println("public "+implClassName+"(){ ");
+		sourceWriter.println("public DataSource<?> getDataSource(String id){");
+		boolean first = true;
 		for (String dataSource : dataSourcesClassNames.keySet()) 
 		{
-			sourceWriter.println("dataSources.put(\""+dataSource+"\", new " + dataSourcesClassNames.get(dataSource) + "());");
+			if (!first)
+			{
+				sourceWriter.print("else ");
+			}
+			sourceWriter.println("if(\""+dataSource+"\".equals(id)){");
+			sourceWriter.println("return new " + dataSourcesClassNames.get(dataSource) + "();");
+			sourceWriter.println("}");
 		}
 		sourceWriter.println("}");
 	}
