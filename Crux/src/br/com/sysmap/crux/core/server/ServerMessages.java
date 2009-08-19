@@ -36,10 +36,10 @@ public interface ServerMessages
 	@DefaultMessage("[clientHandlers 001] - Error initializing clientHandler: {0}.")
 	String clientHandlersHandlerInitializeError(String errMsg);
 
-	@DefaultMessage("[widgetConfig - 001] - Error parsing crux configuration file: {0}.")
+	@DefaultMessage("[widgetConfig 001] - Error parsing crux configuration file: {0}.")
 	String widgetConfigParserError(String errMsg);
 
-	@DefaultMessage("[widgetConfig - 002] - Widgets registered.")
+	@DefaultMessage("[widgetConfig 002] - Widgets registered.")
 	String widgetCongigWidgetsRegistered();
 
 	@DefaultMessage("[widgetConfigScanner 001] - Error initializing widgetConfigScanner: {0}.")
@@ -54,37 +54,13 @@ public interface ServerMessages
 	@DefaultMessage("[serviceFactoryInitializer 002] - Error initializing serviceFactory: {0}.")
 	String serviceFactoryInitializerError(String errMsg);
 
-	@DefaultMessage("[scannerURLS - 001] - Error searching /WEB-INF/classes dir: {0}.")
+	@DefaultMessage("[scannerURLS 001] - Error searching /WEB-INF/classes dir: {0}.")
 	String scannerURLSErrorSearchingClassesDir(String errMsg);
 
-	@DefaultMessage("[scannerURLS - 001] - Error searching /WEB-INF/lib dir: {0}.")
+	@DefaultMessage("[scannerURLS 002] - Error searching /WEB-INF/lib dir: {0}.")
 	String scannerURLSErrorSearchingLibDir(String errMsg);
 
-	@DefaultMessage("[screenFactory - 004] - The id attribute is required for CRUX Widgets.")
-	String screenFactoryWidgetIdRequired();
-
-	@DefaultMessage("[screenFactory - 005] - Can not create widget {0}. Verify the widget type.")
-	String screenFactoryErrorCreateWidget(String widgetId);
-
-	@DefaultMessage("[screenFactory - 006] - Error creating widget. Duplicated identifier: {0}.")
-	String screenFactoryErrorDuplicatedWidget(String widgetId);
-
-	@DefaultMessage("[screenFactory 007] - Multiple modules in the same html page is not allowed in CRUX.")
-	String screenFactoryErrorMultipleModulesOnPage();
-	
-	@DefaultMessage("[screenFactory 002] - Error retrieving screen {0}. Error: {1}.")
-	String screenFactoryErrorRetrievingScreen(String screenId, String errMsg);
-
-	@DefaultMessage("[screenFactory 003] - Error Creating widget {0}. Error: {1}.")
-	String screenFactoryGenericErrorCreateWidget(String screenId, String errMsg);
-
-	@DefaultMessage("[screenFactory 001] - Screen {0} not found!")
-	String screenFactoryScreeResourceNotFound(String screenId);
-
-	@DefaultMessage("[Screen - 001] - Error setting property {0} for widget {1}.")
-	String screenPropertyError(String property, String widgetId);
-
-	@DefaultMessage("[formatters 001] - Error initializing formatter: {0}.")
+	@DefaultMessage("[formatters 001] - Error initializing formatters: {0}.")
 	String formattersFormatterInitializeError(String errMsg);
 
 	@DefaultMessage("[localeResolver 001] - Error initializing LocaleResolver: {0}.")
@@ -93,46 +69,34 @@ public interface ServerMessages
 	@DefaultMessage("[localeResolver 002] - User LocaleResolver not initialized.")
 	String localeResolverNotInitialized();
 
-	@DefaultMessage("[screenResolver - 001] - Error initializing ScreenResolver: {0}.")
+	@DefaultMessage("[screenResolver 001] - Error initializing ScreenResolver: {0}.")
 	String screenResourceResolverInitializerError(String message);
 	
-	@DefaultMessage("[screenResolver - 002] - Error obtaining screen resource. Screen id: {0}. Message: {1}")
+	@DefaultMessage("[screenResolver 002] - Error obtaining screen resource. Screen id: {0}. Message: {1}")
 	String screenResourceResolverFindResourceError(String screenId, String message);
 
-	@DefaultMessage("[screenBridge - 001] - Error registering screen: {0}.")
+	@DefaultMessage("[screenBridge 001] - Error registering screen: {0}.")
 	String screenBridgeErrorRegisteringScreen(String errMsg);
 
-	@DefaultMessage("[screenBridge - 002] - Error reading screen id: {0}.")
+	@DefaultMessage("[screenBridge 002] - Error reading screen id: {0}.")
 	String screenBridgeErrorReadingScreenId(String errMsg);
 
-	@DefaultMessage("[screenBridge - 003] - Error registering screen resolver: {0}.")
-	String screenBridgeErrorRegisteringScreenResolver(String localizedMessage);
-
-	@DefaultMessage("[screenBridge - 004] - Error reading screen resolver. Using default.")
-	String screenBridgeErrorReadingScreenResolver();
-
-	@DefaultMessage("[screenBridge - 005] - Error registering eb base dir: {0}.")
-	String screenBridgeErrorRegisteringWebBaseDir(String localizedMessage);	
-
-	@DefaultMessage("[screenBridge - 006] - Error reading web base dir: {0}.")
-	String screenBridgeErrorReadingwebBaseDir(String localizedMessage);
-
-	@DefaultMessage("[messages 001] - Error initializing messagesClasses: {0}.")
+	@DefaultMessage("[messages 001] Error initializing messagesClasses: {0}.")
 	Object messagesClassesInitializeError(String localizedMessage);
 
-	@DefaultMessage("[classpath 001] - Error initializing classPathResolver: {0}.")
+	@DefaultMessage("[classpath 001] Error initializing classPathResolver: {0}.")
 	Object classPathResolverInitializerError(String message);
 
-	@DefaultMessage("[serializers 001] - Error initializing serializer: {0}.")
+	@DefaultMessage("[serializers 001] Error initializing serializer: {0}.")
 	Object serializersSerializersInitializeError(String localizedMessage);
 
-	@DefaultMessage("[screenResourceScanner - 001] - Error initializing screenResourceScanner: {0}.")
+	@DefaultMessage("[screenResourceScanner 001] - Error initializing screenResourceScanner: {0}.")
 	String screenResourceScannerInitializationError(String localizedMessage);
 
-	@DefaultMessage("[screenResourceResolver - 001] - Using Default ScreenResourceResouver.")
+	@DefaultMessage("[screenResourceResolver 001] - Using Default ScreenResourceResouver.")
 	Object screenResourceResolverUsingDefault();
 
-	@DefaultMessage("[datasources- 001] - Error initializing datasource: {0}.")
+	@DefaultMessage("[datasources 001] - Error initializing datasource: {0}.")
 	Object dataSourcesDataSourceInitializeError(String localizedMessage);
 
 }

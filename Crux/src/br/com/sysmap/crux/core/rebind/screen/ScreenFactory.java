@@ -31,9 +31,9 @@ import au.id.jericho.lib.html.Attributes;
 import au.id.jericho.lib.html.Element;
 import au.id.jericho.lib.html.Source;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfigData;
-import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 /**
@@ -46,7 +46,7 @@ import br.com.sysmap.crux.core.utils.RegexpPatterns;
 public class ScreenFactory 
 {
 	private static final Log logger = LogFactory.getLog(ScreenFactory.class);
-	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
+	private static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 	
 	private static final Lock screenLock = new ReentrantLock();
 	private Map<String, Screen> screenCache = new HashMap<String, Screen>();	

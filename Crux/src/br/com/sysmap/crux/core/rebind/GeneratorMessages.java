@@ -83,4 +83,28 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 019] - DataSource not found: ")
 	String errorGeneratingRegisteredDataSourceNotFound();
+	
+	@DefaultMessage("[screenFactory 001] - The id attribute is required for CRUX Widgets.")
+	String screenFactoryWidgetIdRequired();
+
+	@DefaultMessage("[screenFactory 002] - Can not create widget {0}. Verify the widget type.")
+	String screenFactoryErrorCreateWidget(String widgetId);
+
+	@DefaultMessage("[screenFactory 003] - Error creating widget. Duplicated identifier: {0}.")
+	String screenFactoryErrorDuplicatedWidget(String widgetId);
+
+	@DefaultMessage("[screenFactory 004] - Multiple modules in the same html page is not allowed in CRUX.")
+	String screenFactoryErrorMultipleModulesOnPage();
+	
+	@DefaultMessage("[screenFactory 005] - Error retrieving screen {0}. Error: {1}.")
+	String screenFactoryErrorRetrievingScreen(String screenId, String errMsg);
+
+	@DefaultMessage("[screenFactory 006] - Error Creating widget {0}. Error: {1}.")
+	String screenFactoryGenericErrorCreateWidget(String screenId, String errMsg);
+
+	@DefaultMessage("[screenFactory 007] - Screen {0} not found!")
+	String screenFactoryScreeResourceNotFound(String screenId);
+
+	@DefaultMessage("[Screen 001] - Error setting property {0} for widget {1}.")
+	String screenPropertyError(String property, String widgetId);
 }

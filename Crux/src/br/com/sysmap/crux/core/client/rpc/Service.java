@@ -36,7 +36,7 @@ public class Service
 	public static ServiceDefTarget create(Class<? extends RemoteService> cls)
 	{
 		ServiceDefTarget result = GWT.create(cls);
-		
+		//TODO Thiago: locale deve ir para o server
 		if (result.getServiceEntryPoint() == null)
 		{
 			result.setServiceEntryPoint("crux.rpc");
