@@ -80,4 +80,7 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 018] - DataSource class {0} has invalid annotatted information.")
 	String errorGeneratingRegisteredDataSourceInvalidMetaInformation(String dataSourceClassName);
+
+	@DefaultMessage("[generator 019] - DataSource not found: ")
+	String errorGeneratingRegisteredDataSourceNotFound();
 }

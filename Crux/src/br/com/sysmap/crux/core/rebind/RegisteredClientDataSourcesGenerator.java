@@ -26,6 +26,7 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.datasource.Bindable;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
+import br.com.sysmap.crux.core.client.datasource.DataSoureExcpetion;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
@@ -72,6 +73,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		composer.addImport(HasValue.class.getName());
 		composer.addImport(HasText.class.getName());
 		composer.addImport(HasFormatter.class.getName());
+		composer.addImport(DataSoureExcpetion.class.getName());
 	
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
@@ -115,6 +117,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			sourceWriter.println("return new " + dataSourcesClassNames.get(dataSource) + "();");
 			sourceWriter.println("}");
 		}
+		sourceWriter.println("throw new DataSoureExcpetion("+messages.errorGeneratingRegisteredDataSourceNotFound()+"id);");
 		sourceWriter.println("}");
 	}
 	
