@@ -23,6 +23,8 @@ package br.com.sysmap.crux.core.client.datasource;
  */
 public interface RemoteDataSource<R extends DataSourceRecord, E>
 {
-	R[] fetch(int startRecord, int endRecord);
-	E[] fetchData(int startRecord, int endRecord);
+	void fetch(int startRecord, int endRecord);
+	void update(int startRecord, int endRecord, R[] records);
+	void updateData(int startRecord, int endRecord, E[] data);
+	void setCallback(RemoteDataSourceCallback callback);
 }

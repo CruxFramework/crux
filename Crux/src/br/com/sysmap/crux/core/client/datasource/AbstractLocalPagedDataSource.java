@@ -46,66 +46,48 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 
 	public boolean hasNextPage()
 	{
-		if (ensureLoaded())
-		{
-			return (currentPage < getPageCount());
-		}
-		else
-		{
-			return false;
-		}
+		ensureLoaded();
+		return (currentPage < getPageCount());
 	}
 
 	public boolean hasPreviousPage()
 	{
-		if (ensureLoaded())
-		{
-			return (currentPage > 1 );
-		}
-		else
-		{
-			return false;
-		}
+		ensureLoaded();
+		return (currentPage > 1 );
 	}
 
-	public void nextPage()
+	public boolean nextPage()
 	{
 		if (hasNextPage())
 		{
 			currentPage++;
-			if (!updateCurrentRecord())
-			{
-				currentPage--;
-			}
+			updateCurrentRecord();
+			return true;
 		}	
+		return false;
 	}
 
-	public void previousPage()
+	public boolean previousPage()
 	{
 		if (hasPreviousPage())
 		{
 			currentPage--;
-			if (!updateCurrentRecord())
-			{
-				currentPage++;
-			}
-		}	
+			updateCurrentRecord();
+			return true;
+		}
+		return false;
 	}
 
-	public void setCurrentPage(int pageNumber)
+	public boolean setCurrentPage(int pageNumber)
 	{
-		if (ensureLoaded())
+		ensureLoaded();
+		if (pageNumber > 0 && pageNumber <= getPageCount())
 		{
-			if (pageNumber > 0 && pageNumber <= getPageCount())
-			{
-				int previousPage = currentPage;
-				currentPage = pageNumber;
-				if (!updateCurrentRecord())
-				{
-					currentPage = previousPage;
-				}
-			}
+			currentPage = pageNumber;
+			updateCurrentRecord();
+			return true;
 		}
+		return false;
 	}
 
 	public void setPageSize(int pageSize)
@@ -115,7 +97,7 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 			pageSize = 1;
 		}
 		this.pageSize = pageSize;
-		if (ensureLoaded())
+		if (this.loaded)
 		{
 			updateCurrentRecord();
 		}
@@ -143,41 +125,31 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 	@Override
 	public void firstRecord()
 	{
-		if (ensureLoaded())
-		{
-			currentRecord = getPageStartRecord();
-		}
+		ensureLoaded();
+		currentRecord = getPageStartRecord();
 	}
 
 	@Override
 	public void lastRecord()
 	{
-		if (ensureLoaded())
-		{
-			currentRecord = getPageEndRecord();
-		}
+		ensureLoaded();
+		currentRecord = getPageEndRecord();
 	}
 
 	protected boolean isRecordOnPage(int record)
 	{
-		if (ensureLoaded())
-		{
-			if (data == null)
-			{
-				return false;
-			}
-			int startPageRecord = getPageStartRecord();
-			int endPageRescord = getPageEndRecord();
-			if (endPageRescord >= data.length)
-			{
-				endPageRescord = data.length-1;
-			}
-			return (record >= startPageRecord && record <= endPageRescord);
-		}
-		else
+		ensureLoaded();
+		if (data == null)
 		{
 			return false;
 		}
+		int startPageRecord = getPageStartRecord();
+		int endPageRescord = getPageEndRecord();
+		if (endPageRescord >= data.length)
+		{
+			endPageRescord = data.length-1;
+		}
+		return (record >= startPageRecord && record <= endPageRescord);
 	}
 
 	protected int getPageEndRecord()
@@ -190,9 +162,8 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 		return (currentPage - 1) * pageSize;
 	}
 	
-	protected boolean updateCurrentRecord()
+	protected void updateCurrentRecord()
 	{
-		currentRecord = ((currentPage-1)* pageSize) + 1; 
-		return true;
+		currentRecord = getPageStartRecord(); 
 	}
 }

@@ -23,16 +23,16 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.Editab
  *
  */
 public abstract class LocalBindableEditablePagedDataSource<T> extends AbstractLocalPagedDataSource<EditableDataSourceRecord, T> 
-                                                   implements EditableDataSource, Bindable<T>
+                                                   implements EditablePagedDataSource, Bindable<T>
 {
 	/* 
 	 * If we don't override the superclass' method, the LocalBindableEditablePagedDataSource.class.getMethod returns a wrong signature (inherited from super)
 	 */
 	@Override
-	public EditableDataSourceRecord[] load()
+	public void update(EditableDataSourceRecord[] records)
 	{
-		return super.load();
-	}	
+		super.update(records);
+	}
 	
 	protected EditableDataSourceOperations<T> editableOperations = 
 		new EditableDataSourceOperations<T>(this);

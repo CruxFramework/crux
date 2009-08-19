@@ -22,6 +22,8 @@ package br.com.sysmap.crux.core.client.datasource;
  */
 public interface LocalDataSource<R extends DataSourceRecord, E>
 {
-	E[] loadData();
-	R[] load();
+	void load();
+	void update(R[] records);
+	void updateData(E[] data);
+	void setCallback(LocalDataSourceCallback callback);
 }

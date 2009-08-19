@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
-import br.com.sysmap.crux.core.client.Crux;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -25,9 +24,12 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
                            implements PagedDataSource<R>, 
                                       RemoteDataSource<R,E>
 {	
+	protected RemoteDataSourceCallback fetchCallback = null;
+	
 	public AbstractRemotePagedDataSource()
 	{
 		this.data = createDataObject(getRecordCount());
+		this.loaded = true;
 	}
 
 	@Override
@@ -44,7 +46,8 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 	@Override
 	public void sort(String columnName)
 	{
-		if (currentRecord > -1 && ensurePageLoaded(currentRecord))
+		ensurePageLoaded(currentRecord);
+		if (currentRecord > -1)
 		{
 			R[] pageData = createDataObject(pageSize);
 			int startPageRecord = getPageStartRecord();
@@ -55,7 +58,7 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 				pageData[i] = data[i+startPageRecord];
 			}
 			sortArray(pageData,columnName);
-			updateFetchedData(pageData, startPageRecord, endPageRecord);
+			updateRecords(startPageRecord, endPageRecord, pageData);
 		}
 	}
 	
@@ -74,50 +77,57 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 	}
 	
 	@Override
-	protected boolean updateCurrentRecord()
+	public boolean nextPage()
 	{
-		int record = getPageStartRecord(); 
-		if (ensurePageLoaded(record))
+		if (super.nextPage())
 		{
-			currentRecord = record;
+			fetchCurrentPage();
 			return true;
 		}
 		return false;
 	}
-
-	/*
-	 * Remote Data source are always loaded... Its pages can eventually not be fetched yet..
-	 */
+	
 	@Override
-	protected boolean ensureLoaded()
+	public boolean previousPage()
 	{
-		return true;
+		if (super.previousPage())
+		{
+			fetchCurrentPage();
+			return true;
+		}
+		return false;
 	}
 	
-	public E[] loadData()
-	{
-		return null;
-	}
-
 	@Override
-	protected boolean isRecordOnPage(int record)
+	public boolean setCurrentPage(int pageNumber)
 	{
-		if (ensurePageLoaded(record))
+		if (super.setCurrentPage(pageNumber))
 		{
-			return super.isRecordOnPage(record);
+			fetchCurrentPage();
+			return true;
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 	
-	protected boolean ensurePageLoaded(int recordNumber)
+	@Override
+	public void setPageSize(int pageSize)
+	{
+		super.setPageSize(pageSize);
+		fetchCurrentPage();
+	}
+	
+	public final void load()
+	{
+	}
+
+	protected void ensurePageLoaded(int recordNumber)
 	{
 		boolean loaded = isPageLoaded(getPageForRecord(recordNumber));
 		if (!loaded)
 		{
-			try
+			throw new DataSoureExcpetion();//TODO message
+		}
+/*			try
 			{
 				int startPageRecord = getPageStartRecord();
 				int endPageRecord = getPageEndRecord();
@@ -129,28 +139,45 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 				Crux.getErrorHandler().handleError(messages.remoteDataSourceErrorLoadingData(e.getMessage()), e);
 			}
 		}
-		return loaded;
+		return loaded;*/
 	}
 	
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#fetch(int, int)
 	 */
-	public R[] fetch(int startRecord, int endRecord)
+	public void fetch(int startRecord, int endRecord)
 	{
-		return null;
 	}
 
-	protected boolean updateFetchedData(R[] pageData, int startRecord, int endRecord)
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#update(int, int, R[])
+	 */
+	public void update(int startRecord, int endRecord, R[] records)
 	{
-		if (pageData == null || pageData.length < (endRecord-startRecord+1) || endRecord >= getRecordCount())
+		if (updateRecords(startRecord, endRecord, records) && this.fetchCallback != null)
 		{
-			return false;
+			fetchCallback.execute(startRecord, endRecord);
 		}
-		for (int i = startRecord; i <= endRecord; i++)
+	}
+	
+	/**
+	 * 
+	 * @param startRecord
+	 * @param endRecord
+	 * @param records
+	 * @return
+	 */
+	protected boolean updateRecords(int startRecord, int endRecord, R[] records)
+	{
+		if (records != null && records.length >= (endRecord-startRecord+1) && endRecord < getRecordCount())
 		{
-			this.data[i] = pageData[i];
+			for (int i = startRecord; i <= endRecord; i++)
+			{
+				this.data[i] = records[i];
+			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	protected int getPageForRecord(int recordNumber)
@@ -165,5 +192,24 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 		return (data.length > 0 && data[startPageRecord]!= null);
 	}
 
+	/**
+	 * 
+	 */
+	protected void fetchCurrentPage()
+	{
+		if (!isPageLoaded(currentPage))
+		{
+			fetch(getPageStartRecord(), getPageEndRecord());
+		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#setCallback(br.com.sysmap.crux.core.client.datasource.RemoteDataSourceCallback)
+	 */
+	public void setCallback(RemoteDataSourceCallback callback)
+	{
+		this.fetchCallback = callback;
+	}
+	
 	protected abstract R[] createDataObject(int count);
 }

@@ -183,13 +183,13 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		}
 		if (RemoteDataSource.class.isAssignableFrom(dataSourceClass))
 		{
-			generateFetchDataFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
-			generateFetchFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
+			generateFetchFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
+			generateUpdateFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
 		}
 		else if (LocalDataSource.class.isAssignableFrom(dataSourceClass))
 		{
-			generateLoadDataFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
-			generateLoadFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
+			generateLoadFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
+			generateUpdateFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
 		}
 		generateScreenUpdateWidgetsFunction(logger, screen, dataSourceClass, sourceWriter);
 		generateControllerUpdateObjectsFunction(logger, screen, dataSourceClass, sourceWriter);
@@ -205,22 +205,17 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param dataSourceClass
 	 * @param sourceWriter
 	 */
-	private void generateLoadDataFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+	private void generateLoadFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
 			SourceWriter sourceWriter, boolean autoBind)
 	{		
 		try
 		{
-			Method method = dataSourceClass.getMethod("loadData", new Class[]{});
-			Class<?> returnType = method.getReturnType();
-			
-			String returnDeclaration = getParameterDeclaration(returnType);
-			sourceWriter.println("public "+returnDeclaration+" loadData(){");
+			sourceWriter.println("public void load(){");
 			if (autoBind)
 			{
 				sourceWriter.println("updateControllerObjects();");
 			}
-			sourceWriter.println(returnDeclaration+" ret = super.loadData();");
-			sourceWriter.println("return ret;");
+			sourceWriter.println("super.load();");
 			sourceWriter.println("}");
 		}
 		catch (Exception e)
@@ -236,79 +231,76 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param dataSourceClass
 	 * @param sourceWriter
 	 */
-	private void generateLoadFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+	private void generateUpdateFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
 			SourceWriter sourceWriter, ColumnsData columnsData)
 	{
 		try
 		{
-			Method method = dataSourceClass.getMethod("load", new Class[]{});
-			Class<?> returnType = method.getReturnType();
-			Class<?> returnTypeComponent = returnType.getComponentType();
-			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);
-			
-			String returnDeclaration = getParameterDeclaration(returnType);
-			String returnTypeComponentDeclaration = getParameterDeclaration(returnTypeComponent);
+			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);			
 			String dataTypeDeclaration = getParameterDeclaration(dataType);
 			
-			generateGenericLoadDataFunction(logger, sourceWriter, columnsData, returnTypeComponent, dataType, 
-											dataSourceClass, returnDeclaration, returnTypeComponentDeclaration, 
-											dataTypeDeclaration, "load()", "loadData()");
+			Class<?> recordType = getRecordTypeFromClass(logger, dataSourceClass);
+			String recordTypeDeclaration = getParameterDeclaration(recordType);
+			
+			boolean isRemote = RemoteDataSource.class.isAssignableFrom(dataSourceClass);
+			
+			if (isRemote)
+			{
+				sourceWriter.println("public void updateData(int startRecord, int endRecord, "+dataTypeDeclaration+"[] data{");
+			}
+			else
+			{
+				sourceWriter.println("public void updateData("+dataTypeDeclaration+"[] data{");
+			}
+			
+			if (recordType.isAssignableFrom(dataType))
+			{
+				if (isRemote)
+				{
+					sourceWriter.println("update(startRecord, endRecord, data);");
+				}
+				else
+				{
+					sourceWriter.println("update(data);");
+				}
+			}
+			else
+			{
+				sourceWriter.println(recordTypeDeclaration+"[] ret = new "+recordTypeDeclaration+"[(data!=null?data.length:0)];");
+				sourceWriter.println("for (int i=0; i<data.length; i++){");
+				sourceWriter.print("ret[i] = new "+recordTypeDeclaration+"(");
+				
+				if (EditableDataSourceRecord.class.isAssignableFrom(recordType) && 
+					EditableDataSource.class.isAssignableFrom(dataSourceClass))
+				{
+					sourceWriter.print("this,");
+				}
+				sourceWriter.print(getIdentifierDelcaration(logger, dataType, columnsData.identifier, "data[i]"));
+				sourceWriter.println(");");
+
+				for (String name:  columnsData.names)
+				{
+					sourceWriter.println("ret[i].addValue("+
+							getFieldValueGet(logger, dataType, dataType.getDeclaredField(name),	"data[i]", false)+
+							");");
+				}
+				
+				sourceWriter.println("}");
+				if (isRemote)
+				{
+					sourceWriter.println("update(startRecord, endRecord, ret);");
+				}
+				else
+				{
+					sourceWriter.println("update(ret);");
+				}
+			}
+			sourceWriter.println("}");
 		}
 		catch (Exception e)
 		{
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
 		}
-	}
-
-	/**
-	 * 
-	 * @param logger
-	 * @param sourceWriter
-	 * @param columnsData
-	 * @param returnType
-	 * @param dataType
-	 * @param returnDeclaration
-	 * @param returnTypeComponentDeclaration
-	 * @param dataTypeDeclaration
-	 * @throws NoSuchFieldException
-	 */
-	private void generateGenericLoadDataFunction(TreeLogger logger, SourceWriter sourceWriter, ColumnsData columnsData, 
-												 Class<?> returnTypeComponent, Class<?> dataType, Class<?> dataSourceClass, 
-												 String returnDeclaration, String returnTypeComponentDeclaration, 
-												 String dataTypeDeclaration, String loadFunctionDeclaration, 
-												 String loadDataFunctionCall) throws NoSuchFieldException
-	{
-		sourceWriter.println("public "+returnDeclaration+" "+loadFunctionDeclaration+"{");
-		if (returnTypeComponent.isAssignableFrom(dataType))
-		{
-			sourceWriter.println("return "+loadDataFunctionCall+";");
-		}
-		else
-		{
-			sourceWriter.println(dataTypeDeclaration+"[] data = "+loadDataFunctionCall+";");
-			sourceWriter.println(returnDeclaration+" ret = new "+returnTypeComponentDeclaration+"[(data!=null?data.length:0)];");
-			sourceWriter.println("for (int i=0; i<data.length; i++){");
-			sourceWriter.print("ret[i] = new "+returnTypeComponentDeclaration+"(");
-			
-			if (EditableDataSourceRecord.class.isAssignableFrom(returnTypeComponent) && 
-				EditableDataSource.class.isAssignableFrom(dataSourceClass))
-			{
-				sourceWriter.print("this,");
-			}
-			sourceWriter.print(getIdentifierDelcaration(logger, dataType, columnsData.identifier, "data[i]"));
-			sourceWriter.println(");");
-
-			for (String name:  columnsData.names)
-			{
-				sourceWriter.println("ret[i].addValue("+
-						getFieldValueGet(logger, dataType, dataType.getDeclaredField(name),	"data[i]", false)+
-						");");
-			}
-			
-			sourceWriter.println("}");
-			sourceWriter.println("return ret;");
-		}
-		sourceWriter.println("}");
 	}
 
 	/**
@@ -339,22 +331,17 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param dataSourceClass
 	 * @param sourceWriter
 	 */
-	private void generateFetchDataFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+	private void generateFetchFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
 			SourceWriter sourceWriter, boolean autoBind)
 	{
 		try
 		{
-			Method method = dataSourceClass.getMethod("fetchData", new Class[]{Integer.TYPE, Integer.TYPE});
-			Class<?> returnType = method.getReturnType();
-			
-			String returnDeclaration = getParameterDeclaration(returnType);
-			sourceWriter.println("public "+returnDeclaration+" fetchData(int startRecord, int endRecord){");
+			sourceWriter.println("public void fetch(int startRecord, int endRecord){");
 			if (autoBind)
 			{
 				sourceWriter.println("updateControllerObjects();");
 			}
-			sourceWriter.println(returnDeclaration+" ret = super.fetchData(startRecord, endRecord);");
-			sourceWriter.println("return ret;");
+			sourceWriter.println("super.fetch(startRecord, endRecord);");
 			sourceWriter.println("}");
 		}
 		catch (Exception e)
@@ -363,37 +350,6 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		}
 	}
 
-	/**
-	 * 
-	 * @param logger
-	 * @param screen
-	 * @param dataSourceClass
-	 * @param sourceWriter
-	 */
-	private void generateFetchFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
-			SourceWriter sourceWriter, ColumnsData columnsData)
-	{
-		try
-		{
-			Method method = dataSourceClass.getMethod("fetch", new Class[]{Integer.TYPE, Integer.TYPE});
-			Class<?> returnType = method.getReturnType();
-			Class<?> returnTypeComponent = returnType.getComponentType();
-			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);
-			
-			String returnDeclaration = getParameterDeclaration(returnType);
-			String returnTypeComponentDeclaration = getParameterDeclaration(returnTypeComponent);
-			String dataTypeDeclaration = getParameterDeclaration(dataType);
-			
-			generateGenericLoadDataFunction(logger, sourceWriter, columnsData, returnTypeComponent, dataType, 
-											dataSourceClass, returnDeclaration, returnTypeComponentDeclaration, 
-											dataTypeDeclaration, "fetch(int start, int end)", "fetchData(start, end)");
-		}
-		catch (Exception e)
-		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
-		}
-	}
-	
 	/**
 	 * 
 	 * @param logger
@@ -444,17 +400,46 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 */
 	private Class<?> getDtoTypeFromClass(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass)
 	{
+		return getTypeFromClass(logger, dataSourceClass, "updateData");
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param dataSourceClass
+	 * @return
+	 */
+	private Class<?> getRecordTypeFromClass(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass)
+	{
+		return getTypeFromClass(logger, dataSourceClass, "update");
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param dataSourceClass
+	 * @param methodName
+	 * @return
+	 */
+	private Class<?> getTypeFromClass(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass, String methodName)
+	{
 		try
 		{
-			if (LocalDataSource.class.isAssignableFrom(dataSourceClass))
+			int paramPosition = (RemoteDataSource.class.isAssignableFrom(dataSourceClass))?3:1;
+			Method[] methods = dataSourceClass.getDeclaredMethods();
+			if (methods != null)
 			{
-				Method method = dataSourceClass.getMethod("loadData", new Class[]{});
-				return method.getReturnType().getComponentType();
-			}
-			if (RemoteDataSource.class.isAssignableFrom(dataSourceClass))
-			{
-				Method method = dataSourceClass.getMethod("fetchData", new Class[]{Integer.TYPE, Integer.TYPE});
-				return method.getReturnType().getComponentType();
+				for (Method method : methods)
+				{
+					if (method.getName().equals(methodName) && method.getParameterTypes().length == paramPosition)
+					{
+						Class<?> paramClass = method.getParameterTypes()[paramPosition-1];
+						if (paramClass.isArray())
+						{
+							return paramClass.getComponentType();
+						}
+					}
+				}
 			}
 		}
 		catch (Exception e) 
@@ -463,7 +448,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		}
 		return null;
 	}
-
+	
 	/**
 	 * 
 	 * @param logger

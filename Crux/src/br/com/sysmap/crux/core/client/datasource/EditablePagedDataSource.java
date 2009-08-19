@@ -15,24 +15,13 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
+
+
 /**
  * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface PagedDataSource<T extends DataSourceRecord> extends ScrollableDataSource<T>
+public interface EditablePagedDataSource extends EditableDataSource, PagedDataSource<EditableDataSourceRecord>
 {
-	boolean hasNextPage();
-	boolean nextPage();
-	
-	boolean hasPreviousPage();
-	boolean previousPage();
-	
-	int getPageCount();
-	
-	int getPageSize();
-	void setPageSize(int pageSize);
-
-	boolean setCurrentPage(int pageNumber);
-	int getCurrentPage();
 }

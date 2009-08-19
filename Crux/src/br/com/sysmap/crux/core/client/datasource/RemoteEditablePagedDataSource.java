@@ -22,7 +22,7 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.Editab
  *
  */
 public abstract class RemoteEditablePagedDataSource extends AbstractRemotePagedDataSource<EditableDataSourceRecord, EditableDataSourceRecord>
-										   implements EditableDataSource
+										   implements EditablePagedDataSource
 {	
 	protected EditableDataSourceOperations<EditableDataSourceRecord> editableOperations = 
 		new EditableDataSourceOperations<EditableDataSourceRecord>(this);
@@ -34,33 +34,33 @@ public abstract class RemoteEditablePagedDataSource extends AbstractRemotePagedD
 	}
 
 	@Override
-	public EditableDataSourceRecord[] fetch(int startPageRecord, int endPageRecord)
+	public void fetch(int startPageRecord, int endPageRecord)
 	{
-		return super.fetch(startPageRecord, endPageRecord);
+		super.fetch(startPageRecord, endPageRecord);
 	}
 	
 	@Override
-	public void nextPage()
+	public boolean nextPage()
 	{
 		checkChanges();
-		super.nextPage();
+		return super.nextPage();
 	}
 
 	@Override
-	public void previousPage()
+	public boolean previousPage()
 	{
 		checkChanges();
-		super.previousPage();
+		return super.previousPage();
 	}
 	
 	@Override
-	public void setCurrentPage(int pageNumber)
+	public boolean setCurrentPage(int pageNumber)
 	{
 		if (this.currentPage != pageNumber)
 		{
 			checkChanges();
 		}
-		super.setCurrentPage(pageNumber);
+		return super.setCurrentPage(pageNumber);
 	}
 	
 	@Override
@@ -157,7 +157,7 @@ public abstract class RemoteEditablePagedDataSource extends AbstractRemotePagedD
 	{
 		if (editableOperations.isDirty())
 		{
-			throw new DataSoureDirtyPageExcpetion();//TODO: mensagem
+			throw new DataSoureExcpetion();//TODO: mensagem
 		}
 	}	
 }

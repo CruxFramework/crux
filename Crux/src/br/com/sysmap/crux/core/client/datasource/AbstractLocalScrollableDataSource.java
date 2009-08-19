@@ -18,10 +18,9 @@ package br.com.sysmap.crux.core.client.datasource;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import com.google.gwt.core.client.GWT;
-
 import br.com.sysmap.crux.core.client.ClientMessages;
-import br.com.sysmap.crux.core.client.Crux;
+
+import com.google.gwt.core.client.GWT;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -35,7 +34,7 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	protected int currentRecord = -1;
 	protected boolean loaded = false;
 	protected ClientMessages messages = GWT.create(ClientMessages.class);
-	
+	protected LocalDataSourceCallback loadCallback = null;
 
 	public Metadata getMetadata()
 	{
@@ -58,14 +57,8 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	
 	public boolean hasNextRecord()
 	{
-		if (ensureLoaded())
-		{
-			return (data != null && currentRecord < data.length -1);
-		}
-		else
-		{
-			return false;
-		}
+		ensureLoaded();
+		return (data != null && currentRecord < data.length -1);
 	}
 
 	public void nextRecord()
@@ -88,7 +81,8 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	
 	public R getRecord()
 	{
-		if (ensureLoaded() && currentRecord > -1)
+		ensureLoaded();
+		if (currentRecord > -1)
 		{
 			return data[currentRecord];
 		}
@@ -100,15 +94,8 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	
 	public boolean hasPreviousRecord()
 	{
-		if (ensureLoaded())
-		{
-
-			return (data != null && currentRecord > 0 && data.length > 0);
-		}
-		else
-		{
-			return false;
-		}
+		ensureLoaded();
+		return (data != null && currentRecord > 0 && data.length > 0);
 	}
 
 	public void previousRecord()
@@ -121,7 +108,8 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	
 	public void sort(final String columnName)
 	{
-		if (ensureLoaded() && data != null)
+		ensureLoaded();
+		if (data != null)
 		{
 			sortArray(data,columnName);
 		}
@@ -167,34 +155,36 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	
 	public void lastRecord()
 	{
-		if (ensureLoaded())
-		{
-			currentRecord = getRecordCount()-1;
-		}
+		ensureLoaded();
+		currentRecord = getRecordCount()-1;
 	}
 	
-	protected boolean ensureLoaded()
+	protected void ensureLoaded()
 	{
 		if (!loaded)
 		{
-			try
-			{
-				this.data = load();
-				loaded = true;
-			}
-			catch (RuntimeException e)
-			{
-				Crux.getErrorHandler().handleError(messages.localDataSourceErrorLoadingData(e.getMessage()), e);
-			}
+			throw new DataSoureExcpetion();//TODO message
 		}
-		return loaded;
 	}
 	
-	/*
-	 * This method is overridden by DataSourceGenerator
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.LocalDataSource#update(R[])
 	 */
-	public R[] load()
+	public void update(R[] records)
 	{
-		return null;
+		loaded = true;
+		this.data = records;
+		if (this.loadCallback != null)
+		{
+			this.loadCallback.execute();
+		}
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.LocalDataSource#setCallback(br.com.sysmap.crux.core.client.datasource.LocalDataSourceCallback)
+	 */
+	public void setCallback(LocalDataSourceCallback callback)
+	{
+		this.loadCallback = callback;
 	}
 }

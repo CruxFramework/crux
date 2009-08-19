@@ -46,6 +46,7 @@ class EditableDataSourceOperations<E>
 	 */
 	public EditableDataSourceRecord insertRecord(int index)
 	{
+		this.editableDataSource.ensureLoaded();
 		checkRange(index);
 		EditableDataSourceRecord record = new EditableDataSourceRecord((EditableDataSource)this.editableDataSource, 
 																		"_newRecord"+newRecords.size());
@@ -60,6 +61,7 @@ class EditableDataSourceOperations<E>
 	 */
 	public EditableDataSourceRecord removeRecord(int index)
 	{
+		this.editableDataSource.ensureLoaded();
 		checkRange(index);
 		EditableDataSourceRecord record = this.editableDataSource.data[index];
 		EditableDataSourceRecordState previousState = record.getCurrentState();
@@ -74,6 +76,7 @@ class EditableDataSourceOperations<E>
 	 */
 	public void updateState(EditableDataSourceRecord record, EditableDataSourceRecordState previousState)
 	{
+		this.editableDataSource.ensureLoaded();
 		if (record.isCreated())
 		{
 			if (record.isRemoved())
