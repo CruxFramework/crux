@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.core.client.datasource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.EditableDataSourceRecordState;
@@ -117,7 +116,7 @@ class EditableDataSourceOperations<E>
 	protected void insertDataRecord(int index, EditableDataSourceRecord record)
 	{
 		int size = this.editableDataSource.data.length;
-		this.editableDataSource.data = Arrays.copyOf(this.editableDataSource.data, size+1);
+		this.editableDataSource.data = copyOf(this.editableDataSource.data, size+1);
 		System.arraycopy(this.editableDataSource.data, index, this.editableDataSource.data, index + 1, size - index);
 		this.editableDataSource.data[index] = record;
 	}
@@ -131,9 +130,22 @@ class EditableDataSourceOperations<E>
 		int numMoved = size - index - 1;
 		if (numMoved > 0)
 		    System.arraycopy(this.editableDataSource.data, index+1, this.editableDataSource.data, index, numMoved);
-		this.editableDataSource.data = Arrays.copyOf(this.editableDataSource.data, size-1);
+		this.editableDataSource.data = copyOf(this.editableDataSource.data, size-1);
 	}
 
+	/**
+	 * 
+	 * @param original
+	 * @param newLength
+	 * @return
+	 */
+	protected EditableDataSourceRecord[] copyOf(EditableDataSourceRecord[] original, int newLength)
+	{
+		EditableDataSourceRecord[] copy = new EditableDataSourceRecord[newLength];
+		System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
+		return copy;
+	}
+	
 	/**
 	 * @param index
 	 */
