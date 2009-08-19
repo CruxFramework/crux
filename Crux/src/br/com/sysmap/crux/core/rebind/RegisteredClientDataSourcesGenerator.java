@@ -18,6 +18,8 @@ package br.com.sysmap.crux.core.rebind;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,9 +28,14 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.datasource.Bindable;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
+import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.DataSoureExcpetion;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
+import br.com.sysmap.crux.core.client.datasource.LocalBindableEditablePagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.LocalBindableEditableScrollableDataSource;
+import br.com.sysmap.crux.core.client.datasource.LocalBindablePagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.LocalBindableScrollableDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
@@ -37,6 +44,7 @@ import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumns;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
+import br.com.sysmap.crux.core.client.utils.EscapeUtils;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
@@ -74,6 +82,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		composer.addImport(HasText.class.getName());
 		composer.addImport(HasFormatter.class.getName());
 		composer.addImport(DataSoureExcpetion.class.getName());
+		composer.addImport(DataSourceRecord.class.getName());	
 	
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
@@ -117,7 +126,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			sourceWriter.println("return new " + dataSourcesClassNames.get(dataSource) + "();");
 			sourceWriter.println("}");
 		}
-		sourceWriter.println("throw new DataSoureExcpetion("+messages.errorGeneratingRegisteredDataSourceNotFound()+"id);");
+		sourceWriter.println("throw new DataSoureExcpetion("+EscapeUtils.quote(messages.errorGeneratingRegisteredDataSourceNotFound())+"+id);");
 		sourceWriter.println("}");
 	}
 	
@@ -193,15 +202,15 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		if (RemoteDataSource.class.isAssignableFrom(dataSourceClass))
 		{
 			generateFetchFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
-			generateUpdateFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
 		}
 		else if (LocalDataSource.class.isAssignableFrom(dataSourceClass))
 		{
 			generateLoadFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
-			generateUpdateFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
 		}
+		generateUpdateFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
 		generateScreenUpdateWidgetsFunction(logger, screen, dataSourceClass, sourceWriter);
 		generateControllerUpdateObjectsFunction(logger, screen, dataSourceClass, sourceWriter);
+		generateGetBindedObjectFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
 		
 		sourceWriter.println("}");
 		return className;
@@ -245,21 +254,32 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	{
 		try
 		{
-			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);			
-			String dataTypeDeclaration = getParameterDeclaration(dataType);
 			
 			Class<?> recordType = getRecordTypeFromClass(logger, dataSourceClass);
 			String recordTypeDeclaration = getParameterDeclaration(recordType);
+			
+			Class<?> dataType;
+			
+			if(Bindable.class.isAssignableFrom(dataSourceClass))
+			{
+				dataType = getDtoTypeFromClass(logger, dataSourceClass);			
+			}
+			else
+			{
+				dataType = recordType;
+			}
+			String dataTypeDeclaration = getParameterDeclaration(dataType);
+			 
 			
 			boolean isRemote = RemoteDataSource.class.isAssignableFrom(dataSourceClass);
 			
 			if (isRemote)
 			{
-				sourceWriter.println("public void updateData(int startRecord, int endRecord, "+dataTypeDeclaration+"[] data{");
+				sourceWriter.println("public void updateData(int startRecord, int endRecord, "+dataTypeDeclaration+"[] data){");
 			}
 			else
 			{
-				sourceWriter.println("public void updateData("+dataTypeDeclaration+"[] data{");
+				sourceWriter.println("public void updateData("+dataTypeDeclaration+"[] data){");
 			}
 			
 			if (recordType.isAssignableFrom(dataType))
@@ -284,7 +304,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 				{
 					sourceWriter.print("this,");
 				}
-				sourceWriter.print(getIdentifierDelcaration(logger, dataType, columnsData.identifier, "data[i]"));
+				sourceWriter.print(getIdentifierDeclaration(logger, dataType, columnsData.identifier, "data[i]"));
 				sourceWriter.println(");");
 
 				for (String name:  columnsData.names)
@@ -315,13 +335,58 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	/**
 	 * 
 	 * @param logger
+	 * @param screen
+	 * @param dataSourceClass
+	 * @param sourceWriter
+	 */
+	private void generateGetBindedObjectFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+			SourceWriter sourceWriter, ColumnsData columnsData)
+	{
+		try
+		{
+			
+			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);			
+			String dataTypeDeclaration = getParameterDeclaration(dataType);
+			 
+			sourceWriter.println("public "+dataTypeDeclaration+" getBindedObject(){");
+			sourceWriter.println(dataTypeDeclaration+" ret = new "+dataTypeDeclaration+"();");
+			sourceWriter.println("DataSourceRecord record = getRecord();");
+
+			for (int i=0; i < columnsData.names.length; i++)
+			{
+				String name = columnsData.names[i];
+				Class<?> type = (columnsData.types.length > 0? columnsData.types[i]:String.class);
+				Field field = dataType.getDeclaredField(name);
+				generateFieldValueSet(logger, dataType, field, "ret", 
+									"("+getParameterDeclaration(type)+")record.get("+i+")", 
+									sourceWriter, false);
+			}
+
+			Field field = dataType.getDeclaredField(columnsData.identifier);
+			Class<?> type = field.getType();
+			generateFieldValueSet(logger, dataType, field, "ret", 
+					"("+getParameterDeclaration(type)+")record.getIdentifier()", 
+					sourceWriter, false);
+			
+			sourceWriter.println("return ret;");
+			sourceWriter.println("}");
+		}
+		catch (Exception e)
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param logger
 	 * @param dataType
 	 * @param identifiers
 	 * @param parentVariable
 	 * @return
 	 * @throws NoSuchFieldException
 	 */
-	private String getIdentifierDelcaration(TreeLogger logger, Class<?> dataType, String identifiers, String parentVariable) throws NoSuchFieldException
+	private String getIdentifierDeclaration(TreeLogger logger, Class<?> dataType, String identifiers, String parentVariable) throws NoSuchFieldException
 	{
 		String[] identifier = RegexpPatterns.REGEXP_COMMA.split(identifiers);
 		StringBuilder result = new StringBuilder("\"\""); 
@@ -409,7 +474,31 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 */
 	private Class<?> getDtoTypeFromClass(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass)
 	{
-		return getTypeFromClass(logger, dataSourceClass, "updateData");
+		try
+		{
+			Type superClass = dataSourceClass.getGenericSuperclass();
+			while (superClass != null)
+			{
+				if (superClass instanceof ParameterizedType)
+				{
+					ParameterizedType parameterizedType = (ParameterizedType)superClass;
+					Type rawType = parameterizedType.getRawType();
+					if (LocalBindableEditableScrollableDataSource.class.equals(rawType) || 
+						LocalBindableScrollableDataSource.class.equals(rawType) || 	
+						LocalBindablePagedDataSource.class.equals(rawType) || 	
+						LocalBindableEditablePagedDataSource.class.equals(rawType))
+					{
+						return (Class<?>)parameterizedType.getActualTypeArguments()[0];
+					}
+				}
+				superClass = ((Class<?>)superClass).getGenericSuperclass();
+			}
+		}
+		catch (Exception e) 
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
+		}
+		return null;
 	}
 
 	/**
@@ -420,36 +509,10 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 */
 	private Class<?> getRecordTypeFromClass(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass)
 	{
-		return getTypeFromClass(logger, dataSourceClass, "update");
-	}
-
-	/**
-	 * 
-	 * @param logger
-	 * @param dataSourceClass
-	 * @param methodName
-	 * @return
-	 */
-	private Class<?> getTypeFromClass(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass, String methodName)
-	{
 		try
 		{
-			int paramPosition = (RemoteDataSource.class.isAssignableFrom(dataSourceClass))?3:1;
-			Method[] methods = dataSourceClass.getDeclaredMethods();
-			if (methods != null)
-			{
-				for (Method method : methods)
-				{
-					if (method.getName().equals(methodName) && method.getParameterTypes().length == paramPosition)
-					{
-						Class<?> paramClass = method.getParameterTypes()[paramPosition-1];
-						if (paramClass.isArray())
-						{
-							return paramClass.getComponentType();
-						}
-					}
-				}
-			}
+			Method method = dataSourceClass.getMethod("getRecord", new Class[]{});
+			return method.getReturnType();
 		}
 		catch (Exception e) 
 		{
@@ -512,8 +575,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		boolean mustInclude = Comparable.class.isAssignableFrom(field.getType());
 		if (mustInclude)
 		{
-			//TODO: checar por escrita tbm para editabledatasources
-			mustInclude = isPropertyVisibleToRead(dtoType, field);
+			mustInclude = isPropertyVisibleToRead(dtoType, field) && isPropertyVisibleToWrite(dtoType, field);
 		}
 		if (mustInclude)
 		{

@@ -16,24 +16,10 @@
 package br.com.sysmap.crux.core.client.datasource;
 
 /**
- * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface PagedDataSource<T extends DataSourceRecord> extends ScrollableDataSource<T>
+public interface StreamingDataSource
 {
-	boolean hasNextPage();
-	boolean nextPage();
-	
-	boolean hasPreviousPage();
-	boolean previousPage();
-	
-	int getPageCount();
-	
-	int getPageSize();
-	void setPageSize(int pageSize);
-	int getCurrentPageSize();
-	
-	boolean setCurrentPage(int pageNumber);
-	int getCurrentPage();
+
 }

@@ -40,11 +40,11 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 			this.data = createDataObject(getRecordCount());
 		}
 		currentRecord = -1;
-		currentPage = 1;
+		currentPage = 0;
 	}
 	
 	@Override
-	public void sort(String columnName)
+	public void sort(String columnName, boolean ascending)
 	{
 		ensurePageLoaded(currentRecord);
 		if (currentRecord > -1)
@@ -57,7 +57,7 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 			{
 				pageData[i] = data[i+startPageRecord];
 			}
-			sortArray(pageData,columnName);
+			sortArray(pageData,columnName, ascending);
 			updateRecords(startPageRecord, endPageRecord, pageData);
 		}
 	}
@@ -213,6 +213,10 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 	public void setCallback(RemoteDataSourceCallback callback)
 	{
 		this.fetchCallback = callback;
+	}
+	
+	public void updateData(int startRecord, int endRecord, E[] data)
+	{
 	}
 	
 	protected abstract R[] createDataObject(int count);

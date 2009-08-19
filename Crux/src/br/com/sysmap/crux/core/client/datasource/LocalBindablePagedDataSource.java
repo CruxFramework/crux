@@ -24,4 +24,13 @@ package br.com.sysmap.crux.core.client.datasource;
 public abstract class LocalBindablePagedDataSource<T> extends AbstractLocalPagedDataSource<DataSourceRecord, T>
 													  implements Bindable<T>
 {
+	/*
+	 * Overridden by generator
+	 * @see br.com.sysmap.crux.core.client.datasource.Bindable#getBindedObject()
+	 */
+	public T getBindedObject()
+	{
+		return null;
+	}
+
 }

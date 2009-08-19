@@ -26,6 +26,12 @@ public abstract class LocalEditableScrollableDataSource
 				extends AbstractLocalScrollableDataSource<EditableDataSourceRecord, EditableDataSourceRecord> 
                 implements EditableDataSource
 {
+	@Override
+	public EditableDataSourceRecord getRecord() 
+	{
+		return super.getRecord();
+	};
+	
 	protected EditableDataSourceOperations<EditableDataSourceRecord> editableOperations = 
 			new EditableDataSourceOperations<EditableDataSourceRecord>(this);
 	

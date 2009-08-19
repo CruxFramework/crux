@@ -106,37 +106,60 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 		}
 	}
 	
-	public void sort(final String columnName)
+	public void sort(final String columnName, boolean ascending)
 	{
 		ensureLoaded();
 		if (data != null)
 		{
-			sortArray(data,columnName);
+			sortArray(data,columnName, ascending);
 		}
 	}
 
-	protected void sortArray(DataSourceRecord[] array, final String columnName)
+	protected void sortArray(DataSourceRecord[] array, final String columnName, final boolean ascending)
 	{
 		final int position = metadata.getColumnPosition(columnName);
 		Arrays.sort(array, new Comparator<DataSourceRecord>(){
 			public int compare(DataSourceRecord o1, DataSourceRecord o2)
 			{
-				if (o1==null) return (o2==null?0:-1);
-				if (o2==null) return 1;
-
+				if (ascending)
+				{
+					if (o1==null) return (o2==null?0:-1);
+					if (o2==null) return 1;
+				}
+				else
+				{
+					if (o1==null) return (o2==null?0:1);
+					if (o2==null) return -1;
+				}
+				
 				Object value1 = o1.get(position);
 				Object value2 = o2.get(position);
 
-				if (value1==null) return (value2==null?0:-1);
-				if (value2==null) return 1;
+				if (ascending)
+				{
+					if (value1==null) return (value2==null?0:-1);
+					if (value2==null) return 1;
+				}
+				else
+				{
+					if (value1==null) return (value2==null?0:1);
+					if (value2==null) return -1;
+				}
 
-				return compareNonNullValuesByType(value1,value2);
+				return compareNonNullValuesByType(value1,value2,ascending);
 			}
 
 			@SuppressWarnings("unchecked")
-			private int compareNonNullValuesByType(Object value1, Object value2)
+			private int compareNonNullValuesByType(Object value1, Object value2,boolean ascending)
 			{
-				return ((Comparable)value1).compareTo(value2);
+				if (ascending)
+				{
+					return ((Comparable)value1).compareTo(value2);
+				}
+				else
+				{
+					return ((Comparable)value2).compareTo(value1);
+				}
 			}
 		});
 		firstRecord();
@@ -186,5 +209,9 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	public void setCallback(LocalDataSourceCallback callback)
 	{
 		this.loadCallback = callback;
+	}
+	
+	public void updateData(E[] data)
+	{
 	}
 }

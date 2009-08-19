@@ -23,4 +23,12 @@ package br.com.sysmap.crux.core.client.datasource;
 public abstract class LocalBindableScrollableDataSource<T> extends AbstractLocalScrollableDataSource<DataSourceRecord, T>
 														   implements Bindable<T>
 {
+	/*
+	 * Overridden by generator
+	 * @see br.com.sysmap.crux.core.client.datasource.Bindable#getBindedObject()
+	 */
+	public T getBindedObject()
+	{
+		return null;
+	}
 }

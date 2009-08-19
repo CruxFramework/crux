@@ -24,7 +24,7 @@ public interface ScrollableDataSource<T extends DataSourceRecord> extends DataSo
 {
 	boolean hasPreviousRecord();
 	void previousRecord();
-	void sort(String columnName);
+	void sort(String columnName, boolean ascending);
 	int getRecordCount();
 	void firstRecord();
 	void lastRecord();

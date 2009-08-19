@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.client.datasource;
 
 
+
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
@@ -24,7 +25,7 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
                                               implements PagedDataSource<R>
 {
 	protected int pageSize = 10;
-	protected int currentPage = 1;
+	protected int currentPage = 0;
 	
 	public int getCurrentPage()
 	{
@@ -44,6 +45,14 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 		return pageSize;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.PagedDataSource#getCurrentPageSize()
+	 */
+	public int getCurrentPageSize()
+	{
+		return getPageEndRecord() - getPageStartRecord() + 1;
+	}
+	
 	public boolean hasNextPage()
 	{
 		ensureLoaded();
@@ -119,7 +128,7 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 	public void reset()
 	{
 		super.reset();
-		currentPage = 1;
+		currentPage = 0;
 	}	
 
 	@Override

@@ -246,6 +246,55 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	}
 	
 	/**
+	 * Generates a property set block. First try to set the field directly, then try to use a javabean setter method.
+	 * 
+	 * @param logger
+	 * @param voClass
+	 * @param field
+	 * @param parentVariable
+	 * @param valueVariable
+	 * @param sourceWriter
+	 */
+	protected void generateFieldValueSet(TreeLogger logger, Class<?> voClass, Field field, String parentVariable,  
+			                           String valueVariable, SourceWriter sourceWriter)
+	{
+		generateFieldValueSet(logger, voClass, field, parentVariable, valueVariable, sourceWriter, true);
+	}
+	/**
+	 * Generates a property set block. First try to set the field directly, then try to use a javabean setter method.
+	 * 
+	 * @param logger
+	 * @param voClass
+	 * @param field
+	 * @param parentVariable
+	 * @param valueVariable
+	 * @param sourceWriter
+	 */
+	protected void generateFieldValueSet(TreeLogger logger, Class<?> voClass, Field field, String parentVariable,  
+			                           String valueVariable, SourceWriter sourceWriter, boolean allowProtected)
+	{
+		if ((Modifier.isPublic(field.getModifiers()) || (allowProtected && Modifier.isProtected(field.getModifiers()))))
+		{
+			sourceWriter.println(parentVariable+"."+field.getName()+"="+valueVariable+";");
+		}
+		else
+		{
+			String setterMethodName = "set"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+			try
+			{
+				if (voClass.getMethod(setterMethodName, new Class<?>[]{field.getType()}) != null)
+				{
+					sourceWriter.println(parentVariable+"."+setterMethodName+"("+valueVariable+");");
+				}
+			}
+			catch (Exception e)
+			{
+				logger.log(TreeLogger.ERROR, messages.registeredClientObjectPropertyNotFound(field.getName()));
+			}
+		}
+	}
+
+	/**
 	 * Generates the code for DTO population from screen. 
 	 * 
 	 * @param logger
@@ -480,40 +529,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredObjectWidgetNotFound(name), e);
 		}
 	}	
-	
-	/**
-	 * Generates a property set block. First try to set the field directly, then try to use a javabean setter method.
-	 * 
-	 * @param logger
-	 * @param voClass
-	 * @param field
-	 * @param parentVariable
-	 * @param valueVariable
-	 * @param sourceWriter
-	 */
-	private void generateFieldValueSet(TreeLogger logger, Class<?> voClass, Field field, String parentVariable,  String valueVariable, SourceWriter sourceWriter)
-	{
-		if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
-		{
-			sourceWriter.println(parentVariable+"."+field.getName()+"="+valueVariable+";");
-		}
-		else
-		{
-			String setterMethodName = "set"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-			try
-			{
-				if (voClass.getMethod(setterMethodName, new Class<?>[]{field.getType()}) != null)
-				{
-					sourceWriter.println(parentVariable+"."+setterMethodName+"("+valueVariable+");");
-				}
-			}
-			catch (Exception e)
-			{
-				logger.log(TreeLogger.ERROR, messages.registeredClientObjectPropertyNotFound(field.getName()));
-			}
-		}
-	}
-	
+		
 	/**
 	 * 
 	 * @param logger

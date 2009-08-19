@@ -29,9 +29,18 @@ public abstract class LocalBindableEditablePagedDataSource<T> extends AbstractLo
 	 * If we don't override the superclass' method, the LocalBindableEditablePagedDataSource.class.getMethod returns a wrong signature (inherited from super)
 	 */
 	@Override
-	public void update(EditableDataSourceRecord[] records)
+	public EditableDataSourceRecord getRecord() 
 	{
-		super.update(records);
+		return super.getRecord();
+	};
+	
+	/*
+	 * Overridden by generator
+	 * @see br.com.sysmap.crux.core.client.datasource.Bindable#getBindedObject()
+	 */
+	public T getBindedObject()
+	{
+		return null;
 	}
 	
 	protected EditableDataSourceOperations<T> editableOperations = 
