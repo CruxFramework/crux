@@ -201,6 +201,10 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 		{
 			fetch(getPageStartRecord(), getPageEndRecord());
 		}
+		else
+		{
+			fetchCallback.execute(getPageStartRecord(), getPageEndRecord());
+		}
 	}
 
 	/**
