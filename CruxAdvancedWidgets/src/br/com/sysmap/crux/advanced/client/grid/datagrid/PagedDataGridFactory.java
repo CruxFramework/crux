@@ -18,8 +18,8 @@ package br.com.sysmap.crux.advanced.client.grid.datagrid;
 import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
+import br.com.sysmap.crux.advanced.client.util.AlignmentUtil;
+import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenFactory;
@@ -28,6 +28,8 @@ import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
 /**
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
@@ -35,13 +37,39 @@ import com.google.gwt.user.client.DeferredCommand;
 public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 {
 	/**
+	 * @param cellSpacing 
+	 * @param autoLoad 
 	 * @see br.com.sysmap.crux.core.client.screen.WidgetFactory#instantiateWidget(com.google.gwt.dom.client.Element, java.lang.String)
 	 */
 	protected PagedDataGrid instantiateWidget(Element gridElem, String widgetId) throws InterfaceConfigException
 	{
-		PagedDataGrid grid = new PagedDataGrid(getColumnDefinitions(gridElem), getPageSize(gridElem), getRowSelectionModel(gridElem));
+		PagedDataGrid grid = new PagedDataGrid(getColumnDefinitions(gridElem), getPageSize(gridElem), getRowSelectionModel(gridElem), getCellSpacing(gridElem), getAutoLoad(gridElem));
 		bindDataSource(grid, gridElem);
 		return grid;
+	}
+
+	private boolean getAutoLoad(Element gridElem)
+	{
+		String autoLoad = gridElem.getAttribute("_autoLoadData");
+		
+		if(autoLoad != null && autoLoad.trim().length() > 0)
+		{
+			return Boolean.parseBoolean(autoLoad);
+		}
+		
+		return false;
+	}
+
+	private int getCellSpacing(Element gridElem)
+	{
+		String spacing = gridElem.getAttribute("_cellSpacing");
+		
+		if(spacing != null && spacing.trim().length() > 0)
+		{
+			return Integer.parseInt(spacing);
+		}
+		
+		return 1;
 	}
 
 	/**
@@ -56,10 +84,9 @@ public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 		{
 			DeferredCommand.addCommand(new Command()
 			{
-				@SuppressWarnings("unchecked")
 				public void execute()
 				{	
-					PagedDataSource<EditableDataSourceRecord> dataSource = (PagedDataSource<EditableDataSourceRecord>) Screen.getDataSource(dataSourceName);
+					EditablePagedDataSource dataSource = (EditablePagedDataSource) Screen.getDataSource(dataSourceName);
 					grid.setDataSource(dataSource);
 				}
 			});
@@ -136,12 +163,21 @@ public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 				String label = colElem.getAttribute("_label");
 				String key = colElem.getAttribute("_key");
 				String strFormatter = colElem.getAttribute("_formatter");
+				String hAlign = colElem.getAttribute("_horizontalAlignment");
+				String vAlign = colElem.getAttribute("_verticalAlignment");
 				
 				boolean visible = (strVisible != null && strVisible.length() > 0) ? Boolean.parseBoolean(strVisible) : true;
 				String formatter = (strFormatter != null && strFormatter.length() > 0) ? strFormatter : null;
 				label = (label != null && label.length() > 0) ? ScreenFactory.getInstance().getDeclaredMessage(label) : "";
 				
-				DataColumnDefinition def = new DataColumnDefinition(label, width, formatter, visible);
+				DataColumnDefinition def = new DataColumnDefinition(
+						label, 
+						width, 
+						formatter, 
+						visible, 
+						AlignmentUtil.getHorizontalAlignment(hAlign, HasHorizontalAlignment.ALIGN_CENTER),
+						AlignmentUtil.getVerticalAlignment(vAlign, HasVerticalAlignment.ALIGN_MIDDLE));
+				
 				defs.add(key, def);
 			}
 		}

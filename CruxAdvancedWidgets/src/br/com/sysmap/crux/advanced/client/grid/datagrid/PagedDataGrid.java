@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import br.com.sysmap.crux.advanced.client.grid.model.AbstractGrid;
 import br.com.sysmap.crux.advanced.client.grid.model.Cell;
-import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinition;
 import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinitions;
 import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
 import br.com.sysmap.crux.advanced.client.paging.Pageable;
@@ -12,9 +11,9 @@ import br.com.sysmap.crux.advanced.client.paging.Pager;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSourceCallback;
-import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSourceCallback;
+import br.com.sysmap.crux.core.client.datasource.StreamingDataSource;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
@@ -131,7 +130,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	@Override
 	protected int getRowsToBeRendered()
 	{
-		if(this.dataSource != null)
+		if(this.dataSource != null && loaded)
 		{
 			return this.dataSource.getCurrentPageSize();
 		}
@@ -142,8 +141,19 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	@Override
 	protected void onClear()
 	{
-		this.dataSource.reset();
+		if(this.dataSource != null)
+		{
+			this.dataSource.reset();
+		}
+		
+		this.currentSortingColumn = null;
+		this.ascendingSort = false;
 		this.loaded = false;
+		
+		if(this.pager != null)
+		{
+			this.pager.update(0, false);
+		}		
 	}
 
 	@Override
@@ -255,7 +265,10 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 				// TODO
 			}			
 			
-			this.pager.update(this.dataSource.getCurrentPage(), !hasMorePages);
+			if(this.pager != null)
+			{
+				this.pager.update(this.dataSource.getCurrentPage(), !hasMorePages);
+			}
 			
 			dataSource.firstRecord();
 		}

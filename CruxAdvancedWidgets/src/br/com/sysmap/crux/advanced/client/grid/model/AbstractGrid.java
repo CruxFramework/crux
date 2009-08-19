@@ -82,9 +82,12 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 
 	private void renderRows()
 	{
-		onBeforeRenderRows();
-		
 		int rowCount = getRowsToBeRendered();
+		
+		if(rowCount > 0)
+		{
+			onBeforeRenderRows();
+		}
 		
 		for(int i = 0; i < rowCount; i++)
 		{

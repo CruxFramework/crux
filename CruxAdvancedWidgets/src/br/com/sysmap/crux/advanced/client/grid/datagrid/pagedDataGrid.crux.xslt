@@ -33,6 +33,12 @@
 			<xsl:if test="string-length(@rowSelection) > 0">
 				<xsl:attribute name="_rowSelection" select="@rowSelection" />
 			</xsl:if>
+			<xsl:if test="string-length(@cellSpacing) > 0">
+				<xsl:attribute name="_cellSpacing" select="@cellSpacing" />
+			</xsl:if>
+			<xsl:if test="string-length(@autoLoadData) > 0">
+				<xsl:attribute name="_autoLoadData" select="@autoLoadData" />
+			</xsl:if>
 			<xsl:for-each select="child::*">
 				<xsl:element name="span" namespace="{$xhtmlNS}">
 					<xsl:if test="string-length(@width) > 0">
@@ -49,6 +55,12 @@
 					</xsl:if>
 					<xsl:if test="string-length(@formatter) > 0">
 						<xsl:attribute name="_formatter" select="@formatter" />
+					</xsl:if>
+					<xsl:if test="string-length(@horizontalAlignment) > 0">
+						<xsl:attribute name="_horizontalAlignment" select="@horizontalAlignment" />
+					</xsl:if>
+					<xsl:if test="string-length(@verticalAlignment) > 0">
+						<xsl:attribute name="_verticalAlignment" select="@verticalAlignment" />
 					</xsl:if>
 					<xsl:value-of select="' '"/>
 				</xsl:element>

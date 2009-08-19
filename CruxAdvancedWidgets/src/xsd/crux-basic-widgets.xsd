@@ -171,8 +171,8 @@
 
 	<xs:simpleType name="VerticalAlignment">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="bottom" />
 			<xs:enumeration value="middle" />
+			<xs:enumeration value="bottom" />
 			<xs:enumeration value="top" />
 		</xs:restriction>
 	</xs:simpleType>
