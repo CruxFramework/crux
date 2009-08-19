@@ -1,16 +1,23 @@
 package br.com.sysmap.crux.advanced.client.grid.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
-import br.com.sysmap.crux.advanced.client.grid.datagrid.DataColumnDefinition;
-
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -18,216 +25,246 @@ import com.google.gwt.user.client.ui.Widget;
  * Base class for implementing grid widgets. All subclasses of this class must invoke the method <code>render()</code> in their constructors.
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public abstract class AbstractGrid<T extends DataColumnDefinition> extends Composite {	
+public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> extends Composite {	
 	
 	private ScrollPanel scrollingArea;
-	private GridHtmlTable rows;
-	private ColumnDefinitions<T> definitions;
-	private Long generatedId =  new Date().getTime();
+	private GridHtmlTable table;
+	private ColumnDefinitions<C> definitions;
+	private String generatedId =  "cruxGrid_" + new Date().getTime();
 	private GridLayout gridLayout = GWT.create(GridLayout.class);
-	private int headerRowCount = 1;
+	private List<R> rows = new ArrayList<R>();
+	private RowSelectionModel rowSelection;
 	
 	/**
 	 * Constructor
 	 * @param columnDefinitions
 	 */
-	public AbstractGrid(ColumnDefinitions<T> columnDefinitions)
+	public AbstractGrid(ColumnDefinitions<C> columnDefinitions, RowSelectionModel rowSelection, int cellSpacing)
 	{
 		this.definitions = columnDefinitions;
+		this.rowSelection = rowSelection;
 		
 		scrollingArea = new ScrollPanel();
 		scrollingArea.setStyleName("crux-Grid");
 		
 		initWidget(scrollingArea);
 		
-		rows = new GridHtmlTable();
-		rows.setCellSpacing(1);
-		rows.setCellPadding(0);		
-		gridLayout.setTableLayout(rows);
+		table = new GridHtmlTable();
+		table.setCellSpacing(cellSpacing);
+		table.setCellPadding(0);
+		gridLayout.setTableLayout(table);
 		
 		DeferredCommand.addCommand(new Command()
 		{
 			public void execute()
 			{	
-				scrollingArea.add(rows);
+				scrollingArea.add(table);
 			}
 		});
 	}
 	
-	/**
-	 * Inserts a widget in the given position
-	 * @param widget
-	 * @param rowIndex
-	 * @param column
-	 */
-	public void setWidget(Widget widget, int rowIndex, String column)
+	protected final void render()
 	{
-		int colIndex = calculateColumnIndex(column);
-		setWidget(widget, rowIndex, colIndex, definitions.getDefinition(column).getWidth());
-	}
-	
-	/**
-	 * Gets the widget contained in the given position.
-	 * @param rowIndex
-	 * @param column
-	 * @return the widget
-	 */
-	public Widget getWidget(int rowIndex, String column)
-	{
-		int colIndex = calculateColumnIndex(column);
-		return getWidget(rowIndex, colIndex);
-	}
-	
-	/**
-	 * Creates a new row in the grid
-	 * @param beforeIndex
-	 * @return the newly created row index
-	 */
-	public int addRow(int beforeIndex)
-	{
-		int index = beforeIndex + getHeaderRowCount();
+		clear();
 		
-		if(getRowsToBeRendered() == 0 || index > rows.getRowCount())
+		int rowCount = getRowsToBeRendered() + 1;
+		table.resize(rowCount, definitions.getDefinitions().size() + 1);
+		
+		for (int i = 0; i < rowCount; i++)
 		{
-			index = rows.insertRow(index);			
+			R row = createRow(i, table.getRowElement(i));
+			rows.add(row);
 		}
-				
-		return index;
-	}
-
-	protected int getHeaderRowCount()
-	{
-		return headerRowCount;
-	}
-	
-	/**
-	 * Empties the grid
-	 */
-	public void clear()
-	{
-		rows.resizeRows(0);
-		clearRows();
-	}
-	
-	/**
-	 * Sets the style name of the row with given index
-	 * @param rowIndex
-	 * @param styleName
-	 */
-	public void setRowStyle(int rowIndex, String styleName)
-	{
-		rows.getRowElement(rowIndex).setClassName(styleName);
-	}
-	
-	protected abstract int getFirstDataColumnIndex();
-	
-	/**
-	 * When a new header row is created, subclasses may want manipulate it
-	 * @param rowIndex
-	 */
-	protected abstract void preProcessHeaderRow(int rowIndex);
-
-	/**
-	 * Gives the subclasses a chance for rendering their data
-	 */
-	protected abstract void renderRows();
-	
-	/**
-	 * Gives the subclasses a chance for releasing resources when the rows are removed 
-	 */
-	protected abstract void clearRows();
-	
-	/**
-	 * Asks the subclasses how many rows are going to be rendered.
-	 * @return the number of rows to be rendered. 0 if unknown
-	 */
-	protected abstract int getRowsToBeRendered();
-	
-	/**
-	 * Gives the subclasses a chance for inserting header rows, before the default headers
-	 * @return the number of inserted header rows. 0 if no row was inserted
-	 */
-	protected abstract int preProcessHeaders();
-	
-	/**
-	 * Gives the subclasses a chance for inserting header rows, after the default headers
-	 * @return the number of inserted header rows
-	 */	
-	protected abstract int postProcessHeaders();
-	
-	/**
-	 * Renders the grid. All subclasses should invoke this method as the last statement of their constructors.
-	 */
-	protected void render()
-	{
-		rows.resizeColumns(countRenderingColumns());
-		
-		int rowsToBeRendered = getRowsToBeRendered();
-		int headerRowCount = getHeaderRowCount();
-		
-		rows.resizeRows(rowsToBeRendered + headerRowCount);
 		
 		renderHeaders();
 		renderRows();
 	}
-	
-	protected Widget getWidget(int rowIndex, int columnIndex)
-	{
-		return ((Cell) rows.getWidget(rowIndex, columnIndex)).getCellWidget();
-	}
-	
-	protected void setWidget(Widget widget, int rowIndex, int columnIndex)
-	{
-		setWidget(widget, rowIndex, columnIndex, "");
-	}
-	
-	protected void setWidget(Widget widget, int rowIndex, int columnIndex, String cellWidth)
-	{
-		if(!(widget instanceof Cell))
-		{
-			widget = createSimpleCell(cellWidth, widget);
-		}
 
-		rows.setWidget(rowIndex, columnIndex, widget);
+	private void renderRows()
+	{
+		onBeforeRenderRows();
+		
+		int rowCount = getRowsToBeRendered();
+		
+		for(int i = 0; i < rowCount; i++)
+		{
+			R row = rows.get(i + 1);
+			
+			if(hasSelectionColumn())
+			{
+				row.setCell(createSelectionCell(row), 0);
+			}
+			
+			renderRow(row);
+		}
+	}
+
+	private Cell createSelectionCell(R row)
+	{
+		Widget w = null;
+		
+		if(RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelection))
+		{
+			CheckBox checkBox = new CheckBox();
+			checkBox.addClickHandler(new RowSelectionHandler<R>(this, row));
+			w = checkBox;
+		}
+		else if(RowSelectionModel.SINGLE_WITH_RADIO.equals(rowSelection))
+		{
+			RadioButton radio = new RadioButton(generatedId + "_selector");
+			radio.addValueChangeHandler(new RowSelectionHandler<R>(this, row));
+			w = radio;
+		}
+		
+		return createCell("", w);
+	}
+
+	private Iterator<R> getRowIterator()
+	{
+		Iterator<R> it = new Iterator<R>(){
+
+			int position = 1;
+			
+			public boolean hasNext()
+			{
+				return rows.size() > position + 1;
+			}
+
+			public R next()
+			{
+				if(hasNext())
+				{
+					return rows.get(position++);
+				}
+				else
+				{
+					return null;
+				}
+			}
+
+			public void remove()
+			{
+				throw new RuntimeException(); // TODO - set message here				
+			}			
+		};
+		
+		return it;
+	}
+
+	private void renderHeaders()
+	{
+		R row = rows.get(0);
+		
+		row.setStyle("columnHeadersRow row");
+		row.setCell(getHeaderFristColumnCell(), 0);
+				
+		List<C> columns = definitions.getDefinitions();
+		for (C columnDefinition : columns)
+		{
+			if(columnDefinition.isVisible())
+			{
+				Cell cell = createHeaderCell(columnDefinition);
+				row.setCell(cell, columnDefinition.getKey());
+			}
+		}
+	}
+
+	protected Cell createHeaderCell(C columnDefinition)
+	{
+		String label = columnDefinition.getLabel();
+		Label columnHeader = new Label(label);
+		Cell cell = createHeaderCell(columnDefinition.getWidth(), columnHeader);
+		return cell;
 	}
 	
-	protected String getGridGeneratedId()
+	protected Cell createCell(String width, Widget widget)
 	{
-		return "gridGeneratedId_" + generatedId;
-	}
-	
-	protected List<T> getColumnDefinitions()
-	{
-		return this.definitions.getDefinitions();
-	}	
-	
-	protected Cell createSimpleCell(String width, Widget widget)
-	{
-		Cell cell = createCell(width, widget);
+		Cell cell = createBaseCell(width, widget);
 		cell.addStyleName("cell");
 		return cell;
 	}
 	
+	private Cell getHeaderFristColumnCell()
+	{
+		Widget w = null;
+		
+		if(hasSelectionColumn())
+		{
+			if(RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelection))
+			{
+				CheckBox checkBox = new CheckBox();
+				checkBox.addClickHandler(createSelectAllRowsClickHandler());
+				w = checkBox;
+			}	
+		}
+		
+		if(w == null)
+		{
+			w = new Label(" ");
+		}
+		
+		Cell cell = createHeaderCell("", w);
+		
+		return cell;
+	}
+	
+	/**
+	 * @return
+	 */
+	private ClickHandler createSelectAllRowsClickHandler()
+	{
+		return new ClickHandler()
+		{
+			@SuppressWarnings("unchecked")
+			public void onClick(ClickEvent event)
+			{
+				HasValue<Boolean> source = (HasValue<Boolean>) event.getSource();
+				boolean select = source.getValue();
+				selectAllRows(select);
+			}
+		};
+	}
+
+	private void selectAllRows(boolean select) 
+	{
+		Iterator<R> it = getRowIterator();
+		
+		while(it.hasNext())
+		{
+			R row = it.next();
+			
+			if(RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelection))
+			{
+				((CheckBox) row.getCell(0).getCellWidget()).setValue(select);
+			}
+			
+			if(!RowSelectionModel.UNSELECTABLE.equals(rowSelection))
+			{
+				onSelectRow(select, row);
+			}
+		}
+	}
+
+	/**
+	 * Creates a header styled cell
+	 * @param width
+	 * @param widget
+	 * @return
+	 */
 	protected Cell createHeaderCell(String width, Widget widget)
 	{
-		Cell cell = createCell(width, widget);
+		Cell cell = createBaseCell(width, widget);
 		cell.addStyleName("columnHeader");
 		return cell;
 	}
 	
-	private int countRenderingColumns()
-	{
-		int dataColumnCount = definitions.getDefinitions().size();
-		int controllColumns = getFirstDataColumnIndex();
-		return dataColumnCount + controllColumns;
-	}
-	
-	private int calculateColumnIndex(String column)
-	{
-		return definitions.getColumnIndex(column) + getFirstDataColumnIndex();
-	}
-
-	private Cell createCell(String width, Widget widget)
+	/**
+	 * Creates a cell with an widget to be inserted in table
+	 * @param width
+	 * @param widget
+	 * @return
+	 */
+	private Cell createBaseCell(String width, Widget widget)
 	{
 		Cell cell = null;
 		
@@ -244,29 +281,66 @@ public abstract class AbstractGrid<T extends DataColumnDefinition> extends Compo
 			
 		return cell;
 	}
-	
-	private void renderHeaders()
+
+	/**
+	 * Empties the grid
+	 */
+	public void clear()
 	{
-		int addedBefore = preProcessHeaders();
-		this.headerRowCount += addedBefore;
+		table.resizeRows(0);
+		rows = new ArrayList<R>();
+		onClear();
+	}
+	
+	protected boolean hasSelectionColumn()
+	{
+		return RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelection) || RowSelectionModel.SINGLE_WITH_RADIO.equals(rowSelection);
+	}
+	
+	GridHtmlTable getTable()
+	{
+		return table;
+	}
+
+	protected abstract void onClear();
+	
+	protected abstract int getRowsToBeRendered();
+	
+	protected abstract void onSelectRow(boolean select, R row);
+	
+	protected abstract void renderRow(R row);
+	
+	protected abstract R createRow(int index, Element element);
+	
+	protected abstract void onBeforeRenderRows();
+	
+	protected ColumnDefinitions<C> getColumnDefinitions()
+	{
+		return definitions;
+	}
+	
+	@SuppressWarnings("unchecked")
+	static class RowSelectionHandler<R extends Row> implements ClickHandler, ValueChangeHandler<Boolean>
+	{
+		private AbstractGrid<?, R> grid;
+		private R row;
 		
-		Element rowElem = rows.getRowElement(addedBefore);
-		rowElem.setClassName("columnHeadersRow row");
-		
-		preProcessHeaderRow(addedBefore);
-				
-		List<T> columns = definitions.getDefinitions();
-		for (T columnDefinition : columns)
+		public RowSelectionHandler(AbstractGrid<?, R> grid, R row)
 		{
-			if(columnDefinition.isVisible())
-			{
-				String label = columnDefinition.getLabel();
-				Label columnHeader = new Label(label);
-				Cell cell = createHeaderCell(columnDefinition.getWidth(), columnHeader);
-				rows.setWidget(addedBefore, calculateColumnIndex(columnDefinition.getKey()), cell);
-			}
+			this.grid = grid;
 		}
 		
-		postProcessHeaders();
+		public void onClick(ClickEvent event)
+		{
+			boolean selected = ((HasValue<Boolean>) event.getSource()).getValue();
+			grid.onSelectRow(selected, row);
+			
+		}
+		
+		public void onValueChange(ValueChangeEvent<Boolean> event)
+		{
+			boolean selected = ((HasValue<Boolean>) event.getSource()).getValue();
+			grid.onSelectRow(selected, row);
+		}		
 	}
 }

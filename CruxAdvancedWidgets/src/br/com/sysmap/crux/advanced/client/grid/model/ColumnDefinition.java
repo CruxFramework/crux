@@ -1,17 +1,28 @@
 package br.com.sysmap.crux.advanced.client.grid.model;
 
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
+
 public class ColumnDefinition
 {
+	String key;
+	
 	String width;
 	boolean visible;
 	String label;
-	String key;
+	
+	HorizontalAlignmentConstant horizontalAlign;
+	VerticalAlignmentConstant verticalAlign;
 
-	public ColumnDefinition(String label, String width, boolean visible)
+	public ColumnDefinition(String label, String width, boolean visible, HorizontalAlignmentConstant horizontalAlign, VerticalAlignmentConstant verticalAlign)
 	{
 		this.label = label;
 		this.width = width;
 		this.visible = visible;
+		this.horizontalAlign = horizontalAlign == null ? HasHorizontalAlignment.ALIGN_CENTER : horizontalAlign;
+		this.verticalAlign = verticalAlign == null ? HasVerticalAlignment.ALIGN_MIDDLE : verticalAlign;
 	}
 
 	/**

@@ -38,7 +38,7 @@ public class Filter extends SuggestBox implements HasFocusHandlers, HasBlurHandl
 	private String initialText = null;
 
 	/**
-	 * @param filterable
+	 * Default constructor
 	 */
 	public Filter()
 	{

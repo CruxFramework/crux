@@ -22,6 +22,7 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 import com.google.gwt.dom.client.Element;
@@ -137,7 +138,8 @@ public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 				String strFormatter = colElem.getAttribute("_formatter");
 				
 				boolean visible = (strVisible != null && strVisible.length() > 0) ? Boolean.parseBoolean(strVisible) : true;
-				String formatter = (strFormatter != null && strFormatter.length() > 0) ? strFormatter : null;				
+				String formatter = (strFormatter != null && strFormatter.length() > 0) ? strFormatter : null;
+				label = (label != null && label.length() > 0) ? ScreenFactory.getInstance().getDeclaredMessage(label) : "";
 				
 				DataColumnDefinition def = new DataColumnDefinition(label, width, formatter, visible);
 				defs.add(key, def);

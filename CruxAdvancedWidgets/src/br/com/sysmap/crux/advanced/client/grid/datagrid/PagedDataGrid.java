@@ -1,36 +1,43 @@
 package br.com.sysmap.crux.advanced.client.grid.datagrid;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator;
 
 import br.com.sysmap.crux.advanced.client.grid.model.AbstractGrid;
 import br.com.sysmap.crux.advanced.client.grid.model.Cell;
+import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinition;
+import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinitions;
 import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
+import br.com.sysmap.crux.advanced.client.paging.Pageable;
+import br.com.sysmap.crux.advanced.client.paging.Pager;
+import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
+import br.com.sysmap.crux.core.client.datasource.LocalDataSourceCallback;
 import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
+import br.com.sysmap.crux.core.client.datasource.RemoteDataSourceCallback;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Grid for data rendering
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class PagedDataGrid extends AbstractGrid<DataColumnDefinition> {	
+public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> implements Pageable {	
 
-	private RowSelectionModel rowSelectionModel;
 	private int pageSize;
-	private PagedDataSource<EditableDataSourceRecord> dataSource;	
-	private Map<Integer, EditableDataSourceRecord> rowsByIndex = new HashMap<Integer, EditableDataSourceRecord>();
+	private EditablePagedDataSource dataSource;
+	private boolean autoLoadData;
+	private boolean loaded;
+	private String currentSortingColumn;
+	private boolean ascendingSort;
+	private Pager pager; 
 	
 	/**
 	 * Constructor
@@ -38,11 +45,11 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition> {
 	 * @param pageSize
 	 * @param rowSelectionModel
 	 */
-	public PagedDataGrid(DataColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel)
+	public PagedDataGrid(DataColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData)
 	{
-		super(columnDefinitions);
-		this.rowSelectionModel = rowSelectionModel;
+		super(columnDefinitions, rowSelectionModel, cellSpacing);
 		this.pageSize = pageSize;
+		this.autoLoadData = autoLoadData;
 		super.render();
 	}
 	
@@ -50,249 +57,236 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition> {
 	 * Sets the data source, forcing re-rendering
 	 * @param dataSource
 	 */
-	public void setDataSource(PagedDataSource<EditableDataSourceRecord> dataSource)
+	public void setDataSource(EditablePagedDataSource dataSource)
 	{
 		this.dataSource = dataSource;
-		refresh();
+		this.dataSource.setPageSize(this.pageSize);
+		
+		if(this.dataSource instanceof LocalDataSource)
+		{
+			LocalDataSource<?, ?> local = (LocalDataSource<?, ?>) this.dataSource;
+			
+			local.setCallback(new LocalDataSourceCallback()
+			{
+				public void execute()
+				{
+					render();
+				}
+			});
+			
+			if(autoLoadData)
+			{
+				loadData();
+			}
+		}
+		else if(this.dataSource instanceof RemoteDataSource)
+		{
+			RemoteDataSource<?, ?> remote = (RemoteDataSource<?, ?>) this.dataSource;
+			
+			remote.setCallback(new RemoteDataSourceCallback()
+			{
+				public void execute(int startRecord, int endRecord)
+				{
+					refresh();
+				}
+			});
+			
+			if(autoLoadData)
+			{
+				loadData();
+			}
+		}
+	}
+	
+	public void loadData()
+	{
+		if(!this.loaded)
+		{
+			this.loaded = true;
+			
+			if(this.dataSource instanceof LocalDataSource)
+			{
+				LocalDataSource<?, ?> local = (LocalDataSource<?, ?>) this.dataSource;
+				local.load();
+			}
+			else if(this.dataSource instanceof RemoteDataSource)
+			{
+				this.dataSource.nextPage();
+			}
+		}
 	}
 
 	private void refresh()
 	{
-		rowsByIndex = new HashMap<Integer, EditableDataSourceRecord>();
 		super.clear();
 		super.render();
 	}
 
-	/**
-	 * Marks all data source rows as selected
-	 */
-	public void selectAllRows()
-	{
-		selectAllRows(true);
-	}
-	
-	/**
-	 * Marks all data source rows as unselected
-	 */
-	public void unselectAllRows()
-	{
-		selectAllRows(false);
-	}	
-	
-	public void nextPage()
-	{
-		this.dataSource.nextPage();
-		refresh();
-	}
-	
-	public void previousPage()
-	{
-		this.dataSource.previousPage();
-		refresh();
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void selectAllRows(boolean select) 
-	{
-		if(dataSource != null && !RowSelectionModel.UNSELECTABLE.equals(rowSelectionModel))
-		{
-			dataSource.firstRecord();
-			
-			for(int i = 0; dataSource.hasNextRecord(); i++)
-			{
-				dataSource.nextRecord();
-				dataSource.getRecord().setSelected(select);
-				
-				if(hasSelectionColumn())
-				{
-					((HasValue<Boolean>)getWidget(i, 0)).setValue(select);
-				}
-			}
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void selectRow(int index, boolean select)
+	@Override
+	protected DataRow createRow(int index, Element element)
 	{	
-		EditableDataSourceRecord record = rowsByIndex.get(index);
-		record.setSelected(select);
-	
-		if(hasSelectionColumn())
-		{
-			HasValue<Boolean> selector = (HasValue<Boolean>) getWidget(index, 0);
-			selector.setValue(select);
-		}
-		
-		if(select)
-		{
-			setRowStyle(index, "row-selected");
-		}
-		else
-		{
-			setRowStyle(index, "row");
-		}
-	}
-
-	private ClickHandler createSelectAllClickHandler()
-	{
-		return new ClickHandler()
-		{
-			@SuppressWarnings("unchecked")
-			public void onClick(ClickEvent event)
-			{
-				HasValue<Boolean> source = (HasValue<Boolean>) event.getSource();
-				boolean select = source.getValue();
-				if(select)
-				{
-					selectAllRows();
-				}
-				else
-				{
-					unselectAllRows();
-				}
-								
-			}					
-		};
-	}
-	
-	private boolean hasSelectionColumn()
-	{
-		return RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelectionModel) || RowSelectionModel.SINGLE_WITH_RADIO.equals(rowSelectionModel);
-	}
-	
-	protected int getFirstDataColumnIndex()
-	{
-		if(hasSelectionColumn())
-		{
-			return 1;
-		}
-		
-		return 0;
-	}
-
-	private void preProcessRow(int rowIndex)
-	{
-		if(hasSelectionColumn())
-		{
-			HasClickHandlers selector = null;
-				
-			if(RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelectionModel))
-			{
-				selector = new CheckBox();
-				
-			}
-			else
-			{
-				selector = new RadioButton(getGridGeneratedId() + "_lineSelector");
-			}
-			
-			selector.addClickHandler(createSelectRowClickHandler(rowIndex));
-			Cell cell = createSimpleCell("", (Widget) selector);
-			setWidget(cell, rowIndex, 0);
-		}	
-	}
-	
-	@Override
-	protected void preProcessHeaderRow(int rowIndex)
-	{
-		Widget widget = null;
-		
-		if(hasSelectionColumn())
-		{
-			if(RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelectionModel))
-			{
-				widget = new CheckBox();
-				((CheckBox) widget).addClickHandler(createSelectAllClickHandler());
-			}
-			else if(RowSelectionModel.SINGLE_WITH_RADIO.equals(rowSelectionModel))
-			{
-				widget = new Label(" ");
-			}
-						
-			Cell cell = createHeaderCell("", widget);
-			cell.addStyleName("rowSelectionColumn");
-			setWidget(cell, rowIndex, 0);
-		}		
-	}
-
-	@Override
-	protected void renderRows()
-	{
-		if(dataSource != null)
-		{
-			for(int i = 0; dataSource.hasNextRecord(); i++)
-			{
-				dataSource.nextRecord();
-				int rowIndex = addRow(i);
-				
-				preProcessRow(rowIndex);				
-								
-				List<DataColumnDefinition> columns = getColumnDefinitions();
-				for (DataColumnDefinition columnDefinition : columns)
-				{
-					if(columnDefinition.isVisible())
-					{
-						// TODO - usar masked label ou hasvalue
-						String key = columnDefinition.getKey();
-						String formatterName = columnDefinition.getFormatter();
-						Object value = dataSource.getValue(key);
-						String str = "";
-						
-						if(value != null)
-						{
-							if(formatterName != null && formatterName.length() > 0)
-							{
-								Formatter formatter = Screen.getFormatter(formatterName);
-								str = formatter.format(value);
-							}
-							else
-							{
-								str = value.toString();
-							}
-						}
-						
-						Label label = new Label(str);
-						setWidget(label, rowIndex, key);
-					}
-				}
-			}			
-		}
-	}
-
-	@Override
-	protected void clearRows()
-	{
-		
+		return new DataRow(index, element, this, hasSelectionColumn());
 	}
 
 	@Override
 	protected int getRowsToBeRendered()
 	{
-		return pageSize;
+		if(this.dataSource != null)
+		{
+			return this.dataSource.getCurrentPageSize();
+		}
+		
+		return 0;
+	}
+
+	@Override
+	protected void onClear()
+	{
+		this.dataSource.reset();
+		this.loaded = false;
+	}
+
+	@Override
+	protected void onSelectRow(boolean select, DataRow row)
+	{
+		row.getDataSourceRecord().setSelected(select);
+	}
+
+	@Override
+	protected void renderRow(DataRow row)
+	{
+		dataSource.nextRecord();
+		row.setDataSourceRecord(dataSource.getRecord());
+		
+		ColumnDefinitions<DataColumnDefinition> defs = getColumnDefinitions();
+		Iterator<DataColumnDefinition> it = defs.getIterator();
+		while (it.hasNext())
+		{
+			DataColumnDefinition column = it.next();
+			
+			if(column.isVisible())
+			{
+				String key = column.getKey();
+				String formatterName = column.getFormatter();
+				Object value = dataSource.getValue(key);
+				String str = "";
+				
+				if(value != null)
+				{
+					if(formatterName != null && formatterName.length() > 0)
+					{
+						Formatter formatter = Screen.getFormatter(formatterName);
+						str = formatter.format(value);
+					}
+					else
+					{
+						str = value.toString();
+					}
+				}
+				
+				Label label = new Label(str);
+				row.setCell(createCell(column.getWidth(), label), key);
+			}			
+		}
+		
+		row.markAsSelected(row.getDataSourceRecord().isSelected());
 	}
 	
-	private ClickHandler createSelectRowClickHandler(final int rowIndex)
+	@Override
+	protected Cell createHeaderCell(final DataColumnDefinition columnDefinition)
 	{
-		return new ClickHandler()
+		FocusPanel clickable = new FocusPanel();
+		
+		clickable.addClickHandler(new ClickHandler()
 		{
-			@SuppressWarnings("unchecked")
 			public void onClick(ClickEvent event)
 			{
-				HasValue<Boolean> selector = (HasValue<Boolean>) event.getSource();
-				rowsByIndex.get(rowIndex).setSelected(selector.getValue());
+				String column = columnDefinition.getKey();
+				String previousSorting = currentSortingColumn;
+				boolean resorting = column.equals(previousSorting);
+				
+				currentSortingColumn = column;
+								
+				if(!resorting)
+				{
+					ascendingSort = true;
+				}
+				else
+				{
+					ascendingSort = !ascendingSort;
+				}
+				
+				dataSource.sort(column, ascendingSort);
+				refresh();
+			}			
+		});		
+		
+		HorizontalPanel panel = new HorizontalPanel();
+		
+		Label columnLabel = new Label(columnDefinition.getLabel());
+		columnLabel.setStyleName("label");
+		
+		Label columnLabelArrow = new Label(" ");
+		columnLabelArrow.setStyleName("arrow");
+		
+		panel.add(columnLabel);
+		panel.add(columnLabelArrow);
+		
+		clickable.add(panel);
+		
+		Cell cell = createHeaderCell(columnDefinition.getWidth(), clickable);
+		
+		return cell;
+	}
+
+	@Override
+	protected void onBeforeRenderRows()
+	{
+		if(this.dataSource != null)
+		{
+			boolean hasMorePages = false;
+			
+			if(!(this.dataSource instanceof StreamingDataSource))
+			{
+				hasMorePages = this.dataSource.hasNextPage();
 			}
-		};
+			else
+			{
+				// TODO
+			}			
+			
+			this.pager.update(this.dataSource.getCurrentPage(), !hasMorePages);
+			
+			dataSource.firstRecord();
+		}
 	}
 
-	@Override
-	protected int postProcessHeaders()
+	public int getPageCount()
 	{
+		if(!(this.dataSource instanceof StreamingDataSource))
+		{
+			this.dataSource.getPageCount();
+		}
+		else
+		{
+			return -1;
+		}
+		
 		return 0;
 	}
 
-	@Override
-	protected int preProcessHeaders()
+	public void nextPage()
 	{
-		return 0;
+		this.dataSource.nextPage();
+	}
+
+	public void previousPage()
+	{
+		this.dataSource.previousPage();	
+	}
+
+	public void setPager(Pager pager)
+	{
+		this.pager = pager;		
 	}
 }
