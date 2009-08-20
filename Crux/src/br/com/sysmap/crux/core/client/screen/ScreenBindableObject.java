@@ -23,4 +23,5 @@ public interface ScreenBindableObject
 {
 	void updateScreenWidgets();
 	void updateControllerObjects();
+	boolean isAutoBindEnabled();
 }

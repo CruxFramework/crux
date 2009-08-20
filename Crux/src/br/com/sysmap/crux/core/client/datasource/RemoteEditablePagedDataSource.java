@@ -24,12 +24,6 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.Editab
 public abstract class RemoteEditablePagedDataSource extends AbstractRemotePagedDataSource<EditableDataSourceRecord, EditableDataSourceRecord>
 										   implements EditablePagedDataSource
 {	
-	@Override
-	public EditableDataSourceRecord getRecord() 
-	{
-		return super.getRecord();
-	};
-
 	protected EditableDataSourceOperations<EditableDataSourceRecord> editableOperations = 
 		new EditableDataSourceOperations<EditableDataSourceRecord>(this);
 
@@ -37,12 +31,6 @@ public abstract class RemoteEditablePagedDataSource extends AbstractRemotePagedD
 	protected EditableDataSourceRecord[] createDataObject(int count)
 	{
 		return new EditableDataSourceRecord[count];
-	}
-
-	@Override
-	public void fetch(int startPageRecord, int endPageRecord)
-	{
-		super.fetch(startPageRecord, endPageRecord);
 	}
 	
 	@Override

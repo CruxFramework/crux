@@ -168,7 +168,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	}
 	
 	/**
-	 * Create a new class to invoke the eventHandler method by its name
+	 * Create a new class to invoke the caller method by its name
 	 * @param logger
 	 * @param sourceWriter
 	 * @param handlerClass
@@ -181,7 +181,8 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 				+ " implements br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker{");
 		
 		Controller controllerAnnot = handlerClass.getAnnotation(Controller.class);
-		boolean singleton = (controllerAnnot != null && controllerAnnot.statefull());
+		boolean singleton = (controllerAnnot == null || controllerAnnot.statefull());
+		boolean autoBindEnabled = (controllerAnnot == null || controllerAnnot.autoBind());
 		if (singleton)
 		{
 			sourceWriter.println(className+"Wrapper wrapper = null;");
@@ -212,7 +213,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		}
 		
 
-		if (controllerAnnot != null && controllerAnnot.autoBind())
+		if (autoBindEnabled)
 		{
 			sourceWriter.println("wrapper.updateControllerObjects();");
 		}
@@ -281,7 +282,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		}
 		sourceWriter.println("throw new Exception(\""+messages.errorInvokingGeneratedMethod()+" \"+metodo);");
 
-		if (!first && controllerAnnot != null && controllerAnnot.autoBind())
+		if (!first && autoBindEnabled)
 		{
 			sourceWriter.println("wrapper.updateScreenWidgets();");
 		}		
@@ -290,10 +291,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		
 		generateScreenUpdateWidgetsFunction(logger, screen, handlerClass, sourceWriter);
 		generateControllerUpdateObjectsFunction(logger, screen, handlerClass, sourceWriter);
-		
-		sourceWriter.println("public boolean isAutoBindEnabled(){");
-		sourceWriter.println("return "+(controllerAnnot != null && controllerAnnot.autoBind())+";");
-		sourceWriter.println("}");
+		generateIsAutoBindEnabledMethod(sourceWriter, autoBindEnabled);
 				
 		sourceWriter.println("}");
 		

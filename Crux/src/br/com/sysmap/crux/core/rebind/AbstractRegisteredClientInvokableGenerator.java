@@ -295,6 +295,18 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	}
 
 	/**
+	 * 
+	 * @param sourceWriter
+	 * @param autoBind
+	 */
+	protected void generateIsAutoBindEnabledMethod(SourceWriter sourceWriter, boolean autoBind)
+	{
+		sourceWriter.println("public boolean isAutoBindEnabled(){");
+		sourceWriter.println("return "+autoBind+";");
+		sourceWriter.println("}");
+	}
+	
+	/**
 	 * Generates the code for DTO population from screen. 
 	 * 
 	 * @param logger

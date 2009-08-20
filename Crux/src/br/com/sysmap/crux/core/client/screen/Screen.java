@@ -376,7 +376,7 @@ public class Screen
 	
 	/**
 	 * Update widgets on screen that have the same id of fields mapped with ValueObject
-	 * @param eventHandler
+	 * @param caller
 	 */
 	protected void updateScreenWidgets(Object eventHandler)
 	{
@@ -393,7 +393,7 @@ public class Screen
 	
 	/**
 	 * Update fields mapped with ValueObject from widgets that have similar names.
-	 * @param eventHandler
+	 * @param caller
 	 */
 	protected void updateControllerObjects(Object eventHandler)
 	{
@@ -527,7 +527,7 @@ public class Screen
 	/**
 	 * Update widgets on screen that have the same id of fields mapped with ValueObject
 	 * 
-	 * @param eventHandler
+	 * @param caller
 	 */
 	public static void updateScreen(Object eventHandler)
 	{
@@ -537,7 +537,7 @@ public class Screen
 	/**
 	 * Update fields mapped with ValueObject from widgets that have similar names.
 	 * 
-	 * @param eventHandler
+	 * @param caller
 	 */
 	public void updateController(Object eventHandler)
 	{

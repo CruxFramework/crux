@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.rpc;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
+import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -29,14 +29,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public abstract class AsyncCallbackAdapter<T> implements AsyncCallback<T>
 {
-	EventClientHandlerInvoker eventHandler;
+	protected ScreenBindableObject caller;
 	public AsyncCallbackAdapter(Object eventHandler)
 	{
-		if (!(eventHandler instanceof EventClientHandlerInvoker))
+		if (!(eventHandler instanceof ScreenBindableObject))
 		{
 			throw new ClassCastException(Crux.getMessages().asyncCallbackInvalidHandlerError());
 		}
-		this.eventHandler = (EventClientHandlerInvoker) eventHandler;
+		this.caller = (ScreenBindableObject) eventHandler;
 	}
 	
 	public final void onSuccess(T result)
@@ -47,9 +47,9 @@ public abstract class AsyncCallbackAdapter<T> implements AsyncCallback<T>
 		}
 		finally
 		{
-			if (eventHandler.isAutoBindEnabled())
+			if (caller.isAutoBindEnabled())
 			{
-				this.eventHandler.updateScreenWidgets();
+				this.caller.updateScreenWidgets();
 			}
 		}
 	}
@@ -62,9 +62,9 @@ public abstract class AsyncCallbackAdapter<T> implements AsyncCallback<T>
 		}
 		finally
 		{
-			if (eventHandler.isAutoBindEnabled())
+			if (caller.isAutoBindEnabled())
 			{
-				this.eventHandler.updateScreenWidgets();
+				this.caller.updateScreenWidgets();
 			}
 		}
 	}

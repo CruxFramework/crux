@@ -17,7 +17,6 @@ package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -191,14 +190,10 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 				
 		ColumnsData columnsData = generateDataSourceClassConstructor(logger, sourceWriter, dataSourceClass, className);	
 		
-		boolean autoBind = true;
 		br.com.sysmap.crux.core.client.datasource.annotation.DataSource annot = 
 				dataSourceClass.getAnnotation(br.com.sysmap.crux.core.client.datasource.annotation.DataSource.class);
+		boolean autoBind = (annot == null || annot.autoBind());
 
-		if (annot != null)
-		{
-			autoBind = annot.autoBind();
-		}
 		if (RemoteDataSource.class.isAssignableFrom(dataSourceClass))
 		{
 			generateFetchFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
@@ -211,6 +206,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		generateScreenUpdateWidgetsFunction(logger, screen, dataSourceClass, sourceWriter);
 		generateControllerUpdateObjectsFunction(logger, screen, dataSourceClass, sourceWriter);
 		generateGetBindedObjectFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
+		generateIsAutoBindEnabledMethod(sourceWriter, autoBind);
 		
 		sourceWriter.println("}");
 		return className;
@@ -269,29 +265,12 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 				dataType = recordType;
 			}
 			String dataTypeDeclaration = getParameterDeclaration(dataType);
-			 
-			
-			boolean isRemote = RemoteDataSource.class.isAssignableFrom(dataSourceClass);
-			
-			if (isRemote)
-			{
-				sourceWriter.println("public void updateData(int startRecord, int endRecord, "+dataTypeDeclaration+"[] data){");
-			}
-			else
-			{
-				sourceWriter.println("public void updateData("+dataTypeDeclaration+"[] data){");
-			}
+			 			
+			sourceWriter.println("public void updateData("+dataTypeDeclaration+"[] data){");
 			
 			if (recordType.isAssignableFrom(dataType))
 			{
-				if (isRemote)
-				{
-					sourceWriter.println("update(startRecord, endRecord, data);");
-				}
-				else
-				{
-					sourceWriter.println("update(data);");
-				}
+				sourceWriter.println("update(data);");
 			}
 			else
 			{
@@ -315,14 +294,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 				}
 				
 				sourceWriter.println("}");
-				if (isRemote)
-				{
-					sourceWriter.println("update(startRecord, endRecord, ret);");
-				}
-				else
-				{
-					sourceWriter.println("update(ret);");
-				}
+				sourceWriter.println("update(ret);");
 			}
 			sourceWriter.println("}");
 		}
@@ -487,11 +459,16 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 						LocalBindableScrollableDataSource.class.equals(rawType) || 	
 						LocalBindablePagedDataSource.class.equals(rawType) || 	
 						LocalBindableEditablePagedDataSource.class.equals(rawType))
+						//TODO: completar os tipos aki
 					{
 						return (Class<?>)parameterizedType.getActualTypeArguments()[0];
 					}
+					superClass = rawType;
 				}
-				superClass = ((Class<?>)superClass).getGenericSuperclass();
+				else
+				{
+					superClass = ((Class<?>)superClass).getGenericSuperclass();
+				}
 			}
 		}
 		catch (Exception e) 
@@ -511,8 +488,26 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	{
 		try
 		{
-			Method method = dataSourceClass.getMethod("getRecord", new Class[]{});
-			return method.getReturnType();
+			Type superClass = dataSourceClass.getGenericSuperclass();
+			while (superClass != null)
+			{
+				if (superClass instanceof ParameterizedType)
+				{
+					ParameterizedType parameterizedType = (ParameterizedType)superClass;
+					Class<?> rawType = (Class<?>)parameterizedType.getRawType();
+					if ("br.com.sysmap.crux.core.client.datasource.AbstractLocalScrollableDataSource".equals(rawType.getName()) || 
+						"br.com.sysmap.crux.core.client.datasource.AbstractLocalPagedDataSource".equals(rawType.getName()) || 	
+						"br.com.sysmap.crux.core.client.datasource.AbstractRemotePagedDataSource".equals(rawType))
+					{
+						return (Class<?>)parameterizedType.getActualTypeArguments()[0];
+					}
+					superClass = rawType;
+				}
+				else
+				{
+					superClass = ((Class<?>)superClass).getGenericSuperclass();
+				}
+			}
 		}
 		catch (Exception e) 
 		{
