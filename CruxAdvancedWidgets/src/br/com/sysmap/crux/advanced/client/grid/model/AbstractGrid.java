@@ -63,13 +63,18 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		});
 	}
 	
-	protected final void render()
+	protected final void clearAndRender()
 	{
-		clear();
-		
+		clear();		
+		render();
+	}
+
+	protected void render()
+	{
 		int rowCount = getRowsToBeRendered() + 1;
-		table.resize(rowCount, definitions.getDefinitions().size() + 1);
 		
+		clearRendering();
+			
 		for (int i = 0; i < rowCount; i++)
 		{
 			R row = createRow(i, table.getRowElement(i));
@@ -80,18 +85,25 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		renderRows();
 	}
 
+	private void clearRendering()
+	{
+		int rowCount = getRowsToBeRendered() + 1;
+		table.resize(rowCount, definitions.getDefinitions().size() + 1);
+		this.rows = new ArrayList<R>();
+	}
+
 	private void renderRows()
 	{
-		int rowCount = getRowsToBeRendered();
+		Iterator<R> it = getRowIterator();
 		
-		if(rowCount > 0)
+		if(it.hasNext())
 		{
 			onBeforeRenderRows();
 		}
 		
-		for(int i = 0; i < rowCount; i++)
+		while(it.hasNext())
 		{
-			R row = rows.get(i + 1);
+			R row = it.next();
 			
 			if(hasSelectionColumn())
 			{
@@ -130,7 +142,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 			
 			public boolean hasNext()
 			{
-				return rows.size() > position + 1;
+				return position < rows.size();
 			}
 
 			public R next()

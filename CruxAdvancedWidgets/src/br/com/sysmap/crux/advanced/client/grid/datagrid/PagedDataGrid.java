@@ -86,7 +86,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 			{
 				public void execute(int startRecord, int endRecord)
 				{
-					refresh();
+					render();
 				}
 			});
 			
@@ -115,12 +115,6 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 		}
 	}
 
-	private void refresh()
-	{
-		super.clear();
-		super.render();
-	}
-
 	@Override
 	protected DataRow createRow(int index, Element element)
 	{	
@@ -132,6 +126,11 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	{
 		if(this.dataSource != null && loaded)
 		{
+			if(this.dataSource.getCurrentPage() == 0)
+			{
+				this.dataSource.nextPage();
+			}
+			
 			return this.dataSource.getCurrentPageSize();
 		}
 		
@@ -165,7 +164,6 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	@Override
 	protected void renderRow(DataRow row)
 	{
-		dataSource.nextRecord();
 		row.setDataSourceRecord(dataSource.getRecord());
 		
 		ColumnDefinitions<DataColumnDefinition> defs = getColumnDefinitions();
@@ -200,6 +198,11 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 		}
 		
 		row.markAsSelected(row.getDataSourceRecord().isSelected());
+		
+		if(dataSource.hasNextRecord())
+		{
+			dataSource.nextRecord();
+		}
 	}
 	
 	@Override
@@ -216,7 +219,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 				boolean resorting = column.equals(previousSorting);
 				
 				currentSortingColumn = column;
-								
+
 				if(!resorting)
 				{
 					ascendingSort = true;
@@ -227,7 +230,8 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 				}
 				
 				dataSource.sort(column, ascendingSort);
-				refresh();
+				
+				render();
 			}			
 		});		
 		

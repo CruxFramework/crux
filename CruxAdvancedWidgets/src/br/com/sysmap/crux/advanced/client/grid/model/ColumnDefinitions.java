@@ -46,7 +46,7 @@ public abstract class ColumnDefinitions<T extends ColumnDefinition>
 		
 		public boolean hasNext()
 		{
-			return cursor < defs.size() - 1;
+			return cursor < defs.size();
 		}
 
 		public T next()

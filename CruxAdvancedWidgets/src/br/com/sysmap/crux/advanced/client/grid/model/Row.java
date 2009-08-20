@@ -20,12 +20,13 @@ public class Row
 	
 	public void setCell(Cell cell, String column)
 	{
-		// TODO
+		int colIndex = getColumnIndex(column);
+		setCell(cell, colIndex);
 	}
-	
+
 	void setCell(Cell cell, int column)
 	{
-		// TODO
+		grid.getTable().setWidget(index, column, cell);
 	}
 	
 	Cell getCell(int column)
@@ -35,8 +36,8 @@ public class Row
 	
 	public Cell getCell(String column)
 	{
-		// TODO 
-		return null;
+		int colIndex = getColumnIndex(column);
+		return (Cell) grid.getTable().getWidget(index, colIndex);
 	}
 	
 	/**
@@ -58,5 +59,16 @@ public class Row
 		}
 		
 		setStyle("row-selected");
+	}
+	
+	private int getColumnIndex(String column)
+	{
+		int colIndex = grid.getColumnDefinitions().getColumnIndex(column);
+		
+		if(hasSelectionCell)
+		{
+			colIndex++;
+		}
+		return colIndex;
 	}
 }
