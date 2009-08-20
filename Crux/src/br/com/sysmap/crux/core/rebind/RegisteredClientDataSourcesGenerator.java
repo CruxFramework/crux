@@ -38,6 +38,9 @@ import br.com.sysmap.crux.core.client.datasource.LocalBindableScrollableDataSour
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
+import br.com.sysmap.crux.core.client.datasource.RemoteBindableEditablePagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.RemoteBindablePagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.RemoteBindableStreamingDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumns;
@@ -458,7 +461,12 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 					if (LocalBindableEditableScrollableDataSource.class.equals(rawType) || 
 						LocalBindableScrollableDataSource.class.equals(rawType) || 	
 						LocalBindablePagedDataSource.class.equals(rawType) || 	
-						LocalBindableEditablePagedDataSource.class.equals(rawType))
+						LocalBindableEditablePagedDataSource.class.equals(rawType) ||
+						RemoteBindablePagedDataSource.class.equals(rawType) ||
+						RemoteBindableEditablePagedDataSource.class.equals(rawType) ||
+						RemoteBindableStreamingDataSource.class.equals(rawType)
+						)
+						
 						//TODO: completar os tipos aki
 					{
 						return (Class<?>)parameterizedType.getActualTypeArguments()[0];
@@ -497,7 +505,8 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 					Class<?> rawType = (Class<?>)parameterizedType.getRawType();
 					if ("br.com.sysmap.crux.core.client.datasource.AbstractLocalScrollableDataSource".equals(rawType.getName()) || 
 						"br.com.sysmap.crux.core.client.datasource.AbstractLocalPagedDataSource".equals(rawType.getName()) || 	
-						"br.com.sysmap.crux.core.client.datasource.AbstractRemotePagedDataSource".equals(rawType))
+						"br.com.sysmap.crux.core.client.datasource.AbstractRemotePagedDataSource".equals(rawType) ||
+						"br.com.sysmap.crux.core.client.datasource.AbstractStreamingDataSource".equals(rawType))
 					{
 						return (Class<?>)parameterizedType.getActualTypeArguments()[0];
 					}
