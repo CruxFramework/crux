@@ -22,10 +22,14 @@ package br.com.sysmap.crux.core.client.datasource;
  */
 public interface DataSource<T extends DataSourceRecord>
 {
+	void firstRecord();
 	boolean hasNextRecord();
 	void nextRecord();
 	Metadata getMetadata();
 	void reset();
 	Object getValue(String columnName);
 	T getRecord();
+	boolean hasPreviousRecord();
+	void previousRecord();
+	void sort(String columnName, boolean ascending);
 }

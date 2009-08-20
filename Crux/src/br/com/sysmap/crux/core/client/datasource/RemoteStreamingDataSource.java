@@ -15,13 +15,10 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
-
-
 /**
- * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface EditablePagedDataSource extends EditableDataSource, MeasurablePagedDataSource<EditableDataSourceRecord>
+public abstract class RemoteStreamingDataSource extends AbstractStreamingDataSource<DataSourceRecord, DataSourceRecord>
 {
 }

@@ -19,7 +19,6 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface StreamingDataSource
+public interface StreamingDataSource<R extends DataSourceRecord, E> extends RemoteDataSource<R, E>
 {
-
 }

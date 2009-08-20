@@ -37,9 +37,9 @@ public class DataSourceAsyncCallbackAdapter<T> extends AsyncCallbackAdapter<T>
 	{
 		if (this.caller instanceof RemoteDataSource)
 		{
-			if (result instanceof RemoteDataSourceConfiguration)
+			if (this.caller instanceof MeasurableRemoteDataSource && result instanceof RemoteDataSourceConfiguration)
 			{
-				((RemoteDataSource<?, ?>)this.caller).setLoadData((RemoteDataSourceConfiguration)result);
+				((MeasurableRemoteDataSource<?, ?>)this.caller).setLoadData((RemoteDataSourceConfiguration)result);
 			}
 			else
 			{

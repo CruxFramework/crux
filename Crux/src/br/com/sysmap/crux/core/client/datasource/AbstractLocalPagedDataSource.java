@@ -22,7 +22,7 @@ package br.com.sysmap.crux.core.client.datasource;
  *
  */
 abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> extends AbstractLocalScrollableDataSource<R,E> 
-                                              implements PagedDataSource<R>
+                                              implements MeasurablePagedDataSource<R>
 {
 	protected int pageSize = 10;
 	protected int currentPage = 0;
@@ -46,11 +46,12 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.PagedDataSource#getCurrentPageSize()
+	 * @see br.com.sysmap.crux.core.client.datasource.MeasurablePagedDataSource#getCurrentPageSize()
 	 */
 	public int getCurrentPageSize()
 	{
-		return getPageEndRecord() - getPageStartRecord() + 1;
+		int pageEndRecord = getPageEndRecord();
+		return pageEndRecord - getPageStartRecord() + 1;
 	}
 	
 	public boolean hasNextPage()
@@ -154,16 +155,17 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 		}
 		int startPageRecord = getPageStartRecord();
 		int endPageRescord = getPageEndRecord();
-		if (endPageRescord >= data.length)
-		{
-			endPageRescord = data.length-1;
-		}
 		return (record >= startPageRecord && record <= endPageRescord);
 	}
 
 	protected int getPageEndRecord()
 	{
-		return (currentPage * pageSize) - 1;
+		int pageEndRecord = (currentPage * pageSize) - 1;
+		if (pageEndRecord >= this.data.length)
+		{
+			pageEndRecord = this.data.length-1;
+		}
+		return pageEndRecord;
 	}
 
 	protected int getPageStartRecord()

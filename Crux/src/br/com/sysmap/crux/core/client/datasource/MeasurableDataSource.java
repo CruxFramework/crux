@@ -20,12 +20,8 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface ScrollableDataSource<T extends DataSourceRecord> extends DataSource<T>
+public interface MeasurableDataSource<T extends DataSourceRecord> extends DataSource<T>
 {
-	boolean hasPreviousRecord();
-	void previousRecord();
-	void sort(String columnName, boolean ascending);
 	int getRecordCount();
-	void firstRecord();
 	void lastRecord();
 }

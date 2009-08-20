@@ -15,13 +15,24 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
-
-
 /**
- * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface EditablePagedDataSource extends EditableDataSource, MeasurablePagedDataSource<EditableDataSourceRecord>
+public abstract class RemoteBindablePagedDataSource<T> extends AbstractRemotePagedDataSource<DataSourceRecord, T>
+													   implements Bindable<T>
 {
+	@Override
+	protected DataSourceRecord[] createDataObject(int count)
+	{
+		return new DataSourceRecord[count];
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.Bindable#getBindedObject()
+	 */
+	public T getBindedObject()
+	{
+		return null;
+	}	
 }

@@ -27,7 +27,7 @@ import com.google.gwt.core.client.GWT;
  *
  */
 abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
-                                                   implements ScrollableDataSource<R>, LocalDataSource<R,E>
+                                                   implements MeasurableDataSource<R>, LocalDataSource<R,E>
 {
 	protected Metadata metadata;
 	protected R[] data;
@@ -45,7 +45,7 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	{
 		if (currentRecord > -1)
 		{
-			DataSourceRecord dataSourceRow = data[currentRecord];
+			R dataSourceRow = data[currentRecord];
 			int position = metadata.getColumnPosition(columnName);
 			if (position > -1)
 			{
@@ -115,11 +115,11 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 		}
 	}
 
-	protected void sortArray(DataSourceRecord[] array, final String columnName, final boolean ascending)
+	protected void sortArray(R[] array, final String columnName, final boolean ascending)
 	{
 		final int position = metadata.getColumnPosition(columnName);
-		Arrays.sort(array, new Comparator<DataSourceRecord>(){
-			public int compare(DataSourceRecord o1, DataSourceRecord o2)
+		Arrays.sort(array, new Comparator<R>(){
+			public int compare(R o1, R o2)
 			{
 				if (ascending)
 				{

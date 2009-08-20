@@ -21,8 +21,7 @@ package br.com.sysmap.crux.core.client.datasource;
  *
  */
 public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> extends AbstractLocalPagedDataSource<R, E> 
-                           implements PagedDataSource<R>, 
-                                      RemoteDataSource<R,E>
+                           implements MeasurableRemoteDataSource<R,E>
 {	
 	protected RemoteDataSourceCallback fetchCallback = null;
 	private RemoteDataSourceConfiguration config;
@@ -144,9 +143,14 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 	{
 		int startRecord = getPageStartRecord();
 		int endRecord = getPageEndRecord();
-		if (updateRecords(startRecord, endRecord, records) && this.fetchCallback != null)
+		int updateRecordsCount = updateRecords(startRecord, endRecord, records);
+		if (updateRecordsCount > 0 && this.fetchCallback != null)
 		{
-			fetchCallback.execute(startRecord, endRecord);
+			fetchCallback.execute(startRecord, startRecord+updateRecordsCount-1);
+		}
+		else
+		{
+			fetchCallback.execute(-1, -1);
 		}
 	}
 	
@@ -157,17 +161,17 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 	 * @param records
 	 * @return
 	 */
-	protected boolean updateRecords(int startRecord, int endRecord, R[] records)
+	protected int updateRecords(int startRecord, int endRecord, R[] records)
 	{
-		if (records != null && records.length >= (endRecord-startRecord+1) && endRecord < getRecordCount())
+		if (records != null && endRecord < getRecordCount())
 		{
 			for (int i = startRecord; i <= endRecord; i++)
 			{
 				this.data[i] = records[i];
 			}
-			return true;
+			return records.length;
 		}
-		return false;
+		return 0;
 	}
 	
 	/**
@@ -208,13 +212,14 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 	 */
 	protected void fetchCurrentPage()
 	{
+		int pageEndRecord = (currentPage * pageSize) - 1;
 		if (!isPageLoaded(currentPage))
 		{
-			fetch(getPageStartRecord(), getPageEndRecord());
+			fetch(getPageStartRecord(), pageEndRecord);
 		}
 		else
 		{
-			fetchCallback.execute(getPageStartRecord(), getPageEndRecord());
+			fetchCallback.execute(getPageStartRecord(), pageEndRecord);
 		}
 	}
 	

@@ -21,10 +21,8 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface RemoteDataSource<R extends DataSourceRecord, E>
+public interface RemoteDataSource<R extends DataSourceRecord, E> extends PagedDataSource<R>
 {
-	void load();
-	void setLoadData(RemoteDataSourceConfiguration config);
 	void fetch(int startRecord, int endRecord);
 	void update(R[] records);
 	void updateData(E[] data);
