@@ -21,9 +21,9 @@ import br.com.sysmap.crux.core.client.rpc.AsyncCallbackAdapter;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class DataSourceAsyncCallbackAdapter<T> extends AsyncCallbackAdapter<T[]>
+public class RemoteDataSourceLoadAsyncCallbackAdapter extends AsyncCallbackAdapter<RemoteDataSourceConfiguration>
 {
-	public DataSourceAsyncCallbackAdapter(Object eventHandler)
+	public RemoteDataSourceLoadAsyncCallbackAdapter(RemoteDataSource<?, ?> eventHandler)
 	{
 		super(eventHandler);
 	}
@@ -31,18 +31,17 @@ public class DataSourceAsyncCallbackAdapter<T> extends AsyncCallbackAdapter<T[]>
 	/**
 	 * @see br.com.sysmap.crux.core.client.rpc.AsyncCallbackAdapter#onComplete(java.lang.Object)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public void onComplete(T[] result)
+	public void onComplete(RemoteDataSourceConfiguration result)
 	{
 		if (this.caller instanceof RemoteDataSource)
 		{
-			((RemoteDataSource<?, T>)this.caller).updateData(result);
+			if (this.caller instanceof MeasurableRemoteDataSource)
+			{
+				((MeasurableRemoteDataSource<?, ?>)this.caller).setLoadData(result);
+			}
 		}
-		else
-		{
-			((LocalDataSource<?, T>)this.caller).updateData(result);
-		}
+
 	}
 
 }
