@@ -39,6 +39,7 @@ import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.datasource.RemoteBindableEditablePagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.RemoteBindableEditableStreamingDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteBindablePagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteBindableStreamingDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
@@ -464,8 +465,8 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 						LocalBindableEditablePagedDataSource.class.equals(rawType) ||
 						RemoteBindablePagedDataSource.class.equals(rawType) ||
 						RemoteBindableEditablePagedDataSource.class.equals(rawType) ||
-						RemoteBindableStreamingDataSource.class.equals(rawType)
-						)
+						RemoteBindableStreamingDataSource.class.equals(rawType) ||
+						RemoteBindableEditableStreamingDataSource.class.equals(rawType))
 					{
 						return (Class<?>)parameterizedType.getActualTypeArguments()[0];
 					}
