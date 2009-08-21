@@ -2,6 +2,7 @@ package br.com.sysmap.crux.advanced.client.grid.model;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 
 public class Row
 {
@@ -9,6 +10,7 @@ public class Row
 	private int index;
 	private Element elem;
 	private boolean hasSelectionCell;
+	private boolean selected;
 		
 	protected Row(int index, Element elem, AbstractGrid<?, ?> grid, boolean hasSelectionCell)
 	{
@@ -20,15 +22,25 @@ public class Row
 	
 	public void setCell(Cell cell, String column)
 	{
+		CellFormatter formatter = grid.getTable().getCellFormatter();
+		
 		ColumnDefinition def = grid.getColumnDefinitions().getDefinition(column);
 		int colIndex = getColumnIndex(column);
-		setCell(cell, colIndex);
-		grid.getTable().getCellFormatter().setAlignment(index, colIndex, def.getHorizontalAlign(), def.getVerticalAlign());
+		formatter.setAlignment(index, colIndex, def.getHorizontalAlign(), def.getVerticalAlign());
+		
+		if(def.getWidth() != null)
+		{
+			formatter.setWidth(index, colIndex, def.getWidth());
+		}	
+		
+		setCell(cell, colIndex);	
 	}
 
 	void setCell(Cell cell, int column)
 	{
 		grid.getTable().setWidget(index, column, cell);
+		cell.setRow(this);
+		cell.setGrid(grid);
 	}
 	
 	Cell getCell(int column)
@@ -43,12 +55,21 @@ public class Row
 	}
 	
 	/**
+	 * Adds a style name to the row
+	 * @param rowIndex
+	 */
+	public void addStyle(String styleName)
+	{
+		elem.setClassName(elem.getClassName() + " " + styleName);
+	}
+	
+	/**
 	 * Sets the style name of the row
 	 * @param rowIndex
 	 */
 	void setStyle(String styleName)
 	{
-		elem.setClassName(styleName);
+		elem.setClassName(elem.getClassName() + " " + styleName);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -58,9 +79,18 @@ public class Row
 		{
 			HasValue<Boolean> selector = (HasValue<Boolean>) getCell(0).getCellWidget();
 			selector.setValue(selected);
+			
+			if(selected)
+			{
+				setStyle("row row-selected");
+			}
+			else
+			{
+				setStyle("row");
+			}
 		}
 		
-		setStyle("row-selected");
+		this.selected = selected;
 	}
 	
 	private int getColumnIndex(String column)
@@ -72,5 +102,21 @@ public class Row
 			colIndex++;
 		}
 		return colIndex;
+	}
+
+	/**
+	 * @return the selected
+	 */
+	boolean isSelected()
+	{
+		return selected;
+	}
+
+	/**
+	 * @return the grid
+	 */
+	protected AbstractGrid<?, ?> getGrid()
+	{
+		return grid;
 	}
 }
