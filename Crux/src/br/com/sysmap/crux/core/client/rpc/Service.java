@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.client.rpc;
 
+import br.com.sysmap.crux.core.client.screen.Screen;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -36,10 +38,17 @@ public class Service
 	public static ServiceDefTarget create(Class<? extends RemoteService> cls)
 	{
 		ServiceDefTarget result = GWT.create(cls);
-		//TODO Thiago: locale deve ir para o server
 		if (result.getServiceEntryPoint() == null)
 		{
-			result.setServiceEntryPoint("crux.rpc");
+			String locale = Screen.getLocale();
+			if (locale != null && locale.trim().length() > 0)
+			{
+				result.setServiceEntryPoint("crux.rpc?locale="+locale);
+			}
+			else
+			{
+				result.setServiceEntryPoint("crux.rpc");
+			}
 		}
 		return result;
 	}

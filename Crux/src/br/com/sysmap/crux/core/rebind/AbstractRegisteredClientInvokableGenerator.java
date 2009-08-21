@@ -54,6 +54,18 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 */
 	protected void generateAutoCreateFields(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter, String parentVariable)
 	{
+		generateLocaleVariableCreation(sourceWriter);
+		generateAutoCreateFieldsWithLocale(logger, controller, sourceWriter, parentVariable);
+	}
+	
+	/**
+	 * Create objects for fields that are annotated with @Create
+	 * @param logger
+	 * @param controller
+	 * @param sourceWriter
+	 */
+	private void generateAutoCreateFieldsWithLocale(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter, String parentVariable)
+	{
 		for (Field field : controller.getDeclaredFields()) 
 		{
 			if (field.getAnnotation(Create.class) != null)
@@ -76,15 +88,28 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 
 				if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
 				{
-					sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+").setServiceEntryPoint(\"crux.rpc\");");
+					sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+
+							").setServiceEntryPoint(\"crux.rpc\"+__locale_);");
 				}
 			}
 		}
 
 		if (controller.getSuperclass() != null)
 		{
-			generateAutoCreateFields(logger, controller.getSuperclass(), sourceWriter, parentVariable);
+			generateAutoCreateFieldsWithLocale(logger, controller.getSuperclass(), sourceWriter, parentVariable);
 		}
+	}
+
+	/**
+	 * 
+	 * @param sourceWriter
+	 */
+	private void generateLocaleVariableCreation(SourceWriter sourceWriter)
+	{
+		sourceWriter.println("String __locale_ = Screen.getLocale();");
+		sourceWriter.println("if (__locale_ != null && __locale_.trim().length() > 0)");
+		sourceWriter.println("__locale_ = \"?locale=\" + __locale_;");
+		sourceWriter.println("else __locale_ = \"\";");
 	}
 
 	/**
