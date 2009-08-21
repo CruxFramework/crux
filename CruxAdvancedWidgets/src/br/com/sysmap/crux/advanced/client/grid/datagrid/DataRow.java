@@ -30,4 +30,10 @@ public class DataRow extends Row
 	{
 		this.dataSourceRecord = dataSourceRowId;
 	}
+	
+	public Object getValue(String column)
+	{
+		int index = ((PagedDataGrid) getGrid()).getDataSource().getMetadata().getColumnPosition(column);
+		return dataSourceRecord.get(index);
+	}
 }
