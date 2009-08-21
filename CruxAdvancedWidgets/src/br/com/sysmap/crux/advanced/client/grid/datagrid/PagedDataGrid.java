@@ -410,4 +410,12 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 			}
 		}
 	}
+
+	/**
+	 * @return the dataSource
+	 */
+	EditablePagedDataSource getDataSource()
+	{
+		return dataSource;
+	}
 }

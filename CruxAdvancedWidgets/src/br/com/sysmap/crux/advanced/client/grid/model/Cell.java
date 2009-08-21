@@ -7,6 +7,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class Cell extends Composite {
 
 	private SimplePanel basePanel;
+	private Row row;
+	private AbstractGrid<?, ?> grid;
 	
 	protected Cell()
 	{
@@ -30,5 +32,15 @@ public class Cell extends Composite {
 	protected Widget getCellWidget()
 	{
 		return basePanel.getWidget();
+	}
+
+	public void setRow(Row row)
+	{
+		this.row = row;		
+	}
+
+	public void setGrid(AbstractGrid<?, ?> grid)
+	{
+		this.grid = grid;		
 	}
 }
