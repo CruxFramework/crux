@@ -90,4 +90,12 @@ public abstract class LocalEditablePagedDataSource extends AbstractLocalPagedDat
 	{
 		return editableOperations.getSelectedRecords();
 	}	
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#clearChanges()
+	 */
+	public void clearChanges()
+	{
+		this.editableOperations.reset();
+	}	
 }

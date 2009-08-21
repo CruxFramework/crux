@@ -33,4 +33,6 @@ public interface EditableDataSource extends DataSource<EditableDataSourceRecord>
 	EditableDataSourceRecord[] getRemovedRecords();
 	EditableDataSourceRecord[] getUpdatedRecords();
 	EditableDataSourceRecord[] getSelectedRecords();
+	
+	void clearChanges();
 }

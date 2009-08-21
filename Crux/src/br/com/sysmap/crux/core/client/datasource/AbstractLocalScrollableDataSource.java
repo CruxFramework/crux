@@ -186,7 +186,7 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 	{
 		if (!loaded)
 		{
-			throw new DataSoureExcpetion();//TODO message
+			throw new DataSoureExcpetion(messages.dataSourceNotLoaded());
 		}
 	}
 	

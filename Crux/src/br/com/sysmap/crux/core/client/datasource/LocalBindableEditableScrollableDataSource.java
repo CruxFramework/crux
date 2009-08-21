@@ -92,6 +92,14 @@ public abstract class LocalBindableEditableScrollableDataSource<T> extends Abstr
 	}	
 	
 	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#clearChanges()
+	 */
+	public void clearChanges()
+	{
+		this.editableOperations.reset();
+	}
+	
+	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.Bindable#getBindedObject()
 	 */
 	public T getBindedObject()

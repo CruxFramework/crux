@@ -68,4 +68,10 @@ public interface ClientMessages extends Messages
 
 	@DefaultMessage("[datasource 002] - Error loading dataSource remote data: {0}")
 	String remoteDataSourceErrorLoadingData(String message);
+
+	@DefaultMessage("[datasource 003] - Error processing requested operation. DataSource is not loaded yet.")
+	String dataSourceNotLoaded();
+	
+	@DefaultMessage("[datasource 004] - DataSource has changes on page. You must save or discard them before perform this operation.")
+	String remoteDataSourcePageDirty();
 }

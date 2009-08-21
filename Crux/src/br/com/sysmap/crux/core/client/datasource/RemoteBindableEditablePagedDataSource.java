@@ -151,10 +151,18 @@ public abstract class RemoteBindableEditablePagedDataSource<T> extends AbstractR
 	{
 		if (editableOperations.isDirty())
 		{
-			throw new DataSoureExcpetion();//TODO: mensagem
+			throw new DataSoureExcpetion(messages.remoteDataSourcePageDirty());
 		}
 	}	
 	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#clearChanges()
+	 */
+	public void clearChanges()
+	{
+		this.editableOperations.reset();
+	}
+
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.Bindable#getBindedObject()
 	 */

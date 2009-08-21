@@ -151,7 +151,15 @@ public abstract class RemoteEditablePagedDataSource extends AbstractRemotePagedD
 	{
 		if (editableOperations.isDirty())
 		{
-			throw new DataSoureExcpetion();//TODO: mensagem
+			throw new DataSoureExcpetion(messages.remoteDataSourcePageDirty());
 		}
-	}	
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#clearChanges()
+	 */
+	public void clearChanges()
+	{
+		this.editableOperations.reset();
+	}
 }

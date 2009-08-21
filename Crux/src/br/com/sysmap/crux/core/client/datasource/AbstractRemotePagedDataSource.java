@@ -122,7 +122,7 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 		boolean loaded = isPageLoaded(getPageForRecord(recordNumber));
 		if (!loaded)
 		{
-			throw new DataSoureExcpetion();//TODO message
+			throw new DataSoureExcpetion(messages.dataSourceNotLoaded());
 		}
 	}
 	
@@ -131,7 +131,7 @@ public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, 
 	{
 		if (!loaded)
 		{
-			throw new DataSoureExcpetion();//TODO message
+			throw new DataSoureExcpetion(messages.dataSourceNotLoaded());
 		}
 		return this.config.getRecordCount();
 	}

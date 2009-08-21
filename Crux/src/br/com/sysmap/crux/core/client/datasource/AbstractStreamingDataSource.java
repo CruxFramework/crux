@@ -20,6 +20,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.ClientMessages;
+
+import com.google.gwt.core.client.GWT;
+
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -34,12 +38,20 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 	protected int currentPage = 0;
 	protected Metadata metadata;
 	protected RemoteDataSourceCallback fetchCallback = null;
+	protected ClientMessages messages = GWT.create(ClientMessages.class);
 	
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#setCallback(br.com.sysmap.crux.core.client.datasource.RemoteDataSourceCallback)
+	 */
 	public void setCallback(RemoteDataSourceCallback callback)
 	{
 		this.fetchCallback = callback;		
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#update(R[])
+	 */
 	public void update(R[] records)
 	{
 		int startRecord = getPageStartRecord();
@@ -81,15 +93,24 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 	}
 	
 	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#updateData(E[])
+	 */
 	public void updateData(E[] data)
 	{
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getMetadata()
+	 */
 	public Metadata getMetadata()
 	{
 		return metadata;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getRecord()
+	 */
 	public R getRecord()
 	{
 		ensureCurrentPageLoaded();		
@@ -103,6 +124,9 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		}
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getValue(java.lang.String)
+	 */
 	public Object getValue(String columnName)
 	{
 		ensureCurrentPageLoaded();		
@@ -118,12 +142,18 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		return null;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#hasNextRecord()
+	 */
 	public boolean hasNextRecord()
 	{
 		ensureCurrentPageLoaded();
 		return isRecordOnPage(currentRecord+1);
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#nextRecord()
+	 */
 	public void nextRecord()
 	{
 		if (hasNextRecord())
@@ -132,18 +162,27 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		}
 	}
 	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#firstRecord()
+	 */
 	public void firstRecord()
 	{
 		currentRecord = getPageStartRecord();
 		ensureCurrentPageLoaded();
 	}
 	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#hasPreviousRecord()
+	 */
 	public boolean hasPreviousRecord()
 	{
 		ensureCurrentPageLoaded();
 		return isRecordOnPage(currentRecord-1);
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#previousRecord()
+	 */
 	public void previousRecord()
 	{
 		if (hasPreviousRecord())
@@ -152,6 +191,9 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		}
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#reset()
+	 */
 	public void reset()
 	{
 		this.data.clear();
@@ -164,7 +206,7 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		boolean loaded = isCurrentPageLoaded();
 		if (!loaded)
 		{
-			throw new DataSoureExcpetion();//TODO message
+			throw new DataSoureExcpetion(messages.dataSourceNotLoaded());
 		}
 	}
 
@@ -205,22 +247,34 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		return (currentPage - 1) * pageSize;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.PagedDataSource#getCurrentPage()
+	 */
 	public int getCurrentPage()
 	{
 		return currentPage;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.PagedDataSource#getCurrentPageSize()
+	 */
 	public int getCurrentPageSize()
 	{
 		int pageEndRecord = getPageEndRecord();
 		return pageEndRecord - getPageStartRecord() + 1;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.PagedDataSource#getPageSize()
+	 */
 	public int getPageSize()
 	{
 		return pageSize;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.PagedDataSource#hasNextPage()
+	 */
 	public boolean hasNextPage()
 	{
 		int pageEndRecord = getPageEndRecord();
@@ -235,11 +289,17 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		return false;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.PagedDataSource#hasPreviousPage()
+	 */
 	public boolean hasPreviousPage()
 	{
 		return (currentPage > 1);
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.PagedDataSource#nextPage()
+	 */
 	public boolean nextPage()
 	{
 		if (hasNextPage())
@@ -253,6 +313,9 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		return false;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.PagedDataSource#previousPage()
+	 */
 	public boolean previousPage()
 	{
 		if (hasPreviousPage())
@@ -266,6 +329,9 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		return false;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.PagedDataSource#setPageSize(int)
+	 */
 	public void setPageSize(int pageSize)
 	{
 		if (pageSize < 1)
@@ -276,7 +342,10 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		updateCurrentRecord();
 		fetchCurrentPage();
 	}
-
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#sort(java.lang.String, boolean)
+	 */
 	@SuppressWarnings("unchecked")
 	public void sort(String columnName, boolean ascending)
 	{
@@ -344,7 +413,6 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		});
 		firstRecord();
 	}
-	
 	
 	protected void updateCurrentRecord()
 	{

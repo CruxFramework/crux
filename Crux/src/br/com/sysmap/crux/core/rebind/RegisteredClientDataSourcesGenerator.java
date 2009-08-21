@@ -466,8 +466,6 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 						RemoteBindableEditablePagedDataSource.class.equals(rawType) ||
 						RemoteBindableStreamingDataSource.class.equals(rawType)
 						)
-						
-						//TODO: completar os tipos aki
 					{
 						return (Class<?>)parameterizedType.getActualTypeArguments()[0];
 					}
