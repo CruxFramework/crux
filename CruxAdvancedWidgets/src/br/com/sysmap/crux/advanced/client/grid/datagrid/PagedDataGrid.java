@@ -10,6 +10,7 @@ import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinitions;
 import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
 import br.com.sysmap.crux.advanced.client.paging.Pageable;
 import br.com.sysmap.crux.advanced.client.paging.Pager;
+import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSourceCallback;
@@ -44,6 +45,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	private String currentSortingColumn;
 	private boolean ascendingSort;
 	private Pager pager; 
+	private RowSelectionModel rowSelectionModel;
 	
 	/**
 	 * Constructor
@@ -55,6 +57,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	{
 		super(columnDefinitions, rowSelectionModel, cellSpacing);
 		this.pageSize = pageSize;
+		this.rowSelectionModel = rowSelectionModel;
 		this.autoLoadData = autoLoadData;
 		super.render();
 	}
@@ -173,7 +176,29 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	@Override
 	protected void onSelectRow(boolean select, DataRow row)
 	{
+		if(select && (RowSelectionModel.SINGLE.equals(rowSelectionModel) || RowSelectionModel.SINGLE_WITH_RADIO.equals(rowSelectionModel)))
+		{
+			EditableDataSourceRecord[] records = dataSource.getSelectedRecords();
+			if(records != null)
+			{
+				for (int i = 0; i < records.length; i++)
+				{
+					EditableDataSourceRecord editableDataSourceRecord = records[i];
+					editableDataSourceRecord.setSelected(false);
+				}
+			}
+			
+			Iterator<DataRow> it = getRowIterator();
+			
+			while(it.hasNext())
+			{
+				DataRow dataRow = it.next();
+				dataRow.markAsSelected(false);
+			}			
+		}		
+		
 		row.getDataSourceRecord().setSelected(select);
+		row.markAsSelected(select);
 	}
 
 	@Override
@@ -208,7 +233,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 				}
 				
 				Label label = new Label(str);
-				row.setCell(createCell(column.getWidth(), label), key);
+				row.setCell(createCell(label), key);
 			}			
 		}
 		
@@ -225,7 +250,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	{
 		ColumnHeader header = new ColumnHeader(columnDefinition, this);		
 		headers.add(header);
-		Cell cell = createHeaderCell(columnDefinition.getWidth(), header);
+		Cell cell = createHeaderCell(header);
 		cell.setWidth("100%");
 		cell.setHeight("100%");
 		return cell;

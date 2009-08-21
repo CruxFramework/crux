@@ -69,7 +69,7 @@ public class Row
 	 */
 	void setStyle(String styleName)
 	{
-		elem.setClassName(elem.getClassName() + " " + styleName);
+		elem.setClassName(styleName);
 	}
 	
 	@SuppressWarnings("unchecked")

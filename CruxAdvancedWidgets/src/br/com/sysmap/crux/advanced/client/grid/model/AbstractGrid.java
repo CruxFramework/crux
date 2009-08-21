@@ -5,12 +5,21 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import br.com.sysmap.crux.advanced.client.event.row.HasRowClickHandlers;
+import br.com.sysmap.crux.advanced.client.event.row.HasRowDoubleClickHandlers;
+import br.com.sysmap.crux.advanced.client.event.row.HasRowRenderHandlers;
+import br.com.sysmap.crux.advanced.client.event.row.RowClickEvent;
+import br.com.sysmap.crux.advanced.client.event.row.RowClickHandler;
+import br.com.sysmap.crux.advanced.client.event.row.RowDoubleClickEvent;
+import br.com.sysmap.crux.advanced.client.event.row.RowDoubleClickHandler;
+import br.com.sysmap.crux.advanced.client.event.row.RowRenderEvent;
+import br.com.sysmap.crux.advanced.client.event.row.RowRenderHandler;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -26,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Base class for implementing grid widgets. All subclasses of this class must invoke the method <code>render()</code> in their constructors.
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> extends Composite {	
+public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> extends Composite implements HasRowClickHandlers, HasRowDoubleClickHandlers, HasRowRenderHandlers {	
 	
 	private SimplePanel panel;
 	private GridHtmlTable table;
@@ -138,6 +147,8 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 			}
 			
 			renderRow(row);
+			
+			fireRowRenderEvent(row);
 		}
 	}
 
@@ -154,14 +165,14 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		else if(RowSelectionModel.SINGLE_WITH_RADIO.equals(rowSelection))
 		{
 			RadioButton radio = new RadioButton(generatedId + "_selector");
-			radio.addValueChangeHandler(new RowSelectionHandler<R>(this, row));
+			radio.addClickHandler(new RowSelectionHandler<R>(this, row));
 			w = radio;
 		}
 		
-		return createCell("", w);
+		return createCell(w);
 	}
 
-	private Iterator<R> getRowIterator()
+	protected Iterator<R> getRowIterator()
 	{
 		Iterator<R> it = new Iterator<R>(){
 
@@ -215,13 +226,13 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	{
 		String label = columnDefinition.getLabel();
 		Label columnHeader = new Label(label);
-		Cell cell = createHeaderCell(columnDefinition.getWidth(), columnHeader);
+		Cell cell = createHeaderCell(columnHeader);
 		return cell;
 	}
 	
-	protected Cell createCell(String width, Widget widget)
+	protected Cell createCell(Widget widget)
 	{
-		Cell cell = createBaseCell(width, widget);
+		Cell cell = createBaseCell(widget, true);
 		cell.addStyleName("cell");
 		return cell;
 	}
@@ -245,8 +256,8 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 			w = new Label(" ");
 		}
 		
-		Cell cell = createHeaderCell("", w);
-		
+		Cell cell = createHeaderCell(w);
+		cell.setHeight("100%");
 		return cell;
 	}
 	
@@ -293,33 +304,32 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	 * @param widget
 	 * @return
 	 */
-	protected Cell createHeaderCell(String width, Widget widget)
+	protected Cell createHeaderCell(Widget widget)
 	{
-		Cell cell = createBaseCell(width, widget);
+		Cell cell = createBaseCell(widget, false);
 		cell.addStyleName("columnHeader");
 		return cell;
 	}
 	
 	/**
 	 * Creates a cell with an widget to be inserted in table
-	 * @param width
 	 * @param widget
 	 * @return
 	 */
-	private Cell createBaseCell(String width, Widget widget)
+	protected Cell createBaseCell(Widget widget, boolean fireEvents)
 	{
 		Cell cell = null;
 		
 		if(widget != null)
 		{
-			cell = new Cell(widget);
+			cell = new Cell(widget, fireEvents);
 		}
 		else
 		{
-			cell = new Cell();
+			cell = new Cell(fireEvents);
 		}
 		
-		cell.setWidth(width);
+		cell.setWidth("100%");
 			
 		return cell;
 	}
@@ -364,7 +374,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	}
 	
 	@SuppressWarnings("unchecked")
-	static class RowSelectionHandler<R extends Row> implements ClickHandler, ValueChangeHandler<Boolean>
+	static class RowSelectionHandler<R extends Row> implements ClickHandler
 	{
 		private AbstractGrid<?, R> grid;
 		private R row;
@@ -372,19 +382,45 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		public RowSelectionHandler(AbstractGrid<?, R> grid, R row)
 		{
 			this.grid = grid;
+			this.row = row;
 		}
 		
 		public void onClick(ClickEvent event)
 		{
 			boolean selected = ((HasValue<Boolean>) event.getSource()).getValue();
+			row.markAsSelected(selected);
 			grid.onSelectRow(selected, row);
-			
-		}
-		
-		public void onValueChange(ValueChangeEvent<Boolean> event)
-		{
-			boolean selected = ((HasValue<Boolean>) event.getSource()).getValue();
-			grid.onSelectRow(selected, row);
-		}		
+			event.stopPropagation();
+		}	
+	}
+	
+	public HandlerRegistration addClickRowHandler(RowClickHandler handler)
+	{
+		return addHandler(handler, RowClickEvent.getType());		
+	}
+
+	public HandlerRegistration addDoubleClickRowHandler(RowDoubleClickHandler handler)
+	{
+		return addHandler(handler, RowDoubleClickEvent.getType());
+	}
+	
+	public HandlerRegistration addRowRenderHandler(RowRenderHandler handler)
+	{
+		return addHandler(handler, RowRenderEvent.getType());
+	}
+	
+	void fireRowDoubleClickEvent(R row)
+	{
+		RowDoubleClickEvent.fire(this, row);
+	}
+	
+	void fireRowClickEvent(R row)
+	{
+		RowClickEvent.fire(this, row);
+	}
+
+	void fireRowRenderEvent(R row)
+	{
+		RowRenderEvent.fire(this, row);
 	}
 }
