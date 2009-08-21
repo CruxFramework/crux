@@ -39,6 +39,9 @@
 			<xsl:if test="string-length(@autoLoadData) > 0">
 				<xsl:attribute name="_autoLoadData" select="@autoLoadData" />
 			</xsl:if>
+			<xsl:if test="string-length(@stretchColumns) > 0">
+				<xsl:attribute name="_stretchColumns" select="@stretchColumns" />
+			</xsl:if>
 			<xsl:for-each select="child::*">
 				<xsl:element name="span" namespace="{$xhtmlNS}">
 					<xsl:if test="string-length(@width) > 0">
