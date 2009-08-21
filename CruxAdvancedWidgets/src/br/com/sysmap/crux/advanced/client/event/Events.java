@@ -19,4 +19,7 @@ public class Events
 	public static final String OK = "_onok";	
 	
 	public static final String TIMEOUT = "_ontimeout";
+	
+	public static final String CLICK_LINE = "_onclickline";
+	public static final String DOUBLE_CLICK_LINE = "_ondoubleclickline";
 }
