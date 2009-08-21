@@ -4,6 +4,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -23,7 +25,8 @@ public class SequentialPager extends Composite implements Pager
 	public SequentialPager()
 	{
 		this.panel = new HorizontalPanel();
-		this.panel.setSpacing(5);
+		this.panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		this.panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 		
 		this.previousBtn = createPreviousButton();
 		this.nextBtn = createNextButton();
@@ -77,28 +80,30 @@ public class SequentialPager extends Composite implements Pager
 
 	public void update(int currentPage, boolean isLastPage)
 	{
+		this.currentPage = currentPage;
+		
 		Label currentPageLabel = createCurrentPageLabel(currentPage);
 		
-		if(currentPage <= 1)
+		if(this.currentPage <= 1)
 		{
-			previousBtn.addStyleName("disabled");
+			this.previousBtn.addStyleDependentName("disabled");
 		}
 		else
 		{
-			previousBtn.removeStyleName("disabled");
+			this.previousBtn.removeStyleDependentName("disabled");
 		}
 		
 		if(isLastPage)
 		{
-			nextBtn.addStyleName("disabled");
+			this.nextBtn.addStyleDependentName("disabled");
 		}
 		else
 		{
-			nextBtn.removeStyleName("disabled");
+			this.nextBtn.removeStyleDependentName("disabled");
 		}
 				
-		infoPanel.clear();
-		infoPanel.add(currentPageLabel);
+		this.infoPanel.clear();
+		this.infoPanel.add(currentPageLabel);
 	}
 
 	private Label createCurrentPageLabel(int currentPageNumber)

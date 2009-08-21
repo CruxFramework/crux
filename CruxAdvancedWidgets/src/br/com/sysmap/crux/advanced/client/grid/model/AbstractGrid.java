@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -27,13 +28,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> extends Composite {	
 	
-	private ScrollPanel scrollingArea;
+	private SimplePanel panel;
 	private GridHtmlTable table;
 	private ColumnDefinitions<C> definitions;
 	private String generatedId =  "cruxGrid_" + new Date().getTime();
 	private GridLayout gridLayout = GWT.create(GridLayout.class);
 	private List<R> rows = new ArrayList<R>();
 	private RowSelectionModel rowSelection;
+	private ScrollPanel scrollingArea;
 	
 	/**
 	 * Constructor
@@ -44,10 +46,16 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		this.definitions = columnDefinitions;
 		this.rowSelection = rowSelection;
 		
-		scrollingArea = new ScrollPanel();
-		scrollingArea.setStyleName("crux-Grid");
+		panel = new SimplePanel();
+		panel.setStyleName("crux-Grid");
 		
-		initWidget(scrollingArea);
+		scrollingArea = new ScrollPanel();
+		scrollingArea.setHeight("1");
+		scrollingArea.setWidth("1");
+		
+		panel.add(scrollingArea);
+				
+		initWidget(panel);
 		
 		table = new GridHtmlTable();
 		table.setCellSpacing(cellSpacing);
@@ -58,9 +66,27 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		{
 			public void execute()
 			{	
+				resize();			
 				scrollingArea.add(table);
 			}
 		});
+	}
+	
+	private void resize()
+	{
+		Element elem = scrollingArea.getElement().getParentElement();
+		if(elem != null)
+		{
+			int width = elem.getClientWidth();
+			int height = elem.getClientHeight();
+			scrollingArea.setWidth("" + width);
+			scrollingArea.setHeight("" + height);
+		}
+		else
+		{
+			scrollingArea.setWidth("100%");
+			scrollingArea.setHeight("100%");
+		}
 	}
 	
 	protected final void clearAndRender()
@@ -90,6 +116,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		int rowCount = getRowsToBeRendered() + 1;
 		table.resize(rowCount, definitions.getDefinitions().size() + 1);
 		this.rows = new ArrayList<R>();
+		onClearRendering();
 	}
 
 	private void renderRows()
@@ -178,13 +205,13 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		{
 			if(columnDefinition.isVisible())
 			{
-				Cell cell = createHeaderCell(columnDefinition);
+				Cell cell = createColumnHeaderCell(columnDefinition);
 				row.setCell(cell, columnDefinition.getKey());
 			}
 		}
 	}
 
-	protected Cell createHeaderCell(C columnDefinition)
+	protected Cell createColumnHeaderCell(C columnDefinition)
 	{
 		String label = columnDefinition.getLabel();
 		Label columnHeader = new Label(label);
@@ -328,6 +355,8 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	protected abstract R createRow(int index, Element element);
 	
 	protected abstract void onBeforeRenderRows();
+	
+	protected abstract void onClearRendering();
 	
 	protected ColumnDefinitions<C> getColumnDefinitions()
 	{

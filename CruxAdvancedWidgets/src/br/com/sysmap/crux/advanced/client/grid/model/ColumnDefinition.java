@@ -65,4 +65,20 @@ public class ColumnDefinition
 	{
 		return key;
 	}
+
+	/**
+	 * @return the horizontalAlign
+	 */
+	public HorizontalAlignmentConstant getHorizontalAlign()
+	{
+		return horizontalAlign;
+	}
+
+	/**
+	 * @return the verticalAlign
+	 */
+	public VerticalAlignmentConstant getVerticalAlign()
+	{
+		return verticalAlign;
+	}
 }

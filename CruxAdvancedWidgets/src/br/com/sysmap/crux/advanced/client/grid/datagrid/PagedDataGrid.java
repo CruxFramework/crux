@@ -1,6 +1,8 @@
 package br.com.sysmap.crux.advanced.client.grid.datagrid;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.grid.model.AbstractGrid;
 import br.com.sysmap.crux.advanced.client.grid.model.Cell;
@@ -11,6 +13,8 @@ import br.com.sysmap.crux.advanced.client.paging.Pager;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSourceCallback;
+import br.com.sysmap.crux.core.client.datasource.MeasurableDataSource;
+import br.com.sysmap.crux.core.client.datasource.MeasurableRemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSourceCallback;
 import br.com.sysmap.crux.core.client.datasource.StreamingDataSource;
@@ -20,7 +24,9 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -32,6 +38,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 
 	private int pageSize;
 	private EditablePagedDataSource dataSource;
+	private List<ColumnHeader> headers = new ArrayList<ColumnHeader>();
 	private boolean autoLoadData;
 	private boolean loaded;
 	private String currentSortingColumn;
@@ -97,6 +104,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void loadData()
 	{
 		if(!this.loaded)
@@ -110,7 +118,14 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 			}
 			else if(this.dataSource instanceof RemoteDataSource)
 			{
-				this.dataSource.nextPage();
+				if(this.dataSource instanceof MeasurableDataSource)
+				{
+					((MeasurableRemoteDataSource) this.dataSource).load();
+				}
+				else
+				{
+					this.dataSource.nextPage();
+				}
 			}
 		}
 	}
@@ -152,7 +167,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 		if(this.pager != null)
 		{
 			this.pager.update(0, false);
-		}		
+		}
 	}
 
 	@Override
@@ -206,50 +221,13 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	}
 	
 	@Override
-	protected Cell createHeaderCell(final DataColumnDefinition columnDefinition)
+	protected Cell createColumnHeaderCell(final DataColumnDefinition columnDefinition)
 	{
-		FocusPanel clickable = new FocusPanel();
-		
-		clickable.addClickHandler(new ClickHandler()
-		{
-			public void onClick(ClickEvent event)
-			{
-				String column = columnDefinition.getKey();
-				String previousSorting = currentSortingColumn;
-				boolean resorting = column.equals(previousSorting);
-				
-				currentSortingColumn = column;
-
-				if(!resorting)
-				{
-					ascendingSort = true;
-				}
-				else
-				{
-					ascendingSort = !ascendingSort;
-				}
-				
-				dataSource.sort(column, ascendingSort);
-				
-				render();
-			}			
-		});		
-		
-		HorizontalPanel panel = new HorizontalPanel();
-		
-		Label columnLabel = new Label(columnDefinition.getLabel());
-		columnLabel.setStyleName("label");
-		
-		Label columnLabelArrow = new Label(" ");
-		columnLabelArrow.setStyleName("arrow");
-		
-		panel.add(columnLabel);
-		panel.add(columnLabelArrow);
-		
-		clickable.add(panel);
-		
-		Cell cell = createHeaderCell(columnDefinition.getWidth(), clickable);
-		
+		ColumnHeader header = new ColumnHeader(columnDefinition, this);		
+		headers.add(header);
+		Cell cell = createHeaderCell(columnDefinition.getWidth(), header);
+		cell.setWidth("100%");
+		cell.setHeight("100%");
 		return cell;
 	}
 
@@ -258,35 +236,37 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	{
 		if(this.dataSource != null)
 		{
-			boolean hasMorePages = false;
-			
-			if(!(this.dataSource instanceof StreamingDataSource))
+			updatePager();
+
+			for (ColumnHeader header : headers)
 			{
-				hasMorePages = this.dataSource.hasNextPage();
-			}
-			else
-			{
-				// TODO
-			}			
-			
-			if(this.pager != null)
-			{
-				this.pager.update(this.dataSource.getCurrentPage(), !hasMorePages);
+				header.applySortingLayout();
 			}
 			
 			dataSource.firstRecord();
 		}
 	}
+	
+	private void updatePager()
+	{
+		if(this.dataSource != null && this.pager != null)
+		{
+			if(this.pager != null)
+			{
+				this.pager.update(this.dataSource.getCurrentPage(),  !this.dataSource.hasNextPage());
+			}
+		}
+	}
 
 	public int getPageCount()
 	{
-		if(!(this.dataSource instanceof StreamingDataSource))
+		if(this.dataSource instanceof StreamingDataSource)
 		{
-			this.dataSource.getPageCount();
+			return -1;
 		}
 		else
 		{
-			return -1;
+			this.dataSource.getPageCount();
 		}
 		
 		return 0;
@@ -294,16 +274,140 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 
 	public void nextPage()
 	{
-		this.dataSource.nextPage();
+		if(this.dataSource != null && loaded)
+		{
+			this.dataSource.nextPage();
+			
+			if(!(this.dataSource instanceof RemoteDataSource))
+			{
+				render();
+			}
+		}
 	}
 
 	public void previousPage()
 	{
-		this.dataSource.previousPage();	
+		if(this.dataSource != null && loaded)
+		{
+			this.dataSource.previousPage();
+			
+			if(!(this.dataSource instanceof RemoteDataSource))
+			{
+				render();
+			}
+		}
 	}
 
 	public void setPager(Pager pager)
 	{
-		this.pager = pager;		
+		this.pager = pager;
+		updatePager();
+	}
+	
+	@Override
+	protected void onClearRendering()
+	{
+		this.headers = new ArrayList<ColumnHeader>();		
+	}
+	
+	/*
+	public List<Object> getSelectedRows()
+	{
+		if(this.dataSource instanceof Bindable)
+		{
+			Bindable<?> bindable = (Bindable<?>) this.dataSource;
+			bindable.getBindedObject();			
+		}
+	}
+	*/
+	
+	protected static class ColumnHeader extends Composite
+	{
+		private FocusPanel clickable;
+		private Label columnLabelArrow;
+		
+		private PagedDataGrid grid;
+		private DataColumnDefinition columnDefinition;
+		
+		public ColumnHeader(DataColumnDefinition columnDefinition, PagedDataGrid grid)
+		{
+			this.grid = grid;
+			this.columnDefinition = columnDefinition;
+			
+			clickable = new FocusPanel();
+			clickable.setWidth("100%");
+			clickable.setHeight("100%");
+			
+			HorizontalPanel panel = new HorizontalPanel();
+			panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+			panel.setHeight("100%");
+			
+			Label columnLabel = new Label(columnDefinition.getLabel());
+			columnLabel.setStyleName("label");
+			
+			columnLabelArrow = new Label(" ");
+			columnLabelArrow.setStyleName("arrow");
+			
+			panel.add(columnLabel);
+			panel.add(columnLabelArrow);
+			
+			clickable.add(panel);
+			clickable.addClickHandler(createClickHandler());
+			
+			initWidget(clickable);
+			
+			setStyleName("columnSorter");
+		}
+		
+		private ClickHandler createClickHandler()
+		{
+			return new ClickHandler()
+			{
+				public void onClick(ClickEvent event)
+				{
+					if(grid.dataSource != null && grid.loaded)
+					{
+						String column = columnDefinition.getKey();
+						String previousSorting = grid.currentSortingColumn;
+						boolean resorting = column.equals(previousSorting);
+						
+						grid.currentSortingColumn = column;
+				
+						if(!resorting)
+						{
+							grid.ascendingSort = true;
+						}
+						else
+						{
+							grid.ascendingSort = !grid.ascendingSort;
+						}
+						
+						grid.dataSource.sort(column, grid.ascendingSort);
+						
+						grid.render();
+					}				
+				}			
+			};
+		}
+		
+		void applySortingLayout()
+		{
+			if(this.columnDefinition.getKey().equals(grid.currentSortingColumn))
+			{
+				if(grid.ascendingSort)
+				{
+					addStyleDependentName("asc");
+				}
+				else
+				{
+					addStyleDependentName("desc");
+				}
+			}
+			else
+			{
+				removeStyleDependentName("asc");
+				removeStyleDependentName("desc");
+			}
+		}
 	}
 }

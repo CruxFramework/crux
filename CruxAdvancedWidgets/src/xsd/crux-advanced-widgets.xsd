@@ -17,6 +17,7 @@
 	<xs:element name="popup" type="Popup" />
 	<xs:element name="timer" type="Timer" />
 	<xs:element name="pagedDataGrid" type="PagedDataGrid" />
+	<xs:element name="sequentialPager" type="SequentialPager" />
 
 	<!--
 	=====================================================================================
@@ -39,6 +40,7 @@
 			<xs:element ref="popup"/>
 			<xs:element ref="timer"/>
 			<xs:element ref="pagedDataGrid"/>
+			<xs:element ref="sequentialPager"/>
 		</xs:choice>
 	</xs:group>
 
@@ -283,6 +285,14 @@
 		<xs:attributeGroup ref="basic:HorizontalAlignment"/>
 		<xs:attributeGroup ref="basic:VerticalAlignment"/>
 	</xs:complexType>
+	
+	<xs:complexType name="SequentialPager">
+		<xs:complexContent>
+			<xs:extension base="basic:AbstractWidget">
+				<xs:attribute name="pageable" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
 	
 	<!--
 	=====================================================================================

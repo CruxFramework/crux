@@ -20,8 +20,10 @@ public class Row
 	
 	public void setCell(Cell cell, String column)
 	{
+		ColumnDefinition def = grid.getColumnDefinitions().getDefinition(column);
 		int colIndex = getColumnIndex(column);
 		setCell(cell, colIndex);
+		grid.getTable().getCellFormatter().setAlignment(index, colIndex, def.getHorizontalAlign(), def.getVerticalAlign());
 	}
 
 	void setCell(Cell cell, int column)
