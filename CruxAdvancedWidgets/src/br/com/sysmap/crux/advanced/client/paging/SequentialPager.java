@@ -16,7 +16,7 @@ public class SequentialPager extends Composite implements Pager
 	private Pageable pageable;
 	
 	private int currentPage = 0;
-	boolean isLastPage = false;
+	boolean isLastPage = true;
 	
 	private SimplePanel infoPanel;
 	private FocusPanel previousBtn;
@@ -46,6 +46,7 @@ public class SequentialPager extends Composite implements Pager
 	{
 		FocusPanel panel = new FocusPanel();
 		panel.setStyleName("previousButton");
+		panel.addStyleDependentName("disabled");
 		panel.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event)
 			{
@@ -64,6 +65,7 @@ public class SequentialPager extends Composite implements Pager
 	{
 		FocusPanel panel = new FocusPanel();
 		panel.setStyleName("nextButton");
+		panel.addStyleDependentName("disabled");
 		panel.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event)
 			{
@@ -81,6 +83,7 @@ public class SequentialPager extends Composite implements Pager
 	public void update(int currentPage, boolean isLastPage)
 	{
 		this.currentPage = currentPage;
+		this.isLastPage = isLastPage;
 		
 		Label currentPageLabel = createCurrentPageLabel(currentPage);
 		

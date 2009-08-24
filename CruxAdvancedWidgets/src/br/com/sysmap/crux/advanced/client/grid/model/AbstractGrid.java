@@ -394,12 +394,12 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		}	
 	}
 	
-	public HandlerRegistration addClickRowHandler(RowClickHandler handler)
+	public HandlerRegistration addRowClickHandler(RowClickHandler handler)
 	{
 		return addHandler(handler, RowClickEvent.getType());		
 	}
 
-	public HandlerRegistration addDoubleClickRowHandler(RowDoubleClickHandler handler)
+	public HandlerRegistration addRowDoubleClickHandler(RowDoubleClickHandler handler)
 	{
 		return addHandler(handler, RowDoubleClickEvent.getType());
 	}

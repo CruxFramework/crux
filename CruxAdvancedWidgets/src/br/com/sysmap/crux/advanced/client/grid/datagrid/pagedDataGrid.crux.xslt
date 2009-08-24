@@ -42,6 +42,17 @@
 			<xsl:if test="string-length(@stretchColumns) > 0">
 				<xsl:attribute name="_stretchColumns" select="@stretchColumns" />
 			</xsl:if>
+			
+			<xsl:if test="string-length(@onRowRender) > 0">
+				<xsl:attribute name="_onrowrender" select="@onRowRender" />
+			</xsl:if>
+			<xsl:if test="string-length(@onRowClick) > 0">
+				<xsl:attribute name="_onrowclick" select="@onRowClick" />
+			</xsl:if>
+			<xsl:if test="string-length(@onRowDoubleClick) > 0">
+				<xsl:attribute name="_onrowdoubleclick" select="@onRowDoubleClick" />
+			</xsl:if>
+			
 			<xsl:for-each select="child::*">
 				<xsl:element name="span" namespace="{$xhtmlNS}">
 					<xsl:if test="string-length(@width) > 0">

@@ -17,6 +17,7 @@ package br.com.sysmap.crux.advanced.client.grid.datagrid;
 
 import java.util.List;
 
+import br.com.sysmap.crux.advanced.client.event.row.RowEventsBind;
 import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
 import br.com.sysmap.crux.advanced.client.util.AlignmentUtil;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
@@ -188,5 +189,14 @@ public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 		}
 				
 		return defs;
+	}
+	
+	@Override
+	protected void processEvents(PagedDataGrid widget, Element element, String widgetId) throws InterfaceConfigException
+	{
+		RowEventsBind.bindClickRowEvent(element, widget);
+		RowEventsBind.bindDoubleClickRowEvent(element, widget);
+		RowEventsBind.bindRenderRowEvent(element, widget);
+		super.processEvents(widget, element, widgetId);
 	}
 }
