@@ -31,7 +31,7 @@ public class SequentialPager extends Composite implements Pager
 		this.previousBtn = createPreviousButton();
 		this.nextBtn = createNextButton();
 		this.infoPanel = new SimplePanel();
-		this.infoPanel.setWidget(createCurrentPageLabel(0));
+		this.infoPanel.setWidget(createCurrentPageLabel("" + 0));
 		
 		this.panel.add(previousBtn);
 		this.panel.add(infoPanel);
@@ -85,7 +85,7 @@ public class SequentialPager extends Composite implements Pager
 		this.currentPage = currentPage;
 		this.isLastPage = isLastPage;
 		
-		Label currentPageLabel = createCurrentPageLabel(currentPage);
+		Label currentPageLabel = createCurrentPageLabel("" + currentPage);
 		
 		if(this.currentPage <= 1)
 		{
@@ -109,9 +109,9 @@ public class SequentialPager extends Composite implements Pager
 		this.infoPanel.add(currentPageLabel);
 	}
 
-	private Label createCurrentPageLabel(int currentPageNumber)
+	private Label createCurrentPageLabel(String currentPageNumber)
 	{
-		Label label = new Label("" + currentPageNumber);
+		Label label = new Label(currentPageNumber);
 		label.setStyleName("currentPageLabel");
 		return label;
 	}
@@ -127,10 +127,8 @@ public class SequentialPager extends Composite implements Pager
 
 	private void setLoading()
 	{
-		SimplePanel loading = new SimplePanel();
-		loading.setStyleName("loading");
-		infoPanel.clear();
-		infoPanel.add(loading);
+		this.infoPanel.clear();
+		this.infoPanel.add(createCurrentPageLabel("..."));
 	}
 	
 	private void checkPageable()

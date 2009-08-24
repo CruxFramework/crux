@@ -1,5 +1,7 @@
 package br.com.sysmap.crux.advanced.client.grid.model;
 
+import br.com.sysmap.crux.advanced.client.util.StyleUtils;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
@@ -58,9 +60,18 @@ public class Row
 	 * Adds a style name to the row
 	 * @param rowIndex
 	 */
-	public void addStyle(String styleName)
+	public void addStyle(String styleSuffix)
 	{
-		elem.setClassName(elem.getClassName() + " " + styleName);
+		StyleUtils.addStyleDependentName(elem, styleSuffix);
+	}
+	
+	/**
+	 * Adds a style name to the row
+	 * @param rowIndex
+	 */
+	public void removeStyle(String styleSuffix)
+	{
+		StyleUtils.removeStyleDependentName(elem, styleSuffix);
 	}
 	
 	/**
@@ -79,15 +90,15 @@ public class Row
 		{
 			HasValue<Boolean> selector = (HasValue<Boolean>) getCell(0).getCellWidget();
 			selector.setValue(selected);
-			
-			if(selected)
-			{
-				setStyle("row row-selected");
-			}
-			else
-			{
-				setStyle("row");
-			}
+		}
+		
+		if(selected)
+		{
+			addStyle("selected");
+		}
+		else
+		{
+			removeStyle("selected");
 		}
 		
 		this.selected = selected;

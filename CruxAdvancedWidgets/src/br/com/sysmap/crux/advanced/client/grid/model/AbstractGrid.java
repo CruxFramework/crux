@@ -14,11 +14,14 @@ import br.com.sysmap.crux.advanced.client.event.row.RowDoubleClickEvent;
 import br.com.sysmap.crux.advanced.client.event.row.RowDoubleClickHandler;
 import br.com.sysmap.crux.advanced.client.event.row.RowRenderEvent;
 import br.com.sysmap.crux.advanced.client.event.row.RowRenderHandler;
+import br.com.sysmap.crux.core.client.screen.Screen;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -26,6 +29,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -57,11 +61,10 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		
 		panel = new SimplePanel();
 		panel.setStyleName("crux-Grid");
-		
+	
 		scrollingArea = new ScrollPanel();
 		scrollingArea.setHeight("1");
 		scrollingArea.setWidth("1");
-		
 		panel.add(scrollingArea);
 				
 		initWidget(panel);
@@ -69,33 +72,70 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		table = new GridHtmlTable();
 		table.setCellSpacing(cellSpacing);
 		table.setCellPadding(0);
-		gridLayout.setTableLayout(table);
+		gridLayout.adjustToBrowser(scrollingArea, table);
 		
 		DeferredCommand.addCommand(new Command()
 		{
 			public void execute()
 			{	
-				resize();			
+				resizeToFit(scrollingArea, panel);
 				scrollingArea.add(table);
+			}
+		});
+		
+		Screen.addResizeHandler(new ResizeHandler(){
+			public void onResize(ResizeEvent event)
+			{
+				resizeToFit(scrollingArea, panel);				
 			}
 		});
 	}
 	
-	private void resize()
+	/**
+	 * Resizes a widget so that it fills all available space from its parent
+	 * @param widget
+	 */
+	private void resizeToFit(final Widget widget, final Panel parent)
 	{
-		Element elem = scrollingArea.getElement().getParentElement();
-		if(elem != null)
-		{
-			int width = elem.getClientWidth();
-			int height = elem.getClientHeight();
-			scrollingArea.setWidth("" + width);
-			scrollingArea.setHeight("" + height);
-		}
-		else
-		{
-			scrollingArea.setWidth("100%");
-			scrollingArea.setHeight("100%");
-		}
+		final Element elem = parent.getElement();
+		
+		parent.clear();
+		
+		DeferredCommand.addCommand(new Command(){
+
+			public void execute()
+			{
+				int width = 0;
+				int height = 0;
+				
+				if(elem != null)
+				{
+					width = elem.getClientWidth();
+					height = elem.getClientHeight();
+					widget.setHeight("" + height);
+				}
+				
+				if(width > 0)
+				{
+					widget.setWidth("" + width);
+				}
+				else
+				{
+					widget.setWidth("100%");
+				}
+				
+				if(height > 0)
+				{
+					widget.setHeight("" + height);
+				}
+				else
+				{
+					widget.setHeight("100%");
+				}
+				
+				parent.add(widget);			
+			}
+		});		
 	}
 	
 	protected final void clearAndRender()
@@ -113,6 +153,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		for (int i = 0; i < rowCount; i++)
 		{
 			R row = createRow(i, table.getRowElement(i));
+			row.setStyle("row");
 			rows.add(row);
 		}
 		
@@ -123,7 +164,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	private void clearRendering()
 	{
 		int rowCount = getRowsToBeRendered() + 1;
-		table.resize(rowCount, definitions.getDefinitions().size() + 1);
+		table.resize(rowCount, definitions.getDefinitions().size() + (hasSelectionColumn() ? 1 : 0));
 		this.rows = new ArrayList<R>();
 		onClearRendering();
 	}
@@ -232,11 +273,19 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	
 	protected Cell createCell(Widget widget)
 	{
-		Cell cell = createBaseCell(widget, true);
+		Cell cell = createBaseCell(widget, true, selectRowOnClickCell());
 		cell.addStyleName("cell");
 		return cell;
 	}
 	
+	/**
+	 * @return
+	 */
+	private boolean selectRowOnClickCell()
+	{
+		return RowSelectionModel.SINGLE.equals(rowSelection) || RowSelectionModel.MULTIPLE.equals(rowSelection);
+	}
+
 	private Cell getHeaderFristColumnCell()
 	{
 		Widget w = null;
@@ -306,7 +355,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	 */
 	protected Cell createHeaderCell(Widget widget)
 	{
-		Cell cell = createBaseCell(widget, false);
+		Cell cell = createBaseCell(widget, false, false);
 		cell.addStyleName("columnHeader");
 		return cell;
 	}
@@ -316,17 +365,17 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	 * @param widget
 	 * @return
 	 */
-	protected Cell createBaseCell(Widget widget, boolean fireEvents)
+	protected Cell createBaseCell(Widget widget, boolean fireEvents, boolean selectRowOnclick)
 	{
 		Cell cell = null;
 		
 		if(widget != null)
 		{
-			cell = new Cell(widget, fireEvents);
+			cell = new Cell(widget, fireEvents, selectRowOnclick);
 		}
 		else
 		{
-			cell = new Cell(fireEvents);
+			cell = new Cell(fireEvents, selectRowOnclick);
 		}
 		
 		cell.setWidth("100%");

@@ -13,4 +13,9 @@
     		<when-property-is name="user.agent" value="ie8" />
     	</any>
     </replace-with>
+    <replace-with
+    	class="br.com.sysmap.crux.labs.client.widgets.grid.GridLayoutMozImpl">
+    	<when-type-is class="br.com.sysmap.crux.labs.client.widgets.grid.GridLayout" />
+		<when-property-is name="user.agent" value="gecko1_8" />
+    </replace-with>
 </module>
