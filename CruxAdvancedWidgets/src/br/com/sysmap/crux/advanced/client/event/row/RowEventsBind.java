@@ -32,12 +32,12 @@ public class RowEventsBind extends EvtBind
 	 */
 	public static void bindClickRowEvent(Element element, HasRowClickHandlers widget)
 	{
-		final Event clickLineEvent = getWidgetEvent(element, Events.CLICK_LINE);
+		final Event clickLineEvent = getWidgetEvent(element, Events.ROW_CLICK);
 		if (clickLineEvent != null)
 		{
-			widget.addClickRowHandler(new RowClickHandler()
+			widget.addRowClickHandler(new RowClickHandler()
 			{
-				public void onClickRow(RowClickEvent event)
+				public void onRowClick(RowClickEvent event)
 				{
 					br.com.sysmap.crux.core.client.event.Events.callEvent(clickLineEvent, event);					
 				}
@@ -47,12 +47,12 @@ public class RowEventsBind extends EvtBind
 	
 	public static void bindDoubleClickRowEvent(Element element, HasRowDoubleClickHandlers widget)
 	{
-		final Event doubleClickLineEvent = getWidgetEvent(element, Events.DOUBLE_CLICK_LINE);
+		final Event doubleClickLineEvent = getWidgetEvent(element, Events.ROW_DOUBLE_CLICK);
 		if (doubleClickLineEvent != null)
 		{
-			widget.addDoubleClickRowHandler(new RowDoubleClickHandler()
+			widget.addRowDoubleClickHandler(new RowDoubleClickHandler()
 			{
-				public void onDoubleClickRow(RowDoubleClickEvent event)
+				public void onRowDoubleClick(RowDoubleClickEvent event)
 				{
 					br.com.sysmap.crux.core.client.event.Events.callEvent(doubleClickLineEvent, event);					
 				}
@@ -60,17 +60,17 @@ public class RowEventsBind extends EvtBind
 		}
 	}
 	
-	public static void bindRenderRowEvent(Element element, HasRowDoubleClickHandlers widget)
+	public static void bindRenderRowEvent(Element element, HasRowRenderHandlers widget)
 	{
-		final Event doubleClickLineEvent = getWidgetEvent(element, Events.DOUBLE_CLICK_LINE);
-		if (doubleClickLineEvent != null)
+		final Event renderEvent = getWidgetEvent(element, Events.ROW_RENDER);
+		if (renderEvent != null)
 		{
-			widget.addDoubleClickRowHandler(new RowDoubleClickHandler()
+			widget.addRowRenderHandler(new RowRenderHandler()
 			{
-				public void onDoubleClickRow(RowDoubleClickEvent event)
+				public void onRowRender(RowRenderEvent event)
 				{
-					br.com.sysmap.crux.core.client.event.Events.callEvent(doubleClickLineEvent, event);					
-				}
+					br.com.sysmap.crux.core.client.event.Events.callEvent(renderEvent, event);					
+				}				
 			});
 		}
 	}

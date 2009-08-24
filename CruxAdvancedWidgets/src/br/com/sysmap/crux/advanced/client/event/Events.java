@@ -20,6 +20,7 @@ public class Events
 	
 	public static final String TIMEOUT = "_ontimeout";
 	
-	public static final String CLICK_LINE = "_onclickline";
-	public static final String DOUBLE_CLICK_LINE = "_ondoubleclickline";
+	public static final String ROW_CLICK = "_onrowclick";
+	public static final String ROW_DOUBLE_CLICK = "_onrowdoubleclick";
+	public static final String ROW_RENDER = "_onrowrender";
 }

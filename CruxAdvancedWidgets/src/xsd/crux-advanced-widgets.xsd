@@ -261,6 +261,9 @@
 				<xs:attribute name="dataSource" type="xs:string" use="optional"/>
 				<xs:attribute name="cellSpacing" type="xs:positiveInteger" use="optional" default="1"/>
 				<xs:attribute name="autoLoadData" type="xs:boolean" use="optional" default="false"/>
+				<xs:attribute name="onRowRender" type="xs:string" use="optional"/>
+				<xs:attribute name="onRowClick" type="xs:string" use="optional"/>
+				<xs:attribute name="onRowDoubleClick" type="xs:string" use="optional"/>
 				<xs:attribute name="rowSelection" use="optional" default="unselectable">
 					<xs:simpleType>
 						<xs:restriction base="xs:string">

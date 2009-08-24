@@ -58,7 +58,7 @@ public class RowDoubleClickEvent extends GwtEvent<RowDoubleClickHandler>{
 	@Override
 	protected void dispatch(RowDoubleClickHandler handler)
 	{
-		handler.onDoubleClickRow(this);
+		handler.onRowDoubleClick(this);
 	}
 
 	@Override

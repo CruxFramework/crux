@@ -23,5 +23,5 @@ import com.google.gwt.event.shared.EventHandler;
  */
 public interface RowClickHandler extends EventHandler
 {
-	void onClickRow(RowClickEvent event);
+	void onRowClick(RowClickEvent event);
 }

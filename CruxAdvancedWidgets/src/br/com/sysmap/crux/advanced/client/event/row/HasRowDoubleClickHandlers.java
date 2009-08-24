@@ -20,5 +20,5 @@ import com.google.gwt.event.shared.HasHandlers;
 
 public interface HasRowDoubleClickHandlers extends HasHandlers 
 {
-	HandlerRegistration addDoubleClickRowHandler(RowDoubleClickHandler handler);
+	HandlerRegistration addRowDoubleClickHandler(RowDoubleClickHandler handler);
 }

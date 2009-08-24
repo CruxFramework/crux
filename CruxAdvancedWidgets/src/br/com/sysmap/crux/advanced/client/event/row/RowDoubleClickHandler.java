@@ -23,5 +23,5 @@ import com.google.gwt.event.shared.EventHandler;
  */
 public interface RowDoubleClickHandler extends EventHandler
 {
-	void onDoubleClickRow(RowDoubleClickEvent event);
+	void onRowDoubleClick(RowDoubleClickEvent event);
 }

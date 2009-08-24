@@ -58,7 +58,7 @@ public class RowRenderEvent extends GwtEvent<RowRenderHandler>{
 	@Override
 	protected void dispatch(RowRenderHandler handler)
 	{
-		handler.onRenderRow(this);
+		handler.onRowRender(this);
 	}
 
 	@Override

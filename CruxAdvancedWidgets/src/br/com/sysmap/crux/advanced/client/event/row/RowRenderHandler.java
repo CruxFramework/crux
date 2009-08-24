@@ -23,5 +23,5 @@ import com.google.gwt.event.shared.EventHandler;
  */
 public interface RowRenderHandler extends EventHandler
 {
-	void onRenderRow(RowRenderEvent event);
+	void onRowRender(RowRenderEvent event);
 }
