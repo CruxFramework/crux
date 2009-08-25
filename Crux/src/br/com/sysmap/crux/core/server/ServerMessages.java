@@ -36,14 +36,11 @@ public interface ServerMessages
 	@DefaultMessage("[clientHandlers 001] - Error initializing clientHandler: {0}.")
 	String clientHandlersHandlerInitializeError(String errMsg);
 
-	@DefaultMessage("[widgetConfig 001] - Error parsing crux configuration file: {0}.")
-	String widgetConfigParserError(String errMsg);
+	@DefaultMessage("[widgetConfig 001] - Error initializing widgets.")
+	String widgetConfigInitializeError(String errMsg);
 
 	@DefaultMessage("[widgetConfig 002] - Widgets registered.")
 	String widgetCongigWidgetsRegistered();
-
-	@DefaultMessage("[widgetConfigScanner 001] - Error initializing widgetConfigScanner: {0}.")
-	String widgetConfigScannerInitializationError(String errMsg);
 
 	@DefaultMessage("[services 001] - Error initializing services: {0}.")
 	String servicesInitializeError(String errMsg);

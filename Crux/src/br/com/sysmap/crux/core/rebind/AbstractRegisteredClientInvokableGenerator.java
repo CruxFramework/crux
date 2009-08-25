@@ -25,11 +25,14 @@ import br.com.sysmap.crux.core.client.controller.ScreenBind;
 import br.com.sysmap.crux.core.client.controller.ValueObject;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
+import br.com.sysmap.crux.core.utils.GenericUtils;
 
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -43,9 +46,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  *
  */
 public abstract class AbstractRegisteredClientInvokableGenerator extends AbstractRegisteredElementsGenerator
-{
-
-	
+{	
 	/**
 	 * Create objects for fields that are annotated with @Create
 	 * @param logger
@@ -542,7 +543,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	{
 		try
 		{
-			Class<? extends Widget> widgetClass = getClientWidget(screen, name);
+			Class<? extends Widget> widgetClass = getClientWidget(logger, screen, name);
 			if (widgetClass != null)
 			{
 				String valueVariable = "__wid";
@@ -641,18 +642,43 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	private Class<? extends Widget> getClientWidget(Screen screen,  String name) throws ClassNotFoundException
+	/**
+	 * 
+	 * @param logger
+	 * @param screen
+	 * @param name
+	 * @return
+	 * @throws ClassNotFoundException
+	 */
+	private Class<? extends Widget> getClientWidget(TreeLogger logger, Screen screen,  String name) throws ClassNotFoundException
 	{
 		br.com.sysmap.crux.core.rebind.screen.Widget rebindWidget = screen.getWidget(name);
 		
 		if (rebindWidget != null)
 		{
-			String className = WidgetConfig.getClientClass(rebindWidget.getType());
-			return (Class<? extends Widget>) Class.forName(className);
+			Class<? extends WidgetFactory<?>> factoryClass = WidgetConfig.getClientClass(rebindWidget.getType());
+			return getWidgetClassFromFactory(logger, factoryClass);
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * 
+	 * @param logger
+	 * @param dataSourceClass
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private Class<? extends Widget> getWidgetClassFromFactory(TreeLogger logger, Class<? extends WidgetFactory<?>> factoryClass)
+	{
+		Class<? extends Widget> result = (Class<? extends Widget>) 
+				GenericUtils.resolveReturnType(factoryClass, "instantiateWidget", new Class[]{Element.class, String.class});
+		if (result == null)
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingInvokableObjectCanNotRealizeGenericType());
+		}
+		return result;
 	}
 	
 	/**

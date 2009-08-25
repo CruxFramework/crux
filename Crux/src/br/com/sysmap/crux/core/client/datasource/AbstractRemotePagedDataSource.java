@@ -20,7 +20,7 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> extends AbstractLocalPagedDataSource<R, E> 
+abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> extends AbstractLocalPagedDataSource<R, E> 
                            implements MeasurableRemoteDataSource<R,E>
 {	
 	protected RemoteDataSourceCallback fetchCallback = null;

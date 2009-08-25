@@ -15,8 +15,6 @@
  */
 package br.com.sysmap.crux.core.rebind.screen.config;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,55 +22,40 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.xml.sax.InputSource;
 
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.screen.WidgetParser;
-import br.com.sysmap.crux.core.rebind.screen.config.parser.CruxT;
-import br.com.sysmap.crux.core.rebind.screen.config.parser.WidgetT;
 import br.com.sysmap.crux.core.server.ServerMessages;
-import br.com.sysmap.crux.core.server.scan.ScannerURLS;
-import br.com.sysmap.crux.core.server.scan.WidgetConfigScanner;
+import br.com.sysmap.crux.core.server.scan.ClassScanner;
 
 public class WidgetConfig 
 {
-	private static Map<String, WidgetConfigData> config = null;
+	private static Map<String, Class<? extends WidgetFactory<?>>> config = null;
 	private static Set<String> registeredLibraries = null;
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Log logger = LogFactory.getLog(WidgetConfig.class);
 	private static final Lock lock = new ReentrantLock();
 
-	public static void initializeWidgetConfig()
+	/**
+	 * 
+	 */
+	public static void initialize()
 	{
-		initializeWidgetConfig(ScannerURLS.getURLsForSearch());
-	}
-	
-	public static void initializeWidgetConfig(URL[] urls)
-	{
-		if (config != null) return;
-		lock.lock();
+		if (config != null)
+		{
+			return;
+		}
 		try
 		{
-			if (config != null) return;
-			config = new HashMap<String, WidgetConfigData>(100);
-			registeredLibraries = new HashSet<String>();
-			WidgetConfigScanner.getInstance().scanArchives(urls);
-			if (logger.isInfoEnabled())
+			lock.lock();
+			if (config != null)
 			{
-				logger.info(messages.widgetCongigWidgetsRegistered());
+				return;
 			}
-		}
-		catch (RuntimeException e) 
-		{
-			config = null;
-			registeredLibraries = null;
-			throw (e);
+			
+			initializeWidgetConfig();
 		}
 		finally
 		{
@@ -80,78 +63,56 @@ public class WidgetConfig
 		}
 	}
 	
-	public static void parseCruxConfigFile(InputStream inputStream)
+	@SuppressWarnings("unchecked")
+	protected static void initializeWidgetConfig()
 	{
-		try 
+		config = new HashMap<String, Class<? extends WidgetFactory<?>>>(100);
+		registeredLibraries = new HashSet<String>();
+		Set<String> factoriesNames =  ClassScanner.searchClassesByAnnotation(br.com.sysmap.crux.core.client.declarative.DeclarativeFactory.class);
+		if (factoriesNames != null)
 		{
-			Unmarshaller unmarshaller = JAXBContext.newInstance("br.com.sysmap.crux.core.rebind.screen.config.parser").createUnmarshaller();
-			InputSource input = new InputSource(inputStream);
-			
-			CruxT crux = (CruxT)((JAXBElement<?>) unmarshaller.unmarshal(input)).getValue();
-			
-			registeredLibraries.add(crux.getModule());
-			
-			for (WidgetT widget : crux.getWidget())
+			for (String name : factoriesNames) 
 			{
-				WidgetParser widgetParser = (WidgetParser) Class.forName(widget.getServerParserClass()).newInstance();	
-				
-				WidgetConfigData data = new WidgetConfigData(widget.getClientClass(),
-																   widget.getServerClass(), 
-																   widgetParser,
-																   widget.getParserInput().value());
-				config.put(widget.getId(), data);
+				try 
+				{
+					Class<? extends WidgetFactory<?>> factoryClass = (Class<? extends WidgetFactory<?>>)Class.forName(name);
+					br.com.sysmap.crux.core.client.declarative.DeclarativeFactory annot = 
+						factoryClass.getAnnotation(br.com.sysmap.crux.core.client.declarative.DeclarativeFactory.class);
+					registeredLibraries.add(annot.library());
+					//String widgetType = annot.library() + "_" + annot.id();
+					//config.put(widgetType, factoryClass); TODO: colocar o pacote, para evitar colisao
+					config.put(annot.id(), factoryClass);
+				} 
+				catch (ClassNotFoundException e) 
+				{
+					logger.error(messages.widgetConfigInitializeError(e.getLocalizedMessage()),e);
+				}
 			}
-		} 
-		catch (Throwable e) 
+		}
+		if (logger.isInfoEnabled())
 		{
-			logger.error(messages.widgetConfigParserError(e.getLocalizedMessage()),e);
+			logger.info(messages.widgetCongigWidgetsRegistered());
 		}
 	}
 	
-	public static String getServerClass(String id)
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static Class<? extends WidgetFactory<?>> getClientClass(String id)
 	{
 		if (config == null)
 		{
 			initializeWidgetConfig();
 		}
-		WidgetConfigData data = config.get(id);
-		if (data == null) return null;
-		return data.getServerClass();
-	}
-
-	public static WidgetParser getWidgetParser(String id)
-	{
-		if (config == null)
-		{
-			initializeWidgetConfig();
-		}
-		WidgetConfigData data = config.get(id);
-		if (data == null) return null;
-		return data.getWidgetParser();
-	}
-
-	public static String getClientClass(String id)
-	{
-		if (config == null)
-		{
-			initializeWidgetConfig();
-		}
-		WidgetConfigData data = config.get(id);
-		if (data == null) return null;
-		return data.getClientClass();
-	}
-
-	public static String getParserInput(String id)
-	{
-		if (config == null)
-		{
-			initializeWidgetConfig();
-		}
-		WidgetConfigData data = config.get(id);
-		if (data == null) return null;
-		return data.getParserInput();
+		return config.get(id);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public static Set<String> getRegisteredLibraries()
 	{
 		if (registeredLibraries == null)
@@ -161,5 +122,4 @@ public class WidgetConfig
 		
 		return registeredLibraries;
 	}
-	
 }

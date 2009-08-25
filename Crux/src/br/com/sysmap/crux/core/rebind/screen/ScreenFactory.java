@@ -32,8 +32,6 @@ import au.id.jericho.lib.html.Element;
 import au.id.jericho.lib.html.Source;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.GeneratorMessages;
-import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
-import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfigData;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 /**
@@ -193,31 +191,14 @@ public class ScreenFactory
 	 */
 	private Widget newWidget(Element element, String widgetId) throws ScreenConfigException
 	{
-		String type = element.getAttributeValue("_type");
-		String className = WidgetConfig.getServerClass(type);
-		WidgetParser parser = WidgetConfig.getWidgetParser(type);
-		String parserInput = WidgetConfig.getParserInput(type);
-		if (className == null || parser == null || parserInput == null)
-		{
-			throw new ScreenConfigException(messages.screenFactoryErrorCreateWidget(widgetId));
-		}
 		try 
 		{
-			Widget widget = (Widget) Class.forName(className).newInstance();
+			String type = element.getAttributeValue("_type");
+			WidgetParser parser = new WidgetParserImpl();
+			Widget widget = new Widget();
 			widget.setId(widgetId);
 			widget.setType(type);
-			if (WidgetConfigData.PARSER_INPUT_DOM.equals(parserInput))
-			{
-				parser.parse(widget, toDomElment(element));
-			}
-			else if (WidgetConfigData.PARSER_INPUT_STRING.equals(parserInput))
-			{
-				parser.parse(widget, element.toString());
-			}
-			else
-			{
-				parser.parse(widget, element);
-			}
+			parser.parse(widget, element);
 			return widget;
 		} 
 		catch (Throwable e) 
@@ -381,15 +362,5 @@ public class ScreenFactory
 				if (logger.isDebugEnabled()) logger.debug(messages.screenPropertyError(attrName.substring(1), screen.getId()));
 			}
 		}
-	}
-	
-	/**
-	 * Convert a Jericho element to a DOM element
-	 * @param element
-	 * @return
-	 */
-	private org.w3c.dom.Element toDomElment(Element element)
-	{
-		return null;
 	}
 }

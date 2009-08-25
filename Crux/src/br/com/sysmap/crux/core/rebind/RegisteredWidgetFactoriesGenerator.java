@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.rebind.screen.Widget;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
@@ -52,7 +53,7 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 		sourceWriter.println("private java.util.Map<String, WidgetFactory<? extends Widget>> widgetFactories = new java.util.HashMap<String, WidgetFactory<? extends Widget>>();");
 
-		generateConstructor(sourceWriter, screens, implClassName);
+		generateConstructor(logger, sourceWriter, screens, implClassName);
 
 		sourceWriter.println("public WidgetFactory<? extends Widget> getWidgetFactory(String type) throws InterfaceConfigException{ ");
 		sourceWriter.println("if (!widgetFactories.containsKey(type)) {");
@@ -67,7 +68,7 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 		context.commit(logger, printWriter);
 	}
 	
-	protected void generateConstructor(SourceWriter sourceWriter, List<Screen> screens, String implClassName) 
+	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, List<Screen> screens, String implClassName) 
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");
 		
@@ -79,19 +80,27 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 			while (iterator.hasNext())
 			{
 				Widget widget = iterator.next();
-				generateCreateWidgetBlock(sourceWriter, widget, added);
+				generateCreateWidgetBlock(logger, sourceWriter, widget, added);
 			}
 		}
 		sourceWriter.println("}");
 	} 
 	
-	protected void generateCreateWidgetBlock(SourceWriter sourceWriter, Widget widget, Map<String, Boolean> added)
+	protected void generateCreateWidgetBlock(TreeLogger logger, SourceWriter sourceWriter, Widget widget, Map<String, Boolean> added)
 	{
 		String type = widget.getType();
 		if (!added.containsKey(type))
 		{
-			sourceWriter.println("widgetFactories.put(\""+type+"\", new "+WidgetConfig.getClientClass(type)+"());");
-			added.put(type, true);
+			Class<? extends WidgetFactory<?>> widgetClass = WidgetConfig.getClientClass(type);
+			if (widgetClass != null)
+			{
+				sourceWriter.println("widgetFactories.put(\""+type+"\", new "+getClassSourceName(widgetClass)+"());");
+				added.put(type, true);
+			}
+			else
+			{
+				logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredWidgetFactoryNotRegistered()+type);
+			}
 		}
 	}
 }

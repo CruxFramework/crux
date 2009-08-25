@@ -13,29 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.scan;
+package br.com.sysmap.crux.core.client.declarative;
 
-public class WidgetConfigScannerException extends RuntimeException 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface DeclarativeFactory
 {
-	private static final long serialVersionUID = 6810738683779587271L;
-
-	public WidgetConfigScannerException() 
-	{
-	}
-
-	public WidgetConfigScannerException(String message) 
-	{
-		super(message);
-	}
-
-	public WidgetConfigScannerException(Throwable cause) 
-	{
-		super(cause);
-	}
-
-	public WidgetConfigScannerException(String message, Throwable cause) 
-	{
-		super(message, cause);
-	}
-
+	String id();
+	String library();
 }

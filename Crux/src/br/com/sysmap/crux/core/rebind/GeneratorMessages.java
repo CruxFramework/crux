@@ -24,7 +24,7 @@ import br.com.sysmap.crux.core.i18n.DefaultMessage;
  */
 public interface GeneratorMessages 
 {
-	@DefaultMessage("[generator 001] - WidgetFactory not registered: ")
+	@DefaultMessage("[generator 001] - DeclarativeFactory not registered: ")
 	String errorGeneratingRegisteredWidgetFactoryNotRegistered();
 
 	@DefaultMessage("[generator 002] - Error for register client event handler. Controller: {0}. Error:{1}")
@@ -84,6 +84,15 @@ public interface GeneratorMessages
 	@DefaultMessage("[generator 019] - DataSource not found: ")
 	String errorGeneratingRegisteredDataSourceNotFound();
 	
+	@DefaultMessage("[generator 020] - Error generating invokable object: {0}")
+	String errorGeneratingInvokableObject(String errMesg);
+
+	@DefaultMessage("[generator 021] - Error for register client datasource. DataSource: {0}. Error: Can not realize the type for datasource generic declaration.")
+	String errorGeneratingRegisteredDataSourceCanNotRealizeGenericType(String name);
+
+	@DefaultMessage("[generator 022] - Error generating invokable object. Can not realize the type for generic declaration.")
+	String errorGeneratingInvokableObjectCanNotRealizeGenericType();
+
 	@DefaultMessage("[screenFactory 001] - The id attribute is required for CRUX Widgets.")
 	String screenFactoryWidgetIdRequired();
 

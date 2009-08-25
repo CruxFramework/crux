@@ -66,7 +66,7 @@ public class InitializerListener implements ServletContextListener
 	{
 		if (!Environment.isProduction())
 		{
-			WidgetConfig.initializeWidgetConfig();
+			WidgetConfig.initialize();
 		}
 		ServiceFactoryInitializer.initialize(context);
 	}

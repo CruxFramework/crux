@@ -45,7 +45,7 @@ public class Screen
 	}
 
 	/**
-	 * Return WidgetFactory associated with the given id
+	 * Return DeclarativeFactory associated with the given id
 	 * @param widgetId
 	 * @return
 	 */
