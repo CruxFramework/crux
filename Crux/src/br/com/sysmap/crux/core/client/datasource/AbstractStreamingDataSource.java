@@ -79,11 +79,11 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		int ret = 0;
 		if (records != null)
 		{
-			for (int i = startRecord; i <= endRecord; i++)
+			int count = Math.min(endRecord - startRecord + 1, records.length);
+			for (ret = 0; ret < count ; ret++)
 			{
-				this.data.add(records[i]);
+				this.data.add(records[ret]);
 			}
-			ret = records.length;
 		}
 		if (ret < (endRecord - startRecord))
 		{
@@ -235,10 +235,16 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 	protected int getPageEndRecord()
 	{
 		int pageEndRecord = (currentPage * pageSize) - 1;
+		int pageStartRecord = getPageStartRecord();
+		
 		if (pageEndRecord >= this.data.size())
 		{
-			pageEndRecord = this.data.size()-1;
+			if (this.data.size() > 0 && this.data.size() > pageStartRecord && this.data.get(this.data.size()-1) == null)
+			{
+				pageEndRecord = this.data.size()-2;
+			}
 		}
+		
 		return pageEndRecord;
 	}
 
@@ -278,12 +284,19 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 	public boolean hasNextPage()
 	{
 		int pageEndRecord = getPageEndRecord();
+		
+		if (pageEndRecord < 0)
+		{
+			return this.data.size() == 0;
+		}
+		
 		if (pageEndRecord < this.data.size())
 		{
 			if (pageEndRecord == this.data.size()-1)
 			{
 				return this.data.get(pageEndRecord) != null;
 			}
+			
 			return true;
 		}
 		return false;
@@ -338,9 +351,16 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		{
 			pageSize = 1;
 		}
+		
+		boolean loaded = data.size() > 0;
+		
 		this.pageSize = pageSize;
-		updateCurrentRecord();
-		fetchCurrentPage();
+		
+		if(loaded)
+		{
+			fetchCurrentPage();
+			updateCurrentRecord();
+		}
 	}
 	
 	/**

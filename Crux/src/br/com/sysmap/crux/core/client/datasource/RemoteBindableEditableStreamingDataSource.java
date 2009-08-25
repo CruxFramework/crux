@@ -22,7 +22,7 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.Editab
  *
  */
 public abstract class RemoteBindableEditableStreamingDataSource<T> extends AbstractStreamingDataSource<EditableDataSourceRecord, T>
-                                                                   implements Bindable<T>
+                                                                   implements Bindable<T>, EditablePagedDataSource
 {
 	protected EditableStreamingDataSourceOperations<T> editableOperations = 
 		new EditableStreamingDataSourceOperations<T>(this);

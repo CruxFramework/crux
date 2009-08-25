@@ -23,7 +23,7 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.Editab
  *
  */
 public abstract class LocalBindableEditablePagedDataSource<T> extends AbstractLocalPagedDataSource<EditableDataSourceRecord, T> 
-                                                   implements EditablePagedDataSource, Bindable<T>
+                                                   implements MeasurableEditablePagedDataSource, Bindable<T>
 {	
 	protected EditableDataSourceOperations<T> editableOperations = 
 		new EditableDataSourceOperations<T>(this);

@@ -504,8 +504,8 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 					Class<?> rawType = (Class<?>)parameterizedType.getRawType();
 					if ("br.com.sysmap.crux.core.client.datasource.AbstractLocalScrollableDataSource".equals(rawType.getName()) || 
 						"br.com.sysmap.crux.core.client.datasource.AbstractLocalPagedDataSource".equals(rawType.getName()) || 	
-						"br.com.sysmap.crux.core.client.datasource.AbstractRemotePagedDataSource".equals(rawType) ||
-						"br.com.sysmap.crux.core.client.datasource.AbstractStreamingDataSource".equals(rawType))
+						"br.com.sysmap.crux.core.client.datasource.AbstractRemotePagedDataSource".equals(rawType.getName()) ||
+						"br.com.sysmap.crux.core.client.datasource.AbstractStreamingDataSource".equals(rawType.getName()))
 					{
 						return (Class<?>)parameterizedType.getActualTypeArguments()[0];
 					}

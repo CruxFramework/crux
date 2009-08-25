@@ -22,7 +22,7 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.Editab
  *
  */
 public abstract class RemoteEditablePagedDataSource extends AbstractRemotePagedDataSource<EditableDataSourceRecord, EditableDataSourceRecord>
-										   implements EditablePagedDataSource
+										   implements MeasurableEditablePagedDataSource
 {	
 	protected EditableDataSourceOperations<EditableDataSourceRecord> editableOperations = 
 		new EditableDataSourceOperations<EditableDataSourceRecord>(this);
