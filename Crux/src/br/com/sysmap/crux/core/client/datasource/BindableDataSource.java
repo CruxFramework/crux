@@ -20,7 +20,8 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface Bindable<T>
+public interface BindableDataSource<R extends DataSourceRecord, E>
 {
-	T getBindedObject();
+	E getBindedObject();
+	E getBindedObject(R record);
 }

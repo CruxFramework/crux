@@ -22,7 +22,7 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.Editab
  *
  */
 public abstract class RemoteBindableEditablePagedDataSource<T> extends AbstractRemotePagedDataSource<EditableDataSourceRecord, T>
-										   implements MeasurableEditablePagedDataSource, Bindable<T>
+										   implements MeasurableEditablePagedDataSource, BindableDataSource<EditableDataSourceRecord, T>
 {	
 	protected EditableDataSourceOperations<T> editableOperations = 
 		new EditableDataSourceOperations<T>(this);
@@ -164,9 +164,17 @@ public abstract class RemoteBindableEditablePagedDataSource<T> extends AbstractR
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.Bindable#getBindedObject()
+	 * @see br.com.sysmap.crux.core.client.datasource.BindableDataSource#getBindedObject()
 	 */
 	public T getBindedObject()
+	{
+		return getBindedObject(getRecord());
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.BindableDataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 */
+	public T getBindedObject(EditableDataSourceRecord record)
 	{
 		return null;
 	}		

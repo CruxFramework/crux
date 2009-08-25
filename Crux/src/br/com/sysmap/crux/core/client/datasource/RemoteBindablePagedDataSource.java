@@ -20,7 +20,7 @@ package br.com.sysmap.crux.core.client.datasource;
  *
  */
 public abstract class RemoteBindablePagedDataSource<T> extends AbstractRemotePagedDataSource<DataSourceRecord, T>
-													   implements Bindable<T>
+													   implements BindableDataSource<DataSourceRecord, T>
 {
 	@Override
 	protected DataSourceRecord[] createDataObject(int count)
@@ -29,10 +29,18 @@ public abstract class RemoteBindablePagedDataSource<T> extends AbstractRemotePag
 	}
 	
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.Bindable#getBindedObject()
+	 * @see br.com.sysmap.crux.core.client.datasource.BindableDataSource#getBindedObject()
 	 */
 	public T getBindedObject()
 	{
+		return getBindedObject(getRecord());
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.BindableDataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 */
+	public T getBindedObject(DataSourceRecord record)
+	{
 		return null;
-	}	
+	}		
 }

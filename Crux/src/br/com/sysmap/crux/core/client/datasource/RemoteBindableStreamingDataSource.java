@@ -20,13 +20,21 @@ package br.com.sysmap.crux.core.client.datasource;
  *
  */
 public abstract class RemoteBindableStreamingDataSource<T> extends AbstractStreamingDataSource<DataSourceRecord, T>
-														   implements Bindable<T>
+														   implements BindableDataSource<DataSourceRecord, T>
 {
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.Bindable#getBindedObject()
+	 * @see br.com.sysmap.crux.core.client.datasource.BindableDataSource#getBindedObject()
 	 */
 	public T getBindedObject()
 	{
-		return null;
+		return getBindedObject(getRecord());
 	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.BindableDataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 */
+	public T getBindedObject(DataSourceRecord record)
+	{
+		return null;
+	}	
 }

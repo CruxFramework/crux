@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import br.com.sysmap.crux.core.client.datasource.Bindable;
+import br.com.sysmap.crux.core.client.datasource.BindableDataSource;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.DataSoureExcpetion;
@@ -251,7 +251,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			
 			Class<?> dataType;
 			
-			if(Bindable.class.isAssignableFrom(dataSourceClass))
+			if(BindableDataSource.class.isAssignableFrom(dataSourceClass))
 			{
 				dataType = getDtoTypeFromClass(logger, dataSourceClass);			
 			}
@@ -311,13 +311,15 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	{
 		try
 		{
-			
 			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);			
 			String dataTypeDeclaration = getParameterDeclaration(dataType);
 			 
-			sourceWriter.println("public "+dataTypeDeclaration+" getBindedObject(){");
+			Class<?> recordType = getRecordTypeFromClass(logger, dataSourceClass);			
+			String recordTypeDeclaration = getParameterDeclaration(recordType);
+
+			sourceWriter.println("public "+dataTypeDeclaration+" getBindedObject("+recordTypeDeclaration+" record){");
+			sourceWriter.println("if (record == null) return null;");
 			sourceWriter.println(dataTypeDeclaration+" ret = new "+dataTypeDeclaration+"();");
-			sourceWriter.println("DataSourceRecord record = getRecord();");
 
 			for (int i=0; i < columnsData.names.length; i++)
 			{
@@ -407,7 +409,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		DataSourceColumns columnsAnnot = dataSourceClass.getAnnotation(DataSourceColumns.class);
 		DataSourceBinding typeAnnot = dataSourceClass.getAnnotation(DataSourceBinding.class);
 		
-		boolean isBindable = Bindable.class.isAssignableFrom(dataSourceClass) && typeAnnot != null;
+		boolean isBindable = BindableDataSource.class.isAssignableFrom(dataSourceClass) && typeAnnot != null;
 		if(columnsAnnot == null && !isBindable)
 		{
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceNoMetaInformation(dataSourceClass.getName()), null);
