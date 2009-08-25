@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.advanced.client.decoratedbutton;
 
 import br.com.sysmap.crux.basic.client.FocusWidgetFactory;
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -24,6 +25,7 @@ import com.google.gwt.dom.client.Element;
  * Factory for Decorated Button widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@DeclarativeFactory(id="decoratedButton", library="adv")
 public class DecoratedButtonFactory extends FocusWidgetFactory<DecoratedButton>
 {
 	@Override

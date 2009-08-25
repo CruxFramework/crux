@@ -17,6 +17,7 @@ package br.com.sysmap.crux.advanced.client.filter;
 
 import br.com.sysmap.crux.advanced.client.AdvancedWidgetMessages;
 import br.com.sysmap.crux.basic.client.SuggestBoxFactory;
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
@@ -30,6 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Factory for Filter widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@DeclarativeFactory(id="filter", library="adv")
 public class FilterFactory extends SuggestBoxFactory
 {
 	AdvancedWidgetMessages messages = GWT.create(AdvancedWidgetMessages.class);

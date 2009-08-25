@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.advanced.client.paging;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@DeclarativeFactory(id="sequentialPager", library="adv")
 public class SequentialPagerFactory extends WidgetFactory<SequentialPager>
 {
 	/**

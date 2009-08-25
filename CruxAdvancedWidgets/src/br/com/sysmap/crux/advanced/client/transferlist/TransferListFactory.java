@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.advanced.client.transferlist;
 
 import br.com.sysmap.crux.basic.client.CompositeFactory;
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 
@@ -25,6 +26,7 @@ import com.google.gwt.dom.client.Element;
  * Factory for Transfer List widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@DeclarativeFactory(id="transferList", library="adv")
 public class TransferListFactory extends CompositeFactory<TransferList>
 {
 	@Override

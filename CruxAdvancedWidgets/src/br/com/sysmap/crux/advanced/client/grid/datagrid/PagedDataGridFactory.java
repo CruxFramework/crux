@@ -21,6 +21,7 @@ import br.com.sysmap.crux.advanced.client.event.row.RowEventsBind;
 import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
 import br.com.sysmap.crux.advanced.client.util.AlignmentUtil;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenFactory;
@@ -35,6 +36,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 /**
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@DeclarativeFactory(id="pagedDataGrid", library="adv")
 public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 {
 	/**

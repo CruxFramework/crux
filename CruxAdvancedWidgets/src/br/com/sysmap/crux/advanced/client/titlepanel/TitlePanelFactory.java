@@ -18,6 +18,7 @@ package br.com.sysmap.crux.advanced.client.titlepanel;
 import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.decoratedpanel.AbstractDecoratedPanelFactory;
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Factory for Title Panel widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@DeclarativeFactory(id="titlePanel", library="adv")
 public class TitlePanelFactory<T extends TitlePanel> extends AbstractDecoratedPanelFactory<T>
 {
 	@Override

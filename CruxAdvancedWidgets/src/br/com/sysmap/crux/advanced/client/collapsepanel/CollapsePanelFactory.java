@@ -18,6 +18,7 @@ package br.com.sysmap.crux.advanced.client.collapsepanel;
 import br.com.sysmap.crux.advanced.client.event.LoadImagesEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseOrExpandEvtBind;
 import br.com.sysmap.crux.advanced.client.titlepanel.TitlePanelFactory;
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
@@ -29,6 +30,7 @@ import com.google.gwt.dom.client.Element;
  * Factory for Collapse Panel widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@DeclarativeFactory(id="collapsePanel", library="adv")
 public class CollapsePanelFactory extends TitlePanelFactory<CollapsePanel>
 {
 	@Override

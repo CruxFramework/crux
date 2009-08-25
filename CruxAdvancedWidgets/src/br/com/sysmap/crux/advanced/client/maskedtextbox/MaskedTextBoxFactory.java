@@ -34,6 +34,7 @@ import com.google.gwt.i18n.client.HasDirection.Direction;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
+@br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="maskedTextBox", library="adv")
 public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
 {
 	private AdvancedWidgetMessages messages = GWT.create(AdvancedWidgetMessages.class);

@@ -26,6 +26,7 @@ import com.google.gwt.dom.client.Element;
  * Factory for Stack Menu
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="stackMenu", library="adv")
 public class StackMenuFactory extends WidgetFactory<StackMenu>
 {
 	@Override
