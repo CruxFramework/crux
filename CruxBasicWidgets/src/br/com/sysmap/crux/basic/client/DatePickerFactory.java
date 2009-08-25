@@ -17,6 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import java.util.Date;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.HighlightEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.ShowRangeEvtBind;
@@ -29,6 +30,7 @@ import com.google.gwt.user.datepicker.client.DatePicker;
  * Factory for TabPanel widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
+@DeclarativeFactory(id="datePicker", library="bas")
 public class DatePickerFactory extends CompositeFactory<DatePicker> 
 {
 	@Override

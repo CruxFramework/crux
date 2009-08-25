@@ -18,6 +18,7 @@ package br.com.sysmap.crux.basic.client;
 import java.util.Date;
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
@@ -35,6 +36,7 @@ import com.google.gwt.user.datepicker.client.DateBox.Format;
  * Factory for TabPanel widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
+@DeclarativeFactory(id="dateBox", library="bas")
 public class DateBoxFactory extends CompositeFactory<DateBox> 
 {
 

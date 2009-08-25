@@ -36,7 +36,7 @@ public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetF
 	/**
 	 * Process widget attributes
 	 * @throws InterfaceConfigException 
-	 * @see #WidgetFactory.processAttributes
+	 * @see #DeclarativeFactory.processAttributes
 	 */
 	@Override
 	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
@@ -71,7 +71,7 @@ public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetF
 	/**
 	 * Render component events
 	 * @throws InterfaceConfigException 
-	 * @see #WidgetFactory.attachEvents
+	 * @see #DeclarativeFactory.attachEvents
 	 */
 	@Override
 	protected void processEvents(T widget, Element element, String widgetId) throws InterfaceConfigException

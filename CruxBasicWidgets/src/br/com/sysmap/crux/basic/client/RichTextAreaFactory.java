@@ -18,6 +18,7 @@ package br.com.sysmap.crux.basic.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
@@ -35,6 +36,7 @@ import com.google.gwt.user.client.ui.RichTextArea.Justification;
  * Represents a rich text area component
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="richTextArea", library="bas")
 public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 {
 	@Override

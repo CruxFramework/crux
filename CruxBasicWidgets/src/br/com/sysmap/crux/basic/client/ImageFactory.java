@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.LoadEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.ui.Image;
  * Represents an ImageFactory component
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="image", library="bas")
 public class ImageFactory extends WidgetFactory<Image>
 {
 	@Override

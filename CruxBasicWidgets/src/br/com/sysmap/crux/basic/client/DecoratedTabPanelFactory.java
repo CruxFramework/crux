@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DecoratedTabPanel;
 
@@ -22,6 +24,7 @@ import com.google.gwt.user.client.ui.DecoratedTabPanel;
  * Factory for DecoratedTabPanel widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
+@DeclarativeFactory(id="decoratedTabPanel", library="bas")
 public class DecoratedTabPanelFactory extends TabPanelFactory
 {
 	@Override

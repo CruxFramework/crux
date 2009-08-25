@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
@@ -29,6 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Represents a HorizontalSplitPanel
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="horizontalSplitPanel", library="bas")
 public class HorizontalSplitPanelFactory extends SplitPanelFactory<HorizontalSplitPanel>
 {
 

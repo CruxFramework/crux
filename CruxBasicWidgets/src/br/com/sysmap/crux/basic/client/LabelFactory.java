@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
@@ -26,10 +27,11 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Represents a LabelFactory WidgetFactory
+ * Represents a LabelFactory DeclarativeFactory
  * @author Thiago Bustamante
  *
  */
+@DeclarativeFactory(id="label", library="bas")
 public class LabelFactory extends WidgetFactory<Label>
 {
 	@Override

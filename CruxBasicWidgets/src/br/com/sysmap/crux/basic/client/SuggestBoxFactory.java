@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
@@ -31,6 +32,7 @@ import com.google.gwt.user.client.ui.SuggestOracle;
  * Factory for SuggestBox widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@DeclarativeFactory(id="suggestBox", library="bas")
 public class SuggestBoxFactory extends CompositeFactory<SuggestBox>
 {
 	@Override

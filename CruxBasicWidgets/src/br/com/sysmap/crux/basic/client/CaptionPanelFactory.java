@@ -17,6 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
@@ -28,6 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Factory for CaptionPanel widgets
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@DeclarativeFactory(id="captionPanel", library="bas")
 public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implements HasWidgetsFactory<CaptionPanel>
 {
 	@Override

@@ -46,7 +46,7 @@ public abstract class CustomButtonFactory<T extends CustomButton> extends FocusW
 	/**
 	 * Render component attributes
 	 * @throws InterfaceConfigException 
-	 * @see #WidgetFactory.processAttributes
+	 * @see #DeclarativeFactory.processAttributes
 	 */
 	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
 	{

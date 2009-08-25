@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.bind.ScrollEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
@@ -31,6 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Represents a ScrollPanelFactory
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="scrollPanel", library="bas")
 public class ScrollPanelFactory extends SimplePanelFactory 
 {
 	protected BasicMessages messages = GWT.create(BasicMessages.class);

@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Grid;
 
@@ -22,6 +24,7 @@ import com.google.gwt.user.client.ui.Grid;
  * Factory for Grid widget
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="grid", library="bas")
 public class GridFactory extends HTMLTableFactory<Grid>
 {
 

@@ -17,6 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.bind.BeforeSelectionEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
@@ -34,6 +35,7 @@ import com.google.gwt.user.client.ui.TabBar.Tab;
  * Factory for TabBar widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
+@DeclarativeFactory(id="tabBar", library="bas")
 public class TabBarFactory extends CompositeFactory<TabBar>
 {
 	@Override

@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 
@@ -22,6 +24,7 @@ import com.google.gwt.user.client.ui.DecoratedPopupPanel;
  * Represents a DecoratedPopupPanelFactory
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="decoratedPopupPanel", library="bas")
 public class DecoratedPopupPanelFactory extends PopupPanelFactory 
 {
 	@Override

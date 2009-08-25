@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.bind.BeforeSelectionEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
@@ -33,6 +34,7 @@ import com.google.gwt.user.client.ui.TabBar.Tab;
  * Factory for TabPanel widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
+@DeclarativeFactory(id="tabPanel", library="bas")
 public class TabPanelFactory extends CompositeFactory<TabPanel> implements HasWidgetsFactory<TabPanel>
 {
 	@Override

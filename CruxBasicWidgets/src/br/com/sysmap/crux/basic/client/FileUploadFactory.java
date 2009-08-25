@@ -18,12 +18,14 @@ package br.com.sysmap.crux.basic.client;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FileUpload;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 /**
  * Represents a FileUploadFactory component.
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="fileUpload", library="bas")
 public class FileUploadFactory extends WidgetFactory<FileUpload>
 {
 

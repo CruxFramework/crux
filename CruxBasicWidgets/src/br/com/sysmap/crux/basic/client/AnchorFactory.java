@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * Represents an AnchorFactory component
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="anchor", library="bas")
 public class AnchorFactory extends FocusWidgetFactory<Anchor>
 {
 	@Override

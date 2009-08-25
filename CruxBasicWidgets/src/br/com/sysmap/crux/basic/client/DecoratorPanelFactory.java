@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.DecoratorPanel;
  * Represents a DecoratorPanelFactory
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="decoratorPanel", library="bas")
 public class DecoratorPanelFactory extends SimplePanelFactory
 {
 	@Override

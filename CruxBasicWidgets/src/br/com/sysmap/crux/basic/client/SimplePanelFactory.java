@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,6 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago Bustamante
  *
  */
+@DeclarativeFactory(id="simplePanel", library="bas")
 public class SimplePanelFactory extends PanelFactory<SimplePanel>
 {
 	@Override

@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.FocusEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
@@ -29,6 +30,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * Represents a FocusPanelFactory
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="focusPanel", library="bas")
 public class FocusPanelFactory extends SimplePanelFactory
 {
 	@Override

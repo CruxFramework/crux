@@ -17,6 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
@@ -35,6 +36,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Factory for DisclosurePanel widgets
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
+@DeclarativeFactory(id="disclosurePanel", library="bas")
 public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> implements HasWidgetsFactory<DisclosurePanel>
 {
 	protected BasicMessages messages = GWT.create(BasicMessages.class);

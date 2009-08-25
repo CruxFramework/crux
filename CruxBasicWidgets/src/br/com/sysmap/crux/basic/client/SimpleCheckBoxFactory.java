@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -25,6 +26,7 @@ import com.google.gwt.user.client.ui.SimpleCheckBox;
  * @author Thiago Bustamante
  *
  */
+@DeclarativeFactory(id="simpleCheckBox", library="bas")
 public class SimpleCheckBoxFactory extends FocusWidgetFactory<SimpleCheckBox>
 {
 	@Override

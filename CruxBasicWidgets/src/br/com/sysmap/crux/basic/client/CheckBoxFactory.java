@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
@@ -23,16 +24,17 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasHTML;
 
 /**
- * CheckBoxFactory WidgetFactory.
+ * CheckBoxFactory DeclarativeFactory.
  * @author Thiago Bustamante
  *
  */
+@DeclarativeFactory(id="checkBox", library="bas")
 public class CheckBoxFactory extends FocusWidgetFactory<CheckBox> 
 {
 	/**
 	 * process widget attributes
 	 * @throws InterfaceConfigException 
-	 * @see #WidgetFactory.processAttributes
+	 * @see #DeclarativeFactory.processAttributes
 	 */
 	@Override
 	protected void processAttributes(CheckBox widget, Element element, String widgetId) throws InterfaceConfigException

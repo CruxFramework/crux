@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.SimpleRadioButton;
 
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.SimpleRadioButton;
  * @author Thiago Bustamante
  *
  */
+@DeclarativeFactory(id="simpleRadioButton", library="bas")
 public class SimpleRadioButtonFactory extends SimpleCheckBoxFactory
 {
 	@Override

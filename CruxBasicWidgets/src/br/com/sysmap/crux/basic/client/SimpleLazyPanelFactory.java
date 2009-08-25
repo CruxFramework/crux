@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.LazyPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -24,6 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A LayzyPanel that encapsulate a SimplePanelFactory
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="simpleLazyPanel", library="bas")
 public class SimpleLazyPanelFactory extends SimplePanelFactory
 {
 	protected com.google.gwt.user.client.ui.LazyPanel lazyPanelWidget;

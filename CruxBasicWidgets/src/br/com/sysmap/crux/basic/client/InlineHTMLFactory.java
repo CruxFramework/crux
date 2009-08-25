@@ -15,15 +15,18 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.InlineHTML;
 
 
 /**
- * Represents an InlineHTMLFactory WidgetFactory
+ * Represents an InlineHTMLFactory DeclarativeFactory
  * @author Thiago Bustamante
  *
  */
+@DeclarativeFactory(id="inlineHTML", library="bas")
 public class InlineHTMLFactory extends HTMLFactory
 {
 	@Override

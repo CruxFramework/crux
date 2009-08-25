@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
@@ -25,6 +26,7 @@ import com.google.gwt.user.client.ui.Hidden;
  * Represents a HiddenFactory component
  * @author Thiago Bustamante
  */
+@DeclarativeFactory(id="hidden", library="bas")
 public class HiddenFactory extends WidgetFactory<Hidden> 
 {
 

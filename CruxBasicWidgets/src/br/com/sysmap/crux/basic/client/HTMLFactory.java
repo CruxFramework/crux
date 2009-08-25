@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -24,10 +25,11 @@ import com.google.gwt.user.client.ui.Label;
 
 
 /**
- * Represents a HTMLFactory WidgetFactory
+ * Represents a HTMLFactory DeclarativeFactory
  * @author Thiago Bustamante
  *
  */
+@DeclarativeFactory(id="HTML", library="bas")
 public class HTMLFactory extends LabelFactory
 {
 	@Override
