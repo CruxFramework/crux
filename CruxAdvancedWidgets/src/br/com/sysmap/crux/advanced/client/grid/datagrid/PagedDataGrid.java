@@ -15,10 +15,10 @@ import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSourceCallback;
 import br.com.sysmap.crux.core.client.datasource.MeasurableDataSource;
+import br.com.sysmap.crux.core.client.datasource.MeasurablePagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.MeasurableRemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSourceCallback;
-import br.com.sysmap.crux.core.client.datasource.StreamingDataSource;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
@@ -285,16 +285,15 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 
 	public int getPageCount()
 	{
-		if(this.dataSource instanceof StreamingDataSource)
+		if(this.dataSource instanceof MeasurablePagedDataSource)
 		{
-			return -1;
+			MeasurablePagedDataSource<?> ds = (MeasurablePagedDataSource<?>) this.dataSource;
+			return ds.getPageCount();
 		}
 		else
 		{
-			this.dataSource.getPageCount();
+			return -1;
 		}
-		
-		return 0;
 	}
 
 	public void nextPage()

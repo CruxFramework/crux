@@ -61,7 +61,8 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		
 		panel = new SimplePanel();
 		panel.setStyleName("crux-Grid");
-	
+		panel.setWidth("100%");
+		
 		scrollingArea = new ScrollPanel();
 		scrollingArea.setHeight("1");
 		scrollingArea.setWidth("1");
@@ -99,40 +100,48 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	{
 		final Element elem = parent.getElement();
 		
+		String borderLeft = elem.getStyle().getProperty("borderLeft");
+		elem.getStyle().setProperty("borderLeft", "solid 1px #FFFFFF");
+		
 		parent.clear();
+		
+		int width = 0;
+		int height = 0;
+		
+		if(elem != null)
+		{
+			width = elem.getClientWidth();
+			height = elem.getClientHeight();
+		}
+		
+		final int finalWidth = width;
+		final int finalHeight = height;
+		
+		elem.getStyle().setProperty("borderLeft", borderLeft);
 		
 		DeferredCommand.addCommand(new Command(){
 
 			public void execute()
 			{
-				int width = 0;
-				int height = 0;
-				
-				if(elem != null)
+				if(finalWidth > 0)
 				{
-					width = elem.getClientWidth();
-					height = elem.getClientHeight();
-					widget.setHeight("" + height);
-				}
-				
-				if(width > 0)
-				{
-					widget.setWidth("" + width);
+					widget.setWidth("" + finalWidth);
 				}
 				else
 				{
 					widget.setWidth("100%");
 				}
 				
-				if(height > 0)
+				if(finalHeight > 0)
 				{
-					widget.setHeight("" + height);
+					widget.setHeight("" + finalHeight);
 				}
 				else
 				{
 					widget.setHeight("100%");
 				}
 				
+				parent.clear();
 				parent.add(widget);			
 			}
 		});		
