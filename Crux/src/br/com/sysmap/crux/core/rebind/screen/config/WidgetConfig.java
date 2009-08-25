@@ -14,7 +14,7 @@
  * the License.
  */
 package br.com.sysmap.crux.core.rebind.screen.config;
-
+ 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
