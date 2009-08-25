@@ -17,8 +17,6 @@ package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,17 +29,9 @@ import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.DataSoureExcpetion;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.LocalBindableEditablePagedDataSource;
-import br.com.sysmap.crux.core.client.datasource.LocalBindableEditableScrollableDataSource;
-import br.com.sysmap.crux.core.client.datasource.LocalBindablePagedDataSource;
-import br.com.sysmap.crux.core.client.datasource.LocalBindableScrollableDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
-import br.com.sysmap.crux.core.client.datasource.RemoteBindableEditablePagedDataSource;
-import br.com.sysmap.crux.core.client.datasource.RemoteBindableEditableStreamingDataSource;
-import br.com.sysmap.crux.core.client.datasource.RemoteBindablePagedDataSource;
-import br.com.sysmap.crux.core.client.datasource.RemoteBindableStreamingDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumns;
@@ -50,6 +40,7 @@ import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
+import br.com.sysmap.crux.core.utils.GenericUtils;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.core.client.GWT;
@@ -450,41 +441,14 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 */
 	private Class<?> getDtoTypeFromClass(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass)
 	{
-		try
+		Class<?> returnType = GenericUtils.resolveReturnType(dataSourceClass, "getBindedObject", new Class[]{});
+		if (returnType == null)
 		{
-			Type superClass = dataSourceClass.getGenericSuperclass();
-			while (superClass != null)
-			{
-				if (superClass instanceof ParameterizedType)
-				{
-					ParameterizedType parameterizedType = (ParameterizedType)superClass;
-					Type rawType = parameterizedType.getRawType();
-					if (LocalBindableEditableScrollableDataSource.class.equals(rawType) || 
-						LocalBindableScrollableDataSource.class.equals(rawType) || 	
-						LocalBindablePagedDataSource.class.equals(rawType) || 	
-						LocalBindableEditablePagedDataSource.class.equals(rawType) ||
-						RemoteBindablePagedDataSource.class.equals(rawType) ||
-						RemoteBindableEditablePagedDataSource.class.equals(rawType) ||
-						RemoteBindableStreamingDataSource.class.equals(rawType) ||
-						RemoteBindableEditableStreamingDataSource.class.equals(rawType))
-					{
-						return (Class<?>)parameterizedType.getActualTypeArguments()[0];
-					}
-					superClass = rawType;
-				}
-				else
-				{
-					superClass = ((Class<?>)superClass).getGenericSuperclass();
-				}
-			}
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceCanNotRealizeGenericType(dataSourceClass.getName()));
 		}
-		catch (Exception e) 
-		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
-		}
-		return null;
+		return returnType;
 	}
-
+	
 	/**
 	 * 
 	 * @param logger
@@ -493,35 +457,12 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 */
 	private Class<?> getRecordTypeFromClass(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass)
 	{
-		try
+		Class<?> returnType = GenericUtils.resolveReturnType(dataSourceClass, "getRecord", new Class[]{});
+		if (returnType == null)
 		{
-			Type superClass = dataSourceClass.getGenericSuperclass();
-			while (superClass != null)
-			{
-				if (superClass instanceof ParameterizedType)
-				{
-					ParameterizedType parameterizedType = (ParameterizedType)superClass;
-					Class<?> rawType = (Class<?>)parameterizedType.getRawType();
-					if ("br.com.sysmap.crux.core.client.datasource.AbstractLocalScrollableDataSource".equals(rawType.getName()) || 
-						"br.com.sysmap.crux.core.client.datasource.AbstractLocalPagedDataSource".equals(rawType.getName()) || 	
-						"br.com.sysmap.crux.core.client.datasource.AbstractRemotePagedDataSource".equals(rawType.getName()) ||
-						"br.com.sysmap.crux.core.client.datasource.AbstractStreamingDataSource".equals(rawType.getName()))
-					{
-						return (Class<?>)parameterizedType.getActualTypeArguments()[0];
-					}
-					superClass = rawType;
-				}
-				else
-				{
-					superClass = ((Class<?>)superClass).getGenericSuperclass();
-				}
-			}
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceCanNotRealizeGenericType(dataSourceClass.getName()));
 		}
-		catch (Exception e) 
-		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
-		}
-		return null;
+		return returnType;
 	}
 	
 	/**
