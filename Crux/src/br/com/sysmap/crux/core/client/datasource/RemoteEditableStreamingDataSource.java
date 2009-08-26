@@ -135,4 +135,10 @@ public abstract class RemoteEditableStreamingDataSource extends AbstractStreamin
 	{
 		this.editableOperations.reset();
 	}
+	
+	@Override
+	protected EditableDataSourceRecord[] createDataObject(int count)
+	{
+		return new EditableDataSourceRecord[count];
+	}	
 }

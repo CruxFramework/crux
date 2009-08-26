@@ -54,7 +54,7 @@ abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> exte
 			int startPageRecord = getPageStartRecord();
 			int endPageRecord = getPageEndRecord();
 			int pageSize = endPageRecord - startPageRecord + 1;
-			for (int i = 0; i<=pageSize; i++)
+			for (int i = 0; i<pageSize; i++)
 			{
 				pageData[i] = data[i+startPageRecord];
 			}

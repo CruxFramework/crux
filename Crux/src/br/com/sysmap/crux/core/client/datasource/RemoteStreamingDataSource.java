@@ -21,4 +21,9 @@ package br.com.sysmap.crux.core.client.datasource;
  */
 public abstract class RemoteStreamingDataSource extends AbstractStreamingDataSource<DataSourceRecord, DataSourceRecord>
 {
+	@Override
+	protected DataSourceRecord[] createDataObject(int count)
+	{
+		return new DataSourceRecord[count];
+	}	
 }

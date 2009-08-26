@@ -37,4 +37,10 @@ public abstract class RemoteBindableStreamingDataSource<T> extends AbstractStrea
 	{
 		return null;
 	}	
+	
+	@Override
+	protected DataSourceRecord[] createDataObject(int count)
+	{
+		return new DataSourceRecord[count];
+	}
 }

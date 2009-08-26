@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.datasource;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -377,23 +377,23 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 	{
 		if (currentRecord > -1)
 		{
-			List<R> pageData = new ArrayList<R>(pageSize);
+			R[] pageData = createDataObject(pageSize);
 			int startPageRecord = getPageStartRecord();
 			int endPageRecord = getPageEndRecord();
 			int pageSize = endPageRecord - startPageRecord + 1;
-			for (int i = 0; i<=pageSize; i++)
+			for (int i = 0; i<pageSize; i++)
 			{
-				pageData.add(data.get(i+startPageRecord));
+				pageData[i] = data.get(i+startPageRecord);
 			}
-			sortList(pageData,columnName, ascending);
-			updateRecords(startPageRecord, endPageRecord, (R[]) pageData.toArray());
+			sortArray(pageData,columnName, ascending);
+			updateRecords(startPageRecord, endPageRecord, pageData);
 		}
 	}
 	
-	protected void sortList(List<R> list, final String columnName, final boolean ascending)
+	protected void sortArray(R[] array, final String columnName, final boolean ascending)
 	{
 		final int position = metadata.getColumnPosition(columnName);
-		Collections.sort(list, new Comparator<R>(){
+		Arrays.sort(array, new Comparator<R>(){
 			public int compare(R o1, R o2)
 			{
 				if (ascending)
@@ -460,4 +460,5 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		}
 	}
 	
+	protected abstract R[] createDataObject(int count);	
 }

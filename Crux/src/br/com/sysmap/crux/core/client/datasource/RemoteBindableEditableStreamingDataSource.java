@@ -152,5 +152,11 @@ public abstract class RemoteBindableEditableStreamingDataSource<T> extends Abstr
 	public T getBindedObject(EditableDataSourceRecord record)
 	{
 		return null;
-	}		
+	}
+	
+	@Override
+	protected EditableDataSourceRecord[] createDataObject(int count)
+	{
+		return new EditableDataSourceRecord[count];
+	}
 }
