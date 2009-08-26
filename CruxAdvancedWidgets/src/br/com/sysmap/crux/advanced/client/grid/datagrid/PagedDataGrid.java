@@ -337,9 +337,9 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	/*
 	public List<Object> getSelectedRows()
 	{
-		if(this.dataSource instanceof Bindable)
+		if(this.dataSource instanceof BindableDataSource)
 		{
-			Bindable<?> bindable = (Bindable<?>) this.dataSource;
+			BindableDataSource<?> bindable = (BindableDataSource<?>) this.dataSource;
 			bindable.getBindedObject();			
 		}
 	}
