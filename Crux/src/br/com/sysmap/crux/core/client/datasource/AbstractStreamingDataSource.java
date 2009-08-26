@@ -57,13 +57,19 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		int startRecord = getPageStartRecord();
 		int endRecord = (currentPage * pageSize) - 1;
 		int updateRecordsCount = updateRecords(startRecord, endRecord, records);
-		if (updateRecordsCount > 0 && this.fetchCallback != null)
+		if (updateRecordsCount > 0)
 		{
-			fetchCallback.execute(startRecord, startRecord+updateRecordsCount-1);
+			if (this.fetchCallback != null)
+			{
+				fetchCallback.execute(startRecord, startRecord+updateRecordsCount-1);
+			}
 		}
 		else
 		{
-			fetchCallback.execute(-1, -1);
+			if (this.fetchCallback != null)
+			{
+				fetchCallback.execute(-1, -1);
+			}
 		}
 	}
 	

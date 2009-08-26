@@ -144,13 +144,16 @@ abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> exte
 		int startRecord = getPageStartRecord();
 		int endRecord = getPageEndRecord();
 		int updateRecordsCount = updateRecords(startRecord, endRecord, records);
-		if (updateRecordsCount > 0 && this.fetchCallback != null)
+		if (this.fetchCallback != null)
 		{
-			fetchCallback.execute(startRecord, startRecord+updateRecordsCount-1);
-		}
-		else
-		{
-			fetchCallback.execute(-1, -1);
+			if (updateRecordsCount > 0)
+			{
+				fetchCallback.execute(startRecord, startRecord+updateRecordsCount-1);
+			}
+			else
+			{
+				fetchCallback.execute(-1, -1);
+			}
 		}
 	}
 	
