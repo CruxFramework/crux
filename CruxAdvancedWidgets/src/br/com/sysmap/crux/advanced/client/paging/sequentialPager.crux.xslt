@@ -27,6 +27,9 @@
 			<xsl:if test="string-length(@pageable) > 0">
 				<xsl:attribute name="_pageable" select="@pageable" />
 			</xsl:if>
+			<xsl:if test="string-length(@onPage) > 0">
+				<xsl:attribute name="_onpage" select="@onPage" />
+			</xsl:if>
 			<xsl:value-of select="' '"/>
 		</xsl:element>		
 	</xsl:template>	

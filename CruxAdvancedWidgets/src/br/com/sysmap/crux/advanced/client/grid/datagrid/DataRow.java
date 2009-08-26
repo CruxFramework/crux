@@ -1,6 +1,7 @@
 package br.com.sysmap.crux.advanced.client.grid.datagrid;
 
 import br.com.sysmap.crux.advanced.client.grid.model.AbstractGrid;
+import br.com.sysmap.crux.advanced.client.grid.model.Cell;
 import br.com.sysmap.crux.advanced.client.grid.model.Row;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 
@@ -18,7 +19,7 @@ public class DataRow extends Row
 	/**
 	 * @return the dataSourceRowId
 	 */
-	EditableDataSourceRecord getDataSourceRecord()
+	public EditableDataSourceRecord getDataSourceRecord()
 	{
 		return dataSourceRecord;
 	}
@@ -35,5 +36,17 @@ public class DataRow extends Row
 	{
 		int index = ((PagedDataGrid) getGrid()).getDataSource().getMetadata().getColumnPosition(column);
 		return dataSourceRecord.get(index);
+	}
+	
+	@Override
+	protected void setCell(Cell cell, String column)
+	{
+		super.setCell(cell, column);
+	}
+	
+	@Override
+	protected void markAsSelected(boolean selected)
+	{
+		super.markAsSelected(selected);
 	}
 }

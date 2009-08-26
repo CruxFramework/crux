@@ -1,7 +1,11 @@
 package br.com.sysmap.crux.advanced.client.paging;
 
+import br.com.sysmap.crux.advanced.client.event.paging.PageEvent;
+import br.com.sysmap.crux.advanced.client.event.paging.PageHandler;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -44,17 +48,23 @@ public class SequentialPager extends Composite implements Pager
 	
 	private FocusPanel createPreviousButton()
 	{
+		final Pager myself = this; 
+		
 		FocusPanel panel = new FocusPanel();
 		panel.setStyleName("previousButton");
 		panel.addStyleDependentName("disabled");
 		panel.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event)
 			{
-				if(currentPage > 1)
+				PageEvent pageEvent = PageEvent.fire(myself, currentPage - 1);
+				if(!pageEvent.isCanceled())
 				{
-					checkPageable();
-					setLoading();
-					pageable.previousPage();
+					if(currentPage > 1)
+					{
+						checkPageable();
+						setLoading();
+						pageable.previousPage();
+					}
 				}
 			}
 		});
@@ -63,17 +73,23 @@ public class SequentialPager extends Composite implements Pager
 	
 	private FocusPanel createNextButton()
 	{
+		final Pager myself = this; 
+		
 		FocusPanel panel = new FocusPanel();
 		panel.setStyleName("nextButton");
 		panel.addStyleDependentName("disabled");
-		panel.addClickHandler(new ClickHandler(){
+		panel.addClickHandler(new ClickHandler(){			
 			public void onClick(ClickEvent event)
 			{
-				if(!isLastPage)
+				PageEvent pageEvent = PageEvent.fire(myself, currentPage + 1);
+				if(!pageEvent.isCanceled())
 				{
-					checkPageable();
-					setLoading();
-					pageable.nextPage();
+					if(!isLastPage)
+					{
+						checkPageable();
+						setLoading();
+						pageable.nextPage();
+					}
 				}
 			}			
 		});
@@ -137,5 +153,13 @@ public class SequentialPager extends Composite implements Pager
 		{
 			throw new RuntimeException(); // TODO
 		}		
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.advanced.client.event.paging.HasPageHandlers#addPageHandler(br.com.sysmap.crux.advanced.client.event.paging.PageHandler)
+	 */
+	public HandlerRegistration addPageHandler(PageHandler handler)
+	{
+		return addHandler(handler, PageEvent.getType());
 	}	
 }

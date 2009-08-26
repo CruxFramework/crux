@@ -22,7 +22,7 @@ public class Row
 		this.grid = grid;
 	}
 	
-	public void setCell(Cell cell, String column)
+	protected void setCell(Cell cell, String column)
 	{
 		CellFormatter formatter = grid.getTable().getCellFormatter();
 		
@@ -50,7 +50,7 @@ public class Row
 		return (Cell) grid.getTable().getWidget(index, column);
 	}
 	
-	public Cell getCell(String column)
+	protected Cell getCell(String column)
 	{
 		int colIndex = getColumnIndex(column);
 		return (Cell) grid.getTable().getWidget(index, colIndex);
@@ -60,7 +60,7 @@ public class Row
 	 * Adds a style name to the row
 	 * @param rowIndex
 	 */
-	public void addStyle(String styleSuffix)
+	public void addStyleDependentName(String styleSuffix)
 	{
 		StyleUtils.addStyleDependentName(elem, styleSuffix);
 	}
@@ -69,7 +69,7 @@ public class Row
 	 * Adds a style name to the row
 	 * @param rowIndex
 	 */
-	public void removeStyle(String styleSuffix)
+	public void removeStyleDependentName(String styleSuffix)
 	{
 		StyleUtils.removeStyleDependentName(elem, styleSuffix);
 	}
@@ -84,7 +84,7 @@ public class Row
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void markAsSelected(boolean selected)
+	protected void markAsSelected(boolean selected)
 	{
 		if(hasSelectionCell)
 		{
@@ -94,11 +94,11 @@ public class Row
 		
 		if(selected)
 		{
-			addStyle("selected");
+			addStyleDependentName("selected");
 		}
 		else
 		{
-			removeStyle("selected");
+			removeStyleDependentName("selected");
 		}
 		
 		this.selected = selected;
@@ -129,5 +129,10 @@ public class Row
 	protected AbstractGrid<?, ?> getGrid()
 	{
 		return grid;
+	}
+	
+	public void setVisible(boolean visible)
+	{
+		elem.getStyle().setProperty("display", visible ? "" : "none");
 	}
 }

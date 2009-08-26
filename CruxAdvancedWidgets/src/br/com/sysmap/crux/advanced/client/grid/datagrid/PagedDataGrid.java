@@ -10,6 +10,7 @@ import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinitions;
 import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
 import br.com.sysmap.crux.advanced.client.paging.Pageable;
 import br.com.sysmap.crux.advanced.client.paging.Pager;
+import br.com.sysmap.crux.core.client.datasource.BindableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
@@ -194,7 +195,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 			{
 				DataRow dataRow = it.next();
 				dataRow.markAsSelected(false);
-			}			
+			}
 		}		
 		
 		row.getDataSourceRecord().setSelected(select);
@@ -322,6 +323,9 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 		}
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.advanced.client.paging.Pageable#setPager(br.com.sysmap.crux.advanced.client.paging.Pager)
+	 */
 	public void setPager(Pager pager)
 	{
 		this.pager = pager;
@@ -334,17 +338,45 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 		this.headers = new ArrayList<ColumnHeader>();		
 	}
 	
-	/*
-	public List<Object> getSelectedRows()
+	/**
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public Object[] getSelectedDataRows()
 	{
-		if(this.dataSource instanceof BindableDataSource)
+		if(this.dataSource != null)
 		{
-			BindableDataSource<?> bindable = (BindableDataSource<?>) this.dataSource;
-			bindable.getBindedObject();			
-		}
+			EditableDataSourceRecord[] selectedRecords = this.dataSource.getSelectedRecords();
+			
+			if(selectedRecords != null)
+			{
+				if(this.dataSource instanceof BindableDataSource)
+				{
+					BindableDataSource<EditableDataSourceRecord, ?> bindable = (BindableDataSource<EditableDataSourceRecord, ?>) this.dataSource;
+					
+					Object[] selectedObjs = new Object[selectedRecords.length]; 
+					
+					for (int i = 0; i < selectedRecords.length; i++)
+					{
+						Object o = bindable.getBindedObject(selectedRecords[i]);
+						selectedObjs[i] = o;					
+					}
+					
+					return selectedObjs;
+				}
+				else
+				{
+					return  selectedRecords;
+				}
+			}			
+		}		
+		
+		return new Object[0];
 	}
-	*/
 	
+	/**
+	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 */
 	protected static class ColumnHeader extends Composite
 	{
 		private FocusPanel clickable;
@@ -441,5 +473,25 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	EditablePagedDataSource getDataSource()
 	{
 		return dataSource;
+	}
+
+	@Override
+	public List<DataRow> getSelectedRows()
+	{
+		List<DataRow> result = new ArrayList<DataRow>();
+		
+		Iterator<DataRow> rows = getRowIterator();
+		
+		while(rows.hasNext())
+		{
+			DataRow row = rows.next();
+			
+			if(row.getDataSourceRecord().isSelected())
+			{
+				result.add(row);
+			}
+		}
+		
+		return result;
 	}
 }

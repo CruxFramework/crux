@@ -280,9 +280,9 @@
 	</xs:complexType>
 	
 	<xs:complexType name="DataGridColumn">
-		<xs:attribute name="width" type="xs:string" use="required"/>
+		<xs:attribute name="width" type="xs:string" use="optional"/>
 		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
-		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="label" type="xs:string" use="optional"/>
 		<xs:attribute name="key" type="xs:string" use="required"/>
 		<xs:attribute name="formatter" type="xs:string" use="optional"/>
 		<xs:attributeGroup ref="basic:HorizontalAlignment"/>
@@ -293,6 +293,7 @@
 		<xs:complexContent>
 			<xs:extension base="basic:AbstractWidget">
 				<xs:attribute name="pageable" type="xs:string" use="required"/>
+				<xs:attribute name="onPage" type="xs:string" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>	

@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.advanced.client.paging;
 
+import br.com.sysmap.crux.advanced.client.event.paging.PageEvtBind;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
@@ -66,5 +67,12 @@ public class SequentialPagerFactory extends WidgetFactory<SequentialPager>
 		);
 		
 		return pager;
+	}
+	
+	@Override
+	protected void processEvents(SequentialPager widget, Element element, String widgetId) throws InterfaceConfigException
+	{
+		PageEvtBind.bindEvent(element, widget);
+		super.processEvents(widget, element, widgetId);
 	}
 }

@@ -49,6 +49,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	private List<R> rows = new ArrayList<R>();
 	private RowSelectionModel rowSelection;
 	private ScrollPanel scrollingArea;
+	private int visibleColumnCount = -1;
 	
 	/**
 	 * Constructor
@@ -173,9 +174,27 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	private void clearRendering()
 	{
 		int rowCount = getRowsToBeRendered() + 1;
-		table.resize(rowCount, definitions.getDefinitions().size() + (hasSelectionColumn() ? 1 : 0));
+		table.resize(rowCount, getVisibleColumnCount() + (hasSelectionColumn() ? 1 : 0));
 		this.rows = new ArrayList<R>();
 		onClearRendering();
+	}
+
+	private int getVisibleColumnCount()
+	{
+		if(this.visibleColumnCount == -1)
+		{
+			this.visibleColumnCount = 0;
+			
+			for (ColumnDefinition def : definitions.getDefinitions())
+			{
+				if(def.isVisible())
+				{
+					this.visibleColumnCount++;
+				}
+			}
+		}
+		
+		return this.visibleColumnCount ;		
 	}
 
 	private void renderRows()
@@ -219,7 +238,10 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 			w = radio;
 		}
 		
-		return createCell(w);
+		Cell cell = createCell(w);
+		cell.addStyleName("rowSelector");
+		
+		return cell;
 	}
 
 	protected Iterator<R> getRowIterator()
@@ -481,4 +503,6 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	{
 		RowRenderEvent.fire(this, row);
 	}
+	
+	public abstract List<R> getSelectedRows(); 
 }
