@@ -97,7 +97,27 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		}
 		return ret;
 	}
-	
+
+	/**
+	 * 
+	 * @param startRecord
+	 * @param endRecord
+	 * @param records
+	 * @return
+	 */
+	protected int updatePageRecords(int startRecord, int endRecord, R[] records)
+	{
+		int ret = 0;
+		if (records != null)
+		{
+			int count = Math.min(endRecord - startRecord + 1, records.length);
+			for (ret = 0; ret < count ; ret++)
+			{
+				this.data.set(ret+startRecord, records[ret]);
+			}
+		}
+		return ret;
+	}
 	
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#updateData(E[])
@@ -386,7 +406,7 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 				pageData[i] = data.get(i+startPageRecord);
 			}
 			sortArray(pageData,columnName, ascending);
-			updateRecords(startPageRecord, endPageRecord, pageData);
+			updatePageRecords(startPageRecord, endPageRecord, pageData);
 		}
 	}
 	
