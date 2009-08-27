@@ -318,9 +318,9 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		
 		if (pageEndRecord < this.data.size())
 		{
-			if (pageEndRecord == this.data.size()-1)
+			if (pageEndRecord == this.data.size() - 2)
 			{
-				return this.data.get(pageEndRecord) != null;
+				return this.data.get(pageEndRecord) == null;
 			}
 			
 			return true;
