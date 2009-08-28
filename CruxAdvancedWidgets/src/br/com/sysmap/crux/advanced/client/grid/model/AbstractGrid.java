@@ -201,10 +201,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	{
 		Iterator<R> it = getRowIterator();
 		
-		if(it.hasNext())
-		{
-			onBeforeRenderRows();
-		}
+		onBeforeRenderRows();
 		
 		while(it.hasNext())
 		{

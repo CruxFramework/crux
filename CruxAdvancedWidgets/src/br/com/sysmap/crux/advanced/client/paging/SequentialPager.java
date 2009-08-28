@@ -26,6 +26,8 @@ public class SequentialPager extends Composite implements Pager
 	private FocusPanel previousBtn;
 	private FocusPanel nextBtn;
 	
+	private boolean enabled = true;
+	
 	public SequentialPager()
 	{
 		this.panel = new HorizontalPanel();
@@ -56,14 +58,17 @@ public class SequentialPager extends Composite implements Pager
 		panel.addClickHandler(new ClickHandler(){
 			public void onClick(ClickEvent event)
 			{
-				PageEvent pageEvent = PageEvent.fire(myself, currentPage - 1);
-				if(!pageEvent.isCanceled())
+				if(isEnabled())
 				{
-					if(currentPage > 1)
+					PageEvent pageEvent = PageEvent.fire(myself, currentPage - 1);
+					if(!pageEvent.isCanceled())
 					{
-						checkPageable();
-						setLoading();
-						pageable.previousPage();
+						if(currentPage > 1)
+						{
+							checkPageable();
+							setLoading();
+							pageable.previousPage();
+						}
 					}
 				}
 			}
@@ -81,14 +86,17 @@ public class SequentialPager extends Composite implements Pager
 		panel.addClickHandler(new ClickHandler(){			
 			public void onClick(ClickEvent event)
 			{
-				PageEvent pageEvent = PageEvent.fire(myself, currentPage + 1);
-				if(!pageEvent.isCanceled())
+				if(isEnabled())
 				{
-					if(!isLastPage)
+					PageEvent pageEvent = PageEvent.fire(myself, currentPage + 1);
+					if(!pageEvent.isCanceled())
 					{
-						checkPageable();
-						setLoading();
-						pageable.nextPage();
+						if(!isLastPage)
+						{
+							checkPageable();
+							setLoading();
+							pageable.nextPage();
+						}
 					}
 				}
 			}			
@@ -103,7 +111,7 @@ public class SequentialPager extends Composite implements Pager
 		
 		Label currentPageLabel = createCurrentPageLabel("" + currentPage);
 		
-		if(this.currentPage <= 1)
+		if(this.currentPage <= 1 || !isEnabled())
 		{
 			this.previousBtn.addStyleDependentName("disabled");
 		}
@@ -112,7 +120,7 @@ public class SequentialPager extends Composite implements Pager
 			this.previousBtn.removeStyleDependentName("disabled");
 		}
 		
-		if(isLastPage)
+		if(isLastPage || !isEnabled())
 		{
 			this.nextBtn.addStyleDependentName("disabled");
 		}
@@ -124,7 +132,13 @@ public class SequentialPager extends Composite implements Pager
 		this.infoPanel.clear();
 		this.infoPanel.add(currentPageLabel);
 	}
-
+	
+	public void setEnabled(boolean enabled)
+	{
+		this.enabled = enabled;
+		update(this.currentPage, this.isLastPage);
+	}
+	
 	private Label createCurrentPageLabel(String currentPageNumber)
 	{
 		Label label = new Label(currentPageNumber);
@@ -161,5 +175,13 @@ public class SequentialPager extends Composite implements Pager
 	public HandlerRegistration addPageHandler(PageHandler handler)
 	{
 		return addHandler(handler, PageEvent.getType());
+	}
+
+	/**
+	 * @return the enabled
+	 */
+	protected boolean isEnabled()
+	{
+		return enabled;
 	}	
 }

@@ -262,8 +262,14 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	{
 		if(this.dataSource != null)
 		{
+			if(this.dataSource.getCurrentPage() > 0 && this.dataSource.getCurrentPageSize() == 0)
+			{
+				this.previousPage();
+				return;
+			}
+			
 			updatePager();
-
+	
 			for (ColumnHeader header : headers)
 			{
 				header.applySortingLayout();

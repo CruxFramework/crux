@@ -41,6 +41,7 @@ public class SequentialPagerFactory extends WidgetFactory<SequentialPager>
 	{
 		final SequentialPager pager = new SequentialPager();
 		final String pageableId = elem.getAttribute("_pageable");
+		final String strEnabled = elem.getAttribute("_enabled");
 		
 		addScreenLoadedHandler(
 				
@@ -57,6 +58,10 @@ public class SequentialPagerFactory extends WidgetFactory<SequentialPager>
 					if(pageable != null)
 					{
 						pager.setPageable((Pageable) pageable);
+						if(strEnabled != null && strEnabled.length() > 0)
+						{
+							pager.setEnabled(Boolean.parseBoolean(strEnabled));
+						}
 					}
 					else
 					{

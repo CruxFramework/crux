@@ -294,6 +294,7 @@
 			<xs:extension base="basic:AbstractWidget">
 				<xs:attribute name="pageable" type="xs:string" use="required"/>
 				<xs:attribute name="onPage" type="xs:string" use="optional"/>
+				<xs:attribute name="enabled" type="xs:boolean" use="optional" default="true"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>	
