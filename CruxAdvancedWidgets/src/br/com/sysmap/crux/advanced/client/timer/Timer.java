@@ -37,6 +37,7 @@ public class Timer extends Composite implements HasTimeoutHandlers
 	public static final String DEFAULT_STYLE_NAME = "crux-Timer" ;
 	private final Label widget;
 	private long initial;
+	private long creationTime;
 	private boolean regressive;
 	
 	private boolean running = false;
@@ -53,6 +54,7 @@ public class Timer extends Composite implements HasTimeoutHandlers
 	public Timer(long initial, boolean regressive, boolean start)
 	{	
 		this.initial = initial;
+		this.creationTime = initial;
 		this.regressive = regressive;
 		this.timeProcessor = new TimeProcessor(this);
 		
@@ -106,6 +108,26 @@ public class Timer extends Composite implements HasTimeoutHandlers
 			this.initial += ((new Date()).getTime() - this.startTime) / 1000;
 			this.update();
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void reset()
+	{
+		stop();
+		this.initial = creationTime;
+		start();
+	}
+	
+	/**
+	 * 
+	 */
+	public void clear()
+	{
+		stop();
+		this.initial = creationTime;
+		update();
 	}
 	
 	/**
