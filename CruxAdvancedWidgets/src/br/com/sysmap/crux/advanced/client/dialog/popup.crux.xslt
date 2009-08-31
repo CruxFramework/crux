@@ -30,6 +30,9 @@
 			<xsl:if test="string-length(@closeable) > 0">
 				<xsl:attribute name="_closeable" select="@closeable"/>
 			</xsl:if>
+			<xsl:if test="string-length(@onBeforeClose) > 0">
+				<xsl:attribute name="_onbeforeclose" select="@onBeforeClose"/>
+			</xsl:if>
 			<xsl:if test="string-length(@title) > 0">
 				<xsl:attribute name="_title" select="@title"/>
 			</xsl:if>

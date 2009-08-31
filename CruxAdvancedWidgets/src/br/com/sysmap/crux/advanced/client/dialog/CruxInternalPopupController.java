@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
+import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
@@ -27,17 +28,12 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
- * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- *
  */
 @Global
 @Controller("__popup")
@@ -62,7 +58,11 @@ public class CruxInternalPopupController
 	@ExposeOutOfModule
 	public void onClose()
 	{
-		CloseEvent.fire(Popup.popup, Popup.popup);
+		BeforeCloseEvent evt = BeforeCloseEvent.fire(Popup.popup);
+		if(!evt.isCanceled())
+		{
+			hidePopupOnTop();
+		}
 	}
 
 	/**
@@ -100,14 +100,6 @@ public class CruxInternalPopupController
 			dialogBox.setWidth(data.getWidth());
 			dialogBox.setHeight(data.getHeight());
 
-			dialogBox.addCloseHandler(new CloseHandler<PopupPanel>()
-			{
-				public void onClose(CloseEvent<PopupPanel> event)
-				{
-					closePopup();
-				}
-			});
-
 			Frame frame = new Frame(data.getUrl());
 			frame.setStyleName("frame");
 			frame.setHeight("100%");
@@ -127,7 +119,7 @@ public class CruxInternalPopupController
 				{
 					public void onClick(ClickEvent event)
 					{
-						hide();
+						closePopup();
 					}
 				});
 				Label label = new Label(" ");
@@ -190,6 +182,7 @@ public class CruxInternalPopupController
 	 */
 	private native void hidePopupOnTop()/*-{
 		$wnd.top._cruxScreenControllerAccessor("__popup.hidePopupHandler", null);
+		$wnd.top._popup_origin = null;
 	}-*/;
 
 	/**
@@ -199,7 +192,6 @@ public class CruxInternalPopupController
 	 */
 	protected native void closePopup()/*-{
 		var o = $wnd.top._popup_origin;
-		$wnd.top._popup_origin = null;
 		o._cruxScreenControllerAccessor("__popup.onClose", null);
 	}-*/;
 }

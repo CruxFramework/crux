@@ -15,8 +15,8 @@
  */ 
 package br.com.sysmap.crux.advanced.client.dialog;
 
+import br.com.sysmap.crux.advanced.client.event.openclose.BeforeOpenOrCloseEvtBind;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
@@ -70,6 +70,6 @@ public class PopupFactory extends WidgetFactory<Popup>
 	protected void processEvents(Popup widget, Element element, String widgetId) throws InterfaceConfigException
 	{
 		super.processEvents(widget, element, widgetId);
-		CloseEvtBind.bindEvent(element, widget);
+		BeforeOpenOrCloseEvtBind.bindBeforeCloseEvent(element, widget);
 	}
 }

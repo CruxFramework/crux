@@ -15,9 +15,10 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
+import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseHandler;
+import br.com.sysmap.crux.advanced.client.event.openclose.HasBeforeCloseHandlers;
+
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasAnimation;
@@ -28,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimation
+public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Popup" ;
 	private static CruxInternalPopupController popupController = null;
@@ -48,11 +49,6 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimati
 	{
 		setElement(DOM.createSpan());
 	}
-
-	public HandlerRegistration addCloseHandler(CloseHandler<Popup> handler)
-	{
-		return addHandler(handler, CloseEvent.getType());
-	}	
 
 	public String getTitle()
 	{
@@ -133,22 +129,22 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimati
 	 * 
 	 * @param title
 	 * @param url
-	 * @param closeHandler
+	 * @param beforeCloseHandler
 	 */
-	public static void show(String title, String url,  CloseHandler<Popup> closeHandler)
+	public static void show(String title, String url,  BeforeCloseHandler beforeCloseHandler)
 	{
-		show(title, url, null, null, closeHandler, DEFAULT_STYLE_NAME, false, true);
+		show(title, url, null, null, beforeCloseHandler, DEFAULT_STYLE_NAME, false, true);
 	}
 	
 	/**
 	 * 
 	 * @param title
 	 * @param url
-	 * @param closeHandler
+	 * @param beforeCloseHandler
 	 * @param styleName
 	 * @param animationEnabled
 	 */
-	public static void show(String title, String url, String width, String height, CloseHandler<Popup> closeHandler, String styleName, boolean animationEnabled, boolean closeable)
+	public static void show(String title, String url, String width, String height, BeforeCloseHandler beforeCloseHandler, String styleName, boolean animationEnabled, boolean closeable)
 	{
 		Popup popup = new Popup(); 
 		popup.setTitle(title);
@@ -166,9 +162,9 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimati
 		}			
 		
 		popup.setAnimationEnabled(animationEnabled);
-		if (closeHandler != null)
+		if (beforeCloseHandler != null)
 		{
-			popup.addCloseHandler(closeHandler);
+			popup.addBeforeCloseHandler(beforeCloseHandler);
 		}
 		
 		popup.show();
@@ -212,5 +208,13 @@ public class Popup extends Widget implements HasCloseHandlers<Popup>, HasAnimati
 	public void setHeight(String height)
 	{
 		this.height = height;
+	}
+
+	/*
+	 * @see br.com.sysmap.crux.advanced.client.event.openclose.HasBeforeCloseHandlers#addBeforeCloseHandler(br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseHandler)
+	 */
+	public HandlerRegistration addBeforeCloseHandler(BeforeCloseHandler handler)
+	{
+		return addHandler(handler, BeforeCloseEvent.getType());
 	}
 }
