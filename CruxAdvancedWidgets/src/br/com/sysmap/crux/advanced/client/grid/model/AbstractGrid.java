@@ -154,6 +154,11 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		render();
 	}
 
+	public void refresh()
+	{
+		render();
+	}
+	
 	protected void render()
 	{
 		int rowCount = getRowsToBeRendered() + 1;
