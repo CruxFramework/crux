@@ -194,12 +194,12 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 			while(it.hasNext())
 			{
 				DataRow dataRow = it.next();
-				dataRow.markAsSelected(false);
+				dataRow.setSelected(false);
 			}
 		}		
 		
 		row.getDataSourceRecord().setSelected(select);
-		row.markAsSelected(select);
+		row.setSelected(select);
 	}
 
 	@Override
@@ -238,7 +238,8 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 			}			
 		}
 		
-		row.markAsSelected(row.getDataSourceRecord().isSelected());
+		row.setSelected(row.getDataSourceRecord().isSelected());
+		row.setEnabled(!row.getDataSourceRecord().isReadOnly());
 		
 		if(dataSource.hasNextRecord())
 		{
