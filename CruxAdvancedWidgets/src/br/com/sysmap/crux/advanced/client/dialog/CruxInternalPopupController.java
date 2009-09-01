@@ -147,7 +147,7 @@ public class CruxInternalPopupController
 	 * Invoke hide on top. It is required to handle multi-frame pages.
 	 * @param data
 	 */
-	public void hide()
+	public static void hide()
 	{
 		hidePopupOnTop();
 	}
@@ -180,7 +180,7 @@ public class CruxInternalPopupController
 	/**
 	 * 
 	 */
-	private native void hidePopupOnTop()/*-{
+	private static native void hidePopupOnTop()/*-{
 		$wnd.top._cruxScreenControllerAccessor("__popup.hidePopupHandler", null);
 		$wnd.top._popup_origin = null;
 	}-*/;
