@@ -47,6 +47,21 @@ public class EditableDataSourceRecord extends DataSourceRecord
 		}
 	}
 	
+	public boolean isReadOnly()
+	{
+		return state.isReadOnly();
+	}
+
+	public void setReadOnly(boolean readOnly)
+	{
+		if (this.state.isReadOnly() != readOnly)
+		{
+			EditableDataSourceRecordState previousState = getCurrentState();
+			this.state.setReadOnly(readOnly);
+			dataSource.updateState(this, previousState);
+		}
+	}
+	
 	public boolean isSelected()
 	{
 		return state.isSelected();
@@ -89,7 +104,7 @@ public class EditableDataSourceRecord extends DataSourceRecord
 	
 	public EditableDataSourceRecordState getCurrentState()
 	{
-		return new EditableDataSourceRecordState(state.isSelected(), state.isDirty(), state.isCreated(), state.isRemoved());
+		return new EditableDataSourceRecordState(state.isSelected(), state.isDirty(), state.isCreated(), state.isRemoved(), state.isReadOnly());
 	}
 	
 	public static class EditableDataSourceRecordState 
@@ -98,18 +113,20 @@ public class EditableDataSourceRecord extends DataSourceRecord
 		private boolean dirty;
 		private boolean created;
 		private boolean removed;
+		private boolean readOnly;
 		
 		public EditableDataSourceRecordState()
 		{
-			this(false, false, false, false);
+			this(false, false, false, false, false);
 		}
 
-		public EditableDataSourceRecordState(boolean selected, boolean dirty, boolean created, boolean removed)
+		public EditableDataSourceRecordState(boolean selected, boolean dirty, boolean created, boolean removed, boolean readOnly)
 		{
 			this.selected = selected;
 			this.dirty = dirty;
 			this.created = created;
 			this.removed = removed;
+			this.readOnly = readOnly; 
 		}
 
 		public boolean isSelected()
@@ -144,6 +161,14 @@ public class EditableDataSourceRecord extends DataSourceRecord
 		{
 			this.removed = removed;
 		}
+		protected boolean isReadOnly()
+		{
+			return readOnly;
+		}
+		protected void setReadOnly(boolean readOnly)
+		{
+			this.readOnly = readOnly;
+		}
 		
 		@Override
 		public boolean equals(Object obj)
@@ -152,7 +177,8 @@ public class EditableDataSourceRecord extends DataSourceRecord
 			if (!(obj instanceof EditableDataSourceRecordState)) return false;
 			EditableDataSourceRecordState otherState = (EditableDataSourceRecordState)obj;
 			return (this.selected == otherState.selected) && (this.dirty == otherState.dirty) && 
-			       (this.created == otherState.created) && (this.removed == otherState.removed);
+			       (this.created == otherState.created) && (this.removed == otherState.removed) &&
+			       (this.readOnly == otherState.readOnly);
 		}
 	}
 }
