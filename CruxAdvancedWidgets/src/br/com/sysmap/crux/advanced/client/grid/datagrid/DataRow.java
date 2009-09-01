@@ -42,11 +42,30 @@ public class DataRow extends Row
 	protected void setCell(Cell cell, String column)
 	{
 		super.setCell(cell, column);
+	}	
+	
+	@Override
+	public boolean isSelected()
+	{
+		return this.dataSourceRecord.isSelected();
 	}
 	
 	@Override
-	protected void markAsSelected(boolean selected)
+	public void setSelected(boolean selected)
 	{
-		super.markAsSelected(selected);
+		super.setSelected(selected);
+	}
+	
+	@Override
+	public boolean isEnabled()
+	{
+		return !this.dataSourceRecord.isReadOnly();
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled)
+	{
+		this.dataSourceRecord.setReadOnly(!enabled);
+		super.setEnabled(enabled);
 	}
 }
