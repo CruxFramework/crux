@@ -3,6 +3,7 @@ package br.com.sysmap.crux.advanced.client.grid.model;
 import br.com.sysmap.crux.advanced.client.util.StyleUtils;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 
@@ -13,6 +14,7 @@ public class Row
 	private Element elem;
 	private boolean hasSelectionCell;
 	private boolean selected;
+	private boolean enabled;
 		
 	protected Row(int index, Element elem, AbstractGrid<?, ?> grid, boolean hasSelectionCell)
 	{
@@ -84,7 +86,7 @@ public class Row
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void markAsSelected(boolean selected)
+	public void setSelected(boolean selected)
 	{
 		if(hasSelectionCell)
 		{
@@ -118,7 +120,7 @@ public class Row
 	/**
 	 * @return the selected
 	 */
-	boolean isSelected()
+	protected boolean isSelected()
 	{
 		return selected;
 	}
@@ -134,5 +136,36 @@ public class Row
 	public void setVisible(boolean visible)
 	{
 		elem.getStyle().setProperty("display", visible ? "" : "none");
+	}
+
+	/**
+	 * @return the enabled
+	 */
+	public boolean isEnabled()
+	{
+		return enabled;
+	}
+
+	/**
+	 * @param enabled the enabled to set
+	 */
+	public void setEnabled(boolean enabled)
+	{
+		if(hasSelectionCell)
+		{
+			CheckBox selector = (CheckBox) getCell(0).getCellWidget();
+			selector.setEnabled(enabled);
+		}		
+		
+		if(!enabled)
+		{
+			addStyleDependentName("disabled");
+		}
+		else
+		{
+			removeStyleDependentName("disabled");
+		}
+		
+		this.enabled = enabled;
 	}
 }
