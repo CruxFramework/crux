@@ -115,18 +115,6 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	
 	/**
 	 * 
-	 */
-	public void hide()
-	{
-		if (popupController != null && popup != null)
-		{
-			popupController.hide();
-			popup = null;
-		}
-	}
-	
-	/**
-	 * 
 	 * @param title
 	 * @param url
 	 * @param beforeCloseHandler
@@ -170,12 +158,9 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 		popup.show();
 	}
 	
-	public static void close ()
+	public static void close()
 	{
-		if (popup != null)
-		{
-			popup.hide();
-		}
+		CruxInternalPopupController.hide();
 	}
 
 	/**
