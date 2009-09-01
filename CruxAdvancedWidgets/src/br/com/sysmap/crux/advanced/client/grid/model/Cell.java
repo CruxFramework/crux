@@ -64,14 +64,14 @@ public class Cell extends Composite
 
 		if (type == Event.ONCLICK)
 		{
-			if(selectRowOnClick)
+			if(selectRowOnClick && row.isEnabled())
 			{
 				boolean status = row.isSelected();
-				row.markAsSelected(!status);
+				row.setSelected(!status);
 				grid.onSelectRow(!status, row);
 			}
 
-			if(fireEvents)
+			if(fireEvents && row.isEnabled())
 			{
 				grid.fireRowClickEvent(row);
 			}
@@ -79,7 +79,7 @@ public class Cell extends Composite
 
 		if (type == Event.ONDBLCLICK)
 		{
-			if(fireEvents)
+			if(fireEvents && row.isEnabled())
 			{
 				grid.fireRowDoubleClickEvent(row);
 			}
