@@ -25,6 +25,7 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
@@ -120,9 +121,10 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		
 		elem.getStyle().setProperty("borderLeft", borderLeft);
 		
-		DeferredCommand.addCommand(new Command(){
-
-			public void execute()
+		new Timer()
+		{
+			@Override
+			public void run()
 			{
 				if(finalWidth > 0)
 				{
@@ -143,9 +145,9 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 				}
 				
 				parent.clear();
-				parent.add(widget);			
+				parent.add(widget);				
 			}
-		});		
+		}.schedule(100);
 	}
 	
 	protected final void clearAndRender()
@@ -172,7 +174,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 			rows.add(row);
 		}
 		
-		renderHeaders();
+		renderHeaders(rowCount);
 		renderRows();
 	}
 
@@ -278,12 +280,12 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		return it;
 	}
 
-	private void renderHeaders()
+	private void renderHeaders(int rowCount)
 	{
 		R row = rows.get(0);
 		
 		row.setStyle("columnHeadersRow row");
-		row.setCell(getHeaderFristColumnCell(), 0);
+		row.setCell(getHeaderFristColumnCell(rowCount), 0);
 				
 		List<C> columns = definitions.getDefinitions();
 		for (C columnDefinition : columns)
@@ -319,7 +321,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		return RowSelectionModel.SINGLE.equals(rowSelection) || RowSelectionModel.MULTIPLE.equals(rowSelection);
 	}
 
-	private Cell getHeaderFristColumnCell()
+	private Cell getHeaderFristColumnCell(int rowCount)
 	{
 		Widget w = null;
 		
@@ -329,6 +331,12 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 			{
 				CheckBox checkBox = new CheckBox();
 				checkBox.addClickHandler(createSelectAllRowsClickHandler());
+				
+				if(rowCount <= 1)
+				{
+					checkBox.setEnabled(false);
+				}
+				
 				w = checkBox;
 			}	
 		}
@@ -368,14 +376,17 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		{
 			R row = it.next();
 			
-			if(RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelection))
+			if(row.isEnabled())
 			{
-				((CheckBox) row.getCell(0).getCellWidget()).setValue(select);
-			}
-			
-			if(!RowSelectionModel.UNSELECTABLE.equals(rowSelection))
-			{
-				onSelectRow(select, row);
+				if(RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelection))
+				{
+					((CheckBox) row.getCell(0).getCellWidget()).setValue(select);
+				}
+				
+				if(!RowSelectionModel.UNSELECTABLE.equals(rowSelection))
+				{
+					onSelectRow(select, row);
+				}
 			}
 		}
 	}
@@ -470,7 +481,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		public void onClick(ClickEvent event)
 		{
 			boolean selected = ((HasValue<Boolean>) event.getSource()).getValue();
-			row.markAsSelected(selected);
+			row.setSelected(selected);
 			grid.onSelectRow(selected, row);
 			event.stopPropagation();
 		}	
