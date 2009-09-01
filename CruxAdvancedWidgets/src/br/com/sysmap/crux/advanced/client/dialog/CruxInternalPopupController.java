@@ -15,6 +15,9 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
@@ -40,7 +43,7 @@ import com.google.gwt.user.client.ui.Label;
 public class CruxInternalPopupController 
 {
 	private ModuleComunicationSerializer serializer;
-	private CustomDialogBox dialogBox;
+	private List<CustomDialogBox> dialogBoxes = new ArrayList<CustomDialogBox>();
 	
 	@Create
 	protected DialogMessages messages;
@@ -94,12 +97,12 @@ public class CruxInternalPopupController
 		{
 			final PopupData data = (PopupData) controllerEvent.getParameter();
 
-			dialogBox = new CustomDialogBox(false, true, true);
+			CustomDialogBox dialogBox = new CustomDialogBox(false, true, true);
 			dialogBox.setStyleName(data.getStyleName());
 			dialogBox.setAnimationEnabled(data.isAnimationEnabled());
 			dialogBox.setWidth(data.getWidth());
 			dialogBox.setHeight(data.getHeight());
-
+			
 			Frame frame = new Frame(data.getUrl());
 			frame.setStyleName("frame");
 			frame.setHeight("100%");
@@ -134,6 +137,8 @@ public class CruxInternalPopupController
 			dialogBox.setWidget(frame);
 			dialogBox.center();
 
+			dialogBoxes.add(dialogBox);
+			
 			dialogBox.show();
 		}
 		catch (Exception e)
@@ -159,8 +164,9 @@ public class CruxInternalPopupController
 	@ExposeOutOfModule
 	public void hidePopupHandler(InvokeControllerEvent controllerEvent)
 	{
-		if (dialogBox != null)
+		if (dialogBoxes.size() > 0)
 		{
+			CustomDialogBox dialogBox = dialogBoxes.remove(dialogBoxes.size() - 1);
 			Screen.unblockToUser();
 			dialogBox.hide();
 			dialogBox = null;
@@ -173,25 +179,30 @@ public class CruxInternalPopupController
 	 * @param serializedData
 	 */
 	private native void showPopupOnTop(String serializedData)/*-{
-		$wnd.top._popup_origin = $wnd;
+		if($wnd.top._popup_origin == null)
+		{
+			$wnd.top._popup_origin = new Array();
+		}		
+		$wnd.top._popup_origin.push($wnd);
 		$wnd.top._cruxScreenControllerAccessor("__popup.showPopupHandler", serializedData);
 	}-*/;
 
 	/**
-	 * 
+	 * Closes the popup, removing its window from the stack 
 	 */
 	private static native void hidePopupOnTop()/*-{
-		$wnd.top._cruxScreenControllerAccessor("__popup.hidePopupHandler", null);
-		$wnd.top._popup_origin = null;
+		if($wnd.top._popup_origin != null)
+		{
+			$wnd.top._cruxScreenControllerAccessor("__popup.hidePopupHandler", null);
+			$wnd.top._popup_origin.pop();
+		}
 	}-*/;
 
 	/**
-	 * 
-	 * @param call
-	 * @param serializedData
+	 * Invoked when the user clicks the close button. Depending on the beforeClose event handling, may not close the popup. 
 	 */
 	protected native void closePopup()/*-{
-		var o = $wnd.top._popup_origin;
+		var o = $wnd.top._popup_origin[$wnd.top._popup_origin.length - 1];
 		o._cruxScreenControllerAccessor("__popup.onClose", null);
 	}-*/;
 }
