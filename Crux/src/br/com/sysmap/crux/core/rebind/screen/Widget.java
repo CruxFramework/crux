@@ -15,8 +15,10 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +34,7 @@ public class Widget
 	protected String dataSource;
 
 	protected Map<String, Event> events = new HashMap<String, Event>();
-	protected Map<String, String> properties = new HashMap<String, String>();
+	protected List<String> propertiesValues = new ArrayList<String>();
 	
 	
 	public Widget() 
@@ -51,23 +53,15 @@ public class Widget
 			events.put(event.getId(), event);
 		}
 	}
-	
-	public String getProperty(String propId)
-	{
-		return properties.get(propId);
-	}
-	
+
 	public Iterator<String> iterateProperties()
 	{
-		return properties.values().iterator();
+		return propertiesValues.iterator();
 	}
 	
-	protected void addProperty(String id, String value)
+	protected void addPropertyValue(String value)
 	{
-		if (id != null)
-		{
-			properties.put(id, value);
-		}
+		propertiesValues.add(value);
 	}
 	
 	public Event getEvent(String evtId)

@@ -20,6 +20,7 @@ import java.util.List;
 import br.com.sysmap.crux.advanced.client.decoratedpanel.AbstractDecoratedPanelFactory;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
@@ -56,7 +57,8 @@ public class TitlePanelFactory<T extends TitlePanel> extends AbstractDecoratedPa
 		}
 		else if("text".equals(type))
 		{
-			widget.setTitleText(child.getInnerText());
+			String innerText = getI18NText(child);			
+			widget.setTitleText(innerText);
 		}
 		else if("widget".equals(type))
 		{
@@ -65,6 +67,30 @@ public class TitlePanelFactory<T extends TitlePanel> extends AbstractDecoratedPa
 			widget.setTitleWidget(childWidget);
 			super.add(widget, childWidget, element, child);
 		}
+	}
+
+	private String getI18NText(Element child)
+	{
+		String innerText = child.getInnerText();
+		
+		if(innerText != null)
+		{
+			innerText = innerText.trim();
+			
+			if(innerText.length() > 0)
+			{
+				innerText = ScreenFactory.getInstance().getDeclaredMessage(innerText);
+			}
+			else
+			{
+				innerText = "";
+			}
+		}
+		else
+		{
+			innerText = "";
+		}
+		return innerText;
 	}
 
 	/**
@@ -82,7 +108,8 @@ public class TitlePanelFactory<T extends TitlePanel> extends AbstractDecoratedPa
 		}
 		else if("text".equals(type))
 		{
-			widget.setContentText(child.getInnerText());
+			String innerText = getI18NText(child);			
+			widget.setContentText(innerText);
 		}
 		else if("widget".equals(type))
 		{

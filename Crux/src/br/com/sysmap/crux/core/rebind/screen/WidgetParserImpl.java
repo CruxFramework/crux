@@ -15,9 +15,12 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
+import java.util.List;
+
 import au.id.jericho.lib.html.Attribute;
 import au.id.jericho.lib.html.Attributes;
 import au.id.jericho.lib.html.Element;
+import au.id.jericho.lib.html.TextExtractor;
 
 /**
  * 
@@ -29,8 +32,65 @@ public class WidgetParserImpl implements WidgetParser
 	public void parse(Widget widget, Object element) 
 	{
 		Element elem = (Element) element;
+		parse(elem, widget, true);
+	}
+
+	private void parse(Element elem, Widget widget, boolean parseIfWidget)
+	{
+		if(elem != null && elem.getName().toUpperCase().equals("SPAN"))
+		{
+			if(!isWidget(elem) || parseIfWidget)
+			{
+				extractProperties(elem, widget);
+				
+				List<?>childElements = elem.getChildElements();
+				
+				if(childElements != null && childElements.size() > 0)
+				{
+					for (Object child : childElements)
+					{
+						if(child instanceof Element)
+						{
+							Element childElem = (Element) child;
+							parse(childElem, widget, false);
+						}
+					}
+				}
+				else
+				{
+					extractInnerText(elem, widget);
+				}
+			}
+		}
+	}
+	
+	private void extractInnerText(Element elem, Widget widget)
+	{
+		TextExtractor textExtractor = elem.getTextExtractor();
 		
+		if(textExtractor != null)
+		{
+			String text = textExtractor.toString();
+			
+			text = text.trim();
+			
+			if(text.length() > 0)
+			{
+				widget.addPropertyValue(text);
+			}
+		}
+	}
+
+	private boolean isWidget(Element elem)
+	{
+		String att = elem.getAttributeValue("_type");
+		return att != null && att.trim().length() > 0;
+	}
+
+	private void extractProperties(Element elem, Widget widget)
+	{
 		Attributes attrs =  elem.getAttributes();
+		
 		for (Object object : attrs) 
 		{
 			Attribute attr = (Attribute)object;
@@ -55,11 +115,11 @@ public class WidgetParserImpl implements WidgetParser
 			}
 			else
 			{
-				widget.addProperty(attrName, attr.getValue());
+				widget.addPropertyValue(attr.getValue());
 			}
 		}
 	}
-	
+
 	protected void setEvent(Widget widget, String evtName, String value)
 	{
 		Event event = EventFactory.getEvent(evtName, value);

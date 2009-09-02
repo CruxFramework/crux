@@ -392,7 +392,6 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#sort(java.lang.String, boolean)
 	 */
-	@SuppressWarnings("unchecked")
 	public void sort(String columnName, boolean ascending)
 	{
 		if (currentRecord > -1)

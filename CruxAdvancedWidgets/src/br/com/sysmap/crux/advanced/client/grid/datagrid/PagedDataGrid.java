@@ -155,6 +155,15 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 		
 		return 0;
 	}
+	
+	/**
+	 * Gets the current page row count
+	 * @return
+	 */
+	public int getCurrentPageSize()
+	{
+		return getRowsToBeRendered();
+	}
 
 	@Override
 	protected void onClear()
