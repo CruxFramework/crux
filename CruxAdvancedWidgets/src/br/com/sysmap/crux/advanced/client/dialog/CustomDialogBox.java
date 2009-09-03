@@ -38,18 +38,35 @@ import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasText;
 
 /**
- * TODO - Gessé - Comment this
- * 
+ * A decorated dialog box
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasText
 {
+	private static final String DEFAULT_STYLENAME = "crux-CustomDialogBox";
+
+	private CaptionImpl caption = new CaptionImpl();
+	private boolean dragging;
+	private int dragStartX, dragStartY;
+	private int windowWidth;
+	private int clientLeft;
+	private int clientTop;
 	private boolean hideContentOnDragging;
 
+	private HandlerRegistration resizeHandlerRegistration;
+
+	/**
+	 * A caption for the dialog box, able to detect mouse events
+	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 */
 	public interface Caption extends HasAllMouseHandlers
 	{
 	}
 
+	/**
+	 * A caption for the dialog box, able to detect mouse events
+	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 */
 	private class CaptionImpl extends HTML implements Caption
 	{
 		@Override
@@ -65,9 +82,12 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		}
 	}
 
+	/**
+	 * A mouse handler for show/hide the contents of the dialog box while it is being dragged
+	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 */
 	private class MouseHandler implements MouseDownHandler, MouseUpHandler, MouseMoveHandler
 	{
-
 		public void onMouseDown(MouseDownEvent event)
 		{
 			beginDragging(event);
@@ -84,27 +104,30 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		}
 	}
 
-	private static final String DEFAULT_STYLENAME = "crux-CustomDialogBox";
 
-	private CaptionImpl caption = new CaptionImpl();
-	private boolean dragging;
-	private int dragStartX, dragStartY;
-	private int windowWidth;
-	private int clientLeft;
-	private int clientTop;
-
-	private HandlerRegistration resizeHandlerRegistration;
-
+	/**
+	 * Default constructor
+	 */
 	public CustomDialogBox()
 	{
 		this(false);
 	}
 
+	/**
+	 * Constructor
+	 * @param autoHide <code>true</code> if the dialog box should be automatically hidden when the user clicks outside of it
+	 */
 	public CustomDialogBox(boolean autoHide)
 	{
 		this(autoHide, true, true);
 	}
 
+	/**
+	 * Full constructor
+	 * @param autoHide <code>true</code> if the dialog box should be automatically hidden when the user clicks outside of it
+	 * @param hideContentOnDragging <code>true</code> if the content should be hidden while dragging
+	 * @param modal <code>true</code> if keyboard or mouse events that do not target the PopupPanel or its children should be ignored
+	 */
 	public CustomDialogBox(boolean autoHide, boolean hideContentOnDragging, boolean modal)
 	{
 		super(autoHide, modal);
@@ -129,24 +152,16 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 	}
 
 	/**
-	 * Provides access to the dialog's caption.
-	 * 
-	 * This method is final because the Caption interface will expand. Therefore
-	 * it is highly likely that subclasses which implemented this method would
-	 * end up breaking.
-	 * 
-	 * @return the logical caption for this dialog box
+	 * @see com.google.gwt.user.client.ui.HasHTML#getHTML()
 	 */
-	public final Caption getCaption()
-	{
-		return caption;
-	}
-
 	public String getHTML()
 	{
 		return caption.getHTML();
 	}
 
+	/**
+	 * @see com.google.gwt.user.client.ui.HasText#getText()
+	 */
 	public String getText()
 	{
 		return caption.getText();
@@ -183,8 +198,9 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 	}
 
 	/**
-	 * @param transparent
-	 * @param elements
+	 * Makes an element opaque or transparent
+	 * @param transparent <code>true</code> for transparent
+	 * @param element
 	 */
 	private void makeTransparent(boolean transparent, Element element)
 	{
@@ -200,11 +216,17 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		}
 	}
 
+	/**
+	 * @see com.google.gwt.user.client.ui.HasHTML#setHTML(java.lang.String)
+	 */
 	public void setHTML(String html)
 	{
 		caption.setHTML(html);
 	}
 
+	/**
+	 * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
+	 */
 	public void setText(String text)
 	{
 		caption.setText(text);
@@ -226,14 +248,23 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		super.show();
 	}
 
+	/**
+	 * Called when the dragging starts.
+	 * @param event
+	 */
 	protected void beginDragging(MouseDownEvent event)
 	{
 		dragging = true;
 		DOM.setCapture(getElement());
-		dragStartX =  event.getX();
+		dragStartX = event.getX();
 		dragStartY = event.getY();
 	}
 
+	/**
+	 * Called when the mouse moves and the <code>beginDragging</code> has already being called.
+	 * Sets the dialog position according to the current mouse position.
+	 * @param event
+	 */
 	protected void continueDragging(MouseMoveEvent event)
 	{
 		if (dragging)
@@ -270,6 +301,10 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		caption.onDetach();
 	}
 
+	/**
+	 * Called when the dragging stops. 
+	 * @param event
+	 */
 	protected void endDragging(MouseUpEvent event)
 	{
 		dragging = false;
@@ -279,8 +314,7 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		{
 			getContentWidget().setVisible(true);
 			makeTransparent(false, getElement());
-		}
-		
+		}		
 	}
 
 	@Override
@@ -304,6 +338,10 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		super.onPreviewNativeEvent(event);
 	}
 
+	/**
+	 * @param event
+	 * @return true when the event was fired by the caption
+	 */
 	private boolean isCaptionEvent(NativeEvent event)
 	{
 		EventTarget target = event.getEventTarget();

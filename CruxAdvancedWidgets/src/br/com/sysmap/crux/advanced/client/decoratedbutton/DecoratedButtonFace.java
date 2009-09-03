@@ -25,7 +25,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * TODO - Gessé - Comment this
+ * HTML face DecoratedButton
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class DecoratedButtonFace extends Widget
@@ -33,6 +33,9 @@ public class DecoratedButtonFace extends Widget
 	private TableElement face;
 	private TableCellElement faceText;
 
+	/**
+	 * Default constructor
+	 */
 	public DecoratedButtonFace()
 	{
 		this.face = createElement();
@@ -40,8 +43,7 @@ public class DecoratedButtonFace extends Widget
 	}
 
 	/**
-	 * @param text
-	 * @param face
+	 * Creates a 3 X 1 table, which will be the element of the DecoratedButtion widget
 	 * @return
 	 */
 	private TableElement createElement()
@@ -82,6 +84,7 @@ public class DecoratedButtonFace extends Widget
 	}
 
 	/**
+	 * Sets the face's text
 	 * @param text
 	 */
 	public void setText(String text)
@@ -90,6 +93,7 @@ public class DecoratedButtonFace extends Widget
 	}
 
 	/**
+	 * Gets the face's text 
 	 * @return
 	 */
 	public String getText()

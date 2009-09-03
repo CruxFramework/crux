@@ -30,11 +30,14 @@ import com.google.gwt.user.client.ui.HasText;
  */
 public class DecoratedButton extends FocusWidget implements HasText
 {
-	public static final String DEFAULT_STYLE_NAME = "crux-DecoratedButton";
+	static final String DEFAULT_STYLE_NAME = "crux-DecoratedButton";
 	
 	private DecoratedButtonFace face;
 	private boolean allowClick;
 
+	/**
+	 * Default constructor
+	 */
 	public DecoratedButton()
 	{
 		this.face = new DecoratedButtonFace();
@@ -99,7 +102,7 @@ public class DecoratedButton extends FocusWidget implements HasText
 	}
 
 	/**
-	 * 
+	 * Fires the click event
 	 */
 	protected void onClick()
 	{
@@ -112,8 +115,7 @@ public class DecoratedButton extends FocusWidget implements HasText
 	}
 
 	/**
-	 * @param event
-	 * @return
+	 * @return true if the click was done by using the ENTER or SPACE keys
 	 */
 	private boolean wasClickByKeyEvent(Event event)
 	{

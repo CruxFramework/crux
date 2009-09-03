@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
  */
 public class DecoratedPanel extends CellPanel
 {
-	public static final String DEFAULT_STYLE_NAME = "crux-DecoratedPanel" ;
+	private static final String DEFAULT_STYLE_NAME = "crux-DecoratedPanel" ;
 	
 	private Element topLine;
 	private Element topLeftCell;
@@ -49,6 +49,12 @@ public class DecoratedPanel extends CellPanel
 	private Element bottomRightCell;
 	private Widget contentWidget;
 	
+	/**
+	 * Constructor
+	 * @param width
+	 * @param height
+	 * @param styleName
+	 */
 	public DecoratedPanel(String width, String height, String styleName)
 	{
 		getTable().setClassName(styleName != null && styleName.trim().length() > 0 ? styleName : DEFAULT_STYLE_NAME);
@@ -107,6 +113,7 @@ public class DecoratedPanel extends CellPanel
 	}
 	
 	/**
+	 * Sets the widget which will be displayed at the northeastern cell
 	 * @param widget
 	 */
 	public void setTopRightWidget(Widget widget)
@@ -118,19 +125,18 @@ public class DecoratedPanel extends CellPanel
 	}
 	
 	/**
-	 * Adds a widget to the body of the panel (middle center cell)
-	 * @param w
+	 * Sets the widget which will be displayed in the body of the panel
+	 * @param widget
 	 */
-	public void setContentWidget(Widget w)
+	public void setContentWidget(Widget widget)
 	{
 		cleanEmptySpaces(middleCenterCell);
-		add(w, middleCenterCell);
-		contentWidget = w;
+		add(widget, middleCenterCell);
+		contentWidget = widget;
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @return the widget displayed in the body of the panel
 	 */
 	public Widget getContentWidget()
 	{
@@ -138,7 +144,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * Adds text to the body of the panel (middle center cell)
+	 * Sets a text to be displayed in the body of the panel
 	 * @param text
 	 */
 	public void setContentText(String text)
@@ -148,7 +154,7 @@ public class DecoratedPanel extends CellPanel
 	}
 	
 	/**
-	 * Adds HTML to the body of the panel (middle center cell)
+	 * Sets an HTML text to be displayed in the body of the panel
 	 * @param html
 	 */
 	public void setContentHtml(String html)
@@ -158,7 +164,8 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @param middleCenterCell2
+	 * Removes the empty spaces from the element's inner text 
+	 * @param cell
 	 */
 	private void cleanEmptySpaces(Element cell)
 	{
@@ -171,9 +178,10 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * Creates a TD with the given style name 
+	 * Creates a TD with the given style name
 	 * @param styleName
-	 * @return
+	 * @param fillWithBlank if true, inserts a blank space into the TD's inner text
+	 * @return a table cell (TD)
 	 */
 	private Element createTd(String styleName, boolean fillWithBlank)
 	{
@@ -189,7 +197,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the topLine
+	 * @return the top TR
 	 */
 	public Element getTopLine()
 	{
@@ -197,7 +205,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the middleLine
+	 * @return the middle TR
 	 */
 	public Element getMiddleLine()
 	{
@@ -205,7 +213,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the bottomLine
+	 * @return the bottom TR
 	 */
 	public Element getBottomLine()
 	{
@@ -213,7 +221,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the topLeftCell
+	 * @return the top left TD
 	 */
 	public Element getTopLeftCell()
 	{
@@ -221,7 +229,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the topCenterCell
+	 * @return the top center TD
 	 */
 	public Element getTopCenterCell()
 	{
@@ -229,7 +237,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the topRightCell
+	 * @return the top right TD
 	 */
 	public Element getTopRightCell()
 	{
@@ -237,7 +245,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the middleLeftCell
+	 * @return the middle left TD
 	 */
 	public Element getMiddleLeftCell()
 	{
@@ -245,7 +253,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the middleCenterCell
+	 * @return the middle center TD (panel's body)
 	 */
 	public Element getMiddleCenterCell()
 	{
@@ -253,7 +261,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the middleRightCell
+	 * @return the middle right TD
 	 */
 	public Element getMiddleRightCell()
 	{
@@ -261,7 +269,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the bottomLeftCell
+	 * @return the bottom left TD
 	 */
 	public Element getBottomLeftCell()
 	{
@@ -269,7 +277,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the bottomCenterCell
+	 * @return the bottom center TD
 	 */
 	public Element getBottomCenterCell()
 	{
@@ -277,7 +285,7 @@ public class DecoratedPanel extends CellPanel
 	}
 
 	/**
-	 * @return the bottomRightCell
+	 * @return the bottom right TD
 	 */
 	public Element getBottomRightCell()
 	{
@@ -285,6 +293,7 @@ public class DecoratedPanel extends CellPanel
 	}
 	
 	/**
+	 * Sets the horizontal alignment of the body
 	 * @param align
 	 */
 	public void setHorizontalAlignment(HorizontalAlignmentConstant align)
@@ -293,6 +302,7 @@ public class DecoratedPanel extends CellPanel
 	}
 	
 	/**
+	 * Sets the vertical alignment of the body
 	 * @param align
 	 */
 	public void setVerticalAlignment(VerticalAlignmentConstant align)

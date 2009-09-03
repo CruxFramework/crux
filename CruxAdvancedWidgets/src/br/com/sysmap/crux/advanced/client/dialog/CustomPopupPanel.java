@@ -24,18 +24,16 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * TODO - Gessé - Comment this
- * 
+ * A decorated PopupPanel
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class CustomPopupPanel extends PopupPanel
 {
 	private static final String DEFAULT_STYLENAME = ".crux-CustomPopupPanel";
-
 	private DecoratedPanel panel;
 
 	/**
-	 * 
+	 * Default constructor
 	 */
 	public CustomPopupPanel()
 	{
@@ -43,7 +41,7 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @param autoHide
+	 * @param autoHide <code>true</code> if the dialog box should be automatically hidden when the user clicks outside of it
 	 */
 	public CustomPopupPanel(boolean autoHide)
 	{
@@ -51,8 +49,9 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @param autoHide
-	 * @param modal
+	 * Constructor
+	 * @param autoHide <code>true</code> if the dialog box should be automatically hidden when the user clicks outside of it
+	 * @param modal <code>true</code> if keyboard or mouse events that do not target the PopupPanel or its children should be ignored
 	 */
 	public CustomPopupPanel(boolean autoHide, boolean modal)
 	{
@@ -95,6 +94,7 @@ public class CustomPopupPanel extends PopupPanel
 	}
 	
 	/**
+	 * Sets the widget to be displayed at in to right cell 
 	 * @param w
 	 */
 	public void setTopRightWidget(Widget w)
@@ -103,7 +103,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 	
 	/**
-	 * @return the topLine
+	 * Gets the first row element (TR)
+	 * @return a TR element
 	 */
 	public Element getTopLine()
 	{
@@ -111,7 +112,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the middleLine
+	 * Gets the second row element (TR)
+	 * @return a TR element
 	 */
 	public Element getMiddleLine()
 	{
@@ -119,7 +121,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the bottomLine
+	 * Gets the third row element (TR)
+	 * @return a TR element
 	 */
 	public Element getBottomLine()
 	{
@@ -127,7 +130,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the topLeftCell
+	 * Gets the top left cell (TD)
+	 * @return a TD element
 	 */
 	public Element getTopLeftCell()
 	{
@@ -135,7 +139,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the topCenterCell
+	 * Gets the top center cell (TD)
+	 * @return a TD element
 	 */
 	public Element getTopCenterCell()
 	{
@@ -143,7 +148,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the topRightCell
+	 * Gets the top right cell (TD)
+	 * @return a TD element
 	 */
 	public Element getTopRightCell()
 	{
@@ -151,7 +157,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the middleLeftCell
+	 * Gets the middle left cell (TD)
+	 * @return a TD element
 	 */
 	public Element getMiddleLeftCell()
 	{
@@ -159,7 +166,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the middleCenterCell
+	 * Gets the middle center cell (TD)
+	 * @return a TD element
 	 */
 	public Element getMiddleCenterCell()
 	{
@@ -167,7 +175,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the middleRightCell
+	 * Gets the middle right cell (TD)
+	 * @return a TD element
 	 */
 	public Element getMiddleRightCell()
 	{
@@ -175,7 +184,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the bottomLeftCell
+	 * Gets the bottom left cell (TD)
+	 * @return a TD element
 	 */
 	public Element getBottomLeftCell()
 	{
@@ -183,7 +193,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the bottomCenterCell
+	 * Gets the bottom center cell (TD)
+	 * @return a TD element
 	 */
 	public Element getBottomCenterCell()
 	{
@@ -191,7 +202,8 @@ public class CustomPopupPanel extends PopupPanel
 	}
 
 	/**
-	 * @return the bottomRightCell
+	 * Gets the bottom right cell (TD)
+	 * @return a TD element
 	 */
 	public Element getBottomRightCell()
 	{
@@ -199,8 +211,8 @@ public class CustomPopupPanel extends PopupPanel
 	}	
 	
 	/**
-	 * 
-	 * @return
+	 * Gets the widget which is being displayed in the body (middle center cell)
+	 * @return a TD element  
 	 */
 	public Widget getContentWidget()
 	{

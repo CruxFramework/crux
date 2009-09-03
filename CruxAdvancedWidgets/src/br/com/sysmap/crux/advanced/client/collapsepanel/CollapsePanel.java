@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBeforeExpandHandlers
 {
-	public static final String DEFAULT_STYLE_NAME = "crux-CollapsePanel" ;
+	private static final String DEFAULT_STYLE_NAME = "crux-CollapsePanel" ;
 	private boolean collapsible = false;
 	private boolean collapsed = false;
 	private String height;
@@ -45,11 +45,12 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	private Image image = null;
 	
 	/**
+	 * Constructor
 	 * @param width
 	 * @param height
 	 * @param styleName
 	 * @param collapsible
-	 * @param expanded
+	 * @param collapsed
 	 */
 	public CollapsePanel(String width, String height, String styleName, boolean collapsible, boolean collapsed)
 	{
@@ -57,25 +58,12 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	}	
 	
 	/**
-	 * @param b
-	 * @return
-	 */
-	private Image createCollapseExpandImage()
-	{
-		AbstractImagePrototype proto = collapsed ? images.expand() : images.collapse();
-		Image image = proto.createImage();
-		image.addClickHandler(new ExpandButtonClickHandler());
-		setTopRightWidget(image);
-		DOM.setStyleAttribute(image.getElement(), "marginRight", "4px");
-		return image;
-	}
-
-	/**
+	 * Constructor
 	 * @param width
 	 * @param height
 	 * @param styleName
 	 * @param collapsible
-	 * @param expanded
+	 * @param collapsed
 	 * @param images
 	 */
 	public CollapsePanel(String width, String height, String styleName, boolean collapsible, boolean collapsed, CollapsePanelImages images)
@@ -89,6 +77,23 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	}
 	
 	/**
+	 * 
+	 * @return
+	 */
+	private Image createCollapseExpandImage()
+	{
+		// TODO - insert images using CSS  
+		
+		AbstractImagePrototype proto = collapsed ? images.expand() : images.collapse();
+		Image image = proto.createImage();
+		image.addClickHandler(new ExpandButtonClickHandler());
+		setTopRightWidget(image);
+		DOM.setStyleAttribute(image.getElement(), "marginRight", "4px");
+		return image;
+	}
+
+	/**
+	 * Enables or disables the collapse/expand feature
 	 * @param collapsible the collapsible to set
 	 */
 	public void setCollapsible(boolean collapsible)
@@ -99,6 +104,7 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	}
 	
 	/**
+	 * Collapses or expands the panel
 	 * @param collapsed the collapsed to set
 	 */
 	public void setCollapsed(boolean collapsed)
@@ -125,7 +131,7 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	}
 
 	/**
-	 * @return the collapsible
+	 * @return true if collapsible
 	 */
 	public boolean isCollapsible()
 	{
@@ -133,28 +139,36 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	}
 
 	/**
-	 * @return the collapsed
+	 * @return true if collapsed
 	 */
 	public boolean isCollapsed()
 	{
 		return collapsed;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.advanced.client.event.collapseexpand.HasBeforeCollapseHandlers#addBeforeCollapseHandler(br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseHandler)
+	 */
 	public HandlerRegistration addBeforeCollapseHandler(BeforeCollapseHandler handler)
 	{
 		return addHandler(handler, BeforeCollapseEvent.getType());
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.advanced.client.event.collapseexpand.HasBeforeExpandHandlers#addBeforeExpandHandler(br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeExpandHandler)
+	 */
 	public HandlerRegistration addBeforeExpandHandler(BeforeExpandHandler handler)
 	{
 		return addHandler(handler, BeforeExpandEvent.getType());
 	}
 
 	/**
-	 * @param images the images to set
+	 * Changes the images of the collapse/expand button
+	 * @param images
 	 */
 	public void setImages(CollapsePanelImages images)
 	{
+		// TODO - insert images using CSS
 		this.images = images;
 	}
 	
@@ -173,11 +187,14 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 }
 
 /**
- * Collapses or expands the panel
+ * Button that collapses or expands the panel
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 class ExpandButtonClickHandler implements ClickHandler
 {
+	/**
+	 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+	 */
 	public void onClick(ClickEvent event)
 	{
 		Image img = (Image) event.getSource();

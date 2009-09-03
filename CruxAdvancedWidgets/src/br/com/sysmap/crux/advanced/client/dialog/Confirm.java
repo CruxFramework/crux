@@ -30,7 +30,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- *
  */
 public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers, HasAnimation
 {

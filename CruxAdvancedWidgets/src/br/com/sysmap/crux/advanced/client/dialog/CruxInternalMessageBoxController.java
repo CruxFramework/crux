@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * TODO - Gessé - Comment this
+ * A cross frame controller for showing message boxes
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @Global
@@ -49,7 +49,7 @@ public class CruxInternalMessageBoxController
 	protected DialogMessages messages;
 	
 	/**
-	 * 
+	 * Default constructor
 	 */
 	public CruxInternalMessageBoxController()
 	{
@@ -74,8 +74,7 @@ public class CruxInternalMessageBoxController
 	}
 	
 	/**
-	 * Called by top window
-	 * @param controllerEvent
+	 * Fires the OK button click event 
 	 */
 	@ExposeOutOfModule
 	public void onOk()
@@ -84,7 +83,7 @@ public class CruxInternalMessageBoxController
 	}
 	
 	/**
-	 * Handler method to be invoked on top. That method shows the message box.
+	 * Handler method to be invoked on top. This method does show the message box.
 	 * @param controllerEvent
 	 */
 	@ExposeOutOfModule
@@ -123,6 +122,7 @@ public class CruxInternalMessageBoxController
 	}
 
 	/**
+	 * Creates a label to display the message
 	 * @param data
 	 * @return
 	 */
@@ -134,6 +134,7 @@ public class CruxInternalMessageBoxController
 	}
 
 	/**
+	 * Creates the OK button
 	 * @param dialogBox
 	 * @return
 	 */
@@ -165,8 +166,7 @@ public class CruxInternalMessageBoxController
 	}
 
 	/**
-	 * 
-	 * @param call
+	 * Calls the method <code>showMessageBoxHandler</code> in the top window
 	 * @param serializedData
 	 */
 	private native void showMessageBoxOnTop(String serializedData)/*-{
@@ -175,9 +175,7 @@ public class CruxInternalMessageBoxController
 	}-*/;
 
 	/**
-	 * 
-	 * @param call
-	 * @param serializedData
+	 * Calls the method <code>onOk</code> in the top window that has invoked the message box
 	 */
 	private native void okClick()/*-{
 		var o = $wnd.top._messageBox_origin;

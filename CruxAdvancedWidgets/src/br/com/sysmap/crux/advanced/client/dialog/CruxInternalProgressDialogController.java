@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 /**
- * TODO - Gessé - Comment this
+ * Multi-frame aware controller for showing the progress dialog
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @Global
@@ -42,6 +42,9 @@ public class CruxInternalProgressDialogController
 	private ModuleComunicationSerializer serializer;
 	private DialogBox dialog;
 	
+	/**
+	 * Default constructor
+	 */
 	public CruxInternalProgressDialogController()
 	{
 		this.serializer = Screen.getCruxSerializer();
@@ -49,7 +52,7 @@ public class CruxInternalProgressDialogController
 	}
 
 	/**
-	 * Invoke showProgressDialogOnTop on top. It is required to handle multi-frame pages.
+	 * Invoke showProgressDialogOnTop on top window. It is required to handle multi-frame pages.
 	 * @param data
 	 */
 	public void showProgressDialog(ProgressDialogData data)
@@ -65,7 +68,7 @@ public class CruxInternalProgressDialogController
 	}
 	
 	/**
-	 * Invoke hideProgressDialogOnTop on top. It is required to handle multi-frame pages.
+	 * Invoke hideProgressDialogOnTop on top window. It is required to handle multi-frame pages.
 	 * @param data
 	 */
 	public void hideProgressDialog()
@@ -74,7 +77,7 @@ public class CruxInternalProgressDialogController
 	}
 	
 	/**
-	 * Handler method to be invoked on top. That method shows the progress dialog.
+	 * Handler method to be invoked on top. This method shows the progress dialog.
 	 * @param controllerEvent
 	 */
 	@ExposeOutOfModule
@@ -131,7 +134,8 @@ public class CruxInternalProgressDialogController
 	}
 	
 	/**
-	 * @return
+	 * Creates a panel to display a icon for the message 
+	 * @return a panel
 	 */
 	private Widget createIconPanel()
 	{
@@ -141,8 +145,9 @@ public class CruxInternalProgressDialogController
 	}
 
 	/**
+	 * Creates a label to display the message 
 	 * @param data
-	 * @return
+	 * @return a label
 	 */
 	private Label createMessageLabel(final ProgressDialogData data)
 	{
@@ -152,6 +157,7 @@ public class CruxInternalProgressDialogController
 	}
 
 	/**
+	 * Calls the method <code>showProgressDialogHandler</code> in the top window
 	 * @param serializedData
 	 */
 	private native void showProgressDialogOnTop(String serializedData)/*-{
@@ -159,7 +165,7 @@ public class CruxInternalProgressDialogController
 	}-*/;
 	
 	/**
-	 * 
+	 * Calls the method <code>hideProgressDialogHandler</code> in the top window
 	 */
 	private native void hideProgressDialogOnTop()/*-{
 		$wnd.top._cruxScreenControllerAccessor("__progressDialog.hideProgressDialogHandler");
