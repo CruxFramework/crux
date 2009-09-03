@@ -19,9 +19,9 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
- * TODO - Gessé - Comment this
+ * A simple widget without layout for showing typical "Please, wait..." message boxes across frames. 
+ * The rendering is made by <code>CruxInternalProgressDialogController</code>, using the attributes contained in this widget.
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class ProgressDialog extends Widget implements HasAnimation
@@ -34,45 +34,15 @@ public class ProgressDialog extends Widget implements HasAnimation
 	protected static ProgressDialog progressDialog;
 	
 	/**
-	 * 
+	 * Default constructor
 	 */
 	public ProgressDialog()
 	{
 		setElement(DOM.createSpan());
 	}
 
-	public String getMessage()
-	{
-		return message;
-	}
-
-	public void setMessage(String message)
-	{
-		this.message = message;
-	}
-
-	public String getStyleName()
-	{
-		return styleName;
-	}
-
-	public void setStyleName(String styleName)
-	{
-		this.styleName = styleName;
-	}
-	
-	public boolean isAnimationEnabled()
-	{
-		return animationEnabled;
-	}
-
-	public void setAnimationEnabled(boolean animationEnabled)
-	{
-		this.animationEnabled = animationEnabled;
-	}	
-
 	/**
-	 * 
+	 * Calls the <code>CruxInternalProgressDialogController</code> for showing the progress dialog
 	 */
 	public void show()
 	{
@@ -85,7 +55,7 @@ public class ProgressDialog extends Widget implements HasAnimation
 	}
 	
 	/**
-	 * 
+	 * Hides the progress dialog 
 	 */
 	public static void hide()
 	{
@@ -97,11 +67,8 @@ public class ProgressDialog extends Widget implements HasAnimation
 	}
 	
 	/**
-	 * 
-	 * @param title
-	 * @param message
-	 * @param okCall
-	 * @param cancelCall
+	 * Shows a cross frame progress dialog
+	 * @param message the text to be displayed in the body of the message box 
 	 */
 	public static void show(String message)
 	{
@@ -109,12 +76,10 @@ public class ProgressDialog extends Widget implements HasAnimation
 	}
 	
 	/**
-	 * 
-	 * @param title
-	 * @param message
-	 * @param okCall
-	 * @param cancelCall
-	 * @param styleName
+	 * Shows a cross frame progress dialog
+	 * @param message the text to be displayed in the body of the message box
+	 * @param styleName the name of the CSS class to be applied in the message box element
+	 * @param animationEnabled true to enable animations while showing or hiding the message box
 	 */
 	public static void show(String message, String styleName, boolean animationEnabled)
 	{
@@ -123,5 +88,53 @@ public class ProgressDialog extends Widget implements HasAnimation
 		progressDialog.setStyleName(styleName);
 		progressDialog.setAnimationEnabled(animationEnabled);
 		progressDialog.show();
+	}
+
+	/**
+	 * @return the message
+	 */
+	public String getMessage()
+	{
+		return message;
+	}
+
+	/**
+	 * @param message the message to set
+	 */
+	public void setMessage(String message)
+	{
+		this.message = message;
+	}
+
+	/**
+	 * @return the styleName
+	 */
+	public String getStyleName()
+	{
+		return styleName;
+	}
+
+	/**
+	 * @param styleName the styleName to set
+	 */
+	public void setStyleName(String styleName)
+	{
+		this.styleName = styleName;
+	}
+
+	/**
+	 * @return the animationEnabled
+	 */
+	public boolean isAnimationEnabled()
+	{
+		return animationEnabled;
+	}
+
+	/**
+	 * @param animationEnabled the animationEnabled to set
+	 */
+	public void setAnimationEnabled(boolean animationEnabled)
+	{
+		this.animationEnabled = animationEnabled;
 	}
 }
