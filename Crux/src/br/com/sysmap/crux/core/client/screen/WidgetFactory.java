@@ -48,10 +48,18 @@ public abstract class WidgetFactory <T extends Widget>
 	
 	public T createWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
+		return createWidget(element, widgetId, true);
+	}
+	
+	public T createWidget(Element element, String widgetId, boolean addToScreen) throws InterfaceConfigException
+	{
 		T widget = instantiateWidget(element, widgetId);
 		if (widget != null)
 		{
-			Screen.add(widgetId, widget);
+			if(addToScreen)
+			{
+				Screen.add(widgetId, widget);
+			}			
 			processAttributes(widget, element, widgetId);
 			processEvents(widget, element, widgetId);
 		}
