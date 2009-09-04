@@ -17,6 +17,8 @@ package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
@@ -46,6 +48,9 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public class WidgetFactoriesGenerator extends AbstractGenerator
 {
+	private static Map<Class<?>, String> attributesFromClass = new HashMap<Class<?>, String>();
+	private static Map<Class<?>, String> eventsFromClass = new HashMap<Class<?>, String>();
+	
 	/**
 	 * 
 	 */
@@ -158,7 +163,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		sourceWriter.println("public void processEvents("+getClassSourceName(WidgetFactoryContext.class)
 				         +"<"+ getClassSourceName(widgetType)+"> context) throws InterfaceConfigException{"); 
 		sourceWriter.println("super.processEvents(context);");
-		generateProccessEventsBlock(logger, sourceWriter, factoryClass);
+		sourceWriter.print(generateProccessEventsBlock(logger, factoryClass));
 		sourceWriter.println("}");
 	}
 
@@ -175,7 +180,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		sourceWriter.println("public void processAttributes("+getClassSourceName(WidgetFactoryContext.class)
 		         +"<"+ getClassSourceName(widgetType)+"> context) throws InterfaceConfigException{"); 
 		sourceWriter.println("super.processAttributes(context);");
-		generateProccessAttributesBlock(logger, sourceWriter, factoryClass, widgetType);
+		sourceWriter.print(generateProccessAttributesBlock(logger, factoryClass, widgetType));
 		sourceWriter.println("}");
 	}
 	
@@ -185,8 +190,14 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param sourceWriter
 	 * @param factoryClass
 	 */
-	private void generateProccessAttributesBlock(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType)
+	private String generateProccessAttributesBlock(TreeLogger logger, Class<?> factoryClass, Class<?> widgetType)
 	{
+		if (attributesFromClass.containsKey(factoryClass))
+		{
+			return attributesFromClass.get(factoryClass);
+		}
+		StringBuilder result = new StringBuilder();
+		
 		Method method = getMethod(factoryClass, "processAttributes");
 		if (method != null)
 		{
@@ -218,10 +229,10 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 								}
 								else
 								{
-									sourceWriter.println("String "+attrName+" = context.getElement().getAttribute(\"_"+attrName+"\");");
-									sourceWriter.println("if ("+attrName+" != null && "+attrName+".length() > 0){");
-									sourceWriter.println("context.getWidget()."+setterMethod+"("+expression+");");
-									sourceWriter.println("}");
+									result.append("String "+attrName+" = context.getElement().getAttribute(\"_"+attrName+"\");\n");
+									result.append("if ("+attrName+" != null && "+attrName+".length() > 0){\n");
+									result.append("context.getWidget()."+setterMethod+"("+expression+");\n");
+									result.append("}\n");
 								}
 							}
 							else
@@ -240,14 +251,16 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		Class<?> superclass = factoryClass.getSuperclass();
 		if (superclass!= null && !superclass.equals(Object.class))
 		{
-			generateProccessAttributesBlock(logger, sourceWriter, superclass, widgetType);
+			result.append(generateProccessAttributesBlock(logger, superclass, widgetType)+"\n");
 		}
 		Class<?>[] interfaces = factoryClass.getInterfaces();
 		for (Class<?> interfaceClass : interfaces)
 		{
-			generateProccessAttributesBlock(logger, sourceWriter, interfaceClass, widgetType);
+			result.append(generateProccessAttributesBlock(logger, interfaceClass, widgetType)+"\n");
 		}
-	
+		String attributes = result.toString();
+		attributesFromClass.put(factoryClass, attributes);
+		return attributes;
 	}
 	
 	/**
@@ -258,8 +271,15 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @throws IllegalAccessException 
 	 * @throws Exception 
 	 */
-	private void generateProccessEventsBlock(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass) throws Exception
+	private String generateProccessEventsBlock(TreeLogger logger, Class<?> factoryClass) throws Exception
 	{
+		if (eventsFromClass.containsKey(factoryClass))
+		{
+			return eventsFromClass.get(factoryClass);
+		}
+		
+		StringBuilder result = new StringBuilder();
+		
 		Method method = getMethod(factoryClass, "processEvents");
 		if (method != null)
 		{
@@ -271,20 +291,24 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 					Class<? extends EvtBinder<?>> binderClass = evt.value();
 					//TODO gerar codigo para instanciar binder....colocar um cahce
 					String binderClassName = getClassSourceName(binderClass);
-					sourceWriter.println("new " + binderClassName+"().bindEvent(context.getElement(), context.getWidget());");
+					result.append("new " + binderClassName+"().bindEvent(context.getElement(), context.getWidget());\n");
 				}
 			}
 		}
 		Class<?> superclass = factoryClass.getSuperclass();
 		if (superclass!= null && !superclass.equals(Object.class))
 		{
-			generateProccessEventsBlock(logger, sourceWriter, superclass);
+			result.append(generateProccessEventsBlock(logger, superclass)+"\n");
 		}
 		Class<?>[] interfaces = factoryClass.getInterfaces();
 		for (Class<?> interfaceClass : interfaces)
 		{
-			generateProccessEventsBlock(logger, sourceWriter, interfaceClass);
+			result.append(generateProccessEventsBlock(logger, interfaceClass)+"\n");
 		}
+		
+		String events = result.toString();
+		eventsFromClass.put(factoryClass, events);
+		return events;
 	}
 
 	/**

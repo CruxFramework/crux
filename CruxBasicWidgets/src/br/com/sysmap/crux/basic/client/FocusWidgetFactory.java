@@ -17,12 +17,22 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
+import br.com.sysmap.crux.core.client.event.bind.BlurEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.FocusEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.KeyDownEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.KeyPressEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.KeyUpEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseDownEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseMoveEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseOutEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseOverEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseUpEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseWheelEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
-import br.com.sysmap.crux.core.client.screen.factory.HasAllFocusHandlersFactory;
-import br.com.sysmap.crux.core.client.screen.factory.HasAllKeyHandlersFactory;
-import br.com.sysmap.crux.core.client.screen.factory.HasAllMouseHandlersFactory;
-import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
 
 import com.google.gwt.user.client.ui.FocusWidget;
 
@@ -33,8 +43,6 @@ import com.google.gwt.user.client.ui.FocusWidget;
  *
  */
 public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetFactory<T> 
-             implements HasClickHandlersFactory<T>, HasAllFocusHandlersFactory<T>, HasAllKeyHandlersFactory<T>,
-             HasAllMouseHandlersFactory<T>
 {
 	/**
 	 * Process widget attributes
@@ -42,13 +50,62 @@ public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetF
 	 */
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="tabIndex", type=Integer.class),
-		@TagAttribute(value="enabled", type=Boolean.class),
-		@TagAttribute(value="accessKey", type=Character.class),
-		@TagAttribute(value="focus", type=Boolean.class)
+		@TagAttribute(value="tabIndex", type=Integer.class, autoProcess=false),
+		@TagAttribute(value="enabled", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="accessKey", type=Character.class, autoProcess=false),
+		@TagAttribute(value="focus", type=Boolean.class, autoProcess=false)
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
+		String tabIndex = context.getElement().getAttribute("_tabIndex");
+		if (tabIndex != null && tabIndex.length() > 0){
+			context.getWidget().setTabIndex(Integer.parseInt(tabIndex));
+		}
+		String enabled = context.getElement().getAttribute("_enabled");
+		if (enabled != null && enabled.length() > 0){
+			context.getWidget().setEnabled(Boolean.parseBoolean(enabled));
+		}
+		String accessKey = context.getElement().getAttribute("_accessKey");
+		if (accessKey != null && accessKey.length() > 0){
+			context.getWidget().setAccessKey(accessKey.charAt(0));
+		}
+		String focus = context.getElement().getAttribute("_focus");
+		if (focus != null && focus.length() > 0){
+			context.getWidget().setFocus(Boolean.parseBoolean(focus));
+		}
+	}
+	
+	@Override
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onLoadWidget"),
+		@TagEventDeclaration("onClick"),
+		@TagEventDeclaration("onFocus"),
+		@TagEventDeclaration("onBlur"),
+		@TagEventDeclaration("onKeyPress"),
+		@TagEventDeclaration("onKeyUp"),
+		@TagEventDeclaration("onKeyDown"),
+		@TagEventDeclaration("onMouseDown"),
+		@TagEventDeclaration("onMouseUp"),
+		@TagEventDeclaration("onMouseOver"),
+		@TagEventDeclaration("onMouseOut"),
+		@TagEventDeclaration("onMouseMove"),
+		@TagEventDeclaration("onMouseWheel")
+	})
+	public void processEvents(WidgetFactoryContext<T> context) throws InterfaceConfigException
+	{
+		super.processEvents(context);
+		new ClickEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new FocusEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new BlurEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new KeyUpEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new KeyPressEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new KeyDownEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new MouseDownEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new MouseUpEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new MouseOverEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new MouseOutEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new MouseMoveEvtBind().bindEvent(context.getElement(), context.getWidget());
+		new MouseWheelEvtBind().bindEvent(context.getElement(), context.getWidget());
 	}
 }

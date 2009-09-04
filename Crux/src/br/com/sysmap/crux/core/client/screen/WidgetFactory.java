@@ -128,15 +128,31 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @throws InterfaceConfigException 
 	 */
 	@TagAttributes({
-		@TagAttribute("width"),
-		@TagAttribute("height"),
-		@TagAttribute("styleName"),
-		@TagAttribute(value="visible", type=Boolean.class),
+		@TagAttribute(value="width", autoProcess=false),
+		@TagAttribute(value="height", autoProcess=false),
+		@TagAttribute(value="styleName", autoProcess=false),
+		@TagAttribute(value="visible", type=Boolean.class, autoProcess=false),
 		@TagAttribute(value="tooltip", autoProcess=false),
 		@TagAttribute(value="style", autoProcess=false)
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
+		String width = context.getElement().getAttribute("_width");
+		if (width != null && width.length() > 0){
+			context.getWidget().setWidth(width);
+		}
+		String height = context.getElement().getAttribute("_height");
+		if (height != null && height.length() > 0){
+			context.getWidget().setHeight(height);
+		}
+		String styleName = context.getElement().getAttribute("_styleName");
+		if (styleName != null && styleName.length() > 0){
+			context.getWidget().setStyleName(styleName);
+		}
+		String visible = context.getElement().getAttribute("_visible");
+		if (visible != null && visible.length() > 0){
+			context.getWidget().setVisible(Boolean.parseBoolean(visible));
+		}
 		String tooltip = context.getElement().getAttribute("_tooltip");
 		if (tooltip != null && tooltip.length() > 0)
 		{
