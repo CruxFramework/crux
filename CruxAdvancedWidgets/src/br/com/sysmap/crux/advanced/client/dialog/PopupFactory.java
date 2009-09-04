@@ -15,10 +15,13 @@
  */ 
 package br.com.sysmap.crux.advanced.client.dialog;
 
-import br.com.sysmap.crux.advanced.client.event.openclose.BeforeOpenOrCloseEvtBind;
+import br.com.sysmap.crux.advanced.client.event.openclose.HasBeforeCloseHandlersFactory;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 
 import com.google.gwt.dom.client.Element;
 
@@ -27,49 +30,23 @@ import com.google.gwt.dom.client.Element;
  *
  */
 @DeclarativeFactory(id="popup", library="adv")
-public class PopupFactory extends WidgetFactory<Popup>
+public class PopupFactory extends WidgetFactory<Popup> 
+       implements HasAnimationFactory<Popup>, HasBeforeCloseHandlersFactory<Popup>
 {
-
 	@Override
-	protected Popup instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public Popup instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		return new Popup();
 	}
 
 	@Override
-	protected void processAttributes(Popup widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="title", supportsI18N=true),
+		@TagAttribute("url"),
+		@TagAttribute(value="closeable", type=Boolean.class)
+	})
+	public void processAttributes(WidgetFactoryContext<Popup> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
-		String title = element.getAttribute("_title");
-		if (title != null && title.length() > 0)
-		{
-			widget.setTitle(title);
-		}
-
-		String url = element.getAttribute("_url");
-		if (url != null && url.length() > 0)
-		{
-			widget.setUrl(url);
-		}
-
-		String animationEnabled = element.getAttribute("_animationEnabled");
-		if (animationEnabled != null && animationEnabled.length() > 0)
-		{
-			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
-		}
-
-		String closeable = element.getAttribute("_closeable");
-		if (closeable != null && closeable.length() > 0)
-		{
-			widget.setCloseable(Boolean.parseBoolean(closeable));
-		}
-	}
-	
-	@Override
-	protected void processEvents(Popup widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		super.processEvents(widget, element, widgetId);
-		BeforeOpenOrCloseEvtBind.bindBeforeCloseEvent(element, widget);
+		super.processAttributes(context);
 	}
 }

@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class DecoratedPanelFactory extends AbstractDecoratedPanelFactory<DecoratedPanel>
 {
 	@Override
-	protected DecoratedPanel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public DecoratedPanel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		String height = element.getAttribute("_height");
 		String width = element.getAttribute("_width");
@@ -38,8 +38,11 @@ public class DecoratedPanelFactory extends AbstractDecoratedPanelFactory<Decorat
 	}
 
 	@Override
-	protected void processChildrenTags(DecoratedPanel widget, Element element, String widgetId) throws InterfaceConfigException
+	public void processChildren(WidgetFactoryContext<DecoratedPanel> context) throws InterfaceConfigException
 	{
+		Element element = context.getElement();
+		DecoratedPanel widget = context.getWidget();
+		
 		Element child = ensureFirstChildSpan(element, true);
 		if(child != null)
 		{

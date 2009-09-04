@@ -22,6 +22,10 @@ import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
 import br.com.sysmap.crux.advanced.client.util.AlignmentUtil;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenFactory;
@@ -44,13 +48,14 @@ public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 	 * @param autoLoad 
 	 * @see br.com.sysmap.crux.core.client.screen.WidgetFactory#instantiateWidget(com.google.gwt.dom.client.Element, java.lang.String)
 	 */
-	protected PagedDataGrid instantiateWidget(Element gridElem, String widgetId) throws InterfaceConfigException
+	public PagedDataGrid instantiateWidget(Element gridElem, String widgetId) throws InterfaceConfigException
 	{
-		PagedDataGrid grid = new PagedDataGrid(getColumnDefinitions(gridElem), getPageSize(gridElem), getRowSelectionModel(gridElem), getCellSpacing(gridElem), getAutoLoad(gridElem));
-		bindDataSource(grid, gridElem);
+		PagedDataGrid grid = new PagedDataGrid(getColumnDefinitions(gridElem), getPageSize(gridElem), 
+				                               getRowSelectionModel(gridElem), getCellSpacing(gridElem), 
+				                               getAutoLoad(gridElem));
 		return grid;
 	}
-
+	
 	private boolean getAutoLoad(Element gridElem)
 	{
 		String autoLoad = gridElem.getAttribute("_autoLoadData");
@@ -79,9 +84,12 @@ public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 	 * @param grid
 	 * @param gridElem
 	 */
-	private void bindDataSource(final PagedDataGrid grid, final Element gridElem)
+	private void bindDataSource(WidgetFactoryContext<PagedDataGrid> context)
 	{
-		final String dataSourceName = gridElem.getAttribute("_dataSource");
+		Element element = context.getElement();
+		final PagedDataGrid widget = context.getWidget();
+
+		final String dataSourceName = element.getAttribute("_dataSource");
 		
 		if(dataSourceName != null && dataSourceName.length() > 0)
 		{
@@ -90,7 +98,7 @@ public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 				public void execute()
 				{	
 					EditablePagedDataSource dataSource = (EditablePagedDataSource) Screen.getDataSource(dataSourceName);
-					grid.setDataSource(dataSource);
+					widget.setDataSource(dataSource);
 				}
 			});
 		}
@@ -194,11 +202,33 @@ public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 	}
 	
 	@Override
-	protected void processEvents(PagedDataGrid widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="pageSize", type=Integer.class, defaultValue="0x7fffffff", autoProcess=false),
+		@TagAttribute(value="rowSelection", type=RowSelectionModel.class, defaultValue="unselectable", autoProcess=false),
+		@TagAttribute(value="dataSource", autoProcess=false),
+		@TagAttribute(value="cellSpacing", type=Integer.class, defaultValue="1", autoProcess=false),
+		@TagAttribute(value="autoLoadData", type=Boolean.class, defaultValue="false", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<PagedDataGrid> context) throws InterfaceConfigException
 	{
+		super.processAttributes(context);
+		bindDataSource(context);
+	}
+	
+	@Override
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onRowClick"),
+		@TagEventDeclaration("onRowDoubleClick"),
+		@TagEventDeclaration("onRowRender")
+	})
+	public void processEvents(WidgetFactoryContext<PagedDataGrid> context) throws InterfaceConfigException
+	{
+		Element element = context.getElement();
+		PagedDataGrid widget = context.getWidget();
+
 		RowEventsBind.bindClickRowEvent(element, widget);
 		RowEventsBind.bindDoubleClickRowEvent(element, widget);
 		RowEventsBind.bindRenderRowEvent(element, widget);
-		super.processEvents(widget, element, widgetId);
+		super.processEvents(context);
 	}
 }

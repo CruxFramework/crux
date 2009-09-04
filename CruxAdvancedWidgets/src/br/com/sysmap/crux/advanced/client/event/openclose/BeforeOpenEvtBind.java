@@ -15,50 +15,23 @@
  */
 package br.com.sysmap.crux.advanced.client.event.openclose;
 
-import br.com.sysmap.crux.advanced.client.event.Events;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
+import br.com.sysmap.crux.core.client.event.bind.EvtBinder;
 
 import com.google.gwt.dom.client.Element;
 
-public class BeforeOpenOrCloseEvtBind extends EvtBind
+public class BeforeOpenEvtBind implements EvtBinder<HasBeforeOpenHandlers>
 {
-	/**
-	 * @param element
-	 * @param widget
-	 */
-	public static void bindEvents(Element element, HasBeforeOpenAndBeforeCloseHandlers widget)
-	{
-		bindBeforeCloseEvent(element, widget);
-		bindBeforeOpenEvent(element, widget);
-	}
+	private static final String EVENT_NAME = "onBeforeOpen";
 	
 	/**
 	 * @param element
 	 * @param widget
 	 */
-	public static void bindBeforeCloseEvent(Element element, HasBeforeCloseHandlers widget)
+	public void bindEvent(Element element, HasBeforeOpenHandlers widget)
 	{
-		final Event beforeCloseEvent = getWidgetEvent(element, Events.BEFORE_CLOSE);
-		if (beforeCloseEvent != null)
-		{
-			widget.addBeforeCloseHandler(new BeforeCloseHandler()
-			{
-				public void onBeforeClose(BeforeCloseEvent event)
-				{
-					br.com.sysmap.crux.core.client.event.Events.callEvent(beforeCloseEvent, event);
-				}
-			});
-		}
-	}
-	
-	/**
-	 * @param element
-	 * @param widget
-	 */
-	public static void bindBeforeOpenEvent(Element element, HasBeforeOpenHandlers widget)
-	{
-		final Event beforeOpenEvent = getWidgetEvent(element, Events.BEFORE_OPEN);
+		final Event beforeOpenEvent = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (beforeOpenEvent != null)
 		{
 			widget.addBeforeOpenHandler(new BeforeOpenHandler()
@@ -69,5 +42,13 @@ public class BeforeOpenOrCloseEvtBind extends EvtBind
 				}
 			});
 		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}
 }

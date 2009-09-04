@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.advanced.client.decoratedpanel;
 
 import br.com.sysmap.crux.basic.client.CellPanelFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -29,30 +31,25 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 public abstract class AbstractDecoratedPanelFactory<T extends DecoratedPanel> extends CellPanelFactory<T>
 {
 	@Override
-	protected abstract T instantiateWidget(Element element, String widgetId) throws InterfaceConfigException;
-
-	@Override
-	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="horizontalAlignment", autoProcess=false),
+		@TagAttribute(value="verticalAlignment", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		processAlignment(widget, element);
-		processChildrenTags(widget, element, widgetId);
+		super.processAttributes(context);
+		processAlignment(context);
 	}
 
 	/**
 	 * @param widget
 	 * @param element
-	 * @param widgetId
-	 * @throws InterfaceConfigException 
 	 */
-	protected abstract void processChildrenTags(T widget, Element element, String widgetId) throws InterfaceConfigException;
-
-	/**
-	 * @param widget
-	 * @param element
-	 */
-	private void processAlignment(T widget, Element element)
+	private void processAlignment(WidgetFactoryContext<T> context)
 	{
+		Element element = context.getElement();
+		DecoratedPanel widget = context.getWidget();
+
 		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");
 		if (cellHorizontalAlignment != null && cellHorizontalAlignment.trim().length() > 0)
 		{

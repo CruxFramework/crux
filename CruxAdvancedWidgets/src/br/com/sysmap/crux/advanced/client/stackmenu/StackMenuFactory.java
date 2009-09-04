@@ -30,16 +30,17 @@ import com.google.gwt.dom.client.Element;
 public class StackMenuFactory extends WidgetFactory<StackMenu>
 {
 	@Override
-	protected StackMenu instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public StackMenu instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		return new StackMenu();
 	}
 	
 	@Override
-	protected void processAttributes(StackMenu widget, Element element, String widgetId) throws InterfaceConfigException
+	public void processChildren(WidgetFactoryContext<StackMenu> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
+		Element element = context.getElement();
+		StackMenu widget = context.getWidget();
+
 		List<Element> items = ensureChildrenSpans(element, true);
 		for (Element child : items)
 		{

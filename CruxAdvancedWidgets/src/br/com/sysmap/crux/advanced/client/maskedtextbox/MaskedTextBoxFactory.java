@@ -16,31 +16,41 @@
 package br.com.sysmap.crux.advanced.client.maskedtextbox;
 
 import br.com.sysmap.crux.advanced.client.AdvancedWidgetMessages;
-import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.FocusEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
+import br.com.sysmap.crux.advanced.client.dynatabs.DynaTabs;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllFocusHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllKeyHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllMouseHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasChangeHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasDirectionFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.i18n.client.HasDirection.Direction;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
 @br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="maskedTextBox", library="adv")
-public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
+public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox> 
+       implements HasDirectionFactory<MaskedTextBox>, HasNameFactory<MaskedTextBox>, 
+                  HasChangeHandlersFactory<MaskedTextBox>, HasValueChangeHandlersFactory<MaskedTextBox>,
+                  HasClickHandlersFactory<MaskedTextBox>, HasAllFocusHandlersFactory<MaskedTextBox>,
+                  HasAllKeyHandlersFactory<MaskedTextBox>, HasAllMouseHandlersFactory<MaskedTextBox>
 {
 	private AdvancedWidgetMessages messages = GWT.create(AdvancedWidgetMessages.class);
 	
 	@Override
-	protected MaskedTextBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public MaskedTextBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		String formatter = element.getAttribute("_formatter");
 		if (formatter != null && formatter.length() > 0)
@@ -56,64 +66,25 @@ public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
 	}
 
 	@Override
-	protected void processAttributes(MaskedTextBox widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="formatter", required=true, autoProcess=false),
+		@TagAttribute(value="value", autoProcess=false),
+		@TagAttribute(value="readOnly", type=Boolean.class),
+		@TagAttribute(value="tabIndex", type=Integer.class),
+		@TagAttribute(value="accessKey", type=Character.class),
+		@TagAttribute(value="focus", type=Boolean.class)
+	})
+	public void processAttributes(WidgetFactoryContext<MaskedTextBox> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		Element element = context.getElement();
+		MaskedTextBox widget = context.getWidget();
 
-		String direction = element.getAttribute("_direction");
-		if (direction != null && direction.length() > 0)
-		{
-			widget.setDirection(Direction.valueOf(direction));
-		}
-		
+		super.processAttributes(context);
+
 		String value = element.getAttribute("_value");
 		if (value != null && value.length() > 0)
 		{
 			widget.setUnformattedValue(widget.getFormatter().unformat(value));
 		}
-		String readOnly = element.getAttribute("_readOnly");
-		if (readOnly != null && readOnly.length() > 0)
-		{
-			widget.setReadOnly(Boolean.parseBoolean(readOnly));
-		}
-		
-		String tabIndex = element.getAttribute("_tabIndex");
-		if (tabIndex != null && tabIndex.length() > 0)
-		{
-			widget.setTabIndex(Integer.parseInt(tabIndex));
-		}
-		
-		String enabled = element.getAttribute("_enabled");
-		if (enabled != null && enabled.length() > 0)
-		{
-			widget.setEnabled(Boolean.parseBoolean(enabled));
-		}
-		
-		String accessKey = element.getAttribute("_accessKey");
-		if (accessKey != null && accessKey.length() == 1)
-		{
-			widget.setAccessKey(accessKey.charAt(0));
-		}
-		
-		String focus = element.getAttribute("_focus");
-		if (focus != null && focus.trim().length() > 0)
-		{
-			widget.setFocus(Boolean.parseBoolean(focus));
-		}
-		
 	}
-	
-	@Override
-	protected void processEvents(MaskedTextBox widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		super.processEvents(widget, element, widgetId);
-
-		ChangeEvtBind.bindValueEvent(element, widget);
-		FocusEvtBind.bindEvents(element, widget);
-		ClickEvtBind.bindEvent(element, widget);
-		KeyEvtBind.bindEvents(element, widget);
-		MouseEvtBind.bindEvents(element, widget);
-	}	
-	
-	
 }

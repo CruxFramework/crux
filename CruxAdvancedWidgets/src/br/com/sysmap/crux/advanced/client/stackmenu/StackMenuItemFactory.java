@@ -17,9 +17,14 @@ package br.com.sysmap.crux.advanced.client.stackmenu;
 
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
+import br.com.sysmap.crux.advanced.client.dynatabs.DynaTabs;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
+import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 
@@ -29,37 +34,36 @@ import com.google.gwt.dom.client.Element;
  */
 @br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="stackMenuItem", library="adv")
 public class StackMenuItemFactory extends WidgetFactory<StackMenuItem>
+       implements HasClickHandlersFactory<StackMenuItem>
 {
 	@Override
-	protected StackMenuItem instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public StackMenuItem instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		String label = element.getAttribute("_label"); 
-		return new StackMenuItem(label);
+		return new StackMenuItem(ScreenFactory.getInstance().getDeclaredMessage(label));
 	}
 	
 	@Override
-	protected void processAttributes(StackMenuItem widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="open", type=Boolean.class),
+		@TagAttribute(value="label", autoProcess=false, supportsI18N=true, required=true)
+	})
+	public void processAttributes(WidgetFactoryContext<StackMenuItem> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
-		String open = element.getAttribute("_open");
-		if(open != null && open.trim().length() > 0)
-		{
-			widget.setOpen(Boolean.parseBoolean(open));
-		}
-		
+		super.processAttributes(context);
+	}
+	
+	@Override
+	public void processChildren(WidgetFactoryContext<StackMenuItem> context) throws InterfaceConfigException
+	{
+		Element element = context.getElement();
+		StackMenuItem widget = context.getWidget();
+
 		List<Element> items = ensureChildrenSpans(element, true);
 		for (Element child : items)
 		{
 			StackMenuItem item = (StackMenuItem) createChildWidget(child, child.getId());
 			widget.add(item);
 		}
-	}
-	
-	@Override
-	protected void processEvents(StackMenuItem widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		super.processEvents(widget, element, widgetId);
-		ClickEvtBind.bindEvent(element, widget);
 	}
 }

@@ -15,42 +15,41 @@
  */
 package br.com.sysmap.crux.advanced.client.event.collapseexpand;
 
-import br.com.sysmap.crux.advanced.client.event.Events;
 import br.com.sysmap.crux.core.client.event.Event;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
+import br.com.sysmap.crux.core.client.event.bind.EvtBinder;
 
 import com.google.gwt.dom.client.Element;
 
-public class BeforeCollapseOrExpandEvtBind extends EvtBind
+public class BeforeCollapseEvtBind implements EvtBinder<HasBeforeCollapseHandlers>
 {
+	private static final String EVENT_NAME = "onBeforeCollapse";
+
 	/**
 	 * @param element
 	 * @param widget
 	 */
-	public static void bindEvents(Element element, HasBeforeCollapseAndBeforeExpandHandlers widget)
+	public void bindEvent(Element element, HasBeforeCollapseHandlers widget)
 	{
-		final Event beforeCollapseEvent = getWidgetEvent(element, Events.BEFORE_COLLAPSE);
+		final Event beforeCollapseEvent = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (beforeCollapseEvent != null)
 		{
 			widget.addBeforeCollapseHandler(new BeforeCollapseHandler()
 			{
 				public void onBeforeCollapse(BeforeCollapseEvent event)
 				{
-					br.com.sysmap.crux.core.client.event.Events.callEvent(beforeCollapseEvent, event);
+					Events.callEvent(beforeCollapseEvent, event);
 				}
 			});
 		}
-		
-		final Event beforeExpandEvent = getWidgetEvent(element, Events.BEFORE_EXPAND);
-		if (beforeExpandEvent != null)
-		{
-			widget.addBeforeExpandHandler(new BeforeExpandHandler()
-			{
-				public void onBeforeExpand(BeforeExpandEvent event)
-				{
-					br.com.sysmap.crux.core.client.event.Events.callEvent(beforeExpandEvent, event);
-				}
-			});
-		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}
 }

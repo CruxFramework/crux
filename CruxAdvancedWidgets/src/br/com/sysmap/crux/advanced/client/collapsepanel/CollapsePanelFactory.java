@@ -16,9 +16,16 @@
 package br.com.sysmap.crux.advanced.client.collapsepanel;
 
 import br.com.sysmap.crux.advanced.client.event.LoadImagesEvent;
-import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseOrExpandEvtBind;
-import br.com.sysmap.crux.advanced.client.titlepanel.TitlePanelFactory;
+import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseEvtBind;
+import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeExpandEvtBind;
+import br.com.sysmap.crux.advanced.client.titlepanel.AbstractTitlePanelFactory;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEvent;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEvents;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
@@ -31,10 +38,10 @@ import com.google.gwt.dom.client.Element;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @DeclarativeFactory(id="collapsePanel", library="adv")
-public class CollapsePanelFactory extends TitlePanelFactory<CollapsePanel>
+public class CollapsePanelFactory extends AbstractTitlePanelFactory<CollapsePanel>
 {
 	@Override
-	protected CollapsePanel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public CollapsePanel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		String height = element.getAttribute("_height");
 		String width = element.getAttribute("_width");
@@ -66,9 +73,25 @@ public class CollapsePanelFactory extends TitlePanelFactory<CollapsePanel>
 	}
 	
 	@Override
-	protected void processEvents(CollapsePanel widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagEvents({
+		@TagEvent(BeforeCollapseEvtBind.class),
+		@TagEvent(BeforeExpandEvtBind.class)
+	})
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onLoadImage")
+	})
+	public void processEvents(WidgetFactoryContext<CollapsePanel> context) throws InterfaceConfigException
 	{
-		super.processEvents(widget, element, widgetId);
-		BeforeCollapseOrExpandEvtBind.bindEvents(element, widget);
+		super.processEvents(context);
+	}
+	
+	@Override
+	@TagAttributes({
+		@TagAttribute(value="collapsed", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="collapsible", type=Boolean.class, autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<CollapsePanel> context) throws InterfaceConfigException
+	{
+		super.processAttributes(context);
 	}
 }

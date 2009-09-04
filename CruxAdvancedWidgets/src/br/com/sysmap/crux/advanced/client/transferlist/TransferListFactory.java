@@ -17,8 +17,9 @@ package br.com.sysmap.crux.advanced.client.transferlist;
 
 import br.com.sysmap.crux.basic.client.CompositeFactory;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 
 import com.google.gwt.dom.client.Element;
 
@@ -30,44 +31,21 @@ import com.google.gwt.dom.client.Element;
 public class TransferListFactory extends CompositeFactory<TransferList>
 {
 	@Override
-	protected TransferList instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public TransferList instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		return new TransferList();
 	}
 
 	@Override
-	protected void processAttributes(TransferList widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="leftToRightButtonText", supportsI18N=true),
+		@TagAttribute(value="rightToLeftButtonText", supportsI18N=true),
+		@TagAttribute(value="leftListLabel", supportsI18N=true),
+		@TagAttribute(value="rightListLabel", supportsI18N=true),
+		@TagAttribute(value="visibleItemCount", type=Integer.class)
+	})
+	public void processAttributes(WidgetFactoryContext<TransferList> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
-		String leftToRightButtonText = element.getAttribute("_leftToRightButtonText");
-		if(leftToRightButtonText != null && leftToRightButtonText.length() > 0)
-		{
-			widget.setMoveToRightButtonText(ScreenFactory.getInstance().getDeclaredMessage(leftToRightButtonText));
-		}
-		
-		String rightToLeftButtonText = element.getAttribute("_rightToLeftButtonText");
-		if(rightToLeftButtonText != null && rightToLeftButtonText.length() > 0)
-		{
-			widget.setMoveToLeftButtonText(ScreenFactory.getInstance().getDeclaredMessage(rightToLeftButtonText));
-		}
-		
-		String leftListLabel = element.getAttribute("_leftListLabel");
-		if(leftListLabel != null && leftListLabel.length() > 0)
-		{
-			widget.setLeftListLabel(ScreenFactory.getInstance().getDeclaredMessage(leftListLabel));
-		}
-		
-		String rightListLabel = element.getAttribute("_rightListLabel");
-		if(rightListLabel != null && rightListLabel.length() > 0)
-		{
-			widget.setRightListLabel(ScreenFactory.getInstance().getDeclaredMessage(rightListLabel));
-		}	
-		
-		String visibleItems = element.getAttribute("_visibleItemCount");
-		if(visibleItems != null && visibleItems.length() > 0)
-		{
-			widget.setVisibleItemCount(Integer.parseInt(visibleItems));
-		}		
+		super.processAttributes(context);
 	}
 }

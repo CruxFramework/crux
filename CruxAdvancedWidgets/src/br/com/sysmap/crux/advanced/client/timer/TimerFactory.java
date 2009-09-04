@@ -19,6 +19,8 @@ import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.event.timeout.TimeoutEvtBind;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
@@ -29,12 +31,12 @@ import com.google.gwt.dom.client.Element;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @DeclarativeFactory(id="timer", library="adv")
-public class TimerFactory<T extends Timer> extends WidgetFactory<Timer>
+public class TimerFactory extends WidgetFactory<Timer>
 {
 	/**
 	 * @see br.com.sysmap.crux.core.client.screen.WidgetFactory#instantiateWidget(com.google.gwt.dom.client.Element, java.lang.String)
 	 */
-	protected Timer instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public Timer instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		long initial = 0;
 		boolean regressive = false;
@@ -61,12 +63,23 @@ public class TimerFactory<T extends Timer> extends WidgetFactory<Timer>
 		return new Timer(initial, regressive, start);
 	}
 	
+	@Override
+	@TagAttributes({
+		@TagAttribute(value="start", type=Boolean.class, defaultValue="false", autoProcess=false),
+		@TagAttribute(value="initial", type=Integer.class, defaultValue="0", autoProcess=false),
+		@TagAttribute(value="regressive", type=Boolean.class, defaultValue="false", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<Timer> context) throws InterfaceConfigException
+	{
+		super.processAttributes(context);
+	}
 	
 	@Override
-	protected void processAttributes(Timer widget, Element element, String widgetId) throws InterfaceConfigException
+	public void processChildren(WidgetFactoryContext<Timer> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
+		Element element = context.getElement();
+		Timer widget = context.getWidget();
+
 		List<Element> children = ensureChildrenSpans(element, true);
 		for (Element child : children)
 		{

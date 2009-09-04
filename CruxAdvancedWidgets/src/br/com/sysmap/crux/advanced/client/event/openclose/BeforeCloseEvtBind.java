@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.advanced.client.event.dialog;
+package br.com.sysmap.crux.advanced.client.event.openclose;
 
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
@@ -21,24 +21,24 @@ import br.com.sysmap.crux.core.client.event.bind.EvtBinder;
 
 import com.google.gwt.dom.client.Element;
 
-public class CancelEvtBind implements EvtBinder<HasCancelHandlers>
+public class BeforeCloseEvtBind implements EvtBinder<HasBeforeCloseHandlers>
 {
-	private static final String EVENT_NAME = "onCancel";
+	private static final String EVENT_NAME = "onBeforeClose";
 
 	/**
 	 * @param element
 	 * @param widget
 	 */
-	public void bindEvent(Element element, HasCancelHandlers widget)
+	public void bindEvent(Element element, HasBeforeCloseHandlers widget)
 	{
-		final Event cancelEvent = EvtBind.getWidgetEvent(element, EVENT_NAME);
-		if (cancelEvent != null)
+		final Event beforeCloseEvent = EvtBind.getWidgetEvent(element, EVENT_NAME);
+		if (beforeCloseEvent != null)
 		{
-			widget.addCancelHandler(new CancelHandler()
+			widget.addBeforeCloseHandler(new BeforeCloseHandler()
 			{
-				public void onCancel(CancelEvent event)
+				public void onBeforeClose(BeforeCloseEvent event)
 				{
-					br.com.sysmap.crux.core.client.event.Events.callEvent(cancelEvent, event);
+					br.com.sysmap.crux.core.client.event.Events.callEvent(beforeCloseEvent, event);
 				}
 			});
 		}

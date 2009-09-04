@@ -18,7 +18,7 @@ package br.com.sysmap.crux.advanced.client.dynatabs;
 import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusOrBlurEvtBind;
-import br.com.sysmap.crux.advanced.client.event.openclose.BeforeOpenOrCloseEvtBind;
+import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
@@ -32,15 +32,16 @@ import com.google.gwt.dom.client.Element;
 public class DynaTabsFactory extends WidgetFactory<DynaTabs>
 {
 	@Override
-	protected DynaTabs instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public DynaTabs instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		return new DynaTabs();
 	}
-	
+
 	@Override
-	protected void processAttributes(DynaTabs widget, Element element, String widgetId) throws InterfaceConfigException
+	public void processChildren(WidgetFactoryContext<DynaTabs> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		Element element = context.getElement();
+		DynaTabs widget = context.getWidget();
 		
 		List<Element> tabs = ensureChildrenSpans(element, true);
 		for (Element child : tabs)
@@ -59,7 +60,7 @@ public class DynaTabsFactory extends WidgetFactory<DynaTabs>
 			Tab tab = widget.openTab(id, label, url, closeable, false);
 			
 			BeforeFocusOrBlurEvtBind.bindEvents(child, tab);
-			BeforeOpenOrCloseEvtBind.bindBeforeCloseEvent(child, tab);
+			new BeforeCloseEvtBind().bindEvent(child, tab);
 		}
 	}
 }

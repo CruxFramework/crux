@@ -17,6 +17,10 @@ package br.com.sysmap.crux.advanced.client.paging;
 
 import br.com.sysmap.crux.advanced.client.event.paging.PageEvtBind;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
@@ -37,11 +41,25 @@ public class SequentialPagerFactory extends WidgetFactory<SequentialPager>
 	 * @param autoLoad 
 	 * @see br.com.sysmap.crux.core.client.screen.WidgetFactory#instantiateWidget(com.google.gwt.dom.client.Element, java.lang.String)
 	 */
-	protected SequentialPager instantiateWidget(Element elem, String widgetId) throws InterfaceConfigException
+	public SequentialPager instantiateWidget(Element elem, String widgetId) throws InterfaceConfigException
 	{
-		final SequentialPager pager = new SequentialPager();
-		final String pageableId = elem.getAttribute("_pageable");
-		final String strEnabled = elem.getAttribute("_enabled");
+		return new SequentialPager();
+	}
+
+	@Override
+	@TagAttributes({
+		@TagAttribute(value="pageable", autoProcess=false),
+		@TagAttribute(value="enabled", type=Boolean.class, autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<SequentialPager> context) throws InterfaceConfigException
+	{
+		super.processAttributes(context);
+	
+		Element element = context.getElement();
+		final SequentialPager widget = context.getWidget();
+
+		final String pageableId = element.getAttribute("_pageable");
+		final String strEnabled = element.getAttribute("_enabled");
 		
 		addScreenLoadedHandler(
 				
@@ -57,10 +75,10 @@ public class SequentialPagerFactory extends WidgetFactory<SequentialPager>
 					
 					if(pageable != null)
 					{
-						pager.setPageable((Pageable) pageable);
+						widget.setPageable((Pageable) pageable);
 						if(strEnabled != null && strEnabled.length() > 0)
 						{
-							pager.setEnabled(Boolean.parseBoolean(strEnabled));
+							widget.setEnabled(Boolean.parseBoolean(strEnabled));
 						}
 					}
 					else
@@ -70,14 +88,18 @@ public class SequentialPagerFactory extends WidgetFactory<SequentialPager>
 				}				
 			}		
 		);
-		
-		return pager;
 	}
 	
 	@Override
-	protected void processEvents(SequentialPager widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onPage")
+	})
+	public void processEvents(WidgetFactoryContext<SequentialPager> context) throws InterfaceConfigException
 	{
+		Element element = context.getElement();
+		SequentialPager widget = context.getWidget();
+
 		PageEvtBind.bindEvent(element, widget);
-		super.processEvents(widget, element, widgetId);
+		super.processEvents(context);
 	}
 }

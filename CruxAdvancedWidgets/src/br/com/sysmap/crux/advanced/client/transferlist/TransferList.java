@@ -214,7 +214,7 @@ public class TransferList extends Composite
 	/**
 	 * @param text
 	 */
-	public void setMoveToRightButtonText(String text)
+	public void setLeftToRightButtonText(String text)
 	{
 		this.moveToRightButton.setText(text);
 	}
@@ -222,7 +222,7 @@ public class TransferList extends Composite
 	/**
 	 * @param text
 	 */
-	public void setMoveToLeftButtonText(String text)
+	public void setRightToLeftButtonText(String text)
 	{
 		this.moveToLeftButton.setText(text);
 	}

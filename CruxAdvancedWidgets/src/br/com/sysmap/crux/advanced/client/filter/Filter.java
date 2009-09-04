@@ -19,8 +19,6 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasBlurHandlers;
-import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -32,7 +30,7 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @SuppressWarnings("unchecked")
-public class Filter extends SuggestBox implements HasFocusHandlers, HasBlurHandlers
+public class Filter extends SuggestBox
 {
 	private static final String DEFAULT_STYLE_NAME = "crux-Filter";
 	private String initialText = null;
@@ -126,7 +124,7 @@ public class Filter extends SuggestBox implements HasFocusHandlers, HasBlurHandl
 	/**
 	 * @see com.google.gwt.event.dom.client.HasFocusHandlers#addFocusHandler(com.google.gwt.event.dom.client.FocusHandler)
 	 */
-	public HandlerRegistration addFocusHandler(FocusHandler handler)
+	private HandlerRegistration addFocusHandler(FocusHandler handler)
 	{
 		return addDomHandler(handler, FocusEvent.getType());
 	}
@@ -134,7 +132,7 @@ public class Filter extends SuggestBox implements HasFocusHandlers, HasBlurHandl
 	/**
 	 * @see com.google.gwt.event.dom.client.HasBlurHandlers#addBlurHandler(com.google.gwt.event.dom.client.BlurHandler)
 	 */
-	public HandlerRegistration addBlurHandler(BlurHandler handler)
+	private HandlerRegistration addBlurHandler(BlurHandler handler)
 	{
 		return addDomHandler(handler, BlurEvent.getType());
 	}

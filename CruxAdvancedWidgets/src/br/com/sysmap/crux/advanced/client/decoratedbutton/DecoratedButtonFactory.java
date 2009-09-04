@@ -18,6 +18,7 @@ package br.com.sysmap.crux.advanced.client.decoratedbutton;
 import br.com.sysmap.crux.basic.client.FocusWidgetFactory;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
 
 import com.google.gwt.dom.client.Element;
 
@@ -26,10 +27,10 @@ import com.google.gwt.dom.client.Element;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @DeclarativeFactory(id="decoratedButton", library="adv")
-public class DecoratedButtonFactory extends FocusWidgetFactory<DecoratedButton>
+public class DecoratedButtonFactory extends FocusWidgetFactory<DecoratedButton> implements HasTextFactory<DecoratedButton>
 {
 	@Override
-	protected DecoratedButton instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public DecoratedButton instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		return new DecoratedButton();
 	}

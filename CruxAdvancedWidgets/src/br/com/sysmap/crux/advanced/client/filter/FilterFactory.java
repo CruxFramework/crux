@@ -16,12 +16,23 @@
 package br.com.sysmap.crux.advanced.client.filter;
 
 import br.com.sysmap.crux.advanced.client.AdvancedWidgetMessages;
-import br.com.sysmap.crux.basic.client.SuggestBoxFactory;
+import br.com.sysmap.crux.advanced.client.dynatabs.DynaTabs;
+import br.com.sysmap.crux.basic.client.CompositeFactory;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllKeyHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasSelectionHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -32,40 +43,66 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @DeclarativeFactory(id="filter", library="adv")
-public class FilterFactory extends SuggestBoxFactory
+public class FilterFactory extends CompositeFactory<Filter> 
+	   implements HasAnimationFactory<Filter>, HasTextFactory<Filter>, 
+	              HasValueChangeHandlersFactory<Filter>, HasSelectionHandlersFactory<Filter>,
+	              HasAllKeyHandlersFactory<Filter>
 {
 	AdvancedWidgetMessages messages = GWT.create(AdvancedWidgetMessages.class);
 	
 	@Override
-	protected Filter instantiateWidget(final Element element, String widgetId) throws InterfaceConfigException
+	public Filter instantiateWidget(final Element element, String widgetId) throws InterfaceConfigException
 	{
-		final Filter filter = new Filter();
-				
+		return new Filter();	
+	}
+	
+	@Override
+	@TagAttributes({
+		@TagAttribute(value="filterable", autoProcess=false),
+		@TagAttribute(value="accessKey", type=Character.class),
+		@TagAttribute(value="autoSelectEnabled", type=Boolean.class),
+		@TagAttribute(value="focus", type=Boolean.class),
+		@TagAttribute(value="limit", type=Integer.class),
+		@TagAttribute("popupStyleName"),
+		@TagAttribute(value="tabIndex", type=Integer.class),
+		@TagAttribute("value")
+	})
+	public void processAttributes(WidgetFactoryContext<Filter> context) throws InterfaceConfigException
+	{
+		final Element element = context.getElement();
+		final Filter widget = context.getWidget();
+
+		super.processAttributes(context);
 		addScreenLoadedHandler(
-			
-			new ScreenLoadHandler()
-			{
-				public void onLoad(ScreenLoadEvent screenLoadEvent)
-				{					
-					String filterableId = element.getAttribute("_filterable");
-					Widget filterableWidget = null;
-					if(filterableId != null)
-					{
-						filterableWidget = Screen.get(filterableId);
-					}
-					
-					if(filterableWidget != null)
-					{
-						filter.setFilterable((Filterable<?>) filterableWidget);
-					}
-					else
-					{
-						throw new RuntimeException(messages.filterableNotFoundWhenInstantiantingFilter(filterableId));
-					}							
-				}				
-			}		
-		);
-		
-		return filter;	
+				new ScreenLoadHandler()
+				{
+					public void onLoad(ScreenLoadEvent screenLoadEvent)
+					{					
+						String filterableId = element.getAttribute("_filterable");
+						Widget filterableWidget = null;
+						if(filterableId != null)
+						{
+							filterableWidget = Screen.get(filterableId);
+						}
+						
+						if(filterableWidget != null)
+						{
+							widget.setFilterable((Filterable<?>) filterableWidget);
+						}
+						else
+						{
+							throw new RuntimeException(messages.filterableNotFoundWhenInstantiantingFilter(filterableId));
+						}							
+					}				
+				}		
+			);
+	}
+	
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onLoadOracle")
+	})
+	public void processEvents(WidgetFactoryContext<Filter> context) throws InterfaceConfigException
+	{
+		super.processEvents(context);		
 	}
 }

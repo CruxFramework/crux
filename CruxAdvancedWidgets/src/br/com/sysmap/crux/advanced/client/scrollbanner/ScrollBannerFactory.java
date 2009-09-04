@@ -17,6 +17,8 @@ package br.com.sysmap.crux.advanced.client.scrollbanner;
 
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
@@ -30,7 +32,7 @@ import com.google.gwt.dom.client.Element;
 public class ScrollBannerFactory extends WidgetFactory<ScrollBanner>
 {
 	@Override
-	protected ScrollBanner instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	public ScrollBanner instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		String period = element.getAttribute("_messageScrollingPeriod");
 		if(period != null && period.trim().length() > 0)
@@ -42,10 +44,20 @@ public class ScrollBannerFactory extends WidgetFactory<ScrollBanner>
 	}
 	
 	@Override
-	protected void processAttributes(ScrollBanner widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="messageScrollingPeriod", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<ScrollBanner> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
+		super.processAttributes(context);
+	}
+	
+	@Override
+	public void processChildren(WidgetFactoryContext<ScrollBanner> context) throws InterfaceConfigException
+	{
+		Element element = context.getElement();
+		ScrollBanner widget = context.getWidget();
+
 		List<Element> children = ensureChildrenSpans(element, true);
 		for (Element child : children)
 		{
