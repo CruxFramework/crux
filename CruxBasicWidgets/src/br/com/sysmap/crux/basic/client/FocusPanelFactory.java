@@ -16,65 +16,77 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEvent;
+import br.com.sysmap.crux.core.client.declarative.TagEvents;
+import br.com.sysmap.crux.core.client.event.bind.BlurEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.FocusEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.KeyDownEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.KeyPressEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.KeyUpEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseDownEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseMoveEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseOutEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseOverEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseUpEvtBind;
+import br.com.sysmap.crux.core.client.event.bind.MouseWheelEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represents a FocusPanelFactory
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="focusPanel", library="bas")
-public class FocusPanelFactory extends SimplePanelFactory
+public class FocusPanelFactory extends PanelFactory<FocusPanel>
 {
 	@Override
-	protected void processEvents(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException 
+	@TagEvents({
+		@TagEvent(ClickEvtBind.class),
+		@TagEvent(FocusEvtBind.class),
+		@TagEvent(BlurEvtBind.class),
+		@TagEvent(KeyUpEvtBind.class),
+		@TagEvent(KeyPressEvtBind.class),
+		@TagEvent(KeyDownEvtBind.class),
+		@TagEvent(MouseDownEvtBind.class),
+		@TagEvent(MouseUpEvtBind.class),
+		@TagEvent(MouseOverEvtBind.class),
+		@TagEvent(MouseOutEvtBind.class),
+		@TagEvent(MouseMoveEvtBind.class),
+		@TagEvent(MouseWheelEvtBind.class)
+	})	
+	public void processEvents(WidgetFactoryContext<FocusPanel> context) throws InterfaceConfigException 
 	{
-		super.processEvents(widget, element, widgetId);
-		FocusPanel focusPanel = (FocusPanel) widget; 
-		
-		FocusEvtBind.bindEvents(element, focusPanel);
-		ClickEvtBind.bindEvent(element, focusPanel);
-		KeyEvtBind.bindEvents(element, focusPanel);
-		MouseEvtBind.bindEvents(element, focusPanel);
-		
+		super.processEvents(context);
 	}
 	
 	@Override
-	protected void processAttributes(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException 
+	@TagAttributes({
+		@TagAttribute(value="tabIndex", type=Integer.class),
+		@TagAttribute(value="accessKey", type=Character.class),
+		@TagAttribute(value="focus", type=Boolean.class)
+	})
+	public void processAttributes(WidgetFactoryContext<FocusPanel> context) throws InterfaceConfigException 
 	{
-		super.processAttributes(widget, element, widgetId);
-		FocusPanel focusPanel = (FocusPanel) widget; 
-
-		String tabIndex = element.getAttribute("_tabIndex");
-		if (tabIndex != null && tabIndex.length() > 0)
-		{
-			focusPanel.setTabIndex(Integer.parseInt(tabIndex));
-		}
-		
-		String accessKey = element.getAttribute("_accessKey");
-		if (accessKey != null && accessKey.length() == 1)
-		{
-			focusPanel.setAccessKey(accessKey.charAt(0));
-		}
-		
-		String focus = element.getAttribute("_focus");
-		if (focus != null && focus.trim().length() > 0)
-		{
-			focusPanel.setFocus(Boolean.parseBoolean(focus));
-		}
+		super.processAttributes(context);
 	}
 	
 	@Override
-	protected FocusPanel instantiateWidget(Element element, String widgetId) 
+	public FocusPanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new FocusPanel();
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 */
+	public void add(FocusPanel parent, Widget child, Element parentElement, Element childElement) 
+	{
+		parent.add(child);
+	}	
 }

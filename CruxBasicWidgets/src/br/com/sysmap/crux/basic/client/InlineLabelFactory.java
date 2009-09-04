@@ -27,10 +27,10 @@ import com.google.gwt.user.client.ui.InlineLabel;
  *
  */
 @DeclarativeFactory(id="inlineLabel", library="bas")
-public class InlineLabelFactory extends LabelFactory
+public class InlineLabelFactory extends AbstractLabelFactory<InlineLabel>
 {
 	@Override
-	protected InlineLabel instantiateWidget(Element element, String widgetId) 
+	public InlineLabel instantiateWidget(Element element, String widgetId) 
 	{
 		return new InlineLabel();
 	}

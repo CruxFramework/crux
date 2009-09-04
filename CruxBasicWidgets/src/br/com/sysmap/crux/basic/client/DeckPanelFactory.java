@@ -16,7 +16,10 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DeckPanel;
@@ -28,36 +31,37 @@ import com.google.gwt.user.client.ui.Widget;
  */
 @DeclarativeFactory(id="deckPanel", library="bas")
 public class DeckPanelFactory extends ComplexPanelFactory<DeckPanel>
+					implements HasAnimationFactory<DeckPanel>
 {
 	/**
 	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
 	 */
 	public void add(DeckPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
 	{
-			parent.add(child);
+		parent.add(child);
 	}
 
 	@Override
-	protected DeckPanel instantiateWidget(Element element, String widgetId) 
+	public DeckPanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new DeckPanel();
 	}
 
 	@Override
-	protected void processAttributes(DeckPanel widget, Element element, String widgetId) throws InterfaceConfigException 
+	@TagAttributes({
+		@TagAttribute(value="visibleWidget", type=Integer.class, autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<DeckPanel> context) throws InterfaceConfigException 
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+		
+		Element element = context.getElement();
+		DeckPanel widget = context.getWidget();
 		
 		String visibleWidget = element.getAttribute("_visibleWidget");
 		if (visibleWidget != null && visibleWidget.length() > 0)
 		{
 			widget.showWidget(Integer.parseInt(visibleWidget));
 		}
-		String animationEnabled = element.getAttribute("_animationEnabled");
-		if (animationEnabled != null && animationEnabled.length() > 0)
-		{
-			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
-		}
-	}
-	
+	}	
 }

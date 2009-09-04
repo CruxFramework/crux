@@ -15,8 +15,12 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.TextBoxBase;
@@ -28,21 +32,23 @@ import com.google.gwt.user.client.ui.TextBoxBase;
  *
  */
 public abstract class TextBoxBaseFactory<T extends TextBoxBase> extends FocusWidgetFactory<T>
+                implements HasValueChangeHandlersFactory<T>, HasNameFactory<T>, HasTextFactory<T>
 {	
+	public static enum TextAlign{center, justify, left, right}
+	
 	@Override
-	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute("value"),
+		@TagAttribute(value="readOnly", type=Boolean.class),
+		@TagAttribute(value="textAlignment", type=TextAlign.class, autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		String value = element.getAttribute("_value");
-		if (value != null && value.length() > 0)
-		{
-			widget.setValue(value);
-		}
-		String readOnly = element.getAttribute("_readOnly");
-		if (readOnly != null && readOnly.length() > 0)
-		{
-			widget.setReadOnly(Boolean.parseBoolean(readOnly));
-		}
+		super.processAttributes(context);
+
+		Element element = context.getElement();
+		T widget = context.getWidget();
+		
 		String textAlignment = element.getAttribute("_textAlignment");
 		if (textAlignment != null)
 		{
@@ -64,11 +70,4 @@ public abstract class TextBoxBaseFactory<T extends TextBoxBase> extends FocusWid
 			} 
 		}
 	}
-	
-	@Override
-	protected void processEvents(T widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		ChangeEvtBind.bindValueEvent(element, widget);
-		super.processEvents(widget, element, widgetId);
-	}	
 }

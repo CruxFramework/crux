@@ -29,7 +29,7 @@ public class GridFactory extends HTMLTableFactory<Grid>
 {
 
 	@Override
-	protected Grid instantiateWidget(Element element, String widgetId)
+	public Grid instantiateWidget(Element element, String widgetId)
 	{
 		return new Grid();
 	}

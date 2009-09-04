@@ -16,19 +16,26 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasCloseHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represents a DecoratedPopupPanelFactory
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="decoratedPopupPanel", library="bas")
-public class DecoratedPopupPanelFactory extends PopupPanelFactory 
+public class DecoratedPopupPanelFactory extends PanelFactory<DecoratedPopupPanel>
+             implements HasAnimationFactory<DecoratedPopupPanel>, HasCloseHandlersFactory<DecoratedPopupPanel>
 {
 	@Override
-	protected DecoratedPopupPanel instantiateWidget(Element element, String widgetId) 
+	public DecoratedPopupPanel instantiateWidget(Element element, String widgetId) 
 	{
 		String autoHideStr = element.getAttribute("_autoHide");
 		boolean autoHide = false;
@@ -44,5 +51,21 @@ public class DecoratedPopupPanelFactory extends PopupPanelFactory
 		}
 
 		return new DecoratedPopupPanel(autoHide, modal);
+	}
+	
+	@Override
+	@TagAttributes({
+		@TagAttribute(value="autoHide", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="modal", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="previewAllNativeEvents", type=Boolean.class)
+	})
+	public void processAttributes(WidgetFactoryContext<DecoratedPopupPanel> context) throws InterfaceConfigException
+	{
+		super.processAttributes(context);
+	}
+	
+	public void add(DecoratedPopupPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
+	{
+		parent.add(child);
 	}
 }

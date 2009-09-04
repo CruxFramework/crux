@@ -25,10 +25,10 @@ import com.google.gwt.user.client.ui.DecoratedTabPanel;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
 @DeclarativeFactory(id="decoratedTabPanel", library="bas")
-public class DecoratedTabPanelFactory extends TabPanelFactory
+public class DecoratedTabPanelFactory extends AbstractTabPanelFactory<DecoratedTabPanel>
 {
 	@Override
-	protected DecoratedTabPanel instantiateWidget(Element element, String widgetId) 
+	public DecoratedTabPanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new DecoratedTabPanel();
 	}

@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -33,7 +35,7 @@ public class HorizontalPanelFactory extends CellPanelFactory<HorizontalPanel>
 {
 
 	@Override
-	protected HorizontalPanel instantiateWidget(Element element, String widgetId)
+	public HorizontalPanel instantiateWidget(Element element, String widgetId)
 	{
 		return new HorizontalPanel();
 	}
@@ -46,9 +48,17 @@ public class HorizontalPanelFactory extends CellPanelFactory<HorizontalPanel>
 	}
 	
 	@Override
-	protected void processAttributes(HorizontalPanel widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="horizontalAlignment", autoProcess=false),
+		@TagAttribute(value="verticalAlignment", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<HorizontalPanel> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+		
+		Element element = context.getElement();
+		HorizontalPanel widget = context.getWidget();
+		
 		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");
 		if (cellHorizontalAlignment != null && cellHorizontalAlignment.trim().length() > 0)
 		{

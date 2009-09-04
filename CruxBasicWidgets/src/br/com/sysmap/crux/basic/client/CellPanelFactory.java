@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -84,25 +86,16 @@ public abstract class CellPanelFactory <T extends CellPanel> extends ComplexPane
 			{
 				parent.setCellWidth(child, cellWidth);
 			}
-			
 		}
 	}
 	
 	@Override
-	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="borderWidth",type=Integer.class),
+		@TagAttribute(value="spacing",type=Integer.class)
+	})
+	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-
-		String borderWidth = element.getAttribute("_borderWidth");
-		if (borderWidth != null && borderWidth.length() > 0)
-		{
-			widget.setBorderWidth(Integer.parseInt(borderWidth));
-		}
-	
-		String spacing = element.getAttribute("_spacing");
-		if (spacing != null && spacing.length() > 0)
-		{
-			widget.setSpacing(Integer.parseInt(spacing));
-		}
+		super.processAttributes(context);
 	}
 }

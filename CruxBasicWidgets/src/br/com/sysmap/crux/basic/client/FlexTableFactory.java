@@ -29,7 +29,7 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 {
 
 	@Override
-	protected FlexTable instantiateWidget(Element element, String widgetId)
+	public FlexTable instantiateWidget(Element element, String widgetId)
 	{
 		return new FlexTable();
 	}

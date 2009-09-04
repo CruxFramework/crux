@@ -31,7 +31,7 @@ public class AbsolutePanelFactory extends ComplexPanelFactory<AbsolutePanel>
 {
 
 	@Override
-	protected AbsolutePanel instantiateWidget(Element element, String widgetId)
+	public AbsolutePanel instantiateWidget(Element element, String widgetId)
 	{
 		return new AbsolutePanel();
 	}

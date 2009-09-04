@@ -15,14 +15,15 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.FocusEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllFocusHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllKeyHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllMouseHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FocusWidget;
 
 /**
@@ -32,55 +33,22 @@ import com.google.gwt.user.client.ui.FocusWidget;
  *
  */
 public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetFactory<T> 
+             implements HasClickHandlersFactory<T>, HasAllFocusHandlersFactory<T>, HasAllKeyHandlersFactory<T>,
+             HasAllMouseHandlersFactory<T>
 {
 	/**
 	 * Process widget attributes
 	 * @throws InterfaceConfigException 
-	 * @see #DeclarativeFactory.processAttributes
 	 */
 	@Override
-	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="tabIndex", type=Integer.class),
+		@TagAttribute(value="enabled", type=Boolean.class),
+		@TagAttribute(value="accessKey", type=Character.class),
+		@TagAttribute(value="focus", type=Boolean.class)
+	})
+	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-				
-		String tabIndex = element.getAttribute("_tabIndex");
-		if (tabIndex != null && tabIndex.length() > 0)
-		{
-			widget.setTabIndex(Integer.parseInt(tabIndex));
-		}
-		
-		String enabled = element.getAttribute("_enabled");
-		if (enabled != null && enabled.length() > 0)
-		{
-			widget.setEnabled(Boolean.parseBoolean(enabled));
-		}
-		
-		String accessKey = element.getAttribute("_accessKey");
-		if (accessKey != null && accessKey.length() == 1)
-		{
-			widget.setAccessKey(accessKey.charAt(0));
-		}
-		
-		String focus = element.getAttribute("_focus");
-		if (focus != null && focus.trim().length() > 0)
-		{
-			widget.setFocus(Boolean.parseBoolean(focus));
-		}
-	}
-
-	/**
-	 * Render component events
-	 * @throws InterfaceConfigException 
-	 * @see #DeclarativeFactory.attachEvents
-	 */
-	@Override
-	protected void processEvents(T widget, Element element, String widgetId) throws InterfaceConfigException
-	{	 
-		super.processEvents(widget, element, widgetId);
-
-		FocusEvtBind.bindEvents(element, widget);
-		ClickEvtBind.bindEvent(element, widget);
-		KeyEvtBind.bindEvents(element, widget);
-		MouseEvtBind.bindEvents(element, widget);
+		super.processAttributes(context);
 	}
 }

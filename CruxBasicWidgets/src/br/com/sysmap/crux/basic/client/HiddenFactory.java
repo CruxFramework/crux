@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
@@ -29,26 +31,18 @@ import com.google.gwt.user.client.ui.Hidden;
 @DeclarativeFactory(id="hidden", library="bas")
 public class HiddenFactory extends WidgetFactory<Hidden> 
 {
-
 	@Override
-	protected void processAttributes(Hidden widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute("name"),
+		@TagAttribute("value")
+	})
+	public void processAttributes(WidgetFactoryContext<Hidden> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-
-		String name = element.getAttribute("_name");
-		if (name != null && name.length() > 0)
-		{
-			widget.setName(name);
-		}
-		String value = element.getAttribute("_value");
-		if (value != null && value.length() > 0)
-		{
-			widget.setValue(value);
-		}
+		super.processAttributes(context);
 	}
 
 	@Override
-	protected Hidden instantiateWidget(Element element, String widgetId) 
+	public Hidden instantiateWidget(Element element, String widgetId) 
 	{
 		return new Hidden();
 	}

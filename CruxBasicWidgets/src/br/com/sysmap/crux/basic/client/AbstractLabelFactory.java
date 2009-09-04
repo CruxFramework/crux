@@ -15,43 +15,40 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllMouseHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasDirectionFactory;
-import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasWordWrapFactory;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.Label;
 
 /**
- * Represents an AnchorFactory component
+ * Represents a LabelFactory DeclarativeFactory
  * @author Thiago Bustamante
+ *
  */
-@DeclarativeFactory(id="anchor", library="bas")
-public class AnchorFactory extends FocusWidgetFactory<Anchor> 
-	   implements HasTextFactory<Anchor>, HasNameFactory<Anchor>, 
-	              HasWordWrapFactory<Anchor>, HasDirectionFactory<Anchor>
+public abstract class AbstractLabelFactory<T extends Label> extends WidgetFactory<T> 
+       implements HasDirectionFactory<T>, HasWordWrapFactory<T>, HasTextFactory<T>,
+                  HasClickHandlersFactory<T>, HasAllMouseHandlersFactory<T>
 {
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="horizontalAlignment", autoProcess=false),
-		@TagAttribute(value="verticalAlignment", autoProcess=false),
-		@TagAttribute("href"),
-		@TagAttribute("target")
+		@TagAttribute(value="horizontalAlignment", autoProcess=false)
 	})
-	public void processAttributes(WidgetFactoryContext<Anchor> context) throws InterfaceConfigException
+	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
-
-		Element element = context.getElement();
-		Anchor widget = context.getWidget();
 		
+		Element element = context.getElement();
+		T widget = context.getWidget();
+
 		String horizontalAlignment = element.getAttribute("_horizontalAlignment");
 		if (horizontalAlignment != null && horizontalAlignment.trim().length() > 0)
 		{
@@ -72,18 +69,5 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			}
 		}
-		
-		String innerHtml = element.getInnerHTML();
-		String text = element.getAttribute("_text");
-		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
-		{
-			((HasHTML)widget).setHTML(innerHtml);
-		}		
 	}
-
-	@Override
-	public Anchor instantiateWidget(Element element, String widgetId) 
-	{
-		return new Anchor();
-	}	
 }

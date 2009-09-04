@@ -18,9 +18,11 @@ package br.com.sysmap.crux.basic.client;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.CustomButton;
+import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.CustomButton.Face;
 
@@ -29,6 +31,7 @@ import com.google.gwt.user.client.ui.CustomButton.Face;
  * @author Thiago Bustamante
  */
 public abstract class CustomButtonFactory<T extends CustomButton> extends FocusWidgetFactory<T> 
+			implements HasTextFactory<T>
 {
 	public static final String FACE_DOWN_DISABLED = "downDisabled";
 	public static final String FACE_UP_DISABLED = "upDisabled";
@@ -46,11 +49,31 @@ public abstract class CustomButtonFactory<T extends CustomButton> extends FocusW
 	/**
 	 * Render component attributes
 	 * @throws InterfaceConfigException 
-	 * @see #DeclarativeFactory.processAttributes
 	 */
-	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
+	@Override
+	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+
+		Element element = context.getElement();
+		T widget = context.getWidget();
+		
+		String innerHtml = element.getInnerHTML();
+		String text = element.getAttribute("_text");
+		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
+		{
+			((HasHTML)widget).setHTML(innerHtml);
+		}
+	}		
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException
+	{
+		Element element = context.getElement();
+		T widget = context.getWidget();
 		
 		List<Element> facesCandidates = ensureChildrenSpans(element, true);
 		

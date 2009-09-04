@@ -16,37 +16,49 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasHTML;
-import com.google.gwt.user.client.ui.InlineHTML;
-
 
 /**
- * Represents an InlineHTMLFactory DeclarativeFactory
+ * CheckBoxFactory DeclarativeFactory.
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="inlineHTML", library="bas")
-public class InlineHTMLFactory extends AbstractLabelFactory<InlineHTML>
+@DeclarativeFactory(id="checkBox", library="bas")
+public abstract class AbstractCheckBoxFactory<T extends CheckBox> extends FocusWidgetFactory<T> 
+       implements HasNameFactory<T>, HasValueChangeHandlersFactory<T>, HasTextFactory<T>
 {
+	/**
+	 * process widget attributes
+	 * @throws InterfaceConfigException 
+	 */
 	@Override
-	public InlineHTML instantiateWidget(Element element, String widgetId) 
-	{
-		return new InlineHTML();
-	}
-	
-	@Override
-	public void processAttributes(WidgetFactoryContext<InlineHTML> context) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="checked", type=Boolean.class, autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
 		
 		Element element = context.getElement();
-		InlineHTML widget = context.getWidget();
+		T widget = context.getWidget();
+
+		String checked = element.getAttribute("_checked");
+		if (checked != null && checked.trim().length() > 0)
+		{
+			widget.setValue(Boolean.parseBoolean(checked));
+		}
 
 		String innerHtml = element.getInnerHTML();
-		String text = element.getAttribute("_text");
+		String text = element.getAttribute("_text");		
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{
 			((HasHTML)widget).setHTML(innerHtml);

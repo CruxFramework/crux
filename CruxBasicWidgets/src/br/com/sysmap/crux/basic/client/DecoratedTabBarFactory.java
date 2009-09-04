@@ -19,17 +19,16 @@ import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DecoratedTabBar;
-import com.google.gwt.user.client.ui.TabBar;
 
 /**
  * Factory for DecoratedTabBar widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
 @DeclarativeFactory(id="decoratedTabBar", library="bas")
-public class DecoratedTabBarFactory extends TabBarFactory
+public class DecoratedTabBarFactory extends AbstractTabBarFactory<DecoratedTabBar>
 {
 	@Override
-	protected TabBar instantiateWidget(Element element, String widgetId) 
+	public DecoratedTabBar instantiateWidget(Element element, String widgetId) 
 	{
 		return new DecoratedTabBar();
 	}

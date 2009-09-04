@@ -19,6 +19,7 @@ import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /**
@@ -26,11 +27,19 @@ import com.google.gwt.user.client.ui.DecoratorPanel;
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="decoratorPanel", library="bas")
-public class DecoratorPanelFactory extends SimplePanelFactory
+public class DecoratorPanelFactory extends PanelFactory<DecoratorPanel>
 {
 	@Override
-	protected DecoratorPanel instantiateWidget(Element element, String widgetId) 
+	public DecoratorPanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new DecoratorPanel();
 	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 */
+	public void add(DecoratorPanel parent, Widget child, Element parentElement, Element childElement) 
+	{
+		parent.add(child);
+	}	
 }

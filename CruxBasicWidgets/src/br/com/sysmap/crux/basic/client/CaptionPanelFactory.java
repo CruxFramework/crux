@@ -18,6 +18,8 @@ package br.com.sysmap.crux.basic.client;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
@@ -33,15 +35,19 @@ import com.google.gwt.user.client.ui.Widget;
 public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implements HasWidgetsFactory<CaptionPanel>
 {
 	@Override
-	protected void processAttributes(CaptionPanel widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute("captionText")
+	})
+	public void processAttributes(WidgetFactoryContext<CaptionPanel> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
-		String captionText = element.getAttribute("_text");
-		if (captionText != null && captionText.length() > 0)
-		{
-			widget.setCaptionText(captionText);
-		}
+		super.processAttributes(context);
+	}
+	
+	@Override
+	public void processChildren(WidgetFactoryContext<CaptionPanel> context) throws InterfaceConfigException
+	{
+		Element element = context.getElement();
+		CaptionPanel widget = context.getWidget();
 
 		List<Element> children = ensureChildrenSpans(element, true);
 		
@@ -62,7 +68,7 @@ public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implemen
 	}
 	
 	@Override
-	protected CaptionPanel instantiateWidget(Element element, String widgetId) 
+	public CaptionPanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new CaptionPanel();
 	}

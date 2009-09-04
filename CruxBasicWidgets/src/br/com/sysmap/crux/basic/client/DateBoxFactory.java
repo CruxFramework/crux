@@ -19,11 +19,13 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
-import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -38,34 +40,25 @@ import com.google.gwt.user.datepicker.client.DateBox.Format;
  */
 @DeclarativeFactory(id="dateBox", library="bas")
 public class DateBoxFactory extends CompositeFactory<DateBox> 
+       implements HasValueChangeHandlersFactory<DateBox>
 {
 
 	@Override
-	protected void processAttributes(final DateBox widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="tabIndex", type=Integer.class),
+		@TagAttribute(value="enabled", type=Boolean.class),
+		@TagAttribute(value="accessKey", type=Character.class),
+		@TagAttribute(value="focus", type=Boolean.class),
+		@TagAttribute(value="value", type=Date.class, autoProcess=false),
+		@TagAttribute(value="reportFormatError", type=Boolean.class, autoProcess=false)
+	})
+	public void processAttributes(final WidgetFactoryContext<DateBox> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
-		String tabIndex = element.getAttribute("_tabIndex");
-		if (tabIndex != null && tabIndex.length() > 0)
-		{
-			widget.setTabIndex(Integer.parseInt(tabIndex));
-		}
-		String enabled = element.getAttribute("_enabled");
-		if (enabled != null && enabled.length() > 0)
-		{
-			widget.setEnabled(Boolean.parseBoolean(enabled));
-		}
-		String accessKey = element.getAttribute("_accessKey");
-		if (accessKey != null && accessKey.length() == 1)
-		{
-			widget.setAccessKey(accessKey.charAt(0));
-		}
-		String focus = element.getAttribute("_focus");
-		if (focus != null && focus.trim().length() > 0)
-		{
-			widget.setFocus(Boolean.parseBoolean(focus));
-		}
+		super.processAttributes(context);
 
+		Element element = context.getElement();
+		DateBox widget = context.getWidget();
+		
 		String value = element.getAttribute("_value");
 		if (value != null && value.length() > 0)
 		{
@@ -82,7 +75,7 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 	}
 	
 	@Override
-	protected DateBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
+	public DateBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
 	{
 		List<Element> children = ensureChildrenSpans(element, true);
 		if (children.size() > 0)
@@ -137,13 +130,5 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 		}
 		
 		return format;
-	}
-	
-	@Override
-	protected void processEvents(DateBox widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		super.processEvents(widget, element, widgetId);
-		
-		ChangeEvtBind.bindValueEvent(element, widget);
 	}
 }

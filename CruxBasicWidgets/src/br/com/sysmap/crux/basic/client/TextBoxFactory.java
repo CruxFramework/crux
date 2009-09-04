@@ -16,10 +16,12 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasDirectionFactory;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -27,32 +29,21 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="textBox", library="bas")
-public class TextBoxFactory extends TextBoxBaseFactory<TextBox>
+public class TextBoxFactory extends TextBoxBaseFactory<TextBox> 
+       implements HasDirectionFactory<TextBox>
 {	
 	@Override
-	protected void processAttributes(TextBox widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="maxLength", type=Integer.class),
+		@TagAttribute(value="visibleLength", type=Integer.class)
+	})
+	public void processAttributes(WidgetFactoryContext<TextBox> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-
-		String direction = element.getAttribute("_direction");
-		if (direction != null && direction.length() > 0)
-		{
-			widget.setDirection(Direction.valueOf(direction));
-		}
-		String maxLength = element.getAttribute("_maxLength");
-		if (maxLength != null && maxLength.length() > 0)
-		{
-			widget.setMaxLength(Integer.parseInt(maxLength));
-		}
-		String visibleLength = element.getAttribute("_visibleLength");
-		if (visibleLength != null && visibleLength.length() > 0)
-		{
-			widget.setVisibleLength(Integer.parseInt(visibleLength));
-		}	
+		super.processAttributes(context);
 	}
 
 	@Override
-	protected TextBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
+	public TextBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
 	{
 		return new TextBox();
 	}

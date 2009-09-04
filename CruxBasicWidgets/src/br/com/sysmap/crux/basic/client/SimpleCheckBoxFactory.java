@@ -16,7 +16,10 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.SimpleCheckBox;
@@ -27,21 +30,19 @@ import com.google.gwt.user.client.ui.SimpleCheckBox;
  *
  */
 @DeclarativeFactory(id="simpleCheckBox", library="bas")
-public class SimpleCheckBoxFactory extends FocusWidgetFactory<SimpleCheckBox>
+public class SimpleCheckBoxFactory extends FocusWidgetFactory<SimpleCheckBox> implements HasNameFactory<SimpleCheckBox>
 {
 	@Override
-	protected void processAttributes(SimpleCheckBox widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute("checked")
+	})
+	public void processAttributes(WidgetFactoryContext<SimpleCheckBox> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		String checked = element.getAttribute("_checked");
-		if (checked != null && checked.trim().length() > 0)
-		{
-			widget.setChecked(Boolean.parseBoolean(checked));
-		}
+		super.processAttributes(context);
 	}
 
 	@Override
-	protected SimpleCheckBox instantiateWidget(Element element, String widgetId) 
+	public SimpleCheckBox instantiateWidget(Element element, String widgetId) 
 	{
 		return new SimpleCheckBox();
 	}

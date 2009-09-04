@@ -16,10 +16,12 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasDirectionFactory;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.user.client.ui.TextArea;
 
 
@@ -30,33 +32,22 @@ import com.google.gwt.user.client.ui.TextArea;
  *
  */
 @DeclarativeFactory(id="textArea", library="bas")
-public class TextAreaFactory extends TextBoxBaseFactory<TextArea>
+public class TextAreaFactory extends TextBoxBaseFactory<TextArea> 
+       implements HasDirectionFactory<TextArea>
 {
 	
 	@Override
-	protected void processAttributes(TextArea widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="characterWidth", type=Integer.class),
+		@TagAttribute(value="visibleLines", type=Integer.class)
+	})
+	public void processAttributes(WidgetFactoryContext<TextArea> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-
-		String characterWidth = element.getAttribute("_characterWidth");
-		if (characterWidth != null && characterWidth.trim().length() > 0)
-		{
-			widget.setCharacterWidth(Integer.parseInt(characterWidth));
-		}
-		String direction = element.getAttribute("_direction");
-		if (direction != null && direction.trim().length() > 0)
-		{
-			widget.setDirection(Direction.valueOf(direction));
-		}
-		String visibleLines = element.getAttribute("_visibleLines");
-		if (visibleLines != null && visibleLines.trim().length() > 0)
-		{
-			widget.setVisibleLines(Integer.parseInt(visibleLines));
-		}
+		super.processAttributes(context);
 	}
 
 	@Override
-	protected TextArea instantiateWidget(Element element, String widgetId) 
+	public TextArea instantiateWidget(Element element, String widgetId) 
 	{
 		return new TextArea();
 	}

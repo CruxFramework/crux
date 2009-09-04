@@ -18,13 +18,18 @@ package br.com.sysmap.crux.basic.client;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
-import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
-import br.com.sysmap.crux.core.client.event.bind.OpenEvtBind;
 import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasCloseHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasOpenHandlersFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -37,37 +42,37 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @DeclarativeFactory(id="disclosurePanel", library="bas")
-public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> implements HasWidgetsFactory<DisclosurePanel>
+public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> 
+       implements HasWidgetsFactory<DisclosurePanel>, HasAnimationFactory<DisclosurePanel>, 
+                  HasOpenHandlersFactory<DisclosurePanel>, HasCloseHandlersFactory<DisclosurePanel>
 {
 	protected BasicMessages messages = GWT.create(BasicMessages.class);
 	
 	@Override
-	protected void processAttributes(DisclosurePanel widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="open", type=Boolean.class),
+		@TagAttribute(value="headerText", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
-		String open = element.getAttribute("_open");
-		if (open != null && open.trim().length() > 0)
-		{
-			widget.setOpen(Boolean.parseBoolean(open));
-		}
-		
-		String animationEnabled = element.getAttribute("_animationEnabled");
-		if (animationEnabled != null && animationEnabled.trim().length() > 0)
-		{
-			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
-		}
-		
-		addChildWidgets(widget, element);
+		super.processAttributes(context);
 	}
 
-	/**
-	 * @param widget
-	 * @param element
-	 * @throws InterfaceConfigException
-	 */
-	private void addChildWidgets(DisclosurePanel widget, Element element) throws InterfaceConfigException
+	@Override
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onLoadImage")
+	})
+	public void processEvents(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException
 	{
+		super.processEvents(context);
+	}
+
+	@Override
+	public void processChildren(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException
+	{
+		Element element = context.getElement();
+		DisclosurePanel widget = context.getWidget();
+		
 		List<Element> childSpans = ensureChildrenSpans(element, true);
 		
 		if(childSpans.size() <= 2)
@@ -105,7 +110,7 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> im
 	}
 	
 	@Override
-	protected DisclosurePanel instantiateWidget(Element element, String widgetId) 
+	public DisclosurePanel instantiateWidget(Element element, String widgetId) 
 	{
 		String headerText = element.getAttribute("_headerText");
 		Event eventLoadImages = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
@@ -126,13 +131,5 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> im
 	public void add(DisclosurePanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
 	{
 		// nothing to do here
-	}
-	
-	@Override
-	protected void processEvents(DisclosurePanel widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		super.processEvents(widget, element, widgetId);
-		CloseEvtBind.bindEvent(element, widget);
-		OpenEvtBind.bindEvent(element, widget);
 	}
 }

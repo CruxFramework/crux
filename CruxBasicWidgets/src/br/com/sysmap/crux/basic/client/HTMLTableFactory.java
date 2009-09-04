@@ -18,8 +18,10 @@ package br.com.sysmap.crux.basic.client;
 
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -33,6 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactory<T>
+       implements HasClickHandlersFactory<T>
 {
 	protected BasicMessages messages = GWT.create(BasicMessages.class);
 	
@@ -44,53 +47,35 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		// Does not need to add the child because it was already attached in processAttributes method
 	}
 	
-	@Override
-	protected void processEvents(T widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		super.processEvents(widget, element, widgetId);
-
-		ClickEvtBind.bindEvent(element, widget);		
-	}
 	
 	@Override
-	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="borderWidth",type=Integer.class),
+		@TagAttribute(value="cellPadding",type=Integer.class),
+		@TagAttribute(value="cellSpacing",type=Integer.class)
+	})
+	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-
-		String borderWidth = element.getAttribute("_borderWidth");
-		if (borderWidth != null && borderWidth.length() > 0)
-		{
-			widget.setBorderWidth(Integer.parseInt(borderWidth));
-		}
-	
-		String cellPadding = element.getAttribute("_cellPadding");
-		if (cellPadding != null && cellPadding.length() > 0)
-		{
-			widget.setCellPadding(Integer.parseInt(cellPadding));
-		}
-		
-		String cellSpacing = element.getAttribute("_cellSpacing");
-		if (cellSpacing != null && cellSpacing.length() > 0)
-		{
-			widget.setCellSpacing(Integer.parseInt(cellSpacing));
-		}
-
-		renderRows(widget, element, widgetId);		
+		super.processAttributes(context);
 	}
-
+	
 	/**
 	 * Populate the panel with declared items
 	 * @param element
 	 * @throws InterfaceConfigException 
 	 */
-	protected void renderRows(T widget, Element element, String widgetId) throws InterfaceConfigException
+	@Override
+	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
+		Element element = context.getElement();
+		T widget = context.getWidget();
+		
 		List<Element> itensCandidates = ensureChildrenSpans(element, true);
 		int validRows = 0;
 		for (int i=0; i<itensCandidates.size(); i++)
 		{
 			Element e = (Element)itensCandidates.get(i);
-			renderRow(widget, e, validRows, widgetId);
+			renderRow(widget, e, validRows, context.getWidgetId());
 			processAttributesForRow(widget, e, validRows);
 			validRows++;
 		}

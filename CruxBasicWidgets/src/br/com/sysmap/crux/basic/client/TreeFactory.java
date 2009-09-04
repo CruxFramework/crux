@@ -18,18 +18,23 @@ package br.com.sysmap.crux.basic.client;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
-import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
-import br.com.sysmap.crux.core.client.event.bind.FocusEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.OpenEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
 import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllFocusHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllKeyHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllMouseHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasCloseHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasOpenHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasSelectionHandlersFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -43,11 +48,16 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="tree", library="bas")
-public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactory<Tree>
+public class TreeFactory extends WidgetFactory<Tree> 
+       implements HasWidgetsFactory<Tree>, HasAnimationFactory<Tree>, HasAllFocusHandlersFactory<Tree>,
+                  HasOpenHandlersFactory<Tree>, HasCloseHandlersFactory<Tree>, 
+                  HasAllMouseHandlersFactory<Tree>, HasAllKeyHandlersFactory<Tree>,
+                  HasSelectionHandlersFactory<Tree>
 {
 	protected BasicMessages messages = GWT.create(BasicMessages.class);
 	
-	protected Tree instantiateWidget(Element element, String widgetId) 
+	@Override
+	public Tree instantiateWidget(Element element, String widgetId) 
 	{
 		Event eventLoadImage = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
 		if (eventLoadImage != null)
@@ -68,9 +78,19 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 	}
 	
 	@Override
-	protected void processAttributes(Tree widget, Element element, String widgetId) throws InterfaceConfigException 
+	@TagAttributes({
+		@TagAttribute(value="useLeafImages", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="openSelectedItem", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="tabIndex", type=Integer.class),
+		@TagAttribute(value="accessKey", type=Character.class),
+		@TagAttribute(value="focus", type=Boolean.class)
+	})
+	public void processAttributes(WidgetFactoryContext<Tree> context) throws InterfaceConfigException 
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+		
+		Element element = context.getElement();
+		Tree widget = context.getWidget();
 		
 		String openSelectedItem = element.getAttribute("_openSelectedItem");
 		if (openSelectedItem != null && openSelectedItem.length() > 0)
@@ -80,55 +100,24 @@ public class TreeFactory extends WidgetFactory<Tree> implements HasWidgetsFactor
 				widget.ensureSelectedItemVisible();
 			}
 		}
-		
-		String tabIndex = element.getAttribute("_tabIndex");
-		if (tabIndex != null && tabIndex.length() > 0)
-		{
-			widget.setTabIndex(Integer.parseInt(tabIndex));
-		}
+	}
 
-		String accessKey = element.getAttribute("_accessKey");
-		if (accessKey != null && accessKey.length() == 1)
-		{
-			widget.setAccessKey(accessKey.charAt(0));
-		}
-		
-		String focus = element.getAttribute("_focus");
-		if (focus != null && focus.trim().length() > 0)
-		{
-			widget.setFocus(Boolean.parseBoolean(focus));
-		}
-		
-		String animationEnabled = element.getAttribute("_animationEnabled");
-		if (animationEnabled != null && animationEnabled.length() > 0)
-		{
-			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
-		}
-		
-		processTreeItens(widget, element);
+	@Override
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onLoadImage")
+	})
+	public void processEvents(WidgetFactoryContext<Tree> context) throws InterfaceConfigException
+	{
+		// TODO Auto-generated method stub
+		super.processEvents(context);
 	}
 	
 	@Override
-	protected void processEvents(Tree widget, Element element, String widgetId) throws InterfaceConfigException
+	public void processChildren(WidgetFactoryContext<Tree> context) throws InterfaceConfigException
 	{
-		super.processEvents(widget, element, widgetId);
-		
-		FocusEvtBind.bindEvents(element, widget);
-		OpenEvtBind.bindEvent(element, widget);
-		CloseEvtBind.bindEvent(element, widget);
-		MouseEvtBind.bindEvents(element, widget);
-		KeyEvtBind.bindEvents(element, widget);
-		SelectionEvtBind.bindEvent(element, widget);
-	}
+		Element element = context.getElement();
+		Tree widget = context.getWidget();
 
-	
-	/**
-	 * Populate the tree with declared items
-	 * @param element
-	 * @throws InterfaceConfigException 
-	 */
-	protected void processTreeItens(Tree widget, Element element) throws InterfaceConfigException
-	{
 		List<Element> itens = ensureChildrenSpans(element, true);
 		for (Element e : itens)
 		{

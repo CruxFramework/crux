@@ -16,12 +16,15 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasCloseHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /**
@@ -30,11 +33,12 @@ import com.google.gwt.user.client.ui.SimplePanel;
  *
  */
 @DeclarativeFactory(id="popupPanel", library="bas")
-public class PopupPanelFactory extends SimplePanelFactory
+public class PopupPanelFactory extends PanelFactory<PopupPanel>
+       implements HasAnimationFactory<PopupPanel>, HasCloseHandlersFactory<PopupPanel>
 {
 
 	@Override
-	protected PopupPanel instantiateWidget(Element element, String widgetId) 
+	public PopupPanel instantiateWidget(Element element, String widgetId) 
 	{
 		String autoHideStr = element.getAttribute("_autoHide");
 		boolean autoHide = false;
@@ -53,31 +57,18 @@ public class PopupPanelFactory extends SimplePanelFactory
 	}
 	
 	@Override
-	protected void processAttributes(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="previewAllNativeEvents", type=Boolean.class),
+		@TagAttribute(value="modal", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="autoHide", type=Boolean.class, autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<PopupPanel> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
-		PopupPanel popupPanel = (PopupPanel)widget;
-		String animationEnabled = element.getAttribute("_animationEnabled");
-		if (animationEnabled != null && animationEnabled.length() > 0)
-		{
-			popupPanel.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
-		}
-		String previewAllNativeEvents = element.getAttribute("_previewAllNativeEvents");
-		if (previewAllNativeEvents != null && previewAllNativeEvents.length() > 0)
-		{
-			popupPanel.setPreviewingAllNativeEvents(Boolean.parseBoolean(previewAllNativeEvents));
-		}
-		
+		super.processAttributes(context);
 	}
 	
-	
-	@Override
-	protected void processEvents(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException
+	public void add(PopupPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
 	{
-		super.processEvents(widget, element, widgetId);
-		
-		PopupPanel popupPanel = (PopupPanel)widget;
-		CloseEvtBind.bindEvent(element, popupPanel);
+		parent.add(child);
 	}
 }

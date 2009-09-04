@@ -30,7 +30,7 @@ public class FileUploadFactory extends WidgetFactory<FileUpload>
 {
 
 	@Override
-	protected FileUpload instantiateWidget(Element element, String widgetId) 
+	public FileUpload instantiateWidget(Element element, String widgetId) 
 	{
 		return new FileUpload();
 	}

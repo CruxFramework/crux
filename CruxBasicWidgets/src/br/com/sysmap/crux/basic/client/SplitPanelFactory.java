@@ -30,21 +30,16 @@ import com.google.gwt.user.client.ui.Panel;
 public abstract class SplitPanelFactory <T extends Panel> extends PanelFactory<T>
 {
 	protected BasicMessages messages = GWT.create(BasicMessages.class);
-
-	@Override
-	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException 
-	{
-		super.processAttributes(widget, element, widgetId);
-		renderSplitItens(widget, element);
-	}
 	
 	/**
 	 * Render internal widgets
-	 * @param element
-	 * @throws InterfaceConfigException
 	 */
-	protected void renderSplitItens(T widget, Element element) throws InterfaceConfigException
+	@Override
+	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
+		Element element = context.getElement();
+		T widget = context.getWidget();
+		
 		List<Element> itensCandidates = ensureChildrenSpans(element, false);
 		for (int i=0; i<itensCandidates.size(); i++)
 		{

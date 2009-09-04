@@ -18,10 +18,11 @@ package br.com.sysmap.crux.basic.client;
 import java.util.Date;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.HighlightEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.ShowRangeEvtBind;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasShowRangeHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.datepicker.client.DatePicker;
@@ -32,11 +33,19 @@ import com.google.gwt.user.datepicker.client.DatePicker;
  */
 @DeclarativeFactory(id="datePicker", library="bas")
 public class DatePickerFactory extends CompositeFactory<DatePicker> 
+       implements HasValueChangeHandlersFactory<DatePicker>, HasShowRangeHandlersFactory<DatePicker>
 {
 	@Override
-	protected void processAttributes(final DatePicker widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="value", type=Date.class, autoProcess=false),
+		@TagAttribute(value="datePattern", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<DatePicker> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+		
+		Element element = context.getElement();
+		DatePicker widget = context.getWidget();
 		
 		String value = element.getAttribute("_value");
 		if (value != null && value.length() > 0)
@@ -52,18 +61,8 @@ public class DatePickerFactory extends CompositeFactory<DatePicker>
 	}
 	
 	@Override
-	protected DatePicker instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
+	public DatePicker instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
 	{
 		return new DatePicker();
-	}
-	
-	@Override
-	protected void processEvents(DatePicker widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		super.processEvents(widget, element, widgetId);
-		
-		ChangeEvtBind.bindValueEvent(element, widget);
-		HighlightEvtBind.bindEvent(element, widget);
-		ShowRangeEvtBind.bindEvent(element, widget);
 	}
 }

@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -32,21 +34,18 @@ public class ToggleButtonFactory extends CustomButtonFactory<ToggleButton>
 	/**
 	 * Render component attributes
 	 * @throws InterfaceConfigException 
-	 * @see #DeclarativeFactory.renderAttributes
 	 */
-	protected void processAttributes(ToggleButton widget, Element element, String widgetId) throws InterfaceConfigException
+	@Override
+	@TagAttributes({
+		@TagAttribute(value="down", type=Boolean.class)
+	})
+	public void processAttributes(WidgetFactoryContext<ToggleButton> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-
-		String down = element.getAttribute("_down");
-		if (down != null && down.trim().length() > 0)
-		{
-			widget.setDown(Boolean.parseBoolean(down));
-		}
+		super.processAttributes(context);
 	}
 
 	@Override
-	protected ToggleButton instantiateWidget(Element element, String widgetId) 
+	public ToggleButton instantiateWidget(Element element, String widgetId) 
 	{
 		return new ToggleButton();
 	}

@@ -25,11 +25,11 @@ import com.google.gwt.user.client.ui.DecoratedStackPanel;
  *
  */
 @DeclarativeFactory(id="decoratedStackPanel", library="bas")
-public class DecoratedStackPanelFactory extends StackPanelFactory
+public class DecoratedStackPanelFactory extends AbstractStackPanelFactory<DecoratedStackPanel>
 {
 
 	@Override
-	protected DecoratedStackPanel instantiateWidget(Element element, String widgetId) 
+	public DecoratedStackPanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new DecoratedStackPanel();
 	}

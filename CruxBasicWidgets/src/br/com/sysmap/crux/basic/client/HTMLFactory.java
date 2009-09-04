@@ -21,7 +21,6 @@ import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
-import com.google.gwt.user.client.ui.Label;
 
 
 /**
@@ -30,18 +29,21 @@ import com.google.gwt.user.client.ui.Label;
  *
  */
 @DeclarativeFactory(id="HTML", library="bas")
-public class HTMLFactory extends LabelFactory
+public class HTMLFactory extends AbstractLabelFactory<HTML>
 {
 	@Override
-	protected HTML instantiateWidget(Element element, String widgetId) 
+	public HTML instantiateWidget(Element element, String widgetId) 
 	{
 		return new HTML();
 	}
 	
 	@Override
-	protected void processAttributes(Label widget, Element element, String widgetId) throws InterfaceConfigException
+	public void processAttributes(WidgetFactoryContext<HTML> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+		
+		Element element = context.getElement();
+		HTML widget = context.getWidget();
 
 		String innerHtml = element.getInnerHTML();
 		String text = element.getAttribute("_text");

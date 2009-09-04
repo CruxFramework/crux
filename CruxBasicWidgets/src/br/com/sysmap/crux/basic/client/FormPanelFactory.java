@@ -16,6 +16,10 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
@@ -23,53 +27,48 @@ import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 
 /**
  * Represents a FormPanelFactory.
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="formPanel", library="bas")
-public class FormPanelFactory extends SimplePanelFactory
+public class FormPanelFactory extends PanelFactory<FormPanel>
 {
 	
 	@Override
-	protected void processAttributes(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException 
+	@TagAttributes({
+		@TagAttribute("method"),
+		@TagAttribute("encoding"),
+		@TagAttribute("action"),
+		@TagAttribute(value="target", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<FormPanel> context) throws InterfaceConfigException 
 	{
-		super.processAttributes(widget, element, widgetId);
-		FormPanel formPanel = (FormPanel)widget;
-		
-		String method = element.getAttribute("_method");
-		if (method != null && method.length() > 0)
-		{
-			formPanel.setMethod(method);
-		}
-		String encoding = element.getAttribute("_encoding");
-		if (encoding != null && encoding.length() > 0)
-		{
-			formPanel.setEncoding(encoding);
-		}
-		String action = element.getAttribute("_action");
-		if (action != null && action.length() > 0)
-		{
-			formPanel.setAction(action);
-		}
+		super.processAttributes(context);
 	}
 	
 	@Override
-	protected void processEvents(SimplePanel widget, Element element, final String widgetId) throws InterfaceConfigException 
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onSubmitComplete"),
+		@TagEventDeclaration("onSubmit")
+	})
+	public void processEvents(WidgetFactoryContext<FormPanel> context) throws InterfaceConfigException 
 	{
-		super.processEvents(widget, element, widgetId);
-		FormPanel formPanel = (FormPanel)widget;
+		super.processEvents(context);
+		
+		Element element = context.getElement();
+		FormPanel widget = context.getWidget();
 		
 		final Event eventSubmitComplete = EvtBind.getWidgetEvent(element, Events.EVENT_SUBMIT_COMPLETE);
 		if (eventSubmitComplete != null)
 		{
-			formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler()
+			widget.addSubmitCompleteHandler(new SubmitCompleteHandler()
 			{
 				public void onSubmitComplete(SubmitCompleteEvent event) 
 				{
@@ -81,7 +80,7 @@ public class FormPanelFactory extends SimplePanelFactory
 		final Event eventSubmit = EvtBind.getWidgetEvent(element, Events.EVENT_SUBMIT);
 		if (eventSubmitComplete != null)
 		{
-			formPanel.addSubmitHandler(new SubmitHandler()
+			widget.addSubmitHandler(new SubmitHandler()
 			{
 				public void onSubmit(SubmitEvent event) 
 				{
@@ -92,7 +91,7 @@ public class FormPanelFactory extends SimplePanelFactory
 	}
 	
 	@Override
-	protected FormPanel instantiateWidget(Element element, String widgetId) 
+	public FormPanel instantiateWidget(Element element, String widgetId) 
 	{
 		String target = element.getAttribute("_target");
 		if (target != null && target.length() >0)
@@ -103,5 +102,13 @@ public class FormPanelFactory extends SimplePanelFactory
 		{
 			return new FormPanel();
 		}
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 */
+	public void add(FormPanel parent, Widget child, Element parentElement, Element childElement) 
+	{
+		parent.add(child);
 	}
 }

@@ -16,22 +16,27 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasCloseHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHTML;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  */
 @DeclarativeFactory(id="dialogBox", library="bas")
-public class DialogBoxFactory extends DecoratedPopupPanelFactory 
+public class DialogBoxFactory extends PanelFactory<DialogBox>
+       implements HasAnimationFactory<DialogBox>, HasCloseHandlersFactory<DialogBox> 
 {
 	@Override
-	protected DialogBox instantiateWidget(Element element, String widgetId) 
+	public DialogBox instantiateWidget(Element element, String widgetId) 
 	{
 		String autoHideStr = element.getAttribute("_autoHide");
 		boolean autoHide = false;
@@ -50,9 +55,17 @@ public class DialogBoxFactory extends DecoratedPopupPanelFactory
 	}
 	
 	@Override
-	protected void processAttributes(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="autoHide", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="modal", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="previewAllNativeEvents", type=Boolean.class)
+	})
+	public void processAttributes(WidgetFactoryContext<DialogBox> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+		
+		Element element = context.getElement();
+		DialogBox widget = context.getWidget();
 
 		String innerHtml = element.getInnerHTML();
 		String text = element.getAttribute("_text");
@@ -61,4 +74,8 @@ public class DialogBoxFactory extends DecoratedPopupPanelFactory
 			((HasHTML)widget).setHTML(innerHtml);
 		}
 	}
-}
+	
+	public void add(DialogBox parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
+	{
+		parent.add(child);
+	}}

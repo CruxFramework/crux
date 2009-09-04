@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class SimplePanelFactory extends PanelFactory<SimplePanel>
 {
 	@Override
-	protected SimplePanel instantiateWidget(Element element, String widgetId) 
+	public SimplePanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new SimplePanel();
 	}

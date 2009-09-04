@@ -18,12 +18,19 @@ package br.com.sysmap.crux.basic.client;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEvent;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEvents;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -36,6 +43,7 @@ import com.google.gwt.user.client.ui.MenuBar.MenuBarImages;
  */
 @DeclarativeFactory(id="menuBar", library="bas")
 public class MenuBarFactory extends WidgetFactory<MenuBar> 
+       implements HasAnimationFactory<MenuBar>
 {
 	public static final String ITEM_TYPE_HTML = "html";
 	public static final String ITEM_TYPE_SEPARATOR = "separator";
@@ -44,7 +52,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	protected BasicMessages messages = GWT.create(BasicMessages.class);
 	
 	@Override
-	protected MenuBar instantiateWidget(Element element, String widgetId) 
+	public MenuBar instantiateWidget(Element element, String widgetId) 
 	{
 		String verticalStr = element.getAttribute("_vertical");
 		boolean vertical = false;
@@ -64,45 +72,39 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	}
 	
 	@Override
-	protected void processAttributes(MenuBar widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="autoOpen", type=Boolean.class),
+		@TagAttribute(value="vertical", type=Boolean.class, autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<MenuBar> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
-		String autoOpen = element.getAttribute("_autoOpen");
-		if (autoOpen != null && autoOpen.length() > 0)
-		{
-			widget.setAutoOpen(Boolean.parseBoolean(autoOpen));
-		}
-		
-		String animationEnabled = element.getAttribute("_animationEnabled");
-		if (animationEnabled != null && animationEnabled.length() > 0)
-		{
-			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
-		}
-		
-		processMenuItens(widget, widgetId, element);
+		super.processAttributes(context);		
 	}
 	
 	@Override
-	protected void processEvents(MenuBar widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagEvents({
+		@TagEvent(CloseEvtBind.class)
+	})
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onLoadImage")
+	})
+	public void processEvents(WidgetFactoryContext<MenuBar> context) throws InterfaceConfigException
 	{
-		super.processEvents(widget, element, widgetId);
-		
-		CloseEvtBind.bindEvent(element, widget);
+		super.processEvents(context);
 	}
 
-	/**
-	 * Populate the menuBar with declared itens
-	 * @param element
-	 * @throws InterfaceConfigException 
-	 */
-	protected void processMenuItens(MenuBar widget, String widgetId, Element element) throws InterfaceConfigException
+	@Override
+	public void processChildren(WidgetFactoryContext<MenuBar> context) throws InterfaceConfigException
 	{
+		Element element = context.getElement();
+		MenuBar widget = context.getWidget();
+		
 		List<Element> itensCandidates = ensureChildrenSpans(element, true);
 		for (int i=0; i<itensCandidates.size(); i++)
 		{
 			Element e = (Element)itensCandidates.get(i);
 			String type = e.getAttribute("_itemType");
+			String widgetId = context.getWidgetId();
 			
 			if (type == null || type.length() == 0)
 			{

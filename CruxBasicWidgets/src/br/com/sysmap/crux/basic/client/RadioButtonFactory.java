@@ -26,10 +26,10 @@ import com.google.gwt.user.client.ui.RadioButton;
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="radioButton", library="bas")
-public class RadioButtonFactory extends CheckBoxFactory
+public class RadioButtonFactory extends AbstractCheckBoxFactory<RadioButton>
 {
 	@Override
-	protected RadioButton instantiateWidget(Element element, String widgetId) 
+	public RadioButton instantiateWidget(Element element, String widgetId) 
 	{
 		return new RadioButton(element.getAttribute("_name"));
 	}

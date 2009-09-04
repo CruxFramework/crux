@@ -16,11 +16,16 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEvent;
+import br.com.sysmap.crux.core.client.declarative.TagEvents;
+import br.com.sysmap.crux.core.client.event.bind.LoadErrorEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.LoadEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.MouseEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllMouseHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Image;
@@ -30,18 +35,23 @@ import com.google.gwt.user.client.ui.Image;
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="image", library="bas")
-public class ImageFactory extends WidgetFactory<Image>
+public class ImageFactory extends WidgetFactory<Image> 
+	   implements HasClickHandlersFactory<Image>, HasAllMouseHandlersFactory<Image>
 {
 	@Override
-	protected void processAttributes(Image widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute("url"),
+		@TagAttribute(value="leftRect", autoProcess=false),
+		@TagAttribute(value="topRect", autoProcess=false),
+		@TagAttribute(value="widthRect", autoProcess=false),
+		@TagAttribute(value="heightRect", autoProcess=false)
+	})	
+	public void processAttributes(WidgetFactoryContext<Image> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-
-		String url = element.getAttribute("_url");
-		if (url != null && url.length() > 0)
-		{
-			widget.setUrl(url);
-		}
+		super.processAttributes(context);
+		
+		Element element = context.getElement();
+		Image widget = context.getWidget();
 
 		String leftStr = element.getAttribute("_leftRect");
 		String topStr = element.getAttribute("_topRect");
@@ -56,18 +66,17 @@ public class ImageFactory extends WidgetFactory<Image>
 	}
 	
 	@Override
-	protected void processEvents(Image widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagEvents({
+		@TagEvent(LoadEvtBind.class),
+		@TagEvent(LoadErrorEvtBind.class)
+	})
+	public void processEvents(WidgetFactoryContext<Image> context) throws InterfaceConfigException
 	{
-		super.processEvents(widget, element, widgetId);
-
-		ClickEvtBind.bindEvent(element, widget);
-		MouseEvtBind.bindEvents(element, widget);
-		LoadEvtBind.bindLoadEvent(element, widget);
-		LoadEvtBind.bindErrorEvent(element, widget);
+		super.processEvents(context);
 	}
 
 	@Override
-	protected Image instantiateWidget(Element element, String widgetId) 
+	public Image instantiateWidget(Element element, String widgetId) 
 	{
 		return new Image();
 	}

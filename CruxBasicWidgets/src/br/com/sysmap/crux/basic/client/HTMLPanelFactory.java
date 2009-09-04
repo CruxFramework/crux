@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel>
 {
 	@Override
-	protected HTMLPanel instantiateWidget(Element element, String widgetId) 
+	public HTMLPanel instantiateWidget(Element element, String widgetId) 
 	{
 		String innerHTML = element.getInnerHTML();
 		element.setInnerHTML("");

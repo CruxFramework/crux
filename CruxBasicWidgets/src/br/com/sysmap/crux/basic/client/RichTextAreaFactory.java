@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
@@ -40,15 +42,32 @@ import com.google.gwt.user.client.ui.RichTextArea.Justification;
 public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 {
 	@Override
-	protected RichTextArea instantiateWidget(Element element, String widgetId) 
+	public RichTextArea instantiateWidget(Element element, String widgetId) 
 	{
 		return new RichTextArea();
 	}
 	
 	@Override
-	protected void processAttributes(final RichTextArea widget, Element element, String widgetId) throws InterfaceConfigException 
+	@TagAttributes({
+		@TagAttribute(value="backColor", autoProcess=false),
+		@TagAttribute(value="fontName", autoProcess=false),
+		@TagAttribute(value="fontSize", type=Integer.class, autoProcess=false),
+		@TagAttribute(value="foreColor", autoProcess=false),
+		@TagAttribute(value="justification", autoProcess=false),
+		@TagAttribute(value="bold", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="italic", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="subscript", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="superscript", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="underline", type=Boolean.class, autoProcess=false),
+		@TagAttribute(value="strikethrough", type=Boolean.class, autoProcess=false)
+	})
+	public void processAttributes(final WidgetFactoryContext<RichTextArea> context) throws InterfaceConfigException 
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+		
+		Element element = context.getElement();
+		final RichTextArea widget = context.getWidget();
+		
 		final Map<String, String> declaredProperties = readDeclaredProperties(element);
 
 		// We need to give UI thread time to render the textArea before try to focus it

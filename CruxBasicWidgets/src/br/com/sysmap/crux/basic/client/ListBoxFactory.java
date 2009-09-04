@@ -16,8 +16,10 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasChangeHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
@@ -28,10 +30,11 @@ import com.google.gwt.user.client.ui.ListBox;
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="listBox", library="bas")
-public class ListBoxFactory extends FocusWidgetFactory<ListBox>
+public class ListBoxFactory extends FocusWidgetFactory<ListBox> 
+       implements HasChangeHandlersFactory<ListBox>
 {
 	@Override
-	protected ListBox instantiateWidget(Element element, String widgetId) 
+	public ListBox instantiateWidget(Element element, String widgetId) 
 	{
 		String multiple = element.getAttribute("_multiple");
 		if (multiple != null && multiple.trim().length() > 0)
@@ -43,27 +46,21 @@ public class ListBoxFactory extends FocusWidgetFactory<ListBox>
 	}
 	
 	@Override
-	protected void processAttributes(ListBox widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="visibleItemCount", type=Integer.class),
+		@TagAttribute(value="multiple", type=Boolean.class, autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<ListBox> context) throws InterfaceConfigException
 	{
-		renderListItens(widget, element);
-				
-		String visibleItemCount = element.getAttribute("_visibleItemCount");
-		if (visibleItemCount != null && visibleItemCount.trim().length() > 0)
-		{
-			widget.setVisibleItemCount(Integer.parseInt(visibleItemCount));
-
-		}
-
-		super.processAttributes(widget, element, widgetId);
-
+		super.processAttributes(context);
 	}
-	
-	/**
-	 * Populate the listBox with declared itens
-	 * @param element
-	 */
-	protected void renderListItens(ListBox widget, Element element)
+
+	@Override
+	public void processChildren(WidgetFactoryContext<ListBox> context) throws InterfaceConfigException
 	{
+		Element element = context.getElement();
+		ListBox widget = context.getWidget();
+		
 		NodeList<Element> itensCandidates = element.getElementsByTagName("span");
 		for (int i=0; i<itensCandidates.getLength(); i++)
 		{
@@ -72,7 +69,6 @@ public class ListBoxFactory extends FocusWidgetFactory<ListBox>
 				processItemDeclaration(widget, itensCandidates.getItem(i), i);
 			}
 		}
-		
 	}
 
 	/**
@@ -112,13 +108,5 @@ public class ListBoxFactory extends FocusWidgetFactory<ListBox>
 		{
 			widget.setItemSelected(index, Boolean.parseBoolean(selected));
 		}
-	}
-		
-	@Override
-	protected void processEvents(ListBox widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		super.processEvents(widget, element, widgetId);
-		
-		ChangeEvtBind.bindEvent(element, widget);
 	}
 }

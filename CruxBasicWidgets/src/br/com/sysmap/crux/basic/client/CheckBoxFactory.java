@@ -16,7 +16,8 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -29,17 +30,23 @@ import com.google.gwt.user.client.ui.HasHTML;
  *
  */
 @DeclarativeFactory(id="checkBox", library="bas")
-public class CheckBoxFactory extends FocusWidgetFactory<CheckBox> 
+public class CheckBoxFactory extends AbstractCheckBoxFactory<CheckBox>
 {
 	/**
 	 * process widget attributes
 	 * @throws InterfaceConfigException 
-	 * @see #DeclarativeFactory.processAttributes
 	 */
 	@Override
-	protected void processAttributes(CheckBox widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="checked", type=Boolean.class, autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<CheckBox> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+		
+		Element element = context.getElement();
+		CheckBox widget = context.getWidget();
+
 		String checked = element.getAttribute("_checked");
 		if (checked != null && checked.trim().length() > 0)
 		{
@@ -55,14 +62,7 @@ public class CheckBoxFactory extends FocusWidgetFactory<CheckBox>
 	}
 	
 	@Override
-	protected void processEvents(CheckBox widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		super.processEvents(widget, element, widgetId);
-		ChangeEvtBind.bindValueEvent(element, widget);
-	}
-
-	@Override
-	protected CheckBox instantiateWidget(Element element, String widgetId) 
+	public CheckBox instantiateWidget(Element element, String widgetId) 
 	{
 		return new CheckBox();
 	}

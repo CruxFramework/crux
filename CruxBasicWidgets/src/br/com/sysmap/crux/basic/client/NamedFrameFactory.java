@@ -16,6 +16,10 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.NamedFrame;
@@ -27,11 +31,21 @@ import com.google.gwt.user.client.ui.NamedFrame;
  *
  */
 @DeclarativeFactory(id="namedFrame", library="bas")
-public class NamedFrameFactory extends FrameFactory
+public class NamedFrameFactory extends WidgetFactory<NamedFrame>
 {
 	@Override
-	protected NamedFrame instantiateWidget(Element element, String widgetId) 
+	public NamedFrame instantiateWidget(Element element, String widgetId) 
 	{
 		return new NamedFrame(element.getAttribute("_name"));
+	}
+	
+	@Override
+	@TagAttributes({
+		@TagAttribute(value="name", autoProcess=false),
+		@TagAttribute("url")
+	})
+	public void processAttributes(WidgetFactoryContext<NamedFrame> context) throws InterfaceConfigException
+	{
+		super.processAttributes(context);
 	}
 }

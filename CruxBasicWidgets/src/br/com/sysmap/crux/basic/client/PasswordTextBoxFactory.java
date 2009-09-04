@@ -16,6 +16,10 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasDirectionFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -26,10 +30,21 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
  *
  */
 @DeclarativeFactory(id="passwordTextBox", library="bas")
-public class PasswordTextBoxFactory extends TextBoxFactory 
+public class PasswordTextBoxFactory extends TextBoxBaseFactory<PasswordTextBox> 
+       implements HasDirectionFactory<PasswordTextBox>  
 {
 	@Override
-	protected PasswordTextBox instantiateWidget(Element element, String widgetId) 
+	@TagAttributes({
+		@TagAttribute(value="maxLength", type=Integer.class),
+		@TagAttribute(value="visibleLength", type=Integer.class)
+	})
+	public void processAttributes(WidgetFactoryContext<PasswordTextBox> context) throws InterfaceConfigException
+	{
+		super.processAttributes(context);
+	}
+	
+	@Override
+	public PasswordTextBox instantiateWidget(Element element, String widgetId) 
 	{
 		return new PasswordTextBox();
 	}

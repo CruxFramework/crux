@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
@@ -30,19 +32,16 @@ import com.google.gwt.user.client.ui.Frame;
 public class FrameFactory extends WidgetFactory<Frame>
 {
 	@Override
-	protected void processAttributes(Frame widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute("url")
+	})
+	public void processAttributes(WidgetFactoryContext<Frame> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-
-		String url = element.getAttribute("_url");
-		if (url != null && url.length() > 0)
-		{
-			widget.setUrl(url);
-		}
+		super.processAttributes(context);
 	}
 
 	@Override
-	protected Frame instantiateWidget(Element element, String widgetId) 
+	public Frame instantiateWidget(Element element, String widgetId) 
 	{
 		return new Frame();
 	}	

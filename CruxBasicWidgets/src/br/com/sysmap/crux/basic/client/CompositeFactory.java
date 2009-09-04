@@ -20,7 +20,7 @@ import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- * Represents an ImageFactory component
+ * Factory for a composite widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public abstract class CompositeFactory<T extends Composite> extends WidgetFactory<T>

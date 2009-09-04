@@ -28,11 +28,9 @@ import com.google.gwt.user.client.ui.PushButton;
 @DeclarativeFactory(id="pushButton", library="bas")
 public class PushButtonFactory extends CustomButtonFactory<PushButton> 
 {
-
 	@Override
-	protected PushButton instantiateWidget(Element element, String widgetId) 
+	public PushButton instantiateWidget(Element element, String widgetId) 
 	{
 		return new PushButton();
 	}
-
 }

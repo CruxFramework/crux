@@ -16,13 +16,19 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
-import br.com.sysmap.crux.core.client.event.bind.ChangeEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
-import br.com.sysmap.crux.core.client.event.bind.KeyEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.SelectionEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasAllKeyHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasSelectionHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.SuggestBox;
@@ -33,70 +39,28 @@ import com.google.gwt.user.client.ui.SuggestOracle;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @DeclarativeFactory(id="suggestBox", library="bas")
-public class SuggestBoxFactory extends CompositeFactory<SuggestBox>
+public class SuggestBoxFactory extends CompositeFactory<SuggestBox> 
+       implements HasAnimationFactory<SuggestBox>, HasTextFactory<SuggestBox>, 
+                  HasValueChangeHandlersFactory<SuggestBox>, HasSelectionHandlersFactory<SuggestBox>,
+                  HasAllKeyHandlersFactory<SuggestBox>
 {
 	@Override
-	protected void processAttributes(SuggestBox widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="accessKey", type=Character.class),
+		@TagAttribute(value="autoSelectEnabled", type=Boolean.class),
+		@TagAttribute(value="focus", type=Boolean.class),
+		@TagAttribute(value="limit", type=Integer.class),
+		@TagAttribute("popupStyleName"),
+		@TagAttribute(value="tabIndex", type=Integer.class),
+		@TagAttribute("value")
+	})
+	public void processAttributes(WidgetFactoryContext<SuggestBox> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
-		
-		String accessKey = element.getAttribute("_accessKey");
-		if (accessKey != null && accessKey.length() == 1)
-		{
-			widget.setAccessKey(accessKey.charAt(0));
-		}
-		
-		String animationEnabled = element.getAttribute("_animationEnabled");
-		if (animationEnabled != null && animationEnabled.trim().length() > 0)
-		{
-			widget.setAnimationEnabled(Boolean.parseBoolean(animationEnabled));
-		}
-		
-		String autoSelectEnabled = element.getAttribute("_autoSelectEnabled");
-		if (autoSelectEnabled != null && autoSelectEnabled.trim().length() > 0)
-		{
-			widget.setAutoSelectEnabled(Boolean.parseBoolean(autoSelectEnabled));
-		}
-		
-		String focus = element.getAttribute("_focus");
-		if (focus != null && focus.trim().length() > 0)
-		{
-			widget.setFocus(Boolean.parseBoolean(focus));
-		}
-		
-		String limit = element.getAttribute("_limit");
-		if (limit != null && limit.trim().length() > 0)
-		{
-			widget.setLimit(Integer.parseInt(limit));
-		}
-		
-		String popupStyleName = element.getAttribute("_popupStyleName");
-		if (popupStyleName != null && popupStyleName.trim().length() > 0)
-		{
-			widget.setPopupStyleName(popupStyleName);
-		}
-		
-		String tabIndex = element.getAttribute("_tabIndex");
-		if (tabIndex != null && tabIndex.length() > 0)
-		{
-			widget.setTabIndex(Integer.parseInt(tabIndex));
-		}
-		
-		String text = element.getAttribute("_text");
-		if (text != null && text.length() > 0)
-		{
-			widget.setText(text);
-		}
-		
-		String value = element.getAttribute("_value");
-		if (value != null && value.length() > 0)
-		{
-			widget.setValue(value);
-		}
+		super.processAttributes(context);
 	}
 	
 	@Override
-	protected SuggestBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
+	public SuggestBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
 	{
 		Event eventLoadOracle = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_ORACLE);
 		
@@ -111,12 +75,11 @@ public class SuggestBoxFactory extends CompositeFactory<SuggestBox>
 	}
 	
 	@Override
-	protected void processEvents(SuggestBox widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onLoadOracle")
+	})
+	public void processEvents(WidgetFactoryContext<SuggestBox> context) throws InterfaceConfigException
 	{
-		super.processEvents(widget, element, widgetId);
-		
-		ChangeEvtBind.bindValueEvent(element, widget);
-		SelectionEvtBind.bindEvent(element, widget);
-		KeyEvtBind.bindEvents(element, widget);		
+		super.processEvents(context);		
 	}
 }

@@ -16,6 +16,10 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.SimpleRadioButton;
@@ -26,10 +30,19 @@ import com.google.gwt.user.client.ui.SimpleRadioButton;
  *
  */
 @DeclarativeFactory(id="simpleRadioButton", library="bas")
-public class SimpleRadioButtonFactory extends SimpleCheckBoxFactory
+public class SimpleRadioButtonFactory extends FocusWidgetFactory<SimpleRadioButton> implements HasNameFactory<SimpleRadioButton>
 {
 	@Override
-	protected SimpleRadioButton instantiateWidget(Element element, String widgetId) 
+	@TagAttributes({
+		@TagAttribute("checked")
+	})
+	public void processAttributes(WidgetFactoryContext<SimpleRadioButton> context) throws InterfaceConfigException
+	{
+		super.processAttributes(context);
+	}
+	
+	@Override
+	public SimpleRadioButton instantiateWidget(Element element, String widgetId) 
 	{
 		return new SimpleRadioButton(element.getAttribute("_name"));
 	}

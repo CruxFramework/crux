@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class FlowPanelFactory extends ComplexPanelFactory<FlowPanel>
 {
 	@Override
-	protected FlowPanel instantiateWidget(Element element, String widgetId) 
+	public FlowPanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new FlowPanel();
 	}

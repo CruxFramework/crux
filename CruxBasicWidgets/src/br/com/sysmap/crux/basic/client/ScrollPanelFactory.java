@@ -16,16 +16,17 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.event.bind.ScrollEvtBind;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
+import br.com.sysmap.crux.core.client.screen.factory.HasScrollHandlersFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -33,38 +34,45 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="scrollPanel", library="bas")
-public class ScrollPanelFactory extends SimplePanelFactory 
+public class ScrollPanelFactory extends PanelFactory<ScrollPanel> 
+       implements HasScrollHandlersFactory<ScrollPanel>
 {
 	protected BasicMessages messages = GWT.create(BasicMessages.class);
 
+	public static enum VerticalScrollPosition{top,bottom};
+	public static enum HorizontalScrollPosition{left,right};
+
 	@Override
-	protected SimplePanel instantiateWidget(Element element, String widgetId) 
+	public ScrollPanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new ScrollPanel();
 	}
 	
 	@Override
-	protected void processAttributes(SimplePanel widget, Element element, final String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="alwaysShowScrollBars", type=Boolean.class),
+		@TagAttribute(value="verticalScrollPosition", type=VerticalScrollPosition.class, autoProcess=false),
+		@TagAttribute(value="horizontalScrollPosition", type=HorizontalScrollPosition.class, autoProcess=false),
+		@TagAttribute(value="ensureVisible", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<ScrollPanel> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
 		
-		final ScrollPanel scrollPanel = (ScrollPanel)widget; 
+		Element element = context.getElement();
+		final ScrollPanel widget = context.getWidget();
+		final String widgetId = context.getWidgetId();
 		
-		String alwaysShowScrollBars = element.getAttribute("_alwaysShowScrollBars");
-		if (alwaysShowScrollBars != null && alwaysShowScrollBars.length() > 0)
-		{
-			scrollPanel.setAlwaysShowScrollBars(Boolean.parseBoolean(alwaysShowScrollBars));
-		}
 		String verticalScrollPosition = element.getAttribute("_verticalScrollPosition");
 		if (verticalScrollPosition != null && verticalScrollPosition.length() > 0)
 		{
 			if ("top".equals(verticalScrollPosition))
 			{
-				scrollPanel.scrollToTop();
+				widget.scrollToTop();
 			}
 			else if ("bottom".equals(verticalScrollPosition))
 			{
-				scrollPanel.scrollToBottom();
+				widget.scrollToBottom();
 			}
 		}
 		String horizontalScrollPosition = element.getAttribute("_horizontalScrollPosition");
@@ -72,11 +80,11 @@ public class ScrollPanelFactory extends SimplePanelFactory
 		{
 			if ("left".equals(horizontalScrollPosition))
 			{
-				scrollPanel.scrollToLeft();
+				widget.scrollToLeft();
 			}
 			else if ("right".equals(horizontalScrollPosition))
 			{
-				scrollPanel.scrollToRight();
+				widget.scrollToRight();
 			}
 		}
 	
@@ -92,19 +100,17 @@ public class ScrollPanelFactory extends SimplePanelFactory
 					{
 						throw new NullPointerException(messages.scrollPanelWidgetNotFound(widgetId, ensureVisible));
 					}
-					scrollPanel.ensureVisible(c);
+					widget.ensureVisible(c);
 				}
 			});
 		}
 	}
-	
-	@Override
-	protected void processEvents(SimplePanel widget, Element element, String widgetId) throws InterfaceConfigException
-	{
-		super.processEvents(widget, element, widgetId);
-	
-		final ScrollPanel scrollPanel = (ScrollPanel)widget; 
-		ScrollEvtBind.bindEvent(element, scrollPanel);
-	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 */
+	public void add(ScrollPanel parent, Widget child, Element parentElement, Element childElement) 
+	{
+		parent.add(child);
+	}
 }

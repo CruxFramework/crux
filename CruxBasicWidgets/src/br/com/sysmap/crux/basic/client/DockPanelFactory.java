@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.core.client.GWT;
@@ -35,7 +37,7 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 	protected BasicMessages messages = GWT.create(BasicMessages.class);
 
 	@Override
-	protected DockPanel instantiateWidget(Element element, String widgetId)
+	public DockPanel instantiateWidget(Element element, String widgetId)
 	{
 		return new DockPanel();
 	}
@@ -90,9 +92,18 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 	}
 	
 	@Override
-	protected void processAttributes(DockPanel widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute(value="horizontalAlignment", autoProcess=false),
+		@TagAttribute(value="verticalAlignment", autoProcess=false),
+		@TagAttribute(value="direction", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<DockPanel> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+		
+		Element element = context.getElement();
+		DockPanel widget = context.getWidget();
+		
 		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");
 		if (cellHorizontalAlignment != null && cellHorizontalAlignment.trim().length() > 0)
 		{
@@ -129,7 +140,6 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 			{
 				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 			}
-		}	
-		
+		}			
 	}
 }

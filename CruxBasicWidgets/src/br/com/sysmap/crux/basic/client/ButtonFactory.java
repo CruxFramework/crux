@@ -17,6 +17,7 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Button;
@@ -27,19 +28,22 @@ import com.google.gwt.user.client.ui.HasHTML;
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="button", library="bas")
-public class ButtonFactory extends FocusWidgetFactory<Button>
+public class ButtonFactory extends FocusWidgetFactory<Button> implements HasTextFactory<Button>
 {
 
 	@Override
-	protected Button instantiateWidget(Element element, String widgetId) 
+	public Button instantiateWidget(Element element, String widgetId) 
 	{
 		return new Button();
 	}
 	
 	@Override
-	protected void processAttributes(Button widget, Element element, String widgetId) throws InterfaceConfigException
+	public void processAttributes(WidgetFactoryContext<Button> context) throws InterfaceConfigException
 	{
-		super.processAttributes(widget, element, widgetId);
+		super.processAttributes(context);
+
+		Element element = context.getElement();
+		Button widget = context.getWidget();
 
 		String innerHtml = element.getInnerHTML();
 		String text = element.getAttribute("_text");
@@ -47,6 +51,5 @@ public class ButtonFactory extends FocusWidgetFactory<Button>
 		{
 			((HasHTML)widget).setHTML(innerHtml);
 		}
-
 	}
 }
