@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * Grid for data rendering
+ * A paged sortable data grid
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> implements Pageable {	
@@ -49,10 +49,13 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	private RowSelectionModel rowSelectionModel;
 	
 	/**
-	 * Constructor
-	 * @param columnDefinitions
-	 * @param pageSize
-	 * @param rowSelectionModel
+	 * Full constructor
+	 * @param columnDefinitions the columns to be rendered
+	 * @param pageSize the number of rows per page
+	 * @param rowSelection the behavior of the grid about line selection
+	 * @param cellSpacing the space between the cells
+	 * @param autoLoadData if <code>true</code>, when a data source is set, its first page records are fetched and rendered. 
+	 * 	If <code>false</code>, the method <code>loadData()</code> must be invoked for rendering the first page.
 	 */
 	public PagedDataGrid(DataColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData)
 	{
@@ -64,7 +67,7 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	}
 	
 	/**
-	 * Sets the data source, forcing re-rendering
+	 * Sets the data source and re-renders the grid
 	 * @param dataSource
 	 */
 	public void setDataSource(EditablePagedDataSource dataSource)
