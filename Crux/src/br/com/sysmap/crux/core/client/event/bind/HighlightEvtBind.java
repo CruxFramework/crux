@@ -28,21 +28,35 @@ import com.google.gwt.event.logical.shared.HighlightHandler;
  * @author Thiago Bustamante
  *
  */
-public class HighlightEvtBind extends EvtBind
+public class HighlightEvtBind implements EvtBinder<HasHighlightHandlers<?>>
 {
-	public static <V> void bindEvent(Element element, HasHighlightHandlers<V> widget)
+	private static final String EVENT_NAME = "onHighlight";
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#bindEvent(com.google.gwt.dom.client.Element, com.google.gwt.event.shared.HasHandlers)
+	 */
+	@SuppressWarnings("unchecked")
+	public void bindEvent(Element element, HasHighlightHandlers<?> widget)
 	{
-		final Event eventHighlight = EvtBind.getWidgetEvent(element, "_onhighlight");
+		final Event eventHighlight = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventHighlight != null)
 		{
-			widget.addHighlightHandler(new HighlightHandler<V>()
+			widget.addHighlightHandler(new HighlightHandler()
 			{
-				public void onHighlight(HighlightEvent<V> event)
+				public void onHighlight(HighlightEvent event)
 				{
 					Events.callEvent(eventHighlight, event);
 				}
 			});
 		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}
 
 }

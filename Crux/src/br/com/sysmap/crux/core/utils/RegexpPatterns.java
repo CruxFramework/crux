@@ -25,5 +25,6 @@ public class RegexpPatterns {
     public static final Pattern REGEXP_SLASH = Pattern.compile("/");
     public static final Pattern REGEXP_COMMA = Pattern.compile(",");
     public static final Pattern REGEXP_INVALID_HTML_CHARS = Pattern.compile("[<>\\&\\\"\\']");
+    public static final Pattern REGEXP_WORD = Pattern.compile("\\w*");
 
 }

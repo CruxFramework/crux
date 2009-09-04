@@ -21,19 +21,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.rebind.screen.Widget;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ *
+ */
 public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElementsGenerator
 {
+	/**
+	 * 
+	 */
 	@Override
 	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens) 
 	{
@@ -46,8 +56,9 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 		if (printWriter == null) return;
 
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
-		composer.addImplementedInterface("br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories");
-		composer.addImport("com.google.gwt.user.client.ui.Widget");
+		composer.addImplementedInterface(RegisteredWidgetFactories.class.getName());
+		composer.addImport(com.google.gwt.user.client.ui.Widget.class.getName());
+		composer.addImport(GWT.class.getName());
 		
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
@@ -68,6 +79,13 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 		context.commit(logger, printWriter);
 	}
 	
+	/**
+	 * 
+	 * @param logger
+	 * @param sourceWriter
+	 * @param screens
+	 * @param implClassName
+	 */
 	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, List<Screen> screens, String implClassName) 
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");
@@ -86,6 +104,13 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 		sourceWriter.println("}");
 	} 
 	
+	/**
+	 * 
+	 * @param logger
+	 * @param sourceWriter
+	 * @param widget
+	 * @param added
+	 */
 	protected void generateCreateWidgetBlock(TreeLogger logger, SourceWriter sourceWriter, Widget widget, Map<String, Boolean> added)
 	{
 		String type = widget.getType();
@@ -94,7 +119,7 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 			Class<? extends WidgetFactory<?>> widgetClass = WidgetConfig.getClientClass(type);
 			if (widgetClass != null)
 			{
-				sourceWriter.println("widgetFactories.put(\""+type+"\", new "+getClassSourceName(widgetClass)+"());");
+				sourceWriter.println("widgetFactories.put(\""+type+"\", (WidgetFactory<? extends Widget>)GWT.create("+getClassSourceName(widgetClass)+".class));");
 				added.put(type, true);
 			}
 			else

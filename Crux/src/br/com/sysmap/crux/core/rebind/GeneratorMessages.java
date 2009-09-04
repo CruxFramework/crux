@@ -116,4 +116,16 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[Screen 001] - Error setting property {0} for widget {1}.")
 	String screenPropertyError(String property, String widgetId);
+
+	@DefaultMessage("[generator 023] - Error generating widget factory: {0}.")
+	String errorGeneratingWidgetFactory(String localizedMessage);
+
+	@DefaultMessage("[generator 024] - Error generating widget factory. Can not realize the type for generic declaration.")
+	String errorGeneratingWidgetFactoryCanNotRealizeGenericType(String name);
+
+	@DefaultMessage("[generator 025] - Error generating widget factory. Invalid attribute name: {0}.")
+	String errorGeneratingWidgetFactoryInvalidAttrName(String attrName);
+
+	@DefaultMessage("[generator 026] - Error generating widget factory. Widget does not have a valid setter for attribute: {0}.")
+	String errorGeneratingWidgetFactoryInvalidProperty(String attrName);
 }

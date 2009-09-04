@@ -28,20 +28,34 @@ import com.google.gwt.event.logical.shared.OpenHandler;
  * @author Thiago Bustamante
  *
  */
-public class OpenEvtBind extends EvtBind
+public class OpenEvtBind implements EvtBinder<HasOpenHandlers<?>>
 {
-	public static <I> void bindEvent(Element element, HasOpenHandlers<I> widget)
+	private static final String EVENT_NAME = "onOpen";
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#bindEvent(com.google.gwt.dom.client.Element, com.google.gwt.event.shared.HasHandlers)
+	 */
+	@SuppressWarnings("unchecked")
+	public void bindEvent(Element element, HasOpenHandlers<?> widget)
 	{
-		final Event eventChange = getWidgetEvent(element, Events.EVENT_CHANGE);
+		final Event eventChange = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventChange != null)
 		{
-			widget.addOpenHandler(new OpenHandler<I>()
+			widget.addOpenHandler(new OpenHandler()
 			{
-				public void onOpen(OpenEvent<I> event) 
+				public void onOpen(OpenEvent event) 
 				{
 					Events.callEvent(eventChange, event);
 				}
 			});
 		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}
 }

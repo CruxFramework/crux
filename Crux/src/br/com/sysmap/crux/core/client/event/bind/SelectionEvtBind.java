@@ -28,20 +28,34 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
  * @author Thiago Bustamante
  *
  */
-public class SelectionEvtBind extends EvtBind
+public class SelectionEvtBind implements EvtBinder<HasSelectionHandlers<?>>
 {
-	public static <I> void bindEvent(Element element, HasSelectionHandlers<I> widget)
+	private static final String EVENT_NAME = "onSelection";
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#bindEvent(com.google.gwt.dom.client.Element, java.lang.Object)
+	 */
+	@SuppressWarnings("unchecked")
+	public void bindEvent(Element element, HasSelectionHandlers<?> widget)
 	{
-		final Event eventChange = getWidgetEvent(element, Events.EVENT_SELECTION);
+		final Event eventChange = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventChange != null)
 		{
-			widget.addSelectionHandler(new SelectionHandler<I>()
+			widget.addSelectionHandler(new SelectionHandler()
 			{
-				public void onSelection(SelectionEvent<I> event) 
+				public void onSelection(SelectionEvent event) 
 				{
 					Events.callEvent(eventChange, event);
 				}
 			});
 		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}
 }

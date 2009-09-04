@@ -21,6 +21,10 @@
 		<when-type-assignable class="br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories" />
 	</generate-with>
 	
+	<generate-with class="br.com.sysmap.crux.core.rebind.WidgetFactoriesGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.screen.WidgetFactory" />
+	</generate-with>
+
 	<!-- Specify the generator for registered formatters.     -->
 	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientFormattersGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters" />

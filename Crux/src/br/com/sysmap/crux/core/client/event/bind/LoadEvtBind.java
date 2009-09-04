@@ -19,9 +19,6 @@ import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ErrorEvent;
-import com.google.gwt.event.dom.client.ErrorHandler;
-import com.google.gwt.event.dom.client.HasErrorHandlers;
 import com.google.gwt.event.dom.client.HasLoadHandlers;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
@@ -30,11 +27,16 @@ import com.google.gwt.event.dom.client.LoadHandler;
  * Helper Class for load events binding
  * @author Thiago Bustamante
  */
-public class LoadEvtBind extends EvtBind 
+public class LoadEvtBind implements EvtBinder<HasLoadHandlers>
 {
-	public static void bindLoadEvent(Element element, HasLoadHandlers widget)
+	private static final String EVENT_NAME = "onLoad";
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#bindEvent(com.google.gwt.dom.client.Element, com.google.gwt.event.shared.HasHandlers)
+	 */
+	public void bindEvent(Element element, HasLoadHandlers widget)
 	{
-		final Event eventLoad = getWidgetEvent(element, Events.EVENT_LOAD);
+		final Event eventLoad = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventLoad != null)
 		{
 			widget.addLoadHandler(new LoadHandler()
@@ -47,18 +49,11 @@ public class LoadEvtBind extends EvtBind
 		}
 	}
 
-	public static void bindErrorEvent(Element element, HasErrorHandlers widget)
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
 	{
-		final Event eventError = getWidgetEvent(element, Events.EVENT_ERROR);
-		if (eventError != null)
-		{
-			widget.addErrorHandler(new ErrorHandler()
-			{
-				public void onError(ErrorEvent event) 
-				{
-					Events.callEvent(eventError, event);
-				}
-			});
-		}
+		return EVENT_NAME;
 	}
 }

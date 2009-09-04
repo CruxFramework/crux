@@ -28,16 +28,22 @@ import com.google.gwt.event.logical.shared.ShowRangeHandler;
  * @author Thiago Bustamante
  *
  */
-public class ShowRangeEvtBind extends EvtBind
+public class ShowRangeEvtBind implements EvtBinder<HasShowRangeHandlers<?>>
 {
-	public static <V> void bindEvent(Element element, HasShowRangeHandlers<V> widget)
+	private static final String EVENT_NAME = "onShowRange";
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#bindEvent(com.google.gwt.dom.client.Element, java.lang.Object)
+	 */
+	@SuppressWarnings("unchecked")
+	public void bindEvent(Element element, HasShowRangeHandlers<?> widget)
 	{
-		final Event eventShowRange = EvtBind.getWidgetEvent(element, "_onshowrange");
+		final Event eventShowRange = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventShowRange != null)
 		{
-			widget.addShowRangeHandler(new ShowRangeHandler<V>()
+			widget.addShowRangeHandler(new ShowRangeHandler()
 			{
-				public void onShowRange(ShowRangeEvent<V> event)
+				public void onShowRange(ShowRangeEvent event)
 				{
 					Events.callEvent(eventShowRange, event);
 				}
@@ -45,4 +51,13 @@ public class ShowRangeEvtBind extends EvtBind
 		}		
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
+	}
+
+	
 }

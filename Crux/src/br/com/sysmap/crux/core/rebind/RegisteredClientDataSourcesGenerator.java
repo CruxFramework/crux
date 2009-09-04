@@ -34,6 +34,7 @@ import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding;
+import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumn;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumns;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
@@ -200,7 +201,10 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		generateUpdateFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
 		generateScreenUpdateWidgetsFunction(logger, screen, dataSourceClass, sourceWriter);
 		generateControllerUpdateObjectsFunction(logger, screen, dataSourceClass, sourceWriter);
-		generateGetBindedObjectFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
+		if (BindableDataSource.class.isAssignableFrom(dataSourceClass))
+		{
+			generateGetBindedObjectFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
+		}
 		generateIsAutoBindEnabledMethod(sourceWriter, autoBind);
 		
 		sourceWriter.println("}");
@@ -593,11 +597,21 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param columnsAnnot
 	 * @param dataSourceClassName
 	 */
+	@SuppressWarnings("unchecked")
 	private void generateMetadataPopulationBlockFromColumns(TreeLogger logger, SourceWriter sourceWriter, 
 							DataSourceColumns columnsAnnot, String dataSourceClassName, ColumnsData columnsData)
 	{
-		columnsData.names = columnsAnnot.names();
-		columnsData.types = columnsAnnot.types();
+		DataSourceColumn[] columns = columnsAnnot.columns();
+		
+		columnsData.names = new String[columns.length];
+		columnsData.types = new Class[columns.length];
+		
+		for (int i=0; i<columns.length; i++)
+		{
+			DataSourceColumn dataSourceColumn = columns[i];
+			columnsData.names[i] = dataSourceColumn.value();
+			columnsData.types[i] = dataSourceColumn.type();
+		}
 		
 		generateMetadaPopulationBlock(logger, sourceWriter, dataSourceClassName, columnsData);
 	}
@@ -613,23 +627,14 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	private void generateMetadaPopulationBlock(TreeLogger logger, SourceWriter sourceWriter, String dataSourceClassName, 
 			                                  ColumnsData columnsData)
 	{
-		if (columnsData.types.length > 0 && (columnsData.names.length != columnsData.types.length))
+		if (columnsData.names.length != columnsData.types.length)
 		{
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceInvalidMetaInformation(dataSourceClassName), null);
 		}
 		
 		for (int i=0; i<columnsData.names.length; i++)
 		{
-			Class<? extends Comparable<?>> type;
-			if (columnsData.types.length > 0)
-			{
-				type = columnsData.types[i];
-			}
-			else
-			{
-				type = String.class;
-			}
-			sourceWriter.println("metadata.addColumn(new ColumnMetadata<"+getParameterDeclaration(type)+">(\""+columnsData.names[i]+"\"));");
+			sourceWriter.println("metadata.addColumn(new ColumnMetadata<"+getParameterDeclaration(columnsData.types[i])+">(\""+columnsData.names[i]+"\"));");
 		}
 	}	
 	

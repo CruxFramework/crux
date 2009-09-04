@@ -26,8 +26,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface DataSourceColumns {
+public @interface DataSourceColumns 
+{
 	String identifier();
-	String[] names();
-	Class<? extends Comparable<?>>[] types() default {};
+	DataSourceColumn[] columns();
 }

@@ -31,7 +31,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -86,6 +85,123 @@ public class ScreenFactory {
 		return screen;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getScreenId()
+	{
+		if (screenId == null)
+		{
+			String fileName = DOMUtils.getDocumentName();
+			int indexBeg = fileName.indexOf(GWT.getModuleName());
+			int indexEnd = fileName.indexOf("?");
+			int begin = (indexBeg == -1) ? 0 : indexBeg;
+			int end = (indexEnd == -1) ? fileName.length() : indexEnd;
+			screenId = fileName.substring(begin, end);
+		}
+		return screenId;
+	}
+
+	/**
+	 * 
+	 * @param formatter
+	 * @return
+	 */
+	public Formatter getClientFormatter(String formatter)
+	{
+		if (this.registeredClientFormatters == null)
+		{
+			this.registeredClientFormatters = (RegisteredClientFormatters) GWT.create(RegisteredClientFormatters.class);
+		}
+
+		return this.registeredClientFormatters.getClientFormatter(formatter);
+	}
+	
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public String getDeclaredMessage(String key)
+	{
+		return this.declaredI18NMessages.getMessage(key);
+	}
+	
+	/**
+	 * 
+	 * @param dataSource
+	 * @return
+	 */
+	public DataSource<?> getDataSource(String dataSource)
+	{
+		return this.registeredDataSources.getDataSource(dataSource);
+	}
+	
+	/**
+	 * 
+	 * @param element
+	 * @param widgetId
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	Widget newWidget(Element element, String widgetId) throws InterfaceConfigException
+	{
+		String type = element.getAttribute("_type");
+		WidgetFactory<? extends Widget> widgetFactory = registeredWidgetFactories.getWidgetFactory(type);
+		if (widgetFactory == null)
+		{
+			throw new InterfaceConfigException(Crux.getMessages().screenFactoryWidgetFactoryNotFound(type));
+		}
+		
+		Widget widget = widgetFactory.createWidget(element, widgetId); 
+		if (widget == null)
+		{
+			throw new InterfaceConfigException(Crux.getMessages().screenFactoryErrorCreateWidget(widgetId));
+		}
+		
+		return widget;
+	}
+	
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	boolean isValidWidget(Element element)
+	{
+		if ("span".equalsIgnoreCase(element.getTagName()))
+		{
+			String type = element.getAttribute("_type");
+			if (type != null && type.length() > 0 && !"screen".equals(type))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	private boolean isScreenDefinitions(Element element)
+	{
+		if ("span".equalsIgnoreCase(element.getTagName()))
+		{
+			String type = element.getAttribute("_type");
+			if (type != null && "screen".equals(type))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 */
 	private void create()
 	{
 		screen = new Screen(getScreenId());
@@ -130,6 +246,10 @@ public class ScreenFactory {
 		screen.load();
 	}
 	
+	/**
+	 * 
+	 * @param screenElement
+	 */
 	private void clearScreenMetaTag(Element screenElement)
 	{
 		while (screenElement.hasChildNodes())
@@ -145,6 +265,10 @@ public class ScreenFactory {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param widgets
+	 */
 	private void clearWidgetsMetaTags(List<Element> widgets)
 	{
 		for (Element element : widgets) 
@@ -162,64 +286,11 @@ public class ScreenFactory {
 		}
 	}
 	
-	public String getScreenId()
-	{
-		if (screenId == null)
-		{
-			String fileName = DOMUtils.getDocumentName();
-			int indexBeg = fileName.indexOf(GWT.getModuleName());
-			int indexEnd = fileName.indexOf("?");
-			int begin = (indexBeg == -1) ? 0 : indexBeg;
-			int end = (indexEnd == -1) ? fileName.length() : indexEnd;
-			screenId = fileName.substring(begin, end);
-		}
-		return screenId;
-	}
-
-	Widget newWidget(Element element, String widgetId) throws InterfaceConfigException
-	{
-		String type = element.getAttribute("_type");
-		WidgetFactory<? extends Widget> widgetFactory = registeredWidgetFactories.getWidgetFactory(type);
-		if (widgetFactory == null)
-		{
-			throw new InterfaceConfigException(Crux.getMessages().screenFactoryWidgetFactoryNotFound(type));
-		}
-		
-		Widget widget = widgetFactory.createWidget(element, widgetId); 
-		if (widget == null)
-		{
-			throw new InterfaceConfigException(Crux.getMessages().screenFactoryErrorCreateWidget(widgetId));
-		}
-		
-		return widget;
-	}
-	
-	private boolean isScreenDefinitions(Element element)
-	{
-		if ("span".equalsIgnoreCase(element.getTagName()))
-		{
-			String type = element.getAttribute("_type");
-			if (type != null && "screen".equals(type))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	boolean isValidWidget(Element element)
-	{
-		if ("span".equalsIgnoreCase(element.getTagName()))
-		{
-			String type = element.getAttribute("_type");
-			if (type != null && type.length() > 0 && !"screen".equals(type))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
 	private Element getParentElement(Element element) 
 	{
 		Element elementParent = element.getParentElement();
@@ -235,18 +306,14 @@ public class ScreenFactory {
 		return null;	
 	}
 	
-	private Widget getParentWidget(Element element, Screen screen) throws InterfaceConfigException
-	{
-		String id = element.getId();
-		Widget parent = screen.getWidget(id); 
-
-		if (parent != null && !(parent instanceof HasWidgets))
-		{
-			throw new InterfaceConfigException(Crux.getMessages().screenFactoryInvalidWidgetParent(element.getId()));
-		}
-		return parent;
-	}
-	
+	/**
+	 * 
+	 * @param element
+	 * @param screen
+	 * @param widgetsElementsAdded
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
 	@SuppressWarnings("unchecked")
 	private Widget createWidget(Element element, Screen screen, List<Element> widgetsElementsAdded) throws InterfaceConfigException
 	{
@@ -265,23 +332,27 @@ public class ScreenFactory {
 		Element parentElement = getParentElement(element);
 		if (parentElement != null)
 		{
-			parent = getParentWidget(parentElement, screen);
+			parent = screen.getWidget(parentElement.getId());
 			if (parent == null)
 			{
 				parent = createWidget(parentElement, screen, widgetsElementsAdded);
 			}
-		}
-		
-		widget = newWidget(element, widgetId);
-
-		if (parent != null)
-		{
-			HasWidgetsFactory<Widget> parentWidgetFactory = (HasWidgetsFactory<Widget>) registeredWidgetFactories.
-															getWidgetFactory(parentElement.getAttribute("_type"));
-			parentWidgetFactory.add(parent, widget, parentElement, element);
+			
+			WidgetFactory<?> parentWidgetFactory = registeredWidgetFactories.getWidgetFactory(parentElement.getAttribute("_type"));
+			if (parentWidgetFactory instanceof HasWidgetsFactory)
+			{
+				widget = newWidget(element, widgetId);
+				((HasWidgetsFactory<Widget>)parentWidgetFactory).add(parent, widget, parentElement, element);
+			}
+			else
+			{
+				widget = screen.getWidget(widgetId);
+			}
 		}
 		else
 		{
+			widget = newWidget(element, widgetId);
+
 			Element panelElement;
 			boolean parentHasMoreThanOneChild = (element.getNextSiblingElement() != null || DOMUtils.getPreviousSiblingElement(element) != null);
 			if (Crux.getConfig().wrapSiblingWidgets() && parentHasMoreThanOneChild)
@@ -301,27 +372,8 @@ public class ScreenFactory {
 			CruxWidgetPanel panel = new CruxWidgetPanel(panelElement);
 			panel.add(widget);
 		}
+
 		widgetsElementsAdded.add(element);
 		return widget;
-	}
-	
-	public Formatter getClientFormatter(String formatter)
-	{
-		if (this.registeredClientFormatters == null)
-		{
-			this.registeredClientFormatters = (RegisteredClientFormatters) GWT.create(RegisteredClientFormatters.class);
-		}
-
-		return this.registeredClientFormatters.getClientFormatter(formatter);
-	}
-	
-	public String getDeclaredMessage(String key)
-	{
-		return this.declaredI18NMessages.getMessage(key);
-	}
-	
-	public DataSource<?> getDataSource(String dataSource)
-	{
-		return this.registeredDataSources.getDataSource(dataSource);
 	}
 }

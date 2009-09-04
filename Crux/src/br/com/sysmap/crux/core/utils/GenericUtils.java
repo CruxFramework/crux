@@ -47,8 +47,7 @@ public abstract class GenericUtils
 	 * @param parameterTypes
 	 * @return
 	 */
-	public static Class<?> resolveReturnType(Class<?> clazz, String methodName, Class<?>... parameterTypes) {
-		
+	public static Class<?> resolveReturnType(Class<?> clazz, String methodName, Class<?>... parameterTypes) {		
 		Method method;
 		try
 		{

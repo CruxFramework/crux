@@ -23,6 +23,7 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -42,9 +43,7 @@ public abstract class AbstractGenerator extends Generator
 	 */
 	protected String getClassSourceName(Class<?> handlerClass)
 	{
-		String sourceName = handlerClass.getName();
-		sourceName = sourceName.replace('$','.');
-		return sourceName;
+		return ClassUtils.getClassSourceName(handlerClass);
 	}
 	
 	/**
@@ -54,18 +53,7 @@ public abstract class AbstractGenerator extends Generator
 	 */
 	protected String getClassBinaryName(JClassType classType)
 	{
-		String pkgName = classType.getPackage().getName();
-		String simpleName = classType.getSimpleSourceName();
-		String name = classType.getName();
-		
-		if (name.equals(simpleName))
-		{
-			return pkgName + "." +name;
-		}
-		else
-		{
-			return pkgName + "." + name.substring(0, name.indexOf(simpleName)-1) + "$"+ simpleName;
-		}
+		return ClassUtils.getClassBinaryName(classType);
 	}
 	
 	/**

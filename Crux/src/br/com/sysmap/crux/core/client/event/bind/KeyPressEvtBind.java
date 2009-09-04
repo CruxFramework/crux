@@ -19,36 +19,25 @@ import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.HasAllKeyHandlers;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 
 /**
  * Helper Class for key events binding
  * @author Thiago Bustamante
  *
  */
-public class KeyEvtBind extends EvtBind
+public class KeyPressEvtBind implements EvtBinder<HasKeyPressHandlers>
 {
-	public static void bindEvents(Element element, HasAllKeyHandlers widget)
-	{
-		final Event eventKeyDown = getWidgetEvent(element, Events.EVENT_KEY_DOWN);
-		if (eventKeyDown != null)
-		{
-			widget.addKeyDownHandler(new KeyDownHandler()
-			{
-				public void onKeyDown(KeyDownEvent event) 
-				{
-					Events.callEvent(eventKeyDown, event);
-				}
-			});
-		}
+	private static final String EVENT_NAME = "onKeyPress";
 
-		final Event eventKeyPress = getWidgetEvent(element, Events.EVENT_KEY_PRESS);
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#bindEvent(com.google.gwt.dom.client.Element, com.google.gwt.event.shared.HasHandlers)
+	 */
+	public void bindEvent(Element element, HasKeyPressHandlers widget)
+	{
+		final Event eventKeyPress = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventKeyPress != null)
 		{
 			widget.addKeyPressHandler(new KeyPressHandler()
@@ -59,18 +48,14 @@ public class KeyEvtBind extends EvtBind
 				}
 			});
 		}
-		
-		final Event eventKeyUp = getWidgetEvent(element, Events.EVENT_KEY_UP);
-		if (eventKeyUp != null)
-		{
-			widget.addKeyUpHandler(new KeyUpHandler()
-			{
-				public void onKeyUp(KeyUpEvent event) 
-				{
-					Events.callEvent(eventKeyUp, event);
-				}
-			});
-		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}
 
 }

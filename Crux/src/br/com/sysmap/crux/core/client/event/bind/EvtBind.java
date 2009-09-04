@@ -28,14 +28,14 @@ import com.google.gwt.dom.client.Element;
 public class EvtBind 
 { 
 	/**
-	 * Builds an Event object from the page DOM element representing the widget (Its &lt;span&gt; tag)
+	 * Builds an TagEvent object from the page DOM element representing the widget (Its &lt;span&gt; tag)
 	 * @param element
 	 * @param evtId
 	 * @return
 	 */
 	public static Event getWidgetEvent(Element element, String evtId)
 	{
-		String evt = element.getAttribute(evtId);
+		String evt = element.getAttribute("_"+evtId);
 		return Events.getEvent(evtId, evt);
 	}
 }

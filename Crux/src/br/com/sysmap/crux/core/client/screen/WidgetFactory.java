@@ -19,6 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
@@ -27,8 +31,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.HasName;
-import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -40,13 +42,53 @@ import com.google.gwt.user.client.ui.Widget;
  *  &lt;span id="myWidgetId" _type="textBox" 
  *                           _onclick="myControlClass.myethod" &gt; 
  *  &lt;/span&gt;
- * @author Thiago Bustamante
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
 public abstract class WidgetFactory <T extends Widget>
 {
 	private static int currentId = 0;
 	
-	public T createWidget(Element element, String widgetId) throws InterfaceConfigException
+	/**
+	 * 
+	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 *
+	 * @param <W>
+	 */
+	public static class WidgetFactoryContext<W>
+	{
+		private W widget;
+		private Element element;
+		private String widgetId;
+		
+		private WidgetFactoryContext(W widget, Element element, String widgetId)
+		{
+			this.widget = widget;
+			this.element = element;
+			this.widgetId = widgetId;
+		}
+		
+		public W getWidget()
+		{
+			return widget;
+		}
+		public Element getElement()
+		{
+			return element;
+		}
+		public String getWidgetId()
+		{
+			return widgetId;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param element
+	 * @param widgetId
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	public final T createWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		return createWidget(element, widgetId, true);
 	}
@@ -60,48 +102,47 @@ public abstract class WidgetFactory <T extends Widget>
 			{
 				Screen.add(widgetId, widget);
 			}			
-			processAttributes(widget, element, widgetId);
-			processEvents(widget, element, widgetId);
+
+			WidgetFactoryContext<T> context = new WidgetFactoryContext<T>(widget, element, widgetId);
+			processAttributes(context);
+			processEvents(context);
+			processChildren(context);
 		}
 		return widget;
 	}
 	
-	protected abstract T instantiateWidget(Element element, String widgetId) throws InterfaceConfigException;
-	
+	/**
+	 * Process element children
+	 * @param widget
+	 * @param parentElement
+	 * @param widgetId
+	 * @throws InterfaceConfigException 
+	 */
+	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException
+	{
+	}
 
 	/**
 	 * Process widget attributes
 	 * @param element page DOM element representing the widget (Its &lt;span&gt; tag)
 	 * @throws InterfaceConfigException 
 	 */
-	protected void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagAttributes({
+		@TagAttribute("width"),
+		@TagAttribute("height"),
+		@TagAttribute("styleName"),
+		@TagAttribute(value="visible", type=Boolean.class),
+		@TagAttribute(value="tooltip", autoProcess=false),
+		@TagAttribute(value="style", autoProcess=false)
+	})
+	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
-		String width = element.getAttribute("_width");
-		if (width != null && width.length() > 0)
-		{
-			widget.setWidth(width);
-		}
-		String height = element.getAttribute("_height");
-		if (height != null && height.length() > 0)
-		{
-			widget.setHeight(height);
-		}
-		String visible = element.getAttribute("_visible");
-		if (visible != null && visible.length() > 0)
-		{
-			widget.setVisible(Boolean.parseBoolean(visible));
-		}
-		String tooltip = element.getAttribute("_tooltip");
+		String tooltip = context.getElement().getAttribute("_tooltip");
 		if (tooltip != null && tooltip.length() > 0)
 		{
-			widget.setTitle(tooltip);
+			context.getWidget().setTitle(tooltip);
 		}
-		String styleName = element.getAttribute("_styleName");
-		if (styleName != null && styleName.length() > 0)
-		{
-			widget.setStyleName(styleName);
-		}
-		String style = element.getAttribute("_style");
+		String style = context.getElement().getAttribute("_style");
 		if (style != null && style.length() > 0)
 		{
 			String[] styleAttributes = style.split(";");
@@ -109,21 +150,8 @@ public abstract class WidgetFactory <T extends Widget>
 			{
 				String[] attr = styleAttributes[i].split(":");
 				if (attr != null && attr.length == 2)
-					DOM.setStyleAttribute(widget.getElement(), attr[0], attr[1]);
+					DOM.setStyleAttribute((com.google.gwt.user.client.Element) context.getElement(), attr[0], attr[1]);
 			}
-		}
-		
-		if (widget instanceof HasText)
-		{
-			String text = element.getAttribute("_text");
-			if (text != null && text.length() > 0)
-				((HasText)widget).setText(ScreenFactory.getInstance().getDeclaredMessage(text));
-		}
-		if (widget instanceof HasName)
-		{
-			String name = element.getAttribute("_name");
-			if (name != null && name.length() > 0)
-				((HasName)widget).setName(name);
 		}
 	}
 	
@@ -132,9 +160,12 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @param element page DOM element representing the widget (Its &lt;span&gt; tag)
 	 * @throws InterfaceConfigException
 	 */
-	protected void processEvents(T widget, Element element, String widgetId) throws InterfaceConfigException
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onLoadWidget")
+	})
+	public void processEvents(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
-		final Event eventLoad = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_WIDGET);
+		final Event eventLoad = EvtBind.getWidgetEvent(context.getElement(), Events.EVENT_LOAD_WIDGET);
 		if (eventLoad != null)
 		{
 			addScreenLoadedHandler(new ScreenLoadHandler()
@@ -315,4 +346,6 @@ public abstract class WidgetFactory <T extends Widget>
 		
 		throw new InterfaceConfigException(Crux.getMessages().widgetFactoryEnsureWidgetFail());
 	}
+	
+	public abstract T instantiateWidget(Element element, String widgetId) throws InterfaceConfigException;	
 }

@@ -30,35 +30,18 @@ public class Events
 	public static final String SYNC_TYPE_SYNCHRONOUS = "synchronous";
 	public static final String SYNC_TYPE_ASSYNCHRONOUS = "assynchronous";
 	
-	public static final String EVENT_CLICK = "_onclick";
-	public static final String EVENT_CHANGE = "_onchange";
-	public static final String EVENT_FOCUS = "_onfocus";
-	public static final String EVENT_BLUR = "_onblur";
-	public static final String EVENT_LOAD = "_onload";
-	public static final String EVENT_KEY_DOWN = "_onkeydown";
-	public static final String EVENT_KEY_PRESS = "_onkeypress";
-	public static final String EVENT_KEY_UP = "_onkeyup";
-	public static final String EVENT_MOUSE_DOWN = "_onmousedown";
-	public static final String EVENT_MOUSE_MOVE = "_onmousemove";
-	public static final String EVENT_MOUSE_UP = "_onmouseup";
-	public static final String EVENT_MOUSE_OUT = "_onmouseout";
-	public static final String EVENT_MOUSE_OVER = "_onmouseover";
-	public static final String EVENT_MOUSE_WHEEL = "_onmousewheel";
-	public static final String EVENT_CLOSE = "_onclose";
-	public static final String EVENT_CLOSING = "_onclosing";
-	public static final String EVENT_RESIZED = "_onresized";
-	public static final String EVENT_ERROR = "_onerror";
-	public static final String EVENT_LOAD_IMAGES = "_onloadimage";
-	public static final String EVENT_LOAD_ORACLE = "_onloadoracle";
-	public static final String EVENT_LOAD_FORMAT = "_onloadformat";
-	public static final String EVENT_SCROLL = "_onscroll";
-	public static final String EVENT_BEFORE_SELECTION = "_onbeforeselection";
-	public static final String EVENT_SELECTION = "_onselection";
-	public static final String EVENT_LOAD_WIDGET = "_onloadwidget";
-	public static final String EVENT_EXECUTE_EVENT = "_onexecute";
-	public static final String EVENT_SUBMIT_COMPLETE = "_onsubmitcomplete";
-	public static final String EVENT_SUBMIT = "_onsubmit";
-	public static final String EVENT_HISTORY_CHANGED = "_onhistorychanged";
+	public static final String EVENT_LOAD = "onload";
+	public static final String EVENT_CLOSE = "onclose";
+	public static final String EVENT_CLOSING = "onclosing";
+	public static final String EVENT_RESIZED = "onresized";
+	public static final String EVENT_LOAD_IMAGES = "onloadimage";
+	public static final String EVENT_LOAD_ORACLE = "onloadoracle";
+	public static final String EVENT_LOAD_FORMAT = "onloadformat";
+	public static final String EVENT_LOAD_WIDGET = "onloadwidget";
+	public static final String EVENT_EXECUTE_EVENT = "onexecute";
+	public static final String EVENT_SUBMIT_COMPLETE = "onsubmitcomplete";
+	public static final String EVENT_SUBMIT = "onsubmit";
+	public static final String EVENT_HISTORY_CHANGED = "onhistorychanged";
 	
 	private static RegisteredClientEventHandlers registeredClientEventHandlers;
 	

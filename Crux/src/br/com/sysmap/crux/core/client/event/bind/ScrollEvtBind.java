@@ -29,11 +29,16 @@ import com.google.gwt.event.dom.client.ScrollEvent;
  * @author Thiago Bustamante
  *
  */
-public class ScrollEvtBind extends EvtBind
+public class ScrollEvtBind implements EvtBinder<HasScrollHandlers>
 {
-	public static void bindEvent(Element element, HasScrollHandlers widget)
+	private static final String EVENT_NAME = "onScroll";
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#bindEvent(com.google.gwt.dom.client.Element, com.google.gwt.event.shared.HasHandlers)
+	 */
+	public void bindEvent(Element element, HasScrollHandlers widget)
 	{
-		final Event eventScroll = getWidgetEvent(element, Events.EVENT_SCROLL);
+		final Event eventScroll = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventScroll != null)
 		{
 			ScrollHandler handler = new ScrollHandler()
@@ -45,5 +50,13 @@ public class ScrollEvtBind extends EvtBind
 			};
 			widget.addScrollHandler(handler);
 		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}	
 }

@@ -28,11 +28,16 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
  * @author Thiago Bustamante
  *
  */
-public class ClickEvtBind extends EvtBind
+public class ClickEvtBind implements EvtBinder<HasClickHandlers>
 {
-	public static void bindEvent(Element element, HasClickHandlers widget)
+	private static final String EVENT_NAME = "onClick";
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#bindEvent(com.google.gwt.dom.client.Element, com.google.gwt.event.shared.HasHandlers)
+	 */
+	public void bindEvent(Element element, HasClickHandlers widget)
 	{
-		final Event eventClick = getWidgetEvent(element, Events.EVENT_CLICK);
+		final Event eventClick = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventClick != null)
 		{
 			ClickHandler handler = new ClickHandler()
@@ -44,5 +49,13 @@ public class ClickEvtBind extends EvtBind
 			};
 			widget.addClickHandler(handler);
 		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}	
 }

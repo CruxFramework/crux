@@ -22,35 +22,22 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.HasChangeHandlers;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 
 /**
  * Helper Class for change events binding
  * @author Thiago Bustamante
  *
  */
-public class ChangeEvtBind extends EvtBind
+public class ChangeEvtBind implements EvtBinder<HasChangeHandlers>
 {
-	public static <I> void bindValueEvent(Element element, HasValueChangeHandlers<I> widget)
-	{
-		final Event eventChange = getWidgetEvent(element, Events.EVENT_CHANGE);
-		if (eventChange != null)
-		{
-			widget.addValueChangeHandler(new ValueChangeHandler<I>()
-			{
-				public void onValueChange(ValueChangeEvent<I> event) 
-				{
-					Events.callEvent(eventChange, event);
-				}
-			});
-		}
-	}
+	private static final String EVENT_NAME = "onChange";
 
-	public static void bindEvent(Element element, HasChangeHandlers widget)
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#bindEvent(com.google.gwt.dom.client.Element, com.google.gwt.event.shared.HasHandlers)
+	 */
+	public void bindEvent(Element element, HasChangeHandlers widget)
 	{
-		final Event eventChange = getWidgetEvent(element, Events.EVENT_CHANGE);
+		final Event eventChange = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventChange != null)
 		{
 			widget.addChangeHandler(new ChangeHandler()
@@ -61,5 +48,13 @@ public class ChangeEvtBind extends EvtBind
 				}
 			});
 		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}
 }

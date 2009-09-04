@@ -28,21 +28,29 @@ import com.google.gwt.event.logical.shared.HasCloseHandlers;
  * @author Thiago Bustamante
  *
  */
-public class CloseEvtBind extends EvtBind
+public class CloseEvtBind implements EvtBinder<HasCloseHandlers<?>>
 {
-	public static <I> void bindEvent(Element element, HasCloseHandlers<I> widget)
+	private static final String EVENT_NAME = "onClick";
+	
+	@SuppressWarnings("unchecked")
+	public void bindEvent(Element element, HasCloseHandlers<?> widget)
 	{
-		final Event eventClose = getWidgetEvent(element, Events.EVENT_CLOSE);
+		final Event eventClose = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventClose != null)
 		{
-			widget.addCloseHandler(new CloseHandler<I>()
+			widget.addCloseHandler(new CloseHandler()
 			{
-				public void onClose(CloseEvent<I> event) 
+				public void onClose(CloseEvent event) 
 				{
 					Events.callEvent(eventClose, event);
 				}
 			});
 		}
+	}
+
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}
 
 }

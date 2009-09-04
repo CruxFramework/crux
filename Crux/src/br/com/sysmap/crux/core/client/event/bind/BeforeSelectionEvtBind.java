@@ -28,21 +28,35 @@ import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class BeforeSelectionEvtBind extends EvtBind
+public class BeforeSelectionEvtBind implements EvtBinder<HasBeforeSelectionHandlers<?>>
 {
-	public static <I> void bindEvent(Element element, HasBeforeSelectionHandlers<I> widget)
+	private static final String EVENT_NAME = "onBeforeSelection";
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#bindEvent(com.google.gwt.dom.client.Element, com.google.gwt.event.shared.HasHandlers)
+	 */
+	@SuppressWarnings("unchecked")
+	public void bindEvent(Element element, HasBeforeSelectionHandlers<?> widget)
 	{
-		final Event eventBeforeSelection = getWidgetEvent(element, Events.EVENT_BEFORE_SELECTION);
+		final Event eventBeforeSelection = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (eventBeforeSelection != null)
 		{
-			widget.addBeforeSelectionHandler(new BeforeSelectionHandler<I>()
+			widget.addBeforeSelectionHandler(new BeforeSelectionHandler()
 			{
-				public void onBeforeSelection(BeforeSelectionEvent<I> event)
+				public void onBeforeSelection(BeforeSelectionEvent event)
 				{
 					Events.callEvent(eventBeforeSelection, event);
 				}
 			});
 		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.event.bind.EvtBinder#getEventName()
+	 */
+	public String getEventName()
+	{
+		return EVENT_NAME;
 	}
 
 }

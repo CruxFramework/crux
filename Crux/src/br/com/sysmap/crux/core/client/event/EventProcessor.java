@@ -19,7 +19,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Abstraction for a event processor. Each processor process events according with the 
- * properties in the Event Object.
+ * properties in the TagEvent Object.
  * @author Thiago
  *
  */
