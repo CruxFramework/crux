@@ -2,8 +2,10 @@ package br.com.sysmap.crux.advanced.client.grid.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import br.com.sysmap.crux.advanced.client.event.row.HasRowClickHandlers;
 import br.com.sysmap.crux.advanced.client.event.row.HasRowDoubleClickHandlers;
@@ -41,16 +43,17 @@ import com.google.gwt.user.client.ui.Widget;
  * All subclasses must invoke the method <code>render()</code> in their constructors.
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> extends Composite implements HasRowClickHandlers, HasRowDoubleClickHandlers, HasRowRenderHandlers {	
+public abstract class AbstractGrid<R extends Row> extends Composite implements HasRowClickHandlers, HasRowDoubleClickHandlers, HasRowRenderHandlers {	
 	
 	private static final String DEFAULT_STYLE_NAME = "crux-Grid";
 	
 	private SimplePanel panel;
 	private GridHtmlTable table;
-	private ColumnDefinitions<C> definitions;
+	private ColumnDefinitions definitions;
 	private String generatedId =  "cruxGrid_" + new Date().getTime();
 	private GridLayout gridLayout = GWT.create(GridLayout.class);
 	private List<R> rows = new ArrayList<R>();
+	private Map<Widget, R> widgetsPerRow = new HashMap<Widget, R>();
 	private RowSelectionModel rowSelection;
 	private ScrollPanel scrollingArea;
 	private int visibleColumnCount = -1;
@@ -58,10 +61,10 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	@SuppressWarnings("unchecked")
 	static class RowSelectionHandler<R extends Row> implements ClickHandler
 	{
-		private AbstractGrid<?, R> grid;
+		private AbstractGrid<R> grid;
 		private R row;
 		
-		public RowSelectionHandler(AbstractGrid<?, R> grid, R row)
+		public RowSelectionHandler(AbstractGrid<R> grid, R row)
 		{
 			this.grid = grid;
 			this.row = row;
@@ -82,7 +85,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	 * @param rowSelection the behavior of the grid about line selection 
 	 * @param cellSpacing the space between the cells
 	 */
-	public AbstractGrid(ColumnDefinitions<C> columnDefinitions, RowSelectionModel rowSelection, int cellSpacing)
+	public AbstractGrid(ColumnDefinitions columnDefinitions, RowSelectionModel rowSelection, int cellSpacing)
 	{
 		this.definitions = columnDefinitions;
 		this.rowSelection = rowSelection;
@@ -153,7 +156,17 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	{
 		table.resizeRows(0);
 		rows = new ArrayList<R>();
+		this.widgetsPerRow = new HashMap<Widget, R>();
 		onClear();
+	}
+	
+	/**
+	 * Gets the row where the given widget is rendered
+	 * @return a <code>Row</code> that contains the given widget. Null if no such row found.;
+	 */
+	public R getRow(Widget w)
+	{
+		return widgetsPerRow.get(w);
 	}
 	
 	/**
@@ -232,7 +245,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	 * @param columnDefinition
 	 * @return the newly created cell
 	 */
-	protected Cell createColumnHeaderCell(C columnDefinition)
+	protected Cell createColumnHeaderCell(ColumnDefinition columnDefinition)
 	{
 		String label = columnDefinition.getLabel();
 		Label columnHeader = new Label(label);
@@ -289,7 +302,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 	 * Gets the grid columns (including the invisible columns)
 	 * @return
 	 */
-	protected ColumnDefinitions<C> getColumnDefinitions()
+	protected ColumnDefinitions getColumnDefinitions()
 	{
 		return definitions;
 	}
@@ -391,6 +404,12 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		return table;
 	}
 	
+	@SuppressWarnings("unchecked")
+	void registerWidget(Widget w, Row row)
+	{
+		widgetsPerRow.put(w, (R) row);
+	}	
+	
 	/**
 	 * Resizes the grid table, according with the number of rows that will be rendered. 
 	 */
@@ -399,6 +418,7 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		int rowCount = getRowsToBeRendered() + 1;
 		table.resize(rowCount, getVisibleColumnCount() + (hasSelectionColumn() ? 1 : 0));
 		this.rows = new ArrayList<R>();
+		this.widgetsPerRow = new HashMap<Widget, R>();
 		onClearRendering();
 	}
 	
@@ -518,8 +538,8 @@ public abstract class AbstractGrid<C extends ColumnDefinition, R extends Row> ex
 		row.setStyle("columnHeadersRow row");
 		row.setCell(createHeaderFristColumnCell(rowCount), 0);
 				
-		List<C> columns = definitions.getDefinitions();
-		for (C columnDefinition : columns)
+		List<ColumnDefinition> columns = definitions.getDefinitions();
+		for (ColumnDefinition columnDefinition : columns)
 		{
 			if(columnDefinition.isVisible())
 			{

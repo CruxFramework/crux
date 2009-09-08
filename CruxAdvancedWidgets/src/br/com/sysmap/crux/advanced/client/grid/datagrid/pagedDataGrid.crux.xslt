@@ -55,6 +55,7 @@
 			
 			<xsl:for-each select="child::*">
 				<xsl:element name="span" namespace="{$xhtmlNS}">
+					<xsl:attribute name="_columnType" select="local-name()" />
 					<xsl:if test="string-length(@width) > 0">
 						<xsl:attribute name="_width" select="@width" />
 					</xsl:if>
@@ -75,6 +76,9 @@
 					</xsl:if>
 					<xsl:if test="string-length(@verticalAlignment) > 0">
 						<xsl:attribute name="_verticalAlignment" select="@verticalAlignment" />
+					</xsl:if>
+					<xsl:if test="local-name() = 'widgetColumn'">
+						<xsl:apply-templates select="child::*" />
 					</xsl:if>
 					<xsl:value-of select="' '"/>
 				</xsl:element>

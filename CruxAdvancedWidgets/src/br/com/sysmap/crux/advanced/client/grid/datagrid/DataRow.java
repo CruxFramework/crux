@@ -11,7 +11,7 @@ public class DataRow extends Row
 {
 	private EditableDataSourceRecord dataSourceRecord;
 	
-	protected DataRow(int index, Element elem, AbstractGrid<?, ?> grid, boolean hasSelectionCell)
+	protected DataRow(int index, Element elem, AbstractGrid<?> grid, boolean hasSelectionCell)
 	{
 		super(index, elem, grid, hasSelectionCell);
 	}

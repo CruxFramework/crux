@@ -5,18 +5,19 @@ import br.com.sysmap.crux.advanced.client.util.StyleUtils;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 
 public class Row
 {
-	private AbstractGrid<?, ?> grid;
+	private AbstractGrid<?> grid;
 	private int index;
 	private Element elem;
 	private boolean hasSelectionCell;
 	private boolean selected;
 	private boolean enabled;
 		
-	protected Row(int index, Element elem, AbstractGrid<?, ?> grid, boolean hasSelectionCell)
+	protected Row(int index, Element elem, AbstractGrid<?> grid, boolean hasSelectionCell)
 	{
 		this.index = index;
 		this.elem = elem;
@@ -45,6 +46,12 @@ public class Row
 		grid.getTable().setWidget(index, column, cell);
 		cell.setRow(this);
 		cell.setGrid(grid);
+		
+		Widget cellWidget = cell.getCellWidget();
+		if(cellWidget != null)
+		{
+			grid.registerWidget(cellWidget, this);
+		}		
 	}
 	
 	Cell getCell(int column)
@@ -128,7 +135,7 @@ public class Row
 	/**
 	 * @return the grid
 	 */
-	protected AbstractGrid<?, ?> getGrid()
+	protected AbstractGrid<?> getGrid()
 	{
 		return grid;
 	}

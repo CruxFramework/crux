@@ -18,6 +18,8 @@ package br.com.sysmap.crux.advanced.client.grid.datagrid;
 import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.event.row.RowEventsBind;
+import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinition;
+import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinitions;
 import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
 import br.com.sysmap.crux.advanced.client.util.AlignmentUtil;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
@@ -160,15 +162,16 @@ public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	private DataColumnDefinitions getColumnDefinitions(Element gridElem) throws InterfaceConfigException
+	private ColumnDefinitions getColumnDefinitions(Element gridElem) throws InterfaceConfigException
 	{
-		DataColumnDefinitions defs = new DataColumnDefinitions();
+		ColumnDefinitions defs = new ColumnDefinitions();
 		
 		List<Element> colElems = ensureChildrenSpans(gridElem, false);
 		if(colElems != null && colElems.size() > 0)
 		{
 			for (Element colElem : colElems)
 			{
+				String columnType = colElem.getAttribute("_columnType");
 				String width = colElem.getAttribute("_width");
 				String strVisible = colElem.getAttribute("_visible");
 				String label = colElem.getAttribute("_label");
@@ -181,14 +184,29 @@ public class PagedDataGridFactory extends WidgetFactory<PagedDataGrid>
 				String formatter = (strFormatter != null && strFormatter.length() > 0) ? strFormatter : null;
 				label = (label != null && label.length() > 0) ? ScreenFactory.getInstance().getDeclaredMessage(label) : "";
 				
-				DataColumnDefinition def = new DataColumnDefinition(
-						label, 
-						width, 
-						formatter, 
-						visible, 
-						AlignmentUtil.getHorizontalAlignment(hAlign, HasHorizontalAlignment.ALIGN_CENTER),
-						AlignmentUtil.getVerticalAlignment(vAlign, HasVerticalAlignment.ALIGN_MIDDLE));
+				ColumnDefinition def = null;
 				
+				if("dataColumn".equals(columnType))
+				{
+					def = new DataColumnDefinition(
+							label, 
+							width, 
+							formatter, 
+							visible, 
+							AlignmentUtil.getHorizontalAlignment(hAlign, HasHorizontalAlignment.ALIGN_CENTER),
+							AlignmentUtil.getVerticalAlignment(vAlign, HasVerticalAlignment.ALIGN_MIDDLE));
+				}
+				else if("widgetColumn".equals(columnType))
+				{
+					def = new WidgetColumnDefinition(
+							label, 
+							width, 
+							ensureFirstChildSpan(colElem, false),
+							visible, 
+							AlignmentUtil.getHorizontalAlignment(hAlign, HasHorizontalAlignment.ALIGN_CENTER),
+							AlignmentUtil.getVerticalAlignment(vAlign, HasVerticalAlignment.ALIGN_MIDDLE));
+				}
+					
 				defs.add(key, def);
 			}
 		}

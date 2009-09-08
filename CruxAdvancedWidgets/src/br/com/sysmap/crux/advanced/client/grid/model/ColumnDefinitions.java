@@ -6,22 +6,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ColumnDefinitions<T extends ColumnDefinition>
+public class ColumnDefinitions
 {
-	private List<T> definitionsInOrder = new ArrayList<T>();
-	private Map<String, T> definitionsByKey = new HashMap<String, T>();
+	private List<ColumnDefinition> definitionsInOrder = new ArrayList<ColumnDefinition>();
+	private Map<String, ColumnDefinition> definitionsByKey = new HashMap<String, ColumnDefinition>();
 	
-	public void add(String key, T definition){
+	public void add(String key, ColumnDefinition definition){
 		definitionsInOrder.add(definition);
 		definitionsByKey.put(key, definition);
 		definition.setKey(key);
 	}
 	
-	List<T> getDefinitions(){
+	List<ColumnDefinition> getDefinitions(){
 		return definitionsInOrder;
 	}
 	
-	T getDefinition(String key){
+	ColumnDefinition getDefinition(String key){
 		return definitionsByKey.get(key);
 	}
 	
@@ -29,9 +29,9 @@ public abstract class ColumnDefinitions<T extends ColumnDefinition>
 		return definitionsInOrder.indexOf(definitionsByKey.get(key));
 	}
 	
-	public Iterator<T> getIterator()
+	public Iterator<ColumnDefinition> getIterator()
 	{
-		return new ColumnIterator<T>(definitionsInOrder);
+		return new ColumnIterator<ColumnDefinition>(definitionsInOrder);
 	}
 		
 	public static class ColumnIterator<T extends ColumnDefinition> implements Iterator<T>

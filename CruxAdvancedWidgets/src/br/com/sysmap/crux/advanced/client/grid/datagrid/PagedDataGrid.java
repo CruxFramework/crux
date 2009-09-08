@@ -1,11 +1,13 @@
 package br.com.sysmap.crux.advanced.client.grid.datagrid;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.grid.model.AbstractGrid;
 import br.com.sysmap.crux.advanced.client.grid.model.Cell;
+import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinition;
 import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinitions;
 import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
 import br.com.sysmap.crux.advanced.client.paging.Pageable;
@@ -21,8 +23,12 @@ import br.com.sysmap.crux.core.client.datasource.MeasurableRemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSourceCallback;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -31,12 +37,13 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A paged sortable data grid
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> implements Pageable {	
+public class PagedDataGrid extends AbstractGrid<DataRow> implements Pageable {	
 
 	private int pageSize;
 	private EditablePagedDataSource dataSource;
@@ -47,6 +54,8 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	private boolean ascendingSort;
 	private Pager pager; 
 	private RowSelectionModel rowSelectionModel;
+	private RegisteredWidgetFactories registeredWidgetFactories = null;
+	private long generatedWidgetId = 0;
 	
 	/**
 	 * Full constructor
@@ -57,9 +66,10 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	 * @param autoLoadData if <code>true</code>, when a data source is set, its first page records are fetched and rendered. 
 	 * 	If <code>false</code>, the method <code>loadData()</code> must be invoked for rendering the first page.
 	 */
-	public PagedDataGrid(DataColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData)
+	public PagedDataGrid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData)
 	{
 		super(columnDefinitions, rowSelectionModel, cellSpacing);
+		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 		this.pageSize = pageSize;
 		this.rowSelectionModel = rowSelectionModel;
 		this.autoLoadData = autoLoadData;
@@ -219,35 +229,28 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 	{
 		row.setDataSourceRecord(dataSource.getRecord());
 		
-		ColumnDefinitions<DataColumnDefinition> defs = getColumnDefinitions();
-		Iterator<DataColumnDefinition> it = defs.getIterator();
+		ColumnDefinitions defs = getColumnDefinitions();
+		Iterator<ColumnDefinition> it = defs.getIterator();
 		while (it.hasNext())
 		{
-			DataColumnDefinition column = it.next();
+			ColumnDefinition column = it.next();
 			
 			if(column.isVisible())
 			{
+				Widget widget = null;
 				String key = column.getKey();
-				String formatterName = column.getFormatter();
-				Object value = dataSource.getValue(key);
-				String str = "";
 				
-				if(value != null)
+				if(column instanceof DataColumnDefinition)
 				{
-					if(formatterName != null && formatterName.length() > 0)
-					{
-						Formatter formatter = Screen.getFormatter(formatterName);
-						str = formatter.format(value);
-					}
-					else
-					{
-						str = value.toString();
-					}
+					widget = createDataLabel(column, key);					
+				}
+				else if(column instanceof WidgetColumnDefinition)
+				{
+					widget = createWidget((WidgetColumnDefinition) column, row);
 				}
 				
-				Label label = new Label(str);
-				row.setCell(createCell(label), key);
-			}			
+				row.setCell(createCell(widget), key);
+			}
 		}
 		
 		row.setSelected(row.getDataSourceRecord().isSelected());
@@ -258,9 +261,71 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 			dataSource.nextRecord();
 		}
 	}
+
+	/**
+	 * TODO - Gessé - cloned element does not have a parent
+	 * TODO - Gessé - error message
+	 * @param column
+	 * @param row
+	 * @return
+	 * @throws InterfaceConfigException 
+	 */
+	private Widget createWidget(WidgetColumnDefinition column, DataRow row)
+	{
+		try
+		{
+			Element template = column.getWidgetTemplate();
+			Element clone = (Element) template.cloneNode(true);
+			clone.setId(template.getId() + "_" + generateWidgetIdSufix());
+			WidgetFactory<?> factory = registeredWidgetFactories.getWidgetFactory(template.getAttribute("_type"));
+			return factory.createWidget(clone, clone.getId());
+		}
+		catch (InterfaceConfigException e)
+		{
+			GWT.log(e.getMessage(), e);
+			throw new RuntimeException("Could not create widget for grid column " + column.getKey());
+		}
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private long generateWidgetIdSufix()
+	{
+		if(generatedWidgetId == 0)
+		{
+			generatedWidgetId = new Date().getTime();
+		}
+		
+		return ++generatedWidgetId;
+	}
+
+	private Widget createDataLabel(ColumnDefinition column, String key)
+	{
+		DataColumnDefinition dataColumn = (DataColumnDefinition) column;
+		String formatterName = dataColumn.getFormatter();
+		Object value = dataSource.getValue(key);
+		String str = "";
+		
+		if(value != null)
+		{
+			if(formatterName != null && formatterName.length() > 0)
+			{
+				Formatter formatter = Screen.getFormatter(formatterName);
+				str = formatter.format(value);
+			}
+			else
+			{
+				str = value.toString();
+			}
+		}
+		
+		return new Label(str);
+	}
 	
 	@Override
-	protected Cell createColumnHeaderCell(final DataColumnDefinition columnDefinition)
+	protected Cell createColumnHeaderCell(final ColumnDefinition columnDefinition)
 	{
 		ColumnHeader header = new ColumnHeader(columnDefinition, this);		
 		headers.add(header);
@@ -402,9 +467,9 @@ public class PagedDataGrid extends AbstractGrid<DataColumnDefinition, DataRow> i
 		private Label columnLabelArrow;
 		
 		private PagedDataGrid grid;
-		private DataColumnDefinition columnDefinition;
+		private ColumnDefinition columnDefinition;
 		
-		public ColumnHeader(DataColumnDefinition columnDefinition, PagedDataGrid grid)
+		public ColumnHeader(ColumnDefinition columnDefinition, PagedDataGrid grid)
 		{
 			this.grid = grid;
 			this.columnDefinition = columnDefinition;
