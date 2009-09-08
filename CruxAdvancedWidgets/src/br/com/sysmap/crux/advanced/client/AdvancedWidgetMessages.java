@@ -30,4 +30,10 @@ public interface AdvancedWidgetMessages extends Messages
 
 	@DefaultMessage("[advanced-widgets - 003] - The formatter {0} was not found on this screen.")
 	String maskedTextBoxFormatterNotFound(String formatter);
+	
+	@DefaultMessage("[advanced-widgets - 004] - The operation <code>getBindedObject()</code> is only supported in grids whose datasources implement <code>BindableDataSource</code>.")
+	String getBindedObjectNotSupported();
+
+	@DefaultMessage("[advanced-widgets - 005] - Could not create widget for grid column ''{0}''")
+	String errorCreatingWidgetForColumn(String key);
 }

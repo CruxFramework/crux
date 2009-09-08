@@ -1,5 +1,6 @@
 package br.com.sysmap.crux.advanced.client.grid.model;
 
+import br.com.sysmap.crux.advanced.client.AdvancedWidgetMessages;
 import br.com.sysmap.crux.advanced.client.util.StyleUtils;
 
 import com.google.gwt.dom.client.Element;
@@ -16,13 +17,15 @@ public class Row
 	private boolean hasSelectionCell;
 	private boolean selected;
 	private boolean enabled;
+	private AdvancedWidgetMessages messages;
 		
-	protected Row(int index, Element elem, AbstractGrid<?> grid, boolean hasSelectionCell)
+	protected Row(int index, Element elem, AbstractGrid<?> grid, boolean hasSelectionCell, AdvancedWidgetMessages messages)
 	{
 		this.index = index;
 		this.elem = elem;
 		this.hasSelectionCell = hasSelectionCell;
 		this.grid = grid;
+		this.messages = messages;
 	}
 	
 	protected void setCell(Cell cell, String column)
@@ -174,5 +177,13 @@ public class Row
 		}
 		
 		this.enabled = enabled;
+	}
+
+	/**
+	 * @return the messages
+	 */
+	protected AdvancedWidgetMessages getMessages()
+	{
+		return messages;
 	}
 }

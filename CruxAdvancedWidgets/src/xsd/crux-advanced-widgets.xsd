@@ -16,7 +16,7 @@
 	<xs:element name="confirm" type="Confirm" />
 	<xs:element name="popup" type="Popup" />
 	<xs:element name="timer" type="Timer" />
-	<xs:element name="pagedDataGrid" type="PagedDataGrid" />
+	<xs:element name="grid" type="Grid" />
 	<xs:element name="sequentialPager" type="SequentialPager" />
 
 	<!--
@@ -39,7 +39,7 @@
 			<xs:element ref="confirm"/>
 			<xs:element ref="popup"/>
 			<xs:element ref="timer"/>
-			<xs:element ref="pagedDataGrid"/>
+			<xs:element ref="grid"/>
 			<xs:element ref="sequentialPager"/>
 		</xs:choice>
 	</xs:group>
@@ -251,7 +251,7 @@
 		Output
 	===================================================================================== 
 	-->
-	<xs:complexType name="PagedDataGrid">
+	<xs:complexType name="Grid">
 		<xs:complexContent>
 			<xs:extension base="basic:AbstractWidget">
 				<xs:sequence minOccurs="0">
@@ -282,7 +282,7 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:complexType name="DataGridColumn">
+	<xs:complexType name="GridColumn">
 		<xs:attribute name="width" type="xs:string" use="optional"/>
 		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
 		<xs:attribute name="label" type="xs:string" use="optional"/>
@@ -293,7 +293,7 @@
 	
 	<xs:complexType name="DataColumn">
 		<xs:complexContent>
-			<xs:extension base="DataGridColumn">
+			<xs:extension base="GridColumn">
 				<xs:attribute name="formatter" type="xs:string" use="optional"/>	
 			</xs:extension>		
 		</xs:complexContent>
@@ -301,7 +301,7 @@
 	
 	<xs:complexType name="WidgetColumn">
 		<xs:complexContent>
-			<xs:extension base="DataGridColumn">
+			<xs:extension base="GridColumn">
 				<xs:group ref="basic:widgets" />
 			</xs:extension>		
 		</xs:complexContent>

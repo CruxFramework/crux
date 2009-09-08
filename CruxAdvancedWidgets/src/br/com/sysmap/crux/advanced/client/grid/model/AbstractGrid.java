@@ -162,6 +162,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	
 	/**
 	 * Gets the row where the given widget is rendered
+	 * @param w a widget rendered inside a row  
 	 * @return a <code>Row</code> that contains the given widget. Null if no such row found.;
 	 */
 	public R getRow(Widget w)
