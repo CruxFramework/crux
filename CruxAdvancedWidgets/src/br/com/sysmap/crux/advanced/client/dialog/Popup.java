@@ -18,6 +18,7 @@ package br.com.sysmap.crux.advanced.client.dialog;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.advanced.client.event.openclose.HasBeforeCloseHandlers;
+import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
@@ -122,6 +123,26 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	public static void show(String title, String url,  BeforeCloseHandler beforeCloseHandler)
 	{
 		show(title, url, null, null, beforeCloseHandler, DEFAULT_STYLE_NAME, false, true);
+	}
+	
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return CruxInternalPopupController.invokeOnOpener(call, param, resultType);
+	}
+	
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	public static void invokeOnOpener(String call, Object param) throws ModuleComunicationException
+	{
+		CruxInternalPopupController.invokeOnOpener(call, param);
 	}
 	
 	/**

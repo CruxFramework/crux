@@ -6,23 +6,23 @@ package br.com.sysmap.crux.advanced.client.event;
  */
 public class Events
 {
-	public static final String BEFORE_COLLAPSE = "_onbeforecollapse";
-	public static final String BEFORE_EXPAND = "_onbeforeexpand";
+	public static final String BEFORE_COLLAPSE = "onbeforecollapse";
+	public static final String BEFORE_EXPAND = "onbeforeexpand";
 	
-	public static final String BEFORE_FOCUS = "_onbeforefocus";
-	public static final String BEFORE_BLUR = "_onbeforeblur";
+	public static final String BEFORE_FOCUS = "onbeforefocus";
+	public static final String BEFORE_BLUR = "onbeforeblur";
 	
-	public static final String BEFORE_CLOSE = "_onbeforeclose";
-	public static final String BEFORE_OPEN = "_onbeforeopen";
+	public static final String BEFORE_CLOSE = "onbeforeclose";
+	public static final String BEFORE_OPEN = "onbeforeopen";
 
-	public static final String CANCEL = "_oncancel";
-	public static final String OK = "_onok";	
+	public static final String CANCEL = "oncancel";
+	public static final String OK = "onok";	
 	
-	public static final String TIMEOUT = "_ontimeout";
+	public static final String TIMEOUT = "ontimeout";
 	
-	public static final String ROW_CLICK = "_onrowclick";
-	public static final String ROW_DOUBLE_CLICK = "_onrowdoubleclick";
-	public static final String ROW_RENDER = "_onrowrender";
+	public static final String ROW_CLICK = "onrowclick";
+	public static final String ROW_DOUBLE_CLICK = "onrowdoubleclick";
+	public static final String ROW_RENDER = "onrowrender";
 	
-	public static final String PAGE = "_onpage";
+	public static final String PAGE = "onpage";
 }

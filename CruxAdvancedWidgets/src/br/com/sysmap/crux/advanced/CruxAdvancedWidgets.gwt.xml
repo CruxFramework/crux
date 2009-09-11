@@ -18,4 +18,7 @@
     	<when-type-is class="br.com.sysmap.crux.labs.client.widgets.grid.GridLayout" />
 		<when-property-is name="user.agent" value="gecko1_8" />
     </replace-with>
+    <generate-with class="br.com.sysmap.crux.advanced.rebind.PopupOpenerInvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.advanced.client.dialog.PopupOpenerInvoker" />
+	</generate-with>
 </module>

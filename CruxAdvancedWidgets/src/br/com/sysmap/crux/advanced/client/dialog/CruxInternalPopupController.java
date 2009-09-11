@@ -174,6 +174,37 @@ public class CruxInternalPopupController
 	}
 	
 	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.getCruxSerializer().deserialize(callOpenerControllerAccessor(call,  Screen.getCruxSerializer().serialize(param)));
+	}
+	
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	public static void invokeOnOpener(String call, Object param) throws ModuleComunicationException
+	{
+		callOpenerControllerAccessor(call,  Screen.getCruxSerializer().serialize(param));
+	}
+	
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	private static native String callOpenerControllerAccessor(String call, String serializedData)/*-{
+		var o = $wnd.top._popup_origin[$wnd.top._popup_origin.length - 1];
+		return o._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+	
+	/**
 	 * 
 	 * @param call
 	 * @param serializedData
