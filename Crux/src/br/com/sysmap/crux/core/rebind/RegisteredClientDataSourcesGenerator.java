@@ -335,12 +335,6 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 									sourceWriter, false);
 			}
 
-			Field field = dataType.getDeclaredField(columnsData.identifier);
-			Class<?> type = field.getType();
-			generateFieldValueSet(logger, dataType, field, "ret", 
-					"("+getParameterDeclaration(type)+")record.getIdentifier()", 
-					sourceWriter, false);
-			
 			sourceWriter.println("return ret;");
 			sourceWriter.println("}");
 		}
