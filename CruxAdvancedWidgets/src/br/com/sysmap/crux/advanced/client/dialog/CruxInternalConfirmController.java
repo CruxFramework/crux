@@ -115,8 +115,8 @@ public class CruxInternalConfirmController
 			
 			HorizontalPanel horizontalPanel = new HorizontalPanel();
 			horizontalPanel.setSpacing(10);
-			horizontalPanel.add(createOkButton(dialogBox));
-			horizontalPanel.add(createCancelButton(dialogBox));
+			horizontalPanel.add(createOkButton(dialogBox, data));
+			horizontalPanel.add(createCancelButton(dialogBox, data));
 			
 			dockPanel.add(horizontalPanel, DockPanel.SOUTH);
 			dockPanel.setCellHorizontalAlignment(horizontalPanel, HasHorizontalAlignment.ALIGN_CENTER);
@@ -145,12 +145,18 @@ public class CruxInternalConfirmController
 
 	/**
 	 * @param dialogBox
+	 * @param data 
 	 * @return
 	 */
-	private DecoratedButton createCancelButton(final DialogBox dialogBox)
+	private DecoratedButton createCancelButton(final DialogBox dialogBox, ConfirmData data)
 	{
 		DecoratedButton cancelButton = new DecoratedButton();
-		cancelButton.setText(messages.confirmCancelLabel());
+		String text = data.getCancelButtonText();
+		if(text == null || text.length() == 0)
+		{
+			text = messages.confirmCancelLabel();
+		}
+		cancelButton.setText(text);
 		cancelButton.addStyleName("button");
 		cancelButton.addStyleName("cancelButton");
 		cancelButton.addClickHandler(new ClickHandler()
@@ -176,12 +182,18 @@ public class CruxInternalConfirmController
 
 	/**
 	 * @param dialogBox
+	 * @param data 
 	 * @return
 	 */
-	private DecoratedButton createOkButton(final DialogBox dialogBox)
+	private DecoratedButton createOkButton(final DialogBox dialogBox, ConfirmData data)
 	{
 		DecoratedButton okButton = new DecoratedButton();
-		okButton.setText(messages.confirmOkLabel());
+		String text = data.getOkButtonText();
+		if(text == null || text.length() == 0)
+		{
+			text = messages.confirmOkLabel();
+		}
+		okButton.setText(text);
 		okButton.addStyleName("button");
 		okButton.addStyleName("okButton");
 		okButton.addClickHandler(new ClickHandler()

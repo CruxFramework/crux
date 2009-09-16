@@ -57,6 +57,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	private RowSelectionModel rowSelection;
 	private ScrollPanel scrollingArea;
 	private int visibleColumnCount = -1;
+	private boolean stretchColumns = false;
 	
 	@SuppressWarnings("unchecked")
 	static class RowSelectionHandler<R extends Row> implements ClickHandler
@@ -84,11 +85,13 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * @param columnDefinitions the columns to be rendered
 	 * @param rowSelection the behavior of the grid about line selection 
 	 * @param cellSpacing the space between the cells
+	 * @param stretchColumns 
 	 */
-	public AbstractGrid(ColumnDefinitions columnDefinitions, RowSelectionModel rowSelection, int cellSpacing)
+	public AbstractGrid(ColumnDefinitions columnDefinitions, RowSelectionModel rowSelection, int cellSpacing, boolean stretchColumns)
 	{
 		this.definitions = columnDefinitions;
 		this.rowSelection = rowSelection;
+		this.stretchColumns = stretchColumns;
 		
 		panel = new SimplePanel();
 		panel.setStyleName(DEFAULT_STYLE_NAME);
@@ -104,6 +107,12 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		table = new GridHtmlTable();
 		table.setCellSpacing(cellSpacing);
 		table.setCellPadding(0);
+		
+		if(this.stretchColumns)
+		{
+			table.setWidth("100%");
+		}
+		
 		gridLayout.adjustToBrowser(scrollingArea, table);
 		
 		// lazy attaches the table to avoid problems related to scrolling    

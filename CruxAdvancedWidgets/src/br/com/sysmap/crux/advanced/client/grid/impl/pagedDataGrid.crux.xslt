@@ -22,8 +22,17 @@
 	<xsl:param name="xhtmlNS" select="'http://www.w3.org/1999/xhtml'"></xsl:param>
 
 	<xsl:template name="grid" match="adv:grid">
+	
 		<xsl:element name="span" namespace="{$xhtmlNS}">
-			<xsl:call-template name="widgetAttributes" />
+		
+			<xsl:call-template name="widgetAttributes">
+				<xsl:with-param name="widgetName" select="'advGrid'"/>
+			</xsl:call-template>
+			
+			<xsl:if test="string-length(@pageSize) > 0">
+				<xsl:attribute name="_pageSize" select="@pageSize" />
+			</xsl:if>
+			
 			<xsl:if test="string-length(@pageSize) > 0">
 				<xsl:attribute name="_pageSize" select="@pageSize" />
 			</xsl:if>

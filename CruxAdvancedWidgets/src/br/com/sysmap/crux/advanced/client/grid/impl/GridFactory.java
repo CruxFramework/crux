@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 /**
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-@DeclarativeFactory(id="grid", library="adv")
+@DeclarativeFactory(id="advGrid", library="adv")
 public class GridFactory extends WidgetFactory<Grid>
 {
 	/**
@@ -54,7 +54,7 @@ public class GridFactory extends WidgetFactory<Grid>
 	{
 		Grid grid = new Grid(getColumnDefinitions(gridElem), getPageSize(gridElem), 
 				                               getRowSelectionModel(gridElem), getCellSpacing(gridElem), 
-				                               getAutoLoad(gridElem));
+				                               getAutoLoad(gridElem), getStretchColumns(gridElem));
 		return grid;
 	}
 	
@@ -65,6 +65,18 @@ public class GridFactory extends WidgetFactory<Grid>
 		if(autoLoad != null && autoLoad.trim().length() > 0)
 		{
 			return Boolean.parseBoolean(autoLoad);
+		}
+		
+		return false;
+	}
+	
+	private boolean getStretchColumns(Element gridElem)
+	{
+		String stretchColumns = gridElem.getAttribute("_stretchColumns");
+		
+		if(stretchColumns != null && stretchColumns.trim().length() > 0)
+		{
+			return Boolean.parseBoolean(stretchColumns);
 		}
 		
 		return false;
@@ -225,7 +237,8 @@ public class GridFactory extends WidgetFactory<Grid>
 		@TagAttribute(value="rowSelection", type=RowSelectionModel.class, defaultValue="unselectable", autoProcess=false),
 		@TagAttribute(value="dataSource", autoProcess=false),
 		@TagAttribute(value="cellSpacing", type=Integer.class, defaultValue="1", autoProcess=false),
-		@TagAttribute(value="autoLoadData", type=Boolean.class, defaultValue="false", autoProcess=false)
+		@TagAttribute(value="autoLoadData", type=Boolean.class, defaultValue="false", autoProcess=false),
+		@TagAttribute(value="stretchColumns", type=Boolean.class, defaultValue="false", autoProcess=false)
 	})
 	public void processAttributes(WidgetFactoryContext<Grid> context) throws InterfaceConfigException
 	{

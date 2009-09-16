@@ -30,6 +30,12 @@
 			<xsl:if test="string-length(@title) > 0">
 				<xsl:attribute name="_title" select="@title"/>
 			</xsl:if>
+			<xsl:if test="string-length(@okButtonText) > 0">
+				<xsl:attribute name="_okButtonText" select="@okButtonText"/>
+			</xsl:if>
+			<xsl:if test="string-length(@cancelButtonText) > 0">
+				<xsl:attribute name="_cancelButtonText" select="@cancelButtonText"/>
+			</xsl:if>			
 			<xsl:if test="string-length(@onOk) > 0">
 				<xsl:attribute name="_onok" select="@onOk"/>
 			</xsl:if>

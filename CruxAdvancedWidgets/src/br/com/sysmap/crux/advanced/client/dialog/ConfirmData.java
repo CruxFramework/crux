@@ -32,17 +32,22 @@ public class ConfirmData implements CruxSerializable
 	private String styleName;
 	private String title;
 	private String message;
+	private String okButtonText;
+	private String cancelButtonText;
+	
 	private boolean animationEnabled;
 
 	public ConfirmData()
 	{
 	}
 	
-	public ConfirmData(String title, String message, String styleName, boolean animationEnabled)
+	public ConfirmData(String title, String message, String okButtonText, String cancelButtonText, String styleName, boolean animationEnabled)
 	{
 		this.styleName = styleName;
 		this.title = title;
 		this.message = message;
+		this.okButtonText = okButtonText;
+		this.cancelButtonText = cancelButtonText;
 		this.animationEnabled = animationEnabled;
 	}
 
@@ -92,9 +97,16 @@ public class ConfirmData implements CruxSerializable
 		{
 			Document root = XMLParser.parse(serializedData);
 			Element data = root.getDocumentElement();
-			return new ConfirmData(data.getAttribute("title"), data.getAttribute("message"), 
-								   data.getAttribute("styleName"), Boolean.parseBoolean(data.getAttribute("animationEnabled")));
+			
+			return 	new ConfirmData(
+							data.getAttribute("title"), 
+							data.getAttribute("message"), 
+							data.getAttribute("okButtonText"), 
+							data.getAttribute("cancelButtonText"), 
+							data.getAttribute("styleName"), 
+							Boolean.parseBoolean(data.getAttribute("animationEnabled")));
 		}
+		
 		return null;
 	}
 	
@@ -118,12 +130,53 @@ public class ConfirmData implements CruxSerializable
 		{
 			data.setAttribute("message", message);
 		}
+		if (okButtonText != null)
+		{
+			data.setAttribute("okButtonText", okButtonText);
+		}
+		if (cancelButtonText != null)
+		{
+			data.setAttribute("cancelButtonText", cancelButtonText);
+		}
 		if (styleName != null)
 		{
 			data.setAttribute("styleName", styleName);
 		}
+		
 		data.setAttribute("animationEnabled", Boolean.toString(animationEnabled));
 		
 		return document.toString();
+	}
+
+	/**
+	 * @return the okButtonText
+	 */
+	public String getOkButtonText()
+	{
+		return okButtonText;
+	}
+
+	/**
+	 * @param okButtonText the okButtonText to set
+	 */
+	public void setOkButtonText(String okButtonText)
+	{
+		this.okButtonText = okButtonText;
+	}
+
+	/**
+	 * @return the cancelButtonText
+	 */
+	public String getCancelButtonText()
+	{
+		return cancelButtonText;
+	}
+
+	/**
+	 * @param cancelButtonText the cancelButtonText to set
+	 */
+	public void setCancelButtonText(String cancelButtonText)
+	{
+		this.cancelButtonText = cancelButtonText;
 	}
 }

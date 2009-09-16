@@ -68,9 +68,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable {
 	 * @param autoLoadData if <code>true</code>, when a data source is set, its first page records are fetched and rendered. 
 	 * 	If <code>false</code>, the method <code>loadData()</code> must be invoked for rendering the first page.
 	 */
-	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData)
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData, boolean stretchColumns)
 	{
-		super(columnDefinitions, rowSelectionModel, cellSpacing);
+		super(columnDefinitions, rowSelectionModel, cellSpacing, stretchColumns);
 		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 		this.pageSize = pageSize;
 		this.rowSelectionModel = rowSelectionModel;

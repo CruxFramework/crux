@@ -37,6 +37,8 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 	private static CruxInternalConfirmController confirmController = null;
 	private String title;
 	private String message;
+	private String okButtonText;
+	private String cancelButtonText;
 	private String styleName;
 	private boolean animationEnabled;
 	protected static Confirm confirm;
@@ -115,7 +117,7 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 			confirmController = new CruxInternalConfirmController(); 
 		}
 		confirm = this;
-		confirmController.showConfirm(new ConfirmData(title, message, styleName!=null?styleName:DEFAULT_STYLE_NAME, animationEnabled));
+		confirmController.showConfirm(new ConfirmData(title, message, okButtonText, cancelButtonText, styleName!=null?styleName:DEFAULT_STYLE_NAME, animationEnabled));
 	}
 	
 	/**
@@ -131,6 +133,32 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 	}
 	
 	/**
+	 * @param title
+	 * @param message
+	 * @param okButtonText
+	 * @param cancelButtonText
+	 * @param okHandler
+	 * @param cancelHandler
+	 */
+	public static void show(String title, String message, String okButtonText, String cancelButtonText, OkHandler okHandler, CancelHandler cancelHandler)
+	{
+		show(title, message, okButtonText, cancelButtonText, okHandler, cancelHandler, null, false);
+	}
+	
+	/**
+	 * @param title
+	 * @param message
+	 * @param okHandler
+	 * @param cancelHandler
+	 * @param styleName
+	 * @param animationEnabled
+	 */
+	public static void show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, String styleName, boolean animationEnabled)
+	{
+		show(title, message, null, null, okHandler, cancelHandler, styleName, animationEnabled);
+	}
+	
+	/**
 	 * 
 	 * @param title
 	 * @param message
@@ -138,11 +166,13 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 	 * @param cancelCall
 	 * @param styleName
 	 */
-	public static void show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, String styleName, boolean animationEnabled)
+	public static void show(String title, String message, String okButtonText, String cancelButtonText, OkHandler okHandler, CancelHandler cancelHandler, String styleName, boolean animationEnabled)
 	{
 		Confirm confirm = new Confirm(); 
 		confirm.setTitle(title);
 		confirm.setMessage(message);
+		confirm.setOkButtonText(okButtonText);
+		confirm.setCancelButtonText(cancelButtonText);
 		confirm.setStyleName(styleName);
 		confirm.setAnimationEnabled(animationEnabled);
 		if (okHandler != null)
@@ -154,5 +184,37 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 			confirm.addCancelHandler(cancelHandler);
 		}
 		confirm.show();
+	}
+
+	/**
+	 * @return the okButtonText
+	 */
+	public String getOkButtonText()
+	{
+		return okButtonText;
+	}
+
+	/**
+	 * @param okButtonText the okButtonText to set
+	 */
+	public void setOkButtonText(String okButtonText)
+	{
+		this.okButtonText = okButtonText;
+	}
+
+	/**
+	 * @return the cancelButtonText
+	 */
+	public String getCancelButtonText()
+	{
+		return cancelButtonText;
+	}
+
+	/**
+	 * @param cancelButtonText the cancelButtonText to set
+	 */
+	public void setCancelButtonText(String cancelButtonText)
+	{
+		this.cancelButtonText = cancelButtonText;
 	}
 }

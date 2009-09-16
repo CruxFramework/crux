@@ -78,6 +78,18 @@ public class Row
 	}
 	
 	/**
+	 * Gets the cell internal widget  
+	 * @param column
+	 * @return
+	 */
+	public Widget getWidget(String column)
+	{
+		int colIndex = getColumnIndex(column);
+		Cell cell = (Cell) grid.getTable().getWidget(index, colIndex);
+		return cell.getCellWidget();
+	}
+	
+	/**
 	 * Adds a style name to the row
 	 * @param rowIndex
 	 */

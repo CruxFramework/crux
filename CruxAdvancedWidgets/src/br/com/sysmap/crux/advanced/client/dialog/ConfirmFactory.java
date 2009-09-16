@@ -15,7 +15,6 @@
  */ 
 package br.com.sysmap.crux.advanced.client.dialog;
 
-import br.com.sysmap.crux.advanced.client.decoratedpanel.DecoratedPanel;
 import br.com.sysmap.crux.advanced.client.event.dialog.CancelEvtBind;
 import br.com.sysmap.crux.advanced.client.event.dialog.OkEvtBind;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
@@ -47,7 +46,9 @@ public class ConfirmFactory extends WidgetFactory<Confirm>
 	@Override
 	@TagAttributes({
 		@TagAttribute(value="title", supportsI18N=true),
-		@TagAttribute(value="message", supportsI18N=true)
+		@TagAttribute(value="message", supportsI18N=true),
+		@TagAttribute(value="okButtonText", supportsI18N=true),
+		@TagAttribute(value="cancelButtonText", supportsI18N=true)
 	})
 	public void processAttributes(WidgetFactoryContext<Confirm> context) throws InterfaceConfigException
 	{
