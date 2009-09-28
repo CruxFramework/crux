@@ -158,7 +158,7 @@ public class DynaTabs extends Composite
 		}
 		else
 		{
-			BeforeCloseEvent evt = BeforeCloseEvent.fire(getTab(tabId).getFlapPanel());
+			BeforeCloseEvent evt = BeforeCloseEvent.fire(getTab(tabId));
 			
 			if (!evt.isCanceled())
 			{

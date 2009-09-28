@@ -61,13 +61,26 @@ public class StackMenuItem extends Composite implements HasClickHandlers
 		
 		// sub items wrapping box
 		subItemsCanvas = new FlowPanel();
-		subItemsCanvas.setVisible(false);
 		subItemsCanvas.setStyleName("subItemsWrapper");
 		
 		wrappingCanvas.add(subItemsCanvas);
 		wrappingCanvas.setCellVerticalAlignment(subItemsCanvas, HasVerticalAlignment.ALIGN_TOP);
 		
+		showSubItens(false);
+		
 		initWidget(wrappingCanvas);
+	}
+
+	/**
+	 * @param wrappingCanvas2
+	 * @param subItemsCanvas2
+	 * @param b
+	 */
+	private void showSubItens(boolean show)
+	{
+		// Hides the TR which contains the cell where the sub items DIV resides.
+		// If only the sub items DIV is hidden, an undesired space will be displayed under the item caption.
+		subItemsCanvas.getElement().getParentElement().getParentElement().getStyle().setProperty("display", show ? "" : "none");
 	}
 
 	/**
@@ -183,12 +196,12 @@ public class StackMenuItem extends Composite implements HasClickHandlers
 		if(open)
 		{
 			itemCaption.setOpen(true);
-			this.subItemsCanvas.setVisible(true);		
+			showSubItens(true);
 		}
 		else
 		{
 			itemCaption.setOpen(false);
-			this.subItemsCanvas.setVisible(false);				
+			showSubItens(false);				
 		}		
 	}
 

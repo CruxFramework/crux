@@ -111,6 +111,9 @@ public class CruxInternalMessageBoxController
 			dockPanel.setCellHorizontalAlignment(horizontalPanel, HasHorizontalAlignment.ALIGN_CENTER);
 			
 			dialogBox.add(dockPanel);
+			
+			dockPanel.getElement().getParentElement().setAttribute("align", "center");
+			
 			dialogBox.center();
 			dialogBox.show();
 		}
