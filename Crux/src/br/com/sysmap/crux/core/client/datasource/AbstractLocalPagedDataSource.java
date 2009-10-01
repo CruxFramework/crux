@@ -51,6 +51,10 @@ abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> exten
 	public int getCurrentPageSize()
 	{
 		int pageEndRecord = getPageEndRecord();
+		if (pageEndRecord < 0)
+		{
+			return 0;
+		}
 		return pageEndRecord - getPageStartRecord() + 1;
 	}
 	
