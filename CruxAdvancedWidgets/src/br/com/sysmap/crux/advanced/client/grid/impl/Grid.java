@@ -555,7 +555,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable {
 	/**
 	 * @return the dataSource
 	 */
-	EditablePagedDataSource getDataSource()
+	public EditablePagedDataSource getDataSource()
 	{
 		return dataSource;
 	}

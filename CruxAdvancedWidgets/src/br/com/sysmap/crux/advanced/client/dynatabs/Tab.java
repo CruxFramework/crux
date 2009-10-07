@@ -16,8 +16,10 @@
 package br.com.sysmap.crux.advanced.client.dynatabs;
 
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeBlurHandler;
+import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusEvent;
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusHandler;
 import br.com.sysmap.crux.advanced.client.event.focusblur.HasBeforeFocusAndBeforeBlurHandlers;
+import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.advanced.client.event.openclose.HasBeforeCloseHandlers;
 import br.com.sysmap.crux.advanced.client.js.JSWindow;
@@ -144,12 +146,12 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 
 	public HandlerRegistration addBeforeFocusHandler(BeforeFocusHandler handler)
 	{
-		return flapPanel.addBeforeFocusHandler(handler);
+		return addHandler(handler, BeforeFocusEvent.getType());
 	}
 
 	public HandlerRegistration addBeforeCloseHandler(BeforeCloseHandler handler)
 	{
-		return flapPanel.addBeforeCloseHandler(handler);
+		return addHandler(handler, BeforeCloseEvent.getType());
 	}
 	
 	public JSWindow getInternalWindow()

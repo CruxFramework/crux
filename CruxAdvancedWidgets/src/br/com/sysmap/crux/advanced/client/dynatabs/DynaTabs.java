@@ -230,7 +230,7 @@ public class DynaTabs extends Composite
 						}
 						else
 						{
-							BeforeFocusEvent evt = BeforeFocusEvent.fire(tab.getFlapPanel());
+							BeforeFocusEvent evt = BeforeFocusEvent.fire(tab);
 							canceled = canceled || evt.isCanceled();
 						}
 					}
