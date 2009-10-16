@@ -18,11 +18,12 @@ package br.com.sysmap.crux.tools.htmltags;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -39,8 +40,17 @@ import nu.xom.xinclude.XIncluder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.Environment;
 import br.com.sysmap.crux.core.utils.FileSystemUtils;
 import br.com.sysmap.crux.tools.htmltags.util.StreamUtils;
@@ -62,46 +72,6 @@ public class CruxToHtmlTransformer
 	private static Transformer transformer = null;
 	private static final Lock lock = new ReentrantLock();
 
-	/**
-	 * Initializes the static resources
-	 */
-	private static void init()
-	{
-		if (transformer == null)
-		{
-			lock.lock();
-
-			if (transformer == null)
-			{
-				try
-				{
-					TransformerFactory tfactory = new TransformerFactoryImpl();
-					File tmpDir = new File(FileSystemUtils.getTempDirFile(), "crux_xslt");
-					if (!tmpDir.exists())
-					{
-						tmpDir.mkdir();
-					}
-					InputStream is = generateHtmlTagsXSLT(tmpDir);
-					transformer = tfactory.newTransformer(new StreamSource(is));
-					
-					File[] tmpXsltFiles = tmpDir.listFiles();
-					for (File file : tmpXsltFiles)
-					{
-						file.delete();
-					}
-					tmpDir.delete();
-				}
-				catch (Throwable e)
-				{
-					log.error(messages.transformerErrorCreatingTransformer(e.getMessage()), e);
-				}
-				finally
-				{
-					lock.unlock();
-				}
-			}
-		}
-	}
 
 	/**
 	 * Executes the transformation
@@ -128,6 +98,64 @@ public class CruxToHtmlTransformer
 		{
 			log.error(e.getMessage(), e);
 			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Makes it easier to read the output files
+	 * @param force
+	 */
+	public static void setForceIndent(boolean force)
+	{
+		forceIndent = force;
+	}
+
+	/**
+	 * @param outputCharset
+	 */
+	public static void setOutputCharset(String charset)
+	{
+		outputCharset = charset;
+	}	
+
+	/**
+	 * Initializes the static resources
+	 */
+	private static void init()
+	{
+		if (transformer == null)
+		{
+			lock.lock();
+
+			if (transformer == null)
+			{
+				try
+				{
+					TransformerFactory tfactory = new TransformerFactoryImpl();
+					File tmpDir = new File(FileSystemUtils.getTempDirFile(), "crux_xslt");
+					if (!tmpDir.exists())
+					{
+						tmpDir.mkdir();
+					}
+					InputStream is = generateHtmlTagsXSLT();
+					transformer = tfactory.newTransformer(new StreamSource(is));
+					
+					File[] tmpXsltFiles = tmpDir.listFiles();
+					for (File file : tmpXsltFiles)
+					{
+						file.delete();
+					}
+					tmpDir.delete();
+				}
+				catch (Throwable e)
+				{
+					log.error(messages.transformerErrorCreatingTransformer(e.getMessage()), e);
+				}
+				finally
+				{
+					lock.unlock();
+				}
+			}
 		}
 	}
 
@@ -163,7 +191,7 @@ public class CruxToHtmlTransformer
 	 * Generate the XSLT file based on template crux-ui.template.xslt, importing all files with extension .crux.xslt.
 	 * @return
 	 */
-	private static InputStream generateHtmlTagsXSLT(File parentDir)
+	private static InputStream generateHtmlTagsXSLT()
 	{
 		InputStream templateIs = CruxToHtmlTransformer.class.getResourceAsStream("/META-INF/crux-ui.template.xslt");
 		if (templateIs == null)
@@ -173,8 +201,10 @@ public class CruxToHtmlTransformer
 		try
 		{
 			String template = StreamUtils.readAsUTF8(templateIs);
-			String imports = generateImportList(parentDir);
-			template = template.replace("${imports}", imports);
+			String allWidgets = generateWidgetsList();
+			String referencedWidgets = generateReferenceWidgetsList();
+			template = template.replace("${allWidgets}", allWidgets);
+			template = template.replace("${referencedWidgets}", referencedWidgets);
 			template = template.replace("${indent}", mustIndent() ? "yes" : "no");
 			template = template.replace("${charset}", outputCharset);
 			
@@ -192,43 +222,106 @@ public class CruxToHtmlTransformer
 	}
 
 	/**
+	 * 
+	 * @return
+	 */
+	private static String generateReferenceWidgetsList()
+	{
+		StringBuilder widgetList = new StringBuilder();
+		Set<String> registeredLibraries = WidgetConfig.getRegisteredLibraries();
+		for (String library : registeredLibraries)
+		{
+			Set<String> factories = WidgetConfig.getRegisteredLibraryFactories(library);
+			for (String widget : factories)
+			{
+				Class<?> clientClass = WidgetConfig.getClientClass(library, widget);
+				try
+				{
+					Method method = clientClass.getMethod("processChildren", new Class[]{WidgetFactoryContext.class});
+					generateReferenceWidgetsListFromTagChildren(widgetList, method.getAnnotation(TagChildren.class), 
+																		library, widget, new HashSet<Class<?>>());
+				}
+				catch (NoSuchMethodException e)
+				{
+					log.error(messages.transformerErrorGeneratingWidgetsReferenceList(), e);
+				}
+			}
+		}
+		
+		return widgetList.toString();
+	}
+
+	/**
+	 * 
+	 * @param widgetList 
+	 * @param tagChildren
+	 * @param parentLibrary
+	 */
+	private static void generateReferenceWidgetsListFromTagChildren(StringBuilder widgetList, TagChildren tagChildren, 
+																    String parentLibrary, String parentWidget, Set<Class<?>> added)
+	{
+		if (tagChildren != null)
+		{
+			for (TagChild child : tagChildren.value())
+			{
+				Class<? extends WidgetChildProcessor<?>> processorClass = child.value();
+				if (!added.contains(processorClass))
+				{
+					added.add(processorClass);
+					TagChildAttributes childAttributes = processorClass.getAnnotation(TagChildAttributes.class);
+					if (childAttributes!= null)
+					{
+						if (WidgetFactory.class.isAssignableFrom(childAttributes.type()))
+						{
+							DeclarativeFactory declarativeFactory = childAttributes.type().getAnnotation(DeclarativeFactory.class);
+							if (declarativeFactory != null)
+							{
+								widgetList.append(","+parentLibrary+"_"+parentWidget+"_"+childAttributes.tagName()+",|"+
+													  declarativeFactory.library()+"_"+declarativeFactory.id()+"|");
+							}
+						}
+					}
+					
+					try
+					{
+						Method method = processorClass.getMethod("processChildren", new Class[]{WidgetChildProcessorContext.class});
+						generateReferenceWidgetsListFromTagChildren(widgetList, method.getAnnotation(TagChildren.class), 
+																	parentLibrary, parentWidget, added);
+					}
+					catch (Exception e)
+					{
+						log.error(messages.transformerErrorGeneratingWidgetsList(), e);
+					}
+				}
+			}
+		}				
+	}
+	
+	/**
+	 * 
+	 */
+	private static String generateWidgetsList() throws IOException
+	{
+		StringBuilder widgetList = new StringBuilder(",");
+		Set<String> registeredLibraries = WidgetConfig.getRegisteredLibraries();
+		for (String library : registeredLibraries)
+		{
+			Set<String> factories = WidgetConfig.getRegisteredLibraryFactories(library);
+			for (String widget : factories)
+			{
+				widgetList.append(library+"_"+widget+",");				
+			}
+		}
+		
+		return widgetList.toString();
+	}
+
+	/**
 	 * @return
 	 */
 	private static boolean mustIndent()
 	{
 		return !Environment.isProduction() || forceIndent;
-	}
-
-	/**
-	 * 
-	 * @return
-	 * @throws IOException 
-	 */
-	private static String generateImportList(File parentDir) throws IOException
-	{
-		StringBuilder importList = new StringBuilder();
-		Iterator<String> iterator = WidgetTagConfig.iterateStyleSheets();
-
-		int xsltCount = 0;
-		
-		while (iterator.hasNext())
-		{
-			InputStream streamXslt = new ByteArrayInputStream(iterator.next().getBytes());
-			File xsltFile = new File(parentDir, "cruxHtmlTag"+(xsltCount++)+".xslt");
-			FileOutputStream out = new FileOutputStream(xsltFile);
-			StreamUtils.write(streamXslt, out, false);
-			out.close();
-			String filePath = xsltFile.getCanonicalPath().replaceAll("\\\\", "/");
-			if (!filePath.startsWith("/"))
-			{
-				filePath = "/"+filePath;
-			}
-			filePath = "file://"+filePath;
-
-			importList.append("<xsl:import href=\"" + filePath + "\"/>");
-		}
-		
-		return importList.toString();
 	}
 
 	/**
@@ -255,21 +348,4 @@ public class CruxToHtmlTransformer
 			throw new InterfaceConfigException(e.getMessage(), e);
 		}
 	}
-
-	/**
-	 * Makes it easier to read the output files
-	 * @param force
-	 */
-	public static void setForceIndent(boolean force)
-	{
-		forceIndent = force;
-	}
-
-	/**
-	 * @param outputCharset
-	 */
-	public static void setOutputCharset(String charset)
-	{
-		outputCharset = charset;
-	}	
 }

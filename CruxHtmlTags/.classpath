@@ -11,5 +11,8 @@
 	<classpathentry kind="lib" path="lib/xom-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/javassist.jar"/>
 	<classpathentry kind="lib" path="lib/crux-scannotation.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
+	<classpathentry kind="lib" path="C:/desenvolvimento/ide/workspaces/myeclipse/CruxBasicWidgets/dist/crux-basic-widgets.jar"/>
+	<classpathentry kind="lib" path="C:/desenvolvimento/ide/workspaces/myeclipse/CruxAdvancedWidgets/dist/crux-advanced-widgets.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
