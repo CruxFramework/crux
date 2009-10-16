@@ -166,7 +166,8 @@
 {
 	height:30px;
 	width:5px;
-	font-size: 0px;
+	font-size: 5px;
+	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat top left;
 }
 .crux-Popup .topCenterCell
@@ -175,13 +176,15 @@
 	font-weight: bold;
 	color: #6C83C3;
 	text-align: left;
+	width: 100%;
 	font-family: Verdana, Arial, Helvetica;
 	background: url(../img/title-panel-blue.gif) no-repeat top center;
 }
 .crux-Popup .topRightCell
 {
 	width:5px;
-	font-size: 0px;
+	font-size: 5px;
+	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat top right;
 	padding-right: 5px;
 }
@@ -394,7 +397,7 @@
 	font-size:11px;
 	font-weight:bold;
 	text-decoration:none;
-	padding:4px 0 6px 10px;
+	padding:4px 0 2px 10px;
 }
 .crux-StackMenu .hasSubItems
 {
@@ -686,7 +689,8 @@
 {
 	height:30px;
 	width:5px;
-	font-size: 0px;
+	font-size: 5px;
+	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat top left;
 }
 .crux-TitlePanel .topCenterCell 
@@ -696,6 +700,7 @@
 	color: #6C83C3;
 	text-align: left;
 	font-family: Verdana, Arial, Helvetica;
+	width: 100%;
 	background: url(../img/title-panel-blue.gif) no-repeat top center;
 }
 .crux-TitlePanel .topCenterRightCell 
@@ -707,13 +712,15 @@
 .crux-TitlePanel .topRightCell
 {
 	width:5px;
-	font-size: 0px;
+	font-size: 5px;
+	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat top right;
 }
 .crux-TitlePanel .middleLeftCell
 {
 	width: 5px;
-	font-size: 0px;
+	font-size: 5px;
+	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat center left;
 }
 .crux-TitlePanel .middleCenterCell
@@ -723,7 +730,8 @@
 .crux-TitlePanel .middleRightCell
 {
 	width: 5px;
-	font-size: 0px;
+	font-size: 5px;
+	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat center right;
 }
 .crux-TitlePanel .bottomLeftCell
@@ -754,7 +762,8 @@
 {
 	height:30px;
 	width:5px;
-	font-size: 0px;
+	font-size: 5px;
+	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat top left;
 }
 .crux-CollapsePanel .topCenterCell 
@@ -763,13 +772,15 @@
 	font-weight: bold;
 	color: #0066CC;
 	text-align: left;
+	width: 100%;
 	font-family: Verdana, Arial, Helvetica;
 	background: url(../img/title-panel-blue.gif) no-repeat top center;
 }
 .crux-CollapsePanel .topRightCell
 {
 	width:5px;
-	font-size: 0px;
+	font-size: 5px;
+	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat top right;
 	padding-right: 5px;
 }
@@ -815,7 +826,8 @@
 }
 .crux-DecoratedPanel .topLeftCell 
 {
-	font-size: 0px;
+	font-size: 5px;
+	font-family: monospace;
 	height:5px;
 	width:5px;
 	background: url(../img/decorated-panel.gif) no-repeat top left;
@@ -823,6 +835,7 @@
 .crux-DecoratedPanel .topCenterCell 
 {
 	font-size: 0px;
+	width: 100%;
 	background: url(../img/decorated-panel.gif) no-repeat top center;
 }
 .crux-DecoratedPanel .topCenterRightCell 
@@ -833,7 +846,8 @@
 }
 .crux-DecoratedPanel .topRightCell
 {
-	font-size: 0px;
+	font-size: 5px;
+	font-family: monospace;
 	width:5px;
 	background: url(../img/decorated-panel.gif) no-repeat top right;
 }
