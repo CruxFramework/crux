@@ -42,7 +42,8 @@ public abstract class AbstractCheckBoxFactory<T extends CheckBox> extends FocusW
 	 */
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="checked", type=Boolean.class, autoProcess=false)
+		@TagAttribute(value="checked", type=Boolean.class, autoProcess=false),
+		@TagAttribute("formValue")
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
@@ -56,7 +57,7 @@ public abstract class AbstractCheckBoxFactory<T extends CheckBox> extends FocusW
 		{
 			widget.setValue(Boolean.parseBoolean(checked));
 		}
-
+		
 		String innerHtml = element.getInnerHTML();
 		String text = element.getAttribute("_text");		
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)

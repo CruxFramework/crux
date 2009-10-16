@@ -32,6 +32,10 @@
 				<xsl:attribute name="_checked" select="@checked"/>			
 			</xsl:if>
 			
+			<xsl:if test="string-length(@formValue) > 0">
+				<xsl:attribute name="_formValue" select="@formValue"/>			
+			</xsl:if>
+			
 			<xsl:copy-of select="child::*" copy-namespaces="no"/>
 			
 			<xsl:value-of select="' '"/>
