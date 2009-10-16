@@ -36,7 +36,6 @@ import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represents a FocusPanelFactory
@@ -81,12 +80,4 @@ public class FocusPanelFactory extends PanelFactory<FocusPanel>
 	{
 		return new FocusPanel();
 	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(FocusPanel parent, Widget child, Element parentElement, Element childElement) 
-	{
-		parent.add(child);
-	}	
 }

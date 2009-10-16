@@ -15,24 +15,28 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import java.util.List;
-
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
-import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.CaptionPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory for CaptionPanel widgets
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @DeclarativeFactory(id="captionPanel", library="bas")
-public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implements HasWidgetsFactory<CaptionPanel>
+public class CaptionPanelFactory extends CompositeFactory<CaptionPanel>
 {
 	@Override
 	@TagAttributes({
@@ -44,40 +48,59 @@ public class CaptionPanelFactory extends CompositeFactory<CaptionPanel> implemen
 	}
 	
 	@Override
-	public void processChildren(WidgetFactoryContext<CaptionPanel> context) throws InterfaceConfigException
-	{
-		Element element = context.getElement();
-		CaptionPanel widget = context.getWidget();
-
-		List<Element> children = ensureChildrenSpans(element, true);
-		
-		for (Element child : children)
-		{
-			// It's an HTML caption
-			if(!isWidget(child))
-			{
-				widget.setCaptionHTML(child.getInnerHTML());
-			}
-			
-			// Is a widget content
-			else
-			{
-				widget.setContentWidget(createChildWidget(child, child.getId()));
-			}
-		}
-	}
+	@TagChildren({
+		@TagChild(CaptionProcessor.class),
+		@TagChild(ContentProcessor.class)
+	})	
+	public void processChildren(WidgetFactoryContext<CaptionPanel> context) throws InterfaceConfigException {}
 	
 	@Override
 	public CaptionPanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new CaptionPanel();
 	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(CaptionPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
+	
+	@TagChildAttributes(minOccurs="0")
+	public static class CaptionProcessor extends ChoiceChildProcessor<CaptionPanel>
 	{
-		// nothing to do here
+		@Override
+		@TagChildren({
+			@TagChild(CaptionTextProcessor.class),
+			@TagChild(CaptionHTMLProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<CaptionPanel> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(minOccurs="0", tagName="widget")
+	public static class ContentProcessor extends WidgetChildProcessor<CaptionPanel> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(WidgetProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<CaptionPanel> context) throws InterfaceConfigException {}
+	}
+
+	@TagChildAttributes(minOccurs="0", widgetProperty="contentWidget")
+	public static class WidgetProcessor extends AnyWidgetChildProcessor<CaptionPanel> {}
+	
+	@TagChildAttributes(tagName="captionText", type=String.class)
+	public static class CaptionTextProcessor extends WidgetChildProcessor<CaptionPanel>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<CaptionPanel> context) throws InterfaceConfigException 
+		{
+			context.getRootWidget().setCaptionText(context.getChildElement().getInnerHTML());
+		}
+	}
+	
+	@TagChildAttributes(tagName="captionHTML", type=AnyTag.class)
+	public static class CaptionHTMLProcessor extends WidgetChildProcessor<CaptionPanel>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<CaptionPanel> context) throws InterfaceConfigException 
+		{
+			context.getRootWidget().setCaptionHTML(context.getChildElement().getInnerHTML());
+		}
 	}
 }

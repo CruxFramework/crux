@@ -17,7 +17,9 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.factory.HasDirectionFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
@@ -40,10 +42,12 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 {
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="horizontalAlignment", autoProcess=false),
-		@TagAttribute(value="verticalAlignment", autoProcess=false),
 		@TagAttribute("href"),
 		@TagAttribute("target")
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("horizontalAlignment"),
+		@TagAttributeDeclaration("verticalAlignment")
 	})
 	public void processAttributes(WidgetFactoryContext<Anchor> context) throws InterfaceConfigException
 	{

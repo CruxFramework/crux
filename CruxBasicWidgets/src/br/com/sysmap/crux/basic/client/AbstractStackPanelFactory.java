@@ -15,11 +15,19 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -32,50 +40,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class AbstractStackPanelFactory<T extends StackPanel> extends ComplexPanelFactory<T>
 {
+	private static final String KEY_IS_HTML = "isHtml";
+	private static final String KEY_TITLE = "title";
+
 	protected BasicMessages messages = GWT.create(BasicMessages.class);
 	
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(T parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
-	{
-		Element childElementParent = childElement.getParentElement();
-		
-		String parentId = parentElement.getId();
-		String childParentId = childElementParent.getId();
-		
-		// there's no stack text. 
-		if (parentId.equals(childParentId))
-		{
-			parent.add(child);
-		}
-		else 
-		{
-			String stackText = childElementParent.getAttribute("_widgetTitle");
-			// stack text as text
-			if (stackText != null && stackText.trim().length() > 0)
-			{
-				parent.add(child, stackText);
-			}
-			// stack text as html
-			else
-			{
-				Element stackTextSpan = ensureFirstChildSpan(childElementParent, true);
-				if (stackTextSpan != null && !isWidget(stackTextSpan))
-				{
-					parent.add(child, stackTextSpan.getInnerHTML(), true);
-				}
-				else
-				{
-					throw new InterfaceConfigException(messages.stackPanelIvalidChild(childElement.getId(), parentElement.getId()));
-				}
-			}
-		}
-	}
-
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="visibleStack", type=Integer.class, autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="visibleStack", type=Integer.class)
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException 
 	{
@@ -96,5 +68,97 @@ public abstract class AbstractStackPanelFactory<T extends StackPanel> extends Co
 			});
 		}
 	}
+
+	@Override
+	@TagChildren({
+		@TagChild(StackItemProcessor.class)
+	})	
+	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException
+	{
+	}
 	
+	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", tagName="stackItem")
+	public static class StackItemProcessor extends WidgetChildProcessor<StackPanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TitleProcessor.class),
+			@TagChild(ContentProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(minOccurs="0")
+	public static class TitleProcessor extends ChoiceChildProcessor<StackPanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TitleTextProcessor.class),
+			@TagChild(TitleHTMLProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException {}
+	}
+
+	@TagChildAttributes(tagName="textTitle", type=String.class)
+	public static class TitleTextProcessor extends WidgetChildProcessor<StackPanel>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException 
+		{
+			context.setAttribute(KEY_TITLE, context.getChildElement().getInnerHTML());
+			context.setAttribute(KEY_IS_HTML, false);
+		}
+	}
+	
+	@TagChildAttributes(tagName="htmlTitle", type=AnyTag.class)
+	public static class TitleHTMLProcessor extends WidgetChildProcessor<StackPanel>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException 
+		{
+			context.setAttribute(KEY_TITLE, context.getChildElement().getInnerHTML());
+			context.setAttribute(KEY_IS_HTML, true);
+		}
+	}
+	
+	@TagChildAttributes(minOccurs="0", tagName="widget")
+	public static class ContentProcessor extends WidgetChildProcessor<StackPanel> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(ContentWidgetProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException {}
+	}
+
+	@TagChildAttributes(minOccurs="0", type=AnyWidget.class)
+	public static class ContentWidgetProcessor extends WidgetChildProcessor<StackPanel> 
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException 
+		{
+			Element childElement = context.getChildElement();
+			Widget child = createChildWidget(childElement, childElement.getId());
+			
+			String title = (String)context.getAttribute(KEY_TITLE);
+			if (title == null)
+			{
+				context.getRootWidget().add(child);
+			}
+			else
+			{
+				Boolean isHtml = (Boolean)context.getAttribute(KEY_IS_HTML);
+				if (isHtml == null)
+				{
+					context.getRootWidget().add(child, title);
+				}
+				else
+				{
+					context.getRootWidget().add(child, title, isHtml);
+				}
+			}
+			context.setAttribute(KEY_TITLE, null);
+			context.setAttribute(KEY_IS_HTML, null);
+		}	
+	}
 }

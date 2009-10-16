@@ -16,7 +16,15 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyWidget;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -36,25 +44,55 @@ public class AbsolutePanelFactory extends ComplexPanelFactory<AbsolutePanel>
 		return new AbsolutePanel();
 	}
 
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(AbsolutePanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
+	@Override
+	@TagChildren({
+		@TagChild(AbsoluteChildrenProcessor.class)
+	})	
+	public void processChildren(WidgetFactoryContext<AbsolutePanel> context) throws InterfaceConfigException
 	{
-		Element childElementParent = childElement.getParentElement();
-		// there're cell attributes . 
-		if (!parentElement.getId().equals(childElementParent.getId()))
+	}	
+	
+	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", tagName="widget" )
+	public static class AbsoluteChildrenProcessor extends WidgetChildProcessor<AbsolutePanel> 
+	{
+		@Override
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration("left"),
+			@TagAttributeDeclaration("top")
+		})
+		@TagChildren({
+			@TagChild(AbsoluteWidgetProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<AbsolutePanel> context) throws InterfaceConfigException
 		{
-			String left = childElementParent.getAttribute("_left");
-			String top = childElementParent.getAttribute("_top");
+			String left = context.getChildElement().getAttribute("_left");
+			String top = context.getChildElement().getAttribute("_top");
+			context.setAttribute("left", left);
+			context.setAttribute("top", top);
+		}
+	}
+
+	@TagChildAttributes(type=AnyWidget.class)
+	public static class AbsoluteWidgetProcessor extends WidgetChildProcessor<AbsolutePanel> 
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<AbsolutePanel> context) throws InterfaceConfigException
+		{
+			String left = (String) context.getAttribute("left");
+			String top = (String) context.getAttribute("top");
+
+			Widget child = createChildWidget(context.getChildElement(), context.getChildElement().getId());
 			if (left != null && left.length() > 0 && top != null && top.length() > 0)
 			{
-				parent.add(child, Integer.parseInt(left), Integer.parseInt(top));
+				context.getRootWidget().add(child, Integer.parseInt(left), Integer.parseInt(top));
 			}
 			else
 			{
-				parent.add(child);
+				context.getRootWidget().add(child);
 			}
-		}		
-	}
+			
+			context.setAttribute("left", null);
+			context.setAttribute("top", null);
+		}
+	}	
 }

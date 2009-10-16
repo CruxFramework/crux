@@ -16,26 +16,30 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HorizontalSplitPanel;
 import com.google.gwt.user.client.ui.HorizontalSplitPanelImages;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represents a HorizontalSplitPanel
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="horizontalSplitPanel", library="bas")
-public class HorizontalSplitPanelFactory extends SplitPanelFactory<HorizontalSplitPanel>
+public class HorizontalSplitPanelFactory extends PanelFactory<HorizontalSplitPanel>
 {
-
 	@Override
 	public HorizontalSplitPanel instantiateWidget(Element element, String widgetId) {
 		Event eventLoadImage = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
@@ -58,38 +62,35 @@ public class HorizontalSplitPanelFactory extends SplitPanelFactory<HorizontalSpl
 	}
 	
 	@Override
-	protected void renderSplitItem(HorizontalSplitPanel widget, Element element) throws InterfaceConfigException
+	@TagChildren({
+		@TagChild(LeftProcessor.class),
+		@TagChild(RightProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<HorizontalSplitPanel> context) throws InterfaceConfigException {}
+	
+	@TagChildAttributes(tagName="left", minOccurs="0")
+	public static class LeftProcessor extends WidgetChildProcessor<HorizontalSplitPanel>
 	{
-		String position = element.getAttribute("_position");
-		if (position == null || position.length() == 0)
-		{
-			throw new InterfaceConfigException(messages.horizontalSplitPanelInvalidPosition(element.getId()));
-		}
-		String id = element.getId();
-
-		Element e = getComponentChildElement(element);
-		if (e != null)
-		{
-			if (position.equals("left"))
-			{
-				widget.setLeftWidget(createChildWidget(e, id));
-			}
-			else if (position.equals("right"))
-			{				
-				widget.setRightWidget(createChildWidget(e, id));
-			}
-			else
-			{
-				throw new InterfaceConfigException(messages.horizontalSplitPanelInvalidPosition(element.getId()));
-			}
-		}
+		@Override
+		@TagChildren({
+			@TagChild(LeftWidgeProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<HorizontalSplitPanel> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(tagName="right", minOccurs="0")
+	public static class RightProcessor extends WidgetChildProcessor<HorizontalSplitPanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(RightWidgeProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<HorizontalSplitPanel> context) throws InterfaceConfigException {}
 	}
 
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(HorizontalSplitPanel parent, Widget child, Element parentElement, Element childElement) 
-	{
-		// TODO - does nothing, maybe we don't need extend hasWidgetFactory
-	}
+	@TagChildAttributes(widgetProperty="leftWidget")
+	public static class LeftWidgeProcessor extends AnyWidgetChildProcessor<HorizontalSplitPanel> {}
+	
+	@TagChildAttributes(widgetProperty="rightWidget")
+	public static class RightWidgeProcessor extends AnyWidgetChildProcessor<HorizontalSplitPanel> {}
 }

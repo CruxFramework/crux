@@ -15,11 +15,14 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import java.util.List;
-
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEvent;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEvents;
@@ -30,6 +33,10 @@ import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyWidget;
 import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -73,8 +80,10 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="autoOpen", type=Boolean.class),
-		@TagAttribute(value="vertical", type=Boolean.class, autoProcess=false)
+		@TagAttribute(value="autoOpen", type=Boolean.class)
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="vertical", type=Boolean.class)
 	})
 	public void processAttributes(WidgetFactoryContext<MenuBar> context) throws InterfaceConfigException
 	{
@@ -94,151 +103,130 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	}
 
 	@Override
-	public void processChildren(WidgetFactoryContext<MenuBar> context) throws InterfaceConfigException
+	@TagChildren({
+		@TagChild(MenuItemsProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<MenuBar> context) throws InterfaceConfigException {}
+
+	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded")
+	public static class MenuItemsProcessor extends ChoiceChildProcessor<MenuBar>
 	{
-		Element element = context.getElement();
-		MenuBar widget = context.getWidget();
-		
-		List<Element> itensCandidates = ensureChildrenSpans(element, true);
-		for (int i=0; i<itensCandidates.size(); i++)
+		@Override
+		@TagChildren({
+			@TagChild(TextProcessor.class),
+			@TagChild(HTMLProcessor.class),
+			@TagChild(SeparatorProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<MenuBar> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(tagName="text")
+	public static class TextProcessor extends WidgetChildProcessor<MenuBar>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(CaptionProcessor.class),
+			@TagChild(SubItemsProcessor.class)
+		})
+		public void processChildren(final WidgetChildProcessorContext<MenuBar> context) throws InterfaceConfigException
 		{
-			Element e = (Element)itensCandidates.get(i);
-			String type = e.getAttribute("_itemType");
-			String widgetId = context.getWidgetId();
-			
-			if (type == null || type.length() == 0)
+			context.setAttribute("textCaption", null);
+			processCommandAttribute(context);
+		}
+	}
+	
+	@TagChildAttributes(tagName="caption")
+	public static class CaptionProcessor extends WidgetChildProcessor<MenuBar>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<MenuBar> context) throws InterfaceConfigException
+		{
+			String captionText = context.getChildElement().getInnerHTML();
+			Command command = (Command) context.getAttribute("command");
+			if (command != null)
 			{
-				throw new InterfaceConfigException(messages.menuBarItemTypeEmpty(widgetId));
+				
+				context.getRootWidget().addItem(captionText, command);
 			}
-			if (type.equals(ITEM_TYPE_TEXT))
+			else
 			{
-				processItemTextDeclaration(widget, widgetId, e, i);
+				context.setAttribute("textCaption", captionText);
 			}
-			else if (type.equals(ITEM_TYPE_SEPARATOR))
+		}
+	}
+	
+	@TagChildAttributes(tagName="html")
+	public static class HTMLProcessor extends WidgetChildProcessor<MenuBar>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(HTMLCaptionProcessor.class),
+			@TagChild(SubItemsProcessor.class)
+		})
+		public void processChildren(final WidgetChildProcessorContext<MenuBar> context) throws InterfaceConfigException
+		{
+			context.setAttribute("htmlCaption", null);
+			processCommandAttribute(context);
+		}
+	}
+	
+	@TagChildAttributes(tagName="caption")
+	public static class HTMLCaptionProcessor extends WidgetChildProcessor<MenuBar>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<MenuBar> context) throws InterfaceConfigException
+		{
+			String captionHTML = context.getChildElement().getInnerHTML();
+			Command command = (Command) context.getAttribute("command");
+			if (command != null)
 			{
-				processItemSeparatorMenuDeclaration(widget, e, i);
+				
+				context.getRootWidget().addItem(captionHTML, true, command);
 			}
-			else if (type.equals(ITEM_TYPE_HTML))
+			else
 			{
-				processItemHTMLDeclaration(widget, widgetId, e, i);
-			}	
+				context.setAttribute("htmlCaption", captionHTML);
+			}
 		}
 	}
 
-	/**
-	 * Process Item declaration for MenuBarFactory
-	 * @param element
-	 * @throws InterfaceConfigException 
-	 */
-	protected void processItemTextDeclaration(MenuBar widget, String widgetId, Element element, int index) throws InterfaceConfigException
+	@TagChildAttributes(tagName="items", minOccurs="0", maxOccurs="1")
+	public static class SubItemsProcessor extends WidgetChildProcessor<MenuBar>
 	{
-		List<Element> children = ensureChildrenSpans(element, true);
-		
-		String caption = null ;
-		Command command = null;
-		MenuBar itens = null;
-		
-		// has caption
-		if(children.size() > 0)
-		{
-			Element child = children.get(0);
-			caption = child.getInnerText(); 
-			command = getCommand(widget, element, widgetId);
-		}
-		
-		// has items
-		if(children.size() > 1)
-		{
-			Element child = children.get(1);
-			itens = getSubMenu(widget, ensureFirstChildSpan(child, false));
-		}		
-		
-		if (command != null)
-		{
-			widget.addItem(caption, command);
-		}
-		else if(itens != null)
-		{
-			widget.addItem(caption, itens);
-		}
-		else
-		{
-			GWT.log(messages.menubarItemWithoutChildrenOrCommand(caption), null);
-		}		
+		@Override
+		@TagChildren({
+			@TagChild(SubItemProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<MenuBar> context) throws InterfaceConfigException {}
 	}
-
-	/**
-	 * Process Item declaration for MenuBarFactory
-	 * @param element
-	 * @throws InterfaceConfigException 
-	 */
-	protected void processItemHTMLDeclaration(MenuBar widget, String widgetId, Element element, int index) throws InterfaceConfigException
+	
+	@TagChildAttributes(type=AnyWidget.class)
+	public static class SubItemProcessor extends WidgetChildProcessor<MenuBar>
 	{
-		List<Element> children = ensureChildrenSpans(element, true);
-		
-		String caption = null ;
-		Command command = null;
-		MenuBar itens = null;
-		
-		// has caption
-		if(children.size() > 0)
+		@Override
+		public void processChildren(WidgetChildProcessorContext<MenuBar> context) throws InterfaceConfigException
 		{
-			Element child = children.get(0);
-			caption = child.getInnerHTML(); 
-			command = getCommand(widget, element, widgetId);
-		}
-		
-		// has items
-		if(children.size() > 1)
-		{
-			Element child = children.get(1);
-			itens = getSubMenu(widget, ensureFirstChildSpan(child, false));
-		}		
-		
-		if (command != null)
-		{
-			widget.addItem(caption, true, command);
-		}
-		else if(itens != null)
-		{
-			widget.addItem(caption, true, itens);
-		}
-		else
-		{
-			GWT.log(messages.menubarItemWithoutChildrenOrCommand(caption), null);
-		}
-	}
-
-	/**
-	 * Process Item declaration for MenuBarFactory
-	 * @param element
-	 */
-	protected void processItemSeparatorMenuDeclaration(MenuBar widget, Element element, int index)
-	{
-		widget.addSeparator();
-	}
-
-	/**
-	 * Creates a Command for encapsulate the event declared on the span tag
-	 * @param element
-	 * @return
-	 */
-	protected Command getCommand(final MenuBar widget,Element element, final String widgetId)
-	{
-		final Event evt = EvtBind.getWidgetEvent(element, Events.EVENT_EXECUTE_EVENT);
-		if (evt != null)
-		{
-			return new Command()
+			MenuBar subMenu = getSubMenu(context.getRootWidget(), context.getChildElement());
+			String textCaption = (String) context.getAttribute("textCaption");
+			if (textCaption != null)
 			{
-				public void execute() 
-				{
-					Events.callEvent(evt, new ExecuteEvent<MenuBar>(widget, widgetId));
-				}
-			};
+				context.getRootWidget().addItem(textCaption, subMenu);
+			}
+			else
+			{
+				String htmlCaption = (String)context.getAttribute("htmlCaption");
+				context.getRootWidget().addItem(htmlCaption, true, subMenu);
+			}
 		}
-		else
+	}
+	
+	@TagChildAttributes(tagName="separator")
+	public static class SeparatorProcessor extends WidgetChildProcessor<MenuBar>
+	{
+		@Override
+		public void processChildren(final WidgetChildProcessorContext<MenuBar> context) throws InterfaceConfigException
 		{
-			return null;
+			context.getRootWidget().addSeparator();
 		}
 	}
 	
@@ -248,12 +236,32 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	 * @return
 	 * @throws InterfaceConfigException 
 	 */
-	protected MenuBar getSubMenu(MenuBar widget, Element element) throws InterfaceConfigException
+	protected static MenuBar getSubMenu(MenuBar widget, Element element) throws InterfaceConfigException
 	{
 		String subMenuId = element.getId();
 		MenuBar subMenu = (MenuBar) createChildWidget(element, subMenuId);	
 		subMenu.setAutoOpen(widget.getAutoOpen());
 		subMenu.setAnimationEnabled(widget.isAnimationEnabled());
 		return subMenu;
+	}
+	
+	/**
+	 * 
+	 * @param context
+	 */
+	protected static void processCommandAttribute(final WidgetChildProcessorContext<MenuBar> context)
+	{
+		final Event evt = EvtBind.getWidgetEvent(context.getChildElement(), Events.EVENT_EXECUTE_EVENT);
+		if (evt != null)
+		{
+			Command cmd =  new Command()
+			{
+				public void execute() 
+				{
+					Events.callEvent(evt, new ExecuteEvent<MenuBar>(context.getRootWidget(), context.getRootWidgetId()));
+				}
+			};
+			context.setAttribute("command", cmd);
+		}
 	}
 }

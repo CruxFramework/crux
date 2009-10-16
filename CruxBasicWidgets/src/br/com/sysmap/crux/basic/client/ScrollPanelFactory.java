@@ -17,7 +17,9 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
@@ -50,10 +52,12 @@ public class ScrollPanelFactory extends PanelFactory<ScrollPanel>
 	
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="alwaysShowScrollBars", type=Boolean.class),
-		@TagAttribute(value="verticalScrollPosition", type=VerticalScrollPosition.class, autoProcess=false),
-		@TagAttribute(value="horizontalScrollPosition", type=HorizontalScrollPosition.class, autoProcess=false),
-		@TagAttribute(value="ensureVisible", autoProcess=false)
+		@TagAttribute(value="alwaysShowScrollBars", type=Boolean.class)
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="verticalScrollPosition", type=VerticalScrollPosition.class),
+		@TagAttributeDeclaration(value="horizontalScrollPosition", type=HorizontalScrollPosition.class),
+		@TagAttributeDeclaration("ensureVisible")
 	})
 	public void processAttributes(WidgetFactoryContext<ScrollPanel> context) throws InterfaceConfigException
 	{
@@ -104,13 +108,5 @@ public class ScrollPanelFactory extends PanelFactory<ScrollPanel>
 				}
 			});
 		}
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(ScrollPanel parent, Widget child, Element parentElement, Element childElement) 
-	{
-		parent.add(child);
 	}
 }

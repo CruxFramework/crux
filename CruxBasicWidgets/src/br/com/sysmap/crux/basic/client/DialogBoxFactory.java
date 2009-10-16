@@ -17,7 +17,9 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasCloseHandlersFactory;
@@ -25,7 +27,6 @@ import br.com.sysmap.crux.core.client.screen.factory.HasCloseHandlersFactory;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHTML;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -56,9 +57,11 @@ public class DialogBoxFactory extends PanelFactory<DialogBox>
 	
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="autoHide", type=Boolean.class, autoProcess=false),
-		@TagAttribute(value="modal", type=Boolean.class, autoProcess=false),
 		@TagAttribute(value="previewAllNativeEvents", type=Boolean.class)
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="autoHide", type=Boolean.class),
+		@TagAttributeDeclaration(value="modal", type=Boolean.class)
 	})
 	public void processAttributes(WidgetFactoryContext<DialogBox> context) throws InterfaceConfigException
 	{
@@ -74,8 +77,4 @@ public class DialogBoxFactory extends PanelFactory<DialogBox>
 			((HasHTML)widget).setHTML(innerHtml);
 		}
 	}
-	
-	public void add(DialogBox parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
-	{
-		parent.add(child);
-	}}
+}

@@ -17,7 +17,9 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
@@ -27,7 +29,6 @@ import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
@@ -45,10 +46,12 @@ public class FormPanelFactory extends PanelFactory<FormPanel>
 	@TagAttributes({
 		@TagAttribute("method"),
 		@TagAttribute("encoding"),
-		@TagAttribute("action"),
-		@TagAttribute(value="target", autoProcess=false)
+		@TagAttribute("action")
 	})
-	public void processAttributes(WidgetFactoryContext<FormPanel> context) throws InterfaceConfigException 
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("target")
+	})
+    public void processAttributes(WidgetFactoryContext<FormPanel> context) throws InterfaceConfigException 
 	{
 		super.processAttributes(context);
 	}
@@ -102,13 +105,5 @@ public class FormPanelFactory extends PanelFactory<FormPanel>
 		{
 			return new FormPanel();
 		}
-	}
-	
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(FormPanel parent, Widget child, Element parentElement, Element childElement) 
-	{
-		parent.add(child);
 	}
 }

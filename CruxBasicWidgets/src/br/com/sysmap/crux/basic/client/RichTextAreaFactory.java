@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
@@ -48,18 +48,18 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 	}
 	
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="backColor", autoProcess=false),
-		@TagAttribute(value="fontName", autoProcess=false),
-		@TagAttribute(value="fontSize", type=Integer.class, autoProcess=false),
-		@TagAttribute(value="foreColor", autoProcess=false),
-		@TagAttribute(value="justification", autoProcess=false),
-		@TagAttribute(value="bold", type=Boolean.class, autoProcess=false),
-		@TagAttribute(value="italic", type=Boolean.class, autoProcess=false),
-		@TagAttribute(value="subscript", type=Boolean.class, autoProcess=false),
-		@TagAttribute(value="superscript", type=Boolean.class, autoProcess=false),
-		@TagAttribute(value="underline", type=Boolean.class, autoProcess=false),
-		@TagAttribute(value="strikethrough", type=Boolean.class, autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("backColor"),
+		@TagAttributeDeclaration("fontName"),
+		@TagAttributeDeclaration(value="fontSize", type=Integer.class),
+		@TagAttributeDeclaration("foreColor"),
+		@TagAttributeDeclaration("justification"),
+		@TagAttributeDeclaration(value="bold", type=Boolean.class),
+		@TagAttributeDeclaration(value="italic", type=Boolean.class),
+		@TagAttributeDeclaration(value="subscript", type=Boolean.class),
+		@TagAttributeDeclaration(value="superscript", type=Boolean.class),
+		@TagAttributeDeclaration(value="underline", type=Boolean.class),
+		@TagAttributeDeclaration(value="strikethrough", type=Boolean.class)
 	})
 	public void processAttributes(final WidgetFactoryContext<RichTextArea> context) throws InterfaceConfigException 
 	{

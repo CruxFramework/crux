@@ -16,7 +16,9 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
@@ -39,8 +41,10 @@ public abstract class TextBoxBaseFactory<T extends TextBoxBase> extends FocusWid
 	@Override
 	@TagAttributes({
 		@TagAttribute("value"),
-		@TagAttribute(value="readOnly", type=Boolean.class),
-		@TagAttribute(value="textAlignment", type=TextAlign.class, autoProcess=false)
+		@TagAttribute(value="readOnly", type=Boolean.class)
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="textAlignment", type=TextAlign.class)
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{

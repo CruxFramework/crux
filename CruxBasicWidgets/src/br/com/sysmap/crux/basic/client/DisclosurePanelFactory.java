@@ -15,18 +15,23 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import java.util.List;
-
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
-import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasCloseHandlersFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasOpenHandlersFactory;
@@ -35,7 +40,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.DisclosurePanelImages;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory for DisclosurePanel widgets
@@ -43,71 +47,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 @DeclarativeFactory(id="disclosurePanel", library="bas")
 public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> 
-       implements HasWidgetsFactory<DisclosurePanel>, HasAnimationFactory<DisclosurePanel>, 
+       implements HasAnimationFactory<DisclosurePanel>, 
                   HasOpenHandlersFactory<DisclosurePanel>, HasCloseHandlersFactory<DisclosurePanel>
 {
 	protected BasicMessages messages = GWT.create(BasicMessages.class);
 	
-	@Override
-	@TagAttributes({
-		@TagAttribute(value="open", type=Boolean.class),
-		@TagAttribute(value="headerText", autoProcess=false)
-	})
-	public void processAttributes(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException
-	{
-		super.processAttributes(context);
-	}
-
-	@Override
-	@TagEventsDeclaration({
-		@TagEventDeclaration("onLoadImage")
-	})
-	public void processEvents(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException
-	{
-		super.processEvents(context);
-	}
-
-	@Override
-	public void processChildren(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException
-	{
-		Element element = context.getElement();
-		DisclosurePanel widget = context.getWidget();
-		
-		List<Element> childSpans = ensureChildrenSpans(element, true);
-		
-		if(childSpans.size() <= 2)
-		{
-			for (int i = 0; i < childSpans.size(); i++)
-			{
-				Element childElement = ensureWidget(childSpans.get(0));
-				Widget childWidget = createChildWidget(childElement, childElement.getId());
-				
-				// contains widgets for header and body 
-				if(childSpans.size() > 1)
-				{
-					// it's the header
-					if(i == 0)
-					{
-						widget.setHeader(childWidget);
-					}
-					
-					// it's the body
-					else
-					{
-						widget.setContent(childWidget);
-					}
-				}
-				else
-				{
-					widget.setContent(childWidget);
-				}
-			}
-		}
-		else
-		{
-			throw new InterfaceConfigException(messages.disclosurePanelInvalidChildrenElements(element.getId()));
-		}
-	}
 	
 	@Override
 	public DisclosurePanel instantiateWidget(Element element, String widgetId) 
@@ -124,12 +68,58 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel>
 		
 		return new DisclosurePanel(headerText, false);
 	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(DisclosurePanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
+	
+	@Override
+	@TagAttributes({
+		@TagAttribute(value="open", type=Boolean.class)
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("headerText")
+	})
+	public void processAttributes(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException
 	{
-		// nothing to do here
+		super.processAttributes(context);
 	}
+
+	@Override
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onLoadImage")
+	})
+	public void processEvents(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException
+	{
+		super.processEvents(context);
+	}
+
+	@Override
+	@TagChildren({
+		@TagChild(HeaderProcessor.class),
+		@TagChild(ContentProcessor.class)
+	})	
+	public void processChildren(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException {}
+
+	@TagChildAttributes(minOccurs="0", tagName="widgetHeader")
+	public static class HeaderProcessor extends WidgetChildProcessor<DisclosurePanel> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(WidgetHeaderProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<DisclosurePanel> context) throws InterfaceConfigException {}
+	}
+		
+	@TagChildAttributes(minOccurs="0", tagName="widgetContent")
+	public static class ContentProcessor extends WidgetChildProcessor<DisclosurePanel> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(WidgetProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<DisclosurePanel> context) throws InterfaceConfigException {}
+	}
+
+	@TagChildAttributes(widgetProperty="content")
+	public static class WidgetProcessor extends AnyWidgetChildProcessor<DisclosurePanel> {}
+	
+	@TagChildAttributes(widgetProperty="header")
+	public static class WidgetHeaderProcessor extends AnyWidgetChildProcessor<DisclosurePanel> {}
 }

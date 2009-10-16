@@ -16,7 +16,13 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Grid;
 
@@ -34,20 +40,85 @@ public class GridFactory extends HTMLTableFactory<Grid>
 		return new Grid();
 	}
 
+	/**
+	 * Populate the panel with declared items
+	 * @param element
+	 * @throws InterfaceConfigException 
+	 */
 	@Override
-	protected void prepareCell(Grid widget, int indexRow, int indexCol, String widgetId)
+	@TagChildren({
+		@TagChild(GridRowProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<Grid> context) throws InterfaceConfigException	{}
+	
+	@TagChildAttributes(tagName="row", minOccurs="0", maxOccurs="unbounded")
+	public static class GridRowProcessor extends TableRowProcessor<Grid>
 	{
-		if (indexRow < 0 || indexCol < 0)
+		@Override
+		@TagChildren({
+			@TagChild(GridCellProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<Grid> context) throws InterfaceConfigException
 		{
-			throw new IndexOutOfBoundsException(messages.gridInvalidRowColIndexes(widgetId));
-		}
-		if (widget.getRowCount() < indexRow+1)
-		{
-			widget.resizeRows(indexRow+1);
-		}
-		if (widget.getColumnCount() < indexCol+1)
-		{
-			widget.resizeColumns(indexCol + 1);
+			super.processChildren(context);
 		}
 	}
+
+	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", tagName="cell")
+	public static class GridCellProcessor extends TableCellProcessor<Grid>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(GridChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<Grid> context) throws InterfaceConfigException
+		{
+			super.processChildren(context);
+		}
+	}
+	
+	@TagChildAttributes(minOccurs="0")
+	public static class GridChildrenProcessor extends CellChildrenProcessor<Grid> 
+	{
+		protected BasicMessages messages = GWT.create(BasicMessages.class);
+		
+		@Override
+		@TagChildren({
+			@TagChild(GridCellTextProcessor.class),
+			@TagChild(GridCellHTMLProcessor.class),
+			@TagChild(GridCellWidgetProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<Grid> context) throws InterfaceConfigException	
+		{
+			Integer indexRow = (Integer) context.getAttribute("rowIndex");
+			Integer indexCol = (Integer) context.getAttribute("colIndex");
+
+			if (indexRow < 0 || indexCol < 0)
+			{
+				throw new IndexOutOfBoundsException(messages.gridInvalidRowColIndexes(context.getRootWidgetId()));
+			}
+			if (context.getRootWidget().getRowCount() < indexRow+1)
+			{
+				context.getRootWidget().resizeRows(indexRow+1);
+			}
+			if (context.getRootWidget().getColumnCount() < indexCol+1)
+			{
+				context.getRootWidget().resizeColumns(indexCol + 1);
+			}
+		}
+	}
+	
+	public static class GridCellTextProcessor extends CellTextProcessor<Grid>{}
+	public static class GridCellHTMLProcessor extends CellHTMLProcessor<Grid>{}
+	public static class GridCellWidgetProcessor extends CellWidgetProcessor<Grid>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(GridWidgetProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<Grid> context) throws InterfaceConfigException {}
+		
+	}
+	public static class GridWidgetProcessor extends WidgetProcessor<Grid>{} 
+	
 }

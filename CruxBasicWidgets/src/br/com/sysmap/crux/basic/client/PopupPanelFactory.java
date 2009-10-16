@@ -17,14 +17,15 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasCloseHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 
 /**
@@ -58,17 +59,14 @@ public class PopupPanelFactory extends PanelFactory<PopupPanel>
 	
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="previewAllNativeEvents", type=Boolean.class),
-		@TagAttribute(value="modal", type=Boolean.class, autoProcess=false),
-		@TagAttribute(value="autoHide", type=Boolean.class, autoProcess=false)
+		@TagAttribute(value="previewAllNativeEvents", type=Boolean.class)
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="modal", type=Boolean.class),
+		@TagAttributeDeclaration(value="autoHide", type=Boolean.class)
 	})
 	public void processAttributes(WidgetFactoryContext<PopupPanel> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
-	}
-	
-	public void add(PopupPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
-	{
-		parent.add(child);
 	}
 }

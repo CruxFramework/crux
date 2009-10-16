@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.LazyPanel;
@@ -43,13 +42,5 @@ public class SimpleLazyPanelFactory extends PanelFactory<LazyPanel>
 				return new SimplePanel();
 			}
 		};
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(LazyPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
-	{
-		parent.add(child);
 	}
 }

@@ -16,7 +16,13 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FlexTable;
 
@@ -33,23 +39,88 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 	{
 		return new FlexTable();
 	}
-
+	
+	/**
+	 * Populate the panel with declared items
+	 * @param element
+	 * @throws InterfaceConfigException 
+	 */
 	@Override
-	protected void prepareCell(FlexTable widget, int indexRow, int indexCol, String widgetId)
+	@TagChildren({
+		@TagChild(GridRowProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<FlexTable> context) throws InterfaceConfigException {}
+	
+	@TagChildAttributes(tagName="row", minOccurs="0", maxOccurs="unbounded")
+	public static class GridRowProcessor extends TableRowProcessor<FlexTable>
 	{
-		if (indexRow < 0 || indexCol < 0)
+		@Override
+		@TagChildren({
+			@TagChild(GridCellProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<FlexTable> context) throws InterfaceConfigException
 		{
-			throw new IndexOutOfBoundsException(messages.flexTableInvalidRowColIndexes(widgetId));
-		}
-		int r = widget.getRowCount();
-		while (widget.getRowCount() < indexRow+1)
-		{
-			widget.insertRow(r++);
-		}
-		
-		while (widget.getCellCount(indexRow) < indexCol+1)
-		{
-			widget.addCell(indexRow);
+			super.processChildren(context);
 		}
 	}
+
+	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded")
+	public static class GridCellProcessor extends TableCellProcessor<FlexTable>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(GridChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<FlexTable> context) throws InterfaceConfigException
+		{
+			super.processChildren(context);
+		}
+	}
+	
+	@TagChildAttributes(minOccurs="0")
+	public static class GridChildrenProcessor extends CellChildrenProcessor<FlexTable> 
+	{
+		protected BasicMessages messages = GWT.create(BasicMessages.class);
+
+		@Override
+		@TagChildren({
+			@TagChild(FlexCellTextProcessor.class),
+			@TagChild(FlexCellHTMLProcessor.class),
+			@TagChild(FlexCellWidgetProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<FlexTable> context) throws InterfaceConfigException	
+		{
+			Integer indexRow = (Integer) context.getAttribute("rowIndex");
+			Integer indexCol = (Integer) context.getAttribute("colIndex");
+
+			if (indexRow < 0 || indexCol < 0)
+			{
+				throw new IndexOutOfBoundsException(messages.flexTableInvalidRowColIndexes(context.getRootWidgetId()));
+			}
+			int r = context.getRootWidget().getRowCount();
+			while (context.getRootWidget().getRowCount() < indexRow+1)
+			{
+				context.getRootWidget().insertRow(r++);
+			}
+			
+			while (context.getRootWidget().getCellCount(indexRow) < indexCol+1)
+			{
+				context.getRootWidget().addCell(indexRow);
+			}
+		}
+	}
+	
+	public static class FlexCellTextProcessor extends CellTextProcessor<FlexTable>{}
+	public static class FlexCellHTMLProcessor extends CellHTMLProcessor<FlexTable>{}
+	public static class FlexCellWidgetProcessor extends CellWidgetProcessor<FlexTable>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FlexWidgetProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<FlexTable> context) throws InterfaceConfigException {}
+		
+	}
+	public static class FlexWidgetProcessor extends WidgetProcessor<FlexTable>{} 
+		
 }

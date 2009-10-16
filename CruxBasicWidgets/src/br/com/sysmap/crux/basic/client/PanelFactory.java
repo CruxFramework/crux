@@ -15,8 +15,12 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 
 import com.google.gwt.user.client.ui.Panel;
 
@@ -24,6 +28,17 @@ import com.google.gwt.user.client.ui.Panel;
  * Base factory class for all panels
  * @author Thiago Bustamante
  */
-public abstract class PanelFactory <T extends Panel> extends WidgetFactory<T> implements HasWidgetsFactory<T>
+public abstract class PanelFactory <T extends Panel> extends WidgetFactory<T>
 {
+	@Override
+	@TagChildren({
+		@TagChild(WidgetContentProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException
+	{
+	}
+	
+	@TagChildAttributes(minOccurs="0", maxOccurs="1")
+	public static class WidgetContentProcessor extends AnyWidgetChildProcessor<Panel> {}
+
 }

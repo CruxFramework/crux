@@ -17,7 +17,9 @@ package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEvent;
 import br.com.sysmap.crux.core.client.declarative.TagEvents;
 import br.com.sysmap.crux.core.client.event.bind.LoadErrorEvtBind;
@@ -40,11 +42,13 @@ public class ImageFactory extends WidgetFactory<Image>
 {
 	@Override
 	@TagAttributes({
-		@TagAttribute("url"),
-		@TagAttribute(value="leftRect", autoProcess=false),
-		@TagAttribute(value="topRect", autoProcess=false),
-		@TagAttribute(value="widthRect", autoProcess=false),
-		@TagAttribute(value="heightRect", autoProcess=false)
+		@TagAttribute("url")
+	})	
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("leftRect"),
+		@TagAttributeDeclaration("topRect"),
+		@TagAttributeDeclaration("widthRect"),
+		@TagAttributeDeclaration("heightRect")
 	})	
 	public void processAttributes(WidgetFactoryContext<Image> context) throws InterfaceConfigException
 	{

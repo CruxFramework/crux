@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -28,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 @DeclarativeFactory(id="HTMLPanel", library="bas")
-public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel>
+public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel> implements HasWidgetsFactory<HTMLPanel>
 {
 	@Override
 	public HTMLPanel instantiateWidget(Element element, String widgetId) 

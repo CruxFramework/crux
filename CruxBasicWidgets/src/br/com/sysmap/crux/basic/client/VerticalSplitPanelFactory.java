@@ -15,25 +15,31 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.basic.client.HorizontalSplitPanelFactory.RightWidgeProcessor;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.VerticalSplitPanel;
 import com.google.gwt.user.client.ui.VerticalSplitPanelImages;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Represents a VerticalSplitPanelFactory
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="verticalSplitPanel", library="bas")
-public class VerticalSplitPanelFactory extends SplitPanelFactory<VerticalSplitPanel>
+public class VerticalSplitPanelFactory extends PanelFactory<VerticalSplitPanel>
 {
 	@Override
 	public VerticalSplitPanel instantiateWidget(Element element, String widgetId) 
@@ -56,42 +62,37 @@ public class VerticalSplitPanelFactory extends SplitPanelFactory<VerticalSplitPa
 	{
 		super.processEvents(context);
 	}
-	
 
 	@Override
-	protected void renderSplitItem(VerticalSplitPanel widget, Element element) throws InterfaceConfigException
+	@TagChildren({
+		@TagChild(TopProcessor.class),
+		@TagChild(BottomProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<VerticalSplitPanel> context) throws InterfaceConfigException {}
+	
+	@TagChildAttributes(tagName="top", minOccurs="0")
+	public static class TopProcessor extends WidgetChildProcessor<VerticalSplitPanel>
 	{
-		String position = element.getAttribute("_position");
-		if (position == null || position.length() == 0)
-		{
-			throw new InterfaceConfigException(messages.verticalSplitPanelInvalidPosition(element.getId()));
-		}
-		String id = element.getId();
-
-		Element e = getComponentChildElement(element);
-		if (e != null)
-		{
-			if (position.equals("top"))
-			{
-
-				widget.setTopWidget(createChildWidget(e, id));
-			}
-			else if (position.equals("bottom"))
-			{
-				widget.setBottomWidget(createChildWidget(e, id));
-			}
-			else
-			{
-				throw new InterfaceConfigException(messages.verticalSplitPanelInvalidPosition(element.getId()));
-			}
-		}
+		@Override
+		@TagChildren({
+			@TagChild(TopWidgeProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<VerticalSplitPanel> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(tagName="bottom", minOccurs="0")
+	public static class BottomProcessor extends WidgetChildProcessor<VerticalSplitPanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(RightWidgeProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<VerticalSplitPanel> context) throws InterfaceConfigException {}
 	}
 
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(VerticalSplitPanel parent, Widget child, Element parentElement, Element childElement) 
-	{
-		// TODO - does nothing, maybe we don't need extend hasWidgetFactory 
-	}
+	@TagChildAttributes(widgetProperty="topWidget")
+	public static class TopWidgeProcessor extends AnyWidgetChildProcessor<VerticalSplitPanel> {}
+	
+	@TagChildAttributes(widgetProperty="bottomWidget")
+	public static class BottomWidgeProcessor extends AnyWidgetChildProcessor<VerticalSplitPanel> {}
 }

@@ -16,14 +16,13 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DeckPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -33,14 +32,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class DeckPanelFactory extends ComplexPanelFactory<DeckPanel>
 					implements HasAnimationFactory<DeckPanel>
 {
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(DeckPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException 
-	{
-		parent.add(child);
-	}
-
 	@Override
 	public DeckPanel instantiateWidget(Element element, String widgetId) 
 	{
@@ -48,8 +39,8 @@ public class DeckPanelFactory extends ComplexPanelFactory<DeckPanel>
 	}
 
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="visibleWidget", type=Integer.class, autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="visibleWidget", type=Integer.class)
 	})
 	public void processAttributes(WidgetFactoryContext<DeckPanel> context) throws InterfaceConfigException 
 	{

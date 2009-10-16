@@ -15,8 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.bind.BlurEvtBind;
@@ -49,11 +49,11 @@ public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetF
 	 * @throws InterfaceConfigException 
 	 */
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="tabIndex", type=Integer.class, autoProcess=false),
-		@TagAttribute(value="enabled", type=Boolean.class, autoProcess=false),
-		@TagAttribute(value="accessKey", type=Character.class, autoProcess=false),
-		@TagAttribute(value="focus", type=Boolean.class, autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="tabIndex", type=Integer.class),
+		@TagAttributeDeclaration(value="enabled", type=Boolean.class),
+		@TagAttributeDeclaration(value="accessKey", type=Character.class),
+		@TagAttributeDeclaration(value="focus", type=Boolean.class)
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
@@ -78,7 +78,6 @@ public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetF
 	
 	@Override
 	@TagEventsDeclaration({
-		@TagEventDeclaration("onLoadWidget"),
 		@TagEventDeclaration("onClick"),
 		@TagEventDeclaration("onFocus"),
 		@TagEventDeclaration("onBlur"),

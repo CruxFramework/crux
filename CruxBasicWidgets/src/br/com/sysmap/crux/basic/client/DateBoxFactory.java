@@ -20,11 +20,17 @@ import java.util.List;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -42,15 +48,17 @@ import com.google.gwt.user.datepicker.client.DateBox.Format;
 public class DateBoxFactory extends CompositeFactory<DateBox> 
        implements HasValueChangeHandlersFactory<DateBox>
 {
-
 	@Override
 	@TagAttributes({
 		@TagAttribute(value="tabIndex", type=Integer.class),
 		@TagAttribute(value="enabled", type=Boolean.class),
 		@TagAttribute(value="accessKey", type=Character.class),
-		@TagAttribute(value="focus", type=Boolean.class),
-		@TagAttribute(value="value", type=Date.class, autoProcess=false),
-		@TagAttribute(value="reportFormatError", type=Boolean.class, autoProcess=false)
+		@TagAttribute(value="focus", type=Boolean.class)
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("value"),
+		@TagAttributeDeclaration("pattern"),
+		@TagAttributeDeclaration(value="reportFormatError", type=Boolean.class)
 	})
 	public void processAttributes(final WidgetFactoryContext<DateBox> context) throws InterfaceConfigException
 	{
@@ -99,6 +107,15 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 			return dateBox;
 		}		
 	}
+	
+	@Override
+	@TagChildren({
+		@TagChild(value=DateBoxProcessor.class,autoProcess=false)
+	})
+	public void processChildren(WidgetFactoryContext<DateBox> context) throws InterfaceConfigException {}
+	
+	@TagChildAttributes(tagName="datePicker", minOccurs="0", type=DatePickerFactory.class)
+	public static class DateBoxProcessor extends WidgetChildProcessor<DateBox>{}
 	
 	/**
 	 * @param element

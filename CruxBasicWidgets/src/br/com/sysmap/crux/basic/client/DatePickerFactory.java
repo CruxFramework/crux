@@ -18,8 +18,8 @@ package br.com.sysmap.crux.basic.client;
 import java.util.Date;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.factory.HasShowRangeHandlersFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
@@ -36,9 +36,9 @@ public class DatePickerFactory extends CompositeFactory<DatePicker>
        implements HasValueChangeHandlersFactory<DatePicker>, HasShowRangeHandlersFactory<DatePicker>
 {
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="value", type=Date.class, autoProcess=false),
-		@TagAttribute(value="datePattern", autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="value", type=String.class),
+		@TagAttributeDeclaration(value="datePattern")
 	})
 	public void processAttributes(WidgetFactoryContext<DatePicker> context) throws InterfaceConfigException
 	{

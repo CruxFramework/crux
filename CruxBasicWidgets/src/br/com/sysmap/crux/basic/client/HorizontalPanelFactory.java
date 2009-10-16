@@ -16,9 +16,13 @@
 package br.com.sysmap.crux.basic.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -39,18 +43,11 @@ public class HorizontalPanelFactory extends CellPanelFactory<HorizontalPanel>
 	{
 		return new HorizontalPanel();
 	}
-
-	@Override
-	public void add(HorizontalPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
-	{
-		parent.add(child);
-		super.add(parent, child, parentElement, childElement);
-	}
 	
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="horizontalAlignment", autoProcess=false),
-		@TagAttribute(value="verticalAlignment", autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("horizontalAlignment"),
+		@TagAttributeDeclaration("verticalAlignment")
 	})
 	public void processAttributes(WidgetFactoryContext<HorizontalPanel> context) throws InterfaceConfigException
 	{
@@ -96,6 +93,55 @@ public class HorizontalPanelFactory extends CellPanelFactory<HorizontalPanel>
 				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
 			}
 		}	
-		
 	}
+	
+	@Override
+	@TagChildren({
+		@TagChild(HorizontalPanelProcessor.class)
+	})		
+	public void processChildren(WidgetFactoryContext<HorizontalPanel> context) throws InterfaceConfigException {}
+	
+	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded")
+	public static class  HorizontalPanelProcessor extends AbstractCellPanelProcessor<HorizontalPanel> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(HorizontalProcessor.class),
+			@TagChild(HorizontalWidgetProcessor.class)
+		})		
+		public void processChildren(WidgetChildProcessorContext<HorizontalPanel> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+	
+	public static class HorizontalProcessor extends AbstractCellProcessor<HorizontalPanel>
+	{
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration("height"),
+			@TagAttributeDeclaration("width"),
+			@TagAttributeDeclaration("horizontalAlignment"),
+			@TagAttributeDeclaration("verticalAlignment")
+		})
+		@TagChildren({
+			@TagChild(value=HorizontalWidgetProcessor.class)
+		})		
+		public void processChildren(WidgetChildProcessorContext<HorizontalPanel> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+		
+	public static class HorizontalWidgetProcessor extends AbstractCellWidgetProcessor<HorizontalPanel> 
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<HorizontalPanel> context) throws InterfaceConfigException
+		{
+			Widget child = createChildWidget(context.getChildElement(), context.getChildElement().getId());
+			context.getRootWidget().add(child);
+			context.setAttribute("child", child);
+			super.processChildren(context);
+			context.setAttribute("child", null);
+		}
+	}	
 }

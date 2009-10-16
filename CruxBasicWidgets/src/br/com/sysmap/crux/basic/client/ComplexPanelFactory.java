@@ -15,6 +15,12 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
+
 import com.google.gwt.user.client.ui.ComplexPanel;
 
 /**
@@ -23,4 +29,15 @@ import com.google.gwt.user.client.ui.ComplexPanel;
  */
 public abstract class ComplexPanelFactory <T extends ComplexPanel> extends PanelFactory<T>
 {
+	@Override
+	@TagChildren({
+		@TagChild(WidgetContentProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException
+	{
+	}
+	
+	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded")
+	public static class WidgetContentProcessor extends AnyWidgetChildProcessor<ComplexPanel> {}
+	
 }

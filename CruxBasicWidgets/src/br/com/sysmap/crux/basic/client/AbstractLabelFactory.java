@@ -15,8 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasAllMouseHandlersFactory;
@@ -39,8 +39,8 @@ public abstract class AbstractLabelFactory<T extends Label> extends WidgetFactor
                   HasClickHandlersFactory<T>, HasAllMouseHandlersFactory<T>
 {
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="horizontalAlignment", autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="horizontalAlignment")
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{

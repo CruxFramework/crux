@@ -18,6 +18,8 @@ package br.com.sysmap.crux.basic.client;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
@@ -41,9 +43,11 @@ public abstract class AbstractCheckBoxFactory<T extends CheckBox> extends FocusW
 	 * @throws InterfaceConfigException 
 	 */
 	@Override
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="checked", type=Boolean.class)
+	})
 	@TagAttributes({
-		@TagAttribute(value="checked", type=Boolean.class, autoProcess=false),
-		@TagAttribute("formValue")
+		@TagAttribute("formValue")	
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
@@ -57,7 +61,7 @@ public abstract class AbstractCheckBoxFactory<T extends CheckBox> extends FocusW
 		{
 			widget.setValue(Boolean.parseBoolean(checked));
 		}
-		
+
 		String innerHtml = element.getInnerHTML();
 		String text = element.getAttribute("_text");		
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)

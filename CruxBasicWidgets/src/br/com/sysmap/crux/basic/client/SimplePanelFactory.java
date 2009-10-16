@@ -19,7 +19,6 @@ import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -33,13 +32,5 @@ public class SimplePanelFactory extends PanelFactory<SimplePanel>
 	public SimplePanel instantiateWidget(Element element, String widgetId) 
 	{
 		return new SimplePanel();
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(SimplePanel parent, Widget child, Element parentElement, Element childElement) 
-	{
-		parent.add(child);
 	}
 }
