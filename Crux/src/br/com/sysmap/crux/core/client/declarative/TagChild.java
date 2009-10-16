@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import br.com.sysmap.crux.core.client.screen.TagChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -30,5 +30,6 @@ import br.com.sysmap.crux.core.client.screen.TagChildProcessor;
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface TagChild
 {
-	Class<? extends TagChildProcessor<?>> value();	
+	Class<? extends WidgetChildProcessor<?>> value();
+	boolean autoProcess() default true;
 }

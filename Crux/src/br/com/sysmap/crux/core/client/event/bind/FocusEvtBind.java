@@ -30,7 +30,6 @@ import com.google.gwt.event.dom.client.HasFocusHandlers;
  */
 public class FocusEvtBind implements EvtBinder<HasFocusHandlers>
 {
-	//TODO adicionar chamadas para o blurevt
 	private static final String EVENT_NAME = "onFocus";
 
 	/**
@@ -57,5 +56,5 @@ public class FocusEvtBind implements EvtBinder<HasFocusHandlers>
 	public String getEventName()
 	{
 		return EVENT_NAME;
-	}
+	}	
 }

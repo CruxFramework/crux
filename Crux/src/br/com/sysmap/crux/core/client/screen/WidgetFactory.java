@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
@@ -127,13 +127,14 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @param element page DOM element representing the widget (Its &lt;span&gt; tag)
 	 * @throws InterfaceConfigException 
 	 */
-	@TagAttributes({
-		@TagAttribute(value="width", autoProcess=false),
-		@TagAttribute(value="height", autoProcess=false),
-		@TagAttribute(value="styleName", autoProcess=false),
-		@TagAttribute(value="visible", type=Boolean.class, autoProcess=false),
-		@TagAttribute(value="tooltip", autoProcess=false),
-		@TagAttribute(value="style", autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="id", required=true),
+		@TagAttributeDeclaration("width"),
+		@TagAttributeDeclaration("height"),
+		@TagAttributeDeclaration("styleName"),
+		@TagAttributeDeclaration(value="visible", type=Boolean.class),
+		@TagAttributeDeclaration("tooltip"),
+		@TagAttributeDeclaration("style")
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
@@ -211,7 +212,7 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	protected Widget createChildWidget(Element element, String widgetId) throws InterfaceConfigException
+	protected static Widget createChildWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		return ScreenFactory.getInstance().newWidget(element, widgetId);
 	}

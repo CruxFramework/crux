@@ -56,6 +56,5 @@ public class KeyUpEvtBind implements EvtBinder<HasKeyUpHandlers>
 	public String getEventName()
 	{
 		return EVENT_NAME;
-	}
-
+	}		
 }

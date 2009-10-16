@@ -25,12 +25,8 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface TagAttribute
+@Target(ElementType.METHOD)
+public @interface TagAttributesDeclaration
 {
-	String value();
-	Class<?> type() default String.class;
-	String defaultValue() default "";
-	boolean required() default false;
-	boolean supportsI18N() default false;
+	TagAttributeDeclaration[] value();
 }

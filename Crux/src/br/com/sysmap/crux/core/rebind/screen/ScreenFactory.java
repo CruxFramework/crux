@@ -301,7 +301,7 @@ public class ScreenFactory
 			Attribute attr = (Attribute)object;
 			String attrName = attr.getName();
 			
-			if(attrName.equals("_usecontroller"))
+			if(attrName.equals("_useController"))
 			{
 				String handlerStr =  attr.getValue();
 				if (handlerStr != null)
@@ -313,7 +313,7 @@ public class ScreenFactory
 					}
 				}
 			}
-			else if(attrName.equals("_useserializable"))
+			else if(attrName.equals("_useSerializable"))
 			{
 				String serializerStr =  attr.getValue();
 				if (serializerStr != null)
@@ -325,7 +325,7 @@ public class ScreenFactory
 					}
 				}
 			}
-			else if(attrName.equals("_useformatter"))
+			else if(attrName.equals("_useFormatter"))
 			{
 				String formatterStr =  attr.getValue();
 				if (formatterStr != null)
@@ -337,7 +337,7 @@ public class ScreenFactory
 					}
 				}
 			}
-			else if(attrName.equals("_usedatasource"))
+			else if(attrName.equals("_useDataSource"))
 			{
 				String datasourceStr =  attr.getValue();
 				if (datasourceStr != null)

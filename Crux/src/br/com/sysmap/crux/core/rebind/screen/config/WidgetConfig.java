@@ -38,7 +38,7 @@ import br.com.sysmap.crux.core.server.scan.ClassScanner;
 public class WidgetConfig 
 {
 	private static Map<String, Class<? extends WidgetFactory<?>>> config = null;
-	private static Set<String> registeredLibraries = null;
+	private static Map<String, Set<String>> registeredLibraries = null;
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Log logger = LogFactory.getLog(WidgetConfig.class);
 	private static final Lock lock = new ReentrantLock();
@@ -72,7 +72,7 @@ public class WidgetConfig
 	protected static void initializeWidgetConfig()
 	{
 		config = new HashMap<String, Class<? extends WidgetFactory<?>>>(100);
-		registeredLibraries = new HashSet<String>();
+		registeredLibraries = new HashMap<String, Set<String>>();
 		Set<String> factoriesNames =  ClassScanner.searchClassesByAnnotation(br.com.sysmap.crux.core.client.declarative.DeclarativeFactory.class);
 		if (factoriesNames != null)
 		{
@@ -83,10 +83,13 @@ public class WidgetConfig
 					Class<? extends WidgetFactory<?>> factoryClass = (Class<? extends WidgetFactory<?>>)Class.forName(name);
 					br.com.sysmap.crux.core.client.declarative.DeclarativeFactory annot = 
 						factoryClass.getAnnotation(br.com.sysmap.crux.core.client.declarative.DeclarativeFactory.class);
-					registeredLibraries.add(annot.library());
-					//String widgetType = annot.library() + "_" + annot.id();
-					//config.put(widgetType, factoryClass); TODO: colocar o pacote, para evitar colisao
-					config.put(annot.id(), factoryClass);
+					if (!registeredLibraries.containsKey(annot.library()))
+					{
+						registeredLibraries.put(annot.library(), new HashSet<String>());
+					}
+					registeredLibraries.get(annot.library()).add(annot.id());
+					String widgetType = annot.library() + "_" + annot.id();
+					config.put(widgetType, factoryClass); 
 				} 
 				catch (ClassNotFoundException e) 
 				{
@@ -113,7 +116,22 @@ public class WidgetConfig
 		}
 		return config.get(id);
 	}
-	
+
+	/**
+	 * 
+	 * @param library
+	 * @param id
+	 * @return
+	 */
+	public static Class<? extends WidgetFactory<?>> getClientClass(String library, String id)
+	{
+		if (config == null)
+		{
+			initializeWidgetConfig();
+		}
+		return config.get(library+"_"+id);
+	}
+
 	/**
 	 * 
 	 * @return
@@ -125,6 +143,21 @@ public class WidgetConfig
 			initializeWidgetConfig();
 		}
 		
-		return registeredLibraries;
+		return registeredLibraries.keySet();
+	}
+
+	/**
+	 * 
+	 * @param library
+	 * @return
+	 */
+	public static Set<String> getRegisteredLibraryFactories(String library)
+	{
+		if (registeredLibraries == null)
+		{
+			initializeWidgetConfig();
+		}
+		
+		return registeredLibraries.get(library);
 	}
 }

@@ -53,7 +53,6 @@ public class ScreenFactory {
 	
 	private ScreenFactory()
 	{
-		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 		this.declaredI18NMessages = GWT.create(DeclaredI18NMessages.class);
 		this.registeredDataSources = GWT.create(RegisteredDataSources.class);
 	}
@@ -80,7 +79,9 @@ public class ScreenFactory {
 	{
 		if (screen == null)
 		{
+			this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 			create();
+			this.registeredWidgetFactories = null; // Release resources from javascript memory.
 		}
 		return screen;
 	}

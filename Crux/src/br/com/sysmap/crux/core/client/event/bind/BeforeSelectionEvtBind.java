@@ -58,5 +58,4 @@ public class BeforeSelectionEvtBind implements EvtBinder<HasBeforeSelectionHandl
 	{
 		return EVENT_NAME;
 	}
-
 }

@@ -56,5 +56,5 @@ public class MouseDownEvtBind implements EvtBinder<HasMouseDownHandlers>
 	public String getEventName()
 	{
 		return EVENT_NAME;
-	}	
+	}			
 }

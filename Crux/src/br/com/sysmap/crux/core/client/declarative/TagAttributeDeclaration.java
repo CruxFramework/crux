@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface TagAttribute
+public @interface TagAttributeDeclaration
 {
 	String value();
 	Class<?> type() default String.class;

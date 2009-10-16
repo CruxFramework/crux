@@ -13,19 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.screen;
+package br.com.sysmap.crux.core.client.screen.children;
 
-import com.google.gwt.dom.client.Element;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyWidget;
+
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface TagChildProcessor<T extends Widget>
+@TagChildAttributes(type=AnyWidget.class)
+public class AnyWidgetChildProcessor<T extends Widget> extends WidgetChildProcessor<T>
 {
-	void processAttributes(T widget, Element element, String widgetId) throws InterfaceConfigException;
-	void processEvents(T widget, Element element, String widgetId) throws InterfaceConfigException;
-	void processChildren(T widget, Element parentElement, String widgetId) throws InterfaceConfigException;
-//	String getTagName();
 }

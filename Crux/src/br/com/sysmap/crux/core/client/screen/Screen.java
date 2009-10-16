@@ -539,7 +539,7 @@ public class Screen
 	 * 
 	 * @param caller
 	 */
-	public void updateController(Object eventHandler)
+	public static void updateController(Object eventHandler)
 	{
 		Screen.get().updateControllerObjects(eventHandler);
 	}

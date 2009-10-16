@@ -57,6 +57,5 @@ public class HighlightEvtBind implements EvtBinder<HasHighlightHandlers<?>>
 	public String getEventName()
 	{
 		return EVENT_NAME;
-	}
-
+	}	
 }

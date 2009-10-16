@@ -57,5 +57,4 @@ public class KeyPressEvtBind implements EvtBinder<HasKeyPressHandlers>
 	{
 		return EVENT_NAME;
 	}
-
 }

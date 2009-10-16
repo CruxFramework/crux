@@ -56,5 +56,5 @@ public class MouseMoveEvtBind implements EvtBinder<HasMouseMoveHandlers>
 	public String getEventName()
 	{
 		return EVENT_NAME;
-	}	
+	}		
 }

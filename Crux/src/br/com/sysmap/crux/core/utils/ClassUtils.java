@@ -15,6 +15,9 @@
  */
 package br.com.sysmap.crux.core.utils;
 
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
@@ -230,5 +233,26 @@ public class ClassUtils
 			return pkgName + "." + name.substring(0, name.indexOf(simpleName)-1) + "$"+ simpleName;
 		}
 	}	
+	
+	/**
+	 * 
+	 * @param processorClass
+	 * @return
+	 */
+	public static TagChildAttributes getChildtrenAttributesAnnotation(Class<?> processorClass)
+	{
+		TagChildAttributes attributes = processorClass.getAnnotation(TagChildAttributes.class);
+		if (attributes == null)
+		{
+			Class<?> superClass = processorClass.getSuperclass();
+			if (superClass != null && !superClass.equals(WidgetFactory.class))
+			{
+				attributes = getChildtrenAttributesAnnotation(superClass);
+			}
+		}
+		
+		return attributes;
+	}
+	
 	
 }

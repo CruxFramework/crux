@@ -25,12 +25,13 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface TagAttribute
+@Target(ElementType.TYPE)
+public @interface TagChildAttributes
 {
-	String value();
-	Class<?> type() default String.class;
-	String defaultValue() default "";
-	boolean required() default false;
-	boolean supportsI18N() default false;
+	String minOccurs() default "1";
+	String maxOccurs() default "1";
+	String tagName() default "";
+	Class<?> type() default Void.class;
+	String widgetProperty() default "";
+	boolean inheritsParentAttributes() default false;
 }

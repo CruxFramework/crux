@@ -55,5 +55,5 @@ public class LoadEvtBind implements EvtBinder<HasLoadHandlers>
 	public String getEventName()
 	{
 		return EVENT_NAME;
-	}
+	}	
 }

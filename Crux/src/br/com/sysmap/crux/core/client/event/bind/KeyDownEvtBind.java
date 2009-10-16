@@ -56,6 +56,5 @@ public class KeyDownEvtBind implements EvtBinder<HasKeyDownHandlers>
 	public String getEventName()
 	{
 		return EVENT_NAME;
-	}
-
+	}		
 }

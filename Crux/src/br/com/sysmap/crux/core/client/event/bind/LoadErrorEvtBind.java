@@ -55,5 +55,5 @@ public class LoadErrorEvtBind implements EvtBinder<HasErrorHandlers>
 	public String getEventName()
 	{
 		return EVENT_NAME;
-	}
+	}	
 }

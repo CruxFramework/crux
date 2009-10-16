@@ -13,24 +13,17 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.declarative;
+package br.com.sysmap.crux.core.client.screen.children;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.google.gwt.user.client.ui.Widget;
+
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface TagAttribute
+public interface HasPostProcessor<T extends Widget>
 {
-	String value();
-	Class<?> type() default String.class;
-	String defaultValue() default "";
-	boolean required() default false;
-	boolean supportsI18N() default false;
+	void postProcessChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException;
 }

@@ -51,6 +51,5 @@ public class CloseEvtBind implements EvtBinder<HasCloseHandlers<?>>
 	public String getEventName()
 	{
 		return EVENT_NAME;
-	}
-
+	}		
 }

@@ -56,5 +56,5 @@ public class MouseOutEvtBind implements EvtBinder<HasMouseOutHandlers>
 	public String getEventName()
 	{
 		return EVENT_NAME;
-	}	
+	}			
 }
