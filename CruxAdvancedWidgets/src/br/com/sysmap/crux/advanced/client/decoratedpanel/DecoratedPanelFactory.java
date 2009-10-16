@@ -16,10 +16,17 @@
 package br.com.sysmap.crux.advanced.client.decoratedpanel;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory for Decorated Panel widget
@@ -38,30 +45,53 @@ public class DecoratedPanelFactory extends AbstractDecoratedPanelFactory<Decorat
 	}
 
 	@Override
-	public void processChildren(WidgetFactoryContext<DecoratedPanel> context) throws InterfaceConfigException
+	@TagChildren({
+		@TagChild(ChildrenProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<DecoratedPanel> context) throws InterfaceConfigException {}
+	
+	public static class ChildrenProcessor extends ChoiceChildProcessor<DecoratedPanel>
 	{
-		Element element = context.getElement();
-		DecoratedPanel widget = context.getWidget();
-		
-		Element child = ensureFirstChildSpan(element, true);
-		if(child != null)
+		@Override
+		@TagChildren({
+			@TagChild(HTMLChildProcessor.class),
+			@TagChild(TextChildProcessor.class),
+			@TagChild(WidgetProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<DecoratedPanel> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(tagName="html", type=AnyTag.class)
+	public static class HTMLChildProcessor extends WidgetChildProcessor<DecoratedPanel>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<DecoratedPanel> context) throws InterfaceConfigException
 		{
-			String type = child.getAttribute("_contentType");
-			if("html".equals(type))
-			{
-				widget.setContentHtml(child.getInnerHTML());
-			}
-			else if("text".equals(type))
-			{
-				widget.setContentText(child.getInnerText());
-			}
-			else if("widget".equals(type))
-			{
-				Element widgetElement = ensureFirstChildSpan(child, false);
-				Widget childWidget = createChildWidget(ensureWidget(widgetElement), widgetElement.getId());
-				widget.setContentWidget(childWidget);
-				super.add(widget, childWidget, element, child);
-			}
-		}		
-	}	
+			context.getRootWidget().setContentHtml(context.getChildElement().getInnerHTML());
+		}
+	}
+
+	@TagChildAttributes(tagName="text", type=String.class)
+	public static class TextChildProcessor extends WidgetChildProcessor<DecoratedPanel>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<DecoratedPanel> context) throws InterfaceConfigException
+		{
+			context.getRootWidget().setContentText(context.getChildElement().getInnerText());
+		}
+	}
+	
+	@TagChildAttributes(tagName="widget")
+	public static class WidgetProcessor extends WidgetChildProcessor<DecoratedPanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(WidgetContentProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<DecoratedPanel> context) throws InterfaceConfigException {}
+	}
+
+	@TagChildAttributes(widgetProperty="contentWidget")
+	public static class WidgetContentProcessor extends AnyWidgetChildProcessor<DecoratedPanel> {}
+
 }

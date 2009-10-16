@@ -15,15 +15,18 @@
  */
 package br.com.sysmap.crux.advanced.client.stackmenu;
 
-import java.util.List;
-
-import br.com.sysmap.crux.advanced.client.dynatabs.DynaTabs;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
-import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
@@ -45,8 +48,10 @@ public class StackMenuItemFactory extends WidgetFactory<StackMenuItem>
 	
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="open", type=Boolean.class),
-		@TagAttribute(value="label", autoProcess=false, supportsI18N=true, required=true)
+		@TagAttribute(value="open", type=Boolean.class)
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="label", supportsI18N=true, required=true)
 	})
 	public void processAttributes(WidgetFactoryContext<StackMenuItem> context) throws InterfaceConfigException
 	{
@@ -54,16 +59,20 @@ public class StackMenuItemFactory extends WidgetFactory<StackMenuItem>
 	}
 	
 	@Override
-	public void processChildren(WidgetFactoryContext<StackMenuItem> context) throws InterfaceConfigException
+	@TagChildren({
+		@TagChild(StackMenuItemProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<StackMenuItem> context) throws InterfaceConfigException {}
+	
+	@TagChildAttributes(tagName="item", minOccurs="0", maxOccurs="unbounded", type=StackMenuItemFactory.class)
+	public static class StackMenuItemProcessor extends WidgetChildProcessor<StackMenuItem>
 	{
-		Element element = context.getElement();
-		StackMenuItem widget = context.getWidget();
-
-		List<Element> items = ensureChildrenSpans(element, true);
-		for (Element child : items)
+		@Override
+		public void processChildren(WidgetChildProcessorContext<StackMenuItem> context) throws InterfaceConfigException 
 		{
-			StackMenuItem item = (StackMenuItem) createChildWidget(child, child.getId());
-			widget.add(item);
+			Element childElement = context.getChildElement();
+			StackMenuItem childWidget = (StackMenuItem)createChildWidget(childElement, childElement.getId());
+			context.getRootWidget().add(childWidget);
 		}
 	}
 }

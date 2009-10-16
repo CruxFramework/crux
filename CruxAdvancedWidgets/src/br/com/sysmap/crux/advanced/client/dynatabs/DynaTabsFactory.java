@@ -19,8 +19,17 @@ import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusOrBlurEvtBind;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvtBind;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 
@@ -38,6 +47,9 @@ public class DynaTabsFactory extends WidgetFactory<DynaTabs>
 	}
 
 	@Override
+	@TagChildren({
+		@TagChild(DynaTabProcessor.class)
+	})
 	public void processChildren(WidgetFactoryContext<DynaTabs> context) throws InterfaceConfigException
 	{
 		Element element = context.getElement();
@@ -61,6 +73,42 @@ public class DynaTabsFactory extends WidgetFactory<DynaTabs>
 			
 			BeforeFocusOrBlurEvtBind.bindEvents(child, tab);
 			new BeforeCloseEvtBind().bindEvent(child, tab);
+		}
+	}
+	
+	@TagChildAttributes(tagName="tab", minOccurs="0", maxOccurs="unbounded")
+	public static class DynaTabProcessor extends WidgetChildProcessor<DynaTabs>
+	{
+		@Override
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration(value="id", required=true),
+			@TagAttributeDeclaration(value="url", required=true),
+			@TagAttributeDeclaration("label"),
+			@TagAttributeDeclaration(value="closeable", type=Boolean.class)
+		})
+		@TagEventsDeclaration({
+			@TagEventDeclaration("onBeforeFocus"),
+			@TagEventDeclaration("onBeforeBlur"),
+			@TagEventDeclaration("onBeforeClose")
+		})
+		public void processChildren(WidgetChildProcessorContext<DynaTabs> context) throws InterfaceConfigException
+		{
+			Element childElement = context.getChildElement();
+			String id = childElement.getAttribute("_id");
+			String label = childElement.getAttribute("_label");
+			String url = childElement.getAttribute("_url");
+						
+			boolean closeable = true;
+			String strCloseable = childElement.getAttribute("_closeable");
+			if(strCloseable != null && strCloseable.trim().length() > 0)
+			{
+				closeable = Boolean.parseBoolean(strCloseable);
+			}
+			
+			Tab tab = context.getRootWidget().openTab(id, label, url, closeable, false);
+			
+			BeforeFocusOrBlurEvtBind.bindEvents(childElement, tab);
+			new BeforeCloseEvtBind().bindEvent(childElement, tab);			
 		}
 	}
 }

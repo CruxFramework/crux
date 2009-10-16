@@ -15,14 +15,16 @@
  */
 package br.com.sysmap.crux.advanced.client.titlepanel;
 
-import java.util.List;
-
 import br.com.sysmap.crux.advanced.client.decoratedpanel.AbstractDecoratedPanelFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.screen.ScreenFactory;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Widget;
+import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
 
 /**
  * Factory for Title Panel widget
@@ -30,106 +32,125 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class AbstractTitlePanelFactory<T extends TitlePanel> extends AbstractDecoratedPanelFactory<T>
 {
-	/**
-	 * @param widget
-	 * @param element
-	 * @param child
-	 * @param type
-	 * @throws InterfaceConfigException
-	 */
-	private void setTitleContent(T widget, Element element, Element child, String type) throws InterfaceConfigException
-	{
-		if("html".equals(type))
-		{
-			widget.setTitleHtml(child.getInnerHTML());
-		}
-		else if("text".equals(type))
-		{
-			String innerText = getI18NText(child);			
-			widget.setTitleText(innerText);
-		}
-		else if("widget".equals(type))
-		{
-			Element widgetElement = ensureFirstChildSpan(child, false);
-			Widget childWidget = createChildWidget(ensureWidget(widgetElement), widgetElement.getId());
-			widget.setTitleWidget(childWidget);
-			super.add(widget, childWidget, element, child);
-		}
-	}
-
-	/**
-	 * @param widget
-	 * @param element
-	 * @param child
-	 * @param type
-	 * @throws InterfaceConfigException
-	 */
-	private void setBodyContent(T widget, Element element, Element child, String type) throws InterfaceConfigException
-	{
-		if("html".equals(type))
-		{
-			widget.setContentHtml(child.getInnerHTML());
-		}
-		else if("text".equals(type))
-		{
-			String innerText = getI18NText(child);			
-			widget.setContentText(innerText);
-		}
-		else if("widget".equals(type))
-		{
-			Element widgetElement = ensureFirstChildSpan(child, false);
-			Widget childWidget = createChildWidget(ensureWidget(widgetElement), widgetElement.getId());
-			widget.setContentWidget(childWidget);
-			super.add(widget, childWidget, element, child);
-		}
-	}
-
 	@Override
-	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException
+	@TagChildren({
+		@TagChild(TitleProcessor.class),
+		@TagChild(BodyProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException {}
+	
+	@TagChildAttributes(tagName="title", minOccurs="0")
+	public static class TitleProcessor extends WidgetChildProcessor<TitlePanel>
 	{
-		Element element = context.getElement();
-		T widget = context.getWidget();
+		@Override
+		@TagChildren({
+			@TagChild(TitleChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<TitlePanel> context) throws InterfaceConfigException	{}
+	}
 
-		List<Element> children = ensureChildrenSpans(element, true);
-		
-		for (Element child : children)
-		{
-			String type = child.getAttribute("_contentType");
-			String part = child.getAttribute("_part");
-			
-			if("body".equals(part))
-			{
-				setBodyContent(widget, element, child, type);
-			}
-			else if("title".equals(part))
-			{
-				setTitleContent(widget, element, child, type);
-			}
-		}		
+	public static class TitleChildrenProcessor extends ChoiceChildProcessor<TitlePanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TitlePanelHTMLChildProcessor.class),
+			@TagChild(TitlePanelTextChildProcessor.class),
+			@TagChild(TitlePanelWidgetChildProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<TitlePanel> context) throws InterfaceConfigException {}
 	}
 	
-	private String getI18NText(Element child)
+	@TagChildAttributes(tagName="html", type=AnyTag.class)
+	public static abstract class HTMLChildProcessor<T extends TitlePanel> extends WidgetChildProcessor<T>
 	{
-		String innerText = child.getInnerText();
-		
-		if(innerText != null)
+		@Override
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
 		{
-			innerText = innerText.trim();
-			
-			if(innerText.length() > 0)
-			{
-				innerText = ScreenFactory.getInstance().getDeclaredMessage(innerText);
-			}
-			else
-			{
-				innerText = "";
-			}
+			context.getRootWidget().setTitleHtml(context.getChildElement().getInnerHTML());
 		}
-		else
-		{
-			innerText = "";
-		}
-		return innerText;
 	}
+
+	@TagChildAttributes(tagName="text", type=String.class)
+	public static abstract class TextChildProcessor<T extends TitlePanel> extends WidgetChildProcessor<T>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
+		{
+			context.getRootWidget().setTitleText(context.getChildElement().getInnerText());
+		}
+	}
+		
+	@TagChildAttributes(tagName="widget")
+	public static class TitlePanelWidgetChildProcessor extends WidgetChildProcessor<TitlePanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TitleWidgetTitleProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<TitlePanel> context) throws InterfaceConfigException {}
+	}
+
+	@TagChildAttributes(widgetProperty="titleWidget")
+	public static class TitleWidgetTitleProcessor extends AnyWidgetChildProcessor<TitlePanel> {}
+	
+	
+	@TagChildAttributes(tagName="body", minOccurs="0")
+	public static class BodyProcessor extends WidgetChildProcessor<TitlePanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(BodyChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<TitlePanel> context) throws InterfaceConfigException {}
+	}
+
+	public static class BodyChildrenProcessor extends ChoiceChildProcessor<TitlePanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TitlePanelBodyHTMLChildProcessor.class),
+			@TagChild(TitlePanelBodyTextChildProcessor.class),
+			@TagChild(TitlePanelBodyWidgetProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<TitlePanel> context) throws InterfaceConfigException {}
+	}	
+	
+	@TagChildAttributes(tagName="html", type=AnyTag.class)
+	public static abstract class BodyHTMLChildProcessor<T extends TitlePanel> extends WidgetChildProcessor<T>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
+		{
+			context.getRootWidget().setContentHtml(context.getChildElement().getInnerHTML());
+		}
+	}
+
+	@TagChildAttributes(tagName="text", type=String.class)
+	public static abstract class BodyTextChildProcessor<T extends TitlePanel> extends WidgetChildProcessor<T>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
+		{
+			context.getRootWidget().setContentText(context.getChildElement().getInnerText());
+		}
+	}
+	
+	@TagChildAttributes(tagName="widget")
+	public static class TitlePanelBodyWidgetProcessor extends WidgetChildProcessor<TitlePanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(BodyWidgetContentProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<TitlePanel> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(widgetProperty="contentWidget")
+	public static class BodyWidgetContentProcessor extends AnyWidgetChildProcessor<TitlePanel> {}
+
+	public static class TitlePanelHTMLChildProcessor extends HTMLChildProcessor<TitlePanel>{}
+	public static class TitlePanelTextChildProcessor extends TextChildProcessor<TitlePanel>{}	
+	public static class TitlePanelBodyHTMLChildProcessor extends BodyHTMLChildProcessor<TitlePanel>{}
+	public static class TitlePanelBodyTextChildProcessor extends BodyTextChildProcessor<TitlePanel> {}
 	
 }

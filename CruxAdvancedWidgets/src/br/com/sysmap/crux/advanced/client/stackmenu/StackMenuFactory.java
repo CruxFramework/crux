@@ -15,10 +15,13 @@
  */
 package br.com.sysmap.crux.advanced.client.stackmenu;
 
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 
@@ -36,16 +39,20 @@ public class StackMenuFactory extends WidgetFactory<StackMenu>
 	}
 	
 	@Override
-	public void processChildren(WidgetFactoryContext<StackMenu> context) throws InterfaceConfigException
-	{
-		Element element = context.getElement();
-		StackMenu widget = context.getWidget();
+	@TagChildren({
+		@TagChild(StackMenuItemProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<StackMenu> context) throws InterfaceConfigException {}
 
-		List<Element> items = ensureChildrenSpans(element, true);
-		for (Element child : items)
+	@TagChildAttributes(tagName="item", minOccurs="0", maxOccurs="unbounded", type=StackMenuItemFactory.class)
+	public static class StackMenuItemProcessor extends WidgetChildProcessor<StackMenu>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<StackMenu> context) throws InterfaceConfigException 
 		{
-			StackMenuItem item = (StackMenuItem) createChildWidget(child, child.getId());
-			widget.add(item);
+			Element childElement = context.getChildElement();
+			StackMenuItem childWidget = (StackMenuItem)createChildWidget(childElement, childElement.getId());
+			context.getRootWidget().add(childWidget);
 		}
 	}
 }

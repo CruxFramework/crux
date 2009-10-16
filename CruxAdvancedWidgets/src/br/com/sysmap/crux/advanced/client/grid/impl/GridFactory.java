@@ -24,14 +24,21 @@ import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
 import br.com.sysmap.crux.advanced.client.util.AlignmentUtil;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Command;
@@ -232,13 +239,13 @@ public class GridFactory extends WidgetFactory<Grid>
 	}
 	
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="pageSize", type=Integer.class, defaultValue="0x7fffffff", autoProcess=false),
-		@TagAttribute(value="rowSelection", type=RowSelectionModel.class, defaultValue="unselectable", autoProcess=false),
-		@TagAttribute(value="dataSource", autoProcess=false),
-		@TagAttribute(value="cellSpacing", type=Integer.class, defaultValue="1", autoProcess=false),
-		@TagAttribute(value="autoLoadData", type=Boolean.class, defaultValue="false", autoProcess=false),
-		@TagAttribute(value="stretchColumns", type=Boolean.class, defaultValue="false", autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="pageSize", type=Integer.class, defaultValue="8"),
+		@TagAttributeDeclaration(value="rowSelection", type=RowSelectionModel.class, defaultValue="UNSELECTABLE"),
+		@TagAttributeDeclaration("dataSource"),
+		@TagAttributeDeclaration(value="cellSpacing", type=Integer.class, defaultValue="1"),
+		@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, defaultValue="false"),
+		@TagAttributeDeclaration(value="stretchColumns", type=Boolean.class, defaultValue="false")
 	})
 	public void processAttributes(WidgetFactoryContext<Grid> context) throws InterfaceConfigException
 	{
@@ -262,4 +269,59 @@ public class GridFactory extends WidgetFactory<Grid>
 		RowEventsBind.bindRenderRowEvent(element, widget);
 		super.processEvents(context);
 	}
+	
+	@Override
+	@TagChildren({
+		@TagChild(value=ColumnProcessor.class, autoProcess=false)
+	})
+	public void processChildren(WidgetFactoryContext<Grid> context) throws InterfaceConfigException {}
+	
+	
+	@TagChildAttributes(maxOccurs="unbounded")
+	public static class ColumnProcessor extends ChoiceChildProcessor<Grid>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(DataColumnProcessor.class),
+			@TagChild(WidgetColumnProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<Grid> context) throws InterfaceConfigException {}
+	}
+
+	
+	@TagChildAttributes(tagName="dataColumn", minOccurs="0", maxOccurs="unbounded")
+	public static class DataColumnProcessor extends WidgetChildProcessor<Grid>
+	{
+		@Override
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration("width"),
+			@TagAttributeDeclaration(value="visible", type=Boolean.class),
+			@TagAttributeDeclaration("label"),
+			@TagAttributeDeclaration("key"),
+			@TagAttributeDeclaration("formatter"),
+			@TagAttributeDeclaration("horizontalAlignment"),
+			@TagAttributeDeclaration("verticalAlignment")
+		})
+		public void processChildren(WidgetChildProcessorContext<Grid> context) throws InterfaceConfigException {}
+	}
+
+	@TagChildAttributes(tagName="widgetColumn", minOccurs="0", maxOccurs="unbounded")
+	public static class WidgetColumnProcessor extends WidgetChildProcessor<Grid>
+	{
+		@Override
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration("width"),
+			@TagAttributeDeclaration(value="visible", type=Boolean.class),
+			@TagAttributeDeclaration("label"),
+			@TagAttributeDeclaration("key"),
+			@TagAttributeDeclaration("horizontalAlignment"),
+			@TagAttributeDeclaration("verticalAlignment")
+		})
+		@TagChildren({
+			@TagChild(WidgetProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<Grid> context) throws InterfaceConfigException {}
+	}
+	
+	public static class WidgetProcessor extends AnyWidgetChildProcessor<Grid>{}
 }

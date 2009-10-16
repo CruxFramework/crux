@@ -16,14 +16,14 @@
 package br.com.sysmap.crux.advanced.client.maskedtextbox;
 
 import br.com.sysmap.crux.advanced.client.AdvancedWidgetMessages;
-import br.com.sysmap.crux.advanced.client.dynatabs.DynaTabs;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
-import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
 import br.com.sysmap.crux.core.client.screen.factory.HasAllFocusHandlersFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasAllKeyHandlersFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasAllMouseHandlersFactory;
@@ -67,12 +67,14 @@ public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
 
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="formatter", required=true, autoProcess=false),
-		@TagAttribute(value="value", autoProcess=false),
 		@TagAttribute(value="readOnly", type=Boolean.class),
 		@TagAttribute(value="tabIndex", type=Integer.class),
 		@TagAttribute(value="accessKey", type=Character.class),
 		@TagAttribute(value="focus", type=Boolean.class)
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="formatter", required=true),
+		@TagAttributeDeclaration("value")
 	})
 	public void processAttributes(WidgetFactoryContext<MaskedTextBox> context) throws InterfaceConfigException
 	{

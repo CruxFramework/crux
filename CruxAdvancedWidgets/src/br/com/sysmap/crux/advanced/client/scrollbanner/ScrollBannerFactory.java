@@ -15,12 +15,16 @@
  */
 package br.com.sysmap.crux.advanced.client.scrollbanner;
 
-import java.util.List;
-
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 
@@ -44,8 +48,8 @@ public class ScrollBannerFactory extends WidgetFactory<ScrollBanner>
 	}
 	
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="messageScrollingPeriod", autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("messageScrollingPeriod")
 	})
 	public void processAttributes(WidgetFactoryContext<ScrollBanner> context) throws InterfaceConfigException
 	{
@@ -53,16 +57,19 @@ public class ScrollBannerFactory extends WidgetFactory<ScrollBanner>
 	}
 	
 	@Override
-	public void processChildren(WidgetFactoryContext<ScrollBanner> context) throws InterfaceConfigException
+	@TagChildren({
+		@TagChild(MessageProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<ScrollBanner> context) throws InterfaceConfigException {}
+	
+	@TagChildAttributes(tagName="message", minOccurs="0", maxOccurs="unbounded", type=String.class)
+	public static class MessageProcessor extends WidgetChildProcessor<ScrollBanner>
 	{
-		Element element = context.getElement();
-		ScrollBanner widget = context.getWidget();
-
-		List<Element> children = ensureChildrenSpans(element, true);
-		for (Element child : children)
+		@Override
+		public void processChildren(WidgetChildProcessorContext<ScrollBanner> context) throws InterfaceConfigException
 		{
-			String message = child.getInnerText();
-			widget.addMessage(message);
-		}		
+			String message = ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getInnerHTML());
+			context.getRootWidget().addMessage(message);
+		}
 	}
 }

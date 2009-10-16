@@ -15,14 +15,17 @@
  */
 package br.com.sysmap.crux.advanced.client.timer;
 
-import java.util.List;
-
 import br.com.sysmap.crux.advanced.client.event.timeout.TimeoutEvtBind;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 
@@ -64,10 +67,10 @@ public class TimerFactory extends WidgetFactory<Timer>
 	}
 	
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="start", type=Boolean.class, defaultValue="false", autoProcess=false),
-		@TagAttribute(value="initial", type=Integer.class, defaultValue="0", autoProcess=false),
-		@TagAttribute(value="regressive", type=Boolean.class, defaultValue="false", autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="start", type=Boolean.class, defaultValue="false"),
+		@TagAttributeDeclaration(value="initial", type=Integer.class, defaultValue="0"),
+		@TagAttributeDeclaration(value="regressive", type=Boolean.class, defaultValue="false")
 	})
 	public void processAttributes(WidgetFactoryContext<Timer> context) throws InterfaceConfigException
 	{
@@ -75,15 +78,22 @@ public class TimerFactory extends WidgetFactory<Timer>
 	}
 	
 	@Override
-	public void processChildren(WidgetFactoryContext<Timer> context) throws InterfaceConfigException
+	@TagChildren({
+		@TagChild(TimerChildrenProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<Timer> context) throws InterfaceConfigException {}
+	
+	@TagChildAttributes(tagName="onTimeout", minOccurs="0", maxOccurs="unbounded")
+	public static class TimerChildrenProcessor extends WidgetChildProcessor<Timer>
 	{
-		Element element = context.getElement();
-		Timer widget = context.getWidget();
-
-		List<Element> children = ensureChildrenSpans(element, true);
-		for (Element child : children)
+		@Override
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration(value="time", required=true, type=Integer.class),
+			@TagAttributeDeclaration(value="execute", required=true)
+		})
+		public void processChildren(WidgetChildProcessorContext<Timer> context) throws InterfaceConfigException
 		{
-			TimeoutEvtBind.bindEventForChildTag(child, widget);
-		}		
+			TimeoutEvtBind.bindEventForChildTag(context.getChildElement(), context.getRootWidget());
+		}
 	}
 }

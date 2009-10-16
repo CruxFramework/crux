@@ -16,8 +16,8 @@
 package br.com.sysmap.crux.advanced.client.decoratedpanel;
 
 import br.com.sysmap.crux.basic.client.CellPanelFactory;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
 import com.google.gwt.dom.client.Element;
@@ -31,9 +31,9 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 public abstract class AbstractDecoratedPanelFactory<T extends DecoratedPanel> extends CellPanelFactory<T>
 {
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="horizontalAlignment", autoProcess=false),
-		@TagAttribute(value="verticalAlignment", autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("horizontalAlignment"),
+		@TagAttributeDeclaration("verticalAlignment")
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{

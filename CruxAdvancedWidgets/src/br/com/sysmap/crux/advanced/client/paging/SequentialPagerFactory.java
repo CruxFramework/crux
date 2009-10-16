@@ -17,8 +17,8 @@ package br.com.sysmap.crux.advanced.client.paging;
 
 import br.com.sysmap.crux.advanced.client.event.paging.PageEvtBind;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
@@ -47,9 +47,9 @@ public class SequentialPagerFactory extends WidgetFactory<SequentialPager>
 	}
 
 	@Override
-	@TagAttributes({
-		@TagAttribute(value="pageable", autoProcess=false),
-		@TagAttribute(value="enabled", type=Boolean.class, autoProcess=false)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("pageable"),
+		@TagAttributeDeclaration(value="enabled", type=Boolean.class)
 	})
 	public void processAttributes(WidgetFactoryContext<SequentialPager> context) throws InterfaceConfigException
 	{

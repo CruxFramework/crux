@@ -16,18 +16,18 @@
 package br.com.sysmap.crux.advanced.client.filter;
 
 import br.com.sysmap.crux.advanced.client.AdvancedWidgetMessages;
-import br.com.sysmap.crux.advanced.client.dynatabs.DynaTabs;
 import br.com.sysmap.crux.basic.client.CompositeFactory;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
-import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
 import br.com.sysmap.crux.core.client.screen.factory.HasAllKeyHandlersFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasSelectionHandlersFactory;
@@ -58,7 +58,6 @@ public class FilterFactory extends CompositeFactory<Filter>
 	
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="filterable", autoProcess=false),
 		@TagAttribute(value="accessKey", type=Character.class),
 		@TagAttribute(value="autoSelectEnabled", type=Boolean.class),
 		@TagAttribute(value="focus", type=Boolean.class),
@@ -66,6 +65,9 @@ public class FilterFactory extends CompositeFactory<Filter>
 		@TagAttribute("popupStyleName"),
 		@TagAttribute(value="tabIndex", type=Integer.class),
 		@TagAttribute("value")
+	})
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("filterable")
 	})
 	public void processAttributes(WidgetFactoryContext<Filter> context) throws InterfaceConfigException
 	{
