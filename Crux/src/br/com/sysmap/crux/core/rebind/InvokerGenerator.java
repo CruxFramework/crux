@@ -18,7 +18,6 @@ package br.com.sysmap.crux.core.rebind;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import br.com.sysmap.crux.core.client.controller.ControllerName;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
 
 import com.google.gwt.core.ext.TreeLogger;
@@ -196,71 +195,5 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 		{
 			sourceWriter.println("return null;");
 		}
-	}	
-	
-	/**
-	 * 
-	 * @param declaringClass
-	 * @return
-	 */
-	private String getControllerName(Class<?> declaringClass)
-	{
-		ControllerName annotation = declaringClass.getAnnotation(ControllerName.class);
-		if (annotation != null)
-		{
-			return annotation.value();
-		}
-		String name = declaringClass.getSimpleName();
-		if (name.endsWith("Invoker"))
-		{
-			name = name.substring(0, name.lastIndexOf("Invoker"));
-			if (name.length() > 0)
-			{
-				name =  Character.toLowerCase(name.charAt(0)) + name.substring(1);
-			}
-		}
-		return name;
-	}
-
-	/**
-	 * 
-	 * @param parameterClass
-	 * @return
-	 */
-	private String getClassNameForPrimitive(Class<?> parameterClass)
-	{
-		if ("int".equals(parameterClass.getName()))
-		{
-			return Integer.class.getName();
-		}
-		else if ("short".equals(parameterClass.getName()))
-		{
-			return Short.class.getName();
-		}
-		else if ("long".equals(parameterClass.getName()))
-		{
-			return Long.class.getName();
-		}
-		else if ("byte".equals(parameterClass.getName()))
-		{
-			return Byte.class.getName();
-		}
-		else if ("float".equals(parameterClass.getName()))
-		{
-			return Float.class.getName();
-		}
-		else if ("double".equals(parameterClass.getName()))
-		{
-			return Double.class.getName();
-		}
-		else if ("char".equals(parameterClass.getName()))
-		{
-			return Character.class.getName();
-		}
-		else if ("boolean".equals(parameterClass.getName()))
-		{
-			return Boolean.class.getName();
-		}
-		return null;
 	}	
 }

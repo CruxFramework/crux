@@ -45,7 +45,7 @@ public interface ClientMessages extends Messages
 	String screenFactoryInvalidWidgetParent(String widgetId);
 	@DefaultMessage("[widget 003] - Can not create widget ''{0}''. Verify the widget type.")
 	String screenFactoryErrorCreateWidget(String widgetId);
-	@DefaultMessage("[widget 004] - The span element must contains at least one child.")
+	@DefaultMessage("[widget 004] - The span element must contain at least one child.")
 	String widgetFactoryEnsureChildrenSpansEmpty();
 	@DefaultMessage("[widget 005] - The span element does not represents a widget.")
 	String widgetFactoryEnsureWidgetFail();
