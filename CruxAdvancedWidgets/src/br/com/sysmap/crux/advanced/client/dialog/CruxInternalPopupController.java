@@ -61,9 +61,10 @@ public class CruxInternalPopupController
 	@ExposeOutOfModule
 	public void onClose()
 	{
-		BeforeCloseEvent evt = BeforeCloseEvent.fire(Popup.popup);
+		BeforeCloseEvent evt = BeforeCloseEvent.fire(Popup.getLastShownPopup());
 		if(!evt.isCanceled())
 		{
+			Popup.unregisterLastShownPopup();
 			hidePopupOnTop();
 		}
 	}
@@ -154,6 +155,7 @@ public class CruxInternalPopupController
 	 */
 	public static void hide()
 	{
+		Popup.unregisterLastShownPopup();
 		hidePopupOnTop();
 	}
 	
@@ -181,7 +183,8 @@ public class CruxInternalPopupController
 	@SuppressWarnings("unchecked")
 	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
-		return (T) Screen.getCruxSerializer().deserialize(callOpenerControllerAccessor(call,  Screen.getCruxSerializer().serialize(param)));
+		String result = callOpenerControllerAccessor(call,  Screen.getCruxSerializer().serialize(param));
+		return (T) Screen.getCruxSerializer().deserialize(result);
 	}
 	
 	/**

@@ -186,6 +186,12 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	public abstract List<R> getSelectedRows(); 
 	
 	/**
+	 * Gets all grid rows
+	 * @return a <code>List</code> containing the rows
+	 */
+	public abstract List<R> getRows(); 
+	
+	/**
 	 * Repaints the grid
 	 */
 	public void refresh()

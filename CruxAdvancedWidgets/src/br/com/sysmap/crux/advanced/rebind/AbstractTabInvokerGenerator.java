@@ -18,7 +18,6 @@ package br.com.sysmap.crux.advanced.rebind;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import br.com.sysmap.crux.advanced.client.dialog.Popup;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
 import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperGenerator;
 import br.com.sysmap.crux.core.rebind.WrapperGeneratorException;
@@ -30,8 +29,10 @@ import com.google.gwt.user.rebind.SourceWriter;
  * TODO - Gessé - Comment this
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerator
+public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapperGenerator
 {
+	private static final String ON_TAB_SUFIX = "OnTab";
+
 	/**
 	 * @throws WrapperGeneratorException 
 	 * 
@@ -39,9 +40,39 @@ public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerat
 	@Override
 	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws WrapperGeneratorException
 	{
+		String name = extracted(method);
+		
+		int indexOfTabSufix = name.indexOf(ON_TAB_SUFIX);
+		
+		if (indexOfTabSufix > 0)
+		{
+			String tabId = name.substring(indexOfTabSufix + ON_TAB_SUFIX.length());
+			
+			if (tabId.length() <= ON_TAB_SUFIX.length())
+			{
+				throw new WrapperGeneratorException("Error for generating invoker wrapper: Invalid Method signature: " + method.toGenericString() + ". A valid signature must have the form [methodName][OnTab][tabId]"); // TODO - Gessé - add message here;
+			}
+			
+			tabId = toJavaName(tabId);
+			
+			generateMethod(method, sourceWriter, tabId);
+		}
+		else
+		{
+			throw new WrapperGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.toGenericString()));
+		}
+	}
+	
+	/**
+	 * @throws WrapperGeneratorException 
+	 * 
+	 */
+	protected void generateMethod(Method method, SourceWriter sourceWriter, String tabId) throws WrapperGeneratorException
+	{
 		Class<?> returnType = method.getReturnType();
 		String methodName = method.getName();
 		String controllerName = getControllerName(method.getDeclaringClass());
+		
 		if (methodName.length() > 0)
 		{
 			String returnTypeDeclaration = getParameterDeclaration(returnType);
@@ -62,7 +93,7 @@ public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerat
 			
 			if (returnType.getName().equals("void") || returnType.getName().equals("java.lang.Void"))
 			{
-				generateMethodInvocation(sourceWriter, controllerName, methodName, numParams, null);
+				generateMethodInvocation(sourceWriter, controllerName, getMethodName(method), tabId, numParams, null);
 			}
 			else
 			{
@@ -70,10 +101,28 @@ public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerat
 				{
 					returnTypeDeclaration = getClassNameForPrimitive(returnType);
 				}
-				generateMethodInvocation(sourceWriter, controllerName, methodName, numParams, returnTypeDeclaration);
+				
+				generateMethodInvocation(sourceWriter, controllerName, getMethodName(method), tabId, numParams, returnTypeDeclaration);
 			}
+			
 			sourceWriter.println("}");
 		}
+	}
+
+	/**
+	 * @param method
+	 * @return
+	 */
+	private String getMethodName(Method method)
+	{
+		String name = method.getName();
+		int onTabSufix = name.indexOf(ON_TAB_SUFIX);
+		return name.substring(0, onTabSufix);
+	}
+
+	private String extracted(Method method)
+	{
+		return method.getName();
 	}
 
 	/**
@@ -84,8 +133,7 @@ public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerat
 	 * @param numParams
 	 * @param returnTypeDeclaration
 	 */
-	private void generateMethodInvocation(SourceWriter sourceWriter, String controllerName, String methodName, 
-										  int numParams, String returnTypeDeclaration)
+	private void generateMethodInvocation(SourceWriter sourceWriter, String controllerName, String methodName, String tabId, int numParams, String returnTypeDeclaration)
 	{
 		sourceWriter.println("try{");
 		boolean hasValue = numParams > 0;
@@ -109,11 +157,11 @@ public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerat
 		
 		if (returnTypeDeclaration != null)
 		{
-			sourceWriter.println("return " + Popup.class.getName() + ".invokeOnOpener(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
+			sourceWriter.println("return " + getTabMethodInvocationString() + "(\"" + tabId + "\", \"" + controllerName + "." + methodName + "\"," + (hasValue?"value":"null") + ", " + returnTypeDeclaration + ".class);");
 		}
 		else
 		{
-			sourceWriter.println(Popup.class.getName() + ".invokeOnOpener(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+");");
+			sourceWriter.println(getTabMethodInvocationString() + "(\"" + tabId + "\", \"" + controllerName + "." + methodName + "\"," + (hasValue?"value":"null") + ");");
 		}
 		sourceWriter.println("}catch(Throwable e){");
 		sourceWriter.println("Crux.getErrorHandler().handleError("+EscapeUtils.quote(messages.errorInvokerWrapperSerializationError())+",e);");
@@ -122,5 +170,26 @@ public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerat
 		{
 			sourceWriter.println("return null;");
 		}
-	}	
+	}
+	
+
+	/**
+	 * @param name
+	 * @return
+	 */
+	private static String toJavaName(String name)
+	{
+		if(name != null)
+		{
+			name = name.replaceAll("\\$", ".");
+		}
+		
+		return name;
+	}
+
+	/**
+	 * Creates a String with the form [full.class.Name][.][staticMethodToInvoke], which will determine the method to be invoked when the invoker is called. 
+	 * @return
+	 */
+	protected abstract String getTabMethodInvocationString();	
 }

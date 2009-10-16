@@ -22,6 +22,7 @@ import java.util.List;
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.advanced.client.event.focusblur.BeforeFocusEvent;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
+import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
@@ -174,7 +175,7 @@ public class DynaTabs extends Composite
 	public void closeTab(String tabId)
 	{
 		closeTab(tabId, true);
-	}
+	}	
 	
 	/**
 	 * @param tabId
@@ -203,7 +204,34 @@ public class DynaTabs extends Composite
 			result.add(tab);
 		}
 		return result;
-	}	
+	}
+	
+	/**
+	 * Invokes a controller method on a tab. The tab must belong to a DynaTabs object residing in the current document.
+	 * @param <T>
+	 * @param tabId
+	 * @param call
+	 * @param param
+	 * @param resultType
+	 * @return
+	 * @throws ModuleComunicationException
+	 */
+	public static <T> T invokeOnTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return CruxInternalDynaTabsController.invokeOnTab(tabId, call, param, resultType);
+	}
+	
+	/**
+	 * Invokes a controller method on a tab. The tab must belong to a DynaTabs object residing in the current document.
+	 * @param tabId
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	public static void invokeOnTab(String tabId, String call, Object param) throws ModuleComunicationException
+	{
+		CruxInternalDynaTabsController.invokeOnTab(tabId, call, param);
+	}
 	
 	/**
 	 * @param tabId

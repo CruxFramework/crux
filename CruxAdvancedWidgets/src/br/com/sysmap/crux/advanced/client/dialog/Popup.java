@@ -15,6 +15,9 @@
  */
 package br.com.sysmap.crux.advanced.client.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.advanced.client.event.openclose.HasBeforeCloseHandlers;
@@ -41,7 +44,7 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	private String height = "300";
 	private boolean animationEnabled;
 	private boolean closeable = true;
-	protected static Popup popup;
+	protected static List<Popup> popups = new ArrayList<Popup>();
 	
 	/**
 	 * 
@@ -110,7 +113,7 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 		{
 			popupController = new CruxInternalPopupController(); 
 		}
-		popup = this;
+		popups.add(this);
 		popupController.showPopup(new PopupData(title, url, width, height, styleName!=null ? styleName : DEFAULT_STYLE_NAME, animationEnabled, closeable));
 	}
 	
@@ -222,5 +225,23 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	public HandlerRegistration addBeforeCloseHandler(BeforeCloseHandler handler)
 	{
 		return addHandler(handler, BeforeCloseEvent.getType());
+	}
+
+	public static Popup getLastShownPopup()
+	{
+		if(popups.size() > 0)
+		{
+			return popups.get(popups.size() - 1);
+		}
+		
+		return null;
+	}
+
+	public static void unregisterLastShownPopup()
+	{
+		if(popups.size() > 0)
+		{
+			popups.remove(popups.size() - 1);
+		}
 	}
 }

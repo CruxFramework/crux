@@ -21,4 +21,10 @@
     <generate-with class="br.com.sysmap.crux.advanced.rebind.PopupOpenerInvokerGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.advanced.client.dialog.PopupOpenerInvoker" />
 	</generate-with>
+	<generate-with class="br.com.sysmap.crux.advanced.rebind.SiblingTabInvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.advanced.client.dynatabs.SiblingTabInvoker" />
+	</generate-with>
+	<generate-with class="br.com.sysmap.crux.advanced.rebind.TabInvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.advanced.client.dynatabs.TabInvoker" />
+	</generate-with>
 </module>

@@ -23,6 +23,7 @@ import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.advanced.client.event.openclose.HasBeforeCloseHandlers;
 import br.com.sysmap.crux.advanced.client.js.JSWindow;
+import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -99,6 +100,26 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	public String getId()
 	{
 		return id;
+	}
+	
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	public static <T> T invokeOnSiblingTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return CruxInternalDynaTabsController.invokeOnSiblingTab(tabId, call, param, resultType);
+	}
+	
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	public static void invokeOnSiblingTab(String tabId, String call, Object param) throws ModuleComunicationException
+	{
+		CruxInternalDynaTabsController.invokeOnSiblingTab(tabId, call, param);
 	}
 
 	/**

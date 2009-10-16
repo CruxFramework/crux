@@ -424,42 +424,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable {
 	}
 	
 	/**
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public Object[] getSelectedDataRows()
-	{
-		if(this.dataSource != null)
-		{
-			EditableDataSourceRecord[] selectedRecords = this.dataSource.getSelectedRecords();
-			
-			if(selectedRecords != null)
-			{
-				if(this.dataSource instanceof BindableDataSource)
-				{
-					BindableDataSource<EditableDataSourceRecord, ?> bindable = (BindableDataSource<EditableDataSourceRecord, ?>) this.dataSource;
-					
-					Object[] selectedObjs = new Object[selectedRecords.length]; 
-					
-					for (int i = 0; i < selectedRecords.length; i++)
-					{
-						Object o = bindable.getBindedObject(selectedRecords[i]);
-						selectedObjs[i] = o;					
-					}
-					
-					return selectedObjs;
-				}
-				else
-				{
-					return  selectedRecords;
-				}
-			}			
-		}		
-		
-		return new Object[0];
-	}
-	
-	/**
 	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
 	 */
 	protected static class ColumnHeader extends Composite
@@ -578,5 +542,57 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable {
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public List<DataRow> getRows()
+	{
+		List<DataRow> result = new ArrayList<DataRow>();
+		
+		Iterator<DataRow> rows = getRowIterator();
+		
+		while(rows.hasNext())
+		{
+			DataRow row = rows.next();
+			result.add(row);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public Object[] getSelectedDataRows()
+	{
+		if(this.dataSource != null)
+		{
+			EditableDataSourceRecord[] selectedRecords = this.dataSource.getSelectedRecords();
+			
+			if(selectedRecords != null)
+			{
+				if(this.dataSource instanceof BindableDataSource)
+				{
+					BindableDataSource<EditableDataSourceRecord, ?> bindable = (BindableDataSource<EditableDataSourceRecord, ?>) this.dataSource;
+					
+					Object[] selectedObjs = new Object[selectedRecords.length]; 
+					
+					for (int i = 0; i < selectedRecords.length; i++)
+					{
+						Object o = bindable.getBindedObject(selectedRecords[i]);
+						selectedObjs[i] = o;					
+					}
+					
+					return selectedObjs;
+				}
+				else
+				{
+					return  selectedRecords;
+				}
+			}			
+		}		
+		
+		return new Object[0];
 	}
 }
