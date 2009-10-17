@@ -249,7 +249,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 						methodName = Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1);
 						validateMethod = "validate"+ methodName;
 					}
-					sourceWriter.println("wrapper."+validateMethod+"();");
+					generateValidateMethodCall(logger, handlerClass, method, validateMethod, sourceWriter);
 					sourceWriter.println("}catch (Throwable e){");
 					sourceWriter.println("__runMethod = false;");
 					sourceWriter.println("eventProcessor._validationMessage = e.getMessage();");
@@ -298,6 +298,43 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		return className+"Wrapper";
 	}
 	
+	/**
+	 * 
+	 * @param logger
+	 * @param handlerClass
+	 * @param method
+	 * @param validateMethod
+	 * @param sourceWriter
+	 */
+	private void generateValidateMethodCall(TreeLogger logger, Class<?> handlerClass, Method method, String validateMethod, SourceWriter sourceWriter)
+	{
+		Class<?>[] params = method.getParameterTypes();
+		try
+		{
+			Method validate = null;
+			if (params != null && params.length == 1)
+			{
+				try
+				{
+					validate = handlerClass.getMethod(validateMethod, params[0]);
+				}
+				catch (Exception e)
+				{
+					validate = handlerClass.getMethod(validateMethod, new Class[]{});
+				}
+			}
+			else
+			{
+				validate = handlerClass.getMethod(validateMethod, new Class[]{});
+			}
+			generateMethodCall(validate, sourceWriter);
+		}
+		catch (Exception e)
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandlerInvalidValidateMethod(validateMethod));
+		}
+	}
+
 	/** 
 	 * Generates the handler method call.
 	 * @param method

@@ -128,4 +128,7 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 026] - Error generating widget factory. Widget does not have a valid setter for attribute: {0}.")
 	String errorGeneratingWidgetFactoryInvalidProperty(String attrName);
+
+	@DefaultMessage("[generator 027] - Error generating widget factory. invalid validation method: {0}.")
+	String errorGeneratingRegisteredClientHandlerInvalidValidateMethod(String validateMethod);
 }
