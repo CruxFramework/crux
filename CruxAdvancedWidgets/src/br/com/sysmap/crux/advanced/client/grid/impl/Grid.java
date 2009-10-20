@@ -220,9 +220,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable {
 				DataRow dataRow = it.next();
 				dataRow.setSelected(false);
 			}
-		}		
+		}
 		
-		row.getDataSourceRecord().setSelected(select);
 		row.setSelected(select);
 	}
 

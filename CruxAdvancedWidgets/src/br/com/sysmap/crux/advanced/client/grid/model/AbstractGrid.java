@@ -74,7 +74,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		public void onClick(ClickEvent event)
 		{
 			boolean selected = ((HasValue<Boolean>) event.getSource()).getValue();
-			row.setSelected(selected);
 			grid.onSelectRow(selected, row);
 			event.stopPropagation();
 		}	

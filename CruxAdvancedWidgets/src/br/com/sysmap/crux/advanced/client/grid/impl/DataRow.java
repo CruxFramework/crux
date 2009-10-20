@@ -74,6 +74,7 @@ public class DataRow extends Row
 	@Override
 	public void setSelected(boolean selected)
 	{
+		getDataSourceRecord().setSelected(selected);
 		super.setSelected(selected);
 	}
 	
