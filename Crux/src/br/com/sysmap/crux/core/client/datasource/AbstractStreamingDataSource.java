@@ -415,15 +415,15 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 		Arrays.sort(array, new Comparator<R>(){
 			public int compare(R o1, R o2)
 			{
-				if (ascending)
+				// Null elements must always be considered greater, because datasources uses the first null record to identify the page end.
+				if (o1 == null)
 				{
-					if (o1==null) return (o2==null?0:-1);
-					if (o2==null) return 1;
+					return o2 == null ? 0 : 1;
 				}
-				else
+				
+				if (o2 == null)
 				{
-					if (o1==null) return (o2==null?0:1);
-					if (o2==null) return -1;
+					return -1;
 				}
 				
 				Object value1 = o1.get(position);
@@ -431,12 +431,12 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 
 				if (ascending)
 				{
-					if (value1==null) return (value2==null?0:-1);
+					if (value1==null) return (value2 == null ? 0 : -1);
 					if (value2==null) return 1;
 				}
 				else
 				{
-					if (value1==null) return (value2==null?0:1);
+					if (value1==null) return (value2 == null ? 0 : 1);
 					if (value2==null) return -1;
 				}
 

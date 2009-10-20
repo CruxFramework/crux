@@ -50,9 +50,9 @@
   </target>
 	
   <target name="clean" description="o Clean up the generated directories">
-    <delete dir="${classesdir}" />
-    <delete dir="${testclassesdir}" />
-    <delete dir="${distdir}" />
+    <delete dir="${classesdir}" failonerror="no"/>
+    <delete dir="${testclassesdir}" failonerror="no"/>
+    <delete dir="${distdir}" failonerror="no"/>
   </target>
 	
   <target name="dist" description="o Create a distribution" depends="jar, test, javadoc">
