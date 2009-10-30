@@ -48,6 +48,7 @@ import br.com.sysmap.crux.core.client.screen.children.AllChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.SequenceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.TextChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
@@ -319,9 +320,24 @@ public class SchemaGenerator
 			if (!added.contains(elementName))
 			{
 				out.println("<xs:complexType name=\""+elementName+"\">");
-				generateChildrenForProcessor(out, type, library);
+				
+				boolean hasTextChild = processorSupportsInnerText(type);
+				if (hasTextChild)
+				{
+					out.println("<xs:simpleContent>");
+					out.println("<xs:extension base=\"xs:string\">");
+				}
+				else
+				{
+					generateChildrenForProcessor(out, type, library);
+				}
 				generateAttributesForProcessor(out, type, library, new HashSet<String>());
 				generateEventsForProcessor(out, type, new HashSet<String>());
+				if (hasTextChild)
+				{
+					out.println("</xs:extension>");
+					out.println("</xs:simpleContent>");
+				}				
 				out.println("</xs:complexType>");
 				added.add(elementName);
 			}
@@ -433,9 +449,23 @@ public class SchemaGenerator
 		out.println("<xs:element name=\""+elementName+"\" type=\"T"+elementName+"\"/>");
 				
 		out.println("<xs:complexType name=\"T"+elementName+"\">");
-		generateChildrenForFactory(out, widgetFactory, library);
+		boolean hasTextChild = factorySupportsInnerText(widgetFactory);
+		if (hasTextChild)
+		{
+			out.println("<xs:simpleContent>");
+			out.println("<xs:extension base=\"xs:string\">");
+		}
+		else
+		{
+			generateChildrenForFactory(out, widgetFactory, library);
+		}
 		generateAttributesForFactory(out, widgetFactory, library, new HashSet<String>());
 		generateEventsForFactory(out, widgetFactory, new HashSet<String>());
+		if (hasTextChild)
+		{
+			out.println("</xs:extension>");
+			out.println("</xs:simpleContent>");
+		}
 		out.println("</xs:complexType>");
 	}
 
@@ -581,6 +611,10 @@ public class SchemaGenerator
 		else if (AnyWidget.class.isAssignableFrom(type))
 		{
 			out.println("<xs:group ref=\"c:widgets\" />");
+		}
+		else if (AnyTag.class.isAssignableFrom(type) && tagName.length() == 0)
+		{
+			out.println("<xs:any minOccurs=\""+attributes.minOccurs()+ "\" maxOccurs=\""+attributes.maxOccurs()+ "\" />");			
 		}
 		else
 		{
@@ -898,6 +932,53 @@ public class SchemaGenerator
 		}
 	}	
 	
+	/**
+	 * 
+	 * @param widgetFactory
+	 * @return
+	 */
+	private boolean factorySupportsInnerText(Class<? extends WidgetFactory<?>> widgetFactory)
+	{
+		try
+		{
+			Method method = widgetFactory.getMethod("processChildren", new Class[]{WidgetFactoryContext.class});
+			return hasTextChild(method);
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @return
+	 */
+	private boolean processorSupportsInnerText(Class<? extends WidgetChildProcessor<?>> processorClass)
+	{
+		try
+		{
+			Method method = processorClass.getMethod("processChildren", new Class[]{WidgetChildProcessorContext.class});
+			return hasTextChild(method);
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param method
+	 * @return
+	 */
+	private boolean hasTextChild(Method method)
+	{
+		TagChildren tagChildren = method.getAnnotation(TagChildren.class);
+		return (tagChildren != null && tagChildren.value().length == 1 && TextChildProcessor.class.isAssignableFrom(tagChildren.value()[0].value()));
+	}
+
 	/**
 	 * 
 	 * @param args
