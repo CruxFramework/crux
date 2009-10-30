@@ -53,6 +53,8 @@ public interface ClientMessages extends Messages
 	String widgetFactoryEnsureSpanFail();
 	@DefaultMessage("[widget 007] - The widget ''{0}'' was added to a pure HTML node where already exists other children. In this case, crux can not ensure an order for this widget. To solve this, If you must use panels as widget parent or enable the wrapSiblingWidgets config property.")
 	String screenFactoryNonDeterministicWidgetPositionInParent(String widgetId);
+	@DefaultMessage("[widget 008] - The span element must contain a text node child.")
+	String widgetFactoryEnsureTextChildEmpty();
 	
 	@DefaultMessage("[callback 001] - An Invalid controller was passed to AsyncCallbackAdapter.")
 	String asyncCallbackInvalidHandlerError();
@@ -65,13 +67,10 @@ public interface ClientMessages extends Messages
 
 	@DefaultMessage("[datasource 001] - Error loading dataSource data: {0}")
 	String localDataSourceErrorLoadingData(String message);
-
 	@DefaultMessage("[datasource 002] - Error loading dataSource remote data: {0}")
 	String remoteDataSourceErrorLoadingData(String message);
-
 	@DefaultMessage("[datasource 003] - Error processing requested operation. DataSource is not loaded yet.")
 	String dataSourceNotLoaded();
-	
 	@DefaultMessage("[datasource 004] - DataSource has changes on page. You must save or discard them before perform this operation.")
 	String remoteDataSourcePageDirty();
 }

@@ -131,4 +131,7 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 027] - Error generating widget factory. invalid validation method: {0}.")
 	String errorGeneratingRegisteredClientHandlerInvalidValidateMethod(String validateMethod);
+
+	@DefaultMessage("[generator 028] - Error generating widget factory. An element can not contains text and other children.")
+	String errorGeneratingWidgetFactoryMixedContentNotAllowed();
 }

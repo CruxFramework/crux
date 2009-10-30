@@ -30,6 +30,7 @@ import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.Text;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -312,6 +313,39 @@ public abstract class WidgetFactory <T extends Widget>
 		}	
 	}
 	
+	/**
+	 * 
+	 * @param element
+	 * @param acceptsNoChild
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	protected String ensureTextChild(Element element, boolean acceptsNoChild) throws InterfaceConfigException
+	{
+		NodeList<Node> childNodes = element.getChildNodes();
+		String result = null;
+		
+		if(childNodes != null)
+		{
+			for (int i = 0; i < childNodes.getLength(); i++)
+			{
+				Node node = childNodes.getItem(i);
+				
+				if(node instanceof Text)
+				{
+					Text text =  (Text) node;
+					result = (result == null?text.getNodeValue():result+text.getNodeValue());
+				}
+			}
+		}
+		
+		if((result == null || result.length() == 0) && !acceptsNoChild)
+		{
+			throw new InterfaceConfigException(Crux.getMessages().widgetFactoryEnsureTextChildEmpty());
+		}
+
+		return result;
+	}
 	/**
 	 * If there are any span elements among the child nodes of the given one, returns those spans.
 	 * If there are no child spans and <code>acceptsNoChild</code> is false, raises error.

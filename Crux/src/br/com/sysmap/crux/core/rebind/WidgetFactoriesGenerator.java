@@ -37,6 +37,7 @@ import br.com.sysmap.crux.core.client.screen.children.AllChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.SequenceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.TextChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.utils.ClassUtils;
@@ -50,6 +51,7 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
@@ -451,7 +453,14 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 				{
 					if (allowedChildren.maxOccurs == 1)
 					{
-						source.append("Element child = ensureFirstChildSpan(c.getChildElement(), "+acceptNoChildren+");\n");
+						if(TextChildProcessor.class.isAssignableFrom(children.value()[0].value()))
+						{
+							source.append("String child = ensureTextChild(c.getChildElement(), "+acceptNoChildren+");\n");
+						}
+						else
+						{
+							source.append("Element child = ensureFirstChildSpan(c.getChildElement(), "+acceptNoChildren+");\n");
+						}
 						source.append("if (child != null){\n");
 					}
 					else
@@ -530,7 +539,11 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 			{
 				Class<? extends WidgetChildProcessor<?>> childProcessor = child.value();
 				
-				if (ChoiceChildProcessor.class.isAssignableFrom(childProcessor) ||
+				if (TextChildProcessor.class.isAssignableFrom(childProcessor))
+				{
+					source.append(generateTextProcessingBlock(logger, widgetType, childProcessor));
+				}
+				else if (ChoiceChildProcessor.class.isAssignableFrom(childProcessor) ||
 					SequenceChildProcessor.class.isAssignableFrom(childProcessor) ||
 					AllChildProcessor.class.isAssignableFrom(childProcessor))
 				{
@@ -555,6 +568,30 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 			}
 		}
 		return source.toString();
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param widgetType
+	 * @param childProcessor
+	 * @param processorVariables
+	 * @return
+	 */
+	private String generateTextProcessingBlock(TreeLogger logger, Class<?> widgetType, 
+											   Class<? extends WidgetChildProcessor<?>> childProcessor)
+	{
+		TagChildAttributes processorAttributes = ClassUtils.getChildtrenAttributesAnnotation(childProcessor);
+		if (processorAttributes.widgetProperty().length() > 0)
+		{
+			return "if (child.trim().length() > 0) c.getRootWidget()."+ClassUtils.getSetterMethod(processorAttributes.widgetProperty())+"(child);";
+		}
+		else if (HasText.class.isAssignableFrom(widgetType))
+		{
+			return "if (child.trim().length() > 0) c.getRootWidget().setText(child);";
+			
+		}
+		return "";
 	}
 
 	/**
@@ -681,13 +718,19 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * 
 	 * @param children
 	 * @return
+	 * @throws Exception 
 	 */
-	private AllowedOccurences getAllowedChildrenNumber(TagChildren children)
+	private AllowedOccurences getAllowedChildrenNumber(TagChildren children) throws Exception
 	{
 		AllowedOccurences allowed = new AllowedOccurences();
 		
 		for (TagChild child: children.value())
 		{
+			if (children.value().length > 1 && TextChildProcessor.class.isAssignableFrom(child.value()))
+			{
+				throw new Exception(messages.errorGeneratingWidgetFactoryMixedContentNotAllowed());
+			}
+			
 			AllowedOccurences allowedForChild = getAllowedOccurrencesForChild(child);
 			if (allowedForChild.minOccurs == UNBOUNDED)
 			{
