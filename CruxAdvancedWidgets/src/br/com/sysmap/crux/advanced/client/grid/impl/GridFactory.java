@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 /**
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-@DeclarativeFactory(id="advGrid", library="adv")
+@DeclarativeFactory(id="grid", library="adv")
 public class GridFactory extends WidgetFactory<Grid>
 {
 	/**
@@ -137,27 +137,27 @@ public class GridFactory extends WidgetFactory<Grid>
 		{
 			if("unselectable".equals(rowSelection))
 			{
-				return RowSelectionModel.UNSELECTABLE;
+				return RowSelectionModel.unselectable;
 			}
 			else if("single".equals(rowSelection))
 			{
-				return RowSelectionModel.SINGLE;
+				return RowSelectionModel.single;
 			}
 			else if("multiple".equals(rowSelection))
 			{
-				return RowSelectionModel.MULTIPLE;
+				return RowSelectionModel.multiple;
 			}
 			else if("singleWithRadioButton".equals(rowSelection))
 			{
-				return RowSelectionModel.SINGLE_WITH_RADIO;
+				return RowSelectionModel.singleWithRadioButton;
 			}
 			else if("multipleWithCheckBox".equals(rowSelection))
 			{
-				return RowSelectionModel.MULTIPLE_WITH_CHECKBOX;
+				return RowSelectionModel.multipleWithCheckBox;
 			}
 		}
 		
-		return RowSelectionModel.UNSELECTABLE;
+		return RowSelectionModel.unselectable;
 	}
 
 	/**
@@ -241,7 +241,7 @@ public class GridFactory extends WidgetFactory<Grid>
 	@Override
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="pageSize", type=Integer.class, defaultValue="8"),
-		@TagAttributeDeclaration(value="rowSelection", type=RowSelectionModel.class, defaultValue="UNSELECTABLE"),
+		@TagAttributeDeclaration(value="rowSelection", type=RowSelectionModel.class, defaultValue="unselectable"),
 		@TagAttributeDeclaration("dataSource"),
 		@TagAttributeDeclaration(value="cellSpacing", type=Integer.class, defaultValue="1"),
 		@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, defaultValue="false"),

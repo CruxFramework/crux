@@ -332,7 +332,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	protected boolean hasSelectionColumn()
 	{
-		return RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelection) || RowSelectionModel.SINGLE_WITH_RADIO.equals(rowSelection);
+		return RowSelectionModel.multipleWithCheckBox.equals(rowSelection) || RowSelectionModel.singleWithRadioButton.equals(rowSelection);
 	}
 	
 	/**
@@ -446,13 +446,13 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	{
 		Widget w = null;
 		
-		if(RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelection))
+		if(RowSelectionModel.multipleWithCheckBox.equals(rowSelection))
 		{
 			CheckBox checkBox = new CheckBox();
 			checkBox.addClickHandler(new RowSelectionHandler<R>(this, row));
 			w = checkBox;
 		}
-		else if(RowSelectionModel.SINGLE_WITH_RADIO.equals(rowSelection))
+		else if(RowSelectionModel.singleWithRadioButton.equals(rowSelection))
 		{
 			RadioButton radio = new RadioButton(generatedId + "_selector");
 			radio.addClickHandler(new RowSelectionHandler<R>(this, row));
@@ -500,7 +500,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		
 		if(hasSelectionColumn())
 		{
-			if(RowSelectionModel.MULTIPLE.equals(rowSelection) || RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelection))
+			if(RowSelectionModel.multiple.equals(rowSelection) || RowSelectionModel.multipleWithCheckBox.equals(rowSelection))
 			{
 				CheckBox checkBox = new CheckBox();
 				checkBox.addClickHandler(createSelectAllRowsClickHandler());
@@ -659,12 +659,12 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			
 			if(row.isEnabled())
 			{
-				if(RowSelectionModel.MULTIPLE_WITH_CHECKBOX.equals(rowSelection))
+				if(RowSelectionModel.multipleWithCheckBox.equals(rowSelection))
 				{
 					((CheckBox) row.getCell(0).getCellWidget()).setValue(select);
 				}
 				
-				if(!RowSelectionModel.UNSELECTABLE.equals(rowSelection))
+				if(!RowSelectionModel.unselectable.equals(rowSelection))
 				{
 					onSelectRow(select, row);
 				}
@@ -677,6 +677,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	private boolean selectRowOnClickCell()
 	{
-		return RowSelectionModel.SINGLE.equals(rowSelection) || RowSelectionModel.MULTIPLE.equals(rowSelection);
+		return RowSelectionModel.single.equals(rowSelection) || RowSelectionModel.multiple.equals(rowSelection);
 	}
 }

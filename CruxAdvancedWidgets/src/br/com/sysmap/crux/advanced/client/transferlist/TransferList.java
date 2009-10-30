@@ -53,7 +53,7 @@ public class TransferList extends Composite
 	 */
 	public static enum ItemLocation
 	{
-		LEFT, RIGHT;
+		left, right;
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class TransferList extends Composite
 		 */
 		public Item(String label, String value)
 		{
-			this(label, value, ItemLocation.LEFT);
+			this(label, value, ItemLocation.left);
 		}
 		
 		/**
@@ -253,7 +253,7 @@ public class TransferList extends Composite
 		
 		for (Item item : items)
 		{
-			if(item.location.equals(ItemLocation.LEFT))
+			if(item.location.equals(ItemLocation.left))
 			{
 				leftList.addItem(item.getLabel(), item.getValue());
 			}
@@ -303,7 +303,7 @@ public class TransferList extends Composite
 			Item item = new Item(
 				listBox.getItemText(i), 
 				listBox.getValue(i), 
-				left ? ItemLocation.LEFT : ItemLocation.RIGHT
+				left ? ItemLocation.left : ItemLocation.right
 			);
 			
 			items.add(item);

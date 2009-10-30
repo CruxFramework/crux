@@ -201,7 +201,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable {
 	@Override
 	protected void onSelectRow(boolean select, DataRow row)
 	{
-		if(select && (RowSelectionModel.SINGLE.equals(rowSelectionModel) || RowSelectionModel.SINGLE_WITH_RADIO.equals(rowSelectionModel)))
+		if(select && (RowSelectionModel.single.equals(rowSelectionModel) || RowSelectionModel.singleWithRadioButton.equals(rowSelectionModel)))
 		{
 			EditableDataSourceRecord[] records = dataSource.getSelectedRecords();
 			if(records != null)
