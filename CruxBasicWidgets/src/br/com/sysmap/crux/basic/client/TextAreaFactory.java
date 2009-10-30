@@ -18,7 +18,11 @@ package br.com.sysmap.crux.basic.client;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.TextChildProcessor;
 import br.com.sysmap.crux.core.client.screen.factory.HasDirectionFactory;
 
 import com.google.gwt.dom.client.Element;
@@ -51,4 +55,15 @@ public class TextAreaFactory extends TextBoxBaseFactory<TextArea>
 	{
 		return new TextArea();
 	}
+	
+	@Override
+	@TagChildren({
+		@TagChild(InnerTextProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<TextArea> context) throws InterfaceConfigException
+	{
+	}
+	
+	@TagChildAttributes(minOccurs="0", widgetProperty="value")
+	public static class InnerTextProcessor extends TextChildProcessor<TextArea> {}	
 }
