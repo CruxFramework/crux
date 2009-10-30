@@ -571,7 +571,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		if (includeFields != null && includeFields.length > 0)
 		{
 			boolean isInWhiteList = false;
-			for (String string : excludeFields)
+			for (String string : includeFields)
 			{
 				if (field.getName().equals(string))
 				{
