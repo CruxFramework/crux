@@ -21,7 +21,9 @@ import br.com.sysmap.crux.advanced.client.event.row.RowEventsBind;
 import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinition;
 import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinitions;
 import br.com.sysmap.crux.advanced.client.grid.model.RowSelectionModel;
-import br.com.sysmap.crux.advanced.client.util.AlignmentUtil;
+import br.com.sysmap.crux.basic.client.align.AlignmentAttributeParser;
+import br.com.sysmap.crux.basic.client.align.HorizontalAlignment;
+import br.com.sysmap.crux.basic.client.align.VerticalAlignment;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
@@ -212,8 +214,8 @@ public class GridFactory extends WidgetFactory<Grid>
 							width, 
 							formatter, 
 							visible, 
-							AlignmentUtil.getHorizontalAlignment(hAlign, HasHorizontalAlignment.ALIGN_CENTER),
-							AlignmentUtil.getVerticalAlignment(vAlign, HasVerticalAlignment.ALIGN_MIDDLE));
+							AlignmentAttributeParser.getHorizontalAlignment(hAlign, HasHorizontalAlignment.ALIGN_CENTER),
+							AlignmentAttributeParser.getVerticalAlignment(vAlign, HasVerticalAlignment.ALIGN_MIDDLE));
 				}
 				else if("widgetColumn".equals(columnType))
 				{
@@ -222,8 +224,8 @@ public class GridFactory extends WidgetFactory<Grid>
 							width, 
 							ensureFirstChildSpan(colElem, false),
 							visible, 
-							AlignmentUtil.getHorizontalAlignment(hAlign, HasHorizontalAlignment.ALIGN_CENTER),
-							AlignmentUtil.getVerticalAlignment(vAlign, HasVerticalAlignment.ALIGN_MIDDLE));
+							AlignmentAttributeParser.getHorizontalAlignment(hAlign, HasHorizontalAlignment.ALIGN_CENTER),
+							AlignmentAttributeParser.getVerticalAlignment(vAlign, HasVerticalAlignment.ALIGN_MIDDLE));
 				}
 					
 				defs.add(key, def);
@@ -299,8 +301,8 @@ public class GridFactory extends WidgetFactory<Grid>
 			@TagAttributeDeclaration("label"),
 			@TagAttributeDeclaration("key"),
 			@TagAttributeDeclaration("formatter"),
-			@TagAttributeDeclaration("horizontalAlignment"),
-			@TagAttributeDeclaration("verticalAlignment")
+			@TagAttributeDeclaration(value="horizontalAlignment", type=HorizontalAlignment.class, defaultValue="defaultAlign"),
+			@TagAttributeDeclaration(value="verticalAlignment", type=VerticalAlignment.class)
 		})
 		public void processChildren(WidgetChildProcessorContext<Grid> context) throws InterfaceConfigException {}
 	}
@@ -314,8 +316,8 @@ public class GridFactory extends WidgetFactory<Grid>
 			@TagAttributeDeclaration(value="visible", type=Boolean.class),
 			@TagAttributeDeclaration("label"),
 			@TagAttributeDeclaration("key"),
-			@TagAttributeDeclaration("horizontalAlignment"),
-			@TagAttributeDeclaration("verticalAlignment")
+			@TagAttributeDeclaration(value="horizontalAlignment", type=HorizontalAlignment.class, defaultValue="defaultAlign"),
+			@TagAttributeDeclaration(value="verticalAlignment", type=VerticalAlignment.class)
 		})
 		@TagChildren({
 			@TagChild(WidgetProcessor.class)
