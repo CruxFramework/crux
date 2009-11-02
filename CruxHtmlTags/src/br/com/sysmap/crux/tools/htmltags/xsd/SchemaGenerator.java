@@ -78,10 +78,19 @@ public class SchemaGenerator
 	 */
 	public SchemaGenerator(String destDir)
 	{
-		this.destDir = new File(destDir);
+		this(new File(destDir));
+	}
+	
+	/**
+	 * 
+	 * @param destDir
+	 */
+	public SchemaGenerator(File destDir)
+	{
+		this.destDir = destDir;
 		this.destDir.mkdirs();
 		this.enumTypes = new HashMap<String, Class<?>>();
-		this.subTagTypes = new LinkedList<Class<? extends WidgetChildProcessor<?>>>();
+		this.subTagTypes = new LinkedList<Class<? extends WidgetChildProcessor<?>>>();	
 	}
 	
 	/**
@@ -982,14 +991,39 @@ public class SchemaGenerator
 	/**
 	 * 
 	 * @param args
+	 * @throws IOException 
+	 */
+	public static void generateSchemas(String outputDir) throws IOException
+	{
+		generateSchemas(new File(outputDir));
+	}
+
+	/**
+	 * 
+	 * @param args
+	 * @throws IOException 
+	 */
+	public static void generateSchemas(File outputDir) throws IOException
+	{
+		ClassScanner.initialize(ClasspathUrlFinder.findClassPaths());
+		SchemaGenerator generator = new SchemaGenerator(outputDir);
+		generator.generateSchemas();
+	}
+
+	/**
+	 * 
+	 * @param args
 	 */
 	public static void main(String[] args)
 	{
-		ClassScanner.initialize(ClasspathUrlFinder.findClassPaths());
-		SchemaGenerator generator = new SchemaGenerator("C:\\desenvolvimento\\ide\\workspaces\\myeclipse\\CruxHtmlTags\\xsd\\generated");
 		try
 		{
-			generator.generateSchemas();
+			if (args.length != 1)
+			{
+				System.out.println("Usage: SchemaGenerator <outputDir>");
+			}
+			String outputDir = args[0];//"C:\\desenvolvimento\\ide\\workspaces\\myeclipse\\CruxHtmlTags\\xsd\\generated";
+			SchemaGenerator.generateSchemas(outputDir);
 		}
 		catch (IOException e)
 		{
