@@ -262,7 +262,7 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @param acceptsNull
 	 * @return
 	 */
-	private boolean isSpan(Element element) 
+	private static boolean isSpan(Element element) 
 	{
 		return element != null && element.getTagName() != null && element.getTagName().equalsIgnoreCase("span");
 	}
@@ -274,7 +274,7 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	private Element ensureSpan(Element element) throws InterfaceConfigException
+	private static Element ensureSpan(Element element) throws InterfaceConfigException
 	{
 		if(isSpan(element))
 		{
@@ -294,7 +294,7 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	protected Element ensureFirstChildSpan(Element element, boolean acceptsNoChild) throws InterfaceConfigException
+	protected static Element ensureFirstChildSpan(Element element, boolean acceptsNoChild) throws InterfaceConfigException
 	{
 		Element firstChild = element.getFirstChildElement();
 		
@@ -320,7 +320,7 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	protected String ensureTextChild(Element element, boolean acceptsNoChild) throws InterfaceConfigException
+	protected static String ensureTextChild(Element element, boolean acceptsNoChild) throws InterfaceConfigException
 	{
 		NodeList<Node> childNodes = element.getChildNodes();
 		String result = null;
@@ -354,7 +354,7 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	protected List<Element> ensureChildrenSpans(Element element, boolean acceptsNoChild) throws InterfaceConfigException
+	protected static List<Element> ensureChildrenSpans(Element element, boolean acceptsNoChild) throws InterfaceConfigException
 	{
 		List<Element> childSpans = new ArrayList<Element>();
 		

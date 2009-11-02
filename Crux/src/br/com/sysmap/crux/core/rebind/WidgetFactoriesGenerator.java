@@ -451,11 +451,13 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 
 				if (allowedChildren.maxOccurs == UNBOUNDED || allowedChildren.maxOccurs >= 1)
 				{
+					boolean hasChildElement = true;
 					if (allowedChildren.maxOccurs == 1)
 					{
 						if(TextChildProcessor.class.isAssignableFrom(children.value()[0].value()))
 						{
 							source.append("String child = ensureTextChild(c.getChildElement(), "+acceptNoChildren+");\n");
+							hasChildElement = false;
 						}
 						else
 						{
@@ -469,7 +471,10 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 						source.append("if (children != null){\n");
 						source.append("for(Element child: children){\n");
 					}
-					source.append("c.setChildElement(child);\n");
+					if (hasChildElement)
+					{
+						source.append("c.setChildElement(child);\n");
+					}
 
 					source.append(generateChildrenBlockFromAnnotation(logger, methodsForInnerProcessing, widgetType, children, 
 							                                                                       processorVariables));
