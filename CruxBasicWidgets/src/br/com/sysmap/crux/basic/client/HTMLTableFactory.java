@@ -16,13 +16,15 @@
 package br.com.sysmap.crux.basic.client;
 
 
+import br.com.sysmap.crux.basic.client.align.AlignmentAttributeParser;
+import br.com.sysmap.crux.basic.client.align.HorizontalAlignment;
+import br.com.sysmap.crux.basic.client.align.VerticalAlignment;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
@@ -32,7 +34,6 @@ import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -59,7 +60,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		@TagAttributesDeclaration({
 			@TagAttributeDeclaration("styleName"),
 			@TagAttributeDeclaration(value="visible", type=Boolean.class, defaultValue="true"),
-			@TagAttributeDeclaration("verticalAlignment")
+			@TagAttributeDeclaration(value="verticalAlignment", type=VerticalAlignment.class)
 		})
 		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
 		{
@@ -87,26 +88,13 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 				}
 
 				String verticalAlignment = element.getAttribute("_verticalAlignment");
-				if (verticalAlignment != null && verticalAlignment.trim().length() > 0)
-				{
-					if (HasVerticalAlignment.ALIGN_BOTTOM.getVerticalAlignString().equals(verticalAlignment))
-					{
-						context.getRootWidget().getRowFormatter().setVerticalAlign(index, HasVerticalAlignment.ALIGN_BOTTOM);
-					}
-					else if (HasVerticalAlignment.ALIGN_MIDDLE.getVerticalAlignString().equals(verticalAlignment))
-					{
-						context.getRootWidget().getRowFormatter().setVerticalAlign(index, HasVerticalAlignment.ALIGN_MIDDLE);
-					}
-					else if (HasVerticalAlignment.ALIGN_TOP.getVerticalAlignString().equals(verticalAlignment))
-					{
-						context.getRootWidget().getRowFormatter().setVerticalAlign(index, HasVerticalAlignment.ALIGN_TOP);
-					}
-				}
+				context.getRootWidget().getRowFormatter().setVerticalAlign(index, 
+						AlignmentAttributeParser.getVerticalAlignment(verticalAlignment));
 			}
 			finally
 			{
 				context.setAttribute("rowIndex", (index));
-				context.setAttribute("colIndex", 0);
+				context.setAttribute("colIndex", null);
 			}
 		}
 	}
@@ -121,8 +109,8 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 			@TagAttributeDeclaration("height"),
 			@TagAttributeDeclaration(value="visible", type=Boolean.class, defaultValue="true"),
 			@TagAttributeDeclaration(value="wordWrap", type=Boolean.class, defaultValue="true"),
-			@TagAttributeDeclaration("verticalAlignment"),
-			@TagAttributeDeclaration("horizontalAlignment")			
+			@TagAttributeDeclaration(value="horizontalAlignment", type=HorizontalAlignment.class, defaultValue="defaultAlign"),
+			@TagAttributeDeclaration(value="verticalAlignment", type=VerticalAlignment.class)
 		})
 		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
 		{
@@ -131,7 +119,14 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 
 			Integer indexRow = (Integer) context.getAttribute("rowIndex");
 			Integer indexCol = (Integer) context.getAttribute("colIndex");
-
+			if (indexCol == null)
+			{
+				indexCol = 0;
+			}
+			else
+			{
+				indexCol++;
+			}
 			try
 			{
 				String styleName = element.getAttribute("_styleName");
@@ -161,57 +156,17 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 				}
 
 				String horizontalAlignment = element.getAttribute("_horizontalAlignment");
-				if (horizontalAlignment != null && horizontalAlignment.trim().length() > 0)
-				{
-					if (HasHorizontalAlignment.ALIGN_CENTER.getTextAlignString().equals(horizontalAlignment))
-					{
-						widget.getCellFormatter().setHorizontalAlignment(indexRow, indexCol, HasHorizontalAlignment.ALIGN_CENTER);
-					}
-					else if (HasHorizontalAlignment.ALIGN_DEFAULT.getTextAlignString().equals(horizontalAlignment))
-					{
-						widget.getCellFormatter().setHorizontalAlignment(indexRow, indexCol, HasHorizontalAlignment.ALIGN_DEFAULT);
-					}
-					else if (HasHorizontalAlignment.ALIGN_LEFT.getTextAlignString().equals(horizontalAlignment))
-					{
-						widget.getCellFormatter().setHorizontalAlignment(indexRow, indexCol, HasHorizontalAlignment.ALIGN_LEFT);
-					}
-					else if (HasHorizontalAlignment.ALIGN_RIGHT.getTextAlignString().equals(horizontalAlignment))
-					{
-						widget.getCellFormatter().setHorizontalAlignment(indexRow, indexCol, HasHorizontalAlignment.ALIGN_RIGHT);
-					}
-				}			
+				widget.getCellFormatter().setHorizontalAlignment(indexRow, indexCol, 
+						AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
 
 				String verticalAlignment = element.getAttribute("_verticalAlignment");
-				if (verticalAlignment != null && verticalAlignment.trim().length() > 0)
-				{
-					if (HasVerticalAlignment.ALIGN_BOTTOM.getVerticalAlignString().equals(verticalAlignment))
-					{
-						widget.getCellFormatter().setVerticalAlignment(indexRow, indexCol, HasVerticalAlignment.ALIGN_BOTTOM);
-					}
-					else if (HasVerticalAlignment.ALIGN_MIDDLE.getVerticalAlignString().equals(verticalAlignment))
-					{
-						widget.getCellFormatter().setVerticalAlignment(indexRow, indexCol, HasVerticalAlignment.ALIGN_MIDDLE);
-					}
-					else if (HasVerticalAlignment.ALIGN_TOP.getVerticalAlignString().equals(verticalAlignment))
-					{
-						widget.getCellFormatter().setVerticalAlignment(indexRow, indexCol, HasVerticalAlignment.ALIGN_TOP);
-					}
-				}	
+				widget.getCellFormatter().setVerticalAlignment(indexRow, indexCol, 
+						AlignmentAttributeParser.getVerticalAlignment(verticalAlignment));
 			}
 			finally
 			{
-				context.setAttribute("colIndex", (indexCol+1));
+				context.setAttribute("colIndex", indexCol);
 			}
-		}
-	}
-	
-	@TagChildAttributes(minOccurs="0")
-	public abstract static class CellChildrenProcessor<T extends HTMLTable> extends ChoiceChildProcessor<T> 
-	{
-		@Override
-		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException	
-		{
-			//prepare cell
 		}
 	}
 	

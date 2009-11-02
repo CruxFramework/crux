@@ -20,6 +20,7 @@ import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.core.client.GWT;
@@ -60,11 +61,13 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 		})
 		public void processChildren(WidgetChildProcessorContext<FlexTable> context) throws InterfaceConfigException
 		{
+			int r = context.getRootWidget().getRowCount();
+			context.getRootWidget().insertRow(r);
 			super.processChildren(context);
 		}
 	}
 
-	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded")
+	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", tagName="cell")
 	public static class GridCellProcessor extends TableCellProcessor<FlexTable>
 	{
 		@Override
@@ -73,12 +76,14 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 		})
 		public void processChildren(WidgetChildProcessorContext<FlexTable> context) throws InterfaceConfigException
 		{
+			Integer indexRow = (Integer) context.getAttribute("rowIndex");
+			context.getRootWidget().addCell(indexRow);
 			super.processChildren(context);
 		}
 	}
 	
 	@TagChildAttributes(minOccurs="0")
-	public static class GridChildrenProcessor extends CellChildrenProcessor<FlexTable> 
+	public static class GridChildrenProcessor extends ChoiceChildProcessor<FlexTable> 
 	{
 		protected BasicMessages messages = GWT.create(BasicMessages.class);
 
@@ -88,26 +93,7 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 			@TagChild(FlexCellHTMLProcessor.class),
 			@TagChild(FlexCellWidgetProcessor.class)
 		})
-		public void processChildren(WidgetChildProcessorContext<FlexTable> context) throws InterfaceConfigException	
-		{
-			Integer indexRow = (Integer) context.getAttribute("rowIndex");
-			Integer indexCol = (Integer) context.getAttribute("colIndex");
-
-			if (indexRow < 0 || indexCol < 0)
-			{
-				throw new IndexOutOfBoundsException(messages.flexTableInvalidRowColIndexes(context.getRootWidgetId()));
-			}
-			int r = context.getRootWidget().getRowCount();
-			while (context.getRootWidget().getRowCount() < indexRow+1)
-			{
-				context.getRootWidget().insertRow(r++);
-			}
-			
-			while (context.getRootWidget().getCellCount(indexRow) < indexCol+1)
-			{
-				context.getRootWidget().addCell(indexRow);
-			}
-		}
+		public void processChildren(WidgetChildProcessorContext<FlexTable> context) throws InterfaceConfigException	{}
 	}
 	
 	public static class FlexCellTextProcessor extends CellTextProcessor<FlexTable>{}

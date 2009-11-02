@@ -15,6 +15,9 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.basic.client.align.AlignmentAttributeParser;
+import br.com.sysmap.crux.basic.client.align.HorizontalAlignment;
+import br.com.sysmap.crux.basic.client.align.VerticalAlignment;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
@@ -29,7 +32,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -49,9 +51,8 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 
 	@Override
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="horizontalAlignment"),
-		@TagAttributeDeclaration(value="verticalAlignment"),
-		@TagAttributeDeclaration(value="direction")
+		@TagAttributeDeclaration(value="horizontalAlignment", type=HorizontalAlignment.class, defaultValue="defaultAlign"),
+		@TagAttributeDeclaration(value="verticalAlignment", type=VerticalAlignment.class)
 	})
 	public void processAttributes(WidgetFactoryContext<DockPanel> context) throws InterfaceConfigException
 	{
@@ -61,42 +62,10 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 		DockPanel widget = context.getWidget();
 		
 		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");
-		if (cellHorizontalAlignment != null && cellHorizontalAlignment.trim().length() > 0)
-		{
-			if (HasHorizontalAlignment.ALIGN_CENTER.getTextAlignString().equals(cellHorizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-			}
-			else if (HasHorizontalAlignment.ALIGN_DEFAULT.getTextAlignString().equals(cellHorizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_DEFAULT);
-			}
-			else if (HasHorizontalAlignment.ALIGN_LEFT.getTextAlignString().equals(cellHorizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-			}
-			else if (HasHorizontalAlignment.ALIGN_RIGHT.getTextAlignString().equals(cellHorizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-			}
-		}			
+		widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(cellHorizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
 		
 		String cellVerticalAlignment = element.getAttribute("_verticalAlignment");
-		if (cellVerticalAlignment != null && cellVerticalAlignment.trim().length() > 0)
-		{
-			if (HasVerticalAlignment.ALIGN_BOTTOM.getVerticalAlignString().equals(cellVerticalAlignment))
-			{
-				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
-			}
-			else if (HasVerticalAlignment.ALIGN_MIDDLE.getVerticalAlignString().equals(cellVerticalAlignment))
-			{
-				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-			}
-			else if (HasVerticalAlignment.ALIGN_TOP.getVerticalAlignString().equals(cellVerticalAlignment))
-			{
-				widget.setVerticalAlignment(HasVerticalAlignment.ALIGN_TOP);
-			}
-		}			
+		widget.setVerticalAlignment(AlignmentAttributeParser.getVerticalAlignment(cellVerticalAlignment));
 	}
 	
 	@Override

@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.basic.client.align.AlignmentAttributeParser;
+import br.com.sysmap.crux.basic.client.align.HorizontalAlignment;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
@@ -46,8 +48,7 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 		@TagAttribute("target")
 	})
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration("horizontalAlignment"),
-		@TagAttributeDeclaration("verticalAlignment")
+		@TagAttributeDeclaration(value="horizontalAlignment", type=HorizontalAlignment.class, defaultValue="defaultAlign")
 	})
 	public void processAttributes(WidgetFactoryContext<Anchor> context) throws InterfaceConfigException
 	{
@@ -57,26 +58,8 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 		Anchor widget = context.getWidget();
 		
 		String horizontalAlignment = element.getAttribute("_horizontalAlignment");
-		if (horizontalAlignment != null && horizontalAlignment.trim().length() > 0)
-		{
-			if (HasHorizontalAlignment.ALIGN_CENTER.getTextAlignString().equals(horizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-			}
-			else if (HasHorizontalAlignment.ALIGN_DEFAULT.getTextAlignString().equals(horizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_DEFAULT);
-			}
-			else if (HasHorizontalAlignment.ALIGN_LEFT.getTextAlignString().equals(horizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-			}
-			else if (HasHorizontalAlignment.ALIGN_RIGHT.getTextAlignString().equals(horizontalAlignment))
-			{
-				widget.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-			}
-		}
-		
+		widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
+
 		String innerHtml = element.getInnerHTML();
 		String text = element.getAttribute("_text");
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)

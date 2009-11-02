@@ -15,6 +15,9 @@
  */
 package br.com.sysmap.crux.basic.client;
 
+import br.com.sysmap.crux.basic.client.align.AlignmentAttributeParser;
+import br.com.sysmap.crux.basic.client.align.HorizontalAlignment;
+import br.com.sysmap.crux.basic.client.align.VerticalAlignment;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
@@ -85,8 +88,8 @@ public abstract class CellPanelFactory <T extends CellPanel> extends ComplexPane
 		@TagAttributesDeclaration({
 			@TagAttributeDeclaration("height"),
 			@TagAttributeDeclaration("width"),
-			@TagAttributeDeclaration("horizontalAlignment"),
-			@TagAttributeDeclaration("verticalAlignment")
+			@TagAttributeDeclaration(value="horizontalAlignment", type=HorizontalAlignment.class, defaultValue="defaultAlign"),
+			@TagAttributeDeclaration(value="verticalAlignment", type=VerticalAlignment.class)
 		})
 		@TagChildren({
 			@TagChild(value=CellWidgetProcessor.class)
@@ -129,43 +132,12 @@ public abstract class CellPanelFactory <T extends CellPanel> extends ComplexPane
 			}
 			
 			String cellHorizontalAlignment = (String) context.getAttribute("horizontalAlignment");
-			if (cellHorizontalAlignment != null && cellHorizontalAlignment.trim().length() > 0)
-			{
-				if (HasHorizontalAlignment.ALIGN_CENTER.getTextAlignString().equals(cellHorizontalAlignment))
-				{
-					parent.setCellHorizontalAlignment(child, HasHorizontalAlignment.ALIGN_CENTER);
-				}
-				else if (HasHorizontalAlignment.ALIGN_DEFAULT.getTextAlignString().equals(cellHorizontalAlignment))
-				{
-					parent.setCellHorizontalAlignment(child, HasHorizontalAlignment.ALIGN_DEFAULT);
-				}
-				else if (HasHorizontalAlignment.ALIGN_LEFT.getTextAlignString().equals(cellHorizontalAlignment))
-				{
-					parent.setCellHorizontalAlignment(child, HasHorizontalAlignment.ALIGN_LEFT);
-				}
-				else if (HasHorizontalAlignment.ALIGN_RIGHT.getTextAlignString().equals(cellHorizontalAlignment))
-				{
-					parent.setCellHorizontalAlignment(child, HasHorizontalAlignment.ALIGN_RIGHT);
-				}
-			}			
+			parent.setCellHorizontalAlignment(child, 
+					  AlignmentAttributeParser.getHorizontalAlignment(cellHorizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
 			
 			String cellVerticalAlignment = (String) context.getAttribute("verticalAlignment");
-			if (cellVerticalAlignment != null && cellVerticalAlignment.trim().length() > 0)
-			{
-				if (HasVerticalAlignment.ALIGN_BOTTOM.getVerticalAlignString().equals(cellVerticalAlignment))
-				{
-					parent.setCellVerticalAlignment(child, HasVerticalAlignment.ALIGN_BOTTOM);
-				}
-				else if (HasVerticalAlignment.ALIGN_MIDDLE.getVerticalAlignString().equals(cellVerticalAlignment))
-				{
-					parent.setCellVerticalAlignment(child, HasVerticalAlignment.ALIGN_MIDDLE);
-				}
-				else if (HasVerticalAlignment.ALIGN_TOP.getVerticalAlignString().equals(cellVerticalAlignment))
-				{
-					parent.setCellVerticalAlignment(child, HasVerticalAlignment.ALIGN_TOP);
-				}
-			}	
-			
+			parent.setCellVerticalAlignment(child, AlignmentAttributeParser.getVerticalAlignment(cellVerticalAlignment));
+
 			String cellWidth = (String) context.getAttribute("width");
 			if (cellWidth != null && cellWidth.length() > 0)
 			{
