@@ -1,6 +1,6 @@
 <xsl:stylesheet version="2.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:crux="http://www.sysmap.com.br/crux/1.0"
+	xmlns:crux="http://www.sysmap.com.br/crux"
 	xmlns:html="http://www.w3.org/1999/xhtml"
 	xmlns:exsl="http://exslt.org/common"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -115,8 +115,8 @@
 	  <xsl:param name="elem" as="node()*"/> 
 	
 	  <xsl:choose>
-	      <xsl:when test="string-length(namespace-uri($elem)) > 34 and (contains(namespace-uri($elem), 'http://www.sysmap.com.br/crux/1.0/'))">
-	      	 <xsl:sequence select="substring(namespace-uri($elem),35)" />
+	      <xsl:when test="string-length(namespace-uri($elem)) > 30 and (contains(namespace-uri($elem), 'http://www.sysmap.com.br/crux/'))">
+	      	 <xsl:sequence select="substring(namespace-uri($elem),31)" />
 	      </xsl:when>
 	  	  <xsl:otherwise>
 	  	  	 <xsl:sequence select="()" />
@@ -217,10 +217,10 @@
 	<xsl:template name="handleInnerHtml">
 		<xsl:for-each select="child::*">
 			<xsl:choose>
-				<xsl:when test="namespace-uri() = 'http://www.sysmap.com.br/crux/1.0'">
+				<xsl:when test="namespace-uri() = 'http://www.sysmap.com.br/crux'">
 					<xsl:apply-templates select="current()" />
 				</xsl:when>
-				<xsl:when test="string-length(namespace-uri()) > 34 and (contains(namespace-uri(), 'http://www.sysmap.com.br/crux/1.0/'))">
+				<xsl:when test="string-length(namespace-uri()) > 30 and (contains(namespace-uri(), 'http://www.sysmap.com.br/crux/'))">
 					<!-- xsl:apply-templates select="current()" /-->
 					<xsl:call-template name="cruxInnerTags" />
 				</xsl:when>

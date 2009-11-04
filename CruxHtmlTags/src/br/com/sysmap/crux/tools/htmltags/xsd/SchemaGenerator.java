@@ -125,15 +125,15 @@ public class SchemaGenerator
 		coreFile.createNewFile();
 		PrintStream out = new PrintStream(coreFile);
 		out.println("<xs:schema ");
-		out.println("xmlns=\"http://www.sysmap.com.br/crux/1.0\" ");
+		out.println("xmlns=\"http://www.sysmap.com.br/crux\" ");
 		out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
 		for (String lib : libraries)
 		{
-			out.println("xmlns:_"+lib+"=\"http://www.sysmap.com.br/crux/1.0/"+lib+"\" ");
+			out.println("xmlns:_"+lib+"=\"http://www.sysmap.com.br/crux/"+lib+"\" ");
 		}
 		out.println("attributeFormDefault=\"unqualified\" ");
 		out.println("elementFormDefault=\"qualified\" ");
-		out.println("targetNamespace=\"http://www.sysmap.com.br/crux/1.0\" >");
+		out.println("targetNamespace=\"http://www.sysmap.com.br/crux\" >");
 		
 		generateCoreSchemasImport(libraries, out);
 		generateCoreSplashScreenElement(out);
@@ -153,7 +153,7 @@ public class SchemaGenerator
 	{
 		for (String lib : libraries)
 		{
-			out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.sysmap.com.br/crux/1.0/"+lib+"\"/>");
+			out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.sysmap.com.br/crux/"+lib+"\"/>");
 		}
 	}
 
@@ -239,19 +239,19 @@ public class SchemaGenerator
 		PrintStream out = new PrintStream(coreFile);
 
 		out.println("<xs:schema ");
-		out.println("xmlns=\"http://www.sysmap.com.br/crux/1.0/"+library+"\" ");
+		out.println("xmlns=\"http://www.sysmap.com.br/crux/"+library+"\" ");
 		out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
-		out.println("xmlns:c=\"http://www.sysmap.com.br/crux/1.0\" ");
+		out.println("xmlns:c=\"http://www.sysmap.com.br/crux\" ");
 		for (String lib : allLibraries)
 		{
 			if (!lib.equals(library))
 			{
-				out.println("xmlns:_"+lib+"=\"http://www.sysmap.com.br/crux/1.0/"+lib+"\" ");
+				out.println("xmlns:_"+lib+"=\"http://www.sysmap.com.br/crux/"+lib+"\" ");
 			}
 		}
 		out.println("attributeFormDefault=\"unqualified\" ");
 		out.println("elementFormDefault=\"qualified\" ");
-		out.println("targetNamespace=\"http://www.sysmap.com.br/crux/1.0/"+library+"\" >");
+		out.println("targetNamespace=\"http://www.sysmap.com.br/crux/"+library+"\" >");
 		
 		generateSchemaImportsForLibrary(library, allLibraries, out);
 		
@@ -277,12 +277,12 @@ public class SchemaGenerator
 	 */
 	private void generateSchemaImportsForLibrary(String library, Set<String> allLibraries, PrintStream out)
 	{
-		out.println("<xs:import schemaLocation=\"core.xsd\" namespace=\"http://www.sysmap.com.br/crux/1.0\"/>");
+		out.println("<xs:import schemaLocation=\"core.xsd\" namespace=\"http://www.sysmap.com.br/crux\"/>");
 		for (String lib : allLibraries)
 		{
 			if (!lib.equals(library))
 			{
-				out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.sysmap.com.br/crux/1.0/"+lib+"\"/>");
+				out.println("<xs:import schemaLocation=\""+lib+".xsd\" namespace=\"http://www.sysmap.com.br/crux/"+lib+"\"/>");
 			}
 		}
 	}
