@@ -58,8 +58,10 @@ public class AnchorFactory extends FocusWidgetFactory<Anchor>
 		Anchor widget = context.getWidget();
 		
 		String horizontalAlignment = element.getAttribute("_horizontalAlignment");
-		widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
-
+		if (horizontalAlignment != null && horizontalAlignment.length() > 0)
+		{
+			widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
+		}
 		String innerHtml = element.getInnerHTML();
 		String text = element.getAttribute("_text");
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)

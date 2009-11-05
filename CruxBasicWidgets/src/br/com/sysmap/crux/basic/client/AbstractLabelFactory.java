@@ -52,6 +52,9 @@ public abstract class AbstractLabelFactory<T extends Label> extends WidgetFactor
 		T widget = context.getWidget();
 
 		String horizontalAlignment = element.getAttribute("_horizontalAlignment");
-		widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
+		if (horizontalAlignment != null && horizontalAlignment.length() > 0)
+		{
+			widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
+		}
 	}
 }

@@ -156,12 +156,18 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 				}
 
 				String horizontalAlignment = element.getAttribute("_horizontalAlignment");
-				widget.getCellFormatter().setHorizontalAlignment(indexRow, indexCol, 
+				if (horizontalAlignment != null && horizontalAlignment.length() > 0)
+				{
+					widget.getCellFormatter().setHorizontalAlignment(indexRow, indexCol, 
 						AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
-
+				}
 				String verticalAlignment = element.getAttribute("_verticalAlignment");
-				widget.getCellFormatter().setVerticalAlignment(indexRow, indexCol, 
+				if (verticalAlignment != null && verticalAlignment.length() > 0)
+				{
+					widget.getCellFormatter().setVerticalAlignment(indexRow, indexCol, 
 						AlignmentAttributeParser.getVerticalAlignment(verticalAlignment));
+
+				}
 			}
 			finally
 			{

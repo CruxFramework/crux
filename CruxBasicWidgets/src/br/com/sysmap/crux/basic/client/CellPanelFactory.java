@@ -132,12 +132,16 @@ public abstract class CellPanelFactory <T extends CellPanel> extends ComplexPane
 			}
 			
 			String cellHorizontalAlignment = (String) context.getAttribute("horizontalAlignment");
-			parent.setCellHorizontalAlignment(child, 
+			if (cellHorizontalAlignment != null && cellHorizontalAlignment.length() > 0)
+			{
+				parent.setCellHorizontalAlignment(child, 
 					  AlignmentAttributeParser.getHorizontalAlignment(cellHorizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
-			
+			}
 			String cellVerticalAlignment = (String) context.getAttribute("verticalAlignment");
-			parent.setCellVerticalAlignment(child, AlignmentAttributeParser.getVerticalAlignment(cellVerticalAlignment));
-
+			if (cellVerticalAlignment != null && cellVerticalAlignment.length() > 0)
+			{
+				parent.setCellVerticalAlignment(child, AlignmentAttributeParser.getVerticalAlignment(cellVerticalAlignment));
+			}
 			String cellWidth = (String) context.getAttribute("width");
 			if (cellWidth != null && cellWidth.length() > 0)
 			{
