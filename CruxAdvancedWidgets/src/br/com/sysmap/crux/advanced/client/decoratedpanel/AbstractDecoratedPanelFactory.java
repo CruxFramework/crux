@@ -53,9 +53,14 @@ public abstract class AbstractDecoratedPanelFactory<T extends DecoratedPanel> ex
 		DecoratedPanel widget = context.getWidget();
 
 		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");
-		widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(cellHorizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
-		
+		if (cellHorizontalAlignment != null && cellHorizontalAlignment.length() > 0)
+		{
+			widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(cellHorizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
+		}		
 		String cellVerticalAlignment = element.getAttribute("_verticalAlignment");
-		widget.setVerticalAlignment(AlignmentAttributeParser.getVerticalAlignment(cellVerticalAlignment));
+		if (cellVerticalAlignment != null && cellVerticalAlignment.length() > 0)
+		{
+			widget.setVerticalAlignment(AlignmentAttributeParser.getVerticalAlignment(cellVerticalAlignment));
+		}
 	}	
 }
