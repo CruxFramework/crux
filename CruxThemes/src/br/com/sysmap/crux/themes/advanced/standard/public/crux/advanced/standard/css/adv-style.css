@@ -818,6 +818,25 @@
 	background: url(../img/title-panel-blue.gif) no-repeat bottom right;
 }
 
+.crux-CollapsePanel .collapseExpandButton
+{
+	width: 11px;
+	height: 11px;
+	border: solid 0px;
+	cursor: pointer;	
+}
+
+.crux-CollapsePanel .collapseExpandButton-collapsed
+{
+	background: url(../img/collapse-panel-expand.gif) no-repeat;
+}
+
+.crux-CollapsePanel .collapseExpandButton-expanded
+{
+	background: url(../img/collapse-panel-collapse.gif) no-repeat;
+}
+
+
 /******************************************************************************
 	Bold Gray Decorated Panel
 *******************************************************************************/
