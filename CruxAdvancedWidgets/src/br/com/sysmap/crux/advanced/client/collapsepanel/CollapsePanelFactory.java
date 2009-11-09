@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.advanced.client.collapsepanel;
 
-import br.com.sysmap.crux.advanced.client.event.LoadImagesEvent;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeCollapseEvtBind;
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeExpandEvtBind;
 import br.com.sysmap.crux.advanced.client.titlepanel.AbstractTitlePanelFactory;
@@ -26,12 +25,7 @@ import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEvent;
-import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEvents;
-import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.Events;
-import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
@@ -68,14 +62,6 @@ public class CollapsePanelFactory extends AbstractTitlePanelFactory<CollapsePane
 			collapsed = Boolean.parseBoolean(strCollapsed);
 		}
 		
-		Event eventLoadImages = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
-		if (eventLoadImages != null)
-		{
-			LoadImagesEvent<CollapsePanel> loadEvent = new LoadImagesEvent<CollapsePanel>(widgetId);
-			CollapsePanelImages images = (CollapsePanelImages) Events.callEvent(eventLoadImages, loadEvent);
-			return new CollapsePanel(width, height, styleName, collapsible, collapsed, images);
-		}
-		
 		return new CollapsePanel(width, height, styleName, collapsible, collapsed);
 	}
 	
@@ -83,9 +69,6 @@ public class CollapsePanelFactory extends AbstractTitlePanelFactory<CollapsePane
 	@TagEvents({
 		@TagEvent(BeforeCollapseEvtBind.class),
 		@TagEvent(BeforeExpandEvtBind.class)
-	})
-	@TagEventsDeclaration({
-		@TagEventDeclaration("onLoadImage")
 	})
 	public void processEvents(WidgetFactoryContext<CollapsePanel> context) throws InterfaceConfigException
 	{

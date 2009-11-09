@@ -6,6 +6,11 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
 
 import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinition;
 
+/**
+ * TODO - Gessé - Comment this
+ * TODO - Gessé - widget columns should not be sortable 
+ * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ */
 public class WidgetColumnDefinition extends ColumnDefinition
 {
 	Element widgetTemplate;

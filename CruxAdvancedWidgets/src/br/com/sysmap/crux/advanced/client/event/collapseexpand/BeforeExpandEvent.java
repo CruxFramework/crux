@@ -72,8 +72,6 @@ public class BeforeExpandEvent extends GwtEvent<BeforeExpandHandler> implements 
 
 	/**
 	 * Cancel the before selection event.
-	 * 
-	 * Classes overriding this method should still call super.cancel().
 	 */
 	public void cancel()
 	{

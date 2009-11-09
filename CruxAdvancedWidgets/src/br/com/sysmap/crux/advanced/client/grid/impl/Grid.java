@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import br.com.sysmap.crux.advanced.client.AdvancedWidgetMessages;
+import br.com.sysmap.crux.advanced.client.event.row.BeforeRowSelectEvent;
+import br.com.sysmap.crux.advanced.client.event.row.BeforeRowSelectHandler;
+import br.com.sysmap.crux.advanced.client.event.row.HasBeforeRowSelectHandlers;
 import br.com.sysmap.crux.advanced.client.grid.model.AbstractGrid;
 import br.com.sysmap.crux.advanced.client.grid.model.Cell;
 import br.com.sysmap.crux.advanced.client.grid.model.ColumnDefinition;
@@ -33,6 +36,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -44,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A paged sortable data grid
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class Grid extends AbstractGrid<DataRow> implements Pageable {	
+public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRowSelectHandlers {	
 
 	private int pageSize;
 	private EditablePagedDataSource dataSource;
@@ -68,9 +72,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable {
 	 * @param autoLoadData if <code>true</code>, when a data source is set, its first page records are fetched and rendered. 
 	 * 	If <code>false</code>, the method <code>loadData()</code> must be invoked for rendering the first page.
 	 */
-	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData, boolean stretchColumns)
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver)
 	{
-		super(columnDefinitions, rowSelectionModel, cellSpacing, stretchColumns);
+		super(columnDefinitions, rowSelectionModel, cellSpacing, stretchColumns, highlightRowOnMouseOver);
 		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 		this.pageSize = pageSize;
 		this.rowSelectionModel = rowSelectionModel;
@@ -199,30 +203,38 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable {
 	}
 
 	@Override
-	protected void onSelectRow(boolean select, DataRow row)
+	protected boolean onSelectRow(boolean select, DataRow row)
 	{
-		if(select && (RowSelectionModel.single.equals(rowSelectionModel) || RowSelectionModel.singleWithRadioButton.equals(rowSelectionModel)))
+		BeforeRowSelectEvent event = BeforeRowSelectEvent.fire(this, row);
+		boolean canceled = event.isCanceled();
+		
+		if(!canceled)
 		{
-			EditableDataSourceRecord[] records = dataSource.getSelectedRecords();
-			if(records != null)
+			if(select && (RowSelectionModel.single.equals(rowSelectionModel) || RowSelectionModel.singleWithRadioButton.equals(rowSelectionModel)))
 			{
-				for (int i = 0; i < records.length; i++)
+				EditableDataSourceRecord[] records = dataSource.getSelectedRecords();
+				if(records != null)
 				{
-					EditableDataSourceRecord editableDataSourceRecord = records[i];
-					editableDataSourceRecord.setSelected(false);
+					for (int i = 0; i < records.length; i++)
+					{
+						EditableDataSourceRecord editableDataSourceRecord = records[i];
+						editableDataSourceRecord.setSelected(false);
+					}
+				}
+				
+				Iterator<DataRow> it = getRowIterator();
+				
+				while(it.hasNext())
+				{
+					DataRow dataRow = it.next();
+					dataRow.setSelected(false);
 				}
 			}
 			
-			Iterator<DataRow> it = getRowIterator();
-			
-			while(it.hasNext())
-			{
-				DataRow dataRow = it.next();
-				dataRow.setSelected(false);
-			}
+			row.setSelected(select);
 		}
 		
-		row.setSelected(select);
+		return !canceled;
 	}
 
 	@Override
@@ -593,5 +605,13 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable {
 		}		
 		
 		return new Object[0];
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.advanced.client.event.row.HasBeforeRowSelectHandlers#addBeforeRowSelectHandler(br.com.sysmap.crux.advanced.client.event.row.BeforeRowSelectHandler)
+	 */
+	public HandlerRegistration addBeforeRowSelectHandler(BeforeRowSelectHandler handler)
+	{
+		return addHandler(handler, BeforeRowSelectEvent.getType());
 	}
 }

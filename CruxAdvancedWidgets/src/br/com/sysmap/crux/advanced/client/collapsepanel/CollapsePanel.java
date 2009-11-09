@@ -23,13 +23,11 @@ import br.com.sysmap.crux.advanced.client.event.collapseexpand.BeforeExpandHandl
 import br.com.sysmap.crux.advanced.client.event.collapseexpand.HasBeforeCollapseAndBeforeExpandHandlers;
 import br.com.sysmap.crux.advanced.client.titlepanel.TitlePanel;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.FocusPanel;
 
 /**
  * Panel based on a 3x3 table, with collapse/expand feature. Similar to GWT's DisclosurePanel
@@ -41,8 +39,7 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	private boolean collapsible = false;
 	private boolean collapsed = false;
 	private String height;
-	private CollapsePanelImages images;
-	private Image image = null;
+	private FocusPanel button = null;
 	
 	/**
 	 * Constructor
@@ -54,25 +51,9 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	 */
 	public CollapsePanel(String width, String height, String styleName, boolean collapsible, boolean collapsed)
 	{
-		this(width, height, styleName, collapsible, collapsed, (CollapsePanelImages) GWT.create(CollapsePanelImages.class));
-	}	
-	
-	/**
-	 * Constructor
-	 * @param width
-	 * @param height
-	 * @param styleName
-	 * @param collapsible
-	 * @param collapsed
-	 * @param images
-	 */
-	public CollapsePanel(String width, String height, String styleName, boolean collapsible, boolean collapsed, CollapsePanelImages images)
-	{
 		super(width, collapsible ? "" : height, styleName != null && styleName.trim().length() > 0 ? styleName : DEFAULT_STYLE_NAME);
-		this.images = images;
 		this.collapsed = collapsed;
-		this.image = createCollapseExpandImage();
-		
+		this.button = createCollapseExpandButton();
 		setCollapsible(collapsible);
 	}
 	
@@ -80,16 +61,15 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	 * 
 	 * @return
 	 */
-	private Image createCollapseExpandImage()
+	private FocusPanel createCollapseExpandButton()
 	{
-		// TODO - insert images using CSS  
-		
-		AbstractImagePrototype proto = collapsed ? images.expand() : images.collapse();
-		Image image = proto.createImage();
-		image.addClickHandler(new ExpandButtonClickHandler());
-		setTopRightWidget(image);
-		DOM.setStyleAttribute(image.getElement(), "marginRight", "4px");
-		return image;
+		FocusPanel button = new FocusPanel();
+		button.setStyleName("collapseExpandButton");
+		button.addStyleDependentName(collapsed ? "collapsed" : "expanded");
+		button.addClickHandler(new ExpandButtonClickHandler());
+		setTopRightWidget(button);
+		DOM.setStyleAttribute(button.getElement(), "marginRight", "4px");
+		return button;
 	}
 
 	/**
@@ -119,15 +99,17 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 		{
 			if(collapsed)
 			{
-				images.expand().applyTo(image);
+				button.removeStyleDependentName("expanded");
+				button.addStyleDependentName("collapsed");
 			}
 			else
 			{
-				images.collapse().applyTo(image);
+				button.removeStyleDependentName("collapsed");
+				button.addStyleDependentName("expanded");
 			}
 		}
 		
-		image.setVisible(collapsible);
+		button.setVisible(collapsible);
 	}
 
 	/**
@@ -161,16 +143,6 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	{
 		return addHandler(handler, BeforeExpandEvent.getType());
 	}
-
-	/**
-	 * Changes the images of the collapse/expand button
-	 * @param images
-	 */
-	public void setImages(CollapsePanelImages images)
-	{
-		// TODO - insert images using CSS
-		this.images = images;
-	}
 	
 	@Override
 	public void setHeight(String height)
@@ -197,8 +169,8 @@ class ExpandButtonClickHandler implements ClickHandler
 	 */
 	public void onClick(ClickEvent event)
 	{
-		Image img = (Image) event.getSource();
-		CollapsePanel panel = (CollapsePanel) img.getParent();
+		FocusPanel button = (FocusPanel) event.getSource();
+		CollapsePanel panel = (CollapsePanel) button.getParent();
 		boolean collapsed = panel.isCollapsed();
 		BeforeCollapseOrBeforeExpandEvent preEvent = null;
 		

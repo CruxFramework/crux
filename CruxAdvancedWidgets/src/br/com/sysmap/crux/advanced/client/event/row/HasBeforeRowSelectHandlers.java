@@ -13,20 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.advanced.client.collapsepanel;
+package br.com.sysmap.crux.advanced.client.event.row;
 
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.ImageBundle;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HasHandlers;
 
-/**
- * ImageBundle for CollapsePanel 
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
- */
-public interface CollapsePanelImages extends ImageBundle
+public interface HasBeforeRowSelectHandlers extends HasHandlers 
 {
-	@Resource("expand.gif")
-	AbstractImagePrototype expand();
-	
-	@Resource("collapse.gif")
-	AbstractImagePrototype collapse();
+	HandlerRegistration addBeforeRowSelectHandler(BeforeRowSelectHandler handler);
 }

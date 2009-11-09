@@ -23,6 +23,7 @@ public class Events
 	public static final String ROW_CLICK = "onrowclick";
 	public static final String ROW_DOUBLE_CLICK = "onrowdoubleclick";
 	public static final String ROW_RENDER = "onrowrender";
+	public static final String BEFORE_ROW_SELECT = "onbeforerowselect";
 	
 	public static final String PAGE = "onpage";
 }

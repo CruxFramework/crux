@@ -57,7 +57,8 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	private RowSelectionModel rowSelection;
 	private ScrollPanel scrollingArea;
 	private int visibleColumnCount = -1;
-	private boolean stretchColumns = false;
+	private boolean stretchColumns;
+	private boolean highlightRowOnMouseOver;
 	
 	@SuppressWarnings("unchecked")
 	static class RowSelectionHandler<R extends Row> implements ClickHandler
@@ -74,7 +75,12 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		public void onClick(ClickEvent event)
 		{
 			boolean selected = ((HasValue<Boolean>) event.getSource()).getValue();
-			grid.onSelectRow(selected, row);
+			
+			if(!grid.onSelectRow(selected, row))
+			{
+				event.preventDefault();
+			}
+			
 			event.stopPropagation();
 		}	
 	}
@@ -86,11 +92,12 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * @param cellSpacing the space between the cells
 	 * @param stretchColumns 
 	 */
-	public AbstractGrid(ColumnDefinitions columnDefinitions, RowSelectionModel rowSelection, int cellSpacing, boolean stretchColumns)
+	public AbstractGrid(ColumnDefinitions columnDefinitions, RowSelectionModel rowSelection, int cellSpacing, boolean stretchColumns, boolean highlightRowOnMouseOver)
 	{
 		this.definitions = columnDefinitions;
 		this.rowSelection = rowSelection;
 		this.stretchColumns = stretchColumns;
+		this.highlightRowOnMouseOver = highlightRowOnMouseOver;
 		
 		panel = new SimplePanel();
 		panel.setStyleName(DEFAULT_STYLE_NAME);
@@ -250,7 +257,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	protected Cell createCell(Widget widget)
 	{
-		Cell cell = createBaseCell(widget, true, selectRowOnClickCell());
+		Cell cell = createBaseCell(widget, true, selectRowOnClickCell(), highlightRowOnMouseOver);
 		cell.addStyleName("cell");
 		return cell;
 	}
@@ -275,17 +282,17 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * @param selectRowOnclick
 	 * @return
 	 */
-	protected Cell createBaseCell(Widget widget, boolean fireEvents, boolean selectRowOnclick)
+	protected Cell createBaseCell(Widget widget, boolean fireEvents, boolean selectRowOnclick, boolean highlightRowOnMouseOver)
 	{
 		Cell cell = null;
 		
 		if(widget != null)
 		{
-			cell = new Cell(widget, fireEvents, selectRowOnclick);
+			cell = new Cell(widget, fireEvents, selectRowOnclick, highlightRowOnMouseOver);
 		}
 		else
 		{
-			cell = new Cell(fireEvents, selectRowOnclick);
+			cell = new Cell(fireEvents, selectRowOnclick, highlightRowOnMouseOver);
 		}
 		
 		cell.setWidth("100%");
@@ -300,7 +307,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	protected Cell createHeaderCell(Widget widget)
 	{
-		Cell cell = createBaseCell(widget, false, false);
+		Cell cell = createBaseCell(widget, false, false, false);
 		cell.addStyleName("columnHeader");
 		return cell;
 	}
@@ -355,7 +362,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * @param select <code>true</code> if the row was selected, <code>false</code> if deselected
 	 * @param row
 	 */
-	protected abstract void onSelectRow(boolean select, R row);
+	protected abstract boolean onSelectRow(boolean select, R row);
 	
 	/**
 	 * Renders the grid. The subclasses should call this method for rendering themselves.

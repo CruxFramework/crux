@@ -63,10 +63,22 @@ public class GridFactory extends WidgetFactory<Grid>
 	{
 		Grid grid = new Grid(getColumnDefinitions(gridElem), getPageSize(gridElem), 
 				                               getRowSelectionModel(gridElem), getCellSpacing(gridElem), 
-				                               getAutoLoad(gridElem), getStretchColumns(gridElem));
+				                               getAutoLoad(gridElem), getStretchColumns(gridElem), getHighlightRowOnMouseOver(gridElem));
 		return grid;
 	}
 	
+	private boolean getHighlightRowOnMouseOver(Element gridElem)
+	{
+		String highlight = gridElem.getAttribute("_highlightRowOnMouseOver");
+		
+		if(highlight != null && highlight.trim().length() > 0)
+		{
+			return Boolean.parseBoolean(highlight);
+		}
+		
+		return false;
+	}
+
 	private boolean getAutoLoad(Element gridElem)
 	{
 		String autoLoad = gridElem.getAttribute("_autoLoadData");
@@ -247,7 +259,8 @@ public class GridFactory extends WidgetFactory<Grid>
 		@TagAttributeDeclaration("dataSource"),
 		@TagAttributeDeclaration(value="cellSpacing", type=Integer.class, defaultValue="1"),
 		@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, defaultValue="false"),
-		@TagAttributeDeclaration(value="stretchColumns", type=Boolean.class, defaultValue="false")
+		@TagAttributeDeclaration(value="stretchColumns", type=Boolean.class, defaultValue="false"),
+		@TagAttributeDeclaration(value="highlightRowOnMouseOver", type=Boolean.class, defaultValue="false")
 	})
 	public void processAttributes(WidgetFactoryContext<Grid> context) throws InterfaceConfigException
 	{
@@ -259,7 +272,8 @@ public class GridFactory extends WidgetFactory<Grid>
 	@TagEventsDeclaration({
 		@TagEventDeclaration("onRowClick"),
 		@TagEventDeclaration("onRowDoubleClick"),
-		@TagEventDeclaration("onRowRender")
+		@TagEventDeclaration("onRowRender"),
+		@TagEventDeclaration("onBeforeRowSelect")
 	})
 	public void processEvents(WidgetFactoryContext<Grid> context) throws InterfaceConfigException
 	{
@@ -269,6 +283,8 @@ public class GridFactory extends WidgetFactory<Grid>
 		RowEventsBind.bindClickRowEvent(element, widget);
 		RowEventsBind.bindDoubleClickRowEvent(element, widget);
 		RowEventsBind.bindRenderRowEvent(element, widget);
+		RowEventsBind.bindBeforeSelectRowEvent(element, widget);
+		
 		super.processEvents(context);
 	}
 	

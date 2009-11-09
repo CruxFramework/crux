@@ -74,4 +74,19 @@ public class RowEventsBind extends EvtBind
 			});
 		}
 	}
+	
+	public static void bindBeforeSelectRowEvent(Element element, HasBeforeRowSelectHandlers widget)
+	{
+		final Event evt = getWidgetEvent(element, Events.BEFORE_ROW_SELECT);
+		if (evt != null)
+		{
+			widget.addBeforeRowSelectHandler(new BeforeRowSelectHandler()
+			{
+				public void onBeforeRowSelect(BeforeRowSelectEvent event)
+				{
+					br.com.sysmap.crux.core.client.event.Events.callEvent(evt, event);					
+				}				
+			});
+		}
+	}
 }

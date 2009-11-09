@@ -16,11 +16,13 @@ public class Cell extends Composite
 	@SuppressWarnings("unchecked")
 	private AbstractGrid grid;
 	private boolean selectRowOnClick;
+	private boolean highlightRowOnMouseOver;
 
-	protected Cell(boolean fireEvents, boolean selectRowOnClick)
+	protected Cell(boolean fireEvents, boolean selectRowOnClick, boolean highlightRowOnMouseOver)
 	{
 		this.fireEvents = fireEvents;
 		this.selectRowOnClick = selectRowOnClick;
+		this.highlightRowOnMouseOver = highlightRowOnMouseOver;
 
 		basePanel = new SimplePanel();
 		initWidget(basePanel);
@@ -29,9 +31,9 @@ public class Cell extends Composite
 		sinkEvents(Event.ONCLICK | Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONDBLCLICK);
 	}
 
-	protected Cell(Widget widget, boolean fireEvents, boolean selectRowOnClick)
+	protected Cell(Widget widget, boolean fireEvents, boolean selectRowOnClick, boolean highlightRowOnMouseOver)
 	{
-		this(fireEvents, selectRowOnClick);
+		this(fireEvents, selectRowOnClick, highlightRowOnMouseOver);
 		this.basePanel.add(widget);
 	}
 
@@ -81,6 +83,31 @@ public class Cell extends Composite
 			if(fireEvents && row.isEnabled())
 			{
 				grid.fireRowDoubleClickEvent(row);
+			}
+			
+			return;
+		}
+		
+		if(highlightRowOnMouseOver)
+		{
+			if (type == Event.ONMOUSEOVER)
+			{
+				if(row.isEnabled())
+				{
+					row.addStyleDependentName("highlighted");
+				}
+				
+				return;
+			}
+			
+			if (type == Event.ONMOUSEOUT)
+			{
+				if(row.isEnabled())
+				{
+					row.removeStyleDependentName("highlighted");
+				}
+				
+				return;
 			}
 		}
 
