@@ -105,7 +105,9 @@ public class CruxInternalMessageBoxController
 			
 			HorizontalPanel horizontalPanel = new HorizontalPanel();
 			horizontalPanel.setSpacing(10);
-			horizontalPanel.add(createOkButton(dialogBox));
+			DecoratedButton okButton = createOkButton(dialogBox);
+			okButton.setFocus(true);
+			horizontalPanel.add(okButton);
 			
 			dockPanel.add(horizontalPanel, DockPanel.SOUTH);
 			dockPanel.setCellHorizontalAlignment(horizontalPanel, HasHorizontalAlignment.ALIGN_CENTER);
