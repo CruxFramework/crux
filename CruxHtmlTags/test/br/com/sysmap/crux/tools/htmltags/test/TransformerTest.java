@@ -2,12 +2,10 @@ package br.com.sysmap.crux.tools.htmltags.test;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.net.URL;
 
 import junit.framework.TestCase;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
-import br.com.sysmap.crux.tools.htmltags.WidgetTagConfig;
 
 /**
  * Test for CruxToHtmlTransformer
@@ -21,7 +19,6 @@ public class TransformerTest extends TestCase
 	protected void setUp() throws Exception
 	{
 		CruxToHtmlTransformer.setForceIndent(true);
-		WidgetTagConfig.initializeWidgetConfig(new URL[]{new File(conf.xsltDir()).toURI().toURL()});
 	}
 	
 	/**

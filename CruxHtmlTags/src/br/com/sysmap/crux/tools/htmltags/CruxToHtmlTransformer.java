@@ -22,23 +22,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.TransformerFactoryImpl;
-import nu.xom.Builder;
-import nu.xom.Serializer;
-import nu.xom.xinclude.XIncluder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
@@ -52,7 +56,7 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContex
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.Environment;
-import br.com.sysmap.crux.core.utils.FileSystemUtils;
+import br.com.sysmap.crux.tools.htmltags.template.TemplatesPreProcessor;
 import br.com.sysmap.crux.tools.htmltags.util.StreamUtils;
 
 /**
@@ -63,13 +67,14 @@ public class CruxToHtmlTransformer
 {
 	// Makes it easier to read the output files
 	private static boolean forceIndent = false;
-	
-	// Makes it easier to read the output files
 	private static String outputCharset = "ISO-8859-1";
 
 	private static final Log log = LogFactory.getLog(CruxToHtmlTransformer.class);
 	private static HTMLTagsMessages messages = (HTMLTagsMessages)MessagesFactory.getMessages(HTMLTagsMessages.class);
 	private static Transformer transformer = null;
+	private static DocumentBuilder documentBuilder = null;
+
+	private static List<CruxXmlPreProcessor> preProcessors;
 	private static final Lock lock = new ReentrantLock();
 
 
@@ -88,8 +93,8 @@ public class CruxToHtmlTransformer
 		try
 		{
 			ByteArrayOutputStream buff = new ByteArrayOutputStream();
-			String source = resolveXInclude(filePath);
-			transformer.transform(new StreamSource(new ByteArrayInputStream(source.getBytes("UTF-8"))), new StreamResult(buff));
+			Document source = loadCruxPage(filePath);
+			transformer.transform(new DOMSource(source), new StreamResult(buff));
 			String result = new String(buff.toByteArray());
 			result = handleHtmlDocument(source, result);
 			StreamUtils.write(new ByteArrayInputStream(result.getBytes()), out, false);
@@ -132,20 +137,10 @@ public class CruxToHtmlTransformer
 				try
 				{
 					TransformerFactory tfactory = new TransformerFactoryImpl();
-					File tmpDir = new File(FileSystemUtils.getTempDirFile(), "crux_xslt");
-					if (!tmpDir.exists())
-					{
-						tmpDir.mkdir();
-					}
 					InputStream is = generateHtmlTagsXSLT();
 					transformer = tfactory.newTransformer(new StreamSource(is));
-					
-					File[] tmpXsltFiles = tmpDir.listFiles();
-					for (File file : tmpXsltFiles)
-					{
-						file.delete();
-					}
-					tmpDir.delete();
+					documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+					initializePreProcessors();
 				}
 				catch (Throwable e)
 				{
@@ -160,20 +155,27 @@ public class CruxToHtmlTransformer
 	}
 
 	/**
+	 * 
+	 */
+	private static void initializePreProcessors()
+	{
+		preProcessors = new ArrayList<CruxXmlPreProcessor>();
+		preProcessors.add(new TemplatesPreProcessor());
+	}
+
+	/**
 	 * If source contains DOCTYPE declaration, inserts it in the result.
 	 * Removes the XMLNS declaration from the root tag
 	 * @param result
 	 * @param result2 
 	 */
-	private static String handleHtmlDocument(String source, String result)
+	private static String handleHtmlDocument(Document source, String result)
 	{
-		int doctypeBegin = source.indexOf("!DOCTYPE");
-
-		if(doctypeBegin >= 0)
+		DocumentType doctype = source.getDoctype();
+		
+		if (doctype != null)
 		{
-			int lineEnd = source.indexOf("\n", doctypeBegin);
-			String doctype = source.substring(doctypeBegin, lineEnd);
-			result = "<" + doctype + ">\n" + result;
+			result = "<!DOCTYPE " + doctype.getName() + ">\n" + result;
 		}
 		
 		int htmlTagBegin = result.toUpperCase().indexOf("<HTML");
@@ -325,27 +327,36 @@ public class CruxToHtmlTransformer
 	}
 
 	/**
-	 * Executes the X-Include processing
+	 * Loads Crux page
 	 * @param fileName
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	private static String resolveXInclude(String filePath) throws InterfaceConfigException
+	private static Document loadCruxPage(String filePath) throws InterfaceConfigException
 	{
-		Builder builder = new Builder();
-
 		try
 		{
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			Serializer outputter = new Serializer(out, "ISO-8859-1");
-			nu.xom.Document input = builder.build(new File(filePath));
-			XIncluder.resolveInPlace(input);
-			outputter.write(input);
-			return new String(out.toByteArray());
+			Document document = documentBuilder.parse(new File(filePath));
+			return preprocess(document);
 		}
 		catch (Exception e)
 		{
 			throw new InterfaceConfigException(e.getMessage(), e);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param doc
+	 * @return
+	 */
+	private static Document preprocess(Document doc)
+	{
+		for (CruxXmlPreProcessor preProcessor : preProcessors)
+		{
+			doc = preProcessor.preprocess(doc);
+		}
+		
+		return doc;
 	}
 }

@@ -15,43 +15,13 @@
  */
 package br.com.sysmap.crux.tools.htmltags;
 
+import org.w3c.dom.Document;
+
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class WidgetTagConfigScannerException extends RuntimeException
+public interface CruxXmlPreProcessor
 {
-	private static final long serialVersionUID = -816451350854820273L;
-
-	/**
-	 * 
-	 */
-	public WidgetTagConfigScannerException()
-	{
-	}
-
-	/**
-	 * @param message
-	 */
-	public WidgetTagConfigScannerException(String message)
-	{
-		super(message);
-	}
-
-	/**
-	 * @param cause
-	 */
-	public WidgetTagConfigScannerException(Throwable cause)
-	{
-		super(cause);
-	}
-
-	/**
-	 * @param message
-	 * @param cause
-	 */
-	public WidgetTagConfigScannerException(String message, Throwable cause)
-	{
-		super(message, cause);
-	}
+	Document preprocess(Document doc);
 }

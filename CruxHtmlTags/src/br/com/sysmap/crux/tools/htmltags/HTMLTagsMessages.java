@@ -23,8 +23,8 @@ import br.com.sysmap.crux.core.i18n.DefaultMessage;
  */
 public interface HTMLTagsMessages
 {
-	@DefaultMessage("[htmlTags 001] - Error initialising widgetTagConfigScanner. Message: {0}")
-	String widgetTagConfigScannerInitializationError(String localizedMessage);
+	@DefaultMessage("[htmlTags 001] - Error initializing TemplateScanner.")
+	String templatesScannerInitializationError(String localizedMessage);
 	
 	@DefaultMessage("[htmlTags 002] - Error creating xslt file from template. Template crux-ui.template.xslt not found")
 	String transformerTemplateNotFound();
@@ -39,32 +39,41 @@ public interface HTMLTagsMessages
 	String cruxHtmlTagsScreenResolverError(String screenId, String message);
 
 	@DefaultMessage("[htmlTags 006] - Generating core.xsd file")
-	Object schemaGeneratorCreatingCoreXSD();
+	String schemaGeneratorCreatingCoreXSD();
 
 	@DefaultMessage("[htmlTags 007] - Generating xsd file for library: {0}.")
-	Object schemaGeneratorCreatingLibraryXSD(String library);
+	String schemaGeneratorCreatingLibraryXSD(String library);
 
 	@DefaultMessage("[htmlTags 008] - XSD Files Generated.")
-	Object schemaGeneratorXSDFilesGenerated();
+	String schemaGeneratorXSDFilesGenerated();
 
 	@DefaultMessage("[htmlTags 009] - Error creating XSD File: Tag Name expected in processor class: {0}.")
-	Object schemaGeneratorErrorTagNameExpected(String className);
+	String schemaGeneratorErrorTagNameExpected(String className);
 
 	@DefaultMessage("[htmlTags 010] - Error creating XSD File: ProcessChildren method not found.")
-	Object schemaGeneratorErrorProcessChildrenMethodNotFound();
+	String schemaGeneratorErrorProcessChildrenMethodNotFound();
 
 	@DefaultMessage("[htmlTags 011] - Error creating XSD File: Error generating attributes for Processor.")
-	Object schemaGeneratorErrorGeneratingAttributesForProcessor();
+	String schemaGeneratorErrorGeneratingAttributesForProcessor();
 
 	@DefaultMessage("[htmlTags 012] - Error creating XSD File: Error generating events for Processor.")
-	Object schemaGeneratorErrorGeneratingEventsForProcessor();
+	String schemaGeneratorErrorGeneratingEventsForProcessor();
 
 	@DefaultMessage("[htmlTags 013] - Error creating XSD File: Error generating children for Processor.")
-	Object schemaGeneratorErrorGeneratingChildrenForFactory();
+	String schemaGeneratorErrorGeneratingChildrenForFactory();
 
 	@DefaultMessage("[htmlTags 014] - Error creating XSD File: Error generating widgets reference list.")
-	Object transformerErrorGeneratingWidgetsReferenceList();
+	String transformerErrorGeneratingWidgetsReferenceList();
 
 	@DefaultMessage("[htmlTags 015] - Error creating XSD File: Error generating widgets list.")
-	Object transformerErrorGeneratingWidgetsList();
+	String transformerErrorGeneratingWidgetsList();
+
+	@DefaultMessage("[htmlTags 016] - Error creating XML Parser.")
+	String templatesScannerErrorBuilderCanNotBeCreated();
+
+	@DefaultMessage("[htmlTags 017] - Error parsing template file: {0}.")
+	String templatesScannerErrorParsingTemplateFile(String fileName);
+
+	@DefaultMessage("[htmlTags 017] - Searching for template files.")
+	String templatesScannerSearchingTemplateFiles();
 }
