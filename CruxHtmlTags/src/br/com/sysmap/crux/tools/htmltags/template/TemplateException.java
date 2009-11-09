@@ -19,26 +19,26 @@ package br.com.sysmap.crux.tools.htmltags.template;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class TemplateScannerException extends RuntimeException
+public class TemplateException extends RuntimeException
 {
 	private static final long serialVersionUID = 7025740896654216172L;
 
-	public TemplateScannerException()
+	public TemplateException()
 	{
 		super();
 	}
 
-	public TemplateScannerException(String message, Throwable cause)
+	public TemplateException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}
 
-	public TemplateScannerException(String message)
+	public TemplateException(String message)
 	{
 		super(message);
 	}
 
-	public TemplateScannerException(Throwable cause)
+	public TemplateException(Throwable cause)
 	{
 		super(cause);
 	}

@@ -59,7 +59,7 @@ public class TemplatesScanner
 		}
 		catch (ParserConfigurationException e)
 		{
-			throw new TemplateScannerException(messages.templatesScannerErrorBuilderCanNotBeCreated(), e);
+			throw new TemplateException(messages.templatesScannerErrorBuilderCanNotBeCreated(), e);
 		}
 	}
 	
@@ -126,7 +126,7 @@ public class TemplatesScanner
 			}
 			catch (IOException e)
 			{
-				throw new TemplateScannerException(messages.templatesScannerInitializationError(e.getLocalizedMessage()), e);
+				throw new TemplateException(messages.templatesScannerInitializationError(e.getLocalizedMessage()), e);
 			}
 		}
 	}

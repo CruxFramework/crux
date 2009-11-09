@@ -21,11 +21,17 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
 import br.com.sysmap.crux.tools.htmltags.CruxXmlPreProcessor;
+import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -34,6 +40,12 @@ import br.com.sysmap.crux.tools.htmltags.CruxXmlPreProcessor;
 public class TemplatesPreProcessor implements CruxXmlPreProcessor
 {
 	private XPathExpression findTemplatesExpression;
+	private static HTMLTagsMessages messages = (HTMLTagsMessages)MessagesFactory.getMessages(HTMLTagsMessages.class);
+	private static final Log log = LogFactory.getLog(CruxToHtmlTransformer.class);
+	
+	/**
+	 * 
+	 */
 	public TemplatesPreProcessor()
 	{
 		XPathFactory factory = XPathFactory.newInstance();
@@ -44,11 +56,10 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 		}
 		catch (XPathExpressionException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(messages.templatesPreProcessorInitializingError());
+			throw new TemplateException(e.getLocalizedMessage(), e);
 		}
 	}
-	
 	
 	/**
 	 * 
@@ -63,23 +74,18 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 			for (int i = 0; i < nodes.getLength(); i++)
 			{
 				Element element = (Element)nodes.item(i);
+				Node parentNode = element.getParentNode();
+				String library = element.getAttribute("library");
+				Document template = preprocess(Templates.getTemplate(library, element.getLocalName()));		
+				parentNode.replaceChild(template.getDocumentElement(), element);
 			}
-			
-			
-			
 		}
 		catch (XPathExpressionException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(messages.templatesPreProcessorError());
+			throw new TemplateException(e.getLocalizedMessage(), e);
 		}
 		
-		return null;
+		return doc;
 	}
-
-	private String getTemplateLibrary(Element element)
-	{
-		return element.getAttribute("library");
-	}
-	
 }

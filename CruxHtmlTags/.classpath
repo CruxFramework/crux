@@ -8,7 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Crux"/>
 	<classpathentry kind="lib" path="lib/gwt-dev-windows.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="lib/xom-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/javassist.jar"/>
 	<classpathentry kind="lib" path="lib/crux-scannotation.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>

@@ -74,6 +74,12 @@ public interface HTMLTagsMessages
 	@DefaultMessage("[htmlTags 017] - Error parsing template file: {0}.")
 	String templatesScannerErrorParsingTemplateFile(String fileName);
 
-	@DefaultMessage("[htmlTags 017] - Searching for template files.")
+	@DefaultMessage("[htmlTags 018] - Searching for template files.")
 	String templatesScannerSearchingTemplateFiles();
+
+	@DefaultMessage("[htmlTags 019] - Error initializing templates pre-processor.")
+	Object templatesPreProcessorInitializingError();
+
+	@DefaultMessage("[htmlTags 020] - Error pre-processing templates.")
+	Object templatesPreProcessorError();
 }
