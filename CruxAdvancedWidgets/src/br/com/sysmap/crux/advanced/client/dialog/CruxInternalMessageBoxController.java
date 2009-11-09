@@ -106,7 +106,6 @@ public class CruxInternalMessageBoxController
 			HorizontalPanel horizontalPanel = new HorizontalPanel();
 			horizontalPanel.setSpacing(10);
 			DecoratedButton okButton = createOkButton(dialogBox);
-			okButton.setFocus(true);
 			horizontalPanel.add(okButton);
 			
 			dockPanel.add(horizontalPanel, DockPanel.SOUTH);
@@ -118,6 +117,8 @@ public class CruxInternalMessageBoxController
 			
 			dialogBox.center();
 			dialogBox.show();
+			
+			okButton.setFocus(true);
 		}
 		catch (Exception e)
 		{
