@@ -85,11 +85,27 @@ public class Templates
 	 */
 	public static Document getTemplate(String library, String id)
 	{
+		return getTemplate(library, id, false);
+	}
+
+	/**
+	 * 
+	 * @param library
+	 * @param id
+	 * @return
+	 */
+	public static Document getTemplate(String library, String id, boolean clone)
+	{
 		if (templates == null)
 		{
 			initializeTemplates();
 		}
-		return templates.get(library+"_"+id);
+		Document document = templates.get(library+"_"+id);
+		if (document != null)
+		{
+			document = (Document) document.cloneNode(true);
+		}
+		return document;
 	}
 	
 	/**

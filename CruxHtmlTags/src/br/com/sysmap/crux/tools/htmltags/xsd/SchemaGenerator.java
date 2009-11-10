@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
@@ -59,6 +60,9 @@ import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.utils.ClassUtils;
 import br.com.sysmap.crux.scannotation.ClasspathUrlFinder;
 import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
+import br.com.sysmap.crux.tools.htmltags.template.TemplateParser;
+import br.com.sysmap.crux.tools.htmltags.template.Templates;
+import br.com.sysmap.crux.tools.htmltags.template.TemplatesScanner;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -71,6 +75,7 @@ public class SchemaGenerator
 	private Deque<Class<? extends WidgetChildProcessor<?>>> subTagTypes;
 	private static final Log logger = LogFactory.getLog(SchemaGenerator.class);
 	private HTMLTagsMessages messages = MessagesFactory.getMessages(HTMLTagsMessages.class);
+	private TemplateParser templateParser;
 	
 	/**
 	 * 
@@ -80,7 +85,6 @@ public class SchemaGenerator
 	{
 		this(new File(destDir));
 	}
-	
 	/**
 	 * 
 	 * @param destDir
@@ -90,7 +94,8 @@ public class SchemaGenerator
 		this.destDir = destDir;
 		this.destDir.mkdirs();
 		this.enumTypes = new HashMap<String, Class<?>>();
-		this.subTagTypes = new LinkedList<Class<? extends WidgetChildProcessor<?>>>();	
+		this.subTagTypes = new LinkedList<Class<? extends WidgetChildProcessor<?>>>();
+		this.templateParser = new TemplateParser();
 	}
 	
 	/**
@@ -105,14 +110,169 @@ public class SchemaGenerator
 			logger.info(messages.schemaGeneratorCreatingLibraryXSD(library));
 			generateSchemaForLibrary(library, libraries);
 		}
+
+		logger.info(messages.schemaGeneratorCreatingTemplateXSD());
+		generateTemplateSchema(libraries);
+
+		Set<String> templateLibraries = Templates.getRegisteredLibraries();
+		for (String library : templateLibraries)
+		{
+			logger.info(messages.schemaGeneratorCreatingTemplateLibrary(library));
+			generateSchemaForTemplateLibrary(library);
+		}
+		
 		logger.info(messages.schemaGeneratorCreatingCoreXSD());
 		generateCoreSchema(libraries);
+
 		logger.info(messages.schemaGeneratorXSDFilesGenerated());
 	}
 	
 	/**
 	 * 
+	 * @param library
+	 */
+	private void generateSchemaForTemplateLibrary(String library) throws IOException
+	{
+		File coreFile = new File(destDir, library+".xsd");
+		if (coreFile.exists())
+		{
+			coreFile.delete();
+		}
+		coreFile.createNewFile();
+		PrintStream out = new PrintStream(coreFile);
+
+		out.println("<xs:schema ");
+		out.println("xmlns=\"http://www.sysmap.com.br/templates/"+library+"\" ");
+		out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
+		out.println("xmlns:c=\"http://www.sysmap.com.br/crux\" ");
+		out.println("attributeFormDefault=\"unqualified\" ");
+		out.println("elementFormDefault=\"qualified\" ");
+		out.println("targetNamespace=\"http://www.sysmap.com.br/templates/"+library+"\" >");
+		
+		Set<String> templates = Templates.getRegisteredLibraryTemplates(library);
+		for (String id : templates)
+		{
+			Document template = Templates.getTemplate(library, id);
+			generateTypeForTemplate(out, template, id);
+		}
+		out.println("</xs:schema>");
+		out.close();
+	}
+
+	/**
+	 * 
+	 * @param out
+	 * @param template
+	 */
+	private void generateTypeForTemplate(PrintStream out, Document template, String templateName)
+	{
+		out.println("<xs:element name=\""+templateName+"\" type=\"T"+templateName+"\" />");
+		out.println("<xs:complexType name=\"T"+templateName+"\">");
+		
+		generateChildrenForTemplate(out, template);
+		generateAttributesForTemplate(out, template);
+		
+		out.println("</xs:complexType>");
+	}
+
+	/**
+	 * 
+	 * @param out
+	 * @param template
+	 */
+	private void generateAttributesForTemplate(PrintStream out, Document template)
+	{
+		Set<String> attributesForTemplate = templateParser.getParameters(template);
+		for (String attrValue : attributesForTemplate)
+		{
+			out.println("<xs:attribute name=\""+attrValue+"\" type=\"xs:string\" use=\"required\" />");
+		}
+	}
+
+	/**
+	 * 
+	 * @param out
+	 * @param template
+	 */
+	private void generateChildrenForTemplate(PrintStream out, Document template)
+	{
+		Set<String> childrenForTemplate = templateParser.getSections(template);
+		
+		if (childrenForTemplate.size() > 0)
+		{
+			out.println("<xs:all>");
+			for (String section : childrenForTemplate)
+			{
+				out.println("<xs:element type=\"xs:anyType\" name=\""+section+"\" />");
+			}
+			out.println("</xs:all>");
+		}
+	}
+
+	/**
+	 * 
 	 * @param libraries
+	 * @throws IOException
+	 */
+	private void generateTemplateSchema(Set<String> libraries) throws IOException
+	{
+		File coreFile = new File(destDir, "template.xsd");
+		if (coreFile.exists())
+		{
+			coreFile.delete();
+		}
+		coreFile.createNewFile();
+		PrintStream out = new PrintStream(coreFile);
+		out.println("<xs:schema ");
+		out.println("xmlns=\"http://www.sysmap.com.br/templates\" ");
+		out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
+		out.println("attributeFormDefault=\"unqualified\" ");
+		out.println("elementFormDefault=\"qualified\" ");
+		out.println("targetNamespace=\"http://www.sysmap.com.br/templates\" >");
+		
+		generateCoreSchemasImport(libraries, out);
+
+		generateTemplateElement(out);
+		generateTemplateSectionElement(out);	
+		
+		out.println("</xs:schema>");
+		out.close();
+	}
+
+	/**
+	 * 
+	 * @param out
+	 */
+	private void generateTemplateSectionElement(PrintStream out)
+	{
+		out.println("<xs:element name=\"section\" type=\"Section\" />");
+		out.println("<xs:complexType name=\"Section\">");
+		out.println("<xs:choice>");
+		out.println("<xs:any minOccurs=\"0\" maxOccurs=\"unbounded\"/>");
+		out.println("</xs:choice>");
+		out.println("<xs:attribute name=\"name\" type=\"xs:string\" use=\"required\"/>");
+		out.println("</xs:complexType>");
+	}
+
+	/**
+	 * 
+	 * @param out
+	 */
+	private void generateTemplateElement(PrintStream out)
+	{
+		out.println("<xs:element name=\"template\" type=\"Template\" />");
+		out.println("<xs:complexType name=\"Template\">");
+		out.println("<xs:choice>");
+		out.println("<xs:any minOccurs=\"0\" maxOccurs=\"unbounded\"/>");
+		out.println("</xs:choice>");
+		out.println("<xs:attribute name=\"library\" type=\"xs:string\" use=\"required\"/>");
+		out.println("</xs:complexType>");
+	}
+
+	/**
+	 * 
+	 * @param libraries
+	 * @param templateLibraries 
 	 * @throws IOException
 	 */
 	private void generateCoreSchema(Set<String> libraries) throws IOException
@@ -147,6 +307,7 @@ public class SchemaGenerator
 	/**
 	 * 
 	 * @param libraries
+	 * @param templateLibraries 
 	 * @param out
 	 */
 	private void generateCoreSchemasImport(Set<String> libraries, PrintStream out)
@@ -161,6 +322,7 @@ public class SchemaGenerator
 	 * 
 	 * @param out
 	 * @param libraries
+	 * @param templateLibraries 
 	 */
 	private void generateCoreWidgetsType(PrintStream out, Set<String> libraries)
 	{
@@ -1006,6 +1168,7 @@ public class SchemaGenerator
 	public static void generateSchemas(File outputDir) throws IOException
 	{
 		ClassScanner.initialize(ClasspathUrlFinder.findClassPaths());
+		TemplatesScanner.initialize(ClasspathUrlFinder.findClassPaths());
 		SchemaGenerator generator = new SchemaGenerator(outputDir);
 		generator.generateSchemas();
 	}

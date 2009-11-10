@@ -15,7 +15,9 @@
  */
 package br.com.sysmap.crux.tools.htmltags.template;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -30,6 +32,7 @@ import org.w3c.dom.Document;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
+import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
 import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
@@ -55,7 +58,9 @@ public class TemplatesScanner
 	{
 		try
 		{
-			this.documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			documentBuilderFactory.setNamespaceAware(true);
+			this.documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		}
 		catch (ParserConfigurationException e)
 		{
@@ -105,7 +110,15 @@ public class TemplatesScanner
 							Document template;
 							try
 							{
-								template = documentBuilder.parse(getClass().getResourceAsStream(fileName));
+								InputStream inputStream = getClass().getResourceAsStream(fileName);
+								if (inputStream != null)
+								{
+									template = documentBuilder.parse(inputStream);
+								}
+								else
+								{
+									template = documentBuilder.parse(new File(fileName));
+								}
 								Templates.registerTemplate(getTemplateId(fileName), template);
 							}
 							catch (Exception e)
@@ -138,7 +151,7 @@ public class TemplatesScanner
 	{
 		if (urlsForSearch == null)
 		{
-			initialize(ScannerURLS.getURLsForSearch());
+			initialize(ScannerURLS.getWebURLsForSearch());
 		}
 		scanArchives(urlsForSearch);
 	}
@@ -168,15 +181,11 @@ public class TemplatesScanner
 	private String getTemplateId(String fileName)
 	{
 		fileName = fileName.substring(0, fileName.length() - 13);
+		fileName = RegexpPatterns.REGEXP_BACKSLASH.matcher(fileName).replaceAll("/");
 		int indexStartId = fileName.lastIndexOf('/');
 		if (indexStartId > 0)
 		{
-			fileName = fileName.substring(indexStartId);
-		}
-		indexStartId = fileName.lastIndexOf('.');
-		if (indexStartId > 0)
-		{
-			fileName = fileName.substring(indexStartId);
+			fileName = fileName.substring(indexStartId+1);
 		}
 		
 		return fileName;

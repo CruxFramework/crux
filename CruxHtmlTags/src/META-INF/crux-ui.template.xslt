@@ -8,7 +8,7 @@
 	exclude-result-prefixes="#all"
 	extension-element-prefixes="html crux exsl xsl">
 
-	<xsl:output method="xml" encoding="${charset}" indent="${indent}" exclude-result-prefixes="#all" omit-xml-declaration="yes" />
+	<xsl:output method="html" encoding="${charset}" indent="${indent}" exclude-result-prefixes="#all" omit-xml-declaration="yes" />
 
 	<xsl:param name="xhtmlNS" select="'http://www.w3.org/1999/xhtml'"></xsl:param>
 	<xsl:param name="allWidgets" select="'${allWidgets}'"></xsl:param>

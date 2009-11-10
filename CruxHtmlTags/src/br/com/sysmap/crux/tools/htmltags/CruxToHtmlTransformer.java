@@ -139,7 +139,11 @@ public class CruxToHtmlTransformer
 					TransformerFactory tfactory = new TransformerFactoryImpl();
 					InputStream is = generateHtmlTagsXSLT();
 					transformer = tfactory.newTransformer(new StreamSource(is));
-					documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+					DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+					builderFactory.setNamespaceAware(true);
+					builderFactory.setIgnoringComments(true);
+					
+					documentBuilder = builderFactory.newDocumentBuilder();
 					initializePreProcessors();
 				}
 				catch (Throwable e)

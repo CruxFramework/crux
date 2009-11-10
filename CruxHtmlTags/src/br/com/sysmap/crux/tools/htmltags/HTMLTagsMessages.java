@@ -78,8 +78,23 @@ public interface HTMLTagsMessages
 	String templatesScannerSearchingTemplateFiles();
 
 	@DefaultMessage("[htmlTags 019] - Error initializing templates pre-processor.")
-	Object templatesPreProcessorInitializingError();
+	String templatesPreProcessorInitializingError();
 
 	@DefaultMessage("[htmlTags 020] - Error pre-processing templates.")
-	Object templatesPreProcessorError();
+	String templatesPreProcessorError();
+
+	@DefaultMessage("[htmlTags 021] - Generating template.xsd file. ")
+	String schemaGeneratorCreatingTemplateXSD();
+
+	@DefaultMessage("[htmlTags 022] - Generating XSD file for library {0}. ")
+	String schemaGeneratorCreatingTemplateLibrary(String library);
+
+	@DefaultMessage("[htmlTags 023] - Error generating attributes for template {0}. ")
+	String templateParserErrorExtractingAttributesForTemplate(String template);
+
+	@DefaultMessage("[htmlTags 024] - Error initializing generator.")
+	String templateParserErrorInitializingGenerator();
+
+	@DefaultMessage("[htmlTags 025] - Error generating children for template {0}. ")
+	String schemaGeneratorErrorGeneratingChildrenForTemplate(String localName);
 }
