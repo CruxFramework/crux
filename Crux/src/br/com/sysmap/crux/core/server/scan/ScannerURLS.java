@@ -94,4 +94,18 @@ public class ScannerURLS
 		
 		return urls;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static URL[] getWebURLsForSearch()
+	{
+		URL[] urls = getURLsForSearch();
+		URL[] result = new URL[urls.length + 1];
+		System.arraycopy(urls, 0, result, 0, urls.length);
+		URL webDir = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
+		result[result.length-1] = webDir;
+		return result;
+	}
 }
