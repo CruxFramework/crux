@@ -17,10 +17,12 @@ package br.com.sysmap.crux.tools.htmltags.template;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -35,6 +37,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
 import br.com.sysmap.crux.tools.htmltags.CruxXmlPreProcessor;
 import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
@@ -46,6 +49,7 @@ import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
 public class TemplatesPreProcessor implements CruxXmlPreProcessor
 {
 	private XPathExpression findTemplatesExpression;
+	private XPathExpression findScreensExpression;
 	private static HTMLTagsMessages messages = (HTMLTagsMessages)MessagesFactory.getMessages(HTMLTagsMessages.class);
 	private static final Log log = LogFactory.getLog(CruxToHtmlTransformer.class);
 	
@@ -58,10 +62,31 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 	{
 		this.templateParser = new TemplateParser();
 		XPathFactory factory = XPathFactory.newInstance();
-		XPath findTemplatespath = factory.newXPath();
+		XPath findPath = factory.newXPath();
+		findPath.setNamespaceContext(new NamespaceContext()
+		{
+			public String getNamespaceURI(String prefix)
+			{
+				return "http://www.sysmap.com.br/crux";
+			}
+
+			public String getPrefix(String namespaceURI)
+			{
+				return "c";
+			}
+
+			public Iterator<?> getPrefixes(String namespaceURI)
+			{
+				List<String> prefixes = new ArrayList<String>();
+				prefixes.add("c");
+
+				return prefixes.iterator();
+			}
+		});
 		try
 		{
-			findTemplatesExpression = findTemplatespath.compile("//*[contains(namespace-uri(), 'http://www.sysmap.com.br/templates/')]");
+			findTemplatesExpression = findPath.compile("//*[contains(namespace-uri(), 'http://www.sysmap.com.br/templates/')]");
+			findScreensExpression = findPath.compile("//c:screen");
 		}
 		catch (XPathExpressionException e)
 		{
@@ -77,6 +102,78 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 	 */
 	public Document preprocess(Document doc)
 	{
+		Set<String> controllers = new HashSet<String>();
+		Set<String> dataSources = new HashSet<String>();
+		Set<String> formatters = new HashSet<String>();
+		Set<String> serializables = new HashSet<String>();
+		
+		Document result = preprocess(doc, controllers, dataSources, formatters, serializables);
+		updateScreenProperties(doc, controllers, dataSources, formatters, serializables);
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param doc
+	 * @param controllers
+	 * @param dataSources
+	 * @param formatters
+	 * @param serializables
+	 */
+	private void updateScreenProperties(Document doc, Set<String> controllers, Set<String> dataSources, Set<String> formatters, Set<String> serializables)
+	{
+		try
+		{
+			NodeList nodes = (NodeList)findScreensExpression.evaluate(doc, XPathConstants.NODESET);
+			if (nodes.getLength() > 0)
+			{
+				Element screen = (Element)nodes.item(0);
+				extractScreenPropertiesFromElement(screen, controllers, dataSources, formatters, serializables);
+				updateScreenProperty(screen, controllers, "useController");
+				updateScreenProperty(screen, dataSources, "useDataSource");
+				updateScreenProperty(screen, formatters, "useFormatter");
+				updateScreenProperty(screen, serializables, "useSerializable");
+			}
+		}
+		catch (XPathExpressionException e)
+		{
+			log.error(messages.templatesPreProcessorError());
+			throw new TemplateException(e.getLocalizedMessage(), e);
+		}
+	}
+
+	/**
+	 * 
+	 * @param screen
+	 * @param properties
+	 * @param property
+	 */
+	private void updateScreenProperty(Element screen, Set<String> properties, String property)
+	{
+		StringBuilder str = new StringBuilder();
+		boolean first = true;
+		for (String propValue : properties)
+		{
+			if (!first)
+			{
+				str.append(",");
+			}
+			str.append(propValue);
+			first = false;
+		}
+		if (str.length() > 0)
+		{
+			screen.setAttribute(property, str.toString());
+		}
+	}
+
+	/**
+	 * 
+	 * @param doc
+	 * @return
+	 */
+	private Document preprocess(Document doc, Set<String> controllers, Set<String> dataSources, Set<String> formatters, Set<String> serializables)
+	{
 		try
 		{
 			NodeList nodes = (NodeList)findTemplatesExpression.evaluate(doc, XPathConstants.NODESET);
@@ -87,13 +184,14 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 				{
 					String library = element.getNamespaceURI();
 					library = library.substring(library.lastIndexOf('/')+1);
-					Document template = preprocess(Templates.getTemplate(library, element.getLocalName(), true));
+					Document template = preprocess(Templates.getTemplate(library, element.getLocalName(), true), 
+							controllers, dataSources, formatters, serializables);
 
 					updateTemplateAttributes(element, template);
 					updateTemplateChildren(element, template);
 
-					Element templateElement = template.getDocumentElement();
-					templateElement = (Element) doc.importNode(templateElement, true);
+					Element templateElement = (Element) doc.importNode(template.getDocumentElement(), true);
+					extractScreenPropertiesFromElement(templateElement, controllers, dataSources, formatters, serializables);										
 					
 					replaceByChildren(element, templateElement);
 				}
@@ -106,6 +204,39 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 		}
 		
 		return doc;
+	}
+
+	/**
+	 * 
+	 * @param template
+	 * @param controllers
+	 * @param dataSources
+	 * @param formatters
+	 * @param serializables
+	 */
+	private void extractScreenPropertiesFromElement(Element template, Set<String> controllers, Set<String> dataSources, Set<String> formatters, Set<String> serializables)
+	{
+		extractScreenPropertyFromTemplate(controllers, template.getAttribute("useController"));
+		extractScreenPropertyFromTemplate(dataSources, template.getAttribute("useDataSource"));
+		extractScreenPropertyFromTemplate(formatters, template.getAttribute("useFormatter"));
+		extractScreenPropertyFromTemplate(serializables, template.getAttribute("useSerializable"));
+	}
+
+	/**
+	 * 
+	 * @param properties
+	 * @param property
+	 */
+	private void extractScreenPropertyFromTemplate(Set<String> properties, String property)
+	{
+		if (property != null)
+		{
+			String[] strs = RegexpPatterns.REGEXP_COMMA.split(property);
+			for (String str : strs)
+			{
+				properties.add(str);
+			}
+		}
 	}
 
 	/**
