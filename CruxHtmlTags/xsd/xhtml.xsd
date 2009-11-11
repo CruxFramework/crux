@@ -2,10 +2,7 @@
 <xs:schema version="1.0" xml:lang="en"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.w3.org/1999/xhtml"
 	xmlns="http://www.w3.org/1999/xhtml" xmlns:xml="http://www.w3.org/XML/1998/namespace"
-	elementFormDefault="qualified" 
-	xmlns:xi="http://www.w3.org/2001/XInclude">
-
-	<xs:import namespace="http://www.w3.org/2001/XInclude" schemaLocation="xinclude.xsd" />
+	elementFormDefault="qualified" >
 
 	<xs:annotation>
 		<xs:documentation>
@@ -566,8 +563,6 @@
       <xs:group ref="blocktext"/>
       <xs:element ref="fieldset"/>
       <xs:element ref="table"/>
-      <xs:element ref="xi:include"/>
-      <xs:element ref="xi:fallback"/>
     </xs:choice>
   </xs:group>
 
