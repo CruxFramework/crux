@@ -54,7 +54,6 @@ public class TemplateParser
 	private XPathExpression templateChildrenNameExpression;
 	private XPathExpression templateChildrenExpression;
 	
-
 	/**
 	 * 
 	 */
@@ -84,7 +83,7 @@ public class TemplateParser
 		});
 		try
 		{
-			templateAttributesExpression = findTemplates.compile("//@*[contains(../@*, '#{')]");
+			templateAttributesExpression = findTemplates.compile("//@*[contains(., '#{')]");
 			templateChildrenNameExpression = findTemplates.compile("//t:section/@name");
 			templateChildrenExpression = findTemplates.compile("//t:section");
 		}
