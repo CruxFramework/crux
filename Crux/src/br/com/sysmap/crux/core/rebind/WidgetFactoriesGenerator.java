@@ -307,7 +307,17 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 							else
 							{
 								result.append("String "+attrName+" = context.getElement().getAttribute(\"_"+attrName+"\");\n");
-								result.append("if ("+attrName+" != null && "+attrName+".length() > 0){\n");
+								if (attr.defaultValue().length() > 0)
+								{
+									result.append("if ("+attrName+" == null || "+attrName+".length() == 0){\n");
+									result.append(attrName + " = \"" + attr.defaultValue() + "\";");
+									result.append("}\n");
+									result.append("else {\n");
+								}
+								else
+								{
+									result.append("if ("+attrName+" != null && "+attrName+".length() > 0){\n");
+								}
 								result.append("context.getWidget()."+setterMethod+"("+expression+");\n");
 								result.append("}\n");
 							}
