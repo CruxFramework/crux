@@ -29,12 +29,21 @@ import au.id.jericho.lib.html.TextExtractor;
  */
 public class WidgetParserImpl implements WidgetParser
 {
+	/**
+	 * 
+	 */
 	public void parse(Widget widget, Object element) 
 	{
 		Element elem = (Element) element;
 		parse(elem, widget, true);
 	}
 
+	/**
+	 * 
+	 * @param elem
+	 * @param widget
+	 * @param parseIfWidget
+	 */
 	private void parse(Element elem, Widget widget, boolean parseIfWidget)
 	{
 		if(elem != null && elem.getName().toUpperCase().equals("SPAN"))
@@ -64,6 +73,11 @@ public class WidgetParserImpl implements WidgetParser
 		}
 	}
 	
+	/**
+	 * 
+	 * @param elem
+	 * @param widget
+	 */
 	private void extractInnerText(Element elem, Widget widget)
 	{
 		TextExtractor textExtractor = elem.getTextExtractor();
@@ -81,12 +95,22 @@ public class WidgetParserImpl implements WidgetParser
 		}
 	}
 
+	/**
+	 * 
+	 * @param elem
+	 * @return
+	 */
 	private boolean isWidget(Element elem)
 	{
 		String att = elem.getAttributeValue("_type");
 		return att != null && att.trim().length() > 0;
 	}
 
+	/**
+	 * 
+	 * @param elem
+	 * @param widget
+	 */
 	private void extractProperties(Element elem, Widget widget)
 	{
 		Attributes attrs =  elem.getAttributes();
@@ -120,6 +144,12 @@ public class WidgetParserImpl implements WidgetParser
 		}
 	}
 
+	/**
+	 * 
+	 * @param widget
+	 * @param evtName
+	 * @param value
+	 */
 	protected void setEvent(Widget widget, String evtName, String value)
 	{
 		Event event = EventFactory.getEvent(evtName, value);

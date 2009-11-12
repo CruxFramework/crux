@@ -19,6 +19,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.ScreenBind;
@@ -56,7 +58,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	protected void generateAutoCreateFields(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter, String parentVariable)
 	{
 		generateLocaleVariableCreation(sourceWriter);
-		generateAutoCreateFieldsWithLocale(logger, controller, sourceWriter, parentVariable);
+		generateAutoCreateFieldsWithLocale(logger, controller, sourceWriter, parentVariable, new HashSet<String>());
 	}
 	
 	/**
@@ -65,12 +67,13 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param controller
 	 * @param sourceWriter
 	 */
-	private void generateAutoCreateFieldsWithLocale(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter, String parentVariable)
+	private void generateAutoCreateFieldsWithLocale(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter, String parentVariable, Set<String> added)
 	{
 		for (Field field : controller.getDeclaredFields()) 
 		{
-			if (field.getAnnotation(Create.class) != null)
+			if (field.getAnnotation(Create.class) != null && !added.contains(field.getName()))
 			{
+				added.add(field.getName());
 				String fieldTypeName = getClassSourceName(field.getType());
 				Class<?> type = getTypeForField(logger, field);
 				String typeName = getClassSourceName(type);
@@ -97,7 +100,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 
 		if (controller.getSuperclass() != null)
 		{
-			generateAutoCreateFieldsWithLocale(logger, controller.getSuperclass(), sourceWriter, parentVariable);
+			generateAutoCreateFieldsWithLocale(logger, controller.getSuperclass(), sourceWriter, parentVariable, added);
 		}
 	}
 
