@@ -700,7 +700,6 @@
 	color: #6C83C3;
 	text-align: left;
 	font-family: Verdana, Arial, Helvetica;
-	width: 100%;
 	background: url(../img/title-panel-blue.gif) no-repeat top center;
 }
 .crux-TitlePanel .topCenterRightCell 
@@ -772,7 +771,6 @@
 	font-weight: bold;
 	color: #0066CC;
 	text-align: left;
-	width: 100%;
 	font-family: Verdana, Arial, Helvetica;
 	background: url(../img/title-panel-blue.gif) no-repeat top center;
 }
@@ -854,7 +852,6 @@
 .crux-DecoratedPanel .topCenterCell 
 {
 	font-size: 0px;
-	width: 100%;
 	background: url(../img/decorated-panel.gif) no-repeat top center;
 }
 .crux-DecoratedPanel .topCenterRightCell 
