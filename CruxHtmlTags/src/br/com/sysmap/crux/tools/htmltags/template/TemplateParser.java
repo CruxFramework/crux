@@ -83,7 +83,7 @@ public class TemplateParser
 		});
 		try
 		{
-			templateAttributesExpression = findTemplates.compile("//@*[contains(., '#{')]");
+			templateAttributesExpression = findTemplates.compile("//@*[contains(., '#{')] | //text()[contains(., '#{')]");
 			templateChildrenNameExpression = findTemplates.compile("//t:section/@name");
 			templateChildrenExpression = findTemplates.compile("//t:section");
 		}
@@ -100,34 +100,24 @@ public class TemplateParser
 	 */
 	public Set<String> getParameters(Document template)
 	{
-		try
+		Set<Node> parametersNodes = getParametersNodes(template);
+		Set<String> attributes = new HashSet<String>();		
+		for (Node node : parametersNodes)
 		{
-			NodeList nodes = (NodeList)templateAttributesExpression.evaluate(template, XPathConstants.NODESET);
-			Set<String> attributes = new HashSet<String>();
-			
-			for (int i = 0; i < nodes.getLength(); i++)
+			String attrValue = node.getNodeValue();
+			if (attrValue.contains("#{"))
 			{
-				Node attribute = nodes.item(i);
-				String attrValue = attribute.getNodeValue();
-				if (attrValue.contains("#{"))
-				{
-					extractParameterNames(attrValue, attributes);
-				}
+				extractParameterNames(attrValue, attributes);
 			}
-			return attributes;
 		}
-		catch (XPathExpressionException e)
-		{
-			logger.error(messages.templateParserErrorExtractingAttributesForTemplate(template.getLocalName()));
-			throw new TemplateException(e.getLocalizedMessage(), e);
-		}
+		return attributes;
 	}
 	
 	/**
 	 * 
 	 * @param template
 	 */
-	public Set<Node> getAttributeWithParameters(Document template)
+	public Set<Node> getParametersNodes(Document template)
 	{
 		try
 		{

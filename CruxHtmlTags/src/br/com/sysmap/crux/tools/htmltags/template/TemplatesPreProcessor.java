@@ -306,7 +306,7 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 	 */
 	private void updateTemplateAttributes(Element element, Document template)
 	{
-		Set<Node> parameters = templateParser.getAttributeWithParameters(template);
+		Set<Node> parameters = templateParser.getParametersNodes(template);
 		for (Node attributeNode : parameters)
 		{
 			Set<String> attributes = new HashSet<String>();
