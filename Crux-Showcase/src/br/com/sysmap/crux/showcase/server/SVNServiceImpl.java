@@ -21,16 +21,8 @@ public class SVNServiceImpl implements SVNService{
 	
 	private static final String BASE_XML_URL = "http://crux-framework.googlecode.com/svn/trunk/Crux-Showcase/war/";
 	private static final String BASE_MODULE_URL = "http://crux-framework.googlecode.com/svn/trunk/Crux-Showcase/src/br/com/sysmap/crux/showcase/";
-	private static final String BASE_JAVA_CONTROLLER_URL = BASE_MODULE_URL + "client/controller/";
 	
 	private static Map<String, String> cachedResources = new ConcurrentHashMap<String,String>();
-	
-	/* 
-	 * @see br.com.sysmap.crux.showcase.client.remote.SVNService#getJavaControllerFile(java.lang.String, boolean)
-	 */
-	public String getJavaControllerFile(String fileName, boolean escapeHtml){		
-		return loadSourceCode(BASE_JAVA_CONTROLLER_URL + fileName, escapeHtml, "java controller");
-	}
 	
 	/* 
 	 * @see br.com.sysmap.crux.showcase.client.remote.SVNService#getJavaFile(java.lang.String, boolean)

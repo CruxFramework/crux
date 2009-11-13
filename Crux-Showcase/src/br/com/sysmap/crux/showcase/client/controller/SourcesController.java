@@ -25,22 +25,9 @@ public class SourcesController {
 		{
 			javaLoaded = true;
 			
-			Screen.blockToUser();
-			
 			String id = getScreenSimpleId();
 			String javaFileName = id.substring(0,1).toUpperCase() + id.substring(1) + "Controller.java";
-			
-			service.getJavaControllerFile(javaFileName, false, 
-				new AsyncCallbackAdapter<String>(this){
-					public void onComplete(String result)
-					{
-						TextArea textArea = Screen.get("javaSourceFrame", TextArea.class);
-						textArea.getElement().setAttribute("wrap", "off");
-						textArea.setValue(result);
-						Screen.unblockToUser();
-					}
-				}
-			);
+			loadFile("client/controller/"+javaFileName, "javaSource");
 		}
 	}
 	
@@ -51,30 +38,55 @@ public class SourcesController {
 		{
 			xmlLoaded = true;
 			
-			Screen.blockToUser();
-		
 			String id = getScreenSimpleId();
 			String xmlFileName = id + ".crux.xml";
 			
-			service.getXmlFile(xmlFileName, false, 
-				new AsyncCallbackAdapter<String>(this){
-				
-					public void onComplete(String result)
-					{
-						TextArea textArea = Screen.get("xmlSourceFrame", TextArea.class);
-						textArea.getElement().setAttribute("wrap", "off");
-						textArea.setValue(result);
-						Screen.unblockToUser();
-					}
-					
-					@Override
-					public void onError(Throwable e)
-					{
-						Screen.unblockToUser();
-					}
-				}
-			);
+			loadXMLFile(xmlFileName, "xmlSource");
 		}
+	}
+
+	protected void loadFile(String sourceFile, final String widgetName)
+	{
+		Screen.blockToUser();		
+		service.getJavaFile(sourceFile, false, 
+			new AsyncCallbackAdapter<String>(this){
+				public void onComplete(String result)
+				{
+					TextArea textArea = Screen.get(widgetName, TextArea.class);
+					textArea.getElement().setAttribute("wrap", "off");
+					textArea.setValue(result);
+					Screen.unblockToUser();
+				}		
+				@Override
+				public void onError(Throwable e)
+				{
+					Screen.unblockToUser();
+					super.onError(e);
+				}
+			}
+		);
+	}
+	
+	protected void loadXMLFile(String sourceFile, final String widgetName)
+	{
+		Screen.blockToUser();		
+		service.getXmlFile(sourceFile, false, 
+			new AsyncCallbackAdapter<String>(this){
+				public void onComplete(String result)
+				{
+					TextArea textArea = Screen.get(widgetName, TextArea.class);
+					textArea.getElement().setAttribute("wrap", "off");
+					textArea.setValue(result);
+					Screen.unblockToUser();
+				}		
+				@Override
+				public void onError(Throwable e)
+				{
+					Screen.unblockToUser();
+					super.onError(e);
+				}
+			}
+		);
 	}
 
 	private String getScreenSimpleId() {

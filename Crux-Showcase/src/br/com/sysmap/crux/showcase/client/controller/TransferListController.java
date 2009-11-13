@@ -17,10 +17,10 @@ public class TransferListController {
 	public void loadItems(){
 		TransferList transferList = Screen.get("transferList", TransferList.class);
 		List<Item> items = new ArrayList<Item>();
-		items.add(new TransferList.Item("Item 1 ", "Item1Value", ItemLocation.LEFT));
-		items.add(new TransferList.Item("Item 2 ", "Item2Value", ItemLocation.LEFT));
-		items.add(new TransferList.Item("Item 3 ", "Item3Value", ItemLocation.RIGHT));
-		items.add(new TransferList.Item("Item 4 ", "Item4Value", ItemLocation.LEFT));
+		items.add(new TransferList.Item("Item 1 ", "Item1Value", ItemLocation.left));
+		items.add(new TransferList.Item("Item 2 ", "Item2Value", ItemLocation.left));
+		items.add(new TransferList.Item("Item 3 ", "Item3Value", ItemLocation.right));
+		items.add(new TransferList.Item("Item 4 ", "Item4Value", ItemLocation.left));
 		
 		transferList.setCollection(items);
 	}

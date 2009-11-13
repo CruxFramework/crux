@@ -1,12 +1,12 @@
 package br.com.sysmap.crux.showcase.client.controller;
 
 import br.com.sysmap.crux.advanced.client.dialog.Popup;
+import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseEvent;
+import br.com.sysmap.crux.advanced.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -26,8 +26,8 @@ public class PopupController {
 		Popup.show(		
 			"Popup Example", 
 			url,			
-			new CloseHandler<Popup>(){
-				public void onClose(CloseEvent<Popup> event)
+			new BeforeCloseHandler(){
+				public void onBeforeClose(BeforeCloseEvent event)
 				{
 					Screen.get("message", Label.class).setText("Popup was closed!");
 				}				
