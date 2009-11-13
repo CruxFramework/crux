@@ -1,8 +1,9 @@
 <html 
 	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
-	xmlns:xi="http://www.w3.org/2001/XInclude">
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/adv"
+	xmlns:b="http://www.sysmap.com.br/crux/bas"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
 		<title>Confirm</title>
@@ -13,18 +14,18 @@
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="confirmController,sourcesController"/>
+		<c:screen useController="confirmController"/>
 
-		<c:dockPanel id="centeringPanel" width="100%" height="150" spacing="5">
-			<c:cell direction="west" verticalAlignment="middle" horizontalAlignment="right" width="50%">
+		<b:dockPanel id="centeringPanel" width="100%" height="150" spacing="5">
+			<b:cell direction="west" verticalAlignment="middle" horizontalAlignment="right" width="50%">
 				<a:decoratedButton id="showConfirmButton" text="Show Confirm" onClick="confirmController.showConfirm"/>
-			</c:cell>
-			<c:cell direction="east" verticalAlignment="middle" horizontalAlignment="left" width="50%">
-				<c:label id="message"/>
-			</c:cell>
-		</c:dockPanel>
+			</b:cell>
+			<b:cell direction="east" verticalAlignment="middle" horizontalAlignment="left" width="50%">
+				<b:label id="message"/>
+			</b:cell>
+		</b:dockPanel>
 		
-		<xi:include href="sources.crux.xml"/>
+		<s:sources/>
 		
 	</body>
 </html>

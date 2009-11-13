@@ -1,8 +1,9 @@
 <html 
 	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
-	xmlns:xi="http://www.w3.org/2001/XInclude">
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/adv"
+	xmlns:b="http://www.sysmap.com.br/crux/bas"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
 		<title>Filter</title>
@@ -13,15 +14,15 @@
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="stackMenuController,sourcesController"/>
+		<c:screen useController="stackMenuController"/>
 
-		<c:dockPanel id="centeringPanel" width="100%" height="130" spacing="15">
-			<c:cell direction="west" horizontalAlignment="right" verticalAlignment="top" width="50%">
-				<c:dockPanel id="filterSeparator" width="100%" height="130" spacing="5">
-					<c:cell direction="north" horizontalAlignment="right" verticalAlignment="top">
+		<b:dockPanel id="centeringPanel" width="100%" height="130" spacing="15">
+			<b:cell direction="west" horizontalAlignment="right" verticalAlignment="top" width="50%">
+				<b:dockPanel id="filterSeparator" width="100%" height="130" spacing="5">
+					<b:cell direction="north" horizontalAlignment="right" verticalAlignment="top">
 						<a:filter filterable="aFilteredMenu" id="filter" text="Search the menu"/>
-					</c:cell>
-					<c:cell direction="south" horizontalAlignment="right" verticalAlignment="top">
+					</b:cell>
+					<b:cell direction="south" horizontalAlignment="right" verticalAlignment="top">
 						<a:stackMenu id="aFilteredMenu" height="250">
 							<a:item id="item_1" label="Item 1">
 								<a:item id="item_1_1" label="Item 1.1" onClick="stackMenuController.onClickItem_1_1"/>
@@ -34,15 +35,15 @@
 							<a:item id="item_2" label="Item 2" onClick="stackMenuController.onClickItem_2"/>
 							<a:item id="item_3" label="Item 3" onClick="stackMenuController.onClickItem_3"/>			
 						</a:stackMenu>
-					</c:cell>
-				</c:dockPanel>
-			</c:cell>
-			<c:cell direction="east" width="50%" horizontalAlignment="left" verticalAlignment="top">
-				<c:label id="message"/>
-			</c:cell>
-		</c:dockPanel>
+					</b:cell>
+				</b:dockPanel>
+			</b:cell>
+			<b:cell direction="east" width="50%" horizontalAlignment="left" verticalAlignment="top">
+				<b:label id="message"/>
+			</b:cell>
+		</b:dockPanel>
 
-		<xi:include href="sources.crux.xml"/>
+		<s:sources/>
 		
 	</body>
 </html>

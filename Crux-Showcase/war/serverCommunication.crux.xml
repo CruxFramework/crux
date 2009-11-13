@@ -1,8 +1,9 @@
 <html 
 	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
-	xmlns:xi="http://www.w3.org/2001/XInclude">
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/adv"
+	xmlns:b="http://www.sysmap.com.br/crux/bas"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
 		<title>Server Communication</title>
@@ -12,33 +13,33 @@
 	<body>
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="serverCommunicationController,sourcesController,serverCommunicationSourcesController"/>
+		<c:screen useController="serverCommunicationController"/>
 
 		<center>
 		
-		<c:flexTable id="centeringPanel" cellSpacing="15">
-			<c:row>
-				<c:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
-					<c:text>Type your name:</c:text>				
-				</c:cell>
-			</c:row>
-			<c:row>
-				<c:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
-					<c:widget><c:textBox id="name" /></c:widget>
-				</c:cell>
-				<c:cell horizontalAlignment="left" verticalAlignment="middle">
-					<c:widget><a:decoratedButton id="button" onClick="serverCommunicationController.callService" text="Call Server Method"/></c:widget>
-				</c:cell>
-			</c:row>
-			<c:row>
-				<c:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
-					<c:widget><c:label id="serverResponse" text=" "/></c:widget>
-				</c:cell>
-			</c:row>
-		</c:flexTable>
+		<b:flexTable id="centeringPanel" cellSpacing="15">
+			<b:row>
+				<b:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
+					<b:text>Type your name:</b:text>				
+				</b:cell>
+			</b:row>
+			<b:row>
+				<b:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
+					<b:widget><b:textBox id="name" /></b:widget>
+				</b:cell>
+				<b:cell horizontalAlignment="left" verticalAlignment="middle">
+					<b:widget><a:decoratedButton id="button" onClick="serverCommunicationController.callService" text="Call Server Method"/></b:widget>
+				</b:cell>
+			</b:row>
+			<b:row>
+				<b:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
+					<b:widget><b:label id="serverResponse" text=" "/></b:widget>
+				</b:cell>
+			</b:row>
+		</b:flexTable>
 		
 		</center>
 		
-		<xi:include href="serverCommunicationSources.crux.xml"/>
+		<s:serverCommunicationSources/>
 	</body>
 </html>

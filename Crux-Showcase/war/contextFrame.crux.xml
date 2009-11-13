@@ -1,8 +1,9 @@
 <html 
 	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
-	xmlns:xi="http://www.w3.org/2001/XInclude">
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/adv"
+	xmlns:b="http://www.sysmap.com.br/crux/bas"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
 		<title>Inner Frame</title>
@@ -17,14 +18,14 @@
 		
 		<center>
 		
-		<c:verticalPanel id="vPanel" spacing="15" horizontalAlignment="center">
-			<c:cell>
+		<b:verticalPanel id="vPanel" spacing="15" horizontalAlignment="center">
+			<b:cell>
 				<a:decoratedButton id="btn" text="Read from context" onClick="contextFrameController.readContext"/>
-			</c:cell>
-			<c:cell>
-				<c:label id="label"/>
-			</c:cell>		
-		</c:verticalPanel>			
+			</b:cell>
+			<b:cell>
+				<b:label id="label"/>
+			</b:cell>		
+		</b:verticalPanel>			
 			
 		</center>
  

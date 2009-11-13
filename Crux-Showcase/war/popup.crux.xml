@@ -1,8 +1,9 @@
 <html 
 	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
-	xmlns:xi="http://www.w3.org/2001/XInclude">
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/adv"
+	xmlns:b="http://www.sysmap.com.br/crux/bas"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
 		<title>Confirm</title>
@@ -13,7 +14,7 @@
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="popupController,sourcesController"/>
+		<c:screen useController="popupController"/>
 
 		<table width="100%" cellpadding="15">
 			<tr>
@@ -21,7 +22,7 @@
 					<table cellspacing="5">
 						<tr>
 							<td>
-								<c:textBox id="url" text="http://www.google.com"/>
+								<b:textBox id="url" text="http://www.google.com"/>
 							</td>
 							<td>
 								<a:decoratedButton id="browseButton" text="Browse" onClick="popupController.browse"/>
@@ -29,7 +30,7 @@
 						</tr>
 						<tr>
 							<td colspan="2">
-								<c:label id="message"/>
+								<b:label id="message"/>
 							</td>
 						</tr>
 					</table>
@@ -37,7 +38,7 @@
 			</tr>
 		</table>		
 
-		<xi:include href="sources.crux.xml"/>
+		<s:sources/>
 		
 	</body>
 </html>

@@ -1,8 +1,9 @@
 <html 
 	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
-	xmlns:xi="http://www.w3.org/2001/XInclude">
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/adv"
+	xmlns:b="http://www.sysmap.com.br/crux/bas"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
 		<title>I18N</title>
@@ -13,25 +14,25 @@
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
 		<c:screen useController="i18nController,sourcesController,i18nSourcesController" onLoad="i18nController.onLoad">
-			<c:dockPanel id="centeringPanel" width="100%" height="130">
-				<c:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
-					<c:label id="localeLabel" />
-				</c:cell>
-				<c:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
-					<c:listBox id="locales" >
-						<c:item label="English" value=" "/>
-						<c:item label="Portuguese" value="pt_BR"/>
-					</c:listBox>
-				</c:cell>
-				<c:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
+			<b:dockPanel id="centeringPanel" width="100%" height="130">
+				<b:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
+					<b:label id="localeLabel" />
+				</b:cell>
+				<b:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
+					<b:listBox id="locales" >
+						<b:item label="English" value=" "/>
+						<b:item label="Portuguese" value="pt_BR"/>
+					</b:listBox>
+				</b:cell>
+				<b:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
 					<a:decoratedButton id="button" text="${myMessages.myButton}" onClick="i18nController.clickButton"/>
-				</c:cell>
-				<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
-					<c:label id="i18nLabel" text="${myMessages.message1}"/>
-				</c:cell>
-			</c:dockPanel>
+				</b:cell>
+				<b:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
+					<b:label id="i18nLabel" text="${myMessages.message1}" />
+				</b:cell>
+			</b:dockPanel>
 			
-			<xi:include href="i18nSources.crux.xml"/>
+			<s:i18nSources/>
 		</c:screen>
 	</body>
 </html>

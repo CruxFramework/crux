@@ -1,7 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0"
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0"
-	xmlns:xi="http://www.w3.org/2001/XInclude">
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/adv"
+	xmlns:b="http://www.sysmap.com.br/crux/bas"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
 		<title>GWT Widgets</title>
@@ -12,60 +13,59 @@
 		<script type="text/javascript" src="showcase/showcase.nocache.js">
 		</script>
 
-		<c:screen useController="gwtController,sourcesController" />
+		<c:screen useController="gwtController" />
 		
 		<center>
 		
 		<br/>
 		
-		<c:label id="descLabel" text="Default Crux distribution supports all GWT widgets in its declarative engine. Here are some examples:" style="fontWeight:bold"/>
+		<b:label id="descLabel" text="Default Crux distribution supports all GWT widgets in its declarative engine. Here are some examples:" style="fontWeight:bold"/>
 		
 		<br/>
 		
-		<c:dockPanel id="centeringPanel" height="130" spacing="15">
-			<c:cell direction="west" horizontalAlignment="left"	verticalAlignment="top" width="120">
-				<c:tree id="tree" onSelection="gwtController.onSelectTreeItem">
-					<c:item>
-						<c:textTitle>Item 1</c:textTitle>
-						<c:item>
-							<c:textTitle>SubItem 1</c:textTitle>
-						</c:item>
-					</c:item>
-					<c:item>
-						<c:textTitle>Item 2</c:textTitle>
-					</c:item>
-					<c:item>
-						<c:textTitle>Item 3</c:textTitle>
-					</c:item>
-				</c:tree>
-			</c:cell>
-			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="top">
-				<c:datePicker id="datePicker" />
-			</c:cell>
-			<c:cell direction="east" horizontalAlignment="right" verticalAlignment="top" width="250">
-				<c:tabPanel id="tabs" visibleTab="0" width="100%">
-					<c:panel>
-						<c:tabText>Tab 1</c:tabText>
-						<c:panelContent>
-							<c:textArea id="textArea1"></c:textArea>
-						</c:panelContent>
-					</c:panel>
-					<c:panel>
-						<c:tabText>Tab 2</c:tabText>
-						<c:panelContent>
-							<c:verticalPanel id="vPanel">
-								<c:textBox id="text1"></c:textBox>
-								<c:textBox id="text2"></c:textBox>
-							</c:verticalPanel>
-						</c:panelContent>
-					</c:panel>
-				</c:tabPanel>
-			</c:cell>
-		</c:dockPanel>
+		<b:dockPanel id="centeringPanel" height="130" spacing="15">
+			<b:cell direction="west" horizontalAlignment="left"	verticalAlignment="top" width="120">
+				<b:tree id="tree" onSelection="gwtController.onSelectTreeItem">
+					<b:item>
+						<b:textTitle>Item 1</b:textTitle>
+						<b:item>
+							<b:textTitle>SubItem 1</b:textTitle>
+						</b:item>
+					</b:item>
+					<b:item>
+						<b:textTitle>Item 2</b:textTitle>
+					</b:item>
+					<b:item>
+						<b:textTitle>Item 3</b:textTitle>
+					</b:item>
+				</b:tree>
+			</b:cell>
+			<b:cell direction="center" horizontalAlignment="center" verticalAlignment="top">
+				<b:datePicker id="datePicker" />
+			</b:cell>
+			<b:cell direction="east" horizontalAlignment="right" verticalAlignment="top" width="250">
+				<b:tabPanel id="tabs" visibleTab="0" width="100%">
+					<b:tab>
+						<b:tabText>Tab 1</b:tabText>
+						<b:panelContent>
+							<b:textArea id="textArea1"></b:textArea>
+						</b:panelContent>
+					</b:tab>
+					<b:tab>
+						<b:tabText>Tab 2</b:tabText>
+						<b:panelContent>
+							<b:verticalPanel id="vPanel">
+								<b:textBox id="text1"></b:textBox>
+								<b:textBox id="text2"></b:textBox>
+							</b:verticalPanel>
+						</b:panelContent>
+					</b:tab>
+				</b:tabPanel>
+			</b:cell>
+		</b:dockPanel>
 		
 		</center>
 
-		<xi:include href="sources.crux.xml" />
-
+		<s:sources/>
 	</body>
 </html>

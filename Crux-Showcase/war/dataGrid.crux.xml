@@ -6,7 +6,7 @@
 	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
-		<title>Inner Frame1</title>
+		<title>Data Grid</title>
 		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
 	</head>
 
@@ -14,11 +14,7 @@
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="frameController"/>
+		<c:screen useDataSource="myLocalPagedDataSource"/>
 
-		<center>
-			<b:label id="label"/>
-		</center>
- 
 	</body>
 </html>

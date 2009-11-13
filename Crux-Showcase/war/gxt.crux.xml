@@ -3,9 +3,10 @@
 -->
 <html 
 	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
-	xmlns:xi="http://www.w3.org/2001/XInclude">
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/adv"
+	xmlns:b="http://www.sysmap.com.br/crux/bas"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
 		<title>GXT Integration</title>
@@ -17,15 +18,15 @@
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="gxtController,sourcesController" onLoad="gxtController.loadGXTWidgets"/>
+		<c:screen useController="gxtController" onLoad="gxtController.loadGXTWidgets"/>
 
-		<c:dockPanel id="centeringPanel" width="100%" height="130">
-			<c:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
-  			   <c:simplePanel id="gxtWidgets"></c:simplePanel> 
-			</c:cell>
-		</c:dockPanel>
+		<b:dockPanel id="centeringPanel" width="100%" height="130">
+			<b:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
+  			   <b:simplePanel id="gxtWidgets"></b:simplePanel> 
+			</b:cell>
+		</b:dockPanel>
 		
-		<xi:include href="sources.crux.xml"/>
+		<s:sources/>
 		
 	</body>
 </html>

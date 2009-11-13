@@ -1,8 +1,9 @@
 <html 
 	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0"
-	xmlns:xi="http://www.w3.org/2001/XInclude">
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/adv"
+	xmlns:b="http://www.sysmap.com.br/crux/bas"
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
 		<title>Crux Framework - Showcase</title>
@@ -12,40 +13,41 @@
 
 	<body>
 
-		<xi:include href="analytics.crux.xml"/>
+		<s:analytics/>
 			
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
 		<c:screen useController="mainController,contextInitializerController" onLoad="contextInitializerController.onLoad" />
 
-		<c:dockPanel id="centeringPanel" width="100%" height="100%">
-			<c:cell direction="north" height="70" verticalAlignment="top">
-				<c:dockPanel id="titlePanel" width="100%" spacing="5" height="100%">
-					<c:cell direction="west" width="50">
-						<c:image id="logoImg" url="style/img/crux-logo.gif"/>
-					</c:cell>
-					<c:cell direction="east">
-						<c:dockPanel id="linksSeparator" width="100%">
-							<c:cell direction="west" horizontalAlignment="left" verticalAlignment="top">
-								<c:dockPanel id="titlesDividerPanel" spacing="0">
-									<c:cell direction="north" height="35" verticalAlignment="bottom">
-										<c:label id="titleLabel" text="Crux Framework" styleName="MainTitle"/>
-									</c:cell>
-									<c:cell direction="south" verticalAlignment="top">
-										<c:label id="secondaryTitleLabel" text="Showcase of features" styleName="SecondaryTitle"/>
-									</c:cell>
-								</c:dockPanel>
-							</c:cell>
-							<c:cell direction="east" horizontalAlignment="right" verticalAlignment="top">
-								<c:anchor id="projectHome" href="http://crux-framework.googlecode.com/" text="Project Home"/>
-							</c:cell>
-						</c:dockPanel>
-					</c:cell>
-				</c:dockPanel>
-			</c:cell>
-			<c:cell direction="south" verticalAlignment="top" horizontalAlignment="center" height="100%">
-				<c:dockPanel id="menuTabsDividerPannel" width="100%" height="100%" spacing="5">
-					<c:cell direction="west" width="160">
+
+		<b:dockPanel id="centeringPanel" width="100%" height="100%">
+			<b:cell direction="north" height="70" verticalAlignment="top">
+				<b:dockPanel id="titlePanel" width="100%" spacing="5" height="100%">
+					<b:cell direction="west" width="50">
+						<b:image id="logoImg" url="style/img/crux-logo.gif"/>
+					</b:cell>
+					<b:cell direction="east">
+						<b:dockPanel id="linksSeparator" width="100%">
+							<b:cell direction="west" horizontalAlignment="left" verticalAlignment="top">
+								<b:dockPanel id="titlesDividerPanel" spacing="0">
+									<b:cell direction="north" height="35" verticalAlignment="bottom">
+										<b:label id="titleLabel" text="Crux Framework" styleName="MainTitle"/>
+									</b:cell>
+									<b:cell direction="south" verticalAlignment="top">
+										<b:label id="secondaryTitleLabel" text="Showcase of features" styleName="SecondaryTitle"/>
+									</b:cell>
+								</b:dockPanel>
+							</b:cell>
+							<b:cell direction="east" horizontalAlignment="right" verticalAlignment="top">
+								<b:anchor id="projectHome" href="http://crux-framework.googlecode.com/" text="Project Home"/>
+							</b:cell>
+						</b:dockPanel>
+					</b:cell>
+				</b:dockPanel>
+			</b:cell>
+			<b:cell direction="south" verticalAlignment="top" horizontalAlignment="center" height="100%">
+				<b:dockPanel id="menuTabsDividerPannel" width="100%" height="100%" spacing="5">
+					<b:cell direction="west" width="160">
 						<a:stackMenu id="menu" height="400">
 							<a:item id="widgetsItem" label="Widgets" open="true">
 								<a:item id="decoratedButtonItem" label="Decorated Button" onClick="mainController.onClickDecoratedButtonItem"/>
@@ -68,6 +70,9 @@
 							<a:item id="tabsItem" label="Tabs">
 								<a:item id="dynaTabsItem" label="Dyna Tabs" onClick="mainController.onClickDynaTabsItem" />
 							</a:item>
+							<a:item id="gridsItem" label="Grids">
+								<a:item id="dataGridItem" label="Data Grid" onClick="mainController.onClickDataGridItem" />
+							</a:item>
 							<a:item id="popupsItem" label="Popups">
 								<a:item id="confirmItem" label="Confirm" onClick="mainController.onClickConfirmItem" />
 								<a:item id="messageBoxItem" label="Message Box" onClick="mainController.onClickMessageBoxItem" />
@@ -88,17 +93,17 @@
 								<a:item id="i18nItem" label="I18N" onClick="mainController.onClickI18NItem" />
 							</a:item>
 						</a:stackMenu>
-					</c:cell>
-					<c:cell direction="east">
+					</b:cell>
+					<b:cell direction="east">
 						<a:decoratedPanel id="basePanel" width="100%" height="100%">
 							<a:widget>
 								<a:dynaTabs id="tabs" height="100%" width="100%"/>
 							</a:widget>
 						</a:decoratedPanel>
-					</c:cell>
-				</c:dockPanel>
-			</c:cell>
-		</c:dockPanel>
+					</b:cell>
+				</b:dockPanel>
+			</b:cell>
+		</b:dockPanel>
 
 	</body>
 </html>

@@ -1,8 +1,9 @@
 <html 
 	xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:c="http://www.sysmap.com.br/crux/basic-widgets/1.0" 
-	xmlns:a="http://www.sysmap.com.br/crux/advanced-widgets/1.0" 
-	xmlns:xi="http://www.w3.org/2001/XInclude">
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/adv"
+	xmlns:b="http://www.sysmap.com.br/crux/bas"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
 		<title>Screen Communication</title>
@@ -12,43 +13,31 @@
 	<body>
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="screenCommunicationController,sourcesController,frameSourcesController"/>
+		<c:screen useController="screenCommunicationController,frameSourcesController"/>
 
 		<center>
 		
-		<c:dockPanel id="centeringPanel" width="500" height="130" spacing="15">
-			<c:cell direction="west" horizontalAlignment="center" verticalAlignment="middle" >
+		<b:dockPanel id="centeringPanel" width="500" height="130" spacing="15">
+			<b:cell direction="west" horizontalAlignment="center" verticalAlignment="middle" >
 				<a:decoratedButton id="button" onClick="screenCommunicationController.changeFrame" text="Change Frame"/>
-			</c:cell>
-			<c:cell direction="east" horizontalAlignment="center" verticalAlignment="middle">
+			</b:cell>
+			<b:cell direction="east" horizontalAlignment="center" verticalAlignment="middle">
 				<a:titlePanel id="bordersEast" height="100%" >
 					<a:title>
 						<a:text>Internal Frame</a:text>
 					</a:title>
 					<a:body>
 						<a:widget>
-							<c:namedFrame id="frame" name="myFrame" url="innerFrame.html" width="100%" height="100%" style="border:solid 0px;"/>
+							<b:namedFrame id="frame" name="myFrame" url="innerFrame.html" width="100%" height="100%" style="border:solid 0px;"/>
 						</a:widget>
 					</a:body>
 				</a:titlePanel>
-			</c:cell>
-		</c:dockPanel>
+			</b:cell>
+		</b:dockPanel>
 		
 		</center>
 		
-		<xi:include href="sources.crux.xml"/>
-
-		<center>
-		<a:collapsePanel id="framePanel" width="98%" collapsed="true" onBeforeExpand="frameSourcesController.loadXmlSource">
-			<a:title>
-				<a:text>View Frame source</a:text>
-			</a:title>
-			<a:body>
-				<a:widget>
-					<c:textArea id="frameSourceFrame" styleName="Source" visibleLines="15" readOnly="true" width="100%"/>
-				</a:widget>
-			</a:body>
-		</a:collapsePanel>		
-		</center>
+		<s:sources/>
+		<s:source id="frameSource" onLoadSource="frameSourcesController.loadXmlSource" title="View Frame source"/>
 	</body>
 </html>
