@@ -117,7 +117,15 @@ public class TemplatesScanner
 								}
 								else
 								{
-									template = documentBuilder.parse(new File(fileName));
+									inputStream = getClass().getResourceAsStream("/"+fileName);
+									if (inputStream != null)
+									{
+										template = documentBuilder.parse(inputStream);
+									}
+									else
+									{
+										template = documentBuilder.parse(new File(fileName));
+									}
 								}
 								Templates.registerTemplate(getTemplateId(fileName), template);
 							}

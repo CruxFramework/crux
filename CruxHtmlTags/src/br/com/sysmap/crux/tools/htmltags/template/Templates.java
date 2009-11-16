@@ -68,7 +68,6 @@ public class Templates
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	protected static void initializeTemplates()
 	{
 		templates = new HashMap<String, Document>();
