@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.tools.htmltags.xsd;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
@@ -25,6 +26,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,6 +65,7 @@ import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
 import br.com.sysmap.crux.tools.htmltags.template.TemplateParser;
 import br.com.sysmap.crux.tools.htmltags.template.Templates;
 import br.com.sysmap.crux.tools.htmltags.template.TemplatesScanner;
+import br.com.sysmap.crux.tools.htmltags.util.StreamUtils;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -70,30 +73,34 @@ import br.com.sysmap.crux.tools.htmltags.template.TemplatesScanner;
  */
 public class SchemaGenerator
 {
+	private File projectBaseDir;
 	private File destDir;
 	private Map<String, Class<?>> enumTypes;
+	private Map<String, File> namespacesForCatalog;
 	private Deque<Class<? extends WidgetChildProcessor<?>>> subTagTypes;
 	private static final Log logger = LogFactory.getLog(SchemaGenerator.class);
 	private HTMLTagsMessages messages = MessagesFactory.getMessages(HTMLTagsMessages.class);
 	private TemplateParser templateParser;
-	
+		
 	/**
 	 * 
-	 * @param destDir
+	 * @param destRelativeDir
 	 */
-	public SchemaGenerator(String destDir)
+	public SchemaGenerator(String projectBaseDir, String destRelativeDir)
 	{
-		this(new File(destDir));
+		this(new File(projectBaseDir), destRelativeDir);
 	}
 	/**
 	 * 
 	 * @param destDir
 	 */
-	public SchemaGenerator(File destDir)
+	private SchemaGenerator(File projectBaseDir, String destRelativeDir)
 	{
-		this.destDir = destDir;
+		this.projectBaseDir = projectBaseDir;
+		this.destDir = new File(projectBaseDir, destRelativeDir);
 		this.destDir.mkdirs();
 		this.enumTypes = new HashMap<String, Class<?>>();
+		this.namespacesForCatalog = new HashMap<String, File>();
 		this.subTagTypes = new LinkedList<Class<? extends WidgetChildProcessor<?>>>();
 		this.templateParser = new TemplateParser();
 	}
@@ -123,9 +130,30 @@ public class SchemaGenerator
 		
 		logger.info(messages.schemaGeneratorCreatingCoreXSD());
 		generateCoreSchema(libraries);
+		
+		copyXHTMLSchema();
 
 		logger.info(messages.schemaGeneratorXSDFilesGenerated());
 	}
+	
+	/**
+	 * @throws IOException
+	 */
+	private void copyXHTMLSchema() throws IOException
+	{
+		File xhtmlFile = new File(destDir, "xhtml.xsd");
+		if (xhtmlFile.exists())
+		{
+			xhtmlFile.delete();
+		}
+		xhtmlFile.createNewFile();
+		FileOutputStream out = new FileOutputStream(xhtmlFile);
+
+		String targetNS = "http://www.w3.org/1999/xhtml";
+		registerNamespaceForCatalog(targetNS, xhtmlFile);
+		
+		StreamUtils.write(getClass().getResourceAsStream("/META-INF/xhtml.xsd"), out, true);
+	}	
 	
 	/**
 	 * 
@@ -140,6 +168,9 @@ public class SchemaGenerator
 		}
 		coreFile.createNewFile();
 		PrintStream out = new PrintStream(coreFile);
+		
+		String targetNS = "http://www.sysmap.com.br/templates/" + library;
+		registerNamespaceForCatalog(targetNS, coreFile);
 
 		out.println("<xs:schema ");
 		out.println("xmlns=\"http://www.sysmap.com.br/templates/"+library+"\" ");
@@ -147,7 +178,7 @@ public class SchemaGenerator
 		out.println("xmlns:c=\"http://www.sysmap.com.br/crux\" ");
 		out.println("attributeFormDefault=\"unqualified\" ");
 		out.println("elementFormDefault=\"qualified\" ");
-		out.println("targetNamespace=\"http://www.sysmap.com.br/templates/"+library+"\" >");
+		out.println("targetNamespace=\"" + targetNS+ "\" >");
 		
 		Set<String> templates = Templates.getRegisteredLibraryTemplates(library);
 		for (String id : templates)
@@ -222,13 +253,17 @@ public class SchemaGenerator
 			coreFile.delete();
 		}
 		coreFile.createNewFile();
+		
+		String targetNS = "http://www.sysmap.com.br/templates";
+		registerNamespaceForCatalog(targetNS, coreFile);
+		
 		PrintStream out = new PrintStream(coreFile);
 		out.println("<xs:schema ");
 		out.println("xmlns=\"http://www.sysmap.com.br/templates\" ");
 		out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
 		out.println("attributeFormDefault=\"unqualified\" ");
 		out.println("elementFormDefault=\"qualified\" ");
-		out.println("targetNamespace=\"http://www.sysmap.com.br/templates\" >");
+		out.println("targetNamespace=\"" + targetNS + "\" >");
 		
 		generateCoreSchemasImport(libraries, out);
 
@@ -287,6 +322,10 @@ public class SchemaGenerator
 			coreFile.delete();
 		}
 		coreFile.createNewFile();
+		
+		String targetNS = "http://www.sysmap.com.br/crux";
+		registerNamespaceForCatalog(targetNS, coreFile);
+		
 		PrintStream out = new PrintStream(coreFile);
 		out.println("<xs:schema ");
 		out.println("xmlns=\"http://www.sysmap.com.br/crux\" ");
@@ -297,7 +336,7 @@ public class SchemaGenerator
 		}
 		out.println("attributeFormDefault=\"unqualified\" ");
 		out.println("elementFormDefault=\"qualified\" ");
-		out.println("targetNamespace=\"http://www.sysmap.com.br/crux\" >");
+		out.println("targetNamespace=\"" + targetNS + "\" >");
 		
 		generateCoreSchemasImport(libraries, out);
 		generateCoreSplashScreenElement(out);
@@ -404,6 +443,9 @@ public class SchemaGenerator
 		coreFile.createNewFile();
 		PrintStream out = new PrintStream(coreFile);
 
+		String targetNS = "http://www.sysmap.com.br/crux/" + library;
+		registerNamespaceForCatalog(targetNS, coreFile);
+		
 		out.println("<xs:schema ");
 		out.println("xmlns=\"http://www.sysmap.com.br/crux/"+library+"\" ");
 		out.println("xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ");
@@ -417,7 +459,7 @@ public class SchemaGenerator
 		}
 		out.println("attributeFormDefault=\"unqualified\" ");
 		out.println("elementFormDefault=\"qualified\" ");
-		out.println("targetNamespace=\"http://www.sysmap.com.br/crux/"+library+"\" >");
+		out.println("targetNamespace=\"" + targetNS + "\" >");
 		
 		generateSchemaImportsForLibrary(library, allLibraries, out);
 		
@@ -435,6 +477,15 @@ public class SchemaGenerator
 		out.close();
 	}
 
+	/**
+	 * @param targetNS
+	 * @param coreFile
+	 */
+	private void registerNamespaceForCatalog(String targetNS, File file)
+	{
+		this.namespacesForCatalog.put(targetNS, file);
+	}
+	
 	/**
 	 * 
 	 * @param library
@@ -484,7 +535,6 @@ public class SchemaGenerator
 	 * @param out
 	 * @param library
 	 */
-	@SuppressWarnings("unchecked")
 	private void generateTypesForSubTags(PrintStream out, String library)
 	{
 		Set<String> added = new HashSet<String>();
@@ -1159,22 +1209,63 @@ public class SchemaGenerator
 	 * @param args
 	 * @throws IOException 
 	 */
-	public static void generateSchemas(String outputDir) throws IOException
+	public static void generateSchemas(String projectBaseDir, String destRelativeDir) throws IOException
 	{
-		generateSchemas(new File(outputDir));
+		File projectDir = new File(projectBaseDir);
+		generateSchemas(projectDir, destRelativeDir);
 	}
 
+	/**
+	 * @param out
+	 */
+	private void generateCatalog() throws IOException
+	{
+		File catalog = new File(destDir, "crux-catalog.xml");
+		catalog.createNewFile();
+		PrintStream stream = null;
+		
+		try
+		{
+			stream = new PrintStream(catalog);
+			
+			stream.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+			stream.println("<catalog xmlns=\"urn:oasis:names:tc:entity:xmlns:xml:catalog\">");		
+			for (Entry<String, File> entry : namespacesForCatalog.entrySet())
+			{
+				stream.println("\t<uri name=\"" + entry.getKey() + "\" uri=\"platform:/resource/" + projectBaseDir.getName() + "/" + getRelativeName(entry.getValue()) + "\"/>");
+			}
+			stream.println("</catalog>");
+		}
+		finally
+		{
+			stream.close();
+		}	
+	}
+	
+	/**
+	 * @param value
+	 * @return
+	 * @throws IOException 
+	 */
+	private String getRelativeName(File value) throws IOException
+	{
+		String absolutePath = value.toURI().getPath();
+		String projectPath = projectBaseDir.toURI().getPath();
+		return absolutePath.substring(projectPath.length());
+	}
+	
 	/**
 	 * 
 	 * @param args
 	 * @throws IOException 
 	 */
-	public static void generateSchemas(File outputDir) throws IOException
+	public static void generateSchemas(File projectBaseDir, String outputDir) throws IOException
 	{
 		ClassScanner.initialize(ClasspathUrlFinder.findClassPaths());
 		TemplatesScanner.initialize(ClasspathUrlFinder.findClassPaths());
-		SchemaGenerator generator = new SchemaGenerator(outputDir);
+		SchemaGenerator generator = new SchemaGenerator(projectBaseDir, outputDir);
 		generator.generateSchemas();
+		generator.generateCatalog();
 	}
 
 	/**
@@ -1187,10 +1278,13 @@ public class SchemaGenerator
 		{
 			if (args.length != 1)
 			{
-				System.out.println("Usage: SchemaGenerator <outputDir>");
+				System.out.println("Usage: SchemaGenerator <projectBaseDir> <outputDir>");
 			}
-			String outputDir = args[0];//"C:\\desenvolvimento\\ide\\workspaces\\myeclipse\\CruxHtmlTags\\xsd\\generated";
-			SchemaGenerator.generateSchemas(outputDir);
+			
+			String projectBaseDir = args[0]; //"C:\\desenvolvimento\\ide\\workspaces\\myeclipse\\CruxHtmlTags";
+			String outputDir = args[1]; //xsd\\generated";
+			
+			SchemaGenerator.generateSchemas(projectBaseDir, outputDir);
 		}
 		catch (IOException e)
 		{
