@@ -83,7 +83,7 @@ public class CookieContextHandler implements ContextHandler
 	{
 		try
 		{
-			Cookies.setCookie(CONTEXT_PREFIX+key, Screen.getCruxSerializer().serialize(value), expires);
+			Cookies.setCookie(CONTEXT_PREFIX+key, Screen.getCruxSerializer().serialize(value), expires, null, "/", false);
 		}
 		catch (ModuleComunicationException e)
 		{
