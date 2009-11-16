@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.context.ContextManager;
@@ -135,6 +136,29 @@ public class Screen
 		{
 			widget.removeFromParent();
 		}
+	}
+	
+	/**
+	 * @return a list containing all widgets ids from the current screen 
+	 */
+	public static List<String> getAllWidgetsIds()
+	{
+		Screen instance = Screen.get();
+		Set<String> keySet = instance.widgets.keySet();
+		List<String> ids = new ArrayList<String>(keySet.size());		
+		ids.addAll(keySet);
+		return ids;
+	}
+	
+	/**
+	 * @return a list containing all widgets from the current screen 
+	 */
+	public static List<Widget> getAllWidgets()
+	{
+		Screen instance = Screen.get();
+		List<Widget> ids = new ArrayList<Widget>();
+		ids.addAll(instance.widgets.values());
+		return ids;
 	}
 
 	protected Iterator<String> iteratorWidgetsIds()
