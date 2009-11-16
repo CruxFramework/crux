@@ -29,6 +29,7 @@ import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
+import br.com.sysmap.crux.scannotation.archiveiterator.StreamIterator;
 
 /**
  * 
@@ -66,7 +67,9 @@ public abstract class ScreenResourcesScanner
 
 		try
 		{
-			IteratorFactory.create(url, filter);
+			StreamIterator it = IteratorFactory.create(url, filter);
+			while (it.next() != null); // Do nothing, but searches the directories and jars
+			
 		}
 		catch (IOException e)
 		{

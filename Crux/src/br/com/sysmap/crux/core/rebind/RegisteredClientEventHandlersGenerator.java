@@ -19,6 +19,7 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Validate;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
+import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 
 import com.google.gwt.core.client.GWT;
@@ -105,7 +107,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	 * @param implClassName
 	 * @para handlerClassNames
 	 */
-	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, String implClassName, 
+	private void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, String implClassName, 
 			Map<String, String> handlerClassNames) 
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");
@@ -122,7 +124,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	 * @param sourceWriter
 	 * @param screen
 	 */
-	protected void generateEventHandlersForScreen(TreeLogger logger, SourceWriter sourceWriter, Screen screen, 
+	private void generateEventHandlersForScreen(TreeLogger logger, SourceWriter sourceWriter, Screen screen, 
 			Map<String, String> handlerClassNames, String implClassName)
 	{
 		Iterator<String> controllers = screen.iterateControllers();
@@ -138,10 +140,18 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames);
+			Class<?> controllerClass = ClientControllers.getClientHandler(controller);
+			if (controllerClass != null)
+			{
+				String controllerClassName = getClassSourceName(controllerClass).replace('.', '/');
+				if (Modules.isClassOnModulePath(controllerClassName, screen.getModule(), new HashSet<String>()))
+				{
+					generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames);
+				}
+			}
 		}		
 	}
-	
+
 	/**
 	 * Generate the block to include event handler object.
 	 * @param logger
@@ -150,7 +160,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	 * @param event
 	 * @param added
 	 */
-	protected void generateEventHandlerBlock(TreeLogger logger, Screen screen, SourceWriter sourceWriter, String controller, 
+	private void generateEventHandlerBlock(TreeLogger logger, Screen screen, SourceWriter sourceWriter, String controller, 
 			Map<String, String> added)
 	{
 		try
@@ -174,7 +184,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	 * @param handlerClass
 	 * @return
 	 */
-	protected String generateEventHandlerInvokerClass(TreeLogger logger, Screen screen, SourceWriter sourceWriter, Class<?> handlerClass)
+	private String generateEventHandlerInvokerClass(TreeLogger logger, Screen screen, SourceWriter sourceWriter, Class<?> handlerClass)
 	{
 		String className = handlerClass.getSimpleName();
 		sourceWriter.println("public class "+className+"Wrapper extends " + getClassSourceName(handlerClass)
@@ -359,7 +369,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	 * @param method
 	 * @return
 	 */
-	protected boolean isHandlerMethodSignatureValid(Method method)
+	private boolean isHandlerMethodSignatureValid(Method method)
 	{
 		if (!Modifier.isPublic(method.getModifiers()))
 		{

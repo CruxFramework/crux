@@ -134,4 +134,19 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 028] - Error generating widget factory. An element can not contains text and other children.")
 	String errorGeneratingWidgetFactoryMixedContentNotAllowed();
+
+	@DefaultMessage("[generator 029] - Error creating modules scanner. Can not create builder object.")
+	String modulesScannerErrorBuilderCanNotBeCreated();
+
+	@DefaultMessage("[generator 030] - Searching for modules.")
+	String modulesScannerSearchingModuleFiles();
+
+	@DefaultMessage("[generator 031] - Error parsing module file.")
+	String modulesScannerErrorParsingModuleFile(String fileName);
+
+	@DefaultMessage("[generator 032] - Error initializing modulesScanner.")
+	String modulesScannerInitializationError(String localizedMessage);
+
+	@DefaultMessage("[generator 033] - Can not find the web classes dir.")
+	String modulesScannerErrorFindingClassesDir();
 }
