@@ -1229,6 +1229,8 @@ public class SchemaGenerator
 			stream = new PrintStream(catalog);
 			
 			stream.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+			stream.println("<!DOCTYPE catalog PUBLIC \"-//OASIS//DTD Entity Resolution XML Catalog V1.0//EN\" \"http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd\">");
+
 			stream.println("<catalog xmlns=\"urn:oasis:names:tc:entity:xmlns:xml:catalog\">");		
 			for (Entry<String, File> entry : namespacesForCatalog.entrySet())
 			{
