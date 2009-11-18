@@ -1,8 +1,8 @@
 <html 
 	xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:c="http://www.sysmap.com.br/crux" 
-	xmlns:a="http://www.sysmap.com.br/crux/adv"
-	xmlns:b="http://www.sysmap.com.br/crux/bas"
+	xmlns:a="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"
 	xmlns:s="http://www.sysmap.com.br/templates/showcase"
 >
 
