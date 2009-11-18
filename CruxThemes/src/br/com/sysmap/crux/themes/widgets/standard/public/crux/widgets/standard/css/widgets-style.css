@@ -901,6 +901,177 @@
 }
 
 /******************************************************************************
+	Grid
+*******************************************************************************/
+.crux-Grid
+{
+	border: solid 2px #D0E4F6 !important;
+}
+.crux-Grid .row
+{
+	background-color:#FFFFFF;
+	height: 28px;
+}
+.crux-Grid .row .cellWrapper
+{
+	vertical-align:middle;
+	background-color:#FFFFFF;
+	border-bottom: solid 1px #F0F0F0; 
+	border-right: solid 1px #F0F0F0;
+}
+.crux-Grid .row .cell
+{
+	color:#4E4E4E;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-size:11px;
+	font-weight:normal;
+	vertical-align:middle;
+	background-color:#FFFFFF;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	overflow-y: visible;
+	overflow-x: hidden;
+	width: 50px;
+}
+.crux-Grid .row .rowSelector
+{
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+.crux-Grid .row-selected .cellWrapper, .crux-Grid .row-selected .cell  
+{
+	background-color: #F5F5F5;
+}
+.crux-Grid .row-disabled .cell
+{
+	opacity:0.4;
+	filter:alpha(opacity=40);
+}
+.crux-Grid .row-highlighted .cellWrapper, .crux-Grid .row-highlighted .cell
+{
+	background-color: #FFFFE1;
+	cursor: pointer;
+}
+.crux-Grid .columnHeadersRow
+{
+	background-color: #DFE6F0;
+}
+.crux-Grid .columnHeadersRow .cellWrapper
+{
+	background-image: url(../img/grid-header.gif);
+	border-bottom: solid 2px #C5E0F0;
+	border-right: solid 1px #D0E4F6;
+	height: 28px;
+	text-align: center;
+}
+.crux-Grid .columnHeader
+{
+	padding: 0px;
+	text-align: center;
+	display: inline-block;
+}
+.crux-Grid .columnHeader .label
+{
+	color:#5090C0;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-size:11px;
+	font-weight:bold;
+	padding-left: 3px;
+}
+.crux-Grid .columnSorter
+{
+	cursor: pointer;
+	text-align: center;
+	width: auto;
+	display: inline;
+}
+.crux-Grid .columnSorter-desc .arrow
+{
+	background-image: url(../img/grid-sorting-arrow-down.gif);
+	background-repeat: no-repeat;
+	background-position: left;
+	width: 7px;
+	height: 4px;
+	font-size: 4px;
+	font-family: monospace;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+.crux-Grid .columnSorter-asc .arrow
+{
+	background-image: url(../img/grid-sorting-arrow-up.gif);
+	background-repeat: no-repeat;
+	background-position: left;
+	width: 7px;
+	height: 4px;
+	font-size: 4px;
+	font-family: monospace;
+	margin-left: 2px;
+	margin-right: 2px; 
+}
+.crux-Grid .columnSorter-asc .label
+{
+	text-decoration: underline;
+}
+.crux-Grid .columnSorter-desc .label
+{
+	text-decoration: underline;
+}
+
+/******************************************************************************
+	Sequential Pager
+*******************************************************************************/
+.crux-SequentialPager
+{
+	height: 12px;
+}
+.crux-SequentialPager .previousButton
+{
+	width: 9px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-previous.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+	cursor: pointer; 
+	margin-left: 5px;
+}
+.crux-SequentialPager .nextButton
+{
+	width: 9px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-next.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+	cursor: pointer;
+	margin-right: 5px;
+}
+.crux-SequentialPager .currentPageLabel
+{
+	color:#2077A9;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-size:11px;
+	font-weight: bold;
+	text-align: center;
+	width: 30px;
+	height: 13px;
+}
+.crux-SequentialPager .previousButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-SequentialPager .nextButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+
+
+/******************************************************************************
 	Screen Blockers
 *******************************************************************************/
 .crux-DefaultScreenBlocker
