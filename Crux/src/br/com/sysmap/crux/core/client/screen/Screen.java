@@ -857,6 +857,26 @@ public class Screen
 	 * @param call
 	 * @throws ModuleComunicationException
 	 */
+	public static void invokeControllerOnSiblingFrame(String frame, String call, Object param) throws ModuleComunicationException
+	{
+		invokeControllerOnSiblingFrame(frame, call, param, Object.class);
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T  invokeControllerOnSiblingFrame(String frame, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.get().serializer.deserialize(callSiblingFrameControllerAccessor(frame, call, Screen.get().serializer.serialize(param)));
+	}
+
+	/**
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
 	public static void invokeControllerOnSelf(String call, Object param)
 	{
 		invokeControllerOnSelf(call, param, Object.class);
@@ -939,4 +959,14 @@ public class Screen
 		return $wnd.frames[frame]._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;		
 	
+	/**
+	 * 
+	 * @param frame
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	private static native String callSiblingFrameControllerAccessor(String frame, String call, String serializedData)/*-{
+		return $wnd.parent.frames[frame]._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;		
 }

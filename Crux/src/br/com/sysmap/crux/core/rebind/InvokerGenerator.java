@@ -67,6 +67,15 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 			}
 			generateMethod(method, sourceWriter, sufix);
 		}
+		else if (name.indexOf("OnSiblingFrame") > 0)
+		{
+			String sufix = name.substring(name.indexOf("OnSiblingFrame"));
+			if (sufix.length() <= 14)
+			{
+				throw new WrapperGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.toGenericString()));
+			}
+			generateMethod(method, sourceWriter, sufix);
+		}
 		else
 		{
 			throw new WrapperGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.toGenericString()));
@@ -166,9 +175,22 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 			}
 			sufix = "OnFrame";
 		}
+		else if (sufix.startsWith("OnSiblingFrame"))
+		{
+			frameName = sufix.substring(14);
+			if (frameName.length()>1)
+			{
+				frameName = Character.toLowerCase(frameName.charAt(0)) + frameName.substring(1);
+			}
+			else
+			{
+				frameName = frameName.toLowerCase();
+			}
+			sufix = "OnSiblingFrame";
+		}
 		if (returnTypeDeclaration != null)
 		{
-			if ("OnFrame".equals(sufix))
+			if ("OnFrame".equals(sufix) || "OnSiblingFrame".equals(sufix))
 			{
 				sourceWriter.println("return Screen.invokeController"+sufix+"(\""+frameName+"\",\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
 			}
@@ -179,7 +201,7 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 		}
 		else
 		{
-			if ("OnFrame".equals(sufix))
+			if ("OnFrame".equals(sufix) || "OnSiblingFrame".equals(sufix))
 			{
 				sourceWriter.println("Screen.invokeController"+sufix+"(\""+frameName+"\",\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+");");
 			}
