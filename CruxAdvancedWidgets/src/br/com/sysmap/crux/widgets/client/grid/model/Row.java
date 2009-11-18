@@ -47,7 +47,7 @@ public class Row
 	void setCell(Cell cell, int column)
 	{
 		grid.getTable().setWidget(index, column, cell);
-		StyleUtils.addStyleName(grid.getTable().getCellElement(index, column), "cell");
+		StyleUtils.addStyleName(grid.getTable().getCellElement(index, column), "cellWrapper");
 		cell.setRow(this);
 		cell.setGrid(grid);
 		

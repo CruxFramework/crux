@@ -62,6 +62,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private long generatedWidgetId = 0;
 	private AdvancedWidgetMessages messages = GWT.create(AdvancedWidgetMessages.class);
+	private final String emptyDataFilling;
 	
 	/**
 	 * Full constructor
@@ -72,9 +73,10 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 	 * @param autoLoadData if <code>true</code>, when a data source is set, its first page records are fetched and rendered. 
 	 * 	If <code>false</code>, the method <code>loadData()</code> must be invoked for rendering the first page.
 	 */
-	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver)
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling)
 	{
 		super(columnDefinitions, rowSelectionModel, cellSpacing, stretchColumns, highlightRowOnMouseOver);
+		this.emptyDataFilling = emptyDataFilling != null ? emptyDataFilling : " ";
 		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 		this.pageSize = pageSize;
 		this.rowSelectionModel = rowSelectionModel;
@@ -318,7 +320,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 		DataColumnDefinition dataColumn = (DataColumnDefinition) column;
 		String formatterName = dataColumn.getFormatter();
 		Object value = dataSource.getValue(key);
-		String str = "";
+		String str = emptyDataFilling;
 		
 		if(value != null)
 		{
@@ -329,7 +331,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 			}
 			else
 			{
-				str = value.toString();
+				String strValue = value.toString(); 
+				if(str.length() > 0)
+				{
+					str = strValue;
+				}
 			}
 		}
 		
@@ -342,8 +348,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 		ColumnHeader header = new ColumnHeader(columnDefinition, this);		
 		headers.add(header);
 		Cell cell = createHeaderCell(header);
-		cell.setWidth("100%");
-		cell.setHeight("100%");
 		return cell;
 	}
 
@@ -451,12 +455,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 			this.columnDefinition = columnDefinition;
 			
 			clickable = new FocusPanel();
-			clickable.setWidth("100%");
-			clickable.setHeight("100%");
 			
 			HorizontalPanel panel = new HorizontalPanel();
 			panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-			panel.setHeight("100%");
 			
 			Label columnLabel = new Label(columnDefinition.getLabel());
 			columnLabel.setStyleName("label");

@@ -259,6 +259,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	{
 		Cell cell = createBaseCell(widget, true, selectRowOnClickCell(), highlightRowOnMouseOver);
 		cell.addStyleName("cell");
+		cell.setWidth("100%");
 		return cell;
 	}
 
@@ -294,8 +295,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		{
 			cell = new Cell(fireEvents, selectRowOnclick, highlightRowOnMouseOver);
 		}
-		
-		cell.setWidth("100%");
 			
 		return cell;
 	}
@@ -526,9 +525,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			w = new Label(" ");
 		}
 		
-		Cell cell = createHeaderCell(w);
-		cell.setHeight("100%");
-		return cell;
+		return createHeaderCell(w);
 	}
 	
 	/**
