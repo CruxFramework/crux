@@ -1278,7 +1278,7 @@ public class SchemaGenerator
 	{
 		try
 		{
-			if (args.length != 1)
+			if (args.length != 2)
 			{
 				System.out.println("Usage: SchemaGenerator <projectBaseDir> <outputDir>");
 			}
