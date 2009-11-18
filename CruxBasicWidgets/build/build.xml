@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="dist" name="Crux-Basic-Widgets" basedir="../">
+<project default="dist" name="Crux-GWT-Widgets" basedir="../">
 
   <tstamp>
  	<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />
@@ -15,7 +15,7 @@
   <property name="testreporthtml" value="dist/report/junit/html" />
   <property name="distdir" value="dist" />
   <property name="javadocdir" value="dist/javadoc" />
-  <property name="final.name" value="crux-basic-widgets"/>
+  <property name="final.name" value="crux-gwt-widgets"/>
   <property name="testbenchmarkpath" value="dist/report/junit/benchmark" />
   <property name="cruxdistdir" value="../Crux/dist"/>
  
