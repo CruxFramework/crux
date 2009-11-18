@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="jar" name="Crux-Advanced-Widgets" basedir="../">
+<project default="jar" name="Crux-Widgets" basedir="../">
 
 	<tstamp>
 		<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />
@@ -10,9 +10,9 @@
 	<property name="libdir" value="lib" />
 	<property name="classesdir" value="bin" />
 	<property name="distdir" value="dist" />
-	<property name="final.name" value="crux-advanced-widgets" />
+	<property name="final.name" value="crux-widgets" />
 	<property name="cruxdistdir" value="../Crux/dist" />
-	<property name="cruxbasicwidgetsdir" value="../CruxBasicWidgets/dist" />
+	<property name="cruxgwtwidgetsdir" value="../CruxGWTWidgets/dist" />
 
 	<path id="build.classpath">
 		<fileset dir="${libdir}">
@@ -21,7 +21,7 @@
 		<fileset dir="${cruxdistdir}">
 			<include name="**/*.jar" />
 		</fileset>
-		<fileset dir="${cruxbasicwidgetsdir}">
+		<fileset dir="${cruxgwtwidgetsdir}">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
