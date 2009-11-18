@@ -1,10 +1,10 @@
 package br.com.sysmap.crux.showcase.client.controller;
 
-import br.com.sysmap.crux.advanced.client.dynatabs.DynaTabs;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.screen.ScreenWrapper;
+import br.com.sysmap.crux.widgets.client.dynatabs.DynaTabs;
 
 @Controller("mainController")
 public class MainController {

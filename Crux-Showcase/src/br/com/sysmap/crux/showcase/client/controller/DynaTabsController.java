@@ -2,10 +2,10 @@ package br.com.sysmap.crux.showcase.client.controller;
 
 import java.util.Date;
 
-import br.com.sysmap.crux.advanced.client.dynatabs.DynaTabs;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.widgets.client.dynatabs.DynaTabs;
 
 import com.google.gwt.user.client.ui.TextBox;
 

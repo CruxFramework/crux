@@ -2,8 +2,6 @@ package br.com.sysmap.crux.showcase.client.controller;
 
 import java.util.Date;
 
-import br.com.sysmap.crux.advanced.client.maskedtextbox.MaskedTextBox;
-import br.com.sysmap.crux.advanced.client.maskedtextbox.MaskedTextBoxBaseFormatter;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
@@ -12,6 +10,8 @@ import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
 import br.com.sysmap.crux.core.client.formatter.annotation.FormatterName;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenWrapper;
+import br.com.sysmap.crux.widgets.client.maskedtextbox.MaskedTextBox;
+import br.com.sysmap.crux.widgets.client.maskedtextbox.MaskedTextBoxBaseFormatter;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Label;

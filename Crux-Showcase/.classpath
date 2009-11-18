@@ -2,8 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-advanced-widgets.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-basic-widgets.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-core.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-html-tags.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-scannotation.jar"/>
@@ -20,5 +18,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gxt.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon9-dom.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-gwt-widgets.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-widgets.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

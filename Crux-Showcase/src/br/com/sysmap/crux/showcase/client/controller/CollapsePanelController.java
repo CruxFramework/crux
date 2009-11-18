@@ -1,9 +1,9 @@
 package br.com.sysmap.crux.showcase.client.controller;
 
-import br.com.sysmap.crux.advanced.client.collapsepanel.CollapsePanel;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.widgets.client.collapsepanel.CollapsePanel;
 
 @Controller("collapsePanelController")
 public class CollapsePanelController {
