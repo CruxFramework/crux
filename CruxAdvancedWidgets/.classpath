@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Crux"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CruxBasicWidgets"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CruxGWTWidgets"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CruxHtmlTags"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-dev-windows.jar"/>
