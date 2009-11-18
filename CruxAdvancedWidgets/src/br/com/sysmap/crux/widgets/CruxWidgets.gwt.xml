@@ -1,13 +1,13 @@
 <module>
     <inherits name="br.com.sysmap.crux.core.Crux"/>
     <replace-with
-    	class="br.com.sysmap.crux.advanced.client.maskedtextbox.MaskedInput.PasteEventHandlerOperaImpl">
-    	<when-type-is class="br.com.sysmap.crux.advanced.client.maskedtextbox.MaskedInput.PasteEventHandlerImpl" />
+    	class="br.com.sysmap.crux.widgets.client.maskedtextbox.MaskedInput.PasteEventHandlerOperaImpl">
+    	<when-type-is class="br.com.sysmap.crux.widgets.client.maskedtextbox.MaskedInput.PasteEventHandlerImpl" />
     	<when-property-is name="user.agent" value="opera" />
     </replace-with>
     <replace-with
-    	class="br.com.sysmap.crux.advanced.client.dynatabs.TabInternalJSObjectsIEImpl">
-    	<when-type-is class="br.com.sysmap.crux.advanced.client.dynatabs.TabInternalJSObjectsImpl" />
+    	class="br.com.sysmap.crux.widgets.client.dynatabs.TabInternalJSObjectsIEImpl">
+    	<when-type-is class="br.com.sysmap.crux.widgets.client.dynatabs.TabInternalJSObjectsImpl" />
     	<any>
       		<when-property-is name="user.agent" value="ie6" />
     		<when-property-is name="user.agent" value="ie8" />
@@ -18,13 +18,13 @@
     	<when-type-is class="br.com.sysmap.crux.labs.client.widgets.grid.GridLayout" />
 		<when-property-is name="user.agent" value="gecko1_8" />
     </replace-with>
-    <generate-with class="br.com.sysmap.crux.advanced.rebind.PopupOpenerInvokerGenerator">
-		<when-type-assignable class="br.com.sysmap.crux.advanced.client.dialog.PopupOpenerInvoker" />
+    <generate-with class="br.com.sysmap.crux.widgets.rebind.PopupOpenerInvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.dialog.PopupOpenerInvoker" />
 	</generate-with>
-	<generate-with class="br.com.sysmap.crux.advanced.rebind.SiblingTabInvokerGenerator">
-		<when-type-assignable class="br.com.sysmap.crux.advanced.client.dynatabs.SiblingTabInvoker" />
+	<generate-with class="br.com.sysmap.crux.widgets.rebind.SiblingTabInvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.dynatabs.SiblingTabInvoker" />
 	</generate-with>
-	<generate-with class="br.com.sysmap.crux.advanced.rebind.TabInvokerGenerator">
-		<when-type-assignable class="br.com.sysmap.crux.advanced.client.dynatabs.TabInvoker" />
+	<generate-with class="br.com.sysmap.crux.widgets.rebind.TabInvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.dynatabs.TabInvoker" />
 	</generate-with>
 </module>
