@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HasHTML;
  * Represents a ButtonFactory component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="button", library="bas")
+@DeclarativeFactory(id="button", library="gwt")
 public class ButtonFactory extends FocusWidgetFactory<Button> implements HasTextFactory<Button>
 {
 

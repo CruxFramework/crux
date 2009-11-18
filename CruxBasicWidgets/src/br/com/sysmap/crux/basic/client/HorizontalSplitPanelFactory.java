@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.HorizontalSplitPanelImages;
  * Represents a HorizontalSplitPanel
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="horizontalSplitPanel", library="bas")
+@DeclarativeFactory(id="horizontalSplitPanel", library="gwt")
 public class HorizontalSplitPanelFactory extends PanelFactory<HorizontalSplitPanel>
 {
 	@Override

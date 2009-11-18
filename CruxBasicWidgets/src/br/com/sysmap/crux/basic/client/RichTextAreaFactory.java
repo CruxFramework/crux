@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.RichTextArea.Justification;
  * Represents a rich text area component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="richTextArea", library="bas")
+@DeclarativeFactory(id="richTextArea", library="gwt")
 public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 {
 	@Override

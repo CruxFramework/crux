@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.HasHTML;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="HTML", library="bas")
+@DeclarativeFactory(id="HTML", library="gwt")
 public class HTMLFactory extends AbstractLabelFactory<HTML>
 {
 	@Override

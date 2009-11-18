@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="popupPanel", library="bas")
+@DeclarativeFactory(id="popupPanel", library="gwt")
 public class PopupPanelFactory extends PanelFactory<PopupPanel>
        implements HasAnimationFactory<PopupPanel>, HasCloseHandlersFactory<PopupPanel>
 {

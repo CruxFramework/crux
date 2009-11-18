@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.FlexTable;
  * Factory for FlexTable widget
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="flexTable", library="bas")
+@DeclarativeFactory(id="flexTable", library="gwt")
 public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 {
 

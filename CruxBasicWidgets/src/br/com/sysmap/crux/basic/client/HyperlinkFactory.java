@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Hyperlink;
  * Represents a HyperlinkFactory component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="hyperlink", library="bas")
+@DeclarativeFactory(id="hyperlink", library="gwt")
 public class HyperlinkFactory extends WidgetFactory<Hyperlink>
 	   implements HasTextFactory<Hyperlink>, HasClickHandlersFactory<Hyperlink>
 {

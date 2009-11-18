@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-@DeclarativeFactory(id="dockPanel", library="bas")
+@DeclarativeFactory(id="dockPanel", library="gwt")
 public class DockPanelFactory extends CellPanelFactory<DockPanel>
 {
 	public static enum DockDirection{center, lineStart, lineEnd, east, north, south, west}

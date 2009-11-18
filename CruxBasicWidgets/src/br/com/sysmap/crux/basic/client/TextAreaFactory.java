@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.TextArea;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="textArea", library="bas")
+@DeclarativeFactory(id="textArea", library="gwt")
 public class TextAreaFactory extends TextBoxBaseFactory<TextArea> 
        implements HasDirectionFactory<TextArea>
 {

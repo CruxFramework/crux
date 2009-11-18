@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Hidden;
  * Represents a HiddenFactory component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="hidden", library="bas")
+@DeclarativeFactory(id="hidden", library="gwt")
 public class HiddenFactory extends WidgetFactory<Hidden> 
 {
 	@Override

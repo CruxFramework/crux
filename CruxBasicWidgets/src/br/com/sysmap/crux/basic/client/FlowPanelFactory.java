@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="flowPanel", library="bas")
+@DeclarativeFactory(id="flowPanel", library="gwt")
 public class FlowPanelFactory extends ComplexPanelFactory<FlowPanel>
 {
 	@Override

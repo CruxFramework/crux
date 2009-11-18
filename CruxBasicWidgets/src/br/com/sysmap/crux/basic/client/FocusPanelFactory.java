@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
  * Represents a FocusPanelFactory
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="focusPanel", library="bas")
+@DeclarativeFactory(id="focusPanel", library="gwt")
 public class FocusPanelFactory extends PanelFactory<FocusPanel>
 {
 	@Override

@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.HasHTML;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="checkBox", library="bas")
+@DeclarativeFactory(id="checkBox", library="gwt")
 public class CheckBoxFactory extends AbstractCheckBoxFactory<CheckBox>
 {
 	/**

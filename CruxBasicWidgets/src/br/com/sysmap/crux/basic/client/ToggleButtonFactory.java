@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.ToggleButton;
  * Represents a Toggle ButtonFactory
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="toggleButton", library="bas")
+@DeclarativeFactory(id="toggleButton", library="gwt")
 public class ToggleButtonFactory extends CustomButtonFactory<ToggleButton> 
 {
 	

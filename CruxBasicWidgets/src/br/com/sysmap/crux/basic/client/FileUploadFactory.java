@@ -25,7 +25,7 @@ import br.com.sysmap.crux.core.client.screen.WidgetFactory;
  * Represents a FileUploadFactory component.
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="fileUpload", library="bas")
+@DeclarativeFactory(id="fileUpload", library="gwt")
 public class FileUploadFactory extends WidgetFactory<FileUpload>
 {
 

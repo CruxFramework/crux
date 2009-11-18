@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Frame;
  * Factory to create Frame Widgets
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="frame", library="bas")
+@DeclarativeFactory(id="frame", library="gwt")
 public class FrameFactory extends WidgetFactory<Frame>
 {
 	@Override

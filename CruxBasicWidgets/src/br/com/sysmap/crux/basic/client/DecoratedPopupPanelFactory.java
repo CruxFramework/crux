@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.DecoratedPopupPanel;
  * Represents a DecoratedPopupPanelFactory
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="decoratedPopupPanel", library="bas")
+@DeclarativeFactory(id="decoratedPopupPanel", library="gwt")
 public class DecoratedPopupPanelFactory extends PanelFactory<DecoratedPopupPanel>
              implements HasAnimationFactory<DecoratedPopupPanel>, HasCloseHandlersFactory<DecoratedPopupPanel>
 {

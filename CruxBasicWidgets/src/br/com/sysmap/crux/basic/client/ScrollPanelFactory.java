@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Represents a ScrollPanelFactory
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="scrollPanel", library="bas")
+@DeclarativeFactory(id="scrollPanel", library="gwt")
 public class ScrollPanelFactory extends PanelFactory<ScrollPanel> 
        implements HasScrollHandlersFactory<ScrollPanel>
 {

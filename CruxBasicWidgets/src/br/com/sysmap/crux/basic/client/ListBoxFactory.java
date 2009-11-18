@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.ListBox;
  * Represents a List Box component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="listBox", library="bas")
+@DeclarativeFactory(id="listBox", library="gwt")
 public class ListBoxFactory extends FocusWidgetFactory<ListBox> 
        implements HasChangeHandlersFactory<ListBox>
 {

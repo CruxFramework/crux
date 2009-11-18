@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.SimpleCheckBox;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="simpleCheckBox", library="bas")
+@DeclarativeFactory(id="simpleCheckBox", library="gwt")
 public class SimpleCheckBoxFactory extends FocusWidgetFactory<SimpleCheckBox> implements HasNameFactory<SimpleCheckBox>
 {
 	@Override

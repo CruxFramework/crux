@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.DecoratorPanel;
  * Represents a DecoratorPanelFactory
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="decoratorPanel", library="bas")
+@DeclarativeFactory(id="decoratorPanel", library="gwt")
 public class DecoratorPanelFactory extends PanelFactory<DecoratorPanel>
 {
 	@Override

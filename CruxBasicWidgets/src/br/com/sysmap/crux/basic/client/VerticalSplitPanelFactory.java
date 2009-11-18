@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.VerticalSplitPanelImages;
  * Represents a VerticalSplitPanelFactory
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="verticalSplitPanel", library="bas")
+@DeclarativeFactory(id="verticalSplitPanel", library="gwt")
 public class VerticalSplitPanelFactory extends PanelFactory<VerticalSplitPanel>
 {
 	@Override

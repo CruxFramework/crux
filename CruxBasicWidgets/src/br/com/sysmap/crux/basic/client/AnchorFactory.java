@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
  * Represents an AnchorFactory component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="anchor", library="bas")
+@DeclarativeFactory(id="anchor", library="gwt")
 public class AnchorFactory extends FocusWidgetFactory<Anchor> 
 	   implements HasTextFactory<Anchor>, HasNameFactory<Anchor>, 
 	              HasWordWrapFactory<Anchor>, HasDirectionFactory<Anchor>

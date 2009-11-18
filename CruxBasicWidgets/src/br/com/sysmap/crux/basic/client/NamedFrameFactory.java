@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.NamedFrame;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="namedFrame", library="bas")
+@DeclarativeFactory(id="namedFrame", library="gwt")
 public class NamedFrameFactory extends WidgetFactory<NamedFrame>
 {
 	@Override

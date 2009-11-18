@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
  * Represents a FormPanelFactory.
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="formPanel", library="bas")
+@DeclarativeFactory(id="formPanel", library="gwt")
 public class FormPanelFactory extends PanelFactory<FormPanel>
 {
 	

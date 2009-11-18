@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-@DeclarativeFactory(id="absolutePanel", library="bas")
+@DeclarativeFactory(id="absolutePanel", library="gwt")
 public class AbsolutePanelFactory extends ComplexPanelFactory<AbsolutePanel>
 {
 

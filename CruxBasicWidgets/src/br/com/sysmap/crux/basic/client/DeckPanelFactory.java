@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-@DeclarativeFactory(id="deckPanel", library="bas")
+@DeclarativeFactory(id="deckPanel", library="gwt")
 public class DeckPanelFactory extends ComplexPanelFactory<DeckPanel>
 					implements HasAnimationFactory<DeckPanel>
 {

@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Represents a TreeFactory DeclarativeFactory
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="tree", library="bas")
+@DeclarativeFactory(id="tree", library="gwt")
 public class TreeFactory extends WidgetFactory<Tree> 
        implements HasAnimationFactory<Tree>, HasAllFocusHandlersFactory<Tree>,
                   HasOpenHandlersFactory<Tree>, HasCloseHandlersFactory<Tree>, 

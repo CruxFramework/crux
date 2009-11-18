@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.HasHTML;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="checkBox", library="bas")
+@DeclarativeFactory(id="checkBox", library="gwt")
 public abstract class AbstractCheckBoxFactory<T extends CheckBox> extends FocusWidgetFactory<T> 
        implements HasNameFactory<T>, HasValueChangeHandlersFactory<T>, HasTextFactory<T>
 {

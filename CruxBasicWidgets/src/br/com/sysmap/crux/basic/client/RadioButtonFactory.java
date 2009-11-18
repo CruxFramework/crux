@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.RadioButton;
  * Represents a RadioButtonFactory component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="radioButton", library="bas")
+@DeclarativeFactory(id="radioButton", library="gwt")
 public class RadioButtonFactory extends AbstractCheckBoxFactory<RadioButton>
 {
 	@Override

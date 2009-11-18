@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A LayzyPanel that encapsulate a SimplePanelFactory
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="simpleLazyPanel", library="bas")
+@DeclarativeFactory(id="simpleLazyPanel", library="gwt")
 public class SimpleLazyPanelFactory extends PanelFactory<LazyPanel>
 {
 	protected com.google.gwt.user.client.ui.LazyPanel lazyPanelWidget;

@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.InlineHTML;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="inlineHTML", library="bas")
+@DeclarativeFactory(id="inlineHTML", library="gwt")
 public class InlineHTMLFactory extends AbstractLabelFactory<InlineHTML>
 {
 	@Override

@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * Represents a TextBoxFactory component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="textBox", library="bas")
+@DeclarativeFactory(id="textBox", library="gwt")
 public class TextBoxFactory extends TextBoxBaseFactory<TextBox> 
        implements HasDirectionFactory<TextBox>
 {	

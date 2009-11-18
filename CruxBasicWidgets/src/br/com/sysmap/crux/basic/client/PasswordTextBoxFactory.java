@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="passwordTextBox", library="bas")
+@DeclarativeFactory(id="passwordTextBox", library="gwt")
 public class PasswordTextBoxFactory extends TextBoxBaseFactory<PasswordTextBox> 
        implements HasDirectionFactory<PasswordTextBox>  
 {

@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="simplePanel", library="bas")
+@DeclarativeFactory(id="simplePanel", library="gwt")
 public class SimplePanelFactory extends PanelFactory<SimplePanel>
 {
 	@Override

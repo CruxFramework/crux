@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.DisclosurePanelImages;
  * Factory for DisclosurePanel widgets
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-@DeclarativeFactory(id="disclosurePanel", library="bas")
+@DeclarativeFactory(id="disclosurePanel", library="gwt")
 public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel> 
        implements HasAnimationFactory<DisclosurePanel>, 
                   HasOpenHandlersFactory<DisclosurePanel>, HasCloseHandlersFactory<DisclosurePanel>

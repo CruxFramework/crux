@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.DecoratedTabBar;
  * Factory for DecoratedTabBar widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
-@DeclarativeFactory(id="decoratedTabBar", library="bas")
+@DeclarativeFactory(id="decoratedTabBar", library="gwt")
 public class DecoratedTabBarFactory extends AbstractTabBarFactory<DecoratedTabBar>
 {
 	@Override

@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * Represents a Push ButtonFactory
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="pushButton", library="bas")
+@DeclarativeFactory(id="pushButton", library="gwt")
 public class PushButtonFactory extends CustomButtonFactory<PushButton> 
 {
 	@Override

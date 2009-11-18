@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.DecoratedStackPanel;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-@DeclarativeFactory(id="decoratedStackPanel", library="bas")
+@DeclarativeFactory(id="decoratedStackPanel", library="gwt")
 public class DecoratedStackPanelFactory extends AbstractStackPanelFactory<DecoratedStackPanel>
 {
 

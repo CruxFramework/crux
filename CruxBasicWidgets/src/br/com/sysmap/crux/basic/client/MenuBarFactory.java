@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.MenuBar.MenuBarImages;
  * Represents a MenuBarFactory component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="menuBar", library="bas")
+@DeclarativeFactory(id="menuBar", library="gwt")
 public class MenuBarFactory extends WidgetFactory<MenuBar> 
        implements HasAnimationFactory<MenuBar>
 {

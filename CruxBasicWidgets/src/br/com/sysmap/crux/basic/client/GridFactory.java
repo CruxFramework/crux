@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Grid;
  * Factory for Grid widget
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="grid", library="bas")
+@DeclarativeFactory(id="grid", library="gwt")
 public class GridFactory extends HTMLTableFactory<Grid>
 {
 

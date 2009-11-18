@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.InlineHyperlink;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="inlineHyperlink", library="bas")
+@DeclarativeFactory(id="inlineHyperlink", library="gwt")
 public class InlineHyperlinkFactory extends WidgetFactory<InlineHyperlink>
        implements HasTextFactory<InlineHyperlink>, HasClickHandlersFactory<InlineHyperlink>
 {

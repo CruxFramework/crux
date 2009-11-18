@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.HasHTML;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  */
-@DeclarativeFactory(id="dialogBox", library="bas")
+@DeclarativeFactory(id="dialogBox", library="gwt")
 public class DialogBoxFactory extends PanelFactory<DialogBox>
        implements HasAnimationFactory<DialogBox>, HasCloseHandlersFactory<DialogBox> 
 {

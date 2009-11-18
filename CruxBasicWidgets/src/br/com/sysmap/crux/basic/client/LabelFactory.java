@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Label;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="label", library="bas")
+@DeclarativeFactory(id="label", library="gwt")
 public class LabelFactory extends AbstractLabelFactory<Label>
 {	
 	@Override

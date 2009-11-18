@@ -31,7 +31,7 @@ import com.google.gwt.user.datepicker.client.DatePicker;
  * Factory for TabPanel widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
-@DeclarativeFactory(id="datePicker", library="bas")
+@DeclarativeFactory(id="datePicker", library="gwt")
 public class DatePickerFactory extends CompositeFactory<DatePicker> 
        implements HasValueChangeHandlersFactory<DatePicker>, HasShowRangeHandlersFactory<DatePicker>
 {

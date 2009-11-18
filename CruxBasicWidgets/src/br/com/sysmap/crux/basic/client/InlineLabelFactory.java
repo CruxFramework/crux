@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="inlineLabel", library="bas")
+@DeclarativeFactory(id="inlineLabel", library="gwt")
 public class InlineLabelFactory extends AbstractLabelFactory<InlineLabel>
 {
 	@Override

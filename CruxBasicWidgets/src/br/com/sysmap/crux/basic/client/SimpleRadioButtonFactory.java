@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.SimpleRadioButton;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="simpleRadioButton", library="bas")
+@DeclarativeFactory(id="simpleRadioButton", library="gwt")
 public class SimpleRadioButtonFactory extends FocusWidgetFactory<SimpleRadioButton> implements HasNameFactory<SimpleRadioButton>
 {
 	@Override

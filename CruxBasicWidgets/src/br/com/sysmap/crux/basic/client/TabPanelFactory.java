@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.TabPanel;
  * Factory for TabPanel widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
-@DeclarativeFactory(id="tabPanel", library="bas")
+@DeclarativeFactory(id="tabPanel", library="gwt")
 public class TabPanelFactory extends AbstractTabPanelFactory<TabPanel> 
 {
 	@Override

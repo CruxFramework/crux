@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.Image;
  * Represents an ImageFactory component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="image", library="bas")
+@DeclarativeFactory(id="image", library="gwt")
 public class ImageFactory extends WidgetFactory<Image> 
 	   implements HasClickHandlersFactory<Image>, HasAllMouseHandlersFactory<Image>
 {
