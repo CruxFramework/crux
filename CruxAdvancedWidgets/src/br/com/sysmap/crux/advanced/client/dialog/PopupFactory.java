@@ -29,7 +29,7 @@ import com.google.gwt.dom.client.Element;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-@DeclarativeFactory(id="popup", library="adv")
+@DeclarativeFactory(id="popup", library="widgets")
 public class PopupFactory extends WidgetFactory<Popup> 
        implements HasAnimationFactory<Popup>, HasBeforeCloseHandlersFactory<Popup>
 {

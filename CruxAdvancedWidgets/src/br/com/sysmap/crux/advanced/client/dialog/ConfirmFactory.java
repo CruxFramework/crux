@@ -32,7 +32,7 @@ import com.google.gwt.dom.client.Element;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-@DeclarativeFactory(id="confirm", library="adv")
+@DeclarativeFactory(id="confirm", library="widgets")
 public class ConfirmFactory extends WidgetFactory<Confirm> 
        implements HasAnimationFactory<Confirm>
 {

@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-@DeclarativeFactory(id="sequentialPager", library="adv")
+@DeclarativeFactory(id="sequentialPager", library="widgets")
 public class SequentialPagerFactory extends WidgetFactory<SequentialPager>
 {
 	/**

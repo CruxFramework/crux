@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Factory for Filter widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-@DeclarativeFactory(id="filter", library="adv")
+@DeclarativeFactory(id="filter", library="widgets")
 public class FilterFactory extends CompositeFactory<Filter> 
 	   implements HasAnimationFactory<Filter>, HasTextFactory<Filter>, 
 	              HasValueChangeHandlersFactory<Filter>, HasSelectionHandlersFactory<Filter>,

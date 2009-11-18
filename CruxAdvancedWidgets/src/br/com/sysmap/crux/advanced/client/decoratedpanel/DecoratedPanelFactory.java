@@ -32,7 +32,7 @@ import com.google.gwt.dom.client.Element;
  * Factory for Decorated Panel widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-@DeclarativeFactory(id="decoratedPanel", library="adv")
+@DeclarativeFactory(id="decoratedPanel", library="widgets")
 public class DecoratedPanelFactory extends AbstractDecoratedPanelFactory<DecoratedPanel>
 {
 	@Override

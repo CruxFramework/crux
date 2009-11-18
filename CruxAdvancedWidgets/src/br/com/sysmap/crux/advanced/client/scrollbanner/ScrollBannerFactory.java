@@ -32,7 +32,7 @@ import com.google.gwt.dom.client.Element;
  * Factory for Scroll Banner widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-@br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="scrollBanner", library="adv")
+@br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="scrollBanner", library="widgets")
 public class ScrollBannerFactory extends WidgetFactory<ScrollBanner>
 {
 	@Override

@@ -40,7 +40,7 @@ import com.google.gwt.dom.client.Element;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-@br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="maskedTextBox", library="adv")
+@br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="maskedTextBox", library="widgets")
 public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox> 
        implements HasDirectionFactory<MaskedTextBox>, HasNameFactory<MaskedTextBox>, 
                   HasChangeHandlersFactory<MaskedTextBox>, HasValueChangeHandlersFactory<MaskedTextBox>,
