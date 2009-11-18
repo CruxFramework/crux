@@ -63,8 +63,21 @@ public class GridFactory extends WidgetFactory<Grid>
 	{
 		Grid grid = new Grid(getColumnDefinitions(gridElem), getPageSize(gridElem), 
 				                               getRowSelectionModel(gridElem), getCellSpacing(gridElem), 
-				                               getAutoLoad(gridElem), getStretchColumns(gridElem), getHighlightRowOnMouseOver(gridElem));
+				                               getAutoLoad(gridElem), getStretchColumns(gridElem), getHighlightRowOnMouseOver(gridElem),
+				                               getEmptyDataFilling(gridElem));
 		return grid;
+	}
+	
+	private String getEmptyDataFilling(Element gridElem)
+	{
+		String emptyDataFilling = gridElem.getAttribute("_emptyDataFilling");
+		
+		if(emptyDataFilling != null && emptyDataFilling.trim().length() > 0)
+		{
+			return emptyDataFilling;
+		}
+		
+		return null;
 	}
 	
 	private boolean getHighlightRowOnMouseOver(Element gridElem)
@@ -204,7 +217,7 @@ public class GridFactory extends WidgetFactory<Grid>
 		{
 			for (Element colElem : colElems)
 			{
-				String columnType = colElem.getAttribute("_columnType");
+				String columnType = colElem.getAttribute("__tag");
 				String width = colElem.getAttribute("_width");
 				String strVisible = colElem.getAttribute("_visible");
 				String label = colElem.getAttribute("_label");
@@ -260,7 +273,8 @@ public class GridFactory extends WidgetFactory<Grid>
 		@TagAttributeDeclaration(value="cellSpacing", type=Integer.class, defaultValue="1"),
 		@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, defaultValue="false"),
 		@TagAttributeDeclaration(value="stretchColumns", type=Boolean.class, defaultValue="false"),
-		@TagAttributeDeclaration(value="highlightRowOnMouseOver", type=Boolean.class, defaultValue="false")
+		@TagAttributeDeclaration(value="highlightRowOnMouseOver", type=Boolean.class, defaultValue="false"),
+		@TagAttributeDeclaration(value="emptyDataFilling", type=String.class, defaultValue=" ")
 	})
 	public void processAttributes(WidgetFactoryContext<Grid> context) throws InterfaceConfigException
 	{
