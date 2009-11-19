@@ -321,6 +321,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 		String formatterName = dataColumn.getFormatter();
 		Object value = dataSource.getValue(key);
 		String str = emptyDataFilling;
+		boolean useEmptyDataStyle = true;
 		
 		if(value != null)
 		{
@@ -328,6 +329,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 			{
 				Formatter formatter = Screen.getFormatter(formatterName);
 				str = formatter.format(value);
+				useEmptyDataStyle = false;
 			}
 			else
 			{
@@ -335,11 +337,19 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 				if(str.length() > 0)
 				{
 					str = strValue;
+					useEmptyDataStyle = false;
 				}
 			}
 		}
 		
-		return new Label(str);
+		Label label = new Label(str);
+		
+		if(useEmptyDataStyle)
+		{
+			label.addStyleName("emptyData");
+		}		
+		
+		return label;
 	}
 	
 	@Override
