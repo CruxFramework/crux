@@ -18,6 +18,7 @@ package br.com.sysmap.crux.tools.htmltags.template;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -98,57 +99,79 @@ public class TemplatesScanner
 	{
 		for (URL url : urls)
 		{
-			Filter filter = new Filter()
+			if(existsFile(url))
 			{
-				public boolean accepts(String fileName)
+				Filter filter = new Filter()
 				{
-					if (fileName.endsWith(".template.xml"))
+					public boolean accepts(String fileName)
 					{
-						if (fileName.startsWith("/")) fileName = fileName.substring(1);
-						if (!ignoreScan(fileName.replace('/', '.')))
+						if (fileName.endsWith(".template.xml"))
 						{
-							Document template;
-							try
+							if (fileName.startsWith("/")) fileName = fileName.substring(1);
+							if (!ignoreScan(fileName.replace('/', '.')))
 							{
-								InputStream inputStream = getClass().getResourceAsStream(fileName);
-								if (inputStream != null)
+								Document template;
+								try
 								{
-									template = documentBuilder.parse(inputStream);
-								}
-								else
-								{
-									inputStream = getClass().getResourceAsStream("/"+fileName);
+									InputStream inputStream = getClass().getResourceAsStream(fileName);
 									if (inputStream != null)
 									{
 										template = documentBuilder.parse(inputStream);
 									}
 									else
 									{
-										template = documentBuilder.parse(new File(fileName));
+										inputStream = getClass().getResourceAsStream("/"+fileName);
+										if (inputStream != null)
+										{
+											template = documentBuilder.parse(inputStream);
+										}
+										else
+										{
+											template = documentBuilder.parse(new File(fileName));
+										}
 									}
+									Templates.registerTemplate(getTemplateId(fileName), template);
 								}
-								Templates.registerTemplate(getTemplateId(fileName), template);
+								catch (Exception e)
+								{
+									logger.error(messages.templatesScannerErrorParsingTemplateFile(fileName));
+									return false;
+								}
+								return true;
 							}
-							catch (Exception e)
-							{
-								logger.error(messages.templatesScannerErrorParsingTemplateFile(fileName));
-								return false;
-							}
-							return true;
 						}
+						return false;
 					}
-					return false;
+				};
+	
+				try
+				{
+					IteratorFactory.create(url, filter);
 				}
-			};
-
-			try
-			{
-				IteratorFactory.create(url, filter);
+				catch (IOException e)
+				{
+					throw new TemplateException(messages.templatesScannerInitializationError(e.getLocalizedMessage()), e);
+				}
 			}
-			catch (IOException e)
-			{
-				throw new TemplateException(messages.templatesScannerInitializationError(e.getLocalizedMessage()), e);
-			}
+		}
+	}
+	
+	/**
+	 * Returns true if exists a file or directory with the given URL
+	 * @param url
+	 * @return
+	 * @throws IOException 
+	 */
+	private boolean existsFile(URL url) throws RuntimeException
+	{
+		try
+		{
+			File file = new File(url.toURI());
+			return file.exists();
+		}
+		catch (URISyntaxException e)
+		{
+			throw new TemplateException(messages.templatesScanningURLError(url.toString(), e.getLocalizedMessage()), e);
 		}
 	}
 

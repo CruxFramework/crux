@@ -97,4 +97,7 @@ public interface HTMLTagsMessages
 
 	@DefaultMessage("[htmlTags 025] - Error generating children for template {0}. ")
 	String schemaGeneratorErrorGeneratingChildrenForTemplate(String localName);
+	
+	@DefaultMessage("[htmlTags 026] - Error scanning for templates. Scanned URL: {0}. Underlying error message: {1}")
+	String templatesScanningURLError(String url, String localizedMessage);
 }
