@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="dist" name="Crux-GWT-Widgets" basedir="../">
+<project default="dist" name="CruxGWTWidgets" basedir="../">
 
   <tstamp>
  	<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />

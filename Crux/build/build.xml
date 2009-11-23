@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="dist" name="Crux-Core" basedir="../">
+<project default="dist" name="Crux" basedir="../">
 
   <tstamp>
  	<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />

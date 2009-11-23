@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="jar" name="Crux-Themes" basedir="../">
+<project default="jar" name="CruxThemes" basedir="../">
 
 	<property name="srcdir" value="src" />
 	<property name="classesdir" value="bin" />
