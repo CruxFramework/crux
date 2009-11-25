@@ -1,4 +1,4 @@
-<project name="Crux-Showcase" basedir="../">
+<project name="CruxShowcase" basedir="../">
 
 	<property name="final.name" value="Crux-Showcase" />
 	<property name="src.dir" value="src" />
@@ -134,6 +134,12 @@
 			<arg value="DEBUG"/>
 			-->
 		</cruxcompile>
+	</target>
+	
+	<target name="delete-html-files">
+		<delete>
+			<fileset dir="${web.root}" includes="*.html"/>
+		</delete>
 	</target>
 
 </project>
