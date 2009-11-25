@@ -71,7 +71,9 @@
 								<a:item id="dynaTabsItem" label="Dyna Tabs" onClick="mainController.onClickDynaTabsItem" />
 							</a:item>
 							<a:item id="gridsItem" label="Grids">
-								<a:item id="simpleGridItem" label="Simple Grid" onClick="mainController.onClickSimpleGridItem" />
+								<a:item id="simpleGridItem" label="Simple" onClick="mainController.onClickSimpleGridItem" />
+								<a:item id="streamingGridItem" label="Streaming Data" onClick="mainController.onClickStreamingGridItem" />
+								<a:item id="widgetGridItem" label="Grid with Widgets" onClick="mainController.onClickWidgetGridItem" />
 							</a:item>
 							<a:item id="popupsItem" label="Popups">
 								<a:item id="confirmItem" label="Confirm" onClick="mainController.onClickConfirmItem" />

@@ -1,0 +1,9 @@
+<t:template 
+    xmlns:t="http://www.sysmap.com.br/templates"
+	xmlns:s="http://www.sysmap.com.br/templates/showcase"
+	library="showcase">
+
+	<s:sources/>
+	<s:source onLoadSource="#{pageName}SourcesController.loadDTO" title="View binded object source" id="contact"/>
+	<s:source onLoadSource="#{pageName}SourcesController.loadServiceImpl" title="View server side source" id="serviceImpl"/>
+</t:template>

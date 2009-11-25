@@ -6,7 +6,7 @@
 	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
-		<title>Simple Grid</title>
+		<title>Grid with Widgets</title>
 		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
 	</head>
 
@@ -14,7 +14,7 @@
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 		
-		<c:screen onLoad="simpleGridController.onLoad" useController="simpleGridController,simpleGridSourcesController" 
+		<c:screen onLoad="widgetGridController.onLoad" useController="widgetGridController,widgetGridSourcesController" 
 			useDataSource="simpleGridDataSource" useFormatter="birthday"/>
 		
 		<center>
@@ -27,23 +27,28 @@
 								<b:label id="title" text="Contacts" styleName="SpecialLabel"/>
 							</b:cell>
 							<b:cell horizontalAlignment="right" verticalAlignment="middle">
-								<a:sequentialPager id="pager" pageable="simpleGrid"/>	
+								<a:sequentialPager id="pager" pageable="widgetGrid"/>	
 							</b:cell>				 
 						</b:horizontalPanel>
 					</a:widget>
 				</a:title>
 				<a:body>
 					<a:widget>
-						<a:grid id="simpleGrid" height="200" width="100%" dataSource="simpleGridDataSource" 
+						<a:grid id="widgetGrid" height="200" width="100%" dataSource="simpleGridDataSource" 
 							stretchColumns="true" pageSize="7" highlightRowOnMouseOver="true">
 							<a:dataColumn key="name" label="Name"/>
 							<a:dataColumn key="phone" label="Phone"/>
 							<a:dataColumn key="birthday" label="Birthday" formatter="birthday"/>
+							<a:widgetColumn>
+								<b:image id="call" url="../style/img/phone.gif" 
+									onClick="widgetGridController.onClickCall" tooltip="Click to make a call"
+									style="cursor:pointer"/>
+							</a:widgetColumn>
 						</a:grid>
 					</a:widget>				
 				</a:body>
 			</a:titlePanel>
-	
+			
 			<s:gridSources pageName="simpleGrid"/>
 	
 		</center>						

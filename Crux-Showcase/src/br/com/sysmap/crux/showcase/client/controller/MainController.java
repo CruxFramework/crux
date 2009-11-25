@@ -35,6 +35,8 @@ public class MainController {
 	private static final String CONTEXT_TAB = "context";
 	private static final String I18N_TAB = "i18n";
 	private static final String SIMPLE_GRID_TAB = "simpleGrid";
+	private static final String STREAMING_GRID_TAB = "streamingGrid";
+	private static final String WIDGET_GRID_TAB = "widgetGrid";
 	
 	@Create
 	protected MainScreen screen;
@@ -162,6 +164,16 @@ public class MainController {
 	@Expose
 	public void onClickSimpleGridItem(){
 		screen.getTabs().openTab(SIMPLE_GRID_TAB, "Simple Grid", SIMPLE_GRID_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickStreamingGridItem(){
+		screen.getTabs().openTab(STREAMING_GRID_TAB, "Streaming Data Grid", STREAMING_GRID_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickWidgetGridItem(){
+		screen.getTabs().openTab(WIDGET_GRID_TAB, "Grid with Widgets", WIDGET_GRID_TAB + HTML, true, false);
 	}
 	
 	protected static interface MainScreen extends ScreenWrapper {

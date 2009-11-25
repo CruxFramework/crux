@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,8 +18,8 @@ import br.com.sysmap.crux.showcase.client.remote.SVNService;
 
 public class SVNServiceImpl implements SVNService{
 	
-	private static final Log log = LogFactory.getLog(SVNServiceImpl.class);
-	
+	private static final long TOKEN = new Date().getTime(); 
+	private static final Log log = LogFactory.getLog(SVNServiceImpl.class);	
 	private static final String BASE_XML_URL = "http://crux-framework.googlecode.com/svn/trunk/Crux-Showcase/war/";
 	private static final String BASE_MODULE_URL = "http://crux-framework.googlecode.com/svn/trunk/Crux-Showcase/src/br/com/sysmap/crux/showcase/";
 	
@@ -41,12 +42,14 @@ public class SVNServiceImpl implements SVNService{
 	private String loadSourceCode(final String url, boolean escapeHtml, String type){
 		
 		BufferedReader reader = null;
+		
 		try{
+		
 			String result = cachedResources.get(url);
 			
 			if (result == null)
 			{
-				URL resourceURL = new URL(url); 
+				URL resourceURL = new URL(url + "?" + TOKEN); 
 
 				reader = new BufferedReader(new InputStreamReader(resourceURL.openStream()));
 				String line;

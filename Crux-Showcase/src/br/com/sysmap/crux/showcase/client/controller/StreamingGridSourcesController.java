@@ -2,8 +2,8 @@ package br.com.sysmap.crux.showcase.client.controller;
 
 import br.com.sysmap.crux.core.client.controller.Controller;
 
-@Controller("simpleGridSourcesController")
-public class SimpleGridSourcesController extends AbstractGridSourcesController {
+@Controller("streamingGridSourcesController")
+public class StreamingGridSourcesController extends AbstractGridSourcesController {
 	
 	@Override
 	protected String getDtoFilePath()
@@ -14,6 +14,6 @@ public class SimpleGridSourcesController extends AbstractGridSourcesController {
 	@Override
 	protected String getServiceImplFilePath()
 	{
-		return "SimpleGridServiceImpl.java";
+		return "StreamingGridServiceImpl.java";
 	}
 }

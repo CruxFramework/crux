@@ -7,7 +7,7 @@ import br.com.sysmap.crux.showcase.client.remote.SimpleGridService;
 
 public class SimpleGridServiceImpl implements SimpleGridService {
 	
-	private static final String[] NAMES = {
+	static final String[] NAMES = {
 		"Jack", "Rose", "Albert", "Pam", "Diana", "Joe",
 		"Suse", "Robert", "David", "Tom", "Betty", "Bill",
 		"Rian", "Phill", "Moe", "Lisa", "Herbert", "Daniel",
@@ -15,7 +15,7 @@ public class SimpleGridServiceImpl implements SimpleGridService {
 		"Monica", "Sarah", "Cindy", "Justin", "Frank", "Roy"		
 	};
 	
-	private static int COUNT = NAMES.length;
+	static final int COUNT = NAMES.length;
 	
 	public Contact[] getContactList() {
 		
@@ -33,14 +33,14 @@ public class SimpleGridServiceImpl implements SimpleGridService {
 		return result;
 	}
 
-	private String generatePhone(int i) {
+	static String generatePhone(int i) {
 		int m = (i % 9) + 1;
 		int n = (i % 9);
 		return "" +  m + n + m + " - " + n + m + n + m;
 	}
 
 	@SuppressWarnings(/*using old constructor only for simplicity*/"deprecation")
-	private Date generateDate(int i) {
+	static Date generateDate(int i) {
 		return new Date(2009, i % 12, (i % 28) + 1);
 	}
 }
