@@ -34,7 +34,7 @@ public class MainController {
 	private static final String SERVER_COMMUNICATION_TAB = "serverCommunication";
 	private static final String CONTEXT_TAB = "context";
 	private static final String I18N_TAB = "i18n";
-	private static final String DATA_GRID_TAB = "dataGrid";
+	private static final String SIMPLE_GRID_TAB = "simpleGrid";
 	
 	@Create
 	protected MainScreen screen;
@@ -160,8 +160,8 @@ public class MainController {
 	}
 	
 	@Expose
-	public void onClickDataGridItem(){
-		screen.getTabs().openTab(DATA_GRID_TAB, "Data Grid", DATA_GRID_TAB + HTML, true, false);
+	public void onClickSimpleGridItem(){
+		screen.getTabs().openTab(SIMPLE_GRID_TAB, "Simple Grid", SIMPLE_GRID_TAB + HTML, true, false);
 	}
 	
 	protected static interface MainScreen extends ScreenWrapper {

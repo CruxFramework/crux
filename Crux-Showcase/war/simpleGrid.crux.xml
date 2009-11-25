@@ -1,0 +1,51 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
+
+	<head>
+		<title>Simple Grid</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+		
+		<c:screen onLoad="simpleGridController.onLoad" useController="simpleGridController" 
+			useDataSource="simpleGridDataSource" useFormatter="birthday"/>
+		
+		<center>
+		
+			<a:titlePanel id="tPanel" width="500">
+				<a:title>
+					<a:widget>
+						<b:horizontalPanel id="hPanel" width="100%">
+							<b:cell horizontalAlignment="left">
+								<b:label id="title" text="Contacts" styleName="SpecialLabel"/>
+							</b:cell>
+							<b:cell horizontalAlignment="right" verticalAlignment="middle">
+								<a:sequentialPager id="pager" pageable="simpleGrid"/>	
+							</b:cell>							 
+						</b:horizontalPanel>
+					</a:widget>
+				</a:title>
+				<a:body>
+					<a:widget>
+						<a:grid id="simpleGrid" height="200" width="100%" dataSource="simpleGridDataSource" 
+							stretchColumns="true" pageSize="7" highlightRowOnMouseOver="true">
+							<a:dataColumn key="name" label="Name"/>
+							<a:dataColumn key="phone" label="Phone"/>
+							<a:dataColumn key="birthday" label="Birthday" formatter="birthday"/>
+						</a:grid>
+					</a:widget>				
+				</a:body>
+			</a:titlePanel>
+	
+		<s:simpleGridSources/>		
+	
+		</center>						
+	</body>	
+</html>

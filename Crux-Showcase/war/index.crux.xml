@@ -71,7 +71,7 @@
 								<a:item id="dynaTabsItem" label="Dyna Tabs" onClick="mainController.onClickDynaTabsItem" />
 							</a:item>
 							<a:item id="gridsItem" label="Grids">
-								<a:item id="dataGridItem" label="Data Grid" onClick="mainController.onClickDataGridItem" />
+								<a:item id="simpleGridItem" label="Simple Grid" onClick="mainController.onClickSimpleGridItem" />
 							</a:item>
 							<a:item id="popupsItem" label="Popups">
 								<a:item id="confirmItem" label="Confirm" onClick="mainController.onClickConfirmItem" />

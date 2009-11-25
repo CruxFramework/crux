@@ -31,7 +31,7 @@
 			<a:widget>
 				<a:dynaTabs id="dynaTabs" width="100%" height="100%">
 					<a:tab url="http://crux-framework.googlecode.com/" id="crux" label="Crux"/>
-					<a:tab url="http://www.sysmap.com.br/" id="sysmap" label="Sysmap" closeable="false"/>
+					<a:tab url="http://www.sysmap.com.br/english/" id="sysmap" label="Sysmap" closeable="false"/>
 				</a:dynaTabs>
 			</a:widget>
 		</a:decoratedPanel>

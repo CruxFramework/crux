@@ -1,3 +1,9 @@
+CENTER
+{
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
 TEXTAREA
 {
 	margin-bottom: 10px;
@@ -20,6 +26,13 @@ TEXTAREA
 {
 	font-size: 11px !important;
 	font-family: monospace;
+}
+.SpecialLabel
+{
+	font-size: 11px;
+	font-weight: bold;
+	color: #6C83C3;
+	font-family: Verdana, Arial, Helvetica;
 }
 #cruxSplashScreen
 {
