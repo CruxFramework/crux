@@ -336,7 +336,7 @@
 
 .crux-ScrollBanner .message
 {
-	color:#0066CC;
+	color:#6C83C3;
 	font-size:12px;
 	font-weight:bold;
 	font-family:Verdana,Arial,Helvetica;
@@ -346,7 +346,7 @@
 
 .crux-ScrollBanner .messageCount
 {
-	color:#0066CC;
+	color:#6C83C3;
 	font-size:12px;
 	font-weight:bold;
 	font-family:Verdana,Arial,Helvetica;
@@ -769,7 +769,7 @@
 {
 	font-size: 11px;
 	font-weight: bold;
-	color: #0066CC;
+	color: #6C83C3;
 	text-align: left;
 	font-family: Verdana, Arial, Helvetica;
 	background: url(../img/title-panel-blue.gif) no-repeat top center;
@@ -950,7 +950,6 @@
 .crux-Grid .row-highlighted .cellWrapper, .crux-Grid .row-highlighted .cell
 {
 	background-color: #FFFFE1;
-	cursor: pointer;
 }
 .crux-Grid .columnHeadersRow
 {
@@ -972,7 +971,7 @@
 }
 .crux-Grid .columnHeader .label
 {
-	color:#5090C0;
+	color:#6C83C3;
 	font-family: Arial Unicode MS, Arial, sans-serif;
 	font-size:11px;
 	font-weight:bold;
