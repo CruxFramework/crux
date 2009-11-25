@@ -101,6 +101,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 			{
 				public void execute()
 				{
+					loaded = true;
 					render();
 				}
 			});
@@ -118,6 +119,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 			{
 				public void execute(int startRecord, int endRecord)
 				{
+					loaded = true;
 					render();
 				}
 			});
@@ -134,8 +136,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 	{
 		if(!this.loaded)
 		{
-			this.loaded = true;
-			
 			if(this.dataSource instanceof LocalDataSource)
 			{
 				LocalDataSource<?, ?> local = (LocalDataSource<?, ?>) this.dataSource;
@@ -385,7 +385,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 	
 	private void updatePager()
 	{
-		if(this.dataSource != null && this.pager != null)
+		if(this.dataSource != null && this.pager != null && this.loaded)
 		{
 			if(this.pager != null)
 			{
