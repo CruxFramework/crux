@@ -149,7 +149,6 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 */
 	private void generateProccessChildrenMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType) throws Exception
 	{
-		resetVariableNameSuffixCounter();
 		Method method = factoryClass.getMethod("processChildren", new Class[]{WidgetFactoryContext.class});
 
 		// TODO tratar instanciamento qdo for inner classe não estatica.
@@ -235,7 +234,6 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	{
 		Map<String, String> evtBinderVariables = new HashMap<String, String>();
 		
-		resetVariableNameSuffixCounter();
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void processEvents("+getClassSourceName(WidgetFactoryContext.class)
 				         +"<"+ getClassSourceName(widgetType)+"> context) throws InterfaceConfigException{"); 
@@ -388,15 +386,23 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		if (superclass!= null && !superclass.equals(Object.class))
 		{
 			Map<String, String> evtBinderVariablesSubClasses = new HashMap<String, String>();
-			result.append(generateProccessEventsBlock(logger, superclass, evtBinderVariablesSubClasses)+"\n");
-			evtBinderVariables.putAll(evtBinderVariablesSubClasses);
+			String superClassBlock = generateProccessEventsBlock(logger, superclass, evtBinderVariablesSubClasses);
+			if (result.indexOf(superClassBlock) < 0)
+			{
+				result.append(superClassBlock+"\n");
+				evtBinderVariables.putAll(evtBinderVariablesSubClasses);
+			}
 		}
 		Class<?>[] interfaces = factoryClass.getInterfaces();
 		for (Class<?> interfaceClass : interfaces)
 		{
 			Map<String, String> evtBinderVariablesSubClasses = new HashMap<String, String>();
-			result.append(generateProccessEventsBlock(logger, interfaceClass, evtBinderVariablesSubClasses)+"\n");
-			evtBinderVariables.putAll(evtBinderVariablesSubClasses);
+			String superClassBlock = generateProccessEventsBlock(logger, interfaceClass, evtBinderVariablesSubClasses);
+			if (result.indexOf(superClassBlock) < 0)
+			{
+				result.append(superClassBlock+"\n");
+				evtBinderVariables.putAll(evtBinderVariablesSubClasses);
+			}
 		}
 		
 		String events = result.toString();
@@ -862,14 +868,6 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	private int getVariableNameSuffixCounter()
 	{
 		return variableNameSuffixCounter++;
-	}
-
-	/**
-	 * 
-	 */
-	private void resetVariableNameSuffixCounter()
-	{
-		variableNameSuffixCounter = 0;
 	}
 
 	private String getProcessingMethodNameForProcessorMethod(Method processMethod)
