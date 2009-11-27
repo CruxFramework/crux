@@ -23,9 +23,9 @@ import br.com.sysmap.crux.core.client.rpc.AsyncCallbackAdapter;
  */
 public class RemoteDataSourceLoadAsyncCallbackAdapter extends AsyncCallbackAdapter<RemoteDataSourceConfiguration>
 {
-	public RemoteDataSourceLoadAsyncCallbackAdapter(RemoteDataSource<?, ?> eventHandler)
+	public RemoteDataSourceLoadAsyncCallbackAdapter(RemoteDataSource<?, ?> dataSource)
 	{
-		super(eventHandler);
+		super(dataSource);
 	}
 
 	/**
