@@ -19,12 +19,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.timeout.HasTimeoutHandlers;
 import br.com.sysmap.crux.widgets.client.event.timeout.TimeoutEvent;
 import br.com.sysmap.crux.widgets.client.event.timeout.TimeoutHandler;
 import br.com.sysmap.crux.widgets.client.util.StringUtils;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 
@@ -68,6 +72,12 @@ public class Timer extends Composite implements HasTimeoutHandlers
 		{
 			start();
 		}
+		Screen.addCloseHandler(new CloseHandler<Window>(){
+			public void onClose(CloseEvent<Window> event)
+			{
+				stop();
+			}
+		});
 	}	
 
 	/**
