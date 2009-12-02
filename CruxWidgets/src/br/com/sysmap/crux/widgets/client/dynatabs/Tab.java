@@ -24,6 +24,8 @@ import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.widgets.client.event.openclose.HasBeforeCloseHandlers;
 import br.com.sysmap.crux.widgets.client.js.JSWindow;
+import br.com.sysmap.crux.widgets.client.util.FrameStateCallback;
+import br.com.sysmap.crux.widgets.client.util.FrameUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -48,6 +50,7 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	private int insertionIndex;
 	private TabInternalJSObjects tabObjetcs;
 	private FlapPanel flapPanel;
+	private boolean canClose = false;
 
 	/**
 	 * Constructor
@@ -69,11 +72,22 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 		
 		this.frame = new Frame(url);
 		this.frame.setHeight("100%");
-		this.frame.getElement().setPropertyString("frameBorder", "no");
-		this.frame.getElement().setPropertyString("border", "0");
-		this.frame.getElement().setPropertyString("id", id + ".window");
-		this.frame.getElement().setPropertyString("name", id + ".window");
+		Element frameElement = getElement();
+		frameElement.setPropertyString("frameBorder", "no");
+		frameElement.setPropertyString("border", "0");
+		frameElement.setPropertyString("id", id + ".window");
+		frameElement.setPropertyString("name", id + ".window");
 
+		if (closeable)
+		{
+			FrameUtils.registerStateCallback(frameElement, new FrameStateCallback(){
+				public void onComplete()
+				{
+					canClose = true;
+				}
+			}, 20000);
+		}
+		
 		tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
 	}
 
@@ -138,6 +152,15 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 		return closeable;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	boolean canClose()
+	{
+		return canClose;
+	}
+	
 	/**
 	 * @return the frame
 	 */

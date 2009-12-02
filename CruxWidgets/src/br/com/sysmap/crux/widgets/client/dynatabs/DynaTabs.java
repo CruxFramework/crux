@@ -149,19 +149,23 @@ public class DynaTabs extends Composite
 	 */
 	public void closeTab(String tabId, boolean skipBeforeCloseHandlers)
 	{
-		if(skipBeforeCloseHandlers)
+		Tab tab = getTab(tabId);
+		if (tab.canClose())
 		{
-			doCloseTab(tabId);
-		}
-		else
-		{
-			BeforeCloseEvent evt = BeforeCloseEvent.fire(getTab(tabId));
-			
-			if (!evt.isCanceled())
+			if(skipBeforeCloseHandlers)
 			{
 				doCloseTab(tabId);
 			}
-		}		
+			else
+			{
+				BeforeCloseEvent evt = BeforeCloseEvent.fire(tab);
+
+				if (!evt.isCanceled())
+				{
+					doCloseTab(tabId);
+				}
+			}
+		}
 	}
 	
 	/**

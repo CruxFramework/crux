@@ -122,15 +122,10 @@ public class CruxInternalPopupController
 			
 			if (data.isCloseable())
 			{
-				frameElement.setAttribute("canClose", "false");
-				FrameUtils.registerStateCallback(frameElement, new FrameStateCallback(){
-					public void onComplete()
-					{
-						frameElement.setAttribute("canClose", "true");
-					}
-				});
-				FocusPanel focusPanel = new FocusPanel();
+				final FocusPanel focusPanel = new FocusPanel();
 				focusPanel.setStyleName("closeButton");
+				focusPanel.addStyleDependentName("disabled");
+				
 				focusPanel.addClickHandler(new ClickHandler()
 				{
 					public void onClick(ClickEvent event)
@@ -141,6 +136,15 @@ public class CruxInternalPopupController
 						}
 					}
 				});
+				frameElement.setAttribute("canClose", "false");
+				FrameUtils.registerStateCallback(frameElement, new FrameStateCallback(){
+					public void onComplete()
+					{
+						focusPanel.removeStyleDependentName("disabled");
+						frameElement.setAttribute("canClose", "true");
+					}
+				}, 20000);
+
 				Label label = new Label(" ");
 				label.getElement().getStyle().setProperty("fontSize", "0px");
 				label.getElement().getStyle().setProperty("fontFamily", "monospace");
