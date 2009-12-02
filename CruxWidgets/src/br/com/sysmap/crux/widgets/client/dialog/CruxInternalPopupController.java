@@ -28,7 +28,10 @@ import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
+import br.com.sysmap.crux.widgets.client.util.FrameStateCallback;
+import br.com.sysmap.crux.widgets.client.util.FrameUtils;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -108,22 +111,34 @@ public class CruxInternalPopupController
 			frame.setStyleName("frame");
 			frame.setHeight("100%");
 			frame.setWidth("100%");
-			frame.getElement().setPropertyString("frameBorder", "no");
-			frame.getElement().setPropertyInt("border", 0);
-			frame.getElement().setPropertyInt("marginWidth", 0);
-			frame.getElement().setPropertyInt("marginHeight", 0);
-			frame.getElement().setPropertyInt("vspace", 0);
-			frame.getElement().setPropertyInt("hspace", 0);
-
+			
+			final Element frameElement = frame.getElement();
+			frameElement.setPropertyString("frameBorder", "no");
+			frameElement.setPropertyInt("border", 0);
+			frameElement.setPropertyInt("marginWidth", 0);
+			frameElement.setPropertyInt("marginHeight", 0);
+			frameElement.setPropertyInt("vspace", 0);
+			frameElement.setPropertyInt("hspace", 0);
+			
 			if (data.isCloseable())
 			{
+				frameElement.setAttribute("canClose", "false");
+				FrameUtils.registerStateCallback(frameElement, new FrameStateCallback(){
+					public void onComplete()
+					{
+						frameElement.setAttribute("canClose", "true");
+					}
+				});
 				FocusPanel focusPanel = new FocusPanel();
 				focusPanel.setStyleName("closeButton");
 				focusPanel.addClickHandler(new ClickHandler()
 				{
 					public void onClick(ClickEvent event)
 					{
-						closePopup();
+						if (canClose(frameElement))
+						{
+							closePopup();
+						}
 					}
 				});
 				Label label = new Label(" ");
@@ -147,6 +162,17 @@ public class CruxInternalPopupController
 			Crux.getErrorHandler().handleError(e);
 			Screen.unblockToUser();
 		}		
+	}
+
+	/**
+	 * 
+	 * @param frameElement
+	 * @return
+	 */
+	protected boolean canClose(Element frameElement)
+	{
+		String canClose = frameElement.getAttribute("canClose");
+		return canClose != null && Boolean.parseBoolean(canClose);
 	}
 
 	/**
