@@ -233,6 +233,10 @@
 	margin-right: 5px;
 	cursor: pointer;
 }
+.crux-Popup .closeButton-disabled
+{
+	cursor: wait;
+}
 
 /******************************************************************************
 	Confirm
@@ -593,6 +597,10 @@
 	margin-top: 3px;
 	cursor: pointer;
 	margin-right: 0px;
+}
+.crux-DynaTabs .flapCloseButton-disable 
+{
+	cursor: wait;
 }
 
 /******************************************************************************
