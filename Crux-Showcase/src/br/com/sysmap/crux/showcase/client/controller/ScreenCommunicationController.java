@@ -2,8 +2,6 @@ package br.com.sysmap.crux.showcase.client.controller;
 
 import java.util.Date;
 
-import com.google.gwt.user.client.ui.Label;
-
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
@@ -11,6 +9,8 @@ import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Invoker;
 import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
 import br.com.sysmap.crux.core.client.screen.Screen;
+
+import com.google.gwt.user.client.ui.Label;
 
 @Controller("screenCommunicationController")
 public class ScreenCommunicationController {

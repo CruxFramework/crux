@@ -34,6 +34,31 @@ TEXTAREA
 	color: #6C83C3;
 	font-family: Verdana, Arial, Helvetica;
 }
+.CommentsTable TH
+{
+	font-family:Arial, Helvetica;
+	font-weight:bold;
+	font-size:12px;
+	color:#6C83C3;
+}
+.CommentsTable 
+{
+	width: 100%;
+}
+.CommentsTable TD
+{
+	font-family:Arial, Helvetica;
+	font-size:11px;
+}
+.crux-DecoratedPanel .middleCenterCell
+{
+	font-family:Arial Unicode MS,Arial,sans-serif;
+	font-size:12px;
+}
+.crux-Grid
+{
+	width: 99.8% !important;
+}
 #cruxSplashScreen
 {
 	background-color: #FFFFFF;

@@ -74,6 +74,7 @@
 								<a:item id="simpleGridItem" label="Simple" onClick="mainController.onClickSimpleGridItem" />
 								<a:item id="streamingGridItem" label="Streaming Data" onClick="mainController.onClickStreamingGridItem" />
 								<a:item id="widgetGridItem" label="Grid with Widgets" onClick="mainController.onClickWidgetGridItem" />
+								<a:item id="gridEventsItem" label="Grid Events" onClick="mainController.onClickGridEventsItem" />
 							</a:item>
 							<a:item id="popupsItem" label="Popups">
 								<a:item id="confirmItem" label="Confirm" onClick="mainController.onClickConfirmItem" />

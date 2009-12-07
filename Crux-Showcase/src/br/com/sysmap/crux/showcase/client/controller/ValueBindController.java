@@ -2,13 +2,13 @@ package br.com.sysmap.crux.showcase.client.controller;
 
 import java.util.Date;
 
-import com.google.gwt.user.client.Window;
-
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.controller.ScreenBind;
 import br.com.sysmap.crux.core.client.controller.ValueObject;
+
+import com.google.gwt.user.client.Window;
 
 @Controller("valueBindController")
 public class ValueBindController {

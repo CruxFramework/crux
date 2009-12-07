@@ -2,11 +2,11 @@ package br.com.sysmap.crux.showcase.client.formatter;
 
 import java.util.Date;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.InvalidFormatException;
 import br.com.sysmap.crux.core.client.formatter.annotation.FormatterName;
+
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 @FormatterName("birthday")
 public class BirthdayFormatter implements Formatter {
@@ -17,7 +17,7 @@ public class BirthdayFormatter implements Formatter {
 			return "";
 		}
 		
-		return DateTimeFormat.getFormat("MMM, d").format((Date) input);
+		return DateTimeFormat.getFormat("MMMM, d").format((Date) input);
 	}
 
 	public Object unformat(String input) throws InvalidFormatException {
@@ -26,6 +26,6 @@ public class BirthdayFormatter implements Formatter {
 			return "";
 		}
 		
-		return DateTimeFormat.getFormat("MMM, d").parse(input);
+		return DateTimeFormat.getFormat("MMMM, d").parse(input);
 	}
 }
