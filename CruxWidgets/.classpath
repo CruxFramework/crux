@@ -6,6 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CruxGWTWidgets"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CruxHtmlTags"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-dev-windows.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
