@@ -127,7 +127,14 @@ public class FrameUtils
 		
 		private native String getFrameState(Element frameElement)/*-{
 			var element = frameElement;
-			return element.contentDocument.readyState;
+			if (element != null && element.contentDocument != null)
+			{
+				return element.contentDocument.readyState;
+			}
+			else
+			{
+				return '';
+			}
 		}-*/;
 		
 		protected abstract boolean isLoaded(String frameState);
