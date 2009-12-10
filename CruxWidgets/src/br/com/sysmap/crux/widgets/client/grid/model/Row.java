@@ -55,7 +55,7 @@ public class Row
 		if(cellWidget != null)
 		{
 			grid.registerWidget(cellWidget, this);
-		}		
+		}
 	}
 	
 	Cell getCell(int column)

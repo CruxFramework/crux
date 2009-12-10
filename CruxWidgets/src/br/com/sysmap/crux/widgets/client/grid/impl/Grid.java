@@ -8,6 +8,7 @@ import java.util.List;
 import br.com.sysmap.crux.core.client.datasource.BindableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.HasDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSourceCallback;
 import br.com.sysmap.crux.core.client.datasource.MeasurableDataSource;
@@ -24,6 +25,9 @@ import br.com.sysmap.crux.widgets.client.AdvancedWidgetMessages;
 import br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectEvent;
 import br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectHandler;
 import br.com.sysmap.crux.widgets.client.event.row.HasBeforeRowSelectHandlers;
+import br.com.sysmap.crux.widgets.client.event.row.RowClickEvent;
+import br.com.sysmap.crux.widgets.client.event.row.RowDoubleClickEvent;
+import br.com.sysmap.crux.widgets.client.event.row.RowRenderEvent;
 import br.com.sysmap.crux.widgets.client.grid.model.AbstractGrid;
 import br.com.sysmap.crux.widgets.client.grid.model.Cell;
 import br.com.sysmap.crux.widgets.client.grid.model.ColumnDefinition;
@@ -48,7 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A paged sortable data grid
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRowSelectHandlers {	
+public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<EditablePagedDataSource>, HasBeforeRowSelectHandlers {	
 
 	private int pageSize;
 	private EditablePagedDataSource dataSource;
@@ -567,7 +571,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 	}
 	
 	@Override
-	public List<DataRow> getRows()
+	public List<DataRow> getCurrentPageRows()
 	{
 		List<DataRow> result = new ArrayList<DataRow>();
 		
@@ -624,5 +628,23 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasBeforeRo
 	public HandlerRegistration addBeforeRowSelectHandler(BeforeRowSelectHandler handler)
 	{
 		return addHandler(handler, BeforeRowSelectEvent.getType());
+	}
+
+	@Override
+	protected void fireRowRenderEvent(DataRow row)
+	{
+		RowRenderEvent.fire(this, row);
+	}
+
+	@Override
+	protected void fireRowClickEvent(DataRow row)
+	{
+		RowClickEvent.fire(this, row);
+	}
+
+	@Override
+	protected void fireRowDoubleClickEvent(DataRow row)
+	{
+		RowDoubleClickEvent.fire(this, row);
 	}
 }

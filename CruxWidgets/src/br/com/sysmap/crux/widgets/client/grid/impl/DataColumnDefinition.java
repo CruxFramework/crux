@@ -1,9 +1,9 @@
 package br.com.sysmap.crux.widgets.client.grid.impl;
 
+import br.com.sysmap.crux.widgets.client.grid.model.ColumnDefinition;
+
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
-
-import br.com.sysmap.crux.widgets.client.grid.model.ColumnDefinition;
 
 public class DataColumnDefinition extends ColumnDefinition
 {

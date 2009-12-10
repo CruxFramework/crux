@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.event.row;
 
-import br.com.sysmap.crux.widgets.client.grid.model.Row;
+import br.com.sysmap.crux.widgets.client.grid.impl.DataRow;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -28,13 +28,13 @@ public class BeforeRowSelectEvent extends GwtEvent<BeforeRowSelectHandler>{
 
 	private static Type<BeforeRowSelectHandler> TYPE = new Type<BeforeRowSelectHandler>();
 	private HasBeforeRowSelectHandlers source;
-	private Row row;
+	private DataRow row;
 	private boolean canceled;
 
 	/**
 	 * 
 	 */
-	public BeforeRowSelectEvent(HasBeforeRowSelectHandlers source, Row row)
+	public BeforeRowSelectEvent(HasBeforeRowSelectHandlers source, DataRow row)
 	{
 		this.source = source;
 		this.row = row;
@@ -68,7 +68,7 @@ public class BeforeRowSelectEvent extends GwtEvent<BeforeRowSelectHandler>{
 		return TYPE;
 	}
 	
-	public static BeforeRowSelectEvent fire(HasBeforeRowSelectHandlers source, Row row)
+	public static BeforeRowSelectEvent fire(HasBeforeRowSelectHandlers source, DataRow row)
 	{
 		BeforeRowSelectEvent event = new BeforeRowSelectEvent(source, row);
 		source.fireEvent(event);
@@ -78,7 +78,7 @@ public class BeforeRowSelectEvent extends GwtEvent<BeforeRowSelectHandler>{
 	/**
 	 * @return the row
 	 */
-	public Row getRow()
+	public DataRow getRow()
 	{
 		return row;
 	}

@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.event.row;
 
-import br.com.sysmap.crux.widgets.client.grid.model.Row;
+import br.com.sysmap.crux.widgets.client.grid.impl.DataRow;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -28,12 +28,12 @@ public class RowRenderEvent extends GwtEvent<RowRenderHandler>{
 
 	private static Type<RowRenderHandler> TYPE = new Type<RowRenderHandler>();
 	private HasRowRenderHandlers source;
-	private Row row;
+	private DataRow row;
 
 	/**
 	 * 
 	 */
-	public RowRenderEvent(HasRowRenderHandlers source, Row row)
+	public RowRenderEvent(HasRowRenderHandlers source, DataRow row)
 	{
 		this.source = source;
 		this.row = row;
@@ -67,7 +67,7 @@ public class RowRenderEvent extends GwtEvent<RowRenderHandler>{
 		return TYPE;
 	}
 	
-	public static RowRenderEvent fire(HasRowRenderHandlers source, Row row)
+	public static RowRenderEvent fire(HasRowRenderHandlers source, DataRow row)
 	{
 		RowRenderEvent event = new RowRenderEvent(source, row);
 		source.fireEvent(event);
@@ -77,7 +77,7 @@ public class RowRenderEvent extends GwtEvent<RowRenderHandler>{
 	/**
 	 * @return the row
 	 */
-	public Row getRow()
+	public DataRow getRow()
 	{
 		return row;
 	}

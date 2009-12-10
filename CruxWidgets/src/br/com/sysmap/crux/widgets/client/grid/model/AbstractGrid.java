@@ -195,7 +195,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * Gets all grid rows
 	 * @return a <code>List</code> containing the rows
 	 */
-	public abstract List<R> getRows(); 
+	public abstract List<R> getCurrentPageRows();
 	
 	/**
 	 * Repaints the grid
@@ -393,29 +393,20 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * Fires a row click event
 	 * @param row
 	 */
-	void fireRowClickEvent(R row)
-	{
-		RowClickEvent.fire(this, row);
-	}
-	
+	protected abstract void fireRowClickEvent(R row);
+		
 	/**
 	 * Fires a row double click event
 	 * @param row
 	 */
-	void fireRowDoubleClickEvent(R row)
-	{
-		RowDoubleClickEvent.fire(this, row);
-	}	
-
+	protected abstract void fireRowDoubleClickEvent(R row);
+	
 	/**
 	 * Fires a row rendering event
 	 * @param row
 	 */
-	void fireRowRenderEvent(R row)
-	{
-		RowRenderEvent.fire(this, row);
-	}
-	
+	protected abstract void fireRowRenderEvent(R row);
+		
 	/**
 	 * Access for the grid table element
 	 * @return
