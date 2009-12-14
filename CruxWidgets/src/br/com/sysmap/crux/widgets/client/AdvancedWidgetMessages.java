@@ -36,4 +36,22 @@ public interface AdvancedWidgetMessages extends Messages
 
 	@DefaultMessage("[advanced-widgets - 005] - Could not create widget for grid column ''{0}''")
 	String errorCreatingWidgetForColumn(String key);
+	
+	@DefaultMessage("[advanced-widgets - 006] - Found a null element reference when trying to modify it''s styleName property.")
+	String nullElementAtSetStyleName();
+	
+	@DefaultMessage("[advanced-widgets - 007] - Empty strings can not be used as a styleName property value.")
+	String emptyStringAsStyleNameValue();
+	
+	@DefaultMessage("[advanced-widgets - 008] - It is not possible unregister a column definition.")
+	String removingColumnDefinitionByIterator();
+	
+	@DefaultMessage("[advanced-widgets - 009] - There is no sibling tab with the id ''{0}''")
+	String tabsControllerNoSiblingTabFound(String tabId);
+	
+	@DefaultMessage("[advanced-widgets - 010] - There is no tab with the id ''{0}''")
+	String tabsControllerNoTabFound(String tabId);
+	
+	@DefaultMessage("[advanced-widgets - 011] - It is not possible remove a grid row.")
+	String gridDoesNotAllowRemoveRow();	
 }

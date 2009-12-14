@@ -19,6 +19,7 @@ import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.widgets.client.AdvancedWidgetMessages;
 import br.com.sysmap.crux.widgets.client.js.JSWindow;
 
 import com.google.gwt.core.client.GWT;
@@ -48,7 +49,7 @@ public class CruxInternalDynaTabsController
 		Element tabIFrame = getSiblingTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new ModuleComunicationException("There is no sibling tab with the id [" + tabId + "]"); // TODO - Gessé - add message here
+			throw new ModuleComunicationException(getMessages().tabsControllerNoSiblingTabFound(tabId));
 		}
 	
 		return retrieveTabWindowAndInvoke(call, param, tabIFrame, resultType);
@@ -66,7 +67,7 @@ public class CruxInternalDynaTabsController
 		Element tabIFrame = getSiblingTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new ModuleComunicationException("There is no sibling tab with the id [" + tabId + "]"); // TODO - Gessé - add message here
+			throw new ModuleComunicationException(getMessages().tabsControllerNoSiblingTabFound(tabId));
 		}
 	
 		retrieveTabWindowAndInvoke(call, param, tabIFrame);
@@ -87,7 +88,7 @@ public class CruxInternalDynaTabsController
 		Element tabIFrame = getTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new ModuleComunicationException("There is no tab with the id [" + tabId + "]"); // TODO - Gessé - add message here
+			throw new ModuleComunicationException(getMessages().tabsControllerNoTabFound(tabId));
 		}
 	
 		return retrieveTabWindowAndInvoke(call, param, tabIFrame, resultType);
@@ -105,7 +106,7 @@ public class CruxInternalDynaTabsController
 		Element tabIFrame = getTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new ModuleComunicationException("There is no tab with the id [" + tabId + "]"); // TODO - Gessé - add message here
+			throw new ModuleComunicationException(getMessages().tabsControllerNoTabFound(tabId));
 		}
 	
 		retrieveTabWindowAndInvoke(call, param, tabIFrame);
@@ -163,5 +164,13 @@ public class CruxInternalDynaTabsController
 	private static Element getTabInternalFrameElement(String tabId)
 	{
 		return DOM.getElementById(tabId + ".window");
+	}
+	
+	/**
+	 * @return
+	 */
+	private static AdvancedWidgetMessages getMessages()
+	{
+		return GWT.create(AdvancedWidgetMessages.class);
 	}
 }
