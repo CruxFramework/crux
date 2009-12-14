@@ -668,9 +668,9 @@
   <xs:element name="html">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="head"/>
-        <xs:element ref="body"/>
-
+        <xs:element ref="head" minOccurs="0"/>
+        <xs:element ref="body" minOccurs="0"/>
+        <xs:any maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attributeGroup ref="i18n"/>
       <xs:attribute name="id" type="xs:ID"/>
@@ -1698,7 +1698,7 @@
     <xs:complexType>
       <xs:attributeGroup ref="attrs"/>
       <xs:attribute name="src" use="required" type="URI"/>
-      <xs:attribute name="alt" use="required" type="Text"/>
+      <xs:attribute name="alt" type="Text"/>
 
       <xs:attribute name="longdesc" type="URI"/>
       <xs:attribute name="height" type="Length"/>
