@@ -69,6 +69,10 @@ public class DynaTabs extends Composite
 			this.tabs.put(tabId, tab);			
 			tabPanel.add(tab, flapPanel);
 		}
+		else
+		{
+			tab = this.tabs.get(tabId);
+		}
 
 		focusTab(tabId);
 
