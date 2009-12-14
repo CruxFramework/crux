@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.gwt.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
@@ -71,6 +73,9 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 	public static class GridCellProcessor extends TableCellProcessor<FlexTable>
 	{
 		@Override
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration(value="colSpan", type=Integer.class)
+		})
 		@TagChildren({
 			@TagChild(GridChildrenProcessor.class)
 		})
@@ -78,7 +83,15 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 		{
 			Integer indexRow = (Integer) context.getAttribute("rowIndex");
 			context.getRootWidget().addCell(indexRow);
+			
 			super.processChildren(context);
+
+			String colspan = context.getChildElement().getAttribute("_colSpan");
+			if(colspan != null && colspan.length() > 0)
+			{
+				Integer indexCol = (Integer) context.getAttribute("colIndex");
+				context.getRootWidget().getFlexCellFormatter().setColSpan(indexRow, indexCol, Integer.parseInt(colspan));
+			}			
 		}
 	}
 	
