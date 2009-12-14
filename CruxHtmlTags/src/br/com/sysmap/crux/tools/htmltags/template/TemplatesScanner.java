@@ -134,7 +134,7 @@ public class TemplatesScanner
 								}
 								catch (Exception e)
 								{
-									logger.error(messages.templatesScannerErrorParsingTemplateFile(fileName));
+									logger.error(messages.templatesScannerErrorParsingTemplateFile(fileName), e);
 									return false;
 								}
 								return true;
