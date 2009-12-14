@@ -11,6 +11,7 @@ import br.com.sysmap.crux.widgets.client.event.row.RowRenderEvent;
 import br.com.sysmap.crux.widgets.client.grid.impl.DataRow;
 import br.com.sysmap.crux.widgets.client.grid.impl.Grid;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 
 @Controller("gridEventsController")
@@ -42,10 +43,9 @@ public class GridEventsController {
 		DataRow row = (DataRow) event.getRow();
 		Contact contact = (Contact) row.getBindedObject();
 		String detail =
-			"Name:\t\t\t\t\t" + contact.getName() +
-			"\nPhone:\t\t\t\t" + contact.getPhone() +
-			"\nGender:\t\t\t" + contact.getGender() +
-			"\nBirthday:\t" + Screen.getFormatter("birthday").format(contact.getBirthday());
-		MessageBox.show("Showing selected contact details:    ", detail, null);
+			"name: " + contact.getName() + ", " +
+			"\nphone: " + contact.getPhone() + ", " +
+			"\nbirthday: " + Screen.getFormatter("birthday").format(contact.getBirthday());
+		MessageBox.show("Contact Details", detail, null);
 	}
 }
