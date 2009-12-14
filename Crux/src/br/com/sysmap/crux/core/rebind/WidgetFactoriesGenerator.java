@@ -151,7 +151,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	{
 		Method method = factoryClass.getMethod("processChildren", new Class[]{WidgetFactoryContext.class});
 
-		// TODO tratar instanciamento qdo for inner classe não estatica.
+		// TODO - Thiago -  tratar instanciamento qdo for inner classe não estatica.
 		String contextDeclaration = getClassSourceName(WidgetChildProcessorContext.class)+"<"+ getClassSourceName(widgetType) + ">";
 		Map<String, String> methodsForInnerProcessing = new HashMap<String, String>();
 		Map<String, String> processorVariables = new HashMap<String, String>();
@@ -495,7 +495,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 					source.append(generateChildrenBlockFromAnnotation(logger, methodsForInnerProcessing, widgetType, children, 
 							                                                                       processorVariables));
 
-					// TODO tratar validação de filhos obrigatorios .... espeficamente qdo parent for um agregador....
+					// TODO - Thiago - tratar validação de filhos obrigatorios .... espeficamente qdo parent for um agregador....
 					if (allowedChildren.maxOccurs == UNBOUNDED || allowedChildren.maxOccurs > 1)
 					{
 						source.append("}\n");
@@ -694,8 +694,8 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 												  Map<String, String> processorVariables)
 			throws NoSuchMethodException, Exception
 	{
-		// TODO colocar todos as amarracoes de eventos do client em evtbinder 
-		// TODO Rever a anotação Global.... se um jar estiver presente no projeto, mas nao for referenciado no modulo, nao vai achar a classe....
+		// TODO - Thiago - colocar todos as amarracoes de eventos do client em evtbinder 
+		// TODO - Thiago - Rever a anotação Global.... se um jar estiver presente no projeto, mas nao for referenciado no modulo, nao vai achar a classe....
 		StringBuilder source = new StringBuilder();
 		
 		String processorName = getClassSourceName(childProcessor);
