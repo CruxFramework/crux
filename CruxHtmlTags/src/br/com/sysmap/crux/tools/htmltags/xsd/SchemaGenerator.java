@@ -20,12 +20,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
@@ -77,7 +76,7 @@ public class SchemaGenerator
 	private File destDir;
 	private Map<String, Class<?>> enumTypes;
 	private Map<String, File> namespacesForCatalog;
-	private Deque<Class<? extends WidgetChildProcessor<?>>> subTagTypes;
+	private Stack<Class<? extends WidgetChildProcessor<?>>> subTagTypes;
 	private static final Log logger = LogFactory.getLog(SchemaGenerator.class);
 	private HTMLTagsMessages messages = MessagesFactory.getMessages(HTMLTagsMessages.class);
 	private TemplateParser templateParser;
@@ -101,7 +100,7 @@ public class SchemaGenerator
 		this.destDir.mkdirs();
 		this.enumTypes = new HashMap<String, Class<?>>();
 		this.namespacesForCatalog = new HashMap<String, File>();
-		this.subTagTypes = new LinkedList<Class<? extends WidgetChildProcessor<?>>>();
+		this.subTagTypes = new Stack<Class<? extends WidgetChildProcessor<?>>>();
 		this.templateParser = new TemplateParser();
 	}
 	
