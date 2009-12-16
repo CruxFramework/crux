@@ -194,16 +194,16 @@
 				<xsl:otherwise>
 					<xsl:attribute name="__tag" select="local-name()" />	
 				</xsl:otherwise>
-			</xsl:choose>
-			
+			</xsl:choose>			
 			<xsl:for-each select="current()/@*">
 				<xsl:if test="name() != 'id'">	
 					<xsl:call-template name="writeAttribute"/>
 				</xsl:if>
 			</xsl:for-each>
 			<xsl:value-of select="text()"></xsl:value-of>
-			<xsl:value-of select="' '"></xsl:value-of>
-
+			<xsl:if test="count(child::*) = 0 and count(text()) = 0">
+				<xsl:value-of select="' '"></xsl:value-of>
+			</xsl:if>
 			<xsl:call-template name="handleInnerHtml" />
 		</xsl:element> 
 	</xsl:template>

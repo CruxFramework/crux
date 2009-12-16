@@ -19,6 +19,7 @@ import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
@@ -76,7 +77,9 @@ public abstract class AbstractTitlePanelFactory<T extends TitlePanel> extends Ab
 		@Override
 		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
 		{
-			context.getRootWidget().setTitleText(context.getChildElement().getInnerText());
+			String innerText = context.getChildElement().getInnerText();
+			String i18nText = ScreenFactory.getInstance().getDeclaredMessage(innerText);
+			context.getRootWidget().setTitleText(i18nText);
 		}
 	}
 		
@@ -131,7 +134,9 @@ public abstract class AbstractTitlePanelFactory<T extends TitlePanel> extends Ab
 		@Override
 		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
 		{
-			context.getRootWidget().setContentText(context.getChildElement().getInnerText());
+			String innerText = context.getChildElement().getInnerText();
+			String i18nText = ScreenFactory.getInstance().getDeclaredMessage(innerText);
+			context.getRootWidget().setContentText(i18nText);
 		}
 	}
 	

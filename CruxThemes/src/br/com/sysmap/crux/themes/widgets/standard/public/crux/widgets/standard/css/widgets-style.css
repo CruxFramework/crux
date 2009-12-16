@@ -744,17 +744,20 @@
 .crux-TitlePanel .bottomLeftCell
 {
 	font-size: 0px;
+	font-family: monospace;
 	height:5px;
 	background: url(../img/title-panel-blue.gif) no-repeat bottom left;
 }
 .crux-TitlePanel .bottomCenterCell
 {
 	font-size: 0px;
+	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat bottom center;
 }
 .crux-TitlePanel .bottomRightCell
 {
 	font-size: 0px;
+	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat bottom right;
 }
 
