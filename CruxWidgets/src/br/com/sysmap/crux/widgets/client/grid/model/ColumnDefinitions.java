@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import br.com.sysmap.crux.widgets.client.AdvancedWidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMessages;
 
 import com.google.gwt.core.client.GWT;
 
@@ -86,7 +86,7 @@ public class ColumnDefinitions
 	 */
 	public static class ColumnIterator<T extends ColumnDefinition> implements Iterator<T>
 	{
-		private AdvancedWidgetMessages messages = GWT.create(AdvancedWidgetMessages.class);
+		private WidgetMessages messages = GWT.create(WidgetMessages.class);
 		
 		int cursor = 0;
 		private List<T> defs;

@@ -31,7 +31,7 @@ import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasDirectionFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
-import br.com.sysmap.crux.widgets.client.AdvancedWidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -47,7 +47,7 @@ public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
                   HasClickHandlersFactory<MaskedTextBox>, HasAllFocusHandlersFactory<MaskedTextBox>,
                   HasAllKeyHandlersFactory<MaskedTextBox>, HasAllMouseHandlersFactory<MaskedTextBox>
 {
-	private AdvancedWidgetMessages messages = GWT.create(AdvancedWidgetMessages.class);
+	private WidgetMessages messages = GWT.create(WidgetMessages.class);
 	
 	@Override
 	public MaskedTextBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException

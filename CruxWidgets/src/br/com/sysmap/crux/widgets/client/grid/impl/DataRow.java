@@ -3,7 +3,7 @@ package br.com.sysmap.crux.widgets.client.grid.impl;
 import br.com.sysmap.crux.core.client.datasource.BindableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
-import br.com.sysmap.crux.widgets.client.AdvancedWidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMessages;
 import br.com.sysmap.crux.widgets.client.grid.model.AbstractGrid;
 import br.com.sysmap.crux.widgets.client.grid.model.Cell;
 import br.com.sysmap.crux.widgets.client.grid.model.Row;
@@ -14,7 +14,7 @@ public class DataRow extends Row
 {
 	private EditableDataSourceRecord dataSourceRecord;
 	
-	protected DataRow(int index, Element elem, AbstractGrid<?> grid, boolean hasSelectionCell, AdvancedWidgetMessages messages)
+	protected DataRow(int index, Element elem, AbstractGrid<?> grid, boolean hasSelectionCell, WidgetMessages messages)
 	{
 		super(index, elem, grid, hasSelectionCell, messages);
 	}

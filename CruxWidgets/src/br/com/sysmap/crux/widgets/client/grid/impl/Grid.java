@@ -21,7 +21,7 @@ import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
-import br.com.sysmap.crux.widgets.client.AdvancedWidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMessages;
 import br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectEvent;
 import br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectHandler;
 import br.com.sysmap.crux.widgets.client.event.row.HasBeforeRowSelectHandlers;
@@ -65,7 +65,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private RowSelectionModel rowSelectionModel;
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private long generatedWidgetId = 0;
-	private AdvancedWidgetMessages messages = GWT.create(AdvancedWidgetMessages.class);
+	private WidgetMessages messages = GWT.create(WidgetMessages.class);
 	private final String emptyDataFilling;
 	
 	/**

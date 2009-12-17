@@ -19,7 +19,7 @@ import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
-import br.com.sysmap.crux.widgets.client.AdvancedWidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMessages;
 import br.com.sysmap.crux.widgets.client.js.JSWindow;
 
 import com.google.gwt.core.client.GWT;
@@ -169,8 +169,8 @@ public class CruxInternalDynaTabsController
 	/**
 	 * @return
 	 */
-	private static AdvancedWidgetMessages getMessages()
+	private static WidgetMessages getMessages()
 	{
-		return GWT.create(AdvancedWidgetMessages.class);
+		return GWT.create(WidgetMessages.class);
 	}
 }
