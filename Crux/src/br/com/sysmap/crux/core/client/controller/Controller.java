@@ -26,4 +26,5 @@ public @interface Controller {
 	String value();
 	boolean statefull() default true;
 	boolean autoBind() default true;
+	boolean lazy() default false;
 }

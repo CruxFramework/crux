@@ -13,22 +13,37 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.screen;
-
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.SimplePanel;
+package br.com.sysmap.crux.core.client.utils;
 
 /**
- * A basic container used to wrap crux widgets, in case they are orphans
- * @author Thiago Bustamante
- *
+ * TODO - Gessé - Comment this
+ * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class CruxWidgetPanel extends SimplePanel
+public class StringUtils
 {
-	public CruxWidgetPanel(Element element)
+	/**
+	 * @param src
+	 * @param length
+	 * @param padding
+	 * @return
+	 */
+	public static String lpad(String src, int length, char padding)
 	{
-		super(element);
-		onAttach();
+		if(src == null)
+		{
+			src = "";
+		}
+
+		while(src.length() < length)
+		{
+			src = padding + src;
+		}
+		
+		return src;
 	}
+	
+	public static boolean isEmpty(String value)
+	{
+		return (value == null || value.length() == 0);
+	}	
 }

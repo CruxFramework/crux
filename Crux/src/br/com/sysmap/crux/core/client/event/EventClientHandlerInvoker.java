@@ -17,10 +17,7 @@ package br.com.sysmap.crux.core.client.event;
 
 import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
 
-import com.google.gwt.event.shared.GwtEvent;
-
 public interface EventClientHandlerInvoker extends ScreenBindableObject
 {
-	void invoke(String metodo, GwtEvent<?> sourceEvent, EventProcessor eventProcessor) throws Exception;
-	void invoke(String method, CruxEvent<?> sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception;
+	void invoke(String method, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception;
 }

@@ -30,6 +30,8 @@ import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
@@ -43,11 +45,8 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.Window.ClosingHandler;
@@ -368,25 +367,19 @@ public class Screen
 	{
 		if (handlerManager.getHandlerCount(ScreenLoadEvent.TYPE) > 0)
 		{
-			new Timer()
-			{
-				public void run() 
+			Scheduler.get().scheduleDeferred(new ScheduledCommand(){
+				public void execute()
 				{
 					try 
 					{
-						DeferredCommand.addCommand(new Command() {
-							public void execute() 
-							{
-								ScreenLoadEvent.fire(Screen.this);
-							}
-						});							
+						ScreenLoadEvent.fire(Screen.this);
 					} 
 					catch (RuntimeException e) 
 					{
 						Crux.getErrorHandler().handleError(e);
 					}
 				}
-			}.schedule(1); // Waits for browser starts the rendering process
+			});
 		}
 	}
 

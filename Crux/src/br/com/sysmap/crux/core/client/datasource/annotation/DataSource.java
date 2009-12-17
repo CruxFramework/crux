@@ -28,5 +28,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface DataSource {
 	String value();
-	boolean autoBind() default true;	
+	boolean autoBind() default true;
+	boolean lasy() default false;
 }

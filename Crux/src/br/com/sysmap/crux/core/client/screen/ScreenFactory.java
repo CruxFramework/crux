@@ -31,6 +31,9 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -315,7 +318,6 @@ public class ScreenFactory {
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	@SuppressWarnings("unchecked")
 	private Widget createWidget(Element element, Screen screen, List<Element> widgetsElementsAdded) throws InterfaceConfigException
 	{
 		String widgetId = element.getId();
@@ -329,52 +331,103 @@ public class ScreenFactory {
 			return widget;
 		}
 		
-		Widget parent = null;
 		Element parentElement = getParentElement(element);
 		if (parentElement != null)
 		{
-			parent = screen.getWidget(parentElement.getId());
-			if (parent == null)
+			widget = createWidgetWithExplicitParent(element, parentElement, screen, widgetsElementsAdded, widgetId);
+		}
+		else
+		{
+			widget = createWidgetWithoutExplicitParent(element, parentElement, widgetId);
+		}
+
+		widgetsElementsAdded.add(element);
+		return widget;
+	}
+
+	/**
+	 * 
+	 * @param element
+	 * @param screen
+	 * @param widgetsElementsAdded
+	 * @param widgetId
+	 * @param parentElement
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	@SuppressWarnings("unchecked")
+	private Widget createWidgetWithExplicitParent(Element element, Element parentElement, Screen screen, List<Element> widgetsElementsAdded, String widgetId) throws InterfaceConfigException
+	{
+		Widget widget;
+		Widget parent = screen.getWidget(parentElement.getId());
+		if (parent == null)
+		{
+			parent = createWidget(parentElement, screen, widgetsElementsAdded);
+		}
+		
+		WidgetFactory<?> parentWidgetFactory = registeredWidgetFactories.getWidgetFactory(parentElement.getAttribute("_type"));
+		if (parentWidgetFactory instanceof HasWidgetsFactory)
+		{
+			widget = newWidget(element, widgetId);
+			((HasWidgetsFactory<Widget>)parentWidgetFactory).add(parent, widget, parentElement, element);
+		}
+		else
+		{
+			widget = screen.getWidget(widgetId);
+		}
+		return widget;
+	}
+
+	/**
+	 * 
+	 * @param element
+	 * @param widgetId
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	private Widget createWidgetWithoutExplicitParent(Element element, Element parentElement, String widgetId) throws InterfaceConfigException
+	{
+		Element panelElement;
+		boolean parentHasMoreThanOneChild = (element.getNextSiblingElement() != null || DOMUtils.getPreviousSiblingElement(element) != null);
+		if (Crux.getConfig().wrapSiblingWidgets() && parentHasMoreThanOneChild)
+		{
+			panelElement = DOM.createSpan();
+			element.getParentElement().insertBefore(panelElement, element);
+		}
+		else
+		{
+			if (parentHasMoreThanOneChild)
 			{
-				parent = createWidget(parentElement, screen, widgetsElementsAdded);
+				GWT.log(Crux.getMessages().screenFactoryNonDeterministicWidgetPositionInParent(widgetId), null);
 			}
-			
-			WidgetFactory<?> parentWidgetFactory = registeredWidgetFactories.getWidgetFactory(parentElement.getAttribute("_type"));
-			if (parentWidgetFactory instanceof HasWidgetsFactory)
+			panelElement = element.getParentElement();
+		}
+		Widget widget = newWidget(element, widgetId);
+
+		Panel panel;
+		if (widget instanceof RequiresResize)
+		{
+			boolean hasSize = (WidgetFactory.hasWidth(element) && WidgetFactory.hasHeight(element));
+			if (RootPanel.getBodyElement().equals(element.getParentElement()) && !hasSize)
 			{
-				widget = newWidget(element, widgetId);
-				((HasWidgetsFactory<Widget>)parentWidgetFactory).add(parent, widget, parentElement, element);
+				panel = RootLayoutPanel.get();
 			}
 			else
 			{
-				widget = screen.getWidget(widgetId);
+				panelElement.setId(WidgetFactory.generateNewId());
+				panel = RootPanel.get(panelElement.getId());
+				if (!hasSize)
+				{
+					GWT.log(Crux.getMessages().screenFactoryLayoutPanelWithoutSize(widgetId), null);
+				}
 			}
 		}
 		else
 		{
-			widget = newWidget(element, widgetId);
-
-			Element panelElement;
-			boolean parentHasMoreThanOneChild = (element.getNextSiblingElement() != null || DOMUtils.getPreviousSiblingElement(element) != null);
-			if (Crux.getConfig().wrapSiblingWidgets() && parentHasMoreThanOneChild)
-			{
-				panelElement = DOM.createSpan();
-				element.getParentElement().insertBefore(panelElement, element);
-			}
-			else
-			{
-				if (parentHasMoreThanOneChild)
-				{
-					GWT.log(Crux.getMessages().screenFactoryNonDeterministicWidgetPositionInParent(widgetId), null);
-				}
-				panelElement = element.getParentElement();
-			}
-
-			CruxWidgetPanel panel = new CruxWidgetPanel(panelElement);
-			panel.add(widget);
+			panelElement.setId(WidgetFactory.generateNewId());
+			panel = RootPanel.get(panelElement.getId());
 		}
-
-		widgetsElementsAdded.add(element);
+		panel.add(widget);
 		return widget;
 	}
 }

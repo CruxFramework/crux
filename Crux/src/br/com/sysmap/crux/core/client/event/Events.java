@@ -34,7 +34,6 @@ public class Events
 	public static final String EVENT_CLOSE = "onclose";
 	public static final String EVENT_CLOSING = "onclosing";
 	public static final String EVENT_RESIZED = "onresized";
-	public static final String EVENT_LOAD_IMAGES = "onloadimage";
 	public static final String EVENT_LOAD_ORACLE = "onloadoracle";
 	public static final String EVENT_LOAD_FORMAT = "onloadformat";
 	public static final String EVENT_LOAD_WIDGET = "onloadwidget";
@@ -170,38 +169,12 @@ public class Events
 		{
 			public void processEvent(GwtEvent<?> sourceEvent)
 			{
-				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)getRegisteredClientEventHandlers().getEventHandler(event.getController());
-				if (handler == null)
-				{
-					Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerNotFound(event.getController()));
-					return;
-				}
-				try
-				{
-					handler.invoke(event.getMethod(), sourceEvent, this);
-				}
-				catch (Exception e) 
-				{
-					_exception = e;
-				}
+				getRegisteredClientEventHandlers().invokeEventHandler(event.getController(), event.getMethod(), false, sourceEvent, this);
 			}
 
 			public void processEvent(CruxEvent<?> sourceEvent, boolean fromOutOfModule)
 			{
-				final EventClientHandlerInvoker handler = (EventClientHandlerInvoker)getRegisteredClientEventHandlers().getEventHandler(event.getController());
-				if (handler == null)
-				{
-					Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerNotFound(event.getController()));
-					return;
-				}
-				try
-				{
-					handler.invoke(event.getMethod(), sourceEvent, fromOutOfModule, this);
-				}
-				catch (Exception e) 
-				{
-					_exception = e;
-				}
+				getRegisteredClientEventHandlers().invokeEventHandler(event.getController(), event.getMethod(), fromOutOfModule, sourceEvent, this);
 			}
 		};
 	}

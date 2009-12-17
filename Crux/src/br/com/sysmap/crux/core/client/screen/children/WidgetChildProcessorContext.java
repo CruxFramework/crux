@@ -15,8 +15,7 @@
  */
 package br.com.sysmap.crux.core.client.screen.children;
 
-import java.util.HashMap;
-import java.util.Map;
+import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
 
 import com.google.gwt.dom.client.Element;
 
@@ -26,33 +25,28 @@ import com.google.gwt.dom.client.Element;
  */
 public class WidgetChildProcessorContext<W>
 {
-	private W rootWidget;
-	private Element rootElement;
-	private String rootWidgetId;
 	private Element childElement;
-	private Map<String, Object> attributes;
 	
-	public WidgetChildProcessorContext(W rootWidget, Element rootElement, String rootWidgetId)
+	private WidgetFactoryContext<W> context;
+	
+	public WidgetChildProcessorContext(WidgetFactoryContext<W> context)
 	{
-		this.rootWidget = rootWidget;
-		this.rootElement = rootElement;
-		this.rootWidgetId = rootWidgetId;
-		this.attributes = new HashMap<String, Object>();
+		this.context = context;
 	}
 
 	public W getRootWidget()
 	{
-		return rootWidget;
+		return context.getWidget();
 	}
 
 	public Element getRootElement()
 	{
-		return rootElement;
+		return context.getElement();
 	}
 
 	public String getRootWidgetId()
 	{
-		return rootWidgetId;
+		return context.getWidgetId();
 	}
 
 	public Element getChildElement()
@@ -62,7 +56,7 @@ public class WidgetChildProcessorContext<W>
 	
 	public Object getAttribute(String key)
 	{
-		return attributes.get(key);
+		return context.getAttribute(key);
 	}
 
 	public void setChildElement(Element childElement)
@@ -72,11 +66,16 @@ public class WidgetChildProcessorContext<W>
 	
 	public void setAttribute(String key, Object value)
 	{
-		this.attributes.put(key, value);
+		this.context.setAttribute(key, value);
 	}
 	
 	public void clearAttributes()
 	{
-		this.attributes.clear();
+		this.context.clearAttributes();
+	}
+
+	public void removeAttribute(String key)
+	{
+		this.context.removeAttribute(key);
 	}
 }

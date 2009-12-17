@@ -16,11 +16,12 @@
 package br.com.sysmap.crux.core.client.event;
 
 
+
 /**
  * Used to retrieve client controllers.
  * @author Thiago
  */
 public interface RegisteredClientEventHandlers 
 {
-	EventClientHandlerInvoker getEventHandler(String id);
+	void invokeEventHandler(String controller, String method, boolean fromOutOfModule, Object sourceEvent, EventProcessor eventProcessor);
 }

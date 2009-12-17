@@ -31,13 +31,17 @@ public interface ClientMessages extends Messages
 	String eventProcessorClientError(String call, String errMsg);
 	@DefaultMessage("[event 003] - Invalid declaration for handler method ''{0}''. Correct syntaxe is <controller.method>.")
 	String eventFactoryInvalidHandlerMethodDeclaration(String evt);
+	@DefaultMessage("[event 003] - Error loading lazy controller {0}.")
+	String eventProcessorClientControllerCanNotBeLoaded(String controller);
 	
 	//  screenFactory
 	@DefaultMessage("[screenFactory 001] - Error Creating widget: ''{0}''. See Log for more detail.")
 	String screenFactoryGenericErrorCreateWidget(String errMsg);
 	@DefaultMessage("[screenFactory 002] - Can not found widgetFactory for type: ''{0}''.")
 	String screenFactoryWidgetFactoryNotFound(String type);
-
+	@DefaultMessage("[screenFactory 003] - The widget ''{0}'' is a layout panel that does not have its dimensions defined. Explicity define it, or append it directly on body element.")
+	String screenFactoryLayoutPanelWithoutSize(String widgetId);
+	
 	//  widget
 	@DefaultMessage("[widget 001] - The id attribute is required for CRUX widgets.")
 	String screenFactoryWidgetIdRequired();

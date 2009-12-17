@@ -23,7 +23,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 
-import com.google.gwt.dev.HostedMode;
 
 /**
  * 
@@ -53,8 +52,9 @@ public class Environment
 					{
 						StackTraceElement[] stackTrace = utilException.getStackTrace();
 						StackTraceElement stackTraceElement = stackTrace[stackTrace.length -1];
-						isProduction = (!stackTraceElement.getClassName().equals(HostedMode.class.getName()) &&
-								!stackTraceElement.getClassName().equals(com.google.gwt.dev.GWTShell.class.getName()) );
+						isProduction = (!stackTraceElement.getClassName().equals(com.google.gwt.dev.HostedMode.class.getName()) &&
+								!stackTraceElement.getClassName().equals(com.google.gwt.dev.GWTShell.class.getName()) &&
+								!stackTraceElement.getClassName().equals(com.google.gwt.dev.DevMode.class.getName()) );
 
 						if (isProduction)
 						{

@@ -215,7 +215,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		sourceWriter.println("super.processChildren(context);");
 		if (childrenProcessorMethodName != null)
 		{
-			sourceWriter.println(contextDeclaration+" c = new "+contextDeclaration+"(context.getWidget(), context.getElement(), context.getWidgetId());");
+			sourceWriter.println(contextDeclaration+" c = new "+contextDeclaration+"(context);");
 			sourceWriter.println("c.setChildElement(context.getElement());");
 			sourceWriter.println(childrenProcessorMethodName+"(c);");
 		}
