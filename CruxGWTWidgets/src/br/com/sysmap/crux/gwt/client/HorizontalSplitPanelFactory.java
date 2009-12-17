@@ -19,11 +19,6 @@ import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
-import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
-import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.Events;
-import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
@@ -31,7 +26,6 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContex
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HorizontalSplitPanel;
-import com.google.gwt.user.client.ui.HorizontalSplitPanelImages;
 
 /**
  * Represents a HorizontalSplitPanel
@@ -42,25 +36,9 @@ public class HorizontalSplitPanelFactory extends PanelFactory<HorizontalSplitPan
 {
 	@Override
 	public HorizontalSplitPanel instantiateWidget(Element element, String widgetId) {
-		Event eventLoadImage = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
-		if (eventLoadImage != null)
-		{
-			LoadImagesEvent<HorizontalSplitPanel> loadEvent = new LoadImagesEvent<HorizontalSplitPanel>(widgetId);
-			HorizontalSplitPanelImages splitImages = (HorizontalSplitPanelImages) Events.callEvent(eventLoadImage, loadEvent);
-			return new HorizontalSplitPanel(splitImages);
-		}
 		return new HorizontalSplitPanel();
 	}
 
-	@Override
-	@TagEventsDeclaration({
-		@TagEventDeclaration("onLoadImage")
-	})
-	public void processEvents(WidgetFactoryContext<HorizontalSplitPanel> context) throws InterfaceConfigException
-	{
-		super.processEvents(context);
-	}
-	
 	@Override
 	@TagChildren({
 		@TagChild(LeftProcessor.class),

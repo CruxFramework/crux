@@ -27,9 +27,6 @@ import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.Events;
-import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
@@ -48,7 +45,6 @@ import br.com.sysmap.crux.core.client.screen.factory.HasSelectionHandlersFactory
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeImages;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -63,26 +59,11 @@ public class TreeFactory extends WidgetFactory<Tree>
                   HasAllMouseHandlersFactory<Tree>, HasAllKeyHandlersFactory<Tree>,
                   HasSelectionHandlersFactory<Tree>
 {
-	protected BasicMessages messages = GWT.create(BasicMessages.class);
+	protected GWTMessages messages = GWT.create(GWTMessages.class);
 	
 	@Override
 	public Tree instantiateWidget(Element element, String widgetId) 
 	{
-		Event eventLoadImage = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
-		if (eventLoadImage != null)
-		{
-			LoadImagesEvent<Tree> loadEvent = new LoadImagesEvent<Tree>(widgetId);
-			TreeImages treeImages = (TreeImages) Events.callEvent(eventLoadImage, loadEvent);
-
-			String useLeafImagesStr = element.getAttribute("_useLeafImages");
-			boolean useLeafImages = true;
-			if (useLeafImagesStr != null && useLeafImagesStr.length() > 0)
-			{
-				useLeafImages = (Boolean.parseBoolean(useLeafImagesStr));
-			}
-			
-			return new Tree(treeImages, useLeafImages);
-		}
 		return new Tree();
 	}
 	

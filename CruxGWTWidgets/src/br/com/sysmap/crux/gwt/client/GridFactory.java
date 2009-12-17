@@ -96,7 +96,7 @@ public class GridFactory extends HTMLTableFactory<Grid>
 	@TagChildAttributes(minOccurs="0")
 	public static class GridChildrenProcessor extends ChoiceChildProcessor<Grid> 
 	{
-		protected BasicMessages messages = GWT.create(BasicMessages.class);
+		protected GWTMessages messages = GWT.create(GWTMessages.class);
 		
 		@Override
 		@TagChildren({

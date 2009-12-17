@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ScrollPanelFactory extends PanelFactory<ScrollPanel> 
        implements HasScrollHandlersFactory<ScrollPanel>
 {
-	protected BasicMessages messages = GWT.create(BasicMessages.class);
+	protected GWTMessages messages = GWT.create(GWTMessages.class);
 
 	public static enum VerticalScrollPosition{top,bottom};
 	public static enum HorizontalScrollPosition{left,right};

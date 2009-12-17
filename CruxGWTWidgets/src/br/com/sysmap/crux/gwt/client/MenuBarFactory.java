@@ -24,9 +24,7 @@ import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEvent;
-import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEvents;
-import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
@@ -43,7 +41,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuBar.MenuBarImages;
 /**
  * Represents a MenuBarFactory component
  * @author Thiago Bustamante
@@ -56,7 +53,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	public static final String ITEM_TYPE_SEPARATOR = "separator";
 	public static final String ITEM_TYPE_TEXT = "text";
 	
-	protected BasicMessages messages = GWT.create(BasicMessages.class);
+	protected GWTMessages messages = GWT.create(GWTMessages.class);
 	
 	@Override
 	public MenuBar instantiateWidget(Element element, String widgetId) 
@@ -68,13 +65,6 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 			vertical = (Boolean.parseBoolean(verticalStr));
 		}
 
-		Event eventLoadImage = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
-		if (eventLoadImage != null)
-		{
-			LoadImagesEvent<MenuBar> loadEvent = new LoadImagesEvent<MenuBar>(widgetId);
-			MenuBarImages menuBarImages = (MenuBarImages) Events.callEvent(eventLoadImage, loadEvent);
-			return new MenuBar(vertical, menuBarImages);
-		}
 		return new MenuBar(vertical);
 	}
 	
@@ -93,9 +83,6 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	@Override
 	@TagEvents({
 		@TagEvent(CloseEvtBind.class)
-	})
-	@TagEventsDeclaration({
-		@TagEventDeclaration("onLoadImage")
 	})
 	public void processEvents(WidgetFactoryContext<MenuBar> context) throws InterfaceConfigException
 	{

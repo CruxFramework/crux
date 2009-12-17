@@ -21,9 +21,6 @@ import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.Events;
-import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
@@ -32,7 +29,6 @@ import br.com.sysmap.crux.gwt.client.HorizontalSplitPanelFactory.RightWidgeProce
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.VerticalSplitPanel;
-import com.google.gwt.user.client.ui.VerticalSplitPanelImages;
 
 /**
  * Represents a VerticalSplitPanelFactory
@@ -44,14 +40,7 @@ public class VerticalSplitPanelFactory extends PanelFactory<VerticalSplitPanel>
 	@Override
 	public VerticalSplitPanel instantiateWidget(Element element, String widgetId) 
 	{
-		Event eventLoadImage = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
-		if (eventLoadImage != null)
-		{
-			LoadImagesEvent<VerticalSplitPanel> loadEvent = new LoadImagesEvent<VerticalSplitPanel>(widgetId);
-			VerticalSplitPanelImages splitImages = (VerticalSplitPanelImages) Events.callEvent(eventLoadImage, loadEvent);
-			return new com.google.gwt.user.client.ui.VerticalSplitPanel(splitImages);
-		}
-		return new com.google.gwt.user.client.ui.VerticalSplitPanel();
+		return new VerticalSplitPanel();
 	}
 	
 	@Override

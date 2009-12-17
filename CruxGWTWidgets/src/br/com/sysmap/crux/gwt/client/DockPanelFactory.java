@@ -116,7 +116,7 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 	@TagChildAttributes(type=AnyWidget.class)
 	public static class DockWidgetProcessor extends AbstractCellWidgetProcessor<DockPanel> 
 	{
-		protected BasicMessages messages = GWT.create(BasicMessages.class);
+		protected GWTMessages messages = GWT.create(GWTMessages.class);
 
 		@Override
 		public void processChildren(WidgetChildProcessorContext<DockPanel> context) throws InterfaceConfigException

@@ -28,9 +28,8 @@ import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.RichTextArea;
-import com.google.gwt.user.client.ui.RichTextArea.BasicFormatter;
-import com.google.gwt.user.client.ui.RichTextArea.ExtendedFormatter;
 import com.google.gwt.user.client.ui.RichTextArea.FontSize;
+import com.google.gwt.user.client.ui.RichTextArea.Formatter;
 import com.google.gwt.user.client.ui.RichTextArea.Justification;
 
 
@@ -76,8 +75,7 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 			public void onLoad(ScreenLoadEvent event) 
 			{
 				widget.setFocus(true);// Necessary to work around a bug in mozzila
-				initBasicFormatterOptions(widget, declaredProperties);
-				initExtendedFormatterOptions(widget, declaredProperties);
+				initFormatterOptions(widget, declaredProperties);
 			}
 		});
 
@@ -158,19 +156,19 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 	/**
 	 * Render basic formatter options
 	 */
-	protected void initBasicFormatterOptions(RichTextArea widget, Map<String, String> declaredProperties)
+	protected void initFormatterOptions(RichTextArea widget, Map<String, String> declaredProperties)
 	{
-		final BasicFormatter basicFormatter = widget.getBasicFormatter();
-		if (basicFormatter != null)
+		final Formatter formatter = widget.getFormatter();
+		if (formatter != null)
 		{
 			if (declaredProperties.containsKey("backColor"))
 			{
-				widget.getBasicFormatter().setBackColor(declaredProperties.get("backColor"));
+				formatter.setBackColor(declaredProperties.get("backColor"));
 			}
 
 			if (declaredProperties.containsKey("fontName"))
 			{
-				widget.getBasicFormatter().setFontName(declaredProperties.get("fontName"));
+				formatter.setFontName(declaredProperties.get("fontName"));
 			}
 
 			if (declaredProperties.containsKey("fontSize"))
@@ -178,35 +176,35 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 				switch (Integer.parseInt(declaredProperties.get("fontSize"))) 
 				{
 				case 1:
-					widget.getBasicFormatter().setFontSize(FontSize.XX_SMALL);
+					formatter.setFontSize(FontSize.XX_SMALL);
 					break;
 				case 2:
-					widget.getBasicFormatter().setFontSize(FontSize.X_SMALL);
+					formatter.setFontSize(FontSize.X_SMALL);
 					break;
 				case 3:
-					widget.getBasicFormatter().setFontSize(FontSize.SMALL);
+					formatter.setFontSize(FontSize.SMALL);
 					break;
 				case 4:
-					widget.getBasicFormatter().setFontSize(FontSize.MEDIUM);
+					formatter.setFontSize(FontSize.MEDIUM);
 					break;
 				case 5:
-					widget.getBasicFormatter().setFontSize(FontSize.LARGE);
+					formatter.setFontSize(FontSize.LARGE);
 					break;
 				case 6:
-					widget.getBasicFormatter().setFontSize(FontSize.X_LARGE);
+					formatter.setFontSize(FontSize.X_LARGE);
 					break;
 				case 7:
-					widget.getBasicFormatter().setFontSize(FontSize.XX_LARGE);
+					formatter.setFontSize(FontSize.XX_LARGE);
 					break;
 
 				default:
-					widget.getBasicFormatter().setFontSize(FontSize.MEDIUM);
+					formatter.setFontSize(FontSize.MEDIUM);
 				}
 			}
 
 			if (declaredProperties.containsKey("foreColor"))
 			{
-				widget.getBasicFormatter().setForeColor(declaredProperties.get("foreColor"));
+				formatter.setForeColor(declaredProperties.get("foreColor"));
 			}
 
 			if (declaredProperties.containsKey("justification"))
@@ -214,54 +212,42 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 				String justification = declaredProperties.get("justification");
 				if (justification.equalsIgnoreCase("center"))
 				{
-					widget.getBasicFormatter().setJustification(Justification.CENTER);
+					formatter.setJustification(Justification.CENTER);
 				}
 				else if (justification.equalsIgnoreCase("left"))
 				{
-					widget.getBasicFormatter().setJustification(Justification.LEFT);
+					formatter.setJustification(Justification.LEFT);
 				}
 				else if (justification.equalsIgnoreCase("right"))
 				{
-					widget.getBasicFormatter().setJustification(Justification.RIGHT);
+					formatter.setJustification(Justification.RIGHT);
 				}
 			}
 
 			if (declaredProperties.containsKey("bold") && Boolean.parseBoolean(declaredProperties.get("bold")))
 			{
-				widget.getBasicFormatter().toggleBold();
+				formatter.toggleBold();
 			}
 			if (declaredProperties.containsKey("italic") && Boolean.parseBoolean(declaredProperties.get("italic")))
 			{
-				widget.getBasicFormatter().toggleItalic();
+				formatter.toggleItalic();
 			}
 			if (declaredProperties.containsKey("subscript") && Boolean.parseBoolean(declaredProperties.get("subscript")))
 			{
-				widget.getBasicFormatter().toggleSubscript();
+				formatter.toggleSubscript();
 			}
 			if (declaredProperties.containsKey("superscript") && Boolean.parseBoolean(declaredProperties.get("superscript")))
 			{
-				widget.getBasicFormatter().toggleSuperscript();
+				formatter.toggleSuperscript();
 			}
 			if (declaredProperties.containsKey("underline") && Boolean.parseBoolean(declaredProperties.get("underline")))
 			{
-				widget.getBasicFormatter().toggleUnderline();
+				formatter.toggleUnderline();
+			}
+			if (declaredProperties.containsKey("strikethrough") && Boolean.parseBoolean(declaredProperties.get("strikethrough")))
+			{
+				formatter.toggleStrikethrough();
 			}
 		}
 	}
-	
-	/**
-	 * Render extended formatter options
-	 */
-	protected void initExtendedFormatterOptions(RichTextArea widget, Map<String, String> declaredProperties) 
-	{
-		final ExtendedFormatter extendedFormatter = widget.getExtendedFormatter();
-		if (extendedFormatter != null)
-		{
-			if (declaredProperties.containsKey("strikethrough") && Boolean.parseBoolean(declaredProperties.get("strikethrough")))
-			{
-				widget.getExtendedFormatter().toggleStrikethrough();
-			}
-		}		
-	}
-	
 }

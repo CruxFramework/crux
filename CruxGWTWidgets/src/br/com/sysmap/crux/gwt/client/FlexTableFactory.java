@@ -98,7 +98,7 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 	@TagChildAttributes(minOccurs="0")
 	public static class GridChildrenProcessor extends ChoiceChildProcessor<FlexTable> 
 	{
-		protected BasicMessages messages = GWT.create(BasicMessages.class);
+		protected GWTMessages messages = GWT.create(GWTMessages.class);
 
 		@Override
 		@TagChildren({

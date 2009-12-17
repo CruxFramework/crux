@@ -23,11 +23,6 @@ import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
-import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
-import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
-import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.Events;
-import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
@@ -39,7 +34,6 @@ import br.com.sysmap.crux.core.client.screen.factory.HasOpenHandlersFactory;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.DisclosurePanelImages;
 
 /**
  * Factory for DisclosurePanel widgets
@@ -50,23 +44,14 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel>
        implements HasAnimationFactory<DisclosurePanel>, 
                   HasOpenHandlersFactory<DisclosurePanel>, HasCloseHandlersFactory<DisclosurePanel>
 {
-	protected BasicMessages messages = GWT.create(BasicMessages.class);
+	protected GWTMessages messages = GWT.create(GWTMessages.class);
 	
 	
 	@Override
 	public DisclosurePanel instantiateWidget(Element element, String widgetId) 
 	{
 		String headerText = element.getAttribute("_headerText");
-		Event eventLoadImages = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_IMAGES);
-		
-		if (eventLoadImages != null)
-		{
-			LoadImagesEvent<DisclosurePanel> loadEvent = new LoadImagesEvent<DisclosurePanel>(widgetId);
-			DisclosurePanelImages images = (DisclosurePanelImages) Events.callEvent(eventLoadImages, loadEvent);
-			return new DisclosurePanel(images, headerText, false);
-		}
-		
-		return new DisclosurePanel(headerText, false);
+		return new DisclosurePanel(headerText);
 	}
 	
 	@Override
@@ -79,15 +64,6 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel>
 	public void processAttributes(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
-	}
-
-	@Override
-	@TagEventsDeclaration({
-		@TagEventDeclaration("onLoadImage")
-	})
-	public void processEvents(WidgetFactoryContext<DisclosurePanel> context) throws InterfaceConfigException
-	{
-		super.processEvents(context);
 	}
 
 	@Override

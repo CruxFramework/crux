@@ -43,7 +43,7 @@ public abstract class AbstractStackPanelFactory<T extends StackPanel> extends Co
 	private static final String KEY_IS_HTML = "isHtml";
 	private static final String KEY_TITLE = "title";
 
-	protected BasicMessages messages = GWT.create(BasicMessages.class);
+	protected GWTMessages messages = GWT.create(GWTMessages.class);
 	
 	@Override
 	@TagAttributesDeclaration({
