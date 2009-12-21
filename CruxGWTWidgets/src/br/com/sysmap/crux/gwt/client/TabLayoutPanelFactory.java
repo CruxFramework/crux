@@ -15,17 +15,12 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
-import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
-import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
-import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.KeyDownEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.KeyPressEvtBind;
-import br.com.sysmap.crux.core.client.event.bind.KeyUpEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
@@ -35,33 +30,49 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyWidget;
-import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasBeforeSelectionHandlersFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasSelectionHandlersFactory;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.TabBar.Tab;
 
 /**
- * Factory for TabPanel widgets
+ * Factory for TabLayoutPanel widgets
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
-public abstract class AbstractTabPanelFactory<T extends TabPanel> extends CompositeFactory<T> 
-       implements HasAnimationFactory<T>, 
-                  HasBeforeSelectionHandlersFactory<T>, HasSelectionHandlersFactory<T>
+@DeclarativeFactory(id="tabLayoutPanel", library="gwt")
+public class TabLayoutPanelFactory extends CompositeFactory<TabLayoutPanel> 
+       implements HasBeforeSelectionHandlersFactory<TabLayoutPanel>, HasSelectionHandlersFactory<TabLayoutPanel>
 {
 	@Override
+	public TabLayoutPanel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+	{
+		String height = element.getAttribute("_barHeight");
+		if (StringUtils.isEmpty(height))
+		{
+			return new TabLayoutPanel(20, Unit.PX);
+		}
+		else
+		{
+			return new TabLayoutPanel(Double.parseDouble(height), AbstractLayoutPanelFactory.getUnit(element.getAttribute("_unit")));
+		}
+	}
+	
+	@Override
 	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="barHeight", type=Integer.class, defaultValue="20"),
+		@TagAttributeDeclaration(value="unit", type=Unit.class),
 		@TagAttributeDeclaration(value="visibleTab", type=Integer.class)
 	})
-	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
+	public void processAttributes(WidgetFactoryContext<TabLayoutPanel> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
 
 		Element element = context.getElement();
-		final T widget = context.getWidget();
+		final TabLayoutPanel widget = context.getWidget();
 		
 		final String visibleTab = element.getAttribute("_visibleTab");
 		if (visibleTab != null && visibleTab.length() > 0)
@@ -80,36 +91,23 @@ public abstract class AbstractTabPanelFactory<T extends TabPanel> extends Compos
 	@TagChildren({
 		@TagChild(TabProcessor.class)
 	})	
-	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException 
+	public void processChildren(WidgetFactoryContext<TabLayoutPanel> context) throws InterfaceConfigException 
 	{
 	}
 
 	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", tagName="tab" )
-	public static class TabProcessor extends WidgetChildProcessor<TabPanel> 
+	public static class TabProcessor extends WidgetChildProcessor<TabLayoutPanel> 
 	{
 		@Override
-		@TagAttributesDeclaration({
-			@TagAttributeDeclaration(value="tabEnabled", type=Boolean.class, defaultValue="true"),
-			@TagAttributeDeclaration(value="tabWordWrap", type=Boolean.class, defaultValue="true")
-		})
-		@TagEventsDeclaration({
-			@TagEventDeclaration("onClick"),
-			@TagEventDeclaration("onKeyUp"),
-			@TagEventDeclaration("onKeyDown"),
-			@TagEventDeclaration("onKeyPress")
-		})
 		@TagChildren({
 			@TagChild(TabTitleProcessor.class), 
 			@TagChild(TabWidgetProcessor.class)
 		})	
-		public void processChildren(WidgetChildProcessorContext<TabPanel> context) throws InterfaceConfigException
-		{
-			context.setAttribute("tabElement", context.getChildElement());
-		}
+		public void processChildren(WidgetChildProcessorContext<TabLayoutPanel> context) throws InterfaceConfigException {}
 	}
 
 	@TagChildAttributes(minOccurs="0")
-	public static class TabTitleProcessor extends ChoiceChildProcessor<TabPanel> 
+	public static class TabTitleProcessor extends ChoiceChildProcessor<TabLayoutPanel> 
 	{
 		@Override
 		@TagChildren({
@@ -117,15 +115,15 @@ public abstract class AbstractTabPanelFactory<T extends TabPanel> extends Compos
 			@TagChild(HTMLTabProcessor.class),
 			@TagChild(WidgetTitleTabProcessor.class)
 		})		
-		public void processChildren(WidgetChildProcessorContext<TabPanel> context) throws InterfaceConfigException {}
+		public void processChildren(WidgetChildProcessorContext<TabLayoutPanel> context) throws InterfaceConfigException {}
 		
 	}
 	
 	@TagChildAttributes(tagName="tabText", type=String.class)
-	public static class TextTabProcessor extends WidgetChildProcessor<TabPanel>
+	public static class TextTabProcessor extends WidgetChildProcessor<TabLayoutPanel>
 	{
 		@Override
-		public void processChildren(WidgetChildProcessorContext<TabPanel> context) throws InterfaceConfigException 
+		public void processChildren(WidgetChildProcessorContext<TabLayoutPanel> context) throws InterfaceConfigException 
 		{
 			String title = ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getInnerHTML());
 			context.setAttribute("titleText", title);
@@ -133,10 +131,10 @@ public abstract class AbstractTabPanelFactory<T extends TabPanel> extends Compos
 	}
 	
 	@TagChildAttributes(tagName="tabHtml", type=AnyTag.class)
-	public static class HTMLTabProcessor extends WidgetChildProcessor<TabPanel>
+	public static class HTMLTabProcessor extends WidgetChildProcessor<TabLayoutPanel>
 	{
 		@Override
-		public void processChildren(WidgetChildProcessorContext<TabPanel> context) throws InterfaceConfigException 
+		public void processChildren(WidgetChildProcessorContext<TabLayoutPanel> context) throws InterfaceConfigException 
 		{
 			String title = context.getChildElement().getInnerHTML();
 			context.setAttribute("titleHtml", title);
@@ -144,20 +142,20 @@ public abstract class AbstractTabPanelFactory<T extends TabPanel> extends Compos
 	}
 	
 	@TagChildAttributes(tagName="tabWidget")
-	public static class WidgetTitleTabProcessor extends WidgetChildProcessor<TabPanel> 
+	public static class WidgetTitleTabProcessor extends WidgetChildProcessor<TabLayoutPanel> 
 	{
 		@Override
 		@TagChildren({
 			@TagChild(WidgetTitleProcessor.class)
 		})	
-		public void processChildren(WidgetChildProcessorContext<TabPanel> context) throws InterfaceConfigException {}
+		public void processChildren(WidgetChildProcessorContext<TabLayoutPanel> context) throws InterfaceConfigException {}
 	}
 
 	@TagChildAttributes(type=AnyWidget.class)
-	public static class WidgetTitleProcessor extends WidgetChildProcessor<TabPanel> 
+	public static class WidgetTitleProcessor extends WidgetChildProcessor<TabLayoutPanel> 
 	{
 		@Override
-		public void processChildren(WidgetChildProcessorContext<TabPanel> context) throws InterfaceConfigException
+		public void processChildren(WidgetChildProcessorContext<TabLayoutPanel> context) throws InterfaceConfigException
 		{
 			Element childElement = context.getChildElement();
 			Widget titleWidget = createChildWidget(childElement, childElement.getId());
@@ -166,20 +164,20 @@ public abstract class AbstractTabPanelFactory<T extends TabPanel> extends Compos
 	}
 	
 	@TagChildAttributes(tagName="panelContent")
-	public static class TabWidgetProcessor extends WidgetChildProcessor<TabPanel> 
+	public static class TabWidgetProcessor extends WidgetChildProcessor<TabLayoutPanel> 
 	{
 		@Override
 		@TagChildren({
 			@TagChild(WidgetContentProcessor.class)
 		})	
-		public void processChildren(WidgetChildProcessorContext<TabPanel> context) throws InterfaceConfigException {}
+		public void processChildren(WidgetChildProcessorContext<TabLayoutPanel> context) throws InterfaceConfigException {}
 	}
 
 	@TagChildAttributes(type=AnyWidget.class)
-	public static class WidgetContentProcessor extends WidgetChildProcessor<TabPanel> 
+	public static class WidgetContentProcessor extends WidgetChildProcessor<TabLayoutPanel> 
 	{
 		@Override
-		public void processChildren(WidgetChildProcessorContext<TabPanel> context) throws InterfaceConfigException
+		public void processChildren(WidgetChildProcessorContext<TabLayoutPanel> context) throws InterfaceConfigException
 		{
 			Element childElement = context.getChildElement();
 			Widget widget = createChildWidget(childElement, childElement.getId());
@@ -202,33 +200,6 @@ public abstract class AbstractTabPanelFactory<T extends TabPanel> extends Compos
 					context.getRootWidget().add(widget, titleWidget);
 				}
 			}
-			updateTabState(context);
 		}
-		
-		private static void updateTabState(WidgetChildProcessorContext<TabPanel> context)
-		{
-			Element tabElement = (Element) context.getAttribute("tabElement");
-			String enabled = tabElement.getAttribute("_enabled");
-			int tabCount = context.getRootWidget().getTabBar().getTabCount();
-			if (enabled != null && enabled.length() >0)
-			{
-				context.getRootWidget().getTabBar().setTabEnabled(tabCount-1, Boolean.parseBoolean(enabled));
-			}
-
-			Tab currentTab = context.getRootWidget().getTabBar().getTab(tabCount-1);
-			
-			String wordWrap = tabElement.getAttribute("_wordWrap");
-			if (wordWrap != null && wordWrap.trim().length() > 0)
-			{
-				currentTab.setWordWrap(Boolean.parseBoolean(wordWrap));
-			}
-
-			new ClickEvtBind().bindEvent(tabElement, currentTab);
-			new KeyUpEvtBind().bindEvent(tabElement, currentTab);
-			new KeyPressEvtBind().bindEvent(tabElement, currentTab);
-			new KeyDownEvtBind().bindEvent(tabElement, currentTab);
-
-			context.clearAttributes();
-		}	
 	}
 }
