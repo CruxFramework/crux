@@ -18,18 +18,18 @@ package br.com.sysmap.crux.gwt.client;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.SubmitButton;
 
 /**
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="button", library="gwt")
-public class ButtonFactory extends ButtonBaseFactory<Button>
+@DeclarativeFactory(id="submitButton", library="gwt")
+public class SubmitButtonFactory extends ButtonBaseFactory<SubmitButton>
 {
 
 	@Override
-	public Button instantiateWidget(Element element, String widgetId) 
+	public SubmitButton instantiateWidget(Element element, String widgetId) 
 	{
-		return new Button();
+		return new SubmitButton();
 	}
 }

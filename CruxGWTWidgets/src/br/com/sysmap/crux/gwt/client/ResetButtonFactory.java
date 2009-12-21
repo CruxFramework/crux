@@ -18,18 +18,18 @@ package br.com.sysmap.crux.gwt.client;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ResetButton;
 
 /**
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="button", library="gwt")
-public class ButtonFactory extends ButtonBaseFactory<Button>
+@DeclarativeFactory(id="resetButton", library="gwt")
+public class ResetButtonFactory extends ButtonBaseFactory<ResetButton>
 {
 
 	@Override
-	public Button instantiateWidget(Element element, String widgetId) 
+	public ResetButton instantiateWidget(Element element, String widgetId) 
 	{
-		return new Button();
+		return new ResetButton();
 	}
 }
