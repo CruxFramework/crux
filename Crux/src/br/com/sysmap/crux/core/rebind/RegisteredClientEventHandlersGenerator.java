@@ -135,21 +135,25 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 			sourceWriter.println("if (\""+handler+"\".equals(controller)){");
 			Class<?> handlerClass = ClientControllers.getClientHandler(handler);
 			Controller controllerAnnot = handlerClass.getAnnotation(Controller.class);
-			if (controllerAnnot != null && controllerAnnot.lazy())
+			if (controllerAnnot != null && Fragments.getFragmentClass(controllerAnnot.fragment()) != null)
 			{
-				sourceWriter.println("GWT.runAsync(new RunAsyncCallback(){");
+				sourceWriter.println("GWT.runAsync("+Fragments.getFragmentClass(controllerAnnot.fragment())+".class, new RunAsyncCallback(){");
 				sourceWriter.println("public void onFailure(Throwable reason){");
 				sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerCanNotBeLoaded(controller));");
 				sourceWriter.println("}");
 				sourceWriter.println("public void onSuccess(){");
+				sourceWriter.println("if (!clientHandlers.containsKey(\""+handler+"\")){");
 				sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
+				sourceWriter.println("}");
 				sourceWriter.println("invokeEventHandler(controller, method, fromOutOfModule, sourceEvent, eventProcessor);");
 				sourceWriter.println("}");
 				sourceWriter.println("});");
 			}
 			else
 			{
+				sourceWriter.println("if (!clientHandlers.containsKey(\""+handler+"\")){");
 				sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
+				sourceWriter.println("}");
 				sourceWriter.println("invokeEventHandler(controller, method, fromOutOfModule, sourceEvent, eventProcessor);");
 			}
 			sourceWriter.println("}");

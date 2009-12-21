@@ -86,6 +86,7 @@ public class ClientControllers
 					{
 						globalClientHandlers.add(annot.value());
 					}
+					Fragments.registerFragment(annot.fragment(), controllerClass);
 				} 
 				catch (ClassNotFoundException e) 
 				{

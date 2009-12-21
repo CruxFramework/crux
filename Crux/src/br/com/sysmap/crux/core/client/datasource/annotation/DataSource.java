@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 public @interface DataSource {
 	String value();
 	boolean autoBind() default true;
-	boolean lasy() default false;
+	String fragment() default "";
 }
