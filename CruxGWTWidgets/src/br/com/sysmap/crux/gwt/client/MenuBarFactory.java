@@ -24,7 +24,9 @@ import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEvent;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEvents;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.CloseEvtBind;
@@ -34,7 +36,6 @@ import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
-import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyWidget;
 import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -111,6 +112,9 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	public static class TextProcessor extends WidgetChildProcessor<MenuBar>
 	{
 		@Override
+		@TagEventsDeclaration({
+			@TagEventDeclaration("onExecute")
+		})
 		@TagChildren({
 			@TagChild(CaptionProcessor.class),
 			@TagChild(SubItemsProcessor.class)
@@ -146,6 +150,9 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	public static class HTMLProcessor extends WidgetChildProcessor<MenuBar>
 	{
 		@Override
+		@TagEventsDeclaration({
+			@TagEventDeclaration("onExecute")
+		})
 		@TagChildren({
 			@TagChild(HTMLCaptionProcessor.class),
 			@TagChild(SubItemsProcessor.class)
@@ -187,7 +194,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 		public void processChildren(WidgetChildProcessorContext<MenuBar> context) throws InterfaceConfigException {}
 	}
 	
-	@TagChildAttributes(type=AnyWidget.class)
+	@TagChildAttributes(type=MenuBarFactory.class)
 	public static class SubItemProcessor extends WidgetChildProcessor<MenuBar>
 	{
 		@Override
@@ -238,7 +245,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 	 */
 	protected static void processCommandAttribute(final WidgetChildProcessorContext<MenuBar> context)
 	{
-		final Event evt = EvtBind.getWidgetEvent(context.getChildElement(), Events.EVENT_EXECUTE_EVENT);
+		final Event evt = EvtBind.getWidgetEvent(context.getChildElement(), "onExecute");
 		if (evt != null)
 		{
 			Command cmd =  new Command()
