@@ -107,7 +107,7 @@ public class CruxInternalPopupController
 			dialogBox.setWidth(data.getWidth());
 			dialogBox.setHeight(data.getHeight());
 			
-			Frame frame = new Frame(data.getUrl());
+			Frame frame = new Frame(Screen.appendDebugParameters(data.getUrl()));
 			frame.setStyleName("frame");
 			frame.setHeight("100%");
 			frame.setWidth("100%");
