@@ -16,10 +16,12 @@
 package br.com.sysmap.crux.gwt.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Frame;
@@ -32,12 +34,17 @@ import com.google.gwt.user.client.ui.Frame;
 public class FrameFactory extends WidgetFactory<Frame>
 {
 	@Override
-	@TagAttributes({
-		@TagAttribute("url")
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration("url")
 	})
 	public void processAttributes(WidgetFactoryContext<Frame> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
+		String url = context.getElement().getAttribute("_url");
+		if (!StringUtils.isEmpty(url))
+		{
+			context.getWidget().setUrl(Screen.appendDebugParameters(url));
+		}
 	}
 
 	@Override
