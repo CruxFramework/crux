@@ -28,6 +28,7 @@ import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -45,6 +46,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -896,6 +898,37 @@ public class Screen
 			Crux.getErrorHandler().handleError(e.getLocalizedMessage(), e);
 			return null;
 		}
+	}
+	
+	/**
+	 * 
+	 * @param url
+	 */
+	public static String appendDebugParameters(String url)
+	{
+		try
+		{
+			if (!StringUtils.isEmpty(url) && !url.contains("gwt.codesvr="))
+			{
+				String debugSvr = Window.Location.getParameter("gwt.codesvr");
+				if (!StringUtils.isEmpty(debugSvr))
+				{
+					if (url.contains("?"))
+					{
+						url += "&gwt.codesvr="+URL.encode(debugSvr); 
+					}
+					else
+					{
+						url += "?gwt.codesvr="+URL.encode(debugSvr); 
+					}
+				}
+			}
+		}
+		catch(Throwable e)
+		{
+			GWT.log(e.getLocalizedMessage(), e);
+		}
+		return url;
 	}
 	
 	/**
