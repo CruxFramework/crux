@@ -16,6 +16,12 @@
 package br.com.sysmap.crux.gwt.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.PushButton;
@@ -33,4 +39,115 @@ public class PushButtonFactory extends CustomButtonFactory<PushButton>
 	{
 		return new PushButton();
 	}
+	
+	@Override
+	@TagChildren({
+		@TagChild(FacesProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<PushButton> context) throws InterfaceConfigException
+	{
+		super.processChildren(context);
+	}
+	
+	@TagChildAttributes(minOccurs="0", maxOccurs="6")
+	public static class FacesProcessor extends ChoiceChildProcessor<PushButton> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(UpFaceProcessor.class),
+			@TagChild(UpDisabledFaceProcessor.class),
+			@TagChild(UpHoveringFaceProcessor.class),
+			@TagChild(DownFaceProcessor.class),
+			@TagChild(DownDisabledFaceProcessor.class),
+			@TagChild(DownHoveringFaceProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<PushButton> context) throws InterfaceConfigException {}
+	}
+	
+	public static class FaceChildrenProcessor extends ChoiceChildProcessor<PushButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TextFaceProcessor.class),
+			@TagChild(HTMLFaceProcessor.class),
+			@TagChild(ImageFaceProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<PushButton> context) throws InterfaceConfigException {}
+	}
+
+	public static class UpFaceProcessor extends AbstractUpFaceProcessor<PushButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<PushButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+	
+	public static class UpDisabledFaceProcessor extends AbstractUpDisabledFaceProcessor<PushButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<PushButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+
+	public static class UpHoveringFaceProcessor extends AbstractUpHoveringFaceProcessor<PushButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<PushButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+
+	public static class DownFaceProcessor extends AbstractDownFaceProcessor<PushButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<PushButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+
+	public static class DownDisabledFaceProcessor extends AbstractDownDisabledFaceProcessor<PushButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<PushButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+
+	public static class DownHoveringFaceProcessor extends AbstractDownHoveringFaceProcessor<PushButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<PushButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+	
+	public static class TextFaceProcessor extends AbstractTextFaceProcessor<PushButton> {}
+	public static class HTMLFaceProcessor extends AbstractHTMLFaceProcessor<PushButton> {}
+	public static class ImageFaceProcessor extends AbstractImageFaceProcessor<PushButton> {}	
 }

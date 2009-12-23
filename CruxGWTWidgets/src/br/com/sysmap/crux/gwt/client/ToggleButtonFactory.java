@@ -18,7 +18,12 @@ package br.com.sysmap.crux.gwt.client;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.ToggleButton;
@@ -49,4 +54,115 @@ public class ToggleButtonFactory extends CustomButtonFactory<ToggleButton>
 	{
 		return new ToggleButton();
 	}
+	
+	@Override
+	@TagChildren({
+		@TagChild(FacesProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<ToggleButton> context) throws InterfaceConfigException
+	{
+		super.processChildren(context);
+	}
+	
+	@TagChildAttributes(minOccurs="0", maxOccurs="6")
+	public static class FacesProcessor extends ChoiceChildProcessor<ToggleButton> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(UpFaceProcessor.class),
+			@TagChild(UpDisabledFaceProcessor.class),
+			@TagChild(UpHoveringFaceProcessor.class),
+			@TagChild(DownFaceProcessor.class),
+			@TagChild(DownDisabledFaceProcessor.class),
+			@TagChild(DownHoveringFaceProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<ToggleButton> context) throws InterfaceConfigException {}
+	}
+	
+	public static class FaceChildrenProcessor extends ChoiceChildProcessor<ToggleButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TextFaceProcessor.class),
+			@TagChild(HTMLFaceProcessor.class),
+			@TagChild(ImageFaceProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<ToggleButton> context) throws InterfaceConfigException {}
+	}
+
+	public static class UpFaceProcessor extends AbstractUpFaceProcessor<ToggleButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<ToggleButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+	
+	public static class UpDisabledFaceProcessor extends AbstractUpDisabledFaceProcessor<ToggleButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<ToggleButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+
+	public static class UpHoveringFaceProcessor extends AbstractUpHoveringFaceProcessor<ToggleButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<ToggleButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+
+	public static class DownFaceProcessor extends AbstractDownFaceProcessor<ToggleButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<ToggleButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+
+	public static class DownDisabledFaceProcessor extends AbstractDownDisabledFaceProcessor<ToggleButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<ToggleButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+
+	public static class DownHoveringFaceProcessor extends AbstractDownHoveringFaceProcessor<ToggleButton>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(FaceChildrenProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<ToggleButton> context) throws InterfaceConfigException 
+		{
+			super.processChildren(context);
+		}
+	}
+	
+	public static class TextFaceProcessor extends AbstractTextFaceProcessor<ToggleButton> {}
+	public static class HTMLFaceProcessor extends AbstractHTMLFaceProcessor<ToggleButton> {}
+	public static class ImageFaceProcessor extends AbstractImageFaceProcessor<ToggleButton> {}	
 }

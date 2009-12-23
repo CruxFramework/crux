@@ -15,10 +15,9 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
-import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
@@ -34,7 +33,6 @@ import com.google.gwt.user.client.ui.HasHTML;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="checkBox", library="gwt")
 public abstract class AbstractCheckBoxFactory<T extends CheckBox> extends FocusWidgetFactory<T> 
        implements HasNameFactory<T>, HasValueChangeHandlersFactory<T>, HasTextFactory<T>
 {

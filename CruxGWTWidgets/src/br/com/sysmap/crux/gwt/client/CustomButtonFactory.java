@@ -15,10 +15,15 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.CustomButton;
@@ -33,19 +38,6 @@ import com.google.gwt.user.client.ui.CustomButton.Face;
 public abstract class CustomButtonFactory<T extends CustomButton> extends FocusWidgetFactory<T> 
 			implements HasTextFactory<T>
 {
-	public static final String FACE_DOWN_DISABLED = "downDisabled";
-	public static final String FACE_UP_DISABLED = "upDisabled";
-	public static final String FACE_UP_HOVERING = "upHovering";
-	public static final String FACE_DOWN_HOVERING = "downHovering";
-	public static final String FACE_DOWN = "down";
-	public static final String FACE_UP = "up";
-	
-	public static final String FACE_TYPE_HTML = "html";
-	public static final String FACE_TYPE_TEXT = "text";
-	public static final String FACE_TYPE_IMAGE = "image";
-	
-	protected com.google.gwt.user.client.ui.CustomButton customButtonWidget;
-
 	/**
 	 * Render component attributes
 	 * @throws InterfaceConfigException 
@@ -62,118 +54,125 @@ public abstract class CustomButtonFactory<T extends CustomButton> extends FocusW
 		String text = element.getAttribute("_text");
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{
-			((HasHTML)widget).setHTML(innerHtml);
+			((HasHTML)widget).setHTML(ScreenFactory.getInstance().getDeclaredMessage(innerHtml));
 		}
 	}		
 	
-	/**
-	 * 
-	 */
-	@Override
-	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException
+	@TagChildAttributes(tagName="up")
+	abstract static class AbstractUpFaceProcessor<W extends CustomButton> extends WidgetChildProcessor<W>
 	{
-		Element element = context.getElement();
-		T widget = context.getWidget();
-		
-		List<Element> facesCandidates = ensureChildrenSpans(element, true);
-		
-		for (Element child : facesCandidates)
+		@Override
+		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
-			if (isValidFace(child))
-			{
-				processFaceDeclaration(widget, child);
-			}
+			context.setAttribute("face", context.getRootWidget().getUpFace());
 		}
-	}	
-	
-	/**
-	 * Verify if the span tag found is a valid face declaration for customButtons
-	 * @param element
-	 * @return
-	 */
-	protected boolean isValidFace(Element element)
-	{
-		if ("span".equalsIgnoreCase(element.getTagName()))
-		{
-			String type = element.getAttribute("_faceType");
-			if (type != null && type.trim().length() > 0)
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 	
-	/**
-	 * Process Face declaration for customButton
-	 * @param element
-	 */
-	protected void processFaceDeclaration(T widget, Element element)
+	@TagChildAttributes(tagName="upDisabled")
+	abstract static class AbstractUpDisabledFaceProcessor<W extends CustomButton> extends WidgetChildProcessor<W>
 	{
-		String faceType = element.getAttribute("_faceType");
-		Face face = getFace(widget, element.getAttribute("_face"));
-		if (face != null)
+		@Override
+		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
-			if (FACE_TYPE_IMAGE.equals(faceType))
-			{
-				String leftStr = element.getAttribute("_left");
-				String topStr = element.getAttribute("_top");
-				String widthStr = element.getAttribute("_width");
-				String heightStr = element.getAttribute("_height");
-				if (leftStr == null || topStr == null || widthStr == null || heightStr ==null)
-				{
-					face.setImage(new Image(element.getAttribute("_url")));
-				}
-				else
-				{
-					face.setImage(new Image(element.getAttribute("_url"), Integer.parseInt(leftStr), 
-							Integer.parseInt(topStr), 
-							Integer.parseInt(widthStr), 
-							Integer.parseInt(heightStr)));
-				}
-			}
-			else if (FACE_TYPE_TEXT.equals(faceType))
-			{
-				face.setText(element.getAttribute("_value"));
-			}
-			else if (FACE_TYPE_HTML.equals(faceType))
-			{
-				face.setHTML(element.getInnerHTML());
-			}
+			context.setAttribute("face", context.getRootWidget().getUpDisabledFace());
 		}
 	}
 
-	/**
-	 * Return face associated with label in tag 
-	 * @param face
-	 * @return
-	 */
-	protected Face getFace(T widget, String face)
+	@TagChildAttributes(tagName="upHovering")
+	abstract static class AbstractUpHoveringFaceProcessor<W extends CustomButton> extends WidgetChildProcessor<W>
 	{
-		if (face == null || face.trim().length() == 0 || FACE_UP.equals(face))
+		@Override
+		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
-			return widget.getUpFace();
+			context.setAttribute("face", context.getRootWidget().getUpHoveringFace());
 		}
-		else if (FACE_DOWN.equals(face))
+	}
+
+	@TagChildAttributes(tagName="down")
+	abstract static class AbstractDownFaceProcessor<W extends CustomButton> extends WidgetChildProcessor<W>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
-			return widget.getDownFace();
+			context.setAttribute("face", context.getRootWidget().getDownFace());
 		}
-		else if (FACE_DOWN_HOVERING.equals(face))
+	}
+	
+	@TagChildAttributes(tagName="downDisabled")
+	abstract static class AbstractDownDisabledFaceProcessor<W extends CustomButton> extends WidgetChildProcessor<W>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
-			return widget.getDownHoveringFace();
+			context.setAttribute("face", context.getRootWidget().getDownDisabledFace());
 		}
-		else if (FACE_UP_HOVERING.equals(face))
+	}
+
+	@TagChildAttributes(tagName="downHovering")
+	abstract static class AbstractDownHoveringFaceProcessor<W extends CustomButton> extends WidgetChildProcessor<W>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
-			return widget.getUpHoveringFace();
+			context.setAttribute("face", context.getRootWidget().getDownHoveringFace());
 		}
-		else if (FACE_UP_DISABLED.equals(face))
+	}
+	
+	@TagChildAttributes(tagName="textFace")
+	abstract static class AbstractTextFaceProcessor<W extends CustomButton> extends WidgetChildProcessor<W>
+	{
+		@Override
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration(value="value", required=true)
+		})
+		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
-			return widget.getUpDisabledFace();
+			Face face = (Face)context.getAttribute("face");
+			face.setText(context.getChildElement().getAttribute("_value"));
 		}
-		else if (FACE_DOWN_DISABLED.equals(face))
+	}
+	
+	@TagChildAttributes(tagName="htmlFace")
+	abstract static class AbstractHTMLFaceProcessor<W extends CustomButton> extends WidgetChildProcessor<W>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
-			return widget.getDownDisabledFace();
+			Face face = (Face)context.getAttribute("face");
+			face.setText(context.getChildElement().getInnerHTML());
 		}
-		return null;
+	}
+	
+	@TagChildAttributes(tagName="imageFace")
+	abstract static class AbstractImageFaceProcessor<W extends CustomButton> extends WidgetChildProcessor<W>
+	{
+		@Override
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration(value="url", required=true),
+			@TagAttributeDeclaration(value="left", type=Integer.class),
+			@TagAttributeDeclaration(value="top", type=Integer.class),
+			@TagAttributeDeclaration(value="width", type=Integer.class),
+			@TagAttributeDeclaration(value="height", type=Integer.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
+		{
+			Face face = (Face)context.getAttribute("face");
+			String leftStr = context.getChildElement().getAttribute("_left");
+			String topStr = context.getChildElement().getAttribute("_top");
+			String widthStr = context.getChildElement().getAttribute("_width");
+			String heightStr = context.getChildElement().getAttribute("_height");
+
+			if (StringUtils.isEmpty(leftStr)  || StringUtils.isEmpty(topStr) || StringUtils.isEmpty(widthStr) || StringUtils.isEmpty(heightStr))
+			{
+				face.setImage(new Image(context.getChildElement().getAttribute("_url")));
+			}
+			else
+			{
+				face.setImage(new Image(context.getChildElement().getAttribute("_url"), Integer.parseInt(leftStr), 
+						Integer.parseInt(topStr), 
+						Integer.parseInt(widthStr), 
+						Integer.parseInt(heightStr)));
+			}
+		}
 	}
 }
