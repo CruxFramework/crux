@@ -842,6 +842,14 @@ public class SchemaGenerator
 		}
 		else
 		{
+			if ((tagName.length() == 0) && (WidgetFactory.class.isAssignableFrom(type)))
+			{
+				DeclarativeFactory annot = type.getAnnotation(DeclarativeFactory.class);
+				if (annot != null)
+				{
+					tagName = annot.id();
+				}
+			}
 			out.println("<xs:element name=\""+tagName+"\" minOccurs=\""+attributes.minOccurs()+
 					    "\" maxOccurs=\""+attributes.maxOccurs()+
 					    "\" type=\""+getSchemaType(type, library)+"\"/>");
@@ -1281,11 +1289,13 @@ public class SchemaGenerator
 			{
 				System.out.println("Usage: SchemaGenerator <projectBaseDir> <outputDir>");
 			}
-			
-			String projectBaseDir = args[0]; //"C:\\desenvolvimento\\ide\\workspaces\\myeclipse\\CruxHtmlTags";
-			String outputDir = args[1]; //xsd\\generated";
-			
-			SchemaGenerator.generateSchemas(projectBaseDir, outputDir);
+			else
+			{
+				String projectBaseDir = args[0]; //"C:\\desenvolvimento\\ide\\workspaces\\myeclipse\\CruxHtmlTags";
+				String outputDir = args[1]; //xsd\\generated";
+
+				SchemaGenerator.generateSchemas(projectBaseDir, outputDir);
+			}
 		}
 		catch (IOException e)
 		{
