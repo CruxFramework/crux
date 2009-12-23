@@ -27,20 +27,11 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class Events 
 {
-	public static final String SYNC_TYPE_SYNCHRONOUS = "synchronous";
-	public static final String SYNC_TYPE_ASSYNCHRONOUS = "assynchronous";
-	
-	public static final String EVENT_LOAD = "onload";
-	public static final String EVENT_CLOSE = "onclose";
-	public static final String EVENT_CLOSING = "onclosing";
-	public static final String EVENT_RESIZED = "onresized";
 	public static final String EVENT_LOAD_ORACLE = "onloadoracle";
 	public static final String EVENT_LOAD_FORMAT = "onloadformat";
-	public static final String EVENT_LOAD_WIDGET = "onloadwidget";
 	public static final String EVENT_EXECUTE_EVENT = "onexecute";
 	public static final String EVENT_SUBMIT_COMPLETE = "onsubmitcomplete";
 	public static final String EVENT_SUBMIT = "onsubmit";
-	public static final String EVENT_HISTORY_CHANGED = "onhistorychanged";
 	
 	private static RegisteredClientEventHandlers registeredClientEventHandlers;
 	

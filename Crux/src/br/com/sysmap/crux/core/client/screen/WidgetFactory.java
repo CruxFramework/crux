@@ -223,7 +223,7 @@ public abstract class WidgetFactory <T extends Widget>
 	})
 	public void processEvents(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
-		final Event eventLoad = EvtBind.getWidgetEvent(context.getElement(), Events.EVENT_LOAD_WIDGET);
+		final Event eventLoad = EvtBind.getWidgetEvent(context.getElement(), "onLoadWidget");
 		if (eventLoad != null)
 		{
 			addScreenLoadedHandler(new ScreenLoadHandler()

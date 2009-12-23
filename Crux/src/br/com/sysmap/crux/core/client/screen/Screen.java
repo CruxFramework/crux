@@ -298,7 +298,7 @@ public class Screen
 			Window.setTitle(ScreenFactory.getInstance().getDeclaredMessage(title));
 		}
 
-		final Event eventHistory = Events.getEvent(Events.EVENT_HISTORY_CHANGED, element.getAttribute("_" + Events.EVENT_HISTORY_CHANGED));
+		final Event eventHistory = Events.getEvent("onHistoryChanged", element.getAttribute("_onHistoryChanged"));
 		if (eventHistory != null)
 		{
 			addWindowHistoryChangedHandler(new ValueChangeHandler<String>(){
@@ -309,7 +309,7 @@ public class Screen
 			});
 		}
 
-		final Event eventClosing = Events.getEvent(Events.EVENT_CLOSING, element.getAttribute("_" + Events.EVENT_CLOSING));
+		final Event eventClosing = Events.getEvent("onClosing", element.getAttribute("_onClosing"));
 		if (eventClosing != null)
 		{
 			addWindowClosingHandler(new Window.ClosingHandler(){
@@ -320,7 +320,7 @@ public class Screen
 			});
 		}
 
-		final Event eventClose = Events.getEvent(Events.EVENT_CLOSE, element.getAttribute("_" + Events.EVENT_CLOSE));
+		final Event eventClose = Events.getEvent("onClose", element.getAttribute("_onClose"));
 		if (eventClose != null)
 		{
 			addWindowCloseHandler(new CloseHandler<Window>(){
@@ -331,7 +331,7 @@ public class Screen
 			});
 		}
 
-		final Event eventResized = Events.getEvent(Events.EVENT_RESIZED, element.getAttribute("_" + Events.EVENT_RESIZED));
+		final Event eventResized = Events.getEvent("onResized", element.getAttribute("_onResized"));
 		if (eventResized != null)
 		{
 			addWindowResizeHandler(new ResizeHandler(){
@@ -341,7 +341,7 @@ public class Screen
 				}
 			});
 		}
-		final Event eventLoad = Events.getEvent(Events.EVENT_LOAD, element.getAttribute("_" + Events.EVENT_LOAD));
+		final Event eventLoad = Events.getEvent("onLoad", element.getAttribute("_onLoad"));
 		if (eventLoad != null)
 		{
 			addLoadHandler(new ScreenLoadHandler(){
