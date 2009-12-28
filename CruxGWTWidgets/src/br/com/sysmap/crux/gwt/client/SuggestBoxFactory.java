@@ -62,7 +62,7 @@ public class SuggestBoxFactory extends CompositeFactory<SuggestBox>
 	@Override
 	public SuggestBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
 	{
-		Event eventLoadOracle = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_ORACLE);
+		Event eventLoadOracle = EvtBind.getWidgetEvent(element, "onLoadOracle");
 		
 		if (eventLoadOracle != null)
 		{

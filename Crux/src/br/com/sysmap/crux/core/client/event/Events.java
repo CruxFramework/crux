@@ -27,12 +27,6 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class Events 
 {
-	public static final String EVENT_LOAD_ORACLE = "onloadoracle";
-	public static final String EVENT_LOAD_FORMAT = "onloadformat";
-	public static final String EVENT_EXECUTE_EVENT = "onexecute";
-	public static final String EVENT_SUBMIT_COMPLETE = "onsubmitcomplete";
-	public static final String EVENT_SUBMIT = "onsubmit";
-	
 	private static RegisteredClientEventHandlers registeredClientEventHandlers;
 	
 	

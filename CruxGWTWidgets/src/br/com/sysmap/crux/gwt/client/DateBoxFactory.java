@@ -26,6 +26,8 @@ import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
+import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
@@ -83,6 +85,15 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 	}
 	
 	@Override
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onLoadFormat")
+	})
+	public void processEvents(WidgetFactoryContext<DateBox> context) throws InterfaceConfigException
+	{
+		super.processEvents(context);
+	}
+	
+	@Override
 	public DateBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
 	{
 		List<Element> children = ensureChildrenSpans(element, true);
@@ -133,7 +144,7 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 		}
 		else
 		{
-			Event eventLoadFormat = EvtBind.getWidgetEvent(element, Events.EVENT_LOAD_FORMAT);
+			Event eventLoadFormat = EvtBind.getWidgetEvent(element, "onLoadFormat");
 			
 			if (eventLoadFormat != null)
 			{

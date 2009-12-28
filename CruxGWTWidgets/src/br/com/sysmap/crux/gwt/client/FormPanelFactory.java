@@ -68,7 +68,7 @@ public class FormPanelFactory extends PanelFactory<FormPanel>
 		Element element = context.getElement();
 		FormPanel widget = context.getWidget();
 		
-		final Event eventSubmitComplete = EvtBind.getWidgetEvent(element, Events.EVENT_SUBMIT_COMPLETE);
+		final Event eventSubmitComplete = EvtBind.getWidgetEvent(element, "onSubmitComplete");
 		if (eventSubmitComplete != null)
 		{
 			widget.addSubmitCompleteHandler(new SubmitCompleteHandler()
@@ -80,7 +80,7 @@ public class FormPanelFactory extends PanelFactory<FormPanel>
 			});
 		}
 		
-		final Event eventSubmit = EvtBind.getWidgetEvent(element, Events.EVENT_SUBMIT);
+		final Event eventSubmit = EvtBind.getWidgetEvent(element, "onSubmit");
 		if (eventSubmitComplete != null)
 		{
 			widget.addSubmitHandler(new SubmitHandler()
