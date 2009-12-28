@@ -43,6 +43,8 @@ public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel> implements 
 		String innerHTML = element.getInnerHTML();
 		element.setInnerHTML("");
 		HTMLPanel ret = new HTMLPanel(innerHTML);
+		ret.getElement().setAttribute("_hasWidgetsPanel", widgetId);
+		ret.getElement().setAttribute("_type", "gwt_HTMLPanel");
 		return ret;
 	}
 
