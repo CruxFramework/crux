@@ -174,7 +174,8 @@ public class ScreenFactory {
 	 */
 	boolean isValidWidget(Element element)
 	{
-		if ("span".equalsIgnoreCase(element.getTagName()))
+		String tagName = element.getTagName();
+		if ("span".equalsIgnoreCase(tagName))
 		{
 			String type = element.getAttribute("_type");
 			if (type != null && type.length() > 0 && !"screen".equals(type))
@@ -185,6 +186,21 @@ public class ScreenFactory {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	boolean isValidHasWidgetsPanel(Element element)
+	{
+		String type = element.getAttribute("_hasWidgetsPanel");
+		if (type != null && type.length() > 0)
+		{
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * 
 	 * @param element
@@ -300,7 +316,7 @@ public class ScreenFactory {
 		Element elementParent = element.getParentElement();
 		while (elementParent != null && !"body".equalsIgnoreCase(elementParent.getTagName()))
 		{
-			if (isValidWidget(elementParent))
+			if (isValidWidget(elementParent) || isValidHasWidgetsPanel(elementParent))
 			{
 				return elementParent;
 			}
@@ -362,7 +378,15 @@ public class ScreenFactory {
 		Widget parent = screen.getWidget(parentElement.getId());
 		if (parent == null)
 		{
-			parent = createWidget(parentElement, screen, widgetsElementsAdded);
+			String hasWidgetParentId = parentElement.getAttribute("_hasWidgetsPanel");
+			if (hasWidgetParentId != null && hasWidgetParentId.length() > 0)
+			{
+				parent = screen.getWidget(hasWidgetParentId);
+			}
+			if (parent == null)
+			{
+				parent = createWidget(parentElement, screen, widgetsElementsAdded);
+			}
 		}
 		
 		WidgetFactory<?> parentWidgetFactory = registeredWidgetFactories.getWidgetFactory(parentElement.getAttribute("_type"));
