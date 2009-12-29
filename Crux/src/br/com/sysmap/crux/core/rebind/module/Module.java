@@ -26,6 +26,7 @@ public class Module
 	private String name;
 	private String fullName;
 	private String source;
+	private String publicPath;
 	private Set<String> inherits;
 	
 	public Set<String> getInherits()
@@ -48,7 +49,14 @@ public class Module
 	{
 		this.source = source;
 	}
-
+	public String getPublicPath()
+	{
+		return publicPath;
+	}
+	public void setPublicPath(String publicPath)
+	{
+		this.publicPath = publicPath;
+	}
 	public void setInherits(Set<String> inherits)
 	{
 		this.inherits = inherits;

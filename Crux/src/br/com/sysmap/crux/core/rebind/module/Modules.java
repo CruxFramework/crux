@@ -146,6 +146,7 @@ public class Modules
 		module.setFullName(moduleFullName);
 		module.setName(getModuleName(moduleFullName, element));
 		module.setSource(getModuleSource(moduleFullName, element));
+		module.setPublicPath(getModulePublicPath(moduleFullName, element));
 		module.setInherits(getModuleInherits(element));
 		modules.put(module.getName(), module);
 		moduleAliases.put(moduleFullName, module.getName());
@@ -218,5 +219,37 @@ public class Modules
 			}
 		}
 		return sourcePath;
+	}
+	
+	/**
+	 * 
+	 * @param moduleFullName
+	 * @param element
+	 * @return
+	 */
+	private static String getModulePublicPath(String moduleFullName, Element element)
+	{
+		moduleFullName = moduleFullName.replace('.', '/');
+		int index = moduleFullName.lastIndexOf('/');
+		if (index > 0)
+		{
+			moduleFullName = moduleFullName.substring(0, index);
+		}
+		else
+		{
+			moduleFullName = "";
+		}
+		String publicPath = moduleFullName+"/public";
+		NodeList publicTags = element.getElementsByTagName("public");
+		if (publicTags != null && publicTags.getLength() > 0)
+		{
+			Element source = (Element)publicTags.item(0);
+			publicPath = source.getAttribute("path");
+			if (publicPath != null && publicPath.length()>0)
+			{
+				publicPath = moduleFullName+"/"+publicPath;
+			}
+		}
+		return publicPath;
 	}
 }
