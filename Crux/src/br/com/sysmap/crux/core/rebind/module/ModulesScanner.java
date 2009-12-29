@@ -238,9 +238,11 @@ public class ModulesScanner
 	private String getClassesDir() throws URISyntaxException, IOException
 	{
 		URL classesPath = ClassPathResolverInitializer.getClassPathResolver().findWebInfClassesPath();
-		File classesDir = new File(classesPath.toURI());
+		return classesPath.toString();
+/*		File classesDir = new File(classesPath.toURI());
 		String canonicalPath = classesDir.getCanonicalPath();
 		return RegexpPatterns.REGEXP_BACKSLASH.matcher(canonicalPath).replaceAll("/");
+		*/
 	}
 	
 	/**

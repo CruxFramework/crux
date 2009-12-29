@@ -15,16 +15,17 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Set;
 
+import br.com.sysmap.crux.classpath.URLResourceHandler;
+import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.server.Environment;
 import br.com.sysmap.crux.core.server.ServerMessages;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
+import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 /**
  * 
@@ -38,21 +39,25 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 	{
 		try
 		{
-			File input = new File(Environment.getWebBaseDir(), screenId);
+			URL webBaseDir = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
+			URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(webBaseDir.getProtocol());
+			
+			screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/");
+			URL screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
 
-			if (input != null && input.exists())
+			try
 			{
-				return new FileInputStream(input);
+				return screenURL.openStream();
 			}
-			else 
+			catch(Exception e) 
 			{
-				input = new File(screenId);
+				screenURL = new URL("file:///"+screenId);
 
-				if (input != null && input.exists())
+				try
 				{
-					return new FileInputStream(input);
+					return screenURL.openStream();
 				}
-				else
+				catch(Exception e1)
 				{
 					URL url = getClass().getResource("/"+screenId);
 					if (url != null)

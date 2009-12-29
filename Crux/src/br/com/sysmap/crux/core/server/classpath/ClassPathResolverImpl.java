@@ -15,11 +15,15 @@
  */
 package br.com.sysmap.crux.core.server.classpath;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import br.com.sysmap.crux.classpath.URLResourceHandler;
+import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
+import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
+import br.com.sysmap.crux.scannotation.archiveiterator.StreamIterator;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -31,102 +35,116 @@ public class ClassPathResolverImpl implements ClassPathResolver
 	// where is impossible to find the lib directory URL in zipped war
 	private static final String A_RESOUCE_FROM_WEBINF_LIB = "/"+ClassPathResolverImpl.class.getName().replaceAll("\\.", "/")+".class";
 
+	private URL webInfClassesPath = null;
+	private URL webInfLibPath = null;
+	private URL webBaseDir = null;
+	private List<URL> webInfLibJars = null;
 	/**
 	 * @param context
 	 * @return
 	 */
-	public URL findWebInfClassesPath()
+	public synchronized URL findWebInfClassesPath()
 	{
-		try
+		if (webInfClassesPath == null)
 		{
-			URL url = findWebBaseDir();
-			File webRootFile = new File(url.toURI());
-			return new File(webRootFile, "WEB-INF/classes").toURI().toURL();
+			try
+			{
+				URL url = findWebBaseDir();
+				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
+
+				webInfClassesPath = resourceHandler.getChildResource(url, "WEB-INF/classes");
+			}
+			catch (Exception e)
+			{
+				throw new RuntimeException(e.getMessage(), e);
+			}
 		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e.getMessage(), e);
-		}
+		return webInfClassesPath;
 	}
 	
 	/**
 	 * @param context
 	 * @return
 	 */
-	public URL findWebInfLibPath()
+	public synchronized URL findWebInfLibPath()
 	{
-		try
+		if (webInfLibPath == null)
 		{
-			URL url = new ClassPathResolverImpl().getClass().getResource(A_RESOUCE_FROM_WEBINF_LIB);
-			String path = url.toString().replace(A_RESOUCE_FROM_WEBINF_LIB, "");
-			if (path.endsWith("!"))
+			try
 			{
-				path = path.substring(0, path.length() - 1);
-			}
-			
-			if(path.toUpperCase().startsWith("ZIP:"))
-			{
-				int firstSlash = path.indexOf("/");
-				path = path.substring(firstSlash + 1);
-				path = "file:///" + path;
-			}
-			else if(path.toUpperCase().startsWith("JAR:"))
-			{
-				path = path.substring(4);
-			}
+				URL url = new ClassPathResolverImpl().getClass().getResource(A_RESOUCE_FROM_WEBINF_LIB);
+				String path = url.toString().replace(A_RESOUCE_FROM_WEBINF_LIB, "")+"/";
+				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
 
-			int lastSlash = path.lastIndexOf("/");
-			path = path.substring(0, lastSlash);
-			
-			return new URL(path+"/");
+				webInfLibPath = resourceHandler.getParentDir(new URL(path));
+			}
+			catch (MalformedURLException e)
+			{
+				throw new RuntimeException(e.getMessage(), e);
+			}
 		}
-		catch (MalformedURLException e)
-		{
-			throw new RuntimeException(e.getMessage(), e);
-		}
+		return webInfLibPath;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public URL[] findWebInfLibJars()
+	public synchronized URL[] findWebInfLibJars() 
 	{		
-		try
+		if (webInfLibJars == null)
 		{
-			List<URL> urlList = new ArrayList<URL>();
-			URL libDir = findWebInfLibPath();
-			File libDirFile = new File(libDir.toURI());
-			File[] jars = libDirFile.listFiles();
-			for (File jar : jars)
+			try
 			{
-				if (jar.getName().endsWith(".jar"))
-				{
-					urlList.add(jar.toURI().toURL());
-				}
+				final List<URL> urlList = new ArrayList<URL>();
+				final URL libDir = findWebInfLibPath();
+
+				final URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(libDir.getProtocol());
+				StreamIterator iterator = resourceHandler.getDirectoryIteratorFactory().create(libDir, new Filter(){
+					public boolean accepts(String filename)
+					{
+						if (filename.endsWith(".jar"))
+						{
+							urlList.add(resourceHandler.getChildResource(libDir, filename));
+							return true;
+						}
+						return false;
+					}
+				});
+
+				while (iterator.next() != null); // Do nothing, but searches the directories and jars
+				webInfLibJars = new ArrayList<URL>();
+				webInfLibJars.addAll(urlList);
 			}
-			return urlList.toArray(new URL[urlList.size()]);
+			catch (Exception e)
+			{
+				throw new RuntimeException(e.getMessage(), e);
+			}
 		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e.getMessage(), e);
-		}
+		return webInfLibJars.toArray(new URL[webInfLibJars.size()]);
 	}
 
-	public URL findWebBaseDir()
+	/**
+	 * 
+	 */
+	public synchronized URL findWebBaseDir()
 	{
-		try
+		if (webBaseDir == null)
 		{
-			URL url = findWebInfLibPath();
-			File webInfClassesFile = new File(url.toURI());
-			File webRoot = webInfClassesFile.getParentFile().getParentFile();
-			return webRoot.toURI().toURL();
+			try
+			{
+				URL url = findWebInfLibPath();
+				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
+
+				url = resourceHandler.getParentDir(url);
+				url = resourceHandler.getParentDir(url);
+				webBaseDir = url;
+			}
+			catch (Exception e)
+			{
+				throw new RuntimeException(e.getMessage(), e);
+			}
 		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e.getMessage(), e);
-		}
+		return webBaseDir;
 	}
-	
-	
 }

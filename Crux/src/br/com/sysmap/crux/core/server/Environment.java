@@ -15,13 +15,10 @@
  */
 package br.com.sysmap.crux.core.server;
 
-import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 
 
 /**
@@ -81,15 +78,5 @@ public class Environment
 			}
 		}
 		return isProduction;
-	}
-
-	/**
-	 * Gets the web base dir
-	 * @return
-	 * @throws Exception
-	 */
-	public static File getWebBaseDir() throws Exception
-	{
-		return new File(ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir().toURI());
 	}
 }
