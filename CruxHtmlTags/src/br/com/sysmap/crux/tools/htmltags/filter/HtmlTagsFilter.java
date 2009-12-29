@@ -15,8 +15,8 @@
  */
 package br.com.sysmap.crux.tools.htmltags.filter;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -26,8 +26,15 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import br.com.sysmap.crux.core.server.Environment;
 import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
+import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
 
 /**
  * Used to save the path to the current HTML page. This information is necessary
@@ -37,6 +44,9 @@ import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
  */
 public class HtmlTagsFilter implements Filter 
 {
+	private static final Log log = LogFactory.getLog(HtmlTagsFilter.class);
+
+	private HTMLTagsMessages messages = MessagesFactory.getMessages(HTMLTagsMessages.class);
 	private boolean production = true;
 	FilterConfig config = null;
 	
@@ -86,19 +96,24 @@ public class HtmlTagsFilter implements Filter
 						{
 							pathInfo = pathInfo.substring(1);
 						}
-						File input = new File(Environment.getWebBaseDir(), pathInfo.replace(".html", ".crux.xml"));
-						if (input != null && input.exists())
+						
+						String screenId = pathInfo.replace(".html", ".crux.xml");
+						String charset = config.getInitParameter("outputCharset");
+							
+						if(charset != null)
 						{
-							String charset = config.getInitParameter("outputCharset");
-							
-							if(charset != null)
-							{
-								CruxToHtmlTransformer.setOutputCharset(charset);
-							}
-							
-							CruxToHtmlTransformer.generateHTML(input.getPath(), resp.getOutputStream());
-							
+							CruxToHtmlTransformer.setOutputCharset(charset);
+						}
+						
+						try
+						{
+							InputStream screenResource = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(screenId);
+							CruxToHtmlTransformer.generateHTML(screenResource, resp.getOutputStream());
 							return;
+						}
+						catch(InterfaceConfigException e)
+						{
+							log.info(messages.htmlTagsDoNotTransformPage(pathInfo));
 						}
 					}
 					catch (Exception e)

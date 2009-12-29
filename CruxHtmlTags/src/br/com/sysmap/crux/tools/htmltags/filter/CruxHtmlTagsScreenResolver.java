@@ -17,16 +17,18 @@ package br.com.sysmap.crux.tools.htmltags.filter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Set;
 
+import br.com.sysmap.crux.classpath.URLResourceHandler;
+import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolver;
-import br.com.sysmap.crux.core.server.Environment;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
+import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
 import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
 
@@ -38,29 +40,36 @@ public class CruxHtmlTagsScreenResolver implements ScreenResourceResolver
 {
 	HTMLTagsMessages messages = MessagesFactory.getMessages(HTMLTagsMessages.class);	
 
+	/**
+	 * 
+	 */
 	public InputStream getScreenResource(String screenId) throws InterfaceConfigException
 	{
 		try
 		{
-			File input = new File(Environment.getWebBaseDir(), screenId.replace(".html", ".crux.xml"));
+			URL webBaseDir = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
+			URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(webBaseDir.getProtocol());
+			
+			screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/").replace(".html", ".crux.xml");
+			URL screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
 
-			if (input != null && input.exists())
+			try
 			{
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				CruxToHtmlTransformer.generateHTML(input.getPath(), out);			
+				CruxToHtmlTransformer.generateHTML(screenURL.openStream(), out);			
 				return new ByteArrayInputStream(out.toByteArray());
 			}
-			else 
+			catch(Exception e) 
 			{
-				input = new File(screenId.replace(".html", ".crux.xml"));
+				screenURL = new URL("file:///"+screenId);
 
-				if (input != null && input.exists())
+				try
 				{
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					CruxToHtmlTransformer.generateHTML(input.getPath(), out);			
+					CruxToHtmlTransformer.generateHTML(screenURL.openStream(), out);			
 					return new ByteArrayInputStream(out.toByteArray());
 				}
-				else
+				catch(Exception e1)
 				{
 					URL url = getClass().getResource("/"+screenId);
 					if (url != null)
@@ -80,6 +89,9 @@ public class CruxHtmlTagsScreenResolver implements ScreenResourceResolver
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public Set<String> getAllScreenIDs(String module) throws ScreenConfigException
 	{
 		return  new CruxHtmlTagsScreenResourceScanner().getPages(module);

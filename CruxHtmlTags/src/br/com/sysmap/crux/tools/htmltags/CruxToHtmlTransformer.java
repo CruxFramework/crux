@@ -17,7 +17,8 @@ package br.com.sysmap.crux.tools.htmltags;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -86,14 +87,14 @@ public class CruxToHtmlTransformer
 	 * @throws IOException
 	 * @throws InterfaceConfigException 
 	 */
-	public static void generateHTML(String filePath, OutputStream out) throws InterfaceConfigException
+	public static void generateHTML(InputStream file, OutputStream out)
 	{
 		init();
 		
 		try
 		{
 			ByteArrayOutputStream buff = new ByteArrayOutputStream();
-			Document source = loadCruxPage(filePath);
+			Document source = loadCruxPage(file);
 			transformer.transform(new DOMSource(source), new StreamResult(buff));
 			String result = new String(buff.toByteArray(), "UTF-8");
 			result = handleHtmlDocument(source, result);
@@ -106,6 +107,26 @@ public class CruxToHtmlTransformer
 		}
 	}
 
+	/**
+	 * 
+	 * @param filePath
+	 * @param out
+	 * @throws InterfaceConfigException
+	 */
+	public static void generateHTML(String filePath, OutputStream out)
+	{
+		try
+		{
+			generateHTML(new FileInputStream(filePath), out);
+		}
+		catch (FileNotFoundException e)
+		{
+			log.error(e.getMessage(), e);
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 	/**
 	 * Makes it easier to read the output files
 	 * @param force
@@ -336,11 +357,11 @@ public class CruxToHtmlTransformer
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	private static Document loadCruxPage(String filePath) throws InterfaceConfigException
+	private static Document loadCruxPage(InputStream file) throws InterfaceConfigException
 	{
 		try
 		{
-			Document document = documentBuilder.parse(new File(filePath));
+			Document document = documentBuilder.parse(file);
 			return preprocess(document);
 		}
 		catch (Exception e)

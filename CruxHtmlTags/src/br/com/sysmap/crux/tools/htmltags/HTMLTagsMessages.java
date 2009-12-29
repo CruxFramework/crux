@@ -100,4 +100,7 @@ public interface HTMLTagsMessages
 	
 	@DefaultMessage("[htmlTags 026] - Error scanning for templates. Scanned URL: {0}. Underlying error message: {1}")
 	String templatesScanningURLError(String url, String localizedMessage);
+
+	@DefaultMessage("[htmlTags 027] - The page {0} is not transformed... Accessing directly.")
+	String htmlTagsDoNotTransformPage(String pathInfo);
 }
