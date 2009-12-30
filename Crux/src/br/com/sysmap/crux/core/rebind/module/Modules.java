@@ -17,6 +17,7 @@ package br.com.sysmap.crux.core.rebind.module;
  
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -71,17 +72,6 @@ public class Modules
 	
 	/**
 	 * 
-	 */
-	protected static void initializeModules()
-	{
-		modules = new HashMap<String, Module>();
-		moduleAliases = new HashMap<String, String>();
-		logger.info(messages.modulesScannerSearchingModuleFiles());
-		ModulesScanner.getInstance().scanArchives();
-	}
-	
-	/**
-	 * 
 	 * @param id
 	 * @return
 	 */
@@ -89,13 +79,26 @@ public class Modules
 	{
 		if (modules == null)
 		{
-			initializeModules();
+			initialize();
 		}
 		if (moduleAliases.containsKey(id))
 		{
 			id = moduleAliases.get(id);
 		}
 		return modules.get(id);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static Iterator<Module> iterateModules()
+	{
+		if (modules == null)
+		{
+			initialize();
+		}
+		return modules.values().iterator();
 	}
 	
 	/**
@@ -131,6 +134,17 @@ public class Modules
 		return false;
 	}	
 	
+
+	/**
+	 * 
+	 */
+	protected static void initializeModules()
+	{
+		modules = new HashMap<String, Module>();
+		moduleAliases = new HashMap<String, String>();
+		logger.info(messages.modulesScannerSearchingModuleFiles());
+		ModulesScanner.getInstance().scanArchives();
+	}
 
 	/**
 	 * 

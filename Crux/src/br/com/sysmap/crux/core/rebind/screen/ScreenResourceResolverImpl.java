@@ -26,6 +26,7 @@ import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
+import br.com.sysmap.crux.core.utils.URLUtils;
 
 /**
  * 
@@ -45,24 +46,33 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 			screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/");
 			URL screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
 
-			try
+			InputStream inputStream = URLUtils.openStream(screenURL);
+			if (inputStream != null)
 			{
-				return screenURL.openStream();
+				return inputStream;
 			}
-			catch(Exception e) 
+			else 
 			{
-				screenURL = new URL("file:///"+screenId);
-
-				try
+				if (screenId.startsWith("file:/"))
 				{
-					return screenURL.openStream();
+					screenURL = new URL(screenId);
 				}
-				catch(Exception e1)
+				else
 				{
-					URL url = getClass().getResource("/"+screenId);
-					if (url != null)
+					screenURL = new URL("file:///"+screenId);
+				}
+
+				inputStream = URLUtils.openStream(screenURL);
+				if (inputStream != null)
+				{
+					return inputStream;
+				}
+				else
+				{
+					screenURL = getClass().getResource("/"+screenId);
+					if (screenURL != null)
 					{
-						return url.openStream();
+						return URLUtils.openStream(screenURL);
 					}
 					else
 					{

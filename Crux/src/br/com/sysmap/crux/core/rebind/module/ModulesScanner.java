@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.core.rebind.module;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -132,7 +131,7 @@ public class ModulesScanner
 									}
 									else
 									{
-										module = documentBuilder.parse(new File(fileName));
+										module = documentBuilder.parse(new URL(fileName).openStream());
 									}
 								}
 								Modules.registerModule(getModuleName(fileName), module);
@@ -239,10 +238,6 @@ public class ModulesScanner
 	{
 		URL classesPath = ClassPathResolverInitializer.getClassPathResolver().findWebInfClassesPath();
 		return classesPath.toString();
-/*		File classesDir = new File(classesPath.toURI());
-		String canonicalPath = classesDir.getCanonicalPath();
-		return RegexpPatterns.REGEXP_BACKSLASH.matcher(canonicalPath).replaceAll("/");
-		*/
 	}
 	
 	/**
