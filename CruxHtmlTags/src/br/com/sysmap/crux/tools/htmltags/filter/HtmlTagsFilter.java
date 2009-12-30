@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import br.com.sysmap.crux.core.server.Environment;
@@ -105,15 +104,15 @@ public class HtmlTagsFilter implements Filter
 							CruxToHtmlTransformer.setOutputCharset(charset);
 						}
 						
-						try
+						InputStream screenResource = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(screenId);
+						if (screenResource != null)
 						{
-							InputStream screenResource = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(screenId);
 							CruxToHtmlTransformer.generateHTML(screenResource, resp.getOutputStream());
 							return;
 						}
-						catch(InterfaceConfigException e)
+						else
 						{
-							log.info(messages.htmlTagsDoNotTransformPage(pathInfo));
+							log.info(messages.htmlTagsDoesNotTransformPage(pathInfo));
 						}
 					}
 					catch (Exception e)

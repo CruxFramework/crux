@@ -102,5 +102,5 @@ public interface HTMLTagsMessages
 	String templatesScanningURLError(String url, String localizedMessage);
 
 	@DefaultMessage("[htmlTags 027] - The page {0} is not transformed... Accessing directly.")
-	String htmlTagsDoNotTransformPage(String pathInfo);
+	String htmlTagsDoesNotTransformPage(String pathInfo);
 }

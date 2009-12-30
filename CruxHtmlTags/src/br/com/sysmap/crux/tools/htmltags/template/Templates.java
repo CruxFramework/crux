@@ -97,7 +97,7 @@ public class Templates
 	{
 		if (templates == null)
 		{
-			initializeTemplates();
+			initialize();
 		}
 		Document document = templates.get(library+"_"+id);
 		if (document != null)
@@ -115,7 +115,7 @@ public class Templates
 	{
 		if (registeredLibraries == null)
 		{
-			initializeTemplates();
+			initialize();
 		}
 		
 		return registeredLibraries.keySet();
@@ -130,7 +130,7 @@ public class Templates
 	{
 		if (registeredLibraries == null)
 		{
-			initializeTemplates();
+			initialize();
 		}
 		
 		return registeredLibraries.get(library);
