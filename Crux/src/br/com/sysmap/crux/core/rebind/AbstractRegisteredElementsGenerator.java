@@ -79,6 +79,11 @@ public abstract class AbstractRegisteredElementsGenerator extends AbstractGenera
 		if(requestedScreen != null)
 		{
 			Set<String> screenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(requestedScreen.getModule());
+			
+			if (screenIDs == null)
+			{
+				throw new ScreenConfigException(messages.errorGeneratingRegisteredElementModuleNotFound(requestedScreen.getModule()));
+			}
 			for (String screenID : screenIDs)
 			{
 				Screen screen = ScreenFactory.getInstance().getScreen(screenID);

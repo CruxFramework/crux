@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.annotation.FormatterName;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 
@@ -85,6 +86,10 @@ public class Formatters
 					FormatterName annot = formatterClass.getAnnotation(FormatterName.class);
 					if (annot != null)
 					{
+						if (formatters.containsKey(annot.value()))
+						{
+							throw new CruxGeneratorException(messages.formattersDuplicatedDataSource(annot.value()));
+						}
 						formatters.put(annot.value(), formatterClass);
 					}
 					else

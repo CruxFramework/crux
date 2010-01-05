@@ -36,6 +36,9 @@ public interface ServerMessages
 	@DefaultMessage("[clientHandlers 001] - Error initializing clientHandler: {0}.")
 	String clientHandlersHandlerInitializeError(String errMsg);
 
+	@DefaultMessage("[clientHandlers 002] - Duplicated Client Controller: {0}.")
+	String clientHandlersDuplicatedController(String value);
+	
 	@DefaultMessage("[widgetConfig 001] - Error initializing widgets.")
 	String widgetConfigInitializeError(String errMsg);
 
@@ -60,6 +63,9 @@ public interface ServerMessages
 	@DefaultMessage("[formatters 001] - Error initializing formatters: {0}.")
 	String formattersFormatterInitializeError(String errMsg);
 
+	@DefaultMessage("[formatters 002] - Duplicated formatter: {0}.")
+	String formattersDuplicatedDataSource(String value);
+	
 	@DefaultMessage("[localeResolver 001] - Error initializing LocaleResolver: {0}.")
 	String localeResolverInitialisationError(String errMsg);
 
@@ -79,21 +85,26 @@ public interface ServerMessages
 	String screenBridgeErrorReadingScreenId(String errMsg);
 
 	@DefaultMessage("[messages 001] Error initializing messagesClasses: {0}.")
-	Object messagesClassesInitializeError(String localizedMessage);
+	String messagesClassesInitializeError(String localizedMessage);
 
+	@DefaultMessage("[messages 002] - Duplicated Message Key: {0}.")
+	String messagesClassesDuplicatedMessageKey(String value);
+	
 	@DefaultMessage("[classpath 001] Error initializing classPathResolver: {0}.")
-	Object classPathResolverInitializerError(String message);
+	String classPathResolverInitializerError(String message);
 
 	@DefaultMessage("[serializers 001] Error initializing serializer: {0}.")
-	Object serializersSerializersInitializeError(String localizedMessage);
+	String serializersSerializersInitializeError(String localizedMessage);
 
 	@DefaultMessage("[screenResourceScanner 001] - Error initializing screenResourceScanner: {0}.")
 	String screenResourceScannerInitializationError(String localizedMessage);
 
 	@DefaultMessage("[screenResourceResolver 001] - Using Default ScreenResourceResouver.")
-	Object screenResourceResolverUsingDefault();
+	String screenResourceResolverUsingDefault();
 
 	@DefaultMessage("[datasources 001] - Error initializing datasource: {0}.")
-	Object dataSourcesDataSourceInitializeError(String localizedMessage);
+	String dataSourcesDataSourceInitializeError(String localizedMessage);
 
+	@DefaultMessage("[datasources 002] - Duplicated datasource: {0}.")
+	String dataSourcesDuplicatedDataSource(String value);
 }

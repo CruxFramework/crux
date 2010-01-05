@@ -40,44 +40,48 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 	{
 		try
 		{
-			URL webBaseDir = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
-			URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(webBaseDir.getProtocol());
+			URL[] webBaseDirs = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
 			
-			screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/");
-			URL screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
+			URL screenURL = null;
+			InputStream inputStream = null;
+			for (URL webBaseDir: webBaseDirs)
+			{
+				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(webBaseDir.getProtocol());
 
-			InputStream inputStream = URLUtils.openStream(screenURL);
-			if (inputStream != null)
-			{
-				return inputStream;
-			}
-			else 
-			{
-				if (screenId.startsWith("file:/"))
-				{
-					screenURL = new URL(screenId);
-				}
-				else
-				{
-					screenURL = new URL("file:///"+screenId);
-				}
+				screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/");
+				screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
 
 				inputStream = URLUtils.openStream(screenURL);
 				if (inputStream != null)
 				{
 					return inputStream;
 				}
+			}
+			
+			if (screenId.indexOf(":/") > 1) //has protocol?
+			{
+				screenURL = new URL(screenId);
+			}
+			else
+			{
+				screenURL = new URL("file:///"+screenId);
+			}
+
+			inputStream = URLUtils.openStream(screenURL);
+			if (inputStream != null)
+			{
+				return inputStream;
+			}
+			else
+			{
+				screenURL = getClass().getResource("/"+screenId);
+				if (screenURL != null)
+				{
+					return URLUtils.openStream(screenURL);
+				}
 				else
 				{
-					screenURL = getClass().getResource("/"+screenId);
-					if (screenURL != null)
-					{
-						return URLUtils.openStream(screenURL);
-					}
-					else
-					{
-						return null;
-					}
+					return null;
 				}
 			}
 		}

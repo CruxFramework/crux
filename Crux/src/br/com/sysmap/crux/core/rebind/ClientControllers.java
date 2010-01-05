@@ -81,6 +81,11 @@ public class ClientControllers
 				{
 					Class<?> controllerClass = Class.forName(controller);
 					Controller annot = controllerClass.getAnnotation(Controller.class);
+					if (clientHandlers.containsKey(annot.value()))
+					{
+						throw new CruxGeneratorException(messages.clientHandlersDuplicatedController(annot.value()));
+					}
+					
 					clientHandlers.put(annot.value(), controllerClass);
 					if (controllerClass.getAnnotation(Global.class) != null)
 					{

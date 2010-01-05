@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.client.i18n.Name;
+import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 
@@ -64,6 +65,10 @@ public class MessageClasses
 							Name annot = messageClass.getAnnotation(Name.class);
 							if (annot!= null)
 							{
+								if (messagesClasses.containsKey(annot.value()))
+								{
+									throw new CruxGeneratorException(messages.messagesClassesDuplicatedMessageKey(annot.value()));
+								}
 								messagesClasses.put(annot.value(), (Class<? extends LocalizableResource>) messageClass);
 							}
 							else

@@ -149,4 +149,7 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 033] - Can not find the web classes dir.")
 	String modulesScannerErrorFindingClassesDir();
+
+	@DefaultMessage("[generator 033] - Can not find the module {0}.")
+	String errorGeneratingRegisteredElementModuleNotFound(String module);
 }

@@ -906,6 +906,7 @@ public class Screen
 	 */
 	public static String appendDebugParameters(String url)
 	{
+		//TODO - Thiago - com o uso dos modules (plugins) não poderia adicionar esses parametros a menos que estejamos no modulo em desenvolvimento 
 		try
 		{
 			if (!StringUtils.isEmpty(url) && !url.contains("gwt.codesvr="))

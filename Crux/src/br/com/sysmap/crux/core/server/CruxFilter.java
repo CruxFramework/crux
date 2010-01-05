@@ -35,8 +35,8 @@ import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
  */
 public class CruxFilter implements Filter 
 {
-	private boolean production = true;
-	FilterConfig config = null;
+	protected boolean production = true;
+	protected FilterConfig config = null;
 	
 	public void init(FilterConfig config) throws ServletException 
 	{
@@ -57,40 +57,62 @@ public class CruxFilter implements Filter
 		}
 		else
 		{
-			HttpServletRequest request = (HttpServletRequest) req;
-			String pathInfo = request.getPathInfo();
-			if (pathInfo == null)
+			String requestedScreen = getRequestedScreen(req);
+			if (requestedScreen != null)
 			{
-				pathInfo = request.getRequestURI();
-			}
-			if (pathInfo != null && pathInfo.length() > 0)
-			{
-				if (!pathInfo.endsWith("hosted.html"))
-				{
-					if (pathInfo.startsWith("/"))
-					{
-						pathInfo = pathInfo.substring(1);
-					}
-
-					String contextPath = config.getServletContext().getContextPath().replaceAll("\\/", "");
-					if (pathInfo.startsWith(contextPath))
-					{
-						pathInfo = pathInfo.substring(contextPath.length());
-					}
-					
-					if (pathInfo.startsWith("/"))
-					{
-						pathInfo = pathInfo.substring(1);
-					}
-					CruxScreenBridge.getInstance().registerLastPageRequested(pathInfo);
-				}
+				CruxScreenBridge.getInstance().registerLastPageRequested(requestedScreen);
 			}
 			else
 			{
 				CruxScreenBridge.getInstance().registerLastPageRequested("");
 			}
+			
 			chain.doFilter(req, resp);
-
 		}
+	}
+	
+	/**
+	 * 
+	 * @param req
+	 * @return
+	 */
+	protected String getRequestedScreen(ServletRequest req)
+	{
+		HttpServletRequest request = (HttpServletRequest) req;
+		String result = request.getPathInfo();
+		if (result == null)
+		{
+			result = request.getRequestURI();
+		}
+		if (result != null && result.length() > 0)
+		{
+			if (!result.endsWith("hosted.html"))
+			{
+				if (result.startsWith("/"))
+				{
+					result = result.substring(1);
+				}
+
+				String contextPath = config.getServletContext().getContextPath().replaceAll("\\/", "");
+				if (result.startsWith(contextPath))
+				{
+					result = result.substring(contextPath.length());
+				}
+				
+				if (result.startsWith("/"))
+				{
+					result = result.substring(1);
+				}
+			}
+			else
+			{
+				result = null;
+			}
+		}
+		else
+		{
+			result = null;
+		}
+		return result;
 	}
 }

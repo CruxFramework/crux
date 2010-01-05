@@ -45,35 +45,39 @@ public abstract class ScreenResourcesScanner
 	
 	public Set<String> scanArchives()
 	{
-		URL url = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
+		URL[] urls = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
 		final Set<String> screens = new HashSet<String>();
 		final ScreenResourcesScanner scanner = this;
-		Filter filter = new Filter()
+		
+		for (URL url : urls)
 		{
-			public boolean accepts(String filename)
+			Filter filter = new Filter()
 			{
-				if (scanner.accepts(filename))
+				public boolean accepts(String filename)
 				{
-					if (filename.startsWith("/"))
+					if (scanner.accepts(filename))
 					{
-						filename = filename.substring(1);
+						if (filename.startsWith("/"))
+						{
+							filename = filename.substring(1);
+						}
+						screens.add(filename);
+						return true;
 					}
-					screens.add(filename);
-					return true;
+					return false;
 				}
-				return false;
-			}
-		};
+			};
 
-		try
-		{
-			StreamIterator it = IteratorFactory.create(url, filter);
-			while (it.next() != null); // Do nothing, but searches the directories and jars
-			
-		}
-		catch (IOException e)
-		{
-			throw new ScreenResourcesScannerException(messages.screenResourceScannerInitializationError(e.getLocalizedMessage()), e);
+			try
+			{
+				StreamIterator it = IteratorFactory.create(url, filter);
+				while (it.next() != null); // Do nothing, but searches the directories and jars
+
+			}
+			catch (IOException e)
+			{
+				throw new ScreenResourcesScannerException(messages.screenResourceScannerInitializationError(e.getLocalizedMessage()), e);
+			}
 		}
 		return screens;
 	}

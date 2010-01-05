@@ -13,18 +13,45 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.server.classpath;
-
-import java.net.URL;
+package br.com.sysmap.crux.core.rebind;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface ClassPathResolver
+public class CruxGeneratorException extends RuntimeException
 {
-	URL findWebInfClassesPath();
-	URL findWebInfLibPath();
-	URL[] findWebInfLibJars();
-	URL[] findWebBaseDirs();
+	private static final long serialVersionUID = 7341726648387062538L;
+
+	/**
+	 * 
+	 */
+	public CruxGeneratorException()
+	{
+	}
+
+	/**
+	 * @param message
+	 */
+	public CruxGeneratorException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public CruxGeneratorException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public CruxGeneratorException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }

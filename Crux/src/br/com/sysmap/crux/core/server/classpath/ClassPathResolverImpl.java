@@ -37,7 +37,7 @@ public class ClassPathResolverImpl implements ClassPathResolver
 
 	private URL webInfClassesPath = null;
 	private URL webInfLibPath = null;
-	private URL webBaseDir = null;
+	private URL[] webBaseDirs = null;
 	private List<URL> webInfLibJars = null;
 	/**
 	 * @param context
@@ -49,7 +49,7 @@ public class ClassPathResolverImpl implements ClassPathResolver
 		{
 			try
 			{
-				URL url = findWebBaseDir();
+				URL url = findWebBaseDirs()[0];
 				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
 
 				webInfClassesPath = resourceHandler.getChildResource(url, "WEB-INF/classes");
@@ -127,9 +127,9 @@ public class ClassPathResolverImpl implements ClassPathResolver
 	/**
 	 * 
 	 */
-	public synchronized URL findWebBaseDir()
+	public synchronized URL[] findWebBaseDirs()
 	{
-		if (webBaseDir == null)
+		if (webBaseDirs == null)
 		{
 			try
 			{
@@ -138,13 +138,14 @@ public class ClassPathResolverImpl implements ClassPathResolver
 
 				url = resourceHandler.getParentDir(url);
 				url = resourceHandler.getParentDir(url);
-				webBaseDir = url;
+				webBaseDirs = new URL[1]; 
+				webBaseDirs[0] = url;
 			}
 			catch (Exception e)
 			{
 				throw new RuntimeException(e.getMessage(), e);
 			}
 		}
-		return webBaseDir;
+		return webBaseDirs;
 	}
 }

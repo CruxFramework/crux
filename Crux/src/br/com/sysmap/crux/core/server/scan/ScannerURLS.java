@@ -102,10 +102,14 @@ public class ScannerURLS
 	public static URL[] getWebURLsForSearch()
 	{
 		URL[] urls = getURLsForSearch();
-		URL[] result = new URL[urls.length + 1];
+		URL[] webDirs = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
+		if (webDirs == null)
+		{
+			return urls;
+		}
+		URL[] result = new URL[urls.length + webDirs.length];
 		System.arraycopy(urls, 0, result, 0, urls.length);
-		URL webDir = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
-		result[result.length-1] = webDir;
+		System.arraycopy(webDirs, 0, result, urls.length, webDirs.length);
 		return result;
 	}
 }
