@@ -49,13 +49,23 @@ public class CruxHtmlTagsScreenResolver implements ScreenResourceResolver
 	{
 		try
 		{
-			URL webBaseDir = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
-			URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(webBaseDir.getProtocol());
+			URL[] webBaseDirs = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
+			URL screenURL = null;
+			InputStream inputStream = null;
 			
-			screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/").replace(".html", ".crux.xml");
-			URL screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
+			for (URL webBaseDir: webBaseDirs)
+			{
+				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(webBaseDir.getProtocol());
 
-			InputStream inputStream = URLUtils.openStream(screenURL);
+				screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/").replace(".html", ".crux.xml");
+				screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
+				inputStream = URLUtils.openStream(screenURL);
+				if (inputStream != null)
+				{
+					break;
+				}
+			}	
+			
 			if (inputStream == null)
 			{
 				if (screenId.startsWith("file:/"))

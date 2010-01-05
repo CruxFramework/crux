@@ -18,20 +18,17 @@ package br.com.sysmap.crux.tools.htmltags.filter;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
-import br.com.sysmap.crux.core.server.Environment;
+import br.com.sysmap.crux.core.server.CruxFilter;
 import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
 import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
 
@@ -41,24 +38,13 @@ import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
  * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
-public class HtmlTagsFilter implements Filter 
+public class HtmlTagsFilter extends CruxFilter
 {
 	private static final Log log = LogFactory.getLog(HtmlTagsFilter.class);
 
 	private HTMLTagsMessages messages = MessagesFactory.getMessages(HTMLTagsMessages.class);
-	private boolean production = true;
-	FilterConfig config = null;
-	
-	public void init(FilterConfig config) throws ServletException 
-	{
-		production = Environment.isProduction();
-		this.config = config;
-	}
-	
-	public void destroy() 
-	{
-	}
 
+	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)  throws IOException, ServletException 
 	{
 		if (production)
@@ -67,58 +53,39 @@ public class HtmlTagsFilter implements Filter
 		}
 		else
 		{
-			HttpServletRequest request = (HttpServletRequest) req;
-			String pathInfo = request.getPathInfo();
-			if (pathInfo == null)
+			String requestedScreen = getRequestedScreen(req);
+			if (requestedScreen != null)
 			{
-				pathInfo = request.getRequestURI();
-			}
-			if (pathInfo != null && pathInfo.length() > 0)
-			{
-				if (!pathInfo.endsWith("hosted.html"))
+				try
 				{
+					String screenId = requestedScreen.replace(".html", ".crux.xml");
+					String charset = config.getInitParameter("outputCharset");
 
-					try
+					if(charset != null)
 					{
-						if (pathInfo.startsWith("/"))
-						{
-							pathInfo = pathInfo.substring(1);
-						}
+						CruxToHtmlTransformer.setOutputCharset(charset);
+					}
 
-						String contextPath = config.getServletContext().getContextPath().replaceAll("\\/", "");
-						if (pathInfo.startsWith(contextPath))
-						{
-							pathInfo = pathInfo.substring(contextPath.length());
-						}
-						
-						if (pathInfo.startsWith("/"))
-						{
-							pathInfo = pathInfo.substring(1);
-						}
-						
-						String screenId = pathInfo.replace(".html", ".crux.xml");
-						String charset = config.getInitParameter("outputCharset");
-							
-						if(charset != null)
-						{
-							CruxToHtmlTransformer.setOutputCharset(charset);
-						}
-						
-						InputStream screenResource = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(screenId);
-						if (screenResource != null)
-						{
-							CruxToHtmlTransformer.generateHTML(screenResource, resp.getOutputStream());
-							return;
-						}
-						else
-						{
-							log.info(messages.htmlTagsDoesNotTransformPage(pathInfo));
-						}
-					}
-					catch (Exception e)
+					InputStream screenResource = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(screenId);
+					if (screenResource != null)
 					{
-						throw new ServletException(e.getMessage(),e);
+						//TODO - Thiago - Criar um filtro semelhante para os plugins, mas que seta o modulo corrente, para que um screenResolver possa recuperar a tela.
+						// este devera ser inteligente para detectar se o plugin htmltags esta sendo usado e fazer a transformacao apenas das paginas do modulo corrente...
+						//as demais serao carregadas diretamente do arquivo .html
+						// Esta mesma inteligencia deve ser adicionada ao novo screenresolver.
+						
+						CruxToHtmlTransformer.generateHTML(screenResource, resp.getOutputStream());
+						return;
 					}
+					else
+					{
+						log.info(messages.htmlTagsDoesNotTransformPage(requestedScreen));
+					}
+				}
+				catch (Exception e)
+				{
+					log.error(e.getMessage(), e);
+					throw new ServletException(e.getMessage(),e);
 				}
 			}
 			chain.doFilter(req, resp);
