@@ -117,24 +117,34 @@ public class ModulesScanner
 							Document module;
 							try
 							{
-								InputStream inputStream = getClass().getResourceAsStream(fileName);
+								URL moduleDescriptor = getClass().getResource(fileName);
+								InputStream inputStream = null;
+								if (moduleDescriptor != null)
+								{
+									inputStream = moduleDescriptor.openStream();
+								}
 								if (inputStream != null)
 								{
 									module = documentBuilder.parse(inputStream);
 								}
 								else
 								{
-									inputStream = getClass().getResourceAsStream("/"+fileName);
+									moduleDescriptor = getClass().getResource("/"+fileName);
+									if (moduleDescriptor != null)
+									{
+										inputStream = moduleDescriptor.openStream();
+									}
 									if (inputStream != null)
 									{
 										module = documentBuilder.parse(inputStream);
 									}
 									else
 									{
-										module = documentBuilder.parse(new URL(fileName).openStream());
+										moduleDescriptor = new URL(fileName);
+										module = documentBuilder.parse(moduleDescriptor.openStream());
 									}
 								}
-								Modules.registerModule(getModuleName(fileName), module);
+								Modules.registerModule(moduleDescriptor, getModuleName(fileName), module);
 							}
 							catch (Exception e)
 							{

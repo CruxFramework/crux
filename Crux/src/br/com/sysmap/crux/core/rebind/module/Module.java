@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.core.rebind.module;
 
+import java.net.URL;
 import java.util.Set;
 
 /**
@@ -25,9 +26,11 @@ public class Module
 {
 	private String name;
 	private String fullName;
-	private String source;
-	private String publicPath;
+	private String[] sources;
+	private String[] publicPaths;
 	private Set<String> inherits;
+	private URL descriptorURL;
+	private String rootPath;
 	
 	public Set<String> getInherits()
 	{
@@ -41,21 +44,21 @@ public class Module
 	{
 		this.name = name;
 	}
-	public String getSource()
+	public String[] getSources()
 	{
-		return source;
+		return sources;
 	}
-	public void setSource(String source)
+	public void setSources(String[] sources)
 	{
-		this.source = source;
+		this.sources = sources;
 	}
-	public String getPublicPath()
+	public String[] getPublicPaths()
 	{
-		return publicPath;
+		return publicPaths;
 	}
-	public void setPublicPath(String publicPath)
+	public void setPublicPaths(String[] publicPaths)
 	{
-		this.publicPath = publicPath;
+		this.publicPaths = publicPaths;
 	}
 	public void setInherits(Set<String> inherits)
 	{
@@ -68,5 +71,21 @@ public class Module
 	public void setFullName(String fullName)
 	{
 		this.fullName = fullName;
+	}
+	public URL getDescriptorURL()
+	{
+		return descriptorURL;
+	}
+	public void setDescriptorURL(URL descriptorURL)
+	{
+		this.descriptorURL = descriptorURL;
+	}
+	public String getRootPath()
+	{
+		return rootPath;
+	}
+	public void setRootPath(String rootPath)
+	{
+		this.rootPath = rootPath;
 	}
 }

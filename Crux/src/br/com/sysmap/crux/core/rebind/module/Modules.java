@@ -15,9 +15,12 @@
  */
 package br.com.sysmap.crux.core.rebind.module;
  
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -117,11 +120,14 @@ public class Modules
 		Module module = Modules.getModule(moduleId);
 		if (module != null)
 		{
-			if (controller.startsWith(module.getSource()))
-			{
-				return true;
-			}
 			
+			for(String source: module.getSources())
+			{
+				if (controller.startsWith(module.getRootPath()+source))
+				{
+					return true;
+				}
+			}
 			for (String inheritModule : module.getInherits())
 			{
 				if (isClassOnModulePath(controller, inheritModule, alreadySearched))
@@ -151,7 +157,7 @@ public class Modules
 	 * @param templateId
 	 * @param template
 	 */
-	static void registerModule(String moduleFullName, Document moduleDocument)
+	static void registerModule(URL moduleDescriptor, String moduleFullName, Document moduleDocument)
 	{
 		Module module = new Module();
 		
@@ -159,9 +165,11 @@ public class Modules
 		
 		module.setFullName(moduleFullName);
 		module.setName(getModuleName(moduleFullName, element));
-		module.setSource(getModuleSource(moduleFullName, element));
-		module.setPublicPath(getModulePublicPath(moduleFullName, element));
+		module.setSources(getModuleSources(element));
+		module.setPublicPaths(getModulePublicPaths(element));
+		module.setRootPath(getModuleRootPath(moduleFullName));
 		module.setInherits(getModuleInherits(element));
+		module.setDescriptorURL(moduleDescriptor);
 		modules.put(module.getName(), module);
 		moduleAliases.put(moduleFullName, module.getName());
 	}
@@ -206,10 +214,9 @@ public class Modules
 	/**
 	 * 
 	 * @param moduleFullName
-	 * @param element
 	 * @return
 	 */
-	private static String getModuleSource(String moduleFullName, Element element)
+	private static String getModuleRootPath(String moduleFullName)
 	{
 		moduleFullName = moduleFullName.replace('.', '/');
 		int index = moduleFullName.lastIndexOf('/');
@@ -221,18 +228,7 @@ public class Modules
 		{
 			moduleFullName = "";
 		}
-		String sourcePath = moduleFullName+"/client";
-		NodeList sourceTags = element.getElementsByTagName("source");
-		if (sourceTags != null && sourceTags.getLength() > 0)
-		{
-			Element source = (Element)sourceTags.item(0);
-			sourcePath = source.getAttribute("path");
-			if (sourcePath != null && sourcePath.length()>0)
-			{
-				sourcePath = moduleFullName+"/"+sourcePath;
-			}
-		}
-		return sourcePath;
+		return moduleFullName+"/";
 	}
 	
 	/**
@@ -241,29 +237,57 @@ public class Modules
 	 * @param element
 	 * @return
 	 */
-	private static String getModulePublicPath(String moduleFullName, Element element)
+	private static String[] getModuleSources(Element element)
 	{
-		moduleFullName = moduleFullName.replace('.', '/');
-		int index = moduleFullName.lastIndexOf('/');
-		if (index > 0)
+		NodeList sourceTags = element.getElementsByTagName("source");
+		if (sourceTags != null && sourceTags.getLength() > 0)
 		{
-			moduleFullName = moduleFullName.substring(0, index);
+			List<String> paths = new ArrayList<String>();
+			for (int i=0; i < sourceTags.getLength(); i++)
+			{
+				Element source = (Element)sourceTags.item(i);
+				String sourcePath = source.getAttribute("path");
+				if (sourcePath != null && sourcePath.length()>0)
+				{
+					paths.add(sourcePath);
+				}
+			}
+
+			return paths.toArray(new String[paths.size()]);
 		}
 		else
 		{
-			moduleFullName = "";
+			return new String[]{"client"};
 		}
-		String publicPath = moduleFullName+"/public";
-		NodeList publicTags = element.getElementsByTagName("public");
-		if (publicTags != null && publicTags.getLength() > 0)
+	}
+	
+	/**
+	 * 
+	 * @param moduleFullName
+	 * @param element
+	 * @return
+	 */
+	private static String[] getModulePublicPaths(Element element)
+	{
+		NodeList sourceTags = element.getElementsByTagName("public");
+		if (sourceTags != null && sourceTags.getLength() > 0)
 		{
-			Element source = (Element)publicTags.item(0);
-			publicPath = source.getAttribute("path");
-			if (publicPath != null && publicPath.length()>0)
+			List<String> paths = new ArrayList<String>();
+			for (int i=0; i < sourceTags.getLength(); i++)
 			{
-				publicPath = moduleFullName+"/"+publicPath;
+				Element source = (Element)sourceTags.item(i);
+				String sourcePath = source.getAttribute("path");
+				if (sourcePath != null && sourcePath.length()>0)
+				{
+					paths.add(sourcePath);
+				}
 			}
+
+			return paths.toArray(new String[paths.size()]);
 		}
-		return publicPath;
+		else
+		{
+			return new String[]{"public"};
+		}
 	}
 }
