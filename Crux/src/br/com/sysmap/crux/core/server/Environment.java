@@ -37,6 +37,8 @@ public class Environment
 	@SuppressWarnings("deprecation")
 	public static boolean isProduction()
 	{
+		//TODO - Thiago - usar um "strategy" aki... para que cada um possa informar como determinar o valor correto para 
+		//esta variavel.... com o plugin de modules, por exemplo, a classe que dará o start é o ModulesLauncher.
 		if (isProduction == null)
 		{
 			lock.lock();

@@ -77,7 +77,20 @@ public class CruxClientConfigGenerator extends AbstractGenerator
 		context.commit(logger, printWriter);
 	}
 
-	private void generateMethodWrappers(TreeLogger logger, Class<?> interfaceClass, SourceWriter sourceWriter)
+	protected void generateMethodWrappers(TreeLogger logger, Class<?> interfaceClass, SourceWriter sourceWriter)
+	{
+		generateWrapSiblingWidgetsMethod(sourceWriter);
+		generateEnableChildrenWindowsDebugMethod(sourceWriter);
+	}
+
+	protected void generateEnableChildrenWindowsDebugMethod(SourceWriter sourceWriter)
+	{
+		sourceWriter.println("public boolean enableDebugForURL(String url){");
+		sourceWriter.println("return " + ConfigurationFactory.getConfigurations().enableChildrenWindowsDebug() + ";");
+		sourceWriter.println("}");
+	}
+
+	protected void generateWrapSiblingWidgetsMethod(SourceWriter sourceWriter)
 	{
 		sourceWriter.println("public boolean wrapSiblingWidgets(){");
 		sourceWriter.println("return " + ConfigurationFactory.getConfigurations().wrapSiblingWidgets() + ";");

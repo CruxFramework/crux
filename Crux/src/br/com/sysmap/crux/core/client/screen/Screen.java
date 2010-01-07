@@ -906,28 +906,30 @@ public class Screen
 	 */
 	public static String appendDebugParameters(String url)
 	{
-		//TODO - Thiago - com o uso dos modules (plugins) não poderia adicionar esses parametros a menos que estejamos no modulo em desenvolvimento 
-		try
+		if (Crux.getConfig().enableDebugForURL(url))
 		{
-			if (!StringUtils.isEmpty(url) && !url.contains("gwt.codesvr="))
+			try
 			{
-				String debugSvr = Window.Location.getParameter("gwt.codesvr");
-				if (!StringUtils.isEmpty(debugSvr))
+				if (!StringUtils.isEmpty(url) && !url.contains("gwt.codesvr="))
 				{
-					if (url.contains("?"))
+					String debugSvr = Window.Location.getParameter("gwt.codesvr");
+					if (!StringUtils.isEmpty(debugSvr))
 					{
-						url += "&gwt.codesvr="+URL.encode(debugSvr); 
-					}
-					else
-					{
-						url += "?gwt.codesvr="+URL.encode(debugSvr); 
+						if (url.contains("?"))
+						{
+							url += "&gwt.codesvr="+URL.encode(debugSvr); 
+						}
+						else
+						{
+							url += "?gwt.codesvr="+URL.encode(debugSvr); 
+						}
 					}
 				}
 			}
-		}
-		catch(Throwable e)
-		{
-			GWT.log(e.getLocalizedMessage(), e);
+			catch(Throwable e)
+			{
+				GWT.log(e.getLocalizedMessage(), e);
+			}
 		}
 		return url;
 	}

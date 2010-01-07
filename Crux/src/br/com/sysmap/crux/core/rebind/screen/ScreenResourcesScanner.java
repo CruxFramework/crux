@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
@@ -84,6 +85,26 @@ public abstract class ScreenResourcesScanner
 	
 	public Set<String> getPages(String module) throws ScreenConfigException
 	{
+		if (Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableWebRootScannerCache()))
+		{
+			return getCachedPages(module);
+		}
+		else
+		{
+			HashMap<String, Set<String>> modulePages = new HashMap<String, Set<String>>();
+			createPagesMapForModule(modulePages);
+			return modulePages.get(module);
+		}
+	}		
+		
+	/**
+	 * 
+	 * @param module
+	 * @return
+	 * @throws ScreenConfigException
+	 */
+	private Set<String> getCachedPages(String module) throws ScreenConfigException
+	{
 		if (pagesPerModule == null)
 		{
 			lock.lock();
@@ -92,22 +113,7 @@ public abstract class ScreenResourcesScanner
 				if (pagesPerModule == null)
 				{
 					pagesPerModule = new HashMap<String, Set<String>>();
-					
-					Set<String> archives = scanArchives();
-					for (String screenID : archives)
-					{
-						Screen screen = ScreenFactory.getInstance().getScreen(screenID);
-						if(screen != null)
-						{
-							Set<String> pages = pagesPerModule.get(screen.getModule());
-							if (pages == null)
-							{
-								pages = new HashSet<String>();
-								pagesPerModule.put(screen.getModule(), pages);
-							}
-							pages.add(screenID);
-						}
-					}
+					createPagesMapForModule(pagesPerModule);
 				}
 			}
 			finally
@@ -117,6 +123,32 @@ public abstract class ScreenResourcesScanner
 		}
 		
 		return pagesPerModule.get(module);
+		//TODO - Thiago - Caso um module herde outro, o module herdado deve adicionar a pasta publica do outro em sua lista de web roots.
+	}
+
+	/**
+	 * 
+	 * @param modulePages
+	 * @return
+	 * @throws ScreenConfigException
+	 */
+	private void createPagesMapForModule(Map<String, Set<String>> modulePages) throws ScreenConfigException
+	{
+		Set<String> archives = scanArchives();
+		for (String screenID : archives)
+		{
+			Screen screen = ScreenFactory.getInstance().getScreen(screenID);
+			if(screen != null)
+			{
+				Set<String> pages = modulePages.get(screen.getModule());
+				if (pages == null)
+				{
+					pages = new HashSet<String>();
+					modulePages.put(screen.getModule(), pages);
+				}
+				pages.add(screenID);
+			}
+		}
 	}
 	
 

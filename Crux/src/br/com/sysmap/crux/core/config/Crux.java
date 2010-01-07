@@ -35,5 +35,12 @@ public interface Crux
 	String wrapSiblingWidgets();
 
 	@DefaultMessage("true")
+	String enableChildrenWindowsDebug();
+
+	@DefaultMessage("true")
 	String allowAutoBindWithNonDeclarativeWidgets();
+
+	@DefaultMessage("true")
+	String enableWebRootScannerCache();
+
 }

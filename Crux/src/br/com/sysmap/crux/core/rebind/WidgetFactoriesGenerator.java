@@ -695,7 +695,6 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 			throws NoSuchMethodException, Exception
 	{
 		// TODO - Thiago - colocar todos as amarracoes de eventos do client em evtbinder 
-		// TODO - Thiago - Rever a anotação Global.... se um jar estiver presente no projeto, mas nao for referenciado no modulo, nao vai achar a classe....
 		StringBuilder source = new StringBuilder();
 		
 		String processorName = getClassSourceName(childProcessor);

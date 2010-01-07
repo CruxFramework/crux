@@ -39,6 +39,7 @@ public class ClassPathResolverImpl implements ClassPathResolver
 	private URL webInfLibPath = null;
 	private URL[] webBaseDirs = null;
 	private List<URL> webInfLibJars = null;
+	
 	/**
 	 * @param context
 	 * @return
