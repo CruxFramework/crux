@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
@@ -156,11 +157,18 @@ public class TemplatesScanner
 	 */
 	public void scanArchives()
 	{
-		if (urlsForSearch == null)
+		if (Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableWebRootScannerCache()))
 		{
-			initialize(ScannerURLS.getWebURLsForSearch());
+			if (urlsForSearch == null)
+			{
+				initialize(ScannerURLS.getWebURLsForSearch());
+			}
+			scanArchives(urlsForSearch);
 		}
-		scanArchives(urlsForSearch);
+		else
+		{
+			scanArchives(ScannerURLS.getWebURLsForSearch());
+		}
 	}
 	
 	/**

@@ -33,8 +33,8 @@ import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
 import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
 
 /**
- * Used to save the path to the current HTML page. This information is necessary
- * to generate the client handlers and formatters.
+ * Intercept requests to .html pages and redirect to the correspondent .crux.xml file. Then transform this xml  
+ * into the expected .html file. Used only for development.
  * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
@@ -69,11 +69,6 @@ public class HtmlTagsFilter extends CruxFilter
 					InputStream screenResource = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(screenId);
 					if (screenResource != null)
 					{
-						//TODO - Thiago - Criar um filtro semelhante para os plugins, mas que seta o modulo corrente, para que um screenResolver possa recuperar a tela.
-						// este devera ser inteligente para detectar se o plugin htmltags esta sendo usado e fazer a transformacao apenas das paginas do modulo corrente...
-						//as demais serao carregadas diretamente do arquivo .html
-						// Esta mesma inteligencia deve ser adicionada ao novo screenresolver.
-						
 						CruxToHtmlTransformer.generateHTML(screenResource, resp.getOutputStream());
 						return;
 					}
