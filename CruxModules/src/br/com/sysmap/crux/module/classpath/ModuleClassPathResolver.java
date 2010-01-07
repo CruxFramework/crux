@@ -32,7 +32,6 @@ import br.com.sysmap.crux.module.CruxModuleHandler;
 public class ModuleClassPathResolver extends ClassPathResolverImpl
 {
 	private URL webInfClassesPath = null;
-	private URL[] webBaseDirs = null;
 
 	/**
 	 * @param context
@@ -61,28 +60,24 @@ public class ModuleClassPathResolver extends ClassPathResolverImpl
 	 * 
 	 */
 	@Override
-	public synchronized URL[] findWebBaseDirs()
+	public URL[] findWebBaseDirs()
 	{
-		if (webBaseDirs == null)
+		try
 		{
-			try
+			List<URL> urls = new ArrayList<URL>();
+
+			CruxModule cruxModule = CruxModuleHandler.getCurrentModule();
+			URL moduleLocation = cruxModule.getLocation();
+			URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(moduleLocation.getProtocol());
+			for(String publicPath: cruxModule.getGwtModule().getPublicPaths())
 			{
-				List<URL> urls = new ArrayList<URL>();
-				
-				CruxModule cruxModule = CruxModuleHandler.getCurrentModule();
-				URL moduleLocation = cruxModule.getLocation();
-				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(moduleLocation.getProtocol());
-				for(String publicPath: cruxModule.getGwtModule().getPublicPaths())
-				{
-					urls.add(resourceHandler.getChildResource(moduleLocation, publicPath));
-				}
-				webBaseDirs = urls.toArray(new URL[urls.size()]);
+				urls.add(resourceHandler.getChildResource(moduleLocation, publicPath));
 			}
-			catch (Exception e)
-			{
-				throw new RuntimeException(e.getMessage(), e);
-			}
+			return urls.toArray(new URL[urls.size()]);
 		}
-		return webBaseDirs;
+		catch (Exception e)
+		{
+			throw new RuntimeException(e.getMessage(), e);
+		}
 	}
 }

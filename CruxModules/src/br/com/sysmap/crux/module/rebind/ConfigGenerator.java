@@ -41,6 +41,8 @@ public class ConfigGenerator extends CruxClientConfigGenerator
 			if (pages != null)
 			{
 				String moduleName = CruxModuleHandler.getCurrentModule().getName();
+				//TODO - Thiago - varrer nao o module corrente, mas todos os modules de desenvolvimento
+				//TODO - Thiago - quando o processo chamador for o de compilação, nao pode existir module de desenvolvimento
 				//TODO - Thiago - colocar tbm um scanner para achar os controllers de um module
 				sourceWriter.println("if (url == null){");
 				sourceWriter.println("return false;");

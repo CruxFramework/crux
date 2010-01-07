@@ -29,6 +29,7 @@ import br.com.sysmap.crux.core.rebind.module.Module;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
+import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.config.CruxModuleConfigurationFactory;
 
 /**
@@ -89,23 +90,39 @@ public class CruxModuleHandler
 		
 		if (currentModule == null || currentModule.length() == 0)
 		{
-			currentModule = CruxModuleConfigurationFactory.getConfigurations().developmentModule();
-			if (currentModule == null || currentModule.length() == 0)
+			Iterator<CruxModule> modules = iterateCruxModules();
+			if (modules.hasNext())
 			{
-				Iterator<CruxModule> modules = iterateCruxModules();
-				if (modules.hasNext())
-				{
-					return modules.next();
-				}
-				else
-				{
-					throw new CruxModuleException(messages.developmentCruxModuleNotDefined());
-				}
+				return modules.next();
+			}
+			else
+			{
+				throw new CruxModuleException(messages.developmentCruxModuleNotDefined());
 			}
 		}		
 		return getCruxModule(currentModule);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public static String[] getDevelopmentModules()
+	{
+		String developmentModules = CruxModuleConfigurationFactory.getConfigurations().developmentModules();
+		if (developmentModules == null)
+		{
+			return new String[0];
+		}
+		String[] modules = RegexpPatterns.REGEXP_COMMA.split(developmentModules);
+		for (int i=0; i< modules.length; i++)
+		{
+			modules[i] = modules[i].trim();
+		}
+		return modules;
+	}
+	
+	
 	/**
 	 * 
 	 * @param module

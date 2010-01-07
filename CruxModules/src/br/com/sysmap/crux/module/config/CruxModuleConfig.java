@@ -22,5 +22,5 @@ package br.com.sysmap.crux.module.config;
  */
 public interface CruxModuleConfig
 {
-	String developmentModule();
+	String developmentModules();
 }
