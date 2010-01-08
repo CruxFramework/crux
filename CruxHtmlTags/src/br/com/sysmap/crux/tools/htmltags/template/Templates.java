@@ -145,6 +145,11 @@ public class Templates
 	{
 		Element templateElement = template.getDocumentElement();
 		String library = templateElement.getAttribute("library");
+		if (templates.containsKey(library+"_"+templateId))
+		{
+			logger.warn(messages.templateDuplicatedTemplate(library, templateId));
+		}
+		
 		if (!registeredLibraries.containsKey(library))
 		{
 			registeredLibraries.put(library, new HashSet<String>());

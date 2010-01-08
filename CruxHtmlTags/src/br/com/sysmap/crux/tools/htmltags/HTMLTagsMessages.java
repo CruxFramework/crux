@@ -103,4 +103,7 @@ public interface HTMLTagsMessages
 
 	@DefaultMessage("[htmlTags 027] - The page {0} is not transformed... Accessing directly.")
 	String htmlTagsDoesNotTransformPage(String pathInfo);
+
+	@DefaultMessage("[htmlTags 027] - Duplicated template found. Library: {0}. Template: {1}.")
+	String templateDuplicatedTemplate(String library, String templateId);
 }

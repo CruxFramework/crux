@@ -157,6 +157,7 @@ public class TemplatesScanner
 	 */
 	public void scanArchives()
 	{
+		//TODO - Thiago - Tratar conflitos de nomes de templates, controllers, formatters e datasources declarados em modulos distintos. 
 		if (Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableWebRootScannerCache()))
 		{
 			if (urlsForSearch == null)
