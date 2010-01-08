@@ -29,6 +29,7 @@ import br.com.sysmap.crux.core.rebind.module.Module;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
+import br.com.sysmap.crux.core.server.Environment;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.config.CruxModuleConfigurationFactory;
 
@@ -109,6 +110,10 @@ public class CruxModuleHandler
 	 */
 	public static String[] getDevelopmentModules()
 	{
+		if (Environment.isProduction())
+		{
+			return null;
+		}
 		String developmentModules = CruxModuleConfigurationFactory.getConfigurations().developmentModules();
 		if (developmentModules == null)
 		{
@@ -164,9 +169,18 @@ public class CruxModuleHandler
 			}
 		}
 		
-		for (CruxModule cruxModule : cruxModules.values())
+		String currentModule = CruxModuleBridge.getInstance().getCurrentModule(); 
+		try
 		{
-			searchModulePages(cruxModule);
+			for (CruxModule cruxModule : cruxModules.values())
+			{
+				CruxModuleBridge.getInstance().registerCurrentModule(cruxModule.getName());
+				searchModulePages(cruxModule);
+			}
+		}
+		finally
+		{
+			CruxModuleBridge.getInstance().registerCurrentModule(currentModule);
 		}
 	}
 

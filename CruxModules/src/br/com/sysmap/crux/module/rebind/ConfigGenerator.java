@@ -37,13 +37,9 @@ public class ConfigGenerator extends CruxClientConfigGenerator
 		}
 		else
 		{
-			String[] pages = CruxModuleHandler.getCurrentModule().getPages();
-			if (pages != null)
+			String[] developmentModules = CruxModuleHandler.getDevelopmentModules();
+			if (developmentModules != null)
 			{
-				String moduleName = CruxModuleHandler.getCurrentModule().getName();
-				//TODO - Thiago - varrer nao o module corrente, mas todos os modules de desenvolvimento
-				//TODO - Thiago - quando o processo chamador for o de compilação, nao pode existir module de desenvolvimento
-				//TODO - Thiago - colocar tbm um scanner para achar os controllers de um module
 				sourceWriter.println("if (url == null){");
 				sourceWriter.println("return false;");
 				sourceWriter.println("}");
@@ -53,11 +49,19 @@ public class ConfigGenerator extends CruxClientConfigGenerator
 				sourceWriter.println("if (index  > 0){");
 				sourceWriter.println("urlWithoutParameters = url.substring(0,index);");
 				sourceWriter.println("}");
-				for (String page : pages)
+				for (String moduleName : developmentModules)
 				{
-					sourceWriter.println("if (urlWithoutParameters.endsWith(\""+moduleName+"/"+page+"\")){");
-					sourceWriter.println("return true;");
-					sourceWriter.println("}");
+					String[] pages = CruxModuleHandler.getCruxModule(moduleName).getPages();
+					if (pages != null)
+					{
+						//TODO - Thiago - colocar tbm um scanner para achar os controllers de um module
+						for (String page : pages)
+						{
+							sourceWriter.println("if (urlWithoutParameters.endsWith(\""+moduleName+"/"+page+"\")){");
+							sourceWriter.println("return true;");
+							sourceWriter.println("}");
+						}
+					}
 				}
 			}
 			sourceWriter.println("return false;");
