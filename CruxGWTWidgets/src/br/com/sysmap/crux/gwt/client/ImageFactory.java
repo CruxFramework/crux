@@ -42,7 +42,7 @@ public class ImageFactory extends WidgetFactory<Image>
 {
 	@Override
 	@TagAttributes({
-		@TagAttribute("url")
+		@TagAttribute(value="url", required=true)
 	})	
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration("leftRect"),
