@@ -18,8 +18,10 @@ package br.com.sysmap.crux.module.launch;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.module.CruxModuleHandler;
+import br.com.sysmap.crux.module.CruxModuleMessages;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -27,6 +29,8 @@ import br.com.sysmap.crux.module.CruxModuleHandler;
  */
 public class ModulesLauncher
 {
+	private static CruxModuleMessages messages = (CruxModuleMessages)MessagesFactory.getMessages(CruxModuleMessages.class);
+
 	/**
 	 * 
 	 * @param args
@@ -36,7 +40,7 @@ public class ModulesLauncher
 		String[] developmentModules = CruxModuleHandler.getDevelopmentModules();
 		if (developmentModules==null || developmentModules.length ==0)
 		{
-			throw new RuntimeException();//TODO - Thiago - message here.
+			throw new RuntimeException(messages.launcerErrorNoDevelopmentModulesSpecified());
 		}
 		
 		List<String> modules = new ArrayList<String>();

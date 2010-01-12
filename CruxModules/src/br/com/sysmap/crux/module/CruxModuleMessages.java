@@ -40,4 +40,7 @@ public interface CruxModuleMessages
 
 	@DefaultMessage("[crux-modules 006] - No module registered under the bridge module. Assuming the development module" )
 	String moduleBridgeErrorReadingModule();
+
+	@DefaultMessage("[crux-modules 006] - No development module specified." )
+	String launcerErrorNoDevelopmentModulesSpecified();
 }
