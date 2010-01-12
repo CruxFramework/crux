@@ -243,7 +243,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			 */
 			public void remove()
 			{
-				throw new RuntimeException(); // TODO - set message here				
+				throw new RuntimeException(); // TODO - Gessé - set message here				
 			}			
 		};
 		
