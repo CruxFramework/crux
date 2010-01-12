@@ -43,4 +43,12 @@ public interface Crux
 	@DefaultMessage("true")
 	String enableWebRootScannerCache();
 
+	void setEnableWebRootScannerCache(Boolean value);
+	void setAllowAutoBindWithNonDeclarativeWidgets(Boolean value);
+	void setEnableChildrenWindowsDebug(Boolean value);
+	void setWrapSiblingWidgets(Boolean value);
+	void setClassPathResolver(String value);
+	void setScreenResourceResolver(String value);
+	void setLocaleResolver(String value);
+	void setServiceFactory(String value);
 }
