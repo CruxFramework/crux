@@ -23,4 +23,6 @@ package br.com.sysmap.crux.module.config;
 public interface CruxModuleConfig
 {
 	String developmentModules();
+
+	void setDevelopmentModules(String value);
 }
