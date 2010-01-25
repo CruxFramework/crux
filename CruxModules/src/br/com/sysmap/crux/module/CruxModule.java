@@ -63,6 +63,10 @@ public class CruxModule
 	
 	public String[] getPages()
 	{
+		if (pages == null)
+		{
+			CruxModuleHandler.initializeModulesPages();
+		}
 		return pages;
 	}
 

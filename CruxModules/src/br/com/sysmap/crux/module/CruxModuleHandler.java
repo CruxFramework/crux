@@ -40,7 +40,9 @@ import br.com.sysmap.crux.module.config.CruxModuleConfigurationFactory;
 public class CruxModuleHandler
 {
 	private static Map<Module, CruxModule> cruxModules = null;
+	private static boolean pagesInitialized = false;
 	private static final Lock lock = new ReentrantLock();
+	private static final Lock lockPages = new ReentrantLock();
 	private static final CruxModuleMessages messages = MessagesFactory.getMessages(CruxModuleMessages.class);
 	
 	/**
@@ -168,19 +170,40 @@ public class CruxModuleHandler
 				throw new CruxModuleException(messages.errorInitializingCruxModuleHandler(), e);
 			}
 		}
-		
-		String currentModule = CruxModuleBridge.getInstance().getCurrentModule(); 
-		try
+	}
+
+	/**
+	 * 
+	 */
+	static void initializeModulesPages()
+	{
+		if (!pagesInitialized)
 		{
-			for (CruxModule cruxModule : cruxModules.values())
+			lockPages.lock();
+			if (!pagesInitialized)
 			{
-				CruxModuleBridge.getInstance().registerCurrentModule(cruxModule.getName());
-				searchModulePages(cruxModule);
+				pagesInitialized = true;
+				try
+				{
+					String currentModule = CruxModuleBridge.getInstance().getCurrentModule(); 
+					try
+					{
+						for (CruxModule cruxModule : cruxModules.values())
+						{
+							CruxModuleBridge.getInstance().registerCurrentModule(cruxModule.getName());
+							searchModulePages(cruxModule);
+						}
+					}
+					finally
+					{
+						CruxModuleBridge.getInstance().registerCurrentModule(currentModule);
+					}
+				}
+				finally
+				{
+					lockPages.unlock();
+				}
 			}
-		}
-		finally
-		{
-			CruxModuleBridge.getInstance().registerCurrentModule(currentModule);
 		}
 	}
 
@@ -245,6 +268,10 @@ public class CruxModuleHandler
 				}
 
 				cruxModule.setPages(pages);
+			}
+			else 
+			{
+				cruxModule.setPages(new String[0]);
 			}
 		}
 		catch (ScreenConfigException e)

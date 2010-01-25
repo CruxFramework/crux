@@ -86,11 +86,6 @@ public class ModulesHtmlTagsFilter extends ModulesFilter
 					throw new ServletException(e.getMessage(),e);
 				}
 			}
-			else
-			{
-				CruxModuleBridge.getInstance().registerCurrentModule("");
-				CruxScreenBridge.getInstance().registerLastPageRequested("");
-			}
 			chain.doFilter(req, resp);
 		}
 	}
