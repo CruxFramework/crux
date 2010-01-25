@@ -15,8 +15,6 @@
  */
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
-import java.util.List;
-
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
@@ -50,31 +48,7 @@ public class DynaTabsFactory extends WidgetFactory<DynaTabs>
 	@TagChildren({
 		@TagChild(DynaTabProcessor.class)
 	})
-	public void processChildren(WidgetFactoryContext<DynaTabs> context) throws InterfaceConfigException
-	{
-		Element element = context.getElement();
-		DynaTabs widget = context.getWidget();
-		
-		List<Element> tabs = ensureChildrenSpans(element, true);
-		for (Element child : tabs)
-		{
-			String id = child.getAttribute("_id");
-			String label = child.getAttribute("_label");
-			String url = child.getAttribute("_url");
-						
-			boolean closeable = true;
-			String strCloseable = child.getAttribute("_closeable");
-			if(strCloseable != null && strCloseable.trim().length() > 0)
-			{
-				closeable = Boolean.parseBoolean(strCloseable);
-			}
-			
-			Tab tab = widget.openTab(id, label, url, closeable, false);
-			
-			BeforeFocusOrBlurEvtBind.bindEvents(child, tab);
-			new BeforeCloseEvtBind().bindEvent(child, tab);
-		}
-	}
+	public void processChildren(WidgetFactoryContext<DynaTabs> context) throws InterfaceConfigException {}
 	
 	@TagChildAttributes(tagName="tab", minOccurs="0", maxOccurs="unbounded")
 	public static class DynaTabProcessor extends WidgetChildProcessor<DynaTabs>
