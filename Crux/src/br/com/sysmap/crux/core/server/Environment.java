@@ -49,12 +49,19 @@ public class Environment
 					Exception utilException = new Exception();
 					try
 					{
-						StackTraceElement[] stackTrace = utilException.getStackTrace();
-						StackTraceElement stackTraceElement = stackTrace[stackTrace.length -1];
-						isProduction = (!stackTraceElement.getClassName().equals(com.google.gwt.dev.HostedMode.class.getName()) &&
-								!stackTraceElement.getClassName().equals(com.google.gwt.dev.GWTShell.class.getName()) &&
-								!stackTraceElement.getClassName().equals(com.google.gwt.dev.DevMode.class.getName()) );
+						try
+						{
+							StackTraceElement[] stackTrace = utilException.getStackTrace();
+							StackTraceElement stackTraceElement = stackTrace[stackTrace.length -1];
+							isProduction = (!stackTraceElement.getClassName().equals(com.google.gwt.dev.HostedMode.class.getName()) &&
+									!stackTraceElement.getClassName().equals(com.google.gwt.dev.GWTShell.class.getName()) &&
+									!stackTraceElement.getClassName().equals(com.google.gwt.dev.DevMode.class.getName()) );
 
+						}
+						catch (Throwable e) 
+						{
+							isProduction = true;
+						}
 						if (isProduction)
 						{
 							List<String> inputArgs = ManagementFactory.getRuntimeMXBean().getInputArguments();
