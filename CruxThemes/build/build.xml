@@ -11,9 +11,7 @@
 	<target name="export">
 		
 		<delete dir="${classesdir}" failonerror="no"/>
-		<delete dir="${distdir}" failonerror="no"/>
 		<mkdir dir="${classesdir}" />
-		<mkdir dir="${distdir}" />
 		
 		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" encoding="8859_1">
 			<src>

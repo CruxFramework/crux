@@ -28,11 +28,8 @@
 
 	<target name="export" description="Creates the jar">
 
-		<delete dir="${distdir}" failonerror="false" />
 		<delete dir="${classesdir}" failonerror="false" />
-
 		<mkdir dir="${classesdir}" />
-		<mkdir dir="${distdir}" />
 
 		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*" encoding="8859_1">
 			<src>
