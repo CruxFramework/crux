@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JDK 6.0"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Crux"/>
 	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CruxScannotation"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CruxHtmlTags"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

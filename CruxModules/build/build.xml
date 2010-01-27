@@ -1,68 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="dist" name="CruxModules" basedir="../">
+<project default="export" name="CruxModules" basedir="../">
 
-  <tstamp>
- 	<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />
-  </tstamp>
+	<tstamp>
+		<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />
+	</tstamp>
 
-  <property name="srcdir" value="src"/>
-  <property name="libdir" value="lib"/>  
-  <property name="classesdir" value="bin/classes"/>
-  <property name="distdir" value="dist" />
-  <property name="final.name" value="crux-modules"/>
-  <property name="cruxdistdir" value="../Crux/dist"/>
-  <property name="cruxscannotationdistdir" value="../CruxScannotation/dist"/>
-  <property name="cruxhtmltagsdistdir" value="../CruxHtmlTags/dist"/>
- 
-  <path id="build.classpath">
-    <fileset dir="${libdir}">
-      <include name="**/*.jar" />
-    </fileset>
-  </path>
+	<property name="srcdir" value="src" />
+	<property name="libdir" value="lib" />
+	<property name="classesdir" value="bin/classes" />
+	<property name="distdir" value="dist" />
+	<property name="final.name" value="crux-modules" />
+	<property name="cruxdistdir" value="../Crux/dist" />
+	<property name="cruxscannotationdistdir" value="../CruxScannotation/dist" />
+	<property name="cruxhtmltagsdistdir" value="../CruxHtmlTags/dist" />
+	<property name="crux.libs.project" value="../CruxLibs/crux"/>	
 
-  <target name="init" description="Initializes">
-  	<mkdir dir="${classesdir}" />
-  	<mkdir dir="${distdir}" />
-  </target>
-	
-  <target name="compile" description="Compile the code" depends="init">
-    <javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*">
-      <src>
-        <pathelement location="${srcdir}" />
-      </src>
-      <classpath refid="build.classpath" />
-        <classpath>
-      	    <fileset dir="${cruxdistdir}">
-      	      <include name="**/*.jar" />
-      	    </fileset>
-        </classpath>
-        <classpath>
-      	    <fileset dir="${cruxscannotationdistdir}">
-      	      <include name="**/*.jar" />
-      	    </fileset>
-        </classpath>
-        <classpath>
-      	    <fileset dir="${cruxhtmltagsdistdir}">
-      	      <include name="**/*.jar" />
-      	    </fileset>
-        </classpath>
-    </javac>
-  </target>
-	
-  <target name="jar" description="Create the jar" depends="clean,compile">
-    <jar jarfile="${distdir}/${final.name}.jar" >
-    	<fileset dir="${classesdir}" excludes="**/public/*" />
-    	<fileset dir="${srcdir}" excludes="**/public/*" />
-	</jar>
-  </target>
-	
-  <target name="clean" description="Clean up the generated directories">
-    <delete dir="${classesdir}" />
-    <delete dir="${distdir}" />
-  </target>
-	
-  <target name="dist" description="Create a distribution" depends="jar">
-  </target>
-	
+	<path id="build.classpath">
+		<fileset dir="${libdir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="export" description="Creates the jar">
+
+		<delete dir="${classesdir}" />
+		<delete dir="${distdir}" />
+		<mkdir dir="${classesdir}" />
+		<mkdir dir="${distdir}" />
+
+		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*">
+			<src>
+				<pathelement location="${srcdir}" />
+			</src>
+			<classpath refid="build.classpath" />
+			<classpath>
+				<fileset dir="${cruxdistdir}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+			<classpath>
+				<fileset dir="${cruxscannotationdistdir}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+			<classpath>
+				<fileset dir="${cruxhtmltagsdistdir}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+
+		<jar jarfile="${distdir}/${final.name}.jar">
+			<fileset dir="${classesdir}" excludes="**/public/*" />
+			<fileset dir="${srcdir}" excludes="**/public/*" />
+		</jar>
+		
+		<copy todir="${crux.libs.project}">
+			<fileset dir="${distdir}">
+				<filename name="${final.name}.jar"/>
+			</fileset>
+		</copy>
+	</target>
+
 </project>
