@@ -74,7 +74,8 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 	{
 		@Override
 		@TagAttributesDeclaration({
-			@TagAttributeDeclaration(value="colSpan", type=Integer.class)
+			@TagAttributeDeclaration(value="colSpan", type=Integer.class),
+			@TagAttributeDeclaration(value="rowSpan", type=Integer.class)
 		})
 		@TagChildren({
 			@TagChild(GridChildrenProcessor.class)
@@ -91,7 +92,14 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 			{
 				Integer indexCol = (Integer) context.getAttribute("colIndex");
 				context.getRootWidget().getFlexCellFormatter().setColSpan(indexRow, indexCol, Integer.parseInt(colspan));
-			}			
+			}
+			
+			String rowSpan = context.getChildElement().getAttribute("_rowSpan");
+			if(rowSpan != null && rowSpan.length() > 0)
+			{
+				Integer indexCol = (Integer) context.getAttribute("colIndex");
+				context.getRootWidget().getFlexCellFormatter().setRowSpan(indexRow, indexCol, Integer.parseInt(rowSpan));
+			}
 		}
 	}
 	
