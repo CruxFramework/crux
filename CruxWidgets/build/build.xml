@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="jar" name="CruxWidgets" basedir="../">
+<project default="export" name="CruxWidgets" basedir="../">
 
 	<tstamp>
 		<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />
@@ -13,6 +13,7 @@
 	<property name="final.name" value="crux-widgets" />
 	<property name="cruxdistdir" value="../Crux/dist" />
 	<property name="cruxgwtwidgetsdir" value="../CruxGWTWidgets/dist" />
+	<property name="crux.libs.project" value="../CruxLibs/crux" />
 
 	<path id="build.classpath">
 		<fileset dir="${libdir}">
@@ -26,14 +27,13 @@
 		</fileset>
 	</path>
 
-	<target name="init" description="o Initializes">
+	<target name="export" description="Creates the jar">
+		
 		<delete dir="${classesdir}" failonerror="no"/>
 		<delete dir="${distdir}" failonerror="no"/>
 		<mkdir dir="${classesdir}" />
 		<mkdir dir="${distdir}" />
-	</target>
-
-	<target name="compile" description="o Compile the code" depends="init">
+		
 		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*" encoding="8859_1">
 			<src>
 				<pathelement location="${srcdir}" />
@@ -46,15 +46,20 @@
 			</classpath>
 
 		</javac>
-	</target>
-
-	<target name="jar" description="o Create a distribution" depends="compile">
+		
 		<jar jarfile="${distdir}/${final.name}.jar">
 			<fileset dir="${classesdir}" excludes="**/public/*" />
 			<fileset dir="${srcdir}">
 				<include name="**/*" />
 			</fileset>
 		</jar>
+		
+		<copy todir="${crux.libs.project}">
+			<fileset dir="${distdir}">
+				<filename name="/${final.name}.jar"/>
+			</fileset>
+		</copy>
+		
 	</target>
 
 </project>
