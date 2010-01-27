@@ -84,7 +84,6 @@
 							</a:item>
 							<a:item id="integration" label="Integration">
 								<a:item id="gwtItem" label="GWT Widgets" onClick="mainController.onClickGwtItem" />
-								<a:item id="gxtItem" label="GXT Widgets" onClick="mainController.onClickGxtItem" />
 							</a:item>
 							<a:item id="features" label="Other Features">
 								<a:item id="valueBindItem" label="Value Binding" onClick="mainController.onClickValueBindItem" />
