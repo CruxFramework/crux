@@ -11,7 +11,6 @@ import br.com.sysmap.crux.widgets.client.event.row.RowRenderEvent;
 import br.com.sysmap.crux.widgets.client.grid.impl.DataRow;
 import br.com.sysmap.crux.widgets.client.grid.impl.Grid;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 
 @Controller("gridEventsController")
