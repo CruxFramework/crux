@@ -92,6 +92,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 			generateEventHandlersForScreen(logger, sourceWriter, screen, handlerClassNames, packageName+"."+implClassName);
 		}
 
+		generateConstructor(sourceWriter, implClassName, handlerClassNames);
 		generateEventHandlerInvokeMethod(sourceWriter, handlerClassNames);
 		
 		sourceWriter.outdent();
@@ -100,6 +101,24 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		context.commit(logger, printWriter);
 	}
 
+	private void generateConstructor(SourceWriter sourceWriter, String implClassName, Map<String, String> handlerClassNames)
+	{
+		
+		sourceWriter.println("public "+implClassName+"(){");
+		for (String handler : handlerClassNames.keySet()) 
+		{
+			Class<?> handlerClass = ClientControllers.getClientHandler(handler);
+			Controller controllerAnnot = handlerClass.getAnnotation(Controller.class);
+			if (controllerAnnot != null && !controllerAnnot.lazy())
+			{
+				sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
+			}
+		}
+		sourceWriter.println("}");
+	}
+
+	
+	
 	/**
 	 * 
 	 * @param sourceWriter
@@ -123,39 +142,42 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		boolean first = true;
 		for (String handler : handlerClassNames.keySet()) 
 		{
-			if (!first)
-			{
-				sourceWriter.print("else ");
-			}
-			else
-			{
-				first = false;
-			}
-			sourceWriter.println("if (\""+handler+"\".equals(controller)){");
 			Class<?> handlerClass = ClientControllers.getClientHandler(handler);
 			Controller controllerAnnot = handlerClass.getAnnotation(Controller.class);
-			if (controllerAnnot != null && Fragments.getFragmentClass(controllerAnnot.fragment()) != null)
+			if (controllerAnnot == null || controllerAnnot.lazy())
 			{
-				sourceWriter.println("GWT.runAsync("+Fragments.getFragmentClass(controllerAnnot.fragment())+".class, new RunAsyncCallback(){");
-				sourceWriter.println("public void onFailure(Throwable reason){");
-				sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerCanNotBeLoaded(controller));");
+				if (!first)
+				{
+					sourceWriter.print("else ");
+				}
+				else
+				{
+					first = false;
+				}
+				sourceWriter.println("if (\""+handler+"\".equals(controller)){");
+				if (controllerAnnot != null && Fragments.getFragmentClass(controllerAnnot.fragment()) != null)
+				{
+					sourceWriter.println("GWT.runAsync("+Fragments.getFragmentClass(controllerAnnot.fragment())+".class, new RunAsyncCallback(){");
+					sourceWriter.println("public void onFailure(Throwable reason){");
+					sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerCanNotBeLoaded(controller));");
+					sourceWriter.println("}");
+					sourceWriter.println("public void onSuccess(){");
+					sourceWriter.println("if (!clientHandlers.containsKey(\""+handler+"\")){");
+					sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
+					sourceWriter.println("}");
+					sourceWriter.println("invokeEventHandler(controller, method, fromOutOfModule, sourceEvent, eventProcessor);");
+					sourceWriter.println("}");
+					sourceWriter.println("});");
+				}
+				else
+				{
+					sourceWriter.println("if (!clientHandlers.containsKey(\""+handler+"\")){");
+					sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
+					sourceWriter.println("}");
+					sourceWriter.println("invokeEventHandler(controller, method, fromOutOfModule, sourceEvent, eventProcessor);");
+				}
 				sourceWriter.println("}");
-				sourceWriter.println("public void onSuccess(){");
-				sourceWriter.println("if (!clientHandlers.containsKey(\""+handler+"\")){");
-				sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
-				sourceWriter.println("}");
-				sourceWriter.println("invokeEventHandler(controller, method, fromOutOfModule, sourceEvent, eventProcessor);");
-				sourceWriter.println("}");
-				sourceWriter.println("});");
 			}
-			else
-			{
-				sourceWriter.println("if (!clientHandlers.containsKey(\""+handler+"\")){");
-				sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
-				sourceWriter.println("}");
-				sourceWriter.println("invokeEventHandler(controller, method, fromOutOfModule, sourceEvent, eventProcessor);");
-			}
-			sourceWriter.println("}");
 		}
 		
 		sourceWriter.println("}");
