@@ -32,6 +32,7 @@ import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import br.com.sysmap.crux.core.server.Environment;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.config.CruxModuleConfigurationFactory;
+import br.com.sysmap.crux.module.validation.CruxModuleValidator;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -145,6 +146,16 @@ public class CruxModuleHandler
 		return cruxModules.get(mod);
 	}
 	
+	/**
+	 * 
+	 * @param module
+	 * @return
+	 */
+	public static boolean isDependenciesOk(String module)
+	{
+		return CruxModuleValidator.isDependenciesOk(module);
+	}
+
 	/**
 	 * 
 	 */

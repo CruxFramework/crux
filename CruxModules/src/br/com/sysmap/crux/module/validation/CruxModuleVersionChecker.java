@@ -13,22 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.module.config;
-
-import br.com.sysmap.crux.core.i18n.DefaultMessage;
-
+package br.com.sysmap.crux.module.validation;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface CruxModuleConfig
+public interface CruxModuleVersionChecker
 {
-	String developmentModules();
-
-	@DefaultMessage("br.com.sysmap.crux.module.validation.DecimalNotationVersionChecker")
-	String cruxModuleVersionChecker();
-	
-	void setDevelopmentModules(String value);
-	void setCruxModuleVersionChecker(String value);
+	boolean checkMaxVersion(String expectedVersion, String realVersion);
+	boolean checkMinVersion(String expectedVersion, String realVersion);
 }
