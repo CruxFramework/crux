@@ -69,7 +69,7 @@ public class Cell extends Composite
 			if(selectRowOnClick && row.isEnabled())
 			{
 				boolean status = row.isSelected();
-				grid.onSelectRow(!status, row);
+				grid.onSelectRow(!status, row, true);
 			}
 
 			if(fireEvents && row.isEnabled())

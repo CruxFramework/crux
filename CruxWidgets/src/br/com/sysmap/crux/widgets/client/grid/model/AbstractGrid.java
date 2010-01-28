@@ -76,7 +76,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		{
 			boolean selected = ((HasValue<Boolean>) event.getSource()).getValue();
 			
-			if(!grid.onSelectRow(selected, row))
+			if(!grid.onSelectRow(selected, row, true))
 			{
 				event.preventDefault();
 			}
@@ -361,7 +361,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * @param select <code>true</code> if the row was selected, <code>false</code> if deselected
 	 * @param row
 	 */
-	protected abstract boolean onSelectRow(boolean select, R row);
+	protected abstract boolean onSelectRow(boolean select, R row, boolean fireEvents);
 	
 	/**
 	 * Renders the grid. The subclasses should call this method for rendering themselves.
@@ -532,7 +532,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			{
 				HasValue<Boolean> source = (HasValue<Boolean>) event.getSource();
 				boolean select = source.getValue();
-				selectAllRows(select);
+				selectCurrentPageRows(select, true);
 			}
 		};
 	}
@@ -642,9 +642,10 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	
 	/**
 	 * Selects or deselects all enabled rows
-	 * @param select <code>true</code> for select, <code>false</code> for deselect  
+	 * @param select <code>true</code> for select, <code>false</code> for deselect
+	 * @param fireEvents if <code>true</code>, fires a <code>BeforeRowSelectEvent</code> for each enabled row 
 	 */
-	private void selectAllRows(boolean select) 
+	public void selectCurrentPageRows(boolean select, boolean fireEvents) 
 	{
 		Iterator<R> it = getRowIterator();
 		
@@ -661,7 +662,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 				
 				if(!RowSelectionModel.unselectable.equals(rowSelection))
 				{
-					onSelectRow(select, row);
+					onSelectRow(select, row, fireEvents);
 				}
 			}
 		}

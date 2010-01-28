@@ -209,12 +209,17 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	}
 
 	@Override
-	protected boolean onSelectRow(boolean select, DataRow row)
+	protected boolean onSelectRow(boolean select, DataRow row, boolean fireEvents)
 	{
-		BeforeRowSelectEvent event = BeforeRowSelectEvent.fire(this, row);
-		boolean canceled = event.isCanceled();
+		boolean proceed = true;
 		
-		if(!canceled)
+		if(fireEvents)
+		{
+			BeforeRowSelectEvent event = BeforeRowSelectEvent.fire(this, row);
+			proceed = !event.isCanceled();
+		}
+		
+		if(proceed)
 		{
 			if(select && (RowSelectionModel.single.equals(rowSelectionModel) || RowSelectionModel.singleWithRadioButton.equals(rowSelectionModel)))
 			{
@@ -240,7 +245,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			row.setSelected(select);
 		}
 		
-		return !canceled;
+		return proceed;
 	}
 
 	@Override
@@ -621,7 +626,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		
 		return new Object[0];
 	}
-
+	
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.event.row.HasBeforeRowSelectHandlers#addBeforeRowSelectHandler(br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectHandler)
 	 */
