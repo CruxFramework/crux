@@ -104,13 +104,18 @@ public class Modules
 		return modules.values().iterator();
 	}
 	
+	public static boolean isClassOnModulePath(String controller, String moduleId)
+	{
+		return isClassOnModulePath(controller, moduleId, new HashSet<String>());
+	}
+
 	/**
 	 * 
 	 * @param controller
 	 * @param module
 	 * @return
 	 */
-	public static boolean isClassOnModulePath(String controller, String moduleId, Set<String> alreadySearched)
+	protected static boolean isClassOnModulePath(String controller, String moduleId, Set<String> alreadySearched)
 	{
 		if (alreadySearched.contains(moduleId))
 		{

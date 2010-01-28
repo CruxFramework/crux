@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -188,7 +187,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 			if (controllerClass != null)
 			{
 				String controllerClassName = getClassSourceName(controllerClass).replace('.', '/');
-				if (Modules.isClassOnModulePath(controllerClassName, screen.getModule(), new HashSet<String>()))
+				if (Modules.isClassOnModulePath(controllerClassName, screen.getModule()))
 				{
 					generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames);
 				}
@@ -377,7 +376,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		}
 		catch (Exception e)
 		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandlerInvalidValidateMethod(validateMethod));
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandlerInvalidValidateMethod(validateMethod), e);
 		}
 	}
 
