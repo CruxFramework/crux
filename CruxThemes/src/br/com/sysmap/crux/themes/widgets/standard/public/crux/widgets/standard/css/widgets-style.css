@@ -14,6 +14,7 @@
 	width:5px;
 	font-size: 0px;
 	background: url(../img/title-panel-blue.gif) no-repeat top left;
+	cursor: move;
 }
 .crux-MessageBox .dialogTopCenter 
 {
@@ -23,12 +24,14 @@
 	text-align: left;
 	font-family: Verdana, Arial, Helvetica;
 	background: url(../img/title-panel-blue.gif) no-repeat top center;
+	cursor: move;
 }
 .crux-MessageBox .dialogTopRight
 {
 	width:5px;
 	font-size: 0px;
 	background: url(../img/title-panel-blue.gif) no-repeat top right;
+	cursor: move;
 }
 .crux-MessageBox .dialogMiddleLeft
 {
@@ -81,20 +84,23 @@
 	height: 4px;
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat top left;	
+	background: url(../img/progress-dialog.gif) no-repeat top left;
+	cursor: move;	
 }
 .crux-ProgressDialog .dialogTopCenter
 {
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat top center;	
+	background: url(../img/progress-dialog.gif) no-repeat top center;
+	cursor: move;	
 }
 .crux-ProgressDialog .dialogTopRight
 {
 	width: 4px;
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat top right;	
+	background: url(../img/progress-dialog.gif) no-repeat top right;
+	cursor: move;	
 }
 .crux-ProgressDialog .dialogMiddleLeft
 {
@@ -169,6 +175,7 @@
 	font-size: 5px;
 	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat top left;
+	cursor: move;
 }
 .crux-Popup .topCenterCell
 {
@@ -179,6 +186,7 @@
 	width: 100%;
 	font-family: Verdana, Arial, Helvetica;
 	background: url(../img/title-panel-blue.gif) no-repeat top center;
+	cursor: move;
 }
 .crux-Popup .topRightCell
 {
@@ -187,6 +195,7 @@
 	font-family: monospace;
 	background: url(../img/title-panel-blue.gif) no-repeat top right;
 	padding-right: 5px;
+	cursor: move;
 }
 .crux-Popup .middleLeftCell
 {
@@ -254,6 +263,7 @@
 	width:5px;
 	font-size: 0px;
 	background: url(../img/title-panel-blue.gif) no-repeat top left;
+	cursor: move;
 }
 .crux-Confirm .dialogTopCenter 
 {
@@ -263,12 +273,14 @@
 	text-align: left;
 	font-family: Verdana, Arial, Helvetica;
 	background: url(../img/title-panel-blue.gif) no-repeat top center;
+	cursor: move;
 }
 .crux-Confirm .dialogTopRight
 {
 	width:5px;
 	font-size: 0px;
 	background: url(../img/title-panel-blue.gif) no-repeat top right;
+	cursor: move;
 }
 .crux-Confirm .dialogMiddleLeft
 {
