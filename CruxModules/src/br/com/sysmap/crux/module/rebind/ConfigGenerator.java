@@ -57,7 +57,7 @@ public class ConfigGenerator extends CruxClientConfigGenerator
 						//TODO - Thiago - colocar tbm um scanner para achar os controllers de um module
 						for (String page : pages)
 						{
-							sourceWriter.println("if (urlWithoutParameters.endsWith(\""+moduleName+"/"+page+"\")){");
+							sourceWriter.println("if (urlWithoutParameters.endsWith(\""+page+"\")){");
 							sourceWriter.println("return true;");
 							sourceWriter.println("}");
 						}
