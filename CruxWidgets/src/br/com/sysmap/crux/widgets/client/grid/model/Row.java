@@ -33,7 +33,7 @@ public class Row
 		CellFormatter formatter = grid.getTable().getCellFormatter();
 		
 		ColumnDefinition def = grid.getColumnDefinitions().getDefinition(column);
-		int colIndex = getColumnIndex(column);
+		int colIndex = getColumnIndex(column, false);
 		formatter.setAlignment(index, colIndex, def.getHorizontalAlign(), def.getVerticalAlign());
 		
 		if(def.getWidth() != null)
@@ -65,7 +65,7 @@ public class Row
 	
 	protected Cell getCell(String column)
 	{
-		int colIndex = getColumnIndex(column);
+		int colIndex = getColumnIndex(column, false);
 		return (Cell) grid.getTable().getWidget(index, colIndex);
 	}
 	
@@ -85,7 +85,7 @@ public class Row
 	 */
 	public Widget getWidget(String column)
 	{
-		int colIndex = getColumnIndex(column);
+		int colIndex = getColumnIndex(column, false);
 		Cell cell = (Cell) grid.getTable().getWidget(index, colIndex);
 		return cell.getCellWidget();
 	}
@@ -129,9 +129,9 @@ public class Row
 		this.selected = selected;
 	}
 	
-	private int getColumnIndex(String column)
+	private int getColumnIndex(String column, boolean considerInvisibleColumns)
 	{
-		int colIndex = grid.getColumnDefinitions().getColumnIndex(column);
+		int colIndex = grid.getColumnDefinitions().getColumnIndex(column, considerInvisibleColumns);
 		
 		if(hasSelectionCell)
 		{

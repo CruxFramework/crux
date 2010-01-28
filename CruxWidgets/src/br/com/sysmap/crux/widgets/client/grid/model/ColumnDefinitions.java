@@ -33,6 +33,7 @@ public class ColumnDefinitions
 {
 	private List<ColumnDefinition> definitionsInOrder = new ArrayList<ColumnDefinition>();
 	private Map<String, ColumnDefinition> definitionsByKey = new HashMap<String, ColumnDefinition>();
+	private Map<String, Integer> actualColumnIndexes = new HashMap<String, Integer>();
 	
 	/**
 	 * Register a new column definition
@@ -66,10 +67,37 @@ public class ColumnDefinitions
 	/**
 	 * Gets the column definition index 
 	 * @param key
+	 * @param considerInvisibleColumns 
 	 */
-	int getColumnIndex(String key)
+	int getColumnIndex(String key, boolean considerInvisibleColumns)
 	{
-		return definitionsInOrder.indexOf(definitionsByKey.get(key));
+		if(!considerInvisibleColumns)
+		{
+			Integer index = actualColumnIndexes.get(key);
+			if(index == null)
+			{
+				int i = -1;
+				
+				for (ColumnDefinition column : definitionsInOrder)
+				{
+					if(column.isVisible())
+					{
+						i++;
+					}
+					
+					if(column.getKey().equals(key))
+					{
+						index = i;
+						actualColumnIndexes.put(key, index);
+					}
+				}
+			}
+			return index;
+		}
+		else
+		{
+			return definitionsInOrder.indexOf(definitionsByKey.get(key));
+		}	
 	}
 	
 	/**
