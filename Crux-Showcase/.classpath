@@ -18,5 +18,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon9-dom.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-gwt-widgets.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-widgets.jar"/>
+	<classpathentry kind="lib" path="build/lib/gwt-dev.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
