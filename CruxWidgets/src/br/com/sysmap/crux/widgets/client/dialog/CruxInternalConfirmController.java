@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.Label;
  *
  */
 @Global
-@Controller("__confirm")
+@Controller(value="__confirm", lazy=false)
 public class CruxInternalConfirmController 
 {
 	private ModuleComunicationSerializer serializer;

@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @Global
-@Controller("__progressDialog")
+@Controller(value="__progressDialog", lazy=false)
 public class CruxInternalProgressDialogController 
 {
 	private ModuleComunicationSerializer serializer;

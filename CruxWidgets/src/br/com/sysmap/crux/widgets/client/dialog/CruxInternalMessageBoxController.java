@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Label;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 @Global
-@Controller("__messageBox")
+@Controller(value="__messageBox", lazy=false)
 public class CruxInternalMessageBoxController 
 {
 	private ModuleComunicationSerializer serializer;
