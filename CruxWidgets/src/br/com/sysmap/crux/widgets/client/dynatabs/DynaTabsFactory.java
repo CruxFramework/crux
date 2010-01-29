@@ -23,6 +23,7 @@ import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
@@ -68,8 +69,9 @@ public class DynaTabsFactory extends WidgetFactory<DynaTabs>
 		public void processChildren(WidgetChildProcessorContext<DynaTabs> context) throws InterfaceConfigException
 		{
 			Element childElement = context.getChildElement();
-			String id = childElement.getAttribute("_id");
+			String id = childElement.getAttribute("id");
 			String label = childElement.getAttribute("_label");
+			label = (label != null && label.length() > 0) ? ScreenFactory.getInstance().getDeclaredMessage(label) : "";
 			String url = childElement.getAttribute("_url");
 						
 			boolean closeable = true;
