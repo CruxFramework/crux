@@ -1,6 +1,6 @@
 <project name="CruxShowcase" basedir="../">
 
-	<property name="final.name" value="Crux-Showcase" />
+	<property name="final.name" value="CruxShowcase" />
 	<property name="src.dir" value="src" />
 	<property name="dist.dir" value="dist" />
 	<property name="temp.dir" value="${dist.dir}/temp" />
