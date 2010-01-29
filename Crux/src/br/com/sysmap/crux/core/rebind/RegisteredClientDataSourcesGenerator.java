@@ -314,7 +314,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			SourceWriter sourceWriter, ColumnsData columnsData)
 	{
 		try
-		{
+		{//TODO: adicionar suporte a tipos primitivos para os datasources
 			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);			
 			String dataTypeDeclaration = getParameterDeclaration(dataType);
 			 

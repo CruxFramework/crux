@@ -42,16 +42,27 @@ import br.com.sysmap.crux.core.rebind.GeneratorMessages;
  */
 public class Modules 
 {
-	private static Map<String, Module> modules = null;
-	private static Map<String, String> moduleAliases = null;
-	private static GeneratorMessages messages = MessagesFactory.getMessages(GeneratorMessages.class);
+	protected Map<String, Module> modules = null;
+	protected Map<String, String> moduleAliases = null;
+	private GeneratorMessages messages = MessagesFactory.getMessages(GeneratorMessages.class);
 	private static final Log logger = LogFactory.getLog(Modules.class);
 	private static final Lock lock = new ReentrantLock();
 
+	private static Modules instance = new Modules();
+	
+	protected Modules()
+	{
+	}
+	
+	public static Modules getInstance()
+	{
+		return instance;
+	}
+	
 	/**
 	 * 
 	 */
-	public static void initialize()
+	public void initialize()
 	{
 		if (modules != null)
 		{
@@ -78,7 +89,7 @@ public class Modules
 	 * @param id
 	 * @return
 	 */
-	public static Module getModule(String id)
+	public Module getModule(String id)
 	{
 		if (modules == null)
 		{
@@ -95,7 +106,7 @@ public class Modules
 	 * 
 	 * @return
 	 */
-	public static Iterator<Module> iterateModules()
+	public Iterator<Module> iterateModules()
 	{
 		if (modules == null)
 		{
@@ -104,7 +115,7 @@ public class Modules
 		return modules.values().iterator();
 	}
 	
-	public static boolean isClassOnModulePath(String controller, String moduleId)
+	public boolean isClassOnModulePath(String controller, String moduleId)
 	{
 		return isClassOnModulePath(controller, moduleId, new HashSet<String>());
 	}
@@ -115,14 +126,14 @@ public class Modules
 	 * @param module
 	 * @return
 	 */
-	protected static boolean isClassOnModulePath(String controller, String moduleId, Set<String> alreadySearched)
+	protected boolean isClassOnModulePath(String controller, String moduleId, Set<String> alreadySearched)
 	{
 		if (alreadySearched.contains(moduleId))
 		{
 			return false;
 		}
 		alreadySearched.add(moduleId);
-		Module module = Modules.getModule(moduleId);
+		Module module = getModule(moduleId);
 		if (module != null)
 		{
 			
@@ -149,7 +160,7 @@ public class Modules
 	/**
 	 * 
 	 */
-	protected static void initializeModules()
+	protected void initializeModules()
 	{
 		modules = new HashMap<String, Module>();
 		moduleAliases = new HashMap<String, String>();
@@ -162,7 +173,7 @@ public class Modules
 	 * @param templateId
 	 * @param template
 	 */
-	static void registerModule(URL moduleDescriptor, String moduleFullName, Document moduleDocument)
+	protected Module registerModule(URL moduleDescriptor, String moduleFullName, Document moduleDocument)
 	{
 		Module module = new Module();
 		
@@ -177,6 +188,7 @@ public class Modules
 		module.setDescriptorURL(moduleDescriptor);
 		modules.put(module.getName(), module);
 		moduleAliases.put(moduleFullName, module.getName());
+		return module;
 	}
 
 	/**
@@ -184,7 +196,7 @@ public class Modules
 	 * @param element
 	 * @return
 	 */
-	private static Set<String> getModuleInherits(Element element)
+	private Set<String> getModuleInherits(Element element)
 	{
 		Set<String> result = new HashSet<String>();
 		NodeList inheritsTags = element.getElementsByTagName("inherits");
@@ -205,7 +217,7 @@ public class Modules
 	 * @param element
 	 * @return
 	 */
-	private static String getModuleName(String moduleFullName, Element element)
+	private String getModuleName(String moduleFullName, Element element)
 	{
 		String moduleName = moduleFullName;
 		String renameTo = element.getAttribute("rename-to");
@@ -221,7 +233,7 @@ public class Modules
 	 * @param moduleFullName
 	 * @return
 	 */
-	private static String getModuleRootPath(String moduleFullName)
+	private String getModuleRootPath(String moduleFullName)
 	{
 		moduleFullName = moduleFullName.replace('.', '/');
 		int index = moduleFullName.lastIndexOf('/');
@@ -242,7 +254,7 @@ public class Modules
 	 * @param element
 	 * @return
 	 */
-	private static String[] getModuleSources(Element element)
+	private String[] getModuleSources(Element element)
 	{
 		NodeList sourceTags = element.getElementsByTagName("source");
 		if (sourceTags != null && sourceTags.getLength() > 0)
@@ -272,7 +284,7 @@ public class Modules
 	 * @param element
 	 * @return
 	 */
-	private static String[] getModulePublicPaths(Element element)
+	private String[] getModulePublicPaths(Element element)
 	{
 		NodeList sourceTags = element.getElementsByTagName("public");
 		if (sourceTags != null && sourceTags.getLength() > 0)

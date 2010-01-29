@@ -209,7 +209,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 			if (controllerClass != null)
 			{
 				String controllerClassName = getClassSourceName(controllerClass).replace('.', '/');
-				if (Modules.isClassOnModulePath(controllerClassName, screen.getModule()))
+				if (Modules.getInstance().isClassOnModulePath(controllerClassName, screen.getModule()))
 				{
 					generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames);
 				}

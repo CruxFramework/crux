@@ -39,7 +39,7 @@ public interface GeneratorMessages
 	@DefaultMessage("[generator 005] - Error retrieving screen Identifier.")
 	String errorGeneratingRegisteredElementInvalidScreenID();
 
-	@DefaultMessage("[generator 006] - property {0} can could not be created. This is not visible neither has a getter/setter method.")
+	@DefaultMessage("[generator 006] - property {0} could not be created. This is not visible neither has a getter/setter method.")
 	String registeredClientObjectPropertyNotFound(String name);
 
 	@DefaultMessage("[generator 007] - Error generating class for declared message {0}.")
@@ -141,7 +141,7 @@ public interface GeneratorMessages
 	@DefaultMessage("[generator 030] - Searching for modules.")
 	String modulesScannerSearchingModuleFiles();
 
-	@DefaultMessage("[generator 031] - Error parsing module file.")
+	@DefaultMessage("[generator 031] - Error parsing module file: {0}.")
 	String modulesScannerErrorParsingModuleFile(String fileName);
 
 	@DefaultMessage("[generator 032] - Error initializing modulesScanner.")
@@ -150,6 +150,6 @@ public interface GeneratorMessages
 	@DefaultMessage("[generator 033] - Can not find the web classes dir.")
 	String modulesScannerErrorFindingClassesDir();
 
-	@DefaultMessage("[generator 033] - Can not find the module {0}.")
+	@DefaultMessage("[generator 034] - Can not find the module {0}.")
 	String errorGeneratingRegisteredElementModuleNotFound(String module);
 }

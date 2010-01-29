@@ -144,7 +144,7 @@ public class ModulesScanner
 										module = documentBuilder.parse(moduleDescriptor.openStream());
 									}
 								}
-								Modules.registerModule(moduleDescriptor, getModuleName(fileName), module);
+								Modules.getInstance().registerModule(moduleDescriptor, getModuleName(fileName), module);
 							}
 							catch (Exception e)
 							{

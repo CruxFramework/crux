@@ -220,7 +220,15 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 			}
 			catch (Exception e)
 			{
-				return false;
+				try
+				{
+					getterMethodName = "is"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+					return (voClass.getMethod(getterMethodName, new Class<?>[]{}) != null);
+				}
+				catch (Exception e1)
+				{
+					return false;
+				}
 			}
 		}
 	}	
@@ -265,10 +273,31 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 				{
 					return (parentVariable+"."+getterMethodName+"()");
 				}
+				else
+				{
+					logger.log(TreeLogger.ERROR, messages.registeredClientObjectPropertyNotFound(field.getName()));
+				}
 			}
 			catch (Exception e)
 			{
-				logger.log(TreeLogger.ERROR, messages.registeredClientObjectPropertyNotFound(field.getName()));
+				try
+				{
+					getterMethodName = "is"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+					Method method = voClass.getMethod(getterMethodName, new Class<?>[]{});
+					if (method != null && (Modifier.isPublic(method.getModifiers()) || 
+							               (allowProtected && Modifier.isProtected(method.getModifiers()))))
+					{
+						return (parentVariable+"."+getterMethodName+"()");
+					}
+					else
+					{
+						logger.log(TreeLogger.ERROR, messages.registeredClientObjectPropertyNotFound(field.getName()));
+					}
+				}
+				catch (Exception e1)
+				{
+					logger.log(TreeLogger.ERROR, messages.registeredClientObjectPropertyNotFound(field.getName()));
+				}
 			}
 		}
 		return null;
