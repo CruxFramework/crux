@@ -46,7 +46,7 @@ public class ModulesLauncher
 		List<String> modules = new ArrayList<String>();
 		for (String moduleName : developmentModules)
 		{
-			modules.add(Modules.getModule(moduleName).getFullName());
+			modules.add(Modules.getInstance().getModule(moduleName).getFullName());
 		}
 		String[] newArgs = new String[args.length+modules.size()];
 		System.arraycopy(args, 0, newArgs, 0, args.length);

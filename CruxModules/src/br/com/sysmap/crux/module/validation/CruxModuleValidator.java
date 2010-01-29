@@ -34,7 +34,7 @@ public class CruxModuleValidator
 	{
 		CruxModule cruxModule = CruxModuleHandler.getCruxModule(module);
 		
-		ModuleRef[] requiredModules = cruxModule.getInfo().getRequiredModules();
+		ModuleRef[] requiredModules = cruxModule.getRequiredModules();
 		if (requiredModules != null)
 		{
 			for (ModuleRef moduleRef : requiredModules)

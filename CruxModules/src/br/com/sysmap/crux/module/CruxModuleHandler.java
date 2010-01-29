@@ -16,8 +16,10 @@
 package br.com.sysmap.crux.module;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -33,6 +35,8 @@ import br.com.sysmap.crux.core.server.Environment;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.config.CruxModuleConfigurationFactory;
 import br.com.sysmap.crux.module.validation.CruxModuleValidator;
+import br.com.sysmap.crux.module.validation.ModuleDependencies;
+import br.com.sysmap.crux.module.validation.ModuleDependency;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -142,7 +146,7 @@ public class CruxModuleHandler
 		{
 			initialize();
 		}
-		Module mod = Modules.getModule(module);
+		Module mod = Modules.getInstance().getModule(module);
 		return cruxModules.get(mod);
 	}
 	
@@ -162,7 +166,7 @@ public class CruxModuleHandler
 	private static void initializeModules()
 	{
 		cruxModules = new HashMap<Module, CruxModule>();
-		Iterator<Module> modules = Modules.iterateModules();
+		Iterator<Module> modules = Modules.getInstance().iterateModules();
 		while (modules.hasNext())
 		{
 			Module module = modules.next();
@@ -230,9 +234,29 @@ public class CruxModuleHandler
 		URL location = module.getDescriptorURL();
 		location = URLResourceHandlersRegistry.getURLResourceHandler(location.getProtocol()).getParentDir(location);
 		cruxModule.setLocation(location);
-		
+		cruxModule.setRequiredModules(getRequiredModules(info));
 		return cruxModule;
 	}	
+
+	private static ModuleRef[] getRequiredModules(ModuleInfo info)
+	{
+		List<ModuleRef> result = new ArrayList<ModuleRef>();
+
+		ModuleDependencies dependencies = info.getClass().getAnnotation(ModuleDependencies.class);
+		if (dependencies != null)
+		{
+			for (ModuleDependency dependency : dependencies.value())
+			{
+				ModuleRef ref = new ModuleRef();
+				ref.setName(dependency.value());
+				ref.setMinVersion(dependency.minVersion());
+				ref.setMaxVersion(dependency.maxVersion());
+				result.add(ref);
+			} 
+		}
+		
+		return result.toArray(new ModuleRef[result.size()]);
+	}
 
 	/**
 	 * 

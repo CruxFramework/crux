@@ -23,7 +23,6 @@ package br.com.sysmap.crux.module;
 public interface ModuleInfo
 {
 	String getDescription();
-	ModuleRef[] getRequiredModules();
 	String getStartPage();
 	String getVersion();
 }

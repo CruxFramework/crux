@@ -29,6 +29,8 @@ public class CruxModule
 	private final ModuleInfo info;
 	private URL location;
 	private String[] pages;
+	private ModuleRef[] requiredModules;
+
 	
 	CruxModule(Module module, ModuleInfo info)
 	{
@@ -74,4 +76,16 @@ public class CruxModule
 	{
 		this.pages = pages;
 	}
+
+	public ModuleRef[] getRequiredModules()
+	{
+		return requiredModules;
+	}
+
+	void setRequiredModules(ModuleRef[] requiredModules)
+	{
+		this.requiredModules = requiredModules;
+	}
+	
+	
 }
