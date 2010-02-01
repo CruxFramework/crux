@@ -22,4 +22,5 @@ package br.com.sysmap.crux.core.client.datasource;
 public interface RemoteDataSourceCallback
 {
 	void execute(int startRecord, int endRecord);
+	void cancelFetching();
 }

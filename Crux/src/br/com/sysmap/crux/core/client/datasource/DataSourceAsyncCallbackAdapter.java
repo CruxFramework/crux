@@ -44,5 +44,20 @@ public class DataSourceAsyncCallbackAdapter<T> extends AsyncCallbackAdapter<T[]>
 			((LocalDataSource<?, T>)this.caller).updateData(result);
 		}
 	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.rpc.AsyncCallbackAdapter#onError(java.lang.Throwable)
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public void onError(Throwable e)
+	{
+		if (this.caller instanceof RemoteDataSource)
+		{
+			((RemoteDataSource<?, T>)this.caller).cancelFetching();
+		}
+		
+		super.onError(e);
+	}
 
 }

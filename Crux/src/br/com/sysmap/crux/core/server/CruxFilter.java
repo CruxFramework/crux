@@ -62,11 +62,7 @@ public class CruxFilter implements Filter
 			{
 				CruxScreenBridge.getInstance().registerLastPageRequested(requestedScreen);
 			}
-			else
-			{
-				CruxScreenBridge.getInstance().registerLastPageRequested("");
-			}
-			
+						
 			chain.doFilter(req, resp);
 		}
 	}

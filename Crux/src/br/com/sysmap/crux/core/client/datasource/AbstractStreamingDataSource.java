@@ -125,6 +125,16 @@ public abstract class AbstractStreamingDataSource<R extends DataSourceRecord, E>
 	public void updateData(E[] data)
 	{
 	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#cancelFetching()
+	 */
+	public void cancelFetching()
+	{
+		currentPage--;
+		updateCurrentRecord();
+		this.fetchCallback.cancelFetching();
+	}
 
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getMetadata()
