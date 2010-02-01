@@ -126,6 +126,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 					loaded = true;
 					render();
 				}
+
+				public void cancelFetching()
+				{
+					render();			
+				}
 			});
 			
 			if(autoLoadData)
