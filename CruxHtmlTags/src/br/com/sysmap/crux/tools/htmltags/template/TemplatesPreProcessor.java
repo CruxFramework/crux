@@ -274,7 +274,7 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 			child = child.getNextSibling();
 		}
 		
-		Collections.reverse(children);
+		Collections.reverse(children); 
 		
 		return children;
 	}
