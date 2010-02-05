@@ -67,6 +67,7 @@ public class CookieContextHandler implements ContextHandler
 		String value = Cookies.getCookie(CONTEXT_PREFIX+key);
 		try
 		{
+			value = decode(value);
 			return Screen.getCruxSerializer().deserialize(value);
 		}
 		catch (ModuleComunicationException e)
@@ -76,6 +77,14 @@ public class CookieContextHandler implements ContextHandler
 		}
 	}
 
+	private native String decode(String value)/*-{
+		return decodeURIComponent(value);
+	}-*/;
+	
+	private native String encode(String value)/*-{
+		return encodeURIComponent(value);
+	}-*/;
+
 	/**
 	 * 
 	 */
@@ -83,7 +92,9 @@ public class CookieContextHandler implements ContextHandler
 	{
 		try
 		{
-			Cookies.setCookie(CONTEXT_PREFIX+key, Screen.getCruxSerializer().serialize(value), expires, null, "/", false);
+			String serialized = Screen.getCruxSerializer().serialize(value);
+			serialized = encode(serialized);
+			Cookies.setCookie(CONTEXT_PREFIX+key, serialized, expires, null, "/", false);
 		}
 		catch (ModuleComunicationException e)
 		{
