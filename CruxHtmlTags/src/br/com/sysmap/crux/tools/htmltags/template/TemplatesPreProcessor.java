@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.tools.htmltags.template;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -272,6 +273,9 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 			children.add(child);
 			child = child.getNextSibling();
 		}
+		
+		Collections.reverse(children);
+		
 		return children;
 	}
 
