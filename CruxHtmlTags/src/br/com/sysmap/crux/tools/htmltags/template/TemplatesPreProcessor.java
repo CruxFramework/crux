@@ -177,25 +177,36 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 	{
 		try
 		{
-			NodeList nodes = (NodeList)findTemplatesExpression.evaluate(doc, XPathConstants.NODESET);
-			for (int i = 0; i < nodes.getLength(); i++)
-			{
-				Element element = (Element)nodes.item(i);
-				if (!isAnInnerSection(element))
+			NodeList nodes = (NodeList) findTemplatesExpression.evaluate(doc, XPathConstants.NODESET);
+			
+			// TODO - Gessé - refatorar este trecho de código. 
+			// O while resolve o problema relativo a templates aninhados
+			// um processamento recursivo em profundidade deve surtir o mesmo efeito.
+			
+			while(nodes != null && nodes.getLength() > 0)
+			{			
+				for (int i = 0; i < nodes.getLength(); i++)
 				{
+					Element element = (Element)nodes.item(i);
 					String library = element.getNamespaceURI();
 					library = library.substring(library.lastIndexOf('/')+1);
-					Document template = preprocess(Templates.getTemplate(library, element.getLocalName(), true), 
-							controllers, dataSources, formatters, serializables);
-
-					updateTemplateAttributes(element, template);
-					updateTemplateChildren(element, template);
-
-					Element templateElement = (Element) doc.importNode(template.getDocumentElement(), true);
-					extractScreenPropertiesFromElement(templateElement, controllers, dataSources, formatters, serializables);										
 					
-					replaceByChildren(element, templateElement);
+					if (!isAnInnerSection(element, library))
+					{					
+						Document template = preprocess(Templates.getTemplate(library, element.getLocalName(), true), 
+								controllers, dataSources, formatters, serializables);
+	
+						updateTemplateAttributes(element, template);
+						updateTemplateChildren(element, template);
+	
+						Element templateElement = (Element) doc.importNode(template.getDocumentElement(), true);
+						extractScreenPropertiesFromElement(templateElement, controllers, dataSources, formatters, serializables);										
+
+						replaceByChildren(element, templateElement);
+					}
 				}
+				
+				nodes = (NodeList) findTemplatesExpression.evaluate(doc, XPathConstants.NODESET);
 			}
 		}
 		catch (XPathExpressionException e)
@@ -281,11 +292,19 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 
 	/**
 	 * 
+	 * @param library 
 	 * @param elementFromElement
 	 * @return
 	 */
-	private boolean isAnInnerSection(Element element)
+	private boolean isAnInnerSection(Element element, String library)
 	{
+		Document template = Templates.getTemplate(library, element.getLocalName(), true);
+		
+		if(template != null)
+		{
+			return false;
+		}
+		
 		String namespace = element.getNamespaceURI();
 		if (namespace != null)
 		{
