@@ -43,8 +43,6 @@ import br.com.sysmap.crux.widgets.client.grid.model.ColumnDefinitions;
 import br.com.sysmap.crux.widgets.client.grid.model.RowSelectionModel;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
@@ -141,14 +139,8 @@ public class GridFactory extends WidgetFactory<Grid>
 		
 		if(dataSourceName != null && dataSourceName.length() > 0)
 		{
-			DeferredCommand.addCommand(new Command()
-			{
-				public void execute()
-				{	
-					EditablePagedDataSource dataSource = (EditablePagedDataSource) Screen.getDataSource(dataSourceName);
-					widget.setDataSource(dataSource);
-				}
-			});
+			EditablePagedDataSource dataSource = (EditablePagedDataSource) Screen.getDataSource(dataSourceName);
+			widget.setDataSource(dataSource);
 		}
 	}
 
