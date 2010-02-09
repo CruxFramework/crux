@@ -357,6 +357,14 @@ public class ScreenFactory
 					screen.addEvent(event);
 				}
 			}
+			else if (attrName.equals("_title"))
+			{
+				String title = attr.getValue();
+				if (title != null && title.length() > 0)
+				{
+					screen.setTitle(title);
+				}
+			}
 			else if (!attrName.equals("id"))
 			{
 				if (logger.isDebugEnabled()) logger.debug(messages.screenPropertyError(attrName.substring(1), screen.getId()));

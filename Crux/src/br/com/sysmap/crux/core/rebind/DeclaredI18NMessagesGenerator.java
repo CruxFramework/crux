@@ -86,6 +86,7 @@ public class DeclaredI18NMessagesGenerator extends AbstractRegisteredElementsGen
 				Widget widget = iterator.next();
 				generateGetMessageBlock(logger, sourceWriter, widget, added);
 			}
+			generateGetMessageBlockForProperty(logger, sourceWriter, added, screen.getTitle());
 		}
 		sourceWriter.println("}");
 	} 

@@ -35,6 +35,7 @@ public class Screen
 	protected List<String> serializers = new ArrayList<String>();
 	protected List<String> formatters = new ArrayList<String>();
 	protected List<String> dataSources = new ArrayList<String>();
+	protected String title;
 	
 	protected String module;
 	
@@ -203,5 +204,15 @@ public class Screen
 	public Iterator<String> iterateDataSources()
 	{
 		return dataSources.iterator();
-	}	
+	}
+
+	public String getTitle()
+	{
+		return title;
+	}
+
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
 }
