@@ -102,6 +102,10 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 	 */
 	public Document preprocess(Document doc)
 	{
+		if (doc == null)
+		{
+			return null;
+		}
 		Set<String> controllers = new HashSet<String>();
 		Set<String> dataSources = new HashSet<String>();
 		Set<String> formatters = new HashSet<String>();
@@ -184,9 +188,13 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 				{
 					String library = element.getNamespaceURI();
 					library = library.substring(library.lastIndexOf('/')+1);
-					Document template = preprocess(Templates.getTemplate(library, element.getLocalName(), true), 
-							controllers, dataSources, formatters, serializables);
-
+					Document template = Templates.getTemplate(library, element.getLocalName(), true);
+					if (template == null)
+					{
+						throw new TemplateException(messages.templatesPreProcessorTemplateNotFound(library, element.getLocalName()));
+					}
+					template = preprocess(template, controllers, dataSources, formatters, serializables);
+					
 					updateTemplateAttributes(element, template);
 					updateTemplateChildren(element, template);
 
