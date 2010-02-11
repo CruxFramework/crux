@@ -65,7 +65,7 @@ public class ModuleClassPathResolver extends ClassPathResolverImpl
 		try
 		{
 			List<URL> urls = new ArrayList<URL>();
-
+ 
 			CruxModule cruxModule = CruxModuleHandler.getCurrentModule();
 			URL moduleLocation = cruxModule.getLocation();
 			URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(moduleLocation.getProtocol());
