@@ -108,7 +108,7 @@ public class SchemaGenerator
 	 * 
 	 * @throws IOException
 	 */
-	public void generateSchemas() throws IOException
+	public void generateSchemas(boolean generateModuleSchema) throws IOException
 	{
 		Set<String> libraries = WidgetConfig.getRegisteredLibraries();
 		for (String library : libraries)
@@ -131,6 +131,11 @@ public class SchemaGenerator
 		generateCoreSchema(libraries);
 		
 		copyXHTMLSchema();
+		
+		if (generateModuleSchema)
+		{
+			copyModuleSchema();
+		}
 
 		logger.info(messages.schemaGeneratorXSDFilesGenerated());
 	}
@@ -154,6 +159,25 @@ public class SchemaGenerator
 		StreamUtils.write(getClass().getResourceAsStream("/META-INF/xhtml.xsd"), out, true);
 	}	
 	
+	/**
+	 * @throws IOException
+	 */
+	private void copyModuleSchema() throws IOException
+	{
+		File xhtmlFile = new File(destDir, "module.xsd");
+		if (xhtmlFile.exists())
+		{
+			xhtmlFile.delete();
+		}
+		xhtmlFile.createNewFile();
+		FileOutputStream out = new FileOutputStream(xhtmlFile);
+
+		String targetNS = "http://www.sysmap.com.br/module";
+		registerNamespaceForCatalog(targetNS, xhtmlFile);
+		
+		StreamUtils.write(getClass().getResourceAsStream("/META-INF/module.xsd"), out, true);
+	}	
+
 	/**
 	 * 
 	 * @param library
@@ -1216,10 +1240,10 @@ public class SchemaGenerator
 	 * @param args
 	 * @throws IOException 
 	 */
-	public static void generateSchemas(String projectBaseDir, String destRelativeDir) throws IOException
+	public static void generateSchemas(String projectBaseDir, String destRelativeDir, boolean generateModuleSchema) throws IOException
 	{
 		File projectDir = new File(projectBaseDir);
-		generateSchemas(projectDir, destRelativeDir);
+		generateSchemas(projectDir, destRelativeDir, generateModuleSchema);
 	}
 
 	/**
@@ -1268,12 +1292,12 @@ public class SchemaGenerator
 	 * @param args
 	 * @throws IOException 
 	 */
-	public static void generateSchemas(File projectBaseDir, String outputDir) throws IOException
+	public static void generateSchemas(File projectBaseDir, String outputDir, boolean generateModuleSchema) throws IOException
 	{
 		ClassScanner.initialize(ClasspathUrlFinder.findClassPaths());
 		TemplatesScanner.initialize(ClasspathUrlFinder.findClassPaths());
 		SchemaGenerator generator = new SchemaGenerator(projectBaseDir, outputDir);
-		generator.generateSchemas();
+		generator.generateSchemas(generateModuleSchema);
 		generator.generateCatalog();
 	}
 
@@ -1294,7 +1318,7 @@ public class SchemaGenerator
 				String projectBaseDir = args[0]; //"C:\\desenvolvimento\\ide\\workspaces\\myeclipse\\CruxHtmlTags";
 				String outputDir = args[1]; //xsd\\generated";
 
-				SchemaGenerator.generateSchemas(projectBaseDir, outputDir);
+				SchemaGenerator.generateSchemas(projectBaseDir, outputDir, false);
 			}
 		}
 		catch (IOException e)
