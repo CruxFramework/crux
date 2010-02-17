@@ -22,19 +22,28 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Create;
+import br.com.sysmap.crux.core.client.controller.Parameter;
+import br.com.sysmap.crux.core.client.controller.ParameterObject;
 import br.com.sysmap.crux.core.client.controller.ScreenBind;
 import br.com.sysmap.crux.core.client.controller.ValueObject;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
+import br.com.sysmap.crux.core.client.event.ValidateException;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.utils.EscapeUtils;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
+import br.com.sysmap.crux.core.server.ServerMessages;
+import br.com.sysmap.crux.core.utils.ClassUtils;
 import br.com.sysmap.crux.core.utils.GenericUtils;
 
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -49,6 +58,10 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public abstract class AbstractRegisteredClientInvokableGenerator extends AbstractRegisteredElementsGenerator
 {	
+
+	protected ServerMessages coreMessages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
+	
+	
 	/**
 	 * Create objects for fields that are annotated with @Create
 	 * @param logger
@@ -71,29 +84,46 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	{
 		for (Field field : controller.getDeclaredFields()) 
 		{
-			if (field.getAnnotation(Create.class) != null && !added.contains(field.getName()))
+			if (!added.contains(field.getName()))
 			{
-				added.add(field.getName());
-				String fieldTypeName = getClassSourceName(field.getType());
-				Class<?> type = getTypeForField(logger, field);
-				String typeName = getClassSourceName(type);
+				if (field.getAnnotation(Create.class) != null)
+				{
+					added.add(field.getName());
+					String fieldTypeName = getClassSourceName(field.getType());
+					Class<?> type = getTypeForField(logger, field);
+					String typeName = getClassSourceName(type);
 
-				if (DataSource.class.isAssignableFrom(type))
-				{
-					String dsName = getDsName(type);
-					sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=("+fieldTypeName+")"+
-							br.com.sysmap.crux.core.client.screen.Screen.class.getName()+".getDataSource(\""+dsName+"\");");
-				}
-				else
-				{
-					sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=GWT.create("+typeName+".class);");
-				}
-				generateFieldValueSet(logger, controller, field, parentVariable, "_field"+field.getName(), sourceWriter);
+					if (DataSource.class.isAssignableFrom(type))
+					{
+						String dsName = getDsName(type);
+						sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=("+fieldTypeName+")"+
+								br.com.sysmap.crux.core.client.screen.Screen.class.getName()+".getDataSource(\""+dsName+"\");");
 
-				if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
+						generateFieldValueSet(logger, controller, field, parentVariable, "_field"+field.getName(), sourceWriter);					
+					}
+					else
+					{
+						ParameterObject parameterObjectAnnot = type.getAnnotation(ParameterObject.class);
+						if (parameterObjectAnnot != null)
+						{
+							generateParameterPopulation(logger, controller, parentVariable, sourceWriter, field);
+						}
+						else
+						{
+							sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=GWT.create("+typeName+".class);");
+							generateFieldValueSet(logger, controller, field, parentVariable, "_field"+field.getName(), sourceWriter);
+						}
+					}
+
+					if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
+					{
+						sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+
+						").setServiceEntryPoint(\"crux.rpc\"+__locale_);");
+					}
+				}
+				else if (field.getAnnotation(Parameter.class) != null)
 				{
-					sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+
-							").setServiceEntryPoint(\"crux.rpc\"+__locale_);");
+					generateParameterPopulation(logger, controller, parentVariable, sourceWriter, field);
 				}
 			}
 		}
@@ -102,6 +132,23 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 		{
 			generateAutoCreateFieldsWithLocale(logger, controller.getSuperclass(), sourceWriter, parentVariable, added);
 		}
+	}
+
+	/**
+	 * 
+	 * @param logger
+	 * @param controller
+	 * @param parentVariable 
+	 * @param sourceWriter
+	 * @param field
+	 */
+	private void generateParameterPopulation(TreeLogger logger, Class<?> controller, String parentVariable, SourceWriter sourceWriter, Field field)
+	{
+		sourceWriter.println("try{");
+		generateDTOParameterPopulationField(logger, parentVariable, controller, field, sourceWriter);
+		sourceWriter.println("}catch("+ValidateException.class.getName() + " _e){");
+		sourceWriter.println(Crux.class.getName()+".getValidationErrorHandler().handleValidationError(_e.getMessage());");
+		sourceWriter.println("}");
 	}
 
 	/**
@@ -318,6 +365,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	{
 		generateFieldValueSet(logger, voClass, field, parentVariable, valueVariable, sourceWriter, true);
 	}
+	
 	/**
 	 * Generates a property set block. First try to set the field directly, then try to use a javabean setter method.
 	 * 
@@ -388,6 +436,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 			}
 		}
 	}
+	
 	/**
 	 * Generates the code for screen widget population from a DTO field.
 	 * 
@@ -534,6 +583,90 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param voClass
 	 * @param field
 	 * @param sourceWriter
+	 */
+	private void generateDTOParameterPopulationField(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter)
+	{
+		Class<?> type = field.getType();
+		String name = null;
+		boolean required = false;
+		Parameter parameterAnnot = field.getAnnotation(Parameter.class);
+		if (parameterAnnot != null)
+		{
+			name = parameterAnnot.value();
+			required = parameterAnnot.required();
+		}
+		if (name == null || name.length() == 0)
+		{
+			name = field.getName();
+		}
+		
+		if ((type.isPrimitive()) ||
+                (Number.class.isAssignableFrom(type)) ||
+                (Boolean.class.isAssignableFrom(type)) || 
+                (Character.class.isAssignableFrom(type)) ||
+                (CharSequence.class.isAssignableFrom(type)) ||
+                (Date.class.isAssignableFrom(type)) ||
+                (type.isEnum())) 
+		{
+			if (required)
+			{
+				
+				sourceWriter.println("if (" +Window.class.getName()+".Location.getParameter(\""+name+"\")==null){");
+				sourceWriter.println("throw new "+ValidateException.class.getName()+"("+EscapeUtils.quote(coreMessages.requiredParameterMissing(name))+");");
+				sourceWriter.println("}");
+				
+			}
+			sourceWriter.println("try{");
+			generateParameterBinding(logger, parentVariable, voClass, field, sourceWriter, type, name);
+			sourceWriter.println("}catch(Throwable _e1){");
+			sourceWriter.println("throw new "+ValidateException.class.getName()+"("+EscapeUtils.quote(coreMessages.errorReadingParameter(name))+");");
+			sourceWriter.println("}");
+		}
+		else if (type.getAnnotation(ParameterObject.class) != null)
+		{
+			sourceWriter.println("if (" +getFieldValueGet(logger, voClass, field, parentVariable)+"==null){");
+			generateFieldValueSet(logger, voClass, field, parentVariable, "new "+getClassSourceName(type)+"()", sourceWriter);
+			sourceWriter.println("}");
+
+			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable);
+			if (parentVariable != null)
+			{
+				generateDTOParameterPopulation(logger, parentVariable, type, sourceWriter);
+			}
+		}			
+	}
+	
+	/**
+	 * Generates the code for DTO population from screen. 
+	 * 
+	 * @param logger
+	 * @param resultVariable
+	 * @param voClass
+	 * @param sourceWriter
+	 */
+	private void generateDTOParameterPopulation(TreeLogger logger, String resultVariable, Class<?> voClass, SourceWriter sourceWriter)
+	{
+		for (Field field : voClass.getDeclaredFields()) 
+		{
+			if (isPropertyVisibleToWrite(voClass, field))
+			{
+				ParameterObject parameterObject = voClass.getAnnotation(ParameterObject.class);
+				Parameter parameter = field.getAnnotation(Parameter.class); 
+				if (parameterObject != null && parameterObject.bindParameterByFieldName() || parameter != null)
+				{
+					generateDTOParameterPopulationField(logger, resultVariable, voClass, field, sourceWriter);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param logger
+	 * @param parentVariable
+	 * @param voClass
+	 * @param field
+	 * @param sourceWriter
 	 * @param populateScreen
 	 * @param type
 	 * @param name
@@ -599,7 +732,34 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredObjectWidgetNotFound(name), e);
 		}
 	}	
-		
+
+	/**
+	 * 
+	 * @param logger
+	 * @param parentVariable
+	 * @param voClass
+	 * @param field
+	 * @param sourceWriter
+	 * @param type
+	 * @param name
+	 */
+	private void generateParameterBinding(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, 
+			Class<?> type, String name)
+	{
+		generateFieldValueSet(logger, voClass, field, parentVariable, getParameterFromURL(type, name), sourceWriter);
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @param name
+	 * @return
+	 */
+	private String getParameterFromURL(Class<?> type, String name)
+	{
+		return ClassUtils.getParsingExpressionForSimpleType(Window.class.getName()+".Location.getParameter(\""+name+"\")", type);
+	}
+
 	/**
 	 * 
 	 * @param logger

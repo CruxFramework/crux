@@ -107,4 +107,10 @@ public interface ServerMessages
 
 	@DefaultMessage("[datasources 002] - Duplicated datasource: {0}.")
 	String dataSourcesDuplicatedDataSource(String value);
+
+	@DefaultMessage("[parameter 001] - Required parameter {0} is missing.")
+	String requiredParameterMissing(String name);
+
+	@DefaultMessage("[parameter 002] - Error parsing parameter {0}.")
+	String errorReadingParameter(String name);
 }
