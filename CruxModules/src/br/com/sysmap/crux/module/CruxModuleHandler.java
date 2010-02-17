@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.module;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +26,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
@@ -35,8 +47,6 @@ import br.com.sysmap.crux.core.server.Environment;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.config.CruxModuleConfigurationFactory;
 import br.com.sysmap.crux.module.validation.CruxModuleValidator;
-import br.com.sysmap.crux.module.validation.ModuleDependencies;
-import br.com.sysmap.crux.module.validation.ModuleDependency;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -49,6 +59,7 @@ public class CruxModuleHandler
 	private static final Lock lock = new ReentrantLock();
 	private static final Lock lockPages = new ReentrantLock();
 	private static final CruxModuleMessages messages = MessagesFactory.getMessages(CruxModuleMessages.class);
+	private static DocumentBuilder documentBuilder;
 	
 	/**
 	 * 
@@ -66,8 +77,14 @@ public class CruxModuleHandler
 			{
 				return;
 			}
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			
 			initializeModules();
+		}
+		catch (ParserConfigurationException e)
+		{
+			throw new CruxModuleException(messages.errorInitializingCruxModuleHandler(), e);
 		}
 		finally
 		{
@@ -172,19 +189,95 @@ public class CruxModuleHandler
 			Module module = modules.next();
 			try
 			{
-				Class<?> moduleClass = Class.forName(module.getFullName());
-				ModuleInfo info = (ModuleInfo) moduleClass.newInstance();
-				cruxModules.put(module, buildCruxModule(module, info));
-			}
-			catch (ClassNotFoundException cnfe)
-			{
-				continue;
+				String moduleDescriptor = "/"+RegexpPatterns.REGEXP_DOT.matcher(module.getFullName()).replaceAll("/")+".module.xml";
+				InputStream stream = CruxModuleHandler.class.getResourceAsStream(moduleDescriptor);
+				ModuleInfo info = parseModuleDescriptor(stream);
+				if (info != null)
+				{
+					cruxModules.put(module, buildCruxModule(module, info));
+				}
 			}
 			catch (Exception e)
 			{
 				throw new CruxModuleException(messages.errorInitializingCruxModuleHandler(), e);
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @param stream
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 */
+	public static ModuleInfo parseModuleDescriptor(InputStream stream) throws SAXException, IOException
+	{
+		if (stream == null)
+		{
+			return null;
+		}
+		
+		ModuleInfo info = new ModuleInfo();
+		Document descriptor = documentBuilder.parse(stream);
+		NodeList childNodes = descriptor.getDocumentElement().getChildNodes();
+		for (int i=0; i<childNodes.getLength(); i++)
+		{
+			Node item = childNodes.item(i);
+			
+			if (item instanceof Element)
+			{
+				Element element = (Element) item;
+				
+				String localName = element.getNodeName();
+				if ("version".equalsIgnoreCase(localName))
+				{
+					info.setVersion(element.getTextContent());
+				}
+				else if ("description".equalsIgnoreCase(localName))
+				{
+					info.setDescription(element.getTextContent());
+				}
+				else if ("startPage".equalsIgnoreCase(localName))
+				{
+					info.setStartPage(element.getTextContent());
+				}
+				else if ("dependencies".equalsIgnoreCase(localName))
+				{
+					info.setDependencies(getDependencies(element));
+				}
+			}
+		}
+		return info;
+	}
+
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	private static ModuleRef[] getDependencies(Element element)
+	{
+		NodeList childNodes = element.getChildNodes();
+		List<ModuleRef> result = new ArrayList<ModuleRef>();
+
+		for (int i=0; i<childNodes.getLength(); i++)
+		{
+			Node item = childNodes.item(i);
+			
+			if (item instanceof Element)
+			{
+				ModuleRef ref = new ModuleRef();
+				Element dependency = (Element) item;
+				
+				ref.setName(dependency.getAttribute("name"));
+				ref.setMinVersion(dependency.getAttribute("minVersion"));
+				ref.setMaxVersion(dependency.getAttribute("maxVersion"));
+				result.add(ref);
+			}
+		}
+		
+		return result.toArray(new ModuleRef[result.size()]);
 	}
 
 	/**
@@ -240,22 +333,14 @@ public class CruxModuleHandler
 
 	private static ModuleRef[] getRequiredModules(ModuleInfo info)
 	{
-		List<ModuleRef> result = new ArrayList<ModuleRef>();
-
-		ModuleDependencies dependencies = info.getClass().getAnnotation(ModuleDependencies.class);
-		if (dependencies != null)
+		if (info.getDependencies() != null)
 		{
-			for (ModuleDependency dependency : dependencies.value())
-			{
-				ModuleRef ref = new ModuleRef();
-				ref.setName(dependency.value());
-				ref.setMinVersion(dependency.minVersion());
-				ref.setMaxVersion(dependency.maxVersion());
-				result.add(ref);
-			} 
+			return info.getDependencies();
 		}
-		
-		return result.toArray(new ModuleRef[result.size()]);
+		else
+		{
+			return new ModuleRef[0];
+		}
 	}
 
 	/**
