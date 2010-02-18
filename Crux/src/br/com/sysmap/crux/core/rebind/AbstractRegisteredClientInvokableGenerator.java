@@ -652,7 +652,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 			{
 				ParameterObject parameterObject = voClass.getAnnotation(ParameterObject.class);
 				Parameter parameter = field.getAnnotation(Parameter.class); 
-				if (parameterObject != null && parameterObject.bindParameterByFieldName() || parameter != null)
+				if ((parameterObject != null && parameterObject.bindParameterByFieldName()) || parameter != null)
 				{
 					generateDTOParameterPopulationField(logger, resultVariable, voClass, field, sourceWriter);
 				}
