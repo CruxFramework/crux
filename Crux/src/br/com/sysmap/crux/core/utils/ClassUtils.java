@@ -15,6 +15,9 @@
  */
 package br.com.sysmap.crux.core.utils;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
@@ -254,5 +257,51 @@ public class ClassUtils
 		return attributes;
 	}
 	
+	/**
+	 * 
+	 * @param clazz
+	 * @param name
+	 * @param parameterTypes
+	 * @return
+	 */
+	public static Method getMethod(Class<?> clazz, String name, Class<?>... parameterTypes)
+	{
+		try
+		{
+			return clazz.getMethod(name, parameterTypes);
+		}
+		catch (NoSuchMethodException e)
+		{
+			return getProtectedMethod(clazz, name, parameterTypes);
+		}
+	}
+
+	/**
+	 * 
+	 * @param clazz
+	 * @param name
+	 * @param parameterTypes
+	 * @return
+	 */
+	protected static Method getProtectedMethod(Class<?> clazz, String name, Class<?>... parameterTypes)
+	{
+		try
+		{
+			Method method = clazz.getDeclaredMethod(name, parameterTypes);
+			if (Modifier.isProtected(method.getModifiers()))
+			{
+				return method;
+			}
+		}
+		catch (NoSuchMethodException e)
+		{
+			if (!clazz.equals(Object.class))
+			{
+				return getProtectedMethod(clazz.getSuperclass(), name, parameterTypes);
+			}
+		}
+		
+		return null;
+	}
 	
 }

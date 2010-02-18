@@ -33,6 +33,7 @@ import br.com.sysmap.crux.core.client.event.EventProcessor;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
+import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -381,18 +382,15 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 			Method validate = null;
 			if (params != null && params.length == 1)
 			{
-				try
+				validate = ClassUtils.getMethod(handlerClass, validateMethod, params[0]);
+				if(validate == null)
 				{
-					validate = handlerClass.getMethod(validateMethod, params[0]);
-				}
-				catch (Exception e)
-				{
-					validate = handlerClass.getMethod(validateMethod, new Class[]{});
+					validate = ClassUtils.getMethod(handlerClass, validateMethod, new Class[]{});
 				}
 			}
 			else
 			{
-				validate = handlerClass.getMethod(validateMethod, new Class[]{});
+				validate = ClassUtils.getMethod(handlerClass, validateMethod, new Class[]{});
 			}
 			generateMethodCall(validate, sourceWriter);
 		}
