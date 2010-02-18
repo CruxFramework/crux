@@ -145,7 +145,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	private void generateParameterPopulation(TreeLogger logger, Class<?> controller, String parentVariable, SourceWriter sourceWriter, Field field)
 	{
 		sourceWriter.println("try{");
-		generateDTOParameterPopulationField(logger, parentVariable, controller, field, sourceWriter);
+		generateDTOParameterPopulationField(logger, parentVariable, controller, field, sourceWriter, true);
 		sourceWriter.println("}catch("+ValidateException.class.getName() + " _e){");
 		sourceWriter.println(Crux.class.getName()+".getValidationErrorHandler().handleValidationError(_e.getMessage());");
 		sourceWriter.println("}");
@@ -431,7 +431,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 				ScreenBind screenBind = field.getAnnotation(ScreenBind.class); 
 				if (valueObject != null && valueObject.bindWidgetByFieldName() || screenBind != null)
 				{
-					generateScreenOrDTOPopulationField(logger, screen, resultVariable, voClass, field, sourceWriter, populateScreen);
+					generateScreenOrDTOPopulationField(logger, screen, resultVariable, voClass, field, sourceWriter, populateScreen, false);
 				}
 			}
 		}
@@ -448,7 +448,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 */
 	private void generateScreenWidgetPopulation(TreeLogger logger, Screen screen, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter)
 	{
-		generateScreenOrDTOPopulationField(logger, screen, parentVariable, voClass, field, sourceWriter, true);
+		generateScreenOrDTOPopulationField(logger, screen, parentVariable, voClass, field, sourceWriter, true, true);
 	}
 	
 	/**
@@ -460,7 +460,8 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param field
 	 * @param sourceWriter
 	 */
-	private void generateScreenOrDTOPopulationField(TreeLogger logger, Screen screen, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen)
+	private void generateScreenOrDTOPopulationField(TreeLogger logger, Screen screen, String parentVariable, Class<?> voClass, 
+			                                        Field field, SourceWriter sourceWriter, boolean populateScreen, boolean allowProtected)
 	{
 		Class<?> type = field.getType();
 		String name = null;
@@ -483,22 +484,22 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 		{
 			if ("true".equals(ConfigurationFactory.getConfigurations().allowAutoBindWithNonDeclarativeWidgets()))
 			{
-				generateAutoBindHandlerForAllWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, name);
+				generateAutoBindHandlerForAllWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, name, allowProtected);
 			}
 			else
 			{
-				generateAutoBindHandlerForDeclarativeWidgetsOnly(logger, screen, parentVariable, voClass, field, sourceWriter, populateScreen, type, name);
+				generateAutoBindHandlerForDeclarativeWidgetsOnly(logger, screen, parentVariable, voClass, field, sourceWriter, populateScreen, type, name, allowProtected);
 			}
 		}
 		else if (type.getAnnotation(ValueObject.class) != null)
 		{
 			if (!populateScreen)
 			{
-				sourceWriter.println("if (" +getFieldValueGet(logger, voClass, field, parentVariable)+"==null){");
-				generateFieldValueSet(logger, voClass, field, parentVariable, "new "+getClassSourceName(type)+"()", sourceWriter);
+				sourceWriter.println("if (" +getFieldValueGet(logger, voClass, field, parentVariable, allowProtected)+"==null){");
+				generateFieldValueSet(logger, voClass, field, parentVariable, "new "+getClassSourceName(type)+"()", sourceWriter, allowProtected);
 				sourceWriter.println("}");
 			}
-			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable);
+			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable, allowProtected);
 			if (parentVariable != null)
 			{
 				generateScreenOrDTOPopulation(logger, screen, parentVariable, type, sourceWriter, populateScreen);
@@ -573,7 +574,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 */
 	private void generateDTOFieldPopulation(TreeLogger logger, Screen screen, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter)
 	{
-		generateScreenOrDTOPopulationField(logger, screen, parentVariable, voClass, field, sourceWriter, false);
+		generateScreenOrDTOPopulationField(logger, screen, parentVariable, voClass, field, sourceWriter, false, true);
 	}
 	
 	/**
@@ -583,8 +584,9 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param voClass
 	 * @param field
 	 * @param sourceWriter
+	 * @param allowProtected
 	 */
-	private void generateDTOParameterPopulationField(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter)
+	private void generateDTOParameterPopulationField(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean allowProtected)
 	{
 		Class<?> type = field.getType();
 		String name = null;
@@ -617,18 +619,18 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 				
 			}
 			sourceWriter.println("try{");
-			generateParameterBinding(logger, parentVariable, voClass, field, sourceWriter, type, name);
+			generateParameterBinding(logger, parentVariable, voClass, field, sourceWriter, type, name, allowProtected);
 			sourceWriter.println("}catch(Throwable _e1){");
 			sourceWriter.println("throw new "+ValidateException.class.getName()+"("+EscapeUtils.quote(coreMessages.errorReadingParameter(name))+");");
 			sourceWriter.println("}");
 		}
 		else if (type.getAnnotation(ParameterObject.class) != null)
 		{
-			sourceWriter.println("if (" +getFieldValueGet(logger, voClass, field, parentVariable)+"==null){");
-			generateFieldValueSet(logger, voClass, field, parentVariable, "new "+getClassSourceName(type)+"()", sourceWriter);
+			sourceWriter.println("if (" +getFieldValueGet(logger, voClass, field, parentVariable, allowProtected)+"==null){");
+			generateFieldValueSet(logger, voClass, field, parentVariable, "new "+getClassSourceName(type)+"()", sourceWriter, allowProtected);
 			sourceWriter.println("}");
 
-			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable);
+			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable, allowProtected);
 			if (parentVariable != null)
 			{
 				generateDTOParameterPopulation(logger, parentVariable, type, sourceWriter);
@@ -654,7 +656,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 				Parameter parameter = field.getAnnotation(Parameter.class); 
 				if ((parameterObject != null && parameterObject.bindParameterByFieldName()) || parameter != null)
 				{
-					generateDTOParameterPopulationField(logger, resultVariable, voClass, field, sourceWriter);
+					generateDTOParameterPopulationField(logger, resultVariable, voClass, field, sourceWriter, false);
 				}
 			}
 		}
@@ -672,20 +674,20 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param name
 	 */
 	private void generateAutoBindHandlerForAllWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, Class<?> type,
-			String name)
+			String name, boolean allowProtected)
 	{
 		String valueVariable = "__wid";
 		sourceWriter.println(valueVariable + "= Screen.get(\""+name+"\");");
 		sourceWriter.println("if ("+valueVariable+" != null){");
 		sourceWriter.println("if ("+valueVariable+" instanceof HasFormatter){");
-		generateHandleHasFormatterWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+		generateHandleHasFormatterWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable, allowProtected);
 		sourceWriter.println("}else if ("+valueVariable+" instanceof HasValue){");
-		generateHandleHasValueWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+		generateHandleHasValueWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable, allowProtected);
 		sourceWriter.print("}");
 		if (String.class.isAssignableFrom(type))
 		{
 			sourceWriter.println("else if ("+valueVariable+" instanceof HasText){");
-			generateHandleHasTextWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+			generateHandleHasTextWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable, allowProtected);
 			sourceWriter.println("}");
 		}
 		sourceWriter.println("}");
@@ -704,7 +706,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param name
 	 */
 	private void generateAutoBindHandlerForDeclarativeWidgetsOnly(TreeLogger logger, Screen screen, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter,
-			boolean populateScreen, Class<?> type, String name)
+			boolean populateScreen, Class<?> type, String name, boolean allowProtected)
 	{
 		try
 		{
@@ -715,15 +717,15 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 				sourceWriter.println(valueVariable + "= Screen.get(\""+name+"\");");
 				if (HasFormatter.class.isAssignableFrom(widgetClass))
 				{
-					generateHandleHasFormatterWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+					generateHandleHasFormatterWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable, allowProtected);
 				}
 				else if (HasValue.class.isAssignableFrom(widgetClass))
 				{
-					generateHandleHasValueWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+					generateHandleHasValueWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable, allowProtected);
 				}
 				else if (String.class.isAssignableFrom(type) && HasText.class.isAssignableFrom(widgetClass))
 				{
-					generateHandleHasTextWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable);
+					generateHandleHasTextWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable, allowProtected);
 				}
 			}
 		}
@@ -744,9 +746,9 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param name
 	 */
 	private void generateParameterBinding(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, 
-			Class<?> type, String name)
+			Class<?> type, String name, boolean allowProtected)
 	{
-		generateFieldValueSet(logger, voClass, field, parentVariable, getParameterFromURL(type, name), sourceWriter);
+		generateFieldValueSet(logger, voClass, field, parentVariable, getParameterFromURL(type, name), sourceWriter, allowProtected);
 	}
 	
 	/**
@@ -770,16 +772,17 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param populateScreen
 	 * @param valueVariable
 	 */
-	private void generateHandleHasTextWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, Class<?> type, String valueVariable)
+	private void generateHandleHasTextWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, 
+			boolean populateScreen, Class<?> type, String valueVariable, boolean allowProtected)
 	{
 		if (populateScreen)
 		{
-			sourceWriter.println("Object o = " +getFieldValueGet(logger, voClass, field, parentVariable)+";");
+			sourceWriter.println("Object o = " +getFieldValueGet(logger, voClass, field, parentVariable, allowProtected)+";");
 			sourceWriter.println("((HasText)"+valueVariable+").setText(String.valueOf(o!=null?o:\"\"));");
 		}
 		else
 		{
-			generateFieldValueSet(logger, voClass, field, parentVariable, "((HasText)"+valueVariable+").getText()", sourceWriter);
+			generateFieldValueSet(logger, voClass, field, parentVariable, "((HasText)"+valueVariable+").getText()", sourceWriter, allowProtected);
 		}
 	}
 
@@ -795,16 +798,18 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param valueVariable
 	 */
 	private void generateHandleHasValueWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, Class<?> type,
-			String valueVariable)
+			String valueVariable, boolean allowProtected)
 	{
 		if (populateScreen)
 		{
 			sourceWriter.println("((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").setValue("
-					            + getFieldValueGet(logger, voClass, field, parentVariable)+");");
+					            + getFieldValueGet(logger, voClass, field, parentVariable, allowProtected)+");");
 		}
 		else
 		{
-			generateFieldValueSet(logger, voClass, field, parentVariable, "("+getGenericDeclForType(type)+")((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").getValue()", sourceWriter);
+			generateFieldValueSet(logger, voClass, field, parentVariable, 
+					"("+getGenericDeclForType(type)+")((HasValue<"+getGenericDeclForType(type)+">)"+valueVariable+").getValue()", 
+					sourceWriter, allowProtected);
 		}
 	}
 	
@@ -820,17 +825,17 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param valueVariable
 	 */
 	private void generateHandleHasFormatterWidgets(TreeLogger logger, String parentVariable, Class<?> voClass, Field field, SourceWriter sourceWriter, boolean populateScreen, Class<?> type,
-			String valueVariable)
+			String valueVariable, boolean allowProtected)
 	{
 		if (populateScreen)
 		{
 			sourceWriter.println("((HasFormatter)"+valueVariable+").setUnformattedValue("
-					            + getFieldValueGet(logger, voClass, field, parentVariable)+");");
+					            + getFieldValueGet(logger, voClass, field, parentVariable, allowProtected)+");");
 		}
 		else
 		{
 			generateFieldValueSet(logger, voClass, field, parentVariable, "("+getGenericDeclForType(type)+")"
-					            + "((HasFormatter)"+valueVariable+").getUnformattedValue()", sourceWriter);
+					            + "((HasFormatter)"+valueVariable+").getUnformattedValue()", sourceWriter, allowProtected);
 		}
 	}
 	
