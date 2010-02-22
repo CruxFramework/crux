@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
 
@@ -42,6 +43,9 @@ public class Templates
 	private static HTMLTagsMessages messages = MessagesFactory.getMessages(HTMLTagsMessages.class);
 	private static final Log logger = LogFactory.getLog(Templates.class);
 	private static final Lock lock = new ReentrantLock();
+	private static boolean starting = false;
+	private static boolean hotDeploymentScannerStarted = false;
+	
 
 	/**
 	 * 
@@ -68,12 +72,32 @@ public class Templates
 		}
 	}
 	
+	/**
+	 * 
+	 */
+	public static void restart()
+	{
+		templates = null;
+		initialize();
+	}
+	
+	/**
+	 * 
+	 */
 	protected static void initializeTemplates()
 	{
+		starting = true;
 		templates = new HashMap<String, Document>();
 		registeredLibraries = new HashMap<String, Set<String>>();
 		logger.info(messages.templatesScannerSearchingTemplateFiles());
 		TemplatesScanner.getInstance().scanArchives();
+		if (!hotDeploymentScannerStarted && Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()))
+		{
+			hotDeploymentScannerStarted = true;
+			TemplatesHotDeploymentScanner.scanWebDirs();
+		}
+		
+		starting = false;
 	}
 	
 	/**
@@ -157,5 +181,9 @@ public class Templates
 		registeredLibraries.get(library).add(templateId);
 		
 		templates.put(library+"_"+templateId, template);
+	}
+	
+	static boolean isStarting(){
+		return starting;
 	}
 }

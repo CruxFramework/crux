@@ -109,4 +109,10 @@ public interface HTMLTagsMessages
 
 	@DefaultMessage("[htmlTags 029] - Template not found. Library: {0}. Template: {1}.")
 	String templatesPreProcessorTemplateNotFound(String library, String template);
+
+	@DefaultMessage("[htmlTags 030] - Template file modified: {0}.")
+	String templatesHotDeploymentScannerTemplateFileModified(String fileName);
+
+	@DefaultMessage("[htmlTags 031] - Error scanning dir: {0}.")
+	String templatesHotDeploymentScannerErrorScanningDir(String name);
 }
