@@ -648,6 +648,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 */
 	private void generateDTOParameterPopulation(TreeLogger logger, String resultVariable, Class<?> voClass, SourceWriter sourceWriter)
 	{
+		boolean hasAtLeastOneField = false;
 		for (Field field : voClass.getDeclaredFields()) 
 		{
 			if (isPropertyVisibleToWrite(voClass, field))
@@ -656,9 +657,14 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 				Parameter parameter = field.getAnnotation(Parameter.class); 
 				if ((parameterObject != null && parameterObject.bindParameterByFieldName()) || parameter != null)
 				{
+					hasAtLeastOneField = true;
 					generateDTOParameterPopulationField(logger, resultVariable, voClass, field, sourceWriter, false);
 				}
 			}
+		}
+		if (!hasAtLeastOneField)
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredObjectParameterObjectHasNoValidField(voClass.getName()));
 		}
 	}
 	

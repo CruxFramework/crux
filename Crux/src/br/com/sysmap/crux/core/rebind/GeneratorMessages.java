@@ -152,4 +152,7 @@ public interface GeneratorMessages
 
 	@DefaultMessage("[generator 034] - Can not find the module {0}.")
 	String errorGeneratingRegisteredElementModuleNotFound(String module);
+
+	@DefaultMessage("[generator 035] - Parameter Object {0} has no valid field for binding.")
+	String errorGeneratingRegisteredObjectParameterObjectHasNoValidField(String name);
 }
