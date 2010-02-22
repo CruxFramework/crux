@@ -87,6 +87,7 @@
 							</a:item>
 							<a:item id="features" label="Other Features">
 								<a:item id="valueBindItem" label="Value Binding" onClick="mainController.onClickValueBindItem" />
+								<a:item id="parameterBindItem" label="Parameter Binding" onClick="mainController.onClickParameterBindItem" />
 								<a:item id="screenWrapperItem" label="Screen Wrappers" onClick="mainController.onClickScreenWrapperItem" />
 								<a:item id="screenCommunicationItem" label="Screen Communication" onClick="mainController.onClickScreenCommunicationItem" />
 								<a:item id="contextItem" label="Shared Context" onClick="mainController.onClickContextItem" />

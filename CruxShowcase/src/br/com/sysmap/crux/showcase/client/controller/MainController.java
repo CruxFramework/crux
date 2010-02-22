@@ -20,6 +20,7 @@ public class MainController {
 	private static final String TITLE_PANEL_TAB = "titlePanel";
 	private static final String COLLAPSE_PANEL_TAB = "collapsePanel";
 	private static final String VALUE_BIND_TAB = "valueBind";
+	private static final String PARAMETER_BIND_TAB = "parameterBind";
 	private static final String STACK_MENU_TAB = "stackMenu";
 	private static final String FILTER_TAB = "filter";
 	private static final String SCREEN_COMMUNICATION_TAB = "screenCommunication";
@@ -101,6 +102,11 @@ public class MainController {
 		screen.getTabs().openTab(VALUE_BIND_TAB, "Value Bind", VALUE_BIND_TAB + HTML, true, false);
 	}	
 	
+	@Expose
+	public void onClickParameterBindItem(){
+		screen.getTabs().openTab(PARAMETER_BIND_TAB, "Parameter Bind", PARAMETER_BIND_TAB + HTML+"?parameter=Test&intParamenter=123", true, false);
+	}	
+
 	@Expose
 	public void onClickScreenWrapperItem(){
 		screen.getTabs().openTab(SCREEN_WRAPPER_TAB, "Screen Wrapper", SCREEN_WRAPPER_TAB + HTML, true, false);
