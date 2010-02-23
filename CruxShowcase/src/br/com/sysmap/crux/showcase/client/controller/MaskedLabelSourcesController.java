@@ -14,7 +14,7 @@ public class MaskedLabelSourcesController extends SourcesController {
 		if(!formatterLoaded)
 		{
 			formatterLoaded = true;
-			loadFile("client/formatter/PhoneFormatter.java", "formatterSource");
+			loadFile("client/formatter/BirthdayFormatter.java", "formatterSource");
 		}
 	}
 }

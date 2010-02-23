@@ -4,8 +4,8 @@
 	xmlns:s="http://www.sysmap.com.br/templates/showcase"
 	library="showcase" useController="maskedLabelSourcesController">
 
-	<s:source id="xmlSource" onLoadSource="sourcesController.loadXmlSource" title="View page source"/>
-	<s:source id="formatterSource" onLoadSource="sourcesController.loadFormatterSource" title="View formatter source"/>
+	<s:source id="xmlSource" onLoadSource="maskedLabelSourcesController.loadXmlSource" title="View page source"/>
+	<s:source id="formatterSource" onLoadSource="maskedLabelSourcesController.loadFormatterSource" title="View formatter source"/>
 
 	<c:splashScreen/>
 </t:template>
