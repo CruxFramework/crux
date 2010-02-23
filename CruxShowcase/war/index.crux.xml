@@ -64,7 +64,7 @@
 								<a:item id="stackMenuItem" label="Stack Menu" onClick="mainController.onClickStackMenuItem" />
 								<a:item id="filterMenuItem" label="Filter" onClick="mainController.onClickFilterItem" />
 							</a:item>
-							<a:item id="textInputItem" label="Text Input">
+							<a:item id="textItem" label="Masked Text">
 								<a:item id="maskedTextBoxItem" label="Masked Text Box" onClick="mainController.onClickMaskedTextBoxItem" />
 								<a:item id="maskedLabelItem" label="Masked Label" onClick="mainController.onClickMaskedLabelItem" />
 							</a:item>
