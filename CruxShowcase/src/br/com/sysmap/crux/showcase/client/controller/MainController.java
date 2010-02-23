@@ -16,6 +16,7 @@ public class MainController {
 	private static final String TRANSFER_LIST_TAB = "transferList";
 	private static final String GWT_TAB = "gwt";
 	private static final String MASKED_TEXTBOX_TAB = "maskedTextBox";
+	private static final String MASKED_LABEL_TAB = "maskedLabel";
 	private static final String DECORATED_PANEL_TAB = "decoratedPanel";
 	private static final String TITLE_PANEL_TAB = "titlePanel";
 	private static final String COLLAPSE_PANEL_TAB = "collapsePanel";
@@ -95,6 +96,11 @@ public class MainController {
 	@Expose
 	public void onClickMaskedTextBoxItem(){
 		screen.getTabs().openTab(MASKED_TEXTBOX_TAB, "Masked Text Box", MASKED_TEXTBOX_TAB + HTML, true, false);
+	}	
+	
+	@Expose
+	public void onClickMaskedLabelItem(){
+		screen.getTabs().openTab(MASKED_LABEL_TAB, "Masked Label", MASKED_LABEL_TAB + HTML, true, false);
 	}	
 	
 	@Expose

@@ -6,7 +6,7 @@
 	xmlns:s="http://www.sysmap.com.br/templates/showcase">
 
 	<head>
-		<title>Value Bind</title>
+		<title>Parameter Bind</title>
 		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
 	</head>
 

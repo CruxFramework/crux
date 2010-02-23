@@ -66,6 +66,7 @@
 							</a:item>
 							<a:item id="textInputItem" label="Text Input">
 								<a:item id="maskedTextBoxItem" label="Masked Text Box" onClick="mainController.onClickMaskedTextBoxItem" />
+								<a:item id="maskedLabelItem" label="Masked Label" onClick="mainController.onClickMaskedLabelItem" />
 							</a:item>
 							<a:item id="tabsItem" label="Tabs">
 								<a:item id="dynaTabsItem" label="Dyna Tabs" onClick="mainController.onClickDynaTabsItem" />
