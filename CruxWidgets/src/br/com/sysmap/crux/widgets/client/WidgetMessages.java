@@ -28,31 +28,37 @@ public interface WidgetMessages extends Messages
 	@DefaultMessage("[crux-widgets - 003] - The attribute formatter is required for MaskedTextBox.")
 	String maskedTextBoxFormatterRequired();
 
-	@DefaultMessage("[crux-widgets - 003] - The formatter {0} was not found on this screen.")
+	@DefaultMessage("[crux-widgets - 004] - The formatter {0} was not found on this screen.")
 	String maskedTextBoxFormatterNotFound(String formatter);
 	
-	@DefaultMessage("[crux-widgets - 004] - The operation <code>getBindedObject()</code> is only supported in grids whose datasources implement <code>BindableDataSource</code>.")
+	@DefaultMessage("[crux-widgets - 005] - The operation <code>getBindedObject()</code> is only supported in grids whose datasources implement <code>BindableDataSource</code>.")
 	String getBindedObjectNotSupported();
 
-	@DefaultMessage("[crux-widgets - 005] - Could not create widget for grid column ''{0}''")
+	@DefaultMessage("[crux-widgets - 006] - Could not create widget for grid column ''{0}''")
 	String errorCreatingWidgetForColumn(String key);
 	
-	@DefaultMessage("[crux-widgets - 006] - Found a null element reference when trying to modify it''s styleName property.")
+	@DefaultMessage("[crux-widgets - 007] - Found a null element reference when trying to modify it''s styleName property.")
 	String nullElementAtSetStyleName();
 	
-	@DefaultMessage("[crux-widgets - 007] - Empty strings can not be used as a styleName property value.")
+	@DefaultMessage("[crux-widgets - 008] - Empty strings can not be used as a styleName property value.")
 	String emptyStringAsStyleNameValue();
 	
-	@DefaultMessage("[crux-widgets - 008] - It is not possible unregister a column definition.")
+	@DefaultMessage("[crux-widgets - 009] - It is not possible unregister a column definition.")
 	String removingColumnDefinitionByIterator();
 	
-	@DefaultMessage("[crux-widgets - 009] - There is no sibling tab with the id ''{0}''")
+	@DefaultMessage("[crux-widgets - 010] - There is no sibling tab with the id ''{0}''")
 	String tabsControllerNoSiblingTabFound(String tabId);
 	
-	@DefaultMessage("[crux-widgets - 010] - There is no tab with the id ''{0}''")
+	@DefaultMessage("[crux-widgets - 011] - There is no tab with the id ''{0}''")
 	String tabsControllerNoTabFound(String tabId);
 	
-	@DefaultMessage("[crux-widgets - 011] - It is not possible remove a grid row.")
-	String gridDoesNotAllowRemoveRow();	
+	@DefaultMessage("[crux-widgets - 012] - It is not possible remove a grid row.")
+	String gridDoesNotAllowRemoveRow();
+
+	@DefaultMessage("[crux-widgets - 013] - The formatter {0} was not found on this screen.")
+	String maskedLabelFormatterNotFound(String formatter);
+
+	@DefaultMessage("[crux-widgets - 014] - The attribute formatter is required for MaskedLabel.")
+	String maskedLabelFormatterRequired();	
 	
 }
