@@ -16,4 +16,10 @@ public class SimpleGridSourcesController extends AbstractGridSourcesController {
 	{
 		return "SimpleGridServiceImpl.java";
 	}
+
+	@Override
+	protected String getDSFilePath()
+	{
+		return "SimpleGridDataSource.java";
+	}
 }

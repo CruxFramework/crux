@@ -16,4 +16,10 @@ public class StreamingGridSourcesController extends AbstractGridSourcesControlle
 	{
 		return "StreamingGridServiceImpl.java";
 	}
+	
+	@Override
+	protected String getDSFilePath()
+	{
+		return "StreamingGridDataSource.java";
+	}	
 }
