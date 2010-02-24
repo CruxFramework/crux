@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -52,7 +54,7 @@ public class ModulesScanner
 	private DocumentBuilder documentBuilder;
 	private static URL[] urlsForSearch = null;
 	private static final Lock lock = new ReentrantLock();
-	private String classesDir; 
+	private String[] classesDir; 
 	
 	/**
 	 * 
@@ -208,9 +210,13 @@ public class ModulesScanner
 	{
 		fileName = fileName.substring(0, fileName.length() - 8);
 		fileName = RegexpPatterns.REGEXP_BACKSLASH.matcher(fileName).replaceAll("/");
-		if (fileName.startsWith(classesDir))
+		for (String clsDir : classesDir)
 		{
-			fileName = fileName.substring(classesDir.length());
+			if (fileName.startsWith(clsDir))
+			{
+				fileName = fileName.substring(clsDir.length());
+				break;
+			}
 		}
 		
 		if (fileName.startsWith("/"))
@@ -244,12 +250,43 @@ public class ModulesScanner
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	private String getClassesDir() throws URISyntaxException, IOException
+	public String[] getClassesDir() throws URISyntaxException, IOException
 	{
 		URL classesPath = ClassPathResolverInitializer.getClassPathResolver().findWebInfClassesPath();
-		return classesPath.toString();
+		return new String[]{classesPath.toString()};
 	}
 	
+	/**
+	 * @param classesDir
+	 */
+	public void setClassesDir(String[] classesDir)
+	{
+		Arrays.sort(classesDir, new Comparator<String>(){
+			public int compare(String o1, String o2)
+			{
+				if (o1==null)
+				{
+					return (o2==null?0:1);
+				}
+				if (o2 == null)
+				{
+					return -1;
+				}
+				if (o1.length() == o2.length())
+				{
+					return 0;
+				}
+				if (o1.length() < o2.length())
+				{
+					return 1;
+				}
+				
+				return -1;
+			}
+		});
+		this.classesDir = classesDir;
+	}
+
 	/**
 	 * 
 	 * @return
@@ -258,5 +295,4 @@ public class ModulesScanner
 	{
 		return instance;
 	}
-	
 }
