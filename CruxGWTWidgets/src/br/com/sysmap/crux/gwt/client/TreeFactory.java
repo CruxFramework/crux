@@ -27,6 +27,9 @@ import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
+import br.com.sysmap.crux.core.client.event.Event;
+import br.com.sysmap.crux.core.client.event.Events;
+import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
@@ -47,6 +50,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.Tree.Resources;
 
 /**
  * Represents a TreeFactory DeclarativeFactory
@@ -64,6 +68,23 @@ public class TreeFactory extends WidgetFactory<Tree>
 	@Override
 	public Tree instantiateWidget(Element element, String widgetId) 
 	{
+		Event eventLoadImage = EvtBind.getWidgetEvent(element, "onLoadImage");
+		
+		if (eventLoadImage != null)
+		{
+			LoadImagesEvent<Tree> loadEvent = new LoadImagesEvent<Tree>(widgetId);
+			Resources treeImages = (Resources) Events.callEvent(eventLoadImage, loadEvent);
+
+			String useLeafImagesStr = element.getAttribute("useLeafImages");
+			boolean useLeafImages = true;
+			if (useLeafImagesStr != null && useLeafImagesStr.length() > 0)
+			{
+				useLeafImages = (Boolean.parseBoolean(useLeafImagesStr));
+			}
+			
+			return new Tree(treeImages, useLeafImages);
+		}
+		
 		return new Tree();
 	}
 	
