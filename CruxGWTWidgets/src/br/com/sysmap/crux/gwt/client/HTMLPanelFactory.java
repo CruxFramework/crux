@@ -15,6 +15,9 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
@@ -25,6 +28,8 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -40,11 +45,15 @@ public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel> implements 
 	@Override
 	public HTMLPanel instantiateWidget(Element element, String widgetId) 
 	{
-		String innerHTML = element.getInnerHTML();
-		element.setInnerHTML("");
-		HTMLPanel ret = new HTMLPanel(innerHTML);
+		HTMLPanel ret = new HTMLPanel("");
+		List<Node> children = extractChildrenInReverseOrder(element);
+		for (Node node : children)
+		{
+			ret.getElement().appendChild(node);
+		}
 		ret.getElement().setAttribute("_hasWidgetsPanel", widgetId);
 		ret.getElement().setAttribute("_type", "gwt_HTMLPanel");
+
 		return ret;
 	}
 
@@ -66,5 +75,45 @@ public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel> implements 
 	
 	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", type=AnyTag.class)
 	public static class ContentProcessor extends WidgetChildProcessor<HTMLPanel> {}
+	
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	protected List<Node> extractChildrenInReverseOrder(Element element)
+	{
+		List<Node> result = new ArrayList<Node>();
+		
+		NodeList<Node> childNodes = element.getChildNodes();
+		
+		for (int i=0; i< childNodes.getLength(); i++)
+		{
+			Node node = childNodes.getItem(i);
+			result.add(0,node);
+		}
+
+		for (Node node : result)
+		{
+			if (node.getParentNode() != null)
+			{
+				node.getParentNode().removeChild(node);
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param element
+	 * @param acceptsNoChild
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	protected static List<Element> ensureChildrenSpans(Element element, boolean acceptsNoChild) throws InterfaceConfigException
+	{
+		return new ArrayList<Element>();
+	}
 	
 }
