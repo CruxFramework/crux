@@ -31,6 +31,7 @@ import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import br.com.sysmap.crux.core.server.CruxFilter;
 import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
 import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
+import br.com.sysmap.crux.tools.htmltags.util.StreamUtils;
 
 /**
  * Intercept requests to .html pages and redirect to the correspondent .crux.xml file. Then transform this xml  
@@ -69,7 +70,7 @@ public class HtmlTagsFilter extends CruxFilter
 					InputStream screenResource = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(screenId);
 					if (screenResource != null)
 					{
-						CruxToHtmlTransformer.generateHTML(screenResource, resp.getOutputStream());
+						StreamUtils.write(screenResource, resp.getOutputStream(), false);
 						return;
 					}
 					else

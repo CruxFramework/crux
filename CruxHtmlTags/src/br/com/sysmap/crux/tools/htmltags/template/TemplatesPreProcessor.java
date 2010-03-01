@@ -85,7 +85,7 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 		});
 		try
 		{
-			findTemplatesExpression = findPath.compile("//*[contains(namespace-uri(), 'http://www.sysmap.com.br/templates/')]");
+			findTemplatesExpression = findPath.compile(".//*[contains(namespace-uri(), 'http://www.sysmap.com.br/templates/')]");
 			findScreensExpression = findPath.compile("//c:screen");
 		}
 		catch (XPathExpressionException e)
@@ -178,30 +178,26 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 	 */
 	private Document preprocess(Document doc, Set<String> controllers, Set<String> dataSources, Set<String> formatters, Set<String> serializables)
 	{
+		preprocess(doc.getDocumentElement(), controllers, dataSources, formatters, serializables, false);
+		return doc;
+	}
+
+	/**
+	 * 
+	 * @param doc
+	 * @return
+	 */
+	private void preprocess(Element root, Set<String> controllers, Set<String> dataSources, Set<String> formatters, Set<String> serializables, boolean allowInnerSections)
+	{
 		try
 		{
-			NodeList nodes = (NodeList)findTemplatesExpression.evaluate(doc, XPathConstants.NODESET);
+			NodeList nodes = (NodeList)findTemplatesExpression.evaluate(root, XPathConstants.NODESET);
 			for (int i = 0; i < nodes.getLength(); i++)
 			{
 				Element element = (Element)nodes.item(i);
-				if (!isAnInnerSection(element))
+				if (isAttached(element) && (allowInnerSections || !isAnInnerSection(element)))
 				{
-					String library = element.getNamespaceURI();
-					library = library.substring(library.lastIndexOf('/')+1);
-					Document template = Templates.getTemplate(library, element.getLocalName(), true);
-					if (template == null)
-					{
-						throw new TemplateException(messages.templatesPreProcessorTemplateNotFound(library, element.getLocalName()));
-					}
-					template = preprocess(template, controllers, dataSources, formatters, serializables);
-					
-					updateTemplateAttributes(element, template);
-					updateTemplateChildren(element, template);
-
-					Element templateElement = (Element) doc.importNode(template.getDocumentElement(), true);
-					extractScreenPropertiesFromElement(templateElement, controllers, dataSources, formatters, serializables);										
-					
-					replaceByChildren(element, templateElement);
+					preprocessTemplate(element, controllers, dataSources, formatters, serializables);
 				}
 			}
 		}
@@ -211,7 +207,60 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 			throw new TemplateException(e.getLocalizedMessage(), e);
 		}
 		
-		return doc;
+	}
+
+	
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	private boolean isAttached(Node element)
+	{
+		boolean attached = false;
+		
+		while (element.getParentNode() != null)
+		{
+			if (element.equals(element.getOwnerDocument().getDocumentElement()))
+			{
+				attached = true;
+				break;
+			}
+			element = element.getParentNode();
+		}
+		
+		return attached;
+	}
+
+	/**
+	 * 
+	 * @param doc
+	 * @param controllers
+	 * @param dataSources
+	 * @param formatters
+	 * @param serializables
+	 * @param element
+	 */
+	private void preprocessTemplate(Element element, Set<String> controllers, Set<String> dataSources, 
+			                Set<String> formatters, Set<String> serializables)
+	{
+		Document doc = element.getOwnerDocument();
+		String library = element.getNamespaceURI();
+		library = library.substring(library.lastIndexOf('/')+1);
+		Document template = Templates.getTemplate(library, element.getLocalName(), true);
+		if (template == null)
+		{
+			throw new TemplateException(messages.templatesPreProcessorTemplateNotFound(library, element.getLocalName()));
+		}
+		template = preprocess(template, controllers, dataSources, formatters, serializables);
+
+		updateTemplateAttributes(element, template);
+		updateTemplateChildren(element, template, controllers, dataSources, formatters, serializables);
+
+		Element templateElement = (Element) doc.importNode(template.getDocumentElement(), true);
+		extractScreenPropertiesFromElement(templateElement, controllers, dataSources, formatters, serializables);										
+
+		replaceByChildren(element, templateElement);
 	}
 
 	/**
@@ -296,7 +345,7 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 		{
 			Element documentElement = element.getOwnerDocument().getDocumentElement();
 			element = (Element) element.getParentNode();
-			while (!element.equals(documentElement))
+			while (element != null && !element.equals(documentElement))
 			{
 				if (namespace.equals(element.getNamespaceURI()))
 				{
@@ -335,7 +384,7 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 	 * @param element
 	 * @param template
 	 */
-	private void updateTemplateChildren(Element element, Document template)
+	private void updateTemplateChildren(Element element, Document template, Set<String> controllers, Set<String> dataSources, Set<String> formatters, Set<String> serializables)
 	{
 		Map<String, Node> sections = templateParser.getSectionElements(template);
 		List<Node> children = getChildren(element);
@@ -346,6 +395,9 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 			{
 				String sectionName = section.getLocalName();
 				Node templateNode = sections.get(sectionName);
+				
+				preprocess((Element)section, controllers, dataSources, formatters, serializables, true);
+				
 				section = template.importNode(section, true);
 				replaceByChildren(templateNode, section);
 			}
