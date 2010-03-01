@@ -30,6 +30,7 @@ import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import br.com.sysmap.crux.module.CruxModuleBridge;
 import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
+import br.com.sysmap.crux.tools.htmltags.util.StreamUtils;
 
 /**
  * Used to locate the resources inside the modules structure. Used only for development. When this filter is used, you need 
@@ -72,7 +73,7 @@ public class ModulesHtmlTagsFilter extends ModulesFilter
 					InputStream screenResource = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(screenId);
 					if (screenResource != null)
 					{
-						CruxToHtmlTransformer.generateHTML(screenResource, resp.getOutputStream());
+						StreamUtils.write(screenResource, resp.getOutputStream(), false);
 						return;
 					}
 					else
