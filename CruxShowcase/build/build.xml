@@ -62,7 +62,7 @@
 			-->
 		</copydir>
 
-		<cruxcompile webinfclassesdir="${target.classes.dir}">
+		<cruxcompile srcDir="${src.dir}">
 			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputdir="${temp.dir}/webroot" />
 			<fileset dir="${temp.dir}/webroot">
 				<include name="**/*.crux.xml" />
@@ -71,7 +71,6 @@
 				<path refid="build.classpath" />
 				<pathelement path="${target.classes.dir}" />
 				<pathelement path="${web.root}" />
-				<pathelement location="${src.dir}" />
 			</classpath>
 
 			<!-- change these two parameters if you need to modify memory settings -->
@@ -108,7 +107,7 @@
 	</target>
 
 	<target name="compile-scripts">
-		<cruxcompile webinfclassesdir="${target.classes.dir}">
+		<cruxcompile srcDir="${src.dir}">
 			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputdir="${web.root}" />
 			<fileset dir="${web.root}">
 				<include name="**/*.crux.xml" />
@@ -117,7 +116,6 @@
 				<path refid="build.classpath" />
 				<pathelement path="${target.classes.dir}" />
 				<pathelement path="${web.root}" />
-				<pathelement location="${src.dir}" />
 			</classpath>
 
 			<!-- change these two parameters if you need to modify memory settings -->
