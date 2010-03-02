@@ -106,6 +106,16 @@ public class Screen
 		return widgets.get(id);
 	}
 	
+	
+	/**
+	 * @param id
+	 * @return
+	 */
+	protected boolean containsWidget(String id)
+	{
+		return widgets.containsKey(id);
+	}
+	
 	/**
 	 * Generic version of <code>getWidget</code> method
 	 * @param <T>
@@ -472,6 +482,15 @@ public class Screen
 	public static Screen get()
 	{
 		return ScreenFactory.getInstance().getScreen();
+	}
+	
+	/**
+	 * @param id
+	 * @return
+	 */
+	public static boolean contains(String id)
+	{
+		return Screen.get().containsWidget(id);
 	}
 	
 	/**

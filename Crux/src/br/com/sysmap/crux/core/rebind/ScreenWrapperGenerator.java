@@ -36,10 +36,14 @@ public class ScreenWrapperGenerator extends AbstractInterfaceWrapperGenerator
 			String widgetName = name.substring(3);
 			if (widgetName.length() > 0)
 			{
-				widgetName = Character.toLowerCase(widgetName.charAt(0)) + widgetName.substring(1);
+				String widgetNameFirstLower = Character.toLowerCase(widgetName.charAt(0)) + widgetName.substring(1);
 				String classSourceName = getClassSourceName(returnType);
 				sourceWriter.println("public "+classSourceName+" " + name+"(){");
+				sourceWriter.println("if (Screen.contains(\""+widgetNameFirstLower+"\")){");
+				sourceWriter.println("return Screen.get(\""+widgetNameFirstLower+"\", "+classSourceName+".class);");
+				sourceWriter.println("}else{");
 				sourceWriter.println("return Screen.get(\""+widgetName+"\", "+classSourceName+".class);");
+				sourceWriter.println("}");
 				sourceWriter.println("}");
 			}
 		}
