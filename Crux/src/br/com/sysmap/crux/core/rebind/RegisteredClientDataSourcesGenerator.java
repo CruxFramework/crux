@@ -41,6 +41,7 @@ import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
+import br.com.sysmap.crux.core.utils.ClassUtils;
 import br.com.sysmap.crux.core.utils.GenericUtils;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
@@ -288,7 +289,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 				for (String name:  columnsData.names)
 				{
 					sourceWriter.println("ret[i].addValue("+
-							getFieldValueGet(logger, dataType, dataType.getDeclaredField(name),	"data[i]", false)+
+							getFieldValueGet(logger, dataType, ClassUtils.getDeclaredField(dataType, name),	"data[i]", false)+
 							");");
 				}
 				
@@ -329,7 +330,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			{
 				String name = columnsData.names[i];
 				Class<?> type = (columnsData.types.length > 0? columnsData.types[i]:String.class);
-				Field field = dataType.getDeclaredField(name);
+				Field field = ClassUtils.getDeclaredField(dataType, name);
 				generateFieldValueSet(logger, dataType, field, "ret", 
 									"("+getParameterDeclaration(type)+")record.get("+i+")", 
 									sourceWriter, false);
@@ -360,7 +361,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 
 		for (int i = 0; i < identifier.length; i++)
 		{
-			result.append("+"+getFieldValueGet(logger, dataType, dataType.getDeclaredField(identifier[i]), parentVariable, false));
+			result.append("+"+getFieldValueGet(logger, dataType, ClassUtils.getDeclaredField(dataType, identifier[i]), parentVariable, false));
 		}
 		return result.toString();
 	}
@@ -491,7 +492,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			excludeFields = new String[0];
 		}
 		
-		Field[] declaredFields = dtoType.getDeclaredFields();
+		Field[] declaredFields = ClassUtils.getDeclaredFields(dtoType);
 		
 		for (Field field : declaredFields)
 		{

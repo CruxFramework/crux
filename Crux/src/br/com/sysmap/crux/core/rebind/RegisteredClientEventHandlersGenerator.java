@@ -27,6 +27,7 @@ import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
+import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.client.controller.Validate;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
@@ -94,6 +95,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		}
 
 		generateConstructor(sourceWriter, implClassName, handlerClassNames);
+		generateValidateControllerMethod(sourceWriter);
 		generateEventHandlerInvokeMethod(sourceWriter, handlerClassNames);
 		
 		sourceWriter.outdent();
@@ -102,6 +104,27 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		context.commit(logger, printWriter);
 	}
 
+	/**
+	 * @param sourceWriter
+	 */
+	private void generateValidateControllerMethod(SourceWriter sourceWriter)
+	{
+		sourceWriter.println("public boolean __validateController(String controllerId){");
+		sourceWriter.println("String[] controllers = Screen.getControllers();");
+		sourceWriter.println("for (String c: controllers){");
+		sourceWriter.println("if (c.equals(controllerId)){");
+		sourceWriter.println("return true;");
+		sourceWriter.println("}");
+		sourceWriter.println("}");
+		sourceWriter.println("return false;");
+		sourceWriter.println("}");
+	}
+	
+	/**
+	 * @param sourceWriter
+	 * @param implClassName
+	 * @param handlerClassNames
+	 */
 	private void generateConstructor(SourceWriter sourceWriter, String implClassName, Map<String, String> handlerClassNames)
 	{
 		
@@ -112,13 +135,16 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 			Controller controllerAnnot = handlerClass.getAnnotation(Controller.class);
 			if (controllerAnnot != null && !controllerAnnot.lazy())
 			{
+				Global globalAnnot = handlerClass.getAnnotation(Global.class);
+				if (globalAnnot == null)
+				{
+					sourceWriter.println("if (__validateController(\""+handler+"\"))");
+				}
 				sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
 			}
 		}
 		sourceWriter.println("}");
 	}
-
-	
 	
 	/**
 	 * 
@@ -180,6 +206,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 				sourceWriter.println("}");
 			}
 		}
+		//TODO - Thiago - aparentemente, se o controller nao existir, nao notifica mais isso pro usuario.... não lançar exceção... apenas logar no console
 		
 		sourceWriter.println("}");
 	}

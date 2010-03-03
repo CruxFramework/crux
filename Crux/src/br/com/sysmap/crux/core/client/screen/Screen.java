@@ -70,6 +70,10 @@ public class Screen
 	protected HandlerManager handlerManager;
 	protected ModuleComunicationSerializer serializer = null;
 	protected ScreenBlocker screenBlocker = GWT.create(ScreenBlocker.class);
+	protected String[] declaredControllers;
+	protected String[] declaredDataSources;
+	protected String[] declaredFormatters;
+	protected String[] declaredSerializables;
 	
 	protected Screen(String id) 
 	{
@@ -77,13 +81,58 @@ public class Screen
 		this.handlerManager = new HandlerManager(this);
 		this.serializer = new ModuleComunicationSerializer();
 		createControllerAccessor(this);
+		this.addWindowCloseHandler(new CloseHandler<Window>()
+		{
+			public void onClose(CloseEvent<Window> event)
+			{
+				removeControllerAccessor(Screen.this);
+			}
+		});
 	}
 	
+	/**
+	 * @return
+	 */
+	protected String[] getDeclaredControllers()
+	{
+		return declaredControllers;
+	}
+
+	/**
+	 * @return
+	 */
+	protected String[] getDeclaredDataSources()
+	{
+		return declaredDataSources;
+	}
+
+	/**
+	 * @return
+	 */
+	protected String[] getDeclaredFormatters()
+	{
+		return declaredFormatters;
+	}
+
+	/**
+	 * @return
+	 */
+	protected String[] getDeclaredSerializables()
+	{
+		return declaredSerializables;
+	}
+
+	/**
+	 * @return
+	 */
 	protected String getIdentifier() 
 	{
 		return id;
 	}
 	
+	/**
+	 * 
+	 */
 	protected void prepareHistoryFrame() 
 	{
 		Element body = RootPanel.getBodyElement();
@@ -101,6 +150,10 @@ public class Screen
 		}
 	}
 
+	/**
+	 * @param id
+	 * @return
+	 */
 	protected Widget getWidget(String id)
 	{
 		return widgets.get(id);
@@ -308,6 +361,11 @@ public class Screen
 			Window.setTitle(ScreenFactory.getInstance().getDeclaredMessage(title));
 		}
 
+		this.declaredControllers = extractReferencedResourceList(element, "_useController");
+		this.declaredDataSources = extractReferencedResourceList(element, "_useDataSource");
+		this.declaredSerializables = extractReferencedResourceList(element, "_useSerializable");
+		this.declaredFormatters = extractReferencedResourceList(element, "_useFormatter");
+		
 		final Event eventHistory = Events.getEvent("onHistoryChanged", element.getAttribute("_onHistoryChanged"));
 		if (eventHistory != null)
 		{
@@ -361,6 +419,26 @@ public class Screen
 				}
 			});
 		}
+	}
+
+	/**
+	 * @param element
+	 * @param attributeName
+	 * @return
+	 */
+	private String[] extractReferencedResourceList(Element element, String attributeName)
+	{
+		String attr = element.getAttribute(attributeName);
+		if (!StringUtils.isEmpty(attr))
+		{
+			String[] result = attr.split(",");
+			for (int i = 0; i < result.length; i++)
+			{
+				result[i] = result[i].trim();
+			}
+			return result;
+		}
+		return new String[0];
 	}
 
 	/**
@@ -444,6 +522,10 @@ public class Screen
 		};
 	}-*/;
 
+	private native void removeControllerAccessor(Screen handler)/*-{
+		$wnd._cruxScreenControllerAccessor = null;
+	}-*/;
+	
 	@SuppressWarnings("unused") // called by native code
 	private String invokeController(String call, String serializedData)
 	{
@@ -953,6 +1035,38 @@ public class Screen
 		return url;
 	}
 	
+	/**
+	 * @return
+	 */
+	public static String[] getControllers()
+	{
+		return Screen.get().getDeclaredControllers();
+	}
+	
+	/**
+	 * @return
+	 */
+	public static String[] getDataSources()
+	{
+		return Screen.get().getDeclaredDataSources();
+	}
+	
+	/**
+	 * @return
+	 */
+	public static String[] getFormatters()
+	{
+		return Screen.get().getDeclaredFormatters();
+	}
+	
+	/**
+	 * @return
+	 */
+	public static String[] getSerializables()
+	{
+		return Screen.get().getDeclaredSerializables();
+	}
+
 	/**
 	 * @param call
 	 * @param serializedData

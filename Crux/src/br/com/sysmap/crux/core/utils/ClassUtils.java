@@ -15,8 +15,11 @@
  */
 package br.com.sysmap.crux.core.utils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashSet;
+import java.util.Set;
 
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
@@ -276,6 +279,61 @@ public class ClassUtils
 		}
 	}
 
+	/**
+	 * @param clazz
+	 * @param name
+	 * @return
+	 */
+	public static Field getDeclaredField(Class<?> clazz, String name) throws NoSuchFieldException
+	{
+		try
+		{
+			return clazz.getDeclaredField(name);
+		}
+		catch (NoSuchFieldException e)
+		{
+			if (clazz.equals(Object.class))
+			{
+				throw new NoSuchFieldException(name);
+			}
+			return getDeclaredField(clazz.getSuperclass(), name);
+		}
+	}
+	
+	/**
+	 * @param clazz
+	 * @return
+	 */
+	public static Field[] getDeclaredFields(Class<?> clazz)
+	{
+		if (clazz.equals(Object.class))
+		{
+			return new Field[0];
+		}
+		Set<Field> result = new HashSet<Field>();
+		Field[] declaredFields = clazz.getDeclaredFields();
+		for (Field field : declaredFields)
+		{
+			result.add(field);
+		}
+		clazz = clazz.getSuperclass();
+		while (!clazz.equals(Object.class))
+		{
+			declaredFields = clazz.getDeclaredFields();
+			for (Field field : declaredFields)
+			{
+				if (!result.contains(field))
+				{
+					result.add(field);
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+		
+		return result.toArray(new Field[result.size()]);
+	}
+	
+	
 	/**
 	 * 
 	 * @param clazz
