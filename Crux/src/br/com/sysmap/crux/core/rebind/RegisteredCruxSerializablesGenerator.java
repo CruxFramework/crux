@@ -106,20 +106,20 @@ public class RegisteredCruxSerializablesGenerator extends AbstractRegisteredElem
 
 	private void generateDefaultSerializersBlock(SourceWriter sourceWriter)
 	{
-		sourceWriter.print("serializers.put(\"java.lang.Boolean\", new " + BooleanSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.Byte\", new " + ByteSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.Character\", new " + CharacterSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.util.Date\", new " + DateSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.Double\", new " + DoubleSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.Float\", new " + FloatSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.Integer\", new " + IntegerSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.Long\", new " + LongSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.Short\", new " + ShortSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.sql.Date\", new " + SQLDateSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.StringBuffer\", new " + StringBufferSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.StringBuilder\", new " + StringBuilderSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.String\", new " + StringSerializer.class.getName() + "());");
-		sourceWriter.print("serializers.put(\"java.lang.Timestamp\", new " + TimestampSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.Boolean\", new " + BooleanSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.Byte\", new " + ByteSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.Character\", new " + CharacterSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.util.Date\", new " + DateSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.Double\", new " + DoubleSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.Float\", new " + FloatSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.Integer\", new " + IntegerSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.Long\", new " + LongSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.Short\", new " + ShortSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.sql.Date\", new " + SQLDateSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.StringBuffer\", new " + StringBufferSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.StringBuilder\", new " + StringBuilderSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.String\", new " + StringSerializer.class.getName() + "());");
+		sourceWriter.println("serializers.put(\"java.lang.Timestamp\", new " + TimestampSerializer.class.getName() + "());");
 	} 
 		
 	protected void generateSerialisersBlock(TreeLogger logger, SourceWriter sourceWriter, String serializer, Map<String, Boolean> added)
@@ -129,7 +129,7 @@ public class RegisteredCruxSerializablesGenerator extends AbstractRegisteredElem
 			if (!added.containsKey(serializer) && Serializers.getCruxSerializable(serializer)!= null)
 			{
 				Class<?> serializerClass = Serializers.getCruxSerializable(serializer);
-				sourceWriter.print("serializers.put(\""+serializerClass.getName()+"\", new " + getClassSourceName(serializerClass) + "());");
+				sourceWriter.println("serializers.put(\""+serializerClass.getName()+"\", new " + getClassSourceName(serializerClass) + "());");
 				added.put(serializer, true);
 			}
 		}

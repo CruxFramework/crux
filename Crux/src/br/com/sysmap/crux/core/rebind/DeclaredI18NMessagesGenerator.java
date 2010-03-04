@@ -17,9 +17,11 @@ package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import br.com.sysmap.crux.core.i18n.MessageClasses;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
@@ -37,6 +39,9 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public class DeclaredI18NMessagesGenerator extends AbstractRegisteredElementsGenerator
 {
+	/**
+	 * @see br.com.sysmap.crux.core.rebind.AbstractRegisteredElementsGenerator#generateClass(com.google.gwt.core.ext.TreeLogger, com.google.gwt.core.ext.GeneratorContext, com.google.gwt.core.ext.typeinfo.JClassType, java.util.List)
+	 */
 	@Override
 	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens)
 	{
@@ -71,12 +76,17 @@ public class DeclaredI18NMessagesGenerator extends AbstractRegisteredElementsGen
 		context.commit(logger, printWriter);
 	}
 
+	/**
+	 * @param logger
+	 * @param sourceWriter
+	 * @param screens
+	 * @param implClassName
+	 */
 	protected void generateConstructor(TreeLogger logger, SourceWriter sourceWriter, List<Screen> screens, String implClassName) 
 	{
 		sourceWriter.println("public "+implClassName+"(){ ");
 		
-		sourceWriter.println("String msg;");
-		Map<String, Boolean> added = new HashMap<String, Boolean>();
+		Map<String, Set<String>> declaredMessages = new HashMap<String, Set<String>>();
 
 		for (Screen screen : screens)
 		{
@@ -84,52 +94,94 @@ public class DeclaredI18NMessagesGenerator extends AbstractRegisteredElementsGen
 			while (iterator.hasNext())
 			{
 				Widget widget = iterator.next();
-				generateGetMessageBlock(logger, sourceWriter, widget, added);
+				getMessageBlock(logger, widget, declaredMessages);
 			}
-			generateGetMessageBlockForProperty(logger, sourceWriter, added, screen.getTitle());
+			getMessageBlockForProperty(logger, declaredMessages, screen.getTitle());
 		}
+		generateMessagesBlockPopulation(logger, sourceWriter, declaredMessages);
+		
 		sourceWriter.println("}");
 	} 
+
+	/**
+	 * @param logger
+	 * @param sourceWriter
+	 * @param declaredMessages
+	 */
+	protected void generateMessagesBlockPopulation(TreeLogger logger, SourceWriter sourceWriter, Map<String, Set<String>> declaredMessages)
+	{
+		for (String classSourceName : declaredMessages.keySet())
+		{
+			String varName = classSourceName.replace('.', '$');
+			sourceWriter.println(classSourceName+" "+varName+"=GWT.create("+classSourceName+".class);" );
+
+			Set<String> messages = declaredMessages.get(classSourceName);
+			for (String text : messages)
+			{
+				String[] messageParts = getKeyMessageParts(text);
+				sourceWriter.println("messages.put(\"${"+messageParts[0]+"."+messageParts[1]+"}\", "+varName+"."+messageParts[1]+"());");
+			}
+		}
+	}
 	
-	protected void generateGetMessageBlock(TreeLogger logger, SourceWriter sourceWriter, Widget widget, Map<String, Boolean> added)
+	/**
+	 * @param logger
+	 * @param widget
+	 * @param declaredMessages
+	 */
+	protected void getMessageBlock(TreeLogger logger, Widget widget, Map<String, Set<String>> declaredMessages)
 	{
 		Iterator<String> iterator = widget.iterateProperties();
 		while (iterator.hasNext())
 		{
 			String property = (String) iterator.next();
-			generateGetMessageBlockForProperty(logger, sourceWriter, added, property);
+			getMessageBlockForProperty(logger, declaredMessages, property);
 		}
 	}
 
-	protected void generateGetMessageBlockForProperty(TreeLogger logger, SourceWriter sourceWriter, Map<String, Boolean> added, String text)
+	/**
+	 * @param logger
+	 * @param declaredMessages
+	 * @param text
+	 */
+	protected void getMessageBlockForProperty(TreeLogger logger, Map<String, Set<String>> declaredMessages, String text)
 	{
 		if (text != null && isKeyReference(text))
 		{
 			String[] messageParts = getKeyMessageParts(text);
 
-			if (!added.containsKey(text))
+			Class<?> messagesClass = MessageClasses.getMessageClass(messageParts[0]);
+			if (messagesClass == null)
 			{
-				Class<?> messagesClass = MessageClasses.getMessageClass(messageParts[0]);
-				if (messagesClass == null)
+				logger.log(TreeLogger.ERROR, messages.errorGeneratingDeclaredMessagesClassNotFound(messageParts[0]));
+			}
+			else
+			{
+				String classSourceName = getClassSourceName(messagesClass);
+
+				if (!declaredMessages.containsKey(classSourceName))
 				{
-					logger.log(TreeLogger.ERROR, messages.errorGeneratingDeclaredMessagesClassNotFound(messageParts[0]));
+					declaredMessages.put(classSourceName, new HashSet<String>());
 				}
-				else
-				{
-					String classSourceName = getClassSourceName(messagesClass);
-					sourceWriter.println("msg = (("+classSourceName+")GWT.create("+classSourceName+".class))."+messageParts[1]+"();");
-					sourceWriter.println("messages.put(\""+text+"\", msg);");
-				}
-				added.put(text, true);
+				Set<String> messages = declaredMessages.get(classSourceName);
+				messages.add(text);
 			}
 		}
 	}
 
+	/**
+	 * @param text
+	 * @return
+	 */
 	protected boolean isKeyReference(String text)
 	{
 		return text.matches("\\$\\{\\w+\\.\\w+\\}");
 	}
 	
+	/**
+	 * @param text
+	 * @return
+	 */
 	protected String[] getKeyMessageParts(String text)
 	{
 		text = text.substring(2, text.length()-1);

@@ -108,7 +108,7 @@ public class RegisteredClientFormattersGenerator extends AbstractRegisteredEleme
 			if (!added.containsKey(formatter) && Formatters.getFormatter(formatterName)!= null)
 			{
 				Class<?> formatterClass = Formatters.getFormatter(formatterName);
-				sourceWriter.print("clientFormatters.put(\""+formatter+"\", new " + getClassSourceName(formatterClass) + "("+parameters.toString()+"));");
+				sourceWriter.println("clientFormatters.put(\""+formatter+"\", new " + getClassSourceName(formatterClass) + "("+parameters.toString()+"));");
 				added.put(formatter, true);
 			}
 		}
