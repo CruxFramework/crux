@@ -31,26 +31,9 @@ import com.google.gwt.user.client.Cookies;
 public class CookieContextHandler implements ContextHandler
 {
 	private static final String CONTEXT_PREFIX = "__cruxContext";
-	private Date expires = new Date(2240532000000L); 
+	private static final Date expires = new Date(2240532000000L);
+	private static final Date expired = new Date(10L);
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public Date getExpires()
-	{
-		return expires;
-	}
-
-	/**
-	 * 
-	 * @param expires
-	 */
-	public void setExpires(Date expires)
-	{
-		this.expires = expires;
-	}
-
 	/**
 	 * 
 	 */
@@ -65,16 +48,22 @@ public class CookieContextHandler implements ContextHandler
 	public Object readData(String key)
 	{
 		String value = Cookies.getCookie(CONTEXT_PREFIX+key);
-		try
+		
+		if(value != null && value.length() > 0)
 		{
-			value = decode(value);
-			return Screen.getCruxSerializer().deserialize(value);
+			try
+			{
+				value = decode(value);
+				return Screen.getCruxSerializer().deserialize(value);
+			}
+			catch (ModuleComunicationException e)
+			{
+				Crux.getErrorHandler().handleError(e);
+				return null;
+			}
 		}
-		catch (ModuleComunicationException e)
-		{
-			Crux.getErrorHandler().handleError(e);
-			return null;
-		}
+		
+		return null;
 	}
 
 	private native String decode(String value)/*-{
@@ -107,7 +96,7 @@ public class CookieContextHandler implements ContextHandler
 	 */
 	public void eraseData(String key)
 	{
-		Cookies.removeCookie(CONTEXT_PREFIX+key);
+		Cookies.setCookie(CONTEXT_PREFIX+key, "", expired, null, "/", false);
 	}
 
 	/**
@@ -120,7 +109,7 @@ public class CookieContextHandler implements ContextHandler
 		{
 			if (cookie.startsWith(CONTEXT_PREFIX))
 			{
-				Cookies.removeCookie(cookie);
+				Cookies.setCookie(cookie, "", expired, null, "/", false);
 			}
 		}
 	}
