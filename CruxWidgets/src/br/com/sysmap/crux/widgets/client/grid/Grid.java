@@ -1,4 +1,4 @@
-package br.com.sysmap.crux.widgets.client.grid.impl;
+package br.com.sysmap.crux.widgets.client.grid;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,11 +28,6 @@ import br.com.sysmap.crux.widgets.client.event.row.HasBeforeRowSelectHandlers;
 import br.com.sysmap.crux.widgets.client.event.row.RowClickEvent;
 import br.com.sysmap.crux.widgets.client.event.row.RowDoubleClickEvent;
 import br.com.sysmap.crux.widgets.client.event.row.RowRenderEvent;
-import br.com.sysmap.crux.widgets.client.grid.model.AbstractGrid;
-import br.com.sysmap.crux.widgets.client.grid.model.Cell;
-import br.com.sysmap.crux.widgets.client.grid.model.ColumnDefinition;
-import br.com.sysmap.crux.widgets.client.grid.model.ColumnDefinitions;
-import br.com.sysmap.crux.widgets.client.grid.model.RowSelectionModel;
 import br.com.sysmap.crux.widgets.client.paging.Pageable;
 import br.com.sysmap.crux.widgets.client.paging.Pager;
 

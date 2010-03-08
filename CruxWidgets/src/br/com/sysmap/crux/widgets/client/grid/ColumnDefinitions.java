@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.widgets.client.grid.model;
+package br.com.sysmap.crux.widgets.client.grid;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.widgets.client.WidgetMessages;
-import br.com.sysmap.crux.widgets.client.grid.impl.Grid;
 
 import com.google.gwt.core.client.GWT;
 
@@ -37,7 +36,7 @@ public class ColumnDefinitions
 	private Map<String, Integer> actualColumnIndexes = new HashMap<String, Integer>();
 	private int visibleColumnCount = -1;
 	
-	public void setGrid(Grid grid)//TODO visibilidade package
+	void setGrid(Grid grid)
 	{
 		for (ColumnDefinition columnDefinition : definitionsInOrder)
 		{

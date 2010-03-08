@@ -1,12 +1,9 @@
-package br.com.sysmap.crux.widgets.client.grid.impl;
+package br.com.sysmap.crux.widgets.client.grid;
 
 import br.com.sysmap.crux.core.client.datasource.BindableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
 import br.com.sysmap.crux.widgets.client.WidgetMessages;
-import br.com.sysmap.crux.widgets.client.grid.model.AbstractGrid;
-import br.com.sysmap.crux.widgets.client.grid.model.Cell;
-import br.com.sysmap.crux.widgets.client.grid.model.Row;
 
 import com.google.gwt.dom.client.Element;
 

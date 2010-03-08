@@ -1,4 +1,4 @@
-package br.com.sysmap.crux.widgets.client.grid.model;
+package br.com.sysmap.crux.widgets.client.grid;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;

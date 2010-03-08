@@ -1,4 +1,4 @@
-package br.com.sysmap.crux.widgets.client.grid.impl;
+package br.com.sysmap.crux.widgets.client.grid;
 
 public class GridException extends RuntimeException
 {

@@ -1,7 +1,6 @@
-package br.com.sysmap.crux.widgets.client.grid.model;
+package br.com.sysmap.crux.widgets.client.grid;
 
 import br.com.sysmap.crux.core.client.utils.ObjectUtils;
-import br.com.sysmap.crux.widgets.client.grid.impl.Grid;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;

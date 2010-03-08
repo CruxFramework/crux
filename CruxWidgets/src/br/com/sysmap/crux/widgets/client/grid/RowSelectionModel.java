@@ -1,4 +1,4 @@
-package br.com.sysmap.crux.widgets.client.grid.model;
+package br.com.sysmap.crux.widgets.client.grid;
  
 public enum RowSelectionModel
 {

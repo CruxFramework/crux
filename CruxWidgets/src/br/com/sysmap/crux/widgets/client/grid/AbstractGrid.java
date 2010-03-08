@@ -1,4 +1,4 @@
-package br.com.sysmap.crux.widgets.client.grid.model;
+package br.com.sysmap.crux.widgets.client.grid;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -14,8 +14,8 @@
     	</any>
     </replace-with>
     <replace-with
-    	class="br.com.sysmap.crux.labs.client.widgets.grid.GridLayoutMozImpl">
-    	<when-type-is class="br.com.sysmap.crux.labs.client.widgets.grid.GridLayout" />
+    	class="br.com.sysmap.crux.widgets.client.grid.GridLayoutMozImpl">
+    	<when-type-is class="br.com.sysmap.crux.widgets.client.grid.GridLayout" />
 		<when-property-is name="user.agent" value="gecko1_8" />
     </replace-with>
     <generate-with class="br.com.sysmap.crux.widgets.rebind.PopupOpenerInvokerGenerator">

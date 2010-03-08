@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.widgets.client.grid.impl;
+package br.com.sysmap.crux.widgets.client.grid;
 
 import java.util.List;
 
@@ -38,9 +38,6 @@ import br.com.sysmap.crux.gwt.client.align.AlignmentAttributeParser;
 import br.com.sysmap.crux.gwt.client.align.HorizontalAlignment;
 import br.com.sysmap.crux.gwt.client.align.VerticalAlignment;
 import br.com.sysmap.crux.widgets.client.event.row.RowEventsBind;
-import br.com.sysmap.crux.widgets.client.grid.model.ColumnDefinition;
-import br.com.sysmap.crux.widgets.client.grid.model.ColumnDefinitions;
-import br.com.sysmap.crux.widgets.client.grid.model.RowSelectionModel;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;

@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.event.row;
 
-import br.com.sysmap.crux.widgets.client.grid.impl.DataRow;
+import br.com.sysmap.crux.widgets.client.grid.DataRow;
 
 import com.google.gwt.event.shared.GwtEvent;
 
