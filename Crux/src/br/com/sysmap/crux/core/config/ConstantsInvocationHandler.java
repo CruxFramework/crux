@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
-import br.com.sysmap.crux.core.i18n.DefaultMessage;
+import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
 import br.com.sysmap.crux.core.i18n.MessageException;
 
 /**
@@ -35,6 +35,7 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 	/**
 	 * 
 	 */
+	@SuppressWarnings("deprecation")
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 	{
 		String name = method.getName();
@@ -64,12 +65,22 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 		{
 			// if property does not contains method key, use default
 		}
-		DefaultMessage annot = method.getAnnotation(DefaultMessage.class);
-		if (annot != null)
+		DefaultServerMessage serverAnnot = method.getAnnotation(DefaultServerMessage.class);
+		if (serverAnnot != null)
 		{
-			String value = MessageFormat.format(annot.value(),args);
+			String value = MessageFormat.format(serverAnnot.value(),args);
 			resolvedConstants.put(name, value);
 			return value;
+		}
+		else
+		{
+			br.com.sysmap.crux.core.i18n.DefaultMessage annot = method.getAnnotation(br.com.sysmap.crux.core.i18n.DefaultMessage.class);
+			if (annot != null)
+			{
+				String value = MessageFormat.format(annot.value(),args);
+				resolvedConstants.put(name, value);
+				return value;
+			}
 		}
 		return null;
 	}

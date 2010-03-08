@@ -26,8 +26,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Deprecated
-public @interface DefaultMessage 
+public @interface DefaultServerMessage 
 {
 	String value();
 }

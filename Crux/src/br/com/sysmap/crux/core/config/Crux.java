@@ -15,35 +15,35 @@
  */
 package br.com.sysmap.crux.core.config;
 
-import br.com.sysmap.crux.core.i18n.DefaultMessage;
+import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
 
 public interface Crux 
 {
-	@DefaultMessage("br.com.sysmap.crux.core.server.dispatch.ServiceFactoryImpl")
+	@DefaultServerMessage("br.com.sysmap.crux.core.server.dispatch.ServiceFactoryImpl")
 	String serviceFactory();
 	
-	@DefaultMessage("br.com.sysmap.crux.core.i18n.LocaleResolverImpl")
+	@DefaultServerMessage("br.com.sysmap.crux.core.i18n.LocaleResolverImpl")
 	String localeResolver();
 
-	@DefaultMessage("")
+	@DefaultServerMessage("")
 	String screenResourceResolver();
 
-	@DefaultMessage("br.com.sysmap.crux.core.server.classpath.ClassPathResolverImpl")
+	@DefaultServerMessage("br.com.sysmap.crux.core.server.classpath.ClassPathResolverImpl")
 	String classPathResolver();
 	
-	@DefaultMessage("true")
+	@DefaultServerMessage("true")
 	String wrapSiblingWidgets();
 
-	@DefaultMessage("true")
+	@DefaultServerMessage("true")
 	String enableChildrenWindowsDebug();
 
-	@DefaultMessage("true")
+	@DefaultServerMessage("true")
 	String allowAutoBindWithNonDeclarativeWidgets();
 
-	@DefaultMessage("true")
+	@DefaultServerMessage("true")
 	String enableWebRootScannerCache();
 
-	@DefaultMessage("true")
+	@DefaultServerMessage("true")
 	String enableHotDeploymentForWebDirs();
 
 	void setEnableWebRootScannerCache(Boolean value);
