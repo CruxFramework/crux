@@ -25,8 +25,8 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 import com.google.gwt.user.client.Cookies;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- *
+ * Cookie based context handler
+ * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class CookieContextHandler implements ContextHandler
 {
@@ -35,7 +35,7 @@ public class CookieContextHandler implements ContextHandler
 	private static final Date expired = new Date(10L);
 	
 	/**
-	 * 
+	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#initializeContext()
 	 */
 	public void initializeContext()
 	{
@@ -43,7 +43,7 @@ public class CookieContextHandler implements ContextHandler
 	}
 
 	/**
-	 * 
+	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#readData(java.lang.String)
 	 */
 	public Object readData(String key)
 	{
@@ -66,16 +66,8 @@ public class CookieContextHandler implements ContextHandler
 		return null;
 	}
 
-	private native String decode(String value)/*-{
-		return decodeURIComponent(value);
-	}-*/;
-	
-	private native String encode(String value)/*-{
-		return encodeURIComponent(value);
-	}-*/;
-
 	/**
-	 * 
+	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#writeData(java.lang.String, java.lang.Object)
 	 */
 	public void writeData(String key, Object value)
 	{
@@ -91,8 +83,9 @@ public class CookieContextHandler implements ContextHandler
 		}
 	}
 
+
 	/**
-	 * 
+	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#eraseData(java.lang.String)
 	 */
 	public void eraseData(String key)
 	{
@@ -100,7 +93,7 @@ public class CookieContextHandler implements ContextHandler
 	}
 
 	/**
-	 * 
+	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#clearContext()
 	 */
 	public void clearContext()
 	{
@@ -113,4 +106,22 @@ public class CookieContextHandler implements ContextHandler
 			}
 		}
 	}
+	
+	/**
+	 * Decodes a cookie value after retrieving it
+	 * @param value
+	 * @return
+	 */
+	private native String decode(String value)/*-{
+		return decodeURIComponent(value);
+	}-*/;
+
+	/**
+	 * Encodes a cookie value before storing it
+	 * @param value
+	 * @return
+	 */
+	private native String encode(String value)/*-{
+		return encodeURIComponent(value);
+	}-*/;
 }
