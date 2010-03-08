@@ -489,7 +489,10 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			panel.add(columnLabelArrow);
 			
 			clickable.add(panel);
-			clickable.addClickHandler(createClickHandler());
+			if (this.grid.getDataSource() != null && this.grid.getDataSource().getMetadata().getColumn(columnDefinition.getKey()).isSortable())
+			{
+				clickable.addClickHandler(createClickHandler());
+			}
 			
 			initWidget(clickable);
 			
