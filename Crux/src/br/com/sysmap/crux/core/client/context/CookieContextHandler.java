@@ -25,8 +25,8 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 import com.google.gwt.user.client.Cookies;
 
 /**
- * Cookie based context handler
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code> *
  */
 public class CookieContextHandler implements ContextHandler
 {
