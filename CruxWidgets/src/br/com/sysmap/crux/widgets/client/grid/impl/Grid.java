@@ -80,6 +80,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling)
 	{
 		super(columnDefinitions, rowSelectionModel, cellSpacing, stretchColumns, highlightRowOnMouseOver);
+		getColumnDefinitions().setGrid(this);
 		this.emptyDataFilling = emptyDataFilling != null ? emptyDataFilling : " ";
 		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 		this.pageSize = pageSize;
@@ -656,5 +657,10 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	protected void fireRowDoubleClickEvent(DataRow row)
 	{
 		RowDoubleClickEvent.fire(this, row);
+	}
+
+	public boolean isLoaded()
+	{
+		return loaded;
 	}
 }

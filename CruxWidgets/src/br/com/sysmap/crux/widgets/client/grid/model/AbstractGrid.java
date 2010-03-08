@@ -56,7 +56,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	private Map<Widget, R> widgetsPerRow = new HashMap<Widget, R>();
 	private RowSelectionModel rowSelection;
 	private ScrollPanel scrollingArea;
-	private int visibleColumnCount = -1;
 	private boolean stretchColumns;
 	private boolean highlightRowOnMouseOver;
 	
@@ -203,6 +202,15 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	public void refresh()
 	{
 		render();
+	}
+	
+	/**
+	 * @param key
+	 * @return
+	 */
+	public ColumnDefinition getColumnDefinition(String key)
+	{
+		return this.definitions.getDefinition(key);
 	}
 	
 	/**
@@ -368,6 +376,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	protected void render()
 	{
+		this.definitions.reset();
 		int rowCount = getRowsToBeRendered() + 1;
 		
 		clearRendering();
@@ -428,7 +437,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	private void clearRendering()
 	{
 		int rowCount = getRowsToBeRendered() + 1;
-		table.resize(rowCount, getVisibleColumnCount() + (hasSelectionColumn() ? 1 : 0));
+		table.resize(rowCount, definitions.getVisibleColumnCount() + (hasSelectionColumn() ? 1 : 0));
 		this.rows = new ArrayList<R>();
 		this.widgetsPerRow = new HashMap<Widget, R>();
 		onClearRendering();
@@ -460,28 +469,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		cell.addStyleName("rowSelector");
 		
 		return cell;
-	}
-	
-	/**
-	 * Gets the number of columns that will be rendered
-	 * @return the visible column count
-	 */
-	private int getVisibleColumnCount()
-	{
-		if(this.visibleColumnCount == -1)
-		{
-			this.visibleColumnCount = 0;
-			
-			for (ColumnDefinition def : definitions.getDefinitions())
-			{
-				if(def.isVisible())
-				{
-					this.visibleColumnCount++;
-				}
-			}
-		}
-		
-		return this.visibleColumnCount ;		
 	}
 	
 	/**

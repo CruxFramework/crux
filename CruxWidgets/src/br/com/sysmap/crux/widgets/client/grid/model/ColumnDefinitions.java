@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.widgets.client.WidgetMessages;
+import br.com.sysmap.crux.widgets.client.grid.impl.Grid;
 
 import com.google.gwt.core.client.GWT;
 
@@ -34,6 +35,15 @@ public class ColumnDefinitions
 	private List<ColumnDefinition> definitionsInOrder = new ArrayList<ColumnDefinition>();
 	private Map<String, ColumnDefinition> definitionsByKey = new HashMap<String, ColumnDefinition>();
 	private Map<String, Integer> actualColumnIndexes = new HashMap<String, Integer>();
+	private int visibleColumnCount = -1;
+	
+	public void setGrid(Grid grid)//TODO visibilidade package
+	{
+		for (ColumnDefinition columnDefinition : definitionsInOrder)
+		{
+			columnDefinition.setGrid(grid);
+		}
+	}
 	
 	/**
 	 * Register a new column definition
@@ -98,6 +108,37 @@ public class ColumnDefinitions
 		{
 			return definitionsInOrder.indexOf(definitionsByKey.get(key));
 		}	
+	}
+	
+	/**
+	 * 
+	 */
+	void reset()
+	{
+		this.visibleColumnCount = -1;
+		this.actualColumnIndexes.clear();
+	}
+	
+	/**
+	 * Gets the number of columns that will be rendered
+	 * @return the visible column count
+	 */
+	int getVisibleColumnCount()
+	{
+		if(this.visibleColumnCount == -1)
+		{
+			this.visibleColumnCount = 0;
+			
+			for (ColumnDefinition def : definitionsInOrder)
+			{
+				if(def.isVisible())
+				{
+					this.visibleColumnCount++;
+				}
+			}
+		}
+		
+		return this.visibleColumnCount ;		
 	}
 	
 	/**
