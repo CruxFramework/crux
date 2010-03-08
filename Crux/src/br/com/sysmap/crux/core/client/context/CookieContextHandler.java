@@ -32,7 +32,6 @@ public class CookieContextHandler implements ContextHandler
 {
 	private static final String CONTEXT_PREFIX = "__cruxContext";
 	private static final Date expires = new Date(2240532000000L);
-	private static final Date expired = new Date(10L);
 	
 	/**
 	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#initializeContext()
@@ -89,7 +88,7 @@ public class CookieContextHandler implements ContextHandler
 	 */
 	public void eraseData(String key)
 	{
-		Cookies.setCookie(CONTEXT_PREFIX+key, "", expired, null, "/", false);
+		Cookies.removeCookie(CONTEXT_PREFIX + key,  "/");
 	}
 
 	/**
@@ -102,7 +101,7 @@ public class CookieContextHandler implements ContextHandler
 		{
 			if (cookie.startsWith(CONTEXT_PREFIX))
 			{
-				Cookies.setCookie(cookie, "", expired, null, "/", false);
+				Cookies.removeCookie(cookie,  "/");
 			}
 		}
 	}
