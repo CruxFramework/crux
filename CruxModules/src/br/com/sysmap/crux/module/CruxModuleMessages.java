@@ -15,7 +15,9 @@
  */
 package br.com.sysmap.crux.module;
 
-import br.com.sysmap.crux.core.i18n.DefaultMessage;
+import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
+
+
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -23,27 +25,27 @@ import br.com.sysmap.crux.core.i18n.DefaultMessage;
  */
 public interface CruxModuleMessages
 {
-	@DefaultMessage("[crux-modules 001] - No development module found. Define it using the 'developmentModule' properties on CruxModuleConfig.properties file.")
+	@DefaultServerMessage("[crux-modules 001] - No development module found. Define it using the 'developmentModule' properties on CruxModuleConfig.properties file.")
 	String developmentCruxModuleNotDefined();
 
-	@DefaultMessage("[crux-modules 002] - Error initializing the crux module handler.")
+	@DefaultServerMessage("[crux-modules 002] - Error initializing the crux module handler.")
 	String errorInitializingCruxModuleHandler();
 
-	@DefaultMessage("[crux-modules 003] - The page {0} is not transformed... Accessing directly.")
+	@DefaultServerMessage("[crux-modules 003] - The page {0} is not transformed... Accessing directly.")
 	String modulesFilterDoesNotTransformPage(String requestedScreen);
 
-	@DefaultMessage("[crux-modules 004] - Error searching for pages into module {0}.")
+	@DefaultServerMessage("[crux-modules 004] - Error searching for pages into module {0}.")
 	String errorSearchingForModulePages(String moduleName);
 
-	@DefaultMessage("[crux-modules 005] - Error registering current module {0}.")
+	@DefaultServerMessage("[crux-modules 005] - Error registering current module {0}.")
 	String moduleBridgeErrorRegisteringModule(String localizedMessage);
 
-	@DefaultMessage("[crux-modules 006] - No module registered under the bridge module. Assuming the development module" )
+	@DefaultServerMessage("[crux-modules 006] - No module registered under the bridge module. Assuming the development module" )
 	String moduleBridgeErrorReadingModule();
 
-	@DefaultMessage("[crux-modules 007] - No development module specified." )
+	@DefaultServerMessage("[crux-modules 007] - No development module specified." )
 	String launcerErrorNoDevelopmentModulesSpecified();
 
-	@DefaultMessage("[crux-modules 008] - Error initializing crux module version checker: {0}." )
+	@DefaultServerMessage("[crux-modules 008] - Error initializing crux module version checker: {0}." )
 	Object versionChekerInitializerError(String message);
 }

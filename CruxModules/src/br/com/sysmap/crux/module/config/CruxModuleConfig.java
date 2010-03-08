@@ -15,7 +15,8 @@
  */
 package br.com.sysmap.crux.module.config;
 
-import br.com.sysmap.crux.core.i18n.DefaultMessage;
+import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
+
 
 
 /**
@@ -26,7 +27,7 @@ public interface CruxModuleConfig
 {
 	String developmentModules();
 
-	@DefaultMessage("br.com.sysmap.crux.module.validation.DecimalNotationVersionChecker")
+	@DefaultServerMessage("br.com.sysmap.crux.module.validation.DecimalNotationVersionChecker")
 	String cruxModuleVersionChecker();
 	
 	void setDevelopmentModules(String value);
