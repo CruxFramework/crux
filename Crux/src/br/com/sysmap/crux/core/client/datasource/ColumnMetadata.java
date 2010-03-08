@@ -20,13 +20,15 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class ColumnMetadata<T extends Comparable<T>>
+public class ColumnMetadata<T>
 {
 	private String name;
+	private boolean sortable;
 	
-	public ColumnMetadata(String name)
+	public ColumnMetadata(String name, boolean sortable)
 	{
 		this.name = name;
+		this.sortable = sortable;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -38,5 +40,10 @@ public class ColumnMetadata<T extends Comparable<T>>
 	public String getName()
 	{
 		return name;
+	}
+
+	public boolean isSortable()
+	{
+		return sortable;
 	}
 }

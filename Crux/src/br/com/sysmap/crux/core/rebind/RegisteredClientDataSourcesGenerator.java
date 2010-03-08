@@ -477,7 +477,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 							DataSourceBinding typeAnnot, Class<?> dtoType, String dataSourceClassName, ColumnsData columnsData)
 	{
 		List<String> names = new ArrayList<String>();
-		List<Class<? extends Comparable<?>>> types = new ArrayList<Class<? extends Comparable<?>>>();
+		List<Class<?>> types = new ArrayList<Class<?>>();
 		
 		String[] includeFields;
 		String[] excludeFields;
@@ -499,11 +499,11 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			if (mustInclude(field, includeFields, excludeFields, dtoType))
 			{
 				names.add(field.getName());
-				types.add((Class<? extends Comparable<?>>) field.getType());
+				types.add(field.getType());
 			}
 		}
 		columnsData.names = names.toArray(new String[0]);
-		columnsData.types = (Class<? extends Comparable<?>>[]) types.toArray(new Class[0]);
+		columnsData.types = types.toArray(new Class[0]);
 		
 		generateMetadaPopulationBlock(logger, sourceWriter, dataSourceClassName, columnsData);
 	}
@@ -517,7 +517,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 */
 	private boolean mustInclude(Field field, String[] includeFields, String[] excludeFields, Class<?> dtoType)
 	{
-		boolean mustInclude = Comparable.class.isAssignableFrom(field.getType());
+		boolean mustInclude = true;
 		if (mustInclude)
 		{
 			mustInclude = isPropertyVisibleToRead(dtoType, field) && isPropertyVisibleToWrite(dtoType, field);
@@ -629,14 +629,15 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		
 		for (int i=0; i<columnsData.names.length; i++)
 		{
-			sourceWriter.println("metadata.addColumn(new ColumnMetadata<"+getParameterDeclaration(columnsData.types[i])+">(\""+columnsData.names[i]+"\"));");
+			boolean sortable = Comparable.class.isAssignableFrom(columnsData.types[i]);
+			sourceWriter.println("metadata.addColumn(new ColumnMetadata<"+getParameterDeclaration(columnsData.types[i])+">(\""+columnsData.names[i]+"\","+sortable+"));");
 		}
 	}	
 	
 	private static class ColumnsData
 	{
 		private String[] names;
-		private Class<? extends Comparable<?>>[] types;
+		private Class<?>[] types;
 		private String identifier;
 	}
 }

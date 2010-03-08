@@ -77,4 +77,6 @@ public interface ClientMessages extends Messages
 	String dataSourceNotLoaded();
 	@DefaultMessage("[datasource 004] - DataSource has changes on page. You must save or discard them before perform this operation.")
 	String remoteDataSourcePageDirty();
+	@DefaultMessage("[datasource 005] - The column {0} can not be sorted.")
+	String dataSourceErrorColumnNotComparable(String columnName);
 }

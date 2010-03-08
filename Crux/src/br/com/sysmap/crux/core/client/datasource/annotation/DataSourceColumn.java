@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 public @interface DataSourceColumn
 {
 	String value();
-	Class<? extends Comparable<?>> type() default String.class;	
+	Class<?> type() default String.class;	
 }

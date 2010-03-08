@@ -117,6 +117,10 @@ abstract class AbstractLocalScrollableDataSource<R extends DataSourceRecord, E>
 
 	protected void sortArray(R[] array, final String columnName, final boolean ascending)
 	{
+		if (!metadata.getColumn(columnName).isSortable())
+		{
+			throw new DataSoureExcpetion(messages.dataSourceErrorColumnNotComparable(columnName));
+		}
 		final int position = metadata.getColumnPosition(columnName);
 		Arrays.sort(array, new Comparator<R>(){
 			public int compare(R o1, R o2)
