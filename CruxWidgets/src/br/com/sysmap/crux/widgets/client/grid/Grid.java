@@ -489,7 +489,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			panel.add(columnLabelArrow);
 			
 			clickable.add(panel);
-			if (this.grid.getDataSource() != null && this.grid.getDataSource().getMetadata().getColumn(columnDefinition.getKey()).isSortable())
+			if (isDataColumnSortable(columnDefinition))
 			{
 				clickable.addClickHandler(createClickHandler());
 			}
@@ -499,6 +499,20 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			setStyleName("columnSorter");
 		}
 		
+		/**
+		 * @param columnDefinition2
+		 * @return
+		 */
+		private boolean isDataColumnSortable(ColumnDefinition columnDefinition)
+		{
+			return (columnDefinition instanceof DataColumnDefinition) && 
+			        this.grid.getDataSource() != null && 
+			        this.grid.getDataSource().getMetadata().getColumn(columnDefinition.getKey()).isSortable();
+		}
+
+		/**
+		 * @return
+		 */
 		private ClickHandler createClickHandler()
 		{
 			return new ClickHandler()
