@@ -110,6 +110,15 @@ public class ClientControllers
 		return clientHandlers.get(name);
 	}
 	
+	public static Iterator<String> iterateClientHandler()
+	{
+		if (clientHandlers == null)
+		{
+			initialize();
+		}
+		return clientHandlers.keySet().iterator();
+	}
+	
 	public static Iterator<String> iterateGlobalClientHandler()
 	{
 		if (globalClientHandlers == null)
