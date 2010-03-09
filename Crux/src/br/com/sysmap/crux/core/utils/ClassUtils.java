@@ -83,7 +83,7 @@ public class ClassUtils
 		}	
 	}
 	
-	static Class<?> getReflectionEquivalentTypeForPrimities(Class<?> attrType)
+	public static Class<?> getReflectionEquivalentTypeForPrimities(Class<?> attrType)
 	{
 		if (attrType.equals(Integer.class))
 		{

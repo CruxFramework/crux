@@ -265,7 +265,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 				dataType = recordType;
 			}
 			String dataTypeDeclaration = getParameterDeclaration(dataType);
-			 			
+			 		
 			sourceWriter.println("public void updateData("+dataTypeDeclaration+"[] data){");
 			
 			if (recordType.isAssignableFrom(dataType))
@@ -332,7 +332,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 				Class<?> type = (columnsData.types.length > 0? columnsData.types[i]:String.class);
 				Field field = ClassUtils.getDeclaredField(dataType, name);
 				generateFieldValueSet(logger, dataType, field, "ret", 
-									"("+getParameterDeclaration(type)+")record.get("+i+")", 
+									"("+getParameterDeclarationWithPrimitiveWrappers(type)+")record.get("+i+")", 
 									sourceWriter, false);
 			}
 
@@ -630,9 +630,23 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		for (int i=0; i<columnsData.names.length; i++)
 		{
 			boolean sortable = Comparable.class.isAssignableFrom(columnsData.types[i]);
-			sourceWriter.println("metadata.addColumn(new ColumnMetadata<"+getParameterDeclaration(columnsData.types[i])+">(\""+columnsData.names[i]+"\","+sortable+"));");
+			sourceWriter.println("metadata.addColumn(new ColumnMetadata<"+getParameterDeclarationWithPrimitiveWrappers(columnsData.types[i])+">(\""+columnsData.names[i]+"\","+sortable+"));");
 		}
 	}	
+	
+	/**
+	 * @param parameterClass
+	 * @return
+	 */
+	private String getParameterDeclarationWithPrimitiveWrappers(Class<?> parameterClass)
+	{
+		if (parameterClass.isPrimitive())
+		{
+			return getParameterDeclaration(ClassUtils.getReflectionEquivalentTypeForPrimities(parameterClass));
+		}
+		
+		return getParameterDeclaration(parameterClass);
+	}
 	
 	private static class ColumnsData
 	{
