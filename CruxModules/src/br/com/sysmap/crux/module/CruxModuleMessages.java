@@ -17,8 +17,6 @@ package br.com.sysmap.crux.module;
 
 import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
 
-
-
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
