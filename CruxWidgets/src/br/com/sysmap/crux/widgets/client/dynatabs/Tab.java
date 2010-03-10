@@ -78,15 +78,12 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 		frameElement.setPropertyString("id", id + ".window");
 		frameElement.setPropertyString("name", id + ".window");
 
-		if (closeable)
-		{
-			FrameUtils.registerStateCallback(frameElement, new FrameStateCallback(){
-				public void onComplete()
-				{
-					canClose = true;
-				}
-			}, 20000);
-		}
+		FrameUtils.registerStateCallback(frameElement, new FrameStateCallback(){
+			public void onComplete()
+			{
+				canClose = true;
+			}
+		}, 20000);
 		
 		tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
 	}
