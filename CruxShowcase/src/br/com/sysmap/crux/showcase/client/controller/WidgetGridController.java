@@ -5,8 +5,8 @@ import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.showcase.client.dto.Contact;
 import br.com.sysmap.crux.widgets.client.dialog.MessageBox;
-import br.com.sysmap.crux.widgets.client.grid.impl.DataRow;
-import br.com.sysmap.crux.widgets.client.grid.impl.Grid;
+import br.com.sysmap.crux.widgets.client.grid.DataRow;
+import br.com.sysmap.crux.widgets.client.grid.Grid;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Image;

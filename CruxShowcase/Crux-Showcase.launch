@@ -17,7 +17,7 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.HostedMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl index.html br.com.sysmap.crux.showcase.Showcase -gen c:/temp/gen  -logLevel DEBUG -whitelist http://*"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl index.html br.com.sysmap.crux.showcase.Showcase -gen c:/temp/gen  -logLevel ERROR -whitelist http://*"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="CruxShowcase"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xss32768k -Xms64M -Xmx512M"/>
 </launchConfiguration>

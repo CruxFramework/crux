@@ -8,8 +8,8 @@ import br.com.sysmap.crux.showcase.client.dto.Contact.Gender;
 import br.com.sysmap.crux.widgets.client.dialog.MessageBox;
 import br.com.sysmap.crux.widgets.client.event.row.RowClickEvent;
 import br.com.sysmap.crux.widgets.client.event.row.RowRenderEvent;
-import br.com.sysmap.crux.widgets.client.grid.impl.DataRow;
-import br.com.sysmap.crux.widgets.client.grid.impl.Grid;
+import br.com.sysmap.crux.widgets.client.grid.DataRow;
+import br.com.sysmap.crux.widgets.client.grid.Grid;
 
 import com.google.gwt.user.client.ui.Image;
 
