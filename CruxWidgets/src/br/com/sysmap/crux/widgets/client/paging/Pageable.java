@@ -23,4 +23,16 @@ public interface Pageable
 	 * @param pager
 	 */
 	void setPager(Pager pager);
+	
+	/**
+	 * Moves the pageable's cursor to an arbitrary page
+	 * @param page
+	 */
+	void goToPage(int page);
+	
+	/**
+	 * Checks if pageable data is already avaiable
+	 * @param page
+	 */
+	boolean isDataLoaded();	
 }

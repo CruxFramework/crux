@@ -1091,6 +1091,82 @@
 	opacity:0.2;
 	filter:alpha(opacity=20);
 }
+.crux-RandomPager .previousButton
+{
+	width: 9px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-previous.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+	cursor: pointer; 
+	margin-left: 5px;
+}
+.crux-RandomPager .nextButton
+{
+	width: 9px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-next.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+	cursor: pointer;
+	margin-right: 5px;
+}
+.crux-RandomPager .previousButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-RandomPager .nextButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-RandomPager .firstButton
+{
+	width: 16px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-first.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+	cursor: pointer; 
+	margin-left: 5px;
+}
+.crux-RandomPager .lastButton
+{
+	width: 16px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-last.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+	cursor: pointer;
+	margin-right: 5px;
+}
+.crux-RandomPager .firstButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-RandomPager .lastButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-RandomPager .gwt-ListBox
+{
+	color:#2077A9;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-size:10px;
+	margin-left: 3px;
+	margin-right: 3px;
+}
 
 
 /******************************************************************************

@@ -93,7 +93,30 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		this.dataSource = dataSource;
 		this.dataSource.setPageSize(this.pageSize);
 		
-		if(this.dataSource instanceof LocalDataSource)
+		if(this.dataSource instanceof RemoteDataSource)
+		{
+			RemoteDataSource<?, ?> remote = (RemoteDataSource<?, ?>) this.dataSource;
+			
+			remote.setCallback(new RemoteDataSourceCallback()
+			{
+				public void execute(int startRecord, int endRecord)
+				{
+					loaded = true;
+					render();
+				}
+				
+				public void cancelFetching()
+				{
+					render();			
+				}
+			});
+			
+			if(autoLoadData)
+			{
+				loadData();
+			}
+		}
+		else if(this.dataSource instanceof LocalDataSource)
 		{
 			LocalDataSource<?, ?> local = (LocalDataSource<?, ?>) this.dataSource;
 			
@@ -111,29 +134,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				loadData();
 			}
 		}
-		else if(this.dataSource instanceof RemoteDataSource)
-		{
-			RemoteDataSource<?, ?> remote = (RemoteDataSource<?, ?>) this.dataSource;
-			
-			remote.setCallback(new RemoteDataSourceCallback()
-			{
-				public void execute(int startRecord, int endRecord)
-				{
-					loaded = true;
-					render();
-				}
-
-				public void cancelFetching()
-				{
-					render();			
-				}
-			});
-			
-			if(autoLoadData)
-			{
-				loadData();
-			}
-		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -141,12 +141,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		if(!this.loaded)
 		{
-			if(this.dataSource instanceof LocalDataSource)
-			{
-				LocalDataSource<?, ?> local = (LocalDataSource<?, ?>) this.dataSource;
-				local.load();
-			}
-			else if(this.dataSource instanceof RemoteDataSource)
+			if(this.dataSource instanceof RemoteDataSource)
 			{
 				if(this.dataSource instanceof MeasurableDataSource)
 				{
@@ -156,6 +151,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				{
 					this.dataSource.nextPage();
 				}
+			}
+			else if(this.dataSource instanceof LocalDataSource)
+			{
+				LocalDataSource<?, ?> local = (LocalDataSource<?, ?>) this.dataSource;
+				local.load();
 			}
 		}
 	}
@@ -674,5 +674,37 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	public boolean isLoaded()
 	{
 		return loaded;
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.paging.Pageable#goToPage(int)
+	 */
+	public void goToPage(int page)
+	{
+		if(this.dataSource != null && loaded)
+		{
+			if(this.dataSource instanceof MeasurablePagedDataSource)
+			{
+				((MeasurablePagedDataSource<?>) this.dataSource).setCurrentPage(page);
+
+				if(!(this.dataSource instanceof RemoteDataSource))
+				{
+					render();
+				}
+			}
+			else
+			{
+				throw new UnsupportedOperationException(messages.gridRandomPagingNotSupported());
+			}
+		}
+		
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.paging.Pageable#isDataLoaded()
+	 */
+	public boolean isDataLoaded()
+	{
+		return this.dataSource != null && loaded;
 	}
 }

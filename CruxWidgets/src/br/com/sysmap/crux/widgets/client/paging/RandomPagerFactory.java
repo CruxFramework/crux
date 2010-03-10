@@ -20,12 +20,12 @@ import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 /**
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-@DeclarativeFactory(id="sequentialPager", library="widgets")
-public class SequentialPagerFactory extends AbstractPagerFactory<SequentialPager>
+@DeclarativeFactory(id="randomPager", library="widgets")
+public class RandomPagerFactory extends AbstractPagerFactory<RandomPager>
 {
 	@Override
-	protected SequentialPager createPagerInstance()
+	protected RandomPager createPagerInstance()
 	{
-		return new SequentialPager();
-	}
+		return new RandomPager();
+	}	
 }

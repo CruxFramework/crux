@@ -61,4 +61,9 @@ public interface WidgetMessages extends Messages
 	@DefaultMessage("[crux-widgets - 014] - The attribute formatter is required for MaskedLabel.")
 	String maskedLabelFormatterRequired();	
 	
+	@DefaultMessage("[crux-widgets - 015] - Random paging is only supported in Grids whose DataSources are instances of MeasurablePagedDataSource.")
+	String gridRandomPagingNotSupported();
+	
+	@DefaultMessage("[crux-widgets - 016] - No pageable widget set for this pager.")
+	String pagerNoPageableSet();	
 }
