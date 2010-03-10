@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.rebind.screen.formatter;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -138,4 +139,18 @@ public class Formatters
 		}
 		return formatters.get(name);
 	}
+	
+	/**
+	 * @return
+	 */
+	public static Iterator<String> iterateFormatters()
+	{
+		if (formatters == null)
+		{
+			initialize();
+		}
+
+		return formatters.keySet().iterator();
+	}
+	
 }

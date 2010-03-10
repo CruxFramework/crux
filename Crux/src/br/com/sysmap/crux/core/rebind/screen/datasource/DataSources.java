@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.rebind.screen.datasource;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -127,5 +128,19 @@ public class DataSources
 		}
 		
 		return dataSources.get(name);
+	}
+	
+	
+	/**
+	 * @return
+	 */
+	public static Iterator<String> iterateDataSources()
+	{
+		if (dataSources == null)
+		{
+			initialize();
+		}
+		
+		return dataSources.keySet().iterator();
 	}
 }
