@@ -472,7 +472,6 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param sourceWriter
 	 * @param typeAnnot
 	 */
-	@SuppressWarnings("unchecked")
 	private void generateMetadataPopulationBlockFromType(TreeLogger logger, SourceWriter sourceWriter, 
 							DataSourceBinding typeAnnot, Class<?> dtoType, String dataSourceClassName, ColumnsData columnsData)
 	{
@@ -592,7 +591,6 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	 * @param columnsAnnot
 	 * @param dataSourceClassName
 	 */
-	@SuppressWarnings("unchecked")
 	private void generateMetadataPopulationBlockFromColumns(TreeLogger logger, SourceWriter sourceWriter, 
 							DataSourceColumns columnsAnnot, String dataSourceClassName, ColumnsData columnsData)
 	{

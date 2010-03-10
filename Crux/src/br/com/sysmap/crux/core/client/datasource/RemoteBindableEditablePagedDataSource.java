@@ -92,6 +92,16 @@ public abstract class RemoteBindableEditablePagedDataSource<T> extends AbstractR
 	}
 	
 	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#cancelFetching()
+	 */
+	public void cancelFetching()
+	{
+		currentPage--;
+		updateCurrentRecord();
+		this.fetchCallback.cancelFetching();
+	}
+	
+	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#insertRecord(int)
 	 */
 	public EditableDataSourceRecord insertRecord(int index)

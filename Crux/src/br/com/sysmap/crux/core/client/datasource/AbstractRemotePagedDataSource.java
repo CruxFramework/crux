@@ -28,7 +28,7 @@ abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> exte
 	
 	public AbstractRemotePagedDataSource()
 	{
-		this.data = createDataObject(getRecordCount());
+		this.data = createDataObject(0);
 	}
 
 	@Override
@@ -114,7 +114,10 @@ abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> exte
 	public void setPageSize(int pageSize)
 	{
 		super.setPageSize(pageSize);
-		fetchCurrentPage();
+		if (this.loaded)
+		{
+			load();
+		}
 	}
 	
 	protected void ensurePageLoaded(int recordNumber)
@@ -168,10 +171,11 @@ abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> exte
 	{
 		if (records != null && endRecord < getRecordCount())
 		{
-			for (int i = startRecord; i <= endRecord; i++)
+			for (int i = startRecord, j = 0; i <= endRecord && j < records.length; i++, j++)
 			{
-				this.data[i] = records[i];
+				this.data[i] = records[j];
 			}
+			
 			return records.length;
 		}
 		return 0;
@@ -184,6 +188,8 @@ abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> exte
 	{
 		this.config = config;
 		this.loaded = (this.config != null);
+		this.data = createDataObject(getRecordCount());
+		this.setCurrentPage(1);
 	}
 	
 	/**
