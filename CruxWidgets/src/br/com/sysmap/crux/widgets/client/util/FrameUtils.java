@@ -15,6 +15,11 @@
  */
 package br.com.sysmap.crux.widgets.client.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import br.com.sysmap.crux.core.client.utils.StringUtils;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
@@ -93,8 +98,12 @@ public class FrameUtils
 	 */
 	static abstract class FrameStateMonitorImpl implements FrameStateMonitor
 	{
+		private Map<String, Timer> monitorTimers = new HashMap<String, Timer>();
+		private Map<String, Timer> timeoutTimers = new HashMap<String, Timer>();
+		private static int framecounter = 0;
 		public void registerStateCallback(final Element frameElement, final FrameStateCallback callback, int timeout)
 		{
+			unregisterStateCallback(frameElement);
 			final Timer monitorTimer = new Timer()
 			{
 				@Override
@@ -108,11 +117,12 @@ public class FrameUtils
 					}
 				}
 			};
+			monitorTimers.put(frameElement.getId(), monitorTimer);
 			monitorTimer.scheduleRepeating(5);
 			
 			if (timeout > 0)
 			{
-				Timer timeoutTimer = new Timer()
+				final Timer timeoutTimer = new Timer()
 				{
 					@Override
 					public void run()
@@ -121,10 +131,39 @@ public class FrameUtils
 						callback.onComplete();
 					}
 				};
+				timeoutTimers.put(frameElement.getId(), timeoutTimer);
 				timeoutTimer.schedule(timeout);
 			}
 		}
 		
+		private void unregisterStateCallback(Element frameElement)
+		{
+			String id = frameElement.getId();
+			if (StringUtils.isEmpty(id))
+			{
+				id = generateFrameId();
+				frameElement.setId(id);
+			}
+			Timer monitorTimer = monitorTimers.get(id);
+			Timer timeoutTimer = timeoutTimers.get(id);
+
+			if (timeoutTimer != null)
+			{
+				timeoutTimer.cancel();
+				timeoutTimers.remove(id);
+			}
+			if (monitorTimer != null)
+			{
+				monitorTimer.cancel();
+				monitorTimers.remove(id);
+			}
+		}
+
+		private String generateFrameId()
+		{
+			return "__frame"+(framecounter++);
+		}
+
 		private native String getFrameState(Element frameElement)/*-{
 			var element = frameElement;
 			if (element != null && element.contentDocument != null)

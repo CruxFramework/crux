@@ -31,6 +31,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
@@ -86,6 +87,17 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 		}, 20000);
 		
 		tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
+	}
+
+	void executeWhenLoaded(final Command call)
+	{
+		FrameUtils.registerStateCallback(getElement(), new FrameStateCallback(){
+			public void onComplete()
+			{
+				canClose = true;
+				call.execute();
+			}
+		}, 20000);
 	}
 
 	/**

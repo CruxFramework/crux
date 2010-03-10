@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.Label;
 class FlapController extends Composite
 {
 	private Label title;
-	
+	private FocusPanel closeButton;
 	/**
 	 * @param tabs
 	 * @param tabId
@@ -33,7 +33,7 @@ class FlapController extends Composite
 		title.setStyleName("flapLabel");
 		flap.add(title);
 
-		FocusPanel closeButton = new FocusPanel();
+		closeButton = new FocusPanel();
 		Label empty = new Label("");
 		empty.getElement().getStyle().setProperty("fontSize", "1px");
 		closeButton.add(empty);
@@ -58,5 +58,17 @@ class FlapController extends Composite
 	public void setTabTitle(String title)
 	{
 		this.title.setText(title);
+	}
+	
+	void setCloseButtonEnabled(boolean enabled)
+	{
+		if (enabled)
+		{
+			closeButton.removeStyleDependentName("disable");
+		}
+		else
+		{
+			closeButton.addStyleDependentName("disable");
+		}
 	}
 }

@@ -27,6 +27,7 @@ import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TabPanel;
 
@@ -147,32 +148,6 @@ public class DynaTabs extends Composite
 		this.tabPanel.selectTab(getTabIndex(tabId));
 	}
 
-	
-	/**
-	 * @param tabId
-	 * @param skipBeforeCloseHandlers
-	 */
-	public void closeTab(String tabId, boolean skipBeforeCloseHandlers)
-	{
-		Tab tab = getTab(tabId);
-		if (tab.canClose())
-		{
-			if(skipBeforeCloseHandlers)
-			{
-				doCloseTab(tabId);
-			}
-			else
-			{
-				BeforeCloseEvent evt = BeforeCloseEvent.fire(tab);
-
-				if (!evt.isCanceled())
-				{
-					doCloseTab(tabId);
-				}
-			}
-		}
-	}
-	
 	/**
 	 * Closes the tab, skipping any BeforeCloseHandler registered
 	 * @param tabId
@@ -184,8 +159,54 @@ public class DynaTabs extends Composite
 	
 	/**
 	 * @param tabId
+	 * @param skipBeforeCloseHandlers
 	 */
-	private void doCloseTab(String tabId)
+	public void closeTab(final String tabId, final boolean skipBeforeCloseHandlers)
+	{
+		final Tab tab = getTab(tabId);
+		if (tab.canClose())
+		{
+			doCloseTab(tabId, skipBeforeCloseHandlers, tab);
+		}
+		else
+		{
+			tab.getFlapPanel().getFlapController().setCloseButtonEnabled(false);
+			tab.executeWhenLoaded(new Command(){
+				public void execute()
+				{
+					tab.getFlapPanel().getFlapController().setCloseButtonEnabled(true);
+					doCloseTab(tabId, skipBeforeCloseHandlers, tab);
+				}
+			});
+		}
+	}
+
+	/**
+	 * @param tabId
+	 * @param skipBeforeCloseHandlers
+	 * @param tab
+	 */
+	private void doCloseTab(String tabId, boolean skipBeforeCloseHandlers, Tab tab)
+	{
+		if(skipBeforeCloseHandlers)
+		{
+			doCloseTab(tabId);
+		}
+		else
+		{
+			BeforeCloseEvent evt = BeforeCloseEvent.fire(tab);
+
+			if (!evt.isCanceled())
+			{
+				doCloseTab(tabId);
+			}
+		}
+	}
+	
+	/**
+	 * @param tabId
+	 */
+	void doCloseTab(String tabId)
 	{
 		int index = getTabIndex(tabId);
 		this.tabPanel.remove(index);
