@@ -56,16 +56,17 @@ public class ModuleComunicationSerializer
 	 */
 	public String serialize(Object param) throws ModuleComunicationException
 	{
-		Document document = XMLParser.createDocument();
-
 		if (param != null)
 		{
+			Document document = XMLParser.createDocument();
+
 			Element root = document.createElement("data");
 			document.appendChild(root);
 			serializeValue(document, root, param);
+			return document.toString();
 		}
 		
-		return document.toString();
+		return null;
 	}
 
 	/**
