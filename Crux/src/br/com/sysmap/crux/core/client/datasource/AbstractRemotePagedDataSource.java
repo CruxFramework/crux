@@ -20,7 +20,7 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> extends AbstractLocalPagedDataSource<R, E> 
+abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> extends AbstractPagedDataSource<R, E> 
                            implements MeasurableRemoteDataSource<R,E>
 {	
 	protected RemoteDataSourceCallback fetchCallback = null;
@@ -119,6 +119,16 @@ abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> exte
 			load();
 		}
 	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#cancelFetching()
+	 */
+	public void cancelFetching()
+	{
+		currentPage--;
+		updateCurrentRecord();
+		this.fetchCallback.cancelFetching();
+	}	
 	
 	protected void ensurePageLoaded(int recordNumber)
 	{

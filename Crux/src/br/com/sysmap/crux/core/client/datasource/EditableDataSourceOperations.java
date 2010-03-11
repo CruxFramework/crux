@@ -32,9 +32,9 @@ class EditableDataSourceOperations<E>
 	protected List<EditableDataSourceRecord> changedRecords = new ArrayList<EditableDataSourceRecord>();
 	protected List<EditableDataSourceRecord> selectedRecords = new ArrayList<EditableDataSourceRecord>();	
 
-	protected AbstractLocalScrollableDataSource<EditableDataSourceRecord, E> editableDataSource;
+	protected AbstractScrollableDataSource<EditableDataSourceRecord, E> editableDataSource;
 	
-	public EditableDataSourceOperations(AbstractLocalScrollableDataSource<EditableDataSourceRecord, E> editableDataSource)
+	public EditableDataSourceOperations(AbstractScrollableDataSource<EditableDataSourceRecord, E> editableDataSource)
 	{
 		this.editableDataSource = editableDataSource;
 	}

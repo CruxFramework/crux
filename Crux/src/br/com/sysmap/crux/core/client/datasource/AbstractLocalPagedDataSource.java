@@ -21,164 +21,33 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> extends AbstractLocalScrollableDataSource<R,E> 
-                                              implements MeasurablePagedDataSource<R>
+abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> extends AbstractPagedDataSource<R,E> 
+                                              implements MeasurablePagedDataSource<R>, LocalDataSource<R, E>
 {
-	protected int pageSize = 10;
-	protected int currentPage = 0;
-	
-	public int getCurrentPage()
-	{
-		return currentPage;
-	}
-
-	public int getPageCount()
-	{
-		int numRecords = getRecordCount();
-		int pageSize = getPageSize();
-		
-		return (numRecords / pageSize) + (numRecords%pageSize==0?0:1);
-	}
-
-	public int getPageSize()
-	{
-		return pageSize;
-	}
+	protected LocalDataSourceCallback loadCallback = null;
 
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.MeasurablePagedDataSource#getCurrentPageSize()
+	 * @see br.com.sysmap.crux.core.client.datasource.LocalDataSource#update(R[])
 	 */
-	public int getCurrentPageSize()
+	public void update(R[] records)
 	{
-		int pageEndRecord = getPageEndRecord();
-		if (pageEndRecord < 0)
+		loaded = true;
+		this.data = records;
+		if (this.loadCallback != null)
 		{
-			return 0;
-		}
-		return pageEndRecord - getPageStartRecord() + 1;
-	}
-	
-	public boolean hasNextPage()
-	{
-		ensureLoaded();
-		return (currentPage < getPageCount());
-	}
-
-	public boolean hasPreviousPage()
-	{
-		ensureLoaded();
-		return (currentPage > 1 );
-	}
-
-	public boolean nextPage()
-	{
-		if (hasNextPage())
-		{
-			currentPage++;
-			updateCurrentRecord();
-			return true;
-		}	
-		return false;
-	}
-
-	public boolean previousPage()
-	{
-		if (hasPreviousPage())
-		{
-			currentPage--;
-			updateCurrentRecord();
-			return true;
-		}
-		return false;
-	}
-
-	public boolean setCurrentPage(int pageNumber)
-	{
-		ensureLoaded();
-		if (pageNumber > 0 && pageNumber <= getPageCount())
-		{
-			currentPage = pageNumber;
-			updateCurrentRecord();
-			return true;
-		}
-		return false;
-	}
-
-	public void setPageSize(int pageSize)
-	{
-		if (pageSize < 1)
-		{
-			pageSize = 1;
-		}
-		this.pageSize = pageSize;
-		if (this.loaded)
-		{
-			updateCurrentRecord();
+			this.loadCallback.execute();
 		}
 	}
 	
-	@Override
-	public boolean hasNextRecord()
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.LocalDataSource#setCallback(br.com.sysmap.crux.core.client.datasource.LocalDataSourceCallback)
+	 */
+	public void setCallback(LocalDataSourceCallback callback)
 	{
-		return isRecordOnPage(currentRecord+1);
+		this.loadCallback = callback;
 	}
 	
-	@Override
-	public boolean hasPreviousRecord()
+	public void updateData(E[] data)
 	{
-		return isRecordOnPage(currentRecord-1);
-	}
-	
-	@Override
-	public void reset()
-	{
-		super.reset();
-		currentPage = 0;
-	}	
-
-	@Override
-	public void firstRecord()
-	{
-		ensureLoaded();
-		currentRecord = getPageStartRecord();
-	}
-
-	@Override
-	public void lastRecord()
-	{
-		ensureLoaded();
-		currentRecord = getPageEndRecord();
-	}
-
-	protected boolean isRecordOnPage(int record)
-	{
-		ensureLoaded();
-		if (data == null)
-		{
-			return false;
-		}
-		int startPageRecord = getPageStartRecord();
-		int endPageRescord = getPageEndRecord();
-		return (record >= startPageRecord && record <= endPageRescord);
-	}
-
-	protected int getPageEndRecord()
-	{
-		int pageEndRecord = (currentPage * pageSize) - 1;
-		if (pageEndRecord >= this.data.length)
-		{
-			pageEndRecord = this.data.length-1;
-		}
-		return pageEndRecord;
-	}
-
-	protected int getPageStartRecord()
-	{
-		return (currentPage - 1) * pageSize;
-	}
-	
-	protected void updateCurrentRecord()
-	{
-		currentRecord = getPageStartRecord(); 
 	}
 }
