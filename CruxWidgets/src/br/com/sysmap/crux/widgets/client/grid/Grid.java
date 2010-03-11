@@ -506,7 +506,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		private boolean isDataColumnSortable(ColumnDefinition columnDefinition)
 		{
 			return (columnDefinition instanceof DataColumnDefinition) && 
-			        this.grid.getDataSource() != null && 
+			        this.grid.getDataSource() != null &&
+			        this.grid.getDataSource().getMetadata().getColumn(columnDefinition.getKey()) != null &&
 			        this.grid.getDataSource().getMetadata().getColumn(columnDefinition.getKey()).isSortable();
 		}
 
