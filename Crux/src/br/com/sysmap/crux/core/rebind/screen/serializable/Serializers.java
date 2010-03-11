@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.rebind.screen.serializable;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -117,5 +118,18 @@ public class Serializers
 		}
 		
 		return serializers.get(name);
+	}
+	
+	/**
+	 * @return
+	 */
+	public static Iterator<String> iterateSerializables()
+	{
+		if (serializers == null)
+		{
+			initialize();
+		}
+		
+		return serializers.keySet().iterator();
 	}
 }
