@@ -46,6 +46,9 @@ public interface Crux
 	@DefaultServerMessage("true")
 	String enableHotDeploymentForWebDirs();
 
+	@DefaultServerMessage("true")
+	String enableHotDeploymentForWidgetFactories();
+	
 	void setEnableWebRootScannerCache(Boolean value);
 	void setAllowAutoBindWithNonDeclarativeWidgets(Boolean value);
 	void setEnableChildrenWindowsDebug(Boolean value);
@@ -54,5 +57,6 @@ public interface Crux
 	void setScreenResourceResolver(String value);
 	void setLocaleResolver(String value);
 	void setServiceFactory(String value);
-	void setEnableHotDeployment(String value);
+	void setEnableHotDeploymentForWebDirs(String value);
+	void setEnableHotDeploymentForWidgetFactories(String value);
 }

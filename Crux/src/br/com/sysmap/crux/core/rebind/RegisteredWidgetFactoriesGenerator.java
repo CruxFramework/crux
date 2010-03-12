@@ -20,12 +20,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.rebind.screen.Widget;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
+import br.com.sysmap.crux.core.server.Environment;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -92,18 +95,45 @@ public class RegisteredWidgetFactoriesGenerator extends AbstractRegisteredElemen
 		
 		Map<String, Boolean> added = new HashMap<String, Boolean>();
 
-		for (Screen screen : screens)
+		if (Environment.isProduction() || !Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWidgetFactories()))
 		{
-			Iterator<Widget> iterator = screen.iterateWidgets();
-			while (iterator.hasNext())
+			for (Screen screen : screens)
 			{
-				Widget widget = iterator.next();
-				generateCreateWidgetBlock(logger, sourceWriter, widget, added);
+				Iterator<Widget> iterator = screen.iterateWidgets();
+				while (iterator.hasNext())
+				{
+					Widget widget = iterator.next();
+					generateCreateWidgetBlock(logger, sourceWriter, widget, added);
+				}
 			}
+		}
+		else
+		{
+			generateCreateWidgetBlockForAllWidgets(logger, sourceWriter);
 		}
 		sourceWriter.println("}");
 	} 
 	
+	/**
+	 * @param logger
+	 * @param sourceWriter
+	 */
+	protected void generateCreateWidgetBlockForAllWidgets(TreeLogger logger, SourceWriter sourceWriter)
+	{
+		Set<String> libraries = WidgetConfig.getRegisteredLibraries();
+		
+		for (String library : libraries)
+		{
+			Set<String> registeredLibraryFactories = WidgetConfig.getRegisteredLibraryFactories(library);
+			for (String factory : registeredLibraryFactories)
+			{
+				String type = library+"_"+factory;
+				Class<? extends WidgetFactory<?>> widgetClass = WidgetConfig.getClientClass(type);
+				sourceWriter.println("widgetFactories.put(\""+type+"\", (WidgetFactory<? extends Widget>)GWT.create("+getClassSourceName(widgetClass)+".class));");
+			}
+		}
+	}
+
 	/**
 	 * 
 	 * @param logger

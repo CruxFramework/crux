@@ -15,10 +15,10 @@
  */
 package br.com.sysmap.crux.core.server;
 
-import java.lang.management.ManagementFactory;
-import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 
 /**
@@ -27,6 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Environment
 {
+	private static final String CRUX_DEV_PROPERTY = "Crux.dev";
 	private static Boolean isProduction = null;
 	private static final Lock lock = new ReentrantLock();
 
@@ -34,11 +35,8 @@ public class Environment
 	 * Determine if we are running in GWT Hosted Mode 
 	 * @return
 	 */
-	@SuppressWarnings("deprecation")
 	public static boolean isProduction()
 	{
-		//TODO - Thiago - usar um "strategy" aki... para que cada um possa informar como determinar o valor correto para 
-		//esta variavel.... com o plugin de modules, por exemplo, a classe que dará o start é o ModulesLauncher.
 		if (isProduction == null)
 		{
 			lock.lock();
@@ -46,33 +44,17 @@ public class Environment
 			{
 				if (isProduction == null)
 				{
-					Exception utilException = new Exception();
+
 					try
 					{
-						try
-						{
-							StackTraceElement[] stackTrace = utilException.getStackTrace();
-							StackTraceElement stackTraceElement = stackTrace[stackTrace.length -1];
-							isProduction = (!stackTraceElement.getClassName().equals(com.google.gwt.dev.HostedMode.class.getName()) &&
-									!stackTraceElement.getClassName().equals(com.google.gwt.dev.GWTShell.class.getName()) &&
-									!stackTraceElement.getClassName().equals(com.google.gwt.dev.DevMode.class.getName()) );
-
-						}
-						catch (Throwable e) 
+						String developement = System.getProperty(CRUX_DEV_PROPERTY);
+						if (StringUtils.isEmpty(developement))
 						{
 							isProduction = true;
 						}
-						if (isProduction)
+						else
 						{
-							List<String> inputArgs = ManagementFactory.getRuntimeMXBean().getInputArguments();
-							for (String arg : inputArgs)
-							{
-								if (arg.contains("-Xdebug") || arg.contains("-agentlib:jdwp"))
-								{
-									isProduction = false;
-									break;
-								}
-							}							
+							isProduction = !Boolean.parseBoolean(developement);
 						}
 					}
 					catch (Throwable e) 
