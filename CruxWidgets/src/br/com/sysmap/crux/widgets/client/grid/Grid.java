@@ -169,7 +169,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	@Override
 	protected int getRowsToBeRendered()
 	{
-		if(this.dataSource != null && loaded)
+		if(isDataLoaded())
 		{
 			if(this.dataSource.getCurrentPage() == 0)
 			{
@@ -194,7 +194,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	@Override
 	protected void onClear()
 	{
-		if(this.dataSource != null)
+		if(isDataLoaded())
 		{
 			this.dataSource.reset();
 		}
@@ -374,7 +374,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	@Override
 	protected void onBeforeRenderRows()
 	{
-		if(this.dataSource != null)
+		if(isDataLoaded())
 		{
 			if(this.dataSource.getCurrentPage() > 0 && this.dataSource.getCurrentPageSize() == 0)
 			{
@@ -395,7 +395,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	
 	private void updatePager()
 	{
-		if(this.dataSource != null && this.pager != null && this.loaded)
+		if(isDataLoaded() && this.pager != null)
 		{
 			if(this.pager != null)
 			{
@@ -419,7 +419,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public void nextPage()
 	{
-		if(this.dataSource != null && loaded)
+		if(isDataLoaded())
 		{
 			this.dataSource.nextPage();
 			
@@ -432,7 +432,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public void previousPage()
 	{
-		if(this.dataSource != null && loaded)
+		if(isDataLoaded())
 		{
 			this.dataSource.previousPage();
 			
@@ -505,10 +505,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		 */
 		private boolean isDataColumnSortable(ColumnDefinition columnDefinition)
 		{
-			return (columnDefinition instanceof DataColumnDefinition) && 
-			        this.grid.getDataSource() != null &&
-			        this.grid.getDataSource().getMetadata().getColumn(columnDefinition.getKey()) != null &&
-			        this.grid.getDataSource().getMetadata().getColumn(columnDefinition.getKey()).isSortable();
+			return (columnDefinition instanceof DataColumnDefinition) 
+					&& grid.isDataLoaded() 
+					&& this.grid.getDataSource().getMetadata().getColumn(columnDefinition.getKey()).isSortable();
 		}
 
 		/**
@@ -520,7 +519,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			{
 				public void onClick(ClickEvent event)
 				{
-					if(grid.dataSource != null && grid.loaded)
+					if(grid.isDataLoaded())
 					{
 						String column = columnDefinition.getKey();
 						String previousSorting = grid.currentSortingColumn;
@@ -682,7 +681,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	 */
 	public void goToPage(int page)
 	{
-		if(this.dataSource != null && loaded)
+		if(isDataLoaded())
 		{
 			if(this.dataSource instanceof MeasurablePagedDataSource)
 			{
