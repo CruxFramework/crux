@@ -56,7 +56,7 @@ public class DecoratedPopupPanelFactory extends PanelFactory<DecoratedPopupPanel
 	
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="previewAllNativeEvents", type=Boolean.class)
+		@TagAttribute(value="previewingAllNativeEvents", type=Boolean.class)
 	})
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="autoHide", type=Boolean.class),

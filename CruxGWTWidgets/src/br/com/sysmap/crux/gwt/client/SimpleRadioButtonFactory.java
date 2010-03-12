@@ -34,7 +34,7 @@ public class SimpleRadioButtonFactory extends FocusWidgetFactory<SimpleRadioButt
 {
 	@Override
 	@TagAttributes({
-		@TagAttribute("checked")
+		@TagAttribute(value="checked", type=Boolean.class)
 	})
 	public void processAttributes(WidgetFactoryContext<SimpleRadioButton> context) throws InterfaceConfigException
 	{

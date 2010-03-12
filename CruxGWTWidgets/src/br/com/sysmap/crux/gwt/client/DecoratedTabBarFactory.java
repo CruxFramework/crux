@@ -16,6 +16,13 @@
 package br.com.sysmap.crux.gwt.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DecoratedTabBar;
@@ -32,4 +39,49 @@ public class DecoratedTabBarFactory extends AbstractTabBarFactory<DecoratedTabBa
 	{
 		return new DecoratedTabBar();
 	}
+	
+	@Override
+	@TagChildren({
+		@TagChild(TabProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<DecoratedTabBar> context) throws InterfaceConfigException {}		
+
+	public static class TabProcessor extends AbstractTabProcessor<DecoratedTabBar> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TabItemProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<DecoratedTabBar> context) throws InterfaceConfigException
+		{
+			super.processChildren(context);
+		}
+	}
+	
+	public static class TabItemProcessor extends ChoiceChildProcessor<DecoratedTabBar> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TextTabProcessor.class),
+			@TagChild(HTMLTabProcessor.class),
+			@TagChild(WidgetTabProcessor.class)
+		})		
+		public void processChildren(WidgetChildProcessorContext<DecoratedTabBar> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(tagName="widget")
+	public static class WidgetTabProcessor extends WidgetChildProcessor<DecoratedTabBar> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(WidgetProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<DecoratedTabBar> context) throws InterfaceConfigException {}
+	}
+	
+	public static class TextTabProcessor extends AbstractTextTabProcessor<DecoratedTabBar> {}
+	
+	public static class HTMLTabProcessor extends AbstractHTMLTabProcessor<DecoratedTabBar> {}
+	
+	public static class WidgetProcessor extends AbstractWidgetProcessor<DecoratedTabBar> {}
 }

@@ -17,9 +17,7 @@ package br.com.sysmap.crux.gwt.client;
 
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
-import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
-import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.bind.ClickEvtBind;
@@ -29,7 +27,6 @@ import br.com.sysmap.crux.core.client.event.bind.KeyUpEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
-import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
@@ -73,13 +70,64 @@ public abstract class AbstractTabBarFactory<T extends TabBar> extends CompositeF
 		}
 	}
 	
-	@Override
-	@TagChildren({
-		@TagChild(TabProcessor.class)
-	})
-	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException {}		
-
-	private static void updateTabState(WidgetChildProcessorContext<TabBar> context)
+	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", tagName="tab" )
+	public abstract static class AbstractTabProcessor<T extends TabBar> extends WidgetChildProcessor<T> 
+	{
+		@Override
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration(value="enabled", type=Boolean.class, defaultValue="true"),
+			@TagAttributeDeclaration(value="wordWrap", type=Boolean.class, defaultValue="true")
+		})
+		@TagEventsDeclaration({
+			@TagEventDeclaration("onClick"),
+			@TagEventDeclaration("onKeyUp"),
+			@TagEventDeclaration("onKeyDown"),
+			@TagEventDeclaration("onKeyPress")
+		})
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
+		{
+			context.setAttribute("tabElement", context.getChildElement());
+		}
+	}
+	
+	@TagChildAttributes(tagName="text", type=String.class)
+	public abstract static class AbstractTextTabProcessor<T extends TabBar> extends WidgetChildProcessor<T>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException 
+		{
+			String title = context.getChildElement().getInnerHTML();
+			context.getRootWidget().addTab(title);
+			updateTabState(context);
+		}
+	}
+	
+	@TagChildAttributes(tagName="html", type=AnyTag.class)
+	public abstract static class AbstractHTMLTabProcessor<T extends TabBar> extends WidgetChildProcessor<T>
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException 
+		{
+			String title = context.getChildElement().getInnerHTML();
+			context.getRootWidget().addTab(title, true);
+			updateTabState(context);
+		}
+	}
+	
+	@TagChildAttributes(type=AnyWidget.class)
+	public abstract static class AbstractWidgetProcessor<T extends TabBar> extends WidgetChildProcessor<T> 
+	{
+		@Override
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
+		{
+			Element childElement = context.getChildElement();
+			Widget titleWidget = createChildWidget(childElement, childElement.getId());
+			context.getRootWidget().addTab(titleWidget);
+			updateTabState(context);
+		}
+	}
+	
+	private static <T extends TabBar> void updateTabState(WidgetChildProcessorContext<T> context)
 	{
 		Element tabElement = (Element) context.getAttribute("tabElement");
 		String enabled = tabElement.getAttribute("_enabled");
@@ -103,89 +151,5 @@ public abstract class AbstractTabBarFactory<T extends TabBar> extends CompositeF
 		new KeyDownEvtBind().bindEvent(tabElement, currentTab);
 		
 		context.clearAttributes();
-	}
-	
-	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", tagName="tab" )
-	public static class TabProcessor extends WidgetChildProcessor<TabBar> 
-	{
-		@Override
-		@TagAttributesDeclaration({
-			@TagAttributeDeclaration(value="enabled", type=Boolean.class, defaultValue="true"),
-			@TagAttributeDeclaration(value="wordWrap", type=Boolean.class, defaultValue="true")
-		})
-		@TagEventsDeclaration({
-			@TagEventDeclaration("onClick"),
-			@TagEventDeclaration("onKeyUp"),
-			@TagEventDeclaration("onKeyDown"),
-			@TagEventDeclaration("onKeyPress")
-		})
-		@TagChildren({
-			@TagChild(TabItemProcessor.class)
-		})	
-		public void processChildren(WidgetChildProcessorContext<TabBar> context) throws InterfaceConfigException
-		{
-			context.setAttribute("tabElement", context.getChildElement());
-		}
-	}
-	
-	public static class TabItemProcessor extends ChoiceChildProcessor<TabBar> 
-	{
-		@Override
-		@TagChildren({
-			@TagChild(TextTabProcessor.class),
-			@TagChild(HTMLTabProcessor.class),
-			@TagChild(WidgetTabProcessor.class)
-		})		
-		public void processChildren(WidgetChildProcessorContext<TabBar> context) throws InterfaceConfigException {}
-		
-	}
-	
-	@TagChildAttributes(tagName="text", type=String.class)
-	public static class TextTabProcessor extends WidgetChildProcessor<TabBar>
-	{
-		@Override
-		public void processChildren(WidgetChildProcessorContext<TabBar> context) throws InterfaceConfigException 
-		{
-			String title = context.getChildElement().getInnerHTML();
-			context.getRootWidget().addTab(title);
-			updateTabState(context);
-		}
-	}
-	
-	@TagChildAttributes(tagName="html", type=AnyTag.class)//
-	public static class HTMLTabProcessor extends WidgetChildProcessor<TabBar>
-	{
-		@Override
-		public void processChildren(WidgetChildProcessorContext<TabBar> context) throws InterfaceConfigException 
-		{
-			String title = context.getChildElement().getInnerHTML();
-			context.getRootWidget().addTab(title, true);
-			updateTabState(context);
-		}
-	}
-	
-	@TagChildAttributes(tagName="widget")
-	public static class WidgetTabProcessor extends WidgetChildProcessor<TabBar> 
-	{
-		@Override
-		@TagChildren({
-			@TagChild(WidgetProcessor.class)
-		})	
-		public void processChildren(WidgetChildProcessorContext<TabBar> context) throws InterfaceConfigException
-		{
-		}
-	}
-
-	@TagChildAttributes(type=AnyWidget.class)
-	public static class WidgetProcessor extends WidgetChildProcessor<TabBar> 
-	{
-		@Override
-		public void processChildren(WidgetChildProcessorContext<TabBar> context) throws InterfaceConfigException
-		{
-			Element childElement = context.getChildElement();
-			Widget titleWidget = createChildWidget(childElement, childElement.getId());
-			context.getRootWidget().addTab(titleWidget);
-			updateTabState(context);
-		}
 	}
 }

@@ -25,7 +25,6 @@ import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
-import br.com.sysmap.crux.gwt.client.HorizontalSplitPanelFactory.RightWidgeProcessor;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.VerticalSplitPanel;
@@ -74,7 +73,7 @@ public class VerticalSplitPanelFactory extends PanelFactory<VerticalSplitPanel>
 	{
 		@Override
 		@TagChildren({
-			@TagChild(RightWidgeProcessor.class)
+			@TagChild(BottomWidgeProcessor.class)
 		})
 		public void processChildren(WidgetChildProcessorContext<VerticalSplitPanel> context) throws InterfaceConfigException {}
 	}

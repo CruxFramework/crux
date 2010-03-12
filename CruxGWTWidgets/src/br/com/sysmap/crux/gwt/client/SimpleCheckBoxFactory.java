@@ -34,7 +34,7 @@ public class SimpleCheckBoxFactory extends FocusWidgetFactory<SimpleCheckBox> im
 {
 	@Override
 	@TagAttributes({
-		@TagAttribute("checked")
+		@TagAttribute(value="checked", type=Boolean.class)
 	})
 	public void processAttributes(WidgetFactoryContext<SimpleCheckBox> context) throws InterfaceConfigException
 	{

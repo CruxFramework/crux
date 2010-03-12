@@ -16,6 +16,13 @@
 package br.com.sysmap.crux.gwt.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.TabBar;
@@ -32,4 +39,49 @@ public class TabBarFactory extends AbstractTabBarFactory<TabBar>
 	{
 		return new TabBar();
 	}
+	
+	@Override
+	@TagChildren({
+		@TagChild(TabProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<TabBar> context) throws InterfaceConfigException {}		
+
+	public static class TabProcessor extends AbstractTabProcessor<TabBar> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TabItemProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<TabBar> context) throws InterfaceConfigException
+		{
+			super.processChildren(context);
+		}
+	}
+	
+	public static class TabItemProcessor extends ChoiceChildProcessor<TabBar> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TextTabProcessor.class),
+			@TagChild(HTMLTabProcessor.class),
+			@TagChild(WidgetTabProcessor.class)
+		})		
+		public void processChildren(WidgetChildProcessorContext<TabBar> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(tagName="widget")
+	public static class WidgetTabProcessor extends WidgetChildProcessor<TabBar> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(WidgetProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<TabBar> context) throws InterfaceConfigException {}
+	}
+	
+	public static class TextTabProcessor extends AbstractTextTabProcessor<TabBar> {}
+	
+	public static class HTMLTabProcessor extends AbstractHTMLTabProcessor<TabBar> {}
+	
+	public static class WidgetProcessor extends AbstractWidgetProcessor<TabBar> {}
 }

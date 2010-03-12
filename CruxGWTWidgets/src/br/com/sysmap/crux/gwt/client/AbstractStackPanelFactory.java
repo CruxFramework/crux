@@ -17,13 +17,10 @@ package br.com.sysmap.crux.gwt.client;
 
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
-import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
-import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
-import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
@@ -69,41 +66,11 @@ public abstract class AbstractStackPanelFactory<T extends StackPanel> extends Co
 		}
 	}
 
-	@Override
-	@TagChildren({
-		@TagChild(StackItemProcessor.class)
-	})	
-	public void processChildren(WidgetFactoryContext<T> context) throws InterfaceConfigException
-	{
-	}
-	
-	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", tagName="stackItem")
-	public static class StackItemProcessor extends WidgetChildProcessor<StackPanel>
-	{
-		@Override
-		@TagChildren({
-			@TagChild(TitleProcessor.class),
-			@TagChild(ContentProcessor.class)
-		})	
-		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException {}
-	}
-	
-	@TagChildAttributes(minOccurs="0")
-	public static class TitleProcessor extends ChoiceChildProcessor<StackPanel>
-	{
-		@Override
-		@TagChildren({
-			@TagChild(TitleTextProcessor.class),
-			@TagChild(TitleHTMLProcessor.class)
-		})	
-		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException {}
-	}
-
 	@TagChildAttributes(tagName="textTitle", type=String.class)
-	public static class TitleTextProcessor extends WidgetChildProcessor<StackPanel>
+	public abstract static class AbstractTitleTextProcessor<T extends StackPanel> extends WidgetChildProcessor<T>
 	{
 		@Override
-		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException 
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException 
 		{
 			context.setAttribute(KEY_TITLE, context.getChildElement().getInnerHTML());
 			context.setAttribute(KEY_IS_HTML, false);
@@ -111,31 +78,21 @@ public abstract class AbstractStackPanelFactory<T extends StackPanel> extends Co
 	}
 	
 	@TagChildAttributes(tagName="htmlTitle", type=AnyTag.class)
-	public static class TitleHTMLProcessor extends WidgetChildProcessor<StackPanel>
+	public abstract static class AbstractTitleHTMLProcessor<T extends StackPanel> extends WidgetChildProcessor<T>
 	{
 		@Override
-		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException 
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException 
 		{
 			context.setAttribute(KEY_TITLE, context.getChildElement().getInnerHTML());
 			context.setAttribute(KEY_IS_HTML, true);
 		}
 	}
 	
-	@TagChildAttributes(minOccurs="0", tagName="widget")
-	public static class ContentProcessor extends WidgetChildProcessor<StackPanel> 
-	{
-		@Override
-		@TagChildren({
-			@TagChild(ContentWidgetProcessor.class)
-		})	
-		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException {}
-	}
-
 	@TagChildAttributes(minOccurs="0", type=AnyWidget.class)
-	public static class ContentWidgetProcessor extends WidgetChildProcessor<StackPanel> 
+	public abstract static class AbstractContentWidgetProcessor<T extends StackPanel> extends WidgetChildProcessor<T> 
 	{
 		@Override
-		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException 
+		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException 
 		{
 			Element childElement = context.getChildElement();
 			Widget child = createChildWidget(childElement, childElement.getId());

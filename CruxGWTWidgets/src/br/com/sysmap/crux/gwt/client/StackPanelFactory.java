@@ -16,6 +16,13 @@
 package br.com.sysmap.crux.gwt.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagChild;
+import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagChildren;
+import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
+import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.StackPanel;
@@ -32,4 +39,50 @@ public class StackPanelFactory extends AbstractStackPanelFactory<StackPanel>
 	{
 		return new StackPanel();
 	}
+
+	@Override
+	@TagChildren({
+		@TagChild(StackItemProcessor.class)
+	})	
+	public void processChildren(WidgetFactoryContext<StackPanel> context) throws InterfaceConfigException
+	{
+	}
+	
+	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", tagName="stackItem")
+	public static class StackItemProcessor extends WidgetChildProcessor<StackPanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TitleProcessor.class),
+			@TagChild(ContentProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(minOccurs="0")
+	public static class TitleProcessor extends ChoiceChildProcessor<StackPanel>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(TitleTextProcessor.class),
+			@TagChild(TitleHTMLProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException {}
+	}
+
+	public static class TitleTextProcessor extends AbstractTitleTextProcessor<StackPanel> {}
+	
+	public static class TitleHTMLProcessor extends AbstractTitleHTMLProcessor<StackPanel> {}
+	
+	@TagChildAttributes(minOccurs="0", tagName="widget")
+	public static class ContentProcessor extends WidgetChildProcessor<StackPanel> 
+	{
+		@Override
+		@TagChildren({
+			@TagChild(ContentWidgetProcessor.class)
+		})	
+		public void processChildren(WidgetChildProcessorContext<StackPanel> context) throws InterfaceConfigException {}
+	}
+	
+	public static class ContentWidgetProcessor extends AbstractContentWidgetProcessor<StackPanel> {}
 }
