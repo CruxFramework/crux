@@ -23,6 +23,7 @@
 						<a:transferList id="transferList" leftListLabel="Left Items" 
 			                rightListLabel="Right Items" visibleItemCount="5"
 			                leftToRightButtonText="&gt;&gt;" rightToLeftButtonText="&lt;&lt;"
+			                onBeforeMoveItems="transferListController.onBeforeMoveItems"
 			                onLoadWidget="transferListController.loadItems" style="padding:5px;"/>
 					</a:widget>
 				</a:decoratedPanel>
