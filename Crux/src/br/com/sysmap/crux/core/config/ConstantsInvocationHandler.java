@@ -45,15 +45,15 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 		}
 		try
 		{
-			PropertyResourceBundle properties = getPropertiesForLocale(targetInterface);
-			if (properties != null)
+			if (isValidPropertySetter(method))
 			{
-				if (isValidPropertySetter(method))
-				{
-					invokeSetter(properties, method, args);
-					return null;
-				}
-				else
+				invokeSetter(method, args);
+				return null;
+			}
+			else
+			{
+				PropertyResourceBundle properties = getPropertiesForLocale(targetInterface);
+				if (properties != null)
 				{
 					String value = MessageFormat.format(properties.getString(name),args);
 					resolvedConstants.put(name, value);
@@ -120,7 +120,7 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 	 * @param method
 	 * @param args
 	 */
-	protected void invokeSetter(PropertyResourceBundle properties, Method method, Object[] args)
+	protected void invokeSetter(Method method, Object[] args)
 	{
 		String property = getPropertyFromSetterMethodName(method.getName());
 		Object value = args[0];
