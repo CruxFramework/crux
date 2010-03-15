@@ -47,7 +47,7 @@ public class TemplatesHotDeploymentScanner
 	 * 
 	 * @param poolSize
 	 */
-	public TemplatesHotDeploymentScanner(int poolSize)
+	private TemplatesHotDeploymentScanner(int poolSize)
 	{
 		threadPool = Executors.newScheduledThreadPool(poolSize);
 	}

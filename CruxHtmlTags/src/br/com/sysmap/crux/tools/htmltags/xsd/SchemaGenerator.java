@@ -55,6 +55,7 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyWidget;
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
@@ -1294,6 +1295,7 @@ public class SchemaGenerator
 	 */
 	public static void generateSchemas(File projectBaseDir, String outputDir, boolean generateModuleSchema) throws IOException
 	{
+		ConfigurationFactory.getConfigurations().setEnableHotDeploymentForWebDirs("false");
 		ClassScanner.initialize(ClasspathUrlFinder.findClassPaths());
 		TemplatesScanner.initialize(ClasspathUrlFinder.findClassPaths());
 		SchemaGenerator generator = new SchemaGenerator(projectBaseDir, outputDir);
