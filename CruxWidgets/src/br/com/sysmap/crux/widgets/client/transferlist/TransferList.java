@@ -18,8 +18,13 @@ package br.com.sysmap.crux.widgets.client.transferlist;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.sysmap.crux.widgets.client.event.moveitem.HasBeforeMoveItemsHandlers;
+import br.com.sysmap.crux.widgets.client.event.moveitem.BeforeMoveItemsEvent;
+import br.com.sysmap.crux.widgets.client.event.moveitem.BeforeMoveItemsHandler;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -33,7 +38,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * A decorated panel, with a title bar.
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class TransferList extends Composite
+public class TransferList extends Composite implements HasBeforeMoveItemsHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-TransferList" ;
 	
@@ -42,9 +47,7 @@ public class TransferList extends Composite
 	private ListBox rightList;
 	private Button moveToRightButton;
 	private Button moveToLeftButton;
-
 	private Label leftListLabel;
-
 	private Label rightListLabel;
 	
 	/**
@@ -311,67 +314,99 @@ public class TransferList extends Composite
 		
 		return items;	
 	}
-}
 
-/**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
- */
-class TransferItemClickHandler implements ClickHandler
-{
-	private TransferList transferList;
-	private boolean leftToRight; 
-	
 	/**
-	 * @param transfer
-	 * @param leftToRight
+	 * @see br.com.sysmap.crux.widgets.client.event.moveitem.HasBeforeMoveItemsHandlers#addBeforeMoveItemsHandler(br.com.sysmap.crux.widgets.client.event.moveitem.BeforeMoveItemsHandler)
 	 */
-	public TransferItemClickHandler(TransferList transfer, boolean leftToRight)
+	public HandlerRegistration addBeforeMoveItemsHandler(BeforeMoveItemsHandler handler)
 	{
-		this.transferList = transfer;
-		this.leftToRight = leftToRight;
+		return addHandler(handler, BeforeMoveItemsEvent.getType());
 	}
 	
 	/**
-	 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+	 * Click handler for transfer list buttons
+	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
 	 */
-	public void onClick(ClickEvent event)
+	private static class TransferItemClickHandler implements ClickHandler
 	{
-		ListBox listToRemove = leftToRight ? transferList.getLeftList() : transferList.getRightList();
-		ListBox listToAdd = leftToRight ? transferList.getRightList() : transferList.getLeftList();
+		private TransferList transferList;
+		private boolean leftToRight; 
 		
-		List<Object[]> move = new ArrayList<Object[]>();
-		List<Object[]> keep = new ArrayList<Object[]>();
-		
-		for (int i = 0; i < listToRemove.getItemCount(); i++)
+		/**
+		 * @param transfer
+		 * @param leftToRight
+		 */
+		public TransferItemClickHandler(TransferList transfer, boolean leftToRight)
 		{
-			String text = listToRemove.getItemText(i);
-			String value = listToRemove.getValue(i);
-			Object[] item = new Object[]{i, text, value};
+			this.transferList = transfer;
+			this.leftToRight = leftToRight;
+		}
+		
+		/**
+		 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+		 */
+		public void onClick(ClickEvent event)
+		{
+			ListBox listToRemove = leftToRight ? transferList.getLeftList() : transferList.getRightList();
+			ListBox listToAdd = leftToRight ? transferList.getRightList() : transferList.getLeftList();
 			
-			if(listToRemove.isItemSelected(i))
+			List<String[]> move = new ArrayList<String[]>();
+			List<String[]> keep = new ArrayList<String[]>();
+			
+			for (int i = 0; i < listToRemove.getItemCount(); i++)
 			{
-				move.add(item);
+				String text = listToRemove.getItemText(i);
+				String value = listToRemove.getValue(i);
+				String[] item = new String[]{text, value};
+				
+				if(listToRemove.isItemSelected(i))
+				{
+					move.add(item);
+				}
+				else
+				{
+					keep.add(item);
+				}
 			}
-			else
+			
+			if(move.size() > 0)
 			{
-				keep.add(item);
+				ItemLocation itemsLocation = leftToRight ? ItemLocation.left : ItemLocation.right;
+				List<Item> itemsForEvet = createItemList(move, itemsLocation);
+				BeforeMoveItemsEvent moveEvt = BeforeMoveItemsEvent.fire(transferList, itemsForEvet);
+				
+				if(!moveEvt.isCanceled())
+				{
+					listToRemove.clear();
+					
+					for (String[] item : move)
+					{
+						listToAdd.addItem(item[0], item[1]);
+					}
+					
+					for (String[] item : keep)
+					{
+						listToRemove.addItem(item[0], item[1]);
+					}
+				}
 			}
 		}
 		
-		if(move.size() > 0)
+		/**
+		 * Creates a list of Item from a list of string[] containing labels and values 
+		 * @param arrays
+		 * @param location
+		 * @return
+		 */
+		private List<Item> createItemList(List<String[]> arrays, ItemLocation location)
 		{
-			listToRemove.clear();
-			
-			for (Object[] item : move)
+			List<Item> items = new ArrayList<Item>();
+			for (String[] array : arrays)
 			{
-				listToAdd.addItem((String) item[1], (String) item[2]);
+				Item item = new Item(array[0], array[1], location);
+				items.add(item);
 			}
-			
-			for (Object[] item : keep)
-			{
-				listToRemove.addItem((String) item[1], (String) item[2]);
-			}
-		}		
-	}	
+			return items;
+		}
+	}
 }

@@ -26,4 +26,6 @@ public class Events
 	public static final String BEFORE_ROW_SELECT = "onbeforerowselect";
 	
 	public static final String PAGE = "onpage";
+	
+	public static final String MOVE_ITEMS = "onmoveitems";
 }

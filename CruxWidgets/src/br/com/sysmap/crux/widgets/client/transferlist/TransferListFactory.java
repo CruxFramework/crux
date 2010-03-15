@@ -18,8 +18,11 @@ package br.com.sysmap.crux.widgets.client.transferlist;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
+import br.com.sysmap.crux.core.client.declarative.TagEvent;
+import br.com.sysmap.crux.core.client.declarative.TagEvents;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.gwt.client.CompositeFactory;
+import br.com.sysmap.crux.widgets.client.event.moveitem.BeforeMoveItemsEvtBind;
 
 import com.google.gwt.dom.client.Element;
 
@@ -47,5 +50,15 @@ public class TransferListFactory extends CompositeFactory<TransferList>
 	public void processAttributes(WidgetFactoryContext<TransferList> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
+	}
+	
+	
+	@Override
+	@TagEvents({
+		@TagEvent(BeforeMoveItemsEvtBind.class)
+	})
+	public void processEvents(br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext<TransferList> context) throws InterfaceConfigException
+	{
+		super.processEvents(context);
 	}
 }
