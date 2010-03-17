@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
+import br.com.sysmap.crux.widgets.client.util.StyleUtils;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -199,20 +201,18 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 
 	/**
 	 * Makes an element opaque or transparent
-	 * @param transparent <code>true</code> for transparent
+	 * @param apply <code>true</code> for appending a style dependent name
 	 * @param element
 	 */
-	private void makeTransparent(boolean transparent, Element element)
+	private void applyDraggingStyle(boolean apply, Element element)
 	{
-		if(transparent)
+		if(apply)
 		{
-			element.getStyle().setProperty("opacity", "0.7");
-			element.getStyle().setProperty("filter", "alpha(opacity=70)");
+			StyleUtils.addStyleDependentName(element, "dragging");
 		}
 		else
 		{
-			element.getStyle().setProperty("opacity", "1");
-			element.getStyle().setProperty("filter", "alpha(opacity=100)");
+			StyleUtils.removeStyleDependentName(element, "dragging");
 		}
 	}
 
@@ -282,7 +282,7 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 			if (hideContentOnDragging)
 			{
 				getContentWidget().setVisible(false);
-				makeTransparent(true, getElement());
+				applyDraggingStyle(true, getElement());
 			}
 		}
 	}
@@ -313,7 +313,7 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		if (hideContentOnDragging)
 		{
 			getContentWidget().setVisible(true);
-			makeTransparent(false, getElement());
+			applyDraggingStyle(false, getElement());
 		}		
 	}
 
