@@ -132,29 +132,36 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 	 */
 	public void onKeyDown(KeyDownEvent event)
 	{
-		int[] pos = caret(-1,-1);
-		int code = event.getNativeKeyCode();
-		ignore = (code < 16 || (code > 16 && code < 32) || (code > 32 && code < 41));
-
-		if ((pos[0] - pos[1]) != 0 && (!ignore || code == KeyCodes.KEY_BACKSPACE || code == KeyCodes.KEY_DELETE)) 
+		if (textBox.isReadOnly())
 		{
-			clearBuffer(pos[0], pos[1]);
+			event.preventDefault();
 		}
-
-		if (code == KeyCodes.KEY_BACKSPACE || code == KeyCodes.KEY_DELETE ) // || (iPhone && k==127) 
+		else
 		{
-			if (pos[0] < this.length  || code != KeyCodes.KEY_DELETE)
+			int[] pos = caret(-1,-1);
+			int code = event.getNativeKeyCode();
+			ignore = (code < 16 || (code > 16 && code < 32) || (code > 32 && code < 41));
+
+			if ((pos[0] - pos[1]) != 0 && (!ignore || code == KeyCodes.KEY_BACKSPACE || code == KeyCodes.KEY_DELETE)) 
 			{
-				shiftL(pos[0] + (code == KeyCodes.KEY_DELETE ? 0 : -1));
+				clearBuffer(pos[0], pos[1]);
 			}
-			event.preventDefault();
-		}
-		else if (code == KeyCodes.KEY_ESCAPE)
-		{
-			clearBuffer(0, length);
-			writeBuffer();
-			caret(firstNonMaskPos, -1);
-			event.preventDefault();
+
+			if (code == KeyCodes.KEY_BACKSPACE || code == KeyCodes.KEY_DELETE ) // || (iPhone && k==127) 
+			{
+				if (pos[0] < this.length  || code != KeyCodes.KEY_DELETE)
+				{
+					shiftL(pos[0] + (code == KeyCodes.KEY_DELETE ? 0 : -1));
+				}
+				event.preventDefault();
+			}
+			else if (code == KeyCodes.KEY_ESCAPE)
+			{
+				clearBuffer(0, length);
+				writeBuffer();
+				caret(firstNonMaskPos, -1);
+				event.preventDefault();
+			}
 		}
 	}
 
@@ -204,10 +211,10 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 	 */
 	public void onFocus(FocusEvent event)
 	{
-		focusText = textBox.getText();
 		int pos = checkVal(false);
 		writeBuffer();
 		caret(pos, -1);
+		focusText = textBox.getText();
 	}
 
 	/**
