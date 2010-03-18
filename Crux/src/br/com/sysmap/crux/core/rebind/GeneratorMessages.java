@@ -94,30 +94,6 @@ public interface GeneratorMessages
 	@DefaultServerMessage("[generator 022] - Error generating invokable object. Can not realize the type for generic declaration.")
 	String errorGeneratingInvokableObjectCanNotRealizeGenericType();
 
-	@DefaultServerMessage("[screenFactory 001] - The id attribute is required for CRUX Widgets.")
-	String screenFactoryWidgetIdRequired();
-
-	@DefaultServerMessage("[screenFactory 002] - Can not create widget {0}. Verify the widget type.")
-	String screenFactoryErrorCreateWidget(String widgetId);
-
-	@DefaultServerMessage("[screenFactory 003] - Error creating widget. Duplicated identifier: {0}.")
-	String screenFactoryErrorDuplicatedWidget(String widgetId);
-
-	@DefaultServerMessage("[screenFactory 004] - Multiple modules in the same html page is not allowed in CRUX.")
-	String screenFactoryErrorMultipleModulesOnPage();
-	
-	@DefaultServerMessage("[screenFactory 005] - Error retrieving screen {0}. Error: {1}.")
-	String screenFactoryErrorRetrievingScreen(String screenId, String errMsg);
-
-	@DefaultServerMessage("[screenFactory 006] - Error Creating widget {0}. Error: {1}.")
-	String screenFactoryGenericErrorCreateWidget(String screenId, String errMsg);
-
-	@DefaultServerMessage("[screenFactory 007] - Screen {0} not found!")
-	String screenFactoryScreeResourceNotFound(String screenId);
-
-	@DefaultServerMessage("[Screen 001] - Error setting property {0} for widget {1}.")
-	String screenPropertyError(String property, String widgetId);
-
 	@DefaultServerMessage("[generator 023] - Error generating widget factory: {0}.")
 	String errorGeneratingWidgetFactory(String localizedMessage);
 
@@ -145,7 +121,7 @@ public interface GeneratorMessages
 	@DefaultServerMessage("[generator 031] - Error parsing module file: {0}.")
 	String modulesScannerErrorParsingModuleFile(String fileName);
 
-	@DefaultServerMessage("[generator 032] - Error initializing modulesScanner.")
+	@DefaultServerMessage("[generator 032] - Error initializing modulesScanner. ErrorMsg: {0}")
 	String modulesScannerInitializationError(String localizedMessage);
 
 	@DefaultServerMessage("[generator 033] - Can not find the web classes dir.")
@@ -156,4 +132,34 @@ public interface GeneratorMessages
 
 	@DefaultServerMessage("[generator 035] - Parameter Object {0} has no valid field for binding.")
 	String errorGeneratingRegisteredObjectParameterObjectHasNoValidField(String name);
+	
+	@DefaultServerMessage("[parameter 001] - Required parameter {0} is missing.")
+	String requiredParameterMissing(String name);
+
+	@DefaultServerMessage("[parameter 002] - Error parsing parameter {0}.")
+	String errorReadingParameter(String name);
+
+	@DefaultServerMessage("[screenFactory 001] - The id attribute is required for CRUX Widgets.")
+	String screenFactoryWidgetIdRequired();
+
+	@DefaultServerMessage("[screenFactory 002] - Can not create widget {0}. Verify the widget type.")
+	String screenFactoryErrorCreateWidget(String widgetId);
+
+	@DefaultServerMessage("[screenFactory 003] - Error creating widget. Duplicated identifier: {0}.")
+	String screenFactoryErrorDuplicatedWidget(String widgetId);
+
+	@DefaultServerMessage("[screenFactory 004] - Multiple modules in the same html page is not allowed in CRUX.")
+	String screenFactoryErrorMultipleModulesOnPage();
+	
+	@DefaultServerMessage("[screenFactory 005] - Error retrieving screen {0}. Error: {1}.")
+	String screenFactoryErrorRetrievingScreen(String screenId, String errMsg);
+
+	@DefaultServerMessage("[screenFactory 006] - Error Creating widget {0}. Error: {1}.")
+	String screenFactoryGenericErrorCreateWidget(String screenId, String errMsg);
+
+	@DefaultServerMessage("[screenFactory 007] - Screen {0} not found!")
+	String screenFactoryScreeResourceNotFound(String screenId);
+
+	@DefaultServerMessage("[Screen 001] - Error setting property {0} for widget {1}.")
+	String screenPropertyError(String property, String widgetId);
 }
