@@ -85,16 +85,16 @@ public interface ServerMessages
 	@DefaultServerMessage("[screenBridge 002] - Error reading screen id: {0}.")
 	String screenBridgeErrorReadingScreenId(String errMsg);
 
-	@DefaultServerMessage("[messages 001] Error initializing messagesClasses: {0}.")
+	@DefaultServerMessage("[messages 001] - Error initializing messagesClasses: {0}.")
 	String messagesClassesInitializeError(String localizedMessage);
 
 	@DefaultServerMessage("[messages 002] - Duplicated Message Key: {0}.")
 	String messagesClassesDuplicatedMessageKey(String value);
 	
-	@DefaultServerMessage("[classpath 001] Error initializing classPathResolver: {0}.")
+	@DefaultServerMessage("[classpath 001] - Error initializing classPathResolver: {0}.")
 	String classPathResolverInitializerError(String message);
 
-	@DefaultServerMessage("[serializers 001] Error initializing serializer: {0}.")
+	@DefaultServerMessage("[serializers 001] - Error initializing serializer: {0}.")
 	String serializersSerializersInitializeError(String localizedMessage);
 
 	@DefaultServerMessage("[screenResourceScanner 001] - Error initializing screenResourceScanner: {0}.")
