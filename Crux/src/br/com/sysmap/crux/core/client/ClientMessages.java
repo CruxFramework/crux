@@ -31,7 +31,7 @@ public interface ClientMessages extends Messages
 	String eventProcessorClientError(String call, String errMsg);
 	@DefaultMessage("[event 003] - Invalid declaration for handler method ''{0}''. Correct syntaxe is <controller.method>.")
 	String eventFactoryInvalidHandlerMethodDeclaration(String evt);
-	@DefaultMessage("[event 003] - Error loading lazy controller {0}.")
+	@DefaultMessage("[event 004] - Error loading lazy controller {0}.")
 	String eventProcessorClientControllerCanNotBeLoaded(String controller);
 	
 	//  screenFactory

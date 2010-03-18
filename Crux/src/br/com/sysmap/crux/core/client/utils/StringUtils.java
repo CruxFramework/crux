@@ -42,6 +42,21 @@ public class StringUtils
 		return src;
 	}
 	
+	public static String rpad(String src, int length, char padding)
+	{
+		if(src == null)
+		{
+			src = "";
+		}
+
+		while(src.length() < length)
+		{
+			src += padding;
+		}
+		
+		return src;
+	}
+
 	public static boolean isEmpty(String value)
 	{
 		return (value == null || value.length() == 0);

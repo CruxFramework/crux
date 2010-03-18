@@ -37,7 +37,6 @@ import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
-import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.utils.ClassUtils;
 import br.com.sysmap.crux.core.utils.GenericUtils;
 
@@ -59,7 +58,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 public abstract class AbstractRegisteredClientInvokableGenerator extends AbstractRegisteredElementsGenerator
 {	
 
-	protected ServerMessages coreMessages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
+	protected GeneratorMessages coreMessages = MessagesFactory.getMessages(GeneratorMessages.class);
 	
 	
 	/**
