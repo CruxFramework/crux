@@ -65,6 +65,9 @@ import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
 import br.com.sysmap.crux.tools.htmltags.template.TemplateParser;
 import br.com.sysmap.crux.tools.htmltags.template.Templates;
 import br.com.sysmap.crux.tools.htmltags.template.TemplatesScanner;
+import br.com.sysmap.crux.tools.htmltags.tools.ConsoleParameter;
+import br.com.sysmap.crux.tools.htmltags.tools.ConsoleParametersProcessingException;
+import br.com.sysmap.crux.tools.htmltags.tools.ConsoleParametersProcessor;
 import br.com.sysmap.crux.tools.htmltags.util.StreamUtils;
 
 /**
@@ -1311,21 +1314,44 @@ public class SchemaGenerator
 	{
 		try
 		{
-			if (args.length != 2)
+			try
 			{
-				System.out.println("Usage: SchemaGenerator <projectBaseDir> <outputDir>");
-			}
-			else
-			{
-				String projectBaseDir = args[0]; //"C:\\desenvolvimento\\ide\\workspaces\\myeclipse\\CruxHtmlTags";
-				String outputDir = args[1]; //xsd\\generated";
+				ConsoleParametersProcessor parametersProcessor = createParametersProcessor();
+				Map<String, ConsoleParameter> parameters = parametersProcessor.processConsoleParameters(args);
 
-				SchemaGenerator.generateSchemas(projectBaseDir, outputDir, false);
+				if (parameters.containsKey("-help") || parameters.containsKey("-h"))
+				{
+					parametersProcessor.showsUsageScreen();
+				}
+				else
+				{
+					SchemaGenerator.generateSchemas(parameters.get("projectBaseDir").getValue(), 
+													parameters.get("outputDir").getValue(), 
+													parameters.containsKey("-generateModuleSchema"));
+				}
+			}
+			catch (ConsoleParametersProcessingException e)
+			{
+				System.out.println("Program aborted");
 			}
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * @return
+	 */
+	private static ConsoleParametersProcessor createParametersProcessor()
+	{
+		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor("SchemaGenerator");
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("projectBaseDir", "The project folder."));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("outputDir", "The folder where the files will be created."));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-generateModuleSchema", "Generates also the modules.xsd file.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
+		return parametersProcessor;
 	}
 }
