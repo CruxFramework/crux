@@ -34,7 +34,7 @@ public interface GeneratorMessages
 	@DefaultServerMessage("[generator 003] - Error for register client formatter. Formatter: {0}. Error:{1}")
 	String errorGeneratingRegisteredFormatter(String formatter, String errMesg);
 
-	@DefaultServerMessage("[generator 004] - Error for register client class {0}:")
+	@DefaultServerMessage("[generator 004] - Error for generate client class {0}:")
 	String errorGeneratingRegisteredElement(String errMsg);
 
 	@DefaultServerMessage("[generator 005] - Error retrieving screen Identifier.")
