@@ -59,7 +59,10 @@ public class PopupPanelFactory extends PanelFactory<PopupPanel>
 	
 	@Override
 	@TagAttributes({
-		@TagAttribute(value="previewingAllNativeEvents", type=Boolean.class)
+		@TagAttribute(value="previewingAllNativeEvents", type=Boolean.class),
+		@TagAttribute(value="autoHideOnHistoryEventsEnabled", type=Boolean.class),
+		@TagAttribute("glassStyleName"),
+		@TagAttribute(value="glassEnabled", type=Boolean.class)
 	})
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="modal", type=Boolean.class),
