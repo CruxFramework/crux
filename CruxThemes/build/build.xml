@@ -9,6 +9,8 @@
 	<property name="crux.libs.project" value="../CruxLibs/crux"/>
 
 	<target name="export">
+		<delete dir="${distdir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
+		<mkdir dir="${distdir}" />
 		
 		<delete dir="${classesdir}" failonerror="no"/>
 		<mkdir dir="${classesdir}" />
