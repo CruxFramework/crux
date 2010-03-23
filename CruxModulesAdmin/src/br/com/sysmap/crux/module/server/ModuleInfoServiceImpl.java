@@ -525,7 +525,7 @@ public class ModuleInfoServiceImpl implements ModuleInfoService, SessionAware
 		}
 		else
 		{
-			pageParameter.setName(parameterAnnot.value());
+			pageParameter.setName(field.getName());
 		}
 
 		pageParameter.setType(field.getType().getName());
