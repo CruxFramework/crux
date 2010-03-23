@@ -78,7 +78,7 @@ public abstract class GenericUtils
 		}		
 		Map<TypeVariable<?>, Type> typeVariableMap = getTypeVariableMap(clazz);
 		Type rawType = getRawType(genericType, typeVariableMap);
-		return (rawType instanceof Class ? (Class<?>) rawType : method.getReturnType());
+		return (rawType instanceof Class<?> ? (Class<?>) rawType : method.getReturnType());
 	}
 
 	/**
@@ -102,7 +102,7 @@ public abstract class GenericUtils
 	 */
 	static Class<?> resolveType(Type genericType, Map<TypeVariable<?>, Type> typeVariableMap) {
 		Type rawType = getRawType(genericType, typeVariableMap);
-		return (rawType instanceof Class ? (Class<?>) rawType : Object.class);
+		return (rawType instanceof Class<?> ? (Class<?>) rawType : Object.class);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public abstract class GenericUtils
 	 */
 	static Type getRawType(Type genericType, Map<TypeVariable<?>, Type> typeVariableMap) {
 		Type resolvedType = genericType;
-		if (genericType instanceof TypeVariable) {
+		if (genericType instanceof TypeVariable<?>) {
 			TypeVariable<?> tv = (TypeVariable<?>) genericType;
 			resolvedType = typeVariableMap.get(tv);
 			if (resolvedType == null) {
@@ -182,7 +182,7 @@ public abstract class GenericUtils
 			return Object.class;
 		}
 		Type bound = bounds[0];
-		if (bound instanceof TypeVariable) {
+		if (bound instanceof TypeVariable<?>) {
 			bound = extractBoundForTypeVariable((TypeVariable<?>) bound);
 		}
 		return bound;
@@ -193,12 +193,12 @@ public abstract class GenericUtils
 			if (genericInterface instanceof ParameterizedType) {
 				ParameterizedType pt = (ParameterizedType) genericInterface;
 				populateTypeMapFromParameterizedType(pt, typeVariableMap);
-				if (pt.getRawType() instanceof Class) {
+				if (pt.getRawType() instanceof Class<?>) {
 					extractTypeVariablesFromGenericInterfaces(
 							((Class<?>) pt.getRawType()).getGenericInterfaces(), typeVariableMap);
 				}
 			}
-			else if (genericInterface instanceof Class) {
+			else if (genericInterface instanceof Class<?>) {
 				extractTypeVariablesFromGenericInterfaces(
 						((Class<?>) genericInterface).getGenericInterfaces(), typeVariableMap);
 			}
@@ -222,13 +222,13 @@ public abstract class GenericUtils
 	 * {S=java.lang.String, T=java.lang.Integer}.
 	 */
 	private static void populateTypeMapFromParameterizedType(ParameterizedType type, Map<TypeVariable<?>, Type> typeVariableMap) {
-		if (type.getRawType() instanceof Class) {
+		if (type.getRawType() instanceof Class<?>) {
 			Type[] actualTypeArguments = type.getActualTypeArguments();
 			TypeVariable<?>[] typeVariables = ((Class<?>) type.getRawType()).getTypeParameters();
 			for (int i = 0; i < actualTypeArguments.length; i++) {
 				Type actualTypeArgument = actualTypeArguments[i];
 				TypeVariable<?> variable = typeVariables[i];
-				if (actualTypeArgument instanceof Class) {
+				if (actualTypeArgument instanceof Class<?>) {
 					typeVariableMap.put(variable, actualTypeArgument);
 				}
 				else if (actualTypeArgument instanceof GenericArrayType) {
@@ -237,7 +237,7 @@ public abstract class GenericUtils
 				else if (actualTypeArgument instanceof ParameterizedType) {
 					typeVariableMap.put(variable, actualTypeArgument);
 				}
-				else if (actualTypeArgument instanceof TypeVariable) {
+				else if (actualTypeArgument instanceof TypeVariable<?>) {
 					// We have a type that is parameterized at instantiation time
 					// the nearest match on the bridge method will be the bounded type.
 					TypeVariable<?> typeVariableArgument = (TypeVariable<?>) actualTypeArgument;

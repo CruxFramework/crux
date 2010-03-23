@@ -69,7 +69,7 @@ public class ContextGenerator extends AbstractInterfaceWrapperGenerator
 	private void generateSetter(Method method, SourceWriter sourceWriter, String name) throws WrapperGeneratorException
 	{
 		Type parameterType = method.getGenericParameterTypes()[0];
-		if ((parameterType instanceof Class) && ((Class<?>)parameterType).isPrimitive())
+		if ((parameterType instanceof Class<?>) && ((Class<?>)parameterType).isPrimitive())
 		{
 			throw new WrapperGeneratorException(messages.errorContextWrapperPrimitiveParamterNotAllowed(method.toGenericString()));
 		}

@@ -34,9 +34,9 @@ public class RemoteDataSourceLoadAsyncCallbackAdapter extends AsyncCallbackAdapt
 	@Override
 	public void onComplete(RemoteDataSourceConfiguration result)
 	{
-		if (this.caller instanceof RemoteDataSource)
+		if (this.caller instanceof RemoteDataSource<?, ?>)
 		{
-			if (this.caller instanceof MeasurableRemoteDataSource)
+			if (this.caller instanceof MeasurableRemoteDataSource<?, ?>)
 			{
 				((MeasurableRemoteDataSource<?, ?>)this.caller).setLoadData(result);
 			}
