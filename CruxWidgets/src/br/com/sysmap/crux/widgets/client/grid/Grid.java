@@ -93,7 +93,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		this.dataSource = dataSource;
 		this.dataSource.setPageSize(this.pageSize);
 		
-		if(this.dataSource instanceof RemoteDataSource)
+		if(this.dataSource instanceof RemoteDataSource<?, ?>)
 		{
 			RemoteDataSource<?, ?> remote = (RemoteDataSource<?, ?>) this.dataSource;
 			
@@ -116,7 +116,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				loadData();
 			}
 		}
-		else if(this.dataSource instanceof LocalDataSource)
+		else if(this.dataSource instanceof LocalDataSource<?, ?>)
 		{
 			LocalDataSource<?, ?> local = (LocalDataSource<?, ?>) this.dataSource;
 			
@@ -406,7 +406,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public int getPageCount()
 	{
-		if(this.dataSource instanceof MeasurablePagedDataSource)
+		if(this.dataSource instanceof MeasurablePagedDataSource<?>)
 		{
 			MeasurablePagedDataSource<?> ds = (MeasurablePagedDataSource<?>) this.dataSource;
 			return ds.getPageCount();
@@ -423,7 +423,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			this.dataSource.nextPage();
 			
-			if(!(this.dataSource instanceof RemoteDataSource))
+			if(!(this.dataSource instanceof RemoteDataSource<?, ?>))
 			{
 				render();
 			}
@@ -436,7 +436,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			this.dataSource.previousPage();
 			
-			if(!(this.dataSource instanceof RemoteDataSource))
+			if(!(this.dataSource instanceof RemoteDataSource<?, ?>))
 			{
 				render();
 			}
@@ -683,11 +683,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		if(isDataLoaded())
 		{
-			if(this.dataSource instanceof MeasurablePagedDataSource)
+			if(this.dataSource instanceof MeasurablePagedDataSource<?>)
 			{
 				((MeasurablePagedDataSource<?>) this.dataSource).setCurrentPage(page);
 
-				if(!(this.dataSource instanceof RemoteDataSource))
+				if(!(this.dataSource instanceof RemoteDataSource<?, ?>))
 				{
 					render();
 				}
