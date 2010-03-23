@@ -26,6 +26,9 @@
 	</path>
 
 	<target name="export" description="Creates a jar file and exports it to the CruxLibs project.">
+
+		<delete dir="${distdir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
+		<mkdir dir="${distdir}" />
 		
 		<delete dir="${classesdir}" failonerror="no" />
 		<mkdir dir="${classesdir}" />
