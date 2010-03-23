@@ -28,6 +28,8 @@
 	</path>
 
 	<target name="export" description="Creates the jar">
+		<delete dir="${distdir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
+		<mkdir dir="${distdir}" />
 		
 		<delete dir="${classesdir}" failonerror="no"/>
 		<mkdir dir="${classesdir}" />
