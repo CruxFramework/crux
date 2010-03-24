@@ -194,7 +194,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	@Override
 	protected void onClear()
 	{
-		if(isDataLoaded())
+		if(this.dataSource != null)
 		{
 			this.dataSource.reset();
 		}
