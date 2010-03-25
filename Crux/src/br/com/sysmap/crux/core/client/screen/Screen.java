@@ -752,14 +752,25 @@ public class Screen
 	}
 	
 	/**
+	 * @deprecated Use createDataSource(java.lang.String) instead
+	 * @param dataSource
+	 * @return
+	 */
+	@Deprecated
+	public static DataSource<?> getDataSource(String dataSource)
+	{
+		return createDataSource(dataSource);
+	}
+
+	/**
 	 * 
 	 * @param dataSource
 	 * @return
 	 */
-	public static DataSource<?> getDataSource(String dataSource)
+	public static DataSource<?> createDataSource(String dataSource)
 	{
-		return ScreenFactory.getInstance().getDataSource(dataSource);
-	}
+		return ScreenFactory.getInstance().createDataSource(dataSource);
+	}	
 	
 	/**
 	 * 

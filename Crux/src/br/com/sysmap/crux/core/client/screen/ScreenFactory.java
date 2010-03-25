@@ -133,15 +133,26 @@ public class ScreenFactory {
 	}
 	
 	/**
+	 * @deprecated - Use createDataSource(java.lang.String) instead.
+	 * @param dataSource
+	 * @return
+	 */
+	@Deprecated
+	public DataSource<?> getDataSource(String dataSource)
+	{
+		return createDataSource(dataSource);
+	}
+	
+	/**
 	 * 
 	 * @param dataSource
 	 * @return
 	 */
-	public DataSource<?> getDataSource(String dataSource)
+	public DataSource<?> createDataSource(String dataSource)
 	{
 		return this.registeredDataSources.getDataSource(dataSource);
 	}
-	
+
 	/**
 	 * 
 	 * @param element
