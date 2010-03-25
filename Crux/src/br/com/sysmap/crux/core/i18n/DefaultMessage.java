@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- *
+ * @deprecated - Use DefaultServerMessage instead.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
