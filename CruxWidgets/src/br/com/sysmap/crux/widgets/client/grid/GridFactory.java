@@ -136,7 +136,7 @@ public class GridFactory extends WidgetFactory<Grid>
 		
 		if(dataSourceName != null && dataSourceName.length() > 0)
 		{
-			EditablePagedDataSource dataSource = (EditablePagedDataSource) Screen.getDataSource(dataSourceName);
+			EditablePagedDataSource dataSource = (EditablePagedDataSource) Screen.createDataSource(dataSourceName);
 			widget.setDataSource(dataSource);
 		}
 	}
