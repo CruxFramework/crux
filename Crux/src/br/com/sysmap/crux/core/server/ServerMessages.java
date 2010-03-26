@@ -108,4 +108,7 @@ public interface ServerMessages
 
 	@DefaultServerMessage("[datasources 002] - Duplicated datasource: {0}.")
 	String dataSourcesDuplicatedDataSource(String value);
+	
+	@DefaultServerMessage("[synchronizerToken 001] - Invalid Synchronizer Token for method {0}. Possible CSRF attack.")
+	String synchronizerTokenServiceInvalidTokenError(String methodFullSignature);
 }

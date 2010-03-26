@@ -4,7 +4,7 @@
     <inherits name="com.google.gwt.http.HTTP"/>
 	<inherits name='com.google.gwt.user.User'/>
 	<inherits name='com.google.gwt.xml.XML'/>
-
+  
 	<!-- Specify the app entry point class.                   -->
 	<entry-point class='br.com.sysmap.crux.core.client.Crux'/>
 
@@ -78,6 +78,12 @@
 	<!-- Specify the generator for invoker wrappers.     -->
 	<generate-with class="br.com.sysmap.crux.core.rebind.InvokerGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.controller.Invoker" />
+	</generate-with>
+	
+	<!-- Specify the generator for RPC stubs.     -->
+
+	<generate-with class="br.com.sysmap.crux.core.rebind.rpc.CruxServiceGenerator">
+		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService"/>
 	</generate-with>
 	
 	<!-- Specify ie6 implementation for screen blocker -->

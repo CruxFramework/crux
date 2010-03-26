@@ -15,15 +15,22 @@
  */
 package br.com.sysmap.crux.core.server.dispatch;
 
+import java.lang.reflect.Method;
+
+import br.com.sysmap.crux.core.client.rpc.st.UseSynchronizerToken;
 import br.com.sysmap.crux.core.i18n.LocaleResolver;
 import br.com.sysmap.crux.core.i18n.LocaleResolverInitialiser;
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.server.ServerMessages;
+import br.com.sysmap.crux.core.server.dispatch.st.CruxSynchronizerTokenHandler;
+import br.com.sysmap.crux.core.server.dispatch.st.CruxSynchronizerTokenHandlerFactory;
+import br.com.sysmap.crux.core.server.dispatch.st.InvalidTokenException;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RPC;
 import com.google.gwt.user.server.rpc.RPCRequest;
-import com.google.gwt.user.server.rpc.SerializationPolicy;
 
 /**
  * 
@@ -32,10 +39,10 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
 public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteServiceServlet
 {
 	private static final long serialVersionUID = -5471459247489132091L;
+	private ServerMessages messages = MessagesFactory.getMessages(ServerMessages.class);
 
 	/**
-	 * Override RemoteServiceServlet to 
-	 * {@link SerializationPolicy}
+	 * @see com.google.gwt.user.server.rpc.RemoteServiceServlet#processCall(java.lang.String)
 	 */
 	@Override
 	public String processCall(String payload) throws SerializationException 
@@ -47,8 +54,23 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 			Object service = getServiceForRequest(payload);
 			RPCRequest rpcRequest = RPC.decodeRequest(payload, service.getClass(), this);
 			onAfterRequestDeserialized(rpcRequest);
-			return RPC.invokeAndEncodeResponse(service, rpcRequest.getMethod(),
-					rpcRequest.getParameters(), rpcRequest.getSerializationPolicy());
+
+			CruxSynchronizerTokenHandler handler = CruxSynchronizerTokenHandlerFactory.getCruxSynchronizerTokenHandler(getThreadLocalRequest());
+
+			boolean useToken = checkSynchonizerToken(rpcRequest, handler);
+			try
+			{
+				return RPC.invokeAndEncodeResponse(service, rpcRequest.getMethod(),
+						rpcRequest.getParameters(), rpcRequest.getSerializationPolicy());
+			}
+			finally
+			{
+				if (useToken)
+				{
+					String methodFullSignature = handler.getMethodDescription(rpcRequest.getMethod());
+					handler.endMethod(methodFullSignature);
+				}
+			}
 		}
 		catch (IncompatibleRemoteServiceException ex) 
 		{
@@ -63,7 +85,39 @@ public class RemoteServiceServlet extends com.google.gwt.user.server.rpc.RemoteS
 			}
 		}
 	}
-	  
+	
+	/**
+	 * @param rpcRequest
+	 * @param handler
+	 * @return
+	 * @throws IncompatibleRemoteServiceException
+	 */
+	protected boolean checkSynchonizerToken(RPCRequest rpcRequest, CruxSynchronizerTokenHandler handler) throws IncompatibleRemoteServiceException
+	{
+		Method method = rpcRequest.getMethod();
+		if (method.getAnnotation(UseSynchronizerToken.class) != null)
+		{
+			String methodFullSignature = handler.getMethodDescription(method);
+			if (!handler.isMethodRunning(methodFullSignature))
+			{
+				try
+				{
+					handler.startMethod(methodFullSignature);
+					return true;
+				}
+				catch (InvalidTokenException e)
+				{
+					throw new IncompatibleRemoteServiceException(e.getLocalizedMessage(), e);
+				}
+			}
+			else
+			{
+				throw new IncompatibleRemoteServiceException(messages.synchronizerTokenServiceInvalidTokenError(methodFullSignature));
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * 
 	 */

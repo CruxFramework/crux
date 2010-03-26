@@ -25,6 +25,8 @@ import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.core.ext.typeinfo.JParameter;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -83,6 +85,10 @@ public class ClassUtils
 		}	
 	}
 	
+	/**
+	 * @param attrType
+	 * @return
+	 */
 	public static Class<?> getReflectionEquivalentTypeForPrimities(Class<?> attrType)
 	{
 		if (attrType.equals(Integer.class))
@@ -333,6 +339,61 @@ public class ClassUtils
 		return result.toArray(new Field[result.size()]);
 	}
 	
+	/**
+	 * @param method
+	 * @return
+	 */
+	public static String getMethodDescription(Method method)
+	{
+		StringBuilder str = new StringBuilder();
+		
+		str.append(ClassUtils.getClassSourceName(method.getDeclaringClass()));
+		str.append(".");
+		str.append(method.getName());
+		str.append("(");
+		boolean needsComma = false;
+		
+		for ( Class<?> type : method.getParameterTypes())
+		{
+			if (needsComma)
+			{
+				str.append(",");
+			}
+			needsComma = true;
+			str.append(ClassUtils.getClassSourceName(type));
+		}
+		str.append(")");
+		
+		return str.toString();
+	}
+	
+	/**
+	 * @param method
+	 * @return
+	 */
+	public static String getMethodDescription(JMethod method)
+	{
+		StringBuilder str = new StringBuilder();
+		
+		str.append(method.getEnclosingType().getQualifiedSourceName());
+		str.append(".");
+		str.append(method.getName());
+		str.append("(");
+		boolean needsComma = false;
+		
+		for (JParameter parameter: method.getParameters())
+		{
+			if (needsComma)
+			{
+				str.append(",");
+			}
+			needsComma = true;
+			str.append(parameter.getType().getParameterizedQualifiedSourceName());
+		}
+		str.append(")");
+		
+		return str.toString();
+	}
 	
 	/**
 	 * 

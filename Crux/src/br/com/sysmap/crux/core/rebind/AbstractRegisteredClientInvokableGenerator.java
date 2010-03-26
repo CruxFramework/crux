@@ -43,9 +43,6 @@ import br.com.sysmap.crux.core.utils.GenericUtils;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
@@ -69,8 +66,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 */
 	protected void generateAutoCreateFields(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter, String parentVariable)
 	{
-		generateLocaleVariableCreation(sourceWriter);
-		generateAutoCreateFieldsWithLocale(logger, controller, sourceWriter, parentVariable, new HashSet<String>());
+		generateAutoCreateFields(logger, controller, sourceWriter, parentVariable, new HashSet<String>());
 	}
 	
 	/**
@@ -79,7 +75,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	 * @param controller
 	 * @param sourceWriter
 	 */
-	private void generateAutoCreateFieldsWithLocale(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter, String parentVariable, Set<String> added)
+	private void generateAutoCreateFields(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter, String parentVariable, Set<String> added)
 	{
 		for (Field field : controller.getDeclaredFields()) 
 		{
@@ -113,12 +109,6 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 							generateFieldValueSet(logger, controller, field, parentVariable, "_field"+field.getName(), sourceWriter);
 						}
 					}
-
-					if (RemoteService.class.isAssignableFrom(type) && type.getAnnotation(RemoteServiceRelativePath.class) == null)
-					{
-						sourceWriter.println("(("+ServiceDefTarget.class.getName()+")_field"+field.getName()+
-						").setServiceEntryPoint(\"crux.rpc\"+__locale_);");
-					}
 				}
 				else if (field.getAnnotation(Parameter.class) != null)
 				{
@@ -129,7 +119,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 
 		if (controller.getSuperclass() != null)
 		{
-			generateAutoCreateFieldsWithLocale(logger, controller.getSuperclass(), sourceWriter, parentVariable, added);
+			generateAutoCreateFields(logger, controller.getSuperclass(), sourceWriter, parentVariable, added);
 		}
 	}
 
@@ -148,18 +138,6 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 		sourceWriter.println("}catch("+ValidateException.class.getName() + " _e){");
 		sourceWriter.println(Crux.class.getName()+".getValidationErrorHandler().handleValidationError(_e.getMessage());");
 		sourceWriter.println("}");
-	}
-
-	/**
-	 * 
-	 * @param sourceWriter
-	 */
-	private void generateLocaleVariableCreation(SourceWriter sourceWriter)
-	{
-		sourceWriter.println("String __locale_ = Screen.getLocale();");
-		sourceWriter.println("if (__locale_ != null && __locale_.trim().length() > 0)");
-		sourceWriter.println("__locale_ = \"?locale=\" + __locale_;");
-		sourceWriter.println("else __locale_ = \"\";");
 	}
 
 	/**
