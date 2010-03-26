@@ -33,6 +33,8 @@ public interface ClientMessages extends Messages
 	String eventFactoryInvalidHandlerMethodDeclaration(String evt);
 	@DefaultMessage("[event 004] - Error loading lazy controller {0}.")
 	String eventProcessorClientControllerCanNotBeLoaded(String controller);
+	@DefaultMessage("[event 005] - Service method is already being processed.")
+	String methodIsAlreadyBeingProcessed();
 	
 	//  screenFactory
 	@DefaultMessage("[screenFactory 001] - Error Creating widget: ''{0}''. See Log for more detail.")

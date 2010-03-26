@@ -30,6 +30,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface UseSynchronizerToken //TODO - Thiago dar um nome pra isto
+public @interface UseSynchronizerToken 
 {
+	boolean notifyCallsWhenProcessing() default true;
+	boolean blocksUserInteraction() default true;
 }

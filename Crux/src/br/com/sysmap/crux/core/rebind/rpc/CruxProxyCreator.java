@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.rpc.st.CruxSynchronizerTokenService;
 import br.com.sysmap.crux.core.client.rpc.st.CruxSynchronizerTokenServiceAsync;
 import br.com.sysmap.crux.core.client.rpc.st.UseSynchronizerToken;
@@ -52,7 +53,7 @@ public class CruxProxyCreator extends ProxyCreator
 	private static final String WRAPPER_SUFFIX = "_Wrapper";
 	private static final String WAITING_TOKEN = "waitingToken";
 	private boolean hasSyncTokenMethod = false;
-	
+	private TreeLogger logger;
 	
 	/**
 	 * @param type
@@ -70,9 +71,10 @@ public class CruxProxyCreator extends ProxyCreator
 	public String create(TreeLogger logger, GeneratorContext context)
 			throws UnableToCompleteException
 	{
+		this.logger = logger;
 		String asyncServiceTypeName = super.create(logger, context);
 		
-		return createAsyncWrapper(logger, context, asyncServiceTypeName);
+		return createAsyncWrapper(context, asyncServiceTypeName);
 	}
 
 	/**
@@ -97,7 +99,7 @@ public class CruxProxyCreator extends ProxyCreator
 	 * @return
 	 * @throws UnableToCompleteException 
 	 */
-	private String createAsyncWrapper(TreeLogger logger, GeneratorContext context, String asyncServiceTypeName) throws UnableToCompleteException
+	private String createAsyncWrapper(GeneratorContext context, String asyncServiceTypeName) throws UnableToCompleteException
 	{
 		JClassType serviceAsync = context.getTypeOracle().findType(serviceIntf.getQualifiedSourceName() + "Async");
 		SourceWriter srcWriter = getSourceWriter(logger, context, asyncServiceTypeName);
@@ -280,19 +282,22 @@ public class CruxProxyCreator extends ProxyCreator
 	 * @param asyncMethod
 	 * @param asyncReturnType
 	 * @param parameters
+	 * @throws UnableToCompleteException 
 	 */
 	private void generateProxyWrapperMethodCall(SourceWriter srcWriter, JMethod syncMethod,
-			JMethod asyncMethod, JType asyncReturnType, List<JParameter> parameters)
+			JMethod asyncMethod, JType asyncReturnType, List<JParameter> parameters) throws UnableToCompleteException
 	{
 		if (asyncReturnType != JPrimitiveType.VOID) 
 		{
-			srcWriter.print("return ");
-		}//TODO tratar estes tipos de retorno do metodo...so pode ser void...
-		
+			logger.log(TreeLogger.ERROR, "UseSynchronizer Token only can be used with void return type on Async interface.");
+			throw new UnableToCompleteException();
+		}
+		UseSynchronizerToken synchronizerTokenAnnot = syncMethod.getAnnotation(UseSynchronizerToken.class);
+		boolean blocksScreen = synchronizerTokenAnnot.blocksUserInteraction();
 		JParameter parameter = parameters.get(parameters.size()-1);
 		
 		srcWriter.println("final String methodDesc = \""+ClassUtils.getMethodDescription(syncMethod)+"\";");
-		srcWriter.println("if (__startMethodCall(methodDesc)){");
+		srcWriter.println("if (__startMethodCall(methodDesc, "+blocksScreen+")){");
 		srcWriter.indent();
 
 		srcWriter.println("__syncTokenService.getSynchronizerToken(methodDesc,");
@@ -302,7 +307,7 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("public void onSuccess(String result){");
 		srcWriter.indent();
 		srcWriter.println("__updateMethodToken(methodDesc, result);");
-		generateProxyMethodCall(srcWriter, asyncMethod, parameters, "methodDesc");
+		generateProxyMethodCall(srcWriter, asyncMethod, parameters, "methodDesc", blocksScreen);
 		srcWriter.outdent();
 		srcWriter.println("}");
 
@@ -311,7 +316,7 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("try{");
 		srcWriter.println(parameter.getName()+".onFailure(caught);");
 		srcWriter.println("}finally{");
-		srcWriter.println("__endMethodCall(methodDesc);");
+		srcWriter.println("__endMethodCall(methodDesc, "+blocksScreen+");");
 		srcWriter.println("}");
 		srcWriter.outdent();
 		srcWriter.println("}");
@@ -321,6 +326,16 @@ public class CruxProxyCreator extends ProxyCreator
 		
 		srcWriter.outdent();
 		srcWriter.println("}");
+		if (synchronizerTokenAnnot.notifyCallsWhenProcessing())
+		{
+			srcWriter.println("else{");
+			srcWriter.indent();
+
+			srcWriter.println(Crux.class.getName()+".getErrorHandler().handleError("+Crux.class.getName()+".getMessages().methodIsAlreadyBeingProcessed());");
+			
+			srcWriter.outdent();
+			srcWriter.println("}");
+		}
 	}
 
 	/**
@@ -330,7 +345,7 @@ public class CruxProxyCreator extends ProxyCreator
 	 * @param methodDescVar
 	 */
 	private void generateProxyMethodCall(SourceWriter srcWriter, JMethod asyncMethod,
-			List<JParameter> parameters, String methodDescVar)
+			List<JParameter> parameters, String methodDescVar, boolean blocksScreen)
 	{
 		
 		srcWriter.print(getProxyWrapperQualifiedName()+".super."+asyncMethod.getName() + "(");
@@ -349,7 +364,7 @@ public class CruxProxyCreator extends ProxyCreator
 			}
 			else
 			{
-				generateAsyncCallbackForSyncTokenMethod(srcWriter, parameter, methodDescVar);
+				generateAsyncCallbackForSyncTokenMethod(srcWriter, parameter, methodDescVar, blocksScreen);
 			}
 		}
 		srcWriter.println(");");
@@ -359,8 +374,9 @@ public class CruxProxyCreator extends ProxyCreator
 	 * 
 	 * @param parameter
 	 * @param methodDescVar 
+	 * @param blocksScreen 
 	 */
-	private void generateAsyncCallbackForSyncTokenMethod(SourceWriter srcWriter, JParameter parameter, String methodDescVar)
+	private void generateAsyncCallbackForSyncTokenMethod(SourceWriter srcWriter, JParameter parameter, String methodDescVar, boolean blocksScreen)
 	{
 		JParameterizedType parameterizedType = parameter.getType().isParameterized();
 		String typeSourceName = parameterizedType.getParameterizedQualifiedSourceName();
@@ -376,7 +392,7 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("try{");
 		srcWriter.println(parameter.getName()+".onSuccess(result);");
 		srcWriter.println("}finally{");
-		srcWriter.println("__endMethodCall("+methodDescVar+");");
+		srcWriter.println("__endMethodCall("+methodDescVar+", "+blocksScreen+");");
 		srcWriter.println("}");
 		srcWriter.outdent();
 		srcWriter.println("}");
@@ -386,7 +402,7 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("try{");
 		srcWriter.println(parameter.getName()+".onFailure(caught);");
 		srcWriter.println("}finally{");
-		srcWriter.println("__endMethodCall("+methodDescVar+");");
+		srcWriter.println("__endMethodCall("+methodDescVar+", "+blocksScreen+");");
 		srcWriter.println("}");
 		srcWriter.outdent();
 		srcWriter.println("}");
@@ -401,14 +417,14 @@ public class CruxProxyCreator extends ProxyCreator
 	private void generateProxyWrapperStartMethod(SourceWriter srcWriter)
 	{
 		srcWriter.println();
-		srcWriter.println("private boolean __startMethodCall(String methodDesc){");
+		srcWriter.println("private boolean __startMethodCall(String methodDesc, boolean blocksScreen){");
 		srcWriter.indent();
 		
 		srcWriter.println("boolean ret = !__syncProcessingMethods.containsKey(methodDesc);");
 		srcWriter.println("if (ret){");
 		srcWriter.indent();
 		srcWriter.println("__syncProcessingMethods.put(methodDesc, \""+WAITING_TOKEN+"\");");
-		srcWriter.println("Screen.blockToUser();");
+		srcWriter.println("if (blocksScreen) Screen.blockToUser();");
 		srcWriter.outdent();
 		srcWriter.println("}");
 		
@@ -424,10 +440,10 @@ public class CruxProxyCreator extends ProxyCreator
 	private void generateProxyWrapperEndMethod(SourceWriter srcWriter)
 	{
 		srcWriter.println();
-		srcWriter.println("private void __endMethodCall(String methodDesc){");
+		srcWriter.println("private void __endMethodCall(String methodDesc, boolean unblocksScreen){");
 		srcWriter.indent();
 		
-		srcWriter.println("Screen.unblockToUser();");
+		srcWriter.println("if (unblocksScreen) Screen.unblockToUser();");
 		srcWriter.println("String previousEntryPoint = __syncProcessingMethods.remove(methodDesc);");
 		srcWriter.println("if (previousEntryPoint != null && !previousEntryPoint.equals(\""+WAITING_TOKEN+"\")){");
 		srcWriter.indent();
