@@ -4,6 +4,6 @@
 	library="showcase" useController="sensitiveMethodSourcesController"
 >
 	<s:sources/>
-	<s:source id="serviceInterfaceSource" onLoadSource="sensitiveMethodSourcesController.loadServiceInterfaceSource" title="View Service Interface"/>
-	<s:source id="ServiceImplementationSource" onLoadSource="sensitiveMethodSourcesController.loadServiceImplementationSource" title="View Service Implementation"/>
+	<s:source id="serviceInterfaceSource" onLoadSource="sensitiveMethodSourcesController.loadServiceSource" title="View Service Interface"/>
+	<s:source id="ServiceImplementationSource" onLoadSource="sensitiveMethodSourcesController.loadServiceImplSource" title="View Service Implementation"/>
 </t:template>
