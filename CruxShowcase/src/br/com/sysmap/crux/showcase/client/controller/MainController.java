@@ -35,6 +35,7 @@ public class MainController {
 	private static final String SERVER_COMMUNICATION_TAB = "serverCommunication";
 	private static final String CONTEXT_TAB = "context";
 	private static final String I18N_TAB = "i18n";
+	private static final String SENSITIVE_METHOD_TAB = "sensitiveMethod";
 	private static final String SIMPLE_GRID_TAB = "simpleGrid";
 	private static final String STREAMING_GRID_TAB = "streamingGrid";
 	private static final String WIDGET_GRID_TAB = "widgetGrid";
@@ -166,6 +167,11 @@ public class MainController {
 	@Expose
 	public void onClickI18NItem(){
 		screen.getTabs().openTab(I18N_TAB, "I18N", I18N_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickSensitiveMethodProtectionItem(){
+		screen.getTabs().openTab(SENSITIVE_METHOD_TAB, "Sensitive Method Protection", SENSITIVE_METHOD_TAB + HTML, true, false);
 	}
 	
 	@Expose

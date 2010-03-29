@@ -8,5 +8,4 @@ public class ServerServiceImpl implements ServerService
 	{
 		return "Hello, "+name+"!";
 	}
-
 }

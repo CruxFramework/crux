@@ -13,7 +13,7 @@
 	<body>
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="i18nController,sourcesController,i18nSourcesController" onLoad="i18nController.onLoad">
+		<c:screen useController="i18nController" onLoad="i18nController.onLoad">
 			<b:dockPanel id="centeringPanel" width="100%" height="130">
 				<b:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
 					<b:label id="localeLabel" />
