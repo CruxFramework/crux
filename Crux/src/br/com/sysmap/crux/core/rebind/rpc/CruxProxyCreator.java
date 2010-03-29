@@ -51,7 +51,6 @@ import com.google.gwt.user.rebind.rpc.ProxyCreator;
 public class CruxProxyCreator extends ProxyCreator
 {
 	private static final String WRAPPER_SUFFIX = "_Wrapper";
-	private static final String WAITING_TOKEN = "waitingToken";
 	private boolean hasSyncTokenMethod = false;
 	private TreeLogger logger;
 	
@@ -123,6 +122,8 @@ public class CruxProxyCreator extends ProxyCreator
 			generateProxyWrapperEndMethod(srcWriter);
 			
 			generateProxyWrapperUpdateTokenMethod(srcWriter);
+			
+			generateSetServiceEntryPointMethod(srcWriter);
 		}
 		
 	    srcWriter.commit(logger);
@@ -139,8 +140,9 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("private boolean __hasParameters = false;");
 		if (this.hasSyncTokenMethod)
 		{
-			srcWriter.println("private Map<String, String> __syncProcessingMethods = new HashMap<String, String>();");
+			srcWriter.println("private Map<String, Boolean> __syncProcessingMethods = new HashMap<String, Boolean>();");
 			srcWriter.println("private CruxSynchronizerTokenServiceAsync __syncTokenService;");
+			srcWriter.println("private String __baseEntrypoint;");
 		}
 	}
 
@@ -156,6 +158,7 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("this.__hasParameters = (getServiceEntryPoint()!=null?getServiceEntryPoint().indexOf('?')>0:false);");
 		if (this.hasSyncTokenMethod)
 		{
+			srcWriter.println("this.__baseEntrypoint = getServiceEntryPoint();");	
 			srcWriter.println("this.__syncTokenService = (CruxSynchronizerTokenServiceAsync)GWT.create(CruxSynchronizerTokenService.class);");
 		}
 		srcWriter.println("String locale = Screen.getLocale();");
@@ -172,7 +175,7 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.outdent();
 		srcWriter.println("}");	
 		srcWriter.outdent();
-		srcWriter.println("}");	
+		srcWriter.println("}");
 		
 		srcWriter.outdent();
 		srcWriter.println("}");
@@ -423,7 +426,7 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("boolean ret = !__syncProcessingMethods.containsKey(methodDesc);");
 		srcWriter.println("if (ret){");
 		srcWriter.indent();
-		srcWriter.println("__syncProcessingMethods.put(methodDesc, \""+WAITING_TOKEN+"\");");
+		srcWriter.println("__syncProcessingMethods.put(methodDesc, true);");
 		srcWriter.println("if (blocksScreen) Screen.blockToUser();");
 		srcWriter.outdent();
 		srcWriter.println("}");
@@ -443,12 +446,12 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("private void __endMethodCall(String methodDesc, boolean unblocksScreen){");
 		srcWriter.indent();
 		
-		srcWriter.println("if (unblocksScreen) Screen.unblockToUser();");
-		srcWriter.println("String previousEntryPoint = __syncProcessingMethods.remove(methodDesc);");
-		srcWriter.println("if (previousEntryPoint != null && !previousEntryPoint.equals(\""+WAITING_TOKEN+"\")){");
+		srcWriter.println("Boolean isProcessing = __syncProcessingMethods.remove(methodDesc);");
+		srcWriter.println("if (isProcessing != null && !isProcessing){");
 		srcWriter.indent();
 		
-		srcWriter.println("setServiceEntryPoint(previousEntryPoint);");
+		srcWriter.println("if (unblocksScreen) Screen.unblockToUser();");
+		srcWriter.println("setServiceEntryPoint(__baseEntrypoint);");
 
 		srcWriter.outdent();
 		srcWriter.println("}");
@@ -466,21 +469,38 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("private void __updateMethodToken(String methodDesc, String token){");
 		srcWriter.indent();
 		
-		srcWriter.println("__syncProcessingMethods.put(methodDesc, getServiceEntryPoint());");
+		srcWriter.println("__syncProcessingMethods.put(methodDesc, false);");
 		
 		srcWriter.println("if (this.__hasParameters){");	
 		srcWriter.indent();
-		srcWriter.println("setServiceEntryPoint(getServiceEntryPoint() + \"&"+CruxSynchronizerTokenService.CRUX_SYNC_TOKEN_PARAM+"=\" + token);");
+		srcWriter.println("super.setServiceEntryPoint(__baseEntrypoint + \"&"+CruxSynchronizerTokenService.CRUX_SYNC_TOKEN_PARAM+"=\" + token);");
 		srcWriter.outdent();
 		srcWriter.println("}else{");	
 		srcWriter.indent();
-		srcWriter.println("setServiceEntryPoint(getServiceEntryPoint() + \"?"+CruxSynchronizerTokenService.CRUX_SYNC_TOKEN_PARAM+"=\" + token);");
+		srcWriter.println("super.setServiceEntryPoint(__baseEntrypoint + \"?"+CruxSynchronizerTokenService.CRUX_SYNC_TOKEN_PARAM+"=\" + token);");
 		srcWriter.outdent();
 		srcWriter.println("}");	
 		
 		srcWriter.outdent();
 		srcWriter.println("}");
 	}
+	
+	/**
+	 * @param srcWriter
+	 */
+	private void generateSetServiceEntryPointMethod(SourceWriter srcWriter)
+	{
+		srcWriter.println();
+		srcWriter.println("public void setServiceEntryPoint(String entryPoint){");
+		srcWriter.indent();
+		
+		srcWriter.println("__baseEntrypoint = entryPoint;");
+		srcWriter.println("super.setServiceEntryPoint(entryPoint);");
+		
+		srcWriter.outdent();
+		srcWriter.println("}");
+	}
+	
 	
 	/**
 	 * @param asyncMethod
