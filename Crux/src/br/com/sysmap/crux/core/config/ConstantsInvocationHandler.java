@@ -35,7 +35,6 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 	/**
 	 * 
 	 */
-	@SuppressWarnings("deprecation")
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 	{
 		String name = method.getName();
@@ -43,28 +42,56 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 		{
 			return resolvedConstants.get(name);
 		}
+		String message = null;
 		try
 		{
 			if (isValidPropertySetter(method))
 			{
 				invokeSetter(method, args);
-				return null;
 			}
 			else
 			{
-				PropertyResourceBundle properties = getPropertiesForLocale(targetInterface);
-				if (properties != null)
+				message = getMessageFromProperties(args, name);
+				if (message == null)
 				{
-					String value = MessageFormat.format(properties.getString(name),args);
-					resolvedConstants.put(name, value);
-					return value;
+					message = getMessageFromAnnotation(method, args, name);
 				}
 			}
 		}
 		catch (Throwable e)
 		{
-			// if property does not contains method key, use default
+			message = getMessageFromAnnotation(method, args, name);
 		}
+		
+		return message;
+	}
+
+	/**
+	 * @param args
+	 * @param name
+	 * @return
+	 */
+	protected String getMessageFromProperties(Object[] args, String name)
+	{
+		PropertyResourceBundle properties = getPropertiesForLocale(targetInterface);
+		String message = null;
+		if (properties != null)
+		{
+			message = MessageFormat.format(properties.getString(name),args);
+			resolvedConstants.put(name, message);
+		}
+		return message;
+	}
+
+	/**
+	 * @param method
+	 * @param args
+	 * @param name
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	protected String getMessageFromAnnotation(Method method, Object[] args, String name)
+	{
 		DefaultServerMessage serverAnnot = method.getAnnotation(DefaultServerMessage.class);
 		if (serverAnnot != null)
 		{

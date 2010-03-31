@@ -15,9 +15,6 @@
  */
 package br.com.sysmap.crux.core.config;
 
-import java.util.Locale;
-import java.util.PropertyResourceBundle;
-
 import br.com.sysmap.crux.core.i18n.MessageException;
 
 /**
@@ -51,25 +48,5 @@ public class ConfigurationFactory extends AbstractPropertiesFactory
 	protected ConstantsInvocationHandler getInvocationHandler(Class<?> targetInterface) 
 	{
 		return new ConfigurationInvocationHandler(targetInterface);
-	}
-
-}
-
-/**
- * Dynamic proxy for message resources.
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
- */
-class ConfigurationInvocationHandler extends ConstantsInvocationHandler
-{
-	public ConfigurationInvocationHandler(Class<?> targetInterface) 
-	{
-		super(targetInterface);
-	}
-	
-	@Override
-	protected <T> PropertyResourceBundle getPropertiesForLocale(final Class<T> targetInterface) 
-	{
-		return loadProperties(targetInterface, Locale.getDefault());
 	}
 }
