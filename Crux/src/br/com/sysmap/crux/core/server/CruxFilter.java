@@ -111,12 +111,14 @@ public class CruxFilter implements Filter
 	 */
 	protected String removeStringPrefix(String input, String prefix)
 	{
-		prefix = prefix.replaceAll("\\/", "");
+		if (prefix.startsWith("/"))
+		{
+			prefix = prefix.substring(1);
+		}
 		if (input.startsWith(prefix))
 		{
 			input = input.substring(prefix.length());
 		}
-		
 		if (input.startsWith("/"))
 		{
 			input = input.substring(1);
