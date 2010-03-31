@@ -21,6 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
@@ -32,6 +33,8 @@ public class ClassPathResolverInitializer
 	private static final Lock lock = new ReentrantLock();
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
+	private static final String CRUX_CLASSPATH_RESOLVER_PROPERTY = "Crux.classpathResolver";
+	
 	public static ClassPathResolver getClassPathResolver()
 	{
 		if (classPathResolver != null) return classPathResolver;
@@ -40,7 +43,16 @@ public class ClassPathResolverInitializer
 		{
 			lock.lock();
 			if (classPathResolver != null) return classPathResolver;
-			classPathResolver = (ClassPathResolver) Class.forName(ConfigurationFactory.getConfigurations().classPathResolver()).newInstance(); 
+			String classpathResolverProperty = System.getProperty(CRUX_CLASSPATH_RESOLVER_PROPERTY);
+			
+			if (!StringUtils.isEmpty(classpathResolverProperty))
+			{
+				classPathResolver = (ClassPathResolver) Class.forName(classpathResolverProperty).newInstance();
+			}
+			else
+			{
+				classPathResolver = (ClassPathResolver) Class.forName(ConfigurationFactory.getConfigurations().classPathResolver()).newInstance();
+			}
 		}
 		catch (Throwable e)
 		{
