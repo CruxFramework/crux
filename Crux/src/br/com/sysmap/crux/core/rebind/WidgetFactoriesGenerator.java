@@ -493,7 +493,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 					}
 
 					source.append(generateChildrenBlockFromAnnotation(logger, methodsForInnerProcessing, widgetType, children, 
-							                                                                       processorVariables));
+							                                                                       processorVariables, true));
 
 					// TODO - Thiago - tratar validação de filhos obrigatorios .... espeficamente qdo parent for um agregador....
 					if (allowedChildren.maxOccurs == UNBOUNDED || allowedChildren.maxOccurs > 1)
@@ -550,10 +550,9 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 													 Map<String, String> methodsForInnerProcessing, 
 			                                         Class<?> widgetType, 
 			                                         TagChildren children,
-			                                         Map<String, String> processorVariables) throws NoSuchMethodException, Exception
+			                                         Map<String, String> processorVariables, boolean first) throws NoSuchMethodException, Exception
 	{
 		StringBuilder source = new StringBuilder();
-		boolean first = true;
 		for (TagChild child : children.value())
 		{
 			if (child.autoProcess())
@@ -569,7 +568,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 					AllChildProcessor.class.isAssignableFrom(childProcessor))
 				{
 					source.append(generateAgregatorTagProcessingBlock(logger, methodsForInnerProcessing, widgetType, 
-							                                          children, childProcessor, processorVariables));
+							                                          children, childProcessor, processorVariables, first));
 				}
 				else
 				{
@@ -664,7 +663,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 													 Class<?> widgetType, 
 													 TagChildren children,
 													 Class<? extends WidgetChildProcessor<?>> childProcessor, 
-													 Map<String, String> processorVariables) 
+													 Map<String, String> processorVariables, boolean first) 
 	             throws NoSuchMethodException, Exception
 	{
 		StringBuilder source = new StringBuilder();
@@ -673,7 +672,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		TagChildren tagChildren = processorMethod.getAnnotation(TagChildren.class);
 		if (children != null)
 		{
-			source.append(generateChildrenBlockFromAnnotation(logger, methodsForInnerProcessing, widgetType, tagChildren, processorVariables));
+			source.append(generateChildrenBlockFromAnnotation(logger, methodsForInnerProcessing, widgetType, tagChildren, processorVariables, first));
 		}
 		return source.toString();
 	}
