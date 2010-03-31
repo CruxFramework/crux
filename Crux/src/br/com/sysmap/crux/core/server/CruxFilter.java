@@ -89,16 +89,8 @@ public class CruxFilter implements Filter
 					result = result.substring(1);
 				}
 
-				String contextPath = config.getServletContext().getContextPath().replaceAll("\\/", "");
-				if (result.startsWith(contextPath))
-				{
-					result = result.substring(contextPath.length());
-				}
-				
-				if (result.startsWith("/"))
-				{
-					result = result.substring(1);
-				}
+				String contextPath = config.getServletContext().getContextPath();
+				result = removeStringPrefix(result, contextPath);
 			}
 			else
 			{
@@ -110,5 +102,25 @@ public class CruxFilter implements Filter
 			result = null;
 		}
 		return result;
+	}
+
+	/**
+	 * @param input
+	 * @param prefix
+	 * @return
+	 */
+	protected String removeStringPrefix(String input, String prefix)
+	{
+		prefix = prefix.replaceAll("\\/", "");
+		if (input.startsWith(prefix))
+		{
+			input = input.substring(prefix.length());
+		}
+		
+		if (input.startsWith("/"))
+		{
+			input = input.substring(1);
+		}
+		return input;
 	}
 }
