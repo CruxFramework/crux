@@ -993,6 +993,10 @@
 	height: 28px;
 	text-align: center;
 }
+.crux-Grid .columnHeadersRow .cellWrapper-rowSelectionColumn
+{
+	width: 25px;
+}
 .crux-Grid .columnHeader
 {
 	padding: 0px;

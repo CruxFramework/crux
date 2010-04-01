@@ -17,6 +17,7 @@ import br.com.sysmap.crux.widgets.client.event.row.RowDoubleClickEvent;
 import br.com.sysmap.crux.widgets.client.event.row.RowDoubleClickHandler;
 import br.com.sysmap.crux.widgets.client.event.row.RowRenderEvent;
 import br.com.sysmap.crux.widgets.client.event.row.RowRenderHandler;
+import br.com.sysmap.crux.widgets.client.util.StyleUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -534,6 +535,15 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		
 		row.setStyle("columnHeadersRow row");
 		row.setCell(createHeaderFristColumnCell(rowCount), 0);
+		
+		if(hasSelectionColumn())
+		{
+			StyleUtils.addStyleDependentName(table.getCellElement(0, 0), "rowSelectionColumn");
+		}
+		else
+		{
+			StyleUtils.removeStyleDependentName(table.getCellElement(0, 0), "rowSelectionColumn");
+		}
 				
 		List<ColumnDefinition> columns = definitions.getDefinitions();
 		for (ColumnDefinition columnDefinition : columns)
