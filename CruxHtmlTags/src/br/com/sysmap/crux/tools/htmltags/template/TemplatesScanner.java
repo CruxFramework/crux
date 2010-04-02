@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.tools.htmltags.template;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -35,7 +34,7 @@ import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
-import br.com.sysmap.crux.scannotation.archiveiterator.StreamIterator;
+import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
 import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
 
 /**
@@ -108,33 +107,6 @@ public class TemplatesScanner
 						if (fileName.startsWith("/")) fileName = fileName.substring(1);
 						if (!ignoreScan(fileName.replace('/', '.')))
 						{
-							Document template;
-							try
-							{
-								InputStream inputStream = getClass().getResourceAsStream(fileName);
-								if (inputStream != null)
-								{
-									template = documentBuilder.parse(inputStream);
-								}
-								else
-								{
-									inputStream = getClass().getResourceAsStream("/"+fileName);
-									if (inputStream != null)
-									{
-										template = documentBuilder.parse(inputStream);
-									}
-									else
-									{
-										template = documentBuilder.parse(new URL(fileName).openStream());
-									}
-								}
-								Templates.registerTemplate(getTemplateId(fileName), template);
-							}
-							catch (Exception e)
-							{
-								logger.error(messages.templatesScannerErrorParsingTemplateFile(fileName), e);
-								return false;
-							}
 							return true;
 						}
 					}
@@ -144,8 +116,20 @@ public class TemplatesScanner
 
 			try
 			{
-				StreamIterator it = IteratorFactory.create(url, filter);
-				while (it.next() != null); // Do nothing, but searches the directories and jars
+				URLIterator it = IteratorFactory.create(url, filter);
+				URL found;
+				while ((found = it.next()) != null)
+				{
+					try
+					{
+						Document template = documentBuilder.parse(found.openStream());
+						Templates.registerTemplate(getTemplateId(found.toString()), template);
+					}
+					catch (Exception e)
+					{
+						logger.error(messages.templatesScannerErrorParsingTemplateFile(found.toString()), e);
+					}
+				}
 			}
 			catch (IOException e)
 			{
