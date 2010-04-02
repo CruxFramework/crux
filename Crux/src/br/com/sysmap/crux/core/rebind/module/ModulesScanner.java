@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.core.rebind.module;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
@@ -32,14 +31,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
+import br.com.sysmap.crux.classpath.PackageFileURLResourceHandler;
+import br.com.sysmap.crux.classpath.URLResourceHandler;
+import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
-import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
-import br.com.sysmap.crux.scannotation.archiveiterator.StreamIterator;
+import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
 
 /**
  * 
@@ -101,79 +102,6 @@ public class ModulesScanner
 
 	/**
 	 * 
-	 * @param urls
-	 */
-	private void scanArchives(URL... urls)
-	{
-		for (URL url : urls)
-		{
-			Filter filter = new Filter()
-			{
-				public boolean accepts(String fileName)
-				{
-					if (fileName.endsWith(".gwt.xml"))
-					{
-						if (fileName.startsWith("/")) fileName = fileName.substring(1);
-						if (!ignoreScan(fileName.replace('/', '.')))
-						{
-							Document module;
-							try
-							{
-								URL moduleDescriptor = getClass().getResource(fileName);
-								InputStream inputStream = null;
-								if (moduleDescriptor != null)
-								{
-									inputStream = moduleDescriptor.openStream();
-								}
-								if (inputStream != null)
-								{
-									module = documentBuilder.parse(inputStream);
-								}
-								else
-								{
-									moduleDescriptor = getClass().getResource("/"+fileName);
-									if (moduleDescriptor != null)
-									{
-										inputStream = moduleDescriptor.openStream();
-									}
-									if (inputStream != null)
-									{
-										module = documentBuilder.parse(inputStream);
-									}
-									else
-									{
-										moduleDescriptor = new URL(fileName);
-										module = documentBuilder.parse(moduleDescriptor.openStream());
-									}
-								}
-								Modules.getInstance().registerModule(moduleDescriptor, getModuleName(fileName), module);
-							}
-							catch (Exception e)
-							{
-								logger.error(messages.modulesScannerErrorParsingModuleFile(fileName));
-								return false;
-							}
-							return true;
-						}
-					}
-					return false;
-				}
-			};
-
-			try
-			{
-				StreamIterator it = IteratorFactory.create(url, filter);
-				while (it.next() != null); // Do nothing, but searches the directories and jars
-			}
-			catch (IOException e)
-			{
-				throw new ModuleException(messages.modulesScannerInitializationError(e.getLocalizedMessage()), e);
-			}
-		}
-	}
-
-	/**
-	 * 
 	 */
 	public void scanArchives()
 	{
@@ -203,21 +131,79 @@ public class ModulesScanner
 	
 	/**
 	 * 
+	 * @param urls
+	 */
+	private void scanArchives(URL... urls)
+	{
+		for (URL url : urls)
+		{
+			Filter filter = new Filter()
+			{
+				public boolean accepts(String fileName)
+				{
+					if (fileName.endsWith(".gwt.xml"))
+					{
+						if (fileName.startsWith("/")) fileName = fileName.substring(1);
+						if (!ignoreScan(fileName.replace('/', '.')))
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+			};
+
+			try
+			{
+				URLIterator it = IteratorFactory.create(url, filter);
+				URL found;
+				while ((found = it.next()) != null)
+				{
+					try
+					{
+						Document module = documentBuilder.parse(found.openStream());
+						Modules.getInstance().registerModule(found, getModuleName(url, found), module);
+					}
+					catch (Exception e) 
+					{
+						logger.error(messages.modulesScannerErrorParsingModuleFile(found.toString()));
+					}
+				}
+			}
+			catch (IOException e)
+			{
+				throw new ModuleException(messages.modulesScannerInitializationError(e.getLocalizedMessage()), e);
+			}
+		}
+	}
+
+	/**
+	 * 
 	 * @param fileName
 	 * @return
 	 */
-	private String getModuleName(String fileName)
+	private String getModuleName(URL parent, URL resource)
 	{
-		fileName = fileName.substring(0, fileName.length() - 8);
-		fileName = RegexpPatterns.REGEXP_BACKSLASH.matcher(fileName).replaceAll("/");
-		for (String clsDir : classesDir)
+		String fileName;
+		
+		URLResourceHandler handler = URLResourceHandlersRegistry.getURLResourceHandler(resource.getProtocol());
+		if (handler instanceof PackageFileURLResourceHandler)
 		{
-			if (fileName.startsWith(clsDir))
+			PackageFileURLResourceHandler packagehandler = (PackageFileURLResourceHandler)handler;
+			fileName = packagehandler.getPackaegResourceName(resource);
+			
+		}
+		else
+		{
+			fileName = extractResourceFromClassesDir(resource.toString());
+			String baseDir = parent.toString();
+			if (fileName.startsWith(baseDir))
 			{
-				fileName = fileName.substring(clsDir.length());
-				break;
+				fileName = fileName.substring(baseDir.length());
 			}
 		}
+		
+		fileName = fileName.substring(0, fileName.length() - 8);
 		
 		if (fileName.startsWith("/"))
 		{
@@ -225,6 +211,22 @@ public class ModulesScanner
 		}
 		
 		return fileName.replace('/', '.');
+	}
+	
+	/**
+	 * @param fileName
+	 * @return
+	 */
+	private String extractResourceFromClassesDir(String fileName)
+	{
+		for (String clsDir : classesDir)
+		{
+			if (fileName.startsWith(clsDir))
+			{
+				return fileName.substring(clsDir.length());
+			}
+		}
+		return fileName;
 	}
 	
 	/**

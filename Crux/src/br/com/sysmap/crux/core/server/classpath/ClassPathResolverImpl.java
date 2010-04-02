@@ -23,7 +23,7 @@ import java.util.List;
 import br.com.sysmap.crux.classpath.URLResourceHandler;
 import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
-import br.com.sysmap.crux.scannotation.archiveiterator.StreamIterator;
+import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -97,25 +97,21 @@ public class ClassPathResolverImpl implements ClassPathResolver
 		{
 			try
 			{
-				final List<URL> urlList = new ArrayList<URL>();
+				webInfLibJars = new ArrayList<URL>();
 				final URL libDir = findWebInfLibPath();
 
 				final URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(libDir.getProtocol());
-				StreamIterator iterator = resourceHandler.getDirectoryIteratorFactory().create(libDir, new Filter(){
+				URLIterator iterator = resourceHandler.getDirectoryIteratorFactory().create(libDir, new Filter(){
 					public boolean accepts(String filename)
 					{
-						if (filename.endsWith(".jar"))
-						{
-							urlList.add(resourceHandler.getChildResource(libDir, filename));
-							return true;
-						}
-						return false;
+						return (filename.endsWith(".jar"));
 					}
 				});
-
-				while (iterator.next() != null); // Do nothing, but searches the directories and jars
-				webInfLibJars = new ArrayList<URL>();
-				webInfLibJars.addAll(urlList);
+				URL found;
+				while ((found = iterator.next()) != null)
+				{
+					webInfLibJars.add(found);
+				}
 			}
 			catch (Exception e)
 			{

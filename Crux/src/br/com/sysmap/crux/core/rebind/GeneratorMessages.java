@@ -133,6 +133,9 @@ public interface GeneratorMessages
 	@DefaultServerMessage("[generator 035] - Parameter Object {0} has no valid field for binding.")
 	String errorGeneratingRegisteredObjectParameterObjectHasNoValidField(String name);
 	
+	@DefaultServerMessage("[generator 036] - No method found on service interface that matches the async method: {0}.")
+	String cruxProxyCreatorMethodNotFoundOnServiceInterface(String name);
+
 	@DefaultServerMessage("[parameter 001] - Required parameter {0} is missing.")
 	String requiredParameterMissing(String name);
 

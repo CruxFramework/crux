@@ -30,7 +30,7 @@ import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
-import br.com.sysmap.crux.scannotation.archiveiterator.StreamIterator;
+import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
 
 /**
  * 
@@ -44,7 +44,7 @@ public abstract class ScreenResourcesScanner
 	private static Map<String, Set<String>> pagesPerModule = null;
 	private static Lock lock = new ReentrantLock();
 	
-	public Set<String> scanArchives()
+	private Set<String> scanArchives()
 	{
 		URL[] urls = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
 		final Set<String> screens = new HashSet<String>();
@@ -71,8 +71,8 @@ public abstract class ScreenResourcesScanner
 
 			try
 			{
-				StreamIterator it = IteratorFactory.create(url, filter);
-				while (it.next() != null); // Do nothing, but searches the directories and jars
+				URLIterator it = IteratorFactory.create(url, filter);
+				while (it.next() != null); // TODO retornar Set<URL>
 
 			}
 			catch (IOException e)

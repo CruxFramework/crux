@@ -26,6 +26,8 @@ import br.com.sysmap.crux.core.client.rpc.st.CruxSynchronizerTokenService;
 import br.com.sysmap.crux.core.client.rpc.st.CruxSynchronizerTokenServiceAsync;
 import br.com.sysmap.crux.core.client.rpc.st.UseSynchronizerToken;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.client.GWT;
@@ -53,6 +55,8 @@ public class CruxProxyCreator extends ProxyCreator
 	private static final String WRAPPER_SUFFIX = "_Wrapper";
 	private boolean hasSyncTokenMethod = false;
 	private TreeLogger logger;
+	private GeneratorMessages messages = MessagesFactory.getMessages(GeneratorMessages.class);
+	
 	
 	/**
 	 * @param type
@@ -216,17 +220,24 @@ public class CruxProxyCreator extends ProxyCreator
 	 */
 	private void generateProxyWrapperMethod(SourceWriter srcWriter, JMethod asyncMethod) throws UnableToCompleteException
 	{
-		JMethod syncMethod = getSyncMethodFromAsync(asyncMethod);
-		
-		if (syncMethod.getAnnotation(UseSynchronizerToken.class) != null)
+		try
 		{
-			JType asyncReturnType = asyncMethod.getReturnType().getErasedType();
-			List<JParameter> parameters = generateProxyWrapperMethodDeclaration(srcWriter, asyncMethod, asyncReturnType);
+			JMethod syncMethod = getSyncMethodFromAsync(asyncMethod);
+			
+			if (syncMethod.getAnnotation(UseSynchronizerToken.class) != null)
+			{
+				JType asyncReturnType = asyncMethod.getReturnType().getErasedType();
+				List<JParameter> parameters = generateProxyWrapperMethodDeclaration(srcWriter, asyncMethod, asyncReturnType);
 
-			generateProxyWrapperMethodCall(srcWriter, syncMethod, asyncMethod, asyncReturnType, parameters);
+				generateProxyWrapperMethodCall(srcWriter, syncMethod, asyncMethod, asyncReturnType, parameters);
 
-			srcWriter.outdent();
-			srcWriter.println("}");
+				srcWriter.outdent();
+				srcWriter.println("}");
+			}
+		}
+		catch (NotFoundException e)
+		{
+			logger.log(TreeLogger.ERROR, messages.cruxProxyCreatorMethodNotFoundOnServiceInterface(asyncMethod.getName()));
 		}
 	}
 
@@ -262,7 +273,6 @@ public class CruxProxyCreator extends ProxyCreator
 			}
 
 			JType paramType = param.getType();
-			paramType = paramType.getErasedType();
 			if (i == (asyncParams.length-1))
 			{
 				srcWriter.print("final ");
@@ -505,9 +515,9 @@ public class CruxProxyCreator extends ProxyCreator
 	/**
 	 * @param asyncMethod
 	 * @return
-	 * @throws UnableToCompleteException 
+	 * @throws NotFoundException 
 	 */
-	private JMethod getSyncMethodFromAsync(JMethod asyncMethod) throws UnableToCompleteException
+	private JMethod getSyncMethodFromAsync(JMethod asyncMethod) throws NotFoundException
 	{
 		JParameter[] parameters = asyncMethod.getParameters();
 		List<JType> syncParamTypes = new ArrayList<JType>();
@@ -516,17 +526,10 @@ public class CruxProxyCreator extends ProxyCreator
 			for (int i=0; i<parameters.length-1; i++)
 			{
 				JParameter jParameter = parameters[i];
-				syncParamTypes.add(jParameter.getType().getErasedType());
+				syncParamTypes.add(jParameter.getType());
 			}
 		}
-		try
-		{
-			return serviceIntf.getMethod(asyncMethod.getName(), syncParamTypes.toArray(new JType[syncParamTypes.size()]));
-		}
-		catch (NotFoundException e)
-		{
-			throw new UnableToCompleteException();
-		}
+		return serviceIntf.getMethod(asyncMethod.getName(), syncParamTypes.toArray(new JType[syncParamTypes.size()]));
 	}
 	
 	/**
