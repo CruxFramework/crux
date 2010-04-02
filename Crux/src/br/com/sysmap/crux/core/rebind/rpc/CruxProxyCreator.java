@@ -302,7 +302,7 @@ public class CruxProxyCreator extends ProxyCreator
 	{
 		if (asyncReturnType != JPrimitiveType.VOID) 
 		{
-			logger.log(TreeLogger.ERROR, "UseSynchronizer Token only can be used with void return type on Async interface.");
+			logger.log(TreeLogger.ERROR, messages.cruxProxyCreatorInvalidReturnType(asyncReturnType.getSimpleSourceName()));
 			throw new UnableToCompleteException();
 		}
 		UseSynchronizerToken synchronizerTokenAnnot = syncMethod.getAnnotation(UseSynchronizerToken.class);

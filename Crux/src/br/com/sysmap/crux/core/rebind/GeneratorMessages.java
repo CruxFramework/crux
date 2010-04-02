@@ -136,6 +136,9 @@ public interface GeneratorMessages
 	@DefaultServerMessage("[generator 036] - No method found on service interface that matches the async method: {0}.")
 	String cruxProxyCreatorMethodNotFoundOnServiceInterface(String name);
 
+	@DefaultServerMessage("[generator 037] - UseSynchronizer Token only can be used with void return type on Async interface.")
+	String cruxProxyCreatorInvalidReturnType(String simpleSourceName);
+
 	@DefaultServerMessage("[parameter 001] - Required parameter {0} is missing.")
 	String requiredParameterMissing(String name);
 
