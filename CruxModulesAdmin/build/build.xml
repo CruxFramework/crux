@@ -24,7 +24,6 @@
 	</path>
 
 	<taskdef name="cruxmodulecompile" classname="br.com.sysmap.crux.tools.compile.CruxModuleCompile" loaderref="build.classpath.loader" classpathref="build.classpath" />
-	<typedef name="modulepostprocessor" classname="br.com.sysmap.crux.tools.compile.CruxModulePostProcessor" loaderref="build.classpath.loader" classpathref="build.classpath" />
 	<typedef name="htmlpreprocessor" classname="br.com.sysmap.crux.tools.compile.htmltags.CruxHTMLTagsPreProcessor" loaderref="build.classpath.loader" classpathref="build.classpath" />
 	<taskdef name="blockremove" classname="br.com.sysmap.crux.tools.compile.utils.BlockRemoveTask" classpathref="build.classpath" />
 	<taskdef name="generateSchemas" classname="br.com.sysmap.crux.tools.compile.SchemaGeneratorModulesTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
@@ -51,8 +50,7 @@
 		</copydir>
 		
 		<cruxmodulecompile srcDir="${src.dir}" outputDir="${temp.dir}/webroot">
-			<htmlpreprocessor indent="false" keepgeneratedfiles="true" />
-			<modulepostprocessor indent="false" outputdir="${temp.dir}/webroot" />
+			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputDir="${temp.dir}/webroot/admin"/>
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${web.root}" />
@@ -95,8 +93,7 @@
 	-->
 	<target name="compile-scripts">
 		<cruxmodulecompile srcDir="${src.dir}" outputDir="${web.root}">
-			<htmlpreprocessor indent="false" keepgeneratedfiles="true"/>
-			<modulepostprocessor indent="false" outputDir="${web.root}"/>
+			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputDir="${web.root}/admin"/>
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${web.root}" />
