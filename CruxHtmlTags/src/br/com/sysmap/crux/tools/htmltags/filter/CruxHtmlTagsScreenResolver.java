@@ -68,11 +68,10 @@ public class CruxHtmlTagsScreenResolver implements ScreenResourceResolver
 			
 			if (inputStream == null)
 			{
-				if (screenId.startsWith("file:/"))
-				{
-					screenURL = new URL(screenId);
-				}
-				else
+				
+				screenURL = URLUtils.isrValidURL(screenId);
+				
+				if (screenURL == null)
 				{
 					screenURL = new URL("file:///"+screenId);
 				}
