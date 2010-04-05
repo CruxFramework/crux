@@ -108,6 +108,7 @@ public class DecoratedButton extends FocusWidget implements HasText
 	{
 		this.allowClick = true;
 
+		this.setFocus(true);
 		NativeEvent evt = Document.get().createClickEvent(1, 0, 0, 0, 0, false, false, false, false);
 		getElement().dispatchEvent(evt);
 

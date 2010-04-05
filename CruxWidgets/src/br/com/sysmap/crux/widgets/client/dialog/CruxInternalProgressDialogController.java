@@ -25,10 +25,9 @@ import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 
 /**
@@ -98,7 +97,8 @@ public class CruxInternalProgressDialogController
 				HorizontalPanel horizontalPanel = new HorizontalPanel();
 				horizontalPanel.setSpacing(0);
 	
-				horizontalPanel.add(createIconPanel());
+				FocusPanel iconPanel = createIconPanel();
+				horizontalPanel.add(iconPanel);
 				horizontalPanel.add(createMessageLabel(data));
 							
 				dialogBox.add(horizontalPanel);
@@ -107,6 +107,10 @@ public class CruxInternalProgressDialogController
 				
 				dialogBox.center();
 				dialogBox.show();
+				
+				// TODO - Gessé - find out a better solution to avoid focus on blocked screen widgets 
+				iconPanel.setFocus(true);
+				iconPanel.setFocus(false);
 				
 				
 			}
@@ -137,9 +141,9 @@ public class CruxInternalProgressDialogController
 	 * Creates a panel to display a icon for the message 
 	 * @return a panel
 	 */
-	private Widget createIconPanel()
+	private FocusPanel createIconPanel()
 	{
-		SimplePanel iconPanel = new SimplePanel();
+		FocusPanel iconPanel = new FocusPanel();
 		iconPanel.setStyleName("icon");
 		return iconPanel;
 	}
