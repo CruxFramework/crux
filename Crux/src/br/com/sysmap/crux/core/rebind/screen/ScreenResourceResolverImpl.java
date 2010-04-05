@@ -58,11 +58,9 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 				}
 			}
 			
-			if (screenId.indexOf(":/") > 1) //has protocol?
-			{
-				screenURL = new URL(screenId);
-			}
-			else
+			screenURL = URLUtils.isrValidURL(screenId);
+			
+			if (screenURL == null)
 			{
 				screenURL = new URL("file:///"+screenId);
 			}

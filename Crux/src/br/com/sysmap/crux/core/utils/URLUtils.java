@@ -106,4 +106,21 @@ public class URLUtils
 		return null;
 	}
 	
+	/**
+	 * @param urlString
+	 * @return
+	 */
+	public static URL isrValidURL(String urlString)
+	{
+	
+		try 
+		{
+			return new URL(urlString);
+		} 
+		catch (Exception e) 
+		{
+			return null;
+		}
+	}
+	
 }
