@@ -15,7 +15,8 @@
 		<delete dir="${classesdir}" failonerror="no"/>
 		<mkdir dir="${classesdir}" />
 		
-		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" encoding="8859_1">
+		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false"
+			encoding="ISO-8859-1">
 			<src>
 				<pathelement location="${srcdir}" />
 			</src>
