@@ -32,6 +32,7 @@ import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
+import br.com.sysmap.crux.scannotation.AbstractScanner;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
 import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
@@ -42,7 +43,7 @@ import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class TemplatesScanner 
+public class TemplatesScanner extends AbstractScanner
 {
 	private static final Log logger = LogFactory.getLog(TemplatesScanner.class);
 	private static final TemplatesScanner instance = new TemplatesScanner();
@@ -66,28 +67,6 @@ public class TemplatesScanner
 		{
 			throw new TemplateException(messages.templatesScannerErrorBuilderCanNotBeCreated(), e);
 		}
-	}
-	
-	protected transient String[] ignoredPackages = {"javax", "java", "sun", "com.sun", "org.apache", 
-													"net.sf.saxon", "javassist", "org.json", "com.extjs",
-													"com.metaparadigm", "junit"};
-
-	/**
-	 * 
-	 * @return
-	 */
-	public String[] getIgnoredPackages()
-	{
-		return ignoredPackages;
-	}
-
-	/**
-	 * 
-	 * @param ignoredPackages
-	 */
-	public void setIgnoredPackages(String[] ignoredPackages)
-	{
-		this.ignoredPackages = ignoredPackages;
 	}
 
 	/**
@@ -192,23 +171,6 @@ public class TemplatesScanner
 		return fileName;
 	}
 	
-	/**
-	 * 
-	 * @param intf
-	 * @return
-	 */
-	private boolean ignoreScan(String intf)
-	{
-		for (String ignored : ignoredPackages)
-		{
-			if (intf.startsWith(ignored + "."))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * 
 	 * @return
