@@ -35,7 +35,7 @@ public class ClassScanner
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Lock lock = new ReentrantLock();
 
-	private static ScannerDB scannerDB;
+	private static ScannerDB scannerDB = new ScannerDB();
 
 	/**
 	 * 
@@ -51,15 +51,38 @@ public class ClassScanner
 	 */
 	public static void initialize(URL[] urls) 
 	{
-		scannerDB = new ScannerDB();
-		scannerDB.setIgnoredPackages(new String[]{"javax", "java", "sun", "com.sun", "org.apache", 
-				"javassist", "org.json", "net.sf.saxon", "com.extjs",
-				"com.metaparadigm", "junit", "br.com.sysmap.crux.core.rebind.screen"});
+		scannerDB.addIgnoredPackage("br.com.sysmap.crux.core.rebind.screen");
 		scannerDB.setScanFieldAnnotations(false);
 		scannerDB.setScanMethodAnnotations(false);
 		scannerDB.setScanParameterAnnotations(false);
 		scannerDB.setScanClassAnnotations(true);
 		buildIndex(urls);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static String[] getIgnoredPackages()
+	{
+		return scannerDB.getIgnoredPackages();
+	}
+
+	/**
+	 * 
+	 * @param ignoredPackages
+	 */
+	public static void setIgnoredPackages(String[] ignoredPackages)
+	{
+		scannerDB.setIgnoredPackages(ignoredPackages);
+	}
+	
+	/**
+	 * @param ignoredPackage
+	 */
+	public static void addIgnoredPackage(String ignoredPackage)
+	{
+		scannerDB.addIgnoredPackage(ignoredPackage);
 	}
 	
 	/**
