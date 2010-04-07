@@ -54,7 +54,6 @@ public class ConfigGenerator extends CruxClientConfigGenerator
 					String[] pages = CruxModuleHandler.getCruxModule(moduleName).getPages();
 					if (pages != null)
 					{
-						//TODO - Thiago - colocar tbm um scanner para achar os controllers de um module
 						for (String page : pages)
 						{
 							sourceWriter.println("if (urlWithoutParameters.endsWith(\""+page+"\")){");
