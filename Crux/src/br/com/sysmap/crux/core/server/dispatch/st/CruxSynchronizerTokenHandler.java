@@ -34,4 +34,3 @@ public interface CruxSynchronizerTokenHandler extends SessionAware, RequestAware
 	void setSession(HttpSession session);
 	String getMethodDescription(Method method);
 }
-// TODO - documentar isso no wiki
