@@ -36,6 +36,7 @@ public class ClassScanner
 	private static final Lock lock = new ReentrantLock();
 
 	private static ScannerDB scannerDB = new ScannerDB();
+	private static boolean initialized = false;
 
 	/**
 	 * 
@@ -45,18 +46,43 @@ public class ClassScanner
 		
 	}
 	
+	
+	/**
+	 * 
+	 * @param urls
+	 */
+	public static void initialize() 
+	{
+		initialize(ScannerURLS.getURLsForSearch());
+	}
+	
 	/**
 	 * 
 	 * @param urls
 	 */
 	public static void initialize(URL[] urls) 
 	{
-		scannerDB.addIgnoredPackage("br.com.sysmap.crux.core.rebind.screen");
-		scannerDB.setScanFieldAnnotations(false);
-		scannerDB.setScanMethodAnnotations(false);
-		scannerDB.setScanParameterAnnotations(false);
-		scannerDB.setScanClassAnnotations(true);
-		buildIndex(urls);
+		if (!isInitialized())
+		{
+			lock.lock();
+			try
+			{
+				if (!isInitialized())
+				{
+					scannerDB.addIgnoredPackage("br.com.sysmap.crux.core.rebind.screen");
+					scannerDB.setScanFieldAnnotations(false);
+					scannerDB.setScanMethodAnnotations(false);
+					scannerDB.setScanParameterAnnotations(false);
+					scannerDB.setScanClassAnnotations(true);
+					buildIndex(urls);
+					initialized = true;
+				}
+			}
+			finally
+			{
+				lock.unlock();
+			}
+		}
 	}
 	
 	/**
@@ -83,29 +109,6 @@ public class ClassScanner
 	public static void addIgnoredPackage(String ignoredPackage)
 	{
 		scannerDB.addIgnoredPackage(ignoredPackage);
-	}
-	
-	/**
-	 * 
-	 * @param urls
-	 */
-	public static void initialize() 
-	{
-		if (!isInitialized())
-		{
-			lock.lock();
-			try
-			{
-				if (!isInitialized())
-				{
-					initialize(ScannerURLS.getURLsForSearch());
-				}
-			}
-			finally
-			{
-				lock.unlock();
-			}
-		}
 	}
 
 	/**
@@ -194,6 +197,6 @@ public class ClassScanner
 	 */
 	public static boolean isInitialized()
 	{
-		return scannerDB != null;
+		return initialized;
 	}
 }
