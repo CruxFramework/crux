@@ -70,6 +70,7 @@ public class ClassScanner
 				if (!isInitialized())
 				{
 					scannerDB.addIgnoredPackage("br.com.sysmap.crux.core.rebind.screen");
+					scannerDB.addRequiredPackage("br.com.sysmap.crux");
 					scannerDB.setScanFieldAnnotations(false);
 					scannerDB.setScanMethodAnnotations(false);
 					scannerDB.setScanParameterAnnotations(false);
@@ -109,6 +110,58 @@ public class ClassScanner
 	public static void addIgnoredPackage(String ignoredPackage)
 	{
 		scannerDB.addIgnoredPackage(ignoredPackage);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static String[] getAllowedPackages()
+	{
+		return scannerDB.getAllowedPackages();
+	}
+
+	/**
+	 * 
+	 * @param ignoredPackages
+	 */
+	public static void setAllowedPackages(String[] allowedPackages)
+	{
+		scannerDB.setAllowedPackages(allowedPackages);
+	}
+	
+	/**
+	 * @param ignoredPackage
+	 */
+	public static void addAllowedPackage(String allowedPackage)
+	{
+		scannerDB.addAllowedPackage(allowedPackage);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static String[] getRequiredPackages()
+	{
+		return scannerDB.getRequiredPackages();
+	}
+
+	/**
+	 * 
+	 * @param ignoredPackages
+	 */
+	public static void setRequiredPackages(String[] requiredPackages)
+	{
+		scannerDB.setRequiredPackages(requiredPackages);
+	}
+	
+	/**
+	 * @param ignoredPackage
+	 */
+	public static void addRequiredPackage(String requiredPackage)
+	{
+		scannerDB.addRequiredPackage(requiredPackage);
 	}
 
 	/**
