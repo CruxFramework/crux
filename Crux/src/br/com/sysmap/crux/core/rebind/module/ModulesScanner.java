@@ -88,6 +88,7 @@ public class ModulesScanner extends AbstractScanner
 	 */
 	private void initializeAllowedPackages()
 	{
+		addRequiredPackage("br.com.sysmap.crux");
 		String scanAllowedPackages = CruxScreenBridge.getInstance().getScanAllowedPackages();
 		if (!StringUtils.isEmpty(scanAllowedPackages))
 		{
