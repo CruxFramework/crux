@@ -144,7 +144,7 @@ public class ModulesScanner extends AbstractScanner
 	 */
 	private void scanArchives(URL... urls)
 	{
-		for (URL url : urls)
+		for (final URL url : urls)
 		{
 			Filter filter = new Filter()
 			{
@@ -152,8 +152,7 @@ public class ModulesScanner extends AbstractScanner
 				{
 					if (fileName.endsWith(".gwt.xml"))
 					{
-						if (fileName.startsWith("/")) fileName = fileName.substring(1);
-						if (!ignoreScan(fileName.replace('/', '.')))
+						if (!ignoreScan(url, fileName))
 						{
 							return true;
 						}

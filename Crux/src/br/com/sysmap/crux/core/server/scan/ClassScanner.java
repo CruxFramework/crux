@@ -95,6 +95,7 @@ public class ClassScanner
 	{
 		scannerDB.addIgnoredPackage("br.com.sysmap.crux.core.rebind.screen");
 		scannerDB.addRequiredPackage("br.com.sysmap.crux");
+		scannerDB.addRequiredPackage("com.google.gwt.i18n.client");
 		
 		String scanAllowedPackages = CruxScreenBridge.getInstance().getScanAllowedPackages();
 		if (!StringUtils.isEmpty(scanAllowedPackages))

@@ -51,6 +51,7 @@ public class Services
 					return serviceClass;
 				}
 			}
+			//TODO - Thiago - notificar 
 		} 
 		catch (ClassNotFoundException e) 
 		{
