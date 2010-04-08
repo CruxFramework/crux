@@ -26,8 +26,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.server.ServerMessages;
+import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 public class ClassScanner
 {
@@ -69,8 +72,7 @@ public class ClassScanner
 			{
 				if (!isInitialized())
 				{
-					scannerDB.addIgnoredPackage("br.com.sysmap.crux.core.rebind.screen");
-					scannerDB.addRequiredPackage("br.com.sysmap.crux");
+					initializeAllowedPackages();
 					scannerDB.setScanFieldAnnotations(false);
 					scannerDB.setScanMethodAnnotations(false);
 					scannerDB.setScanParameterAnnotations(false);
@@ -86,6 +88,35 @@ public class ClassScanner
 		}
 	}
 	
+	/**
+	 * 
+	 */
+	private static void initializeAllowedPackages()
+	{
+		scannerDB.addIgnoredPackage("br.com.sysmap.crux.core.rebind.screen");
+		scannerDB.addRequiredPackage("br.com.sysmap.crux");
+		
+		String scanAllowedPackages = CruxScreenBridge.getInstance().getScanAllowedPackages();
+		if (!StringUtils.isEmpty(scanAllowedPackages))
+		{
+			String[] allowedPackages = RegexpPatterns.REGEXP_COMMA.split(scanAllowedPackages);
+			for (String allowed : allowedPackages) 
+			{
+				scannerDB.addAllowedPackage(allowed.trim());
+			}
+		}
+		
+		String scanIgnoredPackages = CruxScreenBridge.getInstance().getScanIgnoredPackages();
+		if (!StringUtils.isEmpty(scanIgnoredPackages))
+		{
+			String[] ignoredPackages = RegexpPatterns.REGEXP_COMMA.split(scanIgnoredPackages);
+			for (String ignored : ignoredPackages) 
+			{
+				scannerDB.addIgnoredPackage(ignored.trim());
+			}
+		}
+	}
+
 	/**
 	 * 
 	 * @return

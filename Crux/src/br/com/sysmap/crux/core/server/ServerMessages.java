@@ -85,6 +85,18 @@ public interface ServerMessages
 	@DefaultServerMessage("[screenBridge 002] - Error reading screen id: {0}.")
 	String screenBridgeErrorReadingScreenId(String errMsg);
 
+	@DefaultServerMessage("[screenBridge 003] - Error registering ignoredPackages: {0}.")
+	String screenBridgeErrorRegisteringIgnoredPackages(String localizedMessage);
+
+	@DefaultServerMessage("[screenBridge 004] - Error reading ignoredPackages: {0}.")
+	String screenBridgeErrorReadingIgnoredPackages(String localizedMessage);
+
+	@DefaultServerMessage("[screenBridge 005] - Error registering allowedPackages: {0}.")
+	String screenBridgeErrorRegisteringAllowedPackages(String localizedMessage);
+
+	@DefaultServerMessage("[screenBridge 006] - Error reading allowedPackages: {0}.")
+	String screenBridgeErrorReadingAllowedPackages(String localizedMessage);
+
 	@DefaultServerMessage("[messages 001] - Error initializing messagesClasses: {0}.")
 	String messagesClassesInitializeError(String localizedMessage);
 

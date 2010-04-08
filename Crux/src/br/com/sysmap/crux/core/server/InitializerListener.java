@@ -24,11 +24,9 @@ import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
-import br.com.sysmap.crux.core.rebind.module.ModulesScanner;
+import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.dispatch.ServiceFactoryInitializer;
-import br.com.sysmap.crux.core.server.scan.ClassScanner;
-import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 /**
  * When the application starts, register clientHandlers
@@ -54,26 +52,27 @@ public class InitializerListener implements ServletContextListener
 		try
 		{
 			//TODO - Thiago documentar isso no wiki
+			//TODO - Thiago remover quebras de linha e espacos antes de gravar....
+			
 			String classScannerAllowedPackages = contextEvent.getServletContext().getInitParameter("classScannerAllowedPackages");
+			
 			if (!StringUtils.isEmpty(classScannerAllowedPackages))
 			{
-				String[] allowedPackages = RegexpPatterns.REGEXP_COMMA.split(classScannerAllowedPackages);
-				for (String allowed : allowedPackages) 
-				{
-					ClassScanner.addAllowedPackage(allowed);
-					ModulesScanner.getInstance().addAllowedPackage(allowed);
-				}
+				CruxScreenBridge.getInstance().registerScanAllowedPackages(classScannerAllowedPackages);
+			}
+			else
+			{
+				CruxScreenBridge.getInstance().registerScanAllowedPackages("");
 			}
 			
 			String classScannerIgnoredPackages = contextEvent.getServletContext().getInitParameter("classScannerIgnoredPackages");
 			if (!StringUtils.isEmpty(classScannerIgnoredPackages))
 			{
-				String[] ignoredPackages = RegexpPatterns.REGEXP_COMMA.split(classScannerIgnoredPackages);
-				for (String ignored : ignoredPackages) 
-				{
-					ClassScanner.addIgnoredPackage(ignored);
-					ModulesScanner.getInstance().addIgnoredPackage(ignored);
-				}
+				CruxScreenBridge.getInstance().registerScanIgnoredPackages(classScannerIgnoredPackages);
+			}
+			else
+			{
+				CruxScreenBridge.getInstance().registerScanIgnoredPackages("");
 			}
 
 			ConfigurationFactory.getConfigurations();

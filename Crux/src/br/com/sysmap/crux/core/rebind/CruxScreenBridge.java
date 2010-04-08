@@ -47,12 +47,16 @@ public class CruxScreenBridge
 	//Woww :) How GWT generators and the application server run in different JVMs, 
 	//the only way to obtain these informations is using a bridge in file system.
 	private File screenRequestedBridgeFile;
+	private File scanAllowedPackagesFile;
+	private File scanIgnoredPackagesFile;
 	
 	private CruxScreenBridge() 
 	{
 		String tmpDir = FileSystemUtils.getTempDir();
 		
 		screenRequestedBridgeFile = new File(tmpDir+"screenRequestedBridgeFile");
+		scanAllowedPackagesFile = new File(tmpDir+"scanAllowedPackagesFile");
+		scanIgnoredPackagesFile = new File(tmpDir+"scanIgnoredPackagesFile");
 	}
 
 	/**
@@ -98,6 +102,78 @@ public class CruxScreenBridge
 		catch (Exception e) 
 		{
 			logger.error(messages.screenBridgeErrorReadingScreenId(e.getLocalizedMessage()), e);
+			return null;
+		}
+	}
+
+	/**
+	 * @param ignoredPackages
+	 */
+	public void registerScanIgnoredPackages(String ignoredPackages)
+	{
+		PrintWriter writer;
+		try 
+		{
+			writer = new PrintWriter(scanIgnoredPackagesFile);
+			writer.println(ignoredPackages);
+			writer.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			logger.error(messages.screenBridgeErrorRegisteringIgnoredPackages(e.getLocalizedMessage()), e);
+		}
+	}
+
+	/**
+	 * Return the last page requested by client.
+	 * @return
+	 */
+	public String getScanIgnoredPackages() 
+	{
+		try 
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(scanIgnoredPackagesFile));
+			return reader.readLine();
+		} 
+		catch (Exception e) 
+		{
+			logger.error(messages.screenBridgeErrorReadingIgnoredPackages(e.getLocalizedMessage()), e);
+			return null;
+		}
+	}
+
+	/**
+	 * @param allowedPackages
+	 */
+	public void registerScanAllowedPackages(String allowedPackages)
+	{
+		PrintWriter writer;
+		try 
+		{
+			writer = new PrintWriter(scanAllowedPackagesFile);
+			writer.println(allowedPackages);
+			writer.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			logger.error(messages.screenBridgeErrorRegisteringAllowedPackages(e.getLocalizedMessage()), e);
+		}
+	}
+
+	/**
+	 * Return the last page requested by client.
+	 * @return
+	 */
+	public String getScanAllowedPackages() 
+	{
+		try 
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(scanAllowedPackagesFile));
+			return reader.readLine();
+		} 
+		catch (Exception e) 
+		{
+			logger.error(messages.screenBridgeErrorReadingAllowedPackages(e.getLocalizedMessage()), e);
 			return null;
 		}
 	}

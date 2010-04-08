@@ -34,10 +34,13 @@ import org.w3c.dom.Document;
 import br.com.sysmap.crux.classpath.PackageFileURLResourceHandler;
 import br.com.sysmap.crux.classpath.URLResourceHandler;
 import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
+import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.scannotation.AbstractScanner;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
@@ -68,6 +71,7 @@ public class ModulesScanner extends AbstractScanner
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			this.documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			classesDir = getClassesDir();
+			initializeAllowedPackages();
 		}
 		catch (ParserConfigurationException e)
 		{
@@ -76,6 +80,32 @@ public class ModulesScanner extends AbstractScanner
 		catch (Exception e)
 		{
 			throw new ModuleException(messages.modulesScannerErrorFindingClassesDir(), e);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void initializeAllowedPackages()
+	{
+		String scanAllowedPackages = CruxScreenBridge.getInstance().getScanAllowedPackages();
+		if (!StringUtils.isEmpty(scanAllowedPackages))
+		{
+			String[] allowedPackages = RegexpPatterns.REGEXP_COMMA.split(scanAllowedPackages);
+			for (String allowed : allowedPackages) 
+			{
+				addAllowedPackage(allowed.trim());
+			}
+		}
+		
+		String scanIgnoredPackages = CruxScreenBridge.getInstance().getScanIgnoredPackages();
+		if (!StringUtils.isEmpty(scanIgnoredPackages))
+		{
+			String[] ignoredPackages = RegexpPatterns.REGEXP_COMMA.split(scanIgnoredPackages);
+			for (String ignored : ignoredPackages) 
+			{
+				addIgnoredPackage(ignored.trim());
+			}
 		}
 	}
 	
