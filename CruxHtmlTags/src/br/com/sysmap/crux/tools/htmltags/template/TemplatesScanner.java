@@ -17,6 +17,8 @@ package br.com.sysmap.crux.tools.htmltags.template;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -75,6 +77,9 @@ public class TemplatesScanner extends AbstractScanner
 	 */
 	private void scanArchives(URL... urls)
 	{
+		// used to handle duplicated entries on classpath
+		Set<String> foundTemplates = new HashSet<String>();
+		
 		for (final URL url : urls)
 		{
 			Filter filter = new Filter()
@@ -98,14 +103,19 @@ public class TemplatesScanner extends AbstractScanner
 				URL found;
 				while ((found = it.next()) != null)
 				{
-					try
+					String urlString = found.toString();
+					if (!foundTemplates.contains(urlString))
 					{
-						Document template = documentBuilder.parse(found.openStream());
-						Templates.registerTemplate(getTemplateId(found.toString()), template);
-					}
-					catch (Exception e)
-					{
-						logger.error(messages.templatesScannerErrorParsingTemplateFile(found.toString()), e);
+						try
+						{
+							foundTemplates.add(urlString);
+							Document template = documentBuilder.parse(found.openStream());
+							Templates.registerTemplate(getTemplateId(urlString), template);
+						}
+						catch (Exception e)
+						{
+							logger.error(messages.templatesScannerErrorParsingTemplateFile(urlString), e);
+						}
 					}
 				}
 			}
