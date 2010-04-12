@@ -16,6 +16,9 @@
 package br.com.sysmap.crux.core.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -44,5 +47,31 @@ public class FileSystemUtils
 	public static File getTempDirFile()
 	{
 		return new File(getTempDir());
+	}
+	
+	/**
+	 * @param sourceLocation
+	 * @param targetLocation
+	 * @throws IOException
+	 */
+	public static void copyDirectory(File sourceLocation , File targetLocation) throws IOException 
+	{
+		if (sourceLocation.isDirectory()) 
+		{
+			if (!targetLocation.exists()) 
+			{
+				targetLocation.mkdir();
+			}
+
+			String[] children = sourceLocation.list();
+			for (int i=0; i<children.length; i++) 
+			{
+				copyDirectory(new File(sourceLocation, children[i]), new File(targetLocation, children[i]));
+			}
+		} 
+		else 
+		{
+			StreamUtils.write(new FileInputStream(sourceLocation), new FileOutputStream(targetLocation), true);
+		}
 	}
 }
