@@ -57,7 +57,7 @@
 		
 		<copy todir="${crux.libs.project}">
 			<fileset dir="${distdir}">
-				<filename name="/${final.name}.jar"/>
+				<filename name="${final.name}.jar"/>
 			</fileset>
 		</copy>
 		
