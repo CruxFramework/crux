@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 import junit.framework.TestCase;
+import br.com.sysmap.crux.core.declarativeui.CruxToHtmlTransformer;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
 
 /**
  * Test for CruxToHtmlTransformer

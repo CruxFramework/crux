@@ -3,12 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/saxon9.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Crux"/>
-	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="lib/javassist.jar"/>
-	<classpathentry kind="lib" path="lib/crux-scannotation.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CruxCompileTask"/>
 	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
