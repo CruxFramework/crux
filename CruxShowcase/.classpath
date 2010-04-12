@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javassist.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jericho-html-2.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon9.jar"/>
-	<classpathentry kind="lib" path="build/lib/crux-compile-task.jar"/>
 	<classpathentry kind="lib" path="build/lib/crux-html-tags-compile-task.jar"/>
 	<classpathentry kind="lib" path="build/lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-themes.jar"/>
