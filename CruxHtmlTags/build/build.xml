@@ -18,7 +18,7 @@
 	<property name="final.name" value="crux-html-tags"/>
 	<property name="testbenchmarkpath" value="dist/report/junit/benchmark" />
 	<property name="cruxdistdir" value="../Crux/dist"/>
-	<property name="cruxcompilerdistdir" value="../CruxCompileTask/dist"/>
+	<property name="cruxcompilerdistdir" value="../CruxCompiler/dist"/>
 	<property name="crux.libs.project" value="../CruxLibs/crux"/>
 	
 	<path id="build.classpath">
