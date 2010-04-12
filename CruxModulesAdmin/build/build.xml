@@ -42,7 +42,7 @@
 			<!-- use code below for removing unnecessary crux files from the compacted war 
 			<exclude name="**/crux-advanced-widgets.jar" />
 			<exclude name="**/crux-basic-widgets.jar" />
-			<exclude name="**/crux-compile-task.jar" />
+			<exclude name="**/crux-compiler.jar" />
 			<exclude name="**/crux-html-tags.jar" />
 			<exclude name="**/crux-html-tags-compile-task.jar" />
 			<exclude name="**/crux-themes.jar" />
