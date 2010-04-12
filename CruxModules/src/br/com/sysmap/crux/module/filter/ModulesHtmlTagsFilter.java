@@ -26,11 +26,11 @@ import javax.servlet.ServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.declarativeui.CruxToHtmlTransformer;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
+import br.com.sysmap.crux.core.utils.StreamUtils;
 import br.com.sysmap.crux.module.CruxModuleBridge;
-import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
-import br.com.sysmap.crux.tools.htmltags.util.StreamUtils;
 
 /**
  * Used to locate the resources inside the modules structure. Used only for development. When this filter is used, you need 

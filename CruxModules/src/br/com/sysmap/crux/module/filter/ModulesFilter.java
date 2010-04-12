@@ -32,10 +32,10 @@ import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import br.com.sysmap.crux.core.server.CruxFilter;
+import br.com.sysmap.crux.core.utils.StreamUtils;
 import br.com.sysmap.crux.module.CruxModuleBridge;
 import br.com.sysmap.crux.module.CruxModuleHandler;
 import br.com.sysmap.crux.module.CruxModuleMessages;
-import br.com.sysmap.crux.tools.htmltags.util.StreamUtils;
 
 /**
  * Used to locate the resources inside the modules structure. Used only for development. When this filter is used, you need 
