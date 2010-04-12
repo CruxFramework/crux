@@ -15,76 +15,16 @@
  */
 package br.com.sysmap.crux.tools.htmltags.filter;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
-import br.com.sysmap.crux.core.server.CruxFilter;
-import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
-import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
-import br.com.sysmap.crux.tools.htmltags.util.StreamUtils;
+import br.com.sysmap.crux.core.declarativeui.filter.DeclarativeUIFilter;
 
 /**
  * Intercept requests to .html pages and redirect to the correspondent .crux.xml file. Then transform this xml  
  * into the expected .html file. Used only for development.
  * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @deprecated - Use DeclarativeUIFilter instead
  */
-public class HtmlTagsFilter extends CruxFilter
+@Deprecated
+public class HtmlTagsFilter extends DeclarativeUIFilter
 {
-	private static final Log log = LogFactory.getLog(HtmlTagsFilter.class);
-
-	private HTMLTagsMessages messages = MessagesFactory.getMessages(HTMLTagsMessages.class);
-
-	@Override
-	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)  throws IOException, ServletException 
-	{
-		if (production)
-		{
-			chain.doFilter(req, resp);
-		}
-		else
-		{
-			String requestedScreen = getRequestedScreen(req);
-			if (requestedScreen != null)
-			{
-				try
-				{
-					String screenId = requestedScreen.replace(".html", ".crux.xml");
-					String charset = config.getInitParameter("outputCharset");
-
-					if(charset != null)
-					{
-						CruxToHtmlTransformer.setOutputCharset(charset);
-					}
-
-					InputStream screenResource = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(screenId);
-					if (screenResource != null)
-					{
-						StreamUtils.write(screenResource, resp.getOutputStream(), false);
-						return;
-					}
-					else
-					{
-						log.info(messages.htmlTagsDoesNotTransformPage(requestedScreen));
-					}
-				}
-				catch (Exception e)
-				{
-					log.error(e.getMessage(), e);
-					throw new ServletException(e.getMessage(),e);
-				}
-			}
-			chain.doFilter(req, resp);
-		}
-	}
 }

@@ -15,110 +15,14 @@
  */
 package br.com.sysmap.crux.tools.htmltags.filter;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Set;
-
-import br.com.sysmap.crux.classpath.URLResourceHandler;
-import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
-import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
-import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
-import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolver;
-import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
-import br.com.sysmap.crux.core.utils.RegexpPatterns;
-import br.com.sysmap.crux.core.utils.URLUtils;
-import br.com.sysmap.crux.tools.htmltags.CruxToHtmlTransformer;
-import br.com.sysmap.crux.tools.htmltags.HTMLTagsMessages;
+import br.com.sysmap.crux.core.declarativeui.DeclarativeUIScreenResolver;
 
 /**
  * Custom screen resolver to handle crux HTML tags 
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @deprecated - Use DeclarativeUIScreenResolver instead
  */
-public class CruxHtmlTagsScreenResolver implements ScreenResourceResolver
-{
-	HTMLTagsMessages messages = MessagesFactory.getMessages(HTMLTagsMessages.class);	
-
-	/**
-	 * 
-	 */
-	public InputStream getScreenResource(String screenId) throws InterfaceConfigException
-	{
-		try
-		{
-			URL[] webBaseDirs = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
-			URL screenURL = null;
-			InputStream inputStream = null;
-			
-			for (URL webBaseDir: webBaseDirs)
-			{
-				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(webBaseDir.getProtocol());
-
-				screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/").replace(".html", ".crux.xml");
-				screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
-				inputStream = URLUtils.openStream(screenURL);
-				if (inputStream != null)
-				{
-					break;
-				}
-			}	
-			
-			if (inputStream == null)
-			{
-				
-				screenURL = URLUtils.isrValidURL(screenId);
-				
-				if (screenURL == null)
-				{
-					screenURL = new URL("file:///"+screenId);
-				}
-				inputStream = URLUtils.openStream(screenURL);
-				if (inputStream == null)
-				{
-					screenURL = getClass().getResource("/"+screenId);
-					if (screenURL != null)
-					{
-						inputStream = URLUtils.openStream(screenURL);
-					}
-				}
-			}
-
-			if (inputStream == null)
-			{
-				return null;
-			}
-
-			return performTransformation(inputStream);
-		}
-		catch (Exception e)
-		{
-			throw new InterfaceConfigException(messages.cruxHtmlTagsScreenResolverError(screenId, e.getMessage()), e);
-		}
-	}
-
-	/**
-	 * 
-	 * @param screenURL
-	 * @return
-	 * @throws IOException
-	 */
-	private InputStream performTransformation(InputStream inputStream) throws IOException
-	{
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		CruxToHtmlTransformer.generateHTML(inputStream, out);			
-		return new ByteArrayInputStream(out.toByteArray());
-	}
-
-	/**
-	 * 
-	 */
-	public Set<String> getAllScreenIDs(String module) throws ScreenConfigException
-	{
-		return  new CruxHtmlTagsScreenResourceScanner().getPages(module);
-	}
-	
-	
+@Deprecated
+public class CruxHtmlTagsScreenResolver extends DeclarativeUIScreenResolver 
+{	
 }
