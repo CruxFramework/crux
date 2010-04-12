@@ -25,7 +25,7 @@ public interface Crux
 	@DefaultServerMessage("br.com.sysmap.crux.core.i18n.LocaleResolverImpl")
 	String localeResolver();
 
-	@DefaultServerMessage("")
+	@DefaultServerMessage("br.com.sysmap.crux.tools.htmltags.filter.CruxHtmlTagsScreenResolver")
 	String screenResourceResolver();
 
 	@DefaultServerMessage("br.com.sysmap.crux.core.server.classpath.ClassPathResolverImpl")
