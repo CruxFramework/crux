@@ -40,7 +40,7 @@ public class TransformerTest extends TestCase
 				
 				try
 				{
-					String inputFile = file.getAbsolutePath();
+					String inputFile = file.getCanonicalPath();
 					String outputFileName = outputDir + "/" + file.getName().replace(".xml", ".html");
 					File resultFile = new File(outputFileName);
 					if(!resultFile.exists())
