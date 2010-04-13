@@ -179,6 +179,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	{
 		sourceWriter.println("public void updateScreenWidgets(){");
 		sourceWriter.println("Widget __wid = null;");
+		sourceWriter.println("Object o = null;");
 		generateScreenUpdateWidgets(logger, screen, "this", controller, sourceWriter);
 		sourceWriter.println("}");
 	}
@@ -760,7 +761,7 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 	{
 		if (populateScreen)
 		{
-			sourceWriter.println("Object o = " +getFieldValueGet(logger, voClass, field, parentVariable, allowProtected)+";");
+			sourceWriter.println("o = " +getFieldValueGet(logger, voClass, field, parentVariable, allowProtected)+";");
 			sourceWriter.println("((HasText)"+valueVariable+").setText(String.valueOf(o!=null?o:\"\"));");
 		}
 		else
