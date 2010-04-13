@@ -174,7 +174,7 @@ public abstract class WidgetFactory <T extends Widget>
 		@TagAttributeDeclaration("height"),
 		@TagAttributeDeclaration("styleName"),
 		@TagAttributeDeclaration(value="visible", type=Boolean.class),
-		@TagAttributeDeclaration("tooltip"),
+		@TagAttributeDeclaration(value="tooltip", supportsI18N=true),
 		@TagAttributeDeclaration("style")
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
@@ -209,7 +209,7 @@ public abstract class WidgetFactory <T extends Widget>
 		String tooltip = context.getElement().getAttribute("_tooltip");
 		if (tooltip != null && tooltip.length() > 0)
 		{
-			context.getWidget().setTitle(tooltip);
+			context.getWidget().setTitle(ScreenFactory.getInstance().getDeclaredMessage(tooltip));
 		}
 	}
 	

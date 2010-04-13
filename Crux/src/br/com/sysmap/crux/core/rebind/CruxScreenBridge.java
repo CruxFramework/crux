@@ -137,7 +137,7 @@ public class CruxScreenBridge
 		} 
 		catch (Exception e) 
 		{
-			logger.error(messages.screenBridgeErrorReadingIgnoredPackages(e.getLocalizedMessage()), e);
+			logger.debug(messages.screenBridgeErrorReadingIgnoredPackages(e.getLocalizedMessage()), e);
 			return null;
 		}
 	}
@@ -173,7 +173,7 @@ public class CruxScreenBridge
 		} 
 		catch (Exception e) 
 		{
-			logger.error(messages.screenBridgeErrorReadingAllowedPackages(e.getLocalizedMessage()), e);
+			logger.debug(messages.screenBridgeErrorReadingAllowedPackages(e.getLocalizedMessage()), e);
 			return null;
 		}
 	}

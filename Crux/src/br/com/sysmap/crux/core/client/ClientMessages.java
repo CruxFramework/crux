@@ -19,8 +19,7 @@ import com.google.gwt.i18n.client.Messages;
 
 /**
  * Contains all client messages used by Crux Framework
- * @author Thiago
- *
+ * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  */
 public interface ClientMessages extends Messages
 {
