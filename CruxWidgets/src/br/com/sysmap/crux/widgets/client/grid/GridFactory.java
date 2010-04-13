@@ -37,8 +37,10 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContex
 import br.com.sysmap.crux.gwt.client.align.AlignmentAttributeParser;
 import br.com.sysmap.crux.gwt.client.align.HorizontalAlignment;
 import br.com.sysmap.crux.gwt.client.align.VerticalAlignment;
+import br.com.sysmap.crux.widgets.client.WidgetMessages;
 import br.com.sysmap.crux.widgets.client.event.row.RowEventsBind;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -49,6 +51,8 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 @DeclarativeFactory(id="grid", library="widgets")
 public class GridFactory extends WidgetFactory<Grid>
 {
+	private WidgetMessages messages = GWT.create(WidgetMessages.class);
+	
 	/**
 	 * @param cellSpacing 
 	 * @param autoLoad 
@@ -247,8 +251,7 @@ public class GridFactory extends WidgetFactory<Grid>
 		}
 		else
 		{
-			// TODO - msg de erro, não há colunas
-			throw new InterfaceConfigException("");
+			throw new InterfaceConfigException(messages.gridDoesNotHaveColumns(gridElem.getId()));
 		}
 				
 		return defs;

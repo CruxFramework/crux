@@ -24,8 +24,10 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.widgets.client.WidgetMessages;
 import br.com.sysmap.crux.widgets.client.event.paging.PageEvtBind;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -34,6 +36,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class AbstractPagerFactory<T extends AbstractPager> extends WidgetFactory<T>
 {
+	private WidgetMessages messages = GWT.create(WidgetMessages.class);
+	
 	/**
 	 * @see br.com.sysmap.crux.core.client.screen.WidgetFactory#instantiateWidget(com.google.gwt.dom.client.Element, java.lang.String)
 	 */
@@ -84,7 +88,7 @@ public abstract class AbstractPagerFactory<T extends AbstractPager> extends Widg
 					}
 					else
 					{
-						throw new RuntimeException(""); // TODO
+						throw new RuntimeException(messages.pagerNoPageableSet()); 
 					}							
 				}				
 			}		
