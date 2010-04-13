@@ -49,6 +49,9 @@ public interface ServerMessages
 	@DefaultServerMessage("[services 001] - Error initializing services: {0}.")
 	String servicesInitializeError(String errMsg);
 
+	@DefaultServerMessage("[services 002] - No implementation class found to service interface: {0}.")
+	String servicesNoImplementationFound(String interfaceName);
+	
 	@DefaultServerMessage("[serviceFactoryInitializer 001] - Server services registered.")
 	String serviceFactoryInitializerServicesRegistered();
 

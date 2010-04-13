@@ -51,7 +51,7 @@ public class Services
 					return serviceClass;
 				}
 			}
-			//TODO - Thiago - notificar 
+			logger.error(messages.servicesNoImplementationFound(interfaceName));
 		} 
 		catch (ClassNotFoundException e) 
 		{
