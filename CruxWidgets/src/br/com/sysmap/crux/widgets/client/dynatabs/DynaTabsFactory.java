@@ -27,7 +27,8 @@ import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
-import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusOrBlurEvtBind;
+import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeBlurEvtBind;
+import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusEvtBind;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvtBind;
 
 import com.google.gwt.dom.client.Element;
@@ -54,6 +55,10 @@ public class DynaTabsFactory extends WidgetFactory<DynaTabs>
 	@TagChildAttributes(tagName="tab", minOccurs="0", maxOccurs="unbounded")
 	public static class DynaTabProcessor extends WidgetChildProcessor<DynaTabs>
 	{
+		protected BeforeFocusEvtBind beforeFocusEvtBind = new BeforeFocusEvtBind();
+		protected BeforeBlurEvtBind beforeBlurEvtBind = new BeforeBlurEvtBind();
+		protected BeforeCloseEvtBind beforeCloseEvtBind = new BeforeCloseEvtBind();
+
 		@Override
 		@TagAttributesDeclaration({
 			@TagAttributeDeclaration(value="id", required=true),
@@ -83,8 +88,9 @@ public class DynaTabsFactory extends WidgetFactory<DynaTabs>
 			
 			Tab tab = context.getRootWidget().openTab(id, label, url, closeable, false);
 			
-			BeforeFocusOrBlurEvtBind.bindEvents(childElement, tab);
-			new BeforeCloseEvtBind().bindEvent(childElement, tab);			
+			beforeFocusEvtBind.bindEvent(childElement, tab);			
+			beforeBlurEvtBind.bindEvent(childElement, tab);			
+			beforeCloseEvtBind.bindEvent(childElement, tab);			
 		}
 	}
 }

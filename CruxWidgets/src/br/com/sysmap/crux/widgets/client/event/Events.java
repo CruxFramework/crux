@@ -6,18 +6,6 @@ package br.com.sysmap.crux.widgets.client.event;
  */
 public class Events
 {
-	public static final String BEFORE_COLLAPSE = "onbeforecollapse";
-	public static final String BEFORE_EXPAND = "onbeforeexpand";
-	
-	public static final String BEFORE_FOCUS = "onbeforefocus";
-	public static final String BEFORE_BLUR = "onbeforeblur";
-	
-	public static final String BEFORE_CLOSE = "onbeforeclose";
-	public static final String BEFORE_OPEN = "onbeforeopen";
-
-	public static final String CANCEL = "oncancel";
-	public static final String OK = "onok";	
-	
 	public static final String TIMEOUT = "ontimeout";
 	
 	public static final String ROW_CLICK = "onrowclick";
