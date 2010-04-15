@@ -135,7 +135,21 @@ public class Timer extends Composite implements HasTimeoutHandlers
 	 */
 	public void clear()
 	{
+		clear(false);
+	}
+	
+	/**
+	 * 
+	 */
+	public void clear(boolean reprocessTimeoutEvents)
+	{
 		stop();
+		
+		if(reprocessTimeoutEvents)
+		{
+			resetTimeoutEvents();
+		}
+		
 		this.initial = creationTime;
 		update();
 	}
@@ -187,6 +201,20 @@ public class Timer extends Composite implements HasTimeoutHandlers
 						task.process(this);
 					}
 				}
+			}
+		}		
+	}
+	
+	/**
+	 * @param currentCount
+	 */
+	private void resetTimeoutEvents()
+	{
+		if(this.events != null)
+		{
+			for (TimeouTask task  : this.events)
+			{
+				task.setProcessed(false);
 			}
 		}		
 	}
