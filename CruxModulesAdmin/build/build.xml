@@ -1,4 +1,4 @@
-<project name="CruxModulesAdmin" basedir="../">
+<project name="CruxModulesAdmin" basedir="../" default="export-as-module">
 
 	<property name="final.name" value="CruxModulesAdmin" />
 	<property name="src.dir" value="src" />
