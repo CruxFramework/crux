@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<EditablePagedDataSource>, HasBeforeRowSelectHandlers {	
- 
+
 	private int pageSize;
 	private EditablePagedDataSource dataSource;
 	private List<ColumnHeader> headers = new ArrayList<ColumnHeader>();
