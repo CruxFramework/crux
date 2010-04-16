@@ -4,7 +4,8 @@ public enum RowSelectionModel
 {
 	unselectable,
 	single,
-	singleWithRadioButton,
+	singleRadioButton,
 	multiple,	
-	multipleWithCheckBox	
+	multipleCheckBox,
+	multipleCheckBoxSelectAll
 }

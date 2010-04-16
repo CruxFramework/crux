@@ -347,7 +347,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	protected boolean hasSelectionColumn()
 	{
-		return RowSelectionModel.multipleWithCheckBox.equals(rowSelection) || RowSelectionModel.singleWithRadioButton.equals(rowSelection);
+		return RowSelectionModel.multipleCheckBox.equals(rowSelection) || RowSelectionModel.multipleCheckBoxSelectAll.equals(rowSelection) || RowSelectionModel.singleRadioButton.equals(rowSelection);
 	}
 	
 	/**
@@ -453,13 +453,13 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	{
 		Widget w = null;
 		
-		if(RowSelectionModel.multipleWithCheckBox.equals(rowSelection))
+		if(RowSelectionModel.multipleCheckBox.equals(rowSelection) || RowSelectionModel.multipleCheckBoxSelectAll.equals(rowSelection))
 		{
 			CheckBox checkBox = new CheckBox();
 			checkBox.addClickHandler(new RowSelectionHandler<R>(this, row));
 			w = checkBox;
 		}
-		else if(RowSelectionModel.singleWithRadioButton.equals(rowSelection))
+		else if(RowSelectionModel.singleRadioButton.equals(rowSelection))
 		{
 			RadioButton radio = new RadioButton(generatedId + "_selector");
 			radio.addClickHandler(new RowSelectionHandler<R>(this, row));
@@ -474,7 +474,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	
 	/**
 	 * Creates a cell to be used as first header cell. 
-	 * If the row selection model is <code>MULTIPLE</code> or <code>MULTIPLE_WITH_CHECKBOX</code>, 
+	 * If the row selection model is <code>multipleCheckBoxSelectAll</code>, 
 	 * 	this cell will contain a check box which when clicked selects or deselects all enabled rows.  
 	 * @param rowCount
 	 * @return the created cell
@@ -485,7 +485,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		
 		if(hasSelectionColumn())
 		{
-			if(RowSelectionModel.multiple.equals(rowSelection) || RowSelectionModel.multipleWithCheckBox.equals(rowSelection))
+			if(RowSelectionModel.multipleCheckBoxSelectAll.equals(rowSelection))
 			{
 				CheckBox checkBox = new CheckBox();
 				checkBox.addClickHandler(createSelectAllRowsClickHandler());
@@ -652,7 +652,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			
 			if(row.isEnabled())
 			{
-				if(RowSelectionModel.multipleWithCheckBox.equals(rowSelection))
+				if(RowSelectionModel.multipleCheckBox.equals(rowSelection) || RowSelectionModel.multipleCheckBoxSelectAll.equals(rowSelection))
 				{
 					((CheckBox) row.getCell(0).getCellWidget()).setValue(select);
 				}

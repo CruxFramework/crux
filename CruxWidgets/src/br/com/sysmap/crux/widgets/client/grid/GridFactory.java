@@ -167,13 +167,17 @@ public class GridFactory extends WidgetFactory<Grid>
 			{
 				return RowSelectionModel.multiple;
 			}
-			else if("singleWithRadioButton".equals(rowSelection))
+			else if("singleRadioButton".equals(rowSelection))
 			{
-				return RowSelectionModel.singleWithRadioButton;
+				return RowSelectionModel.singleRadioButton;
 			}
-			else if("multipleWithCheckBox".equals(rowSelection))
+			else if("multipleCheckBox".equals(rowSelection))
 			{
-				return RowSelectionModel.multipleWithCheckBox;
+				return RowSelectionModel.multipleCheckBox;
+			}
+			else if("multipleCheckBoxSelectAll".equals(rowSelection))
+			{
+				return RowSelectionModel.multipleCheckBoxSelectAll;
 			}
 		}
 		

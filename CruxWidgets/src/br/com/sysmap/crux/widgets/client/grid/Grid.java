@@ -222,7 +222,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		
 		if(proceed)
 		{
-			if(select && (RowSelectionModel.single.equals(rowSelectionModel) || RowSelectionModel.singleWithRadioButton.equals(rowSelectionModel)))
+			if(select && (RowSelectionModel.single.equals(rowSelectionModel) || RowSelectionModel.singleRadioButton.equals(rowSelectionModel)))
 			{
 				EditableDataSourceRecord[] records = dataSource.getSelectedRecords();
 				if(records != null)
