@@ -596,10 +596,12 @@ public abstract class AbstractRegisteredClientInvokableGenerator extends Abstrac
 				sourceWriter.println("}");
 				
 			}
+			sourceWriter.println("if (" +Window.class.getName()+".Location.getParameter(\""+name+"\")!=null){");
 			sourceWriter.println("try{");
 			generateParameterBinding(logger, parentVariable, voClass, field, sourceWriter, type, name, allowProtected);
 			sourceWriter.println("}catch(Throwable _e1){");
 			sourceWriter.println("throw new "+ValidateException.class.getName()+"("+EscapeUtils.quote(coreMessages.errorReadingParameter(name))+");");
+			sourceWriter.println("}");
 			sourceWriter.println("}");
 		}
 		else if (type.getAnnotation(ParameterObject.class) != null)

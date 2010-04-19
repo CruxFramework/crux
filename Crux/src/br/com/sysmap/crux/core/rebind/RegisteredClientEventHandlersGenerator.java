@@ -290,8 +290,31 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		{
 			sourceWriter.println(className+"Wrapper wrapper = null;");
 		}
+		sourceWriter.println(Map.class.getName()+"<String, Boolean> __runningMethods = new "+HashMap.class.getName()+"<String, Boolean>();");
+
+		generateInvokeMethod(logger, sourceWriter, handlerClass, className, singleton, autoBindEnabled);
+		generateScreenUpdateWidgetsFunction(logger, screen, handlerClass, sourceWriter);
+		generateControllerUpdateObjectsFunction(logger, screen, handlerClass, sourceWriter);
+		generateIsAutoBindEnabledMethod(sourceWriter, autoBindEnabled);
+				
+		sourceWriter.println("}");
 		
-		sourceWriter.println("public void invoke(String metodo, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception{ ");
+		return className+"Wrapper";
+	}
+
+	/**
+	 * @param logger
+	 * @param sourceWriter
+	 * @param handlerClass
+	 * @param className
+	 * @param methods
+	 * @param singleton
+	 * @param autoBindEnabled
+	 */
+	private void generateInvokeMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> handlerClass, 
+			          String className, boolean singleton, boolean autoBindEnabled)
+    {
+	    sourceWriter.println("public void invoke(String metodo, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception{ ");
 		sourceWriter.println("boolean __runMethod = true;");
 		
 		if (singleton)
@@ -310,12 +333,13 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 
 		if (autoBindEnabled)
 		{
+			sourceWriter.println("if (!__runningMethods.containsKey(metodo)){");
 			sourceWriter.println("wrapper.updateControllerObjects();");
+			sourceWriter.println("}");
 		}
 		
-		Method[] methods = handlerClass.getMethods(); 
-
 		boolean first = true;
+		Method[] methods = handlerClass.getMethods(); 
 		for (Method method: methods) 
 		{
 			if (isHandlerMethodSignatureValid(method))
@@ -325,48 +349,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 					sourceWriter.print("else ");
 				}
 				
-				if (method.getAnnotation(ExposeOutOfModule.class) != null)
-				{
-					sourceWriter.println("if (\""+method.getName()+"\".equals(metodo)) {");
-				}
-				else
-				{
-					sourceWriter.println("if (\""+method.getName()+"\".equals(metodo) && !fromOutOfModule) {");
-				}
-				Validate annot = method.getAnnotation(Validate.class);
-				if (annot != null)
-				{
-					sourceWriter.println("try{");
-					String validateMethod = annot.value();
-					if (validateMethod == null || validateMethod.length() == 0)
-					{
-						String methodName = method.getName();
-						methodName = Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1);
-						validateMethod = "validate"+ methodName;
-					}
-					generateValidateMethodCall(logger, handlerClass, method, validateMethod, sourceWriter);
-					sourceWriter.println("}catch (Throwable e){");
-					sourceWriter.println("__runMethod = false;");
-					sourceWriter.println("eventProcessor._validationMessage = e.getMessage();");
-					sourceWriter.println("}");
-				}
-				sourceWriter.println("if (__runMethod){");
-				sourceWriter.println("try{");
-				
-				if (!method.getReturnType().getName().equals("void") && 
-					!method.getReturnType().getName().equals("java.lang.Void"))
-				{
-					sourceWriter.println("eventProcessor._hasReturn = true;");
-					sourceWriter.println("eventProcessor._returnValue = ");
-				}
-				generateMethodCall(method, sourceWriter);
-				
-				sourceWriter.println("}catch (Throwable e){");
-				sourceWriter.println("eventProcessor._exception = e;");
-				sourceWriter.println("}");
-				
-				sourceWriter.println("}");
-				sourceWriter.println("}");
+				generateInvokeBlockForMethod(logger, sourceWriter, handlerClass, method);
 
 				first = false;
 			}
@@ -383,16 +366,98 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		}		
 		
 		sourceWriter.println("}");
-		
-		generateScreenUpdateWidgetsFunction(logger, screen, handlerClass, sourceWriter);
-		generateControllerUpdateObjectsFunction(logger, screen, handlerClass, sourceWriter);
-		generateIsAutoBindEnabledMethod(sourceWriter, autoBindEnabled);
-				
-		sourceWriter.println("}");
-		
-		return className+"Wrapper";
-	}
+    }
+
+	/**
+	 * @param logger
+	 * @param sourceWriter
+	 * @param handlerClass
+	 * @param method
+	 */
+	private void generateInvokeBlockForMethod(TreeLogger logger,
+            SourceWriter sourceWriter, Class<?> handlerClass, Method method)
+    {
+	    if (method.getAnnotation(ExposeOutOfModule.class) != null)
+	    {
+	    	sourceWriter.println("if (\""+method.getName()+"\".equals(metodo)) {");
+	    }
+	    else
+	    {
+	    	sourceWriter.println("if (\""+method.getName()+"\".equals(metodo) && !fromOutOfModule) {");
+	    }
+	    
+	    boolean allowMultipleClicks = isAllowMultipleClicks(method);
+	    if (!allowMultipleClicks)
+	    {
+			sourceWriter.println("if (!__runningMethods.containsKey(metodo)){");
+	    	sourceWriter.println("__runningMethods.put(metodo,true);");
+	    	sourceWriter.println("try{");
+	    }
+	    
+	    Validate annot = method.getAnnotation(Validate.class);
+	    if (annot != null)
+	    {
+	    	sourceWriter.println("try{");
+	    	String validateMethod = annot.value();
+	    	if (validateMethod == null || validateMethod.length() == 0)
+	    	{
+	    		String methodName = method.getName();
+	    		methodName = Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1);
+	    		validateMethod = "validate"+ methodName;
+	    	}
+	    	generateValidateMethodCall(logger, handlerClass, method, validateMethod, sourceWriter);
+	    	sourceWriter.println("}catch (Throwable e){");
+	    	sourceWriter.println("__runMethod = false;");
+	    	sourceWriter.println("eventProcessor._validationMessage = e.getMessage();");
+	    	sourceWriter.println("}");
+	    }
+	    sourceWriter.println("if (__runMethod){");
+	    sourceWriter.println("try{");
+	    
+	    if (!method.getReturnType().getName().equals("void") && 
+	    	!method.getReturnType().getName().equals("java.lang.Void"))
+	    {
+	    	sourceWriter.println("eventProcessor._hasReturn = true;");
+	    	sourceWriter.println("eventProcessor._returnValue = ");
+	    }
+	    generateMethodCall(method, sourceWriter);
+	    
+	    sourceWriter.println("}catch (Throwable e){");
+	    sourceWriter.println("eventProcessor._exception = e;");
+	    sourceWriter.println("}");
+	    sourceWriter.println("}");
+
+	    if (!allowMultipleClicks)
+	    {
+	    	sourceWriter.println("}finally{");
+	    	sourceWriter.println("__runningMethods.remove(metodo);");
+	    	sourceWriter.println("}");
+	    	sourceWriter.println("}");
+	    }
+	    
+	    sourceWriter.println("}");
+    }
 	
+	/**
+	 * @param method
+	 * @return
+	 */
+	private boolean isAllowMultipleClicks(Method method)
+    {
+	    Expose exposeAnnot = method.getAnnotation(Expose.class);
+	    if (exposeAnnot != null)
+	    {
+	    	return exposeAnnot.allowMultipleCalls();
+	    }
+		
+	    ExposeOutOfModule exposeOutAnnot = method.getAnnotation(ExposeOutOfModule.class);
+	    if (exposeOutAnnot != null)
+	    {
+	    	return exposeOutAnnot.allowMultipleCalls();
+	    }
+		return false;
+    }
+
 	/**
 	 * 
 	 * @param logger
