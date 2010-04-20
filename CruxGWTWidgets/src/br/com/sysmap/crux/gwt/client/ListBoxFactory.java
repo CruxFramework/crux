@@ -24,6 +24,7 @@ import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.factory.HasChangeHandlersFactory;
@@ -89,13 +90,18 @@ public class ListBoxFactory extends FocusWidgetFactory<ListBox>
 
 			Element element = context.getChildElement();
 			
-			String item = element.getAttribute("_label");
+			String label = element.getAttribute("_label");
 			String value = element.getAttribute("_value");
+			
+			if(label != null && label.length() > 0)
+			{
+				label = ScreenFactory.getInstance().getDeclaredMessage(label);
+			}			
 			if (value == null || value.length() == 0)
 			{
-				value = item;
+				value = label;
 			}
-			context.getRootWidget().insertItem(item, value, index);
+			context.getRootWidget().insertItem(label, value, index);
 
 			String selected = element.getAttribute("_selected");
 			if (selected != null && selected.trim().length() > 0)
