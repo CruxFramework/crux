@@ -17,6 +17,7 @@ public class RandomPager extends NavigationButtonsPager
 {
 	private HorizontalPanel panel;
 	private ListBox listBox;
+	private int pageCount;
 	
 	/**
 	 * Constructor
@@ -42,17 +43,23 @@ public class RandomPager extends NavigationButtonsPager
 
 	@Override
 	protected void onUpdate()
-	{	
-		if(listBox.getItemCount() == 0)
+	{
+		if(this.pageCount != getPageCount())
 		{
+			this.pageCount = getPageCount();
+			this.listBox.clear();
+			
 			for (int i = 1; i <= getPageCount(); i++)
 			{
 				String page = "" + i;
 				listBox.addItem(page, page);
 			}
 		}
-			
-		listBox.setSelectedIndex(getCurrentPage() - 1);
+		
+		if(this.listBox.getItemCount() > 0)
+		{
+			listBox.setSelectedIndex(getCurrentPage() - 1);
+		}
 	}
 
 	/**
