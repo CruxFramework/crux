@@ -873,7 +873,7 @@
 }
 .crux-DecoratedPanel .topLeftCell 
 {
-	font-size: 5px;
+	font-size: 0px;
 	font-family: monospace;
 	height:5px;
 	width:5px;
@@ -892,7 +892,7 @@
 }
 .crux-DecoratedPanel .topRightCell
 {
-	font-size: 5px;
+	font-size: 0px;
 	font-family: monospace;
 	width:5px;
 	background: url(../img/decorated-panel.gif) no-repeat top right;
