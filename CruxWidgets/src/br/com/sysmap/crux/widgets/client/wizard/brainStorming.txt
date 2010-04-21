@@ -1,0 +1,42 @@
+Estrutura:
+
+<wizard onLoadWidget="">
+	<navigationBar position="top" />
+	<steps>
+		<widget onEntry="" onLeave="" >
+			<commands>
+				<command label="" action="" className="" />
+			</commands>
+			<anyWidget... />
+		</widget>
+		<page src="otherPage.crux.xml" />
+	</steps>
+	<controlBar position="bottom" previousOrder="1" previousLabel="">
+		<customCommand order="2">
+			<image id="" />
+		</customCommand>
+	</controlBar>
+</wizard>
+
+
+onde, na otherPage.crux.xml, 
+adicionamos a widget (opcionalmente).. se não tiver, simplesmente não vai notificar 
+evento nenhum para screen e nem permitir ler ou gravar dados no contexto do wzard:
+
+<wizardStep onEntry="" onLeave="" >
+	<commands>
+		<command label="" action="" className="" />
+	</commands>
+</wizardStep>
+
+4 botoes de controle padrao = next,previous, cancel, finish
+botões de controle devem aceitar label customizado (Finish pode ser "solicitação")
+
+
+metodos showPrevious, hidePrevious, etc.... no widget wizard
+
+todos os eventos onEntry, onLeave, etc, receberao um objeto de evento novo (WizardEvent) que permita acesso a metodos e propriedades do widget wizard.
+
+o wizard tem uma propriedade que é o seu contexto de dados.... as paginas podem ler e gravar coisar nesse contexto nos eventos onEntry, onLeave etc....
+
+pode existir uma interface wrapper (tipo a do context) para facilitar o acesso a esses dados do context do wizard. 
