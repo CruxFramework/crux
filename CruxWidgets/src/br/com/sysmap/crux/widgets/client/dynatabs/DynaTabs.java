@@ -67,7 +67,7 @@ public class DynaTabs extends Composite
 		if (!this.tabs.containsKey(tabId))
 		{
 			FlapPanel flapPanel = new FlapPanel(this, tabId, label, closeable);
-			tab = new Tab(tabId, label, Screen.appendDebugParameters(url), closeable, reloadIfAlreadyOpen, tabPanel.getWidgetCount(), flapPanel);
+			tab = new Tab(tabId, label, Screen.appendDebugParameters(url), closeable, tabPanel.getWidgetCount(), flapPanel);
 			this.tabs.put(tabId, tab);			
 			tabPanel.add(tab, flapPanel);
 		}

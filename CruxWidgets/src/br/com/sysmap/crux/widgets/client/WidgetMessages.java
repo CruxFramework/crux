@@ -68,5 +68,20 @@ public interface WidgetMessages extends Messages
 	String pagerNoPageableSet();
 
 	@DefaultMessage("[crux-widgets 017] - Grid {0} has no column.")
-	String gridDoesNotHaveColumns(String gridId);	
+	String gridDoesNotHaveColumns(String gridId);
+
+	@DefaultMessage("Previous")
+	String wizardPreviousCommand();	
+
+	@DefaultMessage("Next")
+	String wizardNextCommand();	
+
+	@DefaultMessage("Cancel")
+	String wizardCancelCommand();	
+
+	@DefaultMessage("Finish")
+	String wizardFinishCommand();
+
+	@DefaultMessage("[crux-widgets 018] - WizardControlBar is not associated with any Wizard.")
+	String wizardControlBarOrphan();	
 }

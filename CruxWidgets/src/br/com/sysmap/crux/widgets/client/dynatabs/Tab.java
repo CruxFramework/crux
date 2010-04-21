@@ -15,43 +15,23 @@
  */
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeBlurHandler;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusEvent;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusHandler;
 import br.com.sysmap.crux.widgets.client.event.focusblur.HasBeforeFocusAndBeforeBlurHandlers;
-import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
-import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler;
-import br.com.sysmap.crux.widgets.client.event.openclose.HasBeforeCloseHandlers;
-import br.com.sysmap.crux.widgets.client.js.JSWindow;
-import br.com.sysmap.crux.widgets.client.util.FrameStateCallback;
-import br.com.sysmap.crux.widgets.client.util.FrameUtils;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * TODO - Gessé - Comment
  * 
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, HasBeforeCloseHandlers
+public class Tab extends AbstractTab implements HasBeforeFocusAndBeforeBlurHandlers
 {
-	private String id;
-	private String url;
-	private String label;
-	private boolean closeable;
-	private Frame frame;
-	private int insertionIndex;
-	private TabInternalJSObjects tabObjetcs;
 	private FlapPanel flapPanel;
-	private boolean canClose = false;
+	private boolean closeable;
+	private int insertionIndex;
 
 	/**
 	 * Constructor
@@ -62,50 +42,12 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	 * @param closeable
 	 * @param reloadIfExists
 	 */
-	Tab(String id, String label, String url, boolean closeable, boolean reloadIfExists, int insertionIndex, FlapPanel flapPanel)
+	Tab(String id, String label, String url, boolean closeable, int insertionIndex, FlapPanel flapPanel)
 	{
-		this.id = id;
-		this.label = label;
-		this.url = url;
-		this.closeable = closeable;
+		super(id, label, url);
 		this.insertionIndex = insertionIndex;
 		this.flapPanel = flapPanel;
-		
-		this.frame = new Frame(url);
-		this.frame.setHeight("100%");
-		Element frameElement = getElement();
-		frameElement.setPropertyString("frameBorder", "no");
-		frameElement.setPropertyString("border", "0");
-		frameElement.setPropertyString("id", id + ".window");
-		frameElement.setPropertyString("name", id + ".window");
-
-		FrameUtils.registerStateCallback(frameElement, new FrameStateCallback(){
-			public void onComplete()
-			{
-				canClose = true;
-			}
-		}, 20000);
-		
-		tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
-	}
-
-	void executeWhenLoaded(final Command call)
-	{
-		FrameUtils.registerStateCallback(getElement(), new FrameStateCallback(){
-			public void onComplete()
-			{
-				canClose = true;
-				call.execute();
-			}
-		}, 20000);
-	}
-
-	/**
-	 * @return the label
-	 */
-	public String getLabel()
-	{
-		return label;
+		this.closeable = closeable;
 	}
 
 	/**
@@ -113,69 +55,18 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 	 */
 	public void setLabel(String label)
 	{
-		this.label = label;
+		super.setLabel(label);
 		this.flapPanel.getFlapController().setTabTitle(label);
 	}
 
-	/**
-	 * @return the id
-	 */
-	public String getId()
+	public HandlerRegistration addBeforeFocusHandler(BeforeFocusHandler handler)
 	{
-		return id;
-	}
-	
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	public static <T> T invokeOnSiblingTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{
-		return CruxInternalDynaTabsController.invokeOnSiblingTab(tabId, call, param, resultType);
-	}
-	
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	public static void invokeOnSiblingTab(String tabId, String call, Object param) throws ModuleComunicationException
-	{
-		CruxInternalDynaTabsController.invokeOnSiblingTab(tabId, call, param);
+		return addHandler(handler, BeforeFocusEvent.getType());
 	}
 
-	/**
-	 * @return the url
-	 */
-	String getUrl()
+	public HandlerRegistration addBeforeBlurHandler(BeforeBlurHandler handler)
 	{
-		return url;
-	}
-
-	/**
-	 * @return the closeable
-	 */
-	boolean isCloseable()
-	{
-		return closeable;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	boolean canClose()
-	{
-		return canClose;
-	}
-	
-	/**
-	 * @return the frame
-	 */
-	Frame getFrame()
-	{
-		return frame;
+		return flapPanel.addBeforeBlurHandler(handler);
 	}
 
 	/**
@@ -186,42 +77,19 @@ public class Tab extends Widget implements HasBeforeFocusAndBeforeBlurHandlers, 
 		return insertionIndex;
 	}
 	
-	@Override
-	public Element getElement()
-	{
-		return frame.getElement();
-	}
-
-	public HandlerRegistration addBeforeBlurHandler(BeforeBlurHandler handler)
-	{
-		return flapPanel.addBeforeBlurHandler(handler);
-	}
-
-	public HandlerRegistration addBeforeFocusHandler(BeforeFocusHandler handler)
-	{
-		return addHandler(handler, BeforeFocusEvent.getType());
-	}
-
-	public HandlerRegistration addBeforeCloseHandler(BeforeCloseHandler handler)
-	{
-		return addHandler(handler, BeforeCloseEvent.getType());
-	}
-	
-	public JSWindow getInternalWindow()
-	{
-		return tabObjetcs.getTabWindow(getFrame().getElement().<IFrameElement> cast());
-	}
-	
-	public Document getInternalDocument()
-	{
-		return tabObjetcs.getTabDocument(getFrame().getElement().<IFrameElement> cast());
-	}
-
 	/**
 	 * @return the flapPanel
 	 */
-	protected FlapPanel getFlapPanel()
+	FlapPanel getFlapPanel()
 	{
 		return flapPanel;
+	}
+	
+	/**
+	 * @return the closeable
+	 */
+	boolean isCloseable()
+	{
+		return closeable;
 	}
 }

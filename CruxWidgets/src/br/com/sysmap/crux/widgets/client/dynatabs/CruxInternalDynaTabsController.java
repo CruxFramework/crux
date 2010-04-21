@@ -34,6 +34,7 @@ import com.google.gwt.user.client.DOM;
 @Controller("__dynatabs")
 public class CruxInternalDynaTabsController 
 {
+//TODO - Thiago - Por que isso eh um controller? nao tem nada com @Expose... eh tudo estatico... ta registrando isso a toa?	
 	/**
 	 * Invokes a method on a sibling tab controller 
 	 * @param <T>
