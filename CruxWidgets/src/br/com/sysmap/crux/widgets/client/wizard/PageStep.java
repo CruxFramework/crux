@@ -15,11 +15,14 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.widgets.client.dynatabs.AbstractTab;
-import br.com.sysmap.crux.widgets.client.event.step.EnterEvent;
-import br.com.sysmap.crux.widgets.client.event.step.LeaveEvent;
+import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
@@ -27,44 +30,105 @@ import br.com.sysmap.crux.widgets.client.event.step.LeaveEvent;
  */
 public class PageStep extends AbstractTab
 {
-	private static CruxInternalWizardPageController pageController = null;
-	
+	/**
+	 * @param id
+	 * @param label
+	 * @param url
+	 */
 	PageStep(String id, String label, String url)
     {
 	    super(id, label, url);
     }
 
-	EnterEvent fireEnterEvent(String previousStep)
+	/**
+	 * @param previousStep
+	 * @return
+	 */
+	EnterEvent fireEnterEvent(String wizardId, String previousStep)
 	{
-		return null;
-	}
-	
-	LeaveEvent fireLeaveEvent()
-	{
-/*		try
+		try
         {
-	        LeaveEvent result = new LeaveEvent();
-	        
-	      //TODO - Thiago - param
-			if (!CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.onLeave", "param", Boolean.class))
-			{
-		        result.cancel();
-			}
+	        EnterEvent result = new EnterEvent(null, previousStep);
+			CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.onEnter", new Object[]{wizardId, previousStep});
+			return result;
         }
         catch (ModuleComunicationException e)
         {
         	Crux.getErrorHandler().handleError("", e); // TODO - Thiago - message
         }
-*/		
+		
 		return null;
 	}
 	
-	private static CruxInternalWizardPageController getController()
+	/**
+	 * @return
+	 */
+	LeaveEvent fireLeaveEvent(String wizardId)
 	{
-		if (pageController == null)
-		{
-			pageController = new CruxInternalWizardPageController();
-		}
-		return pageController;
+		try
+        {
+	        LeaveEvent result = new LeaveEvent(null);
+	        
+			if (!CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.onLeave", wizardId, Boolean.class))
+			{
+		        result.cancel();
+			}
+			return result;
+        }
+        catch (ModuleComunicationException e)
+        {
+        	Crux.getErrorHandler().handleError("", e); // TODO - Thiago - message
+        }
+		
+		return null;
+	}
+	
+	/**
+	 * @return
+	 */
+	Iterator<WizardCommand> iterateWizardCommands(final String wizardId)
+	{
+		try
+        {
+			List<WizardCommand> result = new ArrayList<WizardCommand>();
+			WizardCommandData[] commands =  CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.listCommands", null, WizardCommandData[].class);
+			if (commands != null)
+			{
+				for (final WizardCommandData data : commands)
+                {
+	                result.add(new WizardCommand(data.getId(), data.getOrder(), data.getLabel(), new WizardCommandHandler()
+					{
+						public void onCommand(WizardCommandEvent event)
+						{
+							fireCommandEvent(wizardId, data.getId());
+						}
+					}, new PageWizardProxy(wizardId)));
+                }
+			}
+			return result.iterator();
+        }
+        catch (ModuleComunicationException e)
+        {
+        	Crux.getErrorHandler().handleError("", e); // TODO - Thiago - message
+        }
+		
+		return null;
+	}
+	
+	/**
+	 * @param wizardId
+	 * @param commanddId
+	 * @return
+	 */
+	private void fireCommandEvent(String wizardId, String commandId)
+	{
+		try
+        {
+			CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.onCommand", new Object[]{wizardId, commandId});
+        }
+        catch (ModuleComunicationException e)
+        {
+        	Crux.getErrorHandler().handleError("", e); // TODO - Thiago - message
+        }
 	}
 }

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.widgets.client.event.step;
+package br.com.sysmap.crux.widgets.client.wizard;
 
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
@@ -25,24 +25,24 @@ import com.google.gwt.dom.client.Element;
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class LeaveEvtBind implements EvtBinder<HasLeaveHandlers>
+public class EnterEvtBind implements EvtBinder<HasEnterHandlers>
 {
-	private static final String EVENT_NAME = "onLeave";
+	private static final String EVENT_NAME = "onEnter";
 
 	/**
 	 * @param element
 	 * @param widget
 	 */
-	public void bindEvent(Element element, HasLeaveHandlers widget)
+	public void bindEvent(Element element, HasEnterHandlers widget)
 	{
-		final Event leaveEvent = EvtBind.getWidgetEvent(element, EVENT_NAME);
-		if (leaveEvent != null)
+		final Event enterEvent = EvtBind.getWidgetEvent(element, EVENT_NAME);
+		if (enterEvent != null)
 		{
-			widget.addLeaveHandler(new LeaveHandler()
+			widget.addEnterHandler(new EnterHandler()
 			{
-				public void onLeave(LeaveEvent event)
+				public void onEnter(EnterEvent event)
 				{
-					br.com.sysmap.crux.core.client.event.Events.callEvent(leaveEvent, event);
+					br.com.sysmap.crux.core.client.event.Events.callEvent(enterEvent, event);
 				}
 			});
 		}

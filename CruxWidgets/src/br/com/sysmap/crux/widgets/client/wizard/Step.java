@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
-import java.util.List;
+import java.util.Iterator;
 
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
@@ -37,6 +37,7 @@ public class Step
 	 */
 	Step(Wizard wizard, String id, Widget widget)
     {
+		this.wizard = wizard;
 		this.id = id;
 		this.widget = widget;
     }
@@ -84,11 +85,15 @@ public class Step
 	/**
 	 * @return
 	 */
-	List<WizardCommand> getCommands()
+	Iterator<WizardCommand> iterateCommands()
 	{
 		if (widget instanceof HasCommands)
 		{
-			return ((HasCommands)widget).getCommands();
+			return ((HasCommands)widget).iterateCommands();
+		}
+		else if (widget instanceof PageStep)
+		{
+			return ((PageStep) widget).iterateWizardCommands(wizard.getElement().getId());
 		}
 		return null;
 	}

@@ -244,7 +244,7 @@ public class DynaTabs extends Composite
 	 */
 	public static <T> T invokeOnTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
-		return CruxInternalDynaTabsController.invokeOnTab(tabId, call, param, resultType);
+		return DynaTabsControllerInvoker.invokeOnTab(tabId, call, param, resultType);
 	}
 	
 	/**
@@ -256,7 +256,7 @@ public class DynaTabs extends Composite
 	 */
 	public static void invokeOnTab(String tabId, String call, Object param) throws ModuleComunicationException
 	{
-		CruxInternalDynaTabsController.invokeOnTab(tabId, call, param);
+		DynaTabsControllerInvoker.invokeOnTab(tabId, call, param);
 	}
 	
 	/**

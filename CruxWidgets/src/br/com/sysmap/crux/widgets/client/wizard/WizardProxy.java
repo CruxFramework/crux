@@ -15,15 +15,21 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
-import java.util.Iterator;
-
-import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface HasCommands
+interface WizardProxy
 {
-	Iterator<WizardCommand> iterateCommands();
+	boolean first();
+	boolean next();
+	boolean previous();
+	boolean cancel();
+	boolean finish();
+	boolean selectStep(String id, boolean ignoreLeaveEvent);
+	int getStepOrder(String id);
+	WizardControlBarAccessor getControlBar();
+	void updateContext(Object data);
+    <T> T readContext(Class<T> dataType);
 }

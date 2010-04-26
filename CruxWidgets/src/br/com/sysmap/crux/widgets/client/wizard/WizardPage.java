@@ -15,6 +15,12 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -27,6 +33,9 @@ public class WizardPage extends AbstractWidgetStep
 {
 	static final String PAGE_UNIQUE_ID = "__WizardPage_";
 	
+	private Map<String, WizardCommandHandler> commandHandlers = new HashMap<String, WizardCommandHandler>();
+	private Map<String, WizardCommandData> commands = new LinkedHashMap<String, WizardCommandData>();
+	
 	public WizardPage()
     {
 		Widget unique = Screen.get(PAGE_UNIQUE_ID);
@@ -35,6 +44,8 @@ public class WizardPage extends AbstractWidgetStep
 			//TODO throw new Exception
 		}
 		Screen.add(PAGE_UNIQUE_ID, this);
+		Events.getRegisteredClientEventHandlers().registerEventHandler("__wizard", new CruxInternalWizardPageController());
+		
 		super.setVisible(false);
 		//initWidget(widget); TODO- Thiago - Qual Widget? criar um label fake?
     }
@@ -43,4 +54,60 @@ public class WizardPage extends AbstractWidgetStep
 	public void setVisible(boolean visible)
 	{
 	}
+	
+	@Override
+	public boolean addCommand(String id, String label, WizardCommandHandler handler, int order)
+	{
+		if (!commands.containsKey(id))
+		{
+			WizardCommandData commandData = new WizardCommandData(id, label, order);
+			commands.put(id, commandData);
+			commandHandlers.put(id, handler);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @param command
+	 * @return
+	 */
+	@Override
+	public boolean removeCommand(String id)
+	{
+		if (commands.containsKey(id))
+		{
+			commands.remove(id);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @return
+	 */
+	WizardCommandData[] listCommands()
+    {
+	    return commands.values().toArray(new WizardCommandData[commands.size()]);
+    }
+
+	/**
+	 * @param commandId
+	 * @param wizardCommandEvent
+	 */
+	void fireCommandEvent(String commandId, WizardCommandEvent wizardCommandEvent)
+    {
+		WizardCommandHandler handler = commandHandlers.get(commandId);
+		if (handler != null)
+		{
+			try
+            {
+	            handler.onCommand(wizardCommandEvent);
+            }
+            catch (RuntimeException e)
+            {
+            	Crux.getErrorHandler().handleError("", e); //TODO- Thiago - message erro de evento
+            }
+		}
+    }
 }

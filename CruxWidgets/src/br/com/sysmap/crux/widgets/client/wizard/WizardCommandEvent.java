@@ -13,33 +13,30 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.widgets.client.event.step;
+package br.com.sysmap.crux.widgets.client.wizard;
 
-import com.google.gwt.event.shared.GwtEvent;
 
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class LeaveEvent extends GwtEvent<LeaveHandler> 
+public class WizardCommandEvent extends StepEvent<WizardCommandHandler> 
 {
-	private static Type<LeaveHandler> TYPE = new Type<LeaveHandler>();
-
-	private boolean canceled;
+	private static Type<WizardCommandHandler> TYPE = new Type<WizardCommandHandler>();
 
 	/**
 	 * 
 	 */
-	protected LeaveEvent ()
+	protected WizardCommandEvent(WizardProxy wizardProxy)
 	{
-		super();
+		super(wizardProxy);
 	}
 
 	/**
 	 * @return
 	 */
-	public static Type<LeaveHandler> getType()
+	public static Type<WizardCommandHandler> getType()
 	{
 		return TYPE;
 	}
@@ -49,38 +46,22 @@ public class LeaveEvent extends GwtEvent<LeaveHandler>
 	 * @param source
 	 * @return
 	 */
-	public static LeaveEvent fire(HasLeaveHandlers source)
+	public static WizardCommandEvent fire(HasWizardCommandHandlers source, WizardProxy proxy)
 	{
-		LeaveEvent event = new LeaveEvent();
+		WizardCommandEvent event = new WizardCommandEvent(proxy);
 		source.fireEvent(event);
 		return event;
 	}
 
 	@Override
-	protected void dispatch(LeaveHandler handler)
+	protected void dispatch(WizardCommandHandler handler)
 	{
-		handler.onLeave(this);
+		handler.onCommand(this);
 	}
 
 	@Override
-	public Type<LeaveHandler> getAssociatedType()
+	public Type<WizardCommandHandler> getAssociatedType()
 	{
 		return TYPE;
-	}
-
-	/**
-	 * @return the canceled
-	 */
-	public boolean isCanceled()
-	{
-		return canceled;
-	}
-
-	/**
-	 * 
-	 */
-	public void cancel()
-	{
-		canceled = true;
 	}
 }

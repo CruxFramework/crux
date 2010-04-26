@@ -18,16 +18,18 @@ package br.com.sysmap.crux.widgets.client.wizard;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.widgets.client.WidgetMessages;
 import br.com.sysmap.crux.widgets.client.decoratedbutton.DecoratedButton;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -50,6 +52,14 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	private Map<String, WizardCommand> commands = new HashMap<String, WizardCommand>();
 	private List<String> stepCommands = new ArrayList<String>();
 	private Wizard wizard;
+	private boolean vertical;
+	private String buttonWidth;
+	private String buttonHeight;
+	private String buttonStyle;
+	private String previousLabel;
+	private String nextLabel;
+	private String cancelLabel;
+	private String finishLabel;
 	
 	private static WidgetMessages messages = GWT.create(WidgetMessages.class);
 	
@@ -58,7 +68,7 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	 */
 	public WizardControlBar()
     {
-		this(messages.wizardPreviousCommand(),  messages.wizardNextCommand(), messages.wizardCancelCommand(), messages.wizardFinishCommand(), false);
+		this(false);
     }
 	
 	/**
@@ -68,8 +78,13 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	 * @param cancelLabel
 	 * @param finishLabel
 	 */
-	public WizardControlBar(String previousLabel, String nextLabel, String cancelLabel, String finishLabel, boolean vertical)
+	public WizardControlBar(boolean vertical)
 	{
+		this.previousLabel = messages.wizardPreviousCommand();
+		this.nextLabel = messages.wizardNextCommand();
+		this.cancelLabel = messages.wizardCancelCommand();
+		this.finishLabel = messages.wizardFinishCommand();
+		this.vertical = vertical;
 		
 		if (vertical)
 		{
@@ -79,37 +94,8 @@ public class WizardControlBar extends Composite implements WizardStepListener
 		{
 			this.cellPanel = new HorizontalPanel();
 		}
-		this.cellPanel.setStyleName(DEFAULT_STYLE_NAME);//TODO - Thiago -rever o estilo para vertical / horizontal
+		this.cellPanel.setStyleName(DEFAULT_STYLE_NAME);
 		
-		commands.put(PREVIOUS_COMMAND, new WizardCommand(this, PREVIOUS_COMMAND, 0, previousLabel, new Command()
-		{
-			public void execute()
-			{
-				previous();
-			}
-		}));
-		commands.put(NEXT_COMMAND, new WizardCommand(this, NEXT_COMMAND, 1, nextLabel, new Command()
-		{
-			public void execute()
-			{
-				next();
-			}
-		}));
-		commands.put(CANCEL_COMMAND, new WizardCommand(this, CANCEL_COMMAND, 2, cancelLabel, new Command()
-		{
-			public void execute()
-			{
-				cancel();
-			}
-		}));
-		commands.put(FINISH_COMMAND, new WizardCommand(this, FINISH_COMMAND, 3, finishLabel, new Command()
-		{
-			public void execute()
-			{
-				finish();
-			}
-		}));
-		updateCommands();
 		initWidget(cellPanel);
     }
 	
@@ -151,23 +137,24 @@ public class WizardControlBar extends Composite implements WizardStepListener
 
 	/**
 	 * @param id
-	 * @param command
+	 * @param handler
 	 * @param order
 	 */
-	public void addCommand(String id, String label, Command command, int order)
+	public void addCommand(String id, String label, WizardCommandHandler handler, int order)
 	{
-		addCommand(id, label, command, order, true);
+		addCommand(id, label, handler, order, true);
 	}
 	
 	/**
 	 * @param id
-	 * @param command
+	 * @param handler
 	 * @param order
 	 * @param updateBar
 	 */
-	public void addCommand(String id, String label, Command command, int order, boolean updateBar)
+	public void addCommand(String id, String label, WizardCommandHandler handler, int order, boolean updateBar)
 	{
-		commands.put(id, new WizardCommand(this, id, order, label, command));
+		checkWizard();
+		commands.put(id, new WizardCommand(this, id, order, label, handler, new WidgetWizardProxy(wizard)));
 		if (updateBar)
 		{
 			updateCommands();
@@ -181,6 +168,22 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	public WizardCommand getCommand(String id)
 	{
 		return commands.get(id);
+	}
+	
+	/**
+	 * @param spacing
+	 */
+	public void setSpacing(int spacing)
+	{
+		cellPanel.setSpacing(spacing);
+	}
+	
+	/**
+	 * @return
+	 */
+	public int getSpacing()
+	{
+		return cellPanel.getSpacing();
 	}
 	
 	/**
@@ -206,11 +209,125 @@ public class WizardControlBar extends Composite implements WizardStepListener
     }
 
 	/**
+	 * @return
+	 */
+	public boolean isVertical()
+	{
+		return vertical;
+	}
+	
+	public String getButtonsWidth()
+    {
+    	return buttonWidth;
+    }
+
+	public void setButtonsWidth(String buttonWidth)
+    {
+    	this.buttonWidth = buttonWidth;
+    	updateCommandButtons();
+    }
+
+	public String getButtonsHeight()
+    {
+    	return buttonHeight;
+    }
+
+	public void setButtonsHeight(String buttonHeight)
+    {
+    	this.buttonHeight = buttonHeight;
+    	updateCommandButtons();
+    }
+
+	public String getButtonsStyle()
+    {
+    	return buttonStyle;
+    }
+
+	public void setButtonsStyle(String buttonStyle)
+    {
+    	this.buttonStyle = buttonStyle;
+    	updateCommandButtons();
+    }
+
+	public String getPreviousLabel()
+    {
+    	return previousLabel;
+    }
+
+	public String getNextLabel()
+    {
+    	return nextLabel;
+    }
+
+	public String getCancelLabel()
+    {
+    	return cancelLabel;
+    }
+
+	public String getFinishLabel()
+    {
+    	return finishLabel;
+    }
+
+	/**
+	 * @param previousLabel
+	 */
+	public void setPreviousLabel(String previousLabel)
+	{
+		this.previousLabel = previousLabel;
+		WizardCommand command = getCommand(PREVIOUS_COMMAND);
+		if (command != null)
+		{
+			command.setLabel(this.previousLabel);
+		}
+	}
+	
+	/**
+	 * @param nextLabel
+	 */
+	public void setNextLabel(String nextLabel)
+	{
+		this.nextLabel = nextLabel;
+		WizardCommand command = getCommand(NEXT_COMMAND);
+		if (command != null)
+		{
+			command.setLabel(this.nextLabel);
+		}
+	}
+	
+	/**
+	 * @param cancelLabel
+	 */
+	public void setCancelLabel(String cancelLabel)
+	{
+		this.cancelLabel = cancelLabel;
+		WizardCommand command = getCommand(CANCEL_COMMAND);
+		if (command != null)
+		{
+			command.setLabel(this.cancelLabel);
+		}
+	}
+	
+	/**
+	 * @param finishLabel
+	 */
+	public void setFinishLabel(String finishLabel)
+	{
+		this.finishLabel = finishLabel;
+		WizardCommand command = getCommand(FINISH_COMMAND);
+		if (command != null)
+		{
+			command.setLabel(this.finishLabel);
+		}
+	}
+
+	/**
 	 * @param wizard
 	 */
 	void setWizard(Wizard wizard)
     {
     	this.wizard = wizard;
+    	addDefaultCommands();
     }
 
 	/**
@@ -224,11 +341,12 @@ public class WizardControlBar extends Composite implements WizardStepListener
         }
 	    stepCommands.clear();
 	    
-	    List<WizardCommand> commands = currentStep.getCommands();
+	    Iterator<WizardCommand> commands = currentStep.iterateCommands();
 	    if (commands != null)
 	    {
-	    	for (WizardCommand command: commands)
+	    	while (commands.hasNext())
 	    	{
+	    		WizardCommand command = commands.next();
 	    		String commandId = command.getId();
 	    		command.setControlBar(this);
 	    		this.commands.put(commandId, command);
@@ -267,35 +385,100 @@ public class WizardControlBar extends Composite implements WizardStepListener
 		
 		for (final WizardCommand command: sortedCommands)
 		{
-			cellPanel.add(command.button);
+			cellPanel.add(command);
 		}
     }
 
 	/**
+	 * 
+	 */
+	private void updateCommandButtons()
+    {
+		for (WizardCommand command: commands.values())
+		{
+			command.setControlBar(this);
+		}
+    }
+
+	/**
+	 * @param previousLabel
+	 * @param nextLabel
+	 * @param cancelLabel
+	 * @param finishLabel
+	 */
+	private void addDefaultCommands()
+    {
+		checkWizard();
+		commands.put(PREVIOUS_COMMAND, new WizardCommand(this, PREVIOUS_COMMAND, 0, previousLabel, new WizardCommandHandler()
+		{
+			
+			public void onCommand(WizardCommandEvent event)
+			{
+				previous();
+			}
+		}, new WidgetWizardProxy(wizard)));
+		commands.put(NEXT_COMMAND, new WizardCommand(this, NEXT_COMMAND, 1, nextLabel, new WizardCommandHandler()
+		{
+			
+			public void onCommand(WizardCommandEvent event)
+			{
+				next();
+			}
+		}, new WidgetWizardProxy(wizard)));
+		commands.put(CANCEL_COMMAND, new WizardCommand(this, CANCEL_COMMAND, 2, cancelLabel, new WizardCommandHandler()
+		{
+			
+			public void onCommand(WizardCommandEvent event)
+			{
+				cancel();
+			}
+		}, new WidgetWizardProxy(wizard)));
+		commands.put(FINISH_COMMAND, new WizardCommand(this, FINISH_COMMAND, 3, finishLabel, new WizardCommandHandler()
+		{
+			
+			public void onCommand(WizardCommandEvent event)
+			{
+				finish();
+			}
+		}, new WidgetWizardProxy(wizard)));
+		updateCommands();
+    }
+	
+	/**
 	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
 	 *
 	 */
-	public static class WizardCommand implements Comparable<WizardCommand>
+	public static class WizardCommand extends Composite implements Comparable<WizardCommand>, HasWizardCommandHandlers
 	{
 		private WizardControlBar controlBar;
 		private String id;
 		private int order;
 		private DecoratedButton button;
+		private WizardProxy proxy;
 		
-		WizardCommand(WizardControlBar controlBar, String id, int order, String label, Command command)
+		WizardCommand(WizardControlBar controlBar, String id, int order, String label, WizardCommandHandler commandHandler, WizardProxy proxy)
 		{
-			this(id, order, label, command);
+			this(id, order, label, commandHandler, proxy);
 			setControlBar(controlBar);
 		}
 		
-		public WizardCommand(String id, int order, String label, Command command)
+		WizardCommand(String id, int order, String label, WizardCommandHandler commandHandler, WizardProxy proxy)
 		{
-			//TODO - Thiago - ver estilo para os botoes de comando
 			this.id = id;
 			this.order = order;
-			this.button = new DecoratedButton();
+			this.proxy = proxy;
+			button = new DecoratedButton();
+			button.addClickHandler(new ClickHandler()
+			{
+				public void onClick(ClickEvent event)
+				{
+					WizardCommandEvent.fire(WizardCommand.this, WizardCommand.this.proxy);
+				}
+			});
+			initWidget(button);
+			
 			setLabel(label);
-			setCommand(command);
+			addWizardCommandHandler(commandHandler);
 		}
 		
 		public int getOrder()
@@ -322,16 +505,6 @@ public class WizardControlBar extends Composite implements WizardStepListener
         	this.button.setText(label);
         }
 
-		public boolean isVisible()
-        {
-        	return this.button.isVisible();
-        }
-
-		public void setVisible(boolean visible)
-        {
-        	this.button.setVisible(visible);
-        }
-
 		public boolean isEnabled()
         {
         	return this.button.isEnabled();
@@ -356,23 +529,26 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	        return order==o.order?0:order<o.order?-1:1;
         }
 
+		public HandlerRegistration addWizardCommandHandler(WizardCommandHandler handler)
+		{
+			return addHandler(handler, WizardCommandEvent.getType());
+		}
+		
 		void setControlBar(WizardControlBar controlBar)
 		{
 			this.controlBar = controlBar;
-		}
-		
-		private void setCommand(final Command command)
-        {
-			if (command != null)
+			if (!StringUtils.isEmpty(this.controlBar.buttonHeight))
 			{
-				button.addClickHandler(new ClickHandler()
-				{
-					public void onClick(ClickEvent event)
-					{
-						command.execute();
-					}
-				});
+				setHeight(this.controlBar.buttonHeight);;
 			}
-        }
+			if (!StringUtils.isEmpty(this.controlBar.buttonWidth))
+			{
+				setWidth(this.controlBar.buttonWidth);;
+			}
+			if (StringUtils.isEmpty(getStyleName()) && !StringUtils.isEmpty(this.controlBar.buttonStyle))
+			{
+				setStyleName(this.controlBar.buttonStyle);;
+			}
+		}
 	}
 }

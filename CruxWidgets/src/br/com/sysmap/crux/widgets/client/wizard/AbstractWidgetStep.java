@@ -15,17 +15,6 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import br.com.sysmap.crux.widgets.client.event.step.EnterEvent;
-import br.com.sysmap.crux.widgets.client.event.step.EnterHandler;
-import br.com.sysmap.crux.widgets.client.event.step.HasEnterHandlers;
-import br.com.sysmap.crux.widgets.client.event.step.HasLeaveHandlers;
-import br.com.sysmap.crux.widgets.client.event.step.LeaveEvent;
-import br.com.sysmap.crux.widgets.client.event.step.LeaveHandler;
-import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
-
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
@@ -33,10 +22,8 @@ import com.google.gwt.user.client.ui.Composite;
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public abstract class AbstractWidgetStep extends Composite implements HasEnterHandlers, HasLeaveHandlers, HasCommands
+public abstract class AbstractWidgetStep extends Composite implements HasEnterHandlers, HasLeaveHandlers
 {
-	private List<WizardCommand> commands = new ArrayList<WizardCommand>();
-	
 	/**
 	 * @param widget
 	 */
@@ -45,7 +32,7 @@ public abstract class AbstractWidgetStep extends Composite implements HasEnterHa
     }
 	
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.event.step.HasEnterHandlers#addEnterHandler(br.com.sysmap.crux.widgets.client.event.step.EnterHandler)
+	 * @see br.com.sysmap.crux.widgets.client.wizard.HasEnterHandlers#addEnterHandler(br.com.sysmap.crux.widgets.client.wizard.EnterHandler)
 	 */
 	public HandlerRegistration addEnterHandler(EnterHandler handler)
 	{
@@ -53,7 +40,7 @@ public abstract class AbstractWidgetStep extends Composite implements HasEnterHa
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.event.step.HasLeaveHandlers#addLeaveHandler(br.com.sysmap.crux.widgets.client.event.step.LeaveHandler)
+	 * @see br.com.sysmap.crux.widgets.client.wizard.HasLeaveHandlers#addLeaveHandler(br.com.sysmap.crux.widgets.client.wizard.LeaveHandler)
 	 */
 	public HandlerRegistration addLeaveHandler(LeaveHandler handler)
 	{
@@ -61,28 +48,14 @@ public abstract class AbstractWidgetStep extends Composite implements HasEnterHa
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.HasCommands#getCommands()
+	 * @param command
+	 * @return
 	 */
-	public List<WizardCommand> getCommands()
-    {
-	    return commands;
-    }
+	public abstract boolean addCommand(String id, String label, WizardCommandHandler handler, int order);
 	
 	/**
 	 * @param command
 	 * @return
 	 */
-	public boolean addCommand(WizardCommand command)
-	{
-		return commands.add(command);
-	}
-	
-	/**
-	 * @param command
-	 * @return
-	 */
-	public boolean removeCommand(WizardCommand command)
-	{
-		return commands.remove(command);
-	}
+	public abstract boolean removeCommand(String id);
 }

@@ -15,15 +15,31 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
-import java.util.Iterator;
-
-import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
-
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface HasCommands
+interface WizardControlBarProxy
 {
-	Iterator<WizardCommand> iterateCommands();
+	void finish();
+	void cancel();
+	void next();
+	void previous();
+	void setSpacing(int spacing);
+	int getSpacing();
+	boolean isVertical();
+	String getPreviousLabel();
+	String getNextLabel();
+	String getCancelLabel();
+	String getFinishLabel();
+	void setPreviousLabel(String previousLabel);
+	void setNextLabel(String nextLabel);
+	void setCancelLabel(String cancelLabel);
+	void setFinishLabel(String finishLabel);
+	String getButtonsWidth();
+	void setButtonsWidth(String buttonWidth);
+	String getButtonsHeight();
+	void setButtonsHeight(String buttonHeight);
+	String getButtonsStyle();
+	void setButtonsStyle(String buttonStyle);
 }

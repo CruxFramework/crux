@@ -119,7 +119,7 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 	 */
 	public static <T> T invokeOnSiblingTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
-		return CruxInternalDynaTabsController.invokeOnSiblingTab(tabId, call, param, resultType);
+		return DynaTabsControllerInvoker.invokeOnSiblingTab(tabId, call, param, resultType);
 	}
 	
 	/**
@@ -129,7 +129,7 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 	 */
 	public static void invokeOnSiblingTab(String tabId, String call, Object param) throws ModuleComunicationException
 	{
-		CruxInternalDynaTabsController.invokeOnSiblingTab(tabId, call, param);
+		DynaTabsControllerInvoker.invokeOnSiblingTab(tabId, call, param);
 	}
 
 	/**

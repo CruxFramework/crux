@@ -20,14 +20,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.com.sysmap.crux.widgets.client.event.step.EnterEvent;
-import br.com.sysmap.crux.widgets.client.event.step.HasEnterHandlers;
-import br.com.sysmap.crux.widgets.client.event.step.HasLeaveHandlers;
-import br.com.sysmap.crux.widgets.client.event.step.LeaveEvent;
+import br.com.sysmap.crux.core.client.context.ContextManager;
+import br.com.sysmap.crux.core.client.event.Events;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
 
@@ -64,8 +64,13 @@ public class Wizard extends Composite
 		this.stepsPanel.setWidth("100%");
 		
 		this.dockPanel.add(stepsPanel, DockPanel.CENTER);
+		this.dockPanel.setCellHeight(this.stepsPanel, "100%");
+		this.dockPanel.setCellWidth(this.stepsPanel, "100%");
 		
 		initWidget(dockPanel);
+		//TODO - Thiago - Evitar registros duplicados;
+		Events.getRegisteredClientEventHandlers().registerEventHandler("__wizard", new CruxInternalWizardPageController());
+		ContextManager.getContextHandler().eraseData("__Wizard."+getElement().getId());
     }
 	
 	/**
@@ -114,7 +119,7 @@ public class Wizard extends Composite
 	 */
 	public WidgetStep insertWidgetStep(String id, Widget widget, int beforeIndex)
 	{
-		WidgetStep widgetStep = new WidgetStep(widget);
+		WidgetStep widgetStep = new WidgetStep(widget, this);
 		if (insertStep(new Step(this, id, widgetStep), beforeIndex))
 		{
 			return widgetStep;
@@ -195,11 +200,21 @@ public class Wizard extends Composite
 	 */
 	public boolean selectStep(String id)
 	{
+		return selectStep(id, false);
+	}
+	
+	/**
+	 * @param id
+	 * @param ignoreLeaveEvent
+	 * @return
+	 */
+	public boolean selectStep(String id, boolean ignoreLeaveEvent)
+	{
 		boolean ret = false;
 		int index = getStepOrder(id);
 		if (index > -1)
 		{
-			ret = selectStep(index);
+			ret = selectStep(index, ignoreLeaveEvent);
 		}
 		
 		return ret;
@@ -235,9 +250,22 @@ public class Wizard extends Composite
     		removeStepListener(this.controlBar);
     	}
 		this.controlBar = controlBar;
-		this.controlBar.setWizard(this);
-    	addStepListener(this.controlBar);
-    	dockPanel.add(this.controlBar, getDockPosition(position));
+		if (this.controlBar != null)
+		{
+			this.controlBar.setWizard(this);
+			addStepListener(this.controlBar);
+			dockPanel.add(this.controlBar, getDockPosition(position));
+			if (this.controlBar.isVertical())
+			{
+				dockPanel.setCellWidth(this.controlBar, "0");
+				dockPanel.setCellVerticalAlignment(this.controlBar, HasVerticalAlignment.ALIGN_MIDDLE);
+			}
+			else
+			{
+				dockPanel.setCellHeight(this.controlBar, "0");
+				dockPanel.setCellHorizontalAlignment(this.controlBar, HasHorizontalAlignment.ALIGN_CENTER);
+			}
+		}
     }
 
 	/**
@@ -345,6 +373,82 @@ public class Wizard extends Composite
 	}
 
 	/**
+	 * @return
+	 */
+	public int getCurrentStepIndex()
+	{
+		return currentStep;
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getCurrentStep()
+	{
+		Step step = getStep(currentStep);
+		if (step != null)
+		{
+			return step.getId();
+		}
+		return null;
+	}
+	
+	/**
+	 * @param step
+	 * @return
+	 */
+	public boolean selectStep(int step)
+    {
+		return selectStep(step, false);
+    }
+
+	/**
+	 * @param step
+	 * @param ignoreLeaveEvent
+	 * @return
+	 */
+	public boolean selectStep(int step, boolean ignoreLeaveEvent)
+    {
+		boolean ret = false;
+		if (currentStep != step && step >= 0 && step < steps.size())
+		{
+			if (ignoreLeaveEvent || leavePreviousStep())			
+			{
+				String preivousStep = null;
+				if (currentStep >=0)
+				{
+					preivousStep = getStep(currentStep).getId();
+				}
+				currentStep = step;
+				stepsPanel.showWidget(currentStep);
+				notifyStepListeners(preivousStep);
+				enterCurrentStep(preivousStep);
+				ret = true;
+			}
+		}
+		return ret;
+    }
+
+	/**
+	 * @param data
+	 */
+	public void updateContext(Object data)
+	{
+        ContextManager.getContextHandler().writeData("__Wizard."+getElement().getId(), data);
+	}
+	
+	/**
+	 * @param <T>
+	 * @param dataType
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+    public <T> T readContext(Class<T> dataType)
+	{
+        return (T)ContextManager.getContextHandler().readData("__Wizard."+getElement().getId());
+	}
+	
+	/**
 	 * @param id
 	 * @return
 	 */
@@ -398,42 +502,6 @@ public class Wizard extends Composite
 	}
 
 	/**
-	 * @param step
-	 * @return
-	 */
-	private boolean selectStep(int step)
-    {
-		return selectStep(step, false);
-    }
-
-	/**
-	 * @param step
-	 * @param ignoreLeaveEvent
-	 * @return
-	 */
-	private boolean selectStep(int step, boolean ignoreLeaveEvent)
-    {
-		boolean ret = false;
-		if (currentStep != step && step >= 0 && step < steps.size())
-		{
-			if (ignoreLeaveEvent || leavePreviousStep())			
-			{
-				String preivousStep = null;
-				if (currentStep >=0)
-				{
-					preivousStep = getStep(currentStep).getId();
-				}
-				currentStep = step;
-				stepsPanel.showWidget(currentStep);
-				notifyStepListeners(preivousStep);
-				entryCurrentStep(preivousStep);
-				ret = true;
-			}
-		}
-		return ret;
-    }
-
-	/**
 	 * 
 	 */
 	private void notifyStepListeners(String preivousStep)
@@ -452,18 +520,18 @@ public class Wizard extends Composite
 	/**
 	 * @param previousStep
 	 */
-	private void entryCurrentStep(String previousStep)
+	private void enterCurrentStep(String previousStep)
     {
     	Step entryStep = getStep(currentStep);
     	if (entryStep.getWidget() instanceof PageStep)
     	{
     		PageStep source =(PageStep)entryStep.getWidget();
-    		source.fireEnterEvent(previousStep);
+    		source.fireEnterEvent(getElement().getId(), previousStep);
     	}
     	else
     	{
     		HasEnterHandlers source =(HasEnterHandlers)entryStep.getWidget();
-    		EnterEvent.fire(source, previousStep);
+    		EnterEvent.fire(source, new WidgetWizardProxy(this), previousStep);
     	}
     }
 
@@ -479,13 +547,13 @@ public class Wizard extends Composite
 	    	if (previousStep.getWidget() instanceof PageStep)
 	    	{
 	    		PageStep source =(PageStep)previousStep.getWidget();
-	    		LeaveEvent leaveEvent = source.fireLeaveEvent();
+	    		LeaveEvent leaveEvent = source.fireLeaveEvent(getElement().getId());
 	    		leave = leaveEvent == null || !leaveEvent.isCanceled();
 	    	}
 	    	else
 	    	{
 	    		HasLeaveHandlers source =(HasLeaveHandlers)previousStep.getWidget();
-	    		LeaveEvent leaveEvent = LeaveEvent.fire(source);
+	    		LeaveEvent leaveEvent = LeaveEvent.fire(source, new WidgetWizardProxy(this));
 	    		leave = !leaveEvent.isCanceled();
 	    	}
 	    }

@@ -13,16 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.widgets.client.event.step;
+package br.com.sysmap.crux.widgets.client.wizard;
 
-import com.google.gwt.event.shared.GwtEvent;
 
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class EnterEvent extends GwtEvent<EnterHandler> 
+public class EnterEvent extends StepEvent<EnterHandler> 
 {
 	private static Type<EnterHandler> TYPE = new Type<EnterHandler>();
 
@@ -31,8 +30,9 @@ public class EnterEvent extends GwtEvent<EnterHandler>
 	/**
 	 * 
 	 */
-	protected EnterEvent(String previousStep)
+	protected EnterEvent(WizardProxy wizardProxy, String previousStep)
 	{
+		super(wizardProxy);
 		this.previousStep = previousStep;
 	}
 
@@ -49,9 +49,9 @@ public class EnterEvent extends GwtEvent<EnterHandler>
 	 * @param source
 	 * @return
 	 */
-	public static EnterEvent fire(HasEnterHandlers source, String previousStep)
+	public static EnterEvent fire(HasEnterHandlers source, WizardProxy proxy, String previousStep)
 	{
-		EnterEvent event = new EnterEvent(previousStep);
+		EnterEvent event = new EnterEvent(proxy, previousStep);
 		source.fireEvent(event);
 		return event;
 	}

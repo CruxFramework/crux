@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.widgets.client.event.step;
+package br.com.sysmap.crux.widgets.client.wizard;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
@@ -22,7 +22,7 @@ import com.google.gwt.event.shared.HasHandlers;
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface HasLeaveHandlers extends HasHandlers 
+public interface HasWizardCommandHandlers extends HasHandlers 
 {
-	HandlerRegistration addLeaveHandler(LeaveHandler handler);
+	HandlerRegistration addWizardCommandHandler(WizardCommandHandler handler);
 }

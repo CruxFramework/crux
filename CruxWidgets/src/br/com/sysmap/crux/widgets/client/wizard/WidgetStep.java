@@ -15,6 +15,12 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
+
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -22,15 +28,18 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class WidgetStep extends AbstractWidgetStep
+public class WidgetStep extends AbstractWidgetStep implements HasCommands
 {
 	private SimplePanel panel;
+	protected Wizard wizard;
+	protected Map<String, WizardCommand> commands = new LinkedHashMap<String, WizardCommand>();
 	
 	/**
 	 * @param widget
 	 */
-	WidgetStep(Widget widget)
+	WidgetStep(Widget widget, Wizard wizard)
     {
+		this.wizard = wizard;
 		panel = new SimplePanel();
 		panel.setHeight("100%");
 		panel.setWidth("100%");
@@ -38,4 +47,39 @@ public class WidgetStep extends AbstractWidgetStep
 		panel.add(widget);
 		initWidget(widget);
     }
+
+	@Override
+    public boolean addCommand(String id, String label, WizardCommandHandler handler, int order)
+    {
+		if (!commands.containsKey(id))
+		{
+			WizardCommand command = new WizardCommand(id, order, label, handler, new WidgetWizardProxy(wizard));
+			commands.put(id, command);
+			return true;
+		}
+		return false;
+    }
+	
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.wizard.HasCommands#getCommands()
+	 */
+	public Iterator<WizardCommand> iterateCommands()
+    {
+	    return commands.values().iterator();
+    }
+	
+	/**
+	 * @param command
+	 * @return
+	 */
+	@Override
+	public boolean removeCommand(String id)
+	{
+		if (commands.containsKey(id))
+		{
+			commands.remove(id);
+			return true;
+		}
+		return false;
+	}
 }

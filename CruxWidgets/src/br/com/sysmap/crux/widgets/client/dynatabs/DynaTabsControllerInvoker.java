@@ -15,8 +15,6 @@
  */
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
-import br.com.sysmap.crux.core.client.controller.Controller;
-import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.WidgetMessages;
@@ -30,11 +28,8 @@ import com.google.gwt.user.client.DOM;
 /**
  * @author Gessé Dafé <code>gessedafe@gmail.com</code>
  */
-@Global
-@Controller("__dynatabs")
-public class CruxInternalDynaTabsController 
+public class DynaTabsControllerInvoker 
 {
-//TODO - Thiago - Por que isso eh um controller? nao tem nada com @Expose... eh tudo estatico... ta registrando isso a toa?	
 	/**
 	 * Invokes a method on a sibling tab controller 
 	 * @param <T>

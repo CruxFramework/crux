@@ -1,9 +1,9 @@
 Estrutura:
 
-<wizard onLoadWidget="">
+<wizard onLoadWidget="" >
 	<navigationBar position="top" />
 	<steps>
-		<widget onEntry="" onLeave="" >
+		<widget onEnter="" onLeave="" >
 			<commands>
 				<command label="" action="" className="" />
 			</commands>
@@ -12,9 +12,7 @@ Estrutura:
 		<page src="otherPage.crux.xml" />
 	</steps>
 	<controlBar position="bottom" previousOrder="1" previousLabel="">
-		<customCommand order="2">
-			<image id="" />
-		</customCommand>
+		<command ..>
 	</controlBar>
 </wizard>
 
@@ -23,7 +21,7 @@ onde, na otherPage.crux.xml,
 adicionamos a widget (opcionalmente).. se não tiver, simplesmente não vai notificar 
 evento nenhum para screen e nem permitir ler ou gravar dados no contexto do wzard:
 
-<wizardStep onEntry="" onLeave="" >
+<wizardStep onEnter="" onLeave="" >
 	<commands>
 		<command label="" action="" className="" />
 	</commands>
