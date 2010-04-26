@@ -164,7 +164,7 @@ public class Events
 		};
 	}
 
-	protected static RegisteredClientEventHandlers getRegisteredClientEventHandlers()
+	public static RegisteredClientEventHandlers getRegisteredClientEventHandlers()
 	{
 		if (registeredClientEventHandlers == null)
 		{

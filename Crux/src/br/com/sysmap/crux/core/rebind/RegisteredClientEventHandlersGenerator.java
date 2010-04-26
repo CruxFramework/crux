@@ -97,12 +97,15 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		generateConstructor(sourceWriter, implClassName, handlerClassNames);
 		generateValidateControllerMethod(sourceWriter);
 		generateEventHandlerInvokeMethod(sourceWriter, handlerClassNames);
+		generateRegisterHandlerMethod(sourceWriter); 
+		
 		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 
 		context.commit(logger, printWriter);
 	}
+
 
 	/**
 	 * @param sourceWriter
@@ -143,6 +146,13 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 				sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
 			}
 		}
+		sourceWriter.println("}");
+	}
+
+	private void generateRegisterHandlerMethod(SourceWriter sourceWriter)
+    {
+		sourceWriter.println("public void registerEventHandler(String controller, EventClientHandlerInvoker handlerInvoker){");
+		sourceWriter.println("clientHandlers.put(controller, handlerInvoker);");
 		sourceWriter.println("}");
 	}
 	

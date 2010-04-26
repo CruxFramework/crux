@@ -24,4 +24,5 @@ package br.com.sysmap.crux.core.client.event;
 public interface RegisteredClientEventHandlers 
 {
 	void invokeEventHandler(String controller, String method, boolean fromOutOfModule, Object sourceEvent, EventProcessor eventProcessor);
+	void registerEventHandler(String controller, EventClientHandlerInvoker handlerInvoker);
 }

@@ -58,5 +58,24 @@ public abstract class EventProcessor
 	{
 		return _validationMessage;
 	}
-	
+
+	public void setHasReturn(boolean hasReturn)
+    {
+    	_hasReturn = hasReturn;
+    }
+
+	public void setReturnValue(Object returnValue)
+    {
+    	_returnValue = returnValue;
+    }
+
+	public void setException(Throwable exception)
+    {
+    	_exception = exception;
+    }
+
+	public void setValidationMessage(String validationMessage)
+    {
+    	_validationMessage = validationMessage;
+    }
 }
