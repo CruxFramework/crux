@@ -29,16 +29,18 @@ public class Step
 {
 	private Wizard wizard;
 	private String id;
+	private String label;
 	private Widget widget;
 	
 	/**
 	 * @param id
 	 * @param widget
 	 */
-	Step(Wizard wizard, String id, Widget widget)
+	Step(Wizard wizard, String id, String label, Widget widget)
     {
 		this.wizard = wizard;
 		this.id = id;
+		this.label = label;
 		this.widget = widget;
     }
 	
@@ -49,6 +51,14 @@ public class Step
     {
     	return id;
     }
+	
+	/**
+	 * @return
+	 */
+	public String getLabel()
+	{
+		return label;
+	}
 	
 	/**
 	 * @return

@@ -35,9 +35,9 @@ public class PageStep extends AbstractTab
 	 * @param label
 	 * @param url
 	 */
-	PageStep(String id, String label, String url)
+	PageStep(String id, String url)
     {
-	    super(id, label, url);
+	    super(id, url);
     }
 
 	/**

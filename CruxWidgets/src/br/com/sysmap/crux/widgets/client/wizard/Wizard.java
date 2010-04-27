@@ -100,8 +100,8 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	public PageStep insertPageStep(String id, String label, String url, int beforeIndex)
 	{
-		PageStep pageStep = new PageStep(id, label, url);
-		if (insertStep(new Step(this, id, pageStep), beforeIndex))
+		PageStep pageStep = new PageStep(id, url);
+		if (insertStep(new Step(this, id, label, pageStep), beforeIndex))
 		{
 			return pageStep;
 		}
@@ -113,9 +113,9 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param widget
 	 * @return
 	 */
-	public WidgetStep addWidgetStep(String id, Widget widget)
+	public WidgetStep addWidgetStep(String id, String label, Widget widget)
 	{
-		return insertWidgetStep(id, widget, steps.size());
+		return insertWidgetStep(id, label, widget, steps.size());
 	}
 	
 	/**
@@ -124,10 +124,10 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param beforeIndex
 	 * @return
 	 */
-	public WidgetStep insertWidgetStep(String id, Widget widget, int beforeIndex)
+	public WidgetStep insertWidgetStep(String id, String label, Widget widget, int beforeIndex)
 	{
 		WidgetStep widgetStep = new WidgetStep(widget, this);
-		if (insertStep(new Step(this, id, widgetStep), beforeIndex))
+		if (insertStep(new Step(this, id, label, widgetStep), beforeIndex))
 		{
 			return widgetStep;
 		}
