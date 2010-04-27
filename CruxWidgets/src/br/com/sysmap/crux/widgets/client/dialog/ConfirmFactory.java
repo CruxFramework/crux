@@ -23,8 +23,8 @@ import br.com.sysmap.crux.core.client.declarative.TagEvents;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
-import br.com.sysmap.crux.widgets.client.event.dialog.CancelEvtBind;
-import br.com.sysmap.crux.widgets.client.event.dialog.OkEvtBind;
+import br.com.sysmap.crux.widgets.client.event.CancelEvtBind;
+import br.com.sysmap.crux.widgets.client.event.OkEvtBind;
 
 import com.google.gwt.dom.client.Element;
 

@@ -25,7 +25,7 @@ interface WizardProxy
 	boolean first();
 	boolean next();
 	boolean previous();
-	boolean cancel();
+	void cancel();
 	boolean finish();
 	boolean selectStep(String id, boolean ignoreLeaveEvent);
 	int getStepOrder(String id);

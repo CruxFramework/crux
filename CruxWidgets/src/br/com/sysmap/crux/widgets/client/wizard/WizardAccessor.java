@@ -58,9 +58,9 @@ public class WizardAccessor
 	/**
 	 * @return
 	 */
-	public boolean cancel()
+	public void cancel()
 	{
-		return proxy.cancel();
+		proxy.cancel();
 	}
 	
 	/**

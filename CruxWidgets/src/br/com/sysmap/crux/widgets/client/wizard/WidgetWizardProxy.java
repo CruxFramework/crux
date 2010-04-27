@@ -34,9 +34,9 @@ class WidgetWizardProxy implements WizardProxy
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#cancel()
 	 */
-	public boolean cancel()
+	public void cancel()
     {
-	    return wizard.cancel();
+	    wizard.cancel();
     }
 
 	/**

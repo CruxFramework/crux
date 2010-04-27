@@ -15,9 +15,9 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
-import br.com.sysmap.crux.widgets.client.event.dialog.HasOkHandlers;
-import br.com.sysmap.crux.widgets.client.event.dialog.OkEvent;
-import br.com.sysmap.crux.widgets.client.event.dialog.OkHandler;
+import br.com.sysmap.crux.widgets.client.event.HasOkHandlers;
+import br.com.sysmap.crux.widgets.client.event.OkEvent;
+import br.com.sysmap.crux.widgets.client.event.OkHandler;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;

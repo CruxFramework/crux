@@ -1,4 +1,4 @@
-package br.com.sysmap.crux.widgets.client.event.dialog;
+package br.com.sysmap.crux.widgets.client.event;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;

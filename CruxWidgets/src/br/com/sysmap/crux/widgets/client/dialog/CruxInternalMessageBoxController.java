@@ -25,7 +25,7 @@ import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.decoratedbutton.DecoratedButton;
-import br.com.sysmap.crux.widgets.client.event.dialog.OkEvent;
+import br.com.sysmap.crux.widgets.client.event.OkEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

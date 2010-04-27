@@ -110,10 +110,10 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 * @return
 	 */
 	@ExposeOutOfModule
-	public boolean cancel(InvokeControllerEvent event)
+	public void cancel(InvokeControllerEvent event)
 	{
 		String wizardId = (String) event.getParameter(0);
-		return Screen.get(wizardId, Wizard.class).cancel();
+		Screen.get(wizardId, Wizard.class).cancel();
 	}
 
 	/**
@@ -508,8 +508,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 			}
 			else if("cancel".equals(method) && fromOutOfModule)
 			{
-				hasReturn = true;
-				returnValue = cancel((InvokeControllerEvent)sourceEvent);
+				cancel((InvokeControllerEvent)sourceEvent);
 			}
 			else if("onCommand".equals(method) && fromOutOfModule)
 			{

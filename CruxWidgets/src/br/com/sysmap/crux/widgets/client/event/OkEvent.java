@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.widgets.client.event.dialog;
+package br.com.sysmap.crux.widgets.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 

@@ -22,7 +22,14 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.event.Events;
+import br.com.sysmap.crux.widgets.client.event.CancelEvent;
+import br.com.sysmap.crux.widgets.client.event.CancelHandler;
+import br.com.sysmap.crux.widgets.client.event.FinishEvent;
+import br.com.sysmap.crux.widgets.client.event.FinishHandler;
+import br.com.sysmap.crux.widgets.client.event.HasCancelHandlers;
+import br.com.sysmap.crux.widgets.client.event.HasFinishHandlers;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -34,7 +41,7 @@ import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  */
-public class Wizard extends Composite
+public class Wizard extends Composite implements HasCancelHandlers, HasFinishHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Wizard";
 	
@@ -179,10 +186,9 @@ public class Wizard extends Composite
 	/**
 	 * @return
 	 */
-	public boolean cancel()
+	public void cancel()
 	{
-		//TODO chamar cancelhandler
-		return false;
+		CancelEvent.fire(this);
 	}
 
 	/**
@@ -190,10 +196,26 @@ public class Wizard extends Composite
 	 */
 	public boolean finish()
 	{
-		//TODO chamar finishhandler
-		return false;
+		FinishEvent finishEvent = FinishEvent.fire(this);
+		return !finishEvent.isCanceled();
 	}
 	
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.event.HasCancelHandlers#addCancelHandler(br.com.sysmap.crux.widgets.client.event.CancelHandler)
+	 */
+	public HandlerRegistration addCancelHandler(CancelHandler handler)
+    {
+		return addHandler(handler, CancelEvent.getType());
+    }
+	
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.event.HasFinishHandlers#addFinishHandler(br.com.sysmap.crux.widgets.client.event.FinishHandler)
+	 */
+	public HandlerRegistration addFinishHandler(FinishHandler handler)
+    {
+		return addHandler(handler, FinishEvent.getType());
+    }
+
 	/**
 	 * @param id
 	 * @return

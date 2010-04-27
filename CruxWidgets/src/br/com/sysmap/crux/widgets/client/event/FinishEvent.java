@@ -13,53 +13,75 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.widgets.client.event.dialog;
+package br.com.sysmap.crux.widgets.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+
+
 /**
- * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class CancelEvent extends GwtEvent<CancelHandler>
+public class FinishEvent extends GwtEvent<FinishHandler> 
 {
-	private static Type<CancelHandler> TYPE = new Type<CancelHandler>();
-	
-	protected CancelEvent()
-	{
-	}
+	private static Type<FinishHandler> TYPE = new Type<FinishHandler>();
 
-	@Override
-	protected void dispatch(CancelHandler handler)
-	{
-		handler.onCancel(this);
-	}
+	private boolean canceled;
 
-	@Override
-	public Type<CancelHandler> getAssociatedType()
-	{
-		return TYPE;
-	}
-	
 	/**
 	 * 
+	 */
+	protected FinishEvent()
+	{
+		super();
+	}
+
+	/**
 	 * @return
 	 */
-	public static Type<CancelHandler> getType()
+	public static Type<FinishHandler> getType()
 	{
 		return TYPE;
 	}
-	
+
 	/**
 	 * @param <I>
 	 * @param source
 	 * @return
 	 */
-	public static CancelEvent fire(HasCancelHandlers source)
+	public static FinishEvent fire(HasFinishHandlers source)
 	{
-		CancelEvent event = new CancelEvent();
+		FinishEvent event = new FinishEvent();
 		source.fireEvent(event);
 		return event;
-	}	
+	}
+
+	@Override
+	protected void dispatch(FinishHandler handler)
+	{
+		handler.onFinish(this);
+	}
+
+	@Override
+	public Type<FinishHandler> getAssociatedType()
+	{
+		return TYPE;
+	}
+
+	/**
+	 * @return the canceled
+	 */
+	public boolean isCanceled()
+	{
+		return canceled;
+	}
+
+	/**
+	 * 
+	 */
+	public void cancel()
+	{
+		canceled = true;
+	}
 }

@@ -38,9 +38,9 @@ class PageWizardProxy implements WizardProxy
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#cancel()
 	 */
-	public boolean cancel()
+	public void cancel()
     {
-	    return invokeSimpleCommand("cancel");
+		invokeSimpleCommand("cancel", wizardId, Object.class);
     }
 
 	/**
