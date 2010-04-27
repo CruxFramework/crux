@@ -123,9 +123,9 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 
 			Class<?> widgetType = getWidgetTypeFromClass(logger, factoryClass);
 			
-			generateProccessAttributesMethod(logger, sourceWriter, factoryClass, widgetType);
-			generateProccessEventsMethod(logger, sourceWriter, factoryClass, widgetType);
-			generateProccessChildrenMethod(logger, sourceWriter, factoryClass, widgetType);
+			generateProcessAttributesMethod(logger, sourceWriter, factoryClass, widgetType);
+			generateProcessEventsMethod(logger, sourceWriter, factoryClass, widgetType);
+			generateProcessChildrenMethod(logger, sourceWriter, factoryClass, widgetType);
 
 			sourceWriter.outdent();
 			sourceWriter.println("}");
@@ -147,7 +147,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param widgetType
 	 * @throws Exception 
 	 */
-	private void generateProccessChildrenMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType) throws Exception
+	private void generateProcessChildrenMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType) throws Exception
 	{
 		Method method = factoryClass.getMethod("processChildren", new Class[]{WidgetFactoryContext.class});
 
@@ -206,7 +206,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	private void generatingChildrenProcessingBlock(TreeLogger logger, SourceWriter sourceWriter, Class<?> widgetType, Method method, String contextDeclaration,
 			Map<String, String> methodsForInnerProcessing, Map<String, String> processorVariables) throws Exception
 	{
-		String childrenProcessorMethodName = generateProccessChildrenBlockFromMethod(logger, methodsForInnerProcessing, method,
+		String childrenProcessorMethodName = generateProcessChildrenBlockFromMethod(logger, methodsForInnerProcessing, method,
 				                                                                     widgetType, processorVariables);
 
 		sourceWriter.println("@Override");
@@ -230,7 +230,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param widgetType
 	 * @throws Exception
 	 */
-	private void generateProccessEventsMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType) throws Exception
+	private void generateProcessEventsMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType) throws Exception
 	{
 		Map<String, String> evtBinderVariables = new HashMap<String, String>();
 		
@@ -238,7 +238,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		sourceWriter.println("public void processEvents("+getClassSourceName(WidgetFactoryContext.class)
 				         +"<"+ getClassSourceName(widgetType)+"> context) throws InterfaceConfigException{"); 
 		sourceWriter.println("super.processEvents(context);");
-		sourceWriter.print(generateProccessEventsBlock(logger, factoryClass, evtBinderVariables));
+		sourceWriter.print(generateProcessEventsBlock(logger, factoryClass, evtBinderVariables));
 		sourceWriter.println("}");
 		
 		generateInnerProcessorsvariables(sourceWriter, evtBinderVariables);
@@ -251,13 +251,13 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param factoryClass
 	 * @param widgetType
 	 */
-	private void generateProccessAttributesMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType)
+	private void generateProcessAttributesMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType)
 	{
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void processAttributes("+getClassSourceName(WidgetFactoryContext.class)
 		         +"<"+ getClassSourceName(widgetType)+"> context) throws InterfaceConfigException{"); 
 		sourceWriter.println("super.processAttributes(context);");
-		sourceWriter.print(generateProccessAttributesBlock(logger, factoryClass, widgetType));
+		sourceWriter.print(generateProcessAttributesBlock(logger, factoryClass, widgetType));
 		sourceWriter.println("}");
 	}
 	
@@ -267,7 +267,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param sourceWriter
 	 * @param factoryClass
 	 */
-	private String generateProccessAttributesBlock(TreeLogger logger, Class<?> factoryClass, Class<?> widgetType)
+	private String generateProcessAttributesBlock(TreeLogger logger, Class<?> factoryClass, Class<?> widgetType)
 	{
 		if (attributesFromClass.containsKey(factoryClass))
 		{
@@ -335,12 +335,12 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		Class<?> superclass = factoryClass.getSuperclass();
 		if (superclass!= null && !superclass.equals(Object.class))
 		{
-			result.append(generateProccessAttributesBlock(logger, superclass, widgetType)+"\n");
+			result.append(generateProcessAttributesBlock(logger, superclass, widgetType)+"\n");
 		}
 		Class<?>[] interfaces = factoryClass.getInterfaces();
 		for (Class<?> interfaceClass : interfaces)
 		{
-			result.append(generateProccessAttributesBlock(logger, interfaceClass, widgetType)+"\n");
+			result.append(generateProcessAttributesBlock(logger, interfaceClass, widgetType)+"\n");
 		}
 		String attributes = result.toString();
 		attributesFromClass.put(factoryClass, attributes);
@@ -355,7 +355,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @throws IllegalAccessException 
 	 * @throws Exception 
 	 */
-	private String generateProccessEventsBlock(TreeLogger logger, 
+	private String generateProcessEventsBlock(TreeLogger logger, 
 											   Class<?> factoryClass, 
 											   Map<String, String> evtBinderVariables) throws Exception
 	{
@@ -386,7 +386,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		if (superclass!= null && !superclass.equals(Object.class))
 		{
 			Map<String, String> evtBinderVariablesSubClasses = new HashMap<String, String>();
-			String superClassBlock = generateProccessEventsBlock(logger, superclass, evtBinderVariablesSubClasses);
+			String superClassBlock = generateProcessEventsBlock(logger, superclass, evtBinderVariablesSubClasses);
 			if (result.indexOf(superClassBlock) < 0)
 			{
 				result.append(superClassBlock+"\n");
@@ -397,7 +397,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		for (Class<?> interfaceClass : interfaces)
 		{
 			Map<String, String> evtBinderVariablesSubClasses = new HashMap<String, String>();
-			String superClassBlock = generateProccessEventsBlock(logger, interfaceClass, evtBinderVariablesSubClasses);
+			String superClassBlock = generateProcessEventsBlock(logger, interfaceClass, evtBinderVariablesSubClasses);
 			if (result.indexOf(superClassBlock) < 0)
 			{
 				result.append(superClassBlock+"\n");
@@ -446,7 +446,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param widgetType
 	 * @throws Exception
 	 */
-	private String generateProccessChildrenBlockFromMethod(TreeLogger logger, 
+	private String generateProcessChildrenBlockFromMethod(TreeLogger logger, 
 														   Map<String, String> methodsForInnerProcessing, 
 														   Method processChildrenMethod, Class<?> widgetType, 
 														   Map<String, String> processorVariables) throws Exception
@@ -701,7 +701,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		source.append(evtBinderVar+".processChildren(c);\n");
 		
 		Method processorMethod = childProcessor.getMethod("processChildren", new Class[]{WidgetChildProcessorContext.class});
-		String childrenProcessorMethodName = generateProccessChildrenBlockFromMethod(logger, methodsForInnerProcessing, 
+		String childrenProcessorMethodName = generateProcessChildrenBlockFromMethod(logger, methodsForInnerProcessing, 
 				                                            processorMethod, widgetType, processorVariables);
 		if (childrenProcessorMethodName != null)
 		{
@@ -751,35 +751,46 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 			}
 			
 			AllowedOccurences allowedForChild = getAllowedOccurrencesForChild(child);
-			if (allowedForChild.minOccurs == UNBOUNDED)
-			{
-				allowed.minOccurs = UNBOUNDED;
-			}
-			else if (allowed.minOccurs != UNBOUNDED)
-			{
-				allowed.minOccurs += allowedForChild.minOccurs;	
-			}
-			if (allowedForChild.maxOccurs == UNBOUNDED)
-			{
-				allowed.maxOccurs = UNBOUNDED;
-			}
-			else if (allowed.maxOccurs != UNBOUNDED)
-			{
-				allowed.maxOccurs += allowedForChild.maxOccurs;	
-			}
+			mergeAllowedOccurrences(allowed, allowedForChild);
 		}
 		return allowed;
 	}
 
 	/**
+	 * @param allowed
+	 * @param allowedForChild
+	 */
+	private void mergeAllowedOccurrences(AllowedOccurences allowed,
+            AllowedOccurences allowedForChild)
+    {
+	    if (allowedForChild.minOccurs == UNBOUNDED)
+	    {
+	    	allowed.minOccurs = UNBOUNDED;
+	    }
+	    else if (allowed.minOccurs != UNBOUNDED)
+	    {
+	    	allowed.minOccurs += allowedForChild.minOccurs;	
+	    }
+	    if (allowedForChild.maxOccurs == UNBOUNDED)
+	    {
+	    	allowed.maxOccurs = UNBOUNDED;
+	    }
+	    else if (allowed.maxOccurs != UNBOUNDED)
+	    {
+	    	allowed.maxOccurs += allowedForChild.maxOccurs;	
+	    }
+    }
+
+	/**
 	 * 
 	 * @param child
 	 * @return
+	 * @throws Exception 
 	 */
-	private AllowedOccurences getAllowedOccurrencesForChild(TagChild child)
+	private AllowedOccurences getAllowedOccurrencesForChild(TagChild child) throws Exception
 	{
 		AllowedOccurences allowed = new AllowedOccurences();
-		
+//TODO documentar o @Expose no wiki		
 		Class<? extends WidgetChildProcessor<?>> childProcessor = child.value();
 		TagChildAttributes processorAttributes = ClassUtils.getChildtrenAttributesAnnotation(childProcessor);
 
@@ -804,6 +815,16 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 			{
 				allowed.maxOccurs = Integer.parseInt(maxOccurs);
 			}
+		}
+		else if (AllChildProcessor.class.isAssignableFrom(child.value()) || SequenceChildProcessor.class.isAssignableFrom(child.value()))
+		{
+            Method processorMethod = child.value().getMethod("processChildren", new Class[]{WidgetChildProcessorContext.class});
+            TagChildren tagChildren = processorMethod.getAnnotation(TagChildren.class);
+            if (tagChildren != null)
+            {
+            	AllowedOccurences allowedChildren = getAllowedChildrenNumber(tagChildren);
+            	mergeAllowedOccurrences(allowed, allowedChildren);
+            }
 		}
 		else
 		{
