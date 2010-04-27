@@ -18,10 +18,10 @@ package br.com.sysmap.crux.core.client.context;
 import java.util.HashMap;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.controller.Controller;
-import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
-import br.com.sysmap.crux.core.client.controller.Global;
+import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
+import br.com.sysmap.crux.core.client.event.EventProcessor;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
@@ -33,6 +33,14 @@ import br.com.sysmap.crux.core.client.screen.Screen;
  */
 public class TopContextHandler implements ContextHandler
 {
+	/**
+	 * 
+	 */
+	public TopContextHandler()
+    {
+		Events.getRegisteredClientEventHandlers().registerEventHandler("__topContextController", new TopContextHanlderController());
+    }
+	
 	/**
 	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#eraseData(java.lang.String)
 	 */
@@ -53,7 +61,7 @@ public class TopContextHandler implements ContextHandler
 	 */
 	public void initializeContext()
 	{
-		// Do Nothing
+		//Do nothing
 	}
 
 	/**
@@ -102,12 +110,13 @@ public class TopContextHandler implements ContextHandler
 		}
 	}
 
-	@Global
-	@Controller("__topContextController")
-	public static class TopContextHanlderController
+	/**
+	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 *
+	 */
+	public static class TopContextHanlderController implements EventClientHandlerInvoker
 	{
-		@Create
-		protected HashMap<String, Object> context;
+		protected HashMap<String, Object> context = new HashMap<String, Object>();
 		
 		@ExposeOutOfModule
 		public void writeData(InvokeControllerEvent event)
@@ -133,5 +142,68 @@ public class TopContextHandler implements ContextHandler
 		{
 			context.clear();
 		}
+
+		/**
+		 * @see br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker#invoke(java.lang.String, java.lang.Object, boolean, br.com.sysmap.crux.core.client.event.EventProcessor)
+		 */
+		public void invoke(String method, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor)
+                throws Exception
+        {
+			Object returnValue = null;
+			boolean hasReturn = false;
+
+			try
+			{
+				if ("readData".equals(method) && fromOutOfModule)
+				{
+					hasReturn = true;
+					returnValue = readData((InvokeControllerEvent)sourceEvent);
+				}
+				else if("writeData".equals(method) && fromOutOfModule)
+				{
+					writeData((InvokeControllerEvent)sourceEvent);
+				}
+				else if("eraseData".equals(method) && fromOutOfModule)
+				{
+					eraseData((InvokeControllerEvent)sourceEvent);
+				}
+				else if("clearData".equals(method) && fromOutOfModule)
+				{
+					clearData((InvokeControllerEvent)sourceEvent);
+				}
+			}
+			catch (Throwable e)
+			{
+				eventProcessor.setException(e);
+			} 
+
+			if (hasReturn)
+			{
+				eventProcessor.setHasReturn(true);
+				eventProcessor.setReturnValue(returnValue);
+			}
+        }
+
+		/**
+		 * @see br.com.sysmap.crux.core.client.screen.ScreenBindableObject#isAutoBindEnabled()
+		 */
+		public boolean isAutoBindEnabled()
+        {
+	        return false;
+        }
+
+		/**
+		 * @see br.com.sysmap.crux.core.client.screen.ScreenBindableObject#updateControllerObjects()
+		 */
+		public void updateControllerObjects()
+        {
+        }
+
+		/**
+		 * @see br.com.sysmap.crux.core.client.screen.ScreenBindableObject#updateScreenWidgets()
+		 */
+		public void updateScreenWidgets()
+        {
+        }
 	}
 }

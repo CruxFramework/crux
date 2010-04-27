@@ -152,7 +152,9 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	private void generateRegisterHandlerMethod(SourceWriter sourceWriter)
     {
 		sourceWriter.println("public void registerEventHandler(String controller, EventClientHandlerInvoker handlerInvoker){");
+		sourceWriter.println("if (!clientHandlers.containsKey(controller)){");
 		sourceWriter.println("clientHandlers.put(controller, handlerInvoker);");
+		sourceWriter.println("}");
 		sourceWriter.println("}");
 	}
 	
