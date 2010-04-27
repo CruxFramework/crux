@@ -21,6 +21,7 @@ import java.util.List;
 
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.timeout.HasTimeoutHandlers;
 import br.com.sysmap.crux.widgets.client.event.timeout.TimeoutEvent;
 import br.com.sysmap.crux.widgets.client.event.timeout.TimeoutHandler;
@@ -38,17 +39,20 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class Timer extends Composite implements HasTimeoutHandlers
 {
-	public static final String DEFAULT_STYLE_NAME = "crux-Timer" ;
+	public static final String DEFAULT_STYLE_NAME = "crux-Timer";
+
 	private final Label widget;
 	private long initial;
 	private long creationTime;
 	private boolean regressive;
+	private boolean allowChanges;
 	
 	private boolean running = false;
 	private long startTime = 0;
 	private List<TimeouTask> events = new ArrayList<TimeouTask>();	
 	
 	private TimeProcessor timeProcessor;
+	
 	
 	/**
 	 * @param width
@@ -61,6 +65,7 @@ public class Timer extends Composite implements HasTimeoutHandlers
 		this.creationTime = initial;
 		this.regressive = regressive;
 		this.timeProcessor = new TimeProcessor(this);
+		this.allowChanges = !start;
 		
 		widget = new Label();
 		widget.setStyleName(DEFAULT_STYLE_NAME);
@@ -72,12 +77,17 @@ public class Timer extends Composite implements HasTimeoutHandlers
 		{
 			start();
 		}
-		Screen.addCloseHandler(new CloseHandler<Window>(){
-			public void onClose(CloseEvent<Window> event)
+		
+		Screen.addCloseHandler
+		(
+			new CloseHandler<Window>()
 			{
-				stop();
+				public void onClose(CloseEvent<Window> event)
+				{
+					stop();
+				}
 			}
-		});
+		);
 	}	
 
 	/**
@@ -150,7 +160,9 @@ public class Timer extends Composite implements HasTimeoutHandlers
 			resetTimeoutEvents();
 		}
 		
-		this.initial = creationTime;
+		this.initial = creationTime;		
+		this.allowChanges = true;
+		
 		update();
 	}
 	
@@ -204,7 +216,7 @@ public class Timer extends Composite implements HasTimeoutHandlers
 			}
 		}		
 	}
-	
+
 	/**
 	 * @param currentCount
 	 */
@@ -227,6 +239,36 @@ public class Timer extends Composite implements HasTimeoutHandlers
 		TimeouTask task = new TimeouTask(handler);
 		this.events.add(task);
 		return addHandler(handler, TimeoutEvent.getType());
+	}
+
+	/**
+	 * @param initial the initial to set
+	 */
+	public void setInitial(long initial)
+	{
+		if(!allowChanges)
+		{
+			throw new IllegalStateException(WidgetMsgFactory.getMessages().startedTimerCannotBeModified());
+		}
+		else
+		{
+			this.initial = initial;
+		}
+	}
+
+	/**
+	 * @param regressive the regressive to set
+	 */
+	public void setRegressive(boolean regressive)
+	{
+		if(!allowChanges)
+		{
+			throw new IllegalStateException(WidgetMsgFactory.getMessages().startedTimerCannotBeModified());
+		}
+		else
+		{
+			this.regressive = regressive;
+		}
 	}
 }
 

@@ -83,5 +83,9 @@ public interface WidgetMessages extends Messages
 	String wizardFinishCommand();
 
 	@DefaultMessage("[crux-widgets 018] - WizardControlBar is not associated with any Wizard.")
-	String wizardControlBarOrphan();	
+	String wizardControlBarOrphan();
+	
+	@DefaultMessage("[crux-widgets 019] - A started timer can not be modified.")
+	String startedTimerCannotBeModified();
+
 }

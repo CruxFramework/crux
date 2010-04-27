@@ -29,8 +29,8 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * TODO - Comment
@@ -40,11 +40,8 @@ public class ScrollBanner extends Composite
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-ScrollBanner" ;
 	
-	private HorizontalPanel basePannel;
 	private Label messagesLabel;
 	private Label messageCountLabel;
-	private FocusPanel nextMsgButton;
-	private FocusPanel previousMsgButton;
 	private int messageScrollingPeriod;
 	
 	private int currentMessageIndex = -1;
@@ -70,52 +67,103 @@ public class ScrollBanner extends Composite
 	}
 	
 	/**
-	 * 
+	 * Constructor
 	 */
 	public ScrollBanner()
+	{
+		HorizontalPanel basePanel = new HorizontalPanel();
+		basePanel.setStyleName(DEFAULT_STYLE_NAME);
+		basePanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		
+		messagesLabel = new Label(" ");
+		messagesLabel.setStyleName("message");
+		messagesLabel.getElement().getStyle().setProperty("overflow", "hidden");
+				
+		HorizontalPanel verticalCenteringPanel = createMessageVerticalCenteringPanel();
+		SimplePanel overflowHiddenPanel = createMessageOverflowHiddenPanel(verticalCenteringPanel);		
+		
+		basePanel.add(overflowHiddenPanel);
+		basePanel.setCellHorizontalAlignment(overflowHiddenPanel, HasHorizontalAlignment.ALIGN_CENTER);
+		basePanel.setCellVerticalAlignment(overflowHiddenPanel, HasVerticalAlignment.ALIGN_MIDDLE);
+		
+		VerticalPanel controllersPanel = createScrollingControlPanel();
+		basePanel.add(controllersPanel);
+		basePanel.setCellWidth(controllersPanel, "30");
+		basePanel.setCellHorizontalAlignment(controllersPanel, HasHorizontalAlignment.ALIGN_RIGHT);
+		basePanel.getElement().getStyle().setProperty("tableLayout", "fixed");
+	
+		initWidget(basePanel);
+	}
+
+	/**
+	 * Creates a panel for hiding long texts that don't fit the banner size 
+	 * @param verticalCenteringPanel
+	 * @return
+	 */
+	private SimplePanel createMessageOverflowHiddenPanel
+	(
+		HorizontalPanel verticalCenteringPanel) {
+		SimplePanel overflowHiddenPanel = new SimplePanel();
+		overflowHiddenPanel.getElement().getStyle().setProperty("overflow", "hidden");
+		overflowHiddenPanel.setWidth("100%");
+		overflowHiddenPanel.setHeight("100%");
+		overflowHiddenPanel.setWidget(verticalCenteringPanel);
+		return overflowHiddenPanel;
+	}
+
+	/**
+	 * Creates a panel for vertical centering short texts.
+	 * @return
+	 */
+	private HorizontalPanel createMessageVerticalCenteringPanel() 
+	{
+		HorizontalPanel verticalCenteringPanel = new HorizontalPanel();
+		verticalCenteringPanel.setHeight("100%");
+		verticalCenteringPanel.setWidth("100%");
+		verticalCenteringPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+		verticalCenteringPanel.add(messagesLabel);
+		return verticalCenteringPanel;
+	}
+
+	/**
+	 * Creates a vertical panel containing the scrolling buttons and the message counter
+	 * @return
+	 */
+	private VerticalPanel createScrollingControlPanel() 
 	{
 		VerticalPanel controllersPanel = new VerticalPanel();
 		controllersPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		controllersPanel.setHeight("100%");
 		
-		Label previousMsgButtonFace = new Label(" ");
-		TextSelectionUtils.makeUnselectable(previousMsgButtonFace.getElement());
-		previousMsgButton = new FocusPanel(previousMsgButtonFace);
-		previousMsgButton.setStyleName("previousMessageButton");
-		previousMsgButton.addClickHandler(createPreviousMessageClickHandler());
+		FocusPanel previousMsgButton = createScrollButton("previousMessageButton", createPreviousMessageClickHandler());
 		controllersPanel.add(previousMsgButton);
 		controllersPanel.setCellVerticalAlignment(previousMsgButton, HasVerticalAlignment.ALIGN_TOP);
 		
-		messageCountLabel = new Label(" ");
-		messageCountLabel.setStyleName("messageCount");
-		controllersPanel.add(messageCountLabel);
-		controllersPanel.setCellVerticalAlignment(messageCountLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+		this.messageCountLabel = new Label(" ");
+		this.messageCountLabel.setStyleName("messageCount");
+		controllersPanel.add(this.messageCountLabel);
+		controllersPanel.setCellVerticalAlignment(this.messageCountLabel, HasVerticalAlignment.ALIGN_MIDDLE);
 		
-		Label nextMsgButtonFace = new Label(" ");
-		TextSelectionUtils.makeUnselectable(nextMsgButtonFace.getElement());
-		nextMsgButton = new FocusPanel(nextMsgButtonFace);
-		nextMsgButton.setStyleName("nextMessageButton");
-		nextMsgButton.addClickHandler(createNextMessageClickHandler());		
+		FocusPanel nextMsgButton = createScrollButton("nextMessageButton", createNextMessageClickHandler());		
 		controllersPanel.add(nextMsgButton);
 		controllersPanel.setCellVerticalAlignment(nextMsgButton, HasVerticalAlignment.ALIGN_BOTTOM);
-		
-		basePannel = new HorizontalPanel();
-		basePannel.setStyleName(DEFAULT_STYLE_NAME);
-		basePannel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		
-		messagesLabel = new Label(" ");
-		messagesLabel.setStyleName("message");
-		messagesLabel.getElement().getStyle().setProperty("overflow", "hidden");
-		basePannel.add(messagesLabel);
-		basePannel.setCellHorizontalAlignment(messagesLabel, HasHorizontalAlignment.ALIGN_CENTER);
-		basePannel.setCellVerticalAlignment(messagesLabel, HasVerticalAlignment.ALIGN_MIDDLE);
-		
-		basePannel.add(controllersPanel);
-		basePannel.setCellWidth(controllersPanel, "30");
-		basePannel.setCellHorizontalAlignment(controllersPanel, HasHorizontalAlignment.ALIGN_RIGHT);
-		basePannel.getElement().getStyle().setProperty("tableLayout", "fixed");
-	
-		initWidget(basePannel);
+		return controllersPanel;
+	}
+
+	/**
+	 * Creates a message scrolling button
+	 * @param styleName
+	 * @param handler
+	 * @return
+	 */
+	private FocusPanel createScrollButton(String styleName, ClickHandler handler) 
+	{
+		Label btnFace = new Label(" ");
+		TextSelectionUtils.makeUnselectable(btnFace.getElement());
+		FocusPanel button = new FocusPanel(btnFace);
+		button.setStyleName(styleName);
+		button.addClickHandler(handler);
+		return button;
 	}
 	
 	/**
@@ -166,43 +214,9 @@ public class ScrollBanner extends Composite
 	 */
 	private void showMessage(int index)
 	{
-		int parentHeight = this.messagesLabel.getParent().getOffsetHeight();
-		int parentWidth = this.messagesLabel.getParent().getOffsetWidth();
-		
 		this.messagesLabel.setText(this.messages.get(index));
 		this.messagesLabel.setTitle(this.messages.get(index));
-			
-		adjustDimensions(messagesLabel, parentHeight, parentWidth);		
-		
 		this.messageCountLabel.setText("" + (index + 1));		
-	}
-
-	/**
-	 * @param widget 
-	 * @param parentWidth 
-	 * @param parentHeight 
-	 * @param parentHeight
-	 * @param parentWidth
-	 */
-	private void adjustDimensions(Widget widget, int parentHeight, int parentWidth)
-	{
-		if(widget.getOffsetHeight() > parentHeight)
-		{
-			widget.getElement().getStyle().setProperty("height", "100%");
-		}
-		else
-		{
-			widget.getElement().getStyle().setProperty("height", "");
-		}
-		
-		if(widget.getOffsetWidth() > parentWidth)
-		{
-			widget.getElement().getStyle().setProperty("width", "100%");
-		}
-		else
-		{
-			widget.getElement().getStyle().setProperty("width", "");
-		}
 	}
 	
 	/**
