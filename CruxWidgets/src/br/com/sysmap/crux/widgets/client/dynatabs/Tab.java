@@ -32,6 +32,7 @@ public class Tab extends AbstractTab implements HasBeforeFocusAndBeforeBlurHandl
 	private FlapPanel flapPanel;
 	private boolean closeable;
 	private int insertionIndex;
+	private String label;
 
 	/**
 	 * Constructor
@@ -44,7 +45,8 @@ public class Tab extends AbstractTab implements HasBeforeFocusAndBeforeBlurHandl
 	 */
 	Tab(String id, String label, String url, boolean closeable, int insertionIndex, FlapPanel flapPanel)
 	{
-		super(id, label, url);
+		super(id, url);
+		this.label = label;
 		this.insertionIndex = insertionIndex;
 		this.flapPanel = flapPanel;
 		this.closeable = closeable;
@@ -55,10 +57,18 @@ public class Tab extends AbstractTab implements HasBeforeFocusAndBeforeBlurHandl
 	 */
 	public void setLabel(String label)
 	{
-		super.setLabel(label);
+		this.label = label;
 		this.flapPanel.getFlapController().setTabTitle(label);
 	}
 
+	/**
+	 * @return the label
+	 */
+	public String getLabel()
+	{
+		return label;
+	}
+	
 	public HandlerRegistration addBeforeFocusHandler(BeforeFocusHandler handler)
 	{
 		return addHandler(handler, BeforeFocusEvent.getType());

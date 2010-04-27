@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
@@ -37,7 +38,7 @@ import com.google.gwt.dom.client.Element;
  * Factory for Decorated Button widget
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-@br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="dynaTabs", library="widgets")
+@DeclarativeFactory(id="dynaTabs", library="widgets")
 public class DynaTabsFactory extends WidgetFactory<DynaTabs>
 {
 	@Override

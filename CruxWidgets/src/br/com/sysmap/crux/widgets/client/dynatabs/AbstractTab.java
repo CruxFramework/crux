@@ -40,7 +40,6 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 {
 	private String id;
 	private String url;
-	private String label;
 	private Frame frame;
 	private TabInternalJSObjects tabObjetcs;
 	private boolean canClose = false;
@@ -53,10 +52,9 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 	 * @param url
 	 * @param closeable
 	 */
-	protected AbstractTab(String id, String label, String url)
+	protected AbstractTab(String id, String url)
 	{
 		this.id = id;
-		this.label = label;
 		this.url = url;
 		
 		this.frame = new Frame(url);
@@ -86,22 +84,6 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 				call.execute();
 			}
 		}, 20000);
-	}
-
-	/**
-	 * @return the label
-	 */
-	public String getLabel()
-	{
-		return label;
-	}
-
-	/**
-	 * @param label the label to set
-	 */
-	public void setLabel(String label)
-	{
-		this.label = label;
 	}
 
 	/**
