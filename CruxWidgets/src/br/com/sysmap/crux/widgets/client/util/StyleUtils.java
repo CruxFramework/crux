@@ -15,9 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.util;
 
-import br.com.sysmap.crux.widgets.client.WidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.UIObject;
@@ -29,8 +28,6 @@ import com.google.gwt.user.client.ui.UIObject;
  */
 public class StyleUtils
 {
-	private static WidgetMessages messages = GWT.create(WidgetMessages.class);
-	
 	/**
 	 * Adds a dependent style name by specifying the style name's suffix. The
 	 * actual form of the style name that is added is:
@@ -169,13 +166,13 @@ public class StyleUtils
 	{
 		if (elem == null)
 		{
-			throw new IllegalArgumentException(messages.nullElementAtSetStyleName());
+			throw new IllegalArgumentException(WidgetMsgFactory.getMessages().nullElementAtSetStyleName());
 		}
 
 		style = style.trim();
 		if (style.length() == 0)
 		{
-			throw new IllegalArgumentException(messages.emptyStringAsStyleNameValue());
+			throw new IllegalArgumentException(WidgetMsgFactory.getMessages().emptyStringAsStyleNameValue());
 		}
 
 		// Get the current style string.

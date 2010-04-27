@@ -17,7 +17,7 @@ package br.com.sysmap.crux.widgets.client.dynatabs;
 
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
-import br.com.sysmap.crux.widgets.client.WidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.js.JSWindow;
 
 import com.google.gwt.core.client.GWT;
@@ -45,7 +45,7 @@ public class DynaTabsControllerInvoker
 		Element tabIFrame = getSiblingTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new ModuleComunicationException(getMessages().tabsControllerNoSiblingTabFound(tabId));
+			throw new ModuleComunicationException(WidgetMsgFactory.getMessages().tabsControllerNoSiblingTabFound(tabId));
 		}
 	
 		return retrieveTabWindowAndInvoke(call, param, tabIFrame, resultType);
@@ -63,7 +63,7 @@ public class DynaTabsControllerInvoker
 		Element tabIFrame = getSiblingTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new ModuleComunicationException(getMessages().tabsControllerNoSiblingTabFound(tabId));
+			throw new ModuleComunicationException(WidgetMsgFactory.getMessages().tabsControllerNoSiblingTabFound(tabId));
 		}
 	
 		retrieveTabWindowAndInvoke(call, param, tabIFrame);
@@ -84,7 +84,7 @@ public class DynaTabsControllerInvoker
 		Element tabIFrame = getTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new ModuleComunicationException(getMessages().tabsControllerNoTabFound(tabId));
+			throw new ModuleComunicationException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(tabId));
 		}
 	
 		return retrieveTabWindowAndInvoke(call, param, tabIFrame, resultType);
@@ -102,7 +102,7 @@ public class DynaTabsControllerInvoker
 		Element tabIFrame = getTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new ModuleComunicationException(getMessages().tabsControllerNoTabFound(tabId));
+			throw new ModuleComunicationException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(tabId));
 		}
 	
 		retrieveTabWindowAndInvoke(call, param, tabIFrame);
@@ -160,13 +160,5 @@ public class DynaTabsControllerInvoker
 	private static Element getTabInternalFrameElement(String tabId)
 	{
 		return DOM.getElementById(tabId + ".window");
-	}
-	
-	/**
-	 * @return
-	 */
-	private static WidgetMessages getMessages()
-	{
-		return GWT.create(WidgetMessages.class);
 	}
 }

@@ -32,9 +32,8 @@ import br.com.sysmap.crux.core.client.screen.factory.HasSelectionHandlersFactory
 import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
 import br.com.sysmap.crux.gwt.client.CompositeFactory;
-import br.com.sysmap.crux.widgets.client.WidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -48,8 +47,6 @@ public class FilterFactory extends CompositeFactory<Filter>
 	              HasValueChangeHandlersFactory<Filter>, HasSelectionHandlersFactory<Filter>,
 	              HasAllKeyHandlersFactory<Filter>
 {
-	WidgetMessages messages = GWT.create(WidgetMessages.class);
-	
 	@Override
 	public Filter instantiateWidget(final Element element, String widgetId) throws InterfaceConfigException
 	{
@@ -93,7 +90,7 @@ public class FilterFactory extends CompositeFactory<Filter>
 						}
 						else
 						{
-							throw new RuntimeException(messages.filterableNotFoundWhenInstantiantingFilter(filterableId));
+							throw new RuntimeException(WidgetMsgFactory.getMessages().filterableNotFoundWhenInstantiantingFilter(filterableId));
 						}							
 					}				
 				}		

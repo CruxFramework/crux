@@ -23,10 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
-import br.com.sysmap.crux.widgets.client.WidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.decoratedbutton.DecoratedButton;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -65,8 +64,6 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	private int cancelOrder = 2;
 	private int finishOrder = 3;
 	
-	private static WidgetMessages messages = GWT.create(WidgetMessages.class);
-	
 	/**
 	 * @param wizard
 	 */
@@ -84,10 +81,10 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	 */
 	public WizardControlBar(boolean vertical)
 	{
-		this.previousLabel = messages.wizardPreviousCommand();
-		this.nextLabel = messages.wizardNextCommand();
-		this.cancelLabel = messages.wizardCancelCommand();
-		this.finishLabel = messages.wizardFinishCommand();
+		this.previousLabel = WidgetMsgFactory.getMessages().wizardPreviousCommand();
+		this.nextLabel = WidgetMsgFactory.getMessages().wizardNextCommand();
+		this.cancelLabel = WidgetMsgFactory.getMessages().wizardCancelCommand();
+		this.finishLabel = WidgetMsgFactory.getMessages().wizardFinishCommand();
 		this.vertical = vertical;
 		
 		if (vertical)
@@ -439,7 +436,7 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	{
 		if (this.wizard == null)
 		{
-			throw new NullPointerException(messages.wizardControlBarOrphan());
+			throw new NullPointerException(WidgetMsgFactory.getMessages().wizardControlBarOrphan());
 		}
 	}
 	

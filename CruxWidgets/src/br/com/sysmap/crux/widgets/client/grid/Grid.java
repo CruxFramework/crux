@@ -21,7 +21,7 @@ import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
-import br.com.sysmap.crux.widgets.client.WidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectEvent;
 import br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectHandler;
 import br.com.sysmap.crux.widgets.client.event.row.HasBeforeRowSelectHandlers;
@@ -60,7 +60,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private RowSelectionModel rowSelectionModel;
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private long generatedWidgetId = 0;
-	private WidgetMessages messages = GWT.create(WidgetMessages.class);
 	private final String emptyDataFilling;
 	
 	/**
@@ -163,7 +162,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	@Override
 	protected DataRow createRow(int index, Element element)
 	{	
-		return new DataRow(index, element, this, hasSelectionColumn(), this.messages);
+		return new DataRow(index, element, this, hasSelectionColumn());
 	}
 
 	@Override
@@ -307,7 +306,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		catch (InterfaceConfigException e)
 		{
 			GWT.log(e.getMessage(), e);
-			throw new RuntimeException(messages.errorCreatingWidgetForColumn(column.getKey()));
+			throw new RuntimeException(WidgetMsgFactory.getMessages().errorCreatingWidgetForColumn(column.getKey()));
 		}
 	}
 
@@ -694,7 +693,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			}
 			else
 			{
-				throw new UnsupportedOperationException(messages.gridRandomPagingNotSupported());
+				throw new UnsupportedOperationException(WidgetMsgFactory.getMessages().gridRandomPagingNotSupported());
 			}
 		}
 		

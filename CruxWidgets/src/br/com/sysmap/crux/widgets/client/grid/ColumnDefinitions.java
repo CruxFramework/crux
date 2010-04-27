@@ -21,9 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import br.com.sysmap.crux.widgets.client.WidgetMessages;
-
-import com.google.gwt.core.client.GWT;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
 /**
  * Represents the columns to be rendered by a grid widget.
@@ -154,8 +152,6 @@ public class ColumnDefinitions
 	 */
 	public static class ColumnIterator<T extends ColumnDefinition> implements Iterator<T>
 	{
-		private WidgetMessages messages = GWT.create(WidgetMessages.class);
-		
 		int cursor = 0;
 		private List<T> defs;
 	
@@ -197,7 +193,7 @@ public class ColumnDefinitions
 		 */
 		public void remove()
 		{
-			throw new UnsupportedOperationException(messages.removingColumnDefinitionByIterator());
+			throw new UnsupportedOperationException(WidgetMsgFactory.getMessages().removingColumnDefinitionByIterator());
 		}		
 	}
 }

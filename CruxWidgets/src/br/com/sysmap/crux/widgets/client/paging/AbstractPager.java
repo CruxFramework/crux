@@ -1,10 +1,9 @@
 package br.com.sysmap.crux.widgets.client.paging;
 
-import br.com.sysmap.crux.widgets.client.WidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.paging.PageEvent;
 import br.com.sysmap.crux.widgets.client.event.paging.PageHandler;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
@@ -14,8 +13,6 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public abstract class AbstractPager extends Composite implements Pager
 {
-	private WidgetMessages messages = GWT.create(WidgetMessages.class);
-
 	private Pageable pageable;
 	private int currentPage = 0;
 	private boolean isLastPage = true;
@@ -138,16 +135,8 @@ public abstract class AbstractPager extends Composite implements Pager
 	{
 		if(this.pageable == null)
 		{
-			throw new IllegalStateException(messages.pagerNoPageableSet());
+			throw new IllegalStateException(WidgetMsgFactory.getMessages().pagerNoPageableSet());
 		}		
-	}
-
-	/**
-	 * @return the messages
-	 */
-	public WidgetMessages getMessages()
-	{
-		return messages;
 	}
 
 	/**

@@ -32,9 +32,8 @@ import br.com.sysmap.crux.core.client.screen.factory.HasClickHandlersFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasDirectionFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
-import br.com.sysmap.crux.widgets.client.WidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -48,8 +47,6 @@ public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
                   HasClickHandlersFactory<MaskedTextBox>, HasAllFocusHandlersFactory<MaskedTextBox>,
                   HasAllKeyHandlersFactory<MaskedTextBox>, HasAllMouseHandlersFactory<MaskedTextBox>
 {
-	private WidgetMessages messages = GWT.create(WidgetMessages.class);
-	
 	@Override
 	public MaskedTextBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
@@ -59,11 +56,11 @@ public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
 			Formatter fmt = Screen.getFormatter(formatter);
 			if (fmt == null)
 			{
-				throw new InterfaceConfigException(messages.maskedTextBoxFormatterNotFound(formatter));
+				throw new InterfaceConfigException(WidgetMsgFactory.getMessages().maskedTextBoxFormatterNotFound(formatter));
 			}
 			return new MaskedTextBox(fmt);
 		}
-		throw new InterfaceConfigException(messages.maskedTextBoxFormatterRequired());
+		throw new InterfaceConfigException(WidgetMsgFactory.getMessages().maskedTextBoxFormatterRequired());
 	}
 
 	@Override

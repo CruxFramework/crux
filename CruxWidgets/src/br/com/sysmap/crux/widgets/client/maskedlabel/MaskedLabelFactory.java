@@ -28,9 +28,8 @@ import br.com.sysmap.crux.core.client.screen.factory.HasDirectionFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasWordWrapFactory;
 import br.com.sysmap.crux.gwt.client.align.AlignmentAttributeParser;
 import br.com.sysmap.crux.gwt.client.align.HorizontalAlignment;
-import br.com.sysmap.crux.widgets.client.WidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
@@ -43,8 +42,6 @@ public class MaskedLabelFactory extends WidgetFactory<MaskedLabel>
 				implements HasDirectionFactory<MaskedLabel>, HasClickHandlersFactory<MaskedLabel>, HasAllMouseHandlersFactory<MaskedLabel>, 
 				           HasWordWrapFactory<MaskedLabel>
 {
-	private WidgetMessages messages = GWT.create(WidgetMessages.class);
-
 	@Override
 	public MaskedLabel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
@@ -54,11 +51,11 @@ public class MaskedLabelFactory extends WidgetFactory<MaskedLabel>
 			Formatter fmt = Screen.getFormatter(formatter);
 			if (fmt == null)
 			{
-				throw new InterfaceConfigException(messages.maskedLabelFormatterNotFound(formatter));
+				throw new InterfaceConfigException(WidgetMsgFactory.getMessages().maskedLabelFormatterNotFound(formatter));
 			}
 			return new MaskedLabel(fmt);
 		}
-		throw new InterfaceConfigException(messages.maskedLabelFormatterRequired());	
+		throw new InterfaceConfigException(WidgetMsgFactory.getMessages().maskedLabelFormatterRequired());	
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package br.com.sysmap.crux.widgets.client.grid;
 import br.com.sysmap.crux.core.client.datasource.BindableDataSource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
-import br.com.sysmap.crux.widgets.client.WidgetMessages;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
 import com.google.gwt.dom.client.Element;
 
@@ -11,9 +11,9 @@ public class DataRow extends Row
 {
 	private EditableDataSourceRecord dataSourceRecord;
 	
-	protected DataRow(int index, Element elem, AbstractGrid<?> grid, boolean hasSelectionCell, WidgetMessages messages)
+	protected DataRow(int index, Element elem, AbstractGrid<?> grid, boolean hasSelectionCell)
 	{
-		super(index, elem, grid, hasSelectionCell, messages);
+		super(index, elem, grid, hasSelectionCell);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class DataRow extends Row
 		}
 		else
 		{
-			throw new GridException(getMessages().getBindedObjectNotSupported());
+			throw new GridException(WidgetMsgFactory.getMessages().getBindedObjectNotSupported());
 		}
 	}
 	
