@@ -18,6 +18,10 @@ package br.com.sysmap.crux.widgets.client.maskedtextbox;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.formatter.MaskedFormatter;
+import br.com.sysmap.crux.widgets.client.event.paste.HasPasteHandlers;
+import br.com.sysmap.crux.widgets.client.event.paste.PasteEvent;
+import br.com.sysmap.crux.widgets.client.event.paste.PasteHandler;
+import br.com.sysmap.crux.widgets.client.event.paste.PasteEventSourceRegisterFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -56,7 +60,7 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class MaskedTextBox extends Composite implements HasFormatter, HasDirection, HasChangeHandlers, HasValueChangeHandlers<String>,
 														HasClickHandlers, HasAllFocusHandlers, HasAllKeyHandlers,
-														HasAllMouseHandlers, HasName
+														HasAllMouseHandlers, HasName, HasPasteHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-MaskedTextBox" ;
 
@@ -102,8 +106,9 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 		this.textBox.setStyleName(DEFAULT_STYLE_NAME);
 		setFormatter(formatter);
 		initWidget(this.textBox);
+		PasteEventSourceRegisterFactory.getRegister().registerPasteEventSource(this, this.textBox.getElement());
 	}
-
+	
 	/**
 	 * 
 	 * @return
@@ -343,5 +348,10 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 	public void setAccessKey(char key)
 	{
 		textBox.setAccessKey(key);
+	}
+
+	public HandlerRegistration addPasteHandler(PasteHandler handler)
+	{
+		return addHandler(handler, PasteEvent.getType());
 	}
 }

@@ -20,8 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
+import br.com.sysmap.crux.widgets.client.event.paste.PasteEvent;
+import br.com.sysmap.crux.widgets.client.event.paste.PasteHandler;
+
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -41,7 +42,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
  */
-public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, BlurHandler
+public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, BlurHandler, PasteHandler
 {
 	private static Map<Character, String> definitions = new HashMap<Character, String>();
 	static
@@ -65,7 +66,8 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 	private HandlerRegistration keyPressHandlerRegistration;
 	private HandlerRegistration focusHandlerRegistration;
 	private HandlerRegistration blurHandlerRegistration;
-	private PasteEventHandler pasteEventHandler = GWT.create(PasteEventHandlerImpl.class);
+	private HandlerRegistration pasteHandlerRegistration;
+	private MaskedTextBox maskedTextBox;
 	
 	/**
 	 * Constructor
@@ -73,8 +75,9 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 	 * @param mask
 	 * @param placeHolder
 	 */
-	public MaskedInput(TextBox textBox, String mask, char placeHolder)
+	public MaskedInput(MaskedTextBox maskedTextBox, String mask, char placeHolder)
 	{
+		this.maskedTextBox = maskedTextBox;
 		this.placeHolder = placeHolder;
 		this.partialPosition = mask.length();;
 		this.buffer = new char[mask.length()];
@@ -99,12 +102,13 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 			}
 		}
 
-		this.textBox = textBox;
+		this.textBox = maskedTextBox.textBox;
 		keyDownHandlerRegistration = this.textBox.addKeyDownHandler(this);
 		keyPressHandlerRegistration = this.textBox.addKeyPressHandler(this);
 		focusHandlerRegistration = this.textBox.addFocusHandler(this);
 		blurHandlerRegistration = this.textBox.addBlurHandler(this);
-		pasteEventHandler.addNativeHandlerForPaste(this, this.textBox.getElement());
+		pasteHandlerRegistration = this.maskedTextBox.addPasteHandler(this);
+		
 		
 		this.checkVal(false);
 	}
@@ -123,8 +127,9 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 		keyPressHandlerRegistration.removeHandler();
 		focusHandlerRegistration.removeHandler();
 		blurHandlerRegistration.removeHandler();
-		pasteEventHandler.removeNativeHandlerForPaste(this, this.textBox.getElement());
+		pasteHandlerRegistration.removeHandler();
 		this.textBox = null;
+		this.maskedTextBox = null;
 	}
 	
 	/**
@@ -163,6 +168,11 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 				event.preventDefault();
 			}
 		}
+	}
+
+	public void onPaste(PasteEvent event)
+	{
+		checkVal(true);
 	}
 
 	/**
@@ -413,52 +423,5 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 			}
 		}
 		return ((partialPosition != 0) ? i : firstNonMaskPos);
-	}
-	
-	/**
-	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
-	 *
-	 */
-	public static interface PasteEventHandler 
-	{
-		void addNativeHandlerForPaste(MaskedInput handler, Element element);
-		void removeNativeHandlerForPaste(MaskedInput handler, Element element);
-	};
-	
-	/**
-	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
-	 *
-	 */
-	public static class PasteEventHandlerImpl implements PasteEventHandler
-	{
-		public native void addNativeHandlerForPaste(MaskedInput handler, Element element)/*-{
-			element.onpaste = function(){
-				setTimeout(function(){handler.@br.com.sysmap.crux.widgets.client.maskedtextbox.MaskedInput::checkVal(Z)(true);},10);
-			};
-		}-*/;
-
-		public native void removeNativeHandlerForPaste(MaskedInput handler, Element element)/*-{
-			element.onpaste = null;
-		}-*/;
-	}
-
-	/**
-	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
-	 *
-	 */
-	public static class PasteEventHandlerOperaImpl implements PasteEventHandler
-	{
-		public native void addNativeHandlerForPaste(MaskedInput handler, Element element)/*-{
-			element.oninput = function(){
-				setTimeout(function(){handler.@br.com.sysmap.crux.widgets.client.maskedtextbox.MaskedInput::checkVal(Z)(true);},10);
-			};
-		}-*/;
-
-		public native void removeNativeHandlerForPaste(MaskedInput handler, Element element)/*-{
-			element.oninput = null;
-		}-*/;
 	}
 }

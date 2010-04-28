@@ -88,4 +88,7 @@ public interface WidgetMessages extends Messages
 	@DefaultMessage("[crux-widgets 019] - A started timer can not be modified.")
 	String startedTimerCannotBeModified();
 
+	@DefaultMessage("[crux-widgets 020] - TextArea widget only accepts maxLength greater or equals zero.")
+	String textAreaInvalidMaxLengthParameter();
+
 }
