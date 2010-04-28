@@ -40,6 +40,7 @@ public class MainController {
 	private static final String STREAMING_GRID_TAB = "streamingGrid";
 	private static final String WIDGET_GRID_TAB = "widgetGrid";
 	private static final String GRID_EVENTS_TAB = "gridEvents";
+	private static final String TEXT_AREA_TAB = "textArea";
 	
 	@Create
 	protected MainScreen screen;
@@ -194,6 +195,11 @@ public class MainController {
 		screen.getTabs().openTab(GRID_EVENTS_TAB, "Grid Events", GRID_EVENTS_TAB + HTML, true, false);
 	}
 	
+	@Expose
+	public void onClickTextAreaItem(){
+		screen.getTabs().openTab(TEXT_AREA_TAB, "Text Area", TEXT_AREA_TAB + HTML, true, false);
+	}
+		
 	protected static interface MainScreen extends ScreenWrapper {
 		DynaTabs getTabs();
 	}

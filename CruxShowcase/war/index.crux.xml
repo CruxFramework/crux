@@ -64,9 +64,10 @@
 								<a:item id="stackMenuItem" label="Stack Menu" onClick="mainController.onClickStackMenuItem" />
 								<a:item id="filterMenuItem" label="Filter" onClick="mainController.onClickFilterItem" />
 							</a:item>
-							<a:item id="textItem" label="Masked Text">
+							<a:item id="textItem" label="Text Widgets">
 								<a:item id="maskedTextBoxItem" label="Masked Text Box" onClick="mainController.onClickMaskedTextBoxItem" />
 								<a:item id="maskedLabelItem" label="Masked Label" onClick="mainController.onClickMaskedLabelItem" />
+								<a:item id="textAreaItem" label="Text Area" onClick="mainController.onClickTextAreaItem"/>
 							</a:item>
 							<a:item id="tabsItem" label="Tabs">
 								<a:item id="dynaTabsItem" label="Dyna Tabs" onClick="mainController.onClickDynaTabsItem" />
