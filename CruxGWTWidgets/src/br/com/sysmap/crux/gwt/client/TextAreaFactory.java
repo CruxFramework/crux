@@ -38,8 +38,7 @@ import com.google.gwt.user.client.ui.TextArea;
 @DeclarativeFactory(id="textArea", library="gwt")
 public class TextAreaFactory extends TextBoxBaseFactory<TextArea> 
        implements HasDirectionFactory<TextArea>
-{
-	
+{	
 	@Override
 	@TagAttributes({
 		@TagAttribute(value="characterWidth", type=Integer.class),
