@@ -70,7 +70,7 @@ public class WizardPageFactory extends WidgetFactory<WizardPage>
 	{
 		@Override
 		@TagChildren({
-			@TagChild(WizardCommandsProcessor.class),
+			@TagChild(WizardCommandsProcessor.class)
 		})
 		public void processChildren(WidgetChildProcessorContext<WizardPage> context) throws InterfaceConfigException {}
 	}

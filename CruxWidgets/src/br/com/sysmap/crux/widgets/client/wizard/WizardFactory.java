@@ -141,7 +141,7 @@ public class WizardFactory extends WidgetFactory<Wizard>
 		})
 		@TagAttributesDeclaration({
 			@TagAttributeDeclaration(value="id", required=true),
-			@TagAttributeDeclaration(value="label", required=true, supportsI18N=true),
+			@TagAttributeDeclaration(value="label", required=true, supportsI18N=true)
 		})
 		@TagEventsDeclaration({
 			@TagEventDeclaration("onEnter"),
@@ -161,7 +161,7 @@ public class WizardFactory extends WidgetFactory<Wizard>
 	{
 		@Override
 		@TagChildren({
-			@TagChild(WizardCommandsProcessor.class),
+			@TagChild(WizardCommandsProcessor.class)
 		})
 		public void processChildren(WidgetChildProcessorContext<Wizard> context) throws InterfaceConfigException {}
 	}
