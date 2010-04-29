@@ -59,9 +59,9 @@ public class WizardControlBarAccessor
 	/**
 	 * 
 	 */
-	public void previous()
+	public void back()
     {
-	    proxy.previous();
+	    proxy.back();
     }
 	
 	/**
@@ -91,9 +91,9 @@ public class WizardControlBarAccessor
 	/**
 	 * @return
 	 */
-	public String getPreviousLabel()
+	public String getBackLabel()
     {
-    	return proxy.getPreviousLabel();
+    	return proxy.getBackLabel();
     }
 
 	/**
@@ -121,11 +121,11 @@ public class WizardControlBarAccessor
     }
 
 	/**
-	 * @param previousLabel
+	 * @param backLabel
 	 */
-	public void setPreviousLabel(String previousLabel)
+	public void setBackLabel(String backLabel)
 	{
-		proxy.setPreviousLabel(previousLabel);
+		proxy.setBackLabel(backLabel);
 	}
 	
 	/**
@@ -181,4 +181,9 @@ public class WizardControlBarAccessor
     {
 		proxy.setButtonsStyle(buttonStyle);
     }
+	
+	public WizardCommandAccessor getCommand(String commandId)
+	{
+		return proxy.getCommand(commandId);
+	}
 }

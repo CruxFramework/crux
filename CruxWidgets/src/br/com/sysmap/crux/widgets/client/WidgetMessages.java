@@ -70,10 +70,10 @@ public interface WidgetMessages extends Messages
 	@DefaultMessage("[crux-widgets 017] - Grid {0} has no column.")
 	String gridDoesNotHaveColumns(String gridId);
 
-	@DefaultMessage("Previous")
-	String wizardPreviousCommand();	
+	@DefaultMessage("< Back")
+	String wizardBackCommand();	
 
-	@DefaultMessage("Next")
+	@DefaultMessage("Next >")
 	String wizardNextCommand();	
 
 	@DefaultMessage("Cancel")

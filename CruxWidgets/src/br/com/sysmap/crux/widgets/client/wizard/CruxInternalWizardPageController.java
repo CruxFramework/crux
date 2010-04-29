@@ -27,6 +27,7 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.dynatabs.DynaTabsControllerInvoker;
 import br.com.sysmap.crux.widgets.client.js.JSWindow;
+import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
@@ -50,11 +51,12 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	@ExposeOutOfModule
 	public boolean onLeave(InvokeControllerEvent event)
 	{
-		String wizardId = (String) event.getParameter(0);
 		WizardPage wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
 		if (wizardPage != null)
 		{
-			LeaveEvent leaveEvent = LeaveEvent.fire(wizardPage, new PageWizardProxy(wizardId));
+			String wizardId = (String) event.getParameter(0);
+			String nextStep = (String)event.getParameter(1);
+			LeaveEvent leaveEvent = LeaveEvent.fire(wizardPage, new PageWizardProxy(wizardId), nextStep);
 			return !leaveEvent.isCanceled();
 		}
 		
@@ -172,7 +174,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 * @return
 	 */
 	@ExposeOutOfModule
-	public boolean previous(InvokeControllerEvent event)
+	public boolean back(InvokeControllerEvent event)
 	{
 		String wizardId = (String) event.getParameter(0);
 	    Wizard wizard = Screen.get(wizardId, Wizard.class);
@@ -294,13 +296,13 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 * @return
 	 */
 	@ExposeOutOfModule
-	public String getPreviousLabel(InvokeControllerEvent event)
+	public String getBackLabel(InvokeControllerEvent event)
 	{
 		String wizardId = (String) event.getParameter(0);
 		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
-			return controlBar.getPreviousLabel();
+			return controlBar.getBackLabel();
 		}
 		return null;
 	}
@@ -438,14 +440,14 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 * @return
 	 */
 	@ExposeOutOfModule
-	public void setPreviousLabel(InvokeControllerEvent event)
+	public void setBackLabel(InvokeControllerEvent event)
 	{
 		String wizardId = (String) event.getParameter(0);
-		String previousLabel = (String) event.getParameter(1);
+		String backLabel = (String) event.getParameter(1);
 		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
-			controlBar.setPreviousLabel(previousLabel);
+			controlBar.setBackLabel(backLabel);
 		}
 	}
 
@@ -466,6 +468,125 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	}
 
 	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public String getCommandId(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			return command.getId();
+		}
+		return null;
+	}
+	
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public String getCommandLabel(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			return command.getLabel();
+		}
+		return null;
+	}
+
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public int getCommandOrder(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			return command.getOrder();
+		}
+		return 0;
+	}
+
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public boolean isCommandEnabled(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			return command.isEnabled();
+		}
+		return false;
+	}
+
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public void setCommandEnabled(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		Boolean enabled = event.getParameter(2, Boolean.class);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			 command.setEnabled(enabled);
+		}
+	}
+
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public void setCommandLabel(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		String label = (String) event.getParameter(2);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			 command.setLabel(label);
+		}
+	}
+
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public void setCommandOrder(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		Integer order = (Integer) event.getParameter(2);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			 command.setOrder(order);
+		}
+	}
+
+	/**
 	 * @see br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker#invoke(java.lang.String, java.lang.Object, boolean, br.com.sysmap.crux.core.client.event.EventProcessor)
 	 */
 	public void invoke(String method, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception
@@ -480,10 +601,10 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 				hasReturn = true;
 				returnValue = selectStep((InvokeControllerEvent)sourceEvent);
 			}
-			else if("previous".equals(method) && fromOutOfModule)
+			else if("back".equals(method) && fromOutOfModule)
 			{
 				hasReturn = true;
-				returnValue = previous((InvokeControllerEvent)sourceEvent);
+				returnValue = back((InvokeControllerEvent)sourceEvent);
 			}
 			else if("next".equals(method) && fromOutOfModule)
 			{
@@ -557,10 +678,10 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 				hasReturn = true;
 				returnValue = getNextLabel((InvokeControllerEvent)sourceEvent);
 			}
-			else if("getPreviousLabel".equals(method) && fromOutOfModule)
+			else if("getBackLabel".equals(method) && fromOutOfModule)
 			{
 				hasReturn = true;
-				returnValue = getPreviousLabel((InvokeControllerEvent)sourceEvent);
+				returnValue = getBackLabel((InvokeControllerEvent)sourceEvent);
 			}
 			else if("getSpacing".equals(method) && fromOutOfModule)
 			{
@@ -596,13 +717,45 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 			{
 				setNextLabel((InvokeControllerEvent)sourceEvent);
 			}
-			else if("setPreviousLabel".equals(method) && fromOutOfModule)
+			else if("setBackLabel".equals(method) && fromOutOfModule)
 			{
-				setPreviousLabel((InvokeControllerEvent)sourceEvent);
+				setBackLabel((InvokeControllerEvent)sourceEvent);
 			}
 			else if("setSpacing".equals(method) && fromOutOfModule)
 			{
 				setSpacing((InvokeControllerEvent)sourceEvent);
+			}
+			else if("setCommandEnabled".equals(method) && fromOutOfModule)
+			{
+				setCommandEnabled((InvokeControllerEvent)sourceEvent);
+			}
+			else if("setCommandLabel".equals(method) && fromOutOfModule)
+			{
+				setCommandLabel((InvokeControllerEvent)sourceEvent);
+			}
+			else if("setCommandOrder".equals(method) && fromOutOfModule)
+			{
+				setCommandOrder((InvokeControllerEvent)sourceEvent);
+			}
+			else if("isCommandEnabled".equals(method) && fromOutOfModule)
+			{
+				hasReturn = true;
+				returnValue = isCommandEnabled((InvokeControllerEvent)sourceEvent);
+			}
+			else if("getCommandOrder".equals(method) && fromOutOfModule)
+			{
+				hasReturn = true;
+				returnValue = getCommandOrder((InvokeControllerEvent)sourceEvent);
+			}
+			else if("getCommandLabel".equals(method) && fromOutOfModule)
+			{
+				hasReturn = true;
+				returnValue = getCommandLabel((InvokeControllerEvent)sourceEvent);
+			}
+			else if("getCommandId".equals(method) && fromOutOfModule)
+			{
+				hasReturn = true;
+				returnValue = getCommandId((InvokeControllerEvent)sourceEvent);
 			}
 		}
 		catch (Throwable e)

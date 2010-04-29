@@ -76,11 +76,11 @@ class PageWizardProxy implements WizardProxy
     }
 
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#previous()
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#back()
 	 */
-	public boolean previous()
+	public boolean back()
     {
-	    return invokeSimpleCommand("previous");
+	    return invokeSimpleCommand("back");
     }
 
 	/**
@@ -201,9 +201,9 @@ class PageWizardProxy implements WizardProxy
 	        return PageWizardProxy.invokeSimpleCommand("getNextLabel", wizardId, String.class);
         }
 
-		public String getPreviousLabel()
+		public String getBackLabel()
         {
-	        return PageWizardProxy.invokeSimpleCommand("getPreviousLabel", wizardId, String.class);
+	        return PageWizardProxy.invokeSimpleCommand("getBackLabel", wizardId, String.class);
         }
 
 		public int getSpacing()
@@ -221,9 +221,9 @@ class PageWizardProxy implements WizardProxy
 		    invokeSimpleCommand("next");
         }
 
-		public void previous()
+		public void back()
         {
-		    invokeSimpleCommand("previous");
+		    invokeSimpleCommand("back");
         }
 
 		public void setButtonsHeight(String buttonHeight)
@@ -256,9 +256,9 @@ class PageWizardProxy implements WizardProxy
 	        PageWizardProxy.invokeSimpleCommand("setNextLabel", new Object[]{wizardId,nextLabel}, Object.class);
         }
 
-		public void setPreviousLabel(String previousLabel)
+		public void setBackLabel(String backLabel)
         {
-	        PageWizardProxy.invokeSimpleCommand("setPreviousLabel", new Object[]{wizardId,previousLabel}, Object.class);
+	        PageWizardProxy.invokeSimpleCommand("setBackLabel", new Object[]{wizardId,backLabel}, Object.class);
         }
 
 		public void setSpacing(int spacing)
@@ -270,5 +270,61 @@ class PageWizardProxy implements WizardProxy
 	    {
 			PageWizardProxy.invokeSimpleCommand(cmd, wizardId, Object.class);
 	    }
+
+		public WizardCommandAccessor getCommand(String commandId)
+        {
+	        return new WizardCommandAccessor(new WizardCommandPageProxy(wizardId, commandId));
+        }
+	}
+
+	/**
+	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 *
+	 */
+	static class WizardCommandPageProxy implements WizardCommandProxy
+	{
+		private final String wizardId;
+		private final String commandId;
+
+		public WizardCommandPageProxy(String wizardId, String commandId)
+        {
+			this.wizardId = wizardId;
+			this.commandId = commandId;
+        }
+
+		public String getId()
+        {
+	        return PageWizardProxy.invokeSimpleCommand("getCommandId", new Object[]{wizardId,commandId}, String.class);
+        }
+
+		public String getLabel()
+        {
+	        return PageWizardProxy.invokeSimpleCommand("getCommandLabel", new Object[]{wizardId,commandId}, String.class);
+        }
+
+		public int getOrder()
+        {
+	        return PageWizardProxy.invokeSimpleCommand("getCommandOrder", new Object[]{wizardId,commandId}, Integer.class);
+        }
+
+		public boolean isEnabled()
+        {
+	        return PageWizardProxy.invokeSimpleCommand("isCommandEnabled", new Object[]{wizardId,commandId}, Boolean.class);
+        }
+
+		public void setEnabled(boolean enabled)
+        {
+	        PageWizardProxy.invokeSimpleCommand("setCommandEnabled", new Object[]{wizardId,commandId, enabled}, Object.class);
+        }
+
+		public void setLabel(String label)
+        {
+	        PageWizardProxy.invokeSimpleCommand("setCommandLabel", new Object[]{wizardId,commandId, label}, Object.class);
+        }
+
+		public void setOrder(int order)
+        {
+	        PageWizardProxy.invokeSimpleCommand("setCommandOrder", new Object[]{wizardId,commandId, order}, Object.class);
+        }
 	}
 }

@@ -39,7 +39,9 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyWi
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.widgets.client.event.CancelEvtBind;
 import br.com.sysmap.crux.widgets.client.event.FinishEvtBind;
+import br.com.sysmap.crux.widgets.client.wizard.Wizard.ControlHorizontalAlign;
 import br.com.sysmap.crux.widgets.client.wizard.Wizard.ControlPosition;
+import br.com.sysmap.crux.widgets.client.wizard.Wizard.ControlVerticalAlign;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,7 +56,7 @@ public class WizardFactory extends WidgetFactory<Wizard>
 	@Override
     public Wizard instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
     {
-	    return new Wizard();
+	    return new Wizard(widgetId);
     }
 
 	@Override
@@ -262,19 +264,24 @@ public class WizardFactory extends WidgetFactory<Wizard>
 		@Override
 		@TagAttributesDeclaration({
 			@TagAttributeDeclaration(value="position", type=ControlPosition.class, defaultValue="south"),
-			@TagAttributeDeclaration(value="vertical", type=Boolean.class, defaultValue="false"),
+			@TagAttributeDeclaration(value="verticalAlignment", type=ControlVerticalAlign.class, defaultValue="top"),
+			@TagAttributeDeclaration(value="horizontalAlignment", type=ControlHorizontalAlign.class, defaultValue="right"),
+			@TagAttributeDeclaration(value="position", type=ControlPosition.class, defaultValue="south"),
 			@TagAttributeDeclaration(value="spacing", type=Integer.class),
 			@TagAttributeDeclaration(value="buttonsWidth", type=String.class),
 			@TagAttributeDeclaration(value="buttonsHeight", type=String.class),
 			@TagAttributeDeclaration(value="buttonsStyle", type=String.class),
-			@TagAttributeDeclaration(value="previousLabel", type=String.class, supportsI18N=true),
+			@TagAttributeDeclaration(value="backLabel", type=String.class, supportsI18N=true),
 			@TagAttributeDeclaration(value="nextLabel", type=String.class, supportsI18N=true),
 			@TagAttributeDeclaration(value="cancelLabel", type=String.class, supportsI18N=true),
 			@TagAttributeDeclaration(value="finishLabel", type=String.class, supportsI18N=true),
-			@TagAttributeDeclaration(value="previousOrder", type=Integer.class, defaultValue="0"),
+			@TagAttributeDeclaration(value="backOrder", type=Integer.class, defaultValue="0"),
 			@TagAttributeDeclaration(value="nextOrder", type=Integer.class, defaultValue="1"),
 			@TagAttributeDeclaration(value="cancelOrder", type=Integer.class, defaultValue="2"),
 			@TagAttributeDeclaration(value="finishOrder", type=Integer.class, defaultValue="3")
+		})
+		@TagChildren({
+			@TagChild(ControlBarCommandsProcessor.class)
 		})
 		public void processChildren(WidgetChildProcessorContext<Wizard> context) throws InterfaceConfigException 
 		{
@@ -285,13 +292,27 @@ public class WizardFactory extends WidgetFactory<Wizard>
 				position = ControlPosition.valueOf(positionAttr);
 			}
 			
-			String verticalAttr = context.getChildElement().getAttribute("_vertical");
-			boolean vertical = false;
-			if (!StringUtils.isEmpty(verticalAttr))
+			boolean vertical = position.equals(ControlPosition.east) || position.equals(ControlPosition.west);
+			if (vertical)
 			{
-				vertical = Boolean.parseBoolean(verticalAttr);
+				ControlVerticalAlign verticalAlign = ControlVerticalAlign.top;
+				String verticalAlignmentAttr = context.getChildElement().getAttribute("_verticalAlignment");
+				if (!StringUtils.isEmpty(verticalAlignmentAttr))
+				{
+					verticalAlign = ControlVerticalAlign.valueOf(verticalAlignmentAttr);
+				}
+				context.getRootWidget().setControlBar(new WizardControlBar(vertical), position, verticalAlign);
 			}
-			context.getRootWidget().setControlBar(new WizardControlBar(vertical), position);
+			else
+			{
+				ControlHorizontalAlign horizontalAlign = ControlHorizontalAlign.right;
+				String horizontalAlignmentAttr = context.getChildElement().getAttribute("_horizontalAlignment");
+				if (!StringUtils.isEmpty(horizontalAlignmentAttr))
+				{
+					horizontalAlign = ControlHorizontalAlign.valueOf(horizontalAlignmentAttr);
+				}
+				context.getRootWidget().setControlBar(new WizardControlBar(vertical), position, horizontalAlign);
+			}
 			WizardControlBar controlBar = context.getRootWidget().getControlBar();
 			
 			processControlBarAttributes(context, controlBar);
@@ -324,10 +345,10 @@ public class WizardFactory extends WidgetFactory<Wizard>
 				controlBar.setButtonsStyle(buttonsStyle);
 			}
 
-			String previousLabel = context.getChildElement().getAttribute("_previousLabel");
-			if (!StringUtils.isEmpty(previousLabel))
+			String backLabel = context.getChildElement().getAttribute("_backLabel");
+			if (!StringUtils.isEmpty(backLabel))
 			{
-				controlBar.setPreviousLabel(ScreenFactory.getInstance().getDeclaredMessage(previousLabel));
+				controlBar.setBackLabel(ScreenFactory.getInstance().getDeclaredMessage(backLabel));
 			}
 
 			String nextLabel = context.getChildElement().getAttribute("_nextLabel");
@@ -348,10 +369,10 @@ public class WizardFactory extends WidgetFactory<Wizard>
 				controlBar.setFinishLabel(ScreenFactory.getInstance().getDeclaredMessage(finishLabel));
 			}
 
-			String previousOrder = context.getChildElement().getAttribute("_previousOrder");
-			if (!StringUtils.isEmpty(previousOrder))
+			String backOrder = context.getChildElement().getAttribute("_backOrder");
+			if (!StringUtils.isEmpty(backOrder))
 			{
-				controlBar.setPreviousOrder(Integer.parseInt(previousOrder));
+				controlBar.setBackOrder(Integer.parseInt(backOrder));
 			}
 
 			String nextOrder = context.getChildElement().getAttribute("_nextOrder");
@@ -373,5 +394,44 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			}
         }
 	}
-
+	
+	@TagChildAttributes(tagName="commands", minOccurs="0")
+	public static class ControlBarCommandsProcessor extends WidgetChildProcessor<Wizard>
+	{
+		@Override
+		@TagChildren({
+			@TagChild(ControlBarCommandProcessor.class)
+		})
+		public void processChildren(WidgetChildProcessorContext<Wizard> context) throws InterfaceConfigException {}
+	}
+	
+	@TagChildAttributes(tagName="command", maxOccurs="unbounded")
+	public static class ControlBarCommandProcessor extends WidgetChildProcessor<Wizard>
+	{
+		@Override
+		@TagAttributesDeclaration({
+			@TagAttributeDeclaration(value="id", required=true),
+			@TagAttributeDeclaration(value="label", required=true, supportsI18N=true),
+			@TagAttributeDeclaration(value="order", required=true, type=Integer.class),
+			@TagAttributeDeclaration(value="onCommand", required=true)
+		})
+		public void processChildren(WidgetChildProcessorContext<Wizard> context) throws InterfaceConfigException 
+		{
+			String id = context.getChildElement().getAttribute("id");
+			String label = ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getAttribute("_label"));
+			int order = Integer.parseInt(context.getChildElement().getAttribute("_order"));
+			
+			final Event commandEvent = EvtBind.getWidgetEvent(context.getChildElement(), "onCommand");
+			
+			WizardCommandHandler handler = new WizardCommandHandler()
+			{
+				public void onCommand(WizardCommandEvent event)
+				{
+					Events.callEvent(commandEvent, event);
+				}
+			};
+			
+			context.getRootWidget().getControlBar().addCommand(id, label, handler, order);
+		}
+	}
 }

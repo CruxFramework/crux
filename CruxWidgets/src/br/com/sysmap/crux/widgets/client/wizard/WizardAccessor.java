@@ -50,9 +50,9 @@ public class WizardAccessor
 	/**
 	 * @return
 	 */
-	public boolean previous()
+	public boolean back()
 	{
-		return proxy.previous();
+		return proxy.back();
 	}
 
 	/**

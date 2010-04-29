@@ -26,13 +26,15 @@ public class LeaveEvent extends StepEvent<LeaveHandler>
 	private static Type<LeaveHandler> TYPE = new Type<LeaveHandler>();
 
 	private boolean canceled;
+	private final String nextStep;
 
 	/**
 	 * 
 	 */
-	protected LeaveEvent (WizardProxy wizardProxy)
+	protected LeaveEvent (WizardProxy wizardProxy, String nextStep)
 	{
 		super(wizardProxy);
+		this.nextStep = nextStep;
 	}
 
 	/**
@@ -48,9 +50,9 @@ public class LeaveEvent extends StepEvent<LeaveHandler>
 	 * @param source
 	 * @return
 	 */
-	public static LeaveEvent fire(HasLeaveHandlers source, WizardProxy proxy)
+	public static LeaveEvent fire(HasLeaveHandlers source, WizardProxy proxy, String nextStep)
 	{
-		LeaveEvent event = new LeaveEvent(proxy);
+		LeaveEvent event = new LeaveEvent(proxy, nextStep);
 		source.fireEvent(event);
 		return event;
 	}
@@ -82,4 +84,11 @@ public class LeaveEvent extends StepEvent<LeaveHandler>
 	{
 		canceled = true;
 	}
+
+	public String getNextStep()
+    {
+    	return nextStep;
+    }
+	
+	
 }

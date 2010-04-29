@@ -41,6 +41,8 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
@@ -54,18 +56,22 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	private DockPanel dockPanel;
 	private DeckPanel stepsPanel;
 	private int currentStep = -1;
+
+	private boolean isChangingStep = false;
 	
 	private WizardControlBar controlBar;
 	private WizardNavigationBar navigationBar;
-	
+
 	private List<WizardStepListener> stepListeners = new ArrayList<WizardStepListener>(); 
 	
 	public static enum ControlPosition{north, south, east, west}
+	public static enum ControlVerticalAlign{top, middle, bottom}
+	public static enum ControlHorizontalAlign{left, center, right}
 	
 	/**
 	 * 
 	 */
-	public Wizard()
+	public Wizard(String id)
     {
 		this.dockPanel = new DockPanel();
 		this.dockPanel.setStyleName(DEFAULT_STYLE_NAME);
@@ -77,6 +83,8 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		this.dockPanel.add(stepsPanel, DockPanel.CENTER);
 		this.dockPanel.setCellHeight(this.stepsPanel, "100%");
 		this.dockPanel.setCellWidth(this.stepsPanel, "100%");
+		
+		this.dockPanel.getElement().setId(id);
 		
 		initWidget(dockPanel);
 		Events.getRegisteredClientEventHandlers().registerEventHandler("__wizard", new CruxInternalWizardPageController());
@@ -181,7 +189,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @return
 	 */
-	public boolean previous()
+	public boolean back()
 	{
 		return selectStep(currentStep-1);
 	}
@@ -266,30 +274,36 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @param controlBar
 	 * @param position
+	 * @param verticalAlign
 	 */
-	public void setControlBar(WizardControlBar controlBar, ControlPosition position)
+	public void setControlBar(WizardControlBar controlBar, ControlPosition position, ControlVerticalAlign verticalAlign)
     {
-    	if (this.controlBar != null)
-    	{
-    		dockPanel.remove(this.controlBar);
-    		removeStepListener(this.controlBar);
-    	}
-		this.controlBar = controlBar;
+    	setControlBar(controlBar);
 		if (this.controlBar != null)
 		{
 			this.controlBar.setWizard(this);
 			addStepListener(this.controlBar);
 			dockPanel.add(this.controlBar, getDockPosition(position));
-			if (this.controlBar.isVertical())
-			{
-				dockPanel.setCellWidth(this.controlBar, "0");
-				dockPanel.setCellVerticalAlignment(this.controlBar, HasVerticalAlignment.ALIGN_MIDDLE);
-			}
-			else
-			{
-				dockPanel.setCellHeight(this.controlBar, "0");
-				dockPanel.setCellHorizontalAlignment(this.controlBar, HasHorizontalAlignment.ALIGN_CENTER);
-			}
+			dockPanel.setCellWidth(this.controlBar, "0");
+			dockPanel.setCellVerticalAlignment(this.controlBar, getVerticalAlign(verticalAlign));
+		}
+    }
+
+	/**
+	 * @param controlBar
+	 * @param position
+	 * @param horizontalAlign
+	 */
+	public void setControlBar(WizardControlBar controlBar, ControlPosition position, ControlHorizontalAlign horizontalAlign)
+    {
+    	setControlBar(controlBar);
+		if (this.controlBar != null)
+		{
+			this.controlBar.setWizard(this);
+			addStepListener(this.controlBar);
+			dockPanel.add(this.controlBar, getDockPosition(position));
+			dockPanel.setCellHeight(this.controlBar, "0");
+			dockPanel.setCellHorizontalAlignment(this.controlBar, getHorizontalAlign(horizontalAlign));
 		}
     }
 
@@ -437,13 +451,20 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		boolean ret = false;
 		if (currentStep != step && step >= 0 && step < steps.size())
 		{
-			if (ignoreLeaveEvent || leavePreviousStep())			
+			isChangingStep = true;
+
+			String nextStep = (step < getStepCount())?getStep(step).getId():null;
+			if (ignoreLeaveEvent || leavePreviousStep(nextStep))			
 			{
-				final String preivousStep = (currentStep >=0)?getStep(currentStep).getId():null;
+				String preivousStep = (currentStep >=0)?getStep(currentStep).getId():null;
 				currentStep = step;
 				stepsPanel.showWidget(currentStep);
 				changeStep(preivousStep);
 				ret = true;
+			}
+			else
+			{
+				isChangingStep = false;
 			}
 		}
 		return ret;
@@ -489,6 +510,14 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * @return
+	 */
+	boolean isChangingStep()
+	{
+		return this.isChangingStep;
 	}
 	
 	/**
@@ -591,12 +620,14 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
     		HasEnterHandlers source =(HasEnterHandlers)entryStep.getWidget();
     		EnterEvent.fire(source, new WidgetWizardProxy(this), previousStep);
     	}
+		isChangingStep = false;
     }
 
 	/**
+	 * @param nextStep 
 	 * @return
 	 */
-	private boolean leavePreviousStep()
+	private boolean leavePreviousStep(String nextStep)
     {
 		boolean leave = true;
 	    if (currentStep >= 0)
@@ -605,13 +636,13 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	    	if (previousStep.getWidget() instanceof PageStep)
 	    	{
 	    		PageStep source =(PageStep)previousStep.getWidget();
-	    		LeaveEvent leaveEvent = source.fireLeaveEvent(getElement().getId());
+	    		LeaveEvent leaveEvent = source.fireLeaveEvent(getElement().getId(), nextStep);
 	    		leave = leaveEvent == null || !leaveEvent.isCanceled();
 	    	}
 	    	else
 	    	{
 	    		HasLeaveHandlers source =(HasLeaveHandlers)previousStep.getWidget();
-	    		LeaveEvent leaveEvent = LeaveEvent.fire(source, new WidgetWizardProxy(this));
+	    		LeaveEvent leaveEvent = LeaveEvent.fire(source, new WidgetWizardProxy(this), nextStep);
 	    		leave = !leaveEvent.isCanceled();
 	    	}
 	    }
@@ -637,4 +668,47 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
         }
 	    return DockPanel.SOUTH;
     }
+	
+	private HorizontalAlignmentConstant getHorizontalAlign(ControlHorizontalAlign horizontalAlign)
+    {
+		switch (horizontalAlign)
+        {
+        	case center:
+        		return HasHorizontalAlignment.ALIGN_CENTER;
+        	case left:
+        		return HasHorizontalAlignment.ALIGN_LEFT;
+        	case right:
+        		return HasHorizontalAlignment.ALIGN_RIGHT;
+        }
+		
+		return HasHorizontalAlignment.ALIGN_RIGHT;
+    }
+
+	private VerticalAlignmentConstant getVerticalAlign(ControlVerticalAlign verticalAlign)
+    {
+		switch (verticalAlign)
+        {
+        	case middle:
+        		return HasVerticalAlignment.ALIGN_MIDDLE;
+        	case top:
+        		return HasVerticalAlignment.ALIGN_TOP;
+        	case bottom:
+        		return HasVerticalAlignment.ALIGN_BOTTOM;
+        }
+		
+		return HasVerticalAlignment.ALIGN_TOP;
+    }
+
+	/**
+	 * @param controlBar
+	 */
+	private void setControlBar(WizardControlBar controlBar)
+    {
+	    if (this.controlBar != null)
+    	{
+    		dockPanel.remove(this.controlBar);
+    		removeStepListener(this.controlBar);
+    	}
+		this.controlBar = controlBar;
+    }	
 }

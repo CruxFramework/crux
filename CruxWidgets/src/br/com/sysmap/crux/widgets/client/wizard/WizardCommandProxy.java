@@ -19,28 +19,13 @@ package br.com.sysmap.crux.widgets.client.wizard;
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-interface WizardControlBarProxy
+public interface WizardCommandProxy
 {
-	void finish();
-	void cancel();
-	void next();
-	void back();
-	void setSpacing(int spacing);
-	int getSpacing();
-	boolean isVertical();
-	String getBackLabel();
-	String getNextLabel();
-	String getCancelLabel();
-	String getFinishLabel();
-	void setBackLabel(String backLabel);
-	void setNextLabel(String nextLabel);
-	void setCancelLabel(String cancelLabel);
-	void setFinishLabel(String finishLabel);
-	String getButtonsWidth();
-	void setButtonsWidth(String buttonWidth);
-	String getButtonsHeight();
-	void setButtonsHeight(String buttonHeight);
-	String getButtonsStyle();
-	void setButtonsStyle(String buttonStyle);
-	WizardCommandAccessor getCommand(String commandId);
+	int getOrder();
+	void setOrder(int order);
+	String getLabel();
+	void setLabel(String label);
+	void setEnabled(boolean enabled);
+	boolean isEnabled();
+	String getId();
 }

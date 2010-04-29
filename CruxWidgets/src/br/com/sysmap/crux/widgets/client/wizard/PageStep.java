@@ -86,13 +86,13 @@ public class PageStep extends LazyPanel
 	/**
 	 * @return
 	 */
-	LeaveEvent fireLeaveEvent(String wizardId)
+	LeaveEvent fireLeaveEvent(String wizardId, String nextStep)
 	{
 		try
         {
-	        LeaveEvent result = new LeaveEvent(null);
+	        LeaveEvent result = new LeaveEvent(null, nextStep);
 	        
-			if (!CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.onLeave", wizardId, Boolean.class))
+			if (!CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.onLeave", new Object[]{wizardId, nextStep}, Boolean.class))
 			{
 		        result.cancel();
 			}

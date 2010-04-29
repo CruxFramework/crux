@@ -43,8 +43,8 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	public static final String DEFAULT_STYLE_NAME = "crux-WizardControlBar";
 
 	public static String CANCEL_COMMAND = "cancel";
-	public static String PREVIOUS_COMMAND = "previous";
-	public static String NEXT_COMMAND = "next";
+	public static String BACK_COMMAND = "< back";
+	public static String NEXT_COMMAND = "next >";
 	public static String FINISH_COMMAND = "finish";
 	
 	private CellPanel cellPanel;
@@ -55,14 +55,15 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	private String buttonWidth;
 	private String buttonHeight;
 	private String buttonStyle;
-	private String previousLabel;
+	private String backLabel;
 	private String nextLabel;
 	private String cancelLabel;
 	private String finishLabel;
-	private int previousOrder = 0;
+	private int backOrder = 0;
 	private int nextOrder = 1;
 	private int cancelOrder = 2;
 	private int finishOrder = 3;
+	
 	
 	/**
 	 * @param wizard
@@ -73,15 +74,11 @@ public class WizardControlBar extends Composite implements WizardStepListener
     }
 	
 	/**
-	 * @param wizard
-	 * @param previousLabel
-	 * @param nextLabel
-	 * @param cancelLabel
-	 * @param finishLabel
+	 * @param vertical
 	 */
 	public WizardControlBar(boolean vertical)
 	{
-		this.previousLabel = WidgetMsgFactory.getMessages().wizardPreviousCommand();
+		this.backLabel = WidgetMsgFactory.getMessages().wizardBackCommand();
 		this.nextLabel = WidgetMsgFactory.getMessages().wizardNextCommand();
 		this.cancelLabel = WidgetMsgFactory.getMessages().wizardCancelCommand();
 		this.finishLabel = WidgetMsgFactory.getMessages().wizardFinishCommand();
@@ -131,10 +128,10 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	/**
 	 * 
 	 */
-	public void previous()
+	public void back()
     {
 		checkWizard();
-	    wizard.previous();
+	    wizard.back();
     }
 
 	/**
@@ -194,12 +191,12 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	public void stepChanged(Step currentStep, Step previousStep)
     {
 		checkWizard();
-	    int currentOrder = wizard.getStepOrder(currentStep.getId());
-		
-    	commands.get(PREVIOUS_COMMAND).setEnabled(currentOrder > 0);
-    	commands.get(NEXT_COMMAND).setEnabled(currentOrder < (wizard.getStepCount()-1));
-    	
-    	updateStepCommands(currentStep);
+		int currentOrder = wizard.getStepOrder(currentStep.getId());
+
+		commands.get(BACK_COMMAND).setEnabled(currentOrder > 0);
+		commands.get(NEXT_COMMAND).setEnabled(currentOrder < (wizard.getStepCount()-1));
+
+		updateStepCommands(currentStep);
     }
 	
 	/**
@@ -251,9 +248,9 @@ public class WizardControlBar extends Composite implements WizardStepListener
     	updateCommandButtons();
     }
 
-	public String getPreviousLabel()
+	public String getBackLabel()
     {
-    	return previousLabel;
+    	return backLabel;
     }
 
 	public String getNextLabel()
@@ -271,9 +268,9 @@ public class WizardControlBar extends Composite implements WizardStepListener
     	return finishLabel;
     }
 	
-	public int getPreviousOrder()
+	public int getBackOrder()
     {
-    	return previousOrder;
+    	return backOrder;
     }
 
 	public int getNextOrder()
@@ -292,15 +289,15 @@ public class WizardControlBar extends Composite implements WizardStepListener
     }
 
 	/**
-	 * @param previousOrder
+	 * @param backOrder
 	 */
-	public void setPreviousOrder(int previousOrder)
+	public void setBackOrder(int backOrder)
     {
-    	this.previousOrder = previousOrder;
-		WizardCommand command = getCommand(PREVIOUS_COMMAND);
+    	this.backOrder = backOrder;
+		WizardCommand command = getCommand(BACK_COMMAND);
 		if (command != null)
 		{
-			command.setOrder(this.previousOrder);
+			command.setOrder(this.backOrder);
 		}
     }
 
@@ -344,15 +341,15 @@ public class WizardControlBar extends Composite implements WizardStepListener
     }
 
 	/**
-	 * @param previousLabel
+	 * @param backLabel
 	 */
-	public void setPreviousLabel(String previousLabel)
+	public void setBackLabel(String backLabel)
 	{
-		this.previousLabel = previousLabel;
-		WizardCommand command = getCommand(PREVIOUS_COMMAND);
+		this.backLabel = backLabel;
+		WizardCommand command = getCommand(BACK_COMMAND);
 		if (command != null)
 		{
-			command.setLabel(this.previousLabel);
+			command.setLabel(this.backLabel);
 		}
 	}
 	
@@ -475,7 +472,7 @@ public class WizardControlBar extends Composite implements WizardStepListener
     }
 
 	/**
-	 * @param previousLabel
+	 * @param backLabel
 	 * @param nextLabel
 	 * @param cancelLabel
 	 * @param finishLabel
@@ -483,25 +480,28 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	private void addDefaultCommands()
     {
 		checkWizard();
-		commands.put(PREVIOUS_COMMAND, new WizardCommand(this, PREVIOUS_COMMAND, this.previousOrder, previousLabel, new WizardCommandHandler()
+		commands.put(BACK_COMMAND, new WizardCommand(this, BACK_COMMAND, this.backOrder, backLabel, new WizardCommandHandler()
 		{
-			
 			public void onCommand(WizardCommandEvent event)
 			{
-				previous();
+				if (!wizard.isChangingStep())
+				{
+					back();
+				}
 			}
 		}, new WidgetWizardProxy(wizard)));
 		commands.put(NEXT_COMMAND, new WizardCommand(this, NEXT_COMMAND, this.nextOrder, nextLabel, new WizardCommandHandler()
 		{
-			
 			public void onCommand(WizardCommandEvent event)
 			{
-				next();
+				if (!wizard.isChangingStep())
+				{
+					next();
+				}
 			}
 		}, new WidgetWizardProxy(wizard)));
 		commands.put(CANCEL_COMMAND, new WizardCommand(this, CANCEL_COMMAND, this.cancelOrder, cancelLabel, new WizardCommandHandler()
 		{
-			
 			public void onCommand(WizardCommandEvent event)
 			{
 				cancel();
@@ -509,7 +509,6 @@ public class WizardControlBar extends Composite implements WizardStepListener
 		}, new WidgetWizardProxy(wizard)));
 		commands.put(FINISH_COMMAND, new WizardCommand(this, FINISH_COMMAND, this.finishOrder, finishLabel, new WizardCommandHandler()
 		{
-			
 			public void onCommand(WizardCommandEvent event)
 			{
 				finish();

@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
+
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
@@ -73,9 +75,9 @@ class WidgetWizardProxy implements WizardProxy
     }
 
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#previous()
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#back()
 	 */
-	public boolean previous()
+	public boolean back()
     {
 	    int currentStep = wizard.getCurrentStepIndex();
 		return wizard.selectStep(currentStep-1, true);
@@ -166,9 +168,9 @@ class WidgetWizardProxy implements WizardProxy
 	        return controlBar.getNextLabel();
         }
 
-		public String getPreviousLabel()
+		public String getBackLabel()
         {
-	        return controlBar.getPreviousLabel();
+	        return controlBar.getBackLabel();
         }
 
 		public int getSpacing()
@@ -186,9 +188,9 @@ class WidgetWizardProxy implements WizardProxy
 	        controlBar.next();
         }
 
-		public void previous()
+		public void back()
         {
-	        controlBar.previous();
+	        controlBar.back();
         }
 
 		public void setButtonsHeight(String buttonHeight)
@@ -221,14 +223,68 @@ class WidgetWizardProxy implements WizardProxy
 	        controlBar.setNextLabel(nextLabel);
         }
 
-		public void setPreviousLabel(String previousLabel)
+		public void setBackLabel(String backLabel)
         {
-	        controlBar.setPreviousLabel(previousLabel);
+	        controlBar.setBackLabel(backLabel);
         }
 
 		public void setSpacing(int spacing)
         {
 	        controlBar.setSpacing(spacing);
+        }
+
+		public WizardCommandAccessor getCommand(String commandId)
+        {
+	        return new WizardCommandAccessor(new WizardCommandWidgetProxy(controlBar.getCommand(commandId)));
+        }
+	}
+	
+	/**
+	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 *
+	 */
+	static class WizardCommandWidgetProxy implements WizardCommandProxy
+	{
+		private final WizardCommand command;
+
+		public WizardCommandWidgetProxy(WizardCommand command)
+        {
+			this.command = command;
+        }
+
+		public String getId()
+        {
+	        return command.getId();
+        }
+
+		public String getLabel()
+        {
+	        return command.getLabel();
+        }
+
+		public int getOrder()
+        {
+	        return command.getOrder();
+        }
+
+		public boolean isEnabled()
+        {
+	        return command.isEnabled();
+        }
+
+		public void setEnabled(boolean enabled)
+        {
+			command.setEnabled(enabled);
+        }
+
+		public void setLabel(String label)
+        {
+			command.setLabel(label);
+        }
+
+		public void setOrder(int order)
+        {
+			command.setOrder(order);
         }
 	}
 }

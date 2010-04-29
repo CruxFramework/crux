@@ -19,28 +19,48 @@ package br.com.sysmap.crux.widgets.client.wizard;
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-interface WizardControlBarProxy
+public class WizardCommandAccessor
 {
-	void finish();
-	void cancel();
-	void next();
-	void back();
-	void setSpacing(int spacing);
-	int getSpacing();
-	boolean isVertical();
-	String getBackLabel();
-	String getNextLabel();
-	String getCancelLabel();
-	String getFinishLabel();
-	void setBackLabel(String backLabel);
-	void setNextLabel(String nextLabel);
-	void setCancelLabel(String cancelLabel);
-	void setFinishLabel(String finishLabel);
-	String getButtonsWidth();
-	void setButtonsWidth(String buttonWidth);
-	String getButtonsHeight();
-	void setButtonsHeight(String buttonHeight);
-	String getButtonsStyle();
-	void setButtonsStyle(String buttonStyle);
-	WizardCommandAccessor getCommand(String commandId);
+	private WizardCommandProxy proxy;
+	
+	WizardCommandAccessor(WizardCommandProxy proxy)
+    {
+		this.proxy = proxy;
+    }
+	
+	public int getOrder()
+    {
+    	return proxy.getOrder();
+    }
+
+	public void setOrder(int order)
+    {
+		proxy.setOrder(order);
+    }
+
+	public String getLabel()
+    {
+    	return proxy.getLabel();
+    }
+
+	public void setLabel(String label)
+    {
+		proxy.setLabel(label);
+    }
+
+	public boolean isEnabled()
+    {
+    	return proxy.isEnabled();
+    }
+
+	public void setEnabled(boolean enabled)
+    {
+		proxy.setEnabled(enabled);
+    }
+
+	public String getId()
+    {
+    	return proxy.getId();
+    }
+	
 }

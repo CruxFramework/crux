@@ -25,7 +25,7 @@ public class EnterEvent extends StepEvent<EnterHandler>
 {
 	private static Type<EnterHandler> TYPE = new Type<EnterHandler>();
 
-	private String previousStep;
+	private final String previousStep;
 	
 	/**
 	 * 
