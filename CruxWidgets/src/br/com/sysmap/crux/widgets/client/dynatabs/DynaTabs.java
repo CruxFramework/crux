@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
-import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
@@ -67,7 +66,7 @@ public class DynaTabs extends Composite
 		if (!this.tabs.containsKey(tabId))
 		{
 			FlapPanel flapPanel = new FlapPanel(this, tabId, label, closeable);
-			tab = new Tab(tabId, label, Screen.appendDebugParameters(url), closeable, tabPanel.getWidgetCount(), flapPanel);
+			tab = new Tab(tabId, label, url, closeable, tabPanel.getWidgetCount(), flapPanel);
 			this.tabs.put(tabId, tab);			
 			tabPanel.add(tab, flapPanel);
 		}

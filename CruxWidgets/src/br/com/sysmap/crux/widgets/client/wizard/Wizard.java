@@ -20,8 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.event.Events;
+import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.widgets.client.event.CancelEvent;
 import br.com.sysmap.crux.widgets.client.event.CancelHandler;
 import br.com.sysmap.crux.widgets.client.event.FinishEvent;
@@ -29,6 +31,8 @@ import br.com.sysmap.crux.widgets.client.event.FinishHandler;
 import br.com.sysmap.crux.widgets.client.event.HasCancelHandlers;
 import br.com.sysmap.crux.widgets.client.event.HasFinishHandlers;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
@@ -75,7 +79,6 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		this.dockPanel.setCellWidth(this.stepsPanel, "100%");
 		
 		initWidget(dockPanel);
-		//TODO - Thiago - Evitar registros duplicados;
 		Events.getRegisteredClientEventHandlers().registerEventHandler("__wizard", new CruxInternalWizardPageController());
 		ContextManager.getContextHandler().eraseData("__Wizard."+getElement().getId());
     }
@@ -436,15 +439,10 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		{
 			if (ignoreLeaveEvent || leavePreviousStep())			
 			{
-				String preivousStep = null;
-				if (currentStep >=0)
-				{
-					preivousStep = getStep(currentStep).getId();
-				}
+				final String preivousStep = (currentStep >=0)?getStep(currentStep).getId():null;
 				currentStep = step;
 				stepsPanel.showWidget(currentStep);
-				notifyStepListeners(preivousStep);
-				enterCurrentStep(preivousStep);
+				changeStep(preivousStep);
 				ret = true;
 			}
 		}
@@ -493,6 +491,44 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		return null;
 	}
 	
+	/**
+	 * @param preivousStep
+	 */
+	private void changeStep(final String preivousStep)
+    {
+		final Widget widgetStep = getStep(currentStep).getWidget();
+		if (widgetStep instanceof PageStep)
+		{
+			Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
+			{
+				public boolean execute()
+				{
+					boolean loaded;
+                    try
+                    {
+	                    loaded = CruxInternalWizardPageController.isInternalPageLoaded(((PageStep)widgetStep).getId());
+						if (loaded)
+						{
+				    		notifyStepListeners(preivousStep);
+				    		enterCurrentStep(preivousStep);
+						}
+                    }
+                    catch (ModuleComunicationException e)
+                    {
+                    	Crux.getErrorHandler().handleError(e.getMessage(), e);
+                    	loaded = true;
+                    }
+					return !loaded;
+				}
+			}, 10);
+		}
+		else
+		{
+    		notifyStepListeners(preivousStep);
+    		enterCurrentStep(preivousStep);
+		}
+    }
+
 	/**
 	 * @param step
 	 * @param beforeIndex

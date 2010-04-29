@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
+import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.widgets.client.event.openclose.HasBeforeCloseHandlers;
@@ -57,7 +58,7 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 		this.id = id;
 		this.url = url;
 		
-		this.frame = new Frame(url);
+		this.frame = new Frame(Screen.appendDebugParameters(url));
 		this.frame.setHeight("100%");
 		Element frameElement = getElement();
 		frameElement.setPropertyString("frameBorder", "no");

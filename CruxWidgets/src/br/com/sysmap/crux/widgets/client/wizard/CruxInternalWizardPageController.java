@@ -15,14 +15,18 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import com.google.gwt.dom.client.Element;
+
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
 import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
+import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.screen.Screen;
-import br.com.sysmap.crux.widgets.client.dialog.PopupData;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.dynatabs.DynaTabsControllerInvoker;
+import br.com.sysmap.crux.widgets.client.js.JSWindow;
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
@@ -36,7 +40,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	public CruxInternalWizardPageController()
     {
 		ModuleComunicationSerializer serializer = Screen.getCruxSerializer();
-		serializer.registerCruxSerializable(PopupData.class.getName(), new PopupData());
+		serializer.registerCruxSerializable(WizardCommandData.class.getName(), new WizardCommandData());
     }
 	
 	/**
@@ -51,10 +55,10 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 		if (wizardPage != null)
 		{
 			LeaveEvent leaveEvent = LeaveEvent.fire(wizardPage, new PageWizardProxy(wizardId));
-			return leaveEvent.isCanceled();
+			return !leaveEvent.isCanceled();
 		}
 		
-		return false;
+		return true;
 	}
 
 	/**
@@ -520,7 +524,8 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 			}
 			else if("onLeave".equals(method) && fromOutOfModule)
 			{
-				onLeave((InvokeControllerEvent)sourceEvent);
+				hasReturn = true;
+				returnValue = onLeave((InvokeControllerEvent)sourceEvent);
 			}
 			else if("getButtonsHeight".equals(method) && fromOutOfModule)
 			{
@@ -633,4 +638,24 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	public void updateScreenWidgets()
     {
     }
+	
+	/**
+	 * @param pageId
+	 * @return
+	 * @throws ModuleComunicationException
+	 */
+	static boolean isInternalPageLoaded(String pageId) throws ModuleComunicationException
+	{
+		Element pageIFrame = getTabInternalFrameElement(pageId);
+		if(pageIFrame == null)
+		{
+			throw new ModuleComunicationException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(pageId));
+		}
+		JSWindow window = retrieveTabWindow(pageIFrame);
+		return existsAccessorFunction(window);
+	}
+	
+	private static native boolean existsAccessorFunction(JSWindow tabWindow)/*-{
+		return typeof tabWindow['_cruxScreenControllerAccessor'] == 'function';
+	}-*/;
 }

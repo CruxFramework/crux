@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.LazyPanel;
+import com.google.gwt.user.client.ui.Widget;
+
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.widgets.client.dynatabs.AbstractTab;
@@ -28,8 +31,11 @@ import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class PageStep extends AbstractTab
+public class PageStep extends LazyPanel
 {
+	private final String id;
+	private final String url;
+
 	/**
 	 * @param id
 	 * @param label
@@ -37,7 +43,24 @@ public class PageStep extends AbstractTab
 	 */
 	PageStep(String id, String url)
     {
-	    super(id, url);
+		this.id = id;
+		this.url = url;
+    }
+
+	@Override
+    protected Widget createWidget()
+    {
+	    return new WizardPageTab(id, url);
+    }
+
+	public String getId()
+    {
+    	return id;
+    }
+
+	public String getUrl()
+    {
+    	return url;
     }
 
 	/**
@@ -130,5 +153,19 @@ public class PageStep extends AbstractTab
         {
         	Crux.getErrorHandler().handleError("", e); // TODO - Thiago - message
         }
+	}
+	
+	static class WizardPageTab extends AbstractTab
+	{
+		/**
+		 * @param id
+		 * @param label
+		 * @param url
+		 */
+		WizardPageTab(String id, String url)
+	    {
+		    super(id, url);
+		    getFrame().setWidth("100%");
+	    }		
 	}
 }

@@ -111,18 +111,23 @@ public class DynaTabsControllerInvoker
 	@SuppressWarnings("unchecked")
 	private static <T> T retrieveTabWindowAndInvoke(String call, Object param, Element tabIFrame, Class<T> resultType) throws ModuleComunicationException
 	{
-		TabInternalJSObjects tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
-		JSWindow window = tabObjetcs.getTabWindow((IFrameElement) tabIFrame);
+		JSWindow window = retrieveTabWindow(tabIFrame);
 		String result = callSiblingTabControllerAccessor(window, call,  Screen.getCruxSerializer().serialize(param));
 		return (T) Screen.getCruxSerializer().deserialize(result);
 	}
 	
 	private static void retrieveTabWindowAndInvoke(String call, Object param, Element tabIFrame) throws ModuleComunicationException
 	{
-		TabInternalJSObjects tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
-		JSWindow window = tabObjetcs.getTabWindow((IFrameElement) tabIFrame);
+		JSWindow window = retrieveTabWindow(tabIFrame);
 		callSiblingTabControllerAccessor(window, call,  Screen.getCruxSerializer().serialize(param));
 	}
+
+	protected static JSWindow retrieveTabWindow(Element tabIFrame)
+    {
+	    TabInternalJSObjects tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
+		JSWindow window = tabObjetcs.getTabWindow((IFrameElement) tabIFrame);
+	    return window;
+    }
 	
 	/**
 	 * @param call
@@ -157,7 +162,7 @@ public class DynaTabsControllerInvoker
 	 * @param string 
 	 * @return
 	 */
-	private static Element getTabInternalFrameElement(String tabId)
+	protected static Element getTabInternalFrameElement(String tabId)
 	{
 		return DOM.getElementById(tabId + ".window");
 	}

@@ -31,6 +31,11 @@ public class WizardCommandData implements CruxSerializable
 	private String label;
 	private int order;
 	
+	public WizardCommandData()
+	{
+		
+	}
+	
 	public WizardCommandData(String id, String label, int order)
     {
 		this.id = id;

@@ -68,9 +68,9 @@ public class WizardFactory extends WidgetFactory<Wizard>
 	}
 
 	@Override
-	public void postProcess(WidgetFactoryContext<Wizard> context) throws InterfaceConfigException
+	public void postProcess(final WidgetFactoryContext<Wizard> context) throws InterfaceConfigException
 	{
-	    context.getWidget().first();
+		context.getWidget().first();				
 	}
 	
 	

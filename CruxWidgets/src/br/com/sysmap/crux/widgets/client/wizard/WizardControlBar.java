@@ -98,6 +98,7 @@ public class WizardControlBar extends Composite implements WizardStepListener
 		this.cellPanel.setStyleName(DEFAULT_STYLE_NAME);
 		
 		initWidget(cellPanel);
+		setSpacing(5);
     }
 	
 	/**

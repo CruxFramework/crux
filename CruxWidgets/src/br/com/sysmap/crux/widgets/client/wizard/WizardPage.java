@@ -23,6 +23,10 @@ import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -45,9 +49,10 @@ public class WizardPage extends AbstractWidgetStep
 		}
 		Screen.add(PAGE_UNIQUE_ID, this);
 		Events.getRegisteredClientEventHandlers().registerEventHandler("__wizard", new CruxInternalWizardPageController());
-		
+		Element span = DOM.createSpan();
+		RootPanel.getBodyElement().appendChild(span);
+		initWidget(Label.wrap(span));
 		super.setVisible(false);
-		//initWidget(widget); TODO- Thiago - Qual Widget? criar um label fake?
     }
 	
 	@Override

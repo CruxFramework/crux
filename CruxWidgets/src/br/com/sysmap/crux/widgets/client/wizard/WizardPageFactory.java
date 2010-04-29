@@ -65,7 +65,7 @@ public class WizardPageFactory extends WidgetFactory<WizardPage>
 	{
 	}
 	
-	@TagChildAttributes(tagName="commands")
+	@TagChildAttributes(tagName="commands", minOccurs="0")
 	public static class CommandsProcessor extends WidgetChildProcessor<WizardPage>
 	{
 		@Override
