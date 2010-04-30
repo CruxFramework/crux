@@ -31,6 +31,7 @@ import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.dom.client.Element;
 
@@ -83,6 +84,9 @@ public class WizardPageFactory extends WidgetFactory<WizardPage>
 			@TagAttributeDeclaration(value="id", required=true),
 			@TagAttributeDeclaration(value="label", required=true, supportsI18N=true),
 			@TagAttributeDeclaration(value="order", required=true, type=Integer.class),
+			@TagAttributeDeclaration("styleName"),
+			@TagAttributeDeclaration("width"),
+			@TagAttributeDeclaration("height"),
 			@TagAttributeDeclaration(value="onCommand", required=true)
 		})
 		public void processChildren(WidgetChildProcessorContext<WizardPage> context) throws InterfaceConfigException 
@@ -102,6 +106,22 @@ public class WizardPageFactory extends WidgetFactory<WizardPage>
 			};
 			
 			context.getRootWidget().addCommand(id, label, handler, order);
+			
+			String styleName = context.getChildElement().getAttribute("_styleName");
+			if (!StringUtils.isEmpty(styleName))
+			{
+				context.getRootWidget().getCommand(id).setStyleName(styleName);
+			}
+			String width = context.getChildElement().getAttribute("_width");
+			if (!StringUtils.isEmpty(width))
+			{
+				context.getRootWidget().getCommand(id).setWidth(width);
+			}
+			String height = context.getChildElement().getAttribute("_height");
+			if (!StringUtils.isEmpty(height))
+			{
+				context.getRootWidget().getCommand(id).setHeight(height);
+			}
 		}
 	}
 }

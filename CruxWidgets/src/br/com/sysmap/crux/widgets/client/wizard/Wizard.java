@@ -24,6 +24,7 @@ import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.CancelEvent;
 import br.com.sysmap.crux.widgets.client.event.CancelHandler;
 import br.com.sysmap.crux.widgets.client.event.FinishEvent;
@@ -112,11 +113,8 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	public PageStep insertPageStep(String id, String label, String url, int beforeIndex)
 	{
 		PageStep pageStep = new PageStep(id, url);
-		if (insertStep(new Step(this, id, label, pageStep), beforeIndex))
-		{
-			return pageStep;
-		}
-		return null;
+		insertStep(new Step(this, id, label, pageStep), beforeIndex);
+		return pageStep;
 	}
 
 	/**
@@ -138,11 +136,8 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	public WidgetStep insertWidgetStep(String id, String label, Widget widget, int beforeIndex)
 	{
 		WidgetStep widgetStep = new WidgetStep(widget, this);
-		if (insertStep(new Step(this, id, label, widgetStep), beforeIndex))
-		{
-			return widgetStep;
-		}
-		return null;
+		insertStep(new Step(this, id, label, widgetStep), beforeIndex);
+		return widgetStep;
 	}
 	
 	/**
@@ -563,29 +558,18 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param beforeIndex
 	 * @return
 	 */
-	private boolean insertStep(Step step, int beforeIndex)
+	private void insertStep(Step step, int beforeIndex)
 	{
 		if (!steps.containsKey(step.getId()))
 		{
 			steps.put(step.getId(), step);
 			stepsPanel.insert(step.getWidget(), beforeIndex);
 			stepOrder.add(beforeIndex, step.getId());
-			return true;
 		}
 		else
 		{
-			focusStep(step);//TODO lançar erro
+			throw new WizardException(WidgetMsgFactory.getMessages().wizardDuplicatedStep(step.getId()));
 		}
-		
-		return false;
-	}
-
-	/**
-	 * @param step
-	 */
-	private void focusStep(Step step)
-	{
-		stepsPanel.showWidget(stepsPanel.getWidgetIndex(step.getWidget()));
 	}
 
 	/**

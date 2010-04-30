@@ -19,6 +19,7 @@ import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
@@ -143,7 +144,7 @@ class PageWizardProxy implements WizardProxy
         }
         catch (ModuleComunicationException e)
         {
-        	Crux.getErrorHandler().handleError("", e); // TODO - Thiago - message
+        	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardPageStepErrorInvokingEventOuterPage(), e); 
         }
         return null;
     }
@@ -325,6 +326,36 @@ class PageWizardProxy implements WizardProxy
 		public void setOrder(int order)
         {
 	        PageWizardProxy.invokeSimpleCommand("setCommandOrder", new Object[]{wizardId,commandId, order}, Object.class);
+        }
+
+		public String getStyleName()
+        {
+	        return PageWizardProxy.invokeSimpleCommand("getCommandStyleName", new Object[]{wizardId,commandId}, String.class);
+        }
+
+		public void setStyleName(String styleName)
+        {
+	        PageWizardProxy.invokeSimpleCommand("setCommandStyleName", new Object[]{wizardId,commandId, styleName}, Object.class);
+        }
+
+		public int getOffsetHeight()
+        {
+	        return PageWizardProxy.invokeSimpleCommand("getCommandOffsetHeight", new Object[]{wizardId,commandId}, Integer.class);
+        }
+
+		public int getOffsetWidth()
+        {
+	        return PageWizardProxy.invokeSimpleCommand("getCommandOffsetWidth", new Object[]{wizardId,commandId}, Integer.class);
+        }
+
+		public void setHeight(String height)
+        {
+	        PageWizardProxy.invokeSimpleCommand("setCommandHeight", new Object[]{wizardId,commandId, height}, Object.class);
+        }
+
+		public void setWidth(String width)
+        {
+	        PageWizardProxy.invokeSimpleCommand("setCommandWidth", new Object[]{wizardId,commandId, width}, Object.class);
         }
 	}
 }

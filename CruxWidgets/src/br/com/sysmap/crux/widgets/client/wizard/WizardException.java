@@ -19,19 +19,39 @@ package br.com.sysmap.crux.widgets.client.wizard;
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public interface WizardCommandProxy
+public class WizardException extends RuntimeException
 {
-	int getOrder();
-	void setOrder(int order);
-	String getLabel();
-	void setLabel(String label);
-	void setEnabled(boolean enabled);
-	boolean isEnabled();
-	String getId();
-	String getStyleName();
-	void setStyleName(String styleName);
-	int getOffsetWidth();
-	int getOffsetHeight();
-	void setWidth(String width);
-	void setHeight(String height);
+    private static final long serialVersionUID = -1473622943555444441L;
+
+	/**
+	 * 
+	 */
+	public WizardException()
+	{
+	}
+
+	/**
+	 * @param message
+	 */
+	public WizardException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public WizardException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public WizardException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }

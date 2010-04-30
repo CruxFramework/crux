@@ -22,6 +22,7 @@ import java.util.Map;
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -45,7 +46,7 @@ public class WizardPage extends AbstractWidgetStep
 		Widget unique = Screen.get(PAGE_UNIQUE_ID);
 		if (unique != null)
 		{
-			//TODO throw new Exception
+			throw new WizardException(WidgetMsgFactory.getMessages().wizardPageDuplicatedWidgetOnPage());
 		}
 		Screen.add(PAGE_UNIQUE_ID, this);
 		Events.getRegisteredClientEventHandlers().registerEventHandler("__wizard", new CruxInternalWizardPageController());
@@ -71,6 +72,15 @@ public class WizardPage extends AbstractWidgetStep
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * @param id
+	 * @return
+	 */
+	public WizardCommandData getCommand(String id)
+	{
+		return commands.get(id);
 	}
 	
 	/**

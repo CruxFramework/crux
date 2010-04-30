@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.dynatabs.AbstractTab;
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
@@ -77,7 +78,7 @@ public class PageStep extends LazyPanel
         }
         catch (ModuleComunicationException e)
         {
-        	Crux.getErrorHandler().handleError("", e); // TODO - Thiago - message
+        	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardPageStepErrorInvokingEventOnInnerPage(), e); 
         }
 		
 		return null;
@@ -100,7 +101,7 @@ public class PageStep extends LazyPanel
         }
         catch (ModuleComunicationException e)
         {
-        	Crux.getErrorHandler().handleError("", e); // TODO - Thiago - message
+        	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardPageStepErrorInvokingEventOnInnerPage(), e); 
         }
 		
 		return null;
@@ -132,7 +133,7 @@ public class PageStep extends LazyPanel
         }
         catch (ModuleComunicationException e)
         {
-        	Crux.getErrorHandler().handleError("", e); // TODO - Thiago - message
+        	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardPageStepErrorInvokingEventOnInnerPage(), e);
         }
 		
 		return null;
@@ -151,7 +152,7 @@ public class PageStep extends LazyPanel
         }
         catch (ModuleComunicationException e)
         {
-        	Crux.getErrorHandler().handleError("", e); // TODO - Thiago - message
+        	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardPageStepErrorInvokingEventOnInnerPage(), e);
         }
 	}
 	

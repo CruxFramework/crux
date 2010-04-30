@@ -585,6 +585,108 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 			 command.setOrder(order);
 		}
 	}
+	
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public String getCommandStyleName(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			return command.getStyleName();
+		}
+		return null;
+	}	
+
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public int getOffsetHeight(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			return command.getOffsetHeight();
+		}
+		return 0;
+	}	
+	
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public int getOffsetWidth(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			return command.getOffsetWidth();
+		}
+		return 0;
+	}	
+
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public void setCommandStyleName(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		String styleName = (String) event.getParameter(2);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			 command.setStyleName(styleName);
+		}
+	}
+
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public void setCommandHeight(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		String height = (String) event.getParameter(2);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			 command.setHeight(height);
+		}
+	}
+
+	/**
+	 * @param event
+	 * @return
+	 */
+	@ExposeOutOfModule
+	public void setCommandWidth(InvokeControllerEvent event)
+	{
+		String wizardId = (String) event.getParameter(0);
+		String commandId = (String) event.getParameter(1);
+		String width = (String) event.getParameter(2);
+		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		if (command != null)
+		{
+			 command.setWidth(width);
+		}
+	}
 
 	/**
 	 * @see br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker#invoke(java.lang.String, java.lang.Object, boolean, br.com.sysmap.crux.core.client.event.EventProcessor)
@@ -737,6 +839,10 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 			{
 				setCommandOrder((InvokeControllerEvent)sourceEvent);
 			}
+			else if("setCommandStyleName".equals(method) && fromOutOfModule)
+			{
+				setCommandStyleName((InvokeControllerEvent)sourceEvent);
+			}
 			else if("isCommandEnabled".equals(method) && fromOutOfModule)
 			{
 				hasReturn = true;
@@ -756,6 +862,29 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 			{
 				hasReturn = true;
 				returnValue = getCommandId((InvokeControllerEvent)sourceEvent);
+			}
+			else if("getCommandStyleName".equals(method) && fromOutOfModule)
+			{
+				hasReturn = true;
+				returnValue = getCommandStyleName((InvokeControllerEvent)sourceEvent);
+			}
+			else if("setCommandHeight".equals(method) && fromOutOfModule)
+			{
+				setCommandHeight((InvokeControllerEvent)sourceEvent);
+			}
+			else if("setCommandWidth".equals(method) && fromOutOfModule)
+			{
+				setCommandWidth((InvokeControllerEvent)sourceEvent);
+			}
+			else if("getOffsetHeight".equals(method) && fromOutOfModule)
+			{
+				hasReturn = true;
+				returnValue = getOffsetHeight((InvokeControllerEvent)sourceEvent);
+			}
+			else if("getOffsetWidth".equals(method) && fromOutOfModule)
+			{
+				hasReturn = true;
+				returnValue = getOffsetWidth((InvokeControllerEvent)sourceEvent);
 			}
 		}
 		catch (Throwable e)

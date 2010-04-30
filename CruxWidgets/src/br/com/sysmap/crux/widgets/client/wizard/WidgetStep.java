@@ -61,6 +61,15 @@ public class WidgetStep extends AbstractWidgetStep implements HasCommands
     }
 	
 	/**
+	 * @param id
+	 * @return
+	 */
+	public WizardCommand getCommand(String id)
+	{
+	    return commands.get(id);
+	}
+	
+	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.HasCommands#getCommands()
 	 */
 	public Iterator<WizardCommand> iterateCommands()

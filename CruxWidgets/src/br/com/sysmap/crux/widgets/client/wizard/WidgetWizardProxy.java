@@ -286,5 +286,35 @@ class WidgetWizardProxy implements WizardProxy
         {
 			command.setOrder(order);
         }
+
+		public String getStyleName()
+        {
+	        return command.getStyleName();
+        }
+
+		public void setStyleName(String styleName)
+        {
+			command.setStyleName(styleName);
+        }
+
+		public int getOffsetHeight()
+        {
+	        return command.getOffsetHeight();
+        }
+
+		public int getOffsetWidth()
+        {
+	        return command.getOffsetWidth();
+        }
+
+		public void setHeight(String height)
+        {
+			command.setHeight(height);
+        }
+
+		public void setWidth(String width)
+        {
+			command.setWidth(width);
+        }
 	}
 }

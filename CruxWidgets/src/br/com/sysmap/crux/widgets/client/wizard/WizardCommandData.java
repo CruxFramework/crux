@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.widgets.client.wizard;
 
 import br.com.sysmap.crux.core.client.screen.CruxSerializable;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
@@ -30,6 +31,9 @@ public class WizardCommandData implements CruxSerializable
 	private String id;
 	private String label;
 	private int order;
+	private String styleName;
+	private String width;
+	private String height;
 	
 	public WizardCommandData()
 	{
@@ -67,6 +71,30 @@ public class WizardCommandData implements CruxSerializable
     {
     	this.order = order;
     }
+	public String getStyleName()
+    {
+    	return styleName;
+    }
+	public void setStyleName(String styleName)
+    {
+    	this.styleName = styleName;
+    }
+	public String getWidth()
+    {
+    	return width;
+    }
+	public void setWidth(String width)
+    {
+    	this.width = width;
+    }
+	public String getHeight()
+    {
+    	return height;
+    }
+	public void setHeight(String height)
+    {
+    	this.height = height;
+    }
 
 	/**
 	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#deserialize(java.lang.String)
@@ -77,9 +105,25 @@ public class WizardCommandData implements CruxSerializable
 		{
 			Document root = XMLParser.parse(serializedData);
 			Element data = root.getDocumentElement();
-			return new WizardCommandData(data.getAttribute("id"), 
+			WizardCommandData wizardCommandData = new WizardCommandData(data.getAttribute("id"), 
 								 data.getAttribute("label"), 
 								 Integer.parseInt(data.getAttribute("order")));
+			String styleName = data.getAttribute("styleName");
+			if(!StringUtils.isEmpty(styleName))
+			{
+				wizardCommandData.setStyleName(styleName);
+			}
+			String width = data.getAttribute("width");
+			if(!StringUtils.isEmpty(width))
+			{
+				wizardCommandData.setWidth(width);
+			}
+			String height = data.getAttribute("height");
+			if(!StringUtils.isEmpty(height))
+			{
+				wizardCommandData.setHeight(height);
+			}
+			return wizardCommandData;
 		}
 		return null;
     }
@@ -105,6 +149,9 @@ public class WizardCommandData implements CruxSerializable
 		data.setAttribute("id", id);
 		data.setAttribute("label", label);
 		data.setAttribute("order", Integer.toString(order));
+		data.setAttribute("styleName", styleName);
+		data.setAttribute("width", width);
+		data.setAttribute("height", height);
 		
 		return document.toString();
     }

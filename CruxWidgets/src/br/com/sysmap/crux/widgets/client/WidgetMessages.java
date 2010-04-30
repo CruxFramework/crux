@@ -91,4 +91,16 @@ public interface WidgetMessages extends Messages
 	@DefaultMessage("[crux-widgets 020] - TextArea widget only accepts maxLength greater or equals zero.")
 	String textAreaInvalidMaxLengthParameter();
 
+	@DefaultMessage("[crux-widgets 021] - Error while communicating with inner page step.")
+	String wizardPageStepErrorInvokingEventOnInnerPage();
+
+	@DefaultMessage("[crux-widgets 022] - Error while communicating with wizard widget.")
+	String wizardPageStepErrorInvokingEventOuterPage();
+
+	@DefaultMessage("[crux-widgets 023] - Only one WizardPage widget can be used on a single screen.")
+	String wizardPageDuplicatedWidgetOnPage();
+
+	@DefaultMessage("[crux-widgets 024] - This wizard already contains a step with id {0}.")
+	String wizardDuplicatedStep(String id);
+
 }

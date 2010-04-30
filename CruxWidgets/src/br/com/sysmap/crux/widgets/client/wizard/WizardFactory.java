@@ -176,6 +176,9 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			@TagAttributeDeclaration(value="id", required=true),
 			@TagAttributeDeclaration(value="label", required=true, supportsI18N=true),
 			@TagAttributeDeclaration(value="order", required=true, type=Integer.class),
+			@TagAttributeDeclaration("styleName"),
+			@TagAttributeDeclaration("width"),
+			@TagAttributeDeclaration("height"),
 			@TagAttributeDeclaration(value="onCommand", required=true)
 		})
 		public void processChildren(WidgetChildProcessorContext<Wizard> context) throws InterfaceConfigException 
@@ -196,6 +199,22 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			
 			WidgetStep widgetStep = context.getRootWidget().getWidgetStep((String)context.getAttribute("stepId"));
 			widgetStep.addCommand(id, label, handler, order);
+			
+			String styleName = context.getChildElement().getAttribute("_styleName");
+			if (!StringUtils.isEmpty(styleName))
+			{
+				widgetStep.getCommand(id).setStyleName(styleName);
+			}
+			String width = context.getChildElement().getAttribute("_width");
+			if (!StringUtils.isEmpty(width))
+			{
+				widgetStep.getCommand(id).setWidth(width);
+			}
+			String height = context.getChildElement().getAttribute("_height");
+			if (!StringUtils.isEmpty(height))
+			{
+				widgetStep.getCommand(id).setHeight(height);
+			}
 		}
 	}
 	
@@ -277,8 +296,8 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			@TagAttributeDeclaration(value="finishLabel", type=String.class, supportsI18N=true),
 			@TagAttributeDeclaration(value="backOrder", type=Integer.class, defaultValue="0"),
 			@TagAttributeDeclaration(value="nextOrder", type=Integer.class, defaultValue="1"),
-			@TagAttributeDeclaration(value="cancelOrder", type=Integer.class, defaultValue="2"),
-			@TagAttributeDeclaration(value="finishOrder", type=Integer.class, defaultValue="3")
+			@TagAttributeDeclaration(value="finishOrder", type=Integer.class, defaultValue="2"),
+			@TagAttributeDeclaration(value="cancelOrder", type=Integer.class, defaultValue="3")
 		})
 		@TagChildren({
 			@TagChild(ControlBarCommandsProcessor.class)
@@ -413,6 +432,9 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			@TagAttributeDeclaration(value="id", required=true),
 			@TagAttributeDeclaration(value="label", required=true, supportsI18N=true),
 			@TagAttributeDeclaration(value="order", required=true, type=Integer.class),
+			@TagAttributeDeclaration("styleName"),
+			@TagAttributeDeclaration("width"),
+			@TagAttributeDeclaration("height"),
 			@TagAttributeDeclaration(value="onCommand", required=true)
 		})
 		public void processChildren(WidgetChildProcessorContext<Wizard> context) throws InterfaceConfigException 
@@ -432,6 +454,23 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			};
 			
 			context.getRootWidget().getControlBar().addCommand(id, label, handler, order);
+			
+			String styleName = context.getChildElement().getAttribute("_styleName");
+			if (!StringUtils.isEmpty(styleName))
+			{
+				context.getRootWidget().getControlBar().getCommand(id).setStyleName(styleName);
+			}
+			String width = context.getChildElement().getAttribute("_width");
+			if (!StringUtils.isEmpty(width))
+			{
+				context.getRootWidget().getControlBar().getCommand(id).setWidth(width);
+			}
+			String height = context.getChildElement().getAttribute("_height");
+			if (!StringUtils.isEmpty(height))
+			{
+				context.getRootWidget().getControlBar().getCommand(id).setHeight(height);
+			}
+			
 		}
 	}
 }

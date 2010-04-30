@@ -63,4 +63,33 @@ public class WizardCommandAccessor
     	return proxy.getId();
     }
 	
+	public String getStyleName()
+	{
+		return proxy.getStyleName();
+	}
+	
+	public void setStyleName(String styleName)
+	{
+		proxy.setStyleName(styleName);
+	}
+	
+	public int getWidth()
+	{
+		return proxy.getOffsetWidth();
+	}
+
+	public void setWidth(String width)
+	{
+		proxy.setWidth(width);
+	}
+
+	public int getHeight()
+	{
+		return proxy.getOffsetWidth();
+	}
+
+	public void setHeight(String height)
+	{
+		proxy.setHeight(height);
+	}
 }

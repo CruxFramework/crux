@@ -61,8 +61,8 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	private String finishLabel;
 	private int backOrder = 0;
 	private int nextOrder = 1;
-	private int cancelOrder = 2;
-	private int finishOrder = 3;
+	private int finishOrder = 2;
+	private int cancelOrder = 3;
 	
 	
 	/**
@@ -480,7 +480,7 @@ public class WizardControlBar extends Composite implements WizardStepListener
 	private void addDefaultCommands()
     {
 		checkWizard();
-		commands.put(BACK_COMMAND, new WizardCommand(this, BACK_COMMAND, this.backOrder, backLabel, new WizardCommandHandler()
+		WizardCommand command = new WizardCommand(this, BACK_COMMAND, this.backOrder, backLabel, new WizardCommandHandler()
 		{
 			public void onCommand(WizardCommandEvent event)
 			{
@@ -489,8 +489,12 @@ public class WizardControlBar extends Composite implements WizardStepListener
 					back();
 				}
 			}
-		}, new WidgetWizardProxy(wizard)));
-		commands.put(NEXT_COMMAND, new WizardCommand(this, NEXT_COMMAND, this.nextOrder, nextLabel, new WizardCommandHandler()
+		}, new WidgetWizardProxy(wizard)); 
+			
+		command.addStyleDependentName("back");
+		commands.put(BACK_COMMAND, command);
+		
+		command = new WizardCommand(this, NEXT_COMMAND, this.nextOrder, nextLabel, new WizardCommandHandler()
 		{
 			public void onCommand(WizardCommandEvent event)
 			{
@@ -499,21 +503,33 @@ public class WizardControlBar extends Composite implements WizardStepListener
 					next();
 				}
 			}
-		}, new WidgetWizardProxy(wizard)));
-		commands.put(CANCEL_COMMAND, new WizardCommand(this, CANCEL_COMMAND, this.cancelOrder, cancelLabel, new WizardCommandHandler()
+		}, new WidgetWizardProxy(wizard)); 
+
+		command.addStyleDependentName("next");
+		commands.put(NEXT_COMMAND, command);
+
+		command = new WizardCommand(this, CANCEL_COMMAND, this.cancelOrder, cancelLabel, new WizardCommandHandler()
 		{
 			public void onCommand(WizardCommandEvent event)
 			{
 				cancel();
 			}
-		}, new WidgetWizardProxy(wizard)));
-		commands.put(FINISH_COMMAND, new WizardCommand(this, FINISH_COMMAND, this.finishOrder, finishLabel, new WizardCommandHandler()
+		}, new WidgetWizardProxy(wizard));
+		
+		command.addStyleDependentName("cancel");
+		commands.put(CANCEL_COMMAND, command);
+
+		command = new WizardCommand(this, FINISH_COMMAND, this.finishOrder, finishLabel, new WizardCommandHandler()
 		{
 			public void onCommand(WizardCommandEvent event)
 			{
 				finish();
 			}
-		}, new WidgetWizardProxy(wizard)));
+		}, new WidgetWizardProxy(wizard));
+		
+		command.addStyleDependentName("finish");
+		commands.put(FINISH_COMMAND, command);
+		
 		updateCommands();
     }
 	
