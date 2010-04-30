@@ -530,6 +530,29 @@
 	margin-right: 15px;
 }
 
+.crux-WizardNavigationLabel
+{
+	color:#6C83C3;
+	font-family:Verdana,Arial,Helvetica;
+	font-size:11px;
+	text-decoration:none;
+}
+
+.crux-WizardNavigationLabel-selected
+{
+	font-weight:bold;
+}
+
+.crux-WizardNavigationVerticalSeparator
+{
+	
+}
+
+.crux-WizardNavigationHorizontalSeparator
+{
+	
+}
+
 /******************************************************************************
 	Dyna Tabs
 *******************************************************************************/
