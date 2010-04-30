@@ -273,12 +273,8 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	public void setControlBar(WizardControlBar controlBar, ControlPosition position, ControlVerticalAlign verticalAlign)
     {
-    	setControlBar(controlBar);
-		if (this.controlBar != null)
-		{
-			this.controlBar.setWizard(this);
-			addStepListener(this.controlBar);
-			dockPanel.add(this.controlBar, getDockPosition(position));
+    	if (setControlBar(controlBar, position))
+    	{
 			dockPanel.setCellWidth(this.controlBar, "0");
 			dockPanel.setCellVerticalAlignment(this.controlBar, getVerticalAlign(verticalAlign));
 		}
@@ -291,12 +287,8 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	public void setControlBar(WizardControlBar controlBar, ControlPosition position, ControlHorizontalAlign horizontalAlign)
     {
-    	setControlBar(controlBar);
-		if (this.controlBar != null)
-		{
-			this.controlBar.setWizard(this);
-			addStepListener(this.controlBar);
-			dockPanel.add(this.controlBar, getDockPosition(position));
+    	if (setControlBar(controlBar, position))
+    	{
 			dockPanel.setCellHeight(this.controlBar, "0");
 			dockPanel.setCellHorizontalAlignment(this.controlBar, getHorizontalAlign(horizontalAlign));
 		}
@@ -313,17 +305,29 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @param navigationBar
 	 * @param position
+	 * @param verticalAlign
 	 */
-	public void setNavigationBar(WizardNavigationBar navigationBar, ControlPosition position)
+	public void setNavigationBar(WizardNavigationBar navigationBar, ControlPosition position, ControlVerticalAlign verticalAlign)
     {
-    	if (this.navigationBar != null)
+    	if (setNavigationBar(navigationBar, position))
     	{
-    		dockPanel.remove(this.navigationBar);
-    		removeStepListener(this.navigationBar);
-    	}
-		this.navigationBar = navigationBar;
-    	addStepListener(navigationBar);
-    	dockPanel.add(navigationBar, getDockPosition(position));
+			dockPanel.setCellWidth(this.navigationBar, "0");
+			dockPanel.setCellVerticalAlignment(this.navigationBar, getVerticalAlign(verticalAlign));
+		}
+    }
+
+	/**
+	 * @param navigationBar
+	 * @param position
+	 * @param horizontalAlign
+	 */
+	public void setNavigationBar(WizardNavigationBar navigationBar, ControlPosition position, ControlHorizontalAlign horizontalAlign)
+    {
+    	if (setNavigationBar(navigationBar, position))
+    	{
+			dockPanel.setCellHeight(this.navigationBar, "0");
+			dockPanel.setCellHorizontalAlignment(this.navigationBar, getHorizontalAlign(horizontalAlign));
+		}
     }
 
 	/**
@@ -685,8 +689,9 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 
 	/**
 	 * @param controlBar
+	 * @return true if a new controlBar was added
 	 */
-	private void setControlBar(WizardControlBar controlBar)
+	private boolean setControlBar(WizardControlBar controlBar, ControlPosition position)
     {
 	    if (this.controlBar != null)
     	{
@@ -694,5 +699,38 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
     		removeStepListener(this.controlBar);
     	}
 		this.controlBar = controlBar;
+		if (this.controlBar != null)
+		{
+			this.controlBar.setWizard(this);
+			addStepListener(this.controlBar);
+			dockPanel.add(this.controlBar, getDockPosition(position));
+			return true;
+		}
+		return false;
     }	
+	
+	/**
+	 * @param navigationBar
+	 * @return true if a new controlBar was added
+	 */
+	private boolean setNavigationBar(WizardNavigationBar navigationBar, ControlPosition position)
+    {
+	    if (this.navigationBar != null)
+    	{
+    		dockPanel.remove(this.navigationBar);
+    		removeStepListener(this.navigationBar);
+    	}
+		this.navigationBar = navigationBar;
+		if (this.navigationBar != null)
+		{
+			this.navigationBar.setWizard(this);
+			addStepListener(this.navigationBar);
+			dockPanel.add(this.navigationBar, getDockPosition(position));
+			return true;
+		}
+		return false;
+    }	
+	
+	
+	
 }

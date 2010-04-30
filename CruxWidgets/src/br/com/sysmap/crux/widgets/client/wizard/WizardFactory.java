@@ -98,7 +98,14 @@ public class WizardFactory extends WidgetFactory<Wizard>
 	{
 		@Override
 		@TagAttributesDeclaration({
-			@TagAttributeDeclaration(value="position", type=ControlPosition.class, defaultValue="north")
+			@TagAttributeDeclaration(value="position", type=ControlPosition.class, defaultValue="north"),
+			@TagAttributeDeclaration(value="showAllSteps", type=Boolean.class, defaultValue="true"),
+			@TagAttributeDeclaration(value="allowSelectStep", type=Boolean.class, defaultValue="true"),
+			@TagAttributeDeclaration(value="verticalAlignment", type=ControlVerticalAlign.class, defaultValue="top"),
+			@TagAttributeDeclaration(value="horizontalAlignment", type=ControlHorizontalAlign.class, defaultValue="left"),
+			@TagAttributeDeclaration("labelStyleName"),
+			@TagAttributeDeclaration("horizontalSeparatorStyleName"),
+			@TagAttributeDeclaration("verticalSeparatorStyleName")
 		})
 		public void processChildren(WidgetChildProcessorContext<Wizard> context) throws InterfaceConfigException 
 		{
@@ -108,8 +115,62 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			{
 				position = ControlPosition.valueOf(positionAttr);
 			}
-			context.getRootWidget().setNavigationBar(new WizardNavigationBar(), position);
+			
+			boolean vertical = position.equals(ControlPosition.east) || position.equals(ControlPosition.west);
+			boolean showAllSteps = true;
+			String showAllStepsAttr = context.getChildElement().getAttribute("_showAllSteps");
+			if (!StringUtils.isEmpty(showAllStepsAttr ))
+			{
+				showAllSteps = Boolean.parseBoolean(showAllStepsAttr);
+			}
+			if (vertical)
+			{
+				ControlVerticalAlign verticalAlign = ControlVerticalAlign.top;
+				String verticalAlignmentAttr = context.getChildElement().getAttribute("_verticalAlignment");
+				if (!StringUtils.isEmpty(verticalAlignmentAttr))
+				{
+					verticalAlign = ControlVerticalAlign.valueOf(verticalAlignmentAttr);
+				}
+				context.getRootWidget().setNavigationBar(new WizardNavigationBar(vertical, showAllSteps), position, verticalAlign);
+			}
+			else
+			{
+				ControlHorizontalAlign horizontalAlign = ControlHorizontalAlign.left;
+				String horizontalAlignmentAttr = context.getChildElement().getAttribute("_horizontalAlignment");
+				if (!StringUtils.isEmpty(horizontalAlignmentAttr))
+				{
+					horizontalAlign = ControlHorizontalAlign.valueOf(horizontalAlignmentAttr);
+				}
+				context.getRootWidget().setNavigationBar(new WizardNavigationBar(vertical, showAllSteps), position, horizontalAlign);
+			}
+			
+			processNavigationBarAttributes(context);
+
 		}
+
+		private void processNavigationBarAttributes(WidgetChildProcessorContext<Wizard> context)
+        {
+	        String allowSelectStep = context.getChildElement().getAttribute("_allowSelectStep");
+			if (!StringUtils.isEmpty(allowSelectStep))
+			{
+				context.getRootWidget().getNavigationBar().setAllowSelectStep(Boolean.parseBoolean(allowSelectStep));
+			}
+			String labelStyleName = context.getChildElement().getAttribute("_labelStyleName");
+			if (!StringUtils.isEmpty(labelStyleName))
+			{
+				context.getRootWidget().getNavigationBar().setLabelStyleName(labelStyleName);
+			}
+			String horizontalSeparatorStyleName = context.getChildElement().getAttribute("_horizontalSeparatorStyleName");
+			if (!StringUtils.isEmpty(horizontalSeparatorStyleName))
+			{
+				context.getRootWidget().getNavigationBar().setHorizontalSeparatorStyleName(horizontalSeparatorStyleName);
+			}
+			String verticalSeparatorStyleName = context.getChildElement().getAttribute("_verticalSeparatorStyleName");
+			if (!StringUtils.isEmpty(verticalSeparatorStyleName))
+			{
+				context.getRootWidget().getNavigationBar().setVerticalSeparatorStyleName(verticalSeparatorStyleName);
+			}
+        }
 	}
 	
 	@TagChildAttributes(tagName="steps")
@@ -285,7 +346,6 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			@TagAttributeDeclaration(value="position", type=ControlPosition.class, defaultValue="south"),
 			@TagAttributeDeclaration(value="verticalAlignment", type=ControlVerticalAlign.class, defaultValue="top"),
 			@TagAttributeDeclaration(value="horizontalAlignment", type=ControlHorizontalAlign.class, defaultValue="right"),
-			@TagAttributeDeclaration(value="position", type=ControlPosition.class, defaultValue="south"),
 			@TagAttributeDeclaration(value="spacing", type=Integer.class),
 			@TagAttributeDeclaration(value="buttonsWidth", type=String.class),
 			@TagAttributeDeclaration(value="buttonsHeight", type=String.class),
