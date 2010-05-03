@@ -27,10 +27,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Step
 {
-	private Wizard wizard;
+	private boolean enabled = true;
 	private String id;
 	private String label;
 	private Widget widget;
+	private Wizard wizard;
 	
 	/**
 	 * @param id
@@ -69,11 +70,19 @@ public class Step
     }
 
 	/**
-	 * @param id
+	 * @return
 	 */
-	void setId(String id)
+	public boolean isEnabled()
+	{
+		return enabled;
+	}
+	
+	/**
+	 * @param enabled
+	 */
+	public void setEnabled(boolean enabled)
     {
-    	this.id = id;
+		this.enabled = enabled;
     }
 	
 	/**
@@ -82,14 +91,6 @@ public class Step
 	Widget getWidget()
     {
     	return widget;
-    }
-	
-	/**
-	 * @param widget
-	 */
-	void setWidget(Widget widget)
-    {
-    	this.widget = widget;
     }
 	
 	/**
@@ -107,4 +108,20 @@ public class Step
 		}
 		return null;
 	}
+
+	/**
+	 * @param id
+	 */
+	void setId(String id)
+    {
+    	this.id = id;
+    }
+	
+	/**
+	 * @param widget
+	 */
+	void setWidget(Widget widget)
+    {
+    	this.widget = widget;
+    }
 }

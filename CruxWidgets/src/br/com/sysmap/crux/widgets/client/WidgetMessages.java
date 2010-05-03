@@ -103,4 +103,12 @@ public interface WidgetMessages extends Messages
 	@DefaultMessage("[crux-widgets 024] - This wizard already contains a step with id {0}.")
 	String wizardDuplicatedStep(String id);
 
+	@DefaultMessage("[crux-widgets 025] - Step {0} not found.")
+	String wizardStepNotFound(String stepId);
+
+	@DefaultMessage("[crux-widgets 026] - Wizard does not have a step with index {0}.")
+	String wizardStepNotFound(int stepOrder);
+
+	@DefaultMessage("[crux-widgets 027] - The wizard step with index {0} can not be selected because it is not enabled.")
+	String wizardInvalidStepSelected(int step);
 }

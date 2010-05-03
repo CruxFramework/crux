@@ -204,7 +204,8 @@ public class WizardFactory extends WidgetFactory<Wizard>
 		})
 		@TagAttributesDeclaration({
 			@TagAttributeDeclaration(value="id", required=true),
-			@TagAttributeDeclaration(value="label", required=true, supportsI18N=true)
+			@TagAttributeDeclaration(value="label", required=true, supportsI18N=true),
+			@TagAttributeDeclaration(value="enabled", type=Boolean.class, defaultValue="true")
 		})
 		@TagEventsDeclaration({
 			@TagEventDeclaration("onEnter"),
@@ -216,6 +217,7 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			context.setAttribute("stepLabel", context.getChildElement().getAttribute("_label"));
 			context.setAttribute("stepOnEnter", context.getChildElement().getAttribute("_onEnter"));
 			context.setAttribute("stepOnLeave", context.getChildElement().getAttribute("_onLeave"));
+			context.setAttribute("enabled", context.getChildElement().getAttribute("_enabled"));
 		}
 	}
 	
@@ -317,6 +319,11 @@ public class WizardFactory extends WidgetFactory<Wizard>
 					}
 				});
 			}
+			String enabled = (String)context.getAttribute("enabled");
+			if (!StringUtils.isEmpty(enabled))
+			{
+				context.getRootWidget().setStepEnabled(id, Boolean.parseBoolean(enabled));
+			}
 		}
 	}
 
@@ -327,7 +334,8 @@ public class WizardFactory extends WidgetFactory<Wizard>
 		@TagAttributesDeclaration({
 			@TagAttributeDeclaration(value="id", required=true),
 			@TagAttributeDeclaration(value="label", required=true, supportsI18N=true),
-			@TagAttributeDeclaration(value="url", required=true)
+			@TagAttributeDeclaration(value="url", required=true),
+			@TagAttributeDeclaration(value="enabled", type=Boolean.class, defaultValue="true")
 		})
 		public void processChildren(WidgetChildProcessorContext<Wizard> context) throws InterfaceConfigException
 		{
@@ -335,6 +343,12 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			String label = ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getAttribute("_label"));
 			String url = context.getChildElement().getAttribute("_url");
 			context.getRootWidget().addPageStep(id, label, url);
+
+			String enabled = context.getChildElement().getAttribute("_enabled");
+			if (!StringUtils.isEmpty(enabled))
+			{
+				context.getRootWidget().setStepEnabled(id, Boolean.parseBoolean(enabled));
+			}
 		}
 	}
 	

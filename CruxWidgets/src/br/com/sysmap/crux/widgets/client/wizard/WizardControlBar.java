@@ -336,10 +336,48 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 		checkWizard();
 		int currentOrder = wizard.getStepOrder(currentStep.getId());
 
-		commands.get(BACK_COMMAND).setEnabled(currentOrder > 0);
-		commands.get(NEXT_COMMAND).setEnabled(currentOrder < (wizard.getStepCount()-1));
+		commands.get(BACK_COMMAND).setEnabled(hasEnabledPreviousStep(currentOrder));
+		commands.get(NEXT_COMMAND).setEnabled(hasEnabledNextStep(currentOrder));
 
 		updateStepCommands(currentStep);
+    }
+
+	/**
+	 * @param currentOrder
+	 * @return
+	 */
+	private boolean hasEnabledNextStep(int currentOrder)
+    {
+		boolean ret = false;
+		for (int i=currentOrder+1; i<(wizard.getStepCount()); i++)
+		{
+			if (wizard.isStepEnabled(i))
+			{
+				ret = true;
+				break;
+			}
+		}
+		
+	    return ret;
+    }
+
+	/**
+	 * @param currentOrder
+	 * @return
+	 */
+	private boolean hasEnabledPreviousStep(int currentOrder)
+    {
+		boolean ret = false;
+		for (int i=currentOrder-1; i>=0; i--)
+		{
+			if (wizard.isStepEnabled(i))
+			{
+				ret = true;
+				break;
+			}
+		}
+		
+	    return ret;
     }
 
 	/**

@@ -142,34 +142,37 @@ public class WizardNavigationBar extends AbstractWizardNavigationBar
 		boolean needsSeparator = false;
 		for (int i=0; i<wizard.getStepCount() && (showAllSteps || i<= currentStep); i++)
 		{
-			if (needsSeparator)
-			{
-				Label separator = new Label();
-				separator.setStyleName(isVertical()?verticalSeparatorStyleName:horizontalSeparatorStyleName);
-				cellPanel.add(separator);
-			}
-			needsSeparator = true;
 			Step step = wizard.getStep(i);
-			Label label = new Label(step.getLabel());
-			label.setStyleName(labelStyleName);
-			
-			if (i == wizard.getCurrentStepIndex())
+			if (step.isEnabled())
 			{
-				label.addStyleDependentName("selected");
-			}
-			else if (allowSelectStep)
-			{
-				final int stepIndex = i;
-				label.addClickHandler(new ClickHandler()
+				if (needsSeparator)
 				{
-					public void onClick(ClickEvent event)
-					{
-						wizard.selectStep(stepIndex);
-					}
-				});
-			}
+					Label separator = new Label();
+					separator.setStyleName(isVertical()?verticalSeparatorStyleName:horizontalSeparatorStyleName);
+					cellPanel.add(separator);
+				}
+				needsSeparator = true;
+				Label label = new Label(step.getLabel());
+				label.setStyleName(labelStyleName);
 
-			cellPanel.add(label);
+				if (i == wizard.getCurrentStepIndex())
+				{
+					label.addStyleDependentName("selected");
+				}
+				else if (allowSelectStep)
+				{
+					final int stepIndex = i;
+					label.addClickHandler(new ClickHandler()
+					{
+						public void onClick(ClickEvent event)
+						{
+							wizard.selectStep(stepIndex);
+						}
+					});
+				}
+
+				cellPanel.add(label);
+			}
 		}
     }
 
