@@ -4,8 +4,8 @@ import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.dialog.MessageBox;
-import br.com.sysmap.crux.widgets.client.event.dialog.OkEvent;
-import br.com.sysmap.crux.widgets.client.event.dialog.OkHandler;
+import br.com.sysmap.crux.widgets.client.event.OkEvent;
+import br.com.sysmap.crux.widgets.client.event.OkHandler;
 
 import com.google.gwt.user.client.ui.Label;
 

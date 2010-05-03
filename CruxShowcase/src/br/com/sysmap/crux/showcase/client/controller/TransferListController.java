@@ -3,8 +3,6 @@ package br.com.sysmap.crux.showcase.client.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.Window;
-
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.screen.Screen;
@@ -12,6 +10,8 @@ import br.com.sysmap.crux.widgets.client.event.moveitem.BeforeMoveItemsEvent;
 import br.com.sysmap.crux.widgets.client.transferlist.TransferList;
 import br.com.sysmap.crux.widgets.client.transferlist.TransferList.Item;
 import br.com.sysmap.crux.widgets.client.transferlist.TransferList.ItemLocation;
+
+import com.google.gwt.user.client.Window;
 
 @Controller("transferListController")
 public class TransferListController {
