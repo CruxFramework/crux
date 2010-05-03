@@ -15,6 +15,9 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
@@ -39,7 +42,10 @@ import com.google.gwt.user.client.ui.Label;
 public class CruxInternalProgressDialogController 
 {
 	private ModuleComunicationSerializer serializer;
-	private DialogBox dialog;
+	private DialogBox dialog = null;
+	private Label messageLabel = null;
+	
+	private List<String> stack = new ArrayList<String>(); 
 	
 	/**
 	 * Default constructor
@@ -82,13 +88,15 @@ public class CruxInternalProgressDialogController
 	@ExposeOutOfModule
 	public void showProgressDialogHandler(InvokeControllerEvent controllerEvent)
 	{
-		if(dialog == null)
+		try
 		{
-			Screen.blockToUser("crux-ProgressDialogScreenBlocker");
+			final ProgressDialogData data = (ProgressDialogData) controllerEvent.getParameter();
+			String message = data.getMessage();
+			this.stack.add(message);
 			
-			try
+			if(this.stack.size() == 1)
 			{
-				final ProgressDialogData data = (ProgressDialogData) controllerEvent.getParameter();
+				Screen.blockToUser("crux-ProgressDialogScreenBlocker");
 				
 				final DialogBox dialogBox = new DialogBox(false, true);
 				dialogBox.setStyleName(data.getStyleName());
@@ -99,7 +107,8 @@ public class CruxInternalProgressDialogController
 	
 				FocusPanel iconPanel = createIconPanel();
 				horizontalPanel.add(iconPanel);
-				horizontalPanel.add(createMessageLabel(data));
+				this.messageLabel = createMessageLabel(message);
+				horizontalPanel.add(this.messageLabel);
 							
 				dialogBox.add(horizontalPanel);
 				
@@ -111,14 +120,16 @@ public class CruxInternalProgressDialogController
 				// TODO - Gessé - find out a better solution to avoid focus on blocked screen widgets 
 				iconPanel.setFocus(true);
 				iconPanel.setFocus(false);
-				
-				
 			}
-			catch (Exception e)
+			else
 			{
-				Crux.getErrorHandler().handleError(e);
-				Screen.unblockToUser();
-			}
+				this.messageLabel.setText(message);
+			}				
+		}
+		catch (Exception e)
+		{
+			Crux.getErrorHandler().handleError(e);
+			Screen.unblockToUser();
 		}
 	}
 
@@ -129,11 +140,23 @@ public class CruxInternalProgressDialogController
 	@ExposeOutOfModule
 	public void hideProgressDialogHandler(InvokeControllerEvent controllerEvent)
 	{
-		if(dialog != null)
+		if(this.stack.size() <= 1)
 		{
 			Screen.unblockToUser();
-			dialog.hide();
-			dialog = null;
+			
+			if(dialog != null)
+			{
+				dialog.hide();
+				dialog = null;
+			}
+			
+			this.stack.clear();
+		}
+		else
+		{
+			this.stack.remove(this.stack.size() - 1);
+			String msg = this.stack.get(this.stack.size() - 1);
+			this.messageLabel.setText(msg);
 		}
 	}
 	
@@ -153,9 +176,9 @@ public class CruxInternalProgressDialogController
 	 * @param data
 	 * @return a label
 	 */
-	private Label createMessageLabel(final ProgressDialogData data)
+	private Label createMessageLabel(String message)
 	{
-		Label label = new Label(data.getMessage());
+		Label label = new Label(message);
 		label.setStyleName("message");
 		return label;
 	}
