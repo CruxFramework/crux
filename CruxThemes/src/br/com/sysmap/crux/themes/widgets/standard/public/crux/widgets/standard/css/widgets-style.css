@@ -543,12 +543,14 @@
 	font-weight:bold;
 }
 
-.crux-WizardNavigationVerticalSeparator
+.crux-WizardNavigationHorizontalSeparator
 {
-	
+	width: 20px;
+	height: 11px;
+	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
 }
 
-.crux-WizardNavigationHorizontalSeparator
+.crux-WizardNavigationVerticalSeparator
 {
 	
 }
