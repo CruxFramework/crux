@@ -343,44 +343,6 @@ public class WizardControlBar extends AbstractWizardNavigationBar
     }
 
 	/**
-	 * @param currentOrder
-	 * @return
-	 */
-	private boolean hasEnabledNextStep(int currentOrder)
-    {
-		boolean ret = false;
-		for (int i=currentOrder+1; i<(wizard.getStepCount()); i++)
-		{
-			if (wizard.isStepEnabled(i))
-			{
-				ret = true;
-				break;
-			}
-		}
-		
-	    return ret;
-    }
-
-	/**
-	 * @param currentOrder
-	 * @return
-	 */
-	private boolean hasEnabledPreviousStep(int currentOrder)
-    {
-		boolean ret = false;
-		for (int i=currentOrder-1; i>=0; i--)
-		{
-			if (wizard.isStepEnabled(i))
-			{
-				ret = true;
-				break;
-			}
-		}
-		
-	    return ret;
-    }
-
-	/**
 	 * @param wizard
 	 */
 	@Override
@@ -453,6 +415,44 @@ public class WizardControlBar extends AbstractWizardNavigationBar
     }
 
 	/**
+	 * @param currentOrder
+	 * @return
+	 */
+	private boolean hasEnabledNextStep(int currentOrder)
+    {
+		boolean ret = false;
+		for (int i=currentOrder+1; i<(wizard.getStepCount()); i++)
+		{
+			if (wizard.isStepEnabled(i))
+			{
+				ret = true;
+				break;
+			}
+		}
+		
+	    return ret;
+    }
+	
+	/**
+	 * @param currentOrder
+	 * @return
+	 */
+	private boolean hasEnabledPreviousStep(int currentOrder)
+    {
+		boolean ret = false;
+		for (int i=currentOrder-1; i>=0; i--)
+		{
+			if (wizard.isStepEnabled(i))
+			{
+				ret = true;
+				break;
+			}
+		}
+		
+	    return ret;
+    }
+
+	/**
 	 * 
 	 */
 	private void updateCommandButtons()
@@ -462,7 +462,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 			command.setControlBar(this);
 		}
     }
-	
+
 	/**
 	 * 
 	 */
@@ -477,12 +477,14 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 
 		Collections.sort(sortedCommands);
 		
-		cellPanel.clear();
+		itemsPanel.clear();
 		
 		for (final WizardCommand command: sortedCommands)
 		{
-			cellPanel.add(command);
+			itemsPanel.add(command);
 		}
+		
+		maybeShowNavigationButtons();
     }
 
 	/**

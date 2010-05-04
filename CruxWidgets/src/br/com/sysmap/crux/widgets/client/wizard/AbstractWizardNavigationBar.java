@@ -17,10 +17,23 @@ package br.com.sysmap.crux.widgets.client.wizard;
 
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
@@ -28,10 +41,27 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public abstract class AbstractWizardNavigationBar extends Composite implements WizardStepListener
 {
-	private boolean vertical;
+	public static final String DEFAULT_NEXT_HORIZONTAL_STYLE_NAME = "crux-WizardNavigationNextHorizontal";
+	public static final String DEFAULT_NEXT_VERTICAL_STYLE_NAME = "crux-WizardNavigationNextVertical";
+	public static final String DEFAULT_PREVIOUS_HORIZONTAL_STYLE_NAME = "crux-WizardNavigationPreviousHorizontal";
+	public static final String DEFAULT_PREVIOUS_VERTICAL_STYLE_NAME = "crux-WizardNavigationPreviousVertical";
+
+	protected CellPanel itemsPanel;
 	
-	protected CellPanel cellPanel;
+	protected InternalDockPanel layoutPanel;
 	protected Wizard wizard;
+	
+	private String horizontalNextButtonStyleName = DEFAULT_NEXT_HORIZONTAL_STYLE_NAME;
+
+	private Label horizontalNextLabel;
+	private String horizontalPreviousButtonStyleName = DEFAULT_PREVIOUS_HORIZONTAL_STYLE_NAME;
+	private Label horizontalPreviousLabel;
+	private SimplePanel itemsScrollPanel;
+	private boolean vertical;
+	private String verticalNextButtonStyleName = DEFAULT_NEXT_VERTICAL_STYLE_NAME;
+	private Label verticalNextLabel;
+	private String verticalPreviousButtonStyleName = DEFAULT_PREVIOUS_VERTICAL_STYLE_NAME;
+	private Label verticalPreviousLabel;
 
 	/**
 	 * @param vertical
@@ -40,20 +70,88 @@ public abstract class AbstractWizardNavigationBar extends Composite implements W
 	{
 		this.vertical = vertical;
 		
+		this.layoutPanel = new InternalDockPanel();
+		this.itemsScrollPanel = new SimplePanel();
+	    DOM.setStyleAttribute(this.itemsScrollPanel.getElement(), "overflow", "hidden");
+		
 		if (vertical)
 		{
-			this.cellPanel = new VerticalPanel();
+			this.layoutPanel.setHeight("100%");
+			this.itemsScrollPanel.setHeight("100%");
+			this.itemsPanel = new VerticalPanel();
 		}
 		else
 		{
-			this.cellPanel = new HorizontalPanel();
+			this.layoutPanel.setWidth("100%");
+			this.itemsScrollPanel.setWidth("100%");
+			this.itemsPanel = new HorizontalPanel();
 		}
-		this.cellPanel.setStyleName(styleName);
 		
-		initWidget(cellPanel);
+		this.itemsScrollPanel.add(this.itemsPanel);
+		
+		this.layoutPanel.add(this.itemsScrollPanel, DockPanel.CENTER);
+		this.layoutPanel.setStyleName(styleName);
+		this.layoutPanel.getElement().getStyle().setProperty("tableLayout", "fixed");
+		this.layoutPanel.getBody().getStyle().setProperty("height", "100%");
+		
+		if (vertical)
+		{
+			this.layoutPanel.setCellHeight(this.itemsScrollPanel, "100%");
+		}
+		
+		
+		initWidget(layoutPanel);
 		setSpacing(5);
     }
 	
+	/**
+	 * @return
+	 */
+	public String getHorizontalNextButtonStyleName()
+    {
+    	return horizontalNextButtonStyleName;
+    }
+
+	/**
+	 * @return
+	 */
+	public String getHorizontalPreviousButtonStyleName()
+    {
+    	return horizontalPreviousButtonStyleName;
+    }
+
+	/**
+	 * @return
+	 */
+	public int getSpacing()
+	{
+		return itemsPanel.getSpacing();
+	}
+
+	/**
+	 * @return
+	 */
+	public String getVerticalNextButtonStyleName()
+    {
+    	return verticalNextButtonStyleName;
+    }
+
+	/**
+	 * @return
+	 */
+	public String getVerticalPreviousButtonStyleName()
+    {
+    	return verticalPreviousButtonStyleName;
+    }
+
+	/**
+	 * @return
+	 */
+	public Wizard getWizard()
+    {
+    	return wizard;
+    }
+
 	/**
 	 * @return
 	 */
@@ -61,29 +159,167 @@ public abstract class AbstractWizardNavigationBar extends Composite implements W
 	{
 		return vertical;
 	}
+
+	/**
+	 * @param horizontalNextButtonStyleName
+	 */
+	public void setHorizontalNextButtonStyleName(String horizontalNextButtonStyleName)
+    {
+    	this.horizontalNextButtonStyleName = horizontalNextButtonStyleName;
+    }
+
+	/**
+	 * @param horizontalPreviousButtonStyleName
+	 */
+	public void setHorizontalPreviousButtonStyleName(String horizontalPreviousButtonStyleName)
+    {
+    	this.horizontalPreviousButtonStyleName = horizontalPreviousButtonStyleName;
+    }
 	
 	/**
 	 * @param spacing
 	 */
 	public void setSpacing(int spacing)
 	{
-		cellPanel.setSpacing(spacing);
+		itemsPanel.setSpacing(spacing);
 	}
-	
+
 	/**
-	 * @return
+	 * @param verticalNextButtonStyleName
 	 */
-	public int getSpacing()
-	{
-		return cellPanel.getSpacing();
-	}	
-	
-	/**
-	 * @return
-	 */
-	public Wizard getWizard()
+	public void setVerticalNextButtonStyleName(String verticalNextButtonStyleName)
     {
-    	return wizard;
+    	this.verticalNextButtonStyleName = verticalNextButtonStyleName;
+    }
+	
+	/**
+	 * @param verticalPreviousButtonStyleName
+	 */
+	public void setVerticalPreviousButtonStyleName(String verticalPreviousButtonStyleName)
+    {
+    	this.verticalPreviousButtonStyleName = verticalPreviousButtonStyleName;
+    }
+	
+	/**
+	 * 
+	 */
+	protected void addHorizontalNavigationButtons()
+    {
+	    if (horizontalPreviousLabel != null)
+	    {
+	    	horizontalPreviousLabel.removeFromParent();
+	    }
+		horizontalPreviousLabel = new Label(" ");
+	    horizontalPreviousLabel.setStyleName(horizontalPreviousButtonStyleName);
+	    HorizontalNavButtonEvtHandler handler = new HorizontalNavButtonEvtHandler(-20, -5);
+	    horizontalPreviousLabel.addMouseDownHandler(handler);
+	    horizontalPreviousLabel.addMouseUpHandler(handler);
+
+	    this.layoutPanel.add(horizontalPreviousLabel, DockPanel.WEST);
+	    this.layoutPanel.setCellWidth(horizontalPreviousLabel, "16");
+	    
+	    if (horizontalNextLabel != null)
+	    {
+	    	horizontalNextLabel.removeFromParent();
+	    }
+	    horizontalNextLabel = new Label(" ");
+	    horizontalNextLabel.setStyleName(horizontalNextButtonStyleName);
+	    handler = new HorizontalNavButtonEvtHandler(20, 5);
+	    horizontalNextLabel.addMouseDownHandler(handler);
+	    horizontalNextLabel.addMouseUpHandler(handler);
+
+	    this.layoutPanel.add(horizontalNextLabel, DockPanel.EAST);
+	    this.layoutPanel.setCellWidth(horizontalNextLabel, "16");
+    }	
+	
+	/**
+	 * 
+	 */
+	protected void addVerticalNavigationButtons()
+    {
+	    if (verticalPreviousLabel != null)
+	    {
+	    	verticalPreviousLabel.removeFromParent();
+	    }
+	    verticalPreviousLabel = new Label(" ");
+	    verticalPreviousLabel.setStyleName(verticalPreviousButtonStyleName);
+	    VerticalNavButtonEvtHandler handler = new VerticalNavButtonEvtHandler(-20, -5);
+	    verticalPreviousLabel.addMouseDownHandler(handler);
+	    verticalPreviousLabel.addMouseUpHandler(handler);
+	    this.layoutPanel.add(verticalPreviousLabel, DockPanel.NORTH);
+	    this.layoutPanel.setCellHeight(verticalPreviousLabel, "16");
+	    
+	    if (verticalNextLabel != null)
+	    {
+	    	verticalNextLabel.removeFromParent();
+	    }
+	    verticalNextLabel = new Label(" ");
+	    handler = new VerticalNavButtonEvtHandler(20, 5);
+	    verticalNextLabel.addMouseDownHandler(handler);
+	    verticalNextLabel.addMouseUpHandler(handler);
+	    verticalNextLabel.setStyleName(verticalNextButtonStyleName);
+	    this.layoutPanel.add(verticalNextLabel, DockPanel.SOUTH);
+	    this.layoutPanel.setCellHeight(verticalNextLabel, "16");
+    }
+
+	/**
+	 * 
+	 */
+	protected void checkWizard()
+	{
+		if (this.wizard == null)
+		{
+			throw new NullPointerException(WidgetMsgFactory.getMessages().wizardControlBarOrphan());
+		}
+	}
+
+	/**
+	 * 
+	 */
+	protected void maybeShowNavigationButtons()
+    {
+	    if (isVertical())
+		{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand()
+			{
+				public void execute()
+				{
+					if (itemsPanel.getOffsetHeight() > layoutPanel.getOffsetHeight())
+					{
+						addVerticalNavigationButtons();
+					}
+				}
+			});
+		}
+		else
+		{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand()
+			{
+				public void execute()
+				{
+					if (itemsPanel.getOffsetWidth() > layoutPanel.getOffsetWidth())
+					{
+						addHorizontalNavigationButtons();
+					}
+				}
+			});
+		}
+    }
+	
+	/**
+	 * @param align
+	 */
+	protected void setCellHorizontalAlignment(HorizontalAlignmentConstant align)
+    {
+		this.layoutPanel.setCellHorizontalAlignment(this.itemsScrollPanel, align);
+    }
+
+	/**
+	 * @param verticalAlign
+	 */
+	protected void setCellVerticalAlignment(VerticalAlignmentConstant verticalAlign)
+    {
+		this.layoutPanel.setCellVerticalAlignment(this.itemsScrollPanel, verticalAlign);
     }
 	
 	/**
@@ -95,13 +331,86 @@ public abstract class AbstractWizardNavigationBar extends Composite implements W
     }	
 	
 	/**
-	 * 
+	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 *
 	 */
-	protected void checkWizard()
+	class HorizontalNavButtonEvtHandler implements MouseDownHandler, MouseUpHandler
 	{
-		if (this.wizard == null)
+		private int adjust;
+		private boolean buttonPressed = false;
+		private int incrementalAdjust;
+		//TODO - Thiago - Salvar o scrollPosition para manter qdo uma troca de pagina acontece
+		HorizontalNavButtonEvtHandler(int adjust, int incrementalAdjust)
 		{
-			throw new NullPointerException(WidgetMsgFactory.getMessages().wizardControlBarOrphan());
+			this.adjust = adjust;
+			this.incrementalAdjust = incrementalAdjust;
 		}
-	}	
+		
+		public void onMouseDown(MouseDownEvent event)
+		{
+			buttonPressed = true;
+			adjustScrollPosition(adjust);
+			Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
+			{
+				public boolean execute()
+				{
+					if (buttonPressed)
+					{
+						adjustScrollPosition(incrementalAdjust);
+					}
+					return buttonPressed;
+				}
+			}, 50);
+		}
+
+		public void onMouseUp(MouseUpEvent event)
+		{
+			buttonPressed = false;
+		}
+		
+		/**
+		 * @param adjust
+		 */
+		protected void adjustScrollPosition(int adjust)
+	    {
+			int position = DOM.getElementPropertyInt(itemsScrollPanel.getElement(), "scrollLeft") + adjust;
+			if (position <0)
+			{
+				position = 0;
+			}
+			else if (position > itemsScrollPanel.getOffsetWidth())
+			{
+				position = itemsScrollPanel.getOffsetWidth();
+			}
+		    DOM.setElementPropertyInt(itemsScrollPanel.getElement(), "scrollLeft", position);
+	    }
+	}
+	
+	/**
+	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 *
+	 */
+	class VerticalNavButtonEvtHandler extends HorizontalNavButtonEvtHandler
+	{
+
+		VerticalNavButtonEvtHandler(int adjust, int incrementalAdjust)
+        {
+	        super(adjust, incrementalAdjust);
+        }
+
+		@Override
+		protected void adjustScrollPosition(int adjust)
+	    {
+	        int position = DOM.getElementPropertyInt(itemsScrollPanel.getElement(), "scrollTop") + adjust;
+			if (position <0)
+			{
+				position = 0;
+			}
+			else if (position > itemsScrollPanel.getOffsetHeight())
+			{
+				position = itemsScrollPanel.getOffsetHeight();
+			}
+		    DOM.setElementPropertyInt(itemsScrollPanel.getElement(), "scrollTop", position);
+	    }
+	}
 }

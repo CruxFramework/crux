@@ -54,7 +54,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	
 	private WizardControlBar controlBar;
 	private int currentStep = -1;
-	private DockPanel dockPanel;
+	private InternalDockPanel dockPanel;
 	private boolean isChangingStep = false;
 	private WizardNavigationBar navigationBar;
 
@@ -70,7 +70,8 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	public Wizard(String id)
     {
-		this.dockPanel = new DockPanel();
+		this.dockPanel = new InternalDockPanel(){
+		};
 		this.dockPanel.setStyleName(DEFAULT_STYLE_NAME);
 		
 		this.stepsPanel = new DeckPanel();
@@ -82,6 +83,8 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		this.dockPanel.setCellWidth(this.stepsPanel, "100%");
 		
 		this.dockPanel.getElement().setId(id);
+		this.dockPanel.getBody().getStyle().setProperty("height", "100%");
+		
 		
 		initWidget(dockPanel);
 		Events.getRegisteredClientEventHandlers().registerEventHandler("__wizard", new CruxInternalWizardPageController());
@@ -488,12 +491,14 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param position
 	 * @param horizontalAlign
 	 */
-	public void setControlBar(WizardControlBar controlBar, ControlPosition position, ControlHorizontalAlign horizontalAlign)
+	public void setControlBar(final WizardControlBar controlBar, ControlPosition position, ControlHorizontalAlign horizontalAlign)
     {
     	if (setControlBar(controlBar, position))
     	{
 			dockPanel.setCellHeight(this.controlBar, "0");
-			dockPanel.setCellHorizontalAlignment(this.controlBar, getHorizontalAlign(horizontalAlign));
+			final HorizontalAlignmentConstant align = getHorizontalAlign(horizontalAlign);
+			this.controlBar.setCellHorizontalAlignment(align);
+			dockPanel.setCellHorizontalAlignment(this.controlBar, align);
 		}
     }
 	
@@ -502,13 +507,16 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param position
 	 * @param verticalAlign
 	 */
-	public void setControlBar(WizardControlBar controlBar, ControlPosition position, ControlVerticalAlign verticalAlign)
+	public void setControlBar(final WizardControlBar controlBar, ControlPosition position, ControlVerticalAlign verticalAlign)
     {
     	if (setControlBar(controlBar, position))
     	{
 			dockPanel.setCellWidth(this.controlBar, "0");
-			dockPanel.setCellVerticalAlignment(this.controlBar, getVerticalAlign(verticalAlign));
-		}
+			dockPanel.setCellHeight(this.controlBar, "100%");
+			final VerticalAlignmentConstant align = getVerticalAlign(verticalAlign);
+			this.controlBar.setCellVerticalAlignment(align);
+			dockPanel.setCellVerticalAlignment(this.controlBar, align);
+    	}
     }
 
 	/**
@@ -521,7 +529,9 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
     	if (setNavigationBar(navigationBar, position))
     	{
 			dockPanel.setCellHeight(this.navigationBar, "0");
-			dockPanel.setCellHorizontalAlignment(this.navigationBar, getHorizontalAlign(horizontalAlign));
+			HorizontalAlignmentConstant align = getHorizontalAlign(horizontalAlign);
+			this.navigationBar.setCellHorizontalAlignment(align);
+			dockPanel.setCellHorizontalAlignment(this.navigationBar, align);
 		}
     }
 	
@@ -535,7 +545,10 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
     	if (setNavigationBar(navigationBar, position))
     	{
 			dockPanel.setCellWidth(this.navigationBar, "0");
-			dockPanel.setCellVerticalAlignment(this.navigationBar, getVerticalAlign(verticalAlign));
+			dockPanel.setCellHeight(this.navigationBar, "100%");
+			VerticalAlignmentConstant align = getVerticalAlign(verticalAlign);
+			this.navigationBar.setCellVerticalAlignment(align);
+			dockPanel.setCellVerticalAlignment(this.navigationBar, align);
 		}
     }
 
