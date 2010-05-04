@@ -137,8 +137,8 @@ public class WizardNavigationBar extends AbstractWizardNavigationBar
 	 */
 	private void updateNavigationBar(int currentStep)
     {
-		itemsPanel.clear();
-		
+		rollingPanel.clear();
+		int originalScrollPosition = (rollingPanel.isVertical()?rollingPanel.getVerticalScrollPosition():rollingPanel.getHorizontalScrollPosition());
 		boolean needsSeparator = false;
 		for (int i=0; i<wizard.getStepCount() && (showAllSteps || i<= currentStep); i++)
 		{
@@ -149,7 +149,7 @@ public class WizardNavigationBar extends AbstractWizardNavigationBar
 				{
 					Label separator = new Label();
 					separator.setStyleName(isVertical()?verticalSeparatorStyleName:horizontalSeparatorStyleName);
-					itemsPanel.add(separator);
+					rollingPanel.add(separator);
 				}
 				needsSeparator = true;
 				Label label = new Label(step.getLabel());
@@ -171,10 +171,9 @@ public class WizardNavigationBar extends AbstractWizardNavigationBar
 					});
 				}
 
-				itemsPanel.add(label);
+				rollingPanel.add(label);
 			}
 		}
-		
-		maybeShowNavigationButtons();
+		updateScrollPosition(originalScrollPosition);
     }
 }

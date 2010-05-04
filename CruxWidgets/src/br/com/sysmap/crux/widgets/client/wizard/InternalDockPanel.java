@@ -22,10 +22,10 @@ import com.google.gwt.user.client.ui.DockPanel;
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-class InternalDockPanel extends DockPanel
+public class InternalDockPanel extends DockPanel
 {
 	@Override
-	protected Element getBody()
+	public Element getBody()
 	{
 	    return super.getBody();
 	}

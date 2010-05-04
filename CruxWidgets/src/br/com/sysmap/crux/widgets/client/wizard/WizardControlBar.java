@@ -477,14 +477,15 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 
 		Collections.sort(sortedCommands);
 		
-		itemsPanel.clear();
+		int originalScrollPosition = (rollingPanel.isVertical()?rollingPanel.getVerticalScrollPosition():rollingPanel.getHorizontalScrollPosition());
+		rollingPanel.clear();
 		
 		for (final WizardCommand command: sortedCommands)
 		{
-			itemsPanel.add(command);
+			rollingPanel.add(command);
 		}
 		
-		maybeShowNavigationButtons();
+		updateScrollPosition(originalScrollPosition);
     }
 
 	/**
