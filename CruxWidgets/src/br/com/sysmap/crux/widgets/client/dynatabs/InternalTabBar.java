@@ -91,9 +91,9 @@ public class InternalTabBar extends Composite implements
     boolean hasWordWrap();
   }
 
-  private class internalSimplePanel extends SimplePanel
+  private class InternalSimplePanel extends SimplePanel
   {
-	  internalSimplePanel(Element e)
+	  InternalSimplePanel(Element e)
 	  {
 		  super(e);
 	  }
@@ -111,7 +111,7 @@ public class InternalTabBar extends Composite implements
 
     ClickDelegatePanel(Widget child) {
 
-      focusablePanel = new internalSimplePanel(((FocusImpl)GWT.create(FocusImpl.class)).createFocusable());
+      focusablePanel = new InternalSimplePanel(((FocusImpl)GWT.create(FocusImpl.class)).createFocusable());
       focusablePanel.setWidget(child);
       SimplePanel wrapperWidget = createTabTextWrapper();
       if (wrapperWidget == null) {

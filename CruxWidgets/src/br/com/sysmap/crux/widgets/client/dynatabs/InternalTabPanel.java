@@ -228,8 +228,8 @@ public class InternalTabPanel extends Composite implements HasWidgets,
 			}
 		});
 
-		setStyleName("crux-InternalTabPanel");
-		deck.setStyleName("crux-TabPanelBottom");
+		setStyleName("gwt-TabPanel");
+		deck.setStyleName("gwt-TabPanelBottom");
 		// Add a11y role "InternalTabPanel"
 		Accessibility.setRole(deck.getElement(), Accessibility.ROLE_TABPANEL);
 	}
