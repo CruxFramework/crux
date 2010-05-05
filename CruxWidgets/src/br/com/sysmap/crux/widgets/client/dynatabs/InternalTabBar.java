@@ -425,6 +425,7 @@ public class InternalTabBar extends Composite implements
 
     selectedTab = panel.getWidget(index + 1);
     setSelectionStyle(selectedTab, true);
+    panel.scrollToWidget(selectedTab);
     SelectionEvent.fire(this, index);
     return true;
   }
