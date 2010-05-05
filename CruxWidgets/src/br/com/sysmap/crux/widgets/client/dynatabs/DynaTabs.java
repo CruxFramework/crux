@@ -28,7 +28,6 @@ import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TabPanel;
 
 /**
  * TODO - Gessé - Comment
@@ -39,14 +38,14 @@ public class DynaTabs extends Composite
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-DynaTabs";
 	private LinkedHashMap<String, Tab> tabs = new LinkedHashMap<String, Tab>();
-	private TabPanel tabPanel;
+	private InternalTabPanel tabPanel;
 
 	/**
 	 * Empty constructor
 	 */
 	public DynaTabs()
 	{
-		this.tabPanel = new TabPanel();
+		this.tabPanel = new InternalTabPanel();
 		this.tabPanel.setStyleName(DEFAULT_STYLE_NAME);
 		this.tabPanel.addBeforeSelectionHandler(createBeforeSelectionHandler());
 		initWidget(tabPanel);

@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -43,7 +44,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-public class RollingPanel extends Composite 
+public class RollingPanel extends Composite implements InsertPanel
 {
 	public static final String DEFAULT_NEXT_HORIZONTAL_STYLE_NAME = "crux-RollingPanelHNext";
 
@@ -61,13 +62,14 @@ public class RollingPanel extends Composite
 	private Label horizontalPreviousLabel = null;
 	
 	private SimplePanel itemsScrollPanel;
+	private boolean scrollToAddedWidgets = false;
 	private boolean vertical;
 	private String verticalNextButtonStyleName = DEFAULT_NEXT_VERTICAL_STYLE_NAME;
-	private Label verticalNextLabel = null;
 
+	private Label verticalNextLabel = null;
 	private String verticalPreviousButtonStyleName = DEFAULT_PREVIOUS_VERTICAL_STYLE_NAME;
 	private Label verticalPreviousLabel = null;
-
+	
 	/**
 	 * @param vertical
 	 */
@@ -120,12 +122,22 @@ public class RollingPanel extends Composite
 	/**
 	 * @param child
 	 */
-	public void add(Widget child)
+	public void add(final Widget child)
 	{
 		this.itemsPanel.add(child);
 		maybeShowNavigationButtons();
+		if (scrollToAddedWidgets)
+		{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand()
+			{
+				public void execute()
+				{
+					scrollToWidget(child);
+				}
+			});
+		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -134,7 +146,7 @@ public class RollingPanel extends Composite
 		this.itemsPanel.clear();
 		maybeShowNavigationButtons();
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -142,7 +154,7 @@ public class RollingPanel extends Composite
     {
     	return horizontalNextButtonStyleName;
     }
-
+	
 	/**
 	 * @return
 	 */
@@ -150,7 +162,7 @@ public class RollingPanel extends Composite
     {
     	return horizontalPreviousButtonStyleName;
     }
-
+	
 	/**
 	 * @return
 	 */
@@ -166,7 +178,7 @@ public class RollingPanel extends Composite
 	{
 		return itemsPanel.getSpacing();
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -182,7 +194,7 @@ public class RollingPanel extends Composite
     {
     	return verticalPreviousButtonStyleName;
     }
-
+	
 	/**
 	 * @return
 	 */
@@ -192,6 +204,59 @@ public class RollingPanel extends Composite
 	}
 
 	/**
+	 * @param i
+	 * @return
+	 */
+	public Widget getWidget(int i)
+    {
+	    return itemsPanel.getWidget(i);
+    }
+
+	/**
+	 * @return
+	 */
+	public int getWidgetCount()
+    {
+	    return itemsPanel.getWidgetCount();
+    }
+
+	/**
+	 * @see com.google.gwt.user.client.ui.IndexedPanel#getWidgetIndex(com.google.gwt.user.client.ui.Widget)
+	 */
+	public int getWidgetIndex(Widget child)
+    {
+	    return ((InsertPanel)itemsPanel).getWidgetIndex(child);
+    }
+
+	/**
+	 * @param widget
+	 * @param i
+	 */
+	public void insert(final Widget widget, int i)
+    {
+	    ((InsertPanel)itemsPanel).insert(widget, i);
+		maybeShowNavigationButtons();
+		if (scrollToAddedWidgets)
+		{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand()
+			{
+				public void execute()
+				{
+					scrollToWidget(widget);
+				}
+			});
+		}
+    }
+	
+	/**
+	 * @return
+	 */
+	public boolean isScrollToAddedWidgets()
+    {
+    	return scrollToAddedWidgets;
+    }
+	
+	/**
 	 * @return
 	 */
 	public boolean isVertical()
@@ -199,6 +264,43 @@ public class RollingPanel extends Composite
 		return vertical;
 	}
 
+	/**
+	 * @see com.google.gwt.user.client.ui.IndexedPanel#remove(int)
+	 */
+	public boolean remove(int index)
+    {
+	    boolean ret = ((InsertPanel)itemsPanel).remove(index);
+		maybeShowNavigationButtons();
+		return ret;
+    }
+	
+	/**
+	 * @param toRemove
+	 */
+	public void remove(Widget toRemove)
+    {
+		itemsPanel.remove(toRemove);
+		maybeShowNavigationButtons();
+    }
+	
+	/**
+	 * @param widget
+	 */
+	public void scrollToWidget(Widget widget)
+	{
+		if (widget != null)
+		{
+			if (isVertical())
+			{
+				verticalScrollToWidget(itemsScrollPanel.getElement(), widget.getElement());
+			}
+			else
+			{
+				horizontalScrollToWidget(itemsScrollPanel.getElement(), widget.getElement());
+			}
+		}
+	}
+	
 	/**
 	 * @param child
 	 * @param cellHeight
@@ -215,7 +317,7 @@ public class RollingPanel extends Composite
 	public void setCellHorizontalAlignment(Widget w, HorizontalAlignmentConstant align)
 	{
 		this.itemsPanel.setCellHorizontalAlignment(w, align);
-	}
+	}	
 	
 	/**
 	 * @param verticalAlign
@@ -223,7 +325,7 @@ public class RollingPanel extends Composite
 	public void setCellVerticalAlignment(Widget w, VerticalAlignmentConstant verticalAlign)
     {
 		this.itemsPanel.setCellVerticalAlignment(w, verticalAlign);
-    }
+    }	
 
 	/**
 	 * @param child
@@ -249,7 +351,7 @@ public class RollingPanel extends Composite
     {
     	this.horizontalNextButtonStyleName = horizontalNextButtonStyleName;
     }
-	
+
 	/**
 	 * @param horizontalPreviousButtonStyleName
 	 */
@@ -272,7 +374,15 @@ public class RollingPanel extends Composite
 			position = itemsScrollPanel.getOffsetWidth();
 		}
 		DOM.setElementPropertyInt(itemsScrollPanel.getElement(), "scrollLeft", position);
-	}	
+	}
+
+	/**
+	 * @param scrollToAddedWidgets
+	 */
+	public void setScrollToAddedWidgets(boolean scrollToAddedWidgets)
+    {
+    	this.scrollToAddedWidgets = scrollToAddedWidgets;
+    }
 	
 	/**
 	 * @param spacing
@@ -280,8 +390,8 @@ public class RollingPanel extends Composite
 	public void setSpacing(int spacing)
 	{
 		itemsPanel.setSpacing(spacing);
-	}	
-
+	}
+	
 	/**
 	 * @param verticalAlign
 	 */
@@ -289,7 +399,7 @@ public class RollingPanel extends Composite
     {
 		this.layoutPanel.setCellVerticalAlignment(this.itemsScrollPanel, verticalAlign);
     }
-	
+
 	/**
 	 * @param verticalNextButtonStyleName
 	 */
@@ -406,7 +516,7 @@ public class RollingPanel extends Composite
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -456,6 +566,42 @@ public class RollingPanel extends Composite
 	    	verticalNextLabel = null;
 	    }
 	}
+
+	/**
+	 * @param scroll
+	 * @param item
+	 */
+	private void horizontalScrollToWidget(com.google.gwt.dom.client.Element scroll, com.google.gwt.dom.client.Element item)
+    {
+		if (itemsPanel.getOffsetWidth() > layoutPanel.getOffsetWidth())
+		{		
+			int realOffset = 0;
+			while (item != null && (!item.equals(scroll)))
+			{
+				realOffset += item.getOffsetLeft();
+				item = item.getOffsetParent();
+			}
+			scroll.setScrollLeft(realOffset - scroll.getOffsetWidth() / 2);
+		}
+    }
+
+	/**
+	 * @param scroll
+	 * @param item
+	 */
+	private void verticalScrollToWidget(com.google.gwt.dom.client.Element scroll, com.google.gwt.dom.client.Element item)
+    {
+		if (itemsPanel.getOffsetHeight() > layoutPanel.getOffsetHeight())
+		{
+			int realOffset = 0;
+			while (item != null && (!item.equals(scroll)))
+			{
+				realOffset += item.getOffsetTop();
+				item = item.getOffsetParent();
+			}
+			scroll.setScrollTop(realOffset - scroll.getOffsetHeight() / 2);
+		}
+    }
 
 	/**
 	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
