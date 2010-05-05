@@ -61,7 +61,7 @@ public class DecoratedPanel extends CellPanel
 		getTable().setPropertyString("width", width);
 		getTable().getStyle().setProperty("height", height);
 //		getTable().getStyle().setProperty("tableLayout", "fixed");
-		
+	 	
 		topLine = DOM.createTR();
 		topLeftCell = createTd("topLeftCell", true);
 		topCenterCell = createTd("topCenterCell", true);
