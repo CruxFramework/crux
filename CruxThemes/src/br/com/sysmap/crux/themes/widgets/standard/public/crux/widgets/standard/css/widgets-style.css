@@ -556,6 +556,37 @@
 }
 
 /******************************************************************************
+	RollingPanel
+*******************************************************************************/
+.crux-RollingPanelHNext
+{
+	width: 20px;
+	height: 11px;
+	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
+}
+
+.crux-RollingPanelHPrevious
+{
+	width: 20px;
+	height: 11px;
+	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
+}
+
+.crux-RollingPanelVNext
+{
+	width: 20px;
+	height: 11px;
+	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
+}
+
+.crux-RollingPanelVPrevious
+{
+	width: 20px;
+	height: 11px;
+	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
+}
+
+/******************************************************************************
 	Dyna Tabs
 *******************************************************************************/
 .crux-DynaTabs .gwt-TabBarFirst
@@ -571,7 +602,7 @@
 	height:26px !important;
 	padding:0px;
 }
-.crux-DynaTabs .gwt-TabPanelBottom
+.crux-DynaTabs .crux-TabPanelBottom
 {
 	height: 99.7%;
 	border: solid 0px;
@@ -644,7 +675,7 @@
 	padding-right:5px;
 	white-space:nowrap;
 }
-.crux-DynaTabs .gwt-TabPanelBottom
+.crux-DynaTabs .crux-TabPanelBottom
 {
 	padding: 0px;
 	overflow:auto;
