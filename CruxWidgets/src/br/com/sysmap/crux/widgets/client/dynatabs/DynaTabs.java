@@ -120,7 +120,7 @@ public class DynaTabs extends Composite
 	 */
 	public int getFocusedTabIndex()
 	{
-		return tabPanel.getTabBar().getSelectedTab();
+		return tabPanel.getSelectedTab();
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class DynaTabs extends Composite
 	 */
 	public Tab getFocusedTab()
 	{
-		int index = tabPanel.getTabBar().getSelectedTab();
+		int index = tabPanel.getSelectedTab();
 
 		if (index >= 0)
 		{
