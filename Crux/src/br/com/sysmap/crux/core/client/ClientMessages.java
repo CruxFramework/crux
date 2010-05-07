@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.core.client;
 
 import com.google.gwt.i18n.client.Messages;
-import com.google.gwt.i18n.client.Messages.DefaultMessage;
 
 /**
  * Contains all client messages used by Crux Framework
