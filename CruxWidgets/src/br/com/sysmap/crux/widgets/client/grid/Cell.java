@@ -32,8 +32,8 @@ public class Cell extends Composite
 	private AbstractGrid grid;
 	private boolean selectRowOnClick;
 	private boolean highlightRowOnMouseOver;
-
-	protected Cell(boolean fireEvents, boolean selectRowOnClick, boolean highlightRowOnMouseOver)
+	
+	protected Cell(boolean fireEvents, boolean selectRowOnClick, boolean highlightRowOnMouseOver, boolean wrapLine, boolean truncate)
 	{
 		this.fireEvents = fireEvents;
 		this.selectRowOnClick = selectRowOnClick;
@@ -41,14 +41,23 @@ public class Cell extends Composite
 
 		basePanel = new SimplePanel();
 		initWidget(basePanel);
-		basePanel.getElement().getStyle().setProperty("whiteSpace", "nowrap");
-		basePanel.getElement().getStyle().setProperty("overflow", "hidden");
+		
+		if(!wrapLine)
+		{
+			basePanel.getElement().getStyle().setProperty("whiteSpace", "nowrap");
+		}
+		
+		if(truncate)
+		{
+			basePanel.getElement().getStyle().setProperty("overflow", "hidden");
+		}
+		
 		sinkEvents(Event.ONCLICK | Event.ONMOUSEOVER | Event.ONMOUSEOUT | Event.ONDBLCLICK);
 	}
 
-	protected Cell(Widget widget, boolean fireEvents, boolean selectRowOnClick, boolean highlightRowOnMouseOver)
+	protected Cell(Widget widget, boolean fireEvents, boolean selectRowOnClick, boolean highlightRowOnMouseOver, boolean wrapLine, boolean truncate)
 	{
-		this(fireEvents, selectRowOnClick, highlightRowOnMouseOver);
+		this(fireEvents, selectRowOnClick, highlightRowOnMouseOver, wrapLine, truncate);
 		this.basePanel.add(widget);
 	}
 

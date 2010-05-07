@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.grid;
 
-import br.com.sysmap.crux.widgets.client.util.StyleUtils;
+import br.com.sysmap.crux.core.client.utils.StyleUtils;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.CheckBox;

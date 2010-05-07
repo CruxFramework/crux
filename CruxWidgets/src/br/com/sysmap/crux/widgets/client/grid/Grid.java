@@ -75,7 +75,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private RowSelectionModel rowSelectionModel;
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private long generatedWidgetId = 0;
-	private final String emptyDataFilling;
+	private String emptyDataFilling;
 	
 	/**
 	 * Full constructor
@@ -86,9 +86,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	 * @param autoLoadData if <code>true</code>, when a data source is set, its first page records are fetched and rendered. 
 	 * 	If <code>false</code>, the method <code>loadData()</code> must be invoked for rendering the first page.
 	 */
-	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling)
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize)
 	{
-		super(columnDefinitions, rowSelectionModel, cellSpacing, stretchColumns, highlightRowOnMouseOver);
+		super(columnDefinitions, rowSelectionModel, cellSpacing, stretchColumns, highlightRowOnMouseOver, fixedCellSize);
 		getColumnDefinitions().setGrid(this);
 		this.emptyDataFilling = emptyDataFilling != null ? emptyDataFilling : " ";
 		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
@@ -278,17 +278,23 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			{
 				Widget widget = null;
 				String key = column.getKey();
+				boolean wrapLine = true;
+				boolean truncate = true;
 				
 				if(column instanceof DataColumnDefinition)
 				{
-					widget = createDataLabel(column, key);					
+					wrapLine = true;
+					truncate = false;
+					widget = createDataLabel((DataColumnDefinition) column, key);					
 				}
 				else if(column instanceof WidgetColumnDefinition)
 				{
+					wrapLine = false;
+					truncate = true;
 					widget = createWidget((WidgetColumnDefinition) column, row);
 				}
 				
-				row.setCell(createCell(widget), key);
+				row.setCell(createCell(widget, wrapLine, truncate), key);
 			}
 		}
 		
@@ -339,9 +345,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		return ++generatedWidgetId;
 	}
 
-	private Widget createDataLabel(ColumnDefinition column, String key)
+	private Widget createDataLabel(DataColumnDefinition dataColumn, String key)
 	{
-		DataColumnDefinition dataColumn = (DataColumnDefinition) column;
 		String formatterName = dataColumn.getFormatter();
 		Object value = dataSource.getValue(key);
 		String str = emptyDataFilling;
@@ -371,7 +376,16 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		if(useEmptyDataStyle)
 		{
 			label.addStyleName("emptyData");
-		}		
+		}
+		
+		if(!dataColumn.isWrapLine())
+		{
+			label.getElement().getStyle().setProperty("whiteSpace", "nowrap");
+		}		 
+		else
+		{
+			label.getElement().getStyle().setProperty("whiteSpace", "normal");
+		}
 		
 		return label;
 	}

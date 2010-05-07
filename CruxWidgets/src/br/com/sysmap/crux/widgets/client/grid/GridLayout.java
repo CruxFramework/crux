@@ -21,5 +21,6 @@ public class GridLayout
 {
 	void adjustToBrowser(ScrollPanel scrollingArea, GridHtmlTable table)
 	{
+		table.getElement().getStyle().setProperty("tableLayout", "fixed");
 	}
 }

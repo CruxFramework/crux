@@ -20,12 +20,14 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
 
 public class DataColumnDefinition extends ColumnDefinition
 {
-	String formatter;
+	private String formatter;
+	private boolean wrapLine;
 
-	public DataColumnDefinition(String label, String width, String formatter, boolean visible, HorizontalAlignmentConstant horizontalAlign, VerticalAlignmentConstant verticalAlign)
+	public DataColumnDefinition(String label, String width, String formatter, boolean visible, boolean wrapLine, HorizontalAlignmentConstant horizontalAlign, VerticalAlignmentConstant verticalAlign)
 	{
 		super(label, width, visible, horizontalAlign, verticalAlign);
 		this.formatter = formatter;
+		this.wrapLine = wrapLine;
 	}
 
 	/**
@@ -34,5 +36,13 @@ public class DataColumnDefinition extends ColumnDefinition
 	public String getFormatter()
 	{
 		return formatter;
+	}
+
+	/**
+	 * @return the wrapLine
+	 */
+	public boolean isWrapLine()
+	{
+		return wrapLine;
 	}
 }

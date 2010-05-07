@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
 public class ColumnDefinition
 {
 	String key;
-
+	
 	Grid grid = null;
 	
 	String width;

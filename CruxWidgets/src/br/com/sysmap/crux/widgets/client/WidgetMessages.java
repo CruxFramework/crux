@@ -37,12 +37,6 @@ public interface WidgetMessages extends Messages
 	@DefaultMessage("[crux-widgets 006] - Could not create widget for grid column ''{0}''")
 	String errorCreatingWidgetForColumn(String key);
 	
-	@DefaultMessage("[crux-widgets 007] - Found a null element reference when trying to modify it''s styleName property.")
-	String nullElementAtSetStyleName();
-	
-	@DefaultMessage("[crux-widgets 008] - Empty strings can not be used as a styleName property value.")
-	String emptyStringAsStyleNameValue();
-	
 	@DefaultMessage("[crux-widgets 009] - It is not possible unregister a column definition.")
 	String removingColumnDefinitionByIterator();
 	

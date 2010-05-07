@@ -60,8 +60,20 @@ public class GridFactory extends WidgetFactory<Grid>
 		Grid grid = new Grid(getColumnDefinitions(gridElem), getPageSize(gridElem), 
 				                               getRowSelectionModel(gridElem), getCellSpacing(gridElem), 
 				                               getAutoLoad(gridElem), getStretchColumns(gridElem), getHighlightRowOnMouseOver(gridElem),
-				                               getEmptyDataFilling(gridElem));
+				                               getEmptyDataFilling(gridElem), isFixedCellSize(gridElem));
 		return grid;
+	}
+	
+	private boolean isFixedCellSize(Element gridElem)
+	{
+		String fixedCellSize = gridElem.getAttribute("_fixedCellSize");
+		
+		if(fixedCellSize != null && fixedCellSize.trim().length() > 0)
+		{
+			return Boolean.parseBoolean(fixedCellSize);
+		}
+		
+		return false;
 	}
 	
 	private String getEmptyDataFilling(Element gridElem)
@@ -214,6 +226,7 @@ public class GridFactory extends WidgetFactory<Grid>
 				String columnType = colElem.getAttribute("__tag");
 				String width = colElem.getAttribute("_width");
 				String strVisible = colElem.getAttribute("_visible");
+				String strWrapLine = colElem.getAttribute("_wrapLine");
 				String label = colElem.getAttribute("_label");
 				String key = colElem.getAttribute("_key");
 				String strFormatter = colElem.getAttribute("_formatter");
@@ -221,6 +234,7 @@ public class GridFactory extends WidgetFactory<Grid>
 				String vAlign = colElem.getAttribute("_verticalAlignment");
 				
 				boolean visible = (strVisible != null && strVisible.length() > 0) ? Boolean.parseBoolean(strVisible) : true;
+				boolean wrapLine = (strWrapLine != null && strWrapLine.length() > 0) ? Boolean.parseBoolean(strWrapLine) : false;
 				String formatter = (strFormatter != null && strFormatter.length() > 0) ? strFormatter : null;
 				label = (label != null && label.length() > 0) ? ScreenFactory.getInstance().getDeclaredMessage(label) : "";
 				
@@ -232,7 +246,8 @@ public class GridFactory extends WidgetFactory<Grid>
 							label, 
 							width, 
 							formatter, 
-							visible, 
+							visible,
+							wrapLine,
 							AlignmentAttributeParser.getHorizontalAlignment(hAlign, HasHorizontalAlignment.ALIGN_CENTER),
 							AlignmentAttributeParser.getVerticalAlignment(vAlign, HasVerticalAlignment.ALIGN_MIDDLE));
 				}
@@ -267,6 +282,7 @@ public class GridFactory extends WidgetFactory<Grid>
 		@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, defaultValue="false"),
 		@TagAttributeDeclaration(value="stretchColumns", type=Boolean.class, defaultValue="false"),
 		@TagAttributeDeclaration(value="highlightRowOnMouseOver", type=Boolean.class, defaultValue="false"),
+		@TagAttributeDeclaration(value="fixedCellSize", type=Boolean.class, defaultValue="false"),
 		@TagAttributeDeclaration(value="emptyDataFilling", type=String.class, defaultValue=" ")
 	})
 	public void processAttributes(WidgetFactoryContext<Grid> context) throws InterfaceConfigException
@@ -321,6 +337,7 @@ public class GridFactory extends WidgetFactory<Grid>
 		@TagAttributesDeclaration({
 			@TagAttributeDeclaration("width"),
 			@TagAttributeDeclaration(value="visible", type=Boolean.class),
+			@TagAttributeDeclaration(value="wrapLine", type=Boolean.class, defaultValue="false"),
 			@TagAttributeDeclaration("label"),
 			@TagAttributeDeclaration("key"),
 			@TagAttributeDeclaration("formatter"),

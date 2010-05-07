@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.client.utils.StyleUtils;
 import br.com.sysmap.crux.widgets.client.event.row.HasRowClickHandlers;
 import br.com.sysmap.crux.widgets.client.event.row.HasRowDoubleClickHandlers;
 import br.com.sysmap.crux.widgets.client.event.row.HasRowRenderHandlers;
@@ -32,9 +33,7 @@ import br.com.sysmap.crux.widgets.client.event.row.RowDoubleClickEvent;
 import br.com.sysmap.crux.widgets.client.event.row.RowDoubleClickHandler;
 import br.com.sysmap.crux.widgets.client.event.row.RowRenderEvent;
 import br.com.sysmap.crux.widgets.client.event.row.RowRenderHandler;
-import br.com.sysmap.crux.widgets.client.util.StyleUtils;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -67,7 +66,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	private GridHtmlTable table;
 	private ColumnDefinitions definitions;
 	private String generatedId =  "cruxGrid_" + new Date().getTime();
-	private GridLayout gridLayout = GWT.create(GridLayout.class);
 	private List<R> rows = new ArrayList<R>();
 	private Map<Widget, R> widgetsPerRow = new HashMap<Widget, R>();
 	private RowSelectionModel rowSelection;
@@ -106,8 +104,9 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * @param rowSelection the behavior of the grid about line selection 
 	 * @param cellSpacing the space between the cells
 	 * @param stretchColumns 
+	 * @param fixedCellSize 
 	 */
-	public AbstractGrid(ColumnDefinitions columnDefinitions, RowSelectionModel rowSelection, int cellSpacing, boolean stretchColumns, boolean highlightRowOnMouseOver)
+	public AbstractGrid(ColumnDefinitions columnDefinitions, RowSelectionModel rowSelection, int cellSpacing, boolean stretchColumns, boolean highlightRowOnMouseOver, boolean fixedCellSize)
 	{
 		this.definitions = columnDefinitions;
 		this.rowSelection = rowSelection;
@@ -133,8 +132,11 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		{
 			table.setWidth("100%");
 		}
-		
-		gridLayout.adjustToBrowser(scrollingArea, table);
+
+		if(fixedCellSize)
+		{
+			table.getElement().getStyle().setProperty("tableLayout", "fixed");
+		}
 		
 		// lazy attaches the table to avoid problems related to scrolling    
 		DeferredCommand.addCommand(new Command()
@@ -279,9 +281,9 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * @param widget the content of the cell
 	 * @return
 	 */
-	protected Cell createCell(Widget widget)
+	protected Cell createCell(Widget widget, boolean wrapLine, boolean truncate)
 	{
-		Cell cell = createBaseCell(widget, true, selectRowOnClickCell(), highlightRowOnMouseOver);
+		Cell cell = createBaseCell(widget, true, selectRowOnClickCell(), highlightRowOnMouseOver, wrapLine, truncate);
 		cell.addStyleName("cell");
 		cell.setWidth("100%");
 		return cell;
@@ -307,17 +309,17 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * @param selectRowOnclick
 	 * @return
 	 */
-	protected Cell createBaseCell(Widget widget, boolean fireEvents, boolean selectRowOnclick, boolean highlightRowOnMouseOver)
+	protected Cell createBaseCell(Widget widget, boolean fireEvents, boolean selectRowOnclick, boolean highlightRowOnMouseOver, boolean wrapLine, boolean truncate)
 	{
 		Cell cell = null;
 		
 		if(widget != null)
 		{
-			cell = new Cell(widget, fireEvents, selectRowOnclick, highlightRowOnMouseOver);
+			cell = new Cell(widget, fireEvents, selectRowOnclick, highlightRowOnMouseOver, wrapLine, truncate);
 		}
 		else
 		{
-			cell = new Cell(fireEvents, selectRowOnclick, highlightRowOnMouseOver);
+			cell = new Cell(fireEvents, selectRowOnclick, highlightRowOnMouseOver, wrapLine, truncate);
 		}
 			
 		return cell;
@@ -330,7 +332,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	protected Cell createHeaderCell(Widget widget)
 	{
-		Cell cell = createBaseCell(widget, false, false, false);
+		Cell cell = createBaseCell(widget, false, false, false, true, false);
 		cell.addStyleName("columnHeader");
 		return cell;
 	}
@@ -481,7 +483,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			w = radio;
 		}
 		
-		Cell cell = createCell(w);
+		Cell cell = createCell(w, false, false);
 		cell.addStyleName("rowSelector");
 		
 		return cell;
