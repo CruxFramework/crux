@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.client;
 
 import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.i18n.client.Messages.DefaultMessage;
 
 /**
  * Contains all client messages used by Crux Framework
@@ -80,4 +81,9 @@ public interface ClientMessages extends Messages
 	String remoteDataSourcePageDirty();
 	@DefaultMessage("[datasource 005] - The column {0} can not be sorted.")
 	String dataSourceErrorColumnNotComparable(String columnName);
+	
+	@DefaultMessage("[stylesheets 001] - Found a null element reference when trying to modify it''s styleName property.")
+	String nullElementAtSetStyleName();	
+	@DefaultMessage("[stylesheets 002] - Empty strings can not be used as a styleName property value.")
+	String emptyStringAsStyleNameValue();
 }

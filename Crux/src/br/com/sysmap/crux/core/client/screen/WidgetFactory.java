@@ -28,12 +28,12 @@ import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
+import br.com.sysmap.crux.core.client.utils.StyleUtils;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Text;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -195,7 +195,9 @@ public abstract class WidgetFactory <T extends Widget>
 			{
 				String[] attr = styleAttributes[i].split(":");
 				if (attr != null && attr.length == 2)
-					DOM.setStyleAttribute((com.google.gwt.user.client.Element) context.getElement(), attr[0], attr[1]);
+				{
+					StyleUtils.addStyleProperty(context.getWidget().getElement(), attr[0], attr[1]);
+				}
 			}
 		}
 		String width = context.getElement().getAttribute("_width");
