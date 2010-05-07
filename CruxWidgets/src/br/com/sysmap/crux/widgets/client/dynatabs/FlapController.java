@@ -2,8 +2,11 @@ package br.com.sysmap.crux.widgets.client.dynatabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -14,7 +17,7 @@ import com.google.gwt.user.client.ui.Label;
 class FlapController extends Composite
 {
 	private Label title;
-	private FocusPanel closeButton;
+	private FocusWidget closeButton;
 	/**
 	 * @param tabs
 	 * @param tabId
@@ -33,10 +36,9 @@ class FlapController extends Composite
 		title.setStyleName("flapLabel");
 		flap.add(title);
 
-		closeButton = new FocusPanel();
-		Label empty = new Label("");
-		empty.getElement().getStyle().setProperty("fontSize", "1px");
-		closeButton.add(empty);
+		closeButton = new FocusWidget(new Label(" ").getElement()) {};
+		
+		
 		closeButton.setStyleName("flapCloseButton");
 		closeButton.addClickHandler(new ClickHandler()
 		{
@@ -44,6 +46,18 @@ class FlapController extends Composite
 			{
 				event.stopPropagation();
 				tabs.closeTab(tabId, false);
+			}
+		});
+		
+		closeButton.addKeyDownHandler(new KeyDownHandler()
+		{
+			public void onKeyDown(KeyDownEvent event)
+			{
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+				{
+					event.stopPropagation();
+					tabs.closeTab(tabId, false);
+				}
 			}
 		});
 

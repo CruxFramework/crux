@@ -17,8 +17,6 @@ package br.com.sysmap.crux.widgets.client.dynatabs;
 
 import br.com.sysmap.crux.widgets.client.rollingpanel.RollingPanel;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasAllKeyHandlers;
@@ -48,7 +46,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.impl.FocusImpl;
 
 /**
  * Modified version of GWT TabBar that uses a RollingPanel wrapping its Tabs.
@@ -348,7 +345,8 @@ class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Int
 		ClickDelegatePanel(Widget child)
 		{
 
-			focusablePanel = new InternalSimplePanel(((FocusImpl) GWT.create(FocusImpl.class)).createFocusable());
+			focusablePanel = new SimplePanel();
+			focusablePanel.getElement().setTabIndex(0);
 			focusablePanel.setWidget(child);
 			initWidget(focusablePanel);
 
@@ -431,14 +429,6 @@ class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Int
 				throw new UnsupportedOperationException(
 				        "Widget does not implement HasWordWrap");
 			}
-		}
-	}
-
-	private class InternalSimplePanel extends SimplePanel
-	{
-		InternalSimplePanel(Element e)
-		{
-			super(e);
 		}
 	}
 }

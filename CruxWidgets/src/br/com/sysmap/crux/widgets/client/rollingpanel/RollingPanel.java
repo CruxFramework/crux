@@ -576,12 +576,25 @@ public class RollingPanel extends Composite implements InsertPanel
 		if (itemsPanel.getOffsetWidth() > layoutPanel.getOffsetWidth())
 		{		
 			int realOffset = 0;
-			while (item != null && (!item.equals(scroll)))
+			int itemOffsetWidth = item.getOffsetWidth();
+			while (item != null && item != scroll)
 			{
 				realOffset += item.getOffsetLeft();
-				item = item.getOffsetParent();
+				item = item.getParentElement();
 			}
-			scroll.setScrollLeft(realOffset - scroll.getOffsetWidth() / 2);
+			int scrollLeft = scroll.getScrollLeft();
+			int scrollOffsetWidth = scroll.getOffsetWidth();
+			int right = realOffset + itemOffsetWidth;
+			int visibleWidth = scrollLeft + scrollOffsetWidth;
+			
+			if (realOffset < scrollLeft)	
+			{
+				scroll.setScrollLeft(realOffset);
+			}
+			else if (right > visibleWidth)
+			{
+				scroll.setScrollLeft(scrollLeft + right - visibleWidth);
+			}
 		}
     }
 
@@ -594,15 +607,28 @@ public class RollingPanel extends Composite implements InsertPanel
 		if (itemsPanel.getOffsetHeight() > layoutPanel.getOffsetHeight())
 		{
 			int realOffset = 0;
-			while (item != null && (!item.equals(scroll)))
+			int itemOffsetHeight = item.getOffsetHeight();
+			while (item != null && item != scroll)
 			{
 				realOffset += item.getOffsetTop();
-				item = item.getOffsetParent();
+				item = item.getParentElement();
 			}
-			scroll.setScrollTop(realOffset - scroll.getOffsetHeight() / 2);
+			int scrollTop = scroll.getScrollTop();
+			int scrollOffsetHeight = scroll.getOffsetHeight();
+			int bottom = realOffset + itemOffsetHeight;
+			int visibleHeight = scrollTop + scrollOffsetHeight;
+			
+			if (realOffset < scrollTop)	
+			{
+				scroll.setScrollTop(realOffset);
+			}
+			else if (bottom > visibleHeight)
+			{
+				scroll.setScrollTop(scrollTop + bottom - visibleHeight);
+			}
 		}
     }
-
+	
 	/**
 	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
 	 *
