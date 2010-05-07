@@ -437,7 +437,7 @@ public class RollingPanel extends Composite implements InsertPanel
 	 */
 	protected void addHorizontalNavigationButtons()
     {
-		if (horizontalPreviousLabel == null)
+		if (horizontalPreviousLabel == null || horizontalNextLabel == null)
 		{
 			horizontalPreviousLabel = new Label(" ");
 			horizontalPreviousLabel.setStyleName(horizontalPreviousButtonStyleName);
@@ -446,18 +446,28 @@ public class RollingPanel extends Composite implements InsertPanel
 			horizontalPreviousLabel.addMouseUpHandler(handler);
 
 			this.layoutPanel.add(horizontalPreviousLabel, DockPanel.WEST);
-			this.layoutPanel.setCellWidth(horizontalPreviousLabel, "16");
-		}
-	    if (horizontalNextLabel == null)
-	    {
-	    	horizontalNextLabel = new Label(" ");
+			
+			horizontalNextLabel = new Label(" ");
 	    	horizontalNextLabel.setStyleName(horizontalNextButtonStyleName);
-	    	HorizontalNavButtonEvtHandler handler = new HorizontalNavButtonEvtHandler(20, 5);
+	    	handler = new HorizontalNavButtonEvtHandler(20, 5);
 	    	horizontalNextLabel.addMouseDownHandler(handler);
 	    	horizontalNextLabel.addMouseUpHandler(handler);
 
 	    	this.layoutPanel.add(horizontalNextLabel, DockPanel.EAST);
-	    	this.layoutPanel.setCellWidth(horizontalNextLabel, "16");
+	    	
+	    	Scheduler.get().scheduleDeferred
+	    	(
+				new ScheduledCommand()
+				{
+					public void execute()
+					{
+						horizontalPreviousLabel.getElement().getParentElement().setClassName(horizontalPreviousButtonStyleName + "Wrapper");
+						horizontalNextLabel.getElement().getParentElement().setClassName(horizontalNextButtonStyleName + "Wrapper");
+						setHorizontalScrollPosition(5);
+						scrollToWidget(getWidget(getWidgetCount() - 1));
+					}
+				}
+			);
 	    }
     }
 
@@ -466,7 +476,7 @@ public class RollingPanel extends Composite implements InsertPanel
 	 */
 	protected void addVerticalNavigationButtons()
     {
-	    if (verticalPreviousLabel == null)
+	    if (verticalPreviousLabel == null || verticalNextLabel == null)
 	    {
 	    	verticalPreviousLabel = new Label(" ");
 	    	verticalPreviousLabel.setStyleName(verticalPreviousButtonStyleName);
@@ -474,17 +484,29 @@ public class RollingPanel extends Composite implements InsertPanel
 	    	verticalPreviousLabel.addMouseDownHandler(handler);
 	    	verticalPreviousLabel.addMouseUpHandler(handler);
 	    	this.layoutPanel.add(verticalPreviousLabel, DockPanel.NORTH);
-	    	this.layoutPanel.setCellHeight(verticalPreviousLabel, "16");
-	    }
-	    if (verticalNextLabel == null)
-	    {
+	    	verticalPreviousLabel.getElement().getParentElement().setClassName(verticalPreviousButtonStyleName + "Wrapper");
+	   
 	    	verticalNextLabel = new Label(" ");
-	    	VerticalNavButtonEvtHandler handler = new VerticalNavButtonEvtHandler(20, 5);
+	    	handler = new VerticalNavButtonEvtHandler(20, 5);
 	    	verticalNextLabel.addMouseDownHandler(handler);
 	    	verticalNextLabel.addMouseUpHandler(handler);
 	    	verticalNextLabel.setStyleName(verticalNextButtonStyleName);
 	    	this.layoutPanel.add(verticalNextLabel, DockPanel.SOUTH);
-	    	this.layoutPanel.setCellHeight(verticalNextLabel, "16");
+	    	verticalNextLabel.getElement().getParentElement().setClassName(verticalNextButtonStyleName + "Wrapper");
+	    
+		    Scheduler.get().scheduleDeferred
+	    	(
+				new ScheduledCommand()
+				{
+					public void execute()
+					{
+						verticalPreviousLabel.getElement().getParentElement().setClassName(verticalPreviousButtonStyleName + "Wrapper");
+						verticalNextLabel.getElement().getParentElement().setClassName(verticalNextButtonStyleName + "Wrapper");
+						setHorizontalScrollPosition(5);
+						scrollToWidget(getWidget(getWidgetCount() - 1));
+					}
+				}
+			);
 	    }
     }
 	

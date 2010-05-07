@@ -65,8 +65,8 @@ class InternalTabPanel extends Composite implements HasAnimation, HasBeforeSelec
 			}
 		});
 
-		setStyleName("gwt-TabPanel");
-		deck.setStyleName("gwt-TabPanelBottom");
+		setStyleName("crux-TabPanel");
+		deck.setStyleName("crux-TabPanelBottom");
 		// Add a11y role "TabPanel"
 		Accessibility.setRole(deck.getElement(), Accessibility.ROLE_TABPANEL);
 	}

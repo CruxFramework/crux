@@ -56,7 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, HasSelectionHandlers<Integer>
 {
-	private static final String STYLENAME_DEFAULT = "gwt-TabBarItem";
+	private static final String STYLENAME_DEFAULT = "crux-TabBarItem";
 
 	private RollingPanel panel;
 	private Widget selectedTab;
@@ -70,7 +70,7 @@ class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Int
 
 		initWidget(panel);
 		sinkEvents(Event.ONCLICK);
-		setStyleName("gwt-TabBar");
+		setStyleName("crux-TabBar");
 		panel.setSpacing(0);
 		panel.setScrollToAddedWidgets(true);
 
@@ -80,8 +80,8 @@ class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Int
 		panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_BOTTOM);
 
 		HTML first = new HTML("&nbsp;", true), rest = new HTML("&nbsp;", true);
-		first.setStyleName("gwt-TabBarFirst");
-		rest.setStyleName("gwt-TabBarRest");
+		first.setStyleName("crux-TabBarFirst");
+		rest.setStyleName("crux-TabBarRest");
 		first.setHeight("100%");
 		rest.setHeight("100%");
 
@@ -91,9 +91,9 @@ class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Int
 		panel.setCellHeight(first, "100%");
 		panel.setCellWidth(rest, "100%");
 		setStyleName(first.getElement().getParentElement(),
-		        "gwt-TabBarFirst-wrapper");
+		        "crux-TabBarFirst-wrapper");
 		setStyleName(rest.getElement().getParentElement(),
-		        "gwt-TabBarRest-wrapper");
+		        "crux-TabBarRest-wrapper");
 	}
 	
 	/**
@@ -301,15 +301,15 @@ class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Int
 		{
 			if (selected)
 			{
-				item.addStyleName("gwt-TabBarItem-selected");
+				item.addStyleName("crux-TabBarItem-selected");
 				setStyleName(DOM.getParent(item.getElement()),
-				        "gwt-TabBarItem-wrapper-selected", true);
+				        "crux-TabBarItem-wrapper-selected", true);
 			}
 			else
 			{
-				item.removeStyleName("gwt-TabBarItem-selected");
+				item.removeStyleName("crux-TabBarItem-selected");
 				setStyleName(DOM.getParent(item.getElement()),
-				        "gwt-TabBarItem-wrapper-selected", false);
+				        "crux-TabBarItem-wrapper-selected", false);
 			}
 		}
 	}
