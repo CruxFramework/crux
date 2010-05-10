@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.utils.StyleUtils;
 import br.com.sysmap.crux.widgets.client.event.row.HasRowClickHandlers;
 import br.com.sysmap.crux.widgets.client.event.row.HasRowDoubleClickHandlers;
@@ -37,20 +36,13 @@ import br.com.sysmap.crux.widgets.client.event.row.RowRenderHandler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -62,7 +54,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	
 	private static final String DEFAULT_STYLE_NAME = "crux-Grid";
 	
-	private SimplePanel panel;
 	private GridHtmlTable table;
 	private ColumnDefinitions definitions;
 	private String generatedId =  "cruxGrid_" + new Date().getTime();
@@ -113,20 +104,15 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		this.stretchColumns = stretchColumns;
 		this.highlightRowOnMouseOver = highlightRowOnMouseOver;
 		
-		panel = new SimplePanel();
-		panel.setStyleName(DEFAULT_STYLE_NAME);
-		panel.setWidth("100%");
-		
 		scrollingArea = new ScrollPanel();
-		scrollingArea.setHeight("1");
-		scrollingArea.setWidth("1");
-		panel.add(scrollingArea);
-				
-		initWidget(panel);
+		scrollingArea.setStyleName(DEFAULT_STYLE_NAME);
+		initWidget(scrollingArea);
 		
 		table = new GridHtmlTable();
 		table.setCellSpacing(cellSpacing);
 		table.setCellPadding(0);
+		StyleUtils.addStyleProperty(table.getBodyElement(), "width", "100%");
+		StyleUtils.addStyleProperty(table.getBodyElement(), "height", "100%");
 		
 		if(this.stretchColumns)
 		{
@@ -138,23 +124,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			table.getElement().getStyle().setProperty("tableLayout", "fixed");
 		}
 		
-		// lazy attaches the table to avoid problems related to scrolling    
-		DeferredCommand.addCommand(new Command()
-		{
-			public void execute()
-			{	
-				resizeToFit(scrollingArea, panel);
-				scrollingArea.add(table);
-			}
-		});
-		
-		// when the screen is resized, the scrolling panel must be resized to fit its container
-		Screen.addResizeHandler(new ResizeHandler(){
-			public void onResize(ResizeEvent event)
-			{
-				resizeToFit(scrollingArea, panel);				
-			}
-		});
+		scrollingArea.add(table);
 	}
 	
 	/**
@@ -595,63 +565,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			
 			fireRowRenderEvent(row);
 		}
-	}
-	
-	/**
-	 * Resizes a widget so it fills all available space in its parent
-	 * @param widget
-	 * @param parent
-	 */
-	private void resizeToFit(final Widget widget, final Panel parent)
-	{
-		final Element elem = parent.getElement();
-		
-		String borderLeft = elem.getStyle().getProperty("borderLeft");
-		elem.getStyle().setProperty("borderLeft", "solid 1px #FFFFFF");
-		
-		parent.clear();
-		
-		int width = 0;
-		int height = 0;
-		
-		if(elem != null)
-		{
-			width = elem.getClientWidth();
-			height = elem.getClientHeight();
-		}
-		
-		final int finalWidth = width;
-		final int finalHeight = height;
-		
-		elem.getStyle().setProperty("borderLeft", borderLeft);
-		
-		new Timer()
-		{
-			@Override
-			public void run()
-			{
-				if(finalWidth > 0)
-				{
-					widget.setWidth("" + finalWidth);
-				}
-				else
-				{
-					widget.setWidth("100%");
-				}
-				
-				if(finalHeight > 0)
-				{
-					widget.setHeight("" + finalHeight);
-				}
-				else
-				{
-					widget.setHeight("100%");
-				}
-				
-				parent.clear();
-				parent.add(widget);				
-			}
-		}.schedule(100);
 	}
 	
 	/**

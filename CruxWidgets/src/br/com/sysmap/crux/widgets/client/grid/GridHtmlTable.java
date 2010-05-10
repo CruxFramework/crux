@@ -35,5 +35,12 @@ public class GridHtmlTable extends com.google.gwt.user.client.ui.Grid
     
     private native Element getRowElement(Element table, int row) /*-{
     	return table.rows[row];
-  }-*/;
+  	}-*/;
+    
+    
+    @Override
+    protected Element getBodyElement()
+    {
+    	return super.getBodyElement();
+    }
 }
