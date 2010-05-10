@@ -586,6 +586,25 @@
 	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
 }
 
+.crux-RollingPanelHPreviousWrapper
+{
+	vertical-align:bottom !important;
+	width:20px;
+}
+.crux-RollingPanelHNextWrapper
+{
+	vertical-align:bottom !important;
+	width:20px;
+}
+.crux-RollingPanelHPreviousWrapper-disabled
+{
+	width:0px;
+}
+.crux-RollingPanelHNextWrapper-disabled
+{
+	width:0px;
+}
+
 /******************************************************************************
 	Dyna Tabs
 *******************************************************************************/
