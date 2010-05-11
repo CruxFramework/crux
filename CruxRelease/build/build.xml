@@ -1,0 +1,113 @@
+<project default="dist" name="CruxRelease" basedir="../">
+
+	<property file="build/version.properties" />
+
+	<property name="srcdir" value="src" />
+	<property name="libdir" value="lib" />
+	<property name="classesdir" value="bin" />
+	<property name="distdir" value="dist" />
+	<property name="expandeddir" value="dist/crux-${version}" />
+	<property name="resourcedir" value="resource" />
+	<property name="projectconfig" value="test/project.properties" />
+	<property name="cmdfile" value="test/projectGenerator.cmd" />
+	<property name="shfile" value="test/projectGenerator.sh" />
+	<property name="final.name" value="crux-project-generator" />
+
+	<property name="crux.dist" value="../Crux/dist" />
+	<property name="crux.gwt.dist" value="../CruxGWTWidgets/dist" />
+	<property name="crux.widgets.dist" value="../CruxWidgets/dist" />
+	<property name="crux.compiler.dist" value="../CruxCompiler/dist" />
+	<property name="crux.themes.dist" value="../CruxThemes/dist" />
+	<property name="crux.scannotation.dist" value="../CruxScannotation/dist" />
+	<property name="crux.modules.dist" value="../CruxModules/dist" />
+	<property name="crux.modules.admin.dist" value="../CruxModulesAdmin/dist" />
+	<property name="crux.modules.compiler.dist" value="../CruxModulesCompiler/dist" />
+
+	<property name="crux.htmltags.dist" value="../CruxHtmlTags/dist" />
+	<property name="crux.htmltags.compile.dist" value="../CruxHTMLTagsCompileTask/dist" />
+	
+	<property name="crux.libs" value="../CruxLibs/crux" />
+	<property name="crux.dependencies" value="../CruxLibs/dependencies" />
+
+	<path id="build.classpath">
+		<fileset dir="${libdir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${resourcedir}/jars">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="dist">
+
+		<!-- compiling -->
+		<delete dir="${classesdir}" failonerror="no" includeemptydirs="true" />
+		<mkdir dir="${classesdir}" />
+		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*" 
+			encoding="ISO-8859-1">
+			<src>
+				<pathelement location="${srcdir}" />
+			</src>
+			<classpath refid="build.classpath" />
+		</javac>
+
+		<!-- exporting -->
+		<delete dir="${expandeddir}" failonerror="no" includeemptydirs="true" />
+		<mkdir dir="${expandeddir}/tools" />
+		<jar jarfile="${expandeddir}/tools/${final.name}.jar">
+			<fileset dir="${classesdir}" />
+			<fileset dir="${srcdir}" />
+		</jar>
+		<copy todir="${resourcedir}/jars/lib/web-inf">
+			<fileset dir="${crux.dist}" includes="*.jar" />
+			<fileset dir="${crux.gwt.dist}" includes="*.jar" />
+			<fileset dir="${crux.widgets.dist}" includes="*.jar" />
+			<fileset dir="${crux.scannotation.dist}" includes="*.jar" />
+			<fileset dir="${crux.themes.dist}" includes="*.jar" />
+			<fileset file="${crux.dependencies}/commons-logging.jar"/>
+			<fileset file="${crux.dependencies}/gwt-servlet.jar"/>
+			<fileset file="${crux.dependencies}/javassist.jar"/>
+			<fileset file="${crux.dependencies}/jericho-html-2.5.jar"/>
+			<fileset file="${crux.dependencies}/saxon9.jar"/>
+			<fileset file="${crux.dependencies}/saxon9-dom.jar"/>
+		</copy>
+		<copy todir="${resourcedir}/jars/lib/build">
+			<fileset dir="${crux.compiler.dist}" includes="*.jar" />
+			<fileset file="${crux.dependencies}/gwt-dev.jar"/>
+			<fileset file="${crux.dependencies}/gwt-ll.dll"/>
+			<fileset file="${crux.dependencies}/gwt-module.dtd"/>
+			<fileset file="${crux.dependencies}/gwt-user.jar"/>
+		</copy>
+		<copy todir="${resourcedir}/jars/lib/modules/build">
+			<fileset dir="${crux.modules.compiler.dist}" includes="*.jar" />
+		</copy>
+		<copy todir="${resourcedir}/jars/lib/modules/web-inf">
+			<fileset dir="${crux.modules.dist}" includes="*.jar" />
+			<fileset file="${crux.dependencies}/svnkit.jar"/>
+		</copy>
+		<copy todir="${resourcedir}/jars/lib/modules/web-inf">
+			<fileset dir="${crux.modules.admin.dist}" includes="*.jar" />
+		</copy>
+		<copy todir="${resourcedir}/jars/lib/legacy">
+			<fileset dir="${crux.htmltags.dist}" includes="*.jar" />
+			<fileset dir="${crux.htmltags.compile.dist}" includes="*.jar" />
+		</copy>
+		<copydir dest="${expandeddir}/lib/build" src="${resourcedir}/jars/lib/build" />
+		<copydir dest="${expandeddir}/lib/web-inf" src="${resourcedir}/jars/lib/web-inf" />
+		<copydir dest="${expandeddir}/lib/modules/build" src="${resourcedir}/jars/lib/modules/build" />
+		<copydir dest="${expandeddir}/lib/modules/web-inf" src="${resourcedir}/jars/lib/modules/web-inf" />
+		<copydir dest="${expandeddir}/lib/legacy" src="${resourcedir}/jars/lib/legacy" />
+
+		<copy todir="${expandeddir}" file="${projectconfig}" />
+		<copy todir="${expandeddir}" file="${cmdfile}" />
+		<copy todir="${expandeddir}" file="${shfile}" />
+
+		<exec command="chmod 755 ${expandeddir}/projectGenerator.sh" />
+ 
+		<copy todir="${expandeddir}">
+			<fileset dir="${resourcedir}/static" includes="*" />
+		</copy>
+		<!--zip basedir="${expandeddir}" destfile="${distdir}/crux-${version}.zip" /-->
+		<!--delete dir="${tempdir}" failonerror="no" includeemptydirs="true" /-->
+	</target>
+</project>

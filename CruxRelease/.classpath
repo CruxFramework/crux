@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="lib" path="lib/crux-core.jar"/>
+	<classpathentry kind="lib" path="lib/crux-gwt-widgets.jar"/>
+	<classpathentry kind="lib" path="lib/crux-scannotation.jar"/>
+	<classpathentry kind="lib" path="lib/crux-themes.jar"/>
+	<classpathentry kind="lib" path="lib/crux-widgets.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
+	<classpathentry kind="lib" path="lib/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/jericho-html-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/saxon9-dom.jar"/>
+	<classpathentry kind="lib" path="lib/saxon9.jar"/>
+	<classpathentry kind="lib" path="lib/crux-compiler.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
