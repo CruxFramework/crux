@@ -31,6 +31,8 @@ public class MainController {
 	private static final String MESSAGE_BOX_TAB = "messageBox";	
 	private static final String POPUP_TAB = "popup";
 	private static final String PROGRESS_DIALOG_TAB = "progressDialog";
+	private static final String SIMPLE_WIZARD_TAB = "simpleWizard";
+	private static final String MULTIPLE_PAGES_WIZARD_TAB = "multiPagesWizard";
 	private static final String VALIDATION_TAB = "validation";
 	private static final String SERVER_COMMUNICATION_TAB = "serverCommunication";
 	private static final String CONTEXT_TAB = "context";
@@ -148,6 +150,16 @@ public class MainController {
 	@Expose
 	public void onClickProgressDialogItem(){
 		screen.getTabs().openTab(PROGRESS_DIALOG_TAB, "Progress Dialog", PROGRESS_DIALOG_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickSimpleWizardItem(){
+		screen.getTabs().openTab(SIMPLE_WIZARD_TAB, "Simple Wizard", SIMPLE_WIZARD_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickMultiplePagesWizardItem(){
+		screen.getTabs().openTab(MULTIPLE_PAGES_WIZARD_TAB, "Multiple Pages Wizard", MULTIPLE_PAGES_WIZARD_TAB + HTML, true, false);
 	}
 	
 	@Expose
