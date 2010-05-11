@@ -29,7 +29,6 @@
 			<fileset dir="${dependencies.jars.dir}">
 				<include name="junit-4.4.jar" />
 				<include name="javassist.jar" />
-				<include name="titan-cruise-1.0.jar" />
 				<include name="servlet-api.jar" />
 				<include name="svnant.jar" />
 				<include name="svnClientAdapter.jar" />
