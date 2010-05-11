@@ -84,6 +84,10 @@
 								<a:item id="popupItem" label="Popup" onClick="mainController.onClickPopupItem" />
 								<a:item id="progressDialogItem" label="Progress Dialog" onClick="mainController.onClickProgressDialogItem" />
 							</a:item>
+							<a:item id="wizardsItem" label="Wizards">
+								<a:item id="simpleWizard" label="Simple Wizard" onClick="mainController.onClickSimpleWizardItem" />
+								<a:item id="multiplePagesWizard" label="Multiple Pages Wizard" onClick="mainController.onClickMultiplePagesWizardItem" />
+							</a:item>
 							<a:item id="integration" label="Integration">
 								<a:item id="gwtItem" label="GWT Widgets" onClick="mainController.onClickGwtItem" />
 							</a:item>
