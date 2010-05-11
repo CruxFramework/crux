@@ -1,4 +1,4 @@
-Crux 2.2.0
+Crux
 Copyright (c) Sysmap Solutions, Ltda. 2009.  All rights reserved.
 Visit Crux Code (http://code.google.com/p/crux-framework).
 
