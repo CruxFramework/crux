@@ -6,6 +6,8 @@
 		<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />
 	</tstamp>
 
+	<property file="../CruxRelease/build/version.properties" />
+
 	<property name="srcdir" value="src" />
 	<property name="libdir" value="lib" />
 	<property name="classesdir" value="bin" />
@@ -26,6 +28,8 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
+
+	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="build.classpath" />
 
 	<target name="export" description="Creates the jar">
 		<delete dir="${distdir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
@@ -48,11 +52,20 @@
 
 		</javac>
 		
+		<svn failonerror="false" javahl="false" svnkit="true">
+			<info target="${basedir}" verbose="true"/>
+		</svn>
+		
 		<jar jarfile="${distdir}/${final.name}.jar">
 			<fileset dir="${classesdir}" excludes="**/public/*" />
 			<fileset dir="${srcdir}">
 				<include name="**/*" />
 			</fileset>
+			<manifest>
+				<attribute name="Build-Timestamp" value="${build.date}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Revision" value="${svn.info.rev}" />
+			</manifest>
 		</jar>
 		
 		<copy todir="${crux.libs.project}">
