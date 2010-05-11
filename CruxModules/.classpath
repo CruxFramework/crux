@@ -5,7 +5,6 @@
 	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CruxScannotation"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CruxHtmlTags"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
