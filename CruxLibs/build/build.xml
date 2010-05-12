@@ -27,6 +27,8 @@
 		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnkit.jar" dest="dependencies/svnkit.jar" verbose="true"/>
 		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnjavahl.jar" dest="dependencies/svnjavahl.jar" verbose="true"/>
 		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnClientAdapter.jar" dest="dependencies/svnClientAdapter.jar" verbose="true"/>
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/gwt-ll.dll" dest="dependencies/gwt-ll.dll" verbose="true"/>
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/gwt-module.dtd" dest="dependencies/gwt-module.dtd" verbose="true"/>
 		<get src="http://repo1.maven.org/maven2/net/htmlparser/jericho/jericho-html/3.1/jericho-html-3.1.jar " dest="dependencies/jericho-html.jar" verbose="true"/>
 		<get src="http://repo1.maven.org/maven2/org/apache/ant/ant/1.7.0/ant-1.7.0.jar" dest="dependencies/ant.jar" verbose="true"/>
 		<get src="http://repository.jboss.org/maven2/javassist/javassist/3.7.1.GA/javassist-3.7.1.GA.jar" dest="dependencies/javassist.jar" verbose="true"/>
