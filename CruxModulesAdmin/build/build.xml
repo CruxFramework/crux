@@ -23,8 +23,7 @@
 		<pathelement path="${target.classes.dir}" />
 	</path>
 
-	<taskdef name="cruxmodulecompile" classname="br.com.sysmap.crux.tools.compile.CruxModuleCompile" loaderref="build.classpath.loader" classpathref="build.classpath" />
-	<typedef name="htmlpreprocessor" classname="br.com.sysmap.crux.tools.compile.htmltags.CruxHTMLTagsPreProcessor" loaderref="build.classpath.loader" classpathref="build.classpath" />
+	<taskdef name="cruxmodulecompiler" classname="br.com.sysmap.crux.tools.compile.CruxModulesCompilerTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
 	<taskdef name="blockremove" classname="br.com.sysmap.crux.tools.compile.utils.BlockRemoveTask" classpathref="build.classpath" />
 	<taskdef name="generateSchemas" classname="br.com.sysmap.crux.tools.compile.SchemaGeneratorModulesTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
 
@@ -92,8 +91,9 @@
 	========================================================================================================
 	-->
 	<target name="compile-scripts">
-		<cruxmodulecompile srcDir="${src.dir}" outputDir="${web.root}">
-			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputDir="${web.root}/admin"/>
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" 
+			keepPagesGeneratedFiles="true" pagesOutputDir="${web.root}"
+			scanallowedpackages="br.com.sysmap.crux.module">
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${web.root}" />
@@ -103,11 +103,13 @@
 			<!-- change these two parameters if you need to modify memory settings -->
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
+			<jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" />
 
 			<arg value="-gen"/>
-			<arg value="c:\temp\admin"/>
-			<arg value="-style"/>
-			<arg value="DETAILED"/>
+			<arg value="gen"/>
+			<!--arg value="-style"/>
+			<arg value="DETAILED"/-->
 
 			<!-- use these parameters if you want to modify GWT output settings
 			<arg value="-style"/>
@@ -115,7 +117,7 @@
 			<arg value="-logLevel"/>
 			<arg value="DEBUG"/>
 			-->
-		</cruxmodulecompile>
+		</cruxmodulecompiler>
 	</target>
 
 	<!-- 
@@ -124,9 +126,9 @@
 	========================================================================================================
 	-->
 	<target name="fast-compile-scripts">
-		<cruxmodulecompile srcDir="${src.dir}" outputDir="${web.root}">
-			<htmlpreprocessor indent="false" keepgeneratedfiles="true"/>
-			<modulepostprocessor indent="false" outputDir="${web.root}"/>
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" 
+			keepPagesGeneratedFiles="true" pagesOutputDir="${web.root}"
+			scanallowedpackages="br.com.sysmap.crux.module">
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${web.root}" />
@@ -145,7 +147,7 @@
 			<arg value="-logLevel"/>
 			<arg value="DEBUG"/>
 			-->
-		</cruxmodulecompile>
+		</cruxmodulecompiler>
 	</target>
 
 	<!-- 
