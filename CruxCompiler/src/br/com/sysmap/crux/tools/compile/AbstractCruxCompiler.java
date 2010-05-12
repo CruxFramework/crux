@@ -225,12 +225,20 @@ public abstract class AbstractCruxCompiler
     {
 	    for (ConsoleParameter parameter : parameters)
         {
-	        if (parameter.getName().equals("-gen") || parameter.getName().equals("-style"))
+	        if (parameter.getName().equals("-gen") || parameter.getName().equals("-style") || parameter.getName().equals("-extra"))
 	        {
 	        	gwtCompilerArgs.add(parameter.getName());
 	        	gwtCompilerArgs.add(parameter.getValue());
 	        }
+	        else if (parameter.getName().equals("-compileReport"))
+	        {
+	        	gwtCompilerArgs.add(parameter.getName());
+	        }
 	        else if (parameter.getName().equals("-draftCompile"))
+	        {
+	        	gwtCompilerArgs.add(parameter.getName());
+	        }
+	        else if (parameter.getName().equals("-validateOnly"))
 	        {
 	        	gwtCompilerArgs.add(parameter.getName());
 	        }
@@ -443,7 +451,6 @@ public abstract class AbstractCruxCompiler
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-keepPagesGeneratedFiles", 
 				"If false, the output pages will be removed after compilation.", false, true));
 
-		//TODO - mapear todos os parametros do GWT aki.
 		parameter = new ConsoleParameter("-gen", "Specify the folder where the GWT generators will output generated classes.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("genFolder", "Folder Name"));
 		parametersProcessor.addSupportedParameter(parameter);
@@ -452,6 +459,12 @@ public abstract class AbstractCruxCompiler
 		parameter.addParameterOption(new ConsoleParameterOption("style", "GWT output Style"));
 		parametersProcessor.addSupportedParameter(parameter);
 		
+		parameter = new ConsoleParameter("-extra", "The directory into which extra files, not intended for deployment, will be written.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("extraFolder", "Folder Name"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-validateOnly", " Validate all source code, but do not compile.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-compileReport", "Create a compile report that tells the Story of Your Compile.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-draftCompile", "Disable compiler optimizations and run faster.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
