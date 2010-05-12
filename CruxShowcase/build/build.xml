@@ -21,8 +21,7 @@
 		</fileset>
 	</path>
 
-	<taskdef name="cruxcompile" classname="br.com.sysmap.crux.tools.compile.CruxCompile" loaderref="build.classpath.loader" classpathref="build.classpath" />
-	<typedef name="htmlpreprocessor" classname="br.com.sysmap.crux.tools.compile.htmltags.CruxHTMLTagsPreProcessor" loaderref="build.classpath.loader" classpathref="build.classpath" />
+	<taskdef name="cruxcompile" classname="br.com.sysmap.crux.tools.compile.CruxCompilerTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
 	<taskdef name="blockremove" classname="br.com.sysmap.crux.tools.compile.utils.BlockRemoveTask" classpathref="build.classpath" />
 	<taskdef name="generateSchemas" classname="br.com.sysmap.crux.tools.compile.htmltags.SchemaGeneratorTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
 
@@ -62,11 +61,8 @@
 			-->
 		</copydir>
 
-		<cruxcompile srcDir="${src.dir}">
-			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputdir="${temp.dir}/webroot" />
-			<fileset dir="${temp.dir}/webroot">
-				<include name="**/*.crux.xml" />
-			</fileset>
+		<cruxcompile srcDir="${src.dir}" keepPagesGeneratedFiles="true" outputDir="${temp.dir}/webroot" pagesOutputDir="${temp.dir}/webroot">
+			<dirset dir="${web.root}" />
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${target.classes.dir}" />
@@ -76,9 +72,6 @@
 			<!-- change these two parameters if you need to modify memory settings -->
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
-
-			<arg value="-war" />
-			<arg value="${temp.dir}/webroot" />
 
 			<!-- use these parameters if you want to modify GWT output settings
 			<arg value="-style"/>
@@ -107,11 +100,8 @@
 	</target>
 
 	<target name="compile-scripts">
-		<cruxcompile srcDir="${src.dir}">
-			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputdir="${web.root}" />
-			<fileset dir="${web.root}">
-				<include name="**/*.crux.xml" />
-			</fileset>
+		<cruxcompile srcDir="${src.dir}" outputDir="${web.root}" keepPagesGeneratedFiles="false">
+			<dirset dir="${web.root}" />
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${target.classes.dir}" />
@@ -121,9 +111,6 @@
 			<!-- change these two parameters if you need to modify memory settings -->
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
-
-			<arg value="-war" />
-			<arg value="${web.root}" />
 
 			<!-- use these parameters if you want to modify GWT output settings
 			<arg value="-style"/>
@@ -135,11 +122,8 @@
 	</target>
 	
 	<target name="draft-compile-scripts">
-		<cruxcompile srcDir="${src.dir}">
-			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputdir="${web.root}" />
-			<fileset dir="${web.root}">
-				<include name="**/*.crux.xml" />
-			</fileset>
+		<cruxcompile srcDir="${src.dir}" outputDir="${web.root}" keepPagesGeneratedFiles="false">
+			<dirset dir="${web.root}" />
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${target.classes.dir}" />
@@ -150,9 +134,6 @@
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
 
-			<arg value="-war" />
-			<arg value="${web.root}" />
-			
 			<arg value="-draftCompile" />
 
 			<!-- use these parameters if you want to modify GWT output settings
