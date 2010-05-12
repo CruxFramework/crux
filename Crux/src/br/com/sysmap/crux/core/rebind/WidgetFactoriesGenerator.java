@@ -790,7 +790,6 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	private AllowedOccurences getAllowedOccurrencesForChild(TagChild child) throws Exception
 	{
 		AllowedOccurences allowed = new AllowedOccurences();
-//TODO documentar o @Expose no wiki		
 		Class<? extends WidgetChildProcessor<?>> childProcessor = child.value();
 		TagChildAttributes processorAttributes = ClassUtils.getChildtrenAttributesAnnotation(childProcessor);
 

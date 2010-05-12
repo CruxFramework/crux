@@ -52,7 +52,6 @@ public class InitializerListener implements ServletContextListener
 		try
 		{
 			//TODO - Thiago documentar isso no wiki
-			//TODO - Thiago documentar @Expose(block) no wiki
 			//TODO - Thiago remover quebras de linha e espacos antes de gravar....
 			
 			String classScannerAllowedPackages = contextEvent.getServletContext().getInitParameter("classScannerAllowedPackages");
