@@ -17,10 +17,10 @@ package br.com.sysmap.crux.core.rebind.screen;
 
 import java.util.List;
 
-import au.id.jericho.lib.html.Attribute;
-import au.id.jericho.lib.html.Attributes;
-import au.id.jericho.lib.html.Element;
-import au.id.jericho.lib.html.TextExtractor;
+import net.htmlparser.jericho.Attribute;
+import net.htmlparser.jericho.Attributes;
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.TextExtractor;
 
 /**
  * 

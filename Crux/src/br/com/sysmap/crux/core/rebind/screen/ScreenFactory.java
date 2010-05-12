@@ -23,13 +23,14 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import net.htmlparser.jericho.Attribute;
+import net.htmlparser.jericho.Attributes;
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.Source;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import au.id.jericho.lib.html.Attribute;
-import au.id.jericho.lib.html.Attributes;
-import au.id.jericho.lib.html.Element;
-import au.id.jericho.lib.html.Source;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
@@ -221,13 +222,13 @@ public class ScreenFactory
 		Source source = new Source(stream);
 		source.fullSequentialParse();
 
-		String screenModule = getScreenModule(source.findAllElements("script"));
+		String screenModule = getScreenModule(source.getAllElements("script"));
 		
 		if(screenModule != null)
 		{
 			screen = new Screen(id, screenModule);
 			
-			List<?> elementList = source.findAllElements("span");
+			List<?> elementList = source.getAllElements("span");
 			
 			for (Object object : elementList) 
 			{

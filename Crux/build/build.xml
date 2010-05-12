@@ -20,6 +20,7 @@
 	<property name="final.name" value="crux-core" />
 	<property name="testbenchmarkpath" value="dist/report/junit/benchmark" />
 	<property name="crux.libs.project" value="../CruxLibs/crux" />	
+	<property name="cruxscannotationdistdir" value="../CruxScannotation/dist" />
 
 	<path id="build.classpath">
 		<fileset dir="${libdir}">
@@ -43,6 +44,11 @@
 				<pathelement location="${srcdir}" />
 			</src>
 			<classpath refid="build.classpath" />
+			<classpath>
+				<fileset dir="${cruxscannotationdistdir}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
 		</javac>
 
 		<svn failonerror="false" javahl="false" svnkit="true">
