@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="export" name="CruxHTMLTagsCompileTask" basedir="../">
+
+	<property name="srcdir" value="src" />
+	<property name="libdir" value="lib" />
+	<property name="classesdir" value="bin/classes" />
+	<property name="distdir" value="dist" />
+	<property name="final.name" value="crux-html-tags-compile-task" />
+	<property name="cruxdistdir" value="../Crux/dist" />
+	<property name="cruxscannotationdistdir" value="../CruxScannotation/dist" />
+	<property name="cruxhtmltagsdistdir" value="../CruxHtmlTags/dist" />
+	<property name="cruxcompilerdistdir" value="../CruxCompiler/dist" />
+	<property name="crux.libs.project" value="../CruxLibs/crux" />
+
+	<path id="build.classpath">
+		<fileset dir="${libdir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${cruxdistdir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${cruxscannotationdistdir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${cruxhtmltagsdistdir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${cruxcompilerdistdir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="export" description="Generates the jar">
+		
+		<delete dir="${distdir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
+		<mkdir dir="${distdir}" />
+
+		<delete dir="${classesdir}" />
+		<mkdir dir="${classesdir}" />
+
+		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*"
+			encoding="ISO-8859-1">
+			<src>
+				<pathelement location="${srcdir}" />
+			</src>
+			<classpath refid="build.classpath" />
+		</javac>
+
+		<jar jarfile="${distdir}/${final.name}.jar">
+			<fileset dir="${classesdir}" excludes="**/public/*" />
+			<fileset dir="${srcdir}" excludes="**/public/*" />
+		</jar>
+
+		<copy todir="${crux.libs.project}">
+			<fileset dir="${distdir}">
+				<filename name="${final.name}.jar" />
+			</fileset>
+		</copy>
+
+	</target>
+
+</project>
