@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import au.id.jericho.lib.html.Element;
-import au.id.jericho.lib.html.Source;
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.Source;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.rebind.module.Module;
 import br.com.sysmap.crux.core.rebind.module.Modules;
@@ -68,7 +68,7 @@ public class ModuleUtils
 	{
 		String result = null;
 		Source source = new Source(pageFile.openStream());
-		List<?> elementList = source.findAllElements("script");
+		List<?> elementList = source.getAllElements("script");
 		
 		for (Object object : elementList)
 		{
