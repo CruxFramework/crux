@@ -57,6 +57,7 @@ public class CruxCompiler
 				compiler.processParameters(parameters.values());
 				compiler.execute();
 			}
+			System.exit(0);
 		}
 		catch (ConsoleParametersProcessingException e)
 		{
@@ -66,5 +67,6 @@ public class CruxCompiler
 		{
 			logger.error(messages.cruxCompilerErrorCompilingFiles(e.getLocalizedMessage()));
 		}
+		System.exit(1);
 	}	
 }
