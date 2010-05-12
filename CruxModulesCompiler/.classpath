@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
-	<classpathentry kind="lib" path="lib/jericho-html-2.5.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CruxCompiler"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CruxModules"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CruxScannotation"/>
