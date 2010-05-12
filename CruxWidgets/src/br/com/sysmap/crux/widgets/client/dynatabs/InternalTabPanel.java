@@ -64,6 +64,21 @@ class InternalTabPanel extends Composite implements HasAnimation, HasBeforeSelec
 				deck.showWidget(event.getSelectedItem());
 			}
 		});
+		
+		tabBar.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>()
+		{
+			public void onBeforeSelection(BeforeSelectionEvent<Integer> event)
+            {
+			    BeforeSelectionEvent<Integer> tabPanelEvent = BeforeSelectionEvent.fire(InternalTabPanel.this, event.getItem());
+			    if (tabPanelEvent == null || tabPanelEvent.isCanceled())
+			    {
+			    	if (event != null)
+			    	{
+			    		event.cancel();
+			    	}
+			    }
+            }
+		});
 
 		setStyleName("crux-TabPanel");
 		deck.setStyleName("crux-TabPanelBottom");
