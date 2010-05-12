@@ -7,16 +7,16 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-scannotation.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar" sourcepath="build/lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javassist.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jericho-html-2.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon9.jar"/>
 	<classpathentry kind="lib" path="build/lib/crux-html-tags-compile-task.jar"/>
 	<classpathentry kind="lib" path="build/lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-themes.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang-2.3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon9-dom.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-gwt-widgets.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-widgets.jar"/>
 	<classpathentry kind="lib" path="build/lib/gwt-dev.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jericho-html.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
