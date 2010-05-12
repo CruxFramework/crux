@@ -22,12 +22,31 @@
 	<property name="dependencies.jars.dir" value="dependencies" />
 	<property name="crux.jars.dir" value="crux" />
 
+	<target name="download-dependencies" description="Download all Crux dependencies" >
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnant.jar" dest="dependencies/svnant.jar" verbose="true"/>
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnkit.jar" dest="dependencies/svnkit.jar" verbose="true"/>
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnjavahl.jar" dest="dependencies/svnjavahl.jar" verbose="true"/>
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnClientAdapter.jar" dest="dependencies/svnClientAdapter.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/net/htmlparser/jericho/jericho-html/3.1/jericho-html-3.1.jar " dest="dependencies/jericho-html.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/org/apache/ant/ant/1.7.0/ant-1.7.0.jar" dest="dependencies/ant.jar" verbose="true"/>
+		<get src="http://repository.jboss.org/maven2/javassist/javassist/3.7.1.GA/javassist-3.7.1.GA.jar" dest="dependencies/javassist.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/commons-lang/commons-lang/2.3/commons-lang-2.3.jar" dest="dependencies/commons-lang.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" dest="dependencies/commons-logging.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-dev/2.0.3/gwt-dev-2.0.3.jar" dest="dependencies/gwt-dev.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-servlet/2.0.3/gwt-servlet-2.0.3.jar" dest="dependencies/gwt-servlet.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-user/2.0.3/gwt-user-2.0.3.jar" dest="dependencies/gwt-user.jar" verbose="true"/>
+		<get src="http://repo2.maven.org/maven2/junit/junit/4.4/junit-4.4.jar" dest="dependencies/junit.jar" verbose="true"/>
+		<get src="http://svn.apache.org/repos/asf/servicemix/m2-repo/net/sf/saxon/saxon/9.0/saxon-9.0.jar" dest="dependencies/saxon9.jar" verbose="true"/>
+		<get src="http://svn.apache.org/repos/asf/servicemix/m2-repo/net/sf/saxon/saxon-dom/9.0/saxon-dom-9.0.jar" dest="dependencies/saxon9-dom.jar" verbose="true"/>
+		<get src="http://repo2.maven.org/maven2/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar" dest="dependencies/servlet-api.jar" verbose="true"/>
+	</target>
+	
 	<target name="distribute" description="Copies the jar files to the other projects">
 
 		<!-- Export to CruxScannotation -->
 		<copy todir="${scannotation.project}/lib" >
 			<fileset dir="${dependencies.jars.dir}">
-				<include name="junit-4.4.jar" />
+				<include name="junit.jar" />
 				<include name="javassist.jar" />
 				<include name="servlet-api.jar" />
 				<include name="svnant.jar" />
@@ -44,17 +63,14 @@
 				<include name="gwt-dev.jar" />
 				<include name="gwt-user.jar" />
 				<include name="javassist.jar" />
-				<include name="jericho-html-2.5.jar" />
-				<include name="junit-4.4.jar" />
+				<include name="jericho-html.jar" />
+				<include name="junit.jar" />
 				<include name="saxon9-dom.jar" />
 				<include name="saxon9.jar" />
 				<include name="svnant.jar" />
 				<include name="svnClientAdapter.jar" />
 				<include name="svnjavahl.jar" />
 				<include name="svnkit.jar" />
-			</fileset>
-			<fileset dir="${crux.jars.dir}">
-				<filename name="crux-scannotation.jar" />
 			</fileset>
 		</copy>
 
@@ -83,7 +99,7 @@
 		<!-- Export to CruxHtmltags -->
 		<copy todir="${html.tags.project}/lib" >
 			<fileset dir="${dependencies.jars.dir}">
-				<include name="junit-4.4.jar" />
+				<include name="junit.jar" />
 				<include name="saxon9.jar" />
 				<include name="commons-logging.jar" />
 				<include name="javassist.jar" />
@@ -93,9 +109,6 @@
 				<include name="svnClientAdapter.jar" />
 				<include name="svnjavahl.jar" />
 				<include name="svnkit.jar" />
-			</fileset>
-			<fileset dir="${crux.jars.dir}">
-				<filename name="crux-scannotation.jar" />
 			</fileset>
 		</copy>
 
@@ -126,7 +139,7 @@
 		<copy todir="${modules.compiler.project}/lib" >
 			<fileset dir="${dependencies.jars.dir}">
 				<include name="ant.jar" />
-				<include name="jericho-html-2.5.jar" />
+				<include name="jericho-html.jar" />
 				<include name="commons-logging.jar" />
 				<include name="svnant.jar" />
 				<include name="svnClientAdapter.jar" />
@@ -139,7 +152,7 @@
 		<copy todir="${compiler.project}/lib" >
 			<fileset dir="${dependencies.jars.dir}">
 				<include name="ant.jar" />
-				<include name="jericho-html-2.5.jar" />
+				<include name="jericho-html.jar" />
 				<include name="commons-logging.jar" />
 				<include name="gwt-dev.jar" />
 				<include name="gwt-user.jar" />
@@ -163,7 +176,7 @@
 				<include name="commons-logging.jar" />
 				<include name="gwt-user.jar" />
 				<include name="javassist.jar" />
-				<include name="jericho-html-2.5.jar" />
+				<include name="jericho-html.jar" />
 				<include name="saxon9-dom.jar" />
 				<include name="saxon9.jar" />
 			</fileset>
@@ -183,9 +196,9 @@
 				<include name="commons-logging.jar" />
 				<include name="gwt-servlet.jar"/>
 				<include name="javassist.jar" />
-				<include name="jericho-html-2.5.jar" />
+				<include name="jericho-html.jar" />
 				<include name="saxon9.jar" />
-				<include name="commons-lang-2.3.jar" />
+				<include name="commons-lang.jar" />
 				<include name="saxon9-dom.jar" />
 			</fileset>
 			<fileset dir="${crux.jars.dir}">
@@ -214,7 +227,7 @@
 				<include name="commons-logging.jar" />
 				<include name="gwt-servlet.jar"/>
 				<include name="javassist.jar" />
-				<include name="jericho-html-2.5.jar" />
+				<include name="jericho-html.jar" />
 				<include name="saxon9.jar" />
 				<include name="saxon9-dom.jar" />
 				<include name="svnkit.jar" />
