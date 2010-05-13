@@ -32,7 +32,7 @@ import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.module.Module;
 import br.com.sysmap.crux.core.rebind.module.ModulesScanner;
-import br.com.sysmap.crux.core.utils.FileSystemUtils;
+import br.com.sysmap.crux.core.utils.FileUtils;
 import br.com.sysmap.crux.scannotation.ClasspathUrlFinder;
 import br.com.sysmap.crux.tools.compile.utils.ModuleUtils;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
@@ -130,11 +130,11 @@ public abstract class AbstractCruxCompiler
 	 */
 	protected void maybeRestoreBackup(Module module) throws IOException
     {
-    	File backupFile = new File(FileSystemUtils.getTempDirFile(), "_moduleBackup");
+    	File backupFile = new File(FileUtils.getTempDirFile(), "_moduleBackup");
 	    if (backupFile.exists())
 	    {
 		    File output = new File(outputDir, module.getName());
-	    	FileSystemUtils.copyDirectory(backupFile, output);
+	    	FileUtils.copyDirectory(backupFile, output);
 	    	backupFile.delete();
 	    }
     }
@@ -148,8 +148,8 @@ public abstract class AbstractCruxCompiler
 	    File output = new File(outputDir, module.getName());
 	    if (output.exists())
 	    {
-	    	File backupFile = new File(FileSystemUtils.getTempDirFile(), "_moduleBackup");
-	    	FileSystemUtils.copyDirectory(output, backupFile);
+	    	File backupFile = new File(FileUtils.getTempDirFile(), "_moduleBackup");
+	    	FileUtils.copyDirectory(output, backupFile);
 	    }
     }
 
@@ -161,12 +161,12 @@ public abstract class AbstractCruxCompiler
 	    File output = new File(outputDir, module.getName());
 	    if (output.exists())
 	    {
-	    	output.delete();
+	    	FileUtils.recursiveDelete(output);
 	    }
-    	File backupFile = new File(FileSystemUtils.getTempDirFile(), "_moduleBackup");
+    	File backupFile = new File(FileUtils.getTempDirFile(), "_moduleBackup");
 	    if (backupFile.exists())
 	    {
-	    	backupFile.delete();
+	    	FileUtils.recursiveDelete(backupFile);
 	    }
     }
 	
