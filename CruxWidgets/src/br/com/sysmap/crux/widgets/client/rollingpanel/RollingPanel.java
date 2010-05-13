@@ -17,7 +17,6 @@ package br.com.sysmap.crux.widgets.client.rollingpanel;
 
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.utils.StyleUtils;
-import br.com.sysmap.crux.widgets.client.wizard.InternalDockPanel;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -56,7 +55,7 @@ public class RollingPanel extends Composite implements InsertPanel
 	public static final String DEFAULT_STYLE_NAME = "crux-RollingPanel";
 
 	protected CellPanel itemsPanel;
-	protected InternalDockPanel layoutPanel;
+	protected DockPanel layoutPanel;
 	
 	private String horizontalNextButtonStyleName = DEFAULT_NEXT_HORIZONTAL_STYLE_NAME;
 	private Label horizontalNextLabel = null;
@@ -79,7 +78,7 @@ public class RollingPanel extends Composite implements InsertPanel
 	{
 		this.vertical = vertical;
 		
-		this.layoutPanel = new InternalDockPanel();
+		this.layoutPanel = new DockPanel();
 		this.itemsScrollPanel = new SimplePanel();
 	    DOM.setStyleAttribute(this.itemsScrollPanel.getElement(), "overflow", "hidden");
 		
@@ -102,8 +101,7 @@ public class RollingPanel extends Composite implements InsertPanel
 		
 		this.layoutPanel.add(this.itemsScrollPanel, DockPanel.CENTER);
 		this.layoutPanel.getElement().getStyle().setProperty("tableLayout", "fixed");
-		this.layoutPanel.getBody().getStyle().setProperty("height", "100%");
-		
+	
 		if (vertical)
 		{
 			this.layoutPanel.setCellHeight(this.itemsScrollPanel, "100%");

@@ -24,6 +24,8 @@ import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
+import br.com.sysmap.crux.core.client.utils.StyleUtils;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.CancelEvent;
 import br.com.sysmap.crux.widgets.client.event.CancelHandler;
@@ -34,6 +36,8 @@ import br.com.sysmap.crux.widgets.client.event.HasFinishHandlers;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
@@ -54,7 +58,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	
 	private WizardControlBar controlBar;
 	private int currentStep = -1;
-	private InternalDockPanel dockPanel;
+	private DockPanel dockPanel;
 	private boolean isChangingStep = false;
 	private WizardNavigationBar navigationBar;
 
@@ -70,22 +74,16 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	public Wizard(String id)
     {
-		this.dockPanel = new InternalDockPanel(){
+		this.dockPanel = new DockPanel(){
 		};
 		this.dockPanel.setStyleName(DEFAULT_STYLE_NAME);
 		
 		this.stepsPanel = new DeckPanel();
 		this.stepsPanel.setHeight("100%");
 		this.stepsPanel.setWidth("100%");
-		
-		this.dockPanel.add(stepsPanel, DockPanel.CENTER);
-		this.dockPanel.setCellHeight(this.stepsPanel, "100%");
-		this.dockPanel.setCellWidth(this.stepsPanel, "100%");
-		
+		this.dockPanel.add(stepsPanel, DockPanel.CENTER);		
 		this.dockPanel.getElement().setId(id);
-		this.dockPanel.getBody().getStyle().setProperty("height", "100%");
-		
-		
+
 		initWidget(dockPanel);
 		Events.getRegisteredClientEventHandlers().registerEventHandler("__wizard", new CruxInternalWizardPageController());
 		ContextManager.getContextHandler().eraseData("__Wizard."+getElement().getId());
@@ -495,7 +493,6 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
     {
     	if (setControlBar(controlBar, position))
     	{
-			dockPanel.setCellHeight(this.controlBar, "0");
 			final HorizontalAlignmentConstant align = getHorizontalAlign(horizontalAlign);
 			this.controlBar.setCellHorizontalAlignment(align);
 			dockPanel.setCellHorizontalAlignment(this.controlBar, align);
@@ -511,8 +508,6 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
     {
     	if (setControlBar(controlBar, position))
     	{
-			dockPanel.setCellWidth(this.controlBar, "0");
-			dockPanel.setCellHeight(this.controlBar, "100%");
 			final VerticalAlignmentConstant align = getVerticalAlign(verticalAlign);
 			this.controlBar.setCellVerticalAlignment(align);
 			dockPanel.setCellVerticalAlignment(this.controlBar, align);
@@ -528,7 +523,6 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
     {
     	if (setNavigationBar(navigationBar, position))
     	{
-			dockPanel.setCellHeight(this.navigationBar, "0");
 			HorizontalAlignmentConstant align = getHorizontalAlign(horizontalAlign);
 			this.navigationBar.setCellHorizontalAlignment(align);
 			dockPanel.setCellHorizontalAlignment(this.navigationBar, align);
@@ -544,9 +538,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
     {
     	if (setNavigationBar(navigationBar, position))
     	{
-			dockPanel.setCellWidth(this.navigationBar, "0");
-			dockPanel.setCellHeight(this.navigationBar, "100%");
-			VerticalAlignmentConstant align = getVerticalAlign(verticalAlign);
+    		VerticalAlignmentConstant align = getVerticalAlign(verticalAlign);
 			this.navigationBar.setCellVerticalAlignment(align);
 			dockPanel.setCellVerticalAlignment(this.navigationBar, align);
 		}
@@ -804,11 +796,32 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 			this.controlBar.setWizard(this);
 			addStepListener(this.controlBar);
 			dockPanel.add(this.controlBar, getDockPosition(position));
+			applyCssStyleOnWizardBar(this.controlBar, position, WizardControlBar.DEFAULT_STYLE_NAME);
 			return true;
 		}
 		return false;
     }
 	
+	/**
+	 * Sets a css class on the parent element of the widget
+	 * @param bar
+	 * @param position
+	 */
+	private void applyCssStyleOnWizardBar(final Widget bar, final ControlPosition position, final String baseCssClassName)
+	{
+		Scheduler.get().scheduleDeferred
+		(
+			new ScheduledCommand()
+			{
+				public void execute()
+				{
+					Element parent = bar.getElement().getParentElement();
+					StyleUtils.addStyleName(parent, baseCssClassName + StringUtils.toUpperCaseFirstChar(position.name()) + "Wrapper");
+				}
+			}
+		);	
+	}
+
 	/**
 	 * @param navigationBar
 	 * @return true if a new controlBar was added
@@ -826,6 +839,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 			this.navigationBar.setWizard(this);
 			addStepListener(this.navigationBar);
 			dockPanel.add(this.navigationBar, getDockPosition(position));
+			applyCssStyleOnWizardBar(this.navigationBar, position, WizardNavigationBar.DEFAULT_STYLE_NAME);
 			return true;
 		}
 		return false;
