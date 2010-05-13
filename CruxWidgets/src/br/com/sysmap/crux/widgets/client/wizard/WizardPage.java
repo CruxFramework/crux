@@ -121,7 +121,7 @@ public class WizardPage extends AbstractWidgetStep
             }
             catch (RuntimeException e)
             {
-            	Crux.getErrorHandler().handleError("", e); //TODO- Thiago - message erro de evento
+            	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardCommandError(commandId, e.getMessage()), e);
             }
 		}
     }

@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
 
 /**
  * TODO - Gessé - Comment this
- * TODO - Gessé - widget columns should not be sortable 
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class WidgetColumnDefinition extends ColumnDefinition

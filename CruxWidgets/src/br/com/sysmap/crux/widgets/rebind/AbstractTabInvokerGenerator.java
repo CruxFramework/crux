@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
 import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperGenerator;
 import br.com.sysmap.crux.core.rebind.WrapperGeneratorException;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.user.rebind.SourceWriter;
@@ -50,7 +51,7 @@ public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapp
 			
 			if (tabId.length() <= ON_TAB_SUFIX.length())
 			{
-				throw new WrapperGeneratorException("Error for generating invoker wrapper: Invalid Method signature: " + method.toGenericString() + ". A valid signature must have the form [methodName][OnTab][tabId]"); // TODO - Gessé - add message here;
+				throw new WrapperGeneratorException(WidgetMsgFactory.getMessages().tabsControllerInvalidSignature(method.toGenericString())); 
 			}
 			
 			tabId = toJavaName(tabId);

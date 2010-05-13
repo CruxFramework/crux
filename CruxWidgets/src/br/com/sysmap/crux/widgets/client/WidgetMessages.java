@@ -105,4 +105,10 @@ public interface WidgetMessages extends Messages
 
 	@DefaultMessage("[crux-widgets 027] - The wizard step with index {0} can not be selected because it is not enabled.")
 	String wizardInvalidStepSelected(int step);
+
+	@DefaultMessage("[crux-widgets 028] - Error runnig the wizard command {0}. Message: {1}.")
+	String wizardCommandError(String commandId, String message);
+
+	@DefaultMessage("[crux-widgets 029] - Error for generating invoker wrapper: Invalid Method signature: {0}. A valid signature must have the form [methodName][OnTab][tabId]")
+	String tabsControllerInvalidSignature(String signature);
 }
