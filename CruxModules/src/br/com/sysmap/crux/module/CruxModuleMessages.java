@@ -38,12 +38,15 @@ public interface CruxModuleMessages
 	@DefaultServerMessage("[crux-modules 005] - Error registering current module {0}.")
 	String moduleBridgeErrorRegisteringModule(String localizedMessage);
 
-	@DefaultServerMessage("[crux-modules 006] - No module registered under the bridge module. Assuming the development module" )
+	@DefaultServerMessage("[crux-modules 006] - No module registered under the bridge module. Assuming the development module")
 	String moduleBridgeErrorReadingModule();
 
-	@DefaultServerMessage("[crux-modules 007] - No development module specified." )
+	@DefaultServerMessage("[crux-modules 007] - No development module specified.")
 	String launcerErrorNoDevelopmentModulesSpecified();
 
-	@DefaultServerMessage("[crux-modules 008] - Error initializing crux module version checker: {0}." )
+	@DefaultServerMessage("[crux-modules 008] - Error initializing crux module version checker: {0}.")
 	Object versionChekerInitializerError(String message);
+
+	@DefaultServerMessage("[crux-modules 009] - Module version is null.")
+	String decimalVersionCheckerEmptyRealVersion();
 }

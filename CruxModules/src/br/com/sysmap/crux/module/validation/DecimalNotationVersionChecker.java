@@ -17,7 +17,9 @@ package br.com.sysmap.crux.module.validation;
 
 import java.util.regex.Pattern;
 
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
+import br.com.sysmap.crux.module.CruxModuleMessages;
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -27,6 +29,8 @@ public class DecimalNotationVersionChecker implements CruxModuleVersionChecker
 {
     public static final Pattern REGEXP_DOT_NUMBER = Pattern.compile("[\\.0-9 ]+");
     public static final Pattern REGEXP_SPACE_OR_DOT = Pattern.compile("[\\. ]+");
+    
+    private CruxModuleMessages messages = MessagesFactory.getMessages(CruxModuleMessages.class);
     
     /**
      * 
@@ -125,7 +129,7 @@ public class DecimalNotationVersionChecker implements CruxModuleVersionChecker
 	{
 		if (realVersion == null || realVersion.trim().length() == 0)
 		{
-			throw new NullPointerException(realVersion); //TODO - Thiago - mensagem 
+			throw new NullPointerException(messages.decimalVersionCheckerEmptyRealVersion());
 		}
 		
 		if (expectedVersion != null && expectedVersion.length() > 0 && !REGEXP_DOT_NUMBER.matcher(expectedVersion).matches())

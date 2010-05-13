@@ -25,7 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.utils.FileSystemUtils;
+import br.com.sysmap.crux.core.utils.FileUtils;
 
 
 /**
@@ -49,7 +49,7 @@ public class CruxModuleBridge
 	
 	private CruxModuleBridge() 
 	{
-		String tmpDir = FileSystemUtils.getTempDir();
+		String tmpDir = FileUtils.getTempDir();
 		
 		currentModuleBridgeFile = new File(tmpDir+"currentModuleBridgeFile");
 	}
