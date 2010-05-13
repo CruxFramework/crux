@@ -11,6 +11,7 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
+import br.com.sysmap.crux.core.utils.FileUtils;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessingException;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
