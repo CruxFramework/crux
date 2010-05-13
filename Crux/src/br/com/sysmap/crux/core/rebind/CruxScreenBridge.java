@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.ServerMessages;
-import br.com.sysmap.crux.core.utils.FileSystemUtils;
+import br.com.sysmap.crux.core.utils.FileUtils;
 
 
 /**
@@ -52,7 +52,7 @@ public class CruxScreenBridge
 	
 	private CruxScreenBridge() 
 	{
-		String tmpDir = FileSystemUtils.getTempDir();
+		String tmpDir = FileUtils.getTempDir();
 		
 		screenRequestedBridgeFile = new File(tmpDir+"screenRequestedBridgeFile");
 		scanAllowedPackagesFile = new File(tmpDir+"scanAllowedPackagesFile");
