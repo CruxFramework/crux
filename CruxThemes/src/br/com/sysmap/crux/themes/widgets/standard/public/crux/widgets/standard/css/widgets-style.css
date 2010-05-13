@@ -558,52 +558,6 @@
 /******************************************************************************
 	RollingPanel
 *******************************************************************************/
-.crux-RollingPanelHNext
-{
-	width: 18px;
-	height: 11px;
-	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
-}
-
-.crux-RollingPanelHPrevious
-{
-	width: 18px;
-	height: 11px;
-	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
-}
-
-.crux-RollingPanelVNext
-{
-	width: 20px;
-	height: 11px;
-	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
-}
-
-.crux-RollingPanelVPrevious
-{
-	width: 20px;
-	height: 11px;
-	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
-}
-
-.crux-RollingPanelHPreviousWrapper
-{
-	vertical-align:bottom !important;
-	width:20px;
-}
-.crux-RollingPanelHNextWrapper
-{
-	vertical-align:bottom !important;
-	width:20px;
-}
-.crux-RollingPanelHPreviousWrapper-disabled
-{
-	width:0px;
-}
-.crux-RollingPanelHNextWrapper-disabled
-{
-	width:0px;
-}
 
 /******************************************************************************
 	Dyna Tabs
@@ -641,10 +595,12 @@
 .crux-DynaTabs .crux-TabBar .crux-RollingPanelHPreviousWrapper-disabled
 {
 	width:0px;
+	border: solid 0px;
 }
 .crux-DynaTabs .crux-TabBar .crux-RollingPanelHNextWrapper-disabled
 {
 	width:0px;
+	border: solid 0px;
 }
 .crux-DynaTabs .crux-TabBar .crux-RollingPanelHNextWrapper-disabled .crux-RollingPanelHNext
 {
@@ -796,6 +752,9 @@
 /******************************************************************************
 	Decorated Button
 *******************************************************************************/
+.crux-DecoratedButton
+{
+}
 .crux-DecoratedButton TD
 {
 	height: 23px;
@@ -807,7 +766,7 @@
 .crux-DecoratedButton .leftCell 
 {
 	width:2px;
-	font-size: 0px;
+	font-size: 2px;
 	font-family: monospace;
 	padding: 0px !important;
 	margin: 0px !important;
@@ -839,7 +798,7 @@
 {
 	width:2px;
 	font-family: monospace;
-	font-size: 0px;
+	font-size: 2px;
 	padding: 0px !important;
 	margin: 0px !important;
 	background: url(../img/decorated-button-right.gif) no-repeat top right;
