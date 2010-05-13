@@ -120,4 +120,19 @@ public class StringUtils
 		buf.append(text.substring(start));
 		return buf.toString();
 	}
+	
+	/**
+	 * Transforms "some text" into "Some text"
+	 * @param text
+	 * @return
+	 */
+	public static String toUpperCaseFirstChar(String text)
+	{
+		if(text != null && text.length() > 0)
+		{
+			return text.substring(0,1).toUpperCase() + text.substring(1);
+		}
+		
+		return text;
+	}
 }
