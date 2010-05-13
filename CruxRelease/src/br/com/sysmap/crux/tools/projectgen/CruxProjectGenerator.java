@@ -3,12 +3,10 @@ package br.com.sysmap.crux.tools.projectgen;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Map.Entry;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.utils.FileUtils;
@@ -23,78 +21,80 @@ import br.com.sysmap.crux.tools.schema.SchemaGenerator;
  */
 public class CruxProjectGenerator
 {
-	private Properties config = new Properties();
-	
-	private File workspaceDir;
-	private File libDir;
-	private String projectName;
-	private String hostedModeStartupModule;
-	private String hostedModeStartupURL;
-	private File projectDir;
+	private CruxProjectGeneratorOptions options;
 	private List<String[]> replacements;
-	private String moduleSimpleName;
-	private String modulePackage;
-	private boolean useCruxModuleExtension = false;
+	
 	
 	/**
 	 * @param workspaceDir
 	 */
-	public CruxProjectGenerator(File workspaceDir)
+	public CruxProjectGenerator(CruxProjectGeneratorOptions options)
 	{
-		this.workspaceDir = workspaceDir;
+		this.options = options;
+	}
+
+	/**
+	 * @param args
+	 * @throws Exception 
+	 */
+	public static void main(String[] args) throws Exception
+	{
+		try
+		{
+			try
+			{
+				ConsoleParametersProcessor parametersProcessor = createParametersProcessor();
+				Map<String, ConsoleParameter> parameters = parametersProcessor.processConsoleParameters(args);
+
+				if (parameters.containsKey("-help") || parameters.containsKey("-h"))
+				{
+					parametersProcessor.showsUsageScreen();
+				}
+				else
+				{
+					CruxProjectGeneratorOptions options = loadGeneratorOptions(new File(parameters.get("outputDir").getValue()));
+					new CruxProjectGenerator(options).generate();
+				}
+			}
+			catch (ConsoleParametersProcessingException e)
+			{
+				System.out.println("Program aborted");
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @return
+	 */
+	private static ConsoleParametersProcessor createParametersProcessor()
+	{
+		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor("projectGenerator");
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("outputDir", "The folder where the files will be created."));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
+		return parametersProcessor;
 	}
 
 	/**
 	 * @throws IOException
 	 */
-	private void init() throws Exception
+	private static CruxProjectGeneratorOptions loadGeneratorOptions(File workspaceDir) throws Exception
 	{
-		config.load(this.getClass().getResourceAsStream("/project.properties"));
+		Properties config = new Properties();
+		config.load(CruxProjectGenerator.class.getResourceAsStream("/project.properties"));
 		
-		this.projectName = config.getProperty(Names.projectName);
-		this.hostedModeStartupModule = config.getProperty(Names.hostedModeStartupModule);
-		this.hostedModeStartupURL = config.getProperty(Names.hostedModeStartupURL);
-		this.projectDir = createProjectDir();
-		this.moduleSimpleName = getModuleSimpleName();
-		this.modulePackage = getModulePackage();
-		this.libDir = getLibDir();
-		this.useCruxModuleExtension = Boolean.parseBoolean(config.getProperty(Names.useCruxModuleExtension));
-	}
-	
-	/**
-	 * @return
-	 */
-	private String getModuleSimpleName()
-	{
-		int lastDot = this.hostedModeStartupModule.lastIndexOf(".");
+		String projectName = config.getProperty(Names.projectName);
+		String hostedModeStartupModule = config.getProperty(Names.hostedModeStartupModule);
+		String hostedModeStartupURL = config.getProperty(Names.hostedModeStartupURL);
+		boolean useCruxModuleExtension = Boolean.parseBoolean(config.getProperty(Names.useCruxModuleExtension));
+		String hostedModeVMArgs = config.getProperty(Names.hostedModeVMArgs);
 		
-		if(lastDot >= 0)
-		{
-			return this.hostedModeStartupModule.substring(lastDot + 1);
-		}
-		
-		return this.hostedModeStartupModule;
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getModulePackage()
-	{
-		int lastDot = this.hostedModeStartupModule.lastIndexOf(".");
-		return this.hostedModeStartupModule.substring(0, lastDot);
-	}
-
-	/**
-	 * @return
-	 * @throws Exception 
-	 */
-	private File getLibDir() throws Exception
-	{
-		String resourceFromClasspathRoot = "/project.properties";
-		URL url = this.getClass().getResource(resourceFromClasspathRoot);
-		File rootDir = new File(url.toURI()).getParentFile();
-		return new File(rootDir, "lib");
+		return new CruxProjectGeneratorOptions(workspaceDir, projectName, hostedModeStartupModule, hostedModeStartupURL, 
+											   hostedModeVMArgs, useCruxModuleExtension);
 	}
 
 	/**
@@ -102,8 +102,6 @@ public class CruxProjectGenerator
 	 */
 	public void generate() throws Exception
 	{
-		init();
-		
 		createProjectRootFiles();
 		createSources();
 		createdBuildFiles();
@@ -112,9 +110,28 @@ public class CruxProjectGenerator
 		createXSDs();
 	}
 
-	private void createXSDs() throws IOException
+	/**
+	 * @return
+	 */
+	public List<String[]> getReplacements()
 	{
-		SchemaGenerator.generateSchemas(projectDir, "xsd", useCruxModuleExtension);
+		if(this.replacements == null)
+		{
+			this.replacements = new ArrayList<String[]>();
+
+			this.replacements.add(new String[]{"projectName", this.options.getProjectName()});
+			this.replacements.add(new String[]{"hostedModeStartupURL", this.options.getHostedModeStartupURL()});
+			this.replacements.add(new String[]{"hostedModeStartupModule", this.options.getHostedModeStartupModule()});
+			this.replacements.add(new String[]{"hostedModeVMArgs", this.options.getHostedModeVMArgs()});
+			this.replacements.add(new String[]{"useCruxModuleExtension", this.options.getModuleSimpleName()});
+			
+			
+			this.replacements.add(new String[]{"moduleSimpleNameUpperCase", this.options.getModuleSimpleName()});
+			this.replacements.add(new String[]{"moduleSimpleName", this.options.getModuleSimpleName().toLowerCase()});
+			this.replacements.add(new String[]{"modulePackage", this.options.getModulePackage()});
+		}
+		
+		return this.replacements;
 	}
 
 	/**
@@ -137,147 +154,8 @@ public class CruxProjectGenerator
 		
 		getReplacements().add(new String[]{"classpathLibs", libs.toString()});
 		
-		createFile(projectDir, ".classpath", "classpath.xml");
+		createFile(options.getProjectDir(), ".classpath", "classpath.xml");
 	}
-
-	/**
-	 * @param buildLibDir
-	 * @return
-	 */
-	private List<String> listJars(File dir)
-	{
-		List<String> jars = new ArrayList<String>();
-		
-		File[] files = dir.listFiles();
-		for (File file : files)
-		{
-			String fileName = file.getName();
-			if(fileName.endsWith(".jar"))
-			{
-				jars.add(fileName);
-			}
-		}
-		
-		return jars;
-	}
-
-	/**
-	 * @throws IOException 
-	 * 
-	 */
-	private void createSources() throws IOException
-	{
-		File sourceDir = createDir(projectDir, "src");
-		
-		String packageDir = this.modulePackage.replaceAll("\\.", "/");
-		File moduleDir = createDir(sourceDir, packageDir);
-		
-		File clientPackage = createDir(moduleDir, "client");
-		File clientRemotePackage = createDir(clientPackage, "remote");
-		File clientControllerPackage = createDir(clientPackage, "controller");
-		File serverPackage = createDir(moduleDir, "server");
-		
-		createFile(clientRemotePackage, "GreetingService.java", "GreetingService.java.txt");
-		createFile(clientRemotePackage, "GreetingServiceAsync.java", "GreetingServiceAsync.java.txt");
-		createFile(clientControllerPackage, "MyController.java", "MyController.java.txt");
-		createFile(serverPackage, "GreetingServiceImpl.java", "GreetingServiceImpl.java.txt");
-
-		if (this.useCruxModuleExtension)
-		{
-			createFile(sourceDir, "Crux.properties", "modules/crux.properties.txt");
-			createFile(sourceDir, "CruxModuleConfig.properties", "modules/cruxModuleConfig.properties.txt");
-			createFile(moduleDir, this.moduleSimpleName + ".gwt.xml", "modules/module.xml");
-			createFile(moduleDir, this.moduleSimpleName + ".module.xml", "modules/ModuleInfo.module.xml");
-		}
-		else
-		{
-			createFile(moduleDir, this.moduleSimpleName + ".gwt.xml", "module.xml");
-		}
-	}
-
-	/**
-	 * @return
-	 * @throws IOException
-	 */
-	private File createProjectDir() throws IOException
-	{
-		File projectDir = new File(workspaceDir, projectName);
-		
-		if(projectDir.exists())
-		{
-			FileUtils.recursiveDelete(projectDir);
-		}
-		
-		boolean created = projectDir.mkdirs();
-		if(!projectDir.exists() && !created)
-		{
-			throw new IOException("Could not create " + projectDir.getCanonicalPath());
-		}
-		return projectDir;
-	}
-
-	/**
-	 * @throws IOException
-	 */
-	private void createWebRootFiles() throws IOException
-	{
-		FileUtils.copyFilesFromDir(new File(libDir, "web-inf"), getWebInfLibDir());
-		String pageName = this.hostedModeStartupURL;
-		if (pageName == null || pageName.length() == 0)
-		{
-			pageName = "index.crux.xml";
-		}
-		else if (pageName.endsWith(".html"))
-		{
-			pageName = pageName.substring(0, pageName.length()-5) + ".crux.xml";
-		}
-		if (this.useCruxModuleExtension)
-		{
-			FileUtils.copyFilesFromDir(new File(libDir, "modules/web-inf"), getWebInfLibDir());
-			createFile(getWebInfLibDir().getParentFile(), "web.xml", "modules/web.xml");
-			createFile(getModulePublicDir(), pageName, "modules/index.crux.xml");		
-		}
-		else
-		{
-			createFile(getWebInfLibDir().getParentFile(), "web.xml", "web.xml");
-			createFile(getWarDir(), pageName, "index.crux.xml");		
-		}
-	}
-
-	/**
-	 * @return
-	 */
-	private File getModulePublicDir()
-	{
-		String packageDir = this.modulePackage.replaceAll("\\.", "/");
-		File moduleDir = new File(projectDir, "src/"+packageDir);
-		
-		return createDir(moduleDir, "public");
-	}
-
-	/**
-	 * @return
-	 */
-	private File getWarDir()
-	{
-		return createDir(projectDir, "war");
-	}
-
-	/**
-	 * @return
-	 */
-	private File getWebInfLibDir()
-	{
-		return createDir(projectDir, "war/WEB-INF/lib");
-	}
-	
-	/**
-	 * @return
-	 */
-	private File getBuildLibDir()
-	{
-		return createDir(projectDir, "build/lib");
-	}	
 
 	/**
 	 * @throws IOException
@@ -285,10 +163,10 @@ public class CruxProjectGenerator
 	private void createdBuildFiles() throws IOException
 	{
 		File buildLibDir = getBuildLibDir();
-		FileUtils.copyFilesFromDir(new File(libDir, "build"), buildLibDir);
-		if (this.useCruxModuleExtension)
+		FileUtils.copyFilesFromDir(new File(options.getLibDir(), "build"), buildLibDir);
+		if (this.options.isUseCruxModuleExtension())
 		{
-			FileUtils.copyFilesFromDir(new File(libDir, "modules/build"), buildLibDir);
+			FileUtils.copyFilesFromDir(new File(options.getLibDir(), "modules/build"), buildLibDir);
 			createFile(buildLibDir.getParentFile(), "build.xml", "modules/build.xml");
 		}
 		else
@@ -311,22 +189,6 @@ public class CruxProjectGenerator
 		}
 		return dir;
 	}
-	
-	/**
-	 * @throws IOException
-	 */
-	private void createProjectRootFiles() throws IOException
-	{
-		if (this.useCruxModuleExtension)
-		{
-			createFile(projectDir, projectName + ".launch", "modules/launch.xml");
-		}
-		else
-		{
-			createFile(projectDir, projectName + ".launch", "launch.xml");
-		}
-		createFile(projectDir, ".project", "project.xml");		
-	}
 
 	/**
 	 * @param rootDir
@@ -345,20 +207,105 @@ public class CruxProjectGenerator
 	}
 
 	/**
-	 * @param text
-	 * @param replacements
+	 * @throws IOException
+	 */
+	private void createProjectRootFiles() throws IOException
+	{
+		if (this.options.isUseCruxModuleExtension())
+		{
+			createFile(options.getProjectDir(), options.getProjectName() + ".launch", "modules/launch.xml");
+		}
+		else
+		{
+			createFile(options.getProjectDir(), options.getProjectName() + ".launch", "launch.xml");
+		}
+		createFile(options.getProjectDir(), ".project", "project.xml");		
+	}
+	
+	/**
+	 * @throws IOException 
+	 * 
+	 */
+	private void createSources() throws IOException
+	{
+		File sourceDir = createDir(options.getProjectDir(), "src");
+		
+		String packageDir = this.options.getModulePackage().replaceAll("\\.", "/");
+		File moduleDir = createDir(sourceDir, packageDir);
+		
+		File clientPackage = createDir(moduleDir, "client");
+		File clientRemotePackage = createDir(clientPackage, "remote");
+		File clientControllerPackage = createDir(clientPackage, "controller");
+		File serverPackage = createDir(moduleDir, "server");
+		
+		createFile(clientRemotePackage, "GreetingService.java", "GreetingService.java.txt");
+		createFile(clientRemotePackage, "GreetingServiceAsync.java", "GreetingServiceAsync.java.txt");
+		createFile(clientControllerPackage, "MyController.java", "MyController.java.txt");
+		createFile(serverPackage, "GreetingServiceImpl.java", "GreetingServiceImpl.java.txt");
+
+		if (this.options.isUseCruxModuleExtension())
+		{
+			createFile(sourceDir, "Crux.properties", "modules/crux.properties.txt");
+			createFile(sourceDir, "CruxModuleConfig.properties", "modules/cruxModuleConfig.properties.txt");
+			createFile(moduleDir, this.options.getModuleSimpleName() + ".gwt.xml", "modules/module.xml");
+			createFile(moduleDir, this.options.getModuleSimpleName() + ".module.xml", "modules/ModuleInfo.module.xml");
+		}
+		else
+		{
+			createFile(moduleDir, this.options.getModuleSimpleName() + ".gwt.xml", "module.xml");
+		}
+	}	
+
+	/**
+	 * @throws IOException
+	 */
+	private void createWebRootFiles() throws IOException
+	{
+		FileUtils.copyFilesFromDir(new File(options.getLibDir(), "web-inf"), getWebInfLibDir());
+		String pageName = this.options.getHostedModeStartupURL();
+		if (pageName == null || pageName.length() == 0)
+		{
+			pageName = "index.crux.xml";
+		}
+		else if (pageName.endsWith(".html"))
+		{
+			pageName = pageName.substring(0, pageName.length()-5) + ".crux.xml";
+		}
+		if (this.options.isUseCruxModuleExtension())
+		{
+			FileUtils.copyFilesFromDir(new File(options.getLibDir(), "modules/web-inf"), getWebInfLibDir());
+			createFile(getWebInfLibDir().getParentFile(), "web.xml", "modules/web.xml");
+			createFile(getModulePublicDir(), pageName, "modules/index.crux.xml");		
+		}
+		else
+		{
+			createFile(getWebInfLibDir().getParentFile(), "web.xml", "web.xml");
+			createFile(getWarDir(), pageName, "index.crux.xml");		
+		}
+	}
+
+	private void createXSDs() throws IOException
+	{
+		SchemaGenerator.generateSchemas(options.getProjectDir(), "xsd", options.isUseCruxModuleExtension());
+	}
+	
+	/**
 	 * @return
 	 */
-	private String replaceParameters(String text, List<String[]> replacements)
+	private File getBuildLibDir()
 	{
-		for (String[] replacement : replacements)
-		{
-			String from = "${" + replacement[0] + "}";
-			String to = replacement[1];
-			text = StringUtils.replace(text, from, to);
-		}
+		return createDir(options.getProjectDir(), "build/lib");
+	}
+
+	/**
+	 * @return
+	 */
+	private File getModulePublicDir()
+	{
+		String packageDir = this.options.getModulePackage().replaceAll("\\.", "/");
+		File moduleDir = new File(options.getProjectDir(), "src/"+packageDir);
 		
-		return text;
+		return createDir(moduleDir, "public");
 	}
 
 	/**
@@ -375,71 +322,55 @@ public class CruxProjectGenerator
 	/**
 	 * @return
 	 */
-	public List<String[]> getReplacements()
+	private File getWarDir()
 	{
-		if(this.replacements == null)
-		{
-			this.replacements = new ArrayList<String[]>();
-			for(Entry<?, ?> entry : config.entrySet())
-			{
-				String key = entry.getKey().toString();
-				String value = entry.getValue().toString();
-				String[] replacement = new String[]{key, value};
-				
-				this.replacements.add(replacement);
-			}
-			
-			this.replacements.add(new String[]{"moduleSimpleNameUpperCase", this.moduleSimpleName});
-			this.replacements.add(new String[]{"moduleSimpleName", this.moduleSimpleName.toLowerCase()});
-			this.replacements.add(new String[]{"modulePackage", this.modulePackage});
-		}
-		
-		return this.replacements;
-	}
-	
-	/**
-	 * @param args
-	 * @throws Exception 
-	 */
-	public static void main(String[] args) throws Exception
-	{
-		try
-		{
-			try
-			{
-				ConsoleParametersProcessor parametersProcessor = createParametersProcessor();
-				Map<String, ConsoleParameter> parameters = parametersProcessor.processConsoleParameters(args);
-
-				if (parameters.containsKey("-help") || parameters.containsKey("-h"))
-				{
-					parametersProcessor.showsUsageScreen();
-				}
-				else
-				{
-					new CruxProjectGenerator(new File(parameters.get("outputDir").getValue())).generate();
-				}
-			}
-			catch (ConsoleParametersProcessingException e)
-			{
-				System.out.println("Program aborted");
-			}
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		return createDir(options.getProjectDir(), "war");
 	}
 
 	/**
 	 * @return
 	 */
-	private static ConsoleParametersProcessor createParametersProcessor()
+	private File getWebInfLibDir()
 	{
-		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor("projectGenerator");
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("outputDir", "The folder where the files will be created."));
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
-		return parametersProcessor;
+		return createDir(options.getProjectDir(), "war/WEB-INF/lib");
+	}
+	
+	/**
+	 * @param buildLibDir
+	 * @return
+	 */
+	private List<String> listJars(File dir)
+	{
+		List<String> jars = new ArrayList<String>();
+		
+		File[] files = dir.listFiles();
+		for (File file : files)
+		{
+			String fileName = file.getName();
+			if(fileName.endsWith(".jar"))
+			{
+				jars.add(fileName);
+			}
+		}
+		
+		return jars;
+	}
+
+	/**
+	 * @param text
+	 * @param replacements
+	 * @return
+	 */
+	private String replaceParameters(String text, List<String[]> replacements)
+	{
+		for (String[] replacement : replacements)
+		{
+			String from = "${" + replacement[0] + "}";
+			String to = replacement[1];
+			text = StringUtils.replace(text, from, to);
+		}
+		
+		return text;
 	}
 }
 
@@ -449,9 +380,9 @@ public class CruxProjectGenerator
  */
 interface Names
 {
-	String projectName = "projectName";
-	String hostedModeStartupURL = "hostedModeStartupURL";
 	String hostedModeStartupModule = "hostedModeStartupModule";
+	String hostedModeStartupURL = "hostedModeStartupURL";
 	String hostedModeVMArgs = "hostedModeVMArgs";
+	String projectName = "projectName";
 	String useCruxModuleExtension = "useCruxModuleExtension";
 }

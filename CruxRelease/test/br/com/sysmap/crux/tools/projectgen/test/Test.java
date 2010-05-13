@@ -1,9 +1,7 @@
 package br.com.sysmap.crux.tools.projectgen.test;
 
-import java.io.File;
-
-import br.com.sysmap.crux.tools.projectgen.CruxProjectGenerator;
 import junit.framework.TestCase;
+import br.com.sysmap.crux.tools.projectgen.CruxProjectGenerator;
 
 /**
  * TODO - Gessé - Comment this
@@ -16,7 +14,7 @@ public class Test extends TestCase
 	 */
 	public void testProjectGeneration() throws Exception
 	{
-		File workspaceDir = new File("C:/Desenvolvimento/Java/Workspaces/Crux");
-		new CruxProjectGenerator(workspaceDir).generate();
+		String workspaceDir = "C:/Desenvolvimento/Java/Workspaces/Crux";
+		CruxProjectGenerator.main(new String[]{workspaceDir});
 	}	
 }
