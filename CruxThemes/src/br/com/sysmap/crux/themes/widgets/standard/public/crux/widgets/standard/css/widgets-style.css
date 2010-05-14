@@ -662,7 +662,7 @@
 	DynaTabs
 *******************************************************************************/
 
-.crux-DynaTabs .flapLeft 
+.crux-DynaTabs .flapLeft, .crux-TabPanel .flapLeft 
 {
 	padding:1px !important;
 	font-family:arial;
@@ -673,7 +673,7 @@
 	background-repeat: no-repeat;
 	background-position: top left; 
 }
-.crux-DynaTabs .flapRight 
+.crux-DynaTabs .flapRight, .crux-TabPanel .flapRight 
 {
 	padding:1px !important;
 	font-family:arial;
@@ -684,13 +684,13 @@
 	background-position: top right; 
 	background-image: url(../img/tabs_right.gif);
 }
-.crux-DynaTabs .flapCenter
+.crux-DynaTabs .flapCenter, .crux-TabPanel .flapCenter 
 {
 	background-image: url(../img/tabs_bg_label.gif);
 	background-position: top;
 	background-repeat: repeat-x;
 }
-.crux-DynaTabs .flapLabel
+.crux-DynaTabs .flapLabel, .crux-TabPanel .flapLabel 
 {
 	cursor:default;
 	font-family:arial;
