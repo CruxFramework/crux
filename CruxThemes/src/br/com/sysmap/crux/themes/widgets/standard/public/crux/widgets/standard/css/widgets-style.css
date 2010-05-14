@@ -560,13 +560,13 @@
 *******************************************************************************/
 
 /******************************************************************************
-	Dyna Tabs
+	RollingTabPanel
 *******************************************************************************/
-.crux-DynaTabs .crux-TabBar
+.crux-TabBar
 {
 	height: 28px;
 }
-.crux-DynaTabs .crux-TabBar .crux-RollingPanelHPrevious
+.crux-TabBar .crux-RollingPanelHPrevious
 {
 	height: 23px;
 	width: 17px;
@@ -574,7 +574,7 @@
 	background-image: url(../img/dyna-tabs-roll-left.gif);
 	cursor: pointer;
 }
-.crux-DynaTabs .crux-TabBar .crux-RollingPanelHNext
+.crux-TabBar .crux-RollingPanelHNext
 {
 	height: 23px;
 	width: 17px;
@@ -582,38 +582,37 @@
 	background-image: url(../img/dyna-tabs-roll-right.gif);
 	cursor: pointer;
 }
-.crux-DynaTabs .crux-TabBar .crux-RollingPanelHPreviousWrapper
+.crux-TabBar .crux-RollingPanelHPreviousWrapper
 {
 	vertical-align:bottom !important;
 	width:20px;
 }
-.crux-DynaTabs .crux-TabBar .crux-RollingPanelHNextWrapper
+.crux-TabBar .crux-RollingPanelHNextWrapper
 {
 	vertical-align:bottom !important;
 	width:20px;
 }
-.crux-DynaTabs .crux-TabBar .crux-RollingPanelHPreviousWrapper-disabled
+.crux-TabBar .crux-RollingPanelHPreviousWrapper-disabled
 {
 	width:0px;
 	border: solid 0px;
 }
-.crux-DynaTabs .crux-TabBar .crux-RollingPanelHNextWrapper-disabled
+.crux-TabBar .crux-RollingPanelHNextWrapper-disabled
 {
 	width:0px;
 	border: solid 0px;
 }
-.crux-DynaTabs .crux-TabBar .crux-RollingPanelHNextWrapper-disabled .crux-RollingPanelHNext
+.crux-TabBar .crux-RollingPanelHNextWrapper-disabled .crux-RollingPanelHNext
 {
 	width:0px;
 	height: 0px;
 }
-.crux-DynaTabs .crux-TabBar .crux-RollingPanelHPreviousWrapper-disabled .crux-RollingPanelHPrevious
+.crux-TabBar .crux-RollingPanelHPreviousWrapper-disabled .crux-RollingPanelHPrevious
 {
 	width:0px;
 	height: 0px;
 }
-
-.crux-DynaTabs .crux-TabBarFirst
+.crux-TabBarFirst
 {
 	width:2px !important;
 	overflow: hidden;
@@ -621,24 +620,19 @@
 	padding: 0px;
 	margin: 0px !important;
 }
-.crux-DynaTabs .crux-TabBarFirst, .crux-DynaTabs .crux-TabBarRest  
+.crux-TabBarFirst, .crux-TabBarRest  
 {
 	height:23px !important;
 	padding:0px;
 }
-.crux-DynaTabs .crux-TabPanelBottom
+.crux-TabPanelBottom
 {
 	height: 99.7%;
 	border: solid 0px;
 	border-top: solid 2px #A5CCEF;
 	overflow: hidden;
 }
-.crux-DynaTabs IFRAME
-{
-	border: solid 0px !important;
-	height: 99.0% !important;
-}			  
-.crux-DynaTabs .crux-TabBarItem 
+.crux-TabBarItem 
 {
 	background-image: none;
 	cursor:default;
@@ -653,12 +647,22 @@
 	padding:0px !important;
 	text-align:center;
 }
-.crux-DynaTabs .crux-TabBarItem-selected
+.crux-TabBarItem-selected
 {
 	opacity:1;
 	filter:alpha(opacity=100);
 }
-.crux-DynaTabs .flapLeft
+.crux-TabPanelBottom
+{
+	padding: 0px;
+	overflow:auto;
+}
+
+/******************************************************************************
+	DynaTabs
+*******************************************************************************/
+
+.crux-DynaTabs .flapLeft 
 {
 	padding:1px !important;
 	font-family:arial;
@@ -699,11 +703,6 @@
 	padding-right:5px;
 	white-space:nowrap;
 }
-.crux-DynaTabs .crux-TabPanelBottom
-{
-	padding: 0px;
-	overflow:auto;
-} 
 .crux-DynaTabs .flapCloseButton 
 {
 	background-image: url(../img/dyna-tabs-close.gif);
@@ -721,6 +720,11 @@
 {
 	cursor: wait;
 }
+.crux-DynaTabs IFRAME
+{
+	border: solid 0px !important;
+	height: 99.0% !important;
+}			  
 
 /******************************************************************************
 	Transfer List
