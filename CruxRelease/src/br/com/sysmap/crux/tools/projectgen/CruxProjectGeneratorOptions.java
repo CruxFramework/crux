@@ -27,26 +27,28 @@ import br.com.sysmap.crux.core.utils.FileUtils;
  */
 public class CruxProjectGeneratorOptions
 {
-	private final File workspaceDir;
-	private final String projectName;
+	private final String cruxModuleDescription;
 	private final String hostedModeStartupModule;
 	private final String hostedModeStartupURL;
-	private final String moduleSimpleName;
-	private final String modulePackage;
 	private final String hostedModeVMArgs;
-	private final boolean useCruxModuleExtension;
-	
 	private File libDir;
+	private final String modulePackage;
+	private final String moduleSimpleName;
 	private File projectDir;
+	private final String projectName;
+	
+	private final boolean useCruxModuleExtension;
+	private final File workspaceDir;
 
 	public CruxProjectGeneratorOptions(File workspaceDir, String projectName, String hostedModeStartupModule, String hostedModeStartupURL,
-			String hostedModeVMArgs, boolean useCruxModuleExtension) throws Exception
+			String hostedModeVMArgs, boolean useCruxModuleExtension, String cruxModuleDescription) throws Exception
     {
 		this.workspaceDir = workspaceDir;
 		this.projectName = projectName;
 		this.hostedModeStartupModule = hostedModeStartupModule;
 		this.hostedModeStartupURL = hostedModeStartupURL;
 		this.hostedModeVMArgs = hostedModeVMArgs;
+		this.cruxModuleDescription = cruxModuleDescription;
 		this.moduleSimpleName = getModuleSimpleName(hostedModeStartupModule) ;
 		this.modulePackage = getModulePackage(hostedModeStartupModule);
 		this.useCruxModuleExtension = useCruxModuleExtension;
@@ -55,14 +57,9 @@ public class CruxProjectGeneratorOptions
 		this.libDir = findLibDir();
     }
 
-	public File getWorkspaceDir()
+	public String getCruxModuleDescription()
     {
-    	return workspaceDir;
-    }
-
-	public String getProjectName()
-    {
-    	return projectName;
+    	return cruxModuleDescription;
     }
 
 	public String getHostedModeStartupModule()
@@ -75,19 +72,9 @@ public class CruxProjectGeneratorOptions
     	return hostedModeStartupURL;
     }
 
-	public String getModuleSimpleName()
+	public String getHostedModeVMArgs()
     {
-    	return moduleSimpleName;
-    }
-
-	public String getModulePackage()
-    {
-    	return modulePackage;
-    }
-
-	public boolean isUseCruxModuleExtension()
-    {
-    	return useCruxModuleExtension;
+    	return hostedModeVMArgs;
     }
 
 	public File getLibDir()
@@ -95,14 +82,34 @@ public class CruxProjectGeneratorOptions
     	return libDir;
     }
 
+	public String getModulePackage()
+    {
+    	return modulePackage;
+    }
+
+	public String getModuleSimpleName()
+    {
+    	return moduleSimpleName;
+    }
+
 	public File getProjectDir()
     {
     	return projectDir;
     }
-	
-	public String getHostedModeVMArgs()
+
+	public String getProjectName()
     {
-    	return hostedModeVMArgs;
+    	return projectName;
+    }
+	
+	public File getWorkspaceDir()
+    {
+    	return workspaceDir;
+    }
+
+	public boolean isUseCruxModuleExtension()
+    {
+    	return useCruxModuleExtension;
     }
 
 	/**
@@ -141,6 +148,15 @@ public class CruxProjectGeneratorOptions
 	/**
 	 * @return
 	 */
+	private String getModulePackage(String hostedModeStartupModule)
+	{
+		int lastDot = hostedModeStartupModule.lastIndexOf(".");
+		return hostedModeStartupModule.substring(0, lastDot);
+	}
+	
+	/**
+	 * @return
+	 */
 	private String getModuleSimpleName(String hostedModeStartupModule)
 	{
 		int lastDot = hostedModeStartupModule.lastIndexOf(".");
@@ -151,15 +167,6 @@ public class CruxProjectGeneratorOptions
 		}
 		
 		return hostedModeStartupModule;
-	}
-	
-	/**
-	 * @return
-	 */
-	private String getModulePackage(String hostedModeStartupModule)
-	{
-		int lastDot = hostedModeStartupModule.lastIndexOf(".");
-		return hostedModeStartupModule.substring(0, lastDot);
 	}
 	
 }

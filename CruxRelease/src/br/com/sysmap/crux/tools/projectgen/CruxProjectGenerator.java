@@ -92,9 +92,10 @@ public class CruxProjectGenerator
 		String hostedModeStartupURL = config.getProperty(Names.hostedModeStartupURL);
 		boolean useCruxModuleExtension = Boolean.parseBoolean(config.getProperty(Names.useCruxModuleExtension));
 		String hostedModeVMArgs = config.getProperty(Names.hostedModeVMArgs);
+		String cruxModuleDescription = config.getProperty(Names.cruxModuleDescription);
 		
 		return new CruxProjectGeneratorOptions(workspaceDir, projectName, hostedModeStartupModule, hostedModeStartupURL, 
-											   hostedModeVMArgs, useCruxModuleExtension);
+											   hostedModeVMArgs, useCruxModuleExtension, cruxModuleDescription);
 	}
 
 	/**
@@ -124,7 +125,7 @@ public class CruxProjectGenerator
 			this.replacements.add(new String[]{"hostedModeStartupModule", this.options.getHostedModeStartupModule()});
 			this.replacements.add(new String[]{"hostedModeVMArgs", this.options.getHostedModeVMArgs()});
 			this.replacements.add(new String[]{"useCruxModuleExtension", this.options.getModuleSimpleName()});
-			
+			this.replacements.add(new String[]{"cruxModuleDescription", this.options.getCruxModuleDescription()});
 			
 			this.replacements.add(new String[]{"moduleSimpleNameUpperCase", this.options.getModuleSimpleName()});
 			this.replacements.add(new String[]{"moduleSimpleName", this.options.getModuleSimpleName().toLowerCase()});
@@ -385,4 +386,5 @@ interface Names
 	String hostedModeVMArgs = "hostedModeVMArgs";
 	String projectName = "projectName";
 	String useCruxModuleExtension = "useCruxModuleExtension";
+	String cruxModuleDescription = "cruxModuleDescription";
 }
