@@ -23,6 +23,7 @@ import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
+import br.com.sysmap.crux.widgets.client.rollingtabs.RollingTabPanel;
 
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
@@ -38,14 +39,14 @@ public class DynaTabs extends Composite
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-DynaTabs";
 	private LinkedHashMap<String, Tab> tabs = new LinkedHashMap<String, Tab>();
-	private InternalTabPanel tabPanel;
+	private RollingTabPanel tabPanel;
 
 	/**
 	 * Empty constructor
 	 */
 	public DynaTabs()
 	{
-		this.tabPanel = new InternalTabPanel();
+		this.tabPanel = new RollingTabPanel();
 		this.tabPanel.setStyleName(DEFAULT_STYLE_NAME);
 		this.tabPanel.addBeforeSelectionHandler(createBeforeSelectionHandler());
 		initWidget(tabPanel);

@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.widgets.client.dynatabs;
+package br.com.sysmap.crux.widgets.client.rollingtabs;
 
 import br.com.sysmap.crux.widgets.client.rollingpanel.RollingPanel;
 
@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HasWordWrap;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.UIObject;
@@ -54,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
  *         <code>tr_bustamante@yahoo.com.br</code>
  * 
  */
-class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, HasSelectionHandlers<Integer>
+public class RollingTabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, HasSelectionHandlers<Integer>
 {
 	private static final String STYLENAME_DEFAULT = "crux-TabBarItem";
 
@@ -64,7 +65,7 @@ class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Int
 	/**
 	 * Creates an empty tab bar.
 	 */
-	InternalTabBar()
+	RollingTabBar()
 	{
 		panel = new RollingPanel(false);
 
@@ -137,6 +138,42 @@ class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Int
 	}
 
 	/**
+	 * Enable or disable a tab. When disabled, users cannot select the tab.
+	 * 
+	 * @param index the index of the tab to enable or disable
+	 * @param enabled true to enable, false to disable
+	 */
+	public void setTabEnabled(int index, boolean enabled) 
+	{
+		assert (index >= 0) && (index < getTabCount()) : "Tab index out of bounds";
+
+		// Style the wrapper
+		ClickDelegatePanel delPanel = (ClickDelegatePanel) panel.getWidget(index + 1);
+		delPanel.setEnabled(enabled);
+		
+		setStyleName(delPanel.getElement(), "crux-TabBarItem-disabled", !enabled);
+		setStyleName(delPanel.getElement().getParentElement(), "crux-TabBarItem-wrapper-disabled", !enabled);
+	}
+	
+	/**
+	 * Gets the given tab.
+	 * 
+	 * This method is final because the Tab interface will expand. Therefore
+	 * it is highly likely that subclasses which implemented this method would end up
+	 * breaking.
+	 * 
+	 * @param index the tab's index
+	 * @return the tab wrapper
+	 */
+	public final Tab getTab(int index) {
+		if (index >= getTabCount()) {
+			return null;
+		}
+		ClickDelegatePanel p = (ClickDelegatePanel) panel.getWidget(index + 1);
+		return p;
+	}
+	
+	/**
 	 * Inserts a new tab at the specified index.
 	 * 
 	 * @param widget
@@ -147,6 +184,31 @@ class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Int
 	public void insertTab(Widget widget, int beforeIndex)
 	{
 		insertTabWidget(widget, beforeIndex);
+	}
+
+	/**
+	 * Inserts a new tab at the specified index.
+	 * 
+	 * @param text the new tab's text
+	 * @param asHTML <code>true</code> to treat the specified text as HTML
+	 * @param beforeIndex the index before which this tab will be inserted
+	 */
+	public void insertTab(String text, boolean asHTML, int beforeIndex) 
+	{
+		checkInsertBeforeTabIndex(beforeIndex);
+
+		Label item;
+		if (asHTML) 
+		{
+			item = new HTML(text);
+		} 
+		else 
+		{
+			item = new Label(text);
+		}
+
+		item.setWordWrap(false);
+		insertTabWidget(item, beforeIndex);
 	}
 
 	/**
@@ -405,19 +467,24 @@ class InternalTabBar extends Composite implements HasBeforeSelectionHandlers<Int
 			switch (DOM.eventGetType(event))
 			{
 			case Event.ONCLICK:
-				InternalTabBar.this.selectTabByTabWidget(this);
+				RollingTabBar.this.selectTabByTabWidget(this);
 				break;
 
 			case Event.ONKEYDOWN:
 				if (((char) DOM.eventGetKeyCode(event)) == KeyCodes.KEY_ENTER)
 				{
-					InternalTabBar.this.selectTabByTabWidget(this);
+					RollingTabBar.this.selectTabByTabWidget(this);
 				}
 				break;
 			}
 			super.onBrowserEvent(event);
 		}
 
+		public void setEnabled(boolean enabled) 
+		{
+			this.enabled = enabled;
+		}		
+		
 		public void setWordWrap(boolean wrap)
 		{
 			if (hasWordWrap())

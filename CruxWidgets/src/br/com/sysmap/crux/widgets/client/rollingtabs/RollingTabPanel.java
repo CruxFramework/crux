@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.widgets.client.dynatabs;
+package br.com.sysmap.crux.widgets.client.rollingtabs;
 
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
@@ -35,17 +35,17 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
  *
  */
-class InternalTabPanel extends Composite implements HasAnimation, HasBeforeSelectionHandlers<Integer>
+public class RollingTabPanel extends Composite implements HasAnimation, HasBeforeSelectionHandlers<Integer>
 {
 	private TabbedDeckPanel deck = null;
-	private InternalTabBar tabBar = null;
+	private RollingTabBar tabBar = null;
 
 	/**
 	 * Creates an empty tab panel.
 	 */
-	public InternalTabPanel()
+	public RollingTabPanel()
 	{
-		tabBar = new InternalTabBar();
+		tabBar = new RollingTabBar();
 		deck = new TabbedDeckPanel(tabBar);
 
 		VerticalPanel panel = new VerticalPanel();
@@ -69,7 +69,7 @@ class InternalTabPanel extends Composite implements HasAnimation, HasBeforeSelec
 		{
 			public void onBeforeSelection(BeforeSelectionEvent<Integer> event)
             {
-			    BeforeSelectionEvent<Integer> tabPanelEvent = BeforeSelectionEvent.fire(InternalTabPanel.this, event.getItem());
+			    BeforeSelectionEvent<Integer> tabPanelEvent = BeforeSelectionEvent.fire(RollingTabPanel.this, event.getItem());
 			    if (tabPanelEvent == null || tabPanelEvent.isCanceled())
 			    {
 			    	if (event != null)
@@ -84,6 +84,31 @@ class InternalTabPanel extends Composite implements HasAnimation, HasBeforeSelec
 		deck.setStyleName("crux-TabPanelBottom");
 		// Add a11y role "TabPanel"
 		Accessibility.setRole(deck.getElement(), Accessibility.ROLE_TABPANEL);
+	}
+
+	/**
+	 * Adds a widget to the tab panel. If the Widget is already attached to the
+	 * TabPanel, it will be moved to the right-most index.
+	 * 
+	 * @param w the widget to be added
+	 * @param tabText the text to be shown on its tab
+	 */
+	public void add(Widget w, String tabText) 
+	{
+		add(w, tabText, false);
+	}
+
+	/**
+	 * Adds a widget to the tab panel. If the Widget is already attached to the
+	 * TabPanel, it will be moved to the right-most index.
+	 * 
+	 * @param w the widget to be added
+	 * @param tabText the text to be shown on its tab
+	 * @param asHTML <code>true</code> to treat the specified text as HTML
+	 */
+	public void add(Widget w, String tabText, boolean asHTML) 
+	{
+		insert(w, tabText, asHTML, getWidgetCount());
 	}
 
 	/**
@@ -134,6 +159,10 @@ class InternalTabPanel extends Composite implements HasAnimation, HasBeforeSelec
 		return deck.getWidgetIndex(widget);
 	}
 
+	RollingTabBar getTabBar() {
+		return tabBar;
+	}	
+	
 	/**
 	 * Inserts a widget into the tab panel. If the Widget is already attached to
 	 * the InternalTabPanel, it will be moved to the requested index.
@@ -150,6 +179,21 @@ class InternalTabPanel extends Composite implements HasAnimation, HasBeforeSelec
 		// Delegate updates to the TabBar to our DeckPanel implementation
 		deck.insertProtected(widget, tabWidget, beforeIndex);
 	}
+
+	/**
+	 * Inserts a widget into the tab panel. If the Widget is already attached to
+	 * the TabPanel, it will be moved to the requested index.
+	 * 
+	 * @param widget the widget to be inserted
+	 * @param tabText the text to be shown on its tab
+	 * @param asHTML <code>true</code> to treat the specified text as HTML
+	 * @param beforeIndex the index before which it will be inserted
+	 */
+	public void insert(Widget widget, String tabText, boolean asHTML, int beforeIndex) 
+	{
+		// Delegate updates to the TabBar to our DeckPanel implementation
+		deck.insertProtected(widget, tabText, asHTML, beforeIndex);
+	}	
 
 	public boolean isAnimationEnabled()
 	{
@@ -212,7 +256,7 @@ class InternalTabPanel extends Composite implements HasAnimation, HasBeforeSelec
 	/**
 	 * @return
 	 */
-	int getSelectedTab()
+	public int getSelectedTab()
     {
 	    return tabBar.getSelectedTab();
     }
@@ -225,9 +269,9 @@ class InternalTabPanel extends Composite implements HasAnimation, HasBeforeSelec
 	 */
 	private static class TabbedDeckPanel extends DeckPanel
 	{
-		private InternalTabBar tabBar;
+		private RollingTabBar tabBar;
 
-		public TabbedDeckPanel(InternalTabBar tabBar)
+		public TabbedDeckPanel(RollingTabBar tabBar)
 		{
 			this.tabBar = tabBar;
 		}
@@ -267,5 +311,23 @@ class InternalTabPanel extends Composite implements HasAnimation, HasBeforeSelec
 			tabBar.insertTab(tabWidget, beforeIndex);
 			super.insert(w, beforeIndex);
 		}
+		
+		protected void insertProtected(Widget w, String tabText, boolean asHTML, int beforeIndex) 
+		{
+			// Check to see if the TabPanel already contains the Widget. If so,
+			// remove it and see if we need to shift the position to the left.
+			int idx = getWidgetIndex(w);
+			if (idx != -1) {
+				remove(w);
+				if (idx < beforeIndex) 
+				{
+					beforeIndex--;
+				}
+			}
+
+			tabBar.insertTab(tabText, asHTML, beforeIndex);
+			super.insert(w, beforeIndex);
+		}
+
 	}
 }
