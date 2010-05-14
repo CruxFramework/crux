@@ -50,6 +50,30 @@
 										<b:widget><a:maskedLabel id="dateOfBirth" formatter="date" width="100"/></b:widget>
 									</b:cell>
 								</b:row>
+								<b:row>
+									<b:cell>
+										<b:text>Address:</b:text>
+									</b:cell>
+									<b:cell>
+										<b:widget><b:label id="street" width="100"/></b:widget>
+									</b:cell>
+								</b:row>
+								<b:row>
+									<b:cell>
+										<b:text>City:</b:text>
+									</b:cell>
+									<b:cell>
+										<b:widget><b:label id="city" width="100"/></b:widget>
+									</b:cell>
+								</b:row>
+								<b:row>
+									<b:cell>
+										<b:text>State:</b:text>
+									</b:cell>
+									<b:cell>
+										<b:widget><b:label id="state" width="100"/></b:widget>
+									</b:cell>
+								</b:row>
 							</b:grid>
 						</a:widget>
 					</a:body>

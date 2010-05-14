@@ -58,6 +58,7 @@
 								<a:item id="decoratedPanelItem" label="Decorated Panel" onClick="mainController.onClickDecoratedPanelItem" />
 								<a:item id="titlePanelItem" label="Title Panel" onClick="mainController.onClickTitlePanelItem" />
 								<a:item id="collapsePanelItem" label="Collapse Panel" onClick="mainController.onClickCollapsePanelItem" />
+								<a:item id="rollingPanelItem" label="Rolling Panel" onClick="mainController.onClickRollingPanelItem" />
 							</a:item>
 							<a:item id="listsItem" label="Lists and Menus">
 								<a:item id="transferListItem" label="Transfer List" onClick="mainController.onClickTransferListItem" />
@@ -71,6 +72,7 @@
 							</a:item>
 							<a:item id="tabsItem" label="Tabs">
 								<a:item id="dynaTabsItem" label="Dyna Tabs" onClick="mainController.onClickDynaTabsItem" />
+								<a:item id="rollingTabsItem" label="Rolling Tab Panel" onClick="mainController.onClickRollingTabsItem" />
 							</a:item>
 							<a:item id="gridsItem" label="Grids">
 								<a:item id="simpleGridItem" label="Simple" onClick="mainController.onClickSimpleGridItem" />

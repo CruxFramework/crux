@@ -22,87 +22,18 @@
 				<w:wizard id="wizard" width="600" height="300" onCancel="multiWizardController.onCancel" 
 				          onFinish="multiWizardController.onFinish" >
 					<w:steps>
-						<w:page url="wizardStep1.html" label="First Step" id="step1"/>
-						<w:page url="wizardStep11.html" label="First Step" id="step11"/>
-						<w:page url="wizardStep12.html" label="First Step" id="step12"/>
-						<w:page url="wizardStep13.html" label="First Step" id="step13"/>
-						<w:page url="wizardStep14.html" label="First Step" id="step14"/>
-						<w:page url="wizardStep15.html" label="First Step" id="step15"/>
-						<w:page url="wizardStep16.html" label="First Step" id="step16"/>
-						<w:page url="wizardStep17.html" label="First Step" id="step17"/>
-						<w:page url="wizardStep18.html" label="First Step" id="step18"/>
-						<w:page url="wizardStep19.html" label="First Step" id="step19"/>
-						<w:page url="wizardStep141.html" label="First Step" id="step141"/>
-						<w:page url="wizardStep151.html" label="First Step" id="step151"/>
-						<w:page url="wizardStep161.html" label="First Step" id="step161"/>
-						<w:page url="wizardStep171.html" label="First Step" id="step171"/>
-						<w:page url="wizardStep181.html" label="First Step" id="step181"/>
-						<w:page url="wizardStep191.html" label="First Step" id="step191"/>
-						<w:page url="wizardStep141.html" label="First Step" id="step1412"/>
-						<w:page url="wizardStep151.html" label="First Step" id="step1512"/>
-						<w:page url="wizardStep161.html" label="First Step" id="step1612"/>
-						<w:page url="wizardStep171.html" label="First Step" id="step1712"/>
-						<w:page url="wizardStep181.html" label="First Step" id="step1812"/>
-						<w:page url="wizardStep191.html" label="First Step" id="step1912"/>
-						<w:page url="wizardStep141.html" label="First Step" id="step14123"/>
-						<w:page url="wizardStep151.html" label="First Step" id="step15123"/>
-						<w:page url="wizardStep161.html" label="First Step" id="step16123"/>
-						<w:page url="wizardStep171.html" label="First Step" id="step17123"/>
-						<w:page url="wizardStep181.html" label="First Step" id="step18123"/>
-						<w:page url="wizardStep191.html" label="First Step" id="step19123"/>
-						<w:page url="wizardStep2.html" label="Second Step" id="step2" enabled="false"/>
-						<w:page url="wizardStep4.html" label="Fourth Step" id="step4"/>
-						<w:page url="wizardStep141.html" label="First Step" id="step1410"/>
-						<w:page url="wizardStep151.html" label="First Step" id="step1510"/>
-						<w:page url="wizardStep161.html" label="First Step" id="step1610"/>
-						<w:page url="wizardStep171.html" label="First Step" id="step1710"/>
-						<w:page url="wizardStep181.html" label="First Step" id="step1810"/>
-						<w:page url="wizardStep191.html" label="First Step" id="step1910"/>
-						<w:page url="wizardStep141.html" label="First Step" id="step14120"/>
-						<w:page url="wizardStep151.html" label="First Step" id="step15120"/>
-						<w:page url="wizardStep161.html" label="First Step" id="step16120"/>
-						<w:page url="wizardStep171.html" label="First Step" id="step17120"/>
-						<w:page url="wizardStep181.html" label="First Step" id="step18120"/>
-						<w:page url="wizardStep191.html" label="First Step" id="step19120"/>
-						<w:page url="wizardStep141.html" label="First Step" id="step141230"/>
-						<w:page url="wizardStep151.html" label="First Step" id="step151230"/>
-						<w:page url="wizardStep161.html" label="First Step" id="step161230"/>
-						<w:page url="wizardStep171.html" label="First Step" id="step171230"/>
-						<w:page url="wizardStep181.html" label="First Step" id="step181230"/>
-						<w:page url="wizardStep191.html" label="First Step" id="step191230"/>
-						<w:page url="wizardStep2.html" label="Second Step" id="step2231312" enabled="false"/>
-						<w:page url="wizardStep4.html" label="Fourth Step" id="step423123123"/>
+						<w:page url="wizardStep1.html" label="First Step" id="step1" />
+						<w:page url="wizardStep2.html" label="Second Step" id="step2" />
+						<w:page url="wizardStep3.html" label="Third Step" id="step3" />
+						<w:page url="wizardStep4.html" label="Fourth Step" id="step4" />
 					</w:steps>
-					<w:controlBar buttonsWidth="75" >
-						<w:commands>
-							<w:command order="6" onCommand="multiWizardController.onCancel" label="Teste" id="teste1"/>
-							<w:command order="7" onCommand="multiWizardController.onCancel" label="Teste" id="teste2"/>
-							<w:command order="8" onCommand="multiWizardController.onCancel" label="Teste" id="teste3"/>
-							<w:command order="9" onCommand="multiWizardController.onCancel" label="Teste" id="teste4"/>
-							<w:command order="10" onCommand="multiWizardController.onCancel" label="Teste" id="teste5"/>
-							<w:command order="11" onCommand="multiWizardController.onCancel" label="Teste" id="teste6"/>
-							<w:command order="12" onCommand="multiWizardController.onCancel" label="Teste" id="teste7"/>
-							<w:command order="13" onCommand="multiWizardController.onCancel" label="Teste" id="teste8"/>
-							<w:command order="14" onCommand="multiWizardController.onCancel" label="Teste" id="teste9"/>
-							<w:command order="15" onCommand="multiWizardController.onCancel" label="Teste" id="teste10"/>
-							<w:command order="16" onCommand="multiWizardController.onCancel" label="Teste" id="teste11"/>
-							<w:command order="17" onCommand="multiWizardController.onCancel" label="Teste" id="teste12"/>
-							<w:command order="18" onCommand="multiWizardController.onCancel" label="Teste" id="teste13"/>
-							<w:command order="19" onCommand="multiWizardController.onCancel" label="Teste" id="teste14"/>
-							<w:command order="20" onCommand="multiWizardController.onCancel" label="Teste" id="teste15"/>
-							<w:command order="21" onCommand="multiWizardController.onCancel" label="Teste" id="teste16"/>
-							<w:command order="22" onCommand="multiWizardController.onCancel" label="Teste" id="teste17"/>
-							<w:command order="23" onCommand="multiWizardController.onCancel" label="Teste" id="teste18"/>
-							<w:command order="24" onCommand="multiWizardController.onCancel" label="Teste" id="teste19"/>
-							<w:command order="25" onCommand="multiWizardController.onCancel" label="Teste" id="teste20"/>
-						</w:commands>
-					</w:controlBar>
-					<w:navigationBar horizontalAlignment="left" />
+					<w:controlBar buttonsWidth="75" />
+					<w:navigationBar horizontalAlignment="left" showAllSteps="false"/>
 				</w:wizard>
 			</w:widget>
 		</w:decoratedPanel>
+		<br/>		
+		<s:wizardMultiPagesSources/>
 		</center>
-		
-		<s:sources/>
 	</body>
 </html>
