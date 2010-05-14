@@ -21,7 +21,6 @@ import br.com.sysmap.crux.core.client.controller.ValueObject;
 import br.com.sysmap.crux.core.client.screen.CruxSerializable;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
-import br.com.sysmap.crux.widgets.client.wizard.WizardCommandData;
 
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
@@ -38,6 +37,7 @@ public class Person implements CruxSerializable
 	private String name;
 	private String phone;
 	private Date dateOfBirth;
+	private Address address;
 
 	public Person(){
 	}
@@ -72,6 +72,16 @@ public class Person implements CruxSerializable
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	public Address getAddress()
+    {
+    	return address;
+    }
+
+	public void setAddress(Address address)
+    {
+    	this.address = address;
+    }
+
 	/**
 	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#deserialize(java.lang.String)
 	 */
@@ -80,9 +90,15 @@ public class Person implements CruxSerializable
 			Document root = XMLParser.parse(serializedData);
 			Element data = root.getDocumentElement();
 			String dateAttr = data.getAttribute("dateOfBirth");
-			return new Person(data.getAttribute("name"), 
+			Person person = new Person(data.getAttribute("name"), 
 								 data.getAttribute("phone"), 
 								 StringUtils.isEmpty(dateAttr)?null:new Date(Long.parseLong(dateAttr)));
+			person.setAddress(new Address());
+			person.getAddress().setStreet(data.getAttribute("address.street"));
+			person.getAddress().setCity(data.getAttribute("address.city"));
+			person.getAddress().setState(data.getAttribute("address.state"));
+			
+			return person;
 		}
 		return null;
     }
@@ -91,7 +107,7 @@ public class Person implements CruxSerializable
 	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#newArray(int)
 	 */
 	public Object[] newArray(int size){
-	    return new WizardCommandData[size];
+	    return new Person[size];
     }
 
 	/**
@@ -108,6 +124,14 @@ public class Person implements CruxSerializable
 		if (dateOfBirth!= null){
 			data.setAttribute("dateOfBirth", Long.toString(dateOfBirth.getTime()));
 		}
+
+		if (this.address != null)
+		{
+			data.setAttribute("address.street", address.getStreet());
+			data.setAttribute("address.city", address.getCity());
+			data.setAttribute("address.state", address.getState());
+		}
+		
 		return document.toString();
     }
 }
