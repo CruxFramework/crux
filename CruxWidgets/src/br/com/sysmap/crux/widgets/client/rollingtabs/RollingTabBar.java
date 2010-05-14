@@ -206,9 +206,11 @@ public class RollingTabBar extends Composite implements HasBeforeSelectionHandle
 		{
 			item = new Label(text);
 		}
-
+		item.setStyleName("flapLabel");
 		item.setWordWrap(false);
-		insertTabWidget(item, beforeIndex);
+		SimpleDecoratedPanel panel = new SimpleDecoratedPanel();
+		panel.setContentWidget(item);
+		insertTabWidget(panel, beforeIndex);
 	}
 
 	/**

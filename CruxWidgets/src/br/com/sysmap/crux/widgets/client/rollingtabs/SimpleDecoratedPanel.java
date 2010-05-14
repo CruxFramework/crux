@@ -1,4 +1,4 @@
-package br.com.sysmap.crux.widgets.client.dynatabs;
+package br.com.sysmap.crux.widgets.client.rollingtabs;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;

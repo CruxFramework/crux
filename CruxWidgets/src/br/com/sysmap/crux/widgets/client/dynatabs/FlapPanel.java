@@ -7,6 +7,7 @@ import br.com.sysmap.crux.widgets.client.event.focusblur.HasBeforeFocusAndBefore
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.widgets.client.event.openclose.HasBeforeCloseHandlers;
+import br.com.sysmap.crux.widgets.client.rollingtabs.SimpleDecoratedPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -32,7 +33,7 @@ class FlapPanel extends Composite  implements HasBeforeFocusAndBeforeBlurHandler
 	public FlapPanel(final DynaTabs tabs, String tabId, String tabLabel, boolean closeable)
 	{
 		panel = new SimpleDecoratedPanel();
-		flapController = new FlapController(tabs, tabId, tabLabel, closeable);
+		flapController = new FlapController(tabs, tabId, tabLabel, false, closeable);
 		panel.setContentWidget(flapController);
 		initWidget(panel);
 	}

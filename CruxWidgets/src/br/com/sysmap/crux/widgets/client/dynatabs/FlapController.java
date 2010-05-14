@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -14,7 +15,7 @@ import com.google.gwt.user.client.ui.Label;
  * TODO - Gessé - Comment this
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-class FlapController extends Composite
+public class FlapController extends Composite
 {
 	private Label title;
 	private FocusWidget closeButton;
@@ -24,7 +25,7 @@ class FlapController extends Composite
 	 * @param tabLabel
 	 * @param closeable
 	 */
-	public FlapController(final DynaTabs tabs, final String tabId, String tabLabel, boolean closeable)
+	public FlapController(final DynaTabs tabs, final String tabId, String tabLabel, boolean asHTML, boolean closeable)
 	{
 		HorizontalPanel flap = new HorizontalPanel();
 		
@@ -32,38 +33,48 @@ class FlapController extends Composite
 		
 		flap.setSpacing(0);
 
-		title = new Label(tabLabel);
+		if (asHTML)
+		{
+			title = new HTML(tabLabel);
+		}
+		else
+		{
+			title = new Label(tabLabel);
+		}
 		title.setStyleName("flapLabel");
 		flap.add(title);
 
-		closeButton = new FocusWidget(new Label(" ").getElement()) {};
-		
-		
-		closeButton.setStyleName("flapCloseButton");
-		closeButton.addClickHandler(new ClickHandler()
+		if (closeable)
 		{
-			public void onClick(ClickEvent event)
+			closeButton = new FocusWidget(new Label(" ").getElement()) {};
+
+
+			closeButton.setStyleName("flapCloseButton");
+			closeButton.addClickHandler(new ClickHandler()
 			{
-				event.stopPropagation();
-				tabs.closeTab(tabId, false);
-			}
-		});
-		
-		closeButton.addKeyDownHandler(new KeyDownHandler()
-		{
-			public void onKeyDown(KeyDownEvent event)
-			{
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+				public void onClick(ClickEvent event)
 				{
 					event.stopPropagation();
 					tabs.closeTab(tabId, false);
 				}
-			}
-		});
+			});
 
-		closeButton.setVisible(closeable);
-		
-		flap.add(closeButton);
+			closeButton.addKeyDownHandler(new KeyDownHandler()
+			{
+				public void onKeyDown(KeyDownEvent event)
+				{
+					if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
+					{
+						event.stopPropagation();
+						tabs.closeTab(tabId, false);
+					}
+				}
+			});
+
+			closeButton.setVisible(closeable);
+
+			flap.add(closeButton);
+		}
 	}
 	
 	/**
