@@ -524,13 +524,11 @@
 	border: solid 0px !important;
 	height: 99.0% !important;
 }
-
-.crux-WizardControlBar .crux-DecoratedButton-finish
+.crux-Wizard .crux-WizardControlBar .crux-DecoratedButton-finish
 {
 	margin-right: 15px;
 }
-
-.crux-WizardNavigationLabel
+.crux-Wizard .crux-WizardNavigationLabel
 {
 	color:#6C83C3;
 	font-family:Verdana,Arial,Helvetica;
@@ -538,26 +536,140 @@
 	text-decoration:none;
 }
 
-.crux-WizardNavigationLabel-selected
+.crux-Wizard .crux-WizardNavigationLabel-selected
 {
 	font-weight:bold;
 }
 
-.crux-WizardNavigationHorizontalSeparator
+.crux-Wizard .crux-WizardNavigationHorizontalSeparator
 {
 	width: 20px;
 	height: 11px;
 	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
 }
-
-.crux-WizardNavigationVerticalSeparator
+.crux-Wizard .crux-WizardNavigationVerticalSeparator
 {
 	
 }
+.crux-Wizard .crux-WizardControlBarSouthWrapper, .crux-Wizard .crux-WizardControlBarNorthWrapper
+{
+	height: 32px;
+}
+.crux-Wizard .crux-WizardNavigationBarSouthWrapper, .crux-Wizard .crux-WizardNavigationBarNorthWrapper
+{
+	height: 32px;
+}
+.crux-Wizard .crux-WizardControlBarWestWrapper, .crux-Wizard .crux-WizardControlBarEastWrapper
+{
+	width: 80px;
+}
+.crux-Wizard .crux-WizardNavigationBarWestWrapper, .crux-Wizard .crux-WizardNavigationBarEastWrapper
+{
+	width: 80px;
+}
+.crux-Wizard .crux-WizardControlBar .crux-DecoratedButton
+{
+	width: 70px;
+}
 
 /******************************************************************************
-	RollingPanel
+	RollingPanel - Horizontal
 *******************************************************************************/
+.crux-RollingPanelHPreviousWrapper
+{
+	width:20px;
+	height: 100%;
+}
+.crux-RollingPanelHPrevious
+{
+	width: 15px;
+	height: 30px;
+	border: solid 1px #8cbae7;
+	background-color: #f1f6fc;
+	background-image: url(../img/rolling-panel-left.gif);
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+	height: 100%;
+}
+.crux-RollingPanelHNextWrapper
+{
+	width:20px;
+	text-align: right;
+	height: 100%;
+}
+.crux-RollingPanelHNext
+{
+	width: 15px;
+	height: 30px;
+	border: solid 1px #8cbae7;
+	background-color: #f1f6fc;
+	background-image: url(../img/rolling-panel-right.gif);
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+	height: 100%;
+}
+.crux-RollingPanelHPreviousWrapper-disabled, .crux-RollingPanelHNextWrapper-disabled
+{
+	width:0px;
+	border: solid 0px;
+}
+.crux-RollingPanelHPreviousWrapper-disabled .crux-RollingPanelHPrevious, .crux-RollingPanelHNextWrapper-disabled .crux-RollingPanelHNext
+{
+	width:0px;
+	border: solid 0px;
+}
+
+/******************************************************************************
+	RollingPanel - Vertical
+*******************************************************************************/
+.crux-RollingPanelVPreviousWrapper
+{
+	vertical-align:top !important;
+	text-align: center;
+	height: 15px;
+}
+.crux-RollingPanelVNextWrapper
+{
+	vertical-align:bottom !important;
+	text-align: center;
+	height:15px;
+}
+.crux-RollingPanelVPrevious
+{
+	height: 12px;
+	border: solid 1px #8cbae7;
+	background-color: #f1f6fc;
+	background-image: url(../img/rolling-panel-up.gif);
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+	font-family: monospace;
+	font-size: 0px;
+}
+.crux-RollingPanelVNext
+{
+	height: 12px;
+	border: solid 1px #8cbae7;
+	background-color: #f1f6fc;
+	background-image: url(../img/rolling-panel-down.gif);
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+	font-family: monospace;
+	font-size: 0px;
+}
+.crux-RollingPanelVPreviousWrapper-disabled, .crux-RollingPanelVNextWrapper-disabled
+{
+	width:0px;
+	border: solid 0px;
+}
+.crux-RollingPanelVPreviousWrapper-disabled .crux-RollingPanelVPrevious, .crux-RollingPanelVNextWrapper-disabled .crux-RollingPanelVNext
+{
+	width:0px;
+	border: solid 0px;
+}
 
 /******************************************************************************
 	RollingTabPanel
