@@ -13,6 +13,7 @@ import br.com.sysmap.crux.showcase.client.dto.Person;
 import br.com.sysmap.crux.widgets.client.maskedtextbox.MaskedTextBox;
 import br.com.sysmap.crux.widgets.client.wizard.EnterEvent;
 import br.com.sysmap.crux.widgets.client.wizard.LeaveEvent;
+import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar;
 
 @Controller("wizardStep2Controller")
 public class WizardStep2Controller {
@@ -24,6 +25,9 @@ public class WizardStep2Controller {
 	
 	@Expose
 	public void onEnter(EnterEvent event){
+		
+		event.getWizardAccessor().getControlBar().getCommand(WizardControlBar.CANCEL_COMMAND).setEnabled(true);
+		
 		Person personContext = event.getWizardAccessor().readContext(Person.class);
 		if (personContext == null) {
 			clearFields();

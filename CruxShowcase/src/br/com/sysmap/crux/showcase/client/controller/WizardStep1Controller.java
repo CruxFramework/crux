@@ -10,6 +10,7 @@ public class WizardStep1Controller {
 	
 	@Expose
 	public void onEnter(EnterEvent event){
+		event.getWizardAccessor().getControlBar().getCommand(WizardControlBar.CANCEL_COMMAND).setEnabled(false);
 		event.getWizardAccessor().getControlBar().getCommand(WizardControlBar.FINISH_COMMAND).setEnabled(false);
 	}
 }

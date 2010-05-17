@@ -17,7 +17,7 @@
 
 		<center>
 
-		<w:decoratedPanel id="border" width="400" height="100">
+		<w:decoratedPanel id="border" width="150" height="250">
 			<w:widget>
 				<w:wizard id="wizard" width="100%" height="100%" onCancel="simpleWizardController.onCancel" onFinish="simpleWizardController.onFinish">
 					<w:steps>
@@ -47,8 +47,8 @@
 							<b:label id="Label2" text="This is the Last Step"/>
 						</w:widget>
 					</w:steps>
-					<w:controlBar position="east"/>
-					<w:navigationBar position="west"/>
+					<w:controlBar/>
+					<w:navigationBar/>
 
 				</w:wizard>
 			</w:widget>

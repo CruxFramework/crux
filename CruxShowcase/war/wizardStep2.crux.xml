@@ -17,16 +17,23 @@
 
 		<a:wizardPage id="wizardPage" onEnter="wizardStep2Controller.onEnter" onLeave="wizardStep2Controller.onLeave">
 			<a:commands>
-				<a:command order="-1" onCommand="wizardStep2Controller.clearFields" label="Clear Fields" id="clearCommand" width="100"/>
+				<a:command order="-1" onCommand="wizardStep2Controller.clearFields" label="Clear Fields" id="clearCommand" width="100" styleName="FirstLeftCustomCommand"/>
 			</a:commands>		
 		</a:wizardPage>
 
 		<b:dockPanel id="centeringPanel" width="100%" height="130" spacing="15">
 			<b:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
-				<b:grid id="grid" cellSpacing="5">
+				<b:flexTable id="grid" cellSpacing="5">
+					<b:row>
+						<b:cell colSpan="2" horizontalAlignment="center">
+							<b:widget>
+								<b:label id="infoLabel" text="Type in your personal information, then click proceed." styleName="SpecialSecondaryLabel" style="marginBottom:25px"/>
+							</b:widget>
+						</b:cell>
+					</b:row>
 					<b:row>
 						<b:cell>
-							<b:text>Name:</b:text>
+							<b:text>* Name:</b:text>
 						</b:cell>
 						<b:cell>
 							<b:widget><b:textBox id="name" width="300"/></b:widget>
@@ -34,7 +41,7 @@
 					</b:row>
 					<b:row>
 						<b:cell>
-							<b:text>Phone:</b:text>
+							<b:text>* Phone:</b:text>
 						</b:cell>
 						<b:cell>
 							<b:widget><a:maskedTextBox id="phone" formatter="phone" width="100"/></b:widget>
@@ -42,13 +49,13 @@
 					</b:row>
 					<b:row>
 						<b:cell>
-							<b:text>Date of Birth:</b:text>
+							<b:text>* Date of Birth:</b:text>
 						</b:cell>
 						<b:cell>
 							<b:widget><a:maskedTextBox id="dateOfBirth" formatter="date" width="100"/></b:widget>
 						</b:cell>
 					</b:row>
-				</b:grid>
+				</b:flexTable>
 			</b:cell>
 		</b:dockPanel>
 		<c:splashScreen/>		

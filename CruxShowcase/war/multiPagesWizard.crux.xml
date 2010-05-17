@@ -22,10 +22,10 @@
 				<w:wizard id="wizard" width="600" height="300" onCancel="multiWizardController.onCancel" 
 				          onFinish="multiWizardController.onFinish" >
 					<w:steps>
-						<w:page url="wizardStep1.html" label="First Step" id="step1" />
-						<w:page url="wizardStep2.html" label="Second Step" id="step2" />
-						<w:page url="wizardStep3.html" label="Third Step" id="step3" />
-						<w:page url="wizardStep4.html" label="Fourth Step" id="step4" />
+						<w:page url="wizardStep1.html" label="Welcome" id="step1" />
+						<w:page url="wizardStep2.html" label="Personal Info" id="step2" />
+						<w:page url="wizardStep3.html" label="Contact Info" id="step3" />
+						<w:page url="wizardStep4.html" label="Summary" id="step4" />
 					</w:steps>
 					<w:controlBar buttonsWidth="75" />
 					<w:navigationBar horizontalAlignment="left" showAllSteps="false"/>
