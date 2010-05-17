@@ -34,6 +34,13 @@ TEXTAREA
 	color: #6C83C3;
 	font-family: Verdana, Arial, Helvetica;
 }
+.SpecialSecondaryLabel
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #000000;
+	font-family: Verdana, Arial, Helvetica;
+}
 .CommentsTable TH
 {
 	font-family:Arial, Helvetica;
@@ -67,4 +74,8 @@ TEXTAREA
 	width: 100%;
 	height: 100%;
 	position: absolute;
+}
+.FirstLeftCustomCommand
+{
+	margin-right: 25px 
 }
