@@ -72,7 +72,7 @@ class MessagesInvocationHandler extends ConstantsInvocationHandler
 	
 	public MessagesInvocationHandler(Class<?> targetInterface) 
 	{
-		super(targetInterface);
+		super(targetInterface, false);
 	}
 	
 	@Override

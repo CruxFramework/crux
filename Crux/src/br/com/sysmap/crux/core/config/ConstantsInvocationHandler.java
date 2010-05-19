@@ -22,6 +22,17 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 {
 	private Class<?> targetInterface;
 	private Map<String, String> resolvedConstants = new ConcurrentHashMap<String, String>();
+	private boolean isCacheable = true;
+	
+	/**
+	 * 
+	 * @param targetInterface
+	 */
+	public ConstantsInvocationHandler(Class<?> targetInterface, boolean isCacheable) 
+	{
+		this.targetInterface = targetInterface;
+		this.isCacheable = isCacheable;
+	}
 	
 	/**
 	 * 
@@ -29,16 +40,16 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 	 */
 	public ConstantsInvocationHandler(Class<?> targetInterface) 
 	{
-		this.targetInterface = targetInterface;
+		this(targetInterface, true);
 	}
-	
+
 	/**
 	 * 
 	 */
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
 	{
 		String name = method.getName();
-		if (resolvedConstants.containsKey(name))
+		if (this.isCacheable && resolvedConstants.containsKey(name))
 		{
 			return resolvedConstants.get(name);
 		}
@@ -78,7 +89,10 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 		if (properties != null)
 		{
 			message = MessageFormat.format(properties.getString(name),args);
-			resolvedConstants.put(name, message);
+			if (this.isCacheable)
+			{
+				resolvedConstants.put(name, message);
+			}
 		}
 		return message;
 	}
@@ -96,7 +110,10 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 		if (serverAnnot != null)
 		{
 			String value = MessageFormat.format(serverAnnot.value(),args);
-			resolvedConstants.put(name, value);
+			if (this.isCacheable)
+			{
+				resolvedConstants.put(name, value);
+			}
 			return value;
 		}
 		else
@@ -105,7 +122,10 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 			if (annot != null)
 			{
 				String value = MessageFormat.format(annot.value(),args);
-				resolvedConstants.put(name, value);
+				if (this.isCacheable)
+				{
+					resolvedConstants.put(name, value);
+				}
 				return value;
 			}
 		}
@@ -123,7 +143,7 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 		if (methodName.startsWith("set") && methodName.length() > 3)
 		{
 			String property = getPropertyFromSetterMethodName(methodName);
-			if (resolvedConstants.containsKey(property))
+			if (this.isCacheable && resolvedConstants.containsKey(property))
 			{
 				return method.getParameterTypes().length == 1;
 			}
@@ -149,15 +169,18 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 	 */
 	protected void invokeSetter(Method method, Object[] args)
 	{
-		String property = getPropertyFromSetterMethodName(method.getName());
-		Object value = args[0];
-		if (value == null)
+		if (this.isCacheable)
 		{
-			resolvedConstants.remove(property);
-		}
-		else
-		{
-			resolvedConstants.put(property, value.toString());
+			String property = getPropertyFromSetterMethodName(method.getName());
+			Object value = args[0];
+			if (value == null)
+			{
+				resolvedConstants.remove(property);
+			}
+			else
+			{
+				resolvedConstants.put(property, value.toString());
+			}
 		}
 	}
 	
