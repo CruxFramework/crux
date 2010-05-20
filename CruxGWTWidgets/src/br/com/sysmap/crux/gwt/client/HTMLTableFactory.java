@@ -22,6 +22,7 @@ import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
@@ -184,7 +185,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		{
 			Integer indexRow = (Integer) context.getAttribute("rowIndex");
 			Integer indexCol = (Integer) context.getAttribute("colIndex");
-			context.getRootWidget().setText(indexRow, indexCol, context.getChildElement().getInnerHTML());
+			context.getRootWidget().setText(indexRow, indexCol, ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getInnerHTML()));
 		}
 	}
 	
