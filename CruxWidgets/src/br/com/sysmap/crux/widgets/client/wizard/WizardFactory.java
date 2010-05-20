@@ -290,7 +290,7 @@ public class WizardFactory extends WidgetFactory<Wizard>
 			Widget childWidget = createChildWidget(context.getChildElement(), context.getChildElement().getId());
 			
 			String id = (String)context.getAttribute("stepId");
-			String label = (String)context.getAttribute("stepLabel");
+			String label = ScreenFactory.getInstance().getDeclaredMessage((String)context.getAttribute("stepLabel"));
 			
 			WidgetStep widgetStep = context.getRootWidget().addWidgetStep(id, label, childWidget);
 			
