@@ -24,6 +24,7 @@ import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyWidget;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.gwt.client.align.AlignmentAttributeParser;
 import br.com.sysmap.crux.gwt.client.align.HorizontalAlignment;
 import br.com.sysmap.crux.gwt.client.align.VerticalAlignment;
@@ -109,7 +110,12 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 			super.processChildren(context);
 			Element childElement = context.getChildElement();
 			
-			context.setAttribute("direction", childElement.getAttribute("_direction"));
+			String direction = childElement.getAttribute("_direction");
+			if (StringUtils.isEmpty(direction))
+			{
+				direction = "center";
+			}
+			context.setAttribute("direction", direction);
 		}
 	}
 
