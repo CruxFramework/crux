@@ -1,6 +1,23 @@
-<t:template xmlns="http://www.w3.org/1999/xhtml" 
+<t:template xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:c="http://www.sysmap.com.br/crux"  
             xmlns:t="http://www.sysmap.com.br/templates" library="quickstart"> 
-
-	<t:section name="body">
-	</t:section>
+	<head>
+		<style>
+#cruxSplashScreen
+{
+	background-color: #FFFFFF;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript" src="../quickstart/quickstart.nocache.js"></script>
+		<t:section name="body">
+		</t:section>
+		<c:splashScreen/>
+	</body>	
 </t:template>
