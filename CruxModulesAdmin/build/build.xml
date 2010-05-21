@@ -48,7 +48,7 @@
 			-->
 		</copydir>
 		
-		<cruxmodulecompile srcDir="${src.dir}" outputDir="${temp.dir}/webroot">
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${temp.dir}/webroot">
 			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputDir="${temp.dir}/webroot/admin"/>
 			<classpath>
 				<path refid="build.classpath" />
@@ -66,7 +66,7 @@
 			<arg value="-logLevel"/>
 			<arg value="DEBUG"/>
 			-->
-		</cruxmodulecompile>
+		</cruxmodulecompiler>
 		<delete>
 			<fileset dir="${temp.dir}/webroot">
 				<include name="**/*.crux.xml"/>
