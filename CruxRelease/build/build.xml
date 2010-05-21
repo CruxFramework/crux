@@ -191,19 +191,6 @@
 		<delete dir="${expandeddir}" failonerror="no" includeemptydirs="true" />
 		<mkdir dir="${expandeddir}/tools" />
 		
-		<antcall target="export-war" />
-		<antcall target="generate-javadoc" />
-		
-		<jar jarfile="${expandeddir}/tools/${final.name}.jar">
-			<fileset dir="${target.classes.dir}" >
-				<include name="br/com/sysmap/crux/tools/projectgen/**/*.class" />
-			</fileset>
-			<fileset dir="${srcdir}" >
-				<include name="br/com/sysmap/crux/tools/projectgen/**/*.java" />
-				<include name="/*.properties" />
-				<include name="templates/**/*" />
-			</fileset>
-		</jar>
 		<copy todir="${resourcedir}/jars/lib/web-inf">
 			<fileset dir="${crux.dist}" includes="*.jar" />
 			<fileset dir="${crux.gwt.dist}" includes="*.jar" />
@@ -256,6 +243,20 @@
 		<copy todir="${expandeddir}">
 			<fileset dir="${resourcedir}/static" includes="*" />
 		</copy>
+
+		<antcall target="export-war" />
+		<antcall target="generate-javadoc" />
+		
+		<jar jarfile="${expandeddir}/tools/${final.name}.jar">
+			<fileset dir="${target.classes.dir}" >
+				<include name="br/com/sysmap/crux/tools/projectgen/**/*.class" />
+			</fileset>
+			<fileset dir="${srcdir}" >
+				<include name="br/com/sysmap/crux/tools/projectgen/**/*.java" />
+				<include name="/*.properties" />
+				<include name="templates/**/*" />
+			</fileset>
+		</jar>
 		<!--zip basedir="${expandeddir}" destfile="${distdir}/crux-${version}.zip" /-->
 		<!--delete dir="${tempdir}" failonerror="no" includeemptydirs="true" /-->
 	</target>
