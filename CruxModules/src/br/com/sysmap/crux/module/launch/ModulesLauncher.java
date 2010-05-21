@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.module.CruxModuleHandler;
 import br.com.sysmap.crux.module.CruxModuleMessages;
@@ -43,6 +44,9 @@ public class ModulesLauncher
 			throw new RuntimeException(messages.launcerErrorNoDevelopmentModulesSpecified());
 		}
 		
+		CruxScreenBridge.getInstance().registerScanIgnoredPackages("");
+		CruxScreenBridge.getInstance().registerScanAllowedPackages("");
+
 		List<String> modules = new ArrayList<String>();
 		for (String moduleName : developmentModules)
 		{
