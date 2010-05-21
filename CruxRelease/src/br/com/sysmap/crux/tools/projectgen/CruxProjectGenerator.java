@@ -373,18 +373,19 @@ public class CruxProjectGenerator
 		
 		return text;
 	}
+
+	/**
+	 * TODO - Gessé - Comment this
+	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 */
+	public static interface Names
+	{
+		String cruxModuleDescription = "cruxModuleDescription";
+		String hostedModeStartupModule = "hostedModeStartupModule";
+		String hostedModeStartupURL = "hostedModeStartupURL";
+		String hostedModeVMArgs = "hostedModeVMArgs";
+		String projectName = "projectName";
+		String useCruxModuleExtension = "useCruxModuleExtension";
+	}
 }
 
-/**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
- */
-interface Names
-{
-	String hostedModeStartupModule = "hostedModeStartupModule";
-	String hostedModeStartupURL = "hostedModeStartupURL";
-	String hostedModeVMArgs = "hostedModeVMArgs";
-	String projectName = "projectName";
-	String useCruxModuleExtension = "useCruxModuleExtension";
-	String cruxModuleDescription = "cruxModuleDescription";
-}

@@ -1,0 +1,37 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:crux="http://www.sysmap.com.br/crux/widgets"
+	xmlns:gwt="http://www.sysmap.com.br/crux/gwt"
+	xmlns:q="http://www.sysmap.com.br/templates/quickstart" 
+>
+	<body>
+		
+		<script type="text/javascript" src="../quickstart/quickstart.nocache.js"></script>
+		
+		<c:screen useController="overviewController" title="${quickMsg.appTitle}"/>
+		<q:quickStartPage>
+			<q:body>
+				<br/>
+				<center>
+					<gwt:image id="logoImg" url="img/crux-logo.gif"/>
+					
+					<br/><br/>
+					
+					<crux:decoratedPanel id="border">
+						<crux:widget>
+							<gwt:verticalPanel id="vPanel" spacing="10">
+								<crux:decoratedButton id="generateApp" text="${quickMsg.generateApp}" onClick="overviewController.generateApp" width="250" />
+								<crux:decoratedButton id="viewExamples" text="${quickMsg.viewExamples}" onClick="overviewController.viewExamples" width="250" />
+								<crux:decoratedButton id="viewJavadoc" text="${quickMsg.viewJavadoc}" onClick="overviewController.viewJavadoc" width="250" />
+								<crux:decoratedButton id="viewUserManual" text="${quickMsg.viewUserManual}" onClick="overviewController.viewUserManual" width="250" />
+							</gwt:verticalPanel>
+						</crux:widget>
+					</crux:decoratedPanel>
+				</center>
+			</q:body>
+		</q:quickStartPage>
+	</body>
+
+</html>
+

@@ -1,0 +1,6 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml" 
+            xmlns:t="http://www.sysmap.com.br/templates" library="quickstart"> 
+
+	<t:section name="body">
+	</t:section>
+</t:template>
