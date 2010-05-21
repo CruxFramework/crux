@@ -109,6 +109,9 @@ public interface ServerMessages
 	@DefaultServerMessage("[classpath 001] - Error initializing classPathResolver: {0}.")
 	String classPathResolverInitializerError(String message);
 
+	@DefaultServerMessage("[classpath 002] - Using classPathResolver: {0}.")
+	String classPathResolverInitializerUsingResolver(String name);
+	
 	@DefaultServerMessage("[serializers 001] - Error initializing serializer: {0}.")
 	String serializersSerializersInitializeError(String localizedMessage);
 

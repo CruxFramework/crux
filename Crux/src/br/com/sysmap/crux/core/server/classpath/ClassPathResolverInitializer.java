@@ -51,6 +51,7 @@ public class ClassPathResolverInitializer
 		{
 			lock.unlock();
 		}
+		logger.info(messages.classPathResolverInitializerUsingResolver(classPathResolver.getClass().getName()));
 		return classPathResolver;
 	}
 
