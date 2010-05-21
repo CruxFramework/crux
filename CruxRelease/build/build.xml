@@ -10,6 +10,7 @@
 	<property name="cmdfile" value="test/projectGenerator.cmd" />
 	<property name="shfile" value="test/projectGenerator.sh" />
 	<property name="launchershfile" value="test/start.sh" />
+	<property name="launchercmdfile" value="test/start.cmd" />
 	<property name="final.name" value="crux-project-generator" />
 	<property name="war.name" value="quickstart" />
 	<property name="xsd.dir" value="xsd" />
@@ -247,6 +248,7 @@
 		<copy todir="${expandeddir}" file="${cmdfile}" />
 		<copy todir="${expandeddir}" file="${shfile}" />
 		<copy todir="${expandeddir}" file="${launchershfile}" />
+		<copy todir="${expandeddir}" file="${launchercmdfile}" />
 
 		<exec command="chmod 755 ${expandeddir}/projectGenerator.sh" />
 		<exec command="chmod 755 ${expandeddir}/start.sh" />
