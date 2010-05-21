@@ -191,6 +191,32 @@
 				<include name="crux-compiler.jar" />
 			</fileset>
 		</copy>
+		<copy todir="${release.project}/war/WEB-INF/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="commons-logging.jar" />
+				<include name="gwt-servlet.jar"/>
+				<include name="javassist.jar" />
+				<include name="jericho-html.jar" />
+				<include name="saxon9.jar" />
+				<include name="saxon9-dom.jar" />
+			</fileset>
+			<fileset dir="${crux.jars.dir}">
+				<include name="crux-core.jar" />
+				<include name="crux-compiler.jar" />
+				<include name="crux-modules.jar" />
+				<include name="crux-module-compiler.jar" />
+				<include name="crux-scannotation.jar" />
+				<include name="crux-themes.jar" />
+				<include name="crux-gwt-widgets.jar" />
+				<include name="crux-widgets.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${release.project}/build/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="gwt-dev.jar" />
+				<include name="gwt-user.jar" />
+			</fileset>
+		</copy>
 
 		<!-- CruxShowcase -->
 		<copy todir="${showcase.project}/war/WEB-INF/lib" >
