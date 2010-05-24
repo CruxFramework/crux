@@ -33,9 +33,8 @@ import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSourceCallback;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories;
 import br.com.sysmap.crux.core.client.screen.Screen;
-import br.com.sysmap.crux.core.client.screen.WidgetFactory;
+import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectEvent;
 import br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectHandler;
@@ -48,6 +47,8 @@ import br.com.sysmap.crux.widgets.client.paging.Pager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -73,7 +74,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private boolean ascendingSort;
 	private Pager pager; 
 	private RowSelectionModel rowSelectionModel;
-	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private long generatedWidgetId = 0;
 	private String emptyDataFilling;
 	
@@ -91,7 +91,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		super(columnDefinitions, rowSelectionModel, cellSpacing, stretchColumns, highlightRowOnMouseOver, fixedCellSize);
 		getColumnDefinitions().setGrid(this);
 		this.emptyDataFilling = emptyDataFilling != null ? emptyDataFilling : " ";
-		this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 		this.pageSize = pageSize;
 		this.rowSelectionModel = rowSelectionModel;
 		this.autoLoadData = autoLoadData;
@@ -308,7 +307,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	}
 
 	/**
-	 * TODO - Gessé - cloned element does not have a parent
+	 * Creates a widget
 	 * @param column
 	 * @param row
 	 * @return
@@ -320,14 +319,36 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			Element template = column.getWidgetTemplate();
 			Element clone = (Element) template.cloneNode(true);
-			clone.setId(template.getId() + "_" + generateWidgetIdSufix());
-			WidgetFactory<?> factory = registeredWidgetFactories.getWidgetFactory(template.getAttribute("_type"));
-			return factory.createWidget(clone, clone.getId(), false);
+			setRandomId(clone);
+			return ScreenFactory.getInstance().newWidget(clone, clone.getId(), false);
 		}
 		catch (InterfaceConfigException e)
 		{
 			GWT.log(e.getMessage(), e);
 			throw new RuntimeException(WidgetMsgFactory.getMessages().errorCreatingWidgetForColumn(column.getKey()));
+		}
+	}
+
+	/**
+	 * Generates and sets a random ID on the given element and its children.
+	 * @param template
+	 */
+	private void setRandomId(Element template)
+	{
+		template.setId(template.getId() + "_" + generateWidgetIdSufix());
+		NodeList<Node> children = template.getChildNodes();
+		if(children != null)
+		{
+			int length = children.getLength();
+			for(int i = 0; i < length; i++)
+			{
+				Node childNode = children.getItem(i);
+				if(Element.is(childNode))
+				{
+					Element childElement = Element.as(childNode);
+					setRandomId(childElement);
+				}
+			}
 		}
 	}
 

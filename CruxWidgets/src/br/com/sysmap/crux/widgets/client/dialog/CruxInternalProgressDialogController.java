@@ -141,11 +141,10 @@ public class CruxInternalProgressDialogController
 	public void hideProgressDialogHandler(InvokeControllerEvent controllerEvent)
 	{
 		if(this.stack.size() <= 1)
-		{
-			Screen.unblockToUser();
-			
+		{			
 			if(dialog != null)
 			{
+				Screen.unblockToUser();
 				dialog.hide();
 				dialog = null;
 			}

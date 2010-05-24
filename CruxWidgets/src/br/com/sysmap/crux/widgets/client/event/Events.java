@@ -14,5 +14,5 @@ public class Events
 	public static final String BEFORE_ROW_SELECT = "onbeforerowselect";
 	
 	public static final String PAGE = "onpage";
-	//TODO - Remover esta classe inteira
+	//TODO - Gessé - Remover esta classe inteira
 }

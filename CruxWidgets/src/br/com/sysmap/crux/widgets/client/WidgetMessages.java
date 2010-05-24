@@ -111,4 +111,7 @@ public interface WidgetMessages extends Messages
 
 	@DefaultMessage("[crux-widgets 029] - Error for generating invoker wrapper: Invalid Method signature: {0}. A valid signature must have the form [methodName][OnTab][tabId]")
 	String tabsControllerInvalidSignature(String signature);
+
+	@DefaultMessage("[crux-widgets 030] - It is not possible to remove a row from a Grid.")
+	String errorItsNotPossibleToRemoveARowmFromAGrid();
 }

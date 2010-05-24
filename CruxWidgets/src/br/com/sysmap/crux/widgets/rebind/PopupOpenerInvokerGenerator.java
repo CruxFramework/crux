@@ -27,7 +27,7 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
- * TODO - Gessé - Comment this
+ * Generator for PopupOpenerInvoker objects.
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerator

@@ -18,7 +18,7 @@ package br.com.sysmap.crux.widgets.client.js;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * TODO - Gessé - Comment this
+ * A Window JavaScriptObject. Useful for accessing foreign native JS objects and functions.
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class JSWindow extends JavaScriptObject

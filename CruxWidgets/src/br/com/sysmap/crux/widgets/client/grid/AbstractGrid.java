@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.utils.StyleUtils;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.row.HasRowClickHandlers;
 import br.com.sysmap.crux.widgets.client.event.row.HasRowDoubleClickHandlers;
 import br.com.sysmap.crux.widgets.client.event.row.HasRowRenderHandlers;
@@ -169,7 +170,14 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	public R getRow(Widget w)
 	{
-		return widgetsPerRow.get(w);
+		Widget widget = w;
+		
+		while(!widgetsPerRow.containsKey(widget) && widget.getParent() != null)
+		{
+			widget = widget.getParent();
+		}
+		
+		return widgetsPerRow.get(widget);
 	}
 	
 	/**
@@ -239,7 +247,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			 */
 			public void remove()
 			{
-				throw new RuntimeException(); // TODO - Gessé - set message here				
+				throw new UnsupportedOperationException(WidgetMsgFactory.getMessages().errorItsNotPossibleToRemoveARowmFromAGrid());				
 			}			
 		};
 		

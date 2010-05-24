@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
- * TODO - Comment
+ * A banner for showing multiple text messages, one each time. The messages are displayed in a periodic and sequential way.  
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public class ScrollBanner extends Composite
@@ -57,7 +57,8 @@ public class ScrollBanner extends Composite
 	};
 
 	/**
-	 * @param messageScrollingInterval
+	 * Parameterized constructor
+	 * @param messageScrollingPeriod the period, in milliseconds, for swaping messages
 	 */
 	public ScrollBanner(int messageScrollingPeriod)
 	{
@@ -67,7 +68,7 @@ public class ScrollBanner extends Composite
 	}
 	
 	/**
-	 * Constructor
+	 * Default constructor
 	 */
 	public ScrollBanner()
 	{
@@ -97,7 +98,6 @@ public class ScrollBanner extends Composite
 
 	/**
 	 * Creates a panel for hiding long texts that don't fit the banner size 
-	 * @param verticalCenteringPanel
 	 * @return
 	 */
 	private SimplePanel createMessageOverflowHiddenPanel
@@ -151,7 +151,7 @@ public class ScrollBanner extends Composite
 	}
 
 	/**
-	 * Creates a message scrolling button
+	 * Creates a scrolling button
 	 * @param styleName
 	 * @param handler
 	 * @return
@@ -167,6 +167,8 @@ public class ScrollBanner extends Composite
 	}
 	
 	/**
+	 * Adds a new message to the banner. If no message exists, the new added message is shown. 
+	 * Otherwise, it is stored in the queue, and shown timely.  
 	 * @param message
 	 */
 	public void addMessage(String message)
@@ -180,7 +182,7 @@ public class ScrollBanner extends Composite
 	}
 	
 	/**
-	 * 
+	 * Shows the next message in the queue.
 	 */
 	protected void showNextMessage()
 	{
@@ -192,7 +194,7 @@ public class ScrollBanner extends Composite
 	}
 	
 	/**
-	 * 
+	 * Shows the previous message in the queue.
 	 */
 	protected void showPreviousMessage()
 	{
@@ -210,6 +212,7 @@ public class ScrollBanner extends Composite
 	}
 
 	/**
+	 * Shows the Nth message in the queue.
 	 * @param index
 	 */
 	private void showMessage(int index)
@@ -220,7 +223,7 @@ public class ScrollBanner extends Composite
 	}
 	
 	/**
-	 * 
+	 * Clears the message queue.
 	 */
 	public void clear()
 	{
@@ -229,6 +232,7 @@ public class ScrollBanner extends Composite
 	}
 	
 	/**
+	 * Creates a click handler for the "next" scrolling button 
 	 * @return
 	 */
 	private ClickHandler createNextMessageClickHandler()
@@ -247,6 +251,7 @@ public class ScrollBanner extends Composite
 	}
 
 	/**
+	 * Creates a click handler for the "previous" scrolling button
 	 * @return
 	 */
 	private ClickHandler createPreviousMessageClickHandler()

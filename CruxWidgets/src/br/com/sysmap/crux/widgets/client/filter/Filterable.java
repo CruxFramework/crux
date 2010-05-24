@@ -18,16 +18,26 @@ package br.com.sysmap.crux.widgets.client.filter;
 import java.util.List;
 
 /**
- * TODO - Gessé - Comment this
+ * Interface for objects (typically widgets) whose contents can be filtered using a textual expression.
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
 public interface Filterable<T>
 {
+	/**
+	 * Returns the fiterable's contents that match the query.
+	 * @param query
+	 * @return
+	 */
 	List<FilterResult<T>> filter(String query);
+	
+	/**
+	 * A chance for executing some logic when a item is selected after a filtering operation.
+	 * @param selectedItem
+	 */
 	void onSelectItem(T selectedItem);
 	
 	/**
-	 * TODO - Gessé - Comment this
+	 * A single result of a filtering operation. 
 	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
 	 */
 	public static class FilterResult<T>
@@ -36,6 +46,7 @@ public interface Filterable<T>
 		private String label;
 		
 		/**
+		 * Constructor.
 		 * @param label
 		 * @param value
 		 */
@@ -46,6 +57,7 @@ public interface Filterable<T>
 		}
 		
 		/**
+		 * Returns the label of the result.
 		 * @return the label
 		 */
 		public String getLabel()
@@ -54,6 +66,7 @@ public interface Filterable<T>
 		}
 
 		/**
+		 * Returns the filterable's item bound in this result.
 		 * @return the value
 		 */
 		public T getValue()
