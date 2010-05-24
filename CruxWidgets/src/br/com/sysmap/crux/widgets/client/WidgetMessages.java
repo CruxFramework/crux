@@ -114,4 +114,7 @@ public interface WidgetMessages extends Messages
 
 	@DefaultMessage("[crux-widgets 030] - It is not possible to remove a row from a Grid.")
 	String errorItsNotPossibleToRemoveARowmFromAGrid();
+
+	@DefaultMessage("[crux-widgets 031] - Error sorting the Grid. No DataColumn with the key ''{0}'' was found.")
+	String errorGridNoDataColumnFound(String column);
 }

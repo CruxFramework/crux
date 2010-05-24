@@ -35,6 +35,7 @@ import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenFactory;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectEvent;
 import br.com.sysmap.crux.widgets.client.event.row.BeforeRowSelectHandler;
@@ -63,8 +64,8 @@ import com.google.gwt.user.client.ui.Widget;
  * A paged sortable data grid
  * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
  */
-public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<EditablePagedDataSource>, HasBeforeRowSelectHandlers {	
-
+public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<EditablePagedDataSource>, HasBeforeRowSelectHandlers 
+{	
 	private int pageSize;
 	private EditablePagedDataSource dataSource;
 	private List<ColumnHeader> headers = new ArrayList<ColumnHeader>();
@@ -76,6 +77,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private RowSelectionModel rowSelectionModel;
 	private long generatedWidgetId = 0;
 	private String emptyDataFilling;
+	private String defaultSortingColumn;
+	private SortingType defaultSortingType;
 	
 	/**
 	 * Full constructor
@@ -83,17 +86,24 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	 * @param pageSize the number of rows per page
 	 * @param rowSelection the behavior of the grid about line selection
 	 * @param cellSpacing the space between the cells
-	 * @param autoLoadData if <code>true</code>, when a data source is set, its first page records are fetched and rendered. 
-	 * 	If <code>false</code>, the method <code>loadData()</code> must be invoked for rendering the first page.
+	 * @param autoLoadData if <code>true</code>, when a data source is set, its first page records are fetched and rendered.
+	 * @param stretchColumns if <code>true</code>, the width of the columns are auto adjusted to fit the grid width. Prevents horizontal scrolling.   
+	 * @param highlightRowOnMouseOver if <code>true</code>, rows change their styles when mouse passed over them
+	 * @param emptyDataFilling an alternative text to be shown when there is no data for some data cell
+	 * @param fixedCellSize equivalent of setting CSS attribute <code>table-layout</code> to <code>fixed</code>
+	 * @param defaultSortingColumn the column to be used to automatically sort the grid's data when it is rendered for the first time 
+	 * @param defaultSortingType tells the grid if <code>defaultSortingColumn</code> should be used ascending or descending
 	 */
-	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelectionModel, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize)
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType)
 	{
-		super(columnDefinitions, rowSelectionModel, cellSpacing, stretchColumns, highlightRowOnMouseOver, fixedCellSize);
+		super(columnDefinitions, rowSelection, cellSpacing, stretchColumns, highlightRowOnMouseOver, fixedCellSize);
 		getColumnDefinitions().setGrid(this);
 		this.emptyDataFilling = emptyDataFilling != null ? emptyDataFilling : " ";
 		this.pageSize = pageSize;
-		this.rowSelectionModel = rowSelectionModel;
+		this.rowSelectionModel = rowSelection;
 		this.autoLoadData = autoLoadData;
+		this.defaultSortingColumn = defaultSortingColumn;
+		this.defaultSortingType = defaultSortingType;
 		super.render();
 	}
 	
@@ -115,7 +125,10 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				public void execute(int startRecord, int endRecord)
 				{
 					loaded = true;
-					render();
+					if(!autoSort())
+					{
+						render();
+					}
 				}
 				
 				public void cancelFetching()
@@ -138,7 +151,10 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				public void execute()
 				{
 					loaded = true;
-					render();
+					if(!autoSort())
+					{
+						render();
+					}
 				}
 			});
 			
@@ -508,118 +524,26 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	}
 	
 	/**
-	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
-	 */
-	protected static class ColumnHeader extends Composite
-	{
-		private FocusPanel clickable;
-		private Label columnLabelArrow;
-		
-		private Grid grid;
-		private ColumnDefinition columnDefinition;
-		
-		public ColumnHeader(ColumnDefinition columnDefinition, Grid grid)
-		{
-			this.grid = grid;
-			this.columnDefinition = columnDefinition;
-			
-			clickable = new FocusPanel();
-			
-			HorizontalPanel panel = new HorizontalPanel();
-			panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-			
-			Label columnLabel = new Label(columnDefinition.getLabel());
-			columnLabel.setStyleName("label");
-			
-			columnLabelArrow = new Label(" ");
-			columnLabelArrow.setStyleName("arrow");
-			
-			panel.add(columnLabel);
-			panel.add(columnLabelArrow);
-			
-			clickable.add(panel);
-			if (isDataColumnSortable(columnDefinition))
-			{
-				clickable.addClickHandler(createClickHandler());
-			}
-			
-			initWidget(clickable);
-			
-			setStyleName("columnSorter");
-		}
-		
-		/**
-		 * @param columnDefinition2
-		 * @return
-		 */
-		private boolean isDataColumnSortable(ColumnDefinition columnDefinition)
-		{
-			return (columnDefinition instanceof DataColumnDefinition) 
-					&& grid.isDataLoaded() 
-					&& this.grid.getDataSource().getMetadata().getColumn(columnDefinition.getKey()).isSortable();
-		}
-
-		/**
-		 * @return
-		 */
-		private ClickHandler createClickHandler()
-		{
-			return new ClickHandler()
-			{
-				public void onClick(ClickEvent event)
-				{
-					if(grid.isDataLoaded())
-					{
-						String column = columnDefinition.getKey();
-						String previousSorting = grid.currentSortingColumn;
-						boolean resorting = column.equals(previousSorting);
-						
-						grid.currentSortingColumn = column;
-				
-						if(!resorting)
-						{
-							grid.ascendingSort = true;
-						}
-						else
-						{
-							grid.ascendingSort = !grid.ascendingSort;
-						}
-						
-						grid.dataSource.sort(column, grid.ascendingSort);
-						
-						grid.render();
-					}				
-				}			
-			};
-		}
-		
-		void applySortingLayout()
-		{
-			if(this.columnDefinition.getKey().equals(grid.currentSortingColumn))
-			{
-				if(grid.ascendingSort)
-				{
-					addStyleDependentName("asc");
-				}
-				else
-				{
-					addStyleDependentName("desc");
-				}
-			}
-			else
-			{
-				removeStyleDependentName("asc");
-				removeStyleDependentName("desc");
-			}
-		}
-	}
-
-	/**
 	 * @return the dataSource
 	 */
 	public EditablePagedDataSource getDataSource()
 	{
 		return dataSource;
+	}
+
+	/**
+	 * Sorts the grid's data by the given column
+	 * @param columnKey
+	 */
+	public void sort(String columnKey, boolean ascending)
+	{
+		if(this.isDataLoaded())
+		{
+			this.dataSource.sort(columnKey, ascending);
+			this.ascendingSort = ascending;
+			this.currentSortingColumn = columnKey;
+			this.render();
+		}		
 	}
 
 	@Override
@@ -755,5 +679,147 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	public boolean isDataLoaded()
 	{
 		return this.dataSource != null && loaded;
+	}
+	
+	/**
+	 * Sorts the grid's data when it is loaded for the first time
+	 */
+	private boolean autoSort()
+	{
+		boolean sort = isAutoSortEnabled();
+		
+		if(sort)
+		{
+			sort(this.defaultSortingColumn, !this.defaultSortingType.equals(SortingType.descending));
+		}
+		
+		return sort;
+	}
+	
+	/**
+	 * Checks if auto sorting is enabled
+	 * @return
+	 */
+	private boolean isAutoSortEnabled()
+	{
+		if(!StringUtils.isEmpty(this.defaultSortingColumn))
+		{
+			ColumnDefinition column = getColumnDefinition(this.defaultSortingColumn);
+			
+			if(column != null && column instanceof DataColumnDefinition)
+			{
+				return true;
+			}
+			else
+			{
+				throw new IllegalArgumentException(WidgetMsgFactory.getMessages().errorGridNoDataColumnFound(this.defaultSortingColumn));
+			}		
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Grid default sorting type
+	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 */
+	public enum SortingType
+	{
+		ascending,
+		descending
+	}
+	
+	/**
+	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 */
+	protected static class ColumnHeader extends Composite
+	{
+		private FocusPanel clickable;
+		private Label columnLabelArrow;
+		
+		private Grid grid;
+		private ColumnDefinition columnDefinition;
+		
+		public ColumnHeader(ColumnDefinition columnDefinition, Grid grid)
+		{
+			this.grid = grid;
+			this.columnDefinition = columnDefinition;
+			
+			clickable = new FocusPanel();
+			
+			HorizontalPanel panel = new HorizontalPanel();
+			panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+			
+			Label columnLabel = new Label(columnDefinition.getLabel());
+			columnLabel.setStyleName("label");
+			
+			columnLabelArrow = new Label(" ");
+			columnLabelArrow.setStyleName("arrow");
+			
+			panel.add(columnLabel);
+			panel.add(columnLabelArrow);
+			
+			clickable.add(panel);
+			if (isDataColumnSortable(columnDefinition))
+			{
+				clickable.addClickHandler(createClickHandler());
+			}
+			
+			initWidget(clickable);
+			
+			setStyleName("columnSorter");
+		}
+		
+		/**
+		 * @param columnDefinition2
+		 * @return
+		 */
+		private boolean isDataColumnSortable(ColumnDefinition columnDefinition)
+		{
+			return (columnDefinition instanceof DataColumnDefinition) 
+					&& grid.isDataLoaded() 
+					&& this.grid.getDataSource().getMetadata().getColumn(columnDefinition.getKey()).isSortable();
+		}
+
+		/**
+		 * @return
+		 */
+		private ClickHandler createClickHandler()
+		{
+			return new ClickHandler()
+			{
+				public void onClick(ClickEvent event)
+				{
+					String columnKey = columnDefinition.getKey();
+					String previousSorting = grid.currentSortingColumn;
+					grid.currentSortingColumn = columnKey;
+										
+					boolean resorting = columnKey.equals(previousSorting);
+					boolean descending = resorting && grid.ascendingSort;
+										
+					grid.sort(columnKey, !descending);									
+				}			
+			};
+		}
+		
+		void applySortingLayout()
+		{
+			if(this.columnDefinition.getKey().equals(grid.currentSortingColumn))
+			{
+				if(grid.ascendingSort)
+				{
+					addStyleDependentName("asc");
+				}
+				else
+				{
+					addStyleDependentName("desc");
+				}
+			}
+			else
+			{
+				removeStyleDependentName("asc");
+				removeStyleDependentName("desc");
+			}
+		}
 	}
 }

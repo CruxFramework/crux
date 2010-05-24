@@ -34,11 +34,13 @@ import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.ChoiceChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.gwt.client.align.AlignmentAttributeParser;
 import br.com.sysmap.crux.gwt.client.align.HorizontalAlignment;
 import br.com.sysmap.crux.gwt.client.align.VerticalAlignment;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.row.RowEventsBind;
+import br.com.sysmap.crux.widgets.client.grid.Grid.SortingType;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -60,10 +62,26 @@ public class GridFactory extends WidgetFactory<Grid>
 		Grid grid = new Grid(getColumnDefinitions(gridElem), getPageSize(gridElem), 
 				                               getRowSelectionModel(gridElem), getCellSpacing(gridElem), 
 				                               getAutoLoad(gridElem), getStretchColumns(gridElem), getHighlightRowOnMouseOver(gridElem),
-				                               getEmptyDataFilling(gridElem), isFixedCellSize(gridElem));
+				                               getEmptyDataFilling(gridElem), isFixedCellSize(gridElem), getSortingColumn(gridElem), getSortingType(gridElem));
 		return grid;
 	}
 	
+	private SortingType getSortingType(Element gridElem)
+	{
+		String sortingType = gridElem.getAttribute("_defaultSortingType");
+		if(!StringUtils.isEmpty(sortingType))
+		{
+			SortingType sort = SortingType.valueOf(sortingType);
+			return sort;
+		}
+		return null;
+	}
+
+	private String getSortingColumn(Element gridElem)
+	{
+		return gridElem.getAttribute("_defaultSortingColumn");
+	}
+
 	private boolean isFixedCellSize(Element gridElem)
 	{
 		String fixedCellSize = gridElem.getAttribute("_fixedCellSize");
@@ -283,7 +301,9 @@ public class GridFactory extends WidgetFactory<Grid>
 		@TagAttributeDeclaration(value="stretchColumns", type=Boolean.class, defaultValue="false"),
 		@TagAttributeDeclaration(value="highlightRowOnMouseOver", type=Boolean.class, defaultValue="false"),
 		@TagAttributeDeclaration(value="fixedCellSize", type=Boolean.class, defaultValue="false"),
-		@TagAttributeDeclaration(value="emptyDataFilling", type=String.class, defaultValue=" ")
+		@TagAttributeDeclaration(value="emptyDataFilling", type=String.class, defaultValue=" "),
+		@TagAttributeDeclaration(value="defaultSortingColumn", type=String.class),
+		@TagAttributeDeclaration(value="defaultSortingType", type=SortingType.class, defaultValue="ascending")
 	})
 	public void processAttributes(WidgetFactoryContext<Grid> context) throws InterfaceConfigException
 	{
