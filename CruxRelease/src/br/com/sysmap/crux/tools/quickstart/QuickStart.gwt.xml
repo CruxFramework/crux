@@ -4,6 +4,7 @@
 	<inherits name='br.com.sysmap.crux.widgets.CruxWidgets'/>
 	<inherits name='com.google.gwt.user.theme.standard.Standard'/>
 	<inherits name='br.com.sysmap.crux.themes.widgets.standard.Standard'/>
+	<stylesheet src="style/css/quickstart.css"/>
 	<public path="public">
 		<exclude name="**/*.crux.xml" />
 		<exclude name="**/*.template.xml" />

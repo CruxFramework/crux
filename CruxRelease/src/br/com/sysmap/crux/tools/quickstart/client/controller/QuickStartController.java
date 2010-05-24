@@ -137,13 +137,13 @@ public class QuickStartController
 			{
 				if (needsSeparator)
 				{
-					Label separator = new Label();
-					separator.setStyleName("crux-WizardNavigationHorizontalSeparator");
+					Label separator = new Label("/");
+					separator.setStyleName("FileSystemSeparator");
 					rollingPanel.add(separator);
 				}
-				needsSeparator = true;
+				needsSeparator = i >= 1;
 				final Label label = new Label(folders[i].trim().length()>0?folders[i]:"/");
-				label.setStyleName("crux-WizardNavigationLabel");
+				label.setStyleName("FileSystemLabel");
 
 				final StringBuilder fullPath = new StringBuilder("");
 
