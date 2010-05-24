@@ -84,7 +84,6 @@ public class ScreenFactory {
 		{
 			this.registeredWidgetFactories = (RegisteredWidgetFactories) GWT.create(RegisteredWidgetFactories.class);
 			create();
-			this.registeredWidgetFactories = null; // Release resources from javascript memory.
 		}
 		return screen;
 	}
@@ -154,13 +153,26 @@ public class ScreenFactory {
 	}
 
 	/**
-	 * 
+	 * Creates a new widget based on a HTML SPAN tag and attaches it on the Screen object.
 	 * @param element
 	 * @param widgetId
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	Widget newWidget(Element element, String widgetId) throws InterfaceConfigException
+	public Widget newWidget(Element element, String widgetId) throws InterfaceConfigException
+	{
+		return newWidget(element, widgetId, true);
+	}
+	
+	/**
+	 * Creates a new widget based on a HTML SPAN tag 
+	 * @param element
+	 * @param widgetId
+	 * @param addToScreen
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	public Widget newWidget(Element element, String widgetId, boolean addToScreen) throws InterfaceConfigException
 	{
 		String type = element.getAttribute("_type");
 		WidgetFactory<? extends Widget> widgetFactory = registeredWidgetFactories.getWidgetFactory(type);
@@ -169,7 +181,7 @@ public class ScreenFactory {
 			throw new InterfaceConfigException(Crux.getMessages().screenFactoryWidgetFactoryNotFound(type));
 		}
 		
-		Widget widget = widgetFactory.createWidget(element, widgetId); 
+		Widget widget = widgetFactory.createWidget(element, widgetId, addToScreen); 
 		if (widget == null)
 		{
 			throw new InterfaceConfigException(Crux.getMessages().screenFactoryErrorCreateWidget(widgetId));
