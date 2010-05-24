@@ -17,8 +17,10 @@ package br.com.sysmap.crux.tools.quickstart.client.screen;
 
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.ListBox;
 
 import br.com.sysmap.crux.core.client.screen.ScreenWrapper;
+import br.com.sysmap.crux.widgets.client.rollingpanel.RollingPanel;
 import br.com.sysmap.crux.widgets.client.wizard.Wizard;
 
 /**
@@ -30,4 +32,6 @@ public interface QuickStartScreen extends ScreenWrapper
 	CheckBox getUseCruxModuleExtension();
 	Grid getProjectInfo();
 	Wizard getQuickstartWizard();
+	RollingPanel getDirSelectorRollingPanel();
+	ListBox getDirSelectorBox();
 }

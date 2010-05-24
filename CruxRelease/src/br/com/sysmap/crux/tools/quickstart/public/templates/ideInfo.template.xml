@@ -1,0 +1,32 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:c="http://www.sysmap.com.br/crux"  
+			xmlns:gwt="http://www.sysmap.com.br/crux/gwt"
+			xmlns:crux="http://www.sysmap.com.br/crux/widgets"
+            xmlns:t="http://www.sysmap.com.br/templates" library="quickstart"
+            useController="quickStartController"> 
+	<gwt:dockPanel id="ideInfoCenterPanel" >
+		<gwt:cell verticalAlignment="top" direction="center" horizontalAlignment="center">
+			<gwt:grid id="ideInfo" cellSpacing="5" >
+				<gwt:row>
+					<gwt:cell horizontalAlignment="center">
+						<gwt:text>${quickMsg.workspaceDir}</gwt:text>
+					</gwt:cell>
+				</gwt:row>
+				<gwt:row>
+					<gwt:cell>
+						<gwt:widget>
+							<crux:rollingPanel id="dirSelectorRollingPanel" width="100%" onLoadWidget="quickStartController.loadDirectory" />		
+						</gwt:widget>
+					</gwt:cell>
+				</gwt:row>
+				<gwt:row>
+					<gwt:cell horizontalAlignment="center">
+						<gwt:widget>
+							<gwt:listBox id="dirSelectorBox" visibleItemCount="7"  width="80%" onChange="quickStartController.changeDirectory" />
+						</gwt:widget>
+					</gwt:cell>
+				</gwt:row>
+			</gwt:grid>
+		</gwt:cell>
+	</gwt:dockPanel>
+</t:template>

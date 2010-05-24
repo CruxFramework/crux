@@ -1,0 +1,60 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:c="http://www.sysmap.com.br/crux"  
+			xmlns:gwt="http://www.sysmap.com.br/crux/gwt"
+            xmlns:t="http://www.sysmap.com.br/templates" library="quickstart"
+            useController="quickStartController"> 
+	<gwt:dockPanel id="projectInfoCenterPanel" >
+		<gwt:cell verticalAlignment="top" direction="center" horizontalAlignment="center">
+			<gwt:grid id="projectInfo" cellSpacing="5" >
+				<gwt:row>
+					<gwt:cell width="150">
+						<gwt:text>${quickMsg.projectName}</gwt:text>
+					</gwt:cell>
+					<gwt:cell>
+						<gwt:widget><gwt:textBox id="projectName" width="200"/></gwt:widget>
+					</gwt:cell>
+				</gwt:row>
+				<gwt:row>
+					<gwt:cell  width="150">
+						<gwt:text>${quickMsg.hostedModeStartupURL}</gwt:text>
+					</gwt:cell>
+					<gwt:cell>
+						<gwt:widget><gwt:textBox id="hostedModeStartupURL" width="200"/></gwt:widget>
+					</gwt:cell>
+				</gwt:row>
+				<gwt:row>
+					<gwt:cell  width="150">
+						<gwt:text>${quickMsg.hostedModeStartupModule}</gwt:text>
+					</gwt:cell>
+					<gwt:cell>
+						<gwt:widget><gwt:textBox id="hostedModeStartupModule" width="200"/></gwt:widget>
+					</gwt:cell>
+				</gwt:row>
+				<gwt:row>
+					<gwt:cell  width="150">
+						<gwt:text>${quickMsg.hostedModeVMArgs}</gwt:text>
+					</gwt:cell>
+					<gwt:cell>
+						<gwt:widget><gwt:textBox id="hostedModeVMArgs" width="200"/></gwt:widget>
+					</gwt:cell>
+				</gwt:row>
+				<gwt:row>
+					<gwt:cell  width="150">
+						<gwt:text>${quickMsg.useCruxModuleExtension}</gwt:text>
+					</gwt:cell>
+					<gwt:cell>
+						<gwt:widget><gwt:checkBox id="useCruxModuleExtension" onChange="quickStartController.useModuleCheckChange"/></gwt:widget>
+					</gwt:cell>
+				</gwt:row>
+				<gwt:row visible="false">
+					<gwt:cell  width="150">
+						<gwt:text>${quickMsg.cruxModuleDescription}</gwt:text>
+					</gwt:cell>
+					<gwt:cell>
+						<gwt:widget><gwt:textBox id="cruxModuleDescription" width="200" /></gwt:widget>
+					</gwt:cell>
+				</gwt:row>
+			</gwt:grid>
+		</gwt:cell>
+	</gwt:dockPanel>
+</t:template>

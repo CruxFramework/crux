@@ -89,6 +89,6 @@ public interface QuickStartMessages extends Messages
 	@DefaultMessage("Eclipse Information")
 	String ideInfoLabel();
 	
-	@DefaultMessage("Workspace Directory:")
+	@DefaultMessage("Output Directory")
 	String workspaceDir();
 }

@@ -16,6 +16,11 @@
 package br.com.sysmap.crux.tools.quickstart.server.service;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -24,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import br.com.sysmap.crux.tools.projectgen.CruxProjectGenerator;
 import br.com.sysmap.crux.tools.projectgen.CruxProjectGeneratorOptions;
 import br.com.sysmap.crux.tools.projectgen.CruxProjectGenerator.Names;
+import br.com.sysmap.crux.tools.quickstart.client.dto.DirectoryInfo;
 import br.com.sysmap.crux.tools.quickstart.client.dto.ProjectInfo;
 import br.com.sysmap.crux.tools.quickstart.client.remote.QuickStartService;
 
@@ -54,7 +60,6 @@ public class QuickStartServiceImpl implements QuickStartService
 	        String hostedModeVMArgs = config.getProperty(Names.hostedModeVMArgs);
 	        String cruxModuleDescription = config.getProperty(Names.cruxModuleDescription);
 	        
-	        info.setWorkspaceDir(new File(".").getCanonicalPath());
 	        info.setProjectName(projectName);
 	        info.setCruxModuleDescription(cruxModuleDescription);
 	        info.setHostedModeStartupModule(hostedModeStartupModule);
@@ -90,5 +95,73 @@ public class QuickStartServiceImpl implements QuickStartService
         	logger.error(e.getMessage(), e);
         	return false;
         }
+    }
+
+	/**
+	 * @see br.com.sysmap.crux.tools.quickstart.client.remote.QuickStartService#getDirectoryInfo(java.lang.String)
+	 */
+	public DirectoryInfo getDirectoryInfo(String directoryPath)
+    {
+		try
+        {
+			DirectoryInfo result = new DirectoryInfo();
+			File dir = new File(directoryPath);
+
+			result.setFullPath(getFullPath(dir));
+	        result.setContents(getDirContents(dir));
+	        return result;
+        }
+        catch (IOException e)
+        {
+        	logger.error(e.getMessage(), e);
+        }
+		
+	    return null;
+    }
+
+	/**
+	 * @param dir
+	 * @return
+	 * @throws IOException
+	 */
+	private String getFullPath(File dir) throws IOException
+    {
+	    String fullPath = dir.getCanonicalPath();
+	    
+	    int index = fullPath.indexOf(':');
+	    if (index > 0 && index < fullPath.length()-1)
+	    {
+	    	fullPath = fullPath.substring(index+1);
+	    }
+	    
+	    return fullPath.replace('\\', '/');
+    }
+
+	/**
+	 * @param dir
+	 * @return
+	 */
+	private String[] getDirContents(File dir)
+    {
+	    File[] files = dir.listFiles(new FileFilter()
+	    {
+	    	public boolean accept(File pathname)
+	    	{
+	    		return pathname.isDirectory();
+	    	}
+	    });
+	    
+	    List<String> contents = new ArrayList<String>();
+	    
+	    if (files != null)
+	    {
+	    	for (File file : files)
+	    	{
+	    		contents.add(file.getName());
+	    	}
+	    }
+	    Collections.sort(contents);
+	    
+	    return contents.toArray(new String[contents.size()]);
     }
 }
