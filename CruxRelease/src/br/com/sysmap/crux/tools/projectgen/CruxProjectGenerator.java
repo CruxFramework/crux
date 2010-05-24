@@ -373,9 +373,9 @@ public class CruxProjectGenerator
 		
 		return text;
 	}
-
+	
 	/**
-	 * TODO - Gessé - Comment this
+	 * All possible parameter names for CruxProjectGenerator.
 	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
 	 */
 	public static interface Names
@@ -386,6 +386,5 @@ public class CruxProjectGenerator
 		String hostedModeVMArgs = "hostedModeVMArgs";
 		String projectName = "projectName";
 		String useCruxModuleExtension = "useCruxModuleExtension";
-	}
+	}	
 }
-
