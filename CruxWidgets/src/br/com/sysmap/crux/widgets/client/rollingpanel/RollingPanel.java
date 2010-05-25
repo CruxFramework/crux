@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.widgets.client.rollingpanel;
 
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
+import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.utils.StyleUtils;
 
 import com.google.gwt.core.client.Scheduler;
@@ -29,12 +31,12 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InsertPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -58,18 +60,18 @@ public class RollingPanel extends Composite implements InsertPanel
 	protected DockPanel layoutPanel;
 	
 	private String horizontalNextButtonStyleName = DEFAULT_NEXT_HORIZONTAL_STYLE_NAME;
-	private Label horizontalNextLabel = null;
+	private Button horizontalNextButton = null;
 	private String horizontalPreviousButtonStyleName = DEFAULT_PREVIOUS_HORIZONTAL_STYLE_NAME;
-	private Label horizontalPreviousLabel = null;
+	private Button horizontalPreviousButton = null;
 	
 	private SimplePanel itemsScrollPanel;
 	private boolean scrollToAddedWidgets = false;
 	private boolean vertical;
 	private String verticalNextButtonStyleName = DEFAULT_NEXT_VERTICAL_STYLE_NAME;
 
-	private Label verticalNextLabel = null;
+	private Button verticalNextButton = null;
 	private String verticalPreviousButtonStyleName = DEFAULT_PREVIOUS_VERTICAL_STYLE_NAME;
-	private Label verticalPreviousLabel = null;
+	private Button verticalPreviousButton = null;
 	
 	/**
 	 * @param vertical
@@ -119,7 +121,13 @@ public class RollingPanel extends Composite implements InsertPanel
 			}
 		});
 
-		maybeShowNavigationButtons();
+		Screen.addScreenLoadHandler(new ScreenLoadHandler()
+		{
+			public void onLoad(ScreenLoadEvent screenLoadEvent)
+			{
+				maybeShowNavigationButtons();
+			}
+		});
 	}
 	
 	/**
@@ -440,28 +448,28 @@ public class RollingPanel extends Composite implements InsertPanel
 	 */
 	protected void createHorizontalNavigationButtons()
 	{
-		horizontalPreviousLabel = new Label(" ");
-		horizontalPreviousLabel.setStyleName(horizontalPreviousButtonStyleName);
+		horizontalPreviousButton = new Button(" ");
+		horizontalPreviousButton.setStyleName(horizontalPreviousButtonStyleName);
 		HorizontalNavButtonEvtHandler handler = new HorizontalNavButtonEvtHandler(-20, -5);
-		horizontalPreviousLabel.addMouseDownHandler(handler);
-		horizontalPreviousLabel.addMouseUpHandler(handler);
+		horizontalPreviousButton.addMouseDownHandler(handler);
+		horizontalPreviousButton.addMouseUpHandler(handler);
 
-		this.layoutPanel.add(horizontalPreviousLabel, DockPanel.WEST);
+		this.layoutPanel.add(horizontalPreviousButton, DockPanel.WEST);
 		
-		horizontalNextLabel = new Label(" ");
-		horizontalNextLabel.setStyleName(horizontalNextButtonStyleName);
+		horizontalNextButton = new Button(" ");
+		horizontalNextButton.setStyleName(horizontalNextButtonStyleName);
 		handler = new HorizontalNavButtonEvtHandler(20, 5);
-		horizontalNextLabel.addMouseDownHandler(handler);
-		horizontalNextLabel.addMouseUpHandler(handler);
+		horizontalNextButton.addMouseDownHandler(handler);
+		horizontalNextButton.addMouseUpHandler(handler);
 
-		this.layoutPanel.add(horizontalNextLabel, DockPanel.EAST);
+		this.layoutPanel.add(horizontalNextButton, DockPanel.EAST);
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand()
 		{
 			public void execute()
 			{
-				getWrapperElement(horizontalPreviousLabel).setClassName(horizontalPreviousButtonStyleName + "Wrapper");
-				getWrapperElement(horizontalNextLabel).setClassName(horizontalNextButtonStyleName + "Wrapper");
+				getWrapperElement(horizontalPreviousButton).setClassName(horizontalPreviousButtonStyleName + "Wrapper");
+				getWrapperElement(horizontalNextButton).setClassName(horizontalNextButtonStyleName + "Wrapper");
 			}
 		});
 	}
@@ -469,7 +477,7 @@ public class RollingPanel extends Composite implements InsertPanel
 	/**
 	 * @return
 	 */
-	private Element getWrapperElement(Label button)
+	private Element getWrapperElement(Button button)
 	{
 		return button.getElement().getParentElement();
 	}
@@ -479,26 +487,26 @@ public class RollingPanel extends Composite implements InsertPanel
 	 */
 	protected void createVerticalNavigationButtons()
 	{
-		verticalPreviousLabel = new Label(" ");
-		verticalPreviousLabel.setStyleName(verticalPreviousButtonStyleName);
+		verticalPreviousButton = new Button(" ");
+		verticalPreviousButton.setStyleName(verticalPreviousButtonStyleName);
 		VerticalNavButtonEvtHandler handler = new VerticalNavButtonEvtHandler(-20, -5);
-		verticalPreviousLabel.addMouseDownHandler(handler);
-		verticalPreviousLabel.addMouseUpHandler(handler);
-		this.layoutPanel.add(verticalPreviousLabel, DockPanel.NORTH);
+		verticalPreviousButton.addMouseDownHandler(handler);
+		verticalPreviousButton.addMouseUpHandler(handler);
+		this.layoutPanel.add(verticalPreviousButton, DockPanel.NORTH);
 
-		verticalNextLabel = new Label(" ");
+		verticalNextButton = new Button(" ");
 		handler = new VerticalNavButtonEvtHandler(20, 5);
-		verticalNextLabel.addMouseDownHandler(handler);
-		verticalNextLabel.addMouseUpHandler(handler);
-		verticalNextLabel.setStyleName(verticalNextButtonStyleName);
-		this.layoutPanel.add(verticalNextLabel, DockPanel.SOUTH);
+		verticalNextButton.addMouseDownHandler(handler);
+		verticalNextButton.addMouseUpHandler(handler);
+		verticalNextButton.setStyleName(verticalNextButtonStyleName);
+		this.layoutPanel.add(verticalNextButton, DockPanel.SOUTH);
 
 		Scheduler.get().scheduleDeferred(new ScheduledCommand()
 		{
 			public void execute()
 			{
-				getWrapperElement(verticalPreviousLabel).setClassName(verticalPreviousButtonStyleName + "Wrapper");
-				getWrapperElement(verticalNextLabel).setClassName(verticalNextButtonStyleName + "Wrapper");
+				getWrapperElement(verticalPreviousButton).setClassName(verticalPreviousButtonStyleName + "Wrapper");
+				getWrapperElement(verticalNextButton).setClassName(verticalNextButtonStyleName + "Wrapper");
 			}
 		});
     }
@@ -555,13 +563,13 @@ public class RollingPanel extends Composite implements InsertPanel
 	{
 		if (isVertical())
 		{
-	    	StyleUtils.addStyleDependentName(getWrapperElement(verticalPreviousLabel), "disabled");
-	    	StyleUtils.addStyleDependentName(getWrapperElement(verticalNextLabel), "disabled");
+	    	StyleUtils.addStyleDependentName(getWrapperElement(verticalPreviousButton), "disabled");
+	    	StyleUtils.addStyleDependentName(getWrapperElement(verticalNextButton), "disabled");
 		}
 		else
 		{
-	    	StyleUtils.addStyleDependentName(getWrapperElement(horizontalPreviousLabel), "disabled");
-	    	StyleUtils.addStyleDependentName(getWrapperElement(horizontalNextLabel), "disabled");
+	    	StyleUtils.addStyleDependentName(getWrapperElement(horizontalPreviousButton), "disabled");
+	    	StyleUtils.addStyleDependentName(getWrapperElement(horizontalNextButton), "disabled");
 		}
 	}
 	
@@ -572,13 +580,13 @@ public class RollingPanel extends Composite implements InsertPanel
 	{
 		if (isVertical())
 		{
-			StyleUtils.removeStyleDependentName(getWrapperElement(verticalPreviousLabel), "disabled");
-			StyleUtils.removeStyleDependentName(getWrapperElement(verticalNextLabel), "disabled");
+			StyleUtils.removeStyleDependentName(getWrapperElement(verticalPreviousButton), "disabled");
+			StyleUtils.removeStyleDependentName(getWrapperElement(verticalNextButton), "disabled");
 		}
 		else
 		{
-			StyleUtils.removeStyleDependentName(getWrapperElement(horizontalPreviousLabel), "disabled");
-			StyleUtils.removeStyleDependentName(getWrapperElement(horizontalNextLabel), "disabled");
+			StyleUtils.removeStyleDependentName(getWrapperElement(horizontalPreviousButton), "disabled");
+			StyleUtils.removeStyleDependentName(getWrapperElement(horizontalNextButton), "disabled");
 		}
 	}
 	
