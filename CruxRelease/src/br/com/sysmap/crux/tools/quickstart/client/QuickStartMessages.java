@@ -92,6 +92,12 @@ public interface QuickStartMessages extends Messages
 	@DefaultMessage("Select the output directory:")
 	String workspaceDir();
 	
+	@DefaultMessage("Crux ShowCase")
+	String showcaseApp();
+	
+	@DefaultMessage("Select a Crux Application:")
+	String examplesMsg();
+	
 	@DefaultMessage("Fill in the basic information of your project:")
 	String projectInfoTitle();
 	
@@ -101,7 +107,7 @@ public interface QuickStartMessages extends Messages
 	@DefaultMessage("The name of the file you want to be used as the entry point of your system. We recomend you to use ''.html'' extension. If you choose another file extension, you will have to confuigure the ''web.xml'' file of your generated project, in order to set the ''ModulesDeclarativeUIFilter'' to handle the URLs properly.")
 	String startupURLHelpText();
 	
-	@DefaultMessage("The main GWT module of your application. The freshly generated project will have only a single module, but you will are free to create ones by yourself.")
+	@DefaultMessage("The main GWT module of your application. The freshly generated project will have only a single module, but you are free to create ones by yourself.")
 	String startupModuleHelpText();
 	
 	@DefaultMessage("A set of arguments that will passed to the Java Virtual Machine for running the GWT development console (GWT DevMode).")
