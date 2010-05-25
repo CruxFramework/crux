@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.tools.compile.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.Source;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.declarativeui.CruxToHtmlTransformer;
 import br.com.sysmap.crux.core.rebind.module.Module;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.module.ModulesScanner;
@@ -67,7 +70,12 @@ public class ModuleUtils
 	public static Module findModuleFromPageUrl(URL pageFile) throws IOException, InterfaceConfigException
 	{
 		String result = null;
-		Source source = new Source(pageFile.openStream());
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		CruxToHtmlTransformer.generateHTML(pageFile.openStream(), out);
+		ByteArrayInputStream input = new ByteArrayInputStream(out.toByteArray());
+		
+		Source source = new Source(input);
 		List<?> elementList = source.getAllElements("script");
 		
 		for (Object object : elementList)
