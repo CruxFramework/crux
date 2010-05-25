@@ -612,7 +612,7 @@
 }
 .crux-RollingPanelHPreviousWrapper-disabled, .crux-RollingPanelHNextWrapper-disabled
 {
-	width:0px;
+	width:1px;
 	border: solid 0px;
 }
 .crux-RollingPanelHPreviousWrapper-disabled .crux-RollingPanelHPrevious, .crux-RollingPanelHNextWrapper-disabled .crux-RollingPanelHNext
@@ -665,7 +665,7 @@
 }
 .crux-RollingPanelVPreviousWrapper-disabled, .crux-RollingPanelVNextWrapper-disabled
 {
-	width:0px;
+	width:1px;
 	border: solid 0px;
 }
 .crux-RollingPanelVPreviousWrapper-disabled .crux-RollingPanelVPrevious, .crux-RollingPanelVNextWrapper-disabled .crux-RollingPanelVNext
