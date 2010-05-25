@@ -20,7 +20,7 @@ import br.com.sysmap.crux.widgets.client.rollingpanel.RollingPanel;
 import br.com.sysmap.crux.widgets.client.wizard.Wizard;
 
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public interface QuickStartScreen extends ScreenWrapper
 {
 	CheckBox getUseCruxModuleExtension();
-	Grid getProjectInfo();
+	FlexTable getProjectInfo();
 	Wizard getQuickstartWizard();
 	RollingPanel getDirSelectorRollingPanel();
 	VerticalPanel getDirSelectorBox();

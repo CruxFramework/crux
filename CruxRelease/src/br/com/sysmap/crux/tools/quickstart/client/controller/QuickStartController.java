@@ -218,7 +218,7 @@ public class QuickStartController
 	@Expose
 	public void useModuleCheckChange()
 	{
-		screen.getProjectInfo().getRowFormatter().setVisible(5, 
+		screen.getProjectInfo().getRowFormatter().setVisible(6, 
 				screen.getUseCruxModuleExtension().getValue());
 	}
 	
