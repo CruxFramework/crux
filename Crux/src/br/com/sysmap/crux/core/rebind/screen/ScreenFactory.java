@@ -44,13 +44,13 @@ import br.com.sysmap.crux.core.utils.RegexpPatterns;
  */
 public class ScreenFactory 
 {
-	private static final Log logger = LogFactory.getLog(ScreenFactory.class);
-	private static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
-	
-	private static final Lock screenLock = new ReentrantLock();
-	private Map<String, Screen> screenCache = new HashMap<String, Screen>();	
-
 	private static ScreenFactory instance = new ScreenFactory();
+	private static final Log logger = LogFactory.getLog(ScreenFactory.class);
+	
+	private static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
+	private static final Lock screenLock = new ReentrantLock();	
+
+	private Map<String, Screen> screenCache = new HashMap<String, Screen>();
 	
 	/**
 	 * Singleton Constructor
@@ -66,74 +66,6 @@ public class ScreenFactory
 	public static ScreenFactory getInstance()
 	{
 		return instance;
-	}
-	
-	/**
-	 * Test if a target HTML element represents a Screen definition for Crux.
-	 * @param element
-	 * @return
-	 */
-	private boolean isScreenDefinitions(Element element)
-	{
-		if ("span".equalsIgnoreCase(element.getName()))
-		{
-			String type = element.getAttributeValue("_type");
-			if (type != null && "screen".equals(type))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Test if a target HTML element represents a widget definition for Crux.
-	 * @param element
-	 * @return
-	 */
-	private boolean isValidWidget(Element element)
-	{
-		if ("span".equalsIgnoreCase(element.getName()))
-		{
-			String type = element.getAttributeValue("_type");
-			if (type != null && type.trim().length() > 0 && !"screen".equals(type))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Creates a widget based in its &lt;span&gt; tag definition.
-	 * 
-	 * @param source
-	 * @param element
-	 * @param screen
-	 * @return
-	 * @throws ScreenConfigException
-	 */
-	private Widget createWidget(Source source, Element element, Screen screen) throws ScreenConfigException
-	{
-		String widgetId = element.getAttributeValue("id");
-		if (widgetId == null || widgetId.trim().length() == 0)
-		{
-			throw new ScreenConfigException(messages.screenFactoryWidgetIdRequired());
-		}
-		Widget widget = screen.getWidget(widgetId);
-		if (widget != null)
-		{
-			throw new ScreenConfigException(messages.screenFactoryErrorDuplicatedWidget(widgetId));
-		}
-		
-		widget = newWidget(element, widgetId);
-		if (widget == null)
-		{
-			throw new ScreenConfigException(messages.screenFactoryErrorCreateWidget(widgetId));
-		}
-		
-		screen.addWidget(widget);
-		return widget;
 	}
 	
 	/**
@@ -181,6 +113,107 @@ public class ScreenFactory
 		{
 			throw new ScreenConfigException(messages.screenFactoryErrorRetrievingScreen(id, e.getLocalizedMessage()), e);
 		}
+	}
+
+	/**
+	 * Creates a widget based in its &lt;span&gt; tag definition.
+	 * 
+	 * @param source
+	 * @param element
+	 * @param screen
+	 * @return
+	 * @throws ScreenConfigException
+	 */
+	private Widget createWidget(Source source, Element element, Screen screen) throws ScreenConfigException
+	{
+		String widgetId = element.getAttributeValue("id");
+		if (widgetId == null || widgetId.trim().length() == 0)
+		{
+			throw new ScreenConfigException(messages.screenFactoryWidgetIdRequired());
+		}
+		Widget widget = screen.getWidget(widgetId);
+		if (widget != null)
+		{
+			throw new ScreenConfigException(messages.screenFactoryErrorDuplicatedWidget(widgetId));
+		}
+		
+		widget = newWidget(element, widgetId);
+		if (widget == null)
+		{
+			throw new ScreenConfigException(messages.screenFactoryErrorCreateWidget(widgetId));
+		}
+		
+		screen.addWidget(widget);
+		return widget;
+	}
+
+	private String getScreenModule(List<?> scriptList) throws ScreenConfigException
+	{
+		String result = null;
+		for (Object object : scriptList)
+		{
+			Element element = (Element)object;
+			
+			String src = element.getAttributeValue("src");
+			
+			if (src != null && src.endsWith(".nocache.js"))
+			{
+				if (result != null)
+				{
+					throw new ScreenConfigException(messages.screenFactoryErrorMultipleModulesOnPage());
+				}
+				
+				int lastSlash = src.lastIndexOf("/");
+				
+				if(lastSlash >= 0)
+				{
+					int firstDotAfterSlash = src.indexOf(".", lastSlash);
+					result = src.substring(lastSlash + 1, firstDotAfterSlash);
+				}
+				else
+				{
+					int firstDot = src.indexOf(".");
+					result = src.substring(0, firstDot);
+				}
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Test if a target HTML element represents a Screen definition for Crux.
+	 * @param element
+	 * @return
+	 */
+	private boolean isScreenDefinitions(Element element)
+	{
+		if ("span".equalsIgnoreCase(element.getName()))
+		{
+			String type = element.getAttributeValue("_type");
+			if (type != null && "screen".equals(type))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Test if a target HTML element represents a widget definition for Crux.
+	 * @param element
+	 * @return
+	 */
+	private boolean isValidWidget(Element element)
+	{
+		if ("span".equalsIgnoreCase(element.getName()))
+		{
+			String type = element.getAttributeValue("_type");
+			if (type != null && type.trim().length() > 0 && !"screen".equals(type))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -252,39 +285,6 @@ public class ScreenFactory
 		}
 		
 		return screen;
-	}
-	
-	private String getScreenModule(List<?> scriptList) throws ScreenConfigException
-	{
-		String result = null;
-		for (Object object : scriptList)
-		{
-			Element element = (Element)object;
-			
-			String src = element.getAttributeValue("src");
-			
-			if (src != null && src.endsWith(".nocache.js"))
-			{
-				if (result != null)
-				{
-					throw new ScreenConfigException(messages.screenFactoryErrorMultipleModulesOnPage());
-				}
-				
-				int lastSlash = src.lastIndexOf("/");
-				
-				if(lastSlash >= 0)
-				{
-					int firstDotAfterSlash = src.indexOf(".", lastSlash);
-					result = src.substring(lastSlash + 1, firstDotAfterSlash);
-				}
-				else
-				{
-					int firstDot = src.indexOf(".");
-					result = src.substring(0, firstDot);
-				}
-			}
-		}
-		return result;
 	}
 
 	/**
