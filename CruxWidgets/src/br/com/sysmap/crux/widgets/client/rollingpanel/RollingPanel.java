@@ -16,8 +16,6 @@
 package br.com.sysmap.crux.widgets.client.rollingpanel;
 
 import br.com.sysmap.crux.core.client.screen.Screen;
-import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
-import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.utils.StyleUtils;
 
 import com.google.gwt.core.client.Scheduler;
@@ -121,13 +119,7 @@ public class RollingPanel extends Composite implements InsertPanel
 			}
 		});
 
-		Screen.addScreenLoadHandler(new ScreenLoadHandler()
-		{
-			public void onLoad(ScreenLoadEvent screenLoadEvent)
-			{
-				maybeShowNavigationButtons();
-			}
-		});
+		maybeShowNavigationButtons();
 	}
 	
 	/**
