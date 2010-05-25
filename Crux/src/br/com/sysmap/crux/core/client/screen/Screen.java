@@ -445,7 +445,7 @@ public class Screen
 	 * Adds an event handler that is called only once, when the screen is loaded
 	 * @param handler
 	 */
-	protected void addLoadHandler(final ScreenLoadHandler handler) 
+	public void addLoadHandler(final ScreenLoadHandler handler) 
 	{
 		handlerManager.addHandler(ScreenLoadEvent.TYPE, handler);
 	}
@@ -780,6 +780,16 @@ public class Screen
 	public static HandlerRegistration addClosingHandler(ClosingHandler handler) 
 	{
 		return Screen.get().addWindowClosingHandler(handler);
+	}	
+	
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	public static void addScreenLoadHandler(ScreenLoadHandler handler) 
+	{
+		Screen.get().addLoadHandler(handler);
 	}	
 	
 	/**
