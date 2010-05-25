@@ -53,7 +53,7 @@ public interface QuickStartMessages extends Messages
 	@DefaultMessage("Startup Module:")
 	String hostedModeStartupModule();
 
-	@DefaultMessage("GWT VM Args:")
+	@DefaultMessage("DevMode JVM Args:")
 	String hostedModeVMArgs();
 
 	@DefaultMessage("Module Project:")
@@ -65,13 +65,13 @@ public interface QuickStartMessages extends Messages
 	@DefaultMessage("Welcome")
 	String welcomeQuickstartLabel();
 
-	@DefaultMessage("Welcome to Crux Project Generator. Choose next to continue.")
+	@DefaultMessage("Welcome to Crux Project Generator. Click ''next'' to continue.")
 	String welcomeQuickstartMsg();
 
 	@DefaultMessage("Summary")
 	String summaryQuickstartLabel();
 
-	@DefaultMessage("Your project is ready to be generated. Choose finish to generate it now.")
+	@DefaultMessage("Your project is ready to be generated. Click ''finish'' to generate it now.")
 	String summaryQuickstartMsg();
 
 	@DefaultMessage("Project Generated.")
@@ -91,4 +91,25 @@ public interface QuickStartMessages extends Messages
 	
 	@DefaultMessage("Select the output directory:")
 	String workspaceDir();
+	
+	@DefaultMessage("Fill in the basic information of your project:")
+	String projectInfoTitle();
+	
+	@DefaultMessage("Your project''s name, which will be the used to generate an Eclipse Project for you. Many project''s resources will inherit this name. So, we recomend you to avoid special or blank characters.")
+	String projectNameHelpText();
+	
+	@DefaultMessage("The name of the file you want to be used as the entry point of your system. We recomend you to use ''.html'' extension. If you choose another file extension, you will have to confuigure the ''web.xml'' file of your generated project, in order to set the ''ModulesDeclarativeUIFilter'' to handle the URLs properly.")
+	String startupURLHelpText();
+	
+	@DefaultMessage("The main GWT module of your application. The freshly generated project will have only a single module, but you will are free to create ones by yourself.")
+	String startupModuleHelpText();
+	
+	@DefaultMessage("A set of arguments that will passed to the Java Virtual Machine for running the GWT development console (GWT DevMode).")
+	String devModeJVMArgsHelpText();
+	
+	@DefaultMessage("If you check this option, your project will be created as a Crux Module. That means you will be able to embed it in other Crux projects, packaged as a jar file.")
+	String moduleProjectOptionHelpText();
+	
+	@DefaultMessage("A textual description of the module, that will be used for documentation purposes.")
+	String moduleDescriptionHelpText();
 }

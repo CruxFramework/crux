@@ -15,13 +15,13 @@
  */
 package br.com.sysmap.crux.tools.quickstart.client.screen;
 
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.ListBox;
-
 import br.com.sysmap.crux.core.client.screen.ScreenWrapper;
 import br.com.sysmap.crux.widgets.client.rollingpanel.RollingPanel;
 import br.com.sysmap.crux.widgets.client.wizard.Wizard;
+
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
@@ -33,5 +33,5 @@ public interface QuickStartScreen extends ScreenWrapper
 	Grid getProjectInfo();
 	Wizard getQuickstartWizard();
 	RollingPanel getDirSelectorRollingPanel();
-	ListBox getDirSelectorBox();
+	VerticalPanel getDirSelectorBox();
 }

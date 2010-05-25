@@ -58,15 +58,53 @@ BODY
 	font-family:Verdana,Arial,Helvetica;
 	font-size:12px;
 	text-decoration: underline;
-	cursor: pointer;	
+	cursor: pointer;
+	white-space: nowrap;
+	font-weight: bold;
+}
+
+.FormLabel
+{
+	color: #404040;
+	font-family: Verdana,Arial,Helvetica;
+	font-size: 12px;
+	font-weight: normal;
 }
 
 .FileSystemSeparator
 {
-	color:#6C83C3;
-	font-family:Verdana,Arial,Helvetica;
-	font-size:12px;
-	text-decoration:none;
+	color: #6C83C3;
+	font-family: Verdana,Arial,Helvetica;
+	font-size: 12px;
+	text-decoration: none;
 	margin-left: 2px;
 	margin-right: 2px; 
+}
+
+.DirectorySelectionBox
+{
+	border:solid 1px #AAAAAA;
+}
+
+.DirectoryItem
+{
+	border-bottom: 1px dotted #EEEEEE;
+	cursor: pointer;
+}
+
+.HelpIcon
+{
+	margin-left: 4px;
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+}
+
+.HelpDialog
+{
+	background-color:#FFFFE1;
+	border-color:#909090;
+	border-style:solid;
+	border-width:1px 2px 2px 1px;
+	padding:5px;
 }

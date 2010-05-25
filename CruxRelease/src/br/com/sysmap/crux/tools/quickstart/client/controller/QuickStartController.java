@@ -36,8 +36,12 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
@@ -107,13 +111,6 @@ public class QuickStartController
             }
 		});
     }	
-
-	@Expose
-	public void changeDirectory()
-	{
-		String folder = screen.getDirSelectorBox().getValue(screen.getDirSelectorBox().getSelectedIndex());
-		loadDirectoryInfo(outputDir+"/"+folder);
-	}
 	
 	/**
 	 * @param result
@@ -179,18 +176,45 @@ public class QuickStartController
 	 */
 	private void updateDirSelectorBox(DirectoryInfo result)
     {
-        ListBox selectorBox = screen.getDirSelectorBox();
+        VerticalPanel selectorBox = screen.getDirSelectorBox();
 		selectorBox.clear();
 		if (result != null)
 		{
-			selectorBox.addItem("..");
+			addDirectory("..");
 			for (String item : result.getContents())
 			{
-				selectorBox.addItem(item);
+				addDirectory(item);
 			}
 		}
     }
 	
+	/**
+	 * Adds a directory into the selection panel
+	 * @param item
+	 */
+	private void addDirectory(final String item)
+	{
+		Image icon = new Image("style/img/folder.gif");
+		Label label = new Label(item);		
+		HorizontalPanel panel = new HorizontalPanel();
+		panel.setSpacing(2);
+		panel.add(icon);
+		panel.add(label);
+		
+		FocusPanel clickable = new FocusPanel();
+		clickable.setStyleName("DirectoryItem");
+		clickable.add(panel);
+		clickable.addClickHandler(new ClickHandler()
+		{	
+			public void onClick(ClickEvent event)
+			{
+				loadDirectoryInfo(outputDir + "/" + item);				
+			}
+		});
+		
+		screen.getDirSelectorBox().add(clickable);
+	}
+
 	@Expose
 	public void useModuleCheckChange()
 	{
@@ -253,5 +277,16 @@ public class QuickStartController
 	public void onIdeInfoLeave()
 	{
 		projectInfo.setWorkspaceDir(outputDir);
+	}
+	
+	@Expose
+	public void showProjectFormHelp(ClickEvent evt)
+	{
+		Image img = (Image) evt.getSource();
+		DialogBox dialog = new DialogBox(true);
+		dialog.setWidth("300");
+		dialog.setWidget(new Label(img.getTitle()));
+		dialog.setStyleName("HelpDialog");
+		dialog.showRelativeTo(img);
 	}
 }
