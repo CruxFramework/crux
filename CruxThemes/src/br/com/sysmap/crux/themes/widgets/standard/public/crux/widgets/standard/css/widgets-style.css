@@ -583,32 +583,32 @@
 .crux-RollingPanelHPrevious
 {
 	width: 15px;
-	height: 30px;
+	height: 100%;
 	border: solid 1px #8cbae7;
 	background-color: #f1f6fc;
 	background-image: url(../img/rolling-panel-left.gif);
 	background-repeat: no-repeat;
 	background-position: center;
 	cursor: pointer;
-	height: 100%;
+	padding: 1px;
 }
 .crux-RollingPanelHNextWrapper
 {
 	width:20px;
-	text-align: right;
 	height: 100%;
+	text-align: right;
 }
 .crux-RollingPanelHNext
 {
 	width: 15px;
-	height: 30px;
+	height: 100%;
 	border: solid 1px #8cbae7;
 	background-color: #f1f6fc;
 	background-image: url(../img/rolling-panel-right.gif);
 	background-repeat: no-repeat;
 	background-position: center;
 	cursor: pointer;
-	height: 100%;
+	padding: 1px;
 }
 .crux-RollingPanelHPreviousWrapper-disabled, .crux-RollingPanelHNextWrapper-disabled
 {
@@ -619,6 +619,7 @@
 {
 	width:0px;
 	border: solid 0px;
+	display: none;
 }
 
 /******************************************************************************
@@ -647,6 +648,7 @@
 	cursor: pointer;
 	font-family: monospace;
 	font-size: 0px;
+	padding: 1px;
 }
 .crux-RollingPanelVNext
 {
@@ -659,6 +661,7 @@
 	cursor: pointer;
 	font-family: monospace;
 	font-size: 0px;
+	padding: 1px;
 }
 .crux-RollingPanelVPreviousWrapper-disabled, .crux-RollingPanelVNextWrapper-disabled
 {
@@ -669,6 +672,7 @@
 {
 	width:0px;
 	border: solid 0px;
+	display: none;
 }
 
 /******************************************************************************
