@@ -546,6 +546,8 @@
 	width: 20px;
 	height: 11px;
 	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
+	font-family: monospace;
+	font-size: 1px;
 }
 .crux-Wizard .crux-WizardNavigationVerticalSeparator
 {
