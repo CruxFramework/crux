@@ -4,7 +4,7 @@
             xmlns:t="http://www.sysmap.com.br/templates" library="quickstart"> 
 	<body>
 		<script type="text/javascript" src="../quickstart/quickstart.nocache.js"></script>
-		<c:splashScreen/>
+		<c:splashScreen transactionDelay="100"/>
 		<t:section name="screenDeclaration" />
 		<gwt:dockPanel id="centeringPanel" width="100%" height="100%">
 			<gwt:cell horizontalAlignment="center" verticalAlignment="middle" direction="center">

@@ -7,12 +7,12 @@
 >
 <q:quickStartPage>
 	<q:screenDeclaration>
-		<c:screen useController="overviewController" title="${quickMsg.appTitle}"/>
+		<c:screen useController="overviewController" onLoad="overviewController.onLoad" title="${quickMsg.appTitle}"/>
 	</q:screenDeclaration>
 	<q:body>		
 		<gwt:dockPanel id="borderPanel" styleName="BorderPanel WelcomePanel">
 			<gwt:cell direction="north" height="140" horizontalAlignment="right" verticalAlignment="top">
-				<gwt:label id="versionLabel" text="version 2.2.1" styleName="VersionLabel"/>
+				<gwt:label id="versionLabel" text="" styleName="VersionLabel"/>
 			</gwt:cell>
 			<gwt:cell direction="west" width="240">
 				<gwt:label id="dummy" text=" "/>

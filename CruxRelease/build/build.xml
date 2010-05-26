@@ -102,7 +102,11 @@
 			<exclude name="**/*.jar" />
 		</copydir>
 		
-		<cruxmodulecompiler srcDir="${srcdir}" outputDir="${temp.dir}/webroot" keeppagesgeneratedfiles="true" pagesoutputdir="${temp.dir}/webroot">
+		<copydir dest="${temp.dir}/webroot/WEB-INF/classes" src="build">
+			<include name="version.properties" />
+		</copydir>
+
+			<cruxmodulecompiler srcDir="${srcdir}" outputDir="${temp.dir}/webroot" keeppagesgeneratedfiles="true" pagesoutputdir="${temp.dir}/webroot">
 			<classpath>
 				<fileset dir="${web.lib.dir}">
 					<include name="**/*.jar" />
@@ -253,7 +257,6 @@
 			</fileset>
 			<fileset dir="${srcdir}" >
 				<include name="br/com/sysmap/crux/tools/projectgen/**/*.java" />
-				<include name="/*.properties" />
 				<include name="templates/**/*" />
 			</fileset>
 		</jar>

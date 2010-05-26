@@ -18,8 +18,13 @@ package br.com.sysmap.crux.tools.quickstart.client.controller;
 import com.google.gwt.user.client.Window;
 
 import br.com.sysmap.crux.core.client.controller.Controller;
+import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
+import br.com.sysmap.crux.core.client.rpc.AsyncCallbackAdapter;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.tools.quickstart.client.QuickStartMessages;
+import br.com.sysmap.crux.tools.quickstart.client.remote.WelcomeServiceAsync;
+import br.com.sysmap.crux.tools.quickstart.client.screen.OverviewScreen;
 
 /**
  * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
@@ -28,6 +33,27 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 @Controller("overviewController")
 public class OverviewController
 {
+	@Create
+	protected OverviewScreen screen; 
+	
+	@Create
+	protected QuickStartMessages messages; 
+
+	@Create
+	protected WelcomeServiceAsync service;
+	
+	@Expose
+	public void onLoad()
+	{
+		service.getCruxVersion(new AsyncCallbackAdapter<String>(this)
+		{
+			@Override
+			public void onComplete(String result)
+			{
+				screen.getVersionLabel().setText(messages.cruxVersion(result));
+			}
+		});
+	}
 
 	@Expose
 	public void generateApp()
