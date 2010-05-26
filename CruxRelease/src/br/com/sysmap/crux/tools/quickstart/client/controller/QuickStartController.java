@@ -32,8 +32,6 @@ import br.com.sysmap.crux.widgets.client.event.OkHandler;
 import br.com.sysmap.crux.widgets.client.rollingpanel.RollingPanel;
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -158,16 +156,6 @@ public class QuickStartController
 					}
 				});
 				rollingPanel.add(label);
-				if (i == folders.length-1)
-				{
-					Scheduler.get().scheduleDeferred(new ScheduledCommand()
-					{
-						public void execute()
-						{
-							rollingPanel.scrollToWidget(label);
-						}
-					});
-				}
 			}
 		}
 	}

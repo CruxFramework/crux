@@ -146,6 +146,13 @@ public class Launcher
 		FileUtils.copyFilesFromDir(modulesWebInfLib, webAppLib);
 	}
 	
+	protected void installHelloWorldApp() throws Exception
+	{
+		File webAppLib = new File("./apps/helloworld.war/WEB-INF/lib");
+		File webInfLib = new File("./lib/web-inf");
+		
+		FileUtils.copyFilesFromDir(webInfLib, webAppLib);
+	}
 	
 	/**
 	 * @param args
@@ -161,6 +168,7 @@ public class Launcher
 		{
 			System.out.println("Installing quickstart application...");
 			launcher.installQuickStartApp();
+			launcher.installHelloWorldApp();
 			System.out.println("Quickstart application installed. To Uninstall, just remove the crux distribution folder.");
 		}
 		

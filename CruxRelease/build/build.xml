@@ -45,6 +45,8 @@
 	<property name="crux.htmltags.dist" value="../CruxHtmlTags/dist" />
 	<property name="crux.htmltags.compile.dist" value="../CruxHTMLTagsCompileTask/dist" />
 	
+	<property name="crux.samples.dir" value="samples" />
+	
 	<property name="crux.libs" value="../CruxLibs/crux" />
 	<property name="crux.dependencies" value="../CruxLibs/dependencies" />
 
@@ -249,6 +251,9 @@
 		</copy>
 
 		<antcall target="export-war" />
+		<copy todir="${expandeddir}/apps/helloworld.war">
+			<fileset dir="${crux.samples.dir}/helloworld.war" excludes="**/*.jar"/>
+		</copy>
 		<antcall target="generate-javadoc" />
 		
 		<jar jarfile="${expandeddir}/tools/${final.name}.jar">
