@@ -26,6 +26,7 @@ import br.com.sysmap.crux.tools.quickstart.client.dto.ProjectInfo;
 import br.com.sysmap.crux.tools.quickstart.client.remote.QuickStartServiceAsync;
 import br.com.sysmap.crux.tools.quickstart.client.screen.QuickStartScreen;
 import br.com.sysmap.crux.widgets.client.dialog.MessageBox;
+import br.com.sysmap.crux.widgets.client.dialog.ProgressDialog;
 import br.com.sysmap.crux.widgets.client.event.OkEvent;
 import br.com.sysmap.crux.widgets.client.event.OkHandler;
 import br.com.sysmap.crux.widgets.client.rollingpanel.RollingPanel;
@@ -225,6 +226,8 @@ public class QuickStartController
 	@Expose
 	public void finish()
 	{
+		ProgressDialog.show(messages.waitGeneratingProject());
+		
 		service.generateProject(projectInfo, new AsyncCallbackAdapter<Boolean>(this)
 		{
 			@Override
@@ -244,6 +247,8 @@ public class QuickStartController
 					message = messages.generateAppFailureMessage();
 				}
 				
+				ProgressDialog.hide();
+				
 				MessageBox.show(title, message, new OkHandler()
 				{
 					public void onOk(OkEvent event)
@@ -252,6 +257,13 @@ public class QuickStartController
 					}
 				});
             }
+			
+			@Override
+			public void onError(Throwable e)
+			{
+				ProgressDialog.hide();
+				super.onError(e);
+			}
 		});
 	}
 

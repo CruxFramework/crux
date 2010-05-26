@@ -118,4 +118,7 @@ public interface QuickStartMessages extends Messages
 	
 	@DefaultMessage("A textual description of the module, that will be used for documentation purposes.")
 	String moduleDescriptionHelpText();
+
+	@DefaultMessage("Generating project.Please wait...")
+	String waitGeneratingProject();
 }
