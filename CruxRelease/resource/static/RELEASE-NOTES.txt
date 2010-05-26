@@ -1,4 +1,56 @@
 =====================================================================================================
+Release 2.2.1
+-----------------------------------------------------------------------------------------------------
+ISSUES - DEFECT
+-----------------------------------------------------------------------------------------------------
+57  - Build.xml is not generating all html files from crx.xml files when using modules layout
+58  - ProjectGenerator must generate a Crux.properties telling Crux to use the CruxHtmlTagsScreenResolver
+59  - WidgetFactoriesGenerator generates invalid code when allowAutoBindWithNonDeclarativeWidgets is false
+61  - TemplatesScanner is showing "duplicated template found" messages even if no duplicated template exists
+62  - CruxCompile Task is performing some scanning task more than one time
+63  - CruxProjectGenerator does not add jars required by modules admin
+67  - The tooltip attribute, on all widgets, does not support i18n
+68  - Crux Timer widget does not reexecute timeout events after clear() method is invoked.
+69  - Crux raises a NullpointerException when any not required parameter is not present on URL
+72  - ListBox item's label attribute does not handle i18n
+73  - Crux RandomPager throws exception when the number of pages of the underlying Grid increases
+79  - ScrollBanner widget changes its dimensions when displaying long messages.
+80  - WidgetFactoriesGenerator generates invalid code when a child extends AllWidgetChildProcessor
+83  - CruxCompiler is compiling all previous modules in each module compilation, on a project that contains multiple modules
+91  - ProgressDialog.show method should behave like a stack
+93  - Grid flicks sometimes when screen is resized
+94  - Broken Layout on DynaTabs when open a lot of tabs
+97  - Sometimes Crux Compiler process does not die
+98  - Grid's columns violate the specified width when a cell has a long text
+99  - Style attribute, when being set declaratively, does not work on any Crux or GWT widgets
+102  - CruxCompilerTask should fail if compiler does not execute properly
+103  - NullPointer when using a horizontalPanel inside a widgetColumn
+105  - CruxCompiler is keeping old files on the module output directory
+108  - Parameterized server-side messages are being cached with the first arguments informed
+109  - Invalid Class-Path entry in MANIFEST.MF
+112  - DockPanelFactory does not work with default cell direction
+116  - ModulesLauncher is reading old information about allowed packages for scanners
+121  - Missing source level in CruxShowcase project
+123  - Missing source level in CruxModulesAdmin project
+126  - CruxCompiler fails when the script tag that imports the module is declared inside a template
+
+-----------------------------------------------------------------------------------------------------
+ISSUES - ENHANCEMENT
+-----------------------------------------------------------------------------------------------------
+106  - Create a widget similar to DynaTabs, but to work with widgets as tabs
+114  - Add Grid support so that a column already comes sorted by its type
+128  - SplashScreen could support a configurable delay, to avoid sudden transactions between screens
+60  - Create a white list for packages that must be scanned by ClassScanner
+64  - Add a wizard component
+66  - Create a mechanism for not displaying the "select all rows" checkbox on grids having rowSelection=multipleWithCheckBox
+70  - The event attached on a button is called many times when a user clicks repeated 
+75  - Create a GUI interface to create Crux Applications
+76  - Allow programmatically setting "initial" time in Timer widget
+81  - TextArea with maxLength control
+92  - Create a scroll capable panel with custom scoll buttons and with no scroll bars
+100  - Version identification
+
+=====================================================================================================
 Release 2.2.0
 -----------------------------------------------------------------------------------------------------
 ISSUES - DEFECT
