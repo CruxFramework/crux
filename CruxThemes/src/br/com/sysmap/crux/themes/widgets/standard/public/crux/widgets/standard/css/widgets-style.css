@@ -886,7 +886,7 @@
 .crux-DecoratedButton .leftCell 
 {
 	width:2px;
-	font-size: 2px;
+	font-size: 0px;
 	font-family: monospace;
 	padding: 0px !important;
 	margin: 0px !important;
@@ -918,7 +918,7 @@
 {
 	width:2px;
 	font-family: monospace;
-	font-size: 2px;
+	font-size: 0px;
 	padding: 0px !important;
 	margin: 0px !important;
 	background: url(../img/decorated-button-right.gif) no-repeat top right;
