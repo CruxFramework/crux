@@ -21,11 +21,13 @@ package br.com.sysmap.crux.core.client;
 import br.com.sysmap.crux.core.client.config.CruxClientConfig;
 import br.com.sysmap.crux.core.client.errors.ErrorHandler;
 import br.com.sysmap.crux.core.client.errors.ValidationErrorHandler;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Timer;
 
 
 /**
@@ -68,13 +70,26 @@ public class Crux implements EntryPoint
 	 */
 	protected void stopLoadingProgressBar()
 	{
-		Element loadElement = DOM.getElementById("cruxSplashScreen");
+		final Element loadElement = DOM.getElementById("cruxSplashScreen");
 		if (loadElement != null)
 		{
-			Element parent = loadElement.getParentElement();
+			String transactionDelay = loadElement.getAttribute("_transactionDelay");
+			int delay = 1;
+			if (!StringUtils.isEmpty(transactionDelay))
+			{
+				delay = Integer.parseInt(transactionDelay);
+			}
+			final Element parent = loadElement.getParentElement();
 			if (parent != null)
 			{
-				parent.removeChild(loadElement);
+				new Timer()
+				{
+					@Override
+					public void run()
+					{
+						parent.removeChild(loadElement);
+					}
+				}.schedule(delay);
 			}
 		}
 	}

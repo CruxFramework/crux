@@ -144,6 +144,9 @@
 			<xsl:if test="string-length(@style) > 0">
 				<xsl:attribute name="style" select="@style"/>			
 			</xsl:if>
+			<xsl:if test="string-length(@transactionDelay) > 0">
+				<xsl:attribute name="_transactionDelay" select="@transactionDelay"/>			
+			</xsl:if>
 			<xsl:copy-of select="child::*" copy-namespaces="no"/>
 			<xsl:value-of select="' '"/>
 		</xsl:element> 
