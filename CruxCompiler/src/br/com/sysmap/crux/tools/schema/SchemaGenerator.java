@@ -422,6 +422,7 @@ public class SchemaGenerator
 
 		out.println("<xs:complexType name=\"SplashScreen\">");
 		out.println("<xs:attribute name=\"style\" type=\"xs:string\"/>");
+		out.println("<xs:attribute name=\"transactionDelay\" type=\"xs:integer\"/>");
 		out.println("</xs:complexType>");
 	}
 
