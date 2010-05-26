@@ -15,9 +15,9 @@ BODY
 
 .BorderPanel
 {
-	width: 591px;
-	height: 390px;
-	border: solid 2px #828282;
+	width: 607px;
+	height: 406px;
+	border: solid 0px;
 }
 
 .WelcomePanel
@@ -32,6 +32,7 @@ BODY
 	background-image: url("../img/common-panel-bg.gif");
 	background-repeat: no-repeat;
 	background-position: top left;
+	padding: 10px;
 }
 
 .VersionLabel
@@ -40,8 +41,8 @@ BODY
 	font-family: Verdana,Arial,Helvetica;
 	font-size: 14px;
 	font-weight: bold;
-	margin-right: 34px;
-	margin-top: 63px;
+	margin-right: 42px;
+	margin-top: 70px;
 }
 
 .TitleLabel
