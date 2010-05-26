@@ -617,9 +617,9 @@
 }
 .crux-RollingPanelHPreviousWrapper-disabled .crux-RollingPanelHPrevious, .crux-RollingPanelHNextWrapper-disabled .crux-RollingPanelHNext
 {
-	width:0px;
+	width:1px;
 	border: solid 0px;
-	display: none;
+	visibility: hidden;
 }
 
 /******************************************************************************
