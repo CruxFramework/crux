@@ -10,14 +10,28 @@
 		<c:screen useController="examplesController" title="${quickMsg.appTitle}"/>
 	</q:screenDeclaration>
 	<q:body>		
-		<gwt:dockPanel id="borderPanel" styleName="BorderPanel CommonPanel">
-			<gwt:cell direction="north" height="140" horizontalAlignment="center" verticalAlignment="middle">
-				<gwt:label id="welcomeLabel" text="${quickMsg.examplesMsg}" styleName="TitleLabel"/>
+		<gwt:dockPanel id="borderPanel" styleName="BorderPanel SamplesPanel" spacing="10">
+			<gwt:cell direction="north" horizontalAlignment="center" verticalAlignment="middle" height="50">
+				<gwt:label id="dummySamplesLabel" text=" "/>
 			</gwt:cell>
-			<gwt:cell direction="center" horizontalAlignment="center">
-				<gwt:verticalPanel id="vPanel" spacing="10">
-					<crux:decoratedButton id="showcaseApp" text="${quickMsg.showcaseApp}" onClick="examplesController.showcaseApp" width="250" />
-				</gwt:verticalPanel>				
+			<gwt:cell direction="center" horizontalAlignment="center" verticalAlignment="top">
+				<gwt:horizontalPanel id="hPanel" spacing="40">
+					<gwt:focusPanel id="showcaseFocusPanel" onClick="examplesController.openShowcase" styleName="SampleItem">
+						<gwt:verticalPanel id="showcaseVerticalPanel" horizontalAlignment="center" spacing="3">
+							<gwt:image id="showcaseImage"  url="style/img/icon-showcase.gif"/>
+							<gwt:label id="showcaseLabel" text="${quickMsg.openShowcase}" styleName="LinkLabel"/>
+						</gwt:verticalPanel>
+					</gwt:focusPanel>
+					<gwt:focusPanel id="helloWorldFocusPanel" onClick="examplesController.openHelloWorld" styleName="SampleItem">
+						<gwt:verticalPanel id="helloWorldVerticalPanel" horizontalAlignment="center" spacing="3">
+							<gwt:image id="helloWorldImage" url="style/img/icon-helloworld.gif"/>
+							<gwt:label id="helloWorldLabel" text="${quickMsg.openHelloWorld}" styleName="LinkLabel"/>
+						</gwt:verticalPanel>
+					</gwt:focusPanel>
+				</gwt:horizontalPanel>				
+			</gwt:cell>
+			<gwt:cell direction="south" horizontalAlignment="right" verticalAlignment="bottom" height="50">
+				<crux:decoratedButton id="samplesBackButton" text="${quickMsg.backToMainMenu}" onClick="examplesController.backToMainMenu"/>
 			</gwt:cell>
 		</gwt:dockPanel>
 	</q:body>

@@ -77,7 +77,7 @@ public interface QuickStartMessages extends Messages
 	@DefaultMessage("Project Generated.")
 	String generateAppSuccessTitle();
 
-	@DefaultMessage("Your project was successfuly Generated.")
+	@DefaultMessage("Your project was successfuly generated.")
 	String generateAppSuccessMessage();
 
 	@DefaultMessage("Error generating project.")
@@ -91,9 +91,6 @@ public interface QuickStartMessages extends Messages
 	
 	@DefaultMessage("Select the output directory:")
 	String workspaceDir();
-	
-	@DefaultMessage("Crux ShowCase")
-	String showcaseApp();
 	
 	@DefaultMessage("Select a Crux Application:")
 	String examplesMsg();
@@ -122,7 +119,15 @@ public interface QuickStartMessages extends Messages
 	@DefaultMessage("version {0}")
 	String cruxVersion(String result);
 	
-	@DefaultMessage("Generating project.Please wait...")
+	@DefaultMessage("Generating your project. Please wait...")
 	String waitGeneratingProject();
-
+	
+	@DefaultMessage("Back to Main Menu")
+	String backToMainMenu();
+	
+	@DefaultMessage("Crux Showcase")
+	String openShowcase();
+	
+	@DefaultMessage("Hello World")
+	String openHelloWorld();
 }

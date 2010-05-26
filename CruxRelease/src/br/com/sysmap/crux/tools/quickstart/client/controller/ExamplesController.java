@@ -28,8 +28,20 @@ import com.google.gwt.user.client.Window;
 public class ExamplesController
 {
 	@Expose
-	public void showcaseApp()
+	public void openShowcase()
 	{
 		Window.Location.assign("http://crux-showcase.appspot.com/");
+	}
+	
+	@Expose
+	public void openHelloWorld()
+	{
+		Window.Location.assign("/helloworld/index.html");
+	}	
+	
+	@Expose
+	public void backToMainMenu()
+	{
+		Window.Location.assign("index.html");
 	}
 }

@@ -16,7 +16,7 @@ BODY
 .BorderPanel
 {
 	width: 607px;
-	height: 406px;
+	height: 410px;
 	border: solid 0px;
 }
 
@@ -33,6 +33,16 @@ BODY
 	background-repeat: no-repeat;
 	background-position: top left;
 	padding: 10px;
+	padding-bottom: 15px;
+}
+
+.SamplesPanel
+{
+	background-image: url("../img/crux-samples-bg.gif");
+	background-repeat: no-repeat;
+	background-position: top left;
+	padding: 10px;
+	padding-bottom: 15px;
 }
 
 .VersionLabel
@@ -108,4 +118,20 @@ BODY
 	border-style:solid;
 	border-width:1px 2px 2px 1px;
 	padding:5px;
+}
+
+.SampleItem
+{
+	cursor: pointer;
+}
+
+.LinkLabel
+{
+	color:#6C83C3;
+	font-family:Verdana,Arial,Helvetica;
+	font-size:12px;
+	text-decoration: underline;
+	cursor: pointer;
+	white-space: nowrap;
+	font-weight: bold;
 }
