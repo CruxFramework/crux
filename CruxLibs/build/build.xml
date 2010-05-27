@@ -278,7 +278,6 @@
 			</fileset>
 			<fileset dir="${crux.jars.dir}">
 				<include name="crux-compiler.jar" />
-				<include name="crux-html-tags-compile-task.jar" />
 			</fileset>
 			<fileset dir="${dependencies.jars.dir}">
 				<include name="gwt-dev.jar" />
