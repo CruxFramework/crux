@@ -38,16 +38,16 @@
     </listener>
 
 	<filter>
-		<display-name>ModulesHtmlTagsFilter</display-name>
-		<filter-name>ModulesHtmlTagsFilter</filter-name>
-		<filter-class>br.com.sysmap.crux.module.filter.ModulesHtmlTagsFilter</filter-class>
+		<display-name>ModulesDeclarativeUIFilter</display-name>
+		<filter-name>ModulesDeclarativeUIFilter</filter-name>
+		<filter-class>br.com.sysmap.crux.module.filter.ModulesDeclarativeUIFilter</filter-class>
 		<init-param>
 			<param-name>outputCharset</param-name>
 			<param-value>ISO-8859-1</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
-		<filter-name>ModulesHtmlTagsFilter</filter-name>
+		<filter-name>ModulesDeclarativeUIFilter</filter-name>
 		<url-pattern>*.html</url-pattern>
 	</filter-mapping>
 	<!--antReplacementBlockEnd-->
