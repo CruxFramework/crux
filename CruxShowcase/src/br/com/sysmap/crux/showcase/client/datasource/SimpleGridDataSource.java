@@ -24,7 +24,7 @@ import br.com.sysmap.crux.showcase.client.dto.Contact;
 import br.com.sysmap.crux.showcase.client.remote.SimpleGridServiceAsync;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 @DataSource("simpleGridDataSource")
