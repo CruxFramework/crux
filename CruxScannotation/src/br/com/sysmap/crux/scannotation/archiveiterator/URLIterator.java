@@ -4,7 +4,7 @@ import java.net.URL;
 
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * @author Thiago da Rosa de Bustamante 
  *
  */
 public interface URLIterator

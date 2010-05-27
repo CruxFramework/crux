@@ -10,7 +10,7 @@ import java.util.jar.JarInputStream;
 
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * @author Thiago da Rosa de Bustamante 
  *
  */
 public class JarProtocolIterator extends ZIPProtocolIterator

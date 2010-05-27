@@ -14,7 +14,7 @@ import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * @author Thiago da Rosa de Bustamante 
  *
  */
 public class ZIPProtocolIterator implements URLIterator
