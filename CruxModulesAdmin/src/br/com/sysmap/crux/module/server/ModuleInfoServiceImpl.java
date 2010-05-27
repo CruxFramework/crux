@@ -44,7 +44,7 @@ import br.com.sysmap.crux.module.validation.CruxModuleVersionCheckerInitializer;
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class ModuleInfoServiceImpl implements ModuleInfoService, SessionAware

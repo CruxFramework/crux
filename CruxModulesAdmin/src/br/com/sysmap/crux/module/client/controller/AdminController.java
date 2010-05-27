@@ -18,7 +18,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.URL;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 @Controller("adminController")
@@ -88,7 +88,7 @@ public class AdminController {
 	}
 	
 	/**
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	public static interface AdminScreen extends ScreenWrapper

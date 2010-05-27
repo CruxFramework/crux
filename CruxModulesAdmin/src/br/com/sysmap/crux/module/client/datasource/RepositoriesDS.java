@@ -10,7 +10,7 @@ import br.com.sysmap.crux.module.client.remote.LoginServiceAsync;
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 @DataSource("repositoriesDS")

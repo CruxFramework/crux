@@ -16,7 +16,7 @@ import br.com.sysmap.crux.module.server.scanner.SVNRepositories;
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class LoginServiceImpl implements LoginService, SessionAware

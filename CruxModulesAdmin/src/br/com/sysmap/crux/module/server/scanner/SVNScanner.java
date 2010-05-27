@@ -28,7 +28,7 @@ import br.com.sysmap.crux.module.ModulesAdminMessages;
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class SVNScanner
