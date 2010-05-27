@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.DecoratedTabPanel;
 
 /**
  * Factory for DecoratedTabPanel widgets
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 @DeclarativeFactory(id="decoratedTabPanel", library="gwt")
 public class DecoratedTabPanelFactory extends AbstractTabPanelFactory<DecoratedTabPanel>

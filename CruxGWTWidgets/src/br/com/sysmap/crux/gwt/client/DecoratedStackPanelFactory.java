@@ -28,7 +28,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DecoratedStackPanel;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 @DeclarativeFactory(id="decoratedStackPanel", library="gwt")

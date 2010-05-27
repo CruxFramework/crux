@@ -19,7 +19,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * Helper class for handle date formating.
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 public class DateFormatUtil
 {

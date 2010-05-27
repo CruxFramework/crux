@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.DockLayoutPanel.Direction;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 @DeclarativeFactory(id="splitLayoutPanel", library="gwt")

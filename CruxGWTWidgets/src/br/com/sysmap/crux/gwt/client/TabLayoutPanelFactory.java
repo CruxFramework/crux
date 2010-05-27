@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory for TabLayoutPanel widgets
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 @DeclarativeFactory(id="tabLayoutPanel", library="gwt")
 public class TabLayoutPanelFactory extends CompositeFactory<TabLayoutPanel> 

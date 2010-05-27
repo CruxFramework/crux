@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.TabBar.Tab;
 
 /**
  * Factory for TabBar widgets
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 public abstract class AbstractTabBarFactory<T extends TabBar> extends CompositeFactory<T> 
        implements HasBeforeSelectionHandlersFactory<T>, HasSelectionHandlersFactory<T>

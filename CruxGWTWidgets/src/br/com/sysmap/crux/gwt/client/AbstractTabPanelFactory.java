@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.TabBar.Tab;
 
 /**
  * Factory for TabPanel widgets
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 public abstract class AbstractTabPanelFactory<T extends TabPanel> extends CompositeFactory<T> 
        implements HasAnimationFactory<T>, 

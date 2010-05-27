@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHTML;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  */
 @DeclarativeFactory(id="dialogBox", library="gwt")

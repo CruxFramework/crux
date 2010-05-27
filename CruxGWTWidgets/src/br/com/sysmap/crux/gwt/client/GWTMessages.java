@@ -19,7 +19,7 @@ import com.google.gwt.i18n.client.Messages;
 
 /**
  * Messages for basic widgets
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface GWTMessages extends Messages

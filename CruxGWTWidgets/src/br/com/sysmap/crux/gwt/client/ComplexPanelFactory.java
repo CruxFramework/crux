@@ -24,7 +24,7 @@ import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import com.google.gwt.user.client.ui.ComplexPanel;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public abstract class ComplexPanelFactory <T extends ComplexPanel> extends PanelFactory<T>
