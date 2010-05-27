@@ -41,7 +41,7 @@ import br.com.sysmap.crux.module.CruxModuleMessages;
  * Used to locate the resources inside the modules structure. Used only for development. When this filter is used, you need 
  * to remove CruxFilter and HtmlTagsFilter from your web.xml
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 public class ModulesFilter extends CruxFilter
 {

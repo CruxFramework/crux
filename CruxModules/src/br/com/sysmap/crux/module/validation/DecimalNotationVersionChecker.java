@@ -22,7 +22,7 @@ import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.CruxModuleMessages;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class DecimalNotationVersionChecker implements CruxModuleVersionChecker
@@ -144,7 +144,7 @@ public class DecimalNotationVersionChecker implements CruxModuleVersionChecker
 
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	public static class InvalidVersionFormatException extends RuntimeException

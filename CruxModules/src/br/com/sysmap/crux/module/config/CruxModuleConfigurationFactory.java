@@ -24,7 +24,7 @@ import br.com.sysmap.crux.core.i18n.MessageException;
  * Factory for configuration parameters. Receive an Interface and use it's name to look for 
  * resource bundles in the classpath. Each interface's method is used as key 
  * in that property file.
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  *
  */

@@ -25,7 +25,7 @@ import br.com.sysmap.crux.module.CruxModuleHandler;
 import br.com.sysmap.crux.module.CruxModuleMessages;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class ModulesLauncher
