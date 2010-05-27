@@ -5,7 +5,7 @@ import br.com.sysmap.crux.tools.projectgen.CruxProjectGenerator;
 
 /**
  * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class Test extends TestCase
 {
