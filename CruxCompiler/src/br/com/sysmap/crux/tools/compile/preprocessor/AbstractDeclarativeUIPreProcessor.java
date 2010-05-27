@@ -32,7 +32,7 @@ import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.tools.compile.CruxPreProcessor;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 public abstract class AbstractDeclarativeUIPreProcessor implements CruxPreProcessor
 {

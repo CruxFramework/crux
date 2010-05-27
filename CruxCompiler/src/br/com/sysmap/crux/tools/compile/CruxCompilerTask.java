@@ -25,7 +25,7 @@ import org.apache.tools.ant.types.DirSet;
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 
 public class CruxCompilerTask extends AbstractCruxCompilerTask

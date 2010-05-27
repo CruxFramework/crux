@@ -29,7 +29,7 @@ import org.apache.tools.ant.types.Commandline.Argument;
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 
 public abstract class AbstractCruxCompilerTask extends Task
