@@ -22,7 +22,7 @@ import br.com.sysmap.crux.tools.schema.SchemaGeneratorTask;
 
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class SchemaGeneratorModulesTask extends SchemaGeneratorTask
