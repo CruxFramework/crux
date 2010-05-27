@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.tools.quickstart.client;
 
-import br.com.sysmap.crux.core.client.i18n.Name;
+import br.com.sysmap.crux.core.client.i18n.MessageName;
 
 import com.google.gwt.i18n.client.Messages;
 
@@ -23,7 +23,7 @@ import com.google.gwt.i18n.client.Messages;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-@Name("quickMsg")
+@MessageName("quickMsg")
 public interface QuickStartMessages extends Messages 
 {
 	@DefaultMessage("Generate New Crux Application")

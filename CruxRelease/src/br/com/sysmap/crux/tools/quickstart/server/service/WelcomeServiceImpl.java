@@ -20,7 +20,7 @@ import java.util.PropertyResourceBundle;
 import br.com.sysmap.crux.tools.quickstart.client.remote.WelcomeService;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * @author Thiago da Rosa de Bustamante 
  *
  */
 public class WelcomeServiceImpl implements WelcomeService
