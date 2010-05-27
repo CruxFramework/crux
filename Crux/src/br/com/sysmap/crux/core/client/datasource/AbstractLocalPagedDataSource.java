@@ -18,7 +18,7 @@ package br.com.sysmap.crux.core.client.datasource;
 
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 abstract class AbstractLocalPagedDataSource<R extends DataSourceRecord, E> extends AbstractPagedDataSource<R,E> 

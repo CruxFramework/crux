@@ -37,7 +37,7 @@ import br.com.sysmap.crux.core.utils.StreamUtils;
  * Intercept requests to .html pages and redirect to the correspondent .crux.xml file. Then transform this xml  
  * into the expected .html file. Used only for development.
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 public class DeclarativeUIFilter extends CruxFilter
 {

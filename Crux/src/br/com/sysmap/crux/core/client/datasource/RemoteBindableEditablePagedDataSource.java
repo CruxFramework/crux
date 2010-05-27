@@ -18,7 +18,7 @@ package br.com.sysmap.crux.core.client.datasource;
 import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.EditableDataSourceRecordState;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public abstract class RemoteBindableEditablePagedDataSource<T> extends AbstractRemotePagedDataSource<EditableDataSourceRecord, T>

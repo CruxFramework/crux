@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.Set;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class Module

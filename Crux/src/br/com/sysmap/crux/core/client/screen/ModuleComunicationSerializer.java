@@ -28,7 +28,7 @@ import com.google.gwt.xml.client.XMLParser;
 /**
  * Helper class used to pass parameters between different crux windows.
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class ModuleComunicationSerializer

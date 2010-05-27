@@ -17,7 +17,7 @@ package br.com.sysmap.crux.core.rebind.screen;
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 public class EventFactory  
 {

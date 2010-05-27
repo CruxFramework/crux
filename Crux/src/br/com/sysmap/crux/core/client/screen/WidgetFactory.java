@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  *  &lt;span id="myWidgetId" _type="textBox" 
  *                           _onclick="myControlClass.myethod" &gt; 
  *  &lt;/span&gt;
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 public abstract class WidgetFactory <T extends Widget>
 {
@@ -53,7 +53,7 @@ public abstract class WidgetFactory <T extends Widget>
 	
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 * @param <W>
 	 */

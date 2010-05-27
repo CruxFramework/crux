@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

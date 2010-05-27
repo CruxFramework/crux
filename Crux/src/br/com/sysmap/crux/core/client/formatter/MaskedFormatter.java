@@ -18,7 +18,7 @@ package br.com.sysmap.crux.core.client.formatter;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface MaskedFormatter extends Formatter

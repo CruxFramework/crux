@@ -28,7 +28,7 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class TopContextHandler implements ContextHandler
@@ -111,7 +111,7 @@ public class TopContextHandler implements ContextHandler
 	}
 
 	/**
-	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
 	public static class TopContextHanlderController implements EventClientHandlerInvoker

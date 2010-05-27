@@ -24,7 +24,7 @@ import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
 import com.google.gwt.event.logical.shared.HasShowRangeHandlers;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface HasShowRangeHandlersFactory<T extends HasShowRangeHandlers<?>>

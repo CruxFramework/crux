@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Tool for stream manipulation
- * @author Gessé Dafé <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class StreamUtils
 {

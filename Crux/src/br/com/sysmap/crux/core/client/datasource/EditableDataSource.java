@@ -20,7 +20,7 @@ import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.Editab
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface EditableDataSource extends DataSource<EditableDataSourceRecord>

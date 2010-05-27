@@ -20,8 +20,8 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
- * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
+ * @author Thiago da Rosa de Bustamante
+ * @author Gessé S. F. Dafé
  */
 public interface LocaleResolver 
 {

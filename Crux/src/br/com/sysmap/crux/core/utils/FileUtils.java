@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @author Gessé Dafé - <code>gesse@sysmap.com.br</code>
+ * @author Gessé S. F. Dafé - <code>gesse@sysmap.com.br</code>
  */
 public class FileUtils
 {

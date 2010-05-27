@@ -57,7 +57,7 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class WidgetFactoriesGenerator extends AbstractGenerator
@@ -895,7 +895,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	private static class AllowedOccurences
@@ -906,7 +906,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	private static class EventBinderData

@@ -29,7 +29,7 @@ import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public abstract class AbstractGenerator extends Generator

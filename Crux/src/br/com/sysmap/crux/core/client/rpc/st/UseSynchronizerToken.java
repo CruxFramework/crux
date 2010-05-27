@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * This pattern helps to avoid the "Duplicated Request" problem and to prevent 
  * CSRF attacks.
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 @Retention(RetentionPolicy.RUNTIME)

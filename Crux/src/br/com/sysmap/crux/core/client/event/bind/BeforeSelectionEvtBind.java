@@ -25,7 +25,7 @@ import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
 
 /**
  * Helper Class for beforeSelection events binding
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class BeforeSelectionEvtBind implements EvtBinder<HasBeforeSelectionHandlers<?>>

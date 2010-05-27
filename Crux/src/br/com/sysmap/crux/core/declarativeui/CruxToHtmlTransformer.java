@@ -62,7 +62,7 @@ import br.com.sysmap.crux.core.utils.StreamUtils;
 
 /**
  * Generates HTML output based on Crux widget tags
- * @author Gessé Dafé <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class CruxToHtmlTransformer
 {

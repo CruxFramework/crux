@@ -18,7 +18,7 @@ package br.com.sysmap.crux.core.declarativeui;
 import org.w3c.dom.Document;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface CruxXmlPreProcessor

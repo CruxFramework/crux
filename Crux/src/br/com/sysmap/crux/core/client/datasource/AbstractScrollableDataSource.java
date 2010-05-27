@@ -23,7 +23,7 @@ import br.com.sysmap.crux.core.client.ClientMessages;
 import com.google.gwt.core.client.GWT;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 abstract class AbstractScrollableDataSource<R extends DataSourceRecord, E>

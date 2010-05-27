@@ -19,7 +19,7 @@ import javax.servlet.ServletContext;
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface ServiceFactory 

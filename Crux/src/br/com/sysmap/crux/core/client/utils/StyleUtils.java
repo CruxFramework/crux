@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.UIObject;
 /**
  * Contains common operations for handling styles on HTML elements.
  *  
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class StyleUtils
 {

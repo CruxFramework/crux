@@ -20,7 +20,7 @@ package br.com.sysmap.crux.core.client.screen;
  * to avoid reference to widgets on screen made with strings. With a wrapper, you can 
  * invoke an accessor method for each widget. 
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface ScreenWrapper

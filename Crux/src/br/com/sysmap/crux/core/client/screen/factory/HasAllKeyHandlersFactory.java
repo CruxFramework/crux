@@ -26,7 +26,7 @@ import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
 import com.google.gwt.event.dom.client.HasAllKeyHandlers;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface HasAllKeyHandlersFactory<T extends HasAllKeyHandlers>
