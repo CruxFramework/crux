@@ -10,7 +10,6 @@
 	<property name="html.tags.project" value="../CruxHtmlTags" />
 	<property name="html.tags.compile.project" value="../CruxHTMLTagsCompileTask" />
 	<property name="modules.project" value="../CruxModules" />
-	<property name="modules.jars.dir" value="${modules.project}/dist" />
 	<property name="modules.compiler.project" value="../CruxModulesCompiler" />
 	<property name="modules.compiler.dist" value="${modules.compiler.project}/dist" />
 	<property name="release.project" value="../CruxRelease" />
@@ -266,11 +265,8 @@
 				<include name="crux-themes.jar" />
 				<include name="crux-gwt-widgets.jar" />
 				<include name="crux-widgets.jar" />
-			</fileset>
-			<fileset dir="${modules.jars.dir}">
 				<include name="crux-modules.jar" />
 			</fileset>
-			
 		</copy>
 		<copy todir="${modules.admin.project}/build/lib" >
 			<fileset dir="${crux.jars.dir}">
