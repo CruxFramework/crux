@@ -1,10 +1,10 @@
 package br.com.sysmap.crux.module.client;
 
-import br.com.sysmap.crux.core.client.i18n.Name;
+import br.com.sysmap.crux.core.client.i18n.MessageName;
 
 import com.google.gwt.i18n.client.Messages;
 
-@Name("adminMessages")
+@MessageName("adminMessages")
 public interface AdminMessages extends Messages
 {
 	@DefaultMessage("Module name not informed")
