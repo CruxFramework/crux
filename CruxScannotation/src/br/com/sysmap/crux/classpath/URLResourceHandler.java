@@ -20,7 +20,7 @@ import java.net.URL;
 import br.com.sysmap.crux.scannotation.archiveiterator.DirectoryIteratorFactory;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface URLResourceHandler

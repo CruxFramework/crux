@@ -22,7 +22,7 @@ import br.com.sysmap.crux.scannotation.archiveiterator.DirectoryIteratorFactory;
 import br.com.sysmap.crux.scannotation.archiveiterator.FileProtocolIteratorFactory;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class FileURLResourceHandler extends AbstractURLResourceHandler

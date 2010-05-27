@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class URLResourceHandlersRegistry
