@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * A pager which knows the total number of pages.  
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class RandomPager extends NavigationButtonsPager
 {

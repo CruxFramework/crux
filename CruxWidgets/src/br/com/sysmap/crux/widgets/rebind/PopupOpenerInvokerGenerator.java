@@ -28,7 +28,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  * Generator for PopupOpenerInvoker objects.
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerator
 {

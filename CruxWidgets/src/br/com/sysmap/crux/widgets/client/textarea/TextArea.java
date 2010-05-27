@@ -34,7 +34,7 @@ import com.google.gwt.user.client.Timer;
 
 /**
  * A simple TextArea that obeys the <code>maxLength</code> attribute.
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class TextArea extends com.google.gwt.user.client.ui.TextArea implements HasPasteHandlers
 {
@@ -140,7 +140,7 @@ public class TextArea extends com.google.gwt.user.client.ui.TextArea implements 
 	
 	/**
 	 * Truncates the text of the widget when it exceeds its maxLength.
-	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 * @author Gessé S. F. Dafé
 	 */
 	private static class MaxLengthHandler implements KeyDownHandler, ChangeHandler, PasteHandler
 	{

@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.HasText;
 
 /**
  * A decorated dialog box
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasText
 {
@@ -59,7 +59,7 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 
 	/**
 	 * A caption for the dialog box, able to detect mouse events
-	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 * @author Gessé S. F. Dafé
 	 */
 	public interface Caption extends HasAllMouseHandlers
 	{
@@ -67,7 +67,7 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 
 	/**
 	 * A caption for the dialog box, able to detect mouse events
-	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 * @author Gessé S. F. Dafé
 	 */
 	private class CaptionImpl extends HTML implements Caption
 	{
@@ -86,7 +86,7 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 
 	/**
 	 * A mouse handler for show/hide the contents of the dialog box while it is being dragged
-	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 * @author Gessé S. F. Dafé
 	 */
 	private class MouseHandler implements MouseDownHandler, MouseUpHandler, MouseMoveHandler
 	{

@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class FlapController extends Composite
 {

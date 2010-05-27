@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Modified version of GWT TabPanel that uses a RollingPanel wrapping its TabBar.
  * 
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 public class RollingTabPanel extends Composite implements HasAnimation, HasBeforeSelectionHandlers<Integer>

@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Factory for Title Panel widget
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 @DeclarativeFactory(id="titlePanel", library="widgets")
 public class TitlePanelFactory extends AbstractTitlePanelFactory<TitlePanel>

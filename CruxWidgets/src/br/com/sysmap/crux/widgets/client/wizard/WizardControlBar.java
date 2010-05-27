@@ -32,7 +32,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 public class WizardControlBar extends AbstractWizardNavigationBar
@@ -515,7 +515,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
     }
 
 	/**
-	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
 	public static class WizardCommand extends Composite implements Comparable<WizardCommand>, HasWizardCommandHandlers

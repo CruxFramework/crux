@@ -18,7 +18,7 @@ package br.com.sysmap.crux.widgets.client.wizard;
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 class WidgetWizardProxy implements WizardProxy
@@ -116,7 +116,7 @@ class WidgetWizardProxy implements WizardProxy
     }
 	
 	/**
-	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
 	static class WizardControlBarWidgetProxy implements WizardControlBarProxy
@@ -240,7 +240,7 @@ class WidgetWizardProxy implements WizardProxy
 	}
 	
 	/**
-	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
 	static class WizardCommandWidgetProxy implements WizardCommandProxy

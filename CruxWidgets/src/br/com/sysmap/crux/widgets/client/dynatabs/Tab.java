@@ -25,7 +25,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 /**
  * TODO - Gessé - Comment
  * 
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class Tab extends AbstractTab implements HasBeforeFocusAndBeforeBlurHandlers
 {

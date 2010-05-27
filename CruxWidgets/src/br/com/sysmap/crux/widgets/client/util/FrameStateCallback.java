@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.widgets.client.util;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface FrameStateCallback

@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class StackMenuItem extends Composite implements HasClickHandlers
 {
@@ -249,7 +249,7 @@ public class StackMenuItem extends Composite implements HasClickHandlers
 
 /**
  * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 class StackMenuItemCaption extends Composite implements HasClickHandlers
 {

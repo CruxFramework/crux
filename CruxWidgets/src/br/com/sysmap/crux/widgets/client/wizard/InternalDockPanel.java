@@ -19,7 +19,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.DockPanel;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 public class InternalDockPanel extends DockPanel

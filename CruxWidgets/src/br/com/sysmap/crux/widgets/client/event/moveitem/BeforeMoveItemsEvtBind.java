@@ -24,7 +24,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Binder for BeforeMoveItemsEvent handlers
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class BeforeMoveItemsEvtBind implements EvtBinder<HasBeforeMoveItemsHandlers>
 {

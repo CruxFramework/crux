@@ -23,7 +23,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class RowEventsBind extends EvtBind
 {

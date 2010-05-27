@@ -30,7 +30,7 @@ import br.com.sysmap.crux.widgets.client.js.JSWindow;
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 public class CruxInternalWizardPageController extends DynaTabsControllerInvoker implements EventClientHandlerInvoker

@@ -31,7 +31,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Factory for Timer widget
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 @DeclarativeFactory(id="timer", library="widgets")
 public class TimerFactory extends WidgetFactory<Timer>

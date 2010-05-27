@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Multi-frame aware controller for showing the progress dialog
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 @Global
 @Controller(value="__progressDialog", lazy=false)

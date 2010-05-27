@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Composite;
 /**
  * TODO - Gessé - Comment
  * 
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class DynaTabs extends Composite
 {

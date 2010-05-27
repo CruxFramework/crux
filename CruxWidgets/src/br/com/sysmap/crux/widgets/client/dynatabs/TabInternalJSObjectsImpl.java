@@ -22,7 +22,7 @@ import com.google.gwt.dom.client.IFrameElement;
 
 /**
  * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public class TabInternalJSObjectsImpl extends TabInternalJSObjects
 {

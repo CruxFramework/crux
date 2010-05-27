@@ -28,7 +28,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapperGenerator
 {

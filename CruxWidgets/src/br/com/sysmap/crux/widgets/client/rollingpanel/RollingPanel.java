@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentC
 import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 public class RollingPanel extends Composite implements InsertPanel
@@ -645,7 +645,7 @@ public class RollingPanel extends Composite implements InsertPanel
     }
 	
 	/**
-	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
 	class HorizontalNavButtonEvtHandler implements MouseDownHandler, MouseUpHandler
@@ -698,7 +698,7 @@ public class RollingPanel extends Composite implements InsertPanel
 	}
 
 	/**
-	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
 	class VerticalNavButtonEvtHandler extends HorizontalNavButtonEvtHandler

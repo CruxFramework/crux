@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Base class for implementing grids. 
  * All subclasses must invoke the method <code>render()</code> in their constructors.
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public abstract class AbstractGrid<R extends Row> extends Composite implements HasRowClickHandlers, HasRowDoubleClickHandlers, HasRowRenderHandlers {	
 	

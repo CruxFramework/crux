@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory for TabPanel widgets
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  */
 @DeclarativeFactory(id="rollingTabPanel", library="widgets")
 public class RollingTabPanelFactory extends CompositeFactory<RollingTabPanel> 

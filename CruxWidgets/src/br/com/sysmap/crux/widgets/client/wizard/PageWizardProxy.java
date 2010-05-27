@@ -22,7 +22,7 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 class PageWizardProxy implements WizardProxy
@@ -150,7 +150,7 @@ class PageWizardProxy implements WizardProxy
     }
 	
 	/**
-	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
 	static class WizardControlBarPageProxy implements WizardControlBarProxy
@@ -279,7 +279,7 @@ class PageWizardProxy implements WizardProxy
 	}
 
 	/**
-	 * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
 	static class WizardCommandPageProxy implements WizardCommandProxy

@@ -18,7 +18,7 @@ package br.com.sysmap.crux.widgets.client.paging;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 
 /**
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 @DeclarativeFactory(id="randomPager", library="widgets")
 public class RandomPagerFactory extends AbstractPagerFactory<RandomPager>

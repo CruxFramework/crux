@@ -25,7 +25,7 @@ import com.google.gwt.xml.client.XMLParser;
 
 /**
  * A simple DTO to transport the message box attributes across frames
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 @SerializableName("messageBoxData")	
 public class MessageBoxData implements CruxSerializable

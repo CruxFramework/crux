@@ -22,7 +22,7 @@ import com.google.gwt.event.shared.HasHandlers;
  * Source for PasteEvents. All classes that implements this interface must explicitly invoke 
  * <code>br.com.sysmap.crux.widgets.client.event.paste.PasteRegisterFactory.getPasteRegister().addNativeHandlerForPaste(this, this.getElement());</code> 
  * once in its constructor. 
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public interface HasPasteHandlers extends HasHandlers 
 {

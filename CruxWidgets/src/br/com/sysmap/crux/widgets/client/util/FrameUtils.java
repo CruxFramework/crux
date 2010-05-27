@@ -25,14 +25,14 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
 
 /**
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class FrameUtils
 {
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	public static interface FrameStateMonitor
@@ -65,7 +65,7 @@ public class FrameUtils
 	
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	public static class FrameStateMonitorOperaImpl extends FrameStateMonitorImpl
@@ -79,7 +79,7 @@ public class FrameUtils
 	
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	public static class FrameStateMonitorSafariImpl extends FrameStateMonitorImpl
@@ -93,7 +93,7 @@ public class FrameUtils
 
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	static abstract class FrameStateMonitorImpl implements FrameStateMonitor
@@ -181,7 +181,7 @@ public class FrameUtils
 	
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	public static class FrameStateMonitorIEImpl implements FrameStateMonitor
@@ -233,7 +233,7 @@ public class FrameUtils
 	
 	/**
 	 * 
-	 * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	public static class FrameStateMonitorMozillaImpl implements FrameStateMonitor

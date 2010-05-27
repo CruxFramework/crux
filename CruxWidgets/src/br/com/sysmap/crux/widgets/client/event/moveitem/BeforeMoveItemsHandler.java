@@ -19,7 +19,7 @@ import com.google.gwt.event.shared.EventHandler;
 
 /**
  * Handler for MoveItemsEvent
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 public interface BeforeMoveItemsHandler extends EventHandler
 {

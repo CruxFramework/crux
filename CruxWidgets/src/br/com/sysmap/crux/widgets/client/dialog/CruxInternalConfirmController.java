@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante
  *
  */
 @Global

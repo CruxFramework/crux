@@ -24,7 +24,7 @@ import com.google.gwt.xml.client.XMLParser;
 
 /**
  * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gessé S. F. Dafé
  */
 @SerializableName("progressDialogData")	
 public class ProgressDialogData implements CruxSerializable
