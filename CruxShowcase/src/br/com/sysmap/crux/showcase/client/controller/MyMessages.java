@@ -1,10 +1,10 @@
 package br.com.sysmap.crux.showcase.client.controller;
 
-import br.com.sysmap.crux.core.client.i18n.Name;
+import br.com.sysmap.crux.core.client.i18n.MessageName;
 
 import com.google.gwt.i18n.client.Messages;
 
-@Name("myMessages")
+@MessageName("myMessages")
 public interface MyMessages extends Messages
 {
 	@DefaultMessage("I18N on page Declaratively")
