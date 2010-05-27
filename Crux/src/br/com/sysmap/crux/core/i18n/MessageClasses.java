@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import br.com.sysmap.crux.core.client.i18n.Name;
+import br.com.sysmap.crux.core.client.i18n.MessageName;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
@@ -32,20 +32,35 @@ import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import com.google.gwt.i18n.client.LocalizableResource;
 
 /**
- * Class for retrieve the messages interface, based on the annotation Name or ont the class SimpleName, if annotation not present
+ * Class for retrieve the messages interface, based on the annotation MessageName or on the class SimpleName, if annotation not present
  * @author Thiago Bustamante
  */
 public class MessageClasses 
 {
+	private static final Lock lock = new ReentrantLock();
 	private static final Log logger = LogFactory.getLog(MessageClasses.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
-	private static Map<String, Class<? extends LocalizableResource>> messagesClasses = null;
-	private static final Lock lock = new ReentrantLock();	
+	private static Map<String, Class<? extends LocalizableResource>> messagesClasses = null;	
+	
+	/**
+	 * Return the controller that implements the interface informed.
+	 * @param interfaceName
+	 * @return
+	 */
+	public static Class<?> getMessageClass(String message)
+	{
+		if (messagesClasses == null)
+		{
+			initialize();
+		}
+		return messagesClasses.get(message);
+	}
+	
 	/**
 	 * Initialise the ScreenResourceResolverScanner factory
 	 * @param urls
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void initialize()
 	{
 		if (messagesClasses == null)
@@ -62,14 +77,23 @@ public class MessageClasses
 						for (String message : messagesNames) 
 						{
 							Class<?> messageClass = Class.forName(message);
-							Name annot = messageClass.getAnnotation(Name.class);
-							if (annot!= null)
+							MessageName messageNameAnnot = messageClass.getAnnotation(MessageName.class);
+							br.com.sysmap.crux.core.client.i18n.Name nameAnnot = messageClass.getAnnotation(br.com.sysmap.crux.core.client.i18n.Name.class);
+							if (messageNameAnnot!= null)
 							{
-								if (messagesClasses.containsKey(annot.value()))
+								if (messagesClasses.containsKey(messageNameAnnot.value()))
 								{
-									throw new CruxGeneratorException(messages.messagesClassesDuplicatedMessageKey(annot.value()));
+									throw new CruxGeneratorException(messages.messagesClassesDuplicatedMessageKey(messageNameAnnot.value()));
 								}
-								messagesClasses.put(annot.value(), (Class<? extends LocalizableResource>) messageClass);
+								messagesClasses.put(messageNameAnnot.value(), (Class<? extends LocalizableResource>) messageClass);
+							}
+							else if (nameAnnot!= null)
+							{
+								if (messagesClasses.containsKey(nameAnnot.value()))
+								{
+									throw new CruxGeneratorException(messages.messagesClassesDuplicatedMessageKey(nameAnnot.value()));
+								}
+								messagesClasses.put(nameAnnot.value(), (Class<? extends LocalizableResource>) messageClass);
 							}
 							else
 							{
@@ -97,19 +121,5 @@ public class MessageClasses
 				lock.unlock();
 			}
 		}
-	}
-	
-	/**
-	 * Return the controller that implements the interface informed.
-	 * @param interfaceName
-	 * @return
-	 */
-	public static Class<?> getMessageClass(String message)
-	{
-		if (messagesClasses == null)
-		{
-			initialize();
-		}
-		return messagesClasses.get(message);
 	}
 }

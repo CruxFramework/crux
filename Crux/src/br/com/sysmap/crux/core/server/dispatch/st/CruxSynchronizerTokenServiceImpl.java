@@ -34,7 +34,7 @@ import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.user.server.Base64Utils;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * @author Thiago da Rosa de Bustamante 
  *
  */
 public class CruxSynchronizerTokenServiceImpl implements CruxSynchronizerTokenService, CruxSynchronizerTokenHandler

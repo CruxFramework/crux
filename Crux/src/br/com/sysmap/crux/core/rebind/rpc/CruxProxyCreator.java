@@ -47,7 +47,16 @@ import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.user.rebind.rpc.ProxyCreator;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * This class overrides the GWT Proxy Creator to add a wrapper class around the original generated class. 
+ * 
+ * <p>
+ * The wrapper has two goals:<br>
+ *  - Point all requests that does not inform an endPoint to the Crux FrontController Servlet.<br>
+ *  - Handle security issues like SynchronizationToken for sensitive methods.  
+ * </p>
+ * 
+ * 
+ * @author Thiago da Rosa de Bustamante 
  *
  */
 public class CruxProxyCreator extends ProxyCreator

@@ -23,7 +23,7 @@ import br.com.sysmap.crux.core.server.dispatch.RequestAware;
 import br.com.sysmap.crux.core.server.dispatch.SessionAware;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * @author Thiago da Rosa de Bustamante 
  * 
  */
 public interface CruxSynchronizerTokenHandler extends SessionAware, RequestAware

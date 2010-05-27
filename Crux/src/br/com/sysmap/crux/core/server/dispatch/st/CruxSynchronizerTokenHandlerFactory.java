@@ -18,7 +18,7 @@ package br.com.sysmap.crux.core.server.dispatch.st;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * @author Thiago da Rosa de Bustamante 
  *
  */
 public class CruxSynchronizerTokenHandlerFactory

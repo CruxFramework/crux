@@ -20,7 +20,16 @@ import com.google.gwt.user.rebind.rpc.ProxyCreator;
 import com.google.gwt.user.rebind.rpc.ServiceInterfaceProxyGenerator;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * This class overrides, through CruxProxyCreator, the GWT Service Generator to add a wrapper class around the original generated class. 
+ * 
+ * <p>
+ * The wrapper has two goals:<br>
+ *  - Point all requests that does not inform an endPoint to the Crux FrontController Servlet.<br>
+ *  - Handle security issues like SynchronizationToken for sensitive methods.  
+ * </p>
+ * 
+ * 
+ * @author Thiago da Rosa de Bustamante 
  *
  */
 public class CruxServiceGenerator extends ServiceInterfaceProxyGenerator

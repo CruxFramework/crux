@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.server.dispatch.st;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * @author Thiago da Rosa de Bustamante 
  *
  */
 public class InvalidTokenException extends Exception

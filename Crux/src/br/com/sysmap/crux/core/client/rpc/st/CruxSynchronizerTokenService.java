@@ -18,7 +18,7 @@ package br.com.sysmap.crux.core.client.rpc.st;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>thiago@sysmap.com.br</code>
+ * @author Thiago da Rosa de Bustamante 
  *
  */
 public interface CruxSynchronizerTokenService extends RemoteService

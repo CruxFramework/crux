@@ -21,12 +21,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * This annotation can be used to give a name to a message interface. That name is used
+ * to make declarative references to the annotated message interface.
+ *
+ * 
  * @author Thiago da Rosa de Bustamante
- * @deprecated - Use MessageName instead.
+ *
  */
-@Deprecated
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Name {
+public @interface MessageName {
 	String value();
 }
