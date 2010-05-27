@@ -34,7 +34,7 @@ import br.com.sysmap.crux.tools.quickstart.client.dto.ProjectInfo;
 import br.com.sysmap.crux.tools.quickstart.client.remote.QuickStartService;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 public class QuickStartServiceImpl implements QuickStartService

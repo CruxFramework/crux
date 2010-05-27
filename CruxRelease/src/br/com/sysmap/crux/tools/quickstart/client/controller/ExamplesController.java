@@ -21,7 +21,7 @@ import br.com.sysmap.crux.core.client.controller.Expose;
 import com.google.gwt.user.client.Window;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 @Controller("examplesController")

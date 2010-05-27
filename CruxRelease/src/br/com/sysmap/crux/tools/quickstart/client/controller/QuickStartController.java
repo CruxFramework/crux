@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 @Controller("quickStartController")

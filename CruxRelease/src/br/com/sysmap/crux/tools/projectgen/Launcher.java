@@ -32,7 +32,7 @@ import org.mortbay.jetty.webapp.WebAppContext;
 import br.com.sysmap.crux.core.utils.FileUtils;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 public class Launcher

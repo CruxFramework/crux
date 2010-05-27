@@ -27,7 +27,7 @@ import br.com.sysmap.crux.tools.quickstart.client.remote.WelcomeServiceAsync;
 import br.com.sysmap.crux.tools.quickstart.client.screen.OverviewScreen;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 @Controller("overviewController")

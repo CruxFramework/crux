@@ -18,7 +18,7 @@ package br.com.sysmap.crux.tools.quickstart.client.remote;
 import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 public interface WelcomeService extends RemoteService

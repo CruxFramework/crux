@@ -20,7 +20,7 @@ import br.com.sysmap.crux.core.client.i18n.Name;
 import com.google.gwt.i18n.client.Messages;
 
 /**
- * @author Thiago da Rosa de Bustamante - <code>tr_bustamante@yahoo.com.br</code>
+ * @author Thiago da Rosa de Bustamante -
  *
  */
 @Name("quickMsg")
