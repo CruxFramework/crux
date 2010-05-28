@@ -1,9 +1,0 @@
-<t:template 
-    xmlns:t="http://www.sysmap.com.br/templates"
-	xmlns:s="http://www.sysmap.com.br/templates/showcase"
-	library="showcase" useController="sensitiveMethodSourcesController"
->
-	<s:sources/>
-	<s:source id="serviceInterfaceSource" onLoadSource="sensitiveMethodSourcesController.loadServiceSource" title="View Service Interface"/>
-	<s:source id="ServiceImplementationSource" onLoadSource="sensitiveMethodSourcesController.loadServiceImplSource" title="View Service Implementation"/>
-</t:template>
