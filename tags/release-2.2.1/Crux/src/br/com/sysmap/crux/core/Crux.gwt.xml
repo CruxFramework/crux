@@ -1,0 +1,95 @@
+<module>
+
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+    <inherits name="com.google.gwt.http.HTTP"/>
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='com.google.gwt.xml.XML'/>
+  
+	<!-- Specify the app entry point class.                   -->
+	<entry-point class='br.com.sysmap.crux.core.client.Crux'/>
+
+	<!-- Servlet used to handle RPC event calls.              -->
+	<servlet path="/crux.rpc" class="br.com.sysmap.crux.core.server.dispatch.RemoteServiceServlet"/>
+
+	<!-- Specify the generator for registered client handlers.-->
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientEventHandlersGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers" />
+	</generate-with>
+
+	<!-- Specify the generator for registered widgets.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredWidgetFactoriesGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories" />
+	</generate-with>
+	
+	<generate-with class="br.com.sysmap.crux.core.rebind.WidgetFactoriesGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.screen.WidgetFactory" />
+	</generate-with>
+
+	<!-- Specify the generator for registered formatters.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientFormattersGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters" />
+	</generate-with>
+	
+	<!-- Specify the generator for registered datasources.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientDataSourcesGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.datasource.RegisteredDataSources" />
+	</generate-with>
+
+	<!-- Specify the generator for registered module serializers .-->
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredCruxSerializablesGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.screen.RegisteredCruxSerializables" />
+	</generate-with>
+
+	<!-- Specify the generator for screen wrappers.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.ScreenWrapperGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.screen.ScreenWrapper" />
+	</generate-with>
+
+	<!-- Specify the generator for resolve declared i18n messages .-->
+	<generate-with class="br.com.sysmap.crux.core.rebind.DeclaredI18NMessagesGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages" />
+	</generate-with>
+
+	<!-- Specify the generator for client configurations .-->
+	<generate-with class="br.com.sysmap.crux.core.rebind.CruxClientConfigGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.config.CruxClientConfig" />
+	</generate-with>
+
+	<!-- Specify the default implementation to ContextHandler.-->
+	<replace-with class="br.com.sysmap.crux.core.client.context.CookieContextHandler">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.context.ContextHandler" />
+	</replace-with>
+
+	<!-- Specify the default implementation to ErrorHandler.-->
+	<replace-with class="br.com.sysmap.crux.core.client.errors.ErrorHandlerImpl">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.errors.ErrorHandler" />
+	</replace-with>
+
+	<!-- Specify the default implementation to ValidationErrorHandler.-->
+	<replace-with class="br.com.sysmap.crux.core.client.errors.ErrorHandlerImpl">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.errors.ValidationErrorHandler" />
+	</replace-with>
+
+	<!-- Specify the generator for context wrappers.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.ContextGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.context.Context" />
+	</generate-with>
+
+	<!-- Specify the generator for invoker wrappers.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.InvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.controller.Invoker" />
+	</generate-with>
+	
+	<!-- Specify the generator for RPC stubs.     -->
+
+	<generate-with class="br.com.sysmap.crux.core.rebind.rpc.CruxServiceGenerator">
+		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService"/>
+	</generate-with>
+	
+	<!-- Specify ie6 implementation for screen blocker -->
+	<replace-with
+    	class="br.com.sysmap.crux.core.client.screen.ScreenBlockerIE6">
+    	<when-type-is class="br.com.sysmap.crux.core.client.screen.ScreenBlocker" />
+   		<when-property-is name="user.agent" value="ie6" />
+    </replace-with>
+</module>

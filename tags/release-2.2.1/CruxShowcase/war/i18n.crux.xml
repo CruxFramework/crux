@@ -1,0 +1,38 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
+
+	<head>
+		<title>I18N</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="i18nController" onLoad="i18nController.onLoad">
+			<b:dockPanel id="centeringPanel" width="100%" height="130">
+				<b:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
+					<b:label id="localeLabel" />
+				</b:cell>
+				<b:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
+					<b:listBox id="locales" >
+						<b:item label="English" value=" "/>
+						<b:item label="Portuguese" value="pt_BR"/>
+					</b:listBox>
+				</b:cell>
+				<b:cell direction="north" horizontalAlignment="center" verticalAlignment="middle">
+					<a:decoratedButton id="button" text="${myMessages.myButton}" onClick="i18nController.clickButton"/>
+				</b:cell>
+				<b:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
+					<b:label id="i18nLabel" text="${myMessages.message1}" />
+				</b:cell>
+			</b:dockPanel>
+			
+			<s:i18nSources/>
+		</c:screen>
+	</body>
+</html>

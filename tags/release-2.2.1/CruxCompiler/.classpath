@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Crux"/>
+	<classpathentry kind="lib" path="lib/ant.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CruxScannotation"/>
+	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
+	<classpathentry kind="lib" path="lib/jericho-html.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

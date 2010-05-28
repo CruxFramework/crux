@@ -1,0 +1,9 @@
+<t:template 
+    xmlns:t="http://www.sysmap.com.br/templates"
+	xmlns:s="http://www.sysmap.com.br/templates/showcase"
+	library="showcase" useController="i18nSourcesController"
+>
+	<s:sources/>
+	<s:source id="messagesSource" onLoadSource="i18nSourcesController.loadMessagesSource" title="View Messages source"/>
+	<s:source id="propertiesSource" onLoadSource="i18nSourcesController.loadPropertiesSource" title="View pt_BR.properties source"/>
+</t:template>

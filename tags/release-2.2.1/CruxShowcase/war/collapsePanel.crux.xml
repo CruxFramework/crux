@@ -1,0 +1,43 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"
+	xmlns:s="http://www.sysmap.com.br/templates/showcase"
+>
+
+	<head>
+		<title>Collapse Panel</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="collapsePanelController"/>
+	
+		<b:dockPanel id="centeringPanel" width="100%" spacing="5">
+			
+			<b:cell horizontalAlignment="center" direction="north">
+				<a:collapsePanel id="collapsePanel" onBeforeExpand="collapsePanelController.onBeforeExpand" onBeforeCollapse="collapsePanelController.onBeforeCollapse" width="700" height="80" >
+					<a:title>
+						<a:text>Click the "-" icon to hide the contents</a:text>
+					</a:title>
+					<a:body>
+						<a:widget>
+							<b:dockPanel id="internalCentering" width="100%">
+								<b:cell direction="center" horizontalAlignment="center">
+									<b:image id="image" url="style/img/crux-logo.gif"/>
+								</b:cell>							
+							</b:dockPanel>
+						</a:widget>
+					</a:body>
+				</a:collapsePanel>
+			</b:cell>
+		
+		</b:dockPanel>
+		
+		<s:sources/>
+	</body>
+</html>

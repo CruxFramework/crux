@@ -1,0 +1,40 @@
+<html
+	xmlns="http://www.w3.org/1999/xhtml"  
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test</title>
+	</head>
+
+	<body>
+		<crux:decoratedTabPanel id="myDecoratedTabPanel" animationEnabled="false" visibleTab="5">
+			<crux:panel tabEnabled="true" tabWordWrap="true"  onKeyPress="action">
+				<crux:tabHtml>
+					<code>Here goes HTML</code>
+				</crux:tabHtml>
+				<crux:panelContent>
+					<crux:button id="anyWidgetHere"/>
+				</crux:panelContent>
+			</crux:panel>
+			
+			<crux:panel>
+				<crux:tabText>Here goes text</crux:tabText>
+				<crux:panelContent>
+					<crux:button id="anotherWidget"/>
+				</crux:panelContent>			
+			</crux:panel>
+			
+			<crux:panel>
+				<crux:tabWidget>
+					<crux:anchor id="aWidgetAsTitle"/>
+				</crux:tabWidget>
+				<crux:panelContent>
+					<crux:suggestBox id="testWidget"/>
+				</crux:panelContent>
+			</crux:panel>
+			
+		</crux:decoratedTabPanel>
+	</body>
+
+</html>
+

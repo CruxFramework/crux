@@ -1,0 +1,21 @@
+<!--  
+!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+ -->
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test 123</title>
+	</head>
+
+	<body>
+		<crux:absolutePanel id="absolutePanel1" styleName="ColourfulPanel">
+			<crux:widget left="2" top="4">
+				<crux:absolutePanel id="absolutePanel2" /> 
+			</crux:widget>			
+		</crux:absolutePanel>
+	</body>
+
+</html>
+

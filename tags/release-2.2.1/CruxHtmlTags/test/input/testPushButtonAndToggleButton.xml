@@ -1,0 +1,41 @@
+<html
+	xmlns="http://www.w3.org/1999/xhtml"  
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test</title>
+	</head>
+
+	<body>
+		
+		<crux:pushButton id="myPushButton" enabled="true" onKeyDown="action">
+			<crux:downDisabled>
+				<crux:html>
+					<textarea rows="1" cols="1">HTML</textarea>
+				</crux:html>
+			</crux:downDisabled>
+			<crux:up>
+				<crux:image url="http://some.url.here" top="15"/>
+			</crux:up>
+			<crux:upHovering>
+				<crux:text>Text here</crux:text>
+			</crux:upHovering>
+		</crux:pushButton>
+		
+		<crux:toggleButton id="myToggleButton" enabled="true" onKeyDown="action" down="true">
+			<crux:downDisabled>
+				<crux:html>
+					<textarea rows="1" cols="1">HTML</textarea>
+				</crux:html>
+			</crux:downDisabled>
+			<crux:up>
+				<crux:image url="http://some.url.here" top="15"/>
+			</crux:up>
+			<crux:upHovering>
+				<crux:text>Text here</crux:text>
+			</crux:upHovering>
+		</crux:toggleButton>
+	</body>
+
+</html>
+

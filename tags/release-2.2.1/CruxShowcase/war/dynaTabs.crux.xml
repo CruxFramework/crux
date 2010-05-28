@@ -1,0 +1,46 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
+
+	<head>
+		<title>Dyna Tabs</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="dynaTabsController"/>
+
+		<center>
+		
+		<b:horizontalPanel id="hPanel" spacing="15">
+			<b:cell>
+				<b:textBox id="url" text="http://www.google.com" width="200"/>
+			</b:cell>
+			<b:cell>
+				<a:decoratedButton id="btn" text="Open New Tab" onClick="dynaTabsController.openNewTab"/>
+			</b:cell>
+		</b:horizontalPanel>
+		
+		<a:decoratedPanel id="border" width="80%" height="300">
+			<a:widget>
+				<a:dynaTabs id="dynaTabs" width="100%" height="100%">
+					<a:tab url="http://crux-framework.googlecode.com/" id="crux" label="Crux"/>
+					<a:tab url="http://www.sysmap.com.br/english/" id="sysmap" label="Sysmap" closeable="false"/>
+				</a:dynaTabs>
+			</a:widget>
+		</a:decoratedPanel>
+		
+		<br/>
+		
+		</center>
+		
+		<s:sources/>
+		
+	</body>
+</html>
