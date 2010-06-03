@@ -18,7 +18,7 @@ package br.com.sysmap.crux.widgets.client.wizard;
 import com.google.gwt.dom.client.Element;
 
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
-import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
+import br.com.sysmap.crux.core.client.event.ControllerInvoker;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
 import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
@@ -33,7 +33,7 @@ import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class CruxInternalWizardPageController extends DynaTabsControllerInvoker implements EventClientHandlerInvoker
+public class CruxInternalWizardPageController extends DynaTabsControllerInvoker implements ControllerInvoker
 {
 	/**
 	 * 
@@ -689,7 +689,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker#invoke(java.lang.String, java.lang.Object, boolean, br.com.sysmap.crux.core.client.event.EventProcessor)
+	 * @see br.com.sysmap.crux.core.client.event.ControllerInvoker#invoke(java.lang.String, java.lang.Object, boolean, br.com.sysmap.crux.core.client.event.EventProcessor)
 	 */
 	public void invoke(String method, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception
 	{

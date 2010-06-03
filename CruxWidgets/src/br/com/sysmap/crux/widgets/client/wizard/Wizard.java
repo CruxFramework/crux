@@ -85,7 +85,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		this.dockPanel.getElement().setId(id);
 
 		initWidget(dockPanel);
-		Events.getRegisteredClientEventHandlers().registerEventHandler("__wizard", new CruxInternalWizardPageController());
+		Events.getRegisteredControllers().registerController("__wizard", new CruxInternalWizardPageController());
 		ContextManager.getContextHandler().eraseData("__Wizard."+getElement().getId());
     }
 	

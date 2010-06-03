@@ -49,7 +49,7 @@ public class WizardPage extends AbstractWidgetStep
 			throw new WizardException(WidgetMsgFactory.getMessages().wizardPageDuplicatedWidgetOnPage());
 		}
 		Screen.add(PAGE_UNIQUE_ID, this);
-		Events.getRegisteredClientEventHandlers().registerEventHandler("__wizard", new CruxInternalWizardPageController());
+		Events.getRegisteredControllers().registerController("__wizard", new CruxInternalWizardPageController());
 		Element span = DOM.createSpan();
 		RootPanel.getBodyElement().appendChild(span);
 		initWidget(Label.wrap(span));
