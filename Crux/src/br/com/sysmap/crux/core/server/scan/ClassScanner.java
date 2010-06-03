@@ -249,7 +249,7 @@ public class ClassScanner
 	 * @param deep
 	 * @return
 	 */
-	private static Set<String> searchClassesByInterface(String className, boolean deep)
+	public static Set<String> searchClassesByInterface(String className, boolean deep)
 		{
 		if (!isInitialized())
 		{

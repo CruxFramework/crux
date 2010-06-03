@@ -27,7 +27,7 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class Events 
 {
-	private static RegisteredClientEventHandlers registeredClientEventHandlers;
+	private static RegisteredControllers registeredControllers;
 	
 	
 	/**
@@ -148,28 +148,28 @@ public class Events
 	 */
 	protected static EventProcessor createEventProcessor(final Event event) throws InterfaceConfigException
 	{
-		getRegisteredClientEventHandlers();
+		getRegisteredControllers();
 
 		return new EventProcessor()
 		{
 			public void processEvent(GwtEvent<?> sourceEvent)
 			{
-				getRegisteredClientEventHandlers().invokeEventHandler(event.getController(), event.getMethod(), false, sourceEvent, this);
+				getRegisteredControllers().invokeController(event.getController(), event.getMethod(), false, sourceEvent, this);
 			}
 
 			public void processEvent(CruxEvent<?> sourceEvent, boolean fromOutOfModule)
 			{
-				getRegisteredClientEventHandlers().invokeEventHandler(event.getController(), event.getMethod(), fromOutOfModule, sourceEvent, this);
+				getRegisteredControllers().invokeController(event.getController(), event.getMethod(), fromOutOfModule, sourceEvent, this);
 			}
 		};
 	}
 
-	public static RegisteredClientEventHandlers getRegisteredClientEventHandlers()
+	public static RegisteredControllers getRegisteredControllers()
 	{
-		if (registeredClientEventHandlers == null)
+		if (registeredControllers == null)
 		{
-			registeredClientEventHandlers = (RegisteredClientEventHandlers)GWT.create(RegisteredClientEventHandlers.class);
+			registeredControllers = (RegisteredControllers)GWT.create(RegisteredControllers.class);
 		}
-		return registeredClientEventHandlers;
+		return registeredControllers;
 	}
 }

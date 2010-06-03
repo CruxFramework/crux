@@ -12,8 +12,8 @@
 	<servlet path="/crux.rpc" class="br.com.sysmap.crux.core.server.dispatch.RemoteServiceServlet"/>
 
 	<!-- Specify the generator for registered client handlers.-->
-	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientEventHandlersGenerator">
-		<when-type-assignable class="br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers" />
+	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredControllersGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.event.RegisteredControllers" />
 	</generate-with>
 
 	<!-- Specify the generator for registered widgets.     -->
@@ -81,9 +81,13 @@
 	</generate-with>
 	
 	<!-- Specify the generator for RPC stubs.     -->
-
 	<generate-with class="br.com.sysmap.crux.core.rebind.rpc.CruxServiceGenerator">
 		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService"/>
+	</generate-with>
+
+	<!-- Specify the generator for Cross Document stubs.     -->
+	<generate-with class="br.com.sysmap.crux.core.rebind.crossdocument.CrossDocumentGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocument"/>
 	</generate-with>
 	
 	<!-- Specify ie6 implementation for screen blocker -->

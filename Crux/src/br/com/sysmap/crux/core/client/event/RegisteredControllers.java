@@ -15,9 +15,15 @@
  */
 package br.com.sysmap.crux.core.client.event;
 
-import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
 
-public interface EventClientHandlerInvoker extends ScreenBindableObject
+
+/**
+ * Contains a wrapper class for every controller used on module.
+ * 
+ * @author Thiago da Rosa de Bustamante
+ */
+public interface RegisteredControllers 
 {
-	void invoke(String method, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception;
+	void invokeController(String controller, String method, boolean fromOutOfModule, Object sourceEvent, EventProcessor eventProcessor);
+	void registerController(String controller, ControllerInvoker handlerInvoker);
 }

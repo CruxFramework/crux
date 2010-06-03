@@ -49,12 +49,13 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
- * Creates a Mechanism to work around the lack of reflection support in GWT. This class provides
- * implementations of ClientHandlerInvoker and ClientCallbackInvoker. These implementations are used
- * by EventProcessorFactories to call methods by their names.
- * @author Thiago Bustamante
+ * Generates a RegisteredControllers class.
+ * 
+ * 
+ * @author Thiago da Rosa de Bustamante
+ *
  */
-public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredClientInvokableGenerator
+public class RegisteredControllersGenerator extends AbstractRegisteredClientInvokableGenerator
 {
 	
 	/**
@@ -83,21 +84,21 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		composer.addImport(EventProcessor.class.getName());
 		composer.addImport(Crux.class.getName());
 		
-		composer.addImplementedInterface("br.com.sysmap.crux.core.client.event.RegisteredClientEventHandlers");
+		composer.addImplementedInterface("br.com.sysmap.crux.core.client.event.RegisteredControllers");
 		
 		SourceWriter sourceWriter = composer.createSourceWriter(context, printWriter);
-		sourceWriter.println("private java.util.Map<String, EventClientHandlerInvoker> clientHandlers = new java.util.HashMap<String, EventClientHandlerInvoker>();");
+		sourceWriter.println("private java.util.Map<String, ControllerInvoker> controllers = new java.util.HashMap<String, ControllerInvoker>();");
 
-		Map<String, String> handlerClassNames = new HashMap<String, String>();
+		Map<String, String> controllerClassNames = new HashMap<String, String>();
 		for (Screen screen : screens)
 		{
-			generateEventHandlersForScreen(logger, sourceWriter, screen, handlerClassNames, packageName+"."+implClassName);
+			generateControllersForScreen(logger, sourceWriter, screen, controllerClassNames, packageName+"."+implClassName);
 		}
 
-		generateConstructor(sourceWriter, implClassName, handlerClassNames);
+		generateConstructor(sourceWriter, implClassName, controllerClassNames);
 		generateValidateControllerMethod(sourceWriter);
-		generateEventHandlerInvokeMethod(sourceWriter, handlerClassNames);
-		generateRegisterHandlerMethod(sourceWriter); 
+		generateControllerInvokeMethod(sourceWriter, controllerClassNames);
+		generateRegisterControllerMethod(sourceWriter); 
 		
 		
 		sourceWriter.outdent();
@@ -126,34 +127,34 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	/**
 	 * @param sourceWriter
 	 * @param implClassName
-	 * @param handlerClassNames
+	 * @param controllerClassNames
 	 */
-	private void generateConstructor(SourceWriter sourceWriter, String implClassName, Map<String, String> handlerClassNames)
+	private void generateConstructor(SourceWriter sourceWriter, String implClassName, Map<String, String> controllerClassNames)
 	{
 		
 		sourceWriter.println("public "+implClassName+"(){");
-		for (String handler : handlerClassNames.keySet()) 
+		for (String controller : controllerClassNames.keySet()) 
 		{
-			Class<?> handlerClass = ClientControllers.getClientHandler(handler);
-			Controller controllerAnnot = handlerClass.getAnnotation(Controller.class);
+			Class<?> controllerClass = ClientControllers.getController(controller);
+			Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 			if (controllerAnnot != null && !controllerAnnot.lazy())
 			{
-				Global globalAnnot = handlerClass.getAnnotation(Global.class);
+				Global globalAnnot = controllerClass.getAnnotation(Global.class);
 				if (globalAnnot == null)
 				{
-					sourceWriter.println("if (__validateController(\""+handler+"\"))");
+					sourceWriter.println("if (__validateController(\""+controller+"\"))");
 				}
-				sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
+				sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
 			}
 		}
 		sourceWriter.println("}");
 	}
 
-	private void generateRegisterHandlerMethod(SourceWriter sourceWriter)
+	private void generateRegisterControllerMethod(SourceWriter sourceWriter)
     {
-		sourceWriter.println("public void registerEventHandler(String controller, EventClientHandlerInvoker handlerInvoker){");
-		sourceWriter.println("if (!clientHandlers.containsKey(controller)){");
-		sourceWriter.println("clientHandlers.put(controller, handlerInvoker);");
+		sourceWriter.println("public void registerController(String controller, ControllerInvoker controllerInvoker){");
+		sourceWriter.println("if (!controllers.containsKey(controller)){");
+		sourceWriter.println("controllers.put(controller, controllerInvoker);");
 		sourceWriter.println("}");
 		sourceWriter.println("}");
 	}
@@ -161,15 +162,15 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	/**
 	 * 
 	 * @param sourceWriter
-	 * @param handlerClassNames
+	 * @param controllerClassNames
 	 */
-	private void generateEventHandlerInvokeMethod(SourceWriter sourceWriter, Map<String, String> handlerClassNames)
+	private void generateControllerInvokeMethod(SourceWriter sourceWriter, Map<String, String> controllerClassNames)
 	{
-		sourceWriter.println("public void invokeEventHandler(final String controller, final String method, final boolean fromOutOfModule, final Object sourceEvent, final EventProcessor eventProcessor){");
-		sourceWriter.println("EventClientHandlerInvoker handler = clientHandlers.get(controller);");
-		sourceWriter.println("if (handler != null){");
+		sourceWriter.println("public void invokeController(final String controllerName, final String method, final boolean fromOutOfModule, final Object sourceEvent, final EventProcessor eventProcessor){");
+		sourceWriter.println("ControllerInvoker controller = controllers.get(controllerName);");
+		sourceWriter.println("if (controller != null){");
 		sourceWriter.println("try{");
-		sourceWriter.println("handler.invoke(method, sourceEvent, fromOutOfModule, eventProcessor);");
+		sourceWriter.println("controller.invoke(method, sourceEvent, fromOutOfModule, eventProcessor);");
 		sourceWriter.println("}");
 		sourceWriter.println("catch (Exception e)"); 
 		sourceWriter.println("{");
@@ -179,10 +180,10 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		sourceWriter.println("}");
 
 		boolean first = true;
-		for (String handler : handlerClassNames.keySet()) 
+		for (String controller : controllerClassNames.keySet()) 
 		{
-			Class<?> handlerClass = ClientControllers.getClientHandler(handler);
-			Controller controllerAnnot = handlerClass.getAnnotation(Controller.class);
+			Class<?> controllerClass = ClientControllers.getController(controller);
+			Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 			if (controllerAnnot == null || controllerAnnot.lazy())
 			{
 				if (!first)
@@ -193,7 +194,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 				{
 					first = false;
 				}
-				sourceWriter.println("if (\""+handler+"\".equals(controller)){");
+				sourceWriter.println("if (\""+controller+"\".equals(controllerName)){");
 				if (controllerAnnot != null && Fragments.getFragmentClass(controllerAnnot.fragment()) != null)
 				{
 					sourceWriter.println("GWT.runAsync("+Fragments.getFragmentClass(controllerAnnot.fragment())+".class, new RunAsyncCallback(){");
@@ -201,19 +202,19 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 					sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerCanNotBeLoaded(controller));");
 					sourceWriter.println("}");
 					sourceWriter.println("public void onSuccess(){");
-					sourceWriter.println("if (!clientHandlers.containsKey(\""+handler+"\")){");
-					sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
+					sourceWriter.println("if (!controllers.containsKey(\""+controller+"\")){");
+					sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
 					sourceWriter.println("}");
-					sourceWriter.println("invokeEventHandler(controller, method, fromOutOfModule, sourceEvent, eventProcessor);");
+					sourceWriter.println("invokeController(controllerName, method, fromOutOfModule, sourceEvent, eventProcessor);");
 					sourceWriter.println("}");
 					sourceWriter.println("});");
 				}
 				else
 				{
-					sourceWriter.println("if (!clientHandlers.containsKey(\""+handler+"\")){");
-					sourceWriter.println("clientHandlers.put(\""+handler+"\", new " + handlerClassNames.get(handler) + "());");
+					sourceWriter.println("if (!controllers.containsKey(\""+controller+"\")){");
+					sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
 					sourceWriter.println("}");
-					sourceWriter.println("invokeEventHandler(controller, method, fromOutOfModule, sourceEvent, eventProcessor);");
+					sourceWriter.println("invokeController(controllerName, method, fromOutOfModule, sourceEvent, eventProcessor);");
 				}
 				sourceWriter.println("}");
 			}
@@ -229,56 +230,56 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	 * @param sourceWriter
 	 * @param screen
 	 */
-	private void generateEventHandlersForScreen(TreeLogger logger, SourceWriter sourceWriter, Screen screen, 
-			Map<String, String> handlerClassNames, String implClassName)
+	private void generateControllersForScreen(TreeLogger logger, SourceWriter sourceWriter, Screen screen, 
+			Map<String, String> controllerClassNames, String implClassName)
 	{
 		Iterator<String> controllers = screen.iterateControllers();
 		
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames);
+			generateControllerBlock(logger, screen, sourceWriter, controller, controllerClassNames);
 		}		
 
-		controllers = ClientControllers.iterateGlobalClientHandler();
+		controllers = ClientControllers.iterateGlobalControllers();
 		
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			Class<?> controllerClass = ClientControllers.getClientHandler(controller);
+			Class<?> controllerClass = ClientControllers.getController(controller);
 			if (controllerClass != null)
 			{
 				String controllerClassName = getClassSourceName(controllerClass).replace('.', '/');
 				if (Modules.getInstance().isClassOnModulePath(controllerClassName, screen.getModule()))
 				{
-					generateEventHandlerBlock(logger, screen, sourceWriter, controller, handlerClassNames);
+					generateControllerBlock(logger, screen, sourceWriter, controller, controllerClassNames);
 				}
 			}
 		}		
 	}
 
 	/**
-	 * Generate the block to include event handler object.
+	 * Generate the block to include controller object.
 	 * @param logger
 	 * @param sourceWriter
 	 * @param widgetId
 	 * @param event
 	 * @param added
 	 */
-	private void generateEventHandlerBlock(TreeLogger logger, Screen screen, SourceWriter sourceWriter, String controller, 
+	private void generateControllerBlock(TreeLogger logger, Screen screen, SourceWriter sourceWriter, String controller, 
 			Map<String, String> added)
 	{
 		try
 		{
-			if (!added.containsKey(controller) && ClientControllers.getClientHandler(controller)!= null)
+			if (!added.containsKey(controller) && ClientControllers.getController(controller)!= null)
 			{
-				String genClass = generateEventHandlerInvokerClass(logger,screen,sourceWriter,ClientControllers.getClientHandler(controller));
+				String genClass = generateControllerInvokerClass(logger,screen,sourceWriter,ClientControllers.getController(controller));
 				added.put(controller, genClass);
 			}
 		}
 		catch (Throwable e) 
 		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandler(controller, e.getLocalizedMessage()), e);
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredController(controller, e.getLocalizedMessage()), e);
 		}
 	}
 	
@@ -286,16 +287,16 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	 * Create a new class to invoke the caller method by its name
 	 * @param logger
 	 * @param sourceWriter
-	 * @param handlerClass
+	 * @param controllerClass
 	 * @return
 	 */
-	private String generateEventHandlerInvokerClass(TreeLogger logger, Screen screen, SourceWriter sourceWriter, Class<?> handlerClass)
+	private String generateControllerInvokerClass(TreeLogger logger, Screen screen, SourceWriter sourceWriter, Class<?> controllerClass)
 	{
-		String className = handlerClass.getSimpleName();
-		sourceWriter.println("protected class "+className+"Wrapper extends " + getClassSourceName(handlerClass)
-				+ " implements br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker{");
+		String className = controllerClass.getSimpleName();
+		sourceWriter.println("protected class "+className+"Wrapper extends " + getClassSourceName(controllerClass)
+				+ " implements br.com.sysmap.crux.core.client.event.ControllerInvoker{");
 		
-		Controller controllerAnnot = handlerClass.getAnnotation(Controller.class);
+		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 		boolean singleton = (controllerAnnot == null || controllerAnnot.statefull());
 		boolean autoBindEnabled = (controllerAnnot == null || controllerAnnot.autoBind());
 		if (singleton)
@@ -304,9 +305,9 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		}
 		sourceWriter.println(Map.class.getName()+"<String, Boolean> __runningMethods = new "+HashMap.class.getName()+"<String, Boolean>();");
 
-		generateInvokeMethod(logger, sourceWriter, handlerClass, className, singleton, autoBindEnabled);
-		generateScreenUpdateWidgetsFunction(logger, screen, handlerClass, sourceWriter);
-		generateControllerUpdateObjectsFunction(logger, screen, handlerClass, sourceWriter);
+		generateInvokeMethod(logger, sourceWriter, controllerClass, className, singleton, autoBindEnabled);
+		generateScreenUpdateWidgetsFunction(logger, screen, controllerClass, sourceWriter);
+		generateControllerUpdateObjectsFunction(logger, screen, controllerClass, sourceWriter);
 		generateIsAutoBindEnabledMethod(sourceWriter, autoBindEnabled);
 				
 		sourceWriter.println("}");
@@ -317,13 +318,13 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	/**
 	 * @param logger
 	 * @param sourceWriter
-	 * @param handlerClass
+	 * @param controllerClass
 	 * @param className
 	 * @param methods
 	 * @param singleton
 	 * @param autoBindEnabled
 	 */
-	private void generateInvokeMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> handlerClass, 
+	private void generateInvokeMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> controllerClass, 
 			          String className, boolean singleton, boolean autoBindEnabled)
     {
 	    sourceWriter.println("public void invoke(String metodo, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception{ ");
@@ -333,13 +334,13 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		{
 			sourceWriter.println("if (this.wrapper == null){");
 			sourceWriter.println("this.wrapper = new "+className+"Wrapper();");
-			generateAutoCreateFields(logger, handlerClass, sourceWriter, "wrapper");
+			generateAutoCreateFields(logger, controllerClass, sourceWriter, "wrapper");
 			sourceWriter.println("}");
 		}
 		else
 		{
 			sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
-			generateAutoCreateFields(logger, handlerClass, sourceWriter, "wrapper");
+			generateAutoCreateFields(logger, controllerClass, sourceWriter, "wrapper");
 		}
 		
 
@@ -351,17 +352,17 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 		}
 		
 		boolean first = true;
-		Method[] methods = handlerClass.getMethods(); 
+		Method[] methods = controllerClass.getMethods(); 
 		for (Method method: methods) 
 		{
-			if (isHandlerMethodSignatureValid(method))
+			if (isControllerMethodSignatureValid(method))
 			{
 				if (!first)
 				{
 					sourceWriter.print("else ");
 				}
 				
-				generateInvokeBlockForMethod(logger, sourceWriter, handlerClass, method);
+				generateInvokeBlockForMethod(logger, sourceWriter, controllerClass, method);
 
 				first = false;
 			}
@@ -383,11 +384,11 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	/**
 	 * @param logger
 	 * @param sourceWriter
-	 * @param handlerClass
+	 * @param controllerClass
 	 * @param method
 	 */
 	private void generateInvokeBlockForMethod(TreeLogger logger,
-            SourceWriter sourceWriter, Class<?> handlerClass, Method method)
+            SourceWriter sourceWriter, Class<?> controllerClass, Method method)
     {
 	    if (method.getAnnotation(ExposeOutOfModule.class) != null)
 	    {
@@ -417,7 +418,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	    		methodName = Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1);
 	    		validateMethod = "validate"+ methodName;
 	    	}
-	    	generateValidateMethodCall(logger, handlerClass, method, validateMethod, sourceWriter);
+	    	generateValidateMethodCall(logger, controllerClass, method, validateMethod, sourceWriter);
 	    	sourceWriter.println("}catch (Throwable e){");
 	    	sourceWriter.println("__runMethod = false;");
 	    	sourceWriter.println("eventProcessor._validationMessage = e.getMessage();");
@@ -473,12 +474,12 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	/**
 	 * 
 	 * @param logger
-	 * @param handlerClass
+	 * @param controllerClass
 	 * @param method
 	 * @param validateMethod
 	 * @param sourceWriter
 	 */
-	private void generateValidateMethodCall(TreeLogger logger, Class<?> handlerClass, Method method, String validateMethod, SourceWriter sourceWriter)
+	private void generateValidateMethodCall(TreeLogger logger, Class<?> controllerClass, Method method, String validateMethod, SourceWriter sourceWriter)
 	{
 		Class<?>[] params = method.getParameterTypes();
 		try
@@ -486,26 +487,26 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 			Method validate = null;
 			if (params != null && params.length == 1)
 			{
-				validate = ClassUtils.getMethod(handlerClass, validateMethod, params[0]);
+				validate = ClassUtils.getMethod(controllerClass, validateMethod, params[0]);
 				if(validate == null)
 				{
-					validate = ClassUtils.getMethod(handlerClass, validateMethod, new Class[]{});
+					validate = ClassUtils.getMethod(controllerClass, validateMethod, new Class[]{});
 				}
 			}
 			else
 			{
-				validate = ClassUtils.getMethod(handlerClass, validateMethod, new Class[]{});
+				validate = ClassUtils.getMethod(controllerClass, validateMethod, new Class[]{});
 			}
 			generateMethodCall(validate, sourceWriter);
 		}
 		catch (Exception e)
 		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredClientHandlerInvalidValidateMethod(validateMethod), e);
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredControllerInvalidValidateMethod(validateMethod), e);
 		}
 	}
 
 	/** 
-	 * Generates the handler method call.
+	 * Generates the controller method call.
 	 * @param method
 	 * @param sourceWriter
 	 */
@@ -528,7 +529,7 @@ public class RegisteredClientEventHandlersGenerator extends AbstractRegisteredCl
 	 * @param method
 	 * @return
 	 */
-	private boolean isHandlerMethodSignatureValid(Method method)
+	private boolean isControllerMethodSignatureValid(Method method)
 	{
 		if (!Modifier.isPublic(method.getModifiers()))
 		{

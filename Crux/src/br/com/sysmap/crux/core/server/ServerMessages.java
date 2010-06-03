@@ -35,10 +35,10 @@ public interface ServerMessages
 	String annotationScannerInterfaceRequired(String className);
 
 	@DefaultServerMessage("[clientHandlers 001] - Error initializing clientHandler: {0}.")
-	String clientHandlersHandlerInitializeError(String errMsg);
+	String controllersInitializeError(String errMsg);
 
 	@DefaultServerMessage("[clientHandlers 002] - Duplicated Client Controller: {0}.")
-	String clientHandlersDuplicatedController(String value);
+	String controllersDuplicatedController(String value);
 	
 	@DefaultServerMessage("[widgetConfig 001] - Error initializing widgets.")
 	String widgetConfigInitializeError(String errMsg);

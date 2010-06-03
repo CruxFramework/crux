@@ -29,7 +29,7 @@ public interface GeneratorMessages
 	String errorGeneratingRegisteredWidgetFactoryNotRegistered();
 
 	@DefaultServerMessage("[generator 002] - Error for register client event handler. Controller: {0}. Error:{1}")
-	String errorGeneratingRegisteredClientHandler(String widget, String errMesg);
+	String errorGeneratingRegisteredController(String widget, String errMesg);
 
 	@DefaultServerMessage("[generator 003] - Error for register client formatter. Formatter: {0}. Error:{1}")
 	String errorGeneratingRegisteredFormatter(String formatter, String errMesg);
@@ -107,7 +107,7 @@ public interface GeneratorMessages
 	String errorGeneratingWidgetFactoryInvalidProperty(String attrName);
 
 	@DefaultServerMessage("[generator 027] - Error generating widget factory. invalid validation method: {0}.")
-	String errorGeneratingRegisteredClientHandlerInvalidValidateMethod(String validateMethod);
+	String errorGeneratingRegisteredControllerInvalidValidateMethod(String validateMethod);
 
 	@DefaultServerMessage("[generator 028] - Error generating widget factory. An element can not contains text and other children.")
 	String errorGeneratingWidgetFactoryMixedContentNotAllowed();

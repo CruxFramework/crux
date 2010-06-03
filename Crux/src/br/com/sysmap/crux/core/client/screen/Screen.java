@@ -28,6 +28,8 @@ import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
+import br.com.sysmap.crux.core.client.screen.crossdocument.CrossDocumentInvoker;
+import br.com.sysmap.crux.core.client.screen.crossdocument.CrossDocumentInvokerFactory;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.GWT;
@@ -73,6 +75,8 @@ public class Screen
 	protected String[] declaredControllers;
 	protected String[] declaredDataSources;
 	protected String[] declaredFormatters;
+
+	@Deprecated
 	protected String[] declaredSerializables;
 	
 	protected Screen(String id) 
@@ -86,6 +90,15 @@ public class Screen
 			public void onClose(CloseEvent<Window> event)
 			{
 				removeControllerAccessor(Screen.this);
+			}
+		});
+
+		createCrossDocumentAccessor(this);
+		this.addWindowCloseHandler(new CloseHandler<Window>()
+		{
+			public void onClose(CloseEvent<Window> event)
+			{
+				removeCrossDocumentAccessor(Screen.this);
 			}
 		});
 	}
@@ -117,6 +130,7 @@ public class Screen
 	/**
 	 * @return
 	 */
+	@Deprecated
 	protected String[] getDeclaredSerializables()
 	{
 		return declaredSerializables;
@@ -515,6 +529,7 @@ public class Screen
 		}
 	}
 
+	@Deprecated
 	private native void createControllerAccessor(Screen handler)/*-{
 		$wnd._cruxScreenControllerAccessor = function(call, serializedData){
 			var a = handler.@br.com.sysmap.crux.core.client.screen.Screen::invokeController(Ljava/lang/String;Ljava/lang/String;)(call, serializedData);
@@ -522,10 +537,44 @@ public class Screen
 		};
 	}-*/;
 
+	@Deprecated
 	private native void removeControllerAccessor(Screen handler)/*-{
 		$wnd._cruxScreenControllerAccessor = null;
 	}-*/;
 	
+	/**
+	 * Create a hook javascript function, called outside of module.
+	 * @param handler
+	 */
+	private native void createCrossDocumentAccessor(Screen handler)/*-{
+		$wnd._cruxCrossDocumentAccessor = function(serializedData){
+			var a = handler.@br.com.sysmap.crux.core.client.screen.Screen::invokeCrossDocument(Ljava/lang/String;)(serializedData);
+			return a?a:null;
+		};
+	}-*/;
+	
+	/**
+	 * Remove the cross document hook function
+	 * @param handler
+	 */
+	private native void removeCrossDocumentAccessor(Screen handler)/*-{
+		$wnd._cruxCrossDocumentAccessor = null;
+	}-*/;
+	
+	/**
+	 * Make a call to a cross document object.
+	 * 
+	 * @param serializedData
+	 * @return
+	 */
+	@SuppressWarnings("unused") // called by native code
+	private String invokeCrossDocument(String serializedData)
+	{
+		CrossDocumentInvoker documentInvoker = CrossDocumentInvokerFactory.getCrossDocumentInvoker(serializedData);
+		return documentInvoker.invoke();
+	}
+	
+	@Deprecated
 	@SuppressWarnings("unused") // called by native code
 	private String invokeController(String call, String serializedData)
 	{
@@ -556,7 +605,7 @@ public class Screen
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Gets the current screen
 	 * @return
@@ -871,6 +920,7 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static void invokeControllerOnTop(String call, Object param) throws ModuleComunicationException
 	{
 		invokeControllerOnTop(call, param, Object.class);
@@ -881,6 +931,7 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> T invokeControllerOnTop(String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
@@ -892,6 +943,7 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static void invokeControllerOnAbsoluteTop(String call, Object param) throws ModuleComunicationException
 	{
 		invokeControllerOnAbsoluteTop(call, param, Object.class);
@@ -902,6 +954,7 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> T invokeControllerOnAbsoluteTop(String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
@@ -913,6 +966,7 @@ public class Screen
 	 * @param call
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static void invokeControllerOnOpener(String call, Object param) throws ModuleComunicationException
 	{
 		invokeControllerOnOpener(call, param, Object.class);
@@ -924,6 +978,7 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> T  invokeControllerOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
@@ -934,6 +989,7 @@ public class Screen
 	 * @param call
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static void invokeControllerOnParent(String call, Object param) throws ModuleComunicationException
 	{
 		invokeControllerOnParent(call, param, Object.class);
@@ -944,6 +1000,7 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> T  invokeControllerOnParent(String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
@@ -954,6 +1011,7 @@ public class Screen
 	 * @param call
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static void invokeControllerOnFrame(String frame, String call, Object param) throws ModuleComunicationException
 	{
 		invokeControllerOnFrame(frame, call, param, Object.class);
@@ -964,6 +1022,7 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> T  invokeControllerOnFrame(String frame, String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
@@ -974,6 +1033,7 @@ public class Screen
 	 * @param call
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static void invokeControllerOnSiblingFrame(String frame, String call, Object param) throws ModuleComunicationException
 	{
 		invokeControllerOnSiblingFrame(frame, call, param, Object.class);
@@ -984,6 +1044,7 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> T  invokeControllerOnSiblingFrame(String frame, String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
@@ -994,6 +1055,7 @@ public class Screen
 	 * @param call
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static void invokeControllerOnSelf(String call, Object param)
 	{
 		invokeControllerOnSelf(call, param, Object.class);
@@ -1004,6 +1066,7 @@ public class Screen
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> T invokeControllerOnSelf(String call, Object param, Class<T> resultType)
 	{
@@ -1083,6 +1146,7 @@ public class Screen
 	/**
 	 * @return
 	 */
+	@Deprecated
 	public static String[] getSerializables()
 	{
 		return Screen.get().getDeclaredSerializables();

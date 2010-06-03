@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
-import br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker;
+import br.com.sysmap.crux.core.client.event.ControllerInvoker;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
@@ -38,7 +38,7 @@ public class TopContextHandler implements ContextHandler
 	 */
 	public TopContextHandler()
     {
-		Events.getRegisteredClientEventHandlers().registerEventHandler("__topContextController", new TopContextHanlderController());
+		Events.getRegisteredControllers().registerController("__topContextController", new TopContextHanlderController());
     }
 	
 	/**
@@ -114,7 +114,7 @@ public class TopContextHandler implements ContextHandler
 	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
-	public static class TopContextHanlderController implements EventClientHandlerInvoker
+	public static class TopContextHanlderController implements ControllerInvoker
 	{
 		protected HashMap<String, Object> context = new HashMap<String, Object>();
 		
@@ -144,7 +144,7 @@ public class TopContextHandler implements ContextHandler
 		}
 
 		/**
-		 * @see br.com.sysmap.crux.core.client.event.EventClientHandlerInvoker#invoke(java.lang.String, java.lang.Object, boolean, br.com.sysmap.crux.core.client.event.EventProcessor)
+		 * @see br.com.sysmap.crux.core.client.event.ControllerInvoker#invoke(java.lang.String, java.lang.Object, boolean, br.com.sysmap.crux.core.client.event.EventProcessor)
 		 */
 		public void invoke(String method, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor)
                 throws Exception

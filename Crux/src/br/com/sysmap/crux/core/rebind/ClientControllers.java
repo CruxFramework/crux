@@ -34,7 +34,7 @@ import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 
 /**
- * Maps all client Handlers
+ * Maps all controllers in a module.
  * @author Thiago Bustamante
  *
  */
@@ -43,24 +43,24 @@ public class ClientControllers
 	private static final Log logger = LogFactory.getLog(ClientControllers.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Lock lock = new ReentrantLock();
-	private static Map<String, Class<?>> clientHandlers;
-	private static List<String> globalClientHandlers;
+	private static Map<String, Class<?>> controllers;
+	private static List<String> globalControllers;
 	
 	public static void initialize()
 	{
-		if (clientHandlers != null)
+		if (controllers != null)
 		{
 			return;
 		}
 		try
 		{
 			lock.lock();
-			if (clientHandlers != null)
+			if (controllers != null)
 			{
 				return;
 			}
 			
-			initializeClientHandlers();
+			initializeControllers();
 		}
 		finally
 		{
@@ -68,10 +68,10 @@ public class ClientControllers
 		}
 	}
 
-	protected static void initializeClientHandlers()
+	protected static void initializeControllers()
 	{
-		clientHandlers = new HashMap<String, Class<?>>();
-		globalClientHandlers = new ArrayList<String>();
+		controllers = new HashMap<String, Class<?>>();
+		globalControllers = new ArrayList<String>();
 		Set<String> controllerNames =  ClassScanner.searchClassesByAnnotation(Controller.class);
 		if (controllerNames != null)
 		{
@@ -81,51 +81,51 @@ public class ClientControllers
 				{
 					Class<?> controllerClass = Class.forName(controller);
 					Controller annot = controllerClass.getAnnotation(Controller.class);
-					if (clientHandlers.containsKey(annot.value()))
+					if (controllers.containsKey(annot.value()))
 					{
-						throw new CruxGeneratorException(messages.clientHandlersDuplicatedController(annot.value()));
+						throw new CruxGeneratorException(messages.controllersDuplicatedController(annot.value()));
 					}
 					
-					clientHandlers.put(annot.value(), controllerClass);
+					controllers.put(annot.value(), controllerClass);
 					if (controllerClass.getAnnotation(Global.class) != null)
 					{
-						globalClientHandlers.add(annot.value());
+						globalControllers.add(annot.value());
 					}
 					Fragments.registerFragment(annot.fragment(), controllerClass);
 				} 
 				catch (ClassNotFoundException e) 
 				{
-					logger.error(messages.clientHandlersHandlerInitializeError(e.getLocalizedMessage()),e);
+					logger.error(messages.controllersInitializeError(e.getLocalizedMessage()),e);
 				}
 			}
 		}
 	}
 	
-	public static Class<?> getClientHandler(String name)
+	public static Class<?> getController(String name)
 	{
-		if (clientHandlers == null)
+		if (controllers == null)
 		{
 			initialize();
 		}
-		return clientHandlers.get(name);
+		return controllers.get(name);
 	}
 	
-	public static Iterator<String> iterateClientHandler()
+	public static Iterator<String> iterateControllers()
 	{
-		if (clientHandlers == null)
+		if (controllers == null)
 		{
 			initialize();
 		}
-		return clientHandlers.keySet().iterator();
+		return controllers.keySet().iterator();
 	}
 	
-	public static Iterator<String> iterateGlobalClientHandler()
+	public static Iterator<String> iterateGlobalControllers()
 	{
-		if (globalClientHandlers == null)
+		if (globalControllers == null)
 		{
 			initialize();
 		}
-		return globalClientHandlers.iterator();
+		return globalControllers.iterator();
 	}
 	
 }
