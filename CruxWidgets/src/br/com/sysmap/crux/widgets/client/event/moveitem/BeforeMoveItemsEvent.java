@@ -18,7 +18,6 @@ package br.com.sysmap.crux.widgets.client.event.moveitem;
 import java.util.List;
 
 import br.com.sysmap.crux.widgets.client.transferlist.TransferList.Item;
-import br.com.sysmap.crux.widgets.client.transferlist.TransferList.ItemLocation;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -33,14 +32,16 @@ public class BeforeMoveItemsEvent extends GwtEvent<BeforeMoveItemsHandler>{
 	private HasBeforeMoveItemsHandlers source;
 	private List<Item> items;
 	private boolean canceled;
+	private boolean leftToRight;
 
 	/**
 	 * Constructor 
 	 */
-	public BeforeMoveItemsEvent(HasBeforeMoveItemsHandlers source, List<Item> items)
+	private BeforeMoveItemsEvent(HasBeforeMoveItemsHandlers source, List<Item> items, boolean leftToRight)
 	{
 		this.source = source;
 		this.items = items;
+		this.leftToRight = leftToRight;
 	}
 
 	/**
@@ -71,9 +72,9 @@ public class BeforeMoveItemsEvent extends GwtEvent<BeforeMoveItemsHandler>{
 		return TYPE;
 	}
 	
-	public static BeforeMoveItemsEvent fire(HasBeforeMoveItemsHandlers source, List<Item> items)
+	public static BeforeMoveItemsEvent fire(HasBeforeMoveItemsHandlers source, List<Item> items, boolean leftToRight)
 	{
-		BeforeMoveItemsEvent event = new BeforeMoveItemsEvent(source, items);
+		BeforeMoveItemsEvent event = new BeforeMoveItemsEvent(source, items, leftToRight);
 		source.fireEvent(event);
 		return event;
 	}
@@ -108,9 +109,7 @@ public class BeforeMoveItemsEvent extends GwtEvent<BeforeMoveItemsHandler>{
 	 */
 	public boolean isMovingToRight()
 	{
-		boolean existsItems = this.items != null && this.items.size() > 0;
-		boolean itemsAreFromLeft = existsItems && ItemLocation.left.equals(this.items.get(0).getLocation());
-		return itemsAreFromLeft;
+		return leftToRight;
 	}
 	
 	/**
@@ -119,8 +118,6 @@ public class BeforeMoveItemsEvent extends GwtEvent<BeforeMoveItemsHandler>{
 	 */
 	public boolean isMovingToLeft()
 	{
-		boolean existsItems = this.items != null && this.items.size() > 0;
-		boolean itemsAreFromRight = existsItems && ItemLocation.right.equals(this.items.get(0).getLocation());
-		return itemsAreFromRight;
+		return !leftToRight;
 	}
 }

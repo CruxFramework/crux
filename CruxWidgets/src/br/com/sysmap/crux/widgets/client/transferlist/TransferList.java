@@ -373,7 +373,7 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 			
 			ItemLocation itemsLocation = leftToRight ? ItemLocation.left : ItemLocation.right;
 			List<Item> itemsForEvet = createItemList(move, itemsLocation);
-			BeforeMoveItemsEvent moveEvt = BeforeMoveItemsEvent.fire(transferList, itemsForEvet);
+			BeforeMoveItemsEvent moveEvt = BeforeMoveItemsEvent.fire(transferList, itemsForEvet, leftToRight);
 			
 			if(!moveEvt.isCanceled())
 			{
