@@ -45,7 +45,9 @@ public class TransferListFactory extends CompositeFactory<TransferList>
 		@TagAttribute(value="rightToLeftButtonText", supportsI18N=true),
 		@TagAttribute(value="leftListLabel", supportsI18N=true),
 		@TagAttribute(value="rightListLabel", supportsI18N=true),
-		@TagAttribute(value="visibleItemCount", type=Integer.class)
+		@TagAttribute(value="visibleItemCount", type=Integer.class),
+		@TagAttribute(value="multiTransferFromLeft", type=Boolean.class, defaultValue="true"),
+		@TagAttribute(value="multiTransferFromRight", type=Boolean.class, defaultValue="true")
 	})
 	public void processAttributes(WidgetFactoryContext<TransferList> context) throws InterfaceConfigException
 	{

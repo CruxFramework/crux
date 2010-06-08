@@ -49,6 +49,8 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 	private Button moveToLeftButton;
 	private Label leftListLabel;
 	private Label rightListLabel;
+	private boolean multiTransferFromLeft = true;
+	private boolean multiTransferFromRight = true;
 	
 	/**
 	 * TODO - Gessé - Comment this
@@ -137,7 +139,7 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 		
 		VerticalPanel vPanelLeft = new VerticalPanel();
 		this.leftListLabel = new Label();
-		this.leftList = new ListBox(true);
+		this.leftList = new ListBox(this.multiTransferFromLeft);
 		this.leftList.setStyleName("leftList");
 		vPanelLeft.add(this.leftListLabel);
 		vPanelLeft.add(this.leftList);
@@ -149,7 +151,7 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 		
 		VerticalPanel vPanelRight = new VerticalPanel();
 		this.rightListLabel = new Label();
-		this.rightList = new ListBox(true);
+		this.rightList = new ListBox(this.multiTransferFromRight);
 		this.rightList.setStyleName("rightList");
 		vPanelRight.add(this.rightListLabel);
 		vPanelRight.add(this.rightList);
@@ -369,25 +371,22 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 				}
 			}
 			
-			if(move.size() > 0)
+			ItemLocation itemsLocation = leftToRight ? ItemLocation.left : ItemLocation.right;
+			List<Item> itemsForEvet = createItemList(move, itemsLocation);
+			BeforeMoveItemsEvent moveEvt = BeforeMoveItemsEvent.fire(transferList, itemsForEvet);
+			
+			if(!moveEvt.isCanceled())
 			{
-				ItemLocation itemsLocation = leftToRight ? ItemLocation.left : ItemLocation.right;
-				List<Item> itemsForEvet = createItemList(move, itemsLocation);
-				BeforeMoveItemsEvent moveEvt = BeforeMoveItemsEvent.fire(transferList, itemsForEvet);
+				listToRemove.clear();
 				
-				if(!moveEvt.isCanceled())
+				for (String[] item : move)
 				{
-					listToRemove.clear();
-					
-					for (String[] item : move)
-					{
-						listToAdd.addItem(item[0], item[1]);
-					}
-					
-					for (String[] item : keep)
-					{
-						listToRemove.addItem(item[0], item[1]);
-					}
+					listToAdd.addItem(item[0], item[1]);
+				}
+				
+				for (String[] item : keep)
+				{
+					listToRemove.addItem(item[0], item[1]);
 				}
 			}
 		}
@@ -401,12 +400,66 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 		private List<Item> createItemList(List<String[]> arrays, ItemLocation location)
 		{
 			List<Item> items = new ArrayList<Item>();
+			
 			for (String[] array : arrays)
 			{
 				Item item = new Item(array[0], array[1], location);
 				items.add(item);
 			}
+
 			return items;
 		}
 	}
+
+	/**
+	 * @return the multiTransferFromLeft
+	 */
+	public boolean isMultiTransferFromLeft()
+	{
+		return multiTransferFromLeft;
+	}
+
+	/**
+	 * @param multiTransferFromLeft the multiTransferFromLeft to set
+	 */
+	@SuppressWarnings("deprecation")
+	public void setMultiTransferFromLeft(boolean multiTransferFromLeft)
+	{
+		this.multiTransferFromLeft = multiTransferFromLeft;
+		clearListSelections(this.leftList);
+		this.leftList.setMultipleSelect(this.multiTransferFromLeft);
+	}
+
+	/**
+	 * @return the multiTransferFromRight
+	 */
+	public boolean isMultiTransferFromRight()
+	{
+		return multiTransferFromRight;
+	}
+
+	/**
+	 * @param multiTransferFromRight the multiTransferFromRight to set
+	 */
+	@SuppressWarnings("deprecation")
+	public void setMultiTransferFromRight(boolean multiTransferFromRight)
+	{
+		this.multiTransferFromRight = multiTransferFromRight;
+		clearListSelections(this.rightList);
+		this.rightList.setMultipleSelect(this.multiTransferFromRight);
+	}
+	
+	
+	/**
+	 * Clears the selections made in a listBox.
+	 * @param list
+	 */
+	private void clearListSelections(ListBox list)
+	{
+		int count = list.getItemCount();
+		for(int i = 0; i < count; i++)
+		{
+			list.setItemSelected(i, false);
+		}
+	}	
 }
