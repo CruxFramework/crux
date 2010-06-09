@@ -151,7 +151,7 @@ public class ModuleInfoServiceImpl implements ModuleInfoService, SessionAware
 			while(controllers.hasNext())
 			{
 				String controllerName = controllers.next();
-				Class<?> clientHandler = ClientControllers.getClientHandler(controllerName);
+				Class<?> clientHandler = ClientControllers.getController(controllerName);
 				populateParameters(clientHandler, parameters);
 			}
 			Iterator<String> datasources = screen.iterateDataSources();
@@ -216,11 +216,11 @@ public class ModuleInfoServiceImpl implements ModuleInfoService, SessionAware
 		List<Controller> result = new ArrayList<Controller>();
 		if (cruxModule != null)
 		{
-			Iterator<String> clientHandlers = ClientControllers.iterateClientHandler();
+			Iterator<String> clientHandlers = ClientControllers.iterateControllers();
 			while (clientHandlers.hasNext())
 			{
 				String controllerName = clientHandlers.next();
-				Class<?> clientHandler = ClientControllers.getClientHandler(controllerName);
+				Class<?> clientHandler = ClientControllers.getController(controllerName);
 				String moduleBasePackage = cruxModule.getGwtModule().getFullName();
 				moduleBasePackage = moduleBasePackage.substring(0, moduleBasePackage.lastIndexOf('.'));
 				
