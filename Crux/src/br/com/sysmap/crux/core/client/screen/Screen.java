@@ -28,8 +28,6 @@ import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
-import br.com.sysmap.crux.core.client.screen.crossdocument.CrossDocumentInvoker;
-import br.com.sysmap.crux.core.client.screen.crossdocument.CrossDocumentInvokerFactory;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.GWT;
@@ -570,8 +568,7 @@ public class Screen
 	@SuppressWarnings("unused") // called by native code
 	private String invokeCrossDocument(String serializedData)
 	{
-		CrossDocumentInvoker documentInvoker = CrossDocumentInvokerFactory.getCrossDocumentInvoker(serializedData);
-		return documentInvoker.invoke();
+		return Events.getRegisteredControllers().invokeCrossDocument(serializedData);
 	}
 	
 	@Deprecated

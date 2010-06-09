@@ -32,6 +32,7 @@ import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocumentEx
 import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocumentProxy;
 import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocumentProxy.CrossDocumentReader;
 import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.ClientSerializationStreamWriter;
+import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracle;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracleBuilder;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializationUtils;
@@ -41,7 +42,6 @@ import br.com.sysmap.crux.core.rebind.crossdocument.gwt.TypeSerializerCreator;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.impl.Impl;
 import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.PropertyOracle;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.linker.GeneratedResource;
@@ -53,7 +53,6 @@ import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JParameterizedType;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
-import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.generator.NameFactory;
 import com.google.gwt.dev.javac.TypeOracleMediator;
@@ -70,7 +69,7 @@ import com.google.gwt.user.server.rpc.impl.TypeNameObfuscator;
  * @author Thiago da Rosa de Bustamante
  * 
  */
-public class CrossDocumentProxyCreator
+public class CrossDocumentProxyCreator extends AbstractProxyCreator
 {
 	private static final String CROSS_DOC_SUFFIX = "_CrossDocProxy";
 	private static final Map<JPrimitiveType, CrossDocumentReader> JPRIMITIVETYPE_TO_READER = new HashMap<JPrimitiveType, CrossDocumentReader>();
@@ -86,9 +85,6 @@ public class CrossDocumentProxyCreator
 		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.SHORT, CrossDocumentReader.SHORT);
 		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.VOID, CrossDocumentReader.VOID);
 	}
-	private final GeneratorContext context;
-	private final JClassType crossDocumentIntf;
-	private final TreeLogger logger;
 
 	private Map<JType, String> typeStrings;	
 	
@@ -97,13 +93,11 @@ public class CrossDocumentProxyCreator
 	 * 
 	 * @param logger
 	 * @param context
-	 * @param crossDocumentIntf
+	 * @param baseProxyType
 	 */
-	public CrossDocumentProxyCreator(TreeLogger logger, GeneratorContext context, JClassType crossDocumentIntf)
+	public CrossDocumentProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseProxyType)
 	{
-		this.logger = logger;
-		this.context = context;
-		this.crossDocumentIntf = crossDocumentIntf;
+		super(logger, context, baseProxyType);
 	}
 
 	/**
@@ -115,74 +109,6 @@ public class CrossDocumentProxyCreator
 	protected void addAdditionalInterfaces(ClassSourceFileComposerFactory composerFactory)
 	{
 	}
-	
-	/**
-	 * Adds a root type for each type that appears in the CrossDocument
-	 * interface methods.
-	 */
-	protected void addCrossDocumentRootTypes(TypeOracle typeOracle, SerializableTypeOracleBuilder typesSentFromDoc, 
-			                                      SerializableTypeOracleBuilder typesSentToDoc) throws NotFoundException
-	{
-		JMethod[] methods = crossDocumentIntf.getOverridableMethods();
-		JClassType exceptionClass = typeOracle.getType(Exception.class.getName());
-
-		for (JMethod method : methods)
-		{
-			JType returnType = method.getReturnType();
-			if (returnType != JPrimitiveType.VOID)
-			{
-				typesSentToDoc.addRootType(logger, returnType);
-			}
-
-			JParameter[] params = method.getParameters();
-			for (JParameter param : params)
-			{
-				JType paramType = param.getType();
-				typesSentFromDoc.addRootType(logger, paramType);
-			}
-
-			JType[] exs = method.getThrows();
-			if (exs.length > 0)
-			{
-				for (JType ex : exs)
-				{
-					if (!exceptionClass.isAssignableFrom(ex.isClass()))
-					{
-						logger.log(TreeLogger.WARN, "'" + ex.getQualifiedSourceName() + "' is not a checked exception; only checked exceptions may be used", null);
-					}
-
-					typesSentToDoc.addRootType(logger, ex);
-				}
-			}
-		}
-	}
-
-	
-	/**
-	 * Add the implicit root types that are needed to make Cross Document
-	 * invoker work.
-	 */
-	protected void addRequiredRoots(TreeLogger logger, TypeOracle typeOracle, SerializableTypeOracleBuilder stob) throws NotFoundException
-	{
-		stob.addRootType(logger, typeOracle.getType(String.class.getName()));
-	}
-
-	protected void addRoots(TypeOracle typeOracle, SerializableTypeOracleBuilder typesSentFromDocBuilder, 
-			SerializableTypeOracleBuilder typesSentToDocBuilder) throws UnableToCompleteException
-	{
-		try
-		{
-			addRequiredRoots(logger, typeOracle, typesSentFromDocBuilder);
-			addRequiredRoots(logger, typeOracle, typesSentToDocBuilder);
-
-			addCrossDocumentRootTypes(typeOracle, typesSentFromDocBuilder, typesSentToDocBuilder);
-		}
-		catch (NotFoundException e)
-		{
-			logger.log(TreeLogger.ERROR, "Unable to find type referenced from cross document", e);
-			throw new UnableToCompleteException();
-		}
-	}	
 	
 	/**
 	 * @param paramType
@@ -203,50 +129,11 @@ public class CrossDocumentProxyCreator
 	}
 
 	/**
-	 * Creates the cross document proxy.
-	 * 
-	 * @param logger
-	 * @param context
-	 * @return a proxy class for cross document invoking.
-	 * @throws UnableToCompleteException 
-	 */
-	protected String create() throws UnableToCompleteException
-	{
-		TypeOracle typeOracle = context.getTypeOracle();
-
-		SourceWriter srcWriter = getSourceWriter();
-		if (srcWriter == null)
-		{
-			return getProxyQualifiedName();
-		}
-
-		final PropertyOracle propertyOracle = context.getPropertyOracle();
-
-		SerializableTypeOracleBuilder typesSentFromDocBuilder = new SerializableTypeOracleBuilder(logger, propertyOracle, typeOracle);
-		SerializableTypeOracleBuilder typesSentToDocBuilder = new SerializableTypeOracleBuilder(logger, propertyOracle, typeOracle);
-
-		addRoots(typeOracle, typesSentFromDocBuilder, typesSentToDocBuilder);
-
-	    SerializableTypeOracle typesSentFromDoc = typesSentFromDocBuilder.build(logger);
-	    SerializableTypeOracle typesSentToDoc = typesSentToDocBuilder.build(logger);
-		
-		generateTypeHandlers(logger, context, typesSentFromDoc, typesSentToDoc);
-
-		String controllerName = getControllerName(typeOracle);
-
-		generateProxyFields(srcWriter, controllerName);
-		generateProxyContructor(srcWriter);
-		generateProxyMethods(srcWriter, typesSentFromDoc);
-
-		srcWriter.commit(logger);
-		return getProxyQualifiedName();
-	}	
-	
-	/**
 	 * Generate the proxy constructor and delegate to the superclass constructor
 	 * using the default address for the
 	 * {@link com.google.gwt.user.client.rpc.RemoteService RemoteService}.
 	 */
+	@Override
 	protected void generateProxyContructor(SourceWriter srcWriter)
 	{
 		srcWriter.println("public " + getProxySimpleName() + "() {");
@@ -259,12 +146,15 @@ public class CrossDocumentProxyCreator
 	
 	/**
 	 * Generate any fields required by the proxy.
+	 * @throws UnableToCompleteException 
 	 */
-	protected void generateProxyFields(SourceWriter srcWriter, String controllerName)
+	@Override
+	protected void generateProxyFields(SourceWriter srcWriter) throws UnableToCompleteException
 	{
+		String controllerName = getControllerName(context.getTypeOracle());
 		// Initialize a field with binary name of the remote service interface
 		srcWriter.println("private static final String CONTROLLER_NAME = " + "\"" + controllerName + "\";");
-		String typeSerializerName = SerializationUtils.getTypeSerializerQualifiedName(crossDocumentIntf);
+		String typeSerializerName = SerializationUtils.getTypeSerializerQualifiedName(baseProxyType);
 		srcWriter.println("private static final " + typeSerializerName + " SERIALIZER = new " + typeSerializerName + "();");
 		srcWriter.println();
 	}
@@ -272,7 +162,7 @@ public class CrossDocumentProxyCreator
 	/**
 	 * Generates the client's asynchronous proxy method.
 	 */
-	protected void generateProxyMethod(SourceWriter w, SerializableTypeOracle serializableTypeOracle, JMethod method)
+	protected void generateProxyMethod(SourceWriter w, JMethod method)
 	{
 		w.println();
 
@@ -328,57 +218,12 @@ public class CrossDocumentProxyCreator
 
 	/**
 	 * @param w
-	 * @param method
-	 * @param nameFactory
-	 */
-	private void generateDoInvokeCatchBlock(SourceWriter w, JMethod method, NameFactory nameFactory)
-    {
-	    w.print("} catch (SerializationException ");
-	    String exceptionName = nameFactory.createName("ex");
-	    w.println(exceptionName + ") {");
-		w.indent();
-		w.println("throw new CrossDocumentException(ex.getMessage(), ex);");
-		w.outdent();
-	    w.print("} catch (Throwable ");
-	    exceptionName = nameFactory.createName("ex");
-	    w.println(exceptionName + ") {");
-		w.indent();
-		generateRethrowForInvocationMethod(w, method, exceptionName);
-		w.println("throw new CrossDocumentException(ex.getMessage(), ex);");
-		w.outdent();
-		w.println("}");
-    }
-
-	/**
-	 * @param w
-	 * @param method
-	 * @param exceptionName
-	 */
-	private void generateRethrowForInvocationMethod(SourceWriter w, JMethod method, String exceptionName)
-    {
-	    JType[] methodThrows = method.getThrows();
-		if (methodThrows != null)
-		{
-			for (JType jType : methodThrows)
-            {
-				String exceptionTypeName = jType.getErasedType().getQualifiedSourceName();
-				w.println("if ("+exceptionName+" instanceof "+ exceptionTypeName+"){");
-				w.indent();
-				w.println("throw ("+exceptionTypeName+")"+exceptionName+";");
-				w.outdent();
-				w.println("}");
-            }
-		}
-    }
-
-	
-	/**
-	 * @param w
 	 * @param serializableTypeOracle
 	 */
-	protected void generateProxyMethods(SourceWriter w, SerializableTypeOracle serializableTypeOracle)
+	@Override
+	protected void generateProxyMethods(SourceWriter w)
 	{
-		JMethod[] syncMethods = crossDocumentIntf.getOverridableMethods();
+		JMethod[] syncMethods = baseProxyType.getOverridableMethods();
 		for (JMethod method : syncMethods)
 		{
 			JClassType enclosingType = method.getEnclosingType();
@@ -395,10 +240,10 @@ public class CrossDocumentProxyCreator
 				}
 			}
 
-			generateProxyMethod(w, serializableTypeOracle, method);
+			generateProxyMethod(w, method);
 		}
 	}
-	
+
 	/**
 	 * Generates the signature for the proxy method
 	 * 
@@ -420,6 +265,7 @@ public class CrossDocumentProxyCreator
 		w.println();
 	}
 
+	
 	/**
 	 * @param logger
 	 * @param context
@@ -427,15 +273,16 @@ public class CrossDocumentProxyCreator
 	 * @param typesSentToBrowser
 	 * @throws UnableToCompleteException
 	 */
-	protected void generateTypeHandlers(TreeLogger logger, GeneratorContext context, SerializableTypeOracle typesSentFromBrowser,
+	@Override
+	protected void generateTypeHandlers(SerializableTypeOracle typesSentFromBrowser,
 			                            SerializableTypeOracle typesSentToBrowser) throws UnableToCompleteException
 	{
 		TypeSerializerCreator tsc = new TypeSerializerCreator(logger, typesSentFromBrowser, typesSentToBrowser, context, 
-												SerializationUtils.getTypeSerializerQualifiedName(crossDocumentIntf));
+												SerializationUtils.getTypeSerializerQualifiedName(baseProxyType));
 		tsc.realize(logger);
 
 		typeStrings = new HashMap<JType, String>(tsc.getTypeStrings());
-		typeStrings.put(crossDocumentIntf, TypeNameObfuscator.SERVICE_INTERFACE_ID);
+		typeStrings.put(baseProxyType, TypeNameObfuscator.SERVICE_INTERFACE_ID);
 	}
 	
 	/**
@@ -445,7 +292,7 @@ public class CrossDocumentProxyCreator
 	 */
 	protected String getControllerName(TypeOracle typeOracle) throws UnableToCompleteException
 	{
-		String crossDocInterfaceName = crossDocumentIntf.getQualifiedSourceName();
+		String crossDocInterfaceName = baseProxyType.getQualifiedSourceName();
 		if (!crossDocInterfaceName.endsWith("CrossDoc"))
 		{
 			logger.branch(TreeLogger.ERROR, "Cross document interface " + crossDocInterfaceName + "does not follow the name pattern for cross document objects", null);
@@ -469,13 +316,23 @@ public class CrossDocumentProxyCreator
 		
 		return controllerAnnot.value();
 	}
+
+	/**
+	 * @return
+	 */
+	protected String[] getImports()
+    {
+	    String[] imports = new String[] { getProxySupertype().getCanonicalName(), getStreamWriterClass().getCanonicalName(), SerializationStreamWriter.class.getCanonicalName(), GWT.class.getCanonicalName(),
+		        SerializationException.class.getCanonicalName(), Impl.class.getCanonicalName(), CrossDocumentException.class.getCanonicalName() };
+	    return imports;
+    }
 	
 	/**
 	 * @return the full qualified name of the proxy object.
 	 */
 	protected String getProxyQualifiedName()
 	{
-		return crossDocumentIntf.getPackage().getName() + "." + getProxySimpleName();
+		return baseProxyType.getPackage().getName() + "." + getProxySimpleName();
 	}
 	
 	/**
@@ -483,9 +340,9 @@ public class CrossDocumentProxyCreator
 	 */
 	protected String getProxySimpleName()
 	{
-		return crossDocumentIntf.getSimpleSourceName() + CROSS_DOC_SUFFIX;
+		return baseProxyType.getSimpleSourceName() + CROSS_DOC_SUFFIX;
 	}
-
+	
 	/**
 	 * @return the proxy supertype
 	 */
@@ -494,13 +351,14 @@ public class CrossDocumentProxyCreator
 	{
 		return CrossDocumentProxy.class;
 	}
-	  
+
 	/**
 	 * @return a sourceWriter for the proxy class
 	 */
+	@Override
 	protected SourceWriter getSourceWriter()
 	{
-		JPackage crossDocIntfPkg = crossDocumentIntf.getPackage();
+		JPackage crossDocIntfPkg = baseProxyType.getPackage();
 		String packageName = crossDocIntfPkg == null ? "" : crossDocIntfPkg.getName();
 		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
 
@@ -511,21 +369,20 @@ public class CrossDocumentProxyCreator
 
 		ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(packageName, getProxySimpleName());
 
-		String[] imports = new String[] { getProxySupertype().getCanonicalName(), getStreamWriterClass().getCanonicalName(), SerializationStreamWriter.class.getCanonicalName(), GWT.class.getCanonicalName(),
-		        SerializationException.class.getCanonicalName(), Impl.class.getCanonicalName(), CrossDocumentException.class.getCanonicalName() };
+		String[] imports = getImports();
 		for (String imp : imports)
 		{
 			composerFactory.addImport(imp);
 		}
 
-		composerFactory.setSuperclass(getProxySupertype().getSimpleName() + "<" + crossDocumentIntf.getSimpleSourceName() + ">");
-		composerFactory.addImplementedInterface(crossDocumentIntf.getSimpleSourceName());
+		composerFactory.setSuperclass(getProxySupertype().getSimpleName() + "<" + baseProxyType.getSimpleSourceName() + ">");
+		composerFactory.addImplementedInterface(baseProxyType.getSimpleSourceName());
 
 		addAdditionalInterfaces(composerFactory);
 
 		return composerFactory.createSourceWriter(context, printWriter);
 	}
-
+	  
 	/**
 	 * @return the class used for serialization.
 	 */
@@ -550,7 +407,7 @@ public class CrossDocumentProxyCreator
 			PrintWriter pw = new PrintWriter(osw);
 
 			JType[] serializableTypes = unionOfTypeArrays(serializationSto.getSerializableTypes(), deserializationSto.getSerializableTypes(), 
-														new JType[] { crossDocumentIntf });
+														new JType[] { baseProxyType });
 
 			for (int i = 0; i < serializableTypes.length; ++i)
 			{
@@ -604,11 +461,11 @@ public class CrossDocumentProxyCreator
 				os.write(serializationPolicyFileContents);
 				GeneratedResource resource = context.commitResource(logger, os);
 
-				context.commitArtifact(logger, new RpcPolicyFileArtifact(crossDocumentIntf.getQualifiedSourceName(), resource));
+				context.commitArtifact(logger, new RpcPolicyFileArtifact(baseProxyType.getQualifiedSourceName(), resource));
 			}
 			else
 			{
-				logger.log(TreeLogger.TRACE, "SerializationPolicy file for RemoteService '" + crossDocumentIntf.getQualifiedSourceName() + "' already exists; no need to rewrite it.", null);
+				logger.log(TreeLogger.TRACE, "SerializationPolicy file for RemoteService '" + baseProxyType.getQualifiedSourceName() + "' already exists; no need to rewrite it.", null);
 			}
 
 			return serializationPolicyName;
@@ -624,6 +481,29 @@ public class CrossDocumentProxyCreator
 			throw new UnableToCompleteException();
 		}
 	}
+
+	/**
+	 * @param w
+	 * @param method
+	 * @param nameFactory
+	 */
+	private void generateDoInvokeCatchBlock(SourceWriter w, JMethod method, NameFactory nameFactory)
+    {
+	    w.print("} catch (SerializationException ");
+	    String exceptionName = nameFactory.createName("ex");
+	    w.println(exceptionName + ") {");
+		w.indent();
+		w.println("throw new CrossDocumentException(ex.getMessage(), ex);");
+		w.outdent();
+	    w.print("} catch (Throwable ");
+	    exceptionName = nameFactory.createName("ex");
+	    w.println(exceptionName + ") {");
+		w.indent();
+		generateRethrowForInvocationMethod(w, method, exceptionName);
+		w.println("throw new CrossDocumentException(ex.getMessage(), ex);");
+		w.outdent();
+		w.println("}");
+    }
 
 	/**
 	 * @param w
@@ -683,6 +563,28 @@ public class CrossDocumentProxyCreator
 			JType throwType = methodThrow.getErasedType();
 			w.print(throwType.getQualifiedSourceName());
         }
+    }
+
+	/**
+	 * @param w
+	 * @param method
+	 * @param exceptionName
+	 */
+	private void generateRethrowForInvocationMethod(SourceWriter w, JMethod method, String exceptionName)
+    {
+	    JType[] methodThrows = method.getThrows();
+		if (methodThrows != null)
+		{
+			for (JType jType : methodThrows)
+            {
+				String exceptionTypeName = jType.getErasedType().getQualifiedSourceName();
+				w.println("if ("+exceptionName+" instanceof "+ exceptionTypeName+"){");
+				w.indent();
+				w.println("throw ("+exceptionTypeName+")"+exceptionName+";");
+				w.outdent();
+				w.println("}");
+            }
+		}
     }
 
 	/**

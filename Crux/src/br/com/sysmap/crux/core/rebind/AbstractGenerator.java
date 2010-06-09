@@ -34,14 +34,14 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  */
 public abstract class AbstractGenerator extends Generator
 {
-	protected GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
+	protected static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 
 	/**
 	 * 
 	 * @param handlerClass
 	 * @return
 	 */
-	protected String getClassSourceName(Class<?> handlerClass)
+	protected static String getClassSourceName(Class<?> handlerClass)
 	{
 		return ClassUtils.getClassSourceName(handlerClass);
 	}

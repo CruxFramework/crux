@@ -45,6 +45,7 @@ public class SerializationUtils {
   };
   static final String GENERATED_FIELD_SERIALIZER_SUFFIX = "_FieldSerializer";
   static final String TYPE_SERIALIZER_SUFFIX = "_TypeSerializer";
+  static final String TYPE_DESERIALIZER_SUFFIX = "_TypeDeserializer";
   static final Set<String> TYPES_WHOSE_IMPLEMENTATION_IS_EXCLUDED_FROM_SIGNATURES = new HashSet<String>();
 
   static {
@@ -168,6 +169,30 @@ public class SerializationUtils {
     }
   }
 
+
+  /**
+   * Returns the qualified name of the type deserializer class for the given
+   * interface.
+   * 
+   * @param serviceIntf service interface
+   * @return name of the type serializer that handles the service interface
+   */
+  public static String getTypeDeserializerQualifiedName(JClassType serviceIntf)
+      throws IllegalArgumentException {
+    if (serviceIntf.isInterface() == null) {
+      throw new IllegalArgumentException(serviceIntf.getQualifiedSourceName()
+          + " is not a service interface");
+    }
+
+    String[] name = Shared.synthesizeTopLevelClassName(serviceIntf,
+    		TYPE_DESERIALIZER_SUFFIX);
+    if (name[0].length() > 0) {
+      return name[0] + "." + name[1];
+    } else {
+      return name[1];
+    }
+  }
+  
   /**
    * Returns the simple name of the type serializer class for the given service
    * interface.

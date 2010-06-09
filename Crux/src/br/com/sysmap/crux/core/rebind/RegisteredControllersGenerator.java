@@ -16,8 +16,6 @@
 package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,16 +23,13 @@ import java.util.Map;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
-import br.com.sysmap.crux.core.client.controller.Expose;
-import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Global;
-import br.com.sysmap.crux.core.client.controller.Validate;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
+import br.com.sysmap.crux.core.rebind.controller.ControllerProxyCreator;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
-import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -55,7 +50,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class RegisteredControllersGenerator extends AbstractRegisteredClientInvokableGenerator
+public class RegisteredControllersGenerator extends AbstractRegisteredElementsGenerator
 {
 	
 	/**
@@ -92,12 +87,13 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 		Map<String, String> controllerClassNames = new HashMap<String, String>();
 		for (Screen screen : screens)
 		{
-			generateControllersForScreen(logger, sourceWriter, screen, controllerClassNames, packageName+"."+implClassName);
+			generateControllersForScreen(logger, sourceWriter, screen, controllerClassNames, packageName+"."+implClassName, context);
 		}
 
 		generateConstructor(sourceWriter, implClassName, controllerClassNames);
 		generateValidateControllerMethod(sourceWriter);
 		generateControllerInvokeMethod(sourceWriter, controllerClassNames);
+		generateCrossDocInvokeMethod(sourceWriter, controllerClassNames);//TODO filtrar as classes (controllerClassNames)
 		generateRegisterControllerMethod(sourceWriter); 
 		
 		
@@ -156,6 +152,13 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 		sourceWriter.println("if (!controllers.containsKey(controller)){");
 		sourceWriter.println("controllers.put(controller, controllerInvoker);");
 		sourceWriter.println("}");
+		sourceWriter.println("}");
+	}
+	
+	private void generateCrossDocInvokeMethod(SourceWriter sourceWriter, Map<String, String> controllerClassNames)
+	{
+		sourceWriter.println("public String invokeCrossDocument(String serializedData){");
+		sourceWriter.println("return null;");
 		sourceWriter.println("}");
 	}
 	
@@ -229,16 +232,17 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 	 * @param logger
 	 * @param sourceWriter
 	 * @param screen
+	 * @param context 
 	 */
 	private void generateControllersForScreen(TreeLogger logger, SourceWriter sourceWriter, Screen screen, 
-			Map<String, String> controllerClassNames, String implClassName)
+			Map<String, String> controllerClassNames, String implClassName, GeneratorContext context)
 	{
 		Iterator<String> controllers = screen.iterateControllers();
 		
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			generateControllerBlock(logger, screen, sourceWriter, controller, controllerClassNames);
+			generateControllerBlock(logger, sourceWriter, controller, controllerClassNames, context);
 		}		
 
 		controllers = ClientControllers.iterateGlobalControllers();
@@ -252,7 +256,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 				String controllerClassName = getClassSourceName(controllerClass).replace('.', '/');
 				if (Modules.getInstance().isClassOnModulePath(controllerClassName, screen.getModule()))
 				{
-					generateControllerBlock(logger, screen, sourceWriter, controller, controllerClassNames);
+					generateControllerBlock(logger, sourceWriter, controller, controllerClassNames, context);
 				}
 			}
 		}		
@@ -262,18 +266,17 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 	 * Generate the block to include controller object.
 	 * @param logger
 	 * @param sourceWriter
-	 * @param widgetId
-	 * @param event
 	 * @param added
+	 * @param context 
 	 */
-	private void generateControllerBlock(TreeLogger logger, Screen screen, SourceWriter sourceWriter, String controller, 
-			Map<String, String> added)
+	private void generateControllerBlock(TreeLogger logger, SourceWriter sourceWriter, String controller, 
+			Map<String, String> added, GeneratorContext context)
 	{
 		try
 		{
 			if (!added.containsKey(controller) && ClientControllers.getController(controller)!= null)
 			{
-				String genClass = generateControllerInvokerClass(logger,screen,sourceWriter,ClientControllers.getController(controller));
+				String genClass = new ControllerProxyCreator(logger, context, ClientControllers.getController(controller)).create();
 				added.put(controller, genClass);
 			}
 		}
@@ -289,12 +292,15 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 	 * @param sourceWriter
 	 * @param controllerClass
 	 * @return
-	 */
+	 *
 	private String generateControllerInvokerClass(TreeLogger logger, Screen screen, SourceWriter sourceWriter, Class<?> controllerClass)
 	{
 		String className = controllerClass.getSimpleName();
-		sourceWriter.println("protected class "+className+"Wrapper extends " + getClassSourceName(controllerClass)
-				+ " implements br.com.sysmap.crux.core.client.event.ControllerInvoker{");
+		
+		boolean isCrossDoc = (CrossDocument.class.isAssignableFrom(controllerClass));
+		String baseInterface = getClassSourceName(isCrossDoc?CrossDocumentInvoker.class:ControllerInvoker.class);
+		sourceWriter.print("protected class "+className+"Wrapper extends " + getClassSourceName(controllerClass)
+				+ " implements " + baseInterface+"{");
 		
 		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 		boolean singleton = (controllerAnnot == null || controllerAnnot.statefull());
@@ -309,12 +315,17 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 		generateScreenUpdateWidgetsFunction(logger, screen, controllerClass, sourceWriter);
 		generateControllerUpdateObjectsFunction(logger, screen, controllerClass, sourceWriter);
 		generateIsAutoBindEnabledMethod(sourceWriter, autoBindEnabled);
-				
+		
+		if (isCrossDoc)
+		{
+			generateCrossDocInvokeMethod(logger, sourceWriter, controllerClass, className, singleton, autoBindEnabled);
+		}
 		sourceWriter.println("}");
 		
 		return className+"Wrapper";
 	}
-
+*/
+	
 	/**
 	 * @param logger
 	 * @param sourceWriter
@@ -323,7 +334,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 	 * @param methods
 	 * @param singleton
 	 * @param autoBindEnabled
-	 */
+	 *
 	private void generateInvokeMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> controllerClass, 
 			          String className, boolean singleton, boolean autoBindEnabled)
     {
@@ -386,7 +397,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 	 * @param sourceWriter
 	 * @param controllerClass
 	 * @param method
-	 */
+	 *
 	private void generateInvokeBlockForMethod(TreeLogger logger,
             SourceWriter sourceWriter, Class<?> controllerClass, Method method)
     {
@@ -454,7 +465,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 	/**
 	 * @param method
 	 * @return
-	 */
+	 *
 	private boolean isAllowMultipleClicks(Method method)
     {
 	    Expose exposeAnnot = method.getAnnotation(Expose.class);
@@ -478,7 +489,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 	 * @param method
 	 * @param validateMethod
 	 * @param sourceWriter
-	 */
+	 *
 	private void generateValidateMethodCall(TreeLogger logger, Class<?> controllerClass, Method method, String validateMethod, SourceWriter sourceWriter)
 	{
 		Class<?>[] params = method.getParameterTypes();
@@ -509,7 +520,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 	 * Generates the controller method call.
 	 * @param method
 	 * @param sourceWriter
-	 */
+	 *
 	private void generateMethodCall(Method method, SourceWriter sourceWriter)
 	{
 		Class<?>[] params = method.getParameterTypes();
@@ -528,7 +539,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 	 * generated invoker class
 	 * @param method
 	 * @return
-	 */
+	 *
 	private boolean isControllerMethodSignatureValid(Method method)
 	{
 		if (!Modifier.isPublic(method.getModifiers()))
@@ -560,5 +571,5 @@ public class RegisteredControllersGenerator extends AbstractRegisteredClientInvo
 		}
 		
 		return true;
-	}
+	}*/
 }

@@ -55,7 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
-public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClientInvokableGenerator
+public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElementsGenerator
 {
 	@Override
 	protected void generateClass(TreeLogger logger, GeneratorContext context,JClassType classType, List<Screen> screens) 
@@ -199,14 +199,14 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		{
 			generateLoadFunction(logger, screen, dataSourceClass, sourceWriter, autoBind);
 		}
-		generateUpdateFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
-		generateScreenUpdateWidgetsFunction(logger, screen, dataSourceClass, sourceWriter);
-		generateControllerUpdateObjectsFunction(logger, screen, dataSourceClass, sourceWriter);
+		generateUpdateFunction(logger, dataSourceClass, sourceWriter, columnsData);
+		ClientInvokableGeneratorHelper.generateScreenUpdateWidgetsFunction(logger, dataSourceClass, sourceWriter);
+		ClientInvokableGeneratorHelper.generateControllerUpdateObjectsFunction(logger, dataSourceClass, sourceWriter);
 		if (BindableDataSource.class.isAssignableFrom(dataSourceClass))
 		{
 			generateGetBindedObjectFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
 		}
-		generateIsAutoBindEnabledMethod(sourceWriter, autoBind);
+		ClientInvokableGeneratorHelper.generateIsAutoBindEnabledMethod(sourceWriter, autoBind);
 		
 		sourceWriter.println("}");
 		return className;
@@ -241,11 +241,10 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 	/**
 	 * 
 	 * @param logger
-	 * @param screen
 	 * @param dataSourceClass
 	 * @param sourceWriter
 	 */
-	private void generateUpdateFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+	private void generateUpdateFunction(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass, 
 			SourceWriter sourceWriter, ColumnsData columnsData)
 	{
 		try
@@ -289,7 +288,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 				for (String name:  columnsData.names)
 				{
 					sourceWriter.println("ret[i].addValue("+
-							getFieldValueGet(logger, dataType, ClassUtils.getDeclaredField(dataType, name),	"data[i]", false)+
+							ClientInvokableGeneratorHelper.getFieldValueGet(logger, dataType, ClassUtils.getDeclaredField(dataType, name),	"data[i]", false)+
 							");");
 				}
 				
@@ -331,7 +330,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 				String name = columnsData.names[i];
 				Class<?> type = (columnsData.types.length > 0? columnsData.types[i]:String.class);
 				Field field = ClassUtils.getDeclaredField(dataType, name);
-				generateFieldValueSet(logger, dataType, field, "ret", 
+				ClientInvokableGeneratorHelper.generateFieldValueSet(logger, dataType, field, "ret", 
 									"("+getParameterDeclarationWithPrimitiveWrappers(type)+")record.get("+i+")", 
 									sourceWriter, false);
 			}
@@ -361,7 +360,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 
 		for (int i = 0; i < identifier.length; i++)
 		{
-			result.append("+"+getFieldValueGet(logger, dataType, ClassUtils.getDeclaredField(dataType, identifier[i]), parentVariable, false));
+			result.append("+"+ClientInvokableGeneratorHelper.getFieldValueGet(logger, dataType, ClassUtils.getDeclaredField(dataType, identifier[i]), parentVariable, false));
 		}
 		return result.toString();
 	}
@@ -428,7 +427,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 			generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, getDtoTypeFromClass(logger, dataSourceClass), 
 											dataSourceClass.getName(), ret);
 		}
-		generateAutoCreateFields(logger, dataSourceClass, sourceWriter, "this");
+		ClientInvokableGeneratorHelper.generateAutoCreateFields(logger, dataSourceClass, sourceWriter, "this");
 		sourceWriter.println("}");
 		
 		return ret;
@@ -519,7 +518,8 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredClie
 		boolean mustInclude = true;
 		if (mustInclude)
 		{
-			mustInclude = isPropertyVisibleToRead(dtoType, field) && isPropertyVisibleToWrite(dtoType, field);
+			mustInclude = ClientInvokableGeneratorHelper.isPropertyVisibleToRead(dtoType, field) && 
+			              ClientInvokableGeneratorHelper.isPropertyVisibleToWrite(dtoType, field);
 		}
 		if (mustInclude)
 		{

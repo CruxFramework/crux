@@ -38,9 +38,6 @@ public interface Crux
 	String enableChildrenWindowsDebug();
 
 	@DefaultServerMessage("true")
-	String allowAutoBindWithNonDeclarativeWidgets();
-
-	@DefaultServerMessage("true")
 	String enableWebRootScannerCache();
 
 	@DefaultServerMessage("true")
