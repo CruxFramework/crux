@@ -24,9 +24,10 @@ import java.util.Map;
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Global;
-import br.com.sysmap.crux.core.client.event.CruxEvent;
+import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocument;
+import br.com.sysmap.crux.core.client.event.ControllerInvoker;
+import br.com.sysmap.crux.core.client.event.CrossDocumentInvoker;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
-import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.rebind.controller.ControllerProxyCreator;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
@@ -36,10 +37,6 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.ui.HasText;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -69,15 +66,11 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
 		composer.addImport(GWT.class.getName());
 		composer.addImport(br.com.sysmap.crux.core.client.screen.Screen.class.getName());
-		composer.addImport(CruxEvent.class.getName());
-		composer.addImport(GwtEvent.class.getName());
-		composer.addImport(HasValue.class.getName());
-		composer.addImport(HasText.class.getName());
-		composer.addImport(HasFormatter.class.getName());
-		composer.addImport(Widget.class.getName());
 		composer.addImport(RunAsyncCallback.class.getName());
 		composer.addImport(EventProcessor.class.getName());
 		composer.addImport(Crux.class.getName());
+		composer.addImport(ControllerInvoker.class.getName());
+		composer.addImport(CrossDocumentInvoker.class.getName());
 		
 		composer.addImplementedInterface("br.com.sysmap.crux.core.client.event.RegisteredControllers");
 		
@@ -85,15 +78,16 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		sourceWriter.println("private java.util.Map<String, ControllerInvoker> controllers = new java.util.HashMap<String, ControllerInvoker>();");
 
 		Map<String, String> controllerClassNames = new HashMap<String, String>();
+		Map<String, String> crossDocsClassNames = new HashMap<String, String>();
 		for (Screen screen : screens)
 		{
-			generateControllersForScreen(logger, sourceWriter, screen, controllerClassNames, packageName+"."+implClassName, context);
+			generateControllersForScreen(logger, sourceWriter, screen, controllerClassNames, crossDocsClassNames, packageName+"."+implClassName, context);
 		}
 
 		generateConstructor(sourceWriter, implClassName, controllerClassNames);
 		generateValidateControllerMethod(sourceWriter);
 		generateControllerInvokeMethod(sourceWriter, controllerClassNames);
-		generateCrossDocInvokeMethod(sourceWriter, controllerClassNames);//TODO filtrar as classes (controllerClassNames)
+		generateCrossDocInvokeMethod(sourceWriter, crossDocsClassNames);
 		generateRegisterControllerMethod(sourceWriter); 
 		
 		
@@ -132,8 +126,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		for (String controller : controllerClassNames.keySet()) 
 		{
 			Class<?> controllerClass = ClientControllers.getController(controller);
-			Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
-			if (controllerAnnot != null && !controllerAnnot.lazy())
+			if (!isControllerLazy(controllerClass))
 			{
 				Global globalAnnot = controllerClass.getAnnotation(Global.class);
 				if (globalAnnot == null)
@@ -155,10 +148,54 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		sourceWriter.println("}");
 	}
 	
-	private void generateCrossDocInvokeMethod(SourceWriter sourceWriter, Map<String, String> controllerClassNames)
+	private void generateCrossDocInvokeMethod(SourceWriter sourceWriter, Map<String, String> crossDocsClassNames)
 	{
 		sourceWriter.println("public String invokeCrossDocument(String serializedData){");
+		sourceWriter.indent();
+
+		sourceWriter.println("if (serializedData != null){");
+		sourceWriter.indent();
+
+		sourceWriter.println("int idx = serializedData.indexOf('|');");
+		sourceWriter.println("if (idx > 0){");
+		sourceWriter.indent();
+		
+		sourceWriter.println("String controllerName = null;");
+		sourceWriter.println("try{");
+		sourceWriter.indent();
+		
+		sourceWriter.println("controllerName = serializedData.substring(0,idx);");
+		sourceWriter.println("serializedData = serializedData.substring(idx+1);");
+		sourceWriter.println("CrossDocumentInvoker crossDoc = (CrossDocumentInvoker)controllers.get(controllerName);");
+		sourceWriter.println("if (crossDoc==null){");
+		sourceWriter.indent();
+		sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerNotFound(controllerName));");
 		sourceWriter.println("return null;");
+		sourceWriter.outdent();
+		sourceWriter.println("} else {");
+		sourceWriter.indent();
+		
+		sourceWriter.println("return crossDoc.invoke(serializedData);");
+		
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+		
+		sourceWriter.outdent();
+		sourceWriter.println("} catch(ClassCastException ex){");
+		sourceWriter.indent();
+		sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().crossDocumentInvalidCrossDocumentController(controllerName));");
+		sourceWriter.println("return null;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+		
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+		
+		sourceWriter.println("return null;");
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 	
@@ -177,7 +214,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		sourceWriter.println("}");
 		sourceWriter.println("catch (Exception e)"); 
 		sourceWriter.println("{");
-		sourceWriter.println("eventProcessor._exception = e;");
+		sourceWriter.println("eventProcessor.setException(e);");
 		sourceWriter.println("}");
 		sourceWriter.println("return;");
 		sourceWriter.println("}");
@@ -187,7 +224,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		{
 			Class<?> controllerClass = ClientControllers.getController(controller);
 			Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
-			if (controllerAnnot == null || controllerAnnot.lazy())
+			if (isControllerLazy(controllerClass))
 			{
 				if (!first)
 				{
@@ -226,6 +263,17 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		
 		sourceWriter.println("}");
 	}
+
+
+	/**
+	 * @param controllerClass
+	 * @return true if this controller can be loaded in lazy mode
+	 */
+	private boolean isControllerLazy(Class<?> controllerClass)
+    {
+		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
+	    return (controllerAnnot == null || controllerAnnot.lazy()) && !CrossDocument.class.isAssignableFrom(controllerClass);
+    }
 	
 	/**
 	 * generate wrapper classes for event handling.
@@ -235,14 +283,14 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 	 * @param context 
 	 */
 	private void generateControllersForScreen(TreeLogger logger, SourceWriter sourceWriter, Screen screen, 
-			Map<String, String> controllerClassNames, String implClassName, GeneratorContext context)
+			Map<String, String> controllerClassNames, Map<String, String> crossDocsClassNames, String implClassName, GeneratorContext context)
 	{
 		Iterator<String> controllers = screen.iterateControllers();
 		
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			generateControllerBlock(logger, sourceWriter, controller, controllerClassNames, context);
+			generateControllerBlock(logger, sourceWriter, controller, controllerClassNames, crossDocsClassNames, context);
 		}		
 
 		controllers = ClientControllers.iterateGlobalControllers();
@@ -256,7 +304,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 				String controllerClassName = getClassSourceName(controllerClass).replace('.', '/');
 				if (Modules.getInstance().isClassOnModulePath(controllerClassName, screen.getModule()))
 				{
-					generateControllerBlock(logger, sourceWriter, controller, controllerClassNames, context);
+					generateControllerBlock(logger, sourceWriter, controller, controllerClassNames, crossDocsClassNames, context);
 				}
 			}
 		}		
@@ -266,18 +314,23 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 	 * Generate the block to include controller object.
 	 * @param logger
 	 * @param sourceWriter
-	 * @param added
+	 * @param controllersAdded
 	 * @param context 
 	 */
 	private void generateControllerBlock(TreeLogger logger, SourceWriter sourceWriter, String controller, 
-			Map<String, String> added, GeneratorContext context)
+			Map<String, String> controllersAdded, Map<String, String> crossDocsAdded, GeneratorContext context)
 	{
 		try
 		{
-			if (!added.containsKey(controller) && ClientControllers.getController(controller)!= null)
+			Class<?> controllerClass = ClientControllers.getController(controller);
+			if (!controllersAdded.containsKey(controller) && controllerClass!= null)
 			{
-				String genClass = new ControllerProxyCreator(logger, context, ClientControllers.getController(controller)).create();
-				added.put(controller, genClass);
+				String genClass = new ControllerProxyCreator(logger, context, controllerClass).create();
+				controllersAdded.put(controller, genClass);
+				if (CrossDocument.class.isAssignableFrom(controllerClass))
+				{
+					crossDocsAdded.put(controller, genClass);
+				}
 			}
 		}
 		catch (Throwable e) 
@@ -285,291 +338,4 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredController(controller, e.getLocalizedMessage()), e);
 		}
 	}
-	
-	/**
-	 * Create a new class to invoke the caller method by its name
-	 * @param logger
-	 * @param sourceWriter
-	 * @param controllerClass
-	 * @return
-	 *
-	private String generateControllerInvokerClass(TreeLogger logger, Screen screen, SourceWriter sourceWriter, Class<?> controllerClass)
-	{
-		String className = controllerClass.getSimpleName();
-		
-		boolean isCrossDoc = (CrossDocument.class.isAssignableFrom(controllerClass));
-		String baseInterface = getClassSourceName(isCrossDoc?CrossDocumentInvoker.class:ControllerInvoker.class);
-		sourceWriter.print("protected class "+className+"Wrapper extends " + getClassSourceName(controllerClass)
-				+ " implements " + baseInterface+"{");
-		
-		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
-		boolean singleton = (controllerAnnot == null || controllerAnnot.statefull());
-		boolean autoBindEnabled = (controllerAnnot == null || controllerAnnot.autoBind());
-		if (singleton)
-		{
-			sourceWriter.println(className+"Wrapper wrapper = null;");
-		}
-		sourceWriter.println(Map.class.getName()+"<String, Boolean> __runningMethods = new "+HashMap.class.getName()+"<String, Boolean>();");
-
-		generateInvokeMethod(logger, sourceWriter, controllerClass, className, singleton, autoBindEnabled);
-		generateScreenUpdateWidgetsFunction(logger, screen, controllerClass, sourceWriter);
-		generateControllerUpdateObjectsFunction(logger, screen, controllerClass, sourceWriter);
-		generateIsAutoBindEnabledMethod(sourceWriter, autoBindEnabled);
-		
-		if (isCrossDoc)
-		{
-			generateCrossDocInvokeMethod(logger, sourceWriter, controllerClass, className, singleton, autoBindEnabled);
-		}
-		sourceWriter.println("}");
-		
-		return className+"Wrapper";
-	}
-*/
-	
-	/**
-	 * @param logger
-	 * @param sourceWriter
-	 * @param controllerClass
-	 * @param className
-	 * @param methods
-	 * @param singleton
-	 * @param autoBindEnabled
-	 *
-	private void generateInvokeMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> controllerClass, 
-			          String className, boolean singleton, boolean autoBindEnabled)
-    {
-	    sourceWriter.println("public void invoke(String metodo, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception{ ");
-		sourceWriter.println("boolean __runMethod = true;");
-		
-		if (singleton)
-		{
-			sourceWriter.println("if (this.wrapper == null){");
-			sourceWriter.println("this.wrapper = new "+className+"Wrapper();");
-			generateAutoCreateFields(logger, controllerClass, sourceWriter, "wrapper");
-			sourceWriter.println("}");
-		}
-		else
-		{
-			sourceWriter.println(className+"Wrapper wrapper = new "+className+"Wrapper();");
-			generateAutoCreateFields(logger, controllerClass, sourceWriter, "wrapper");
-		}
-		
-
-		if (autoBindEnabled)
-		{
-			sourceWriter.println("if (!__runningMethods.containsKey(metodo)){");
-			sourceWriter.println("wrapper.updateControllerObjects();");
-			sourceWriter.println("}");
-		}
-		
-		boolean first = true;
-		Method[] methods = controllerClass.getMethods(); 
-		for (Method method: methods) 
-		{
-			if (isControllerMethodSignatureValid(method))
-			{
-				if (!first)
-				{
-					sourceWriter.print("else ");
-				}
-				
-				generateInvokeBlockForMethod(logger, sourceWriter, controllerClass, method);
-
-				first = false;
-			}
-		}
-		if (!first)
-		{
-			sourceWriter.println(" else ");
-		}
-		sourceWriter.println("throw new Exception(\""+messages.errorInvokingGeneratedMethod()+" \"+metodo);");
-
-		if (!first && autoBindEnabled)
-		{
-			sourceWriter.println("wrapper.updateScreenWidgets();");
-		}		
-		
-		sourceWriter.println("}");
-    }
-
-	/**
-	 * @param logger
-	 * @param sourceWriter
-	 * @param controllerClass
-	 * @param method
-	 *
-	private void generateInvokeBlockForMethod(TreeLogger logger,
-            SourceWriter sourceWriter, Class<?> controllerClass, Method method)
-    {
-	    if (method.getAnnotation(ExposeOutOfModule.class) != null)
-	    {
-	    	sourceWriter.println("if (\""+method.getName()+"\".equals(metodo)) {");
-	    }
-	    else
-	    {
-	    	sourceWriter.println("if (\""+method.getName()+"\".equals(metodo) && !fromOutOfModule) {");
-	    }
-	    
-	    boolean allowMultipleClicks = isAllowMultipleClicks(method);
-	    if (!allowMultipleClicks)
-	    {
-			sourceWriter.println("if (!__runningMethods.containsKey(metodo)){");
-	    	sourceWriter.println("__runningMethods.put(metodo,true);");
-	    	sourceWriter.println("try{");
-	    }
-	    
-	    Validate annot = method.getAnnotation(Validate.class);
-	    if (annot != null)
-	    {
-	    	sourceWriter.println("try{");
-	    	String validateMethod = annot.value();
-	    	if (validateMethod == null || validateMethod.length() == 0)
-	    	{
-	    		String methodName = method.getName();
-	    		methodName = Character.toUpperCase(methodName.charAt(0)) + methodName.substring(1);
-	    		validateMethod = "validate"+ methodName;
-	    	}
-	    	generateValidateMethodCall(logger, controllerClass, method, validateMethod, sourceWriter);
-	    	sourceWriter.println("}catch (Throwable e){");
-	    	sourceWriter.println("__runMethod = false;");
-	    	sourceWriter.println("eventProcessor._validationMessage = e.getMessage();");
-	    	sourceWriter.println("}");
-	    }
-	    sourceWriter.println("if (__runMethod){");
-	    sourceWriter.println("try{");
-	    
-	    if (!method.getReturnType().getName().equals("void") && 
-	    	!method.getReturnType().getName().equals("java.lang.Void"))
-	    {
-	    	sourceWriter.println("eventProcessor._hasReturn = true;");
-	    	sourceWriter.println("eventProcessor._returnValue = ");
-	    }
-	    generateMethodCall(method, sourceWriter);
-	    
-	    sourceWriter.println("}catch (Throwable e){");
-	    sourceWriter.println("eventProcessor._exception = e;");
-	    sourceWriter.println("}");
-	    sourceWriter.println("}");
-
-	    if (!allowMultipleClicks)
-	    {
-	    	sourceWriter.println("}finally{");
-	    	sourceWriter.println("__runningMethods.remove(metodo);");
-	    	sourceWriter.println("}");
-	    	sourceWriter.println("}");
-	    }
-	    
-	    sourceWriter.println("}");
-    }
-	
-	/**
-	 * @param method
-	 * @return
-	 *
-	private boolean isAllowMultipleClicks(Method method)
-    {
-	    Expose exposeAnnot = method.getAnnotation(Expose.class);
-	    if (exposeAnnot != null)
-	    {
-	    	return exposeAnnot.allowMultipleCalls();
-	    }
-		
-	    ExposeOutOfModule exposeOutAnnot = method.getAnnotation(ExposeOutOfModule.class);
-	    if (exposeOutAnnot != null)
-	    {
-	    	return exposeOutAnnot.allowMultipleCalls();
-	    }
-		return false;
-    }
-
-	/**
-	 * 
-	 * @param logger
-	 * @param controllerClass
-	 * @param method
-	 * @param validateMethod
-	 * @param sourceWriter
-	 *
-	private void generateValidateMethodCall(TreeLogger logger, Class<?> controllerClass, Method method, String validateMethod, SourceWriter sourceWriter)
-	{
-		Class<?>[] params = method.getParameterTypes();
-		try
-		{
-			Method validate = null;
-			if (params != null && params.length == 1)
-			{
-				validate = ClassUtils.getMethod(controllerClass, validateMethod, params[0]);
-				if(validate == null)
-				{
-					validate = ClassUtils.getMethod(controllerClass, validateMethod, new Class[]{});
-				}
-			}
-			else
-			{
-				validate = ClassUtils.getMethod(controllerClass, validateMethod, new Class[]{});
-			}
-			generateMethodCall(validate, sourceWriter);
-		}
-		catch (Exception e)
-		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredControllerInvalidValidateMethod(validateMethod), e);
-		}
-	}
-
-	/** 
-	 * Generates the controller method call.
-	 * @param method
-	 * @param sourceWriter
-	 *
-	private void generateMethodCall(Method method, SourceWriter sourceWriter)
-	{
-		Class<?>[] params = method.getParameterTypes();
-		if (params != null && params.length == 1)
-		{
-			sourceWriter.print("wrapper."+method.getName()+"(("+getClassSourceName(params[0])+")sourceEvent);");
-		}
-		else 
-		{
-			sourceWriter.print("wrapper."+method.getName()+"();");
-		}
-	}
-	
-	/**
-	 * Verify if a method must be included in the list of callable methods in the 
-	 * generated invoker class
-	 * @param method
-	 * @return
-	 *
-	private boolean isControllerMethodSignatureValid(Method method)
-	{
-		if (!Modifier.isPublic(method.getModifiers()))
-		{
-			return false;
-		}
-		
-		Class<?>[] parameters = method.getParameterTypes();
-		if (parameters != null && parameters.length != 0 && parameters.length != 1)
-		{
-			return false;
-		}
-		if (parameters != null && parameters.length == 1)
-		{
-			if (!GwtEvent.class.isAssignableFrom(parameters[0]) && !CruxEvent.class.isAssignableFrom(parameters[0]))
-			{
-				return false;
-			}
-		}
-		
-		if (method.getDeclaringClass().equals(Object.class))
-		{
-			return false;
-		}
-		
-		if (method.getAnnotation(Expose.class) == null && method.getAnnotation(ExposeOutOfModule.class) == null)
-		{
-			return false;
-		}
-		
-		return true;
-	}*/
 }

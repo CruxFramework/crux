@@ -180,28 +180,17 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		w.println("try {");
 		w.indent();
 
-		w.println(streamWriterName + ".writeString(CONTROLLER_NAME+\"." + method.getName() + "\");");
-
 		JParameter[] params = method.getParameters();
-		w.println(streamWriterName + ".writeInt(" + params.length + ");");
-		for (JParameter param : params)
-		{
-			JType paramType = param.getType().getErasedType();
-			String typeNameExpression = computeTypeNameExpression(paramType);
-			assert typeNameExpression != null : "Could not compute a type name for " + paramType.getQualifiedSourceName();
-			w.println(streamWriterName + ".writeString(" + typeNameExpression + ");");
-		}
-
 		for (int i = 0; i < params.length ; ++i)
 		{
-			JParameter asyncParam = params[i];
+			JParameter param = params[i];
 			w.print(streamWriterName + ".");
-			w.print(Shared.getStreamWriteMethodNameFor(asyncParam.getType()));
-			w.println("(" + asyncParam.getName() + ");");
+			w.print(Shared.getStreamWriteMethodNameFor(param.getType()));
+			w.println("(" + param.getName() + ");");
 		}
 
 		String payloadName = nameFactory.createName("payload");
-		w.println("String " + payloadName + " = " + streamWriterName + ".toString();");
+		w.println("String " + payloadName + " = CONTROLLER_NAME+\"|" + getJsniSimpleSignature(method) + "|\"+"+ streamWriterName + ".toString();");
 
 		if (returnType != JPrimitiveType.VOID)
 		{

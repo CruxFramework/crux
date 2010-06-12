@@ -47,7 +47,6 @@ public interface Crux
 	String enableHotDeploymentForWidgetFactories();
 	
 	void setEnableWebRootScannerCache(Boolean value);
-	void setAllowAutoBindWithNonDeclarativeWidgets(Boolean value);
 	void setEnableChildrenWindowsDebug(Boolean value);
 	void setWrapSiblingWidgets(Boolean value);
 	void setClassPathResolver(String value);
@@ -56,4 +55,5 @@ public interface Crux
 	void setServiceFactory(String value);
 	void setEnableHotDeploymentForWebDirs(String value);
 	void setEnableHotDeploymentForWidgetFactories(String value);
+	//TODO atualiza wiki com as opções correntes
 }

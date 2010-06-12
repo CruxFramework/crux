@@ -72,7 +72,7 @@ public class Shared {
     }
   }
 
-  static String getStreamReadMethodNameFor(JType type) {
+  public static String getStreamReadMethodNameFor(JType type) {
     return "read" + getCallSuffix(type);
   }
 

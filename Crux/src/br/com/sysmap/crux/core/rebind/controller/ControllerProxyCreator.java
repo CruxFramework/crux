@@ -27,6 +27,8 @@ import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Validate;
 import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocument;
+import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.ClientSerializationStreamReader;
+import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.ClientSerializationStreamWriter;
 import br.com.sysmap.crux.core.client.event.ControllerInvoker;
 import br.com.sysmap.crux.core.client.event.CrossDocumentInvoker;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
@@ -38,6 +40,7 @@ import br.com.sysmap.crux.core.rebind.ClientInvokableGeneratorHelper;
 import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracle;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializationUtils;
+import br.com.sysmap.crux.core.rebind.crossdocument.gwt.Shared;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.TypeSerializerCreator;
 import br.com.sysmap.crux.core.utils.ClassUtils;
 
@@ -48,8 +51,14 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.core.ext.typeinfo.JParameter;
+import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
+import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.rpc.SerializationStreamReader;
+import com.google.gwt.user.client.rpc.SerializationStreamWriter;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
@@ -124,6 +133,12 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			srcWriter.println(getProxySimpleName()+" wrapper = null;");
 		}
 		srcWriter.println(Map.class.getName()+"<String, Boolean> __runningMethods = new "+HashMap.class.getCanonicalName()+"<String, Boolean>();");
+
+		if (isCrossDoc)
+		{
+			String typeSerializerName = SerializationUtils.getTypeDeserializerQualifiedName(baseProxyType);
+			srcWriter.println("private static final " + typeSerializerName + " SERIALIZER = new " + typeSerializerName + "();");
+		}
 	}
 	
 	@Override
@@ -137,9 +152,11 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		if (isCrossDoc)
 		{
 			generateCrossDocInvokeMethod(srcWriter);
+			generateCreateStreamReaderMethod(srcWriter);
+			generateCreateStreamWriterMethod(srcWriter);
 		}
 	}
-	
+
 	/**
 	 * @see br.com.sysmap.crux.core.rebind.AbstractProxyCreator#generateTypeHandlers(br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracle, br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracle)
 	 */
@@ -154,8 +171,6 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		}
 	}
 
-	
-	
 	/**
 	 * @return
 	 */
@@ -172,7 +187,10 @@ public class ControllerProxyCreator extends AbstractProxyCreator
     		Widget.class.getCanonicalName(),
     		RunAsyncCallback.class.getCanonicalName(),
     		EventProcessor.class.getCanonicalName(),
-    		Crux.class.getCanonicalName()
+    		Crux.class.getCanonicalName(), 
+    		SerializationException.class.getCanonicalName(), 
+    		SerializationStreamReader.class.getCanonicalName(),
+    		SerializationStreamWriter.class.getCanonicalName()
 		};
 	    return imports;
     }
@@ -222,14 +240,112 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		return composerFactory.createSourceWriter(context, printWriter);
 	}
 	
+	
+	/**
+	 * @param srcWriter
+	 */
+	private void generateCreateStreamReaderMethod(SourceWriter srcWriter)
+	{
+		srcWriter.println("protected SerializationStreamReader createStreamReader(String encoded) throws SerializationException {");
+		srcWriter.indent();
+		String readerClassName = getClientSerializationStreamReaderClassName();
+
+		srcWriter.println(readerClassName+" clientSerializationStreamReader = new "+readerClassName+"(SERIALIZER);");
+		srcWriter.println("clientSerializationStreamReader.prepareToRead(encoded);");
+		srcWriter.println("return clientSerializationStreamReader;");
+		srcWriter.outdent();
+		srcWriter.println("}");
+	}
+	
+	/**
+	 * @param srcWriter
+	 */
+	private void generateCreateStreamWriterMethod(SourceWriter srcWriter)
+	{
+		srcWriter.println("protected SerializationStreamWriter createStreamWriter(){");
+		srcWriter.indent();
+		String writerClassName = getClientSerializationStreamWriterClassName();
+
+		srcWriter.println(writerClassName+" clientSerializationStreamWriter = new "+writerClassName+"(SERIALIZER);");
+		srcWriter.println("clientSerializationStreamWriter.prepareToWrite();");
+		srcWriter.println("return clientSerializationStreamWriter;");
+		srcWriter.outdent();
+		srcWriter.println("}");	
+	}
+	
+	/**
+	 * @return
+	 */
+	protected String getClientSerializationStreamWriterClassName()
+	{
+		return ClientSerializationStreamWriter.class.getCanonicalName();
+	}
+	
+	/**
+	 * @return
+	 */
+	protected String getClientSerializationStreamReaderClassName()
+	{
+		return ClientSerializationStreamReader.class.getCanonicalName();
+	}
+
+	
+	/**
+	 * @param sourceWriter
+	 * @param method
+	 */
+	private void generateCrosDocInvokeBlockForMethod(SourceWriter sourceWriter, JMethod method)
+	{
+		JParameter[] params = method.getParameters();
+		JType returnType = method.getReturnType();
+
+		sourceWriter.println("if (methodCalled.equals(\""+getJsniSimpleSignature(method)+"\")){");
+    	sourceWriter.indent();
+    	sourceWriter.println("try{");
+    	sourceWriter.indent();
+
+    	if (returnType != JPrimitiveType.VOID)
+    	{
+        	sourceWriter.print("Object retObj = ");
+    		
+    	}
+    	sourceWriter.println(method.getName()+"(");
+
+		for (int i = 0; i < params.length ; ++i)
+		{
+			JParameter param = params[i];
+			if (i > 0)
+			{
+				sourceWriter.print(",");
+			}
+			sourceWriter.println("("+param.getType().getQualifiedSourceName()+")streamReader."+Shared.getStreamReadMethodNameFor(param.getType())+"()");
+		}
+    	sourceWriter.println(");");
+    	sourceWriter.println("streamWriter.writeString(\"//OK\");");
+		if (returnType != JPrimitiveType.VOID)
+		{
+			sourceWriter.println("streamWriter."+Shared.getStreamWriteMethodNameFor(returnType)+"(("+returnType.getQualifiedSourceName()+")retObj);");
+		}
+
+    	sourceWriter.outdent();
+    	sourceWriter.println("}catch(Throwable e){");
+    	sourceWriter.indent();
+
+    	sourceWriter.println("streamWriter.writeString(\"//EX\");");
+		sourceWriter.println("streamWriter.writeObject(e);");
+
+		sourceWriter.outdent();
+    	sourceWriter.println("}");
+    	sourceWriter.outdent();
+    	sourceWriter.println("}");
+	}
+
 	/**
 	 * @param sourceWriter
 	 */
-	private void generateCrossDocInvokeMethod(SourceWriter sourceWriter)
-	{
-		sourceWriter.println("public String invoke(String serializedData){ ");
-
-		if (isSingleton)
+	private void generateCrossDocDelegateObjectInstantiation(SourceWriter sourceWriter)
+    {
+	    if (isSingleton)
 		{
 			sourceWriter.println("if (this.wrapper == null){");
 			sourceWriter.println("this.wrapper = new " + getProxySimpleName() + "();");
@@ -241,7 +357,27 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			sourceWriter.println(getProxySimpleName() + " wrapper = new " + getProxySimpleName() + "();");
 			ClientInvokableGeneratorHelper.generateAutoCreateFields(logger, controllerClass, sourceWriter, "wrapper");
 		}
+    }
 
+	
+	
+	
+	/**
+	 * @param sourceWriter
+	 */
+	private void generateCrossDocInvokeMethod(SourceWriter sourceWriter)
+	{
+		sourceWriter.println("public String invoke(String serializedData){ ");
+
+		sourceWriter.println(SerializationStreamWriter.class.getSimpleName()+" streamWriter = createStreamWriter();");
+		sourceWriter.println("try{");
+		sourceWriter.indent();
+
+		generateCrossDocDelegateObjectInstantiation(sourceWriter);
+		generateMethodIdentificationBlock(sourceWriter);
+		
+		sourceWriter.println(SerializationStreamReader.class.getSimpleName()+" streamReader = createStreamReader(serializedData);");
+		
 		if (isAutoBindEnabled)
 		{
 			sourceWriter.println("wrapper.updateControllerObjects();");
@@ -262,27 +398,50 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		}
 		if (!first)
 		{
-			sourceWriter.println(" else ");
+			sourceWriter.println(" else {");
 		}
-		sourceWriter.println("throw new Exception(\"" + messages.errorInvokingGeneratedMethod() + " \"+metodo);");
+		
+    	sourceWriter.println("streamWriter.writeString(\"//EX\");");
+		//sourceWriter.println("streamWriter.writeObject(new );");
+//		sourceWriter.println("retVal = \"//EX\";");// + messages.errorInvokingGeneratedMethod() + " \");");// TODO serializar uma exceção
+		
+    	if (!first)
+		{
+			sourceWriter.println("}");
+		}
 
 		if (!first && isAutoBindEnabled)
 		{
 			sourceWriter.println("wrapper.updateScreenWidgets();");
 		}
-
+		sourceWriter.outdent();
+		sourceWriter.println("}catch (Exception ex){");
+		sourceWriter.indent();
+		generateCrossDocInvokeExceptionHandlingBlock(sourceWriter);
+		sourceWriter.outdent();
 		sourceWriter.println("}");
-	}	
-	
-	
+
+		sourceWriter.println("return streamWriter.toString();");
+		sourceWriter.println("}");
+	}
+
 	/**
 	 * @param sourceWriter
-	 * @param method
 	 */
-	private void generateCrosDocInvokeBlockForMethod(SourceWriter sourceWriter, JMethod method)
-	{
-    	sourceWriter.println("//TODO: deserialize and call method");
-	}
+	private void generateCrossDocInvokeExceptionHandlingBlock(SourceWriter sourceWriter)
+    {
+	    sourceWriter.println("try{");
+		sourceWriter.indent();
+		sourceWriter.println("streamWriter.writeString(\"//EX\");");
+		sourceWriter.println("streamWriter.writeObject(ex);");
+		sourceWriter.outdent();
+		sourceWriter.println("}catch (Exception ex2){");
+		sourceWriter.indent();
+		sourceWriter.println("Crux.getErrorHandler().handleError(ex.getMessage(), ex);");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+    }	
+	
 	
 	/**
 	 * @param logger
@@ -372,18 +531,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	    sourceWriter.println("public void invoke(String metodo, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception{ ");
 		sourceWriter.println("boolean __runMethod = true;");
 		
-		if (isSingleton)
-		{
-			sourceWriter.println("if (this.wrapper == null){");
-			sourceWriter.println("this.wrapper = new "+getProxySimpleName()+"();");
-			ClientInvokableGeneratorHelper.generateAutoCreateFields(logger, controllerClass, sourceWriter, "wrapper");
-			sourceWriter.println("}");
-		}
-		else
-		{
-			sourceWriter.println(getProxySimpleName()+" wrapper = new "+getProxySimpleName()+"();");
-			ClientInvokableGeneratorHelper.generateAutoCreateFields(logger, controllerClass, sourceWriter, "wrapper");
-		}
+		generateCrossDocDelegateObjectInstantiation(sourceWriter);
 		
 
 		if (isAutoBindEnabled)
@@ -421,7 +569,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		}		
 		
 		sourceWriter.println("}");
-    }	
+    }
 	
 	/** 
 	 * Generates the controller method call.
@@ -444,6 +592,27 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			sourceWriter.print(";");
 		}
 	}	
+	
+	/**
+	 * @param sourceWriter
+	 */
+	private void generateMethodIdentificationBlock(SourceWriter sourceWriter)
+    {
+	    sourceWriter.println("String methodCalled = null;");
+		sourceWriter.println("int idx = serializedData.indexOf('|');");
+		sourceWriter.println("if (idx > 0){");
+		sourceWriter.indent();
+		sourceWriter.println("methodCalled = serializedData.substring(0,idx);");
+		sourceWriter.println("serializedData = serializedData.substring(idx+1);");
+		sourceWriter.outdent();
+		sourceWriter.println("}else{");
+		sourceWriter.indent();
+    	sourceWriter.println("streamWriter.writeString(\"//EX\");");
+		//sourceWriter.println("streamWriter.writeObject(new );");//TODO serializar uma exceção aki
+		sourceWriter.println("return streamWriter.toString();");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+    }	
 
 	/**
 	 * 

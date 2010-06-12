@@ -34,6 +34,9 @@ public interface ClientMessages extends Messages
 	String eventProcessorClientControllerCanNotBeLoaded(String controller);
 	@DefaultMessage("[event 005] - Service method is already being processed.")
 	String methodIsAlreadyBeingProcessed();
+	@DefaultMessage("[event 006] - Client Controller Named ''{0}'' does not implement CrossDocument interface and can not be called outside document.")
+	String crossDocumentInvalidCrossDocumentController(String controller);
+
 	
 	//  screenFactory
 	@DefaultMessage("[screenFactory 001] - Error Creating widget: ''{0}''. See Log for more detail.")

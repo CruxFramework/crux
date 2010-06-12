@@ -29,7 +29,6 @@ public interface CrossDocumentInvoker extends ControllerInvoker
 	 * 
 	 * @param serializedData serialization of the input parameters
 	 * @return serialized value
-	 * @throws Exception
 	 */
-	String invoke(String serializedData) throws Exception;
+	String invoke(String serializedData);
 }

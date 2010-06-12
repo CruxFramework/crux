@@ -162,6 +162,23 @@ public abstract class AbstractProxyCreator
 	}	
 
 	/**
+	 * @param method
+	 * @return
+	 */
+	protected String getJsniSimpleSignature(JMethod method)
+	{
+		StringBuilder sb = new StringBuilder();
+		sb.append(method.getName());
+		sb.append("(");
+		for (JParameter param : method.getParameters())
+		{
+			sb.append(param.getType().getJNISignature());
+		}
+		sb.append(")");
+		return sb.toString();
+	}	
+	
+	/**
 	 * @return a sourceWriter for the proxy class
 	 */
 	protected abstract SourceWriter getSourceWriter();	
