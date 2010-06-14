@@ -28,8 +28,16 @@ import java.util.List;
  */
 public final class ClientSerializationStreamWriter extends AbstractSerializationStreamWriter
 {
+    public static final int MAXIMUM_ARRAY_LENGTH = 1 << 15;
+    private static final String POSTLUDE = "])";
+    private static final String PRELUDE = "].concat([";
 
-	/**
+    private int count = 0;
+    private boolean needsComma = false;
+    private int total = 0;
+    private boolean streamOpen = false;
+	
+    /**
 	 * Used by JSNI, see {@link #quoteString(String)}.
 	 */
 	@SuppressWarnings("unused")
@@ -57,7 +65,7 @@ public final class ClientSerializationStreamWriter extends AbstractSerialization
 	                                                    } else if (ch == 92) { // backslash
 	                                                    out += "\\\\";
 	                                                    } else if (ch == 124) { // vertical bar
-	                                                    // 124 = "|" = AbstractSerializationStream.RPC_SEPARATOR_CHAR
+	                                                    // 124 = "|" = AbstractSerializationStream.SEPARATOR_CHAR
 	                                                    out += "\\!";
 	                                                    } else {
 	                                                    var hex = ch.toString(16);
@@ -66,19 +74,44 @@ public final class ClientSerializationStreamWriter extends AbstractSerialization
 	                                                    }
 	                                                    return out + str.substring(idx);
 	                                                    }-*/;
-
-	private static void append(StringBuffer sb, String token)
+	
+	@Override
+	public void append(String token)
 	{
 		assert (token != null);
-		sb.append(token);
-		sb.append(RPC_SEPARATOR_CHAR);
+
+		total++;
+		if (count++ == MAXIMUM_ARRAY_LENGTH)
+		{
+			if (total == MAXIMUM_ARRAY_LENGTH + 1)
+			{
+				encodeBuffer.append(PRELUDE);
+			}
+			else
+			{
+				encodeBuffer.append("],[");
+			}
+			count = 0;
+			needsComma = false;
+		}
+
+		if (needsComma)
+		{
+			encodeBuffer.append(",");
+		}
+		else
+		{
+			needsComma = true;
+		}
+
+		encodeBuffer.append(token);
 	}
 
 	/**
 	 * Create the RegExp instance used for quoting dangerous characters in user
 	 * payload strings.
 	 * 
-	 * Note that {@link AbstractSerializationStream#RPC_SEPARATOR_CHAR} is used
+	 * Note that {@link AbstractSerializationStream#SEPARATOR_CHAR} is used
 	 * in this expression, which must be updated if the separator character is
 	 * changed.
 	 * 
@@ -88,7 +121,7 @@ public final class ClientSerializationStreamWriter extends AbstractSerialization
 	 * @return RegExp object
 	 */
 	private static native JavaScriptObject getQuotingRegex() /*-{
-	                                                         // "|" = AbstractSerializationStream.RPC_SEPARATOR_CHAR
+	                                                         // "|" = AbstractSerializationStream.SEPARATOR_CHAR
 	                                                         var ua = navigator.userAgent.toLowerCase();
 	                                                         if (ua.indexOf("android") != -1) {
 	                                                         // initial version of Android WebKit has a double-encoding bug for UTF8,
@@ -135,15 +168,28 @@ public final class ClientSerializationStreamWriter extends AbstractSerialization
 	{
 		super.prepareToWrite();
 		encodeBuffer = new StringBuffer();
+		streamOpen = true;
 	}
 
 	@Override
 	public String toString()
 	{
-		StringBuffer buffer = new StringBuffer();
-		writeStringTable(buffer);
-		writePayload(buffer);
-		return buffer.toString();
+		if (!streamOpen)
+		{
+			throw new IllegalStateException("WriterStream is not open");//TODO - Thiago - messages
+		}
+		
+		writeStringTable();
+		streamOpen = false;
+
+		if (total > MAXIMUM_ARRAY_LENGTH)
+		{
+			return "[" + encodeBuffer.toString() + POSTLUDE;
+		}
+		else
+		{
+			return "[" + encodeBuffer.toString() + "]";
+		}
 	}
 
 	@Override
@@ -169,15 +215,6 @@ public final class ClientSerializationStreamWriter extends AbstractSerialization
 		writeDouble(parts[1]);
 	}
 
-	/**
-	 * Appends a token to the end of the buffer.
-	 */
-	@Override
-	protected void append(String token)
-	{
-		append(encodeBuffer, token);
-	}
-
 	@Override
 	protected String getObjectTypeSignature(Object o)
 	{
@@ -198,20 +235,13 @@ public final class ClientSerializationStreamWriter extends AbstractSerialization
 		serializer.serialize(this, instance, typeSignature);
 	}
 
-	private void writePayload(StringBuffer buffer)
-	{
-		buffer.append(encodeBuffer.toString());
-	}
-
-	private StringBuffer writeStringTable(StringBuffer buffer)
+	private void writeStringTable()
 	{
 		List<String> stringTable = getStringTable();
-		append(buffer, String.valueOf(stringTable.size()));
 		for (String s : stringTable)
 		{
-			append(buffer, quoteString(s));
+			append(quoteString(s));
 		}
-		return buffer;
+		append(String.valueOf(stringTable.size()));
 	}
-
 }
