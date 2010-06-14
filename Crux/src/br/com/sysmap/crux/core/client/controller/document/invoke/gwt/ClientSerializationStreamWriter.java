@@ -15,12 +15,13 @@
  */
 package br.com.sysmap.crux.core.client.controller.document.invoke.gwt;
 
+import java.util.List;
+
+import br.com.sysmap.crux.core.client.utils.EscapeUtils;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.UnsafeNativeLong;
 import com.google.gwt.user.client.rpc.SerializationException;
-
-import java.util.List;
 
 /**
  * For internal use only. Used for cross document serialization.
@@ -37,43 +38,6 @@ public final class ClientSerializationStreamWriter extends AbstractSerialization
     private int total = 0;
     private boolean streamOpen = false;
 	
-    /**
-	 * Used by JSNI, see {@link #quoteString(String)}.
-	 */
-	@SuppressWarnings("unused")
-	private static JavaScriptObject regex = getQuotingRegex();
-
-	/**
-	 * Quote characters in a user-supplied string to make sure they are safe to
-	 * send to the server.
-	 * 
-	 * @param str
-	 *            string to quote
-	 * @return quoted string
-	 */
-	public static native String quoteString(String str) /*-{
-	                                                    var regex = @br.com.sysmap.crux.core.client.controller.document.invoke.gwt.ClientSerializationStreamWriter::regex;
-	                                                    var idx = 0;
-	                                                    var out = "";
-	                                                    var result;
-	                                                    while ((result = regex.exec(str)) != null) {
-	                                                    out += str.substring(idx, result.index);
-	                                                    idx = result.index + 1;
-	                                                    var ch = result[0].charCodeAt(0);
-	                                                    if (ch == 0) {
-	                                                    out += "\\0";
-	                                                    } else if (ch == 92) { // backslash
-	                                                    out += "\\\\";
-	                                                    } else if (ch == 124) { // vertical bar
-	                                                    // 124 = "|" = AbstractSerializationStream.SEPARATOR_CHAR
-	                                                    out += "\\!";
-	                                                    } else {
-	                                                    var hex = ch.toString(16);
-	                                                    out += "\\u0000".substring(0, 6 - hex.length) + hex;
-	                                                    }
-	                                                    }
-	                                                    return out + str.substring(idx);
-	                                                    }-*/;
 	
 	@Override
 	public void append(String token)
@@ -106,37 +70,6 @@ public final class ClientSerializationStreamWriter extends AbstractSerialization
 
 		encodeBuffer.append(token);
 	}
-
-	/**
-	 * Create the RegExp instance used for quoting dangerous characters in user
-	 * payload strings.
-	 * 
-	 * Note that {@link AbstractSerializationStream#SEPARATOR_CHAR} is used
-	 * in this expression, which must be updated if the separator character is
-	 * changed.
-	 * 
-	 * For Android WebKit, we quote many more characters to keep them from being
-	 * mangled.
-	 * 
-	 * @return RegExp object
-	 */
-	private static native JavaScriptObject getQuotingRegex() /*-{
-	                                                         // "|" = AbstractSerializationStream.SEPARATOR_CHAR
-	                                                         var ua = navigator.userAgent.toLowerCase();
-	                                                         if (ua.indexOf("android") != -1) {
-	                                                         // initial version of Android WebKit has a double-encoding bug for UTF8,
-	                                                         // so we have to encode every non-ASCII character.
-	                                                         // TODO(jat): revisit when this bug is fixed in Android
-	                                                         return /[\u0000\|\\\u0080-\uFFFF]/g;
-	                                                         } else if (ua.indexOf("webkit") != -1) {
-	                                                         // other WebKit-based browsers need some additional quoting due to combining
-	                                                         // forms and normalization (one codepoint being replaced with another).
-	                                                         // Verified with Safari 4.0.1 (5530.18)
-	                                                         return /[\u0000\|\\\u0300-\u03ff\u0590-\u05FF\u0600-\u06ff\u0730-\u074A\u07eb-\u07f3\u0940-\u0963\u0980-\u09ff\u0a00-\u0a7f\u0b00-\u0b7f\u0e00-\u0e7f\u0f00-\u0fff\u1900-\u194f\u1a00-\u1a1f\u1b00-\u1b7f\u1dc0-\u1dff\u1f00-\u1fff\u2000-\u206f\u20d0-\u20ff\u2100-\u214f\u2300-\u23ff\u2a00-\u2aff\u3000-\u303f\uD800-\uFFFF]/g;
-	                                                         } else {
-	                                                         return /[\u0000\|\\\uD800-\uFFFF]/g;
-	                                                         }
-	                                                         }-*/;
 
 	@UnsafeNativeLong
 	// Keep synchronized with LongLib
@@ -240,7 +173,7 @@ public final class ClientSerializationStreamWriter extends AbstractSerialization
 		List<String> stringTable = getStringTable();
 		for (String s : stringTable)
 		{
-			append(quoteString(s));
+			append(EscapeUtils.quote(s, false));
 		}
 		append(String.valueOf(stringTable.size()));
 	}

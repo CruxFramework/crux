@@ -321,7 +321,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			sourceWriter.println("("+param.getType().getQualifiedSourceName()+")streamReader."+Shared.getStreamReadMethodNameFor(param.getType())+"()");
 		}
     	sourceWriter.println(");");
-    	sourceWriter.println("streamWriter.writeString(\"//OK\");");
+    	sourceWriter.println("isExecutionOK = true;");
 		if (returnType != JPrimitiveType.VOID)
 		{
 			sourceWriter.println("streamWriter."+Shared.getStreamWriteMethodNameFor(returnType)+"(("+returnType.getQualifiedSourceName()+")retObj);");
@@ -331,7 +331,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
     	sourceWriter.println("}catch(Throwable e){");
     	sourceWriter.indent();
 
-    	sourceWriter.println("streamWriter.writeString(\"//EX\");");
+    	sourceWriter.println("isExecutionOK = false;");
 		sourceWriter.println("streamWriter.writeObject(e);");
 
 		sourceWriter.outdent();
@@ -368,6 +368,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	private void generateCrossDocInvokeMethod(SourceWriter sourceWriter)
 	{
 		sourceWriter.println("public String invoke(String serializedData){ ");
+		sourceWriter.println("boolean isExecutionOK = true;");
 
 		sourceWriter.println(SerializationStreamWriter.class.getSimpleName()+" streamWriter = createStreamWriter();");
 		sourceWriter.println("try{");
@@ -401,7 +402,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			sourceWriter.println(" else {");
 		}
 		
-    	sourceWriter.println("streamWriter.writeString(\"//EX\");");
+    	sourceWriter.println("isExecutionOK = false;");
 		//sourceWriter.println("streamWriter.writeObject(new );");
 //		sourceWriter.println("retVal = \"//EX\";");// + messages.errorInvokingGeneratedMethod() + " \");");// TODO serializar uma exceção
 		
@@ -421,7 +422,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 
-		sourceWriter.println("return streamWriter.toString();");
+		sourceWriter.println("return (isExecutionOK?\"//OK\":\"//EX\")+streamWriter.toString();");
 		sourceWriter.println("}");
 	}
 
@@ -432,7 +433,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
     {
 	    sourceWriter.println("try{");
 		sourceWriter.indent();
-		sourceWriter.println("streamWriter.writeString(\"//EX\");");
+    	sourceWriter.println("isExecutionOK = false;");
 		sourceWriter.println("streamWriter.writeObject(ex);");
 		sourceWriter.outdent();
 		sourceWriter.println("}catch (Exception ex2){");
@@ -607,7 +608,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		sourceWriter.outdent();
 		sourceWriter.println("}else{");
 		sourceWriter.indent();
-    	sourceWriter.println("streamWriter.writeString(\"//EX\");");
+    	sourceWriter.println("isExecutionOK = false;");
 		//sourceWriter.println("streamWriter.writeObject(new );");//TODO serializar uma exceção aki
 		sourceWriter.println("return streamWriter.toString();");
 		sourceWriter.outdent();

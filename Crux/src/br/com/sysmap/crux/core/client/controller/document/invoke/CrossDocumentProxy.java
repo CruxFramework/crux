@@ -99,7 +99,7 @@ public abstract class CrossDocumentProxy<T extends CrossDocument> extends Screen
 	 */
 	private boolean isReturnValue(String encodedResponse)
 	{
-		return encodedResponse.startsWith("//OK|");
+		return encodedResponse.startsWith("//OK");
 	}
 
 	/**
@@ -112,7 +112,7 @@ public abstract class CrossDocumentProxy<T extends CrossDocument> extends Screen
 	 */
 	private boolean isThrownException(String encodedResponse)
 	{
-		return encodedResponse.startsWith("//EX|");
+		return encodedResponse.startsWith("//EX");
 	}
 	
 	/** Make a call to a cross document method 
@@ -131,11 +131,11 @@ public abstract class CrossDocumentProxy<T extends CrossDocument> extends Screen
 		}
 		else if (isReturnValue(serializedRet))
 		{
-			result = reader.read(createStreamReader(serializedRet.substring(5)));//remove //OK|
+			result = reader.read(createStreamReader(serializedRet.substring(4)));//remove //OK
 		}
 		else if (isThrownException(serializedRet))
 		{
-			throw (Throwable) createStreamReader(serializedRet.substring(5)).readObject();//remove //EX|
+			throw (Throwable) createStreamReader(serializedRet.substring(4)).readObject();//remove //EX
 		}
 		else
 		{

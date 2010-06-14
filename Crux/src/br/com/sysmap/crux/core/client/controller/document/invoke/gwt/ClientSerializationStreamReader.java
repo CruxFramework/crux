@@ -160,10 +160,11 @@ public final class ClientSerializationStreamReader extends AbstractSerialization
 		return instance;
 	}
 
-	protected native String getString(int index) /*-{
+	protected String getString(int index) 
+	{
 		// index is 1-based
-		return index > 0 ? this.@br.com.sysmap.crux.core.client.controller.document.invoke.gwt.ClientSerializationStreamReader::stringTable[index - 1] : null;
-	}-*/;
+		return index > 0 ? this.stringTable[index - 1] : null;
+	};
 
 	protected final void rememberDecodedObject(int index, Object o)
 	{
