@@ -15,8 +15,10 @@
  */
 package br.com.sysmap.crux.core.client.screen;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocumentException;
 import br.com.sysmap.crux.core.client.controller.document.invoke.Target;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 
 /**
@@ -32,30 +34,56 @@ public abstract class ScreenAccessor
 	 * @param target Where the method resides
 	 * @return
 	 */
-	protected String invokeCrossDocument(String serializedData, Target target)
+	protected String invokeCrossDocument(String serializedData, Target target, String frame, String siblingFrame)
 	{
 		switch (target)
         {
-	        case TOP: return invokeCrossDocumentOnTop(serializedData);
-	        default: throw new CrossDocumentException("Invalid Target");//TODO - Thiago: message here.
+	        case TOP: return callTopControllerAccessor(serializedData);
+	        case ABSOLUTE_TOP: return callAbsoluteTopControllerAccessor(serializedData);
+	        case PARENT: return callParentControllerAccessor(serializedData);
+	        case OPENER: return callOpenerControllerAccessor(serializedData);
+	        default: 
+	        	if (!StringUtils.isEmpty(frame))
+	        	{
+	        		return callFrameControllerAccessor(frame, serializedData);
+	        	}
+	        	else if (!StringUtils.isEmpty(siblingFrame))
+	        	{
+	        		return callSiblingFrameControllerAccessor(siblingFrame, serializedData);
+	        	}
+	        	
+	        	throw new CrossDocumentException(Crux.getMessages().crossDocumentInvalidTarget());
         }
 	}
 	
-	/**
-	 * @param serializedData
-	 * @return
-	 */
-	protected String invokeCrossDocumentOnTop(String serializedData)
-	{
-		return callTopControllerAccessor(serializedData);
-	}
-	
-	/**
-	 * @param call
-	 * @param serializedData
-	 * @return
-	 */
 	private native String callTopControllerAccessor(String serializedData)/*-{
 		return $wnd.top._cruxCrossDocumentAccessor(serializedData);
+	}-*/;
+	
+	private static native String callAbsoluteTopControllerAccessor(String serializedData)/*-{
+		var who = $wnd.top;
+		var op = $wnd.opener;
+		while (op != null)
+		{
+			who = op.top;
+			op = op.opener;
+		}
+		return who._cruxCrossDocumentAccessor(serializedData);
 	}-*/;	
+	
+	private static native String callOpenerControllerAccessor(String serializedData)/*-{
+		return $wnd.opener._cruxCrossDocumentAccessor(call, serializedData);
+	}-*/;
+	
+	private static native String callParentControllerAccessor(String serializedData)/*-{
+		return $wnd.parent._cruxCrossDocumentAccessor(call, serializedData);
+	}-*/;
+	
+	private static native String callFrameControllerAccessor(String frame, String serializedData)/*-{
+		return $wnd.frames[frame]._cruxCrossDocumentAccessor(serializedData);
+	}-*/;		
+	
+	private static native String callSiblingFrameControllerAccessor(String frame, String serializedData)/*-{
+		return $wnd.parent.frames[frame]._cruxCrossDocumentAccessor(serializedData);
+	}-*/;		
 }

@@ -335,7 +335,6 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	/**
 	 * @return the proxy supertype
 	 */
-	@SuppressWarnings("unchecked")
 	protected Class<? extends CrossDocumentProxy> getProxySupertype()
 	{
 		return CrossDocumentProxy.class;
@@ -364,7 +363,7 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 			composerFactory.addImport(imp);
 		}
 
-		composerFactory.setSuperclass(getProxySupertype().getSimpleName() + "<" + baseProxyType.getSimpleSourceName() + ">");
+		composerFactory.setSuperclass(getProxySupertype().getSimpleName());
 		composerFactory.addImplementedInterface(baseProxyType.getSimpleSourceName());
 
 		addAdditionalInterfaces(composerFactory);

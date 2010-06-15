@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Abstraction for the entire page. It encapsulate all the widgets, containers and 
  * datasources.
- * @author Thiago
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class Screen
@@ -68,6 +68,7 @@ public class Screen
 	protected List<Element> blockingDivs = new ArrayList<Element>();
 	protected IFrameElement historyFrame = null;
 	protected HandlerManager handlerManager;
+	@Deprecated
 	protected ModuleComunicationSerializer serializer = null;
 	protected ScreenBlocker screenBlocker = GWT.create(ScreenBlocker.class);
 	protected String[] declaredControllers;
@@ -1154,6 +1155,7 @@ public class Screen
 	 * @param serializedData
 	 * @return
 	 */
+	@Deprecated
 	private static native String callAbsoluteTopControllerAccessor(String call, String serializedData)/*-{
 		var who = $wnd.top;
 		var op = $wnd.opener;
@@ -1170,6 +1172,7 @@ public class Screen
 	 * @param serializedData
 	 * @return
 	 */
+	@Deprecated
 	private static native String callTopControllerAccessor(String call, String serializedData)/*-{
 		return $wnd.top._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;
@@ -1179,6 +1182,7 @@ public class Screen
 	 * @param serializedData
 	 * @return
 	 */
+	@Deprecated
 	private static native String callOpenerControllerAccessor(String call, String serializedData)/*-{
 		return $wnd.opener._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;
@@ -1188,6 +1192,7 @@ public class Screen
 	 * @param serializedData
 	 * @return
 	 */
+	@Deprecated
 	private static native String callParentControllerAccessor(String call, String serializedData)/*-{
 		return $wnd.parent._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;
@@ -1199,6 +1204,7 @@ public class Screen
 	 * @param serializedData
 	 * @return
 	 */
+	@Deprecated
 	private static native String callFrameControllerAccessor(String frame, String call, String serializedData)/*-{
 		return $wnd.frames[frame]._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;		
@@ -1210,6 +1216,7 @@ public class Screen
 	 * @param serializedData
 	 * @return
 	 */
+	@Deprecated
 	private static native String callSiblingFrameControllerAccessor(String frame, String call, String serializedData)/*-{
 		return $wnd.parent.frames[frame]._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;		

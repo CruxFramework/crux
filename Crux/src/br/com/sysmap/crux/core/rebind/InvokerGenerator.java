@@ -25,8 +25,9 @@ import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  * @author Thiago da Rosa de Bustamante
- *
+ * @deprecated
  */
+@Deprecated
 public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 {
 	/**

@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.client.controller.document.invoke;
 
 /**
+ * This exception is used to report errors during a cross document call.
  * @author Thiago da Rosa de Bustamante
  *
  */

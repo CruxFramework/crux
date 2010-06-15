@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.core.client.controller.document.invoke;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.ClientSerializationStreamReader;
 import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.ClientSerializationStreamWriter;
 import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.Serializer;
@@ -29,9 +30,12 @@ import com.google.gwt.user.client.rpc.SerializationStreamWriter;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class CrossDocumentProxy<T extends CrossDocument> extends ScreenAccessor implements TargetDocument<T>
+public abstract class CrossDocumentProxy extends ScreenAccessor implements TargetDocument
 {
 	protected Target target;
+	protected String frame;
+	protected String siblingFrame;
+
 	private final Serializer serializer;
 
 
@@ -43,13 +47,33 @@ public abstract class CrossDocumentProxy<T extends CrossDocument> extends Screen
 	/**
 	 * @see br.com.sysmap.crux.core.client.controller.document.invoke.TargetDocument#setTarget(br.com.sysmap.crux.core.client.controller.document.invoke.Target)
 	 */
-	@SuppressWarnings("unchecked")
-    public T setTarget(Target target)
+    public void setTarget(Target target)
 	{
 		this.target = target;
-		return (T) this;
+		this.frame = null;
+		this.siblingFrame = null;
 	}
 
+	/**
+	 * @see br.com.sysmap.crux.core.client.controller.document.invoke.TargetDocument#setTargetFrame(java.lang.String)
+	 */
+    public void setTargetFrame(String frame)
+	{
+		this.frame = frame;
+	    this.target = null;
+		this.siblingFrame = null;
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.controller.document.invoke.TargetDocument#setTargetSiblingFrame(java.lang.String)
+	 */
+    public void setTargetSiblingFrame(String frame)
+	{
+		this.siblingFrame = frame;
+		this.frame = null;
+	    this.target = null;
+	}
+	
 	/**
 	 * Returns a
 	 * {@link com.google.gwt.user.client.rpc.SerializationStreamReader
@@ -72,9 +96,7 @@ public abstract class CrossDocumentProxy<T extends CrossDocument> extends Screen
 	 * Returns a
 	 * {@link com.google.gwt.user.client.rpc.SerializationStreamWriter
 	 * SerializationStreamWriter} that has had
-	 * {@link ClientSerializationStreamWriter#prepareToWrite()} called on it and
-	 * it has already had had the name of the cross document interface written
-	 * as well.
+	 * {@link ClientSerializationStreamWriter#prepareToWrite()} called on it.
 	 * 
 	 * @return {@link com.google.gwt.user.client.rpc.SerializationStreamWriter
 	 *         SerializationStreamWriter} that has had
@@ -122,12 +144,12 @@ public abstract class CrossDocumentProxy<T extends CrossDocument> extends Screen
 	 */
 	protected Object doInvoke(String payload, CrossDocumentReader reader) throws Throwable
 	{
-		String serializedRet = invokeCrossDocument(payload, target);
+		String serializedRet = invokeCrossDocument(payload, target, frame, siblingFrame);
 		Object result = null;
 
 		if (payload == null)
 		{
-			throw new CrossDocumentException("No payload"); // TODO - message
+			throw new CrossDocumentException(Crux.getMessages().crossDocumentInvocationError());
 		}
 		else if (isReturnValue(serializedRet))
 		{

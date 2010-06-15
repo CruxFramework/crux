@@ -26,5 +26,6 @@ public enum Target
 	TOP,
 	PARENT,
 	ABSOLUTE_TOP,
-	SELF
+	SELF, 
+	OPENER
 }

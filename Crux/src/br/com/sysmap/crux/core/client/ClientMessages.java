@@ -36,6 +36,10 @@ public interface ClientMessages extends Messages
 	String methodIsAlreadyBeingProcessed();
 	@DefaultMessage("[event 006] - Client Controller Named ''{0}'' does not implement CrossDocument interface and can not be called outside document.")
 	String crossDocumentInvalidCrossDocumentController(String controller);
+	@DefaultMessage("[event 007] - Error on cross document call. No responde received from method.")
+	String crossDocumentInvocationError();
+	@DefaultMessage("[event 008] - Error on cross document call. Invalid Target.")
+	String crossDocumentInvalidTarget();
 
 	
 	//  screenFactory

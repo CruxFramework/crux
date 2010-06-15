@@ -22,13 +22,26 @@ package br.com.sysmap.crux.core.client.controller.document.invoke;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface TargetDocument<T extends CrossDocument> extends CrossDocument
+public interface TargetDocument extends CrossDocument
 {
 	/**
 	 * Sets the target for the cross document call.
 	 * 
 	 * @param target - the target
-	 * @return the own stub
 	 */
-	T setTarget(Target target);
+	void setTarget(Target target);
+	
+	/**
+	 * Sets the target frame for the cross document call.
+	 * 
+	 * @param frame - the name of the frame
+	 */
+	void setTargetFrame(String frame);
+	
+	/**
+	 * Sets the target sibling frame for the cross document call.
+	 * 
+	 * @param frame - the name of the sibling frame
+	 */
+	void setTargetSiblingFrame(String frame);
 }
