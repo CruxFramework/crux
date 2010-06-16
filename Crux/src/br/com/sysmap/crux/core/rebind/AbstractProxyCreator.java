@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.core.rebind;
 
-import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracle;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracleBuilder;
 
 import com.google.gwt.core.ext.GeneratorContext;
@@ -30,6 +29,7 @@ import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.SourceWriter;
+import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
 
 /**
  * @author Thiago da Rosa de Bustamante

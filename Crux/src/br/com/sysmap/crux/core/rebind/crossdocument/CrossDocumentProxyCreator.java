@@ -15,17 +15,9 @@
  */
 package br.com.sysmap.crux.core.rebind.crossdocument;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.crossdoc.ClientSerializationStreamWriter;
@@ -33,8 +25,6 @@ import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentException
 import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentProxy;
 import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentProxy.CrossDocumentReader;
 import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
-import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracle;
-import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracleBuilder;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializationUtils;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.Shared;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.TypeSerializerCreator;
@@ -44,9 +34,7 @@ import com.google.gwt.core.client.impl.Impl;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.core.ext.linker.GeneratedResource;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.core.ext.typeinfo.JParameter;
@@ -56,13 +44,11 @@ import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.generator.NameFactory;
 import com.google.gwt.dev.javac.TypeOracleMediator;
-import com.google.gwt.dev.util.Util;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.SerializationStreamWriter;
-import com.google.gwt.user.linker.rpc.RpcPolicyFileArtifact;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
-import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
+import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
 import com.google.gwt.user.server.rpc.impl.TypeNameObfuscator;
 
 /**
@@ -383,97 +369,6 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	}
 
 	/**
-	 * @param serializationSto
-	 * @param deserializationSto
-	 * @return
-	 * @throws UnableToCompleteException
-	 */
-	protected String writeSerializationPolicyFile(SerializableTypeOracle serializationSto, SerializableTypeOracle deserializationSto) throws UnableToCompleteException
-	{
-		try
-		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			OutputStreamWriter osw = new OutputStreamWriter(baos, SerializationPolicyLoader.SERIALIZATION_POLICY_FILE_ENCODING);
-			TypeOracle oracle = context.getTypeOracle();
-			PrintWriter pw = new PrintWriter(osw);
-
-			JType[] serializableTypes = unionOfTypeArrays(serializationSto.getSerializableTypes(), deserializationSto.getSerializableTypes(), 
-														new JType[] { baseProxyType });
-
-			for (int i = 0; i < serializableTypes.length; ++i)
-			{
-				JType type = serializableTypes[i];
-				String binaryTypeName = TypeOracleMediator.computeBinaryClassName(type);
-				pw.print(binaryTypeName);
-				pw.print(", " + Boolean.toString(deserializationSto.isSerializable(type)));
-				pw.print(", " + Boolean.toString(deserializationSto.maybeInstantiated(type)));
-				pw.print(", " + Boolean.toString(serializationSto.isSerializable(type)));
-				pw.print(", " + Boolean.toString(serializationSto.maybeInstantiated(type)));
-				pw.print(", " + typeStrings.get(type));
-
-				pw.print(", " + SerializationUtils.getSerializationSignature(oracle, type));
-				pw.print('\n');
-
-				if ((type instanceof JClassType) && ((JClassType) type).isEnhanced())
-				{
-					JField[] fields = ((JClassType) type).getFields();
-					JField[] rpcFields = new JField[fields.length];
-					int numRpcFields = 0;
-					for (JField f : fields)
-					{
-						if (f.isTransient() || f.isStatic() || f.isFinal())
-						{
-							continue;
-						}
-						rpcFields[numRpcFields++] = f;
-					}
-
-					pw.print(SerializationPolicyLoader.CLIENT_FIELDS_KEYWORD);
-					pw.print(',');
-					pw.print(binaryTypeName);
-					for (int idx = 0; idx < numRpcFields; idx++)
-					{
-						pw.print(',');
-						pw.print(rpcFields[idx].getName());
-					}
-					pw.print('\n');
-				}
-			}
-
-			pw.close();
-
-			byte[] serializationPolicyFileContents = baos.toByteArray();
-			String serializationPolicyName = Util.computeStrongName(serializationPolicyFileContents);
-
-			String serializationPolicyFileName = SerializationPolicyLoader.getSerializationPolicyFileName(serializationPolicyName);
-			OutputStream os = context.tryCreateResource(logger, serializationPolicyFileName);
-			if (os != null)
-			{
-				os.write(serializationPolicyFileContents);
-				GeneratedResource resource = context.commitResource(logger, os);
-
-				context.commitArtifact(logger, new RpcPolicyFileArtifact(baseProxyType.getQualifiedSourceName(), resource));
-			}
-			else
-			{
-				logger.log(TreeLogger.TRACE, "SerializationPolicy file for RemoteService '" + baseProxyType.getQualifiedSourceName() + "' already exists; no need to rewrite it.", null);
-			}
-
-			return serializationPolicyName;
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			logger.log(TreeLogger.ERROR, SerializationPolicyLoader.SERIALIZATION_POLICY_FILE_ENCODING + " is not supported", e);
-			throw new UnableToCompleteException();
-		}
-		catch (IOException e)
-		{
-			logger.log(TreeLogger.ERROR, null, e);
-			throw new UnableToCompleteException();
-		}
-	}
-
-	/**
 	 * @param w
 	 * @param method
 	 * @param nameFactory
@@ -595,21 +490,5 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		}
 
 		return CrossDocumentReader.OBJECT;
-	}
-
-	/**
-	 * Take the union of two type arrays, and then sort the results
-	 * alphabetically.
-	 */
-	private JType[] unionOfTypeArrays(JType[]... types)
-	{
-		Set<JType> typesList = new HashSet<JType>();
-		for (JType[] a : types)
-		{
-			typesList.addAll(Arrays.asList(a));
-		}
-		JType[] serializableTypes = typesList.toArray(new JType[0]);
-		Arrays.sort(serializableTypes, SerializableTypeOracleBuilder.JTYPE_COMPARATOR);
-		return serializableTypes;
 	}
 }

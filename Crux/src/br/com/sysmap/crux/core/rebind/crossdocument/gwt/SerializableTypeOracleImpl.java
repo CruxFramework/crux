@@ -17,6 +17,7 @@ package br.com.sysmap.crux.core.rebind.crossdocument.gwt;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
 
 import java.util.Set;
 

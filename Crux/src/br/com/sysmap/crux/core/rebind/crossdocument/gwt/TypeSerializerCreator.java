@@ -46,6 +46,9 @@ import com.google.gwt.user.client.rpc.impl.Serializer;
 import com.google.gwt.user.client.rpc.impl.SerializerBase;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
+import com.google.gwt.user.rebind.rpc.CustomFieldSerializerValidator;
+import com.google.gwt.user.rebind.rpc.FieldSerializerCreator;
+import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
 
 /**
  * This class generates a class with name 'typeSerializerClassName' that is able

@@ -15,28 +15,6 @@
  */
 package br.com.sysmap.crux.core.rebind.crossdocument.gwt;
 
-import com.google.gwt.core.ext.PropertyOracle;
-import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.core.ext.TreeLogger.Type;
-import com.google.gwt.core.ext.typeinfo.JArrayType;
-import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JGenericType;
-import com.google.gwt.core.ext.typeinfo.JParameterizedType;
-import com.google.gwt.core.ext.typeinfo.JRealClassType;
-import com.google.gwt.core.ext.typeinfo.JType;
-import com.google.gwt.core.ext.typeinfo.JTypeParameter;
-import com.google.gwt.core.ext.typeinfo.JWildcardType;
-import com.google.gwt.core.ext.typeinfo.NotFoundException;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
-import com.google.gwt.dev.util.log.PrintWriterTreeLogger;
-import com.google.gwt.user.client.rpc.GwtTransient;
-import com.google.gwt.user.client.rpc.IsSerializable;
-import br.com.sysmap.crux.core.rebind.crossdocument.gwt.ProblemReport.Priority;
-import br.com.sysmap.crux.core.rebind.crossdocument.gwt.TypeParameterExposureComputer.TypeParameterFlowInfo;
-import br.com.sysmap.crux.core.rebind.crossdocument.gwt.TypePaths.TypePath;
-
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -57,6 +35,33 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
+
+import br.com.sysmap.crux.core.rebind.crossdocument.gwt.TypeParameterExposureComputer.TypeParameterFlowInfo;
+import br.com.sysmap.crux.core.rebind.crossdocument.gwt.TypePaths.TypePath;
+
+import com.google.gwt.core.ext.PropertyOracle;
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.core.ext.TreeLogger.Type;
+import com.google.gwt.core.ext.typeinfo.JArrayType;
+import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JField;
+import com.google.gwt.core.ext.typeinfo.JGenericType;
+import com.google.gwt.core.ext.typeinfo.JParameterizedType;
+import com.google.gwt.core.ext.typeinfo.JRealClassType;
+import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.core.ext.typeinfo.JTypeParameter;
+import com.google.gwt.core.ext.typeinfo.JWildcardType;
+import com.google.gwt.core.ext.typeinfo.NotFoundException;
+import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import com.google.gwt.dev.util.log.PrintWriterTreeLogger;
+import com.google.gwt.user.client.rpc.GwtTransient;
+import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.rebind.rpc.CustomFieldSerializerValidator;
+import com.google.gwt.user.rebind.rpc.ProblemReport;
+import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
+import com.google.gwt.user.rebind.rpc.TypeConstrainer;
+import com.google.gwt.user.rebind.rpc.ProblemReport.Priority;
 
 /**
  * Builds a {@link SerializableTypeOracle} for a given set of root types.
