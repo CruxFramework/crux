@@ -41,13 +41,13 @@ public class CrossDocumentGenerator extends AbstractGenerator
 		JClassType crossDocument = typeOracle.findType(typeName);
 		if (crossDocument == null)
 		{
-			logger.log(TreeLogger.ERROR, "Unable to find metadata for type '" + typeName + "'", null); //TODO - Message
+			logger.log(TreeLogger.ERROR, messages.crossDocumentGeneratorSourceNotFound(typeName), null); 
 			throw new UnableToCompleteException();
 		}
 
 		if (crossDocument.isInterface() == null)
 		{
-			logger.log(TreeLogger.ERROR, crossDocument.getQualifiedSourceName() + " is not an interface", null); //TODO - Message
+			logger.log(TreeLogger.ERROR, messages.crossDocumentGeneratorTypeIsNotInterface(crossDocument.getQualifiedSourceName()), null); 
 			throw new UnableToCompleteException();
 		}
 

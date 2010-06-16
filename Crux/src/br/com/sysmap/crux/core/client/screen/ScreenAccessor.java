@@ -16,8 +16,8 @@
 package br.com.sysmap.crux.core.client.screen;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocumentException;
-import br.com.sysmap.crux.core.client.controller.document.invoke.Target;
+import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentException;
+import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 

@@ -26,9 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.Serializer;
-import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.SerializerBase;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.ext.BadPropertyValueException;
@@ -45,6 +42,8 @@ import com.google.gwt.dev.javac.TypeOracleMediator;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.SerializationStreamReader;
 import com.google.gwt.user.client.rpc.SerializationStreamWriter;
+import com.google.gwt.user.client.rpc.impl.Serializer;
+import com.google.gwt.user.client.rpc.impl.SerializerBase;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -391,9 +390,9 @@ public class TypeSerializerCreator {
         srcWriter.println("(function() {");
       }
 
-      srcWriter.println("@br.com.sysmap.crux.core.client.controller.document.invoke.gwt.SerializerBase"
+      srcWriter.println("@com.google.gwt.user.client.rpc.impl.SerializerBase"
           + "::registerMethods("
-          + "Lbr/com/sysmap/crux/core/client/controller/document/invoke/gwt/SerializerBase$MethodMap;"
+          + "Lcom/google/gwt/user/client/rpc/impl/SerializerBase$MethodMap;"
           + "Ljava/lang/String;" + "Lcom/google/gwt/core/client/JsArray;)(");
 
       srcWriter.indentln("@" + typeSerializerClassName + "::methodMap,");
@@ -459,7 +458,7 @@ public class TypeSerializerCreator {
         srcWriter.println("(function() {");
       }
 
-      srcWriter.println("@br.com.sysmap.crux.core.client.controller.document.invoke.gwt.SerializerBase"
+      srcWriter.println("@com.google.gwt.user.client.rpc.impl.SerializerBase"
           + "::registerSignature("
           + "Lcom/google/gwt/core/client/JsArrayString;" + "Ljava/lang/Class;"
           + "Ljava/lang/String;)(");

@@ -28,10 +28,10 @@ import java.util.Map;
 import java.util.Set;
 
 import br.com.sysmap.crux.core.client.controller.Controller;
-import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocumentException;
-import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocumentProxy;
-import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocumentProxy.CrossDocumentReader;
-import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.ClientSerializationStreamWriter;
+import br.com.sysmap.crux.core.client.controller.crossdoc.ClientSerializationStreamWriter;
+import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentException;
+import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentProxy;
+import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentProxy.CrossDocumentReader;
 import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracle;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracleBuilder;
@@ -66,6 +66,9 @@ import com.google.gwt.user.server.rpc.SerializationPolicyLoader;
 import com.google.gwt.user.server.rpc.impl.TypeNameObfuscator;
 
 /**
+ * Thos class generates a proxy for cross document invocations.
+ * 
+ * 
  * @author Thiago da Rosa de Bustamante
  * 
  */

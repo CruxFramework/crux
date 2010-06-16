@@ -26,9 +26,9 @@ import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Validate;
-import br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocument;
-import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.ClientSerializationStreamReader;
-import br.com.sysmap.crux.core.client.controller.document.invoke.gwt.ClientSerializationStreamWriter;
+import br.com.sysmap.crux.core.client.controller.crossdoc.ClientSerializationStreamReader;
+import br.com.sysmap.crux.core.client.controller.crossdoc.ClientSerializationStreamWriter;
+import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocument;
 import br.com.sysmap.crux.core.client.event.ControllerInvoker;
 import br.com.sysmap.crux.core.client.event.CrossDocumentInvoker;
 import br.com.sysmap.crux.core.client.event.CruxEvent;
@@ -402,9 +402,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			sourceWriter.println(" else {");
 		}
 		
-    	sourceWriter.println("isExecutionOK = false;");
-		//sourceWriter.println("streamWriter.writeObject(new );");
-//		sourceWriter.println("retVal = \"//EX\";");// + messages.errorInvokingGeneratedMethod() + " \");");// TODO serializar uma exceção
+		sourceWriter.println("return Crux.getMessages().crossDocumentMethodNotFound();"); 
 		
     	if (!first)
 		{
@@ -438,7 +436,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		sourceWriter.outdent();
 		sourceWriter.println("}catch (Exception ex2){");
 		sourceWriter.indent();
-		sourceWriter.println("Crux.getErrorHandler().handleError(ex.getMessage(), ex);");
+		sourceWriter.println("return Crux.getMessages().crossDocumentInvocationGeneralError(ex2.getMessage());"); 
 		sourceWriter.outdent();
 		sourceWriter.println("}");
     }	
@@ -608,9 +606,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		sourceWriter.outdent();
 		sourceWriter.println("}else{");
 		sourceWriter.indent();
-    	sourceWriter.println("isExecutionOK = false;");
-		//sourceWriter.println("streamWriter.writeObject(new );");//TODO serializar uma exceção aki
-		sourceWriter.println("return streamWriter.toString();");
+		sourceWriter.println("return Crux.getMessages().crossDocumentCanNotIdentifyMethod();"); 
 		sourceWriter.outdent();
 		sourceWriter.println("}");
     }	

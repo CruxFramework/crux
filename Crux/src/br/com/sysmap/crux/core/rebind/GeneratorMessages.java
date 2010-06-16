@@ -139,6 +139,12 @@ public interface GeneratorMessages
 	@DefaultServerMessage("[generator 037] - UseSynchronizer Token only can be used with void return type on Async interface.")
 	String cruxProxyCreatorInvalidReturnType(String simpleSourceName);
 
+	@DefaultServerMessage("[generator 038] - Unable to find source for type {0}")
+	String crossDocumentGeneratorSourceNotFound(String typeName);
+
+	@DefaultServerMessage("[generator 039] - {0} is not an interface.")
+	String crossDocumentGeneratorTypeIsNotInterface(String qualifiedSourceName);
+	
 	@DefaultServerMessage("[parameter 001] - Required parameter {0} is missing.")
 	String requiredParameterMissing(String name);
 
