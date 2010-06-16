@@ -87,7 +87,7 @@
 
 	<!-- Specify the generator for Cross Document stubs.     -->
 	<generate-with class="br.com.sysmap.crux.core.rebind.crossdocument.CrossDocumentGenerator">
-		<when-type-assignable class="br.com.sysmap.crux.core.client.controller.document.invoke.CrossDocument"/>
+		<when-type-assignable class="br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocument"/>
 	</generate-with>
 	
 	<!-- Specify ie6 implementation for screen blocker -->
