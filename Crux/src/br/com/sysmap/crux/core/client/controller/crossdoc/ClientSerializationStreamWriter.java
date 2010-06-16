@@ -21,6 +21,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
 
 import com.google.gwt.core.client.GWT;
@@ -142,7 +143,7 @@ public final class ClientSerializationStreamWriter implements SerializationStrea
 	{
 		if (!streamOpen)
 		{
-			throw new IllegalStateException("WriterStream is not open");//TODO - Thiago - messages
+			throw new IllegalStateException(Crux.getMessages().crossDocumentSerializationErrorStreamClosed());
 		}
 		
 		writeStringTable();

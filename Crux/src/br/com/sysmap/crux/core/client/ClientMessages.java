@@ -46,6 +46,8 @@ public interface ClientMessages extends Messages
 	String crossDocumentCanNotIdentifyMethod();
 	@DefaultMessage("[event 011] - Can not find the method to be called.")
 	String crossDocumentMethodNotFound();
+	@DefaultMessage("[event 012] - WriterStream is not open.")
+	String crossDocumentSerializationErrorStreamClosed();
 	
 	//  screenFactory
 	@DefaultMessage("[screenFactory 001] - Error Creating widget: ''{0}''. See Log for more detail.")

@@ -19,7 +19,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.controller.ControllerName;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
 import com.google.gwt.core.client.GWT;
@@ -165,9 +164,10 @@ public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerato
 	 * @param declaringClass
 	 * @return
 	 */
-	protected String getControllerName(Class<?> declaringClass)
+	@SuppressWarnings("deprecation")
+    protected String getControllerName(Class<?> declaringClass)
 	{
-		ControllerName annotation = declaringClass.getAnnotation(ControllerName.class);
+		br.com.sysmap.crux.core.client.controller.ControllerName annotation = declaringClass.getAnnotation(br.com.sysmap.crux.core.client.controller.ControllerName.class);
 		if (annotation != null)
 		{
 			return annotation.value();

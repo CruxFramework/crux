@@ -328,7 +328,7 @@ public class SerializableTypeOracleBuilder {
       return "Default";
     }
 
-    public boolean isAllowed(@SuppressWarnings("unused") JClassType type) {
+    public boolean isAllowed(JClassType type) {
       return true;
     }
   };

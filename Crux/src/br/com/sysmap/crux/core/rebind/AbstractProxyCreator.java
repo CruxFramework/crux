@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.core.rebind;
 
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracleBuilder;
 
 import com.google.gwt.core.ext.GeneratorContext;
@@ -40,6 +41,7 @@ public abstract class AbstractProxyCreator
 	protected final GeneratorContext context;
 	protected final TreeLogger logger;
 	protected final JClassType baseProxyType;
+	protected static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 
 	/**
 	 * @param logger

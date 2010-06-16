@@ -145,6 +145,15 @@ public interface GeneratorMessages
 	@DefaultServerMessage("[generator 039] - {0} is not an interface.")
 	String crossDocumentGeneratorTypeIsNotInterface(String qualifiedSourceName);
 	
+	@DefaultServerMessage("[generator 040] - Cross document interface {0} does not follow the name pattern for cross document objects.")
+	String crossDocumentInvalidCrossDocInterfaceName(String crossDocInterfaceName);
+	
+	@DefaultServerMessage("[generator 041] - Could not find the cross document controller for the interface {0}.")
+	String crossDocumentCanNotFindControllerForInterface(String crossDocInterfaceName);
+
+	@DefaultServerMessage("[generator 042] - The controller found for the interface {0} does not have the annotation @Controller.")
+	String crossDocumentInvalidController(String crossDocInterfaceName);
+
 	@DefaultServerMessage("[parameter 001] - Required parameter {0} is missing.")
 	String requiredParameterMissing(String name);
 

@@ -25,7 +25,7 @@ import com.google.gwt.user.client.rpc.SerializationStreamReader;
 import com.google.gwt.user.client.rpc.impl.Serializer;
 
 /**
- * For internal use only. Used for server call serialization.
+ * For internal use only. Used for cross document call serialization.
  */
 public final class ClientSerializationStreamReader implements SerializationStreamReader
 {

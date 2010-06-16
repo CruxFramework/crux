@@ -273,22 +273,22 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		String crossDocInterfaceName = baseProxyType.getQualifiedSourceName();
 		if (!crossDocInterfaceName.endsWith("CrossDoc"))
 		{
-			logger.branch(TreeLogger.ERROR, "Cross document interface " + crossDocInterfaceName + "does not follow the name pattern for cross document objects", null);
-			throw new UnableToCompleteException(); // TODO - Message
+			logger.branch(TreeLogger.ERROR, messages.crossDocumentInvalidCrossDocInterfaceName(crossDocInterfaceName), null);
+			throw new UnableToCompleteException();
 			
 		}
 		
 		JClassType controllerClass = typeOracle.findType(crossDocInterfaceName.substring(0, crossDocInterfaceName.length()-8));
 		if (controllerClass == null)
 		{
-			logger.branch(TreeLogger.ERROR, "Could not find the cross document controller for the interface " + crossDocInterfaceName, null);
+			logger.branch(TreeLogger.ERROR, messages.crossDocumentCanNotFindControllerForInterface(crossDocInterfaceName), null);
 			throw new UnableToCompleteException();
 		}
 		
 		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 		if (controllerAnnot == null)
 		{
-			logger.branch(TreeLogger.ERROR, "The controller found for the interface " + crossDocInterfaceName + "does not have the annotation @Controller", null);
+			logger.branch(TreeLogger.ERROR, messages.crossDocumentInvalidController(crossDocInterfaceName), null);
 			throw new UnableToCompleteException();
 		}
 		

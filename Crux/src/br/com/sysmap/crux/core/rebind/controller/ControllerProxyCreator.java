@@ -24,7 +24,6 @@ import java.util.Map;
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Expose;
-import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Validate;
 import br.com.sysmap.crux.core.client.controller.crossdoc.ClientSerializationStreamReader;
 import br.com.sysmap.crux.core.client.controller.crossdoc.ClientSerializationStreamWriter;
@@ -158,7 +157,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.rebind.AbstractProxyCreator#generateTypeHandlers(br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracle, br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracle)
+	 * @see br.com.sysmap.crux.core.rebind.AbstractProxyCreator#generateTypeHandlers(SerializableTypeOracle, SerializableTypeOracle)
 	 */
 	@Override
 	protected void generateTypeHandlers(SerializableTypeOracle typesSentFromBrowser, SerializableTypeOracle typesSentToBrowser) throws UnableToCompleteException
@@ -448,9 +447,10 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	 * @param controllerClass
 	 * @param method
 	 */
-	private void generateInvokeBlockForMethod(SourceWriter sourceWriter, Method method)
+	@SuppressWarnings("deprecation")
+    private void generateInvokeBlockForMethod(SourceWriter sourceWriter, Method method)
     {
-	    if (method.getAnnotation(ExposeOutOfModule.class) != null)
+	    if (method.getAnnotation(br.com.sysmap.crux.core.client.controller.ExposeOutOfModule.class) != null)
 	    {
 	    	sourceWriter.println("if (\""+method.getName()+"\".equals(metodo)) {");
 	    }
@@ -649,7 +649,8 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	 * @param method
 	 * @return
 	 */
-	private boolean isAllowMultipleClicks(Method method)
+	@SuppressWarnings("deprecation")
+    private boolean isAllowMultipleClicks(Method method)
     {
 	    Expose exposeAnnot = method.getAnnotation(Expose.class);
 	    if (exposeAnnot != null)
@@ -657,7 +658,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	    	return exposeAnnot.allowMultipleCalls();
 	    }
 		
-	    ExposeOutOfModule exposeOutAnnot = method.getAnnotation(ExposeOutOfModule.class);
+	    br.com.sysmap.crux.core.client.controller.ExposeOutOfModule exposeOutAnnot = method.getAnnotation(br.com.sysmap.crux.core.client.controller.ExposeOutOfModule.class);
 	    if (exposeOutAnnot != null)
 	    {
 	    	return exposeOutAnnot.allowMultipleCalls();
@@ -671,7 +672,8 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	 * @param method
 	 * @return
 	 */
-	private boolean isControllerMethodSignatureValid(Method method)
+	@SuppressWarnings("deprecation")
+    private boolean isControllerMethodSignatureValid(Method method)
 	{
 		if (!Modifier.isPublic(method.getModifiers()))
 		{
@@ -696,7 +698,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			return false;
 		}
 		
-		if (method.getAnnotation(Expose.class) == null && method.getAnnotation(ExposeOutOfModule.class) == null)
+		if (method.getAnnotation(Expose.class) == null && method.getAnnotation(br.com.sysmap.crux.core.client.controller.ExposeOutOfModule.class) == null)
 		{
 			return false;
 		}
