@@ -104,13 +104,19 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 	private void generateValidateControllerMethod(SourceWriter sourceWriter)
 	{
 		sourceWriter.println("public boolean __validateController(String controllerId){");
+		sourceWriter.indent();
 		sourceWriter.println("String[] controllers = Screen.getControllers();");
 		sourceWriter.println("for (String c: controllers){");
+		sourceWriter.indent();
 		sourceWriter.println("if (c.equals(controllerId)){");
+		sourceWriter.indent();
 		sourceWriter.println("return true;");
+		sourceWriter.outdent();
 		sourceWriter.println("}");
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 		sourceWriter.println("return false;");
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 	
@@ -123,6 +129,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 	{
 		
 		sourceWriter.println("public "+implClassName+"(){");
+		sourceWriter.indent();
 		for (String controller : controllerClassNames.keySet()) 
 		{
 			Class<?> controllerClass = ClientControllers.getController(controller);
@@ -131,20 +138,31 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 				Global globalAnnot = controllerClass.getAnnotation(Global.class);
 				if (globalAnnot == null)
 				{
-					sourceWriter.println("if (__validateController(\""+controller+"\"))");
+					sourceWriter.println("if (__validateController(\""+controller+"\")){");
+					sourceWriter.indent();
 				}
 				sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
+				if (globalAnnot == null)
+				{
+					sourceWriter.outdent();
+					sourceWriter.println("}");
+				}
 			}
 		}
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 
 	private void generateRegisterControllerMethod(SourceWriter sourceWriter)
     {
 		sourceWriter.println("public void registerController(String controller, ControllerInvoker controllerInvoker){");
+		sourceWriter.indent();
 		sourceWriter.println("if (!controllers.containsKey(controller)){");
+		sourceWriter.indent();
 		sourceWriter.println("controllers.put(controller, controllerInvoker);");
+		sourceWriter.outdent();
 		sourceWriter.println("}");
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 	
@@ -207,62 +225,117 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 	private void generateControllerInvokeMethod(SourceWriter sourceWriter, Map<String, String> controllerClassNames)
 	{
 		sourceWriter.println("public void invokeController(final String controllerName, final String method, final boolean fromOutOfModule, final Object sourceEvent, final EventProcessor eventProcessor){");
-		sourceWriter.println("ControllerInvoker controller = controllers.get(controllerName);");
-		sourceWriter.println("if (controller != null){");
-		sourceWriter.println("try{");
-		sourceWriter.println("controller.invoke(method, sourceEvent, fromOutOfModule, eventProcessor);");
-		sourceWriter.println("}");
-		sourceWriter.println("catch (Exception e)"); 
-		sourceWriter.println("{");
-		sourceWriter.println("eventProcessor.setException(e);");
-		sourceWriter.println("}");
-		sourceWriter.println("return;");
-		sourceWriter.println("}");
+		sourceWriter.indent();
+		generateControllerCallForAlreadyLoaded(sourceWriter);
 
-		boolean first = true;
 		for (String controller : controllerClassNames.keySet()) 
 		{
 			Class<?> controllerClass = ClientControllers.getController(controller);
 			Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 			if (isControllerLazy(controllerClass))
 			{
-				if (!first)
-				{
-					sourceWriter.print("else ");
-				}
-				else
-				{
-					first = false;
-				}
-				sourceWriter.println("if (\""+controller+"\".equals(controllerName)){");
+				sourceWriter.println("else if (\""+controller+"\".equals(controllerName)){");
+				sourceWriter.indent();
 				if (controllerAnnot != null && Fragments.getFragmentClass(controllerAnnot.fragment()) != null)
 				{
-					sourceWriter.println("GWT.runAsync("+Fragments.getFragmentClass(controllerAnnot.fragment())+".class, new RunAsyncCallback(){");
-					sourceWriter.println("public void onFailure(Throwable reason){");
-					sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerCanNotBeLoaded(controller));");
-					sourceWriter.println("}");
-					sourceWriter.println("public void onSuccess(){");
-					sourceWriter.println("if (!controllers.containsKey(\""+controller+"\")){");
-					sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
-					sourceWriter.println("}");
-					sourceWriter.println("invokeController(controllerName, method, fromOutOfModule, sourceEvent, eventProcessor);");
-					sourceWriter.println("}");
-					sourceWriter.println("});");
+					generateControllerCallForLazyFragmentedController(sourceWriter, controllerClassNames, controller, controllerAnnot);
 				}
 				else
 				{
-					sourceWriter.println("if (!controllers.containsKey(\""+controller+"\")){");
-					sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
-					sourceWriter.println("}");
-					sourceWriter.println("invokeController(controllerName, method, fromOutOfModule, sourceEvent, eventProcessor);");
+					generateControllerCallForLazyController(sourceWriter, controllerClassNames, controller);
 				}
+				sourceWriter.outdent();
 				sourceWriter.println("}");
 			}
 		}
-		//TODO - Thiago - aparentemente, se o controller nao existir, nao notifica mais isso pro usuario.... não lançar exceção... apenas logar no console
-		
+		generateControllerNotFoundErrorHandling(sourceWriter);
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
+
+
+	/**
+	 * @param sourceWriter
+	 */
+	private void generateControllerNotFoundErrorHandling(SourceWriter sourceWriter)
+    {
+	    sourceWriter.println("else {");
+		sourceWriter.indent();
+		sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerNotFound(controllerName));");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+    }
+
+
+	/**
+	 * @param sourceWriter
+	 * @param controllerClassNames
+	 * @param controller
+	 */
+	private void generateControllerCallForLazyController(SourceWriter sourceWriter, Map<String, String> controllerClassNames, String controller)
+    {
+	    sourceWriter.println("if (!controllers.containsKey(\""+controller+"\")){");
+		sourceWriter.indent();
+	    sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
+		sourceWriter.outdent();
+	    sourceWriter.println("}");
+	    sourceWriter.println("invokeController(controllerName, method, fromOutOfModule, sourceEvent, eventProcessor);");
+    }
+
+
+	/**
+	 * @param sourceWriter
+	 * @param controllerClassNames
+	 * @param controller
+	 * @param controllerAnnot
+	 */
+	private void generateControllerCallForLazyFragmentedController(SourceWriter sourceWriter, Map<String, String> controllerClassNames, String controller, Controller controllerAnnot)
+    {
+	    sourceWriter.println("GWT.runAsync("+Fragments.getFragmentClass(controllerAnnot.fragment())+".class, new RunAsyncCallback(){");
+		sourceWriter.indent();
+	    sourceWriter.println("public void onFailure(Throwable reason){");
+		sourceWriter.indent();
+	    sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerCanNotBeLoaded(controller));");
+		sourceWriter.outdent();
+	    sourceWriter.println("}");
+	    sourceWriter.println("public void onSuccess(){");
+		sourceWriter.indent();
+	    sourceWriter.println("if (!controllers.containsKey(\""+controller+"\")){");
+		sourceWriter.indent();
+	    sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
+		sourceWriter.outdent();
+	    sourceWriter.println("}");
+	    sourceWriter.println("invokeController(controllerName, method, fromOutOfModule, sourceEvent, eventProcessor);");
+		sourceWriter.outdent();
+	    sourceWriter.println("}");
+		sourceWriter.outdent();
+	    sourceWriter.println("});");
+    }
+
+
+	/**
+	 * @param sourceWriter
+	 */
+	private void generateControllerCallForAlreadyLoaded(SourceWriter sourceWriter)
+    {
+	    sourceWriter.println("ControllerInvoker controller = controllers.get(controllerName);");
+		sourceWriter.println("if (controller != null){");
+		sourceWriter.indent();
+		sourceWriter.println("try{");
+		sourceWriter.indent();
+		sourceWriter.println("controller.invoke(method, sourceEvent, fromOutOfModule, eventProcessor);");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+		sourceWriter.println("catch (Exception e)"); 
+		sourceWriter.println("{");
+		sourceWriter.indent();
+		sourceWriter.println("eventProcessor.setException(e);");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+		sourceWriter.println("return;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+    }
 
 
 	/**
