@@ -203,9 +203,6 @@ public class SerializableTypeOracleBuilder {
     /**
      * Returns the internal set of instantiable types for this TIC.
      * Modifications to this set are immediately recorded into the TIC as well.
-     * TODO(spoon) maybe pass the TIC around instead of the set?
-     *  then there could be addInstantiableType(JClassType) instead of
-     *  speccing this to be mutable.
      */
     public Set<JClassType> getInstantiableTypes() {
       return instantiableTypes;
@@ -749,9 +746,6 @@ public class SerializableTypeOracleBuilder {
 
   /**
    * The set of type parameters that appear in one of the root types.
-   * TODO(spoon): It would be cleaner to delete this field, and instead to have
-   * {@link #addRootType(TreeLogger, JType)} replace parameters with wildcard
-   * types. Then the root types would not contain any parameters.
    */
   private Set<JTypeParameter> typeParametersInRootTypes = new HashSet<JTypeParameter>();
 
@@ -837,8 +831,6 @@ public class SerializableTypeOracleBuilder {
         // if entrySucceeded, there may still be "warning" problems, but too
         // often they're expected (e.g. non-instantiable subtypes of List), so
         // we log them at DEBUG.
-        // TODO(fabbott): we could blacklist or graylist those types here, so
-        // instantiation during code generation would flag them for us.
         problems.report(logger, TreeLogger.DEBUG, TreeLogger.DEBUG);
       }
 
@@ -1162,8 +1154,6 @@ public class SerializableTypeOracleBuilder {
     JClassType baseType = getBaseType(classOrInterface);
 
     boolean allSucceeded = true;
-    // TODO: Propagating the constraints will produce better results as long
-    // as infinite expansion can be avoided in the process.
     JField[] fields = baseType.getFields();
     if (fields.length > 0) {
       TreeLogger localLogger = logger.branch(TreeLogger.DEBUG,
