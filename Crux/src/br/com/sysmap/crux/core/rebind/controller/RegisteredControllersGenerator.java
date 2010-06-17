@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind;
+package br.com.sysmap.crux.core.rebind.controller;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocument;
 import br.com.sysmap.crux.core.client.event.ControllerInvoker;
 import br.com.sysmap.crux.core.client.event.CrossDocumentInvoker;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
-import br.com.sysmap.crux.core.rebind.controller.ControllerProxyCreator;
+import br.com.sysmap.crux.core.rebind.AbstractRegisteredElementsGenerator;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 

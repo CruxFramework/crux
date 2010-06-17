@@ -12,7 +12,7 @@
 	<servlet path="/crux.rpc" class="br.com.sysmap.crux.core.server.dispatch.RemoteServiceServlet"/>
 
 	<!-- Specify the generator for registered client handlers.-->
-	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredControllersGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.controller.RegisteredControllersGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.event.RegisteredControllers" />
 	</generate-with>
 
