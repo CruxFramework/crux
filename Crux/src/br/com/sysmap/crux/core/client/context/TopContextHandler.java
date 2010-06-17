@@ -18,7 +18,6 @@ package br.com.sysmap.crux.core.client.context;
 import java.util.HashMap;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.event.ControllerInvoker;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
 import br.com.sysmap.crux.core.client.event.Events;
@@ -31,6 +30,7 @@ import br.com.sysmap.crux.core.client.screen.Screen;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@SuppressWarnings("deprecation")
 public class TopContextHandler implements ContextHandler
 {
 	/**
@@ -38,7 +38,7 @@ public class TopContextHandler implements ContextHandler
 	 */
 	public TopContextHandler()
     {
-		Events.getRegisteredControllers().registerController("__topContextController", new TopContextHanlderController());
+		Events.getRegisteredControllers().registerController("__topContextController", new TopContextHandlerController());
     }
 	
 	/**
@@ -114,30 +114,30 @@ public class TopContextHandler implements ContextHandler
 	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
-	public static class TopContextHanlderController implements ControllerInvoker
+	public static class TopContextHandlerController implements ControllerInvoker
 	{
 		protected HashMap<String, Object> context = new HashMap<String, Object>();
 		
-		@ExposeOutOfModule
+		@br.com.sysmap.crux.core.client.controller.ExposeOutOfModule
 		public void writeData(InvokeControllerEvent event)
 		{
 			Object[] data = (Object[])event.getParameter();
 			context.put((String) data[0], data[1]);
 		}
 		
-		@ExposeOutOfModule
+		@br.com.sysmap.crux.core.client.controller.ExposeOutOfModule
 		public Object readData(InvokeControllerEvent event)
 		{
 			return context.get((String) event.getParameter());
 		}
 		
-		@ExposeOutOfModule
+		@br.com.sysmap.crux.core.client.controller.ExposeOutOfModule
 		public void eraseData(InvokeControllerEvent event)
 		{
 			context.remove((String) event.getParameter());
 		}
 
-		@ExposeOutOfModule
+		@br.com.sysmap.crux.core.client.controller.ExposeOutOfModule
 		public void clearData(InvokeControllerEvent event)
 		{
 			context.clear();
