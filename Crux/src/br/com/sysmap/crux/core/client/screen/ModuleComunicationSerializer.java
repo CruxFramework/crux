@@ -31,6 +31,7 @@ import com.google.gwt.xml.client.XMLParser;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
 public class ModuleComunicationSerializer
 {	
 	private RegisteredCruxSerializables registeredSerializables;

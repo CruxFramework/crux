@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.client.controller.crossdoc;
 
+import br.com.sysmap.crux.core.client.screen.JSWindow;
+
 /**
  * All cross document objects created by Crux implements that interface. It can be
  * used to allow the caller to define where the method will be invoked.
@@ -44,4 +46,11 @@ public interface TargetDocument extends CrossDocument
 	 * @param frame - the name of the sibling frame
 	 */
 	void setTargetSiblingFrame(String frame);
+	
+	/**
+	 * Sets the target window for the cross document call.
+	 * 
+	 * @param jsWindow - the window where the call will occur
+	 */
+	void setTargetWindow(JSWindow jsWindow);
 }

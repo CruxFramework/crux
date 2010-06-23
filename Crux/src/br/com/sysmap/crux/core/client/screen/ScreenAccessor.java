@@ -22,6 +22,7 @@ import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 
 /**
+ * This class is used to make calls in different documents.
  * @author Thiago da Rosa de Bustamante
  *
  */
@@ -34,26 +35,37 @@ public abstract class ScreenAccessor
 	 * @param target Where the method resides
 	 * @return
 	 */
-	protected String invokeCrossDocument(String serializedData, Target target, String frame, String siblingFrame)
+	protected String invokeCrossDocument(String serializedData, Target target, String frame, String siblingFrame, JSWindow jsWindow)
 	{
-		switch (target)
-        {
-	        case TOP: return callTopControllerAccessor(serializedData);
-	        case ABSOLUTE_TOP: return callAbsoluteTopControllerAccessor(serializedData);
-	        case PARENT: return callParentControllerAccessor(serializedData);
-	        case OPENER: return callOpenerControllerAccessor(serializedData);
-	        default: 
-	        	if (!StringUtils.isEmpty(frame))
-	        	{
-	        		return callFrameControllerAccessor(frame, serializedData);
-	        	}
-	        	else if (!StringUtils.isEmpty(siblingFrame))
-	        	{
-	        		return callSiblingFrameControllerAccessor(siblingFrame, serializedData);
-	        	}
-	        	
-	        	throw new CrossDocumentException(Crux.getMessages().crossDocumentInvalidTarget());
-        }
+		if (target != null)
+		{
+			switch (target)
+	        {
+		        case TOP: return callTopControllerAccessor(serializedData);
+		        case ABSOLUTE_TOP: return callAbsoluteTopControllerAccessor(serializedData);
+		        case PARENT: return callParentControllerAccessor(serializedData);
+		        case OPENER: return callOpenerControllerAccessor(serializedData);
+		        default: 
+		        	throw new CrossDocumentException(Crux.getMessages().crossDocumentInvalidTarget());
+	        }
+			
+		}
+		else if (!StringUtils.isEmpty(frame))
+    	{
+    		return callFrameControllerAccessor(frame, serializedData);
+    	}
+    	else if (!StringUtils.isEmpty(siblingFrame))
+    	{
+    		return callSiblingFrameControllerAccessor(siblingFrame, serializedData);
+    	}
+    	else if (jsWindow != null)
+    	{
+    		return callWindowControllerAccessor(jsWindow, serializedData);
+    	}
+    	else
+    	{
+    		throw new CrossDocumentException(Crux.getMessages().crossDocumentInvalidTarget());
+    	}
 	}
 	
 	private native String callTopControllerAccessor(String serializedData)/*-{
@@ -86,4 +98,8 @@ public abstract class ScreenAccessor
 	private static native String callSiblingFrameControllerAccessor(String frame, String serializedData)/*-{
 		return $wnd.parent.frames[frame]._cruxCrossDocumentAccessor(serializedData);
 	}-*/;		
+
+	private static native String callWindowControllerAccessor(JSWindow jsWindow, String serializedData)/*-{
+	return jsWindow._cruxCrossDocumentAccessor(serializedData);
+}-*/;		
 }

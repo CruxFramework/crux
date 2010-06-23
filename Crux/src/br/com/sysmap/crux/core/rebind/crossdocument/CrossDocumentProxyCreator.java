@@ -19,15 +19,19 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.crossdoc.ClientSerializationStreamWriter;
 import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentException;
 import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentProxy;
+import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
 import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentProxy.CrossDocumentReader;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializationUtils;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.Shared;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.TypeSerializerCreator;
+import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.impl.Impl;
@@ -150,8 +154,9 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 
 	/**
 	 * Generates the client's asynchronous proxy method.
+	 * @throws UnableToCompleteException 
 	 */
-	protected void generateProxyMethod(SourceWriter w, JMethod method)
+	protected void generateProxyMethod(SourceWriter w, JMethod method) throws UnableToCompleteException
 	{
 		w.println();
 
@@ -160,6 +165,8 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		generateProxyMethodSignature(w, nameFactory, method);
 		w.println("{");
 		w.indent();		
+
+		generateCallToSelfBlock(w, method);
 
 		w.print(SerializationStreamWriter.class.getSimpleName());
 		w.print(" ");
@@ -196,10 +203,58 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 
 	/**
 	 * @param w
+	 * @param method
+	 * @throws UnableToCompleteException 
+	 */
+	private void generateCallToSelfBlock(SourceWriter w, JMethod method) throws UnableToCompleteException
+    {
+		JClassType controllerClass = getControllerClass(context.getTypeOracle());
+		JType returnType = method.getReturnType().getErasedType();
+		
+		w.println("if (this.target != null && this.target.equals("+ClassUtils.getClassSourceName(Target.class)+".SELF)){");
+		w.indent();
+		String controllerClassName = controllerClass.getQualifiedSourceName();
+		w.println(controllerClassName + " controllerOnSelf = Events.getRegisteredControllers().getCrossDocument(CONTROLLER_NAME,"+controllerClassName+".class);");    
+		w.println("if (controllerOnSelf == null){");
+		w.indent();
+		w.println("throw new CrossDocumentException(Crux.getMessages().eventProcessorClientControllerNotFound(CONTROLLER_NAME));");
+		w.outdent();
+		w.println("}");
+		
+		if (returnType != JPrimitiveType.VOID)
+		{
+			w.print("return ");
+		}
+		w.println("controllerOnSelf."+method.getName()+"(");
+		JParameter[] params = method.getParameters();
+		boolean needsComma = false;
+		for (int i = 0; i < params.length ; ++i)
+		{
+			JParameter param = params[i];
+			if (needsComma)
+			{
+				w.print(", ");
+			}
+			needsComma = true;
+			w.print(param.getName());
+		}
+		w.println(");");
+		if (returnType == JPrimitiveType.VOID)
+		{
+			w.print("return;");
+		}
+
+		w.outdent();		
+		w.println("}");
+    }
+
+	/**
+	 * @param w
 	 * @param serializableTypeOracle
+	 * @throws UnableToCompleteException 
 	 */
 	@Override
-	protected void generateProxyMethods(SourceWriter w)
+	protected void generateProxyMethods(SourceWriter w) throws UnableToCompleteException
 	{
 		JMethod[] syncMethods = baseProxyType.getOverridableMethods();
 		for (JMethod method : syncMethods)
@@ -266,9 +321,9 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	/**
 	 * @param typeOracle
 	 * @return
-	 * @throws UnableToCompleteException 
+	 * @throws UnableToCompleteException
 	 */
-	protected String getControllerName(TypeOracle typeOracle) throws UnableToCompleteException
+	protected JClassType getControllerClass(TypeOracle typeOracle) throws UnableToCompleteException
 	{
 		String crossDocInterfaceName = baseProxyType.getQualifiedSourceName();
 		if (!crossDocInterfaceName.endsWith("CrossDoc"))
@@ -284,7 +339,18 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 			logger.branch(TreeLogger.ERROR, messages.crossDocumentCanNotFindControllerForInterface(crossDocInterfaceName), null);
 			throw new UnableToCompleteException();
 		}
-		
+		return controllerClass;
+	}
+	
+	/**
+	 * @param typeOracle
+	 * @return
+	 * @throws UnableToCompleteException 
+	 */
+	protected String getControllerName(TypeOracle typeOracle) throws UnableToCompleteException
+	{
+		String crossDocInterfaceName = baseProxyType.getQualifiedSourceName();
+		JClassType controllerClass = getControllerClass(typeOracle);
 		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 		if (controllerAnnot == null)
 		{
@@ -301,7 +367,8 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	protected String[] getImports()
     {
 	    String[] imports = new String[] { getProxySupertype().getCanonicalName(), getStreamWriterClass().getCanonicalName(), SerializationStreamWriter.class.getCanonicalName(), GWT.class.getCanonicalName(),
-		        SerializationException.class.getCanonicalName(), Impl.class.getCanonicalName(), CrossDocumentException.class.getCanonicalName() };
+		        SerializationException.class.getCanonicalName(), Impl.class.getCanonicalName(), CrossDocumentException.class.getCanonicalName(), 
+		        Events.class.getCanonicalName(), Crux.class.getCanonicalName()};
 	    return imports;
     }
 	

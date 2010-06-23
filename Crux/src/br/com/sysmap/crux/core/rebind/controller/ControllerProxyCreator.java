@@ -117,7 +117,11 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	@Override
 	protected void generateProxyContructor(SourceWriter srcWriter)
 	{
+		srcWriter.println();
 		srcWriter.println("public " + getProxySimpleName() + "() {");
+		srcWriter.indent();
+		ClientInvokableGeneratorHelper.generateAutoCreateFields(logger, controllerClass, srcWriter, "this");
+		srcWriter.outdent();
 		srcWriter.println("}");
 	}
 	
@@ -138,6 +142,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			String typeSerializerName = SerializationUtils.getTypeDeserializerQualifiedName(baseProxyType);
 			srcWriter.println("private static final " + typeSerializerName + " SERIALIZER = new " + typeSerializerName + "();");
 		}
+		srcWriter.println();
 	}
 	
 	@Override
@@ -347,14 +352,14 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	    if (isSingleton)
 		{
 			sourceWriter.println("if (this.wrapper == null){");
+			sourceWriter.indent();
 			sourceWriter.println("this.wrapper = new " + getProxySimpleName() + "();");
-			ClientInvokableGeneratorHelper.generateAutoCreateFields(logger, controllerClass, sourceWriter, "wrapper");
+			sourceWriter.outdent();
 			sourceWriter.println("}");
 		}
 		else
 		{
 			sourceWriter.println(getProxySimpleName() + " wrapper = new " + getProxySimpleName() + "();");
-			ClientInvokableGeneratorHelper.generateAutoCreateFields(logger, controllerClass, sourceWriter, "wrapper");
 		}
     }
 
@@ -376,7 +381,12 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		generateCrossDocDelegateObjectInstantiation(sourceWriter);
 		generateMethodIdentificationBlock(sourceWriter);
 		
-		sourceWriter.println(SerializationStreamReader.class.getSimpleName()+" streamReader = createStreamReader(serializedData);");
+		sourceWriter.println(SerializationStreamReader.class.getSimpleName()+" streamReader = null;");
+		sourceWriter.println("if(serializedData.length() > 0){");
+		sourceWriter.indent();
+		sourceWriter.println("streamReader = createStreamReader(serializedData);");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 		
 		if (isAutoBindEnabled)
 		{
@@ -453,24 +463,29 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	    if (method.getAnnotation(br.com.sysmap.crux.core.client.controller.ExposeOutOfModule.class) != null)
 	    {
 	    	sourceWriter.println("if (\""+method.getName()+"\".equals(metodo)) {");
+			sourceWriter.indent();
 	    }
 	    else
 	    {
 	    	sourceWriter.println("if (\""+method.getName()+"\".equals(metodo) && !fromOutOfModule) {");
+			sourceWriter.indent();
 	    }
 	    
 	    boolean allowMultipleClicks = isAllowMultipleClicks(method);
 	    if (!allowMultipleClicks)
 	    {
 			sourceWriter.println("if (!__runningMethods.containsKey(metodo)){");
+			sourceWriter.indent();
 	    	sourceWriter.println("__runningMethods.put(metodo,true);");
 	    	sourceWriter.println("try{");
+			sourceWriter.indent();
 	    }
 	    
 	    Validate annot = method.getAnnotation(Validate.class);
 	    if (annot != null)
 	    {
 	    	sourceWriter.println("try{");
+			sourceWriter.indent();
 	    	String validateMethod = annot.value();
 	    	if (validateMethod == null || validateMethod.length() == 0)
 	    	{
@@ -479,13 +494,18 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	    		validateMethod = "validate"+ methodName;
 	    	}
 	    	generateValidateMethodCall(method, validateMethod, sourceWriter);
+			sourceWriter.outdent();
 	    	sourceWriter.println("}catch (Throwable e){");
+			sourceWriter.indent();
 	    	sourceWriter.println("__runMethod = false;");
 	    	sourceWriter.println("eventProcessor.setValidationMessage(e.getMessage());");
+			sourceWriter.outdent();
 	    	sourceWriter.println("}");
 	    }
 	    sourceWriter.println("if (__runMethod){");
+		sourceWriter.indent();
 	    sourceWriter.println("try{");
+		sourceWriter.indent();
 	    
 	    boolean hasReturn = !method.getReturnType().getName().equals("void") && 
 	    	!method.getReturnType().getName().equals("java.lang.Void");
@@ -500,19 +520,28 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	    	sourceWriter.println(");");
 	    }
 	    
+		sourceWriter.outdent();
 	    sourceWriter.println("}catch (Throwable e){");
+		sourceWriter.indent();
 	    sourceWriter.println("eventProcessor.setException(e);");
+		sourceWriter.outdent();
 	    sourceWriter.println("}");
+		sourceWriter.outdent();
 	    sourceWriter.println("}");
 
 	    if (!allowMultipleClicks)
 	    {
+			sourceWriter.outdent();
 	    	sourceWriter.println("}finally{");
+			sourceWriter.indent();
 	    	sourceWriter.println("__runningMethods.remove(metodo);");
+			sourceWriter.outdent();
 	    	sourceWriter.println("}");
+			sourceWriter.outdent();
 	    	sourceWriter.println("}");
 	    }
 	    
+		sourceWriter.outdent();
 	    sourceWriter.println("}");
     }
 	
@@ -528,6 +557,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	private void generateInvokeMethod(SourceWriter sourceWriter)
     {
 	    sourceWriter.println("public void invoke(String metodo, Object sourceEvent, boolean fromOutOfModule, EventProcessor eventProcessor) throws Exception{ ");
+		sourceWriter.indent();
 		sourceWriter.println("boolean __runMethod = true;");
 		
 		generateCrossDocDelegateObjectInstantiation(sourceWriter);
@@ -536,7 +566,9 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		if (isAutoBindEnabled)
 		{
 			sourceWriter.println("if (!__runningMethods.containsKey(metodo)){");
+			sourceWriter.indent();
 			sourceWriter.println("wrapper.updateControllerObjects();");
+			sourceWriter.outdent();
 			sourceWriter.println("}");
 		}
 		
@@ -567,6 +599,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			sourceWriter.println("wrapper.updateScreenWidgets();");
 		}		
 		
+		sourceWriter.outdent();
 		sourceWriter.println("}");
     }
 	

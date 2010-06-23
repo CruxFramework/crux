@@ -212,13 +212,14 @@ public abstract class AbstractProxyCreator
 	 * using the default address for the
 	 * {@link com.google.gwt.user.client.rpc.RemoteService RemoteService}.
 	 */
-	protected abstract void generateProxyContructor(SourceWriter srcWriter);
+	protected abstract void generateProxyContructor(SourceWriter srcWriter) throws UnableToCompleteException;
 	
 	
 	/**
 	 * @param w
 	 * @param serializableTypeOracle
+	 * @throws UnableToCompleteException 
 	 */
-	protected abstract void generateProxyMethods(SourceWriter w);
+	protected abstract void generateProxyMethods(SourceWriter w) throws UnableToCompleteException;
 	
 }

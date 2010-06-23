@@ -23,8 +23,10 @@ import br.com.sysmap.crux.core.client.screen.CruxSerializable;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
 public class DateSerializer implements CruxSerializable
 {
+    private static final long serialVersionUID = 1L;
 
 	public Object deserialize(String serializedData)
 	{

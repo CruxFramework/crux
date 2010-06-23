@@ -49,6 +49,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
 public class RegisteredCruxSerializablesGenerator extends AbstractRegisteredElementsGenerator
 {
 	@Override

@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.client.controller.crossdoc;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.ScreenAccessor;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -25,6 +26,7 @@ import com.google.gwt.user.client.rpc.impl.Serializer;
 
 
 /**
+ * The base class for invocation proxies created to make cross document calls
  * @author Thiago da Rosa de Bustamante
  *
  */
@@ -33,6 +35,7 @@ public abstract class CrossDocumentProxy extends ScreenAccessor implements Targe
 	protected Target target;
 	protected String frame;
 	protected String siblingFrame;
+	protected JSWindow jsWindow;
 
 	private final Serializer serializer;
 
@@ -43,11 +46,23 @@ public abstract class CrossDocumentProxy extends ScreenAccessor implements Targe
     }
 	
 	/**
+	 * @see br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument#setTargetWindow(br.com.sysmap.crux.core.client.screen.JSWindow)
+	 */
+	public void setTargetWindow(JSWindow jsWindow)
+	{
+		this.jsWindow = jsWindow;
+		this.target = null;
+		this.frame = null;
+		this.siblingFrame = null;
+	}
+	
+	/**
 	 * @see br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument#setTarget(br.com.sysmap.crux.core.client.controller.crossdoc.Target)
 	 */
     public void setTarget(Target target)
 	{
 		this.target = target;
+		this.jsWindow = null;
 		this.frame = null;
 		this.siblingFrame = null;
 	}
@@ -58,6 +73,7 @@ public abstract class CrossDocumentProxy extends ScreenAccessor implements Targe
     public void setTargetFrame(String frame)
 	{
 		this.frame = frame;
+		this.jsWindow = null;
 	    this.target = null;
 		this.siblingFrame = null;
 	}
@@ -68,6 +84,7 @@ public abstract class CrossDocumentProxy extends ScreenAccessor implements Targe
     public void setTargetSiblingFrame(String frame)
 	{
 		this.siblingFrame = frame;
+		this.jsWindow = null;
 		this.frame = null;
 	    this.target = null;
 	}
@@ -142,7 +159,7 @@ public abstract class CrossDocumentProxy extends ScreenAccessor implements Targe
 	 */
 	protected Object doInvoke(String payload, CrossDocumentReader reader) throws Throwable
 	{
-		String serializedRet = invokeCrossDocument(payload, target, frame, siblingFrame);
+		String serializedRet = invokeCrossDocument(payload, target, frame, siblingFrame, jsWindow);
 		Object result = null;
 
 		if (payload == null)

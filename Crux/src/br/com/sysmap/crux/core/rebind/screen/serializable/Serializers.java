@@ -36,6 +36,7 @@ import br.com.sysmap.crux.core.server.scan.ClassScanner;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
 public class Serializers 
 {
 	private static final Log logger = LogFactory.getLog(Serializers.class);

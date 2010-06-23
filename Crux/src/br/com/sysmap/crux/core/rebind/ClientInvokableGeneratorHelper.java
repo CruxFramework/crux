@@ -68,8 +68,10 @@ public abstract class ClientInvokableGeneratorHelper extends AbstractRegisteredE
 	public static void generateControllerUpdateObjectsFunction(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
 	{
 		sourceWriter.println("public void updateControllerObjects(){");
+		sourceWriter.indent();
 		sourceWriter.println("Widget __wid = null;");
 		generateControllerUpdateObjects(logger, "this", controller, sourceWriter);
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 
@@ -81,7 +83,9 @@ public abstract class ClientInvokableGeneratorHelper extends AbstractRegisteredE
 	public static void generateIsAutoBindEnabledMethod(SourceWriter sourceWriter, boolean autoBind)
 	{
 		sourceWriter.println("public boolean isAutoBindEnabled(){");
+		sourceWriter.indent();
 		sourceWriter.println("return "+autoBind+";");
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 
@@ -94,9 +98,11 @@ public abstract class ClientInvokableGeneratorHelper extends AbstractRegisteredE
 	public static void generateScreenUpdateWidgetsFunction(TreeLogger logger, Class<?> controller, SourceWriter sourceWriter)
 	{
 		sourceWriter.println("public void updateScreenWidgets(){");
+		sourceWriter.indent();
 		sourceWriter.println("Widget __wid = null;");
 		sourceWriter.println("Object o = null;");
 		generateScreenUpdateWidgets(logger, "this", controller, sourceWriter);
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 	
@@ -297,17 +303,25 @@ public abstract class ClientInvokableGeneratorHelper extends AbstractRegisteredE
 		String valueVariable = "__wid";
 		sourceWriter.println(valueVariable + "= Screen.get(\""+name+"\");");
 		sourceWriter.println("if ("+valueVariable+" != null){");
+		sourceWriter.indent();
 		sourceWriter.println("if ("+valueVariable+" instanceof HasFormatter){");
+		sourceWriter.indent();
 		generateHandleHasFormatterWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable, allowProtected);
+		sourceWriter.outdent();
 		sourceWriter.println("}else if ("+valueVariable+" instanceof HasValue){");
+		sourceWriter.indent();
 		generateHandleHasValueWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable, allowProtected);
+		sourceWriter.outdent();
 		sourceWriter.print("}");
 		if (String.class.isAssignableFrom(type))
 		{
 			sourceWriter.println("else if ("+valueVariable+" instanceof HasText){");
+			sourceWriter.indent();
 			generateHandleHasTextWidgets(logger, parentVariable, voClass, field, sourceWriter, populateScreen, type, valueVariable, allowProtected);
+			sourceWriter.outdent();
 			sourceWriter.println("}");
 		}
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 
@@ -474,22 +488,32 @@ public abstract class ClientInvokableGeneratorHelper extends AbstractRegisteredE
 			{
 				
 				sourceWriter.println("if (" +Window.class.getName()+".Location.getParameter(\""+name+"\")==null){");
+				sourceWriter.indent();
 				sourceWriter.println("throw new "+ValidateException.class.getName()+"("+EscapeUtils.quote(coreMessages.requiredParameterMissing(name))+");");
+				sourceWriter.outdent();
 				sourceWriter.println("}");
 				
 			}
 			sourceWriter.println("if (" +Window.class.getName()+".Location.getParameter(\""+name+"\")!=null){");
+			sourceWriter.indent();
 			sourceWriter.println("try{");
+			sourceWriter.indent();
 			generateParameterBinding(logger, parentVariable, voClass, field, sourceWriter, type, name, allowProtected);
+			sourceWriter.outdent();
 			sourceWriter.println("}catch(Throwable _e1){");
+			sourceWriter.indent();
 			sourceWriter.println("throw new "+ValidateException.class.getName()+"("+EscapeUtils.quote(coreMessages.errorReadingParameter(name))+");");
+			sourceWriter.outdent();
 			sourceWriter.println("}");
+			sourceWriter.outdent();
 			sourceWriter.println("}");
 		}
 		else if (type.getAnnotation(ParameterObject.class) != null)
 		{
 			sourceWriter.println("if (" +getFieldValueGet(logger, voClass, field, parentVariable, allowProtected)+"==null){");
+			sourceWriter.indent();
 			generateFieldValueSet(logger, voClass, field, parentVariable, "new "+getClassSourceName(type)+"()", sourceWriter, allowProtected);
+			sourceWriter.outdent();
 			sourceWriter.println("}");
 
 			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable, allowProtected);
@@ -604,9 +628,13 @@ public abstract class ClientInvokableGeneratorHelper extends AbstractRegisteredE
 	private static void generateParameterPopulation(TreeLogger logger, Class<?> controller, String parentVariable, SourceWriter sourceWriter, Field field)
 	{
 		sourceWriter.println("try{");
+		sourceWriter.indent();
 		generateDTOParameterPopulationField(logger, parentVariable, controller, field, sourceWriter, true);
+		sourceWriter.outdent();
 		sourceWriter.println("}catch("+ValidateException.class.getName() + " _e){");
+		sourceWriter.indent();
 		sourceWriter.println(Crux.class.getName()+".getValidationErrorHandler().handleValidationError(_e.getMessage());");
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 
@@ -673,7 +701,9 @@ public abstract class ClientInvokableGeneratorHelper extends AbstractRegisteredE
 			if (!populateScreen)
 			{
 				sourceWriter.println("if (" +getFieldValueGet(logger, voClass, field, parentVariable, allowProtected)+"==null){");
+				sourceWriter.indent();
 				generateFieldValueSet(logger, voClass, field, parentVariable, "new "+getClassSourceName(type)+"()", sourceWriter, allowProtected);
+				sourceWriter.outdent();
 				sourceWriter.println("}");
 			}
 			parentVariable = getFieldValueGet(logger, voClass, field, parentVariable, allowProtected);

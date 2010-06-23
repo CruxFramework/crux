@@ -78,7 +78,8 @@ public class Screen
 	@Deprecated
 	protected String[] declaredSerializables;
 	
-	protected Screen(String id) 
+	@SuppressWarnings("deprecation")
+    protected Screen(String id) 
 	{
 		this.id = id;
 		this.handlerManager = new HandlerManager(this);
@@ -783,6 +784,7 @@ public class Screen
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public static ModuleComunicationSerializer getCruxSerializer()
 	{
 		return Screen.get().serializer;

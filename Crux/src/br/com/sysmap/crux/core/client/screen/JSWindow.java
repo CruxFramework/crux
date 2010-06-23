@@ -13,32 +13,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.serializer;
+package br.com.sysmap.crux.core.client.screen;
 
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * @author Thiago da Rosa de Bustamante
- *
+ * A Window JavaScriptObject. Useful for accessing foreign native JS objects and functions.
+ * @author Gessé S. F. Dafé
  */
-@Deprecated
-public class CharacterSerializer implements CruxSerializable
+public class JSWindow extends JavaScriptObject
 {
-    private static final long serialVersionUID = 1L;
-
-	public Object deserialize(String serializedData)
+	/**
+	 * Obeying to GWT JSNI restrictions
+	 */
+	protected JSWindow()
 	{
-		return new Character(serializedData.charAt(0));
 	}
-
-	public Object[] newArray(int size)
-	{
-		return new Character[size];
-	}
-
-	public String serialize()
-	{
-		return null;
-	}
-
 }

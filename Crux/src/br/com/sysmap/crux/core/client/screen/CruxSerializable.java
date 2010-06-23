@@ -15,11 +15,14 @@
  */
 package br.com.sysmap.crux.core.client.screen;
 
+import java.io.Serializable;
+
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface CruxSerializable
+@Deprecated
+public interface CruxSerializable extends Serializable
 {
 	String serialize();
 	Object deserialize(String serializedData);

@@ -88,8 +88,8 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		generateValidateControllerMethod(sourceWriter);
 		generateControllerInvokeMethod(sourceWriter, controllerClassNames);
 		generateCrossDocInvokeMethod(sourceWriter, crossDocsClassNames);
-		generateRegisterControllerMethod(sourceWriter); 
-		
+		generateRegisterControllerMethod(sourceWriter);
+		generateGetCrossDocumentMethod(sourceWriter);
 		
 		sourceWriter.outdent();
 		sourceWriter.println("}");
@@ -162,6 +162,15 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		sourceWriter.println("controllers.put(controller, controllerInvoker);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+	}
+	
+	private void generateGetCrossDocumentMethod(SourceWriter sourceWriter)
+	{
+		sourceWriter.println("public <T> T getCrossDocument(String controller, Class<T> crossDocClass){");
+		sourceWriter.indent();
+		sourceWriter.println("return (T)controllers.get(controller);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
