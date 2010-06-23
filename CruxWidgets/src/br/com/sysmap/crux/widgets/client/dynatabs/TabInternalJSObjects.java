@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
-import br.com.sysmap.crux.widgets.client.js.JSWindow;
+import br.com.sysmap.crux.core.client.screen.JSWindow;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;

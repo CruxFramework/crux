@@ -17,17 +17,13 @@ package br.com.sysmap.crux.widgets.client.dialog;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
-import br.com.sysmap.crux.core.client.controller.Create;
-import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Global;
-import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.decoratedbutton.DecoratedButton;
 import br.com.sysmap.crux.widgets.client.event.CancelEvent;
 import br.com.sysmap.crux.widgets.client.event.OkEvent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -42,69 +38,38 @@ import com.google.gwt.user.client.ui.Label;
  *
  */
 @Global
-@Controller(value="__confirm", lazy=false)
-public class CruxInternalConfirmController 
+@Controller("__confirm")
+public class CruxInternalConfirmController implements CruxInternalConfirmControllerCrossDoc
 {
-	private ModuleComunicationSerializer serializer;
-	
-	@Create
-	protected DialogMessages messages;
-	
-	public CruxInternalConfirmController()
-	{
-		this.serializer = Screen.getCruxSerializer();
-		this.serializer.registerCruxSerializable(ConfirmData.class.getName(), new ConfirmData());
-	}
+	protected DialogMessages messages = GWT.create(DialogMessages.class);
+	protected CruxInternalConfirmControllerCrossDoc crossDoc = GWT.create(CruxInternalConfirmControllerCrossDoc.class);
 
 	/**
 	 * Called by top window
-	 * @param controllerEvent
 	 */
-	@ExposeOutOfModule
-	public void onOk()
-	{
-		OkEvent.fire(Confirm.confirm);
-	}
-
-	/**
-	 * Called by top window
-	 * @param controllerEvent
-	 */
-	@ExposeOutOfModule
 	public void onCancel()
 	{
 		CancelEvent.fire(Confirm.confirm);
 	}
 
 	/**
-	 * Invoke showConfirm on top. It is required to handle multi-frame pages.
-	 * @param data
+	 * Called by top window
 	 */
-	public void showConfirm(ConfirmData data)
+	public void onOk()
 	{
-		try
-		{
-			showConfirmOnTop(serializer.serialize(data));
-		}
-		catch (ModuleComunicationException e)
-		{
-			Crux.getErrorHandler().handleError(e);
-		}	
+		OkEvent.fire(Confirm.confirm);
 	}
-	
+
 	/**
 	 * Handler method to be invoked on top. That method shows the popup dialog.
-	 * @param controllerEvent
+	 * @param data all data needed to show the popup
 	 */
-	@ExposeOutOfModule
-	public void showConfirmHandler(InvokeControllerEvent controllerEvent)
+	public void showConfirm(ConfirmData data)
 	{
 		Screen.blockToUser("crux-ConfirmScreenBlocker");
 		
 		try
 		{
-			final ConfirmData data = (ConfirmData) controllerEvent.getParameter();
-			
 			final DialogBox dialogBox = new DialogBox(false, true);
 			dialogBox.setStyleName(data.getStyleName());
 			dialogBox.setAnimationEnabled(data.isAnimationEnabled());
@@ -133,15 +98,15 @@ public class CruxInternalConfirmController
 	}
 
 	/**
-	 * @param data
-	 * @return
+	 * 
+	 * @param call
+	 * @param serializedData
 	 */
-	private Label createMessageLabel(final ConfirmData data)
-	{
-		Label label = new Label(data.getMessage());
-		label.setStyleName("message");
-		return label;
-	}
+	private native void cancelClick()/*-{
+		var o = $wnd.top._confirm_origin;
+		$wnd.top._confirm_origin = null;
+		o._cruxCrossDocumentAccessor("__confirm|onCancel()|");
+	}-*/;
 
 	/**
 	 * @param dialogBox
@@ -178,6 +143,17 @@ public class CruxInternalConfirmController
 			}
 		});
 		return cancelButton;
+	}
+
+	/**
+	 * @param data
+	 * @return
+	 */
+	private Label createMessageLabel(final ConfirmData data)
+	{
+		Label label = new Label(data.getMessage());
+		label.setStyleName("message");
+		return label;
 	}
 
 	/**
@@ -222,30 +198,9 @@ public class CruxInternalConfirmController
 	 * @param call
 	 * @param serializedData
 	 */
-	private native void showConfirmOnTop(String serializedData)/*-{
-		$wnd.top._confirm_origin = $wnd;
-		$wnd.top._cruxScreenControllerAccessor("__confirm.showConfirmHandler", serializedData);
-	}-*/;
-
-	/**
-	 * 
-	 * @param call
-	 * @param serializedData
-	 */
 	private native void okClick()/*-{
 		var o = $wnd.top._confirm_origin;
 		$wnd.top._confirm_origin = null;
-		o._cruxScreenControllerAccessor("__confirm.onOk", null);
-	}-*/;
-
-	/**
-	 * 
-	 * @param call
-	 * @param serializedData
-	 */
-	private native void cancelClick()/*-{
-		var o = $wnd.top._confirm_origin;
-		$wnd.top._confirm_origin = null;
-		o._cruxScreenControllerAccessor("__confirm.onCancel", null);
+		o._cruxCrossDocumentAccessor("__confirm|onOk()|");
 	}-*/;
 }

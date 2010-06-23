@@ -15,10 +15,11 @@
  */
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
+import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentException;
+import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
-import br.com.sysmap.crux.widgets.client.js.JSWindow;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -31,26 +32,33 @@ import com.google.gwt.user.client.DOM;
 public class DynaTabsControllerInvoker 
 {
 	/**
-	 * Invokes a method on a sibling tab controller 
-	 * @param <T>
-	 * @param tabId
-	 * @param call
-	 * @param param
-	 * @param resultType
-	 * @return
-	 * @throws ModuleComunicationException
-	 */	
-	public static <T> T invokeOnSiblingTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{		
+	 * @param tabId the tab identifier
+	 * @return the tab window object
+	 */
+	public static JSWindow getSiblingTabWindow(String tabId)
+	{
 		Element tabIFrame = getSiblingTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new ModuleComunicationException(WidgetMsgFactory.getMessages().tabsControllerNoSiblingTabFound(tabId));
+			throw new CrossDocumentException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(tabId));
 		}
-	
-		return retrieveTabWindowAndInvoke(call, param, tabIFrame, resultType);
+		return retrieveTabWindow(tabIFrame);
 	}
 	
+	/**
+	 * @param tabId the tab identifier
+	 * @return the tab window object
+	 */
+	public static JSWindow getTabWindow(String tabId)
+	{
+		Element tabIFrame = getTabInternalFrameElement(tabId);
+		if(tabIFrame == null)
+		{
+			throw new CrossDocumentException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(tabId));
+		}
+		return retrieveTabWindow(tabIFrame);
+	}
+
 	/**
 	 * Invokes a method on a sibling tab controller 
 	 * @param tabId
@@ -58,6 +66,7 @@ public class DynaTabsControllerInvoker
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static void invokeOnSiblingTab(String tabId, String call, Object param) throws ModuleComunicationException
 	{		
 		Element tabIFrame = getSiblingTabInternalFrameElement(tabId);
@@ -70,7 +79,7 @@ public class DynaTabsControllerInvoker
 	}
 
 	/**
-	 * Invokes a method on a tab controller 
+	 * Invokes a method on a sibling tab controller 
 	 * @param <T>
 	 * @param tabId
 	 * @param call
@@ -78,13 +87,14 @@ public class DynaTabsControllerInvoker
 	 * @param resultType
 	 * @return
 	 * @throws ModuleComunicationException
-	 */
-	public static <T> T invokeOnTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	 */	
+	@Deprecated
+	public static <T> T invokeOnSiblingTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{		
-		Element tabIFrame = getTabInternalFrameElement(tabId);
+		Element tabIFrame = getSiblingTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new ModuleComunicationException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(tabId));
+			throw new ModuleComunicationException(WidgetMsgFactory.getMessages().tabsControllerNoSiblingTabFound(tabId));
 		}
 	
 		return retrieveTabWindowAndInvoke(call, param, tabIFrame, resultType);
@@ -97,6 +107,7 @@ public class DynaTabsControllerInvoker
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static void invokeOnTab(String tabId, String call, Object param) throws ModuleComunicationException
 	{		
 		Element tabIFrame = getTabInternalFrameElement(tabId);
@@ -108,26 +119,27 @@ public class DynaTabsControllerInvoker
 		retrieveTabWindowAndInvoke(call, param, tabIFrame);
 	}
 	
-	@SuppressWarnings("unchecked")
-	private static <T> T retrieveTabWindowAndInvoke(String call, Object param, Element tabIFrame, Class<T> resultType) throws ModuleComunicationException
-	{
-		JSWindow window = retrieveTabWindow(tabIFrame);
-		String result = callSiblingTabControllerAccessor(window, call,  Screen.getCruxSerializer().serialize(param));
-		return (T) Screen.getCruxSerializer().deserialize(result);
-	}
+	/**
+	 * Invokes a method on a tab controller 
+	 * @param <T>
+	 * @param tabId
+	 * @param call
+	 * @param param
+	 * @param resultType
+	 * @return
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static <T> T invokeOnTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{		
+		Element tabIFrame = getTabInternalFrameElement(tabId);
+		if(tabIFrame == null)
+		{
+			throw new ModuleComunicationException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(tabId));
+		}
 	
-	private static void retrieveTabWindowAndInvoke(String call, Object param, Element tabIFrame) throws ModuleComunicationException
-	{
-		JSWindow window = retrieveTabWindow(tabIFrame);
-		callSiblingTabControllerAccessor(window, call,  Screen.getCruxSerializer().serialize(param));
+		return retrieveTabWindowAndInvoke(call, param, tabIFrame, resultType);
 	}
-
-	protected static JSWindow retrieveTabWindow(Element tabIFrame)
-    {
-	    TabInternalJSObjects tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
-		JSWindow window = tabObjetcs.getTabWindow((IFrameElement) tabIFrame);
-	    return window;
-    }
 	
 	/**
 	 * @param call
@@ -135,6 +147,25 @@ public class DynaTabsControllerInvoker
 	 * @param string 
 	 * @return
 	 */
+	protected static Element getTabInternalFrameElement(String tabId)
+	{
+		return DOM.getElementById(tabId + ".window");
+	}
+	
+	protected static JSWindow retrieveTabWindow(Element tabIFrame)
+    {
+	    TabInternalJSObjects tabObjetcs = GWT.create(TabInternalJSObjectsImpl.class);
+		JSWindow window = tabObjetcs.getTabWindow((IFrameElement) tabIFrame);
+	    return window;
+    }
+
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @param string 
+	 * @return
+	 */
+	@Deprecated
 	private static native String callSiblingTabControllerAccessor(JSWindow tabWindow, String call, String serializedData)/*-{
 		return tabWindow._cruxScreenControllerAccessor(call, serializedData);
 	}-*/;
@@ -156,14 +187,19 @@ public class DynaTabsControllerInvoker
 		}
 	}-*/;
 	
-	/**
-	 * @param call
-	 * @param serializedData
-	 * @param string 
-	 * @return
-	 */
-	protected static Element getTabInternalFrameElement(String tabId)
+	@Deprecated
+	private static void retrieveTabWindowAndInvoke(String call, Object param, Element tabIFrame) throws ModuleComunicationException
 	{
-		return DOM.getElementById(tabId + ".window");
+		JSWindow window = retrieveTabWindow(tabIFrame);
+		callSiblingTabControllerAccessor(window, call,  Screen.getCruxSerializer().serialize(param));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Deprecated
+	private static <T> T retrieveTabWindowAndInvoke(String call, Object param, Element tabIFrame, Class<T> resultType) throws ModuleComunicationException
+	{
+		JSWindow window = retrieveTabWindow(tabIFrame);
+		String result = callSiblingTabControllerAccessor(window, call,  Screen.getCruxSerializer().serialize(param));
+		return (T) Screen.getCruxSerializer().deserialize(result);
 	}
 }

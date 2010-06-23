@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusEvent;
@@ -38,8 +39,8 @@ import com.google.gwt.user.client.ui.Composite;
 public class DynaTabs extends Composite
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-DynaTabs";
-	private LinkedHashMap<String, Tab> tabs = new LinkedHashMap<String, Tab>();
 	private RollingTabPanel tabPanel;
+	private LinkedHashMap<String, Tab> tabs = new LinkedHashMap<String, Tab>();
 
 	/**
 	 * Empty constructor
@@ -52,6 +53,157 @@ public class DynaTabs extends Composite
 		initWidget(tabPanel);
 	}
 
+	/**
+	 * @param tabId the tab identifier
+	 * @return the tab window object
+	 */
+	public static JSWindow getSiblingTabWindow(String tabId)
+	{
+		return DynaTabsControllerInvoker.getSiblingTabWindow(tabId);
+	}
+	
+	/**
+	 * @param tabId the tab identifier
+	 * @return the tab window object
+	 */
+	public static JSWindow getTabWindow(String tabId)
+	{
+		return DynaTabsControllerInvoker.getTabWindow(tabId);
+	}
+
+	/**
+	 * Invokes a controller method on a tab. The tab must belong to a DynaTabs object residing in the current document.
+	 * @param tabId
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static void invokeOnTab(String tabId, String call, Object param) throws ModuleComunicationException
+	{
+		DynaTabsControllerInvoker.invokeOnTab(tabId, call, param);
+	}
+
+	/**
+	 * Invokes a controller method on a tab. The tab must belong to a DynaTabs object residing in the current document.
+	 * @param <T>
+	 * @param tabId
+	 * @param call
+	 * @param param
+	 * @param resultType
+	 * @return
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static <T> T invokeOnTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return DynaTabsControllerInvoker.invokeOnTab(tabId, call, param, resultType);
+	}
+	
+	/**
+	 * Closes the tab, skipping any BeforeCloseHandler registered
+	 * @param tabId
+	 */
+	public void closeTab(String tabId)
+	{
+		closeTab(tabId, true);
+	}
+
+	/**
+	 * @param tabId
+	 * @param skipBeforeCloseHandlers
+	 */
+	public void closeTab(final String tabId, final boolean skipBeforeCloseHandlers)
+	{
+		final Tab tab = getTab(tabId);
+		if (tab.canClose())
+		{
+			doCloseTab(tabId, skipBeforeCloseHandlers, tab);
+		}
+		else
+		{
+			tab.getFlapPanel().getFlapController().setCloseButtonEnabled(false);
+			tab.executeWhenLoaded(new Command(){
+				public void execute()
+				{
+					tab.getFlapPanel().getFlapController().setCloseButtonEnabled(true);
+					doCloseTab(tabId, skipBeforeCloseHandlers, tab);
+				}
+			});
+		}
+	}
+
+	/**
+	 * @param tabId
+	 */
+	public void focusTab(String tabId)
+	{
+		this.tabPanel.selectTab(getTabIndex(tabId));
+	}
+
+	/**
+	 * @return
+	 */
+	public Tab getFocusedTab()
+	{
+		int index = tabPanel.getSelectedTab();
+
+		if (index >= 0)
+		{
+			return (Tab) tabPanel.getWidget(index);
+		}
+
+		return null;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getFocusedTabIndex()
+	{
+		return tabPanel.getSelectedTab();
+	}	
+	
+	/**
+	 * @param tabId
+	 * @return
+	 */
+	public Tab getTab(String tabId)
+	{
+		return tabs.get(tabId);
+	}
+
+	/**
+	 * @param tabId
+	 * @return
+	 */
+	public int getTabIndex(String tabId)
+	{
+		return tabPanel.getWidgetIndex(getTab(tabId));
+	}
+	
+	/**
+	 * @param tab
+	 * @return
+	 */
+	public int getTabIndex(Tab tab)
+	{
+		return tabPanel.getWidgetIndex(tab);
+	}
+	
+	/**
+	 * @return
+	 */
+	public List<Tab> getTabs()
+	{
+		List<Tab> result = new ArrayList<Tab>(this.tabs.size());
+		for (Tab tab : this.tabs.values())
+		{
+			result.add(tab);
+		}
+		return result;
+	}
+	
 	/**
 	 * @param tabId
 	 * @param label
@@ -81,128 +233,6 @@ public class DynaTabs extends Composite
 	}
 	
 	/**
-	 * @param tab
-	 * @return
-	 */
-	public int getTabIndex(Tab tab)
-	{
-		return tabPanel.getWidgetIndex(tab);
-	}
-
-	/**
-	 * @param tabId
-	 * @return
-	 */
-	public int getTabIndex(String tabId)
-	{
-		return tabPanel.getWidgetIndex(getTab(tabId));
-	}
-
-	/**
-	 * @param tabId
-	 * @return
-	 */
-	public Tab getTab(String tabId)
-	{
-		return tabs.get(tabId);
-	}
-	
-	/**
-	 * @param tabIndex
-	 * @return
-	 */
-	private String getTabId(int tabIndex)
-	{
-		return ((Tab) tabPanel.getWidget(tabIndex)).getId();
-	}
-
-	/**
-	 * @return
-	 */
-	public int getFocusedTabIndex()
-	{
-		return tabPanel.getSelectedTab();
-	}
-
-	/**
-	 * @return
-	 */
-	public Tab getFocusedTab()
-	{
-		int index = tabPanel.getSelectedTab();
-
-		if (index >= 0)
-		{
-			return (Tab) tabPanel.getWidget(index);
-		}
-
-		return null;
-	}
-
-	/**
-	 * @param tabId
-	 */
-	public void focusTab(String tabId)
-	{
-		this.tabPanel.selectTab(getTabIndex(tabId));
-	}
-
-	/**
-	 * Closes the tab, skipping any BeforeCloseHandler registered
-	 * @param tabId
-	 */
-	public void closeTab(String tabId)
-	{
-		closeTab(tabId, true);
-	}	
-	
-	/**
-	 * @param tabId
-	 * @param skipBeforeCloseHandlers
-	 */
-	public void closeTab(final String tabId, final boolean skipBeforeCloseHandlers)
-	{
-		final Tab tab = getTab(tabId);
-		if (tab.canClose())
-		{
-			doCloseTab(tabId, skipBeforeCloseHandlers, tab);
-		}
-		else
-		{
-			tab.getFlapPanel().getFlapController().setCloseButtonEnabled(false);
-			tab.executeWhenLoaded(new Command(){
-				public void execute()
-				{
-					tab.getFlapPanel().getFlapController().setCloseButtonEnabled(true);
-					doCloseTab(tabId, skipBeforeCloseHandlers, tab);
-				}
-			});
-		}
-	}
-
-	/**
-	 * @param tabId
-	 * @param skipBeforeCloseHandlers
-	 * @param tab
-	 */
-	private void doCloseTab(String tabId, boolean skipBeforeCloseHandlers, Tab tab)
-	{
-		if(skipBeforeCloseHandlers)
-		{
-			doCloseTab(tabId);
-		}
-		else
-		{
-			BeforeCloseEvent evt = BeforeCloseEvent.fire(tab);
-
-			if (!evt.isCanceled())
-			{
-				doCloseTab(tabId);
-			}
-		}
-	}
-	
-	/**
 	 * @param tabId
 	 */
 	void doCloseTab(String tabId)
@@ -217,47 +247,7 @@ public class DynaTabs extends Composite
 			this.tabPanel.selectTab(indexToFocus);
 		}
 	}
-	
-	/**
-	 * @return
-	 */
-	public List<Tab> getTabs()
-	{
-		List<Tab> result = new ArrayList<Tab>(this.tabs.size());
-		for (Tab tab : this.tabs.values())
-		{
-			result.add(tab);
-		}
-		return result;
-	}
-	
-	/**
-	 * Invokes a controller method on a tab. The tab must belong to a DynaTabs object residing in the current document.
-	 * @param <T>
-	 * @param tabId
-	 * @param call
-	 * @param param
-	 * @param resultType
-	 * @return
-	 * @throws ModuleComunicationException
-	 */
-	public static <T> T invokeOnTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{
-		return DynaTabsControllerInvoker.invokeOnTab(tabId, call, param, resultType);
-	}
-	
-	/**
-	 * Invokes a controller method on a tab. The tab must belong to a DynaTabs object residing in the current document.
-	 * @param tabId
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	public static void invokeOnTab(String tabId, String call, Object param) throws ModuleComunicationException
-	{
-		DynaTabsControllerInvoker.invokeOnTab(tabId, call, param);
-	}
-	
+
 	/**
 	 * @param tabId
 	 */
@@ -295,5 +285,36 @@ public class DynaTabs extends Composite
 				}
 			}			
 		};
+	}
+	
+	/**
+	 * @param tabId
+	 * @param skipBeforeCloseHandlers
+	 * @param tab
+	 */
+	private void doCloseTab(String tabId, boolean skipBeforeCloseHandlers, Tab tab)
+	{
+		if(skipBeforeCloseHandlers)
+		{
+			doCloseTab(tabId);
+		}
+		else
+		{
+			BeforeCloseEvent evt = BeforeCloseEvent.fire(tab);
+
+			if (!evt.isCanceled())
+			{
+				doCloseTab(tabId);
+			}
+		}
+	}
+	
+	/**
+	 * @param tabIndex
+	 * @return
+	 */
+	private String getTabId(int tabIndex)
+	{
+		return ((Tab) tabPanel.getWidget(tabIndex)).getId();
 	}
 }

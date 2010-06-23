@@ -19,14 +19,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.LazyPanel;
-import com.google.gwt.user.client.ui.Widget;
-
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.dynatabs.AbstractTab;
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
+
+import com.google.gwt.user.client.ui.LazyPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante -

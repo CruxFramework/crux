@@ -18,6 +18,7 @@ package br.com.sysmap.crux.widgets.client.dialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler;
@@ -36,15 +37,15 @@ import com.google.gwt.user.client.ui.Widget;
 public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Popup" ;
+	protected static List<Popup> popups = new ArrayList<Popup>();
 	private static CruxInternalPopupController popupController = null;
-	private String title;
-	private String url;
-	private String styleName;
-	private String width = "400";
-	private String height = "300";
 	private boolean animationEnabled;
 	private boolean closeable = true;
-	protected static List<Popup> popups = new ArrayList<Popup>();
+	private String height = "300";
+	private String styleName;
+	private String title;
+	private String url;
+	private String width = "400";
 	
 	/**
 	 * 
@@ -54,69 +55,51 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 		setElement(DOM.createSpan());
 	}
 
-	public String getTitle()
+	public static void close()
 	{
-		return title;
+		CruxInternalPopupController.hide();
 	}
 
-	public void setTitle(String title)
+	public static Popup getLastShownPopup()
 	{
-		this.title = title;
-	}
-
-	public String getStyleName()
-	{
-		return styleName;
-	}
-
-	public void setStyleName(String styleName)
-	{
-		this.styleName = styleName;
-	}
-
-	public String getUrl()
-	{
-		return url;
-	}
-
-	public void setUrl(String url)
-	{
-		this.url = url;
-	}
-	
-	public boolean isAnimationEnabled()
-	{
-		return animationEnabled;
-	}
-
-	public void setAnimationEnabled(boolean animationEnabled)
-	{
-		this.animationEnabled = animationEnabled;
-	}
-	
-	public boolean isCloseable()
-	{
-		return closeable;
-	}
-
-	public void setCloseable(boolean closeable)
-	{
-		this.closeable = closeable;
+		if(popups.size() > 0)
+		{
+			return popups.get(popups.size() - 1);
+		}
+		
+		return null;
 	}
 
 	/**
-	 * 
+	 * @return the window object of the popup opener
 	 */
-	public void show()
+	public static JSWindow getOpener()
 	{
-		if (popupController == null)
-		{
-			popupController = new CruxInternalPopupController(); 
-		}
-		popups.add(this);
-		popupController.showPopup(new PopupData(title, url, width, height, styleName!=null ? styleName : DEFAULT_STYLE_NAME, animationEnabled, closeable));
+		return CruxInternalPopupController.getOpener();
 	}
-	
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static void invokeOnOpener(String call, Object param) throws ModuleComunicationException
+	{
+		CruxInternalPopupController.invokeOnOpener(call, param);
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return CruxInternalPopupController.invokeOnOpener(call, param, resultType);
+	}
+
 	/**
 	 * 
 	 * @param title
@@ -126,26 +109,6 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	public static void show(String title, String url,  BeforeCloseHandler beforeCloseHandler)
 	{
 		show(title, url, null, null, beforeCloseHandler, DEFAULT_STYLE_NAME, false, true);
-	}
-	
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{
-		return CruxInternalPopupController.invokeOnOpener(call, param, resultType);
-	}
-	
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	public static void invokeOnOpener(String call, Object param) throws ModuleComunicationException
-	{
-		CruxInternalPopupController.invokeOnOpener(call, param);
 	}
 	
 	/**
@@ -181,18 +144,95 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 		
 		popup.show();
 	}
-	
-	public static void close()
+
+	public static void unregisterLastShownPopup()
 	{
-		CruxInternalPopupController.hide();
+		if(popups.size() > 0)
+		{
+			popups.remove(popups.size() - 1);
+		}
+	}
+	
+	/*
+	 * @see br.com.sysmap.crux.widgets.client.event.openclose.HasBeforeCloseHandlers#addBeforeCloseHandler(br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler)
+	 */
+	public HandlerRegistration addBeforeCloseHandler(BeforeCloseHandler handler)
+	{
+		return addHandler(handler, BeforeCloseEvent.getType());
 	}
 
+	/**
+	 * @return the height
+	 */
+	public String getHeight()
+	{
+		return height;
+	}
+
+	public String getStyleName()
+	{
+		return styleName;
+	}
+	
+	public String getTitle()
+	{
+		return title;
+	}
+	
+	public String getUrl()
+	{
+		return url;
+	}
+	
 	/**
 	 * @return the width
 	 */
 	public String getWidth()
 	{
 		return width;
+	}
+	
+	public boolean isAnimationEnabled()
+	{
+		return animationEnabled;
+	}
+	
+	public boolean isCloseable()
+	{
+		return closeable;
+	}
+
+	public void setAnimationEnabled(boolean animationEnabled)
+	{
+		this.animationEnabled = animationEnabled;
+	}
+	
+	public void setCloseable(boolean closeable)
+	{
+		this.closeable = closeable;
+	}
+
+	/**
+	 * @param height the height to set
+	 */
+	public void setHeight(String height)
+	{
+		this.height = height;
+	}
+
+	public void setStyleName(String styleName)
+	{
+		this.styleName = styleName;
+	}
+
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
 	}
 
 	/**
@@ -204,44 +244,15 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	}
 
 	/**
-	 * @return the height
+	 * 
 	 */
-	public String getHeight()
+	public void show()
 	{
-		return height;
-	}
-
-	/**
-	 * @param height the height to set
-	 */
-	public void setHeight(String height)
-	{
-		this.height = height;
-	}
-
-	/*
-	 * @see br.com.sysmap.crux.widgets.client.event.openclose.HasBeforeCloseHandlers#addBeforeCloseHandler(br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler)
-	 */
-	public HandlerRegistration addBeforeCloseHandler(BeforeCloseHandler handler)
-	{
-		return addHandler(handler, BeforeCloseEvent.getType());
-	}
-
-	public static Popup getLastShownPopup()
-	{
-		if(popups.size() > 0)
+		if (popupController == null)
 		{
-			return popups.get(popups.size() - 1);
+			popupController = new CruxInternalPopupController(); 
 		}
-		
-		return null;
-	}
-
-	public static void unregisterLastShownPopup()
-	{
-		if(popups.size() > 0)
-		{
-			popups.remove(popups.size() - 1);
-		}
+		popups.add(this);
+		popupController.showPopup(new PopupData(title, url, width, height, styleName!=null ? styleName : DEFAULT_STYLE_NAME, animationEnabled, closeable));
 	}
 }

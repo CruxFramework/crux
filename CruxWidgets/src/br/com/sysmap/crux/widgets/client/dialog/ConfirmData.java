@@ -15,21 +15,17 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
-import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
-
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.XMLParser;
+import java.io.Serializable;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-@SerializableName("confirmData")	
-public class ConfirmData implements CruxSerializable
+public class ConfirmData implements Serializable
 {
-	private String styleName;
+    private static final long serialVersionUID = -2174460247930942106L;
+
+    private String styleName;
 	private String title;
 	private String message;
 	private String okButtonText;
@@ -89,63 +85,6 @@ public class ConfirmData implements CruxSerializable
 	public void setAnimationEnabled(boolean animationEnabled)
 	{
 		this.animationEnabled = animationEnabled;
-	}
-
-	public Object deserialize(String serializedData)
-	{
-		if (serializedData != null && serializedData.length() > 0)
-		{
-			Document root = XMLParser.parse(serializedData);
-			Element data = root.getDocumentElement();
-			
-			return 	new ConfirmData(
-							data.getAttribute("title"), 
-							data.getAttribute("message"), 
-							data.getAttribute("okButtonText"), 
-							data.getAttribute("cancelButtonText"), 
-							data.getAttribute("styleName"), 
-							Boolean.parseBoolean(data.getAttribute("animationEnabled")));
-		}
-		
-		return null;
-	}
-	
-	public Object[] newArray(int size)
-	{
-		return new ConfirmData[size];
-	}
-
-	public String serialize()
-	{
-		Document document = XMLParser.createDocument();
-
-		Element data = document.createElement("data");
-		document.appendChild(data);
-		
-		if (title != null)
-		{
-			data.setAttribute("title", title);
-		}
-		if (message != null)
-		{
-			data.setAttribute("message", message);
-		}
-		if (okButtonText != null)
-		{
-			data.setAttribute("okButtonText", okButtonText);
-		}
-		if (cancelButtonText != null)
-		{
-			data.setAttribute("cancelButtonText", cancelButtonText);
-		}
-		if (styleName != null)
-		{
-			data.setAttribute("styleName", styleName);
-		}
-		
-		data.setAttribute("animationEnabled", Boolean.toString(animationEnabled));
-		
-		return document.toString();
 	}
 
 	/**

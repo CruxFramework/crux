@@ -15,19 +15,19 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
-import com.google.gwt.dom.client.Element;
-
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.event.ControllerInvoker;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
 import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
+import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.dynatabs.DynaTabsControllerInvoker;
-import br.com.sysmap.crux.widgets.client.js.JSWindow;
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
+
+import com.google.gwt.dom.client.Element;
 
 /**
  * @author Thiago da Rosa de Bustamante -

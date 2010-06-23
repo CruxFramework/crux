@@ -15,12 +15,12 @@
  */
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
+import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.widgets.client.event.openclose.HasBeforeCloseHandlers;
-import br.com.sysmap.crux.widgets.client.js.JSWindow;
 import br.com.sysmap.crux.widgets.client.util.FrameStateCallback;
 import br.com.sysmap.crux.widgets.client.util.FrameUtils;
 
@@ -100,6 +100,7 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static <T> T invokeOnSiblingTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
 		return DynaTabsControllerInvoker.invokeOnSiblingTab(tabId, call, param, resultType);
@@ -110,6 +111,7 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 	 * @param param
 	 * @throws ModuleComunicationException
 	 */
+	@Deprecated
 	public static void invokeOnSiblingTab(String tabId, String call, Object param) throws ModuleComunicationException
 	{
 		DynaTabsControllerInvoker.invokeOnSiblingTab(tabId, call, param);

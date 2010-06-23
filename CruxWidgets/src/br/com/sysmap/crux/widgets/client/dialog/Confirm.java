@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
+import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
+import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
 import br.com.sysmap.crux.widgets.client.event.CancelEvent;
 import br.com.sysmap.crux.widgets.client.event.CancelHandler;
 import br.com.sysmap.crux.widgets.client.event.HasCancelHandlers;
@@ -22,6 +24,7 @@ import br.com.sysmap.crux.widgets.client.event.HasOkHandlers;
 import br.com.sysmap.crux.widgets.client.event.OkEvent;
 import br.com.sysmap.crux.widgets.client.event.OkHandler;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasAnimation;
@@ -34,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers, HasAnimation
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Confirm" ;
-	private static CruxInternalConfirmController confirmController = null;
+	private static CruxInternalConfirmControllerCrossDoc confirmController = null;
 	private String title;
 	private String message;
 	private String okButtonText;
@@ -114,11 +117,23 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 	{
 		if (confirmController == null)
 		{
-			confirmController = new CruxInternalConfirmController(); 
+			confirmController = GWT.create(CruxInternalConfirmControllerCrossDoc.class); 
+			((TargetDocument)confirmController).setTarget(Target.TOP);
 		}
 		confirm = this;
+		saveConfirmOrigin();
 		confirmController.showConfirm(new ConfirmData(title, message, okButtonText, cancelButtonText, styleName!=null?styleName:DEFAULT_STYLE_NAME, animationEnabled));
 	}
+	
+	/**
+	 * 
+	 * @param call
+	 * @param serializedData
+	 */
+	private native void saveConfirmOrigin()/*-{
+		$wnd.top._confirm_origin = $wnd;
+	}-*/;
+	
 	
 	/**
 	 * 

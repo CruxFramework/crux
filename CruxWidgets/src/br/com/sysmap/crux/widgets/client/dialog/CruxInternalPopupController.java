@@ -24,6 +24,7 @@ import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
+import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.screen.Screen;
@@ -43,13 +44,14 @@ import com.google.gwt.user.client.ui.Label;
  */
 @Global
 @Controller(value="__popup", lazy=false)
+@SuppressWarnings("deprecation")//TODO refactory this to use cross document calls instead
 public class CruxInternalPopupController 
 {
-	private ModuleComunicationSerializer serializer;
-	private List<CustomDialogBox> dialogBoxes = new ArrayList<CustomDialogBox>();
-	
 	@Create
 	protected DialogMessages messages;
+	private List<CustomDialogBox> dialogBoxes = new ArrayList<CustomDialogBox>();
+	
+	private ModuleComunicationSerializer serializer;
 	
 	public CruxInternalPopupController()
 	{
@@ -57,6 +59,89 @@ public class CruxInternalPopupController
 		this.serializer.registerCruxSerializable(PopupData.class.getName(), new PopupData());
 	}
 
+	/**
+	 * @return the window object of the popup opener
+	 */
+	public static native JSWindow getOpener()/*-{
+		try{
+			return $wnd.top._popup_origin[$wnd.top._popup_origin.length - 1];
+		}catch(e)
+		{
+			return null;
+		}
+	}-*/;
+
+	/**
+	 * Invoke hide on top. It is required to handle multi-frame pages.
+	 * @param data
+	 */
+	public static void hide()
+	{
+		Popup.unregisterLastShownPopup();
+		hidePopupOnTop();
+	}
+	
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static void invokeOnOpener(String call, Object param) throws ModuleComunicationException
+	{
+		callOpenerControllerAccessor(call,  Screen.getCruxSerializer().serialize(param));
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@SuppressWarnings("unchecked")
+	@Deprecated
+	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		String result = callOpenerControllerAccessor(call,  Screen.getCruxSerializer().serialize(param));
+		return (T) Screen.getCruxSerializer().deserialize(result);
+	}
+
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	private static native String callOpenerControllerAccessor(String call, String serializedData)/*-{
+		var o = $wnd.top._popup_origin[$wnd.top._popup_origin.length - 1];
+		return o._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+	
+	/**
+	 * Closes the popup, removing its window from the stack 
+	 */
+	private static native void hidePopupOnTop()/*-{
+		if($wnd.top._popup_origin != null)
+		{
+			$wnd.top._cruxScreenControllerAccessor("__popup.hidePopupHandler", null);
+			$wnd.top._popup_origin.pop();
+		}
+	}-*/;
+	
+	/**
+	 * Handler method to be invoked on top. That method hides the popup dialog.
+	 * @param controllerEvent
+	 */
+	@ExposeOutOfModule
+	public void hidePopupHandler(InvokeControllerEvent controllerEvent)
+	{
+		if (dialogBoxes.size() > 0)
+		{
+			CustomDialogBox dialogBox = dialogBoxes.remove(dialogBoxes.size() - 1);
+			Screen.unblockToUser();
+			dialogBox.hide();
+			dialogBox = null;
+		}
+	}
+	
 	/**
 	 * Called by top window
 	 * @param controllerEvent
@@ -71,7 +156,7 @@ public class CruxInternalPopupController
 			hidePopupOnTop();
 		}
 	}
-
+	
 	/**
 	 * Invoke showPopup on top. It is required to handle multi-frame pages.
 	 * @param data
@@ -167,7 +252,7 @@ public class CruxInternalPopupController
 			Screen.unblockToUser();
 		}		
 	}
-
+	
 	/**
 	 * 
 	 * @param frameElement
@@ -180,63 +265,13 @@ public class CruxInternalPopupController
 	}
 
 	/**
-	 * Invoke hide on top. It is required to handle multi-frame pages.
-	 * @param data
+	 * Invoked when the user clicks the close button. Depending on the beforeClose event handling, may not close the popup. 
 	 */
-	public static void hide()
-	{
-		Popup.unregisterLastShownPopup();
-		hidePopupOnTop();
-	}
-	
-	/**
-	 * Handler method to be invoked on top. That method hides the popup dialog.
-	 * @param controllerEvent
-	 */
-	@ExposeOutOfModule
-	public void hidePopupHandler(InvokeControllerEvent controllerEvent)
-	{
-		if (dialogBoxes.size() > 0)
-		{
-			CustomDialogBox dialogBox = dialogBoxes.remove(dialogBoxes.size() - 1);
-			Screen.unblockToUser();
-			dialogBox.hide();
-			dialogBox = null;
-		}
-	}
-	
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{
-		String result = callOpenerControllerAccessor(call,  Screen.getCruxSerializer().serialize(param));
-		return (T) Screen.getCruxSerializer().deserialize(result);
-	}
-	
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	public static void invokeOnOpener(String call, Object param) throws ModuleComunicationException
-	{
-		callOpenerControllerAccessor(call,  Screen.getCruxSerializer().serialize(param));
-	}
-	
-	/**
-	 * @param call
-	 * @param serializedData
-	 * @return
-	 */
-	private static native String callOpenerControllerAccessor(String call, String serializedData)/*-{
+	protected native void closePopup()/*-{
 		var o = $wnd.top._popup_origin[$wnd.top._popup_origin.length - 1];
-		return o._cruxScreenControllerAccessor(call, serializedData);
+		o._cruxScreenControllerAccessor("__popup.onClose", null);
 	}-*/;
-	
+
 	/**
 	 * 
 	 * @param call
@@ -249,24 +284,5 @@ public class CruxInternalPopupController
 		}		
 		$wnd.top._popup_origin.push($wnd);
 		$wnd.top._cruxScreenControllerAccessor("__popup.showPopupHandler", serializedData);
-	}-*/;
-
-	/**
-	 * Closes the popup, removing its window from the stack 
-	 */
-	private static native void hidePopupOnTop()/*-{
-		if($wnd.top._popup_origin != null)
-		{
-			$wnd.top._cruxScreenControllerAccessor("__popup.hidePopupHandler", null);
-			$wnd.top._popup_origin.pop();
-		}
-	}-*/;
-
-	/**
-	 * Invoked when the user clicks the close button. Depending on the beforeClose event handling, may not close the popup. 
-	 */
-	protected native void closePopup()/*-{
-		var o = $wnd.top._popup_origin[$wnd.top._popup_origin.length - 1];
-		o._cruxScreenControllerAccessor("__popup.onClose", null);
 	}-*/;
 }
