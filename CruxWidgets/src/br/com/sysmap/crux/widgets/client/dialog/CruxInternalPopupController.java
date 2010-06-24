@@ -20,18 +20,17 @@ import java.util.List;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
-import br.com.sysmap.crux.core.client.controller.Create;
-import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Global;
-import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
+import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
+import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
 import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.util.FrameStateCallback;
 import br.com.sysmap.crux.widgets.client.util.FrameUtils;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -43,22 +42,14 @@ import com.google.gwt.user.client.ui.Label;
  * @author Thiago da Rosa de Bustamante
  */
 @Global
-@Controller(value="__popup", lazy=false)
-@SuppressWarnings("deprecation")//TODO refactory this to use cross document calls instead
-public class CruxInternalPopupController 
+@Controller("__popup")
+public class CruxInternalPopupController implements CruxInternalPopupControllerCrossDoc
 {
-	@Create
-	protected DialogMessages messages;
+	protected CruxInternalPopupControllerCrossDoc crossDoc = GWT.create(CruxInternalPopupControllerCrossDoc.class);
+	protected DialogMessages messages = GWT.create(DialogMessages.class);
+	
 	private List<CustomDialogBox> dialogBoxes = new ArrayList<CustomDialogBox>();
 	
-	private ModuleComunicationSerializer serializer;
-	
-	public CruxInternalPopupController()
-	{
-		this.serializer = Screen.getCruxSerializer();
-		this.serializer.registerCruxSerializable(PopupData.class.getName(), new PopupData());
-	}
-
 	/**
 	 * @return the window object of the popup opener
 	 */
@@ -78,7 +69,12 @@ public class CruxInternalPopupController
 	public static void hide()
 	{
 		Popup.unregisterLastShownPopup();
-		hidePopupOnTop();
+		if (popPopupOnStack())
+		{
+			CruxInternalPopupControllerCrossDoc crossDoc = GWT.create(CruxInternalPopupControllerCrossDoc.class);
+			((TargetDocument)crossDoc).setTarget(Target.TOP);
+			crossDoc.hidePopup();
+		}
 	}
 	
 	/**
@@ -110,6 +106,7 @@ public class CruxInternalPopupController
 	 * @param serializedData
 	 * @return
 	 */
+	@Deprecated
 	private static native String callOpenerControllerAccessor(String call, String serializedData)/*-{
 		var o = $wnd.top._popup_origin[$wnd.top._popup_origin.length - 1];
 		return o._cruxScreenControllerAccessor(call, serializedData);
@@ -118,20 +115,19 @@ public class CruxInternalPopupController
 	/**
 	 * Closes the popup, removing its window from the stack 
 	 */
-	private static native void hidePopupOnTop()/*-{
+	private static native boolean popPopupOnStack()/*-{
 		if($wnd.top._popup_origin != null)
 		{
-			$wnd.top._cruxScreenControllerAccessor("__popup.hidePopupHandler", null);
 			$wnd.top._popup_origin.pop();
+			return true;
 		}
+		return false;
 	}-*/;
 	
 	/**
 	 * Handler method to be invoked on top. That method hides the popup dialog.
-	 * @param controllerEvent
 	 */
-	@ExposeOutOfModule
-	public void hidePopupHandler(InvokeControllerEvent controllerEvent)
+	public void hidePopup()
 	{
 		if (dialogBoxes.size() > 0)
 		{
@@ -144,32 +140,18 @@ public class CruxInternalPopupController
 	
 	/**
 	 * Called by top window
-	 * @param controllerEvent
 	 */
-	@ExposeOutOfModule
 	public void onClose()
 	{
 		BeforeCloseEvent evt = BeforeCloseEvent.fire(Popup.getLastShownPopup());
 		if(!evt.isCanceled())
 		{
 			Popup.unregisterLastShownPopup();
-			hidePopupOnTop();
-		}
-	}
-	
-	/**
-	 * Invoke showPopup on top. It is required to handle multi-frame pages.
-	 * @param data
-	 */
-	public void showPopup(PopupData data)
-	{
-		try
-		{
-			showPopupOnTop(serializer.serialize(data));
-		}
-		catch (ModuleComunicationException e)
-		{
-			Crux.getErrorHandler().handleError(e);
+			if (popPopupOnStack())
+			{
+				((TargetDocument)crossDoc).setTarget(Target.TOP);
+				crossDoc.hidePopup();
+			}
 		}
 	}
 	
@@ -177,15 +159,12 @@ public class CruxInternalPopupController
 	 * Handler method to be invoked on top. That method shows the popup dialog.
 	 * @param controllerEvent
 	 */
-	@ExposeOutOfModule
-	public void showPopupHandler(InvokeControllerEvent controllerEvent)
+	public void openPopup(PopupData data)
 	{
 		Screen.blockToUser("crux-PopupScreenBlocker");
 		
 		try
 		{
-			final PopupData data = (PopupData) controllerEvent.getParameter();
-
 			CustomDialogBox dialogBox = new CustomDialogBox(false, true, true);
 			dialogBox.setStyleName(data.getStyleName());
 			dialogBox.setAnimationEnabled(data.isAnimationEnabled());
@@ -217,7 +196,8 @@ public class CruxInternalPopupController
 					{
 						if (canClose(frameElement))
 						{
-							closePopup();
+							((TargetDocument)crossDoc).setTargetWindow(getOpener());
+							crossDoc.onClose();
 						}
 					}
 				});
@@ -254,6 +234,17 @@ public class CruxInternalPopupController
 	}
 	
 	/**
+	 * Open popup dialog.
+	 * @param data
+	 */
+	public void showPopup(PopupData data)
+	{
+		pushPopupOnStack();
+		((TargetDocument)crossDoc).setTarget(Target.TOP);
+		crossDoc.openPopup(data);
+	}
+	
+	/**
 	 * 
 	 * @param frameElement
 	 * @return
@@ -265,24 +256,15 @@ public class CruxInternalPopupController
 	}
 
 	/**
-	 * Invoked when the user clicks the close button. Depending on the beforeClose event handling, may not close the popup. 
-	 */
-	protected native void closePopup()/*-{
-		var o = $wnd.top._popup_origin[$wnd.top._popup_origin.length - 1];
-		o._cruxScreenControllerAccessor("__popup.onClose", null);
-	}-*/;
-
-	/**
 	 * 
 	 * @param call
 	 * @param serializedData
 	 */
-	private native void showPopupOnTop(String serializedData)/*-{
+	private native void pushPopupOnStack()/*-{
 		if($wnd.top._popup_origin == null)
 		{
 			$wnd.top._popup_origin = new Array();
 		}		
 		$wnd.top._popup_origin.push($wnd);
-		$wnd.top._cruxScreenControllerAccessor("__popup.showPopupHandler", serializedData);
 	}-*/;
 }

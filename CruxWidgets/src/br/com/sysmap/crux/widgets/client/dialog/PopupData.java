@@ -15,21 +15,17 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
-import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
-
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.XMLParser;
+import java.io.Serializable;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-@SerializableName("popupData")	
-public class PopupData implements CruxSerializable
+public class PopupData implements Serializable
 {
-	private String styleName;
+    private static final long serialVersionUID = 317809212002910317L;
+
+    private String styleName;
 	private String title;
 	private String url;
 	private boolean animationEnabled;
@@ -100,61 +96,6 @@ public class PopupData implements CruxSerializable
 	public void setCloseable(boolean closeable)
 	{
 		this.closeable = closeable;
-	}
-
-	public Object deserialize(String serializedData)
-	{
-		if (serializedData != null && serializedData.length() > 0)
-		{
-			Document root = XMLParser.parse(serializedData);
-			Element data = root.getDocumentElement();
-			return new PopupData(data.getAttribute("title"), 
-								 data.getAttribute("url"), 
-								 data.getAttribute("width"),
-								 data.getAttribute("height"),
-								 data.getAttribute("styleName"), 
-								 Boolean.parseBoolean(data.getAttribute("animationEnabled")),
-								 Boolean.parseBoolean(data.getAttribute("closeable")));
-		}
-		return null;
-	}
-	
-	public Object[] newArray(int size)
-	{
-		return new PopupData[size];
-	}
-
-	public String serialize()
-	{
-		Document document = XMLParser.createDocument();
-
-		Element data = document.createElement("data");
-		document.appendChild(data);
-		
-		if (title != null)
-		{
-			data.setAttribute("title", title);
-		}
-		if (url != null)
-		{
-			data.setAttribute("url", url);
-		}
-		if (styleName != null)
-		{
-			data.setAttribute("styleName", styleName);
-		}
-		if (width != null)
-		{
-			data.setAttribute("width", width);
-		}
-		if (height != null)
-		{
-			data.setAttribute("height", height);
-		}
-		data.setAttribute("animationEnabled", Boolean.toString(animationEnabled));
-		data.setAttribute("closeable", Boolean.toString(closeable));
-		
-		return document.toString();
 	}
 
 	/**
