@@ -286,6 +286,10 @@ public class ScreenFactory {
 			clearScreenMetaTag(screenElement);
 		}
 		clearWidgetsMetaTags(widgets);
+		if (Crux.getConfig().renderWidgetsWithIDs())
+		{
+			screen.updateWidgetsIds();
+		}
 		screen.load();
 	}
 	

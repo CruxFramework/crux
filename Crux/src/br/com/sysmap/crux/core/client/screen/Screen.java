@@ -486,6 +486,21 @@ public class Screen
 			});
 		}
 	}
+	
+	/**
+	 * Update each widget main element id with the value contained on Screen object
+	 */
+	protected void updateWidgetsIds()
+	{
+		for (String widgetId : this.widgets.keySet())
+        {
+	        Widget widget = Screen.get(widgetId);
+	        if (StringUtils.isEmpty(widget.getElement().getId()))
+	        {
+	        	widget.getElement().setId(widgetId);
+	        }
+        }
+	}
 
 	/**
 	 * Fires the load event. This method has no effect when called more than one time.

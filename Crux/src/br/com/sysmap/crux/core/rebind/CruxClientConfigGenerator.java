@@ -81,6 +81,7 @@ public class CruxClientConfigGenerator extends AbstractGenerator
 	{
 		generateWrapSiblingWidgetsMethod(sourceWriter);
 		generateEnableChildrenWindowsDebugMethod(sourceWriter);
+		generateRenderWidgetsWithIDsMethod(sourceWriter);
 	}
 
 	protected void generateEnableChildrenWindowsDebugMethod(SourceWriter sourceWriter)
@@ -94,6 +95,13 @@ public class CruxClientConfigGenerator extends AbstractGenerator
 	{
 		sourceWriter.println("public boolean wrapSiblingWidgets(){");
 		sourceWriter.println("return " + ConfigurationFactory.getConfigurations().wrapSiblingWidgets() + ";");
+		sourceWriter.println("}");
+	}
+	
+	protected void generateRenderWidgetsWithIDsMethod(SourceWriter sourceWriter)
+	{
+		sourceWriter.println("public boolean renderWidgetsWithIDs(){");
+		sourceWriter.println("return " + ConfigurationFactory.getConfigurations().renderWidgetsWithIDs() + ";");
 		sourceWriter.println("}");
 	}
 }
