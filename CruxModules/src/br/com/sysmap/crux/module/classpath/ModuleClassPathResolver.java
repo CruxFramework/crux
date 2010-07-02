@@ -26,38 +26,14 @@ import br.com.sysmap.crux.module.CruxModule;
 import br.com.sysmap.crux.module.CruxModuleHandler;
 
 /**
+ * A classPathResolver that maps all modules public folders as web root folders 
  * @author Thiago da Rosa de Bustamante
  *
  */
 public class ModuleClassPathResolver extends ClassPathResolverImpl
 {
-	private URL webInfClassesPath = null;
-
 	/**
-	 * @param context
-	 * @return
-	 */
-	@Override
-	public synchronized URL findWebInfClassesPath()
-	{
-		if (webInfClassesPath == null)
-		{
-			try
-			{
-				URL url = findWebInfLibPath();
-				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
-				webInfClassesPath = resourceHandler.getChildResource(resourceHandler.getParentDir(url), "classes");
-			}
-			catch (Exception e)
-			{
-				throw new RuntimeException(e.getMessage(), e);
-			}
-		}
-		return webInfClassesPath;
-	}
-	
-	/**
-	 * 
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolverImpl#findWebBaseDirs()
 	 */
 	@Override
 	public URL[] findWebBaseDirs()
