@@ -164,6 +164,8 @@
 			<arg value="-draftCompile" />
 			<arg value="-style" />
 			<arg value="Detailed" />
+			<arg value="-gen" />
+			<arg value="generated" />
 		</cruxmodulecompiler>
 	</target>
 	
