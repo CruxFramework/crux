@@ -49,6 +49,23 @@ public class ScannerURLS
 	
 	/**
 	 * 
+	 * @param urls
+	 */
+	public static void setURLsForSearch(URL[] urls)
+	{
+		lock.lock();
+		try
+		{
+			ScannerURLS.urls = urls;
+		}
+		finally
+		{
+			lock.unlock();
+		}
+	}
+
+	/**
+	 * 
 	 * @return
 	 */
 	public static URL[] getURLsForSearch()

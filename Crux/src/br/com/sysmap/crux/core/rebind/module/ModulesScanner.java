@@ -70,7 +70,6 @@ public class ModulesScanner extends AbstractScanner
 		{
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			this.documentBuilder = documentBuilderFactory.newDocumentBuilder();
-			classesDir = getClassesDir();
 			initializeAllowedPackages();
 		}
 		catch (ParserConfigurationException e)
@@ -190,8 +189,10 @@ public class ModulesScanner extends AbstractScanner
 	 * 
 	 * @param fileName
 	 * @return
+	 * @throws IOException 
+	 * @throws URISyntaxException 
 	 */
-	private String getModuleName(URL parent, URL resource)
+	private String getModuleName(URL parent, URL resource) throws URISyntaxException, IOException
 	{
 		String fileName;
 		
@@ -225,10 +226,12 @@ public class ModulesScanner extends AbstractScanner
 	/**
 	 * @param fileName
 	 * @return
+	 * @throws IOException 
+	 * @throws URISyntaxException 
 	 */
-	private String extractResourceFromClassesDir(String fileName)
+	private String extractResourceFromClassesDir(String fileName) throws URISyntaxException, IOException
 	{
-		for (String clsDir : classesDir)
+		for (String clsDir : getClassesDir())
 		{
 			if (fileName.startsWith(clsDir))
 			{
@@ -244,10 +247,14 @@ public class ModulesScanner extends AbstractScanner
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
-	public String[] getClassesDir() throws URISyntaxException, IOException
+	public synchronized String[] getClassesDir() throws URISyntaxException, IOException
 	{
-		URL classesPath = ClassPathResolverInitializer.getClassPathResolver().findWebInfClassesPath();
-		return new String[]{classesPath.toString()};
+		if (classesDir == null)
+		{
+			URL classesPath = ClassPathResolverInitializer.getClassPathResolver().findWebInfClassesPath();
+			classesDir = new String[]{classesPath.toString()};
+		}
+		return classesDir;
 	}
 	
 	/**

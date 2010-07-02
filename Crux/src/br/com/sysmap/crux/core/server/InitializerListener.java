@@ -39,6 +39,13 @@ public class InitializerListener implements ServletContextListener
 {
 	private static final Log logger = LogFactory.getLog(InitializerListener.class);
 
+	private static ServletContext context;
+	
+	public static ServletContext getContext()
+	{
+		return context;
+	}
+	
 	
 	public void contextDestroyed(ServletContextEvent contextEvent) 
 	{
@@ -51,6 +58,8 @@ public class InitializerListener implements ServletContextListener
 	{
 		try
 		{
+			context = contextEvent.getServletContext();
+			
 			//TODO - Thiago documentar isso no wiki
 			//TODO - Thiago remover quebras de linha e espacos antes de gravar....
 			

@@ -22,27 +22,25 @@ import java.util.List;
 
 import br.com.sysmap.crux.classpath.URLResourceHandler;
 import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
+import br.com.sysmap.crux.core.server.InitializerListener;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
 
 /**
+ * This basic classPathResolver works on most application servers.
+ * 
  * @author Thiago da Rosa de Bustamante
  *
  */
 public class ClassPathResolverImpl implements ClassPathResolver
 {
-	// This very ugly code exists to solve an issue in weblogic, 
-	// where is impossible to find the lib directory URL in zipped war
-	private static final String A_RESOUCE_FROM_WEBINF_LIB = "/"+ClassPathResolverImpl.class.getName().replaceAll("\\.", "/")+".class";
-
 	private URL webInfClassesPath = null;
 	private URL webInfLibPath = null;
 	private URL[] webBaseDirs = null;
 	private List<URL> webInfLibJars = null;
 	
 	/**
-	 * @param context
-	 * @return
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#findWebInfClassesPath()
 	 */
 	public synchronized URL findWebInfClassesPath()
 	{
@@ -50,10 +48,7 @@ public class ClassPathResolverImpl implements ClassPathResolver
 		{
 			try
 			{
-				URL url = findWebBaseDirs()[0];
-				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
-
-				webInfClassesPath = resourceHandler.getChildResource(url, "WEB-INF/classes");
+				webInfClassesPath = InitializerListener.getContext().getResource("/WEB-INF/classes/");
 			}
 			catch (Exception e)
 			{
@@ -64,8 +59,7 @@ public class ClassPathResolverImpl implements ClassPathResolver
 	}
 	
 	/**
-	 * @param context
-	 * @return
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#findWebInfLibPath()
 	 */
 	public synchronized URL findWebInfLibPath()
 	{
@@ -73,11 +67,7 @@ public class ClassPathResolverImpl implements ClassPathResolver
 		{
 			try
 			{
-				URL url = new ClassPathResolverImpl().getClass().getResource(A_RESOUCE_FROM_WEBINF_LIB);
-				String path = url.toString().replace(A_RESOUCE_FROM_WEBINF_LIB, "")+"/";
-				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
-
-				webInfLibPath = resourceHandler.getParentDir(new URL(path));
+				webInfLibPath = InitializerListener.getContext().getResource("/WEB-INF/lib/");
 			}
 			catch (MalformedURLException e)
 			{
@@ -88,8 +78,7 @@ public class ClassPathResolverImpl implements ClassPathResolver
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#findWebInfLibJars()
 	 */
 	public synchronized URL[] findWebInfLibJars() 
 	{		
@@ -122,7 +111,7 @@ public class ClassPathResolverImpl implements ClassPathResolver
 	}
 
 	/**
-	 * 
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#findWebBaseDirs()
 	 */
 	public synchronized URL[] findWebBaseDirs()
 	{
@@ -130,7 +119,7 @@ public class ClassPathResolverImpl implements ClassPathResolver
 		{
 			try
 			{
-				URL url = findWebInfLibPath();
+				URL url = findWebInfClassesPath();
 				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
 
 				url = resourceHandler.getParentDir(url);
@@ -145,4 +134,43 @@ public class ClassPathResolverImpl implements ClassPathResolver
 		}
 		return webBaseDirs;
 	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#setWebBaseDirs(java.net.URL[])
+	 */
+	public synchronized void setWebBaseDirs(URL[] url)
+    {
+		webBaseDirs = url;
+    }
+
+	/**
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#setWebInfClassesPath(java.net.URL)
+	 */
+	public synchronized void setWebInfClassesPath(URL url)
+    {
+	    webInfClassesPath = url;
+    }
+
+	/**
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#setWebInfLibJars(java.net.URL[])
+	 */
+	public synchronized void setWebInfLibJars(URL[] url)
+    {
+		webInfLibJars = new ArrayList<URL>();
+		if (url != null)
+		{
+			for (URL u : url)
+            {
+				webInfLibJars.add(u);
+            }
+		}
+    }
+
+	/**
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#setWebInfLibPath(java.net.URL)
+	 */
+	public synchronized void setWebInfLibPath(URL url)
+    {
+		webInfLibPath = url;
+    }
 }

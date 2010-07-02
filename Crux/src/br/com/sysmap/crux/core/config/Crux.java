@@ -52,13 +52,13 @@ public interface Crux
 	void setEnableWebRootScannerCache(Boolean value);
 	void setEnableChildrenWindowsDebug(Boolean value);
 	void setWrapSiblingWidgets(Boolean value);
+	void setEnableHotDeploymentForWebDirs(Boolean value);
+	void setEnableHotDeploymentForWidgetFactories(Boolean value);
+	void setRenderWidgetsWithIDs(Boolean value);
 	void setClassPathResolver(String value);
 	void setScreenResourceResolver(String value);
 	void setLocaleResolver(String value);
 	void setServiceFactory(String value);
-	void setEnableHotDeploymentForWebDirs(String value);
-	void setEnableHotDeploymentForWidgetFactories(String value);
-	void setRenderWidgetsWithIDs(Boolean value);
 	//TODO atualiza wiki com as opções correntes
 
 }
