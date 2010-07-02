@@ -17,6 +17,7 @@ package br.com.sysmap.crux.tools.compile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.Permission;
@@ -29,9 +30,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.module.Module;
-import br.com.sysmap.crux.core.rebind.module.ModulesScanner;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
+import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.utils.FileUtils;
 import br.com.sysmap.crux.scannotation.ClasspathUrlFinder;
 import br.com.sysmap.crux.tools.compile.utils.ModuleUtils;
@@ -56,6 +59,8 @@ public abstract class AbstractCruxCompiler
 	private List<String> alreadyCompiledModules = new ArrayList<String>();
 	
 	protected File outputDir;
+	protected File webDir;
+	
 	protected File pagesOutputDir;
 	protected boolean indentPages;
 	protected boolean keepPagesGeneratedFiles;
@@ -193,19 +198,7 @@ public abstract class AbstractCruxCompiler
 	{
 		URL[] urls = ClasspathUrlFinder.findClassPaths();
 		ModuleUtils.initializeScannerURLs(urls);
-		
-		List<String> classesDir = new ArrayList<String>();
-		for (URL url : urls)
-		{
-			if (!url.toString().endsWith(".jar"))
-			{
-				classesDir.add(url.toString());
-			}
-		}
-		if (classesDir.size() > 0)
-		{
-			ModulesScanner.getInstance().setClassesDir(classesDir.toArray(new String[classesDir.size()]));
-		}
+		ClassScanner.initialize(urls);
 		
 		for (CruxPreProcessor preprocess : this.preProcessors)
 		{
@@ -245,6 +238,19 @@ public abstract class AbstractCruxCompiler
 	        else if (parameter.getName().equals("outputDir"))
 	        {
 	        	this.outputDir = new File(parameter.getValue());
+	        }
+	        else if (parameter.getName().equals("webDir"))
+	        {
+	        	this.webDir = new File(parameter.getValue());
+	        	try
+                {
+	                ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(new File(webDir, "WEB-INF/classes/").toURI().toURL());
+	                ClassPathResolverInitializer.getClassPathResolver().setWebInfLibPath(new File(webDir, "WEB-INF/lib/").toURI().toURL());
+                }
+                catch (MalformedURLException e)
+                {
+                	logger.error("Invalid web folder");
+                }
 	        }
 	        else if (parameter.getName().equals("scanAllowedPackages"))
 	        {
@@ -425,6 +431,10 @@ public abstract class AbstractCruxCompiler
 		parameter.addParameterOption(new ConsoleParameterOption("dirName", "Folder name"));
 		parametersProcessor.addSupportedParameter(parameter);
 		
+		parameter = new ConsoleParameter("webDir", "The application web root folder.", true, true);
+		parameter.addParameterOption(new ConsoleParameterOption("dirName", "Folder name"));
+		parametersProcessor.addSupportedParameter(parameter);
+
 		parameter = new ConsoleParameter("pagesOutputDir", "The folder where the generated page files will be created.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("output", "Folder name"));
 		parametersProcessor.addSupportedParameter(parameter);
@@ -527,7 +537,7 @@ public abstract class AbstractCruxCompiler
     }
 
 	/**
-	 * @author Thiago da Rosa de Bustamante -
+	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
 	private static class DoNotExitException extends SecurityException

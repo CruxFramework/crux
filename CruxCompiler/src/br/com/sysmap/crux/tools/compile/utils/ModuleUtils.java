@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.htmlparser.jericho.Element;
@@ -28,6 +29,7 @@ import br.com.sysmap.crux.core.declarativeui.CruxToHtmlTransformer;
 import br.com.sysmap.crux.core.rebind.module.Module;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.module.ModulesScanner;
+import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -40,7 +42,19 @@ public class ModuleUtils
 	
 	public static void initializeScannerURLs(URL[] urls)
 	{
-		ModulesScanner.initialize(urls);
+		ScannerURLS.setURLsForSearch(urls);
+		List<String> classesDir = new ArrayList<String>();
+		for (URL url : urls)
+		{
+			if (!url.toString().endsWith(".jar"))
+			{
+				classesDir.add(url.toString());
+			}
+		}
+		if (classesDir.size() > 0)
+		{
+			ModulesScanner.getInstance().setClassesDir(classesDir.toArray(new String[classesDir.size()]));
+		}
 	}
 	
 	/**

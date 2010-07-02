@@ -97,7 +97,7 @@ public class SchemaGenerator
 	 */
 	public static void generateSchemas(File projectBaseDir, String outputDir, boolean generateModuleSchema) throws IOException
 	{
-		ConfigurationFactory.getConfigurations().setEnableHotDeploymentForWebDirs("false");
+		ConfigurationFactory.getConfigurations().setEnableHotDeploymentForWebDirs(false);
 		ClassScanner.initialize(ClasspathUrlFinder.findClassPaths());
 		TemplatesScanner.initialize(ClasspathUrlFinder.findClassPaths());
 		SchemaGenerator generator = new SchemaGenerator(projectBaseDir, outputDir);

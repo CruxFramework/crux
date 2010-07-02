@@ -78,7 +78,7 @@ public class CruxBasicCompiler extends AbstractCruxCompiler
 	        else if (parameter.getName().equals("cruxPagesDir"))
 	        {
 	        	this.cruxPagesDir = new ArrayList<File>(); 
-	        	String[] pageDirs = RegexpPatterns.REGEXP_COMMA.split(parameter.getValue());	
+	        	String[] pageDirs = RegexpPatterns.REGEXP_COMMA.split(parameter.getValue());
 	        	for (String dir : pageDirs)
                 {
 	        		this.cruxPagesDir.add(new File(dir.trim()));

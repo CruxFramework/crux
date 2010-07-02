@@ -38,6 +38,7 @@ public abstract class AbstractCruxCompilerTask extends Task
 	private List<Argument> args = new ArrayList<Argument>();
 	private List<Argument> jvmArgs = new ArrayList<Argument>();
 	private File outputDir;
+	private File webDir;
 	private File pagesOutputDir;
 	private File srcDir;
 	private String scanAllowedPackages;
@@ -67,6 +68,11 @@ public abstract class AbstractCruxCompilerTask extends Task
 		this.outputDir = outputDir;
 	}
 
+	public void setWebDir(File webDir)
+	{
+		this.webDir = webDir;
+	}
+	
 	public void setPagesOutputDir(File pagesOutputDir)
     {
     	this.pagesOutputDir = pagesOutputDir;
@@ -197,6 +203,12 @@ public abstract class AbstractCruxCompilerTask extends Task
 			javatask.createArg().setValue(this.outputDir.getCanonicalPath());
 		}
 
+	    if (this.webDir != null)
+		{
+			javatask.createArg().setValue("webDir");
+			javatask.createArg().setValue(this.webDir.getCanonicalPath());
+		}
+	    
 		if (this.pagesOutputDir != null)
 		{
 			javatask.createArg().setValue("pagesOutputDir");

@@ -34,7 +34,7 @@ import org.apache.tools.ant.types.Commandline.Argument;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.module.Module;
-import br.com.sysmap.crux.core.rebind.module.ModulesScanner;
+import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.tools.compile.utils.ModuleUtils;
 import br.com.sysmap.crux.tools.compile.utils.TaskClassPathUtils;
 
@@ -162,19 +162,7 @@ public class CruxCompile extends Task
 	{
 		URL[] urls = TaskClassPathUtils.getUrlsFromPaths(classpath);
 		ModuleUtils.initializeScannerURLs(urls);
-		
-		List<String> classesDir = new ArrayList<String>();
-		for (URL url : urls)
-		{
-			if (!url.toString().endsWith(".jar"))
-			{
-				classesDir.add(url.toString());
-			}
-		}
-		if (classesDir.size() > 0)
-		{
-			ModulesScanner.getInstance().setClassesDir(classesDir.toArray(new String[classesDir.size()]));
-		}
+		ClassScanner.initialize(urls);
 		
 		for (CruxPreProcessor preprocess : this.preProcessors)
 		{
