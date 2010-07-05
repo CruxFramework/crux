@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.module.launch;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +37,9 @@ public class ModulesLauncher
 	/**
 	 * 
 	 * @param args
+	 * @throws MalformedURLException 
 	 */
-	public static void main(String[] args)
+	public static void main(String[] args) throws MalformedURLException
 	{
 		String[] developmentModules = CruxModuleHandler.getDevelopmentModules();
 		if (developmentModules==null || developmentModules.length ==0)
@@ -44,6 +47,21 @@ public class ModulesLauncher
 			throw new RuntimeException(messages.launcerErrorNoDevelopmentModulesSpecified());
 		}
 		
+		String webDir = "./war/";
+		for (int i=0; i< (args.length-1); i++)
+        {
+			String arg = args[i];
+	        if ("-webDir".equals(arg) )
+	        {
+	        	webDir = args[i+1];
+	        }
+        }
+		
+		File webinfClassesDir = new File(webDir, "WEB-INF/classes");
+		File webinfLibDir = new File(webDir, "WEB-INF/lib");
+		
+		CruxScreenBridge.getInstance().registerWebinfClasses(webinfClassesDir.toURI().toURL().toString());
+		CruxScreenBridge.getInstance().registerWebinfLib(webinfLibDir.toURI().toURL().toString());
 		CruxScreenBridge.getInstance().registerScanIgnoredPackages("");
 		CruxScreenBridge.getInstance().registerScanAllowedPackages("");
 
