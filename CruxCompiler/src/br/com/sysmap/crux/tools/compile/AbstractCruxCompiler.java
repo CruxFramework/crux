@@ -30,7 +30,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
-import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.module.Module;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
@@ -237,20 +236,11 @@ public abstract class AbstractCruxCompiler
 	        }
 	        else if (parameter.getName().equals("outputDir"))
 	        {
-	        	this.outputDir = new File(parameter.getValue());
+	        	setOutputDir(parameter);
 	        }
 	        else if (parameter.getName().equals("webDir"))
 	        {
-	        	this.webDir = new File(parameter.getValue());
-	        	try
-                {
-	                ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(new File(webDir, "WEB-INF/classes/").toURI().toURL());
-	                ClassPathResolverInitializer.getClassPathResolver().setWebInfLibPath(new File(webDir, "WEB-INF/lib/").toURI().toURL());
-                }
-                catch (MalformedURLException e)
-                {
-                	logger.error("Invalid web folder");
-                }
+	        	setWebDir(parameter);
 	        }
 	        else if (parameter.getName().equals("scanAllowedPackages"))
 	        {
@@ -293,7 +283,44 @@ public abstract class AbstractCruxCompiler
 	            logger.error("Invalid output dir.", e);
             }
 		}
-	    
+		if (this.outputDir == null && this.webDir == null)
+		{
+			logger.error("You must inform at least one of outputDir and webDir parameters.");
+			System.exit(1);
+		}
+    }
+
+	/**
+	 * @param parameter
+	 */
+	private void setOutputDir(ConsoleParameter parameter)
+    {
+	    this.outputDir = new File(parameter.getValue());
+	    if (this.webDir == null)
+	    {
+	    	setWebDir(parameter);
+	    }
+    }
+
+	/**
+	 * @param parameter
+	 */
+	private void setWebDir(ConsoleParameter parameter)
+    {
+	    this.webDir = new File(parameter.getValue());
+	    try
+	    {
+	        ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(new File(webDir, "WEB-INF/classes/").toURI().toURL());
+	        ClassPathResolverInitializer.getClassPathResolver().setWebInfLibPath(new File(webDir, "WEB-INF/lib/").toURI().toURL());
+	    }
+	    catch (MalformedURLException e)
+	    {
+	    	logger.error("Invalid web folder");
+	    }
+	    if (this.outputDir == null)
+	    {
+	    	setOutputDir(parameter);
+	    }
     }
 	
 	/**
@@ -427,11 +454,11 @@ public abstract class AbstractCruxCompiler
 		ConsoleParameter parameter;
 		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor(getProgramName());
 
-		parameter = new ConsoleParameter("outputDir", "The folder where the compiled files will be created.", true, true);
+		parameter = new ConsoleParameter("outputDir", "The folder where the compiled files will be created.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("dirName", "Folder name"));
 		parametersProcessor.addSupportedParameter(parameter);
 		
-		parameter = new ConsoleParameter("webDir", "The application web root folder.", true, true);
+		parameter = new ConsoleParameter("webDir", "The application web root folder.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("dirName", "Folder name"));
 		parametersProcessor.addSupportedParameter(parameter);
 
