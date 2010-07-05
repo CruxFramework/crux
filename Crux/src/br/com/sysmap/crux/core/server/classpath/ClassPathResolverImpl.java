@@ -20,8 +20,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import br.com.sysmap.crux.classpath.URLResourceHandler;
 import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
+import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.server.InitializerListener;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
@@ -34,11 +37,36 @@ import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
  */
 public class ClassPathResolverImpl implements ClassPathResolver
 {
-	private URL webInfClassesPath = null;
-	private URL webInfLibPath = null;
 	private URL[] webBaseDirs = null;
+	private URL webInfClassesPath = null;
 	private List<URL> webInfLibJars = null;
+	private URL webInfLibPath = null;
 	
+	/**
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#findWebBaseDirs()
+	 */
+	public synchronized URL[] findWebBaseDirs()
+	{
+		if (webBaseDirs == null)
+		{
+			try
+			{
+				URL url = findWebInfClassesPath();
+				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
+
+				url = resourceHandler.getParentDir(url);
+				url = resourceHandler.getParentDir(url);
+				webBaseDirs = new URL[1]; 
+				webBaseDirs[0] = url;
+			}
+			catch (Exception e)
+			{
+				throw new RuntimeException(e.getMessage(), e);
+			}
+		}
+		return webBaseDirs;
+	}
+
 	/**
 	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#findWebInfClassesPath()
 	 */
@@ -48,7 +76,7 @@ public class ClassPathResolverImpl implements ClassPathResolver
 		{
 			try
 			{
-				webInfClassesPath = InitializerListener.getContext().getResource("/WEB-INF/classes/");
+				webInfClassesPath = getWebinfClasses();
 			}
 			catch (Exception e)
 			{
@@ -56,25 +84,6 @@ public class ClassPathResolverImpl implements ClassPathResolver
 			}
 		}
 		return webInfClassesPath;
-	}
-	
-	/**
-	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#findWebInfLibPath()
-	 */
-	public synchronized URL findWebInfLibPath()
-	{
-		if (webInfLibPath == null)
-		{
-			try
-			{
-				webInfLibPath = InitializerListener.getContext().getResource("/WEB-INF/lib/");
-			}
-			catch (MalformedURLException e)
-			{
-				throw new RuntimeException(e.getMessage(), e);
-			}
-		}
-		return webInfLibPath;
 	}
 	
 	/**
@@ -111,30 +120,24 @@ public class ClassPathResolverImpl implements ClassPathResolver
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#findWebBaseDirs()
+	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#findWebInfLibPath()
 	 */
-	public synchronized URL[] findWebBaseDirs()
+	public synchronized URL findWebInfLibPath()
 	{
-		if (webBaseDirs == null)
+		if (webInfLibPath == null)
 		{
 			try
 			{
-				URL url = findWebInfClassesPath();
-				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
-
-				url = resourceHandler.getParentDir(url);
-				url = resourceHandler.getParentDir(url);
-				webBaseDirs = new URL[1]; 
-				webBaseDirs[0] = url;
+				webInfLibPath = getWebinfLib();
 			}
-			catch (Exception e)
+			catch (MalformedURLException e)
 			{
 				throw new RuntimeException(e.getMessage(), e);
 			}
 		}
-		return webBaseDirs;
+		return webInfLibPath;
 	}
-
+	
 	/**
 	 * @see br.com.sysmap.crux.core.server.classpath.ClassPathResolver#setWebBaseDirs(java.net.URL[])
 	 */
@@ -172,5 +175,43 @@ public class ClassPathResolverImpl implements ClassPathResolver
 	public synchronized void setWebInfLibPath(URL url)
     {
 		webInfLibPath = url;
+    }
+
+	/**
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	private URL getWebinfClasses() throws MalformedURLException
+    {
+	    ServletContext context = InitializerListener.getContext();
+	    if (context != null)
+	    {
+	    	URL webInfClasses = context.getResource("/WEB-INF/classes/");
+	    	CruxScreenBridge.getInstance().registerWebinfClasses(webInfClasses.toString());
+			return webInfClasses;
+	    }
+	    else
+	    {
+	    	return new URL(CruxScreenBridge.getInstance().getWebinfClasses());
+	    }
+    }
+
+	/**
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	private URL getWebinfLib() throws MalformedURLException
+    {
+	    ServletContext context = InitializerListener.getContext();
+	    if (context != null)
+	    {
+	    	URL webInfClasses = context.getResource("/WEB-INF/lib/");
+	    	CruxScreenBridge.getInstance().registerWebinfLib(webInfClasses.toString());
+			return webInfClasses;
+	    }
+	    else
+	    {
+	    	return new URL(CruxScreenBridge.getInstance().getWebinfLib());
+	    }
     }
 }

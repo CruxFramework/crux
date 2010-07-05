@@ -100,6 +100,19 @@ public interface ServerMessages
 	@DefaultServerMessage("[screenBridge 006] - Error reading allowedPackages: {0}.")
 	String screenBridgeErrorReadingAllowedPackages(String localizedMessage);
 
+	@DefaultServerMessage("[screenBridge 007] - Error registering webinfClasses: {0}.")
+	String screenBridgeErrorRegisteringWebinfClasses(String localizedMessage);
+	
+	@DefaultServerMessage("[screenBridge 008] - Error reading webinfClasses: {0}.")
+	String screenBridgeErrorReadingWebinfClasses(String localizedMessage);
+
+	@DefaultServerMessage("[screenBridge 009] - Error registering webinfLib: {0}.")
+	String screenBridgeErrorRegisteringWebinfLib(String localizedMessage);
+	
+	@DefaultServerMessage("[screenBridge 010] - Error reading webinfLib: {0}.")
+	String screenBridgeErrorReadingWebinfLib(String localizedMessage);
+
+
 	@DefaultServerMessage("[messages 001] - Error initializing messagesClasses: {0}.")
 	String messagesClassesInitializeError(String localizedMessage);
 

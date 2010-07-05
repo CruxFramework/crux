@@ -44,11 +44,13 @@ public class CruxScreenBridge
 	private static CruxScreenBridge instance = new CruxScreenBridge();
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 
-	//Woww :) How GWT generators and the application server run in different JVMs, 
-	//the only way to obtain these informations is using a bridge in file system.
+	//How GWT generators and the application server run in different JVMs, 
+	//the only way to obtain these informations is using a bridge.
 	private File screenRequestedBridgeFile;
 	private File scanAllowedPackagesFile;
 	private File scanIgnoredPackagesFile;
+	private File webinfClassesFile;
+	private File webinfLibFile;
 	
 	private CruxScreenBridge() 
 	{
@@ -57,6 +59,8 @@ public class CruxScreenBridge
 		screenRequestedBridgeFile = new File(tmpDir+"screenRequestedBridgeFile");
 		scanAllowedPackagesFile = new File(tmpDir+"scanAllowedPackagesFile");
 		scanIgnoredPackagesFile = new File(tmpDir+"scanIgnoredPackagesFile");
+		webinfClassesFile = new File(tmpDir+"webinfClassesFile");
+		webinfLibFile = new File(tmpDir+"webinfLibFile");
 	}
 
 	/**
@@ -177,4 +181,76 @@ public class CruxScreenBridge
 			return null;
 		}
 	}
+
+	/**
+	 * @param webinfClasses
+	 */
+	public void registerWebinfClasses(String webinfClasses)
+	{
+		PrintWriter writer;
+		try 
+		{
+			writer = new PrintWriter(webinfClassesFile);
+			writer.println(webinfClasses);
+			writer.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			logger.error(messages.screenBridgeErrorRegisteringWebinfClasses(e.getLocalizedMessage()), e);
+		}
+	}
+
+	/**
+	 * Return the web-inf/classes URL .
+	 * @return
+	 */
+	public String getWebinfClasses() 
+	{
+		try 
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(webinfClassesFile));
+			return reader.readLine();
+		} 
+		catch (Exception e) 
+		{
+			logger.debug(messages.screenBridgeErrorReadingWebinfClasses(e.getLocalizedMessage()), e);
+			return null;
+		}
+	}
+	
+	/**
+	 * @param webinfLib
+	 */
+	public void registerWebinfLib(String webinfLib)
+	{
+		PrintWriter writer;
+		try 
+		{
+			writer = new PrintWriter(webinfLibFile);
+			writer.println(webinfLib);
+			writer.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			logger.error(messages.screenBridgeErrorRegisteringWebinfLib(e.getLocalizedMessage()), e);
+		}
+	}
+
+	/**
+	 * Return the web-inf/lib URL.
+	 * @return
+	 */
+	public String getWebinfLib() 
+	{
+		try 
+		{
+			BufferedReader reader = new BufferedReader(new FileReader(webinfLibFile));
+			return reader.readLine();
+		} 
+		catch (Exception e) 
+		{
+			logger.debug(messages.screenBridgeErrorReadingWebinfLib(e.getLocalizedMessage()), e);
+			return null;
+		}
+	}	
 }
