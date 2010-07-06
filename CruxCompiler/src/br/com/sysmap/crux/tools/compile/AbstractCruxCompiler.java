@@ -72,6 +72,7 @@ public abstract class AbstractCruxCompiler
 	 */
 	public AbstractCruxCompiler()
 	{
+		CruxScreenBridge.getInstance().setSingleVM(true);
 		clearCruxBridgeProperties();
 	}
 
