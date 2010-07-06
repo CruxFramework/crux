@@ -59,12 +59,15 @@ public class InitializerListener implements ServletContextListener
 		try
 		{
 			context = contextEvent.getServletContext();
+			if (Environment.isProduction())
+			{
+				CruxScreenBridge.getInstance().setSingleVM(true);	
+			}
 			
 			//TODO - Thiago documentar isso no wiki
 			//TODO - Thiago remover quebras de linha e espacos antes de gravar....
 			
 			String classScannerAllowedPackages = contextEvent.getServletContext().getInitParameter("classScannerAllowedPackages");
-			
 			if (!StringUtils.isEmpty(classScannerAllowedPackages))
 			{
 				CruxScreenBridge.getInstance().registerScanAllowedPackages(classScannerAllowedPackages);

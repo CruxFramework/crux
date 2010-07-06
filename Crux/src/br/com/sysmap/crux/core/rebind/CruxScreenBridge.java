@@ -46,23 +46,46 @@ public class CruxScreenBridge
 
 	//How GWT generators and the application server run in different JVMs, 
 	//the only way to obtain these informations is using a bridge.
-	private File screenRequestedBridgeFile;
+	private File screenRequestedFile;
 	private File scanAllowedPackagesFile;
 	private File scanIgnoredPackagesFile;
 	private File webinfClassesFile;
 	private File webinfLibFile;
 	
+	private String screenRequested = null;
+	private String scanAllowedPackages = null;
+	private String scanIgnoredPackages = null;
+	private String webinfClasses = null;
+	private String webinfLib = null;
+
+	private boolean singleVM = false;
+	
 	private CruxScreenBridge() 
 	{
 		String tmpDir = FileUtils.getTempDir();
-		
-		screenRequestedBridgeFile = new File(tmpDir+"screenRequestedBridgeFile");
+
+		screenRequestedFile = new File(tmpDir+"screenRequestedBridgeFile");
 		scanAllowedPackagesFile = new File(tmpDir+"scanAllowedPackagesFile");
 		scanIgnoredPackagesFile = new File(tmpDir+"scanIgnoredPackagesFile");
 		webinfClassesFile = new File(tmpDir+"webinfClassesFile");
 		webinfLibFile = new File(tmpDir+"webinfLibFile");
 	}
 
+	/**
+	 * @param singleVM
+	 */
+	public void setSingleVM(boolean singleVM)
+	{
+		this.singleVM = singleVM;
+	}
+	
+	/**
+	 * @return
+	 */
+	public boolean isSingleVM()
+	{
+		return singleVM;
+	}
 	/**
 	 * Singleton method
 	 * @return
@@ -71,7 +94,7 @@ public class CruxScreenBridge
 	{
 		return instance;
 	}
-	
+
 	/** 
 	 * Inform the name of the last page the client requested. This is used
 	 * only in hosted mode of GWT, when we will have only the developer
@@ -82,9 +105,16 @@ public class CruxScreenBridge
 		PrintWriter writer;
 		try 
 		{
-			writer = new PrintWriter(screenRequestedBridgeFile);
-			writer.println(lastPage);
-			writer.close();
+			if (singleVM)
+			{
+				screenRequested = lastPage;
+			}
+			else
+			{
+				writer = new PrintWriter(screenRequestedFile);
+				writer.println(lastPage);
+				writer.close();
+			}
 		} 
 		catch (FileNotFoundException e) 
 		{
@@ -100,8 +130,15 @@ public class CruxScreenBridge
 	{
 		try 
 		{
-			BufferedReader reader = new BufferedReader(new FileReader(screenRequestedBridgeFile));
-			return reader.readLine();
+			if (singleVM)
+			{
+				return screenRequested;
+			}
+			else
+			{
+				BufferedReader reader = new BufferedReader(new FileReader(screenRequestedFile));
+				return reader.readLine();
+			}
 		} 
 		catch (Exception e) 
 		{
@@ -118,9 +155,16 @@ public class CruxScreenBridge
 		PrintWriter writer;
 		try 
 		{
-			writer = new PrintWriter(scanIgnoredPackagesFile);
-			writer.println(ignoredPackages);
-			writer.close();
+			if (singleVM)
+			{
+				scanIgnoredPackages = ignoredPackages;
+			}
+			else
+			{
+				writer = new PrintWriter(scanIgnoredPackagesFile);
+				writer.println(ignoredPackages);
+				writer.close();
+			}
 		} 
 		catch (FileNotFoundException e) 
 		{
@@ -136,8 +180,15 @@ public class CruxScreenBridge
 	{
 		try 
 		{
-			BufferedReader reader = new BufferedReader(new FileReader(scanIgnoredPackagesFile));
-			return reader.readLine();
+			if (singleVM)
+			{
+				return scanIgnoredPackages;
+			}
+			else
+			{
+				BufferedReader reader = new BufferedReader(new FileReader(scanIgnoredPackagesFile));
+				return reader.readLine();
+			}
 		} 
 		catch (Exception e) 
 		{
@@ -154,9 +205,16 @@ public class CruxScreenBridge
 		PrintWriter writer;
 		try 
 		{
-			writer = new PrintWriter(scanAllowedPackagesFile);
-			writer.println(allowedPackages);
-			writer.close();
+			if (singleVM)
+			{
+				scanAllowedPackages = allowedPackages;
+			}
+			else
+			{
+				writer = new PrintWriter(scanAllowedPackagesFile);
+				writer.println(allowedPackages);
+				writer.close();
+			}
 		} 
 		catch (FileNotFoundException e) 
 		{
@@ -172,8 +230,15 @@ public class CruxScreenBridge
 	{
 		try 
 		{
-			BufferedReader reader = new BufferedReader(new FileReader(scanAllowedPackagesFile));
-			return reader.readLine();
+			if (singleVM)
+			{
+				return scanAllowedPackages;
+			}
+			else
+			{
+				BufferedReader reader = new BufferedReader(new FileReader(scanAllowedPackagesFile));
+				return reader.readLine();
+			}
 		} 
 		catch (Exception e) 
 		{
@@ -190,9 +255,16 @@ public class CruxScreenBridge
 		PrintWriter writer;
 		try 
 		{
-			writer = new PrintWriter(webinfClassesFile);
-			writer.println(webinfClasses);
-			writer.close();
+			if (singleVM)
+			{
+				this.webinfClasses = webinfClasses;
+			}
+			else
+			{
+				writer = new PrintWriter(webinfClassesFile);
+				writer.println(webinfClasses);
+				writer.close();
+			}
 		} 
 		catch (FileNotFoundException e) 
 		{
@@ -208,8 +280,15 @@ public class CruxScreenBridge
 	{
 		try 
 		{
-			BufferedReader reader = new BufferedReader(new FileReader(webinfClassesFile));
-			return reader.readLine();
+			if (singleVM)
+			{
+				return webinfClasses;
+			}
+			else
+			{
+				BufferedReader reader = new BufferedReader(new FileReader(webinfClassesFile));
+				return reader.readLine();
+			}
 		} 
 		catch (Exception e) 
 		{
@@ -226,9 +305,16 @@ public class CruxScreenBridge
 		PrintWriter writer;
 		try 
 		{
-			writer = new PrintWriter(webinfLibFile);
-			writer.println(webinfLib);
-			writer.close();
+			if(singleVM)
+			{
+				this.webinfLib = webinfLib;
+			}
+			else
+			{
+				writer = new PrintWriter(webinfLibFile);
+				writer.println(webinfLib);
+				writer.close();
+			}
 		} 
 		catch (FileNotFoundException e) 
 		{
@@ -244,8 +330,15 @@ public class CruxScreenBridge
 	{
 		try 
 		{
-			BufferedReader reader = new BufferedReader(new FileReader(webinfLibFile));
-			return reader.readLine();
+			if (singleVM)
+			{
+				return webinfLib;
+			}
+			else
+			{
+				BufferedReader reader = new BufferedReader(new FileReader(webinfLibFile));
+				return reader.readLine();
+			}
 		} 
 		catch (Exception e) 
 		{

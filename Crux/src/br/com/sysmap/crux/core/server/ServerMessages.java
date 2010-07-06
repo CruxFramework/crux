@@ -112,7 +112,6 @@ public interface ServerMessages
 	@DefaultServerMessage("[screenBridge 010] - Error reading webinfLib: {0}.")
 	String screenBridgeErrorReadingWebinfLib(String localizedMessage);
 
-
 	@DefaultServerMessage("[messages 001] - Error initializing messagesClasses: {0}.")
 	String messagesClassesInitializeError(String localizedMessage);
 
