@@ -71,7 +71,7 @@
 	</replace-with>
 
 	<!-- Specify the generator for context wrappers.     -->
-	<generate-with class="br.com.sysmap.crux.core.rebind.ContextGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.context.ContextGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.context.Context" />
 	</generate-with>
 
