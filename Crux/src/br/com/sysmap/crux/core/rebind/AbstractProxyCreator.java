@@ -38,10 +38,10 @@ import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
  */
 public abstract class AbstractProxyCreator
 {
+	protected static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
+	protected final JClassType baseProxyType;
 	protected final GeneratorContext context;
 	protected final TreeLogger logger;
-	protected final JClassType baseProxyType;
-	protected static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 
 	/**
 	 * @param logger
@@ -55,73 +55,6 @@ public abstract class AbstractProxyCreator
 		this.baseProxyType = baseProxyType;
 
     }
-	
-	/**
-	 * Add the implicit root types that are needed to make Cross Document
-	 * invoker work.
-	 */
-	protected void addRequiredRoots(TypeOracle typeOracle, SerializableTypeOracleBuilder stob) throws NotFoundException
-	{
-		stob.addRootType(logger, typeOracle.getType(String.class.getName()));
-	}
-
-	protected void addRoots(TypeOracle typeOracle, SerializableTypeOracleBuilder typesSentFromDocBuilder, 
-			SerializableTypeOracleBuilder typesSentToDocBuilder) throws UnableToCompleteException
-	{
-		try
-		{
-			addRequiredRoots(typeOracle, typesSentFromDocBuilder);
-			addRequiredRoots(typeOracle, typesSentToDocBuilder);
-
-			addBaseTypeRootTypes(typeOracle, typesSentFromDocBuilder, typesSentToDocBuilder);
-		}
-		catch (NotFoundException e)
-		{
-			logger.log(TreeLogger.ERROR, "Unable to find type referenced from cross document", e);
-			throw new UnableToCompleteException();
-		}
-	}	
-	
-	/**
-	 * Adds a root type for each type that appears in the CrossDocument
-	 * interface methods.
-	 */
-	protected void addBaseTypeRootTypes(TypeOracle typeOracle, SerializableTypeOracleBuilder typesSentFromDoc, 
-			                                      SerializableTypeOracleBuilder typesSentToDoc) throws NotFoundException
-	{
-		JMethod[] methods = baseProxyType.getOverridableMethods();
-		JClassType exceptionClass = typeOracle.getType(Exception.class.getName());
-
-		for (JMethod method : methods)
-		{
-			JType returnType = method.getReturnType();
-			if (returnType != JPrimitiveType.VOID)
-			{
-				typesSentToDoc.addRootType(logger, returnType);
-			}
-
-			JParameter[] params = method.getParameters();
-			for (JParameter param : params)
-			{
-				JType paramType = param.getType();
-				typesSentFromDoc.addRootType(logger, paramType);
-			}
-
-			JType[] exs = method.getThrows();
-			if (exs.length > 0)
-			{
-				for (JType ex : exs)
-				{
-					if (!exceptionClass.isAssignableFrom(ex.isClass()))
-					{
-						logger.log(TreeLogger.WARN, "'" + ex.getQualifiedSourceName() + "' is not a checked exception; only checked exceptions may be used", null);
-					}
-
-					typesSentToDoc.addRootType(logger, ex);
-				}
-			}
-		}
-	}
 	
 	/**
 	 * Creates the cross document proxy.
@@ -161,8 +94,105 @@ public abstract class AbstractProxyCreator
 
 		srcWriter.commit(logger);
 		return getProxyQualifiedName();
+	}
+
+	/**
+	 * Adds a root type for each type that appears in the CrossDocument
+	 * interface methods.
+	 */
+	protected void addBaseTypeRootTypes(TypeOracle typeOracle, SerializableTypeOracleBuilder typesSentFromDoc, 
+			                                      SerializableTypeOracleBuilder typesSentToDoc) throws NotFoundException
+	{
+		JMethod[] methods = baseProxyType.getOverridableMethods();
+		JClassType exceptionClass = typeOracle.getType(Exception.class.getName());
+
+		for (JMethod method : methods)
+		{
+			JType returnType = method.getReturnType();
+			if (returnType != JPrimitiveType.VOID)
+			{
+				typesSentToDoc.addRootType(logger, returnType);
+			}
+
+			JParameter[] params = method.getParameters();
+			for (JParameter param : params)
+			{
+				JType paramType = param.getType();
+				typesSentFromDoc.addRootType(logger, paramType);
+			}
+
+			JType[] exs = method.getThrows();
+			if (exs.length > 0)
+			{
+				for (JType ex : exs)
+				{
+					if (!exceptionClass.isAssignableFrom(ex.isClass()))
+					{
+						logger.log(TreeLogger.WARN, "'" + ex.getQualifiedSourceName() + "' is not a checked exception; only checked exceptions may be used", null);
+					}
+
+					typesSentToDoc.addRootType(logger, ex);
+				}
+			}
+		}
+	}	
+	
+	/**
+	 * Add the implicit root types that are needed to make Cross Document
+	 * invoker work.
+	 */
+	protected void addRequiredRoots(TypeOracle typeOracle, SerializableTypeOracleBuilder stob) throws NotFoundException
+	{
+		stob.addRootType(logger, typeOracle.getType(String.class.getName()));
+	}
+	
+	protected void addRoots(TypeOracle typeOracle, SerializableTypeOracleBuilder typesSentFromDocBuilder, 
+			SerializableTypeOracleBuilder typesSentToDocBuilder) throws UnableToCompleteException
+	{
+		try
+		{
+			addRequiredRoots(typeOracle, typesSentFromDocBuilder);
+			addRequiredRoots(typeOracle, typesSentToDocBuilder);
+
+			addBaseTypeRootTypes(typeOracle, typesSentFromDocBuilder, typesSentToDocBuilder);
+		}
+		catch (NotFoundException e)
+		{
+			logger.log(TreeLogger.ERROR, "Unable to find type referenced from base interface", e);
+			throw new UnableToCompleteException();
+		}
 	}	
 
+	/**
+	 * Generate the proxy constructor and delegate to the superclass constructor
+	 * using the default address for the
+	 * {@link com.google.gwt.user.client.rpc.RemoteService RemoteService}.
+	 */
+	protected abstract void generateProxyContructor(SourceWriter srcWriter) throws UnableToCompleteException;	
+	
+	/**
+	 * Generate any fields required by the proxy.
+	 * @throws UnableToCompleteException 
+	 */
+	protected abstract void generateProxyFields(SourceWriter srcWriter) throws UnableToCompleteException;	
+	
+	/**
+	 * @param w
+	 * @param serializableTypeOracle
+	 * @throws UnableToCompleteException 
+	 */
+	protected abstract void generateProxyMethods(SourceWriter w) throws UnableToCompleteException;
+	
+	/**
+	 * @param logger
+	 * @param context
+	 * @param typesSentFromBrowser
+	 * @param typesSentToBrowser
+	 * @throws UnableToCompleteException
+	 */
+	protected abstract void generateTypeHandlers(SerializableTypeOracle typesSentFromBrowser,
+			                            SerializableTypeOracle typesSentToBrowser) throws UnableToCompleteException;
+	
 	/**
 	 * @param method
 	 * @return
@@ -178,48 +208,18 @@ public abstract class AbstractProxyCreator
 		}
 		sb.append(")");
 		return sb.toString();
-	}	
+	}
 	
-	/**
-	 * @return a sourceWriter for the proxy class
-	 */
-	protected abstract SourceWriter getSourceWriter();	
 	
 	/**
 	 * @return the full qualified name of the proxy object.
 	 */
 	protected abstract String getProxyQualifiedName();
 	
-	/**
-	 * @param logger
-	 * @param context
-	 * @param typesSentFromBrowser
-	 * @param typesSentToBrowser
-	 * @throws UnableToCompleteException
-	 */
-	protected abstract void generateTypeHandlers(SerializableTypeOracle typesSentFromBrowser,
-			                            SerializableTypeOracle typesSentToBrowser) throws UnableToCompleteException;
 	
 	/**
-	 * Generate any fields required by the proxy.
-	 * @throws UnableToCompleteException 
+	 * @return a sourceWriter for the proxy class
 	 */
-	protected abstract void generateProxyFields(SourceWriter srcWriter) throws UnableToCompleteException;
-	
-	
-	/**
-	 * Generate the proxy constructor and delegate to the superclass constructor
-	 * using the default address for the
-	 * {@link com.google.gwt.user.client.rpc.RemoteService RemoteService}.
-	 */
-	protected abstract void generateProxyContructor(SourceWriter srcWriter) throws UnableToCompleteException;
-	
-	
-	/**
-	 * @param w
-	 * @param serializableTypeOracle
-	 * @throws UnableToCompleteException 
-	 */
-	protected abstract void generateProxyMethods(SourceWriter w) throws UnableToCompleteException;
+	protected abstract SourceWriter getSourceWriter();
 	
 }
