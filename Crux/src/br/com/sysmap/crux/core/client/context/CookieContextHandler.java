@@ -34,6 +34,38 @@ public class CookieContextHandler implements ContextHandler
 	private static final Date expires = new Date(2240532000000L);
 	
 	/**
+	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#clearContext()
+	 */
+	public void clearContext()
+	{
+		Collection<String> cookieNames = Cookies.getCookieNames();
+		for (String cookie : cookieNames)
+		{
+			if (cookie.startsWith(CONTEXT_PREFIX))
+			{
+				Cookies.removeCookie(cookie,  "/");
+			}
+		}
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#erase(java.lang.String)
+	 */
+	public void erase(String key)
+	{
+		Cookies.removeCookie(CONTEXT_PREFIX + key,  "/");
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#eraseData(java.lang.String)
+	 */
+	@Deprecated
+	public void eraseData(String key)
+	{
+		erase(key);
+	}
+
+	/**
 	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#initializeContext()
 	 */
 	public void initializeContext()
@@ -42,8 +74,24 @@ public class CookieContextHandler implements ContextHandler
 	}
 
 	/**
+	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#read(java.lang.String)
+	 */
+	public String read(String key)
+	{
+		String value = Cookies.getCookie(CONTEXT_PREFIX+key);
+		
+		if(value != null && value.length() > 0)
+		{
+			return decode(value);
+		}
+		
+		return null;
+	}
+
+	/**
 	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#readData(java.lang.String)
 	 */
+	@Deprecated
 	public Object readData(String key)
 	{
 		String value = Cookies.getCookie(CONTEXT_PREFIX+key);
@@ -66,8 +114,18 @@ public class CookieContextHandler implements ContextHandler
 	}
 
 	/**
+	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#writeData(java.lang.String, java.lang.String)
+	 */
+	public void write(String key, String value)
+	{
+		value = encode(value);
+		Cookies.setCookie(CONTEXT_PREFIX+key, value, expires, null, "/", false);
+	}
+
+	/**
 	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#writeData(java.lang.String, java.lang.Object)
 	 */
+	@Deprecated
 	public void writeData(String key, Object value)
 	{
 		try
@@ -79,30 +137,6 @@ public class CookieContextHandler implements ContextHandler
 		catch (ModuleComunicationException e)
 		{
 			Crux.getErrorHandler().handleError(e);
-		}
-	}
-
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#eraseData(java.lang.String)
-	 */
-	public void eraseData(String key)
-	{
-		Cookies.removeCookie(CONTEXT_PREFIX + key,  "/");
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.context.ContextHandler#clearContext()
-	 */
-	public void clearContext()
-	{
-		Collection<String> cookieNames = Cookies.getCookieNames();
-		for (String cookie : cookieNames)
-		{
-			if (cookie.startsWith(CONTEXT_PREFIX))
-			{
-				Cookies.removeCookie(cookie,  "/");
-			}
 		}
 	}
 	

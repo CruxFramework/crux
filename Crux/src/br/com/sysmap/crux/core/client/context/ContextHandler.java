@@ -21,9 +21,15 @@ package br.com.sysmap.crux.core.client.context;
  */
 public interface ContextHandler
 {
-	void writeData(String key, Object value);
-	Object readData(String key);
 	void initializeContext();
-	void eraseData(String key);
 	void clearContext();
+	@Deprecated
+	void writeData(String key, Object value);
+	@Deprecated
+	Object readData(String key);
+	@Deprecated
+	void eraseData(String key);
+	void write(String key, String value);
+	String read(String key);
+	void erase(String key);
 }
