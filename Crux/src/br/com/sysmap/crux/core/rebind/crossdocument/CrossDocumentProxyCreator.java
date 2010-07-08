@@ -47,16 +47,14 @@ import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.generator.NameFactory;
-import com.google.gwt.dev.javac.TypeOracleMediator;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.client.rpc.SerializationStreamWriter;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
-import com.google.gwt.user.server.rpc.impl.TypeNameObfuscator;
 
 /**
- * Thos class generates a proxy for cross document invocations.
+ * This class generates a proxy for cross document invocations.
  * 
  * 
  * @author Thiago da Rosa de Bustamante
@@ -78,8 +76,6 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.SHORT, CrossDocumentReader.SHORT);
 		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.VOID, CrossDocumentReader.VOID);
 	}
-
-	private Map<JType, String> typeStrings;	
 	
 	/**
 	 * Constructor
@@ -101,24 +97,6 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	 */
 	protected void addAdditionalInterfaces(ClassSourceFileComposerFactory composerFactory)
 	{
-	}
-	
-	/**
-	 * @param paramType
-	 * @return
-	 */
-	protected String computeTypeNameExpression(JType paramType)
-	{
-		String typeName;
-		if (typeStrings.containsKey(paramType))
-		{
-			typeName = typeStrings.get(paramType);
-		}
-		else
-		{
-			typeName = TypeOracleMediator.computeBinaryClassName(paramType);
-		}
-		return typeName == null ? null : ('"' + typeName + '"');
 	}
 
 	/**
@@ -203,53 +181,6 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 
 	/**
 	 * @param w
-	 * @param method
-	 * @throws UnableToCompleteException 
-	 */
-	private void generateCallToSelfBlock(SourceWriter w, JMethod method) throws UnableToCompleteException
-    {
-		JClassType controllerClass = getControllerClass(context.getTypeOracle());
-		JType returnType = method.getReturnType().getErasedType();
-		
-		w.println("if (this.target != null && this.target.equals("+ClassUtils.getClassSourceName(Target.class)+".SELF)){");
-		w.indent();
-		String controllerClassName = controllerClass.getQualifiedSourceName();
-		w.println(controllerClassName + " controllerOnSelf = Events.getRegisteredControllers().getCrossDocument(CONTROLLER_NAME,"+controllerClassName+".class);");    
-		w.println("if (controllerOnSelf == null){");
-		w.indent();
-		w.println("throw new CrossDocumentException(Crux.getMessages().eventProcessorClientControllerNotFound(CONTROLLER_NAME));");
-		w.outdent();
-		w.println("}");
-		
-		if (returnType != JPrimitiveType.VOID)
-		{
-			w.print("return ");
-		}
-		w.println("controllerOnSelf."+method.getName()+"(");
-		JParameter[] params = method.getParameters();
-		boolean needsComma = false;
-		for (int i = 0; i < params.length ; ++i)
-		{
-			JParameter param = params[i];
-			if (needsComma)
-			{
-				w.print(", ");
-			}
-			needsComma = true;
-			w.print(param.getName());
-		}
-		w.println(");");
-		if (returnType == JPrimitiveType.VOID)
-		{
-			w.print("return;");
-		}
-
-		w.outdent();		
-		w.println("}");
-    }
-
-	/**
-	 * @param w
 	 * @param serializableTypeOracle
 	 * @throws UnableToCompleteException 
 	 */
@@ -298,7 +229,6 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		w.println();
 	}
 
-	
 	/**
 	 * @param logger
 	 * @param context
@@ -313,10 +243,8 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		TypeSerializerCreator tsc = new TypeSerializerCreator(logger, typesSentFromBrowser, typesSentToBrowser, context, 
 												SerializationUtils.getTypeSerializerQualifiedName(baseProxyType));
 		tsc.realize(logger);
-
-		typeStrings = new HashMap<JType, String>(tsc.getTypeStrings());
-		typeStrings.put(baseProxyType, TypeNameObfuscator.SERVICE_INTERFACE_ID);
 	}
+
 	
 	/**
 	 * @param typeOracle
@@ -360,7 +288,7 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		
 		return controllerAnnot.value();
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -371,7 +299,7 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		        Events.class.getCanonicalName(), Crux.class.getCanonicalName()};
 	    return imports;
     }
-	
+
 	/**
 	 * @return the full qualified name of the proxy object.
 	 */
@@ -391,9 +319,28 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	/**
 	 * @return the proxy supertype
 	 */
-	protected Class<? extends CrossDocumentProxy> getProxySupertype()
+	protected Class<?> getProxySupertype()
 	{
 		return CrossDocumentProxy.class;
+	}
+	
+	/**
+	 * @param returnType
+	 * @return
+	 */
+	protected CrossDocumentReader getReaderFor(JType returnType)
+	{
+		if (returnType.isPrimitive() != null)
+		{
+			return JPRIMITIVETYPE_TO_READER.get(returnType.isPrimitive());
+		}
+
+		if (returnType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
+		{
+			return CrossDocumentReader.STRING;
+		}
+
+		return CrossDocumentReader.OBJECT;
 	}
 
 	/**
@@ -419,8 +366,8 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 			composerFactory.addImport(imp);
 		}
 
-		composerFactory.setSuperclass(getProxySupertype().getSimpleName());
-		composerFactory.addImplementedInterface(baseProxyType.getSimpleSourceName());
+		composerFactory.setSuperclass(getProxySupertype().getCanonicalName());
+		composerFactory.addImplementedInterface(baseProxyType.getQualifiedSourceName());
 
 		addAdditionalInterfaces(composerFactory);
 
@@ -434,6 +381,53 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	{
 		return ClientSerializationStreamWriter.class;
 	}
+
+	/**
+	 * @param w
+	 * @param method
+	 * @throws UnableToCompleteException 
+	 */
+	private void generateCallToSelfBlock(SourceWriter w, JMethod method) throws UnableToCompleteException
+    {
+		JClassType controllerClass = getControllerClass(context.getTypeOracle());
+		JType returnType = method.getReturnType().getErasedType();
+		
+		w.println("if (this.target != null && this.target.equals("+ClassUtils.getClassSourceName(Target.class)+".SELF)){");
+		w.indent();
+		String controllerClassName = controllerClass.getQualifiedSourceName();
+		w.println(controllerClassName + " controllerOnSelf = Events.getRegisteredControllers().getCrossDocument(CONTROLLER_NAME,"+controllerClassName+".class);");    
+		w.println("if (controllerOnSelf == null){");
+		w.indent();
+		w.println("throw new CrossDocumentException(Crux.getMessages().eventProcessorClientControllerNotFound(CONTROLLER_NAME));");
+		w.outdent();
+		w.println("}");
+		
+		if (returnType != JPrimitiveType.VOID)
+		{
+			w.print("return ");
+		}
+		w.println("controllerOnSelf."+method.getName()+"(");
+		JParameter[] params = method.getParameters();
+		boolean needsComma = false;
+		for (int i = 0; i < params.length ; ++i)
+		{
+			JParameter param = params[i];
+			if (needsComma)
+			{
+				w.print(", ");
+			}
+			needsComma = true;
+			w.print(param.getName());
+		}
+		w.println(");");
+		if (returnType == JPrimitiveType.VOID)
+		{
+			w.print("return;");
+		}
+
+		w.outdent();		
+		w.println("}");
+    }
 
 	/**
 	 * @param w
@@ -539,23 +533,4 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
             }
 		}
     }
-
-	/**
-	 * @param returnType
-	 * @return
-	 */
-	private CrossDocumentReader getReaderFor(JType returnType)
-	{
-		if (returnType.isPrimitive() != null)
-		{
-			return JPRIMITIVETYPE_TO_READER.get(returnType.isPrimitive());
-		}
-
-		if (returnType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
-		{
-			return CrossDocumentReader.STRING;
-		}
-
-		return CrossDocumentReader.OBJECT;
-	}
 }
