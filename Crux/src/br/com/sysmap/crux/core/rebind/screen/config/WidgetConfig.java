@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.core.rebind.screen.config;
  
+import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,6 +25,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.google.gwt.user.client.ui.Widget;
 
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
@@ -38,6 +41,7 @@ import br.com.sysmap.crux.core.server.scan.ClassScanner;
 public class WidgetConfig 
 {
 	private static Map<String, Class<? extends WidgetFactory<?>>> config = null;
+	private static Map<Class<? extends Widget>, String> widgets = null;
 	private static Map<String, Set<String>> registeredLibraries = null;
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Log logger = LogFactory.getLog(WidgetConfig.class);
@@ -72,6 +76,7 @@ public class WidgetConfig
 	protected static void initializeWidgetConfig()
 	{
 		config = new HashMap<String, Class<? extends WidgetFactory<?>>>(100);
+		widgets = new HashMap<Class<? extends Widget>, String>();
 		registeredLibraries = new HashMap<String, Set<String>>();
 		Set<String> factoriesNames =  ClassScanner.searchClassesByAnnotation(br.com.sysmap.crux.core.client.declarative.DeclarativeFactory.class);
 		if (factoriesNames != null)
@@ -89,7 +94,10 @@ public class WidgetConfig
 					}
 					registeredLibraries.get(annot.library()).add(annot.id());
 					String widgetType = annot.library() + "_" + annot.id();
-					config.put(widgetType, factoryClass); 
+					
+					config.put(widgetType, factoryClass);
+					Class<? extends Widget> widgetClass = (Class<? extends Widget>) ((ParameterizedType)factoryClass.getGenericSuperclass()).getActualTypeArguments()[0];
+					widgets.put(widgetClass, widgetType);
 				} 
 				catch (ClassNotFoundException e) 
 				{
@@ -160,4 +168,13 @@ public class WidgetConfig
 		
 		return registeredLibraries.get(library);
 	}
+
+	public static String getWidgetType(Class<? extends Widget> widgetClass)
+    {
+		if (widgets == null)
+		{
+			initializeWidgetConfig();
+		}
+		return widgets.get(widgetClass);
+    }
 }

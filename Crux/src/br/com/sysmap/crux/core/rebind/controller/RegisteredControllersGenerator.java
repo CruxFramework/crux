@@ -17,13 +17,16 @@ package br.com.sysmap.crux.core.rebind.controller;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Global;
+import br.com.sysmap.crux.core.client.controller.WidgetController;
 import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocument;
 import br.com.sysmap.crux.core.client.event.ControllerInvoker;
 import br.com.sysmap.crux.core.client.event.CrossDocumentInvoker;
@@ -79,11 +82,19 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 
 		Map<String, String> controllerClassNames = new HashMap<String, String>();
 		Map<String, String> crossDocsClassNames = new HashMap<String, String>();
+		Set<String> usedWidgets = new HashSet<String>();
 		for (Screen screen : screens)
 		{
 			generateControllersForScreen(logger, sourceWriter, screen, controllerClassNames, crossDocsClassNames, packageName+"."+implClassName, context);
+			Iterator<br.com.sysmap.crux.core.rebind.screen.Widget> screenWidgets = screen.iterateWidgets();
+			while (screenWidgets.hasNext())
+			{
+				String widgetType = screenWidgets.next().getType();
+				usedWidgets.add(widgetType);
+			}
 		}
-
+		generateControllersForWidgets(logger, sourceWriter, usedWidgets, controllerClassNames, crossDocsClassNames, context);
+		
 		generateConstructor(sourceWriter, implClassName, controllerClassNames);
 		generateValidateControllerMethod(sourceWriter);
 		generateControllerInvokeMethod(sourceWriter, controllerClassNames);
@@ -136,13 +147,14 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 			if (!isControllerLazy(controllerClass))
 			{
 				Global globalAnnot = controllerClass.getAnnotation(Global.class);
-				if (globalAnnot == null)
+				WidgetController widgetAnnot = controllerClass.getAnnotation(WidgetController.class);
+				if (globalAnnot == null && widgetAnnot == null) //TODO melhorar isso para so criar se a screen corrente contiver a widget da anotação
 				{
 					sourceWriter.println("if (__validateController(\""+controller+"\")){");
 					sourceWriter.indent();
 				}
 				sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
-				if (globalAnnot == null)
+				if (globalAnnot == null && widgetAnnot == null)
 				{
 					sourceWriter.outdent();
 					sourceWriter.println("}");
@@ -390,6 +402,33 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 				}
 			}
 		}		
+	}
+
+	/**
+	 * @param logger
+	 * @param sourceWriter
+	 * @param usedWidgets
+	 * @param controllerClassNames
+	 * @param crossDocsClassNames
+	 * @param context
+	 */
+	private void generateControllersForWidgets(TreeLogger logger, SourceWriter sourceWriter, Set<String> usedWidgets, 
+			Map<String, String> controllerClassNames, Map<String, String> crossDocsClassNames, GeneratorContext context)
+	{
+		
+		Iterator<String> widgets = usedWidgets.iterator();
+		while (widgets.hasNext())
+		{
+			Iterator<String> controllers = ClientControllers.iterateWidgetControllers(widgets.next());
+			if (controllers != null)
+			{
+				while (controllers.hasNext())
+				{
+					String controller = controllers.next();
+					generateControllerBlock(logger, sourceWriter, controller, controllerClassNames, crossDocsClassNames, context);
+				}
+			}		
+		}
 	}
 
 	/**

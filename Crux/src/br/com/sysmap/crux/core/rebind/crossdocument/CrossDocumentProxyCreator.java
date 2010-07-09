@@ -168,7 +168,14 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 
 		if (returnType != JPrimitiveType.VOID)
 		{
-			w.print("return ("+returnType.getQualifiedSourceName()+") ");
+			if (returnType.isPrimitive() != null)
+			{
+				w.print("return ("+returnType.isPrimitive().getQualifiedBoxedSourceName()+") ");
+			}
+			else
+			{
+				w.print("return ("+returnType.getQualifiedSourceName()+") ");
+			}
 		}
 		w.println("doInvoke("+payloadName+", "+"CrossDocumentReader." + getReaderFor(returnType).name()+");");
 		

@@ -17,6 +17,7 @@ package br.com.sysmap.crux.core.rebind.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +28,15 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.google.gwt.user.client.ui.Widget;
+
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Global;
+import br.com.sysmap.crux.core.client.controller.WidgetController;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
+import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 
@@ -46,7 +52,11 @@ public class ClientControllers
 	private static final Lock lock = new ReentrantLock();
 	private static Map<String, Class<?>> controllers;
 	private static List<String> globalControllers;
+	private static Map<String, Set<String>> widgetControllers;
 	
+	/**
+	 * 
+	 */
 	public static void initialize()
 	{
 		if (controllers != null)
@@ -69,10 +79,15 @@ public class ClientControllers
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected static void initializeControllers()
 	{
 		controllers = new HashMap<String, Class<?>>();
 		globalControllers = new ArrayList<String>();
+		widgetControllers = new HashMap<String, Set<String>>();
+		
 		Set<String> controllerNames =  ClassScanner.searchClassesByAnnotation(Controller.class);
 		if (controllerNames != null)
 		{
@@ -92,6 +107,7 @@ public class ClientControllers
 					{
 						globalControllers.add(annot.value());
 					}
+					initWidgetControllers(controllerClass, annot);
 					Fragments.registerFragment(annot.fragment(), controllerClass);
 				} 
 				catch (ClassNotFoundException e) 
@@ -101,7 +117,39 @@ public class ClientControllers
 			}
 		}
 	}
+
+	/**
+	 * @param controllerClass
+	 * @param annot
+	 */
+	private static void initWidgetControllers(Class<?> controllerClass, Controller annot)
+    {
+	    WidgetController widgetControllerAnnot = controllerClass.getAnnotation(WidgetController.class);
+	    if (widgetControllerAnnot != null)
+	    {
+	    	
+	    	Class<? extends Widget>[] widgets = widgetControllerAnnot.value();
+	    	for (Class<? extends Widget> widgetClass : widgets)
+	        {
+	    		String widgetType = WidgetConfig.getWidgetType(widgetClass);
+	    		if (!StringUtils.isEmpty(widgetType))
+	    		{
+	    			Set<String> controllers = widgetControllers.get(widgetType);
+	    			if (controllers == null)
+	    			{
+	    				controllers = new HashSet<String>();
+	    				widgetControllers.put(widgetType, controllers);
+	    			}
+	    			controllers.add(annot.value());
+	    		}
+	        }
+	    }
+    }
 	
+	/**
+	 * @param name
+	 * @return
+	 */
 	public static Class<?> getController(String name)
 	{
 		if (controllers == null)
@@ -111,6 +159,9 @@ public class ClientControllers
 		return controllers.get(name);
 	}
 	
+	/**
+	 * @return
+	 */
 	public static Iterator<String> iterateControllers()
 	{
 		if (controllers == null)
@@ -120,6 +171,9 @@ public class ClientControllers
 		return controllers.keySet().iterator();
 	}
 	
+	/**
+	 * @return
+	 */
 	public static Iterator<String> iterateGlobalControllers()
 	{
 		if (globalControllers == null)
@@ -129,4 +183,21 @@ public class ClientControllers
 		return globalControllers.iterator();
 	}
 	
+	/**
+	 * @param widgetClass
+	 * @return
+	 */
+	public static Iterator<String> iterateWidgetControllers(String widgetType)
+	{
+		if (widgetControllers == null)
+		{
+			initialize();
+		}
+		Set<String> controllers = widgetControllers.get(widgetType);
+		if (controllers == null)
+		{
+			return null;
+		}
+		return controllers.iterator();
+	}
 }

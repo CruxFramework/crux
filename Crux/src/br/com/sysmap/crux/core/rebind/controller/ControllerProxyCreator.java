@@ -310,7 +310,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 
     	if (returnType != JPrimitiveType.VOID)
     	{
-        	sourceWriter.print("Object retObj = ");
+        	sourceWriter.print("streamWriter."+Shared.getStreamWriteMethodNameFor(returnType)+"(");
     		
     	}
     	sourceWriter.println(method.getName()+"(");
@@ -324,12 +324,13 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			}
 			sourceWriter.println("("+param.getType().getQualifiedSourceName()+")streamReader."+Shared.getStreamReadMethodNameFor(param.getType())+"()");
 		}
-    	sourceWriter.println(");");
-    	sourceWriter.println("isExecutionOK = true;");
+    	sourceWriter.print(")");
 		if (returnType != JPrimitiveType.VOID)
 		{
-			sourceWriter.println("streamWriter."+Shared.getStreamWriteMethodNameFor(returnType)+"(("+returnType.getQualifiedSourceName()+")retObj);");
+			sourceWriter.print(")");
 		}
+		sourceWriter.println(";");
+		sourceWriter.println("isExecutionOK = true;");
 
     	sourceWriter.outdent();
     	sourceWriter.println("}catch(Throwable e){");

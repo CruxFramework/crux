@@ -84,11 +84,11 @@ public abstract class ScreenAccessor
 	}-*/;	
 	
 	private static native String callOpenerControllerAccessor(String serializedData)/*-{
-		return $wnd.opener._cruxCrossDocumentAccessor(call, serializedData);
+		return $wnd.opener._cruxCrossDocumentAccessor(serializedData);
 	}-*/;
 	
 	private static native String callParentControllerAccessor(String serializedData)/*-{
-		return $wnd.parent._cruxCrossDocumentAccessor(call, serializedData);
+		return $wnd.parent._cruxCrossDocumentAccessor(serializedData);
 	}-*/;
 	
 	private static native String callFrameControllerAccessor(String frame, String serializedData)/*-{
