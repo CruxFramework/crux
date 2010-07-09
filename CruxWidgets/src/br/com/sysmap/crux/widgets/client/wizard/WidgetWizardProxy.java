@@ -92,11 +92,11 @@ class WidgetWizardProxy implements WizardProxy
     }
 
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#readContext(java.lang.Class)
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#readContext()
 	 */
-	public <T> T readContext(Class<T> dataType)
+	public Object readContext()
     {
-	    return wizard.readContext(dataType);
+	    return wizard.readData();
     }
 
 	/**
@@ -104,7 +104,7 @@ class WidgetWizardProxy implements WizardProxy
 	 */
 	public void updateContext(Object data)
     {
-		wizard.updateContext(data);
+		wizard.updateData(data);
     }
 
 	/**

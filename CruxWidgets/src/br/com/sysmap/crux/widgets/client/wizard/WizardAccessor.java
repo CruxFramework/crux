@@ -121,8 +121,8 @@ public class WizardAccessor
 	 * @param dataType
 	 * @return
 	 */
-	public <T> T readContext(Class<T> dataType)
+	public Object readContext()
 	{
-		return proxy.readContext(dataType);
+		return proxy.readContext();
 	}
 }

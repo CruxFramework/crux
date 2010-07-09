@@ -19,23 +19,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
-import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
+import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
 import br.com.sysmap.crux.widgets.client.dynatabs.AbstractTab;
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.LazyPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * @author Thiago da Rosa de Bustamante -
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class PageStep extends LazyPanel
 {
 	private final String id;
 	private final String url;
+	private CruxInternalWizardPageControllerCrossDoc wizardController = GWT.create(CruxInternalWizardPageControllerCrossDoc.class);
 
 	/**
 	 * @param id
@@ -70,18 +70,11 @@ public class PageStep extends LazyPanel
 	 */
 	EnterEvent fireEnterEvent(String wizardId, String previousStep)
 	{
-		try
-        {
-	        EnterEvent result = new EnterEvent(null, previousStep);
-			CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.onEnter", new Object[]{wizardId, previousStep});
-			return result;
-        }
-        catch (ModuleComunicationException e)
-        {
-        	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardPageStepErrorInvokingEventOnInnerPage(), e); 
-        }
-		
-		return null;
+		EnterEvent result = new EnterEvent(null, previousStep);
+
+		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
+		wizardController.onEnter(wizardId, previousStep);
+		return result;
 	}
 	
 	/**
@@ -89,22 +82,14 @@ public class PageStep extends LazyPanel
 	 */
 	LeaveEvent fireLeaveEvent(String wizardId, String nextStep)
 	{
-		try
-        {
-	        LeaveEvent result = new LeaveEvent(null, nextStep);
-	        
-			if (!CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.onLeave", new Object[]{wizardId, nextStep}, Boolean.class))
-			{
-		        result.cancel();
-			}
-			return result;
-        }
-        catch (ModuleComunicationException e)
-        {
-        	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardPageStepErrorInvokingEventOnInnerPage(), e); 
-        }
-		
-		return null;
+		LeaveEvent result = new LeaveEvent(null, nextStep);
+
+		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
+		if (!wizardController.onLeave(wizardId, nextStep))
+		{
+			result.cancel();
+		}
+		return result;
 	}
 	
 	/**
@@ -112,31 +97,24 @@ public class PageStep extends LazyPanel
 	 */
 	Iterator<WizardCommand> iterateWizardCommands(final String wizardId)
 	{
-		try
-        {
-			List<WizardCommand> result = new ArrayList<WizardCommand>();
-			WizardCommandData[] commands =  CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.listCommands", null, WizardCommandData[].class);
-			if (commands != null)
+		List<WizardCommand> result = new ArrayList<WizardCommand>();
+		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
+
+		WizardCommandData[] commands =  wizardController.listCommands();
+		if (commands != null)
+		{
+			for (final WizardCommandData data : commands)
 			{
-				for (final WizardCommandData data : commands)
-                {
-	                result.add(new WizardCommand(data.getId(), data.getOrder(), data.getLabel(), new WizardCommandHandler()
+				result.add(new WizardCommand(data.getId(), data.getOrder(), data.getLabel(), new WizardCommandHandler()
+				{
+					public void onCommand(WizardCommandEvent event)
 					{
-						public void onCommand(WizardCommandEvent event)
-						{
-							fireCommandEvent(wizardId, data.getId());
-						}
-					}, new PageWizardProxy(wizardId)));
-                }
+						fireCommandEvent(wizardId, data.getId());
+					}
+				}, new PageWizardProxy(wizardId)));
 			}
-			return result.iterator();
-        }
-        catch (ModuleComunicationException e)
-        {
-        	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardPageStepErrorInvokingEventOnInnerPage(), e);
-        }
-		
-		return null;
+		}
+		return result.iterator();
 	}
 	
 	/**
@@ -146,14 +124,8 @@ public class PageStep extends LazyPanel
 	 */
 	private void fireCommandEvent(String wizardId, String commandId)
 	{
-		try
-        {
-			CruxInternalWizardPageController.invokeOnTab(getId(), "__wizard.onCommand", new Object[]{wizardId, commandId});
-        }
-        catch (ModuleComunicationException e)
-        {
-        	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardPageStepErrorInvokingEventOnInnerPage(), e);
-        }
+		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
+		wizardController.onCommand(wizardId, commandId);
 	}
 	
 	static class WizardPageTab extends AbstractTab

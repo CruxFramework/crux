@@ -15,21 +15,11 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
-
 /**
- * @author Thiago da Rosa de Bustamante -
+ * @author Thiago da Rosa de Bustamante
  *
  */
-interface WizardProxy
+public interface RegisteredWizardData
 {
-	boolean first();
-	boolean next();
-	boolean back();
-	void cancel();
-	boolean finish();
-	boolean selectStep(String id, boolean ignoreLeaveEvent);
-	int getStepOrder(String id);
-	WizardControlBarAccessor getControlBar();
-	void updateContext(Object data);
-    Object readContext();
+	//TODO - Thiago - wizardData
 }

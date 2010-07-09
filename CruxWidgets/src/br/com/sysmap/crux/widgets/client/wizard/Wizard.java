@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.context.ContextManager;
-import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.client.utils.StyleUtils;
@@ -68,11 +66,12 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	private Map<String, Step> steps = new HashMap<String, Step>();
 
 	private DeckPanel stepsPanel; 
+	private final String wizardContextObject; 
 	
 	/**
 	 * 
 	 */
-	public Wizard(String id)
+	public Wizard(String id, String wizardContextObject)
     {
 		this.dockPanel = new DockPanel(){
 		};
@@ -83,10 +82,9 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		this.stepsPanel.setWidth("100%");
 		this.dockPanel.add(stepsPanel, DockPanel.CENTER);		
 		this.dockPanel.getElement().setId(id);
-
+		this.wizardContextObject = wizardContextObject;
+		
 		initWidget(dockPanel);
-		Events.getRegisteredControllers().registerController("__wizard", new CruxInternalWizardPageController());
-		ContextManager.getContextHandler().eraseData("__Wizard."+getElement().getId());
     }
 	
 	/**
@@ -376,12 +374,12 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param dataType
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-    public <T> T readContext(Class<T> dataType)
+    public Object readData()
 	{
-        return (T)ContextManager.getContextHandler().readData("__Wizard."+getElement().getId());
+    	//TODO Thiago - wizardValue
+        return null;
 	}
-	
+
 	/**
 	 * @param id
 	 * @return
@@ -575,9 +573,9 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @param data
 	 */
-	public void updateContext(Object data)
+	public void updateData(Object data)
 	{
-        ContextManager.getContextHandler().writeData("__Wizard."+getElement().getId(), data);
+		//TODO Thiago - wizardValue
 	}
 
 	/**

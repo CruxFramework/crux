@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
@@ -49,7 +48,6 @@ public class WizardPage extends AbstractWidgetStep
 			throw new WizardException(WidgetMsgFactory.getMessages().wizardPageDuplicatedWidgetOnPage());
 		}
 		Screen.add(PAGE_UNIQUE_ID, this);
-		Events.getRegisteredControllers().registerController("__wizard", new CruxInternalWizardPageController());
 		Element span = DOM.createSpan();
 		RootPanel.getBodyElement().appendChild(span);
 		initWidget(Label.wrap(span));

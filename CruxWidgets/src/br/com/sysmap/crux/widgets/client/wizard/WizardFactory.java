@@ -56,7 +56,8 @@ public class WizardFactory extends WidgetFactory<Wizard>
 	@Override
     public Wizard instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
     {
-	    return new Wizard(widgetId);
+	    String wizardContextObject = element.getAttribute("_wizardContextObject");
+		return new Wizard(widgetId, wizardContextObject);
     }
 
 	@Override
@@ -69,6 +70,15 @@ public class WizardFactory extends WidgetFactory<Wizard>
 	    super.processEvents(context);
 	}
 
+	@Override
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="wizardContextObject", required=true)
+	})
+	public void processAttributes(br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext<Wizard> context) throws InterfaceConfigException
+	{
+	    super.processAttributes(context);
+	}
+	
 	@Override
 	public void postProcess(final WidgetFactoryContext<Wizard> context) throws InterfaceConfigException
 	{

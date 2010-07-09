@@ -15,20 +15,17 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
-import br.com.sysmap.crux.core.client.utils.StringUtils;
-
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.XMLParser;
+import java.io.Serializable;
 
 /**
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class WizardCommandData implements CruxSerializable
+public class WizardCommandData implements Serializable
 {
-	private String id;
+    private static final long serialVersionUID = 5916369163502763564L;
+
+    private String id;
 	private String label;
 	private int order;
 	private String styleName;
@@ -94,65 +91,5 @@ public class WizardCommandData implements CruxSerializable
 	public void setHeight(String height)
     {
     	this.height = height;
-    }
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#deserialize(java.lang.String)
-	 */
-	public Object deserialize(String serializedData)
-    {
-		if (serializedData != null && serializedData.length() > 0)
-		{
-			Document root = XMLParser.parse(serializedData);
-			Element data = root.getDocumentElement();
-			WizardCommandData wizardCommandData = new WizardCommandData(data.getAttribute("id"), 
-								 data.getAttribute("label"), 
-								 Integer.parseInt(data.getAttribute("order")));
-			String styleName = data.getAttribute("styleName");
-			if(!StringUtils.isEmpty(styleName))
-			{
-				wizardCommandData.setStyleName(styleName);
-			}
-			String width = data.getAttribute("width");
-			if(!StringUtils.isEmpty(width))
-			{
-				wizardCommandData.setWidth(width);
-			}
-			String height = data.getAttribute("height");
-			if(!StringUtils.isEmpty(height))
-			{
-				wizardCommandData.setHeight(height);
-			}
-			return wizardCommandData;
-		}
-		return null;
-    }
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#newArray(int)
-	 */
-	public Object[] newArray(int size)
-    {
-	    return new WizardCommandData[size];
-    }
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#serialize()
-	 */
-	public String serialize()
-    {
-		Document document = XMLParser.createDocument();
-
-		Element data = document.createElement("data");
-		document.appendChild(data);
-		
-		data.setAttribute("id", id);
-		data.setAttribute("label", label);
-		data.setAttribute("order", Integer.toString(order));
-		data.setAttribute("styleName", styleName);
-		data.setAttribute("width", width);
-		data.setAttribute("height", height);
-		
-		return document.toString();
     }
 }

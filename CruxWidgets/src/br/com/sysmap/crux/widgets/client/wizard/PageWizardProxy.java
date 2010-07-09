@@ -15,11 +15,10 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
-import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.context.ContextManager;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
-import br.com.sysmap.crux.core.client.screen.Screen;
-import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
+import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
+import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
+
+import com.google.gwt.core.client.GWT;
 
 /**
  * @author Thiago da Rosa de Bustamante -
@@ -27,21 +26,38 @@ import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
  */
 class PageWizardProxy implements WizardProxy
 {
-	private String wizardId;
+	private static CruxInternalWizardPageControllerCrossDoc wizardController = null;
+
+	private String wizardId; 
+
 	/**
 	 * 
 	 */
 	PageWizardProxy(String wizardId)
     {
+		if (wizardController == null)
+		{
+			wizardController = GWT.create(CruxInternalWizardPageControllerCrossDoc.class);
+			((TargetDocument)wizardController).setTarget(Target.PARENT);
+		}
+		
 		this.wizardId = wizardId;
     }
 	
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#back()
+	 */
+	public boolean back()
+    {
+	    return wizardController.back(wizardId);
+    }
+
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#cancel()
 	 */
 	public void cancel()
     {
-		invokeSimpleCommand("cancel", wizardId, Object.class);
+		wizardController.cancel(wizardId);
     }
 
 	/**
@@ -49,7 +65,7 @@ class PageWizardProxy implements WizardProxy
 	 */
 	public boolean finish()
     {
-	    return invokeSimpleCommand("finish");
+		return wizardController.finish(wizardId);
     }
 
 	/**
@@ -57,57 +73,8 @@ class PageWizardProxy implements WizardProxy
 	 */
 	public boolean first()
     {
-	    return invokeSimpleCommand("first");
+	    return wizardController.first(wizardId);
     }
-
-	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#getStepOrder(java.lang.String)
-	 */
-	public int getStepOrder(String id)
-    {
-	    return invokeSimpleCommand("getStepOrder", new Object[]{wizardId, id}, Integer.class);
-    }
-
-	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#next()
-	 */
-	public boolean next()
-    {
-	    return invokeSimpleCommand("next");
-    }
-
-	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#back()
-	 */
-	public boolean back()
-    {
-	    return invokeSimpleCommand("back");
-    }
-
-	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#selectStep(java.lang.String, boolean)
-	 */
-	public boolean selectStep(String id, boolean ignoreLeaveEvent)
-    {
-	    return invokeSimpleCommand("selectStep", new Object[]{wizardId, id, ignoreLeaveEvent}, Boolean.class);
-    }
-	
-	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#updateContext(java.lang.Object)
-	 */
-	public void updateContext(Object data)
-	{
-        ContextManager.getContextHandler().writeData("__Wizard."+wizardId, data);
-	}
-	
-	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#readContext(java.lang.Class)
-	 */
-	@SuppressWarnings("unchecked")
-    public <T> T readContext(Class<T> dataType)
-	{
-        return (T)ContextManager.getContextHandler().readData("__Wizard."+wizardId);
-	}
 
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#getControlBar()
@@ -116,39 +83,129 @@ class PageWizardProxy implements WizardProxy
     {
 	    return new WizardControlBarAccessor(new WizardControlBarPageProxy(wizardId));
     }
-	
+
 	/**
-	 * @param cmd
-	 * @return
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#getStepOrder(java.lang.String)
 	 */
-	private boolean invokeSimpleCommand(String cmd)
+	public int getStepOrder(String id)
     {
-		 Boolean ret = invokeSimpleCommand(cmd, wizardId, Boolean.class);
-		 if (ret != null)
-		 {
-			 return ret;
-		 }
-		 return false;
+	    return wizardController.getStepOrder(wizardId, id);
+    }
+
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#next()
+	 */
+	public boolean next()
+    {
+	    return wizardController.next(wizardId);
     }
 	
 	/**
-	 * @param cmd
-	 * @param param
-	 * @return
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#readContext(java.lang.Class)
 	 */
-	private static <T> T invokeSimpleCommand(String cmd, Object param, Class<T> returnType)
-    {
-	    try
-        {
-	        return Screen.invokeControllerOnParent("__wizard."+cmd, param, returnType);
-        }
-        catch (ModuleComunicationException e)
-        {
-        	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardPageStepErrorInvokingEventOuterPage(), e); 
-        }
+    public Object readContext()
+	{
+    	//TODO Thiago - wizardValue
         return null;
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#selectStep(java.lang.String, boolean)
+	 */
+	public boolean selectStep(String id, boolean ignoreLeaveEvent)
+    {
+	    return wizardController.selectStep(wizardId, id, ignoreLeaveEvent);
     }
 	
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#updateContext(java.lang.Object)
+	 */
+	public void updateContext(Object data)
+	{
+		//TODO Thiago - wizardValue
+	}
+
+	/**
+	 * @author Thiago da Rosa de Bustamante -
+	 *
+	 */
+	static class WizardCommandPageProxy implements WizardCommandProxy
+	{
+		private final String commandId;
+		private final String wizardId;
+
+		public WizardCommandPageProxy(String wizardId, String commandId)
+        {
+			this.wizardId = wizardId;
+			this.commandId = commandId;
+        }
+
+		public String getId()
+        {
+	        return wizardController.getCommandId(wizardId, commandId);
+        }
+
+		public String getLabel()
+        {
+	        return wizardController.getCommandLabel(wizardId, commandId);
+        }
+
+		public int getOffsetHeight()
+        {
+	        return wizardController.getOffsetHeight(wizardId, commandId);
+        }
+
+		public int getOffsetWidth()
+        {
+	        return wizardController.getOffsetWidth(wizardId, commandId);
+        }
+
+		public int getOrder()
+        {
+	        return wizardController.getCommandOrder(wizardId, commandId);
+        }
+
+		public String getStyleName()
+        {
+	        return wizardController.getCommandStyleName(wizardId, commandId);
+        }
+
+		public boolean isEnabled()
+        {
+	        return wizardController.isCommandEnabled(wizardId, commandId);
+        }
+
+		public void setEnabled(boolean enabled)
+        {
+			wizardController.setCommandEnabled(wizardId, commandId, enabled);
+        }
+
+		public void setHeight(String height)
+        {
+			wizardController.setCommandHeight(wizardId, commandId, height);
+        }
+
+		public void setLabel(String label)
+        {
+			wizardController.setCommandLabel(wizardId, commandId, label);
+        }
+
+		public void setOrder(int order)
+        {
+			wizardController.setCommandOrder(wizardId, commandId, order);
+        }
+
+		public void setStyleName(String styleName)
+        {
+			wizardController.setCommandStyleName(wizardId, commandId, styleName);
+        }
+
+		public void setWidth(String width)
+        {
+			wizardController.setCommandWidth(wizardId, commandId, width);
+        }
+	}
+
 	/**
 	 * @author Thiago da Rosa de Bustamante -
 	 *
@@ -162,200 +219,114 @@ class PageWizardProxy implements WizardProxy
 			this.wizardId = wizardId;
         }
 
+		public void back()
+        {
+			wizardController.back(wizardId);
+        }
+
 		public void cancel()
         {
-		    invokeSimpleCommand("cancel");
+			wizardController.cancel(wizardId);
         }
 
 		public void finish()
         {
-		    invokeSimpleCommand("finish");
-        }
-
-		public String getButtonsHeight()
-        {
-	        return PageWizardProxy.invokeSimpleCommand("getButtonsHeight", wizardId, String.class);
-        }
-
-		public String getButtonsStyle()
-        {
-	        return PageWizardProxy.invokeSimpleCommand("getButtonsStyle", wizardId, String.class);
-        }
-
-		public String getButtonsWidth()
-        {
-	        return PageWizardProxy.invokeSimpleCommand("getButtonsWidth", wizardId, String.class);
-        }
-
-		public String getCancelLabel()
-        {
-	        return PageWizardProxy.invokeSimpleCommand("getCancelLabel", wizardId, String.class);
-        }
-
-		public String getFinishLabel()
-        {
-	        return PageWizardProxy.invokeSimpleCommand("getFinishLabel", wizardId, String.class);
-        }
-
-		public String getNextLabel()
-        {
-	        return PageWizardProxy.invokeSimpleCommand("getNextLabel", wizardId, String.class);
+			wizardController.finish(wizardId);
         }
 
 		public String getBackLabel()
         {
-	        return PageWizardProxy.invokeSimpleCommand("getBackLabel", wizardId, String.class);
+	        return wizardController.getBackLabel(wizardId);
         }
 
-		public int getSpacing()
+		public String getButtonsHeight()
         {
-	        return PageWizardProxy.invokeSimpleCommand("getSpacing", wizardId, Integer.class);
+	        return wizardController.getButtonsHeight(wizardId);
         }
 
-		public boolean isVertical()
+		public String getButtonsStyle()
         {
-	        return PageWizardProxy.invokeSimpleCommand("isVertical", wizardId, Boolean.class);
+	        return wizardController.getButtonsStyle(wizardId);
         }
 
-		public void next()
+		public String getButtonsWidth()
         {
-		    invokeSimpleCommand("next");
+	        return wizardController.getButtonsWidth(wizardId);
         }
 
-		public void back()
+		public String getCancelLabel()
         {
-		    invokeSimpleCommand("back");
+	        return wizardController.getCancelLabel(wizardId);
         }
-
-		public void setButtonsHeight(String buttonHeight)
-        {
-	        PageWizardProxy.invokeSimpleCommand("setButtonsHeight", new Object[]{wizardId,buttonHeight}, Object.class);
-        }
-
-		public void setButtonsStyle(String buttonStyle)
-        {
-	        PageWizardProxy.invokeSimpleCommand("setButtonsStyle", new Object[]{wizardId,buttonStyle}, Object.class);
-        }
-
-		public void setButtonsWidth(String buttonWidth)
-        {
-	        PageWizardProxy.invokeSimpleCommand("setButtonsWidth", new Object[]{wizardId,buttonWidth}, Object.class);
-        }
-
-		public void setCancelLabel(String cancelLabel)
-        {
-	        PageWizardProxy.invokeSimpleCommand("setCancelLabel", new Object[]{wizardId,cancelLabel}, Object.class);
-        }
-
-		public void setFinishLabel(String finishLabel)
-        {
-	        PageWizardProxy.invokeSimpleCommand("setFinishLabel", new Object[]{wizardId,finishLabel}, Object.class);
-        }
-
-		public void setNextLabel(String nextLabel)
-        {
-	        PageWizardProxy.invokeSimpleCommand("setNextLabel", new Object[]{wizardId,nextLabel}, Object.class);
-        }
-
-		public void setBackLabel(String backLabel)
-        {
-	        PageWizardProxy.invokeSimpleCommand("setBackLabel", new Object[]{wizardId,backLabel}, Object.class);
-        }
-
-		public void setSpacing(int spacing)
-        {
-	        PageWizardProxy.invokeSimpleCommand("setSpacing", new Object[]{wizardId,spacing}, Object.class);
-        }
-		
-		private void invokeSimpleCommand(String cmd)
-	    {
-			PageWizardProxy.invokeSimpleCommand(cmd, wizardId, Object.class);
-	    }
 
 		public WizardCommandAccessor getCommand(String commandId)
         {
 	        return new WizardCommandAccessor(new WizardCommandPageProxy(wizardId, commandId));
         }
-	}
 
-	/**
-	 * @author Thiago da Rosa de Bustamante -
-	 *
-	 */
-	static class WizardCommandPageProxy implements WizardCommandProxy
-	{
-		private final String wizardId;
-		private final String commandId;
-
-		public WizardCommandPageProxy(String wizardId, String commandId)
+		public String getFinishLabel()
         {
-			this.wizardId = wizardId;
-			this.commandId = commandId;
+	        return wizardController.getFinishLabel(wizardId);
         }
 
-		public String getId()
+		public String getNextLabel()
         {
-	        return PageWizardProxy.invokeSimpleCommand("getCommandId", new Object[]{wizardId,commandId}, String.class);
+	        return wizardController.getNextLabel(wizardId);
         }
 
-		public String getLabel()
+		public int getSpacing()
         {
-	        return PageWizardProxy.invokeSimpleCommand("getCommandLabel", new Object[]{wizardId,commandId}, String.class);
+	        return wizardController.getSpacing(wizardId);
         }
 
-		public int getOrder()
+		public boolean isVertical()
         {
-	        return PageWizardProxy.invokeSimpleCommand("getCommandOrder", new Object[]{wizardId,commandId}, Integer.class);
+	        return wizardController.isVertical(wizardId);
         }
 
-		public boolean isEnabled()
+		public void next()
         {
-	        return PageWizardProxy.invokeSimpleCommand("isCommandEnabled", new Object[]{wizardId,commandId}, Boolean.class);
+			wizardController.next(wizardId);
         }
 
-		public void setEnabled(boolean enabled)
+		public void setBackLabel(String backLabel)
         {
-	        PageWizardProxy.invokeSimpleCommand("setCommandEnabled", new Object[]{wizardId,commandId, enabled}, Object.class);
+			wizardController.setBackLabel(wizardId, backLabel);
         }
 
-		public void setLabel(String label)
+		public void setButtonsHeight(String buttonHeight)
         {
-	        PageWizardProxy.invokeSimpleCommand("setCommandLabel", new Object[]{wizardId,commandId, label}, Object.class);
+			wizardController.setButtonsHeight(wizardId, buttonHeight);
         }
 
-		public void setOrder(int order)
+		public void setButtonsStyle(String buttonStyle)
         {
-	        PageWizardProxy.invokeSimpleCommand("setCommandOrder", new Object[]{wizardId,commandId, order}, Object.class);
+			wizardController.setButtonsStyle(wizardId, buttonStyle);
         }
 
-		public String getStyleName()
+		public void setButtonsWidth(String buttonWidth)
         {
-	        return PageWizardProxy.invokeSimpleCommand("getCommandStyleName", new Object[]{wizardId,commandId}, String.class);
+			wizardController.setButtonsWidth(wizardId, buttonWidth);
         }
 
-		public void setStyleName(String styleName)
+		public void setCancelLabel(String cancelLabel)
         {
-	        PageWizardProxy.invokeSimpleCommand("setCommandStyleName", new Object[]{wizardId,commandId, styleName}, Object.class);
+			wizardController.setCancelLabel(wizardId, cancelLabel);
         }
 
-		public int getOffsetHeight()
+		public void setFinishLabel(String finishLabel)
         {
-	        return PageWizardProxy.invokeSimpleCommand("getCommandOffsetHeight", new Object[]{wizardId,commandId}, Integer.class);
+			wizardController.setFinishLabel(wizardId, finishLabel);
         }
 
-		public int getOffsetWidth()
+		public void setNextLabel(String nextLabel)
         {
-	        return PageWizardProxy.invokeSimpleCommand("getCommandOffsetWidth", new Object[]{wizardId,commandId}, Integer.class);
+			wizardController.setNextLabel(wizardId, nextLabel);
         }
-
-		public void setHeight(String height)
+		
+		public void setSpacing(int spacing)
         {
-	        PageWizardProxy.invokeSimpleCommand("setCommandHeight", new Object[]{wizardId,commandId, height}, Object.class);
-        }
-
-		public void setWidth(String width)
-        {
-	        PageWizardProxy.invokeSimpleCommand("setCommandWidth", new Object[]{wizardId,commandId, width}, Object.class);
+			wizardController.setSpacing(wizardId, spacing);
         }
 	}
 }
