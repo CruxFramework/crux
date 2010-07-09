@@ -36,7 +36,7 @@ abstract class AbstractRemotePagedDataSource<R extends DataSourceRecord, E> exte
 	{
 		if(data != null)
 		{
-			this.data = createDataObject(getRecordCount());
+			this.data = createDataObject(0);
 		}
 		currentRecord = -1;
 		currentPage = 0;
