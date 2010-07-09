@@ -83,8 +83,13 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		Map<String, String> controllerClassNames = new HashMap<String, String>();
 		Map<String, String> crossDocsClassNames = new HashMap<String, String>();
 		Set<String> usedWidgets = new HashSet<String>();
+		String module = null;
 		for (Screen screen : screens)
 		{
+			if (module == null)
+			{
+				module = screen.getModule();
+			}
 			generateControllersForScreen(logger, sourceWriter, screen, controllerClassNames, crossDocsClassNames, packageName+"."+implClassName, context);
 			Iterator<br.com.sysmap.crux.core.rebind.screen.Widget> screenWidgets = screen.iterateWidgets();
 			while (screenWidgets.hasNext())
@@ -93,7 +98,10 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 				usedWidgets.add(widgetType);
 			}
 		}
-		generateControllersForWidgets(logger, sourceWriter, usedWidgets, controllerClassNames, crossDocsClassNames, context);
+		if (module != null)
+		{
+			generateControllersForWidgets(logger, sourceWriter, usedWidgets, controllerClassNames, crossDocsClassNames, context, module);
+		}
 		
 		generateConstructor(sourceWriter, implClassName, controllerClassNames);
 		generateValidateControllerMethod(sourceWriter);
@@ -413,7 +421,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 	 * @param context
 	 */
 	private void generateControllersForWidgets(TreeLogger logger, SourceWriter sourceWriter, Set<String> usedWidgets, 
-			Map<String, String> controllerClassNames, Map<String, String> crossDocsClassNames, GeneratorContext context)
+			Map<String, String> controllerClassNames, Map<String, String> crossDocsClassNames, GeneratorContext context, String module)
 	{
 		
 		Iterator<String> widgets = usedWidgets.iterator();
@@ -425,6 +433,15 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 				while (controllers.hasNext())
 				{
 					String controller = controllers.next();
+					Class<?> controllerClass = ClientControllers.getController(controller);
+					if (controllerClass != null)
+					{
+						String controllerClassName = getClassSourceName(controllerClass).replace('.', '/');
+						if (Modules.getInstance().isClassOnModulePath(controllerClassName, module))
+						{
+							generateControllerBlock(logger, sourceWriter, controller, controllerClassNames, crossDocsClassNames, context);
+						}
+					}
 					generateControllerBlock(logger, sourceWriter, controller, controllerClassNames, crossDocsClassNames, context);
 				}
 			}		
