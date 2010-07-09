@@ -400,7 +400,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			else
 			{
 				String strValue = value.toString(); 
-				if(str.length() > 0)
+				if(strValue.length() > 0)
 				{
 					str = strValue;
 					useEmptyDataStyle = false;
