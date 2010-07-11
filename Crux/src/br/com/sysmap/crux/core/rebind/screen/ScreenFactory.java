@@ -31,6 +31,7 @@ import net.htmlparser.jericho.Source;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
@@ -75,6 +76,46 @@ public class ScreenFactory
 	 * @throws ScreenConfigException
 	 */
 	public Screen getScreen(String id) throws ScreenConfigException
+	{
+		if (Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableWebRootScannerCache()))
+		{
+			return getScreenWithCache(id);
+		}
+		else
+		{
+			return getScreenWithoutCache(id);
+		}
+	}
+
+	/**
+	 * @param id
+	 * @return
+	 * @throws ScreenConfigException
+	 */
+	private Screen getScreenWithoutCache(String id) throws ScreenConfigException
+	{
+		try 
+		{
+			InputStream stream = ScreenResourceResolverInitializer.getScreenResourceResolver().getScreenResource(id);
+			if (stream == null)
+			{
+				throw new ScreenConfigException(messages.screenFactoryScreeResourceNotFound(id));
+			}
+			
+			return parseScreen(id, stream);
+		} 
+		catch (Throwable e) 
+		{
+			throw new ScreenConfigException(messages.screenFactoryErrorRetrievingScreen(id, e.getLocalizedMessage()), e);
+		}
+	}
+	
+	/**
+	 * @param id
+	 * @return
+	 * @throws ScreenConfigException
+	 */
+	private Screen getScreenWithCache(String id) throws ScreenConfigException
 	{
 		try 
 		{
