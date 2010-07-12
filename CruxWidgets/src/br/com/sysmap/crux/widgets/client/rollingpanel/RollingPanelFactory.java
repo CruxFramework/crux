@@ -69,6 +69,7 @@ public class RollingPanelFactory extends WidgetFactory<RollingPanel>
 		@TagAttribute("horizontalPreviousButtonStyleName"),
 		@TagAttribute("verticalNextButtonStyleName"),
 		@TagAttribute("verticalPreviousButtonStyleName"),
+		@TagAttribute(value="scrollToAddedWidgets", type=Boolean.class),
 		@TagAttribute(value="spacing", type=Integer.class)
 	})
 	public void processAttributes(WidgetFactoryContext<RollingPanel> context) throws InterfaceConfigException
