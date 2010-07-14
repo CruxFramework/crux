@@ -1,6 +1,6 @@
 <project name="CruxModulesAdmin" basedir="../" default="export-as-module">
 
-	<property name="final.name" value="CruxModulesAdmin" />
+	<property name="final.name" value="crux-modules-admin" />
 	<property name="src.dir" value="src" />
 	<property name="dist.dir" value="dist" />
 	<property name="temp.dir" value="${dist.dir}/temp" />
@@ -10,6 +10,7 @@
 	<property name="web.inf.dir" value="${web.root}/WEB-INF" />
 	<property name="web.lib.dir" value="${web.inf.dir}/lib" />
 	<property name="target.classes.dir" value="${web.inf.dir}/classes" />
+	<property name="crux.libs.project" value="../CruxLibs" />
 
 	<property name="xsd.dir" value="xsd" />
 
@@ -47,9 +48,9 @@
 			<exclude name="**/crux-themes.jar" />
 			-->
 		</copydir>
-		
+
 		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${temp.dir}/webroot">
-			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputDir="${temp.dir}/webroot/admin"/>
+			<htmlpreprocessor indent="false" keepgeneratedfiles="true" outputDir="${temp.dir}/webroot/admin" />
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${web.root}" />
@@ -69,11 +70,11 @@
 		</cruxmodulecompiler>
 		<delete>
 			<fileset dir="${temp.dir}/webroot">
-				<include name="**/*.crux.xml"/>
-				<include name="**/*.template.xml"/>
+				<include name="**/*.crux.xml" />
+				<include name="**/*.template.xml" />
 			</fileset>
 		</delete>
-		
+
 		<blockremove beginmarker="&lt;!--antReplacementBlockBegin--&gt;" endmarker="&lt;!--antReplacementBlockEnd--&gt;" file="${temp.dir}/webroot/WEB-INF/web.xml" />
 
 		<war basedir="${temp.dir}/webroot" destfile="${temp.dir}/${final.name}.war" webxml="${web.inf.dir}/web.xml">
@@ -91,9 +92,7 @@
 	========================================================================================================
 	-->
 	<target name="compile-scripts">
-		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" 
-			keepPagesGeneratedFiles="true" pagesOutputDir="${web.root}"
-			scanallowedpackages="br.com.sysmap.crux.module">
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" keepPagesGeneratedFiles="true" pagesOutputDir="${web.root}" scanallowedpackages="br.com.sysmap.crux.module">
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${web.root}" />
@@ -104,8 +103,8 @@
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
 
-			<arg value="-gen"/>
-			<arg value="gen"/>
+			<arg value="-gen" />
+			<arg value="gen" />
 			<!--arg value="-style"/>
 			<arg value="DETAILED"/>
 			<jvmarg value="-Xdebug" />
@@ -126,9 +125,7 @@
 	========================================================================================================
 	-->
 	<target name="fast-compile-scripts">
-		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" 
-			keepPagesGeneratedFiles="true" pagesOutputDir="${web.root}"
-			scanallowedpackages="br.com.sysmap.crux.module">
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" keepPagesGeneratedFiles="true" pagesOutputDir="${web.root}" scanallowedpackages="br.com.sysmap.crux.module">
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${web.root}" />
@@ -171,9 +168,8 @@
 		Export project as a Crux Module
 	========================================================================================================
 	-->
-	<target name="export-as-module" >
-		<delete dir="${dist.dir}" failonerror="no"
-			includeemptydirs="yes" includes="**/*" />
+	<target name="export-as-module">
+		<delete dir="${dist.dir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
 		<mkdir dir="${dist.dir}" />
 
 		<jar jarfile="${dist.dir}/${final.name}.module.jar">
@@ -186,6 +182,12 @@
 				<exclude name="**/public/**" />
 			</fileset>
 		</jar>
+
+		<copy todir="${crux.libs.project}/crux">
+			<fileset dir="${dist.dir}">
+				<filename name="${final.name}.module.jar" />
+			</fileset>
+		</copy>
 	</target>
 
 </project>
