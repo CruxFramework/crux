@@ -13,7 +13,7 @@ import br.com.sysmap.crux.core.client.controller.Parameter;
 import br.com.sysmap.crux.core.client.controller.ParameterObject;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSource;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.ClientControllers;
+import br.com.sysmap.crux.core.rebind.controller.ClientControllers;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
 import br.com.sysmap.crux.core.rebind.screen.ScreenFactory;
