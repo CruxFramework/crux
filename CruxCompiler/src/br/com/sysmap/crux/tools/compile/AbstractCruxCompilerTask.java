@@ -47,6 +47,7 @@ public abstract class AbstractCruxCompilerTask extends Task
 	private String pageFileExtension;
 	private Boolean indentPages;
 	private Boolean keepPagesGeneratedFiles;
+	private boolean failOnError = true;
 	
 	public void addClasspath(Path classpath)
 	{
@@ -113,6 +114,11 @@ public abstract class AbstractCruxCompilerTask extends Task
     	this.srcDir = srcDir;
     }
 
+	public void setFailOnError(Boolean failOnError)
+	{
+		this.failOnError = failOnError;
+	}
+
 	/**
 	 * @see org.apache.tools.ant.Task#execute()
 	 */
@@ -134,10 +140,8 @@ public abstract class AbstractCruxCompilerTask extends Task
 	 * @param url
 	 * @throws Exception
 	 */
-	protected boolean compileFile() throws Exception
+	protected void compileFile() throws Exception
 	{
-		boolean compiled = false;
-		
 		log("Compiling...");
 		Java javatask = (Java) getProject().createTask("java");
 		javatask.setClassname(getProgramClassName());
@@ -174,13 +178,15 @@ public abstract class AbstractCruxCompilerTask extends Task
 		int resultCode = javatask.executeJava();
 		if (resultCode != 0)
 		{
-			log("Crux Compiler returned errors.", Project.MSG_ERR);
+			if (this.failOnError )
+			{
+				throw new CompilerException("Crux Compiler returned errors.");
+			}
+			else
+			{
+				log("Crux Compiler returned errors.", Project.MSG_ERR);				
+			}
 		}
-		else
-		{
-			compiled = true;
-		}
-		return compiled;
 	}
 
 	/**
