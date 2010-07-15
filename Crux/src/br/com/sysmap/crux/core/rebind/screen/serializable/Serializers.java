@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.client.screen.CruxSerializable;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
@@ -86,11 +87,20 @@ public class Serializers
 					SerializableName annot = serializerClass.getAnnotation(SerializableName.class);
 					if (annot != null)
 					{
+						if (serializers.containsKey(annot.value()))
+						{
+							throw new CruxGeneratorException(messages.serializersDuplicatedMessageKey(annot.value()));
+						}
 						serializers.put(annot.value(), serializerClass);
 					}
 					else
 					{
-						serializers.put(serializerClass.getSimpleName(), serializerClass);
+						String simpleName = serializerClass.getSimpleName();
+						if (serializers.containsKey(simpleName))
+						{
+							throw new CruxGeneratorException(messages.serializersDuplicatedMessageKey(simpleName));
+						}
+						serializers.put(simpleName, serializerClass);
 					}
 				} 
 				catch (Throwable e) 

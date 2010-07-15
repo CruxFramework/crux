@@ -21,9 +21,6 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import br.com.sysmap.crux.core.client.i18n.MessageName;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.server.ServerMessages;
@@ -38,7 +35,6 @@ import com.google.gwt.i18n.client.LocalizableResource;
 public class MessageClasses 
 {
 	private static final Lock lock = new ReentrantLock();
-	private static final Log logger = LogFactory.getLog(MessageClasses.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static Map<String, Class<? extends LocalizableResource>> messagesClasses = null;	
 	
@@ -106,6 +102,10 @@ public class MessageClasses
 								{
 									className = className.toLowerCase();
 								}
+								if (messagesClasses.containsKey(className))
+								{
+									throw new CruxGeneratorException(messages.messagesClassesDuplicatedMessageKey(className));
+								}
 								messagesClasses.put(className, (Class<? extends LocalizableResource>) messageClass);
 							}
 						}
@@ -114,7 +114,7 @@ public class MessageClasses
 			} 
 			catch (ClassNotFoundException e) 
 			{
-				logger.error(messages.messagesClassesInitializeError(e.getLocalizedMessage()),e);
+				throw new CruxGeneratorException(messages.messagesClassesInitializeError(e.getLocalizedMessage()),e);
 			}
 			finally
 			{

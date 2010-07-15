@@ -104,6 +104,10 @@ public class Formatters
 						{
 							simpleName = simpleName.toLowerCase();
 						}
+						if (formatters.containsKey(simpleName))
+						{
+							throw new CruxGeneratorException(messages.formattersDuplicatedDataSource(simpleName));
+						}
 						formatters.put(simpleName, formatterClass);
 					}
 				} 

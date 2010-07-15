@@ -156,17 +156,10 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	private void generateDataSourceClassBlock(TreeLogger logger, Screen screen, SourceWriter sourceWriter, String dataSource, 
 			Map<String, String> added)
 	{
-		try
+		if (!added.containsKey(dataSource) && DataSources.getDataSource(dataSource)!= null)
 		{
-			if (!added.containsKey(dataSource) && DataSources.getDataSource(dataSource)!= null)
-			{
-				String genClass = generateDataSourceClass(logger,screen,sourceWriter,DataSources.getDataSource(dataSource));
-				added.put(dataSource, genClass);
-			}
-		}
-		catch (Throwable e) 
-		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSource, e.getLocalizedMessage()), e);
+			String genClass = generateDataSourceClass(logger,screen,sourceWriter,DataSources.getDataSource(dataSource));
+			added.put(dataSource, genClass);
 		}
 	}
 	

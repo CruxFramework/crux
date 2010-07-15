@@ -26,8 +26,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
@@ -47,7 +45,6 @@ import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
  */
 public class TemplatesScanner extends AbstractScanner
 {
-	private static final Log logger = LogFactory.getLog(TemplatesScanner.class);
 	private static final TemplatesScanner instance = new TemplatesScanner();
 	private DeclarativeUIMessages messages = MessagesFactory.getMessages(DeclarativeUIMessages.class);
 	private DocumentBuilder documentBuilder;
@@ -112,9 +109,13 @@ public class TemplatesScanner extends AbstractScanner
 							Document template = documentBuilder.parse(found.openStream());
 							Templates.registerTemplate(getTemplateId(urlString), template);
 						}
+						catch (TemplateException e)
+						{
+							throw e;
+						}
 						catch (Exception e)
 						{
-							logger.error(messages.templatesScannerErrorParsingTemplateFile(urlString), e);
+							throw new TemplateException(messages.templatesScannerErrorParsingTemplateFile(urlString), e);
 						}
 					}
 				}

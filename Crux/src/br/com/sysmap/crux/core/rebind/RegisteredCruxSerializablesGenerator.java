@@ -125,18 +125,11 @@ public class RegisteredCruxSerializablesGenerator extends AbstractRegisteredElem
 		
 	protected void generateSerialisersBlock(TreeLogger logger, SourceWriter sourceWriter, String serializer, Map<String, Boolean> added)
 	{
-		try
+		if (!added.containsKey(serializer) && Serializers.getCruxSerializable(serializer)!= null)
 		{
-			if (!added.containsKey(serializer) && Serializers.getCruxSerializable(serializer)!= null)
-			{
-				Class<?> serializerClass = Serializers.getCruxSerializable(serializer);
-				sourceWriter.println("serializers.put(\""+serializerClass.getName()+"\", new " + getClassSourceName(serializerClass) + "());");
-				added.put(serializer, true);
-			}
-		}
-		catch (Throwable e) 
-		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredCruxSerializable(serializer, e.getLocalizedMessage()), e);
+			Class<?> serializerClass = Serializers.getCruxSerializable(serializer);
+			sourceWriter.println("serializers.put(\""+serializerClass.getName()+"\", new " + getClassSourceName(serializerClass) + "());");
+			added.put(serializer, true);
 		}
 	}
 }

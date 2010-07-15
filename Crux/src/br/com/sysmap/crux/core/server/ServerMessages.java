@@ -127,6 +127,9 @@ public interface ServerMessages
 	@DefaultServerMessage("[serializers 001] - Error initializing serializer: {0}.")
 	String serializersSerializersInitializeError(String localizedMessage);
 
+	@DefaultServerMessage("[serializers 002] - Duplicated SerializableName {0}.")
+	String serializersDuplicatedMessageKey(String name);
+
 	@DefaultServerMessage("[screenResourceScanner 001] - Error initializing screenResourceScanner: {0}.")
 	String screenResourceScannerInitializationError(String localizedMessage);
 

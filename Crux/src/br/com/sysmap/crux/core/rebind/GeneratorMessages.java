@@ -29,7 +29,7 @@ public interface GeneratorMessages
 	String errorGeneratingRegisteredWidgetFactoryNotRegistered();
 
 	@DefaultServerMessage("[generator 002] - Error for register client event handler. Controller: {0}. Error:{1}")
-	String errorGeneratingRegisteredController(String widget, String errMesg);
+	String errorGeneratingRegisteredController(String controller, String errMesg);
 
 	@DefaultServerMessage("[generator 003] - Error for register client formatter. Formatter: {0}. Error:{1}")
 	String errorGeneratingRegisteredFormatter(String formatter, String errMesg);
@@ -183,4 +183,26 @@ public interface GeneratorMessages
 
 	@DefaultServerMessage("[Screen 001] - Error setting property {0} for widget {1}.")
 	String screenPropertyError(String property, String widgetId);
+	
+	@DefaultServerMessage("[generator 043] - Error for register client event handler. Error:{1}")
+	String errorGeneratingRegisteredController(String errMesg);
+
+	@DefaultServerMessage("[screenFactory 008] - Datasource {0}, declared on screen {1}, not found!")
+	String screenFactoryInvalidDataSource(String datasource, String screenId);
+
+	@DefaultServerMessage("[screenFactory 009] - Formatter {0}, declared on screen {1}, not found!")
+	String screenFactoryInvalidFormatter(String formatter, String id);
+
+	@DefaultServerMessage("[screenFactory 010] - Serializable {0}, declared on screen {1}, not found!")
+	String screenFactoryInvalidSerializable(String serializer, String id);
+
+	@DefaultServerMessage("[screenFactory 011] - Controller {0}, declared on screen {1}, not found!")
+	String screenFactoryInvalidController(String handler, String id);
+
+	@DefaultServerMessage("[generator 044] - Error generating invoker. Error:{0}")
+	String errorGeneratingInvokerWrapper(String localizedMessage);
+
+	@DefaultServerMessage("[generator 045] - Error generating invoker. Controller {0} not found.")
+	String errorGeneratingInvokerControllerNotFound(String name);
+
 }

@@ -104,6 +104,10 @@ public class DataSources
 						{
 							simpleName = simpleName.toLowerCase();
 						}
+						if (dataSources.containsKey(simpleName))
+						{
+							throw new CruxGeneratorException(messages.dataSourcesDuplicatedDataSource(simpleName));
+						}
 						dataSources.put(simpleName, dataSourceClass);
 					}
 				} 

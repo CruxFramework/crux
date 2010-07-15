@@ -127,5 +127,5 @@ public abstract class AbstractRegisteredElementsGenerator extends AbstractGenera
 	 * @param classType
 	 * @param screens
 	 */
-	protected abstract void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens);
+	protected abstract void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens) ;
 }

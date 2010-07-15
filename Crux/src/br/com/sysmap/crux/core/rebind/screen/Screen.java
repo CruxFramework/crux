@@ -21,6 +21,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.utils.StringUtils;
+
 /**
  * Represents a Crux Screen at the application's server side. Used for GWT Generators.
  * 
@@ -128,7 +130,7 @@ public class Screen
 	 */
 	protected void addController(String controller)
 	{
-		if (controller != null)
+		if (!StringUtils.isEmpty(controller))
 		{
 			controllers.add(controller);
 		}
@@ -149,7 +151,7 @@ public class Screen
 	 */
 	protected void addSerializer(String serializer)
 	{
-		if (serializer != null)
+		if (!StringUtils.isEmpty(serializer))
 		{
 			serializers.add(serializer);
 		}
@@ -170,7 +172,7 @@ public class Screen
 	 */
 	protected void addFormatter(String formatter)
 	{
-		if (formatter != null)
+		if (!StringUtils.isEmpty(formatter))
 		{
 			formatters.add(formatter);
 		}
@@ -191,7 +193,7 @@ public class Screen
 	 */
 	protected void addDataSource(String dataSource)
 	{
-		if (dataSource != null)
+		if (!StringUtils.isEmpty(dataSource))
 		{
 			dataSources.add(dataSource);
 		}

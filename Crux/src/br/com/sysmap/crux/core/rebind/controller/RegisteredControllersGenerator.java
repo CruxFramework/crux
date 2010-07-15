@@ -39,6 +39,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
@@ -55,8 +56,9 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 	
 	/**
 	 * Generate the class
+	 * @throws UnableToCompleteException 
 	 */
-	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens) 
+	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens)
 	{
 		String packageName = classType.getPackage().getName();
 		String className = classType.getSimpleSourceName();
@@ -74,9 +76,9 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		composer.addImport(Crux.class.getName());
 		composer.addImport(ControllerInvoker.class.getName());
 		composer.addImport(CrossDocumentInvoker.class.getName());
-		
+
 		composer.addImplementedInterface("br.com.sysmap.crux.core.client.event.RegisteredControllers");
-		
+
 		SourceWriter sourceWriter = composer.createSourceWriter(context, printWriter);
 		sourceWriter.println("private java.util.Map<String, ControllerInvoker> controllers = new java.util.HashMap<String, ControllerInvoker>();");
 
@@ -102,14 +104,14 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 		{
 			generateControllersForWidgets(logger, sourceWriter, usedWidgets, controllerClassNames, crossDocsClassNames, context, module);
 		}
-		
+
 		generateConstructor(sourceWriter, implClassName, controllerClassNames);
 		generateValidateControllerMethod(sourceWriter);
 		generateControllerInvokeMethod(sourceWriter, controllerClassNames);
 		generateCrossDocInvokeMethod(sourceWriter, crossDocsClassNames);
 		generateRegisterControllerMethod(sourceWriter);
 		generateGetCrossDocumentMethod(sourceWriter);
-		
+
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 

@@ -35,7 +35,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 public class RegisteredClientFormattersGenerator extends AbstractRegisteredElementsGenerator
 {
 	@Override
-	protected void generateClass(TreeLogger logger, GeneratorContext context,JClassType classType, List<Screen> screens) 
+	protected void generateClass(TreeLogger logger, GeneratorContext context,JClassType classType, List<Screen> screens)  
 	{
 		String packageName = classType.getPackage().getName();
 		String className = classType.getSimpleSourceName();
@@ -82,39 +82,32 @@ public class RegisteredClientFormattersGenerator extends AbstractRegisteredEleme
 	
 	protected void generateFormatterBlock(TreeLogger logger, SourceWriter sourceWriter, String formatter, Map<String, Boolean> added)
 	{
-		try
+		String formatterParams = null;
+		String formatterName = formatter;
+		StringBuilder parameters = new StringBuilder();
+		int index = formatter.indexOf("(");
+		if (index > 0)
 		{
-			String formatterParams = null;
-			String formatterName = formatter;
-			StringBuilder parameters = new StringBuilder();
-			int index = formatter.indexOf("(");
-			if (index > 0)
+			formatterParams = formatter.substring(index+1,formatter.indexOf(")"));
+			formatterName = formatter.substring(0,index).trim();
+			String[] params = RegexpPatterns.REGEXP_COMMA.split(formatterParams);
+			parameters.append("new String[]{");
+			for (int i=0; i < params.length; i++) 
 			{
-				formatterParams = formatter.substring(index+1,formatter.indexOf(")"));
-				formatterName = formatter.substring(0,index).trim();
-				String[] params = RegexpPatterns.REGEXP_COMMA.split(formatterParams);
-				parameters.append("new String[]{");
-				for (int i=0; i < params.length; i++) 
+				if (i>0)
 				{
-					if (i>0)
-					{
-						parameters.append(",");
-					}
-					parameters.append(EscapeUtils.quote(params[i]).trim());
+					parameters.append(",");
 				}
-				parameters.append("}");
+				parameters.append(EscapeUtils.quote(params[i]).trim());
 			}
-			
-			if (!added.containsKey(formatter) && Formatters.getFormatter(formatterName)!= null)
-			{
-				Class<?> formatterClass = Formatters.getFormatter(formatterName);
-				sourceWriter.println("clientFormatters.put(\""+formatter+"\", new " + getClassSourceName(formatterClass) + "("+parameters.toString()+"));");
-				added.put(formatter, true);
-			}
+			parameters.append("}");
 		}
-		catch (Throwable e) 
+
+		if (!added.containsKey(formatter) && Formatters.getFormatter(formatterName)!= null)
 		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredFormatter(formatter, e.getLocalizedMessage()), e);
+			Class<?> formatterClass = Formatters.getFormatter(formatterName);
+			sourceWriter.println("clientFormatters.put(\""+formatter+"\", new " + getClassSourceName(formatterClass) + "("+parameters.toString()+"));");
+			added.put(formatter, true);
 		}
 	}
 }

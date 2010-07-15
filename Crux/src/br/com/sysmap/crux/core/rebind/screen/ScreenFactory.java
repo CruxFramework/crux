@@ -31,8 +31,12 @@ import net.htmlparser.jericho.Source;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.GeneratorMessages;
+import br.com.sysmap.crux.core.rebind.controller.ClientControllers;
+import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
+import br.com.sysmap.crux.core.rebind.screen.formatter.Formatters;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 
 /**
@@ -291,8 +295,9 @@ public class ScreenFactory
 	 * Parse screen element
 	 * @param screen
 	 * @param compCandidate
+	 * @throws ScreenConfigException 
 	 */
-	private void parseScreenElement(Screen screen, Element compCandidate) 
+	private void parseScreenElement(Screen screen, Element compCandidate) throws ScreenConfigException 
 	{
 		Element elem = (Element) compCandidate;
 		
@@ -304,51 +309,19 @@ public class ScreenFactory
 			
 			if(attrName.equals("_useController"))
 			{
-				String handlerStr =  attr.getValue();
-				if (handlerStr != null)
-				{
-					String[] handlers = RegexpPatterns.REGEXP_COMMA.split(handlerStr);
-					for (String handler : handlers)
-					{
-						screen.addController(handler.trim());
-					}
-				}
+				parseScreenUseControllerAttribute(screen, attr);
 			}
 			else if(attrName.equals("_useSerializable"))
 			{
-				String serializerStr =  attr.getValue();
-				if (serializerStr != null)
-				{
-					String[] serializers = RegexpPatterns.REGEXP_COMMA.split(serializerStr);
-					for (String serializer : serializers)
-					{
-						screen.addSerializer(serializer.trim());
-					}
-				}
+				parseScreenUseSerializableAttribute(screen, attr);
 			}
 			else if(attrName.equals("_useFormatter"))
 			{
-				String formatterStr =  attr.getValue();
-				if (formatterStr != null)
-				{
-					String[] formatters = RegexpPatterns.REGEXP_COMMA.split(formatterStr);
-					for (String formatter : formatters)
-					{
-						screen.addFormatter(formatter.trim());
-					}
-				}
+				parseScreenUseFormatterAttribute(screen, attr);
 			}
 			else if(attrName.equals("_useDataSource"))
 			{
-				String datasourceStr =  attr.getValue();
-				if (datasourceStr != null)
-				{
-					String[] datasources = RegexpPatterns.REGEXP_COMMA.split(datasourceStr);
-					for (String datasource : datasources)
-					{
-						screen.addDataSource(datasource.trim());
-					}
-				}
+				parseScreenUseDatasourceAttribute(screen, attr);
 			}
 			else if (attrName.startsWith("_on"))
 			{
@@ -372,4 +345,109 @@ public class ScreenFactory
 			}
 		}
 	}
+
+	/**
+	 * @param screen
+	 * @param attr
+	 * @throws ScreenConfigException 
+	 */
+	private void parseScreenUseDatasourceAttribute(Screen screen, Attribute attr) throws ScreenConfigException
+    {
+	    String datasourceStr =  attr.getValue();
+	    if (datasourceStr != null)
+	    {
+	    	String[] datasources = RegexpPatterns.REGEXP_COMMA.split(datasourceStr);
+	    	for (String datasource : datasources)
+	    	{
+	    		datasource = datasource.trim();
+	    		if (!StringUtils.isEmpty(datasource))
+	    		{
+	    			if (DataSources.getDataSource(datasource) == null)
+	    			{
+	    				throw new ScreenConfigException(messages.screenFactoryInvalidDataSource(datasource, screen.getId()));
+	    			}
+	    			screen.addDataSource(datasource);
+	    		}
+	    	}
+	    }
+    }
+
+	/**
+	 * @param screen
+	 * @param attr
+	 * @throws ScreenConfigException 
+	 */
+	private void parseScreenUseFormatterAttribute(Screen screen, Attribute attr) throws ScreenConfigException
+    {
+	    String formatterStr =  attr.getValue();
+	    if (formatterStr != null)
+	    {
+	    	String[] formatters = RegexpPatterns.REGEXP_COMMA.split(formatterStr);
+	    	for (String formatter : formatters)
+	    	{
+	    		formatter = formatter.trim();
+	    		if (!StringUtils.isEmpty(formatter))
+	    		{
+	    			if (Formatters.getFormatter(formatter) == null)
+	    			{
+	    				throw new ScreenConfigException(messages.screenFactoryInvalidFormatter(formatter, screen.getId()));
+	    			}
+	    			screen.addFormatter(formatter);
+	    		}
+	    	}
+	    }
+    }
+
+	/**
+	 * @param screen
+	 * @param attr
+	 * @throws ScreenConfigException 
+	 */
+	@SuppressWarnings("deprecation")
+    private void parseScreenUseSerializableAttribute(Screen screen, Attribute attr) throws ScreenConfigException
+    {
+	    String serializerStr =  attr.getValue();
+	    if (serializerStr != null)
+	    {
+	    	String[] serializers = RegexpPatterns.REGEXP_COMMA.split(serializerStr);
+	    	for (String serializer : serializers)
+	    	{
+	    		serializer = serializer.trim();
+	    		if (!StringUtils.isEmpty(serializer))
+	    		{
+	    			if (br.com.sysmap.crux.core.rebind.screen.serializable.Serializers.getCruxSerializable(serializer) == null)
+	    			{
+	    				throw new ScreenConfigException(messages.screenFactoryInvalidSerializable(serializer, screen.getId()));
+	    			}
+	    			screen.addSerializer(serializer);
+	    		}
+	    	}
+	    }
+    }
+
+	/**
+	 * @param screen
+	 * @param attr
+	 * @throws ScreenConfigException 
+	 */
+	private void parseScreenUseControllerAttribute(Screen screen, Attribute attr) throws ScreenConfigException
+    {
+	    String handlerStr =  attr.getValue();
+	    if (handlerStr != null)
+	    {
+	    	String[] handlers = RegexpPatterns.REGEXP_COMMA.split(handlerStr);
+	    	for (String handler : handlers)
+	    	{
+	    		handler = handler.trim();
+	    		if (!StringUtils.isEmpty(handler))
+	    		{
+	    			if (ClientControllers.getController(handler) == null)
+	    			{
+	    				throw new ScreenConfigException(messages.screenFactoryInvalidController(handler, screen.getId()));
+	    			}
+	    			screen.addController(handler);
+	    		}
+	    	}
+	    }
+    }
 }

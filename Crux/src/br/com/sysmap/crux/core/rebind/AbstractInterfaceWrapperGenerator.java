@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.rebind.controller.ClientControllers;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -54,7 +55,7 @@ public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerato
 		} 
 		catch (Throwable e) 
 		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingScreenWrapper(e.getLocalizedMessage()), e);
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingInvokerWrapper(e.getLocalizedMessage()), e);
 			throw new UnableToCompleteException();
 		}
 	}
@@ -164,22 +165,30 @@ public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerato
 	 * @param declaringClass
 	 * @return
 	 */
-	@SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation")
     protected String getControllerName(Class<?> declaringClass)
 	{
-		br.com.sysmap.crux.core.client.controller.ControllerName annotation = declaringClass.getAnnotation(br.com.sysmap.crux.core.client.controller.ControllerName.class);
+    	String name;
+    	br.com.sysmap.crux.core.client.controller.ControllerName annotation = declaringClass.getAnnotation(br.com.sysmap.crux.core.client.controller.ControllerName.class);
 		if (annotation != null)
 		{
-			return annotation.value();
+			name = annotation.value();
 		}
-		String name = declaringClass.getSimpleName();
-		if (name.endsWith("Invoker"))
+		else
 		{
-			name = name.substring(0, name.lastIndexOf("Invoker"));
-			if (name.length() > 0)
+			name = declaringClass.getSimpleName();
+			if (name.endsWith("Invoker"))
 			{
-				name =  Character.toLowerCase(name.charAt(0)) + name.substring(1);
+				name = name.substring(0, name.lastIndexOf("Invoker"));
+				if (name.length() > 0)
+				{
+					name =  Character.toLowerCase(name.charAt(0)) + name.substring(1);
+				}
 			}
+		}
+		if (ClientControllers.getController(name) == null)
+		{
+			throw new CruxGeneratorException(messages.errorGeneratingInvokerControllerNotFound(name));
 		}
 		return name;
 	}
