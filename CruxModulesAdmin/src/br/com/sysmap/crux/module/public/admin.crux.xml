@@ -8,7 +8,7 @@
 		
 		<script type="text/javascript" src="../admin/admin.nocache.js"></script>
 		
-		<c:screen title="${adminMessages.modulesAdminConsoleTitle}" useController="adminController"/>
+		<c:screen title="${adminMessages.modulesAdminConsoleTitle}" useController="cruxAdminController"/>
 		<c:splashScreen/>
 		
 		<gwt:dockPanel id="centeringPanel" width="100%" height="100%">
@@ -39,7 +39,7 @@
 			<gwt:cell direction="south" verticalAlignment="top" horizontalAlignment="center" height="100%">
 				<gwt:dockPanel id="menuTabsDividerPannel" width="100%" height="100%" spacing="5">
 					<gwt:cell direction="west" width="160">
-						<crux:stackMenu id="modules" onLoadWidget="adminController.onLoadModules"></crux:stackMenu>
+						<crux:stackMenu id="modules" onLoadWidget="cruxAdminController.onLoadModules"></crux:stackMenu>
 					</gwt:cell>
 					<gwt:cell direction="east">
 						<crux:decoratedPanel id="moduleTabsDecorator" width="100%" height="100%">

@@ -21,7 +21,7 @@ import com.google.gwt.http.client.URL;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@Controller("adminController")
+@Controller("cruxAdminController")
 public class AdminController {
 	
 	@Create

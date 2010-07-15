@@ -8,9 +8,9 @@
 	<body>
 		<script type="text/javascript" src="../admin/admin.nocache.js"></script>
 		
-		<c:screen title="${adminMessages.modulesAdminConsoleTitle}" useController="moduleInfoController" 
+		<c:screen title="${adminMessages.modulesAdminConsoleTitle}" useController="cruxModuleInfoController" 
 				  useDataSource="requiredModulesDS, pagesDS, controllersDS, datasourcesDS, formattersDS, serializablesDS" 
-				  onLoad="moduleInfoController.loadModuleInfo" />
+				  onLoad="cruxModuleInfoController.loadModuleInfo" />
 		<c:splashScreen/>
 		<gwt:grid id="verticalPanel" width="100%" cellSpacing="5">
 			<gwt:row>
@@ -45,7 +45,7 @@
 										<crux:decoratedPanel id="requiredModulesPanel" width="100%">
 											<crux:widget>
 												<crux:grid id="requiredModules" height="200" autoLoadData="false" dataSource="requiredModulesDS"
-												           onRowRender="moduleInfoController.renderRequiredModulesRows" pageSize="6" stretchColumns="true"
+												           onRowRender="cruxModuleInfoController.renderRequiredModulesRows" pageSize="6" stretchColumns="true"
 												           highlightRowOnMouseOver="true" width="100%">
 													<crux:dataColumn key="name" label="${adminMessages.moduleName}"/>
 													<crux:dataColumn key="minVersion" label="${adminMessages.moduleMinVersion}"/>
@@ -62,19 +62,19 @@
 									</gwt:verticalPanel>
 								</gwt:panelContent>
 							</gwt:tab>				
-							<gwt:tab onClick="moduleInfoController.onDependentModulesClick" tabEnabled="false">
+							<gwt:tab onClick="cruxModuleInfoController.onDependentModulesClick" tabEnabled="false">
 								<gwt:tabText>${adminMessages.dependentModulesTab}</gwt:tabText>
 								<gwt:panelContent>
 									<crux:decoratedPanel id="dependentModulesPanel">
 										<crux:widget>
 											<gwt:scrollPanel id="dependentModulesScroll" height="200" >
-												<gwt:tree id="dependentModules" onOpen="moduleInfoController.onDependentModuleOpen"></gwt:tree>	
+												<gwt:tree id="dependentModules" onOpen="cruxModuleInfoController.onDependentModuleOpen"></gwt:tree>	
 											</gwt:scrollPanel>
 										</crux:widget>
 									</crux:decoratedPanel>
 								</gwt:panelContent>
 							</gwt:tab>				
-							<gwt:tab onClick="moduleInfoController.onPagesClick">
+							<gwt:tab onClick="cruxModuleInfoController.onPagesClick">
 								<gwt:tabText>${adminMessages.pagesTab}</gwt:tabText>
 								<gwt:panelContent>
 									<gwt:verticalPanel id="pagesvPanel" width="100%">
@@ -82,7 +82,7 @@
 											<crux:widget>
 												<crux:grid id="pages" height="200" autoLoadData="false" dataSource="pagesDS"
 												           pageSize="6" stretchColumns="true" highlightRowOnMouseOver="true"
-												           onRowDoubleClick="moduleInfoController.onPagesRowClick" width="100%">
+												           onRowDoubleClick="cruxModuleInfoController.onPagesRowClick" width="100%">
 													<crux:dataColumn key="name" label="${adminMessages.pagesLabel}"/>
 												</crux:grid>
 											</crux:widget>
@@ -93,7 +93,7 @@
 									</gwt:verticalPanel>
 								</gwt:panelContent>
 							</gwt:tab>				
-							<gwt:tab onClick="moduleInfoController.onControllersClick">
+							<gwt:tab onClick="cruxModuleInfoController.onControllersClick">
 								<gwt:tabText>${adminMessages.controllersTab}</gwt:tabText>
 								<gwt:panelContent>
 									<gwt:verticalPanel id="controllersvPanel" width="100%">
@@ -117,7 +117,7 @@
 									</gwt:verticalPanel>
 								</gwt:panelContent>
 							</gwt:tab>				
-							<gwt:tab onClick="moduleInfoController.onDataSourcesClick">
+							<gwt:tab onClick="cruxModuleInfoController.onDataSourcesClick">
 								<gwt:tabText>${adminMessages.datasourcesTab}</gwt:tabText>
 								<gwt:panelContent>
 									<gwt:verticalPanel id="datasourcesvPanel" width="100%">
@@ -138,7 +138,7 @@
 									</gwt:verticalPanel>				 
 								</gwt:panelContent>
 							</gwt:tab>				
-							<gwt:tab onClick="moduleInfoController.onFormattersClick">
+							<gwt:tab onClick="cruxModuleInfoController.onFormattersClick">
 								<gwt:tabText>${adminMessages.formattersTab}</gwt:tabText>
 								<gwt:panelContent>
 									<gwt:verticalPanel id="formattersvPanel" width="100%">
@@ -158,7 +158,7 @@
 									</gwt:verticalPanel>		 
 								</gwt:panelContent>
 							</gwt:tab>				
-							<gwt:tab onClick="moduleInfoController.onSerializablesClick">
+							<gwt:tab onClick="cruxModuleInfoController.onSerializablesClick">
 								<gwt:tabText>${adminMessages.serializablesTab}</gwt:tabText>
 								<gwt:panelContent>
 									<gwt:verticalPanel id="serializablesvPanel" width="100%">

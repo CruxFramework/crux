@@ -7,7 +7,7 @@
 		
 		<script type="text/javascript" src="../admin/admin.nocache.js"></script>
 	
-		<c:screen useController="loginController" title="${adminMessages.modulesAdminConsoleTitle}" useDataSource="repositoriesDS" />
+		<c:screen useController="cruxAdminLoginController" title="${adminMessages.modulesAdminConsoleTitle}" useDataSource="repositoriesDS" />
 		
 		<c:splashScreen/>
 		<g:flexTable id="layoutTable" cellSpacing="5" width="98%">
@@ -29,7 +29,7 @@
 			<g:row>
 				<g:cell horizontalAlignment="center" colSpan="2">
 					<g:widget>
-						<w:decoratedButton id="loginBtn" text="${adminMessages.loginScreenLoginBtn}" onClick="loginController.authenticate" width="70"/>
+						<w:decoratedButton id="loginBtn" text="${adminMessages.loginScreenLoginBtn}" onClick="cruxAdminLoginController.authenticate" width="70"/>
 					</g:widget>
 				</g:cell>
 			</g:row>

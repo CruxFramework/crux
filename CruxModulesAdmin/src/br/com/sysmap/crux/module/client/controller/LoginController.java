@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@Controller("loginController")
+@Controller("cruxAdminLoginController")
 public class LoginController
 {
 	@Create
@@ -82,7 +82,7 @@ public class LoginController
 		Grid getLoginGrid();
 	}
 	
-	@ControllerName("moduleInfoController")
+	@ControllerName("cruxModuleInfoController")
 	public static interface ModuleInfoInvoker extends PopupOpenerInvoker
 	{
 		void confirmLogin();

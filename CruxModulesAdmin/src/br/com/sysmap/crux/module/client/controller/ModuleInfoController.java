@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-@Controller("moduleInfoController")
+@Controller("cruxModuleInfoController")
 public class ModuleInfoController 
 {
 	@Create
@@ -276,7 +276,7 @@ public class ModuleInfoController
 		TabPanel getTabContainer();
 	}
 	
-	@ControllerName("moduleInfoController")
+	@ControllerName("cruxModuleInfoController")
 	public static interface ModuleInfoControllerInvoker extends Invoker
 	{
 		ModuleInfo getModuleInfoOnSelf();
