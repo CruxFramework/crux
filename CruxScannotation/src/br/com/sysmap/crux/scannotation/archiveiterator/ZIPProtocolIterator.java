@@ -65,7 +65,7 @@ public class ZIPProtocolIterator implements URLIterator
 			do
 			{
 				next = zipStream.getNextEntry();
-			} while (next != null && (next.isDirectory() || filter == null || !next.getName().startsWith(pathInZip) || !filter.accepts(next.getName().substring(pahtJarLength))));
+			} while (next != null && (next.isDirectory() || filter == null || !next.getName().startsWith(pathInZip) || !filter.accepts(getNextEntryFullName())));
 			if (next == null)
 			{
 				close();
@@ -75,6 +75,28 @@ public class ZIPProtocolIterator implements URLIterator
 		{
 			throw new RuntimeException("failed to browse jar", e);
 		}
+	}
+	
+	/**
+	 * Returns the full name of the next zip entry.
+	 * @return
+	 */
+	private String getNextEntryFullName()
+	{
+		String prefix = this.zip.toString();
+		String nextEntry = this.next.getName();
+		
+		if(prefix.endsWith("/"))
+		{
+			prefix = prefix.substring(0, prefix.length() - 1);
+		}
+		
+		if(nextEntry.startsWith("/"))
+		{
+			nextEntry = nextEntry.substring(1);
+		}
+			
+		return prefix + "/" + nextEntry;
 	}
 
 	public URL next()
