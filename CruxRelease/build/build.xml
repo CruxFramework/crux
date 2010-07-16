@@ -25,7 +25,6 @@
 	<property name="crux-compiler-srcdir" value="../CruxCompiler/src" />
 	<property name="crux-gwt-widgets-srcdir" value="../CruxGWTWidgets/src" />
 	<property name="crux-html-tags-srcdir" value="../CruxHtmlTags/src" />
-	<property name="crux-html-tags-compile-srcdir" value="../CruxHTMLTagsCompileTask/src" />
 	<property name="crux-modules-srcdir" value="../CruxModules/src" />
 	<property name="crux-modules-admin-srcdir" value="../CruxModulesAdmin/src" />
 	<property name="crux-modules-compiler-srcdir" value="../CruxModulesCompiler/src" />
@@ -43,7 +42,6 @@
 	<property name="crux.modules.compiler.dist" value="../CruxModulesCompiler/dist" />
 
 	<property name="crux.htmltags.dist" value="../CruxHtmlTags/dist" />
-	<property name="crux.htmltags.compile.dist" value="../CruxHTMLTagsCompileTask/dist" />
 	
 	<property name="crux.samples.dir" value="samples" />
 	
@@ -180,7 +178,6 @@
 			<fileset dir="${crux-compiler-srcdir}" />
 			<fileset dir="${crux-gwt-widgets-srcdir}" />
 			<fileset dir="${crux-html-tags-srcdir}" />
-			<fileset dir="${crux-html-tags-compile-srcdir}" />
 			<fileset dir="${crux-modules-srcdir}" />
 			<fileset dir="${crux-modules-admin-srcdir}" />
 			<fileset dir="${crux-modules-compiler-srcdir}" />
@@ -231,7 +228,6 @@
 		</copy>
 		<copy todir="${resourcedir}/jars/lib/legacy">
 			<fileset dir="${crux.htmltags.dist}" includes="*.jar" />
-			<fileset dir="${crux.htmltags.compile.dist}" includes="*.jar" />
 		</copy>
 		<copydir dest="${expandeddir}/lib/build" src="${resourcedir}/jars/lib/build" />
 		<copydir dest="${expandeddir}/lib/web-inf" src="${resourcedir}/jars/lib/web-inf" />
