@@ -22,14 +22,20 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.Source;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.declarativeui.CruxToHtmlTransformer;
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 import br.com.sysmap.crux.core.rebind.module.Module;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.module.ModulesScanner;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
+import br.com.sysmap.crux.core.utils.XMLUtils;
+import br.com.sysmap.crux.core.utils.XMLUtils.XMLException;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -38,7 +44,7 @@ import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 public class ModuleUtils
 {
 	private static final String MODULE_IMPORT_SUFFIX = ".nocache.js";
-	
+	private static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);	
 	
 	public static void initializeScannerURLs(URL[] urls)
 	{
@@ -88,15 +94,25 @@ public class ModuleUtils
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		CruxToHtmlTransformer.generateHTML(pageFile.openStream(), out);
 		ByteArrayInputStream input = new ByteArrayInputStream(out.toByteArray());
-		
-		Source source = new Source(input);
-		List<?> elementList = source.getAllElements("script");
-		
-		for (Object object : elementList)
+		Document source = null;
+
+		try
 		{
-			Element element = (Element)object;
+			source = XMLUtils.createNSUnawareDocument(input);
+		}
+		catch (XMLException e)
+		{
+			throw new InterfaceConfigException(messages.screenFactoryErrorParsingScreen(pageFile.toString(), e.getMessage()));
+		}
+		
+		NodeList elementList = source.getElementsByTagName("script");
+		
+		int length = elementList.getLength();
+		for (int i = 0; i < length; i++)
+		{
+			Element element = (Element) elementList.item(i);
 			
-			String src = element.getAttributeValue("src");
+			String src = element.getAttribute("src");
 			
 			if (src != null && src.endsWith(MODULE_IMPORT_SUFFIX))
 			{
