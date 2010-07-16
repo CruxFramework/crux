@@ -15,7 +15,9 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
+import org.w3c.dom.Element;
+
 public interface WidgetParser 
 {
-	void parse(Widget widget, Object element);
+	void parse(Widget widget, Element element);
 }

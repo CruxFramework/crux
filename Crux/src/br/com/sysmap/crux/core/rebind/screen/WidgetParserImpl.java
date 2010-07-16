@@ -15,12 +15,11 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
-import java.util.List;
-
-import net.htmlparser.jericho.Attribute;
-import net.htmlparser.jericho.Attributes;
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.TextExtractor;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * 
@@ -32,7 +31,7 @@ public class WidgetParserImpl implements WidgetParser
 	/**
 	 * 
 	 */
-	public void parse(Widget widget, Object element) 
+	public void parse(Widget widget, Element element) 
 	{
 		Element elem = (Element) element;
 		parse(elem, widget, true);
@@ -46,20 +45,24 @@ public class WidgetParserImpl implements WidgetParser
 	 */
 	private void parse(Element elem, Widget widget, boolean parseIfWidget)
 	{
-		if(elem != null && elem.getName().toUpperCase().equals("SPAN"))
+		if(elem != null && elem.getLocalName().equalsIgnoreCase("SPAN"))
 		{
 			if(!isWidget(elem) || parseIfWidget)
 			{
 				extractProperties(elem, widget);
 				
-				List<?>childElements = elem.getChildElements();
+				NodeList childElements = elem.getChildNodes();
 				
-				if(childElements != null && childElements.size() > 0)
+				int length = childElements.getLength();
+				if(childElements != null && length > 0)
 				{
-					for (Object child : childElements)
+					for (int i = 0; i < length; i++)
 					{
-						if(child instanceof Element)
+						Node childNode = childElements.item(i);
+						
+						if(Node.ELEMENT_NODE == childNode.getNodeType())
 						{
+							Element child = (Element) childElements.item(i);
 							Element childElem = (Element) child;
 							parse(childElem, widget, false);
 						}
@@ -80,18 +83,11 @@ public class WidgetParserImpl implements WidgetParser
 	 */
 	private void extractInnerText(Element elem, Widget widget)
 	{
-		TextExtractor textExtractor = elem.getTextExtractor();
+		String text = elem.getTextContent();
 		
-		if(textExtractor != null)
+		if(text != null && text.length() > 0)
 		{
-			String text = textExtractor.toString();
-			
-			text = text.trim();
-			
-			if(text.length() > 0)
-			{
-				widget.addPropertyValue(text);
-			}
+			widget.addPropertyValue(text);
 		}
 	}
 
@@ -102,7 +98,7 @@ public class WidgetParserImpl implements WidgetParser
 	 */
 	private boolean isWidget(Element elem)
 	{
-		String att = elem.getAttributeValue("_type");
+		String att = elem.getAttribute("_type");
 		return att != null && att.trim().length() > 0;
 	}
 
@@ -113,11 +109,12 @@ public class WidgetParserImpl implements WidgetParser
 	 */
 	private void extractProperties(Element elem, Widget widget)
 	{
-		Attributes attrs =  elem.getAttributes();
+		NamedNodeMap attributes = elem.getAttributes();
 		
-		for (Object object : attrs) 
+		int length = attributes.getLength();
+		for (int i = 0; i < length; i++) 
 		{
-			Attribute attr = (Attribute)object;
+			Attr attr = (Attr)attributes.item(i);
 			String attrName = attr.getName();
 			
 			if (attrName.equals("id") || attrName.equals("_type"))

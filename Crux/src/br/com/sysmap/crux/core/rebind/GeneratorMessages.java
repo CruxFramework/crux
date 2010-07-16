@@ -175,11 +175,14 @@ public interface GeneratorMessages
 	@DefaultServerMessage("[screenFactory 005] - Error retrieving screen {0}. Error: {1}.")
 	String screenFactoryErrorRetrievingScreen(String screenId, String errMsg);
 
-	@DefaultServerMessage("[screenFactory 006] - Error Creating widget {0}. Error: {1}.")
+	@DefaultServerMessage("[screenFactory 006] - Error creating widget {0}. Error: {1}.")
 	String screenFactoryGenericErrorCreateWidget(String screenId, String errMsg);
 
 	@DefaultServerMessage("[screenFactory 007] - Screen {0} not found!")
 	String screenFactoryScreeResourceNotFound(String screenId);
+	
+	@DefaultServerMessage("[screenFactory 008] - Error parsing screen {0}. Details: {1}.")
+	String screenFactoryErrorParsingScreen(String screenId, String errMsg);
 
 	@DefaultServerMessage("[Screen 001] - Error setting property {0} for widget {1}.")
 	String screenPropertyError(String property, String widgetId);

@@ -18,18 +18,17 @@ package br.com.sysmap.crux.core.rebind.screen;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import net.htmlparser.jericho.Attribute;
-import net.htmlparser.jericho.Attributes;
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.Source;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
@@ -38,6 +37,8 @@ import br.com.sysmap.crux.core.rebind.controller.ClientControllers;
 import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
 import br.com.sysmap.crux.core.rebind.screen.formatter.Formatters;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
+import br.com.sysmap.crux.core.utils.XMLUtils;
+import br.com.sysmap.crux.core.utils.XMLUtils.XMLException;
 
 /**
  * Factory for screens at the application's server side. It is necessary for GWT generators 
@@ -54,8 +55,8 @@ public class ScreenFactory
 	private static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 	private static final Lock screenLock = new ReentrantLock();	
 
-	private Map<String, Screen> screenCache = new HashMap<String, Screen>();
-	
+	private Map<String, Screen> screenCache = new HashMap<String, Screen>();	
+		
 	/**
 	 * Singleton Constructor
 	 */
@@ -128,9 +129,9 @@ public class ScreenFactory
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	private Widget createWidget(Source source, Element element, Screen screen) throws ScreenConfigException
+	private Widget createWidget(Document source, Element element, Screen screen) throws ScreenConfigException
 	{
-		String widgetId = element.getAttributeValue("id");
+		String widgetId = element.getAttribute("id");
 		if (widgetId == null || widgetId.trim().length() == 0)
 		{
 			throw new ScreenConfigException(messages.screenFactoryWidgetIdRequired());
@@ -151,14 +152,16 @@ public class ScreenFactory
 		return widget;
 	}
 
-	private String getScreenModule(List<?> scriptList) throws ScreenConfigException
+	private String getScreenModule(NodeList nodeList) throws ScreenConfigException
 	{
 		String result = null;
-		for (Object object : scriptList)
+		
+		int length = nodeList.getLength();
+		for (int i = 0; i < length; i++)
 		{
-			Element element = (Element)object;
+			Element item = (Element) nodeList.item(i);
 			
-			String src = element.getAttributeValue("src");
+			String src = item.getAttribute("src");
 			
 			if (src != null && src.endsWith(".nocache.js"))
 			{
@@ -191,9 +194,9 @@ public class ScreenFactory
 	 */
 	private boolean isScreenDefinitions(Element element)
 	{
-		if ("span".equalsIgnoreCase(element.getName()))
+		if ("span".equalsIgnoreCase(element.getLocalName()))
 		{
-			String type = element.getAttributeValue("_type");
+			String type = element.getAttribute("_type");
 			if (type != null && "screen".equals(type))
 			{
 				return true;
@@ -209,9 +212,9 @@ public class ScreenFactory
 	 */
 	private boolean isValidWidget(Element element)
 	{
-		if ("span".equalsIgnoreCase(element.getName()))
+		if ("span".equalsIgnoreCase(element.getLocalName()))
 		{
-			String type = element.getAttributeValue("_type");
+			String type = element.getAttribute("_type");
 			if (type != null && type.trim().length() > 0 && !"screen".equals(type))
 			{
 				return true;
@@ -231,7 +234,7 @@ public class ScreenFactory
 	{
 		try 
 		{
-			String type = element.getAttributeValue("_type");
+			String type = element.getAttribute("_type");
 			WidgetParser parser = new WidgetParserImpl();
 			Widget widget = new Widget();
 			widget.setId(widgetId);
@@ -256,20 +259,30 @@ public class ScreenFactory
 	private Screen parseScreen(String id, InputStream stream) throws IOException, ScreenConfigException
 	{
 		Screen screen = null;
-		Source source = new Source(stream);
-		source.fullSequentialParse();
+		Document source = null;
+		
+		try
+		{
+			source = XMLUtils.createNSUnawareDocument(stream);
+		}
+		catch (XMLException e)
+		{
+			logger.error(e.getMessage(), e);
+			throw new ScreenConfigException(messages.screenFactoryErrorParsingScreen(id, e.getMessage()));
+		}
 
-		String screenModule = getScreenModule(source.getAllElements("script"));
+		String screenModule = getScreenModule(source.getElementsByTagName("script"));
 		
 		if(screenModule != null)
 		{
 			screen = new Screen(id, screenModule);
 			
-			List<?> elementList = source.getAllElements("span");
+			NodeList elementList = source.getElementsByTagName("span");
 			
-			for (Object object : elementList) 
+			int length = elementList.getLength();
+			for (int i = 0; i < length; i++) 
 			{
-				Element compCandidate = (Element) object;
+				Element compCandidate = (Element) elementList.item(i);
 				if (isValidWidget(compCandidate))
 				{
 					try 
@@ -301,10 +314,13 @@ public class ScreenFactory
 	{
 		Element elem = (Element) compCandidate;
 		
-		Attributes attrs =  elem.getAttributes();
-		for (Object object : attrs) 
+		NamedNodeMap attributes = elem.getAttributes();
+		
+		int length = attributes.getLength();
+		
+		for (int i = 0; i < length; i++) 
 		{
-			Attribute attr = (Attribute)object;
+			Attr attr = (Attr) attributes.item(i);
 			String attrName = attr.getName();
 			
 			if(attrName.equals("_useController"))
@@ -351,7 +367,7 @@ public class ScreenFactory
 	 * @param attr
 	 * @throws ScreenConfigException 
 	 */
-	private void parseScreenUseDatasourceAttribute(Screen screen, Attribute attr) throws ScreenConfigException
+	private void parseScreenUseDatasourceAttribute(Screen screen, Attr attr) throws ScreenConfigException
     {
 	    String datasourceStr =  attr.getValue();
 	    if (datasourceStr != null)
@@ -377,7 +393,7 @@ public class ScreenFactory
 	 * @param attr
 	 * @throws ScreenConfigException 
 	 */
-	private void parseScreenUseFormatterAttribute(Screen screen, Attribute attr) throws ScreenConfigException
+	private void parseScreenUseFormatterAttribute(Screen screen, Attr attr) throws ScreenConfigException
     {
 	    String formatterStr =  attr.getValue();
 	    if (formatterStr != null)
@@ -404,7 +420,7 @@ public class ScreenFactory
 	 * @throws ScreenConfigException 
 	 */
 	@SuppressWarnings("deprecation")
-    private void parseScreenUseSerializableAttribute(Screen screen, Attribute attr) throws ScreenConfigException
+    private void parseScreenUseSerializableAttribute(Screen screen, Attr attr) throws ScreenConfigException
     {
 	    String serializerStr =  attr.getValue();
 	    if (serializerStr != null)
@@ -430,7 +446,7 @@ public class ScreenFactory
 	 * @param attr
 	 * @throws ScreenConfigException 
 	 */
-	private void parseScreenUseControllerAttribute(Screen screen, Attribute attr) throws ScreenConfigException
+	private void parseScreenUseControllerAttribute(Screen screen, Attr attr) throws ScreenConfigException
     {
 	    String handlerStr =  attr.getValue();
 	    if (handlerStr != null)
