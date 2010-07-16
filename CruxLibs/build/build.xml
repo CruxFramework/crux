@@ -8,7 +8,6 @@
 	<property name="compiler.project" value="../CruxCompiler" />
 	<property name="gwt.widgets.project" value="../CruxGWTWidgets" />
 	<property name="html.tags.project" value="../CruxHtmlTags" />
-	<property name="html.tags.compile.project" value="../CruxHTMLTagsCompileTask" />
 	<property name="modules.project" value="../CruxModules" />
 	<property name="modules.compiler.project" value="../CruxModulesCompiler" />
 	<property name="modules.compiler.dist" value="${modules.compiler.project}/dist" />
@@ -161,13 +160,6 @@
 				<include name="svnClientAdapter.jar" />
 				<include name="svnjavahl.jar" />
 				<include name="svnkit.jar" />
-			</fileset>
-		</copy>
-
-		<!-- CruxHtmlTagsCompileTask -->
-		<copy todir="${html.tags.compile.project}/lib" >
-			<fileset dir="${dependencies.jars.dir}">
-				<include name="ant.jar" />
 			</fileset>
 		</copy>
 
