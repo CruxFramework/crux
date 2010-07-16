@@ -46,8 +46,8 @@
 			-->
 		</copydir>
 		
-		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${temp.dir}/webroot" 
-			                keepPagesGeneratedFiles="true" pagesOutputDir="${temp.dir}/webroot">
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${temp.dir}/webroot" webDir="${temp.dir}/webroot" 
+			                keepPagesGeneratedFiles="true" pagesOutputDir="${temp.dir}/webroot" indentPages="false">
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${web.root}" />
@@ -89,7 +89,7 @@
 	========================================================================================================
 	-->
 	<target name="compile-scripts">
-		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" keepPagesGeneratedFiles="false" >
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}"  webDir="${web.root}" keepPagesGeneratedFiles="false" >
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${web.root}" />
@@ -115,7 +115,7 @@
 	========================================================================================================
 	-->
 	<target name="fast-compile-scripts">
-		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" keepPagesGeneratedFiles="false">
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" webDir="${web.root}" keepPagesGeneratedFiles="false">
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${web.root}" />

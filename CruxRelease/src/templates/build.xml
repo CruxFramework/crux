@@ -45,12 +45,11 @@
 			-->
 		</copydir>
 		
-		<cruxcompile srcDir="${src.dir}" keepPagesGeneratedFiles="true" outputDir="${temp.dir}/webroot" pagesOutputDir="${temp.dir}/webroot">
-			<dirset dir="${web.root}" />
+		<cruxcompile srcDir="${src.dir}" keepPagesGeneratedFiles="true" outputDir="${temp.dir}/webroot" webDir="${temp.dir}/webroot" pagesOutputDir="${temp.dir}/webroot">
+			<dirset dir="${temp.dir}/webroot" />
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${target.classes.dir}" />
-				<pathelement path="${web.root}" />
 			</classpath>
 
 			<!-- change these two parameters if you need to modify memory settings -->
@@ -89,7 +88,7 @@
 	========================================================================================================
 	-->
 	<target name="compile-scripts">
-		<cruxcompile srcDir="${src.dir}" outputDir="${web.root}" keepPagesGeneratedFiles="false">
+		<cruxcompile srcDir="${src.dir}" outputDir="${web.root}" webDir="${web.root}" keepPagesGeneratedFiles="false">
 			<dirset dir="${web.root}" />
 			<classpath>
 				<path refid="build.classpath" />
@@ -116,7 +115,7 @@
 	========================================================================================================
 	-->
 	<target name="fast-compile-scripts">
-		<cruxcompile srcDir="${src.dir}" outputDir="${web.root}" keepPagesGeneratedFiles="false">
+		<cruxcompile srcDir="${src.dir}" outputDir="${web.root}" webDir="${web.root}" keepPagesGeneratedFiles="false">
 			<dirset dir="${web.root}" />
 			<classpath>
 				<path refid="build.classpath" />
