@@ -7,6 +7,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/CruxScannotation"/>
 	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
-	<classpathentry kind="lib" path="lib/jericho-html.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
