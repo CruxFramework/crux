@@ -15,18 +15,20 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 /**
- * @author Thiago da Rosa de Bustamante -
+ * @author Thiago da Rosa de Bustamante 
  *
  */
-public class WizardAccessor
+public class WizardAccessor<T extends Serializable>
 {
-	private final WizardProxy proxy;
+	private final WizardProxy<T> proxy;
 
 	/**
 	 * @param proxy
 	 */
-	WizardAccessor(WizardProxy proxy)
+	WizardAccessor(WizardProxy<T> proxy)
     {
 		this.proxy = proxy;
     }
@@ -111,9 +113,9 @@ public class WizardAccessor
 	/**
 	 * @param data
 	 */
-	public void updateContext(Object data)
+	public void updateData(T data)
 	{
-		proxy.updateContext(data);
+		proxy.updateData(data);
 	}
 
 	/**
@@ -121,8 +123,8 @@ public class WizardAccessor
 	 * @param dataType
 	 * @return
 	 */
-	public Object readContext()
+	public T readData()
 	{
-		return proxy.readContext();
+		return proxy.readData();
 	}
 }

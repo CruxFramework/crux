@@ -15,11 +15,18 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 /**
+ * This interface inherited Objects are responsible for serialization and 
+ * context access of Wizard data objects.
+ * 
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface RegisteredWizardData
+public interface WizardDataSerializer<T extends Serializable>
 {
-	//TODO - Thiago - wizardData
+	void setWizard(Wizard<T> wizard);
+	T readObject();
+	void writeObject(T data);
 }

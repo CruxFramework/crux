@@ -15,11 +15,14 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.event.Event;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
@@ -33,11 +36,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class WizardPage extends AbstractWidgetStep
+public class WizardPage<T extends Serializable> extends AbstractWidgetStep<T>
 {
 	static final String PAGE_UNIQUE_ID = "__WizardPage_";
 	
-	private Map<String, WizardCommandHandler> commandHandlers = new HashMap<String, WizardCommandHandler>();
+	private Map<String, WizardCommandHandler<T>> commandHandlers = new HashMap<String, WizardCommandHandler<T>>();
 	private Map<String, WizardCommandData> commands = new LinkedHashMap<String, WizardCommandData>();
 	
 	public WizardPage()
@@ -55,12 +58,7 @@ public class WizardPage extends AbstractWidgetStep
     }
 	
 	@Override
-	public void setVisible(boolean visible)
-	{
-	}
-	
-	@Override
-	public boolean addCommand(String id, String label, WizardCommandHandler handler, int order)
+	public boolean addCommand(String id, String label, WizardCommandHandler<T> handler, int order)
 	{
 		if (!commands.containsKey(id))
 		{
@@ -95,22 +93,36 @@ public class WizardPage extends AbstractWidgetStep
 		}
 		return false;
 	}
-
+	@Override
+	public void setVisible(boolean visible)
+	{
+	}
+	
 	/**
-	 * @return
+	 * @param id
+	 * @param label
+	 * @param commandEvent
+	 * @param order
 	 */
-	WizardCommandData[] listCommands()
-    {
-	    return commands.values().toArray(new WizardCommandData[commands.size()]);
-    }
+	void addCommand(String id, String label, final Event commandEvent, int order)
+	{
+		WizardCommandHandler<T> handler = new WizardCommandHandler<T>()
+		{
+			public void onCommand(WizardCommandEvent<T> event)
+			{
+				Events.callEvent(commandEvent, event);
+			}
+		};
+		addCommand(id, label, handler, order);
+	}
 
 	/**
 	 * @param commandId
 	 * @param wizardCommandEvent
 	 */
-	void fireCommandEvent(String commandId, WizardCommandEvent wizardCommandEvent)
+	void fireCommandEvent(String commandId, WizardCommandEvent<T> wizardCommandEvent)
     {
-		WizardCommandHandler handler = commandHandlers.get(commandId);
+		WizardCommandHandler<T> handler = commandHandlers.get(commandId);
 		if (handler != null)
 		{
 			try
@@ -122,5 +134,23 @@ public class WizardPage extends AbstractWidgetStep
             	Crux.getErrorHandler().handleError(WidgetMsgFactory.getMessages().wizardCommandError(commandId, e.getMessage()), e);
             }
 		}
+    }
+
+	/**
+	 * @param commandId
+	 * @param wizardId
+	 */
+	void fireCommandEvent(String commandId, String wizardId)
+	{
+		WizardCommandEvent<T> wizardCommandEvent = new WizardCommandEvent<T>(new PageWizardProxy<T>(wizardId));
+		fireCommandEvent(commandId, wizardCommandEvent);
+	}
+
+	/**
+	 * @return
+	 */
+	WizardCommandData[] listCommands()
+    {
+	    return commands.values().toArray(new WizardCommandData[commands.size()]);
     }
 }

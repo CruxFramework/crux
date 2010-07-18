@@ -52,4 +52,13 @@
       		<when-property-is name="user.agent" value="gecko1_8" />
     	</any>
     </replace-with>
+    <generate-with class="br.com.sysmap.crux.widgets.rebind.wizard.RegisteredWizardDataSerializerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.wizard.RegisteredWizardDataSerializer" />
+	</generate-with>
+    <generate-with class="br.com.sysmap.crux.widgets.rebind.wizard.WizardDataSerializerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.wizard.WizardDataSerializer" />
+	</generate-with>
+    <generate-with class="br.com.sysmap.crux.widgets.rebind.wizard.WizardInstantiatorGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.wizard.WizardInstantiator" />
+	</generate-with>
 </module>

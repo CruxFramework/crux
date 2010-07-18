@@ -15,23 +15,23 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 
 
 /**
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class LeaveEvent extends StepEvent<LeaveHandler> 
+public class LeaveEvent<T extends Serializable> extends StepEvent<LeaveHandler<T>, T> 
 {
-	private static Type<LeaveHandler> TYPE = new Type<LeaveHandler>();
-
 	private boolean canceled;
 	private final String nextStep;
 
 	/**
 	 * 
 	 */
-	protected LeaveEvent (WizardProxy wizardProxy, String nextStep)
+	protected LeaveEvent (WizardProxy<T> wizardProxy, String nextStep)
 	{
 		super(wizardProxy);
 		this.nextStep = nextStep;
@@ -40,9 +40,9 @@ public class LeaveEvent extends StepEvent<LeaveHandler>
 	/**
 	 * @return
 	 */
-	public static Type<LeaveHandler> getType()
+	public static <T extends Serializable> Type<LeaveHandler<T>> getType(LeaveHandler<T> handler)
 	{
-		return TYPE;
+		return new Type<LeaveHandler<T>>();
 	}
 
 	/**
@@ -50,23 +50,35 @@ public class LeaveEvent extends StepEvent<LeaveHandler>
 	 * @param source
 	 * @return
 	 */
-	public static LeaveEvent fire(HasLeaveHandlers source, WizardProxy proxy, String nextStep)
+	public static <T extends Serializable> LeaveEvent<T> fire(HasLeaveHandlers<T> source, WizardProxy<T> proxy, String nextStep)
 	{
-		LeaveEvent event = new LeaveEvent(proxy, nextStep);
+		LeaveEvent<T> event = new LeaveEvent<T>(proxy, nextStep);
 		source.fireEvent(event);
 		return event;
 	}
 
+	/**
+	 * @param <T>
+	 * @param source
+	 * @param wizardId
+	 * @param nextStep
+	 * @return
+	 */
+	public static <T extends Serializable> LeaveEvent<T> fire(HasLeaveHandlers<T> source, String wizardId, String nextStep)
+	{
+		return fire(source, new PageWizardProxy<T>(wizardId), nextStep);
+	}
+
 	@Override
-	protected void dispatch(LeaveHandler handler)
+	protected void dispatch(LeaveHandler<T> handler)
 	{
 		handler.onLeave(this);
 	}
 
 	@Override
-	public Type<LeaveHandler> getAssociatedType()
+	public Type<LeaveHandler<T>> getAssociatedType()
 	{
-		return TYPE;
+		return new Type<LeaveHandler<T>>();
 	}
 
 	/**
@@ -89,6 +101,4 @@ public class LeaveEvent extends StepEvent<LeaveHandler>
     {
     	return nextStep;
     }
-	
-	
 }

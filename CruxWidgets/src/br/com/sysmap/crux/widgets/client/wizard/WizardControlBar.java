@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.event.Event;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.decoratedbutton.DecoratedButton;
@@ -35,7 +38,7 @@ import com.google.gwt.user.client.ui.Composite;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class WizardControlBar extends AbstractWizardNavigationBar
+public class WizardControlBar<T extends Serializable> extends AbstractWizardNavigationBar<T>
 {
 	public static String BACK_COMMAND = "back";
 
@@ -51,7 +54,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	private String buttonWidth;
 	private String cancelLabel;
 	private int cancelOrder = 3;
-	private Map<String, WizardCommand> commands = new HashMap<String, WizardCommand>();
+	private Map<String, WizardCommand<T>> commands = new HashMap<String, WizardCommand<T>>();
 	private String finishLabel;
 	private int finishOrder = 2;
 	private String nextLabel;
@@ -85,8 +88,26 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	 * @param handler
 	 * @param order
 	 */
-	public void addCommand(String id, String label, WizardCommandHandler handler, int order)
+	public void addCommand(String id, String label, WizardCommandHandler<T> handler, int order)
 	{
+		addCommand(id, label, handler, order, true);
+	}
+	
+	/**
+	 * @param id
+	 * @param label
+	 * @param commandEvent
+	 * @param order
+	 */
+	void addCommand(String id, String label, final Event commandEvent, int order)
+	{
+		WizardCommandHandler<T> handler = new WizardCommandHandler<T>()
+		{
+			public void onCommand(WizardCommandEvent<T> event)
+			{
+				Events.callEvent(commandEvent, event);
+			}
+		};
 		addCommand(id, label, handler, order, true);
 	}
 
@@ -96,10 +117,10 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	 * @param order
 	 * @param updateBar
 	 */
-	public void addCommand(String id, String label, WizardCommandHandler handler, int order, boolean updateBar)
+	public void addCommand(String id, String label, WizardCommandHandler<T> handler, int order, boolean updateBar)
 	{
 		checkWizard();
-		commands.put(id, new WizardCommand(this, id, order, label, handler, new WidgetWizardProxy(wizard)));
+		commands.put(id, new WizardCommand<T>(this, id, order, label, handler, new WidgetWizardProxy<T>(wizard)));
 		if (updateBar)
 		{
 			updateCommands();
@@ -172,7 +193,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	 * @param id
 	 * @return
 	 */
-	public WizardCommand getCommand(String id)
+	public WizardCommand<T> getCommand(String id)
 	{
 		return commands.get(id);
 	}
@@ -212,7 +233,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	public void setBackLabel(String backLabel)
 	{
 		this.backLabel = backLabel;
-		WizardCommand command = getCommand(BACK_COMMAND);
+		WizardCommand<T> command = getCommand(BACK_COMMAND);
 		if (command != null)
 		{
 			command.setLabel(this.backLabel);
@@ -225,7 +246,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	public void setBackOrder(int backOrder)
     {
     	this.backOrder = backOrder;
-		WizardCommand command = getCommand(BACK_COMMAND);
+		WizardCommand<T> command = getCommand(BACK_COMMAND);
 		if (command != null)
 		{
 			command.setOrder(this.backOrder);
@@ -256,7 +277,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	public void setCancelLabel(String cancelLabel)
 	{
 		this.cancelLabel = cancelLabel;
-		WizardCommand command = getCommand(CANCEL_COMMAND);
+		WizardCommand<T> command = getCommand(CANCEL_COMMAND);
 		if (command != null)
 		{
 			command.setLabel(this.cancelLabel);
@@ -269,7 +290,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	public void setCancelOrder(int cancelOrder)
     {
     	this.cancelOrder = cancelOrder;
-		WizardCommand command = getCommand(CANCEL_COMMAND);
+		WizardCommand<T> command = getCommand(CANCEL_COMMAND);
 		if (command != null)
 		{
 			command.setOrder(this.cancelOrder);
@@ -282,7 +303,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	public void setFinishLabel(String finishLabel)
 	{
 		this.finishLabel = finishLabel;
-		WizardCommand command = getCommand(FINISH_COMMAND);
+		WizardCommand<T> command = getCommand(FINISH_COMMAND);
 		if (command != null)
 		{
 			command.setLabel(this.finishLabel);
@@ -295,7 +316,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	public void setFinishOrder(int finishOrder)
     {
     	this.finishOrder = finishOrder;
-		WizardCommand command = getCommand(FINISH_COMMAND);
+		WizardCommand<T> command = getCommand(FINISH_COMMAND);
 		if (command != null)
 		{
 			command.setOrder(this.finishOrder);
@@ -308,7 +329,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	public void setNextLabel(String nextLabel)
 	{
 		this.nextLabel = nextLabel;
-		WizardCommand command = getCommand(NEXT_COMMAND);
+		WizardCommand<T> command = getCommand(NEXT_COMMAND);
 		if (command != null)
 		{
 			command.setLabel(this.nextLabel);
@@ -321,7 +342,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	public void setNextOrder(int nextOrder)
     {
     	this.nextOrder = nextOrder;
-		WizardCommand command = getCommand(NEXT_COMMAND);
+		WizardCommand<T> command = getCommand(NEXT_COMMAND);
 		if (command != null)
 		{
 			command.setOrder(this.nextOrder);
@@ -331,7 +352,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardStepListener#stepChanged(br.com.sysmap.crux.widgets.client.wizard.Step, br.com.sysmap.crux.widgets.client.wizard.Step)
 	 */
-	public void stepChanged(Step currentStep, Step previousStep)
+	public void stepChanged(Step<T> currentStep, Step<T> previousStep)
     {
 		checkWizard();
 		int currentOrder = wizard.getStepOrder(currentStep.getId());
@@ -346,7 +367,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	 * @param wizard
 	 */
 	@Override
-	protected void setWizard(Wizard wizard)
+	protected void setWizard(Wizard<T> wizard)
     {
     	super.setWizard(wizard);
     	addDefaultCommands();
@@ -361,52 +382,52 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	private void addDefaultCommands()
     {
 		checkWizard();
-		WizardCommand command = new WizardCommand(this, BACK_COMMAND, this.backOrder, backLabel, new WizardCommandHandler()
+		WizardCommand<T> command = new WizardCommand<T>(this, BACK_COMMAND, this.backOrder, backLabel, new WizardCommandHandler<T>()
 		{
-			public void onCommand(WizardCommandEvent event)
+			public void onCommand(WizardCommandEvent<T> event)
 			{
 				if (!wizard.isChangingStep())
 				{
 					back();
 				}
 			}
-		}, new WidgetWizardProxy(wizard)); 
+		}, new WidgetWizardProxy<T>(wizard)); 
 			
 		command.addStyleDependentName("back");
 		commands.put(BACK_COMMAND, command);
 		
-		command = new WizardCommand(this, NEXT_COMMAND, this.nextOrder, nextLabel, new WizardCommandHandler()
+		command = new WizardCommand<T>(this, NEXT_COMMAND, this.nextOrder, nextLabel, new WizardCommandHandler<T>()
 		{
-			public void onCommand(WizardCommandEvent event)
+			public void onCommand(WizardCommandEvent<T> event)
 			{
 				if (!wizard.isChangingStep())
 				{
 					next();
 				}
 			}
-		}, new WidgetWizardProxy(wizard)); 
+		}, new WidgetWizardProxy<T>(wizard)); 
 
 		command.addStyleDependentName("next");
 		commands.put(NEXT_COMMAND, command);
 
-		command = new WizardCommand(this, CANCEL_COMMAND, this.cancelOrder, cancelLabel, new WizardCommandHandler()
+		command = new WizardCommand<T>(this, CANCEL_COMMAND, this.cancelOrder, cancelLabel, new WizardCommandHandler<T>()
 		{
-			public void onCommand(WizardCommandEvent event)
+			public void onCommand(WizardCommandEvent<T> event)
 			{
 				cancel();
 			}
-		}, new WidgetWizardProxy(wizard));
+		}, new WidgetWizardProxy<T>(wizard));
 		
 		command.addStyleDependentName("cancel");
 		commands.put(CANCEL_COMMAND, command);
 
-		command = new WizardCommand(this, FINISH_COMMAND, this.finishOrder, finishLabel, new WizardCommandHandler()
+		command = new WizardCommand<T>(this, FINISH_COMMAND, this.finishOrder, finishLabel, new WizardCommandHandler<T>()
 		{
-			public void onCommand(WizardCommandEvent event)
+			public void onCommand(WizardCommandEvent<T> event)
 			{
 				finish();
 			}
-		}, new WidgetWizardProxy(wizard));
+		}, new WidgetWizardProxy<T>(wizard));
 		
 		command.addStyleDependentName("finish");
 		commands.put(FINISH_COMMAND, command);
@@ -457,7 +478,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	 */
 	private void updateCommandButtons()
     {
-		for (WizardCommand command: commands.values())
+		for (WizardCommand<T> command: commands.values())
 		{
 			command.setControlBar(this);
 		}
@@ -468,9 +489,9 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	 */
 	private void updateCommands()
     {
-		List<WizardCommand> sortedCommands = new ArrayList<WizardCommand>();
+		List<WizardCommand<T>> sortedCommands = new ArrayList<WizardCommand<T>>();
 
-		for (WizardCommand command: commands.values())
+		for (WizardCommand<T> command: commands.values())
 		{
 			sortedCommands.add(command);
 		}
@@ -480,7 +501,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 		int originalScrollPosition = (rollingPanel.isVertical()?rollingPanel.getVerticalScrollPosition():rollingPanel.getHorizontalScrollPosition());
 		rollingPanel.clear();
 		
-		for (final WizardCommand command: sortedCommands)
+		for (final WizardCommand<T> command: sortedCommands)
 		{
 			rollingPanel.add(command);
 		}
@@ -491,7 +512,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	/**
 	 * @param currentStep
 	 */
-	private void updateStepCommands(Step currentStep)
+	private void updateStepCommands(Step<T> currentStep)
     {
 		for (String command : stepCommands)
         {
@@ -499,12 +520,12 @@ public class WizardControlBar extends AbstractWizardNavigationBar
         }
 	    stepCommands.clear();
 	    
-	    Iterator<WizardCommand> commands = currentStep.iterateCommands();
+	    Iterator<WizardCommand<T>> commands = currentStep.iterateCommands();
 	    if (commands != null)
 	    {
 	    	while (commands.hasNext())
 	    	{
-	    		WizardCommand command = commands.next();
+	    		WizardCommand<T> command = commands.next();
 	    		String commandId = command.getId();
 	    		command.setControlBar(this);
 	    		this.commands.put(commandId, command);
@@ -518,15 +539,16 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
-	public static class WizardCommand extends Composite implements Comparable<WizardCommand>, HasWizardCommandHandlers
+	public static class WizardCommand<T extends Serializable> extends Composite implements Comparable<WizardCommand<T>>, 
+	                    HasWizardCommandHandlers<T>
 	{
 		private DecoratedButton button;
-		private WizardControlBar controlBar;
+		private WizardControlBar<T> controlBar;
 		private String id;
 		private int order;
-		private WizardProxy proxy;
+		private WizardProxy<T> proxy;
 		
-		WizardCommand(String id, int order, String label, WizardCommandHandler commandHandler, WizardProxy proxy)
+		WizardCommand(String id, int order, String label, WizardCommandHandler<T> commandHandler, WizardProxy<T> proxy)
 		{
 			this.id = id;
 			this.order = order;
@@ -545,18 +567,19 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 			addWizardCommandHandler(commandHandler);
 		}
 		
-		WizardCommand(WizardControlBar controlBar, String id, int order, String label, WizardCommandHandler commandHandler, WizardProxy proxy)
+		WizardCommand(WizardControlBar<T> controlBar, String id, int order, String label, WizardCommandHandler<T> commandHandler, 
+				      WizardProxy<T> proxy)
 		{
 			this(id, order, label, commandHandler, proxy);
 			setControlBar(controlBar);
 		}
 		
-		public HandlerRegistration addWizardCommandHandler(WizardCommandHandler handler)
+		public HandlerRegistration addWizardCommandHandler(WizardCommandHandler<T> handler)
 		{
-			return addHandler(handler, WizardCommandEvent.getType());
+			return addHandler(handler, WizardCommandEvent.getType(handler));
 		}
 
-		public int compareTo(WizardCommand o)
+		public int compareTo(WizardCommand<T> o)
         {
 			if (o == null)
 			{
@@ -604,7 +627,7 @@ public class WizardControlBar extends AbstractWizardNavigationBar
         	}
         }
 		
-		void setControlBar(WizardControlBar controlBar)
+		void setControlBar(WizardControlBar<T> controlBar)
 		{
 			this.controlBar = controlBar;
 			if (!StringUtils.isEmpty(this.controlBar.buttonHeight))
@@ -620,5 +643,17 @@ public class WizardControlBar extends AbstractWizardNavigationBar
 				setStyleName(this.controlBar.buttonStyle);;
 			}
 		}
+
+		public void addWizardCommandEvent(final Event commandEvent)
+        {
+	        addWizardCommandHandler(new WizardCommandHandler<T>()
+			{
+				public void onCommand(WizardCommandEvent<T> event)
+                {
+					Events.callEvent(commandEvent, event);
+                }
+			});
+	        
+        }
 	}
 }

@@ -15,11 +15,13 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 /**
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public interface WizardStepListener
+public interface WizardStepListener <T extends Serializable>
 {
-	void stepChanged(Step currentStep, Step previousStep);
+	void stepChanged(Step<T> currentStep, Step<T> previousStep);
 }

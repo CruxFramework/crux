@@ -15,6 +15,10 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
+import br.com.sysmap.crux.core.client.event.Event;
+
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
 
@@ -22,7 +26,8 @@ import com.google.gwt.event.shared.HasHandlers;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public interface HasLeaveHandlers extends HasHandlers 
+public interface HasLeaveHandlers<T extends Serializable> extends HasHandlers 
 {
-	HandlerRegistration addLeaveHandler(LeaveHandler handler);
+	HandlerRegistration addLeaveHandler(LeaveHandler<T> handler);
+	void addLeaveEvent(final Event leaveEvent);
 }

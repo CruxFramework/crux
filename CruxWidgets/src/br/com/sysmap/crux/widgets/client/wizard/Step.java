@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
@@ -25,19 +26,19 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class Step
+public class Step<T extends Serializable>
 {
 	private boolean enabled = true;
 	private String id;
 	private String label;
 	private Widget widget;
-	private Wizard wizard;
+	private Wizard<T> wizard;
 	
 	/**
 	 * @param id
 	 * @param widget
 	 */
-	Step(Wizard wizard, String id, String label, Widget widget)
+	Step(Wizard<T> wizard, String id, String label, Widget widget)
     {
 		this.wizard = wizard;
 		this.id = id;
@@ -64,7 +65,7 @@ public class Step
 	/**
 	 * @return
 	 */
-	public Wizard getWizard()
+	public Wizard<T> getWizard()
     {
     	return wizard;
     }
@@ -96,15 +97,16 @@ public class Step
 	/**
 	 * @return
 	 */
-	Iterator<WizardCommand> iterateCommands()
+	@SuppressWarnings("unchecked")
+    Iterator<WizardCommand<T>> iterateCommands()
 	{
 		if (widget instanceof HasCommands)
 		{
-			return ((HasCommands)widget).iterateCommands();
+			return ((HasCommands<T>)widget).iterateCommands();
 		}
 		else if (widget instanceof PageStep)
 		{
-			return ((PageStep) widget).iterateWizardCommands(wizard.getElement().getId());
+			return ((PageStep<T>) widget).iterateWizardCommands(wizard.getElement().getId());
 		}
 		return null;
 	}

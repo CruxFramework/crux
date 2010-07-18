@@ -117,4 +117,9 @@ public interface WidgetMessages extends Messages
 
 	@DefaultMessage("[crux-widgets 031] - Error sorting the Grid. No DataColumn with the key ''{0}'' was found.")
 	String errorGridNoDataColumnFound(String column);
+
+	@DefaultMessage("[crux-widgets 032] - Wizard does not have any WizardData assigned.")
+	String wizardNoSerializerAssigned();
+
+	
 }

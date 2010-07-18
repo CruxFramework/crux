@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -22,17 +24,18 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-abstract class StepEvent<H extends EventHandler> extends GwtEvent<H> 
+abstract class StepEvent<H extends EventHandler, T extends Serializable> extends GwtEvent<H> 
 {
-	private final WizardAccessor wizardAccessor;
+	private final WizardAccessor<T> wizardAccessor;
 
-	StepEvent(WizardProxy wizardProxy)
+	@SuppressWarnings("unchecked")
+    StepEvent(WizardProxy<T> wizardProxy)
 	{
 		this.wizardAccessor = new WizardAccessor(wizardProxy);
 		
 	}
 
-	public WizardAccessor getWizardAccessor()
+	public WizardAccessor<T> getWizardAccessor()
     {
     	return wizardAccessor;
     }

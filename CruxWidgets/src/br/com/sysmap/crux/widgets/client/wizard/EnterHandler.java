@@ -15,13 +15,15 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 import com.google.gwt.event.shared.EventHandler;
 
 /**
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public interface EnterHandler extends EventHandler
+public interface EnterHandler<T extends Serializable> extends EventHandler
 {
-	void onEnter(EnterEvent event);
+	void onEnter(EnterEvent<T> event);
 }

@@ -24,7 +24,6 @@ import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEvent;
 import br.com.sysmap.crux.core.client.declarative.TagEvents;
 import br.com.sysmap.crux.core.client.event.Event;
-import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenFactory;
@@ -33,6 +32,7 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 
 /**
@@ -40,20 +40,32 @@ import com.google.gwt.dom.client.Element;
  *
  */
 @DeclarativeFactory(id="wizardPage", library="widgets")
-public class WizardPageFactory extends WidgetFactory<WizardPage>
+public class WizardPageFactory extends WidgetFactory<WizardPage<?>>
 {
+	private WizardInstantiator instantiator = GWT.create(WizardInstantiator.class);
+
 	@Override
-    public WizardPage instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
+    public WizardPage<?> instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
     {
-	    return new WizardPage();
+	    String wizardContextObject = element.getAttribute("_wizardContextObject");
+	    return instantiator.createWizardPage(widgetId, wizardContextObject);
     }
+
+	@Override
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="wizardContextObject", required=true)
+	})
+	public void processAttributes(br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext<WizardPage<?>> context) throws InterfaceConfigException
+	{
+		super.processAttributes(context);
+	}
 
 	@Override
 	@TagEvents({
 		@TagEvent(EnterEvtBind.class),
 		@TagEvent(LeaveEvtBind.class)
 	})
-	public void processEvents(WidgetFactoryContext<WizardPage> context) throws InterfaceConfigException
+	public void processEvents(WidgetFactoryContext<WizardPage<?>> context) throws InterfaceConfigException
 	{
 	    super.processEvents(context);
 	}
@@ -62,22 +74,22 @@ public class WizardPageFactory extends WidgetFactory<WizardPage>
 	@TagChildren({
 		@TagChild(CommandsProcessor.class)
 	})
-	public void processChildren(WidgetFactoryContext<WizardPage> context) throws InterfaceConfigException
+	public void processChildren(WidgetFactoryContext<WizardPage<?>> context) throws InterfaceConfigException
 	{
 	}
 	
 	@TagChildAttributes(tagName="commands", minOccurs="0")
-	public static class CommandsProcessor extends WidgetChildProcessor<WizardPage>
+	public static class CommandsProcessor extends WidgetChildProcessor<WizardPage<?>>
 	{
 		@Override
 		@TagChildren({
 			@TagChild(WizardCommandsProcessor.class)
 		})
-		public void processChildren(WidgetChildProcessorContext<WizardPage> context) throws InterfaceConfigException {}
+		public void processChildren(WidgetChildProcessorContext<WizardPage<?>> context) throws InterfaceConfigException {}
 	}
 	
 	@TagChildAttributes(tagName="command", maxOccurs="unbounded")
-	public static class WizardCommandsProcessor extends WidgetChildProcessor<WizardPage>
+	public static class WizardCommandsProcessor extends WidgetChildProcessor<WizardPage<?>>
 	{
 		@Override
 		@TagAttributesDeclaration({
@@ -89,7 +101,7 @@ public class WizardPageFactory extends WidgetFactory<WizardPage>
 			@TagAttributeDeclaration("height"),
 			@TagAttributeDeclaration(value="onCommand", required=true)
 		})
-		public void processChildren(WidgetChildProcessorContext<WizardPage> context) throws InterfaceConfigException 
+		public void processChildren(WidgetChildProcessorContext<WizardPage<?>> context) throws InterfaceConfigException 
 		{
 			String id = context.getChildElement().getAttribute("id");
 			String label = ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getAttribute("_label"));
@@ -97,15 +109,7 @@ public class WizardPageFactory extends WidgetFactory<WizardPage>
 			
 			final Event commandEvent = EvtBind.getWidgetEvent(context.getChildElement(), "onCommand");
 			
-			WizardCommandHandler handler = new WizardCommandHandler()
-			{
-				public void onCommand(WizardCommandEvent event)
-				{
-					Events.callEvent(commandEvent, event);
-				}
-			};
-			
-			context.getRootWidget().addCommand(id, label, handler, order);
+			context.getRootWidget().addCommand(id, label, commandEvent, order);
 			
 			String styleName = context.getChildElement().getAttribute("_styleName");
 			if (!StringUtils.isEmpty(styleName))

@@ -15,23 +15,11 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
-import java.io.Serializable;
-
-
 /**
- * @author Thiago da Rosa de Bustamante -
+ * @author Thiago da Rosa de Bustamante
  *
  */
-interface WizardProxy<T extends Serializable>
+public interface RegisteredWizardDataSerializer
 {
-	boolean first();
-	boolean next();
-	boolean back();
-	void cancel();
-	boolean finish();
-	boolean selectStep(String id, boolean ignoreLeaveEvent);
-	int getStepOrder(String id);
-	WizardControlBarAccessor getControlBar();
-	void updateData(T data);
-    T readData();
+	WizardDataSerializer<?> getWizardDataSerializer(String wizardDataId);
 }

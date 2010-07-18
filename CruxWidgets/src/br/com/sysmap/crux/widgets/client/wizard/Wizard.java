@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import br.com.sysmap.crux.widgets.client.event.FinishHandler;
 import br.com.sysmap.crux.widgets.client.event.HasCancelHandlers;
 import br.com.sysmap.crux.widgets.client.event.HasFinishHandlers;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -50,31 +52,37 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
 /**
  * @author Thiago da Rosa de Bustamante -
  */
-public class Wizard extends Composite implements HasCancelHandlers, HasFinishHandlers
+public class Wizard<T extends Serializable> extends Composite implements HasCancelHandlers, HasFinishHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Wizard";
 	
-	private WizardControlBar controlBar;
+	private WizardControlBar<T> controlBar;
 	private int currentStep = -1;
 	private DockPanel dockPanel;
 	private boolean isChangingStep = false;
-	private WizardNavigationBar navigationBar;
+	private WizardNavigationBar<T> navigationBar;
 
-	private List<WizardStepListener> stepListeners = new ArrayList<WizardStepListener>();
+	private List<WizardStepListener<T>> stepListeners = new ArrayList<WizardStepListener<T>>();
 	
 	private List<String> stepOrder = new ArrayList<String>();
-	private Map<String, Step> steps = new HashMap<String, Step>();
+	private Map<String, Step<T>> steps = new HashMap<String, Step<T>>();
+	private DeckPanel stepsPanel;
+	
+	private WizardDataSerializer<T> wizardDataSerializer;
 
-	private DeckPanel stepsPanel; 
-	private final String wizardContextObject; 
+	private static RegisteredWizardDataSerializer dataSerializer;
+	
 	
 	/**
+	 * Wizard Contructor
 	 * 
+	 * @param id widget identifier
+	 * @param wizardDataId the identifier associated with the WizardData class, 
+	 * annotated with <code>@WizardData</code> annotation
 	 */
-	public Wizard(String id, String wizardContextObject)
+    public Wizard(String id, String wizardDataId)
     {
-		this.dockPanel = new DockPanel(){
-		};
+		this.dockPanel = new DockPanel();
 		this.dockPanel.setStyleName(DEFAULT_STYLE_NAME);
 		
 		this.stepsPanel = new DeckPanel();
@@ -82,11 +90,29 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		this.stepsPanel.setWidth("100%");
 		this.dockPanel.add(stepsPanel, DockPanel.CENTER);		
 		this.dockPanel.getElement().setId(id);
-		this.wizardContextObject = wizardContextObject;
 		
+		initWizardDataSerializer(wizardDataId);
 		initWidget(dockPanel);
     }
-	
+
+    @SuppressWarnings("unchecked")
+	private void initWizardDataSerializer(String wizardDataId)
+    {
+	    if (!StringUtils.isEmpty(wizardDataId))
+		{
+			if (dataSerializer == null)
+			{
+				dataSerializer = GWT.create(RegisteredWizardDataSerializer.class);
+			}
+			this.wizardDataSerializer = (WizardDataSerializer<T>) dataSerializer.getWizardDataSerializer(wizardDataId);
+			this.wizardDataSerializer.setWizard(this);
+		}
+		else
+		{
+			wizardDataSerializer = null;	
+		}
+    }
+
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.event.HasCancelHandlers#addCancelHandler(br.com.sysmap.crux.widgets.client.event.CancelHandler)
 	 */
@@ -109,7 +135,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param url
 	 * @return
 	 */
-	public PageStep addPageStep(String id, String label, String url)
+	public PageStep<T> addPageStep(String id, String label, String url)
 	{
 		return insertPageStep(id, label, url, steps.size());
 	}
@@ -117,7 +143,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @param listener
 	 */
-	public void addStepListener(WizardStepListener listener)
+	public void addStepListener(WizardStepListener<T> listener)
 	{
 		stepListeners.add(listener);
 	}
@@ -127,7 +153,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param widget
 	 * @return
 	 */
-	public WidgetStep addWidgetStep(String id, String label, Widget widget)
+	public WidgetStep<T> addWidgetStep(String id, String label, Widget widget)
 	{
 		return insertWidgetStep(id, label, widget, steps.size());
 	}
@@ -182,7 +208,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @return
 	 */
-	public WizardControlBar getControlBar()
+	public WizardControlBar<T> getControlBar()
     {
     	return controlBar;
     }
@@ -192,7 +218,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	public String getCurrentStep()
 	{
-		Step step = getStep(currentStep);
+		Step<T> step = getStep(currentStep);
 		if (step != null)
 		{
 			return step.getId();
@@ -211,7 +237,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @return
 	 */
-	public WizardNavigationBar getNavigationBar()
+	public WizardNavigationBar<T> getNavigationBar()
     {
     	return navigationBar;
     }
@@ -220,28 +246,30 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param order
 	 * @return
 	 */
-	public PageStep getPageStep(int order)
+	@SuppressWarnings("unchecked")
+    public PageStep<T> getPageStep(int order)
 	{
-		Step step = getStep(order);
+		Step<T> step = getStep(order);
 		if (step == null)
 		{
 			return null;
 		}
-		return (PageStep)step.getWidget();
+		return (PageStep<T>)step.getWidget();
 	}
 	
 	/**
 	 * @param id
 	 * @return
 	 */
-	public PageStep getPageStep(String id)
+	@SuppressWarnings("unchecked")
+    public PageStep<T> getPageStep(String id)
 	{
-		Step step = getStep(id);
+		Step<T> step = getStep(id);
 		if (step == null)
 		{
 			return null;
 		}
-		return (PageStep)step.getWidget();
+		return (PageStep<T>)step.getWidget();
 	}
 
 	/**
@@ -266,28 +294,30 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param order
 	 * @return
 	 */
-	public WidgetStep getWidgetStep(int order)
+	@SuppressWarnings("unchecked")
+    public WidgetStep<T> getWidgetStep(int order)
 	{
-		Step step = getStep(order);
+		Step<T> step = getStep(order);
 		if (step == null)
 		{
 			return null;
 		}
-		return (WidgetStep)step.getWidget();
+		return (WidgetStep<T>)step.getWidget();
 	}
 
 	/**
 	 * @param id
 	 * @return
 	 */
-	public WidgetStep getWidgetStep(String id)
+	@SuppressWarnings("unchecked")
+    public WidgetStep<T> getWidgetStep(String id)
 	{
-		Step step = getStep(id);
+		Step<T> step = getStep(id);
 		if (step == null)
 		{
 			return null;
 		}
-		return (WidgetStep)step.getWidget();
+		return (WidgetStep<T>)step.getWidget();
 	}
 
 	/**
@@ -297,10 +327,10 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param beforeIndex
 	 * @return
 	 */
-	public PageStep insertPageStep(String id, String label, String url, int beforeIndex)
+	public PageStep<T> insertPageStep(String id, String label, String url, int beforeIndex)
 	{
-		PageStep pageStep = new PageStep(id, url);
-		insertStep(new Step(this, id, label, pageStep), beforeIndex);
+		PageStep<T> pageStep = new PageStep<T>(id, url);
+		insertStep(new Step<T>(this, id, label, pageStep), beforeIndex);
 		return pageStep;
 	}
 
@@ -310,10 +340,10 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param beforeIndex
 	 * @return
 	 */
-	public WidgetStep insertWidgetStep(String id, String label, Widget widget, int beforeIndex)
+	public WidgetStep<T> insertWidgetStep(String id, String label, Widget widget, int beforeIndex)
 	{
-		WidgetStep widgetStep = new WidgetStep(widget, this);
-		insertStep(new Step(this, id, label, widgetStep), beforeIndex);
+		WidgetStep<T> widgetStep = new WidgetStep<T>(widget, this);
+		insertStep(new Step<T>(this, id, label, widgetStep), beforeIndex);
 		return widgetStep;
 	}
 
@@ -323,7 +353,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	public boolean isStepEnabled(int stepOrder)
 	{
-		Step step = getStep(stepOrder);
+		Step<T> step = getStep(stepOrder);
 		if (step == null)
 		{
 			throw new WizardException(WidgetMsgFactory.getMessages().wizardStepNotFound(stepOrder));
@@ -338,7 +368,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	public boolean isStepEnabled(String stepId)
 	{
-		Step step = getStep(stepId);
+		Step<T> step = getStep(stepId);
 		if (step == null)
 		{
 			throw new WizardException(WidgetMsgFactory.getMessages().wizardStepNotFound(stepId));
@@ -374,10 +404,13 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param dataType
 	 * @return
 	 */
-    public Object readData()
+    public T readData()
 	{
-    	//TODO Thiago - wizardValue
-        return null;
+		if (wizardDataSerializer == null)
+		{
+			throw new WizardException(WidgetMsgFactory.getMessages().wizardNoSerializerAssigned());
+		}
+        return wizardDataSerializer.readObject();
 	}
 
 	/**
@@ -390,7 +423,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		if (steps.containsKey(id))
 		{
 			int stepIndex = getStepOrder(id);
-			Step step = steps.remove(id);
+			Step<T> step = steps.remove(id);
 			ret = stepsPanel.remove(step.getWidget());
 			stepOrder.remove(stepIndex);
 			if (currentStep == stepIndex)
@@ -408,7 +441,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @param listener
 	 */
-	public void removeStepListener(WizardStepListener listener)
+	public void removeStepListener(WizardStepListener<T> listener)
 	{
 		stepListeners.remove(listener);
 	}
@@ -432,7 +465,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		boolean ret = false;
 		if (currentStep != step && step >= 0 && step < steps.size())
 		{
-			Step destinationStep = getStep(step);
+			Step<T> destinationStep = getStep(step);
 			if (!destinationStep.isEnabled())
 			{
 				throw new WizardException(WidgetMsgFactory.getMessages().wizardInvalidStepSelected(step));
@@ -487,7 +520,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param position
 	 * @param horizontalAlign
 	 */
-	public void setControlBar(final WizardControlBar controlBar, ControlPosition position, ControlHorizontalAlign horizontalAlign)
+	public void setControlBar(final WizardControlBar<T> controlBar, ControlPosition position, ControlHorizontalAlign horizontalAlign)
     {
     	if (setControlBar(controlBar, position))
     	{
@@ -496,13 +529,33 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 			dockPanel.setCellHorizontalAlignment(this.controlBar, align);
 		}
     }
-	
+
+	/**
+	 * @param vertical
+	 * @param position
+	 * @param verticalAlign
+	 */
+	public void setControlBar(boolean vertical, ControlPosition position, ControlVerticalAlign verticalAlign)
+    {
+		setControlBar(new WizardControlBar<T>(vertical), position, verticalAlign);
+    }
+
+	/**
+	 * @param vertical
+	 * @param position
+	 * @param horizontalAlign
+	 */
+	public void setControlBar(boolean vertical, ControlPosition position, ControlHorizontalAlign horizontalAlign)
+    {
+		setControlBar(new WizardControlBar<T>(vertical), position, horizontalAlign);
+    }
+
 	/**
 	 * @param controlBar
 	 * @param position
 	 * @param verticalAlign
 	 */
-	public void setControlBar(final WizardControlBar controlBar, ControlPosition position, ControlVerticalAlign verticalAlign)
+	public void setControlBar(final WizardControlBar<T> controlBar, ControlPosition position, ControlVerticalAlign verticalAlign)
     {
     	if (setControlBar(controlBar, position))
     	{
@@ -517,7 +570,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param position
 	 * @param horizontalAlign
 	 */
-	public void setNavigationBar(WizardNavigationBar navigationBar, ControlPosition position, ControlHorizontalAlign horizontalAlign)
+	public void setNavigationBar(WizardNavigationBar<T> navigationBar, ControlPosition position, ControlHorizontalAlign horizontalAlign)
     {
     	if (setNavigationBar(navigationBar, position))
     	{
@@ -527,12 +580,35 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 		}
     }
 	
+
+	/**
+	 * @param vertical
+	 * @param showAllSteps
+	 * @param position
+	 * @param verticalAlign
+	 */
+	public void setNavigationBar(boolean vertical, boolean showAllSteps, ControlPosition position, ControlVerticalAlign verticalAlign)
+    {
+		setNavigationBar(new WizardNavigationBar<T>(vertical, showAllSteps), position, verticalAlign);
+    }
+
+	/**
+	 * @param vertical
+	 * @param showAllSteps
+	 * @param position
+	 * @param horizontalAlign
+	 */
+	public void setNavigationBar(boolean vertical, boolean showAllSteps, ControlPosition position, ControlHorizontalAlign horizontalAlign)
+    {
+		setNavigationBar(new WizardNavigationBar<T>(vertical, showAllSteps), position, horizontalAlign);
+    }
+	
 	/**
 	 * @param navigationBar
 	 * @param position
 	 * @param verticalAlign
 	 */
-	public void setNavigationBar(WizardNavigationBar navigationBar, ControlPosition position, ControlVerticalAlign verticalAlign)
+	public void setNavigationBar(WizardNavigationBar<T> navigationBar, ControlPosition position, ControlVerticalAlign verticalAlign)
     {
     	if (setNavigationBar(navigationBar, position))
     	{
@@ -547,7 +623,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	public void setStepEnabled(int stepOrder, boolean enabled)
 	{
-		Step step = getStep(stepOrder);
+		Step<T> step = getStep(stepOrder);
 		if (step == null)
 		{
 			throw new WizardException(WidgetMsgFactory.getMessages().wizardStepNotFound(stepOrder));
@@ -561,7 +637,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	public void setStepEnabled(String stepId, boolean enabled)
 	{
-		Step step = getStep(stepId);
+		Step<T> step = getStep(stepId);
 		if (step == null)
 		{
 			throw new WizardException(WidgetMsgFactory.getMessages().wizardStepNotFound(stepId));
@@ -573,16 +649,20 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @param data
 	 */
-	public void updateData(Object data)
+	public void updateData(T data)
 	{
-		//TODO Thiago - wizardValue
+		if (wizardDataSerializer == null)
+		{
+			throw new WizardException(WidgetMsgFactory.getMessages().wizardNoSerializerAssigned());
+		}
+		wizardDataSerializer.writeObject(data);
 	}
 
 	/**
 	 * @param order
 	 * @return
 	 */
-	Step getStep(int order)
+	Step<T> getStep(int order)
 	{
 		if (order >= 0 && order < stepOrder.size())
 		{
@@ -596,7 +676,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param id
 	 * @return
 	 */
-	Step getStep(String id)
+	Step<T> getStep(String id)
 	{
 		return steps.get(id);
 	}
@@ -612,7 +692,8 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @param preivousStep
 	 */
-	private void changeStep(final String preivousStep)
+	@SuppressWarnings("unchecked")
+    private void changeStep(final String preivousStep)
     {
 		final Widget widgetStep = getStep(currentStep).getWidget();
 		if (widgetStep instanceof PageStep)
@@ -624,7 +705,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 					boolean loaded;
                     try
                     {
-	                    loaded = CruxInternalWizardPageController.isInternalPageLoaded(((PageStep)widgetStep).getId());
+	                    loaded = CruxInternalWizardPageController.isInternalPageLoaded(((PageStep<T>)widgetStep).getId());
 						if (loaded)
 						{
 				    		notifyStepListeners(preivousStep);
@@ -650,18 +731,19 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	/**
 	 * @param previousStep
 	 */
-	private void enterCurrentStep(String previousStep)
+	@SuppressWarnings("unchecked")
+    private void enterCurrentStep(String previousStep)
     {
-    	Step entryStep = getStep(currentStep);
+    	Step<T> entryStep = getStep(currentStep);
     	if (entryStep.getWidget() instanceof PageStep)
     	{
-    		PageStep source =(PageStep)entryStep.getWidget();
-    		source.fireEnterEvent(getElement().getId(), previousStep);
+    		PageStep<T> source =(PageStep<T>)entryStep.getWidget();
+    		source.fireEnterEvent(this, previousStep);
     	}
     	else
     	{
     		HasEnterHandlers source =(HasEnterHandlers)entryStep.getWidget();
-    		EnterEvent.fire(source, new WidgetWizardProxy(this), previousStep);
+    		EnterEvent.fire(source, new WidgetWizardProxy<T>(this), previousStep);
     	}
 		isChangingStep = false;
     }
@@ -721,7 +803,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param beforeIndex
 	 * @return
 	 */
-	private void insertStep(Step step, int beforeIndex)
+	private void insertStep(Step<T> step, int beforeIndex)
 	{
 		if (!steps.containsKey(step.getId()))
 		{
@@ -739,22 +821,23 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param nextStep 
 	 * @return
 	 */
-	private boolean leavePreviousStep(String nextStep)
+	@SuppressWarnings("unchecked")
+    private boolean leavePreviousStep(String nextStep)
     {
 		boolean leave = true;
 	    if (currentStep >= 0)
 	    {
-	    	Step previousStep = getStep(currentStep);
+	    	Step<T> previousStep = getStep(currentStep);
 	    	if (previousStep.getWidget() instanceof PageStep)
 	    	{
-	    		PageStep source =(PageStep)previousStep.getWidget();
-	    		LeaveEvent leaveEvent = source.fireLeaveEvent(getElement().getId(), nextStep);
+	    		PageStep<T> source =(PageStep<T>)previousStep.getWidget();
+	    		LeaveEvent leaveEvent = source.fireLeaveEvent(this, nextStep);
 	    		leave = leaveEvent == null || !leaveEvent.isCanceled();
 	    	}
 	    	else
 	    	{
 	    		HasLeaveHandlers source =(HasLeaveHandlers)previousStep.getWidget();
-	    		LeaveEvent leaveEvent = LeaveEvent.fire(source, new WidgetWizardProxy(this), nextStep);
+	    		LeaveEvent leaveEvent = LeaveEvent.fire(source, new WidgetWizardProxy<T>(this), nextStep);
 	    		leave = !leaveEvent.isCanceled();
 	    	}
 	    }
@@ -766,12 +849,12 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 */
 	private void notifyStepListeners(String preivousStep)
     {
-		Step previous = null;
+		Step<T> previous = null;
 		if (preivousStep != null)
 		{
 			previous = steps.get(preivousStep);
 		}
-		for (WizardStepListener listener : stepListeners)
+		for (WizardStepListener<T> listener : stepListeners)
         {
 	        listener.stepChanged(getStep(currentStep), previous);
         }
@@ -781,7 +864,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param controlBar
 	 * @return true if a new controlBar was added
 	 */
-	private boolean setControlBar(WizardControlBar controlBar, ControlPosition position)
+	private boolean setControlBar(WizardControlBar<T> controlBar, ControlPosition position)
     {
 	    if (this.controlBar != null)
     	{
@@ -824,7 +907,7 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	 * @param navigationBar
 	 * @return true if a new controlBar was added
 	 */
-	private boolean setNavigationBar(WizardNavigationBar navigationBar, ControlPosition position)
+	private boolean setNavigationBar(WizardNavigationBar<T> navigationBar, ControlPosition position)
     {
 	    if (this.navigationBar != null)
     	{
@@ -848,7 +931,4 @@ public class Wizard extends Composite implements HasCancelHandlers, HasFinishHan
 	public static enum ControlPosition{east, north, south, west}	
 	
 	public static enum ControlVerticalAlign{bottom, middle, top}	
-	
-	
-	
 }

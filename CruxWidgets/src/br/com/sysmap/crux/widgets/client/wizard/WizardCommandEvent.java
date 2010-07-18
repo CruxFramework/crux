@@ -15,20 +15,20 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 
 
 /**
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class WizardCommandEvent extends StepEvent<WizardCommandHandler> 
+public class WizardCommandEvent<T extends Serializable> extends StepEvent<WizardCommandHandler<T>, T> 
 {
-	private static Type<WizardCommandHandler> TYPE = new Type<WizardCommandHandler>();
-
 	/**
 	 * 
 	 */
-	protected WizardCommandEvent(WizardProxy wizardProxy)
+	protected WizardCommandEvent(WizardProxy<T> wizardProxy)
 	{
 		super(wizardProxy);
 	}
@@ -36,9 +36,9 @@ public class WizardCommandEvent extends StepEvent<WizardCommandHandler>
 	/**
 	 * @return
 	 */
-	public static Type<WizardCommandHandler> getType()
+	public static <T extends Serializable> Type<WizardCommandHandler<T>> getType(WizardCommandHandler<T> handler)
 	{
-		return TYPE;
+		return new Type<WizardCommandHandler<T>>();
 	}
 
 	/**
@@ -46,22 +46,22 @@ public class WizardCommandEvent extends StepEvent<WizardCommandHandler>
 	 * @param source
 	 * @return
 	 */
-	public static WizardCommandEvent fire(HasWizardCommandHandlers source, WizardProxy proxy)
+	public static <T extends Serializable> WizardCommandEvent<T> fire(HasWizardCommandHandlers<T> source, WizardProxy<T> proxy)
 	{
-		WizardCommandEvent event = new WizardCommandEvent(proxy);
+		WizardCommandEvent<T> event = new WizardCommandEvent<T>(proxy);
 		source.fireEvent(event);
 		return event;
 	}
 
 	@Override
-	protected void dispatch(WizardCommandHandler handler)
+	protected void dispatch(WizardCommandHandler<T> handler)
 	{
 		handler.onCommand(this);
 	}
 
 	@Override
-	public Type<WizardCommandHandler> getAssociatedType()
+	public Type<WizardCommandHandler<T>> getAssociatedType()
 	{
-		return TYPE;
+		return new Type<WizardCommandHandler<T>>();
 	}
 }

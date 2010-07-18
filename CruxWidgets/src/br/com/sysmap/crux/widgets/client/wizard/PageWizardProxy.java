@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
 import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
 
@@ -24,7 +26,7 @@ import com.google.gwt.core.client.GWT;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-class PageWizardProxy implements WizardProxy
+class PageWizardProxy<T extends Serializable> implements WizardProxy<T>
 {
 	private static CruxInternalWizardPageControllerCrossDoc wizardController = null;
 
@@ -101,9 +103,9 @@ class PageWizardProxy implements WizardProxy
     }
 	
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#readContext(java.lang.Class)
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#readData(java.lang.Class)
 	 */
-    public Object readContext()
+    public T readData()
 	{
     	//TODO Thiago - wizardValue
         return null;
@@ -118,9 +120,9 @@ class PageWizardProxy implements WizardProxy
     }
 	
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#updateContext(java.lang.Object)
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#updateContext(T)
 	 */
-	public void updateContext(Object data)
+	public void updateData(T data)
 	{
 		//TODO Thiago - wizardValue
 	}

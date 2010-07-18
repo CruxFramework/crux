@@ -25,7 +25,7 @@ import com.google.gwt.dom.client.Element;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class EnterEvtBind implements EvtBinder<HasEnterHandlers>
+public class EnterEvtBind implements EvtBinder<HasEnterHandlers<?>>
 {
 	private static final String EVENT_NAME = "onEnter";
 
@@ -33,18 +33,12 @@ public class EnterEvtBind implements EvtBinder<HasEnterHandlers>
 	 * @param element
 	 * @param widget
 	 */
-	public void bindEvent(Element element, HasEnterHandlers widget)
+	public void bindEvent(Element element, HasEnterHandlers<?> widget)
 	{
 		final Event enterEvent = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (enterEvent != null)
 		{
-			widget.addEnterHandler(new EnterHandler()
-			{
-				public void onEnter(EnterEvent event)
-				{
-					br.com.sysmap.crux.core.client.event.Events.callEvent(enterEvent, event);
-				}
-			});
+			widget.addEnterEvent(enterEvent);
 		}
 	}
 

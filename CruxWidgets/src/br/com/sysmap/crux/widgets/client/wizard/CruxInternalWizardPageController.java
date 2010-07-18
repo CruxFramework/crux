@@ -27,7 +27,7 @@ import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 import com.google.gwt.dom.client.Element;
 
 /**
- * @author Thiago da Rosa de Bustamante -
+ * @author Thiago da Rosa de Bustamante
  *
  */
 @Controller("__wizard")
@@ -40,10 +40,10 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public boolean onLeave(String wizardId, String nextStep)
 	{
-		WizardPage wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
+		WizardPage<?> wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
 		if (wizardPage != null)
 		{
-			LeaveEvent leaveEvent = LeaveEvent.fire(wizardPage, new PageWizardProxy(wizardId), nextStep);
+			LeaveEvent<?> leaveEvent = LeaveEvent.fire(wizardPage, wizardId, nextStep);
 			return !leaveEvent.isCanceled();
 		}
 		
@@ -56,10 +56,10 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void onEnter(String wizardId, String previousStep)
 	{
-		WizardPage wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
+		WizardPage<?> wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
 		if (wizardPage != null)
 		{
-			EnterEvent.fire(wizardPage, new PageWizardProxy(wizardId), previousStep);
+			EnterEvent.fire(wizardPage, wizardId, previousStep);
 		}
 	}
 	
@@ -69,11 +69,10 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void onCommand(String wizardId, String commandId)
 	{
-		WizardPage wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
+		WizardPage<?> wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
 		if (wizardPage != null)
 		{
-			WizardCommandEvent wizardCommandEvent = new WizardCommandEvent(new PageWizardProxy(wizardId));
-			wizardPage.fireCommandEvent(commandId, wizardCommandEvent);
+			wizardPage.fireCommandEvent(commandId, wizardId);
 		}
 	}
 
@@ -82,7 +81,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public WizardCommandData[] listCommands()
 	{
-		WizardPage wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
+		WizardPage<?> wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
 		if (wizardPage != null)
 		{
 			return wizardPage.listCommands();
@@ -132,7 +131,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public boolean next(String wizardId)
 	{
-	    Wizard wizard = Screen.get(wizardId, Wizard.class);
+	    Wizard<?> wizard = Screen.get(wizardId, Wizard.class);
 		int currentStep = wizard.getCurrentStepIndex();
 		return wizard.selectStep(currentStep+1, true);
 	}
@@ -143,7 +142,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public boolean back(String wizardId)
 	{
-	    Wizard wizard = Screen.get(wizardId, Wizard.class);
+	    Wizard<?> wizard = Screen.get(wizardId, Wizard.class);
 		int currentStep = wizard.getCurrentStepIndex();
 		return wizard.selectStep(currentStep-1, true);
 	}
@@ -163,7 +162,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public String getButtonsHeight(String wizardId)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			return controlBar.getButtonsHeight();
@@ -177,7 +176,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public String getButtonsStyle(String wizardId)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			return controlBar.getButtonsStyle();
@@ -191,7 +190,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public String getButtonsWidth(String wizardId)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			return controlBar.getButtonsWidth();
@@ -205,7 +204,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public String getCancelLabel(String wizardId)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			return controlBar.getCancelLabel();
@@ -219,7 +218,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public String getFinishLabel(String wizardId)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			return controlBar.getFinishLabel();
@@ -233,7 +232,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public String getNextLabel(String wizardId)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			return controlBar.getNextLabel();
@@ -247,7 +246,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public String getBackLabel(String wizardId)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			return controlBar.getBackLabel();
@@ -261,7 +260,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public int getSpacing(String wizardId)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			return controlBar.getSpacing();
@@ -275,7 +274,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public boolean isVertical(String wizardId)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			return controlBar.isVertical();
@@ -289,7 +288,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setButtonsHeight(String wizardId, String buttonHeight)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			controlBar.setButtonsHeight(buttonHeight);
@@ -302,7 +301,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setButtonsStyle(String wizardId, String buttonStyle)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			controlBar.setButtonsStyle(buttonStyle);
@@ -315,7 +314,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setButtonsWidth(String wizardId, String buttonWidth)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			controlBar.setButtonsWidth(buttonWidth);
@@ -328,7 +327,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setCancelLabel(String wizardId, String cancelLabel)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			controlBar.setCancelLabel(cancelLabel);
@@ -341,7 +340,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setFinishLabel(String wizardId, String finishLabel)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			controlBar.setFinishLabel(finishLabel);
@@ -354,7 +353,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setNextLabel(String wizardId, String nextLabel)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			controlBar.setNextLabel(nextLabel);
@@ -367,7 +366,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setBackLabel(String wizardId, String backLabel)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			controlBar.setBackLabel(backLabel);
@@ -380,7 +379,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setSpacing(String wizardId, int spacing)
 	{
-		WizardControlBar controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
+		WizardControlBar<?> controlBar = Screen.get(wizardId, Wizard.class).getControlBar();
 		if (controlBar != null)
 		{
 			controlBar.setSpacing(spacing);
@@ -393,7 +392,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public String getCommandId(String wizardId, String commandId)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			return command.getId();
@@ -407,7 +406,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public String getCommandLabel(String wizardId, String commandId)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			return command.getLabel();
@@ -421,7 +420,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public int getCommandOrder(String wizardId, String commandId)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			return command.getOrder();
@@ -435,7 +434,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public boolean isCommandEnabled(String wizardId, String commandId)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			return command.isEnabled();
@@ -449,7 +448,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setCommandEnabled(String wizardId, String commandId, boolean enabled)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			 command.setEnabled(enabled);
@@ -462,7 +461,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setCommandLabel(String wizardId, String commandId, String label)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			 command.setLabel(label);
@@ -475,7 +474,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setCommandOrder(String wizardId, String commandId, int order)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			 command.setOrder(order);
@@ -488,7 +487,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public String getCommandStyleName(String wizardId, String commandId)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			return command.getStyleName();
@@ -502,7 +501,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public int getOffsetHeight(String wizardId, String commandId)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			return command.getOffsetHeight();
@@ -516,7 +515,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public int getOffsetWidth(String wizardId, String commandId)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			return command.getOffsetWidth();
@@ -530,7 +529,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setCommandStyleName(String wizardId, String commandId, String styleName)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			 command.setStyleName(styleName);
@@ -543,7 +542,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setCommandHeight(String wizardId, String commandId, String height)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			 command.setHeight(height);
@@ -556,7 +555,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 */
 	public void setCommandWidth(String wizardId, String commandId, String width)
 	{
-		WizardCommand command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
+		WizardCommand<?> command = Screen.get(wizardId, Wizard.class).getControlBar().getCommand(commandId);
 		if (command != null)
 		{
 			 command.setWidth(width);

@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
@@ -23,7 +24,7 @@ import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public interface HasCommands
+public interface HasCommands<T extends Serializable>
 {
-	Iterator<WizardCommand> iterateCommands();
+	Iterator<WizardCommand<T>> iterateCommands();
 }

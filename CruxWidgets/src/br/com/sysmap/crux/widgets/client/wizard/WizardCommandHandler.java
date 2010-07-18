@@ -15,13 +15,15 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 import com.google.gwt.event.shared.EventHandler;
 
 /**
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public interface WizardCommandHandler extends EventHandler
+public interface WizardCommandHandler<T extends Serializable> extends EventHandler
 {
-	void onCommand(WizardCommandEvent event);
+	void onCommand(WizardCommandEvent<T> event);
 }

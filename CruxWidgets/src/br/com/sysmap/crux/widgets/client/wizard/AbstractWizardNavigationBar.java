@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.rollingpanel.RollingPanel;
 
@@ -26,9 +28,9 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public abstract class AbstractWizardNavigationBar extends Composite implements WizardStepListener
+public abstract class AbstractWizardNavigationBar<T extends Serializable> extends Composite implements WizardStepListener<T>
 {
-	protected Wizard wizard;
+	protected Wizard<T> wizard;
 	protected RollingPanel rollingPanel;
 
 	/**
@@ -84,7 +86,7 @@ public abstract class AbstractWizardNavigationBar extends Composite implements W
 	/**
 	 * @return
 	 */
-	public Wizard getWizard()
+	public Wizard<T> getWizard()
     {
     	return wizard;
     }
@@ -167,7 +169,7 @@ public abstract class AbstractWizardNavigationBar extends Composite implements W
 	/**
 	 * @param wizard
 	 */
-	protected void setWizard(Wizard wizard)
+	protected void setWizard(Wizard<T> wizard)
     {
     	this.wizard = wizard;
     }

@@ -15,20 +15,22 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
 /**
  * @author Thiago da Rosa de Bustamante -
  *
  */
-class WidgetWizardProxy implements WizardProxy
+class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
 {
-	private Wizard wizard;
+	private Wizard<T> wizard;
 	
 	/**
 	 * @param wizard
 	 */
-	WidgetWizardProxy(Wizard wizard)
+	WidgetWizardProxy(Wizard<T> wizard)
     {
 		this.wizard = wizard;
     }
@@ -94,15 +96,15 @@ class WidgetWizardProxy implements WizardProxy
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#readContext()
 	 */
-	public Object readContext()
+	public T readData()
     {
 	    return wizard.readData();
     }
 
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#updateContext(java.lang.Object)
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#updateData(java.lang.Object)
 	 */
-	public void updateContext(Object data)
+	public void updateData(T data)
     {
 		wizard.updateData(data);
     }
@@ -110,20 +112,20 @@ class WidgetWizardProxy implements WizardProxy
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#getControlBar()
 	 */
-	public WizardControlBarAccessor getControlBar()
+    public WizardControlBarAccessor getControlBar()
     {
-	    return new WizardControlBarAccessor(new WizardControlBarWidgetProxy(wizard.getControlBar()));
+	    return new WizardControlBarAccessor(new WizardControlBarWidgetProxy<T>(wizard.getControlBar()));
     }
 	
 	/**
 	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
-	static class WizardControlBarWidgetProxy implements WizardControlBarProxy
+	static class WizardControlBarWidgetProxy<T extends Serializable> implements WizardControlBarProxy
 	{
-		private final WizardControlBar controlBar;
+		private final WizardControlBar<T> controlBar;
 
-		public WizardControlBarWidgetProxy(WizardControlBar controlBar)
+		public WizardControlBarWidgetProxy(WizardControlBar<T> controlBar)
         {
 			this.controlBar = controlBar;
         }
@@ -235,7 +237,7 @@ class WidgetWizardProxy implements WizardProxy
 
 		public WizardCommandAccessor getCommand(String commandId)
         {
-	        return new WizardCommandAccessor(new WizardCommandWidgetProxy(controlBar.getCommand(commandId)));
+	        return new WizardCommandAccessor(new WizardCommandWidgetProxy<T>(controlBar.getCommand(commandId)));
         }
 	}
 	
@@ -243,11 +245,11 @@ class WidgetWizardProxy implements WizardProxy
 	 * @author Thiago da Rosa de Bustamante -
 	 *
 	 */
-	static class WizardCommandWidgetProxy implements WizardCommandProxy
+	static class WizardCommandWidgetProxy<T extends Serializable> implements WizardCommandProxy
 	{
-		private final WizardCommand command;
+		private final WizardCommand<T> command;
 
-		public WizardCommandWidgetProxy(WizardCommand command)
+		public WizardCommandWidgetProxy(WizardCommand<T> command)
         {
 			this.command = command;
         }

@@ -15,10 +15,13 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.event.Event;
+import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -28,16 +31,16 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class WidgetStep extends AbstractWidgetStep implements HasCommands
+public class WidgetStep<T extends Serializable> extends AbstractWidgetStep<T> implements HasCommands<T>
 {
+	protected Map<String, WizardCommand<T>> commands = new LinkedHashMap<String, WizardCommand<T>>();
+	protected Wizard<T> wizard;
 	private SimplePanel panel;
-	protected Wizard wizard;
-	protected Map<String, WizardCommand> commands = new LinkedHashMap<String, WizardCommand>();
 	
 	/**
 	 * @param widget
 	 */
-	WidgetStep(Widget widget, Wizard wizard)
+	WidgetStep(Widget widget, Wizard<T> wizard)
     {
 		this.wizard = wizard;
 		panel = new SimplePanel();
@@ -49,22 +52,22 @@ public class WidgetStep extends AbstractWidgetStep implements HasCommands
     }
 
 	@Override
-    public boolean addCommand(String id, String label, WizardCommandHandler handler, int order)
+    public boolean addCommand(String id, String label, WizardCommandHandler<T> handler, int order)
     {
 		if (!commands.containsKey(id))
 		{
-			WizardCommand command = new WizardCommand(id, order, label, handler, new WidgetWizardProxy(wizard));
+			WizardCommand<T> command = new WizardCommand<T>(id, order, label, handler, new WidgetWizardProxy<T>(wizard));
 			commands.put(id, command);
 			return true;
 		}
 		return false;
     }
 	
-	/**
+    /**
 	 * @param id
 	 * @return
 	 */
-	public WizardCommand getCommand(String id)
+	public WizardCommand<T> getCommand(String id)
 	{
 	    return commands.get(id);
 	}
@@ -72,7 +75,7 @@ public class WidgetStep extends AbstractWidgetStep implements HasCommands
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.HasCommands#getCommands()
 	 */
-	public Iterator<WizardCommand> iterateCommands()
+	public Iterator<WizardCommand<T>> iterateCommands()
     {
 	    return commands.values().iterator();
     }
@@ -91,4 +94,22 @@ public class WidgetStep extends AbstractWidgetStep implements HasCommands
 		}
 		return false;
 	}
+	
+	boolean addCommand(String id, String label, final Event commandEvent, int order)
+    {
+		if (!commands.containsKey(id))
+		{
+			WizardCommandHandler<T> handler = new WizardCommandHandler<T>()
+			{
+				public void onCommand(WizardCommandEvent<T> event)
+				{
+					Events.callEvent(commandEvent, event);
+				}
+			};
+			WizardCommand<T> command = new WizardCommand<T>(id, order, label, handler, new WidgetWizardProxy<T>(wizard));
+			commands.put(id, command);
+			return true;
+		}
+		return false;
+    }
 }

@@ -25,7 +25,7 @@ import com.google.gwt.dom.client.Element;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class WizardCommandEvtBind implements EvtBinder<HasWizardCommandHandlers>
+public class WizardCommandEvtBind implements EvtBinder<HasWizardCommandHandlers<?>>
 {
 	private static final String EVENT_NAME = "onCommand";
 
@@ -33,18 +33,12 @@ public class WizardCommandEvtBind implements EvtBinder<HasWizardCommandHandlers>
 	 * @param element
 	 * @param widget
 	 */
-	public void bindEvent(Element element, HasWizardCommandHandlers widget)
+	public void bindEvent(Element element, HasWizardCommandHandlers<?> widget)
 	{
 		final Event commandEvent = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (commandEvent != null)
 		{
-			widget.addWizardCommandHandler(new WizardCommandHandler()
-			{
-				public void onCommand(WizardCommandEvent event)
-				{
-					br.com.sysmap.crux.core.client.event.Events.callEvent(commandEvent, event);
-				}
-			});
+			widget.addWizardCommandEvent(commandEvent);
 		}
 	}
 

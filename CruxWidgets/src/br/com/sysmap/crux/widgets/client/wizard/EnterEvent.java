@@ -15,22 +15,22 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 
 
 /**
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class EnterEvent extends StepEvent<EnterHandler> 
+public class EnterEvent<T extends Serializable> extends StepEvent<EnterHandler<T>, T> 
 {
-	private static Type<EnterHandler> TYPE = new Type<EnterHandler>();
-
 	private final String previousStep;
 	
 	/**
 	 * 
 	 */
-	protected EnterEvent(WizardProxy wizardProxy, String previousStep)
+	protected EnterEvent(WizardProxy<T> wizardProxy, String previousStep)
 	{
 		super(wizardProxy);
 		this.previousStep = previousStep;
@@ -39,9 +39,9 @@ public class EnterEvent extends StepEvent<EnterHandler>
 	/**
 	 * @return
 	 */
-	public static Type<EnterHandler> getType()
+	public static <T extends Serializable> Type<EnterHandler<T>> getType(EnterHandler<T> handler)
 	{
-		return TYPE;
+		return new Type<EnterHandler<T>>();
 	}
 
 	/**
@@ -49,23 +49,35 @@ public class EnterEvent extends StepEvent<EnterHandler>
 	 * @param source
 	 * @return
 	 */
-	public static EnterEvent fire(HasEnterHandlers source, WizardProxy proxy, String previousStep)
+	public static <T extends Serializable> EnterEvent<T> fire(HasEnterHandlers<T> source, WizardProxy<T> proxy, String previousStep)
 	{
-		EnterEvent event = new EnterEvent(proxy, previousStep);
+		EnterEvent<T> event = new EnterEvent<T>(proxy, previousStep);
 		source.fireEvent(event);
 		return event;
 	}
 
+	/**
+	 * @param <T>
+	 * @param source
+	 * @param wizardId
+	 * @param previousStep
+	 * @return
+	 */
+	public static <T extends Serializable> EnterEvent<T> fire(HasEnterHandlers<T> source, String wizardId, String previousStep)
+	{
+		return fire(source, new PageWizardProxy<T>(wizardId), previousStep);
+	}
+
 	@Override
-	protected void dispatch(EnterHandler handler)
+	protected void dispatch(EnterHandler<T> handler)
 	{
 		handler.onEnter(this);
 	}
 
 	@Override
-	public Type<EnterHandler> getAssociatedType()
+	public Type<EnterHandler<T>> getAssociatedType()
 	{
-		return TYPE;
+		return new Type<EnterHandler<T>>();
 	}
 	
 	public String getPreviousStep()

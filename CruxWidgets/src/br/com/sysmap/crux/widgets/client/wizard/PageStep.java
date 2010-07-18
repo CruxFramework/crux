@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class PageStep extends LazyPanel
+public class PageStep<T extends Serializable> extends LazyPanel
 {
 	private final String id;
 	private final String url;
@@ -68,24 +69,24 @@ public class PageStep extends LazyPanel
 	 * @param previousStep
 	 * @return
 	 */
-	EnterEvent fireEnterEvent(String wizardId, String previousStep)
+	EnterEvent<T> fireEnterEvent(Wizard<T> wizard, String previousStep)
 	{
-		EnterEvent result = new EnterEvent(null, previousStep);
+		EnterEvent<T> result = new EnterEvent<T>(null, previousStep);
 
 		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
-		wizardController.onEnter(wizardId, previousStep);
+		wizardController.onEnter(wizard.getElement().getId(), previousStep);
 		return result;
 	}
 	
 	/**
 	 * @return
 	 */
-	LeaveEvent fireLeaveEvent(String wizardId, String nextStep)
+	LeaveEvent<T> fireLeaveEvent(Wizard<T> wizard, String nextStep)
 	{
-		LeaveEvent result = new LeaveEvent(null, nextStep);
+		LeaveEvent<T> result = new LeaveEvent<T>(null, nextStep);
 
 		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
-		if (!wizardController.onLeave(wizardId, nextStep))
+		if (!wizardController.onLeave(wizard.getElement().getId(), nextStep))
 		{
 			result.cancel();
 		}
@@ -95,9 +96,9 @@ public class PageStep extends LazyPanel
 	/**
 	 * @return
 	 */
-	Iterator<WizardCommand> iterateWizardCommands(final String wizardId)
+	Iterator<WizardCommand<T>> iterateWizardCommands(final String wizardId)
 	{
-		List<WizardCommand> result = new ArrayList<WizardCommand>();
+		List<WizardCommand<T>> result = new ArrayList<WizardCommand<T>>();
 		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
 
 		WizardCommandData[] commands =  wizardController.listCommands();
@@ -105,13 +106,13 @@ public class PageStep extends LazyPanel
 		{
 			for (final WizardCommandData data : commands)
 			{
-				result.add(new WizardCommand(data.getId(), data.getOrder(), data.getLabel(), new WizardCommandHandler()
+				result.add(new WizardCommand<T>(data.getId(), data.getOrder(), data.getLabel(), new WizardCommandHandler<T>()
 				{
-					public void onCommand(WizardCommandEvent event)
+					public void onCommand(WizardCommandEvent<T> event)
 					{
 						fireCommandEvent(wizardId, data.getId());
 					}
-				}, new PageWizardProxy(wizardId)));
+				}, new PageWizardProxy<T>(wizardId)));
 			}
 		}
 		return result.iterator();

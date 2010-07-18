@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Label;
@@ -24,7 +26,7 @@ import com.google.gwt.user.client.ui.Label;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class WizardNavigationBar extends AbstractWizardNavigationBar
+public class WizardNavigationBar<T extends Serializable> extends AbstractWizardNavigationBar<T>
 {
 	public static final String DEFAULT_LABEL_STYLE_NAME = "crux-WizardNavigationLabel";
 	public static final String DEFAULT_SEPARATOR_HORIZONTAL_STYLE_NAME = "crux-WizardNavigationHorizontalSeparator";
@@ -117,7 +119,7 @@ public class WizardNavigationBar extends AbstractWizardNavigationBar
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardStepListener#stepChanged(br.com.sysmap.crux.widgets.client.wizard.Step, br.com.sysmap.crux.widgets.client.wizard.Step)
 	 */
-	public void stepChanged(Step currentStep, Step previousStep)
+	public void stepChanged(Step<T> currentStep, Step<T> previousStep)
     {
 		updateNavigationBar(wizard.getStepOrder(currentStep.getId()));
     }
@@ -126,7 +128,7 @@ public class WizardNavigationBar extends AbstractWizardNavigationBar
 	 * @see br.com.sysmap.crux.widgets.client.wizard.AbstractWizardNavigationBar#setWizard(br.com.sysmap.crux.widgets.client.wizard.Wizard)
 	 */
 	@Override
-	protected void setWizard(Wizard wizard)
+	protected void setWizard(Wizard<T> wizard)
 	{
 	    super.setWizard(wizard);
 	    updateNavigationBar(-1);
@@ -142,7 +144,7 @@ public class WizardNavigationBar extends AbstractWizardNavigationBar
 		boolean needsSeparator = false;
 		for (int i=0; i<wizard.getStepCount() && (showAllSteps || i<= currentStep); i++)
 		{
-			Step step = wizard.getStep(i);
+			Step<T> step = wizard.getStep(i);
 			if (step.isEnabled())
 			{
 				if (needsSeparator)

@@ -25,7 +25,7 @@ import com.google.gwt.dom.client.Element;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public class LeaveEvtBind implements EvtBinder<HasLeaveHandlers>
+public class LeaveEvtBind implements EvtBinder<HasLeaveHandlers<?>>
 {
 	private static final String EVENT_NAME = "onLeave";
 
@@ -33,18 +33,12 @@ public class LeaveEvtBind implements EvtBinder<HasLeaveHandlers>
 	 * @param element
 	 * @param widget
 	 */
-	public void bindEvent(Element element, HasLeaveHandlers widget)
+	public void bindEvent(Element element, HasLeaveHandlers<?> widget)
 	{
 		final Event leaveEvent = EvtBind.getWidgetEvent(element, EVENT_NAME);
 		if (leaveEvent != null)
 		{
-			widget.addLeaveHandler(new LeaveHandler()
-			{
-				public void onLeave(LeaveEvent event)
-				{
-					br.com.sysmap.crux.core.client.event.Events.callEvent(leaveEvent, event);
-				}
-			});
+			widget.addLeaveEvent(leaveEvent);
 		}
 	}
 

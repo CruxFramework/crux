@@ -15,6 +15,11 @@
  */
 package br.com.sysmap.crux.widgets.client.wizard;
 
+import java.io.Serializable;
+
+import br.com.sysmap.crux.core.client.event.Event;
+import br.com.sysmap.crux.core.client.event.Events;
+
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
@@ -22,7 +27,7 @@ import com.google.gwt.user.client.ui.Composite;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public abstract class AbstractWidgetStep extends Composite implements HasEnterHandlers, HasLeaveHandlers
+public abstract class AbstractWidgetStep<T extends Serializable> extends Composite implements HasEnterHandlers<T>, HasLeaveHandlers<T>
 {
 	/**
 	 * @param widget
@@ -32,30 +37,54 @@ public abstract class AbstractWidgetStep extends Composite implements HasEnterHa
     }
 	
 	/**
+	 * @param command
+	 * @return
+	 */
+	public abstract boolean addCommand(String id, String label, WizardCommandHandler<T> handler, int order);
+
+	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.HasEnterHandlers#addEnterHandler(br.com.sysmap.crux.widgets.client.wizard.EnterHandler)
 	 */
-	public HandlerRegistration addEnterHandler(EnterHandler handler)
+	public HandlerRegistration addEnterHandler(EnterHandler<T> handler)
 	{
-		return addHandler(handler, EnterEvent.getType());
+		return addHandler(handler, EnterEvent.getType(handler));
 	}
 
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.HasLeaveHandlers#addLeaveHandler(br.com.sysmap.crux.widgets.client.wizard.LeaveHandler)
 	 */
-	public HandlerRegistration addLeaveHandler(LeaveHandler handler)
+	public HandlerRegistration addLeaveHandler(LeaveHandler<T> handler)
 	{
-		return addHandler(handler, LeaveEvent.getType());
+		return addHandler(handler, LeaveEvent.getType(handler));
 	}
 
 	/**
 	 * @param command
 	 * @return
 	 */
-	public abstract boolean addCommand(String id, String label, WizardCommandHandler handler, int order);
+	public abstract boolean removeCommand(String id);
 	
 	/**
-	 * @param command
-	 * @return
+	 * @param onEnterEvent
 	 */
-	public abstract boolean removeCommand(String id);
+	public void addEnterEvent(final Event onEnterEvent)
+	{
+		addEnterHandler(new EnterHandler<T>(){
+			public void onEnter(EnterEvent<T> event)
+			{
+				Events.callEvent(onEnterEvent, event);
+			}
+		});
+	}
+	
+	public void addLeaveEvent(final Event onLeaveEvent)
+	{
+		addLeaveHandler(new LeaveHandler<T>()
+		{
+			public void onLeave(LeaveEvent<T> event)
+			{
+				Events.callEvent(onLeaveEvent, event);
+			}
+		});
+	}
 }
