@@ -31,7 +31,7 @@ public interface QuickStartScreen extends ScreenWrapper
 {
 	CheckBox getUseCruxModuleExtension();
 	FlexTable getProjectInfo();
-	Wizard getQuickstartWizard();
+	Wizard<?> getQuickstartWizard();
 	RollingPanel getDirSelectorRollingPanel();
 	VerticalPanel getDirSelectorBox();
 }
