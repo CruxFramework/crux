@@ -36,6 +36,15 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
     }
 	
 	/**
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#back()
+	 */
+	public boolean back()
+    {
+	    int currentStep = wizard.getCurrentStepIndex();
+		return wizard.selectStep(currentStep-1, true);
+    }
+
+	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#cancel()
 	 */
 	public void cancel()
@@ -60,6 +69,19 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
     }
 
 	/**
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#getControlBar()
+	 */
+    public WizardControlBarAccessor getControlBar()
+    {
+	    return new WizardControlBarAccessor(new WizardControlBarWidgetProxy<T>(wizard.getControlBar()));
+    }
+
+	public T getResource()
+    {
+	    return wizard.getResource();
+    }
+
+	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#getStepOrder(java.lang.String)
 	 */
 	public int getStepOrder(String id)
@@ -77,12 +99,11 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
     }
 
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#back()
+	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#readContext()
 	 */
-	public boolean back()
+	public T readData()
     {
-	    int currentStep = wizard.getCurrentStepIndex();
-		return wizard.selectStep(currentStep-1, true);
+	    return wizard.readData();
     }
 
 	/**
@@ -92,15 +113,7 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
     {
 	    return wizard.selectStep(id, ignoreLeaveEvent);
     }
-
-	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#readContext()
-	 */
-	public T readData()
-    {
-	    return wizard.readData();
-    }
-
+	
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#updateData(java.lang.Object)
 	 */
@@ -108,15 +121,86 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
     {
 		wizard.updateData(data);
     }
-
-	/**
-	 * @see br.com.sysmap.crux.widgets.client.wizard.WizardProxy#getControlBar()
-	 */
-    public WizardControlBarAccessor getControlBar()
-    {
-	    return new WizardControlBarAccessor(new WizardControlBarWidgetProxy<T>(wizard.getControlBar()));
-    }
 	
+	/**
+	 * @author Thiago da Rosa de Bustamante -
+	 *
+	 */
+	static class WizardCommandWidgetProxy<T extends Serializable> implements WizardCommandProxy
+	{
+		private final WizardCommand<T> command;
+
+		public WizardCommandWidgetProxy(WizardCommand<T> command)
+        {
+			this.command = command;
+        }
+
+		public String getId()
+        {
+	        return command.getId();
+        }
+
+		public String getLabel()
+        {
+	        return command.getLabel();
+        }
+
+		public int getOffsetHeight()
+        {
+	        return command.getOffsetHeight();
+        }
+
+		public int getOffsetWidth()
+        {
+	        return command.getOffsetWidth();
+        }
+
+		public int getOrder()
+        {
+	        return command.getOrder();
+        }
+
+		public String getStyleName()
+        {
+	        return command.getStyleName();
+        }
+
+		public boolean isEnabled()
+        {
+	        return command.isEnabled();
+        }
+
+		public void setEnabled(boolean enabled)
+        {
+			command.setEnabled(enabled);
+        }
+
+		public void setHeight(String height)
+        {
+			command.setHeight(height);
+        }
+
+		public void setLabel(String label)
+        {
+			command.setLabel(label);
+        }
+
+		public void setOrder(int order)
+        {
+			command.setOrder(order);
+        }
+
+		public void setStyleName(String styleName)
+        {
+			command.setStyleName(styleName);
+        }
+
+		public void setWidth(String width)
+        {
+			command.setWidth(width);
+        }
+	}
+
 	/**
 	 * @author Thiago da Rosa de Bustamante -
 	 *
@@ -130,6 +214,11 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
 			this.controlBar = controlBar;
         }
 
+		public void back()
+        {
+	        controlBar.back();
+        }
+
 		public void cancel()
         {
 			controlBar.cancel();
@@ -138,6 +227,11 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
 		public void finish()
         {
 			controlBar.finish();
+        }
+
+		public String getBackLabel()
+        {
+	        return controlBar.getBackLabel();
         }
 
 		public String getButtonsHeight()
@@ -160,6 +254,11 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
 	        return controlBar.getCancelLabel();
         }
 
+		public WizardCommandAccessor getCommand(String commandId)
+        {
+	        return new WizardCommandAccessor(new WizardCommandWidgetProxy<T>(controlBar.getCommand(commandId)));
+        }
+
 		public String getFinishLabel()
         {
 	        return controlBar.getFinishLabel();
@@ -168,11 +267,6 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
 		public String getNextLabel()
         {
 	        return controlBar.getNextLabel();
-        }
-
-		public String getBackLabel()
-        {
-	        return controlBar.getBackLabel();
         }
 
 		public int getSpacing()
@@ -190,9 +284,9 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
 	        controlBar.next();
         }
 
-		public void back()
+		public void setBackLabel(String backLabel)
         {
-	        controlBar.back();
+	        controlBar.setBackLabel(backLabel);
         }
 
 		public void setButtonsHeight(String buttonHeight)
@@ -225,98 +319,9 @@ class WidgetWizardProxy<T extends Serializable> implements WizardProxy<T>
 	        controlBar.setNextLabel(nextLabel);
         }
 
-		public void setBackLabel(String backLabel)
-        {
-	        controlBar.setBackLabel(backLabel);
-        }
-
 		public void setSpacing(int spacing)
         {
 	        controlBar.setSpacing(spacing);
-        }
-
-		public WizardCommandAccessor getCommand(String commandId)
-        {
-	        return new WizardCommandAccessor(new WizardCommandWidgetProxy<T>(controlBar.getCommand(commandId)));
-        }
-	}
-	
-	/**
-	 * @author Thiago da Rosa de Bustamante -
-	 *
-	 */
-	static class WizardCommandWidgetProxy<T extends Serializable> implements WizardCommandProxy
-	{
-		private final WizardCommand<T> command;
-
-		public WizardCommandWidgetProxy(WizardCommand<T> command)
-        {
-			this.command = command;
-        }
-
-		public String getId()
-        {
-	        return command.getId();
-        }
-
-		public String getLabel()
-        {
-	        return command.getLabel();
-        }
-
-		public int getOrder()
-        {
-	        return command.getOrder();
-        }
-
-		public boolean isEnabled()
-        {
-	        return command.isEnabled();
-        }
-
-		public void setEnabled(boolean enabled)
-        {
-			command.setEnabled(enabled);
-        }
-
-		public void setLabel(String label)
-        {
-			command.setLabel(label);
-        }
-
-		public void setOrder(int order)
-        {
-			command.setOrder(order);
-        }
-
-		public String getStyleName()
-        {
-	        return command.getStyleName();
-        }
-
-		public void setStyleName(String styleName)
-        {
-			command.setStyleName(styleName);
-        }
-
-		public int getOffsetHeight()
-        {
-	        return command.getOffsetHeight();
-        }
-
-		public int getOffsetWidth()
-        {
-	        return command.getOffsetWidth();
-        }
-
-		public void setHeight(String height)
-        {
-			command.setHeight(height);
-        }
-
-		public void setWidth(String width)
-        {
-			command.setWidth(width);
         }
 	}
 }

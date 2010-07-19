@@ -87,7 +87,7 @@ public class RegisteredWizardDataSerializerGenerator extends AbstractRegisteredE
 	private void generateGetWizardDataSerializerMethod(SourceWriter sourceWriter, Map<String, String> dataSerializerClassNames)
 	{
 		
-		sourceWriter.println("WizardDataSerializer<?> getWizardDataSerializer(String wizardDataId){");
+		sourceWriter.println("public WizardDataSerializer<?> getWizardDataSerializer(String wizardDataId){");
 		sourceWriter.indent();
 		boolean first = true;
 		for (String serializer : dataSerializerClassNames.keySet()) 
@@ -104,6 +104,7 @@ public class RegisteredWizardDataSerializerGenerator extends AbstractRegisteredE
 			sourceWriter.outdent();
 			sourceWriter.println("}");
 		}
+		sourceWriter.println("return null;");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}

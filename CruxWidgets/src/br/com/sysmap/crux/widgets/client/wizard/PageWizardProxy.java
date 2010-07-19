@@ -19,6 +19,7 @@ import java.io.Serializable;
 
 import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
 import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
+import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
 import com.google.gwt.core.client.GWT;
 
@@ -31,19 +32,20 @@ class PageWizardProxy<T extends Serializable> implements WizardProxy<T>
 	private static CruxInternalWizardPageControllerCrossDoc wizardController = null;
 
 	private String wizardId; 
+	private WizardDataSerializer<T> wizardDataSerializer;
 
 	/**
 	 * 
 	 */
-	PageWizardProxy(String wizardId)
+	PageWizardProxy(String wizardId, WizardDataSerializer<T> wizardDataSerializer)
     {
 		if (wizardController == null)
 		{
 			wizardController = GWT.create(CruxInternalWizardPageControllerCrossDoc.class);
 			((TargetDocument)wizardController).setTarget(Target.PARENT);
 		}
-		
 		this.wizardId = wizardId;
+		this.wizardDataSerializer = wizardDataSerializer;
     }
 	
 	/**
@@ -107,8 +109,11 @@ class PageWizardProxy<T extends Serializable> implements WizardProxy<T>
 	 */
     public T readData()
 	{
-    	//TODO Thiago - wizardValue
-        return null;
+		if (wizardDataSerializer == null)
+		{
+			throw new WizardException(WidgetMsgFactory.getMessages().wizardNoSerializerAssigned());
+		}
+	    return wizardDataSerializer.readObject();
 	}
 
 	/**
@@ -124,7 +129,11 @@ class PageWizardProxy<T extends Serializable> implements WizardProxy<T>
 	 */
 	public void updateData(T data)
 	{
-		//TODO Thiago - wizardValue
+		if (wizardDataSerializer == null)
+		{
+			throw new WizardException(WidgetMsgFactory.getMessages().wizardNoSerializerAssigned());
+		}
+	    wizardDataSerializer.writeObject(data);
 	}
 
 	/**
@@ -331,4 +340,13 @@ class PageWizardProxy<T extends Serializable> implements WizardProxy<T>
 			wizardController.setSpacing(wizardId, spacing);
         }
 	}
+
+	public T getResource()
+    {
+		if (wizardDataSerializer == null)
+		{
+			throw new WizardException(WidgetMsgFactory.getMessages().wizardNoSerializerAssigned());
+		}
+	    return wizardDataSerializer.getResource();
+    }
 }

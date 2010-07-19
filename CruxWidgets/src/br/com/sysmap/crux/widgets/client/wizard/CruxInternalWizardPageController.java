@@ -38,12 +38,12 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 * @param event
 	 * @return
 	 */
-	public boolean onLeave(String wizardId, String nextStep)
+	public boolean onLeave(String wizardId, String wizardDataId, String nextStep)
 	{
 		WizardPage<?> wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
 		if (wizardPage != null)
 		{
-			LeaveEvent<?> leaveEvent = LeaveEvent.fire(wizardPage, wizardId, nextStep);
+			LeaveEvent<?> leaveEvent = wizardPage.fireLeaveEvent(nextStep);
 			return !leaveEvent.isCanceled();
 		}
 		
@@ -54,12 +54,12 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 * @param event
 	 * @return
 	 */
-	public void onEnter(String wizardId, String previousStep)
+	public void onEnter(String previousStep)
 	{
 		WizardPage<?> wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
 		if (wizardPage != null)
 		{
-			EnterEvent.fire(wizardPage, wizardId, previousStep);
+			wizardPage.fireEnterEvent(previousStep);
 		}
 	}
 	
@@ -67,12 +67,12 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 * @param event
 	 * @return
 	 */
-	public void onCommand(String wizardId, String commandId)
+	public void onCommand(String commandId)
 	{
 		WizardPage<?> wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
 		if (wizardPage != null)
 		{
-			wizardPage.fireCommandEvent(commandId, wizardId);
+			wizardPage.fireCommandEvent(commandId);
 		}
 	}
 

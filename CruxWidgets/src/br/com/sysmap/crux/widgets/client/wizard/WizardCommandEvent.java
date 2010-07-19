@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.widgets.client.wizard;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
@@ -25,20 +27,33 @@ import java.io.Serializable;
  */
 public class WizardCommandEvent<T extends Serializable> extends StepEvent<WizardCommandHandler<T>, T> 
 {
+	private static Map<Class<?>, Type<WizardCommandHandler<?>>> TYPES = new HashMap<Class<?>, Type<WizardCommandHandler<?>>>();
+
+	private T resource;
+	
 	/**
 	 * 
 	 */
 	protected WizardCommandEvent(WizardProxy<T> wizardProxy)
 	{
 		super(wizardProxy);
+		if (wizardProxy != null)
+		{
+			this.resource = wizardProxy.getResource();
+		}
 	}
 
 	/**
 	 * @return
 	 */
-	public static <T extends Serializable> Type<WizardCommandHandler<T>> getType(WizardCommandHandler<T> handler)
+	public static Type<WizardCommandHandler<?>> getType(Class<?> clazz)
 	{
-		return new Type<WizardCommandHandler<T>>();
+		if (!TYPES.containsKey(clazz)) 
+		{
+			TYPES.put(clazz, new Type<WizardCommandHandler<?>>());
+		}
+
+		return TYPES.get(clazz);
 	}
 
 	/**
@@ -59,9 +74,10 @@ public class WizardCommandEvent<T extends Serializable> extends StepEvent<Wizard
 		handler.onCommand(this);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Type<WizardCommandHandler<T>> getAssociatedType()
 	{
-		return new Type<WizardCommandHandler<T>>();
+		return (Type) getType(this.resource.getClass());
 	}
 }

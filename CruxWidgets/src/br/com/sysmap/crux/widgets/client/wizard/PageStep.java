@@ -38,15 +38,20 @@ public class PageStep<T extends Serializable> extends LazyPanel
 	private final String url;
 	private CruxInternalWizardPageControllerCrossDoc wizardController = GWT.create(CruxInternalWizardPageControllerCrossDoc.class);
 
+	private final String wizardId;
+	private WizardDataSerializer<T> wizardDataSerializer;
+
 	/**
 	 * @param id
 	 * @param label
 	 * @param url
 	 */
-	PageStep(String id, String url)
+	PageStep(String id, String url, String wizardId, WizardDataSerializer<T> wizardDataSerializer)
     {
 		this.id = id;
 		this.url = url;
+		this.wizardId = wizardId;
+		this.wizardDataSerializer = wizardDataSerializer;
     }
 
 	@Override
@@ -69,12 +74,12 @@ public class PageStep<T extends Serializable> extends LazyPanel
 	 * @param previousStep
 	 * @return
 	 */
-	EnterEvent<T> fireEnterEvent(Wizard<T> wizard, String previousStep)
+	EnterEvent<T> fireEnterEvent(String previousStep)
 	{
 		EnterEvent<T> result = new EnterEvent<T>(null, previousStep);
 
 		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
-		wizardController.onEnter(wizard.getElement().getId(), previousStep);
+		wizardController.onEnter(previousStep);
 		return result;
 	}
 	
@@ -86,7 +91,7 @@ public class PageStep<T extends Serializable> extends LazyPanel
 		LeaveEvent<T> result = new LeaveEvent<T>(null, nextStep);
 
 		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
-		if (!wizardController.onLeave(wizard.getElement().getId(), nextStep))
+		if (!wizardController.onLeave(wizard.getElement().getId(), wizard.getWizardDataId(), nextStep))
 		{
 			result.cancel();
 		}
@@ -96,7 +101,7 @@ public class PageStep<T extends Serializable> extends LazyPanel
 	/**
 	 * @return
 	 */
-	Iterator<WizardCommand<T>> iterateWizardCommands(final String wizardId)
+	Iterator<WizardCommand<T>> iterateWizardCommands()
 	{
 		List<WizardCommand<T>> result = new ArrayList<WizardCommand<T>>();
 		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
@@ -110,9 +115,9 @@ public class PageStep<T extends Serializable> extends LazyPanel
 				{
 					public void onCommand(WizardCommandEvent<T> event)
 					{
-						fireCommandEvent(wizardId, data.getId());
+						fireCommandEvent(data.getId());
 					}
-				}, new PageWizardProxy<T>(wizardId)));
+				}, new PageWizardProxy<T>(wizardId, wizardDataSerializer)));
 			}
 		}
 		return result.iterator();
@@ -123,10 +128,10 @@ public class PageStep<T extends Serializable> extends LazyPanel
 	 * @param commanddId
 	 * @return
 	 */
-	private void fireCommandEvent(String wizardId, String commandId)
+	private void fireCommandEvent(String commandId)
 	{
 		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
-		wizardController.onCommand(wizardId, commandId);
+		wizardController.onCommand(commandId);
 	}
 	
 	static class WizardPageTab extends AbstractTab

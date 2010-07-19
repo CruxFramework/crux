@@ -48,11 +48,13 @@ public class WizardPageFactory extends WidgetFactory<WizardPage<?>>
     public WizardPage<?> instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
     {
 	    String wizardContextObject = element.getAttribute("_wizardContextObject");
-	    return instantiator.createWizardPage(widgetId, wizardContextObject);
+	    String wizardId = element.getAttribute("_wizardId");
+	    return instantiator.createWizardPage(wizardId, wizardContextObject);
     }
 
 	@Override
 	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="wizardId", required=true),
 		@TagAttributeDeclaration(value="wizardContextObject", required=true)
 	})
 	public void processAttributes(br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext<WizardPage<?>> context) throws InterfaceConfigException

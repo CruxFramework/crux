@@ -28,10 +28,9 @@ abstract class StepEvent<H extends EventHandler, T extends Serializable> extends
 {
 	private final WizardAccessor<T> wizardAccessor;
 
-	@SuppressWarnings("unchecked")
     StepEvent(WizardProxy<T> wizardProxy)
 	{
-		this.wizardAccessor = new WizardAccessor(wizardProxy);
+		this.wizardAccessor = new WizardAccessor<T>(wizardProxy);
 		
 	}
 

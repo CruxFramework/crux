@@ -42,6 +42,7 @@ public class WidgetStep<T extends Serializable> extends AbstractWidgetStep<T> im
 	 */
 	WidgetStep(Widget widget, Wizard<T> wizard)
     {
+		super(wizard.getResource());
 		this.wizard = wizard;
 		panel = new SimplePanel();
 		panel.setHeight("100%");

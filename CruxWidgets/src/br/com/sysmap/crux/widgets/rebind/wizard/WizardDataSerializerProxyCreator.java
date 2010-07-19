@@ -21,7 +21,6 @@ import br.com.sysmap.crux.core.rebind.crossdocument.CrossDocumentProxyCreator;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializationUtils;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.Shared;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.TypeSerializerCreator;
-import br.com.sysmap.crux.widgets.client.wizard.Wizard;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -29,8 +28,6 @@ import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
-import com.google.gwt.core.ext.typeinfo.JParameterizedType;
-import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.dev.generator.NameFactory;
 import com.google.gwt.user.client.rpc.SerializationStreamWriter;
@@ -69,7 +66,7 @@ public class WizardDataSerializerProxyCreator extends CrossDocumentProxyCreator
 	{
 		String typeSerializerName = SerializationUtils.getTypeSerializerQualifiedName(baseProxyType);
 		srcWriter.println("private static final " + typeSerializerName + " SERIALIZER = new " + typeSerializerName + "();");
-		srcWriter.println("private "+Wizard.class.getCanonicalName()+"<?> wizard;");
+		srcWriter.println("private String wizard;");
 		srcWriter.println();
 	}
 
@@ -77,7 +74,7 @@ public class WizardDataSerializerProxyCreator extends CrossDocumentProxyCreator
 	 * Generates the method for context reading.
 	 * @throws UnableToCompleteException 
 	 */
-	protected void generateProxyGetMethod(SourceWriter w, JMethod method) throws UnableToCompleteException
+	protected void generateProxyReadMethod(SourceWriter w, JMethod method) throws UnableToCompleteException
 	{
 		w.println();
 
@@ -91,7 +88,7 @@ public class WizardDataSerializerProxyCreator extends CrossDocumentProxyCreator
 		w.indent();
 
 		String retName = nameFactory.createName("ret");
-		w.println("String "+retName + "="+ContextManager.class.getName()+".getContextHandler().read(this.wizard.getElement().getId()+\"_WizardData\");");
+		w.println("String "+retName + "="+ContextManager.class.getName()+".getContextHandler().read(wizard+\"_WizardData\");");
 		w.println("if (!"+StringUtils.class.getCanonicalName()+".isEmpty("+retName+")){");
 		w.indent();
 		w.print("return ("+returnType.getQualifiedSourceName()+") ");
@@ -122,32 +119,21 @@ public class WizardDataSerializerProxyCreator extends CrossDocumentProxyCreator
 		JMethod[] syncMethods = baseProxyType.getOverridableMethods();
 		for (JMethod method : syncMethods)
 		{
-			JClassType enclosingType = method.getEnclosingType();
-			JParameterizedType isParameterizedType = enclosingType.isParameterized();
-			if (isParameterizedType != null)
+			if (method.getName().equals("readObject"))
 			{
-				JMethod[] methods = isParameterizedType.getMethods();
-				for (int i = 0; i < methods.length; ++i)
-				{
-					if (methods[i] == method)
-					{
-						method = isParameterizedType.getBaseType().getMethods()[i];
-					}
-				}
-			}
-
-			JType returnType = method.getReturnType().getErasedType();
-			if (returnType != JPrimitiveType.VOID)
-			{
-				generateProxyGetMethod(w, method);
+				generateProxyReadMethod(w, method);
 			}
 			else if (method.getName().equals("setWizard")) 
 			{
 				generateProxySetWizardMethod(w, method);
 			}
-			else 
+			else if (method.getName().equals("writeObject"))
 			{
-				generateProxySetMethod(w, method);
+				generateProxyWriteMethod(w, method);
+			}
+			else if (method.getName().equals("getResource"))
+			{
+				generateProxyGetResourceMethod(w, method);
 			}
 		}
 	}
@@ -156,7 +142,7 @@ public class WizardDataSerializerProxyCreator extends CrossDocumentProxyCreator
 	 * Generates method for context writing.
 	 * @throws UnableToCompleteException 
 	 */
-	protected void generateProxySetMethod(SourceWriter w, JMethod method) throws UnableToCompleteException
+	protected void generateProxyWriteMethod(SourceWriter w, JMethod method) throws UnableToCompleteException
 	{
 		w.println();
 
@@ -178,7 +164,7 @@ public class WizardDataSerializerProxyCreator extends CrossDocumentProxyCreator
 
 		w.println("if ("+param.getName()+" == null){");
 		w.indent();
-		w.println(ContextManager.class.getName()+".getContextHandler().erase(this.wizard.getElement().getId()+\"_WizardData\");");
+		w.println(ContextManager.class.getName()+".getContextHandler().erase(wizard+\"_WizardData\");");
 		w.outdent();
 		w.println("} else {");
 		w.indent();
@@ -187,7 +173,7 @@ public class WizardDataSerializerProxyCreator extends CrossDocumentProxyCreator
 		w.println("(" + param.getName() + ");");
 		String payloadName = nameFactory.createName("payload");
 		w.println("String " + payloadName + " = "+ streamWriterName + ".toString();");
-		w.println(ContextManager.class.getName()+".getContextHandler().write(this.wizard.getElement().getId()+\"_WizardData\", "+payloadName+");");
+		w.println(ContextManager.class.getName()+".getContextHandler().write(wizard+\"_WizardData\", "+payloadName+");");
 		w.outdent();
 		w.println("}");
 		
@@ -218,6 +204,23 @@ public class WizardDataSerializerProxyCreator extends CrossDocumentProxyCreator
 		w.println("}");
 	}
 
+	protected void generateProxyGetResourceMethod(SourceWriter w, JMethod method) throws UnableToCompleteException
+	{
+		JType returnType = method.getReturnType().getErasedType();
+		
+		w.println();
+
+		NameFactory nameFactory = new NameFactory();
+		generateProxyMethodSignature(w, nameFactory, method);
+		w.println("{");
+		w.indent();		
+
+		w.println("return new "+returnType.getQualifiedSourceName()+"();");
+
+		w.outdent();
+		w.println("}");
+	}
+	
 	/**
 	 * @param logger
 	 * @param context

@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.widgets.client.wizard;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
@@ -25,6 +27,9 @@ import java.io.Serializable;
  */
 public class LeaveEvent<T extends Serializable> extends StepEvent<LeaveHandler<T>, T> 
 {
+	private static Map<Class<?>, Type<LeaveHandler<?>>> TYPES = new HashMap<Class<?>, Type<LeaveHandler<?>>>();
+
+	private T resource;
 	private boolean canceled;
 	private final String nextStep;
 
@@ -35,14 +40,23 @@ public class LeaveEvent<T extends Serializable> extends StepEvent<LeaveHandler<T
 	{
 		super(wizardProxy);
 		this.nextStep = nextStep;
+		if (wizardProxy != null)
+		{
+			this.resource = wizardProxy.getResource();
+		}
 	}
 
 	/**
 	 * @return
 	 */
-	public static <T extends Serializable> Type<LeaveHandler<T>> getType(LeaveHandler<T> handler)
+	public static Type<LeaveHandler<?>> getType(Class<?> clazz)
 	{
-		return new Type<LeaveHandler<T>>();
+		if (!TYPES.containsKey(clazz)) 
+		{
+			TYPES.put(clazz, new Type<LeaveHandler<?>>());
+		}
+
+		return TYPES.get(clazz);
 	}
 
 	/**
@@ -57,28 +71,17 @@ public class LeaveEvent<T extends Serializable> extends StepEvent<LeaveHandler<T
 		return event;
 	}
 
-	/**
-	 * @param <T>
-	 * @param source
-	 * @param wizardId
-	 * @param nextStep
-	 * @return
-	 */
-	public static <T extends Serializable> LeaveEvent<T> fire(HasLeaveHandlers<T> source, String wizardId, String nextStep)
-	{
-		return fire(source, new PageWizardProxy<T>(wizardId), nextStep);
-	}
-
 	@Override
 	protected void dispatch(LeaveHandler<T> handler)
 	{
 		handler.onLeave(this);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Type<LeaveHandler<T>> getAssociatedType()
 	{
-		return new Type<LeaveHandler<T>>();
+		return (Type) getType(this.resource.getClass());
 	}
 
 	/**

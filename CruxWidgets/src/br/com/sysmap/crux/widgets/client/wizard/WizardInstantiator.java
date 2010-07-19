@@ -21,6 +21,6 @@ package br.com.sysmap.crux.widgets.client.wizard;
  */
 public interface WizardInstantiator
 {
-	Wizard<?> createWizard(String id, String wizardDataId);
-	WizardPage<?> createWizardPage(String id, String wizardDataId);
+	Wizard<?> createWizard(String wizardId, String wizardDataId);
+	WizardPage<?> createWizardPage(String wizardId, String wizardDataId);
 }

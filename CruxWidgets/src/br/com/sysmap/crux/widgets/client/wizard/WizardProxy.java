@@ -34,4 +34,5 @@ interface WizardProxy<T extends Serializable>
 	WizardControlBarAccessor getControlBar();
 	void updateData(T data);
     T readData();
+    T getResource();
 }

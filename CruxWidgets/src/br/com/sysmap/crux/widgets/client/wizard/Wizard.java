@@ -56,21 +56,22 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Wizard";
 	
+	private static RegisteredWizardDataSerializer dataSerializer;
 	private WizardControlBar<T> controlBar;
 	private int currentStep = -1;
 	private DockPanel dockPanel;
 	private boolean isChangingStep = false;
-	private WizardNavigationBar<T> navigationBar;
 
-	private List<WizardStepListener<T>> stepListeners = new ArrayList<WizardStepListener<T>>();
+	private WizardNavigationBar<T> navigationBar;
 	
+	private List<WizardStepListener<T>> stepListeners = new ArrayList<WizardStepListener<T>>();
 	private List<String> stepOrder = new ArrayList<String>();
 	private Map<String, Step<T>> steps = new HashMap<String, Step<T>>();
-	private DeckPanel stepsPanel;
 	
-	private WizardDataSerializer<T> wizardDataSerializer;
+	private DeckPanel stepsPanel;
 
-	private static RegisteredWizardDataSerializer dataSerializer;
+	private String wizardDataId;
+	private WizardDataSerializer<T> wizardDataSerializer;
 	
 	
 	/**
@@ -91,36 +92,18 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		this.dockPanel.add(stepsPanel, DockPanel.CENTER);		
 		this.dockPanel.getElement().setId(id);
 		
-		initWizardDataSerializer(wizardDataId);
+		initWizardDataSerializer(id, wizardDataId);
 		initWidget(dockPanel);
     }
 
-    @SuppressWarnings("unchecked")
-	private void initWizardDataSerializer(String wizardDataId)
-    {
-	    if (!StringUtils.isEmpty(wizardDataId))
-		{
-			if (dataSerializer == null)
-			{
-				dataSerializer = GWT.create(RegisteredWizardDataSerializer.class);
-			}
-			this.wizardDataSerializer = (WizardDataSerializer<T>) dataSerializer.getWizardDataSerializer(wizardDataId);
-			this.wizardDataSerializer.setWizard(this);
-		}
-		else
-		{
-			wizardDataSerializer = null;	
-		}
-    }
-
-	/**
+    /**
 	 * @see br.com.sysmap.crux.widgets.client.event.HasCancelHandlers#addCancelHandler(br.com.sysmap.crux.widgets.client.event.CancelHandler)
 	 */
 	public HandlerRegistration addCancelHandler(CancelHandler handler)
     {
 		return addHandler(handler, CancelEvent.getType());
     }
-	
+
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.event.HasFinishHandlers#addFinishHandler(br.com.sysmap.crux.widgets.client.event.FinishHandler)
 	 */
@@ -157,7 +140,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	{
 		return insertWidgetStep(id, label, widget, steps.size());
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -179,7 +162,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		
 		return selectStep(destinationStep);
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -204,7 +187,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	{
 		return selectStep(0);
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -241,7 +224,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
     {
     	return navigationBar;
     }
-	
+
 	/**
 	 * @param order
 	 * @return
@@ -271,7 +254,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		}
 		return (PageStep<T>)step.getWidget();
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -279,7 +262,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
     {
 		return stepOrder.size();
     }
-	
+
 	/**
 	 * 
 	 * @param id
@@ -304,7 +287,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		}
 		return (WidgetStep<T>)step.getWidget();
 	}
-
+	
 	/**
 	 * @param id
 	 * @return
@@ -329,7 +312,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	 */
 	public PageStep<T> insertPageStep(String id, String label, String url, int beforeIndex)
 	{
-		PageStep<T> pageStep = new PageStep<T>(id, url);
+		PageStep<T> pageStep = new PageStep<T>(id, url, this.getElement().getId(), this.wizardDataSerializer);
 		insertStep(new Step<T>(this, id, label, pageStep), beforeIndex);
 		return pageStep;
 	}
@@ -437,7 +420,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * @param listener
 	 */
@@ -454,7 +437,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
     {
 		return selectStep(step, false);
     }
-
+	
 	/**
 	 * @param step
 	 * @param ignoreLeaveEvent
@@ -497,7 +480,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	{
 		return selectStep(id, false);
 	}
-	
+
 	/**
 	 * @param id
 	 * @param ignoreLeaveEvent
@@ -514,6 +497,26 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		
 		return ret;
 	}
+	
+	/**
+	 * @param vertical
+	 * @param position
+	 * @param horizontalAlign
+	 */
+	public void setControlBar(boolean vertical, ControlPosition position, ControlHorizontalAlign horizontalAlign)
+    {
+		setControlBar(new WizardControlBar<T>(vertical), position, horizontalAlign);
+    }
+
+	/**
+	 * @param vertical
+	 * @param position
+	 * @param verticalAlign
+	 */
+	public void setControlBar(boolean vertical, ControlPosition position, ControlVerticalAlign verticalAlign)
+    {
+		setControlBar(new WizardControlBar<T>(vertical), position, verticalAlign);
+    }
 
 	/**
 	 * @param controlBar
@@ -528,26 +531,6 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 			this.controlBar.setCellHorizontalAlignment(align);
 			dockPanel.setCellHorizontalAlignment(this.controlBar, align);
 		}
-    }
-
-	/**
-	 * @param vertical
-	 * @param position
-	 * @param verticalAlign
-	 */
-	public void setControlBar(boolean vertical, ControlPosition position, ControlVerticalAlign verticalAlign)
-    {
-		setControlBar(new WizardControlBar<T>(vertical), position, verticalAlign);
-    }
-
-	/**
-	 * @param vertical
-	 * @param position
-	 * @param horizontalAlign
-	 */
-	public void setControlBar(boolean vertical, ControlPosition position, ControlHorizontalAlign horizontalAlign)
-    {
-		setControlBar(new WizardControlBar<T>(vertical), position, horizontalAlign);
     }
 
 	/**
@@ -566,6 +549,29 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
     }
 
 	/**
+	 * @param vertical
+	 * @param showAllSteps
+	 * @param position
+	 * @param horizontalAlign
+	 */
+	public void setNavigationBar(boolean vertical, boolean showAllSteps, ControlPosition position, ControlHorizontalAlign horizontalAlign)
+    {
+		setNavigationBar(new WizardNavigationBar<T>(vertical, showAllSteps), position, horizontalAlign);
+    }
+
+	/**
+	 * @param vertical
+	 * @param showAllSteps
+	 * @param position
+	 * @param verticalAlign
+	 */
+	public void setNavigationBar(boolean vertical, boolean showAllSteps, ControlPosition position, ControlVerticalAlign verticalAlign)
+    {
+		setNavigationBar(new WizardNavigationBar<T>(vertical, showAllSteps), position, verticalAlign);
+    }
+	
+
+	/**
 	 * @param navigationBar
 	 * @param position
 	 * @param horizontalAlign
@@ -579,30 +585,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 			dockPanel.setCellHorizontalAlignment(this.navigationBar, align);
 		}
     }
-	
 
-	/**
-	 * @param vertical
-	 * @param showAllSteps
-	 * @param position
-	 * @param verticalAlign
-	 */
-	public void setNavigationBar(boolean vertical, boolean showAllSteps, ControlPosition position, ControlVerticalAlign verticalAlign)
-    {
-		setNavigationBar(new WizardNavigationBar<T>(vertical, showAllSteps), position, verticalAlign);
-    }
-
-	/**
-	 * @param vertical
-	 * @param showAllSteps
-	 * @param position
-	 * @param horizontalAlign
-	 */
-	public void setNavigationBar(boolean vertical, boolean showAllSteps, ControlPosition position, ControlHorizontalAlign horizontalAlign)
-    {
-		setNavigationBar(new WizardNavigationBar<T>(vertical, showAllSteps), position, horizontalAlign);
-    }
-	
 	/**
 	 * @param navigationBar
 	 * @param position
@@ -617,7 +600,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 			dockPanel.setCellVerticalAlignment(this.navigationBar, align);
 		}
     }
-
+	
 	/**
 	 * @param enabled
 	 */
@@ -631,7 +614,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		
 		step.setEnabled(enabled);
 	}
-	
+
 	/**
 	 * @param enabled
 	 */
@@ -657,6 +640,15 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		}
 		wizardDataSerializer.writeObject(data);
 	}
+	
+	T getResource()
+	{
+		if (wizardDataSerializer == null)
+		{
+			throw new WizardException(WidgetMsgFactory.getMessages().wizardNoSerializerAssigned());
+		}
+		return wizardDataSerializer.getResource();
+	}
 
 	/**
 	 * @param order
@@ -681,12 +673,37 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		return steps.get(id);
 	}
 	
+	String getWizardDataId()
+	{
+		return this.wizardDataId;
+	}
+	
 	/**
 	 * @return
 	 */
 	boolean isChangingStep()
 	{
 		return this.isChangingStep;
+	}
+	
+	/**
+	 * Sets a css class on the parent element of the widget
+	 * @param bar
+	 * @param position
+	 */
+	private void applyCssStyleOnWizardBar(final Widget bar, final ControlPosition position, final String baseCssClassName)
+	{
+		Scheduler.get().scheduleDeferred
+		(
+			new ScheduledCommand()
+			{
+				public void execute()
+				{
+					Element parent = bar.getElement().getParentElement();
+					StyleUtils.addStyleName(parent, baseCssClassName + StringUtils.toUpperCaseFirstChar(position.name()) + "Wrapper");
+				}
+			}
+		);	
 	}
 	
 	/**
@@ -738,7 +755,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
     	if (entryStep.getWidget() instanceof PageStep)
     	{
     		PageStep<T> source =(PageStep<T>)entryStep.getWidget();
-    		source.fireEnterEvent(this, previousStep);
+    		source.fireEnterEvent(previousStep);
     	}
     	else
     	{
@@ -767,7 +784,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
         }
 	    return DockPanel.SOUTH;
     }
-	
+
 	private HorizontalAlignmentConstant getHorizontalAlign(ControlHorizontalAlign horizontalAlign)
     {
 		switch (horizontalAlign)
@@ -798,6 +815,28 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		return HasVerticalAlignment.ALIGN_TOP;
     }
 
+	@SuppressWarnings("unchecked")
+	private void initWizardDataSerializer(String wizardId, String wizardDataId)
+    {
+	    this.wizardDataId = wizardDataId;
+		if (!StringUtils.isEmpty(wizardDataId))
+		{
+			if (dataSerializer == null)
+			{
+				dataSerializer = GWT.create(RegisteredWizardDataSerializer.class);
+			}
+			this.wizardDataSerializer = (WizardDataSerializer<T>) dataSerializer.getWizardDataSerializer(wizardDataId);
+			if (this.wizardDataSerializer != null)
+			{
+				this.wizardDataSerializer.setWizard(wizardId);
+			}
+		}
+		else
+		{
+			wizardDataSerializer = null;	
+		}
+    }
+	
 	/**
 	 * @param step
 	 * @param beforeIndex
@@ -843,7 +882,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	    }
 	    return leave;
     }
-
+	
 	/**
 	 * 
 	 */
@@ -882,26 +921,6 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		}
 		return false;
     }
-	
-	/**
-	 * Sets a css class on the parent element of the widget
-	 * @param bar
-	 * @param position
-	 */
-	private void applyCssStyleOnWizardBar(final Widget bar, final ControlPosition position, final String baseCssClassName)
-	{
-		Scheduler.get().scheduleDeferred
-		(
-			new ScheduledCommand()
-			{
-				public void execute()
-				{
-					Element parent = bar.getElement().getParentElement();
-					StyleUtils.addStyleName(parent, baseCssClassName + StringUtils.toUpperCaseFirstChar(position.name()) + "Wrapper");
-				}
-			}
-		);	
-	}
 
 	/**
 	 * @param navigationBar

@@ -576,7 +576,7 @@ public class WizardControlBar<T extends Serializable> extends AbstractWizardNavi
 		
 		public HandlerRegistration addWizardCommandHandler(WizardCommandHandler<T> handler)
 		{
-			return addHandler(handler, WizardCommandEvent.getType(handler));
+			return addHandler(handler, WizardCommandEvent.getType(proxy.getResource().getClass()));
 		}
 
 		public int compareTo(WizardCommand<T> o)

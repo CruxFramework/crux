@@ -106,7 +106,7 @@ public class Step<T extends Serializable>
 		}
 		else if (widget instanceof PageStep)
 		{
-			return ((PageStep<T>) widget).iterateWizardCommands(wizard.getElement().getId());
+			return ((PageStep<T>) widget).iterateWizardCommands();
 		}
 		return null;
 	}

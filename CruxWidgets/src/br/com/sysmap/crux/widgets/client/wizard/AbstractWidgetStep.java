@@ -29,11 +29,14 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public abstract class AbstractWidgetStep<T extends Serializable> extends Composite implements HasEnterHandlers<T>, HasLeaveHandlers<T>
 {
+	private T resource;
+	
 	/**
 	 * @param widget
 	 */
-	AbstractWidgetStep()
+	AbstractWidgetStep(T resource)
     {
+		this.resource = resource;
     }
 	
 	/**
@@ -47,7 +50,7 @@ public abstract class AbstractWidgetStep<T extends Serializable> extends Composi
 	 */
 	public HandlerRegistration addEnterHandler(EnterHandler<T> handler)
 	{
-		return addHandler(handler, EnterEvent.getType(handler));
+		return addHandler(handler, EnterEvent.getType(resource.getClass()));
 	}
 
 	/**
@@ -55,7 +58,7 @@ public abstract class AbstractWidgetStep<T extends Serializable> extends Composi
 	 */
 	public HandlerRegistration addLeaveHandler(LeaveHandler<T> handler)
 	{
-		return addHandler(handler, LeaveEvent.getType(handler));
+		return addHandler(handler, LeaveEvent.getType(resource.getClass()));
 	}
 
 	/**

@@ -102,7 +102,7 @@ public class WizardInstantiatorGenerator extends AbstractRegisteredElementsGener
 				first = false;
 				sourceWriter.println("if (\""+wizardData+"\".equals(wizardDataId)){");
 				sourceWriter.indent();
-				sourceWriter.println("return new Wizard<"+getClassSourceName(wizardDataClass)+">(id, wizardDataId)");
+				sourceWriter.println("return new Wizard<"+getClassSourceName(wizardDataClass)+">(id, wizardDataId);");
 				sourceWriter.outdent();
 				sourceWriter.println("}");
 			}
@@ -122,7 +122,7 @@ public class WizardInstantiatorGenerator extends AbstractRegisteredElementsGener
 	{
 		Iterator<String> wizardDatas = WizardDataObjects.iterateWizardDatas();
 		boolean first = true;
-		sourceWriter.println("public WizardPage<?> createWizardPage(String id, String wizardDataId){");
+		sourceWriter.println("public WizardPage<?> createWizardPage(String wizardId, String wizardDataId){");
 		sourceWriter.indent();
 
 		while (wizardDatas.hasNext())
@@ -138,7 +138,7 @@ public class WizardInstantiatorGenerator extends AbstractRegisteredElementsGener
 				first = false;
 				sourceWriter.println("if (\""+wizardData+"\".equals(wizardDataId)){");
 				sourceWriter.indent();
-				sourceWriter.println("return new WizardPage<"+getClassSourceName(wizardDataClass)+">()");
+				sourceWriter.println("return new WizardPage<"+getClassSourceName(wizardDataClass)+">(wizardId, wizardDataId);");
 				sourceWriter.outdent();
 				sourceWriter.println("}");
 			}

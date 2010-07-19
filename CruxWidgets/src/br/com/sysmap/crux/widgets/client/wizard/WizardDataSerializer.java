@@ -26,7 +26,8 @@ import java.io.Serializable;
  */
 public interface WizardDataSerializer<T extends Serializable>
 {
-	void setWizard(Wizard<T> wizard);
+	void setWizard(String wizard);
 	T readObject();
 	void writeObject(T data);
+	T getResource();
 }

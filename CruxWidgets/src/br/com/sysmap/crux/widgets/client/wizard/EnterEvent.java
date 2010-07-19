@@ -16,7 +16,8 @@
 package br.com.sysmap.crux.widgets.client.wizard;
 
 import java.io.Serializable;
-
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -25,6 +26,9 @@ import java.io.Serializable;
  */
 public class EnterEvent<T extends Serializable> extends StepEvent<EnterHandler<T>, T> 
 {
+	private static Map<Class<?>, Type<EnterHandler<?>>> TYPES = new HashMap<Class<?>, Type<EnterHandler<?>>>();
+
+	private T resource;
 	private final String previousStep;
 	
 	/**
@@ -34,14 +38,23 @@ public class EnterEvent<T extends Serializable> extends StepEvent<EnterHandler<T
 	{
 		super(wizardProxy);
 		this.previousStep = previousStep;
+		if (wizardProxy != null)
+		{
+			this.resource = wizardProxy.getResource();
+		}
 	}
 
 	/**
 	 * @return
 	 */
-	public static <T extends Serializable> Type<EnterHandler<T>> getType(EnterHandler<T> handler)
+	public static Type<EnterHandler<?>> getType(Class<?> clazz)
 	{
-		return new Type<EnterHandler<T>>();
+		if (!TYPES.containsKey(clazz)) 
+		{
+			TYPES.put(clazz, new Type<EnterHandler<?>>());
+		}
+
+		return TYPES.get(clazz);
 	}
 
 	/**
@@ -56,28 +69,17 @@ public class EnterEvent<T extends Serializable> extends StepEvent<EnterHandler<T
 		return event;
 	}
 
-	/**
-	 * @param <T>
-	 * @param source
-	 * @param wizardId
-	 * @param previousStep
-	 * @return
-	 */
-	public static <T extends Serializable> EnterEvent<T> fire(HasEnterHandlers<T> source, String wizardId, String previousStep)
-	{
-		return fire(source, new PageWizardProxy<T>(wizardId), previousStep);
-	}
-
 	@Override
 	protected void dispatch(EnterHandler<T> handler)
 	{
 		handler.onEnter(this);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Type<EnterHandler<T>> getAssociatedType()
 	{
-		return new Type<EnterHandler<T>>();
+		return (Type) getType(this.resource.getClass());
 	}
 	
 	public String getPreviousStep()

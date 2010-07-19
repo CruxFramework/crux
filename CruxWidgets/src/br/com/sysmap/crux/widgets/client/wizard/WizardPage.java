@@ -24,8 +24,10 @@ import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Label;
@@ -40,11 +42,18 @@ public class WizardPage<T extends Serializable> extends AbstractWidgetStep<T>
 {
 	static final String PAGE_UNIQUE_ID = "__WizardPage_";
 	
+	private static RegisteredWizardDataSerializer dataSerializer;
 	private Map<String, WizardCommandHandler<T>> commandHandlers = new HashMap<String, WizardCommandHandler<T>>();
 	private Map<String, WizardCommandData> commands = new LinkedHashMap<String, WizardCommandData>();
+
+	private String wizardId; 
+	private WizardDataSerializer<T> wizardDataSerializer;
 	
-	public WizardPage()
+	@SuppressWarnings("unchecked")
+    public WizardPage(String wizardId, String wizardDataId)
     {
+		super((T)getWizardResource(wizardId, wizardDataId));
+		
 		Widget unique = Screen.get(PAGE_UNIQUE_ID);
 		if (unique != null)
 		{
@@ -55,8 +64,48 @@ public class WizardPage<T extends Serializable> extends AbstractWidgetStep<T>
 		RootPanel.getBodyElement().appendChild(span);
 		initWidget(Label.wrap(span));
 		super.setVisible(false);
+		initWizardDataSerializer(wizardId, wizardDataId);
     }
+
+	private static Serializable getWizardResource(String wizardId, String wizardDataId)
+    {
+	    if (!StringUtils.isEmpty(wizardDataId))
+		{
+			if (dataSerializer == null)
+			{
+				dataSerializer = GWT.create(RegisteredWizardDataSerializer.class);
+			}
+			WizardDataSerializer<?> wizardDataSerializer = (WizardDataSerializer<?>) dataSerializer.getWizardDataSerializer(wizardDataId);
+			return wizardDataSerializer.getResource();
+		}
+		else
+		{
+			return null;	
+		}
+    }	
 	
+	@SuppressWarnings("unchecked")
+	private void initWizardDataSerializer(String wizardId, String wizardDataId)
+    {
+	    this.wizardId = wizardId;
+		if (!StringUtils.isEmpty(wizardDataId))
+		{
+			if (dataSerializer == null)
+			{
+				dataSerializer = GWT.create(RegisteredWizardDataSerializer.class);
+			}
+			wizardDataSerializer = (WizardDataSerializer<T>) dataSerializer.getWizardDataSerializer(wizardDataId);
+			if (wizardDataSerializer != null)
+			{
+				wizardDataSerializer.setWizard(wizardId);
+			}
+		}
+		else
+		{
+			wizardDataSerializer = null;	
+		}
+    }	
+
 	@Override
 	public boolean addCommand(String id, String label, WizardCommandHandler<T> handler, int order)
 	{
@@ -138,12 +187,27 @@ public class WizardPage<T extends Serializable> extends AbstractWidgetStep<T>
 
 	/**
 	 * @param commandId
-	 * @param wizardId
 	 */
-	void fireCommandEvent(String commandId, String wizardId)
+	void fireCommandEvent(String commandId)
 	{
-		WizardCommandEvent<T> wizardCommandEvent = new WizardCommandEvent<T>(new PageWizardProxy<T>(wizardId));
+		WizardCommandEvent<T> wizardCommandEvent = new WizardCommandEvent<T>(new PageWizardProxy<T>(wizardId, wizardDataSerializer));
 		fireCommandEvent(commandId, wizardCommandEvent);
+	}
+
+	/**
+	 * @param previousStep
+	 */
+	void fireEnterEvent(String previousStep)
+	{
+		EnterEvent.fire(this, new PageWizardProxy<T>(wizardId, wizardDataSerializer), previousStep);
+	}
+
+	/**
+	 * @param nextStep
+	 */
+	LeaveEvent<T> fireLeaveEvent(String nextStep)
+	{
+		return LeaveEvent.fire(this, new PageWizardProxy<T>(wizardId, wizardDataSerializer), nextStep);
 	}
 
 	/**
