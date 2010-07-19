@@ -16,8 +16,14 @@
 package br.com.sysmap.crux.core.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -423,4 +429,96 @@ public class ClassUtils
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param parameterType
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static String getTypeDeclaration(Type parameterType)
+	{
+		StringBuilder result = new StringBuilder();
+		if (parameterType instanceof ParameterizedType)
+		{
+			ParameterizedType parameterizedType =((ParameterizedType)parameterType);
+			result.append(getTypeDeclaration(parameterizedType.getRawType()));
+			Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+			if (actualTypeArguments != null && actualTypeArguments.length > 0)
+			{
+				result.append("<");
+				for (Type type : actualTypeArguments)
+				{
+					result.append(getTypeDeclaration(type));
+				}
+				result.append(">");
+			}
+			
+		}
+		else if (parameterType instanceof GenericArrayType)
+		{
+			GenericArrayType genericArrayType = (GenericArrayType) parameterType;
+			result.append(getTypeDeclaration(genericArrayType.getGenericComponentType()));
+			result.append("[]");
+		}
+		else if (parameterType instanceof TypeVariable)
+		{
+			TypeVariable<GenericDeclaration> typeVariable = (TypeVariable<GenericDeclaration>) parameterType;
+			result.append(typeVariable.getName());
+			GenericDeclaration genericDeclaration = typeVariable.getGenericDeclaration();
+			if (genericDeclaration != null)
+			{
+				TypeVariable<?>[] typeParameters = genericDeclaration.getTypeParameters();
+				if (typeParameters != null && typeParameters.length > 0)
+				{
+					result.append("<");
+					for (Type type : typeParameters)
+					{
+						result.append(getTypeDeclaration(type));
+					}
+					result.append(">");
+				}
+			}
+		}
+		else if (parameterType instanceof Class)
+		{
+			Class<?> parameterClass = ((Class<?>)parameterType);
+			if (parameterClass.isArray())
+			{
+				Class<?> componentType = parameterClass.getComponentType();
+				result.append(getTypeDeclaration(componentType));
+				int numDim = getArrayDimensions(parameterClass);
+				for (int i=0; i<numDim; i++)
+				{
+					result.append("[]");
+				}
+			}
+			else
+			{
+				result.append(getClassSourceName(parameterClass));
+			}
+		}
+		else if (parameterType instanceof WildcardType)
+		{
+			result.append("?");
+		}
+		return result.toString();
+	}
+	
+	/**
+	 * 
+	 * @param parameterClass
+	 * @return
+	 */
+	private static int getArrayDimensions(Class<?> parameterClass)
+	{
+		String name = getClassSourceName(parameterClass);
+		for (int i=0; i<name.length(); i++)
+		{
+			if (name.charAt(i) != '[')
+			{
+				return i;
+			}
+		}
+		return 0;
+	}	
 }

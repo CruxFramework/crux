@@ -17,6 +17,9 @@ package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +124,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 			SourceWriter sourceWriter = null;
 			sourceWriter = composer.createSourceWriter(context, printWriter);
 
-			Class<?> widgetType = getWidgetTypeFromClass(logger, factoryClass);
+			Type widgetType = getWidgetTypeFromClass(logger, factoryClass);
 			
 			generateProcessAttributesMethod(logger, sourceWriter, factoryClass, widgetType);
 			generateProcessEventsMethod(logger, sourceWriter, factoryClass, widgetType);
@@ -138,6 +141,23 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 			throw new UnableToCompleteException();
 		}
 	}
+	
+	/**
+	 * @param type
+	 * @return
+	 */
+	private Class<?> getClassFormType(Type type)
+	{
+		if(type instanceof Class<?>)
+		{
+			return (Class<?>)type;
+		}
+		else if (type instanceof ParameterizedType)
+		{
+			return (Class<?>) ((ParameterizedType)type).getRawType();
+		}
+		return null;//TODO throw error;
+	}
 
 	/**
 	 * 
@@ -147,7 +167,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param widgetType
 	 * @throws Exception 
 	 */
-	private void generateProcessChildrenMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType) throws Exception
+	private void generateProcessChildrenMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Type widgetType) throws Exception
 	{
 		Method method = factoryClass.getMethod("processChildren", new Class[]{WidgetFactoryContext.class});
 
@@ -203,7 +223,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param processorVariables
 	 * @throws Exception
 	 */
-	private void generatingChildrenProcessingBlock(TreeLogger logger, SourceWriter sourceWriter, Class<?> widgetType, Method method, String contextDeclaration,
+	private void generatingChildrenProcessingBlock(TreeLogger logger, SourceWriter sourceWriter, Type widgetType, Method method, String contextDeclaration,
 			Map<String, String> methodsForInnerProcessing, Map<String, String> processorVariables) throws Exception
 	{
 		String childrenProcessorMethodName = generateProcessChildrenBlockFromMethod(logger, methodsForInnerProcessing, method,
@@ -230,7 +250,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param widgetType
 	 * @throws Exception
 	 */
-	private void generateProcessEventsMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType) throws Exception
+	private void generateProcessEventsMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Type widgetType) throws Exception
 	{
 		Map<String, String> evtBinderVariables = new HashMap<String, String>();
 		
@@ -251,13 +271,13 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param factoryClass
 	 * @param widgetType
 	 */
-	private void generateProcessAttributesMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Class<?> widgetType)
+	private void generateProcessAttributesMethod(TreeLogger logger, SourceWriter sourceWriter, Class<?> factoryClass, Type widgetType)
 	{
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void processAttributes("+getClassSourceName(WidgetFactoryContext.class)
 		         +"<"+ getClassSourceName(widgetType)+"> context) throws InterfaceConfigException{"); 
 		sourceWriter.println("super.processAttributes(context);");
-		sourceWriter.print(generateProcessAttributesBlock(logger, factoryClass, widgetType));
+		sourceWriter.print(generateProcessAttributesBlock(logger, factoryClass, getClassFormType(widgetType)));
 		sourceWriter.println("}");
 	}
 	
@@ -448,7 +468,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 */
 	private String generateProcessChildrenBlockFromMethod(TreeLogger logger, 
 														   Map<String, String> methodsForInnerProcessing, 
-														   Method processChildrenMethod, Class<?> widgetType, 
+														   Method processChildrenMethod, Type widgetType, 
 														   Map<String, String> processorVariables) throws Exception
 	{
 		String processingMethodName = null;
@@ -548,7 +568,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 */
 	private String generateChildrenBlockFromAnnotation(TreeLogger logger, 
 													 Map<String, String> methodsForInnerProcessing, 
-			                                         Class<?> widgetType, 
+			                                         Type widgetType, 
 			                                         TagChildren children,
 			                                         Map<String, String> processorVariables, boolean first) throws NoSuchMethodException, Exception
 	{
@@ -598,7 +618,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param processorVariables
 	 * @return
 	 */
-	private String generateTextProcessingBlock(TreeLogger logger, Class<?> widgetType, 
+	private String generateTextProcessingBlock(TreeLogger logger, Type widgetType, 
 											   Class<? extends WidgetChildProcessor<?>> childProcessor)
 	{
 		TagChildAttributes processorAttributes = ClassUtils.getChildtrenAttributesAnnotation(childProcessor);
@@ -606,7 +626,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		{
 			return "if (child.trim().length() > 0) c.getRootWidget()."+ClassUtils.getSetterMethod(processorAttributes.widgetProperty())+"(child);";
 		}
-		else if (HasText.class.isAssignableFrom(widgetType))
+		else if (HasText.class.isAssignableFrom(getClassFormType(widgetType)))
 		{
 			return "if (child.trim().length() > 0) c.getRootWidget().setText(child);";
 			
@@ -660,7 +680,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 */
 	private String generateAgregatorTagProcessingBlock(TreeLogger logger, 
 													 Map<String, String> methodsForInnerProcessing, 
-													 Class<?> widgetType, 
+													 Type widgetType, 
 													 TagChildren children,
 													 Class<? extends WidgetChildProcessor<?>> childProcessor, 
 													 Map<String, String> processorVariables, boolean first) 
@@ -688,7 +708,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 */
 	private String generateGenericProcessingBlock(TreeLogger logger,  
 												  Map<String, String> methodsForInnerProcessing, 
-												  Class<?> widgetType, 
+												  Type widgetType, 
 												  Class<? extends WidgetChildProcessor<?>> childProcessor, 
 												  Map<String, String> processorVariables)
 			throws NoSuchMethodException, Exception
@@ -868,15 +888,26 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 	 * @param factoryClass
 	 * @return
 	 */
-	private Class<?> getWidgetTypeFromClass(TreeLogger logger, Class<?> factoryClass)
+	private Type getWidgetTypeFromClass(TreeLogger logger, Class<?> factoryClass)
 	{
-		Class<?> returnType = GenericUtils.resolveReturnType(factoryClass, "instantiateWidget", 
-				new Class[]{Element.class, String.class});
-		if (returnType == null)
-		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingWidgetFactoryCanNotRealizeGenericType(factoryClass.getName()));
-		}
-		return returnType;
+        try
+        {
+	        Method method = factoryClass.getMethod("instantiateWidget", 
+	        		new Class[]{Element.class, String.class});
+	        Type genericReturnType = method.getGenericReturnType();
+	        if (genericReturnType instanceof TypeVariable<?>)
+	        {
+	        	return GenericUtils.resolveReturnType(factoryClass, "instantiateWidget", new Class[]{Element.class, String.class});
+	        }
+	        else
+	        {
+	        	return genericReturnType;
+	        }
+        }
+        catch (Exception e)
+        {
+			throw new CruxGeneratorException(messages.errorGeneratingWidgetFactoryCanNotRealizeGenericType(factoryClass.getName()), e);
+        }
 	}
 	
 	/**

@@ -15,12 +15,7 @@
  */
 package br.com.sysmap.crux.core.rebind;
 
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.GenericDeclaration;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.utils.ClassUtils;
@@ -41,9 +36,9 @@ public abstract class AbstractGenerator extends Generator
 	 * @param handlerClass
 	 * @return
 	 */
-	protected static String getClassSourceName(Class<?> handlerClass)
+	protected static String getClassSourceName(Type type)
 	{
-		return ClassUtils.getClassSourceName(handlerClass);
+		return ClassUtils.getTypeDeclaration(type);
 	}
 	
 	/**
@@ -61,91 +56,8 @@ public abstract class AbstractGenerator extends Generator
 	 * @param parameterType
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	protected String getParameterDeclaration(Type parameterType)
 	{
-		StringBuilder result = new StringBuilder();
-		if (parameterType instanceof ParameterizedType)
-		{
-			ParameterizedType parameterizedType =((ParameterizedType)parameterType);
-			result.append(getParameterDeclaration(parameterizedType.getRawType()));
-			Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-			if (actualTypeArguments != null && actualTypeArguments.length > 0)
-			{
-				result.append("<");
-				for (Type type : actualTypeArguments)
-				{
-					result.append(getParameterDeclaration(type));
-				}
-				result.append(">");
-			}
-			
-		}
-		else if (parameterType instanceof GenericArrayType)
-		{
-			GenericArrayType genericArrayType = (GenericArrayType) parameterType;
-			result.append(getParameterDeclaration(genericArrayType.getGenericComponentType()));
-			result.append("[]");
-		}
-		else if (parameterType instanceof TypeVariable)
-		{
-			TypeVariable<GenericDeclaration> typeVariable = (TypeVariable<GenericDeclaration>) parameterType;
-			result.append(typeVariable.getName());
-			GenericDeclaration genericDeclaration = typeVariable.getGenericDeclaration();
-			if (genericDeclaration != null)
-			{
-				TypeVariable<?>[] typeParameters = genericDeclaration.getTypeParameters();
-				if (typeParameters != null && typeParameters.length > 0)
-				{
-					result.append("<");
-					for (Type type : typeParameters)
-					{
-						result.append(getParameterDeclaration(type));
-					}
-					result.append(">");
-				}
-			}
-		}
-		else if (parameterType instanceof Class)
-		{
-			Class<?> parameterClass = ((Class<?>)parameterType);
-			if (parameterClass.isArray())
-			{
-				Class<?> componentType = parameterClass.getComponentType();
-				result.append(getParameterDeclaration(componentType));
-				int numDim = getArrayDimensions(parameterClass);
-				for (int i=0; i<numDim; i++)
-				{
-					result.append("[]");
-				}
-			}
-			else
-			{
-				result.append(getClassSourceName(parameterClass));
-			}
-		}
-		else if (parameterType instanceof WildcardType)
-		{
-			result.append("?");
-		}
-		return result.toString();
-	}
-
-	/**
-	 * 
-	 * @param parameterClass
-	 * @return
-	 */
-	private int getArrayDimensions(Class<?> parameterClass)
-	{
-		String name = getClassSourceName(parameterClass);
-		for (int i=0; i<name.length(); i++)
-		{
-			if (name.charAt(i) != '[')
-			{
-				return i;
-			}
-		}
-		return 0;
+		return ClassUtils.getTypeDeclaration(parameterType);
 	}
 }

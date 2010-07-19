@@ -144,4 +144,7 @@ public interface ServerMessages
 	
 	@DefaultServerMessage("[synchronizerToken 001] - Invalid Synchronizer Token for method {0}. Possible CSRF attack.")
 	String synchronizerTokenServiceInvalidTokenError(String methodFullSignature);
+
+	@DefaultServerMessage("[widgetConfig 002] - Error initializing widgets. Invalid widget type: {0}")
+	String widgetConfigInitializeErrorInvalidType(String widgetType);
 }
