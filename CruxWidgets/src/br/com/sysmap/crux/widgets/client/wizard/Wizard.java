@@ -69,8 +69,6 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	private Map<String, Step<T>> steps = new HashMap<String, Step<T>>();
 	
 	private DeckPanel stepsPanel;
-
-	private String wizardDataId;
 	private WizardDataSerializer<T> wizardDataSerializer;
 	
 	
@@ -673,11 +671,6 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		return steps.get(id);
 	}
 	
-	String getWizardDataId()
-	{
-		return this.wizardDataId;
-	}
-	
 	/**
 	 * @return
 	 */
@@ -818,7 +811,6 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	@SuppressWarnings("unchecked")
 	private void initWizardDataSerializer(String wizardId, String wizardDataId)
     {
-	    this.wizardDataId = wizardDataId;
 		if (!StringUtils.isEmpty(wizardDataId))
 		{
 			if (dataSerializer == null)

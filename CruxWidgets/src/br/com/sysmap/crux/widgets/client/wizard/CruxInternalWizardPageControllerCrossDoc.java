@@ -23,7 +23,7 @@ import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocument;
  */
 public interface CruxInternalWizardPageControllerCrossDoc extends CrossDocument
 {
-	boolean onLeave(String wizardId, String wizardDataId, String nextStep);
+	boolean onLeave(String nextStep);
 	void onEnter(String previousStep);
 	void onCommand(String commandId);
 	WizardCommandData[] listCommands();

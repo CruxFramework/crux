@@ -38,7 +38,7 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 * @param event
 	 * @return
 	 */
-	public boolean onLeave(String wizardId, String wizardDataId, String nextStep)
+	public boolean onLeave(String nextStep)
 	{
 		WizardPage<?> wizardPage = Screen.get(WizardPage.PAGE_UNIQUE_ID, WizardPage.class);
 		if (wizardPage != null)

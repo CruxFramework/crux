@@ -118,11 +118,37 @@ public class RegisteredWizardDataSerializerGenerator extends AbstractRegisteredE
 	private void generateSerializerClasses(TreeLogger logger, SourceWriter sourceWriter,
 			Map<String, String> dataSerializerClassNames, GeneratorContext context)
 	{
+		generateDefaultSerializerClass(logger, sourceWriter, dataSerializerClassNames, context);
+
 		Iterator<String> wizardDatas = WizardDataObjects.iterateWizardDatas();
 		while (wizardDatas.hasNext())
 		{
 			generateSerializerClass(logger, sourceWriter, wizardDatas.next(), dataSerializerClassNames, context);
 		}		
+	}
+
+	/**
+	 * @param logger
+	 * @param sourceWriter
+	 * @param controllersAdded
+	 * @param context 
+	 */
+	private void generateDefaultSerializerClass(TreeLogger logger, SourceWriter sourceWriter, 
+			Map<String, String> wizardDataAdded, GeneratorContext context)
+	{
+		try
+		{
+			if (!wizardDataAdded.containsKey("string"))
+			{
+				String genClass = "Intf_string";
+				sourceWriter.println("public static interface "+genClass+" extends WizardDataSerializer<String>{}");
+				wizardDataAdded.put("string", genClass);
+			}
+		}
+		catch (Throwable e) 
+		{
+			throw new CruxGeneratorException(widgetMessages.errorGeneratingRegisteredWizardData("string", e.getLocalizedMessage()), e);
+		}
 	}
 
 	/**

@@ -55,7 +55,7 @@ public class WizardPageFactory extends WidgetFactory<WizardPage<?>>
 	@Override
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="wizardId", required=true),
-		@TagAttributeDeclaration(value="wizardContextObject", required=true)
+		@TagAttributeDeclaration("wizardContextObject")
 	})
 	public void processAttributes(br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext<WizardPage<?>> context) throws InterfaceConfigException
 	{

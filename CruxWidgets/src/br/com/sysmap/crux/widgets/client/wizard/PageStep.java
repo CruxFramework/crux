@@ -91,7 +91,7 @@ public class PageStep<T extends Serializable> extends LazyPanel
 		LeaveEvent<T> result = new LeaveEvent<T>(null, nextStep);
 
 		((TargetDocument)wizardController).setTargetWindow(CruxInternalWizardPageController.getTabWindow(getId()));
-		if (!wizardController.onLeave(wizard.getElement().getId(), wizard.getWizardDataId(), nextStep))
+		if (!wizardController.onLeave(nextStep))
 		{
 			result.cancel();
 		}

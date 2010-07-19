@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.AbstractRegisteredElementsGenerator;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
@@ -85,9 +86,14 @@ public class WizardInstantiatorGenerator extends AbstractRegisteredElementsGener
 	private void generateCreateWizardMethod(TreeLogger logger, SourceWriter sourceWriter, GeneratorContext context)
 	{
 		Iterator<String> wizardDatas = WizardDataObjects.iterateWizardDatas();
-		boolean first = true;
 		sourceWriter.println("public Wizard<?> createWizard(String id, String wizardDataId){");
 		sourceWriter.indent();
+
+		sourceWriter.println("if ("+StringUtils.class.getCanonicalName()+".isEmpty(wizardDataId)){");
+		sourceWriter.indent();
+		sourceWriter.println("return new Wizard<String>(id, \"string\");");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 
 		while (wizardDatas.hasNext())
 		{
@@ -95,19 +101,14 @@ public class WizardInstantiatorGenerator extends AbstractRegisteredElementsGener
 			Class<?> wizardDataClass = WizardDataObjects.getWizardData(wizardData);
 			if (wizardDataClass!= null)
 			{
-				if (!first)
-				{
-					sourceWriter.print("else ");
-				}
-				first = false;
-				sourceWriter.println("if (\""+wizardData+"\".equals(wizardDataId)){");
+				sourceWriter.println("else if (\""+wizardData+"\".equals(wizardDataId)){");
 				sourceWriter.indent();
 				sourceWriter.println("return new Wizard<"+getClassSourceName(wizardDataClass)+">(id, wizardDataId);");
 				sourceWriter.outdent();
 				sourceWriter.println("}");
 			}
 		}		
-		sourceWriter.println("return null;");
+		sourceWriter.println("return new Wizard<java.io.Serializable>(id, wizardDataId);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
@@ -121,9 +122,14 @@ public class WizardInstantiatorGenerator extends AbstractRegisteredElementsGener
 	private void generateCreateWizardPageMethod(TreeLogger logger, SourceWriter sourceWriter, GeneratorContext context)
 	{
 		Iterator<String> wizardDatas = WizardDataObjects.iterateWizardDatas();
-		boolean first = true;
 		sourceWriter.println("public WizardPage<?> createWizardPage(String wizardId, String wizardDataId){");
 		sourceWriter.indent();
+
+		sourceWriter.println("if ("+StringUtils.class.getCanonicalName()+".isEmpty(wizardDataId)){");
+		sourceWriter.indent();
+		sourceWriter.println("return new WizardPage<String>(wizardId, \"string\");");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 
 		while (wizardDatas.hasNext())
 		{
@@ -131,19 +137,14 @@ public class WizardInstantiatorGenerator extends AbstractRegisteredElementsGener
 			Class<?> wizardDataClass = WizardDataObjects.getWizardData(wizardData);
 			if (wizardDataClass!= null)
 			{
-				if (!first)
-				{
-					sourceWriter.print("else ");
-				}
-				first = false;
-				sourceWriter.println("if (\""+wizardData+"\".equals(wizardDataId)){");
+				sourceWriter.println("else if (\""+wizardData+"\".equals(wizardDataId)){");
 				sourceWriter.indent();
 				sourceWriter.println("return new WizardPage<"+getClassSourceName(wizardDataClass)+">(wizardId, wizardDataId);");
 				sourceWriter.outdent();
 				sourceWriter.println("}");
 			}
 		}		
-		sourceWriter.println("return null;");
+		sourceWriter.println("return new WizardPage<java.io.Serializable>(wizardId, wizardDataId);");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
