@@ -60,7 +60,11 @@ public class WidgetParserImpl implements WidgetParser
 					{
 						Node childNode = childElements.item(i);
 						
-						if(Node.ELEMENT_NODE == childNode.getNodeType())
+						if(Node.TEXT_NODE == childNode.getNodeType())
+						{
+							extractInnerText(childNode, widget);
+						}
+						else if(Node.ELEMENT_NODE == childNode.getNodeType())
 						{
 							Element child = (Element) childElements.item(i);
 							Element childElem = (Element) child;
@@ -81,11 +85,11 @@ public class WidgetParserImpl implements WidgetParser
 	 * @param elem
 	 * @param widget
 	 */
-	private void extractInnerText(Element elem, Widget widget)
+	private void extractInnerText(Node elem, Widget widget)
 	{
 		String text = elem.getTextContent();
 		
-		if(text != null && text.length() > 0)
+		if(text != null && text.trim().length() > 0)
 		{
 			widget.addPropertyValue(text);
 		}
