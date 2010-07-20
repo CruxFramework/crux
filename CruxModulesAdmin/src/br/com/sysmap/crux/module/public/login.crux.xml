@@ -5,7 +5,7 @@
 		xmlns:w="http://www.sysmap.com.br/crux/widgets">
 	<body>
 		
-		<script type="text/javascript" src="../admin/admin.nocache.js"></script>
+		<script type="text/javascript" src="../cruxModulesAdmin/cruxModulesAdmin.nocache.js"></script>
 	
 		<c:screen useController="cruxAdminLoginController" title="${adminMessages.modulesAdminConsoleTitle}" useDataSource="repositoriesDS" />
 		

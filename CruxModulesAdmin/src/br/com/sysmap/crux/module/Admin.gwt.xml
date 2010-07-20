@@ -1,4 +1,4 @@
-<module rename-to='admin'>
+<module rename-to='cruxModulesAdmin'>
 	<inherits name='br.com.sysmap.crux.module.Module'/>
 	<inherits name='br.com.sysmap.crux.gwt.CruxGWTWidgets'/>
 	<inherits name='br.com.sysmap.crux.widgets.CruxWidgets'/>

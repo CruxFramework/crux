@@ -17,7 +17,7 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="br.com.sysmap.crux.module.launch.ModulesLauncher"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl admin/admin.html -gen c:\temp\crux -logLevel DEBUG"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl cruxModulesAdmin/admin.html -gen generated -logLevel DEBUG"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="CruxModulesAdmin"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xss32768k -Xms64M -Xmx256M -DCrux.dev=true"/>
 </launchConfiguration>

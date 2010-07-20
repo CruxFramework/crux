@@ -6,7 +6,7 @@
 >
 
 	<body>
-		<script type="text/javascript" src="../admin/admin.nocache.js"></script>
+		<script type="text/javascript" src="../cruxModulesAdmin/cruxModulesAdmin.nocache.js"></script>
 		
 		<c:screen title="${adminMessages.modulesAdminConsoleTitle}" useController="cruxModuleInfoController" 
 				  useDataSource="requiredModulesDS, pagesDS, controllersDS, datasourcesDS, formattersDS, serializablesDS" 
