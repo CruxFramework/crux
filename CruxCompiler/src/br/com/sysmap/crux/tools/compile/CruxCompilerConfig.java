@@ -25,4 +25,6 @@ public interface CruxCompilerConfig
 {
 	@DefaultServerMessage("br.com.sysmap.crux.tools.compile.CruxBasicCompiler")
 	String compilerClass();
+
+	void setCompilerClass(String value);
 }

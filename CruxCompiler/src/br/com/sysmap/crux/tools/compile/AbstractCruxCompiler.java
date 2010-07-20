@@ -66,6 +66,7 @@ public abstract class AbstractCruxCompiler
 
 	protected String outputCharset;
 	protected String pageFileExtension;
+	protected boolean initialized = false;
 	
 	/**
 	 * @param parameters
@@ -194,21 +195,25 @@ public abstract class AbstractCruxCompiler
 	/**
 	 * 
 	 */
-	protected void initializeCompiler()
+	public void initializeCompiler()
 	{
-		URL[] urls = ClasspathUrlFinder.findClassPaths();
-		ModuleUtils.initializeScannerURLs(urls);
-		ClassScanner.initialize(urls);
-		
-		for (CruxPreProcessor preprocess : this.preProcessors)
+		if (!initialized)
 		{
-			preprocess.initialize(urls);
+			URL[] urls = ClasspathUrlFinder.findClassPaths();
+			ModuleUtils.initializeScannerURLs(urls);
+			ClassScanner.initialize(urls);
+
+			for (CruxPreProcessor preprocess : this.preProcessors)
+			{
+				preprocess.initialize(urls);
+			}
+			for (CruxPostProcessor postprocess : this.postProcessors)
+			{
+				postprocess.initialize(urls);
+			}
+			initializeProcessors();
+			this.initialized = true;
 		}
-		for (CruxPostProcessor postprocess : this.postProcessors)
-		{
-			postprocess.initialize(urls);
-		}
-		initializeProcessors();
 	}
 
 	/**
@@ -450,6 +455,9 @@ public abstract class AbstractCruxCompiler
 		alreadyCompiledModules.add(moduleName);
 	}
 	
+	/**
+	 * @return
+	 */
 	protected ConsoleParametersProcessor createParametersProcessor()
 	{
 		ConsoleParameter parameter;
