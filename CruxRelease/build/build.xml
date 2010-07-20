@@ -205,7 +205,6 @@
 			<fileset file="${crux.dependencies}/commons-logging.jar"/>
 			<fileset file="${crux.dependencies}/gwt-servlet.jar"/>
 			<fileset file="${crux.dependencies}/javassist.jar"/>
-			<fileset file="${crux.dependencies}/jericho-html.jar"/>
 			<fileset file="${crux.dependencies}/saxon9.jar"/>
 			<fileset file="${crux.dependencies}/saxon9-dom.jar"/>
 		</copy>
