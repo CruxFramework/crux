@@ -36,6 +36,7 @@ import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
 import br.com.sysmap.crux.core.rebind.ClientInvokableGeneratorHelper;
+import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializationUtils;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.Shared;
@@ -91,6 +92,10 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		super(logger, context, getCrossDocumentInterface(logger, context, controllerClass));
 		this.controllerClass = controllerClass;
 		this.isCrossDoc = (CrossDocument.class.isAssignableFrom(controllerClass));
+		if (isCrossDoc && this.baseProxyType == null)
+		{
+			throw new CruxGeneratorException(messages.crossDocumentCanNotFindControllerCrossDocInterface(controllerClass.getCanonicalName()));
+		}
 		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 		this.isSingleton = (controllerAnnot == null || controllerAnnot.statefull());
 		this.isAutoBindEnabled = (controllerAnnot == null || controllerAnnot.autoBind());
