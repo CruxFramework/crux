@@ -45,7 +45,13 @@ public class ModuleExporterTask extends Task
 	private String excludes;
 	private String javaSource;
 	private String javaTarget;
-
+	private boolean exportCruxCompilation = true;
+	private String scanAllowedPackages;
+	private String scanIgnoredPackages;
+	private String pagesOutputCharset;
+	private String pageFileExtension;
+	
+	
 	public void addClasspath(Path classpath)
 	{
 		this.classpath.add(classpath);
@@ -104,6 +110,31 @@ public class ModuleExporterTask extends Task
 	public void setJavaTarget(String javaTarget)
     {
     	this.javaTarget = javaTarget;
+    }
+	
+	public void setExportCruxCompilation(boolean exportCruxCompilation)
+    {
+    	this.exportCruxCompilation = exportCruxCompilation;
+    }
+
+	public void setScanAllowedPackages(String scanAllowedPackages)
+    {
+    	this.scanAllowedPackages = scanAllowedPackages;
+    }
+
+	public void setScanIgnoredPackages(String scanIgnoredPackages)
+    {
+    	this.scanIgnoredPackages = scanIgnoredPackages;
+    }
+
+	public void setPagesOutputCharset(String pagesOutputCharset)
+    {
+    	this.pagesOutputCharset = pagesOutputCharset;
+    }
+
+	public void setPageFileExtension(String pageFileExtension)
+    {
+    	this.pageFileExtension = pageFileExtension;
     }
 
 	/**
@@ -231,6 +262,33 @@ public class ModuleExporterTask extends Task
 			javatask.createArg().setValue("javaTarget");
 			javatask.createArg().setValue(this.javaTarget);
 		}
+
+	    if (this.scanAllowedPackages != null)
+		{
+			javatask.createArg().setValue("scanAllowedPackages");
+			javatask.createArg().setValue(this.scanAllowedPackages);
+		}
+	    
+	    if (this.scanIgnoredPackages != null)
+		{
+			javatask.createArg().setValue("scanIgnoredPackages");
+			javatask.createArg().setValue(this.scanIgnoredPackages);
+		}
+
+	    if (this.pageFileExtension != null)
+		{
+			javatask.createArg().setValue("pageFileExtension");
+			javatask.createArg().setValue(this.pageFileExtension);
+		}
+
+	    if (this.pagesOutputCharset != null)
+		{
+			javatask.createArg().setValue("pagesOutputCharset");
+			javatask.createArg().setValue(this.pagesOutputCharset);
+		}
+
+	    javatask.createArg().setValue("exportCruxCompilation");
+		javatask.createArg().setValue(Boolean.toString(this.exportCruxCompilation));
 
 	    /*if (this.webDir != null)
 		{

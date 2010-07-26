@@ -44,6 +44,7 @@ import br.com.sysmap.crux.core.client.utils.StringUtils;
  */
 public class JarCreator
 {
+	public static final String MANIFEST_BUILD_TIMESTAMP_PROPERTY = "Build-Timestamp";
 	private static DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 	private static final String PATTERN_SPECIAL_CHARACTERS = "\\{}[]()+?$&^-|.!";
 	private List<Pattern> excludesPatterns = new ArrayList<Pattern>();
@@ -88,6 +89,11 @@ public class JarCreator
         {
 			manifest.getMainAttributes().putValue(attrName, metaInfAttributes.get(attrName));
         }
+		
+		if (outputFile.exists())
+		{
+			outputFile.delete();
+		}
 		
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(outputFile), manifest);
 		
@@ -256,7 +262,7 @@ public class JarCreator
 	private void setDefaultAttributes(Map<String, String> metaInfAttributes)
     {
 	    metaInfAttributes.put(Attributes.Name.MANIFEST_VERSION.toString(), "1.0");
-		metaInfAttributes.put("Build-Timestamp", dateFormatter.format(new Date()));
+		metaInfAttributes.put(MANIFEST_BUILD_TIMESTAMP_PROPERTY, dateFormatter.format(new Date()));
     }
 
 	/**
@@ -265,7 +271,7 @@ public class JarCreator
 	 */
 	private String translatePattern(String pattern)
     {
-		pattern = pattern.replace("\\", "/");
+		pattern = pattern.replace("\\", "/").trim();
 		StringBuilder str = new StringBuilder();
 		
 		for (int i=0; i < pattern.length(); i++)
