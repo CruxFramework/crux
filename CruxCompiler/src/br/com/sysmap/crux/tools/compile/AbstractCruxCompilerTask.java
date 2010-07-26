@@ -137,7 +137,6 @@ public abstract class AbstractCruxCompilerTask extends Task
 	
 	/**
 	 * Compile files using GWT compiler
-	 * @param url
 	 * @throws Exception
 	 */
 	protected void compileFile() throws Exception

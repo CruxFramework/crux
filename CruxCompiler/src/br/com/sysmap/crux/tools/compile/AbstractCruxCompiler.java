@@ -52,22 +52,24 @@ public abstract class AbstractCruxCompiler
 {
 	private static final Log logger = LogFactory.getLog(AbstractCruxCompiler.class);
 	
-	private List<String> gwtCompilerArgs = new ArrayList<String>();
-	private List<CruxPreProcessor> preProcessors = new ArrayList<CruxPreProcessor>();
-	private List<CruxPostProcessor> postProcessors = new ArrayList<CruxPostProcessor>();
-	private List<String> alreadyCompiledModules = new ArrayList<String>();
+	protected boolean indentPages;
+	protected boolean initialized = false;
+	protected boolean keepPagesGeneratedFiles;
+	protected String outputCharset;
 	
 	protected File outputDir;
-	protected File webDir;
+	protected String pageFileExtension;
 	
 	protected File pagesOutputDir;
-	protected boolean indentPages;
-	protected boolean keepPagesGeneratedFiles;
+	protected File webDir;
+	private List<String> alreadyCompiledModules = new ArrayList<String>();
 
-	protected String outputCharset;
-	protected String pageFileExtension;
-	protected boolean initialized = false;
+	private List<String> gwtCompilerArgs = new ArrayList<String>();
+	private SecurityManager originalSecurityManager = null;
+	private List<CruxPostProcessor> postProcessors = new ArrayList<CruxPostProcessor>();
 	
+	private List<CruxPreProcessor> preProcessors = new ArrayList<CruxPreProcessor>();
+
 	/**
 	 * @param parameters
 	 */
@@ -125,73 +127,35 @@ public abstract class AbstractCruxCompiler
 		catch (Throwable e) 
 		{
 			logger.error(e.getMessage(), e);
-			new CompilerException(e.getMessage(), e);
+			throw new CompilerException(e.getMessage(), e);
 		}
 	}
 
-	
-	/**
-	 * @param module
-	 * @throws IOException 
-	 */
-	protected void maybeRestoreBackup(Module module) throws IOException
+	public String getOutputCharset()
     {
-    	File backupFile = new File(FileUtils.getTempDirFile(), "_moduleBackup");
-	    if (backupFile.exists())
-	    {
-		    File output = new File(outputDir, module.getName());
-	    	FileUtils.copyDirectory(backupFile, output);
-	    	backupFile.delete();
-	    }
+    	return outputCharset;
     }
 
-	/**
-	 * @throws IOException 
-	 * 
-	 */
-	protected void maybeBackupPreProcessorsOutput(Module module) throws IOException
+	public File getOutputDir()
     {
-	    File output = new File(outputDir, module.getName());
-	    if (output.exists())
-	    {
-	    	File backupFile = new File(FileUtils.getTempDirFile(), "_moduleBackup");
-	    	FileUtils.copyDirectory(output, backupFile);
-	    }
+    	return outputDir;
     }
 
-	/**
-	 * @param module
-	 */
-	protected void deleteModuleOutputDir(Module module)
+	public String getPageFileExtension()
     {
-	    File output = new File(outputDir, module.getName());
-	    if (output.exists())
-	    {
-	    	FileUtils.recursiveDelete(output);
-	    }
-    	File backupFile = new File(FileUtils.getTempDirFile(), "_moduleBackup");
-	    if (backupFile.exists())
-	    {
-	    	FileUtils.recursiveDelete(backupFile);
-	    }
+    	return pageFileExtension;
     }
-	
-	/**
-	 * @param preProcessor
-	 */
-	protected void addPreProcessor(CruxPreProcessor preProcessor)
-	{
-		this.preProcessors.add(preProcessor);
-	}
 
-	/**
-	 * @param postProcessor
-	 */
-	protected void addPostProcessor(CruxPostProcessor postProcessor)
-	{
-		this.postProcessors.add(postProcessor);
-	}
-	
+	public File getPagesOutputDir()
+    {
+    	return pagesOutputDir;
+    }
+
+	public File getWebDir()
+    {
+    	return webDir;
+    }
+
 	/**
 	 * 
 	 */
@@ -216,104 +180,69 @@ public abstract class AbstractCruxCompiler
 		}
 	}
 
-	/**
-	 * @param parameters
-	 */
-	protected void processParameters(Collection<ConsoleParameter> parameters)
+	public boolean isIndentPages()
     {
-	    for (ConsoleParameter parameter : parameters)
-        {
-	        if (parameter.getName().equals("-gen") || parameter.getName().equals("-style") || parameter.getName().equals("-extra"))
-	        {
-	        	gwtCompilerArgs.add(parameter.getName());
-	        	gwtCompilerArgs.add(parameter.getValue());
-	        }
-	        else if (parameter.getName().equals("-compileReport"))
-	        {
-	        	gwtCompilerArgs.add(parameter.getName());
-	        }
-	        else if (parameter.getName().equals("-draftCompile"))
-	        {
-	        	gwtCompilerArgs.add(parameter.getName());
-	        }
-	        else if (parameter.getName().equals("-validateOnly"))
-	        {
-	        	gwtCompilerArgs.add(parameter.getName());
-	        }
-	        else if (parameter.getName().equals("outputDir"))
-	        {
-	        	setOutputDir(parameter);
-	        }
-	        else if (parameter.getName().equals("webDir"))
-	        {
-	        	setWebDir(parameter);
-	        }
-	        else if (parameter.getName().equals("scanAllowedPackages"))
-	        {
-	    	    CruxScreenBridge.getInstance().registerScanAllowedPackages(parameter.getValue());
-	        }
-	        else if (parameter.getName().equals("scanIgnoredPackages"))
-	        {
-	    	    CruxScreenBridge.getInstance().registerScanIgnoredPackages(parameter.getValue());
-	        }
-	        else if (parameter.getName().equals("pagesOutputDir"))
-	        {
-	        	this.pagesOutputDir = new File(parameter.getValue());
-	        }
-	        else if (parameter.getName().equals("-indentPages"))
-	        {
-	        	this.indentPages = true;
-	        }
-	        else if (parameter.getName().equals("-keepPagesGeneratedFiles"))
-	        {
-	        	this.keepPagesGeneratedFiles = true;
-	        }
-	        else if (parameter.getName().equals("outputCharset"))
-	        {
-	        	this.outputCharset = parameter.getValue();
-	        }
-	        else if (parameter.getName().equals("pageFileExtension"))
-	        {
-	        	this.pageFileExtension = parameter.getValue();
-	        }
-        }
-		if (this.outputDir != null)
-		{
-			gwtCompilerArgs.add("-war");
-			try
-            {
-	            gwtCompilerArgs.add(this.outputDir.getCanonicalPath());
-            }
-            catch (IOException e)
-            {
-	            logger.error("Invalid output dir.", e);
-            }
-		}
-		if (this.outputDir == null && this.webDir == null)
-		{
-			logger.error("You must inform at least one of outputDir and webDir parameters.");
-			System.exit(1);
-		}
+    	return indentPages;
     }
 
+	public boolean isKeepPagesGeneratedFiles()
+    {
+    	return keepPagesGeneratedFiles;
+    }
+
+	public void setIndentPages(boolean indentPages)
+    {
+    	this.indentPages = indentPages;
+    }
+
+	public void setKeepPagesGeneratedFiles(boolean keepPagesGeneratedFiles)
+    {
+    	this.keepPagesGeneratedFiles = keepPagesGeneratedFiles;
+    }
+
+	public void setOutputCharset(String outputCharset)
+    {
+    	this.outputCharset = outputCharset;
+    }
+
+	
 	/**
 	 * @param parameter
 	 */
-	private void setOutputDir(ConsoleParameter parameter)
+	public void setOutputDir(File file)
     {
-	    this.outputDir = new File(parameter.getValue());
+	    this.outputDir = file;
+	    this.gwtCompilerArgs.add("-war");
+	    try
+	    {
+	    	this.gwtCompilerArgs.add(this.outputDir.getCanonicalPath());
+	    }
+	    catch (IOException e)
+	    {
+	    	logger.error("Invalid output dir.", e);
+	    }
 	    if (this.webDir == null)
 	    {
-	    	setWebDir(parameter);
+	    	setWebDir(file);
 	    }
     }
 
+	public void setPageFileExtension(String pageFileExtension)
+    {
+    	this.pageFileExtension = pageFileExtension;
+    }
+
+	public void setPagesOutputDir(File pagesOutputDir)
+    {
+    	this.pagesOutputDir = pagesOutputDir;
+    }
+	
 	/**
 	 * @param parameter
 	 */
-	private void setWebDir(ConsoleParameter parameter)
+	public void setWebDir(File file)
     {
-	    this.webDir = new File(parameter.getValue());
+	    this.webDir = file;
 	    try
 	    {
 	        ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(new File(webDir, "WEB-INF/classes/").toURI().toURL());
@@ -325,10 +254,26 @@ public abstract class AbstractCruxCompiler
 	    }
 	    if (this.outputDir == null)
 	    {
-	    	setOutputDir(parameter);
+	    	setOutputDir(file);
 	    }
     }
+
+	/**
+	 * @param postProcessor
+	 */
+	protected void addPostProcessor(CruxPostProcessor postProcessor)
+	{
+		this.postProcessors.add(postProcessor);
+	}
 	
+	/**
+	 * @param preProcessor
+	 */
+	protected void addPreProcessor(CruxPreProcessor preProcessor)
+	{
+		this.preProcessors.add(preProcessor);
+	}
+
 	/**
 	 * 
 	 */
@@ -339,46 +284,6 @@ public abstract class AbstractCruxCompiler
 		CruxScreenBridge.getInstance().registerLastPageRequested("");
     }
 
-	/**
-	 * Gets the list of URLs that will be compiled
-	 * @return
-	 */
-	protected abstract List<URL> getURLs() throws Exception;
-	
-	/**
-	 * A chain composed by CruxPreProcessor object is used.
-	 * @param url
-	 * @param module
-	 * @return
-	 * @throws Exception 
-	 */
-	protected URL preProcessCruxPage(URL url, Module module) throws Exception
-	{
-		for (CruxPreProcessor preprocess : this.preProcessors)
-		{
-			url = preprocess.preProcess(url, module);
-		}
-		logger.info("File ["+url.toString()+"] pre-processed.");
-		
-		return url;
-	}
-	
-	/**
-	 * A chain composed by CruxPostProcessor object is used.
-	 * @param url
-	 * @param module
-	 * @return
-	 * @throws Exception 
-	 */
-	protected void postProcessCruxPage(URL url, Module module) throws Exception
-	{
-		for (CruxPostProcessor postProcessor : this.postProcessors)
-		{
-			url = postProcessor.postProcess(url, module);
-		}
-		logger.info("File ["+url.toString()+"] post-processed.");
-	}
-	
 	/**
 	 * Compile files using GWT compiler
 	 * @param url
@@ -422,39 +327,6 @@ public abstract class AbstractCruxCompiler
 		return compiled;
 	}
 
-	/**
-	 * @param moduleName
-	 * @return
-	 */
-	protected String[] getGwtArgs(String moduleName)
-    {
-	    String[] gwtArgs = new String[gwtCompilerArgs.size()+1];
-	    for (int i=0; i<gwtCompilerArgs.size(); i++)
-	    {
-	        gwtArgs[i] = gwtCompilerArgs.get(i);
-	    }
-	    gwtArgs[gwtCompilerArgs.size()] = moduleName;
-	    return gwtArgs;
-    }
-
-	/**
-	 * @param moduleName
-	 * @return
-	 */
-	protected boolean isModuleCompiled(Module module)
-	{
-		return module!= null && alreadyCompiledModules.contains(module.getFullName());
-	}
-	
-	/**
-	 * 
-	 * @param moduleName
-	 */
-	protected void setCompiledModule(String moduleName)
-	{
-		alreadyCompiledModules.add(moduleName);
-	}
-	
 	/**
 	 * @return
 	 */
@@ -516,46 +388,200 @@ public abstract class AbstractCruxCompiler
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
 		return parametersProcessor;	
 	}
+	
+	/**
+	 * @param module
+	 */
+	protected void deleteModuleOutputDir(Module module)
+    {
+	    File output = new File(outputDir, module.getName());
+	    if (output.exists())
+	    {
+	    	FileUtils.recursiveDelete(output);
+	    }
+    	File backupFile = new File(FileUtils.getTempDirFile(), "_moduleBackup");
+	    if (backupFile.exists())
+	    {
+	    	FileUtils.recursiveDelete(backupFile);
+	    }
+    }
 
+	/**
+	 * @param moduleName
+	 * @return
+	 */
+	protected String[] getGwtArgs(String moduleName)
+    {
+	    String[] gwtArgs = new String[gwtCompilerArgs.size()+1];
+	    for (int i=0; i<gwtCompilerArgs.size(); i++)
+	    {
+	        gwtArgs[i] = gwtCompilerArgs.get(i);
+	    }
+	    gwtArgs[gwtCompilerArgs.size()] = moduleName;
+	    return gwtArgs;
+    }
+	
 	protected String getProgramName()
     {
 	    return "CruxCompiler";
     }
 	
-	private SecurityManager originalSecurityManager = null;
+	/**
+	 * Gets the list of URLs that will be compiled
+	 * @return
+	 */
+	protected abstract List<URL> getURLs() throws Exception;
+	
+	protected abstract void initializeProcessors();
+
+	/**
+	 * @param moduleName
+	 * @return
+	 */
+	protected boolean isModuleCompiled(Module module)
+	{
+		return module!= null && alreadyCompiledModules.contains(module.getFullName());
+	}
+
+	/**
+	 * @throws IOException 
+	 * 
+	 */
+	protected void maybeBackupPreProcessorsOutput(Module module) throws IOException
+    {
+	    File output = new File(outputDir, module.getName());
+	    if (output.exists())
+	    {
+	    	File backupFile = new File(FileUtils.getTempDirFile(), "_moduleBackup");
+	    	FileUtils.copyDirectory(output, backupFile);
+	    }
+    }
+	
+	/**
+	 * @param module
+	 * @throws IOException 
+	 */
+	protected void maybeRestoreBackup(Module module) throws IOException
+    {
+    	File backupFile = new File(FileUtils.getTempDirFile(), "_moduleBackup");
+	    if (backupFile.exists())
+	    {
+		    File output = new File(outputDir, module.getName());
+	    	FileUtils.copyDirectory(backupFile, output);
+	    	backupFile.delete();
+	    }
+    }
+	
+	/**
+	 * A chain composed by CruxPostProcessor object is used.
+	 * @param url
+	 * @param module
+	 * @return
+	 * @throws Exception 
+	 */
+	protected void postProcessCruxPage(URL url, Module module) throws Exception
+	{
+		for (CruxPostProcessor postProcessor : this.postProcessors)
+		{
+			url = postProcessor.postProcess(url, module);
+		}
+		logger.info("File ["+url.toString()+"] post-processed.");
+	}
+
+	/**
+	 * A chain composed by CruxPreProcessor object is used.
+	 * @param url
+	 * @param module
+	 * @return
+	 * @throws Exception 
+	 */
+	protected URL preProcessCruxPage(URL url, Module module) throws Exception
+	{
+		for (CruxPreProcessor preprocess : this.preProcessors)
+		{
+			url = preprocess.preProcess(url, module);
+		}
+		logger.info("File ["+url.toString()+"] pre-processed.");
+		
+		return url;
+	}
+	
+	/**
+	 * @param parameters
+	 */
+	protected void processParameters(Collection<ConsoleParameter> parameters)
+    {
+	    for (ConsoleParameter parameter : parameters)
+        {
+	        if (parameter.getName().equals("-gen") || parameter.getName().equals("-style") || parameter.getName().equals("-extra"))
+	        {
+	        	gwtCompilerArgs.add(parameter.getName());
+	        	gwtCompilerArgs.add(parameter.getValue());
+	        }
+	        else if (parameter.getName().equals("-compileReport"))
+	        {
+	        	gwtCompilerArgs.add(parameter.getName());
+	        }
+	        else if (parameter.getName().equals("-draftCompile"))
+	        {
+	        	gwtCompilerArgs.add(parameter.getName());
+	        }
+	        else if (parameter.getName().equals("-validateOnly"))
+	        {
+	        	gwtCompilerArgs.add(parameter.getName());
+	        }
+	        else if (parameter.getName().equals("outputDir"))
+	        {
+	        	setOutputDir(new File(parameter.getValue()));
+	        }
+	        else if (parameter.getName().equals("webDir"))
+	        {
+	        	setWebDir(new File(parameter.getValue()));
+	        }
+	        else if (parameter.getName().equals("scanAllowedPackages"))
+	        {
+	    	    CruxScreenBridge.getInstance().registerScanAllowedPackages(parameter.getValue());
+	        }
+	        else if (parameter.getName().equals("scanIgnoredPackages"))
+	        {
+	    	    CruxScreenBridge.getInstance().registerScanIgnoredPackages(parameter.getValue());
+	        }
+	        else if (parameter.getName().equals("pagesOutputDir"))
+	        {
+	        	this.pagesOutputDir = new File(parameter.getValue());
+	        }
+	        else if (parameter.getName().equals("-indentPages"))
+	        {
+	        	this.indentPages = true;
+	        }
+	        else if (parameter.getName().equals("-keepPagesGeneratedFiles"))
+	        {
+	        	this.keepPagesGeneratedFiles = true;
+	        }
+	        else if (parameter.getName().equals("outputCharset"))
+	        {
+	        	this.outputCharset = parameter.getValue();
+	        }
+	        else if (parameter.getName().equals("pageFileExtension"))
+	        {
+	        	this.pageFileExtension = parameter.getValue();
+	        }
+        }
+		if (this.outputDir == null && this.webDir == null)
+		{
+			logger.error("You must inform at least one of outputDir and webDir parameters.");
+			System.exit(1);
+		}
+    }
 
 	/**
 	 * 
+	 * @param moduleName
 	 */
-	private void setSecurityManagerToAvoidSystemExit()
-    {
-	    AccessController.doPrivileged(new PrivilegedAction<Boolean>()
-	    {
-	    	public Boolean run()
-	        {
-	    		originalSecurityManager = System.getSecurityManager();
-	    		System.setSecurityManager(new SecurityManager(){
-	    			
-	    			@Override
-	    			public void checkPermission(Permission perm){}
-	    			
-	    			@Override
-	    			public void checkPermission(Permission perm, Object context){}
-	    			
-	    			@Override
-	    			public void checkExit(int status)
-	    			{
-	    				if (status == 0)
-	    				{
-	    					throw new DoNotExitException();
-	    				}
-	    				super.checkExit(status);
-	    			}
-	    		});
-	    		return true;
-	        }
-	    });
-    }
+	protected void setCompiledModule(String moduleName)
+	{
+		alreadyCompiledModules.add(moduleName);
+	}
 
 	/**
 	 * 
@@ -573,6 +599,40 @@ public abstract class AbstractCruxCompiler
     }
 
 	/**
+	 * 
+	 */
+	private void setSecurityManagerToAvoidSystemExit()
+    {
+	    AccessController.doPrivileged(new PrivilegedAction<Boolean>()
+	    {
+	    	public Boolean run()
+	        {
+	    		originalSecurityManager = System.getSecurityManager();
+	    		System.setSecurityManager(new SecurityManager(){
+	    			
+	    			@Override
+	    			public void checkExit(int status)
+	    			{
+	    				if (status == 0)
+	    				{
+	    					throw new DoNotExitException();
+	    				}
+	    				super.checkExit(status);
+	    			}
+	    			
+	    			@Override
+	    			public void checkPermission(Permission perm){}
+	    			
+	    			@Override
+	    			public void checkPermission(Permission perm, Object context){}
+	    		});
+	    		return true;
+	        }
+	    });
+    }
+	
+	
+	/**
 	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
@@ -580,8 +640,5 @@ public abstract class AbstractCruxCompiler
 	{
         private static final long serialVersionUID = -5285052847615664828L;
 	}
-	
-	
-	protected abstract void initializeProcessors();
 	
 }
