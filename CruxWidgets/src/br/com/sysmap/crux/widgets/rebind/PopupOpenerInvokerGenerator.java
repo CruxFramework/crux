@@ -37,11 +37,11 @@ public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerat
 	 * 
 	 */
 	@Override
-	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws WrapperGeneratorException
+	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter, Class<?> interfaceClass) throws WrapperGeneratorException
 	{
 		Class<?> returnType = method.getReturnType();
 		String methodName = method.getName();
-		String controllerName = getControllerName(method.getDeclaringClass());
+		String controllerName = getControllerName(interfaceClass);
 		if (methodName.length() > 0)
 		{
 			String returnTypeDeclaration = getParameterDeclaration(returnType);

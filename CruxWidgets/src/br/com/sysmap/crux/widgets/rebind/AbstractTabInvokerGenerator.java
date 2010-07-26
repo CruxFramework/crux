@@ -39,7 +39,7 @@ public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapp
 	 * 
 	 */
 	@Override
-	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws WrapperGeneratorException
+	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter, Class<?> interfaceClass) throws WrapperGeneratorException
 	{
 		String name = extracted(method);
 		
@@ -56,7 +56,7 @@ public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapp
 			
 			tabId = toJavaName(tabId);
 			
-			generateMethod(method, sourceWriter, tabId);
+			generateMethod(method, sourceWriter, tabId, interfaceClass);
 		}
 		else
 		{
@@ -68,11 +68,11 @@ public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapp
 	 * @throws WrapperGeneratorException 
 	 * 
 	 */
-	protected void generateMethod(Method method, SourceWriter sourceWriter, String tabId) throws WrapperGeneratorException
+	protected void generateMethod(Method method, SourceWriter sourceWriter, String tabId, Class<?> interfaceClass) throws WrapperGeneratorException
 	{
 		Class<?> returnType = method.getReturnType();
 		String methodName = method.getName();
-		String controllerName = getControllerName(method.getDeclaringClass());
+		String controllerName = getControllerName(interfaceClass);
 		
 		if (methodName.length() > 0)
 		{
