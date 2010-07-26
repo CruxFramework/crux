@@ -25,8 +25,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -46,42 +48,37 @@ public class JarCreator
 	private static final String PATTERN_SPECIAL_CHARACTERS = "\\{}[]()+?$&^-|.!";
 	private List<Pattern> excludesPatterns = new ArrayList<Pattern>();
 	private List<Pattern> includesPatterns = new ArrayList<Pattern>();
-	private final File inputDirectory;
-	private final int inputDirectoryNameLength;
+	private Map<String, String> metaInfAttributes;
+	private final File[] inputDirectory;
 	private final File outputFile;
 	
-	public JarCreator(File inputDirectory, File outputFile) throws IOException
+	public JarCreator(File[] inputDirectory, File outputFile) throws IOException
     {
-		this.inputDirectory = inputDirectory;
-		this.inputDirectoryNameLength = inputDirectory.getCanonicalPath().length();
-		this.outputFile = outputFile;
+		this(inputDirectory, outputFile, new HashMap<String, String>());
     }
-
-	public JarCreator(File inputDirectory, File outputFile, String includes, String excludes) throws IOException
+	
+	public JarCreator(File[] inputDirectory, File outputFile, String includes, String excludes, Map<String, String> metaInfAttributes) throws IOException
     {
-		this(inputDirectory, outputFile);
+		this(inputDirectory, outputFile, metaInfAttributes);
 		processIncludesPatterns(includes);
-		processExcludesPatterns(includes);
+		processExcludesPatterns(excludes);
 		
     }
 
-	/**
-	 * @param inputDirectory
-	 * @param outputFile
-	 * @throws IOException
-	 */
-	public void createJar() throws IOException
+	public JarCreator(File[] inputDirectory, File outputFile, Map<String, String> metaInfAttributes) throws IOException
 	{
-		createJar(new HashMap<String, String>());
+		this.inputDirectory = inputDirectory;
+		this.outputFile = outputFile;
+		this.metaInfAttributes = metaInfAttributes;
 	}
-	
+
 	/**
 	 * @param inputDirectory
 	 * @param outputFile
 	 * @param metaInfAttributes
 	 * @throws IOException
 	 */
-	public void createJar(Map<String, String> metaInfAttributes) throws IOException
+	public void createJar() throws IOException
 	{
 		Manifest manifest = new Manifest();
 		
@@ -89,42 +86,52 @@ public class JarCreator
 
 		for (String attrName : metaInfAttributes.keySet())
         {
-			manifest.getMainAttributes().put(attrName, metaInfAttributes.get(attrName));
+			manifest.getMainAttributes().putValue(attrName, metaInfAttributes.get(attrName));
         }
 		
 		JarOutputStream target = new JarOutputStream(new FileOutputStream(outputFile), manifest);
-		addFile(inputDirectory, target);
+		
+		if (inputDirectory != null)
+		{
+			Set<String> added = new HashSet<String>();
+			for (File inputDir : inputDirectory)
+			{
+				addFile(inputDir, target, inputDir.getCanonicalPath().length(), added);
+			}
+		}
 		target.close();
 	}
 
 	/**
 	 * @param source
 	 * @param target
+	 * @param inputDirNameLength 
 	 * @throws IOException
 	 */
-	private void addFile(File source, JarOutputStream target) throws IOException
+	private void addFile(File source, JarOutputStream target, int inputDirNameLength, Set<String> added) throws IOException
 	{
 		BufferedInputStream in = null;
 		try
 		{
-			String entryName = getEntryName(source);
+			String entryName = getEntryName(source, inputDirNameLength);
 			if (source.isDirectory())
 			{
 				String name = entryName;
-				if (!name.isEmpty())
+				if (!name.isEmpty() && !added.contains(name))
 				{
 					JarEntry entry = new JarEntry(name);
 					entry.setTime(source.lastModified());
 					target.putNextEntry(entry);
 					target.closeEntry();
+					added.add(name);
 				}
 				for (File nestedFile : source.listFiles())
 				{
-					addFile(nestedFile, target);
+					addFile(nestedFile, target, inputDirNameLength, added);
 				}
 				return;
 			}
-			if (isValidEntry(entryName))
+			if (isValidEntry(entryName) && !added.contains(entryName))
 			{
 				JarEntry entry = new JarEntry(entryName);
 				entry.setTime(source.lastModified());
@@ -142,6 +149,8 @@ public class JarCreator
 					target.write(buffer, 0, count);
 				}
 				target.closeEntry();
+				added.add(entryName);
+
 			}
 		}
 		finally
@@ -158,9 +167,9 @@ public class JarCreator
 	 * @return
 	 * @throws IOException
 	 */
-	private String getEntryName(File source) throws IOException
+	private String getEntryName(File source, int inputDirNameLength) throws IOException
 	{
-		String name = source.getCanonicalPath().substring(inputDirectoryNameLength).replace("\\", "/");
+		String name = source.getCanonicalPath().substring(inputDirNameLength).replace("\\", "/");
 		if (name.startsWith("/"))
 		{
 			name = name.substring(1);
@@ -251,37 +260,85 @@ public class JarCreator
     }
 
 	/**
-	 * @param includePattern
+	 * @param pattern
 	 * @return
 	 */
-	private String translatePattern(String includePattern)
+	private String translatePattern(String pattern)
     {
-		includePattern = includePattern.replace("\\", "/");
+		pattern = pattern.replace("\\", "/");
 		StringBuilder str = new StringBuilder();
 		
-		for (int i=0; i < includePattern.length(); i++)
+		for (int i=0; i < pattern.length(); i++)
         {
-	        if (includePattern.charAt(i) == '*')
+			int increment = isDirectoryNavigation(pattern, i);
+			if (increment > 0)
 	        {
-	        	if((i<includePattern.length()-2) && (includePattern.substring(i, i+2).equals("**/")))
-	        	{
-	        		str.append(".+");
-	        	}
-	        	else
-	        	{
-	        		str.append("[^/]+");
-	        	}
+				i += increment;
+        		str.append(".*");
 	        }
-	        else
-	        {
-	        	if (needsPatternScape(includePattern.charAt(i)))
-	        	{
-	        		str.append("\\");
-	        	}
-	        	str.append(includePattern.charAt(i));
-	        }
+			else
+			{
+				if (pattern.charAt(i) == '*')
+				{
+	        		str.append("[^/]*");
+				}
+				else
+				{
+					if (needsPatternScape(pattern.charAt(i)))
+					{
+						str.append("\\");
+					}
+					str.append(pattern.charAt(i));
+				}
+			}
         }
 		
 	    return str.toString();
     }
+	
+	/**
+	 * @param pattern
+	 * @param i
+	 * @return
+	 */
+	private int isDirectoryNavigation(String pattern, int i)
+	{
+		if (pattern.charAt(i) == '*' || pattern.charAt(i) == '/')
+        {
+			int length = pattern.length();
+			int rest = length - i; 
+
+			if (rest > 3)
+			{
+				String match = "/**/";
+				if (pattern.substring(i, i+match.length()).equals(match))
+				{
+					return match.length()-1;
+				}
+			}
+			if (rest > 2)
+			{
+				String match = "/**";
+				if (pattern.substring(i, i+match.length()).equals(match))
+				{
+					return match.length()-1;
+				}
+				match = "**/";
+				if (pattern.substring(i, i+match.length()).equals(match))
+				{
+					return match.length()-1;
+				}
+			}			
+			if (rest > 1)
+			{
+				String match = "**";
+				if (pattern.substring(i, i+match.length()).equals(match))
+				{
+					return match.length()-1;
+				}
+			}			
+        }		
+		return 0;
+	}
 }
+

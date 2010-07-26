@@ -39,6 +39,7 @@ public class Compiler
 	private String source;
 	private String sourcepath;
 	private String target;
+	private File tempFile;
 	
 	/**
 	 * @param sourceDir
@@ -47,7 +48,11 @@ public class Compiler
 	 */
 	public boolean compile(File sourceDir) throws IOException
 	{
-		int status = compiler.run(null, null, null, getCompilerOptions() + createCompilerFileList(sourceDir));
+		int status = compiler.run(null, null, null, getCompilerOptions(sourceDir));
+		if (tempFile != null && tempFile.exists())
+		{
+			tempFile.delete();
+		}
 		return status == 0;
 	}
 
@@ -101,10 +106,11 @@ public class Compiler
 
 	/**
 	 * @param outputDirectory
+	 * @throws IOException 
 	 */
-	public void setOutputDirectory(String outputDirectory)
+	public void setOutputDirectory(File outputDirectory) throws IOException
     {
-    	this.outputDirectory = outputDirectory;
+    	this.outputDirectory = outputDirectory!=null?outputDirectory.getCanonicalPath().replace('\\', '/'):null;;
     }
 
 	/**
@@ -118,9 +124,9 @@ public class Compiler
 	/**
 	 * @param sourcepath
 	 */
-	public void setSourcepath(String sourcepath)
+	public void setSourcepath(File sourcepath) throws IOException
     {
-    	this.sourcepath = sourcepath;
+    	this.sourcepath = sourcepath!=null?sourcepath.getCanonicalPath().replace('\\', '/'):null;;
     }
 
 	/**
@@ -138,31 +144,25 @@ public class Compiler
 	 */
 	private String createCompilerFileList(File sourceDir) throws IOException
     {
-		File tempFile = File.createTempFile("cruxCompiler", "files");
+		tempFile = File.createTempFile("cruxCompiler", "files");
 		PrintWriter out = new PrintWriter(tempFile);
 		List<String> javaFiles = new ArrayList<String>();
 		
-		String sourcePath = sourceDir.getCanonicalPath().replace('\\', '/');
-		if (!sourcePath.endsWith("/"))
-		{
-			sourcePath +="/";
-		}
-		extractJavaFiles(sourceDir, javaFiles, sourcePath.length());
+		extractJavaFiles(sourceDir, javaFiles);
 		for (String javaFile : javaFiles)
         {
 			out.println(javaFile);
         }
 		out.close();
-		return " @"+tempFile.getCanonicalPath();
+		return "@"+tempFile.getCanonicalPath();
     }
 	
 	/**
 	 * @param input
 	 * @param javaFiles
-	 * @param sourcePathNameLength
 	 * @throws IOException
 	 */
-	private void extractJavaFiles(File input, List<String> javaFiles, int sourcePathNameLength) throws IOException
+	private void extractJavaFiles(File input, List<String> javaFiles) throws IOException
 	{
 		if (input.isDirectory())
 		{
@@ -171,44 +171,50 @@ public class Compiler
 			{
 				for (File file : files)
 				{
-					extractJavaFiles(file, javaFiles, sourcePathNameLength);
+					extractJavaFiles(file, javaFiles);
 				}
 			}
 		}
 		else if (input.getName().toLowerCase().endsWith(".java"))
 		{
-			javaFiles.add(input.getCanonicalPath().substring(sourcePathNameLength));
+			javaFiles.add(input.getCanonicalPath().replace('\\', '/'));
 		}
 	}
 	
 	/**
 	 * @return
+	 * @throws IOException 
 	 */
-	private String getCompilerOptions()
+	private String[] getCompilerOptions(File sourceDir) throws IOException
 	{
-		StringBuilder str = new StringBuilder();
+		List<String> options = new ArrayList<String>();
 		if (!StringUtils.isEmpty(source))
 		{
-			str.append(" -source "+ source);
+			options.add("-source");
+			options.add(source);
 		}
 		if (!StringUtils.isEmpty(target))
 		{
-			str.append(" -target "+ target);
+			options.add("-target");
+			options.add(target);
 		}
 		if (!StringUtils.isEmpty(classpath))
 		{
-			str.append(" -classpath "+ classpath);
+			options.add("-classpath");
+			options.add(classpath);
 		}
 		if (!StringUtils.isEmpty(sourcepath))
 		{
-			str.append(" -sourcepath "+ sourcepath);
+			options.add("-sourcepath");
+			options.add(sourcepath);
 		}
 		if (!StringUtils.isEmpty(outputDirectory))
 		{
-			str.append(" -d "+ outputDirectory);
+			options.add("-d");
+			options.add(outputDirectory);
 		}
 		
-		
-		return str.toString();
+		options.add(createCompilerFileList(sourceDir));
+		return options.toArray(new String[options.size()]);
 	}
 }
