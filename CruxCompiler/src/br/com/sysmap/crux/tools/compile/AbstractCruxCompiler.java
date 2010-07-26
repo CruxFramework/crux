@@ -240,6 +240,22 @@ public abstract class AbstractCruxCompiler
 	/**
 	 * @param parameter
 	 */
+	public void setScanAllowedPackages(String packages)
+    {
+	    CruxScreenBridge.getInstance().registerScanAllowedPackages(packages);
+    }
+
+	/**
+	 * @param parameter
+	 */
+	public void setScanIgnoredPackages(String packages)
+    {
+	    CruxScreenBridge.getInstance().registerScanIgnoredPackages(packages);
+    }
+	
+	/**
+	 * @param parameter
+	 */
 	public void setWebDir(File file)
     {
 	    this.webDir = file;
@@ -265,7 +281,7 @@ public abstract class AbstractCruxCompiler
 	{
 		this.postProcessors.add(postProcessor);
 	}
-	
+
 	/**
 	 * @param preProcessor
 	 */
@@ -283,7 +299,7 @@ public abstract class AbstractCruxCompiler
 		CruxScreenBridge.getInstance().registerScanIgnoredPackages("");
 		CruxScreenBridge.getInstance().registerLastPageRequested("");
     }
-
+	
 	/**
 	 * Compile files using GWT compiler
 	 * @param url
@@ -405,7 +421,7 @@ public abstract class AbstractCruxCompiler
 	    	FileUtils.recursiveDelete(backupFile);
 	    }
     }
-
+	
 	/**
 	 * @param moduleName
 	 * @return
@@ -425,15 +441,15 @@ public abstract class AbstractCruxCompiler
     {
 	    return "CruxCompiler";
     }
-	
+
 	/**
 	 * Gets the list of URLs that will be compiled
 	 * @return
 	 */
 	protected abstract List<URL> getURLs() throws Exception;
-	
-	protected abstract void initializeProcessors();
 
+	protected abstract void initializeProcessors();
+	
 	/**
 	 * @param moduleName
 	 * @return
@@ -442,7 +458,7 @@ public abstract class AbstractCruxCompiler
 	{
 		return module!= null && alreadyCompiledModules.contains(module.getFullName());
 	}
-
+	
 	/**
 	 * @throws IOException 
 	 * 
@@ -456,7 +472,7 @@ public abstract class AbstractCruxCompiler
 	    	FileUtils.copyDirectory(output, backupFile);
 	    }
     }
-	
+
 	/**
 	 * @param module
 	 * @throws IOException 
@@ -505,7 +521,7 @@ public abstract class AbstractCruxCompiler
 		
 		return url;
 	}
-	
+
 	/**
 	 * @param parameters
 	 */
@@ -540,11 +556,11 @@ public abstract class AbstractCruxCompiler
 	        }
 	        else if (parameter.getName().equals("scanAllowedPackages"))
 	        {
-	    	    CruxScreenBridge.getInstance().registerScanAllowedPackages(parameter.getValue());
+	    	    setScanAllowedPackages(parameter.getValue());
 	        }
 	        else if (parameter.getName().equals("scanIgnoredPackages"))
 	        {
-	    	    CruxScreenBridge.getInstance().registerScanIgnoredPackages(parameter.getValue());
+	    	    setScanIgnoredPackages(parameter.getValue());
 	        }
 	        else if (parameter.getName().equals("pagesOutputDir"))
 	        {
