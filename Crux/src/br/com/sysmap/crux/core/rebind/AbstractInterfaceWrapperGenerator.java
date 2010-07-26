@@ -105,7 +105,7 @@ public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerato
 	{
 		for (Method method : interfaceClass.getMethods())
 		{
-			generateMethodWrapper(logger, method, sourceWriter);
+			generateMethodWrapper(logger, method, sourceWriter, interfaceClass);
 		}
 	}
 
@@ -116,7 +116,7 @@ public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerato
 	 * @param sourceWriter
 	 * @throws WrapperGeneratorException
 	 */
-	protected abstract void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws WrapperGeneratorException;
+	protected abstract void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter, Class<?> interfaceClass) throws WrapperGeneratorException;
 	
 	/**
 	 * 
@@ -168,27 +168,19 @@ public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerato
     @SuppressWarnings("deprecation")
     protected String getControllerName(Class<?> declaringClass)
 	{
-    	String name;
+    	String name = null;
     	br.com.sysmap.crux.core.client.controller.ControllerName annotation = declaringClass.getAnnotation(br.com.sysmap.crux.core.client.controller.ControllerName.class);
 		if (annotation != null)
 		{
 			name = annotation.value();
+			if (ClientControllers.getController(name) == null)
+			{
+				throw new CruxGeneratorException(messages.errorGeneratingInvokerControllerNotFound(name));
+			}
 		}
 		else
 		{
-			name = declaringClass.getSimpleName();
-			if (name.endsWith("Invoker"))
-			{
-				name = name.substring(0, name.lastIndexOf("Invoker"));
-				if (name.length() > 0)
-				{
-					name =  Character.toLowerCase(name.charAt(0)) + name.substring(1);
-				}
-			}
-		}
-		if (ClientControllers.getController(name) == null)
-		{
-			throw new CruxGeneratorException(messages.errorGeneratingInvokerControllerNotFound(name));
+			throw new CruxGeneratorException(messages.errorGeneratingInvokerControllerNotFoundForWrapper(declaringClass.getCanonicalName()));
 		}
 		return name;
 	}

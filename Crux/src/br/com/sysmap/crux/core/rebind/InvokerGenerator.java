@@ -35,29 +35,29 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 	 * 
 	 */
 	@Override
-	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter) throws WrapperGeneratorException
+	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter,  Class<?> interfaceClass) throws WrapperGeneratorException
 	{
 		String name = method.getName();
 		
 		if (name.endsWith("OnTop"))
 		{
-			generateMethod(method, sourceWriter, "OnTop");
+			generateMethod(method, sourceWriter, "OnTop", interfaceClass);
 		}
 		else if (name.endsWith("OnParent"))
 		{
-			generateMethod(method, sourceWriter, "OnParent");
+			generateMethod(method, sourceWriter, "OnParent", interfaceClass);
 		}
 		else if (name.endsWith("OnOpener"))
 		{
-			generateMethod(method, sourceWriter, "OnOpener");
+			generateMethod(method, sourceWriter, "OnOpener", interfaceClass);
 		}
 		else if (name.endsWith("OnAbsoluteTop"))
 		{
-			generateMethod(method, sourceWriter, "OnAbsoluteTop");
+			generateMethod(method, sourceWriter, "OnAbsoluteTop", interfaceClass);
 		}
 		else if (name.endsWith("OnSelf"))
 		{
-			generateMethod(method, sourceWriter, "OnSelf");
+			generateMethod(method, sourceWriter, "OnSelf", interfaceClass);
 		}
 		else if (name.indexOf("OnFrame") > 0)
 		{
@@ -66,7 +66,7 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 			{
 				throw new WrapperGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.toGenericString()));
 			}
-			generateMethod(method, sourceWriter, sufix);
+			generateMethod(method, sourceWriter, sufix, interfaceClass);
 		}
 		else if (name.indexOf("OnSiblingFrame") > 0)
 		{
@@ -75,7 +75,7 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 			{
 				throw new WrapperGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.toGenericString()));
 			}
-			generateMethod(method, sourceWriter, sufix);
+			generateMethod(method, sourceWriter, sufix, interfaceClass);
 		}
 		else
 		{
@@ -91,13 +91,13 @@ public class InvokerGenerator extends AbstractInterfaceWrapperGenerator
 	 * @param prefixLength
 	 * @throws WrapperGeneratorException 
 	 */
-	private void generateMethod(Method method, SourceWriter sourceWriter, String sufix) throws WrapperGeneratorException
+	private void generateMethod(Method method, SourceWriter sourceWriter, String sufix, Class<?> interfaceClass) throws WrapperGeneratorException
 	{
 		Class<?> returnType = method.getReturnType();
 		String name = method.getName();
 
 		String methodName = name.substring(0, name.length() - sufix.length());
-		String controllerName = getControllerName(method.getDeclaringClass());
+		String controllerName = getControllerName(interfaceClass);
 		if (methodName.length() > 0)
 		{
 			String returnTypeDeclaration = getParameterDeclaration(returnType);

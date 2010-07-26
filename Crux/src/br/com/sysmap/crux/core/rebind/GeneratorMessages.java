@@ -211,4 +211,6 @@ public interface GeneratorMessages
 	@DefaultServerMessage("[generator 046] - The Controller {0} is a CrossDocument controller. However, it does not implements the required interface {0}CrossDoc")
 	String crossDocumentCanNotFindControllerCrossDocInterface(String canonicalName);
 
+	@DefaultServerMessage("[generator 047] - Error generating invoker. Controller not found for interface {0}.")
+	String errorGeneratingInvokerControllerNotFoundForWrapper(String canonicalName);
 }

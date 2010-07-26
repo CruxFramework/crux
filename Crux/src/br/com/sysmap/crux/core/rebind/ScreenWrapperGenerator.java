@@ -27,7 +27,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public class ScreenWrapperGenerator extends AbstractInterfaceWrapperGenerator
 {
-	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter)
+	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter, Class<?> interfaceClass)
 	{
 		Class<?> returnType = method.getReturnType();
 		String name = method.getName();

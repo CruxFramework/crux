@@ -36,6 +36,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.declarativeui.CruxToHtmlTransformer;
 import br.com.sysmap.crux.core.declarativeui.CruxXmlPreProcessor;
 import br.com.sysmap.crux.core.declarativeui.DeclarativeUIMessages;
@@ -291,7 +292,10 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 			String[] strs = RegexpPatterns.REGEXP_COMMA.split(property);
 			for (String str : strs)
 			{
-				properties.add(str);
+				if (!StringUtils.isEmpty(str) && !str.contains("#{"))
+				{
+					properties.add(str);
+				}
 			}
 		}
 	}
