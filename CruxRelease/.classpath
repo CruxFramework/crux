@@ -13,7 +13,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-widgets.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar" sourcepath="build/lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javassist.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jericho-html.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon9-dom.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-compiler.jar"/>
