@@ -13,13 +13,16 @@
 
 	<property name="xsd.dir" value="xsd" />
 
-	<path id="build.classpath">
+	<path id="build.lib.classpath">
 		<fileset dir="${web.lib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
 		<fileset dir="${build.lib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
+	</path>
+	<path id="build.classpath">
+		<path refid="build.lib.classpath" />
 		<pathelement path="${target.classes.dir}" />
 	</path>
 
@@ -159,20 +162,11 @@
 	========================================================================================================
 	-->
 	<target name="export-as-module" >
-		<delete dir="${dist.dir}" failonerror="no"
-			includeemptydirs="yes" includes="**/*" />
-		<mkdir dir="${dist.dir}" />
-
-		<jar jarfile="${dist.dir}/${final.name}.module.jar">
-			<fileset dir="${target.classes.dir}">
-				<exclude name="**/*.properties" />
-			</fileset>
-			<fileset dir="${src.dir}">
-				<exclude name="**/*.properties" />
-				<exclude name="**/*.xml" />
-				<exclude name="**/public/**" />
-			</fileset>
-		</jar>
+		<moduleExporter sourcedir="${src.dir}" outputdir="${dist.dir}" modulename="${moduleSimpleName}" outputmodulename="${final.name}" 
+			excludes="**/*.properties">
+			<classpath>
+				<path refid="build.lib.classpath" />
+			</classpath>
+		</moduleExporter>
 	</target>
-
 </project>
