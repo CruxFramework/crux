@@ -66,7 +66,7 @@ public class URLUtils
 	}
 	
 	/**
-	 * 
+	 * If url exists, open a stream to it. Returns null otherwise.
 	 * @param url
 	 * @return an inputStream or null if the resource does not exist or can not be read
 	 */
