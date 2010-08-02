@@ -40,9 +40,9 @@ public class SchemaGeneratorModulesTask extends SchemaGeneratorTask
 	}
 
 	@Override
-	protected void generateSchemas(File baseDir, String outputDir) throws Exception
+	protected void generateSchemas(File baseDir, File outputDir, File webDir) throws Exception
 	{
 		CruxModuleBridge.getInstance().registerCurrentModule(moduleName);
-		super.generateSchemas(baseDir, outputDir);
+		super.generateSchemas(baseDir, outputDir, webDir);
 	}
 }
