@@ -17,6 +17,7 @@ package br.com.sysmap.crux.tools.export;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -32,6 +33,7 @@ import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.utils.FileUtils;
+import br.com.sysmap.crux.core.utils.URLUtils;
 import br.com.sysmap.crux.module.CruxModule;
 import br.com.sysmap.crux.module.CruxModuleHandler;
 import br.com.sysmap.crux.module.ModuleRef;
@@ -55,6 +57,8 @@ import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
  */
 public class ModuleExporter
 {
+	public static final String MODULE_DEP_PREFIX = "CruxDep-";
+
 	private static String[] DEFAULT_EXCLUDES = {
 		 "**/*~",
 	     "**/#*#",
@@ -76,9 +80,10 @@ public class ModuleExporter
 	private Compiler compiler;
 	private AbstractCruxCompiler cruxCompiler;
 	private String excludes;
+	private boolean exportCruxCompilation = true;
 	private File exporterWorkDir;
-	private String includes;
 
+	private String includes;
 	private JarCreator jarCreator;
 	private String javaSource;
 	private String javaTarget;
@@ -87,11 +92,62 @@ public class ModuleExporter
 	private String outputModuleName;
 	private String pageFileExtension;
 	private String pagesOutputCharset;
-	private File sourceDir;
-	private boolean exportCruxCompilation = true;
 	private String scanAllowedPackages;
 	private String scanIgnoredPackages;
+	private File sourceDir;
 	
+	
+	/**
+	 * @param moduleRef
+	 */
+	public static String getModuleBuildTimestamp(String moduleName)
+    {
+		Manifest manifest = getModuleManifest(moduleName);
+		return manifest.getMainAttributes().getValue(JarCreator.MANIFEST_BUILD_TIMESTAMP_PROPERTY);
+    }
+
+	/**
+	 * @param moduleRef
+	 */
+	public static Manifest getModuleManifest(String moduleName)
+    {
+		try
+		{
+			URL location = getModuleJarRootPath(moduleName);
+			URLResourceHandler handler = URLResourceHandlersRegistry.getURLResourceHandler(location.getProtocol());
+			URL moduleManifest = handler.getChildResource(location, "META-INF/MANIFEST.MF");
+			InputStream stream = URLUtils.openStream(moduleManifest);
+			if (stream == null)
+			{
+				throw new ModuleExporterException("Error reading module manifest file. Module: "+ moduleName);
+			}
+			return new Manifest(stream);
+		}
+		catch (IOException e)
+		{
+			throw new ModuleExporterException("Error reading module manifest file. Module: "+ moduleName, e);
+		}
+    }
+
+	
+	/**
+	 * @param moduleName
+	 * @return
+	 */
+	public static URL getModuleJarRootPath(String moduleName)
+	{
+		CruxModule refModule = CruxModuleHandler.getCruxModule(moduleName);
+		URLResourceHandler handler = URLResourceHandlersRegistry.getURLResourceHandler(refModule.getLocation().getProtocol());
+		String[] rootPath = refModule.getGwtModule().getRootPath().split("/");
+
+		URL location = refModule.getLocation();
+
+		for (int i=0; i< rootPath.length; i++)
+		{
+			location = handler.getParentDir(location);
+		}
+		return location;
+	}
 	
 	/**
 	 * Starts the ModuleExporter program
@@ -187,7 +243,7 @@ public class ModuleExporter
 	    	throw new ModuleExporterException("Error compiling crux module", e);
 	    }
     }
-
+	
 	/**
 	 * Performs the java compilation of all module source files
 	 * @throws ModuleExporterException
@@ -207,7 +263,7 @@ public class ModuleExporter
 	    	throw new ModuleExporterException("Error compiling java code", e);
 	    }
     }
-	
+
 	/**
 	 * Packages the module in a .module.jar file
 	 * @throws ModuleExporterException
@@ -416,7 +472,7 @@ public class ModuleExporter
 	        throw new ModuleExporterException("Error initializing Module Exporter", e);
         }
     }
-
+	
 	/**
 	 * Evaluate all program arguments and initialize the associated ModuleExporter properties.
 	 * @param parameters
@@ -497,7 +553,7 @@ public class ModuleExporter
 	    	excludes = defaultExcludes;
 	    }
     }
-	
+
 	/**
 	 * @return
 	 */
@@ -512,40 +568,12 @@ public class ModuleExporter
 		{
 			for (ModuleRef moduleRef : requiredModules)
 			{
-				String timestamp = getModuleBuildTimestamp(moduleRef);
-				attributes.put("CruxDep-"+moduleRef.getName(), timestamp);
+				String timestamp = getModuleBuildTimestamp(moduleRef.getName());
+				attributes.put(MODULE_DEP_PREFIX+moduleRef.getName(), timestamp);
 			}
 		}
 		
 	    return attributes;
-    }
-
-	/**
-	 * @param moduleRef
-	 */
-	private String getModuleBuildTimestamp(ModuleRef moduleRef)
-    {
-		try
-		{
-			CruxModule refModule = CruxModuleHandler.getCruxModule(moduleRef.getName());
-			URLResourceHandler handler = URLResourceHandlersRegistry.getURLResourceHandler(refModule.getLocation().getProtocol());
-			String[] rootPath = refModule.getGwtModule().getRootPath().split("/");
-
-			URL location = refModule.getLocation();
-
-			for (int i=0; i< rootPath.length; i++)
-			{
-				location = handler.getParentDir(location);
-			}
-
-			URL moduleManifest = handler.getChildResource(location, "META-INF/MANIFEST.MF");
-			Manifest manifest = new Manifest(moduleManifest.openStream());
-			return manifest.getMainAttributes().getValue(JarCreator.MANIFEST_BUILD_TIMESTAMP_PROPERTY);
-		}
-		catch (IOException e)
-		{
-			throw new ModuleExporterException("Error reading module manifest file. Module: "+ moduleRef.getName(), e);
-		}
     }
 	
 
