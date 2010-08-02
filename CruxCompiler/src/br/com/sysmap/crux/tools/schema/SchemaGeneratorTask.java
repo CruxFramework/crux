@@ -34,7 +34,8 @@ public class SchemaGeneratorTask extends Task
 {
 	private List<Path> classpath = new ArrayList<Path>();
 	private List<Argument> jvmArgs = new ArrayList<Argument>();
-	private String outputDir;
+	private File outputDir;
+	private File webDir;
 	
 	public void addClasspath(Path classpath)
 	{
@@ -46,17 +47,22 @@ public class SchemaGeneratorTask extends Task
 		this.jvmArgs.add(jvmarg);
 	}
 	
-	public void setOutputDir(String outputDir)
+	public void setOutputDir(File outputDir)
 	{
 		this.outputDir = outputDir;
 	}
+
+	public void setWebDir(File webDir)
+    {
+    	this.webDir = webDir;
+    }
 
 	public void execute() throws BuildException
 	{
 		try 
 		{
 			File baseDir = getProject().getBaseDir();
-			generateSchemas(baseDir, outputDir);
+			generateSchemas(baseDir, outputDir, webDir);
 		} 
 		catch (Throwable e) 
 		{
@@ -70,7 +76,7 @@ public class SchemaGeneratorTask extends Task
 	 * @param file
 	 * @throws Exception
 	 */
-	protected void generateSchemas(File baseDir, String outputDir) throws Exception
+	protected void generateSchemas(File baseDir, File outputDir, File webDir) throws Exception
 	{
 		log("Generating Schemas to: " + baseDir.getCanonicalPath() + "/" + outputDir);
 		Java javatask = (Java) getProject().createTask("java");
@@ -86,7 +92,11 @@ public class SchemaGeneratorTask extends Task
 		}
 
 		javatask.createArg().setValue(baseDir.getCanonicalPath());
-		javatask.createArg().setValue(outputDir);
+		javatask.createArg().setValue(outputDir.getCanonicalPath());
+		if (webDir != null)
+		{
+			javatask.createArg().setValue(webDir.getCanonicalPath());
+		}
 
 		for (Path path : this.classpath)
 		{

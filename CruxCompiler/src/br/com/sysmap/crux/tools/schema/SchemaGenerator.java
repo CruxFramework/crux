@@ -63,6 +63,7 @@ import br.com.sysmap.crux.core.declarativeui.template.TemplatesScanner;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.utils.ClassUtils;
 import br.com.sysmap.crux.core.utils.StreamUtils;
@@ -85,6 +86,7 @@ public class SchemaGenerator
 		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor("SchemaGenerator");
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("projectBaseDir", "The project folder."));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("outputDir", "The folder where the files will be created."));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("webDir", "The project web root folder.", false, false));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-generateModuleSchema", "Generates also the modules.xsd file.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
@@ -95,12 +97,12 @@ public class SchemaGenerator
 	 * @param args
 	 * @throws IOException 
 	 */
-	public static void generateSchemas(File projectBaseDir, String outputDir, boolean generateModuleSchema) throws IOException
+	public static void generateSchemas(File projectBaseDir, File outputDir, File webDir, boolean generateModuleSchema) throws IOException
 	{
 		ConfigurationFactory.getConfigurations().setEnableHotDeploymentForWebDirs(false);
 		ClassScanner.initialize(ClasspathUrlFinder.findClassPaths());
 		TemplatesScanner.initialize(ClasspathUrlFinder.findClassPaths());
-		SchemaGenerator generator = new SchemaGenerator(projectBaseDir, outputDir);
+		SchemaGenerator generator = new SchemaGenerator(projectBaseDir, outputDir, webDir);
 		generator.generateSchemas(generateModuleSchema);
 		generator.generateCatalog();
 	}
@@ -109,11 +111,11 @@ public class SchemaGenerator
 	 * @param args
 	 * @throws IOException 
 	 */
-	public static void generateSchemas(String projectBaseDir, String destRelativeDir, boolean generateModuleSchema) throws IOException
+	public static void generateSchemas(String projectBaseDir, String destDir, String webDir, boolean generateModuleSchema) throws IOException
 	{
-		File projectDir = new File(projectBaseDir);
-		generateSchemas(projectDir, destRelativeDir, generateModuleSchema);
+		generateSchemas(new File(projectBaseDir), new File(destDir), webDir!=null?new File(webDir):null, generateModuleSchema);
 	}
+	
 	/**
 	 * 
 	 * @param args
@@ -133,8 +135,14 @@ public class SchemaGenerator
 				}
 				else
 				{
+					String webDir = null;
+					if (parameters.containsKey("webDir"))
+					{
+						webDir = parameters.get("webDir").getValue();
+					}
 					SchemaGenerator.generateSchemas(parameters.get("projectBaseDir").getValue(), 
 													parameters.get("outputDir").getValue(), 
+													webDir, 
 													parameters.containsKey("-generateModuleSchema"));
 				}
 			}
@@ -163,26 +171,37 @@ public class SchemaGenerator
 	/**
 	 * 
 	 * @param destDir
+	 * @throws IOException 
 	 */
-	private SchemaGenerator(File projectBaseDir, String destRelativeDir)
+	private SchemaGenerator(File projectBaseDir, File destDir, File webDir) throws IOException
 	{
 		this.projectBaseDir = projectBaseDir;
-		this.destDir = new File(projectBaseDir, destRelativeDir);
+		this.destDir = destDir;
 		this.destDir.mkdirs();
 		this.enumTypes = new HashMap<String, Class<?>>();
 		this.namespacesForCatalog = new HashMap<String, File>();
 		this.subTagTypes = new Stack<Class<? extends WidgetChildProcessor<?>>>();
 		this.templateParser = new TemplateParser();
+		
+		if (webDir == null)
+		{
+			webDir = new File(projectBaseDir, "war/");
+		}
+        
+		ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(new File(webDir, "WEB-INF/classes/").toURI().toURL());
+        ClassPathResolverInitializer.getClassPathResolver().setWebInfLibPath(new File(webDir, "WEB-INF/lib/").toURI().toURL());
+
 		clearCruxBridgeProperties();
 	}	
 	
 	/**
 	 * 
 	 * @param destRelativeDir
+	 * @throws IOException 
 	 */
-	public SchemaGenerator(String projectBaseDir, String destRelativeDir)
+	public SchemaGenerator(String projectBaseDir, String destDir, String webDir) throws IOException
 	{
-		this(new File(projectBaseDir), destRelativeDir);
+		this(new File(projectBaseDir), new File(destDir), new File(webDir));
 	}	
 
 	/**

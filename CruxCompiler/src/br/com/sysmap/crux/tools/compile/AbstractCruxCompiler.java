@@ -314,34 +314,42 @@ public abstract class AbstractCruxCompiler
 			String moduleName = module.getFullName();
 			if(!alreadyCompiledModules.contains(moduleName))
 			{
-				setCompiledModule(moduleName);
-				
-				logger.info("Compiling:"+url.toString());
-
-				// Because of an AWT BUG, GWT needs to execute a System.exit command to 
-				// finish its compilation. This class calls the Compiler from an ant command,
-				// so, this bug is not a problem here. We need to compile all the modules on the same 
-				// JVM. Call prerocessCruxPages on a separated JVM would cost a lot to our performance. 
-				setSecurityManagerToAvoidSystemExit();
-				
-				try
-				{
-					Compiler.main(getGwtArgs(moduleName));
-				}
-				catch (DoNotExitException e) 
-				{
-					//Do nothing...continue compile looping
-				}
-				finally
-				{
-					restoreSecurityManager();
-				}
+				alreadyCompiledModules.add(moduleName);
+				doCompileFile(url, moduleName);
 				compiled = true;
 			}
 		}
 		
 		return compiled;
 	}
+
+	/**
+	 * @param url
+	 * @param moduleName
+	 */
+	protected void doCompileFile(URL url, String moduleName)
+    {
+	    logger.info("Compiling:"+url.toString());
+
+	    // Because of an AWT BUG, GWT needs to execute a System.exit command to 
+	    // finish its compilation. This class calls the Compiler from an ant command,
+	    // so, this bug is not a problem here. We need to compile all the modules on the same 
+	    // JVM. Call prerocessCruxPages on a separated JVM would cost a lot to our performance. 
+	    setSecurityManagerToAvoidSystemExit();
+	    
+	    try
+	    {
+	    	Compiler.main(getGwtArgs(moduleName));
+	    }
+	    catch (DoNotExitException e) 
+	    {
+	    	//Do nothing...continue compile looping
+	    }
+	    finally
+	    {
+	    	restoreSecurityManager();
+	    }
+    }
 
 	/**
 	 * @return
@@ -589,15 +597,6 @@ public abstract class AbstractCruxCompiler
 			System.exit(1);
 		}
     }
-
-	/**
-	 * 
-	 * @param moduleName
-	 */
-	protected void setCompiledModule(String moduleName)
-	{
-		alreadyCompiledModules.add(moduleName);
-	}
 
 	/**
 	 * 
