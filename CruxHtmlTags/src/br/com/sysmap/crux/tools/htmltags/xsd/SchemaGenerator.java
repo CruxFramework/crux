@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.tools.htmltags.xsd;
 
+import java.io.IOException;
+
 
 /**
  * @author Thiago da Rosa de Bustamante <code>tr_bustamante@yahoo.com.br</code>
@@ -25,8 +27,8 @@ package br.com.sysmap.crux.tools.htmltags.xsd;
 public class SchemaGenerator extends br.com.sysmap.crux.tools.schema.SchemaGenerator
 {
 
-	public SchemaGenerator(String projectBaseDir, String destRelativeDir)
+	public SchemaGenerator(String projectBaseDir, String destRelativeDir, String webDir) throws IOException
     {
-	    super(projectBaseDir, destRelativeDir);
+	    super(projectBaseDir, destRelativeDir, webDir);
     }
 }
