@@ -318,7 +318,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
         	sourceWriter.print("streamWriter."+Shared.getStreamWriteMethodNameFor(returnType)+"(");
     		
     	}
-    	sourceWriter.println(method.getName()+"(");
+    	sourceWriter.println("wrapper." + method.getName()+"(");
 
 		for (int i = 0; i < params.length ; ++i)
 		{
