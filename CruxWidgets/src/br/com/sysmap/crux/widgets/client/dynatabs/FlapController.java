@@ -1,5 +1,7 @@
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
+import br.com.sysmap.crux.core.client.screen.Screen;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -73,6 +75,8 @@ public class FlapController extends Composite
 
 			closeButton.setVisible(closeable);
 
+			Screen.ensureDebugId(closeButton, tabs.getElement().getId() + "_" + tabId + "_close_btn");
+			
 			flap.add(closeButton);
 		}
 	}

@@ -1,4 +1,5 @@
 package br.com.sysmap.crux.widgets.client.dynatabs;
+import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeBlurHandler;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusEvent;
@@ -36,6 +37,7 @@ class FlapPanel extends Composite  implements HasBeforeFocusAndBeforeBlurHandler
 		flapController = new FlapController(tabs, tabId, tabLabel, false, closeable);
 		panel.setContentWidget(flapController);
 		initWidget(panel);
+		Screen.ensureDebugId(panel, tabs.getElement().getId() + "_" + tabId);
 	}
 
 	/**
