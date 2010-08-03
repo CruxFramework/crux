@@ -142,6 +142,9 @@ public class CruxInternalConfirmController implements CruxInternalConfirmControl
 				}
 			}
 		});
+		
+		Screen.ensureDebugId(cancelButton, "_crux_confirm_cancel_" + data.getMessage());
+		
 		return cancelButton;
 	}
 
@@ -190,6 +193,9 @@ public class CruxInternalConfirmController implements CruxInternalConfirmControl
 				}			
 			}
 		});
+		
+		Screen.ensureDebugId(okButton, "_crux_confirm_ok_" + data.getMessage());
+		
 		return okButton;
 	}
 

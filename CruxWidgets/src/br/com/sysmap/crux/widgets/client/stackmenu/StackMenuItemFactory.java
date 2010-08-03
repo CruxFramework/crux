@@ -43,7 +43,9 @@ public class StackMenuItemFactory extends WidgetFactory<StackMenuItem>
 	public StackMenuItem instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
 		String label = element.getAttribute("_label"); 
-		return new StackMenuItem(ScreenFactory.getInstance().getDeclaredMessage(label));
+		StackMenuItem stackMenuItem = new StackMenuItem(ScreenFactory.getInstance().getDeclaredMessage(label));
+		stackMenuItem.getElement().setId(widgetId);
+		return stackMenuItem;
 	}
 	
 	@Override

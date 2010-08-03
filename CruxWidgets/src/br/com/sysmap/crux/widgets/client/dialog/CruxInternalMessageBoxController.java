@@ -105,7 +105,7 @@ public class CruxInternalMessageBoxController
 			
 			HorizontalPanel horizontalPanel = new HorizontalPanel();
 			horizontalPanel.setSpacing(10);
-			DecoratedButton okButton = createOkButton(dialogBox);
+			DecoratedButton okButton = createOkButton(dialogBox, data);
 			horizontalPanel.add(okButton);
 			
 			dockPanel.add(horizontalPanel, DockPanel.SOUTH);
@@ -142,11 +142,13 @@ public class CruxInternalMessageBoxController
 	/**
 	 * Creates the OK button
 	 * @param dialogBox
+	 * @param data 
 	 * @return
 	 */
-	private DecoratedButton createOkButton(final DialogBox dialogBox)
+	private DecoratedButton createOkButton(final DialogBox dialogBox, MessageBoxData data)
 	{
 		DecoratedButton okButton = new DecoratedButton();
+		
 		okButton.setText(messages.messageBoxOkLabel());
 		okButton.addStyleName("button");
 		okButton.addStyleName("okButton");
@@ -168,6 +170,9 @@ public class CruxInternalMessageBoxController
 				}
 			}
 		});
+		
+		Screen.ensureDebugId(okButton, "_crux_msgBox_ok_" + data.getMessage());
+		
 		return okButton;
 	}
 
