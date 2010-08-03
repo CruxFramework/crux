@@ -931,6 +931,54 @@ public class Screen
 	}
 	
 	/**
+	 * If the given widget does not have a non-empty ID attribute, sets the given id into it. 
+	 * @param widget
+	 * @param id
+	 */
+	public static void ensureDebugId(Widget widget, String id)
+	{
+		if(widget != null)
+		{
+			if(StringUtils.isEmpty(widget.getElement().getId()))
+			{
+				id = id.replaceAll("[^a-zA-Z0-9\\$]", "_");
+				id = id.length() > 100 ? id.substring(0, 100) : id;
+				
+				if(!id.startsWith("_"))
+				{
+					id = "_" + id;
+				}
+				
+				id = id.toLowerCase();
+				
+				id = ensureUniqueId(id);
+				
+				widget.getElement().setId(id);
+			}
+		}
+	}
+
+	/**
+	 * Ensures that the given id is not being used in the current document. If this is not the case, returns an unique id.
+	 * @param id
+	 * @return
+	 */
+	private static String ensureUniqueId(String id)
+	{
+		Object exists = DOM.getElementById(id);
+		int i = 0;
+		while(exists != null)
+		{
+			exists = DOM.getElementById(id + "_" + (++i));
+		}
+		if(i > 0)
+		{
+			id = id + "_" + i;
+		}
+		return id;
+	}
+	
+	/**
 	 * @param call
 	 * @param param
 	 * @throws ModuleComunicationException
