@@ -15,6 +15,5 @@
 	<classpathentry kind="lib" path="build/lib/gwt-dev.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-lang.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jericho-html.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
