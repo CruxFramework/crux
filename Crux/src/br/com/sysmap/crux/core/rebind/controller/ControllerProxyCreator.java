@@ -351,6 +351,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	private void generateCrossDocInvokeMethod(SourceWriter sourceWriter)
 	{
 		sourceWriter.println("public String invoke(String serializedData){ ");
+		sourceWriter.indent();
 
 		sourceWriter.println(getProxySimpleName()+" wrapper = "+(isSingleton?"this":"new "+getProxySimpleName()+"()")+";");
 		
@@ -411,6 +412,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		sourceWriter.println("}");
 
 		sourceWriter.println("return (isExecutionOK?\"//OK\":\"//EX\")+streamWriter.toString();");
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 
