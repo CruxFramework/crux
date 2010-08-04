@@ -35,7 +35,7 @@ import br.com.sysmap.crux.core.utils.FileUtils;
  * @author Thiago da Rosa de Bustamante
  * 
  */
-public class JarExtractor extends JarHandler
+public class JarExtractor extends FilePatternHandler
 {
 	private final File[] inputFile;
 	private final File outputDirectory;

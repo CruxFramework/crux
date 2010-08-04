@@ -25,7 +25,7 @@ import br.com.sysmap.crux.core.client.utils.StringUtils;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class JarHandler
+public class FilePatternHandler
 {
 	private static final String PATTERN_SPECIAL_CHARACTERS = "\\{}[]()+?$&^-|.!";
 	private List<Pattern> excludesPatterns = new ArrayList<Pattern>();
@@ -36,7 +36,7 @@ public abstract class JarHandler
 	 * @param includes
 	 * @param excludes
 	 */
-	protected JarHandler(String includes, String excludes)
+	public FilePatternHandler(String includes, String excludes)
     {
 		processIncludesPatterns(includes);
 		processExcludesPatterns(excludes);

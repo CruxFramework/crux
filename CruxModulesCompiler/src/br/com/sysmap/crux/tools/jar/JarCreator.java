@@ -37,7 +37,7 @@ import java.util.jar.Manifest;
  * @author Thiago da Rosa de Bustamante
  * 
  */
-public class JarCreator extends JarHandler
+public class JarCreator extends FilePatternHandler
 {
 	public static final String MANIFEST_BUILD_TIMESTAMP_PROPERTY = "Build-Timestamp";
 	private static DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");

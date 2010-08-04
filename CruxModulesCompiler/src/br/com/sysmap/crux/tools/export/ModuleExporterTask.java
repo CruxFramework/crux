@@ -287,8 +287,10 @@ public class ModuleExporterTask extends Task
 			javatask.createArg().setValue(this.pagesOutputCharset);
 		}
 
-	    javatask.createArg().setValue("exportCruxCompilation");
-		javatask.createArg().setValue(Boolean.toString(this.exportCruxCompilation));
+	    if (!exportCruxCompilation)
+	    {
+	    	javatask.createArg().setValue("-doNotExportCruxCompilation");
+	    }
 
 	    /*if (this.webDir != null)
 		{

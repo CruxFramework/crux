@@ -83,7 +83,7 @@ public class ModuleExporter
 	private Compiler compiler;
 	private AbstractCruxCompiler cruxCompiler;
 	private String excludes;
-	private boolean exportCruxCompilation = true;
+	private boolean doNotExportCruxCompilation = false;
 	private File exporterWorkDir;
 
 	private String includes;
@@ -98,6 +98,7 @@ public class ModuleExporter
 	private String scanAllowedPackages;
 	private String scanIgnoredPackages;
 	private File sourceDir;
+	private boolean unpackaged = false;
 	
 	
 	/**
@@ -200,7 +201,7 @@ public class ModuleExporter
 			initializeCruxCompiler();
 			if (CruxModuleValidator.isDependenciesOk(moduleName))
 			{
-				if (this.exportCruxCompilation )
+				if (!this.doNotExportCruxCompilation)
 				{
 					compileCruxModule();
 				}
@@ -317,11 +318,10 @@ public class ModuleExporter
 		parameter.addParameterOption(new ConsoleParameterOption("pattern", "Excludes pattern"));
 		parametersProcessor.addSupportedParameter(parameter);
 		
-		parameter = new ConsoleParameter("exportCruxCompilation", "If true, call cruxCompiler and exports its output inside jar file.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("export", "Boolean option"));
-		parametersProcessor.addSupportedParameter(parameter);
-		
-        // Java Compiler Parameters
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-doNotExportCruxCompilation", "Makes export skip crux compilation.", false, false));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-unpackaged", "Export the module to an unpacked folder and not to a .module.jar file.", false, false));
+
+		// Java Compiler Parameters
 		parameter = new ConsoleParameter("javaSource", "Source version of Java files", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("source", "java source version"));
 		parametersProcessor.addSupportedParameter(parameter);
@@ -349,8 +349,9 @@ public class ModuleExporter
 		parameter.addParameterOption(new ConsoleParameterOption("fileExtension", "File Extension"));
 		parametersProcessor.addSupportedParameter(parameter);
 		
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
+
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, false));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, false));
 
 		return parametersProcessor;	
 	}
@@ -512,9 +513,13 @@ public class ModuleExporter
 	        {
 	    	    this.sourceDir = new File(parameter.getValue());
 	        }
-	        else if (parameter.getName().equals("exportCruxCompilation"))
+	        else if (parameter.getName().equals("-doNotExportCruxCompilation"))
 	        {
-	        	this.exportCruxCompilation = Boolean.parseBoolean(parameter.getValue());
+	        	this.doNotExportCruxCompilation = true;
+	        }
+	        else if (parameter.getName().equals("-unpackaged"))
+	        {
+	        	this.unpackaged  = true;
 	        }
 	        // Java Compiler Parameters
 	        else if (parameter.getName().equals("javaSource"))
