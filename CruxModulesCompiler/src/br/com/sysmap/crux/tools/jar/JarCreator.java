@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.tools.export;
+package br.com.sysmap.crux.tools.jar;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -22,61 +22,67 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.util.regex.Pattern;
-
-import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 /**
  * A Helper class to create Jar files.
  * @author Thiago da Rosa de Bustamante
  * 
  */
-public class JarCreator
+public class JarCreator extends JarHandler
 {
 	public static final String MANIFEST_BUILD_TIMESTAMP_PROPERTY = "Build-Timestamp";
 	private static DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-	private static final String PATTERN_SPECIAL_CHARACTERS = "\\{}[]()+?$&^-|.!";
-	private List<Pattern> excludesPatterns = new ArrayList<Pattern>();
-	private List<Pattern> includesPatterns = new ArrayList<Pattern>();
 	private Map<String, String> metaInfAttributes;
 	private final File[] inputDirectory;
 	private final File outputFile;
 	
+	/**
+	 * @param inputDirectory
+	 * @param outputFile
+	 * @throws IOException
+	 */
 	public JarCreator(File[] inputDirectory, File outputFile) throws IOException
     {
 		this(inputDirectory, outputFile, new HashMap<String, String>());
     }
 	
-	public JarCreator(File[] inputDirectory, File outputFile, String includes, String excludes, Map<String, String> metaInfAttributes) throws IOException
-    {
-		this(inputDirectory, outputFile, metaInfAttributes);
-		processIncludesPatterns(includes);
-		processExcludesPatterns(excludes);
-		
-    }
-
+	/**
+	 * @param inputDirectory
+	 * @param outputFile
+	 * @param metaInfAttributes
+	 * @throws IOException
+	 */
 	public JarCreator(File[] inputDirectory, File outputFile, Map<String, String> metaInfAttributes) throws IOException
 	{
+		this(inputDirectory, outputFile, null, null, metaInfAttributes);
+	}
+
+	/**
+	 * @param inputDirectory
+	 * @param outputFile
+	 * @param includes
+	 * @param excludes
+	 * @param metaInfAttributes
+	 * @throws IOException
+	 */
+	public JarCreator(File[] inputDirectory, File outputFile, String includes, String excludes, Map<String, String> metaInfAttributes) throws IOException
+	{
+		super(includes, excludes);
 		this.inputDirectory = inputDirectory;
 		this.outputFile = outputFile;
 		this.metaInfAttributes = metaInfAttributes;
 	}
 
 	/**
-	 * @param inputDirectory
-	 * @param outputFile
-	 * @param metaInfAttributes
 	 * @throws IOException
 	 */
 	public void createJar() throws IOException
@@ -112,6 +118,7 @@ public class JarCreator
 	 * @param source
 	 * @param target
 	 * @param inputDirNameLength 
+	 * @param added
 	 * @throws IOException
 	 */
 	private void addFile(File source, JarOutputStream target, int inputDirNameLength, Set<String> added) throws IOException
@@ -170,6 +177,7 @@ public class JarCreator
 
 	/**
 	 * @param source
+	 * @param inputDirNameLength
 	 * @return
 	 * @throws IOException
 	 */
@@ -189,72 +197,6 @@ public class JarCreator
 	}
 
 	/**
-	 * @param entryName
-	 * @return
-	 */
-	private boolean isValidEntry(String entryName)
-    {
-		boolean isValid = includesPatterns.size() == 0;
-	    for (Pattern pattern : includesPatterns)
-        {
-	        if (pattern.matcher(entryName).matches())
-	        {
-	        	isValid = true;
-	        	break;
-	        }
-        }
-		
-	    for (Pattern pattern : excludesPatterns)
-        {
-	        if (pattern.matcher(entryName).matches())
-	        {
-	        	isValid = false;
-	        	break;
-	        }
-        }
-	    return isValid;
-    }
-
-	/**
-	 * @param patternChar
-	 * @return
-	 */
-	private boolean needsPatternScape(char patternChar)
-    {
-		return PATTERN_SPECIAL_CHARACTERS.indexOf(patternChar) >= 0;
-    }
-
-	/**
-	 * @param excludes
-	 */
-	private void processExcludesPatterns(String excludes)
-    {
-	    if (!StringUtils.isEmpty(excludes))
-		{
-			String[] excludesPatterns = excludes.split(",");
-			for (String excludePattern : excludesPatterns)
-            {
-	            this.excludesPatterns.add(Pattern.compile(translatePattern(excludePattern), Pattern.CASE_INSENSITIVE));
-            }
-		}
-    }
-
-	/**
-	 * @param includes
-	 */
-	private void processIncludesPatterns(String includes)
-    {
-	    if (!StringUtils.isEmpty(includes))
-		{
-			String[] includesPatterns = includes.split(",");
-			for (String includePattern : includesPatterns)
-            {
-	            this.includesPatterns.add(Pattern.compile(translatePattern(includePattern), Pattern.CASE_INSENSITIVE));
-            }
-		}
-    }
-	
-	/**
 	 * Sets the default attributes to manifest. If one of those attributes already exists on
 	 * metaInfAttributes map, it will be replaced. 
 	 * @param metaInfAttributes
@@ -264,87 +206,4 @@ public class JarCreator
 	    metaInfAttributes.put(Attributes.Name.MANIFEST_VERSION.toString(), "1.0");
 		metaInfAttributes.put(MANIFEST_BUILD_TIMESTAMP_PROPERTY, dateFormatter.format(new Date()));
     }
-
-	/**
-	 * @param pattern
-	 * @return
-	 */
-	private String translatePattern(String pattern)
-    {
-		pattern = pattern.replace("\\", "/").trim();
-		StringBuilder str = new StringBuilder();
-		
-		for (int i=0; i < pattern.length(); i++)
-        {
-			int increment = isDirectoryNavigation(pattern, i);
-			if (increment > 0)
-	        {
-				i += increment;
-        		str.append(".*");
-	        }
-			else
-			{
-				if (pattern.charAt(i) == '*')
-				{
-	        		str.append("[^/]*");
-				}
-				else
-				{
-					if (needsPatternScape(pattern.charAt(i)))
-					{
-						str.append("\\");
-					}
-					str.append(pattern.charAt(i));
-				}
-			}
-        }
-		
-	    return str.toString();
-    }
-	
-	/**
-	 * @param pattern
-	 * @param i
-	 * @return
-	 */
-	private int isDirectoryNavigation(String pattern, int i)
-	{
-		if (pattern.charAt(i) == '*' || pattern.charAt(i) == '/')
-        {
-			int length = pattern.length();
-			int rest = length - i; 
-
-			if (rest > 3)
-			{
-				String match = "/**/";
-				if (pattern.substring(i, i+match.length()).equals(match))
-				{
-					return match.length()-1;
-				}
-			}
-			if (rest > 2)
-			{
-				String match = "/**";
-				if (pattern.substring(i, i+match.length()).equals(match))
-				{
-					return match.length()-1;
-				}
-				match = "**/";
-				if (pattern.substring(i, i+match.length()).equals(match))
-				{
-					return match.length()-1;
-				}
-			}			
-			if (rest > 1)
-			{
-				String match = "**";
-				if (pattern.substring(i, i+match.length()).equals(match))
-				{
-					return match.length()-1;
-				}
-			}			
-        }		
-		return 0;
-	}
 }
-

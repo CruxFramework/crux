@@ -15,19 +15,27 @@
  */
 package br.com.sysmap.crux.tools.compile;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.jar.Manifest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import br.com.sysmap.crux.classpath.PackageFileURLResourceHandler;
 import br.com.sysmap.crux.classpath.URLResourceHandler;
 import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
+import br.com.sysmap.crux.core.rebind.module.Module;
 import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import br.com.sysmap.crux.core.utils.URLUtils;
@@ -39,6 +47,7 @@ import br.com.sysmap.crux.module.ModuleRef;
 import br.com.sysmap.crux.module.config.CruxModuleConfigurationFactory;
 import br.com.sysmap.crux.module.validation.CruxModuleValidator;
 import br.com.sysmap.crux.tools.export.ModuleExporter;
+import br.com.sysmap.crux.tools.jar.JarExtractor;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
 
@@ -49,7 +58,10 @@ import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
  */
 public class CruxModuleCompiler extends AbstractCruxCompiler
 {
+	private static final Log logger = LogFactory.getLog(CruxModuleCompiler.class);
+	
 	private boolean forceModulesCompilation = false;
+	private Map<String, Boolean> mustCompileCache = new HashMap<String, Boolean>();
 	
 	public CruxModuleCompiler()
     {
@@ -69,16 +81,21 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	}
 
 	@Override
-	protected void doCompileFile(URL url, String moduleName)
+	protected void doCompileModule(URL url, Module module) throws Exception
 	{
+		String moduleName = module.getFullName();
 		if (forceModulesCompilation || mustCompileModule(moduleName))
 		{
 			CruxModuleBridge.getInstance().registerCurrentModule(moduleName);
-			super.doCompileFile(url, moduleName);
+			super.doCompileModule(url, module);
 		}
 		else
 		{
-//			extractModuleCompilation(moduleName);
+			if (!isModuleCompiled(module))
+			{
+				extractModuleCompilation(moduleName);
+				setModuleAsCompiled(module);
+			}
 		}
 	}
 
@@ -141,6 +158,49 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	}	
 	
 	/**
+	 * @param moduleName
+	 */
+	private void extractModuleCompilation(String moduleName)
+    {
+		logger.info("Extracting module compiled output from jar file...");
+		try
+		{
+			URL rootPath = ModuleExporter.getModuleJarRootPath(moduleName);
+			URLResourceHandler handler = URLResourceHandlersRegistry.getURLResourceHandler(rootPath.getProtocol());
+			if (handler instanceof PackageFileURLResourceHandler)
+			{
+				URL jarURL = ((PackageFileURLResourceHandler)handler).getPackageFile(rootPath);
+				
+				// Extract gwt compilation
+				Map<String, String> replacements = new HashMap<String, String>();
+				replacements.put(ModuleExporter.CRUX_MODULE_EXPORT+"/", "");
+				
+				JarExtractor extractor = new JarExtractor(new File[]{new File(jarURL.toURI())}, this.outputDir, 
+						ModuleExporter.CRUX_MODULE_EXPORT+"/**", null, replacements, false);
+
+				extractor.extractJar();
+
+				// Extract pages
+				replacements = new HashMap<String, String>();
+				replacements.put(ModuleExporter.CRUX_MODULE_EXPORT_PAGES+"/", "");
+				extractor = new JarExtractor(new File[]{new File(jarURL.toURI())}, this.pagesOutputDir, 
+						ModuleExporter.CRUX_MODULE_EXPORT_PAGES+"/**", null, replacements, false);
+
+				extractor.extractJar();
+			}
+			else
+			{
+				throw new CruxModuleException("Module is not packaged as a jar file.");
+			}
+		}
+		catch(Exception e)
+		{
+			throw new CruxModuleException("Error extracting module compiled output from jar.", e);
+		}
+	    
+    }
+	
+	/**
 	 * 
 	 * @param cruxModule
 	 * @throws ScreenConfigException 
@@ -169,8 +229,8 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 			return pages;
 		}
 		return new String[0];
-	}
-	
+	}		
+
 	/**
 	 * 
 	 * @param cruxModule
@@ -195,7 +255,22 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 		}
 
 		return screenID;
-	}		
+	}
+	
+	/**
+	 * @param moduleName
+	 * @return
+	 */
+	private boolean hasCompilationFolder(String moduleName)
+    {
+		URL rootPath = ModuleExporter.getModuleJarRootPath(moduleName);
+		
+		URLResourceHandler handler = URLResourceHandlersRegistry.getURLResourceHandler(rootPath.getProtocol());
+		URL moduleManifest = handler.getChildResource(rootPath, "cruxModuleExport");
+		InputStream stream = URLUtils.openStream(moduleManifest);
+		boolean result = stream != null;
+		return result;
+    }
 
 	/**
 	 * @param moduleName
@@ -203,6 +278,11 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	 */
 	private boolean mustCompileModule(String moduleName)
 	{
+		if (mustCompileCache.containsKey(moduleName))
+		{
+			return mustCompileCache.get(moduleName);
+		}
+		
 		boolean result = true;
 		try
 		{
@@ -239,23 +319,9 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 		}
 		catch (Exception e) 
 		{
-			throw new CruxModuleException("Error compiling module.", e);
+			logger.warn("Error validating module pre-compiled output. Forcing a new module compilation...", e);
 		}
+		mustCompileCache.put(moduleName, result);
 		return result;
 	}
-
-	/**
-	 * @param moduleName
-	 * @return
-	 */
-	private boolean hasCompilationFolder(String moduleName)
-    {
-		URL rootPath = ModuleExporter.getModuleJarRootPath(moduleName);
-		
-		URLResourceHandler handler = URLResourceHandlersRegistry.getURLResourceHandler(rootPath.getProtocol());
-		URL moduleManifest = handler.getChildResource(rootPath, "cruxModuleExport");
-		InputStream stream = URLUtils.openStream(moduleManifest);
-		boolean result = stream != null;
-		return result;
-    }
 }

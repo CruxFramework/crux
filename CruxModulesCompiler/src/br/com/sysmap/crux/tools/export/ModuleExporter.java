@@ -44,6 +44,7 @@ import br.com.sysmap.crux.tools.compile.AbstractCruxCompiler;
 import br.com.sysmap.crux.tools.compile.CompilerException;
 import br.com.sysmap.crux.tools.compile.CruxModuleCompiler;
 import br.com.sysmap.crux.tools.compile.utils.ModuleUtils;
+import br.com.sysmap.crux.tools.jar.JarCreator;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameterOption;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessingException;
@@ -57,6 +58,8 @@ import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
  */
 public class ModuleExporter
 {
+	public static final String CRUX_MODULE_EXPORT_PAGES = "cruxModuleExportPages";
+	public static final String CRUX_MODULE_EXPORT = "cruxModuleExport";
 	public static final String MODULE_DEP_PREFIX = "CruxDep-";
 
 	private static String[] DEFAULT_EXCLUDES = {
@@ -369,11 +372,11 @@ public class ModuleExporter
 	        cruxCompiler.setKeepPagesGeneratedFiles(true);
 	        cruxCompiler.setIndentPages(false);
 	        
-	        File cruxCompilationOutput = new File(exporterWorkDir, "cruxModuleExport");
+	        File cruxCompilationOutput = new File(exporterWorkDir, CRUX_MODULE_EXPORT);
 	        cruxCompilationOutput.mkdirs();
 	        cruxCompiler.setOutputDir(cruxCompilationOutput);
 
-	        File cruxPagesOutput = new File(exporterWorkDir, "cruxModuleExportPages");
+	        File cruxPagesOutput = new File(exporterWorkDir, CRUX_MODULE_EXPORT_PAGES);
 	        cruxPagesOutput.mkdirs();
 	        cruxCompiler.setPagesOutputDir(cruxPagesOutput);
 	        
