@@ -95,28 +95,7 @@ public abstract class AbstractCruxCompiler
 					{
 						deleteModuleOutputDir(module);
 					}
-					CruxScreenBridge.getInstance().registerLastPageRequested(url.toString());
-					URL preprocessedFile = preProcessCruxPage(url, module);
-					if (isModuleNotCompiled)
-					{
-						maybeBackupPreProcessorsOutput(module);
-						try
-						{
-							if (compileFile(preprocessedFile, module))
-							{
-								maybeRestoreBackup(module);
-							}
-						}
-						catch (InterfaceConfigException e) 
-						{
-							logger.error(e.getMessage());
-						}
-					}
-					else
-					{
-						logger.info("Module '"+ module.getFullName()+"' was already compiled. Skipping compilation.");
-					}
-					postProcessCruxPage(preprocessedFile, module);
+					doCompileModule(url, module);
 				}
 				else
 				{
@@ -130,6 +109,38 @@ public abstract class AbstractCruxCompiler
 			throw new CompilerException(e.getMessage(), e);
 		}
 	}
+
+	/**
+	 * @param url
+	 * @param module
+	 * @throws Exception
+	 */
+	protected void doCompileModule(URL url, Module module) throws Exception
+    {
+		boolean isModuleNotCompiled = !isModuleCompiled(module);
+	    CruxScreenBridge.getInstance().registerLastPageRequested(url.toString());
+	    URL preprocessedFile = preProcessCruxPage(url, module);
+	    if (isModuleNotCompiled)
+	    {
+	    	maybeBackupPreProcessorsOutput(module);
+	    	try
+	    	{
+	    		if (compileFile(preprocessedFile, module))
+	    		{
+	    			maybeRestoreBackup(module);
+	    		}
+	    	}
+	    	catch (InterfaceConfigException e) 
+	    	{
+	    		logger.error(e.getMessage());
+	    	}
+	    }
+	    else
+	    {
+	    	logger.info("Module '"+ module.getFullName()+"' was already compiled. Skipping compilation.");
+	    }
+	    postProcessCruxPage(preprocessedFile, module);
+    }
 
 	public String getOutputCharset()
     {
@@ -311,11 +322,10 @@ public abstract class AbstractCruxCompiler
 		
 		if(module != null)
 		{
-			String moduleName = module.getFullName();
-			if(!alreadyCompiledModules.contains(moduleName))
+			if(!isModuleCompiled(module))
 			{
-				alreadyCompiledModules.add(moduleName);
-				doCompileFile(url, moduleName);
+				setModuleAsCompiled(module);
+				doCompileFile(url, module.getFullName());
 				compiled = true;
 			}
 		}
@@ -467,6 +477,17 @@ public abstract class AbstractCruxCompiler
 		return module!= null && alreadyCompiledModules.contains(module.getFullName());
 	}
 	
+	/**
+	 * @param module
+	 */
+	protected void setModuleAsCompiled(Module module)
+	{
+		if (module!= null)
+		{
+			alreadyCompiledModules.add(module.getFullName());
+		}
+	}
+
 	/**
 	 * @throws IOException 
 	 * 
