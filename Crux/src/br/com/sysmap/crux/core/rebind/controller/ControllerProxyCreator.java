@@ -136,10 +136,6 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	@Override
 	protected void generateProxyFields(SourceWriter srcWriter) throws UnableToCompleteException
 	{
-		if (isSingleton)
-		{
-			srcWriter.println(getProxySimpleName()+" wrapper = null;");
-		}
 		srcWriter.println(Map.class.getName()+"<String, Boolean> __runningMethods = new "+HashMap.class.getCanonicalName()+"<String, Boolean>();");
 
 		if (isCrossDoc)
@@ -249,7 +245,6 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		return composerFactory.createSourceWriter(context, printWriter);
 	}
 	
-	
 	/**
 	 * @param srcWriter
 	 */
@@ -353,38 +348,18 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	/**
 	 * @param sourceWriter
 	 */
-	private void generateCrossDocDelegateObjectInstantiation(SourceWriter sourceWriter)
-    {
-	    if (isSingleton)
-		{
-			sourceWriter.println("if (this.wrapper == null){");
-			sourceWriter.indent();
-			sourceWriter.println("this.wrapper = new " + getProxySimpleName() + "();");
-			sourceWriter.outdent();
-			sourceWriter.println("}");
-		}
-		else
-		{
-			sourceWriter.println(getProxySimpleName() + " wrapper = new " + getProxySimpleName() + "();");
-		}
-    }
-
-	
-	
-	
-	/**
-	 * @param sourceWriter
-	 */
 	private void generateCrossDocInvokeMethod(SourceWriter sourceWriter)
 	{
 		sourceWriter.println("public String invoke(String serializedData){ ");
+
+		sourceWriter.println(getProxySimpleName()+" wrapper = "+(isSingleton?"this":"new "+getProxySimpleName()+"()")+";");
+		
 		sourceWriter.println("boolean isExecutionOK = true;");
 
 		sourceWriter.println(SerializationStreamWriter.class.getSimpleName()+" streamWriter = createStreamWriter();");
 		sourceWriter.println("try{");
 		sourceWriter.indent();
 
-		generateCrossDocDelegateObjectInstantiation(sourceWriter);
 		generateMethodIdentificationBlock(sourceWriter);
 		
 		sourceWriter.println(SerializationStreamReader.class.getSimpleName()+" streamReader = null;");
@@ -566,9 +541,8 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		sourceWriter.indent();
 		sourceWriter.println("boolean __runMethod = true;");
 		
-		generateCrossDocDelegateObjectInstantiation(sourceWriter);
+		sourceWriter.println(getProxySimpleName()+" wrapper = "+(isSingleton?"this":"new "+getProxySimpleName()+"()")+";");
 		
-
 		if (isAutoBindEnabled)
 		{
 			sourceWriter.println("if (!__runningMethods.containsKey(metodo)){");
