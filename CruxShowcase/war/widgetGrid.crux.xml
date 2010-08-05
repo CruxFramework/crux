@@ -21,7 +21,7 @@
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 		
-		<c:screen onLoad="widgetGridController.onLoad" useController="widgetGridController,widgetGridSourcesController" 
+		<c:screen onLoad="widgetGridController.onLoad" useController="widgetGridController" 
 			useDataSource="simpleGridDataSource" useFormatter="birthday"/>
 		
 		<center>
@@ -69,7 +69,7 @@
 								</tr>
 								<tr>
 									<td>
-										Inside this column's cells, we've put images that act like buttons,
+										Inside the cells of that column, we've put images that act like buttons,
 										firing actions when clicked.
 									</td>
 								</tr>								  

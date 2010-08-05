@@ -20,7 +20,7 @@
 	
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 		
-		<c:screen onLoad="gridEventsController.onLoad" useController="gridEventsController,gridEventsSourcesController" 
+		<c:screen onLoad="gridEventsController.onLoad" useController="gridEventsController" 
 			useDataSource="simpleGridDataSource" useFormatter="birthday"/>
 		
 		<center>
@@ -73,7 +73,7 @@
 								<tr>
 									<td>
 										<li>
-											<b>RowClickEvent:</b><span> When a row is clicked, the details of the underlying contact are showed in a message box.</span>
+											<b>RowClickEvent:</b><span> When a row is clicked, the details of the underlying contact are shown in a message box.</span>
 										</li>
 									</td>
 								</tr>								  
