@@ -292,7 +292,7 @@ public abstract class ClientInvokableGeneratorHelper extends AbstractRegisteredE
 	 */
 	protected static boolean isPropertyVisibleToWrite(Class<?> voClass, Field field)
 	{
-		if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())))
+		if ((Modifier.isPublic(field.getModifiers()) || Modifier.isProtected(field.getModifiers())) && !Modifier.isFinal(field.getModifiers()))
 		{
 			return true;
 		}
