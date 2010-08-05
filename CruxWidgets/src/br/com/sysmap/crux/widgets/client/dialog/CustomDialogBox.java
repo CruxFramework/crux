@@ -35,6 +35,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasText;
@@ -54,8 +55,8 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 	private int clientLeft;
 	private int clientTop;
 	private boolean hideContentOnDragging;
-
 	private HandlerRegistration resizeHandlerRegistration;
+	private FocusPanel dialogFocus;
 
 	/**
 	 * A caption for the dialog box, able to detect mouse events
@@ -136,11 +137,9 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 
 		this.hideContentOnDragging = hideContentOnDragging;
 
-		Element td = getTopCenterCell();
-		td.setInnerText("");
-		td.appendChild(caption.getElement());
-		adopt(caption);
-		caption.setStyleName("Caption");
+		createDialogCaption();
+		forceDialogFocusable();
+		
 		setStyleName(DEFAULT_STYLENAME);
 
 		windowWidth = Window.getClientWidth();
@@ -151,6 +150,30 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 		addDomHandler(mouseHandler, MouseDownEvent.getType());
 		addDomHandler(mouseHandler, MouseUpEvent.getType());
 		addDomHandler(mouseHandler, MouseMoveEvent.getType());
+	}
+
+	/**
+	 * Creates an invisible focusPanel at the top left corner of the dialog. 
+	 * It is necessary to remove focus from the underneath page components. 
+	 */
+	private void forceDialogFocusable()
+	{
+		dialogFocus = new FocusPanel();
+		dialogFocus.setWidth("0");
+		dialogFocus.setHeight("0");		
+		getTopLeftCell().appendChild(dialogFocus.getElement());
+	}
+
+	/**
+	 * 
+	 */
+	private void createDialogCaption()
+	{
+		Element td = getTopCenterCell();
+		td.setInnerText("");
+		td.appendChild(caption.getElement());
+		adopt(caption);
+		caption.setStyleName("Caption");
 	}
 
 	/**
@@ -246,6 +269,8 @@ public class CustomDialogBox extends CustomPopupPanel implements HasHTML, HasTex
 			});
 		}
 		super.show();
+		dialogFocus.setFocus(true);
+		dialogFocus.setFocus(false);		
 	}
 
 	/**

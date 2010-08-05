@@ -71,6 +71,9 @@ public class CruxInternalConfirmController implements CruxInternalConfirmControl
 		try
 		{
 			final DialogBox dialogBox = new DialogBox(false, true);
+			
+			DecoratedButton okBtn = createOkButton(dialogBox, data);
+			
 			dialogBox.setStyleName(data.getStyleName());
 			dialogBox.setAnimationEnabled(data.isAnimationEnabled());
 			dialogBox.setText(data.getTitle());
@@ -80,7 +83,7 @@ public class CruxInternalConfirmController implements CruxInternalConfirmControl
 			
 			HorizontalPanel horizontalPanel = new HorizontalPanel();
 			horizontalPanel.setSpacing(10);
-			horizontalPanel.add(createOkButton(dialogBox, data));
+			horizontalPanel.add(okBtn);
 			horizontalPanel.add(createCancelButton(dialogBox, data));
 			
 			dockPanel.add(horizontalPanel, DockPanel.SOUTH);
@@ -89,6 +92,8 @@ public class CruxInternalConfirmController implements CruxInternalConfirmControl
 			dialogBox.add(dockPanel);
 			dialogBox.center();
 			dialogBox.show();
+			
+			okBtn.setFocus(true);
 		}
 		catch (Exception e)
 		{
