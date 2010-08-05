@@ -508,16 +508,13 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	 */
 	private boolean mustInclude(Field field, String[] includeFields, String[] excludeFields, Class<?> dtoType)
 	{
-		boolean mustInclude = true;
-		if (mustInclude)
-		{
-			mustInclude = ClientInvokableGeneratorHelper.isPropertyVisibleToRead(dtoType, field) && 
-			              ClientInvokableGeneratorHelper.isPropertyVisibleToWrite(dtoType, field);
-		}
+		boolean mustInclude = ClientInvokableGeneratorHelper.isFullAccessibleField(field, dtoType);
+
 		if (mustInclude)
 		{
 			mustInclude = chekWhiteList(field, includeFields, excludeFields);
 		}
+		
 		if (mustInclude)
 		{
 			mustInclude = checkBlackList(field, excludeFields);

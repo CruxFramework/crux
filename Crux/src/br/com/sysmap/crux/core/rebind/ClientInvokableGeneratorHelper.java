@@ -241,25 +241,49 @@ public abstract class ClientInvokableGeneratorHelper extends AbstractRegisteredE
 		}
 		else
 		{
-			String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+			return hasGetMethod(field, voClass);
+		}
+	}
+
+	/**
+	 * Returns <code>true</code> is the given field has an associated public "get" method.
+	 * @param clazz
+	 * @param field
+	 * @return
+	 */
+	protected static boolean hasGetMethod(Field field, Class<?> clazz)
+	{
+		String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+		try
+		{
+			return (clazz.getMethod(getterMethodName, new Class<?>[]{}) != null);
+		}
+		catch (Exception e)
+		{
 			try
 			{
-				return (voClass.getMethod(getterMethodName, new Class<?>[]{}) != null);
+				getterMethodName = "is"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+				return (clazz.getMethod(getterMethodName, new Class<?>[]{}) != null);
 			}
-			catch (Exception e)
+			catch (Exception e1)
 			{
-				try
-				{
-					getterMethodName = "is"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-					return (voClass.getMethod(getterMethodName, new Class<?>[]{}) != null);
-				}
-				catch (Exception e1)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 	}
+	
+	/**
+	 * Returns <code>true</code> is the given field has both a "get" and a "set" methods.
+	 * @param clazz
+	 * @param field
+	 * @return
+	 */
+	protected static boolean hasGetAndSetMethods(Field field, Class<?> clazz)
+	{
+		return hasGetMethod(field, clazz) && hasSetMethod(field, clazz);
+	}
+	
+	
 	/**
 	 * Verify if the given field is a visible property
 	 * @param voClass
@@ -274,17 +298,40 @@ public abstract class ClientInvokableGeneratorHelper extends AbstractRegisteredE
 		}
 		else
 		{
-			String setterMethodName = "set"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-			try
-			{
-				return (voClass.getMethod(setterMethodName, new Class<?>[]{field.getType()}) != null);
-			}
-			catch (Exception e)
-			{
-				return false;
-			}
+			return hasSetMethod(field, voClass);
 		}
 	}
+
+	/**
+	 * Returns <code>true</code> is the given field has an associated public "set" method.
+	 * @param field
+	 * @param clazz
+	 * @return
+	 */
+	protected static boolean hasSetMethod(Field field, Class<?> clazz)
+	{
+		String setterMethodName = "set"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
+		try
+		{
+			return (clazz.getMethod(setterMethodName, new Class<?>[]{field.getType()}) != null);
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+	
+	/**
+	 * Verify if the given field is fully accessible.
+	 * @param field
+	 * @param clazz
+	 * @return <code>true</code> if the field is public or has associated "get" and "set" methods.
+	 */
+	protected static boolean isFullAccessibleField(Field field, Class<?> clazz)
+	{
+		boolean isPublic = Modifier.isPublic(field.getModifiers());
+		return isPublic || hasGetAndSetMethods(field, clazz);
+	}	
 	
 	/**
 	 * 
