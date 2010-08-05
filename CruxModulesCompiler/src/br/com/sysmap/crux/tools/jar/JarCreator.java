@@ -32,6 +32,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import br.com.sysmap.crux.core.utils.FilePatternHandler;
+import br.com.sysmap.crux.core.utils.FileUtils;
+
 /**
  * A Helper class to create Jar files.
  * @author Thiago da Rosa de Bustamante
@@ -44,6 +47,7 @@ public class JarCreator extends FilePatternHandler
 	private Map<String, String> metaInfAttributes;
 	private final File[] inputDirectory;
 	private final File outputFile;
+	private final boolean unpackaged;
 	
 	/**
 	 * @param inputDirectory
@@ -63,7 +67,7 @@ public class JarCreator extends FilePatternHandler
 	 */
 	public JarCreator(File[] inputDirectory, File outputFile, Map<String, String> metaInfAttributes) throws IOException
 	{
-		this(inputDirectory, outputFile, null, null, metaInfAttributes);
+		this(inputDirectory, outputFile, null, null, metaInfAttributes, false);
 	}
 
 	/**
@@ -74,12 +78,13 @@ public class JarCreator extends FilePatternHandler
 	 * @param metaInfAttributes
 	 * @throws IOException
 	 */
-	public JarCreator(File[] inputDirectory, File outputFile, String includes, String excludes, Map<String, String> metaInfAttributes) throws IOException
+	public JarCreator(File[] inputDirectory, File outputFile, String includes, String excludes, Map<String, String> metaInfAttributes, boolean unpackaged) throws IOException
 	{
 		super(includes, excludes);
 		this.inputDirectory = inputDirectory;
 		this.outputFile = outputFile;
 		this.metaInfAttributes = metaInfAttributes;
+		this.unpackaged = unpackaged;
 	}
 
 	/**
@@ -96,22 +101,35 @@ public class JarCreator extends FilePatternHandler
 			manifest.getMainAttributes().putValue(attrName, metaInfAttributes.get(attrName));
         }
 		
-		if (outputFile.exists())
+		if (unpackaged)
 		{
-			outputFile.delete();
-		}
-		
-		JarOutputStream target = new JarOutputStream(new FileOutputStream(outputFile), manifest);
-		
-		if (inputDirectory != null)
-		{
-			Set<String> added = new HashSet<String>();
 			for (File inputDir : inputDirectory)
 			{
-				addFile(inputDir, target, inputDir.getCanonicalPath().length(), added);
+				FileUtils.copyFilesFromDir(inputDir, outputFile, getIncludes(), getExcludes());
 			}
+			File metaInfDir = new File(outputFile, "META-INF");
+			metaInfDir.mkdirs();
+			manifest.write(new FileOutputStream(new File(metaInfDir, "MANIFEST.MF")));
 		}
-		target.close();
+		else
+		{
+			if (outputFile.exists())
+			{
+				outputFile.delete();
+			}
+
+			JarOutputStream target = new JarOutputStream(new FileOutputStream(outputFile), manifest);
+
+			if (inputDirectory != null)
+			{
+				Set<String> added = new HashSet<String>();
+				for (File inputDir : inputDirectory)
+				{
+					addFile(inputDir, target, inputDir.getCanonicalPath().length(), added);
+				}
+			}
+			target.close();
+		}
 	}
 
 	/**

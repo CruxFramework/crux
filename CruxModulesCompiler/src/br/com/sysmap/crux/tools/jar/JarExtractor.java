@@ -28,6 +28,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
+import br.com.sysmap.crux.core.utils.FilePatternHandler;
 import br.com.sysmap.crux.core.utils.FileUtils;
 
 /**

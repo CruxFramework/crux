@@ -50,6 +50,7 @@ public class ModuleExporterTask extends Task
 	private String scanIgnoredPackages;
 	private String pagesOutputCharset;
 	private String pageFileExtension;
+	private boolean unpackaged = false;
 	
 	
 	public void addClasspath(Path classpath)
@@ -135,6 +136,11 @@ public class ModuleExporterTask extends Task
 	public void setPageFileExtension(String pageFileExtension)
     {
     	this.pageFileExtension = pageFileExtension;
+    }
+
+	public void setUnpackaged(boolean unpackaged)
+    {
+    	this.unpackaged = unpackaged;
     }
 
 	/**
@@ -290,6 +296,11 @@ public class ModuleExporterTask extends Task
 	    if (!exportCruxCompilation)
 	    {
 	    	javatask.createArg().setValue("-doNotExportCruxCompilation");
+	    }
+
+	    if (unpackaged)
+	    {
+	    	javatask.createArg().setValue("-unpackaged");
 	    }
 
 	    /*if (this.webDir != null)

@@ -277,7 +277,7 @@ public class ModuleExporter
 	    try
 	    {
 	    	System.out.println("Creating module file...");
-	    	jarCreator.createJar();
+    		jarCreator.createJar();
 	    }
 	    catch (IOException e)
 	    {
@@ -318,8 +318,8 @@ public class ModuleExporter
 		parameter.addParameterOption(new ConsoleParameterOption("pattern", "Excludes pattern"));
 		parametersProcessor.addSupportedParameter(parameter);
 		
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-doNotExportCruxCompilation", "Makes export skip crux compilation.", false, false));
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-unpackaged", "Export the module to an unpacked folder and not to a .module.jar file.", false, false));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-doNotExportCruxCompilation", "Makes export skip crux compilation.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-unpackaged", "Export the module to an unpacked folder and not to a .module.jar file.", false, true));
 
 		// Java Compiler Parameters
 		parameter = new ConsoleParameter("javaSource", "Source version of Java files", false, true);
@@ -350,8 +350,8 @@ public class ModuleExporter
 		parametersProcessor.addSupportedParameter(parameter);
 		
 
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, false));
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, false));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
 
 		return parametersProcessor;	
 	}
@@ -414,9 +414,9 @@ public class ModuleExporter
 		
 		try
         {
-	        jarCreator = new JarCreator(new File[]{exporterWorkDir, sourceDir}, 
+        	jarCreator = new JarCreator(new File[]{exporterWorkDir, sourceDir}, 
 	        							new File(outputDir, outputModuleName+".module.jar"), 
-	        							includes, excludes, metaInfAttributes);
+	        							includes, excludes, metaInfAttributes, unpackaged);
         }
         catch (IOException e)
         {
