@@ -96,6 +96,30 @@ public class FileUtils
 	 */
 	public static void copyFilesFromDir(File sourceDir, File destDir) throws IOException
 	{
+		copyFilesFromDir(sourceDir, destDir, null);
+	}			
+
+	/**
+	 * @param sourceDir
+	 * @param destDir
+	 * @param includes
+	 * @param excludes
+	 * @throws IOException
+	 */
+	public static void copyFilesFromDir(File sourceDir, File destDir, String includes, String excludes) throws IOException
+	{
+		FilePatternHandler handler = new FilePatternHandler(includes, excludes);
+		copyFilesFromDir(sourceDir, destDir, handler);
+	}
+	
+	/**
+	 * @param sourceDir
+	 * @param destDir
+	 * @param handler
+	 * @throws IOException
+	 */
+	private static void copyFilesFromDir(File sourceDir, File destDir, FilePatternHandler handler) throws IOException
+	{
 		if(!destDir.exists())
 		{
 			destDir.mkdirs();
@@ -104,16 +128,19 @@ public class FileUtils
 		File[] files = sourceDir.listFiles();
 		for (File file : files)
 		{
-			if(!file.isDirectory())
+			if (handler != null && handler.isValidEntry(file.getCanonicalPath()))
 			{
-				FileInputStream stream = new FileInputStream(file);
-				File destFile = new File(destDir, file.getName());
-				write(stream, destFile);
-			}
-			else
-			{
-				File dir = new File(destDir, file.getName());
-				copyFilesFromDir(file, dir);
+				if(!file.isDirectory())
+				{
+					File destFile = new File(destDir, file.getName());
+					FileInputStream stream = new FileInputStream(file);
+					write(stream, destFile);
+				}
+				else
+				{
+					File dir = new File(destDir, file.getName());
+					copyFilesFromDir(file, dir, handler);
+				}
 			}
 		}
 	}
