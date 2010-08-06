@@ -18,9 +18,7 @@ package br.com.sysmap.crux.tools.export;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,6 +41,8 @@ import br.com.sysmap.crux.scannotation.ClasspathUrlFinder;
 import br.com.sysmap.crux.tools.compile.AbstractCruxCompiler;
 import br.com.sysmap.crux.tools.compile.CompilerException;
 import br.com.sysmap.crux.tools.compile.CruxModuleCompiler;
+import br.com.sysmap.crux.tools.compile.JCompiler;
+import br.com.sysmap.crux.tools.compile.utils.ClassPathUtils;
 import br.com.sysmap.crux.tools.compile.utils.ModuleUtils;
 import br.com.sysmap.crux.tools.jar.JarCreator;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
@@ -80,7 +80,7 @@ public class ModuleExporter
 	};
 	
 	
-	private Compiler compiler;
+	private JCompiler compiler;
 	private AbstractCruxCompiler cruxCompiler;
 	private String excludes;
 	private boolean doNotExportCruxCompilation = false;
@@ -372,6 +372,7 @@ public class ModuleExporter
 	        
 	        cruxCompiler.setKeepPagesGeneratedFiles(true);
 	        cruxCompiler.setIndentPages(false);
+	        cruxCompiler.setPreCompileJavaSource(false);
 	        
 	        File cruxCompilationOutput = new File(exporterWorkDir, CRUX_MODULE_EXPORT);
 	        cruxCompilationOutput.mkdirs();
@@ -431,7 +432,7 @@ public class ModuleExporter
 	 */
 	protected void initializeJavaCompiler() throws ModuleExporterException
     {
-	    compiler = new Compiler();
+	    compiler = new JCompiler();
 	    try
         {
 	        compiler.setOutputDirectory(exporterWorkDir);
@@ -465,8 +466,8 @@ public class ModuleExporter
 	    
 	    	exporterWorkDir = new File (FileUtils.getTempDirFile(), "crux_export"+System.currentTimeMillis());
 	    	exporterWorkDir.mkdirs();
-	    	ClassPathUtil.addURL(exporterWorkDir.toURI().toURL());
-	    	ClassPathUtil.addURL(sourceDir.toURI().toURL());
+	    	ClassPathUtils.addURL(exporterWorkDir.toURI().toURL());
+	    	ClassPathUtils.addURL(sourceDir.toURI().toURL());
 	    
         	ClassPathResolverInitializer.registerClassPathResolver(new ModuleClassPathResolver());
 	        ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(exporterWorkDir.toURI().toURL());
@@ -583,36 +584,4 @@ public class ModuleExporter
 		
 	    return attributes;
     }
-	
-
-	/**
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	public static class ClassPathUtil 
-	{
-
-		private static final Class<?>[] parameters = new Class[]{URL.class};
-
-		public static void addURL(URL u) throws IOException 
-		{
-
-			URLClassLoader sysloader = (URLClassLoader)ClassLoader.getSystemClassLoader();
-			Class<?> sysclass = URLClassLoader.class;
-
-			try 
-			{
-				Method method = sysclass.getDeclaredMethod("addURL",parameters);
-				method.setAccessible(true);
-				method.invoke(sysloader,new Object[]{ u });
-
-				String classpath = System.getProperty("java.class.path");
-		    	System.setProperty("java.class.path", classpath + File.pathSeparatorChar + new File(u.toURI()).getCanonicalPath());
-			} 
-			catch (Throwable t) 
-			{
-				throw new IOException("Error, could not add URL to system classloader");
-			}
-		}
-	}
 }
