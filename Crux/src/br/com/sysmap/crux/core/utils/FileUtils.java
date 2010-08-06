@@ -96,7 +96,7 @@ public class FileUtils
 	 */
 	public static void copyFilesFromDir(File sourceDir, File destDir) throws IOException
 	{
-		copyFilesFromDir(sourceDir, destDir, null);
+		copyFilesFromDir(sourceDir, destDir, null, 0);
 	}			
 
 	/**
@@ -109,7 +109,7 @@ public class FileUtils
 	public static void copyFilesFromDir(File sourceDir, File destDir, String includes, String excludes) throws IOException
 	{
 		FilePatternHandler handler = new FilePatternHandler(includes, excludes);
-		copyFilesFromDir(sourceDir, destDir, handler);
+		copyFilesFromDir(sourceDir, destDir, handler, sourceDir.getCanonicalPath().length());
 	}
 	
 	/**
@@ -118,7 +118,7 @@ public class FileUtils
 	 * @param handler
 	 * @throws IOException
 	 */
-	private static void copyFilesFromDir(File sourceDir, File destDir, FilePatternHandler handler) throws IOException
+	private static void copyFilesFromDir(File sourceDir, File destDir, FilePatternHandler handler, int inputDirNameLength) throws IOException
 	{
 		if(!destDir.exists())
 		{
@@ -128,7 +128,7 @@ public class FileUtils
 		File[] files = sourceDir.listFiles();
 		for (File file : files)
 		{
-			if (handler != null && handler.isValidEntry(file.getCanonicalPath()))
+			if (handler != null && handler.isValidEntry(getEntryName(file, inputDirNameLength)))
 			{
 				if(!file.isDirectory())
 				{
@@ -139,10 +139,31 @@ public class FileUtils
 				else
 				{
 					File dir = new File(destDir, file.getName());
-					copyFilesFromDir(file, dir, handler);
+					copyFilesFromDir(file, dir, handler, inputDirNameLength);
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param source
+	 * @param inputDirNameLength
+	 * @return
+	 * @throws IOException
+	 */
+	private static String getEntryName(File source, int inputDirNameLength) throws IOException
+	{
+		String name = source.getCanonicalPath().substring(inputDirNameLength).replace("\\", "/");
+		if (name.startsWith("/"))
+		{
+			name = name.substring(1);
+		}
+		if (source.isDirectory() && !name.endsWith("/"))
+		{
+			name += "/";
+		}
+			
+		return name;
 	}
 	
 	/**
