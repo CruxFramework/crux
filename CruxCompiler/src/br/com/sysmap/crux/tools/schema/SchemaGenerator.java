@@ -63,6 +63,7 @@ import br.com.sysmap.crux.core.declarativeui.template.TemplatesScanner;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverImpl;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.utils.ClassUtils;
@@ -92,6 +93,7 @@ public class SchemaGenerator
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
 		return parametersProcessor;
 	}
+	
 	/**
 	 * 
 	 * @param args
@@ -99,6 +101,8 @@ public class SchemaGenerator
 	 */
 	public static void generateSchemas(File projectBaseDir, File outputDir, File webDir, boolean generateModuleSchema) throws IOException
 	{
+		CruxScreenBridge.getInstance().setSingleVM(true);
+
 		ConfigurationFactory.getConfigurations().setEnableHotDeploymentForWebDirs(false);
 		ClassScanner.initialize(ClasspathUrlFinder.findClassPaths());
 		TemplatesScanner.initialize(ClasspathUrlFinder.findClassPaths());
@@ -175,6 +179,7 @@ public class SchemaGenerator
 	 */
 	private SchemaGenerator(File projectBaseDir, File destDir, File webDir) throws IOException
 	{
+		CruxScreenBridge.getInstance().setSingleVM(true);
 		this.projectBaseDir = projectBaseDir;
 		this.destDir = destDir;
 		this.destDir.mkdirs();
@@ -188,10 +193,9 @@ public class SchemaGenerator
 			webDir = new File(projectBaseDir, "war/");
 		}
         
+		ClassPathResolverInitializer.registerClassPathResolver(new ClassPathResolverImpl());
 		ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(new File(webDir, "WEB-INF/classes/").toURI().toURL());
         ClassPathResolverInitializer.getClassPathResolver().setWebInfLibPath(new File(webDir, "WEB-INF/lib/").toURI().toURL());
-
-		clearCruxBridgeProperties();
 	}	
 	
 	/**
@@ -203,16 +207,6 @@ public class SchemaGenerator
 	{
 		this(new File(projectBaseDir), new File(destDir), new File(webDir));
 	}	
-
-	/**
-	 * 
-	 */
-	protected void clearCruxBridgeProperties()
-    {
-	    CruxScreenBridge.getInstance().registerScanAllowedPackages("");
-		CruxScreenBridge.getInstance().registerScanIgnoredPackages("");
-		CruxScreenBridge.getInstance().registerLastPageRequested("");
-    }
 
 	/**
 	 * @throws IOException

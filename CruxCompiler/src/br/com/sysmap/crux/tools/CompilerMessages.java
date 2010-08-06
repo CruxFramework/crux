@@ -31,4 +31,7 @@ public interface CompilerMessages
 
 	@DefaultServerMessage("[compiler 003] - Error compiling files: {0}. Program aborted.")
 	String cruxCompilerErrorCompilingFiles(String errMsg);
+
+	@DefaultServerMessage("[compiler 004] - Error, could not add URL to system classloader.")
+	String errorAddingURLToSystemClassLoader();
 }

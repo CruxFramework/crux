@@ -168,11 +168,6 @@ public abstract class AbstractCruxCompilerTask extends Task
 		{
 			javatask.setClasspath(path);
 		}
-
-		if (srcDir != null)
-		{
-			javatask.setClasspath(new Path(getProject(), srcDir.getCanonicalPath()));
-		}
 		
 		int resultCode = javatask.executeJava();
 		if (resultCode != 0)
@@ -206,6 +201,12 @@ public abstract class AbstractCruxCompilerTask extends Task
 		{
 			javatask.createArg().setValue("outputDir");
 			javatask.createArg().setValue(this.outputDir.getCanonicalPath());
+		}
+
+	    if (this.srcDir != null)
+		{
+			javatask.createArg().setValue("sourceDir");
+			javatask.createArg().setValue(this.srcDir.getCanonicalPath());
 		}
 
 	    if (this.webDir != null)

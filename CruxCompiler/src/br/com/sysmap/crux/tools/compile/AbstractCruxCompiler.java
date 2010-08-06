@@ -36,6 +36,7 @@ import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.utils.FileUtils;
 import br.com.sysmap.crux.scannotation.ClasspathUrlFinder;
+import br.com.sysmap.crux.tools.compile.utils.ClassPathUtils;
 import br.com.sysmap.crux.tools.compile.utils.ModuleUtils;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameterOption;
@@ -44,7 +45,7 @@ import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
 import com.google.gwt.dev.Compiler;
 
 /**
- * 
+ * A Tool for crux projects compilation
  * @author Thiago da Rosa de Bustamante
  *
  */
@@ -64,12 +65,17 @@ public abstract class AbstractCruxCompiler
 	protected File webDir;
 	private List<String> alreadyCompiledModules = new ArrayList<String>();
 
+	private File compilerWorkDir;
 	private List<String> gwtCompilerArgs = new ArrayList<String>();
 	private SecurityManager originalSecurityManager = null;
 	private List<CruxPostProcessor> postProcessors = new ArrayList<CruxPostProcessor>();
-	
+
+	private boolean preCompileJavaSource = true;
 	private List<CruxPreProcessor> preProcessors = new ArrayList<CruxPreProcessor>();
 
+	private File sourceDir;
+	
+	
 	/**
 	 * @param parameters
 	 */
@@ -79,10 +85,19 @@ public abstract class AbstractCruxCompiler
 		clearCruxBridgeProperties();
 	}
 
+	/**
+	 * Runs the crux compilation loop. 
+	 * 
+	 * <p>First, if a sourceFolder is provided, it is compiled.</p>
+	 * <p>Then, a scanner searches for modules, based on all crux pages found (returned by <code>getUrls()</code> method.).</p>
+	 * <p>Each of those modules is compiled and all pages found is pre processed and post processed.</p>
+	 * @throws CompilerException
+	 */
 	public void execute() throws CompilerException
 	{
 		try 
 		{
+			compileJavaSource();
 			initializeCompiler();
 			List<URL> urls = getURLs();
 			for (URL url : urls)
@@ -101,7 +116,8 @@ public abstract class AbstractCruxCompiler
 				{
 					logger.info("File [" + url.toString() + "] has no module declaration. Skipping compilation.");
 				}
-			} 
+			}
+			releaseCompilerResources();
 		} 
 		catch (Throwable e) 
 		{
@@ -109,38 +125,6 @@ public abstract class AbstractCruxCompiler
 			throw new CompilerException(e.getMessage(), e);
 		}
 	}
-
-	/**
-	 * @param url
-	 * @param module
-	 * @throws Exception
-	 */
-	protected void doCompileModule(URL url, Module module) throws Exception
-    {
-		boolean isModuleNotCompiled = !isModuleCompiled(module);
-	    CruxScreenBridge.getInstance().registerLastPageRequested(url.toString());
-	    URL preprocessedFile = preProcessCruxPage(url, module);
-	    if (isModuleNotCompiled)
-	    {
-	    	maybeBackupPreProcessorsOutput(module);
-	    	try
-	    	{
-	    		if (compileFile(preprocessedFile, module))
-	    		{
-	    			maybeRestoreBackup(module);
-	    		}
-	    	}
-	    	catch (InterfaceConfigException e) 
-	    	{
-	    		logger.error(e.getMessage());
-	    	}
-	    }
-	    else
-	    {
-	    	logger.info("Module '"+ module.getFullName()+"' was already compiled. Skipping compilation.");
-	    }
-	    postProcessCruxPage(preprocessedFile, module);
-    }
 
 	public String getOutputCharset()
     {
@@ -201,6 +185,11 @@ public abstract class AbstractCruxCompiler
     	return keepPagesGeneratedFiles;
     }
 
+	public boolean isPreCompileJavaSource()
+    {
+    	return preCompileJavaSource;
+    }
+
 	public void setIndentPages(boolean indentPages)
     {
     	this.indentPages = indentPages;
@@ -216,7 +205,6 @@ public abstract class AbstractCruxCompiler
     	this.outputCharset = outputCharset;
     }
 
-	
 	/**
 	 * @param parameter
 	 */
@@ -247,6 +235,12 @@ public abstract class AbstractCruxCompiler
     {
     	this.pagesOutputDir = pagesOutputDir;
     }
+
+	public void setPreCompileJavaSource(boolean preCompileJavaSource)
+    {
+    	this.preCompileJavaSource = preCompileJavaSource;
+    }
+
 	
 	/**
 	 * @param parameter
@@ -263,7 +257,7 @@ public abstract class AbstractCruxCompiler
     {
 	    CruxScreenBridge.getInstance().registerScanIgnoredPackages(packages);
     }
-	
+
 	/**
 	 * @param parameter
 	 */
@@ -284,7 +278,7 @@ public abstract class AbstractCruxCompiler
 	    	setOutputDir(file);
 	    }
     }
-
+	
 	/**
 	 * @param postProcessor
 	 */
@@ -300,7 +294,7 @@ public abstract class AbstractCruxCompiler
 	{
 		this.preProcessors.add(preProcessor);
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -310,7 +304,7 @@ public abstract class AbstractCruxCompiler
 		CruxScreenBridge.getInstance().registerScanIgnoredPackages("");
 		CruxScreenBridge.getInstance().registerLastPageRequested("");
     }
-	
+
 	/**
 	 * Compile files using GWT compiler
 	 * @param url
@@ -334,31 +328,33 @@ public abstract class AbstractCruxCompiler
 	}
 
 	/**
-	 * @param url
-	 * @param moduleName
+	 * Pre compile java source folder, if provided
 	 */
-	protected void doCompileFile(URL url, String moduleName)
+	protected void compileJavaSource() throws CompilerException
     {
-	    logger.info("Compiling:"+url.toString());
-
-	    // Because of an AWT BUG, GWT needs to execute a System.exit command to 
-	    // finish its compilation. This class calls the Compiler from an ant command,
-	    // so, this bug is not a problem here. We need to compile all the modules on the same 
-	    // JVM. Call prerocessCruxPages on a separated JVM would cost a lot to our performance. 
-	    setSecurityManagerToAvoidSystemExit();
-	    
-	    try
-	    {
-	    	Compiler.main(getGwtArgs(moduleName));
-	    }
-	    catch (DoNotExitException e) 
-	    {
-	    	//Do nothing...continue compile looping
-	    }
-	    finally
-	    {
-	    	restoreSecurityManager();
-	    }
+		if (preCompileJavaSource && sourceDir != null)
+		{
+		    try
+		    {
+		    	compilerWorkDir = new File (FileUtils.getTempDirFile(), "crux_compiler"+System.currentTimeMillis());
+		    	compilerWorkDir.mkdirs();
+		    	ClassPathUtils.addURL(compilerWorkDir.toURI().toURL());
+		        ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(compilerWorkDir.toURI().toURL());
+		        
+		        JCompiler compiler = new JCompiler();
+		        compiler.setOutputDirectory(compilerWorkDir);
+		        compiler.setSourcepath(sourceDir);
+		    	logger.info("Compiling java source");
+		        if (!compiler.compile(sourceDir))
+		    	{
+		    		throw new CompilerException("Error compiling java code. See console for details");
+		    	}
+	        }
+	        catch (Exception e)
+	        {
+		        throw new CompilerException("Error initializing Java Compiler", e);
+	        }
+		}
     }
 
 	/**
@@ -370,6 +366,10 @@ public abstract class AbstractCruxCompiler
 		ConsoleParametersProcessor parametersProcessor = new ConsoleParametersProcessor(getProgramName());
 
 		parameter = new ConsoleParameter("outputDir", "The folder where the compiled files will be created.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("dirName", "Folder name"));
+		parametersProcessor.addSupportedParameter(parameter);
+		
+		parameter = new ConsoleParameter("sourceDir", "The project source folder.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("dirName", "Folder name"));
 		parametersProcessor.addSupportedParameter(parameter);
 		
@@ -402,6 +402,8 @@ public abstract class AbstractCruxCompiler
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-indentPages", "If true, the output pages will be indented.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-keepPagesGeneratedFiles", 
 				"If false, the output pages will be removed after compilation.", false, true));
+
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-doNotPreCompileJavaSource", "Makes compiler ignore java pre compilation.", false, true));
 
 		parameter = new ConsoleParameter("-gen", "Specify the folder where the GWT generators will output generated classes.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("genFolder", "Folder Name"));
@@ -439,6 +441,66 @@ public abstract class AbstractCruxCompiler
 	    	FileUtils.recursiveDelete(backupFile);
 	    }
     }
+
+	/**
+	 * @param url
+	 * @param moduleName
+	 */
+	protected void doCompileFile(URL url, String moduleName)
+    {
+	    logger.info("Compiling:"+url.toString());
+
+	    // Because of an AWT BUG, GWT needs to execute a System.exit command to 
+	    // finish its compilation. This class calls the Compiler from an ant command,
+	    // so, this bug is not a problem here. We need to compile all the modules on the same 
+	    // JVM. Call prerocessCruxPages on a separated JVM would cost a lot to our performance. 
+	    setSecurityManagerToAvoidSystemExit();
+	    
+	    try
+	    {
+	    	Compiler.main(getGwtArgs(moduleName));
+	    }
+	    catch (DoNotExitException e) 
+	    {
+	    	//Do nothing...continue compile looping
+	    }
+	    finally
+	    {
+	    	restoreSecurityManager();
+	    }
+    }
+
+	/**
+	 * @param url
+	 * @param module
+	 * @throws Exception
+	 */
+	protected void doCompileModule(URL url, Module module) throws Exception
+    {
+		boolean isModuleNotCompiled = !isModuleCompiled(module);
+	    CruxScreenBridge.getInstance().registerLastPageRequested(url.toString());
+	    URL preprocessedFile = preProcessCruxPage(url, module);
+	    if (isModuleNotCompiled)
+	    {
+	    	maybeBackupPreProcessorsOutput(module);
+	    	try
+	    	{
+	    		if (compileFile(preprocessedFile, module))
+	    		{
+	    			maybeRestoreBackup(module);
+	    		}
+	    	}
+	    	catch (InterfaceConfigException e) 
+	    	{
+	    		logger.error(e.getMessage());
+	    	}
+	    }
+	    else
+	    {
+	    	logger.info("Module '"+ module.getFullName()+"' was already compiled. Skipping compilation.");
+	    }
+	    postProcessCruxPage(preprocessedFile, module);
+    }
 	
 	/**
 	 * @param moduleName
@@ -459,7 +521,7 @@ public abstract class AbstractCruxCompiler
     {
 	    return "CruxCompiler";
     }
-
+	
 	/**
 	 * Gets the list of URLs that will be compiled
 	 * @return
@@ -467,7 +529,7 @@ public abstract class AbstractCruxCompiler
 	protected abstract List<URL> getURLs() throws Exception;
 
 	protected abstract void initializeProcessors();
-	
+
 	/**
 	 * @param moduleName
 	 * @return
@@ -477,17 +539,6 @@ public abstract class AbstractCruxCompiler
 		return module!= null && alreadyCompiledModules.contains(module.getFullName());
 	}
 	
-	/**
-	 * @param module
-	 */
-	protected void setModuleAsCompiled(Module module)
-	{
-		if (module!= null)
-		{
-			alreadyCompiledModules.add(module.getFullName());
-		}
-	}
-
 	/**
 	 * @throws IOException 
 	 * 
@@ -501,7 +552,7 @@ public abstract class AbstractCruxCompiler
 	    	FileUtils.copyDirectory(output, backupFile);
 	    }
     }
-
+	
 	/**
 	 * @param module
 	 * @throws IOException 
@@ -516,7 +567,7 @@ public abstract class AbstractCruxCompiler
 	    	backupFile.delete();
 	    }
     }
-	
+
 	/**
 	 * A chain composed by CruxPostProcessor object is used.
 	 * @param url
@@ -550,13 +601,33 @@ public abstract class AbstractCruxCompiler
 		
 		return url;
 	}
-
+	
+	/**
+	 * @param parameters
+	 */
+	protected void processSourceParameter(ConsoleParameter parameter)
+    {
+        if (parameter != null)
+        {
+    	    this.sourceDir = new File(parameter.getValue());
+	    	try
+            {
+                ClassPathUtils.addURL(sourceDir.toURI().toURL());
+            }
+            catch (Exception e)
+            {
+    			logger.error("Invalid sourceDir informed.", e);
+    			System.exit(1);
+            }
+        }
+    }		
+		
 	/**
 	 * @param parameters
 	 */
 	protected void processParameters(Collection<ConsoleParameter> parameters)
-    {
-	    for (ConsoleParameter parameter : parameters)
+	{
+		for (ConsoleParameter parameter : parameters)
         {
 	        if (parameter.getName().equals("-gen") || parameter.getName().equals("-style") || parameter.getName().equals("-extra"))
 	        {
@@ -607,6 +678,10 @@ public abstract class AbstractCruxCompiler
 	        {
 	        	this.outputCharset = parameter.getValue();
 	        }
+	        else if (parameter.getName().equals("-doNotPreCompileJavaSource"))
+	        {
+	        	this.preCompileJavaSource = false;
+	        }
 	        else if (parameter.getName().equals("pageFileExtension"))
 	        {
 	        	this.pageFileExtension = parameter.getValue();
@@ -618,6 +693,28 @@ public abstract class AbstractCruxCompiler
 			System.exit(1);
 		}
     }
+
+	/**
+	 * Release any resource reserved during compilation
+	 */
+	protected void releaseCompilerResources()
+    {
+		if (compilerWorkDir != null && compilerWorkDir.exists())
+		{
+			FileUtils.recursiveDelete(compilerWorkDir);
+		}
+    }
+
+	/**
+	 * @param module
+	 */
+	protected void setModuleAsCompiled(Module module)
+	{
+		if (module!= null)
+		{
+			alreadyCompiledModules.add(module.getFullName());
+		}
+	}
 
 	/**
 	 * 

@@ -54,6 +54,7 @@ public class CruxCompiler
 			}
 			else
 			{
+				compiler.processSourceParameter(parameters.get("sourceDir"));
 				compiler.processParameters(parameters.values());
 				compiler.execute();
 			}
