@@ -15,7 +15,6 @@
 	<property name="final.name" value="crux-modules" />
 	<property name="cruxdistdir" value="../Crux/dist" />
 	<property name="cruxscannotationdistdir" value="../CruxScannotation/dist" />
-	<property name="cruxhtmltagsdistdir" value="../CruxHtmlTags/dist" />
 	<property name="crux.libs.project" value="../CruxLibs/crux"/>	
 
 	<path id="build.classpath">
@@ -47,11 +46,6 @@
 			</classpath>
 			<classpath>
 				<fileset dir="${cruxscannotationdistdir}">
-					<include name="**/*.jar" />
-				</fileset>
-			</classpath>
-			<classpath>
-				<fileset dir="${cruxhtmltagsdistdir}">
 					<include name="**/*.jar" />
 				</fileset>
 			</classpath>

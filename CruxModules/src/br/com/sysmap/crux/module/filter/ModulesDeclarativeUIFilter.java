@@ -34,7 +34,7 @@ import br.com.sysmap.crux.module.CruxModuleBridge;
 
 /**
  * Used to locate the resources inside the modules structure. Used only for development. When this filter is used, you need 
- * to remove CruxFilter and HtmlTagsFilter from your web.xml
+ * to remove CruxFilter and DeclarativeUIFilter from your web.xml
  * 
  * @author Thiago da Rosa de Bustamante
  */
