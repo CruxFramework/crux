@@ -24,7 +24,6 @@
 	<property name="crux-srcdir" value="../Crux/src" />
 	<property name="crux-compiler-srcdir" value="../CruxCompiler/src" />
 	<property name="crux-gwt-widgets-srcdir" value="../CruxGWTWidgets/src" />
-	<property name="crux-html-tags-srcdir" value="../CruxHtmlTags/src" />
 	<property name="crux-modules-srcdir" value="../CruxModules/src" />
 	<property name="crux-modules-admin-srcdir" value="../CruxModulesAdmin/src" />
 	<property name="crux-modules-compiler-srcdir" value="../CruxModulesCompiler/src" />
@@ -41,8 +40,6 @@
 	<property name="crux.modules.admin.dist" value="../CruxModulesAdmin/dist" />
 	<property name="crux.modules.compiler.dist" value="../CruxModulesCompiler/dist" />
 
-	<property name="crux.htmltags.dist" value="../CruxHtmlTags/dist" />
-	
 	<property name="crux.samples.dir" value="samples" />
 	
 	<property name="crux.libs" value="../CruxLibs/crux" />
@@ -106,7 +103,7 @@
 			<include name="version.properties" />
 		</copydir>
 
-			<cruxmodulecompiler srcDir="${srcdir}" outputDir="${temp.dir}/webroot" keeppagesgeneratedfiles="true" pagesoutputdir="${temp.dir}/webroot">
+		<cruxmodulecompiler srcDir="${srcdir}" outputDir="${temp.dir}/webroot" keeppagesgeneratedfiles="true" pagesoutputdir="${temp.dir}/webroot">
 			<classpath>
 				<fileset dir="${web.lib.dir}">
 					<include name="**/*.jar" />
@@ -119,6 +116,9 @@
 			</classpath>
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
+			<!--jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" /-->
+			
 		</cruxmodulecompiler>
 		<delete>
 			<fileset dir="${temp.dir}/webroot">
@@ -158,7 +158,7 @@
 
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
-
+			
 			<arg value="-draftCompile" />
 			<arg value="-style" />
 			<arg value="Detailed" />
@@ -177,7 +177,6 @@
 			<fileset dir="${crux-srcdir}" />
 			<fileset dir="${crux-compiler-srcdir}" />
 			<fileset dir="${crux-gwt-widgets-srcdir}" />
-			<fileset dir="${crux-html-tags-srcdir}" />
 			<fileset dir="${crux-modules-srcdir}" />
 			<fileset dir="${crux-modules-admin-srcdir}" />
 			<fileset dir="${crux-modules-compiler-srcdir}" />
@@ -224,9 +223,6 @@
 		</copy>
 		<copy todir="${resourcedir}/jars/lib/modules/web-inf">
 			<fileset dir="${crux.modules.admin.dist}" includes="*.jar" />
-		</copy>
-		<copy todir="${resourcedir}/jars/lib/legacy">
-			<fileset dir="${crux.htmltags.dist}" includes="*.jar" />
 		</copy>
 		<copydir dest="${expandeddir}/lib/build" src="${resourcedir}/jars/lib/build" />
 		<copydir dest="${expandeddir}/lib/web-inf" src="${resourcedir}/jars/lib/web-inf" />
