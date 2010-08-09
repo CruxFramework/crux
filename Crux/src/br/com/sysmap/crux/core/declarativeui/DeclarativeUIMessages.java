@@ -36,7 +36,7 @@ public interface DeclarativeUIMessages
 	String transformerErrorCreatingTransformer(String message);
 	
 	@DefaultServerMessage("[declarativeui 005] - Error obtaining screen resource. Screen id: {0}. Message: {1}")
-	String cruxHtmlTagsScreenResolverError(String screenId, String message);
+	String declarativeUIScreenResolverError(String screenId, String message);
 
 	@DefaultServerMessage("[declarativeui 006] - Generating core.xsd file")
 	String schemaGeneratorCreatingCoreXSD();
@@ -102,7 +102,7 @@ public interface DeclarativeUIMessages
 	String templatesScanningURLError(String url, String localizedMessage);
 
 	@DefaultServerMessage("[declarativeui 027] - The page {0} is not transformed... Accessing directly.")
-	String htmlTagsDoesNotTransformPage(String pathInfo);
+	String declarativeUIDoesNotTransformPage(String pathInfo);
 
 	@DefaultServerMessage("[declarativeui 028] - Duplicated template found. Library: {0}. Template: {1}.")
 	String templateDuplicatedTemplate(String library, String templateId);

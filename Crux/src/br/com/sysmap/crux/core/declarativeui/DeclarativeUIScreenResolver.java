@@ -93,7 +93,7 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 		}
 		catch (Exception e)
 		{
-			throw new InterfaceConfigException(messages.cruxHtmlTagsScreenResolverError(screenId, e.getMessage()), e);
+			throw new InterfaceConfigException(messages.declarativeUIScreenResolverError(screenId, e.getMessage()), e);
 		}
 	}
 

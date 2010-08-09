@@ -75,7 +75,7 @@ public class DeclarativeUIFilter extends CruxFilter
 					}
 					else
 					{
-						log.info(messages.htmlTagsDoesNotTransformPage(requestedScreen));
+						log.info(messages.declarativeUIDoesNotTransformPage(requestedScreen));
 					}
 				}
 				catch (Exception e)

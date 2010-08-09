@@ -158,7 +158,7 @@ public class CruxToHtmlTransformer
 				try
 				{
 					TransformerFactory tfactory = new TransformerFactoryImpl();
-					InputStream is = generateHtmlTagsXSLT();
+					InputStream is = generateXSLT();
 					transformer = tfactory.newTransformer(new StreamSource(is));
 					DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 					builderFactory.setNamespaceAware(true);
@@ -218,7 +218,7 @@ public class CruxToHtmlTransformer
 	 * Generate the XSLT file based on template crux-ui.template.xslt, importing all files with extension .crux.xslt.
 	 * @return
 	 */
-	private static InputStream generateHtmlTagsXSLT()
+	private static InputStream generateXSLT()
 	{
 		InputStream templateIs = CruxToHtmlTransformer.class.getResourceAsStream("/META-INF/crux-ui.template.xslt");
 		if (templateIs == null)
