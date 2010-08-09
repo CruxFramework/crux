@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.tools.compile;
+package br.com.sysmap.crux.tools;
 
 import br.com.sysmap.crux.core.config.AbstractPropertiesFactory;
 import br.com.sysmap.crux.core.config.ConfigurationInvocationHandler;
@@ -24,11 +24,11 @@ import br.com.sysmap.crux.core.i18n.MessageException;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class CompilerConfigurationFactory extends AbstractPropertiesFactory
+public class ToolsConfigurationFactory extends AbstractPropertiesFactory
 {
-	protected static final CompilerConfigurationFactory instance = new CompilerConfigurationFactory();
+	protected static final ToolsConfigurationFactory instance = new ToolsConfigurationFactory();
 	
-	private CompilerConfigurationFactory() 
+	private ToolsConfigurationFactory() 
 	{
 	}
 	
@@ -38,9 +38,9 @@ public class CompilerConfigurationFactory extends AbstractPropertiesFactory
 	 * @return
 	 * @throws MessageException
 	 */
-	public static CruxCompilerConfig getConfigurations() throws MessageException
+	public static CruxToolsConfig getConfigurations() throws MessageException
 	{
-		return instance.getConstantsFromProperties(CruxCompilerConfig.class);
+		return instance.getConstantsFromProperties(CruxToolsConfig.class);
 	}
 
 	@Override

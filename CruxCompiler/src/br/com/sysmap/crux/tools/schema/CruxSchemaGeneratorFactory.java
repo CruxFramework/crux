@@ -13,33 +13,37 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.tools.compile;
+package br.com.sysmap.crux.tools.schema;
+
+import java.io.File;
+import java.lang.reflect.Constructor;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.tools.CruxToolsMessages;
 import br.com.sysmap.crux.tools.ToolsConfigurationFactory;
 
-
 /**
- * @author Thiago da Rosa de Bustamante -
+ * @author Thiago da Rosa de Bustamante
  *
  */
-public class CruxCompilerFactory
+public class CruxSchemaGeneratorFactory
 {
 	private static CruxToolsMessages messages = MessagesFactory.getMessages(CruxToolsMessages.class);
 	
-	public static AbstractCruxCompiler createCompiler() throws CompilerException
+	public static CruxSchemaGenerator createSchemaGenerator(File projectBaseDir, File destDir, File webDir) throws SchemaGeneratorException
 	{
-		Class<?> compilerClass;
+		Class<?> generatorClass;
         try
         {
-	        compilerClass = Class.forName(ToolsConfigurationFactory.getConfigurations().compilerClass());
-	        AbstractCruxCompiler cruxCompiler = (AbstractCruxCompiler) compilerClass.newInstance();
-	        return cruxCompiler;
+	        generatorClass = Class.forName(ToolsConfigurationFactory.getConfigurations().schemaGeneratorClass());
+	        Constructor<?> constructor = generatorClass.getConstructor(File.class, File.class, File.class);
+	        
+	        CruxSchemaGenerator schemaGenerator = (CruxSchemaGenerator) constructor.newInstance(projectBaseDir, destDir, webDir);
+	        return schemaGenerator;
         }
         catch (Exception e)
         {
-	        throw new CompilerException(messages.cruxCompilerFactoryErrorCreatingCompiler(e.getLocalizedMessage()),e);
+	        throw new SchemaGeneratorException(messages.cruxSchemaGeneratorFactoryErrorCreatingSchemaGenerator(e.getLocalizedMessage()),e);
         }
 		
 	}

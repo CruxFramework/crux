@@ -7,7 +7,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.tools.CompilerMessages;
+import br.com.sysmap.crux.tools.CruxToolsMessages;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -16,7 +16,7 @@ import br.com.sysmap.crux.tools.CompilerMessages;
 public class ClassPathUtils 
 {
 	private static final Class<?>[] parameters = new Class[]{URL.class};
-	private static CompilerMessages messages = MessagesFactory.getMessages(CompilerMessages.class);	
+	private static CruxToolsMessages messages = MessagesFactory.getMessages(CruxToolsMessages.class);	
 
 	public static void addURL(URL u) throws IOException 
 	{

@@ -13,18 +13,45 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.tools.compile;
-
-import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
+package br.com.sysmap.crux.tools.schema;
 
 /**
- * @author Thiago da Rosa de Bustamante -
+ * @author Thiago da Rosa de Bustamante
  *
  */
-public interface CruxCompilerConfig
+public class SchemaGeneratorException extends RuntimeException
 {
-	@DefaultServerMessage("br.com.sysmap.crux.tools.compile.CruxBasicCompiler")
-	String compilerClass();
+    private static final long serialVersionUID = -6327054405374080866L;
 
-	void setCompilerClass(String value);
+	/**
+	 * 
+	 */
+	public SchemaGeneratorException()
+	{
+	}
+
+	/**
+	 * @param message
+	 */
+	public SchemaGeneratorException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * @param cause
+	 */
+	public SchemaGeneratorException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public SchemaGeneratorException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }

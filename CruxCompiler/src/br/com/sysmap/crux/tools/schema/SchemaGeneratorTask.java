@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.tools.schema;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class SchemaGeneratorTask extends Task
 		try 
 		{
 			File baseDir = getProject().getBaseDir();
-			generateSchemas(baseDir, outputDir, webDir);
+			generateSchemas(baseDir);
 		} 
 		catch (Throwable e) 
 		{
@@ -76,7 +77,7 @@ public class SchemaGeneratorTask extends Task
 	 * @param file
 	 * @throws Exception
 	 */
-	protected void generateSchemas(File baseDir, File outputDir, File webDir) throws Exception
+	protected void generateSchemas(File baseDir) throws Exception
 	{
 		log("Generating Schemas to: " + baseDir.getCanonicalPath() + "/" + outputDir);
 		Java javatask = (Java) getProject().createTask("java");
@@ -90,13 +91,9 @@ public class SchemaGeneratorTask extends Task
 				javatask.createJvmarg().setValue(arg.getParts()[0]);
 			}
 		}
-
 		javatask.createArg().setValue(baseDir.getCanonicalPath());
 		javatask.createArg().setValue(outputDir.getCanonicalPath());
-		if (webDir != null)
-		{
-			javatask.createArg().setValue(webDir.getCanonicalPath());
-		}
+		addCompilerParameters(javatask);
 
 		for (Path path : this.classpath)
 		{
@@ -109,4 +106,16 @@ public class SchemaGeneratorTask extends Task
 			log("Error generating schemas.", 1);
 		}
 	}
+	
+	/**
+	 * @param javatask
+	 * @throws IOException
+	 */
+	protected void addCompilerParameters(Java javatask) throws Exception
+    {
+		if (webDir != null)
+		{
+			javatask.createArg().setValue(webDir.getCanonicalPath());
+		}		
+    }
 }

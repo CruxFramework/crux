@@ -21,7 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.tools.CompilerMessages;
+import br.com.sysmap.crux.tools.CruxToolsMessages;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessingException;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
@@ -34,7 +34,7 @@ import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
 public class CruxCompiler 
 {
 	private static final Log logger = LogFactory.getLog(CruxCompiler.class);
-	private static CompilerMessages messages = MessagesFactory.getMessages(CompilerMessages.class);
+	private static CruxToolsMessages messages = MessagesFactory.getMessages(CruxToolsMessages.class);
 	
 	/**
 	 * 

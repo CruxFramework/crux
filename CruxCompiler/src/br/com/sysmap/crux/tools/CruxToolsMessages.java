@@ -21,7 +21,7 @@ import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
  * @author Thiago da Rosa de Bustamante -
  *
  */
-public interface CompilerMessages
+public interface CruxToolsMessages
 {
 	@DefaultServerMessage("[compiler 001] - Error creating the CruxCompiler class: {0}.")
 	String cruxCompilerFactoryErrorCreatingCompiler(String errMsg);
@@ -34,4 +34,7 @@ public interface CompilerMessages
 
 	@DefaultServerMessage("[compiler 004] - Error, could not add URL to system classloader.")
 	String errorAddingURLToSystemClassLoader();
+
+	@DefaultServerMessage("[schemaGenerator 001] - Error, creating the SchemaGenerator class: {0}.")
+	String cruxSchemaGeneratorFactoryErrorCreatingSchemaGenerator(String localizedMessage);
 }
