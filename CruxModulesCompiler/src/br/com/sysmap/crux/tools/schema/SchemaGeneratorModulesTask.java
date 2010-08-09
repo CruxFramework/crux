@@ -13,12 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.tools.compile;
+package br.com.sysmap.crux.tools.schema;
 
-import java.io.File;
-
-import br.com.sysmap.crux.module.CruxModuleBridge;
-import br.com.sysmap.crux.tools.schema.SchemaGeneratorTask;
+import org.apache.tools.ant.taskdefs.Java;
 
 
 /**
@@ -27,22 +24,11 @@ import br.com.sysmap.crux.tools.schema.SchemaGeneratorTask;
  */
 public class SchemaGeneratorModulesTask extends SchemaGeneratorTask
 {
-	private String moduleName;
-	
-	public String getModuleName()
-	{
-		return moduleName;
-	}
-
-	public void setModuleName(String moduleName)
-	{
-		this.moduleName = moduleName;
-	}
-
 	@Override
-	protected void generateSchemas(File baseDir, File outputDir, File webDir) throws Exception
+	protected void addCompilerParameters(Java javatask) throws Exception
 	{
-		CruxModuleBridge.getInstance().registerCurrentModule(moduleName);
-		super.generateSchemas(baseDir, outputDir, webDir);
+	    super.addCompilerParameters(javatask);
+	    
+		javatask.createJvmarg().setValue("-DCruxToolsConfig.schemaGeneratorClass="+ModuleSchemaGenerator.class.getName());
 	}
 }

@@ -30,6 +30,6 @@ public class CruxModulesCompilerTask extends AbstractCruxCompilerTask
 	{
 	    super.addCompilerParameters(javatask);
 	    
-		javatask.createJvmarg().setValue("-DCruxCompilerConfig.compilerClass="+CruxModuleCompiler.class.getName());
+		javatask.createJvmarg().setValue("-DCruxToolsConfig.compilerClass="+CruxModuleCompiler.class.getName());
 	}
 }

@@ -17,7 +17,6 @@
 	<property name="cruxscannotationdistdir" value="../CruxScannotation/dist" />
 	<property name="cruxmodulesdir" value="../CruxModules/dist" />
 	<property name="cruxcompilerdir" value="../CruxCompiler/dist" />
-	<property name="cruxhtmltagsdir" value="../CruxHtmlTags/dist" />
 	<property name="crux.libs.project" value="../CruxLibs/crux" />
 
 	<path id="build.classpath">
@@ -59,11 +58,6 @@
 			</classpath>
 			<classpath>
 				<fileset dir="${cruxcompilerdir}">
-					<include name="**/*.jar" />
-				</fileset>
-			</classpath>
-			<classpath>
-				<fileset dir="${cruxhtmltagsdir}">
 					<include name="**/*.jar" />
 				</fileset>
 			</classpath>
