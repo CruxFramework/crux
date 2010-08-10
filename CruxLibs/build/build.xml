@@ -7,7 +7,6 @@
 	<property name="modules.admin.project" value="../CruxModulesAdmin" />
 	<property name="compiler.project" value="../CruxCompiler" />
 	<property name="gwt.widgets.project" value="../CruxGWTWidgets" />
-	<property name="html.tags.project" value="../CruxHtmlTags" />
 	<property name="modules.project" value="../CruxModules" />
 	<property name="modules.compiler.project" value="../CruxModulesCompiler" />
 	<property name="modules.compiler.dist" value="${modules.compiler.project}/dist" />
@@ -87,22 +86,6 @@
 		<!-- Export to CruxThemes -->
 		<copy todir="${themes.project}/lib" >
 			<fileset dir="${dependencies.jars.dir}">
-				<include name="svnant.jar" />
-				<include name="svnClientAdapter.jar" />
-				<include name="svnjavahl.jar" />
-				<include name="svnkit.jar" />
-			</fileset>
-		</copy>
-
-		<!-- Export to CruxHtmltags -->
-		<copy todir="${html.tags.project}/lib" >
-			<fileset dir="${dependencies.jars.dir}">
-				<include name="junit.jar" />
-				<include name="saxon9.jar" />
-				<include name="commons-logging.jar" />
-				<include name="javassist.jar" />
-				<include name="gwt-user.jar" />
-				<include name="gwt-dev.jar" />
 				<include name="svnant.jar" />
 				<include name="svnClientAdapter.jar" />
 				<include name="svnjavahl.jar" />
