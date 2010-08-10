@@ -17,6 +17,8 @@ package br.com.sysmap.crux.tools.compile;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.tools.compile.preprocessor.DeclarativeUIPreProcessor;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
@@ -85,6 +88,16 @@ public class CruxBasicCompiler extends AbstractCruxCompiler
                 }
 	        }
         }
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.tools.compile.AbstractCruxCompiler#initializeCompilerDir()
+	 */
+	@Override
+	protected void initializeCompilerDir() throws IOException, MalformedURLException
+	{
+	    super.initializeCompilerDir();
+	    ClassPathResolverInitializer.getClassPathResolver().setWebBaseDirs(new URL[]{webDir.toURI().toURL()});
 	}
 	
 	/**

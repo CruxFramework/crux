@@ -53,19 +53,19 @@ public abstract class AbstractCruxCompiler
 {
 	private static final Log logger = LogFactory.getLog(AbstractCruxCompiler.class);
 	
+	protected File compilerWorkDir;
 	protected boolean indentPages;
 	protected boolean initialized = false;
 	protected boolean keepPagesGeneratedFiles;
+	
 	protected String outputCharset;
-	
 	protected File outputDir;
-	protected String pageFileExtension;
 	
+	protected String pageFileExtension;
 	protected File pagesOutputDir;
 	protected File webDir;
-	private List<String> alreadyCompiledModules = new ArrayList<String>();
 
-	private File compilerWorkDir;
+	private List<String> alreadyCompiledModules = new ArrayList<String>();
 	private List<String> gwtCompilerArgs = new ArrayList<String>();
 	private SecurityManager originalSecurityManager = null;
 	private List<CruxPostProcessor> postProcessors = new ArrayList<CruxPostProcessor>();
@@ -336,10 +336,7 @@ public abstract class AbstractCruxCompiler
 		{
 		    try
 		    {
-		    	compilerWorkDir = new File (FileUtils.getTempDirFile(), "crux_compiler"+System.currentTimeMillis());
-		    	compilerWorkDir.mkdirs();
-		    	ClassPathUtils.addURL(compilerWorkDir.toURI().toURL());
-		        ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(compilerWorkDir.toURI().toURL());
+		    	initializeCompilerDir();
 		        
 		        JCompiler compiler = new JCompiler();
 		        compiler.setOutputDirectory(compilerWorkDir);
@@ -424,7 +421,7 @@ public abstract class AbstractCruxCompiler
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
 		return parametersProcessor;	
 	}
-	
+
 	/**
 	 * @param module
 	 */
@@ -441,7 +438,7 @@ public abstract class AbstractCruxCompiler
 	    	FileUtils.recursiveDelete(backupFile);
 	    }
     }
-
+	
 	/**
 	 * @param url
 	 * @param moduleName
@@ -501,7 +498,7 @@ public abstract class AbstractCruxCompiler
 	    }
 	    postProcessCruxPage(preprocessedFile, module);
     }
-	
+
 	/**
 	 * @param moduleName
 	 * @return
@@ -527,6 +524,18 @@ public abstract class AbstractCruxCompiler
 	 * @return
 	 */
 	protected abstract List<URL> getURLs() throws Exception;
+	
+	/**
+	 * @throws IOException
+	 * @throws MalformedURLException
+	 */
+	protected void initializeCompilerDir() throws IOException, MalformedURLException
+    {
+	    compilerWorkDir = new File (FileUtils.getTempDirFile(), "crux_compiler"+System.currentTimeMillis());
+	    compilerWorkDir.mkdirs();
+	    ClassPathUtils.addURL(compilerWorkDir.toURI().toURL());
+	    ClassPathResolverInitializer.getClassPathResolver().setWebInfClassesPath(compilerWorkDir.toURI().toURL());
+    }
 
 	protected abstract void initializeProcessors();
 
@@ -605,26 +614,6 @@ public abstract class AbstractCruxCompiler
 	/**
 	 * @param parameters
 	 */
-	protected void processSourceParameter(ConsoleParameter parameter)
-    {
-        if (parameter != null)
-        {
-    	    this.sourceDir = new File(parameter.getValue());
-	    	try
-            {
-                ClassPathUtils.addURL(sourceDir.toURI().toURL());
-            }
-            catch (Exception e)
-            {
-    			logger.error("Invalid sourceDir informed.", e);
-    			System.exit(1);
-            }
-        }
-    }		
-		
-	/**
-	 * @param parameters
-	 */
 	protected void processParameters(Collection<ConsoleParameter> parameters)
 	{
 		for (ConsoleParameter parameter : parameters)
@@ -692,6 +681,26 @@ public abstract class AbstractCruxCompiler
 			logger.error("You must inform at least one of outputDir and webDir parameters.");
 			System.exit(1);
 		}
+    }		
+		
+	/**
+	 * @param parameters
+	 */
+	protected void processSourceParameter(ConsoleParameter parameter)
+    {
+        if (parameter != null)
+        {
+    	    this.sourceDir = new File(parameter.getValue());
+	    	try
+            {
+                ClassPathUtils.addURL(sourceDir.toURI().toURL());
+            }
+            catch (Exception e)
+            {
+    			logger.error("Invalid sourceDir informed.", e);
+    			System.exit(1);
+            }
+        }
     }
 
 	/**
