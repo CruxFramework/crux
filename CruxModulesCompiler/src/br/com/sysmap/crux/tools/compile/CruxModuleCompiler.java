@@ -98,7 +98,7 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 			}
 		}
 	}
-
+	
 	@Override
 	protected List<URL> getURLs() throws Exception
 	{
