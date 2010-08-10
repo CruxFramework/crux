@@ -54,9 +54,11 @@
 		</fileset>
 	</path>
 
-	<taskdef name="cruxmodulecompiler" classname="br.com.sysmap.crux.tools.compile.CruxModulesCompilerTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
-	<taskdef name="blockremove" classname="br.com.sysmap.crux.tools.compile.utils.BlockRemoveTask" classpathref="build.classpath" />
-	<taskdef name="generateSchemas" classname="br.com.sysmap.crux.tools.compile.SchemaGeneratorModulesTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
+	<taskdef resource="br/com/sysmap/crux/tools/crux-module-tools.xml">
+		<classpath>
+			<path refid="build.classpath" />
+		</classpath>
+	</taskdef>
 
 	<!-- 
 	========================================================================================================
@@ -103,7 +105,8 @@
 			<include name="version.properties" />
 		</copydir>
 
-		<cruxmodulecompiler srcDir="${srcdir}" outputDir="${temp.dir}/webroot" keeppagesgeneratedfiles="true" pagesoutputdir="${temp.dir}/webroot">
+		<cruxmodulecompiler srcDir="${srcdir}" outputDir="${temp.dir}/webroot" webDir="${temp.dir}/webroot" 
+            keepPagesGeneratedFiles="true" pagesOutputDir="${temp.dir}/webroot" indentPages="false">
 			<classpath>
 				<fileset dir="${web.lib.dir}">
 					<include name="**/*.jar" />
@@ -111,8 +114,6 @@
 				<fileset dir="${resourcedir}/jars/lib/build">
 					<include name="**/*.jar" />
 				</fileset>
-				<pathelement path="${web.root}" />
-				<pathelement path="${target.classes.dir}" />
 			</classpath>
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
