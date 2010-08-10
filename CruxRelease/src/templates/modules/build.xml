@@ -13,7 +13,7 @@
 
 	<property name="xsd.dir" value="xsd" />
 
-	<path id="build.lib.classpath">
+	<path id="build.classpath">
 		<fileset dir="${web.lib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
@@ -21,14 +21,12 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-	<path id="build.classpath">
-		<path refid="build.lib.classpath" />
-		<pathelement path="${target.classes.dir}" />
-	</path>
 
-	<taskdef name="cruxmodulecompiler" classname="br.com.sysmap.crux.tools.compile.CruxModulesCompilerTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
-	<taskdef name="blockremove" classname="br.com.sysmap.crux.tools.compile.utils.BlockRemoveTask" classpathref="build.classpath" />
-	<taskdef name="generateSchemas" classname="br.com.sysmap.crux.tools.compile.SchemaGeneratorModulesTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
+	<taskdef resource="br/com/sysmap/crux/tools/crux-module-tools.xml">
+		<classpath>
+			<path refid="build.classpath" />
+		</classpath>
+	</taskdef>
 
 	<!-- 
 	========================================================================================================
@@ -41,11 +39,11 @@
 		<mkdir dir="${temp.dir}" />
 
 		<copydir dest="${temp.dir}/webroot" src="${web.root}">
-			<!-- use code below for removing unnecessary crux files from the compacted war 
 			<exclude name="**/crux-widgets.jar" />
 			<exclude name="**/crux-gwt-widgets.jar" />
-			<exclude name="**/crux-compiler.jar" />
+			<exclude name="**/crux-modules.jar" />
 			<exclude name="**/crux-themes.jar" />
+			<!-- use code below for removing unnecessary crux files from the compacted war 
 			-->
 		</copydir>
 		
@@ -53,8 +51,6 @@
 			                keepPagesGeneratedFiles="true" pagesOutputDir="${temp.dir}/webroot" indentPages="false">
 			<classpath>
 				<path refid="build.classpath" />
-				<pathelement path="${web.root}" />
-				<pathelement path="${target.classes.dir}" />
 			</classpath>
 
 			<!-- change these two parameters if you need to modify memory settings -->
@@ -92,11 +88,9 @@
 	========================================================================================================
 	-->
 	<target name="compile-scripts">
-		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}"  webDir="${web.root}" keepPagesGeneratedFiles="false" >
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" webDir="${web.root}" keepPagesGeneratedFiles="false" >
 			<classpath>
 				<path refid="build.classpath" />
-				<pathelement path="${web.root}" />
-				<pathelement path="${target.classes.dir}" />
 			</classpath>
 
 			<!-- change these two parameters if you need to modify memory settings -->
@@ -121,8 +115,6 @@
 		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" webDir="${web.root}" keepPagesGeneratedFiles="false">
 			<classpath>
 				<path refid="build.classpath" />
-				<pathelement path="${web.root}" />
-				<pathelement path="${target.classes.dir}" />
 			</classpath>
 
 			<!-- change these two parameters if you need to modify memory settings -->
@@ -146,7 +138,7 @@
 	========================================================================================================
 	-->
 	<target name="generate-schemas">
-		<generateSchemas outputDir="${xsd.dir}" moduleName="${moduleSimpleName}">
+		<generateSchemas outputDir="${xsd.dir}" >
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${target.classes.dir}" />
