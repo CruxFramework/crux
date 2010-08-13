@@ -24,7 +24,6 @@ import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
 import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
 import br.com.sysmap.crux.core.client.screen.JSWindow;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.util.FrameStateCallback;
@@ -83,7 +82,7 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	 * @throws ModuleComunicationException
 	 */
 	@Deprecated
-	public static void invokeOnOpener(String call, Object param) throws ModuleComunicationException
+	public static void invokeOnOpener(String call, Object param) throws br.com.sysmap.crux.core.client.screen.ModuleComunicationException
 	{
 		callOpenerControllerAccessor(call,  Screen.getCruxSerializer().serialize(param));
 	}
@@ -95,7 +94,7 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	 */
 	@SuppressWarnings("unchecked")
 	@Deprecated
-	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws br.com.sysmap.crux.core.client.screen.ModuleComunicationException
 	{
 		String result = callOpenerControllerAccessor(call,  Screen.getCruxSerializer().serialize(param));
 		return (T) Screen.getCruxSerializer().deserialize(result);

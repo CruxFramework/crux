@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
 import br.com.sysmap.crux.core.client.screen.JSWindow;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler;
@@ -101,7 +100,7 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 	 * @throws ModuleComunicationException
 	 */
 	@Deprecated
-	public static <T> T invokeOnSiblingTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	public static <T> T invokeOnSiblingTab(String tabId, String call, Object param, Class<T> resultType) throws br.com.sysmap.crux.core.client.screen.ModuleComunicationException
 	{
 		return DynaTabsControllerInvoker.invokeOnSiblingTab(tabId, call, param, resultType);
 	}
@@ -112,7 +111,7 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 	 * @throws ModuleComunicationException
 	 */
 	@Deprecated
-	public static void invokeOnSiblingTab(String tabId, String call, Object param) throws ModuleComunicationException
+	public static void invokeOnSiblingTab(String tabId, String call, Object param) throws br.com.sysmap.crux.core.client.screen.ModuleComunicationException
 	{
 		DynaTabsControllerInvoker.invokeOnSiblingTab(tabId, call, param);
 	}

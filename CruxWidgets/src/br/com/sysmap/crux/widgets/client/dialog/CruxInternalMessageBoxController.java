@@ -17,16 +17,15 @@ package br.com.sysmap.crux.widgets.client.dialog;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
-import br.com.sysmap.crux.core.client.controller.Create;
-import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Global;
-import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
+import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
+import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
+import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.decoratedbutton.DecoratedButton;
 import br.com.sysmap.crux.widgets.client.event.OkEvent;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -41,21 +40,10 @@ import com.google.gwt.user.client.ui.Label;
  */
 @Global
 @Controller(value="__messageBox", lazy=false)
-public class CruxInternalMessageBoxController 
+public class CruxInternalMessageBoxController implements CruxInternalMessageBoxControllerCrossDoc
 {
-	private ModuleComunicationSerializer serializer;
-	
-	@Create
-	protected DialogMessages messages;
-	
-	/**
-	 * Default constructor
-	 */
-	public CruxInternalMessageBoxController()
-	{
-		this.serializer = Screen.getCruxSerializer();
-		this.serializer.registerCruxSerializable(MessageBoxData.class.getName(), new MessageBoxData());
-	}
+	protected DialogMessages messages = GWT.create(DialogMessages.class);
+	protected CruxInternalMessageBoxControllerCrossDoc crossDoc  = GWT.create(CruxInternalMessageBoxControllerCrossDoc.class);
 
 	/**
 	 * Invoke showMessageBox on top. It is required to handle multi-frame pages.
@@ -63,20 +51,14 @@ public class CruxInternalMessageBoxController
 	 */
 	public void showMessageBox(MessageBoxData data)
 	{
-		try
-		{
-			showMessageBoxOnTop(serializer.serialize(data));
-		}
-		catch (ModuleComunicationException e)
-		{
-			Crux.getErrorHandler().handleError(e);
-		}	
+		setMessageBoxOrigin();
+		((TargetDocument)crossDoc).setTarget(Target.TOP);
+		crossDoc.showMessageBoxDialog(data);
 	}
 	
 	/**
 	 * Fires the OK button click event 
 	 */
-	@ExposeOutOfModule
 	public void onOk()
 	{
 		OkEvent.fire(MessageBox.messageBox);
@@ -86,15 +68,12 @@ public class CruxInternalMessageBoxController
 	 * Handler method to be invoked on top. This method does show the message box.
 	 * @param controllerEvent
 	 */
-	@ExposeOutOfModule
-	public void showMessageBoxHandler(InvokeControllerEvent controllerEvent)
+	public void showMessageBoxDialog(MessageBoxData data)
 	{
 		Screen.blockToUser("crux-MessageBoxScreenBlocker");
 		
 		try
 		{
-			final MessageBoxData data = (MessageBoxData) controllerEvent.getParameter();
-			
 			final DialogBox dialogBox = new DialogBox(false, true);
 			dialogBox.setStyleName(data.getStyleName());
 			dialogBox.setText(data.getTitle());
@@ -162,7 +141,9 @@ public class CruxInternalMessageBoxController
 				
 				try
 				{
-					okClick();
+					JSWindow origin = getAndClearMessageBoxOrigin();
+					((TargetDocument)crossDoc).setTargetWindow(origin);
+					crossDoc.onOk();
 				}
 				catch (Throwable e)
 				{
@@ -180,17 +161,16 @@ public class CruxInternalMessageBoxController
 	 * Calls the method <code>showMessageBoxHandler</code> in the top window
 	 * @param serializedData
 	 */
-	private native void showMessageBoxOnTop(String serializedData)/*-{
+	private native void setMessageBoxOrigin()/*-{
 		$wnd.top._messageBox_origin = $wnd;
-		$wnd.top._cruxScreenControllerAccessor("__messageBox.showMessageBoxHandler", serializedData);
 	}-*/;
 
 	/**
 	 * Calls the method <code>onOk</code> in the top window that has invoked the message box
 	 */
-	private native void okClick()/*-{
+	public static native JSWindow getAndClearMessageBoxOrigin()/*-{
 		var o = $wnd.top._messageBox_origin;
 		$wnd.top._messageBox_origin = null;
-		o._cruxScreenControllerAccessor("__messageBox.onOk", null);
+		return o;
 	}-*/;
 }

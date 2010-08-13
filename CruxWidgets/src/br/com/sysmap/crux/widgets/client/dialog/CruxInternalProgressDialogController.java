@@ -20,13 +20,12 @@ import java.util.List;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.controller.Controller;
-import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
 import br.com.sysmap.crux.core.client.controller.Global;
-import br.com.sysmap.crux.core.client.screen.InvokeControllerEvent;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationSerializer;
+import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
+import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -39,37 +38,23 @@ import com.google.gwt.user.client.ui.Label;
  */
 @Global
 @Controller(value="__progressDialog", lazy=false)
-public class CruxInternalProgressDialogController 
+public class CruxInternalProgressDialogController implements CruxInternalProgressDialogControllerCrossDoc
 {
-	private ModuleComunicationSerializer serializer;
 	private DialogBox dialog = null;
 	private Label messageLabel = null;
+	private CruxInternalProgressDialogControllerCrossDoc crossDoc = GWT.create(CruxInternalProgressDialogControllerCrossDoc.class);
+	
 	
 	private List<String> stack = new ArrayList<String>(); 
 	
-	/**
-	 * Default constructor
-	 */
-	public CruxInternalProgressDialogController()
-	{
-		this.serializer = Screen.getCruxSerializer();
-		this.serializer.registerCruxSerializable(ProgressDialogData.class.getName(), new ProgressDialogData());
-	}
-
 	/**
 	 * Invoke showProgressDialogOnTop on top window. It is required to handle multi-frame pages.
 	 * @param data
 	 */
 	public void showProgressDialog(ProgressDialogData data)
 	{
-		try
-		{
-			showProgressDialogOnTop(serializer.serialize(data));
-		}
-		catch (ModuleComunicationException e)
-		{
-			Crux.getErrorHandler().handleError(e);
-		}	
+		((TargetDocument)crossDoc).setTarget(Target.TOP);
+		crossDoc.showProgressDialogBox(data);
 	}
 	
 	/**
@@ -78,19 +63,18 @@ public class CruxInternalProgressDialogController
 	 */
 	public void hideProgressDialog()
 	{
-		hideProgressDialogOnTop();
+		((TargetDocument)crossDoc).setTarget(Target.TOP);
+		crossDoc.hideProgressDialogBox();
 	}
 	
 	/**
 	 * Handler method to be invoked on top. This method shows the progress dialog.
 	 * @param controllerEvent
 	 */
-	@ExposeOutOfModule
-	public void showProgressDialogHandler(InvokeControllerEvent controllerEvent)
+	public void showProgressDialogBox(ProgressDialogData data)
 	{
 		try
 		{
-			final ProgressDialogData data = (ProgressDialogData) controllerEvent.getParameter();
 			String message = data.getMessage();
 			this.stack.add(message);
 			
@@ -135,10 +119,8 @@ public class CruxInternalProgressDialogController
 
 	/**
 	 * Handler method to be invoked on top. That method hides the progress dialog.
-	 * @param controllerEvent
 	 */
-	@ExposeOutOfModule
-	public void hideProgressDialogHandler(InvokeControllerEvent controllerEvent)
+	public void hideProgressDialogBox()
 	{
 		if(this.stack.size() <= 1)
 		{			
@@ -181,19 +163,4 @@ public class CruxInternalProgressDialogController
 		label.setStyleName("message");
 		return label;
 	}
-
-	/**
-	 * Calls the method <code>showProgressDialogHandler</code> in the top window
-	 * @param serializedData
-	 */
-	private native void showProgressDialogOnTop(String serializedData)/*-{
-		$wnd.top._cruxScreenControllerAccessor("__progressDialog.showProgressDialogHandler", serializedData);
-	}-*/;
-	
-	/**
-	 * Calls the method <code>hideProgressDialogHandler</code> in the top window
-	 */
-	private native void hideProgressDialogOnTop()/*-{
-		$wnd.top._cruxScreenControllerAccessor("__progressDialog.hideProgressDialogHandler");
-	}-*/;
 }

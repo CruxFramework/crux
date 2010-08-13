@@ -18,7 +18,6 @@ package br.com.sysmap.crux.widgets.client.wizard;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.WidgetController;
 import br.com.sysmap.crux.core.client.screen.JSWindow;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.dynatabs.DynaTabsControllerInvoker;
@@ -567,12 +566,12 @@ public class CruxInternalWizardPageController extends DynaTabsControllerInvoker 
 	 * @return
 	 * @throws ModuleComunicationException
 	 */
-	static boolean isInternalPageLoaded(String pageId) throws ModuleComunicationException
+	static boolean isInternalPageLoaded(String pageId) throws WizardException
 	{
 		Element pageIFrame = getTabInternalFrameElement(pageId);
 		if(pageIFrame == null)
 		{
-			throw new ModuleComunicationException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(pageId));
+			throw new WizardException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(pageId));
 		}
 		JSWindow window = retrieveTabWindow(pageIFrame);
 		return existsAccessorFunction(window);

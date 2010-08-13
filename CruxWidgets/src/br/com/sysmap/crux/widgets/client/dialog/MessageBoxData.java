@@ -15,22 +15,17 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
-import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
-
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.XMLParser;
-
+import java.io.Serializable;
 
 /**
  * A simple DTO to transport the message box attributes across frames
  * @author Gessé S. F. Dafé
  */
-@SerializableName("messageBoxData")	
-public class MessageBoxData implements CruxSerializable
+public class MessageBoxData implements Serializable
 {
-	private String styleName;
+    private static final long serialVersionUID = 6094423029319432651L;
+
+    private String styleName;
 	private String title;
 	private String message;
 	private boolean animationEnabled;
@@ -55,61 +50,6 @@ public class MessageBoxData implements CruxSerializable
 		this.title = title;
 		this.message = message;
 		this.animationEnabled = animationEnabled;
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#deserialize(java.lang.String)
-	 */
-	public Object deserialize(String serializedData)
-	{
-		if (serializedData != null && serializedData.length() > 0)
-		{
-			Document root = XMLParser.parse(serializedData);
-			Element data = root.getDocumentElement();
-			
-			return new MessageBoxData(
-							data.getAttribute("title"), 
-							data.getAttribute("message"), 
-							data.getAttribute("styleName"), 
-							Boolean.parseBoolean(data.getAttribute("animationEnabled"))
-			);
-		}
-		return null;
-	}
-	
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#newArray(int)
-	 */
-	public Object[] newArray(int size)
-	{
-		return new MessageBoxData[size];
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#serialize()
-	 */
-	public String serialize()
-	{
-		Document document = XMLParser.createDocument();
-
-		Element data = document.createElement("data");
-		document.appendChild(data);
-		
-		if (title != null)
-		{
-			data.setAttribute("title", title);
-		}
-		if (message != null)
-		{
-			data.setAttribute("message", message);
-		}
-		if (styleName != null)
-		{
-			data.setAttribute("styleName", styleName);
-		}
-		data.setAttribute("animationEnabled", Boolean.toString(animationEnabled));
-		
-		return document.toString();
 	}
 
 	/**

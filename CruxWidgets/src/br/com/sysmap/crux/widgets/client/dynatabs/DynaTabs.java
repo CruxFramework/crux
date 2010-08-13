@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.screen.JSWindow;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
@@ -79,7 +78,7 @@ public class DynaTabs extends Composite
 	 * @throws ModuleComunicationException
 	 */
 	@Deprecated
-	public static void invokeOnTab(String tabId, String call, Object param) throws ModuleComunicationException
+	public static void invokeOnTab(String tabId, String call, Object param) throws br.com.sysmap.crux.core.client.screen.ModuleComunicationException
 	{
 		DynaTabsControllerInvoker.invokeOnTab(tabId, call, param);
 	}
@@ -95,7 +94,7 @@ public class DynaTabs extends Composite
 	 * @throws ModuleComunicationException
 	 */
 	@Deprecated
-	public static <T> T invokeOnTab(String tabId, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	public static <T> T invokeOnTab(String tabId, String call, Object param, Class<T> resultType) throws br.com.sysmap.crux.core.client.screen.ModuleComunicationException
 	{
 		return DynaTabsControllerInvoker.invokeOnTab(tabId, call, param, resultType);
 	}

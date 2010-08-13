@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.client.utils.StyleUtils;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
@@ -722,7 +721,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 				    		enterCurrentStep(preivousStep);
 						}
                     }
-                    catch (ModuleComunicationException e)
+                    catch (WizardException e)
                     {
                     	Crux.getErrorHandler().handleError(e.getMessage(), e);
                     	loaded = true;

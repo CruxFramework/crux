@@ -15,21 +15,17 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
-import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
-
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.XMLParser;
+import java.io.Serializable;
 
 /**
  * TODO - Gessé - Comment this
  * @author Gessé S. F. Dafé
  */
-@SerializableName("progressDialogData")	
-public class ProgressDialogData implements CruxSerializable
+public class ProgressDialogData implements Serializable
 {
-	private String styleName;
+    private static final long serialVersionUID = -2904511069640049713L;
+
+    private String styleName;
 	private String message;
 	private boolean animationEnabled;
 
@@ -72,46 +68,5 @@ public class ProgressDialogData implements CruxSerializable
 	public void setAnimationEnabled(boolean animationEnabled)
 	{
 		this.animationEnabled = animationEnabled;
-	}
-
-	public Object deserialize(String serializedData)
-	{
-		if (serializedData != null && serializedData.length() > 0)
-		{
-			Document root = XMLParser.parse(serializedData);
-			Element data = root.getDocumentElement();
-			return new ProgressDialogData(
-				data.getAttribute("message"), 
-				data.getAttribute("styleName"), 
-				Boolean.parseBoolean(data.getAttribute("animationEnabled"))
-			);
-		}
-		return null;
-	}
-	
-	public Object[] newArray(int size)
-	{
-		return new ProgressDialogData[size];
-	}
-
-	public String serialize()
-	{
-		Document document = XMLParser.createDocument();
-
-		Element data = document.createElement("data");
-		document.appendChild(data);
-		
-		if (message != null)
-		{
-			data.setAttribute("message", message);
-		}
-		if (styleName != null)
-		{
-			data.setAttribute("styleName", styleName);
-		}
-
-		data.setAttribute("animationEnabled", Boolean.toString(animationEnabled));
-		
-		return document.toString();
 	}
 }

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.screen.JSWindow;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.widgets.client.event.openclose.HasBeforeCloseHandlers;
@@ -84,7 +83,7 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	 * @throws ModuleComunicationException
 	 */
 	@Deprecated
-	public static void invokeOnOpener(String call, Object param) throws ModuleComunicationException
+	public static void invokeOnOpener(String call, Object param) throws br.com.sysmap.crux.core.client.screen.ModuleComunicationException
 	{
 		CruxInternalPopupController.invokeOnOpener(call, param);
 	}
@@ -95,7 +94,7 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	 * @throws ModuleComunicationException
 	 */
 	@Deprecated
-	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	public static <T> T invokeOnOpener(String call, Object param, Class<T> resultType) throws br.com.sysmap.crux.core.client.screen.ModuleComunicationException
 	{
 		return CruxInternalPopupController.invokeOnOpener(call, param, resultType);
 	}
