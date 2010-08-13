@@ -15,16 +15,15 @@
  */
 package br.com.sysmap.crux.widgets.client.grid;
 
-import br.com.sysmap.crux.core.client.datasource.BindableDataSource;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
-import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
+import br.com.sysmap.crux.core.client.datasource.DataSource;
+import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
+import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
 
 import com.google.gwt.dom.client.Element;
 
 public class DataRow extends Row
 {
-	private EditableDataSourceRecord dataSourceRecord;
+	private DataSourceRecord<?> dataSourceRecord;
 	
 	protected DataRow(int index, Element elem, AbstractGrid<?> grid, boolean hasSelectionCell)
 	{
@@ -34,7 +33,7 @@ public class DataRow extends Row
 	/**
 	 * @return the dataSourceRowId
 	 */
-	public EditableDataSourceRecord getDataSourceRecord()
+	public DataSourceRecord<?> getDataSourceRecord()
 	{
 		return dataSourceRecord;
 	}
@@ -42,15 +41,16 @@ public class DataRow extends Row
 	/**
 	 * @param dataSourceRowId the dataSourceRowId to set
 	 */
-	void setDataSourceRecord(EditableDataSourceRecord dataSourceRowId)
+	void setDataSourceRecord(DataSourceRecord<?> dataSourceRowId)
 	{
 		this.dataSourceRecord = dataSourceRowId;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Object getValue(String column)
 	{
-		int index = ((Grid) getGrid()).getDataSource().getMetadata().getColumnPosition(column);
-		return dataSourceRecord.get(index);
+		PagedDataSource dataSource = ((Grid) getGrid()).getDataSource();
+		return dataSource.getValue(column, dataSourceRecord);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -58,17 +58,8 @@ public class DataRow extends Row
 	{
 		Grid grid = (Grid) getGrid();
 		
-		EditablePagedDataSource dataSource = grid.getDataSource();
-		
-		if(dataSource instanceof BindableDataSource)
-		{
-			BindableDataSource bindable = (BindableDataSource) dataSource;
-			return bindable.getBindedObject(getDataSourceRecord());
-		}
-		else
-		{
-			throw new GridException(WidgetMsgFactory.getMessages().getBindedObjectNotSupported());
-		}
+		DataSource dataSource = grid.getDataSource();
+		return dataSource.getBindedObject(getDataSourceRecord());
 	}
 	
 	@Override

@@ -20,15 +20,14 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.datasource.BindableDataSource;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
-import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.HasDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSourceCallback;
 import br.com.sysmap.crux.core.client.datasource.MeasurableDataSource;
 import br.com.sysmap.crux.core.client.datasource.MeasurablePagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.MeasurableRemoteDataSource;
+import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSourceCallback;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
@@ -64,10 +63,10 @@ import com.google.gwt.user.client.ui.Widget;
  * A paged sortable data grid
  * @author Gessé S. F. Dafé
  */
-public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<EditablePagedDataSource>, HasBeforeRowSelectHandlers 
+public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<PagedDataSource<?>>, HasBeforeRowSelectHandlers 
 {	
 	private int pageSize;
-	private EditablePagedDataSource dataSource;
+	private PagedDataSource<?> dataSource;
 	private List<ColumnHeader> headers = new ArrayList<ColumnHeader>();
 	private boolean autoLoadData;
 	private boolean loaded;
@@ -111,14 +110,14 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	 * Sets the data source and re-renders the grid
 	 * @param dataSource
 	 */
-	public void setDataSource(EditablePagedDataSource dataSource)
+	public void setDataSource(PagedDataSource<?> dataSource)
 	{
 		this.dataSource = dataSource;
 		this.dataSource.setPageSize(this.pageSize);
 		
-		if(this.dataSource instanceof RemoteDataSource<?, ?>)
+		if(this.dataSource instanceof RemoteDataSource<?>)
 		{
-			RemoteDataSource<?, ?> remote = (RemoteDataSource<?, ?>) this.dataSource;
+			RemoteDataSource<?> remote = (RemoteDataSource<?>) this.dataSource;
 			
 			remote.setCallback(new RemoteDataSourceCallback()
 			{
@@ -142,9 +141,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				loadData();
 			}
 		}
-		else if(this.dataSource instanceof LocalDataSource<?, ?>)
+		else if(this.dataSource instanceof LocalDataSource<?>)
 		{
-			LocalDataSource<?, ?> local = (LocalDataSource<?, ?>) this.dataSource;
+			LocalDataSource<?> local = (LocalDataSource<?>) this.dataSource;
 			
 			local.setCallback(new LocalDataSourceCallback()
 			{
@@ -183,7 +182,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			}
 			else if(this.dataSource instanceof LocalDataSource)
 			{
-				LocalDataSource<?, ?> local = (LocalDataSource<?, ?>) this.dataSource;
+				LocalDataSource<?> local = (LocalDataSource<?>) this.dataSource;
 				local.load();
 			}
 		}
@@ -253,12 +252,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			if(select && (RowSelectionModel.single.equals(rowSelectionModel) || RowSelectionModel.singleRadioButton.equals(rowSelectionModel)))
 			{
-				EditableDataSourceRecord[] records = dataSource.getSelectedRecords();
+				DataSourceRecord<?>[] records = dataSource.getSelectedRecords();
 				if(records != null)
 				{
 					for (int i = 0; i < records.length; i++)
 					{
-						EditableDataSourceRecord editableDataSourceRecord = records[i];
+						DataSourceRecord<?> editableDataSourceRecord = records[i];
 						editableDataSourceRecord.setSelected(false);
 					}
 				}
@@ -488,7 +487,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			this.dataSource.nextPage();
 			
-			if(!(this.dataSource instanceof RemoteDataSource<?, ?>))
+			if(!(this.dataSource instanceof RemoteDataSource<?>))
 			{
 				render();
 			}
@@ -501,7 +500,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			this.dataSource.previousPage();
 			
-			if(!(this.dataSource instanceof RemoteDataSource<?, ?>))
+			if(!(this.dataSource instanceof RemoteDataSource<?>))
 			{
 				render();
 			}
@@ -526,7 +525,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	/**
 	 * @return the dataSource
 	 */
-	public EditablePagedDataSource getDataSource()
+	public PagedDataSource<?> getDataSource()
 	{
 		return dataSource;
 	}
@@ -590,28 +589,19 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		if(this.dataSource != null)
 		{
-			EditableDataSourceRecord[] selectedRecords = this.dataSource.getSelectedRecords();
+			DataSourceRecord[] selectedRecords = this.dataSource.getSelectedRecords();
 			
 			if(selectedRecords != null)
 			{
-				if(this.dataSource instanceof BindableDataSource)
+				Object[] selectedObjs = new Object[selectedRecords.length]; 
+
+				for (int i = 0; i < selectedRecords.length; i++)
 				{
-					BindableDataSource<EditableDataSourceRecord, ?> bindable = (BindableDataSource<EditableDataSourceRecord, ?>) this.dataSource;
-					
-					Object[] selectedObjs = new Object[selectedRecords.length]; 
-					
-					for (int i = 0; i < selectedRecords.length; i++)
-					{
-						Object o = bindable.getBindedObject(selectedRecords[i]);
-						selectedObjs[i] = o;					
-					}
-					
-					return selectedObjs;
+					Object o = this.dataSource.getBindedObject(selectedRecords[i]);
+					selectedObjs[i] = o;					
 				}
-				else
-				{
-					return  selectedRecords;
-				}
+
+				return selectedObjs;
 			}			
 		}		
 		
@@ -660,7 +650,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			{
 				((MeasurablePagedDataSource<?>) this.dataSource).setCurrentPage(page);
 
-				if(!(this.dataSource instanceof RemoteDataSource<?, ?>))
+				if(!(this.dataSource instanceof RemoteDataSource<?>))
 				{
 					render();
 				}

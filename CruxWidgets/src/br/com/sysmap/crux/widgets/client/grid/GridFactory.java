@@ -17,7 +17,7 @@ package br.com.sysmap.crux.widgets.client.grid;
 
 import java.util.List;
 
-import br.com.sysmap.crux.core.client.datasource.EditablePagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
@@ -167,7 +167,7 @@ public class GridFactory extends WidgetFactory<Grid>
 		
 		if(dataSourceName != null && dataSourceName.length() > 0)
 		{
-			EditablePagedDataSource dataSource = (EditablePagedDataSource) Screen.createDataSource(dataSourceName);
+			PagedDataSource<?> dataSource = (PagedDataSource<?>) Screen.createDataSource(dataSourceName);
 			widget.setDataSource(dataSource);
 		}
 	}
