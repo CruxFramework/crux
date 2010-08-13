@@ -193,18 +193,39 @@ abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E
 	}
 	
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject()
+	 * @return
+	 * @deprecated Use getBoundObject instead
 	 */
+	@Deprecated
 	public E getBindedObject()
 	{
 		return getBindedObject(getRecord());
 	}
 	
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 * @param record
+	 * @return
+	 * @deprecated Use getBoundObject instead
 	 */
+	@Deprecated
 	public E getBindedObject(DataSourceRecord<E> record)
 	{
-		return null;
-	}		
+		return getBoundObject(record);
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBoundObject()
+	 */
+	public E getBoundObject()
+	{
+	    return getBoundObject(getRecord());
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBoundObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 */
+	public E getBoundObject(DataSourceRecord<E> record)
+	{
+	    return null;
+	}
 }

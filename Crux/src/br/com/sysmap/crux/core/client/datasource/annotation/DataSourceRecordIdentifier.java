@@ -13,30 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.client.datasource;
+package br.com.sysmap.crux.core.client.datasource.annotation;
 
-
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author Thiago da Rosa de Bustamante
- * @deprecated Use LocalEditableScrollableDataSource instead
+ *
  */
-@Deprecated
-public abstract class LocalBindableEditableScrollableDataSource<T> extends LocalEditableScrollableDataSource<T>
-{
-	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBoundObject()
-	 */
-	public T getBoundObject()
-	{
-		return super.getBoundObject(getRecord());
-	}
-	
-	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBoundObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
-	 */
-	public T getBoundObject(DataSourceRecord<T> record)
-	{
-		return super.getBoundObject(record);
-	}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface DataSourceRecordIdentifier {
+	String value();
 }

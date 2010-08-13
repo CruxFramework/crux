@@ -95,14 +95,14 @@ public interface DataSource<E>
 	 * Return a copy of the current record object. 
 	 * @return
 	 */
-	E getBindedObject();
+	E getBoundObject();
 	
 	/**
 	 * Return a copy of the record object. 
 	 * @param record
 	 * @return
 	 */
-	E getBindedObject(DataSourceRecord<E> record);
+	E getBoundObject(DataSourceRecord<E> record);
 	
 	/**
 	 * Insert a new record on DataSource

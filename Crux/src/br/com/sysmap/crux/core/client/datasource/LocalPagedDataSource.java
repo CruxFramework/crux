@@ -126,18 +126,18 @@ public abstract class LocalPagedDataSource<T> extends AbstractPagedDataSource<T>
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject()
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBoundObject()
 	 */
-	public T getBindedObject()
+	public T getBoundObject()
 	{
-		return super.getBindedObject(getRecord());
+		return super.getBoundObject(getRecord());
 	}
 	
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBoundObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
 	 */
-	public T getBindedObject(DataSourceRecord<T> record)
+	public T getBoundObject(DataSourceRecord<T> record)
 	{
-		return super.getBindedObject(record);
+		return super.getBoundObject(record);
 	}
 }

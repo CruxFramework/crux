@@ -22,10 +22,11 @@ import java.lang.annotation.Target;
 
 /**
  * @author Thiago da Rosa de Bustamante
- *
+ * @deprecated Use DataSourceIdentifier instead.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Deprecated
 public @interface DataSourceBinding {
 	String identifier();
 }

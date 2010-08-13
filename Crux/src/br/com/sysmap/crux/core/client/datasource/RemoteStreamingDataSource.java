@@ -594,19 +594,40 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 	{
 		return null;
 	}
-	
+
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject()
+	 * @return
+	 * @deprecated Use getBoundObject instead
 	 */
+	@Deprecated
 	public T getBindedObject()
 	{
 		return getBindedObject(getRecord());
 	}
 	
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 * @param record
+	 * @return
+	 * @deprecated Use getBoundObject instead
 	 */
+	@Deprecated
 	public T getBindedObject(DataSourceRecord<T> record)
+	{
+		return getBoundObject(record);
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBoundObject()
+	 */
+	public T getBoundObject()
+	{
+		return getBoundObject(getRecord());
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBoundObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 */
+	public T getBoundObject(DataSourceRecord<T> record)
 	{
 		return null;
 	}	

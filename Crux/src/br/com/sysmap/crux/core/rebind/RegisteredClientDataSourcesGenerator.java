@@ -33,7 +33,7 @@ import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
-import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding;
+import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceRecordIdentifier;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
@@ -194,7 +194,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 		generateUpdateFunction(logger, dataSourceClass, sourceWriter, columnsData);
 		ClientInvokableGeneratorHelper.generateScreenUpdateWidgetsFunction(logger, dataSourceClass, sourceWriter);
 		ClientInvokableGeneratorHelper.generateControllerUpdateObjectsFunction(logger, dataSourceClass, sourceWriter);
-		generateGetBindedObjectFunction(logger, screen, dataSourceClass, sourceWriter);
+		generateGetBoundObjectFunction(logger, screen, dataSourceClass, sourceWriter);
 		generateGetValueFunction(logger, dataSourceClass, columnsData, sourceWriter);
 		ClientInvokableGeneratorHelper.generateIsAutoBindEnabledMethod(sourceWriter, autoBind);
 		
@@ -375,7 +375,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	 * @param dataSourceClass
 	 * @param sourceWriter
 	 */
-	private void generateGetBindedObjectFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
+	private void generateGetBoundObjectFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
 			SourceWriter sourceWriter)
 	{
 		try
@@ -386,7 +386,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 			Class<?> recordType = getRecordTypeFromClass(logger, dataSourceClass);			
 			String recordTypeDeclaration = getParameterDeclaration(recordType);
 
-			sourceWriter.println("public "+dataTypeDeclaration+" getBindedObject("+recordTypeDeclaration+"<"+dataTypeDeclaration+"> record){");
+			sourceWriter.println("public "+dataTypeDeclaration+" getBoundObject("+recordTypeDeclaration+"<"+dataTypeDeclaration+"> record){");
 			sourceWriter.indent();
 			sourceWriter.println("if (record == null) return null;");
 			sourceWriter.println("return record.getRecordObject();");
@@ -460,17 +460,29 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 		sourceWriter.println("public "+className+"(){");
 		sourceWriter.println("this.metadata = new Metadata();");
 		
-		DataSourceBinding typeAnnot = dataSourceClass.getAnnotation(DataSourceBinding.class);
-		//TODO: deprecate DataSourceBinding...criar outra anotacao.... DataSourceIdentifier(String value())
-		
-		ret.identifier = typeAnnot.identifier();
-		generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, getDtoTypeFromClass(logger, dataSourceClass), 
+		ret.identifier = getDataSourceIdentifier(dataSourceClass);
+		generateMetadataPopulationBlockFromType(logger, sourceWriter, getDtoTypeFromClass(logger, dataSourceClass), 
 				dataSourceClass.getName(), ret);
 		ClientInvokableGeneratorHelper.generateAutoCreateFields(logger, dataSourceClass, sourceWriter, "this");
 		sourceWriter.println("}");
 		
 		return ret;
 	}
+
+	@SuppressWarnings("deprecation")
+    private String getDataSourceIdentifier(Class<? extends DataSource<?>> dataSourceClass)
+    {
+		DataSourceRecordIdentifier idAnnotation = 
+			dataSourceClass.getAnnotation(DataSourceRecordIdentifier.class);
+		if (idAnnotation != null)
+		{
+			return idAnnotation.value();
+		}
+
+		br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding typeAnnot = 
+			dataSourceClass.getAnnotation(br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding.class);
+		return typeAnnot.identifier();
+    }
 
 	/**
 	 * 
@@ -480,7 +492,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	 */
 	private Class<?> getDtoTypeFromClass(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass)
 	{
-		Class<?> returnType = GenericUtils.resolveReturnType(dataSourceClass, "getBindedObject", new Class[]{});
+		Class<?> returnType = GenericUtils.resolveReturnType(dataSourceClass, "getBoundObject", new Class[]{});
 		if (returnType == null)
 		{
 			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceCanNotRealizeGenericType(dataSourceClass.getName()));
@@ -508,10 +520,9 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	 * 
 	 * @param logger
 	 * @param sourceWriter
-	 * @param typeAnnot
 	 */
 	private void generateMetadataPopulationBlockFromType(TreeLogger logger, SourceWriter sourceWriter, 
-							DataSourceBinding typeAnnot, Class<?> dtoType, String dataSourceClassName, ColumnsData columnsData)
+							Class<?> dtoType, String dataSourceClassName, ColumnsData columnsData)
 	{
 		List<String> names = new ArrayList<String>();
 		List<Class<?>> types = new ArrayList<Class<?>>();
