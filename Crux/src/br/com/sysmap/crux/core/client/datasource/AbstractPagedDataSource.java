@@ -21,8 +21,8 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante
  *
  */
-abstract class AbstractPagedDataSource<R extends DataSourceRecord, E> extends AbstractScrollableDataSource<R,E> 
-                                              implements MeasurablePagedDataSource<R>
+abstract class AbstractPagedDataSource<E> extends AbstractScrollableDataSource<E> 
+                                              implements MeasurablePagedDataSource<E>
 {
 	protected int pageSize = 10;
 	protected int currentPage = 0;

@@ -15,12 +15,129 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
+import br.com.sysmap.crux.core.client.datasource.DataSourceRecord.DataSourceRecordState;
+
 
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class LocalPagedDataSource extends AbstractLocalPagedDataSource<DataSourceRecord, DataSourceRecord>
+public abstract class LocalPagedDataSource<T> extends AbstractPagedDataSource<T> 
+				implements LocalDataSource<T> 
 {
+	protected LocalDataSourceCallback loadCallback = null;
+	protected DataSourceOperations<T> operations = new DataSourceOperations<T>(this);
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#clearChanges()
+	 */
+	public void clearChanges()
+	{
+		this.operations.reset();
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getNewRecords()
+	 */
+	public DataSourceRecord<T>[] getNewRecords()
+	{
+		return operations.getNewRecords();
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getRemovedRecords()
+	 */
+	public DataSourceRecord<T>[] getRemovedRecords()
+	{
+		return operations.getRemovedRecords();
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getSelectedRecords()
+	 */
+	public DataSourceRecord<T>[] getSelectedRecords()
+	{
+		return operations.getSelectedRecords();
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getUpdatedRecords()
+	 */
+	public DataSourceRecord<T>[] getUpdatedRecords()
+	{
+		return operations.getUpdatedRecords();
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#insertRecord(int)
+	 */
+	public DataSourceRecord<T> insertRecord(int index)
+	{
+		return operations.insertRecord(index);
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#removeRecord(int)
+	 */
+	public DataSourceRecord<T> removeRecord(int index)
+	{
+		return operations.removeRecord(index);
+	}
+
+	@Override
+	public void reset()
+	{
+		super.reset();
+		operations.reset();
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.LocalDataSource#setCallback(br.com.sysmap.crux.core.client.datasource.LocalDataSourceCallback)
+	 */
+	public void setCallback(LocalDataSourceCallback callback)
+	{
+		this.loadCallback = callback;
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.LocalDataSource#update(R[])
+	 */
+	public void update(DataSourceRecord<T>[] records)
+	{
+		loaded = true;
+		this.data = records;
+		if (this.loadCallback != null)
+		{
+			this.loadCallback.execute();
+		}
+	}
+
+	public void updateData(T[] data)
+	{
+	}	
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#updateState(br.com.sysmap.crux.core.client.datasource.DataSourceRecord, br.com.sysmap.crux.core.client.datasource.DataSourceRecord.DataSourceRecordState)
+	 */
+	public void updateState(DataSourceRecord<T> record, DataSourceRecordState previousState)
+	{
+		operations.updateState(record, previousState);
+	}
+
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject()
+	 */
+	public T getBindedObject()
+	{
+		return super.getBindedObject(getRecord());
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 */
+	public T getBindedObject(DataSourceRecord<T> record)
+	{
+		return super.getBindedObject(record);
+	}
 }

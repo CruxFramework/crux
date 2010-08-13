@@ -15,151 +15,27 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.EditableDataSourceRecordState;
 
 /**
  * @author Thiago da Rosa de Bustamante
- *
+ * @deprecated Use RemotePagedDataSource instead
  */
-public abstract class RemoteEditablePagedDataSource extends AbstractRemotePagedDataSource<EditableDataSourceRecord, EditableDataSourceRecord>
-										   implements MeasurableEditablePagedDataSource
+@Deprecated
+public abstract class RemoteEditablePagedDataSource<T> extends RemotePagedDataSource<T>
 {	
-	protected EditableDataSourceOperations<EditableDataSourceRecord> editableOperations = 
-		new EditableDataSourceOperations<EditableDataSourceRecord>(this);
-
-	@Override
-	protected EditableDataSourceRecord[] createDataObject(int count)
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject()
+	 */
+	public T getBindedObject()
 	{
-		return new EditableDataSourceRecord[count];
-	}
-	
-	@Override
-	public boolean nextPage()
-	{
-		checkChanges();
-		return super.nextPage();
-	}
-
-	@Override
-	public boolean previousPage()
-	{
-		checkChanges();
-		return super.previousPage();
-	}
-	
-	@Override
-	public boolean setCurrentPage(int pageNumber)
-	{
-		if (this.currentPage != pageNumber)
-		{
-			checkChanges();
-		}
-		return super.setCurrentPage(pageNumber);
-	}
-	
-	@Override
-	public void firstRecord()
-	{
-		if (currentPage != 1)
-		{
-			checkChanges();
-		}
-		super.firstRecord();
-	}
-	
-	@Override
-	public void lastRecord()
-	{
-		if (currentPage != getPageCount())
-		{
-			checkChanges();
-		}
-		super.lastRecord();
-	}
-	
-	@Override
-	protected int getPageEndRecord()
-	{
-		int endPageRecord = super.getPageEndRecord();
-		return endPageRecord + editableOperations.getNewRecordsCount() - editableOperations.getRemovedRecordsCount();
-	}
-	
-	@Override
-	public void reset()
-	{
-		super.reset();
-		editableOperations.reset();
+		return super.getBindedObject(getRecord());
 	}
 	
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#insertRecord(int)
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
 	 */
-	public EditableDataSourceRecord insertRecord(int index)
+	public T getBindedObject(DataSourceRecord<T> record)
 	{
-		return editableOperations.insertRecord(index);
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#removeRecord(int)
-	 */
-	public EditableDataSourceRecord removeRecord(int index)
-	{
-		return editableOperations.removeRecord(index);
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#updateState(br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord, br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord.EditableDataSourceRecordState)
-	 */
-	public void updateState(EditableDataSourceRecord record, EditableDataSourceRecordState previousState)
-	{
-		editableOperations.updateState(record, previousState);
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getNewRecords()
-	 */
-	public EditableDataSourceRecord[] getNewRecords()
-	{
-		return editableOperations.getNewRecords();
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getRemovedRecords()
-	 */
-	public EditableDataSourceRecord[] getRemovedRecords()
-	{
-		return editableOperations.getRemovedRecords();
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getUpdatedRecords()
-	 */
-	public EditableDataSourceRecord[] getUpdatedRecords()
-	{
-		return editableOperations.getUpdatedRecords();
-	}
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#getSelectedRecords()
-	 */
-	public EditableDataSourceRecord[] getSelectedRecords()
-	{
-		return editableOperations.getSelectedRecords();
-	}	
-	
-	private void checkChanges()
-	{
-		if (editableOperations.isDirty())
-		{
-			throw new DataSoureExcpetion(messages.remoteDataSourcePageDirty());
-		}
-	}
-	
-	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.EditableDataSource#clearChanges()
-	 */
-	public void clearChanges()
-	{
-		this.editableOperations.reset();
+		return super.getBindedObject(record);
 	}
 }

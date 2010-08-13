@@ -23,7 +23,7 @@ import br.com.sysmap.crux.core.client.rpc.AsyncCallbackAdapter;
  */
 public class RemoteDataSourceLoadAsyncCallbackAdapter extends AsyncCallbackAdapter<RemoteDataSourceConfiguration>
 {
-	public RemoteDataSourceLoadAsyncCallbackAdapter(RemoteDataSource<?, ?> dataSource)
+	public RemoteDataSourceLoadAsyncCallbackAdapter(RemoteDataSource<?> dataSource)
 	{
 		super(dataSource);
 	}
@@ -34,11 +34,11 @@ public class RemoteDataSourceLoadAsyncCallbackAdapter extends AsyncCallbackAdapt
 	@Override
 	public void onComplete(RemoteDataSourceConfiguration result)
 	{
-		if (this.caller instanceof RemoteDataSource<?, ?>)
+		if (this.caller instanceof RemoteDataSource<?>)
 		{
-			if (this.caller instanceof MeasurableRemoteDataSource<?, ?>)
+			if (this.caller instanceof MeasurableRemoteDataSource<?>)
 			{
-				((MeasurableRemoteDataSource<?, ?>)this.caller).setLoadData(result);
+				((MeasurableRemoteDataSource<?>)this.caller).setLoadData(result);
 			}
 		}
 

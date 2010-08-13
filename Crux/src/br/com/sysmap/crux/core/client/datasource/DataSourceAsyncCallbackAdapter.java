@@ -37,11 +37,11 @@ public class DataSourceAsyncCallbackAdapter<T> extends AsyncCallbackAdapter<T[]>
 	{
 		if (this.caller instanceof RemoteDataSource)
 		{
-			((RemoteDataSource<?, T>)this.caller).updateData(result);
+			((RemoteDataSource<T>)this.caller).updateData(result);
 		}
 		else
 		{
-			((LocalDataSource<?, T>)this.caller).updateData(result);
+			((LocalDataSource<T>)this.caller).updateData(result);
 		}
 	}
 	
@@ -54,7 +54,7 @@ public class DataSourceAsyncCallbackAdapter<T> extends AsyncCallbackAdapter<T[]>
 	{
 		if (this.caller instanceof RemoteDataSource)
 		{
-			((RemoteDataSource<?, T>)this.caller).cancelFetching();
+			((RemoteDataSource<T>)this.caller).cancelFetching();
 		}
 		
 		super.onError(e);

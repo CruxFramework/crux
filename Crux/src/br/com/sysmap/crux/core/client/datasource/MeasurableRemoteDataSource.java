@@ -21,8 +21,7 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface MeasurableRemoteDataSource<R extends DataSourceRecord, E> 
-		extends MeasurablePagedDataSource<R>, RemoteDataSource<R, E> 																
+public interface MeasurableRemoteDataSource<E> extends MeasurablePagedDataSource<E>, RemoteDataSource<E> 																
 {
 	void load();
 	void setLoadData(RemoteDataSourceConfiguration config);

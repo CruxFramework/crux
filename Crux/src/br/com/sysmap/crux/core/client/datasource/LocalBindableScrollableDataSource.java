@@ -18,24 +18,24 @@ package br.com.sysmap.crux.core.client.datasource;
 
 /**
  * @author Thiago da Rosa de Bustamante
- *
+ * @deprecated Use LocalScrollableDataSource instead
  */
-public abstract class LocalBindableScrollableDataSource<T> extends AbstractLocalScrollableDataSource<DataSourceRecord, T>
-														   implements BindableDataSource<DataSourceRecord, T>
+@Deprecated
+public abstract class LocalBindableScrollableDataSource<T> extends LocalScrollableDataSource<T>
 {
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.BindableDataSource#getBindedObject()
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject()
 	 */
 	public T getBindedObject()
 	{
-		return getBindedObject(getRecord());
+		return super.getBindedObject(getRecord());
 	}
 	
 	/**
-	 * @see br.com.sysmap.crux.core.client.datasource.BindableDataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
 	 */
-	public T getBindedObject(DataSourceRecord record)
+	public T getBindedObject(DataSourceRecord<T> record)
 	{
-		return null;
-	}
+		return super.getBindedObject(record);
+	}	
 }

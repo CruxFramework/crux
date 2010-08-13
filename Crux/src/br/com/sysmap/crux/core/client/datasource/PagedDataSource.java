@@ -16,10 +16,12 @@
 package br.com.sysmap.crux.core.client.datasource;
 
 /**
+ * A DataSource that supports pagination
+ * 
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface PagedDataSource<T extends DataSourceRecord> extends DataSource<T>
+public interface PagedDataSource<E> extends DataSource<E>
 {
 	boolean hasNextPage();
 	boolean nextPage();

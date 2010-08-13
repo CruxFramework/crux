@@ -17,28 +17,27 @@ package br.com.sysmap.crux.core.rebind;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import br.com.sysmap.crux.core.client.datasource.BindableDataSource;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.DataSoureExcpetion;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSource;
-import br.com.sysmap.crux.core.client.datasource.EditableDataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
 import br.com.sysmap.crux.core.client.datasource.Metadata;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.datasource.RemoteDataSource;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding;
-import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumn;
-import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceColumns;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.screen.ScreenBindableObject;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
 import br.com.sysmap.crux.core.utils.ClassUtils;
@@ -177,7 +176,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 		String className = dataSourceClass.getSimpleName()+"Wrapper";
 		sourceWriter.println("public class "+className+" extends " + getClassSourceName(dataSourceClass)
 				         + " implements "+ScreenBindableObject.class.getName()+"{");
-				
+		sourceWriter.indent();		
 		ColumnsData columnsData = generateDataSourceClassConstructor(logger, sourceWriter, dataSourceClass, className);	
 		
 		br.com.sysmap.crux.core.client.datasource.annotation.DataSource annot = 
@@ -195,15 +194,115 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 		generateUpdateFunction(logger, dataSourceClass, sourceWriter, columnsData);
 		ClientInvokableGeneratorHelper.generateScreenUpdateWidgetsFunction(logger, dataSourceClass, sourceWriter);
 		ClientInvokableGeneratorHelper.generateControllerUpdateObjectsFunction(logger, dataSourceClass, sourceWriter);
-		if (BindableDataSource.class.isAssignableFrom(dataSourceClass))
-		{
-			generateGetBindedObjectFunction(logger, screen, dataSourceClass, sourceWriter, columnsData);
-		}
+		generateGetBindedObjectFunction(logger, screen, dataSourceClass, sourceWriter);
+		generateGetValueFunction(logger, dataSourceClass, columnsData, sourceWriter);
 		ClientInvokableGeneratorHelper.generateIsAutoBindEnabledMethod(sourceWriter, autoBind);
 		
+		sourceWriter.outdent();		
 		sourceWriter.println("}");
 		return className;
 	}
+
+	private void generateGetValueFunction(TreeLogger logger, Class<? extends DataSource<?>> dataSourceClass,
+			ColumnsData columnsData, SourceWriter sourceWriter)
+	{
+		try
+		{
+			Class<?> recordType = getRecordTypeFromClass(logger, dataSourceClass);
+			String recordTypeDeclaration = getParameterDeclaration(recordType);
+
+			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);			
+			String dataTypeDeclaration = getParameterDeclaration(dataType);
+
+			sourceWriter.println("public Object getValue(String columnName, "+recordTypeDeclaration+"<"+dataTypeDeclaration+"> dataSourceRecord){");
+			sourceWriter.indent();
+
+			sourceWriter.println(dataTypeDeclaration + " recordObject = dataSourceRecord.getRecordObject();");
+			sourceWriter.println("Object ret = recordObject;");
+
+			sourceWriter.println("if (recordObject == null){");
+			sourceWriter.indent();
+			sourceWriter.println("return null;");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
+
+			for (String columnName : columnsData.names)
+            {
+				sourceWriter.println("else if (columnName.equals(\""+columnName+"\")){");
+				sourceWriter.indent();
+				generateGetValueForColumn(logger, dataType, columnName, sourceWriter);
+				sourceWriter.outdent();
+				sourceWriter.println("}");
+            }
+			sourceWriter.println("else {");
+			sourceWriter.indent();
+			sourceWriter.println("ret = null;");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
+			
+			sourceWriter.println("return ret;");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
+		}
+		catch (Exception e)
+		{
+			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSource(dataSourceClass.getName(), e.getLocalizedMessage()), e);
+		}
+    }
+
+	/**
+	 * @param logger
+	 * @param baseClass
+	 * @param columnName
+	 * @param sourceWriter
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 */
+	private void generateGetValueForColumn(TreeLogger logger, Class<?> baseClass, String columnName, SourceWriter sourceWriter)
+	             throws SecurityException, NoSuchFieldException
+    {
+	    if (columnName.indexOf('.') < 0)
+	    {
+	    	generateGetValueForProperty(baseClass, columnName, sourceWriter);
+	    }
+	    else
+	    {
+	    	String firstProperty = columnName.substring(0,columnName.indexOf('.'));
+	    	generateGetValueForProperty(baseClass, firstProperty, sourceWriter);
+		    sourceWriter.println("if (ret != null){");
+			sourceWriter.indent();
+			
+	    	columnName = columnName.substring(columnName.indexOf('.')+1);
+	    	Field field = baseClass.getDeclaredField(firstProperty);
+	    	generateGetValueForColumn(logger, field.getType(), columnName, sourceWriter);
+	    	
+	    	sourceWriter.outdent();
+	    	sourceWriter.println("}");
+	    }
+	    
+    }
+
+	/**
+	 * @param baseClass
+	 * @param columnName
+	 * @param sourceWriter
+	 * @throws NoSuchFieldException
+	 */
+	private void generateGetValueForProperty(Class<?> baseClass, String columnName, SourceWriter sourceWriter) throws NoSuchFieldException
+    {
+		String baseTypeDeclaration = getParameterDeclaration(baseClass);
+	    sourceWriter.print("ret = (("+baseTypeDeclaration+")ret).");
+	    Field field = baseClass.getDeclaredField(columnName);
+	    if (Modifier.isPublic(field.getModifiers()))
+	    {
+	    	sourceWriter.print(columnName);
+	    }
+	    else
+	    {
+	    	sourceWriter.print(ClassUtils.getGetterMethod(columnName)+"()");
+	    }
+	    sourceWriter.println(";");
+    }
 
 	/**
 	 * 
@@ -242,52 +341,25 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	{
 		try
 		{
-			
 			Class<?> recordType = getRecordTypeFromClass(logger, dataSourceClass);
 			String recordTypeDeclaration = getParameterDeclaration(recordType);
 			
-			Class<?> dataType;
-			
-			if(BindableDataSource.class.isAssignableFrom(dataSourceClass))
-			{
-				dataType = getDtoTypeFromClass(logger, dataSourceClass);			
-			}
-			else
-			{
-				dataType = recordType;
-			}
+			Class<?> dataType = getDtoTypeFromClass(logger, dataSourceClass);			
 			String dataTypeDeclaration = getParameterDeclaration(dataType);
 			 		
 			sourceWriter.println("public void updateData("+dataTypeDeclaration+"[] data){");
-			
-			if (recordType.isAssignableFrom(dataType))
-			{
-				sourceWriter.println("update(data);");
-			}
-			else
-			{
-				sourceWriter.println(recordTypeDeclaration+"[] ret = new "+recordTypeDeclaration+"[(data!=null?data.length:0)];");
-				sourceWriter.println("for (int i=0; i<data.length; i++){");
-				sourceWriter.print("ret[i] = new "+recordTypeDeclaration+"(");
-				
-				if (EditableDataSourceRecord.class.isAssignableFrom(recordType) && 
-					EditableDataSource.class.isAssignableFrom(dataSourceClass))
-				{
-					sourceWriter.print("this,");
-				}
-				sourceWriter.print(getIdentifierDeclaration(logger, dataType, columnsData.identifier, "data[i]"));
-				sourceWriter.println(");");
-
-				for (String name:  columnsData.names)
-				{
-					sourceWriter.println("ret[i].addValue("+
-							ClientInvokableGeneratorHelper.getFieldValueGet(logger, dataType, ClassUtils.getDeclaredField(dataType, name),	"data[i]", false)+
-							");");
-				}
-				
-				sourceWriter.println("}");
-				sourceWriter.println("update(ret);");
-			}
+			sourceWriter.indent();
+			sourceWriter.println(recordTypeDeclaration+"[] ret = new "+recordTypeDeclaration+"[(data!=null?data.length:0)];");
+			sourceWriter.println("for (int i=0; i<data.length; i++){");
+			sourceWriter.indent();
+			sourceWriter.print("ret[i] = new "+recordTypeDeclaration+"(this,");
+			sourceWriter.print(getIdentifierDeclaration(logger, dataType, columnsData.identifier, "data[i]"));
+			sourceWriter.println(");");
+			sourceWriter.println("ret[i].setRecordObject(data[i]);");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
+			sourceWriter.println("update(ret);");
+			sourceWriter.outdent();
 			sourceWriter.println("}");
 		}
 		catch (Exception e)
@@ -304,7 +376,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	 * @param sourceWriter
 	 */
 	private void generateGetBindedObjectFunction(TreeLogger logger, Screen screen, Class<? extends DataSource<?>> dataSourceClass, 
-			SourceWriter sourceWriter, ColumnsData columnsData)
+			SourceWriter sourceWriter)
 	{
 		try
 		{
@@ -314,22 +386,12 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 			Class<?> recordType = getRecordTypeFromClass(logger, dataSourceClass);			
 			String recordTypeDeclaration = getParameterDeclaration(recordType);
 
-			sourceWriter.println("public "+dataTypeDeclaration+" getBindedObject("+recordTypeDeclaration+" record){");
+			sourceWriter.println("public "+dataTypeDeclaration+" getBindedObject("+recordTypeDeclaration+"<"+dataTypeDeclaration+"> record){");
+			sourceWriter.indent();
 			sourceWriter.println("if (record == null) return null;");
-			sourceWriter.println(dataTypeDeclaration+" ret = new "+dataTypeDeclaration+"();");
-
-			for (int i=0; i < columnsData.names.length; i++)
-			{
-				String name = columnsData.names[i];
-				Class<?> type = (columnsData.types.length > 0? columnsData.types[i]:String.class);
-				Field field = ClassUtils.getDeclaredField(dataType, name);
-				ClientInvokableGeneratorHelper.generateFieldValueSet(logger, dataType, field, "ret", 
-									"("+getParameterDeclarationWithPrimitiveWrappers(type)+")record.get("+i+")", 
-									sourceWriter, false);
-			}
-
-			sourceWriter.println("return ret;");
-			sourceWriter.println("}");
+			sourceWriter.println("return record.getRecordObject();");
+			sourceWriter.outdent();
+			sourceWriter.println("}");//TODO: clonar o objeto ou remover isso daqui
 		}
 		catch (Exception e)
 		{
@@ -391,35 +453,19 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	 * @param dataSourceClass
 	 * @param className
 	 */
-	private ColumnsData generateDataSourceClassConstructor(TreeLogger logger, SourceWriter sourceWriter, Class<? extends DataSource<?>> dataSourceClass, String className)
+	private ColumnsData generateDataSourceClassConstructor(TreeLogger logger, SourceWriter sourceWriter, 
+			Class<? extends DataSource<?>> dataSourceClass, String className)
 	{
 		ColumnsData ret = new ColumnsData();
 		sourceWriter.println("public "+className+"(){");
 		sourceWriter.println("this.metadata = new Metadata();");
 		
-		DataSourceColumns columnsAnnot = dataSourceClass.getAnnotation(DataSourceColumns.class);
 		DataSourceBinding typeAnnot = dataSourceClass.getAnnotation(DataSourceBinding.class);
+		//TODO: deprecate DataSourceBinding...criar outra anotacao.... DataSourceIdentifier(String value())
 		
-		boolean isBindable = BindableDataSource.class.isAssignableFrom(dataSourceClass) && typeAnnot != null;
-		if(columnsAnnot == null && !isBindable)
-		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceNoMetaInformation(dataSourceClass.getName()), null);
-		}
-		else if(columnsAnnot != null && isBindable)
-		{
-			logger.log(TreeLogger.ERROR, messages.errorGeneratingRegisteredDataSourceConflictingMetaInformation(dataSourceClass.getName()), null);
-		}
-		else if(columnsAnnot != null)
-		{
-			ret.identifier = columnsAnnot.identifier();
-			generateMetadataPopulationBlockFromColumns(logger, sourceWriter, columnsAnnot, dataSourceClass.getName(), ret);
-		}
-		else
-		{
-			ret.identifier = typeAnnot.identifier();
-			generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, getDtoTypeFromClass(logger, dataSourceClass), 
-											dataSourceClass.getName(), ret);
-		}
+		ret.identifier = typeAnnot.identifier();
+		generateMetadataPopulationBlockFromType(logger, sourceWriter, typeAnnot, getDtoTypeFromClass(logger, dataSourceClass), 
+				dataSourceClass.getName(), ret);
 		ClientInvokableGeneratorHelper.generateAutoCreateFields(logger, dataSourceClass, sourceWriter, "this");
 		sourceWriter.println("}");
 		
@@ -470,29 +516,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 		List<String> names = new ArrayList<String>();
 		List<Class<?>> types = new ArrayList<Class<?>>();
 		
-		String[] includeFields;
-		String[] excludeFields;
-		if (typeAnnot != null)
-		{
-			includeFields = typeAnnot.includeFields();
-			excludeFields = typeAnnot.excludeFields();  
-		}
-		else
-		{
-			includeFields = new String[0];
-			excludeFields = new String[0];
-		}
-		
-		Field[] declaredFields = ClassUtils.getDeclaredFields(dtoType);
-		
-		for (Field field : declaredFields)
-		{
-			if (mustInclude(field, includeFields, excludeFields, dtoType))
-			{
-				names.add(field.getName());
-				types.add(field.getType());
-			}
-		}
+		findDataSourceColumns(dtoType, names, types, null);
 		columnsData.names = names.toArray(new String[0]);
 		columnsData.types = types.toArray(new Class[0]);
 		
@@ -500,103 +524,62 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	}
 
 	/**
+	 * @param dtoType
+	 * @param names
+	 * @param types
+	 */
+	private void findDataSourceColumns(Class<?> dtoType, List<String> names, List<Class<?>> types, String parentField)
+    {
+	    Field[] declaredFields = ClassUtils.getDeclaredFields(dtoType);
+		
+		for (Field field : declaredFields)
+		{
+			if (mustInclude(field, dtoType))
+			{
+				String columnName;
+				if (StringUtils.isEmpty(parentField))
+				{
+					columnName = field.getName();
+				}
+				else
+				{
+					columnName = parentField+"."+field.getName();
+				}
+				names.add(columnName);
+				Class<?> columnType = field.getType();
+				types.add(columnType);
+				if (isComplexCustomType(columnType))
+				{
+					findDataSourceColumns(columnType, names, types, columnName);
+				}
+			}
+		}
+    }
+
+	/**
+	 * @param type
+	 * @return
+	 */
+	private boolean isComplexCustomType(Class<?> type)
+    {
+		return (!type.isPrimitive() && !type.isAnnotation() && !type.isArray() && !CharSequence.class.isAssignableFrom(type)
+				&& !Number.class.isAssignableFrom(type) && !Character.class.isAssignableFrom(type) && !Boolean.class.isAssignableFrom(type)
+				&& !Date.class.isAssignableFrom(type) && !Collection.class.isAssignableFrom(type) && !Map.class.isAssignableFrom(type)
+				&& !type.isEnum());
+    }
+
+	/**
 	 * 
 	 * @param field
 	 * @param includeFields
 	 * @param excludeFields
 	 * @return
 	 */
-	private boolean mustInclude(Field field, String[] includeFields, String[] excludeFields, Class<?> dtoType)
+	private boolean mustInclude(Field field, Class<?> dtoType)
 	{
 		boolean mustInclude = ClientInvokableGeneratorHelper.isFullAccessibleField(field, dtoType);
 
-		if (mustInclude)
-		{
-			mustInclude = chekWhiteList(field, includeFields, excludeFields);
-		}
-		
-		if (mustInclude)
-		{
-			mustInclude = checkBlackList(field, excludeFields);
-		}
-		
 		return mustInclude;
-	}
-
-	/**
-	 * 
-	 * @param field
-	 * @param excludeFields
-	 * @return
-	 */
-	private boolean checkBlackList(Field field, String[] excludeFields)
-	{
-		boolean mustInclude = true;
-		if (excludeFields != null && excludeFields.length > 0)
-		{
-			boolean isInBlackList = false;
-			for (String string : excludeFields)
-			{
-				if (field.getName().equals(string))
-				{
-					isInBlackList = true;
-					break;
-				}
-			}
-			mustInclude = !isInBlackList;
-		}
-		return mustInclude;
-	}
-
-	/**
-	 * 
-	 * @param field
-	 * @param includeFields
-	 * @param excludeFields
-	 * @return
-	 */
-	private boolean chekWhiteList(Field field, String[] includeFields, String[] excludeFields)
-	{
-		boolean mustInclude = true;
-		if (includeFields != null && includeFields.length > 0)
-		{
-			boolean isInWhiteList = false;
-			for (String string : includeFields)
-			{
-				if (field.getName().equals(string))
-				{
-					isInWhiteList = true;
-					break;
-				}
-			}
-			mustInclude = isInWhiteList;
-		}
-		return mustInclude;
-	}
-	
-	/**
-	 * 
-	 * @param logger
-	 * @param sourceWriter
-	 * @param columnsAnnot
-	 * @param dataSourceClassName
-	 */
-	private void generateMetadataPopulationBlockFromColumns(TreeLogger logger, SourceWriter sourceWriter, 
-							DataSourceColumns columnsAnnot, String dataSourceClassName, ColumnsData columnsData)
-	{
-		DataSourceColumn[] columns = columnsAnnot.columns();
-		
-		columnsData.names = new String[columns.length];
-		columnsData.types = new Class[columns.length];
-		
-		for (int i=0; i<columns.length; i++)
-		{
-			DataSourceColumn dataSourceColumn = columns[i];
-			columnsData.names[i] = dataSourceColumn.value();
-			columnsData.types[i] = dataSourceColumn.type();
-		}
-		
-		generateMetadaPopulationBlock(logger, sourceWriter, dataSourceClassName, columnsData);
 	}
 
 	/**
@@ -636,6 +619,10 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 		return getParameterDeclaration(parameterClass);
 	}
 	
+	/**
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
 	private static class ColumnsData
 	{
 		private String[] names;

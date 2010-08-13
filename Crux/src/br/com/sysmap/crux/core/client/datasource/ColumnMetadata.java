@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.datasource;
 
 /**
- * 
+ * Metadata information about a DataSource column
  * @author Thiago da Rosa de Bustamante
  *
  */

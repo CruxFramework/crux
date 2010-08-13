@@ -61,6 +61,25 @@ public class ClassUtils
 
 	/**
 	 * 
+	 * @param propertyName
+	 * @return
+	 */
+	public static String getGetterMethod(String propertyName)
+	{
+		if (propertyName == null || propertyName.length() == 0)
+		{
+			return null;
+		}
+		String result = "get"+Character.toUpperCase(propertyName.charAt(0)); 
+		if (propertyName.length() > 1)
+		{
+			result += propertyName.substring(1);
+		}
+		return result;
+	}
+
+	/**
+	 * 
 	 * @param widgetType
 	 * @param setterMethod
 	 * @return

@@ -17,13 +17,14 @@ package br.com.sysmap.crux.core.client.datasource;
 
 
 /**
+ * A DataSource that loads all data and store it locally on client browser
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface LocalDataSource<R extends DataSourceRecord, E> extends DataSource<R>
+public interface LocalDataSource<E> extends DataSource<E>
 {
 	void load();
-	void update(R[] records);
+	void update(DataSourceRecord<E>[] records);
 	void updateData(E[] data);
 	void setCallback(LocalDataSourceCallback callback);
 }

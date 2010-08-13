@@ -26,11 +26,10 @@ import com.google.gwt.core.client.GWT;
  * @author Thiago da Rosa de Bustamante
  *
  */
-abstract class AbstractScrollableDataSource<R extends DataSourceRecord, E>
-                                                   implements MeasurableDataSource<R>
+abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E>
 {
 	protected Metadata metadata;
-	protected R[] data;
+	protected DataSourceRecord<E>[] data;
 	protected int currentRecord = -1;
 	protected boolean loaded = false;
 	protected ClientMessages messages = GWT.create(ClientMessages.class);
@@ -44,15 +43,11 @@ abstract class AbstractScrollableDataSource<R extends DataSourceRecord, E>
 	{
 		if (currentRecord > -1)
 		{
-			R dataSourceRow = data[currentRecord];
-			int position = metadata.getColumnPosition(columnName);
-			if (position > -1)
-			{
-				return dataSourceRow.get(position);
-			}
+			DataSourceRecord<E> dataSourceRow = data[currentRecord];
+			return getValue(columnName, dataSourceRow);
 		}
 		return null;
-	}	
+	}
 	
 	public boolean hasNextRecord()
 	{
@@ -78,7 +73,7 @@ abstract class AbstractScrollableDataSource<R extends DataSourceRecord, E>
 		loaded = false;
 	}
 	
-	public R getRecord()
+	public DataSourceRecord<E> getRecord()
 	{
 		ensureLoaded();
 		if (currentRecord > -1)
@@ -114,15 +109,14 @@ abstract class AbstractScrollableDataSource<R extends DataSourceRecord, E>
 		}
 	}
 
-	protected void sortArray(R[] array, final String columnName, final boolean ascending)
+	protected void sortArray(DataSourceRecord<E>[] array, final String columnName, final boolean ascending)
 	{
 		if (!metadata.getColumn(columnName).isSortable())
 		{
 			throw new DataSoureExcpetion(messages.dataSourceErrorColumnNotComparable(columnName));
 		}
-		final int position = metadata.getColumnPosition(columnName);
-		Arrays.sort(array, new Comparator<R>(){
-			public int compare(R o1, R o2)
+		Arrays.sort(array, new Comparator<DataSourceRecord<E>>(){
+			public int compare(DataSourceRecord<E> o1, DataSourceRecord<E> o2)
 			{
 				if (ascending)
 				{
@@ -135,8 +129,8 @@ abstract class AbstractScrollableDataSource<R extends DataSourceRecord, E>
 					if (o2==null) return -1;
 				}
 				
-				Object value1 = o1.get(position);
-				Object value2 = o2.get(position);
+				Object value1 = getValue(columnName, o1);
+				Object value2 = getValue(columnName, o2);
 
 				if (ascending)
 				{
@@ -192,4 +186,25 @@ abstract class AbstractScrollableDataSource<R extends DataSourceRecord, E>
 			throw new DataSoureExcpetion(messages.dataSourceNotLoaded());
 		}
 	}
+	
+	public Object getValue(String columnName, DataSourceRecord<E> dataSourceRecord)
+	{
+		return null;
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject()
+	 */
+	public E getBindedObject()
+	{
+		return getBindedObject(getRecord());
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#getBindedObject(br.com.sysmap.crux.core.client.datasource.DataSourceRecord)
+	 */
+	public E getBindedObject(DataSourceRecord<E> record)
+	{
+		return null;
+	}		
 }

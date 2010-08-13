@@ -28,6 +28,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface DataSourceBinding {
 	String identifier();
-	String[] includeFields() default {};
-	String[] excludeFields() default {};
 }

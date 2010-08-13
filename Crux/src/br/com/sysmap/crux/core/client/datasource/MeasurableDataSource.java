@@ -20,7 +20,7 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface MeasurableDataSource<T extends DataSourceRecord> extends DataSource<T>
+public interface MeasurableDataSource<E> extends DataSource<E>
 {
 	int getRecordCount();
 	void lastRecord();

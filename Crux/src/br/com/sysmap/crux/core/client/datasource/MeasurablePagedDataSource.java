@@ -20,7 +20,7 @@ package br.com.sysmap.crux.core.client.datasource;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface MeasurablePagedDataSource<T extends DataSourceRecord> extends PagedDataSource<T>
+public interface MeasurablePagedDataSource<E> extends PagedDataSource<E>
 {
 	int getPageCount();
 	boolean setCurrentPage(int pageNumber);

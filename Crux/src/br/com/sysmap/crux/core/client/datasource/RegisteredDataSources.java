@@ -16,8 +16,10 @@
 package br.com.sysmap.crux.core.client.datasource;
 
 /**
+ * Contains all DataSources declared. It is used internally by Crux to 
+ * create DataSource objects based on its declared names.
  * 
- * @author Thiago Bustamante
+ * @author Thiago da Rosa de Bustamante
  */
 public interface RegisteredDataSources 
 {
