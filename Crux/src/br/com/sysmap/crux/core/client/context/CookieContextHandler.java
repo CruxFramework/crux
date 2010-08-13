@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Date;
 
 import br.com.sysmap.crux.core.client.Crux;
-import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
 import br.com.sysmap.crux.core.client.screen.Screen;
 
 import com.google.gwt.user.client.Cookies;
@@ -103,7 +102,7 @@ public class CookieContextHandler implements ContextHandler
 				value = decode(value);
 				return Screen.getCruxSerializer().deserialize(value);
 			}
-			catch (ModuleComunicationException e)
+			catch (br.com.sysmap.crux.core.client.screen.ModuleComunicationException e)
 			{
 				Crux.getErrorHandler().handleError(e);
 				return null;
@@ -134,7 +133,7 @@ public class CookieContextHandler implements ContextHandler
 			serialized = encode(serialized);
 			Cookies.setCookie(CONTEXT_PREFIX+key, serialized, expires, null, "/", false);
 		}
-		catch (ModuleComunicationException e)
+		catch (br.com.sysmap.crux.core.client.screen.ModuleComunicationException e)
 		{
 			Crux.getErrorHandler().handleError(e);
 		}

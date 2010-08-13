@@ -21,6 +21,7 @@ import br.com.sysmap.crux.core.client.event.CruxEvent;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
 public class InvokeControllerEvent extends CruxEvent<Screen>
 {
 	private Object parameter;

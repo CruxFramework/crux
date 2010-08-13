@@ -20,6 +20,7 @@ package br.com.sysmap.crux.core.client.screen;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
 public class ModuleComunicationException extends Exception
 {
 	private static final long serialVersionUID = -880487149212227770L;
