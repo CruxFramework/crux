@@ -597,7 +597,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 				for (int i = 0; i < selectedRecords.length; i++)
 				{
-					Object o = this.dataSource.getBindedObject(selectedRecords[i]);
+					Object o = this.dataSource.getBoundObject(selectedRecords[i]);
 					selectedObjs[i] = o;					
 				}
 

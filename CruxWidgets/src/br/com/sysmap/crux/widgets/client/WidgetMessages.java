@@ -31,9 +31,6 @@ public interface WidgetMessages extends Messages
 	@DefaultMessage("[crux-widgets 004] - The formatter {0} was not found on this screen.")
 	String maskedTextBoxFormatterNotFound(String formatter);
 	
-	@DefaultMessage("[crux-widgets 005] - The operation <code>getBindedObject()</code> is only supported in grids whose datasources implement <code>BindableDataSource</code>.")
-	String getBindedObjectNotSupported();
-
 	@DefaultMessage("[crux-widgets 006] - Could not create widget for grid column ''{0}''")
 	String errorCreatingWidgetForColumn(String key);
 	

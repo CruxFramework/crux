@@ -53,13 +53,23 @@ public class DataRow extends Row
 		return dataSource.getValue(column, dataSourceRecord);
 	}
 	
-	@SuppressWarnings("unchecked")
+	/**
+	 * @return
+	 * @deprecated Use getBound() instead
+	 */
+	@Deprecated
 	public Object getBindedObject()
+	{
+		return getBoundObject();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Object getBoundObject()
 	{
 		Grid grid = (Grid) getGrid();
 		
 		DataSource dataSource = grid.getDataSource();
-		return dataSource.getBindedObject(getDataSourceRecord());
+		return dataSource.getBoundObject(getDataSourceRecord());
 	}
 	
 	@Override
