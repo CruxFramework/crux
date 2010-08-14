@@ -15,8 +15,8 @@ public class WizardStep4Controller {
 	protected Person person;
 
 	@Expose
-	public void onEnter(EnterEvent event){
-		Person personContext = event.getWizardAccessor().readContext(Person.class);
+	public void onEnter(EnterEvent<Person> event){
+		Person personContext = event.getWizardAccessor().readData();
 		if (personContext == null)
 		{
 			this.person = new Person();
@@ -29,7 +29,7 @@ public class WizardStep4Controller {
 	}
 
 	@Expose
-	public void onLeave(LeaveEvent event){
+	public void onLeave(LeaveEvent<Person> event){
 		event.getWizardAccessor().getControlBar().getCommand(WizardControlBar.FINISH_COMMAND).setEnabled(false);
 	}
 }

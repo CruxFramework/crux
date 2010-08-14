@@ -25,7 +25,7 @@ public class GridEventsController {
 	@Expose
 	public void applyAvatar(RowRenderEvent event) {
 		DataRow row = (DataRow) event.getRow();
-		Contact contact = (Contact) row.getBindedObject();
+		Contact contact = (Contact) row.getBoundObject();
 		Image image = (Image) row.getWidget("avatar");
 		
 		String url = "../style/img/male_avatar.gif";
@@ -40,7 +40,7 @@ public class GridEventsController {
 	@Expose
 	public void showDetail(RowClickEvent event) {
 		DataRow row = (DataRow) event.getRow();
-		Contact contact = (Contact) row.getBindedObject();
+		Contact contact = (Contact) row.getBoundObject();
 		String detail =
 			"name: " + contact.getName() + ", " +
 			"\nphone: " + contact.getPhone() + ", " +

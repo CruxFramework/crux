@@ -24,11 +24,11 @@ public class WizardStep2Controller {
 	protected StepScreen screen;
 	
 	@Expose
-	public void onEnter(EnterEvent event){
+	public void onEnter(EnterEvent<Person> event){
 		
 		event.getWizardAccessor().getControlBar().getCommand(WizardControlBar.CANCEL_COMMAND).setEnabled(true);
 		
-		Person personContext = event.getWizardAccessor().readContext(Person.class);
+		Person personContext = event.getWizardAccessor().readData();
 		if (personContext == null) {
 			clearFields();
 		}
@@ -39,11 +39,11 @@ public class WizardStep2Controller {
 
 	@Expose
 	@Validate
-	public void onLeave(LeaveEvent event){
-		event.getWizardAccessor().updateContext(this.person);
+	public void onLeave(LeaveEvent<Person> event){
+		event.getWizardAccessor().updateData(this.person);
 	}
 	
-	public void validateOnLeave(LeaveEvent event) throws ValidateException{
+	public void validateOnLeave(LeaveEvent<Person> event) throws ValidateException{
 		if (!"step1".equals(event.getNextStep()))
 		{
 			if (StringUtils.isEmpty(this.person.getName())) {

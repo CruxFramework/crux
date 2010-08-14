@@ -27,7 +27,7 @@ public class WidgetGridController {
 		Grid grid = Screen.get("widgetGrid", Grid.class);
 		DataRow row = grid.getRow(image);
 		
-		Contact contact = (Contact) row.getBindedObject();
+		Contact contact = (Contact) row.getBoundObject();
 		
 		MessageBox.show(
 			"Information", 

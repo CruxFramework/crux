@@ -23,8 +23,8 @@ public class WizardStep3Controller {
 	protected StepScreen screen;
 	
 	@Expose
-	public void onEnter(EnterEvent event){
-		Person personContext = event.getWizardAccessor().readContext(Person.class);
+	public void onEnter(EnterEvent<Person> event){
+		Person personContext = event.getWizardAccessor().readData();
 		if (personContext == null) {
 			clearFields();
 		}
@@ -35,11 +35,11 @@ public class WizardStep3Controller {
 
 	@Expose
 	@Validate
-	public void onLeave(LeaveEvent event){
-		event.getWizardAccessor().updateContext(this.person);
+	public void onLeave(LeaveEvent<Person> event){
+		event.getWizardAccessor().updateData(this.person);
 	}
 	
-	public void validateOnLeave(LeaveEvent event) throws ValidateException{
+	public void validateOnLeave(LeaveEvent<Person> event) throws ValidateException{
 		if (!"step2".equals(event.getNextStep()))
 		{
 			if (StringUtils.isEmpty(this.person.getAddress().getStreet())) {
