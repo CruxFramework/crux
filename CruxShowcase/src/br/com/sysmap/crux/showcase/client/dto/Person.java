@@ -1,20 +1,16 @@
 package br.com.sysmap.crux.showcase.client.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.com.sysmap.crux.core.client.controller.ValueObject;
-import br.com.sysmap.crux.core.client.screen.CruxSerializable;
-import br.com.sysmap.crux.core.client.utils.StringUtils;
-import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
-
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.XMLParser;
+import br.com.sysmap.crux.widgets.client.wizard.WizardData;
 
 @ValueObject
-@SerializableName("person")
-public class Person implements CruxSerializable
+@WizardData("person")
+public class Person implements Serializable
 {
+    private static final long serialVersionUID = -4139032953687869658L;
 	private String name;
 	private String phone;
 	private Date dateOfBirth;
@@ -62,58 +58,4 @@ public class Person implements CruxSerializable
     {
     	this.address = address;
     }
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#deserialize(java.lang.String)
-	 */
-	public Object deserialize(String serializedData){
-		if (serializedData != null && serializedData.length() > 0){
-			Document root = XMLParser.parse(serializedData);
-			Element data = root.getDocumentElement();
-			String dateAttr = data.getAttribute("dateOfBirth");
-			Person person = new Person(data.getAttribute("name"), 
-								 data.getAttribute("phone"), 
-								 StringUtils.isEmpty(dateAttr)?null:new Date(Long.parseLong(dateAttr)));
-			person.setAddress(new Address());
-			person.getAddress().setStreet(data.getAttribute("address.street"));
-			person.getAddress().setCity(data.getAttribute("address.city"));
-			person.getAddress().setState(data.getAttribute("address.state"));
-			
-			return person;
-		}
-		return null;
-    }
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#newArray(int)
-	 */
-	public Object[] newArray(int size){
-	    return new Person[size];
-    }
-
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.CruxSerializable#serialize()
-	 */
-	public String serialize(){
-		Document document = XMLParser.createDocument();
-
-		Element data = document.createElement("data");
-		document.appendChild(data);
-		
-		data.setAttribute("name", name);
-		data.setAttribute("phone", phone);
-		if (dateOfBirth!= null){
-			data.setAttribute("dateOfBirth", Long.toString(dateOfBirth.getTime()));
-		}
-
-		if (this.address != null)
-		{
-			data.setAttribute("address.street", address.getStreet());
-			data.setAttribute("address.city", address.getCity());
-			data.setAttribute("address.state", address.getState());
-		}
-		
-		return document.toString();
-    }
 }
-

@@ -15,16 +15,19 @@ public class Contact implements Serializable {
 	private String phone;
 	private Date birthday;
 	private Gender gender;
+	private Address	address;
+	
 	
 	public Contact(){
 		
 	}
 	
-	public Contact(String name, String phone, Date birthday, Gender gender)	{
+	public Contact(String name, String phone, Date birthday, Gender gender, Address address)	{
 		this.name = name;
 		this.phone = phone;
 		this.birthday = birthday;
 		this.gender = gender;
+		this.address = address;
 	}
 	
 	/**
@@ -83,4 +86,14 @@ public class Contact implements Serializable {
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
+
+	public Address getAddress()
+    {
+    	return address;
+    }
+
+	public void setAddress(Address address)
+    {
+    	this.address = address;
+    }
 }
