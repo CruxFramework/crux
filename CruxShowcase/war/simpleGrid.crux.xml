@@ -41,6 +41,7 @@
 									<a:dataColumn key="name" label="Name"/>
 									<a:dataColumn key="phone" label="Phone"/>
 									<a:dataColumn key="birthday" label="Birthday" formatter="birthday"/>
+									<a:dataColumn key="address.street" label="Street"/>
 								</a:grid>
 							</a:widget>				
 						</a:body>

@@ -19,7 +19,8 @@
 
 		<w:decoratedPanel id="border" width="150" height="250">
 			<w:widget>
-				<w:wizard id="wizard" width="100%" height="100%" onCancel="simpleWizardController.onCancel" onFinish="simpleWizardController.onFinish">
+				<w:wizard id="wizard" width="100%" height="100%" onCancel="simpleWizardController.onCancel" 
+				onFinish="simpleWizardController.onFinish" wizardContextObject="wizardData">
 					<w:steps>
 						<w:widget label="First Step" id="myStep1" onEnter="simpleWizardController.onEnterStep1">
 							<b:label id="Label1" text="Welcome"/>

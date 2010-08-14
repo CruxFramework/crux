@@ -13,14 +13,14 @@
 	<body>
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="multiWizardController" useSerializable="person"/>
+		<c:screen useController="multiWizardController" />
 
 		<center>
 
 		<w:decoratedPanel id="border">
 			<w:widget>
 				<w:wizard id="wizard" width="600" height="300" onCancel="multiWizardController.onCancel" 
-				          onFinish="multiWizardController.onFinish" >
+				          onFinish="multiWizardController.onFinish" wizardContextObject="person">
 					<w:steps>
 						<w:page url="wizardStep1.html" label="Welcome" id="step1" />
 						<w:page url="wizardStep2.html" label="Personal Info" id="step2" />

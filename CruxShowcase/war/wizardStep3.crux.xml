@@ -13,9 +13,9 @@
 
 		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
 
-		<c:screen useController="wizardStep3Controller" useSerializable="person"/>
+		<c:screen useController="wizardStep3Controller" />
 
-		<a:wizardPage id="wizardPage" onEnter="wizardStep3Controller.onEnter" onLeave="wizardStep3Controller.onLeave">
+		<a:wizardPage id="wizardPage" onEnter="wizardStep3Controller.onEnter" onLeave="wizardStep3Controller.onLeave" wizardId="wizard" wizardContextObject="person">
 			<a:commands>
 				<a:command order="-1" onCommand="wizardStep3Controller.clearFields" label="Clear Fields" id="clearCommand" width="100"/>
 			</a:commands>		
