@@ -2,9 +2,9 @@ package br.com.sysmap.crux.showcase.client.datasource;
 
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.datasource.DataSourceAsyncCallbackAdapter;
-import br.com.sysmap.crux.core.client.datasource.RemoteBindableEditableStreamingDataSource;
+import br.com.sysmap.crux.core.client.datasource.RemoteStreamingDataSource;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSource;
-import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding;
+import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceRecordIdentifier;
 import br.com.sysmap.crux.showcase.client.dto.Contact;
 import br.com.sysmap.crux.showcase.client.remote.StreamingGridServiceAsync;
 
@@ -13,8 +13,8 @@ import br.com.sysmap.crux.showcase.client.remote.StreamingGridServiceAsync;
  *
  */
 @DataSource("streamingGridDataSource")
-@DataSourceBinding(identifier="name")
-public class StreamingGridDataSource extends RemoteBindableEditableStreamingDataSource<Contact> {
+@DataSourceRecordIdentifier("name")
+public class StreamingGridDataSource extends RemoteStreamingDataSource<Contact> {
 	
 	@Create
 	protected StreamingGridServiceAsync service;
