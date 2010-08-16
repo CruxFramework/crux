@@ -1,6 +1,7 @@
 <project name="CruxModulesAdmin" basedir="../" default="export-as-module">
 
 	<property name="final.name" value="crux-modules-admin" />
+	<property name="module.name" value="cruxModulesAdmin" />
 	<property name="src.dir" value="src" />
 	<property name="dist.dir" value="dist" />
 	<property name="temp.dir" value="${dist.dir}/temp" />
@@ -21,12 +22,13 @@
 		<fileset dir="${build.lib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
-		<pathelement path="${target.classes.dir}" />
 	</path>
 
-	<taskdef name="cruxmodulecompiler" classname="br.com.sysmap.crux.tools.compile.CruxModuleCompiler" loaderref="build.classpath.loader" classpathref="build.classpath" />
-	<taskdef name="blockremove" classname="br.com.sysmap.crux.tools.compile.utils.BlockRemoveTask" classpathref="build.classpath" />
-	<taskdef name="generateSchemas" classname="br.com.sysmap.crux.tools.compile.SchemaGeneratorModulesTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
+	<taskdef resource="br/com/sysmap/crux/tools/crux-module-tools.xml">
+		<classpath>
+			<path refid="build.classpath" />
+		</classpath>
+	</taskdef>
 
 	<!-- 
 	========================================================================================================
@@ -40,11 +42,7 @@
 
 		<copydir dest="${temp.dir}/webroot" src="${web.root}">
 			<!-- use code below for removing unnecessary crux files from the compacted war 
-			<exclude name="**/crux-advanced-widgets.jar" />
-			<exclude name="**/crux-basic-widgets.jar" />
 			<exclude name="**/crux-compiler.jar" />
-			<exclude name="**/crux-html-tags.jar" />
-			<exclude name="**/crux-html-tags-compile-task.jar" />
 			<exclude name="**/crux-themes.jar" />
 			-->
 		</copydir>
@@ -54,8 +52,6 @@
 			scanallowedpackages="br.com.sysmap.crux.module">
 			<classpath>
 				<path refid="build.classpath" />
-				<pathelement path="${web.root}" />
-				<pathelement path="${target.classes.dir}" />
 			</classpath>
 
 			<!-- change these two parameters if you need to modify memory settings -->
@@ -98,8 +94,6 @@
 			scanallowedpackages="br.com.sysmap.crux.module">
 			<classpath>
 				<path refid="build.classpath" />
-				<pathelement path="${web.root}" />
-				<pathelement path="${target.classes.dir}" />
 			</classpath>
 
 			<!-- change these two parameters if you need to modify memory settings -->
@@ -133,13 +127,14 @@
 			scanallowedpackages="br.com.sysmap.crux.module">
 			<classpath>
 				<path refid="build.classpath" />
-				<pathelement path="${web.root}" />
-				<pathelement path="${target.classes.dir}" />
 			</classpath>
 
 			<!-- change these two parameters if you need to modify memory settings -->
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
+
+			<jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" />
 
 			<arg value="-draftCompile" />
 
@@ -158,7 +153,9 @@
 	========================================================================================================
 	-->
 	<target name="generate-schemas">
-		<generateSchemas outputDir="${xsd.dir}" moduleName="admin">
+		<generateSchemas outputDir="${xsd.dir}">
+			<jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" />
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${target.classes.dir}" />
@@ -173,27 +170,15 @@
 		Export project as a Crux Module
 	========================================================================================================
 	-->
+	
 	<target name="export-as-module" >
-		<delete dir="${dist.dir}" failonerror="no"
-			includeemptydirs="yes" includes="**/*" />
-		<mkdir dir="${dist.dir}" />
-
-		<jar jarfile="${dist.dir}/${final.name}.module.jar">
-			<fileset dir="${target.classes.dir}">
-				<exclude name="**/*.properties" />
-			</fileset>
-			<fileset dir="${src.dir}">
-				<exclude name="**/*.properties" />
-				<exclude name="**/*.xml" />
-				<exclude name="**/public/**" />
-			</fileset>
-		</jar>
-
-		<copy todir="${crux.libs.project}/crux">
-			<fileset dir="${dist.dir}">
-				<filename name="${final.name}.module.jar" />
-			</fileset>
-		</copy>
+		<moduleExporter sourcedir="${src.dir}" outputdir="${dist.dir}" modulename="${module.name}" outputmodulename="${final.name}" 
+			excludes="**/*.properties" >
+			<jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" />
+			<classpath>
+				<path refid="build.classpath" />
+			</classpath>
+		</moduleExporter>
 	</target>
-
 </project>
