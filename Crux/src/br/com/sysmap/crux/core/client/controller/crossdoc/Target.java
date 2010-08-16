@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.controller.crossdoc;
 
 /**
- * All possible target for a cross document call.
+ * All possible targets for a cross document call.
  * 
  * @author Thiago da Rosa de Bustamante
  *
