@@ -391,7 +391,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 			sourceWriter.println("if (record == null) return null;");
 			sourceWriter.println("return record.getRecordObject();");
 			sourceWriter.outdent();
-			sourceWriter.println("}");//TODO: clonar o objeto ou remover isso daqui
+			sourceWriter.println("}");
 		}
 		catch (Exception e)
 		{
