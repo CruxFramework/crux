@@ -92,7 +92,7 @@ public class ModuleInfoController
 	public void renderRequiredModulesRows(RowRenderEvent event)
 	{
 		Image image = (Image) event.getRow().getWidget("statusVersion");
-		ModuleRef moduleRef = (ModuleRef) event.getRow().getBindedObject();
+		ModuleRef moduleRef = (ModuleRef) event.getRow().getBoundObject();
 		
 		if (moduleRef.isStatusVersion() != null && moduleRef.isStatusVersion())
 		{
@@ -117,7 +117,7 @@ public class ModuleInfoController
 	@Expose
 	public void onPagesRowClick(RowDoubleClickEvent event)
 	{
-		Page page = (Page) event.getRow().getBindedObject();
+		Page page = (Page) event.getRow().getBoundObject();
 		
 		Popup.show(messages.parametersPopupTitle()+page.getName(), "pageParameters.html?module="+URL.encode(parameters.getModuleName())+"&page="
 				                                           +URL.encode(page.getName()), null);
