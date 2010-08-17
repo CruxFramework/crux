@@ -43,6 +43,7 @@ public abstract class CrossDocumentProxy extends ScreenAccessor implements Targe
 	public CrossDocumentProxy(Serializer serializer)
     {
 		this.serializer = serializer;
+		setTarget(Target.SELF);
     }
 	
 	/**
