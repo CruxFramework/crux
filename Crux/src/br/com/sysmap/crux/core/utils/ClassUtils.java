@@ -62,18 +62,37 @@ public class ClassUtils
 	/**
 	 * 
 	 * @param propertyName
+	 * @param baseClass 
 	 * @return
 	 */
-	public static String getGetterMethod(String propertyName)
+	public static String getGetterMethod(String propertyName, Class<?> baseClass)
 	{
 		if (propertyName == null || propertyName.length() == 0)
 		{
 			return null;
 		}
-		String result = "get"+Character.toUpperCase(propertyName.charAt(0)); 
+		String result = ""+Character.toUpperCase(propertyName.charAt(0)); 
+		result += propertyName.substring(1);
 		if (propertyName.length() > 1)
 		{
-			result += propertyName.substring(1);
+			try
+            {
+	            baseClass.getMethod("get"+result, (Class<?>[])null);
+                result = "get"+result;
+            }
+            catch (Exception e)
+            {
+	            try
+                {
+	                baseClass.getMethod("is"+result, (Class<?>[])null);
+	                result = "is"+result;
+                }
+                catch (Exception e1)
+                {
+                	result = null;
+                }
+            }
+			
 		}
 		return result;
 	}

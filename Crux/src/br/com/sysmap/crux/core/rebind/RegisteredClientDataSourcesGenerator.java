@@ -299,7 +299,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	    }
 	    else
 	    {
-	    	sourceWriter.print(ClassUtils.getGetterMethod(columnName)+"()");
+	    	sourceWriter.print(ClassUtils.getGetterMethod(columnName, baseClass)+"()");
 	    }
 	    sourceWriter.println(";");
     }
