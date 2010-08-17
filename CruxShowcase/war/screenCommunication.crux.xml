@@ -39,5 +39,7 @@
 		
 		<s:sources/>
 		<s:source id="frameSource" onLoadSource="frameSourcesController.loadXmlSource" title="View Frame source"/>
+		<s:source id="frameControllerSource" onLoadSource="frameSourcesController.loadFrameControllerSource" title="View Frame Controller source"/>
+		<s:source id="frameCrossDocSource" onLoadSource="frameSourcesController.loadFrameCrossDocSource" title="View Frame CrossDocument source"/>
 	</body>
 </html>

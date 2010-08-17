@@ -20,6 +20,7 @@ public class MainController {
 	private static final String DECORATED_PANEL_TAB = "decoratedPanel";
 	private static final String TITLE_PANEL_TAB = "titlePanel";
 	private static final String COLLAPSE_PANEL_TAB = "collapsePanel";
+	private static final String ROLLINGPANEL_PANEL_TAB = "rollingPanel";
 	private static final String VALUE_BIND_TAB = "valueBind";
 	private static final String PARAMETER_BIND_TAB = "parameterBind";
 	private static final String STACK_MENU_TAB = "stackMenu";
@@ -75,6 +76,11 @@ public class MainController {
 	@Expose
 	public void onClickCollapsePanelItem(){
 		screen.getTabs().openTab(COLLAPSE_PANEL_TAB, "Collapse Panel", COLLAPSE_PANEL_TAB + HTML, true, false);
+	}
+	
+	@Expose
+	public void onClickRollingPanelItem(){
+		screen.getTabs().openTab(ROLLINGPANEL_PANEL_TAB, "Rolling Panel", ROLLINGPANEL_PANEL_TAB + HTML, true, false);
 	}
 	
 	@Expose

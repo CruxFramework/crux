@@ -7,6 +7,8 @@ import br.com.sysmap.crux.core.client.controller.Expose;
 public class FrameSourcesController extends SourcesController{
 	
 	private boolean xmlLoaded;
+	private boolean frameController;
+	private boolean frameCrossDoc;
 	
 	@Expose
 	public void loadXmlSource() {
@@ -17,4 +19,25 @@ public class FrameSourcesController extends SourcesController{
 			loadXMLFile("innerFrame.crux.xml", "frameSource");
 		}
 	}
+
+	@Expose
+	public void loadFrameControllerSource() {
+		
+		if(!frameController)
+		{
+			frameController = true;
+			loadFile("client/controller/FrameController.java", "frameControllerSource");
+		}
+	}
+	
+	@Expose
+	public void loadFrameCrossDocSource() {
+		
+		if(!frameCrossDoc)
+		{
+			frameCrossDoc = true;
+			loadFile("client/controller/FrameControllerCrossDoc.java", "frameCrossDocSource");
+		}
+	}
+	
 }
