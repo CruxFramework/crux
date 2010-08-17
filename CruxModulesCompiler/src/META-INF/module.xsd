@@ -6,24 +6,7 @@
 	<xs:element name="module" type="Module" />
 	<xs:complexType name="Module">
 		<xs:all>
-			<xs:element name="version" type="xs:string" />
-			<xs:element name="startPage" type="xs:string" />
 			<xs:element name="description" type="xs:string" />
-			<xs:element ref="dependencies" />
 		</xs:all>
-	</xs:complexType>
-
-	<xs:element name="dependencies" type="Dependencies" />
-	<xs:complexType name="Dependencies">
-		<xs:choice minOccurs="1" maxOccurs="unbounded">
-			<xs:element ref="dependency" />
-		</xs:choice>
-	</xs:complexType>
-
-	<xs:element name="dependency" type="Dependency" />
-	<xs:complexType name="Dependency">
-		<xs:attribute name="name" type="xs:string"/>
-		<xs:attribute name="minVersion" type="xs:string"/>
-		<xs:attribute name="maxVersion" type="xs:string"/>
 	</xs:complexType>
 </xs:schema>

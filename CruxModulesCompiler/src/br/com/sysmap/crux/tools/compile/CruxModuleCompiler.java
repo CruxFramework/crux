@@ -325,3 +325,6 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 		return result;
 	}
 }
+
+//TODO: a verificação de dependencias entre os modulos Crux deve ser feita tbm em profundidade
+//TODO: documentar no wiki a parte de modulos.
