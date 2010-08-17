@@ -128,7 +128,7 @@ public class FileUtils
 		File[] files = sourceDir.listFiles();
 		for (File file : files)
 		{
-			if (handler != null && handler.isValidEntry(getEntryName(file, inputDirNameLength)))
+			if (handler == null || handler.isValidEntry(getEntryName(file, inputDirNameLength)))
 			{
 				if(!file.isDirectory())
 				{
