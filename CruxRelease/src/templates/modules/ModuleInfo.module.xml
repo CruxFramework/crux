@@ -1,5 +1,3 @@
 <cruxmodule xmlns="http://www.sysmap.com.br/module">
-	<version>1.0.0</version>
-	<startPage>${hostedModeStartupURL}</startPage>
 	<description>${cruxModuleDescription}</description>
 </cruxmodule>
