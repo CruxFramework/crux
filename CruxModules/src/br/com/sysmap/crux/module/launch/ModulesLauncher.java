@@ -44,7 +44,7 @@ public class ModulesLauncher
 		String[] developmentModules = CruxModuleHandler.getDevelopmentModules();
 		if (developmentModules==null || developmentModules.length ==0)
 		{
-			throw new RuntimeException(messages.launcerErrorNoDevelopmentModulesSpecified());
+			throw new RuntimeException(messages.launcherErrorNoDevelopmentModulesSpecified());
 		}
 		
 		String webDir = "./war/";

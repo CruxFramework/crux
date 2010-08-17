@@ -230,21 +230,9 @@ public class CruxModuleHandler
 				Element element = (Element) item;
 				
 				String localName = element.getNodeName();
-				if ("version".equalsIgnoreCase(localName))
-				{
-					info.setVersion(element.getTextContent());
-				}
-				else if ("description".equalsIgnoreCase(localName))
+				if ("description".equalsIgnoreCase(localName))
 				{
 					info.setDescription(element.getTextContent());
-				}
-				else if ("startPage".equalsIgnoreCase(localName))
-				{
-					info.setStartPage(element.getTextContent());
-				}
-				else if ("dependencies".equalsIgnoreCase(localName))
-				{
-					info.setDependencies(getDependencies(element));
 				}
 			}
 		}
@@ -253,33 +241,25 @@ public class CruxModuleHandler
 
 	/**
 	 * 
-	 * @param element
-	 * @return
 	 */
-	private static ModuleRef[] getDependencies(Element element)
+	static void initializeModulesDependencies(CruxModule cruxModule)
 	{
-		NodeList childNodes = element.getChildNodes();
-		List<ModuleRef> result = new ArrayList<ModuleRef>();
-
-		for (int i=0; i<childNodes.getLength(); i++)
-		{
-			Node item = childNodes.item(i);
-			
-			if (item instanceof Element)
-			{
-				ModuleRef ref = new ModuleRef();
-				Element dependency = (Element) item;
-				
-				ref.setName(dependency.getAttribute("name"));
-				ref.setMinVersion(dependency.getAttribute("minVersion"));
-				ref.setMaxVersion(dependency.getAttribute("maxVersion"));
-				result.add(ref);
-			}
-		}
+		Set<String> inherits = cruxModule.getGwtModule().getInherits();
+		List<ModuleRef> requiredModules = new ArrayList<ModuleRef>();
 		
-		return result.toArray(new ModuleRef[result.size()]);
+		for (String inherit : inherits)
+        {
+			CruxModule dependency = getCruxModule(inherit);
+			if (dependency != null)
+			{
+				requiredModules.add(new ModuleRef(dependency.getName()));
+			}
+        }
+		
+		cruxModule.setRequiredModules(requiredModules.toArray(new ModuleRef[requiredModules.size()]));
 	}
-
+	
+	
 	/**
 	 * 
 	 */
@@ -327,21 +307,9 @@ public class CruxModuleHandler
 		URL location = module.getDescriptorURL();
 		location = URLResourceHandlersRegistry.getURLResourceHandler(location.getProtocol()).getParentDir(location);
 		cruxModule.setLocation(location);
-		cruxModule.setRequiredModules(getRequiredModules(info));
 		return cruxModule;
 	}	
 
-	private static ModuleRef[] getRequiredModules(ModuleInfo info)
-	{
-		if (info.getDependencies() != null)
-		{
-			return info.getDependencies();
-		}
-		else
-		{
-			return new ModuleRef[0];
-		}
-	}
 
 	/**
 	 * 

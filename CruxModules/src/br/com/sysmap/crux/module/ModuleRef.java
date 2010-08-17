@@ -19,34 +19,33 @@ package br.com.sysmap.crux.module;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ModuleRef
+public class ModuleRef 
 {
 	private String name;
-	private String minVersion;
-	private String maxVersion;
 	
-	public String getName()
-	{
-		return name;
-	}
-	public void setName(String name)
-	{
+	/**
+	 * 
+	 */
+	public ModuleRef()
+    {
+    }
+	
+	/**
+	 * @param name
+	 * @param group
+	 */
+	public ModuleRef(String name)
+    {
 		this.name = name;
-	}
-	public String getMinVersion()
-	{
-		return minVersion;
-	}
-	public void setMinVersion(String minVersion)
-	{
-		this.minVersion = minVersion;
-	}
-	public String getMaxVersion()
-	{
-		return maxVersion;
-	}
-	public void setMaxVersion(String maxVersion)
-	{
-		this.maxVersion = maxVersion;
-	}
+    }
+
+	public String getName()
+    {
+    	return name;
+    }
+
+	public void setName(String name)
+    {
+    	this.name = name;
+    }
 }

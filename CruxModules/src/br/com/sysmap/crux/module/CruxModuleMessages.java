@@ -42,11 +42,14 @@ public interface CruxModuleMessages
 	String moduleBridgeErrorReadingModule();
 
 	@DefaultServerMessage("[crux-modules 007] - No development module specified.")
-	String launcerErrorNoDevelopmentModulesSpecified();
+	String launcherErrorNoDevelopmentModulesSpecified();
 
 	@DefaultServerMessage("[crux-modules 008] - Error initializing crux module version checker: {0}.")
 	Object versionChekerInitializerError(String message);
 
 	@DefaultServerMessage("[crux-modules 009] - Module version is null.")
 	String decimalVersionCheckerEmptyRealVersion();
+
+	@DefaultServerMessage("[crux-modules 010] - Error parsing Crux Module XML file.")
+	String errorParsingCruxModuleFile();
 }

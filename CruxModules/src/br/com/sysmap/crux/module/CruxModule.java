@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.module;
 
 import java.net.URL;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import br.com.sysmap.crux.core.rebind.module.Module;
 
@@ -25,12 +27,13 @@ import br.com.sysmap.crux.core.rebind.module.Module;
  */
 public class CruxModule
 {
+	private static final Lock lockDependencies = new ReentrantLock();
+
 	private final Module module;
 	private final ModuleInfo info;
 	private URL location;
 	private String[] pages;
 	private ModuleRef[] requiredModules;
-
 	
 	CruxModule(Module module, ModuleInfo info)
 	{
@@ -79,6 +82,21 @@ public class CruxModule
 
 	public ModuleRef[] getRequiredModules()
 	{
+		if (requiredModules == null)
+		{
+			lockDependencies.lock();
+			try
+			{
+				if (requiredModules == null)
+				{
+				CruxModuleHandler.initializeModulesDependencies(this);
+				}
+			}
+	        finally
+	        {
+	        	lockDependencies.unlock();
+	        }				
+		}
 		return requiredModules;
 	}
 
@@ -86,6 +104,4 @@ public class CruxModule
 	{
 		this.requiredModules = requiredModules;
 	}
-	
-	
 }

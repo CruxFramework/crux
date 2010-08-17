@@ -40,8 +40,7 @@ public class CruxModuleValidator
 			for (ModuleRef moduleRef : requiredModules)
 			{
 				CruxModule requiredModule = CruxModuleHandler.getCruxModule(moduleRef.getName());
-				if (requiredModule == null || !checkMinVerion(requiredModule, moduleRef.getMinVersion()) || 
-						                      !checkMaxVerion(requiredModule, moduleRef.getMaxVersion()))
+				if (requiredModule == null)
 				{
 					return false;
 				}
@@ -49,15 +48,5 @@ public class CruxModuleValidator
 		}
 		
 		return true;
-	}
-	
-	public static boolean checkMaxVerion(CruxModule module, String maxVersion)
-	{
-		return CruxModuleVersionCheckerInitializer.getVersionChecker().checkMaxVersion(maxVersion, module.getInfo().getVersion());
-	}
-
-	public static boolean checkMinVerion(CruxModule module, String minVersion)
-	{
-		return CruxModuleVersionCheckerInitializer.getVersionChecker().checkMinVersion(minVersion, module.getInfo().getVersion());
 	}
 }

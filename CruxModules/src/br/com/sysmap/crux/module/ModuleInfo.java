@@ -23,9 +23,6 @@ package br.com.sysmap.crux.module;
 public class ModuleInfo
 {
 	private String description;
-	private String startPage;
-	private String version;
-	private ModuleRef[] dependencies;
 	
 	public String getDescription()
 	{
@@ -34,29 +31,5 @@ public class ModuleInfo
 	public void setDescription(String description)
 	{
 		this.description = description;
-	}
-	public String getStartPage()
-	{
-		return startPage;
-	}
-	public void setStartPage(String startPage)
-	{
-		this.startPage = startPage;
-	}
-	public String getVersion()
-	{
-		return version;
-	}
-	public void setVersion(String version)
-	{
-		this.version = version;
-	}
-	public ModuleRef[] getDependencies()
-	{
-		return dependencies;
-	}
-	public void setDependencies(ModuleRef[] dependencies)
-	{
-		this.dependencies = dependencies;
 	}
 }
