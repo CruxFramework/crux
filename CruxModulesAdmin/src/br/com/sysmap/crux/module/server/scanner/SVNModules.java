@@ -16,8 +16,10 @@
 package br.com.sysmap.crux.module.server.scanner;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -110,23 +112,26 @@ public class SVNModules
 		ModuleInfo info = new ModuleInfo();
 		info.setName(getModuleName(moduleFullName, moduleDocument.getDocumentElement()));
 		info.setDescription(moduleInfo.getDescription());
-		info.setStartPage(moduleInfo.getStartPage());
-		info.setVersion(moduleInfo.getVersion());
+//		info.setGroup(moduleInfo.getGroup());
+//		info.setVersion(moduleInfo.getVersion());
 		
-		br.com.sysmap.crux.module.ModuleRef[] dependencies = moduleInfo.getDependencies();
+		br.com.sysmap.crux.module.ModuleRef[] dependencies = null;//moduleInfo.getDependencies();
 		if (dependencies != null)
 		{
-			ModuleRef[] dep = new ModuleRef[dependencies.length];
+			List<ModuleRef> dep = new ArrayList<ModuleRef>();
 			for(int i=0; i< dependencies.length; i++)
 			{
-				ModuleRef ref = new ModuleRef();
-				ref.setMaxVersion(dependencies[i].getMaxVersion());
-				ref.setMinVersion(dependencies[i].getMinVersion());
-				ref.setName(dependencies[i].getName());
-				dep[i] = ref;
+				if (dependencies[i] instanceof br.com.sysmap.crux.module.ModuleRef)
+				{
+					ModuleRef ref = new ModuleRef();
+//					ref.setMaxVersion(((br.com.sysmap.crux.module.ModuleRef)dependencies[i]).getMaxVersion());
+//					ref.setMinVersion(((br.com.sysmap.crux.module.ModuleRef)dependencies[i]).getMinVersion());
+					ref.setName(dependencies[i].getName());
+					dep.add(ref);
+				}
 			}
 			
-			info.setRequiredModules(dep);
+			info.setRequiredModules(dep.toArray(new ModuleRef[dep.size()]));
 		}
 		modulesInfo.put(info.getName()+info.getVersion(), info);
 		return info;

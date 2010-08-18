@@ -1,22 +1,22 @@
 package br.com.sysmap.crux.module.client.datasource;
 
 import br.com.sysmap.crux.core.client.controller.Create;
-import br.com.sysmap.crux.core.client.datasource.LocalBindableEditablePagedDataSource;
+import br.com.sysmap.crux.core.client.datasource.LocalPagedDataSource;
 import br.com.sysmap.crux.core.client.datasource.annotation.DataSource;
-import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceBinding;
-import br.com.sysmap.crux.module.client.controller.ModuleInfoController.ModuleInfoControllerInvoker;
+import br.com.sysmap.crux.core.client.datasource.annotation.DataSourceRecordIdentifier;
+import br.com.sysmap.crux.module.client.controller.ModuleInfoControllerCrossDoc;
 import br.com.sysmap.crux.module.client.dto.ModuleRef;
 
 @DataSource("requiredModulesDS")
-@DataSourceBinding(identifier="name")
-public class RequiredModulesDS extends LocalBindableEditablePagedDataSource<ModuleRef>
+@DataSourceRecordIdentifier("name")
+public class RequiredModulesDS extends LocalPagedDataSource<ModuleRef>
 {
 	@Create
-	protected ModuleInfoControllerInvoker moduleInfoInvoker;
+	protected ModuleInfoControllerCrossDoc crossDoc;
 	
 	public void load()
 	{
-		ModuleRef[] data = moduleInfoInvoker.getModuleInfoOnSelf().getRequiredModules();
+		ModuleRef[] data = crossDoc.getModuleInfo().getRequiredModules();
 		updateData(data);
 	}
 }

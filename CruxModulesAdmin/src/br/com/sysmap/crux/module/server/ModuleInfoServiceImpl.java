@@ -19,7 +19,6 @@ import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
 import br.com.sysmap.crux.core.rebind.screen.ScreenFactory;
 import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
 import br.com.sysmap.crux.core.rebind.screen.formatter.Formatters;
-import br.com.sysmap.crux.core.rebind.screen.serializable.Serializers;
 import br.com.sysmap.crux.core.server.dispatch.SessionAware;
 import br.com.sysmap.crux.core.utils.ClassUtils;
 import br.com.sysmap.crux.module.CruxModule;
@@ -39,7 +38,6 @@ import br.com.sysmap.crux.module.client.remote.ModuleInfoException;
 import br.com.sysmap.crux.module.client.remote.ModuleInfoService;
 import br.com.sysmap.crux.module.server.scanner.SVNModules;
 import br.com.sysmap.crux.module.server.scanner.SVNRepositories;
-import br.com.sysmap.crux.module.validation.CruxModuleValidator;
 import br.com.sysmap.crux.module.validation.CruxModuleVersionCheckerInitializer;
 
 /**
@@ -56,17 +54,18 @@ public class ModuleInfoServiceImpl implements ModuleInfoService, SessionAware
 	/**
 	 * @see br.com.sysmap.crux.module.client.remote.ModuleInfoService#getSerializables(java.lang.String)
 	 */
-	public CruxSerializable[] getSerializables(String module) throws ModuleInfoException
+	@SuppressWarnings("deprecation")
+    public CruxSerializable[] getSerializables(String module) throws ModuleInfoException
 	{
 		CruxModule cruxModule = CruxModuleHandler.getCruxModule(module);
 		List<CruxSerializable> result = new ArrayList<CruxSerializable>();
 		if (cruxModule != null)
 		{
-			Iterator<String> serializables = Serializers.iterateSerializables();
+			Iterator<String> serializables = br.com.sysmap.crux.core.rebind.screen.serializable.Serializers.iterateSerializables();
 			while (serializables.hasNext())
 			{
 				String serializableName = serializables.next();
-				Class<?> serializableClass = Serializers.getCruxSerializable(serializableName);
+				Class<?> serializableClass = br.com.sysmap.crux.core.rebind.screen.serializable.Serializers.getCruxSerializable(serializableName);
 				String moduleBasePackage = cruxModule.getGwtModule().getFullName();
 				moduleBasePackage = moduleBasePackage.substring(0, moduleBasePackage.lastIndexOf('.'));
 				
@@ -265,9 +264,9 @@ public class ModuleInfoServiceImpl implements ModuleInfoService, SessionAware
 		ModuleInfo moduleInfo = new ModuleInfo();
 		
 		moduleInfo.setName(cruxModule.getName());
-		moduleInfo.setVersion(cruxModule.getInfo().getVersion());
+//		moduleInfo.setVersion(cruxModule.getInfo().getVersion());
 		moduleInfo.setDescription(cruxModule.getInfo().getDescription());
-		moduleInfo.setStartPage(cruxModule.getInfo().getStartPage());
+//		moduleInfo.setGroup(cruxModule.getInfo().getGroup());
 
 		br.com.sysmap.crux.module.ModuleRef[] cruxRequiredModules = cruxModule.getRequiredModules();
 		if (cruxRequiredModules != null && cruxRequiredModules.length > 0)
@@ -279,8 +278,8 @@ public class ModuleInfoServiceImpl implements ModuleInfoService, SessionAware
 				ModuleRef moduleRef = new ModuleRef();
 				
 				moduleRef.setName(ref.getName());
-				moduleRef.setMinVersion(ref.getMinVersion());
-				moduleRef.setMaxVersion(ref.getMaxVersion());
+//				moduleRef.setMinVersion(ref.getMinVersion());
+//				moduleRef.setMaxVersion(ref.getMaxVersion());
 
 				CruxModule refModule = CruxModuleHandler.getCruxModule(ref.getName());
 				if (refModule == null)
@@ -289,9 +288,9 @@ public class ModuleInfoServiceImpl implements ModuleInfoService, SessionAware
 				}
 				else
 				{
-					boolean statusVersion = CruxModuleValidator.checkMinVerion(refModule, ref.getMinVersion()) && 
-											CruxModuleValidator.checkMaxVerion(refModule, ref.getMaxVersion());
-					moduleRef.setStatusVersion(statusVersion);
+//					boolean statusVersion = CruxModuleValidator.checkMinVerion(refModule, ref.getMinVersion()) && 
+//											CruxModuleValidator.checkMaxVerion(refModule, ref.getMaxVersion());
+//					moduleRef.setStatusVersion(statusVersion);
 				}
 				requiredModules[i] = moduleRef;
 			}
@@ -385,7 +384,7 @@ public class ModuleInfoServiceImpl implements ModuleInfoService, SessionAware
 		CruxModule cruxModule = CruxModuleHandler.getCruxModule(moduleName);
 		if (cruxModule != null)
 		{
-			return cruxModule.getInfo().getVersion();
+//			return cruxModule.getInfo().getVersion();
 		}
 		return null;
 	}

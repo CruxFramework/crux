@@ -1,11 +1,8 @@
 package br.com.sysmap.crux.module.client.controller;
 
 import br.com.sysmap.crux.core.client.controller.Controller;
-import br.com.sysmap.crux.core.client.controller.ControllerName;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
-import br.com.sysmap.crux.core.client.controller.ExposeOutOfModule;
-import br.com.sysmap.crux.core.client.controller.Invoker;
 import br.com.sysmap.crux.core.client.rpc.AsyncCallbackAdapter;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.screen.ScreenWrapper;
@@ -28,7 +25,7 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 @Controller("cruxModuleInfoController")
-public class ModuleInfoController 
+public class ModuleInfoController implements ModuleInfoControllerCrossDoc
 {
 	@Create
 	protected ModuleInfoServiceAsync moduleService;
@@ -245,14 +242,12 @@ public class ModuleInfoController
 		}
 	}
 	
-	@ExposeOutOfModule
 	public void confirmLogin()
 	{
 		this.userLogged = true;
 		loadDependentModules();
 	}
 	
-	@Expose
 	public ModuleInfo getModuleInfo()
 	{
 		return moduleInfo;
@@ -274,11 +269,5 @@ public class ModuleInfoController
 		Grid getSerializables();
 		Tree getDependentModules();
 		TabPanel getTabContainer();
-	}
-	
-	@ControllerName("cruxModuleInfoController")
-	public static interface ModuleInfoControllerInvoker extends Invoker
-	{
-		ModuleInfo getModuleInfoOnSelf();
 	}
 }

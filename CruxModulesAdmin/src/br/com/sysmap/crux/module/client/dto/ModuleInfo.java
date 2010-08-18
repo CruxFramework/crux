@@ -12,7 +12,7 @@ public class ModuleInfo implements Serializable
 	private String name;
 	private String description;
 	private ModuleRef[] requiredModules;
-	private String startPage;
+	private String group;
 	private String version;
 	
 	public String getDescription()
@@ -31,14 +31,6 @@ public class ModuleInfo implements Serializable
 	{
 		this.requiredModules = requiredModules;
 	}
-	public String getStartPage()
-	{
-		return startPage;
-	}
-	public void setStartPage(String startPage)
-	{
-		this.startPage = startPage;
-	}
 	public String getVersion()
 	{
 		return version;
@@ -55,4 +47,12 @@ public class ModuleInfo implements Serializable
 	{
 		this.name = name;
 	}
+	public String getGroup()
+    {
+    	return group;
+    }
+	public void setGroup(String group)
+    {
+    	this.group = group;
+    }
 }

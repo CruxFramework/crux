@@ -3,15 +3,14 @@ package br.com.sysmap.crux.module.client.controller;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.controller.Controller;
-import br.com.sysmap.crux.core.client.controller.ControllerName;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
+import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
 import br.com.sysmap.crux.core.client.rpc.AsyncCallbackAdapter;
 import br.com.sysmap.crux.core.client.screen.ScreenWrapper;
 import br.com.sysmap.crux.module.client.AdminMessages;
 import br.com.sysmap.crux.module.client.remote.LoginServiceAsync;
 import br.com.sysmap.crux.widgets.client.dialog.Popup;
-import br.com.sysmap.crux.widgets.client.dialog.PopupOpenerInvoker;
 import br.com.sysmap.crux.widgets.client.dialog.ProgressDialog;
 import br.com.sysmap.crux.widgets.client.grid.DataRow;
 import br.com.sysmap.crux.widgets.client.grid.Grid;
@@ -37,11 +36,12 @@ public class LoginController
 	protected AdminMessages messages;
 	
 	@Create
-	protected ModuleInfoInvoker moduleInfoInvoker; 
+	protected ModuleInfoControllerCrossDoc crossDoc; 
 	
 	@Expose
 	public void authenticate()
 	{
+		((TargetDocument)crossDoc).setTargetWindow(Popup.getOpener());
 		List<DataRow> rows = screen.getLoginGrid().getCurrentPageRows();
 		if (rows != null && rows.size() > 0)
 		{
@@ -63,7 +63,7 @@ public class LoginController
 						@Override
 						public void onComplete(Void result)
 						{
-							moduleInfoInvoker.confirmLogin();
+							crossDoc.confirmLogin();
 							ProgressDialog.hide();
 							Popup.close();
 						}
@@ -80,11 +80,5 @@ public class LoginController
 	public static interface LoginScreen extends ScreenWrapper
 	{
 		Grid getLoginGrid();
-	}
-	
-	@ControllerName("cruxModuleInfoController")
-	public static interface ModuleInfoInvoker extends PopupOpenerInvoker
-	{
-		void confirmLogin();
 	}
 }
