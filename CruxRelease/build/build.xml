@@ -25,7 +25,6 @@
 	<property name="crux-compiler-srcdir" value="../CruxCompiler/src" />
 	<property name="crux-gwt-widgets-srcdir" value="../CruxGWTWidgets/src" />
 	<property name="crux-modules-srcdir" value="../CruxModules/src" />
-	<property name="crux-modules-admin-srcdir" value="../CruxModulesAdmin/src" />
 	<property name="crux-modules-compiler-srcdir" value="../CruxModulesCompiler/src" />
 	<property name="crux-scannotation-srcdir" value="../CruxScannotation/src" />
 	<property name="crux-widgets-srcdir" value="../CruxWidgets/src" />
@@ -37,7 +36,6 @@
 	<property name="crux.themes.dist" value="../CruxThemes/dist" />
 	<property name="crux.scannotation.dist" value="../CruxScannotation/dist" />
 	<property name="crux.modules.dist" value="../CruxModules/dist" />
-	<property name="crux.modules.admin.dist" value="../CruxModulesAdmin/dist" />
 	<property name="crux.modules.compiler.dist" value="../CruxModulesCompiler/dist" />
 
 	<property name="crux.samples.dir" value="samples" />
@@ -179,7 +177,6 @@
 			<fileset dir="${crux-compiler-srcdir}" />
 			<fileset dir="${crux-gwt-widgets-srcdir}" />
 			<fileset dir="${crux-modules-srcdir}" />
-			<fileset dir="${crux-modules-admin-srcdir}" />
 			<fileset dir="${crux-modules-compiler-srcdir}" />
 			<fileset dir="${crux-scannotation-srcdir}" />
 			<fileset dir="${crux-widgets-srcdir}" />
@@ -220,16 +217,11 @@
 		</copy>
 		<copy todir="${resourcedir}/jars/lib/modules/web-inf">
 			<fileset dir="${crux.modules.dist}" includes="*.jar" />
-			<fileset file="${crux.dependencies}/svnkit.jar"/>
-		</copy>
-		<copy todir="${resourcedir}/jars/lib/modules/web-inf">
-			<fileset dir="${crux.modules.admin.dist}" includes="*.jar" />
 		</copy>
 		<copydir dest="${expandeddir}/lib/build" src="${resourcedir}/jars/lib/build" />
 		<copydir dest="${expandeddir}/lib/web-inf" src="${resourcedir}/jars/lib/web-inf" />
 		<copydir dest="${expandeddir}/lib/modules/build" src="${resourcedir}/jars/lib/modules/build" />
 		<copydir dest="${expandeddir}/lib/modules/web-inf" src="${resourcedir}/jars/lib/modules/web-inf" />
-		<copydir dest="${expandeddir}/lib/legacy" src="${resourcedir}/jars/lib/legacy" />
 
 		<copy todir="${expandeddir}" file="${projectconfig}" />
 		<copy todir="${expandeddir}" file="${cmdfile}" />
