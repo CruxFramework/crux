@@ -60,6 +60,7 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 {
 	private static final Log logger = LogFactory.getLog(CruxModuleCompiler.class);
 	
+	private  Map<String, Boolean> alreadyChecked = new HashMap<String, Boolean>();
 	private boolean forceModulesCompilation = false;
 	private Map<String, Boolean> mustCompileCache = new HashMap<String, Boolean>();
 	
@@ -158,6 +159,52 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	}	
 	
 	/**
+	 * Checks if all dependencies of the informed module are satisfied.
+	 * @param moduleName Name of the module
+	 * @return true if dependencies are OK
+	 */
+	private boolean checkDependenciesForModifications(String moduleName)
+    {
+		if (alreadyChecked.containsKey(moduleName))
+		{
+			return alreadyChecked.get(moduleName);
+		}
+		boolean result = true;
+		CruxModule cruxModule = CruxModuleHandler.getCruxModule(moduleName);
+	    if (CruxModuleValidator.isDependenciesOk(moduleName))
+	    {
+	    	ModuleRef[] requiredModules = cruxModule.getRequiredModules();
+
+	    	if (requiredModules != null)
+	    	{
+	    		Manifest moduleManifest = ModuleExporter.getModuleManifest(moduleName);
+	    		for (ModuleRef moduleRef : requiredModules)
+	    		{
+	    			String foundTimestamp = ModuleExporter.getModuleBuildTimestamp(moduleRef.getName());
+	    			String expectedTimestamp = moduleManifest.getMainAttributes().getValue(ModuleExporter.MODULE_DEP_PREFIX+moduleRef.getName());
+	    			if (StringUtils.isEmpty(expectedTimestamp) || StringUtils.isEmpty(foundTimestamp) || 
+	    					!foundTimestamp.equals(expectedTimestamp))
+	    			{
+	    				result = false;
+	    				break;
+	    			}
+	    			if (!checkDependenciesForModifications(moduleRef.getName()))
+	    			{
+	    				result = false;
+	    				break;
+	    			}
+	    		}
+	    	}
+	    }
+	    else
+	    {
+	    	throw new CruxModuleException("Module dependencies are broken. Module: "+ moduleName);
+	    }
+	    alreadyChecked.put(moduleName, result);
+	    return result;
+    }
+	
+	/**
 	 * @param moduleName
 	 */
 	private void extractModuleCompilation(String moduleName)
@@ -198,8 +245,8 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 			throw new CruxModuleException("Error extracting module compiled output from jar.", e);
 		}
 	    
-    }
-	
+    }		
+
 	/**
 	 * 
 	 * @param cruxModule
@@ -229,8 +276,8 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 			return pages;
 		}
 		return new String[0];
-	}		
-
+	}
+	
 	/**
 	 * 
 	 * @param cruxModule
@@ -256,7 +303,7 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 
 		return screenID;
 	}
-	
+
 	/**
 	 * @param moduleName
 	 * @return
@@ -272,7 +319,9 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 		return result;
     }
 
+
 	/**
+	 * Checks if the informed module must be compiled 
 	 * @param moduleName
 	 * @return
 	 */
@@ -290,31 +339,7 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 			if (!result)
 			{
 
-				CruxModule cruxModule = CruxModuleHandler.getCruxModule(moduleName);
-				if (CruxModuleValidator.isDependenciesOk(moduleName))
-				{
-					ModuleRef[] requiredModules = cruxModule.getRequiredModules();
-
-					if (requiredModules != null)
-					{
-						Manifest moduleManifest = ModuleExporter.getModuleManifest(moduleName);
-						for (ModuleRef moduleRef : requiredModules)
-						{
-							String foundTimestamp = ModuleExporter.getModuleBuildTimestamp(moduleRef.getName());
-							String expectedTimestamp = moduleManifest.getMainAttributes().getValue(ModuleExporter.MODULE_DEP_PREFIX+moduleRef.getName());
-							if (StringUtils.isEmpty(expectedTimestamp) || StringUtils.isEmpty(foundTimestamp) || 
-									!foundTimestamp.equals(expectedTimestamp))
-							{
-								result = true;
-								break;
-							}
-						}
-					}
-				}
-				else
-				{
-					throw new CruxModuleException("Module dependencies are broken. Module: "+ moduleName);
-				}
+				result = !checkDependenciesForModifications(moduleName);
 			}
 		}
 		catch (Exception e) 
@@ -325,6 +350,3 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 		return result;
 	}
 }
-
-//TODO: a verificação de dependencias entre os modulos Crux deve ser feita tbm em profundidade
-//TODO: documentar no wiki a parte de modulos.
