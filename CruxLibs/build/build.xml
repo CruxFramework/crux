@@ -4,7 +4,6 @@
 
 	<property name="crux.project" value="../Crux" />
 	<property name="showcase.project" value="../CruxShowcase" />
-	<property name="modules.admin.project" value="../CruxModulesAdmin" />
 	<property name="compiler.project" value="../CruxCompiler" />
 	<property name="gwt.widgets.project" value="../CruxGWTWidgets" />
 	<property name="modules.project" value="../CruxModules" />
@@ -198,7 +197,6 @@
 			</fileset>
 			<fileset dir="${crux.jars.dir}">
 				<include name="crux-core.jar" />
-				<include name="crux-html-tags.jar" />
 				<include name="crux-scannotation.jar" />
 				<include name="crux-themes.jar" />
 				<include name="crux-gwt-widgets.jar" />
@@ -208,45 +206,11 @@
 		<copy todir="${showcase.project}/build/lib" >
 			<fileset dir="${crux.jars.dir}">
 				<include name="crux-compiler.jar" />
-				<include name="crux-html-tags-compile-task.jar" />
 			</fileset>
 			<fileset dir="${dependencies.jars.dir}">
 				<include name="gwt-dev.jar" />
 				<include name="gwt-user.jar" />
 			</fileset>
 		</copy>
-		
-		<!-- Modules Admin -->
-		<copy todir="${modules.admin.project}/war/WEB-INF/lib" >
-			<fileset dir="${dependencies.jars.dir}">
-				<include name="commons-logging.jar" />
-				<include name="gwt-servlet.jar"/>
-				<include name="javassist.jar" />
-				<include name="saxon9.jar" />
-				<include name="saxon9-dom.jar" />
-				<include name="svnkit.jar" />
-			</fileset>
-			<fileset dir="${crux.jars.dir}">
-				<include name="crux-core.jar" />
-				<include name="crux-scannotation.jar" />
-				<include name="crux-themes.jar" />
-				<include name="crux-gwt-widgets.jar" />
-				<include name="crux-widgets.jar" />
-				<include name="crux-modules.jar" />
-			</fileset>
-		</copy>
-		<copy todir="${modules.admin.project}/build/lib" >
-			<fileset dir="${crux.jars.dir}">
-				<include name="crux-module-compiler.jar" />
-			</fileset>
-			<fileset dir="${crux.jars.dir}">
-				<include name="crux-compiler.jar" />
-			</fileset>
-			<fileset dir="${dependencies.jars.dir}">
-				<include name="gwt-dev.jar" />
-				<include name="gwt-user.jar" />
-			</fileset>
-		</copy>
-		
 	</target>
 </project>
