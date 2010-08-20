@@ -164,7 +164,7 @@ public class Launcher
 		int port = 8910;
 		
 		File webAppLib = new File("./apps/quickstart.war/WEB-INF/lib");
-		if (!webAppLib.exists())
+		if (!webAppLib.exists() || webAppLib.list().length == 0)
 		{
 			System.out.println("Installing quickstart application...");
 			launcher.installQuickStartApp();
