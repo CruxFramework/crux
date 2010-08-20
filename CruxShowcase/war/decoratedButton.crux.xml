@@ -17,19 +17,16 @@
 		<c:screen useController="decoratedButtonController"/>
 
 		<center>
-
-		<b:dockPanel id="centeringPanel" height="150" spacing="5">
-			<b:cell direction="west" verticalAlignment="middle" horizontalAlignment="right">
-				<a:decoratedButton id="enabledButton" text="Enabled" onClick="decoratedButtonController.onClick"/>
-			</b:cell>
-			<b:cell direction="east" verticalAlignment="middle" horizontalAlignment="left">
-				<a:decoratedButton id="disabledButton" text="Disabled" enabled="false"/>
-			</b:cell>
-		</b:dockPanel>
-		
+			<b:dockPanel id="centeringPanel" height="150" spacing="5">
+				<b:cell direction="west" verticalAlignment="middle" horizontalAlignment="right">
+					<a:decoratedButton id="enabledButton" text="Enabled" onClick="decoratedButtonController.onClick"/>
+				</b:cell>
+				<b:cell direction="east" verticalAlignment="middle" horizontalAlignment="left">
+					<a:decoratedButton id="disabledButton" text="Disabled" enabled="false"/>
+				</b:cell>
+			</b:dockPanel>
 		</center>
 		
 		<s:sources/>
-		
 	</body>
 </html>
