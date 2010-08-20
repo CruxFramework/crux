@@ -97,7 +97,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			throw new CruxGeneratorException(messages.crossDocumentCanNotFindControllerCrossDocInterface(controllerClass.getCanonicalName()));
 		}
 		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
-		this.isSingleton = (controllerAnnot == null || controllerAnnot.statefull());
+		this.isSingleton = (controllerAnnot == null || controllerAnnot.stateful());
 		this.isAutoBindEnabled = (controllerAnnot == null || controllerAnnot.autoBind());
 	}
 	

@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Controller {
 	String value();
-	boolean statefull() default true;
+	boolean stateful() default true;
 	boolean autoBind() default true;
 	String fragment() default "";
 	boolean lazy() default true;
