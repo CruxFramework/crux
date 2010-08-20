@@ -91,7 +91,7 @@ public class ModuleInfoController implements ModuleInfoControllerCrossDoc
 		Image image = (Image) event.getRow().getWidget("statusVersion");
 		ModuleRef moduleRef = (ModuleRef) event.getRow().getBoundObject();
 		
-		if (moduleRef.isStatusVersion() != null && moduleRef.isStatusVersion())
+		if (moduleRef.getStatusVersion() != null && moduleRef.getStatusVersion())
 		{
 			image.setUrl("images/success.gif");
 		}

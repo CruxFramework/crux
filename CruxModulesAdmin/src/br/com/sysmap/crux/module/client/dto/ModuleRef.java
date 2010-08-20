@@ -39,10 +39,16 @@ public class ModuleRef implements Serializable
 	{
 		this.maxVersion = maxVersion;
 	}
-	public Boolean isStatusVersion()
+	/**
+	 * @return the statusVersion
+	 */
+	public Boolean getStatusVersion()
 	{
 		return statusVersion;
 	}
+	/**
+	 * @param statusVersion the statusVersion to set
+	 */
 	public void setStatusVersion(Boolean statusVersion)
 	{
 		this.statusVersion = statusVersion;
