@@ -132,10 +132,12 @@
 			<!-- change these two parameters if you need to modify memory settings -->
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
-
+			
+			<!--
 			<jvmarg value="-Xdebug" />
 			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" />
-
+			-->
+			
 			<arg value="-draftCompile" />
 
 			<!-- use these parameters if you want to modify GWT output settings
@@ -154,8 +156,10 @@
 	-->
 	<target name="generate-schemas">
 		<generateSchemas outputDir="${xsd.dir}">
+			<!--
 			<jvmarg value="-Xdebug" />
 			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" />
+			-->
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${target.classes.dir}" />
@@ -174,8 +178,10 @@
 	<target name="export-as-module" >
 		<moduleExporter sourcedir="${src.dir}" outputdir="${dist.dir}" modulename="${module.name}" outputmodulename="${final.name}" 
 			excludes="**/*.properties" >
+			<!--
 			<jvmarg value="-Xdebug" />
 			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" />
+			-->
 			<classpath>
 				<path refid="build.classpath" />
 			</classpath>
