@@ -35,6 +35,7 @@ import br.com.sysmap.crux.core.rebind.AbstractRegisteredElementsGenerator;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.rebind.module.Modules;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
+import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -62,7 +63,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 	protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens)
 	{
 		String packageName = classType.getPackage().getName();
-		String className = classType.getSimpleSourceName();
+		String className = ClassUtils.getSourceName(classType);
 		String implClassName = className + "Impl";
 
 		PrintWriter printWriter = context.tryCreate(logger, packageName, implClassName);

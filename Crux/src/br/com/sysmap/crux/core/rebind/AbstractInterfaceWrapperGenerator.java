@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.rebind.controller.ClientControllers;
+import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -49,7 +50,7 @@ public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerato
 			TypeOracle typeOracle = context.getTypeOracle(); 
 			JClassType classType = typeOracle.getType(typeName);
 			String packageName = classType.getPackage().getName();
-			String className = classType.getSimpleSourceName() + "Impl";
+			String className = ClassUtils.getSourceName(classType) + "_WrapperImpl";
 			generateClass(logger, context, classType, packageName, className);
 			return packageName + "." + className;
 		} 
@@ -85,7 +86,7 @@ public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerato
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 
-		Class<?> interfaceClass = Class.forName(getClassBinaryName(classType));
+		Class<?> interfaceClass = Class.forName(classType.getQualifiedBinaryName());
 		generateMethodWrappers(logger, interfaceClass, sourceWriter);
 		
 		sourceWriter.outdent();

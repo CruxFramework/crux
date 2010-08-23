@@ -206,6 +206,23 @@ public class ClassUtils
 	}
 	
 	/**
+	 * @param classType
+	 * @return
+	 */
+	public static String getSourceName(JClassType classType)
+	{
+		String packageName = classType.getPackage().getName();
+		if (packageName == null)
+		{
+			packageName = "";
+		}
+		String className = classType.getQualifiedBinaryName().substring(packageName.length()+1);
+		className = className.replace('$', '_');
+		
+		return className;
+	}
+	
+	/**
 	 * 
 	 * @param valueVariable
 	 * @param expectedType
@@ -268,27 +285,6 @@ public class ClassUtils
 		sourceName = sourceName.replace('$','.');
 		return sourceName;
 	}
-	
-	/**
-	 * 
-	 * @param classType
-	 * @return
-	 */
-	public static String getClassBinaryName(JClassType classType)
-	{
-		String pkgName = classType.getPackage().getName();
-		String simpleName = classType.getSimpleSourceName();
-		String name = classType.getName();
-		
-		if (name.equals(simpleName))
-		{
-			return pkgName + "." +name;
-		}
-		else
-		{
-			return pkgName + "." + name.substring(0, name.indexOf(simpleName)-1) + "$"+ simpleName;
-		}
-	}	
 	
 	/**
 	 * 

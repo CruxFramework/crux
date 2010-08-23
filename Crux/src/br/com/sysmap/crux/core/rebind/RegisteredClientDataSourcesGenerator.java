@@ -60,8 +60,7 @@ public class RegisteredClientDataSourcesGenerator extends AbstractRegisteredElem
 	protected void generateClass(TreeLogger logger, GeneratorContext context,JClassType classType, List<Screen> screens) 
 	{
 		String packageName = classType.getPackage().getName();
-		String className = classType.getSimpleSourceName();
-		String implClassName = className + "Impl";
+		String implClassName = ClassUtils.getSourceName(classType)+"_Impl";
 
 		PrintWriter printWriter = context.tryCreate(logger, packageName, implClassName);
 		// if printWriter is null, source code has ALREADY been generated, return

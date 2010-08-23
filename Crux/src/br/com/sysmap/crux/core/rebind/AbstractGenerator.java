@@ -21,7 +21,6 @@ import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.ext.Generator;
-import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -39,16 +38,6 @@ public abstract class AbstractGenerator extends Generator
 	protected static String getClassSourceName(Type type)
 	{
 		return ClassUtils.getTypeDeclaration(type);
-	}
-	
-	/**
-	 * 
-	 * @param classType
-	 * @return
-	 */
-	protected String getClassBinaryName(JClassType classType)
-	{
-		return ClassUtils.getClassBinaryName(classType);
 	}
 	
 	/**

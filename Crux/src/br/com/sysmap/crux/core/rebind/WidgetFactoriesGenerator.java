@@ -81,7 +81,7 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 			TypeOracle typeOracle = context.getTypeOracle(); 
 			JClassType classType = typeOracle.getType(typeName);
 			String packageName = classType.getPackage().getName();
-			String className = classType.getSimpleSourceName() + "Impl";
+			String className = ClassUtils.getSourceName(classType) + "_Impl";
 			generateClass(logger, context, classType);
 			return packageName + "." + className;
 		} 
@@ -104,14 +104,13 @@ public class WidgetFactoriesGenerator extends AbstractGenerator
 		try
 		{
 			String packageName = classType.getPackage().getName();
-			String className = classType.getSimpleSourceName();
-			String implClassName = className + "Impl";
+			String implClassName = ClassUtils.getSourceName(classType) + "_Impl";
 
 			PrintWriter printWriter = context.tryCreate(logger, packageName, implClassName);
 			// if printWriter is null, source code has ALREADY been generated, return
 			if (printWriter == null) return;
 
-			Class<?> factoryClass = Class.forName(getClassBinaryName(classType));
+			Class<?> factoryClass = Class.forName(classType.getQualifiedBinaryName());
 
 			ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, implClassName);
 			composer.setSuperclass(getClassSourceName(factoryClass));

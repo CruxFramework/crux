@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -45,7 +46,7 @@ public class CruxClientConfigGenerator extends AbstractGenerator
 			TypeOracle typeOracle = context.getTypeOracle(); 
 			JClassType classType = typeOracle.getType(typeName);
 			String packageName = classType.getPackage().getName();
-			String className = classType.getSimpleSourceName() + "Impl";
+			String className = ClassUtils.getSourceName(classType) + "_Impl";
 			generateClass(logger, context, classType, packageName, className);
 			return packageName + "." + className;
 		} 
@@ -68,7 +69,7 @@ public class CruxClientConfigGenerator extends AbstractGenerator
 		SourceWriter sourceWriter = null;
 		sourceWriter = composer.createSourceWriter(context, printWriter);
 
-		Class<?> interfaceClass = Class.forName(getClassBinaryName(classType));
+		Class<?> interfaceClass = Class.forName(classType.getQualifiedBinaryName());
 		generateMethodWrappers(logger, interfaceClass, sourceWriter);
 		
 		sourceWriter.outdent();

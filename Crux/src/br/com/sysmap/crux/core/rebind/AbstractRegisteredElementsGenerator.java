@@ -23,6 +23,7 @@ import br.com.sysmap.crux.core.rebind.screen.Screen;
 import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
 import br.com.sysmap.crux.core.rebind.screen.ScreenFactory;
 import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
+import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -52,7 +53,7 @@ public abstract class AbstractRegisteredElementsGenerator extends AbstractGenera
 			List<Screen> screens = getScreens(logger);
 			
 			String packageName = classType.getPackage().getName();
-			String className = classType.getSimpleSourceName() + "Impl";
+			String className = ClassUtils.getSourceName(classType) + "_Impl";
 			generateClass(logger, context, classType, screens);
 			return packageName + "." + className;
 		} 

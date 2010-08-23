@@ -320,7 +320,7 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	 */
 	protected String getProxySimpleName()
 	{
-		return baseProxyType.getSimpleSourceName() + CROSS_DOC_SUFFIX;
+		return ClassUtils.getSourceName(baseProxyType) + CROSS_DOC_SUFFIX;
 	}
 	
 	/**
