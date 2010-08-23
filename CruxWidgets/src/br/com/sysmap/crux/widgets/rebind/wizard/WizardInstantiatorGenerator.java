@@ -24,6 +24,7 @@ import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.AbstractRegisteredElementsGenerator;
 import br.com.sysmap.crux.core.rebind.screen.Screen;
+import br.com.sysmap.crux.core.utils.ClassUtils;
 import br.com.sysmap.crux.widgets.client.wizard.Wizard;
 import br.com.sysmap.crux.widgets.client.wizard.WizardInstantiator;
 import br.com.sysmap.crux.widgets.client.wizard.WizardPage;
@@ -51,8 +52,7 @@ public class WizardInstantiatorGenerator extends AbstractRegisteredElementsGener
     protected void generateClass(TreeLogger logger, GeneratorContext context, JClassType classType, List<Screen> screens)
     {
 		String packageName = classType.getPackage().getName();
-		String className = classType.getSimpleSourceName();
-		String implClassName = className + "Impl";
+		String implClassName = ClassUtils.getSourceName(classType)+"_Impl";
 
 		PrintWriter printWriter = context.tryCreate(logger, packageName, implClassName);
 		// if printWriter is null, source code has ALREADY been generated, return
