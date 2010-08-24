@@ -64,7 +64,7 @@ public class RegisteredControllersGenerator extends AbstractRegisteredElementsGe
 	{
 		String packageName = classType.getPackage().getName();
 		String className = ClassUtils.getSourceName(classType);
-		String implClassName = className + "Impl";
+		String implClassName = className + "_Impl";
 
 		PrintWriter printWriter = context.tryCreate(logger, packageName, implClassName);
 		// if printWriter is null, source code has ALREADY been generated, return
