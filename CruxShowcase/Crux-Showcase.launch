@@ -19,5 +19,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.HostedMode"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl index.html br.com.sysmap.crux.showcase.Showcase -gen generated  -logLevel DEBUG -whitelist http://*"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="CruxShowcase"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xss32768k -Xms64M -Xmx512M -DCrux.dev=true"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xms64M -Xmx512M -DCrux.dev=true"/>
 </launchConfiguration>
