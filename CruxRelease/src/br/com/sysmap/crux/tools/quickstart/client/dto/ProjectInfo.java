@@ -16,81 +16,122 @@
 package br.com.sysmap.crux.tools.quickstart.client.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.sysmap.crux.core.client.controller.ValueObject;
 
 /**
  * @author Thiago da Rosa de Bustamante -
- *
+ * 
  */
 @ValueObject
 public class ProjectInfo implements Serializable
 {
-    private static final long serialVersionUID = -8209132866842980452L;
+	private static final long serialVersionUID = -8209132866842980452L;
 
-    private String workspaceDir;
-    private String projectName;
+	private String workspaceDir;
+	private String projectName;
 	private String hostedModeStartupURL;
 	private String hostedModeStartupModule;
 	private String hostedModeVMArgs;
-	private boolean useCruxModuleExtension;
-	private String cruxModuleDescription;
-	
+	private String projectLayout;
+	private String appDescription;
+	private List<String[]> allProjectLayouts = new ArrayList<String[]>();
+
 	public String getProjectName()
-    {
-    	return projectName;
-    }
+	{
+		return projectName;
+	}
+
 	public void setProjectName(String projectName)
-    {
-    	this.projectName = projectName;
-    }
+	{
+		this.projectName = projectName;
+	}
+
 	public String getHostedModeStartupURL()
-    {
-    	return hostedModeStartupURL;
-    }
+	{
+		return hostedModeStartupURL;
+	}
+
 	public void setHostedModeStartupURL(String hostedModeStartupURL)
-    {
-    	this.hostedModeStartupURL = hostedModeStartupURL;
-    }
+	{
+		this.hostedModeStartupURL = hostedModeStartupURL;
+	}
+
 	public String getHostedModeStartupModule()
-    {
-    	return hostedModeStartupModule;
-    }
+	{
+		return hostedModeStartupModule;
+	}
+
 	public void setHostedModeStartupModule(String hostedModeStartupModule)
-    {
-    	this.hostedModeStartupModule = hostedModeStartupModule;
-    }
+	{
+		this.hostedModeStartupModule = hostedModeStartupModule;
+	}
+
 	public String getHostedModeVMArgs()
-    {
-    	return hostedModeVMArgs;
-    }
+	{
+		return hostedModeVMArgs;
+	}
+
 	public void setHostedModeVMArgs(String hostedModeVMArgs)
-    {
-    	this.hostedModeVMArgs = hostedModeVMArgs;
-    }
-	public boolean isUseCruxModuleExtension()
-    {
-    	return useCruxModuleExtension;
-    }
-	public void setUseCruxModuleExtension(boolean useCruxModuleExtension)
-    {
-    	this.useCruxModuleExtension = useCruxModuleExtension;
-    }
-	public String getCruxModuleDescription()
-    {
-    	return cruxModuleDescription;
-    }
-	public void setCruxModuleDescription(String cruxModuleDescription)
-    {
-    	this.cruxModuleDescription = cruxModuleDescription;
-    }
+	{
+		this.hostedModeVMArgs = hostedModeVMArgs;
+	}
+
 	public String getWorkspaceDir()
-    {
-    	return workspaceDir;
-    }
+	{
+		return workspaceDir;
+	}
+
 	public void setWorkspaceDir(String workspaceDir)
-    {
-    	this.workspaceDir = workspaceDir;
-    }
+	{
+		this.workspaceDir = workspaceDir;
+	}
+
+	/**
+	 * @return the appDescription
+	 */
+	public String getAppDescription()
+	{
+		return appDescription;
+	}
+
+	/**
+	 * @param appDescription the appDescription to set
+	 */
+	public void setAppDescription(String appDescription)
+	{
+		this.appDescription = appDescription;
+	}
 	
+	public void addProjectLayout(String name, String value)
+	{
+		String[] layout = {name, value};
+		allProjectLayouts.add(layout);
+	}
+
+	/**
+	 * @return the allProjectLayouts
+	 */
+	public List<String[]> getAllProjectLayouts()
+	{
+		return allProjectLayouts;
+	}
+
+	/**
+	 * @return the projectLayout
+	 */
+	public String getProjectLayout()
+	{
+		return projectLayout;
+	}
+
+	/**
+	 * @param projectLayout the projectLayout to set
+	 */
+	public void setProjectLayout(String projectLayout)
+	{
+		this.projectLayout = projectLayout;
+	}
 }

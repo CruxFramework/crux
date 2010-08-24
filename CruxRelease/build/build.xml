@@ -64,7 +64,7 @@
 	========================================================================================================
 	-->
 	<target name="generate-schemas">
-		<generateSchemas outputDir="${xsd.dir}" moduleName="quickstart">
+		<generateSchemas outputDir="${xsd.dir}">
 			<classpath>
 				<path refid="build.classpath" />
 				<pathelement path="${target.classes.dir}" />

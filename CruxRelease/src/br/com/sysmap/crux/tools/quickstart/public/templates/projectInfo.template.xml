@@ -1,8 +1,11 @@
 <t:template xmlns="http://www.w3.org/1999/xhtml"
 			xmlns:c="http://www.sysmap.com.br/crux"  
 			xmlns:gwt="http://www.sysmap.com.br/crux/gwt"
+			xmlns:w="http://www.sysmap.com.br/crux/widgets"
+            xmlns:q="http://www.sysmap.com.br/templates/quickstart"
             xmlns:t="http://www.sysmap.com.br/templates" library="quickstart"
             useController="quickStartController"> 
+
 	<gwt:dockPanel id="projectInfoCenterPanel" height="100%">
 		<gwt:cell verticalAlignment="top" direction="center" horizontalAlignment="center">
 			<gwt:flexTable id="projectInfo" cellSpacing="5">
@@ -17,10 +20,11 @@
 					</gwt:cell>
 					<gwt:cell>
 						<gwt:widget>
-							<gwt:horizontalPanel id="projectNameHPanel">
-								<gwt:textBox id="projectName" width="350"/>
-								<gwt:image url="style/img/help-icon.gif" id="projectNameHelpIcon" onClick="quickStartController.showProjectFormHelp" styleName="HelpIcon" tooltip="${quickMsg.projectNameHelpText}"/>
-							</gwt:horizontalPanel>
+							<q:helpContext helpText="${quickMsg.projectNameHelpText}" id="projectNameContext">
+						     	<q:widget>
+						     		<gwt:textBox id="projectName" width="350"/>
+						     	</q:widget>
+						     </q:helpContext>
 						</gwt:widget>						
 					</gwt:cell>
 				</gwt:row>
@@ -30,10 +34,11 @@
 					</gwt:cell>
 					<gwt:cell>
 						<gwt:widget>
-							<gwt:horizontalPanel id="hostedModeStartupURLHPanel">
-								<gwt:textBox id="hostedModeStartupURL" width="350"/>
-								<gwt:image url="style/img/help-icon.gif" id="hostedModeStartupURLHelpIcon" onClick="quickStartController.showProjectFormHelp" styleName="HelpIcon" tooltip="${quickMsg.startupURLHelpText}"/>
-							</gwt:horizontalPanel>						
+							<q:helpContext helpText="${quickMsg.startupURLHelpText}" id="hostedModeStartupURLContext">
+						     	<q:widget>
+						     		<gwt:textBox id="hostedModeStartupURL" width="350"/>
+						     	</q:widget>
+						     </q:helpContext>
 						</gwt:widget>
 					</gwt:cell>
 				</gwt:row>
@@ -43,10 +48,11 @@
 					</gwt:cell>
 					<gwt:cell>
 						<gwt:widget>
-							<gwt:horizontalPanel id="hostedModeStartupModuleHPanel">
-								<gwt:textBox id="hostedModeStartupModule" width="350"/>
-								<gwt:image url="style/img/help-icon.gif" id="hostedModeStartupModuleHelpIcon" onClick="quickStartController.showProjectFormHelp" styleName="HelpIcon" tooltip="${quickMsg.startupModuleHelpText}"/>
-							</gwt:horizontalPanel>
+							<q:helpContext helpText="${quickMsg.startupModuleHelpText}" id="hostedModeStartupModuleContext">
+						     	<q:widget>
+									<gwt:textBox id="hostedModeStartupModule" width="350"/>
+						     	</q:widget>
+						     </q:helpContext>
 						</gwt:widget>
 					</gwt:cell>
 				</gwt:row>
@@ -56,10 +62,11 @@
 					</gwt:cell>
 					<gwt:cell>
 						<gwt:widget>
-							<gwt:horizontalPanel id="hostedModeVMArgsHPanel">
-								<gwt:textBox id="hostedModeVMArgs" width="350"/>
-								<gwt:image url="style/img/help-icon.gif" id="hostedModeVMArgsHelpIcon" onClick="quickStartController.showProjectFormHelp" styleName="HelpIcon" tooltip="${quickMsg.devModeJVMArgsHelpText}"/>
-							</gwt:horizontalPanel>
+							<q:helpContext helpText="${quickMsg.devModeJVMArgsHelpText}" id="hostedModeVMArgsContext">
+						     	<q:widget>
+									<gwt:textBox id="hostedModeVMArgs" width="350"/>
+						     	</q:widget>
+						     </q:helpContext>
 						</gwt:widget>
 					</gwt:cell>
 				</gwt:row>
@@ -69,10 +76,11 @@
 					</gwt:cell>
 					<gwt:cell>
 						<gwt:widget>
-							<gwt:horizontalPanel id="useCruxModuleExtensionHPanel">
-								<gwt:checkBox id="useCruxModuleExtension" onChange="quickStartController.useModuleCheckChange"/>
-								<gwt:image url="style/img/help-icon.gif" id="useCruxModuleExtensionHelpIcon" onClick="quickStartController.showProjectFormHelp" styleName="HelpIcon" tooltip="${quickMsg.moduleProjectOptionHelpText}"/>
-							</gwt:horizontalPanel>
+							<q:helpContext helpText="${quickMsg.moduleProjectOptionHelpText}" id="projectLayoutListBoxContext">
+						     	<q:widget>
+									<w:singleSelect id="projectLayout" />
+						     	</q:widget>
+						     </q:helpContext>
 						</gwt:widget>
 					</gwt:cell>
 				</gwt:row>
@@ -82,10 +90,11 @@
 					</gwt:cell>
 					<gwt:cell>
 						<gwt:widget>
-							<gwt:horizontalPanel id="cruxModuleDescriptionHPanel">
-								<gwt:textBox id="cruxModuleDescription" width="350" />
-								<gwt:image url="style/img/help-icon.gif" id="cruxModuleDescriptionHelpIcon" onClick="quickStartController.showProjectFormHelp" styleName="HelpIcon" tooltip="${quickMsg.moduleDescriptionHelpText}"/>
-							</gwt:horizontalPanel>
+							<q:helpContext helpText="${quickMsg.moduleDescriptionHelpText}" id="appDescriptionContext">
+						     	<q:widget>
+									<gwt:textBox id="appDescription" width="350" />
+						     	</q:widget>
+						     </q:helpContext>
 						</gwt:widget>
 					</gwt:cell>
 				</gwt:row>

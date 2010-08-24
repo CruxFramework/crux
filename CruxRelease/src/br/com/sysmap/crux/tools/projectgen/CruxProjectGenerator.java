@@ -13,6 +13,7 @@ import br.com.sysmap.crux.core.utils.FileUtils;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessingException;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
+import br.com.sysmap.crux.tools.projectgen.CruxProjectGeneratorOptions.ProjectLayout;
 import br.com.sysmap.crux.tools.schema.SchemaGenerator;
 
 /**
@@ -90,12 +91,12 @@ public class CruxProjectGenerator
 		String projectName = config.getProperty(Names.projectName);
 		String hostedModeStartupModule = config.getProperty(Names.hostedModeStartupModule);
 		String hostedModeStartupURL = config.getProperty(Names.hostedModeStartupURL);
-		boolean useCruxModuleExtension = Boolean.parseBoolean(config.getProperty(Names.useCruxModuleExtension));
+		ProjectLayout projectLayout = ProjectLayout.valueOf(config.getProperty(Names.projectLayout));
 		String hostedModeVMArgs = config.getProperty(Names.hostedModeVMArgs);
-		String cruxModuleDescription = config.getProperty(Names.cruxModuleDescription);
+		String appDescription = config.getProperty(Names.appDescription);
 		
 		return new CruxProjectGeneratorOptions(workspaceDir, projectName, hostedModeStartupModule, hostedModeStartupURL, 
-											   hostedModeVMArgs, useCruxModuleExtension, cruxModuleDescription);
+											   hostedModeVMArgs, projectLayout, appDescription);
 	}
 
 	/**
@@ -124,8 +125,8 @@ public class CruxProjectGenerator
 			this.replacements.add(new String[]{"hostedModeStartupURL", this.options.getHostedModeStartupURL()});
 			this.replacements.add(new String[]{"hostedModeStartupModule", this.options.getHostedModeStartupModule()});
 			this.replacements.add(new String[]{"hostedModeVMArgs", this.options.getHostedModeVMArgs()});
-			this.replacements.add(new String[]{"useCruxModuleExtension", this.options.getModuleSimpleName()});
-			this.replacements.add(new String[]{"cruxModuleDescription", this.options.getCruxModuleDescription()});
+			this.replacements.add(new String[]{"projectLayout", this.options.getProjectLayout().toString()});
+			this.replacements.add(new String[]{"appDescription", this.options.getAppDescription()});
 			
 			this.replacements.add(new String[]{"moduleSimpleNameUpperCase", this.options.getModuleSimpleName()});
 			this.replacements.add(new String[]{"moduleSimpleName", this.options.getModuleSimpleName().toLowerCase()});
@@ -165,10 +166,16 @@ public class CruxProjectGenerator
 	{
 		File buildLibDir = getBuildLibDir();
 		FileUtils.copyFilesFromDir(new File(options.getLibDir(), "build"), buildLibDir);
-		if (this.options.isUseCruxModuleExtension())
+		
+		if (this.options.getProjectLayout().equals(ProjectLayout.MODULE_APP))
 		{
 			FileUtils.copyFilesFromDir(new File(options.getLibDir(), "modules/build"), buildLibDir);
 			createFile(buildLibDir.getParentFile(), "build.xml", "modules/build.xml");
+		}
+		else if (this.options.getProjectLayout().equals(ProjectLayout.MODULE_CONTAINER_APP))
+		{
+			FileUtils.copyFilesFromDir(new File(options.getLibDir(), "modules/build"), buildLibDir);
+			createFile(buildLibDir.getParentFile(), "build.xml", "modules-container/build.xml");
 		}
 		else
 		{
@@ -212,7 +219,7 @@ public class CruxProjectGenerator
 	 */
 	private void createProjectRootFiles() throws IOException
 	{
-		if (this.options.isUseCruxModuleExtension())
+		if (!this.options.getProjectLayout().equals(ProjectLayout.STANDALONE_APP))
 		{
 			createFile(options.getProjectDir(), options.getProjectName() + ".launch", "modules/launch.xml");
 		}
@@ -244,7 +251,7 @@ public class CruxProjectGenerator
 		createFile(clientControllerPackage, "MyController.java", "MyController.java.txt");
 		createFile(serverPackage, "GreetingServiceImpl.java", "GreetingServiceImpl.java.txt");
 
-		if (this.options.isUseCruxModuleExtension())
+		if (!this.options.getProjectLayout().equals(ProjectLayout.STANDALONE_APP))
 		{
 			createFile(sourceDir, "Crux.properties", "modules/crux.properties.txt");
 			createFile(sourceDir, "CruxModuleConfig.properties", "modules/cruxModuleConfig.properties.txt");
@@ -272,11 +279,20 @@ public class CruxProjectGenerator
 		{
 			pageName = pageName.substring(0, pageName.length()-5) + ".crux.xml";
 		}
-		if (this.options.isUseCruxModuleExtension())
+		
+		if (!this.options.getProjectLayout().equals(ProjectLayout.STANDALONE_APP))
 		{
 			FileUtils.copyFilesFromDir(new File(options.getLibDir(), "modules/web-inf"), getWebInfLibDir());
 			createFile(getWebInfLibDir().getParentFile(), "web.xml", "modules/web.xml");
-			createFile(getModulePublicDir(), pageName, "modules/index.crux.xml");		
+			
+			if(this.options.getProjectLayout().equals(ProjectLayout.MODULE_APP))
+			{
+				createFile(getModulePublicDir(), pageName, "modules/index.crux.xml");
+			}
+			else
+			{
+				createFile(getWarDir(), pageName, "modules/index.crux.xml");
+			}
 		}
 		else
 		{
@@ -287,7 +303,8 @@ public class CruxProjectGenerator
 
 	private void createXSDs() throws IOException
 	{
-		SchemaGenerator.generateSchemas(options.getProjectDir(), new File(options.getProjectDir(),"xsd"), null, options.isUseCruxModuleExtension());
+		boolean generateModuleSchema = !options.getProjectLayout().equals(ProjectLayout.STANDALONE_APP);
+		SchemaGenerator.generateSchemas(options.getProjectDir(), new File(options.getProjectDir(),"xsd"), null, generateModuleSchema);
 	}
 	
 	/**
@@ -380,11 +397,11 @@ public class CruxProjectGenerator
 	 */
 	public static interface Names
 	{
-		String cruxModuleDescription = "cruxModuleDescription";
+		String appDescription = "appDescription";
 		String hostedModeStartupModule = "hostedModeStartupModule";
 		String hostedModeStartupURL = "hostedModeStartupURL";
 		String hostedModeVMArgs = "hostedModeVMArgs";
 		String projectName = "projectName";
-		String useCruxModuleExtension = "useCruxModuleExtension";
+		String projectLayout = "projectLayout";
 	}	
 }

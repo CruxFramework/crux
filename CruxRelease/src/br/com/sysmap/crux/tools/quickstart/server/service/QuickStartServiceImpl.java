@@ -26,9 +26,11 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.tools.projectgen.CruxProjectGenerator;
 import br.com.sysmap.crux.tools.projectgen.CruxProjectGeneratorOptions;
 import br.com.sysmap.crux.tools.projectgen.CruxProjectGenerator.Names;
+import br.com.sysmap.crux.tools.projectgen.CruxProjectGeneratorOptions.ProjectLayout;
 import br.com.sysmap.crux.tools.quickstart.client.dto.DirectoryInfo;
 import br.com.sysmap.crux.tools.quickstart.client.dto.ProjectInfo;
 import br.com.sysmap.crux.tools.quickstart.client.remote.QuickStartService;
@@ -40,6 +42,7 @@ import br.com.sysmap.crux.tools.quickstart.client.remote.QuickStartService;
 public class QuickStartServiceImpl implements QuickStartService
 {
 	private static final Log logger = LogFactory.getLog(QuickStartServiceImpl.class);
+	private static QuickStartServerMessages messages = MessagesFactory.getMessages(QuickStartServerMessages.class);
 
 	/**
 	 * @see br.com.sysmap.crux.tools.quickstart.client.remote.QuickStartService#getProjectInfoDefaultValues()
@@ -56,16 +59,21 @@ public class QuickStartServiceImpl implements QuickStartService
 	        String projectName = config.getProperty(Names.projectName);
 	        String hostedModeStartupModule = config.getProperty(Names.hostedModeStartupModule);
 	        String hostedModeStartupURL = config.getProperty(Names.hostedModeStartupURL);
-	        boolean useCruxModuleExtension = Boolean.parseBoolean(config.getProperty(Names.useCruxModuleExtension));
+	        String projectLayout = config.getProperty(Names.projectLayout);
 	        String hostedModeVMArgs = config.getProperty(Names.hostedModeVMArgs);
-	        String cruxModuleDescription = config.getProperty(Names.cruxModuleDescription);
+	        String appDescription = config.getProperty(Names.appDescription);
 	        
 	        info.setProjectName(projectName);
-	        info.setCruxModuleDescription(cruxModuleDescription);
+	        info.setAppDescription(appDescription);
 	        info.setHostedModeStartupModule(hostedModeStartupModule);
 	        info.setHostedModeStartupURL(hostedModeStartupURL);
-	        info.setUseCruxModuleExtension(useCruxModuleExtension);
+	        info.setProjectLayout(projectLayout);
 	        info.setHostedModeVMArgs(hostedModeVMArgs);
+	        
+	        info.addProjectLayout(messages.projectLayoutStandaloneApp(), ProjectLayout.STANDALONE_APP.name());
+	        info.addProjectLayout(messages.projectLayoutModuleApp(), ProjectLayout.MODULE_APP.name());
+	        info.addProjectLayout(messages.projectLayoutModuleContainerApp(), ProjectLayout.MODULE_CONTAINER_APP.name());
+	        
         }
         catch (Exception e)
         {
@@ -85,7 +93,7 @@ public class QuickStartServiceImpl implements QuickStartService
 			CruxProjectGeneratorOptions options = new CruxProjectGeneratorOptions(new File(projectInfo.getWorkspaceDir()), 
 					projectInfo.getProjectName(), projectInfo.getHostedModeStartupModule(), 
 					projectInfo.getHostedModeStartupURL(), projectInfo.getHostedModeVMArgs(), 
-					projectInfo.isUseCruxModuleExtension(), projectInfo.getCruxModuleDescription());
+					ProjectLayout.valueOf(projectInfo.getProjectLayout()), projectInfo.getAppDescription());
 			
 	        new CruxProjectGenerator(options).generate();
 	        return true;

@@ -98,22 +98,22 @@ public interface QuickStartMessages extends Messages
 	@DefaultMessage("Fill in the basic information of your project:")
 	String projectInfoTitle();
 	
-	@DefaultMessage("Your project''s name, which will be the used to generate an Eclipse Project for you. Many project''s resources will inherit this name. So, we recomend you to avoid special or blank characters.")
+	@DefaultMessage("The name of your project. This will be used to generate an Eclipse Project for you. Because some project''s resources will inherit this name, we recomend you to avoid special or blank characters.")
 	String projectNameHelpText();
 	
-	@DefaultMessage("The name of the file you want to be used as the entry point of your system. We recomend you to use ''.html'' extension. If you choose another file extension, you will have to confuigure the ''web.xml'' file of your generated project, in order to set the ''ModulesDeclarativeUIFilter'' to handle the URLs properly.")
+	@DefaultMessage("The name of the page you want to be used as the welcome page of your application. We recomend you to use ''.html'' extension. If you choose another file extension, you will have to confuigure the ''web.xml'' file of your generated project, in order to set the ''ModulesDeclarativeUIFilter'' to handle the URLs properly.")
 	String startupURLHelpText();
 	
-	@DefaultMessage("The main GWT module of your application. The freshly generated project will have only a single module, but you are free to create ones by yourself.")
+	@DefaultMessage("The main GWT module of your application. The freshly generated project will have only a single module, but you are free to create others by yourself.")
 	String startupModuleHelpText();
 	
 	@DefaultMessage("A set of arguments that will passed to the Java Virtual Machine for running the GWT development console (GWT DevMode).")
 	String devModeJVMArgsHelpText();
 	
-	@DefaultMessage("If you check this option, your project will be created as a Crux Module. That means you will be able to embed it in other Crux projects, packaged as a jar file.")
+	@DefaultMessage("The layout of your project. If you don''t know what this means, please consult this link:\n http://code.google.com/p/crux-framework/wiki/UserManual#6_Project_Layouts, or leave the default option selected.")
 	String moduleProjectOptionHelpText();
 	
-	@DefaultMessage("A textual description of the module, that will be used for documentation purposes.")
+	@DefaultMessage("A brief textual description of your application, which will be used for documentation purposes.")
 	String moduleDescriptionHelpText();
 
 	@DefaultMessage("version {0}")

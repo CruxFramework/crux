@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.tools.quickstart.client.controller;
 
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
@@ -73,6 +75,7 @@ public class QuickStartController
             public void onComplete(ProjectInfo result)
             {
 				projectInfo = result;
+				populateProjectLayoutList();
             }
 		});
 	}
@@ -203,13 +206,6 @@ public class QuickStartController
 		
 		screen.getDirSelectorBox().add(clickable);
 	}
-
-	@Expose
-	public void useModuleCheckChange()
-	{
-		screen.getProjectInfo().getRowFormatter().setVisible(6, 
-				screen.getUseCruxModuleExtension().getValue());
-	}
 	
 	@Expose
 	public void finish()
@@ -288,5 +284,19 @@ public class QuickStartController
 		dialog.setWidget(new Label(img.getTitle()));
 		dialog.setStyleName("HelpDialog");
 		dialog.showRelativeTo(img);
+	}	
+
+	/**
+	 * Populates the project layout listbox.
+	 */
+	private void populateProjectLayoutList()
+	{
+		screen.getProjectLayout().clear();
+		
+		List<String[]> allProjectLayouts = projectInfo.getAllProjectLayouts();
+		for (String[] layout : allProjectLayouts)
+		{
+			screen.getProjectLayout().addItem(layout[0], layout[1]);
+		}
 	}
 }

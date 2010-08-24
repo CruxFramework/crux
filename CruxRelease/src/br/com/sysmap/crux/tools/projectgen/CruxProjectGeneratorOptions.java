@@ -27,7 +27,7 @@ import br.com.sysmap.crux.core.utils.FileUtils;
  */
 public class CruxProjectGeneratorOptions
 {
-	private final String cruxModuleDescription;
+	private final String appDescription;
 	private final String hostedModeStartupModule;
 	private final String hostedModeStartupURL;
 	private final String hostedModeVMArgs;
@@ -37,29 +37,24 @@ public class CruxProjectGeneratorOptions
 	private File projectDir;
 	private final String projectName;
 	
-	private final boolean useCruxModuleExtension;
+	private final ProjectLayout projectLayout;
 	private final File workspaceDir;
 
 	public CruxProjectGeneratorOptions(File workspaceDir, String projectName, String hostedModeStartupModule, String hostedModeStartupURL,
-			String hostedModeVMArgs, boolean useCruxModuleExtension, String cruxModuleDescription) throws Exception
+			String hostedModeVMArgs, ProjectLayout projectLayout, String appDescription) throws Exception
     {
 		this.workspaceDir = workspaceDir;
 		this.projectName = projectName;
 		this.hostedModeStartupModule = hostedModeStartupModule;
 		this.hostedModeStartupURL = hostedModeStartupURL;
 		this.hostedModeVMArgs = hostedModeVMArgs;
-		this.cruxModuleDescription = cruxModuleDescription;
+		this.appDescription = appDescription;
 		this.moduleSimpleName = getModuleSimpleName(hostedModeStartupModule) ;
 		this.modulePackage = getModulePackage(hostedModeStartupModule);
-		this.useCruxModuleExtension = useCruxModuleExtension;
+		this.projectLayout = projectLayout;
 		
 		this.projectDir = createProjectDir();
 		this.libDir = findLibDir();
-    }
-
-	public String getCruxModuleDescription()
-    {
-    	return cruxModuleDescription;
     }
 
 	public String getHostedModeStartupModule()
@@ -107,10 +102,21 @@ public class CruxProjectGeneratorOptions
     	return workspaceDir;
     }
 
-	public boolean isUseCruxModuleExtension()
-    {
-    	return useCruxModuleExtension;
-    }
+	/**
+	 * @return the appDescription
+	 */
+	public String getAppDescription()
+	{
+		return appDescription;
+	}
+
+	/**
+	 * @return the projectLayout
+	 */
+	public ProjectLayout getProjectLayout()
+	{
+		return projectLayout;
+	}		
 
 	/**
 	 * @return
@@ -169,4 +175,14 @@ public class CruxProjectGeneratorOptions
 		return hostedModeStartupModule;
 	}
 	
+	/**
+	 * Currently available project layouts.
+	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 */
+	public static enum ProjectLayout
+	{
+		STANDALONE_APP,
+		MODULE_APP,
+		MODULE_CONTAINER_APP;
+	}
 }
