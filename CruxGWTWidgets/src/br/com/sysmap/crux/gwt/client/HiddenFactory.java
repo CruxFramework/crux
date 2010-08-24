@@ -34,7 +34,7 @@ public class HiddenFactory extends WidgetFactory<Hidden>
 	@Override
 	@TagAttributes({
 		@TagAttribute("name"),
-		@TagAttribute("value")
+		@TagAttribute(value="value", supportsI18N=true)
 	})
 	public void processAttributes(WidgetFactoryContext<Hidden> context) throws InterfaceConfigException
 	{

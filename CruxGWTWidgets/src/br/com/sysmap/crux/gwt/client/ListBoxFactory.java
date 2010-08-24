@@ -16,18 +16,11 @@
 package br.com.sysmap.crux.gwt.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
-import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
-import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
-import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
-import br.com.sysmap.crux.core.client.screen.ScreenFactory;
-import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
-import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
-import br.com.sysmap.crux.core.client.screen.factory.HasChangeHandlersFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.ListBox;
@@ -37,9 +30,27 @@ import com.google.gwt.user.client.ui.ListBox;
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="listBox", library="gwt")
-public class ListBoxFactory extends FocusWidgetFactory<ListBox> 
-       implements HasChangeHandlersFactory<ListBox>
+public class ListBoxFactory extends AbstractListBoxFactory<ListBox>
 {
+	@Override
+	@TagChildren({
+		@TagChild(ListBoxItemsProcessor.class)
+	})
+	public void processChildren(WidgetFactoryContext<ListBox> context) throws InterfaceConfigException {}	
+	
+	public static class ListBoxItemsProcessor extends ItemsProcessor<ListBox>
+	{		
+	}
+	
+	@Override
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="multiple", type=Boolean.class)
+	})
+	public void processAttributes(br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext<ListBox> context) throws InterfaceConfigException
+	{
+		super.processAttributes(context);
+	}
+
 	@Override
 	public ListBox instantiateWidget(Element element, String widgetId) 
 	{
@@ -49,66 +60,7 @@ public class ListBoxFactory extends FocusWidgetFactory<ListBox>
 			return new ListBox(Boolean.parseBoolean(multiple));
 
 		}
+		
 		return new ListBox();
-	}
-	
-	@Override
-	@TagAttributes({
-		@TagAttribute(value="visibleItemCount", type=Integer.class)
-	})
-	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="multiple", type=Boolean.class)
-	})	
-	
-	public void processAttributes(WidgetFactoryContext<ListBox> context) throws InterfaceConfigException
-	{
-		super.processAttributes(context);
-	}
-
-	@Override
-	@TagChildren({
-		@TagChild(ItemsProcessor.class)
-	})
-	public void processChildren(WidgetFactoryContext<ListBox> context) throws InterfaceConfigException {}
-
-	@TagChildAttributes(tagName="item", minOccurs="0", maxOccurs="unbounded")
-	public static class ItemsProcessor extends WidgetChildProcessor<ListBox>
-	{
-		@Override
-		@TagAttributesDeclaration({
-			@TagAttributeDeclaration("value"),
-			@TagAttributeDeclaration("label"),
-			@TagAttributeDeclaration(value="selected", type=Boolean.class)
-		})
-		public void processChildren(WidgetChildProcessorContext<ListBox> context) throws InterfaceConfigException 
-		{
-			Integer index = (Integer) context.getAttribute("index");
-			if (index == null)
-			{
-				index = 0;
-			}
-
-			Element element = context.getChildElement();
-			
-			String label = element.getAttribute("_label");
-			String value = element.getAttribute("_value");
-			
-			if(label != null && label.length() > 0)
-			{
-				label = ScreenFactory.getInstance().getDeclaredMessage(label);
-			}			
-			if (value == null || value.length() == 0)
-			{
-				value = label;
-			}
-			context.getRootWidget().insertItem(label, value, index);
-
-			String selected = element.getAttribute("_selected");
-			if (selected != null && selected.trim().length() > 0)
-			{
-				context.getRootWidget().setItemSelected(index, Boolean.parseBoolean(selected));
-			}
-			context.setAttribute("index", (index+1));
-		}
 	}
 }
