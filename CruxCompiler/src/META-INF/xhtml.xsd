@@ -668,8 +668,6 @@
   <xs:element name="html">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="head" minOccurs="0"/>
-        <xs:element ref="body" minOccurs="0"/>
         <xs:any minOccurs="0" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attributeGroup ref="i18n"/>
