@@ -50,7 +50,7 @@ public class ClientControllers
 	private static final Log logger = LogFactory.getLog(ClientControllers.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Lock lock = new ReentrantLock();
-	private static Map<String, Class<?>> controllers;
+	private static Map<String, String> controllers;
 	private static List<String> globalControllers;
 	private static Map<String, Set<String>> widgetControllers;
 	
@@ -84,7 +84,7 @@ public class ClientControllers
 	 */
 	protected static void initializeControllers()
 	{
-		controllers = new HashMap<String, Class<?>>();
+		controllers = new HashMap<String, String>();
 		globalControllers = new ArrayList<String>();
 		widgetControllers = new HashMap<String, Set<String>>();
 		
@@ -102,7 +102,7 @@ public class ClientControllers
 						throw new CruxGeneratorException(messages.controllersDuplicatedController(annot.value()));
 					}
 					
-					controllers.put(annot.value(), controllerClass);
+					controllers.put(annot.value(), controllerClass.getCanonicalName());
 					if (controllerClass.getAnnotation(Global.class) != null)
 					{
 						globalControllers.add(annot.value());
@@ -150,7 +150,7 @@ public class ClientControllers
 	 * @param name
 	 * @return
 	 */
-	public static Class<?> getController(String name)
+	public static String getController(String name)
 	{
 		if (controllers == null)
 		{

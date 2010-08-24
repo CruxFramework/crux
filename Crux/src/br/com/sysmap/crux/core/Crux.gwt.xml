@@ -31,7 +31,7 @@
 	</generate-with>
 	
 	<!-- Specify the generator for registered datasources.     -->
-	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientDataSourcesGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.datasource.RegisteredClientDataSourcesGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.datasource.RegisteredDataSources" />
 	</generate-with>
 

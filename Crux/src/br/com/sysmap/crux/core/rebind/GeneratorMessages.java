@@ -140,7 +140,7 @@ public interface GeneratorMessages
 	String cruxProxyCreatorInvalidReturnType(String simpleSourceName);
 
 	@DefaultServerMessage("[generator 038] - Unable to find source for type {0}")
-	String crossDocumentGeneratorSourceNotFound(String typeName);
+	String generatorSourceNotFound(String typeName);
 
 	@DefaultServerMessage("[generator 039] - {0} is not an interface.")
 	String crossDocumentGeneratorTypeIsNotInterface(String qualifiedSourceName);
@@ -213,4 +213,16 @@ public interface GeneratorMessages
 
 	@DefaultServerMessage("[generator 047] - Error generating invoker. Controller not found for interface {0}.")
 	String errorGeneratingInvokerControllerNotFoundForWrapper(String canonicalName);
+
+	@DefaultServerMessage("[generator 048] - Error Generating registered element. Can not retrieve module's list of screens.")
+	String errorGeneratingRegisteredElementCanNotFoundScreens();
+
+	@DefaultServerMessage("[generator 049] - Error Generating DataSource {0}. Can not retrieve identifier field {1}.")
+	String errorGeneratingRegisteredDataSourceCanNotFindIdentifier(String name, String field);
+
+	@DefaultServerMessage("[generator 050] - Error Generating DataSource. Column {1} from type {0} is invalid.")
+	String errorGeneratingRegisteredDataSourceInvalidColumn(String name, String columnName);
+
+	@DefaultServerMessage("[generator 051] - Error Generating DataSource {0}. Invalid Bound object. Primitive is not allowed")
+	String errorGeneratingRegisteredDataSourceInvalidBoundObject(String name);
 }

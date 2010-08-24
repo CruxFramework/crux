@@ -15,8 +15,10 @@
  */
 package br.com.sysmap.crux.core.rebind.crossdocument;
 
-import br.com.sysmap.crux.core.rebind.AbstractGenerator;
+import br.com.sysmap.crux.core.i18n.MessagesFactory;
+import br.com.sysmap.crux.core.rebind.GeneratorMessages;
 
+import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
@@ -29,8 +31,10 @@ import com.google.gwt.core.ext.typeinfo.TypeOracle;
  * @author Thiago da Rosa de Bustamante
  * 
  */
-public class CrossDocumentGenerator extends AbstractGenerator
+public class CrossDocumentGenerator extends Generator
 {
+	protected static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
+
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext context,
 	        String typeName) throws UnableToCompleteException
@@ -41,7 +45,7 @@ public class CrossDocumentGenerator extends AbstractGenerator
 		JClassType crossDocument = typeOracle.findType(typeName);
 		if (crossDocument == null)
 		{
-			logger.log(TreeLogger.ERROR, messages.crossDocumentGeneratorSourceNotFound(typeName), null); 
+			logger.log(TreeLogger.ERROR, messages.generatorSourceNotFound(typeName), null); 
 			throw new UnableToCompleteException();
 		}
 

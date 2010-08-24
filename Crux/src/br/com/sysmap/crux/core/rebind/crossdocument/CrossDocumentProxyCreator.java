@@ -27,7 +27,8 @@ import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentProxy;
 import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
 import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentProxy.CrossDocumentReader;
 import br.com.sysmap.crux.core.client.event.Events;
-import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
+import br.com.sysmap.crux.core.rebind.AbstractSerializableProxyCreator;
+import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializationUtils;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.Shared;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.TypeSerializerCreator;
@@ -37,7 +38,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.impl.Impl;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JPackage;
@@ -60,7 +60,7 @@ import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
  * @author Thiago da Rosa de Bustamante
  * 
  */
-public class CrossDocumentProxyCreator extends AbstractProxyCreator
+public class CrossDocumentProxyCreator extends AbstractSerializableProxyCreator
 {
 	private static final String CROSS_DOC_SUFFIX = "_CrossDocProxy";
 	private static final Map<JPrimitiveType, CrossDocumentReader> JPRIMITIVETYPE_TO_READER = new HashMap<JPrimitiveType, CrossDocumentReader>();
@@ -117,10 +117,10 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	
 	/**
 	 * Generate any fields required by the proxy.
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
 	@Override
-	protected void generateProxyFields(SourceWriter srcWriter) throws UnableToCompleteException
+	protected void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException
 	{
 		String controllerName = getControllerName(context.getTypeOracle());
 		// Initialize a field with binary name of the remote service interface
@@ -132,9 +132,9 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 
 	/**
 	 * Generates the client's asynchronous proxy method.
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
-	protected void generateProxyMethod(SourceWriter w, JMethod method) throws UnableToCompleteException
+	protected void generateProxyMethod(SourceWriter w, JMethod method) throws CruxGeneratorException
 	{
 		w.println();
 
@@ -189,10 +189,10 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	/**
 	 * @param w
 	 * @param serializableTypeOracle
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
 	@Override
-	protected void generateProxyMethods(SourceWriter w) throws UnableToCompleteException
+	protected void generateProxyMethods(SourceWriter w) throws CruxGeneratorException
 	{
 		JMethod[] syncMethods = baseProxyType.getOverridableMethods();
 		for (JMethod method : syncMethods)
@@ -241,30 +241,37 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	 * @param context
 	 * @param typesSentFromBrowser
 	 * @param typesSentToBrowser
-	 * @throws UnableToCompleteException
+	 * @throws CruxGeneratorException
 	 */
 	@Override
-	protected void generateTypeHandlers(SerializableTypeOracle typesSentFromBrowser,
-			                            SerializableTypeOracle typesSentToBrowser) throws UnableToCompleteException
+	protected void generateTypeSerializers(SerializableTypeOracle typesSentFromBrowser,
+			                            SerializableTypeOracle typesSentToBrowser) throws CruxGeneratorException
 	{
-		TypeSerializerCreator tsc = new TypeSerializerCreator(logger, typesSentFromBrowser, typesSentToBrowser, context, 
-												SerializationUtils.getTypeSerializerQualifiedName(baseProxyType));
-		tsc.realize(logger);
+		try
+        {
+	        TypeSerializerCreator tsc = new TypeSerializerCreator(logger, typesSentFromBrowser, typesSentToBrowser, context, 
+	        										SerializationUtils.getTypeSerializerQualifiedName(baseProxyType));
+	        tsc.realize(logger);
+        }
+        catch (Exception e)
+        {
+        	throw new CruxGeneratorException(e.getMessage(), e);
+        }
 	}
 
 	
 	/**
 	 * @param typeOracle
 	 * @return
-	 * @throws UnableToCompleteException
+	 * @throws CruxGeneratorException
 	 */
-	protected JClassType getControllerClass(TypeOracle typeOracle) throws UnableToCompleteException
+	protected JClassType getControllerClass(TypeOracle typeOracle) throws CruxGeneratorException
 	{
 		String crossDocInterfaceName = baseProxyType.getQualifiedSourceName();
 		if (!crossDocInterfaceName.endsWith("CrossDoc"))
 		{
 			logger.branch(TreeLogger.ERROR, messages.crossDocumentInvalidCrossDocInterfaceName(crossDocInterfaceName), null);
-			throw new UnableToCompleteException();
+			throw new CruxGeneratorException();
 			
 		}
 		
@@ -272,7 +279,7 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		if (controllerClass == null)
 		{
 			logger.branch(TreeLogger.ERROR, messages.crossDocumentCanNotFindControllerForInterface(crossDocInterfaceName), null);
-			throw new UnableToCompleteException();
+			throw new CruxGeneratorException();
 		}
 		return controllerClass;
 	}
@@ -280,9 +287,9 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	/**
 	 * @param typeOracle
 	 * @return
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
-	protected String getControllerName(TypeOracle typeOracle) throws UnableToCompleteException
+	protected String getControllerName(TypeOracle typeOracle) throws CruxGeneratorException
 	{
 		String crossDocInterfaceName = baseProxyType.getQualifiedSourceName();
 		JClassType controllerClass = getControllerClass(typeOracle);
@@ -290,7 +297,7 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 		if (controllerAnnot == null)
 		{
 			logger.branch(TreeLogger.ERROR, messages.crossDocumentInvalidController(crossDocInterfaceName), null);
-			throw new UnableToCompleteException();
+			throw new CruxGeneratorException();
 		}
 		
 		return controllerAnnot.value();
@@ -392,9 +399,9 @@ public class CrossDocumentProxyCreator extends AbstractProxyCreator
 	/**
 	 * @param w
 	 * @param method
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
-	private void generateCallToSelfBlock(SourceWriter w, JMethod method) throws UnableToCompleteException
+	private void generateCallToSelfBlock(SourceWriter w, JMethod method) throws CruxGeneratorException
     {
 		JClassType controllerClass = getControllerClass(context.getTypeOracle());
 		JType returnType = method.getReturnType().getErasedType();

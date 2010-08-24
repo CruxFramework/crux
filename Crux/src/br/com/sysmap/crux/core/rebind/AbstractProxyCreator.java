@@ -16,21 +16,13 @@
 package br.com.sysmap.crux.core.rebind;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializableTypeOracleBuilder;
 
 import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.PropertyOracle;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
-import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
-import com.google.gwt.core.ext.typeinfo.JType;
-import com.google.gwt.core.ext.typeinfo.NotFoundException;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.SourceWriter;
-import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -62,32 +54,17 @@ public abstract class AbstractProxyCreator
 	 * @param logger
 	 * @param context
 	 * @return a proxy class for cross document invoking.
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
-	public String create() throws UnableToCompleteException
+	public String create() throws CruxGeneratorException
 	{
-		TypeOracle typeOracle = context.getTypeOracle();
-
 		SourceWriter srcWriter = getSourceWriter();
 		if (srcWriter == null)
 		{
 			return getProxyQualifiedName();
 		}
 
-		final PropertyOracle propertyOracle = context.getPropertyOracle();
-
-		if (this.baseProxyType != null)
-		{
-			SerializableTypeOracleBuilder typesSentFromDocBuilder = new SerializableTypeOracleBuilder(logger, propertyOracle, typeOracle);
-			SerializableTypeOracleBuilder typesSentToDocBuilder = new SerializableTypeOracleBuilder(logger, propertyOracle, typeOracle);
-
-			addRoots(typeOracle, typesSentFromDocBuilder, typesSentToDocBuilder);
-
-			SerializableTypeOracle typesSentFromDoc = typesSentFromDocBuilder.build(logger);
-			SerializableTypeOracle typesSentToDoc = typesSentToDocBuilder.build(logger);
-
-			generateTypeHandlers(typesSentFromDoc, typesSentToDoc);
-		}
+		generateSubTypes(srcWriter);
 		generateProxyFields(srcWriter);
 		generateProxyContructor(srcWriter);
 		generateProxyMethods(srcWriter);
@@ -97,101 +74,31 @@ public abstract class AbstractProxyCreator
 	}
 
 	/**
-	 * Adds a root type for each type that appears in the CrossDocument
-	 * interface methods.
-	 */
-	protected void addBaseTypeRootTypes(TypeOracle typeOracle, SerializableTypeOracleBuilder typesSentFromDoc, 
-			                                      SerializableTypeOracleBuilder typesSentToDoc) throws NotFoundException
-	{
-		JMethod[] methods = baseProxyType.getOverridableMethods();
-		JClassType exceptionClass = typeOracle.getType(Exception.class.getName());
-
-		for (JMethod method : methods)
-		{
-			JType returnType = method.getReturnType();
-			if (returnType != JPrimitiveType.VOID)
-			{
-				typesSentToDoc.addRootType(logger, returnType);
-			}
-
-			JParameter[] params = method.getParameters();
-			for (JParameter param : params)
-			{
-				JType paramType = param.getType();
-				typesSentFromDoc.addRootType(logger, paramType);
-			}
-
-			JType[] exs = method.getThrows();
-			if (exs.length > 0)
-			{
-				for (JType ex : exs)
-				{
-					if (!exceptionClass.isAssignableFrom(ex.isClass()))
-					{
-						logger.log(TreeLogger.WARN, "'" + ex.getQualifiedSourceName() + "' is not a checked exception; only checked exceptions may be used", null);
-					}
-
-					typesSentToDoc.addRootType(logger, ex);
-				}
-			}
-		}
-	}	
-	
-	/**
-	 * Add the implicit root types that are needed to make Cross Document
-	 * invoker work.
-	 */
-	protected void addRequiredRoots(TypeOracle typeOracle, SerializableTypeOracleBuilder stob) throws NotFoundException
-	{
-		stob.addRootType(logger, typeOracle.getType(String.class.getName()));
-	}
-	
-	protected void addRoots(TypeOracle typeOracle, SerializableTypeOracleBuilder typesSentFromDocBuilder, 
-			SerializableTypeOracleBuilder typesSentToDocBuilder) throws UnableToCompleteException
-	{
-		try
-		{
-			addRequiredRoots(typeOracle, typesSentFromDocBuilder);
-			addRequiredRoots(typeOracle, typesSentToDocBuilder);
-
-			addBaseTypeRootTypes(typeOracle, typesSentFromDocBuilder, typesSentToDocBuilder);
-		}
-		catch (NotFoundException e)
-		{
-			logger.log(TreeLogger.ERROR, "Unable to find type referenced from base interface", e);
-			throw new UnableToCompleteException();
-		}
-	}	
-
-	/**
 	 * Generate the proxy constructor and delegate to the superclass constructor
 	 * using the default address for the
 	 * {@link com.google.gwt.user.client.rpc.RemoteService RemoteService}.
 	 */
-	protected abstract void generateProxyContructor(SourceWriter srcWriter) throws UnableToCompleteException;	
-	
+	protected abstract void generateProxyContructor(SourceWriter srcWriter) throws CruxGeneratorException;	
+
 	/**
 	 * Generate any fields required by the proxy.
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
-	protected abstract void generateProxyFields(SourceWriter srcWriter) throws UnableToCompleteException;	
+	protected abstract void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException;	
 	
 	/**
 	 * @param w
 	 * @param serializableTypeOracle
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
-	protected abstract void generateProxyMethods(SourceWriter w) throws UnableToCompleteException;
+	protected abstract void generateProxyMethods(SourceWriter w) throws CruxGeneratorException;	
 	
 	/**
-	 * @param logger
-	 * @param context
-	 * @param typesSentFromBrowser
-	 * @param typesSentToBrowser
-	 * @throws UnableToCompleteException
+	 * Override this method to generate any nested type required by the proxy
+	 * @param srcWriter
+	 * @throws CruxGeneratorException 
 	 */
-	protected abstract void generateTypeHandlers(SerializableTypeOracle typesSentFromBrowser,
-			                            SerializableTypeOracle typesSentToBrowser) throws UnableToCompleteException;
+	protected abstract void generateSubTypes(SourceWriter srcWriter) throws CruxGeneratorException;
 	
 	/**
 	 * @param method
@@ -216,6 +123,10 @@ public abstract class AbstractProxyCreator
 	 */
 	protected abstract String getProxyQualifiedName();
 	
+	/**
+	 * @return the simple name of the proxy object.
+	 */
+	protected abstract String getProxySimpleName();
 	
 	/**
 	 * @return a sourceWriter for the proxy class

@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.core.utils;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
@@ -31,8 +30,12 @@ import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
+import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
+import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.core.ext.typeinfo.NotFoundException;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -65,7 +68,7 @@ public class ClassUtils
 	 * @param baseClass 
 	 * @return
 	 */
-	public static String getGetterMethod(String propertyName, Class<?> baseClass)
+	public static String getGetterMethod(String propertyName, JClassType baseClass)
 	{
 		if (propertyName == null || propertyName.length() == 0)
 		{
@@ -77,19 +80,26 @@ public class ClassUtils
 		{
 			try
             {
-	            baseClass.getMethod("get"+result, (Class<?>[])null);
+	            baseClass.getMethod("get"+result, new JType[]{});
                 result = "get"+result;
             }
             catch (Exception e)
             {
 	            try
                 {
-	                baseClass.getMethod("is"+result, (Class<?>[])null);
+	                baseClass.getMethod("is"+result, new JType[]{});
 	                result = "is"+result;
                 }
                 catch (Exception e1)
                 {
-                	result = null;
+                	if (baseClass.getSuperclass() == null)
+                	{
+                		result = null;
+                	}
+                	else
+                	{
+                		result = getGetterMethod(propertyName, baseClass.getSuperclass());
+                	}
                 }
             }
 			
@@ -130,72 +140,72 @@ public class ClassUtils
 	}
 	
 	/**
-	 * @param attrType
+	 * @param jPrimitiveType
 	 * @return
 	 */
-	public static Class<?> getReflectionEquivalentTypeForPrimities(Class<?> attrType)
+	public static Class<?> getReflectionEquivalentTypeForPrimities(Class<?> jPrimitiveType)
 	{
-		if (attrType.equals(Integer.class))
+		if (jPrimitiveType.equals(Integer.class))
 		{
 			return Integer.TYPE;
 		}
-		else if (attrType.equals(Integer.TYPE))
+		else if (jPrimitiveType.equals(Integer.TYPE))
 		{
 			return Integer.class;
 		}
-		else if (attrType.equals(Short.class))
+		else if (jPrimitiveType.equals(Short.class))
 		{
 			return Short.TYPE;
 		}
-		else if (attrType.equals(Short.TYPE))
+		else if (jPrimitiveType.equals(Short.TYPE))
 		{
 			return Short.class;
 		}
-		else if (attrType.equals(Long.class))
+		else if (jPrimitiveType.equals(Long.class))
 		{
 			return Long.TYPE;
 		}
-		else if (attrType.equals(Long.TYPE))
+		else if (jPrimitiveType.equals(Long.TYPE))
 		{
 			return Long.class;
 		}
-		else if (attrType.equals(Byte.class))
+		else if (jPrimitiveType.equals(Byte.class))
 		{
 			return Byte.TYPE;
 		}
-		else if (attrType.equals(Byte.TYPE))
+		else if (jPrimitiveType.equals(Byte.TYPE))
 		{
 			return Byte.class;
 		}
-		else if (attrType.equals(Float.class))
+		else if (jPrimitiveType.equals(Float.class))
 		{
 			return Float.TYPE;
 		}
-		else if (attrType.equals(Float.TYPE))
+		else if (jPrimitiveType.equals(Float.TYPE))
 		{
 			return Float.class;
 		}
-		else if (attrType.equals(Double.class))
+		else if (jPrimitiveType.equals(Double.class))
 		{
 			return Double.TYPE;
 		}
-		else if (attrType.equals(Double.TYPE))
+		else if (jPrimitiveType.equals(Double.TYPE))
 		{
 			return Double.class;
 		}
-		else if (attrType.equals(Boolean.class))
+		else if (jPrimitiveType.equals(Boolean.class))
 		{
 			return Boolean.TYPE;
 		}
-		else if (attrType.equals(Boolean.TYPE))
+		else if (jPrimitiveType.equals(Boolean.TYPE))
 		{
 			return Boolean.class;
 		}
-		else if (attrType.equals(Character.class))
+		else if (jPrimitiveType.equals(Character.class))
 		{
 			return Character.TYPE;
 		}
-		else if (attrType.equals(Character.TYPE))
+		else if (jPrimitiveType.equals(Character.TYPE))
 		{
 			return Character.class;
 		}
@@ -222,6 +232,68 @@ public class ClassUtils
 		return className;
 	}
 	
+	/**
+	 * 
+	 * @param valueVariable
+	 * @param expectedType
+	 * @return
+	 * @throws NotFoundException 
+	 */
+	public static String getParsingExpressionForSimpleType(String valueVariable, JType expectedType) throws NotFoundException
+	{
+		if (expectedType.isPrimitive() != null)
+		{	
+			JPrimitiveType primitiveType = expectedType.isPrimitive();
+			if (primitiveType.equals(JPrimitiveType.INT))
+			{
+				return "Integer.parseInt("+valueVariable+")";
+			}
+			else if (primitiveType.equals(JPrimitiveType.SHORT))
+			{
+				return "Short.parseShort("+valueVariable+")";
+			}
+			else if (primitiveType.equals(JPrimitiveType.LONG))
+			{
+				return "Long.parseLong("+valueVariable+")";
+			}
+			else if (primitiveType.equals(JPrimitiveType.BYTE))
+			{
+				return "Byte.parseByte("+valueVariable+")";
+			}
+			else if (primitiveType.equals(JPrimitiveType.FLOAT))
+			{
+				return "Float.parseFloat("+valueVariable+")";
+			}
+			else if (primitiveType.equals(JPrimitiveType.DOUBLE))
+			{
+				return "Double.parseDouble("+valueVariable+")";
+			}
+			else if (primitiveType.equals(JPrimitiveType.BOOLEAN))
+			{
+				return "Boolean.parseBoolean("+valueVariable+")";
+			}
+			else if (primitiveType.equals(JPrimitiveType.CHAR))
+			{
+				return valueVariable+".charAt(0)";
+			}
+		}
+		else if (expectedType.isEnum() != null)
+		{
+			return expectedType.getQualifiedSourceName()+".valueOf("+valueVariable+")";
+		}
+		else
+		{
+			JClassType stringType = ((JClassType)expectedType).getOracle().getType(String.class.getName());
+		    if (stringType.isAssignableFrom((JClassType)expectedType))
+		    {
+		    	return valueVariable;
+		    }
+			
+		}
+
+		return null;
+	}
+
 	/**
 	 * 
 	 * @param valueVariable
@@ -330,43 +402,42 @@ public class ClassUtils
 	 * @param name
 	 * @return
 	 */
-	public static Field getDeclaredField(Class<?> clazz, String name) throws NoSuchFieldException
+	public static JField getDeclaredField(JClassType clazz, String name) throws NoSuchFieldException
 	{
-		try
+		JField field = clazz.getField(name);
+		if (field == null)
 		{
-			return clazz.getDeclaredField(name);
-		}
-		catch (NoSuchFieldException e)
-		{
-			if (clazz.equals(Object.class))
+			if (clazz.getSuperclass() == null)
 			{
 				throw new NoSuchFieldException(name);
 			}
-			return getDeclaredField(clazz.getSuperclass(), name);
+			field = getDeclaredField(clazz.getSuperclass(), name);
 		}
+
+		return field;
 	}
 	
 	/**
 	 * @param clazz
 	 * @return
 	 */
-	public static Field[] getDeclaredFields(Class<?> clazz)
+	public static JField[] getDeclaredFields(JClassType clazz)
 	{
-		if (clazz.equals(Object.class))
+		if (clazz.getSuperclass() == null)
 		{
-			return new Field[0];
+			return new JField[0];
 		}
-		Set<Field> result = new HashSet<Field>();
-		Field[] declaredFields = clazz.getDeclaredFields();
-		for (Field field : declaredFields)
+		Set<JField> result = new HashSet<JField>();
+		JField[] declaredFields = clazz.getFields();
+		for (JField field : declaredFields)
 		{
 			result.add(field);
 		}
 		clazz = clazz.getSuperclass();
-		while (!clazz.equals(Object.class))
+		while (clazz.getSuperclass() != null)
 		{
-			declaredFields = clazz.getDeclaredFields();
-			for (Field field : declaredFields)
+			declaredFields = clazz.getFields();
+			for (JField field : declaredFields)
 			{
 				if (!result.contains(field))
 				{
@@ -376,7 +447,7 @@ public class ClassUtils
 			clazz = clazz.getSuperclass();
 		}
 		
-		return result.toArray(new Field[result.size()]);
+		return result.toArray(new JField[result.size()]);
 	}
 	
 	/**

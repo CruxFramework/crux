@@ -17,6 +17,7 @@ package br.com.sysmap.crux.core.rebind.context;
 
 import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
+import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.rebind.crossdocument.CrossDocumentProxyCreator;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.SerializationUtils;
 import br.com.sysmap.crux.core.rebind.crossdocument.gwt.Shared;
@@ -25,7 +26,6 @@ import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
@@ -62,10 +62,10 @@ public class ContextProxyCreator extends CrossDocumentProxyCreator
 	
 	/**
 	 * Generate any fields required by the proxy.
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
 	@Override
-	protected void generateProxyFields(SourceWriter srcWriter) throws UnableToCompleteException
+	protected void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException
 	{
 		String typeSerializerName = SerializationUtils.getTypeSerializerQualifiedName(baseProxyType);
 		srcWriter.println("private static final " + typeSerializerName + " SERIALIZER = new " + typeSerializerName + "();");
@@ -74,9 +74,9 @@ public class ContextProxyCreator extends CrossDocumentProxyCreator
 
 	/**
 	 * Generates the method for context reading.
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
-	protected void generateProxyGetMethod(SourceWriter w, JMethod method, int propPrefixLength) throws UnableToCompleteException
+	protected void generateProxyGetMethod(SourceWriter w, JMethod method, int propPrefixLength) throws CruxGeneratorException
 	{
 		w.println();
 
@@ -116,10 +116,10 @@ public class ContextProxyCreator extends CrossDocumentProxyCreator
 	/**
 	 * @param w
 	 * @param serializableTypeOracle
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
 	@Override
-	protected void generateProxyMethods(SourceWriter w) throws UnableToCompleteException
+	protected void generateProxyMethods(SourceWriter w) throws CruxGeneratorException
 	{
 		JMethod[] syncMethods = baseProxyType.getOverridableMethods();
 		for (JMethod method : syncMethods)
@@ -158,16 +158,16 @@ public class ContextProxyCreator extends CrossDocumentProxyCreator
 			else
 			{
 				logger.log(TreeLogger.ERROR, messages.errorContextWrapperInvalidSignature(method.getJsniSignature()));
-				throw new UnableToCompleteException();
+				throw new CruxGeneratorException();
 			}
 		}
 	}
 
 	/**
 	 * Generates method for context writing.
-	 * @throws UnableToCompleteException 
+	 * @throws CruxGeneratorException 
 	 */
-	protected void generateProxySetMethod(SourceWriter w, JMethod method) throws UnableToCompleteException
+	protected void generateProxySetMethod(SourceWriter w, JMethod method) throws CruxGeneratorException
 	{
 		w.println();
 
@@ -217,15 +217,22 @@ public class ContextProxyCreator extends CrossDocumentProxyCreator
 	 * @param context
 	 * @param typesSentFromBrowser
 	 * @param typesSentToBrowser
-	 * @throws UnableToCompleteException
+	 * @throws CruxGeneratorException
 	 */
 	@Override
-	protected void generateTypeHandlers(SerializableTypeOracle typesSentFromBrowser,
-			                            SerializableTypeOracle typesSentToBrowser) throws UnableToCompleteException
+	protected void generateTypeSerializers(SerializableTypeOracle typesSentFromBrowser,
+			                            SerializableTypeOracle typesSentToBrowser) throws CruxGeneratorException
 	{
-		TypeSerializerCreator tsc = new TypeSerializerCreator(logger, typesSentFromBrowser, typesSentToBrowser, context, 
-												SerializationUtils.getTypeSerializerQualifiedName(baseProxyType));
-		tsc.realize(logger);
+		try
+        {
+	        TypeSerializerCreator tsc = new TypeSerializerCreator(logger, typesSentFromBrowser, typesSentToBrowser, context, 
+	        										SerializationUtils.getTypeSerializerQualifiedName(baseProxyType));
+	        tsc.realize(logger);
+        }
+        catch (Exception e)
+        {
+        	throw new CruxGeneratorException(e.getMessage(), e);
+        }
 	}
 
 	/**

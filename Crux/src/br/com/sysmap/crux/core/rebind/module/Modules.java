@@ -115,9 +115,14 @@ public class Modules
 		return modules.values().iterator();
 	}
 	
+	/**
+	 * @param controller
+	 * @param moduleId
+	 * @return
+	 */
 	public boolean isClassOnModulePath(String controller, String moduleId)
 	{
-		return isClassOnModulePath(controller, moduleId, new HashSet<String>());
+		return isClassOnModulePath(controller.replace('.', '/'), moduleId, new HashSet<String>());
 	}
 
 	/**

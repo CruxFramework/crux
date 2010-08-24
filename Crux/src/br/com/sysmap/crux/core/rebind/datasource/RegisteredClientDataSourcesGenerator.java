@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind.controller;
+package br.com.sysmap.crux.core.rebind.datasource;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.GeneratorMessages;
@@ -26,13 +26,12 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 
 /**
- * Generates a RegisteredControllers class.
- * 
+ * Generates a RegisteredDataSources class. 
  * 
  * @author Thiago da Rosa de Bustamante
- * 
+ *
  */
-public class RegisteredControllersGenerator extends Generator
+public class RegisteredClientDataSourcesGenerator extends Generator
 {
 	protected static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 
@@ -49,6 +48,6 @@ public class RegisteredControllersGenerator extends Generator
 			throw new UnableToCompleteException();
 		}
 
-		return new RegisteredControllersProxyCreator(logger, ctx).create();
+		return new RegisteredDataSourcesProxyCreator(logger, ctx).create();
 	}
 }

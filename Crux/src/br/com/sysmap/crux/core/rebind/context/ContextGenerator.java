@@ -41,7 +41,7 @@ public class ContextGenerator extends AbstractGenerator
 		JClassType crossDocument = typeOracle.findType(typeName);
 		if (crossDocument == null)
 		{
-			logger.log(TreeLogger.ERROR, messages.crossDocumentGeneratorSourceNotFound(typeName), null); 
+			logger.log(TreeLogger.ERROR, messages.generatorSourceNotFound(typeName), null); 
 			throw new UnableToCompleteException();
 		}
 

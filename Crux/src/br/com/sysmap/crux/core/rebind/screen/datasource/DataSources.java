@@ -41,7 +41,7 @@ public class DataSources
 	private static final Log logger = LogFactory.getLog(DataSources.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Lock lock = new ReentrantLock();
-	private static Map<String, Class<? extends DataSource<?>>> dataSources;
+	private static Map<String, String> dataSources;
 	
 	/**
 	 * 
@@ -74,7 +74,7 @@ public class DataSources
 	@SuppressWarnings("unchecked")
 	protected static void initializeDataSources()
 	{
-		dataSources = new HashMap<String, Class<? extends DataSource<?>>>();
+		dataSources = new HashMap<String, String>();
 		Set<String> dataSourceNames =  ClassScanner.searchClassesByInterface(DataSource.class);
 		if (dataSourceNames != null)
 		{
@@ -91,7 +91,7 @@ public class DataSources
 						{
 							throw new CruxGeneratorException(messages.dataSourcesDuplicatedDataSource(annot.value()));
 						}
-						dataSources.put(annot.value(), dataSourceClass);
+						dataSources.put(annot.value(), dataSourceClass.getCanonicalName());
 					}
 					else
 					{
@@ -108,7 +108,7 @@ public class DataSources
 						{
 							throw new CruxGeneratorException(messages.dataSourcesDuplicatedDataSource(simpleName));
 						}
-						dataSources.put(simpleName, dataSourceClass);
+						dataSources.put(simpleName, dataSourceClass.getCanonicalName());
 					}
 				} 
 				catch (Throwable e) 
@@ -124,7 +124,7 @@ public class DataSources
 	 * @param name
 	 * @return
 	 */
-	public static Class<? extends DataSource<?>> getDataSource(String name)
+	public static String getDataSource(String name)
 	{
 		if (dataSources == null)
 		{
