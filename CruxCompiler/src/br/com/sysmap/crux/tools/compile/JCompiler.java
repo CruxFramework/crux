@@ -177,7 +177,7 @@ public class JCompiler
 		}
 		else if (input.getName().toLowerCase().endsWith(".java"))
 		{
-			javaFiles.add(input.getCanonicalPath().replace('\\', '/'));
+			javaFiles.add("\"" + input.getCanonicalPath().replace('\\', '/') + "\"");
 		}
 	}
 	
