@@ -17,7 +17,7 @@
 	</listAttribute>
 	<booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false" />
 	<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="br.com.sysmap.crux.module.launch.ModulesLauncher" />
-	<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl ${moduleSimpleName}/${hostedModeStartupURL} -logLevel DEBUG" />
+	<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-startupUrl ${moduleSimpleName}/${hostedModeStartupURL} -logLevel WARN" />
 	<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="${projectName}" />
 	<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="${hostedModeVMArgs}" />
 </launchConfiguration>  
