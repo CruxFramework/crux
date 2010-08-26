@@ -26,7 +26,7 @@
 	</generate-with>
 
 	<!-- Specify the generator for registered formatters.     -->
-	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredClientFormattersGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.formatter.RegisteredClientFormattersGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters" />
 	</generate-with>
 	
@@ -36,7 +36,7 @@
 	</generate-with>
 
 	<!-- Specify the generator for registered module serializers .-->
-	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredCruxSerializablesGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.serializable.RegisteredCruxSerializablesGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.screen.RegisteredCruxSerializables" />
 	</generate-with>
 
@@ -46,12 +46,12 @@
 	</generate-with>
 
 	<!-- Specify the generator for resolve declared i18n messages .-->
-	<generate-with class="br.com.sysmap.crux.core.rebind.DeclaredI18NMessagesGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.i18n.RegisteredI18NMessagesGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages" />
 	</generate-with>
 
 	<!-- Specify the generator for client configurations .-->
-	<generate-with class="br.com.sysmap.crux.core.rebind.CruxClientConfigGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.config.CruxClientConfigGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.config.CruxClientConfig" />
 	</generate-with>
 
@@ -76,7 +76,7 @@
 	</generate-with>
 
 	<!-- Specify the generator for invoker wrappers.     -->
-	<generate-with class="br.com.sysmap.crux.core.rebind.InvokerGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.invoker.InvokerGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.controller.Invoker" />
 	</generate-with>
 	

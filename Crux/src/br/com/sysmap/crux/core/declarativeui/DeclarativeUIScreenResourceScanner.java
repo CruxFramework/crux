@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.core.declarativeui;
 
-import br.com.sysmap.crux.core.rebind.screen.ScreenResourcesScanner;
+import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenResourcesScanner;
 
 
 /**

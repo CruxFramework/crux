@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import br.com.sysmap.crux.core.declarativeui.CruxToHtmlTransformer;
 import br.com.sysmap.crux.core.declarativeui.DeclarativeUIMessages;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
-import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
+import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenResourceResolverInitializer;
 import br.com.sysmap.crux.core.server.CruxFilter;
 import br.com.sysmap.crux.core.utils.StreamUtils;
 

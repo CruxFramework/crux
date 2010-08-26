@@ -36,14 +36,14 @@ public class MessageClasses
 {
 	private static final Lock lock = new ReentrantLock();
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
-	private static Map<String, Class<? extends LocalizableResource>> messagesClasses = null;	
+	private static Map<String, String> messagesClasses = null;	
 	
 	/**
-	 * Return the controller that implements the interface informed.
+	 * Return the className associated with the name informed
 	 * @param interfaceName
 	 * @return
 	 */
-	public static Class<?> getMessageClass(String message)
+	public static String getMessageClass(String message)
 	{
 		if (messagesClasses == null)
 		{
@@ -53,10 +53,9 @@ public class MessageClasses
 	}
 	
 	/**
-	 * Initialise the ScreenResourceResolverScanner factory
 	 * @param urls
 	 */
-	@SuppressWarnings({ "unchecked", "deprecation" })
+	@SuppressWarnings("deprecation")
 	public static void initialize()
 	{
 		if (messagesClasses == null)
@@ -66,7 +65,7 @@ public class MessageClasses
 			{
 				if (messagesClasses == null)
 				{
-					messagesClasses = new HashMap<String, Class<? extends LocalizableResource>>();
+					messagesClasses = new HashMap<String, String>();
 					Set<String> messagesNames =  ClassScanner.searchClassesByInterface(LocalizableResource.class);
 					if (messagesNames != null)
 					{
@@ -81,7 +80,7 @@ public class MessageClasses
 								{
 									throw new CruxGeneratorException(messages.messagesClassesDuplicatedMessageKey(messageNameAnnot.value()));
 								}
-								messagesClasses.put(messageNameAnnot.value(), (Class<? extends LocalizableResource>) messageClass);
+								messagesClasses.put(messageNameAnnot.value(), messageClass.getCanonicalName());
 							}
 							else if (nameAnnot!= null)
 							{
@@ -89,7 +88,7 @@ public class MessageClasses
 								{
 									throw new CruxGeneratorException(messages.messagesClassesDuplicatedMessageKey(nameAnnot.value()));
 								}
-								messagesClasses.put(nameAnnot.value(), (Class<? extends LocalizableResource>) messageClass);
+								messagesClasses.put(nameAnnot.value(), messageClass.getCanonicalName());
 							}
 							else
 							{
@@ -106,7 +105,7 @@ public class MessageClasses
 								{
 									throw new CruxGeneratorException(messages.messagesClassesDuplicatedMessageKey(className));
 								}
-								messagesClasses.put(className, (Class<? extends LocalizableResource>) messageClass);
+								messagesClasses.put(className, messageClass.getCanonicalName());
 							}
 						}
 					}
