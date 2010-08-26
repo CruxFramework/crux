@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.tools.schema;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
@@ -32,9 +31,8 @@ public class SchemaGenerator
 	/**
 	 *  
 	 * @param args
-	 * @throws IOException 
 	 */
-	public static void generateSchemas(File projectBaseDir, File outputDir, File webDir, boolean generateModuleSchema) throws IOException
+	public static void generateSchemas(File projectBaseDir, File outputDir, File webDir, boolean generateModuleSchema)
 	{
 		CruxSchemaGenerator generator = CruxSchemaGeneratorFactory.createSchemaGenerator(projectBaseDir, outputDir, webDir);
 		generator.generateSchemas();
@@ -44,9 +42,8 @@ public class SchemaGenerator
 	/**
 	 * 
 	 * @param args
-	 * @throws IOException 
 	 */
-	public static void generateSchemas(String projectBaseDir, String destDir, String webDir, boolean generateModuleSchema) throws IOException
+	public static void generateSchemas(String projectBaseDir, String destDir, String webDir, boolean generateModuleSchema)
 	{
 		generateSchemas(new File(projectBaseDir), new File(destDir), webDir!=null?new File(webDir):null, generateModuleSchema);
 	}
@@ -86,7 +83,7 @@ public class SchemaGenerator
 				System.out.println("Program aborted");
 			}
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}

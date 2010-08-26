@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.tools.schema;
 
-import java.io.IOException;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -23,6 +22,6 @@ import java.io.IOException;
  */
 public interface CruxSchemaGenerator
 {
-	void generateSchemas() throws IOException;
-	void generateCatalog() throws IOException;
+	void generateSchemas() throws SchemaGeneratorException;
+	void generateCatalog() throws SchemaGeneratorException;
 }
