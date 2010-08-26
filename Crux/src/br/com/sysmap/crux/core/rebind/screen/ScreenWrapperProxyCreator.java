@@ -104,9 +104,9 @@ public class ScreenWrapperProxyCreator extends AbstractWrapperProxyCreator
 				String classSourceName = returnType.getParameterizedQualifiedSourceName();
 				sourceWriter.println("public "+classSourceName+" " + name+"(){");
 				sourceWriter.println("if (Screen.contains(\""+widgetNameFirstLower+"\")){");
-				sourceWriter.println("return Screen.get(\""+widgetNameFirstLower+"\", "+classSourceName+".class);");
+				sourceWriter.println("return ("+classSourceName+")Screen.get(\""+widgetNameFirstLower+"\");");
 				sourceWriter.println("}else{");
-				sourceWriter.println("return Screen.get(\""+widgetName+"\", "+classSourceName+".class);");
+				sourceWriter.println("return ("+classSourceName+")Screen.get(\""+widgetName+"\");");
 				sourceWriter.println("}");
 				sourceWriter.println("}");
 			}
