@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind.screen.formatter;
+package br.com.sysmap.crux.core.rebind.scanner.screen.formatter;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,7 +42,7 @@ public class Formatters
 	private static final Log logger = LogFactory.getLog(Formatters.class);
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
 	private static final Lock lock = new ReentrantLock();
-	private static Map<String, Class<? extends Formatter>> formatters;
+	private static Map<String, String> formatters;
 	
 	/**
 	 * 
@@ -75,7 +75,7 @@ public class Formatters
 	@SuppressWarnings("unchecked")
 	protected static void initializeFormatters()
 	{
-		formatters = new HashMap<String, Class<? extends Formatter>>();
+		formatters = new HashMap<String, String>();
 		Set<String> formatterNames =  ClassScanner.searchClassesByInterface(Formatter.class);
 		if (formatterNames != null)
 		{
@@ -91,7 +91,7 @@ public class Formatters
 						{
 							throw new CruxGeneratorException(messages.formattersDuplicatedDataSource(annot.value()));
 						}
-						formatters.put(annot.value(), formatterClass);
+						formatters.put(annot.value(), formatterClass.getCanonicalName());
 					}
 					else
 					{
@@ -108,7 +108,7 @@ public class Formatters
 						{
 							throw new CruxGeneratorException(messages.formattersDuplicatedDataSource(simpleName));
 						}
-						formatters.put(simpleName, formatterClass);
+						formatters.put(simpleName, formatterClass.getCanonicalName());
 					}
 				} 
 				catch (Throwable e) 
@@ -124,7 +124,7 @@ public class Formatters
 	 * @param name
 	 * @return
 	 */
-	public static Class<? extends Formatter> getFormatter(String name)
+	public static String getFormatter(String name)
 	{
 		if (formatters == null)
 		{
