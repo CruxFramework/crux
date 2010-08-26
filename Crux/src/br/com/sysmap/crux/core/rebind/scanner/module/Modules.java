@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind.module;
+package br.com.sysmap.crux.core.rebind.scanner.module;
  
 import java.net.URL;
 import java.util.ArrayList;
