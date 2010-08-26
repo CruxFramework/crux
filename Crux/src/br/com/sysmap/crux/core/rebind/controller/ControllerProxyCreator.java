@@ -675,7 +675,7 @@ public class ControllerProxyCreator extends AbstractInvocableProxyCreator
 	 * @param method
 	 * @return
 	 */
-	@SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation")
     private boolean isAllowMultipleClicks(JMethod method)
     {
 	    Expose exposeAnnot = method.getAnnotation(Expose.class);

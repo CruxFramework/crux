@@ -18,7 +18,7 @@ package br.com.sysmap.crux.core.rebind.invoker;
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
-import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
+import br.com.sysmap.crux.core.rebind.AbstractWrapperProxyCreator;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.rebind.controller.ClientControllers;
 
@@ -38,7 +38,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @deprecated
  */
 @Deprecated
-public class InvokerProxyCreator extends AbstractInterfaceWrapperProxyCreator
+public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 {
 	/**
 	 * Constructor
@@ -82,22 +82,6 @@ public class InvokerProxyCreator extends AbstractInterfaceWrapperProxyCreator
 	@Override
     protected void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException
     {
-    }
-
-	@Override
-    protected void generateProxyMethods(SourceWriter srcWriter) throws CruxGeneratorException
-    {
-		JClassType clazz = baseIntf;
-		
-		while (clazz.getSuperclass() != null)
-		{
-			JMethod[] methods = clazz.getMethods();
-			for (JMethod method : methods)
-			{
-				generateWrapperMethod(method, srcWriter, clazz);
-			}
-			clazz = clazz.getSuperclass();
-		}
     }
 
 	@Override
@@ -260,7 +244,8 @@ public class InvokerProxyCreator extends AbstractInterfaceWrapperProxyCreator
 	 * @param interfaceClass
 	 * @throws CruxGeneratorException
 	 */
-	private void generateWrapperMethod(JMethod method, SourceWriter sourceWriter, JClassType interfaceClass) throws CruxGeneratorException
+	@Override
+	protected void generateWrapperMethod(JMethod method, SourceWriter sourceWriter, JClassType interfaceClass) throws CruxGeneratorException
 	{
 		String name = method.getName();
 		
