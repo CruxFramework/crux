@@ -22,7 +22,7 @@ import java.util.List;
 
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
-import br.com.sysmap.crux.core.rebind.module.Modules;
+import br.com.sysmap.crux.core.rebind.scanner.module.Modules;
 import br.com.sysmap.crux.module.CruxModuleHandler;
 import br.com.sysmap.crux.module.CruxModuleMessages;
 

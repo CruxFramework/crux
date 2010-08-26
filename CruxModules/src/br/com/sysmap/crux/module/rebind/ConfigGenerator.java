@@ -15,11 +15,12 @@
  */
 package br.com.sysmap.crux.module.rebind;
 
-import br.com.sysmap.crux.core.config.ConfigurationFactory;
-import br.com.sysmap.crux.core.rebind.CruxClientConfigGenerator;
-import br.com.sysmap.crux.module.CruxModuleHandler;
+import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
+import br.com.sysmap.crux.core.rebind.config.CruxClientConfigGenerator;
 
-import com.google.gwt.user.rebind.SourceWriter;
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -28,43 +29,8 @@ import com.google.gwt.user.rebind.SourceWriter;
 public class ConfigGenerator extends CruxClientConfigGenerator
 {
 	@Override
-	protected void generateEnableChildrenWindowsDebugMethod(SourceWriter sourceWriter)
-	{
-		sourceWriter.println("public boolean enableDebugForURL(String url){");
-		if (!Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableChildrenWindowsDebug()))
-		{
-			sourceWriter.println("return false;");
-		}
-		else
-		{
-			String[] developmentModules = CruxModuleHandler.getDevelopmentModules();
-			if (developmentModules != null)
-			{
-				sourceWriter.println("if (url == null){");
-				sourceWriter.println("return false;");
-				sourceWriter.println("}");
-
-				sourceWriter.println("String urlWithoutParameters = url;");
-				sourceWriter.println("int index = url.indexOf(\"?\");");
-				sourceWriter.println("if (index  > 0){");
-				sourceWriter.println("urlWithoutParameters = url.substring(0,index);");
-				sourceWriter.println("}");
-				for (String moduleName : developmentModules)
-				{
-					String[] pages = CruxModuleHandler.getCruxModule(moduleName).getPages();
-					if (pages != null)
-					{
-						for (String page : pages)
-						{
-							sourceWriter.println("if (urlWithoutParameters.endsWith(\""+page+"\")){");
-							sourceWriter.println("return true;");
-							sourceWriter.println("}");
-						}
-					}
-				}
-			}
-			sourceWriter.println("return false;");
-		}
-		sourceWriter.println("}");
-	}
+    protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf)
+    {
+	    return new ConfigProxyCreator(logger, ctx);
+    }
 }
