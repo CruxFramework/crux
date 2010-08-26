@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
-import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
+import br.com.sysmap.crux.core.rebind.scanner.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.dispatch.ServiceFactoryInitializer;
 
 /**

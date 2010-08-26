@@ -13,26 +13,27 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind.widget;
+package br.com.sysmap.crux.core.rebind.serializable;
 
 import br.com.sysmap.crux.core.rebind.AbstractGenerator;
 import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
- * Generates a RegisteredWidgetFactories class.  
  * 
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class RegisteredWidgetFactoriesGenerator extends AbstractGenerator
+@Deprecated
+public class RegisteredCruxSerializablesGenerator extends AbstractGenerator
 {
 	@Override
-    protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf)
+    protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf) throws UnableToCompleteException
     {
-	    return new RegisteredWidgetFactoriesProxyCreator(logger, ctx);
+	    return new RegisteredCruxSerializablesProxyCreator(logger, ctx);
     }
 }

@@ -15,15 +15,12 @@
  */
 package br.com.sysmap.crux.core.rebind.widget;
 
-import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.AbstractGenerator;
-import br.com.sysmap.crux.core.rebind.GeneratorMessages;
+import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -31,21 +28,9 @@ import com.google.gwt.core.ext.typeinfo.TypeOracle;
  */
 public class WidgetFactoryGenerator extends AbstractGenerator
 {
-	protected static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
-
 	@Override
-	public String generate(TreeLogger logger, GeneratorContext ctx, String requestedClass) throws UnableToCompleteException
-	{
-		TypeOracle typeOracle = ctx.getTypeOracle();
-		assert (typeOracle != null);
-
-		JClassType registeredIntf = typeOracle.findType(requestedClass);
-		if (registeredIntf == null)
-		{
-			logger.log(TreeLogger.ERROR, messages.generatorSourceNotFound(requestedClass), null);
-			throw new UnableToCompleteException();
-		}
-
-		return new WidgetFactoryProxyCreator(logger, ctx, registeredIntf).create();
-	}
+    protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf)
+    {
+	    return new WidgetFactoryProxyCreator(logger, ctx, baseIntf);
+    }
 }

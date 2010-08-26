@@ -23,11 +23,11 @@ import java.util.Set;
 
 import br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
-import br.com.sysmap.crux.core.rebind.AbstractRegisteredElementProxyCreator;
+import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
-import br.com.sysmap.crux.core.rebind.screen.Screen;
-import br.com.sysmap.crux.core.rebind.screen.Widget;
-import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
+import br.com.sysmap.crux.core.rebind.scanner.screen.Screen;
+import br.com.sysmap.crux.core.rebind.scanner.screen.Widget;
+import br.com.sysmap.crux.core.rebind.scanner.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.Environment;
 
 import com.google.gwt.core.client.GWT;
@@ -42,7 +42,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class RegisteredWidgetFactoriesProxyCreator extends AbstractRegisteredElementProxyCreator
+public class RegisteredWidgetFactoriesProxyCreator extends AbstractInterfaceWrapperProxyCreator
 {
 	private Map<String, Boolean> widgetFactories = new HashMap<String, Boolean>();
 
@@ -67,7 +67,7 @@ public class RegisteredWidgetFactoriesProxyCreator extends AbstractRegisteredEle
 	        String type = widget.getType();
 	        if (!widgetFactories.containsKey(type))
 	        {
-	        	JClassType widgetClass = registeredIntf.getOracle().getType(WidgetConfig.getClientClass(type));
+	        	JClassType widgetClass = baseIntf.getOracle().getType(WidgetConfig.getClientClass(type));
 	        	if (widgetClass != null)
 	        	{
 	        		sourceWriter.println("widgetFactories.put(\""+type+"\", (WidgetFactory<? extends Widget>)GWT.create("+
@@ -101,7 +101,7 @@ public class RegisteredWidgetFactoriesProxyCreator extends AbstractRegisteredEle
 	        	for (String factory : registeredLibraryFactories)
 	        	{
 	        		String type = library+"_"+factory;
-	        		JClassType widgetClass = registeredIntf.getOracle().getType(WidgetConfig.getClientClass(type));
+	        		JClassType widgetClass = baseIntf.getOracle().getType(WidgetConfig.getClientClass(type));
 	        		sourceWriter.println("widgetFactories.put(\""+type+"\", new " + 
 	        				new WidgetFactoryProxyCreator(logger, context, widgetClass).create() + "());");
 	        	}
