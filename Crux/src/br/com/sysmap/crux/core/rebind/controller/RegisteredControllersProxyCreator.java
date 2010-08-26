@@ -31,10 +31,10 @@ import br.com.sysmap.crux.core.client.event.ControllerInvoker;
 import br.com.sysmap.crux.core.client.event.CrossDocumentInvoker;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
 import br.com.sysmap.crux.core.client.event.RegisteredControllers;
-import br.com.sysmap.crux.core.rebind.AbstractRegisteredElementProxyCreator;
+import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
-import br.com.sysmap.crux.core.rebind.module.Modules;
-import br.com.sysmap.crux.core.rebind.screen.Screen;
+import br.com.sysmap.crux.core.rebind.scanner.module.Modules;
+import br.com.sysmap.crux.core.rebind.scanner.screen.Screen;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -52,7 +52,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class RegisteredControllersProxyCreator extends AbstractRegisteredElementProxyCreator
+public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperProxyCreator
 {
 	private Map<String, String> controllerClassNames = new HashMap<String, String>();
 	private Map<String, String> crossDocsClassNames = new HashMap<String, String>();
@@ -137,7 +137,7 @@ public class RegisteredControllersProxyCreator extends AbstractRegisteredElement
 				module = screen.getModule();
 			}
 			generateControllersForScreen(srcWriter, screen);
-			Iterator<br.com.sysmap.crux.core.rebind.screen.Widget> screenWidgets = screen.iterateWidgets();
+			Iterator<br.com.sysmap.crux.core.rebind.scanner.screen.Widget> screenWidgets = screen.iterateWidgets();
 			while (screenWidgets.hasNext())
 			{
 				String widgetType = screenWidgets.next().getType();
@@ -163,7 +163,7 @@ public class RegisteredControllersProxyCreator extends AbstractRegisteredElement
     		EventProcessor.class.getCanonicalName(),
     		Crux.class.getCanonicalName(), 
     		ControllerInvoker.class.getCanonicalName(),
-    		CrossDocumentInvoker.class.getCanonicalName(),
+    		CrossDocumentInvoker.class.getCanonicalName()
 		};
 	    return imports;
     }	

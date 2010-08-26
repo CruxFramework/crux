@@ -25,10 +25,10 @@ import br.com.sysmap.crux.core.client.datasource.DataSoureExcpetion;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
-import br.com.sysmap.crux.core.rebind.AbstractRegisteredElementProxyCreator;
+import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
-import br.com.sysmap.crux.core.rebind.screen.Screen;
-import br.com.sysmap.crux.core.rebind.screen.datasource.DataSources;
+import br.com.sysmap.crux.core.rebind.scanner.screen.Screen;
+import br.com.sysmap.crux.core.rebind.scanner.screen.datasource.DataSources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -46,7 +46,7 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class RegisteredDataSourcesProxyCreator extends AbstractRegisteredElementProxyCreator
+public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperProxyCreator
 {
 	private Map<String, String> dataSourcesClassNames = new HashMap<String, String>();
 
@@ -159,7 +159,7 @@ public class RegisteredDataSourcesProxyCreator extends AbstractRegisteredElement
 		{
 			try
             {
-	            JClassType dataSourceClass = registeredIntf.getOracle().getType(DataSources.getDataSource(dataSource));
+	            JClassType dataSourceClass = baseIntf.getOracle().getType(DataSources.getDataSource(dataSource));
 	            String genClass = new DataSourceProxyCreator(logger, context, dataSourceClass).create(); 
 	            dataSourcesClassNames.put(dataSource, genClass);
             }
