@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
-import br.com.sysmap.crux.core.rebind.module.Module;
+import br.com.sysmap.crux.core.rebind.scanner.module.Module;
 
 /**
  * @author Thiago da Rosa de Bustamante

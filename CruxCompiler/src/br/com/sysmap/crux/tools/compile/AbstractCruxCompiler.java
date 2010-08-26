@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
 
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
-import br.com.sysmap.crux.core.rebind.module.Module;
+import br.com.sysmap.crux.core.rebind.scanner.module.Module;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.utils.FileUtils;

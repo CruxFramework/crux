@@ -62,7 +62,7 @@ import br.com.sysmap.crux.core.declarativeui.template.Templates;
 import br.com.sysmap.crux.core.declarativeui.template.TemplatesScanner;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
-import br.com.sysmap.crux.core.rebind.screen.config.WidgetConfig;
+import br.com.sysmap.crux.core.rebind.scanner.screen.config.WidgetConfig;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.utils.ClassUtils;

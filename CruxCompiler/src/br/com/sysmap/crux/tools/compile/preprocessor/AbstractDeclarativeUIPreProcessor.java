@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.declarativeui.CruxToHtmlTransformer;
 import br.com.sysmap.crux.core.declarativeui.template.TemplatesScanner;
-import br.com.sysmap.crux.core.rebind.module.Module;
+import br.com.sysmap.crux.core.rebind.scanner.module.Module;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.tools.compile.CruxPreProcessor;
 
