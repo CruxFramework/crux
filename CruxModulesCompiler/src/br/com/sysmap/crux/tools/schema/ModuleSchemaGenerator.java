@@ -17,7 +17,6 @@ package br.com.sysmap.crux.tools.schema;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 import br.com.sysmap.crux.core.utils.StreamUtils;
 
@@ -33,9 +32,8 @@ public class ModuleSchemaGenerator extends DefaultSchemaGenerator
 	 * @param projectBaseDir
 	 * @param destDir
 	 * @param webDir
-	 * @throws IOException
 	 */
-	public ModuleSchemaGenerator(File projectBaseDir, File destDir, File webDir) throws IOException
+	public ModuleSchemaGenerator(File projectBaseDir, File destDir, File webDir)
     {
 	    super(projectBaseDir, destDir, webDir);
     }
@@ -44,29 +42,43 @@ public class ModuleSchemaGenerator extends DefaultSchemaGenerator
 	 * @see br.com.sysmap.crux.tools.schema.DefaultSchemaGenerator#generateSchemas()
 	 */
 	@Override
-	public void generateSchemas() throws IOException
+	public void generateSchemas() throws SchemaGeneratorException
 	{
-		copyModuleSchema();
+		try
+        {
+	        copyModuleSchema();
+        }
+        catch (Exception e)
+        {
+        	throw new SchemaGeneratorException(e.getMessage(), e);
+        }
 
 	    super.generateSchemas();
 	}
 	
 	/**
-	 * @throws IOException
+	 * 
 	 */
-	private void copyModuleSchema() throws IOException
+	private void copyModuleSchema()
 	{
-		File xhtmlFile = new File(destDir, "module.xsd");
-		if (xhtmlFile.exists())
+		try
 		{
-			xhtmlFile.delete();
-		}
-		xhtmlFile.createNewFile();
-		FileOutputStream out = new FileOutputStream(xhtmlFile);
+			File xhtmlFile = new File(destDir, "module.xsd");
+			if (xhtmlFile.exists())
+			{
+				xhtmlFile.delete();
+			}
+			xhtmlFile.createNewFile();
+			FileOutputStream out = new FileOutputStream(xhtmlFile);
 
-		String targetNS = "http://www.sysmap.com.br/module";
-		registerNamespaceForCatalog(targetNS, xhtmlFile);
-		
-		StreamUtils.write(getClass().getResourceAsStream("/META-INF/module.xsd"), out, true);
+			String targetNS = "http://www.sysmap.com.br/module";
+			registerNamespaceForCatalog(targetNS, xhtmlFile);
+
+			StreamUtils.write(getClass().getResourceAsStream("/META-INF/module.xsd"), out, true);
+		}
+		catch (Exception e)
+		{
+        	throw new SchemaGeneratorException(e.getMessage(), e);
+        }
 	}	
 }
