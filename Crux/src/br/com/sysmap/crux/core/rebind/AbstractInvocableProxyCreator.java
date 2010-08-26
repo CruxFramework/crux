@@ -742,39 +742,7 @@ public abstract class AbstractInvocableProxyCreator extends AbstractSerializable
 		else if (type.isPrimitive() != null)
 		{
 			JPrimitiveType jPrimitiveType = type.isPrimitive();
-			if (jPrimitiveType.equals(JPrimitiveType.BOOLEAN))
-			{
-				return "Boolean";
-			}
-			else if (jPrimitiveType.equals(JPrimitiveType.CHAR))
-			{
-				return "Character";
-			}
-			else if (jPrimitiveType.equals(JPrimitiveType.BYTE))
-			{
-				return "Byte";
-			}
-			else if (jPrimitiveType.equals(JPrimitiveType.SHORT))
-			{
-				return "Short";
-			}
-			else if (jPrimitiveType.equals(JPrimitiveType.INT))
-			{
-				return "Integer";
-			}
-			else if (jPrimitiveType.equals(JPrimitiveType.LONG))
-			{
-				return "Long";
-			}
-			else if (jPrimitiveType.equals(JPrimitiveType.FLOAT))
-			{
-				return "Float";
-			}
-			else if (jPrimitiveType.equals(JPrimitiveType.DOUBLE))
-			{
-				return "Double";
-			}
-			return "?";
+			return jPrimitiveType.getQualifiedBoxedSourceName();
 		}
 		else
 		{
@@ -961,8 +929,15 @@ public abstract class AbstractInvocableProxyCreator extends AbstractSerializable
 
 	            JClassType charSequenceType = classType.getOracle().getType(CharSequence.class.getCanonicalName());
 	            JClassType dateType = classType.getOracle().getType(Date.class.getCanonicalName());
+	            JClassType numberType = classType.getOracle().getType(Number.class.getCanonicalName());
+	            JClassType booleanType = classType.getOracle().getType(Boolean.class.getCanonicalName());
+	            JClassType characterType = classType.getOracle().getType(Character.class.getCanonicalName());
 
 	            return (classType.isPrimitive() != null) ||
+	            (numberType.isAssignableFrom(classType)) ||
+	            (booleanType.isAssignableFrom(classType)) ||
+	            (characterType.isAssignableFrom(classType)) ||
+	            (charSequenceType.isAssignableFrom(classType)) ||
 	            (charSequenceType.isAssignableFrom(classType)) ||
 	            (dateType.isAssignableFrom(classType)) ||
 	            (classType.isEnum() != null);

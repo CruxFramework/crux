@@ -64,7 +64,7 @@ public class RegisteredControllersProxyCreator extends AbstractRegisteredElement
 	 */
 	public RegisteredControllersProxyCreator(TreeLogger logger, GeneratorContext context)
     {
-	    super(logger, context, null, context.getTypeOracle().findType(RegisteredControllers.class.getCanonicalName()));
+	    super(logger, context, context.getTypeOracle().findType(RegisteredControllers.class.getCanonicalName()));
     }
 
 	/**

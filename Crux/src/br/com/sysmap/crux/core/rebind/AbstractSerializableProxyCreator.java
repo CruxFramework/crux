@@ -37,6 +37,7 @@ import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
  */
 public abstract class AbstractSerializableProxyCreator extends AbstractProxyCreator
 {
+	protected final JClassType baseProxyType;
 	/**
 	 * @param logger
 	 * @param context
@@ -44,7 +45,8 @@ public abstract class AbstractSerializableProxyCreator extends AbstractProxyCrea
 	 */
 	public AbstractSerializableProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseProxyType)
     {
-		super(logger, context, baseProxyType);
+		super(logger, context);
+		this.baseProxyType = baseProxyType;
     }
 	
 	/**

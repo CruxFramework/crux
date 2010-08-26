@@ -19,7 +19,6 @@ import br.com.sysmap.crux.core.i18n.MessagesFactory;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.user.rebind.SourceWriter;
@@ -31,7 +30,6 @@ import com.google.gwt.user.rebind.SourceWriter;
 public abstract class AbstractProxyCreator
 {
 	protected static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
-	protected final JClassType baseProxyType;
 	protected final GeneratorContext context;
 	protected final TreeLogger logger;
 
@@ -40,12 +38,10 @@ public abstract class AbstractProxyCreator
 	 * @param context
 	 * @param crossDocumentIntf
 	 */
-	public AbstractProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseProxyType)
+	public AbstractProxyCreator(TreeLogger logger, GeneratorContext context)
     {
 		this.logger = logger;
 		this.context = context;
-		this.baseProxyType = baseProxyType;
-
     }
 	
 	/**

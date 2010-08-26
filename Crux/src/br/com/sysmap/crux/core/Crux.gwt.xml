@@ -17,11 +17,11 @@
 	</generate-with>
 
 	<!-- Specify the generator for registered widgets.     -->
-	<generate-with class="br.com.sysmap.crux.core.rebind.RegisteredWidgetFactoriesGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.widget.RegisteredWidgetFactoriesGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories" />
 	</generate-with>
 	
-	<generate-with class="br.com.sysmap.crux.core.rebind.WidgetFactoriesGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.widget.WidgetFactoryGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.screen.WidgetFactory" />
 	</generate-with>
 
@@ -31,7 +31,7 @@
 	</generate-with>
 	
 	<!-- Specify the generator for registered datasources.     -->
-	<generate-with class="br.com.sysmap.crux.core.rebind.datasource.RegisteredClientDataSourcesGenerator">
+	<generate-with class="br.com.sysmap.crux.core.rebind.datasource.RegisteredDataSourcesGenerator">
 		<when-type-assignable class="br.com.sysmap.crux.core.client.datasource.RegisteredDataSources" />
 	</generate-with>
 

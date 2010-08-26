@@ -334,7 +334,7 @@ public class ControllerProxyCreator extends AbstractInvocableProxyCreator
 			{
 				sourceWriter.print(",");
 			}
-			sourceWriter.println("("+param.getType().getQualifiedSourceName()+")streamReader."+Shared.getStreamReadMethodNameFor(param.getType())+"()");
+			sourceWriter.println("("+param.getType().getParameterizedQualifiedSourceName()+")streamReader."+Shared.getStreamReadMethodNameFor(param.getType())+"()");
 		}
     	sourceWriter.print(")");
 		if (returnType != JPrimitiveType.VOID)

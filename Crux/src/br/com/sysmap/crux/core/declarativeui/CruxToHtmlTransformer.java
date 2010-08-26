@@ -261,14 +261,14 @@ public class CruxToHtmlTransformer
 			Set<String> factories = WidgetConfig.getRegisteredLibraryFactories(library);
 			for (String widget : factories)
 			{
-				Class<?> clientClass = WidgetConfig.getClientClass(library, widget);
 				try
 				{
+					Class<?> clientClass = Class.forName(WidgetConfig.getClientClass(library, widget));
 					Method method = clientClass.getMethod("processChildren", new Class[]{WidgetFactoryContext.class});
 					generateReferenceWidgetsListFromTagChildren(widgetList, method.getAnnotation(TagChildren.class), 
 																		library, widget, new HashSet<Class<?>>());
 				}
-				catch (NoSuchMethodException e)
+				catch (Exception e)
 				{
 					log.error(messages.transformerErrorGeneratingWidgetsReferenceList(), e);
 				}

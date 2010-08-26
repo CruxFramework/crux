@@ -51,6 +51,7 @@ public abstract class WidgetFactory <T extends Widget>
 {
 	private static int currentId = 0;
 	
+	
 	/**
 	 * 
 	 * @author Thiago da Rosa de Bustamante
@@ -64,7 +65,7 @@ public abstract class WidgetFactory <T extends Widget>
 		private String widgetId;
 		private Map<String, Object> attributes;
 		
-		private WidgetFactoryContext(W widget, Element element, String widgetId)
+		WidgetFactoryContext(W widget, Element element, String widgetId)
 		{
 			this.widget = widget;
 			this.element = element;
@@ -124,6 +125,27 @@ public abstract class WidgetFactory <T extends Widget>
 	 */
 	public T createWidget(Element element, String widgetId, boolean addToScreen) throws InterfaceConfigException
 	{
+		WidgetFactoryContext<T> context = createContext(element, widgetId, addToScreen);
+		if (context != null)
+		{
+			processAttributes(context);
+			processEvents(context);
+			processChildren(context);
+			postProcess(context);
+			return context.getWidget();
+		}
+		return null;
+	}
+
+	/**
+	 * @param element
+	 * @param widgetId
+	 * @param addToScreen
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	protected WidgetFactoryContext<T> createContext(Element element, String widgetId, boolean addToScreen) throws InterfaceConfigException
+	{
 		T widget = instantiateWidget(element, widgetId);
 		if (widget != null)
 		{
@@ -132,13 +154,9 @@ public abstract class WidgetFactory <T extends Widget>
 				Screen.add(widgetId, widget);
 			}			
 
-			WidgetFactoryContext<T> context = new WidgetFactoryContext<T>(widget, element, widgetId);
-			processAttributes(context);
-			processEvents(context);
-			processChildren(context);
-			postProcess(context);
+			return new WidgetFactoryContext<T>(widget, element, widgetId);
 		}
-		return widget;
+		return null;
 	}
 	
 	/**
@@ -463,5 +481,5 @@ public abstract class WidgetFactory <T extends Widget>
 		return height != null && (height.length() > 0);
 	}
 	
-	public abstract T instantiateWidget(Element element, String widgetId) throws InterfaceConfigException;	
+	public abstract T instantiateWidget(Element element, String widgetId) throws InterfaceConfigException;
 }

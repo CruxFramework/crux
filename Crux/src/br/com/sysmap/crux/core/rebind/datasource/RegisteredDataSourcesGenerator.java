@@ -31,7 +31,7 @@ import com.google.gwt.core.ext.typeinfo.TypeOracle;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class RegisteredClientDataSourcesGenerator extends Generator
+public class RegisteredDataSourcesGenerator extends Generator
 {
 	protected static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 

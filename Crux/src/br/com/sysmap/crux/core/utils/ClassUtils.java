@@ -113,107 +113,113 @@ public class ClassUtils
 	 * @param setterMethod
 	 * @return
 	 */
-	public static boolean hasValidSetter(Class<?> widgetType, String setterMethod, Class<?> attrType)
+	public static boolean hasValidSetter(JClassType widgetType, String setterMethod, JType attrType)
 	{
-		try
+		if (widgetType.findMethod(setterMethod, new JType[]{attrType}) != null)
 		{
-			widgetType.getMethod(setterMethod, new Class[]{attrType});
 			return true;
 		}
-		catch (Exception e)
+		if (attrType.isPrimitive() != null)
 		{
-			try
+			JClassType wrapperType = widgetType.getOracle().findType(attrType.isPrimitive().getQualifiedBoxedSourceName());
+			if (widgetType.findMethod(setterMethod, new JType[]{wrapperType}) != null)
 			{
-				Class<?> primitieTypeEquivalent = getReflectionEquivalentTypeForPrimities(attrType);
-				if (primitieTypeEquivalent != null)
-				{
-					widgetType.getMethod(setterMethod, new Class[]{primitieTypeEquivalent});
-					return true;
-				}
-				return false;
+				return true;
 			}
-			catch (Exception e1)
-			{
-				return false;
-			}
-		}	
-	}
-	
-	/**
-	 * @param jPrimitiveType
-	 * @return
-	 */
-	public static Class<?> getReflectionEquivalentTypeForPrimities(Class<?> jPrimitiveType)
-	{
-		if (jPrimitiveType.equals(Integer.class))
-		{
-			return Integer.TYPE;
-		}
-		else if (jPrimitiveType.equals(Integer.TYPE))
-		{
-			return Integer.class;
-		}
-		else if (jPrimitiveType.equals(Short.class))
-		{
-			return Short.TYPE;
-		}
-		else if (jPrimitiveType.equals(Short.TYPE))
-		{
-			return Short.class;
-		}
-		else if (jPrimitiveType.equals(Long.class))
-		{
-			return Long.TYPE;
-		}
-		else if (jPrimitiveType.equals(Long.TYPE))
-		{
-			return Long.class;
-		}
-		else if (jPrimitiveType.equals(Byte.class))
-		{
-			return Byte.TYPE;
-		}
-		else if (jPrimitiveType.equals(Byte.TYPE))
-		{
-			return Byte.class;
-		}
-		else if (jPrimitiveType.equals(Float.class))
-		{
-			return Float.TYPE;
-		}
-		else if (jPrimitiveType.equals(Float.TYPE))
-		{
-			return Float.class;
-		}
-		else if (jPrimitiveType.equals(Double.class))
-		{
-			return Double.TYPE;
-		}
-		else if (jPrimitiveType.equals(Double.TYPE))
-		{
-			return Double.class;
-		}
-		else if (jPrimitiveType.equals(Boolean.class))
-		{
-			return Boolean.TYPE;
-		}
-		else if (jPrimitiveType.equals(Boolean.TYPE))
-		{
-			return Boolean.class;
-		}
-		else if (jPrimitiveType.equals(Character.class))
-		{
-			return Character.TYPE;
-		}
-		else if (jPrimitiveType.equals(Character.TYPE))
-		{
-			return Character.class;
 		}
 		else
 		{
+			JPrimitiveType primitiveType = getPrimitiveFromWrapper(attrType);
+			if (primitiveType != null && widgetType.findMethod(setterMethod, new JType[]{primitiveType}) != null)
+			{
+				return true;
+			}
+		}
+		if (widgetType.getSuperclass() != null)
+		{
+			return hasValidSetter(widgetType.getSuperclass(), setterMethod, attrType);
+		}
+		return false;
+	}
+
+	/**
+	 * @param attrType
+	 * @return
+	 */
+	private static JPrimitiveType getPrimitiveFromWrapper(JType attrType)
+    {
+		if (attrType.getQualifiedSourceName().equals(JPrimitiveType.INT.getQualifiedBoxedSourceName()))
+		{
+			return JPrimitiveType.INT;
+		}
+		else if (attrType.getQualifiedSourceName().equals(JPrimitiveType.SHORT.getQualifiedBoxedSourceName()))
+		{
+			return JPrimitiveType.SHORT;
+		}
+		else if (attrType.getQualifiedSourceName().equals(JPrimitiveType.LONG.getQualifiedBoxedSourceName()))
+		{
+			return JPrimitiveType.LONG;
+		}
+		else if (attrType.getQualifiedSourceName().equals(JPrimitiveType.BYTE.getQualifiedBoxedSourceName()))
+		{
+			return JPrimitiveType.BYTE;
+		}
+		else if (attrType.getQualifiedSourceName().equals(JPrimitiveType.FLOAT.getQualifiedBoxedSourceName()))
+		{
+			return JPrimitiveType.FLOAT;
+		}
+		else if (attrType.getQualifiedSourceName().equals(JPrimitiveType.DOUBLE.getQualifiedBoxedSourceName()))
+		{
+			return JPrimitiveType.DOUBLE;
+		}
+		else if (attrType.getQualifiedSourceName().equals(JPrimitiveType.BOOLEAN.getQualifiedBoxedSourceName()))
+		{
+			return JPrimitiveType.BOOLEAN;
+		}
+		else if (attrType.getQualifiedSourceName().equals(JPrimitiveType.CHAR.getQualifiedBoxedSourceName()))
+		{
+			return JPrimitiveType.CHAR;
+		}
+	    return null;
+    }
+
+	/**
+	 * @param methodName
+	 * @return
+	 */
+	public static JClassType getReturnTypeFromMethodClass(JClassType clazz, String methodName, JType[] params)
+    {
+	    JMethod method = getMethod(clazz, methodName, params);
+		
+		if (method == null)
+		{
 			return null;
 		}
-	}
+		JType returnType = method.getReturnType();
+		if (!(returnType instanceof JClassType))
+		{
+			return null;
+		}
+		return (JClassType) returnType;
+    }
+
+	/**
+	 * @param clazz
+	 * @param methodName
+	 * @param params
+	 * @return
+	 */
+	public static JMethod getMethod(JClassType clazz, String methodName, JType[] params)
+    {
+	    JMethod method = null;
+	    JClassType superClass = clazz;
+	    while (method == null && superClass.getSuperclass() != null)
+	    {
+	    	method = superClass.findMethod(methodName, params);
+	    	superClass = superClass.getSuperclass();
+	    }
+	    return method;
+    }
 	
 	/**
 	 * @param classType
@@ -241,41 +247,37 @@ public class ClassUtils
 	 */
 	public static String getParsingExpressionForSimpleType(String valueVariable, JType expectedType) throws NotFoundException
 	{
-		if (expectedType.isPrimitive() != null)
-		{	
-			JPrimitiveType primitiveType = expectedType.isPrimitive();
-			if (primitiveType.equals(JPrimitiveType.INT))
-			{
-				return "Integer.parseInt("+valueVariable+")";
-			}
-			else if (primitiveType.equals(JPrimitiveType.SHORT))
-			{
-				return "Short.parseShort("+valueVariable+")";
-			}
-			else if (primitiveType.equals(JPrimitiveType.LONG))
-			{
-				return "Long.parseLong("+valueVariable+")";
-			}
-			else if (primitiveType.equals(JPrimitiveType.BYTE))
-			{
-				return "Byte.parseByte("+valueVariable+")";
-			}
-			else if (primitiveType.equals(JPrimitiveType.FLOAT))
-			{
-				return "Float.parseFloat("+valueVariable+")";
-			}
-			else if (primitiveType.equals(JPrimitiveType.DOUBLE))
-			{
-				return "Double.parseDouble("+valueVariable+")";
-			}
-			else if (primitiveType.equals(JPrimitiveType.BOOLEAN))
-			{
-				return "Boolean.parseBoolean("+valueVariable+")";
-			}
-			else if (primitiveType.equals(JPrimitiveType.CHAR))
-			{
-				return valueVariable+".charAt(0)";
-			}
+		if (expectedType == JPrimitiveType.INT || Integer.class.getCanonicalName().equals(expectedType.getQualifiedSourceName()))
+		{
+			return "Integer.parseInt("+valueVariable+")";
+		}
+		else if (expectedType == JPrimitiveType.SHORT || Short.class.getCanonicalName().equals(expectedType.getQualifiedSourceName()))
+		{
+			return "Short.parseShort("+valueVariable+")";
+		}
+		else if (expectedType == JPrimitiveType.LONG || Long.class.getCanonicalName().equals(expectedType.getQualifiedSourceName()))
+		{
+			return "Long.parseLong("+valueVariable+")";
+		}
+		else if (expectedType == JPrimitiveType.BYTE || Byte.class.getCanonicalName().equals(expectedType.getQualifiedSourceName()))
+		{
+			return "Byte.parseByte("+valueVariable+")";
+		}
+		else if (expectedType == JPrimitiveType.FLOAT || Float.class.getCanonicalName().equals(expectedType.getQualifiedSourceName()))
+		{
+			return "Float.parseFloat("+valueVariable+")";
+		}
+		else if (expectedType == JPrimitiveType.DOUBLE || Double.class.getCanonicalName().equals(expectedType.getQualifiedSourceName()))
+		{
+			return "Double.parseDouble("+valueVariable+")";
+		}
+		else if (expectedType == JPrimitiveType.BOOLEAN || Boolean.class.getCanonicalName().equals(expectedType.getQualifiedSourceName()))
+		{
+			return "Boolean.parseBoolean("+valueVariable+")";
+		}
+		else if (expectedType == JPrimitiveType.CHAR || Character.class.getCanonicalName().equals(expectedType.getQualifiedSourceName()))
+		{
+			return valueVariable+".charAt(0)";
 		}
 		else if (expectedType.isEnum() != null)
 		{
@@ -289,58 +291,6 @@ public class ClassUtils
 		    	return valueVariable;
 		    }
 			
-		}
-
-		return null;
-	}
-
-	/**
-	 * 
-	 * @param valueVariable
-	 * @param expectedType
-	 * @return
-	 */
-	public static String getParsingExpressionForSimpleType(String valueVariable, Class<?> expectedType)
-	{
-	    if (expectedType.equals(String.class))
-	    {
-	    	return valueVariable;
-	    }
-		else if (expectedType.equals(Integer.class) || expectedType.equals(Integer.TYPE))
-		{
-			return "Integer.parseInt("+valueVariable+")";
-		}
-		else if (expectedType.equals(Short.class) || expectedType.equals(Short.TYPE))
-		{
-			return "Short.parseShort("+valueVariable+")";
-		}
-		else if (expectedType.equals(Long.class) || expectedType.equals(Long.TYPE))
-		{
-			return "Long.parseLong("+valueVariable+")";
-		}
-		else if (expectedType.equals(Byte.class) || expectedType.equals(Byte.TYPE))
-		{
-			return "Byte.parseByte("+valueVariable+")";
-		}
-		else if (expectedType.equals(Float.class) || expectedType.equals(Float.TYPE))
-		{
-			return "Float.parseFloat("+valueVariable+")";
-		}
-		else if (expectedType.equals(Double.class) || expectedType.equals(Double.TYPE))
-		{
-			return "Double.parseDouble("+valueVariable+")";
-		}
-		else if (expectedType.equals(Boolean.class) || expectedType.equals(Boolean.TYPE))
-		{
-			return "Boolean.parseBoolean("+valueVariable+")";
-		}
-		else if (expectedType.equals(Character.class) || expectedType.equals(Character.TYPE))
-		{
-			return valueVariable+".charAt(0)";
-		}
-		else if (expectedType.isEnum())
-		{
-			return getClassSourceName(expectedType)+".valueOf("+valueVariable+")";
 		}
 
 		return null;

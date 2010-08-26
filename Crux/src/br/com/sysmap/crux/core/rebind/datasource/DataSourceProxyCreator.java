@@ -44,7 +44,6 @@ import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -554,28 +553,8 @@ public class DataSourceProxyCreator extends AbstractInvocableProxyCreator
 	 */
 	private JClassType getTypeFromMethodClass(String methodName)
     {
-	    JMethod method = null;
-		try
-        {
-	        JClassType objectType = dataSourceClass.getOracle().getType(Object.class.getCanonicalName());
-	        JClassType superClass = dataSourceClass;
-	        while (method == null && !superClass.equals(objectType))
-	        {
-	        	method = superClass.findMethod(methodName, new JType[]{});
-	        	superClass = superClass.getSuperclass();
-	        }
-        }
-		catch (NotFoundException e)
-		{
-			throw new CruxGeneratorException(messages.errorGeneratingRegisteredDataSourceInvalidBoundObject(dataSourceClass.getName()));
-		}
-		
-		if (method == null)
-		{
-			throw new CruxGeneratorException(messages.errorGeneratingRegisteredDataSourceInvalidBoundObject(dataSourceClass.getName()));
-		}
-		JType returnType = method.getReturnType();
-		if (!(returnType instanceof JClassType))
+		JType returnType = ClassUtils.getReturnTypeFromMethodClass(dataSourceClass, methodName, new JType[]{});
+		if (returnType == null)
 		{
 			throw new CruxGeneratorException(messages.errorGeneratingRegisteredDataSourceInvalidBoundObject(dataSourceClass.getName()));
 		}
@@ -616,11 +595,17 @@ public class DataSourceProxyCreator extends AbstractInvocableProxyCreator
 	        JClassType dateType = type.getOracle().getType(Date.class.getCanonicalName());
 	        JClassType collectionType = type.getOracle().getType(Collection.class.getCanonicalName());
 	        JClassType mapType = type.getOracle().getType(Map.class.getCanonicalName());
+	        JClassType numberType = type.getOracle().getType(Number.class.getCanonicalName());
+	        JClassType booleanType = type.getOracle().getType(Boolean.class.getCanonicalName());
+	        JClassType characterType = type.getOracle().getType(Character.class.getCanonicalName());
 	        return (type.isPrimitive() == null
 	        		&& type.isAnnotation() == null
 	        		&& type.isArray() == null 
 	        		&& type.isEnum() == null
 	        		&& !charSequenceType.isAssignableFrom(type)
+	        		&& !numberType.isAssignableFrom(type)
+	        		&& !booleanType.isAssignableFrom(type)
+	        		&& !characterType.isAssignableFrom(type)
 	        		&& !dateType.isAssignableFrom(type) && !collectionType.isAssignableFrom(type) && !mapType.isAssignableFrom(type));
         }
         catch (NotFoundException e)

@@ -39,7 +39,7 @@ import br.com.sysmap.crux.core.server.scan.ClassScanner;
  */
 public class WidgetConfig 
 {
-	private static Map<String, Class<? extends WidgetFactory<?>>> config = null;
+	private static Map<String, String> config = null;
 	private static Map<Type, String> widgets = null;
 	private static Map<String, Set<String>> registeredLibraries = null;
 	private static ServerMessages messages = (ServerMessages)MessagesFactory.getMessages(ServerMessages.class);
@@ -74,7 +74,7 @@ public class WidgetConfig
 	@SuppressWarnings("unchecked")
 	protected static void initializeWidgetConfig()
 	{
-		config = new HashMap<String, Class<? extends WidgetFactory<?>>>(100);
+		config = new HashMap<String, String>(100);
 		widgets = new HashMap<Type, String>();
 		registeredLibraries = new HashMap<String, Set<String>>();
 		Set<String> factoriesNames =  ClassScanner.searchClassesByAnnotation(br.com.sysmap.crux.core.client.declarative.DeclarativeFactory.class);
@@ -94,7 +94,7 @@ public class WidgetConfig
 					registeredLibraries.get(annot.library()).add(annot.id());
 					String widgetType = annot.library() + "_" + annot.id();
 					
-					config.put(widgetType, factoryClass);
+					config.put(widgetType, factoryClass.getCanonicalName());
 					Type type = ((ParameterizedType)factoryClass.getGenericSuperclass()).getActualTypeArguments()[0];
 					if (type instanceof ParameterizedType)
 					{
@@ -119,7 +119,7 @@ public class WidgetConfig
 	 * @param id
 	 * @return
 	 */
-	public static Class<? extends WidgetFactory<?>> getClientClass(String id)
+	public static String getClientClass(String id)
 	{
 		if (config == null)
 		{
@@ -134,7 +134,7 @@ public class WidgetConfig
 	 * @param id
 	 * @return
 	 */
-	public static Class<? extends WidgetFactory<?>> getClientClass(String library, String id)
+	public static String getClientClass(String library, String id)
 	{
 		if (config == null)
 		{

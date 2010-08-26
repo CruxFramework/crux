@@ -52,7 +52,7 @@ public class RegisteredDataSourcesProxyCreator extends AbstractRegisteredElement
 
 	public RegisteredDataSourcesProxyCreator(TreeLogger logger, GeneratorContext context)
     {
-	    super(logger, context, null, context.getTypeOracle().findType(RegisteredDataSources.class.getCanonicalName()));
+	    super(logger, context, context.getTypeOracle().findType(RegisteredDataSources.class.getCanonicalName()));
     }
 
 	@Override

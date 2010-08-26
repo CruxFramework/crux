@@ -44,9 +44,9 @@ public abstract class AbstractRegisteredElementProxyCreator extends AbstractProx
 	private static final String REGISTERD_ELEMENT_PROXY_SUFFIX = "_Impl";
 	protected JClassType registeredIntf;
 
-	public AbstractRegisteredElementProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseProxyType, JClassType registeredIntf)
+	public AbstractRegisteredElementProxyCreator(TreeLogger logger, GeneratorContext context, JClassType registeredIntf)
     {
-	    super(logger, context, baseProxyType);
+	    super(logger, context);
 		this.registeredIntf = registeredIntf;
     }
 
