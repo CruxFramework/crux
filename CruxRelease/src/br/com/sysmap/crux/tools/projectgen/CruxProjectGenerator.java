@@ -301,7 +301,7 @@ public class CruxProjectGenerator
 		}
 	}
 
-	private void createXSDs() throws IOException
+	private void createXSDs() 
 	{
 		boolean generateModuleSchema = !options.getProjectLayout().equals(ProjectLayout.STANDALONE_APP);
 		SchemaGenerator.generateSchemas(options.getProjectDir(), new File(options.getProjectDir(),"xsd"), null, generateModuleSchema);
