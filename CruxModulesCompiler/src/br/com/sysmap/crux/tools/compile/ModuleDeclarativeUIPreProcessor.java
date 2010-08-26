@@ -21,7 +21,7 @@ import java.net.URL;
 
 import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
-import br.com.sysmap.crux.core.rebind.module.Module;
+import br.com.sysmap.crux.core.rebind.scanner.module.Module;
 import br.com.sysmap.crux.tools.compile.preprocessor.AbstractDeclarativeUIPreProcessor;
 
 /**
