@@ -15,112 +15,24 @@
  */
 package br.com.sysmap.crux.widgets.rebind;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import br.com.sysmap.crux.core.rebind.AbstractGenerator;
+import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
 
-import br.com.sysmap.crux.core.client.utils.EscapeUtils;
-import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperGenerator;
-import br.com.sysmap.crux.core.rebind.WrapperGeneratorException;
-import br.com.sysmap.crux.widgets.client.dialog.Popup;
-
+import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.user.rebind.SourceWriter;
+import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
  * Generator for PopupOpenerInvoker objects.
  * @author Gessé S. F. Dafé
  */
-public class PopupOpenerInvokerGenerator extends AbstractInterfaceWrapperGenerator
+@Deprecated
+public class PopupOpenerInvokerGenerator extends AbstractGenerator
 {
-	/**
-	 * @throws WrapperGeneratorException 
-	 * 
-	 */
 	@Override
-	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter, Class<?> interfaceClass) throws WrapperGeneratorException
-	{
-		Class<?> returnType = method.getReturnType();
-		String methodName = method.getName();
-		String controllerName = getControllerName(interfaceClass);
-		if (methodName.length() > 0)
-		{
-			String returnTypeDeclaration = getParameterDeclaration(returnType);
-			sourceWriter.print("public "+returnTypeDeclaration+" " + methodName+"(");
-			Type[] parameterTypes = method.getGenericParameterTypes();
-			
-			int numParams = 0;
-			for (Type parameterType : parameterTypes)
-			{
-				if (numParams > 0)
-				{
-					sourceWriter.print(",");
-				}
-				
-				sourceWriter.print(getParameterDeclaration(parameterType)+" param"+(numParams++));
-			} 
-			sourceWriter.println("){");
-			
-			if (returnType.getName().equals("void") || returnType.getName().equals("java.lang.Void"))
-			{
-				generateMethodInvocation(sourceWriter, controllerName, methodName, numParams, null);
-			}
-			else
-			{
-				if (returnType.isPrimitive())
-				{
-					returnTypeDeclaration = getClassNameForPrimitive(returnType);
-				}
-				generateMethodInvocation(sourceWriter, controllerName, methodName, numParams, returnTypeDeclaration);
-			}
-			sourceWriter.println("}");
-		}
-	}
-
-	/**
-	 * 
-	 * @param sourceWriter
-	 * @param controllerName
-	 * @param methodName
-	 * @param numParams
-	 * @param returnTypeDeclaration
-	 */
-	private void generateMethodInvocation(SourceWriter sourceWriter, String controllerName, String methodName, 
-										  int numParams, String returnTypeDeclaration)
-	{
-		sourceWriter.println("try{");
-		boolean hasValue = numParams > 0;
-		if (numParams == 1)
-		{
-			sourceWriter.print("Object value = param0;");
-		}
-		else if (numParams > 1)
-		{
-			sourceWriter.print("Object[] value = new Object[]{");
-			for(int i=0; i< numParams; i++)
-			{
-				if (i>0)
-				{
-					sourceWriter.print(",");
-				}
-				sourceWriter.print("param"+i);
-			}
-			sourceWriter.print("};");
-		}
-		
-		if (returnTypeDeclaration != null)
-		{
-			sourceWriter.println("return " + Popup.class.getName() + ".invokeOnOpener(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
-		}
-		else
-		{
-			sourceWriter.println(Popup.class.getName() + ".invokeOnOpener(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+");");
-		}
-		sourceWriter.println("}catch(Throwable e){");
-		sourceWriter.println("Crux.getErrorHandler().handleError("+EscapeUtils.quote(messages.errorInvokerWrapperSerializationError())+",e);");
-		sourceWriter.println("}");
-		if (returnTypeDeclaration != null)
-		{
-			sourceWriter.println("return null;");
-		}
-	}	
+    protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf) throws UnableToCompleteException
+    {
+	    return new PopupOpenerInvokerProxyCreator(logger, ctx, baseIntf);
+    }
 }

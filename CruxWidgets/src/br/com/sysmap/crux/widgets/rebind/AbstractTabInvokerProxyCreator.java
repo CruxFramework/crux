@@ -15,33 +15,79 @@
  */
 package br.com.sysmap.crux.widgets.rebind;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-
+import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
-import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperGenerator;
-import br.com.sysmap.crux.core.rebind.WrapperGeneratorException;
+import br.com.sysmap.crux.core.rebind.AbstractWrapperProxyCreator;
+import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
+import br.com.sysmap.crux.core.rebind.invoker.InvokerProxyCreator;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JMethod;
+import com.google.gwt.core.ext.typeinfo.JParameter;
+import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
+import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  * TODO - Gessé - Comment this
  * @author Gessé S. F. Dafé
  */
-public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapperGenerator
+@Deprecated
+public abstract class AbstractTabInvokerProxyCreator extends AbstractWrapperProxyCreator
 {
 	private static final String ON_TAB_SUFIX = "OnTab";
 
+	/**
+	 * @param logger
+	 * @param context
+	 * @param baseIntf
+	 */
+	public AbstractTabInvokerProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+    {
+	    super(logger, context, baseIntf);
+    }
+
+	@Override
+    protected String[] getImports()
+	{
+		String[] imports = new String[] {
+				Screen.class.getCanonicalName(),
+				GWT.class.getCanonicalName(),
+				Crux.class.getCanonicalName(),
+				Window.class.getCanonicalName()
+		};
+		return imports; 
+    }
+
+	@Override
+    protected void generateProxyContructor(SourceWriter srcWriter) throws CruxGeneratorException
+    {
+    }
+
+	@Override
+    protected void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException
+    {
+    }
+
+	@Override
+    protected void generateSubTypes(SourceWriter srcWriter) throws CruxGeneratorException
+    {
+    }		
+	
 	/**
 	 * @throws WrapperGeneratorException 
 	 * 
 	 */
 	@Override
-	protected void generateMethodWrapper(TreeLogger logger, Method method, SourceWriter sourceWriter, Class<?> interfaceClass) throws WrapperGeneratorException
+	protected void generateWrapperMethod(JMethod method, SourceWriter sourceWriter, JClassType interfaceClass) throws CruxGeneratorException
 	{
-		String name = extracted(method);
+		String name = method.getName();
 		
 		int indexOfTabSufix = name.indexOf(ON_TAB_SUFIX);
 		
@@ -51,7 +97,7 @@ public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapp
 			
 			if (tabId.length() <= ON_TAB_SUFIX.length())
 			{
-				throw new WrapperGeneratorException(WidgetMsgFactory.getMessages().tabsControllerInvalidSignature(method.toGenericString())); 
+				throw new CruxGeneratorException(WidgetMsgFactory.getMessages().tabsControllerInvalidSignature(method.getReadableDeclaration())); 
 			}
 			
 			tabId = toJavaName(tabId);
@@ -60,7 +106,7 @@ public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapp
 		}
 		else
 		{
-			throw new WrapperGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.toGenericString()));
+			throw new CruxGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.getReadableDeclaration()));
 		}
 	}
 	
@@ -68,39 +114,39 @@ public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapp
 	 * @throws WrapperGeneratorException 
 	 * 
 	 */
-	protected void generateMethod(Method method, SourceWriter sourceWriter, String tabId, Class<?> interfaceClass) throws WrapperGeneratorException
+	protected void generateMethod(JMethod method, SourceWriter sourceWriter, String tabId, JClassType interfaceClass) throws CruxGeneratorException
 	{
-		Class<?> returnType = method.getReturnType();
+		JType returnType = method.getReturnType();
 		String methodName = method.getName();
-		String controllerName = getControllerName(interfaceClass);
+		String controllerName = InvokerProxyCreator.getControllerName(interfaceClass);
 		
 		if (methodName.length() > 0)
 		{
-			String returnTypeDeclaration = getParameterDeclaration(returnType);
+			String returnTypeDeclaration = returnType.getParameterizedQualifiedSourceName();
 			sourceWriter.print("public "+returnTypeDeclaration+" " + methodName+"(");
-			Type[] parameterTypes = method.getGenericParameterTypes();
+			JParameter[] parameters = method.getParameters();
 			
 			int numParams = 0;
-			for (Type parameterType : parameterTypes)
+			for (JParameter parameter : parameters)
 			{
 				if (numParams > 0)
 				{
 					sourceWriter.print(",");
 				}
 				
-				sourceWriter.print(getParameterDeclaration(parameterType)+" param"+(numParams++));
+				sourceWriter.print(parameter.getType().getParameterizedQualifiedSourceName()+" param"+(numParams++));
 			} 
 			sourceWriter.println("){");
 			
-			if (returnType.getName().equals("void") || returnType.getName().equals("java.lang.Void"))
+			if (returnType == JPrimitiveType.VOID || returnType.getQualifiedSourceName().equals("java.lang.Void"))
 			{
 				generateMethodInvocation(sourceWriter, controllerName, getMethodName(method), tabId, numParams, null);
 			}
 			else
 			{
-				if (returnType.isPrimitive())
+				if (returnType.isPrimitive() != null)
 				{
-					returnTypeDeclaration = getClassNameForPrimitive(returnType);
+					returnTypeDeclaration = returnType.isPrimitive().getQualifiedBoxedSourceName();
 				}
 				
 				generateMethodInvocation(sourceWriter, controllerName, getMethodName(method), tabId, numParams, returnTypeDeclaration);
@@ -114,16 +160,11 @@ public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapp
 	 * @param method
 	 * @return
 	 */
-	private String getMethodName(Method method)
+	private String getMethodName(JMethod method)
 	{
 		String name = method.getName();
 		int onTabSufix = name.indexOf(ON_TAB_SUFIX);
 		return name.substring(0, onTabSufix);
-	}
-
-	private String extracted(Method method)
-	{
-		return method.getName();
 	}
 
 	/**
@@ -192,5 +233,5 @@ public abstract class AbstractTabInvokerGenerator extends AbstractInterfaceWrapp
 	 * Creates a String with the form [full.class.Name][.][staticMethodToInvoke], which will determine the method to be invoked when the invoker is called. 
 	 * @return
 	 */
-	protected abstract String getTabMethodInvocationString();	
+	protected abstract String getTabMethodInvocationString();
 }

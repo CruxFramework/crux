@@ -41,7 +41,7 @@ public class WizardDataObjects
 	private static final Log logger = LogFactory.getLog(WizardDataObjects.class);
 	private static final Lock lock = new ReentrantLock();
 	protected static WidgetGeneratorMessages messages = (WidgetGeneratorMessages)MessagesFactory.getMessages(WidgetGeneratorMessages.class);
-	private static Map<String, Class<?>> wizardDataObjects;
+	private static Map<String, String> wizardDataObjects;
 	
 	/**
 	 * 
@@ -73,7 +73,7 @@ public class WizardDataObjects
 	 */
 	protected static void initializeWizardDataObjects()
 	{
-		wizardDataObjects = new HashMap<String, Class<?>>();
+		wizardDataObjects = new HashMap<String, String>();
 		
 		Set<String> wizardDataNames =  ClassScanner.searchClassesByAnnotation(WizardData.class);
 		if (wizardDataNames != null)
@@ -89,7 +89,7 @@ public class WizardDataObjects
 						throw new CruxGeneratorException(messages.wizardDataDuplicatedObject(annot.value()));
 					}
 					
-					wizardDataObjects.put(annot.value(), wizardDataClass);
+					wizardDataObjects.put(annot.value(), wizardDataClass.getCanonicalName());
 				} 
 				catch (ClassNotFoundException e) 
 				{
@@ -103,7 +103,7 @@ public class WizardDataObjects
 	 * @param name
 	 * @return
 	 */
-	public static Class<?> getWizardData(String name)
+	public static String getWizardData(String name)
 	{
 		if (wizardDataObjects == null)
 		{

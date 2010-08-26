@@ -16,12 +16,12 @@
 package br.com.sysmap.crux.widgets.rebind.wizard;
 
 import br.com.sysmap.crux.core.rebind.AbstractGenerator;
+import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
 
 /**
  * Generator for context access objects.
@@ -32,25 +32,13 @@ import com.google.gwt.core.ext.typeinfo.TypeOracle;
 public class WizardDataSerializerGenerator extends AbstractGenerator
 {
 	@Override
-	public String generate(TreeLogger logger, GeneratorContext context,
-	        String typeName) throws UnableToCompleteException
-	{
-		TypeOracle typeOracle = context.getTypeOracle();
-		assert (typeOracle != null);
-
-		JClassType crossDocument = typeOracle.findType(typeName);
-		if (crossDocument == null)
+    protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf) throws UnableToCompleteException
+    {
+		if (baseIntf.isInterface() == null)
 		{
-			logger.log(TreeLogger.ERROR, messages.generatorSourceNotFound(typeName), null); 
+			logger.log(TreeLogger.ERROR, messages.crossDocumentGeneratorTypeIsNotInterface(baseIntf.getQualifiedSourceName()), null); 
 			throw new UnableToCompleteException();
 		}
-
-		if (crossDocument.isInterface() == null)
-		{
-			logger.log(TreeLogger.ERROR, messages.crossDocumentGeneratorTypeIsNotInterface(crossDocument.getQualifiedSourceName()), null); 
-			throw new UnableToCompleteException();
-		}
-
-		return new WizardDataSerializerProxyCreator(logger, context, crossDocument).create();
-	}
+	    return new WizardDataSerializerProxyCreator(logger, ctx, baseIntf);
+    }
 }

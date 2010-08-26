@@ -15,24 +15,27 @@
  */
 package br.com.sysmap.crux.widgets.rebind;
 
-import br.com.sysmap.crux.core.rebind.AbstractGenerator;
-import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
-
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
+import br.com.sysmap.crux.widgets.client.dynatabs.Tab;
+
 /**
- * Generates a invoker for calling existing controllers/methods on a tab that belongs to a DynaTabs object rendered in the current document.
+ * generates a invoker for calling existing controllers/methods on a sibling tab.
  * @author Gessé S. F. Dafé
  */
 @Deprecated
-public class TabInvokerGenerator extends AbstractGenerator
+public class SiblingTabInvokerProxyCreator extends AbstractTabInvokerProxyCreator
 {
-	@Override
-    protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf) throws UnableToCompleteException
+	public SiblingTabInvokerProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
     {
-	    return new TabInvokerProxyCreator(logger, ctx, baseIntf);
-    }	
+	    super(logger, context, baseIntf);
+    }
+
+	@Override
+	protected String getTabMethodInvocationString()
+	{
+		return Tab.class.getName() + ".invokeOnSiblingTab";
+	}	
 }
