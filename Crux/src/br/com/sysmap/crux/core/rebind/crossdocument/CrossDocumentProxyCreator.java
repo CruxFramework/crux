@@ -406,7 +406,7 @@ public class CrossDocumentProxyCreator extends AbstractSerializableProxyCreator
 		JClassType controllerClass = getControllerClass(context.getTypeOracle());
 		JType returnType = method.getReturnType().getErasedType();
 		
-		w.println("if (this.target != null && this.target.equals("+ClassUtils.getClassSourceName(Target.class)+".SELF)){");
+		w.println("if (this.target != null && this.target.equals("+Target.class.getCanonicalName()+".SELF)){");
 		w.indent();
 		String controllerClassName = controllerClass.getQualifiedSourceName();
 		w.println(controllerClassName + " controllerOnSelf = Events.getRegisteredControllers().getCrossDocument(CONTROLLER_NAME,"+controllerClassName+".class);");    

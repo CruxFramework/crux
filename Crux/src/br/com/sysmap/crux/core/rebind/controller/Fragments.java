@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
-import br.com.sysmap.crux.core.utils.ClassUtils;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -38,7 +37,7 @@ public class Fragments
 	{
 		if (!StringUtils.isEmpty(fragment) && !fragmentClasses.containsKey(fragment))
 		{
-			fragmentClasses.put(fragment, ClassUtils.getClassSourceName(clazz));
+			fragmentClasses.put(fragment, clazz.getCanonicalName());
 		}
 	}
 	
