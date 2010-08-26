@@ -83,11 +83,11 @@ public abstract class AbstractProxyCreator
 	protected abstract void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException;	
 	
 	/**
-	 * @param w
+	 * @param srcWriter
 	 * @param serializableTypeOracle
 	 * @throws CruxGeneratorException 
 	 */
-	protected abstract void generateProxyMethods(SourceWriter w) throws CruxGeneratorException;	
+	protected abstract void generateProxyMethods(SourceWriter srcWriter) throws CruxGeneratorException;	
 	
 	/**
 	 * Override this method to generate any nested type required by the proxy

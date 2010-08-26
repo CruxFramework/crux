@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import br.com.sysmap.crux.core.rebind.screen.Screen;
-import br.com.sysmap.crux.core.rebind.screen.ScreenConfigException;
-import br.com.sysmap.crux.core.rebind.screen.ScreenFactory;
-import br.com.sysmap.crux.core.rebind.screen.ScreenResourceResolverInitializer;
+import br.com.sysmap.crux.core.rebind.scanner.screen.Screen;
+import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenConfigException;
+import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenFactory;
+import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenResourceResolverInitializer;
 import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
@@ -39,15 +39,15 @@ import com.google.gwt.user.rebind.SourceWriter;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class AbstractRegisteredElementProxyCreator extends AbstractProxyCreator
+public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxyCreator
 {
-	private static final String REGISTERD_ELEMENT_PROXY_SUFFIX = "_Impl";
-	protected JClassType registeredIntf;
+	private static final String PROXY_SUFFIX = "_Impl";
+	protected JClassType baseIntf;
 
-	public AbstractRegisteredElementProxyCreator(TreeLogger logger, GeneratorContext context, JClassType registeredIntf)
+	public AbstractInterfaceWrapperProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
     {
 	    super(logger, context);
-		this.registeredIntf = registeredIntf;
+		this.baseIntf = baseIntf;
     }
 
 	/**
@@ -61,7 +61,7 @@ public abstract class AbstractRegisteredElementProxyCreator extends AbstractProx
 	@Override
 	protected String getProxyQualifiedName()
 	{
-		return registeredIntf.getPackage().getName() + "." + getProxySimpleName();
+		return baseIntf.getPackage().getName() + "." + getProxySimpleName();
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public abstract class AbstractRegisteredElementProxyCreator extends AbstractProx
 	@Override
 	protected String getProxySimpleName()
 	{
-		return ClassUtils.getSourceName(registeredIntf) + REGISTERD_ELEMENT_PROXY_SUFFIX;
+		return ClassUtils.getSourceName(baseIntf) + PROXY_SUFFIX;
 	}
 	
 	/**
@@ -143,7 +143,7 @@ public abstract class AbstractRegisteredElementProxyCreator extends AbstractProx
 	@Override
 	protected SourceWriter getSourceWriter()
 	{
-		JPackage pkg = registeredIntf.getPackage();
+		JPackage pkg = baseIntf.getPackage();
 		String packageName = pkg == null ? "" : pkg.getName();
 		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
 
@@ -160,7 +160,7 @@ public abstract class AbstractRegisteredElementProxyCreator extends AbstractProx
 			composerFactory.addImport(imp);
 		}
 
-		composerFactory.addImplementedInterface(registeredIntf.getQualifiedSourceName());
+		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
 
 		return composerFactory.createSourceWriter(context, printWriter);
 	}	

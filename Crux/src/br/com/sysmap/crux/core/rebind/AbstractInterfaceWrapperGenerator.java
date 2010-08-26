@@ -160,29 +160,4 @@ public abstract class AbstractInterfaceWrapperGenerator extends AbstractGenerato
 		}
 		return null;
 	}	
-	
-	/**
-	 * 
-	 * @param declaringClass
-	 * @return
-	 */
-    @SuppressWarnings("deprecation")
-    protected String getControllerName(Class<?> declaringClass)
-	{
-    	String name = null;
-    	br.com.sysmap.crux.core.client.controller.ControllerName annotation = declaringClass.getAnnotation(br.com.sysmap.crux.core.client.controller.ControllerName.class);
-		if (annotation != null)
-		{
-			name = annotation.value();
-			if (ClientControllers.getController(name) == null)
-			{
-				throw new CruxGeneratorException(messages.errorGeneratingInvokerControllerNotFound(name));
-			}
-		}
-		else
-		{
-			throw new CruxGeneratorException(messages.errorGeneratingInvokerControllerNotFoundForWrapper(declaringClass.getCanonicalName()));
-		}
-		return name;
-	}
 }
