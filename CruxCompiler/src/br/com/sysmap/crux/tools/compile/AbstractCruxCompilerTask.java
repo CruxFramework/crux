@@ -200,25 +200,25 @@ public abstract class AbstractCruxCompilerTask extends Task
 	    if (this.outputDir != null)
 		{
 			javatask.createArg().setValue("outputDir");
-			javatask.createArg().setValue("\"" + this.outputDir.getCanonicalPath() + "\"");
+			javatask.createArg().setValue(this.outputDir.getCanonicalPath());
 		}
 
 	    if (this.srcDir != null)
 		{
 			javatask.createArg().setValue("sourceDir");
-			javatask.createArg().setValue("\"" + this.srcDir.getCanonicalPath() + "\"");
+			javatask.createArg().setValue(this.srcDir.getCanonicalPath());
 		}
 
 	    if (this.webDir != null)
 		{
 			javatask.createArg().setValue("webDir");
-			javatask.createArg().setValue("\"" + this.webDir.getCanonicalPath() + "\"");
+			javatask.createArg().setValue(this.webDir.getCanonicalPath());
 		}
 	    
 		if (this.pagesOutputDir != null)
 		{
 			javatask.createArg().setValue("pagesOutputDir");
-			javatask.createArg().setValue("\"" + this.pagesOutputDir.getCanonicalPath() + "\"");
+			javatask.createArg().setValue(this.pagesOutputDir.getCanonicalPath());
 		}
 		
 		if (this.scanAllowedPackages != null)
