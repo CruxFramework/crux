@@ -1150,7 +1150,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		while (subTagTypes.size() > 0)
 		{
 			Class<? extends WidgetChildProcessor<?>> type = subTagTypes.pop();
-			String elementName = ClassUtils.getClassSourceName(type).replace('.', '_');
+			String elementName = type.getCanonicalName().replace('.', '_');
 			if (!added.contains(elementName))
 			{
 				out.println("<xs:complexType name=\""+elementName+"\">");
@@ -1268,7 +1268,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		}
 		else if (type.isEnum())
 		{
-			String typeName = ClassUtils.getClassSourceName(type).replace('.', '_');
+			String typeName = type.getCanonicalName().replace('.', '_');
 			this.enumTypes.put(typeName, type);
 			return typeName;
 		}
@@ -1289,7 +1289,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		}
 		else if (WidgetChildProcessor.class.isAssignableFrom(type))
 		{
-			String typeName = ClassUtils.getClassSourceName(type).replace('.', '_');
+			String typeName = type.getCanonicalName().replace('.', '_');
 			this.subTagTypes.add((Class<? extends WidgetChildProcessor<?>>) type);
 			return typeName;
 		}
