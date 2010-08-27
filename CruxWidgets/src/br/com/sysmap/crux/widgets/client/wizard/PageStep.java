@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.widgets.client.dynatabs.AbstractTab;
 import br.com.sysmap.crux.widgets.client.wizard.WizardControlBar.WizardCommand;
 
@@ -111,13 +112,26 @@ public class PageStep<T extends Serializable> extends LazyPanel
 		{
 			for (final WizardCommandData data : commands)
 			{
-				result.add(new WizardCommand<T>(data.getId(), data.getOrder(), data.getLabel(), new WizardCommandHandler<T>()
+				WizardCommand<T> command = new WizardCommand<T>(data.getId(), data.getOrder(), data.getLabel(), new WizardCommandHandler<T>()
 				{
 					public void onCommand(WizardCommandEvent<T> event)
 					{
 						fireCommandEvent(data.getId());
 					}
-				}, new PageWizardProxy<T>(wizardId, wizardDataSerializer)));
+				}, new PageWizardProxy<T>(wizardId, wizardDataSerializer));
+				if (!StringUtils.isEmpty(data.getStyleName()))
+				{
+					command.setStyleName(data.getStyleName());
+				}
+				if (!StringUtils.isEmpty(data.getHeight()))
+				{
+					command.setHeight(data.getHeight());
+				}
+				if (!StringUtils.isEmpty(data.getWidth()))
+				{
+					command.setWidth(data.getWidth());
+				}
+				result.add(command);
 			}
 		}
 		return result.iterator();
