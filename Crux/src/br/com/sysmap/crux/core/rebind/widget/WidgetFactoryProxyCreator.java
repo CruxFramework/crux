@@ -338,7 +338,8 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 	        				if (ClassUtils.hasValidSetter(widgetType, setterMethod, type))
 	        				{
 	        					String expression;
-	        					if (type.equals(String.class) && attr.supportsI18N())
+	        					JClassType stringType = factoryClass.getOracle().findType(String.class.getCanonicalName());
+	        					if (type.equals(stringType) && attr.supportsI18N())
 	        					{
 	        						expression = "ScreenFactory.getInstance().getDeclaredMessage("+attrName+")";
 	        					}
@@ -381,7 +382,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 	        	}
 	        }
 	        JClassType superclass = factoryClass.getSuperclass();
-	        if (superclass!= null && !superclass.equals(Object.class))
+	        if (superclass!= null && !superclass.equals(superclass.getOracle().getJavaLangObject()))
 	        {
 	        	result.append(generateProcessAttributesBlock(superclass)+"\n");
 	        }
