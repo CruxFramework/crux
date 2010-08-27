@@ -22,6 +22,7 @@ import br.com.sysmap.crux.core.client.controller.Create;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.rpc.AsyncCallbackAdapter;
 import br.com.sysmap.crux.core.client.screen.Screen;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.tools.quickstart.client.QuickStartMessages;
 import br.com.sysmap.crux.tools.quickstart.client.dto.DirectoryInfo;
 import br.com.sysmap.crux.tools.quickstart.client.dto.ProjectInfo;
@@ -285,6 +286,14 @@ public class QuickStartController
 		dialog.setStyleName("HelpDialog");
 		dialog.showRelativeTo(img);
 	}	
+	
+	@Expose
+	public void projectLayoutChange()
+	{
+		String selectedLayout = screen.getProjectLayout().getValue();
+		boolean visible = (!StringUtils.isEmpty(selectedLayout) && "MODULE_APP".equals(selectedLayout));
+		screen.getProjectInfo().getRowFormatter().setVisible(6, visible);
+	}
 
 	/**
 	 * Populates the project layout listbox.

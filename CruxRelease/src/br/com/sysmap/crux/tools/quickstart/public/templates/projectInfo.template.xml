@@ -72,13 +72,13 @@
 				</gwt:row>
 				<gwt:row>
 					<gwt:cell  width="150">
-						<gwt:widget><gwt:label id="cruxModuleExtLabel" styleName="FormLabel" text="${quickMsg.useCruxModuleExtension}"/></gwt:widget>
+						<gwt:widget><gwt:label id="projectLayoutLabel" styleName="FormLabel" text="${quickMsg.projectLayout}"/></gwt:widget>
 					</gwt:cell>
 					<gwt:cell>
 						<gwt:widget>
-							<q:helpContext helpText="${quickMsg.moduleProjectOptionHelpText}" id="projectLayoutListBoxContext">
+							<q:helpContext helpText="${quickMsg.projectLayoutOptionHelpText}" id="projectLayoutListBoxContext">
 						     	<q:widget>
-									<w:singleSelect id="projectLayout" />
+									<w:singleSelect id="projectLayout" onChange="quickStartController.projectLayoutChange"/>
 						     	</q:widget>
 						     </q:helpContext>
 						</gwt:widget>

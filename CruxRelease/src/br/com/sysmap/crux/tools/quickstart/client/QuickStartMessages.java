@@ -56,8 +56,8 @@ public interface QuickStartMessages extends Messages
 	@DefaultMessage("DevMode JVM Args:")
 	String hostedModeVMArgs();
 
-	@DefaultMessage("Module Project:")
-	String useCruxModuleExtension();
+	@DefaultMessage("Project Layout:")
+	String projectLayout();
 
 	@DefaultMessage("Module Description:")
 	String cruxModuleDescription();
@@ -111,7 +111,7 @@ public interface QuickStartMessages extends Messages
 	String devModeJVMArgsHelpText();
 	
 	@DefaultMessage("The layout of your project. If you don''t know what this means, please consult this link:\n http://code.google.com/p/crux-framework/wiki/UserManual#6_Project_Layouts, or leave the default option selected.")
-	String moduleProjectOptionHelpText();
+	String projectLayoutOptionHelpText();
 	
 	@DefaultMessage("A brief textual description of your application, which will be used for documentation purposes.")
 	String moduleDescriptionHelpText();
