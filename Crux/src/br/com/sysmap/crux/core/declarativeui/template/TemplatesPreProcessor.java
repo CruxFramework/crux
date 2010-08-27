@@ -51,6 +51,7 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 {
 	private XPathExpression findTemplatesExpression;
 	private XPathExpression findScreensExpression;
+	private XPathExpression findBodyExpression;
 	private static DeclarativeUIMessages messages = (DeclarativeUIMessages)MessagesFactory.getMessages(DeclarativeUIMessages.class);
 	private static final Log log = LogFactory.getLog(CruxToHtmlTransformer.class);
 	
@@ -84,10 +85,35 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 				return prefixes.iterator();
 			}
 		});
+
+		XPath htmlPath = factory.newXPath();
+		htmlPath.setNamespaceContext(new NamespaceContext()
+		{
+			public String getNamespaceURI(String prefix)
+			{
+				return "http://www.w3.org/1999/xhtml";
+			}
+
+			public String getPrefix(String namespaceURI)
+			{
+				return "h";
+			}
+
+			public Iterator<?> getPrefixes(String namespaceURI)
+			{
+				List<String> prefixes = new ArrayList<String>();
+				prefixes.add("h");
+
+				return prefixes.iterator();
+			}
+		});
+		
 		try
 		{
 			findTemplatesExpression = findPath.compile(".//*[contains(namespace-uri(), 'http://www.sysmap.com.br/templates/')]");
 			findScreensExpression = findPath.compile("//c:screen");
+			
+			findBodyExpression = htmlPath.compile("//h:body");
 		}
 		catch (XPathExpressionException e)
 		{
@@ -130,15 +156,28 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 		try
 		{
 			NodeList nodes = (NodeList)findScreensExpression.evaluate(doc, XPathConstants.NODESET);
+			Element screen = null;
 			if (nodes.getLength() > 0)
 			{
-				Element screen = (Element)nodes.item(0);
-				extractScreenPropertiesFromElement(screen, controllers, dataSources, formatters, serializables);
-				updateScreenProperty(screen, controllers, "useController");
-				updateScreenProperty(screen, dataSources, "useDataSource");
-				updateScreenProperty(screen, formatters, "useFormatter");
-				updateScreenProperty(screen, serializables, "useSerializable");
+				screen = (Element)nodes.item(0);
 			}
+			else
+			{
+				screen = doc.createElementNS("http://www.sysmap.com.br/crux", "c:screen");
+				NodeList bodyNodes = (NodeList)findBodyExpression.evaluate(doc, XPathConstants.NODESET);
+				if (bodyNodes.getLength() > 0)
+				{
+					Element body = (Element)bodyNodes.item(0);
+					body.appendChild(screen);
+				}
+			}
+			extractScreenPropertiesFromElement(screen, controllers, dataSources, formatters, serializables);
+			updateScreenProperty(screen, controllers, "useController");
+			updateScreenProperty(screen, dataSources, "useDataSource");
+			updateScreenProperty(screen, formatters, "useFormatter");
+			updateScreenProperty(screen, serializables, "useSerializable");
+				
+			
 		}
 		catch (XPathExpressionException e)
 		{
