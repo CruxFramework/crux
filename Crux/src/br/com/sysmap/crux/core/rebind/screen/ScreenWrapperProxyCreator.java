@@ -75,13 +75,14 @@ public class ScreenWrapperProxyCreator extends AbstractWrapperProxyCreator
 	@Override
     protected String[] getImports()
     {
-	    String[] imports = new String[] {
-	    		Screen.class.getCanonicalName(),
-	    		GWT.class.getCanonicalName(),
-	    		Crux.class.getCanonicalName(),
-	    		Window.class.getCanonicalName()
-			};
-		    return imports;       }
+		String[] imports = new String[] {
+				Screen.class.getCanonicalName(),
+				GWT.class.getCanonicalName(),
+				Crux.class.getCanonicalName(),
+				Window.class.getCanonicalName()
+		};
+		return imports;       
+    }
 
 	/**
 	 * @param method
