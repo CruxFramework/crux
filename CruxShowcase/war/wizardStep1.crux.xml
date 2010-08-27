@@ -21,7 +21,7 @@
 			<b:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
 				<b:verticalPanel id="labels" width="100%" spacing="15">
 					<b:label id="welcomeLabel1" text="Welcome to Crux Wizard!" styleName="SpecialSecondaryLabel"/>
-					<b:label id="welcomeLabel2" text="Here you will find out how to create wizards based on multiple html pages." styleName="SpecialSecondaryLabel"/>
+					<b:label id="welcomeLabel2" text="This is an example of a wizard based on multiple html pages." styleName="SpecialSecondaryLabel"/>
 					<b:label id="welcomeLabel3" text="Clik next to proceed..." styleName="SpecialSecondaryLabel"/>
 				</b:verticalPanel>
 			</b:cell>

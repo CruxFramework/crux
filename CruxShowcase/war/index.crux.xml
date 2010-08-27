@@ -72,7 +72,7 @@
 							</a:item>
 							<a:item id="tabsItem" label="Tabs">
 								<a:item id="dynaTabsItem" label="Dyna Tabs" onClick="mainController.onClickDynaTabsItem" />
-								<a:item id="rollingTabsItem" label="Rolling Tab Panel" onClick="mainController.onClickRollingTabsItem" />
+								<!-- a:item id="rollingTabsItem" label="Rolling Tab Panel" onClick="mainController.onClickRollingTabsItem" /-->
 							</a:item>
 							<a:item id="gridsItem" label="Grids">
 								<a:item id="simpleGridItem" label="Simple" onClick="mainController.onClickSimpleGridItem" />
