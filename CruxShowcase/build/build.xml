@@ -56,13 +56,11 @@
 		<mkdir dir="${temp.dir}" />
 
 		<copydir dest="${temp.dir}/webroot" src="${web.root}">
-			<!-- use the code below for removing unnecessary crux files from the war file 
-			<exclude name="**/crux-advanced-widgets.jar" />
-			<exclude name="**/crux-basic-widgets.jar" />
-			<exclude name="**/crux-compiler.jar" />
-			<exclude name="**/crux-html-tags.jar" />
-			<exclude name="**/crux-html-tags-compile-task.jar" />
-			-->
+			<exclude name="**/crux-gwt-widgets.jar" />
+			<exclude name="**/crux-widgets.jar" />
+			<exclude name="**/crux-themes.jar" />
+			<exclude name="**/saxon9-dom.jar" />
+			<exclude name="**/saxon9.jar" />
 		</copydir>
 
 		<cruxcompiler srcDir="${src.dir}" keepPagesGeneratedFiles="true" outputDir="${temp.dir}/webroot" webDir="${temp.dir}/webroot" pagesOutputDir="${temp.dir}/webroot">
