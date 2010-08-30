@@ -355,7 +355,7 @@ public class ScreenFactory
 					screen.setTitle(title);
 				}
 			}
-			else if (!attrName.equals("id"))
+			else if (!attrName.equals("id") && !attrName.equals("_type"))
 			{
 				if (logger.isDebugEnabled()) logger.debug(messages.screenPropertyError(attrName.substring(1), screen.getId()));
 			}

@@ -184,8 +184,8 @@ public interface GeneratorMessages
 	@DefaultServerMessage("[screenFactory 008] - Error parsing screen {0}. Details: {1}.")
 	String screenFactoryErrorParsingScreen(String screenId, String errMsg);
 
-	@DefaultServerMessage("[Screen 001] - Error setting property {0} for widget {1}.")
-	String screenPropertyError(String property, String widgetId);
+	@DefaultServerMessage("[Screen 001] - Error setting property {0} for screen {1}.")
+	String screenPropertyError(String property, String screenId);
 	
 	@DefaultServerMessage("[generator 043] - Error for register client event handler. Error:{1}")
 	String errorGeneratingRegisteredController(String errMesg);
