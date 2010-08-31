@@ -26,10 +26,14 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.sysmap.crux.core.rebind.scanner.module.Module;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolver;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverImpl;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.utils.FileUtils;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.CruxModule;
 import br.com.sysmap.crux.module.CruxModuleHandler;
+import br.com.sysmap.crux.module.classpath.ModuleClassPathResolver;
 import br.com.sysmap.crux.tools.compile.utils.ClassPathUtils;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
@@ -46,6 +50,8 @@ public class CruxModuleContainerApplicationCompiler extends CruxModuleCompiler
 	
 	private boolean monolithicCompilerInitialized = false;
 	private MonolithicApplicationCompiler monolithicAppCompiler;
+	private ClassPathResolver monolithicClassPathResolver;
+	private ClassPathResolver moduleClassPathResolver;
 	
 	@Override
 	protected void doCompileModule(URL url, Module module) throws Exception
@@ -54,10 +60,12 @@ public class CruxModuleContainerApplicationCompiler extends CruxModuleCompiler
 		
 		if(cruxModule != null)
 		{
+			ClassPathResolverInitializer.registerClassPathResolver(this.moduleClassPathResolver);
 			super.doCompileModule(url, module);
 		}
 		else
 		{
+			ClassPathResolverInitializer.registerClassPathResolver(this.monolithicClassPathResolver);
 			nonModuleCompile(url, module);
 		}
 	}
@@ -101,10 +109,15 @@ public class CruxModuleContainerApplicationCompiler extends CruxModuleCompiler
 	@Override
 	protected List<URL> getURLs() throws Exception
 	{
-		List<URL> result = new ArrayList<URL>();
-		
+		List<URL> result = new ArrayList<URL>();		
 		Set<URL> urls = new HashSet<URL>();
+		
+		ClassPathResolverInitializer.registerClassPathResolver(this.moduleClassPathResolver = new ModuleClassPathResolver());
+		
 		urls.addAll(super.getURLs());
+		
+		ClassPathResolverInitializer.registerClassPathResolver(this.monolithicClassPathResolver = new ClassPathResolverImpl());
+		
 		for (File dir : cruxPagesDir)
         {
 	        urls.addAll(MonolithicAppCompileUtils.getURLs(dir));
