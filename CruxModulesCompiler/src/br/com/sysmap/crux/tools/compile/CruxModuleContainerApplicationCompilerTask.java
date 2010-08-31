@@ -24,10 +24,21 @@ import org.apache.tools.ant.taskdefs.Java;
  */
 public class CruxModuleContainerApplicationCompilerTask extends CruxCompilerTask
 {
+	private boolean forceModulesCompilation;
+	
+	public void setForceModulesCompilation(boolean forceModulesCompilation)
+    {
+    	this.forceModulesCompilation = forceModulesCompilation;
+    }
+
 	@Override
 	protected void addCompilerParameters(Java javatask) throws Exception
 	{
 	    super.addCompilerParameters(javatask);
+	    if (forceModulesCompilation)
+	    {
+			javatask.createArg().setValue("-forceModulesCompilation");
+	    }
 		javatask.createJvmarg().setValue("-DCruxToolsConfig.compilerClass="+CruxModuleContainerApplicationCompiler.class.getName());
 	}
 }
