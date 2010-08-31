@@ -712,11 +712,13 @@
 {
 	width:1px;
 	border: solid 0px;
+	opacity:0;
 }
 .crux-TabBar .crux-RollingPanelHNextWrapper-disabled
 {
 	width:1px;
 	border: solid 0px;
+	opacity:0;
 }
 .crux-TabBar .crux-RollingPanelHNextWrapper-disabled .crux-RollingPanelHNext
 {
