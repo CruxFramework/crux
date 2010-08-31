@@ -118,6 +118,14 @@ public class JarCreator extends FilePatternHandler
 			{
 				outputFile.delete();
 			}
+			else
+			{
+				File parentFile = outputFile.getParentFile();
+				if (parentFile != null && !parentFile.exists())
+				{
+					parentFile.mkdirs();
+				}
+			}
 
 			JarOutputStream target = new JarOutputStream(new FileOutputStream(outputFile), manifest);
 
