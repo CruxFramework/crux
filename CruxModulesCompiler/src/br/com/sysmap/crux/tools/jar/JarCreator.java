@@ -32,6 +32,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.utils.FilePatternHandler;
 import br.com.sysmap.crux.core.utils.FileUtils;
 
@@ -148,7 +149,7 @@ public class JarCreator extends FilePatternHandler
 			if (source.isDirectory())
 			{
 				String name = entryName;
-				if (!name.isEmpty() && !added.contains(name))
+				if (!StringUtils.isEmpty(name) && !added.contains(name))
 				{
 					JarEntry entry = new JarEntry(name);
 					entry.setTime(source.lastModified());
