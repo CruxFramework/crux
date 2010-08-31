@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import br.com.sysmap.crux.core.rebind.module.Module;
+import br.com.sysmap.crux.core.rebind.scanner.module.Module;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.CruxModule;
 import br.com.sysmap.crux.module.CruxModuleHandler;
