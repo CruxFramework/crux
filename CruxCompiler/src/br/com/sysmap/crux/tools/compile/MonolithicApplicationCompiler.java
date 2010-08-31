@@ -16,13 +16,11 @@
 package br.com.sysmap.crux.tools.compile;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
@@ -30,7 +28,6 @@ import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.tools.compile.preprocessor.DeclarativeUIPreProcessor;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
-import br.com.sysmap.crux.tools.parameters.ConsoleParameterOption;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
 
 /**
@@ -38,7 +35,7 @@ import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class CruxBasicCompiler extends AbstractCruxCompiler
+public class MonolithicApplicationCompiler extends AbstractCruxCompiler
 {
 	private String keepPagesUnder;
 	private List<File> cruxPagesDir;
@@ -110,57 +107,33 @@ public class CruxBasicCompiler extends AbstractCruxCompiler
 		List<URL> result = new ArrayList<URL>();
 		for (File dir : cruxPagesDir)
         {
-	        result.addAll(getURLs(dir));
+	        result.addAll(MonolithicAppCompileUtils.getURLs(dir));
         }
 		
 		return result;
 	}
 
-	/**
-	 * Gets the list of URLs that will be compiled
-	 * @return
-	 */
-	protected List<URL> getURLs(File pagesDir) throws Exception
-	{
-		List<URL> files = new LinkedList<URL>();
-		File[] listFiles = pagesDir.listFiles(new FileFilter()
-		{
-			public boolean accept(File pathname)
-			{
-				return pathname.isDirectory() || pathname.getName().endsWith(".crux.xml");
-			}
-		});
-		
-		if (listFiles != null)
-		{
-			for (File file : listFiles)
-			{
-				if (file.isDirectory())
-				{
-					files.addAll(getURLs(file));
-				}
-				else
-				{
-					files.add(file.toURI().toURL());
-				}
-			}
-		}
-
-		return files;
-	}
-	
 	@Override
 	protected ConsoleParametersProcessor createParametersProcessor()
 	{
 		ConsoleParametersProcessor parametersProcessor = super.createParametersProcessor();
-		ConsoleParameter parameter = new ConsoleParameter("keepPagesUnder", "A Directory that will be used as parent of generated files.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("dirName", "Folder name"));
-		parametersProcessor.addSupportedParameter(parameter);
-		
-		parameter = new ConsoleParameter("cruxPagesDir", "The source folder(s), where crux.xml files will be searched.", true, true);
-		parameter.addParameterOption(new ConsoleParameterOption("dirNames", "Folder name(s). Separeted by commas"));
-		parametersProcessor.addSupportedParameter(parameter);
-		
+		MonolithicAppCompileUtils.addParametersToProcessor(parametersProcessor);		
 		return parametersProcessor;	
-	}	
+	}
+
+	/**
+	 * @return the keepPagesUnder
+	 */
+	public String getKeepPagesUnder()
+	{
+		return keepPagesUnder;
+	}
+
+	/**
+	 * @param keepPagesUnder the keepPagesUnder to set
+	 */
+	public void setKeepPagesUnder(String keepPagesUnder)
+	{
+		this.keepPagesUnder = keepPagesUnder;
+	}
 }

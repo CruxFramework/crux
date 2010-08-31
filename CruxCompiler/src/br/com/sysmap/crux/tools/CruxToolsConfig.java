@@ -23,7 +23,7 @@ import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
  */
 public interface CruxToolsConfig
 {
-	@DefaultServerMessage("br.com.sysmap.crux.tools.compile.CruxBasicCompiler")
+	@DefaultServerMessage("br.com.sysmap.crux.tools.compile.MonolithicApplicationCompiler")
 	String compilerClass();
 	@DefaultServerMessage("br.com.sysmap.crux.tools.schema.DefaultSchemaGenerator")
 	String schemaGeneratorClass();
