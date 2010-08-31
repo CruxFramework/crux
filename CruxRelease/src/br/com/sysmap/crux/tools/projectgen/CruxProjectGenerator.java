@@ -219,7 +219,7 @@ public class CruxProjectGenerator
 	 */
 	private void createProjectRootFiles() throws IOException
 	{
-		if (!this.options.getProjectLayout().equals(ProjectLayout.MONOLITHIC_APP))
+		if (this.options.getProjectLayout().equals(ProjectLayout.MODULE_APP))
 		{
 			createFile(options.getProjectDir(), options.getProjectName() + ".launch", "modules/launch.xml");
 		}
@@ -251,7 +251,7 @@ public class CruxProjectGenerator
 		createFile(clientControllerPackage, "MyController.java", "MyController.java.txt");
 		createFile(serverPackage, "GreetingServiceImpl.java", "GreetingServiceImpl.java.txt");
 
-		if (!this.options.getProjectLayout().equals(ProjectLayout.MONOLITHIC_APP))
+		if (this.options.getProjectLayout().equals(ProjectLayout.MODULE_APP))
 		{
 			createFile(sourceDir, "Crux.properties", "modules/crux.properties.txt");
 			createFile(sourceDir, "CruxModuleConfig.properties", "modules/cruxModuleConfig.properties.txt");
@@ -280,22 +280,19 @@ public class CruxProjectGenerator
 			pageName = pageName.substring(0, pageName.length()-5) + ".crux.xml";
 		}
 		
-		if (!this.options.getProjectLayout().equals(ProjectLayout.MONOLITHIC_APP))
+		if (this.options.getProjectLayout().equals(ProjectLayout.MODULE_APP))
 		{
 			FileUtils.copyFilesFromDir(new File(options.getLibDir(), "modules/web-inf"), getWebInfLibDir());
 			createFile(getWebInfLibDir().getParentFile(), "web.xml", "modules/web.xml");
-			
-			if(this.options.getProjectLayout().equals(ProjectLayout.MODULE_APP))
-			{
-				createFile(getModulePublicDir(), pageName, "modules/index.crux.xml");
-			}
-			else
-			{
-				createFile(getWarDir(), pageName, "modules/index.crux.xml");
-			}
+			createFile(getModulePublicDir(), pageName, "modules/index.crux.xml");
 		}
 		else
 		{
+			if (this.options.getProjectLayout().equals(ProjectLayout.MODULE_CONTAINER_APP))
+			{
+				FileUtils.copyFilesFromDir(new File(options.getLibDir(), "modules/web-inf"), getBuildLibDir());
+			}
+
 			createFile(getWebInfLibDir().getParentFile(), "web.xml", "web.xml");
 			createFile(getWarDir(), pageName, "index.crux.xml");		
 		}
@@ -303,7 +300,7 @@ public class CruxProjectGenerator
 
 	private void createXSDs() 
 	{
-		boolean generateModuleSchema = !options.getProjectLayout().equals(ProjectLayout.MONOLITHIC_APP);
+		boolean generateModuleSchema = options.getProjectLayout().equals(ProjectLayout.MODULE_APP);
 		SchemaGenerator.generateSchemas(options.getProjectDir(), new File(options.getProjectDir(),"xsd"), null, generateModuleSchema);
 	}
 	
