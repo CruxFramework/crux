@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.tools.compile;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,9 +26,11 @@ import java.util.List;
 import java.util.Set;
 
 import br.com.sysmap.crux.core.rebind.scanner.module.Module;
+import br.com.sysmap.crux.core.utils.FileUtils;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.CruxModule;
 import br.com.sysmap.crux.module.CruxModuleHandler;
+import br.com.sysmap.crux.tools.compile.utils.ClassPathUtils;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
 
@@ -39,12 +43,13 @@ public class CruxModuleContainerApplicationCompiler extends CruxModuleCompiler
 {
 	private String keepPagesUnder;
 	private List<File> cruxPagesDir;
+	
+	private boolean monolithicCompilerInitialized = false;
 	private MonolithicApplicationCompiler monolithicAppCompiler;
 	
 	@Override
 	protected void doCompileModule(URL url, Module module) throws Exception
 	{
-		List<Object[]> nonCruxModules = new ArrayList<Object[]>();
 		CruxModule cruxModule = CruxModuleHandler.getCruxModule(module.getName());
 		
 		if(cruxModule != null)
@@ -53,25 +58,32 @@ public class CruxModuleContainerApplicationCompiler extends CruxModuleCompiler
 		}
 		else
 		{
-			Object[] nonCruxModule = {url, module};
-			nonCruxModules.add(nonCruxModule);
-		}
-		
-		if(nonCruxModules.size() > 0)
-		{
-			prepareForCompileNonCruxModules();
-			
-			for (Object[] nonCruxModule : nonCruxModules)
-			{
-				this.monolithicAppCompiler.doCompileModule((URL) nonCruxModule[0], (Module) nonCruxModule[1]);
-			}
+			nonModuleCompile(url, module);
 		}
 	}
 
 	/**
+	 * Compiles the non-modular part of the application.
+	 * @param url
+	 * @param module
+	 * @throws Exception 
+	 */
+	private void nonModuleCompile(URL url, Module module) throws Exception
+    {
+		if(!this.monolithicCompilerInitialized )
+		{
+			initializeMonolithicCompiler();
+		}
+		
+		this.monolithicAppCompiler.doCompileModule(url, module);
+		
+		setModuleAsCompiled(module);    
+    }
+
+	/**
 	 * 
 	 */
-	private void prepareForCompileNonCruxModules()
+	private void initializeMonolithicCompiler()
 	{
 		this.monolithicAppCompiler = new MonolithicApplicationCompiler();
 		this.monolithicAppCompiler.setIndentPages(this.isIndentPages());
@@ -83,6 +95,7 @@ public class CruxModuleContainerApplicationCompiler extends CruxModuleCompiler
 		this.monolithicAppCompiler.setPagesOutputDir(this.getPagesOutputDir());
 		this.monolithicAppCompiler.setPreCompileJavaSource(this.isPreCompileJavaSource());
 		this.monolithicAppCompiler.setWebDir(this.getWebDir());
+		this.monolithicCompilerInitialized = true;
 	}
 
 	@Override
@@ -131,5 +144,13 @@ public class CruxModuleContainerApplicationCompiler extends CruxModuleCompiler
 		ConsoleParametersProcessor parametersProcessor = super.createParametersProcessor();
 		MonolithicAppCompileUtils.addParametersToProcessor(parametersProcessor);
 		return parametersProcessor;
+	}
+	
+	@Override
+	protected void initializeCompilerDir() throws IOException, MalformedURLException
+	{
+	    compilerWorkDir = new File (FileUtils.getTempDirFile(), "crux_compiler"+System.currentTimeMillis());
+	    compilerWorkDir.mkdirs();
+	    ClassPathUtils.addURL(compilerWorkDir.toURI().toURL());
 	}
 }
