@@ -31,7 +31,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
@@ -91,39 +90,32 @@ public class WizardInstantiatorProxyCreator extends AbstractInterfaceWrapperProx
 	 */
 	private void generateCreateWizardMethod(SourceWriter sourceWriter)
 	{
-		try
-        {
-	        Iterator<String> wizardDatas = WizardDataObjects.iterateWizardDatas();
-	        sourceWriter.println("public Wizard<?> createWizard(String id, String wizardDataId){");
-	        sourceWriter.indent();
+		Iterator<String> wizardDatas = WizardDataObjects.iterateWizardDatas();
+		sourceWriter.println("public Wizard<?> createWizard(String id, String wizardDataId){");
+		sourceWriter.indent();
 
-	        sourceWriter.println("if ("+StringUtils.class.getCanonicalName()+".isEmpty(wizardDataId)){");
-	        sourceWriter.indent();
-	        sourceWriter.println("return new Wizard<String>(id, \"string\");");
-	        sourceWriter.outdent();
-	        sourceWriter.println("}");
+		sourceWriter.println("if ("+StringUtils.class.getCanonicalName()+".isEmpty(wizardDataId)){");
+		sourceWriter.indent();
+		sourceWriter.println("return new Wizard<String>(id, \"string\");");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 
-	        while (wizardDatas.hasNext())
-	        {
-	        	String wizardData = wizardDatas.next();
-	        	JClassType wizardDataClass = baseIntf.getOracle().getType(WizardDataObjects.getWizardData(wizardData));
-	        	if (wizardDataClass!= null)
-	        	{
-	        		sourceWriter.println("else if (\""+wizardData+"\".equals(wizardDataId)){");
-	        		sourceWriter.indent();
-	        		sourceWriter.println("return new Wizard<"+wizardDataClass.getParameterizedQualifiedSourceName()+">(id, wizardDataId);");
-	        		sourceWriter.outdent();
-	        		sourceWriter.println("}");
-	        	}
-	        }		
-	        sourceWriter.println("return new Wizard<java.io.Serializable>(id, wizardDataId);");
-	        sourceWriter.outdent();
-	        sourceWriter.println("}");
-        }
-        catch (NotFoundException e)
-        {
-        	throw new CruxGeneratorException(e.getMessage(), e);
-        }
+		while (wizardDatas.hasNext())
+		{
+			String wizardData = wizardDatas.next();
+			JClassType wizardDataClass = baseIntf.getOracle().findType(WizardDataObjects.getWizardData(wizardData));
+			if (wizardDataClass!= null)
+			{
+				sourceWriter.println("else if (\""+wizardData+"\".equals(wizardDataId)){");
+				sourceWriter.indent();
+				sourceWriter.println("return new Wizard<"+wizardDataClass.getParameterizedQualifiedSourceName()+">(id, wizardDataId);");
+				sourceWriter.outdent();
+				sourceWriter.println("}");
+			}
+		}		
+		sourceWriter.println("return new Wizard<java.io.Serializable>(id, wizardDataId);");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 	}
 
 	/**
@@ -131,38 +123,31 @@ public class WizardInstantiatorProxyCreator extends AbstractInterfaceWrapperProx
 	 */
 	private void generateCreateWizardPageMethod(SourceWriter sourceWriter)
 	{
-		try
-        {
-	        Iterator<String> wizardDatas = WizardDataObjects.iterateWizardDatas();
-	        sourceWriter.println("public WizardPage<?> createWizardPage(String wizardId, String wizardDataId){");
-	        sourceWriter.indent();
+		Iterator<String> wizardDatas = WizardDataObjects.iterateWizardDatas();
+		sourceWriter.println("public WizardPage<?> createWizardPage(String wizardId, String wizardDataId){");
+		sourceWriter.indent();
 
-	        sourceWriter.println("if ("+StringUtils.class.getCanonicalName()+".isEmpty(wizardDataId)){");
-	        sourceWriter.indent();
-	        sourceWriter.println("return new WizardPage<String>(wizardId, \"string\");");
-	        sourceWriter.outdent();
-	        sourceWriter.println("}");
+		sourceWriter.println("if ("+StringUtils.class.getCanonicalName()+".isEmpty(wizardDataId)){");
+		sourceWriter.indent();
+		sourceWriter.println("return new WizardPage<String>(wizardId, \"string\");");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 
-	        while (wizardDatas.hasNext())
-	        {
-	        	String wizardData = wizardDatas.next();
-	        	JClassType wizardDataClass = baseIntf.getOracle().getType(WizardDataObjects.getWizardData(wizardData));
-	        	if (wizardDataClass!= null)
-	        	{
-	        		sourceWriter.println("else if (\""+wizardData+"\".equals(wizardDataId)){");
-	        		sourceWriter.indent();
-	        		sourceWriter.println("return new WizardPage<"+wizardDataClass.getParameterizedQualifiedSourceName()+">(wizardId, wizardDataId);");
-	        		sourceWriter.outdent();
-	        		sourceWriter.println("}");
-	        	}
-	        }		
-	        sourceWriter.println("return new WizardPage<java.io.Serializable>(wizardId, wizardDataId);");
-	        sourceWriter.outdent();
-	        sourceWriter.println("}");
-        }
-        catch (NotFoundException e)
-        {
-        	throw new CruxGeneratorException(e.getMessage(), e);
-        }
+		while (wizardDatas.hasNext())
+		{
+			String wizardData = wizardDatas.next();
+			JClassType wizardDataClass = baseIntf.getOracle().findType(WizardDataObjects.getWizardData(wizardData));
+			if (wizardDataClass!= null)
+			{
+				sourceWriter.println("else if (\""+wizardData+"\".equals(wizardDataId)){");
+				sourceWriter.indent();
+				sourceWriter.println("return new WizardPage<"+wizardDataClass.getParameterizedQualifiedSourceName()+">(wizardId, wizardDataId);");
+				sourceWriter.outdent();
+				sourceWriter.println("}");
+			}
+		}		
+		sourceWriter.println("return new WizardPage<java.io.Serializable>(wizardId, wizardDataId);");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 	}
 }

@@ -164,7 +164,7 @@ public class RegisteredWizardDataSerializerProxyCreator extends AbstractInterfac
 	{
 		try
 		{
-			JClassType wizardDataClass = baseIntf.getOracle().getType(WizardDataObjects.getWizardData(wizardData));
+			JClassType wizardDataClass = baseIntf.getOracle().findType(WizardDataObjects.getWizardData(wizardData));
 			if (!dataSerializerClassNames.containsKey(wizardData) && wizardDataClass!= null)
 			{
 				String genClass = "Intf_"+wizardData;
