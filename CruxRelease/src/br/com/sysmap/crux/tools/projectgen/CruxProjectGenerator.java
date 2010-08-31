@@ -219,7 +219,7 @@ public class CruxProjectGenerator
 	 */
 	private void createProjectRootFiles() throws IOException
 	{
-		if (!this.options.getProjectLayout().equals(ProjectLayout.STANDALONE_APP))
+		if (!this.options.getProjectLayout().equals(ProjectLayout.MONOLITHIC_APP))
 		{
 			createFile(options.getProjectDir(), options.getProjectName() + ".launch", "modules/launch.xml");
 		}
@@ -251,7 +251,7 @@ public class CruxProjectGenerator
 		createFile(clientControllerPackage, "MyController.java", "MyController.java.txt");
 		createFile(serverPackage, "GreetingServiceImpl.java", "GreetingServiceImpl.java.txt");
 
-		if (!this.options.getProjectLayout().equals(ProjectLayout.STANDALONE_APP))
+		if (!this.options.getProjectLayout().equals(ProjectLayout.MONOLITHIC_APP))
 		{
 			createFile(sourceDir, "Crux.properties", "modules/crux.properties.txt");
 			createFile(sourceDir, "CruxModuleConfig.properties", "modules/cruxModuleConfig.properties.txt");
@@ -280,7 +280,7 @@ public class CruxProjectGenerator
 			pageName = pageName.substring(0, pageName.length()-5) + ".crux.xml";
 		}
 		
-		if (!this.options.getProjectLayout().equals(ProjectLayout.STANDALONE_APP))
+		if (!this.options.getProjectLayout().equals(ProjectLayout.MONOLITHIC_APP))
 		{
 			FileUtils.copyFilesFromDir(new File(options.getLibDir(), "modules/web-inf"), getWebInfLibDir());
 			createFile(getWebInfLibDir().getParentFile(), "web.xml", "modules/web.xml");
@@ -303,7 +303,7 @@ public class CruxProjectGenerator
 
 	private void createXSDs() 
 	{
-		boolean generateModuleSchema = !options.getProjectLayout().equals(ProjectLayout.STANDALONE_APP);
+		boolean generateModuleSchema = !options.getProjectLayout().equals(ProjectLayout.MONOLITHIC_APP);
 		SchemaGenerator.generateSchemas(options.getProjectDir(), new File(options.getProjectDir(),"xsd"), null, generateModuleSchema);
 	}
 	

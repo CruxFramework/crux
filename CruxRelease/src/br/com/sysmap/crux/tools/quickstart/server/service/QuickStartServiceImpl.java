@@ -70,7 +70,7 @@ public class QuickStartServiceImpl implements QuickStartService
 	        info.setProjectLayout(projectLayout);
 	        info.setHostedModeVMArgs(hostedModeVMArgs);
 	        
-	        info.addProjectLayout(messages.projectLayoutStandaloneApp(), ProjectLayout.STANDALONE_APP.name());
+	        info.addProjectLayout(messages.projectLayoutMonolithicApp(), ProjectLayout.MONOLITHIC_APP.name());
 	        info.addProjectLayout(messages.projectLayoutModuleApp(), ProjectLayout.MODULE_APP.name());
 	        info.addProjectLayout(messages.projectLayoutModuleContainerApp(), ProjectLayout.MODULE_CONTAINER_APP.name());
 	        

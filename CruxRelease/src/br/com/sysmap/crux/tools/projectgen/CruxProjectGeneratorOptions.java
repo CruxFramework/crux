@@ -181,7 +181,7 @@ public class CruxProjectGeneratorOptions
 	 */
 	public static enum ProjectLayout
 	{
-		STANDALONE_APP,
+		MONOLITHIC_APP,
 		MODULE_APP,
 		MODULE_CONTAINER_APP;
 	}

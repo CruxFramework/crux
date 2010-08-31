@@ -23,8 +23,8 @@ import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
  */
 public interface QuickStartServerMessages
 {
-	@DefaultServerMessage("Standalone Application")
-	String projectLayoutStandaloneApp();
+	@DefaultServerMessage("Monolithic Application")
+	String projectLayoutMonolithicApp();
 	
 	@DefaultServerMessage("Module Application")
 	String projectLayoutModuleApp();
