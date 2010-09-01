@@ -54,11 +54,25 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 		setElement(DOM.createSpan());
 	}
 
+	/**
+	 * 
+	 */
 	public static void close()
 	{
 		CruxInternalPopupController.hide();
 	}
 
+	/**
+	 * @param fireCloseEvents
+	 */
+	public static void close(boolean fireCloseEvents)
+	{
+		CruxInternalPopupController.hide(fireCloseEvents);
+	}
+
+	/**
+	 * @return
+	 */
 	public static Popup getLastShownPopup()
 	{
 		if(popups.size() > 0)
