@@ -29,9 +29,9 @@
 		<get src="http://repository.jboss.org/maven2/javassist/javassist/3.7.1.GA/javassist-3.7.1.GA.jar" dest="dependencies/javassist.jar" verbose="true"/>
 		<get src="http://repo1.maven.org/maven2/commons-lang/commons-lang/2.3/commons-lang-2.3.jar" dest="dependencies/commons-lang.jar" verbose="true"/>
 		<get src="http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" dest="dependencies/commons-logging.jar" verbose="true"/>
-		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-dev/2.0.3/gwt-dev-2.0.3.jar" dest="dependencies/gwt-dev.jar" verbose="true"/>
-		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-servlet/2.0.3/gwt-servlet-2.0.3.jar" dest="dependencies/gwt-servlet.jar" verbose="true"/>
-		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-user/2.0.3/gwt-user-2.0.3.jar" dest="dependencies/gwt-user.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-dev/2.0.4/gwt-dev-2.0.4.jar" dest="dependencies/gwt-dev.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-servlet/2.0.4/gwt-servlet-2.0.4.jar" dest="dependencies/gwt-servlet.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-user/2.0.4/gwt-user-2.0.4.jar" dest="dependencies/gwt-user.jar" verbose="true"/>
 		<get src="http://repo2.maven.org/maven2/junit/junit/4.4/junit-4.4.jar" dest="dependencies/junit.jar" verbose="true"/>
 		<get src="http://svn.apache.org/repos/asf/servicemix/m2-repo/net/sf/saxon/saxon/9.0/saxon-9.0.jar" dest="dependencies/saxon9.jar" verbose="true"/>
 		<get src="http://svn.apache.org/repos/asf/servicemix/m2-repo/net/sf/saxon/saxon-dom/9.0/saxon-dom-9.0.jar" dest="dependencies/saxon9-dom.jar" verbose="true"/>
