@@ -172,7 +172,7 @@ public class ConsoleParametersProcessor
 	{
 		if (orderedNoFlagsParameters.size()>0)
 		{
-			ConsoleParameter parameter = (ConsoleParameter) orderedNoFlagsParameters.removeLast().clone();
+			ConsoleParameter parameter = (ConsoleParameter) orderedNoFlagsParameters.removeFirst().clone();
 			if (parameter == null)
 			{
 				handleProcessingError("Invalid Parameter found: "+cmd+".");
