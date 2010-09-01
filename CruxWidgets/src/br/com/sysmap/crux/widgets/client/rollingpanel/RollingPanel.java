@@ -81,19 +81,18 @@ public class RollingPanel extends Composite implements InsertPanel
 		this.layoutPanel = new DockPanel();
 		this.itemsScrollPanel = new SimplePanel();
 		
+		DOM.setStyleAttribute(this.itemsScrollPanel.getElement(), "overflowX", "hidden");
+		DOM.setStyleAttribute(this.itemsScrollPanel.getElement(), "overflowY", "hidden");
+		
 		if (vertical)
 		{
-			DOM.setStyleAttribute(this.itemsScrollPanel.getElement(), "overflowX", "hidden");
-			DOM.setStyleAttribute(this.itemsScrollPanel.getElement(), "overflowY", "hidden");
 			this.layoutPanel.setHeight("100%");
 			this.itemsScrollPanel.setHeight("100%");
 			this.itemsPanel = new VerticalPanel();
 			createVerticalNavigationButtons();
 		}
 		else
-		{
-			DOM.setStyleAttribute(this.itemsScrollPanel.getElement(), "overflowX", "hidden");
-			DOM.setStyleAttribute(this.itemsScrollPanel.getElement(), "overflowY", "hidden");
+		{	
 			this.layoutPanel.setWidth("100%");
 			this.itemsScrollPanel.setWidth("100%");
 			this.itemsPanel = new HorizontalPanel();
