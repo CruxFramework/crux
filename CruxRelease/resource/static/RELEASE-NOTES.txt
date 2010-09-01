@@ -1,4 +1,56 @@
 =====================================================================================================
+Release 3.0.0
+-----------------------------------------------------------------------------------------------------
+ISSUES - DEFECT
+-----------------------------------------------------------------------------------------------------
+168  - Unnecessary message "Message [Screen 001] - Error setting property _type for widget." on DevMode
+165  - Can not select a tab on DynaTab widget if the number of widgets is high enough to display scroll buttons
+164  - WizardStepCommand styleName attribute does not work when inside a pageStep
+163  - Error using ScreenWrapper whit widget generic class
+161  - GWT Hidden widget doesn't accept i18n'ed value.
+156  - DataSources whose binded objects have protected fields cause error messages on DevMode console log.
+155  - Controller proxies are wasting memory on browser
+154  - Menu items, MessageBox buttons and Confirm buttons do not have ID
+153  - SchemaGenerator throws MalformedURIException
+151  - Crux InvokerGenerator throws error when the Invoker Interface extends a basic interface
+149  - Crux does not accept generic widgets
+143  - Error compiling modules that has pages with similar names
+142  - Creating a Grid with attribute emptyDataFilling = "" causes empty cells.
+141  - RemoteDataSource throws "DataSource is not loaded yet" error after a clear() operation.
+138  - Two or more crux applications running on the same server cause conflicts 
+135  - "allowedPackages" and "ignoredPackages" properties are being cached across executions of SchemaGenerator task
+134  - Crux does not report any message if a page dispatch an event to a controller that does not exist
+122  - CruxLibs doesn't copy crux-html-tags.jar into CruxModulesAdmin project
+119  - Error building Crux from sources (project CruxHtmlTags looks for junit-4.4.jar)
+118  - Error building Crux from sources (missing dist folder in CruxModules project)
+115  - ClassPathResolver section in UserManual is out of date
+96   - Crux does not include an inner template controller if main page has no declared <crux:screen> tag
+45   - When  a Popup, Confirm or ProgressDialog is open, the focused widget in parent screen keeps the focus.
+4    - The Crux Grid Headers are not centered when the size of the column is not big enough to hold it.
+
+-----------------------------------------------------------------------------------------------------
+ISSUES - ENHANCEMENT
+-----------------------------------------------------------------------------------------------------
+169  - event BeforeCloseEvent
+162  - Modify the layout of the Popup, Confirm, MessageBox and Progress Dialog, adding a shadow behind them.
+160  - Create a listBox that implements HasValue interface, for using with AutoBind feature.
+157  - Create a new layout for project generator, called "modules host project"
+150  - Make Wizard widget generic to read and write context data 
+148  - Enhance Crux compilation performance.
+147  - Throw an exception and stop compilation when duplicated or invalid controllers, datasources, and so on, are used
+146  - Check screens to ensure that all declared controllers, datasources, and so on, exists 
+145  - Stop compilation of a multi-module project if one of the modules compilation fail
+140  - Create a way to associate a controller to widget
+139  - Simplify the use of context. Do not require CruxSerializable values, but just Serializable
+137  - Add the widget ID declared on crux.xml file into the widget's main element 
+136  - Crux Grid - Allow to navigate into DTO's properties
+132  - Component transferList
+130  - Refactory default classpathResolver, to make it work with more application servers
+129  - Create a new tool for support application packaging and exporting processes.
+101  - Declare ant tasks on build.xml
+71   - Simplify data serialization between modules or documents
+
+=====================================================================================================
 Release 2.2.1
 -----------------------------------------------------------------------------------------------------
 ISSUES - DEFECT
