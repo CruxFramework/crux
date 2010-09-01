@@ -688,7 +688,7 @@
 }
 .crux-RollingPanelVPreviousWrapper-disabled .crux-RollingPanelVPrevious, .crux-RollingPanelVNextWrapper-disabled .crux-RollingPanelVNext
 {
-	width:0px;
+	width:1px;
 	border: solid 0px;
 	display: none;
 }
@@ -728,23 +728,25 @@
 }
 .crux-TabBar .crux-RollingPanelHPreviousWrapper-disabled
 {
-	width:0px;
+	width:1px;
 	border: solid 0px;
+	opacity:0;
 }
 .crux-TabBar .crux-RollingPanelHNextWrapper-disabled
 {
-	width:0px;
+	width:1px;
 	border: solid 0px;
+	opacity:0;
 }
 .crux-TabBar .crux-RollingPanelHNextWrapper-disabled .crux-RollingPanelHNext
 {
-	width:0px;
-	height: 0px;
+	width:1px;
+	height: 1px;
 }
 .crux-TabBar .crux-RollingPanelHPreviousWrapper-disabled .crux-RollingPanelHPrevious
 {
-	width:0px;
-	height: 0px;
+	width:1px;
+	height: 1px;
 }
 .crux-TabBarFirst
 {
@@ -972,7 +974,7 @@
 }
 .crux-TitlePanel .topCenterRightCell 
 {
-	width: 0px;
+	width: 1px;
 	font-size: 0px;
 	background: url(../img/title-panel-blue.gif) no-repeat top center;
 }
@@ -1127,7 +1129,7 @@
 }
 .crux-DecoratedPanel .topCenterRightCell 
 {
-	width: 0px;
+	width: 1px;
 	font-size: 0px;
 	background: url(../img/decorated-panel.gif) no-repeat top center;
 }
