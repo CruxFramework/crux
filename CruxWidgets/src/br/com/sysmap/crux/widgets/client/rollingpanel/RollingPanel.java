@@ -172,7 +172,7 @@ public class RollingPanel extends Composite implements InsertPanel
 	 */
 	public int getHorizontalScrollPosition()
 	{
-		return DOM.getElementPropertyInt(itemsScrollPanel.getElement(), "scrollLeft");
+		return itemsScrollPanel.getElement().getScrollLeft();
 	}
 
 	/**
@@ -377,7 +377,7 @@ public class RollingPanel extends Composite implements InsertPanel
 		{
 			position = itemsScrollPanel.getOffsetWidth();
 		}
-		DOM.setElementPropertyInt(itemsScrollPanel.getElement(), "scrollLeft", position);
+		itemsScrollPanel.getElement().setScrollLeft(position);
 	}
 
 	/**
@@ -598,18 +598,18 @@ public class RollingPanel extends Composite implements InsertPanel
 				realOffset += item.getOffsetLeft();
 				item = item.getParentElement();
 			}
-			int scrollLeft = scroll.getScrollLeft();
+			int scrollLeft = getHorizontalScrollPosition();
 			int scrollOffsetWidth = scroll.getOffsetWidth();
 			int right = realOffset + itemOffsetWidth;
 			int visibleWidth = scrollLeft + scrollOffsetWidth;
 			
 			if (realOffset < scrollLeft)	
 			{
-				scroll.setScrollLeft(realOffset);
+				setHorizontalScrollPosition(realOffset);
 			}
 			else if (right > visibleWidth)
 			{
-				scroll.setScrollLeft(scrollLeft + right - visibleWidth);
+				setHorizontalScrollPosition(scrollLeft + right - visibleWidth);
 			}
 		}
     }
