@@ -9,6 +9,12 @@
 		<title>Crux Framework - Showcase</title>
 		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
 		<link rel="shortcut icon" href="style/img/favicon.gif"/>
+		<style>
+			.flatBgPanel .middleCenterCell
+			{
+				background-image: none !important;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -107,7 +113,7 @@
 						</a:stackMenu>
 					</b:cell>
 					<b:cell direction="east">
-						<a:decoratedPanel id="basePanel" width="100%" height="100%">
+						<a:decoratedPanel id="basePanel" width="100%" height="100%" styleName="crux-DecoratedPanel flatBgPanel">
 							<a:widget>
 								<a:dynaTabs id="tabs" height="100%" width="100%"/>
 							</a:widget>
