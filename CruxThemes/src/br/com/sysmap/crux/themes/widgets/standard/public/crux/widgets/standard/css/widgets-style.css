@@ -82,28 +82,28 @@
 }
 .crux-ProgressDialog .dialogTopLeft
 {
-	width: 4px;
-	height: 4px;
+	width: 14px;
+	height: 14px;
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat top left;
+	background: url(../img/progress-dialog.png) no-repeat top left;
 	cursor: move;	
 }
 .crux-ProgressDialog .dialogTopCenter
 {
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat top center;
+	background: url(../img/progress-dialog.png) no-repeat top center;
 	cursor: move;
 	padding-top: 8px;
 	padding-left: 2px;
 }
 .crux-ProgressDialog .dialogTopRight
 {
-	width: 4px;
+	width: 14px;
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat top right;
+	background: url(../img/progress-dialog.png) no-repeat top right;
 	cursor: move;	
 }
 .crux-ProgressDialog .dialogMiddleLeft
@@ -111,7 +111,7 @@
 	height: 20px;
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat left;	
+	background: url(../img/progress-dialog.png) no-repeat left;	
 }
 .crux-ProgressDialog .dialogMiddleCenter
 {
@@ -123,26 +123,26 @@
 {
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat right;
+	background: url(../img/progress-dialog.png) no-repeat right;
 }
 .crux-ProgressDialog .dialogBottomLeft
 {
-	height: 4px;
+	height: 14px;
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat bottom left;	
+	background: url(../img/progress-dialog.png) no-repeat bottom left;	
 }
 .crux-ProgressDialog .dialogBottomCenter
 {
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat bottom center;	
+	background: url(../img/progress-dialog.png) no-repeat bottom center;	
 }
 .crux-ProgressDialog .dialogBottomRight
 {
 	font-size: 0px;
 	font-family: monospace;
-	background: url(../img/progress-dialog.gif) no-repeat bottom right;	
+	background: url(../img/progress-dialog.png) no-repeat bottom right;	
 }
 .crux-ProgressDialog .icon
 {
@@ -994,7 +994,8 @@
 }
 .crux-TitlePanel .middleCenterCell
 {
-	background: url(../img/title-panel-blue.gif) no-repeat center center;
+	background: url(../img/decorated-panel-smooth-bg.gif) repeat-x center bottom;
+	background-color: #FFFFFF;
 }
 .crux-TitlePanel .middleRightCell
 {
@@ -1064,7 +1065,8 @@
 .crux-CollapsePanel .middleCenterCell
 {
 	padding: 2px;
-	background: url(../img/title-panel-blue.gif) no-repeat center center;
+	background: url(../img/decorated-panel-smooth-bg.gif) repeat-x center bottom;
+	background-color: #FFFFFF;
 }
 .crux-CollapsePanel .middleRightCell
 {
@@ -1148,7 +1150,8 @@
 }
 .crux-DecoratedPanel .middleCenterCell
 {
-	background: url(../img/decorated-panel.gif) no-repeat center center;
+	background: url(../img/decorated-panel-smooth-bg.gif) repeat-x center bottom;
+	background-color: #FFFFFF;
 }
 .crux-DecoratedPanel .middleRightCell
 {
