@@ -246,7 +246,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 		sourceWriter.indent();
 	    sourceWriter.println("public void onFailure(Throwable reason){");
 		sourceWriter.indent();
-	    sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerCanNotBeLoaded(controller));");
+	    sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerCanNotBeLoaded(controllerName));");
 		sourceWriter.outdent();
 	    sourceWriter.println("}");
 	    sourceWriter.println("public void onSuccess(){");
