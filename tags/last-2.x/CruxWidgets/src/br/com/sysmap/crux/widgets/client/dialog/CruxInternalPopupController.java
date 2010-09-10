@@ -64,16 +64,34 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 
 	/**
 	 * Invoke hide on top. It is required to handle multi-frame pages.
-	 * @param data
 	 */
 	public static void hide()
 	{
-		Popup.unregisterLastShownPopup();
-		if (popPopupOnStack())
+		hide(false);
+	}
+
+	/**
+	 * Invoke hide on top. It is required to handle multi-frame pages.
+	 * 
+	 * @param fireCloseEvent
+	 *            Inform if BeforeCloseEvent must be fired
+	 */
+	public static void hide(boolean fireCloseEvent)
+	{
+		CruxInternalPopupControllerCrossDoc crossDoc = GWT.create(CruxInternalPopupControllerCrossDoc.class);
+		if (fireCloseEvent)
 		{
-			CruxInternalPopupControllerCrossDoc crossDoc = GWT.create(CruxInternalPopupControllerCrossDoc.class);
-			((TargetDocument)crossDoc).setTarget(Target.TOP);
-			crossDoc.hidePopup();
+			((TargetDocument) crossDoc).setTargetWindow(getOpener());
+			crossDoc.onClose();
+		}
+		else
+		{
+			Popup.unregisterLastShownPopup();
+			if (popPopupOnStack())
+			{
+				((TargetDocument) crossDoc).setTarget(Target.TOP);
+				crossDoc.hidePopup();
+			}
 		}
 	}
 	
