@@ -1,9 +1,0 @@
-<module rename-to='showcase'>
-	<inherits name='br.com.sysmap.crux.core.Crux'/>
-	<inherits name='br.com.sysmap.crux.gwt.CruxGWTWidgets'/>
-	<inherits name='br.com.sysmap.crux.widgets.CruxWidgets'/>
-	<inherits name='com.google.gwt.user.theme.standard.Standard'/>
-	<inherits name='br.com.sysmap.crux.themes.widgets.standard.Standard'/>
-	<inherits name="com.google.gwt.i18n.I18N"/>
-    <extend-property name="locale" values="pt_BR"/>
-</module>
