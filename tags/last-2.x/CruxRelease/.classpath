@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-core.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-gwt-widgets.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-modules.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-scannotation.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-themes.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-widgets.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar" sourcepath="build/lib/gwt-user.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/javassist.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon9-dom.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon9.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-compiler.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-module-compiler.jar"/>
+	<classpathentry kind="lib" path="build/lib/gwt-dev.jar"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>

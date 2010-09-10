@@ -1,0 +1,28 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
+
+	<head>
+		<title>Parameter Bind</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="parameterBindController"/>
+
+		<center>
+			<a:decoratedButton id="button" text="Click Me" onClick="parameterBindController.onClick" width="120"/>
+		</center>
+		
+		<br/>
+		
+		<s:sources/>
+		
+	</body>
+</html>

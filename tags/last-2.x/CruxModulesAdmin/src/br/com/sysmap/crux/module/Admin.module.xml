@@ -1,0 +1,5 @@
+<cruxmodule xmlns="http://www.sysmap.com.br/module">
+	<version>1.0.1</version>
+	<startPage>admin.html</startPage>
+	<description>Modules Admin Console</description>
+</cruxmodule>

@@ -1,0 +1,38 @@
+<html
+	xmlns="http://www.w3.org/1999/xhtml"  
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test</title>
+	</head>
+
+	<body>
+		<crux:menuBar id="myMenu" animationEnabled="false" autoOpen="false" onLoadImage="action">
+			<crux:html onExecute="anyAction">
+				<crux:caption>
+					<textarea rows="1" cols="1">First level 1</textarea>	
+				</crux:caption>
+				<crux:items>
+					<crux:menuBar id="secondLevel">
+						<crux:text>
+							<crux:caption>Second Level</crux:caption>
+						</crux:text>
+					</crux:menuBar>
+				</crux:items>				
+			</crux:html>
+			<crux:separator/>
+			<crux:text onExecute="otherAction">
+				<crux:caption>First Level 2</crux:caption>
+				<crux:items>
+					<crux:menuBar id="thirdLevel">
+						<crux:text>
+							<crux:caption>Third Level</crux:caption>
+						</crux:text>
+						<crux:separator/>
+					</crux:menuBar>
+				</crux:items>
+			</crux:text>
+		</crux:menuBar>
+	</body>
+</html>
+

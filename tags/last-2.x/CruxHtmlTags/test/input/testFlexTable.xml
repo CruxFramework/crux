@@ -1,0 +1,37 @@
+<html
+	xmlns="http://www.w3.org/1999/xhtml"  
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test</title>
+	</head>
+
+	<body>
+		<crux:flexTable id="myTable" borderWidth="0" cellSpacing="0" cellPadding="1" styleName="styling">
+			
+			<crux:row verticalAlignment="bottom" styleName="superStylin">
+				<crux:cell horizontalAlignment="left" verticalAlignment="bottom" wordWrap="true" styleName="justATestStyle">
+					<crux:widget>
+						<crux:button id="testButton"/>
+					</crux:widget>
+				</crux:cell>
+			</crux:row>
+			
+			<crux:row verticalAlignment="bottom" styleName="superStylin">
+				<crux:cell horizontalAlignment="right" width="150px">
+					<crux:html>
+						<a href="http://www.google.com">Go to Google!</a>
+					</crux:html>
+				</crux:cell>
+			</crux:row>
+			
+			<crux:row verticalAlignment="bottom" styleName="superStylin">
+				<crux:cell horizontalAlignment="left" verticalAlignment="bottom" wordWrap="true" styleName="justATestStyle">
+					<crux:text>Some text here</crux:text>
+				</crux:cell>
+			</crux:row>
+		</crux:flexTable>
+	</body>
+
+</html>
+

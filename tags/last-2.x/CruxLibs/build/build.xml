@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="distribute" name="CruxLibs" basedir="../">
+
+	<property name="crux.project" value="../Crux" />
+	<property name="showcase.project" value="../CruxShowcase" />
+	<property name="modules.admin.project" value="../CruxModulesAdmin" />
+	<property name="compiler.project" value="../CruxCompiler" />
+	<property name="gwt.widgets.project" value="../CruxGWTWidgets" />
+	<property name="html.tags.project" value="../CruxHtmlTags" />
+	<property name="modules.project" value="../CruxModules" />
+	<property name="modules.compiler.project" value="../CruxModulesCompiler" />
+	<property name="modules.compiler.dist" value="${modules.compiler.project}/dist" />
+	<property name="release.project" value="../CruxRelease" />
+	<property name="scannotation.project" value="../CruxScannotation" />
+	<property name="themes.project" value="../CruxThemes" />
+	<property name="widgets.project" value="../CruxWidgets" />
+	<property name="themes.project" value="../CruxThemes" />
+
+	<property name="dependencies.jars.dir" value="dependencies" />
+	<property name="crux.jars.dir" value="crux" />
+
+	<target name="download-dependencies" description="Download all Crux dependencies" >
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnant.jar" dest="dependencies/svnant.jar" verbose="true"/>
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnkit.jar" dest="dependencies/svnkit.jar" verbose="true"/>
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnjavahl.jar" dest="dependencies/svnjavahl.jar" verbose="true"/>
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/svnClientAdapter.jar" dest="dependencies/svnClientAdapter.jar" verbose="true"/>
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/gwt-ll.dll" dest="dependencies/gwt-ll.dll" verbose="true"/>
+		<get src="http://crux-framework-tools.googlecode.com/svn/trunk/CruxDependencies/lib/gwt-module.dtd" dest="dependencies/gwt-module.dtd" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/org/apache/ant/ant/1.7.0/ant-1.7.0.jar" dest="dependencies/ant.jar" verbose="true"/>
+		<get src="http://repository.jboss.org/maven2/javassist/javassist/3.7.1.GA/javassist-3.7.1.GA.jar" dest="dependencies/javassist.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/commons-lang/commons-lang/2.3/commons-lang-2.3.jar" dest="dependencies/commons-lang.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" dest="dependencies/commons-logging.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-dev/2.0.3/gwt-dev-2.0.3.jar" dest="dependencies/gwt-dev.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-servlet/2.0.3/gwt-servlet-2.0.3.jar" dest="dependencies/gwt-servlet.jar" verbose="true"/>
+		<get src="http://repo1.maven.org/maven2/com/google/gwt/gwt-user/2.0.3/gwt-user-2.0.3.jar" dest="dependencies/gwt-user.jar" verbose="true"/>
+		<get src="http://repo2.maven.org/maven2/junit/junit/4.4/junit-4.4.jar" dest="dependencies/junit.jar" verbose="true"/>
+		<get src="http://svn.apache.org/repos/asf/servicemix/m2-repo/net/sf/saxon/saxon/9.0/saxon-9.0.jar" dest="dependencies/saxon9.jar" verbose="true"/>
+		<get src="http://svn.apache.org/repos/asf/servicemix/m2-repo/net/sf/saxon/saxon-dom/9.0/saxon-dom-9.0.jar" dest="dependencies/saxon9-dom.jar" verbose="true"/>
+		<get src="http://repo2.maven.org/maven2/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar" dest="dependencies/servlet-api.jar" verbose="true"/>
+	</target>
+	
+	<target name="distribute" description="Copies the jar files to the other projects">
+
+		<!-- Export to CruxScannotation -->
+		<copy todir="${scannotation.project}/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="junit.jar" />
+				<include name="javassist.jar" />
+				<include name="servlet-api.jar" />
+				<include name="svnant.jar" />
+				<include name="svnClientAdapter.jar" />
+				<include name="svnjavahl.jar" />
+				<include name="svnkit.jar" />
+			</fileset>
+		</copy>
+
+		<!-- Export to Crux -->
+		<copy todir="${crux.project}/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="commons-logging.jar" />
+				<include name="gwt-dev.jar" />
+				<include name="gwt-user.jar" />
+				<include name="javassist.jar" />
+				<include name="junit.jar" />
+				<include name="saxon9-dom.jar" />
+				<include name="saxon9.jar" />
+				<include name="svnant.jar" />
+				<include name="svnClientAdapter.jar" />
+				<include name="svnjavahl.jar" />
+				<include name="svnkit.jar" />
+			</fileset>
+		</copy>
+
+		<!-- Export to CruxModules -->
+		<copy todir="${modules.project}/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="gwt-dev.jar" />
+				<include name="gwt-user.jar" />
+				<include name="svnant.jar" />
+				<include name="svnClientAdapter.jar" />
+				<include name="svnjavahl.jar" />
+				<include name="svnkit.jar" />
+			</fileset>
+		</copy>
+
+		<!-- Export to CruxThemes -->
+		<copy todir="${themes.project}/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="svnant.jar" />
+				<include name="svnClientAdapter.jar" />
+				<include name="svnjavahl.jar" />
+				<include name="svnkit.jar" />
+			</fileset>
+		</copy>
+
+		<!-- Export to CruxHtmltags -->
+		<copy todir="${html.tags.project}/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="junit.jar" />
+				<include name="saxon9.jar" />
+				<include name="commons-logging.jar" />
+				<include name="javassist.jar" />
+				<include name="gwt-user.jar" />
+				<include name="gwt-dev.jar" />
+				<include name="svnant.jar" />
+				<include name="svnClientAdapter.jar" />
+				<include name="svnjavahl.jar" />
+				<include name="svnkit.jar" />
+			</fileset>
+		</copy>
+
+		<!-- Export to CruxGWTWidgets -->
+		<copy todir="${gwt.widgets.project}/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="gwt-user.jar" />
+				<include name="svnant.jar" />
+				<include name="svnClientAdapter.jar" />
+				<include name="svnjavahl.jar" />
+				<include name="svnkit.jar" />
+			</fileset>
+		</copy>
+
+		<!-- Export to CruxWidgets -->
+		<copy todir="${widgets.project}/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="gwt-user.jar" />
+				<include name="gwt-dev.jar" />
+				<include name="svnant.jar" />
+				<include name="svnClientAdapter.jar" />
+				<include name="svnjavahl.jar" />
+				<include name="svnkit.jar" />
+			</fileset>
+		</copy>
+
+		<!-- CruxModulesCompiler -->
+		<copy todir="${modules.compiler.project}/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="ant.jar" />
+				<include name="commons-logging.jar" />
+				<include name="svnant.jar" />
+				<include name="svnClientAdapter.jar" />
+				<include name="svnjavahl.jar" />
+				<include name="svnkit.jar" />
+			</fileset>
+		</copy>
+
+		<!-- CruxCompiler -->
+		<copy todir="${compiler.project}/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="ant.jar" />
+				<include name="commons-logging.jar" />
+				<include name="gwt-dev.jar" />
+				<include name="gwt-user.jar" />
+				<include name="svnant.jar" />
+				<include name="svnClientAdapter.jar" />
+				<include name="svnjavahl.jar" />
+				<include name="svnkit.jar" />
+			</fileset>
+		</copy>
+
+		<!-- CruxRelease -->
+		<copy todir="${release.project}/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="commons-logging.jar" />
+				<include name="gwt-user.jar" />
+				<include name="javassist.jar" />
+				<include name="saxon9-dom.jar" />
+				<include name="saxon9.jar" />
+			</fileset>
+			<fileset dir="${crux.jars.dir}">
+				<include name="crux-core.jar" />
+				<include name="crux-gwt-widgets.jar" />
+				<include name="crux-scannotation.jar" />
+				<include name="crux-themes.jar" />
+				<include name="crux-widgets.jar" />
+				<include name="crux-compiler.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${release.project}/war/WEB-INF/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="commons-logging.jar" />
+				<include name="gwt-servlet.jar"/>
+				<include name="javassist.jar" />
+				<include name="saxon9.jar" />
+				<include name="saxon9-dom.jar" />
+			</fileset>
+			<fileset dir="${crux.jars.dir}">
+				<include name="crux-core.jar" />
+				<include name="crux-compiler.jar" />
+				<include name="crux-modules.jar" />
+				<include name="crux-module-compiler.jar" />
+				<include name="crux-scannotation.jar" />
+				<include name="crux-themes.jar" />
+				<include name="crux-gwt-widgets.jar" />
+				<include name="crux-widgets.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${release.project}/build/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="gwt-dev.jar" />
+				<include name="gwt-user.jar" />
+			</fileset>
+		</copy>
+
+		<!-- CruxShowcase -->
+		<copy todir="${showcase.project}/war/WEB-INF/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="commons-logging.jar" />
+				<include name="gwt-servlet.jar"/>
+				<include name="javassist.jar" />
+				<include name="saxon9.jar" />
+				<include name="commons-lang.jar" />
+				<include name="saxon9-dom.jar" />
+			</fileset>
+			<fileset dir="${crux.jars.dir}">
+				<include name="crux-core.jar" />
+				<include name="crux-html-tags.jar" />
+				<include name="crux-scannotation.jar" />
+				<include name="crux-themes.jar" />
+				<include name="crux-gwt-widgets.jar" />
+				<include name="crux-widgets.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${showcase.project}/build/lib" >
+			<fileset dir="${crux.jars.dir}">
+				<include name="crux-compiler.jar" />
+				<include name="crux-html-tags-compile-task.jar" />
+			</fileset>
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="gwt-dev.jar" />
+				<include name="gwt-user.jar" />
+			</fileset>
+		</copy>
+		
+		<!-- Modules Admin -->
+		<copy todir="${modules.admin.project}/war/WEB-INF/lib" >
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="commons-logging.jar" />
+				<include name="gwt-servlet.jar"/>
+				<include name="javassist.jar" />
+				<include name="saxon9.jar" />
+				<include name="saxon9-dom.jar" />
+				<include name="svnkit.jar" />
+			</fileset>
+			<fileset dir="${crux.jars.dir}">
+				<include name="crux-core.jar" />
+				<include name="crux-scannotation.jar" />
+				<include name="crux-themes.jar" />
+				<include name="crux-gwt-widgets.jar" />
+				<include name="crux-widgets.jar" />
+				<include name="crux-modules.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${modules.admin.project}/build/lib" >
+			<fileset dir="${crux.jars.dir}">
+				<include name="crux-module-compiler.jar" />
+			</fileset>
+			<fileset dir="${crux.jars.dir}">
+				<include name="crux-compiler.jar" />
+			</fileset>
+			<fileset dir="${dependencies.jars.dir}">
+				<include name="gwt-dev.jar" />
+				<include name="gwt-user.jar" />
+			</fileset>
+		</copy>
+		
+	</target>
+</project>

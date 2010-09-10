@@ -1,0 +1,44 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
+
+	<head>
+		<title>Confirm</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="popupController"/>
+
+		<table width="100%" cellpadding="15">
+			<tr>
+				<td align="center">
+					<table cellspacing="5">
+						<tr>
+							<td>
+								<b:textBox id="url" text="http://www.google.com"/>
+							</td>
+							<td>
+								<a:decoratedButton id="browseButton" text="Browse" onClick="popupController.browse"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<b:label id="message"/>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>		
+
+		<s:sources/>
+		
+	</body>
+</html>

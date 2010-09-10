@@ -1,0 +1,199 @@
+<project name="CruxModulesAdmin" basedir="../" default="export-as-module">
+
+	<property name="final.name" value="crux-modules-admin" />
+	<property name="src.dir" value="src" />
+	<property name="dist.dir" value="dist" />
+	<property name="temp.dir" value="${dist.dir}/temp" />
+	<property name="build.lib.dir" value="build/lib" />
+
+	<property name="web.root" value="war" />
+	<property name="web.inf.dir" value="${web.root}/WEB-INF" />
+	<property name="web.lib.dir" value="${web.inf.dir}/lib" />
+	<property name="target.classes.dir" value="${web.inf.dir}/classes" />
+	<property name="crux.libs.project" value="../CruxLibs" />
+
+	<property name="xsd.dir" value="xsd" />
+
+	<path id="build.classpath">
+		<fileset dir="${web.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${build.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement path="${target.classes.dir}" />
+	</path>
+
+	<taskdef name="cruxmodulecompiler" classname="br.com.sysmap.crux.tools.compile.CruxModuleCompiler" loaderref="build.classpath.loader" classpathref="build.classpath" />
+	<taskdef name="blockremove" classname="br.com.sysmap.crux.tools.compile.utils.BlockRemoveTask" classpathref="build.classpath" />
+	<taskdef name="generateSchemas" classname="br.com.sysmap.crux.tools.compile.SchemaGeneratorModulesTask" loaderref="build.classpath.loader" classpathref="build.classpath" />
+
+	<!-- 
+	========================================================================================================
+		Generates the war for distribution
+	========================================================================================================
+	-->
+	<target name="dist">
+
+		<delete dir="${temp.dir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
+		<mkdir dir="${temp.dir}" />
+
+		<copydir dest="${temp.dir}/webroot" src="${web.root}">
+			<!-- use code below for removing unnecessary crux files from the compacted war 
+			<exclude name="**/crux-advanced-widgets.jar" />
+			<exclude name="**/crux-basic-widgets.jar" />
+			<exclude name="**/crux-compiler.jar" />
+			<exclude name="**/crux-html-tags.jar" />
+			<exclude name="**/crux-html-tags-compile-task.jar" />
+			<exclude name="**/crux-themes.jar" />
+			-->
+		</copydir>
+		
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${temp.dir}/webroot" webDir="${temp.dir}/webroot" 
+			keepPagesGeneratedFiles="true" pagesOutputDir="${temp.dir}/webroot" indentpages="false"
+			scanallowedpackages="br.com.sysmap.crux.module">
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${web.root}" />
+				<pathelement path="${target.classes.dir}" />
+			</classpath>
+
+			<!-- change these two parameters if you need to modify memory settings -->
+			<jvmarg value="-Xmx768M" />
+			<jvmarg value="-Xms256M" />
+
+			<!-- use these parameters if you want to modify GWT output settings
+			<arg value="-style"/>
+			<arg value="DETAILED"/>
+			<arg value="-logLevel"/>
+			<arg value="DEBUG"/>
+			-->
+		</cruxmodulecompiler>
+		<delete>
+			<fileset dir="${temp.dir}/webroot">
+				<include name="**/*.crux.xml"/>
+				<include name="**/*.template.xml"/>
+			</fileset>
+		</delete>
+		
+		<blockremove beginmarker="&lt;!--antReplacementBlockBegin--&gt;" endmarker="&lt;!--antReplacementBlockEnd--&gt;" file="${temp.dir}/webroot/WEB-INF/web.xml" />
+
+		<war basedir="${temp.dir}/webroot" destfile="${temp.dir}/${final.name}.war" webxml="${web.inf.dir}/web.xml">
+			<manifest>
+				<attribute name="Class-Path" value="${final.name}.war" />
+			</manifest>
+		</war>
+		<move file="${temp.dir}/${final.name}.war" tofile="${dist.dir}/${final.name}.war" />
+		<delete dir="${temp.dir}" failonerror="no" includeemptydirs="yes" />
+	</target>
+
+	<!-- 
+	========================================================================================================
+		Invokes the GWT compiler. Usefull for debugging generated Javascript
+	========================================================================================================
+	-->
+	<target name="compile-scripts">
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" webDir="${web.root}" 
+			keepPagesGeneratedFiles="true" pagesOutputDir="${web.root}"
+			scanallowedpackages="br.com.sysmap.crux.module">
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${web.root}" />
+				<pathelement path="${target.classes.dir}" />
+			</classpath>
+
+			<!-- change these two parameters if you need to modify memory settings -->
+			<jvmarg value="-Xmx768M" />
+			<jvmarg value="-Xms256M" />
+
+			<arg value="-gen"/>
+			<arg value="gen"/>
+			<!--arg value="-style"/>
+			<arg value="DETAILED"/>
+			<jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" /-->
+
+			<!-- use these parameters if you want to modify GWT output settings
+			<arg value="-style"/>
+			<arg value="DETAILED"/>
+			<arg value="-logLevel"/>
+			<arg value="DEBUG"/>
+			-->
+		</cruxmodulecompiler>
+	</target>
+
+	<!-- 
+	========================================================================================================
+		Invokes the GWT compiler with draftCompile option.
+	========================================================================================================
+	-->
+	<target name="fast-compile-scripts">
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" webDir="${web.root}"
+			keepPagesGeneratedFiles="true" pagesOutputDir="${web.root}"
+			scanallowedpackages="br.com.sysmap.crux.module">
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${web.root}" />
+				<pathelement path="${target.classes.dir}" />
+			</classpath>
+
+			<!-- change these two parameters if you need to modify memory settings -->
+			<jvmarg value="-Xmx768M" />
+			<jvmarg value="-Xms256M" />
+
+			<arg value="-draftCompile" />
+
+			<!-- use these parameters if you want to modify GWT output settings
+			<arg value="-style"/>
+			<arg value="DETAILED"/>
+			<arg value="-logLevel"/>
+			<arg value="DEBUG"/>
+			-->
+		</cruxmodulecompiler>
+	</target>
+
+	<!-- 
+	========================================================================================================
+		Generate XSD Files, based on Crux widgets libraries found on classpath
+	========================================================================================================
+	-->
+	<target name="generate-schemas">
+		<generateSchemas outputDir="${xsd.dir}" moduleName="admin">
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${target.classes.dir}" />
+				<pathelement path="${web.root}" />
+				<pathelement location="${src.dir}" />
+			</classpath>
+		</generateSchemas>
+	</target>
+
+	<!-- 
+	========================================================================================================
+		Export project as a Crux Module
+	========================================================================================================
+	-->
+	<target name="export-as-module" >
+		<delete dir="${dist.dir}" failonerror="no"
+			includeemptydirs="yes" includes="**/*" />
+		<mkdir dir="${dist.dir}" />
+
+		<jar jarfile="${dist.dir}/${final.name}.module.jar">
+			<fileset dir="${target.classes.dir}">
+				<exclude name="**/*.properties" />
+			</fileset>
+			<fileset dir="${src.dir}">
+				<exclude name="**/*.properties" />
+				<exclude name="**/*.xml" />
+				<exclude name="**/public/**" />
+			</fileset>
+		</jar>
+
+		<copy todir="${crux.libs.project}/crux">
+			<fileset dir="${dist.dir}">
+				<filename name="${final.name}.module.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+</project>

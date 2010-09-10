@@ -1,0 +1,30 @@
+<html 
+		xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:c="http://www.sysmap.com.br/crux"
+		xmlns:g="http://www.sysmap.com.br/crux/gwt"
+		xmlns:w="http://www.sysmap.com.br/crux/widgets">
+	<body>
+		
+		<script type="text/javascript" src="../cruxModulesAdmin/cruxModulesAdmin.nocache.js"></script>
+	
+		<c:screen title="${adminMessages.modulesAdminConsoleTitle}" useDataSource="parametersDS" />
+		
+		<c:splashScreen/>
+
+		<g:verticalPanel id="parametersvPanel" width="100%">
+			<w:decoratedPanel id="parametersPanel" width="100%">
+				<w:widget>
+					<w:grid id="parametersGrid" dataSource="parametersDS" autoLoadData="true" 
+					        height="220" stretchColumns="true" width="100*" pageSize="6">
+						<w:dataColumn key="name" label="${adminMessages.parameterNameLabel}" />
+						<w:dataColumn key="type" label="${adminMessages.parameterTypeLabel}" />
+						<w:dataColumn key="required" label="${adminMessages.parameterRequiredLabel}" />
+					</w:grid>
+				</w:widget>
+			</w:decoratedPanel>
+			<g:cell horizontalAlignment="right">
+				<w:sequentialPager id="parametersPager" pageable="parametersGrid"/>
+			</g:cell>	
+		</g:verticalPanel>
+	</body>
+</html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<html
+	xmlns="http://www.w3.org/1999/xhtml"  
+	xmlns:crux2="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test</title>
+		<meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1" />
+	</head>
+
+	<body>
+		<crux2:anchor id="anchorWithText" text="Click here, man!" href="http://www.google.com" direction="rtl" horizontalAlignment="left"/>
+		
+		<div>
+			<crux2:anchor id="anchorWithHTML2" href="http://www.google.com" direction="default" horizontalAlignment="center">
+				<h4>Charset Test: ¬ á à é è ã ç ô ü ¬</h4>
+			</crux2:anchor>
+		</div>
+	</body>
+
+</html>
+

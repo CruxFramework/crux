@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="export" name="CruxThemes" basedir="../">
+
+	<tstamp>
+		<format property="build.date" pattern="MM/dd/yyyy hh:mm:ss" />
+	</tstamp>
+
+	<property file="../CruxRelease/build/version.properties" />
+
+	<property name="srcdir" value="src" />
+	<property name="libdir" value="lib" />
+	<property name="classesdir" value="bin" />
+	<property name="distdir" value="dist" />
+	<property name="final.name" value="crux-themes" />
+	<property name="crux.libs.project" value="../CruxLibs/crux"/>
+
+	<path id="build.classpath">
+		<fileset dir="${libdir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="build.classpath" />
+
+	<target name="export">
+		<delete dir="${distdir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
+		<mkdir dir="${distdir}" />
+		
+		<delete dir="${classesdir}" failonerror="no"/>
+		<mkdir dir="${classesdir}" />
+		
+		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false"
+			encoding="ISO-8859-1">
+			<src>
+				<pathelement location="${srcdir}" />
+			</src>
+			<classpath refid="build.classpath" />
+		</javac>
+		
+		<svn failonerror="false" javahl="false" svnkit="true">
+			<info target="${basedir}" verbose="true"/>
+		</svn>
+		
+		<jar jarfile="${distdir}/${final.name}.jar">
+			<fileset dir="${classesdir}"/>
+			<fileset dir="${srcdir}">
+				<include name="**/*" />
+			</fileset>
+			<manifest>
+				<attribute name="Build-Timestamp" value="${build.date}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Revision" value="${svn.info.rev}" />
+			</manifest>
+		</jar>
+		
+		<copy todir="${crux.libs.project}">
+			<fileset dir="${distdir}">
+				<filename name="${final.name}.jar"/>
+			</fileset>
+		</copy>
+	</target>
+
+</project>

@@ -1,0 +1,14 @@
+Crux
+Copyright (c) Sysmap Solutions, Ltda. 2009.  All rights reserved.
+Visit Crux Code (http://code.google.com/p/crux-framework).
+
+This product includes software developed by:
+ - Google
+    - Google Web Toolkit (http://code.google.com/webtoolkit/) (which includes several other open source project. consult GWT about file for the complete list).
+ - The Apache Software Foundation (http://www.apache.org/).
+    - Commons-logging
+- JBoss
+    - javassist (http://labs.jboss.com/javassist/)
+-Scannotation (Modified and renamed to br.com.sysmap.crux.scannotation) included in jar crux-scannotation.jar    
+     - http://scannotation.sourceforge.net/
+For source availability and license information see COPYING.

@@ -1,0 +1,25 @@
+<html
+	xmlns="http://www.w3.org/1999/xhtml"  
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test</title>
+	</head>
+
+	<body>
+		<crux:label id="label1" text="Text here!" horizontalAlignment="default" onMouseWheel="action" />
+		
+		<crux:HTML id="htmlLabel">
+			<code>Html here</code>
+		</crux:HTML>
+		
+		<crux:inlineHTML id="inlineHtml1" direction="rtl">
+			<textarea rows="1" cols="2">Test</textarea>
+		</crux:inlineHTML>
+		
+		<crux:inlineLabel id="inlineLabel1" horizontalAlignment="left" text="Some text..."/>
+		
+	</body>
+
+</html>
+

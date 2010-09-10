@@ -1,0 +1,57 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
+
+	<head>
+		<title>Text Area</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="textAreaController"/>
+
+		<center>
+		
+		<b:horizontalPanel id="mainPanel" spacing="20">
+			<b:cell verticalAlignment="top">
+				<a:decoratedPanel id="textAreaPanel" width="350" height="235">
+					<a:widget>
+						<a:textArea id="niceTextArea" width="300" visibleLines="8" maxLength="200">This is a simple TextArea that obeys the maxLength attribute.</a:textArea>
+					</a:widget>
+				</a:decoratedPanel>
+			</b:cell>
+			<b:cell verticalAlignment="top">
+				<a:decoratedPanel id="captionPanel" width="270" height="235">
+					<a:widget>
+						<b:HTMLPanel id="captionTablePanel">
+							<table cellspacing="10" class="CommentsTable">
+								<tr>
+									<th>Type the desired maxLength below and test the widget behavior...</th>
+								</tr>
+								<tr>
+									<td align="center">
+										<b:horizontalPanel id="controls" spacing="3">
+											<b:textBox id="maxLength" width="70"></b:textBox>
+											<a:decoratedButton id="btn" text="Apply!" onClick="textAreaController.applyMaxLength" width="70"/>
+										</b:horizontalPanel>									
+									</td>
+								</tr>
+							</table>
+						</b:HTMLPanel>
+					</a:widget>
+				</a:decoratedPanel>
+			</b:cell>
+		</b:horizontalPanel>
+
+		</center>
+		
+		<s:sources/>
+		
+	</body>
+</html>

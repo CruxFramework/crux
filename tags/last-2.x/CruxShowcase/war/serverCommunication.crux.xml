@@ -1,0 +1,45 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"	
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
+
+	<head>
+		<title>Server Communication</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="serverCommunicationController"/>
+
+		<center>
+		
+		<b:flexTable id="centeringPanel" cellSpacing="15">
+			<b:row>
+				<b:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
+					<b:text>Type your name:</b:text>				
+				</b:cell>
+			</b:row>
+			<b:row>
+				<b:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
+					<b:widget><b:textBox id="name" /></b:widget>
+				</b:cell>
+				<b:cell horizontalAlignment="left" verticalAlignment="middle">
+					<b:widget><a:decoratedButton id="button" onClick="serverCommunicationController.callService" text="Call Server Method"/></b:widget>
+				</b:cell>
+			</b:row>
+			<b:row>
+				<b:cell horizontalAlignment="left" verticalAlignment="middle" width="150">
+					<b:widget><b:label id="serverResponse" text=" "/></b:widget>
+				</b:cell>
+			</b:row>
+		</b:flexTable>
+		
+		</center>
+		
+		<s:serverCommunicationSources/>
+	</body>
+</html>

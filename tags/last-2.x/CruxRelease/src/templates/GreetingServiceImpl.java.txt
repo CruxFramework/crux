@@ -1,0 +1,11 @@
+package ${modulePackage}.server;
+
+import ${modulePackage}.client.remote.GreetingService;
+
+public class GreetingServiceImpl implements GreetingService
+{
+	public String getHelloMessage(String name)
+	{
+		return "Server says: Hello, " + name + "!";
+	}
+}

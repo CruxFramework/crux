@@ -1,0 +1,81 @@
+CENTER
+{
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+TEXTAREA
+{
+	margin-bottom: 10px;
+}
+.MainTitle
+{
+	color:#67A7E3;
+	font-size:22px;
+	font-weight: bold;
+	font-family: Arial Unicode MS,Arial,sans-serif;
+}
+.SecondaryTitle
+{
+	color: #888888 !important;
+	font-size:16px !important;
+	font-family: Arial Unicode MS,Arial,sans-serif;
+	font-weight: bold;
+}
+.Source
+{
+	font-size: 11px !important;
+	font-family: monospace;
+}
+.SpecialLabel
+{
+	font-size: 11px;
+	font-weight: bold;
+	color: #6C83C3;
+	font-family: Verdana, Arial, Helvetica;
+}
+.SpecialSecondaryLabel
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #606060;
+	font-family: Verdana, Arial, Helvetica;
+}
+.CommentsTable TH
+{
+	font-family:Arial, Helvetica;
+	font-weight:bold;
+	font-size:12px;
+	color:#6C83C3;
+}
+.CommentsTable 
+{
+	width: 100%;
+}
+.CommentsTable TD
+{
+	font-family:Arial, Helvetica;
+	font-size:11px;
+}
+.crux-DecoratedPanel .middleCenterCell
+{
+	font-family:Arial Unicode MS,Arial,sans-serif;
+	font-size:12px;
+}
+.crux-Grid
+{
+	width: 99.8% !important;
+}
+#cruxSplashScreen
+{
+	background-color: #FFFFFF;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+.FirstLeftCustomCommand
+{
+	margin-right: 25px 
+}

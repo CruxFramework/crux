@@ -1,0 +1,25 @@
+<html
+	xmlns="http://www.w3.org/1999/xhtml"  
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test</title>
+	</head>
+
+	<body>
+		<table>
+			<tr>
+				<td>
+					<crux:horizontalPanel id="cellPanel1" visible="false">
+						<crux:cell height="200px" horizontalAlignment="left" verticalAlignment="bottom" width="70%">
+							<crux:suggestBox id="internalSuggestBox"/>
+						</crux:cell>
+						<crux:button id="aButtonWithoutCell"/>
+					</crux:horizontalPanel>	
+				</td>
+			</tr>
+		</table>
+		
+	</body>
+
+</html>

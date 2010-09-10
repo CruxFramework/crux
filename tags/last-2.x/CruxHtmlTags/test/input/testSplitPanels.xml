@@ -1,0 +1,31 @@
+<!--  
+!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+ -->
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0">
+
+	<head>
+		<title>test 123</title>
+	</head>
+
+	<body>
+		<crux:horizontalSplitPanel id="horizontal" onLoadImage="action" splitPosition="200px">
+			<crux:left>
+				<crux:verticalSplitPanel id="vertical" styleName="stylin">
+					<crux:top>
+						<crux:anchor id="testAnchor"/>
+					</crux:top>
+					<crux:bottom>
+						<crux:flowPanel id="otherWidget"/>
+					</crux:bottom>
+				</crux:verticalSplitPanel>				
+			</crux:left>
+			<crux:right>
+				<crux:button id="testButton"/>
+			</crux:right>
+		</crux:horizontalSplitPanel>
+	</body>
+
+</html>
+

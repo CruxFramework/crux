@@ -1,0 +1,61 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:w="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
+
+	<head>
+		<title>Decorated Button</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="simpleWizardController" />
+
+		<center>
+
+		<w:decoratedPanel id="border" width="150" height="250">
+			<w:widget>
+				<w:wizard id="wizard" width="100%" height="100%" onCancel="simpleWizardController.onCancel" onFinish="simpleWizardController.onFinish">
+					<w:steps>
+						<w:widget label="First Step" id="myStep1" onEnter="simpleWizardController.onEnterStep1">
+							<b:label id="Label1" text="Welcome"/>
+						</w:widget>
+						<w:widget label="Second Step" id="myStep2" onLeave="simpleWizardController.onLeaveStep2">
+							<b:grid id="grid1">
+								<b:row>
+									<b:cell><b:text>Name:</b:text></b:cell>
+									<b:cell>
+										<b:widget><b:textBox id="name"></b:textBox></b:widget>
+									</b:cell>
+								</b:row>
+								<b:row>
+									<b:cell><b:text>Address:</b:text></b:cell>
+									<b:cell>
+										<b:widget><b:textBox id="address" width="200"/></b:widget>
+									</b:cell>
+								</b:row>
+							</b:grid>
+							<w:commands>
+								<w:command order="5" onCommand="simpleWizardController.onClick" label="My Custom Command" id="customCommand"/>
+							</w:commands>
+						</w:widget>
+						<w:widget label="Third Step" id="myStep3" onEnter="simpleWizardController.onEnterStep3">
+							<b:label id="Label2" text="This is the Last Step"/>
+						</w:widget>
+					</w:steps>
+					<w:controlBar/>
+					<w:navigationBar/>
+
+				</w:wizard>
+			</w:widget>
+		</w:decoratedPanel>
+
+		</center>
+		
+		<s:sources/>
+	</body>
+</html>

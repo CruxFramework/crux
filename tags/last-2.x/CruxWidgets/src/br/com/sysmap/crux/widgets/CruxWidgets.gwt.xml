@@ -1,0 +1,64 @@
+<module>
+    <inherits name="br.com.sysmap.crux.core.Crux"/>
+    <replace-with
+    	class="br.com.sysmap.crux.widgets.client.event.paste.PasteEventSourceRegisterOperaImpl">
+    	<when-type-is class="br.com.sysmap.crux.widgets.client.event.paste.PasteEventSourceRegisterImpl" />
+    	<when-property-is name="user.agent" value="opera" />
+    </replace-with>
+    <replace-with
+    	class="br.com.sysmap.crux.widgets.client.dynatabs.TabInternalJSObjectsIEImpl">
+    	<when-type-is class="br.com.sysmap.crux.widgets.client.dynatabs.TabInternalJSObjectsImpl" />
+    	<any>
+      		<when-property-is name="user.agent" value="ie6" />
+    		<when-property-is name="user.agent" value="ie8" />
+    	</any>
+    </replace-with>
+    <generate-with class="br.com.sysmap.crux.widgets.rebind.PopupOpenerInvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.dialog.PopupOpenerInvoker" />
+	</generate-with>
+	<generate-with class="br.com.sysmap.crux.widgets.rebind.SiblingTabInvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.dynatabs.SiblingTabInvoker" />
+	</generate-with>
+	<generate-with class="br.com.sysmap.crux.widgets.rebind.TabInvokerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.dynatabs.TabInvoker" />
+	</generate-with>
+    <replace-with
+    	class="br.com.sysmap.crux.widgets.client.util.FrameUtils.FrameStateMonitorSafariImpl">
+    	<when-type-is class="br.com.sysmap.crux.widgets.client.util.FrameUtils.FrameStateMonitor" />
+    	<any>
+      		<when-property-is name="user.agent" value="safari" />
+    	</any>
+    </replace-with>
+    <replace-with
+    	class="br.com.sysmap.crux.widgets.client.util.FrameUtils.FrameStateMonitorOperaImpl">
+    	<when-type-is class="br.com.sysmap.crux.widgets.client.util.FrameUtils.FrameStateMonitor" />
+    	<any>
+    		<when-property-is name="user.agent" value="opera" />
+    	</any>
+    </replace-with>
+    <replace-with
+    	class="br.com.sysmap.crux.widgets.client.util.FrameUtils.FrameStateMonitorIEImpl">
+    	<when-type-is class="br.com.sysmap.crux.widgets.client.util.FrameUtils.FrameStateMonitor" />
+    	<any>
+      		<when-property-is name="user.agent" value="ie6" />
+    		<when-property-is name="user.agent" value="ie8" />
+    	</any>
+    </replace-with>
+    <replace-with
+    	class="br.com.sysmap.crux.widgets.client.util.FrameUtils.FrameStateMonitorMozillaImpl">
+    	<when-type-is class="br.com.sysmap.crux.widgets.client.util.FrameUtils.FrameStateMonitor" />
+    	<any>
+      		<when-property-is name="user.agent" value="gecko" />
+      		<when-property-is name="user.agent" value="gecko1_8" />
+    	</any>
+    </replace-with>
+    <generate-with class="br.com.sysmap.crux.widgets.rebind.wizard.RegisteredWizardDataSerializerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.wizard.RegisteredWizardDataSerializer" />
+	</generate-with>
+    <generate-with class="br.com.sysmap.crux.widgets.rebind.wizard.WizardDataSerializerGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.wizard.WizardDataSerializer" />
+	</generate-with>
+    <generate-with class="br.com.sysmap.crux.widgets.rebind.wizard.WizardInstantiatorGenerator">
+		<when-type-assignable class="br.com.sysmap.crux.widgets.client.wizard.WizardInstantiator" />
+	</generate-with>
+</module>

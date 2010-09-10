@@ -1,0 +1,5 @@
+<crux:captionPanel 
+	xmlns:crux="http://www.sysmap.com.br/crux/basic-widgets/1.0"
+	id="captionTexto" height="150px" >
+	<crux:captionText>Conteúdo Texto</crux:captionText>
+</crux:captionPanel>
