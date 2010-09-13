@@ -56,6 +56,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 {
 	private Map<String, String> controllerClassNames = new HashMap<String, String>();
 	private Map<String, String> crossDocsClassNames = new HashMap<String, String>();
+	private Map<String, Set<String>> fragmentControllerClassNames = new HashMap<String, Set<String>>();
 	
 	/**
 	 * Constructor
@@ -119,6 +120,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 		generateCrossDocInvokeMethod(sourceWriter);
 		generateRegisterControllerMethod(sourceWriter);
 		generateGetCrossDocumentMethod(sourceWriter);
+		generateControllerCallForLazyFragmentedControllers(sourceWriter);
     }
 
 	/**
@@ -224,7 +226,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 	 * @param controllerClassNames
 	 * @param controller
 	 */
-	private void generateControllerCallForLazyController(SourceWriter sourceWriter, Map<String, String> controllerClassNames, String controller)
+	private void generateControllerCallForLazyController(SourceWriter sourceWriter, String controller)
     {
 	    sourceWriter.println("if (!controllers.containsKey(\""+controller+"\")){");
 		sourceWriter.indent();
@@ -240,27 +242,47 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 	 * @param controller
 	 * @param controllerAnnot
 	 */
-	private void generateControllerCallForLazyFragmentedController(SourceWriter sourceWriter, Map<String, String> controllerClassNames, String controller, Controller controllerAnnot)
+	private void generateControllerCallForLazyFragmentedControllers(SourceWriter sourceWriter)
     {
-	    sourceWriter.println("GWT.runAsync("+Fragments.getFragmentClass(controllerAnnot.fragment())+".class, new RunAsyncCallback(){");
-		sourceWriter.indent();
-	    sourceWriter.println("public void onFailure(Throwable reason){");
-		sourceWriter.indent();
-	    sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerCanNotBeLoaded(controllerName));");
-		sourceWriter.outdent();
-	    sourceWriter.println("}");
-	    sourceWriter.println("public void onSuccess(){");
-		sourceWriter.indent();
-	    sourceWriter.println("if (!controllers.containsKey(\""+controller+"\")){");
-		sourceWriter.indent();
-	    sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
-		sourceWriter.outdent();
-	    sourceWriter.println("}");
-	    sourceWriter.println("invokeController(controllerName, method, fromOutOfModule, sourceEvent, eventProcessor);");
-		sourceWriter.outdent();
-	    sourceWriter.println("}");
-		sourceWriter.outdent();
-	    sourceWriter.println("});");
+	    
+		for (String controllerFragment : fragmentControllerClassNames.keySet())
+        {
+			String fragment = controllerFragment.replaceAll("\\W", "");
+			sourceWriter.println("public void __load"+fragment+"(final String controllerName, final String method, " +
+					"final boolean fromOutOfModule, final Object sourceEvent, final EventProcessor eventProcessor){");
+			sourceWriter.indent();
+			sourceWriter.println("GWT.runAsync("+Fragments.getFragmentClass(controllerFragment)+".class, new RunAsyncCallback(){");
+			sourceWriter.indent();
+			sourceWriter.println("public void onFailure(Throwable reason){");
+			sourceWriter.indent();
+			sourceWriter.println("Crux.getErrorHandler().handleError(Crux.getMessages().eventProcessorClientControllerCanNotBeLoaded(\""+fragment+"\"));");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
+			sourceWriter.println("public void onSuccess(){");
+			sourceWriter.indent();
+			
+			Set<String> controllers = fragmentControllerClassNames.get(controllerFragment);
+			
+			for (String controller : controllers)
+            {
+				sourceWriter.println("if (!controllers.containsKey(\""+controller+"\")){");
+				sourceWriter.indent();
+				sourceWriter.println("controllers.put(\""+controller+"\", new " + controllerClassNames.get(controller) + "());");
+				sourceWriter.outdent();
+				sourceWriter.println("}");
+            }
+			
+			sourceWriter.println("invokeController(controllerName, method, fromOutOfModule, sourceEvent, eventProcessor);");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
+			sourceWriter.outdent();
+			sourceWriter.println("});");
+	        
+			sourceWriter.outdent();
+			sourceWriter.println("}");
+        } 
+		
+		
     }
 	
 	/**
@@ -285,11 +307,19 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 				sourceWriter.indent();
 				if (controllerAnnot != null && Fragments.getFragmentClass(controllerAnnot.fragment()) != null)
 				{
-					generateControllerCallForLazyFragmentedController(sourceWriter, controllerClassNames, controller, controllerAnnot);
+					Set<String> fragments = fragmentControllerClassNames.get(controllerAnnot.fragment());
+					if (fragments == null)
+					{
+						fragments = new HashSet<String>();
+						fragmentControllerClassNames.put(controllerAnnot.fragment(), fragments);
+					}
+					fragments.add(controller);
+					String fragment = controllerAnnot.fragment().replaceAll("\\W", "");
+					sourceWriter.println("__load"+fragment+"(controllerName, method, fromOutOfModule, sourceEvent, eventProcessor);");
 				}
 				else
 				{
-					generateControllerCallForLazyController(sourceWriter, controllerClassNames, controller);
+					generateControllerCallForLazyController(sourceWriter, controller);
 				}
 				sourceWriter.outdent();
 				sourceWriter.println("}");
