@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord.DataSourceRecordState;
 
 /**
@@ -262,6 +264,10 @@ implements MeasurableRemoteDataSource<T>
 	{
 	}
 
+	public void updateData(List<T> data)
+	{
+	}	
+	
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.DataSource#updateState(br.com.sysmap.crux.core.client.datasource.DataSourceRecord, br.com.sysmap.crux.core.client.datasource.DataSourceRecord.DataSourceRecordState)
 	 */

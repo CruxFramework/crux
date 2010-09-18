@@ -275,6 +275,22 @@ public class DataSourceProxyCreator extends AbstractInvocableProxyCreator
 			sourceWriter.println("update(ret);");
 			sourceWriter.outdent();
 			sourceWriter.println("}");
+
+			sourceWriter.println("public void updateData(java.util.List<"+dtoType.getParameterizedQualifiedSourceName()+"> data){");
+			sourceWriter.indent();
+			sourceWriter.println(recordTypeDeclaration+"[] ret = new "+recordTypeDeclaration+"[(data!=null?data.size():0)];");
+			sourceWriter.println("for (int i=0; i<data.size(); i++){");
+			sourceWriter.indent();
+			sourceWriter.print("ret[i] = new "+recordType.getParameterizedQualifiedSourceName()+"(this,");
+			sourceWriter.print(getIdentifierDeclaration("data.get(i)"));
+			sourceWriter.println(");");
+			sourceWriter.println("ret[i].setRecordObject(data.get(i));");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
+			sourceWriter.println("update(ret);");
+			sourceWriter.outdent();
+			sourceWriter.println("}");
+		
 		}
 		catch (Exception e)
 		{

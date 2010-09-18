@@ -219,6 +219,10 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 	{
 	}
 	
+	public void updateData(List<T> data)
+	{
+	}	
+
 	/**
 	 * @see br.com.sysmap.crux.core.client.datasource.RemoteDataSource#cancelFetching()
 	 */

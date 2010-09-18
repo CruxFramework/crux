@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
+import java.util.List;
+
 
 /**
  * A DataSource that loads all data and store it locally on client browser
@@ -26,5 +28,6 @@ public interface LocalDataSource<E> extends DataSource<E>
 	void load();
 	void update(DataSourceRecord<E>[] records);
 	void updateData(E[] data);
+	void updateData(List<E> data);
 	void setCallback(LocalDataSourceCallback callback);
 }

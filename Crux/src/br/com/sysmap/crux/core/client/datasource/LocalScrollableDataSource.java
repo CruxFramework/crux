@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
+import java.util.List;
+
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord.DataSourceRecordState;
 
 
@@ -113,6 +115,10 @@ public abstract class LocalScrollableDataSource<T> extends AbstractScrollableDat
 	}
 
 	public void updateData(T[] data)
+	{
+	}	
+	
+	public void updateData(List<T> data)
 	{
 	}	
 	

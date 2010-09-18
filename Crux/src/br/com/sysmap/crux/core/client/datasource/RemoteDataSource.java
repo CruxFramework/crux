@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.client.datasource;
 
+import java.util.List;
+
 
 
 /**
@@ -27,5 +29,6 @@ public interface RemoteDataSource<E> extends PagedDataSource<E>
 	void cancelFetching();
 	void update(DataSourceRecord<E>[] records);
 	void updateData(E[] data);
+	void updateData(List<E> data);
 	void setCallback(RemoteDataSourceCallback callback);
 }
