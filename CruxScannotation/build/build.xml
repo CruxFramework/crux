@@ -29,7 +29,7 @@
 		<mkdir dir="${classes.dir}" />
 
 		<javac destdir="${classes.dir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" 
-			encoding="ISO-8859-1">
+			encoding="UTF-8">
 			<src>
 				<pathelement location="${src.dir}" />
 			</src>
