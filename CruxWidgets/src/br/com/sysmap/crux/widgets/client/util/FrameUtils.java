@@ -18,10 +18,12 @@ package br.com.sysmap.crux.widgets.client.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.user.client.Timer;
 
 /**
@@ -31,16 +33,20 @@ import com.google.gwt.user.client.Timer;
 public class FrameUtils
 {
 	/**
-	 * 
 	 * @author Thiago da Rosa de Bustamante
-	 *
 	 */
 	public static interface FrameStateMonitor
 	{
 		void registerStateCallback(Element frameElement, FrameStateCallback callback, int timeout);
 	}
+	
+	public static interface FrameAccessor
+	{
+		JSWindow getFrameWindow(IFrameElement frame);
+	}	
 
 	private static FrameStateMonitor stateMonitor = GWT.create(FrameStateMonitor.class);
+	private static FrameAccessor accessor = GWT.create(FrameAccessorImpl.class);
 	
 	/**
 	 * 
@@ -279,5 +285,34 @@ public class FrameUtils
 			var element = frameElement;
 			element.onload=null;
 		}-*/;
+	}
+
+	public static class FrameAccessorIE implements FrameAccessor
+	{
+		public native JSWindow getFrameWindow(IFrameElement elem)/*-{
+			try{
+				return elem.contentWindow;
+			}
+			catch(e){
+				return null;
+			}
+		}-*/;
+	}
+	
+	public static class FrameAccessorImpl implements FrameAccessor
+	{
+		public native JSWindow getFrameWindow(IFrameElement elem)/*-{
+			try{
+				return elem.contentDocument.defaultView;
+			}
+			catch(e){
+				return null;
+			}
+		}-*/;
+	}
+	
+	public static JSWindow getFrameWindow(IFrameElement frame)
+	{
+		return accessor.getFrameWindow(frame);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Sysmap Solutions Software e Consultoria Ltda.
+ * Copyright 2009 Sysmap Solutions Software e Consultoria Ltda. 
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -31,6 +31,7 @@ import br.com.sysmap.crux.widgets.client.util.FrameUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -60,6 +61,19 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 			return null;
 		}
 	}-*/;
+	
+
+	/**
+	 * Return the window of the last shown popup
+	 * @return
+	 */
+	public static native JSWindow getWindow() /*-{
+		if($wnd.top._popup_wndws != null && $wnd.top._popup_wndws.length > 0)
+		{
+			return $wnd.top._popup_wndws[$wnd.top._popup_wndws.length - 1];
+		}
+		return null; 
+	}-*/;
 
 	/**
 	 * Invoke hide on top. It is required to handle multi-frame pages.
@@ -68,28 +82,30 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	{
 		hide(false);
 	}
-	
+
 	/**
 	 * Invoke hide on top. It is required to handle multi-frame pages.
-	 * @param fireCloseEvent Inform if BeforeCloseEvent must be fired
+	 * 
+	 * @param fireCloseEvent
+	 *            Inform if BeforeCloseEvent must be fired
 	 */
 	public static void hide(boolean fireCloseEvent)
 	{
 		CruxInternalPopupControllerCrossDoc crossDoc = GWT.create(CruxInternalPopupControllerCrossDoc.class);
 		if (fireCloseEvent)
 		{
-			((TargetDocument)crossDoc).setTargetWindow(getOpener());
+			((TargetDocument) crossDoc).setTargetWindow(getOpener());
 			crossDoc.onClose();
 		}
 		else
 		{
 			Popup.unregisterLastShownPopup();
-			if (popPopupOnStack())
+			if (popPopupFromStack())
 			{
-				((TargetDocument)crossDoc).setTarget(Target.TOP);
+				((TargetDocument) crossDoc).setTarget(Target.TOP);
 				crossDoc.hidePopup();
 			}
-		}		
+		}
 	}
 	
 	/**
@@ -130,10 +146,11 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	/**
 	 * Closes the popup, removing its window from the stack 
 	 */
-	private static native boolean popPopupOnStack()/*-{
-		if($wnd.top._popup_origin != null)
+	private static native boolean popPopupFromStack()/*-{
+		if($wnd.top._popup_origin != null && $wnd.top._popup_wndws != null)
 		{
 			$wnd.top._popup_origin.pop();
+			$wnd.top._popup_wndws.pop();
 			return true;
 		}
 		return false;
@@ -162,7 +179,7 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 		if(!evt.isCanceled())
 		{
 			Popup.unregisterLastShownPopup();
-			if (popPopupOnStack())
+			if (popPopupFromStack())
 			{
 				((TargetDocument)crossDoc).setTarget(Target.TOP);
 				crossDoc.hidePopup();
@@ -190,7 +207,7 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 			frame.setStyleName("frame");
 			frame.setHeight("100%");
 			frame.setWidth("100%");
-			
+						
 			final Element frameElement = frame.getElement();
 			frameElement.setPropertyString("frameBorder", "no");
 			frameElement.setPropertyInt("border", 0);
@@ -240,6 +257,8 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 			dialogBoxes.add(dialogBox);
 			
 			dialogBox.show();
+			
+			pushPopupWindowOnStack(FrameUtils.getFrameWindow((IFrameElement) frameElement));
 		}
 		catch (Exception e)
 		{
@@ -271,14 +290,22 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	}
 
 	/**
-	 * 
+	 * Registers the freshly open popup window on the stack
+	 * @param frameWindow
+	 */
+	private native void pushPopupWindowOnStack(JSWindow frameWindow)/*-{
+		$wnd.top._popup_wndws.push(frameWindow);
+	}-*/;
+	
+	/**
 	 * @param call
 	 * @param serializedData
 	 */
 	private native void pushPopupOnStack()/*-{
-		if($wnd.top._popup_origin == null)
+		if($wnd.top._popup_origin == null && $wnd.top._popup_wndws == null)
 		{
 			$wnd.top._popup_origin = new Array();
+			$wnd.top._popup_wndws = new Array();
 		}		
 		$wnd.top._popup_origin.push($wnd);
 	}-*/;

@@ -69,7 +69,7 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	{
 		CruxInternalPopupController.hide(fireCloseEvents);
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -89,6 +89,14 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	public static JSWindow getOpener()
 	{
 		return CruxInternalPopupController.getOpener();
+	}
+	
+	/**
+	 * @return the window object of the popup opener
+	 */
+	public static JSWindow getWindow()
+	{
+		return CruxInternalPopupController.getWindow();
 	}
 
 	/**
