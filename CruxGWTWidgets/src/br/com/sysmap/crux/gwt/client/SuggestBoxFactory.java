@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 
 /**
  * Factory for SuggestBox widget
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 @DeclarativeFactory(id="suggestBox", library="gwt")
 public class SuggestBoxFactory extends CompositeFactory<SuggestBox> 

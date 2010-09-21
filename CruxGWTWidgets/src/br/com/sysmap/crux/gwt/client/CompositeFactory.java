@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  * Factory for a composite widget
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public abstract class CompositeFactory<T extends Composite> extends WidgetFactory<T>
 {
