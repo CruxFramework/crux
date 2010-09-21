@@ -91,7 +91,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 
 	private boolean isMenuVertical(Element element)
 	{
-		String verticalStr = element.getAttribute("_vertical");
+		String verticalStr = getProperty(element,"vertical");
 		boolean vertical = false;
 		if (verticalStr != null && verticalStr.length() > 0)
 		{
@@ -151,7 +151,7 @@ public class MenuBarFactory extends WidgetFactory<MenuBar>
 		})
 		public void processChildren(final WidgetChildProcessorContext<MenuBar> context) throws InterfaceConfigException
 		{
-			String captionText = context.getChildElement().getAttribute("_text");
+			String captionText = context.readChildProperty("text");
 			context.setAttribute(CURRENT_MENU_ITEM_CAPTION, captionText);
 			context.setAttribute(CURRENT_MENU_ITEM_IS_HTML, false);
 		}

@@ -66,14 +66,13 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 	{
 		super.processAttributes(context);
 
-		Element element = context.getElement();
 		DateBox widget = context.getWidget();
 		
-		String value = element.getAttribute("_value");
+		String value = context.readWidgetProperty("value");
 		if (value != null && value.length() > 0)
 		{
 			boolean reportError = true;
-			String reportFormatError = element.getAttribute("_reportFormatError");
+			String reportFormatError = context.readWidgetProperty("reportFormatError");
 			if (reportFormatError != null && reportFormatError.length() > 0)
 			{
 				reportError = Boolean.parseBoolean(reportFormatError);
@@ -136,7 +135,7 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 	public Format getFormat(Element element, String widgetId)
 	{
 		Format format = null;
-		String pattern = element.getAttribute("_pattern");
+		String pattern = getProperty(element,"pattern");
 		
 		if (pattern != null && pattern.trim().length() > 0)
 		{

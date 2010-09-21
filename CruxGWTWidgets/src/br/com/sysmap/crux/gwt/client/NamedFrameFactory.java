@@ -38,7 +38,7 @@ public class NamedFrameFactory extends WidgetFactory<NamedFrame>
 	@Override
 	public NamedFrame instantiateWidget(Element element, String widgetId) 
 	{
-		return new NamedFrame(element.getAttribute("_name"));
+		return new NamedFrame(getProperty(element,"name"));
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class NamedFrameFactory extends WidgetFactory<NamedFrame>
 	})
 	public void processAttributes(WidgetFactoryContext<NamedFrame> context) throws InterfaceConfigException
 	{
-		String url = context.getElement().getAttribute("_url");
+		String url = context.readWidgetProperty("url");
 		if (!StringUtils.isEmpty(url))
 		{
 			context.getWidget().setUrl(Screen.appendDebugParameters(url));

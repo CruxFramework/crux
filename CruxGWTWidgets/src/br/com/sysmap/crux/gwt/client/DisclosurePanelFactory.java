@@ -50,7 +50,7 @@ public class DisclosurePanelFactory extends CompositeFactory<DisclosurePanel>
 	@Override
 	public DisclosurePanel instantiateWidget(Element element, String widgetId) 
 	{
-		String headerText = element.getAttribute("_headerText");
+		String headerText = getProperty(element,"headerText");
 		return new DisclosurePanel(headerText);
 	}
 	

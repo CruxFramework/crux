@@ -31,7 +31,6 @@ import br.com.sysmap.crux.gwt.client.align.AlignmentAttributeParser;
 import br.com.sysmap.crux.gwt.client.align.HorizontalAlignment;
 import br.com.sysmap.crux.gwt.client.align.VerticalAlignment;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -96,12 +95,10 @@ public abstract class CellPanelFactory <T extends CellPanel> extends ComplexPane
 		})		
 		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException 
 		{
-			Element childElement = context.getChildElement();
-			
-			context.setAttribute("height", childElement.getAttribute("_height"));
-			context.setAttribute("width", childElement.getAttribute("_width"));
-			context.setAttribute("horizontalAlignment", childElement.getAttribute("_horizontalAlignment"));
-			context.setAttribute("verticalAlignment", childElement.getAttribute("_verticalAlignment"));
+			context.setAttribute("height", context.readChildProperty("height"));
+			context.setAttribute("width", context.readChildProperty("width"));
+			context.setAttribute("horizontalAlignment", context.readChildProperty("horizontalAlignment"));
+			context.setAttribute("verticalAlignment", context.readChildProperty("verticalAlignment"));
 		}
 	}
 	

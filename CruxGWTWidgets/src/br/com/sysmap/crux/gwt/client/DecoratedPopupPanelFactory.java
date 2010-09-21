@@ -38,13 +38,13 @@ public class DecoratedPopupPanelFactory extends PanelFactory<DecoratedPopupPanel
 	@Override
 	public DecoratedPopupPanel instantiateWidget(Element element, String widgetId) 
 	{
-		String autoHideStr = element.getAttribute("_autoHide");
+		String autoHideStr = getProperty(element,"autoHide");
 		boolean autoHide = false;
 		if (autoHideStr != null && autoHideStr.length() >0)
 		{
 			autoHide = Boolean.parseBoolean(autoHideStr);
 		}
-		String modalStr = element.getAttribute("_modal");
+		String modalStr = getProperty(element,"modal");
 		boolean modal = false;
 		if (modalStr != null && modalStr.length() >0)
 		{

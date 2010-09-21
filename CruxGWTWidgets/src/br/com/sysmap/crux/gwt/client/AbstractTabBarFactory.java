@@ -54,10 +54,9 @@ public abstract class AbstractTabBarFactory<T extends TabBar> extends CompositeF
 	{
 		super.processAttributes(context);
 				
-		Element element = context.getElement();
 		final T widget = context.getWidget();
 
-		final String visibleTab = element.getAttribute("_visibleTab");
+		final String visibleTab = context.readWidgetProperty("visibleTab");
 		if (visibleTab != null && visibleTab.length() > 0)
 		{
 			addScreenLoadedHandler(new ScreenLoadHandler()
@@ -130,7 +129,7 @@ public abstract class AbstractTabBarFactory<T extends TabBar> extends CompositeF
 	private static <T extends TabBar> void updateTabState(WidgetChildProcessorContext<T> context)
 	{
 		Element tabElement = (Element) context.getAttribute("tabElement");
-		String enabled = tabElement.getAttribute("_enabled");
+		String enabled = getProperty(tabElement, "enabled");
 		int tabCount = context.getRootWidget().getTabCount();
 		if (enabled != null && enabled.length() >0)
 		{
@@ -139,7 +138,7 @@ public abstract class AbstractTabBarFactory<T extends TabBar> extends CompositeF
 
 		Tab currentTab = context.getRootWidget().getTab(tabCount-1);
 
-		String wordWrap = tabElement.getAttribute("_wordWrap");
+		String wordWrap = getProperty(tabElement,"wordWrap");
 		if (wordWrap != null && wordWrap.trim().length() > 0)
 		{
 			currentTab.setWordWrap(Boolean.parseBoolean(wordWrap));

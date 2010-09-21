@@ -75,7 +75,7 @@ public class TreeFactory extends WidgetFactory<Tree>
 			LoadImagesEvent<Tree> loadEvent = new LoadImagesEvent<Tree>(widgetId);
 			Resources treeImages = (Resources) Events.callEvent(eventLoadImage, loadEvent);
 
-			String useLeafImagesStr = element.getAttribute("useLeafImages");
+			String useLeafImagesStr = getProperty(element,"useLeafImages");
 			boolean useLeafImages = true;
 			if (useLeafImagesStr != null && useLeafImagesStr.length() > 0)
 			{
@@ -102,10 +102,9 @@ public class TreeFactory extends WidgetFactory<Tree>
 	{
 		super.processAttributes(context);
 		
-		Element element = context.getElement();
 		Tree widget = context.getWidget();
 		
-		String openSelectedItem = element.getAttribute("_openSelectedItem");
+		String openSelectedItem = context.readWidgetProperty("openSelectedItem");
 		if (openSelectedItem != null && openSelectedItem.length() > 0)
 		{
 			if(Boolean.parseBoolean(openSelectedItem))

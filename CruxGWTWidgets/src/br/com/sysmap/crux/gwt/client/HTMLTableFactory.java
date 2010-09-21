@@ -65,7 +65,6 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		})
 		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
 		{
-			Element element = context.getChildElement();
 			Integer index = (Integer) context.getAttribute("rowIndex");
 			if (index == null)
 			{
@@ -77,18 +76,18 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 			}
 			try
 			{
-				String styleName = element.getAttribute("_styleName");
+				String styleName = context.readChildProperty("styleName");
 				if (styleName != null && styleName.length() > 0)
 				{
 					context.getRootWidget().getRowFormatter().setStyleName(index, styleName);
 				}
-				String visible = element.getAttribute("_visible");
+				String visible = context.readChildProperty("visible");
 				if (visible != null && visible.length() > 0)
 				{
 					context.getRootWidget().getRowFormatter().setVisible(index, Boolean.parseBoolean(visible));
 				}
 
-				String verticalAlignment = element.getAttribute("_verticalAlignment");
+				String verticalAlignment = context.readChildProperty("verticalAlignment");
 				context.getRootWidget().getRowFormatter().setVerticalAlign(index, 
 						AlignmentAttributeParser.getVerticalAlignment(verticalAlignment));
 			}
@@ -115,7 +114,6 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		})
 		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
 		{
-			Element element = context.getChildElement();
 			HTMLTable widget = context.getRootWidget();
 
 			Integer indexRow = (Integer) context.getAttribute("rowIndex");
@@ -130,39 +128,39 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 			}
 			try
 			{
-				String styleName = element.getAttribute("_styleName");
+				String styleName = context.readChildProperty("styleName");
 				if (styleName != null && styleName.length() > 0)
 				{
 					widget.getCellFormatter().setStyleName(indexRow, indexCol, styleName);
 				}
-				String visible = element.getAttribute("_visible");
+				String visible = context.readChildProperty("visible");
 				if (visible != null && visible.length() > 0)
 				{
 					widget.getCellFormatter().setVisible(indexRow, indexCol, Boolean.parseBoolean(visible));
 				}
-				String height = element.getAttribute("_height");
+				String height = context.readChildProperty("height");
 				if (height != null && height.length() > 0)
 				{
 					widget.getCellFormatter().setHeight(indexRow, indexCol, height);
 				}
-				String width = element.getAttribute("_width");
+				String width = context.readChildProperty("width");
 				if (width != null && width.length() > 0)
 				{
 					widget.getCellFormatter().setWidth(indexRow, indexCol, width);
 				}
-				String wordWrap = element.getAttribute("_wordWrap");
+				String wordWrap = context.readChildProperty("wordWrap");
 				if (wordWrap != null && wordWrap.length() > 0)
 				{
 					widget.getCellFormatter().setWordWrap(indexRow, indexCol, Boolean.parseBoolean(wordWrap));
 				}
 
-				String horizontalAlignment = element.getAttribute("_horizontalAlignment");
+				String horizontalAlignment = context.readChildProperty("horizontalAlignment");
 				if (horizontalAlignment != null && horizontalAlignment.length() > 0)
 				{
 					widget.getCellFormatter().setHorizontalAlignment(indexRow, indexCol, 
 						AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
 				}
-				String verticalAlignment = element.getAttribute("_verticalAlignment");
+				String verticalAlignment = context.readChildProperty("verticalAlignment");
 				if (verticalAlignment != null && verticalAlignment.length() > 0)
 				{
 					widget.getCellFormatter().setVerticalAlignment(indexRow, indexCol, 

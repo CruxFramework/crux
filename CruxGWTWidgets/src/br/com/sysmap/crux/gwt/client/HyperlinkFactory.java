@@ -48,7 +48,7 @@ public class HyperlinkFactory extends WidgetFactory<Hyperlink>
 		Hyperlink widget = context.getWidget();
 		
 		String innerHtml = element.getInnerHTML();
-		String text = element.getAttribute("_text");
+		String text = context.readWidgetProperty("text");
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{
 			((HasHTML)widget).setHTML(innerHtml);

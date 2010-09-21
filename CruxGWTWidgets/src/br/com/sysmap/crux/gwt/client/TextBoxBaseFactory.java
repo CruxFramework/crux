@@ -24,7 +24,6 @@ import br.com.sysmap.crux.core.client.screen.factory.HasNameFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasValueChangeHandlersFactory;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.TextBoxBase;
 
 
@@ -50,10 +49,9 @@ public abstract class TextBoxBaseFactory<T extends TextBoxBase> extends FocusWid
 	{
 		super.processAttributes(context);
 
-		Element element = context.getElement();
 		T widget = context.getWidget();
 		
-		String textAlignment = element.getAttribute("_textAlignment");
+		String textAlignment = context.readWidgetProperty("textAlignment");
 		if (textAlignment != null)
 		{
 			if ("center".equalsIgnoreCase(textAlignment))

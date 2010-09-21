@@ -59,15 +59,14 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 	{
 		super.processAttributes(context);
 		
-		Element element = context.getElement();
 		DockPanel widget = context.getWidget();
 		
-		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");
+		String cellHorizontalAlignment = context.readWidgetProperty("horizontalAlignment");
 		if (cellHorizontalAlignment != null && cellHorizontalAlignment.length() > 0)
 		{
 			widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(cellHorizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
 		}		
-		String cellVerticalAlignment = element.getAttribute("_verticalAlignment");
+		String cellVerticalAlignment = context.readWidgetProperty("verticalAlignment");
 		if (cellVerticalAlignment != null && cellVerticalAlignment.length() > 0)
 		{
 			widget.setVerticalAlignment(AlignmentAttributeParser.getVerticalAlignment(cellVerticalAlignment));
@@ -108,9 +107,8 @@ public class DockPanelFactory extends CellPanelFactory<DockPanel>
 		public void processChildren(WidgetChildProcessorContext<DockPanel> context) throws InterfaceConfigException 
 		{
 			super.processChildren(context);
-			Element childElement = context.getChildElement();
-			
-			String direction = childElement.getAttribute("_direction");
+
+			String direction = context.readChildProperty("direction");
 			if (StringUtils.isEmpty(direction))
 			{
 				direction = "center";

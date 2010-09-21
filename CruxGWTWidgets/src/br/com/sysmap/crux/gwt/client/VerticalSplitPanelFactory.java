@@ -19,8 +19,6 @@ import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
-import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
-import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.children.AnyWidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
@@ -42,15 +40,6 @@ public class VerticalSplitPanelFactory extends PanelFactory<VerticalSplitPanel>
 		return new VerticalSplitPanel();
 	}
 	
-	@Override
-	@TagEventsDeclaration({
-		@TagEventDeclaration("onLoadImage")
-	})
-	public void processEvents(WidgetFactoryContext<VerticalSplitPanel> context) throws InterfaceConfigException
-	{
-		super.processEvents(context);
-	}
-
 	@Override
 	@TagChildren({
 		@TagChild(TopProcessor.class),

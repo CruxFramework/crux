@@ -44,7 +44,7 @@ public class SimpleRadioButtonFactory extends FocusWidgetFactory<SimpleRadioButt
 	@Override
 	public SimpleRadioButton instantiateWidget(Element element, String widgetId) 
 	{
-		return new SimpleRadioButton(element.getAttribute("_name"));
+		return new SimpleRadioButton(getProperty(element,"name"));
 	}
 
 }

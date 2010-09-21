@@ -54,7 +54,7 @@ public class ListBoxFactory extends AbstractListBoxFactory<ListBox>
 	@Override
 	public ListBox instantiateWidget(Element element, String widgetId) 
 	{
-		String multiple = element.getAttribute("_multiple");
+		String multiple = getProperty(element,"multiple");
 		if (multiple != null && multiple.trim().length() > 0)
 		{
 			return new ListBox(Boolean.parseBoolean(multiple));

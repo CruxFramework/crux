@@ -47,14 +47,14 @@ public class CheckBoxFactory extends AbstractCheckBoxFactory<CheckBox>
 		Element element = context.getElement();
 		CheckBox widget = context.getWidget();
 
-		String checked = element.getAttribute("_checked");
+		String checked = context.readWidgetProperty("checked");
 		if (checked != null && checked.trim().length() > 0)
 		{
 			widget.setValue(Boolean.parseBoolean(checked));
 		}
 
 		String innerHtml = element.getInnerHTML();
-		String text = element.getAttribute("_text");		
+		String text = context.readWidgetProperty("text");		
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{
 			((HasHTML)widget).setHTML(innerHtml);

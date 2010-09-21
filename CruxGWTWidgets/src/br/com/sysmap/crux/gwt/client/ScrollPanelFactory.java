@@ -63,11 +63,10 @@ public class ScrollPanelFactory extends PanelFactory<ScrollPanel>
 	{
 		super.processAttributes(context);
 		
-		Element element = context.getElement();
 		final ScrollPanel widget = context.getWidget();
 		final String widgetId = context.getWidgetId();
 		
-		String verticalScrollPosition = element.getAttribute("_verticalScrollPosition");
+		String verticalScrollPosition = context.readWidgetProperty("verticalScrollPosition");
 		if (verticalScrollPosition != null && verticalScrollPosition.length() > 0)
 		{
 			if ("top".equals(verticalScrollPosition))
@@ -79,7 +78,7 @@ public class ScrollPanelFactory extends PanelFactory<ScrollPanel>
 				widget.scrollToBottom();
 			}
 		}
-		String horizontalScrollPosition = element.getAttribute("_horizontalScrollPosition");
+		String horizontalScrollPosition = context.readWidgetProperty("horizontalScrollPosition");
 		if (horizontalScrollPosition != null && horizontalScrollPosition.length() > 0)
 		{
 			if ("left".equals(horizontalScrollPosition))
@@ -92,7 +91,7 @@ public class ScrollPanelFactory extends PanelFactory<ScrollPanel>
 			}
 		}
 	
-		final String ensureVisible = element.getAttribute("_ensureVisible");
+		final String ensureVisible = context.readWidgetProperty("ensureVisible");
 		if (ensureVisible != null && ensureVisible.length() > 0)
 		{
 			addScreenLoadedHandler(new ScreenLoadHandler()

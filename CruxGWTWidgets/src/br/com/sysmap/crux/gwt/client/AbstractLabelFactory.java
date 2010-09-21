@@ -27,7 +27,6 @@ import br.com.sysmap.crux.core.client.screen.factory.HasWordWrapFactory;
 import br.com.sysmap.crux.gwt.client.align.AlignmentAttributeParser;
 import br.com.sysmap.crux.gwt.client.align.HorizontalAlignment;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 
@@ -48,10 +47,9 @@ public abstract class AbstractLabelFactory<T extends Label> extends WidgetFactor
 	{
 		super.processAttributes(context);
 		
-		Element element = context.getElement();
 		T widget = context.getWidget();
 
-		String horizontalAlignment = element.getAttribute("_horizontalAlignment");
+		String horizontalAlignment = context.readWidgetProperty("horizontalAlignment");
 		if (horizontalAlignment != null && horizontalAlignment.length() > 0)
 		{
 			widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));

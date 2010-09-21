@@ -87,14 +87,14 @@ public class FlexTableFactory extends HTMLTableFactory<FlexTable>
 			
 			super.processChildren(context);
 
-			String colspan = context.getChildElement().getAttribute("_colSpan");
+			String colspan = context.readChildProperty("colSpan");
 			if(colspan != null && colspan.length() > 0)
 			{
 				Integer indexCol = (Integer) context.getAttribute("colIndex");
 				context.getRootWidget().getFlexCellFormatter().setColSpan(indexRow, indexCol, Integer.parseInt(colspan));
 			}
 			
-			String rowSpan = context.getChildElement().getAttribute("_rowSpan");
+			String rowSpan = context.readChildProperty("rowSpan");
 			if(rowSpan != null && rowSpan.length() > 0)
 			{
 				Integer indexCol = (Integer) context.getAttribute("colIndex");

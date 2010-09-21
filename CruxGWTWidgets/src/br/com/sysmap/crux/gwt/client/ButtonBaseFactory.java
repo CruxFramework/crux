@@ -36,7 +36,7 @@ public abstract class ButtonBaseFactory<T extends Button> extends FocusWidgetFac
 		Button widget = context.getWidget();
 
 		String innerHtml = element.getInnerHTML();
-		String text = element.getAttribute("_text");
+		String text = context.readWidgetProperty("text");
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{
 			((HasHTML)widget).setHTML(innerHtml);

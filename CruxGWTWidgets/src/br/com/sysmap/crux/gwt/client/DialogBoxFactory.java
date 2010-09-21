@@ -23,6 +23,7 @@ import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.factory.HasAnimationFactory;
 import br.com.sysmap.crux.core.client.screen.factory.HasCloseHandlersFactory;
+import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -34,18 +35,18 @@ import com.google.gwt.user.client.ui.HasHTML;
  */
 @DeclarativeFactory(id="dialogBox", library="gwt")
 public class DialogBoxFactory extends PanelFactory<DialogBox>
-       implements HasAnimationFactory<DialogBox>, HasCloseHandlersFactory<DialogBox> 
+       implements HasAnimationFactory<DialogBox>, HasCloseHandlersFactory<DialogBox>, HasTextFactory<DialogBox>
 {
 	@Override
 	public DialogBox instantiateWidget(Element element, String widgetId) 
 	{
-		String autoHideStr = element.getAttribute("_autoHide");
+		String autoHideStr = getProperty(element,"autoHide");
 		boolean autoHide = false;
 		if (autoHideStr != null && autoHideStr.length() >0)
 		{
 			autoHide = Boolean.parseBoolean(autoHideStr);
 		}
-		String modalStr = element.getAttribute("_modal");
+		String modalStr = getProperty(element,"modal");
 		boolean modal = false;
 		if (modalStr != null && modalStr.length() >0)
 		{
@@ -71,7 +72,7 @@ public class DialogBoxFactory extends PanelFactory<DialogBox>
 		DialogBox widget = context.getWidget();
 
 		String innerHtml = element.getInnerHTML();
-		String text = element.getAttribute("_text");
+		String text = context.readWidgetProperty("text");
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{
 			((HasHTML)widget).setHTML(innerHtml);

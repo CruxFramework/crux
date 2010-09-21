@@ -44,13 +44,12 @@ public class DatePickerFactory extends CompositeFactory<DatePicker>
 	{
 		super.processAttributes(context);
 		
-		Element element = context.getElement();
 		DatePicker widget = context.getWidget();
 		
-		String value = element.getAttribute("_value");
+		String value = context.readWidgetProperty("value");
 		if (value != null && value.length() > 0)
 		{
-			String datePattern = element.getAttribute("_datePattern");
+			String datePattern = context.readWidgetProperty("datePattern");
 			if (datePattern == null || datePattern.length() == 0)
 			{
 				datePattern = DateFormatUtil.MEDIUM_DATE_PATTERN;

@@ -31,6 +31,6 @@ public class RadioButtonFactory extends AbstractCheckBoxFactory<RadioButton>
 	@Override
 	public RadioButton instantiateWidget(Element element, String widgetId) 
 	{
-		return new RadioButton(element.getAttribute("_name"));
+		return new RadioButton(getProperty(element,"name"));
 	}
 }

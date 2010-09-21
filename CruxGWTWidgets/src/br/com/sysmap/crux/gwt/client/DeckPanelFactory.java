@@ -46,10 +46,9 @@ public class DeckPanelFactory extends ComplexPanelFactory<DeckPanel>
 	{
 		super.processAttributes(context);
 		
-		Element element = context.getElement();
 		DeckPanel widget = context.getWidget();
 		
-		String visibleWidget = element.getAttribute("_visibleWidget");
+		String visibleWidget = context.readWidgetProperty("visibleWidget");
 		if (visibleWidget != null && visibleWidget.length() > 0)
 		{
 			widget.showWidget(Integer.parseInt(visibleWidget));

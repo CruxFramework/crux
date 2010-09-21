@@ -25,7 +25,6 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContex
 import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.CustomButton;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.Image;
@@ -47,11 +46,10 @@ public abstract class CustomButtonFactory<T extends CustomButton> extends FocusW
 	{
 		super.processAttributes(context);
 
-		Element element = context.getElement();
 		T widget = context.getWidget();
 		
-		String innerHtml = element.getInnerHTML();
-		String text = element.getAttribute("_text");
+		String innerHtml = context.getElement().getInnerHTML();
+		String text = context.readWidgetProperty("text");
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{
 			((HasHTML)widget).setHTML(ScreenFactory.getInstance().getDeclaredMessage(innerHtml));
@@ -128,7 +126,7 @@ public abstract class CustomButtonFactory<T extends CustomButton> extends FocusW
 		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
 			Face face = (Face)context.getAttribute("face");
-			face.setText(context.getChildElement().getAttribute("_value"));
+			face.setText(context.readChildProperty("value"));
 		}
 	}
 	
@@ -157,18 +155,18 @@ public abstract class CustomButtonFactory<T extends CustomButton> extends FocusW
 		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
 			Face face = (Face)context.getAttribute("face");
-			String leftStr = context.getChildElement().getAttribute("_left");
-			String topStr = context.getChildElement().getAttribute("_top");
-			String widthStr = context.getChildElement().getAttribute("_width");
-			String heightStr = context.getChildElement().getAttribute("_height");
+			String leftStr = context.readChildProperty("left");
+			String topStr = context.readChildProperty("top");
+			String widthStr = context.readChildProperty("width");
+			String heightStr = context.readChildProperty("height");
 
 			if (StringUtils.isEmpty(leftStr)  || StringUtils.isEmpty(topStr) || StringUtils.isEmpty(widthStr) || StringUtils.isEmpty(heightStr))
 			{
-				face.setImage(new Image(context.getChildElement().getAttribute("_url")));
+				face.setImage(new Image(context.readChildProperty("url")));
 			}
 			else
 			{
-				face.setImage(new Image(context.getChildElement().getAttribute("_url"), Integer.parseInt(leftStr), 
+				face.setImage(new Image(context.readChildProperty("url"), Integer.parseInt(leftStr), 
 						Integer.parseInt(topStr), 
 						Integer.parseInt(widthStr), 
 						Integer.parseInt(heightStr)));

@@ -24,6 +24,7 @@ import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
+import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasHTML;
@@ -38,7 +39,7 @@ import com.google.gwt.user.client.ui.RichTextArea.Justification;
  * @author Thiago Bustamante
  */
 @DeclarativeFactory(id="richTextArea", library="gwt")
-public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
+public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea> implements HasTextFactory<RichTextArea>
 {
 	@Override
 	public RichTextArea instantiateWidget(Element element, String widgetId) 
@@ -67,7 +68,7 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 		Element element = context.getElement();
 		final RichTextArea widget = context.getWidget();
 		
-		final Map<String, String> declaredProperties = readDeclaredProperties(element);
+		final Map<String, String> declaredProperties = readDeclaredProperties(context);
 
 		// We need to give UI thread time to render the textArea before try to focus it
 		addScreenLoadedHandler(new ScreenLoadHandler()
@@ -80,7 +81,7 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 		});
 
 		String innerHtml = element.getInnerHTML();
-		String text = element.getAttribute("_text");
+		String text = context.readWidgetProperty("text");
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{
 			((HasHTML)widget).setHTML(innerHtml);
@@ -92,60 +93,60 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea>
 	 * to initialise the basic formatter. It will be done by method initBasicFormatterOptions
 	 * @param element
 	 */
-	protected Map<String, String> readDeclaredProperties(Element element)
+	protected Map<String, String> readDeclaredProperties(WidgetFactoryContext<RichTextArea> context)
 	{
 		 Map<String, String> declaredProperties = new HashMap<String, String>();
-		String backColor = element.getAttribute("_backColor");
+		String backColor = context.readWidgetProperty("backColor");
 		if (backColor != null && backColor.length() > 0)
 		{
 			declaredProperties.put("backColor",backColor);
 		}
-		String fontName = element.getAttribute("_fontName");
+		String fontName = context.readWidgetProperty("fontName");
 		if (fontName != null && fontName.length() > 0)
 		{
 			declaredProperties.put("fontName",fontName);
 		}
-		String fontSize = element.getAttribute("_fontSize");
+		String fontSize = context.readWidgetProperty("fontSize");
 		if (fontSize != null && fontSize.length() > 0)
 		{
 			declaredProperties.put("fontSize",fontSize);
 		}
-		String foreColor = element.getAttribute("_foreColor");
+		String foreColor = context.readWidgetProperty("foreColor");
 		if (foreColor != null && foreColor.length() > 0)
 		{
 			declaredProperties.put("foreColor",foreColor);
 		}
-		String justification = element.getAttribute("_justification");
+		String justification = context.readWidgetProperty("justification");
 		if (justification != null && justification.length() > 0)
 		{
 			declaredProperties.put("justification",justification);
 		}
-		String bold = element.getAttribute("_bold");
+		String bold = context.readWidgetProperty("bold");
 		if (bold != null && bold.length() > 0)
 		{
 			declaredProperties.put("bold",bold);
 		}
-		String italic = element.getAttribute("_italic");
+		String italic = context.readWidgetProperty("italic");
 		if (italic != null && italic.length() > 0)
 		{
 			declaredProperties.put("italic",italic);
 		}
-		String subscript = element.getAttribute("_subscript");
+		String subscript = context.readWidgetProperty("subscript");
 		if (subscript != null && subscript.length() > 0)
 		{
 			declaredProperties.put("subscript",subscript);
 		}
-		String superscript = element.getAttribute("_superscript");
+		String superscript = context.readWidgetProperty("superscript");
 		if (superscript != null && superscript.length() > 0)
 		{
 			declaredProperties.put("superscript",superscript);
 		}
-		String underline = element.getAttribute("_underline");
+		String underline = context.readWidgetProperty("underline");
 		if (underline != null && underline.length() > 0)
 		{
 			declaredProperties.put("underline",underline);
 		}
-		String strikethrough = element.getAttribute("_strikethrough");
+		String strikethrough = context.readWidgetProperty("strikethrough");
 		if (strikethrough != null && strikethrough.length() > 0)
 		{
 			declaredProperties.put("strikethrough",strikethrough);

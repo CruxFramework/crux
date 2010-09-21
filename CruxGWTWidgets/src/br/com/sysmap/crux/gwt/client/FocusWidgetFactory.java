@@ -58,19 +58,19 @@ public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetF
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
-		String tabIndex = context.getElement().getAttribute("_tabIndex");
+		String tabIndex = context.readWidgetProperty("tabIndex");
 		if (tabIndex != null && tabIndex.length() > 0){
 			context.getWidget().setTabIndex(Integer.parseInt(tabIndex));
 		}
-		String enabled = context.getElement().getAttribute("_enabled");
+		String enabled = context.readWidgetProperty("enabled");
 		if (enabled != null && enabled.length() > 0){
 			context.getWidget().setEnabled(Boolean.parseBoolean(enabled));
 		}
-		String accessKey = context.getElement().getAttribute("_accessKey");
+		String accessKey = context.readWidgetProperty("accessKey");
 		if (accessKey != null && accessKey.length() > 0){
 			context.getWidget().setAccessKey(accessKey.charAt(0));
 		}
-		String focus = context.getElement().getAttribute("_focus");
+		String focus = context.readWidgetProperty("focus");
 		if (focus != null && focus.length() > 0){
 			context.getWidget().setFocus(Boolean.parseBoolean(focus));
 		}

@@ -86,26 +86,26 @@ public class LayoutPanelFactory extends AbstractLayoutPanelFactory<LayoutPanel>
 		})		
 		public void processChildren(WidgetChildProcessorContext<LayoutPanel> context) throws InterfaceConfigException 
 		{
-			context.setAttribute("left", context.getChildElement().getAttribute("_left"));
-			context.setAttribute("right", context.getChildElement().getAttribute("_right"));
-			context.setAttribute("top", context.getChildElement().getAttribute("_top"));
-			context.setAttribute("bottom", context.getChildElement().getAttribute("_bottom"));
-			context.setAttribute("width", context.getChildElement().getAttribute("_width"));
-			context.setAttribute("height", context.getChildElement().getAttribute("_height"));
-			context.setAttribute("animationStartLeft", context.getChildElement().getAttribute("_animationStartLeft"));
-			context.setAttribute("animationStartRight", context.getChildElement().getAttribute("_animationStartRight"));
-			context.setAttribute("animationStartTop", context.getChildElement().getAttribute("_animationStartTop"));
-			context.setAttribute("animationStartBottom", context.getChildElement().getAttribute("_animationStartBottom"));
-			context.setAttribute("animationStartWidth", context.getChildElement().getAttribute("_animationStartWidth"));
-			context.setAttribute("animationStartHeight", context.getChildElement().getAttribute("_animationStartHeight"));
-			context.setAttribute("horizontalPosition", context.getChildElement().getAttribute("_horizontalPosition"));
-			context.setAttribute("verticalPosition", context.getChildElement().getAttribute("_verticalPosition"));
-			context.setAttribute("leftUnit", context.getChildElement().getAttribute("_leftUnit"));
-			context.setAttribute("rightUnit", context.getChildElement().getAttribute("_rightUnit"));
-			context.setAttribute("topUnit", context.getChildElement().getAttribute("_topUnit"));
-			context.setAttribute("bottomUnit", context.getChildElement().getAttribute("_bottomUnit"));
-			context.setAttribute("widthUnit", context.getChildElement().getAttribute("_widthUnit"));
-			context.setAttribute("heightUnit", context.getChildElement().getAttribute("_heightUnit"));
+			context.setAttribute("left", context.readChildProperty("left"));
+			context.setAttribute("right", context.readChildProperty("right"));
+			context.setAttribute("top", context.readChildProperty("top"));
+			context.setAttribute("bottom", context.readChildProperty("bottom"));
+			context.setAttribute("width", context.readChildProperty("width"));
+			context.setAttribute("height", context.readChildProperty("height"));
+			context.setAttribute("animationStartLeft", context.readChildProperty("animationStartLeft"));
+			context.setAttribute("animationStartRight", context.readChildProperty("animationStartRight"));
+			context.setAttribute("animationStartTop", context.readChildProperty("animationStartTop"));
+			context.setAttribute("animationStartBottom", context.readChildProperty("animationStartBottom"));
+			context.setAttribute("animationStartWidth", context.readChildProperty("animationStartWidth"));
+			context.setAttribute("animationStartHeight", context.readChildProperty("animationStartHeight"));
+			context.setAttribute("horizontalPosition", context.readChildProperty("horizontalPosition"));
+			context.setAttribute("verticalPosition", context.readChildProperty("verticalPosition"));
+			context.setAttribute("leftUnit", context.readChildProperty("leftUnit"));
+			context.setAttribute("rightUnit", context.readChildProperty("rightUnit"));
+			context.setAttribute("topUnit", context.readChildProperty("topUnit"));
+			context.setAttribute("bottomUnit", context.readChildProperty("bottomUnit"));
+			context.setAttribute("widthUnit", context.readChildProperty("widthUnit"));
+			context.setAttribute("heightUnit", context.readChildProperty("heightUnit"));
 		}
 	}
 	

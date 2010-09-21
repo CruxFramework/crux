@@ -50,10 +50,9 @@ public abstract class AbstractStackPanelFactory<T extends StackPanel> extends Co
 	{
 		super.processAttributes(context);
 		
-		Element element = context.getElement();
 		final T widget = context.getWidget();
 
-		final String visibleStack = element.getAttribute("_visibleStack");
+		final String visibleStack = context.readWidgetProperty("visibleStack");
 		if (visibleStack != null && visibleStack.length() > 0)
 		{
 			addScreenLoadedHandler(new ScreenLoadHandler()

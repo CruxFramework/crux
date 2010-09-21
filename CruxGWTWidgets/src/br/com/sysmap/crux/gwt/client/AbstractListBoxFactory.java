@@ -26,7 +26,6 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
 import br.com.sysmap.crux.core.client.screen.factory.HasChangeHandlersFactory;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.ListBox;
 
 /**
@@ -61,10 +60,9 @@ public abstract class AbstractListBoxFactory<T extends ListBox> extends FocusWid
 				index = 0;
 			}
 
-			Element element = context.getChildElement();
 			
-			String label = element.getAttribute("_label");
-			String value = element.getAttribute("_value");
+			String label = context.readChildProperty("label");
+			String value = context.readChildProperty("value");
 			
 			if(label != null && label.length() > 0)
 			{
@@ -76,7 +74,7 @@ public abstract class AbstractListBoxFactory<T extends ListBox> extends FocusWid
 			}
 			context.getRootWidget().insertItem(label, value, index);
 
-			String selected = element.getAttribute("_selected");
+			String selected = context.readChildProperty("selected");
 			if (selected != null && selected.trim().length() > 0)
 			{
 				context.getRootWidget().setItemSelected(index, Boolean.parseBoolean(selected));

@@ -65,8 +65,8 @@ public class AbsolutePanelFactory extends ComplexPanelFactory<AbsolutePanel>
 		})	
 		public void processChildren(WidgetChildProcessorContext<AbsolutePanel> context) throws InterfaceConfigException
 		{
-			String left = context.getChildElement().getAttribute("_left");
-			String top = context.getChildElement().getAttribute("_top");
+			String left = context.readChildProperty("left");
+			String top = context.readChildProperty("top");
 			context.setAttribute("left", left);
 			context.setAttribute("top", top);
 		}

@@ -37,7 +37,7 @@ public class DockLayoutPanelFactory extends AbstractDockLayoutPanelFactory<DockL
 	@Override
 	public DockLayoutPanel instantiateWidget(Element element, String widgetId)
 	{
-		Unit unit = getUnit(element.getAttribute("_unit"));
+		Unit unit = getUnit(getProperty(element,"unit"));
 		return new DockLayoutPanel(unit);
 	}
 

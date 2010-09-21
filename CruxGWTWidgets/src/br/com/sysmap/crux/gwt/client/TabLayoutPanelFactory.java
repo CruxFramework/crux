@@ -50,14 +50,14 @@ public class TabLayoutPanelFactory extends CompositeFactory<TabLayoutPanel>
 	@Override
 	public TabLayoutPanel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
-		String height = element.getAttribute("_barHeight");
+		String height = getProperty(element,"barHeight");
 		if (StringUtils.isEmpty(height))
 		{
 			return new TabLayoutPanel(20, Unit.PX);
 		}
 		else
 		{
-			return new TabLayoutPanel(Double.parseDouble(height), AbstractLayoutPanelFactory.getUnit(element.getAttribute("_unit")));
+			return new TabLayoutPanel(Double.parseDouble(height), AbstractLayoutPanelFactory.getUnit(getProperty(element,"unit")));
 		}
 	}
 	
@@ -71,10 +71,9 @@ public class TabLayoutPanelFactory extends CompositeFactory<TabLayoutPanel>
 	{
 		super.processAttributes(context);
 
-		Element element = context.getElement();
 		final TabLayoutPanel widget = context.getWidget();
 		
-		final String visibleTab = element.getAttribute("_visibleTab");
+		final String visibleTab = context.readWidgetProperty("visibleTab");
 		if (visibleTab != null && visibleTab.length() > 0)
 		{
 			addScreenLoadedHandler(new ScreenLoadHandler()

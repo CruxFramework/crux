@@ -49,8 +49,8 @@ public abstract class AbstractDockLayoutPanelFactory<T extends DockLayoutPanel> 
 		})
 		public void processChildren(WidgetChildProcessorContext<W> context) throws InterfaceConfigException 
 		{
-			context.setAttribute("direction", getDirection(context.getChildElement().getAttribute("_direction")));
-			context.setAttribute("size", context.getChildElement().getAttribute("_size"));
+			context.setAttribute("direction", getDirection(context.readChildProperty("direction")));
+			context.setAttribute("size", context.readChildProperty("size"));
 		}
 
 		private Direction getDirection(String direction)

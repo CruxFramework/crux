@@ -54,13 +54,12 @@ public class ImageFactory extends WidgetFactory<Image>
 	{
 		super.processAttributes(context);
 		
-		Element element = context.getElement();
 		Image widget = context.getWidget();
 
-		String leftStr = element.getAttribute("_leftRect");
-		String topStr = element.getAttribute("_topRect");
-		String widthStr = element.getAttribute("_widthRect");
-		String heightStr = element.getAttribute("_heightRect");
+		String leftStr = context.readWidgetProperty("leftRect");
+		String topStr = context.readWidgetProperty("topRect");
+		String widthStr = context.readWidgetProperty("widthRect");
+		String heightStr = context.readWidgetProperty("heightRect");
 		if (leftStr != null && topStr != null && widthStr != null && heightStr != null
 			&& leftStr.length() > 0 && topStr.length() > 0 && widthStr.length() > 0 && heightStr.length() > 0)
 		{

@@ -43,7 +43,7 @@ public class StackLayoutPanelFactory extends WidgetFactory<StackLayoutPanel>
 	@Override
 	public StackLayoutPanel instantiateWidget(Element element, String widgetId) 
 	{
-		return new StackLayoutPanel(AbstractLayoutPanelFactory.getUnit(element.getAttribute("_unit")));
+		return new StackLayoutPanel(AbstractLayoutPanelFactory.getUnit(getProperty(element,"unit")));
 	}
 	
 	@Override
@@ -78,7 +78,7 @@ public class StackLayoutPanelFactory extends WidgetFactory<StackLayoutPanel>
 		public void processChildren(WidgetChildProcessorContext<StackLayoutPanel> context) throws InterfaceConfigException 
 		{
 			context.clearAttributes();
-			String selected = context.getChildElement().getAttribute("_selected");
+			String selected = context.readChildProperty("selected");
 			if (!StringUtils.isEmpty(selected))
 			{
 				context.setAttribute("selected", Boolean.parseBoolean(selected));
@@ -98,7 +98,7 @@ public class StackLayoutPanelFactory extends WidgetFactory<StackLayoutPanel>
 		})
 		public void processChildren(WidgetChildProcessorContext<StackLayoutPanel> context) throws InterfaceConfigException 
 		{
-			context.setAttribute("headerSize", Double.parseDouble(context.getChildElement().getAttribute("_size")));
+			context.setAttribute("headerSize", Double.parseDouble(context.readChildProperty("size")));
 		}
 	}
 

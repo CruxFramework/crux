@@ -40,7 +40,7 @@ public class FrameFactory extends WidgetFactory<Frame>
 	public void processAttributes(WidgetFactoryContext<Frame> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
-		String url = context.getElement().getAttribute("_url");
+		String url = context.readWidgetProperty("url");
 		if (!StringUtils.isEmpty(url))
 		{
 			context.getWidget().setUrl(Screen.appendDebugParameters(url));

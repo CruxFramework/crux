@@ -29,7 +29,6 @@ import br.com.sysmap.crux.core.client.screen.ScreenLoadEvent;
 import br.com.sysmap.crux.core.client.screen.ScreenLoadHandler;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.layout.client.Layout.AnimationCallback;
 import com.google.gwt.layout.client.Layout.Layer;
@@ -50,7 +49,7 @@ public abstract class AbstractLayoutPanelFactory<T extends ComplexPanel> extends
 	public void processAttributes(final WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
-		String animationDuration = context.getElement().getAttribute("_animationDuration");
+		String animationDuration = context.readWidgetProperty("animationDuration");
 		if (!StringUtils.isEmpty(animationDuration))
 		{
 			context.setAttribute("animationDuration", Integer.parseInt(animationDuration));
@@ -72,15 +71,14 @@ public abstract class AbstractLayoutPanelFactory<T extends ComplexPanel> extends
 	@Override
     public void postProcess(WidgetFactoryContext<T> context) throws InterfaceConfigException
     {
-		final Element element = context.getElement();
 		final T widget = context.getWidget();
 		
 		final List<Command> animationConstraints = (List<Command>) context.getAttribute("animationCommands");
 		final Integer animationDuration = (Integer) context.getAttribute("animationDuration");
 		if (animationDuration != null)
 		{
-			final Event onAnimationComplete = Events.getEvent("onAnimationComplete", element.getAttribute("_onAnimationComplete"));
-			final Event onAnimationStep = Events.getEvent("onAnimationStep", element.getAttribute("_onAnimationStep"));
+			final Event onAnimationComplete = Events.getEvent("onAnimationComplete", context.readWidgetProperty("onAnimationComplete"));
+			final Event onAnimationStep = Events.getEvent("onAnimationStep", context.readWidgetProperty("onAnimationStep"));
 			if (onAnimationComplete != null  || onAnimationStep != null)
 			{
 				final LayoutAnimationEvent<T> animationEvent = new LayoutAnimationEvent<T>(widget, context.getWidgetId());

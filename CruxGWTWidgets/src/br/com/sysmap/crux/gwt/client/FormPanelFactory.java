@@ -96,7 +96,7 @@ public class FormPanelFactory extends PanelFactory<FormPanel>
 	@Override
 	public FormPanel instantiateWidget(Element element, String widgetId) 
 	{
-		String target = element.getAttribute("_target");
+		String target = getProperty(element,"target");
 		if (target != null && target.length() >0)
 		{
 			return new FormPanel(target);

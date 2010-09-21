@@ -64,7 +64,7 @@ public class SplitLayoutPanelFactory extends AbstractDockLayoutPanelFactory<Spli
 		})		
 		public void processChildren(WidgetChildProcessorContext<SplitLayoutPanel> context) throws InterfaceConfigException
 		{
-			context.setAttribute("minSize", context.getChildElement().getAttribute("_minSize"));
+			context.setAttribute("minSize", context.readChildProperty("minSize"));
 			super.processChildren(context);
 		}
 	}
