@@ -41,7 +41,7 @@ import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
 
 /**
  * Compiler to support the Module Container Application layout.
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author GessÃ© S. F. DafÃ© - <code>gessedafe@gmail.com</code>
  */
 public class CruxModuleContainerApplicationCompiler extends CruxModuleCompiler
 {
