@@ -101,6 +101,10 @@ public abstract class WidgetFactory <T extends Widget>
 		{
 			this.attributes.remove(key);
 		}
+		public String readWidgetProperty(String propertyName)
+		{
+			return WidgetFactory.getProperty(element, propertyName);
+		}
 	}
 	
 	/**
@@ -197,15 +201,15 @@ public abstract class WidgetFactory <T extends Widget>
 	})
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
-		String styleName = context.getElement().getAttribute("_styleName");
+		String styleName = context.readWidgetProperty("styleName");
 		if (styleName != null && styleName.length() > 0){
 			context.getWidget().setStyleName(styleName);
 		}
-		String visible = context.getElement().getAttribute("_visible");
+		String visible = context.readWidgetProperty("visible");
 		if (visible != null && visible.length() > 0){
 			context.getWidget().setVisible(Boolean.parseBoolean(visible));
 		}
-		String style = context.getElement().getAttribute("_style");
+		String style = context.readWidgetProperty("style");
 		if (style != null && style.length() > 0)
 		{
 			String[] styleAttributes = style.split(";");
@@ -218,15 +222,15 @@ public abstract class WidgetFactory <T extends Widget>
 				}
 			}
 		}
-		String width = context.getElement().getAttribute("_width");
+		String width = context.readWidgetProperty("width");
 		if (width != null && width.length() > 0){
 			context.getWidget().setWidth(width);
 		}
-		String height = context.getElement().getAttribute("_height");
+		String height = context.readWidgetProperty("height");
 		if (height != null && height.length() > 0){
 			context.getWidget().setHeight(height);
 		}
-		String tooltip = context.getElement().getAttribute("_tooltip");
+		String tooltip = context.readWidgetProperty("tooltip");
 		if (tooltip != null && tooltip.length() > 0)
 		{
 			context.getWidget().setTitle(ScreenFactory.getInstance().getDeclaredMessage(tooltip));
@@ -253,6 +257,40 @@ public abstract class WidgetFactory <T extends Widget>
 					Events.callEvent(eventLoad, event);
 				}
 			});
+		}
+	}
+	
+	/**
+	 * Retrieve a Crux widget attribute from its declaring span element
+	 * @param element the widget span metadata element
+	 * @param propertyName the name of the attribute
+	 * @return attribute value
+	 */
+	public static String getProperty(Element element, String propertyName)
+	{
+		if (element != null)
+		{
+			return element.getAttribute("_"+propertyName);
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	/**Retrieve the widget child element name
+	 * @param childElement the span element representing the child
+	 * @return child name
+	 */
+	public static String getChildName(Element childElement)
+	{
+		if (childElement != null)
+		{
+			return childElement.getAttribute("__tag");
+		}
+		else
+		{
+			return null;
 		}
 	}
 	

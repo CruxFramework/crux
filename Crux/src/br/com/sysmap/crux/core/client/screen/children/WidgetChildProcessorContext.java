@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.core.client.screen.children;
 
+import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory.WidgetFactoryContext;
 
 import com.google.gwt.dom.client.Element;
@@ -49,6 +50,16 @@ public class WidgetChildProcessorContext<W>
 		return context.getWidgetId();
 	}
 
+	public String readRootWidgetProperty(String propertyName)
+	{
+		return WidgetFactory.getProperty(getRootElement(), propertyName);
+	}
+	
+	public String readChildProperty(String propertyName)
+	{
+		return WidgetFactory.getProperty(getChildElement(), propertyName);
+	}
+	
 	public Element getChildElement()
 	{
 		return childElement;
