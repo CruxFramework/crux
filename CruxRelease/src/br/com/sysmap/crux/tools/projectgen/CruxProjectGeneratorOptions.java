@@ -177,7 +177,7 @@ public class CruxProjectGeneratorOptions
 	
 	/**
 	 * Currently available project layouts.
-	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 * @author GessÃ© S. F. DafÃ© - <code>gessedafe@gmail.com</code>
 	 */
 	public static enum ProjectLayout
 	{

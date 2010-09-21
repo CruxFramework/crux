@@ -43,7 +43,7 @@
 		<filter-class>br.com.sysmap.crux.core.declarativeui.filter.DeclarativeUIFilter</filter-class>
 		<init-param>
 			<param-name>outputCharset</param-name>
-			<param-value>ISO-8859-1</param-value>
+			<param-value>UTF-8</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>
