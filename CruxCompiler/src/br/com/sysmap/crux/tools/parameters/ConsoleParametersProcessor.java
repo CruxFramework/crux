@@ -331,11 +331,11 @@ public class ConsoleParametersProcessor
 	{
 		ConsoleParametersProcessor processor = new ConsoleParametersProcessor("meuPrograma");
 		
-		processor.addSupportedParameter(new ConsoleParameter("par1", "Este È o par‚metro 1 lalala ksdasd eras"));
-		processor.addSupportedParameter(new ConsoleParameter("-par2", "Este È o par‚metro 2 acas", true, true));
-		processor.addSupportedParameter(new ConsoleParameter("par3", "Este È o par‚metro 3  asdas dsad asd sad sadsadsad", false, false));
+		processor.addSupportedParameter(new ConsoleParameter("par1", "Este √© o par√¢metro 1 lalala ksdasd eras"));
+		processor.addSupportedParameter(new ConsoleParameter("-par2", "Este √© o par√¢metro 2 acas", true, true));
+		processor.addSupportedParameter(new ConsoleParameter("par3", "Este √© o par√¢metro 3  asdas dsad asd sad sadsadsad", false, false));
 
-		ConsoleParameter parameter = new ConsoleParameter("-par4", "Este È o par‚metro 4 s", true, true);
+		ConsoleParameter parameter = new ConsoleParameter("-par4", "Este √© o par√¢metro 4 s", true, true);
 		parameter.addParameterOption(new ConsoleParameterOption("option1", "Lalalalala asd sad asd "));
 		parameter.addParameterOption(new ConsoleParameterOption("option2", "Lalalalala"));
 		processor.addSupportedParameter(parameter);
