@@ -84,7 +84,7 @@
 		<delete dir="${target.classes.dir}" failonerror="no" includeemptydirs="true" />
 		<mkdir dir="${target.classes.dir}" />
 		<javac destdir="${target.classes.dir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*" 
-			encoding="ISO-8859-1">
+			encoding="UTF-8">
 			<src>
 				<pathelement location="${srcdir}" />
 			</src>
@@ -172,7 +172,7 @@
 	========================================================================================================
 	-->
 	<target name="generate-javadoc">
-		<javadoc encoding="ISO-8859-1" destdir="${expandeddir}/docs" protected="true" source="1.5" classpathref="build.classpath">
+		<javadoc encoding="UTF-8" destdir="${expandeddir}/docs" protected="true" source="1.5" classpathref="build.classpath">
 			<fileset dir="${crux-srcdir}" />
 			<fileset dir="${crux-compiler-srcdir}" />
 			<fileset dir="${crux-gwt-widgets-srcdir}" />
@@ -240,7 +240,7 @@
 		<copy todir="${expandeddir}/apps/helloworld.war">
 			<fileset dir="${crux.samples.dir}/helloworld.war" excludes="**/*.jar"/>
 		</copy>
-		<antcall target="generate-javadoc" />
+		<!--antcall target="generate-javadoc" /-->
 		
 		<jar jarfile="${expandeddir}/tools/${final.name}.jar">
 			<fileset dir="${target.classes.dir}" >
