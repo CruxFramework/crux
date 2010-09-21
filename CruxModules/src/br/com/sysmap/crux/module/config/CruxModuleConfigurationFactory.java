@@ -25,7 +25,7 @@ import br.com.sysmap.crux.core.i18n.MessageException;
  * resource bundles in the classpath. Each interface's method is used as key 
  * in that property file.
  * @author Thiago da Rosa de Bustamante
- * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
+ * @author GessÃ© S. F. DafÃ© <code>gessedafe@gmail.com</code>
  *
  */
 public class CruxModuleConfigurationFactory extends AbstractPropertiesFactory
