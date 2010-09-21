@@ -68,10 +68,9 @@ HasBeforeSelectionHandlersFactory<RollingTabPanel>
 	{
 		super.processAttributes(context);
 
-		Element element = context.getElement();
 		final RollingTabPanel widget = context.getWidget();
 		
-		final String visibleTab = element.getAttribute("_visibleTab");
+		final String visibleTab = context.readWidgetProperty("visibleTab");
 		if (visibleTab != null && visibleTab.length() > 0)
 		{
 			addScreenLoadedHandler(new ScreenLoadHandler()
@@ -216,7 +215,7 @@ HasBeforeSelectionHandlersFactory<RollingTabPanel>
 		private void updateTabState(WidgetChildProcessorContext<RollingTabPanel> context)
 		{
 			Element tabElement = (Element) context.getAttribute("tabElement");
-			String enabled = tabElement.getAttribute("_enabled");
+			String enabled = getProperty(tabElement,"enabled");
 			int tabCount = context.getRootWidget().getTabBar().getTabCount();
 			if (enabled != null && enabled.length() >0)
 			{
@@ -225,7 +224,7 @@ HasBeforeSelectionHandlersFactory<RollingTabPanel>
 
 			Tab currentTab = context.getRootWidget().getTabBar().getTab(tabCount-1);
 			
-			String wordWrap = tabElement.getAttribute("_wordWrap");
+			String wordWrap = getProperty(tabElement,"wordWrap");
 			if (wordWrap != null && wordWrap.trim().length() > 0)
 			{
 				currentTab.setWordWrap(Boolean.parseBoolean(wordWrap));

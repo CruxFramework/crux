@@ -38,9 +38,9 @@ public class DecoratedPanelFactory extends AbstractDecoratedPanelFactory<Decorat
 	@Override
 	public DecoratedPanel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
-		String height = element.getAttribute("_height");
-		String width = element.getAttribute("_width");
-		String styleName = element.getAttribute("_styleName");
+		String height = getProperty(element,"height");
+		String width = getProperty(element,"width");
+		String styleName = getProperty(element,"styleName");
 		return new DecoratedPanel(width, height, styleName);
 	}
 

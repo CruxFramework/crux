@@ -66,9 +66,8 @@ public class FilterFactory extends CompositeFactory<Filter>
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration("filterable")
 	})
-	public void processAttributes(WidgetFactoryContext<Filter> context) throws InterfaceConfigException
+	public void processAttributes(final WidgetFactoryContext<Filter> context) throws InterfaceConfigException
 	{
-		final Element element = context.getElement();
 		final Filter widget = context.getWidget();
 
 		super.processAttributes(context);
@@ -77,7 +76,7 @@ public class FilterFactory extends CompositeFactory<Filter>
 				{
 					public void onLoad(ScreenLoadEvent screenLoadEvent)
 					{					
-						String filterableId = element.getAttribute("_filterable");
+						String filterableId =context.readWidgetProperty("filterable");
 						Widget filterableWidget = null;
 						if(filterableId != null)
 						{

@@ -75,13 +75,13 @@ public class DynaTabsFactory extends WidgetFactory<DynaTabs>
 		public void processChildren(WidgetChildProcessorContext<DynaTabs> context) throws InterfaceConfigException
 		{
 			Element childElement = context.getChildElement();
-			String id = childElement.getAttribute("id");
-			String label = childElement.getAttribute("_label");
+			String id = childElement.getId();
+			String label = context.readChildProperty("label");
 			label = (label != null && label.length() > 0) ? ScreenFactory.getInstance().getDeclaredMessage(label) : "";
-			String url = childElement.getAttribute("_url");
+			String url = context.readChildProperty("url");
 						
 			boolean closeable = true;
-			String strCloseable = childElement.getAttribute("_closeable");
+			String strCloseable = context.readChildProperty("closeable");
 			if(strCloseable != null && strCloseable.trim().length() > 0)
 			{
 				closeable = Boolean.parseBoolean(strCloseable);

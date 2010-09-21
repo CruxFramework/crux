@@ -45,7 +45,7 @@ public class MaskedLabelFactory extends WidgetFactory<MaskedLabel>
 	@Override
 	public MaskedLabel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
-		String formatter = element.getAttribute("_formatter");
+		String formatter = getProperty(element,"formatter");
 		if (formatter != null && formatter.length() > 0)
 		{
 			Formatter fmt = Screen.getFormatter(formatter);
@@ -66,18 +66,17 @@ public class MaskedLabelFactory extends WidgetFactory<MaskedLabel>
 	})
 	public void processAttributes(WidgetFactoryContext<MaskedLabel> context) throws InterfaceConfigException
 	{
-		Element element = context.getElement();
 		MaskedLabel widget = context.getWidget();
 
 		super.processAttributes(context);
 
-		String text = element.getAttribute("_text");
+		String text = context.readWidgetProperty("text");
 		if (text != null && text.length() > 0)
 		{
 			widget.setUnformattedValue(widget.getFormatter().unformat(text));
 		}
 		
-		String horizontalAlignment = element.getAttribute("_horizontalAlignment");
+		String horizontalAlignment = context.readWidgetProperty("horizontalAlignment");
 		if (horizontalAlignment != null && horizontalAlignment.length() > 0)
 		{
 			widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));

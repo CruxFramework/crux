@@ -59,7 +59,7 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 	@Override
     public Wizard<?> instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
     {
-	    String wizardContextObject = element.getAttribute("_wizardContextObject");
+	    String wizardContextObject = getProperty(element,"wizardContextObject");
 		return instantiator.createWizard(widgetId, wizardContextObject);
     }
 
@@ -122,7 +122,7 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 		})
 		public void processChildren(WidgetChildProcessorContext<Wizard<?>> context) throws InterfaceConfigException 
 		{
-			String positionAttr = context.getChildElement().getAttribute("_position");
+			String positionAttr = context.readChildProperty("position");
 			ControlPosition position = ControlPosition.north;
 			if (!StringUtils.isEmpty(positionAttr))
 			{
@@ -131,7 +131,7 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 			
 			boolean vertical = position.equals(ControlPosition.east) || position.equals(ControlPosition.west);
 			boolean showAllSteps = true;
-			String showAllStepsAttr = context.getChildElement().getAttribute("_showAllSteps");
+			String showAllStepsAttr = context.readChildProperty("showAllSteps");
 			if (!StringUtils.isEmpty(showAllStepsAttr ))
 			{
 				showAllSteps = Boolean.parseBoolean(showAllStepsAttr);
@@ -139,7 +139,7 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 			if (vertical)
 			{
 				ControlVerticalAlign verticalAlign = ControlVerticalAlign.top;
-				String verticalAlignmentAttr = context.getChildElement().getAttribute("_verticalAlignment");
+				String verticalAlignmentAttr = context.readChildProperty("verticalAlignment");
 				if (!StringUtils.isEmpty(verticalAlignmentAttr))
 				{
 					verticalAlign = ControlVerticalAlign.valueOf(verticalAlignmentAttr);
@@ -149,7 +149,7 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 			else
 			{
 				ControlHorizontalAlign horizontalAlign = ControlHorizontalAlign.left;
-				String horizontalAlignmentAttr = context.getChildElement().getAttribute("_horizontalAlignment");
+				String horizontalAlignmentAttr = context.readChildProperty("horizontalAlignment");
 				if (!StringUtils.isEmpty(horizontalAlignmentAttr))
 				{
 					horizontalAlign = ControlHorizontalAlign.valueOf(horizontalAlignmentAttr);
@@ -163,22 +163,22 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 
 		private void processNavigationBarAttributes(WidgetChildProcessorContext<Wizard<?>> context)
         {
-	        String allowSelectStep = context.getChildElement().getAttribute("_allowSelectStep");
+	        String allowSelectStep = context.readChildProperty("allowSelectStep");
 			if (!StringUtils.isEmpty(allowSelectStep))
 			{
 				context.getRootWidget().getNavigationBar().setAllowSelectStep(Boolean.parseBoolean(allowSelectStep));
 			}
-			String labelStyleName = context.getChildElement().getAttribute("_labelStyleName");
+			String labelStyleName = context.readChildProperty("labelStyleName");
 			if (!StringUtils.isEmpty(labelStyleName))
 			{
 				context.getRootWidget().getNavigationBar().setLabelStyleName(labelStyleName);
 			}
-			String horizontalSeparatorStyleName = context.getChildElement().getAttribute("_horizontalSeparatorStyleName");
+			String horizontalSeparatorStyleName = context.readChildProperty("horizontalSeparatorStyleName");
 			if (!StringUtils.isEmpty(horizontalSeparatorStyleName))
 			{
 				context.getRootWidget().getNavigationBar().setHorizontalSeparatorStyleName(horizontalSeparatorStyleName);
 			}
-			String verticalSeparatorStyleName = context.getChildElement().getAttribute("_verticalSeparatorStyleName");
+			String verticalSeparatorStyleName = context.readChildProperty("verticalSeparatorStyleName");
 			if (!StringUtils.isEmpty(verticalSeparatorStyleName))
 			{
 				context.getRootWidget().getNavigationBar().setVerticalSeparatorStyleName(verticalSeparatorStyleName);
@@ -226,11 +226,11 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 		})
 		public void processChildren(WidgetChildProcessorContext<Wizard<?>> context) throws InterfaceConfigException 
 		{
-			context.setAttribute("stepId", context.getChildElement().getAttribute("id"));
-			context.setAttribute("stepLabel", context.getChildElement().getAttribute("_label"));
-			context.setAttribute("stepOnEnter", context.getChildElement().getAttribute("_onEnter"));
-			context.setAttribute("stepOnLeave", context.getChildElement().getAttribute("_onLeave"));
-			context.setAttribute("enabled", context.getChildElement().getAttribute("_enabled"));
+			context.setAttribute("stepId", context.getChildElement().getId());
+			context.setAttribute("stepLabel", context.readChildProperty("label"));
+			context.setAttribute("stepOnEnter", context.readChildProperty("onEnter"));
+			context.setAttribute("stepOnLeave", context.readChildProperty("onLeave"));
+			context.setAttribute("enabled", context.readChildProperty("enabled"));
 		}
 	}
 	
@@ -260,25 +260,25 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 		public void processChildren(WidgetChildProcessorContext<Wizard<?>> context) throws InterfaceConfigException 
 		{
 			String id = context.getChildElement().getAttribute("id");
-			String label = ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getAttribute("_label"));
-			int order = Integer.parseInt(context.getChildElement().getAttribute("_order"));
+			String label = ScreenFactory.getInstance().getDeclaredMessage(context.readChildProperty("label"));
+			int order = Integer.parseInt(context.readChildProperty("order"));
 			
 			final Event commandEvent = EvtBind.getWidgetEvent(context.getChildElement(), "onCommand");
 			
 			WidgetStep<?> widgetStep = context.getRootWidget().getWidgetStep((String)context.getAttribute("stepId"));
 			widgetStep.addCommand(id, label, commandEvent, order);
 			
-			String styleName = context.getChildElement().getAttribute("_styleName");
+			String styleName = context.readChildProperty("styleName");
 			if (!StringUtils.isEmpty(styleName))
 			{
 				widgetStep.getCommand(id).setStyleName(styleName);
 			}
-			String width = context.getChildElement().getAttribute("_width");
+			String width = context.readChildProperty("width");
 			if (!StringUtils.isEmpty(width))
 			{
 				widgetStep.getCommand(id).setWidth(width);
 			}
-			String height = context.getChildElement().getAttribute("_height");
+			String height = context.readChildProperty("height");
 			if (!StringUtils.isEmpty(height))
 			{
 				widgetStep.getCommand(id).setHeight(height);
@@ -333,11 +333,11 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 		public void processChildren(WidgetChildProcessorContext<Wizard<?>> context) throws InterfaceConfigException
 		{
 			String id = context.getChildElement().getAttribute("id");
-			String label = ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getAttribute("_label"));
-			String url = context.getChildElement().getAttribute("_url");
+			String label = ScreenFactory.getInstance().getDeclaredMessage(context.readChildProperty("label"));
+			String url = context.readChildProperty("url");
 			context.getRootWidget().addPageStep(id, label, url);
 
-			String enabled = context.getChildElement().getAttribute("_enabled");
+			String enabled = context.readChildProperty("enabled");
 			if (!StringUtils.isEmpty(enabled))
 			{
 				context.getRootWidget().setStepEnabled(id, Boolean.parseBoolean(enabled));
@@ -371,7 +371,7 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 		})
 		public void processChildren(WidgetChildProcessorContext<Wizard<?>> context) throws InterfaceConfigException 
 		{
-			String positionAttr = context.getChildElement().getAttribute("_position");
+			String positionAttr = context.readChildProperty("position");
 			ControlPosition position = ControlPosition.south;
 			if (!StringUtils.isEmpty(positionAttr))
 			{
@@ -382,7 +382,7 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 			if (vertical)
 			{
 				ControlVerticalAlign verticalAlign = ControlVerticalAlign.top;
-				String verticalAlignmentAttr = context.getChildElement().getAttribute("_verticalAlignment");
+				String verticalAlignmentAttr = context.readChildProperty("verticalAlignment");
 				if (!StringUtils.isEmpty(verticalAlignmentAttr))
 				{
 					verticalAlign = ControlVerticalAlign.valueOf(verticalAlignmentAttr);
@@ -392,7 +392,7 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 			else
 			{
 				ControlHorizontalAlign horizontalAlign = ControlHorizontalAlign.right;
-				String horizontalAlignmentAttr = context.getChildElement().getAttribute("_horizontalAlignment");
+				String horizontalAlignmentAttr = context.readChildProperty("horizontalAlignment");
 				if (!StringUtils.isEmpty(horizontalAlignmentAttr))
 				{
 					horizontalAlign = ControlHorizontalAlign.valueOf(horizontalAlignmentAttr);
@@ -407,73 +407,73 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 		private void processControlBarAttributes(WidgetChildProcessorContext<Wizard<?>> context,
                 WizardControlBar<?> controlBar)
         {
-	        String spacing = context.getChildElement().getAttribute("_spacing");
+	        String spacing = context.readChildProperty("spacing");
 			if (!StringUtils.isEmpty(spacing))
 			{
 				controlBar.setSpacing(Integer.parseInt(spacing));
 			}
 			
-			String buttonsWidth = context.getChildElement().getAttribute("_buttonsWidth");
+			String buttonsWidth = context.readChildProperty("buttonsWidth");
 			if (!StringUtils.isEmpty(buttonsWidth))
 			{
 				controlBar.setButtonsWidth(buttonsWidth);
 			}
 
-			String buttonsHeight = context.getChildElement().getAttribute("_buttonsHeight");
+			String buttonsHeight = context.readChildProperty("buttonsHeight");
 			if (!StringUtils.isEmpty(buttonsHeight))
 			{
 				controlBar.setButtonsHeight(buttonsHeight);
 			}
 
-			String buttonsStyle = context.getChildElement().getAttribute("_buttonsStyle");
+			String buttonsStyle = context.readChildProperty("buttonsStyle");
 			if (!StringUtils.isEmpty(buttonsStyle))
 			{
 				controlBar.setButtonsStyle(buttonsStyle);
 			}
 
-			String backLabel = context.getChildElement().getAttribute("_backLabel");
+			String backLabel = context.readChildProperty("backLabel");
 			if (!StringUtils.isEmpty(backLabel))
 			{
 				controlBar.setBackLabel(ScreenFactory.getInstance().getDeclaredMessage(backLabel));
 			}
 
-			String nextLabel = context.getChildElement().getAttribute("_nextLabel");
+			String nextLabel = context.readChildProperty("nextLabel");
 			if (!StringUtils.isEmpty(nextLabel))
 			{
 				controlBar.setNextLabel(ScreenFactory.getInstance().getDeclaredMessage(nextLabel));
 			}
 
-			String cancelLabel = context.getChildElement().getAttribute("_cancelLabel");
+			String cancelLabel = context.readChildProperty("cancelLabel");
 			if (!StringUtils.isEmpty(cancelLabel))
 			{
 				controlBar.setCancelLabel(ScreenFactory.getInstance().getDeclaredMessage(cancelLabel));
 			}
 
-			String finishLabel = context.getChildElement().getAttribute("_finishLabel");
+			String finishLabel = context.readChildProperty("finishLabel");
 			if (!StringUtils.isEmpty(finishLabel))
 			{
 				controlBar.setFinishLabel(ScreenFactory.getInstance().getDeclaredMessage(finishLabel));
 			}
 
-			String backOrder = context.getChildElement().getAttribute("_backOrder");
+			String backOrder = context.readChildProperty("backOrder");
 			if (!StringUtils.isEmpty(backOrder))
 			{
 				controlBar.setBackOrder(Integer.parseInt(backOrder));
 			}
 
-			String nextOrder = context.getChildElement().getAttribute("_nextOrder");
+			String nextOrder = context.readChildProperty("nextOrder");
 			if (!StringUtils.isEmpty(nextOrder))
 			{
 				controlBar.setNextOrder(Integer.parseInt(nextOrder));
 			}
 
-			String cancelOrder = context.getChildElement().getAttribute("_cancelOrder");
+			String cancelOrder = context.readChildProperty("cancelOrder");
 			if (!StringUtils.isEmpty(cancelOrder))
 			{
 				controlBar.setCancelOrder(Integer.parseInt(cancelOrder));
 			}
 
-			String finishOrder = context.getChildElement().getAttribute("_finishOrder");
+			String finishOrder = context.readChildProperty("finishOrder");
 			if (!StringUtils.isEmpty(finishOrder))
 			{
 				controlBar.setFinishOrder(Integer.parseInt(finishOrder));
@@ -507,24 +507,24 @@ public class WizardFactory extends WidgetFactory<Wizard<?>>
 		public void processChildren(WidgetChildProcessorContext<Wizard<?>> context) throws InterfaceConfigException 
 		{
 			String id = context.getChildElement().getAttribute("id");
-			String label = ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getAttribute("_label"));
-			int order = Integer.parseInt(context.getChildElement().getAttribute("_order"));
+			String label = ScreenFactory.getInstance().getDeclaredMessage(context.readChildProperty("label"));
+			int order = Integer.parseInt(context.readChildProperty("order"));
 			
 			final Event commandEvent = EvtBind.getWidgetEvent(context.getChildElement(), "onCommand");
 			
 			context.getRootWidget().getControlBar().addCommand(id, label, commandEvent, order);
 			
-			String styleName = context.getChildElement().getAttribute("_styleName");
+			String styleName = context.readChildProperty("styleName");
 			if (!StringUtils.isEmpty(styleName))
 			{
 				context.getRootWidget().getControlBar().getCommand(id).setStyleName(styleName);
 			}
-			String width = context.getChildElement().getAttribute("_width");
+			String width = context.readChildProperty("width");
 			if (!StringUtils.isEmpty(width))
 			{
 				context.getRootWidget().getControlBar().getCommand(id).setWidth(width);
 			}
-			String height = context.getChildElement().getAttribute("_height");
+			String height = context.readChildProperty("height");
 			if (!StringUtils.isEmpty(height))
 			{
 				context.getRootWidget().getControlBar().getCommand(id).setHeight(height);

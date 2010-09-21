@@ -58,10 +58,9 @@ public abstract class AbstractPagerFactory<T extends AbstractPager> extends Widg
 	{
 		super.processAttributes(context);
 	
-		Element element = context.getElement();
 		final T widget = context.getWidget();
-		final String pageableId = element.getAttribute("_pageable");
-		final String strEnabled = element.getAttribute("_enabled");
+		final String pageableId = context.readWidgetProperty("pageable");
+		final String strEnabled = context.readWidgetProperty("enabled");
 		
 		addScreenLoadedHandler(
 				

@@ -38,7 +38,7 @@ public class ScrollBannerFactory extends WidgetFactory<ScrollBanner>
 	@Override
 	public ScrollBanner instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
-		String period = element.getAttribute("_messageScrollingPeriod");
+		String period = getProperty(element,"messageScrollingPeriod");
 		if(period != null && period.trim().length() > 0)
 		{
 			return new ScrollBanner(Integer.parseInt(period));

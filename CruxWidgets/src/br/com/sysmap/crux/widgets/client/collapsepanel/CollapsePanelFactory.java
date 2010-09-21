@@ -44,18 +44,18 @@ public class CollapsePanelFactory extends AbstractTitlePanelFactory<CollapsePane
 	@Override
 	public CollapsePanel instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
-		String height = element.getAttribute("_height");
-		String width = element.getAttribute("_width");
-		String styleName = element.getAttribute("_styleName");
+		String height = getProperty(element,"height");
+		String width = getProperty(element,"width");
+		String styleName = getProperty(element,"styleName");
 
-		String strCollapsible = element.getAttribute("_collapsible");
+		String strCollapsible = getProperty(element,"collapsible");
 		boolean collapsible = true;
 		if(strCollapsible != null && strCollapsible.trim().length() > 0)
 		{
 			collapsible = Boolean.parseBoolean(strCollapsible);
 		}
 		
-		String strCollapsed = element.getAttribute("_collapsed");
+		String strCollapsed = getProperty(element,"collapsed");
 		boolean collapsed = false;
 		if(strCollapsed != null && strCollapsed.trim().length() > 0)
 		{

@@ -23,7 +23,6 @@ import br.com.sysmap.crux.gwt.client.align.AlignmentAttributeParser;
 import br.com.sysmap.crux.gwt.client.align.HorizontalAlignment;
 import br.com.sysmap.crux.gwt.client.align.VerticalAlignment;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 /**
@@ -49,15 +48,14 @@ public abstract class AbstractDecoratedPanelFactory<T extends DecoratedPanel> ex
 	 */
 	private void processAlignment(WidgetFactoryContext<T> context)
 	{
-		Element element = context.getElement();
 		DecoratedPanel widget = context.getWidget();
 
-		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");
+		String cellHorizontalAlignment = context.readWidgetProperty("horizontalAlignment");
 		if (cellHorizontalAlignment != null && cellHorizontalAlignment.length() > 0)
 		{
 			widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(cellHorizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
 		}		
-		String cellVerticalAlignment = element.getAttribute("_verticalAlignment");
+		String cellVerticalAlignment = context.readWidgetProperty("verticalAlignment");
 		if (cellVerticalAlignment != null && cellVerticalAlignment.length() > 0)
 		{
 			widget.setVerticalAlignment(AlignmentAttributeParser.getVerticalAlignment(cellVerticalAlignment));

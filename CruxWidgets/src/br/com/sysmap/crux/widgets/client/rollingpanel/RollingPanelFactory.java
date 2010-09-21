@@ -49,7 +49,7 @@ public class RollingPanelFactory extends WidgetFactory<RollingPanel>
 	@Override
 	public RollingPanel instantiateWidget(Element element, String widgetId)
 	{
-		String verticalAttr = element.getAttribute("_vertical");
+		String verticalAttr = getProperty(element,"vertical");
 		boolean vertical = false;
 		if (!StringUtils.isEmpty(verticalAttr))
 		{
@@ -76,16 +76,15 @@ public class RollingPanelFactory extends WidgetFactory<RollingPanel>
 	{
 		super.processAttributes(context);
 
-		Element element = context.getElement();
 		RollingPanel widget = context.getWidget();
 		
-		String cellHorizontalAlignment = element.getAttribute("_horizontalAlignment");
+		String cellHorizontalAlignment = context.readWidgetProperty("horizontalAlignment");
 		if (cellHorizontalAlignment != null && cellHorizontalAlignment.length() > 0)
 		{
 			widget.setHorizontalAlignment(AlignmentAttributeParser.getHorizontalAlignment(cellHorizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
 		}
 		
-		String cellVerticalAlignment = element.getAttribute("_verticalAlignment");
+		String cellVerticalAlignment = context.readWidgetProperty("verticalAlignment");
 		if (cellVerticalAlignment != null && cellVerticalAlignment.length() > 0)
 		{
 			widget.setVerticalAlignment(AlignmentAttributeParser.getVerticalAlignment(cellVerticalAlignment));
@@ -123,12 +122,10 @@ public class RollingPanelFactory extends WidgetFactory<RollingPanel>
 		})		
 		public void processChildren(WidgetChildProcessorContext<RollingPanel> context) throws InterfaceConfigException 
 		{
-			Element childElement = context.getChildElement();
-			
-			context.setAttribute("height", childElement.getAttribute("_height"));
-			context.setAttribute("width", childElement.getAttribute("_width"));
-			context.setAttribute("horizontalAlignment", childElement.getAttribute("_horizontalAlignment"));
-			context.setAttribute("verticalAlignment", childElement.getAttribute("_verticalAlignment"));
+			context.setAttribute("height", context.readChildProperty("height"));
+			context.setAttribute("width", context.readChildProperty("width"));
+			context.setAttribute("horizontalAlignment", context.readChildProperty("horizontalAlignment"));
+			context.setAttribute("verticalAlignment", context.readChildProperty("verticalAlignment"));
 		}
 	}
 		

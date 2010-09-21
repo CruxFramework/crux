@@ -47,8 +47,8 @@ public class WizardPageFactory extends WidgetFactory<WizardPage<?>>
 	@Override
     public WizardPage<?> instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
     {
-	    String wizardContextObject = element.getAttribute("_wizardContextObject");
-	    String wizardId = element.getAttribute("_wizardId");
+	    String wizardContextObject = getProperty(element,"wizardContextObject");
+	    String wizardId = getProperty(element,"wizardId");
 	    return instantiator.createWizardPage(wizardId, wizardContextObject);
     }
 
@@ -105,25 +105,25 @@ public class WizardPageFactory extends WidgetFactory<WizardPage<?>>
 		})
 		public void processChildren(WidgetChildProcessorContext<WizardPage<?>> context) throws InterfaceConfigException 
 		{
-			String id = context.getChildElement().getAttribute("id");
-			String label = ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getAttribute("_label"));
-			int order = Integer.parseInt(context.getChildElement().getAttribute("_order"));
+			String id = context.getChildElement().getId();
+			String label = ScreenFactory.getInstance().getDeclaredMessage(context.readChildProperty("label"));
+			int order = Integer.parseInt(context.readChildProperty("order"));
 			
 			final Event commandEvent = EvtBind.getWidgetEvent(context.getChildElement(), "onCommand");
 			
 			context.getRootWidget().addCommand(id, label, commandEvent, order);
 			
-			String styleName = context.getChildElement().getAttribute("_styleName");
+			String styleName = context.readChildProperty("styleName");
 			if (!StringUtils.isEmpty(styleName))
 			{
 				context.getRootWidget().getCommand(id).setStyleName(styleName);
 			}
-			String width = context.getChildElement().getAttribute("_width");
+			String width = context.readChildProperty("width");
 			if (!StringUtils.isEmpty(width))
 			{
 				context.getRootWidget().getCommand(id).setWidth(width);
 			}
-			String height = context.getChildElement().getAttribute("_height");
+			String height = context.readChildProperty("height");
 			if (!StringUtils.isEmpty(height))
 			{
 				context.getRootWidget().getCommand(id).setHeight(height);

@@ -68,7 +68,7 @@ public class GridFactory extends WidgetFactory<Grid>
 	
 	private SortingType getSortingType(Element gridElem)
 	{
-		String sortingType = gridElem.getAttribute("_defaultSortingType");
+		String sortingType = getProperty(gridElem,"defaultSortingType");
 		if(!StringUtils.isEmpty(sortingType))
 		{
 			SortingType sort = SortingType.valueOf(sortingType);
@@ -79,12 +79,12 @@ public class GridFactory extends WidgetFactory<Grid>
 
 	private String getSortingColumn(Element gridElem)
 	{
-		return gridElem.getAttribute("_defaultSortingColumn");
+		return getProperty(gridElem,"defaultSortingColumn");
 	}
 
 	private boolean isFixedCellSize(Element gridElem)
 	{
-		String fixedCellSize = gridElem.getAttribute("_fixedCellSize");
+		String fixedCellSize = getProperty(gridElem,"fixedCellSize");
 		
 		if(fixedCellSize != null && fixedCellSize.trim().length() > 0)
 		{
@@ -96,7 +96,7 @@ public class GridFactory extends WidgetFactory<Grid>
 	
 	private String getEmptyDataFilling(Element gridElem)
 	{
-		String emptyDataFilling = gridElem.getAttribute("_emptyDataFilling");
+		String emptyDataFilling = getProperty(gridElem,"emptyDataFilling");
 		
 		if(emptyDataFilling != null && emptyDataFilling.trim().length() > 0)
 		{
@@ -108,7 +108,7 @@ public class GridFactory extends WidgetFactory<Grid>
 	
 	private boolean getHighlightRowOnMouseOver(Element gridElem)
 	{
-		String highlight = gridElem.getAttribute("_highlightRowOnMouseOver");
+		String highlight = getProperty(gridElem,"highlightRowOnMouseOver");
 		
 		if(highlight != null && highlight.trim().length() > 0)
 		{
@@ -120,7 +120,7 @@ public class GridFactory extends WidgetFactory<Grid>
 
 	private boolean getAutoLoad(Element gridElem)
 	{
-		String autoLoad = gridElem.getAttribute("_autoLoadData");
+		String autoLoad = getProperty(gridElem,"autoLoadData");
 		
 		if(autoLoad != null && autoLoad.trim().length() > 0)
 		{
@@ -132,7 +132,7 @@ public class GridFactory extends WidgetFactory<Grid>
 	
 	private boolean getStretchColumns(Element gridElem)
 	{
-		String stretchColumns = gridElem.getAttribute("_stretchColumns");
+		String stretchColumns = getProperty(gridElem,"stretchColumns");
 		
 		if(stretchColumns != null && stretchColumns.trim().length() > 0)
 		{
@@ -144,7 +144,7 @@ public class GridFactory extends WidgetFactory<Grid>
 
 	private int getCellSpacing(Element gridElem)
 	{
-		String spacing = gridElem.getAttribute("_cellSpacing");
+		String spacing = getProperty(gridElem,"cellSpacing");
 		
 		if(spacing != null && spacing.trim().length() > 0)
 		{
@@ -160,10 +160,9 @@ public class GridFactory extends WidgetFactory<Grid>
 	 */
 	private void bindDataSource(WidgetFactoryContext<Grid> context)
 	{
-		Element element = context.getElement();
 		final Grid widget = context.getWidget();
 
-		final String dataSourceName = element.getAttribute("_dataSource");
+		final String dataSourceName = context.readWidgetProperty("dataSource");
 		
 		if(dataSourceName != null && dataSourceName.length() > 0)
 		{
@@ -178,7 +177,7 @@ public class GridFactory extends WidgetFactory<Grid>
 	 */
 	private RowSelectionModel getRowSelectionModel(Element gridElem)
 	{
-		String rowSelection = gridElem.getAttribute("_rowSelection");
+		String rowSelection = getProperty(gridElem,"rowSelection");
 		
 		if(rowSelection != null && rowSelection.length() > 0)
 		{
@@ -217,7 +216,7 @@ public class GridFactory extends WidgetFactory<Grid>
 	 */
 	private int getPageSize(Element gridElem)
 	{
-		String pageSize = gridElem.getAttribute("_pageSize");
+		String pageSize = getProperty(gridElem,"pageSize");
 		
 		if(pageSize != null && pageSize.length() > 0)
 		{
@@ -241,15 +240,14 @@ public class GridFactory extends WidgetFactory<Grid>
 		{
 			for (Element colElem : colElems)
 			{
-				String columnType = colElem.getAttribute("__tag");
-				String width = colElem.getAttribute("_width");
-				String strVisible = colElem.getAttribute("_visible");
-				String strWrapLine = colElem.getAttribute("_wrapLine");
-				String label = colElem.getAttribute("_label");
-				String key = colElem.getAttribute("_key");
-				String strFormatter = colElem.getAttribute("_formatter");
-				String hAlign = colElem.getAttribute("_horizontalAlignment");
-				String vAlign = colElem.getAttribute("_verticalAlignment");
+				String width = getProperty(colElem,"width");
+				String strVisible = getProperty(colElem,"visible");
+				String strWrapLine = getProperty(colElem,"wrapLine");
+				String label = getProperty(colElem,"label");
+				String key = getProperty(colElem,"key");
+				String strFormatter = getProperty(colElem,"formatter");
+				String hAlign = getProperty(colElem,"horizontalAlignment");
+				String vAlign = getProperty(colElem,"verticalAlignment");
 				
 				boolean visible = (strVisible != null && strVisible.length() > 0) ? Boolean.parseBoolean(strVisible) : true;
 				boolean wrapLine = (strWrapLine != null && strWrapLine.length() > 0) ? Boolean.parseBoolean(strWrapLine) : false;
@@ -258,6 +256,7 @@ public class GridFactory extends WidgetFactory<Grid>
 				
 				ColumnDefinition def = null;
 				
+				String columnType = getChildName(colElem);
 				if("dataColumn".equals(columnType))
 				{
 					def = new DataColumnDefinition(

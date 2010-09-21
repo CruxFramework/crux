@@ -45,19 +45,19 @@ public class TimerFactory extends WidgetFactory<Timer>
 		boolean regressive = false;
 		boolean start = false;
 		
-		String strInitial = element.getAttribute("_initial");  
+		String strInitial = getProperty(element,"initial");  
 		if(strInitial != null && strInitial.trim().length() > 0)
 		{
 			initial = Long.parseLong(strInitial);
 		}
 		
-		String strRegressive = element.getAttribute("_regressive");  
+		String strRegressive = getProperty(element,"regressive");  
 		if(strRegressive != null && strRegressive.trim().length() > 0)
 		{
 			regressive = Boolean.parseBoolean(strRegressive);
 		}
 		
-		String strStart = element.getAttribute("_start");  
+		String strStart = getProperty(element,"start");  
 		if(strStart != null && strStart.trim().length() > 0)
 		{
 			start = Boolean.parseBoolean(strStart);

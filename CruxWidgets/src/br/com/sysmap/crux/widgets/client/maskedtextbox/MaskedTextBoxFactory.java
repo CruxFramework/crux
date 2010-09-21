@@ -50,7 +50,7 @@ public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
 	@Override
 	public MaskedTextBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
-		String formatter = element.getAttribute("_formatter");
+		String formatter = getProperty(element,"formatter");
 		if (formatter != null && formatter.length() > 0)
 		{
 			Formatter fmt = Screen.getFormatter(formatter);
@@ -76,12 +76,11 @@ public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
 	})
 	public void processAttributes(WidgetFactoryContext<MaskedTextBox> context) throws InterfaceConfigException
 	{
-		Element element = context.getElement();
 		MaskedTextBox widget = context.getWidget();
 
 		super.processAttributes(context);
 
-		String value = element.getAttribute("_value");
+		String value = context.readWidgetProperty("value");
 		if (value != null && value.length() > 0)
 		{
 			widget.setUnformattedValue(widget.getFormatter().unformat(value));
