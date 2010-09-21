@@ -62,13 +62,13 @@ import br.com.sysmap.crux.core.utils.StreamUtils;
 
 /**
  * Generates HTML output based on Crux widget tags
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public class CruxToHtmlTransformer
 {
 	// Makes it easier to read the output files
 	private static boolean forceIndent = false;
-	private static String outputCharset = "ISO-8859-1";
+	private static String outputCharset = "UTF-8";
 
 	private static final Log log = LogFactory.getLog(CruxToHtmlTransformer.class);
 	private static DeclarativeUIMessages messages = (DeclarativeUIMessages)MessagesFactory.getMessages(DeclarativeUIMessages.class);

@@ -27,7 +27,7 @@ import br.com.sysmap.crux.core.server.ServerMessages;
 /**
  * Initialises the LocaleResolver class
  * @author Thiago da Rosa de Bustamante
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public class LocaleResolverInitialiser 
 {
