@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * A cross frame controller for showing message boxes
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 @Global
 @Controller(value="__messageBox", lazy=false)

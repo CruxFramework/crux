@@ -36,7 +36,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 
 /**
  * Generator for PopupOpenerInvoker objects.
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 @Deprecated
 public class PopupOpenerInvokerProxyCreator extends AbstractWrapperProxyCreator

@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * A simple single-select listBox that implements HasValue interface.
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author GessÃ© S. F. DafÃ© - <code>gessedafe@gmail.com</code>
  */
 public class SingleSelect extends ListBox implements HasValue<String>
 {

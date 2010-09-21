@@ -23,9 +23,9 @@ import br.com.sysmap.crux.widgets.client.event.focusblur.HasBeforeFocusAndBefore
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
- * TODO - Gessé - Comment
+ * TODO - Gessï¿½ - Comment
  * 
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public class Tab extends AbstractTab implements HasBeforeFocusAndBeforeBlurHandlers
 {

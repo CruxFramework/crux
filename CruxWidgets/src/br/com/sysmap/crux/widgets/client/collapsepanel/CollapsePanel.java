@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 
 /**
  * Panel based on a 3x3 table, with collapse/expand feature. Similar to GWT's DisclosurePanel
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBeforeExpandHandlers
 {
@@ -160,7 +160,7 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 
 /**
  * Button that collapses or expands the panel
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 class ExpandButtonClickHandler implements ClickHandler
 {

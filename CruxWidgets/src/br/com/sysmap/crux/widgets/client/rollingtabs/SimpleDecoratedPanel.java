@@ -6,8 +6,8 @@ import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gessï¿½ - Comment this
+ * @author GessÃ© S. F. DafÃ©
  */
 public class SimpleDecoratedPanel extends CellPanel
 {

@@ -24,7 +24,7 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Event fired by TransferList widget before its items are moved across the lists
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public class BeforeMoveItemsEvent extends GwtEvent<BeforeMoveItemsHandler>{
 

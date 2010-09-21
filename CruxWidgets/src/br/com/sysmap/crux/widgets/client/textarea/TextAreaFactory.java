@@ -30,7 +30,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Factory for TextArea widget
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 @DeclarativeFactory(id="textArea", library="widgets")
 public class TextAreaFactory extends TextBoxBaseFactory<TextArea> 

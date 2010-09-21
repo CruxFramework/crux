@@ -22,8 +22,8 @@ import br.com.sysmap.crux.widgets.client.event.Events;
 import com.google.gwt.dom.client.Element;
 
 /**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gessï¿½ - Comment this
+ * @author GessÃ© S. F. DafÃ©
  */
 public class PageEvtBind extends EvtBind
 {

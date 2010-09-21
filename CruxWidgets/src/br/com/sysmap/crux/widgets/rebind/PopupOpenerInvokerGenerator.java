@@ -25,7 +25,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
  * Generator for PopupOpenerInvoker objects.
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 @Deprecated
 public class PopupOpenerInvokerGenerator extends AbstractGenerator

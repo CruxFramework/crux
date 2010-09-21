@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A simple widget without layout for showing typical "Please, wait..." message boxes across frames. 
  * The rendering is made by <code>CruxInternalProgressDialogController</code>, using the attributes contained in this widget.
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public class ProgressDialog extends Widget implements HasAnimation
 {

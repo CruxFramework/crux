@@ -19,8 +19,8 @@ import com.google.gwt.event.shared.GwtEvent;
 
 
 /**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gessï¿½ - Comment this
+ * @author GessÃ© S. F. DafÃ©
  */
 public class PasteEvent extends GwtEvent<PasteHandler>
 {

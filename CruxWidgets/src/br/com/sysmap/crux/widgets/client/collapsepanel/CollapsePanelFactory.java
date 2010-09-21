@@ -36,7 +36,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Factory for Collapse Panel widget
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 @DeclarativeFactory(id="collapsePanel", library="widgets")
 public class CollapsePanelFactory extends AbstractTitlePanelFactory<CollapsePanel>

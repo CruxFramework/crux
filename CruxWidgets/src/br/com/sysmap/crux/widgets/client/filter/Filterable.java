@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * Interface for objects (typically widgets) whose contents can be filtered using a textual expression.
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public interface Filterable<T>
 {
@@ -38,7 +38,7 @@ public interface Filterable<T>
 	
 	/**
 	 * A single result of a filtering operation. 
-	 * @author Gessé S. F. Dafé
+	 * @author GessÃ© S. F. DafÃ©
 	 */
 	public static class FilterResult<T>
 	{

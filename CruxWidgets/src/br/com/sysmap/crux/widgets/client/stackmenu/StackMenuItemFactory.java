@@ -33,7 +33,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Factory for Stack Menu
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 @br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="stackMenuItem", library="widgets")
 public class StackMenuItemFactory extends WidgetFactory<StackMenuItem>

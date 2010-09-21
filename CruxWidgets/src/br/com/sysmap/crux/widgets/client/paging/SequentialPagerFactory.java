@@ -18,7 +18,7 @@ package br.com.sysmap.crux.widgets.client.paging;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 
 /**
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 @DeclarativeFactory(id="sequentialPager", library="widgets")
 public class SequentialPagerFactory extends AbstractPagerFactory<SequentialPager>

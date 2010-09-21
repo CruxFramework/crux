@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Composite;
 
 /**
  * Base implementation for a Pager
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public abstract class AbstractPager extends Composite implements Pager
 {

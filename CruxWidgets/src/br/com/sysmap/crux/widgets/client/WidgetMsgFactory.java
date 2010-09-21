@@ -19,7 +19,7 @@ import com.google.gwt.core.client.GWT;
 
 /**
  * Accessor for WidgetMessages interface
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public abstract class WidgetMsgFactory
 {	

@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
 /**
  * Base factory for Decorated Panels
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public abstract class AbstractDecoratedPanelFactory<T extends DecoratedPanel> extends CellPanelFactory<T>
 {

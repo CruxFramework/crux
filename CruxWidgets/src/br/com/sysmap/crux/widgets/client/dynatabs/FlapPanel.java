@@ -17,8 +17,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gessï¿½ - Comment this
+ * @author GessÃ© S. F. DafÃ©
  */
 class FlapPanel extends Composite  implements HasBeforeFocusAndBeforeBlurHandlers, HasBeforeCloseHandlers, HasClickHandlers
 {

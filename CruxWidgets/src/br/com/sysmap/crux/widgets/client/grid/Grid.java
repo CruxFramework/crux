@@ -61,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A paged sortable data grid
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<PagedDataSource<?>>, HasBeforeRowSelectHandlers 
 {	
@@ -711,7 +711,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	
 	/**
 	 * Grid default sorting type
-	 * @author Gessé S. F. Dafé
+	 * @author GessÃ© S. F. DafÃ©
 	 */
 	public enum SortingType
 	{
@@ -720,7 +720,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	}
 	
 	/**
-	 * @author Gessé S. F. Dafé
+	 * @author GessÃ© S. F. DafÃ©
 	 */
 	protected static class ColumnHeader extends Composite
 	{

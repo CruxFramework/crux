@@ -36,7 +36,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * A decorated panel, with a title bar.
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public class TransferList extends Composite implements HasBeforeMoveItemsHandlers
 {
@@ -53,8 +53,8 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 	private boolean multiTransferFromRight = true;
 	
 	/**
-	 * TODO - Gessé - Comment this
-	 * @author Gessé S. F. Dafé
+	 * TODO - Gessï¿½ - Comment this
+	 * @author GessÃ© S. F. DafÃ©
 	 */
 	public static enum ItemLocation
 	{
@@ -62,8 +62,8 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 	}
 	
 	/**
-	 * TODO - Gessé - Comment this
-	 * @author Gessé S. F. Dafé
+	 * TODO - Gessï¿½ - Comment this
+	 * @author GessÃ© S. F. DafÃ©
 	 */
 	public static class Item
 	{
@@ -327,7 +327,7 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 	
 	/**
 	 * Click handler for transfer list buttons
-	 * @author Gessé S. F. Dafé
+	 * @author GessÃ© S. F. DafÃ©
 	 */
 	private static class TransferItemClickHandler implements ClickHandler
 	{

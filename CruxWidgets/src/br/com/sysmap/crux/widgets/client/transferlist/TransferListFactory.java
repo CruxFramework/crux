@@ -28,7 +28,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Factory for Transfer List widget
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 @DeclarativeFactory(id="transferList", library="widgets")
 public class TransferListFactory extends CompositeFactory<TransferList>

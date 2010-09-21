@@ -18,8 +18,8 @@ package br.com.sysmap.crux.widgets.client.dialog;
 import java.io.Serializable;
 
 /**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gessï¿½ - Comment this
+ * @author GessÃ© S. F. DafÃ©
  */
 public class ProgressDialogData implements Serializable
 {

@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 
 /**
  * Base implementation for navigation-buttons-based pager
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 public abstract class NavigationButtonsPager extends AbstractPager implements Pager
 {

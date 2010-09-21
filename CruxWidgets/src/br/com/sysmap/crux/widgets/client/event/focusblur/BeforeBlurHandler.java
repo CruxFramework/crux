@@ -18,8 +18,8 @@ package br.com.sysmap.crux.widgets.client.event.focusblur;
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gessï¿½ - Comment this
+ * @author GessÃ© S. F. DafÃ©
  */
 public interface BeforeBlurHandler extends EventHandler
 {

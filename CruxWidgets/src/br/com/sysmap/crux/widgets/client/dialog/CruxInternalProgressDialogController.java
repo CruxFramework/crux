@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Multi-frame aware controller for showing the progress dialog
- * @author Gessé S. F. Dafé
+ * @author GessÃ© S. F. DafÃ©
  */
 @Global
 @Controller(value="__progressDialog", lazy=false)
@@ -101,7 +101,7 @@ public class CruxInternalProgressDialogController implements CruxInternalProgres
 				dialogBox.center();
 				dialogBox.show();
 				
-				// TODO - Gessé - find out a better solution to avoid focus on blocked screen widgets 
+				// TODO - Gessï¿½ - find out a better solution to avoid focus on blocked screen widgets 
 				iconPanel.setFocus(true);
 				iconPanel.setFocus(false);
 			}

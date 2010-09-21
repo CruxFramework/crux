@@ -23,8 +23,8 @@ import br.com.sysmap.crux.widgets.client.filter.Filterable.FilterResult;
 import com.google.gwt.user.client.ui.SuggestOracle;
 
 /**
- * TODO - Gessé - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gessï¿½ - Comment this
+ * @author GessÃ© S. F. DafÃ©
  */
 @SuppressWarnings("unchecked")
 public class FilterSuggestOracle extends SuggestOracle
