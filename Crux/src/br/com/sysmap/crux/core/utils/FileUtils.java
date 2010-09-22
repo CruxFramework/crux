@@ -68,8 +68,10 @@ public class FileUtils
 	/**
 	 * @param file
 	 */
-	public static void recursiveDelete(File file)
+	public static boolean recursiveDelete(File file)
 	{
+		boolean success = true;
+		
 		if(file != null && file.exists())
 		{
 			if(file.isDirectory())
@@ -85,8 +87,10 @@ public class FileUtils
 				}
 			}
 			
-			file.delete();
+			success = file.delete();
 		}
+		
+		return success;
 	}
 	
 	/**
