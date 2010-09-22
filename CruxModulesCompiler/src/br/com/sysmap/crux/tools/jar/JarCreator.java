@@ -102,6 +102,8 @@ public class JarCreator extends FilePatternHandler
 			manifest.getMainAttributes().putValue(attrName, metaInfAttributes.get(attrName));
         }
 		
+		removeOldJar();		
+		
 		if (unpackaged)
 		{
 			for (File inputDir : inputDirectory)
@@ -114,17 +116,10 @@ public class JarCreator extends FilePatternHandler
 		}
 		else
 		{
-			if (outputFile.exists())
+			File parentFile = outputFile.getParentFile();
+			if (parentFile != null && !parentFile.exists())
 			{
-				outputFile.delete();
-			}
-			else
-			{
-				File parentFile = outputFile.getParentFile();
-				if (parentFile != null && !parentFile.exists())
-				{
-					parentFile.mkdirs();
-				}
+				parentFile.mkdirs();
 			}
 
 			JarOutputStream target = new JarOutputStream(new FileOutputStream(outputFile), manifest);
@@ -138,6 +133,31 @@ public class JarCreator extends FilePatternHandler
 				}
 			}
 			target.close();
+		}
+	}
+
+	/**
+	 * Removes the old generated jar if it exists.
+	 * @throws IOException
+	 */
+	private void removeOldJar() throws IOException 
+	{
+		if(outputFile.exists())
+		{
+			if(outputFile.isDirectory())
+			{
+				if(!FileUtils.recursiveDelete(outputFile))
+				{
+					throw new IOException("Could not delete file [" + outputFile.getAbsolutePath() + "]");
+				}
+			}
+			else
+			{
+				if(!outputFile.delete())
+				{
+					throw new IOException("Could not delete file [" + outputFile.getAbsolutePath() + "]");
+				}
+			}
 		}
 	}
 
