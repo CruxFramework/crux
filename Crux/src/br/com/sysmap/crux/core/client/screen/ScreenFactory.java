@@ -373,15 +373,22 @@ public class ScreenFactory {
 		{
 			return widget;
 		}
-		
-		Element parentElement = getParentElement(element);
-		if (parentElement != null)
+		DeclarativeWidgetFactory widgetFactory = (DeclarativeWidgetFactory) registeredWidgetFactories.getWidgetFactory(element.getAttribute("_type"));
+		if (!widgetFactory.isAttachToDOM())
 		{
-			widget = createWidgetWithExplicitParent(element, parentElement, screen, widgetsElementsAdded, widgetId);
+			widget = newWidget(element, widgetId);;
 		}
 		else
 		{
-			widget = createWidgetWithoutExplicitParent(element, parentElement, widgetId);
+			Element parentElement = getParentElement(element);
+			if (parentElement != null)
+			{
+				widget = createWidgetWithExplicitParent(element, parentElement, screen, widgetsElementsAdded, widgetId);
+			}
+			else
+			{
+				widget = createWidgetWithoutExplicitParent(element, parentElement, widgetId);
+			}
 		}
 
 		widgetsElementsAdded.add(element);

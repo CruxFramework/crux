@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
@@ -28,6 +29,7 @@ import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.declarative.TagEvent;
 import br.com.sysmap.crux.core.client.declarative.TagEvents;
 import br.com.sysmap.crux.core.client.event.bind.EvtBinder;
+import br.com.sysmap.crux.core.client.screen.DeclarativeWidgetFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.ScreenFactory;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
@@ -113,6 +115,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 		generateProcessAttributesMethod(srcWriter);
 		generateProcessEventsMethod(srcWriter);
 		generateProcessChildrenMethod(srcWriter);
+		generateIsAttachMethod(srcWriter);
     }
 
 	@Override
@@ -157,6 +160,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 		}
 
 		composerFactory.setSuperclass(factoryClass.getParameterizedQualifiedSourceName());
+		composerFactory.addImplementedInterface(DeclarativeWidgetFactory.class.getCanonicalName());
 		return composerFactory.createSourceWriter(context, printWriter);
     }	
 	
@@ -189,7 +193,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
         {
 	        JMethod method = ClassUtils.getMethod(factoryClass, "processChildren", new JType[]{widgetFactoryContextType});
 
-	        // TODO - Thiago -  tratar instanciamento qdo for inner classe não estatica.
+	        // TODO - Thiago -  tratar instanciamento qdo for inner classe nï¿½o estatica.
 	        Map<String, String> methodsForInnerProcessing = new HashMap<String, String>();
 	        Map<String, String> processorVariables = new HashMap<String, String>();
 
@@ -305,6 +309,18 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
+	
+	private void generateIsAttachMethod(SourceWriter sourceWriter)
+	{
+		DeclarativeFactory declarativeFactory = factoryClass.getAnnotation(DeclarativeFactory.class);
+		
+		sourceWriter.println("public boolean isAttachToDOM(){"); 
+		sourceWriter.indent();
+		sourceWriter.println("return "+(declarativeFactory==null?false:declarativeFactory.attachToDOM())+";");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+	}
+
 	
 	/**
 	 * 
@@ -543,7 +559,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 					source.append(generateChildrenBlockFromAnnotation(methodsForInnerProcessing, children, 
 							                                                                       processorVariables, true));
 
-					// TODO - Thiago - tratar validação de filhos obrigatorios .... espeficamente qdo parent for um agregador....
+					// TODO - Thiago - tratar validaï¿½ï¿½o de filhos obrigatorios .... espeficamente qdo parent for um agregador....
 					if (allowedChildren.maxOccurs == UNBOUNDED || allowedChildren.maxOccurs > 1)
 					{
 						source.append("}\n");

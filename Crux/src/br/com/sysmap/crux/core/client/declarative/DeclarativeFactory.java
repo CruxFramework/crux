@@ -30,4 +30,5 @@ public @interface DeclarativeFactory
 {
 	String id();
 	String library();
+	boolean attachToDOM() default true;
 }
