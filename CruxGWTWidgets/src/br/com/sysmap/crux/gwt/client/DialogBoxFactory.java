@@ -27,13 +27,12 @@ import br.com.sysmap.crux.core.client.screen.factory.HasTextFactory;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HasHTML;
 
 /**
  * @author Thiago da Rosa de Bustamante
  * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
  */
-@DeclarativeFactory(id="dialogBox", library="gwt")
+@DeclarativeFactory(id="dialogBox", library="gwt", attachToDOM=false)
 public class DialogBoxFactory extends PanelFactory<DialogBox>
        implements HasAnimationFactory<DialogBox>, HasCloseHandlersFactory<DialogBox>, HasTextFactory<DialogBox>
 {
@@ -67,15 +66,5 @@ public class DialogBoxFactory extends PanelFactory<DialogBox>
 	public void processAttributes(WidgetFactoryContext<DialogBox> context) throws InterfaceConfigException
 	{
 		super.processAttributes(context);
-		
-		Element element = context.getElement();
-		DialogBox widget = context.getWidget();
-
-		String innerHtml = element.getInnerHTML();
-		String text = context.readWidgetProperty("text");
-		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
-		{
-			((HasHTML)widget).setHTML(innerHtml);
-		}
 	}
 }
