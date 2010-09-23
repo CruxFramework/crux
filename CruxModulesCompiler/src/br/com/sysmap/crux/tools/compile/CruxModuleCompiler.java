@@ -49,6 +49,7 @@ import br.com.sysmap.crux.module.validation.CruxModuleValidator;
 import br.com.sysmap.crux.tools.export.ModuleExporter;
 import br.com.sysmap.crux.tools.jar.JarExtractor;
 import br.com.sysmap.crux.tools.parameters.ConsoleParameter;
+import br.com.sysmap.crux.tools.parameters.ConsoleParameterOption;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
 
 /**
@@ -62,6 +63,7 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	
 	private  Map<String, Boolean> alreadyChecked = new HashMap<String, Boolean>();
 	private boolean forceModulesCompilation = false;
+	private String moduleName;
 	private Map<String, Boolean> mustCompileCache = new HashMap<String, Boolean>();
 	
 	public CruxModuleCompiler()
@@ -76,6 +78,10 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	{
 		ConsoleParametersProcessor parametersProcessor = super.createParametersProcessor();
 		ConsoleParameter parameter = new ConsoleParameter("-forceModulesCompilation", "Force all modules compilation.", false, false);
+		parametersProcessor.addSupportedParameter(parameter);
+		
+		parameter = new ConsoleParameter("moduleName", "The folder where the compiled files will be created.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("name", "The name of the module you want to compile. If absent, compiles all modules."));
 		parametersProcessor.addSupportedParameter(parameter);
 		
 		return parametersProcessor;	
@@ -102,27 +108,47 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	
 	@Override
 	protected List<URL> getURLs() throws Exception
-	{
-		Iterator<CruxModule> cruxModules = CruxModuleHandler.iterateCruxModules();
+	{		
 		List<URL> urls = new ArrayList<URL>();
-		while (cruxModules.hasNext())
+		if(this.moduleName != null)
 		{
-			CruxModule cruxModule = cruxModules.next();
-			URL location = cruxModule.getLocation();
-			URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(location.getProtocol());
-			CruxModuleBridge.getInstance().registerCurrentModule(cruxModule.getName());
-			String[] pages = getPagesForModule(cruxModule);
-			if (pages != null)
+			CruxModuleBridge.getInstance().registerCurrentModule(this.moduleName);
+			urls.addAll(getURLsForRegisteredModule());
+		}
+		else
+		{
+			Iterator<CruxModule> cruxModules = CruxModuleHandler.iterateCruxModules();
+			while (cruxModules.hasNext())
 			{
-				for (String page : pages)
-				{
-					urls.add(resourceHandler.getChildResource(location, page));
-				}
+				CruxModuleBridge.getInstance().registerCurrentModule(cruxModules.next().getName());
+				urls.addAll(getURLsForRegisteredModule());
 			}
 		}
-
 		return urls;
 	}
+
+	/**
+	 * Gets all URLs for the current registered module.
+	 * @return
+	 * @throws ScreenConfigException 
+	 */
+	protected List<URL> getURLsForRegisteredModule() throws ScreenConfigException 
+	{
+		List<URL> urls = new ArrayList<URL>();
+		CruxModule cruxModule = CruxModuleHandler.getCurrentModule();
+		URL location = cruxModule.getLocation();
+		URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(location.getProtocol());
+		String[] pages = getPagesForModule(cruxModule);
+		if (pages != null)
+		{
+			for (String page : pages)
+			{
+				urls.add(resourceHandler.getChildResource(location, page));
+			}
+		}
+		return urls;		
+	}
+
 
 	/**
 	 * @see br.com.sysmap.crux.tools.compile.AbstractCruxCompiler#initializeProcessors()
@@ -154,6 +180,11 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	        if (parameter.getName().equals("-forceModulesCompilation"))
 	        {
 	        	this.forceModulesCompilation = true;
+	        }
+	        
+	        if (parameter.getName().equals("moduleName"))
+	        {
+	        	this.setModuleName(parameter.getValue());
 	        }
         }
 	}	
@@ -227,13 +258,14 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 
 				extractor.extractJar();
 
-				// Extract pages
-				replacements = new HashMap<String, String>();
-				replacements.put(ModuleExporter.CRUX_MODULE_EXPORT_PAGES+"/", "");
-				extractor = new JarExtractor(new File[]{new File(jarURL.toURI())}, this.pagesOutputDir, 
-						ModuleExporter.CRUX_MODULE_EXPORT_PAGES+"/**", null, replacements, false);
-
-				extractor.extractJar();
+				if(keepPagesGeneratedFiles)
+				{
+					replacements = new HashMap<String, String>();
+					replacements.put(ModuleExporter.CRUX_MODULE_EXPORT_PAGES+"/", "");
+					extractor = new JarExtractor(new File[]{new File(jarURL.toURI())}, this.pagesOutputDir, 
+													ModuleExporter.CRUX_MODULE_EXPORT_PAGES+"/**", null, replacements, false);
+					extractor.extractJar();
+				}
 			}
 			else
 			{
@@ -252,7 +284,7 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	 * @param cruxModule
 	 * @throws ScreenConfigException 
 	 */
-	private String[] getPagesForModule(CruxModule cruxModule) throws ScreenConfigException
+	protected String[] getPagesForModule(CruxModule cruxModule) throws ScreenConfigException
 	{
 		Set<String> allScreenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(cruxModule.getName());
 		if (allScreenIDs != null)
@@ -348,5 +380,12 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 		}
 		mustCompileCache.put(moduleName, result);
 		return result;
+	}
+
+	/**
+	 * @param moduleName
+	 */
+	public void setModuleName(String moduleName) {
+		this.moduleName = moduleName;
 	}
 }

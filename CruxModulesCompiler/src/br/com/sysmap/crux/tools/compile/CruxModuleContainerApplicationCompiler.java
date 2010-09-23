@@ -22,16 +22,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import br.com.sysmap.crux.core.rebind.scanner.module.Module;
+import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenConfigException;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolver;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverImpl;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.utils.FileUtils;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.CruxModule;
+import br.com.sysmap.crux.module.CruxModuleBridge;
 import br.com.sysmap.crux.module.CruxModuleHandler;
 import br.com.sysmap.crux.module.classpath.ModuleClassPathResolver;
 import br.com.sysmap.crux.tools.compile.utils.ClassPathUtils;
@@ -114,7 +117,7 @@ public class CruxModuleContainerApplicationCompiler extends CruxModuleCompiler
 		
 		ClassPathResolverInitializer.registerClassPathResolver(this.moduleClassPathResolver = new ModuleClassPathResolver());
 		
-		urls.addAll(super.getURLs());
+		urls.addAll(getAllModulesURLs());
 		
 		ClassPathResolverInitializer.registerClassPathResolver(this.monolithicClassPathResolver = new ClassPathResolverImpl());
 		
@@ -128,6 +131,22 @@ public class CruxModuleContainerApplicationCompiler extends CruxModuleCompiler
 		return result;
 	}
 	
+	/**
+	 * @return
+	 * @throws ScreenConfigException 
+	 */
+	private Collection<URL> getAllModulesURLs() throws ScreenConfigException 
+	{
+		List<URL> urls = new ArrayList<URL>();
+		Iterator<CruxModule> cruxModules = CruxModuleHandler.iterateCruxModules();
+		while (cruxModules.hasNext())
+		{
+			CruxModuleBridge.getInstance().registerCurrentModule(cruxModules.next().getName());
+			urls.addAll(getURLsForRegisteredModule());
+		}
+		return urls;
+	}
+
 	@Override
 	protected void processParameters(Collection<ConsoleParameter> parameters)
 	{

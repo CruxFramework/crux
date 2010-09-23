@@ -38,7 +38,6 @@ import br.com.sysmap.crux.module.ModuleRef;
 import br.com.sysmap.crux.module.classpath.ModuleClassPathResolver;
 import br.com.sysmap.crux.module.validation.CruxModuleValidator;
 import br.com.sysmap.crux.scannotation.ClasspathUrlFinder;
-import br.com.sysmap.crux.tools.compile.AbstractCruxCompiler;
 import br.com.sysmap.crux.tools.compile.CompilerException;
 import br.com.sysmap.crux.tools.compile.CruxModuleCompiler;
 import br.com.sysmap.crux.tools.compile.JCompiler;
@@ -81,7 +80,7 @@ public class ModuleExporter
 	
 	
 	private JCompiler compiler;
-	private AbstractCruxCompiler cruxCompiler;
+	private CruxModuleCompiler cruxCompiler;
 	private String excludes;
 	private boolean doNotExportCruxCompilation = false;
 	private File exporterWorkDir;
@@ -397,6 +396,10 @@ public class ModuleExporter
 	        if (!StringUtils.isEmpty(scanIgnoredPackages))
 	        {
 	        	cruxCompiler.setScanIgnoredPackages(scanIgnoredPackages);
+	        }
+	        if (!StringUtils.isEmpty(moduleName))
+	        {
+	        	cruxCompiler.setModuleName(moduleName);
 	        }
         }
         catch (Exception e)
