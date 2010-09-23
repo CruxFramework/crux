@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package br.com.sysmap.crux.core.rebind.scanner.screen.serializable.annotation;
+package br.com.sysmap.crux.core.rebind.screen.serializable.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

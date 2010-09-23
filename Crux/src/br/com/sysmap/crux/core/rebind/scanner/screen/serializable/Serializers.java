@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import br.com.sysmap.crux.core.client.screen.CruxSerializable;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
-import br.com.sysmap.crux.core.rebind.scanner.screen.serializable.annotation.SerializableName;
+import br.com.sysmap.crux.core.rebind.screen.serializable.annotation.SerializableName;
 import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 
