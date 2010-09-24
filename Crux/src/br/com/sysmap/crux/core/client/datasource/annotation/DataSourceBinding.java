@@ -29,5 +29,6 @@ import java.lang.annotation.Target;
 @Deprecated
 public @interface DataSourceBinding {
 	String identifier();
-	String[] excludeFields();
+	String[] includeFields() default {};
+	String[] excludeFields() default {};
 }
