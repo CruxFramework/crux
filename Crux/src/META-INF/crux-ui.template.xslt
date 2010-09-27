@@ -204,9 +204,6 @@
 				</xsl:if>
 			</xsl:for-each>
 			<xsl:value-of select="text()"></xsl:value-of>
-			<xsl:if test="count(child::*) = 0 and count(text()) = 0">
-				<xsl:value-of select="' '"></xsl:value-of>
-			</xsl:if>
 			<xsl:call-template name="handleInnerHtml" />
 		</xsl:element> 
 	</xsl:template>
@@ -232,14 +229,9 @@
 						<xsl:when test="count(child::*) = 0 and string-length(local-name()) > 0">
 							<xsl:copy copy-namespaces="no">
 								<xsl:copy-of select="@*"/>
-								<xsl:choose>
-									<xsl:when test="string-length(text()) > 0">
-										<xsl:value-of select="text()"></xsl:value-of>
-									</xsl:when>
-									<xsl:otherwise>
-										<xsl:value-of select="' '"></xsl:value-of>
-									</xsl:otherwise>
-								</xsl:choose>
+								<xsl:if test="string-length(text()) > 0">
+									<xsl:value-of select="text()"></xsl:value-of>
+								</xsl:if>
 							</xsl:copy>
 						</xsl:when>
 						<xsl:when test="count(child::*) = 0 and string-length(local-name()) = 0">
