@@ -24,6 +24,29 @@ import com.google.gwt.core.client.JavaScriptObject;
 public class JSWindow extends JavaScriptObject
 {
 	/**
+	 * Returns the current window native object;
+	 * @return
+	 */
+	public native static JSWindow currentWindow()/*-{
+		return $wnd;
+	}-*/;
+	
+	/**
+	 * Returns the topmost window native object. No matter if the current window is a frame, a popup or whatever.
+	 * @return
+	 */
+	public native static JSWindow getAbsoluteTop()/*-{
+		var who = $wnd.top;
+		var op = $wnd.opener;
+		while (op != null)
+		{
+			who = op.top;
+			op = op.opener;
+		}
+		return who;
+	}-*/;
+	
+	/**
 	 * Obeying to GWT JSNI restrictions
 	 */
 	protected JSWindow()
