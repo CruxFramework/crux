@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.CaptionPanel;
 
 /**
  * Factory for CaptionPanel widgets
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 @DeclarativeFactory(id="captionPanel", library="gwt")
 public class CaptionPanelFactory extends CompositeFactory<CaptionPanel>

@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * Base class for implementing factories for many kinds of list boxes.
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
  */
 public abstract class AbstractListBoxFactory<T extends ListBox> extends FocusWidgetFactory<T> implements HasChangeHandlersFactory<T>
 {

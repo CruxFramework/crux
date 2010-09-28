@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.DialogBox;
 
 /**
  * @author Thiago da Rosa de Bustamante
- * @author Gessé S. F. Dafé <code>gessedafe@gmail.com</code>
+ * @author Gesse S. F. Dafe <code>gessedafe@gmail.com</code>
  */
 @DeclarativeFactory(id="dialogBox", library="gwt", attachToDOM=false)
 public class DialogBoxFactory extends PanelFactory<DialogBox>
