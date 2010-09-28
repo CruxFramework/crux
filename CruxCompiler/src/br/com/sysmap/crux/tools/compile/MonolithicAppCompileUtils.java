@@ -26,8 +26,8 @@ import br.com.sysmap.crux.tools.parameters.ConsoleParameterOption;
 import br.com.sysmap.crux.tools.parameters.ConsoleParametersProcessor;
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 public class MonolithicAppCompileUtils
 {
