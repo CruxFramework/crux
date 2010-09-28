@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A decorated PopupPanel
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class CustomPopupPanel extends PopupPanel
 {

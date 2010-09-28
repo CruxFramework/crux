@@ -29,7 +29,7 @@ import br.com.sysmap.crux.widgets.client.decoratedpanel.AbstractDecoratedPanelFa
 
 /**
  * Factory for Title Panel widget
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public abstract class AbstractTitlePanelFactory<T extends TitlePanel> extends AbstractDecoratedPanelFactory<T>
 {

@@ -14,8 +14,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 public class FlapController extends Composite
 {

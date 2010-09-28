@@ -19,7 +19,7 @@ import java.io.Serializable;
 
 /**
  * A simple DTO to transport the message box attributes across frames
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class MessageBoxData implements Serializable
 {

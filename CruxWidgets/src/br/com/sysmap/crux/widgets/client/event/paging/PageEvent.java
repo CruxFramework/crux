@@ -19,8 +19,8 @@ import com.google.gwt.event.shared.GwtEvent;
 
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 public class PageEvent extends GwtEvent<PageHandler>{
 

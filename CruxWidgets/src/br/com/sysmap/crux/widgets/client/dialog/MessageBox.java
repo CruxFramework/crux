@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A simple widget without layout for showing message boxes across frames. 
  * The rendering is made by <code>CruxInternalMessageBoxController</code>, using the attributes contained in this widget.
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class MessageBox extends Widget implements HasOkHandlers, HasAnimation
 {

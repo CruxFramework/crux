@@ -31,9 +31,9 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
- * TODO - Gess� - Comment
+ * TODO - Gesse - Comment
  * 
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class DynaTabs extends Composite
 {

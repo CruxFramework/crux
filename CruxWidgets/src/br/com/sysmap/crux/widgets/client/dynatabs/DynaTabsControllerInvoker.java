@@ -26,7 +26,7 @@ import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.user.client.DOM;
 
 /**
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class DynaTabsControllerInvoker 
 {

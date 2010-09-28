@@ -30,7 +30,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Factory for Decorated Panel widget
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 @DeclarativeFactory(id="decoratedPanel", library="widgets")
 public class DecoratedPanelFactory extends AbstractDecoratedPanelFactory<DecoratedPanel>

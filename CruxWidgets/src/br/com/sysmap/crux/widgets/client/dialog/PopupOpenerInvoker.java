@@ -17,7 +17,7 @@ package br.com.sysmap.crux.widgets.client.dialog;
 
 /**
  * Invokes methods on the popup's opener window
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public interface PopupOpenerInvoker
 {

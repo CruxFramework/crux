@@ -31,7 +31,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public abstract class AbstractPagerFactory<T extends AbstractPager> extends WidgetFactory<T>
 {

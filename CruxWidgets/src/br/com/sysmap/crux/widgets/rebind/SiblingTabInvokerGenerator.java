@@ -25,7 +25,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
  * generates a invoker for calling existing controllers/methods on a sibling tab.
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 @Deprecated
 public class SiblingTabInvokerGenerator extends AbstractGenerator

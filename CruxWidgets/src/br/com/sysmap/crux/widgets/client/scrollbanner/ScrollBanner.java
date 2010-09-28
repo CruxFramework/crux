@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * A banner for showing multiple text messages, one each time. The messages are displayed in a periodic and sequential way.  
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class ScrollBanner extends Composite
 {

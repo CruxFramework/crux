@@ -17,7 +17,7 @@ package br.com.sysmap.crux.widgets.client.dynatabs;
 
 /**
  * Invoker for calling existing controllers/methods on a sibling tab. It means that it can only be used from a document which resides on a tab.
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public interface SiblingTabInvoker
 {

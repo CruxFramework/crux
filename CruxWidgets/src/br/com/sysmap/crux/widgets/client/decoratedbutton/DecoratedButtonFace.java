@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * HTML face DecoratedButton
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class DecoratedButtonFace extends Widget
 {

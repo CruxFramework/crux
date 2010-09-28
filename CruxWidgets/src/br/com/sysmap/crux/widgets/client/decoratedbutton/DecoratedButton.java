@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.HasText;
 /**
  * PushButton, based on a 3 X 1 table, useful to build rounded corners.
  * 
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class DecoratedButton extends FocusWidget implements HasText
 {

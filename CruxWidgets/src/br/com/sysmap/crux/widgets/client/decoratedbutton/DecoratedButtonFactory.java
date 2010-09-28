@@ -24,7 +24,7 @@ import com.google.gwt.dom.client.Element;
 
 /**
  * Factory for Decorated Button widget
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 @DeclarativeFactory(id="decoratedButton", library="widgets")
 public class DecoratedButtonFactory extends FocusWidgetFactory<DecoratedButton> implements HasTextFactory<DecoratedButton>

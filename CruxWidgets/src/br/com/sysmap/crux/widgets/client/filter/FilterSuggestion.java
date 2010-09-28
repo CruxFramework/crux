@@ -18,9 +18,9 @@ package br.com.sysmap.crux.widgets.client.filter;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 
 /**
- * TODO - Gess� - Comment this
+ * TODO - Gesse - Comment this
  * 
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class FilterSuggestion implements Suggestion
 {

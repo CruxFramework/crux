@@ -1,8 +1,8 @@
 package br.com.sysmap.crux.widgets.client.event;
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 public class Events
 {
@@ -14,5 +14,5 @@ public class Events
 	public static final String BEFORE_ROW_SELECT = "onbeforerowselect";
 	
 	public static final String PAGE = "onpage";
-	//TODO - Gess� - Remover esta classe inteira
+	//TODO - Gesse - Remover esta classe inteira
 }

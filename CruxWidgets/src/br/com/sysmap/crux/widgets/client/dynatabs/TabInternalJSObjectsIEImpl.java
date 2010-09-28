@@ -21,8 +21,8 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 public class TabInternalJSObjectsIEImpl extends TabInternalJSObjects
 {

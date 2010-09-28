@@ -24,9 +24,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
- * TODO - Gess� - Comment
+ * TODO - Gesse - Comment
  * 
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class StackMenu extends Composite implements Filterable<StackMenuItem>
 {

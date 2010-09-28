@@ -18,8 +18,8 @@ package br.com.sysmap.crux.widgets.client.event.paste;
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 public interface PasteHandler extends EventHandler
 {

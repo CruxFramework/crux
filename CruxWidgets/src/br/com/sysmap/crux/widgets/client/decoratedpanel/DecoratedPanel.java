@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConst
 
 /**
  * Panel based on a 3x3 table, useful to build rounded corners boxes. 
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class DecoratedPanel extends CellPanel
 {

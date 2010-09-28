@@ -25,7 +25,7 @@ import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
 /**
  * Represents the columns to be rendered by a grid widget.
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class ColumnDefinitions
 {
@@ -148,7 +148,7 @@ public class ColumnDefinitions
 		
 	/**
 	 * Iterator for the registered column definition
-	 * @author Gessé S. F. Dafé
+	 * @author Gesse S. F. Dafe
 	 */
 	public static class ColumnIterator<T extends ColumnDefinition> implements Iterator<T>
 	{

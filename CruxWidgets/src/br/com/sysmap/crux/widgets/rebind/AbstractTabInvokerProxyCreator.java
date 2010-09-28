@@ -35,8 +35,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.rebind.SourceWriter;
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 @Deprecated
 public abstract class AbstractTabInvokerProxyCreator extends AbstractWrapperProxyCreator

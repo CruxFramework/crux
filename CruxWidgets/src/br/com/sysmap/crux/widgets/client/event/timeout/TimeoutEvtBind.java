@@ -23,8 +23,8 @@ import br.com.sysmap.crux.widgets.client.event.Events;
 import com.google.gwt.dom.client.Element;
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 public class TimeoutEvtBind extends EvtBind
 {

@@ -23,7 +23,7 @@ import br.com.sysmap.crux.widgets.client.dynatabs.Tab;
 
 /**
  * generates a invoker for calling existing controllers/methods on a sibling tab.
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 @Deprecated
 public class SiblingTabInvokerProxyCreator extends AbstractTabInvokerProxyCreator

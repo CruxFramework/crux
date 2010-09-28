@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * A decorated panel, with a title bar.
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class Timer extends Composite implements HasTimeoutHandlers
 {
@@ -273,8 +273,8 @@ public class Timer extends Composite implements HasTimeoutHandlers
 }
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 class TimeProcessor extends com.google.gwt.user.client.Timer
 {
@@ -293,8 +293,8 @@ class TimeProcessor extends com.google.gwt.user.client.Timer
 }
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 class TimeouTask
 {

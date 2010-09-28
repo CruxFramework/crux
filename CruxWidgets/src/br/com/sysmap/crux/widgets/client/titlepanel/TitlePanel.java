@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A decorated panel, with a title bar.
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class TitlePanel extends DecoratedPanel
 {

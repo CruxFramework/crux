@@ -23,7 +23,7 @@ import br.com.sysmap.crux.widgets.client.dynatabs.DynaTabs;
 
 /**
  * Generates a invoker for calling existing controllers/methods on a tab that belongs to a DynaTabs object rendered in the current document.
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 @Deprecated
 public class TabInvokerProxyCreator extends AbstractTabInvokerProxyCreator

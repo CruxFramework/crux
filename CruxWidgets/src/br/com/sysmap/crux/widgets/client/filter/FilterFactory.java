@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Factory for Filter widget
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 @DeclarativeFactory(id="filter", library="widgets")
 public class FilterFactory extends CompositeFactory<Filter> 
