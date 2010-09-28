@@ -20,7 +20,7 @@ import org.apache.tools.ant.taskdefs.Java;
 
 /**
  * Compiler for the Module Container project layout.
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
  */
 public class CruxModuleContainerApplicationCompilerTask extends CruxCompilerTask
 {
