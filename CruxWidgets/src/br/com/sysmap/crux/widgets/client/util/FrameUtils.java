@@ -43,7 +43,7 @@ public class FrameUtils
 	public static interface FrameAccessor
 	{
 		JSWindow getFrameWindow(IFrameElement frame);
-	}	
+	}
 
 	private static FrameStateMonitor stateMonitor = GWT.create(FrameStateMonitor.class);
 	private static FrameAccessor accessor = GWT.create(FrameAccessorImpl.class);
