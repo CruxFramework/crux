@@ -19,7 +19,7 @@ import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
 
 /**
  * Server-side messages.
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
  */
 public interface QuickStartServerMessages
 {

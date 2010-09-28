@@ -18,7 +18,7 @@ import br.com.sysmap.crux.tools.schema.SchemaGenerator;
 
 /**
  * Generates Crux project skeletons
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class CruxProjectGenerator
 {
@@ -390,7 +390,7 @@ public class CruxProjectGenerator
 	
 	/**
 	 * All possible parameter names for CruxProjectGenerator.
-	 * @author Gessé S. F. Dafé
+	 * @author Gesse S. F. Dafe
 	 */
 	public static interface Names
 	{

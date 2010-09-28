@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Label;
 
 /**
  * Controller for helpContext template.
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
  */
 @Controller("contextHelpController")
 public class ContextHelpController

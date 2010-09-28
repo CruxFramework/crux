@@ -4,8 +4,8 @@ import junit.framework.TestCase;
 import br.com.sysmap.crux.tools.projectgen.CruxProjectGenerator;
 
 /**
- * TODO - Gess� - Comment this
- * @author Gessé S. F. Dafé
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
 public class Test extends TestCase
 {
