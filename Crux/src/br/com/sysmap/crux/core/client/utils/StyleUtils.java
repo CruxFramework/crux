@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.UIObject;
 /**
  * Contains common operations for handling styles on HTML elements.
  *  
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class StyleUtils
 {

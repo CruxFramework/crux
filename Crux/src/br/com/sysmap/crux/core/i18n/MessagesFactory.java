@@ -30,7 +30,7 @@ import br.com.sysmap.crux.core.config.ConstantsInvocationHandler;
  * resource bundles in the classpath. Each interface's method is used as key 
  * in that property file.
  * @author Thiago da Rosa de Bustamante
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  *
  */
 public class MessagesFactory extends AbstractPropertiesFactory
@@ -63,7 +63,7 @@ public class MessagesFactory extends AbstractPropertiesFactory
 /**
  * Dynamic proxy for message resources.
  * @author Thiago da Rosa de Bustamante
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 class MessagesInvocationHandler extends ConstantsInvocationHandler
 {

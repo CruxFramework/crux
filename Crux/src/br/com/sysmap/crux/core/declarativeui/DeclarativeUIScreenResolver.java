@@ -34,7 +34,7 @@ import br.com.sysmap.crux.core.utils.URLUtils;
 
 /**
  * Custom screen resolver to handle crux HTML tags 
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 {

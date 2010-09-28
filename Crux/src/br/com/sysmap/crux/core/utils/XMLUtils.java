@@ -27,7 +27,7 @@ import org.w3c.dom.Document;
 
 /**
  * Toolkit for XML manipulations.
- * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+ * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
  */
 public class XMLUtils
 {
@@ -71,7 +71,7 @@ public class XMLUtils
 	
 	/**
 	 * A XML manipulation error.
-	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 * @author Gesse S. F. Dafe - <code>gessedafe@gmail.com</code>
 	 */
 	@SuppressWarnings("serial")
 	public static class XMLException extends Exception

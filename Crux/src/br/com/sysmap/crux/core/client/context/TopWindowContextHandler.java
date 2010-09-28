@@ -20,7 +20,7 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 
 /**
  * @author Thiago da Rosa de Bustamante
- * @author Gess� S. F. Daf� *
+ * @author Gesse S. F. Dafe
  */
 public class TopWindowContextHandler implements ContextHandler
 {

@@ -16,7 +16,7 @@
 package br.com.sysmap.crux.core.client.utils;
 
 /**
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  * @author Thiago da Rosa de Bustamante -
  */
 public class StringUtils

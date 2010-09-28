@@ -19,7 +19,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * A Window JavaScriptObject. Useful for accessing foreign native JS objects and functions.
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public class JSWindow extends JavaScriptObject
 {

@@ -16,7 +16,7 @@ import br.com.sysmap.crux.core.i18n.MessageException;
 /**
  * Dynamic proxy for message resources.
  * @author Thiago da Rosa de Bustamante
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public abstract class ConstantsInvocationHandler implements InvocationHandler
 {

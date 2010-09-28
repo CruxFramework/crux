@@ -25,7 +25,7 @@ import com.google.gwt.user.client.Cookies;
 
 /**
  * @author Thiago da Rosa de Bustamante
- * @author Gessé S. F. Dafé 
+ * @author Gesse S. F. Dafe 
  */
 public class CookieContextHandler implements ContextHandler
 {

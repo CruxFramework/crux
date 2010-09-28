@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Thiago da Rosa de Bustamante
- * @author Gessé S. F. Dafé
+ * @author Gesse S. F. Dafe
  */
 public interface LocaleResolver 
 {
