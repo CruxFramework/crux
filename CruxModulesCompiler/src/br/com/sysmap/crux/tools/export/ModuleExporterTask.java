@@ -51,7 +51,7 @@ public class ModuleExporterTask extends Task
 	private String pagesOutputCharset;
 	private String pageFileExtension;
 	private boolean unpackaged = false;
-	
+	private String inputCharset = "UTF-8";
 	
 	public void addClasspath(Path classpath)
 	{
@@ -143,6 +143,11 @@ public class ModuleExporterTask extends Task
     	this.unpackaged = unpackaged;
     }
 
+	public void setInputCharset(String inputCharset)
+	{
+		this.inputCharset = inputCharset;
+	}
+	
 	/**
 	 * @see org.apache.tools.ant.Task#execute()
 	 */
@@ -170,6 +175,8 @@ public class ModuleExporterTask extends Task
 		javatask.setClassname(getProgramClassName());
 		javatask.setFork(true);
 		javatask.setFailonerror(true);
+
+		javatask.createJvmarg().setValue("-Dfile.encoding="+this.inputCharset );
 
 		for (Argument arg : jvmArgs)
 		{
