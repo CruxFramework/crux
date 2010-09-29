@@ -44,6 +44,7 @@ public abstract class AbstractCruxCompilerTask extends Task
 	private String scanAllowedPackages;
 	private String scanIgnoredPackages;
 	private String outputCharset;
+	private String inputCharset = "UTF-8";
 	private String pageFileExtension;
 	private Boolean indentPages;
 	private Boolean keepPagesGeneratedFiles;
@@ -93,6 +94,11 @@ public abstract class AbstractCruxCompilerTask extends Task
     {
     	this.outputCharset = outputCharset;
     }
+
+	public void setInputCharset(String inputCharset)
+	{
+		this.inputCharset = inputCharset;
+	}
 
 	public void setPageFileExtension(String pageFileExtension)
     {
@@ -147,6 +153,8 @@ public abstract class AbstractCruxCompilerTask extends Task
 		javatask.setFork(true);
 		javatask.setFailonerror(true);
 
+		javatask.createJvmarg().setValue("-Dfile.encoding="+this.inputCharset );
+		
 		for (Argument arg : jvmArgs)
 		{
 			if(arg != null)
