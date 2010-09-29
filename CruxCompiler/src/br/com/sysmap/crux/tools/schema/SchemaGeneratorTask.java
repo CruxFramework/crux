@@ -37,6 +37,7 @@ public class SchemaGeneratorTask extends Task
 	private List<Argument> jvmArgs = new ArrayList<Argument>();
 	private File outputDir;
 	private File webDir;
+	private String inputCharset = "UTF-8";
 	
 	public void addClasspath(Path classpath)
 	{
@@ -58,6 +59,11 @@ public class SchemaGeneratorTask extends Task
     	this.webDir = webDir;
     }
 
+	public void setInputCharset(String inputCharset)
+	{
+		this.inputCharset = inputCharset;
+	}
+	
 	public void execute() throws BuildException
 	{
 		try 
@@ -84,6 +90,8 @@ public class SchemaGeneratorTask extends Task
 		javatask.setClassname(SchemaGenerator.class.getName());
 		javatask.setFork(true);
 
+		javatask.createJvmarg().setValue("-Dfile.encoding="+this.inputCharset );
+		
 		for (Argument arg : jvmArgs)
 		{
 			if(arg != null)
