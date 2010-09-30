@@ -49,16 +49,21 @@ public interface Crux
 	@DefaultServerMessage("true")
 	String renderWidgetsWithIDs();
 
+	@DefaultServerMessage("false")
+	String useCompileTimeClassScanning();
+
 	void setEnableWebRootScannerCache(Boolean value);
 	void setEnableChildrenWindowsDebug(Boolean value);
 	void setWrapSiblingWidgets(Boolean value);
 	void setEnableHotDeploymentForWebDirs(Boolean value);
 	void setEnableHotDeploymentForWidgetFactories(Boolean value);
 	void setRenderWidgetsWithIDs(Boolean value);
+	void setUseCompileTimeClassScanning(Boolean value);
 	void setClassPathResolver(String value);
 	void setScreenResourceResolver(String value);
 	void setLocaleResolver(String value);
 	void setServiceFactory(String value);
-	//TODO atualiza wiki com as opções correntes
+	//TODO atualiza wiki com as opÃ§Ãµes correntes
+
 
 }

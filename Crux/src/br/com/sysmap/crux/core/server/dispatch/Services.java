@@ -54,7 +54,7 @@ public class Services
 					}
 				}
 			}
-			logger.error(messages.servicesNoImplementationFound(interfaceName));
+			logger.info(messages.servicesNoImplementationFound(interfaceName));
 		} 
 		catch (ClassNotFoundException e) 
 		{
