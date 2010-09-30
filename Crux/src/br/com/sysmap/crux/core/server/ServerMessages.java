@@ -52,6 +52,12 @@ public interface ServerMessages
 	@DefaultServerMessage("[services 002] - No implementation class found to service interface: {0}.")
 	String servicesNoImplementationFound(String interfaceName);
 	
+	@DefaultServerMessage("[services 003] - Error creating service {0}. Cause: {1}")
+	String servicesErrorCreatingService(String serviceName, String message);
+
+	@DefaultServerMessage("[services 004] - Error initializing services. Using runtime strategy for services...")
+	String servicesCompileStrategyInitializeError();
+
 	@DefaultServerMessage("[serviceFactoryInitializer 001] - Server services registered.")
 	String serviceFactoryInitializerServicesRegistered();
 

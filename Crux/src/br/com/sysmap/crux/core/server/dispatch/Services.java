@@ -48,14 +48,17 @@ public class Services
 				for (String service : serviceNames) 
 				{
 					Class<?> serviceClass = Class.forName(service);
-					return serviceClass;
+					if (!serviceClass.isInterface())
+					{
+						return serviceClass;
+					}
 				}
 			}
 			logger.error(messages.servicesNoImplementationFound(interfaceName));
 		} 
 		catch (ClassNotFoundException e) 
 		{
-			logger.error(messages.servicesInitializeError(e.getLocalizedMessage()),e);
+			logger.error(messages.servicesErrorCreatingService(interfaceName, e.getLocalizedMessage()),e);
 		}
 		return null;
 	}
