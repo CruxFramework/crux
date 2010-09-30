@@ -28,6 +28,7 @@ import br.com.sysmap.crux.core.client.controller.ValueObject;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.event.ValidateException;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.utils.ClassUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
@@ -327,14 +328,14 @@ public abstract class AbstractInvocableProxyCreator extends AbstractSerializable
 			if (required)
 			{
 				
-				sourceWriter.println("if (" +Window.class.getName()+".Location.getParameter(\""+name+"\")==null){");
+				sourceWriter.println("if ("+StringUtils.class.getName()+".isEmpty(" +Window.class.getName()+".Location.getParameter(\""+name+"\"))){");
 				sourceWriter.indent();
 				sourceWriter.println("throw new "+ValidateException.class.getName()+"("+EscapeUtils.quote(messages.requiredParameterMissing(name))+");");
 				sourceWriter.outdent();
 				sourceWriter.println("}");
 				
 			}
-			sourceWriter.println("if (" +Window.class.getName()+".Location.getParameter(\""+name+"\")!=null){");
+			sourceWriter.println("if (!"+StringUtils.class.getName()+".isEmpty(" +Window.class.getName()+".Location.getParameter(\""+name+"\"))){");
 			sourceWriter.indent();
 			sourceWriter.println("try{");
 			sourceWriter.indent();
