@@ -28,24 +28,28 @@ public class FileIterator implements URLIterator
       }
    }
 
-   protected static void create(List<File> list, File dir, Filter filter) throws Exception
-   {
-      File[] files = dir.listFiles();
-      for (int i = 0; i < files.length; i++)
-      {
-         if (files[i].isDirectory())
-         {
-            create(list, files[i], filter);
-         }
-         else
-         {
-            if (filter == null || filter.accepts(files[i].toURI().toURL().toString()))
-            {
-               list.add(files[i]);
-            }
-         }
-      }
-   }
+	protected static void create(List<File> list, File dir, Filter filter) throws Exception
+	{
+		File[] files = dir.listFiles();
+		
+		if(files != null)
+		{		
+			for (int i = 0; i < files.length; i++)
+			{
+				if (files[i].isDirectory())
+				{
+					create(list, files[i], filter);
+				}
+				else
+				{
+					if (filter == null || filter.accepts(files[i].toURI().toURL().toString()))
+					{
+						list.add(files[i]);
+					}
+				}
+			}
+		}
+	}
 
    public URL next()
    {
