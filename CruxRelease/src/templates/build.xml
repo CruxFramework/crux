@@ -76,6 +76,13 @@
 		
 		<blockremove beginmarker="&lt;!--antReplacementBlockBegin--&gt;" endmarker="&lt;!--antReplacementBlockEnd--&gt;" file="${temp.dir}/webroot/WEB-INF/web.xml" />
 
+		<serviceMapper projectDir="${temp.dir}/webroot">
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${target.classes.dir}" />
+			</classpath>
+		</serviceMapper>
+
 		<war basedir="${temp.dir}/webroot" destfile="${temp.dir}/${final.name}.war" webxml="${web.inf.dir}/web.xml">
 			<manifest>
 				<attribute name="Class-Path" value="${final.name}.war" />
