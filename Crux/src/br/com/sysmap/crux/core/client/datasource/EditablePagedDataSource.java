@@ -16,13 +16,11 @@
 package br.com.sysmap.crux.core.client.datasource;
 
 /**
+ * A DataSource that supports pagination
  * 
  * @author Thiago da Rosa de Bustamante
- *
+ * @deprecated Use {@link PagedDataSource} instead.
  */
-@SuppressWarnings("deprecation")
-public interface MeasurablePagedDataSource<E> extends EditablePagedDataSource<E>
+public interface EditablePagedDataSource<E> extends PagedDataSource<E>
 {
-	int getPageCount();
-	boolean setCurrentPage(int pageNumber);
 }

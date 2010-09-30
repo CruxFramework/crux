@@ -23,7 +23,8 @@ import java.util.List;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface RemoteDataSource<E> extends PagedDataSource<E>
+@SuppressWarnings("deprecation")
+public interface RemoteDataSource<E> extends EditablePagedDataSource<E>
 {
 	void fetch(int startRecord, int endRecord);
 	void cancelFetching();
