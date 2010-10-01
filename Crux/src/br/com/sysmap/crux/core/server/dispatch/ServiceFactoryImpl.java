@@ -124,11 +124,11 @@ public class ServiceFactoryImpl implements ServiceFactory
 	{
 		if (Environment.isProduction() ||  Boolean.parseBoolean(ConfigurationFactory.getConfigurations().useCompileTimeClassScanning()))
 		{
-			strategy = new RuntimeStrategy();
+			strategy = new CompileTimeStrategy();
 		}
 		else
 		{
-			strategy = new CompileTimeStrategy();
+			strategy = new RuntimeStrategy();
 		}
 	}
 
