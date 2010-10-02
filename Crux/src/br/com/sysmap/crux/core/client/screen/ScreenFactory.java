@@ -271,14 +271,17 @@ public class ScreenFactory {
 		for (String elementId:  widgetIds)
 		{
 			Element element = DOM.getElementById(elementId);
-			try 
+			if (element != null) // Some elements can be handled by its parent's factory
 			{
-				createWidget(element, screen, widgets);
-			}
-			catch (Throwable e) 
-			{
-				Crux.getErrorHandler().handleError(e);
-				element.setInnerText(Crux.getMessages().screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
+				try 
+				{
+					createWidget(element, screen, widgets);
+				}
+				catch (Throwable e) 
+				{
+					Crux.getErrorHandler().handleError(e);
+					element.setInnerText(Crux.getMessages().screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
+				}
 			}
 		}
 		if (screenElement != null)
