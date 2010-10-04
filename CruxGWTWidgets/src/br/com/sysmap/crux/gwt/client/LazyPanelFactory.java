@@ -16,31 +16,44 @@
 package br.com.sysmap.crux.gwt.client;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.screen.LayFactory;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.LazyPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A LayzyPanel that encapsulate a SimplePanelFactory
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="simpleLazyPanel", library="gwt")
-public class SimpleLazyPanelFactory extends PanelFactory<LazyPanel>
+@DeclarativeFactory(id="lazyPanel", library="gwt")
+public class LazyPanelFactory extends PanelFactory<LazyPanel> implements LayFactory<LazyPanel>
 {
 	protected com.google.gwt.user.client.ui.LazyPanel lazyPanelWidget;
 	
 	@Override
-	public LazyPanel instantiateWidget(Element element, String widgetId) 
+	public LazyPanel instantiateWidget(final Element element, String widgetId) 
 	{
-		return new LazyPanel()
+		LazyPanel result =  new LazyPanel()
 		{
+			private String innerHTML = element.getInnerHTML();
 			@Override
 			protected Widget createWidget() 
 			{
-				return new SimplePanel();
+				Scheduler.get().scheduleDeferred(new ScheduledCommand()
+				{
+					public void execute()
+					{
+						getElement().setInnerHTML(innerHTML);
+						parseDocument();
+					}
+				});
+				return null;
 			}
 		};
+		element.setInnerHTML("");
+		return result;
 	}
 }

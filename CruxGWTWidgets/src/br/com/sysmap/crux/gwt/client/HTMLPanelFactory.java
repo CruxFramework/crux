@@ -23,6 +23,7 @@ import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
 import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
+import br.com.sysmap.crux.core.client.screen.HasWidgetsHandler;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTag;
@@ -51,8 +52,7 @@ public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel> implements 
 		{
 			ret.getElement().appendChild(node);
 		}
-		ret.getElement().setAttribute("_hasWidgetsPanel", widgetId);
-		ret.getElement().setAttribute("_type", "gwt_HTMLPanel");
+		HasWidgetsHandler.handleWidgetElement(ret, widgetId, "gwt_HTMLPanel");
 
 		return ret;
 	}
