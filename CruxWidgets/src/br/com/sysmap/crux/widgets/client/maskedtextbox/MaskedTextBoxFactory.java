@@ -67,6 +67,7 @@ public class MaskedTextBoxFactory extends WidgetFactory<MaskedTextBox>
 	@TagAttributes({
 		@TagAttribute(value="readOnly", type=Boolean.class),
 		@TagAttribute(value="tabIndex", type=Integer.class),
+		@TagAttribute(value="maxLength", type=Integer.class),
 		@TagAttribute(value="accessKey", type=Character.class),
 		@TagAttribute(value="focus", type=Boolean.class)
 	})

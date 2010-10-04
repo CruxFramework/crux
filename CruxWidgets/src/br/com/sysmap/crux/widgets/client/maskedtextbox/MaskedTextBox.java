@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.maskedtextbox;
 
+import br.com.sysmap.crux.core.client.formatter.FilterFormatter;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.formatter.MaskedFormatter;
@@ -68,6 +69,7 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 	private Formatter formatter;
 	private HandlerRegistration addBlurHandler;
 	private boolean masked;
+	private boolean filtered;
 	protected TextBox textBox;
 	
 	/**
@@ -144,6 +146,10 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 			{
 				((MaskedFormatter)this.formatter).removeMask(this);
 			}
+			if (this.filtered)
+			{
+				((FilterFormatter)this.formatter).removeFilter(this);
+			}
 		}
 		
 		if (formatter != null)
@@ -158,6 +164,17 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 					}
 				});
 			}
+			else if (formatter instanceof FilterFormatter)
+			{
+				DeferredCommand.addCommand(new Command() 
+				{
+					public void execute()
+					{
+						((FilterFormatter)formatter).applyFilter(MaskedTextBox.this);
+					}
+				});
+			}
+ 
 			else
 			{
 				addBlurHandler = addBlurHandler(new BlurHandler()
@@ -171,8 +188,25 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 		}
 		this.formatter = formatter;
 		this.masked = applyMask && (this.formatter instanceof MaskedFormatter);
+		this.filtered = (this.formatter instanceof FilterFormatter);
 	}
 
+	/**
+	 * @return
+	 */
+	public int getMaxLength()
+	{
+		return this.textBox.getMaxLength();
+	}
+	
+	/**
+	 * @param length
+	 */
+	public void setMaxLength(int length)
+	{
+		this.textBox.setMaxLength(length);
+	}
+	
 	/**
 	 * 
 	 * @return
