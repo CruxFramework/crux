@@ -25,6 +25,7 @@ import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters;
 import br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages;
 import br.com.sysmap.crux.core.client.utils.DOMUtils;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -47,19 +48,6 @@ public class ScreenFactory {
 	
 	private static ScreenFactory instance = null;
 	 
-	private Screen screen = null;
-	private RegisteredClientFormatters registeredClientFormatters = null;
-	private RegisteredWidgetFactories registeredWidgetFactories = null;
-	private RegisteredDataSources registeredDataSources = null;
-	private DeclaredI18NMessages declaredI18NMessages = null;
-	private String screenId = null;
-	
-	private ScreenFactory()
-	{
-		this.declaredI18NMessages = GWT.create(DeclaredI18NMessages.class);
-		this.registeredDataSources = GWT.create(RegisteredDataSources.class);
-	}
-	
 	/**
 	 * Retrieve the ScreenFactory instance.
 	 * Is not synchronized, but it is not a problem. The screen is always build on a single thread
@@ -72,6 +60,65 @@ public class ScreenFactory {
 			instance = new ScreenFactory();
 		}
 		return instance;
+	}
+	private DeclaredI18NMessages declaredI18NMessages = null;
+	private RegisteredClientFormatters registeredClientFormatters = null;
+	private RegisteredDataSources registeredDataSources = null;
+	private RegisteredWidgetFactories registeredWidgetFactories = null;
+	private Screen screen = null;
+	
+	private String screenId = null;
+	
+	private ScreenFactory()
+	{
+		this.declaredI18NMessages = GWT.create(DeclaredI18NMessages.class);
+		this.registeredDataSources = GWT.create(RegisteredDataSources.class);
+	}
+	
+	/**
+	 * 
+	 * @param dataSource
+	 * @return
+	 */
+	public DataSource<?> createDataSource(String dataSource)
+	{
+		return this.registeredDataSources.getDataSource(dataSource);
+	}
+	
+	/**
+	 * 
+	 * @param formatter
+	 * @return
+	 */
+	public Formatter getClientFormatter(String formatter)
+	{
+		if (this.registeredClientFormatters == null)
+		{
+			this.registeredClientFormatters = (RegisteredClientFormatters) GWT.create(RegisteredClientFormatters.class);
+		}
+
+		return this.registeredClientFormatters.getClientFormatter(formatter);
+	}
+
+	/**
+	 * @deprecated - Use createDataSource(java.lang.String) instead.
+	 * @param dataSource
+	 * @return
+	 */
+	@Deprecated
+	public DataSource<?> getDataSource(String dataSource)
+	{
+		return createDataSource(dataSource);
+	}
+	
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public String getDeclaredMessage(String key)
+	{
+		return this.declaredI18NMessages.getMessage(key);
 	}
 	
 	/**
@@ -104,52 +151,6 @@ public class ScreenFactory {
 			screenId = fileName.substring(begin, end);
 		}
 		return screenId;
-	}
-
-	/**
-	 * 
-	 * @param formatter
-	 * @return
-	 */
-	public Formatter getClientFormatter(String formatter)
-	{
-		if (this.registeredClientFormatters == null)
-		{
-			this.registeredClientFormatters = (RegisteredClientFormatters) GWT.create(RegisteredClientFormatters.class);
-		}
-
-		return this.registeredClientFormatters.getClientFormatter(formatter);
-	}
-	
-	/**
-	 * 
-	 * @param key
-	 * @return
-	 */
-	public String getDeclaredMessage(String key)
-	{
-		return this.declaredI18NMessages.getMessage(key);
-	}
-	
-	/**
-	 * @deprecated - Use createDataSource(java.lang.String) instead.
-	 * @param dataSource
-	 * @return
-	 */
-	@Deprecated
-	public DataSource<?> getDataSource(String dataSource)
-	{
-		return createDataSource(dataSource);
-	}
-	
-	/**
-	 * 
-	 * @param dataSource
-	 * @return
-	 */
-	public DataSource<?> createDataSource(String dataSource)
-	{
-		return this.registeredDataSources.getDataSource(dataSource);
 	}
 
 	/**
@@ -208,46 +209,9 @@ public class ScreenFactory {
 		}
 		return false;
 	}
-	
-	/**
-	 * 
-	 * @param element
-	 * @return
-	 */
-	boolean isValidHasWidgetsPanel(Element element)
-	{
-		String type = element.getAttribute("_hasWidgetsPanel");
-		if (type != null && type.length() > 0)
-		{
-			return true;
-		}
-		return false;
-	}
 
-	/**
-	 * 
-	 * @param element
-	 * @return
-	 */
-	private boolean isScreenDefinitions(Element element)
+	void parseDocument()
 	{
-		if ("span".equalsIgnoreCase(element.getTagName()))
-		{
-			String type = element.getAttribute("_type");
-			if (type != null && "screen".equals(type))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 
-	 */
-	private void create()
-	{
-		screen = new Screen(getScreenId());
 		Element body = RootPanel.getBodyElement();
 		NodeList<Element> spanElements = body.getElementsByTagName("span");
 		List<String> widgetIds = new ArrayList<String>();
@@ -295,7 +259,7 @@ public class ScreenFactory {
 		}
 		screen.load();
 	}
-	
+
 	/**
 	 * 
 	 * @param screenElement
@@ -314,7 +278,7 @@ public class ScreenFactory {
 			parent.removeChild(screenElement);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param widgets
@@ -338,22 +302,11 @@ public class ScreenFactory {
 	
 	/**
 	 * 
-	 * @param element
-	 * @return
 	 */
-	private Element getParentElement(Element element) 
+	private void create()
 	{
-		Element elementParent = element.getParentElement();
-		while (elementParent != null && !"body".equalsIgnoreCase(elementParent.getTagName()))
-		{
-			if (isValidWidget(elementParent) || isValidHasWidgetsPanel(elementParent))
-			{
-				return elementParent;
-			}
-			elementParent = elementParent.getParentElement();
-		}
-			
-		return null;	
+		screen = new Screen(getScreenId());
+		parseDocument();
 	}
 	
 	/**
@@ -393,11 +346,13 @@ public class ScreenFactory {
 				widget = createWidgetWithoutExplicitParent(element, parentElement, widgetId);
 			}
 		}
-
-		widgetsElementsAdded.add(element);
+		if (widget != null)
+		{
+			widgetsElementsAdded.add(element);
+		}
 		return widget;
 	}
-
+	
 	/**
 	 * 
 	 * @param element
@@ -415,7 +370,7 @@ public class ScreenFactory {
 		Widget parent = screen.getWidget(parentElement.getId());
 		if (parent == null)
 		{
-			String hasWidgetParentId = parentElement.getAttribute("_hasWidgetsPanel");
+			String hasWidgetParentId = HasWidgetsHandler.getHasWidgetsId(parentElement);
 			if (hasWidgetParentId != null && hasWidgetParentId.length() > 0)
 			{
 				parent = screen.getWidget(hasWidgetParentId);
@@ -432,13 +387,17 @@ public class ScreenFactory {
 			widget = newWidget(element, widgetId);
 			((HasWidgetsFactory<Widget>)parentWidgetFactory).add(parent, widget, parentElement, element);
 		}
+		else if (parentWidgetFactory instanceof LayFactory)
+		{
+			widget = null;
+		}
 		else
 		{
 			widget = screen.getWidget(widgetId);
 		}
 		return widget;
 	}
-
+	
 	/**
 	 * 
 	 * @param element
@@ -485,10 +444,55 @@ public class ScreenFactory {
 		}
 		else
 		{
-			panelElement.setId(WidgetFactory.generateNewId());
-			panel = RootPanel.get(panelElement.getId());
+			if (!StringUtils.isEmpty(panelElement.getId()) && Screen.get(panelElement.getId()) != null)
+			{
+				panel = (Panel) Screen.get(panelElement.getId());
+			}
+			else
+			{
+				panelElement.setId(WidgetFactory.generateNewId());
+				panel = RootPanel.get(panelElement.getId());
+			}
 		}
 		panel.add(widget);
 		return widget;
+	}
+
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	private Element getParentElement(Element element) 
+	{
+		Element elementParent = element.getParentElement();
+		while (elementParent != null && !"body".equalsIgnoreCase(elementParent.getTagName()))
+		{
+			if (isValidWidget(elementParent) || HasWidgetsHandler.isValidHasWidgetsPanel(elementParent))
+			{
+				return elementParent;
+			}
+			elementParent = elementParent.getParentElement();
+		}
+			
+		return null;	
+	}
+
+	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	private boolean isScreenDefinitions(Element element)
+	{
+		if ("span".equalsIgnoreCase(element.getTagName()))
+		{
+			String type = element.getAttribute("_type");
+			if (type != null && "screen".equals(type))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

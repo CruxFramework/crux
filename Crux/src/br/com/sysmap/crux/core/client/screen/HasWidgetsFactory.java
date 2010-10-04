@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Base class for create new containers.
- * @author Thiago
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public interface HasWidgetsFactory<T extends Widget>

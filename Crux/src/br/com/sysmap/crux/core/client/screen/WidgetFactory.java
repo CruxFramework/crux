@@ -497,6 +497,14 @@ public abstract class WidgetFactory <T extends Widget>
 	
 	/**
 	 * 
+	 */
+	protected void parseDocument()
+	{
+		ScreenFactory.getInstance().parseDocument();
+	}
+	
+	/**
+	 * 
 	 * @param element
 	 * @return
 	 */

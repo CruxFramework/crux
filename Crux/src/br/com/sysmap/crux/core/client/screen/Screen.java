@@ -63,20 +63,712 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Screen
 {
-	protected String id;
-	protected Map<String, Widget> widgets = new HashMap<String, Widget>(30);
-	protected List<Element> blockingDivs = new ArrayList<Element>();
-	protected IFrameElement historyFrame = null;
-	protected HandlerManager handlerManager;
-	@Deprecated
-	protected ModuleComunicationSerializer serializer = null;
-	protected ScreenBlocker screenBlocker = GWT.create(ScreenBlocker.class);
-	protected String[] declaredControllers;
-	protected String[] declaredDataSources;
-	protected String[] declaredFormatters;
+	/**
+	 * 
+	 * @param id
+	 * @param widget
+	 */
+	public static void add(String id, Widget widget)
+	{
+		Screen.get().addWidget(id, widget);
+	}
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	public static HandlerRegistration addCloseHandler(CloseHandler<Window> handler) 
+	{
+		return Screen.get().addWindowCloseHandler(handler);
+	}
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	public static HandlerRegistration addClosingHandler(ClosingHandler handler) 
+	{
+		return Screen.get().addWindowClosingHandler(handler);
+	}
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	public static HandlerRegistration addHistoryChangedHandler(ValueChangeHandler<String> handler) 
+	{
+		return Screen.get().addWindowHistoryChangedHandler(handler);
+	}
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	public static HandlerRegistration addResizeHandler(ResizeHandler handler) 
+	{
+		return Screen.get().addWindowResizeHandler(handler);
+	}
+	/**
+	 * 
+	 * @param token
+	 */
+	public static void addToHistory(String token)
+	{
+		Screen.get().addTokenToHistory(token);
+	}
+	/**
+	 * 
+	 * @param token
+	 * @param issueEvent
+	 */
+	public static void addToHistory(String token, boolean issueEvent)
+	{
+		Screen.get().addTokenToHistory(token, issueEvent);
+	}
+	/**
+	 * 
+	 * @param url
+	 */
+	public static String appendDebugParameters(String url)
+	{
+		if (Crux.getConfig().enableDebugForURL(url))
+		{
+			try
+			{
+				if (!StringUtils.isEmpty(url) && !url.contains("gwt.codesvr="))
+				{
+					String debugSvr = Window.Location.getParameter("gwt.codesvr");
+					if (!StringUtils.isEmpty(debugSvr))
+					{
+						if (url.contains("?"))
+						{
+							url += "&gwt.codesvr="+URL.encode(debugSvr); 
+						}
+						else
+						{
+							url += "?gwt.codesvr="+URL.encode(debugSvr); 
+						}
+					}
+				}
+			}
+			catch(Throwable e)
+			{
+				GWT.log(e.getLocalizedMessage(), e);
+			}
+		}
+		return url;
+	}
+	/**
+	 * 
+	 */
+	public static void blockToUser()
+	{
+		Screen.get().showBlockDiv("crux-DefaultScreenBlocker");
+	}
+	/**
+	 * 
+	 */
+	public static void blockToUser(String blockingDivStyleName)
+	{
+		Screen.get().showBlockDiv(blockingDivStyleName);
+	}
+	/**
+     *
+     */
+	public static void clearContext()
+	{
+		ContextManager.clearContext();
+	}
+	
+	
+	/**
+	 * @param id
+	 * @return
+	 */
+	public static boolean contains(String id)
+	{
+		return Screen.get().containsWidget(id);
+	}
+	
+	/**
+	 * 
+	 */
+	public static void createContext()
+	{
+		ContextManager.createContext();
+	}
+	
+	/**
+	 * 
+	 * @param dataSource
+	 * @return
+	 */
+	public static DataSource<?> createDataSource(String dataSource)
+	{
+		return ScreenFactory.getInstance().createDataSource(dataSource);
+	}
 
+	/**
+	 * If the given widget does not have a non-empty ID attribute, sets the given id into it. 
+	 * @param widget
+	 * @param id
+	 */
+	public static void ensureDebugId(Widget widget, String id)
+	{
+		if(widget != null)
+		{
+			if(StringUtils.isEmpty(widget.getElement().getId()))
+			{
+				id = id.replaceAll("[^a-zA-Z0-9\\$]", "_");
+				id = id.length() > 100 ? id.substring(0, 100) : id;
+				
+				if(!id.startsWith("_"))
+				{
+					id = "_" + id;
+				}
+				
+				id = id.toLowerCase();
+				
+				id = ensureUniqueId(id);
+				
+				widget.getElement().setId(id);
+			}
+		}
+	}
+
+	/**
+	 * Gets the current screen
+	 * @return
+	 */
+	public static Screen get()
+	{
+		return ScreenFactory.getInstance().getScreen();
+	}
+
+	/**
+	 * Gets a widget on the current screen
+	 * @param id
+	 * @return
+	 */
+	public static Widget get(String id)
+	{
+		return Screen.get().getWidget(id);
+	}
+
+	/**
+	 * 
+	 * @param <T>
+	 * @param id
+	 * @param clazz
+	 * @return
+	 */
+	public static <T extends Widget> T get(String id, Class<T> clazz)
+	{
+		return Screen.get().getWidget(id, clazz);
+	}
+	
+	/**
+	 * @return a list containing all widgets from the current screen 
+	 */
+	public static List<Widget> getAllWidgets()
+	{
+		Screen instance = Screen.get();
+		List<Widget> ids = new ArrayList<Widget>();
+		ids.addAll(instance.widgets.values());
+		return ids;
+	}
+
+	/**
+	 * @return a list containing all widgets ids from the current screen 
+	 */
+	public static List<String> getAllWidgetsIds()
+	{
+		Screen instance = Screen.get();
+		Set<String> keySet = instance.widgets.keySet();
+		List<String> ids = new ArrayList<String>(keySet.size());		
+		ids.addAll(keySet);
+		return ids;
+	}
+	
+	
+	/**
+	 * @return
+	 */
+	public static String[] getControllers()
+	{
+		return Screen.get().getDeclaredControllers();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@Deprecated
+	public static ModuleComunicationSerializer getCruxSerializer()
+	{
+		return Screen.get().serializer;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getCurrentHistoryItem()
+	{
+		return Screen.get().getCurrentHistoryToken();
+	}
+	
+	/**
+	 * @deprecated Use createDataSource(java.lang.String) instead
+	 * @param dataSource
+	 * @return
+	 */
+	@Deprecated
+	public static DataSource<?> getDataSource(String dataSource)
+	{
+		return createDataSource(dataSource);
+	}
+
+	/**
+	 * @return
+	 */
+	public static String[] getDataSources()
+	{
+		return Screen.get().getDeclaredDataSources();
+	}
+	
+	/**
+	 * 
+	 * @param formatter
+	 * @return
+	 */
+	public static Formatter getFormatter(String formatter)
+	{
+		return ScreenFactory.getInstance().getClientFormatter(formatter);
+	}
+	
+	/**
+	 * @return
+	 */
+	public static String[] getFormatters()
+	{
+		return Screen.get().getDeclaredFormatters();
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getId() 
+	{
+		return Screen.get().getIdentifier();
+	}
+	
+	/**
+	 * 
+	 * @return the locale specified or null
+	 */
+	public static String getLocale()
+	{
+		String locale = Window.Location.getParameter("locale");
+		if (locale == null || locale.length() == 0)
+		{
+			NodeList<Element> metas = Document.get().getElementsByTagName("meta");
+			if (metas != null)
+			{
+				for (int i=0; i< metas.getLength(); i++)
+				{
+					MetaElement meta = MetaElement.as(metas.getItem(i));
+					if ("gwt:property".equals(meta.getName()) && meta.getContent() != null && meta.getContent().startsWith("locale="))
+					{
+						locale = meta.getContent().replace("locale=", "").trim();
+						break;
+					}
+				}
+			}
+		}
+		else
+		{
+			locale = locale.trim();
+		}
+		if ("".equals(locale))
+		{
+			locale = null;
+		}
+		
+		return locale;
+	}
+
+	/**
+	 * @return
+	 */
+	@Deprecated
+	public static String[] getSerializables()
+	{
+		return Screen.get().getDeclaredSerializables();
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static void invokeControllerOnAbsoluteTop(String call, Object param) throws ModuleComunicationException
+	{
+		invokeControllerOnAbsoluteTop(call, param, Object.class);
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
+	public static <T> T invokeControllerOnAbsoluteTop(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.get().serializer.deserialize(callAbsoluteTopControllerAccessor(call, Screen.get().serializer.serialize(param)));
+	}	
+	
+	/**
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static void invokeControllerOnFrame(String frame, String call, Object param) throws ModuleComunicationException
+	{
+		invokeControllerOnFrame(frame, call, param, Object.class);
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
+	public static <T> T  invokeControllerOnFrame(String frame, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.get().serializer.deserialize(callFrameControllerAccessor(frame, call, Screen.get().serializer.serialize(param)));
+	}	
+	
+	/**
+	 * 
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static void invokeControllerOnOpener(String call, Object param) throws ModuleComunicationException
+	{
+		invokeControllerOnOpener(call, param, Object.class);
+	}	
+
+	/**
+	 * 
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
+	public static <T> T  invokeControllerOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.get().serializer.deserialize(callOpenerControllerAccessor(call, Screen.get().serializer.serialize(param)));
+	}
+
+	/**
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static void invokeControllerOnParent(String call, Object param) throws ModuleComunicationException
+	{
+		invokeControllerOnParent(call, param, Object.class);
+	}
+	
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
+	public static <T> T  invokeControllerOnParent(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.get().serializer.deserialize(callParentControllerAccessor(call, Screen.get().serializer.serialize(param)));
+	}
+	
+	/**
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static void invokeControllerOnSelf(String call, Object param)
+	{
+		invokeControllerOnSelf(call, param, Object.class);
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
+	public static <T> T invokeControllerOnSelf(String call, Object param, Class<T> resultType)
+	{
+		try
+		{
+			Event event = Events.getEvent("_onInvokeController", call);
+			InvokeControllerEvent controllerEvent = new InvokeControllerEvent();
+			controllerEvent.setParameter(param);
+			Object result = Events.callEvent(event, controllerEvent, false);
+			return (T) result; 
+		}
+		catch (RuntimeException e)
+		{
+			Crux.getErrorHandler().handleError(e.getLocalizedMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * @param call
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static void invokeControllerOnSiblingFrame(String frame, String call, Object param) throws ModuleComunicationException
+	{
+		invokeControllerOnSiblingFrame(frame, call, param, Object.class);
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
+	public static <T> T  invokeControllerOnSiblingFrame(String frame, String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.get().serializer.deserialize(callSiblingFrameControllerAccessor(frame, call, Screen.get().serializer.serialize(param)));
+	}
+	
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	public static void invokeControllerOnTop(String call, Object param) throws ModuleComunicationException
+	{
+		invokeControllerOnTop(call, param, Object.class);
+	}
+
+	/**
+	 * @param call
+	 * @param param
+	 * @throws ModuleComunicationException
+	 */
+	@Deprecated
+	@SuppressWarnings("unchecked")
+	public static <T> T invokeControllerOnTop(String call, Object param, Class<T> resultType) throws ModuleComunicationException
+	{
+		return (T) Screen.get().serializer.deserialize(callTopControllerAccessor(call, Screen.get().serializer.serialize(param)));
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static Iterator<Widget> iterateWidgets()
+	{
+		return Screen.get().iteratorWidgets();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static Iterator<String> iterateWidgetsIds()
+	{
+		return Screen.get().iteratorWidgetsIds();
+	}
+	
+	/**
+	 * Remove a widget on the current screen
+	 * @param id
+	 */
+	public static void remove(String id)
+	{
+		Screen.get().removeWidget(id);
+	}
+
+	/**
+	 * Remove a widget on the current screen
+	 * @param id
+	 * @param removeFromDOM
+	 */
+	public static void remove(String id, boolean removeFromDOM)
+	{
+		Screen.get().removeWidget(id, removeFromDOM);
+	}
+
+	/**
+	 * 
+	 */
+	public static void unblockToUser()
+	{
+		Screen.get().hideBlockDiv();
+	}
+	
+	/**
+	 * Update fields mapped with ValueObject from widgets that have similar names.
+	 * 
+	 * @param caller
+	 */
+	public static void updateController(Object eventHandler)
+	{
+		Screen.get().updateControllerObjects(eventHandler);
+	}
+	
+	/**
+	 * Update widgets on screen that have the same id of fields mapped with ValueObject
+	 * 
+	 * @param caller
+	 */
+	public static void updateScreen(Object eventHandler)
+	{
+		Screen.get().updateScreenWidgets(eventHandler);
+	}
+	
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	static void addScreenLoadHandler(ScreenLoadHandler handler) 
+	{
+		Screen.get().addLoadHandler(handler);
+	}
+	
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	@Deprecated
+	private static native String callAbsoluteTopControllerAccessor(String call, String serializedData)/*-{
+		var who = $wnd.top;
+		var op = $wnd.opener;
+		while (op != null)
+		{
+			who = op.top;
+			op = op.opener;
+		}
+		return who._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+
+	/**
+	 * 
+	 * @param frame
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	@Deprecated
+	private static native String callFrameControllerAccessor(String frame, String call, String serializedData)/*-{
+		return $wnd.frames[frame]._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+	
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	@Deprecated
+	private static native String callOpenerControllerAccessor(String call, String serializedData)/*-{
+		return $wnd.opener._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+	
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	@Deprecated
+	private static native String callParentControllerAccessor(String call, String serializedData)/*-{
+		return $wnd.parent._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+	
+	/**
+	 * 
+	 * @param frame
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	@Deprecated
+	private static native String callSiblingFrameControllerAccessor(String frame, String call, String serializedData)/*-{
+		return $wnd.parent.frames[frame]._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+	
+	/**
+	 * @param call
+	 * @param serializedData
+	 * @return
+	 */
+	@Deprecated
+	private static native String callTopControllerAccessor(String call, String serializedData)/*-{
+		return $wnd.top._cruxScreenControllerAccessor(call, serializedData);
+	}-*/;
+
+	/**
+	 * Ensures that the given id is not being used in the current document. If this is not the case, returns an unique id.
+	 * @param id
+	 * @return
+	 */
+	private static String ensureUniqueId(String id)
+	{
+		Object exists = DOM.getElementById(id);
+		int i = 0;
+		while(exists != null)
+		{
+			exists = DOM.getElementById(id + "_" + (++i));
+		}
+		if(i > 0)
+		{
+			id = id + "_" + i;
+		}
+		return id;
+	}
+	
+	protected List<Element> blockingDivs = new ArrayList<Element>();
+
+	protected String[] declaredControllers;
+	
+	protected String[] declaredDataSources;
+	
+	protected String[] declaredFormatters;
+	
 	@Deprecated
 	protected String[] declaredSerializables;
+
+	protected HandlerManager handlerManager;
+	
+	protected IFrameElement historyFrame = null;
+	
+	protected String id;
+	
+	protected ScreenBlocker screenBlocker = GWT.create(ScreenBlocker.class);
+
+	@Deprecated
+	protected ModuleComunicationSerializer serializer = null;
+	
+	protected Map<String, Widget> widgets = new HashMap<String, Widget>(30);
+	
+	private List<ScreenLoadHandler>  loadHandlers = new ArrayList<ScreenLoadHandler>();
 	
 	@SuppressWarnings("deprecation")
     protected Screen(String id) 
@@ -102,6 +794,111 @@ public class Screen
 			}
 		});
 	}
+
+	/**
+	 * Adds an event handler that is called only once, when the screen is loaded
+	 * @param handler
+	 */
+	protected void addLoadHandler(final ScreenLoadHandler handler) 
+	{
+		handlerManager.addHandler(ScreenLoadEvent.TYPE, handler);
+		loadHandlers.add(handler);
+	}	
+	
+	/**
+	 * 
+	 * @param token
+	 */
+	protected void addTokenToHistory(String token)
+	{
+		History.newItem(token);
+	}	
+	
+	/**
+	 * 
+	 * @param token
+	 * @param issueEvent
+	 */
+	protected void addTokenToHistory(String token, boolean issueEvent)
+	{
+		History.newItem(token, issueEvent);
+	}	
+	
+	protected void addWidget(String id, Widget widget)
+	{
+		widgets.put(id, widget);
+	}
+
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	protected HandlerRegistration addWindowCloseHandler(CloseHandler<Window> handler) 
+	{
+		return Window.addCloseHandler(handler);
+	}		
+	
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	protected HandlerRegistration addWindowClosingHandler(ClosingHandler handler) 
+	{
+		return Window.addWindowClosingHandler(handler);
+	}		
+	
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	protected HandlerRegistration addWindowHistoryChangedHandler(ValueChangeHandler<String> handler) 
+	{
+		if (historyFrame == null)
+		{
+			prepareHistoryFrame();
+		}
+		return History.addValueChangeHandler(handler);
+	}
+
+	/**
+	 * 
+	 * @param handler
+	 * @return
+	 */
+	protected HandlerRegistration addWindowResizeHandler(ResizeHandler handler) 
+	{
+		return Window.addResizeHandler(handler);
+	}
+	
+	/**
+	 * @param id
+	 * @return
+	 */
+	protected boolean containsWidget(String id)
+	{
+		return widgets.containsKey(id);
+	}
+	
+	/**
+	 * Fires the load event. This method has no effect when called more than one time.
+	 */
+	protected void fireEvent(ScreenLoadEvent event) 
+	{
+		handlerManager.fireEvent(event);
+		cleanLoadhandlers();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	protected String getCurrentHistoryToken()
+	{
+		return History.getToken();
+	}
 	
 	/**
 	 * @return
@@ -118,7 +915,7 @@ public class Screen
 	{
 		return declaredDataSources;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -126,7 +923,7 @@ public class Screen
 	{
 		return declaredFormatters;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -145,26 +942,6 @@ public class Screen
 	}
 	
 	/**
-	 * 
-	 */
-	protected void prepareHistoryFrame() 
-	{
-		Element body = RootPanel.getBodyElement();
-		if (historyFrame == null)
-		{
-			historyFrame = DOM.createIFrame().cast();
-			historyFrame.setSrc("javascript:''");
-			historyFrame.setId("__gwt_historyFrame");
-			historyFrame.getStyle().setProperty("position", "absolute");
-			historyFrame.getStyle().setProperty("width", "0");
-			historyFrame.getStyle().setProperty("height", "0");
-			historyFrame.getStyle().setProperty("border", "0");
-			body.appendChild(historyFrame);
-		    History.fireCurrentHistoryState();
-		}
-	}
-
-	/**
 	 * @param id
 	 * @return
 	 */
@@ -172,17 +949,7 @@ public class Screen
 	{
 		return widgets.get(id);
 	}
-	
-	
-	/**
-	 * @param id
-	 * @return
-	 */
-	protected boolean containsWidget(String id)
-	{
-		return widgets.containsKey(id);
-	}
-	
+
 	/**
 	 * Generic version of <code>getWidget</code> method
 	 * @param <T>
@@ -195,76 +962,6 @@ public class Screen
 	{
 		Widget w = widgets.get(id);
 		return (T) w;
-	}
-	
-	protected void addWidget(String id, Widget widget)
-	{
-		widgets.put(id, widget);
-	}
-	
-	protected void removeWidget(String id)
-	{
-		removeWidget(id, true);
-	}
-
-	protected void removeWidget(String id, boolean removeFromDOM)
-	{
-		Widget widget = widgets.remove(id);
-		if (widget != null && removeFromDOM)
-		{
-			widget.removeFromParent();
-		}
-	}
-	
-	/**
-	 * @return a list containing all widgets ids from the current screen 
-	 */
-	public static List<String> getAllWidgetsIds()
-	{
-		Screen instance = Screen.get();
-		Set<String> keySet = instance.widgets.keySet();
-		List<String> ids = new ArrayList<String>(keySet.size());		
-		ids.addAll(keySet);
-		return ids;
-	}
-	
-	/**
-	 * @return a list containing all widgets from the current screen 
-	 */
-	public static List<Widget> getAllWidgets()
-	{
-		Screen instance = Screen.get();
-		List<Widget> ids = new ArrayList<Widget>();
-		ids.addAll(instance.widgets.values());
-		return ids;
-	}
-
-	protected Iterator<String> iteratorWidgetsIds()
-	{
-		return widgets.keySet().iterator();
-	}
-	
-	protected Iterator<Widget> iteratorWidgets()
-	{
-		return widgets.values().iterator();
-	}
-
-	/**
-	 * Creates and shows a DIV over the screen contents
-	 * @param blockingDivStyleName
-	 */
-	protected void showBlockDiv(String blockingDivStyleName)
-	{
-		if(blockingDivs.size() > 0)
-		{
-			Element blockingDiv = blockingDivs.get(blockingDivs.size() - 1);
-			blockingDiv.getStyle().setProperty("display", "none");
-		}
-		
-		Element body = RootPanel.getBodyElement();		
-		Element blockingDiv = screenBlocker.createBlockingDiv(blockingDivStyleName, body);
-		blockingDivs.add(blockingDiv);
-		body.appendChild(blockingDiv);
 	}
 
 	/**
@@ -291,78 +988,39 @@ public class Screen
 		}
 	}
 
-	/**
-	 * 
-	 * @param handler
-	 * @return
-	 */
-	protected HandlerRegistration addWindowClosingHandler(ClosingHandler handler) 
+	protected Iterator<Widget> iteratorWidgets()
 	{
-		return Window.addWindowClosingHandler(handler);
-	}	
-	
-	/**
-	 * 
-	 * @param handler
-	 * @return
-	 */
-	protected HandlerRegistration addWindowCloseHandler(CloseHandler<Window> handler) 
+		return widgets.values().iterator();
+	}
+
+	protected Iterator<String> iteratorWidgetsIds()
 	{
-		return Window.addCloseHandler(handler);
+		return widgets.keySet().iterator();
 	}
 
 	/**
-	 * 
-	 * @param handler
-	 * @return
+	 * Fires the load event. This method has no effect when called more than one time.
 	 */
-	protected HandlerRegistration addWindowResizeHandler(ResizeHandler handler) 
+	protected void load() 
 	{
-		return Window.addResizeHandler(handler);
-	}	
-	
-	/**
-	 * 
-	 * @param handler
-	 * @return
-	 */
-	protected HandlerRegistration addWindowHistoryChangedHandler(ValueChangeHandler<String> handler) 
-	{
-		if (historyFrame == null)
+		if (handlerManager.getHandlerCount(ScreenLoadEvent.TYPE) > 0)
 		{
-			prepareHistoryFrame();
+			Scheduler.get().scheduleDeferred(new ScheduledCommand(){
+				public void execute()
+				{
+					try 
+					{
+						ScreenLoadEvent.fire(Screen.this);
+					} 
+					catch (RuntimeException e) 
+					{
+						Crux.getErrorHandler().handleError(e);
+					}
+				}
+			});
 		}
-		return History.addValueChangeHandler(handler);
-	}	
-
-	/**
-	 * 
-	 * @param token
-	 */
-	protected void addTokenToHistory(String token)
-	{
-		History.newItem(token);
 	}
 
-	/**
-	 * 
-	 * @param token
-	 * @param issueEvent
-	 */
-	protected void addTokenToHistory(String token, boolean issueEvent)
-	{
-		History.newItem(token, issueEvent);
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected String getCurrentHistoryToken()
-	{
-		return History.getToken();
-	}
-	
 	/**
 	 * 
 	 * @param element
@@ -434,80 +1092,74 @@ public class Screen
 			});
 		}
 	}
-
+	
 	/**
-	 * @param element
-	 * @param attributeName
-	 * @return
+	 * 
 	 */
-	private String[] extractReferencedResourceList(Element element, String attributeName)
+	protected void prepareHistoryFrame() 
 	{
-		String attr = element.getAttribute(attributeName);
-		if (!StringUtils.isEmpty(attr))
+		Element body = RootPanel.getBodyElement();
+		if (historyFrame == null)
 		{
-			String[] result = attr.split(",");
-			for (int i = 0; i < result.length; i++)
-			{
-				result[i] = result[i].trim();
-			}
-			return result;
+			historyFrame = DOM.createIFrame().cast();
+			historyFrame.setSrc("javascript:''");
+			historyFrame.setId("__gwt_historyFrame");
+			historyFrame.getStyle().setProperty("position", "absolute");
+			historyFrame.getStyle().setProperty("width", "0");
+			historyFrame.getStyle().setProperty("height", "0");
+			historyFrame.getStyle().setProperty("border", "0");
+			body.appendChild(historyFrame);
+		    History.fireCurrentHistoryState();
 		}
-		return new String[0];
+	}
+
+	protected void removeWidget(String id)
+	{
+		removeWidget(id, true);
+	}
+
+	protected void removeWidget(String id, boolean removeFromDOM)
+	{
+		Widget widget = widgets.remove(id);
+		if (widget != null && removeFromDOM)
+		{
+			widget.removeFromParent();
+		}
 	}
 
 	/**
-	 * Adds an event handler that is called only once, when the screen is loaded
-	 * @param handler
+	 * Creates and shows a DIV over the screen contents
+	 * @param blockingDivStyleName
 	 */
-	protected void addLoadHandler(final ScreenLoadHandler handler) 
+	protected void showBlockDiv(String blockingDivStyleName)
 	{
-		handlerManager.addHandler(ScreenLoadEvent.TYPE, handler);
-	}
-
-	/**
-	 * Fires the load event. This method has no effect when called more than one time.
-	 */
-	protected void load() 
-	{
-		if (handlerManager.getHandlerCount(ScreenLoadEvent.TYPE) > 0)
+		if(blockingDivs.size() > 0)
 		{
-			Scheduler.get().scheduleDeferred(new ScheduledCommand(){
-				public void execute()
-				{
-					try 
-					{
-						ScreenLoadEvent.fire(Screen.this);
-					} 
-					catch (RuntimeException e) 
-					{
-						Crux.getErrorHandler().handleError(e);
-					}
-				}
-			});
+			Element blockingDiv = blockingDivs.get(blockingDivs.size() - 1);
+			blockingDiv.getStyle().setProperty("display", "none");
 		}
+		
+		Element body = RootPanel.getBodyElement();		
+		Element blockingDiv = screenBlocker.createBlockingDiv(blockingDivStyleName, body);
+		blockingDivs.add(blockingDiv);
+		body.appendChild(blockingDiv);
 	}
 	
 	/**
-	 * Update each widget main element id with the value contained on Screen object
+	 * Update fields mapped with ValueObject from widgets that have similar names.
+	 * @param caller
 	 */
-	protected void updateWidgetsIds()
+	protected void updateControllerObjects(Object eventHandler)
 	{
-		for (String widgetId : this.widgets.keySet())
-        {
-	        Widget widget = Screen.get(widgetId);
-	        if (StringUtils.isEmpty(widget.getElement().getId()))
-	        {
-	        	widget.getElement().setId(widgetId);
-	        }
-        }
-	}
+		if (eventHandler != null)
+		{
+			if (!(eventHandler instanceof ScreenBindableObject))
+			{
+				throw new ClassCastException(Crux.getMessages().screenInvalidObjectError());
+			}
+			((ScreenBindableObject) eventHandler).updateControllerObjects();
 
-	/**
-	 * Fires the load event. This method has no effect when called more than one time.
-	 */
-	protected void fireEvent(ScreenLoadEvent event) 
-	{
-		handlerManager.fireEvent(event);
+		}
 	}
 	
 	/**
@@ -528,22 +1180,38 @@ public class Screen
 	}
 	
 	/**
-	 * Update fields mapped with ValueObject from widgets that have similar names.
-	 * @param caller
+	 * Update each widget main element id with the value contained on Screen object
 	 */
-	protected void updateControllerObjects(Object eventHandler)
+	protected void updateWidgetsIds()
 	{
-		if (eventHandler != null)
-		{
-			if (!(eventHandler instanceof ScreenBindableObject))
-			{
-				throw new ClassCastException(Crux.getMessages().screenInvalidObjectError());
-			}
-			((ScreenBindableObject) eventHandler).updateControllerObjects();
-
-		}
+		for (String widgetId : this.widgets.keySet())
+        {
+	        Widget widget = Screen.get(widgetId);
+	        if (StringUtils.isEmpty(widget.getElement().getId()))
+	        {
+	        	widget.getElement().setId(widgetId);
+	        }
+        }
 	}
-
+	
+	/**
+	 * 
+	 */
+	private void cleanLoadhandlers()
+	{
+		Scheduler.get().scheduleDeferred(new ScheduledCommand()
+		{
+			public void execute()
+			{
+				for (ScreenLoadHandler handler : loadHandlers)
+				{
+					handlerManager.removeHandler(ScreenLoadEvent.TYPE, handler);
+				}
+				loadHandlers.clear();
+			}
+		});
+	}
+	
 	@Deprecated
 	private native void createControllerAccessor(Screen handler)/*-{
 		$wnd._cruxScreenControllerAccessor = function(call, serializedData){
@@ -552,11 +1220,6 @@ public class Screen
 		};
 	}-*/;
 
-	@Deprecated
-	private native void removeControllerAccessor(Screen handler)/*-{
-		$wnd._cruxScreenControllerAccessor = null;
-	}-*/;
-	
 	/**
 	 * Create a hook javascript function, called outside of module.
 	 * @param handler
@@ -569,23 +1232,23 @@ public class Screen
 	}-*/;
 	
 	/**
-	 * Remove the cross document hook function
-	 * @param handler
-	 */
-	private native void removeCrossDocumentAccessor(Screen handler)/*-{
-		$wnd._cruxCrossDocumentAccessor = null;
-	}-*/;
-	
-	/**
-	 * Make a call to a cross document object.
-	 * 
-	 * @param serializedData
+	 * @param element
+	 * @param attributeName
 	 * @return
 	 */
-	@SuppressWarnings("unused") // called by native code
-	private String invokeCrossDocument(String serializedData)
+	private String[] extractReferencedResourceList(Element element, String attributeName)
 	{
-		return Events.getRegisteredControllers().invokeCrossDocument(serializedData);
+		String attr = element.getAttribute(attributeName);
+		if (!StringUtils.isEmpty(attr))
+		{
+			String[] result = attr.split(",");
+			for (int i = 0; i < result.length; i++)
+			{
+				result[i] = result[i].trim();
+			}
+			return result;
+		}
+		return new String[0];
 	}
 	
 	@Deprecated
@@ -619,670 +1282,29 @@ public class Screen
 			return null;
 		}
 	}
-
-	/**
-	 * Gets the current screen
-	 * @return
-	 */
-	public static Screen get()
-	{
-		return ScreenFactory.getInstance().getScreen();
-	}
 	
 	/**
-	 * @param id
-	 * @return
-	 */
-	public static boolean contains(String id)
-	{
-		return Screen.get().containsWidget(id);
-	}
-	
-	/**
-	 * Gets a widget on the current screen
-	 * @param id
-	 * @return
-	 */
-	public static Widget get(String id)
-	{
-		return Screen.get().getWidget(id);
-	}
-	
-	/**
+	 * Make a call to a cross document object.
 	 * 
-	 * @param <T>
-	 * @param id
-	 * @param clazz
-	 * @return
-	 */
-	public static <T extends Widget> T get(String id, Class<T> clazz)
-	{
-		return Screen.get().getWidget(id, clazz);
-	}
-	
-	/**
-	 * 
-	 * @param id
-	 * @param widget
-	 */
-	public static void add(String id, Widget widget)
-	{
-		Screen.get().addWidget(id, widget);
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static Iterator<String> iterateWidgetsIds()
-	{
-		return Screen.get().iteratorWidgetsIds();
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static Iterator<Widget> iterateWidgets()
-	{
-		return Screen.get().iteratorWidgets();
-	}
-
-	/**
-	 * Remove a widget on the current screen
-	 * @param id
-	 */
-	public static void remove(String id)
-	{
-		Screen.get().removeWidget(id);
-	}
-	
-	/**
-	 * Remove a widget on the current screen
-	 * @param id
-	 * @param removeFromDOM
-	 */
-	public static void remove(String id, boolean removeFromDOM)
-	{
-		Screen.get().removeWidget(id, removeFromDOM);
-	}
-	
-	/**
-	 * Update widgets on screen that have the same id of fields mapped with ValueObject
-	 * 
-	 * @param caller
-	 */
-	public static void updateScreen(Object eventHandler)
-	{
-		Screen.get().updateScreenWidgets(eventHandler);
-	}
-	
-	/**
-	 * Update fields mapped with ValueObject from widgets that have similar names.
-	 * 
-	 * @param caller
-	 */
-	public static void updateController(Object eventHandler)
-	{
-		Screen.get().updateControllerObjects(eventHandler);
-	}
-
-	/**
-	 * 
-	 */
-	public static void blockToUser()
-	{
-		Screen.get().showBlockDiv("crux-DefaultScreenBlocker");
-	}
-	
-	/**
-	 * 
-	 */
-	public static void blockToUser(String blockingDivStyleName)
-	{
-		Screen.get().showBlockDiv(blockingDivStyleName);
-	}
-	
-	/**
-	 * 
-	 */
-	public static void unblockToUser()
-	{
-		Screen.get().hideBlockDiv();
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static String getId() 
-	{
-		return Screen.get().getIdentifier();
-	}
-
-	/**
-	 * 
-	 * @return the locale specified or null
-	 */
-	public static String getLocale()
-	{
-		String locale = Window.Location.getParameter("locale");
-		if (locale == null || locale.length() == 0)
-		{
-			NodeList<Element> metas = Document.get().getElementsByTagName("meta");
-			if (metas != null)
-			{
-				for (int i=0; i< metas.getLength(); i++)
-				{
-					MetaElement meta = MetaElement.as(metas.getItem(i));
-					if ("gwt:property".equals(meta.getName()) && meta.getContent() != null && meta.getContent().startsWith("locale="))
-					{
-						locale = meta.getContent().replace("locale=", "").trim();
-						break;
-					}
-				}
-			}
-		}
-		else
-		{
-			locale = locale.trim();
-		}
-		if ("".equals(locale))
-		{
-			locale = null;
-		}
-		
-		return locale;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public static ModuleComunicationSerializer getCruxSerializer()
-	{
-		return Screen.get().serializer;
-	}
-	
-	/**
-	 * 
-	 * @param formatter
-	 * @return
-	 */
-	public static Formatter getFormatter(String formatter)
-	{
-		return ScreenFactory.getInstance().getClientFormatter(formatter);
-	}
-	
-	/**
-	 * @deprecated Use createDataSource(java.lang.String) instead
-	 * @param dataSource
-	 * @return
-	 */
-	@Deprecated
-	public static DataSource<?> getDataSource(String dataSource)
-	{
-		return createDataSource(dataSource);
-	}
-
-	/**
-	 * 
-	 * @param dataSource
-	 * @return
-	 */
-	public static DataSource<?> createDataSource(String dataSource)
-	{
-		return ScreenFactory.getInstance().createDataSource(dataSource);
-	}	
-	
-	/**
-	 * 
-	 * @param handler
-	 * @return
-	 */
-	public static HandlerRegistration addClosingHandler(ClosingHandler handler) 
-	{
-		return Screen.get().addWindowClosingHandler(handler);
-	}	
-	
-	/**
-	 * 
-	 * @param handler
-	 * @return
-	 */
-	static void addScreenLoadHandler(ScreenLoadHandler handler) 
-	{
-		Screen.get().addLoadHandler(handler);
-	}	
-	
-	/**
-	 * 
-	 * @param handler
-	 * @return
-	 */
-	public static HandlerRegistration addCloseHandler(CloseHandler<Window> handler) 
-	{
-		return Screen.get().addWindowCloseHandler(handler);
-	}
-
-	/**
-	 * 
-	 * @param handler
-	 * @return
-	 */
-	public static HandlerRegistration addResizeHandler(ResizeHandler handler) 
-	{
-		return Screen.get().addWindowResizeHandler(handler);
-	}		
-	
-	/**
-	 * 
-	 * @param handler
-	 * @return
-	 */
-	public static HandlerRegistration addHistoryChangedHandler(ValueChangeHandler<String> handler) 
-	{
-		return Screen.get().addWindowHistoryChangedHandler(handler);
-	}		
-	
-	/**
-	 * 
-	 * @param token
-	 */
-	public static void addToHistory(String token)
-	{
-		Screen.get().addTokenToHistory(token);
-	}
-
-	/**
-	 * 
-	 * @param token
-	 * @param issueEvent
-	 */
-	public static void addToHistory(String token, boolean issueEvent)
-	{
-		Screen.get().addTokenToHistory(token, issueEvent);
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static String getCurrentHistoryItem()
-	{
-		return Screen.get().getCurrentHistoryToken();
-	}
-	
-	/**
-	 * 
-	 */
-	public static void createContext()
-	{
-		ContextManager.createContext();
-	}
-	
-	/**
-     *
-     */
-	public static void clearContext()
-	{
-		ContextManager.clearContext();
-	}
-	
-	/**
-	 * If the given widget does not have a non-empty ID attribute, sets the given id into it. 
-	 * @param widget
-	 * @param id
-	 */
-	public static void ensureDebugId(Widget widget, String id)
-	{
-		if(widget != null)
-		{
-			if(StringUtils.isEmpty(widget.getElement().getId()))
-			{
-				id = id.replaceAll("[^a-zA-Z0-9\\$]", "_");
-				id = id.length() > 100 ? id.substring(0, 100) : id;
-				
-				if(!id.startsWith("_"))
-				{
-					id = "_" + id;
-				}
-				
-				id = id.toLowerCase();
-				
-				id = ensureUniqueId(id);
-				
-				widget.getElement().setId(id);
-			}
-		}
-	}
-
-	/**
-	 * Ensures that the given id is not being used in the current document. If this is not the case, returns an unique id.
-	 * @param id
-	 * @return
-	 */
-	private static String ensureUniqueId(String id)
-	{
-		Object exists = DOM.getElementById(id);
-		int i = 0;
-		while(exists != null)
-		{
-			exists = DOM.getElementById(id + "_" + (++i));
-		}
-		if(i > 0)
-		{
-			id = id + "_" + i;
-		}
-		return id;
-	}
-	
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	public static void invokeControllerOnTop(String call, Object param) throws ModuleComunicationException
-	{
-		invokeControllerOnTop(call, param, Object.class);
-	}
-	
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> T invokeControllerOnTop(String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{
-		return (T) Screen.get().serializer.deserialize(callTopControllerAccessor(call, Screen.get().serializer.serialize(param)));
-	}
-
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	public static void invokeControllerOnAbsoluteTop(String call, Object param) throws ModuleComunicationException
-	{
-		invokeControllerOnAbsoluteTop(call, param, Object.class);
-	}
-	
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> T invokeControllerOnAbsoluteTop(String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{
-		return (T) Screen.get().serializer.deserialize(callAbsoluteTopControllerAccessor(call, Screen.get().serializer.serialize(param)));
-	}
-
-	/**
-	 * 
-	 * @param call
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	public static void invokeControllerOnOpener(String call, Object param) throws ModuleComunicationException
-	{
-		invokeControllerOnOpener(call, param, Object.class);
-	}
-
-	/**
-	 * 
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> T  invokeControllerOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{
-		return (T) Screen.get().serializer.deserialize(callOpenerControllerAccessor(call, Screen.get().serializer.serialize(param)));
-	}
-
-	/**
-	 * @param call
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	public static void invokeControllerOnParent(String call, Object param) throws ModuleComunicationException
-	{
-		invokeControllerOnParent(call, param, Object.class);
-	}
-
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> T  invokeControllerOnParent(String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{
-		return (T) Screen.get().serializer.deserialize(callParentControllerAccessor(call, Screen.get().serializer.serialize(param)));
-	}
-
-	/**
-	 * @param call
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	public static void invokeControllerOnFrame(String frame, String call, Object param) throws ModuleComunicationException
-	{
-		invokeControllerOnFrame(frame, call, param, Object.class);
-	}
-
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> T  invokeControllerOnFrame(String frame, String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{
-		return (T) Screen.get().serializer.deserialize(callFrameControllerAccessor(frame, call, Screen.get().serializer.serialize(param)));
-	}
-	
-	/**
-	 * @param call
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	public static void invokeControllerOnSiblingFrame(String frame, String call, Object param) throws ModuleComunicationException
-	{
-		invokeControllerOnSiblingFrame(frame, call, param, Object.class);
-	}
-
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> T  invokeControllerOnSiblingFrame(String frame, String call, Object param, Class<T> resultType) throws ModuleComunicationException
-	{
-		return (T) Screen.get().serializer.deserialize(callSiblingFrameControllerAccessor(frame, call, Screen.get().serializer.serialize(param)));
-	}
-
-	/**
-	 * @param call
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	public static void invokeControllerOnSelf(String call, Object param)
-	{
-		invokeControllerOnSelf(call, param, Object.class);
-	}
-
-	/**
-	 * @param call
-	 * @param param
-	 * @throws ModuleComunicationException
-	 */
-	@Deprecated
-	@SuppressWarnings("unchecked")
-	public static <T> T invokeControllerOnSelf(String call, Object param, Class<T> resultType)
-	{
-		try
-		{
-			Event event = Events.getEvent("_onInvokeController", call);
-			InvokeControllerEvent controllerEvent = new InvokeControllerEvent();
-			controllerEvent.setParameter(param);
-			Object result = Events.callEvent(event, controllerEvent, false);
-			return (T) result; 
-		}
-		catch (RuntimeException e)
-		{
-			Crux.getErrorHandler().handleError(e.getLocalizedMessage(), e);
-			return null;
-		}
-	}
-	
-	/**
-	 * 
-	 * @param url
-	 */
-	public static String appendDebugParameters(String url)
-	{
-		if (Crux.getConfig().enableDebugForURL(url))
-		{
-			try
-			{
-				if (!StringUtils.isEmpty(url) && !url.contains("gwt.codesvr="))
-				{
-					String debugSvr = Window.Location.getParameter("gwt.codesvr");
-					if (!StringUtils.isEmpty(debugSvr))
-					{
-						if (url.contains("?"))
-						{
-							url += "&gwt.codesvr="+URL.encode(debugSvr); 
-						}
-						else
-						{
-							url += "?gwt.codesvr="+URL.encode(debugSvr); 
-						}
-					}
-				}
-			}
-			catch(Throwable e)
-			{
-				GWT.log(e.getLocalizedMessage(), e);
-			}
-		}
-		return url;
-	}
-	
-	/**
-	 * @return
-	 */
-	public static String[] getControllers()
-	{
-		return Screen.get().getDeclaredControllers();
-	}
-	
-	/**
-	 * @return
-	 */
-	public static String[] getDataSources()
-	{
-		return Screen.get().getDeclaredDataSources();
-	}
-	
-	/**
-	 * @return
-	 */
-	public static String[] getFormatters()
-	{
-		return Screen.get().getDeclaredFormatters();
-	}
-	
-	/**
-	 * @return
-	 */
-	@Deprecated
-	public static String[] getSerializables()
-	{
-		return Screen.get().getDeclaredSerializables();
-	}
-
-	/**
-	 * @param call
 	 * @param serializedData
 	 * @return
 	 */
-	@Deprecated
-	private static native String callAbsoluteTopControllerAccessor(String call, String serializedData)/*-{
-		var who = $wnd.top;
-		var op = $wnd.opener;
-		while (op != null)
-		{
-			who = op.top;
-			op = op.opener;
-		}
-		return who._cruxScreenControllerAccessor(call, serializedData);
-	}-*/;
+	@SuppressWarnings("unused") // called by native code
+	private String invokeCrossDocument(String serializedData)
+	{
+		return Events.getRegisteredControllers().invokeCrossDocument(serializedData);
+	}
 	
-	/**
-	 * @param call
-	 * @param serializedData
-	 * @return
-	 */
 	@Deprecated
-	private static native String callTopControllerAccessor(String call, String serializedData)/*-{
-		return $wnd.top._cruxScreenControllerAccessor(call, serializedData);
-	}-*/;
-	
-	/**
-	 * @param call
-	 * @param serializedData
-	 * @return
-	 */
-	@Deprecated
-	private static native String callOpenerControllerAccessor(String call, String serializedData)/*-{
-		return $wnd.opener._cruxScreenControllerAccessor(call, serializedData);
-	}-*/;
-	
-	/**
-	 * @param call
-	 * @param serializedData
-	 * @return
-	 */
-	@Deprecated
-	private static native String callParentControllerAccessor(String call, String serializedData)/*-{
-		return $wnd.parent._cruxScreenControllerAccessor(call, serializedData);
-	}-*/;
-	
-	/**
-	 * 
-	 * @param frame
-	 * @param call
-	 * @param serializedData
-	 * @return
-	 */
-	@Deprecated
-	private static native String callFrameControllerAccessor(String frame, String call, String serializedData)/*-{
-		return $wnd.frames[frame]._cruxScreenControllerAccessor(call, serializedData);
+	private native void removeControllerAccessor(Screen handler)/*-{
+		$wnd._cruxScreenControllerAccessor = null;
 	}-*/;		
 	
 	/**
-	 * 
-	 * @param frame
-	 * @param call
-	 * @param serializedData
-	 * @return
+	 * Remove the cross document hook function
+	 * @param handler
 	 */
-	@Deprecated
-	private static native String callSiblingFrameControllerAccessor(String frame, String call, String serializedData)/*-{
-		return $wnd.parent.frames[frame]._cruxScreenControllerAccessor(call, serializedData);
+	private native void removeCrossDocumentAccessor(Screen handler)/*-{
+		$wnd._cruxCrossDocumentAccessor = null;
 	}-*/;		
 }
