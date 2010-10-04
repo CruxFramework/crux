@@ -182,9 +182,8 @@ public abstract class AbstractInvocableProxyCreator extends AbstractSerializable
 	        			added.add(field.getName());
 	        			String fieldTypeName = field.getType().getParameterizedQualifiedSourceName();
 	        			JType type = getTypeForField(logger, field);
-	        			String typeName = type.getParameterizedQualifiedSourceName();
-
-	                	JClassType dataSourceType = classType.getOracle().getType(DataSource.class.getCanonicalName());
+	        			
+	        			JClassType dataSourceType = classType.getOracle().getType(DataSource.class.getCanonicalName());
 	        			if (type instanceof JClassType && dataSourceType.isAssignableFrom((JClassType)type))
 	        			{
 	        				String dsName = getDsName((JClassType)type);
@@ -206,7 +205,7 @@ public abstract class AbstractInvocableProxyCreator extends AbstractSerializable
 	        				}
 	        				else
 	        				{
-	        					sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=GWT.create("+typeName+".class);");
+	        					sourceWriter.println(fieldTypeName+" _field"+field.getName()+"=GWT.create("+type.getQualifiedSourceName()+".class);");
 	        					generateFieldValueSet(classType, field, parentVariable, "_field"+field.getName(), sourceWriter);
 	        				}
 	        			}
