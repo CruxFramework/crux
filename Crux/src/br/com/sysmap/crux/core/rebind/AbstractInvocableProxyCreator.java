@@ -338,7 +338,7 @@ public abstract class AbstractInvocableProxyCreator extends AbstractSerializable
 			sourceWriter.indent();
 			sourceWriter.println("try{");
 			sourceWriter.indent();
-			generateParameterBinding(parentVariable, voClass, field, sourceWriter, (JClassType)type, name, allowProtected);
+			generateParameterBinding(parentVariable, voClass, field, sourceWriter, type, name, allowProtected);
 			sourceWriter.outdent();
 			sourceWriter.println("}catch(Throwable _e1){");
 			sourceWriter.indent();
@@ -497,7 +497,7 @@ public abstract class AbstractInvocableProxyCreator extends AbstractSerializable
 	 * @param allowProtected
 	 */
 	private void generateParameterBinding(String parentVariable, JClassType voClass, JField field, SourceWriter sourceWriter, 
-			JClassType type, String name, boolean allowProtected)
+			JType type, String name, boolean allowProtected)
 	{
 		generateFieldValueSet(voClass, field, parentVariable, getParameterFromURL(type, name), sourceWriter, allowProtected);
 	}	
