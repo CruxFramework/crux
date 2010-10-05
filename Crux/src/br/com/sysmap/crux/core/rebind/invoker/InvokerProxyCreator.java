@@ -142,7 +142,7 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 				{
 					returnTypeDeclaration = returnType.isPrimitive().getQualifiedBoxedSourceName();
 				}
-				generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, returnTypeDeclaration);
+				generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, returnType);
 			}
 			sourceWriter.println("}");
 		}
@@ -158,7 +158,7 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 	 * @param returnTypeDeclaration
 	 */
 	private void generateMethodInvocation(SourceWriter sourceWriter, String sufix, String controllerName, String methodName, 
-										  int numParams, String returnTypeDeclaration)
+										  int numParams, JType returnType)
 	{
 		sourceWriter.println("try{");
 		boolean hasValue = numParams > 0;
@@ -207,15 +207,18 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 			}
 			sufix = "OnSiblingFrame";
 		}
-		if (returnTypeDeclaration != null)
+		boolean hasReturn = returnType != JPrimitiveType.VOID && !returnType.getQualifiedSourceName().equals("java.lang.Void");
+		if (hasReturn)
 		{
 			if ("OnFrame".equals(sufix) || "OnSiblingFrame".equals(sufix))
 			{
-				sourceWriter.println("return Screen.invokeController"+sufix+"(\""+frameName+"\",\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
+				sourceWriter.println("return ("+returnType.getParameterizedQualifiedSourceName()+")Screen.invokeController"+sufix+"(\""+frameName+"\",\""+controllerName+"."+methodName+"\","
+						+(hasValue?"value":"null")+", "+returnType.getQualifiedSourceName()+".class);");
 			}
 			else
 			{
-				sourceWriter.println("return Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "+returnTypeDeclaration+".class);");
+				sourceWriter.println("return ("+returnType.getParameterizedQualifiedSourceName()+")Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "
+						+returnType.getQualifiedSourceName()+".class);");
 			}
 		}
 		else
@@ -232,7 +235,7 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 		sourceWriter.println("}catch(Throwable e){");
 		sourceWriter.println("Crux.getErrorHandler().handleError("+EscapeUtils.quote(messages.errorInvokerWrapperSerializationError())+",e);");
 		sourceWriter.println("}");
-		if (returnTypeDeclaration != null)
+		if (hasReturn)
 		{
 			sourceWriter.println("return null;");
 		}
