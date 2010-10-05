@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Label;
 public class Timer extends Composite implements HasTimeoutHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Timer";
-	public static final String DEFAULT_PATTERN = "hh:mm:ss";
+	public static final String DEFAULT_PATTERN = "HH:mm:ss";
 
 	private final Label widget;
 	private long initial;
