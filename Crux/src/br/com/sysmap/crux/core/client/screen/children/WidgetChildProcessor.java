@@ -29,4 +29,5 @@ public class WidgetChildProcessor<T extends Widget>
 	
 	public static class AnyWidget{}
 	public static class AnyTag{}
+	public static class HTMLTag{}
 }
