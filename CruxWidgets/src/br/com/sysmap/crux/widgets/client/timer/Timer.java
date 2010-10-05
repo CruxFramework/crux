@@ -29,23 +29,27 @@ import br.com.sysmap.crux.widgets.client.event.timeout.TimeoutHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * A decorated panel, with a title bar.
+ * A time counter capable of firing scheduled events.
  * @author Gesse S. F. Dafe
  */
 public class Timer extends Composite implements HasTimeoutHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Timer";
+	public static final String DEFAULT_PATTERN = "hh:mm:ss";
 
 	private final Label widget;
 	private long initial;
 	private long creationTime;
 	private boolean regressive;
 	private boolean allowChanges;
+	private String pattern;
+	private DateTimeFormat formatter;
 	
 	private boolean running = false;
 	private long startTime = 0;
@@ -59,11 +63,22 @@ public class Timer extends Composite implements HasTimeoutHandlers
 	 * @param height
 	 * @param styleName
 	 */
-	public Timer(long initial, boolean regressive, boolean start)
+	public Timer(long initial, boolean regressive, String pattern, boolean start)
 	{	
 		this.initial = initial;
 		this.creationTime = initial;
 		this.regressive = regressive;
+		this.pattern = pattern;
+		
+		if(StringUtils.isEmpty(this.pattern))
+		{
+			this.formatter = DateTimeFormat.getFormat(DEFAULT_PATTERN);
+		}
+		else
+		{
+			this.formatter = DateTimeFormat.getFormat(this.pattern);
+		}
+		
 		this.timeProcessor = new TimeProcessor(this);
 		this.allowChanges = !start;
 		
@@ -94,13 +109,20 @@ public class Timer extends Composite implements HasTimeoutHandlers
 	 * @param amount
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	private String format(long amount)
 	{
+		Date when = new Date(0, 0, 1, 0, 0, 0);
+				
 		long secs = amount % 60;
 		long mins = ((amount - secs) / 60) % 60;
 		long hours = (amount - mins * 60 - secs) / (60 * 60);
 
-		return StringUtils.lpad("" + hours, 2, '0') + ':' + StringUtils.lpad("" + mins, 2, '0') + ':' + StringUtils.lpad("" + secs, 2, '0');
+		when.setHours((int) hours);
+		when.setMinutes((int) mins);
+		when.setSeconds((int) secs);
+		
+		return formatter.format(when);
 	}
 	
 	/**
@@ -268,6 +290,31 @@ public class Timer extends Composite implements HasTimeoutHandlers
 		else
 		{
 			this.regressive = regressive;
+		}
+	}
+
+	/**
+	 * @return the pattern
+	 */
+	public String getPattern()
+	{
+		return pattern;
+	}
+
+	/**
+	 * @param pattern the pattern to set
+	 */
+	public void setPattern(String pattern)
+	{
+		this.pattern = pattern;
+		
+		if(!StringUtils.isEmpty(this.pattern))
+		{
+			this.formatter = DateTimeFormat.getFormat(this.pattern);
+		}
+		else
+		{
+			this.formatter = DateTimeFormat.getFormat(DEFAULT_PATTERN);
 		}
 	}
 }

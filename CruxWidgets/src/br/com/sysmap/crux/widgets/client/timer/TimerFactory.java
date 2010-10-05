@@ -16,7 +16,9 @@
 package br.com.sysmap.crux.widgets.client.timer;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
+import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
+import br.com.sysmap.crux.core.client.declarative.TagAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
@@ -45,25 +47,25 @@ public class TimerFactory extends WidgetFactory<Timer>
 		boolean regressive = false;
 		boolean start = false;
 		
-		String strInitial = getProperty(element,"initial");  
+		String strInitial = element.getAttribute("_initial");  
 		if(strInitial != null && strInitial.trim().length() > 0)
 		{
 			initial = Long.parseLong(strInitial);
 		}
 		
-		String strRegressive = getProperty(element,"regressive");  
+		String strRegressive = element.getAttribute("_regressive");  
 		if(strRegressive != null && strRegressive.trim().length() > 0)
 		{
 			regressive = Boolean.parseBoolean(strRegressive);
 		}
 		
-		String strStart = getProperty(element,"start");  
+		String strStart = element.getAttribute("_start");  
 		if(strStart != null && strStart.trim().length() > 0)
 		{
 			start = Boolean.parseBoolean(strStart);
 		}
 		
-		return new Timer(initial, regressive, start);
+		return new Timer(initial, regressive, element.getAttribute("_pattern"), start);
 	}
 	
 	@Override
@@ -71,6 +73,9 @@ public class TimerFactory extends WidgetFactory<Timer>
 		@TagAttributeDeclaration(value="start", type=Boolean.class, defaultValue="false"),
 		@TagAttributeDeclaration(value="initial", type=Integer.class, defaultValue="0"),
 		@TagAttributeDeclaration(value="regressive", type=Boolean.class, defaultValue="false")
+	})
+	@TagAttributes({
+		@TagAttribute(value="pattern")
 	})
 	public void processAttributes(WidgetFactoryContext<Timer> context) throws InterfaceConfigException
 	{
