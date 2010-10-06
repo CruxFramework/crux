@@ -132,18 +132,8 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 			} 
 			sourceWriter.println("){");
 			
-			if (returnType == JPrimitiveType.VOID || returnType.getQualifiedSourceName().equals("java.lang.Void"))
-			{
-				generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, null);
-			}
-			else
-			{
-				if (returnType.isPrimitive() != null)
-				{
-					returnTypeDeclaration = returnType.isPrimitive().getQualifiedBoxedSourceName();
-				}
-				generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, returnType);
-			}
+			generateMethodInvocation(sourceWriter, sufix, controllerName, methodName, numParams, returnType);
+			
 			sourceWriter.println("}");
 		}
 	}
@@ -210,15 +200,27 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 		boolean hasReturn = returnType != JPrimitiveType.VOID && !returnType.getQualifiedSourceName().equals("java.lang.Void");
 		if (hasReturn)
 		{
-			if ("OnFrame".equals(sufix) || "OnSiblingFrame".equals(sufix))
+			String returnTypeName = null;
+			
+			if (returnType.isPrimitive() != null)
 			{
-				sourceWriter.println("return ("+returnType.getParameterizedQualifiedSourceName()+")Screen.invokeController"+sufix+"(\""+frameName+"\",\""+controllerName+"."+methodName+"\","
-						+(hasValue?"value":"null")+", "+returnType.getQualifiedSourceName()+".class);");
+				returnTypeName = returnType.isPrimitive().getQualifiedBoxedSourceName();
 			}
 			else
 			{
-				sourceWriter.println("return ("+returnType.getParameterizedQualifiedSourceName()+")Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "
-						+returnType.getQualifiedSourceName()+".class);");
+				returnTypeName = returnType.getParameterizedQualifiedSourceName();
+			}
+			
+			
+			if ("OnFrame".equals(sufix) || "OnSiblingFrame".equals(sufix))
+			{
+				sourceWriter.println("return ("+returnTypeName+")Screen.invokeController"+sufix+"(\""+frameName+"\",\""+controllerName+"."+methodName+"\","
+						+(hasValue?"value":"null")+", "+returnTypeName+".class);");
+			}
+			else
+			{
+				sourceWriter.println("return ("+returnTypeName+")Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "
+						+returnTypeName+".class);");
 			}
 		}
 		else
