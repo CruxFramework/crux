@@ -117,6 +117,11 @@ public class PopupOpenerInvokerProxyCreator extends AbstractWrapperProxyCreator
 				{
 					returnTypeDeclaration = returnType.isPrimitive().getQualifiedBoxedSourceName();
 				}
+				else
+				{
+					returnTypeDeclaration = returnType.getQualifiedSourceName();
+				}
+				
 				generateMethodInvocation(sourceWriter, controllerName, methodName, numParams, returnTypeDeclaration);
 			}
 			sourceWriter.println("}");

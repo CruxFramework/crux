@@ -148,6 +148,10 @@ public abstract class AbstractTabInvokerProxyCreator extends AbstractWrapperProx
 				{
 					returnTypeDeclaration = returnType.isPrimitive().getQualifiedBoxedSourceName();
 				}
+				else
+				{
+					returnTypeDeclaration = returnType.getQualifiedSourceName();
+				}
 				
 				generateMethodInvocation(sourceWriter, controllerName, getMethodName(method), tabId, numParams, returnTypeDeclaration);
 			}
