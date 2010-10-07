@@ -15,10 +15,13 @@
  */
 package br.com.sysmap.crux.core.declarativeui.template;
  
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -26,6 +29,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.declarativeui.DeclarativeUIMessages;
@@ -38,68 +44,60 @@ import br.com.sysmap.crux.core.i18n.MessagesFactory;
  */
 public class Templates 
 {
-	private static Map<String, Document> templates = null;
-	private static Map<String, Set<String>> registeredLibraries = null;
-	private static DeclarativeUIMessages messages = MessagesFactory.getMessages(DeclarativeUIMessages.class);
-	private static final Log logger = LogFactory.getLog(Templates.class);
-	private static final Lock lock = new ReentrantLock();
-	private static boolean starting = false;
 	private static boolean hotDeploymentScannerStarted = false;
+	private static final Lock lock = new ReentrantLock();
+	private static final Log logger = LogFactory.getLog(Templates.class);
+	private static DeclarativeUIMessages messages = MessagesFactory.getMessages(DeclarativeUIMessages.class);
+	private static Map<String, Set<String>> registeredLibraries = null;
+	private static boolean starting = false;
+	private static Map<String, Document> templates = null;
+	private static Map<String, Set<String>> widgetTemplates = null;
 	
 
 	/**
 	 * 
+	 * @return
 	 */
-	public static void initialize()
+	public static Set<String> getRegisteredLibraries()
 	{
-		if (templates != null)
+		if (registeredLibraries == null)
 		{
-			return;
-		}
-		try
-		{
-			lock.lock();
-			if (templates != null)
-			{
-				return;
-			}
-			
-			initializeTemplates();
-		}
-		finally
-		{
-			lock.unlock();
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	public static void restart()
-	{
-		templates = null;
-		initialize();
-	}
-	
-	/**
-	 * 
-	 */
-	protected static void initializeTemplates()
-	{
-		starting = true;
-		templates = new HashMap<String, Document>();
-		registeredLibraries = new HashMap<String, Set<String>>();
-		logger.info(messages.templatesScannerSearchingTemplateFiles());
-		TemplatesScanner.getInstance().scanArchives();
-		if (!hotDeploymentScannerStarted && Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()))
-		{
-			hotDeploymentScannerStarted = true;
-			TemplatesHotDeploymentScanner.scanWebDirs();
+			initialize();
 		}
 		
-		starting = false;
+		return registeredLibraries.keySet();
 	}
 	
+	/**
+	 * 
+	 * @param library
+	 * @return
+	 */
+	public static Set<String> getRegisteredLibraryWidgetTemplates(String library)
+	{
+		if (widgetTemplates == null)
+		{
+			initialize();
+		}
+		
+		return widgetTemplates.get(library);
+	}
+	
+	/**
+	 * 
+	 * @param library
+	 * @return
+	 */
+	public static Set<String> getRegisteredLibraryTemplates(String library)
+	{
+		if (registeredLibraries == null)
+		{
+			initialize();
+		}
+		
+		return registeredLibraries.get(library);
+	}
+
 	/**
 	 * 
 	 * @param library
@@ -133,31 +131,136 @@ public class Templates
 	
 	/**
 	 * 
-	 * @return
 	 */
-	public static Set<String> getRegisteredLibraries()
+	public static void initialize()
 	{
-		if (registeredLibraries == null)
+		if (templates != null)
 		{
-			initialize();
+			return;
 		}
-		
-		return registeredLibraries.keySet();
+		try
+		{
+			lock.lock();
+			if (templates != null)
+			{
+				return;
+			}
+			
+			initializeTemplates();
+		}
+		finally
+		{
+			lock.unlock();
+		}
 	}
 
 	/**
 	 * 
-	 * @param library
-	 * @return
 	 */
-	public static Set<String> getRegisteredLibraryTemplates(String library)
+	public static void restart()
 	{
-		if (registeredLibraries == null)
+		templates = null;
+		initialize();
+	}
+	
+	/**
+	 * 
+	 */
+	protected static void initializeTemplates()
+	{
+		starting = true;
+		templates = new HashMap<String, Document>();
+		widgetTemplates = new HashMap<String, Set<String>>();
+		registeredLibraries = new HashMap<String, Set<String>>();
+		logger.info(messages.templatesScannerSearchingTemplateFiles());
+		TemplatesScanner.getInstance().scanArchives();
+		
+		initializeWidgetTemplates();
+		
+		if (!hotDeploymentScannerStarted && Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()))
 		{
-			initialize();
+			hotDeploymentScannerStarted = true;
+			TemplatesHotDeploymentScanner.scanWebDirs();
 		}
 		
-		return registeredLibraries.get(library);
+		starting = false;
+	}
+
+	/**
+	 * @param parentElement
+	 * @return
+	 */
+	static List<Element> extractChildrenElements(Element parentElement)
+	{
+		List<Element> result = new ArrayList<Element>();
+		NodeList childNodes = parentElement.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++)
+		{
+			Node node = childNodes.item(i);
+			switch (node.getNodeType())
+			{
+				case Node.COMMENT_NODE:
+					//ignore node
+				break;
+				case Node.TEXT_NODE:
+					Text textNode = (Text) node;
+					if (textNode.getWholeText().trim().length() > 0)
+					{
+						return null;
+					}
+				break;
+				case Node.ELEMENT_NODE:
+					result.add((Element) node);
+				break;
+				default:
+					return null;
+			}
+		}
+		
+		return result;
+	}
+
+	/**
+	 * @return
+	 */
+	static boolean isStarting(){
+		return starting;
+	}
+	
+	/**
+	 * @param template
+	 * @return
+	 */
+	static boolean isWidgetTemplate(Document template)
+	{
+		boolean isWidget = false;
+		if (template != null)
+		{
+			Element templateElement = template.getDocumentElement();
+
+			List<Element> children = extractChildrenElements(templateElement);
+			
+			if (children != null && children.size() == 1)
+			{
+				Element element = children.get(0);
+				String namespaceURI = element.getNamespaceURI();
+				if (namespaceURI != null)
+				{
+					if (namespaceURI.startsWith("http://www.sysmap.com.br/crux/"))
+					{
+						isWidget = true;
+					}
+					else if (namespaceURI.startsWith("http://www.sysmap.com.br/templates/"))
+					{
+						String library = namespaceURI.substring("http://www.sysmap.com.br/templates/".length());
+						Document refTemplate = getTemplate(library, element.getLocalName());
+						isWidget = isWidgetTemplate(refTemplate);
+					}
+				}
+			}
+		}
+		
+		return isWidget;
 	}
 
 	/**
@@ -183,7 +286,26 @@ public class Templates
 		templates.put(library+"_"+templateId, template);
 	}
 	
-	static boolean isStarting(){
-		return starting;
+	/**
+	 * 
+	 */
+	private static void initializeWidgetTemplates()
+	{
+		for (Entry<String, Document> entry : templates.entrySet())
+		{
+			if (isWidgetTemplate(entry.getValue()))
+			{
+				String templateKey = entry.getKey(); 
+				String[] templateIdParts = templateKey.split("_");
+				
+				Set<String> templates = widgetTemplates.get(templateIdParts[0]);
+				if (templates == null)
+				{
+					templates = new HashSet<String>();
+					widgetTemplates.put(templateIdParts[0], templates);
+				}
+				templates.add(templateIdParts[1]);
+			}
+		}
 	}
 }

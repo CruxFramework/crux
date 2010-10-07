@@ -90,6 +90,23 @@ public class CruxProxyCreator extends ProxyCreator
 	}
 
 	/**
+	 * @param fullClassName
+	 * @return
+	 */
+	protected String[] getPackageAndClassName(String fullClassName) 
+	{
+		String className = fullClassName;
+		String packageName = "";
+		int index = -1;
+		if ((index = className.lastIndexOf('.')) >= 0) 
+		{
+			packageName = className.substring(0, index);
+			className = className.substring(index + 1, className.length());
+		}
+		return new String[] {packageName, className};
+	}
+	
+	/**
 	 * @see com.google.gwt.user.rebind.rpc.ProxyCreator#getRemoteServiceRelativePath()
 	 */
 	@Override
@@ -103,7 +120,7 @@ public class CruxProxyCreator extends ProxyCreator
 		
 		return ret;
 	}
-	
+
 	/**
 	 * @param logger
 	 * @param context
@@ -145,83 +162,101 @@ public class CruxProxyCreator extends ProxyCreator
 	}
 
 	/**
-	 * @param srcWriter
-	 * @param asyncServiceInterfaceName 
+	 * 
+	 * @param parameter
+	 * @param methodDescVar 
+	 * @param blocksScreen 
 	 */
-	private void generateWrapperProxyFields(SourceWriter srcWriter, String asyncServiceInterfaceName)
+	private void generateAsyncCallbackForSyncTokenMethod(SourceWriter srcWriter, JParameter parameter, String methodDescVar, boolean blocksScreen)
 	{
-		srcWriter.println("private boolean __hasParameters = false;");
-		if (this.hasSyncTokenMethod)
-		{
-			srcWriter.println("private Map<String, Boolean> __syncProcessingMethods = new HashMap<String, Boolean>();");
-			srcWriter.println("private CruxSynchronizerTokenServiceAsync __syncTokenService;");
-			srcWriter.println("private String __baseEntrypoint;");
-		}
-	}
+		JParameterizedType parameterizedType = parameter.getType().isParameterized();
+		String typeSourceName = parameterizedType.getParameterizedQualifiedSourceName();
+		JClassType[] typeArgs = parameterizedType.getTypeArgs();
+		
+		String typeParameterSourceName = typeArgs[0].getParameterizedQualifiedSourceName();
+		
+		srcWriter.println("new "+typeSourceName+"(){");
+		srcWriter.indent();
+		
+		srcWriter.println("public void onSuccess("+typeParameterSourceName+" result){");
+		srcWriter.indent();
+		srcWriter.println("try{");
+		srcWriter.println(parameter.getName()+".onSuccess(result);");
+		srcWriter.println("}finally{");
+		srcWriter.println("__endMethodCall("+methodDescVar+", "+blocksScreen+");");
+		srcWriter.println("}");
+		srcWriter.outdent();
+		srcWriter.println("}");
 
+		srcWriter.println("public void onFailure(Throwable caught){");
+		srcWriter.indent();
+		srcWriter.println("try{");
+		srcWriter.println(parameter.getName()+".onFailure(caught);");
+		srcWriter.println("}finally{");
+		srcWriter.println("__endMethodCall("+methodDescVar+", "+blocksScreen+");");
+		srcWriter.println("}");
+		srcWriter.outdent();
+		srcWriter.println("}");
+
+		srcWriter.outdent();
+		srcWriter.print("}");
+	}
+	
+	/**
+	 * @param srcWriter
+	 * @param asyncMethod
+	 * @param parameters
+	 * @param methodDescVar
+	 */
+	private void generateProxyMethodCall(SourceWriter srcWriter, JMethod asyncMethod,
+			List<JParameter> parameters, String methodDescVar, boolean blocksScreen)
+	{
+		
+		srcWriter.print(getProxyWrapperQualifiedName()+".super."+asyncMethod.getName() + "(");
+		boolean needsComma = false;
+		for (int i = 0; i < parameters.size(); ++i)
+		{
+			JParameter parameter = parameters.get(i); 
+			if (needsComma) 
+			{
+				srcWriter.print(", ");
+			} 
+			needsComma = true;
+			if (i < (parameters.size()-1))
+			{
+				srcWriter.print(parameter.getName());
+			}
+			else
+			{
+				generateAsyncCallbackForSyncTokenMethod(srcWriter, parameter, methodDescVar, blocksScreen);
+			}
+		}
+		srcWriter.println(");");
+	}	
+	
 	/**
 	 * @param srcWriter
 	 */
-	private void generateWrapperProxyContructor(SourceWriter srcWriter) 
+	private void generateProxyWrapperEndMethod(SourceWriter srcWriter)
 	{
-		srcWriter.println("public " + getProxyWrapperSimpleName() + "() {");
+		srcWriter.println();
+		srcWriter.println("private void __endMethodCall(String methodDesc, boolean unblocksScreen){");
 		srcWriter.indent();
+		
+		srcWriter.println("Boolean isProcessing = __syncProcessingMethods.remove(methodDesc);");
+		srcWriter.println("if (isProcessing != null && !isProcessing){");
+		srcWriter.indent();
+		
+		srcWriter.println("if (unblocksScreen) Screen.unblockToUser();");
+		srcWriter.println("setServiceEntryPoint(__baseEntrypoint);");
 
-		srcWriter.println("super();");
-		srcWriter.println("this.__hasParameters = (getServiceEntryPoint()!=null?getServiceEntryPoint().indexOf('?')>0:false);");
-		if (this.hasSyncTokenMethod)
-		{
-			srcWriter.println("this.__baseEntrypoint = getServiceEntryPoint();");	
-			srcWriter.println("this.__syncTokenService = (CruxSynchronizerTokenServiceAsync)GWT.create(CruxSynchronizerTokenService.class);");
-		}
-		srcWriter.println("String locale = Screen.getLocale();");
-		srcWriter.println("if (locale != null && locale.trim().length() > 0){");
-		srcWriter.indent();
-		srcWriter.println("if (this.__hasParameters){");	
-		srcWriter.indent();
-		srcWriter.println("setServiceEntryPoint(getServiceEntryPoint() + \"&locale=\" + locale);");
-		srcWriter.outdent();
-		srcWriter.println("}else{");	
-		srcWriter.indent();
-		srcWriter.println("setServiceEntryPoint(getServiceEntryPoint() + \"?locale=\" + locale);");
-		srcWriter.println("this.__hasParameters = true;");	
-		srcWriter.outdent();
-		srcWriter.println("}");	
 		srcWriter.outdent();
 		srcWriter.println("}");
 		
 		srcWriter.outdent();
 		srcWriter.println("}");
 	}
-	
-	/**
-	 * @param srcWriter
-	 * @param serviceAsync
-	 * @throws UnableToCompleteException 
-	 */
-	private void generateProxyWrapperMethods(SourceWriter srcWriter, JClassType serviceAsync) throws UnableToCompleteException 
-	{
-		JMethod[] asyncMethods = serviceAsync.getOverridableMethods();
-		for (JMethod asyncMethod : asyncMethods) 
-		{
-			JClassType enclosingType = asyncMethod.getEnclosingType();
-			JParameterizedType isParameterizedType = enclosingType.isParameterized();
-			if (isParameterizedType != null) 
-			{
-				JMethod[] methods = isParameterizedType.getMethods();
-				for (int i = 0; i < methods.length; ++i) 
-				{
-					if (methods[i] == asyncMethod) 
-					{
-						asyncMethod = isParameterizedType.getBaseType().getMethods()[i];
-					}
-				}
-			}
 
-			generateProxyWrapperMethod(srcWriter, asyncMethod);
-		}
-	}	
-	
 	/**
 	 * @param srcWriter
 	 * @param asyncMethod
@@ -248,55 +283,6 @@ public class CruxProxyCreator extends ProxyCreator
 		{
 			logger.log(TreeLogger.ERROR, messages.cruxProxyCreatorMethodNotFoundOnServiceInterface(asyncMethod.getName()));
 		}
-	}
-
-	/**
-	 * @param srcWriter
-	 * @param asyncMethod
-	 * @param asyncReturnType
-	 * @return
-	 */
-	private List<JParameter> generateProxyWrapperMethodDeclaration(SourceWriter srcWriter, 
-			                                JMethod asyncMethod, JType asyncReturnType)
-	{
-		srcWriter.println();
-		srcWriter.print("public ");
-		srcWriter.print(asyncReturnType.getQualifiedSourceName());
-		srcWriter.print(" ");
-		srcWriter.print(asyncMethod.getName() + "(");
-
-		boolean needsComma = false;
-		List<JParameter> parameters = new ArrayList<JParameter>();
-		JParameter[] asyncParams = asyncMethod.getParameters();
-		for (int i = 0; i < asyncParams.length; ++i) 
-		{
-			JParameter param = asyncParams[i];
-
-			if (needsComma) 
-			{
-				srcWriter.print(", ");
-			} 
-			else 
-			{
-				needsComma = true;
-			}
-
-			JType paramType = param.getType();
-			if (i == (asyncParams.length-1))
-			{
-				srcWriter.print("final ");
-			}
-			srcWriter.print(paramType.getQualifiedSourceName());
-			srcWriter.print(" ");
-
-			String paramName = param.getName();
-			parameters.add(param);
-			srcWriter.print(paramName);
-		}
-
-		srcWriter.println(") {");
-		srcWriter.indent();
-		return parameters;
 	}
 
 	/**
@@ -363,74 +349,78 @@ public class CruxProxyCreator extends ProxyCreator
 	/**
 	 * @param srcWriter
 	 * @param asyncMethod
-	 * @param parameters
-	 * @param methodDescVar
+	 * @param asyncReturnType
+	 * @return
 	 */
-	private void generateProxyMethodCall(SourceWriter srcWriter, JMethod asyncMethod,
-			List<JParameter> parameters, String methodDescVar, boolean blocksScreen)
+	private List<JParameter> generateProxyWrapperMethodDeclaration(SourceWriter srcWriter, 
+			                                JMethod asyncMethod, JType asyncReturnType)
 	{
-		
-		srcWriter.print(getProxyWrapperQualifiedName()+".super."+asyncMethod.getName() + "(");
+		srcWriter.println();
+		srcWriter.print("public ");
+		srcWriter.print(asyncReturnType.getQualifiedSourceName());
+		srcWriter.print(" ");
+		srcWriter.print(asyncMethod.getName() + "(");
+
 		boolean needsComma = false;
-		for (int i = 0; i < parameters.size(); ++i)
+		List<JParameter> parameters = new ArrayList<JParameter>();
+		JParameter[] asyncParams = asyncMethod.getParameters();
+		for (int i = 0; i < asyncParams.length; ++i) 
 		{
-			JParameter parameter = parameters.get(i); 
+			JParameter param = asyncParams[i];
+
 			if (needsComma) 
 			{
 				srcWriter.print(", ");
 			} 
-			needsComma = true;
-			if (i < (parameters.size()-1))
+			else 
 			{
-				srcWriter.print(parameter.getName());
+				needsComma = true;
 			}
-			else
+
+			JType paramType = param.getType();
+			if (i == (asyncParams.length-1))
 			{
-				generateAsyncCallbackForSyncTokenMethod(srcWriter, parameter, methodDescVar, blocksScreen);
+				srcWriter.print("final ");
 			}
+			srcWriter.print(paramType.getQualifiedSourceName());
+			srcWriter.print(" ");
+
+			String paramName = param.getName();
+			parameters.add(param);
+			srcWriter.print(paramName);
 		}
-		srcWriter.println(");");
+
+		srcWriter.println(") {");
+		srcWriter.indent();
+		return parameters;
 	}
 
 	/**
-	 * 
-	 * @param parameter
-	 * @param methodDescVar 
-	 * @param blocksScreen 
+	 * @param srcWriter
+	 * @param serviceAsync
+	 * @throws UnableToCompleteException 
 	 */
-	private void generateAsyncCallbackForSyncTokenMethod(SourceWriter srcWriter, JParameter parameter, String methodDescVar, boolean blocksScreen)
+	private void generateProxyWrapperMethods(SourceWriter srcWriter, JClassType serviceAsync) throws UnableToCompleteException 
 	{
-		JParameterizedType parameterizedType = parameter.getType().isParameterized();
-		String typeSourceName = parameterizedType.getParameterizedQualifiedSourceName();
-		JClassType[] typeArgs = parameterizedType.getTypeArgs();
-		
-		String typeParameterSourceName = typeArgs[0].getParameterizedQualifiedSourceName();
-		
-		srcWriter.println("new "+typeSourceName+"(){");
-		srcWriter.indent();
-		
-		srcWriter.println("public void onSuccess("+typeParameterSourceName+" result){");
-		srcWriter.indent();
-		srcWriter.println("try{");
-		srcWriter.println(parameter.getName()+".onSuccess(result);");
-		srcWriter.println("}finally{");
-		srcWriter.println("__endMethodCall("+methodDescVar+", "+blocksScreen+");");
-		srcWriter.println("}");
-		srcWriter.outdent();
-		srcWriter.println("}");
+		JMethod[] asyncMethods = serviceAsync.getOverridableMethods();
+		for (JMethod asyncMethod : asyncMethods) 
+		{
+			JClassType enclosingType = asyncMethod.getEnclosingType();
+			JParameterizedType isParameterizedType = enclosingType.isParameterized();
+			if (isParameterizedType != null) 
+			{
+				JMethod[] methods = isParameterizedType.getMethods();
+				for (int i = 0; i < methods.length; ++i) 
+				{
+					if (methods[i] == asyncMethod) 
+					{
+						asyncMethod = isParameterizedType.getBaseType().getMethods()[i];
+					}
+				}
+			}
 
-		srcWriter.println("public void onFailure(Throwable caught){");
-		srcWriter.indent();
-		srcWriter.println("try{");
-		srcWriter.println(parameter.getName()+".onFailure(caught);");
-		srcWriter.println("}finally{");
-		srcWriter.println("__endMethodCall("+methodDescVar+", "+blocksScreen+");");
-		srcWriter.println("}");
-		srcWriter.outdent();
-		srcWriter.println("}");
-
-		srcWriter.outdent();
-		srcWriter.print("}");
+			generateProxyWrapperMethod(srcWriter, asyncMethod);
+		}
 	}
 
 	/**
@@ -456,29 +446,6 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("}");
 	}
 
-	/**
-	 * @param srcWriter
-	 */
-	private void generateProxyWrapperEndMethod(SourceWriter srcWriter)
-	{
-		srcWriter.println();
-		srcWriter.println("private void __endMethodCall(String methodDesc, boolean unblocksScreen){");
-		srcWriter.indent();
-		
-		srcWriter.println("Boolean isProcessing = __syncProcessingMethods.remove(methodDesc);");
-		srcWriter.println("if (isProcessing != null && !isProcessing){");
-		srcWriter.indent();
-		
-		srcWriter.println("if (unblocksScreen) Screen.unblockToUser();");
-		srcWriter.println("setServiceEntryPoint(__baseEntrypoint);");
-
-		srcWriter.outdent();
-		srcWriter.println("}");
-		
-		srcWriter.outdent();
-		srcWriter.println("}");
-	}
-	
 	/**
 	 * @param srcWriter
 	 */
@@ -520,41 +487,71 @@ public class CruxProxyCreator extends ProxyCreator
 		srcWriter.println("}");
 	}
 	
-	
 	/**
-	 * @param asyncMethod
-	 * @return
-	 * @throws NotFoundException 
+	 * @param srcWriter
 	 */
-	private JMethod getSyncMethodFromAsync(JMethod asyncMethod) throws NotFoundException
+	private void generateWrapperProxyContructor(SourceWriter srcWriter) 
 	{
-		JParameter[] parameters = asyncMethod.getParameters();
-		List<JType> syncParamTypes = new ArrayList<JType>();
-		if (parameters != null && parameters.length > 1)
-		{
-			for (int i=0; i<parameters.length-1; i++)
-			{
-				JParameter jParameter = parameters[i];
-				syncParamTypes.add(jParameter.getType());
-			}
-		}
-		return serviceIntf.getMethod(asyncMethod.getName(), syncParamTypes.toArray(new JType[syncParamTypes.size()]));
-	}
-	
-	/**
-	 * @return
-	 */
-	private String getProxyWrapperSimpleName()
-	{
-		return ClassUtils.getSourceName(serviceIntf)+WRAPPER_SUFFIX;
-	}
+		srcWriter.println("public " + getProxyWrapperSimpleName() + "() {");
+		srcWriter.indent();
 
+		srcWriter.println("super();");
+		srcWriter.println("this.__hasParameters = (getServiceEntryPoint()!=null?getServiceEntryPoint().indexOf('?')>0:false);");
+		if (this.hasSyncTokenMethod)
+		{
+			srcWriter.println("this.__baseEntrypoint = getServiceEntryPoint();");	
+			srcWriter.println("this.__syncTokenService = (CruxSynchronizerTokenServiceAsync)GWT.create(CruxSynchronizerTokenService.class);");
+		}
+		srcWriter.println("String locale = Screen.getLocale();");
+		srcWriter.println("if (locale != null && locale.trim().length() > 0){");
+		srcWriter.indent();
+		srcWriter.println("if (this.__hasParameters){");	
+		srcWriter.indent();
+		srcWriter.println("setServiceEntryPoint(getServiceEntryPoint() + \"&locale=\" + locale);");
+		srcWriter.outdent();
+		srcWriter.println("}else{");	
+		srcWriter.indent();
+		srcWriter.println("setServiceEntryPoint(getServiceEntryPoint() + \"?locale=\" + locale);");
+		srcWriter.println("this.__hasParameters = true;");	
+		srcWriter.outdent();
+		srcWriter.println("}");	
+		srcWriter.outdent();
+		srcWriter.println("}");
+		
+		srcWriter.outdent();
+		srcWriter.println("}");
+	}
+	
+	
+	/**
+	 * @param srcWriter
+	 * @param asyncServiceInterfaceName 
+	 */
+	private void generateWrapperProxyFields(SourceWriter srcWriter, String asyncServiceInterfaceName)
+	{
+		srcWriter.println("private boolean __hasParameters = false;");
+		if (this.hasSyncTokenMethod)
+		{
+			srcWriter.println("private Map<String, Boolean> __syncProcessingMethods = new HashMap<String, Boolean>();");
+			srcWriter.println("private CruxSynchronizerTokenServiceAsync __syncTokenService;");
+			srcWriter.println("private String __baseEntrypoint;");
+		}
+	}
+	
 	/**
 	 * @return
 	 */
 	private String getProxyWrapperQualifiedName()
 	{
 		return serviceIntf.getQualifiedSourceName()+ WRAPPER_SUFFIX;
+	}
+
+	/**
+	 * @return
+	 */
+	private String getProxyWrapperSimpleName()
+	{
+		return ClassUtils.getSourceName(serviceIntf)+WRAPPER_SUFFIX;
 	}
 	
 	/**
@@ -593,20 +590,23 @@ public class CruxProxyCreator extends ProxyCreator
 	}	
 
 	/**
-	 * @param fullClassName
+	 * @param asyncMethod
 	 * @return
+	 * @throws NotFoundException 
 	 */
-	private String[] getPackageAndClassName(String fullClassName) 
+	private JMethod getSyncMethodFromAsync(JMethod asyncMethod) throws NotFoundException
 	{
-		String className = fullClassName;
-		String packageName = "";
-		int index = -1;
-		if ((index = className.lastIndexOf('.')) >= 0) 
+		JParameter[] parameters = asyncMethod.getParameters();
+		List<JType> syncParamTypes = new ArrayList<JType>();
+		if (parameters != null && parameters.length > 1)
 		{
-			packageName = className.substring(0, index);
-			className = className.substring(index + 1, className.length());
+			for (int i=0; i<parameters.length-1; i++)
+			{
+				JParameter jParameter = parameters[i];
+				syncParamTypes.add(jParameter.getType());
+			}
 		}
-		return new String[] {packageName, className};
+		return serviceIntf.getMethod(asyncMethod.getName(), syncParamTypes.toArray(new JType[syncParamTypes.size()]));
 	}
 	
 	/**

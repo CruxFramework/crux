@@ -99,4 +99,7 @@ public interface ClientMessages extends Messages
 	String nullElementAtSetStyleName();	
 	@DefaultMessage("[stylesheets 002] - Empty strings can not be used as a styleName property value.")
 	String emptyStringAsStyleNameValue();
+
+	@DefaultMessage("[crux 001] - Crux Engine is already initialized.")
+	String cruxAlreadyInitializedError();
 }

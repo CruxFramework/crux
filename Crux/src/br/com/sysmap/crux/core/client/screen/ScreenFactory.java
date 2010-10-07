@@ -434,7 +434,7 @@ public class ScreenFactory {
 			}
 			else
 			{
-				panelElement.setId(WidgetFactory.generateNewId());
+				ensureElementIdExists(panelElement);
 				panel = RootPanel.get(panelElement.getId());
 				if (!hasSize)
 				{
@@ -450,12 +450,23 @@ public class ScreenFactory {
 			}
 			else
 			{
-				panelElement.setId(WidgetFactory.generateNewId());
+				ensureElementIdExists(panelElement);
 				panel = RootPanel.get(panelElement.getId());
 			}
 		}
 		panel.add(widget);
 		return widget;
+	}
+
+	/**
+	 * @param panelElement
+	 */
+	private void ensureElementIdExists(Element panelElement)
+	{
+		if (StringUtils.isEmpty(panelElement.getId()))
+		{
+			panelElement.setId(WidgetFactory.generateNewId());
+		}
 	}
 
 	/**

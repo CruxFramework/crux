@@ -32,27 +32,80 @@ import com.google.gwt.user.client.Timer;
 
 /**
  * CRUX Client Engine. It starts a ScreenFactory to search HTML page for span tags declaring widgets. 
- * @author Thiago da Rosa de Bustamante -
+ * @author Thiago da Rosa de Bustamante
  */
 public class Crux implements EntryPoint 
 {
-	private static ClientMessages messages;
 	private static CruxClientConfig config;
 	private static ErrorHandler errorHandler;
+	private static boolean initialized = false;
+	private static ClientMessages messages;
 	private static ValidationErrorHandler validationErrorHandler;
 	
 	/**
-	 * This is the entry point method. Called when the page is loaded.
+	 * 
+	 * @return
 	 */
-	public void onModuleLoad() 
+	public static CruxClientConfig getConfig()
+	{
+		return config;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static ErrorHandler getErrorHandler()
+	{
+		return errorHandler;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static ClientMessages getMessages()
+	{
+		return messages;
+	}
+
+	/**
+	 * @return
+	 */
+	public static boolean isInitialized()
+	{
+		return initialized;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static ValidationErrorHandler getValidationErrorHandler()
+	{
+		return validationErrorHandler;
+	}
+
+	/**
+	 * 
+	 */
+	public static void initializeEngine()
 	{
 		try 
 		{
-			messages = GWT.create(ClientMessages.class);
-			config = GWT.create(CruxClientConfig.class);
-			errorHandler = GWT.create(ErrorHandler.class);
-			validationErrorHandler = GWT.create(ValidationErrorHandler.class);
-			br.com.sysmap.crux.core.client.screen.ScreenFactory.getInstance().getScreen();
+			if (initialized)
+			{
+				Crux.getErrorHandler().handleError(new IllegalStateException(messages.cruxAlreadyInitializedError()));
+			}
+			else
+			{
+				messages = GWT.create(ClientMessages.class);
+				config = GWT.create(CruxClientConfig.class);
+				errorHandler = GWT.create(ErrorHandler.class);
+				validationErrorHandler = GWT.create(ValidationErrorHandler.class);
+				br.com.sysmap.crux.core.client.screen.ScreenFactory.getInstance().getScreen();
+				initialized = true;
+			}
 		} 
 		catch (Throwable e) 
 		{
@@ -64,11 +117,43 @@ public class Crux implements EntryPoint
 		
 		stopLoadingProgressBar();
 	}
-	
+
+	/**
+	 * 
+	 * @param errorHandler
+	 */
+	public static void setErrorHandler(ErrorHandler errorHandler)
+	{
+		if (errorHandler == null)
+		{
+			Crux.errorHandler = GWT.create(ErrorHandler.class);
+		}
+		else
+		{
+			Crux.errorHandler = errorHandler;
+		}
+	}
+
+	/**
+	 * 
+	 * @param validationErrorHandler
+	 */
+	public static void setValidationErrorHandler(ValidationErrorHandler validationErrorHandler)
+	{
+		if (validationErrorHandler == null)
+		{
+			Crux.validationErrorHandler = GWT.create(ValidationErrorHandler.class);
+		}
+		else
+		{
+			Crux.validationErrorHandler = validationErrorHandler;
+		}
+	}
+
 	/**
 	 * 
 	 */
-	protected void stopLoadingProgressBar()
+	private static void stopLoadingProgressBar()
 	{
 		final Element loadElement = DOM.getElementById("cruxSplashScreen");
 		if (loadElement != null)
@@ -95,70 +180,10 @@ public class Crux implements EntryPoint
 	}
 
 	/**
-	 * 
-	 * @return
+	 * This is the entry point method. Called when the page is loaded.
 	 */
-	public static ClientMessages getMessages()
+	public void onModuleLoad() 
 	{
-		return messages;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static CruxClientConfig getConfig()
-	{
-		return config;
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static ErrorHandler getErrorHandler()
-	{
-		return errorHandler;
-	}
-
-	/**
-	 * 
-	 * @param errorHandler
-	 */
-	public static void setErrorHandler(ErrorHandler errorHandler)
-	{
-		if (errorHandler == null)
-		{
-			Crux.errorHandler = GWT.create(ErrorHandler.class);
-		}
-		else
-		{
-			Crux.errorHandler = errorHandler;
-		}
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static ValidationErrorHandler getValidationErrorHandler()
-	{
-		return validationErrorHandler;
-	}
-
-	/**
-	 * 
-	 * @param validationErrorHandler
-	 */
-	public static void setValidationErrorHandler(ValidationErrorHandler validationErrorHandler)
-	{
-		if (validationErrorHandler == null)
-		{
-			Crux.validationErrorHandler = GWT.create(ValidationErrorHandler.class);
-		}
-		else
-		{
-			Crux.validationErrorHandler = validationErrorHandler;
-		}
+		initializeEngine();
 	}
 }
