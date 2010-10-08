@@ -90,7 +90,7 @@ public class ScreenWrapperProxyCreator extends AbstractWrapperProxyCreator
 	 * @param interfaceClass
 	 */
 	@Override
-	protected void generateWrapperMethod(JMethod method, SourceWriter sourceWriter, JClassType interfaceClass)
+	protected void generateWrapperMethod(JMethod method, SourceWriter sourceWriter)
 	{
 		JType returnType = method.getReturnType();
 		

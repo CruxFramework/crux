@@ -40,18 +40,12 @@ public abstract class AbstractWrapperProxyCreator extends AbstractInterfaceWrapp
 	
     protected void generateProxyMethods(SourceWriter srcWriter, JClassType clazz) throws CruxGeneratorException
     {
-    	JMethod[] methods = clazz.getMethods();
+    	JMethod[] methods = clazz.getOverridableMethods();
     	for (JMethod method : methods)
     	{
-    		generateWrapperMethod(method, srcWriter, clazz);
+    		generateWrapperMethod(method, srcWriter);
     	}
-    	
-    	JClassType[] interfaces = clazz.getImplementedInterfaces();
-    	for (JClassType intf : interfaces)
-        {
-    		generateProxyMethods(srcWriter, intf);
-        }
     }
 
-	protected abstract void generateWrapperMethod(JMethod method, SourceWriter srcWriter, JClassType clazz);
+	protected abstract void generateWrapperMethod(JMethod method, SourceWriter srcWriter);
 }

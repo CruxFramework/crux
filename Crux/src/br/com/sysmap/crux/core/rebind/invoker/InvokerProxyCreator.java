@@ -109,13 +109,13 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 	 * @param prefixLength
 	 * @throws WrapperGeneratorException 
 	 */
-	private void generateMethod(JMethod method, SourceWriter sourceWriter, String sufix, JClassType interfaceClass) throws CruxGeneratorException
+	private void generateMethod(JMethod method, SourceWriter sourceWriter, String sufix) throws CruxGeneratorException
 	{
 		JType returnType = method.getReturnType();
 		String name = method.getName();
 
 		String methodName = name.substring(0, name.length() - sufix.length());
-		String controllerName = getControllerName(interfaceClass);
+		String controllerName = getControllerName(baseIntf);
 		if (methodName.length() > 0)
 		{
 			String returnTypeDeclaration = returnType.getParameterizedQualifiedSourceName();
@@ -200,27 +200,30 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 		boolean hasReturn = returnType != JPrimitiveType.VOID && !returnType.getQualifiedSourceName().equals("java.lang.Void");
 		if (hasReturn)
 		{
-			String returnTypeName = null;
+			String returnParameterizedTypeName = null;
+			String returnQualifiedTypeName = null;			
 			
 			if (returnType.isPrimitive() != null)
 			{
-				returnTypeName = returnType.isPrimitive().getQualifiedBoxedSourceName();
+				returnParameterizedTypeName = returnType.isPrimitive().getQualifiedBoxedSourceName();
+				returnQualifiedTypeName = returnType.isPrimitive().getQualifiedBoxedSourceName();
 			}
 			else
 			{
-				returnTypeName = returnType.getParameterizedQualifiedSourceName();
+				returnParameterizedTypeName = returnType.getParameterizedQualifiedSourceName();
+				returnQualifiedTypeName = returnType.getQualifiedSourceName();
 			}
 			
 			
 			if ("OnFrame".equals(sufix) || "OnSiblingFrame".equals(sufix))
 			{
-				sourceWriter.println("return ("+returnTypeName+")Screen.invokeController"+sufix+"(\""+frameName+"\",\""+controllerName+"."+methodName+"\","
-						+(hasValue?"value":"null")+", "+returnTypeName+".class);");
+				sourceWriter.println("return ("+returnParameterizedTypeName+")Screen.invokeController"+sufix+"(\""+frameName+"\",\""+controllerName+"."+methodName+"\","
+						+(hasValue?"value":"null")+", "+returnQualifiedTypeName+".class);");
 			}
 			else
 			{
-				sourceWriter.println("return ("+returnTypeName+")Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "
-						+returnTypeName+".class);");
+				sourceWriter.println("return ("+returnParameterizedTypeName+")Screen.invokeController"+sufix+"(\""+controllerName+"."+methodName+"\","+(hasValue?"value":"null")+", "
+						+returnQualifiedTypeName+".class);");
 			}
 		}
 		else
@@ -250,29 +253,29 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 	 * @throws CruxGeneratorException
 	 */
 	@Override
-	protected void generateWrapperMethod(JMethod method, SourceWriter sourceWriter, JClassType interfaceClass) throws CruxGeneratorException
+	protected void generateWrapperMethod(JMethod method, SourceWriter sourceWriter) throws CruxGeneratorException
 	{
 		String name = method.getName();
 		
 		if (name.endsWith("OnTop"))
 		{
-			generateMethod(method, sourceWriter, "OnTop", interfaceClass);
+			generateMethod(method, sourceWriter, "OnTop");
 		}
 		else if (name.endsWith("OnParent"))
 		{
-			generateMethod(method, sourceWriter, "OnParent", interfaceClass);
+			generateMethod(method, sourceWriter, "OnParent");
 		}
 		else if (name.endsWith("OnOpener"))
 		{
-			generateMethod(method, sourceWriter, "OnOpener", interfaceClass);
+			generateMethod(method, sourceWriter, "OnOpener");
 		}
 		else if (name.endsWith("OnAbsoluteTop"))
 		{
-			generateMethod(method, sourceWriter, "OnAbsoluteTop", interfaceClass);
+			generateMethod(method, sourceWriter, "OnAbsoluteTop");
 		}
 		else if (name.endsWith("OnSelf"))
 		{
-			generateMethod(method, sourceWriter, "OnSelf", interfaceClass);
+			generateMethod(method, sourceWriter, "OnSelf");
 		}
 		else if (name.indexOf("OnFrame") > 0)
 		{
@@ -281,7 +284,7 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 			{
 				throw new CruxGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.getReadableDeclaration()));
 			}
-			generateMethod(method, sourceWriter, sufix, interfaceClass);
+			generateMethod(method, sourceWriter, sufix);
 		}
 		else if (name.indexOf("OnSiblingFrame") > 0)
 		{
@@ -290,7 +293,7 @@ public class InvokerProxyCreator extends AbstractWrapperProxyCreator
 			{
 				throw new CruxGeneratorException(messages.errorInvokerWrapperInvalidSignature(method.getReadableDeclaration()));
 			}
-			generateMethod(method, sourceWriter, sufix, interfaceClass);
+			generateMethod(method, sourceWriter, sufix);
 		}
 		else
 		{

@@ -219,7 +219,7 @@ public class FileUtils
 		{
 			if (!targetLocation.exists()) 
 			{
-				targetLocation.mkdir();
+				targetLocation.mkdirs();
 			}
 
 			String[] children = sourceLocation.list();
