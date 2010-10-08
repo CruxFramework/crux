@@ -84,11 +84,11 @@ public class PopupOpenerInvokerProxyCreator extends AbstractWrapperProxyCreator
 	 * 
 	 */
 	@Override
-	protected void generateWrapperMethod(JMethod method, SourceWriter sourceWriter, JClassType interfaceClass) throws CruxGeneratorException
+	protected void generateWrapperMethod(JMethod method, SourceWriter sourceWriter) throws CruxGeneratorException
 	{
 		JType returnType = method.getReturnType();
 		String methodName = method.getName();
-		String controllerName = InvokerProxyCreator.getControllerName(interfaceClass);
+		String controllerName = InvokerProxyCreator.getControllerName(baseIntf);
 		if (methodName.length() > 0)
 		{
 			String returnTypeDeclaration = returnType.getParameterizedQualifiedSourceName();

@@ -85,7 +85,7 @@ public abstract class AbstractTabInvokerProxyCreator extends AbstractWrapperProx
 	 * 
 	 */
 	@Override
-	protected void generateWrapperMethod(JMethod method, SourceWriter sourceWriter, JClassType interfaceClass) throws CruxGeneratorException
+	protected void generateWrapperMethod(JMethod method, SourceWriter sourceWriter) throws CruxGeneratorException
 	{
 		String name = method.getName();
 		
@@ -102,7 +102,7 @@ public abstract class AbstractTabInvokerProxyCreator extends AbstractWrapperProx
 			
 			tabId = toJavaName(tabId);
 			
-			generateMethod(method, sourceWriter, tabId, interfaceClass);
+			generateMethod(method, sourceWriter, tabId);
 		}
 		else
 		{
@@ -114,11 +114,11 @@ public abstract class AbstractTabInvokerProxyCreator extends AbstractWrapperProx
 	 * @throws WrapperGeneratorException 
 	 * 
 	 */
-	protected void generateMethod(JMethod method, SourceWriter sourceWriter, String tabId, JClassType interfaceClass) throws CruxGeneratorException
+	protected void generateMethod(JMethod method, SourceWriter sourceWriter, String tabId) throws CruxGeneratorException
 	{
 		JType returnType = method.getReturnType();
 		String methodName = method.getName();
-		String controllerName = InvokerProxyCreator.getControllerName(interfaceClass);
+		String controllerName = InvokerProxyCreator.getControllerName(baseIntf);
 		
 		if (methodName.length() > 0)
 		{
