@@ -16,6 +16,8 @@
 package br.com.sysmap.crux.core.utils;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 /**
  * Toolkit for XML manipulations.
@@ -60,7 +63,8 @@ public class XMLUtils
 	{
 		try
 		{
-			return nsUnawareDocumentBuilder.parse(stream);
+			InputStreamReader reader = new InputStreamReader(stream, Charset.defaultCharset());
+			return nsUnawareDocumentBuilder.parse(new InputSource(reader));
 		}
 		catch (Exception e)
 		{
