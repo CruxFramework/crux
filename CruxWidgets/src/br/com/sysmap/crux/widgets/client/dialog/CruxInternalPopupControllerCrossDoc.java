@@ -26,4 +26,7 @@ public interface CruxInternalPopupControllerCrossDoc extends CrossDocument
 	void openPopup(PopupData data);
 	void hidePopup();
 	void onClose();
+	void onOpen();
+	void prepareToOpen();
+	boolean isWaitingForOpenEvent();
 }

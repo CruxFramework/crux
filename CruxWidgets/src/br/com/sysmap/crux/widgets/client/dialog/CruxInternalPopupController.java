@@ -26,6 +26,7 @@ import br.com.sysmap.crux.core.client.controller.crossdoc.TargetDocument;
 import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
+import br.com.sysmap.crux.widgets.client.event.openclose.OpenEvent;
 import br.com.sysmap.crux.widgets.client.util.FrameStateCallback;
 import br.com.sysmap.crux.widgets.client.util.FrameUtils;
 
@@ -37,6 +38,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -46,9 +48,25 @@ import com.google.gwt.user.client.ui.Label;
 public class CruxInternalPopupController implements CruxInternalPopupControllerCrossDoc
 {
 	protected CruxInternalPopupControllerCrossDoc crossDoc = GWT.create(CruxInternalPopupControllerCrossDoc.class);
-	protected DialogMessages messages = GWT.create(DialogMessages.class);
-	
+	protected DialogMessages messages = GWT.create(DialogMessages.class);	
 	private List<CustomDialogBox> dialogBoxes = new ArrayList<CustomDialogBox>();
+	private boolean waitingForOpenEvent = false;
+	
+	/**
+	 * If there is an shown popup at this moment, it must be the one whose opening must be notified. 
+	 */
+	public CruxInternalPopupController()
+	{
+		JSWindow opener = Popup.getOpener();
+		if(opener != null)
+		{
+			((TargetDocument) crossDoc).setTargetWindow(opener);
+			if(crossDoc.isWaitingForOpenEvent())
+			{
+				crossDoc.onOpen();				
+			}
+		}
+	}
 	
 	/**
 	 * @return the window object of the popup opener
@@ -172,6 +190,7 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	
 	/**
 	 * Called by top window
+	 * @see br.com.sysmap.crux.widgets.client.dialog.CruxInternalPopupControllerCrossDoc#onClose()
 	 */
 	public void onClose()
 	{
@@ -185,6 +204,34 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 				crossDoc.hidePopup();
 			}
 		}
+	}
+	
+	/**
+	 * Called by top window
+	 * @see br.com.sysmap.crux.widgets.client.dialog.CruxInternalPopupControllerCrossDoc#prepareToOpen()
+	 */
+	public void prepareToOpen()
+	{
+		this.waitingForOpenEvent = true;
+	}
+	
+	/**
+	 * Called by top window
+	 * @see br.com.sysmap.crux.widgets.client.dialog.CruxInternalPopupControllerCrossDoc#isWaitingForOpen()
+	 */
+	public boolean isWaitingForOpenEvent()
+	{
+		return this.waitingForOpenEvent;
+	}
+
+	/**
+	 * Called by top window
+	 * @see br.com.sysmap.crux.widgets.client.dialog.CruxInternalPopupControllerCrossDoc#onOpen()
+	 */
+	public void onOpen()
+	{
+		this.waitingForOpenEvent = false;
+		OpenEvent.fire(Popup.getLastShownPopup());
 	}
 	
 	/**
@@ -216,6 +263,10 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 			frameElement.setPropertyInt("vspace", 0);
 			frameElement.setPropertyInt("hspace", 0);
 			
+			((TargetDocument) crossDoc).setTargetWindow(getOpener());
+			
+			PopupLoadListener listener = new PopupLoadListener(frameElement, crossDoc);
+			
 			if (data.isCloseable())
 			{
 				final FocusPanel focusPanel = new FocusPanel();
@@ -228,19 +279,14 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 					{
 						if (canClose(frameElement))
 						{
-							((TargetDocument)crossDoc).setTargetWindow(getOpener());
 							crossDoc.onClose();
 						}
 					}
 				});
+				
+				listener.setCloseBtn(focusPanel);
+				
 				frameElement.setAttribute("canClose", "false");
-				FrameUtils.registerStateCallback(frameElement, new FrameStateCallback(){
-					public void onComplete()
-					{
-						focusPanel.removeStyleDependentName("disabled");
-						frameElement.setAttribute("canClose", "true");
-					}
-				}, 20000);
 
 				Label label = new Label(" ");
 				label.getElement().getStyle().setProperty("fontSize", "0px");
@@ -249,6 +295,10 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 
 				dialogBox.setTopRightWidget(focusPanel);
 			}
+			
+			
+			FrameUtils.registerStateCallback(frameElement, listener);
+			crossDoc.prepareToOpen();
 
 			dialogBox.setText(data.getTitle());
 			dialogBox.setWidget(frame);
@@ -265,6 +315,43 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 			Crux.getErrorHandler().handleError(e);
 			Screen.unblockToUser();
 		}		
+	}
+	
+	/**
+	 * CallBack for Popup frame loading 
+	 * @author Gessé S. F. Dafé - <code>gessedafe@gmail.com</code>
+	 */
+	public static class PopupLoadListener implements FrameStateCallback
+	{
+		private Widget closeBtn;
+		private Element popupFrame;
+		private CruxInternalPopupControllerCrossDoc crossdoc;
+
+		public PopupLoadListener(Element popupFrame, CruxInternalPopupControllerCrossDoc crossdoc)
+		{
+			this.popupFrame = popupFrame;
+			this.crossdoc = crossdoc;
+		}
+		
+		/**
+		 * @see br.com.sysmap.crux.widgets.client.util.FrameStateCallback#onComplete()
+		 */
+		public void onComplete()
+		{
+			if(this.closeBtn != null)
+			{
+				this.closeBtn.removeStyleDependentName("disabled");
+				this.popupFrame.setAttribute("canClose", "true");
+			}
+		}
+
+		/**
+		 * @param closeBtn the closeBtn to set
+		 */
+		public void setCloseBtn(Widget closeBtn)
+		{
+			this.closeBtn = closeBtn;
+		}
 	}
 	
 	/**

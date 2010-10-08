@@ -22,6 +22,9 @@ import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler;
 import br.com.sysmap.crux.widgets.client.event.openclose.HasBeforeCloseHandlers;
+import br.com.sysmap.crux.widgets.client.event.openclose.HasOpenHandlers;
+import br.com.sysmap.crux.widgets.client.event.openclose.OpenEvent;
+import br.com.sysmap.crux.widgets.client.event.openclose.OpenHandler;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
@@ -33,7 +36,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimation
+public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimation, HasOpenHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Popup" ;
 	protected static List<Popup> popups = new ArrayList<Popup>();
@@ -133,14 +136,49 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	}
 	
 	/**
-	 * 
 	 * @param title
 	 * @param url
+	 * @param width
+	 * @param height
 	 * @param beforeCloseHandler
 	 * @param styleName
 	 * @param animationEnabled
+	 * @param closeable
 	 */
 	public static void show(String title, String url, String width, String height, BeforeCloseHandler beforeCloseHandler, String styleName, boolean animationEnabled, boolean closeable)
+	{
+		fullShow(title, url, width, height, beforeCloseHandler, null, styleName, animationEnabled, closeable);
+	}
+	
+	/**
+	 * @param title
+	 * @param url
+	 * @param width
+	 * @param height
+	 * @param beforeCloseHandler
+	 * @param openHandler
+	 * @param styleName
+	 * @param animationEnabled
+	 * @param closeable
+	 */
+	public static void show(String title, String url, String width, String height, BeforeCloseHandler beforeCloseHandler, OpenHandler openHandler, String styleName, boolean animationEnabled, boolean closeable)
+	{
+		fullShow(title, url, width, height, beforeCloseHandler, openHandler, styleName, animationEnabled, closeable);
+	}
+	
+	/**
+	 * Full parameterized internal method
+	 * @param title
+	 * @param url
+	 * @param width
+	 * @param height
+	 * @param beforeCloseHandler
+	 * @param openHandler
+	 * @param styleName
+	 * @param animationEnabled
+	 * @param closeable
+	 */
+	private static void fullShow(String title, String url, String width, String height, BeforeCloseHandler beforeCloseHandler, OpenHandler openHandler, String styleName, boolean animationEnabled, boolean closeable)
 	{
 		Popup popup = new Popup(); 
 		popup.setTitle(title);
@@ -158,10 +196,16 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 		}			
 		
 		popup.setAnimationEnabled(animationEnabled);
+		
 		if (beforeCloseHandler != null)
 		{
 			popup.addBeforeCloseHandler(beforeCloseHandler);
 		}
+		
+		if (openHandler != null)
+		{
+			popup.addOpenHandler(openHandler);
+		}		
 		
 		popup.show();
 	}
@@ -262,6 +306,11 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 	public void setWidth(String width)
 	{
 		this.width = width;
+	}
+
+	public HandlerRegistration addOpenHandler(OpenHandler handler)
+	{
+		return addHandler(handler, OpenEvent.getType());
 	}
 
 	/**
