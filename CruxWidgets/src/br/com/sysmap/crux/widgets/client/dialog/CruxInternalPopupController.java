@@ -61,10 +61,7 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 		if(opener != null)
 		{
 			((TargetDocument) crossDoc).setTargetWindow(opener);
-			if(crossDoc.isWaitingForOpenEvent())
-			{
-				crossDoc.onOpen();				
-			}
+			crossDoc.onOpen();				
 		}
 	}
 	
@@ -230,8 +227,11 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	 */
 	public void onOpen()
 	{
-		this.waitingForOpenEvent = false;
-		OpenEvent.fire(Popup.getLastShownPopup());
+		if(this.isWaitingForOpenEvent())
+		{
+			this.waitingForOpenEvent = false;
+			OpenEvent.fire(Popup.getLastShownPopup());
+		}
 	}
 	
 	/**
@@ -265,8 +265,6 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 			
 			((TargetDocument) crossDoc).setTargetWindow(getOpener());
 			
-			PopupLoadListener listener = new PopupLoadListener(frameElement, crossDoc);
-			
 			if (data.isCloseable())
 			{
 				final FocusPanel focusPanel = new FocusPanel();
@@ -284,7 +282,8 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 					}
 				});
 				
-				listener.setCloseBtn(focusPanel);
+				PopupLoadListener listener = new PopupLoadListener(frameElement, focusPanel);
+				FrameUtils.registerStateCallback(frameElement, listener);
 				
 				frameElement.setAttribute("canClose", "false");
 
@@ -294,10 +293,8 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 				focusPanel.add(label);
 
 				dialogBox.setTopRightWidget(focusPanel);
-			}
+			}			
 			
-			
-			FrameUtils.registerStateCallback(frameElement, listener);
 			crossDoc.prepareToOpen();
 
 			dialogBox.setText(data.getTitle());
@@ -325,12 +322,11 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	{
 		private Widget closeBtn;
 		private Element popupFrame;
-		private CruxInternalPopupControllerCrossDoc crossdoc;
 
-		public PopupLoadListener(Element popupFrame, CruxInternalPopupControllerCrossDoc crossdoc)
+		public PopupLoadListener(Element popupFrame, FocusPanel closeBtn)
 		{
 			this.popupFrame = popupFrame;
-			this.crossdoc = crossdoc;
+			this.closeBtn = closeBtn;			
 		}
 		
 		/**
@@ -343,14 +339,6 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 				this.closeBtn.removeStyleDependentName("disabled");
 				this.popupFrame.setAttribute("canClose", "true");
 			}
-		}
-
-		/**
-		 * @param closeBtn the closeBtn to set
-		 */
-		public void setCloseBtn(Widget closeBtn)
-		{
-			this.closeBtn = closeBtn;
 		}
 	}
 	
