@@ -15,14 +15,12 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
 import br.com.sysmap.crux.core.client.declarative.TagChildren;
-import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.screen.HasWidgetsHandler;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
@@ -30,9 +28,7 @@ import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor.AnyTa
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 
 /**
@@ -41,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 @DeclarativeFactory(id="HTMLPanel", library="gwt")
-public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel> implements HasWidgetsFactory<HTMLPanel>
+public class HTMLPanelFactory extends AbstractHTMLPanelFactory<HTMLPanel>
 {
 	@Override
 	public HTMLPanel instantiateWidget(Element element, String widgetId) 
@@ -57,14 +53,6 @@ public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel> implements 
 		return ret;
 	}
 
-	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
-	 */
-	public void add(HTMLPanel parent, Widget child, Element parentElement, Element childElement) 
-	{
-		parent.add(child, getParentElement(childElement).getId());
-	}
-	
 	@Override
 	@TagChildren({
 		@TagChild(value=ContentProcessor.class, autoProcess=false)
@@ -75,45 +63,4 @@ public class HTMLPanelFactory extends ComplexPanelFactory<HTMLPanel> implements 
 	
 	@TagChildAttributes(minOccurs="0", maxOccurs="unbounded", type=AnyTag.class)
 	public static class ContentProcessor extends WidgetChildProcessor<HTMLPanel> {}
-	
-	/**
-	 * 
-	 * @param element
-	 * @return
-	 */
-	protected List<Node> extractChildrenInReverseOrder(Element element)
-	{
-		List<Node> result = new ArrayList<Node>();
-		
-		NodeList<Node> childNodes = element.getChildNodes();
-		
-		for (int i=0; i< childNodes.getLength(); i++)
-		{
-			Node node = childNodes.getItem(i);
-			result.add(0,node);
-		}
-
-		for (Node node : result)
-		{
-			if (node.getParentNode() != null)
-			{
-				node.getParentNode().removeChild(node);
-			}
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * 
-	 * @param element
-	 * @param acceptsNoChild
-	 * @return
-	 * @throws InterfaceConfigException
-	 */
-	protected static List<Element> ensureChildrenSpans(Element element, boolean acceptsNoChild) throws InterfaceConfigException
-	{
-		return new ArrayList<Element>();
-	}
-	
 }
