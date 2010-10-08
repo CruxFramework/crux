@@ -25,8 +25,8 @@ import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenResourcesScanner;
  */
 public class DeclarativeUIScreenResourceScanner extends ScreenResourcesScanner
 {
-	protected boolean accepts(String fileName)
+	protected boolean accepts(String urlString)
 	{
-		return fileName != null && fileName.endsWith(".crux.xml");
+		return urlString != null && urlString.endsWith(".crux.xml");
 	}
 }

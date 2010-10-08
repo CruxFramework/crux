@@ -235,7 +235,7 @@ public class Screen
 			}
 		}
 	}
-
+	
 	/**
 	 * Gets the current screen
 	 * @return
@@ -266,7 +266,7 @@ public class Screen
 	{
 		return Screen.get().getWidget(id, clazz);
 	}
-	
+
 	/**
 	 * @return a list containing all widgets from the current screen 
 	 */
@@ -277,7 +277,7 @@ public class Screen
 		ids.addAll(instance.widgets.values());
 		return ids;
 	}
-
+	
 	/**
 	 * @return a list containing all widgets ids from the current screen 
 	 */
@@ -289,8 +289,7 @@ public class Screen
 		ids.addAll(keySet);
 		return ids;
 	}
-	
-	
+
 	/**
 	 * @return
 	 */
@@ -298,6 +297,7 @@ public class Screen
 	{
 		return Screen.get().getDeclaredControllers();
 	}
+	
 	
 	/**
 	 * 
@@ -328,7 +328,7 @@ public class Screen
 	{
 		return createDataSource(dataSource);
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -336,7 +336,7 @@ public class Screen
 	{
 		return Screen.get().getDeclaredDataSources();
 	}
-	
+
 	/**
 	 * 
 	 * @param formatter
@@ -354,7 +354,7 @@ public class Screen
 	{
 		return Screen.get().getDeclaredFormatters();
 	}
-
+	
 	/**
 	 * 
 	 * @return
@@ -363,7 +363,7 @@ public class Screen
 	{
 		return Screen.get().getIdentifier();
 	}
-	
+
 	/**
 	 * 
 	 * @return the locale specified or null
@@ -398,7 +398,7 @@ public class Screen
 		
 		return locale;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -429,8 +429,8 @@ public class Screen
 	public static <T> T invokeControllerOnAbsoluteTop(String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
 		return (T) Screen.get().serializer.deserialize(callAbsoluteTopControllerAccessor(call, Screen.get().serializer.serialize(param)));
-	}	
-	
+	}
+
 	/**
 	 * @param call
 	 * @throws ModuleComunicationException
@@ -439,8 +439,8 @@ public class Screen
 	public static void invokeControllerOnFrame(String frame, String call, Object param) throws ModuleComunicationException
 	{
 		invokeControllerOnFrame(frame, call, param, Object.class);
-	}
-
+	}	
+	
 	/**
 	 * @param call
 	 * @param param
@@ -451,8 +451,8 @@ public class Screen
 	public static <T> T  invokeControllerOnFrame(String frame, String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
 		return (T) Screen.get().serializer.deserialize(callFrameControllerAccessor(frame, call, Screen.get().serializer.serialize(param)));
-	}	
-	
+	}
+
 	/**
 	 * 
 	 * @param call
@@ -463,7 +463,7 @@ public class Screen
 	{
 		invokeControllerOnOpener(call, param, Object.class);
 	}	
-
+	
 	/**
 	 * 
 	 * @param call
@@ -475,7 +475,7 @@ public class Screen
 	public static <T> T  invokeControllerOnOpener(String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
 		return (T) Screen.get().serializer.deserialize(callOpenerControllerAccessor(call, Screen.get().serializer.serialize(param)));
-	}
+	}	
 
 	/**
 	 * @param call
@@ -486,7 +486,7 @@ public class Screen
 	{
 		invokeControllerOnParent(call, param, Object.class);
 	}
-	
+
 	/**
 	 * @param call
 	 * @param param
@@ -508,7 +508,7 @@ public class Screen
 	{
 		invokeControllerOnSelf(call, param, Object.class);
 	}
-
+	
 	/**
 	 * @param call
 	 * @param param
@@ -554,7 +554,7 @@ public class Screen
 	{
 		return (T) Screen.get().serializer.deserialize(callSiblingFrameControllerAccessor(frame, call, Screen.get().serializer.serialize(param)));
 	}
-	
+
 	/**
 	 * @param call
 	 * @param param
@@ -565,7 +565,7 @@ public class Screen
 	{
 		invokeControllerOnTop(call, param, Object.class);
 	}
-
+	
 	/**
 	 * @param call
 	 * @param param
@@ -576,6 +576,14 @@ public class Screen
 	public static <T> T invokeControllerOnTop(String call, Object param, Class<T> resultType) throws ModuleComunicationException
 	{
 		return (T) Screen.get().serializer.deserialize(callTopControllerAccessor(call, Screen.get().serializer.serialize(param)));
+	}
+
+	/**
+	 * @return
+	 */
+	public static boolean isLoaded()
+	{
+		return Screen.get().isScreenLoaded();
 	}
 
 	/**
@@ -761,13 +769,15 @@ public class Screen
 	
 	protected String id;
 	
-	protected ScreenBlocker screenBlocker = GWT.create(ScreenBlocker.class);
+	protected boolean loaded = false;
 
+	protected ScreenBlocker screenBlocker = GWT.create(ScreenBlocker.class);
+	
 	@Deprecated
 	protected ModuleComunicationSerializer serializer = null;
 	
 	protected Map<String, Widget> widgets = new HashMap<String, Widget>(30);
-	
+
 	private List<ScreenLoadHandler>  loadHandlers = new ArrayList<ScreenLoadHandler>();
 	
 	@SuppressWarnings("deprecation")
@@ -822,13 +832,13 @@ public class Screen
 	protected void addTokenToHistory(String token, boolean issueEvent)
 	{
 		History.newItem(token, issueEvent);
-	}	
+	}
 	
 	protected void addWidget(String id, Widget widget)
 	{
 		widgets.put(id, widget);
-	}
-
+	}	
+	
 	/**
 	 * 
 	 * @param handler
@@ -837,8 +847,8 @@ public class Screen
 	protected HandlerRegistration addWindowCloseHandler(CloseHandler<Window> handler) 
 	{
 		return Window.addCloseHandler(handler);
-	}		
-	
+	}
+
 	/**
 	 * 
 	 * @param handler
@@ -861,8 +871,8 @@ public class Screen
 			prepareHistoryFrame();
 		}
 		return History.addValueChangeHandler(handler);
-	}
-
+	}		
+	
 	/**
 	 * 
 	 * @param handler
@@ -872,7 +882,7 @@ public class Screen
 	{
 		return Window.addResizeHandler(handler);
 	}
-	
+
 	/**
 	 * @param id
 	 * @return
@@ -907,7 +917,7 @@ public class Screen
 	{
 		return declaredControllers;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -915,7 +925,7 @@ public class Screen
 	{
 		return declaredDataSources;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -932,7 +942,7 @@ public class Screen
 	{
 		return declaredSerializables;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -940,7 +950,7 @@ public class Screen
 	{
 		return id;
 	}
-	
+
 	/**
 	 * @param id
 	 * @return
@@ -949,7 +959,7 @@ public class Screen
 	{
 		return widgets.get(id);
 	}
-
+	
 	/**
 	 * Generic version of <code>getWidget</code> method
 	 * @param <T>
@@ -988,6 +998,14 @@ public class Screen
 		}
 	}
 
+	/**
+	 * @return if this screen is completely loaded
+	 */
+	protected boolean isScreenLoaded()
+	{
+		return loaded;
+	}
+
 	protected Iterator<Widget> iteratorWidgets()
 	{
 		return widgets.values().iterator();
@@ -1011,6 +1029,7 @@ public class Screen
 					try 
 					{
 						ScreenLoadEvent.fire(Screen.this);
+						Screen.this.loaded = true;
 					} 
 					catch (RuntimeException e) 
 					{

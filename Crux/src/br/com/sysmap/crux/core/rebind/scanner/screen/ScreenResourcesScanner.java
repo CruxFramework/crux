@@ -152,5 +152,5 @@ public abstract class ScreenResourcesScanner
 	}
 	
 
-	protected abstract boolean accepts(String fileName);
+	protected abstract boolean accepts(String urlString);
 }

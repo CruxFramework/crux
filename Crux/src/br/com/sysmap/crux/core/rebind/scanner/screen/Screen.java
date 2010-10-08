@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import com.google.gwt.dev.util.collect.HashSet;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 
@@ -32,6 +35,7 @@ public class Screen
 {
 	protected String id;
 	protected Map<String, Widget> widgets = new HashMap<String, Widget>();
+	protected Set<String> widgetTypes = new HashSet<String>();
 	protected Map<String, Event> events = new HashMap<String, Event>();
 	protected List<String> controllers = new ArrayList<String>();
 	protected List<String> serializers = new ArrayList<String>();
@@ -59,6 +63,15 @@ public class Screen
 	}
 
 	/**
+	 * Return a Set containing all types of widgets found on this screen
+	 * @return
+	 */
+	public Set<String> getWidgetTypesIncluded()
+	{
+		return widgetTypes;
+	}
+	
+	/**
 	 * Iterate over widgets
 	 * @return
 	 */
@@ -76,6 +89,7 @@ public class Screen
 		if (widget != null)
 		{
 			widgets.put(widget.getId(), widget);
+			widgetTypes.add(widget.getType());
 		}
 	}
 	
