@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="export" name="Crux" basedir="../">
+<project default="export" name="CruxGadgets" basedir="../">
 
 	<tstamp>
-		<format property="build.date" pattern="MM/dd/yyyy hh:mm:ss" />
+		<format property="build.date" pattern="dd/MM/yyyy hh:mm:ss" />
 	</tstamp>
 
 	<property file="../CruxRelease/build/version.properties" />
 
 	<property name="srcdir" value="src" />
-	<property name="testsrcdir" value="test" />
 	<property name="libdir" value="lib" />
 	<property name="classesdir" value="bin/classes" />
-	<property name="testclassesdir" value="bin/test" />
-	<property name="testreportxml" value="dist/report/junit/xml" />
-	<property name="testreporthtml" value="dist/report/junit/html" />
 	<property name="distdir" value="dist" />
-	<property name="javadocdir" value="dist/javadoc" />
-	<property name="final.name" value="crux-core" />
-	<property name="testbenchmarkpath" value="dist/report/junit/benchmark" />
-	<property name="crux.libs.project" value="../CruxLibs/crux" />	
+	<property name="final.name" value="crux-gadgets" />
+	<property name="cruxdistdir" value="../Crux/dist" />
 	<property name="cruxscannotationdistdir" value="../CruxScannotation/dist" />
+	<property name="crux.libs.project" value="../CruxLibs/crux"/>	
 
 	<path id="build.classpath">
 		<fileset dir="${libdir}">
@@ -30,20 +25,25 @@
 
 	<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="build.classpath" />
 
-	<target name="export" description="Creates a jar file and exports it to the CruxLibs project.">
+	<target name="export" description="Creates the jar">
 
 		<delete dir="${distdir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
 		<mkdir dir="${distdir}" />
-		
-		<delete dir="${classesdir}" failonerror="no" />
+
+		<delete dir="${classesdir}" />
 		<mkdir dir="${classesdir}" />
-		
-		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*" 
-			   encoding="UTF-8">
+
+		<javac destdir="${classesdir}" deprecation="true" target="1.5" source="1.5" debug="true" optimize="false" excludes="**/public/*"
+               encoding="UTF-8">
 			<src>
 				<pathelement location="${srcdir}" />
 			</src>
 			<classpath refid="build.classpath" />
+			<classpath>
+				<fileset dir="${cruxdistdir}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
 			<classpath>
 				<fileset dir="${cruxscannotationdistdir}">
 					<include name="**/*.jar" />
@@ -54,7 +54,7 @@
 		<svn failonerror="false" javahl="false" svnkit="true">
 			<info target="${basedir}" verbose="true"/>
 		</svn>
-		
+
 		<jar jarfile="${distdir}/${final.name}.jar">
 			<fileset dir="${classesdir}" excludes="**/public/*" />
 			<fileset dir="${srcdir}" excludes="**/public/*" />
@@ -71,4 +71,5 @@
 			</fileset>
 		</copy>
 	</target>
+
 </project>
