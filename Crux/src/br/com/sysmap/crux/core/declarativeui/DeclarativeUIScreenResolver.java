@@ -43,6 +43,14 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 	/**
 	 * 
 	 */
+	public Set<String> getAllScreenIDs(String module) throws ScreenConfigException
+	{
+		return  new DeclarativeUIScreenResourceScanner().getPages(module);
+	}
+
+	/**
+	 * 
+	 */
 	public InputStream getScreenResource(String screenId) throws InterfaceConfigException
 	{
 		try
@@ -103,19 +111,11 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 	 * @return
 	 * @throws IOException
 	 */
-	private InputStream performTransformation(InputStream inputStream) throws IOException
+	protected InputStream performTransformation(InputStream inputStream) throws IOException
 	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		CruxToHtmlTransformer.generateHTML(inputStream, out);			
 		return new ByteArrayInputStream(out.toByteArray());
-	}
-
-	/**
-	 * 
-	 */
-	public Set<String> getAllScreenIDs(String module) throws ScreenConfigException
-	{
-		return  new DeclarativeUIScreenResourceScanner().getPages(module);
 	}
 	
 	
