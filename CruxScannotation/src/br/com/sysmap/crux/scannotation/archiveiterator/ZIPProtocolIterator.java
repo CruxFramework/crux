@@ -25,7 +25,6 @@ public class ZIPProtocolIterator implements URLIterator
 	protected String pathInZip;
 	protected boolean initial = true;
 	protected boolean closed = false;
-	protected int pahtJarLength = 0;
 	protected URL zip;
 
 	public ZIPProtocolIterator(URL zip, Filter filter, String pathInZip) throws IOException, URISyntaxException
@@ -46,8 +45,6 @@ public class ZIPProtocolIterator implements URLIterator
 		{
 			this.pathInZip = this.pathInZip.substring(1);
 		}
-		this.pahtJarLength = this.pathInZip.length();
-
 	}
 
 	protected ZIPProtocolIterator()

@@ -11,14 +11,6 @@ import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
  */
 public class IteratorFactory
 {
-/*   private static final ConcurrentHashMap<String, DirectoryIteratorFactory> registry = new ConcurrentHashMap<String, DirectoryIteratorFactory>();
-
-   static
-   {
-	   registry.put("file", new FileProtocolIteratorFactory());
-   }
-*/
-
    public static URLIterator create(URL url, Filter filter) throws IOException
    {
       String urlString = url.toString();
@@ -29,16 +21,8 @@ public class IteratorFactory
          url = new URL(urlString);
       }
 
-
-/*      if (!urlString.endsWith("/"))
-      {
-         return new JarIterator(url.openStream(), filter);
-      }
-      else
-      {*/
-         DirectoryIteratorFactory factory = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol()).getDirectoryIteratorFactory();
-         if (factory == null) throw new IOException("Unable to scan directory of protocol: " + url.getProtocol());
-         return factory.create(url, filter);
-//      }
+      DirectoryIteratorFactory factory = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol()).getDirectoryIteratorFactory();
+      if (factory == null) throw new IOException("Unable to scan directory of protocol: " + url.getProtocol());
+      return factory.create(url, filter);
    }
 }

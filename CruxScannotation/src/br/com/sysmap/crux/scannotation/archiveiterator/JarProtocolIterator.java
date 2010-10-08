@@ -33,8 +33,6 @@ public class JarProtocolIterator extends ZIPProtocolIterator
 		{
 			this.pathInZip = this.pathInZip.substring(1);
 		}
-		this.pahtJarLength = this.pathInZip.length();
-
 	}
 	
 	@Override

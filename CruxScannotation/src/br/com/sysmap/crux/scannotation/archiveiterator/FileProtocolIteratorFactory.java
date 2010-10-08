@@ -6,12 +6,15 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
- * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
- * @version $Revision: 1 $
+ * @author Thiago da Rosa de Bustamante
+ *
  */
 public class FileProtocolIteratorFactory implements DirectoryIteratorFactory
 {
 
+	/**
+	 * @see br.com.sysmap.crux.scannotation.archiveiterator.DirectoryIteratorFactory#create(java.net.URL, br.com.sysmap.crux.scannotation.archiveiterator.Filter)
+	 */
 	public URLIterator create(URL url, Filter filter) throws IOException
 	{
 		try
@@ -23,7 +26,7 @@ public class FileProtocolIteratorFactory implements DirectoryIteratorFactory
 			}
 			else
 			{
-				return new JarIterator(f, filter);
+				return new JarProtocolIterator(url, filter, null);
 			}
 		}
 		catch (URISyntaxException e)
