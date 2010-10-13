@@ -1203,12 +1203,14 @@ public class Screen
 	 */
 	protected void updateWidgetsIds()
 	{
-		for (String widgetId : this.widgets.keySet())
+		Set<String> widgetIds = this.widgets.keySet();
+		for (String widgetId : widgetIds)
         {
 	        Widget widget = Screen.get(widgetId);
-	        if (StringUtils.isEmpty(widget.getElement().getId()))
+	        Element element = widget.getElement();
+			if (StringUtils.isEmpty(element.getId()))
 	        {
-	        	widget.getElement().setId(widgetId);
+	        	element.setId(widgetId);
 	        }
         }
 	}

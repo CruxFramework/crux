@@ -50,6 +50,9 @@ public interface Crux
 	String renderWidgetsWithIDs();
 
 	@DefaultServerMessage("false")
+	String enableClientFactoryTracing();
+	
+	@DefaultServerMessage("false")
 	String useCompileTimeClassScanning();
 
 	void setEnableWebRootScannerCache(Boolean value);
@@ -58,12 +61,14 @@ public interface Crux
 	void setEnableHotDeploymentForWebDirs(Boolean value);
 	void setEnableHotDeploymentForWidgetFactories(Boolean value);
 	void setRenderWidgetsWithIDs(Boolean value);
+	void setEnableClientFactoryTracing(Boolean value);
 	void setUseCompileTimeClassScanning(Boolean value);
 	void setClassPathResolver(String value);
 	void setScreenResourceResolver(String value);
 	void setLocaleResolver(String value);
 	void setServiceFactory(String value);
-	//TODO atualiza wiki com as opções correntes
+	//TODO atualizar wiki com as opções correntes
+
 
 
 }

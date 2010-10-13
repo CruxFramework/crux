@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.client.screen;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.Crux;
@@ -36,6 +37,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -66,13 +68,20 @@ public class ScreenFactory {
 	private RegisteredDataSources registeredDataSources = null;
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private Screen screen = null;
-	
 	private String screenId = null;
+
+	private boolean traceEnabled = false;
+	private StringBuilder traceOutput = null;
 	
 	private ScreenFactory()
 	{
 		this.declaredI18NMessages = GWT.create(DeclaredI18NMessages.class);
 		this.registeredDataSources = GWT.create(RegisteredDataSources.class);
+		this.traceEnabled = Crux.getConfig().enableClientFactoryTracing();
+		if (traceEnabled)
+		{
+			traceOutput = new StringBuilder();;
+		}
 	}
 	
 	/**
@@ -84,7 +93,7 @@ public class ScreenFactory {
 	{
 		return this.registeredDataSources.getDataSource(dataSource);
 	}
-	
+
 	/**
 	 * 
 	 * @param formatter
@@ -99,7 +108,7 @@ public class ScreenFactory {
 
 		return this.registeredClientFormatters.getClientFormatter(formatter);
 	}
-
+	
 	/**
 	 * @deprecated - Use createDataSource(java.lang.String) instead.
 	 * @param dataSource
@@ -110,7 +119,7 @@ public class ScreenFactory {
 	{
 		return createDataSource(dataSource);
 	}
-	
+
 	/**
 	 * 
 	 * @param key
@@ -152,7 +161,7 @@ public class ScreenFactory {
 		}
 		return screenId;
 	}
-
+	
 	/**
 	 * Creates a new widget based on a HTML SPAN tag and attaches it on the Screen object.
 	 * @param element
@@ -164,7 +173,7 @@ public class ScreenFactory {
 	{
 		return newWidget(element, widgetId, true);
 	}
-	
+
 	/**
 	 * Creates a new widget based on a HTML SPAN tag 
 	 * @param element
@@ -175,6 +184,11 @@ public class ScreenFactory {
 	 */
 	public Widget newWidget(Element element, String widgetId, boolean addToScreen) throws InterfaceConfigException
 	{
+		Date start = null;
+		if (traceEnabled)
+		{
+			start = new Date();
+		}
 		String type = element.getAttribute("_type");
 		WidgetFactory<? extends Widget> widgetFactory = registeredWidgetFactories.getWidgetFactory(type);
 		if (widgetFactory == null)
@@ -188,6 +202,11 @@ public class ScreenFactory {
 			throw new InterfaceConfigException(Crux.getMessages().screenFactoryErrorCreateWidget(widgetId));
 		}
 		
+		if (traceEnabled)
+		{
+			Date end = new Date();
+			traceOutput.append("newWidget [widgetId = "+widgetId+"; type = "+type+"] - ("+(end.getTime() - start.getTime())+" ms)<br/>");
+		}
 		return widget;
 	}
 	
@@ -209,15 +228,21 @@ public class ScreenFactory {
 		}
 		return false;
 	}
-
+	
 	void parseDocument()
 	{
+		Date start = null;
+		if (traceEnabled)
+		{
+			start = new Date();
+		}
 		Element body = RootPanel.getBodyElement();
 		NodeList<Element> spanElements = body.getElementsByTagName("span");
 		List<String> widgetIds = new ArrayList<String>();
 		Element screenElement = null;
 		
-		for (int i=0; i<spanElements.getLength(); i++)
+		int spansLength = spanElements.getLength();
+		for (int i=0; i<spansLength; i++)
 		{
 			Element element = spanElements.getItem(i);
 			if (isScreenDefinitions(element))
@@ -234,17 +259,20 @@ public class ScreenFactory {
 		List<Element> widgets = new ArrayList<Element>();
 		for (String elementId:  widgetIds)
 		{
-			Element element = DOM.getElementById(elementId);
-			if (element != null) // Some elements can be handled by its parent's factory
+			if (!screen.containsWidget(elementId))
 			{
-				try 
+				Element element = DOM.getElementById(elementId);
+				if (element != null) // Some elements can be handled by its parent's factory
 				{
-					createWidget(element, screen, widgets);
-				}
-				catch (Throwable e) 
-				{
-					Crux.getErrorHandler().handleError(e);
-					element.setInnerText(Crux.getMessages().screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
+					try 
+					{
+						createWidget(element, screen, widgets);
+					}
+					catch (Throwable e) 
+					{
+						Crux.getErrorHandler().handleError(e);
+						element.setInnerText(Crux.getMessages().screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
+					}
 				}
 			}
 		}
@@ -256,6 +284,11 @@ public class ScreenFactory {
 		if (Crux.getConfig().renderWidgetsWithIDs())
 		{
 			screen.updateWidgetsIds();
+		}
+		if (traceEnabled)
+		{
+			Date end = new Date();
+			traceOutput.append("parseDocument - ("+(end.getTime() - start.getTime())+" ms)<br/>");
 		}
 		screen.load();
 	}
@@ -278,7 +311,7 @@ public class ScreenFactory {
 			parent.removeChild(screenElement);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param widgets
@@ -299,7 +332,7 @@ public class ScreenFactory {
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -307,6 +340,21 @@ public class ScreenFactory {
 	{
 		screen = new Screen(getScreenId());
 		parseDocument();
+		if (traceEnabled)
+		{
+			createTraceOutput().setInnerHTML(traceOutput.toString());
+		}
+	}
+	
+	/**
+	 * @return
+	 */
+	private Element createTraceOutput()
+	{
+		Element traceDiv = DOM.createDiv();
+		UIObject.setVisible(traceDiv, false);
+		RootPanel.getBodyElement().appendChild(traceDiv);
+		return traceDiv;
 	}
 	
 	/**
