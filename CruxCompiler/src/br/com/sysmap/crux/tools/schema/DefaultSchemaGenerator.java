@@ -700,18 +700,24 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		for (String lib : libraries)
 		{
 			Set<String> factories = WidgetConfig.getRegisteredLibraryFactories(lib);
-			for (String factoryID : factories)
+			if (factories != null)
 			{
-				out.println("<xs:element ref=\"_"+lib+":"+factoryID+"\" />");
+				for (String factoryID : factories)
+				{
+					out.println("<xs:element ref=\"_"+lib+":"+factoryID+"\" />");
+				}
 			}
 		}
 		
 		for (String lib : templateLibraries)
 		{
 			Set<String> templates = Templates.getRegisteredLibraryWidgetTemplates(lib);
-			for (String templateID : templates)
+			if (templates != null)
 			{
-				out.println("<xs:element ref=\"_"+lib+":"+templateID+"\" />");
+				for (String templateID : templates)
+				{
+					out.println("<xs:element ref=\"_"+lib+":"+templateID+"\" />");
+				}
 			}
 		}
 
