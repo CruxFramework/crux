@@ -41,8 +41,6 @@ import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.scanner.module.Module;
 import br.com.sysmap.crux.core.rebind.scanner.module.Modules;
-import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenConfigException;
-import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenResourceResolverInitializer;
 import br.com.sysmap.crux.core.server.Environment;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.config.CruxModuleConfigurationFactory;
@@ -319,52 +317,12 @@ public class CruxModuleHandler
 	{
 		try
 		{
-			Set<String> allScreenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(cruxModule.getName());
-			if (allScreenIDs != null)
-			{
-				String[] pages = new String[allScreenIDs.size()];
-				int i=0;
-				for (String screenID : allScreenIDs)
-				{
-					if (screenID.startsWith(cruxModule.getLocation().toString()))
-					{
-						screenID = screenID.substring(cruxModule.getLocation().toString().length());
-					}
-					if (screenID.startsWith("/"))
-					{
-						screenID = screenID.substring(1);
-					}
-					for (String publicPath : cruxModule.getGwtModule().getPublicPaths())
-					{
-						if (screenID.startsWith(publicPath))
-						{
-							screenID = screenID.substring(publicPath.length());
-							break;
-						}
-					}
-					if (screenID.startsWith("/"))
-					{
-						screenID = screenID.substring(1);
-					}
-
-					if (screenID.endsWith(".crux.xml"))
-					{
-						screenID = screenID.substring(0, screenID.length()-9)+".html";
-					}
-
-					pages[i++] = screenID;
-				}
-
-				cruxModule.setPages(pages);
-			}
-			else 
-			{
-				cruxModule.setPages(new String[0]);
-			}
+			String[] modulePages = Modules.getInstance().searchModulePages(cruxModule.getGwtModule());
+			cruxModule.setPages(modulePages);
 		}
-		catch (ScreenConfigException e)
+		catch (Exception e)
 		{
-			throw new CruxModuleException(messages.errorSearchingForModulePages(cruxModule.getName()));
+			throw new CruxModuleException(messages.errorSearchingForModulePages(cruxModule.getName()), e);
 		}
 	}
 }
