@@ -40,7 +40,7 @@ public abstract class AbstractHTMLPanelFactory<T extends HTMLPanel> extends Comp
 	 */
 	public void add(T parent, Widget child, Element parentElement, Element childElement) 
 	{
-		parent.add(child, getParentElement(childElement).getId());
+		parent.add(child, getEnclosingPanelElement(childElement).getId());
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public abstract class AbstractHTMLPanelFactory<T extends HTMLPanel> extends Comp
 	 * @param element
 	 * @return
 	 */
-	protected List<Node> extractChildrenInReverseOrder(Element element)
+	protected List<Node> extractChildren(Element element)
 	{
 		List<Node> result = new ArrayList<Node>();
 		
@@ -57,11 +57,12 @@ public abstract class AbstractHTMLPanelFactory<T extends HTMLPanel> extends Comp
 		for (int i=0; i< childNodes.getLength(); i++)
 		{
 			Node node = childNodes.getItem(i);
-			result.add(0,node);
+			result.add(node);
 		}
 
-		for (Node node : result)
+		for (int i = result.size()-1; i>=0; i--)
 		{
+			Node node = result.get(i);
 			if (node.getParentNode() != null)
 			{
 				node.getParentNode().removeChild(node);

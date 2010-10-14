@@ -43,7 +43,7 @@ public class HTMLPanelFactory extends AbstractHTMLPanelFactory<HTMLPanel>
 	public HTMLPanel instantiateWidget(Element element, String widgetId) 
 	{
 		HTMLPanel ret = new HTMLPanel("");
-		List<Node> children = extractChildrenInReverseOrder(element);
+		List<Node> children = extractChildren(element);
 		for (Node node : children)
 		{
 			ret.getElement().appendChild(node);
