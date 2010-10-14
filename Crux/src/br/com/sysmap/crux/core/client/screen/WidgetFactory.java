@@ -28,6 +28,7 @@ import br.com.sysmap.crux.core.client.declarative.TagEventsDeclaration;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.event.bind.EvtBind;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.client.utils.StyleUtils;
 
 import com.google.gwt.dom.client.Element;
@@ -341,6 +342,20 @@ public abstract class WidgetFactory <T extends Widget>
 		}
 		
 		return parent;
+	}
+	
+	/**
+	 * @param element
+	 * @return
+	 */
+	protected Element getEnclosingPanelElement(Element element)
+	{
+		Element panelElement = ScreenFactory.getInstance().getEnclosingPanelElement(element, element.getId());
+		if (StringUtils.isEmpty(panelElement.getId()))
+		{
+			panelElement.setId(generateNewId());
+		}
+		return panelElement;
 	}
 	
 	/**

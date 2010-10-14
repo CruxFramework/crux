@@ -64,12 +64,12 @@ public class ScreenFactory {
 		return instance;
 	}
 	private DeclaredI18NMessages declaredI18NMessages = null;
+	private boolean parsing = false;
 	private RegisteredClientFormatters registeredClientFormatters = null;
 	private RegisteredDataSources registeredDataSources = null;
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private Screen screen = null;
 	private String screenId = null;
-	private boolean parsing = false;
 	private boolean traceEnabled = false;
 	private StringBuilder traceOutput = null;
 	
@@ -211,6 +211,33 @@ public class ScreenFactory {
 	}
 	
 	/**
+	 * Returns the parent element, or a wrapper span element, contained on parent on the same position
+	 * that the widget meta tag was declared
+	 * @param element
+	 * @param widgetId
+	 * @return
+	 */
+	protected Element getEnclosingPanelElement(Element element, String widgetId)
+	{
+		Element panelElement;
+		boolean parentHasMoreThanOneChild = (element.getNextSiblingElement() != null || DOMUtils.getPreviousSiblingElement(element) != null);
+		if (Crux.getConfig().wrapSiblingWidgets() && parentHasMoreThanOneChild)
+		{
+			panelElement = DOM.createSpan();
+			element.getParentElement().insertBefore(panelElement, element);
+		}
+		else
+		{
+			if (parentHasMoreThanOneChild)
+			{
+				GWT.log(Crux.getMessages().screenFactoryNonDeterministicWidgetPositionInParent(widgetId), null);
+			}
+			panelElement = element.getParentElement();
+		}
+		return panelElement;
+	}
+	
+	/**
 	 * @return
 	 */
 	boolean isParsing()
@@ -236,7 +263,7 @@ public class ScreenFactory {
 		}
 		return false;
 	}
-	
+
 	void parseDocument()
 	{
 		this.parsing = true;
@@ -308,7 +335,7 @@ public class ScreenFactory {
 		}
 		screen.load();
 	}
-
+	
 	/**
 	 * 
 	 * @param screenElement
@@ -327,7 +354,7 @@ public class ScreenFactory {
 			parent.removeChild(screenElement);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param widgets
@@ -348,7 +375,7 @@ public class ScreenFactory {
 			}
 		}
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -461,7 +488,7 @@ public class ScreenFactory {
 		}
 		return widget;
 	}
-	
+
 	/**
 	 * 
 	 * @param element
@@ -472,20 +499,7 @@ public class ScreenFactory {
 	private Widget createWidgetWithoutExplicitParent(Element element, Element parentElement, String widgetId) throws InterfaceConfigException
 	{
 		Element panelElement;
-		boolean parentHasMoreThanOneChild = (element.getNextSiblingElement() != null || DOMUtils.getPreviousSiblingElement(element) != null);
-		if (Crux.getConfig().wrapSiblingWidgets() && parentHasMoreThanOneChild)
-		{
-			panelElement = DOM.createSpan();
-			element.getParentElement().insertBefore(panelElement, element);
-		}
-		else
-		{
-			if (parentHasMoreThanOneChild)
-			{
-				GWT.log(Crux.getMessages().screenFactoryNonDeterministicWidgetPositionInParent(widgetId), null);
-			}
-			panelElement = element.getParentElement();
-		}
+		panelElement = getEnclosingPanelElement(element, widgetId);
 		Widget widget = newWidget(element, widgetId);
 
 		Panel panel;
