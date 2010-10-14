@@ -58,7 +58,7 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 				}
 			}
 			
-			screenURL = URLUtils.isrValidURL(screenId);
+			screenURL = URLUtils.isValidURL(screenId);
 			
 			if (screenURL == null)
 			{

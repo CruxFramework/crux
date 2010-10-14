@@ -502,7 +502,15 @@ public abstract class WidgetFactory <T extends Widget>
 	{
 		ScreenFactory.getInstance().parseDocument();
 	}
-	
+
+	/**
+	 * @return
+	 */
+	protected boolean isScreenParsing()
+	{
+		return ScreenFactory.getInstance().isParsing();
+	}
+
 	/**
 	 * 
 	 * @param element

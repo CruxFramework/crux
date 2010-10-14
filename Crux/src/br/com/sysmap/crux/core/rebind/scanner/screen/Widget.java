@@ -27,15 +27,15 @@ import java.util.Map;
  */
 public class Widget
 {
-	private int hashValue = 0;
-	protected String id;
-	protected String type;
-	protected String formatter;
 	protected String dataSource;
-
 	protected Map<String, Event> events = new HashMap<String, Event>();
+	protected String formatter;
+	protected String id;
+	protected Widget parent = null;
+
 	protected List<String> propertiesValues = new ArrayList<String>();
-	
+	protected String type;
+	private int hashValue = 0;
 	
 	public Widget() 
 	{
@@ -44,34 +44,6 @@ public class Widget
 	public Widget(String id) 
 	{
 		this.id = id;
-	}
-
-	protected void addEvent(Event event)
-	{
-		if (event != null)
-		{
-			events.put(event.getId(), event);
-		}
-	}
-
-	public Iterator<String> iterateProperties()
-	{
-		return propertiesValues.iterator();
-	}
-	
-	protected void addPropertyValue(String value)
-	{
-		propertiesValues.add(value);
-	}
-	
-	public Event getEvent(String evtId)
-	{
-		return events.get(evtId);
-	}
-	
-	public Iterator<Event> iterateEvents()
-	{
-		return events.values().iterator();
 	}
 
 	public boolean equals(Object obj) 
@@ -84,16 +56,36 @@ public class Widget
     	return (compId1 == null?compId2==null:compId1.equals(compId2));
     }
 
+	public String getDataSource()
+	{
+		return dataSource;
+	}
+	
+	public Event getEvent(String evtId)
+	{
+		return events.get(evtId);
+	}
+	
+	public String getFormatter() 
+	{
+		return formatter;
+	}
+	
 	public String getId() 
 	{
 		return id;
 	}
 
-	void setId(String id)
+	public Widget getParent()
 	{
-		this.id = id;
+		return parent;
 	}
-	
+
+	public String getType() 
+	{
+		return type;
+	}
+
 	public int hashCode()
     {
         if (this.hashValue == 0)
@@ -106,20 +98,20 @@ public class Widget
         }
         return this.hashValue;
     }
-
-	public String getType() 
+	
+	public Iterator<Event> iterateEvents()
 	{
-		return type;
+		return events.values().iterator();
 	}
 
-	void setType(String type) 
+	public Iterator<String> iterateProperties()
 	{
-		this.type = type;
+		return propertiesValues.iterator();
 	}
 
-	public String getFormatter() 
+	public void setDataSource(String dataSource)
 	{
-		return formatter;
+		this.dataSource = dataSource;
 	}
 
 	public void setFormatter(String formatter) 
@@ -127,13 +119,31 @@ public class Widget
 		this.formatter = formatter;
 	}
 
-	public String getDataSource()
+	protected void addEvent(Event event)
 	{
-		return dataSource;
+		if (event != null)
+		{
+			events.put(event.getId(), event);
+		}
 	}
 
-	public void setDataSource(String dataSource)
+	protected void addPropertyValue(String value)
 	{
-		this.dataSource = dataSource;
+		propertiesValues.add(value);
+	}
+
+	void setId(String id)
+	{
+		this.id = id;
+	}
+
+	void setParent(Widget parent)
+	{
+		this.parent = parent;
+	}
+
+	void setType(String type) 
+	{
+		this.type = type;
 	}
 }

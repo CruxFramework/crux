@@ -15,13 +15,12 @@
  */
 package br.com.sysmap.crux.core.client.screen;
 
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface LayFactory<T extends Widget>
+public interface LazyPanel
 {
-
+	void ensureWidget();
 }

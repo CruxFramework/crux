@@ -32,8 +32,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.GeneratorMessages;
+import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenConfigException;
+import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenResourceResolverInitializer;
+import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 
 /**
  * 
@@ -311,5 +315,101 @@ public class Modules
 		{
 			return new String[]{"public"};
 		}
+	}
+
+	/**
+	 * @param module
+	 * @return
+	 */
+	public String[] searchModulePages(Module module)
+	{
+		String[] pages = null;
+		try
+		{
+			Set<String> allScreenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(module.getName());
+			if (allScreenIDs != null)
+			{
+				URL location = module.getDescriptorURL();
+				location = URLResourceHandlersRegistry.getURLResourceHandler(location.getProtocol()).getParentDir(location);
+				pages = new String[allScreenIDs.size()];
+				int i=0;
+				for (String screenID : allScreenIDs)
+				{
+					screenID = getRelativeScreenId(module, screenID, location);
+					pages[i++] = screenID;
+				}
+			}
+			else 
+			{
+				pages = new String[0];
+			}
+		}
+		catch (ScreenConfigException e)
+		{
+			throw new ModuleException(messages.modulesErrorSearchingModulepages(module.getName()), e);
+		}
+		return pages;
+	}
+
+	/**
+	 * @param module
+	 * @param screenID
+	 * @return
+	 */
+	public String getRelativeScreenId(Module module, String screenID)
+	{
+		URL location = module.getDescriptorURL();
+		location = URLResourceHandlersRegistry.getURLResourceHandler(location.getProtocol()).getParentDir(location);
+		return getRelativeScreenId(module, screenID, location);
+	}
+
+	/**
+	 * @param module
+	 * @param screenID
+	 * @param location
+	 * @return
+	 */
+	private String getRelativeScreenId(Module module, String screenID, URL location)
+	{
+		String locationStr = location.toString();
+		if (screenID.startsWith(locationStr))
+		{
+			screenID = screenID.substring(locationStr.length());
+		}
+		else
+		{
+			URL[] webBaseDirs = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
+			for (URL webDir : webBaseDirs)
+			{
+				String webDirStr = webDir.toString();
+				if (screenID.startsWith(webDirStr))
+				{
+					screenID = screenID.substring(webDirStr.length());
+					break;
+				}
+			}
+		}
+		if (screenID.startsWith("/"))
+		{
+			screenID = screenID.substring(1);
+		}
+		for (String publicPath : module.getPublicPaths())
+		{
+			if (screenID.startsWith(publicPath))
+			{
+				screenID = screenID.substring(publicPath.length());
+				break;
+			}
+		}
+		if (screenID.startsWith("/"))
+		{
+			screenID = screenID.substring(1);
+		}
+
+		if (screenID.endsWith(".crux.xml"))
+		{
+			screenID = screenID.substring(0, screenID.length()-9)+".html";
+		}
+		return screenID;
 	}
 }

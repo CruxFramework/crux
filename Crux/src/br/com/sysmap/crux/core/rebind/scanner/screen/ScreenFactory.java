@@ -28,6 +28,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import br.com.sysmap.crux.core.client.utils.StringUtils;
@@ -152,6 +153,11 @@ public class ScreenFactory
 		return widget;
 	}
 
+	/**
+	 * @param nodeList
+	 * @return
+	 * @throws ScreenConfigException
+	 */
 	private String getScreenModule(NodeList nodeList) throws ScreenConfigException
 	{
 		String result = null;
@@ -298,10 +304,55 @@ public class ScreenFactory
 				{
 					parseScreenElement(screen,compCandidate);
 				}
-			} 
+			}
+			
+			checkWidgetsRelationship(screen, elementList);
 		}
 		
 		return screen;
+	}
+
+	/**
+	 * @param screen
+	 * @param elementList
+	 */
+	private void checkWidgetsRelationship(Screen screen, NodeList elementList)
+	{
+		int length = elementList.getLength();
+		for (int i = 0; i < length; i++) 
+		{
+			Element compCandidate = (Element) elementList.item(i);
+			Widget widget = screen.getWidget(compCandidate.getAttribute("id"));
+			if (widget != null)
+			{
+				Widget parent = getParentWidget(screen, compCandidate);
+				if (parent != null)
+				{
+					widget.setParent(parent);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param screen
+	 * @param compCandidate
+	 * @return
+	 */
+	private Widget getParentWidget(Screen screen,Element compCandidate)
+	{
+		Node parentNode = compCandidate.getParentNode();
+		Widget parent = null;
+		while (parentNode != null && !parentNode.getNodeName().equalsIgnoreCase("body"))
+		{
+			if ((parentNode instanceof Element) && isValidWidget((Element) parentNode))
+			{
+				parent = screen.getWidget(((Element)parentNode).getAttribute("id"));
+				break;
+			}
+			parentNode = parentNode.getParentNode();
+		}
+		return parent;
 	}
 
 	/**

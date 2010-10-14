@@ -75,7 +75,7 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 			if (inputStream == null)
 			{
 				
-				screenURL = URLUtils.isrValidURL(screenId);
+				screenURL = URLUtils.isValidURL(screenId);
 				
 				if (screenURL == null)
 				{

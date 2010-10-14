@@ -69,7 +69,7 @@ public class ScreenFactory {
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private Screen screen = null;
 	private String screenId = null;
-
+	private boolean parsing = false;
 	private boolean traceEnabled = false;
 	private StringBuilder traceOutput = null;
 	
@@ -211,6 +211,14 @@ public class ScreenFactory {
 	}
 	
 	/**
+	 * @return
+	 */
+	boolean isParsing()
+	{
+		return parsing;
+	}
+	
+	/**
 	 * 
 	 * @param element
 	 * @return
@@ -231,64 +239,72 @@ public class ScreenFactory {
 	
 	void parseDocument()
 	{
-		Date start = null;
-		if (traceEnabled)
+		this.parsing = true;
+		try
 		{
-			start = new Date();
-		}
-		Element body = RootPanel.getBodyElement();
-		NodeList<Element> spanElements = body.getElementsByTagName("span");
-		List<String> widgetIds = new ArrayList<String>();
-		Element screenElement = null;
-		
-		int spansLength = spanElements.getLength();
-		for (int i=0; i<spansLength; i++)
-		{
-			Element element = spanElements.getItem(i);
-			if (isScreenDefinitions(element))
+			Date start = null;
+			if (traceEnabled)
 			{
-				screenElement = element;
-				screen.parse(screenElement);
+				start = new Date();
 			}
-			else if (isValidWidget(element))
+			Element body = RootPanel.getBodyElement();
+			NodeList<Element> spanElements = body.getElementsByTagName("span");
+			List<String> widgetIds = new ArrayList<String>();
+			Element screenElement = null;
+
+			int spansLength = spanElements.getLength();
+			for (int i=0; i<spansLength; i++)
 			{
-				widgetIds.add(element.getId());
-			}
-		}
-		
-		List<Element> widgets = new ArrayList<Element>();
-		for (String elementId:  widgetIds)
-		{
-			if (!screen.containsWidget(elementId))
-			{
-				Element element = DOM.getElementById(elementId);
-				if (element != null) // Some elements can be handled by its parent's factory
+				Element element = spanElements.getItem(i);
+				if (isScreenDefinitions(element))
 				{
-					try 
+					screenElement = element;
+					screen.parse(screenElement);
+				}
+				else if (isValidWidget(element))
+				{
+					widgetIds.add(element.getId());
+				}
+			}
+
+			List<Element> widgets = new ArrayList<Element>();
+			for (String elementId:  widgetIds)
+			{
+				if (!screen.containsWidget(elementId))
+				{
+					Element element = DOM.getElementById(elementId);
+					if (element != null) // Some elements can be handled by its parent's factory
 					{
-						createWidget(element, screen, widgets);
-					}
-					catch (Throwable e) 
-					{
-						Crux.getErrorHandler().handleError(e);
-						element.setInnerText(Crux.getMessages().screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
+						try 
+						{
+							createWidget(element, screen, widgets);
+						}
+						catch (Throwable e) 
+						{
+							Crux.getErrorHandler().handleError(e);
+							element.setInnerText(Crux.getMessages().screenFactoryGenericErrorCreateWidget(e.getLocalizedMessage()));
+						}
 					}
 				}
 			}
+			if (screenElement != null)
+			{
+				clearScreenMetaTag(screenElement);
+			}
+			clearWidgetsMetaTags(widgets);
+			if (Crux.getConfig().renderWidgetsWithIDs())
+			{
+				screen.updateWidgetsIds();
+			}
+			if (traceEnabled)
+			{
+				Date end = new Date();
+				traceOutput.append("parseDocument - ("+(end.getTime() - start.getTime())+" ms)<br/>");
+			}
 		}
-		if (screenElement != null)
+		finally
 		{
-			clearScreenMetaTag(screenElement);
-		}
-		clearWidgetsMetaTags(widgets);
-		if (Crux.getConfig().renderWidgetsWithIDs())
-		{
-			screen.updateWidgetsIds();
-		}
-		if (traceEnabled)
-		{
-			Date end = new Date();
-			traceOutput.append("parseDocument - ("+(end.getTime() - start.getTime())+" ms)<br/>");
+			this.parsing = false;
 		}
 		screen.load();
 	}
@@ -435,7 +451,7 @@ public class ScreenFactory {
 			widget = newWidget(element, widgetId);
 			((HasWidgetsFactory<Widget>)parentWidgetFactory).add(parent, widget, parentElement, element);
 		}
-		else if (parentWidgetFactory instanceof LayFactory)
+		else if (parentWidgetFactory instanceof LazyFactory)
 		{
 			widget = null;
 		}

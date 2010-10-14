@@ -110,7 +110,7 @@ public class URLUtils
 	 * @param urlString
 	 * @return
 	 */
-	public static URL isrValidURL(String urlString)
+	public static URL isValidURL(String urlString)
 	{
 	
 		try 

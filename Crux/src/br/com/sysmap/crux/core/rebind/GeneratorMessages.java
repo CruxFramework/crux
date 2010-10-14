@@ -225,4 +225,8 @@ public interface GeneratorMessages
 
 	@DefaultServerMessage("[generator 051] - Error Generating DataSource {0}. Invalid Bound object. Primitive is not allowed")
 	String errorGeneratingRegisteredDataSourceInvalidBoundObject(String name);
+
+	@DefaultServerMessage("[generator 052] - Error searching for module pages. Module Name = {0}")
+	String modulesErrorSearchingModulepages(String moduleName);
+
 }

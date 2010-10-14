@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.context.ContextManager;
@@ -158,6 +159,7 @@ public class Screen
 		}
 		return url;
 	}
+	
 	/**
 	 * 
 	 */
@@ -165,6 +167,7 @@ public class Screen
 	{
 		Screen.get().showBlockDiv("crux-DefaultScreenBlocker");
 	}
+	
 	/**
 	 * 
 	 */
@@ -172,6 +175,7 @@ public class Screen
 	{
 		Screen.get().showBlockDiv(blockingDivStyleName);
 	}
+	
 	/**
      *
      */
@@ -179,7 +183,6 @@ public class Screen
 	{
 		ContextManager.clearContext();
 	}
-	
 	
 	/**
 	 * @param id
@@ -769,22 +772,26 @@ public class Screen
 	
 	protected String id;
 	
-	protected boolean loaded = false;
+	protected Map<String, String> lazyWidgets = null;
 
-	protected ScreenBlocker screenBlocker = GWT.create(ScreenBlocker.class);
+	protected boolean loaded = false;
 	
+	protected List<ScreenLoadHandler>  loadHandlers = new ArrayList<ScreenLoadHandler>();
+	
+	protected ScreenBlocker screenBlocker = GWT.create(ScreenBlocker.class);
+
 	@Deprecated
 	protected ModuleComunicationSerializer serializer = null;
 	
 	protected Map<String, Widget> widgets = new HashMap<String, Widget>(30);
 
-	private List<ScreenLoadHandler>  loadHandlers = new ArrayList<ScreenLoadHandler>();
-	
 	@SuppressWarnings("deprecation")
     protected Screen(String id) 
 	{
 		this.id = id;
 		this.handlerManager = new HandlerManager(this);
+		DeclaredLazyWidgets declaredLazyWidgets = GWT.create(DeclaredLazyWidgets.class);
+		this.lazyWidgets = declaredLazyWidgets.getLazyWidgets(id);
 		this.serializer = new ModuleComunicationSerializer();
 		createControllerAccessor(this);
 		this.addWindowCloseHandler(new CloseHandler<Window>()
@@ -957,7 +964,16 @@ public class Screen
 	 */
 	protected Widget getWidget(String id)
 	{
-		return widgets.get(id);
+		Widget widget = widgets.get(id);
+		if (widget == null)
+		{
+			if (lazyWidgets.containsKey(id))
+			{
+				initializeLazyDependentWidget(lazyWidgets.get(id));
+				widget = widgets.get(id);
+			}
+		}
+		return widget;
 	}
 	
 	/**
@@ -970,10 +986,10 @@ public class Screen
 	@SuppressWarnings("unchecked")
 	protected <T extends Widget> T getWidget(String id, Class<T> clazz)
 	{
-		Widget w = widgets.get(id);
+		Widget w = getWidget(id);
 		return (T) w;
 	}
-
+	
 	/**
 	 * Hides the DIV that is blocking the Screen contents
 	 */
@@ -997,6 +1013,24 @@ public class Screen
 			blockingDiv.getStyle().setProperty("display", "block");
 		}
 	}
+	
+	/**
+	 * @param string
+	 */
+	protected void initializeLazyDependentWidget(String widgetId)
+	{
+		List<String> dependentWidgets = getDependentWidgets(widgetId);
+		for (String id : dependentWidgets)
+		{
+			lazyWidgets.remove(id);
+		}
+
+		LazyPanel lazyPanel = (LazyPanel) getWidget(widgetId);
+		if (lazyPanel != null)
+		{
+			lazyPanel.ensureWidget();
+		}
+	}
 
 	/**
 	 * @return if this screen is completely loaded
@@ -1006,11 +1040,17 @@ public class Screen
 		return loaded;
 	}
 
+	/**
+	 * @return
+	 */
 	protected Iterator<Widget> iteratorWidgets()
 	{
 		return widgets.values().iterator();
 	}
 
+	/**
+	 * @return
+	 */
 	protected Iterator<String> iteratorWidgetsIds()
 	{
 		return widgets.keySet().iterator();
@@ -1111,7 +1151,7 @@ public class Screen
 			});
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -1131,7 +1171,7 @@ public class Screen
 		    History.fireCurrentHistoryState();
 		}
 	}
-
+	
 	protected void removeWidget(String id)
 	{
 		removeWidget(id, true);
@@ -1163,7 +1203,7 @@ public class Screen
 		blockingDivs.add(blockingDiv);
 		body.appendChild(blockingDiv);
 	}
-	
+
 	/**
 	 * Update fields mapped with ValueObject from widgets that have similar names.
 	 * @param caller
@@ -1240,7 +1280,7 @@ public class Screen
 			return a?a:null;
 		};
 	}-*/;
-
+	
 	/**
 	 * Create a hook javascript function, called outside of module.
 	 * @param handler
@@ -1251,7 +1291,7 @@ public class Screen
 			return a?a:null;
 		};
 	}-*/;
-	
+
 	/**
 	 * @param element
 	 * @param attributeName
@@ -1270,6 +1310,24 @@ public class Screen
 			return result;
 		}
 		return new String[0];
+	}
+	
+	/**
+	 * @param widgetId
+	 * @return
+	 */
+	private List<String> getDependentWidgets(String widgetId)
+	{
+		List<String> dependentWidgets = new ArrayList<String>();
+		Set<Entry<String, String>> values = lazyWidgets.entrySet();
+		for (Entry<String, String> dependentWidget : values)
+		{
+			if (dependentWidget.getValue().equals(widgetId))
+			{
+				dependentWidgets.add(dependentWidget.getKey());
+			}
+		}
+		return dependentWidgets;
 	}
 	
 	@Deprecated
