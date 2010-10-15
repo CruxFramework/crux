@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
+import br.com.sysmap.crux.core.client.Crux;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.screen.HasWidgetsHandler;
@@ -24,6 +25,7 @@ import br.com.sysmap.crux.core.client.screen.LazyFactory;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.LazyPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -38,11 +40,23 @@ public class LazyPanelFactory extends PanelFactory<LazyPanel> implements LazyFac
 	protected com.google.gwt.user.client.ui.LazyPanel lazyPanelWidget;
 	
 	/**
+	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 */
+	public void add(LazyPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
+	{
+		parent.add(child);
+	}
+
+	/**
 	 * @see br.com.sysmap.crux.core.client.screen.WidgetFactory#instantiateWidget(com.google.gwt.dom.client.Element, java.lang.String)
 	 */
 	@Override
 	public LazyPanel instantiateWidget(final Element element, String widgetId) 
 	{
+		if (Crux.getConfig().enableRuntimeLazyWidgetsInitialization())
+		{
+			maybeBuildLazyDependencyList(element, widgetId);
+		}		
 		class LazyPanelImpl extends LazyPanel implements br.com.sysmap.crux.core.client.screen.LazyPanel{
 			private String innerHTML = element.getInnerHTML();
 			
@@ -86,10 +100,50 @@ public class LazyPanelFactory extends PanelFactory<LazyPanel> implements LazyFac
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
+	 * @param element
+	 * @param widgetId
 	 */
-	public void add(LazyPanel parent, Widget child, Element parentElement, Element childElement) throws InterfaceConfigException
+	private void maybeBuildLazyDependencyList(final Element element, String widgetId)
 	{
-		parent.add(child);
+		if (Crux.getConfig().enableRuntimeLazyWidgetsInitialization())
+		{
+			if (getParentLazyPanelElement(element, widgetId) == null)
+			{
+				// Only the most external lazy panels must be initialized, once they also
+				// initialize their internal lazy children.
+				NodeList<Element> spanElements = element.getElementsByTagName("span");
+
+				int spansLength = spanElements.getLength();
+				for (int i=0; i<spansLength; i++)
+				{
+					Element spanElement = spanElements.getItem(i);
+					if (isWidget(spanElement))
+					{
+						Element parentLazyWidget = getParentLazyPanelElement(spanElement, widgetId);
+						addLazyWidgetDependency(spanElement.getId(), parentLazyWidget.getId());
+					}
+				}
+			}
+		}
 	}
+	
+	private Element getParentLazyPanelElement(Element element, String externalId) 
+	{
+		Element elementParent = element.getParentElement();
+		while (elementParent != null && (elementParent.getId() == null || !elementParent.getId().equals(externalId)))
+		{
+			String type = elementParent.getAttribute("_type");
+			if (type != null && type.equals("gwt_lazyPanel"))//TODO: pegar todos os possiveis lazy, via um generator
+			{
+				return elementParent;
+			}
+			if ("body".equalsIgnoreCase(elementParent.getTagName()))
+			{
+				return null;
+			}
+			elementParent = elementParent.getParentElement();
+		}
+			
+		return elementParent;	
+	}	
 }
