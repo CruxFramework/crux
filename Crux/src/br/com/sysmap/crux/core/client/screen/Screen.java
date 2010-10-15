@@ -790,8 +790,7 @@ public class Screen
 	{
 		this.id = id;
 		this.handlerManager = new HandlerManager(this);
-		DeclaredLazyWidgets declaredLazyWidgets = GWT.create(DeclaredLazyWidgets.class);
-		this.lazyWidgets = declaredLazyWidgets.getLazyWidgets(id);
+		initializeLazyWidgets(id);
 		this.serializer = new ModuleComunicationSerializer();
 		createControllerAccessor(this);
 		this.addWindowCloseHandler(new CloseHandler<Window>()
@@ -811,6 +810,18 @@ public class Screen
 			}
 		});
 	}
+	
+	/**
+	 * @param lazy
+	 * @param depedentId
+	 */
+	protected void addLazyWidgetDependency(String lazy, String dependentId)
+	{
+		if (Crux.getConfig().enableRuntimeLazyWidgetsInitialization())
+		{
+			this.lazyWidgets.put(lazy, dependentId);
+		}
+	}
 
 	/**
 	 * Adds an event handler that is called only once, when the screen is loaded
@@ -820,7 +831,7 @@ public class Screen
 	{
 		handlerManager.addHandler(ScreenLoadEvent.TYPE, handler);
 		loadHandlers.add(handler);
-	}	
+	}
 	
 	/**
 	 * 
@@ -839,12 +850,12 @@ public class Screen
 	protected void addTokenToHistory(String token, boolean issueEvent)
 	{
 		History.newItem(token, issueEvent);
-	}
+	}	
 	
 	protected void addWidget(String id, Widget widget)
 	{
 		widgets.put(id, widget);
-	}	
+	}
 	
 	/**
 	 * 
@@ -854,8 +865,8 @@ public class Screen
 	protected HandlerRegistration addWindowCloseHandler(CloseHandler<Window> handler) 
 	{
 		return Window.addCloseHandler(handler);
-	}
-
+	}	
+	
 	/**
 	 * 
 	 * @param handler
@@ -864,8 +875,8 @@ public class Screen
 	protected HandlerRegistration addWindowClosingHandler(ClosingHandler handler) 
 	{
 		return Window.addWindowClosingHandler(handler);
-	}		
-	
+	}
+
 	/**
 	 * 
 	 * @param handler
@@ -888,8 +899,8 @@ public class Screen
 	protected HandlerRegistration addWindowResizeHandler(ResizeHandler handler) 
 	{
 		return Window.addResizeHandler(handler);
-	}
-
+	}		
+	
 	/**
 	 * @param id
 	 * @return
@@ -898,7 +909,7 @@ public class Screen
 	{
 		return widgets.containsKey(id);
 	}
-	
+
 	/**
 	 * Fires the load event. This method has no effect when called more than one time.
 	 */
@@ -932,7 +943,7 @@ public class Screen
 	{
 		return declaredDataSources;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -940,7 +951,7 @@ public class Screen
 	{
 		return declaredFormatters;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -957,7 +968,7 @@ public class Screen
 	{
 		return id;
 	}
-
+	
 	/**
 	 * @param id
 	 * @return
@@ -975,7 +986,7 @@ public class Screen
 		}
 		return widget;
 	}
-	
+
 	/**
 	 * Generic version of <code>getWidget</code> method
 	 * @param <T>
@@ -1029,6 +1040,22 @@ public class Screen
 		if (lazyPanel != null)
 		{
 			lazyPanel.ensureWidget();
+		}
+	}
+	
+	/**
+	 * @param id
+	 */
+	protected void initializeLazyWidgets(String id)
+	{
+		if (Crux.getConfig().enableRuntimeLazyWidgetsInitialization())
+		{
+			this.lazyWidgets = new HashMap<String, String>();
+		}
+		else
+		{
+			DeclaredLazyWidgets declaredLazyWidgets = GWT.create(DeclaredLazyWidgets.class);
+			this.lazyWidgets = declaredLazyWidgets.getLazyWidgets(id);
 		}
 	}
 

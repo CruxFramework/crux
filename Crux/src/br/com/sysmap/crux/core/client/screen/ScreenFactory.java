@@ -70,7 +70,7 @@ public class ScreenFactory {
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private Screen screen = null;
 	private String screenId = null;
-	private boolean traceEnabled = false;
+	private final boolean traceEnabled;
 	private StringBuilder traceOutput = null;
 	
 	private ScreenFactory()
@@ -78,10 +78,6 @@ public class ScreenFactory {
 		this.declaredI18NMessages = GWT.create(DeclaredI18NMessages.class);
 		this.registeredDataSources = GWT.create(RegisteredDataSources.class);
 		this.traceEnabled = Crux.getConfig().enableClientFactoryTracing();
-		if (traceEnabled)
-		{
-			traceOutput = new StringBuilder();;
-		}
 	}
 	
 	/**
@@ -185,7 +181,7 @@ public class ScreenFactory {
 	public Widget newWidget(Element element, String widgetId, boolean addToScreen) throws InterfaceConfigException
 	{
 		Date start = null;
-		if (traceEnabled)
+		if (traceEnabled && traceOutput != null)
 		{
 			start = new Date();
 		}
@@ -202,7 +198,7 @@ public class ScreenFactory {
 			throw new InterfaceConfigException(Crux.getMessages().screenFactoryErrorCreateWidget(widgetId));
 		}
 		
-		if (traceEnabled)
+		if (traceEnabled && traceOutput != null)
 		{
 			Date end = new Date();
 			traceOutput.append("newWidget [widgetId = "+widgetId+"; type = "+type+"] - ("+(end.getTime() - start.getTime())+" ms)<br/>");
@@ -272,6 +268,7 @@ public class ScreenFactory {
 			Date start = null;
 			if (traceEnabled)
 			{
+				traceOutput = new StringBuilder();;
 				start = new Date();
 			}
 			Element body = RootPanel.getBodyElement();
@@ -327,6 +324,8 @@ public class ScreenFactory {
 			{
 				Date end = new Date();
 				traceOutput.append("parseDocument - ("+(end.getTime() - start.getTime())+" ms)<br/>");
+				createTraceOutput().setInnerHTML(traceOutput.toString());
+				traceOutput = null;
 			}
 		}
 		finally
@@ -383,10 +382,6 @@ public class ScreenFactory {
 	{
 		screen = new Screen(getScreenId());
 		parseDocument();
-		if (traceEnabled)
-		{
-			createTraceOutput().setInnerHTML(traceOutput.toString());
-		}
 	}
 	
 	/**

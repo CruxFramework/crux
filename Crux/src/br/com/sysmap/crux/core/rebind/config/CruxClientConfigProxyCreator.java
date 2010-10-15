@@ -20,6 +20,7 @@ import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
+import br.com.sysmap.crux.core.server.Environment;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -67,6 +68,7 @@ public class CruxClientConfigProxyCreator extends AbstractInterfaceWrapperProxyC
 		generateEnableChildrenWindowsDebugMethod(sourceWriter);
 		generateRenderWidgetsWithIDsMethod(sourceWriter);
 		generateEnableClientFactoryTracing(sourceWriter);
+		generateEnableRuntimeLazyWidgetsInitialization(sourceWriter);
     }
 
 	@Override
@@ -118,6 +120,18 @@ public class CruxClientConfigProxyCreator extends AbstractInterfaceWrapperProxyC
 		sourceWriter.println("public boolean enableClientFactoryTracing(){");
 		sourceWriter.indent();
 		sourceWriter.println("return " + ConfigurationFactory.getConfigurations().enableClientFactoryTracing() + ";");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+	}
+	
+	/**
+	 * @param sourceWriter
+	 */
+	protected void generateEnableRuntimeLazyWidgetsInitialization(SourceWriter sourceWriter)
+	{
+		sourceWriter.println("public boolean enableRuntimeLazyWidgetsInitialization(){");
+		sourceWriter.indent();
+		sourceWriter.println("return " + !Environment.isProduction() + ";");
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}

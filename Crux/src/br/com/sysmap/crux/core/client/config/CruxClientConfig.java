@@ -25,4 +25,5 @@ public interface CruxClientConfig
 	boolean enableDebugForURL(String url);
 	boolean renderWidgetsWithIDs();
 	boolean enableClientFactoryTracing();
+	boolean enableRuntimeLazyWidgetsInitialization();
 }

@@ -369,6 +369,15 @@ public abstract class WidgetFactory <T extends Widget>
 	}
 	
 	/**
+	 * @param lazy
+	 * @param dependentId
+	 */
+	protected void addLazyWidgetDependency(String lazy, String dependentId)
+	{
+		ScreenFactory.getInstance().getScreen().addLazyWidgetDependency(lazy, dependentId);
+	}
+	
+	/**
 	 * Returns true if an element is a span
 	 * @param element
 	 * @param acceptsNull
