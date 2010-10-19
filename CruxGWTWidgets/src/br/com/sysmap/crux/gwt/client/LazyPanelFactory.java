@@ -37,8 +37,78 @@ import com.google.gwt.user.client.ui.Widget;
 @DeclarativeFactory(id="lazyPanel", library="gwt", lazy=true)
 public class LazyPanelFactory extends PanelFactory<LazyPanel> implements LazyFactory<LazyPanel>, HasWidgetsFactory<LazyPanel>
 {
-	protected com.google.gwt.user.client.ui.LazyPanel lazyPanelWidget;
-	
+	/**
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	static class LazyPanelImpl extends LazyPanel implements br.com.sysmap.crux.core.client.screen.LazyPanel{
+		private boolean initialized = false;
+		private String innerHTML;
+		private final String wizardId;
+		
+		public LazyPanelImpl(String innerHTML, String wizardId)
+		{
+			this.innerHTML = innerHTML;
+			this.wizardId = wizardId;
+		}
+		
+		/**
+		 * @see com.google.gwt.user.client.ui.LazyPanel#ensureWidget()
+		 */
+		@Override
+		public void ensureWidget()
+		{
+			if (!initialized)
+			{
+				cleanLazyDependentWidgets(wizardId);
+				initialized = true;
+			}
+			super.ensureWidget();
+		}
+
+		/**
+		 * @see com.google.gwt.user.client.ui.LazyPanel#createWidget()
+		 */
+		@Override
+		protected Widget createWidget() 
+		{
+			if (isScreenParsing())
+			{
+				createWidgetAsync();
+				return null;
+			}
+			else
+			{
+				doCreateWidget();
+				return getWidget();
+			}
+		}			
+
+		/**
+		 * 
+		 */
+		private void createWidgetAsync()
+		{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand()
+			{
+				public void execute()
+				{
+					doCreateWidget();
+				}
+			});
+		}
+				
+		/**
+		 * 
+		 */
+		private void doCreateWidget()
+		{
+			getElement().setInnerHTML(innerHTML);
+			innerHTML = null;
+			parseDocument();
+		}
+	}
+
 	/**
 	 * @see br.com.sysmap.crux.core.client.screen.HasWidgetsFactory#add(com.google.gwt.user.client.ui.Widget, com.google.gwt.user.client.ui.Widget, com.google.gwt.dom.client.Element, com.google.gwt.dom.client.Element)
 	 */
@@ -46,7 +116,7 @@ public class LazyPanelFactory extends PanelFactory<LazyPanel> implements LazyFac
 	{
 		parent.add(child);
 	}
-
+	
 	/**
 	 * @see br.com.sysmap.crux.core.client.screen.WidgetFactory#instantiateWidget(com.google.gwt.dom.client.Element, java.lang.String)
 	 */
@@ -57,48 +127,38 @@ public class LazyPanelFactory extends PanelFactory<LazyPanel> implements LazyFac
 		{
 			maybeBuildLazyDependencyList(element, widgetId);
 		}		
-		class LazyPanelImpl extends LazyPanel implements br.com.sysmap.crux.core.client.screen.LazyPanel{
-			private String innerHTML = element.getInnerHTML();
-			
-			@Override
-			protected Widget createWidget() 
-			{
-				if (isScreenParsing())
-				{
-					createWidgetAsync();
-					return null;
-				}
-				else
-				{
-					doCreateWidget();
-					return getWidget();
-				}
-			}
-
-			private void createWidgetAsync()
-			{
-				Scheduler.get().scheduleDeferred(new ScheduledCommand()
-				{
-					public void execute()
-					{
-						doCreateWidget();
-					}
-				});
-			}			
-
-			private void doCreateWidget()
-			{
-				getElement().setInnerHTML(innerHTML);
-				innerHTML = null;
-				parseDocument();
-			}
-		}
-		LazyPanel result =  new LazyPanelImpl();
+		
+		LazyPanel result =  new LazyPanelImpl(element.getInnerHTML(), widgetId);
 		element.setInnerHTML("");
 		HasWidgetsHandler.handleWidgetElement(result, widgetId, "gwt_lazyPanel");
 		return result;
 	}
 
+	/**
+	 * @param element
+	 * @param externalId
+	 * @return
+	 */
+	private Element getParentLazyPanelElement(Element element, String externalId) 
+	{
+		Element elementParent = element.getParentElement();
+		while (elementParent != null && (elementParent.getId() == null || !elementParent.getId().equals(externalId)))
+		{
+			String type = elementParent.getAttribute("_type");
+			if (type != null && type.equals("gwt_lazyPanel"))//TODO: pegar todos os possiveis lazy, via um generator
+			{
+				return elementParent;
+			}
+			if ("body".equalsIgnoreCase(elementParent.getTagName()))
+			{
+				return null;
+			}
+			elementParent = elementParent.getParentElement();
+		}
+			
+		return elementParent;	
+	}
+	
 	/**
 	 * @param element
 	 * @param widgetId
@@ -125,25 +185,5 @@ public class LazyPanelFactory extends PanelFactory<LazyPanel> implements LazyFac
 				}
 			}
 		}
-	}
-	
-	private Element getParentLazyPanelElement(Element element, String externalId) 
-	{
-		Element elementParent = element.getParentElement();
-		while (elementParent != null && (elementParent.getId() == null || !elementParent.getId().equals(externalId)))
-		{
-			String type = elementParent.getAttribute("_type");
-			if (type != null && type.equals("gwt_lazyPanel"))//TODO: pegar todos os possiveis lazy, via um generator
-			{
-				return elementParent;
-			}
-			if ("body".equalsIgnoreCase(elementParent.getTagName()))
-			{
-				return null;
-			}
-			elementParent = elementParent.getParentElement();
-		}
-			
-		return elementParent;	
 	}	
 }

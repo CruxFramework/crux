@@ -34,6 +34,7 @@ import br.com.sysmap.crux.core.client.event.bind.MouseWheelEvtBind;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.WidgetFactory;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.FocusWidget;
 
 /**
@@ -94,17 +95,19 @@ public abstract class FocusWidgetFactory <T extends FocusWidget> extends WidgetF
 	public void processEvents(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
 		super.processEvents(context);
-		new ClickEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new FocusEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new BlurEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new KeyUpEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new KeyPressEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new KeyDownEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new MouseDownEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new MouseUpEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new MouseOverEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new MouseOutEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new MouseMoveEvtBind().bindEvent(context.getElement(), context.getWidget());
-		new MouseWheelEvtBind().bindEvent(context.getElement(), context.getWidget());
+		Element element = context.getElement();
+		T widget = context.getWidget();
+		new ClickEvtBind().bindEvent(element, widget);
+		new FocusEvtBind().bindEvent(element, widget);
+		new BlurEvtBind().bindEvent(element, widget);
+		new KeyUpEvtBind().bindEvent(element, widget);
+		new KeyPressEvtBind().bindEvent(element, widget);
+		new KeyDownEvtBind().bindEvent(element, widget);
+		new MouseDownEvtBind().bindEvent(element, widget);
+		new MouseUpEvtBind().bindEvent(element, widget);
+		new MouseOverEvtBind().bindEvent(element, widget);
+		new MouseOutEvtBind().bindEvent(element, widget);
+		new MouseMoveEvtBind().bindEvent(element, widget);
+		new MouseWheelEvtBind().bindEvent(element, widget);
 	}
 }
