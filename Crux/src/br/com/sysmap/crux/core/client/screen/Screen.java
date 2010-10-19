@@ -902,6 +902,18 @@ public class Screen
 	}		
 	
 	/**
+	 * @param widgetId
+	 */
+	protected void cleanLazyDependentWidgets(String widgetId)
+	{
+		List<String> dependentWidgets = getDependentWidgets(widgetId);
+		for (String id : dependentWidgets)
+		{
+			lazyWidgets.remove(id);
+		}
+	}
+
+	/**
 	 * @param id
 	 * @return
 	 */
@@ -909,7 +921,7 @@ public class Screen
 	{
 		return widgets.containsKey(id);
 	}
-
+	
 	/**
 	 * Fires the load event. This method has no effect when called more than one time.
 	 */
@@ -943,7 +955,7 @@ public class Screen
 	{
 		return declaredDataSources;
 	}
-	
+
 	/**
 	 * @return
 	 */
@@ -951,7 +963,7 @@ public class Screen
 	{
 		return declaredFormatters;
 	}
-
+	
 	/**
 	 * @return
 	 */
@@ -968,7 +980,7 @@ public class Screen
 	{
 		return id;
 	}
-	
+
 	/**
 	 * @param id
 	 * @return
@@ -986,7 +998,7 @@ public class Screen
 		}
 		return widget;
 	}
-
+	
 	/**
 	 * Generic version of <code>getWidget</code> method
 	 * @param <T>
@@ -1030,16 +1042,14 @@ public class Screen
 	 */
 	protected void initializeLazyDependentWidget(String widgetId)
 	{
-		List<String> dependentWidgets = getDependentWidgets(widgetId);
-		for (String id : dependentWidgets)
-		{
-			lazyWidgets.remove(id);
-		}
-
 		LazyPanel lazyPanel = (LazyPanel) getWidget(widgetId);
 		if (lazyPanel != null)
 		{
 			lazyPanel.ensureWidget();
+		}
+		else
+		{
+			cleanLazyDependentWidgets(widgetId);
 		}
 	}
 	

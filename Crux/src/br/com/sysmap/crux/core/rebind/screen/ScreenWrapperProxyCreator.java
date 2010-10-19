@@ -101,16 +101,33 @@ public class ScreenWrapperProxyCreator extends AbstractWrapperProxyCreator
 			String widgetName = name.substring(3);
 			if (widgetName.length() > 0)
 			{
-				String widgetNameFirstLower = Character.toLowerCase(widgetName.charAt(0)) + widgetName.substring(1);
-				String classSourceName = returnType.getParameterizedQualifiedSourceName();
-				sourceWriter.println("public "+classSourceName+" " + name+"(){");
-				sourceWriter.println("if (Screen.contains(\""+widgetNameFirstLower+"\")){");
-				sourceWriter.println("return ("+classSourceName+")Screen.get(\""+widgetNameFirstLower+"\");");
-				sourceWriter.println("}else{");
-				sourceWriter.println("return ("+classSourceName+")Screen.get(\""+widgetName+"\");");
-				sourceWriter.println("}");
-				sourceWriter.println("}");
+				generateWrapperMethodCaseSensitive(sourceWriter, returnType, name, widgetName);
+				//TODO permitir que se trabalhe de forma insensitive
 			}
 		}
+	}
+
+	/**
+	 * @param sourceWriter
+	 * @param returnType
+	 * @param name
+	 * @param widgetName
+	 */
+	private void generateWrapperMethodCaseSensitive(SourceWriter sourceWriter, JType returnType,
+			String name, String widgetName)
+	{
+		String widgetNameFirstLower = Character.toLowerCase(widgetName.charAt(0)) + widgetName.substring(1);
+		String classSourceName = returnType.getParameterizedQualifiedSourceName();
+		sourceWriter.println("public "+classSourceName+" " + name+"(){");
+		sourceWriter.indent();
+		sourceWriter.println(classSourceName + " ret = ("+classSourceName+")Screen.get(\""+widgetNameFirstLower+"\");");
+		sourceWriter.println("if (ret == null){");
+		sourceWriter.indent();
+		sourceWriter.println("ret = ("+classSourceName+")Screen.get(\""+widgetName+"\");");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+		sourceWriter.println("return ret;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 	}
 }

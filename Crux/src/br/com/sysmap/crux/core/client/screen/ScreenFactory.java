@@ -41,9 +41,10 @@ import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Factory for CRUX screen. Based in the type (extracted from _type attribute in widget declaration span tag), 
- * determine witch class to create for all screen widgets.
- * @author Thiago
+ * Factory for CRUX screen. It parses the document searching for crux meta tags. 
+ * Based on the type (extracted from _type attribute from crux meta tag), 
+ * determine which class to create for all screen widgets.
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class ScreenFactory {
@@ -52,7 +53,6 @@ public class ScreenFactory {
 	 
 	/**
 	 * Retrieve the ScreenFactory instance.
-	 * Is not synchronized, but it is not a problem. The screen is always build on a single thread
 	 * @return
 	 */
 	public static ScreenFactory getInstance()
@@ -73,6 +73,9 @@ public class ScreenFactory {
 	private final boolean traceEnabled;
 	private StringBuilder traceOutput = null;
 	
+	/**
+	 * Constructor
+	 */
 	private ScreenFactory()
 	{
 		this.declaredI18NMessages = GWT.create(DeclaredI18NMessages.class);
@@ -81,9 +84,9 @@ public class ScreenFactory {
 	}
 	
 	/**
-	 * 
-	 * @param dataSource
-	 * @return
+	 * Create a new DataSource instance
+	 * @param dataSource dataSource name, declared with <code>@DataSource</code> annotation
+	 * @return new dataSource instance
 	 */
 	public DataSource<?> createDataSource(String dataSource)
 	{
@@ -259,7 +262,7 @@ public class ScreenFactory {
 		}
 		return false;
 	}
-
+	
 	void parseDocument()
 	{
 		this.parsing = true;
@@ -280,14 +283,18 @@ public class ScreenFactory {
 			for (int i=0; i<spansLength; i++)
 			{
 				Element element = spanElements.getItem(i);
-				if (isScreenDefinitions(element))
+				if (isCruxMetaElement(element))
 				{
-					screenElement = element;
-					screen.parse(screenElement);
-				}
-				else if (isValidWidget(element))
-				{
-					widgetIds.add(element.getId());
+					String type = element.getAttribute("_type");
+					if ("screen".equals(type))
+					{
+						screenElement = element;
+						screen.parse(screenElement);
+					}
+					else
+					{
+						widgetIds.add(element.getId());
+					}
 				}
 			}
 
@@ -334,7 +341,7 @@ public class ScreenFactory {
 		}
 		screen.load();
 	}
-	
+
 	/**
 	 * 
 	 * @param screenElement
@@ -353,7 +360,7 @@ public class ScreenFactory {
 			parent.removeChild(screenElement);
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param widgets
@@ -374,7 +381,7 @@ public class ScreenFactory {
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -418,7 +425,7 @@ public class ScreenFactory {
 		DeclarativeWidgetFactory widgetFactory = (DeclarativeWidgetFactory) registeredWidgetFactories.getWidgetFactory(element.getAttribute("_type"));
 		if (!widgetFactory.isAttachToDOM())
 		{
-			widget = newWidget(element, widgetId);;
+			widget = newWidget(element, widgetId);
 		}
 		else
 		{
@@ -483,7 +490,7 @@ public class ScreenFactory {
 		}
 		return widget;
 	}
-
+	
 	/**
 	 * 
 	 * @param element
@@ -563,16 +570,16 @@ public class ScreenFactory {
 	}
 
 	/**
-	 * 
 	 * @param element
 	 * @return
 	 */
-	private boolean isScreenDefinitions(Element element)
+	private boolean isCruxMetaElement(Element element)
 	{
-		if ("span".equalsIgnoreCase(element.getTagName()))
+		String tagName = element.getTagName();
+		if ("span".equalsIgnoreCase(tagName))
 		{
 			String type = element.getAttribute("_type");
-			if (type != null && "screen".equals(type))
+			if (type != null && type.length() > 0)
 			{
 				return true;
 			}

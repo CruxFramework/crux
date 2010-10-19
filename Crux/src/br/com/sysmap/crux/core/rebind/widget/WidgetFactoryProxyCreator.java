@@ -40,6 +40,7 @@ import br.com.sysmap.crux.core.client.screen.children.SequenceChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.TextChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessor;
 import br.com.sysmap.crux.core.client.screen.children.WidgetChildProcessorContext;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.rebind.AbstractProxyCreator;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.utils.ClassUtils;
@@ -161,6 +162,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
     		ScreenFactory.class.getCanonicalName(),
     		Element.class.getCanonicalName(),
     		List.class.getCanonicalName(),
+    		Widget.class.getCanonicalName(),
     		InterfaceConfigException.class.getCanonicalName()
 		};
 	    return imports;
@@ -438,7 +440,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 	        					}
 	        					else
 	        					{
-	        						result.append("String "+attrName+" = context.getElement().getAttribute(\"_"+attrName+"\");\n");
+	        						result.append("String "+attrName+" = element.getAttribute(\"_"+attrName+"\");\n");
 	        						if (attr.defaultValue().length() > 0)
 	        						{
 	        							result.append("if ("+attrName+" == null || "+attrName+".length() == 0){\n");
@@ -450,7 +452,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 	        						{
 	        							result.append("if ("+attrName+" != null && "+attrName+".length() > 0){\n");
 	        						}
-	        						result.append("context.getWidget()."+setterMethod+"("+expression+");\n");
+	        						result.append("widget."+setterMethod+"("+expression+");\n");
 	        						result.append("}\n");
 	        					}
 	        				}
@@ -500,7 +502,13 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 		         +" context) throws InterfaceConfigException{"); 
 		sourceWriter.indent();
 		sourceWriter.println("super.processAttributes(context);");
-		sourceWriter.print(generateProcessAttributesBlock(factoryClass));
+		String attributesBlock = generateProcessAttributesBlock(factoryClass);
+		if (!StringUtils.isEmpty(attributesBlock))
+		{
+			sourceWriter.println("Element element = context.getElement();");
+			sourceWriter.println(widgetType.getParameterizedQualifiedSourceName()+" widget = context.getWidget();");
+		}
+		sourceWriter.print(attributesBlock);
 		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
@@ -629,7 +637,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 					Class<? extends EvtBinder<?>> binderClass = evt.value();
 					String binderClassName = binderClass.getCanonicalName();
 					String evtBinderVar = getEvtBinderVariableName("ev", evtBinderVariables, binderClassName);
-					result.append(evtBinderVar+".bindEvent(context.getElement(), context.getWidget());\n");
+					result.append(evtBinderVar+".bindEvent(element, widget);\n");
 				}
 			}
 		}
@@ -677,7 +685,13 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 		sourceWriter.println("public void processEvents("+widgetFactoryContextType.getParameterizedQualifiedSourceName()
 				         +" context) throws InterfaceConfigException{"); 
 		sourceWriter.println("super.processEvents(context);");
-		sourceWriter.print(generateProcessEventsBlock(factoryClass, evtBinderVariables));
+		String eventsBlock = generateProcessEventsBlock(factoryClass, evtBinderVariables);
+		if (!StringUtils.isEmpty(eventsBlock))
+		{
+			sourceWriter.println("Element element = context.getElement();");
+			sourceWriter.println(widgetType.getParameterizedQualifiedSourceName()+" widget = context.getWidget();");
+		}
+		sourceWriter.print(eventsBlock);
 		sourceWriter.println("}");
 		
 		generateInnerProcessorsvariables(sourceWriter, evtBinderVariables);

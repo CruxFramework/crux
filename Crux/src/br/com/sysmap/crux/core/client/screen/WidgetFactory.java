@@ -203,12 +203,13 @@ public abstract class WidgetFactory <T extends Widget>
 	public void processAttributes(WidgetFactoryContext<T> context) throws InterfaceConfigException
 	{
 		String styleName = context.readWidgetProperty("styleName");
+		T widget = context.getWidget();
 		if (styleName != null && styleName.length() > 0){
-			context.getWidget().setStyleName(styleName);
+			widget.setStyleName(styleName);
 		}
 		String visible = context.readWidgetProperty("visible");
 		if (visible != null && visible.length() > 0){
-			context.getWidget().setVisible(Boolean.parseBoolean(visible));
+			widget.setVisible(Boolean.parseBoolean(visible));
 		}
 		String style = context.readWidgetProperty("style");
 		if (style != null && style.length() > 0)
@@ -219,22 +220,22 @@ public abstract class WidgetFactory <T extends Widget>
 				String[] attr = styleAttributes[i].split(":");
 				if (attr != null && attr.length == 2)
 				{
-					StyleUtils.addStyleProperty(context.getWidget().getElement(), attr[0], attr[1]);
+					StyleUtils.addStyleProperty(widget.getElement(), attr[0], attr[1]);
 				}
 			}
 		}
 		String width = context.readWidgetProperty("width");
 		if (width != null && width.length() > 0){
-			context.getWidget().setWidth(width);
+			widget.setWidth(width);
 		}
 		String height = context.readWidgetProperty("height");
 		if (height != null && height.length() > 0){
-			context.getWidget().setHeight(height);
+			widget.setHeight(height);
 		}
 		String tooltip = context.readWidgetProperty("tooltip");
 		if (tooltip != null && tooltip.length() > 0)
 		{
-			context.getWidget().setTitle(ScreenFactory.getInstance().getDeclaredMessage(tooltip));
+			widget.setTitle(ScreenFactory.getInstance().getDeclaredMessage(tooltip));
 		}
 	}
 	
@@ -363,7 +364,7 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @param element
 	 * @return
 	 */
-	protected boolean isWidget(Element element)
+	protected static boolean isWidget(Element element)
 	{
 		return ScreenFactory.getInstance().isValidWidget(element);
 	}
@@ -372,9 +373,18 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @param lazy
 	 * @param dependentId
 	 */
-	protected void addLazyWidgetDependency(String lazy, String dependentId)
+	protected static void addLazyWidgetDependency(String lazy, String dependentId)
 	{
 		ScreenFactory.getInstance().getScreen().addLazyWidgetDependency(lazy, dependentId);
+	}
+	
+	
+	/**
+	 * @param lazy
+	 */
+	protected static void cleanLazyDependentWidgets(String lazy)
+	{
+		ScreenFactory.getInstance().getScreen().cleanLazyDependentWidgets(lazy);
 	}
 	
 	/**
@@ -522,7 +532,7 @@ public abstract class WidgetFactory <T extends Widget>
 	/**
 	 * 
 	 */
-	protected void parseDocument()
+	protected static void parseDocument()
 	{
 		ScreenFactory.getInstance().parseDocument();
 	}
@@ -530,7 +540,7 @@ public abstract class WidgetFactory <T extends Widget>
 	/**
 	 * @return
 	 */
-	protected boolean isScreenParsing()
+	protected static boolean isScreenParsing()
 	{
 		return ScreenFactory.getInstance().isParsing();
 	}
