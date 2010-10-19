@@ -41,7 +41,7 @@ public class GadgetViewFactory extends AbstractHTMLPanelFactory<GadgetView>
 	public GadgetView instantiateWidget(Element element, String widgetId) 
 	{
 		GadgetView ret = new GadgetView("");
-		List<Node> children = extractChildrenInReverseOrder(element);
+		List<Node> children = extractChildren(element);
 		for (Node node : children)
 		{
 			ret.getElement().appendChild(node);

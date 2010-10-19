@@ -32,7 +32,7 @@ public class GadgetInformationFactory
 	 * @param module
 	 * @return
 	 */
-	public Class<?> getGadgetInformationMetaClass(Module module)
+	public static Class<?> getGadgetInformationMetaClass(Module module)
 	{
 		try
 		{
@@ -40,7 +40,7 @@ public class GadgetInformationFactory
 		}
 		catch (ClassNotFoundException e)
 		{
-			throw new GadgetException(messages.gadgetInformationMetacLassNotFound(module.getFullName()));
+			throw new GadgetException(messages.gadgetInformationMetaClassNotFound(module.getFullName()));
 		}
 	}
 }

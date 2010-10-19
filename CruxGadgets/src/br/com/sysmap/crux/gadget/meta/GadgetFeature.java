@@ -20,6 +20,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.google.gwt.gadgets.client.AdsFeature;
+import com.google.gwt.gadgets.client.DynamicHeightFeature;
+import com.google.gwt.gadgets.client.GoogleAnalyticsFeature;
+import com.google.gwt.gadgets.client.SetPrefsFeature;
+import com.google.gwt.gadgets.client.SetTitleFeature;
+import com.google.gwt.gadgets.client.ViewFeature;
+import com.google.gwt.gadgets.client.osapi.OsapiFeature;
+import com.google.gwt.gadgets.client.rpc.RpcFeature;
+
 /**
  * @author Thiago da Rosa de Bustamante
  *
@@ -42,24 +51,32 @@ public interface GadgetFeature
 	}
 	
 	public enum ContainerFeature{
-		ads("ads"), 
-		dynamicHeight("dynamic-height"),
-		googleAnalytics("com.google.gadgets.analytics"),
-		lockedDomain("locked-domain"),
-		osapi("osapi"),
-		setPrefs("setprefs"),
-		setTitle("settitle"),
-		views("views");
+		ads("ads", AdsFeature.class), 
+		dynamicHeight("dynamic-height", DynamicHeightFeature.class),
+		googleAnalytics("com.google.gadgets.analytics", GoogleAnalyticsFeature.class),
+		lockedDomain("locked-domain", null),
+		osapi("osapi", OsapiFeature.class),
+		rpc("rpc", RpcFeature.class),
+		setPrefs("setprefs", SetPrefsFeature.class),
+		setTitle("settitle", SetTitleFeature.class),
+		views("views", ViewFeature.class);
 		
-		String value;
-		ContainerFeature(String value)
+		String featureName;
+		Class<?> featureClass;
+		ContainerFeature(String featureName, Class<?> featureClass)
 		{
-			this.value = value;
+			this.featureName = featureName;
+			this.featureClass = featureClass;
 		}
 		
-		public String toString()
+		public String getFeatureName()
 		{
-			return value;
+			return featureName;
+		}
+
+		public Class<?> getFeatureClass()
+		{
+			return featureClass;
 		}
 	}
 }

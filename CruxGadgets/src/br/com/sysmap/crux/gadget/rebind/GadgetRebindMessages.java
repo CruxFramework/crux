@@ -24,5 +24,5 @@ import br.com.sysmap.crux.core.i18n.DefaultServerMessage;
 public interface GadgetRebindMessages
 {
 	@DefaultServerMessage("[gadget-gen 001] - Can not find the GadgetInformation meta class {0}.")
-	String gadgetInformationMetacLassNotFound(String module);
+	String gadgetInformationMetaClassNotFound(String module);
 }
