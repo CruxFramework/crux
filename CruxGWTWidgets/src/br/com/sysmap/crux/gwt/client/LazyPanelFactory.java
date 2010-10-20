@@ -103,9 +103,10 @@ public class LazyPanelFactory extends PanelFactory<LazyPanel> implements LazyFac
 		 */
 		private void doCreateWidget()
 		{
-			getElement().setInnerHTML(innerHTML);
+			Element lazyPanelElement = getElement();
+			lazyPanelElement.setInnerHTML(innerHTML);
 			innerHTML = null;
-			parseDocument();
+			parseDocument(lazyPanelElement);
 		}
 	}
 

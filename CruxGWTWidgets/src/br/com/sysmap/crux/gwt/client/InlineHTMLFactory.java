@@ -45,7 +45,7 @@ public class InlineHTMLFactory extends AbstractLabelFactory<InlineHTML>
 		Element element = context.getElement();
 		InlineHTML widget = context.getWidget();
 
-		String innerHtml = element.getInnerHTML();
+		String innerHtml = element.getInnerHTML();//TODO rever esta factory. Deveria ser similar ao HTMLFactory
 		String text = context.readWidgetProperty("text");
 		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
 		{

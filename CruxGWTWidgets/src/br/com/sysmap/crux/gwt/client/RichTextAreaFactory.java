@@ -80,12 +80,15 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea> implem
 			}
 		});
 
-		String innerHtml = element.getInnerHTML();
 		String text = context.readWidgetProperty("text");
-		if ((text == null || text.length() ==0) && innerHtml != null && innerHtml.length() > 0)
+		if (text == null || text.length() ==0)
 		{
-			((HasHTML)widget).setHTML(innerHtml);
-		}		
+			String innerHtml = element.getInnerHTML();
+			if (innerHtml != null && innerHtml.length() > 0)
+			{
+				((HasHTML)widget).setHTML(innerHtml);
+			}
+		}
 	}
 	
 	/**
