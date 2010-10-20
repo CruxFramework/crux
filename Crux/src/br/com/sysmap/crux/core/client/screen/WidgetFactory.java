@@ -315,9 +315,24 @@ public abstract class WidgetFactory <T extends Widget>
 	 */
 	protected static Widget createChildWidget(Element element, String widgetId) throws InterfaceConfigException
 	{
-		return ScreenFactory.getInstance().newWidget(element, widgetId);
+		ScreenFactory factory = ScreenFactory.getInstance();
+		return factory.newWidget(element, widgetId, factory.getMetaElementType(element));
 	}
 
+	/**
+	 * Used by widgets that need to create new widgets as children, like tree. 
+	 * 
+	 * @param element
+	 * @param widgetId
+	 * @param widgetType
+	 * @return
+	 * @throws InterfaceConfigException
+	 */
+	protected static Widget createChildWidget(Element element, String widgetId, String widgetType) throws InterfaceConfigException
+	{
+		return ScreenFactory.getInstance().newWidget(element, widgetId, widgetType);
+	}
+	
 	/**
 	 * Creates a sequential id
 	 * @return
@@ -532,9 +547,9 @@ public abstract class WidgetFactory <T extends Widget>
 	/**
 	 * 
 	 */
-	protected static void parseDocument()
+	protected static void parseDocument(Element rootElement)
 	{
-		ScreenFactory.getInstance().parseDocument();
+		ScreenFactory.getInstance().parseDocument(rootElement);
 	}
 
 	/**

@@ -70,7 +70,6 @@ public class ScreenFactory {
 	private RegisteredWidgetFactories registeredWidgetFactories = null;
 	private Screen screen = null;
 	private String screenId = null;
-	private final boolean traceEnabled;
 	private StringBuilder traceOutput = null;
 	
 	/**
@@ -80,7 +79,6 @@ public class ScreenFactory {
 	{
 		this.declaredI18NMessages = GWT.create(DeclaredI18NMessages.class);
 		this.registeredDataSources = GWT.create(RegisteredDataSources.class);
-		this.traceEnabled = Crux.getConfig().enableClientFactoryTracing();
 	}
 	
 	/**
@@ -168,9 +166,9 @@ public class ScreenFactory {
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	public Widget newWidget(Element element, String widgetId) throws InterfaceConfigException
+	public Widget newWidget(Element element, String widgetId, String widgetType) throws InterfaceConfigException
 	{
-		return newWidget(element, widgetId, true);
+		return newWidget(element, widgetId, widgetType, true);
 	}
 
 	/**
@@ -181,18 +179,20 @@ public class ScreenFactory {
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	public Widget newWidget(Element element, String widgetId, boolean addToScreen) throws InterfaceConfigException
+	public Widget newWidget(Element element, String widgetId, String widgetType, boolean addToScreen) throws InterfaceConfigException
 	{
 		Date start = null;
-		if (traceEnabled && traceOutput != null)
-		{
-			start = new Date();
+		if (Crux.getConfig().enableClientFactoryTracing())
+		{// This statement is like this to generate a better code when compiling with GWT compiler. Do not join the statements
+			if(traceOutput != null)
+			{
+				start = new Date();
+			}
 		}
-		String type = element.getAttribute("_type");
-		WidgetFactory<? extends Widget> widgetFactory = registeredWidgetFactories.getWidgetFactory(type);
+		WidgetFactory<? extends Widget> widgetFactory = registeredWidgetFactories.getWidgetFactory(widgetType);
 		if (widgetFactory == null)
 		{
-			throw new InterfaceConfigException(Crux.getMessages().screenFactoryWidgetFactoryNotFound(type));
+			throw new InterfaceConfigException(Crux.getMessages().screenFactoryWidgetFactoryNotFound(widgetType));
 		}
 		
 		Widget widget = widgetFactory.createWidget(element, widgetId, addToScreen); 
@@ -201,10 +201,13 @@ public class ScreenFactory {
 			throw new InterfaceConfigException(Crux.getMessages().screenFactoryErrorCreateWidget(widgetId));
 		}
 		
-		if (traceEnabled && traceOutput != null)
-		{
-			Date end = new Date();
-			traceOutput.append("newWidget [widgetId = "+widgetId+"; type = "+type+"] - ("+(end.getTime() - start.getTime())+" ms)<br/>");
+		if (Crux.getConfig().enableClientFactoryTracing())
+		{// This statement is like this to generate a better code when compiling with GWT compiler. Do not join the statements
+			if(traceOutput != null)
+			{
+				Date end = new Date();
+				traceOutput.append("newWidget [widgetId = "+widgetId+"; type = "+widgetType+"] - ("+(end.getTime() - start.getTime())+" ms)<br/>");
+			}
 		}
 		return widget;
 	}
@@ -254,7 +257,7 @@ public class ScreenFactory {
 		String tagName = element.getTagName();
 		if ("span".equalsIgnoreCase(tagName))
 		{
-			String type = element.getAttribute("_type");
+			String type = getMetaElementType(element);
 			if (type != null && type.length() > 0 && !"screen".equals(type))
 			{
 				return true;
@@ -263,19 +266,27 @@ public class ScreenFactory {
 		return false;
 	}
 	
-	void parseDocument()
+	/**
+	 * This method search the element's children for crux meta tags. Those meta tags contains the information
+	 * needed to render widgets and informations about the page itself (represented by a {@code Screen} object).
+	 * 
+	 * <p>For each widget meta tag found, this factory choose a {@code WidgetFactory} that will parse the 
+	 * meta tag and build the widget. To find out which {@code WidgetFactory} call, the attribute {@code _type}
+	 * from the meta tag element is checked.
+	 * @param rootElement
+	 */
+	void parseDocument(Element rootElement)
 	{
 		this.parsing = true;
 		try
 		{
 			Date start = null;
-			if (traceEnabled)
-			{
+			if (Crux.getConfig().enableClientFactoryTracing())
+			{// This statement is like this to generate a better code when compiling with GWT compiler. Do not extract the previous command.
 				traceOutput = new StringBuilder();;
 				start = new Date();
 			}
-			Element body = RootPanel.getBodyElement();
-			NodeList<Element> spanElements = body.getElementsByTagName("span");
+			NodeList<Element> spanElements = rootElement.getElementsByTagName("span");
 			List<String> widgetIds = new ArrayList<String>();
 			Element screenElement = null;
 
@@ -285,7 +296,7 @@ public class ScreenFactory {
 				Element element = spanElements.getItem(i);
 				if (isCruxMetaElement(element))
 				{
-					String type = element.getAttribute("_type");
+					String type = getMetaElementType(element);
 					if ("screen".equals(type))
 					{
 						screenElement = element;
@@ -308,7 +319,7 @@ public class ScreenFactory {
 					{
 						try 
 						{
-							createWidget(element, screen, widgets);
+							createWidget(element, getMetaElementType(element), screen, widgets);
 						}
 						catch (Throwable e) 
 						{
@@ -327,7 +338,7 @@ public class ScreenFactory {
 			{
 				screen.updateWidgetsIds();
 			}
-			if (traceEnabled)
+			if (Crux.getConfig().enableClientFactoryTracing())
 			{
 				Date end = new Date();
 				traceOutput.append("parseDocument - ("+(end.getTime() - start.getTime())+" ms)<br/>");
@@ -340,6 +351,17 @@ public class ScreenFactory {
 			this.parsing = false;
 		}
 		screen.load();
+	}
+
+	/**
+	 * Return the type of a given crux meta tag element. This type could be {@code "screen"} or 
+	 * another string referencing a registered {@code WidgetFactory}
+	 * @param cruxMetaElement
+	 * @return
+	 */
+	public String getMetaElementType(Element cruxMetaElement)
+	{
+		return cruxMetaElement.getAttribute("_type");
 	}
 
 	/**
@@ -388,7 +410,8 @@ public class ScreenFactory {
 	private void create()
 	{
 		screen = new Screen(getScreenId());
-		parseDocument();
+		Element body = RootPanel.getBodyElement();
+		parseDocument(body);
 	}
 	
 	/**
@@ -410,7 +433,7 @@ public class ScreenFactory {
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	private Widget createWidget(Element element, Screen screen, List<Element> widgetsElementsAdded) throws InterfaceConfigException
+	private Widget createWidget(Element element, String widgetType, Screen screen, List<Element> widgetsElementsAdded) throws InterfaceConfigException
 	{
 		String widgetId = element.getId();
 		if (widgetId == null || widgetId.length() == 0)
@@ -422,21 +445,21 @@ public class ScreenFactory {
 		{
 			return widget;
 		}
-		DeclarativeWidgetFactory widgetFactory = (DeclarativeWidgetFactory) registeredWidgetFactories.getWidgetFactory(element.getAttribute("_type"));
+		DeclarativeWidgetFactory widgetFactory = (DeclarativeWidgetFactory) registeredWidgetFactories.getWidgetFactory(widgetType);
 		if (!widgetFactory.isAttachToDOM())
 		{
-			widget = newWidget(element, widgetId);
+			widget = newWidget(element, widgetType, widgetId);
 		}
 		else
 		{
 			Element parentElement = getParentElement(element);
 			if (parentElement != null)
 			{
-				widget = createWidgetWithExplicitParent(element, parentElement, screen, widgetsElementsAdded, widgetId);
+				widget = createWidgetWithExplicitParent(element, parentElement, screen, widgetsElementsAdded, widgetId, widgetType);
 			}
 			else
 			{
-				widget = createWidgetWithoutExplicitParent(element, parentElement, widgetId);
+				widget = createWidgetWithoutExplicitParent(element, parentElement, widgetId, widgetType);
 			}
 		}
 		if (widget != null)
@@ -457,10 +480,11 @@ public class ScreenFactory {
 	 * @throws InterfaceConfigException
 	 */
 	@SuppressWarnings("unchecked")
-	private Widget createWidgetWithExplicitParent(Element element, Element parentElement, Screen screen, List<Element> widgetsElementsAdded, String widgetId) throws InterfaceConfigException
+	private Widget createWidgetWithExplicitParent(Element element, Element parentElement, Screen screen, List<Element> widgetsElementsAdded, String widgetId, String widgetType) throws InterfaceConfigException
 	{
 		Widget widget;
 		Widget parent = screen.getWidget(parentElement.getId());
+		String parentWidgetType = getMetaElementType(parentElement);
 		if (parent == null)
 		{
 			String hasWidgetParentId = HasWidgetsHandler.getHasWidgetsId(parentElement);
@@ -470,14 +494,14 @@ public class ScreenFactory {
 			}
 			if (parent == null)
 			{
-				parent = createWidget(parentElement, screen, widgetsElementsAdded);
+				parent = createWidget(parentElement, parentWidgetType, screen, widgetsElementsAdded);
 			}
 		}
 		
-		WidgetFactory<?> parentWidgetFactory = registeredWidgetFactories.getWidgetFactory(parentElement.getAttribute("_type"));
+		WidgetFactory<?> parentWidgetFactory = registeredWidgetFactories.getWidgetFactory(parentWidgetType);
 		if (parentWidgetFactory instanceof HasWidgetsFactory)
 		{
-			widget = newWidget(element, widgetId);
+			widget = newWidget(element, widgetId, widgetType);
 			((HasWidgetsFactory<Widget>)parentWidgetFactory).add(parent, widget, parentElement, element);
 		}
 		else if (parentWidgetFactory instanceof LazyFactory)
@@ -498,11 +522,11 @@ public class ScreenFactory {
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	private Widget createWidgetWithoutExplicitParent(Element element, Element parentElement, String widgetId) throws InterfaceConfigException
+	private Widget createWidgetWithoutExplicitParent(Element element, Element parentElement, String widgetId, String widgetType) throws InterfaceConfigException
 	{
 		Element panelElement;
 		panelElement = getEnclosingPanelElement(element, widgetId);
-		Widget widget = newWidget(element, widgetId);
+		Widget widget = newWidget(element, widgetId, widgetType);
 
 		Panel panel;
 		if (widget instanceof RequiresResize)
@@ -578,7 +602,7 @@ public class ScreenFactory {
 		String tagName = element.getTagName();
 		if ("span".equalsIgnoreCase(tagName))
 		{
-			String type = element.getAttribute("_type");
+			String type = getMetaElementType(element);
 			if (type != null && type.length() > 0)
 			{
 				return true;
