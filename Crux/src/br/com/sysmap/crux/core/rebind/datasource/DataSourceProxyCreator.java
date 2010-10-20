@@ -42,6 +42,7 @@ import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JPackage;
@@ -63,6 +64,9 @@ public class DataSourceProxyCreator extends AbstractInvocableProxyCreator
 {
 	protected static GeneratorMessages messages = (GeneratorMessages)MessagesFactory.getMessages(GeneratorMessages.class);
 	private static final String DATASOURCE_PROXY_SUFFIX = "_DataSourceProxy";
+
+	// TODO - Gesse - recursive datasource fields cause stack overflow. Disabling field navigation until find a good solution.
+	private static final int MAX_DEPTH = 1;
 	
 	private final ColumnsData columnsData;
 	private final JClassType dataSourceClass;
@@ -474,32 +478,39 @@ public class DataSourceProxyCreator extends AbstractInvocableProxyCreator
 	 * @param names
 	 * @param types
 	 */
-	private void findDataSourceColumns(JClassType dtoType, List<String> names, List<JType> types, String parentField)
+	private void findDataSourceColumns(JClassType dtoType, List<String> names, List<JType> types, String parentField, int depth)
     {
 	    JField[] declaredFields = ClassUtils.getDeclaredFields(dtoType);
 		
-		for (JField field : declaredFields)
-		{
-			if (isFullAccessibleField(field, dtoType))
+	    if(depth > 0)
+	    {
+			for (JField field : declaredFields)
 			{
-				String columnName;
-				if (StringUtils.isEmpty(parentField))
+				if (isFullAccessibleField(field, dtoType))
 				{
-					columnName = field.getName();
-				}
-				else
-				{
-					columnName = parentField+"."+field.getName();
-				}
-				names.add(columnName);
-				JType columnType = field.getType();
-				types.add(columnType);
-				if (columnType instanceof JClassType && isComplexCustomType((JClassType) columnType))
-				{
-					findDataSourceColumns((JClassType)columnType, names, types, columnName);
+					String columnName;
+					if (StringUtils.isEmpty(parentField))
+					{
+						columnName = field.getName();
+					}
+					else
+					{
+						columnName = parentField+"."+field.getName();
+					}
+					names.add(columnName);
+					JType columnType = field.getType();
+					types.add(columnType);
+					if (columnType instanceof JClassType && isComplexCustomType((JClassType) columnType))
+					{
+						findDataSourceColumns((JClassType)columnType, names, types, columnName, depth-1);
+					}
 				}
 			}
-		}
+	    }
+	    else
+	    {
+	    	logger.log(Type.WARN, messages.longDepthDataSourceFielTruncated(dataSourceClass.getParameterizedQualifiedSourceName(), "" + MAX_DEPTH, parentField));
+	    }
     }
 
 	/**
@@ -510,7 +521,7 @@ public class DataSourceProxyCreator extends AbstractInvocableProxyCreator
 		List<String> names = new ArrayList<String>();
 		List<JType> types = new ArrayList<JType>();
 		
-		findDataSourceColumns(dtoType, names, types, null);
+		findDataSourceColumns(dtoType, names, types, null, MAX_DEPTH);
 		columnsData.names = names.toArray(new String[0]);
 		columnsData.types = types.toArray(new JType[0]);
 		
