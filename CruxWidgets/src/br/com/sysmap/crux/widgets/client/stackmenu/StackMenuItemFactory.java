@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.stackmenu;
 
+import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
@@ -35,7 +36,7 @@ import com.google.gwt.dom.client.Element;
  * Factory for Stack Menu
  * @author Gesse S. F. Dafe
  */
-@br.com.sysmap.crux.core.client.declarative.DeclarativeFactory(id="stackMenuItem", library="widgets")
+@DeclarativeFactory(id="stackMenuItem", library="widgets")
 public class StackMenuItemFactory extends WidgetFactory<StackMenuItem>
        implements HasClickHandlersFactory<StackMenuItem>
 {

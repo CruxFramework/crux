@@ -335,7 +335,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			Element template = column.getWidgetTemplate();
 			Element clone = (Element) template.cloneNode(true);
 			setRandomId(clone);
-			return ScreenFactory.getInstance().newWidget(clone, clone.getId(), false);
+			ScreenFactory factory = ScreenFactory.getInstance();
+			return factory.newWidget(clone, clone.getId(), factory.getMetaElementType(clone), false);
 		}
 		catch (InterfaceConfigException e)
 		{
