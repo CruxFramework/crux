@@ -15,11 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.maskedtextbox;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import br.com.sysmap.crux.core.client.collection.FastList;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.widgets.client.event.paste.PasteEvent;
 import br.com.sysmap.crux.widgets.client.event.paste.PasteHandler;
 
@@ -44,18 +41,18 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, BlurHandler, PasteHandler
 {
-	private static Map<Character, String> definitions = new HashMap<Character, String>();
+	private static FastMap<String> definitions = new FastMap<String>();
 	static
 	{
-		definitions.put('9', "[0-9]");
-		definitions.put('a', "[A-Za-z]");
-		definitions.put('*', "[A-Za-z0-9]");
+		definitions.put("9", "[0-9]");
+		definitions.put("a", "[A-Za-z]");
+		definitions.put("*", "[A-Za-z0-9]");
 	}
 	
 	private TextBox textBox;
 	private int firstNonMaskPos = -1;
 	private boolean ignore = false;
-	private List<String> tests = new ArrayList<String>();
+	private FastList<String> tests = new FastList<String>();
 	private char placeHolder;
 	private char[] buffer;
 	private String focusText;
@@ -93,12 +90,13 @@ public class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandle
 			}
 			else
 			{					
-				this.tests.add(definitions.containsKey(c)?definitions.get(c):null);
+				String key = c+"";
+				this.tests.add(definitions.containsKey(key)?definitions.get(key):null);
 				if (this.tests.get(this.tests.size()-1) != null && this.firstNonMaskPos == -1)
 				{
 					this.firstNonMaskPos = this.tests.size()-1;
 				}
-				this.buffer[i] = (definitions.containsKey(c)?placeHolder:c);
+				this.buffer[i] = (definitions.containsKey(key)?placeHolder:c);
 			}
 		}
 

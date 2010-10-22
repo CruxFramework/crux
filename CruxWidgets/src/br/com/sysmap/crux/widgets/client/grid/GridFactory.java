@@ -15,8 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.grid;
 
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.datasource.PagedDataSource;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
@@ -235,11 +234,12 @@ public class GridFactory extends WidgetFactory<Grid>
 	{
 		ColumnDefinitions defs = new ColumnDefinitions();
 		
-		List<Element> colElems = ensureChildrenSpans(gridElem, false);
+		FastList<Element> colElems = ensureChildrenSpans(gridElem, false);
 		if(colElems != null && colElems.size() > 0)
 		{
-			for (Element colElem : colElems)
+			for (int i=0; i<colElems.size(); i++)
 			{
+				Element colElem = colElems.get(i);
 				String width = getProperty(colElem,"width");
 				String strVisible = getProperty(colElem,"visible");
 				String strWrapLine = getProperty(colElem,"wrapLine");

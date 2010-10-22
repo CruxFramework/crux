@@ -50,14 +50,14 @@ public class CollapsePanelFactory extends AbstractTitlePanelFactory<CollapsePane
 
 		String strCollapsible = getProperty(element,"collapsible");
 		boolean collapsible = true;
-		if(strCollapsible != null && strCollapsible.trim().length() > 0)
+		if(strCollapsible != null && strCollapsible.length() > 0)
 		{
 			collapsible = Boolean.parseBoolean(strCollapsible);
 		}
 		
 		String strCollapsed = getProperty(element,"collapsed");
 		boolean collapsed = false;
-		if(strCollapsed != null && strCollapsed.trim().length() > 0)
+		if(strCollapsed != null && strCollapsed.length() > 0)
 		{
 			collapsed = Boolean.parseBoolean(strCollapsed);
 		}

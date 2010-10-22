@@ -15,10 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
@@ -50,7 +48,7 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 {
 	protected CruxInternalPopupControllerCrossDoc crossDoc = GWT.create(CruxInternalPopupControllerCrossDoc.class);
 	protected DialogMessages messages = GWT.create(DialogMessages.class);	
-	private List<CustomDialogBox> dialogBoxes = new ArrayList<CustomDialogBox>();
+	private FastList<CustomDialogBox> dialogBoxes = new FastList<CustomDialogBox>();
 	private boolean waitingForOpenEvent = false;
 	
 	/**

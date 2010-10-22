@@ -34,7 +34,7 @@ public class TitlePanel extends DecoratedPanel
 	 */
 	public TitlePanel(String width, String height, String styleName)
 	{
-		super(width, height, styleName != null && styleName.trim().length() > 0 ? styleName : DEFAULT_STYLE_NAME);
+		super(width, height, styleName != null && styleName.length() > 0 ? styleName : DEFAULT_STYLE_NAME);
 	}
 	
 	/**

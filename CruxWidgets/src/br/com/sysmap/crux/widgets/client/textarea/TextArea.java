@@ -15,9 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.textarea;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.paste.HasPasteHandlers;
 import br.com.sysmap.crux.widgets.client.event.paste.PasteEvent;
@@ -40,7 +38,7 @@ public class TextArea extends com.google.gwt.user.client.ui.TextArea implements 
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-TextArea" ;
 	
-	private List<HandlerRegistration> registrations;
+	private FastList<HandlerRegistration> registrations;
 	
 	private MaxLengthHandler maxLengthHandler = new MaxLengthHandler(this);	
 	
@@ -98,7 +96,7 @@ public class TextArea extends com.google.gwt.user.client.ui.TextArea implements 
 	 */
 	private void attachHandlers()
 	{
-		this.registrations = new ArrayList<HandlerRegistration>();		
+		this.registrations = new FastList<HandlerRegistration>();		
 		this.registrations.add(addKeyDownHandler(this.maxLengthHandler));
 		this.registrations.add(addChangeHandler(this.maxLengthHandler));
 		this.registrations.add(addPasteHandler(this.maxLengthHandler));		
@@ -109,8 +107,9 @@ public class TextArea extends com.google.gwt.user.client.ui.TextArea implements 
 	 */
 	private void removeHandlers()
 	{
-		for(HandlerRegistration registration : this.registrations)
+		for(int i=0; i<registrations.size(); i++)
 		{
+			HandlerRegistration registration = registrations.get(i); 
 			registration.removeHandler();
 		}		
 		registrations.clear();

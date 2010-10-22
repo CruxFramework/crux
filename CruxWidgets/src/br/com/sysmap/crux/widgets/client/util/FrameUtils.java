@@ -15,9 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 
@@ -104,8 +102,8 @@ public class FrameUtils
 	 */
 	static abstract class FrameStateMonitorImpl implements FrameStateMonitor
 	{
-		private Map<String, Timer> monitorTimers = new HashMap<String, Timer>();
-		private Map<String, Timer> timeoutTimers = new HashMap<String, Timer>();
+		private FastMap<Timer> monitorTimers = new FastMap<Timer>();
+		private FastMap<Timer> timeoutTimers = new FastMap<Timer>();
 		private static int framecounter = 0;
 		public void registerStateCallback(final Element frameElement, final FrameStateCallback callback, int timeout)
 		{

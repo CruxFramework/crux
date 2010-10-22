@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.datasource.DataSourceRecord;
 import br.com.sysmap.crux.core.client.datasource.HasDataSource;
 import br.com.sysmap.crux.core.client.datasource.LocalDataSource;
@@ -67,7 +68,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 {	
 	private int pageSize;
 	private PagedDataSource<?> dataSource;
-	private List<ColumnHeader> headers = new ArrayList<ColumnHeader>();
+	private FastList<ColumnHeader> headers = new FastList<ColumnHeader>();
 	private boolean autoLoadData;
 	private boolean loaded;
 	private String currentSortingColumn;
@@ -449,8 +450,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			
 			updatePager();
 	
-			for (ColumnHeader header : headers)
+			for (int i=0; i<headers.size(); i++)
 			{
+				ColumnHeader header = headers.get(i);
 				header.applySortingLayout();
 			}
 			
@@ -520,7 +522,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	@Override
 	protected void onClearRendering()
 	{
-		this.headers = new ArrayList<ColumnHeader>();		
+		this.headers = new FastList<ColumnHeader>();		
 	}
 	
 	/**

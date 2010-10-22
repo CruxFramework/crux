@@ -18,6 +18,7 @@ package br.com.sysmap.crux.widgets.client.transferlist;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.widgets.client.event.moveitem.HasBeforeMoveItemsHandlers;
 import br.com.sysmap.crux.widgets.client.event.moveitem.BeforeMoveItemsEvent;
 import br.com.sysmap.crux.widgets.client.event.moveitem.BeforeMoveItemsHandler;
@@ -352,8 +353,8 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 			ListBox listToRemove = leftToRight ? transferList.getLeftList() : transferList.getRightList();
 			ListBox listToAdd = leftToRight ? transferList.getRightList() : transferList.getLeftList();
 			
-			List<String[]> move = new ArrayList<String[]>();
-			List<String[]> keep = new ArrayList<String[]>();
+			FastList<String[]> move = new FastList<String[]>();
+			FastList<String[]> keep = new FastList<String[]>();
 			
 			for (int i = 0; i < listToRemove.getItemCount(); i++)
 			{
@@ -379,13 +380,15 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 			{
 				listToRemove.clear();
 				
-				for (String[] item : move)
+				for (int i=0; i<move.size(); i++)
 				{
+					String[] item = move.get(i);
 					listToAdd.addItem(item[0], item[1]);
 				}
 				
-				for (String[] item : keep)
+				for (int i=0; i<keep.size(); i++)
 				{
+					String[] item = keep.get(i);
 					listToRemove.addItem(item[0], item[1]);
 				}
 			}
@@ -397,12 +400,13 @@ public class TransferList extends Composite implements HasBeforeMoveItemsHandler
 		 * @param location
 		 * @return
 		 */
-		private List<Item> createItemList(List<String[]> arrays, ItemLocation location)
+		private List<Item> createItemList(FastList<String[]> arrays, ItemLocation location)
 		{
 			List<Item> items = new ArrayList<Item>();
 			
-			for (String[] array : arrays)
+			for (int i=0; i<arrays.size(); i++)
 			{
+				String[] array = arrays.get(i);
 				Item item = new Item(array[0], array[1], location);
 				items.add(item);
 			}

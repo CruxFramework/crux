@@ -18,11 +18,11 @@ package br.com.sysmap.crux.widgets.client.wizard;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
+import br.com.sysmap.crux.core.client.collection.FastList;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
@@ -54,12 +54,12 @@ public class WizardControlBar<T extends Serializable> extends AbstractWizardNavi
 	private String buttonWidth;
 	private String cancelLabel;
 	private int cancelOrder = 3;
-	private Map<String, WizardCommand<T>> commands = new HashMap<String, WizardCommand<T>>();
+	private FastMap<WizardCommand<T>> commands = new FastMap<WizardCommand<T>>();
 	private String finishLabel;
 	private int finishOrder = 2;
 	private String nextLabel;
 	private int nextOrder = 1;
-	private List<String> stepCommands = new ArrayList<String>();
+	private FastList<String> stepCommands = new FastList<String>();
 	
 	
 	/**
@@ -478,8 +478,10 @@ public class WizardControlBar<T extends Serializable> extends AbstractWizardNavi
 	 */
 	private void updateCommandButtons()
     {
-		for (WizardCommand<T> command: commands.values())
+		FastList<String> commandKeys = commands.keys();
+		for (int i=0; i< commandKeys.size(); i++)
 		{
+			WizardCommand<T> command = commands.get(commandKeys.get(i));
 			command.setControlBar(this);
 		}
     }
@@ -491,8 +493,10 @@ public class WizardControlBar<T extends Serializable> extends AbstractWizardNavi
     {
 		List<WizardCommand<T>> sortedCommands = new ArrayList<WizardCommand<T>>();
 
-		for (WizardCommand<T> command: commands.values())
+		FastList<String> commandKeys = commands.keys();
+		for (int i=0; i< commandKeys.size(); i++)
 		{
+			WizardCommand<T> command = commands.get(commandKeys.get(i));
 			sortedCommands.add(command);
 		}
 
@@ -514,8 +518,9 @@ public class WizardControlBar<T extends Serializable> extends AbstractWizardNavi
 	 */
 	private void updateStepCommands(Step<T> currentStep)
     {
-		for (String command : stepCommands)
+		for (int i=0; i<stepCommands.size(); i++)
         {
+			String command = stepCommands.get(i);
 			commands.remove(command);
         }
 	    stepCommands.clear();

@@ -16,12 +16,10 @@
 package br.com.sysmap.crux.widgets.client.wizard;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.collection.FastList;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.client.utils.StyleUtils;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
@@ -63,9 +61,9 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 
 	private WizardNavigationBar<T> navigationBar;
 	
-	private List<WizardStepListener<T>> stepListeners = new ArrayList<WizardStepListener<T>>();
-	private List<String> stepOrder = new ArrayList<String>();
-	private Map<String, Step<T>> steps = new HashMap<String, Step<T>>();
+	private FastList<WizardStepListener<T>> stepListeners = new FastList<WizardStepListener<T>>();
+	private FastList<String> stepOrder = new FastList<String>();
+	private FastMap<Step<T>> steps = new FastMap<Step<T>>();
 	
 	private DeckPanel stepsPanel;
 	private WizardDataSerializer<T> wizardDataSerializer;
@@ -117,7 +115,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	 */
 	public PageStep<T> addPageStep(String id, String label, String url)
 	{
-		return insertPageStep(id, label, url, steps.size());
+		return insertPageStep(id, label, url, stepOrder.size());
 	}
 	
 	/**
@@ -135,7 +133,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	 */
 	public WidgetStep<T> addWidgetStep(String id, String label, Widget widget)
 	{
-		return insertWidgetStep(id, label, widget, steps.size());
+		return insertWidgetStep(id, label, widget, stepOrder.size());
 	}
 	
 	/**
@@ -423,7 +421,11 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	 */
 	public void removeStepListener(WizardStepListener<T> listener)
 	{
-		stepListeners.remove(listener);
+		int index = stepListeners.indexOf(listener);
+		if (index >= 0)
+		{
+			stepListeners.remove(index);
+		}
 	}
 	
 	/**
@@ -443,7 +445,7 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 	public boolean selectStep(int step, boolean ignoreLeaveEvent)
     {
 		boolean ret = false;
-		if (currentStep != step && step >= 0 && step < steps.size())
+		if (currentStep != step && step >= 0 && step < stepOrder.size())
 		{
 			Step<T> destinationStep = getStep(step);
 			if (!destinationStep.isEnabled())
@@ -884,8 +886,9 @@ public class Wizard<T extends Serializable> extends Composite implements HasCanc
 		{
 			previous = steps.get(preivousStep);
 		}
-		for (WizardStepListener<T> listener : stepListeners)
+		for (int i=0; i<stepListeners.size(); i++)
         {
+			WizardStepListener<T> listener = stepListeners.get(i);
 	        listener.stepChanged(getStep(currentStep), previous);
         }
     }

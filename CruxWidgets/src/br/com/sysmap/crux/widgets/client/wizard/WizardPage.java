@@ -16,11 +16,11 @@
 package br.com.sysmap.crux.widgets.client.wizard;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.event.Event;
 import br.com.sysmap.crux.core.client.event.Events;
 import br.com.sysmap.crux.core.client.screen.Screen;
@@ -43,7 +43,7 @@ public class WizardPage<T extends Serializable> extends AbstractWidgetStep<T>
 	static final String PAGE_UNIQUE_ID = "__WizardPage_";
 	
 	private static RegisteredWizardDataSerializer dataSerializer;
-	private Map<String, WizardCommandHandler<T>> commandHandlers = new HashMap<String, WizardCommandHandler<T>>();
+	private FastMap<WizardCommandHandler<T>> commandHandlers = new FastMap<WizardCommandHandler<T>>();
 	private Map<String, WizardCommandData> commands = new LinkedHashMap<String, WizardCommandData>();
 
 	private String wizardId; 

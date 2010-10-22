@@ -15,9 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseHandler;
@@ -39,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimation, HasOpenHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Popup" ;
-	protected static List<Popup> popups = new ArrayList<Popup>();
+	protected static FastList<Popup> popups = new FastList<Popup>();
 	private static CruxInternalPopupController popupController = null;
 	private boolean animationEnabled;
 	private boolean closeable = true;

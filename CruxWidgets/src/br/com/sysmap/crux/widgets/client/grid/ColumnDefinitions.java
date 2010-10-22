@@ -15,12 +15,10 @@
  */
 package br.com.sysmap.crux.widgets.client.grid;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
+import br.com.sysmap.crux.core.client.collection.FastList;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 
 /**
@@ -29,15 +27,16 @@ import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
  */
 public class ColumnDefinitions
 {
-	private List<ColumnDefinition> definitionsInOrder = new ArrayList<ColumnDefinition>();
-	private Map<String, ColumnDefinition> definitionsByKey = new HashMap<String, ColumnDefinition>();
-	private Map<String, Integer> actualColumnIndexes = new HashMap<String, Integer>();
+	private FastList<ColumnDefinition> definitionsInOrder = new FastList<ColumnDefinition>();
+	private FastMap<ColumnDefinition> definitionsByKey = new FastMap<ColumnDefinition>();
+	private FastMap<Integer> actualColumnIndexes = new FastMap<Integer>();
 	private int visibleColumnCount = -1;
 	
 	void setGrid(Grid grid)
 	{
-		for (ColumnDefinition columnDefinition : definitionsInOrder)
+		for (int i=0; i<definitionsInOrder.size(); i++)
 		{
+			ColumnDefinition columnDefinition = definitionsInOrder.get(i);
 			columnDefinition.setGrid(grid);
 		}
 	}
@@ -57,7 +56,7 @@ public class ColumnDefinitions
 	/**
 	 * Gets all registered columns definition
 	 */
-	List<ColumnDefinition> getDefinitions()
+	FastList<ColumnDefinition> getDefinitions()
 	{
 		return definitionsInOrder;
 	}
@@ -85,8 +84,9 @@ public class ColumnDefinitions
 			{
 				int i = -1;
 				
-				for (ColumnDefinition column : definitionsInOrder)
+				for (int j=0; j<definitionsInOrder.size(); j++)
 				{
+					ColumnDefinition column = definitionsInOrder.get(j);
 					if(column.isVisible())
 					{
 						i++;
@@ -126,8 +126,9 @@ public class ColumnDefinitions
 		{
 			this.visibleColumnCount = 0;
 			
-			for (ColumnDefinition def : definitionsInOrder)
+			for (int i=0; i<definitionsInOrder.size(); i++)
 			{
+				ColumnDefinition def = definitionsInOrder.get(i);
 				if(def.isVisible())
 				{
 					this.visibleColumnCount++;
@@ -153,13 +154,13 @@ public class ColumnDefinitions
 	public static class ColumnIterator<T extends ColumnDefinition> implements Iterator<T>
 	{
 		int cursor = 0;
-		private List<T> defs;
+		private FastList<T> defs;
 	
 		/**
 		 * Restrict constructor 
 		 * @param definitions
 		 */
-		ColumnIterator(List<T> definitions)
+		ColumnIterator(FastList<T> definitions)
 		{
 			this.defs = definitions;
 		}

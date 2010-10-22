@@ -15,9 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.scrollbanner;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.widgets.client.util.TextSelectionUtils;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -45,7 +43,7 @@ public class ScrollBanner extends Composite
 	private int messageScrollingPeriod;
 	
 	private int currentMessageIndex = -1;
-	private List<String> messages = new ArrayList<String>();
+	private FastList<String> messages = new FastList<String>();
 
 	private Timer timer = new Timer()
 	{
@@ -227,7 +225,7 @@ public class ScrollBanner extends Composite
 	 */
 	public void clear()
 	{
-		this.messages = new ArrayList<String>();
+		this.messages.clear();
 		this.currentMessageIndex = -1;
 	}
 	

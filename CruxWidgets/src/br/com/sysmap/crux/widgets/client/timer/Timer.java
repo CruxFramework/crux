@@ -15,10 +15,9 @@
  */
 package br.com.sysmap.crux.widgets.client.timer;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
@@ -53,7 +52,7 @@ public class Timer extends Composite implements HasTimeoutHandlers
 	
 	private boolean running = false;
 	private long startTime = 0;
-	private List<TimeouTask> events = new ArrayList<TimeouTask>();	
+	private FastList<TimeouTask> events = new FastList<TimeouTask>();	
 	
 	private TimeProcessor timeProcessor;
 	
@@ -225,8 +224,9 @@ public class Timer extends Composite implements HasTimeoutHandlers
 	{
 		if(this.events != null)
 		{
-			for (TimeouTask task  : this.events)
+			for (int i=0; i<events.size(); i++)
 			{
+				TimeouTask task = events.get(i);
 				if(!task.isProcessed())
 				{
 					if((this.regressive && task.getTime() >= currentCount) || (!this.regressive && task.getTime() <= currentCount))
@@ -246,8 +246,9 @@ public class Timer extends Composite implements HasTimeoutHandlers
 	{
 		if(this.events != null)
 		{
-			for (TimeouTask task  : this.events)
+			for (int i=0; i<events.size(); i++)
 			{
+				TimeouTask task = events.get(i);
 				task.setProcessed(false);
 			}
 		}		

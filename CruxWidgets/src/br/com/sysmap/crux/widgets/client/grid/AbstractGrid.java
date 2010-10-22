@@ -15,13 +15,13 @@
  */
 package br.com.sysmap.crux.widgets.client.grid;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.utils.StyleUtils;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
 import br.com.sysmap.crux.widgets.client.event.row.HasRowClickHandlers;
@@ -58,7 +58,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	private GridHtmlTable table;
 	private ColumnDefinitions definitions;
 	private String generatedId =  "cruxGrid_" + new Date().getTime();
-	private List<R> rows = new ArrayList<R>();
+	private FastList<R> rows = new FastList<R>();
 	private Map<Widget, R> widgetsPerRow = new HashMap<Widget, R>();
 	private RowSelectionModel rowSelection;
 	private ScrollPanel scrollingArea;
@@ -153,12 +153,12 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	}
 	
 	/**
-	 * Clears all gird rows
+	 * Clears all grid rows
 	 */
 	public void clear()
 	{
 		table.resizeRows(0);
-		rows = new ArrayList<R>();
+		rows = new FastList<R>();
 		this.widgetsPerRow = new HashMap<Widget, R>();
 		onClear();
 	}
@@ -434,7 +434,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	{
 		int rowCount = getRowsToBeRendered() + 1;
 		table.resize(rowCount, definitions.getVisibleColumnCount() + (hasSelectionColumn() ? 1 : 0));
-		this.rows = new ArrayList<R>();
+		this.rows = new FastList<R>();
 		this.widgetsPerRow = new HashMap<Widget, R>();
 		onClearRendering();
 	}
@@ -540,9 +540,10 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			StyleUtils.removeStyleDependentName(table.getCellElement(0, 0), "rowSelectionColumn");
 		}
 				
-		List<ColumnDefinition> columns = definitions.getDefinitions();
-		for (ColumnDefinition columnDefinition : columns)
+		FastList<ColumnDefinition> columns = definitions.getDefinitions();
+		for (int i=0; i<columns.size(); i++)
 		{
+			ColumnDefinition columnDefinition = columns.get(i);
 			if(columnDefinition.isVisible())
 			{
 				Cell cell = createColumnHeaderCell(columnDefinition);

@@ -15,10 +15,8 @@
  */
 package br.com.sysmap.crux.widgets.client.dialog;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.client.controller.crossdoc.Target;
@@ -45,7 +43,7 @@ public class CruxInternalProgressDialogController implements CruxInternalProgres
 	private CruxInternalProgressDialogControllerCrossDoc crossDoc = GWT.create(CruxInternalProgressDialogControllerCrossDoc.class);
 	
 	
-	private List<String> stack = new ArrayList<String>(); 
+	private FastList<String> stack = new FastList<String>(); 
 	
 	/**
 	 * Invoke showProgressDialogOnTop on top window. It is required to handle multi-frame pages.
