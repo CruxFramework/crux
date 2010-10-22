@@ -179,7 +179,7 @@ public class LazyPanelFactory extends PanelFactory<LazyPanel> implements LazyFac
 				for (int i=0; i<spansLength; i++)
 				{
 					Element spanElement = spanElements.getItem(i);
-					if (isWidget(spanElement))
+					if (isValidCruxWidgetMetaTag(spanElement))
 					{
 						Element parentLazyWidget = getParentLazyPanelElement(spanElement, widgetId);
 						addLazyWidgetDependency(spanElement.getId(), parentLazyWidget.getId());

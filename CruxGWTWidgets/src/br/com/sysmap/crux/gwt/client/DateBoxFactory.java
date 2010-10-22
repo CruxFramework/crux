@@ -103,7 +103,7 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 			for (int i=0; i<children.size(); i++)
 			{
 				Element childElement = children.get(i);
-				if (isWidget(childElement))
+				if (isValidCruxWidgetMetaTag(childElement))
 				{
 					picker = (DatePicker) createChildWidget(childElement, childElement.getId());
 				}
