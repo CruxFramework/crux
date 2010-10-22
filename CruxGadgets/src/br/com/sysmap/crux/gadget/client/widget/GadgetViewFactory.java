@@ -15,8 +15,7 @@
  */
 package br.com.sysmap.crux.gadget.client.widget;
 
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
@@ -41,9 +40,10 @@ public class GadgetViewFactory extends AbstractHTMLPanelFactory<GadgetView>
 	public GadgetView instantiateWidget(Element element, String widgetId) 
 	{
 		GadgetView ret = new GadgetView("");
-		List<Node> children = extractChildren(element);
-		for (Node node : children)
+		FastList<Node> children = extractChildren(element);
+		for (int i=0; i<children.size(); i++)
 		{
+			Node node = children.get(i);
 			ret.getElement().appendChild(node);
 		}
 		HasWidgetsHandler.handleWidgetElement(ret, widgetId, "gadget_gadgetView");
