@@ -15,8 +15,7 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
@@ -43,9 +42,10 @@ public class HTMLPanelFactory extends AbstractHTMLPanelFactory<HTMLPanel>
 	public HTMLPanel instantiateWidget(Element element, String widgetId) 
 	{
 		HTMLPanel ret = new HTMLPanel("");
-		List<Node> children = extractChildren(element);
-		for (Node node : children)
+		FastList<Node> children = extractChildren(element);
+		for (int i=0; i<children.size(); i++)
 		{
+			Node node = children.get(i);
 			ret.getElement().appendChild(node);
 		}
 		HasWidgetsHandler.handleWidgetElement(ret, widgetId, "gwt_HTMLPanel");

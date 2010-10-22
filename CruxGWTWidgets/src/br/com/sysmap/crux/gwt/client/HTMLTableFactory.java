@@ -35,6 +35,8 @@ import br.com.sysmap.crux.gwt.client.align.VerticalAlignment;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
+import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -65,30 +67,34 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		})
 		public void processChildren(WidgetChildProcessorContext<T> context) throws InterfaceConfigException
 		{
-			Integer index = (Integer) context.getAttribute("rowIndex");
-			if (index == null)
-			{
-				index = 0;
+			int index;
+			
+			Object rowIndexAttr = context.getAttribute("rowIndex");
+			if (rowIndexAttr != null)
+			{    // Do not use auto-boxing during arithmetic operations and always try to use primitive types
+				 // It can improve the GWT generated code performance greatly
+				index= ((Integer) rowIndexAttr).intValue()+1;
 			}
 			else
 			{
-				index++;
+				index = 0;
 			}
 			try
 			{
 				String styleName = context.readChildProperty("styleName");
+				RowFormatter rowFormatter = context.getRootWidget().getRowFormatter();
 				if (styleName != null && styleName.length() > 0)
 				{
-					context.getRootWidget().getRowFormatter().setStyleName(index, styleName);
+					rowFormatter.setStyleName(index, styleName);
 				}
 				String visible = context.readChildProperty("visible");
 				if (visible != null && visible.length() > 0)
 				{
-					context.getRootWidget().getRowFormatter().setVisible(index, Boolean.parseBoolean(visible));
+					rowFormatter.setVisible(index, Boolean.parseBoolean(visible));
 				}
 
 				String verticalAlignment = context.readChildProperty("verticalAlignment");
-				context.getRootWidget().getRowFormatter().setVerticalAlign(index, 
+				rowFormatter.setVerticalAlign(index, 
 						AlignmentAttributeParser.getVerticalAlignment(verticalAlignment));
 			}
 			finally
@@ -116,54 +122,57 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		{
 			HTMLTable widget = context.getRootWidget();
 
-			Integer indexRow = (Integer) context.getAttribute("rowIndex");
-			Integer indexCol = (Integer) context.getAttribute("colIndex");
-			if (indexCol == null)
-			{
-				indexCol = 0;
+			int indexRow = ((Integer) context.getAttribute("rowIndex")).intValue();
+			int indexCol;;
+			Object colIndexAttr = context.getAttribute("colIndex");
+			if (colIndexAttr != null)
+			{// Do not use auto-boxing during arithmetic operations and always try to use primitive types
+			 // It can improve the GWT generated code performance greatly
+				indexCol= ((Integer) colIndexAttr).intValue()+1;
 			}
 			else
 			{
-				indexCol++;
+				indexCol = 0;
 			}
 			try
 			{
 				String styleName = context.readChildProperty("styleName");
+				CellFormatter cellFormatter = widget.getCellFormatter();
 				if (styleName != null && styleName.length() > 0)
 				{
-					widget.getCellFormatter().setStyleName(indexRow, indexCol, styleName);
+					cellFormatter.setStyleName(indexRow, indexCol, styleName);
 				}
 				String visible = context.readChildProperty("visible");
 				if (visible != null && visible.length() > 0)
 				{
-					widget.getCellFormatter().setVisible(indexRow, indexCol, Boolean.parseBoolean(visible));
+					cellFormatter.setVisible(indexRow, indexCol, Boolean.parseBoolean(visible));
 				}
 				String height = context.readChildProperty("height");
 				if (height != null && height.length() > 0)
 				{
-					widget.getCellFormatter().setHeight(indexRow, indexCol, height);
+					cellFormatter.setHeight(indexRow, indexCol, height);
 				}
 				String width = context.readChildProperty("width");
 				if (width != null && width.length() > 0)
 				{
-					widget.getCellFormatter().setWidth(indexRow, indexCol, width);
+					cellFormatter.setWidth(indexRow, indexCol, width);
 				}
 				String wordWrap = context.readChildProperty("wordWrap");
 				if (wordWrap != null && wordWrap.length() > 0)
 				{
-					widget.getCellFormatter().setWordWrap(indexRow, indexCol, Boolean.parseBoolean(wordWrap));
+					cellFormatter.setWordWrap(indexRow, indexCol, Boolean.parseBoolean(wordWrap));
 				}
 
 				String horizontalAlignment = context.readChildProperty("horizontalAlignment");
 				if (horizontalAlignment != null && horizontalAlignment.length() > 0)
 				{
-					widget.getCellFormatter().setHorizontalAlignment(indexRow, indexCol, 
+					cellFormatter.setHorizontalAlignment(indexRow, indexCol, 
 						AlignmentAttributeParser.getHorizontalAlignment(horizontalAlignment, HasHorizontalAlignment.ALIGN_DEFAULT));
 				}
 				String verticalAlignment = context.readChildProperty("verticalAlignment");
 				if (verticalAlignment != null && verticalAlignment.length() > 0)
 				{
-					widget.getCellFormatter().setVerticalAlignment(indexRow, indexCol, 
+					cellFormatter.setVerticalAlignment(indexRow, indexCol, 
 						AlignmentAttributeParser.getVerticalAlignment(verticalAlignment));
 
 				}
@@ -183,7 +192,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		{
 			Integer indexRow = (Integer) context.getAttribute("rowIndex");
 			Integer indexCol = (Integer) context.getAttribute("colIndex");
-			context.getRootWidget().setText(indexRow, indexCol, ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getInnerHTML()));
+			context.getRootWidget().setText(indexRow.intValue(), indexCol.intValue(), ScreenFactory.getInstance().getDeclaredMessage(context.getChildElement().getInnerHTML()));
 		}
 	}
 	
@@ -195,7 +204,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 		{
 			Integer indexRow = (Integer) context.getAttribute("rowIndex");
 			Integer indexCol = (Integer) context.getAttribute("colIndex");
-			context.getRootWidget().setHTML(indexRow, indexCol, context.getChildElement().getInnerHTML());
+			context.getRootWidget().setHTML(indexRow.intValue(), indexCol.intValue(), context.getChildElement().getInnerHTML());
 		}
 	}
 	
@@ -211,7 +220,7 @@ public abstract class HTMLTableFactory <T extends HTMLTable> extends PanelFactor
 			Integer indexRow = (Integer) context.getAttribute("rowIndex");
 			Integer indexCol = (Integer) context.getAttribute("colIndex");
 			Element childElement = context.getChildElement();
-			context.getRootWidget().setWidget(indexRow, indexCol, createChildWidget(childElement, childElement.getId()));
+			context.getRootWidget().setWidget(indexRow.intValue(), indexCol.intValue(), createChildWidget(childElement, childElement.getId()));
 		}
 	}
 }

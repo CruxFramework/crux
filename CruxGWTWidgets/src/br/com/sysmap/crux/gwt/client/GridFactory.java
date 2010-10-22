@@ -15,8 +15,7 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagChild;
 import br.com.sysmap.crux.core.client.declarative.TagChildAttributes;
@@ -54,7 +53,7 @@ public class GridFactory extends HTMLTableFactory<Grid>
 	})
 	public void processChildren(WidgetFactoryContext<Grid> context) throws InterfaceConfigException	
 	{
-		List<Element> childrenSpans = ensureChildrenSpans(context.getElement(), true);
+		FastList<Element> childrenSpans = ensureChildrenSpans(context.getElement(), true);
 		context.getWidget().resizeRows(childrenSpans.size());
 	}
 	
@@ -70,7 +69,7 @@ public class GridFactory extends HTMLTableFactory<Grid>
 			Boolean cellsInitialized = (Boolean) context.getAttribute("cellsInitialized");
 			if (cellsInitialized == null || !cellsInitialized)
 			{
-				List<Element> childrenSpans = ensureChildrenSpans(context.getChildElement(), true);
+				FastList<Element> childrenSpans = ensureChildrenSpans(context.getChildElement(), true);
 				context.getRootWidget().resizeColumns(childrenSpans.size());
 				context.setAttribute("cellsInitialized", new Boolean(true));
 			}

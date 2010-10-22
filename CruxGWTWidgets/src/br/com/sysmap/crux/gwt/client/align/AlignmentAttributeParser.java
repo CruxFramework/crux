@@ -35,7 +35,7 @@ public class AlignmentAttributeParser
 	 */
 	public static HorizontalAlignmentConstant getHorizontalAlignment(String align, HorizontalAlignmentConstant defaultAlignment)
 	{
-		if (align != null && align.trim().length() > 0)
+		if (align != null && align.length() > 0)
 		{
 			HorizontalAlignment alignment = HorizontalAlignment.valueOf(align);
 			
@@ -84,7 +84,7 @@ public class AlignmentAttributeParser
 	 */
 	public static VerticalAlignmentConstant getVerticalAlignment(String align, VerticalAlignmentConstant defaultAlignment)
 	{
-		if (align != null && align.trim().length() > 0)
+		if (align != null && align.length() > 0)
 		{
 			VerticalAlignment alignment = VerticalAlignment.valueOf(align);
 

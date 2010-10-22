@@ -15,9 +15,7 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 
@@ -48,9 +46,9 @@ public abstract class AbstractHTMLPanelFactory<T extends HTMLPanel> extends Comp
 	 * @param element
 	 * @return
 	 */
-	protected List<Node> extractChildren(Element element)
+	protected FastList<Node> extractChildren(Element element)
 	{
-		List<Node> result = new ArrayList<Node>();
+		FastList<Node> result = new FastList<Node>();
 		
 		NodeList<Node> childNodes = element.getChildNodes();
 		
@@ -79,9 +77,9 @@ public abstract class AbstractHTMLPanelFactory<T extends HTMLPanel> extends Comp
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	protected static List<Element> ensureChildrenSpans(Element element, boolean acceptsNoChild) throws InterfaceConfigException
+	protected static FastList<Element> ensureChildrenSpans(Element element, boolean acceptsNoChild) throws InterfaceConfigException
 	{
-		return new ArrayList<Element>();
+		return new FastList<Element>();
 	}
 	
 }

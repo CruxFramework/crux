@@ -21,6 +21,7 @@ import br.com.sysmap.crux.core.client.screen.HasWidgetsFactory;
 import br.com.sysmap.crux.core.client.screen.HasWidgetsHandler;
 import br.com.sysmap.crux.core.client.screen.InterfaceConfigException;
 import br.com.sysmap.crux.core.client.screen.LazyFactory;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -146,11 +147,11 @@ public class LazyPanelFactory extends PanelFactory<LazyPanel> implements LazyFac
 		while (elementParent != null && (elementParent.getId() == null || !elementParent.getId().equals(externalId)))
 		{
 			String type = elementParent.getAttribute("_type");
-			if (type != null && type.equals("gwt_lazyPanel"))//TODO: pegar todos os possiveis lazy, via um generator
+			if (type != null && StringUtils.unsafeEquals(type,"gwt_lazyPanel"))//TODO: pegar todos os possiveis lazy, via um generator
 			{
 				return elementParent;
 			}
-			if ("body".equalsIgnoreCase(elementParent.getTagName()))
+			if (StringUtils.unsafeEquals("BODY",elementParent.getTagName()))
 			{
 				return null;
 			}

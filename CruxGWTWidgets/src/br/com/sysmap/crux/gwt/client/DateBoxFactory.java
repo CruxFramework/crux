@@ -16,8 +16,8 @@
 package br.com.sysmap.crux.gwt.client;
 
 import java.util.Date;
-import java.util.List;
 
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
@@ -95,13 +95,14 @@ public class DateBoxFactory extends CompositeFactory<DateBox>
 	@Override
 	public DateBox instantiateWidget(Element element, String widgetId) throws InterfaceConfigException 
 	{
-		List<Element> children = ensureChildrenSpans(element, true);
+		FastList<Element> children = ensureChildrenSpans(element, true);
 		if (children.size() > 0)
 		{
 			DatePicker picker = null;
 			
-			for (Element childElement : children)
+			for (int i=0; i<children.size(); i++)
 			{
+				Element childElement = children.get(i);
 				if (isWidget(childElement))
 				{
 					picker = (DatePicker) createChildWidget(childElement, childElement.getId());

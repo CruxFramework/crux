@@ -52,4 +52,4 @@ public class InlineHTMLFactory extends AbstractLabelFactory<InlineHTML>
 			((HasHTML)widget).setHTML(innerHtml);
 		}
 	}
-}
+}//TODO as factories HasHTML nao estao suportando i18n declarativo.

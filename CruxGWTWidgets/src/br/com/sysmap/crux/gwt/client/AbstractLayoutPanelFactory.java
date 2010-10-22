@@ -15,9 +15,7 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
@@ -53,7 +51,7 @@ public abstract class AbstractLayoutPanelFactory<T extends ComplexPanel> extends
 		if (!StringUtils.isEmpty(animationDuration))
 		{
 			context.setAttribute("animationDuration", Integer.parseInt(animationDuration));
-			context.setAttribute("animationCommands", new ArrayList<Command>());
+			context.setAttribute("animationCommands", new FastList<Command>());
 		}
 	}
 	
@@ -73,7 +71,7 @@ public abstract class AbstractLayoutPanelFactory<T extends ComplexPanel> extends
     {
 		final T widget = context.getWidget();
 		
-		final List<Command> animationConstraints = (List<Command>) context.getAttribute("animationCommands");
+		final FastList<Command> animationConstraints = (FastList<Command>) context.getAttribute("animationCommands");
 		final Integer animationDuration = (Integer) context.getAttribute("animationDuration");
 		if (animationDuration != null)
 		{
@@ -122,10 +120,11 @@ public abstract class AbstractLayoutPanelFactory<T extends ComplexPanel> extends
 	 * 
 	 * @param animationConstraints
 	 */
-	protected void setAnimationConstraints(List<Command> animationConstraints)
+	protected void setAnimationConstraints(FastList<Command> animationConstraints)
 	{
-		for (Command command : animationConstraints)
+		for (int i=0; i<animationConstraints.size(); i++)
 		{
+			Command command = animationConstraints.get(i);
 			command.execute();
 		}
 	}

@@ -15,9 +15,7 @@
  */
 package br.com.sysmap.crux.gwt.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
@@ -68,7 +66,7 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea> implem
 		Element element = context.getElement();
 		final RichTextArea widget = context.getWidget();
 		
-		final Map<String, String> declaredProperties = readDeclaredProperties(context);
+		final FastMap<String> declaredProperties = readDeclaredProperties(context);
 
 		// We need to give UI thread time to render the textArea before try to focus it
 		addScreenLoadedHandler(new ScreenLoadHandler()
@@ -96,9 +94,9 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea> implem
 	 * to initialise the basic formatter. It will be done by method initBasicFormatterOptions
 	 * @param element
 	 */
-	protected Map<String, String> readDeclaredProperties(WidgetFactoryContext<RichTextArea> context)
+	protected FastMap<String> readDeclaredProperties(WidgetFactoryContext<RichTextArea> context)
 	{
-		 Map<String, String> declaredProperties = new HashMap<String, String>();
+		FastMap<String> declaredProperties = new FastMap<String>();
 		String backColor = context.readWidgetProperty("backColor");
 		if (backColor != null && backColor.length() > 0)
 		{
@@ -160,7 +158,7 @@ public class RichTextAreaFactory extends FocusWidgetFactory<RichTextArea> implem
 	/**
 	 * Render basic formatter options
 	 */
-	protected void initFormatterOptions(RichTextArea widget, Map<String, String> declaredProperties)
+	protected void initFormatterOptions(RichTextArea widget, FastMap<String> declaredProperties)
 	{
 		final Formatter formatter = widget.getFormatter();
 		if (formatter != null)
