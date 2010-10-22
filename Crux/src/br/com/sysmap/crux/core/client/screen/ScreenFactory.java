@@ -266,6 +266,21 @@ public class ScreenFactory {
 	}
 	
 	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	boolean isValidCruxWidgetMetaTag(Element spanElement)
+	{
+		String type = getMetaElementType(spanElement);
+		if (type != null && type.length() > 0 && !StringUtils.unsafeEquals("screen",type))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * This method search the element's children for crux meta tags. Those meta tags contains the information
 	 * needed to render widgets and informations about the page itself (represented by a {@code Screen} object).
 	 * 
@@ -293,9 +308,9 @@ public class ScreenFactory {
 			for (int i=0; i<spansLength; i++)
 			{
 				Element element = spanElements.getItem(i);
-				if (isCruxMetaElement(element))
+				String type = isCruxMetaElement(element);
+				if (type != null)
 				{
-					String type = getMetaElementType(element);
 					if (StringUtils.unsafeEquals("screen",type))
 					{
 						screenElement = element;
@@ -584,7 +599,7 @@ public class ScreenFactory {
 		Element elementParent = element.getParentElement();
 		while (elementParent != null && !StringUtils.unsafeEquals("BODY",elementParent.getTagName()))
 		{
-			if (isValidWidget(elementParent) || HasWidgetsHandler.isValidHasWidgetsPanel(elementParent))
+			if (isValidCruxWidgetMetaTag(elementParent))// || HasWidgetsHandler.isValidHasWidgetsPanel(elementParent))TODO check this
 			{
 				return elementParent;
 			}
@@ -595,20 +610,18 @@ public class ScreenFactory {
 	}
 
 	/**
-	 * @param element
+	 * Check if the span element provided represents a crux meta tag element. If so, return
+	 * the crux meta tag type
+	 * @param element a span element
 	 * @return
 	 */
-	private boolean isCruxMetaElement(Element element)
+	private String isCruxMetaElement(Element spanElement)
 	{
-		String tagName = element.getTagName();
-		if (StringUtils.unsafeEquals("SPAN",tagName))
+		String type = getMetaElementType(spanElement);
+		if (type != null && type.length() > 0)
 		{
-			String type = getMetaElementType(element);
-			if (type != null && type.length() > 0)
-			{
-				return true;
-			}
+			return type;
 		}
-		return false;
+		return null;
 	}
 }

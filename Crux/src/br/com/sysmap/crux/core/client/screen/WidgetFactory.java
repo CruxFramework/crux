@@ -387,6 +387,16 @@ public abstract class WidgetFactory <T extends Widget>
 	}
 	
 	/**
+	 * 
+	 * @param element
+	 * @return
+	 */
+	protected static boolean isValidCruxWidgetMetaTag(Element element)
+	{
+		return ScreenFactory.getInstance().isValidCruxWidgetMetaTag(element);
+	}
+	
+	/**
 	 * @param lazy
 	 * @param dependentId
 	 */
@@ -394,7 +404,6 @@ public abstract class WidgetFactory <T extends Widget>
 	{
 		ScreenFactory.getInstance().getScreen().addLazyWidgetDependency(lazy, dependentId);
 	}
-	
 	
 	/**
 	 * @param lazy
