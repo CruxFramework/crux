@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.core.client.controller.crossdoc;
 
-import java.util.ArrayList;
+import br.com.sysmap.crux.core.client.collection.FastList;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -32,7 +32,7 @@ public final class ClientSerializationStreamReader implements SerializationStrea
 	int index;
 	JavaScriptObject results;
 	String[] stringTable;
-	private ArrayList<Object> seenArray = new ArrayList<Object>();
+	private FastList<Object> seenArray = new FastList<Object>();
 	private Serializer serializer;
 
 	/**

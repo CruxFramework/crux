@@ -16,10 +16,9 @@
 package br.com.sysmap.crux.core.rebind.controller;
 
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Expose;
 import br.com.sysmap.crux.core.client.controller.Validate;
@@ -142,7 +141,7 @@ public class ControllerProxyCreator extends AbstractInvocableProxyCreator
 	@Override
 	protected void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException
 	{
-		srcWriter.println(Map.class.getName()+"<String, Boolean> __runningMethods = new "+HashMap.class.getCanonicalName()+"<String, Boolean>();");
+		srcWriter.println("FastMap<Boolean> __runningMethods = new FastMap<Boolean>();");
 
 		if (isCrossDoc)
 		{
@@ -213,6 +212,7 @@ public class ControllerProxyCreator extends AbstractInvocableProxyCreator
 	    String[] imports = new String[] {
     		GWT.class.getCanonicalName(), 
     		br.com.sysmap.crux.core.client.screen.Screen.class.getCanonicalName(),
+    		FastMap.class.getCanonicalName(),
     		CruxEvent.class.getCanonicalName(),
     		GwtEvent.class.getCanonicalName(),
     		HasValue.class.getCanonicalName(),

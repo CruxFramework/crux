@@ -15,11 +15,10 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.screen.DeclaredLazyWidgets;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
 import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
@@ -58,8 +57,7 @@ public class DeclaredLazyWidgetsProxyCreator extends AbstractInterfaceWrapperPro
     protected String[] getImports()
     {
 		String[] imports = new String[] {
-				Map.class.getCanonicalName(),
-				HashMap.class.getCanonicalName(),
+				FastMap.class.getCanonicalName(),
 				DeclaredLazyWidgets.class.getCanonicalName()
 		};
 		return imports;       
@@ -87,9 +85,9 @@ public class DeclaredLazyWidgetsProxyCreator extends AbstractInterfaceWrapperPro
 	@Override
 	protected void generateProxyMethods(SourceWriter srcWriter) throws CruxGeneratorException
 	{
-		srcWriter.println("public Map<String, String> getLazyWidgets(String screenId){");
+		srcWriter.println("public FastMap<String> getLazyWidgets(String screenId){");
 		srcWriter.indent();
-		srcWriter.println("Map<String, String> result = new HashMap<String, String>();");
+		srcWriter.println("FastMap<String> result = new FastMap<String>();");
 		
 		List<Screen> screens = getScreens();
 		boolean first = true;

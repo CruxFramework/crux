@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.i18n.DeclaredI18NMessages;
 import br.com.sysmap.crux.core.i18n.MessageClasses;
 import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
@@ -56,7 +57,8 @@ public class RegisteredI18NMessagesProxyCreator extends AbstractInterfaceWrapper
     protected String[] getImports()
     {
 	    String[] imports = new String[] {
-	    		GWT.class.getCanonicalName(), 
+	    		GWT.class.getCanonicalName(),
+	    		FastMap.class.getCanonicalName()
 			};
 		    return imports;
     }
@@ -87,7 +89,7 @@ public class RegisteredI18NMessagesProxyCreator extends AbstractInterfaceWrapper
 	@Override
     protected void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException
     {
-		srcWriter.println("private java.util.Map<String, String> messages = new java.util.HashMap<String, String>();");
+		srcWriter.println("private FastMap<String> messages = new FastMap<String>();");
     }
 
 	@Override

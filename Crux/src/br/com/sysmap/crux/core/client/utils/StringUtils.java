@@ -15,6 +15,8 @@
  */
 package br.com.sysmap.crux.core.client.utils;
 
+import com.google.gwt.core.client.GWT;
+
 /**
  * @author Gesse S. F. Dafe
  * @author Thiago da Rosa de Bustamante -
@@ -134,5 +136,52 @@ public class StringUtils
 		}
 		
 		return text;
+	}
+	
+	/**
+	 * This method generates a faster string comparison than {@code String.equals()}
+	 * for web mode code.
+	 * 
+	 * The GWT generated {@code String.equals()} method makes a check in its parameter's type in runtime. 
+	 * That method makes that assertion on compilation time (once its parameters are both 
+	 * Strings).
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public static boolean equals(String a, String b)
+	{
+		if (GWT.isScript())
+		{
+			if (a==null) return (b==null);
+			return (b!= null && a==b);
+		}
+		else
+		{
+			if (a==null) return (b==null);
+			return (b!= null && a.equals(b));
+		}
+	}
+
+	/**
+	 * This method generate a faster string comparison than {@code String.equals()}
+	 * for web mode code. It is similar to {@code StringUtils.equals()} method.
+	 * The only difference is that this one does not check for null parameters.
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public static boolean unsafeEquals(String a, String b)
+	{
+		if (GWT.isScript())
+		{
+			return a==b;
+		}
+		else
+		{
+			return a.equals(b);
+		}
 	}
 }

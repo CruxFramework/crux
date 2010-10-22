@@ -15,12 +15,9 @@
  */
 package br.com.sysmap.crux.core.client.screen;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.collection.FastList;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.declarative.TagAttributeDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagAttributesDeclaration;
 import br.com.sysmap.crux.core.client.declarative.TagEventDeclaration;
@@ -64,14 +61,14 @@ public abstract class WidgetFactory <T extends Widget>
 		private W widget;
 		private Element element;
 		private String widgetId;
-		private Map<String, Object> attributes;
+		private FastMap<Object> attributes;
 		
 		WidgetFactoryContext(W widget, Element element, String widgetId)
 		{
 			this.widget = widget;
 			this.element = element;
 			this.widgetId = widgetId;
-			this.attributes = new HashMap<String, Object>();
+			this.attributes = new FastMap<Object>();
 		}
 		
 		public W getWidget()
@@ -105,6 +102,11 @@ public abstract class WidgetFactory <T extends Widget>
 		public String readWidgetProperty(String propertyName)
 		{
 			return WidgetFactory.getProperty(element, propertyName);
+		}
+
+		public boolean containsAttribute(String key)
+		{
+			return attributes.containsKey(key);
 		}
 	}
 	
@@ -410,7 +412,15 @@ public abstract class WidgetFactory <T extends Widget>
 	 */
 	private static boolean isSpan(Element element) 
 	{
-		return element != null && element.getTagName() != null && element.getTagName().equalsIgnoreCase("span");
+		if (element != null)
+		{
+			String tagName = element.getTagName();
+			if (tagName != null)
+			{
+				return StringUtils.unsafeEquals(tagName,"SPAN");
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -444,7 +454,7 @@ public abstract class WidgetFactory <T extends Widget>
 	{
 		Element firstChild = element.getFirstChildElement();
 		
-		while (firstChild!= null && firstChild.getTagName() == null)
+		while (firstChild!= null && firstChild.getNodeType() != Node.ELEMENT_NODE)
 		{
 			firstChild = firstChild.getNextSiblingElement();
 		}
@@ -473,7 +483,8 @@ public abstract class WidgetFactory <T extends Widget>
 		
 		if(childNodes != null)
 		{
-			for (int i = 0; i < childNodes.getLength(); i++)
+			int length = childNodes.getLength();
+			for (int i = 0; i < length; i++)
 			{
 				Node node = childNodes.getItem(i);
 				
@@ -500,19 +511,19 @@ public abstract class WidgetFactory <T extends Widget>
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	protected static List<Element> ensureChildrenSpans(Element element, boolean acceptsNoChild) throws InterfaceConfigException
+	protected static FastList<Element> ensureChildrenSpans(Element element, boolean acceptsNoChild) throws InterfaceConfigException
 	{
-		List<Element> childSpans = new ArrayList<Element>();
+		FastList<Element> childSpans = new FastList<Element>();
 		
 		NodeList<Node> childNodes = element.getChildNodes();
 		
 		if(childNodes != null)
 		{
-			for (int i = 0; i < childNodes.getLength(); i++)
+			int length = childNodes.getLength();
+			for (int i = 0; i < length; i++)
 			{
 				Node node = childNodes.getItem(i);
-				
-				if(node instanceof Element && ((Element)node).getTagName() != null)
+				if(node.getNodeType() == Node.ELEMENT_NODE)
 				{
 					Element elem =  ensureSpan((Element) node);
 					childSpans.add(elem);

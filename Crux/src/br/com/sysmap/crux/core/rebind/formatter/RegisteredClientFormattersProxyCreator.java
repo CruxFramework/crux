@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
 import br.com.sysmap.crux.core.client.formatter.RegisteredClientFormatters;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
@@ -60,7 +61,8 @@ public class RegisteredClientFormattersProxyCreator extends AbstractInterfaceWra
     protected String[] getImports()
     {
 	    String[] imports = new String[] {
-	    		Formatter.class.getCanonicalName()
+	    		Formatter.class.getCanonicalName(), 
+	    		FastMap.class.getCanonicalName()
 			};
 	    return imports;
     }
@@ -94,7 +96,7 @@ public class RegisteredClientFormattersProxyCreator extends AbstractInterfaceWra
 	@Override
     protected void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException
     {
-		srcWriter.println("private java.util.Map<String,Formatter> clientFormatters = new java.util.HashMap<String,Formatter>();");
+		srcWriter.println("private FastMap<Formatter> clientFormatters = new FastMap<Formatter>();");
     }
 
 	/**

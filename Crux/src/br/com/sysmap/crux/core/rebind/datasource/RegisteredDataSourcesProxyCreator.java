@@ -25,6 +25,7 @@ import br.com.sysmap.crux.core.client.datasource.DataSoureExcpetion;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.rebind.scanner.screen.Screen;
@@ -95,7 +96,8 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
     		HasText.class.getCanonicalName(),
     		HasFormatter.class.getCanonicalName(),
     		DataSoureExcpetion.class.getCanonicalName(),
-    		DataSourceRecord.class.getCanonicalName()
+    		DataSourceRecord.class.getCanonicalName(),
+    		StringUtils.class.getCanonicalName()
 		};
 	    return imports;
     }		
@@ -110,7 +112,13 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 	private void generateGetDataSourceMethod(SourceWriter sourceWriter) 
 	{
 		sourceWriter.println("public DataSource<?> getDataSource(String id){");
+		sourceWriter.indent();
 		boolean first = true;
+		sourceWriter.println("if(id==null){");
+		sourceWriter.indent();
+		sourceWriter.println("throw new DataSoureExcpetion("+EscapeUtils.quote(messages.errorGeneratingRegisteredDataSourceNotFound())+"+id);");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 		for (String dataSource : dataSourcesClassNames.keySet()) 
 		{
 			if (!first)
@@ -121,11 +129,14 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 			{
 				first = false;
 			}
-			sourceWriter.println("if(\""+dataSource+"\".equals(id)){");
+			sourceWriter.println("if(StringUtils.unsafeEquals(\""+dataSource+"\",id)){");
+			sourceWriter.indent();
 			sourceWriter.println("return new " + dataSourcesClassNames.get(dataSource) + "();");
+			sourceWriter.outdent();
 			sourceWriter.println("}");
 		}
 		sourceWriter.println("throw new DataSoureExcpetion("+EscapeUtils.quote(messages.errorGeneratingRegisteredDataSourceNotFound())+"+id);");
+		sourceWriter.outdent();
 		sourceWriter.println("}");
 	}
 	

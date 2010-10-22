@@ -40,7 +40,7 @@ public class Events
 	{
 		try
 		{
-			if (evtId != null && evtId.trim().length() > 0 && evt != null && evt.trim().length() > 0)
+			if (evtId != null && evtId.length() > 0 && evt != null && evt.length() > 0)
 			{
 				int dotPos = evt.indexOf('.');
 				if (dotPos > 0 && dotPos < evt.length()-1)

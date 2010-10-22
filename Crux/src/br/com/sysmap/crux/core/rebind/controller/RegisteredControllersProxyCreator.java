@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.controller.Controller;
 import br.com.sysmap.crux.core.client.controller.Global;
 import br.com.sysmap.crux.core.client.controller.WidgetController;
@@ -31,6 +32,7 @@ import br.com.sysmap.crux.core.client.event.ControllerInvoker;
 import br.com.sysmap.crux.core.client.event.CrossDocumentInvoker;
 import br.com.sysmap.crux.core.client.event.EventProcessor;
 import br.com.sysmap.crux.core.client.event.RegisteredControllers;
+import br.com.sysmap.crux.core.client.utils.StringUtils;
 import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import br.com.sysmap.crux.core.rebind.CruxGeneratorException;
 import br.com.sysmap.crux.core.rebind.scanner.module.Modules;
@@ -83,7 +85,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 			{
 				Global globalAnnot = controllerClass.getAnnotation(Global.class);
 				WidgetController widgetAnnot = controllerClass.getAnnotation(WidgetController.class);
-				if (globalAnnot == null && widgetAnnot == null) //TODO melhorar isso para so criar se a screen corrente contiver a widget da anotação
+				if (globalAnnot == null && widgetAnnot == null) //TODO melhorar isso para so criar se a screen corrente contiver a widget da anotaï¿½ï¿½o
 				{
 					sourceWriter.println("if (__validateController(\""+controller+"\")){");
 					sourceWriter.indent();
@@ -106,7 +108,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 	@Override
     protected void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException
     {
-		srcWriter.println("private java.util.Map<String, ControllerInvoker> controllers = new java.util.HashMap<String, ControllerInvoker>();");
+		srcWriter.println("private FastMap<ControllerInvoker> controllers = new FastMap<ControllerInvoker>();");
     }	
 
 	/**
@@ -164,8 +166,10 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
     		RunAsyncCallback.class.getCanonicalName(),
     		EventProcessor.class.getCanonicalName(),
     		Crux.class.getCanonicalName(), 
+    		FastMap.class.getCanonicalName(),
     		ControllerInvoker.class.getCanonicalName(),
-    		CrossDocumentInvoker.class.getCanonicalName()
+    		CrossDocumentInvoker.class.getCanonicalName(), 
+    		StringUtils.class.getCanonicalName()
 		};
 	    return imports;
     }	
@@ -303,7 +307,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 			Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 			if (isControllerLazy(controllerClass))
 			{
-				sourceWriter.println("else if (\""+controller+"\".equals(controllerName)){");
+				sourceWriter.println("else if (StringUtils.unsafeEquals(\""+controller+"\",controllerName)){");
 				sourceWriter.indent();
 				if (controllerAnnot != null && Fragments.getFragmentClass(controllerAnnot.fragment()) != null)
 				{

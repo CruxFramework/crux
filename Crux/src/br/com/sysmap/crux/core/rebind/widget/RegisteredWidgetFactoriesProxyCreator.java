@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.screen.RegisteredWidgetFactories;
 import br.com.sysmap.crux.core.config.ConfigurationFactory;
 import br.com.sysmap.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
@@ -141,7 +142,7 @@ public class RegisteredWidgetFactoriesProxyCreator extends AbstractInterfaceWrap
 	@Override
     protected void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException
     {
-		srcWriter.println("private java.util.Map<String, WidgetFactory<? extends Widget>> widgetFactories = new java.util.HashMap<String, WidgetFactory<? extends Widget>>();");
+		srcWriter.println("private FastMap<WidgetFactory<? extends Widget>> widgetFactories = new FastMap<WidgetFactory<? extends Widget>>();");
     }
 
 	@Override
@@ -168,7 +169,8 @@ public class RegisteredWidgetFactoriesProxyCreator extends AbstractInterfaceWrap
 	protected String[] getImports()
 	{
 		String[] imports = new String[] {
-				GWT.class.getCanonicalName(), 
+				GWT.class.getCanonicalName(),
+				FastMap.class.getCanonicalName(),
 				RegisteredWidgetFactories.class.getCanonicalName(),
 				com.google.gwt.user.client.ui.Widget.class.getCanonicalName()
 		};

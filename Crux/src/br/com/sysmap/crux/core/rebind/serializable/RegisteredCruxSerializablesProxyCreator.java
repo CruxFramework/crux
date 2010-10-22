@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.screen.CruxSerializable;
 import br.com.sysmap.crux.core.client.screen.RegisteredCruxSerializables;
 import br.com.sysmap.crux.core.client.serializer.BooleanSerializer;
@@ -99,7 +100,7 @@ public class RegisteredCruxSerializablesProxyCreator extends AbstractInterfaceWr
 	@Override
     protected void generateProxyFields(SourceWriter srcWriter) throws CruxGeneratorException
     {
-		srcWriter.println("private java.util.Map<String,CruxSerializable> serializers = new java.util.HashMap<String,CruxSerializable>();");
+		srcWriter.println("private FastMap<CruxSerializable> serializers = new FastMap<CruxSerializable>();");
     }
 
 	/**
@@ -127,7 +128,8 @@ public class RegisteredCruxSerializablesProxyCreator extends AbstractInterfaceWr
     protected String[] getImports()
     {
 	    String[] imports = new String[] {
-	    		CruxSerializable.class.getCanonicalName()
+	    		CruxSerializable.class.getCanonicalName(), 
+	    		FastMap.class.getCanonicalName()
 			};
 	    return imports;
     }

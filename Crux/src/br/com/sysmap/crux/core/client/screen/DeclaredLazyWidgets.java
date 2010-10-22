@@ -15,7 +15,7 @@
  */
 package br.com.sysmap.crux.core.client.screen;
 
-import java.util.Map;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -27,5 +27,5 @@ public interface DeclaredLazyWidgets
 	 * @param screenId
 	 * @return
 	 */
-	Map<String, String> getLazyWidgets(String screenId);
+	FastMap<String> getLazyWidgets(String screenId);
 }

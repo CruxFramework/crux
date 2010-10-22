@@ -17,9 +17,9 @@ package br.com.sysmap.crux.core.rebind.widget;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.declarative.DeclarativeFactory;
 import br.com.sysmap.crux.core.client.declarative.TagAttribute;
 import br.com.sysmap.crux.core.client.declarative.TagAttributes;
@@ -161,9 +161,10 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
     		GWT.class.getCanonicalName(), 
     		ScreenFactory.class.getCanonicalName(),
     		Element.class.getCanonicalName(),
-    		List.class.getCanonicalName(),
+    		FastList.class.getCanonicalName(),
     		Widget.class.getCanonicalName(),
-    		InterfaceConfigException.class.getCanonicalName()
+    		InterfaceConfigException.class.getCanonicalName(),
+    		StringUtils.class.getCanonicalName()
 		};
 	    return imports;
     }	
@@ -555,9 +556,10 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 					}
 					else
 					{
-						source.append("List<Element> children = ensureChildrenSpans(c.getChildElement(), "+acceptNoChildren+");\n");
+						source.append("FastList<Element> children = ensureChildrenSpans(c.getChildElement(), "+acceptNoChildren+");\n");
 						source.append("if (children != null){\n");
-						source.append("for(Element child: children){\n");
+						source.append("for(int _i_=0; _i_<children.size(); _i_++){\n");
+						source.append("Element child = children.get(_i_);\n");
 					}
 					if (hasChildElement)
 					{
@@ -752,7 +754,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 		}
 		else
 		{
-			source.append("if (\""+processorAttributes.tagName()+"\".equals(__tag)){\n");
+			source.append("if (StringUtils.unsafeEquals(\""+processorAttributes.tagName()+"\",__tag)){\n");
 		}
 		
 		return source.toString();

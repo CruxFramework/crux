@@ -15,13 +15,12 @@
  */
 package br.com.sysmap.crux.core.client.controller.crossdoc;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.collection.FastList;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.utils.EscapeUtils;
 
 import com.google.gwt.core.client.GWT;
@@ -51,8 +50,8 @@ public final class ClientSerializationStreamWriter implements SerializationStrea
 	private Map<Object, Integer> objectMap = new IdentityHashMap<Object, Integer>();
 	private final Serializer serializer;
 	private boolean streamOpen = false;
-	private Map<String, Integer> stringMap = new HashMap<String, Integer>();
-	private List<String> stringTable = new ArrayList<String>();
+	private FastMap<Integer> stringMap = new FastMap<Integer>();
+	private FastList<String> stringTable = new FastList<String>();
 	private int total = 0;
 
 	/**
@@ -305,7 +304,7 @@ public final class ClientSerializationStreamWriter implements SerializationStrea
 	/**
 	 * Gets the string table.
 	 */
-	protected List<String> getStringTable()
+	protected FastList<String> getStringTable()
 	{
 		return stringTable;
 	}
@@ -328,10 +327,10 @@ public final class ClientSerializationStreamWriter implements SerializationStrea
 
 	private void writeStringTable()
 	{
-		List<String> stringTable = getStringTable();
-		for (String s : stringTable)
+		FastList<String> stringTable = getStringTable();
+		for (int i=0; i< stringTable.size(); i++)
 		{
-			append(EscapeUtils.quote(s, false));
+			append(EscapeUtils.quote(stringTable.get(i), false));
 		}
 		append(String.valueOf(stringTable.size()));
 	}

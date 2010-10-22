@@ -16,9 +16,9 @@
 package br.com.sysmap.crux.core.client.datasource;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import br.com.sysmap.crux.core.client.collection.FastMap;
 
 /**
  * 
@@ -28,7 +28,7 @@ import java.util.Map;
 public class Metadata
 {
 	private List<String> columnNames = new ArrayList<String>();;
-	private Map<String, ColumnMetadata<?>> columns = new HashMap<String, ColumnMetadata<?>>();;
+	private FastMap<ColumnMetadata<?>> columns = new FastMap<ColumnMetadata<?>>();;
 	
 	public void addColumn(ColumnMetadata<?> columnMetadata)
 	{

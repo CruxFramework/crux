@@ -70,6 +70,11 @@ public class WidgetChildProcessorContext<W>
 		return context.getAttribute(key);
 	}
 
+	public boolean containsAttribute(String key)
+	{
+		return context.containsAttribute(key);
+	}
+	
 	public void setChildElement(Element childElement)
 	{
 		this.childElement = childElement;

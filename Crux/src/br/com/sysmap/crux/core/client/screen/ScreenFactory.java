@@ -15,11 +15,10 @@
  */
 package br.com.sysmap.crux.core.client.screen;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.collection.FastList;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.datasource.RegisteredDataSources;
 import br.com.sysmap.crux.core.client.formatter.Formatter;
@@ -255,10 +254,10 @@ public class ScreenFactory {
 	boolean isValidWidget(Element element)
 	{
 		String tagName = element.getTagName();
-		if ("span".equalsIgnoreCase(tagName))
+		if (StringUtils.unsafeEquals("SPAN",tagName))
 		{
 			String type = getMetaElementType(element);
-			if (type != null && type.length() > 0 && !"screen".equals(type))
+			if (type != null && type.length() > 0 && !StringUtils.unsafeEquals("screen",type))
 			{
 				return true;
 			}
@@ -286,8 +285,8 @@ public class ScreenFactory {
 				traceOutput = new StringBuilder();;
 				start = new Date();
 			}
-			NodeList<Element> spanElements = rootElement.getElementsByTagName("span");
-			List<String> widgetIds = new ArrayList<String>();
+			NodeList<Element> spanElements = rootElement.getElementsByTagName("SPAN");
+			FastList<String> widgetIds = new FastList<String>();
 			Element screenElement = null;
 
 			int spansLength = spanElements.getLength();
@@ -297,7 +296,7 @@ public class ScreenFactory {
 				if (isCruxMetaElement(element))
 				{
 					String type = getMetaElementType(element);
-					if ("screen".equals(type))
+					if (StringUtils.unsafeEquals("screen",type))
 					{
 						screenElement = element;
 						screen.parse(screenElement);
@@ -309,9 +308,10 @@ public class ScreenFactory {
 				}
 			}
 
-			List<Element> widgets = new ArrayList<Element>();
-			for (String elementId:  widgetIds)
+			FastList<Element> widgets = new FastList<Element>();
+			for (int i=0; i<widgetIds.size(); i++)
 			{
+				String elementId = widgetIds.get(i);
 				if (!screen.containsWidget(elementId))
 				{
 					Element element = DOM.getElementById(elementId);
@@ -387,10 +387,11 @@ public class ScreenFactory {
 	 * 
 	 * @param widgets
 	 */
-	private void clearWidgetsMetaTags(List<Element> widgets)
+	private void clearWidgetsMetaTags(FastList<Element> widgets)
 	{
-		for (Element element : widgets) 
+		for (int i=0; i<widgets.size(); i++) 
 		{
+			Element element = widgets.get(i);
 			String widgetId = element.getId();
 			if (widgetId != null && widgetId.length() >= 0)
 			{
@@ -433,7 +434,7 @@ public class ScreenFactory {
 	 * @return
 	 * @throws InterfaceConfigException
 	 */
-	private Widget createWidget(Element element, String widgetType, Screen screen, List<Element> widgetsElementsAdded) throws InterfaceConfigException
+	private Widget createWidget(Element element, String widgetType, Screen screen, FastList<Element> widgetsElementsAdded) throws InterfaceConfigException
 	{
 		String widgetId = element.getId();
 		if (widgetId == null || widgetId.length() == 0)
@@ -480,7 +481,7 @@ public class ScreenFactory {
 	 * @throws InterfaceConfigException
 	 */
 	@SuppressWarnings("unchecked")
-	private Widget createWidgetWithExplicitParent(Element element, Element parentElement, Screen screen, List<Element> widgetsElementsAdded, String widgetId, String widgetType) throws InterfaceConfigException
+	private Widget createWidgetWithExplicitParent(Element element, Element parentElement, Screen screen, FastList<Element> widgetsElementsAdded, String widgetId, String widgetType) throws InterfaceConfigException
 	{
 		Widget widget;
 		Widget parent = screen.getWidget(parentElement.getId());
@@ -581,7 +582,7 @@ public class ScreenFactory {
 	private Element getParentElement(Element element) 
 	{
 		Element elementParent = element.getParentElement();
-		while (elementParent != null && !"body".equalsIgnoreCase(elementParent.getTagName()))
+		while (elementParent != null && !StringUtils.unsafeEquals("BODY",elementParent.getTagName()))
 		{
 			if (isValidWidget(elementParent) || HasWidgetsHandler.isValidHasWidgetsPanel(elementParent))
 			{
@@ -600,7 +601,7 @@ public class ScreenFactory {
 	private boolean isCruxMetaElement(Element element)
 	{
 		String tagName = element.getTagName();
-		if ("span".equalsIgnoreCase(tagName))
+		if (StringUtils.unsafeEquals("SPAN",tagName))
 		{
 			String type = getMetaElementType(element);
 			if (type != null && type.length() > 0)

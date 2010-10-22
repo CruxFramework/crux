@@ -16,14 +16,12 @@
 package br.com.sysmap.crux.core.client.screen;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import br.com.sysmap.crux.core.client.Crux;
+import br.com.sysmap.crux.core.client.collection.FastList;
+import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.context.ContextManager;
 import br.com.sysmap.crux.core.client.datasource.DataSource;
 import br.com.sysmap.crux.core.client.event.Event;
@@ -272,24 +270,33 @@ public class Screen
 
 	/**
 	 * @return a list containing all widgets from the current screen 
+	 * @deprecated Use listWidgets() instead
 	 */
+	@Deprecated
 	public static List<Widget> getAllWidgets()
 	{
-		Screen instance = Screen.get();
-		List<Widget> ids = new ArrayList<Widget>();
-		ids.addAll(instance.widgets.values());
-		return ids;
+		FastList<Widget> keys = listWidgets();
+		List<Widget> values = new ArrayList<Widget>(keys.size());		
+		for (int i=0; i<keys.size(); i++)
+		{
+			values.add(keys.get(i));
+		}		
+		return values;
 	}
 	
 	/**
 	 * @return a list containing all widgets ids from the current screen 
+	 * @deprecated Use listWidgetIds() instead
 	 */
+	@Deprecated
 	public static List<String> getAllWidgetsIds()
 	{
-		Screen instance = Screen.get();
-		Set<String> keySet = instance.widgets.keySet();
-		List<String> ids = new ArrayList<String>(keySet.size());		
-		ids.addAll(keySet);
+		FastList<String> keys = listWidgetIds();
+		List<String> ids = new ArrayList<String>(keys.size());		
+		for (int i=0; i<keys.size(); i++)
+		{
+			ids.add(keys.get(i));
+		}		
 		return ids;
 	}
 
@@ -593,15 +600,33 @@ public class Screen
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public static Iterator<Widget> iterateWidgets()
 	{
 		return Screen.get().iteratorWidgets();
 	}
 	
 	/**
+	 * @return
+	 */
+	public static FastList<Widget> listWidgets()
+	{
+		return Screen.get().widgetsList();
+	}
+
+	/**
+	 * @return
+	 */
+	public static FastList<String> listWidgetIds()
+	{
+		return Screen.get().widgetsIdList();
+	}
+	
+	/**
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public static Iterator<String> iterateWidgetsIds()
 	{
 		return Screen.get().iteratorWidgetsIds();
@@ -755,7 +780,7 @@ public class Screen
 		return id;
 	}
 	
-	protected List<Element> blockingDivs = new ArrayList<Element>();
+	protected FastList<Element> blockingDivs = new FastList<Element>();
 
 	protected String[] declaredControllers;
 	
@@ -772,18 +797,18 @@ public class Screen
 	
 	protected String id;
 	
-	protected Map<String, String> lazyWidgets = null;
+	protected FastMap<String> lazyWidgets = null;
 
 	protected boolean loaded = false;
 	
-	protected List<ScreenLoadHandler>  loadHandlers = new ArrayList<ScreenLoadHandler>();
+	protected FastList<ScreenLoadHandler>  loadHandlers = new FastList<ScreenLoadHandler>();
 	
 	protected ScreenBlocker screenBlocker = GWT.create(ScreenBlocker.class);
 
 	@Deprecated
 	protected ModuleComunicationSerializer serializer = null;
 	
-	protected Map<String, Widget> widgets = new HashMap<String, Widget>(30);
+	protected FastMap<Widget> widgets = new FastMap<Widget>();
 
 	@SuppressWarnings("deprecation")
     protected Screen(String id) 
@@ -906,10 +931,10 @@ public class Screen
 	 */
 	protected void cleanLazyDependentWidgets(String widgetId)
 	{
-		List<String> dependentWidgets = getDependentWidgets(widgetId);
-		for (String id : dependentWidgets)
+		FastList<String> dependentWidgets = getDependentWidgets(widgetId);
+		for (int i=0; i<dependentWidgets.size(); i++)
 		{
-			lazyWidgets.remove(id);
+			lazyWidgets.remove(dependentWidgets.get(i));
 		}
 	}
 
@@ -1060,7 +1085,7 @@ public class Screen
 	{
 		if (Crux.getConfig().enableRuntimeLazyWidgetsInitialization())
 		{
-			this.lazyWidgets = new HashMap<String, String>();
+			this.lazyWidgets = new FastMap<String>();
 		}
 		else
 		{
@@ -1079,18 +1104,59 @@ public class Screen
 
 	/**
 	 * @return
+	 * @deprecated Use widgetsList() instead
 	 */
+	@Deprecated
 	protected Iterator<Widget> iteratorWidgets()
 	{
-		return widgets.values().iterator();
+		FastList<Widget> widgetList = widgetsList();
+		ArrayList<Widget> result = new ArrayList<Widget>();
+		for (int i=0; i<widgetList.size(); i++)
+		{
+			result.add(widgetList.get(i));
+		}
+		
+		return result.iterator();
+	}
+
+	/**
+	 * @return
+	 * @deprecated Use widgetsIdList() instead
+	 */
+	@Deprecated
+	protected Iterator<String> iteratorWidgetsIds()
+	{
+		FastList<String> idList = widgetsIdList();
+		ArrayList<String> result = new ArrayList<String>();
+		for (int i=0; i<idList.size(); i++)
+		{
+			result.add(idList.get(i));
+		}
+		
+		return result.iterator();
+	}
+	
+	/**
+	 * @return
+	 */
+	protected FastList<String> widgetsIdList()
+	{
+		return widgets.keys();
 	}
 
 	/**
 	 * @return
 	 */
-	protected Iterator<String> iteratorWidgetsIds()
+	protected FastList<Widget> widgetsList()
 	{
-		return widgets.keySet().iterator();
+		FastList<String> keys = widgets.keys();
+		FastList<Widget> values = new FastList<Widget>();
+		for (int i=0; i<keys.size(); i++)
+		{
+			values.add(widgets.get(keys.get(i)));
+		}
+		
+		return values;
 	}
 
 	/**
@@ -1280,9 +1346,10 @@ public class Screen
 	 */
 	protected void updateWidgetsIds()
 	{
-		Set<String> widgetIds = this.widgets.keySet();
-		for (String widgetId : widgetIds)
+		FastList<String> widgetIds = this.widgets.keys();
+		for (int i=0; i<widgetIds.size(); i++)
         {
+			String widgetId = widgetIds.get(i);
 	        Widget widget = Screen.get(widgetId);
 	        Element element = widget.getElement();
 			if (StringUtils.isEmpty(element.getId()))
@@ -1301,8 +1368,9 @@ public class Screen
 		{
 			public void execute()
 			{
-				for (ScreenLoadHandler handler : loadHandlers)
+				for (int i=0; i<loadHandlers.size(); i++)
 				{
+					ScreenLoadHandler handler = loadHandlers.get(i);
 					handlerManager.removeHandler(ScreenLoadEvent.TYPE, handler);
 				}
 				loadHandlers.clear();
@@ -1353,15 +1421,16 @@ public class Screen
 	 * @param widgetId
 	 * @return
 	 */
-	private List<String> getDependentWidgets(String widgetId)
+	private FastList<String> getDependentWidgets(String widgetId)
 	{
-		List<String> dependentWidgets = new ArrayList<String>();
-		Set<Entry<String, String>> values = lazyWidgets.entrySet();
-		for (Entry<String, String> dependentWidget : values)
+		FastList<String> dependentWidgets = new FastList<String>();
+		FastList<String> keys = lazyWidgets.keys();
+		for (int i=0; i<keys.size(); i++)
 		{
-			if (dependentWidget.getValue().equals(widgetId))
+			String key = keys.get(i);
+			if (lazyWidgets.get(key).equals(widgetId))
 			{
-				dependentWidgets.add(dependentWidget.getKey());
+				dependentWidgets.add(key);
 			}
 		}
 		return dependentWidgets;
