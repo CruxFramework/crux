@@ -509,7 +509,7 @@ public class DataSourceProxyCreator extends AbstractInvocableProxyCreator
 	    }
 	    else
 	    {
-	    	logger.log(Type.WARN, messages.longDepthDataSourceFielTruncated(dataSourceClass.getParameterizedQualifiedSourceName(), "" + MAX_DEPTH, parentField));
+	    	logger.log(Type.WARN, "Type ignored:"+dtoType.getParameterizedQualifiedSourceName());
 	    }
     }
 
