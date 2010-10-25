@@ -34,4 +34,5 @@ public @interface TagChildAttributes
 	Class<?> type() default Void.class;
 	String widgetProperty() default "";
 	boolean inheritsParentAttributes() default false;
+	boolean lazyContainer() default false;
 }

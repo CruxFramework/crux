@@ -13,6 +13,8 @@
 	<xsl:param name="xhtmlNS" select="'http://www.w3.org/1999/xhtml'"></xsl:param>
 	<xsl:param name="allWidgets" select="'${allWidgets}'"></xsl:param>
 	<xsl:param name="referencedWidgets" select="'${referencedWidgets}'"></xsl:param>
+	<xsl:param name="lazyContainers" select="'${lazyContainers}'"></xsl:param>
+	<xsl:param name="lazyContainer" select="'${lazyContainer}'"></xsl:param>
 
 	<!-- 
 	=====================================================================
@@ -110,6 +112,12 @@
   	  <xsl:sequence select="contains($referencedWidgets, concat(',', $tagName, ','))"/>
 	</xsl:function>
 
+	<!-- isLazyContainer -->
+	<xsl:function name="f:isLazyContainer" as="xs:boolean?">
+	  <xsl:param name="tagName" as="xs:string?"/> 
+  	  <xsl:sequence select="contains($lazyContainers, concat(',', $tagName, ','))"/>
+	</xsl:function>
+
 	<!-- getLibraryName -->
 	<xsl:function name="f:getLibraryName" as="xs:string?">
 	  <xsl:param name="elem" as="node()*"/> 
@@ -204,9 +212,22 @@
 				</xsl:if>
 			</xsl:for-each>
 			<xsl:value-of select="text()"></xsl:value-of>
-			<xsl:call-template name="handleInnerHtml" />
+					<xsl:choose>
+						<xsl:when test="f:isLazyContainer($tagName)">
+							<xsl:element name="span" namespace="{$xhtmlNS}">
+								<xsl:variable name="rnd" select="math:random()" xmlns:math="java:java.lang.Math"/>
+								<xsl:attribute name="id" select="concat('lazy_', $rnd)" />
+								<xsl:attribute name="_type" select="$lazyContainer" />
+								<xsl:call-template name="handleInnerHtml" />
+							</xsl:element> 
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:call-template name="handleInnerHtml" />
+						</xsl:otherwise>
+					</xsl:choose>
 		</xsl:element> 
 	</xsl:template>
+
 
 	<!-- 
 	=====================================================================
@@ -221,7 +242,6 @@
 					<xsl:apply-templates select="current()" />
 				</xsl:when>
 				<xsl:when test="string-length(namespace-uri()) > 30 and (contains(namespace-uri(), 'http://www.sysmap.com.br/crux/'))">
-					<!-- xsl:apply-templates select="current()" /-->
 					<xsl:call-template name="cruxInnerTags" />
 				</xsl:when>
 				<xsl:otherwise>

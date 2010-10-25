@@ -230,8 +230,11 @@ public class CruxToHtmlTransformer
 			String template = StreamUtils.readAsUTF8(templateIs);
 			String allWidgets = generateWidgetsList();
 			String referencedWidgets = generateReferenceWidgetsList();
+			String lazyContainers = generateLazyContainersList();
 			template = template.replace("${allWidgets}", allWidgets);
 			template = template.replace("${referencedWidgets}", referencedWidgets);
+			template = template.replace("${lazyContainers}", lazyContainers);
+			template = template.replace("${lazyContainer}", WidgetConfig.getLazyContainerType());
 			template = template.replace("${indent}", mustIndent() ? "yes" : "no");
 			template = template.replace("${charset}", outputCharset);
 			
@@ -248,6 +251,76 @@ public class CruxToHtmlTransformer
 		}
 	}
 
+	/**
+	 * @return
+	 */
+	private static String generateLazyContainersList()
+	{
+		StringBuilder lazyContainers = new StringBuilder();
+		Set<String> registeredLibraries = WidgetConfig.getRegisteredLibraries();
+		for (String library : registeredLibraries)
+		{
+			Set<String> factories = WidgetConfig.getRegisteredLibraryFactories(library);
+			for (String widget : factories)
+			{
+				try
+				{
+					Class<?> clientClass = Class.forName(WidgetConfig.getClientClass(library, widget));
+					Method method = clientClass.getMethod("processChildren", new Class[]{WidgetFactoryContext.class});
+					generateLazyContainersListFromTagChildren(lazyContainers, method.getAnnotation(TagChildren.class), 
+																		library, widget, new HashSet<Class<?>>());
+				}
+				catch (Exception e)
+				{
+					log.error(messages.transformerErrorGeneratingWidgetsReferenceList(), e);
+				}
+			}
+		}
+		
+		return lazyContainers.toString();
+	}
+
+	/**
+	 * 
+	 * @param lazyContainers 
+	 * @param tagChildren
+	 * @param parentLibrary
+	 */
+	private static void generateLazyContainersListFromTagChildren(StringBuilder lazyContainers, TagChildren tagChildren, 
+																    String parentLibrary, String parentWidget, Set<Class<?>> added)
+	{
+		if (tagChildren != null)
+		{
+			for (TagChild child : tagChildren.value())
+			{
+				Class<? extends WidgetChildProcessor<?>> processorClass = child.value();
+				if (!added.contains(processorClass))
+				{
+					added.add(processorClass);
+					TagChildAttributes childAttributes = processorClass.getAnnotation(TagChildAttributes.class);
+					if (childAttributes!= null)
+					{
+						if (childAttributes.lazyContainer())
+						{
+							lazyContainers.append(","+parentLibrary+"_"+parentWidget+"_"+childAttributes.tagName()+",");
+						}
+					}
+					
+					try
+					{
+						Method method = processorClass.getMethod("processChildren", new Class[]{WidgetChildProcessorContext.class});
+						generateLazyContainersListFromTagChildren(lazyContainers, method.getAnnotation(TagChildren.class), 
+																	parentLibrary, parentWidget, added);
+					}
+					catch (Exception e)
+					{
+						log.error(messages.transformerErrorGeneratingWidgetsList(), e);
+					}
+				}
+			}
+		}				
+	}
+	
 	/**
 	 * 
 	 * @return

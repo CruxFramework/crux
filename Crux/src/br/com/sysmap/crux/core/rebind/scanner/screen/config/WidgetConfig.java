@@ -19,6 +19,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -196,4 +197,23 @@ public class WidgetConfig
 		}
 		return lazyWidgets.contains(type);
 	}
+
+	/**
+	 * @return
+	 */
+	public static String getLazyContainerType()
+	{
+		if (lazyWidgets == null)
+		{
+			initializeWidgetConfig();
+		}
+		
+		Iterator<String> lazies = lazyWidgets.iterator();
+		if (lazies.hasNext())
+		{
+			return lazies.next();
+		}
+		return null;
+	}
+
 }
