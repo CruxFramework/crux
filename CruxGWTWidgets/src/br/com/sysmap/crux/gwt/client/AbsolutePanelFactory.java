@@ -81,14 +81,16 @@ public class AbsolutePanelFactory extends ComplexPanelFactory<AbsolutePanel>
 			String left = (String) context.getAttribute("left");
 			String top = (String) context.getAttribute("top");
 
-			Widget child = createChildWidget(context.getChildElement(), context.getChildElement().getId());
+			Element childElement = context.getChildElement();
+			Widget child = createChildWidget(childElement, childElement.getId());
+			AbsolutePanel absolutePanel = context.getRootWidget();
 			if (left != null && left.length() > 0 && top != null && top.length() > 0)
 			{
-				context.getRootWidget().add(child, Integer.parseInt(left), Integer.parseInt(top));
+				absolutePanel.add(child, Integer.parseInt(left), Integer.parseInt(top));
 			}
 			else
 			{
-				context.getRootWidget().add(child);
+				absolutePanel.add(child);
 			}
 			
 			context.setAttribute("left", null);
