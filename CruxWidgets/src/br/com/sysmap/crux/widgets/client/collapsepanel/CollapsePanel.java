@@ -15,6 +15,7 @@
  */
 package br.com.sysmap.crux.widgets.client.collapsepanel;
 
+import br.com.sysmap.crux.core.client.screen.LazyPanel;
 import br.com.sysmap.crux.widgets.client.event.collapseexpand.BeforeCollapseEvent;
 import br.com.sysmap.crux.widgets.client.event.collapseexpand.BeforeCollapseHandler;
 import br.com.sysmap.crux.widgets.client.event.collapseexpand.BeforeCollapseOrBeforeExpandEvent;
@@ -28,6 +29,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Panel based on a 3x3 table, with collapse/expand feature. Similar to GWT's DisclosurePanel
@@ -40,6 +42,7 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 	private boolean collapsed = false;
 	private String height;
 	private FocusPanel button = null;
+	private boolean contentLoeaded = false;
 	
 	/**
 	 * Constructor
@@ -128,6 +131,16 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 		return collapsed;
 	}
 
+	@Override
+	public void setContentWidget(Widget widget)
+	{
+		super.setContentWidget(widget);
+		if (!collapsible || !collapsed)
+		{
+			ensureContentWidgetLoaded();
+		}
+	}
+	
 	/**
 	 * @see br.com.sysmap.crux.widgets.client.event.collapseexpand.HasBeforeCollapseHandlers#addBeforeCollapseHandler(br.com.sysmap.crux.widgets.client.event.collapseexpand.BeforeCollapseHandler)
 	 */
@@ -156,6 +169,23 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 			super.setHeight("");
 		}
 	}
+	
+	/**
+	 * @param panel
+	 * @param collapsed
+	 */
+	protected void ensureContentWidgetLoaded()
+	{
+		if (!contentLoeaded)
+		{
+			Widget contentWidget = getContentWidget();
+			if (contentWidget != null && (contentWidget instanceof LazyPanel))
+			{
+				((LazyPanel)contentWidget).ensureWidget();
+			}
+			contentLoeaded = true;
+		}
+	}
 }
 
 /**
@@ -172,6 +202,10 @@ class ExpandButtonClickHandler implements ClickHandler
 		FocusPanel button = (FocusPanel) event.getSource();
 		CollapsePanel panel = (CollapsePanel) button.getParent();
 		boolean collapsed = panel.isCollapsed();
+		if (collapsed)
+		{
+			panel.ensureContentWidgetLoaded();
+		}
 		BeforeCollapseOrBeforeExpandEvent preEvent = null;
 		
 		if(!collapsed)

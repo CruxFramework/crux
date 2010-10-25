@@ -147,7 +147,7 @@ public class CollapsePanelFactory extends AbstractTitlePanelFactory<CollapsePane
 		public void processChildren(WidgetChildProcessorContext<CollapsePanel> context) throws InterfaceConfigException {}
 	}
 	
-	@TagChildAttributes(tagName="widget")
+	@TagChildAttributes(tagName="widget", lazyContainer=true)
 	public static class CollapsePanelBodyWidgetProcessor extends WidgetChildProcessor<CollapsePanel>
 	{
 		@Override
