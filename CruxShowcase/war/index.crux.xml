@@ -109,6 +109,7 @@
 								<a:item id="serverItem" label="Server Communication" onClick="mainController.onClickServerItem" />
 								<a:item id="i18nItem" label="I18N" onClick="mainController.onClickI18NItem" />
 								<a:item id="sensitiveMethodProtectionItem" label="Sensitive Method Protection" onClick="mainController.onClickSensitiveMethodProtectionItem" />
+								<a:item id="hugePageItem" label="Performance Test" onClick="mainController.onClickHugePageItem" />
 							</a:item>
 						</a:stackMenu>
 					</b:cell>

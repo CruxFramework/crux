@@ -1,0 +1,47 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.sysmap.com.br/crux" 
+	xmlns:a="http://www.sysmap.com.br/crux/widgets"
+	xmlns:b="http://www.sysmap.com.br/crux/gwt"
+	xmlns:s="http://www.sysmap.com.br/templates/showcase">
+
+	<head>
+		<title>Decorated Button</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="decoratedButtonController"/>
+
+		<center>
+			<b:verticalPanel id="centeringPanel" spacing="5">
+				<!-- Add thousands of widgets inside big tables (grid)-->
+				<s:variousWidgetsOnTable id="t1"/>
+				<s:variousWidgetsOnTable id="t2"/>
+				<s:variousWidgetsOnTable id="t3"/>
+				<s:variousWidgetsOnTable id="t4"/>
+				<s:variousWidgetsOnTable id="t5"/>
+				<s:variousWidgetsOnTable id="t6"/>
+				<s:variousWidgetsOnTable id="t7"/>
+				<s:variousWidgetsOnTable id="t8"/>
+				<s:variousWidgetsOnTable id="t9"/>
+				<s:variousWidgetsOnTable id="t10"/>
+				<s:variousWidgetsOnPanels id="v1"/>
+				<s:variousWidgetsOnPanels id="v2"/>
+				<s:variousWidgetsOnPanels id="v3"/>
+				<s:variousWidgetsOnPanels id="v4"/>
+				<s:variousWidgetsOnPanels id="v5"/>
+				<s:variousWidgetsOnPanels id="v6"/>
+				<s:variousWidgetsOnPanels id="v7"/>
+				<s:variousWidgetsOnPanels id="v8"/>
+				<s:variousWidgetsOnPanels id="v9"/>
+				<s:variousWidgetsOnPanels id="v10"/>
+			</b:verticalPanel>
+		</center>
+		
+		<s:sources/>
+	</body>
+</html>

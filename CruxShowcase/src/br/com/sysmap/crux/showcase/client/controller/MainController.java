@@ -44,6 +44,8 @@ public class MainController {
 	private static final String WIDGET_GRID_TAB = "widgetGrid";
 	private static final String GRID_EVENTS_TAB = "gridEvents";
 	private static final String TEXT_AREA_TAB = "textArea";
+	private static final String HUGE_PAGE_TAB = "HugePage";
+	
 	
 	@Create
 	protected MainScreen screen;
@@ -218,6 +220,11 @@ public class MainController {
 		screen.getTabs().openTab(TEXT_AREA_TAB, "Text Area", TEXT_AREA_TAB + HTML, true, false);
 	}
 		
+	@Expose
+	public void onClickHugePageItem(){
+		screen.getTabs().openTab(HUGE_PAGE_TAB, "Huge Page", HUGE_PAGE_TAB + HTML, true, false);
+	}
+
 	protected static interface MainScreen extends ScreenWrapper {
 		DynaTabs getTabs();
 	}

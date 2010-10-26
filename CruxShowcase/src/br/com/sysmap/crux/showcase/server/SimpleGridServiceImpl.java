@@ -1,5 +1,6 @@
 package br.com.sysmap.crux.showcase.server;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import br.com.sysmap.crux.showcase.client.dto.Address;
@@ -28,8 +29,13 @@ public class SimpleGridServiceImpl implements SimpleGridService {
 		new Contact("Paul",		generatePhone(15),	generateDate(15),	Gender.MALE, new Address("Av. Carlos Luz"))
 	};
 	
-	public Contact[] getContactList() {
-		return CONTACTS;
+	public ArrayList<Contact> getContactList() {
+		ArrayList<Contact> result = new ArrayList<Contact>();
+		for (Contact contact : CONTACTS)
+		{
+			result.add(contact);
+		}
+		return result;
 	}
 
 	static String generatePhone(int i) {

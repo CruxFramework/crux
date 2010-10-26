@@ -1,4 +1,5 @@
-<project name="CruxShowcase" basedir="../">
+<?xml version="1.0" encoding="UTF-8"?>
+	<project name="CruxShowcase" basedir="../">
 
 	<property name="final.name" value="CruxShowcase" />
 	<property name="src.dir" value="src" />
@@ -45,6 +46,16 @@
 		</generateSchemas>
 	</target>
 
+	<target name="generate-service-map">
+		<serviceMapper projectDir="${web.root}">
+			<!--jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" /-->
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${target.classes.dir}" />
+			</classpath>
+		</serviceMapper>
+	</target>
 	<!-- 
 	========================================================================================================
 		Distribuição do projeto
@@ -93,6 +104,13 @@
 
 		<blockremove beginmarker="&lt;!--antReplacementBlockBegin--&gt;" endmarker="&lt;!--antReplacementBlockEnd--&gt;" file="${temp.dir}/webroot/WEB-INF/web.xml" />
 
+		<serviceMapper projectDir="${temp.dir}/webroot">
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${target.classes.dir}" />
+			</classpath>
+		</serviceMapper>
+
 		<war basedir="${temp.dir}/webroot" destfile="${temp.dir}/${final.name}.war" webxml="${web.inf.dir}/web.xml">
 			<manifest>
 				<attribute name="Class-Path" value="${final.name}.war" />
@@ -114,14 +132,15 @@
 			<!-- change these two parameters if you need to modify memory settings -->
 			<jvmarg value="-Xmx768M" />
 			<jvmarg value="-Xms256M" />
-			 
 
+			<arg value="-style"/>
+			<arg value="DETAILED"/>
+			<arg value="-gen"/>
+			<arg value="generated"/>
 
 			<!-- use these parameters if you want to modify GWT output settings
 			<jvmarg value="-Xdebug" />
 			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" />
-			<arg value="-style"/>
-			<arg value="DETAILED"/>
 			<arg value="-logLevel"/>
 			<arg value="DEBUG"/>
 			-->
