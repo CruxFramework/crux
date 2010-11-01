@@ -15,7 +15,6 @@
  */
 package br.com.sysmap.crux.widgets.client.dynatabs;
 
-import br.com.sysmap.crux.core.client.controller.crossdoc.CrossDocumentException;
 import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.WidgetMsgFactory;
@@ -39,7 +38,7 @@ public class DynaTabsControllerInvoker
 		Element tabIFrame = getSiblingTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new CrossDocumentException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(tabId));
+			return null;
 		}
 		return retrieveTabWindow(tabIFrame);
 	}
@@ -53,7 +52,7 @@ public class DynaTabsControllerInvoker
 		Element tabIFrame = getTabInternalFrameElement(tabId);
 		if(tabIFrame == null)
 		{
-			throw new CrossDocumentException(WidgetMsgFactory.getMessages().tabsControllerNoTabFound(tabId));
+			return null;
 		}
 		return retrieveTabWindow(tabIFrame);
 	}
