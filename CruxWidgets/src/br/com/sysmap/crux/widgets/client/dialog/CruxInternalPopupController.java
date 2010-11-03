@@ -115,19 +115,14 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	public static void hide(boolean fireCloseEvent)
 	{
 		CruxInternalPopupControllerCrossDoc crossDoc = GWT.create(CruxInternalPopupControllerCrossDoc.class);
+		((TargetDocument) crossDoc).setTargetWindow(getOpener());
 		if (fireCloseEvent)
 		{
-			((TargetDocument) crossDoc).setTargetWindow(getOpener());
 			crossDoc.onClose();
 		}
 		else
 		{
-			Popup.unregisterLastShownPopup();
-			if (popPopupFromStack())
-			{
-				((TargetDocument) crossDoc).setTarget(Target.TOP);
-				crossDoc.hidePopup();
-			}
+			crossDoc.close();
 		}
 	}
 	
@@ -194,7 +189,7 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	}
 	
 	/**
-	 * Called by top window
+	 * Called from popup window and executed on popup opener
 	 * @see br.com.sysmap.crux.widgets.client.dialog.CruxInternalPopupControllerCrossDoc#onClose()
 	 */
 	public void onClose()
@@ -202,12 +197,21 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 		BeforeCloseEvent evt = BeforeCloseEvent.fire(Popup.getLastShownPopup());
 		if(!evt.isCanceled())
 		{
-			Popup.unregisterLastShownPopup();
-			if (popPopupFromStack())
-			{
-				((TargetDocument)crossDoc).setTarget(Target.TOP);
-				crossDoc.hidePopup();
-			}
+			close();
+		}
+	}
+
+	/**
+	 * Called from popup window and executed on popup opener
+	 * @see br.com.sysmap.crux.widgets.client.dialog.CruxInternalPopupControllerCrossDoc#close()
+	 */
+	public void close()
+	{
+		Popup.unregisterLastShownPopup();
+		if (popPopupFromStack())
+		{
+			((TargetDocument)crossDoc).setTarget(Target.TOP);
+			crossDoc.hidePopup();
 		}
 	}
 	
