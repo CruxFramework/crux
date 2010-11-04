@@ -275,8 +275,6 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 			frameElement.setPropertyInt("vspace", 0);
 			frameElement.setPropertyInt("hspace", 0);
 			
-			((TargetDocument) crossDoc).setTargetWindow(getOpener());
-			
 			if (data.isCloseable())
 			{
 				final FocusPanel focusPanel = new FocusPanel();
@@ -289,6 +287,7 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 					{
 						if (canClose(frameElement))
 						{
+							((TargetDocument) crossDoc).setTargetWindow(getOpener());
 							crossDoc.onClose();
 						}
 					}
@@ -305,8 +304,9 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 				focusPanel.add(label);
 
 				dialogBox.setTopRightWidget(focusPanel);
-			}			
+			}
 			
+			((TargetDocument) crossDoc).setTargetWindow(getOpener());			
 			crossDoc.prepareToOpen();
 
 			dialogBox.setText(data.getTitle());
