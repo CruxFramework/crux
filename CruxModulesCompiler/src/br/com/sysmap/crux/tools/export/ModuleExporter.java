@@ -28,6 +28,7 @@ import java.util.jar.Manifest;
 import br.com.sysmap.crux.classpath.URLResourceHandler;
 import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.core.client.utils.StringUtils;
+import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.utils.FileUtils;
@@ -466,8 +467,8 @@ public class ModuleExporter
 	    }
 	    try
 	    {
-	    
-	    	exporterWorkDir = new File (FileUtils.getTempDirFile(), "crux_export"+System.currentTimeMillis());
+	        CruxScreenBridge.getInstance().setSingleVM(true);
+	        exporterWorkDir = new File (FileUtils.getTempDirFile(), "crux_export"+System.currentTimeMillis());
 	    	exporterWorkDir.mkdirs();
 	    	ClassPathUtils.addURL(exporterWorkDir.toURI().toURL());
 	    	ClassPathUtils.addURL(sourceDir.toURI().toURL());
