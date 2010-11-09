@@ -97,8 +97,8 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 	}
 	private static final String FACTORY_PROXY_SUFFIX = "_Impl";
 	private static final int UNBOUNDED = -1;
-	private Map<JClassType, String> attributesFromClass = new HashMap<JClassType, String>();
-	private Map<JClassType, EventBinderData> eventsFromClass = new HashMap<JClassType, EventBinderData>();
+	private Map<String, String> attributesFromClass = new HashMap<String, String>();
+	private Map<String, EventBinderData> eventsFromClass = new HashMap<String, EventBinderData>();
 	private final JClassType factoryClass;
 	private int variableNameSuffixCounter = 0;
 	private final JClassType widgetChildProcessorContextType;
@@ -404,9 +404,10 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 	{
 		try
         {
-	        if (attributesFromClass.containsKey(factoryClass))
+	        String factoryClassName = factoryClass.getQualifiedSourceName();
+			if (attributesFromClass.containsKey(factoryClassName))
 	        {
-	        	return attributesFromClass.get(factoryClass);
+	        	return attributesFromClass.get(factoryClassName);
 	        }
 	        StringBuilder result = new StringBuilder();
 	        
@@ -480,7 +481,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 	        	result.append(generateProcessAttributesBlock(interfaceClass)+"\n");
 	        }
 	        String attributes = result.toString();
-	        attributesFromClass.put(factoryClass, attributes);
+	        attributesFromClass.put(factoryClassName, attributes);
 	        return attributes;
         }
         catch (NotFoundException e)
@@ -620,10 +621,11 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 	private String generateProcessEventsBlock(JClassType factoryClass, 
 											   Map<String, String> evtBinderVariables) 
 	{
-		if (eventsFromClass.containsKey(factoryClass))
+		String factoryClassName = factoryClass.getQualifiedSourceName();
+		if (eventsFromClass.containsKey(factoryClassName))
 		{
-			evtBinderVariables.putAll(eventsFromClass.get(factoryClass).evtBinderVariables);
-			return eventsFromClass.get(factoryClass).evtBinderCalls;
+			evtBinderVariables.putAll(eventsFromClass.get(factoryClassName).evtBinderVariables);
+			return eventsFromClass.get(factoryClassName).evtBinderCalls;
 		}
 		
 		StringBuilder result = new StringBuilder();
@@ -667,7 +669,7 @@ public class WidgetFactoryProxyCreator extends AbstractProxyCreator
 		}
 		
 		String events = result.toString();
-		eventsFromClass.put(factoryClass, new EventBinderData(events, evtBinderVariables));
+		eventsFromClass.put(factoryClassName, new EventBinderData(events, evtBinderVariables));
 		return events;
 	}
 
