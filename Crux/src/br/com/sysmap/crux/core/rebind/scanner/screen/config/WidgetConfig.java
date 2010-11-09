@@ -112,7 +112,10 @@ public class WidgetConfig
 							widgets.put(((Class<?>)rawType).getCanonicalName(), widgetType);
 						}
 					}
-					widgets.put(((Class<?>)type).getCanonicalName(), widgetType);
+					if (type instanceof Class)
+					{
+						widgets.put(((Class<?>)type).getCanonicalName(), widgetType);
+					}
 				} 
 				catch (ClassNotFoundException e) 
 				{
