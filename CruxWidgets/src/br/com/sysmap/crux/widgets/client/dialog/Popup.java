@@ -26,6 +26,7 @@ import br.com.sysmap.crux.widgets.client.event.openclose.OpenHandler;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -321,6 +322,16 @@ public class Popup extends Widget implements HasBeforeCloseHandlers, HasAnimatio
 			popupController = new CruxInternalPopupController(); 
 		}
 		popups.add(this);
-		popupController.showPopup(new PopupData(title, url, width, height, styleName!=null ? styleName : DEFAULT_STYLE_NAME, animationEnabled, closeable));
+		
+		Timer timer = new Timer()
+		{
+			@Override
+			public void run()
+			{
+				popupController.showPopup(new PopupData(title, url, width, height, styleName!=null ? styleName : DEFAULT_STYLE_NAME, animationEnabled, closeable));
+			}
+		};
+		
+		timer.schedule(10);
 	}
 }
