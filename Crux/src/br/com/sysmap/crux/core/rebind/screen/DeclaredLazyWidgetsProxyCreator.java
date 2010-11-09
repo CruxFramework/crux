@@ -15,8 +15,10 @@
  */
 package br.com.sysmap.crux.core.rebind.screen;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import br.com.sysmap.crux.core.client.collection.FastMap;
 import br.com.sysmap.crux.core.client.screen.DeclaredLazyWidgets;
@@ -40,6 +42,10 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public class DeclaredLazyWidgetsProxyCreator extends AbstractInterfaceWrapperProxyCreator
 {
+	private Map<String, String> screenFunctionSufix = new HashMap<String, String>();
+	private int screenSufix = 0;
+	
+	
 	/**
 	 * Constructor
 	 * @param logger
@@ -85,11 +91,15 @@ public class DeclaredLazyWidgetsProxyCreator extends AbstractInterfaceWrapperPro
 	@Override
 	protected void generateProxyMethods(SourceWriter srcWriter) throws CruxGeneratorException
 	{
+		List<Screen> screens = getScreens();
+		for (Screen screen : screens)
+		{
+			generateGetLazyClassForScreen(srcWriter, screen);
+		}
+
 		srcWriter.println("public FastMap<String> getLazyWidgets(String screenId){");
 		srcWriter.indent();
-		srcWriter.println("FastMap<String> result = new FastMap<String>();");
 		
-		List<Screen> screens = getScreens();
 		boolean first = true;
 		for (Screen screen : screens)
 		{
@@ -101,7 +111,7 @@ public class DeclaredLazyWidgetsProxyCreator extends AbstractInterfaceWrapperPro
 			generateGetLazyBlock(srcWriter, screen);
 		}
 		
-		srcWriter.println("return result;");
+		srcWriter.println("return new FastMap<String>();");
 		srcWriter.outdent();
 		srcWriter.println("}");
 	}
@@ -114,6 +124,24 @@ public class DeclaredLazyWidgetsProxyCreator extends AbstractInterfaceWrapperPro
 	{
 		srcWriter.println("if (screenId.endsWith("+EscapeUtils.quote(getScreenId(screen))+")){");
 		srcWriter.indent();
+
+		srcWriter.println("return LazyWidgetsScreen"+getScreenSufix(screen)+".getLazyWidgets();");
+		
+		srcWriter.outdent();
+		srcWriter.println("}");
+	}
+	
+	/**
+	 * @param srcWriter
+	 * @param screen
+	 */
+	private void generateGetLazyClassForScreen(SourceWriter srcWriter, Screen screen) 
+	{
+		srcWriter.println("private static class LazyWidgetsScreen"+getScreenSufix(screen)+"{");
+		srcWriter.indent();
+		srcWriter.println("private static FastMap<String> getLazyWidgets(){");
+		srcWriter.indent();
+		srcWriter.println("FastMap<String> result = new FastMap<String>();");
 
 		Iterator<Widget> widgets = screen.iterateWidgets();
 		while (widgets.hasNext())
@@ -134,8 +162,27 @@ public class DeclaredLazyWidgetsProxyCreator extends AbstractInterfaceWrapperPro
 				}
 			}
 		}
+
+		srcWriter.println("return result;");
 		srcWriter.outdent();
 		srcWriter.println("}");
+		srcWriter.outdent();
+		srcWriter.println("}");
+	}
+
+	/**
+	 * @param screen
+	 * @return
+	 */
+	private String getScreenSufix(Screen screen) 
+	{
+		if (screenFunctionSufix.containsKey(screen.getId()))
+		{
+			return screenFunctionSufix.get(screen.getId());
+		}
+		String sufix = ""+(this.screenSufix++);
+		screenFunctionSufix.put(screen.getId(), sufix);
+		return sufix;
 	}
 
 	/**
