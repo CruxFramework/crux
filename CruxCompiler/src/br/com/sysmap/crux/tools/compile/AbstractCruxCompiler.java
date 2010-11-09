@@ -414,6 +414,10 @@ public abstract class AbstractCruxCompiler
 		parameter.addParameterOption(new ConsoleParameterOption("extraFolder", "Folder Name"));
 		parametersProcessor.addSupportedParameter(parameter);
 
+		parameter = new ConsoleParameter("-localWorkers", "Number of threads used to compile the permutations in parallel.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("numberOfWorkers", "Number of Workers"));
+		parametersProcessor.addSupportedParameter(parameter);
+		
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-validateOnly", " Validate all source code, but do not compile.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-compileReport", "Create a compile report that tells the Story of Your Compile.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-draftCompile", "Disable compiler optimizations and run faster.", false, true));
@@ -618,7 +622,7 @@ public abstract class AbstractCruxCompiler
 	{
 		for (ConsoleParameter parameter : parameters)
         {
-	        if (parameter.getName().equals("-gen") || parameter.getName().equals("-style") || parameter.getName().equals("-extra"))
+	        if (parameter.getName().equals("-gen") || parameter.getName().equals("-style") || parameter.getName().equals("-extra") || parameter.getName().equals("-localWorkers"))
 	        {
 	        	gwtCompilerArgs.add(parameter.getName());
 	        	gwtCompilerArgs.add(parameter.getValue());
