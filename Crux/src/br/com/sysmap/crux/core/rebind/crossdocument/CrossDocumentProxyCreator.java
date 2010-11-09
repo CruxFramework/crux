@@ -63,18 +63,18 @@ import com.google.gwt.user.rebind.rpc.SerializableTypeOracle;
 public class CrossDocumentProxyCreator extends AbstractSerializableProxyCreator
 {
 	private static final String CROSS_DOC_SUFFIX = "_CrossDocProxy";
-	private static final Map<JPrimitiveType, CrossDocumentReader> JPRIMITIVETYPE_TO_READER = new HashMap<JPrimitiveType, CrossDocumentReader>();
+	private static final Map<String, CrossDocumentReader> JPRIMITIVETYPE_TO_READER = new HashMap<String, CrossDocumentReader>();
 	static 
 	{
-		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.BOOLEAN, CrossDocumentReader.BOOLEAN);
-		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.BYTE, CrossDocumentReader.BYTE);
-		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.CHAR, CrossDocumentReader.CHAR);
-		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.DOUBLE, CrossDocumentReader.DOUBLE);
-		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.FLOAT, CrossDocumentReader.FLOAT);
-		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.INT, CrossDocumentReader.INT);
-		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.LONG, CrossDocumentReader.LONG);
-		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.SHORT, CrossDocumentReader.SHORT);
-		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.VOID, CrossDocumentReader.VOID);
+		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.BOOLEAN.getSimpleSourceName(), CrossDocumentReader.BOOLEAN);
+		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.BYTE.getSimpleSourceName(), CrossDocumentReader.BYTE);
+		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.CHAR.getSimpleSourceName(), CrossDocumentReader.CHAR);
+		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.DOUBLE.getSimpleSourceName(), CrossDocumentReader.DOUBLE);
+		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.FLOAT.getSimpleSourceName(), CrossDocumentReader.FLOAT);
+		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.INT.getSimpleSourceName(), CrossDocumentReader.INT);
+		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.LONG.getSimpleSourceName(), CrossDocumentReader.LONG);
+		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.SHORT.getSimpleSourceName(), CrossDocumentReader.SHORT);
+		JPRIMITIVETYPE_TO_READER.put(JPrimitiveType.VOID.getSimpleSourceName(), CrossDocumentReader.VOID);
 	}
 	
 	/**
@@ -346,7 +346,7 @@ public class CrossDocumentProxyCreator extends AbstractSerializableProxyCreator
 	{
 		if (returnType.isPrimitive() != null)
 		{
-			return JPRIMITIVETYPE_TO_READER.get(returnType.isPrimitive());
+			return JPRIMITIVETYPE_TO_READER.get(returnType.isPrimitive().getSimpleSourceName());
 		}
 
 		if (returnType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
