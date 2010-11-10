@@ -190,7 +190,7 @@ public class RegisteredCruxSerializablesProxyCreator extends AbstractInterfaceWr
 	        if (!serializables.containsKey(serializer) && Serializers.getCruxSerializable(serializer)!= null)
 	        {
 	        	JClassType serializerClass = baseIntf.getOracle().getType(Serializers.getCruxSerializable(serializer));
-	        	sourceWriter.println("serializers.put(\""+serializerClass.getName()+"\", new " + serializerClass.getParameterizedQualifiedSourceName() + "());");
+	        	sourceWriter.println("serializers.put(\""+serializerClass.getQualifiedSourceName()+"\", new " + serializerClass.getParameterizedQualifiedSourceName() + "());");
 	        	serializables.put(serializer, true);
 	        }
         }
