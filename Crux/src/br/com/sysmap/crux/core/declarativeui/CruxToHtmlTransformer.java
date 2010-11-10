@@ -268,7 +268,7 @@ public class CruxToHtmlTransformer
 					Class<?> clientClass = Class.forName(WidgetConfig.getClientClass(library, widget));
 					Method method = clientClass.getMethod("processChildren", new Class[]{WidgetFactoryContext.class});
 					generateLazyContainersListFromTagChildren(lazyContainers, method.getAnnotation(TagChildren.class), 
-																		library, widget, new HashSet<Class<?>>());
+																		library, widget, new HashSet<String>());
 				}
 				catch (Exception e)
 				{
@@ -287,16 +287,16 @@ public class CruxToHtmlTransformer
 	 * @param parentLibrary
 	 */
 	private static void generateLazyContainersListFromTagChildren(StringBuilder lazyContainers, TagChildren tagChildren, 
-																    String parentLibrary, String parentWidget, Set<Class<?>> added)
+																    String parentLibrary, String parentWidget, Set<String> added)
 	{
 		if (tagChildren != null)
 		{
 			for (TagChild child : tagChildren.value())
 			{
 				Class<? extends WidgetChildProcessor<?>> processorClass = child.value();
-				if (!added.contains(processorClass))
+				if (!added.contains(processorClass.getCanonicalName()))
 				{
-					added.add(processorClass);
+					added.add(processorClass.getCanonicalName());
 					TagChildAttributes childAttributes = processorClass.getAnnotation(TagChildAttributes.class);
 					if (childAttributes!= null)
 					{
@@ -339,7 +339,7 @@ public class CruxToHtmlTransformer
 					Class<?> clientClass = Class.forName(WidgetConfig.getClientClass(library, widget));
 					Method method = clientClass.getMethod("processChildren", new Class[]{WidgetFactoryContext.class});
 					generateReferenceWidgetsListFromTagChildren(widgetList, method.getAnnotation(TagChildren.class), 
-																		library, widget, new HashSet<Class<?>>());
+																		library, widget, new HashSet<String>());
 				}
 				catch (Exception e)
 				{
@@ -358,16 +358,16 @@ public class CruxToHtmlTransformer
 	 * @param parentLibrary
 	 */
 	private static void generateReferenceWidgetsListFromTagChildren(StringBuilder widgetList, TagChildren tagChildren, 
-																    String parentLibrary, String parentWidget, Set<Class<?>> added)
+																    String parentLibrary, String parentWidget, Set<String> added)
 	{
 		if (tagChildren != null)
 		{
 			for (TagChild child : tagChildren.value())
 			{
 				Class<? extends WidgetChildProcessor<?>> processorClass = child.value();
-				if (!added.contains(processorClass))
+				if (!added.contains(processorClass.getCanonicalName()))
 				{
-					added.add(processorClass);
+					added.add(processorClass.getCanonicalName());
 					TagChildAttributes childAttributes = processorClass.getAnnotation(TagChildAttributes.class);
 					if (childAttributes!= null)
 					{
