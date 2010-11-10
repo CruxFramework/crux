@@ -201,7 +201,6 @@ public class ModulesScanner extends AbstractScanner
 		{
 			PackageFileURLResourceHandler packagehandler = (PackageFileURLResourceHandler)handler;
 			fileName = packagehandler.getPackaegResourceName(resource);
-			
 		}
 		else
 		{
