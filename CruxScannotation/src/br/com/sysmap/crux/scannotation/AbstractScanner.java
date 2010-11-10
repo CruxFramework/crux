@@ -164,6 +164,13 @@ public abstract class AbstractScanner
 		{
 			intf = intf.substring(urlString.length());
 		}
+		else if (intf.startsWith("jar:") || intf.startsWith("zip:"))
+ 		{
+			if (intf.indexOf("!/") > 0)
+			{
+				intf = intf.substring(intf.indexOf("!/")+2);
+			}		
+		}
 		
 		if (intf.startsWith("/")) intf = intf.substring(1);
 		intf = intf.replace('/', '.');
