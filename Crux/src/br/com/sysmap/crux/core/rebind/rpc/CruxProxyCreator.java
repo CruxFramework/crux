@@ -615,7 +615,7 @@ public class CruxProxyCreator extends ProxyCreator
 	 */
 	private boolean hasSyncTokenMethod(JClassType type)
 	{
-		JMethod[] methods = type.getMethods();
+		JMethod[] methods = type.getOverridableMethods();
 		
 		for (JMethod jMethod : methods)
 		{

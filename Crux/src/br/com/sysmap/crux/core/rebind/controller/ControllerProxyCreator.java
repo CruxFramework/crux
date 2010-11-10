@@ -566,7 +566,7 @@ public class ControllerProxyCreator extends AbstractInvocableProxyCreator
 		}
 		
 		boolean first = true;
-		JMethod[] methods = controllerClass.getMethods(); 
+		JMethod[] methods = controllerClass.getOverridableMethods(); 
 		for (JMethod method: methods) 
 		{
 			if (isControllerMethodSignatureValid(method))
