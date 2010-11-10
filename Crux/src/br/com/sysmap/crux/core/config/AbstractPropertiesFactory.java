@@ -34,7 +34,7 @@ import br.com.sysmap.crux.core.i18n.MessageException;
  */
 public abstract class AbstractPropertiesFactory
 {
-	private Map<Class<?>, Object> cachedProxies = new HashMap<Class<?>, Object>();
+	private Map<String, Object> cachedProxies = new HashMap<String, Object>();
 	private final Lock initLock = new ReentrantLock(true);
 			
 	/**
@@ -46,7 +46,7 @@ public abstract class AbstractPropertiesFactory
 	@SuppressWarnings("unchecked")
 	protected <T> T getConstantsFromProperties(final Class<T> targetInterface) throws MessageException
 	{
-		T proxy = (T)cachedProxies.get(targetInterface);
+		T proxy = (T)cachedProxies.get(targetInterface.getCanonicalName());
 		if (proxy != null)
 		{
 			return proxy;
@@ -65,7 +65,7 @@ public abstract class AbstractPropertiesFactory
 	@SuppressWarnings("unchecked")
 	protected <T> T initProxy (final Class<T> targetInterface)
 	{
-		T proxy = (T)cachedProxies.get(targetInterface);
+		T proxy = (T)cachedProxies.get(targetInterface.getCanonicalName());
 		if (proxy == null)
 		{
 
@@ -75,7 +75,7 @@ public abstract class AbstractPropertiesFactory
 			{
 				InvocationHandler invocationHandler = getInvocationHandler(targetInterface);
 				proxy = (T) proxyClass.getConstructor(new Class<?>[] { InvocationHandler.class }).newInstance(new Object[] { invocationHandler });
-				cachedProxies.put(targetInterface, proxy);
+				cachedProxies.put(targetInterface.getCanonicalName(), proxy);
 				return proxy;
 			}
 			catch (Exception e) 
