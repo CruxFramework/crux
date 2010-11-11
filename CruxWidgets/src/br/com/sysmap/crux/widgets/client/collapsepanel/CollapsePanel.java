@@ -115,6 +115,16 @@ public class CollapsePanel extends TitlePanel implements HasBeforeCollapseAndBef
 		button.setVisible(collapsible);
 	}
 
+	@Override
+	public void setTitleWidget(Widget widget) 
+	{
+		super.setTitleWidget(widget);
+		if (widget != null && (widget instanceof LazyPanel))
+		{
+			((LazyPanel)widget).ensureWidget();
+		}
+	}
+	
 	/**
 	 * @return true if collapsible
 	 */
