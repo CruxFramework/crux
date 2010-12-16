@@ -21,8 +21,8 @@ import br.com.sysmap.crux.core.client.formatter.HasFormatter;
 import br.com.sysmap.crux.core.client.formatter.MaskedFormatter;
 import br.com.sysmap.crux.widgets.client.event.paste.HasPasteHandlers;
 import br.com.sysmap.crux.widgets.client.event.paste.PasteEvent;
-import br.com.sysmap.crux.widgets.client.event.paste.PasteHandler;
 import br.com.sysmap.crux.widgets.client.event.paste.PasteEventSourceRegisterFactory;
+import br.com.sysmap.crux.widgets.client.event.paste.PasteHandler;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -71,6 +71,8 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 	private boolean masked;
 	private boolean filtered;
 	protected TextBox textBox;
+	
+	MaskedInput maskedInput;
 	
 	/**
 	 * 
