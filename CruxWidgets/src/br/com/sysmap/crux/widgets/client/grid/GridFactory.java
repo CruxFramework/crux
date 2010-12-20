@@ -242,6 +242,7 @@ public class GridFactory extends WidgetFactory<Grid>
 				Element colElem = colElems.get(i);
 				String width = getProperty(colElem,"width");
 				String strVisible = getProperty(colElem,"visible");
+				String strSortable = getProperty(colElem,"sortable");
 				String strWrapLine = getProperty(colElem,"wrapLine");
 				String label = getProperty(colElem,"label");
 				String key = getProperty(colElem,"key");
@@ -250,6 +251,7 @@ public class GridFactory extends WidgetFactory<Grid>
 				String vAlign = getProperty(colElem,"verticalAlignment");
 				
 				boolean visible = (strVisible != null && strVisible.length() > 0) ? Boolean.parseBoolean(strVisible) : true;
+				boolean sortable = (strSortable != null && strSortable.length() > 0) ? Boolean.parseBoolean(strSortable) : true;
 				boolean wrapLine = (strWrapLine != null && strWrapLine.length() > 0) ? Boolean.parseBoolean(strWrapLine) : false;
 				String formatter = (strFormatter != null && strFormatter.length() > 0) ? strFormatter : null;
 				label = (label != null && label.length() > 0) ? ScreenFactory.getInstance().getDeclaredMessage(label) : "";
@@ -264,6 +266,7 @@ public class GridFactory extends WidgetFactory<Grid>
 							width, 
 							formatter, 
 							visible,
+							sortable,
 							wrapLine,
 							AlignmentAttributeParser.getHorizontalAlignment(hAlign, HasHorizontalAlignment.ALIGN_CENTER),
 							AlignmentAttributeParser.getVerticalAlignment(vAlign, HasVerticalAlignment.ALIGN_MIDDLE));
@@ -356,6 +359,7 @@ public class GridFactory extends WidgetFactory<Grid>
 		@TagAttributesDeclaration({
 			@TagAttributeDeclaration("width"),
 			@TagAttributeDeclaration(value="visible", type=Boolean.class),
+			@TagAttributeDeclaration(value="sortable", type=Boolean.class, defaultValue="true"),
 			@TagAttributeDeclaration(value="wrapLine", type=Boolean.class, defaultValue="false"),
 			@TagAttributeDeclaration("label"),
 			@TagAttributeDeclaration("key"),
