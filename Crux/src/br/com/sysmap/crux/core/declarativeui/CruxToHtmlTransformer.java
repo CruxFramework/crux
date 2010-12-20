@@ -96,9 +96,9 @@ public class CruxToHtmlTransformer
 			ByteArrayOutputStream buff = new ByteArrayOutputStream();
 			Document source = loadCruxPage(file);
 			transformer.transform(new DOMSource(source), new StreamResult(buff));
-			String result = new String(buff.toByteArray(), "UTF-8");
+			String result = new String(buff.toByteArray(), outputCharset);
 			result = handleHtmlDocument(source, result);
-			StreamUtils.write(new ByteArrayInputStream(result.getBytes()), out, false);
+			StreamUtils.write(new ByteArrayInputStream(result.getBytes(outputCharset)), out, false);
 		}
 		catch (Exception e)
 		{
