@@ -39,7 +39,7 @@ public abstract class MaskedTextBoxBaseFormatter implements MaskedFormatter
 		{
 			MaskedTextBox maskedTxt = (MaskedTextBox) widget;
 			
-			if (maskedTxt.maskedInput != null && maskedTxt.maskedInput.getTextBox() != null && maskedTxt.maskedInput.getTextBox().equals(widget));
+			if (maskedTxt.maskedInput != null && maskedTxt.maskedInput.getTextBox() != null && maskedTxt.maskedInput.getTextBox().equals(widget))
 			{
 				maskedTxt.maskedInput.removeMask();
 			}
