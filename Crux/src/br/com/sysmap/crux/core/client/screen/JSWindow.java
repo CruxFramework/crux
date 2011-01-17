@@ -52,4 +52,17 @@ public class JSWindow extends JavaScriptObject
 	protected JSWindow()
 	{
 	}
+	
+	/**
+	 * Changes the location of the window
+	 * @param newURL
+	 */
+	public final void changeLocation(String newURL)
+	{
+		changeLocation(this, newURL);
+	}
+	
+	private native static void changeLocation(JSWindow jsWnd, String newURL)/*-{
+		jsWnd.location.href = newURL;	
+	}-*/;
 }
