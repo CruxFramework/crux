@@ -22,12 +22,14 @@ import java.util.List;
 import br.com.sysmap.crux.core.client.screen.JSWindow;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusEvent;
+import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusHandler;
 import br.com.sysmap.crux.widgets.client.event.openclose.BeforeCloseEvent;
 import br.com.sysmap.crux.widgets.client.rollingtabs.RollingTabPanel;
 
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -210,25 +212,89 @@ public class DynaTabs extends Composite
 	 * @param closeable
 	 * @param reloadIfAlreadyOpen
 	 */
-	public Tab openTab(String tabId, String label, String url, boolean closeable, boolean reloadIfAlreadyOpen)
+	private Tab openTab(final String tabId, String label, String url, boolean closeable, boolean reloadIfAlreadyOpen, boolean focus, boolean lazy)
 	{
 		Tab tab = null;
 
 		if (!this.tabs.containsKey(tabId))
 		{
 			FlapPanel flapPanel = new FlapPanel(this, tabId, label, closeable);
-			tab = new Tab(tabId, label, url, closeable, tabPanel.getWidgetCount(), flapPanel);
+			
+			if(lazy)
+			{
+				final String lazyURL = url;
+				url = "";
+				final Tab newTab = new Tab(tabId, label, url, closeable, tabPanel.getWidgetCount(), flapPanel);
+				newTab.setLoaded(false);
+				tab = newTab;
+				
+				newTab.addBeforeFocusHandler(new BeforeFocusHandler()
+				{
+					public void onBeforeFocus(BeforeFocusEvent event)
+					{
+						if(!newTab.isLoaded())
+						{
+							newTab.setLoaded(true);
+							focusTab(tabId);
+							new Timer() {							
+								public void run() {
+									newTab.changeURL(lazyURL);
+								}
+							}.schedule(100);
+						}
+					}
+				});
+			}
+			else
+			{
+				tab = new Tab(tabId, label, url, closeable, tabPanel.getWidgetCount(), flapPanel);
+			}
+			
 			this.tabs.put(tabId, tab);			
 			tabPanel.add(tab, flapPanel);
 		}
 		else
 		{
 			tab = this.tabs.get(tabId);
+			
+			if(reloadIfAlreadyOpen)
+			{
+				tab.changeURL(tab.getUrl());
+			}
+		}			
+
+		if(focus)
+		{
+			focusTab(tabId);
 		}
 
-		focusTab(tabId);
-
 		return tab;
+	}
+	
+	
+	/**
+	 * @param tabId
+	 * @param label
+	 * @param url
+	 * @param closeable
+	 * @param reloadIfAlreadyOpen
+	 */
+	public Tab openTab(String tabId, String label, String url, boolean closeable, boolean reloadIfAlreadyOpen)
+	{
+		return openTab(tabId, label, url, closeable, reloadIfAlreadyOpen, true, false);
+	}
+	
+	/**
+	 * @param tabId
+	 * @param label
+	 * @param url
+	 * @param closeable
+	 * @param reloadIfAlreadyOpen
+	 * @return
+	 */
+	public Tab openLazyTab(String tabId, String label, String url, boolean closeable, boolean reloadIfAlreadyOpen)
+	{
+		return openTab(tabId, label, url, closeable, reloadIfAlreadyOpen, false, true);
 	}
 	
 	/**

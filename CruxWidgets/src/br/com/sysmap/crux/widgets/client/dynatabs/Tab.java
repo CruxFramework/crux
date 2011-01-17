@@ -33,6 +33,7 @@ public class Tab extends AbstractTab implements HasBeforeFocusAndBeforeBlurHandl
 	private boolean closeable;
 	private int insertionIndex;
 	private String label;
+	private boolean loaded = true;
 
 	/**
 	 * Constructor
@@ -61,6 +62,14 @@ public class Tab extends AbstractTab implements HasBeforeFocusAndBeforeBlurHandl
 		this.flapPanel.getFlapController().setTabTitle(label);
 	}
 
+	/**
+	 * Changes the document shown in the tab
+	 */
+	void changeURL(String newURL){
+		DynaTabs.getTabWindow(getId()).changeLocation(newURL);
+		setUrl(newURL);
+	}
+	
 	/**
 	 * @return the label
 	 */
@@ -101,5 +110,21 @@ public class Tab extends AbstractTab implements HasBeforeFocusAndBeforeBlurHandl
 	boolean isCloseable()
 	{
 		return closeable;
+	}
+
+	/**
+	 * @return the loaded
+	 */
+	boolean isLoaded()
+	{
+		return loaded;
+	}
+
+	/**
+	 * @param loaded the loaded to set
+	 */
+	void setLoaded(boolean loaded)
+	{
+		this.loaded = loaded;
 	}
 }

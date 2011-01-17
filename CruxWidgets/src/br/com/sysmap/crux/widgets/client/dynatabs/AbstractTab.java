@@ -123,6 +123,13 @@ public abstract class AbstractTab extends Widget implements HasBeforeCloseHandle
 	{
 		return url;
 	}
+	
+	/**
+	 * @param url
+	 */
+	protected void setUrl(String url){
+		this.url = url;
+	}
 
 	/**
 	 * 
