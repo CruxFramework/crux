@@ -31,6 +31,14 @@ public class DataColumnDefinition extends ColumnDefinition
 		this.wrapLine = wrapLine;
 		this.sortable = sortable;
 	}
+	
+	public DataColumnDefinition(String label, String width, String formatter, boolean visible, boolean wrapLine, HorizontalAlignmentConstant horizontalAlign, VerticalAlignmentConstant verticalAlign)
+	{
+		super(label, width, visible, horizontalAlign, verticalAlign);
+		this.formatter = formatter;
+		this.wrapLine = wrapLine;
+		this.sortable = true;
+	}
 
 	/**
 	 * @return the formatter
