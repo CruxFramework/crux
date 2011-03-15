@@ -357,7 +357,7 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	 * @param moduleName
 	 * @return
 	 */
-	private boolean mustCompileModule(String moduleName)
+	public boolean mustCompileModule(String moduleName)
 	{
 		if (mustCompileCache.containsKey(moduleName))
 		{
