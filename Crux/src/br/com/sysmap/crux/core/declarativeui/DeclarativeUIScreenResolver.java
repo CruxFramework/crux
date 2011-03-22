@@ -31,6 +31,7 @@ import br.com.sysmap.crux.core.rebind.scanner.screen.ScreenResourceResolver;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.core.utils.URLUtils;
+import br.com.sysmap.crux.scannotation.URLStreamManager;
 
 /**
  * Custom screen resolver to handle crux HTML tags 
@@ -58,6 +59,7 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 			URL[] webBaseDirs = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
 			URL screenURL = null;
 			InputStream inputStream = null;
+			URLStreamManager manager = null;
 			
 			for (URL webBaseDir: webBaseDirs)
 			{
@@ -65,10 +67,15 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 
 				screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/").replace(".html", ".crux.xml");
 				screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
-				inputStream = URLUtils.openStream(screenURL);
+				manager = new URLStreamManager(screenURL);
+				inputStream = manager.open();
 				if (inputStream != null)
 				{
 					break;
+				}
+				else
+				{
+					manager.close(); // the possible underlying jar must be closed despite of the existence of the referred resource
 				}
 			}	
 			
@@ -81,23 +88,36 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 				{
 					screenURL = new URL("file:///"+screenId);
 				}
-				inputStream = URLUtils.openStream(screenURL);
+				
+				manager = new URLStreamManager(screenURL);
+				inputStream = manager.open();
+
 				if (inputStream == null)
 				{
+					manager.close();					
+					
 					screenURL = getClass().getResource("/"+screenId);
 					if (screenURL != null)
 					{
-						inputStream = URLUtils.openStream(screenURL);
+						manager = new URLStreamManager(screenURL);
+						inputStream = manager.open();
 					}
 				}
 			}
-
+			
 			if (inputStream == null)
 			{
 				return null;
 			}
 
-			return performTransformation(inputStream);
+			InputStream result = performTransformation(inputStream);
+			
+			if(manager != null)
+			{
+				manager.close();
+			}
+			
+			return result;			
 		}
 		catch (Exception e)
 		{
@@ -117,6 +137,4 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 		CruxToHtmlTransformer.generateHTML(inputStream, out);			
 		return new ByteArrayInputStream(out.toByteArray());
 	}
-	
-	
 }

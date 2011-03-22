@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.declarativeui.template;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,6 +35,7 @@ import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.scannotation.AbstractScanner;
+import br.com.sysmap.crux.scannotation.URLStreamManager;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
 import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
@@ -106,8 +108,11 @@ public class TemplatesScanner extends AbstractScanner
 						try
 						{
 							foundTemplates.add(urlString);
-							Document template = documentBuilder.parse(found.openStream());
-							Templates.registerTemplate(getTemplateId(urlString), template);
+							URLStreamManager manager = new URLStreamManager(found);
+							InputStream stream = manager.open();
+							Document template = documentBuilder.parse(stream);
+							manager.close();
+							Templates.registerTemplate(getTemplateId(urlString), template);							
 						}
 						catch (TemplateException e)
 						{

@@ -16,6 +16,7 @@
 package br.com.sysmap.crux.core.rebind.scanner.module;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
@@ -42,6 +43,7 @@ import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.scannotation.AbstractScanner;
+import br.com.sysmap.crux.scannotation.URLStreamManager;
 import br.com.sysmap.crux.scannotation.archiveiterator.Filter;
 import br.com.sysmap.crux.scannotation.archiveiterator.IteratorFactory;
 import br.com.sysmap.crux.scannotation.archiveiterator.URLIterator;
@@ -164,17 +166,25 @@ public class ModulesScanner extends AbstractScanner
 			try
 			{
 				URLIterator it = IteratorFactory.create(url, filter);
-				URL found;
+				URL found = null;
+				
 				while ((found = it.next()) != null)
 				{
+					URLStreamManager urlManager = new URLStreamManager(found);
+
 					try
 					{
-						Document module = documentBuilder.parse(found.openStream());
+						InputStream stream = urlManager.open();						
+						Document module = documentBuilder.parse(stream);
 						Modules.getInstance().registerModule(found, getModuleName(url, found), module);
 					}
 					catch (Exception e) 
 					{
 						logger.error(messages.modulesScannerErrorParsingModuleFile(found.toString()));
+					}
+					finally
+					{
+						urlManager.close();
 					}
 				}
 			}

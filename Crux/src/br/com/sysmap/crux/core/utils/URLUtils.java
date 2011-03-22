@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import br.com.sysmap.crux.scannotation.URLStreamManager;
+
 /**
  * @author Thiago da Rosa de Bustamante
  *
@@ -27,83 +29,37 @@ import java.net.URL;
 public class URLUtils
 {
 	/**
-	 * 
+	 * Returns <code>true</code> if the resource referred by an URL really exists
 	 * @param url
-	 * @return
 	 */
 	public static boolean existsResource(URL url)
 	{
-		if (url == null)
-		{
-			return false;
-		}
-		if ("file".equals(url.getProtocol()))
-		{
-			try
-			{
-				return new File(url.toURI()).exists();
-			}
-			catch (URISyntaxException e)
-			{
-				return false;
-			}
-		}
+		boolean result = false;
 		
-		try
+		if (url != null)
 		{
-			InputStream inputStream = url.openStream();
-			if (inputStream != null)
+			if ("file".equals(url.getProtocol()))
 			{
-				inputStream.close();
-				return true;
-			}
-		}
-		catch(Throwable e)
-		{
-			return false;
-		}
-		return false;
-	}
-	
-	/**
-	 * If url exists, open a stream to it. Returns null otherwise.
-	 * @param url
-	 * @return an inputStream or null if the resource does not exist or can not be read
-	 */
-	public static InputStream openStream(URL url)
-	{
-		if (url == null)
-		{
-			return null;
-		}
-		if ("file".equals(url.getProtocol()))
-		{
-			try
-			{
-				if (new File(url.toURI()).exists())
+				try
 				{
-					return url.openStream();
+					result = new File(url.toURI()).exists();
+				}
+				catch (URISyntaxException e)
+				{
+					result = false;
 				}
 			}
-			catch (Exception e)
+			else
 			{
-				return null;
+				URLStreamManager manager = new URLStreamManager(url);
+				InputStream stream = manager.open();
+				manager.close();
+				
+				result = stream != null;
 			}
 		}
 		
-		try
-		{
-			InputStream inputStream = url.openStream();
-			if (inputStream != null)
-			{
-				return inputStream;
-			}
-		}
-		catch(Throwable e)
-		{
-			return null;
-		}
-		return null;
+		return result;
 	}
 	
 	/**
@@ -112,7 +68,6 @@ public class URLUtils
 	 */
 	public static URL isValidURL(String urlString)
 	{
-	
 		try 
 		{
 			return new URL(urlString);

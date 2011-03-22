@@ -27,6 +27,7 @@ import br.com.sysmap.crux.core.server.ServerMessages;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.core.utils.URLUtils;
+import br.com.sysmap.crux.scannotation.URLStreamManager;
 
 /**
  * 
@@ -44,6 +45,8 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 			
 			URL screenURL = null;
 			InputStream inputStream = null;
+			URLStreamManager manager = null;
+			
 			for (URL webBaseDir: webBaseDirs)
 			{
 				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(webBaseDir.getProtocol());
@@ -51,10 +54,15 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 				screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/");
 				screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
 
-				inputStream = URLUtils.openStream(screenURL);
+				manager = new URLStreamManager(screenURL);
+				inputStream = manager.open();
 				if (inputStream != null)
 				{
 					return inputStream;
+				}
+				else
+				{
+					manager.close(); // the possible underlying jar must be closed despite of the existence of the referred resource
 				}
 			}
 			
@@ -65,17 +73,18 @@ public class ScreenResourceResolverImpl implements ScreenResourceResolver
 				screenURL = new URL("file:///"+screenId);
 			}
 
-			inputStream = URLUtils.openStream(screenURL);
 			if (inputStream != null)
 			{
-				return inputStream;
+				InputStream result = URLStreamManager.bufferedRead(screenURL);
+				return result;
 			}
 			else
 			{
 				screenURL = getClass().getResource("/"+screenId);
 				if (screenURL != null)
 				{
-					return URLUtils.openStream(screenURL);
+					InputStream result = URLStreamManager.bufferedRead(screenURL);
+					return result;
 				}
 				else
 				{
