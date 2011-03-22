@@ -37,6 +37,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import br.com.sysmap.crux.classpath.URLResourceHandler;
 import br.com.sysmap.crux.classpath.URLResourceHandlersRegistry;
 import br.com.sysmap.crux.core.i18n.MessagesFactory;
 import br.com.sysmap.crux.core.rebind.scanner.module.Module;
@@ -45,6 +46,7 @@ import br.com.sysmap.crux.core.server.Environment;
 import br.com.sysmap.crux.core.utils.RegexpPatterns;
 import br.com.sysmap.crux.module.config.CruxModuleConfigurationFactory;
 import br.com.sysmap.crux.module.validation.CruxModuleValidator;
+import br.com.sysmap.crux.scannotation.URLStreamManager;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -185,11 +187,17 @@ public class CruxModuleHandler
 		while (modules.hasNext())
 		{
 			Module module = modules.next();
+			URLStreamManager streamManager = null;
 			try
 			{
-				String moduleDescriptor = "/"+RegexpPatterns.REGEXP_DOT.matcher(module.getFullName()).replaceAll("/")+".module.xml";
-				InputStream stream = CruxModuleHandler.class.getResourceAsStream(moduleDescriptor);
-				ModuleInfo info = parseModuleDescriptor(stream);
+				int lastDot = module.getFullName().lastIndexOf('.');
+				String moduleSimpleName = module.getFullName().substring(lastDot + 1);
+				URL gwtXmlPath = module.getDescriptorURL();
+				URLResourceHandler navigator = URLResourceHandlersRegistry.getURLResourceHandler(gwtXmlPath.getProtocol());
+				URL cruxModuleXml = navigator.getChildResource(navigator.getParentDir(gwtXmlPath), moduleSimpleName + ".module.xml");
+
+				streamManager = new URLStreamManager(cruxModuleXml);
+				ModuleInfo info = parseModuleDescriptor(streamManager.open());
 				if (info != null)
 				{
 					cruxModules.put(module, buildCruxModule(module, info));
@@ -198,6 +206,13 @@ public class CruxModuleHandler
 			catch (Exception e)
 			{
 				throw new CruxModuleException(messages.errorInitializingCruxModuleHandler(), e);
+			}
+			finally
+			{
+				if(streamManager != null)
+				{
+					try{ streamManager.close(); } catch (Exception e) {};
+				}
 			}
 		}
 	}
