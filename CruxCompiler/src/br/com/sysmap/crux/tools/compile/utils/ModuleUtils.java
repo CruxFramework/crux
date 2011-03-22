@@ -36,6 +36,7 @@ import br.com.sysmap.crux.core.rebind.scanner.module.ModulesScanner;
 import br.com.sysmap.crux.core.server.scan.ScannerURLS;
 import br.com.sysmap.crux.core.utils.XMLUtils;
 import br.com.sysmap.crux.core.utils.XMLUtils.XMLException;
+import br.com.sysmap.crux.scannotation.URLStreamManager;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -92,7 +93,9 @@ public class ModuleUtils
 		String result = null;
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		CruxToHtmlTransformer.generateHTML(pageFile.openStream(), out);
+		URLStreamManager manager = new URLStreamManager(pageFile);
+		CruxToHtmlTransformer.generateHTML(manager.open(), out);
+		manager.close();
 		ByteArrayInputStream input = new ByteArrayInputStream(out.toByteArray());
 		Document source = null;
 

@@ -29,6 +29,7 @@ import br.com.sysmap.crux.core.declarativeui.CruxToHtmlTransformer;
 import br.com.sysmap.crux.core.declarativeui.template.TemplatesScanner;
 import br.com.sysmap.crux.core.rebind.scanner.module.Module;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
+import br.com.sysmap.crux.scannotation.URLStreamManager;
 import br.com.sysmap.crux.tools.compile.CruxPreProcessor;
 
 /**
@@ -97,7 +98,9 @@ public abstract class AbstractDeclarativeUIPreProcessor implements CruxPreProces
 		CruxToHtmlTransformer.setForceIndent(indent);
 		CruxToHtmlTransformer.setOutputCharset(outputCharset);
 		FileOutputStream out = new FileOutputStream(preprocessedFile);
-		CruxToHtmlTransformer.generateHTML(url.openStream(), out);
+		URLStreamManager manager = new URLStreamManager(url);
+		CruxToHtmlTransformer.generateHTML(manager.open(), out);
+		manager.close();
 		out.flush();
 		out.close();
 		
