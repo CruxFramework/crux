@@ -270,7 +270,11 @@ public class AnnotationDB extends AbstractScanner implements Serializable
 	
 				URL found;
 				while ((found = it.next()) != null)
-					scanClass(found.openStream());
+				{
+					URLStreamManager manager = new URLStreamManager(found);
+					scanClass(manager.open());
+					manager.close();
+				}
 			}
 		}
 	}
@@ -285,10 +289,12 @@ public class AnnotationDB extends AbstractScanner implements Serializable
 	{
 		boolean exists = false;
 		
+		URLStreamManager manager = new URLStreamManager(url);
+
 		try
 		{
-			InputStream stream = url.openStream();
-			
+			InputStream stream = manager.open();
+			manager.close();
 			if(stream != null)
 			{
 				exists = true;
@@ -298,6 +304,10 @@ public class AnnotationDB extends AbstractScanner implements Serializable
 		catch (IOException e)
 		{
 			// nothing to do
+		}
+		finally
+		{
+			manager.close();
 		}
 		
 		return exists;
