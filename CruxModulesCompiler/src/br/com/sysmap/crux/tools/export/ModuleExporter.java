@@ -32,13 +32,13 @@ import br.com.sysmap.crux.core.rebind.CruxScreenBridge;
 import br.com.sysmap.crux.core.server.classpath.ClassPathResolverInitializer;
 import br.com.sysmap.crux.core.server.scan.ClassScanner;
 import br.com.sysmap.crux.core.utils.FileUtils;
-import br.com.sysmap.crux.core.utils.URLUtils;
 import br.com.sysmap.crux.module.CruxModule;
 import br.com.sysmap.crux.module.CruxModuleHandler;
 import br.com.sysmap.crux.module.ModuleRef;
 import br.com.sysmap.crux.module.classpath.ModuleClassPathResolver;
 import br.com.sysmap.crux.module.validation.CruxModuleValidator;
 import br.com.sysmap.crux.scannotation.ClasspathUrlFinder;
+import br.com.sysmap.crux.scannotation.URLStreamManager;
 import br.com.sysmap.crux.tools.compile.CompilerException;
 import br.com.sysmap.crux.tools.compile.CruxModuleCompiler;
 import br.com.sysmap.crux.tools.compile.JCompiler;
@@ -115,12 +115,15 @@ public class ModuleExporter
 	 */
 	public static Manifest getModuleManifest(String moduleName)
     {
+		URLStreamManager manager = null;
+		
 		try
 		{
 			URL location = getModuleJarRootPath(moduleName);
 			URLResourceHandler handler = URLResourceHandlersRegistry.getURLResourceHandler(location.getProtocol());
 			URL moduleManifest = handler.getChildResource(location, "META-INF/MANIFEST.MF");
-			InputStream stream = URLUtils.openStream(moduleManifest);
+			manager = new URLStreamManager(moduleManifest);
+			InputStream stream = manager.open();
 			if (stream == null)
 			{
 				throw new ModuleExporterException("Error reading module manifest file. Module: "+ moduleName);
@@ -130,6 +133,13 @@ public class ModuleExporter
 		catch (IOException e)
 		{
 			throw new ModuleExporterException("Error reading module manifest file. Module: "+ moduleName, e);
+		}
+		finally
+		{
+			if(manager != null)
+			{
+				manager.close();
+			}
 		}
     }
 

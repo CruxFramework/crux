@@ -16,7 +16,6 @@
 package br.com.sysmap.crux.tools.compile;
 
 import java.io.File;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -346,9 +345,7 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 		
 		URLResourceHandler handler = URLResourceHandlersRegistry.getURLResourceHandler(rootPath.getProtocol());
 		URL moduleManifest = handler.getChildResource(rootPath, "cruxModuleExport");
-		InputStream stream = URLUtils.openStream(moduleManifest);
-		boolean result = stream != null;
-		return result;
+		return URLUtils.existsResource(moduleManifest);
     }
 
 
