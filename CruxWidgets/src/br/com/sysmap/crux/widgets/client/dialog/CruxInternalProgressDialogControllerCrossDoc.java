@@ -25,4 +25,6 @@ public interface CruxInternalProgressDialogControllerCrossDoc extends CrossDocum
 {
 	void showProgressDialogBox(ProgressDialogData data);
 	void hideProgressDialogBox();
+	void enableEventsOnOpener();
+	void disableEventsOnOpener();
 }

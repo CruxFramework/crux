@@ -385,8 +385,6 @@ public class CruxInternalPopupController implements CruxInternalPopupControllerC
 	}-*/;
 	
 	/**
-	 * @param call
-	 * @param serializedData
 	 */
 	private native void pushPopupOnStack()/*-{
 		if($wnd.top._popup_origin == null && $wnd.top._popup_wndws == null)
