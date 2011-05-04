@@ -20,6 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import br.com.sysmap.crux.core.client.screen.JSWindow;
+import br.com.sysmap.crux.core.client.screen.ModuleComunicationException;
+import br.com.sysmap.crux.core.client.screen.Screen;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeBlurEvent;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusEvent;
 import br.com.sysmap.crux.widgets.client.event.focusblur.BeforeFocusHandler;
@@ -238,7 +240,7 @@ public class DynaTabs extends Composite
 							focusTab(tabId);
 							new Timer() {							
 								public void run() {
-									newTab.changeURL(lazyURL);
+									newTab.changeURL(Screen.appendDebugParameters(lazyURL));
 								}
 							}.schedule(100);
 						}
@@ -259,7 +261,7 @@ public class DynaTabs extends Composite
 			
 			if(reloadIfAlreadyOpen)
 			{
-				tab.changeURL(tab.getUrl());
+				tab.changeURL(Screen.appendDebugParameters(url));
 			}
 		}			
 
