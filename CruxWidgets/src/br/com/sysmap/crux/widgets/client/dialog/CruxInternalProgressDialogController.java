@@ -146,9 +146,6 @@ public class CruxInternalProgressDialogController implements CruxInternalProgres
 				dialogBox.center();
 				dialogBox.show();
 				
-				// TODO - Gesse - find out a better solution to avoid focus on blocked screen widgets 
-				iconPanel.setFocus(true);
-				iconPanel.setFocus(false);
 			}
 			else
 			{
