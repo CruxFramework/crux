@@ -1,0 +1,87 @@
+<project name="${projectName}" basedir="../">
+
+	<property name="final.name" value="${projectName}" />
+	<property name="src.dir" value="src" />
+	<property name="dist.dir" value="dist" />
+	<property name="temp.dir" value="${dist.dir}/temp" />
+	<property name="build.lib.dir" value="build/lib" />
+
+	<property name="web.root" value="war" />
+	<property name="web.inf.dir" value="${web.root}/WEB-INF" />
+	<property name="web.lib.dir" value="${web.inf.dir}/lib" />
+	<property name="target.classes.dir" value="${web.inf.dir}/classes" />
+
+	<property name="xsd.dir" value="xsd" />
+
+	<path id="build.classpath">
+		<fileset dir="${web.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${build.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<taskdef resource="org/cruxframework/crux/tools/crux-module-tools.xml">
+		<classpath>
+			<path refid="build.classpath" />
+		</classpath>
+	</taskdef>
+
+	<!-- 
+	========================================================================================================
+	Invokes the GWT compiler. Usefull for debugging generated Javascript. The draftCompile option is active.
+	========================================================================================================
+	-->
+	<target name="compile-scripts">
+		<cruxmodulecompiler srcDir="${src.dir}" outputDir="${web.root}" pagesOutputDir="${web.root}" webDir="${web.root}" 
+			keepPagesGeneratedFiles="false" outputCharset="UTF-8">
+			<classpath>
+				<path refid="build.classpath" />
+			</classpath>
+
+			<!-- change these two parameters if you need to modify memory settings -->
+			<jvmarg value="-Xmx768M" />
+			<jvmarg value="-Xms256M" />
+
+			<!-- use these parameters if you want to modify GWT output settings
+			<arg value="-style"/>
+			<arg value="DETAILED"/>
+			<arg value="-logLevel"/>
+			<arg value="DEBUG"/>
+			-->
+			
+			<arg value="-draftCompile" />
+		</cruxmodulecompiler>
+	</target>
+
+	<!-- 
+	========================================================================================================
+		Generate XSD Files, based on Crux widgets libraries found on classpath
+	========================================================================================================
+	-->
+	<target name="generate-schemas">
+		<generateSchemas outputDir="${xsd.dir}" >
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${target.classes.dir}" />
+				<pathelement path="${web.root}" />
+				<pathelement location="${src.dir}" />
+			</classpath>
+		</generateSchemas>
+	</target>
+
+	<!-- 
+	========================================================================================================
+		Export project as a Crux Module
+	========================================================================================================
+	-->
+	<target name="export-as-module" >
+		<moduleExporter sourcedir="${src.dir}" outputdir="${dist.dir}" modulename="${moduleSimpleName}" outputmodulename="${final.name}" 
+			excludes="**/Crux.properties,**/CruxModuleConfig.properties" pagesOutputCharset="UTF-8">
+			<classpath>
+				<path refid="build.classpath" />
+			</classpath>
+		</moduleExporter>
+	</target>
+</project>

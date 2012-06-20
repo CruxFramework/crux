@@ -1,0 +1,1699 @@
+/******************************************************************************
+	GWT and Native Styles
+******************************************************************************/
+SPAN, DIV, TD, LI, STRONG, UL
+{
+	font-family: arial;
+	font-size: 12px;
+	color: #555555;
+}
+
+/******************************************************************************
+	Message Box
+*******************************************************************************/
+.crux-MessageBox
+{
+}
+.crux-MessageBox .dialogTopLeft
+{
+	height:41px;
+	width:19px;
+	font-size: 19px;
+	font-family: monospace;
+	background: url(../img/dialogs-nw.png) no-repeat top left;
+}
+.crux-MessageBox .dialogTopCenter
+{
+	text-align: left;
+	font-family: Arial, Helvetica;
+	background: url(../img/dialogs-n.png) repeat-x top center;
+	cursor: move;
+	padding-top: 8px;
+	padding-left: 2px;
+}
+.crux-MessageBox .dialogTopCenter .Caption
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #EEEEEE;
+	text-shadow: -1px -1px #2f5578;
+}
+.crux-MessageBox .dialogTopRight
+{
+	width:20px;
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-ne.png) no-repeat top right;
+	padding-right: 5px;
+	cursor: move;
+}
+.crux-MessageBox .dialogMiddleLeft
+{
+	width:19px;
+	font-size: 19px;
+	font-family: monospace;
+	background: url(../img/dialogs-w.png) repeat-y center left;
+}
+.crux-MessageBox .dialogMiddleCenter
+{
+	background-color: #FFFFFF;
+}
+.crux-MessageBox .dialogMiddleRight
+{
+	width:20px;
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-e.png) repeat-y center right;
+}
+.crux-MessageBox .dialogBottomLeft
+{
+	font-size: 19px;
+	font-family: monospace;
+	height:20px;
+	background: url(../img/dialogs-sw.png) no-repeat top left;
+}
+.crux-MessageBox .dialogBottomCenter
+{
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-s.png) repeat-x top center;
+}
+.crux-MessageBox .dialogBottomRight
+{
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-se.png) no-repeat top right;
+}
+.crux-MessageBox .message
+{
+	font-family: Arial, Helvetica;
+	font-size: 12px;
+	font-weight: bold;
+	color: #4E4E4E;
+	padding: 5px;
+}
+.crux-MessageBox .crux-DecoratedButtonCSS3, .crux-MessageBox .crux-DecoratedButton
+{
+	min-width: 60px;
+	overflow: visible;
+	white-space: nowrap;
+}
+
+/******************************************************************************
+	Progress Dialog
+*******************************************************************************/
+.crux-ProgressDialog
+{
+}
+.crux-ProgressDialog .dialogTopLeft
+{
+	width: 20px;
+	font-size: 0px;
+	font-family: monospace;
+}
+.crux-ProgressDialog .dialogTopCenter
+{
+	font-size: 0px;
+	font-family: monospace;
+}
+.crux-ProgressDialog .dialogTopRight
+{
+	width: 20px;
+	font-size: 0px;
+	font-family: monospace;
+}
+.crux-ProgressDialog .dialogMiddleLeft
+{
+	height: 60px;
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/progressdialog-w.png) no-repeat left;
+}
+.crux-ProgressDialog .dialogMiddleCenter
+{
+	font-size: 0px;
+	font-family: monospace;
+	background: url(../img/progressdialog-c.png) repeat-x center;
+}
+.crux-ProgressDialog .dialogMiddleRight
+{
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/progressdialog-e.png) no-repeat right;
+}
+.crux-ProgressDialog .dialogBottomLeft
+{
+	height: 0px;
+	font-size: 0px;
+	font-family: monospace;
+}
+.crux-ProgressDialog .dialogBottomCenter
+{
+	font-size: 0px;
+	font-family: monospace;
+}
+.crux-ProgressDialog .dialogBottomRight
+{
+	font-size: 0px;
+	font-family: monospace;
+}
+.crux-ProgressDialog .icon
+{
+	background: url(../img/progressdialog-icon.gif) no-repeat;
+	width: 32px;
+	height: 32px;
+}
+.crux-ProgressDialog .message
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #FFFFFF;
+	padding-left: 8px;
+	padding-right: 15px;
+	padding-top: 9px;
+	text-shadow: -1px -1px #2f5578;
+}
+
+/******************************************************************************
+	Popup
+*******************************************************************************/
+.crux-Popup
+{
+	color:#333333;
+	font-family:Courier,monospace;
+	font-size:12px;
+	font-weight:bold;
+}
+.crux-Popup .topLeftCell
+{
+	height:41px;
+	width:29px;
+	font-size: 29px;
+	font-family: monospace;
+	background: url(../img/dialogs-nw.png) no-repeat top left;
+	cursor: move;
+}
+.crux-Popup .topLeftCell DIV
+{
+	display: none;
+}
+.crux-Popup .topCenterCell
+{
+	text-align: left;
+	font-family: Arial, Helvetica;
+	background: url(../img/dialogs-n.png) repeat-x top center;
+	cursor: move;
+	padding-top: 8px;
+	padding-left: 2px;
+	font-size: 12px;
+	font-weight: bold;
+	color: #EEEEEE;
+	text-shadow: -1px -1px #2f5578;
+}
+.crux-Popup .topCenterCell .Caption
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #EEEEEE;
+	text-shadow: -1px -1px #2f5578;
+}
+.crux-Popup .topRightCell
+{
+	width:30px;
+	font-size: 30px;
+	font-family: monospace;
+	background: url(../img/dialogs-ne.png) no-repeat top right;
+	padding-right: 5px;
+	cursor: move;
+}
+.crux-Popup .middleLeftCell
+{
+	width:19px;
+	font-size: 19px;
+	font-family: monospace;
+	background: url(../img/dialogs-w.png) repeat-y center left;
+}
+.crux-Popup .middleCenterCell
+{
+	background-color: #FFFFFF;
+}
+.crux-Popup .middleRightCell
+{
+	width:20px;
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-e.png) repeat-y center right;
+}
+.crux-Popup .bottomLeftCell
+{
+	font-size: 19px;
+	font-family: monospace;
+	height:20px;
+	background: url(../img/dialogs-sw.png) no-repeat top left;
+}
+.crux-Popup .bottomCenterCell
+{
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-s.png) repeat-x top center;
+}
+.crux-Popup .bottomRightCell
+{
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-se.png) no-repeat top right;
+}
+.crux-Popup .closeButton
+{
+	font-size: 0px;
+	background: url(../img/dialogs-close.png) no-repeat bottom right;
+	width: 10px;
+	height: 12px;
+	margin-right: 20px;
+	margin-top: 6px;
+	cursor: pointer;
+	opacity: 0.9;
+	filter: alpha(opacity=90);
+	border: solid 0px;
+}
+.crux-Popup .closeButton-disabled
+{
+	cursor: wait;
+}
+.crux-Popup-dragging
+{
+	opacity:0.7;
+	filter:alpha(opacity=70);
+}
+.crux-Popup-dragging .topLeftCell
+{
+	background-image: url(../img/dialogs-nw-drag.png);
+}
+.crux-Popup-dragging .topCenterCell
+{
+	background-image: url(../img/dialogs-n-drag.png);
+}
+.crux-Popup-dragging .topRightCell
+{
+	background-image: url(../img/dialogs-ne-drag.png);
+}
+.crux-Popup-dragging .middleLeftCell
+{
+	background-image: url(../img/dialogs-w-drag.png);
+}
+.crux-Popup-dragging .middleRightCell
+{
+	background-image: url(../img/dialogs-e-drag.png);
+}
+.crux-Popup-dragging .bottomLeftCell
+{
+	background-image: url(../img/dialogs-sw-drag.png);
+}
+.crux-Popup-dragging .bottomCenterCell
+{
+	background-image: url(../img/dialogs-s-drag.png);
+}
+.crux-Popup-dragging .bottomRightCell
+{
+	background-image: url(../img/dialogs-se-drag.png);
+}
+
+/******************************************************************************
+	Confirm
+*******************************************************************************/
+.crux-Confirm
+{
+	color:#333333;
+	font-family:Courier,monospace;
+	font-size:12px;
+	font-weight:bold;
+}
+.crux-Confirm .dialogTopLeft
+{
+	height:41px;
+	width:19px;
+	font-size: 19px;
+	font-family: monospace;
+	background: url(../img/dialogs-nw.png) no-repeat top left;
+	cursor: move;
+}
+.crux-Confirm .dialogTopCenter
+{
+	text-align: left;
+	font-family: Arial, Helvetica;
+	background: url(../img/dialogs-n.png) repeat-x top center;
+	cursor: move;
+	padding-top: 8px;
+	padding-left: 2px;
+}
+.crux-Confirm .dialogTopCenter  .Caption
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #EEEEEE;
+	text-shadow: -1px -1px #2f5578;
+}
+.crux-Confirm .dialogTopRight
+{
+	width:20px;
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-ne.png) no-repeat top right;
+	padding-right: 5px;
+	cursor: move;
+}
+.crux-Confirm .dialogMiddleLeft
+{
+	width:19px;
+	font-size: 19px;
+	font-family: monospace;
+	background: url(../img/dialogs-w.png) repeat-y center left;
+}
+.crux-Confirm .dialogMiddleCenter
+{
+	background-color: #FFFFFF;
+}
+.crux-Confirm .dialogMiddleRight
+{
+	width:20px;
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-e.png) repeat-y center right;
+}
+.crux-Confirm .dialogBottomLeft
+{
+	font-size: 19px;
+	font-family: monospace;
+	height:20px;
+	background: url(../img/dialogs-sw.png) no-repeat top left;
+}
+.crux-Confirm .dialogBottomCenter
+{
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-s.png) repeat-x top center;
+}
+.crux-Confirm .dialogBottomRight
+{
+	font-size: 20px;
+	font-family: monospace;
+	background: url(../img/dialogs-se.png) no-repeat top right;
+}
+.crux-Confirm .message
+{
+	font-family: Arial, Helvetica;
+	font-size: 12px;
+	font-weight: bold;
+	color: #4E4E4E;
+	padding: 5px;
+}
+.crux-Confirm .crux-DecoratedButtonCSS3, .crux-Confirm .crux-DecoratedButton
+{
+	min-width: 60px;
+	overflow: visible;
+	white-space: nowrap;
+}
+
+/******************************************************************************
+	Timer
+*******************************************************************************/
+.crux-Timer
+{
+	font-family:Arial,Helvetica;
+	font-weight:bold;
+	font-size:13px;
+	color:#5385AE;
+}
+
+/******************************************************************************
+	Scroll Banner
+*******************************************************************************/
+.crux-ScrollBanner .previousMessageButton, .crux-ScrollBanner .nextMessageButton
+{
+	background-image: url(../img/scroll-banner-arrow-up.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 17px;
+	height: 17px;
+	font-size: 0px;
+	cursor: pointer;
+}
+.crux-ScrollBanner .nextMessageButton
+{
+	background-image: url(../img/scroll-banner-arrow-down.png);
+}
+
+.crux-ScrollBanner .message
+{
+	color:#5385AE;
+	font-size:13px;
+	font-weight:bold;
+	font-family:Arial,Helvetica;
+	padding: 2px;
+	text-align: left;
+}
+
+.crux-ScrollBanner .messageCount
+{
+	color:#5385AE;
+	font-size:13px;
+	font-weight:bold;
+	font-family:Arial,Helvetica;
+}
+
+/******************************************************************************
+	Filter
+*******************************************************************************/
+.crux-Filter
+{
+	background-color: #FFFFFF;
+	border: solid 1px #5386af;
+	background-image: url(../img/filter-lens.gif);
+	background-position: top right;
+	background-repeat: no-repeat;
+	height: 22px;
+	font-size: 13px;
+	font-family: arial, sans-serif;
+	padding-left: 2px;
+	color: #CCCCCC;
+}
+.crux-Filter-focused
+{
+	background-image: url(../img/filter-lens-focused.gif);
+	color: #505050;
+}
+
+.crux-SuggestPopup
+{
+	background-color: #F4F4F3;
+	border: solid 1px #C9C9C9;
+	-webkit-box-shadow:0px 0px 4px 4px rgba(180,180,180,0.15);
+	-moz-box-shadow:0px 0px 4px 4px rgba(180,180,180,0.15);
+	box-shadow:0px 0px 4px 4px rgba(180,180,180,0.15);
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#f8f8f8),color-stop(0.99,#e5e5e5));
+	background-image: -moz-linear-gradient(top, #f8f8f8,#e5e5e5);
+	background-image: -o-linear-gradient(top, #f8f8f8,#e5e5e5);
+}
+
+.crux-SuggestPopup .item
+{
+	font-family: arial;
+	font-size: 12px;
+	color: #555555;
+	background-color: transparent;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+}
+
+.crux-SuggestPopup .item-selected
+{
+	background-color: #40688D;
+	color: #FFFFFF;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#5386af),color-stop(0.99,#40688d));
+	background-image: -moz-linear-gradient(top, #5386af,#40688d);
+	background-image: -o-linear-gradient(top, #5386af,#40688d);
+}
+
+/******************************************************************************
+	Stack Menu
+*******************************************************************************/
+/*=====================
+    first level
+=====================*/
+.crux-StackMenu .item
+{
+	height: 23px;
+	cursor:pointer;
+	background: url(../img/menu-lv1-off-bg.gif) repeat-x top;
+	background-color: #5386AF;
+	width: 100%;
+}
+.crux-StackMenu .item .item-border-nw
+{
+	width: 4px;
+	height: 3px;
+	background: url(../img/menu-lv1-nw.gif) no-repeat top left;
+	font-size: 3px;
+	font-family: monospace;
+}
+.crux-StackMenu .item .item-border-n
+{
+	font-size: 3px;
+	font-family: monospace;
+	background-position: top;
+}
+.crux-StackMenu .item .item-border-ne
+{
+	width: 10px;
+	background: url(../img/menu-lv1-ne.gif) no-repeat top right;
+	font-size: 3px;
+	font-family: monospace;
+}
+.crux-StackMenu .item .item-border-w
+{
+	background: url(../img/menu-lv1-w.gif) repeat-y left;
+	font-size: 3px;
+	font-family: monospace;
+}
+.crux-StackMenu .item .item-border-e
+{
+	background: url(../img/menu-lv1-e.gif) repeat-y right;
+	font-size: 3px;
+	font-family: monospace;
+}
+.crux-StackMenu .item .item-border-sw
+{
+	height: 3px;
+	background: url(../img/menu-lv1-sw.gif) no-repeat bottom left;
+	font-size: 3px;
+	font-family: monospace;
+}
+.crux-StackMenu .item .item-border-s
+{
+	font-size: 3px;
+	font-family: monospace;
+	background-position: bottom;
+}
+.crux-StackMenu .item .item-border-se
+{
+	background: url(../img/menu-lv1-se.gif) no-repeat bottom right;
+	font-size: 3px;
+	font-family: monospace;
+}
+.crux-StackMenu .item .itemLabel
+{
+	color:#FFFFFF;
+	font-family:Arial,Helvetica;
+	font-size:11px;
+	font-weight:bold;
+	text-decoration:none;
+	padding:0px 4px 3px 4px;
+}
+.crux-StackMenu .item .hasSubItems
+{
+	width: 5px;
+	height: 5px;
+	background: url(../img/menu-lv1-has-sub.gif) no-repeat left;
+}
+.crux-StackMenu .item-open .hasSubItems
+{
+	background: url(../img/menu-lv1-has-sub-open.gif) no-repeat left;
+}
+.crux-StackMenu .item-over
+{
+	background-image: url(../img/menu-lv1-on-bg.gif);
+	background-color: #7D8288;
+}
+/*=====================
+    second level
+=====================*/
+.crux-StackMenu .subItemsWrapper .itemWrapper
+{
+	padding-left: 6px;
+}
+.crux-StackMenu .subItemsWrapper .item
+{
+	background: url(../img/menu-lv2-off-bg.gif) repeat-x top;
+	background-color: #FBFBFB;
+}
+.crux-StackMenu .subItemsWrapper .item .item-border-nw
+{
+	width: 3px;
+	height: 0px;
+	background: none;
+	font-size: 0px;
+	background: url(../img/menu-lv2-w.gif) repeat-y left;
+}
+.crux-StackMenu .subItemsWrapper .item .item-border-n
+{
+	font-size: 0px;
+}
+.crux-StackMenu .subItemsWrapper .item .item-border-ne
+{
+	width: 10px;
+	background: none;
+	font-size: 0px;
+	background: url(../img/menu-lv2-e.gif) repeat-y right;
+}
+.crux-StackMenu .subItemsWrapper .item .item-border-w
+{
+	background: url(../img/menu-lv2-w.gif) repeat-y left;
+}
+.crux-StackMenu .subItemsWrapper .item .item-border-e
+{
+	background: url(../img/menu-lv2-e.gif) repeat-y right;
+}
+.crux-StackMenu .subItemsWrapper .item .item-border-sw
+{
+	height: 1px;
+	background: url(../img/menu-lv2-sw.gif) no-repeat bottom left;
+	font-size: 1px;
+}
+.crux-StackMenu .subItemsWrapper .item .item-border-s
+{
+	background: url(../img/menu-lv2-s.gif) repeat-x bottom;
+}
+.crux-StackMenu .subItemsWrapper .item .item-border-se
+{
+	height: 1px;
+	background: url(../img/menu-lv2-se.gif) no-repeat bottom right;
+	font-size: 1px;
+}
+.crux-StackMenu .subItemsWrapper .item .itemLabel
+{
+	color:#797979;
+	padding: 0px 0px 0px 5px;
+}
+.crux-StackMenu .subItemsWrapper .item .hasSubItems
+{
+	width: 5px;
+	height: 5px;
+	background: url(../img/menu-lv2-has-sub.gif) no-repeat left;
+}
+.crux-StackMenu .subItemsWrapper .item-open .hasSubItems
+{
+	background: url(../img/menu-lv2-has-sub-open.gif) no-repeat left;
+}
+.crux-StackMenu .subItemsWrapper .item-over
+{
+	background-image: none;
+	background-color: #F5F5F5;
+}
+.crux-StackMenu .subItemsWrapper .item-over .itemLabel
+{
+	color: #5182AB;
+}
+/*=====================
+    third level
+=====================*/
+.crux-StackMenu .subItemsWrapper .subItemsWrapper .item .itemLabel
+{
+	font-weight:normal;
+}
+
+/******************************************************************************
+	Wizard
+*******************************************************************************/
+.crux-Wizard
+{
+}
+
+.crux-Wizard IFRAME
+{
+	border: solid 0px !important;
+	height: 99.0% !important;
+}
+.crux-Wizard .crux-WizardControlBar .crux-RollingPanelPreviousWrapper-disabled,
+.crux-Wizard .crux-WizardControlBar .crux-RollingPanelNextWrapper-disabled,
+.crux-Wizard .crux-WizardNavigationBar .crux-RollingPanelPreviousWrapper-disabled,
+.crux-Wizard .crux-WizardNavigationBar .crux-RollingPanelNextWrapper-disabled
+{
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+.crux-Wizard .crux-WizardControlBar .crux-RollingPanelPreviousWrapper-disabled .crux-RollingPanelPrevious,
+.crux-Wizard .crux-WizardControlBar .crux-RollingPanelNextWrapper-disabled .crux-RollingPanelNext,
+.crux-Wizard .crux-WizardNavigationBar .crux-RollingPanelPreviousWrapper-disabled .crux-RollingPanelPrevious,
+.crux-Wizard .crux-WizardNavigationBar .crux-RollingPanelNextWrapper-disabled .crux-RollingPanelNext
+{
+	display: none;
+}
+.crux-Wizard .crux-WizardControlBar .crux-DecoratedButton, .crux-Wizard .crux-WizardControlBar .crux-DecoratedButtonCSS3
+{
+	min-width: 60px;
+	margin-left: 4px;
+}
+.crux-Wizard .crux-WizardControlBar .crux-DecoratedButton-finish, .crux-Wizard .crux-WizardControlBar .crux-DecoratedButtonCSS3-finish
+{
+	margin-right: 15px;
+}
+.crux-Wizard .crux-WizardNavigationLabel
+{
+	color:#5385AE;
+	font-family:Arial,Helvetica;
+	font-size:12px;
+	text-decoration:none;
+	cursor: default;
+	padding: 1px;
+}
+.crux-Wizard .crux-WizardNavigationLabel-selected
+{
+	font-weight:bold;
+	cursor: default;
+}
+.crux-Wizard .crux-WizardNavigationSeparator
+{
+	width: 20px;
+	height: 11px;
+	background: url(../img/wizard-step-hor-separator.gif) no-repeat center;
+	font-family: monospace;
+	font-size: 1px;
+	margin-top: 2px;
+}
+.crux-Wizard .crux-WizardControlBarSouthWrapper, .crux-Wizard .crux-WizardControlBarNorthWrapper
+{
+	height: 25px;
+}
+.crux-Wizard .crux-WizardNavigationBarSouthWrapper, .crux-Wizard .crux-WizardNavigationBarNorthWrapper
+{
+	height: 25px;
+}
+.crux-Wizard .crux-WizardControlBarWestWrapper, .crux-Wizard .crux-WizardControlBarEastWrapper
+{
+	width: 80px;
+}
+.crux-Wizard .crux-WizardNavigationBarWestWrapper, .crux-Wizard .crux-WizardNavigationBarEastWrapper
+{
+	width: 80px;
+}
+.crux-Wizard .crux-WizardControlBar .crux-DecoratedButton
+{
+	width: 70px;
+}
+
+/******************************************************************************
+	RollingPanel - Horizontal
+*******************************************************************************/
+.crux-RollingPanelPreviousWrapper, .crux-RollingPanelNextWrapper
+{
+	width: 22px;
+	height: 100%;
+	padding-left: 1px;
+	padding-right: 1px;
+	border: solid 0px;
+}
+.crux-RollingPanelPrevious, .crux-RollingPanelNext
+{
+	color:#2F567A;
+	font-family:Arial,Helvetica;
+	font-weight: bolder;
+	font-size:16px;
+	text-decoration: none;
+	text-shadow: #9FB6EA 1px 1px 0;
+	cursor: default;
+	border: solid 0px;
+	-webkit-box-shadow:0px 0px 2px 2px rgba(180,180,180,0.3);
+	-moz-box-shadow:0px 0px 2px 2px rgba(180,180,180,0.3);
+	box-shadow:0px 0px 2px 2px rgba(180,180,180,0.3);
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #6b9bc2;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#6b9bc2),color-stop(0.99,#3f668a));
+	background-image: -moz-linear-gradient(top, #6b9bc2,#3f668a);
+	background-image: -o-linear-gradient(top, #6b9bc2,#3f668a);
+	height: 100%;
+	width: 20px;
+	padding: 0px;
+	margin: 0px;
+}
+.crux-RollingPanelPrevious:active, .crux-RollingPanelNext:active
+{
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#3f668a),color-stop(0.99,#3f668a));
+	background-image: -moz-linear-gradient(top, #3f668a,#3f668a);
+	background-image: -o-linear-gradient(top, #3f668a,#3f668a);
+}
+.crux-RollingPanelPreviousWrapper-disabled, .crux-RollingPanelNextWrapper-disabled
+{
+}
+.crux-RollingPanelPreviousWrapper-disabled .crux-RollingPanelPrevious, .crux-RollingPanelNextWrapper-disabled .crux-RollingPanelNext,
+.crux-RollingPanelPreviousWrapper-disabled .crux-RollingPanelPrevious:active, .crux-RollingPanelNextWrapper-disabled .crux-RollingPanelNext:active
+{
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#e0e0e0),color-stop(0.99,#c3c3c3));
+	background-image: -moz-linear-gradient(top, #e0e0e0,#c3c3c3);
+	background-image: -o-linear-gradient(top, #e0e0e0,#c3c3c3);
+	-webkit-box-shadow:0px 0px 2px 2px rgba(180,180,180,0.15);
+	-moz-box-shadow:0px 0px 2px 2px rgba(180,180,180,0.15);
+	box-shadow:0px 0px 2px 2px rgba(180,180,180,0.15);
+	color: #B5B5B5;
+	text-shadow: #FFFFFF 1px 1px 0;
+}
+
+/******************************************************************************
+	TabBar
+*******************************************************************************/
+.crux-TabBar
+{
+	height: 36px;
+}
+.crux-TabBar .crux-RollingPanelPrevious, .crux-TabBar .crux-RollingPanelPrevious:active
+{
+	height: 24px;
+	width: 22px;
+	font-family: monospace;
+	background-image: url(../img/dyna-tabs-roll-left.gif);
+	cursor: pointer;
+	border:none;
+	border-top:none;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+	-webkit-border-radius: 0px;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	font-size: 1px;
+	color: transparent;
+}
+.crux-TabBar .crux-RollingPanelNext, .crux-TabBar .crux-RollingPanelNext:active
+{
+	height: 24px;
+	width: 22px;
+	font-family: monospace;
+	background-image: url(../img/dyna-tabs-roll-right.gif);
+	cursor: pointer;
+	border:none;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+	-webkit-border-radius: 0px;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	font-size: 1px;
+	color: transparent;
+}
+.crux-TabBar .crux-RollingPanelPrevious:active, .crux-TabBar .crux-RollingPanelNext:active
+{
+	opacity:0.7;
+	filter:alpha(opacity=70);
+}
+.crux-TabBar .crux-RollingPanelPreviousWrapper
+{
+	background-image: url(../img/dyna-tabs-roll-left-wrapper.gif);
+	vertical-align:bottom !important;
+	width:27px;
+	padding-left: 3px;
+	padding-bottom: 4px;
+}
+.crux-TabBar .crux-RollingPanelNextWrapper
+{
+	background-image: url(../img/dyna-tabs-roll-right-wrapper.gif);
+	background-position: right;
+	vertical-align:bottom !important;
+	width:27px;
+	padding-right: 3px;
+	padding-bottom: 4px;
+}
+.crux-TabBar .crux-RollingPanelBody
+{
+	background-image: url(../img/dyna-tabs-roll-bg.gif);
+	background-repeat: repeat-x;
+	background-position: top;
+}
+.crux-TabBar .crux-RollingPanelNextWrapper-disabled .crux-RollingPanelNext,
+.crux-TabBar .crux-RollingPanelPreviousWrapper-disabled .crux-RollingPanelPrevious
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-TabBarFirst
+{
+	width:2px !important;
+	overflow: hidden;
+	font-size:0px;
+	padding: 0px;
+	margin: 0px !important;
+}
+.crux-TabBarFirst, .crux-TabBarRest
+{
+	height:36px !important;
+	padding:0px;
+}
+.crux-TabPanelBottom
+{
+	height: 99.7%;
+	border: solid 1px #DBDBDB;
+	border-top: 0px;
+	padding: 0px;
+	overflow: auto;
+}
+.crux-TabBarItem
+{
+	background-image: none;
+	cursor:default;
+	white-space:nowrap;
+	height:29px;
+	opacity:0.9;
+	filter:alpha(opacity=90);
+	background-color: transparent !important;
+	cursor:default;
+	font-weight:bold;
+	margin: 0px;
+	margin-top: 7px;
+	padding:0px !important;
+	text-align:center;
+}
+.crux-TabBarItem-selected
+{
+	opacity:1;
+	filter:alpha(opacity=100);
+}
+
+
+/******************************************************************************
+	DynaTabs
+*******************************************************************************/
+.crux-DynaTabs .crux-TabBarItem
+{
+	margin-right: 2px;
+}
+.crux-DynaTabs .crux-TabBarItem .flapLeft
+{
+	padding:1px !important;
+	font-family:monospace;
+	font-size:9px;
+	width:9px !important;
+	height:29px;
+	background-image: url(../img/dyna-tabs-tab-left.gif);
+	background-repeat: no-repeat;
+	background-position: top left;
+	margin-right: 2px;
+}
+.crux-DynaTabs .crux-TabBarItem .flapRight
+{
+	padding:1px !important;
+	font-family:monospace;
+	font-size:9px;
+	width:9px !important;
+	height:29px;
+	background-image: url(../img/dyna-tabs-tab-right.gif);
+	background-repeat: no-repeat;
+	background-position: top right;
+}
+.crux-DynaTabs .crux-TabBarItem .flapCenter
+{
+	background-image: url(../img/dyna-tabs-tab-bg.gif);
+	background-position: top;
+	background-repeat: repeat-x;
+}
+.crux-DynaTabs .crux-TabBarItem .flapLabel
+{
+	cursor:default;
+	font-family:arial;
+	font-weight:bold;
+	font-size:11px;
+	color:#FFFFFF;
+	padding-top:4px;
+	padding-bottom:4px;
+	padding-left:5px;
+	padding-right:5px;
+	white-space:nowrap;
+}
+.crux-DynaTabs .crux-TabBarItem-selected .flapLeft
+{
+	background-image: url(../img/dyna-tabs-tab-left-selected.gif);
+}
+.crux-DynaTabs .crux-TabBarItem-selected .flapRight
+{
+	background-image: url(../img/dyna-tabs-tab-right-selected.gif);
+}
+.crux-DynaTabs .crux-TabBarItem-selected .flapCenter
+{
+	background-image: url(../img/dyna-tabs-tab-bg-selected.gif);
+}
+.crux-DynaTabs .crux-TabBarItem-selected .flapLabel
+{
+	color:#7b8287;
+}
+.crux-DynaTabs .crux-TabBarItem .flapCloseButton
+{
+	background-image: url(../img/dyna-tabs-close.png);
+	background-position: middle right;
+	background-repeat: no-repeat;
+	width: 14px;
+	height: 14px;
+	margin-top: 4px;
+	cursor: pointer;
+	margin-right: 0px;
+	font-family: monospace;
+	font-size: 0px;
+}
+.crux-DynaTabs .flapCloseButton-disable
+{
+	cursor: wait;
+}
+.crux-DynaTabs IFRAME
+{
+	border: solid 0px !important;
+	height: 100.0% !important;
+}
+
+/******************************************************************************
+	Transfer List
+*******************************************************************************/
+.crux-TransferList .leftList, .crux-TransferList .rightList
+{
+	width: 180px;
+	border: solid 1px #93989C;
+	font-size:12px;
+	font-family: sans-serif,Arial,Helvetica;
+}
+.crux-TransferList .moveToRight, .crux-TransferList .moveToLeft, .crux-TransferList .moveAllToRight, .crux-TransferList .moveAllToLeft
+{
+	color: #FFFFFF;
+	width: 50px;
+	height: 20px;
+	border:	solid 1px #0157A9;
+	font-size:12px;
+	font-weight: bold !important;
+	-webkit-box-shadow:0px 0px 2px 2px rgba(180,180,180,0.3);
+	-moz-box-shadow:0px 0px 2px 2px rgba(180,180,180,0.3);
+	box-shadow:0px 0px 2px 2px rgba(180,180,180,0.3);
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #6b9bc2;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#6b9bc2),color-stop(0.99,#3f668a));
+	background-image: -moz-linear-gradient(top, #6b9bc2,#3f668a);
+	background-image: -o-linear-gradient(top, #6b9bc2,#3f668a);
+}
+.crux-TransferList .moveToRight:active, .crux-TransferList .moveToLeft:active, .crux-TransferList .moveAllToRight:active, .crux-TransferList .moveAllToLeft:active
+{
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#3f668a),color-stop(0.99,#3f668a));
+	background-image: -moz-linear-gradient(top, #3f668a,#3f668a);
+	background-image: -o-linear-gradient(top, #3f668a,#3f668a);
+	background-color: #3f668a !important;
+}
+.crux-TransferList .gwt-Label
+{
+	color: #5385AE;
+	font-weight: bold;
+}
+
+
+/******************************************************************************
+	Decorated Button
+*******************************************************************************/
+.crux-DecoratedButton
+{
+	height: 26px;
+	border-spacing: 0px;
+	border-collapse: collapse;
+	border: solid 0px;
+	padding: 0px;
+}
+.crux-DecoratedButton TD
+{
+	padding: 0px;
+	margin:0px;
+	border: solid 0px;
+}
+.crux-DecoratedButton .leftCell
+{
+	width:7px;
+	font-size: 7px;
+	font-family: monospace;
+	padding: 0px !important;
+	margin: 0px !important;
+	background: url(../img/decorated-btn-left.png);
+	background-repeat: no-repeat;
+	background-position: top left;
+}
+.crux-DecoratedButton .centerCell
+{
+	color:#FFFFFF;
+	font-family:Arial,Helvetica;
+	font-weight: bold;
+	font-size:11px;
+	background: url(../img/decorated-btn-bg.png) repeat-x top center;
+	cursor: default;
+}
+.crux-DecoratedButton .rightCell
+{
+	width:7px;
+	font-size: 7px;
+	font-family: monospace;
+	padding: 0px !important;
+	margin: 0px !important;
+	background: url(../img/decorated-btn-right.png);
+	background-repeat: no-repeat;
+	background-position: top right;
+}
+.crux-DecoratedButton-down .centerCell
+{
+	padding-top: 2px;
+}
+.crux-DecoratedButton-disabled .leftCell
+{
+	background-image: url(../img/decorated-btn-disabled-left.png);
+}
+.crux-DecoratedButton-disabled .centerCell
+{
+	background-image: url(../img/decorated-btn-disabled-bg.png);
+	text-shadow: 1px 1px 1px #E2E2E2;
+	color: #808080;
+}
+.crux-DecoratedButton-disabled .rightCell
+{
+	background-image: url(../img/decorated-btn-disabled-right.png);
+}
+
+/******************************************************************************
+	Title Panel
+*******************************************************************************/
+.crux-TitlePanel
+{
+	background: url(../img/smooth-footer.gif) repeat-x bottom;
+}
+.crux-TitlePanel .topLeftCell
+{
+	height:30px;
+	width:8px;
+	font-size: 8px;
+	font-family: monospace;
+	background: url(../img/collapse-panel-nw.gif) no-repeat top left;
+}
+.crux-TitlePanel .topCenterCell
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #4f7fa7;
+	text-align: left;
+	font-family: Arial, Helvetica;
+	background: url(../img/collapse-panel-n.gif) repeat-x top center;
+}
+.crux-TitlePanel .topRightCell
+{
+	width:8px;
+	font-size: 5px;
+	font-family: monospace;
+	background: url(../img/collapse-panel-ne.gif) no-repeat top right;
+	padding-right: 5px;
+}
+.crux-TitlePanel .middleLeftCell
+{
+	width: 3px;
+	font-size: 3px;
+	font-family: monospace;
+	background: url(../img/collapse-panel-w.gif) repeat-y left;
+}
+.crux-TitlePanel .middleCenterCell
+{
+	padding: 2px;
+	background: transparent;
+}
+.crux-TitlePanel .middleRightCell
+{
+	width: 3px;
+	font-size: 3px;
+	font-family: monospace;
+	background: url(../img/collapse-panel-e.gif) repeat-y right;
+}
+.crux-TitlePanel .bottomLeftCell
+{
+	font-size: 0px;
+	height:6px;
+	background: url(../img/collapse-panel-sw.gif) no-repeat bottom left;
+}
+.crux-TitlePanel .bottomCenterCell
+{
+	font-size: 0px;
+	background: url(../img/collapse-panel-s.gif) repeat-x bottom center;
+}
+.crux-TitlePanel .bottomRightCell
+{
+	font-size: 0px;
+	background: url(../img/collapse-panel-se.gif) no-repeat bottom right;
+}
+
+/******************************************************************************
+	Collapse Panel
+*******************************************************************************/
+.crux-CollapsePanel
+{
+	background: url(../img/smooth-footer.gif) repeat-x bottom;
+}
+.crux-CollapsePanel .topLeftCell
+{
+	height:30px;
+	width:8px;
+	font-size: 8px;
+	font-family: monospace;
+	background: url(../img/collapse-panel-nw.gif) no-repeat top left;
+}
+.crux-CollapsePanel .topCenterCell
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #4f7fa7;
+	text-align: left;
+	font-family: Arial, Helvetica;
+	background: url(../img/collapse-panel-n.gif) repeat-x top center;
+}
+.crux-CollapsePanel .topRightCell
+{
+	width:28px;
+	font-size: 5px;
+	font-family: monospace;
+	background: url(../img/collapse-panel-ne.gif) no-repeat top right;
+	padding-right: 5px;
+}
+.crux-CollapsePanel .middleLeftCell
+{
+	width: 3px;
+	font-size: 3px;
+	font-family: monospace;
+	background: url(../img/collapse-panel-w.gif) repeat-y left;
+}
+.crux-CollapsePanel .middleCenterCell
+{
+	padding: 2px;
+	background: transparent;
+}
+.crux-CollapsePanel .middleRightCell
+{
+	width: 3px;
+	font-size: 3px;
+	font-family: monospace;
+	background: url(../img/collapse-panel-e.gif) repeat-y right;
+}
+.crux-CollapsePanel .bottomLeftCell
+{
+	font-size: 0px;
+	height:6px;
+	background: url(../img/collapse-panel-sw.gif) no-repeat bottom left;
+}
+.crux-CollapsePanel .bottomCenterCell
+{
+	font-size: 0px;
+	background: url(../img/collapse-panel-s.gif) repeat-x bottom center;
+}
+.crux-CollapsePanel .bottomRightCell
+{
+	font-size: 0px;
+	background: url(../img/collapse-panel-se.gif) no-repeat bottom right;
+}
+
+.crux-CollapsePanel .collapseExpandButton
+{
+	width: 19px;
+	height: 19px;
+	border: solid 0px;
+	cursor: pointer;
+}
+.crux-CollapsePanel .collapseExpandButton-collapsed
+{
+	background: url(../img/collapse-panel-expand.gif) no-repeat;
+}
+.crux-CollapsePanel .collapseExpandButton-expanded
+{
+	background: url(../img/collapse-panel-collapse.gif) no-repeat;
+}
+
+
+/******************************************************************************
+	Bold Gray Decorated Panel
+*******************************************************************************/
+.crux-DecoratedPanel
+{
+	background: url(../img/smooth-footer.gif) repeat-x bottom;
+}
+.crux-DecoratedPanel .topLeftCell
+{
+	font-size: 6px;
+	font-family: monospace;
+	height:7px;
+	width:6px;
+	background: url(../img/decorated-panel-nw.gif) no-repeat top left;
+}
+.crux-DecoratedPanel .topCenterCell
+{
+	font-size: 0px;
+	background: url(../img/decorated-panel-n.gif) repeat-x top center;
+}
+.crux-DecoratedPanel .topCenterRightCell
+{
+	width: 1px;
+	font-size: 0px;
+	background: url(../img/decorated-panel-w.gif) repeat-x top center;
+}
+.crux-DecoratedPanel .topRightCell
+{
+	font-size: 6px;
+	font-family: monospace;
+	width:6px;
+	background: url(../img/decorated-panel-ne.gif) no-repeat top right;
+}
+.crux-DecoratedPanel .middleLeftCell
+{
+	width:6px;
+	font-size: 6px;
+	font-family: monospace;
+	background: url(../img/decorated-panel-w.gif) repeat-y left;
+}
+.crux-DecoratedPanel .middleCenterCell
+{
+	background: transparent;
+	background: url(../img/smooth-footer.gif) repeat-x bottom;
+}
+.crux-DecoratedPanel .middleRightCell
+{
+	width:6px;
+	font-size: 6px;
+	font-family: monospace;
+	background: url(../img/decorated-panel-e.gif) repeat-y center right;
+}
+.crux-DecoratedPanel .bottomLeftCell
+{
+	height:6px;
+	font-size: 6px;
+	font-family: monospace;
+	padding: 0px;
+	background: url(../img/decorated-panel-sw.gif) no-repeat bottom left;
+}
+.crux-DecoratedPanel .bottomCenterCell
+{
+	font-size: 6px;
+	font-family: monospace;
+	padding: 0px;
+	background: url(../img/decorated-panel-s.gif) repeat-x bottom center;
+}
+.crux-DecoratedPanel .bottomRightCell
+{
+	font-size: 6px;
+	font-family: monospace;
+	padding: 0px;
+	background: url(../img/decorated-panel-se.gif) no-repeat bottom right;
+}
+
+/******************************************************************************
+	Grid
+*******************************************************************************/
+.crux-Grid
+{
+}
+.crux-Grid .row
+{
+	background-color:#FFFFFF;
+	height: 28px;
+}
+.crux-Grid .row .cellWrapper
+{
+	vertical-align:middle;
+	background-color:#FFFFFF;
+	border-bottom: solid 1px #F0F0F0;
+	border-right: solid 1px #F0F0F0;
+}
+.crux-Grid .row .cell
+{
+	color:#4E4E4E;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-size:11px;
+	font-weight:normal;
+	vertical-align:middle;
+	background-color:#FFFFFF;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	overflow-y: visible;
+	overflow-x: hidden;
+	width: 50px;
+}
+.crux-Grid .row .rowSelector
+{
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+.crux-Grid .row-selected .cellWrapper, .crux-Grid .row-selected .cell
+{
+	background-color: #F5F5F5;
+}
+.crux-Grid .row-disabled .cell
+{
+	opacity:0.4;
+	filter:alpha(opacity=40);
+}
+.crux-Grid .row-highlighted .cellWrapper, .crux-Grid .row-highlighted .cell
+{
+	background-color: #FFFFE1;
+}
+.crux-Grid .columnHeadersRow
+{
+	background-color: #DEDEDE;
+}
+.crux-Grid .columnHeadersRow .cellWrapper
+{
+	background: url(../img/grid-header.gif) repeat-x top;
+	border-bottom: solid 1px #C9C9C9;
+	border-right: solid 1px #D7D7D7;
+	height: 28px;
+	text-align: center;
+	background-color: #DEDEDE;
+}
+.crux-Grid .columnHeadersRow .cellWrapper-rowSelectionColumn
+{
+	width: 25px;
+}
+.crux-Grid .columnHeader
+{
+	padding: 0px;
+	text-align: center;
+	display: inline-block;
+}
+.crux-Grid .columnHeader .label
+{
+	color:#707585;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-size:11px;
+	font-weight:bold;
+	padding-left: 3px;
+	text-align:center;
+	text-shadow: #F5F5F5 1px 1px 0;
+}
+.crux-Grid .columnSorter
+{
+	cursor: pointer;
+	text-align: center;
+	width: auto;
+	display: inline;
+}
+.crux-Grid .columnSorter-desc .arrow
+{
+	background-image: url(../img/grid-sorting-arrow-down.gif);
+	background-repeat: no-repeat;
+	background-position: left;
+	width: 8px;
+	height: 5px;
+	font-size: 4px;
+	font-family: monospace;
+	margin-left: 5px;
+	margin-top: 5px;
+	margin-right: 2px;
+}
+.crux-Grid .columnSorter-asc .arrow
+{
+	background-image: url(../img/grid-sorting-arrow-up.gif);
+	background-repeat: no-repeat;
+	background-position: left;
+	width: 8px;
+	height: 5px;
+	font-size: 4px;
+	font-family: monospace;
+	margin-left: 5px;
+	margin-top: 5px;
+	margin-right: 2px;
+}
+.crux-Grid .columnSorter-asc .label
+{
+	text-decoration: underline;
+}
+.crux-Grid .columnSorter-desc .label
+{
+	text-decoration: underline;
+}
+
+/******************************************************************************
+	Sequential Pager
+*******************************************************************************/
+.crux-SequentialPager
+{
+	height: 12px;
+}
+.crux-SequentialPager .previousButton
+{
+	width: 9px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-previous.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+	cursor: pointer;
+	margin-left: 5px;
+}
+.crux-SequentialPager .nextButton
+{
+	width: 9px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-next.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+	cursor: pointer;
+	margin-right: 5px;
+}
+.crux-SequentialPager .currentPageLabel
+{
+	color:#2077A9;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-size:11px;
+	font-weight: bold;
+	text-align: center;
+	width: 30px;
+	height: 13px;
+}
+.crux-SequentialPager .previousButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-SequentialPager .nextButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-RandomPager .previousButton
+{
+	width: 9px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-previous.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+	cursor: pointer;
+	margin-left: 5px;
+}
+.crux-RandomPager .nextButton
+{
+	width: 9px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-next.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+	cursor: pointer;
+	margin-right: 5px;
+}
+.crux-RandomPager .previousButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-RandomPager .nextButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-RandomPager .firstButton
+{
+	width: 16px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-first.gif);
+	background-repeat: no-repeat;
+	background-position: left center;
+	cursor: pointer;
+	margin-left: 5px;
+}
+.crux-RandomPager .lastButton
+{
+	width: 16px;
+	height: 10px;
+	font-size: 10px;
+	font-family: monospace;
+	background-image: url(../img/pager-last.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+	cursor: pointer;
+	margin-right: 5px;
+}
+.crux-RandomPager .firstButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-RandomPager .lastButton-disabled
+{
+	opacity:0.2;
+	filter:alpha(opacity=20);
+}
+.crux-RandomPager .gwt-ListBox
+{
+	color:#2077A9;
+	font-family: Arial Unicode MS, Arial, sans-serif;
+	font-size:10px;
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
+/******************************************************************************
+	Screen Blockers
+*******************************************************************************/
+.crux-DefaultScreenBlocker
+{
+	background-color: #FFFFFF;
+	opacity: .01;
+	filter:alpha(opacity=1);
+	cursor: wait;
+}
+.crux-MessageBoxScreenBlocker, .crux-ProgressDialogScreenBlocker, .crux-PopupScreenBlocker, .crux-ConfirmScreenBlocker
+{
+	background-color: #BCC7D2;
+	filter:alpha(opacity=62);
+	-moz-opacity: 0.62;
+	opacity: .62;
+}
+
+
+/*
+###############################################################################
+	CSS3 Styles
+###############################################################################
+*/
+
+/******************************************************************************
+	Decorated Button
+*******************************************************************************/
+.crux-DecoratedButtonCSS3
+{
+	color:#FFFFFF;
+	font-family:Arial,Helvetica;
+	font-weight: bold;
+	font-size:11px;
+	text-decoration: none;
+	cursor: default;
+	border: solid 1px #40688b;
+	border-top: solid 1px #598ab2;
+	padding: 4px;
+	-webkit-box-shadow:0px 0px 2px 2px rgba(180,180,180,0.3);
+	-moz-box-shadow:0px 0px 2px 2px rgba(180,180,180,0.3);
+	box-shadow:0px 0px 2px 2px rgba(180,180,180,0.3);
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#6b9bc2),color-stop(0.99,#3f668a));
+	background-image: -moz-linear-gradient(top, #6b9bc2,#3f668a);
+	background-image: -o-linear-gradient(top, #6b9bc2,#3f668a);
+}
+.crux-DecoratedButtonCSS3:active
+{
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#3f668a),color-stop(0.99,#3f668a));
+	background-image: -moz-linear-gradient(top, #3f668a,#3f668a);
+	background-image: -o-linear-gradient(top, #3f668a,#3f668a);
+}
+.crux-DecoratedButtonCSS3-disabled, .crux-DecoratedButtonCSS3-disabled:active
+{
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#e0e0e0),color-stop(0.99,#c3c3c3));
+	background-image: -moz-linear-gradient(top, #e0e0e0,#c3c3c3);
+	background-image: -o-linear-gradient(top, #e0e0e0,#c3c3c3);
+	color: #787878;
+	text-shadow: #FFFFFF 1px 1px 0;
+	border: solid 1px #BBBBBB;
+}

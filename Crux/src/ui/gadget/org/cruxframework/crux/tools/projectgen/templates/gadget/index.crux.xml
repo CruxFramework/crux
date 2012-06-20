@@ -1,0 +1,48 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:gadget="http://www.cruxframework.org/crux/gadget"
+>
+	<head>
+		<title>My Page</title>
+	</head>
+
+	<body>
+		
+		<script type="text/javascript" src="${moduleSimpleName}/${moduleSimpleName}.nocache.js"></script>
+		
+		<c:screen useController="myController"/>
+		
+		<gadget:gadgetView id="gadgetView" view="noViews" width="100%">
+			<br/>
+			<center>
+			<crux:decoratedPanel id="border">
+				<crux:widget>
+					<gwt:HTMLPanel id="tablePanel">
+						<table cellspacing="10" width="300">
+							<tr>
+								<td width="200">
+									<gwt:textBox id="nameTextBox" width="100%"/>
+								</td>
+								<td>
+									<crux:decoratedButton id="helloButton" onClick="myController.sayHello" text="Say Hello!" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<gwt:label id="greetingLabel" text="Type your name and press the button..."/>
+								</td>	
+							</tr>
+						</table>
+					</gwt:HTMLPanel>
+				</crux:widget>
+			</crux:decoratedPanel>
+			
+			</center>
+		</gadget:gadgetView>
+	</body>
+
+</html>
+
