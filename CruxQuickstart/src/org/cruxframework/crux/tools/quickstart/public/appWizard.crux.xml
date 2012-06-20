@@ -1,0 +1,44 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:q="http://www.cruxframework.org/templates/quickstart" 
+>
+<q:quickStartPage>
+	<q:screenDeclaration>
+		<c:screen useController="quickStartController" title="${quickMsg.appTitle}" onLoad="quickStartController.onLoad"/>
+	</q:screenDeclaration>
+	<q:body>
+		<gwt:dockPanel id="borderPanel" styleName="BorderPanel CommonPanel">
+			<crux:wizard id="quickstartWizard" width="100%"  height="100%" onFinish="quickStartController.finish" onCancel="quickStartController.back">
+				<crux:steps>
+					<crux:widget id="welcomeStep" label="${quickMsg.welcomeQuickstartLabel}" >
+						<gwt:dockPanel id="welcome">
+							<gwt:label id="welcomeLabel" text="${quickMsg.welcomeQuickstartMsg}" styleName="TitleLabel"/>
+						</gwt:dockPanel>
+					</crux:widget>
+					<crux:widget id="ideInfoStep" label="${quickMsg.ideInfoLabel}" onLeave="quickStartController.onIdeInfoLeave">
+						<q:ideInfo />
+					</crux:widget>
+					<crux:widget id="projectInfoStep" label="${quickMsg.projectInfo}" >
+						<q:projectInfo/>
+					</crux:widget>
+					<crux:widget id="gagdetInfoStep" label="${quickMsg.gadgetInfo}" enabled="false" >
+						<q:gadgetInfo/>
+					</crux:widget>
+					<crux:widget id="summaryStep" label="${quickMsg.summaryQuickstartLabel}" onEnter="quickStartController.onSummaryEnter"
+								 onLeave="quickStartController.onSummaryLeave">
+						<gwt:dockPanel id="summary">
+							<gwt:label id="summaryLabel" text="${quickMsg.summaryQuickstartMsg}" styleName="TitleLabel"/>
+						</gwt:dockPanel>
+					</crux:widget>
+				</crux:steps>								
+				<crux:controlBar/>
+				<crux:navigationBar allowSelectStep="false"/>
+			</crux:wizard>
+		</gwt:dockPanel>
+	</q:body>
+</q:quickStartPage>
+</html>
+

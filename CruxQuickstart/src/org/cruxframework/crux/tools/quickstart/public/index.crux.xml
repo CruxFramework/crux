@@ -1,0 +1,32 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:q="http://www.cruxframework.org/templates/quickstart" 
+>
+<q:quickStartPage>
+	<q:screenDeclaration>
+		<c:screen useController="overviewController" onLoad="overviewController.onLoad" title="${quickMsg.appTitle}"/>
+	</q:screenDeclaration>
+	<q:body>		
+		<gwt:dockPanel id="borderPanel" styleName="BorderPanel WelcomePanel">
+			<gwt:cell direction="north" height="140" horizontalAlignment="right" verticalAlignment="top">
+				<gwt:label id="versionLabel" text="" styleName="VersionLabel"/>
+			</gwt:cell>
+			<gwt:cell direction="west" width="240">
+				<gwt:label id="dummy" text=" "/>
+			</gwt:cell>
+			<gwt:cell direction="east">
+				<gwt:verticalPanel id="vPanel" spacing="10">
+					<crux:decoratedButton id="generateApp" text="${quickMsg.generateApp}" onClick="overviewController.generateApp" width="250" />
+					<crux:decoratedButton id="viewExamples" text="${quickMsg.viewExamples}" onClick="overviewController.viewExamples" width="250" />
+					<crux:decoratedButton id="viewJavadoc" text="${quickMsg.viewJavadoc}" onClick="overviewController.viewJavadoc" width="250" />
+					<crux:decoratedButton id="viewUserManual" text="${quickMsg.viewUserManual}" onClick="overviewController.viewUserManual" width="250" />
+				</gwt:verticalPanel>				
+			</gwt:cell>
+		</gwt:dockPanel>
+	</q:body>
+</q:quickStartPage>
+</html>
+

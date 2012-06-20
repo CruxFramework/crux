@@ -1,0 +1,13 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:c="http://www.cruxframework.org/crux"  
+			xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+            xmlns:t="http://www.cruxframework.org/templates" library="quickstart"
+            useController="contextHelpController">
+
+	<gwt:horizontalPanel id="#{id}HelpHPanel">
+		<t:section name="widget" />
+		<gwt:image url="style/img/help-icon.gif" id="#{id}HelpIcon" onClick="contextHelpController.showHelpText" styleName="HelpIcon"/>
+		<gwt:hidden id="#{id}HelpTextHidden" value="#{helpText}"/>
+	</gwt:horizontalPanel>
+
+</t:template>

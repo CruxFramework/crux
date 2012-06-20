@@ -1,0 +1,183 @@
+<project default="dist" name="CruxQuickstart" basedir="../">
+
+	<property name="src.dir" value="src" />
+	<property name="dist.dir" value="dist" />
+	<property name="war.name" value="quickstart" />
+	<property name="xsd.dir" value="xsd" />
+	<property name="build.lib.dir" value="build/lib" />
+	
+	<property name="temp.dir" value="${dist.dir}/temp" />
+	<property name="web.root" value="war" />
+	<property name="web.inf.dir" value="${web.root}/WEB-INF" />
+	<property name="web.lib.dir" value="${web.inf.dir}/lib" />
+	<property name="target.classes.dir" value="${web.inf.dir}/classes" />
+
+	<property name="crux.build.dir" value="../Crux/build" />
+	<property name="crux.apps.dir" value="${crux.build.dir}/resource/samples" />
+	
+	<!--get src="http:/repoGesse/crux-dev-deps.jar" dest="${lib.dir}/crux-dev-deps.jar" verbose="true" usetimestamp="yes"/>
+	<get src="http:/repoGesse/gwt-servlet.jar" dest="${dependencies.dir}/gwt-servlet.jar" verbose="true" usetimestamp="yes"/>
+	<get src="http:/repoGesse/gwt-servlet-deps.jar" dest="${dependencies.dir}/gwt-servlet-deps.jar" verbose="true" usetimestamp="yes"/>
+	<get src="http:/repoGesse/crux-runtime-deps.jar" dest="${dependencies.dir}/crux-runtime-deps.jar" verbose="true" usetimestamp="yes"/-->
+
+	<path id="build.classpath">
+		<fileset dir="${web.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${build.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<taskdef resource="org/cruxframework/crux/tools/crux-module-tools.xml">
+		<classpath>
+			<path refid="build.classpath" />
+		</classpath>
+	</taskdef>
+
+	<!-- 
+	========================================================================================================
+		Generates Schemas
+	========================================================================================================
+	-->
+	<target name="generate-schemas">
+		<generateSchemas outputDir="${xsd.dir}">
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement location="${src.dir}" />
+				<fileset dir="${target.classes.dir}">
+					<exclude name="**/*.template.xml"/>
+				</fileset>
+				<fileset dir="${web.root}">
+					<exclude name="**/*.template.xml"/>
+				</fileset>
+			</classpath>
+		</generateSchemas>
+	</target>
+
+	<target name="generate-service-map">
+		<serviceMapper projectDir="${web.root}">
+			<!--jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" /-->
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${target.classes.dir}" />
+			</classpath>
+		</serviceMapper>
+	</target>
+	
+	<!-- 
+	========================================================================================================
+		Compile
+	========================================================================================================
+	-->
+	<target name="fast-compile-scripts">
+		<cruxmodulecompiler srcdir="${src.dir}" outputDir="${web.root}" 
+			keepPagesGeneratedFiles="true" pagesOutputDir="${web.root}" outputCharset="UTF-8">
+			<classpath>
+				<path refid="build.classpath" />
+				<fileset dir="${target.classes.dir}">
+					<exclude name="**/*.template.xml"/>
+				</fileset>
+				<fileset dir="${web.root}">
+					<exclude name="**/*.template.xml"/>
+				</fileset>
+			</classpath>
+
+			<jvmarg value="-Xmx768M" />
+			<jvmarg value="-Xms256M" />
+			
+			<arg value="-draftCompile" />
+			<arg value="-style" />
+			<arg value="Detailed" />
+			<arg value="-gen" />
+			<arg value="generated" />
+		</cruxmodulecompiler>
+	</target>
+	
+	<!-- 
+	========================================================================================================
+		Dist
+	========================================================================================================
+	-->
+	<target name="dist" >
+		<delete dir="${dist.dir}" failonerror="no" includeemptydirs="true" />
+		<mkdir dir="${dist.dir}/" />
+
+		<!-- compiling -->
+		<delete dir="${target.classes.dir}" failonerror="no" includeemptydirs="true" />
+		<mkdir dir="${target.classes.dir}" />
+		<javac destdir="${target.classes.dir}" target="1.5" source="1.5" debug="true" excludes="**/public/*" 
+			encoding="UTF-8">
+			<src>
+				<pathelement location="${src.dir}" />
+			</src>
+			<classpath refid="build.classpath" />
+		</javac>
+
+		<!-- building war-->
+		<delete dir="${temp.dir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
+		<mkdir dir="${temp.dir}" />
+
+		<copy toDir="${temp.dir}/webroot" >
+			<fileset dir="${web.root}">
+				<exclude name="**/*.jar" />
+			</fileset>
+		</copy>
+		
+		<copy toDir="${temp.dir}/webroot/WEB-INF/classes">
+			<fileset dir="${crux.build.dir}">
+				<include name="version.properties" />
+			</fileset>
+		</copy>
+
+		<cruxmodulecompiler srcdir="${src.dir}" outputDir="${temp.dir}/webroot" webDir="${temp.dir}/webroot" 
+            keepPagesGeneratedFiles="true" pagesOutputDir="${temp.dir}/webroot" indentPages="false" outputCharset="UTF-8">
+			<classpath>
+				<path refid="build.classpath" />
+				<fileset dir="${target.classes.dir}">
+					<exclude name="**/*.template.xml"/>
+				</fileset>
+				<fileset dir="${web.root}">
+					<exclude name="**/*.template.xml"/>
+				</fileset>
+			</classpath>
+			<jvmarg value="-Xmx768M" />
+			<jvmarg value="-Xms256M" />
+			<!--jvmarg value="-Xdebug" />
+			<jvmarg value="-Xrunjdwp:transport=dt_socket,address=3331,server=y,suspend=y" /-->
+
+			<arg value="-localWorkers" />
+			<arg value="2" />
+			
+		</cruxmodulecompiler>
+		<delete>
+			<fileset dir="${temp.dir}/webroot">
+				<include name="**/*.crux.xml"/>
+				<include name="**/*.template.xml"/>
+			</fileset>
+		</delete>
+		
+		<blockremove beginmarker="&lt;!--antReplacementBlockBegin--&gt;" endmarker="&lt;!--antReplacementBlockEnd--&gt;" file="${temp.dir}/webroot/WEB-INF/web.xml" />
+
+		<move todir="${temp.dir}/${war.name}.war">
+			<fileset dir="${temp.dir}/webroot" />
+		</move>
+		
+		<serviceMapper projectDir="${temp.dir}/${war.name}.war">
+			<classpath>
+				<path refid="build.classpath" />
+				<pathelement path="${target.classes.dir}" />
+			</classpath>
+		</serviceMapper>
+		
+		<move file="${temp.dir}/${war.name}.war" tofile="${dist.dir}/${war.name}.war" />
+		<delete dir="${temp.dir}" failonerror="no" includeemptydirs="yes" />
+		
+		<!--copy todir="${crux.apps.dir}">
+			<fileset dir="${dist.dir}">
+				<include name="**/*"/>
+			</fileset>
+		</copy-->
+	</target>
+</project>

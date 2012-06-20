@@ -1,0 +1,383 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:c="http://www.cruxframework.org/crux"  
+			xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+			xmlns:w="http://www.cruxframework.org/crux/widgets"
+            xmlns:q="http://www.cruxframework.org/templates/quickstart"
+            xmlns:t="http://www.cruxframework.org/templates" library="quickstart"
+            useController="quickStartController"> 
+
+	<gwt:dockPanel id="gadgetInfoCenterPanel" height="100%">
+		<gwt:cell verticalAlignment="top" direction="center" horizontalAlignment="center">
+			<gwt:scrollPanel id="gadgetScroll" width="100%" height="270">
+				<gwt:verticalPanel id="gadgetInfoVPanel" height="100%" width="100%" spacing="15">
+					<gwt:cell height="20">
+						<gwt:label id="gadgetInfoTitleLabel" styleName="TitleLabel" text="${quickMsg.gadgetInfoTitle}"/>
+					</gwt:cell>
+					<w:titlePanel id="authorTitlePanel" width="95%">
+						<w:title><w:text>${quickMsg.gadgetAuthorInfo}</w:text></w:title>
+						<w:body>
+							<w:widget>
+								<gwt:flexTable id="gadgetAuthorInfo" cellSpacing="5">
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="authorLabel" styleName="FormLabel" text="${quickMsg.author}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.authorHelpText}" id="authorContext">
+											     	<q:widget>
+											     		<gwt:textBox id="author" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="authorAboutMeLabel" styleName="FormLabel" text="${quickMsg.authorAboutMe}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.authorHelpText}" id="authorAboutMeContext">
+											     	<q:widget>
+											     		<gwt:textBox id="authorAboutMe" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="authorAffiliationLabel" styleName="FormLabel" text="${quickMsg.authorAffiliation}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.authorAffiliationHelpText}" id="authorAffiliationContext">
+											     	<q:widget>
+											     		<gwt:textBox id="authorAffiliation" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="authorEmailLabel" styleName="FormLabel" text="${quickMsg.authorEmail}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.authorEmailHelpText}" id="authorEmailContext">
+											     	<q:widget>
+											     		<gwt:textBox id="authorEmail" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="authorLinkLabel" styleName="FormLabel" text="${quickMsg.authorLink}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.authorLinkHelpText}" id="authorLinkContext">
+											     	<q:widget>
+											     		<gwt:textBox id="authorLink" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="authorLocationLabel" styleName="FormLabel" text="${quickMsg.authorLocation}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.authorLocationHelpText}" id="authorLocationContext">
+											     	<q:widget>
+											     		<gwt:textBox id="authorLocation" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="authorPhotoLabel" styleName="FormLabel" text="${quickMsg.authorPhoto}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.authorPhotoHelpText}" id="authorPhotoContext">
+											     	<q:widget>
+											     		<gwt:textBox id="authorPhoto" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="authorQuoteLabel" styleName="FormLabel" text="${quickMsg.authorQuote}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.authorQuoteHelpText}" id="authorQuoteContext">
+											     	<q:widget>
+											     		<gwt:textBox id="authorQuote" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+								</gwt:flexTable>							
+							</w:widget>
+						</w:body>
+					</w:titlePanel>
+					<w:titlePanel id="GadgetTitlePanel" width="95%">
+						<w:title><w:text>${quickMsg.gadgetInfo}</w:text></w:title>
+						<w:body>
+							<w:widget>
+								<gwt:flexTable id="gadgetInfo" cellSpacing="5">
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="useLongManifestNameLabel" styleName="FormLabel" text="${quickMsg.useLongManifestName}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.useLongManifestNameHelpText}" id="useLongManifestNameContext">
+											     	<q:widget>
+											     		<gwt:checkBox id="useLongManifestName" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="descriptionLabel" styleName="FormLabel" text="${quickMsg.description}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.descriptionHelpText}" id="descriptionContext">
+											     	<q:widget>
+											     		<gwt:textBox id="description" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="directoryTitleLabel" styleName="FormLabel" text="${quickMsg.directoryTitle}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.directoryTitleHelpText}" id="directoryTitleContext">
+											     	<q:widget>
+											     		<gwt:textBox id="directoryTitle" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="heightLabel" styleName="FormLabel" text="${quickMsg.height}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.heightHelpText}" id="heightContext">
+											     	<q:widget>
+											     		<gwt:integerBox id="height" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="widthLabel" styleName="FormLabel" text="${quickMsg.width}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.widthHelpText}" id="widthContext">
+											     	<q:widget>
+											     		<gwt:integerBox id="width" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="screenshotLabel" styleName="FormLabel" text="${quickMsg.screenshot}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.screenshotHelpText}" id="screenshotContext">
+											     	<q:widget>
+											     		<gwt:textBox id="screenshot" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="thumbnailLabel" styleName="FormLabel" text="${quickMsg.thumbnail}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.thumbnailHelpText}" id="thumbnailContext">
+											     	<q:widget>
+											     		<gwt:textBox id="thumbnail" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="titleLabel" styleName="FormLabel" text="${quickMsg.title}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.titleHelpText}" id="titleContext">
+											     	<q:widget>
+											     		<gwt:textBox id="title" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="titleUrlLabel" styleName="FormLabel" text="${quickMsg.titleUrl}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.titleUrlHelpText}" id="titleUrlContext">
+											     	<q:widget>
+											     		<gwt:textBox id="titleUrl" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+								</gwt:flexTable>
+							</w:widget>
+						</w:body>
+					</w:titlePanel>	
+					<w:titlePanel id="FeaturesTitlePanel" width="95%">
+						<w:title><w:text>${quickMsg.gadgetFeatures}</w:text></w:title>
+						<w:body>
+							<w:widget>
+								<gwt:flexTable id="gadgetFeaturesInfo">
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="scrollingLabel" styleName="FormLabel" text="${quickMsg.scrolling}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.scrollingHelpText}" id="scrollingContext">
+											     	<q:widget>
+											     		<gwt:checkBox id="scrolling" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="singletonLabel" styleName="FormLabel" text="${quickMsg.singleton}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.singletonHelpText}" id="singletonContext">
+											     	<q:widget>
+											     		<gwt:checkBox id="singleton" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="scalingLabel" styleName="FormLabel" text="${quickMsg.scaling}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.scalingHelpText}" id="scalingContext">
+											     	<q:widget>
+											     		<gwt:checkBox id="scaling" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="userPreferencesLabel" styleName="FormLabel" text="${quickMsg.userPreferences}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.userPreferencesHelpText}" id="userPreferencesContext">
+											     	<q:widget>
+											     		<gwt:textBox id="userPreferences" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="localesLabel" styleName="FormLabel" text="${quickMsg.locales}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.localesHelpText}" id="localesContext">
+											     	<q:widget>
+											     		<gwt:textBox id="locales" width="350"/>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+									<gwt:row>
+										<gwt:cell width="150">
+											<gwt:widget><gwt:label id="featuresLabel" styleName="FormLabel" text="${quickMsg.features}"/></gwt:widget>
+										</gwt:cell>
+										<gwt:cell>
+											<gwt:widget>
+												<q:helpContext helpText="${quickMsg.featuresHelpText}" id="featuresContext">
+											     	<q:widget>
+											     		<w:transferList id="features" width="350" leftListLabel="${quickMsg.availableFeatures}" 
+											     												  rightListLabel="${quickMsg.usedFeatures}"
+											     												  rightToLeftButtonText="&lt;&lt;"
+											     												  leftToRightButtonText="&gt;&gt;"
+											     												  visibleItemCount="5" onMoveItems="quickStartController.onFeaturesChange">
+											     			<w:item location="left" label="ads" value="ads"/>
+											     			<w:item location="left" label="dynamic height" value="dynamic-height"/>
+											     			<w:item location="left" label="google analytics" value="com.google.gadgets.analytics"/>
+											     			<w:item location="left" label="locked domain" value="locked-domain"/>
+											     			<w:item location="left" label="osapi" value="osapi"/>
+											     			<w:item location="left" label="rpc" value="rpc"/>
+											     			<w:item location="left" label="set prefs" value="setprefs"/>
+											     			<w:item location="left" label="set title" value="settitle"/>
+											     			<w:item location="left" label="views" value="views"/>
+											     		</w:transferList>
+											     	</q:widget>
+											     </q:helpContext>
+											</gwt:widget>						
+										</gwt:cell>
+									</gwt:row>
+								</gwt:flexTable>
+							</w:widget>		
+						</w:body>
+					</w:titlePanel>	
+				</gwt:verticalPanel>
+			</gwt:scrollPanel>
+		</gwt:cell>
+	</gwt:dockPanel>
+</t:template>

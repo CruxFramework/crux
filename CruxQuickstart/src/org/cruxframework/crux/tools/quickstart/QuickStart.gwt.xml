@@ -1,0 +1,12 @@
+<module rename-to='quickstart'>
+	<inherits name='org.cruxframework.crux.module.Module'/>
+	<inherits name='org.cruxframework.crux.gwt.CruxGWTWidgets'/>
+	<inherits name='org.cruxframework.crux.widgets.CruxWidgets'/>
+	<inherits name='com.google.gwt.user.theme.standard.Standard'/>
+	<inherits name='org.cruxframework.crux.themes.widgets.smooth.Smooth'/>
+	<stylesheet src="style/css/quickstart.css"/>
+	<public path="public">
+		<exclude name="**/*.crux.xml" />
+		<exclude name="**/*.template.xml" />
+	</public>	
+</module>

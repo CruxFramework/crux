@@ -1,0 +1,15 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:c="http://www.cruxframework.org/crux"
+			xmlns:gwt="http://www.cruxframework.org/crux/gwt"  
+            xmlns:t="http://www.cruxframework.org/templates" library="quickstart"> 
+	<body>
+		<script type="text/javascript" src="../quickstart/quickstart.nocache.js"></script>
+		<c:splashScreen transactionDelay="100"/>
+		<t:section name="screenDeclaration" />
+		<gwt:dockPanel id="centeringPanel" width="100%" height="100%">
+			<gwt:cell horizontalAlignment="center" verticalAlignment="middle" direction="center">
+				<t:section name="body" />
+			</gwt:cell>
+		</gwt:dockPanel>	
+	</body>	
+</t:template>
