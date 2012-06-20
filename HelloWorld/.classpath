@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-runtime-deps.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet-deps.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/crux-runtime.jar"/>
+	<classpathentry kind="lib" path="build/lib/crux-widgets.jar"/>
+	<classpathentry kind="lib" path="build/lib/crux-dev.jar"/>
+	<classpathentry kind="lib" path="build/lib/crux-dev-deps.jar"/>
+	<classpathentry kind="lib" path="build/lib/gwt-dev.jar"/>
+	<classpathentry kind="lib" path="build/lib/gwt-user.jar"/>
+	<classpathentry kind="lib" path="build/lib/crux-themes.jar"/>
+	
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>
