@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<antlib>
-	<taskdef name="cruxmodulecontainercompiler" classname="br.com.sysmap.crux.tools.compile.CruxModuleContainerApplicationCompilerTask" />
-	<taskdef name="cruxmodulecompiler" classname="br.com.sysmap.crux.tools.compile.CruxModulesCompilerTask" />
-	<taskdef name="blockremove" classname="br.com.sysmap.crux.tools.compile.utils.BlockRemoveTask" />
-	<taskdef name="generateSchemas" classname="br.com.sysmap.crux.tools.schema.SchemaGeneratorModulesTask" />
-	<taskdef name="moduleExporter" classname="br.com.sysmap.crux.tools.export.ModuleExporterTask" />
-	<taskdef name="serviceMapper" classname="br.com.sysmap.crux.tools.servicemap.ServiceMapperTask" />
-</antlib>
