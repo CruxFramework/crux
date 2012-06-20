@@ -1,0 +1,39 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Confirm</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="confirmController"/>
+
+		<center>
+			<a:decoratedButton id="showConfirmButton" text="Ask me a Question!" onClick="confirmController.showConfirm"/>
+		</center>
+		
+		<s:info sourcesController="baseSourcesController">
+			<s:widgetInfo>
+				Confirms are useful to ask 'yes or no' questions to users. Unlike the native confirm-box 
+				provided by the browsers, Crux Confirms do not interrupt the user interface execution. Instead, 
+				Crux Confirms are designed to trigger events, more specifically, they 
+				fire an OkEvent or a CancelEvent, according to the user's decision. You can capture those
+				events by providing handlers for them and execute the desired logic.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				if you click the button, a confirm will be shown. We attach two handlers on it, one for 
+				a positive answer and other for a negative one. As result, we just show a message reflecting 
+				the option you choose. Note that we use arbitrary labels even in the buttons' captions. 
+			</s:exampleInfo>
+		</s:info>
+		
+	</body>
+</html>

@@ -1,0 +1,297 @@
+CODE
+{
+	margin-left: 5px;
+	margin-right: 5px;
+	font-weight: bold;
+}
+
+CENTER
+{
+	padding-top: 15px;
+}
+
+TEXTAREA
+{
+	margin-bottom: 10px;
+}
+.MainHeader
+{
+	background-image: url(../img/main-header-bg.gif);
+	background-repeat: repeat-x;
+}
+.MainLeftBorder
+{
+	background: url(../img/bg-top-left.gif) repeat-y top;
+}
+.MainRightBorder
+{
+	background: url(../img/bg-top-right.gif) repeat-y top;
+}
+.MainHeaderLink, .MainHeaderLink:visited
+{
+	font-size: 12px;
+	color: #6585A1;
+	font-family: Arial, Helvetica;
+	text-decoration: underline;
+	margin-top: 5px;
+	display: block;
+	text-shadow: #FFFFFF 1px 1px 0;
+}
+.MainLinkSeparator
+{
+	font-family: Arial, Helvetica;
+	color: #D6D6D6;
+	text-shadow: #FFFFFF 1px 1px 0;
+	font-size: 20px;
+	margin: 5px;
+	margin-top: 2px;
+}
+.MainTitle
+{
+	color:#67A7E3;
+	font-size:22px;
+	font-weight: bold;
+	font-family: Arial Unicode MS,Arial,sans-serif;
+}
+.SecondaryTitle
+{
+	color: #888888 !important;
+	font-size:16px !important;
+	font-family: Arial Unicode MS,Arial,sans-serif;
+	font-weight: bold;
+}
+.Source
+{
+	font-size: 11px !important;
+	font-family: monospace;
+}
+.SpecialLabel
+{
+	font-size: 11px;
+	font-weight: bold;
+	color: #5385AE;
+	font-family: Verdana, Arial, Helvetica;
+}
+.SpecialSecondaryLabel
+{
+	font-size: 12px;
+	font-weight: bold;
+	color: #606060;
+	font-family: Verdana, Arial, Helvetica;
+}
+.CommentsTitle
+{
+	font-family:Arial, Helvetica;
+	font-weight:bold;
+	font-size:12px;
+	color:#5385AE;
+}
+.CommentsTable TH
+{
+	font-family:Arial, Helvetica;
+	font-weight:bold;
+	font-size:12px;
+	color:#5385AE;
+}
+.CommentsTable 
+{
+	width: 100%;
+}
+.CommentsTable TD
+{
+	font-family:Arial, Helvetica;
+	font-size:11px;
+}
+.crux-DecoratedPanel .middleCenterCell
+{
+	font-family:Arial Unicode MS,Arial,sans-serif;
+	font-size:12px;
+}
+#cruxSplashScreen
+{
+	background-color: #FFFFFF;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+.FormLabel
+{
+	font-size: 12px;
+	font-weight: bold;
+	border-top: solid 1px #EFEFEF;
+	border-right: solid 1px #EFEFEF;
+	width: 40%;
+	padding: 5px;
+	color: #7B8287;
+}
+.FormValue
+{
+	border-top: solid 1px #EFEFEF;
+	width: 60%;
+	padding: 5px;
+}
+.FormLabelFirst, .FormValueFirst
+{
+	border-top: 0px;
+}
+.FormLabelLast, .FormValueLast
+{
+	border-bottom: 0px;
+}
+.FormGrid TD
+{
+	font-weight: bold;
+	font-family:Arial Unicode MS,Arial,sans-serif;
+	font-size:12px;
+	color: #7B8287;
+}
+ 
+
+/********************
+	Horiz. Separator
+********************/
+.HrzSeparator
+{
+	margin-top: 5px;
+	margin-bottom: 5px;
+	background: url(../img/horizontal-separator.png) repeat-x center;
+	background-color: transparent;
+	height: 6px;
+	font-size: 0px;
+	font-family: monospace;
+}
+
+/********************
+	Strong Button
+********************/
+.StrongButton .leftCell 
+{
+	background-image: url(../img/strong-btn-left.png) !important;
+}
+.StrongButton .centerCell
+{
+	background-image: url(../img/strong-btn-bg.png) !important;
+}
+.StrongButton .rightCell 
+{
+	background-image: url(../img/strong-btn-right.png) !important;
+}
+
+.StrongButtonCSS3 
+{
+	border: solid 1px #5d5d5d !important;
+	border-top: solid 1px #747474 !important;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#A0A0A0),color-stop(0.99,#4e4e4e)) !important;
+	background-image: -moz-linear-gradient(top,#A0A0A0,#4e4e4e) !important;
+	-webkit-box-shadow:0px 0px 2px 2px rgba(220,220,220,0.15) !important;
+	-moz-box-shadow:0px 0px 2px 2px rgba(220,220,220,0.15) !important;
+}
+
+.StrongButtonCSS3:active 
+{
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#4e4e4e),color-stop(0.99,#4e4e4e)) !important;
+	background-image: -moz-linear-gradient(top,#4e4e4e,#4e4e4e) !important;
+}
+
+.StrongButtonCSS3-disabled
+{
+	border: solid 1px #5d5d5d !important;
+	border-top: solid 1px #747474 !important;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#A0A0A0),color-stop(0.99,#4e4e4e)) !important;
+	background-image: -moz-linear-gradient(top,#A0A0A0,#4e4e4e) !important;
+	-webkit-box-shadow:0px 0px 2px 2px rgba(220,220,220,0.15) !important;
+	-moz-box-shadow:0px 0px 2px 2px rgba(220,220,220,0.15) !important;
+}
+
+.StrongButtonCSS3-disabled, .StrongButtonCSS3-disabled:active 
+{
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01,#e0e0e0),color-stop(0.99,#c3c3c3)) !important;
+	background-image: -moz-linear-gradient(top, #e0e0e0,#c3c3c3) !important;
+	color: #787878 !important;
+	text-shadow: #FFFFFF 1px 1px 0 !important;
+	border: solid 1px #BBBBBB !important;
+}
+
+/***********************************
+  Elements with right-side spacing
+************************************/
+.RightGap, .RightGapCSS3
+{
+	margin-right: 25px 
+}
+
+
+/********************
+	Info Balloon
+********************/
+.Info-bg
+{
+	background: url(../img/info-bg.gif) repeat-x bottom;
+	background-color: #47739A;
+	width: 500px;
+}
+.Info-nw
+{
+	height: 37px;
+	width: 19px;
+	background: url(../img/info-nw.gif) no-repeat top left;
+	font-family: monospace;
+	font: 19px;
+}
+.Info-n
+{
+	background: url(../img/info-n.gif) repeat-x top;
+	font-family: monospace;
+	font: 19px;
+}
+.Info-ne
+{
+	width: 20px;
+	background: url(../img/info-ne.gif) no-repeat top right;
+	font-family: monospace;
+	font: 20px;
+}
+.Info-w
+{
+	background: url(../img/info-w.gif) repeat-y left;
+}
+.Info-text, .Info-text SPAN, .Info-text LI,  .Info-text B  
+{
+	color: #FFFFFF;
+	font-family: arial;
+	font-size: 12px;
+	margin-right: 5px;
+}
+.Info-e
+{
+	background: url(../img/info-e.gif) repeat-y right;
+}
+.Info-sw
+{
+	height: 23px;
+	background: url(../img/info-sw.gif) no-repeat top left;
+}
+.Info-s
+{
+	background: url(../img/info-s.gif) repeat-x bottom;
+}
+.Info-se
+{
+	background: url(../img/info-se.gif) no-repeat top right;
+}
+
+.InfoLink
+{
+	margin-left: 3px;
+	margin-right: 3px;
+	color: #FFFFFF; 
+}
+
+.help-Popup .topCenterCell, .crux-Popup .topLeftCell, .crux-Popup .topRightCell
+{
+	color: #EEEEEE;
+	text-shadow: -1px -1px #2f5578;
+	cursor: default !important;
+}

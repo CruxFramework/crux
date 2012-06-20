@@ -1,0 +1,86 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Screen Wrapper</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="screenWrapperController"/>
+
+		<center>
+		
+			<b:dockPanel id="centeringPanel" width="100%" height="130" spacing="15">
+				<b:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
+					<a:decoratedPanel id="borders" width="470">
+						<a:widget>
+							<b:flexTable id="grid" cellSpacing="5" styleName="FormGrid">
+								<b:row>
+									<b:cell>
+										<b:text>Name:</b:text>
+									</b:cell>
+									<b:cell>
+										<b:widget><b:textBox id="name" width="300" readOnly="true"/></b:widget>
+									</b:cell>
+								</b:row>
+								<b:row>
+									<b:cell>
+										<b:text>Phone:</b:text>
+									</b:cell>
+									<b:cell>
+										<b:widget><a:maskedTextBox id="phone" formatter="phone" width="100" readOnly="true"/></b:widget>
+									</b:cell>
+								</b:row>
+								<b:row>
+									<b:cell>
+										<b:text>Date of Birth:</b:text>
+									</b:cell>
+									<b:cell>
+										<b:widget><b:dateBox id="dateOfBirth" pattern="MM/dd/yyyy" width="100" enabled="false"/></b:widget>
+									</b:cell>
+								</b:row>
+								<b:row>
+									<b:cell colSpan="2" horizontalAlignment="center">
+										<b:widget>
+											<b:horizontalPanel id="buttonsHPanel" spacing="4">
+												<a:decoratedButton id="button" text="Populate Form Using Screen Wrapper" onClick="screenWrapperController.onClick" style="margin-top:10px"/>
+												<a:decoratedButton id="clearButton" text="Clear fields" onClick="screenWrapperController.onClearClick" style="margin-top:10px"/>
+											</b:horizontalPanel>
+										</b:widget>
+									</b:cell>
+								</b:row>
+							</b:flexTable>
+						</a:widget>
+					</a:decoratedPanel>
+				</b:cell>
+			</b:dockPanel>
+		
+		</center>
+				
+		<s:info sourcesController="baseSourcesController">
+			<s:widgetInfo>
+				Screen wrappers are a kind of shortcut to access the widgets declared on the screen's XML. 
+				They are just markup interfaces (this means you don't need to implement them) that extend 
+				a special Crux interface named ScreenWrapper.
+				The goal of screen wrappers is to avoid proliferation of textual widgets IDs by the Java 
+				controllers. Beyond this, using screen wrappers your IDE will be able to auto-complete the 
+				widgets IDs while you write your code.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				as you click the button, we use a screen wrapper to access the fields of the form and 
+				fill them with some predefined values. Take a look at the source code and you will note that 
+				the binding between the widgets' IDs and the methods of the screen wrapper is made by name. 
+				Every method has the form getXXX(), where XXX is the ID of some widget on the screen.
+			</s:exampleInfo>
+		</s:info>
+		
+	</body>
+</html>

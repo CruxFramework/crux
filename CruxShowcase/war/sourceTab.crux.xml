@@ -1,0 +1,36 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:w="http://www.cruxframework.org/crux/widgets"
+	xmlns:g="http://www.cruxframework.org/crux/gwt"
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Source Code</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+		<link rel="stylesheet" type="text/css" href="syntax-highlight/shCore.css" />
+		<link rel="stylesheet" type="text/css" href="syntax-highlight/shCoreDefault.css" />
+		<link rel="stylesheet" type="text/css" href="syntax-highlight/shThemeEclipse.css" />
+		<script type="text/javascript" src="syntax-highlight/shCore.js"></script>
+		<script type="text/javascript" src="syntax-highlight/shBrushJava.js"></script>
+		<script type="text/javascript" src="syntax-highlight/shBrushXml.js"></script>
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="sourceTabController" onLoad="sourceTabController.onLoad"/>
+
+		<span id="sourceEditor"></span>
+		
+		<script>
+			function doHighlight(){
+				SyntaxHighlighter.defaults['auto-links'] = false;
+				SyntaxHighlighter.defaults['quick-code'] = false;
+				SyntaxHighlighter.highlight();
+			}
+		</script>
+			
+	</body>
+</html>

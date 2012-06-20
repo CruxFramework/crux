@@ -1,0 +1,39 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Message Box</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="messageBoxController"/>
+
+		<center>
+			<a:decoratedButton id="showMessageButton" text="Show Message" onClick="messageBoxController.showMessage"/>
+		</center>
+		
+		<s:info sourcesController="baseSourcesController">
+			<s:widgetInfo>
+				MessageBox are widgets used to display messages to users. They are an alternative to the 
+				Window.alert function, natively provided by browsers. The main difference, besides the 
+				customizable look-and-feel, is that MessageBoxes do not suspend the JavaScript processing 
+				when they are displayed. On the other hand, MessageBox triggers an event when its OK button 
+				is pressed, which can be captured and properly handled.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				if you click the button, a message will be shown. When you close the MessageBox, by clicking 
+				its OK button, another message is shown, just for emphasize that the OkEvent was captured 
+				and handled. 
+			</s:exampleInfo>
+		</s:info>
+		
+	</body>
+</html>

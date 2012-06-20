@@ -1,0 +1,54 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Text Area</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="textAreaController"/>
+
+		<center>
+		
+		<a:decoratedPanel id="borders" width="450">
+			<a:widget>
+				<b:verticalPanel id="mainPanel" spacing="5" style="margin:5px">
+					<b:cell>
+						<b:label id="messageLabel" text="Type some maxLength below and test the behavior of the text area..." styleName="CommentsTitle"/>
+					</b:cell>
+					<b:cell>
+						<a:textArea id="niceTextArea" width="100%" visibleLines="8" maxLength="60">This is a simple TextArea that obeys the maxLength attribute</a:textArea>
+					</b:cell>
+					<b:cell horizontalAlignment="right">
+						<b:horizontalPanel id="controls" spacing="3">
+							<b:textBox id="maxLength" width="70" value="60"/>
+							<a:decoratedButton id="btn" text="Apply!" onClick="textAreaController.applyMaxLength" width="70"/>
+						</b:horizontalPanel>
+					</b:cell>
+				</b:verticalPanel>
+			</a:widget>
+		</a:decoratedPanel>
+		
+		</center>
+		
+		<s:info sourcesController="baseSourcesController">
+			<s:widgetInfo>
+				Crux TextArea is almost a standard GWT TextArea widget. The only difference is that you can control
+				the maximum length of the text it can contain.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				the text area starts with the maximum length of 200 characters. To see it in action, try changing that 
+				value to, lets say, 10 characters. Then, try editing the text area contents.  
+			</s:exampleInfo>
+		</s:info>
+		
+	</body>
+</html>

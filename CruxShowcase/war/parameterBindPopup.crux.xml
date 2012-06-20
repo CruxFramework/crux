@@ -1,0 +1,59 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Parameter Bind</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="parameterBindPopupController" onLoad="parameterBindPopupController.onLoad"/>
+
+		<b:verticalPanel id="vPanel" width="100%"  spacing="10">
+		
+			<a:decoratedPanel id="bordersURL" width="100%">
+				<a:widget>
+					<b:horizontalPanel id="hPanelURL" spacing="3" width="100%">
+						<b:cell width="120" verticalAlignment="middle">
+							<b:label id="urlLabel" text="URL of this popup:" styleName="SpecialLabel"/>
+						</b:cell>						
+						<b:textBox id="urlValue" width="100%"/>
+					</b:horizontalPanel>
+				</a:widget>
+			</a:decoratedPanel>
+			
+			<a:titlePanel id="bordersForm" style="marginTop:10px" width="350">
+				<a:title>
+					<a:text>Values Automatically Extracted from URL Parameters:</a:text>
+				</a:title>
+				<a:body>
+					<a:widget>
+						<b:flexTable id="cells" styleName="DataForm" cellSpacing="1" height="120" width="300">
+							<b:row>
+								<b:cell styleName="FormLabel FormLabelFirst"><b:text>Name:</b:text></b:cell>
+								<b:cell styleName="FormValue FormvalueFirst"><b:widget><b:label id="name"/></b:widget></b:cell>
+							</b:row>
+							<b:row>
+								<b:cell styleName="FormLabel"><b:text>Phone:</b:text></b:cell>
+								<b:cell styleName="FormValue"><b:widget><a:maskedLabel id="phone" formatter="phone"/></b:widget></b:cell>
+							</b:row>
+							<b:row>
+								<b:cell styleName="FormLabel"><b:text>Date of Birth:</b:text></b:cell>
+								<b:cell styleName="FormValue"><b:widget><a:maskedLabel id="dateOfBirth" formatter="date"/></b:widget></b:cell>
+							</b:row>
+						</b:flexTable>
+					</a:widget>
+				</a:body>
+			</a:titlePanel>
+		
+		</b:verticalPanel>
+		
+	</body>
+</html>

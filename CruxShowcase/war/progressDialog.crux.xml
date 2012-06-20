@@ -1,0 +1,38 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Progress Dialog</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="progressDialogController"/>
+
+		<center>
+			<a:decoratedButton id="progressButton" text="Show Progress Dialog" onClick="progressDialogController.showProgress"/>
+		</center>		
+		
+		<s:info sourcesController="baseSourcesController">
+			<s:widgetInfo>
+				ProgressDialogs are widgets that tell users that some slow process is in progress.
+				They can prevent users from interacting with other widgets present on screen, avoiding eventual 
+				undesired concurrence.  
+			</s:widgetInfo>
+			<s:exampleInfo>
+				when you click the button, a ProgressDialog is shown and, after three seconds, a Timer closes 
+				it, unblocking the screen. If you take a look at the source code, you will note that you don't
+				need to know how long your process will take in order to close the dialog. You can just keep it
+				visible while needed and force it to close just when you want. 
+			</s:exampleInfo>
+		</s:info>
+		
+	</body>
+</html>

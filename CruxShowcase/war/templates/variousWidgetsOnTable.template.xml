@@ -1,0 +1,59 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:t="http://www.cruxframework.org/templates"
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"
+	library="showcase">
+	<b:grid id="#{id}TextBoxesGrid">
+		<b:row>
+			<b:cell><b:widget><b:label id="#{id}Label1" width="60" text="Text Label"/></b:widget></b:cell>
+			<b:cell><b:widget><b:textBox id="#{id}TextBox1" width="60" /></b:widget></b:cell>
+			<b:cell><b:widget><b:button id="#{id}Button1" width="60" text="Button"/></b:widget></b:cell>
+		</b:row>
+		<b:row>
+			<b:cell><b:widget><b:label id="#{id}Label2" width="60" text="Text Label"/></b:widget></b:cell>
+			<b:cell><b:widget><b:textBox id="#{id}TextBox2" width="60" /></b:widget></b:cell>
+			<b:cell><b:widget><b:button id="#{id}Button2" width="60" text="Button"/></b:widget></b:cell>
+		</b:row>
+		<b:row>
+			<b:cell><b:widget><b:label id="#{id}Label3" width="60" text="Text Label"/></b:widget></b:cell>
+			<b:cell><b:widget><b:textBox id="#{id}TextBox3" width="60" /></b:widget></b:cell>
+			<b:cell><b:widget><b:button id="#{id}Button3" width="60" text="Button"/></b:widget></b:cell>
+		</b:row>
+		<b:row>
+			<b:cell><b:widget><b:label id="#{id}Label4" width="60" text="Text Label"/></b:widget></b:cell>
+			<b:cell><b:widget><b:textBox id="#{id}TextBox4" width="60" /></b:widget></b:cell>
+			<b:cell><b:widget><b:button id="#{id}Button4" width="60" text="Button"/></b:widget></b:cell>
+		</b:row>
+		<b:row>
+			<b:cell><b:widget><b:label id="#{id}Label5" width="60" text="Text Label"/></b:widget></b:cell>
+			<b:cell><b:widget><b:textBox id="#{id}TextBox5" width="60" /></b:widget></b:cell>
+			<b:cell><b:widget><b:button id="#{id}Button5" width="60" text="Button"/></b:widget></b:cell>
+		</b:row>
+		<b:row>
+			<b:cell><b:widget><b:label id="#{id}Label6" width="60" text="Text Label"/></b:widget></b:cell>
+			<b:cell><b:widget><b:textBox id="#{id}TextBox6" width="60" /></b:widget></b:cell>
+			<b:cell><b:widget><b:button id="#{id}Button6" width="60" text="Button"/></b:widget></b:cell>
+		</b:row>
+		<b:row>
+			<b:cell><b:widget><b:label id="#{id}Label7" width="60" text="Text Label"/></b:widget></b:cell>
+			<b:cell><b:widget><b:textBox id="#{id}TextBox7" width="60" /></b:widget></b:cell>
+			<b:cell><b:widget><b:button id="#{id}Button7" width="60" text="Button"/></b:widget></b:cell>
+		</b:row>
+		<b:row>
+			<b:cell><b:widget><b:label id="#{id}Label8" width="60" text="Text Label"/></b:widget></b:cell>
+			<b:cell><b:widget><b:textBox id="#{id}TextBox8" width="60" /></b:widget></b:cell>
+			<b:cell><b:widget><b:button id="#{id}Button8" width="60" text="Button"/></b:widget></b:cell>
+		</b:row>
+		<b:row>
+			<b:cell><b:widget><b:label id="#{id}Label9" width="60" text="Text Label"/></b:widget></b:cell>
+			<b:cell><b:widget><b:textBox id="#{id}TextBox9" width="60" /></b:widget></b:cell>
+			<b:cell><b:widget><b:button id="#{id}Button9" width="60" text="Button"/></b:widget></b:cell>
+		</b:row>
+		<b:row>
+			<b:cell><b:widget><b:label id="#{id}Label10" width="60" text="Text Label"/></b:widget></b:cell>
+			<b:cell><b:widget><b:textBox id="#{id}TextBox10" width="60" /></b:widget></b:cell>
+			<b:cell><b:widget><b:button id="#{id}Button10" width="60" text="Button"/></b:widget></b:cell>
+		</b:row>
+	</b:grid>
+</t:template>

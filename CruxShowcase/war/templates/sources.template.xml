@@ -1,0 +1,12 @@
+<t:template 
+    xmlns:t="http://www.cruxframework.org/templates"
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:s="http://www.cruxframework.org/templates/showcase"
+	library="showcase" useController="sourcesController" >
+
+	<s:source id="xmlSource" onLoadSource="sourcesController.loadXmlSource" title="View page source"/>
+	<s:source id="javaSource" onLoadSource="sourcesController.loadJavaSource" title="View controller source"/>
+
+	<c:splashScreen/>
+
+</t:template>

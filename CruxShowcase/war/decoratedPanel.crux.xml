@@ -1,0 +1,68 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Decorated Panel</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="sourcesController"/>
+	
+		<center>
+			<b:flexTable id="centeringPanel" cellSpacing="10" width="520">
+				<b:row>
+					<b:cell horizontalAlignment="left">
+						<b:widget>
+							<a:decoratedPanel id="textDecoratedPanel" width="250" height="120">
+								<a:text>This is a decorated panel with plain text content.</a:text>
+							</a:decoratedPanel>
+						</b:widget>
+					</b:cell>
+					<b:cell horizontalAlignment="right">
+						<b:widget>
+							<a:decoratedPanel id="htmlDecoratedPanel" width="250" height="120">
+								<a:html>
+									<li><strong>This is a decorated panel with HTML content.</strong></li>
+									<br/>
+									<li><strong>We can have arbitrary HTML here.</strong></li>
+								</a:html>
+							</a:decoratedPanel>
+						</b:widget>
+					</b:cell>
+				</b:row>
+				<b:row>
+					<b:cell colSpan="2" horizontalAlignment="center">
+						<b:widget>
+							<a:decoratedPanel id="widgetDecoratedPanel" width="100%" height="120">
+								<a:widget>
+									<b:verticalPanel id="vPanel" spacing="10">
+										<b:label id="panelLabel" text="This is a decorated panel with widget content."/>
+										<a:decoratedButton id="panelBtn" text="Ok" width="80"/>
+									</b:verticalPanel>
+								</a:widget>
+							</a:decoratedPanel>
+						</b:widget>
+					</b:cell>
+				</b:row>
+			</b:flexTable>
+		</center>
+		
+		<s:info sourcesController="noJavaSourcesController">
+			<s:widgetInfo>
+				DecoratedPanels are simple panels capable of being flexibly styled. Using pure CSS (or CSS plus images, for browser without support for CSS3), you can easily define a sophisticated appearance to them.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				we can see what a DecoratedPanel can contain. The first panel contains pure text, the second one contains HTML and the last one contains a widget.
+			</s:exampleInfo>
+		</s:info>
+		
+	</body>
+</html>

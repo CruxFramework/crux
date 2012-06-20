@@ -1,0 +1,22 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:w="http://www.cruxframework.org/crux/widgets"
+	xmlns:g="http://www.cruxframework.org/crux/gwt"
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Sources</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body style="overflow:hidden; margin:0px; padding:0px">
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="baseSourcesController"/>
+
+		<w:dynaTabs id="sourcesTabs" width="100%" height="100%" />
+	
+	</body>
+</html>

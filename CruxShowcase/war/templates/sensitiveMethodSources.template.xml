@@ -1,0 +1,9 @@
+<t:template 
+    xmlns:t="http://www.cruxframework.org/templates"
+	xmlns:s="http://www.cruxframework.org/templates/showcase"
+	library="showcase" useController="sensitiveMethodSourcesController"
+>
+	<s:sources/>
+	<s:source id="serviceInterfaceSource" onLoadSource="sensitiveMethodSourcesController.loadServiceSource" title="View Service Interface"/>
+	<s:source id="ServiceImplementationSource" onLoadSource="sensitiveMethodSourcesController.loadServiceImplSource" title="View Service Implementation"/>
+</t:template>

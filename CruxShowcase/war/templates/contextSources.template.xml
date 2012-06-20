@@ -1,0 +1,10 @@
+<t:template 
+    xmlns:t="http://www.cruxframework.org/templates"
+	xmlns:s="http://www.cruxframework.org/templates/showcase"
+	library="showcase" useController="contextSourcesController">
+
+	<s:sources/>
+	<s:source id="frameXml" onLoadSource="contextSourcesController.loadFrameXML" title="View frame page source"/>
+	<s:source id="frameController" onLoadSource="contextSourcesController.loadFrameController" title="View frame controller source"/>
+	<s:source id="contextInitializerCntr" onLoadSource="contextSourcesController.loadContextInitializer" title="View context initialization code"/>
+</t:template>

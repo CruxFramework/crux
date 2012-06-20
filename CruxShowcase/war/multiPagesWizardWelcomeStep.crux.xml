@@ -1,0 +1,33 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	>
+
+	<head>
+		<title>Welcome!</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="multiPagesWizardWelcomeStepController"/>
+
+		<a:wizardPage id="wizardPage" onEnter="multiPagesWizardWelcomeStepController.onEnter" wizardId="wizard" wizardContextObject="person"/>
+		
+		<center>
+			<b:verticalPanel id="centeringPanel1" verticalAlignment="middle">
+				<b:HTML id="welcomeMessage">
+					<h2>Welcome to Crux Wizard!</h2>
+					<br/>
+					<h3>This is an example of how to use a multiple-pages wizard.</h3>
+					<h3>Press Next to proceed...</h3>
+				</b:HTML>
+			</b:verticalPanel>
+		</center>
+		
+		<c:splashScreen/>
+	</body>
+</html>

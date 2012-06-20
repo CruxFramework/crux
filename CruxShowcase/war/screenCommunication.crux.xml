@@ -1,0 +1,85 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Screen Communication</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="screenCommunicationController,frameSourcesController"/>
+
+		<center>
+		
+			<b:dockPanel id="centeringPanel" spacing="25">
+				<b:cell direction="west" horizontalAlignment="center" verticalAlignment="middle" >
+					<b:verticalPanel id="vPanelForm" spacing="10">
+						<a:decoratedPanel id="borders" width="350">
+							<a:widget>
+								<b:grid id="grid" cellSpacing="5" styleName="FormGrid">
+									<b:row>
+										<b:cell>
+											<b:text>Name:</b:text>
+										</b:cell>
+										<b:cell>
+											<b:widget><b:textBox id="name" width="200" value="Phil N. Thropic"/></b:widget>
+										</b:cell>
+									</b:row>
+									<b:row>
+										<b:cell>
+											<b:text>Phone:</b:text>
+										</b:cell>
+										<b:cell>
+											<b:widget><a:maskedTextBox id="phone" formatter="phone" width="100" value="(123)456-7890"/></b:widget>
+										</b:cell>
+									</b:row>
+									<b:row>
+										<b:cell>
+											<b:text>Date of Birth:</b:text>
+										</b:cell>
+										<b:cell>
+											<b:widget><b:dateBox id="dateOfBirth" pattern="MM/dd/yyyy" width="100" value="10/05/1975"/></b:widget>
+										</b:cell>
+									</b:row>
+								</b:grid>
+							</a:widget>
+						</a:decoratedPanel>		
+						<a:decoratedButton id="button" onClick="screenCommunicationController.changeFrame" text="Send Data to Internal Frame &gt;&gt;"/>
+					</b:verticalPanel>
+				</b:cell>
+				<b:cell direction="east" horizontalAlignment="center" verticalAlignment="middle">
+					<a:titlePanel id="bordersEast" width="400">
+						<a:title>
+							<a:text>Internal Frame (horrible borders intentionally set)</a:text>
+						</a:title>
+						<a:body>
+							<a:widget>
+								<b:namedFrame id="frame" name="myFrame" url="innerFrame.html" width="350" height="120" style="margin:15px"/>
+							</a:widget>
+						</a:body>
+					</a:titlePanel>
+				</b:cell>
+			</b:dockPanel>
+		
+		</center>
+		
+		<s:info sourcesController="screenCommunicationSourcesController">
+			<s:widgetInfo>
+				Crux allows you to invoke controllers' methods across different windows or documents of your application. 
+				This can be done by extending a special Crux interface named CrossDocument and implementing it with your 
+				controller. Cross-document methods must have serializable parameters and return type.				
+			</s:widgetInfo>
+			<s:exampleInfo>
+				we send a DTO named Person from the main screen to the internal frame. The serialization process is entirely
+				handled by Crux. Note that our Person DTO is annotated with @ValueObject that automatically links it to 
+				screen fields.   
+			</s:exampleInfo>
+		</s:info>
+	</body>
+</html>

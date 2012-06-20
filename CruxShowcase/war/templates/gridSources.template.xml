@@ -1,0 +1,10 @@
+<t:template 
+    xmlns:t="http://www.cruxframework.org/templates"
+	xmlns:s="http://www.cruxframework.org/templates/showcase"
+	library="showcase" useController="#{pageName}SourcesController">
+
+	<s:sources/>
+	<s:source onLoadSource="#{pageName}SourcesController.loadDTO" title="View binded object source" id="contact"/>
+	<s:source onLoadSource="#{pageName}SourcesController.loadDS" title="View dataSource source" id="dataSource"/>
+	<s:source onLoadSource="#{pageName}SourcesController.loadServiceImpl" title="View server side source" id="serviceImpl"/>
+</t:template>

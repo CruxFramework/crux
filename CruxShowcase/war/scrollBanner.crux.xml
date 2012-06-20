@@ -1,0 +1,44 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Scroll Banner</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="scrollBannerController"/>
+
+		<center>
+			<b:dockPanel id="centeringPanel" height="130">
+				<b:cell direction="center" horizontalAlignment="center" verticalAlignment="middle">
+					<a:decoratedPanel id="borders" width="250">
+						<a:widget>
+							<a:scrollBanner id="scrollingMessages" height="70" width="100%" messageScrollingPeriod="4000" onLoadWidget="scrollBannerController.addMessages">
+								<a:message>This message was assigned declaratively.</a:message>
+							</a:scrollBanner>
+						</a:widget>
+					</a:decoratedPanel>
+				</b:cell>
+			</b:dockPanel>
+		</center>
+		
+		<s:info sourcesController="baseSourcesController">
+			<s:widgetInfo>
+				The ScrollBanner is a widget that can display sequential messages. The visible message can be automatically switched in an arbitrary period. There are arrows with which the users can switch manually the message being shown.
+				Messages can be added declaratively, on the HTML page, or programmatically, on the controller.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				the fisrt message was added declaratively and the next two were added programmatically.
+			</s:exampleInfo>
+		</s:info>
+		
+	</body>
+</html>

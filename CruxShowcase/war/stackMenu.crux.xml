@@ -1,0 +1,61 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Stack Menu</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="stackMenuController"/>
+
+		<center>
+			<a:stackMenu id="menu" width="170" onSelection="stackMenuController.onSelectItem">
+				<a:item key="classicMusic" label="Classic Music">
+					<a:item key="concerts" label="Concerts"/>
+					<a:item key="composers" label="Composers">
+						<a:item key="bach" label="Johann Sebastian Bach"/>
+						<a:item key="beethoven" label="Ludwig van Beethoven"/>
+						<a:item key="mozart" label="Wolfgang Amadeus Mozart"/>
+					</a:item>
+				</a:item>
+				<a:item key="rock" label="Rock and Roll">
+					<a:item key="artists" label="Artists">
+						<a:item key="elvis" label="Elvis Presley"/>
+						<a:item key="inkSpots" label="The Ink Spots"/>
+						<a:item key="jerryLewis" label="Jerry Lee Lewis"/>
+					</a:item>
+				</a:item>
+				<a:item key="samba" label="Samba">
+					<a:item key="instruments" label="Instruments">
+						<a:item key="pandeiro" label="Pandeiro"/>
+						<a:item key="cavaco" label="Cavaco"/>
+					</a:item>
+					<a:item key="tracks" label="Tracks">
+						<a:item key="peito" label="Peito Vazio"/>
+						<a:item key="chorar" label="Sei Chorar"/>
+						<a:item key="preciso" label="Preciso Me Encontrar"/>
+					</a:item>
+				</a:item>			
+			</a:stackMenu>
+		</center>		
+		
+		<s:info sourcesController="baseSourcesController">
+			<s:widgetInfo>
+				The StackMenu is a simple vertical hierarchical menu. Each item in a StackMenu can have child items.
+				When an item has no children, it can fire selection events.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				we capture the selection event and show a simple message.
+			</s:exampleInfo>
+		</s:info>
+		
+	</body>
+</html>

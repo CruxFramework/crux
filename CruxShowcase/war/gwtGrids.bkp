@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>GWT Widgets</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+		<script type="text/javascript" src="showcase/showcase.nocache.js">
+		</script>
+
+		<c:screen useController="gwtGridsController"/>
+		
+		<center>
+		
+		<br/>
+		
+		<b:label id="descLabel" text="Default Crux distribution supports all GWT widgets in its declarative engine. Here are some examples:" style="fontWeight:bold"/>
+		
+		<br/>
+		
+		<b:notificationMole id="notif" message="Teste de Notificação com um NotificationMole" show="true" animationDuration="500" />
+		
+		<b:dockPanel id="centeringPanel" height="130" spacing="15">
+			<!-- b:cell direction="center" horizontalAlignment="center" verticalAlignment="top">
+				<b:cellList dataObject="String" id="myList" onLoadWidget="gwtGridsController.onLoadList" 
+				onSelectionChange="gwtGridsController.onSelectionChange" selectionModel="singleSelection" height="150">
+					<b:textCell/>
+				</b:cellList>
+			</b:cell-->
+			<b:cell direction="north">
+				<b:pageSizePager id="pager2" display="myCellTable" increment="5"/>
+				<!-- b:simplePager id="pager" display="myCellTable" pageSize="5" /-->
+			</b:cell>
+			<b:cell direction="south">
+				<b:cellTable dataObject="contact" selectionModel="multiSelection" id="myCellTable"
+						dataProviderFactoryMethod="gwtGridsController.onLoadTable">
+					<b:column property="name" fieldUpdaterFactoryMethod="gwtGridsController.getFieldUpdater" sortable="true">
+						<b:header>
+							<b:text>Name</b:text>
+						</b:header>
+						<b:cell>
+							<b:editTextCell/>
+						</b:cell>
+					</b:column>
+					<b:column property="id" sortable="true">
+						<b:header>
+							<b:text>Id</b:text>
+						</b:header>
+						<b:cell>
+							<b:numberCell/>
+						</b:cell>
+					</b:column>
+					<b:column property="phone">
+						<b:header>
+							<b:text>Phone</b:text>
+						</b:header>
+						<b:cell>
+							<b:textCell/>
+						</b:cell>
+					</b:column>
+					<b:column property="birthday">
+						<b:header>
+							<b:text>Date of Birth</b:text>
+						</b:header>
+						<b:cell>
+							<b:dateCell/>
+						</b:cell>
+					</b:column>
+					<b:column property="address.street">
+						<b:header>
+							<b:text>Address</b:text>
+						</b:header>
+						<b:cell>
+							<b:textCell/>
+						</b:cell>
+					</b:column>
+				</b:cellTable>
+			</b:cell>
+		</b:dockPanel>
+		
+		</center>
+
+		<s:sources/>
+	</body>
+</html>

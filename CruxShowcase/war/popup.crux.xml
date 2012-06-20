@@ -1,0 +1,46 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Confirm</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="popupController"/>
+
+		<center>
+			<a:decoratedPanel id="border" width="400">
+				<a:widget>
+					<b:horizontalPanel id="cells" spacing="5">
+						<b:textBox id="url" text="http://blog.cruxframework.org" width="300"/>
+						<a:decoratedButton id="browseButton" text="Browse" onClick="popupController.browse"/>
+					</b:horizontalPanel>
+				</a:widget>
+			</a:decoratedPanel>
+		</center>		
+
+		<s:info sourcesController="baseSourcesController">
+			<s:widgetInfo>
+				Crux Popup is an elegant way of displaying a modal dialog to the user. Its content is always 
+				another web page, which can be a screen of your application or even a page from an external
+				site. Like in DynaTabs, there is a quite simple way to exchange information between the 
+				controller of the opener page and the popup's internal controller (see more about 
+				cross-page communication in the Screen Communication example). Popups can also be 
+				configured to fire events when they are opened or closed.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				you can type any valid URL and browse it using a popup. When you close the popup, we show
+				a message just to emphasize that the close event was captured.
+			</s:exampleInfo>
+		</s:info>
+				
+	</body>
+</html>

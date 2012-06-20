@@ -1,0 +1,51 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Sensitive Method</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="sensitiveMethodController"/>
+	
+		<center>
+
+		<a:decoratedPanel id="borders" width="450">
+			<a:widget>
+				<b:dockPanel id="centeringPanel" spacing="10">
+					<b:cell direction="west" verticalAlignment="middle" horizontalAlignment="right">
+						<a:decoratedButton id="button" text="Try to click me twice!" onClick="sensitiveMethodController.onClick"/>
+					</b:cell>
+					<b:cell direction="east" verticalAlignment="middle" horizontalAlignment="right">
+						<b:checkBox id="block" text="Block user's interface while processing" checked="false"/>		
+					</b:cell>
+				</b:dockPanel>
+			</a:widget>
+		</a:decoratedPanel>
+		
+		</center>
+
+		<s:info sourcesController="sensitiveMethodSourcesController">
+			<s:widgetInfo>
+				A common requirement among web applications is the ability of avoiding repeated requests from the user's interface.
+				Crux has a declarative mechanism to achieve that feature. We call it Sensitive Method Protection. Using Crux, you
+				just need to annotate the method you want to protect and... Voila... It's done!<br/>
+				The Sensitive Protection can also be used as proven secure way to avoid 
+				<a target="_blank" href="https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet" class="InfoLink"> CSRF attacks</a>,
+				since it uses, behind the scenes, the Token Synchronizer pattern.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				you can see the Sensitive Protection working in two flavors: preventively blocking the user's interface or
+				just notifying the user if there is an attempt to repeat a request.
+			</s:exampleInfo> 
+		</s:info>
+
+	</body>
+</html>

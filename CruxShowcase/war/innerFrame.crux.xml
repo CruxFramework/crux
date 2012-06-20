@@ -1,0 +1,47 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Inner Frame1</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="frameController"/>
+
+		<b:grid id="grid" cellSpacing="5" style="margin:5px;" styleName="FormGrid">
+			<b:row>
+				<b:cell>
+					<b:text>Name:</b:text>
+				</b:cell>
+				<b:cell>
+					<b:widget><b:textBox id="name" width="200"/></b:widget>
+				</b:cell>
+			</b:row>
+			<b:row>
+				<b:cell>
+					<b:text>Phone:</b:text>
+				</b:cell>
+				<b:cell>
+					<b:widget><a:maskedTextBox id="phone" formatter="phone" width="100"/></b:widget>
+				</b:cell>
+			</b:row>
+			<b:row>
+				<b:cell>
+					<b:text>Date of Birth:</b:text>
+				</b:cell>
+				<b:cell>
+					<b:widget><b:dateBox id="dateOfBirth" pattern="MM/dd/yyyy" width="100"/></b:widget>
+				</b:cell>
+			</b:row>
+		</b:grid>
+			
+	</body>
+</html>

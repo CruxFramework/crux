@@ -1,0 +1,34 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:w="http://www.cruxframework.org/crux/widgets"
+	xmlns:g="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Thank You!</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="multiPagesWizardThankYouStepController"/>
+
+		<w:wizardPage id="wizardPage" onEnter="multiPagesWizardThankYouStepController.onEnter" wizardId="wizard" wizardContextObject="person"/>
+		
+		<center>
+			<g:verticalPanel id="centeringPanel2" spacing="20">
+				<g:cell verticalAlignment="bottom" horizontalAlignment="center">
+					<g:label id="finishMessage1" styleName="SpecialSecondaryLabel"/>
+				</g:cell>
+				<g:cell verticalAlignment="top" horizontalAlignment="center">
+					<g:label id="finishMessage2" styleName="SpecialSecondaryLabel"/>
+				</g:cell>
+			</g:verticalPanel>
+		</center>
+		
+		<c:splashScreen/>
+	</body>
+</html>

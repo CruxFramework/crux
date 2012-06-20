@@ -1,0 +1,43 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Parameter Bind</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="parameterBindController"/>
+
+		<center>
+			<a:decoratedButton id="button" text="Open Popup with Parameterized URL" onClick="parameterBindController.onClick"/>
+		</center>
+		
+		<br/>
+		
+		<s:info sourcesController="parameterBindSourcesController">
+			<s:widgetInfo>
+				Parameter Binding is a feature provided by Crux that can automate the repetitive process 
+				of extracting parameters from the window's URL, parsing them and storing them into variables 
+				of your controller.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				if you click the button, we open a Popup passing three parameters on the URL: a name, a phone 
+				number and a date. The popup's controller declares an annotated DTO which automatically grabs 
+				the parameters present on the URL. Those values are then programmatically read from the DTO and 
+				bound to the fields on the screen. You may note that is totally possible to combine
+				both techniques presented here and on the previous example (Value Binding) in order to 
+				grab the values from the URL (using @ParameterObject annotation) and simultaneously bind 
+				them to the screen fields (using @ValueObject annotation).
+			</s:exampleInfo>
+		</s:info>
+		
+	</body>
+</html>

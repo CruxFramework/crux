@@ -1,0 +1,51 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:a="http://www.cruxframework.org/crux/widgets"
+	xmlns:b="http://www.cruxframework.org/crux/gwt"	
+	xmlns:s="http://www.cruxframework.org/templates/showcase">
+
+	<head>
+		<title>Masked Text Box</title>
+		<link rel="stylesheet" type="text/css" href="style/css/standard.css" />
+	</head>
+
+	<body>
+
+		<script type="text/javascript" src="showcase/showcase.nocache.js"></script>
+
+		<c:screen useController="maskedTextBoxController"/>
+
+		<center>
+			<a:decoratedPanel id="borders" width="300" style="margin-top:10px">
+				<a:widget>
+					<b:horizontalPanel id="vPanel" verticalAlignment="middle" spacing="5">
+						<b:cell horizontalAlignment="right" width="50">
+							<b:label id="maskedLabel" text="Phone:" />
+						</b:cell>
+						<b:cell horizontalAlignment="left">
+							<a:maskedTextBox id="maskedTextBox" formatter="phone" width="90"/>
+						</b:cell>
+					    <b:cell horizontalAlignment="left">
+					    	<a:decoratedButton id="changeButton" text="Change Mask" onClick="maskedTextBoxController.changeFormat"/>
+					    </b:cell>
+					</b:horizontalPanel>
+				</a:widget>
+			</a:decoratedPanel>
+		</center>
+		
+		<s:info sourcesController="baseSourcesController">
+			<s:widgetInfo>
+				MaskedTextBoxes are TextBoxes that can format the text being typed by  
+				by the users in real time. They guide the users while they are typing, preventing 
+				data format mistakes.
+			</s:widgetInfo>
+			<s:exampleInfo>
+				you can see a single MakedTextBox being used as a date input or as a phone number input. 
+				To switch what kind of data it can receive, just press the "Change Mask" button. Then, try
+				to edit its contents and you will see the mask and the key filter in action. 
+			</s:exampleInfo>
+		</s:info>
+		
+	</body>
+</html>
