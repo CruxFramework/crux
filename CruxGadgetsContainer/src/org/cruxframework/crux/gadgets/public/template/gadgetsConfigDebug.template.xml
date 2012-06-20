@@ -1,0 +1,12 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:c="http://www.cruxframework.org/crux"  
+			xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+			xmlns:crux="http://www.cruxframework.org/crux/widgets"
+            xmlns:t="http://www.cruxframework.org/templates" library="gadgetContainer"
+            useController="gadgetConfigController"> 
+    <script type="text/javascript">
+    	_gadgetCanvasHeight = "#{gadgetCanvasHeight}";
+    </script>
+	<script type="text/javascript" src="/gadgets/js/shindig-container:pubsub.js?c=1&amp;debug=1"></script>
+	<gwt:hidden id="containerConfigLoader_" onLoadWidget="gadgetConfigController.onLoadDebug"/>
+</t:template>

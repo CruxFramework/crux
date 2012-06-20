@@ -1,0 +1,10 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:c="http://www.cruxframework.org/crux"  
+			xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+			xmlns:crux="http://www.cruxframework.org/crux/widgets"
+            xmlns:t="http://www.cruxframework.org/templates" library="gadgetContainer" > 
+    <script type="text/javascript">
+    	_layoutManager = "gridLayoutManager";
+    </script>
+	<gwt:HTML id="gridContainer" width="100%" height="100%"/>
+</t:template>
