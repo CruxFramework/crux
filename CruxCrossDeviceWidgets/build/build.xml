@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="dist" name="CruxCrossDeviceWidgets" basedir="../">
+
+	<tstamp>
+		<format property="build.date" pattern="MM/dd/yyyy hh:mm:ss" />
+	</tstamp>
+
+	<property file="build/version.properties" />
+	
+	<property name="src.dir" value="src" />
+
+	<property name="lib.dir" value="build/lib" />
+	<property name="classes.dir" value="bin/classes" />
+	<property name="dist.dir" value="dist" />
+	<property name="javadoc.dir" value="${dist.dir}/docs" />
+	
+	<property name="cross.device.widgets.name" value="crux-cross-device-widgets" />
+	
+	<!--get src="http:/repoGesse/crux-dev-deps.jar" dest="${lib.dir}/crux-dev-deps.jar" verbose="true" usetimestamp="yes"/>
+	<get src="http:/repoGesse/gwt-servlet.jar" dest="${dependencies.dir}/gwt-servlet.jar" verbose="true" usetimestamp="yes"/>
+	<get src="http:/repoGesse/gwt-servlet-deps.jar" dest="${dependencies.dir}/gwt-servlet-deps.jar" verbose="true" usetimestamp="yes"/>
+	<get src="http:/repoGesse/crux-runtime-deps.jar" dest="${dependencies.dir}/crux-runtime-deps.jar" verbose="true" usetimestamp="yes"/-->
+
+	<path id="build.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- 
+	========================================================================================================
+		Dist
+	========================================================================================================
+	-->
+	<target name="dist" description="Creates the crux-gadget-container.jar file and exports it to the dist folder.">
+		<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="build.classpath" />
+
+		<delete dir="${dist.dir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
+		<mkdir dir="${dist.dir}" />
+		
+		<delete dir="${classes.dir}" failonerror="no" />
+		<mkdir dir="${classes.dir}" />
+		
+		<javac destdir="${classes.dir}" target="1.5" source="1.5" debug="true" excludes="**/public/*" 
+			   encoding="UTF-8">
+			<src>
+				<pathelement location="${src.dir}"/>
+			</src>
+			<classpath refid="build.classpath" />
+		</javac>
+
+		<svn failonerror="false" javahl="false" svnkit="true">
+			<wcversion path="${basedir}" />
+		</svn>
+		
+		<jar jarfile="${dist.dir}/${cross.device.widgets.name}.jar">
+			<fileset dir="${classes.dir}" excludes="**/public/*" />
+			<fileset dir="${src.dir}" />
+			<manifest>
+				<attribute name="Build-Timestamp" value="${build.date}" />
+				<attribute name="Implementation-Version" value="${version}" />
+				<attribute name="Implementation-Revision" value="${revision.max}" />
+			</manifest>
+		</jar>
+	</target>
+</project>

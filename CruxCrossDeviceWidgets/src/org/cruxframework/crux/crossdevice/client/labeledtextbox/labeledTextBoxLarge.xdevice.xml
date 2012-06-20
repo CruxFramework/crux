@@ -1,0 +1,8 @@
+<x:xdevice xmlns:x="http://www.cruxframework.org/xdevice"
+           xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+           controller="labeledTextBoxLargeController">
+    <gwt:flowPanel id="labeledTextBox" >
+    	<gwt:label id="label" styleName="label" horizontalAlignment="left" width="100%"></gwt:label>
+    	<gwt:textBox id="textBox" styleName="textBox" alignment="left" width="100%"></gwt:textBox>
+    </gwt:flowPanel>
+</x:xdevice>
