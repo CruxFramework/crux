@@ -26,9 +26,9 @@ import org.cruxframework.crux.core.client.errors.ErrorHandler;
 import org.cruxframework.crux.core.client.errors.ValidationErrorHandler;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.DOM;
@@ -125,6 +125,17 @@ public class Crux implements EntryPoint
 				config = GWT.create(CruxClientConfig.class);
 				errorHandler = GWT.create(ErrorHandler.class);
 				validationErrorHandler = GWT.create(ValidationErrorHandler.class);
+				
+				// define a default handler for uncaught exception
+				GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() 
+				{
+					@Override
+					public void onUncaughtException(Throwable e) 
+					{
+						errorHandler.handleError(e);
+					}
+				});
+				
 				org.cruxframework.crux.core.client.screen.ScreenFactory.getInstance().getScreen();
 				initialized = true;
 				if (LogConfiguration.loggingIsEnabled())
