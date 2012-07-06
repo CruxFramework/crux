@@ -829,14 +829,20 @@ public class ViewFactoryCreator
 			String controller = ClientControllers.getController(event.getController());
 			if (controller == null)
 			{
-				throw new CruxGeneratorException("Controller ["+controller+"] , declared on screen ["+screen.getId()+"],  not found.");
+				throw new CruxGeneratorException("Controller ["+controller+"] , declared on screen ["+screen.getId()+"], not found.");
 			}
 
 			boolean hasEventParameter = true;
 			JClassType controllerClass = context.getTypeOracle().findType(controller);
 			if (controllerClass == null)
 			{
-				throw new CruxGeneratorException("Controller class ["+controller+"] , declared on screen ["+screen.getId()+"], not found. Check if any type or subtype used by controller refers to another module and if this module is inherited in the .gwt.xml file.");
+				String message = "Controller class ["+controller+"] , declared on screen ["+screen.getId()+"], could not be loaded. "
+							   + "\n Possible causes:"
+							   + "\n\t 1. Check if any type or subtype used by controller refers to another module and if this module is inherited in the .gwt.xml file."
+							   + "\n\t 2. Check if your controller or its members belongs to a client package."
+							   + "\n\t 3. Check the versions of all your modules."
+							   ;
+				throw new CruxGeneratorException(message);
 			}
 			if (EvtProcessor.getControllerMethodWithEvent(event.getMethod(), eventClassType, controllerClass) == null)
 			{
