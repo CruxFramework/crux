@@ -233,7 +233,17 @@ public class CruxInternalProgressDialogController implements CruxInternalProgres
 	
 	public static native JSWindow getOpener()/*-{
 	try{
-		return $wnd.top._progressDialog_origin[$wnd.top._progressDialog_origin.length - 1];
+		var o = $wnd.top._progressDialog_origin[$wnd.top._progressDialog_origin.length - 1];
+		
+		if (o && o._cruxCrossDocumentAccessor) 
+		{
+			return o;
+		}	
+		else 
+		{
+			return null;
+		}	
+		
 	}catch(e)
 	{
 		return null;
