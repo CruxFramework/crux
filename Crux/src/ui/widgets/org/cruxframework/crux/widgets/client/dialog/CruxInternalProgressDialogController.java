@@ -111,10 +111,11 @@ public class CruxInternalProgressDialogController implements CruxInternalProgres
 		{
 			((TargetDocument)crossDoc).setTargetWindow(opener);
 			crossDoc.enableEventsOnOpener();
-			((TargetDocument)crossDoc).setTarget(Target.TOP);
-			crossDoc.hideProgressDialogBox();
-			popProgressDialogFromStack();
 		}
+		
+		((TargetDocument)crossDoc).setTarget(Target.TOP);
+		crossDoc.hideProgressDialogBox();
+		popProgressDialogFromStack();
 	}
 	
 	/**
