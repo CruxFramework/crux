@@ -739,7 +739,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public int getPageCount()
 	{
-		if(this.dataSource instanceof MeasurablePagedDataSource<?>)
+		if(isDataLoaded() && this.dataSource instanceof MeasurablePagedDataSource<?>)
 		{
 			MeasurablePagedDataSource<?> ds = (MeasurablePagedDataSource<?>) this.dataSource;
 			return ds.getPageCount();
