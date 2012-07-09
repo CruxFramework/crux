@@ -143,8 +143,11 @@ public class CruxInternalMessageBoxController implements CruxInternalMessageBoxC
 				try
 				{
 					JSWindow origin = getAndClearMessageBoxOrigin();
-					((TargetDocument)crossDoc).setTargetWindow(origin);
-					crossDoc.onOk();
+					if (origin != null)
+					{	
+						((TargetDocument)crossDoc).setTargetWindow(origin);
+						crossDoc.onOk();
+					}
 				}
 				catch (Throwable e)
 				{
@@ -172,6 +175,6 @@ public class CruxInternalMessageBoxController implements CruxInternalMessageBoxC
 	public static native JSWindow getAndClearMessageBoxOrigin()/*-{
 		var o = $wnd.top._messageBox_origin;
 		$wnd.top._messageBox_origin = null;
-		return o;
+		return (o ? o : null);
 	}-*/;
 }
