@@ -24,7 +24,6 @@ import org.cruxframework.crux.widgets.client.event.HasOkHandlers;
 import org.cruxframework.crux.widgets.client.event.OkEvent;
 import org.cruxframework.crux.widgets.client.event.OkHandler;
 
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
@@ -122,19 +121,20 @@ public class Confirm extends Widget implements HasCancelHandlers, HasOkHandlers,
 			((TargetDocument)confirmController).setTarget(Target.TOP);
 		}
 		confirm = this;
-		saveConfirmOrigin();
+		pushConfirmOnStack();
 		confirmController.showConfirm(new ConfirmData(title, message, okButtonText, cancelButtonText, styleName!=null?styleName:DEFAULT_STYLE_NAME, animationEnabled));
 	}
 	
 	/**
-	 * 
-	 * @param call
-	 * @param serializedData
+	 * Push the window that has invoked the confirm
 	 */
-	private native void saveConfirmOrigin()/*-{
-		$wnd.top._confirm_origin = $wnd;
+	private native void pushConfirmOnStack()/*-{
+		if($wnd.top._confirm_origin == null)
+		{
+			$wnd.top._confirm_origin = new Array();
+		}		
+		$wnd.top._confirm_origin.push($wnd);
 	}-*/;
-	
 	
 	/**
 	 * 
