@@ -25,7 +25,6 @@ import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.widgets.client.decoratedbutton.DecoratedButton;
 import org.cruxframework.crux.widgets.client.event.OkEvent;
 
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -52,7 +51,7 @@ public class CruxInternalMessageBoxController implements CruxInternalMessageBoxC
 	 */
 	public void showMessageBox(MessageBoxData data)
 	{
-		setMessageBoxOrigin();
+		pushMessageBoxOnStack();
 		((TargetDocument)crossDoc).setTarget(Target.TOP);
 		crossDoc.showMessageBoxDialog(data);
 	}
@@ -142,7 +141,7 @@ public class CruxInternalMessageBoxController implements CruxInternalMessageBoxC
 				
 				try
 				{
-					JSWindow origin = getAndClearMessageBoxOrigin();
+					JSWindow origin = getOpener();
 					if (origin != null)
 					{	
 						((TargetDocument)crossDoc).setTargetWindow(origin);
@@ -153,6 +152,8 @@ public class CruxInternalMessageBoxController implements CruxInternalMessageBoxC
 				{
 					Crux.getErrorHandler().handleError(e);
 				}
+
+				popMessageBoxFromStack();
 			}
 		});
 		
@@ -162,19 +163,49 @@ public class CruxInternalMessageBoxController implements CruxInternalMessageBoxC
 	}
 
 	/**
-	 * Calls the method <code>showMessageBoxHandler</code> in the top window
-	 * @param serializedData
+	 * Closes the message box, removing its window from the stack 
 	 */
-	private native void setMessageBoxOrigin()/*-{
-		$wnd.top._messageBox_origin = $wnd;
+	private static native boolean popMessageBoxFromStack()/*-{
+		if($wnd.top._messageBox_origin != null)
+		{
+			$wnd.top._messageBox_origin.pop();
+			return true;
+		}
+		return false;
 	}-*/;
-
+	
 	/**
-	 * Calls the method <code>onOk</code> in the top window that has invoked the message box
+	 * Push the window that has invoked the message box
 	 */
-	public static native JSWindow getAndClearMessageBoxOrigin()/*-{
-		var o = $wnd.top._messageBox_origin;
-		$wnd.top._messageBox_origin = null;
-		return (o ? o : null);
+	private native void pushMessageBoxOnStack()/*-{
+		if($wnd.top._messageBox_origin == null)
+		{
+			$wnd.top._messageBox_origin = new Array();
+		}		
+		$wnd.top._messageBox_origin.push($wnd);
+	}-*/;
+	
+	/**
+	 * Gets the window that has invoked the message box
+	 * @return
+	 */
+	public static native JSWindow getOpener()/*-{
+		try
+		{
+			var o = $wnd.top._messageBox_origin[$wnd.top._messageBox_origin.length - 1];
+			
+			if (o && o._cruxCrossDocumentAccessor)
+			{
+				return o;
+			}	
+			else 
+			{
+				return null;
+			}	
+		}
+		catch(e)
+		{
+			return null;
+		}
 	}-*/;
 }
