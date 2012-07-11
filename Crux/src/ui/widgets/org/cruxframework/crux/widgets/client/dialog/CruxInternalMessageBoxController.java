@@ -144,8 +144,7 @@ public class CruxInternalMessageBoxController implements CruxInternalMessageBoxC
 					JSWindow origin = getOpener();
 					if (origin != null)
 					{	
-						((TargetDocument)crossDoc).setTargetWindow(origin);
-						crossDoc.onOk();
+						okClick(origin);
 					}
 				}
 				catch (Throwable e)
@@ -161,6 +160,17 @@ public class CruxInternalMessageBoxController implements CruxInternalMessageBoxC
 		
 		return okButton;
 	}
+	
+	/**
+	 * Execute a ok click event on a origin window
+	 * @param origin
+	 */
+	private native void okClick(JSWindow origin)/*-{
+		if (origin && origin._cruxCrossDocumentAccessor)
+		{
+			origin._cruxCrossDocumentAccessor("__messageBox|onOk()|");
+		}	
+	}-*/;
 
 	/**
 	 * Closes the message box, removing its window from the stack 
