@@ -61,7 +61,14 @@ public class CruxInternalMessageBoxController implements CruxInternalMessageBoxC
 	 */
 	public void onOk()
 	{
-		OkEvent.fire(MessageBox.messageBox);
+		try
+		{
+			OkEvent.fire(MessageBox.messageBox);
+		}
+		catch (Throwable e)
+		{
+			Crux.getErrorHandler().handleError(e);
+		}
 	}
 	
 	/**
@@ -149,10 +156,17 @@ public class CruxInternalMessageBoxController implements CruxInternalMessageBoxC
 				}
 				catch (Throwable e)
 				{
-					Crux.getErrorHandler().handleError(e);
+					// IE 7 BUG: When the reference window no longer exists.
 				}
-
-				popMessageBoxFromStack();
+				
+				try
+				{
+					popMessageBoxFromStack();
+				}
+				catch (Throwable e)
+				{
+					// IE 7 BUG: When the reference window no longer exists.
+				}
 			}
 		});
 		
