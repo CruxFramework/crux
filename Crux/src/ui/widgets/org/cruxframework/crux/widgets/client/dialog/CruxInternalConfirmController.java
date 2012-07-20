@@ -50,7 +50,14 @@ public class CruxInternalConfirmController implements CruxInternalConfirmControl
 	 */
 	public void onCancel()
 	{
-		CancelEvent.fire(Confirm.confirm);
+		try
+		{
+			CancelEvent.fire(Confirm.confirm);
+		}
+		catch (Throwable e)
+		{
+			Crux.getErrorHandler().handleError(e);
+		}
 	}
 
 	/**
@@ -58,7 +65,14 @@ public class CruxInternalConfirmController implements CruxInternalConfirmControl
 	 */
 	public void onOk()
 	{
-		OkEvent.fire(Confirm.confirm);
+		try
+		{
+			OkEvent.fire(Confirm.confirm);
+		}
+		catch (Throwable e)
+		{
+			Crux.getErrorHandler().handleError(e);
+		}
 	}
 
 	/**
@@ -137,7 +151,7 @@ public class CruxInternalConfirmController implements CruxInternalConfirmControl
 				}
 				catch (Throwable e)
 				{
-					Crux.getErrorHandler().handleError(e);
+					// IE 7 BUG: When the reference window no longer exists.
 				}
 
 				popConfirmFromStack();
@@ -194,7 +208,7 @@ public class CruxInternalConfirmController implements CruxInternalConfirmControl
 				}
 				catch (Throwable e)
 				{
-					Crux.getErrorHandler().handleError(e);
+					// IE 7 BUG: When the reference window no longer exists.
 				}
 				
 				popConfirmFromStack();
