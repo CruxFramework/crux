@@ -496,7 +496,7 @@ public class GridFactory extends WidgetCreator<WidgetCreatorContext>
 						rowDetailCreatorVar = createVariableName("rowDetailCreator");
 						JSONObject detailElem = ensureChildren(child, false, context.getWidgetId()).optJSONObject(0);
 						out.println("final "+ className + " " + rowDetailCreatorVar + " = new " + className+"(){");
-						out.println("public Widget createWidgetForRowDetail(" + DataRow.class.getCanonicalName() + " row){");
+						out.println("public Widget createWidgetForRowDetail(final " + DataRow.class.getCanonicalName() + " row){");
 						String childWidget = createChildWidget(out, detailElem, new RowDetailsWidgetConsumer("row"), true, context);
 						out.println("return "+childWidget+";");
 						out.println("};");
@@ -525,7 +525,7 @@ public class GridFactory extends WidgetCreator<WidgetCreatorContext>
 		
 		public void consume(SourcePrinter out, String widgetId, String widgetVariableName) 
 		{
-			out.println("this.registerWidget(" + rowVariableName + "," + EscapeUtils.quote(widgetId) + ", " + widgetVariableName + ");");
+			out.println("registerWidget(" + rowVariableName + "," + EscapeUtils.quote(widgetId) + ", " + widgetVariableName + ");");
 		}
 	}
 	
