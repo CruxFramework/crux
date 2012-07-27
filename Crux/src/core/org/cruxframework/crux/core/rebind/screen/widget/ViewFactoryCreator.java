@@ -24,8 +24,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.cruxframework.crux.core.client.Crux;
-import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Input;
 import org.cruxframework.crux.core.client.screen.DeviceDisplayHandler;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
@@ -33,6 +31,8 @@ import org.cruxframework.crux.core.client.screen.ScreenFactory;
 import org.cruxframework.crux.core.client.screen.ScreenLoadEvent;
 import org.cruxframework.crux.core.client.screen.ViewFactory;
 import org.cruxframework.crux.core.client.screen.ViewFactoryUtils;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Input;
 import org.cruxframework.crux.core.client.screen.eventadapter.TapEventAdapter;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
@@ -56,6 +56,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.ext.GeneratorContextExt;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.dev.generator.NameFactory;
 import com.google.gwt.dom.client.Element;
@@ -506,6 +507,9 @@ public class ViewFactoryCreator
 			String[] messageParts = getKeyMessageParts(property);
 			String messageClassName = MessageClasses.getMessageClass(messageParts[0]);
 			
+			// Checks if declared message is valid
+			this.checkDeclaredMessage(messageClassName, messageParts[0], messageParts[1]);
+			
 			String messageVariable;
 			
 			if (!declaredMessages.containsKey(messageClassName))
@@ -524,6 +528,43 @@ public class ViewFactoryCreator
 	    	return property==null?null:EscapeUtils.quote(property);
 	    }
     }
+	
+	/**
+	 * Checks if declared message is valid
+	 * @param messageClassName
+	 * @param messageKey
+	 * @param messageMethod
+	 * @throws CruxGeneratorException
+	 */
+	private void checkDeclaredMessage(String messageClassName, String messageKey, String messageMethod) throws CruxGeneratorException
+	{
+		if (StringUtils.isEmpty(messageClassName))
+		{	
+			throw new CruxGeneratorException("Message ["+messageKey+"] , declared on screen ["+screen.getId()+"], not found.");
+		}
+		else
+		{	
+			JClassType messageClass = context.getTypeOracle().findType(messageClassName);
+			if (messageClass == null)
+			{	
+				String message = "Message class ["+messageKey+"] , declared on screen ["+screen.getId()+"], could not be loaded. "
+							   + "\n Possible causes:"
+							   + "\n\t 1. Check if any type or subtype used by message refers to another module and if this module is inherited in the .gwt.xml file."
+							   + "\n\t 2. Check if your message or its members belongs to a client package."
+							   + "\n\t 3. Check the versions of all your modules."
+							   ;
+				throw new CruxGeneratorException(message);
+			}
+			else
+			{	
+				JMethod method = messageClass.findMethod(messageMethod, new JType[]{});
+				if (method == null)
+				{	
+					throw new CruxGeneratorException("Method ["+messageMethod+"] of message ["+messageKey+"], declared on screen ["+screen.getId()+"], does not exist in message class ["+messageClassName+"].");
+				}
+			}
+		}
+	}
 
     /**
      * Returns <code>true</code> if the given text is an internationalization key.
