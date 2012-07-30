@@ -541,7 +541,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			else
 			{
 				((GridBaseFlexTable) table).joinCells(i);
-				Element cellElem = table.getCellElement(i, 0);
+				Element cellElem = table.getRowElement(i);
 				cellElem.getStyle().setOverflow(Overflow.HIDDEN);
 				cellElem.getStyle().setHeight(1, Unit.PX);
 				cellElem.getStyle().setOpacity(0.01);
