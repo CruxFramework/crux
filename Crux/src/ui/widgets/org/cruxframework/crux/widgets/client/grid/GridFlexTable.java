@@ -53,7 +53,7 @@ public class GridFlexTable extends FlexTable implements GridBaseFlexTable
 			}
 			
 			TableCellElement td = this.getCellElement(row, 0).cast();
-			td.setAttribute("colspan", ""+ numTds);
+			td.setAttribute("colSpan", ""+ numTds);
 			td.setInnerHTML(".");
 		}
 	}
