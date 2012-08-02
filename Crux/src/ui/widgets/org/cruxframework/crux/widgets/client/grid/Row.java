@@ -208,7 +208,6 @@ public class Row
 	{
 		if(hasRowDetails)
 		{
-			getDetailsPanel().setVisible(show);
 			if(show)
 			{
 				grid.getTable().getRowElement(index + 1).getStyle().setOverflow(Overflow.VISIBLE);

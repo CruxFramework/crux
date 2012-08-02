@@ -332,6 +332,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 						}
 					}
 				}
+				
+				dataRow.getDetailsPanel().setVisible(show);
 			}
 		}
 		
