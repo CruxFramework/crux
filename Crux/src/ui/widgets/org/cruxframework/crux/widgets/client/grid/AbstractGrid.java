@@ -122,7 +122,14 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	{
 		if(onShowDetails(show, row, true))
 		{
-			showDetailsButton.setText(show ? "-" : "+");
+			if (show)
+			{
+				StyleUtils.addStyleDependentName(showDetailsButton.getElement(), "opened");
+			}
+			else
+			{
+				StyleUtils.removeStyleDependentName(showDetailsButton.getElement(), "opened");
+			}
 		}
 	}
 	
@@ -645,7 +652,8 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	private Cell createRowDetailsCommandCell(R row)
 	{
-		Button button = new Button("+");
+		Button button = new Button(" ");
+		button.setStyleName("rowDetailsCommandButton");
 		button.addClickHandler(new RowDetailsCommandHandler<R>(this, row, button));
 		Cell cell = createCell(button, false, false);
 		cell.addStyleName("rowDetailsCommandCell");		
