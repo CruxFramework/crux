@@ -56,6 +56,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.ext.GeneratorContextExt;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.dev.generator.NameFactory;
 import com.google.gwt.dom.client.Element;
@@ -556,12 +557,11 @@ public class ViewFactoryCreator
 			}
 			else
 			{	
-				// TODO O método findMethod não está achando métodos de subinterfaces! Ver com o Thiago!!!
-//				JMethod method = messageClass.findMethod(messageMethod, new JType[]{});
-//				if (method == null)
-//				{	
-//					throw new CruxGeneratorException("Method ["+messageMethod+"] of message ["+messageKey+"], declared on screen ["+screen.getId()+"], does not exist in message class ["+messageClassName+"].");
-//				}
+				JMethod method = JClassUtils.getMethod(messageClass, messageMethod, new JType[]{});
+				if (method == null)
+				{	
+					throw new CruxGeneratorException("Method ["+messageMethod+"] of message ["+messageKey+"], declared on screen ["+screen.getId()+"], does not exist in message class ["+messageClassName+"].");
+				}
 			}
 		}
 	}
