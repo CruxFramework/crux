@@ -557,8 +557,7 @@ public class ViewFactoryCreator
 			}
 			else
 			{	
-				JMethod method = JClassUtils.getMethod(messageClass, messageMethod, new JType[]{});
-				if (method == null)
+				if (!hasMethod(messageClass, messageMethod, new JType[]{}))
 				{	
 					throw new CruxGeneratorException("Method ["+messageMethod+"] of message ["+messageKey+"], declared on screen ["+screen.getId()+"], does not exist in message class ["+messageClassName+"].");
 				}
@@ -566,6 +565,39 @@ public class ViewFactoryCreator
 		}
 	}
 
+	/**
+	 * Verifies if a method exists into a interface
+	 * @param clazz
+	 * @param methodName
+	 * @param params
+	 * @return
+	 */
+	private boolean hasMethod(JClassType clazz, String methodName, JType[] params)
+	{
+		if (clazz != null && methodName != null)
+		{	
+			JMethod method = clazz.findMethod(methodName, params);
+			if (method != null)
+			{
+				return true;
+			}
+			
+			JClassType[] interfaces = clazz.getImplementedInterfaces();
+			if (interfaces != null)
+			{
+				for (JClassType intf : interfaces)
+				{
+					if (hasMethod(intf, methodName, params))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
+	}
+	
     /**
      * Returns <code>true</code> if the given text is an internationalization key.
 	 * @param text
