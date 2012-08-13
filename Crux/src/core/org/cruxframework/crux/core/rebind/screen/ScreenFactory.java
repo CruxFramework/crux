@@ -122,7 +122,7 @@ public class ScreenFactory
 					if(screen != null)
 					{
 						screenCache.put(cacheId, screen);
-						saveScreenLastModified(id, lastModified);
+						saveScreenLastModified(cacheId, lastModified);
 					}
 				}
 			}
@@ -151,7 +151,7 @@ public class ScreenFactory
 		Screen screen = screenCache.get(cacheId);
 		if (screen != null)
 		{
-			if (mustReprocessScreen(id, lastModified))
+			if (mustReprocessScreen(cacheId, lastModified))
 			{
 				screenCache.remove(cacheId);
 				screen = null;
@@ -161,11 +161,11 @@ public class ScreenFactory
 	}
 
 	/**
-	 * @param id
+	 * @param cacheId
 	 * @param lastModified
 	 * @return
 	 */
-	private boolean mustReprocessScreen(String id, long lastModified)
+	private boolean mustReprocessScreen(String cacheId, long lastModified)
 	{
 		if (lastModified == REPROCESS_RESOURCE)
 		{
@@ -176,22 +176,22 @@ public class ScreenFactory
 			return false;
 		}
 		
-		return (!screenLastModified.containsKey(id) || !screenLastModified.get(id).equals(lastModified));
+		return (!screenLastModified.containsKey(cacheId) || !screenLastModified.get(cacheId).equals(lastModified));
 	}
 
 	/**
 	 * @param id
 	 * @param lastModified
 	 */
-	private void saveScreenLastModified(String id, long lastModified)
+	private void saveScreenLastModified(String cacheId, long lastModified)
 	{
-	    if (id.toLowerCase().startsWith("file:"))
+	    if (cacheId.toLowerCase().startsWith("file:"))
 	    {
-	    	screenLastModified.put(id, lastModified);
+	    	screenLastModified.put(cacheId, lastModified);
 	    }
 	    else
 	    {
-	    	screenLastModified.put(id, UNCHANGED_RESOURCE);
+	    	screenLastModified.put(cacheId, UNCHANGED_RESOURCE);
 	    }
 	}
 	
