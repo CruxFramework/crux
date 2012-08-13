@@ -816,6 +816,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			this.dataSource.sort(columnKey, ascending);
 			this.ascendingSort = ascending;
 			this.currentSortingColumn = columnKey;
+			
+			if(hasRowDetails())
+			{
+				this.rowDetailsManager.reset();
+			}
+			
 			this.render();
 		}		
 	}
