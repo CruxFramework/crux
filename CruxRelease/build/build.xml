@@ -29,6 +29,7 @@
 	<property name="crux.gadgets.name" value="crux-gadgets" />
 	<property name="crux.gadgets.runtime.name" value="crux-gadgets-runtime" />
 	<property name="crux.widgets.name" value="crux-widgets" />
+	<property name="crux.views.name" value="crux-view-widgets" />
 	<property name="crux.themes.name" value="crux-themes" />
 	
 	<!-- Proporties refering Quickstart Project -->
@@ -56,16 +57,65 @@
 	
 	<!-- 
 	========================================================================================================
+		Checks the presence of jars which Crux depends on  
+	========================================================================================================
+	-->
+	<target name="check-dependencies">
+		<condition property="must.download.deps">
+			<not>
+				<available file="${crux.dependencies.dir}/crux-runtime-deps.jar" type="file"/>
+			</not>
+		</condition>
+	</target>
+	
+	<!-- 
+	========================================================================================================
+		Download dependencies
+	========================================================================================================
+	-->
+	<target name="download-dependencies" depends="check-dependencies" if="must.download.deps">
+		<property name="zipName" value="crux-developer-jars.zip"/>
+		<mkdir dir="${dist.dir}/tmp"/>
+		<get dest="${dist.dir}/tmp" src="http://crux-framework.googlecode.com/files/${zipName}"/>
+		<unzip dest="${dist.dir}/tmp" src="${dist.dir}/tmp/${zipName}"/>
+		<copy todir="${crux.lib.dir}" flatten="yes">
+			<fileset dir="${dist.dir}/tmp">
+				<include name="lib/crux-dev-deps.jar"/>
+				<include name="lib/gwt-dev.jar"/>
+				<include name="lib/gwt-user.jar"/>
+				<include name="lib/validation-api-1.0.0.GA-sources.jar"/>
+				<include name="lib/validation-api-1.0.0.GA.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="${crux.build.dir}/dependencies" flatten="yes">
+			<fileset dir="${dist.dir}/tmp">
+				<include name="dependencies/crux-runtime-deps.jar"/>
+				<include name="dependencies/gwt-servlet-deps.jar"/>
+				<include name="dependencies/gwt-servlet.jar"/>
+			</fileset>
+		</copy>
+		<delete includeemptydirs="true"> 
+			<fileset dir="${dist.dir}/tmp">
+				<include name="**/*"/>
+				<include name="*"/>
+			</fileset>
+		</delete>
+	</target>
+	
+	<!-- 
+	========================================================================================================
 		Dist
 	========================================================================================================
 	-->
-	<target name="dist" >
+	<target name="dist" depends="download-dependencies" 
+		description="Compiles Crux and generates the installer (zip file) for distribution.">
+		
 		<delete dir="${dist.dir}" failonerror="no" includeemptydirs="true" />
 		<mkdir dir="${expanded.dir}" />
 
 		<!-- Run Crux distribution tasks -->
 		<ant inheritall="false" target="dist" antfile="${crux.build.dir}/build.xml"/>
-		<ant inheritall="false" target="generate-javadoc" antfile="${crux.build.dir}/build.xml" />
+		<subant inheritall="false" target="generate-javadoc" antfile="${crux.build.dir}/build.xml" failonerror="false" buildpath="."/>
 		<copy todir="${expanded.dir}/docs">
 			<fileset dir="${crux.dist.dir}/docs" includes="**/*"/>
 		</copy>	
@@ -76,6 +126,7 @@
 			<fileset dir="${crux.dist.dir}" >
 				<include name="${crux.dev.name}.jar" />				
 				<include name="${crux.widgets.name}.jar" />				
+				<include name="${crux.views.name}.jar" />				
 				<include name="${crux.themes.name}.jar" />				
 			</fileset>
 			<fileset dir="${crux.lib.dir}" >
@@ -108,8 +159,8 @@
 		<copy todir="${expanded.dir}" file="${launcher.sh.file}" />
 		<copy todir="${expanded.dir}" file="${launcher.cmd.file}" />
 		
-		<exec command="chmod 755 ${expanded.dir}/projectGenerator.sh" />
-		<exec command="chmod 755 ${expanded.dir}/start.sh" />
+		<exec command="chmod 755 ${expanded.dir}/projectGenerator.sh" failonerror="false" failifexecutionfails="false"/>
+		<exec command="chmod 755 ${expanded.dir}/start.sh" failonerror="false" failifexecutionfails="false"/>
 
 		<copy todir="${expanded.dir}">
 			<fileset dir="${resource.dir}/static" includes="*" />
@@ -152,6 +203,7 @@
 			<fileset dir="${crux.dist.dir}" >
 				<include name="${crux.dev.name}.jar" />				
 				<include name="${crux.widgets.name}.jar" />				
+				<include name="${crux.views.name}.jar" />				
 				<include name="${crux.themes.name}.jar" />				
 			</fileset>
 			<fileset dir="${crux.lib.dir}" >
@@ -172,6 +224,7 @@
 			<fileset dir="${crux.dist.dir}" >
 				<include name="${crux.dev.name}.jar" />				
 				<include name="${crux.widgets.name}.jar" />				
+				<include name="${crux.views.name}.jar" />				
 				<include name="${crux.themes.name}.jar" />				
 			</fileset>
 			<fileset dir="${crux.lib.dir}" >
@@ -192,6 +245,7 @@
 			<fileset dir="${crux.dist.dir}" >
 				<include name="${crux.dev.name}.jar" />				
 				<include name="${crux.widgets.name}.jar" />				
+				<include name="${crux.views.name}.jar" />				
 				<include name="${crux.themes.name}.jar" />				
 			</fileset>
 			<fileset dir="${crux.lib.dir}" >
@@ -212,6 +266,7 @@
 			<fileset dir="${crux.dist.dir}" >
 				<include name="${crux.dev.name}.jar" />				
 				<include name="${crux.widgets.name}.jar" />				
+				<include name="${crux.views.name}.jar" />				
 				<include name="${crux.themes.name}.jar" />				
 				<include name="${crux.runtime.name}.jar" />				
 			</fileset>

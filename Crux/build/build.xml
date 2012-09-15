@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project default="dist" name="Crux" basedir="../">
+<project name="Crux" basedir="../">
 
 	<tstamp>
 		<format property="build.date" pattern="MM/dd/yyyy hh:mm:ss" />
@@ -54,6 +54,7 @@
 	========================================================================================================
 	-->
 	<target name="generate-javadoc">
+		<mkdir dir="${javadoc.dir}"/>
 		<javadoc encoding="UTF-8" destdir="${javadoc.dir}" protected="true" source="1.5" classpathref="build.classpath" 
 			overview="${core.src.dir}/overview.html">
 			<fileset dir="${core.src.dir}" />
@@ -68,10 +69,10 @@
 	
 	<!-- 
 	========================================================================================================
-		Generate the Distribution File
+		Generate the Distribution File (generates all Crux jar files)
 	========================================================================================================
 	-->
-	<target name="dist" description="Creates the crux zip file.">
+	<target name="dist">
 		<delete dir="${dist.dir}" failonerror="no" includeemptydirs="yes" includes="**/*" />
 		<mkdir dir="${dist.dir}" />
 		
@@ -87,10 +88,11 @@
 	
 	<!-- 
 	========================================================================================================
-		Export crux-dev.jar
+		Export crux-dev.jar (Creates the crux-dev.jar file and exports it to the dist folder)
 	========================================================================================================
 	-->
-	<target name="export-crux-dev" description="Creates the crux-dev.jar file and exports it to the dist folder.">
+	<target name="export-crux-dev">
+		
 		<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="build.classpath" />
 		<delete  file="${dist.dir}/${crux.dev.name}.jar" failonerror="no" />
 		
@@ -128,10 +130,10 @@
 
 	<!-- 
 	========================================================================================================
-		Export crux-runtime.jar
+		Export crux-runtime.jar (Creates the crux-runtime.jar file and exports it to the dist folder)
 	========================================================================================================
 	-->
-	<target name="export-crux-runtime" description="Creates the crux-runtime.jar file and exports it to the dist folder.">
+	<target name="export-crux-runtime">
 		<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="build.classpath" />
 		<delete  file="${dist.dir}/${crux.runtime.name}.jar" failonerror="no" />
 		
@@ -186,10 +188,10 @@
 	
 	<!-- 
 	========================================================================================================
-		Export crux-gadget.jar
+		Export crux-gadget.jar (Creates the crux-gadgets.jar file and exports it to the dist folder)
 	========================================================================================================
 	-->
-	<target name="export-crux-gadgets" description="Creates the crux-gadgets.jar file and exports it to the dist folder.">
+	<target name="export-crux-gadgets" >
 		<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="build.classpath" />
 		<delete  file="${dist.dir}/${crux.gadgets.name}.jar" failonerror="no" />
 		
@@ -243,10 +245,10 @@
 	
 	<!-- 
 	========================================================================================================
-		Export crux-widgets.jar
+		Export crux-widgets.jar (Creates the crux-widgets.jar file and exports it to the dist folder)
 	========================================================================================================
 	-->
-	<target name="export-crux-widgets" description="Creates the crux-widgets.jar file and exports it to the dist folder.">
+	<target name="export-crux-widgets">
 		<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="build.classpath" />
 		<delete  file="${dist.dir}/${crux.widgets.name}.jar" failonerror="no" />
 		
@@ -282,10 +284,10 @@
 	
 	<!-- 
 	========================================================================================================
-		Export crux-themes.jar
+		Export crux-themes.jar (Creates the crux-themes.jar file and exports it to the dist folder)
 	========================================================================================================
 	-->
-	<target name="export-crux-themes" description="Creates the crux-themes.jar file and exports it to the dist folder.">
+	<target name="export-crux-themes">
 		<typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="build.classpath" />
 		<delete  file="${dist.dir}/${crux.themes.name}.jar" failonerror="no" />
 		
