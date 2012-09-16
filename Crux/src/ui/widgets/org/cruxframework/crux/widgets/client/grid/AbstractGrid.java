@@ -853,11 +853,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		return rowDetailWidgetCreator;
 	}
 	
-	public RowSelectionModel getRowSelectionModel() 
-	{
-		return rowSelection;
-	}
-	
 	ScrollPanel getScrollingArea()
 	{
 		return this.scrollingArea;
@@ -891,5 +886,37 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	public boolean hasFrozenCells() 
 	{
 		return freezeHeaders || hasFrozenColumns();
+	}
+
+	public RowSelectionModel getRowSelectionModel() 
+	{
+		return rowSelection;
+	}
+	
+	public void setRowSelectionModel(RowSelectionModel rowSelectionModel) 
+	{
+		if(rowSelectionModel != null)
+		{
+			List<R> selectedRows = getSelectedRows();
+
+			this.rowSelection = rowSelectionModel;
+			
+			int numSelectedRows = selectedRows.size();
+			if(numSelectedRows > 0)
+			{
+				boolean selectNone = RowSelectionModel.unselectable.equals(this.rowSelection);
+				boolean selectSingle = RowSelectionModel.single.equals(this.rowSelection) || RowSelectionModel.singleRadioButton.equals(this.rowSelection);
+
+				for (int i = 0; i < numSelectedRows; i++) 
+				{
+					R row = selectedRows.get(i);
+
+					if(selectNone || (selectSingle && i > 0))
+					{
+						row.setSelected(false);
+					}					
+				}
+			}
+		}
 	}
 }
