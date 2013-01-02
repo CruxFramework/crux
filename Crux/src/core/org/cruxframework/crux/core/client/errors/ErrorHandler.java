@@ -47,6 +47,13 @@ public interface ErrorHandler
 	
 	/**
 	 * Handle an error on application
+	 * @param t The exception 
+	 * @param uncaught True if it is an uncaught exception 
+	 */
+	void handleError(Throwable t, boolean uncaught);
+
+	/**
+	 * Handle an error on application
 	 * @param errorMessage The error message
 	 * @param t The exception 
 	 */
