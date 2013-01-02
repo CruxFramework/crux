@@ -25,7 +25,7 @@ public class ShowcaseErrorHandler implements ErrorHandler, ValidationErrorHandle
 
 	public void handleError(Throwable t)
 	{
-		handleError(t.getMessage(), t);
+		handleError(t, false);
 	}
 
 	public void handleError(String errorMessage, Throwable t)
@@ -70,5 +70,9 @@ public class ShowcaseErrorHandler implements ErrorHandler, ValidationErrorHandle
 	public void handleValidationError(String errorMessage)
 	{
 		MessageBox.show("Oops...", errorMessage, null);
+	}
+
+	public void handleError(Throwable t, boolean uncaught) {
+		handleError(t.getMessage(), t);
 	}
 }
