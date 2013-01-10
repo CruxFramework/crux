@@ -19,9 +19,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.Manifest;
 
@@ -100,6 +102,7 @@ public class ModuleExporter
 	private String scanIgnoredPackages;
 	private File sourceDir;
 	private boolean unpackaged = false;
+	private List<String> gwtCompilerArgs = new ArrayList<String>();
 	
 	
 	/**
@@ -360,6 +363,31 @@ public class ModuleExporter
 		parameter.addParameterOption(new ConsoleParameterOption("fileExtension", "File Extension"));
 		parametersProcessor.addSupportedParameter(parameter);
 		
+		// GWT Compiler Parameters
+		parameter = new ConsoleParameter("-gen", "Specify the folder where the GWT generators will output generated classes.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("genFolder", "Folder Name"));
+		parametersProcessor.addSupportedParameter(parameter);
+		
+		parameter = new ConsoleParameter("-style", "Specify the output style for GWT generated code.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("style", "GWT output Style"));
+		parametersProcessor.addSupportedParameter(parameter);
+		
+		parameter = new ConsoleParameter("-extra", "The directory into which extra files, not intended for deployment, will be written.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("extraFolder", "Folder Name"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-localWorkers", "Number of threads used to compile the permutations in parallel.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("numberOfWorkers", "Number of Workers"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-logLevel", "Level of Logging", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("level", "Level"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-validateOnly", " Validate all source code, but do not compile.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-compileReport", "Create a compile report that tells the Story of Your Compile.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-draftCompile", "Disable compiler optimizations and run faster.", false, true));
+		
 
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
@@ -388,6 +416,8 @@ public class ModuleExporter
 	        File cruxCompilationOutput = new File(exporterWorkDir, CRUX_MODULE_EXPORT);
 	        cruxCompilationOutput.mkdirs();
 	        cruxCompiler.setOutputDir(cruxCompilationOutput);
+	        cruxCompiler.addGwtCompilerArgs(getGwtArgs(moduleName));
+	        
 
 	        File cruxPagesOutput = new File(exporterWorkDir, CRUX_MODULE_EXPORT_PAGES);
 	        cruxPagesOutput.mkdirs();
@@ -494,6 +524,20 @@ public class ModuleExporter
     }
 	
 	/**
+	 * @param moduleName
+	 * @return
+	 */
+	protected String[] getGwtArgs(String moduleName)
+    {
+	    String[] gwtArgs = new String[gwtCompilerArgs.size()];
+	    for (int i=0; i<gwtCompilerArgs.size(); i++)
+	    {
+	        gwtArgs[i] = gwtCompilerArgs.get(i);
+	    }
+	    return gwtArgs;
+    }
+	
+	/**
 	 * Evaluate all program arguments and initialize the associated ModuleExporter properties.
 	 * @param parameters
 	 */
@@ -501,7 +545,25 @@ public class ModuleExporter
     {
 	    for (ConsoleParameter parameter : parameters)
         {
-	        if (parameter.getName().equals("moduleName"))
+	        if (parameter.getName().equals("-gen") || parameter.getName().equals("-style") || parameter.getName().equals("-extra") || parameter.getName().equals("-localWorkers")
+	        		|| parameter.getName().equals("-logLevel"))
+	        {
+	        	gwtCompilerArgs.add(parameter.getName());
+	        	gwtCompilerArgs.add(parameter.getValue());
+	        }
+	        else if (parameter.getName().equals("-compileReport"))
+	        {
+	        	gwtCompilerArgs.add(parameter.getName());
+	        }
+	        else if (parameter.getName().equals("-draftCompile"))
+	        {
+	        	gwtCompilerArgs.add(parameter.getName());
+	        }
+	        else if (parameter.getName().equals("-validateOnly"))
+	        {
+	        	gwtCompilerArgs.add(parameter.getName());
+	        }
+	        else if (parameter.getName().equals("moduleName"))
 	        {
 	        	this.moduleName = parameter.getValue();
 	        	if (StringUtils.isEmpty(this.outputModuleName))

@@ -510,6 +510,21 @@ public abstract class AbstractCruxCompiler
     }
 
 	/**
+	 * 
+	 * @param args
+	 */
+	public void addGwtCompilerArgs(String[] args)
+	{
+		if (args != null)
+		{
+			for (String arg : args)
+            {
+	            gwtCompilerArgs.add(arg);
+            }
+		}
+	}
+	
+	/**
 	 * @param moduleName
 	 * @return
 	 */
