@@ -1,7 +1,0 @@
-<module rename-to='helloworld'>
-	<inherits name='org.cruxframework.crux.core.Crux'/>
-	<inherits name='org.cruxframework.crux.gwt.CruxGWTWidgets'/>
-	<inherits name='org.cruxframework.crux.widgets.CruxWidgets'/>
-	<inherits name='com.google.gwt.user.theme.standard.Standard'/>
-	<inherits name='org.cruxframework.crux.themes.widgets.standard.Standard'/>	
-</module>

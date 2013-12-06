@@ -1,6 +1,0 @@
-<x:xdevice xmlns:x="http://www.cruxframework.org/xdevice"
-           xmlns:gwt="http://www.cruxframework.org/crux/gwt" 
-           controller="storyboardLargeController">
-     <gwt:flowPanel id="storyboard" style="textAlign:center;">
-     </gwt:flowPanel>      
-</x:xdevice>

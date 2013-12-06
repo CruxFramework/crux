@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<classpath>
-	<classpathentry excluding="**/*.template.xml" kind="src" path="src"/>
-	${classpathLibs}
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="war/WEB-INF/classes"/>
-</classpath>
