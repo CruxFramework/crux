@@ -1,0 +1,1 @@
+screenResourceResolver=org.cruxframework.crux.gadget.rebind.scanner.GadgetScreenResolver

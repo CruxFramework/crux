@@ -1,0 +1,7 @@
+${customUserPreferencesPackage}
+
+import org.cruxframework.crux.gadget.client.features.UserPreferences;
+
+public interface ${customUserPreferencesClass} extends UserPreferences
+{
+}
