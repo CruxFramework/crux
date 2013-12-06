@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<antToMaven>
+	<globalConfigurations>
+		<mavenHome>E:\desenv\workspaces\workspace-crux-5\AntToMaven\apache-maven-3.1.1</mavenHome>
+		<workingDirectory>E:\desenv\workspaces\unimed</workingDirectory>
+		<targetDirectory>E:\desenv\workspaces\workspace-crux-5\TargetMigracao</targetDirectory>
+		<archetypeGroupId>org.cruxframework</archetypeGroupId>
+		<archetypeJARArtifactId>crux-module-app</archetypeJARArtifactId>
+		<archetypeWARArtifactId>crux-module-container-app</archetypeWARArtifactId>
+		<archetypeCatalog>http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml</archetypeCatalog>
+	</globalConfigurations>
+	<project projectName="simco-app">
+                <typeWAR>true</typeWAR>
+		<groupId>br.com.unimed.simco</groupId>
+		<artifactId>simco-app</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<package>br.com.unimed.simco</package>
+		<moduleName>SimcoApp</moduleName>
+		<moduleShortName>SimcoApp</moduleShortName>
+		<moduleDescription>Este é o módulo Casca da SIMCO - UNIMED</moduleDescription>
+	</project>
+	<project projectName="simco-core">
+                <typeWAR>false</typeWAR>
+		<groupId>br.com.unimed.simco.core</groupId>
+		<artifactId>simco-core</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<package>br.com.unimed.simco.core</package>
+		<moduleName>Core</moduleName>
+		<moduleShortName>Core</moduleShortName>
+		<moduleDescription>Este é o módulo Core da SIMCO - UNIMED</moduleDescription>
+	</project>
+</antToMaven>
