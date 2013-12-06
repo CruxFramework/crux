@@ -1,0 +1,50 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	useController="mainController" title="Home"> 
+	
+	<gwt:HTML id="viewTextPanel" styleName="viewTextPanel">
+		<section>
+			<h1>O que é o Crux Framework?</h1>
+			
+			<p>Conheça um pouco mais sobre essa ferramenta inovadora e 100% brasileira que permite a criação de aplicações
+			Web modernas, velozes e portáveis como você nunca viu.</p>
+			
+			<ul>
+				<li>
+					<h2>Maturidade</h2>
+					<p>Nascido em 2008, o Crux vem sendo utilizado em projetos de larga escala e alta complexidade desde então. 
+					São mais de 5 anos de aprimoramentos e correções, que fazem com que o Crux, hoje em sua 5ª versão, 
+					apresente maturidade plena para seu projeto.</p>
+				</li>
+				<li>
+					<h2>100% brasileiro</h2>
+					<p>O Crux é um projeto totalmente idealizado e mantido por desenvolvedores brasileiros. Sua equipe é
+					composta por projetistas e desenvolvedores experientes, que empregam o conhecimento adquirido ao longo 
+					de suas carreiras com o objetivo de tornar mais simples a tarefa de desenvolver sistemas Web. 
+					</p>
+				</li>
+				<li>
+					<h2>Open Source</h2>
+					<p>O Crux é um projeto totalmente livre e independente. Seu código encontra-se hospedado no 
+					<a href="https://code.google.com/p/crux-framework/" target="_blank">Google Code</a> e totalmente
+					disponível, sob a licença Apache 2.0, para sua análise e uso. Você pode baixar, compilar, modificar 
+					e redistribuir se quiser. Sem restrições.</p>
+				</li>
+				<li>
+					<h2>Bases sólidas</h2>
+					<p>A base para o desenvolvimento do framework Crux é o Google Web Toolkit (GWT), uma ferramenta 
+					criada pelo Google e hoje mantida como um projeto open source por equipes espalhadas pelo mundo.
+					O GWT está em constante evolução e cada dia mais rápido e poderoso.</p> 
+				</li>
+			</ul>
+		</section>
+	</gwt:HTML>		
+
+	<div class="buttonBar">
+		<crux:button id="btnVoltar" onSelect="mainController.showViewInfo" text="Voltar"/>
+	</div>
+</v:view>
