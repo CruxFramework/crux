@@ -1,0 +1,24 @@
+<module rename-to='${module-short-name}'>
+	<inherits name='org.cruxframework.crux.core.Crux' />
+	<inherits name='org.cruxframework.crux.gwt.CruxGWTWidgets' />
+	<inherits name='org.cruxframework.crux.widgets.CruxWidgets' />
+	<inherits name='org.cruxframework.crux.crossdevice.CrossDeviceWidgets' />
+	<inherits name='org.cruxframework.crux.themes.widgets.xstandard.XStandard' />
+
+	<source path='client' />
+	<public path='public' excludes='**/*.crux.xml,**/*.view.xml,**/*.template.xml,**/*.offline.xml' />
+
+	<!-- To enable logging -->
+	<!--
+	<inherits name="com.google.gwt.logging.Logging" />
+	<set-property name="gwt.logging.logLevel" value="FINE" />
+	<set-property name="gwt.logging.enabled" value="TRUE" />
+	<set-property name="gwt.logging.consoleHandler" value="ENABLED" />
+	<set-property name="gwt.logging.developmentModeHandler" value="ENABLED" />
+	<set-property name="gwt.logging.firebugHandler" value="ENABLED" />
+	<set-property name="gwt.logging.popupHandler" value="DISABLED" />
+	<set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED" />
+	<set-property name="gwt.logging.systemHandler" value="DISABLED" />
+	<set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED" />
+     -->
+</module>

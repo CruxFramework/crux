@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.cruxframework</groupId>
+	<artifactId>crux-base-archetype</artifactId>
+	<version>5.0.4</version>
+	<packaging>pom</packaging>
+	<name>crux-base-archetype</name>
+	<description>Parent POM for crux archetypes</description>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+  
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<scm>
+		<connection>scm:svn:http://crux-framework.googlecode.com/svn/branches/5.0.0/archetypes</connection>
+		<developerConnection>scm:svn:https://crux-framework.googlecode.com/svn/branches/5.0.0/archetypes</developerConnection>
+		<url>https://crux-framework.googlecode.com/svn/branches/5.0.0/archetypes</url>
+	</scm>
+
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.archetype</groupId>
+				<artifactId>archetype-packaging</artifactId>
+				<version>2.2</version>
+			</extension>
+		</extensions>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-archetype-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

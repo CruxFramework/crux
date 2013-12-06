@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="main"  >
+<target name="main">
+  <mkdir dir="E:\desenv\workspaces\workspace-crux-5\archetypes\crux-archetypes\target"/>
+  <copy todir="E:\desenv\workspaces\workspace-crux-5\archetypes\crux-archetypes\target">
+    <fileset dir="E:\desenv\workspaces\workspace-crux-5\archetypes\crux-archetypes/src/main/resources">
+      <include name="archetype-catalog.xml"/>
+    </fileset>
+  </copy>
+  <replace token="[version]" file="E:\desenv\workspaces\workspace-crux-5\archetypes\crux-archetypes\target/archetype-catalog.xml" value="5.0.4"/>
+</target>
+</project>
