@@ -307,28 +307,31 @@ public class Main
 		//to: pom.xml
 		String destPomFile = targetDirectory + "\\" + artifactId + "\\" + "pom.xml";
 		//---->>> <dependencies>*</dependencies>
-		try
+		
+		if(new File(workingPomFile).exists())
 		{
-			String pomOrigContent = CruxFileUtils.readFileContent(new File(workingPomFile));
-			String pomDestContent = CruxFileUtils.readFileContent(new File(destPomFile));
-			
-			String newDependencies = pomOrigContent.substring(
-					pomOrigContent.indexOf("<dependencies>") + "<dependencies>".length(), pomOrigContent.lastIndexOf("</dependencies>"));
-			
-			StringBuffer newPom = new StringBuffer();
-			newPom.append(pomDestContent.substring(0, pomDestContent.indexOf("<dependencies>")));
-			newPom.append("<dependencies>");
-			newPom.append(newDependencies);
-			newPom.append(pomDestContent.substring(pomDestContent.lastIndexOf("<dependencies>") + "</dependencies>".length(), pomDestContent.length()));
-			FileWriter writer = new FileWriter(destPomFile);
-			writer.write(newPom.toString());
-			
-			writer.close();
+			try
+			{
+				String pomOrigContent = CruxFileUtils.readFileContent(new File(workingPomFile));
+				String pomDestContent = CruxFileUtils.readFileContent(new File(destPomFile));
+				
+				String newDependencies = pomOrigContent.substring(
+						pomOrigContent.indexOf("<dependencies>") + "<dependencies>".length(), pomOrigContent.lastIndexOf("</dependencies>"));
+				
+				StringBuffer newPom = new StringBuffer();
+				newPom.append(pomDestContent.substring(0, pomDestContent.indexOf("<dependencies>")));
+				newPom.append("<dependencies>");
+				newPom.append(newDependencies);
+				newPom.append(pomDestContent.substring(pomDestContent.lastIndexOf("<dependencies>") + "</dependencies>".length(), pomDestContent.length()));
+				FileWriter writer = new FileWriter(destPomFile);
+				writer.write(newPom.toString());
+				
+				writer.close();
+			}
+			catch (IOException ioe)
+			{
+				ioe.printStackTrace();
+			}
 		}
-		catch (IOException ioe)
-		{
-			ioe.printStackTrace();
-		}
-
 	}
 }
