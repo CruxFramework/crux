@@ -177,14 +177,18 @@ public class Main
 		}
 		//to: src\\main\\webapp\\WEB-INF\\web.xml
 		String destWAR = targetDirectory + "\\" + artifactId + "\\src\\main\\webapp\\WEB-INF\\web.xml";
-		try 
+		
+		if(new File(srcWAR).exists())
 		{
-			CruxFileUtils.copyFile(new File(srcWAR), new File(destWAR));
-		} catch (IOException e) 
-		{
-			throw new RuntimeException("Error to copy web.xml.", e);
+			try 
+			{
+				CruxFileUtils.copyFile(new File(srcWAR), new File(destWAR));
+			} catch (IOException e) 
+			{
+				throw new RuntimeException("Error to copy web.xml.", e);
+			}
 		}
-
+		
 		LOG.info(">>> Copying public folder <<<<");
 		//from: src\*\public
 		String srcPublic = workingDirectory + "\\" + artifactId + "\\" + "src" + "\\" + packageStr + "\\public";
@@ -307,31 +311,27 @@ public class Main
 		//to: pom.xml
 		String destPomFile = targetDirectory + "\\" + artifactId + "\\" + "pom.xml";
 		//---->>> <dependencies>*</dependencies>
-		
-		if(new File(workingPomFile).exists())
+		try
 		{
-			try
-			{
-				String pomOrigContent = CruxFileUtils.readFileContent(new File(workingPomFile));
-				String pomDestContent = CruxFileUtils.readFileContent(new File(destPomFile));
-				
-				String newDependencies = pomOrigContent.substring(
-						pomOrigContent.indexOf("<dependencies>") + "<dependencies>".length(), pomOrigContent.lastIndexOf("</dependencies>"));
-				
-				StringBuffer newPom = new StringBuffer();
-				newPom.append(pomDestContent.substring(0, pomDestContent.indexOf("<dependencies>")));
-				newPom.append("<dependencies>");
-				newPom.append(newDependencies);
-				newPom.append(pomDestContent.substring(pomDestContent.lastIndexOf("<dependencies>") + "</dependencies>".length(), pomDestContent.length()));
-				FileWriter writer = new FileWriter(destPomFile);
-				writer.write(newPom.toString());
-				
-				writer.close();
-			}
-			catch (IOException ioe)
-			{
-				ioe.printStackTrace();
-			}
+			String pomOrigContent = CruxFileUtils.readFileContent(new File(workingPomFile));
+			String pomDestContent = CruxFileUtils.readFileContent(new File(destPomFile));
+			
+			String newDependencies = pomOrigContent.substring(
+					pomOrigContent.indexOf("<dependencies>") + "<dependencies>".length(), pomOrigContent.lastIndexOf("</dependencies>"));
+			
+			StringBuffer newPom = new StringBuffer();
+			newPom.append(pomDestContent.substring(0, pomDestContent.indexOf("<dependencies>")));
+			newPom.append("<dependencies>");
+			newPom.append(newDependencies);
+			newPom.append(pomDestContent.substring(pomDestContent.lastIndexOf("<dependencies>") + "</dependencies>".length(), pomDestContent.length()));
+			FileWriter writer = new FileWriter(destPomFile);
+			writer.write(newPom.toString());
+			
+			writer.close();
+		}
+		catch (IOException ioe)
+		{
+			ioe.printStackTrace();
 		}
 	}
 }
