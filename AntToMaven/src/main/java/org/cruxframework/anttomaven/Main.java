@@ -116,7 +116,7 @@ public class Main
 						CruxFileUtils.cleanDirectory(targetDirectory + "\\" + artifactId);
 					} catch (Exception e) 
 					{
-						e.printStackTrace();
+						LOG.info("Unable to clean directory: " + targetDirectory + "\\" + artifactId);
 					}
 					
 					LOG.info("Generating...");
