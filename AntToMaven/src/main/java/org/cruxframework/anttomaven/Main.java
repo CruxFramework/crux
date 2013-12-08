@@ -123,19 +123,18 @@ public class Main
 					InvocationRequest request = new DefaultInvocationRequest();
 					List<String> params = Collections.singletonList(
 							"archetype:generate"
-									+ " -DgroupId=" + groupId
-									+ " -DartifactId=" + artifactId
-									+ " -DarchetypeGroupId=" + archetypeGroupId
-									+ " -DarchetypeArtifactId=" + (typeWAR ? archetypeJARArtifactId : archetypeWARArtifactId)  
-									+ " -DarchetypeCatalog=" + archetypeCatalog
+							+ " -DgroupId=" + groupId
+							+ " -DartifactId=" + artifactId
+							+ " -DarchetypeGroupId=" + archetypeGroupId
+							+ " -DarchetypeArtifactId=" + (typeWAR ? archetypeWARArtifactId : archetypeJARArtifactId)  
+							+ " -DarchetypeCatalog=" + archetypeCatalog
 
-									+ " -Dversion=" + version
-									+ " -Dpackage=" + packageStr
-									+ " -Dmodule-name=" + moduleName
-									+ " -Dmodule-short-name=" + moduleShortName
-									+ " -Dmodule-description='" + moduleDescription + "'"
-
-						+ " -DinteractiveMode=false" );
+							+ " -Dversion=" + version
+							+ " -Dpackage=" + packageStr
+							+ " -Dmodule-name=" + moduleName
+							+ " -Dmodule-short-name=" + moduleShortName
+							+ " -Dmodule-description='" + moduleDescription + "'"
+							+ " -DinteractiveMode=false" );
 					request.setGoals(params);
 
 					LOG.info(">>> mvn: " + params.toString());

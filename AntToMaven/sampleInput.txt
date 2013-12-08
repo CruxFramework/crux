@@ -3,27 +3,27 @@
 	<globalConfigurations>
 		<mavenHome>E:\desenv\workspaces\crux-trunk\AntToMaven\apache-maven-3.1.1</mavenHome>
 		<workingDirectory>E:\desenv\workspaces\unimed</workingDirectory>
-		<targetDirectory>E:\desenv\workspaces\unimed\targetMigracao</targetDirectory>
+		<targetDirectory>E:\desenv\workspaces\unimed-maven</targetDirectory>
 		<archetypeGroupId>org.cruxframework</archetypeGroupId>
 		<archetypeJARArtifactId>crux-module-app</archetypeJARArtifactId>
 		<archetypeWARArtifactId>crux-module-container-app</archetypeWARArtifactId>
 		<archetypeCatalog>http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml</archetypeCatalog>
 	</globalConfigurations>
 	<project projectName="simco-app">
-                <typeWAR>true</typeWAR>
+        <typeWAR>true</typeWAR>
 		<groupId>br.com.unimed.simco</groupId>
 		<artifactId>simco-app</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 		<package>br.com.unimed.simco</package>
 		<moduleName>SimcoApp</moduleName>
 		<moduleShortName>SimcoApp</moduleShortName>
 		<moduleDescription>Este é o módulo Casca do SIMCO - UNIMED</moduleDescription>
 	</project>
 	<project projectName="simco-core">
-                <typeWAR>false</typeWAR>
+        <typeWAR>false</typeWAR>
 		<groupId>br.com.unimed.simco.core</groupId>
 		<artifactId>simco-core</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 		<package>br.com.unimed.simco.core</package>
 		<moduleName>Core</moduleName>
 		<moduleShortName>Core</moduleShortName>
@@ -33,7 +33,7 @@
         <typeWAR>false</typeWAR>
         <groupId>br.com.unimed.simco.dominio</groupId>
         <artifactId>simco-dominio</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
         <package>br.com.unimed.simco.dominio</package>
         <moduleName>Dominio</moduleName>
         <moduleShortName>Dominio</moduleShortName>
@@ -43,7 +43,7 @@
         <typeWAR>false</typeWAR>
         <groupId>br.com.unimed.simco.gestao</groupId>
         <artifactId>simco-gestao</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
         <package>br.com.unimed.simco.gestao</package>
         <moduleName>Gestao</moduleName>
         <moduleShortName>Gestao</moduleShortName>
@@ -53,7 +53,7 @@
         <typeWAR>false</typeWAR>
         <groupId>br.com.unimed.simco.manutencaoprospect</groupId>
         <artifactId>simco-manutencao-prospect</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
         <package>br.com.unimed.simco.manutencaoprospect</package>
         <moduleName>ManutencaoProspect</moduleName>
         <moduleShortName>ManutencaoProspect</moduleShortName>
@@ -63,7 +63,7 @@
         <typeWAR>false</typeWAR>
         <groupId>br.com.unimed.simco.proposta</groupId>
         <artifactId>simco-proposta</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
         <package>br.com.unimed.simco.proposta</package>
         <moduleName>Proposta</moduleName>
         <moduleShortName>Proposta</moduleShortName>
@@ -73,10 +73,30 @@
         <typeWAR>false</typeWAR>
         <groupId>br.com.unimed.simco.simulacaoplanosaude</groupId>
         <artifactId>simco-simulacao-planosaude</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
         <package>br.com.unimed.simco.simulacaoplanosaude</package>
         <moduleName>SimulacaoPlanoSaude</moduleName>
         <moduleShortName>SimulacaoPlanoSaude</moduleShortName>
         <moduleDescription>Este é o módulo SimulacaoPlanoSaude do SIMCO - UNIMED</moduleDescription>
+    </project>
+    <project projectName="simco-prototipo">
+        <typeWAR>false</typeWAR>
+        <groupId>br.com.unimed.simco.prototipo</groupId>
+        <artifactId>simco-prototipo</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <package>br.com.unimed.simco.prototipo</package>
+        <moduleName>Prototipo</moduleName>
+        <moduleShortName>Prototipo</moduleShortName>
+        <moduleDescription>Este é o módulo Prototipo do SIMCO - UNIMED</moduleDescription>
+    </project>
+    <project projectName="simco-home">
+        <typeWAR>false</typeWAR>
+        <groupId>br.com.unimed.simco.home</groupId>
+        <artifactId>simco-home</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <package>br.com.unimed.simco.home</package>
+        <moduleName>Home</moduleName>
+        <moduleShortName>Home</moduleShortName>
+        <moduleDescription>Este é o módulo Home do SIMCO - UNIMED</moduleDescription>
     </project>
 </antToMaven>
