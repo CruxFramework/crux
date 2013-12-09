@@ -3,8 +3,10 @@ package org.cruxframework.crux.widgets.client.dialogcontainer;
 import org.cruxframework.crux.widgets.client.button.Button;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
+import org.cruxframework.crux.widgets.client.util.DragAndDropUtils;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -20,6 +22,7 @@ public class FlatDialogBox extends PopupPanel
 	private SimplePanel body = new SimplePanel();;
 	private Label title = new Label();
 	private Button closeBtn = new Button();
+	private FocusPanel dragKnob;
 		
 	public FlatDialogBox() 
 	{
@@ -39,6 +42,8 @@ public class FlatDialogBox extends PopupPanel
 		split.add(resizer);
 		
 		super.setWidget(split);
+		
+		DragAndDropUtils.addDragAndDropMoveBehavior(this, dragKnob);
 	}
 
 	private Label prepareResizer() 
@@ -65,7 +70,11 @@ public class FlatDialogBox extends PopupPanel
 			}
 		});
 		
+		dragKnob = new FocusPanel();
+		dragKnob.setStyleName("dialogTopBarDragKnob");
+		
 		topBar.add(title);
+		topBar.add(dragKnob);
 		topBar.add(closeBtn);
 		
 		return topBar;
