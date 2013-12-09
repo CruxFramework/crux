@@ -18,12 +18,13 @@ package org.cruxframework.crux.widgets.client.dialogcontainer;
 import org.cruxframework.crux.core.client.screen.views.SingleViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.widgets.client.event.openclose.BeforeCloseEvent;
-import org.cruxframework.crux.widgets.client.event.openclose.BeforeCloseHandler;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * A View Container that render its views inside a floating dialog box.
@@ -153,16 +154,16 @@ public class DialogViewContainer extends SingleViewContainer
 		
 		unloadViewOnClose = true;
 		
-		dialog.addBeforeCloseHandler(new BeforeCloseHandler() 
+		dialog.addCloseHandler(new CloseHandler<PopupPanel>() 
 		{
 			@Override
-			public void onBeforeClose(BeforeCloseEvent event) 
+			public void onClose(CloseEvent<PopupPanel> event) 
 			{
 				closeDialog(unloadViewOnClose, false);				
 			}
-		});		
+		});
 		
-		dialog.setContent(contentPanel);
+		dialog.setWidget(contentPanel);
 
 		initWidget(new Label());
 	}
@@ -296,7 +297,7 @@ public class DialogViewContainer extends SingleViewContainer
 	{
 		assert(innerView != null):"There is no View loaded into this container.";
 		bindToDOM();
-		dialog.open();
+		dialog.show();
 	}
 	
 	/**
@@ -342,7 +343,7 @@ public class DialogViewContainer extends SingleViewContainer
 		
 		if(closeDialog)
 		{
-			dialog.close();
+			dialog.hide();
 		}
 		
 		unbindToDOM();

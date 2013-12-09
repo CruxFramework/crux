@@ -615,3 +615,88 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
     border:1px solid #ccc;
     border-radius:3px;
 }
+
+@external crux-FlatDialog, dialogGlass, popupContent, dialogTitleBodySplit, dialogTopBar, dialogTitle, dialogCloseButton, dialogBody, dialogResizer;  
+.crux-FlatDialog
+{
+	background-color: #FFF;
+	border-radius: 3px;
+	box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.7) !important;
+	position: fixed !important;
+}
+.dialogGlass
+{
+	background-color: rgba(0, 0, 0, 0.2);
+	position: fixed !important;
+}
+.crux-FlatDialog .dialogTitleBodySplit
+{
+	width: inherit;
+	height: inherit;
+	position: relative;
+}
+.crux-FlatDialog .dialogTopBar
+{
+	position: absolute;
+	padding-top: 10px;
+	height: 40px;
+	width: inherit;
+	top: 0px;
+	left: 0px;
+	box-shadow: 0 20px 10px -10px #FFF;
+	z-index: 1;
+	cursor: move;
+	-webkit-user-select: none;
+}
+.crux-FlatDialog .dialogTitle
+{
+	color: #4496C6;
+	text-align: center;
+	font-size: 18px;
+}
+.crux-FlatDialog .dialogCloseButton
+{
+	position: absolute;
+	right: 2px;
+	top: 2px;
+	background: rgba(0, 0, 0, 0);
+	border: none;
+	cursor: pointer;
+}
+.crux-FlatDialog .dialogCloseButton:after 
+{
+	content: "X";
+	color: #4496C6;
+	font-size: 18px;
+}
+.crux-FlatDialog .dialogBody
+{
+	width: inherit;
+	height: literal("calc(100% - 40px)");
+	overflow: scroll;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	position: absolute;
+	top: 40px;
+}
+
+.crux-FlatDialog .popupContent
+{
+	height: 100%;
+	width: 100%;
+}
+
+.crux-FlatDialog .dialogResizer
+{
+	position: absolute;
+	height: 12px;
+	width: 12px;
+	bottom: 2px;
+	right: 2px;
+	border: solid 2px #4496C6;
+	border-top: transparent;
+	border-left: transparent;
+	cursor: nwse-resize;
+	border-bottom-right-radius: 3px;
+	box-shadow: 2px 2px 2px #FFF, inset -5px -5px 10px #FFF;
+}

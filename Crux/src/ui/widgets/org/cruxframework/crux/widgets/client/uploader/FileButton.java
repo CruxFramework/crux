@@ -18,7 +18,6 @@ package org.cruxframework.crux.widgets.client.uploader;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.TextAlign;
 import com.google.gwt.dom.client.Style.Unit;
@@ -53,7 +52,10 @@ class FileButton extends Composite implements HasChangeHandlers
 		style.setTextAlign(TextAlign.RIGHT);
 		style.setOpacity(0);
 		style.setProperty("cursor", "inherit");
-		style.setZIndex(2);
+		
+		// Unnecessary (at least for Chrome, check others) and makes it overlap dialog boxes)
+		//style.setZIndex(2);
+		
 		style.setWidth(100, Unit.PCT);
 		style.setHeight(100, Unit.PCT);
 		style.setTop(0, Unit.PX);
@@ -66,7 +68,10 @@ class FileButton extends Composite implements HasChangeHandlers
 		style.setPosition(Position.ABSOLUTE);
 		style.setTop(0, Unit.PX);
 		style.setLeft(0, Unit.PX);
-		style.setZIndex(1);
+		
+		// Unnecessary (at least for Chrome, check others) and makes it overlap dialog boxes)
+		//style.setZIndex(1);
+		
 		style.setWidth(100, Unit.PCT);
 		style.setHeight(100, Unit.PCT);
 		mainPanel.add(visibleButton);
