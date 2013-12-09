@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="cross-device-showcase" basedir="../" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+	<property name="final.name" value="cross-device-showcase"/>
+    <property name="target.dir" value="target" />
+	<property name="build.dir" value="appspot" />
+	<property file="${build.dir}/version.properties" />
+	<property file="${build.dir}/build.properties" />
+	
+	<import file="${sdk.dir}/config/user/ant-macros.xml" />
+	
+	<!-- INCREMENTA A VERSAO PARA PUBLICAR NO GOOGLE APPENGINE -->
+	<target name="set-version">
+		<propertyfile file="${build.dir}/version.properties">
+			<entry key="appengine.version" default="0" type="int" operation="+" value="1" />
+		</propertyfile>
+		<replace dir="${build.dir}" includes="appengine-web.xml" propertyFile="${build.dir}/version.properties">
+			<replacefilter token="#[appengine.version]" property="appengine.version" />
+		</replace>
+		<copy todir="${target.dir}/${final.name}/WEB-INF">
+			<fileset dir="${build.dir}">
+				<include name="appengine-web.xml"/>
+			</fileset>
+		</copy>		
+	</target>
+	
+	<!-- COPIA OS ARQUIVOS DO APPENGINE DA PASTA DE BUILD PARA A PASTA TARGET -->
+	<target name="prepare-appengine-files">
+		<copy todir="${target.dir}/${final.name}">
+			<fileset dir="${build.dir}">
+				<include name="defaultError.html"/>
+				<include name="overQuota.html"/>			
+			</fileset>
+		</copy>
+		<delete>
+			<fileset dir="${target.dir}/${final.name}/WEB-INF/lib">
+				<include name="gwt-dev-*.jar"/>
+				<include name="gwt-user-*.jar"/>
+			</fileset>
+		</delete>
+	</target>
+	
+	<!-- ENVIA PARA O GOOGLE APPENGINE -->
+	<target name="publish" depends="set-version, prepare-appengine-files">
+		<input addproperty="appengine.email" message="Informe o seu email associado à conta do AppEngine:" />
+		<input addproperty="appengine.password" message="Informe a senha da sua conta no AppEngine:" />
+		<java classname="com.google.appengine.tools.admin.AppCfg" inputstring="${appengine.password}">
+		     <sysproperty key="appengine.sdk.root" value="${sdk.dir}" />
+		     <classpath>
+		          <fileset dir="${sdk.dir}/lib" includes="**/*.jar" />
+			 </classpath>
+		     <arg value="--email=${appengine.email}" />
+		     <arg value="--passin" />
+		     <arg value="update" />
+		     <arg value="../${target.dir}/${final.name}" />
+		 </java>	
+	</target>	
+	
+</project>

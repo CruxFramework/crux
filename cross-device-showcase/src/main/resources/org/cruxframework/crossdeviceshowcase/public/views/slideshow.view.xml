@@ -1,0 +1,37 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:showcase="http://www.cruxframework.org/templates/showcase"
+	useController="mainController" title="Slide Show"> 
+	
+	<center>
+		
+		<crux:slideshow id="slideshow" layout="classic" width="100%" height="750px" loadOnStartup="true" >
+			<crux:service name="picasa">
+				<crux:param name="userID" value="114650528804514463329" />
+				<crux:param name="albumID" value="5951409748461918465" />
+				<crux:param name="imagesSize" value="600" />
+				<crux:param name="thumbnailsSize" value="48" />
+			</crux:service>
+		</crux:slideshow>
+		
+		<showcase:info title="Slideshow">
+			<showcase:description>
+				<p>
+					O Slideshow é um componente usado para apresentação de imagens, de forma otimizada para cada 
+					tipo de dispositivo. Suporta descrições, miniaturas, pré-carga das próximas imagens, cache local 
+					de imagens visualizadas, redimensionamento automático de imagens, agrupamento em álbuns, etc.
+				</p>
+				<p>
+					Possui um modelo flexível que permite ao esenvolvedor adaptar praticamente qualquer modelo de layout desejado, 
+					além de realizar integração com APIs externas de serviços de imagens, como o Picasa.
+				</p> 
+			</showcase:description>
+		</showcase:info>
+
+	</center>		
+	
+</v:view>
