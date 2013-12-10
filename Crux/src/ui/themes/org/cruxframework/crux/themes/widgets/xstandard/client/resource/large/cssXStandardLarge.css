@@ -622,18 +622,19 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	background-color: #FFF;
 	border-radius: 3px;
 	box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.7) !important;
-	position: fixed !important;
+	-webkit-user-select: none;
 }
 .dialogGlass
 {
 	background-color: rgba(0, 0, 0, 0.2);
-	position: fixed !important;
+	-webkit-user-select: none;
 }
 .crux-FlatDialog .dialogTitleBodySplit
 {
 	width: inherit;
 	height: inherit;
 	position: relative;
+	-webkit-user-select: none;
 }
 .crux-FlatDialog .dialogTopBar
 {
@@ -654,6 +655,7 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	left: 0px;
 	background: transparent;
 	height: 100%;
+	width: 100%;
 	cursor: move;
 	-webkit-user-select: none;
 }
@@ -662,6 +664,7 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	color: #4496C6;
 	text-align: center;
 	font-size: 18px;
+	-webkit-user-select: none;
 }
 .crux-FlatDialog .dialogCloseButton
 {
@@ -671,12 +674,14 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	background: rgba(0, 0, 0, 0);
 	border: none;
 	cursor: pointer;
+	-webkit-user-select: none;
 }
 .crux-FlatDialog .dialogCloseButton:after 
 {
 	content: "X";
 	color: #4496C6;
 	font-size: 18px;
+	-webkit-user-select: none;
 }
 .crux-FlatDialog .dialogBody
 {
@@ -708,4 +713,5 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	cursor: nwse-resize;
 	border-bottom-right-radius: 3px;
 	box-shadow: 2px 2px 2px #FFF, inset -5px -5px 10px #FFF;
+	-webkit-user-select: none;
 }

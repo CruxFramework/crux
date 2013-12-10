@@ -1,11 +1,16 @@
 package org.cruxframework.crux.widgets.client.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.DragEvent;
-import com.google.gwt.event.dom.client.DragHandler;
-import com.google.gwt.event.dom.client.DragStartEvent;
-import com.google.gwt.event.dom.client.DragStartHandler;
-import com.google.gwt.event.dom.client.HasAllDragAndDropHandlers;
+import com.google.gwt.event.dom.client.HasAllMouseHandlers;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -21,7 +26,7 @@ public class DragAndDropUtils
 	 * @param targetWidget
 	 * @param knob
 	 */
-	public static void addDragAndDropMoveBehavior(Widget targetWidget, HasAllDragAndDropHandlers knob)
+	public static void addDragAndDropMoveBehavior(Widget targetWidget, HasAllMouseHandlers knob)
 	{
 		DraggingAndDropMoveBehavior feature = new DraggingAndDropMoveBehavior(knob, targetWidget);
 		feature.apply();
@@ -34,7 +39,8 @@ public class DragAndDropUtils
 	public static class DraggingAndDropMoveBehavior
 	{
 		private Widget targetWidget;
-		private HasAllDragAndDropHandlers knob;
+		private HasAllMouseHandlers knob;
+		private boolean dragging;
 
 		private int dragStartX;
 		private int dragStartY;
@@ -47,7 +53,7 @@ public class DragAndDropUtils
 		 * @param knob
 		 * @param targetWidget
 		 */
-		public DraggingAndDropMoveBehavior(HasAllDragAndDropHandlers knob, Widget targetWidget)
+		public DraggingAndDropMoveBehavior(HasAllMouseHandlers knob, Widget targetWidget)
 		{
 			this.knob = knob;
 			this.targetWidget = targetWidget;
@@ -58,34 +64,62 @@ public class DragAndDropUtils
 		 */
 		public void apply()
 		{
-			((HasAllDragAndDropHandlers) knob).addDragStartHandler(new DragStartHandler()
+			final Logger logger = Logger.getLogger("dragger");
+			
+			knob.addMouseDownHandler(new MouseDownHandler()
 			{
 				@Override
-				public void onDragStart(DragStartEvent event)
+				public void onMouseDown(MouseDownEvent event)
 				{
+					dragging = true;
+					
 					dragStartX = event.getNativeEvent().getScreenX();
 					dragStartY = event.getNativeEvent().getScreenY();
 					
 					originalTop = targetWidget.getElement().getOffsetTop();
 					originalLeft = targetWidget.getElement().getOffsetLeft();
+					
+					logger.log(Level.WARNING, "\n\n\n========START=======");
+					logger.log(Level.WARNING, "dragStartX: " + dragStartX);
+					logger.log(Level.WARNING, "dragStartY: " + dragStartY);
+					logger.log(Level.WARNING, "originalTop: " + originalTop);
+					logger.log(Level.WARNING, "originalLeft: " + originalLeft);
+					
 				}
 			});
 			
-			((HasAllDragAndDropHandlers) knob).addDragHandler(new DragHandler()
+			knob.addMouseUpHandler(new MouseUpHandler()
+			{				
+				@Override
+				public void onMouseUp(MouseUpEvent event)
+				{
+					dragging = false;					
+				}
+			});
+			
+			knob.addMouseMoveHandler(new MouseMoveHandler()
 			{
 				@Override
-				public void onDrag(DragEvent event)
+				public void onMouseMove(MouseMoveEvent event)
 				{
-					int newX = event.getNativeEvent().getScreenX();
-					int newY = event.getNativeEvent().getScreenY();
-					
-					int deltaX = newX - dragStartX;
-					int deltaY = newY - dragStartY;
-					
-					targetWidget.getElement().getStyle().setTop(originalTop + deltaY, Unit.PX);
-					targetWidget.getElement().getStyle().setLeft(originalLeft + deltaX, Unit.PX);
+					if(dragging)
+					{
+						int newX = event.getNativeEvent().getScreenX();
+						int newY = event.getNativeEvent().getScreenY();
+						
+						int deltaX = newX - dragStartX;
+						int deltaY = newY - dragStartY;
+						
+						int newTop = originalTop + deltaY;
+						int newLeft = originalLeft + deltaX;
+						
+						targetWidget.getElement().getStyle().setTop(newTop, Unit.PX);
+						targetWidget.getElement().getStyle().setLeft(newLeft, Unit.PX);
+						
+						logger.log(Level.WARNING, "deltaX:" + deltaX + " deltaY:" + deltaY + " newTop:" + newTop + " newLeft:" + newLeft);
+					}
 				}
-			});			
+			});
 		}
 	}
 }
