@@ -74,7 +74,9 @@ class FileButton extends Composite implements HasChangeHandlers
 		
 		style.setWidth(100, Unit.PCT);
 		style.setHeight(100, Unit.PCT);
+		
 		mainPanel.add(visibleButton);
+		mainPanel.add(fileInput);
 		
 		initWidget(mainPanel);
 		setStyleName("crux-FileButton");
