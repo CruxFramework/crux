@@ -3,8 +3,13 @@ package org.cruxframework.crux.widgets.client.dialogcontainer;
 import org.cruxframework.crux.widgets.client.button.Button;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
-import org.cruxframework.crux.widgets.client.util.DragAndDropUtils;
+import org.cruxframework.crux.widgets.client.util.draganddrop.MoveCapability;
+import org.cruxframework.crux.widgets.client.util.draganddrop.MoveCapability.Movable;
+import org.cruxframework.crux.widgets.client.util.draganddrop.ResizeCapability;
+import org.cruxframework.crux.widgets.client.util.draganddrop.ResizeCapability.Resizable;
 
+import com.google.gwt.event.dom.client.HasAllMouseHandlers;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -17,8 +22,11 @@ import com.google.gwt.user.client.ui.Widget;
  * A simple dialog box built upon DIV elements.
  * @author Gesse Dafe
  */
-public class FlatDialogBox extends PopupPanel
+public class FlatDialogBox extends PopupPanel implements Movable, Resizable 
 {
+	private static final int MIN_WIDTH = 100;
+	private static final int MIN_HEIGHT = 50;
+	
 	private SimplePanel body = new SimplePanel();;
 	private Label title = new Label();
 	private Button closeBtn = new Button();
@@ -43,7 +51,8 @@ public class FlatDialogBox extends PopupPanel
 		
 		super.setWidget(split);
 		
-		DragAndDropUtils.addDragAndDropMoveBehavior(this, dragKnob);
+		MoveCapability.addMoveCapability(this);
+		ResizeCapability.addResizeCapability(this, MIN_WIDTH, MIN_HEIGHT);
 	}
 
 	private Label prepareResizer() 
@@ -136,5 +145,41 @@ public class FlatDialogBox extends PopupPanel
 	public void setHeight(String height) 
 	{
 		getElement().getStyle().setProperty("height", height);
+	}
+
+	@Override
+	public HasAllMouseHandlers getKnob()
+	{
+		return dragKnob;
+	}
+
+	@Override
+	public void setPosition(int x, int y)
+	{
+		setPopupPosition(x, y);
+	}
+
+	@Override
+	public Element getKnobElement()
+	{
+		return dragKnob.getElement();
+	}
+
+	@Override
+	public void setDimensions(int w, int h)
+	{
+		setPixelSize(w, h);
+	}
+
+	@Override
+	public int getAbsoluteWidth()
+	{
+		return getElement().getOffsetWidth();
+	}
+
+	@Override
+	public int getAbsoluteHeight()
+	{
+		return getElement().getOffsetHeight();
 	}
 }
