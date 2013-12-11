@@ -1,7 +1,11 @@
 package org.cruxframework.crux.widgets.client.util.draganddrop;
 
 import org.cruxframework.crux.widgets.client.util.draganddrop.GenericDragEventHandler.DragAction;
+import org.cruxframework.crux.widgets.client.util.draganddrop.GenericDragEventHandler.DragAndDropFeature;
 import org.cruxframework.crux.widgets.client.util.draganddrop.GenericDragEventHandler.Draggable;
+
+import com.google.gwt.event.dom.client.HasAllMouseHandlers;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Encloses the logic and contracts needed to move a widget when user drags it
@@ -13,7 +17,7 @@ public class MoveCapability
 	 * Makes a widget able to me moved by dragging it. 
 	 * @param movable
 	 */
-	public static void addMoveCapability(Movable movable)
+	public static void addMoveCapability(Movable<?> movable)
 	{
 		GenericDragEventHandler handler = new GenericDragEventHandler(new DragMoveAction(movable));
 		handler.applyTo(movable);
@@ -23,7 +27,7 @@ public class MoveCapability
 	 * The contract to implement a widget which can be moved along the screen  
 	 * @author Gesse Dafe
 	 */
-	public static interface Movable extends Draggable
+	public static interface Movable<K extends IsWidget & HasAllMouseHandlers> extends Draggable<K>
 	{
 		public void setPosition(int x, int y);
 		public int getAbsoluteLeft();
@@ -34,15 +38,16 @@ public class MoveCapability
 	 * The logic needed to move a widget when user drags it
 	 * @author Gesse Dafe
 	 */
-	public static class DragMoveAction extends DragAction<Movable>
+	public static class DragMoveAction extends DragAction<Movable<?>>
 	{
 		private int originalLeft;
 		private int originalTop;
 		
 		/**
 		 * @param movable
+		 * @param move 
 		 */
-		public DragMoveAction(Movable movable)
+		public DragMoveAction(Movable<?> movable)
 		{
 			super(movable);
 		}
@@ -58,6 +63,12 @@ public class MoveCapability
 		public void onDrag(int x, int y, int dragStartX, int dragStartY)
 		{
 			getDraggable().setPosition(originalLeft + (x - dragStartX), originalTop + (y - dragStartY));
+		}
+
+		@Override
+		public DragAndDropFeature getFeature()
+		{
+			return DragAndDropFeature.MOVE;
 		}
 	}
 }

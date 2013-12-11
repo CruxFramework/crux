@@ -1,7 +1,11 @@
 package org.cruxframework.crux.widgets.client.util.draganddrop;
 
 import org.cruxframework.crux.widgets.client.util.draganddrop.GenericDragEventHandler.DragAction;
+import org.cruxframework.crux.widgets.client.util.draganddrop.GenericDragEventHandler.DragAndDropFeature;
 import org.cruxframework.crux.widgets.client.util.draganddrop.GenericDragEventHandler.Draggable;
+
+import com.google.gwt.event.dom.client.HasAllMouseHandlers;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Encloses the logic and contracts needed resize a widget when user drags a part of it
@@ -13,7 +17,7 @@ public class ResizeCapability
 	 * Makes a widget able to be resized by dragging a part of it, usually a right bottom corner. 
 	 * @param movable
 	 */
-	public static void addResizeCapability(Resizable resizable, int minWidth, int minHeight)
+	public static void addResizeCapability(Resizable<?> resizable, int minWidth, int minHeight)
 	{
 		GenericDragEventHandler handler = new GenericDragEventHandler(new DragResizeAction(resizable, minWidth, minHeight));
 		handler.applyTo(resizable);
@@ -23,7 +27,7 @@ public class ResizeCapability
 	 * The contract to implement a widget which can be resized  
 	 * @author Gesse Dafe
 	 */
-	public static interface Resizable extends Draggable
+	public static interface Resizable<K extends IsWidget & HasAllMouseHandlers> extends Draggable<K>
 	{
 		public void setDimensions(int w, int h);
 		public int getAbsoluteWidth();
@@ -34,7 +38,7 @@ public class ResizeCapability
 	 * The logic needed to resize a widget when user drags a part of it 
 	 * @author Gesse Dafe
 	 */
-	public static class DragResizeAction extends DragAction<Resizable> 
+	public static class DragResizeAction extends DragAction<Resizable<?>> 
 	{
 		private int minWidth;
 		private int minHeight;
@@ -46,9 +50,9 @@ public class ResizeCapability
 		 * @param minWidth
 		 * @param minHeight
 		 */
-		public DragResizeAction(Resizable movable, int minWidth, int minHeight)
+		public DragResizeAction(Resizable<?> resizable, int minWidth, int minHeight)
 		{
-			super(movable);
+			super(resizable);
 			this.minWidth = minWidth;
 			this.minHeight = minHeight;
 		}
@@ -68,6 +72,12 @@ public class ResizeCapability
 			int newWidth = originalWidth + deltaX;
 			int newHeight = originalHeight + deltaY;
 			getDraggable().setDimensions(newWidth >= minWidth ? newWidth : minWidth, newHeight >= minHeight ? newHeight : minHeight);
+		}
+
+		@Override
+		public DragAndDropFeature getFeature()
+		{
+			return DragAndDropFeature.RESIZE;
 		}
 	}
 }

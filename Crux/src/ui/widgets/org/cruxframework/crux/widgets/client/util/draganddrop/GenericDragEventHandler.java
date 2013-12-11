@@ -9,7 +9,6 @@ import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -40,11 +39,11 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 	 * Apply this handler to a given draggable
 	 * @param draggable
 	 */
-	public void applyTo(Draggable draggable)
+	public void applyTo(Draggable<?> draggable)
 	{
-		draggable.getKnob().addMouseDownHandler(this);
-		draggable.getKnob().addMouseMoveHandler(this);
-		draggable.getKnob().addMouseUpHandler(this);			
+		draggable.getKnob(action.getFeature()).addMouseDownHandler(this);
+		draggable.getKnob(action.getFeature()).addMouseMoveHandler(this);
+		draggable.getKnob(action.getFeature()).addMouseUpHandler(this);			
 	}
 
 	@Override
@@ -58,7 +57,7 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 			
 			dragging = true;
 
-			DOM.setCapture(action.getDraggable().getKnobElement());
+			DOM.setCapture(action.getDraggable().getKnob(action.getFeature()).asWidget().getElement());
 
 			dragStartX = event.getClientX();
 			dragStartY = event.getClientY();
@@ -88,19 +87,20 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 	public void onMouseUp(MouseUpEvent event)
 	{
 		dragging = false;
-		DOM.releaseCapture(action.getDraggable().getKnobElement());
+		DOM.releaseCapture(action.getDraggable().getKnob(action.getFeature()).asWidget().getElement());
 	}
 	
 	/**
 	 * The contract to implement the logic associated to a drag action
 	 * @author Gesse Dafe
 	 */
-	public static abstract class DragAction<D extends Draggable>
+	public static abstract class DragAction<D extends Draggable<?>>
 	{
 		private D draggable;
 
 		/**
 		 * @param draggable
+		 * @param move 
 		 */
 		public DragAction(D draggable)
 		{
@@ -111,6 +111,12 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 		 * Action to me taken when drag starts
 		 */
 		public abstract void onStartDrag();
+		
+		/**
+		 * Gets the feature associated to this action
+		 * @return
+		 */
+		public abstract DragAndDropFeature getFeature();
 		
 		/**
 		 * Action to me taken when drag happens
@@ -134,9 +140,19 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 	 * The contract to implement a widget which can be resized  
 	 * @author Gesse Dafe
 	 */
-	public static interface Draggable extends IsWidget
+	public static interface Draggable<K extends IsWidget & HasAllMouseHandlers>
 	{
-		public HasAllMouseHandlers getKnob();
-		public Element getKnobElement();
+		public K getKnob(DragAndDropFeature feature);
+	}
+	
+	/**
+	 * Features offered by existing drag and drop capabilities 
+	 * @author Gesse Dafe
+	 *
+	 */
+	public static enum DragAndDropFeature
+	{
+		MOVE,
+		RESIZE
 	}
 }

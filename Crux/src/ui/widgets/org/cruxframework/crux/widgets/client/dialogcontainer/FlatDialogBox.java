@@ -3,15 +3,13 @@ package org.cruxframework.crux.widgets.client.dialogcontainer;
 import org.cruxframework.crux.widgets.client.button.Button;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
+import org.cruxframework.crux.widgets.client.util.draganddrop.GenericDragEventHandler.DragAndDropFeature;
 import org.cruxframework.crux.widgets.client.util.draganddrop.MoveCapability;
 import org.cruxframework.crux.widgets.client.util.draganddrop.MoveCapability.Movable;
 import org.cruxframework.crux.widgets.client.util.draganddrop.ResizeCapability;
 import org.cruxframework.crux.widgets.client.util.draganddrop.ResizeCapability.Resizable;
 
-import com.google.gwt.event.dom.client.HasAllMouseHandlers;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -22,7 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A simple dialog box built upon DIV elements.
  * @author Gesse Dafe
  */
-public class FlatDialogBox extends PopupPanel implements Movable, Resizable 
+public class FlatDialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>
 {
 	private static final int MIN_WIDTH = 100;
 	private static final int MIN_HEIGHT = 50;
@@ -30,7 +28,8 @@ public class FlatDialogBox extends PopupPanel implements Movable, Resizable
 	private SimplePanel body = new SimplePanel();;
 	private Label title = new Label();
 	private Button closeBtn = new Button();
-	private FocusPanel dragKnob;
+	private Label moveKnob;
+	private Label resizeKnob;
 		
 	public FlatDialogBox() 
 	{
@@ -41,13 +40,13 @@ public class FlatDialogBox extends PopupPanel implements Movable, Resizable
 		body.setStyleName("dialogBody");
 
 		FlowPanel topBar = prepareTopBar();
-		Label resizer = prepareResizer();
+		resizeKnob = prepareResizer();
 		
 		FlowPanel split = new FlowPanel();
 		split.setStyleName("dialogTitleBodySplit");
 		split.add(topBar);
 		split.add(body);
-		split.add(resizer);
+		split.add(resizeKnob);
 		
 		super.setWidget(split);
 		
@@ -79,11 +78,11 @@ public class FlatDialogBox extends PopupPanel implements Movable, Resizable
 			}
 		});
 		
-		dragKnob = new FocusPanel();
-		dragKnob.setStyleName("dialogTopBarDragKnob");
+		moveKnob = new Label();
+		moveKnob.setStyleName("dialogTopBarDragKnob");
 		
 		topBar.add(title);
-		topBar.add(dragKnob);
+		topBar.add(moveKnob);
 		topBar.add(closeBtn);
 		
 		return topBar;
@@ -148,21 +147,22 @@ public class FlatDialogBox extends PopupPanel implements Movable, Resizable
 	}
 
 	@Override
-	public HasAllMouseHandlers getKnob()
+	public Label getKnob(DragAndDropFeature feature)
 	{
-		return dragKnob;
+		if(DragAndDropFeature.MOVE.equals(feature))
+		{
+			return moveKnob;
+		}
+		else
+		{
+			return resizeKnob;
+		}
 	}
 
 	@Override
 	public void setPosition(int x, int y)
 	{
 		setPopupPosition(x, y);
-	}
-
-	@Override
-	public Element getKnobElement()
-	{
-		return dragKnob.getElement();
 	}
 
 	@Override
