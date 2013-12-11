@@ -21,11 +21,11 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 
 /**
+ * A helper class to help on HasClickHandlers widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
- *
  */
 @TagEvents({
-	@TagEvent(ClickEvtBind.class)
+	@TagEvent(value=ClickEvtBind.class, description="Inform the handler for onClick event. This event is fired when the widget is clicked.")
 })	
 public interface HasClickHandlersFactory<C extends WidgetCreatorContext>
 {

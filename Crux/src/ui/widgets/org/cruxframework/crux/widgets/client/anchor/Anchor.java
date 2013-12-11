@@ -101,7 +101,7 @@ public class Anchor extends Composite implements HasSelectHandlers, HasHTML, Has
 				public void onClick(ClickEvent event)
 				{
 					SelectEvent selectEvent = select();
-					if (selectEvent!= null && selectEvent.isCanceled())
+					if (selectEvent== null || selectEvent.isCanceled())
 					{
 						event.preventDefault();
 					}

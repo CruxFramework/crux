@@ -22,11 +22,13 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import com.google.gwt.i18n.client.HasDirection.Direction;
 
 /**
+ * A helper class to help on HasDirection widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagAttributes({
-	@TagAttribute(value="direction", type=Direction.class)
+	@TagAttribute(value="direction", type=Direction.class,
+			description="")
 })	
 public interface HasDirectionFactory<C extends WidgetCreatorContext>
 {

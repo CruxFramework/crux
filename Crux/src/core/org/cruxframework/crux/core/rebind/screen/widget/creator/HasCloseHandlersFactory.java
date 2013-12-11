@@ -21,11 +21,12 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 
 /**
+ * A helper class to help on HasCloseHandlers widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagEvents({
-	@TagEvent(CloseEvtBind.class)
+	@TagEvent(value=CloseEvtBind.class, description="Inform the handler for onClose event. This event is fired when the widget is closed.")
 })	
 public interface HasCloseHandlersFactory<C extends WidgetCreatorContext>
 {

@@ -15,16 +15,19 @@
  */
 package org.cruxframework.crux.core.client.controller;
 
-
-
-
 /**
- * Contains a wrapper class for every controller used on module.
+ * CRUX INTERNAL INTERFACE. DO NOT USE IT DIRECTLY.
+ * 
+ * <p>It is used to inform Crux about the list of controllers used by a view.</p>
  * 
  * @author Thiago da Rosa de Bustamante
  */
-
 public interface RegisteredControllers 
 {
+	/**
+	 * Retrieve a controller using its name as key.
+	 * @param controller controller name
+	 * @return controller class
+	 */
 	<T> T getController(String controller); 
 }

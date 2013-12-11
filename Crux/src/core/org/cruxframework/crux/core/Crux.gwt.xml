@@ -72,7 +72,7 @@
 
 	<!-- Specify the generator for REST Proxies.     -->
 	<generate-with class="org.cruxframework.crux.core.rebind.rest.CruxRestProxyGenerator">
-		<when-type-assignable class="org.cruxframework.crux.core.client.rest.RestProxy"/>
+		<when-type-assignable class="org.cruxframework.crux.core.client.service.RestProxy"/>
 	</generate-with>
 
 	<!-- Specify the generator for Device Adaptive stubs.     -->

@@ -20,10 +20,11 @@ import java.util.ArrayList;
 import com.google.gwt.core.client.GWT;
 
 /**
- * Lightweight List implementation.
+ * Lightweight List implementation. This implementation has a superior performance compared
+ * to ArrayList. It uses native javascript implementation on production to increase performance.
  * 
- * @param <V>
- *            value type
+ * @param <V> value type
+ * @author Thiago da Rosa de Bustamante
  */
 public class FastList<V>
 {
@@ -31,7 +32,7 @@ public class FastList<V>
 	private ArrayList<V> javaArray;
 
 	/**
-	 * 
+	 * Constructor 
 	 */
 	public FastList()
 	{
@@ -46,8 +47,9 @@ public class FastList<V>
 	}
 
 	/**
-	 * @param index
-	 * @return
+	 * Retrieve an element from the list, based on the specified index 
+	 * @param index element position
+	 * @return element from list
 	 */
 	public final V get(int index)
 	{
@@ -61,6 +63,10 @@ public class FastList<V>
 		}
 	}
 
+	/**
+	 * Retrieve the first element and remove it from the list 
+	 * @return first element
+	 */
 	public final V extractFirst()
 	{
 		if (size() > 0)
@@ -80,7 +86,8 @@ public class FastList<V>
 	}
 	
 	/**
-	 * @param value
+	 * Insert the given element at the end of the list.
+	 * @param value element to add
 	 */
 	public final void add(V value)
 	{
@@ -95,7 +102,9 @@ public class FastList<V>
 	}
 
 	/**
-	 * @param value
+	 * Insert the given element right before the specified position.
+	 * @param beforeIndex position to put the element
+	 * @param value element to add
 	 */
 	public final void add(int beforeIndex, V value)
 	{
@@ -110,21 +119,15 @@ public class FastList<V>
 	}
 	
 	/**
-	 * @param key
-	 * @return
+	 * Check if the the list contains the specified value
+	 * @param value value to search 
+	 * @return true if the element is present inside the list
 	 */
 	public final boolean contains(V value)
 	{
 		if (GWT.isScript())
 		{
-			for(int i=0; i<jsArray.size(); i++)
-			{
-				if (jsArray.get(i) != null)
-				{
-					return true;
-				}
-			}
-			return false;
+			return jsArray.indexOf(value) != -1;
 		}
 		else
 		{
@@ -133,18 +136,16 @@ public class FastList<V>
 	}
 	
 	/**
-	 * @param key
-	 * @return
+	 * Remove the element at the given position.
+	 * @param index element position
+	 * @return the removed element
 	 */
 	public final V remove(int index)
 	{
 		if (GWT.isScript())
 		{
 			V ret = jsArray.get(index);
-			if (ret != null)
-			{
-				jsArray.remove(index);
-			}
+			jsArray.remove(index);
 			return ret;
 		}
 		else
@@ -154,7 +155,8 @@ public class FastList<V>
 	}
 	
 	/**
-	 * @return
+	 * Return the list size
+	 * @return number of elements on this list
 	 */
 	public final int size()
 	{
@@ -169,7 +171,7 @@ public class FastList<V>
 	}
 	
 	/**
-	 * @param value
+	 * Remove all elements on this list
 	 */
 	public final void clear()
 	{
@@ -182,7 +184,12 @@ public class FastList<V>
 			javaArray.clear();
 		}
 	}	
-	
+
+	/**
+	 * Retrieve the position of the given element on this list.
+	 * @param value element to search
+	 * @return element position. If not present, return -1;
+	 */
 	public final int indexOf(V value)
 	{
 		if (GWT.isScript())
@@ -194,7 +201,12 @@ public class FastList<V>
 			return javaArray.indexOf(value);
 		}
 	}
-	
+
+	/**
+	 * Set the given element into the specified position on this list.
+	 * @param index element position
+	 * @param value element to set
+	 */
 	public final void set(int index, V value)
 	{
 		if (GWT.isScript())
@@ -206,5 +218,4 @@ public class FastList<V>
 			javaArray.set(index, value);
 		}
 	}
-	
 }

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.cruxframework.crux.core.server.rest.annotation.GET;
 import org.cruxframework.crux.core.server.rest.core.EntityTag;
 import org.cruxframework.crux.core.server.rest.core.dispatch.ResourceMethod.MethodReturn;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
@@ -28,7 +29,6 @@ import org.cruxframework.crux.core.server.rest.state.ResourceStateHandler.Resour
 import org.cruxframework.crux.core.server.rest.util.DateUtil;
 import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
 import org.cruxframework.crux.core.server.rest.util.HttpResponseCodes;
-import org.cruxframework.crux.core.shared.rest.annotation.GET;
 
 /**
  * @author Thiago da Rosa de Bustamante

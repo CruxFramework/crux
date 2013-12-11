@@ -30,6 +30,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.server.rest.annotation.Path;
+import org.cruxframework.crux.core.server.rest.annotation.StateValidationModel;
 import org.cruxframework.crux.core.server.rest.core.UriBuilder;
 import org.cruxframework.crux.core.server.rest.core.dispatch.CacheInfo;
 import org.cruxframework.crux.core.server.rest.core.dispatch.ResourceMethod;
@@ -37,8 +39,6 @@ import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
 import org.cruxframework.crux.core.server.rest.spi.InternalServerErrorException;
 import org.cruxframework.crux.core.server.rest.util.HttpMethodHelper;
 import org.cruxframework.crux.core.server.rest.util.InvalidRestMethod;
-import org.cruxframework.crux.core.shared.rest.annotation.Path;
-import org.cruxframework.crux.core.shared.rest.annotation.StateValidationModel;
 
 /**
  * 

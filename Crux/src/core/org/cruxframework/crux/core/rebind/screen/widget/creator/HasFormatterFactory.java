@@ -24,8 +24,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
  *
  */
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration("bindPath")
-})	
-public interface HasFormatterFactory<C extends WidgetCreatorContext>
+	@TagAttributeDeclaration(value="formatter", required=true, description="bind a formatter to this widget. Pass the formatter name (declared on Formatter class through @FormatterName annotation).")
+})
+public interface HasFormatterFactory<C extends WidgetCreatorContext> extends HasBindPathFactory<C>
 {
 }

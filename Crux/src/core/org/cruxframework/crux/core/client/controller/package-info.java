@@ -24,7 +24,6 @@
  * <p>Start with the following classes:</p>
  * <li>{@link org.cruxframework.crux.core.client.controller.Controller}</li>
  * <li>{@link org.cruxframework.crux.core.client.controller.Expose}</li>
- * <li>{@link org.cruxframework.crux.core.client.controller.Create}</li>
  *
  */
 package org.cruxframework.crux.core.client.controller;

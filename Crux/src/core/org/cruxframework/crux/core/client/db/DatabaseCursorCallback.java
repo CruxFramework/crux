@@ -17,12 +17,16 @@ package org.cruxframework.crux.core.client.db;
 
 /**
  * Database cursor operations callback. 
- * Use this callback to read objects from a cursor.
+ * Use this callback to read objects from a {@link Cursor}.
  * @param <K> The type of the key used to identify objects into the cursor.
  * @param <V> The type of the objects referenced by this cursor 
  * @author Thiago da Rosa de Bustamante
  */
 public abstract class DatabaseCursorCallback<K, V> extends Callback
 {
+	/**
+	 * Called when an open cursor operation is performed successfully.
+	 * @param result the cursor
+	 */
 	public abstract void onSuccess(Cursor<K, V> result);
 }

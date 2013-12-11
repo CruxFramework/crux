@@ -24,10 +24,10 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.server.rest.annotation.CookieParam;
+import org.cruxframework.crux.core.server.rest.annotation.FormParam;
+import org.cruxframework.crux.core.server.rest.annotation.HeaderParam;
 import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
-import org.cruxframework.crux.core.shared.rest.annotation.CookieParam;
-import org.cruxframework.crux.core.shared.rest.annotation.FormParam;
-import org.cruxframework.crux.core.shared.rest.annotation.HeaderParam;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils.PropertyInfo;
 

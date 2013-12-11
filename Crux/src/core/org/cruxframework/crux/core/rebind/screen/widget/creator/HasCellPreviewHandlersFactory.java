@@ -21,11 +21,12 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 
 /**
+ * A helper class to help on HasBeforeSelectionHandlers widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagEvents({
-	@TagEvent(CellPreviewEvtBind.class)
+	@TagEvent(value=CellPreviewEvtBind.class, description="Inform the handler for onCellPreview event. This event is fired just before any Cell event occurs.")
 })	
 public interface HasCellPreviewHandlersFactory<C extends WidgetCreatorContext>
 {

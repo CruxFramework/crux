@@ -29,4 +29,8 @@ import java.lang.annotation.Target;
 public @interface TagEventDeclaration
 {
 	String value();
+	/**
+	 * A description to be used to compose the documentation of the generated library 
+	 */
+	String description() default "";
 }

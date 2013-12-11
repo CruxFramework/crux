@@ -25,7 +25,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * This annotation can be used to expose a controller method as an event handler method.
  * It only makes any effect if used on methods of a {@link Controller} class.
  * <p>
- * Only methods annotated with this annotation can be refereed on {@code .crux.xml} page. 
+ * Only methods annotated with this annotation can be refereed on {@code .crux.xml} and {@code .view.xml} pages. 
  * A method must obey the following constraints to be exposed as an event handler:  
  * <p>
  * 1) Be annotated with {@code @}Expose annotation.
@@ -55,7 +55,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * }
  * </pre>
  * <p>
- * It can be used on a {@code .crux.xml} page, as illustrated by the following example: 
+ * It can be used on a {@code .crux.xml} or {@code .view.xml} page, as illustrated by the following example: 
  * <pre>
  * {@code <html} 
  *  xmlns="http://www.w3.org/1999/xhtml"

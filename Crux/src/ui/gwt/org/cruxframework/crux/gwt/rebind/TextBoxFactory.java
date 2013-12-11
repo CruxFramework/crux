@@ -25,7 +25,9 @@ import com.google.gwt.user.client.ui.TextBox;
  * A Factory for TextBox widgets
  * @author Thiago da Rosa de Bustamante
  */
-@DeclarativeFactory(id="textBox", library="gwt", targetWidget=TextBox.class)
+@DeclarativeFactory(id="textBox", library="gwt", targetWidget=TextBox.class, 
+					infoURL="http://gwt.googleusercontent.com/samples/Showcase/Showcase.html#!CwBasicText", 
+					description="A standard single-line text box.")
 @TagAttributes({
 	@TagAttribute(value="maxLength", type=Integer.class),
 	@TagAttribute(value="visibleLength", type=Integer.class)

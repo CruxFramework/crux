@@ -31,26 +31,26 @@ import java.util.logging.Logger;
 
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.collection.FastMap;
-import org.cruxframework.crux.core.client.rest.RestError;
-import org.cruxframework.crux.core.client.rest.RestProxy.TargetRestService;
 import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.core.client.service.RestProxy.Callback;
+import org.cruxframework.crux.core.client.service.RestProxy.RestError;
+import org.cruxframework.crux.core.client.service.RestProxy.TargetRestService;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.server.rest.annotation.GET;
+import org.cruxframework.crux.core.server.rest.annotation.Path;
+import org.cruxframework.crux.core.server.rest.annotation.StateValidationModel;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceScanner;
 import org.cruxframework.crux.core.server.rest.util.Encode;
 import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
 import org.cruxframework.crux.core.server.rest.util.HttpMethodHelper;
 import org.cruxframework.crux.core.server.rest.util.InvalidRestMethod;
 import org.cruxframework.crux.core.shared.rest.RestException;
-import org.cruxframework.crux.core.shared.rest.annotation.GET;
-import org.cruxframework.crux.core.shared.rest.annotation.Path;
-import org.cruxframework.crux.core.shared.rest.annotation.StateValidationModel;
 import org.cruxframework.crux.core.utils.EncryptUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsonUtils;
@@ -173,16 +173,8 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		{
 			generateWrapperMethod(methodInfo, srcWriter);
 		}
-		generateSetEndpointMethod(srcWriter);
 	}
 
-	protected void generateSetEndpointMethod(SourcePrinter srcWriter) 
-	{
-		srcWriter.println("public void setEndpoint(String address){");
-		srcWriter.println("this.__hostPath = address;");
-		srcWriter.println("}");
-	}
-	
 	protected void generateStateControlMethods(SourcePrinter srcWriter)
 	{
 		srcWriter.println("public boolean __readCurrentEtag(String uri, RequestBuilder builder, boolean required){");

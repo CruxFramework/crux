@@ -21,6 +21,10 @@ import java.util.logging.Logger;
 import com.google.gwt.logging.client.LogConfiguration;
 
 /**
+ * CRUX INTERNAL INTERFACE. DO NOT USE IT DIRECTLY.
+ * 
+ * <p>Base class for object objects that perform operations on Crux Database.</p> 
+ * 
  * @author Thiago da Rosa de Bustamante
  *
  */
@@ -29,11 +33,21 @@ public abstract class DBObject
 	protected static Logger logger = Logger.getLogger(DBObject.class.getName());
 	protected final AbstractDatabase db;
 
+	/**
+	 * Constructor
+	 * @param db database reference
+	 */
 	protected DBObject(AbstractDatabase db)
 	{
 		this.db = db;
 	}
 	
+	/**
+	 * Report an error on a database operation
+	 * @param callback called to handle the error
+	 * @param error message describing the error occurred
+	 * @param e the error
+	 */
 	protected void reportError(final Callback callback, String error, Exception e)
     {
 		if (LogConfiguration.loggingIsEnabled())
@@ -57,5 +71,4 @@ public abstract class DBObject
 			db.errorHandler.onError(error);
 		}
     }
-	
 }

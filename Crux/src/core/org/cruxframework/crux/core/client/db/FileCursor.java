@@ -18,6 +18,12 @@ package org.cruxframework.crux.core.client.db;
 import org.cruxframework.crux.core.client.file.Blob;
 
 /**
+ * Represents a cursor of files stored into the database.
+ * 
+ * <p>
+ * To open a file cursor, you must ask to a {@link FileStore} object. 
+ * </p>
+ * 
  * @author Thiago da Rosa de Bustamante
  *
  */

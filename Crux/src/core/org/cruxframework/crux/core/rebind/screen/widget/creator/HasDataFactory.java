@@ -30,14 +30,21 @@ import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 /**
+ * A helper class to help on HasData widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagAttributes({
-	@TagAttribute(value="selectionModel", processor=HasDataFactory.SelectionModelProcessor.class, type=HasDataFactory.SelectionModel.class, required=true)
+	@TagAttribute(value="selectionModel", processor=HasDataFactory.SelectionModelProcessor.class, type=HasDataFactory.SelectionModel.class, required=true,
+				 description="Set the SelectionModel used by this widget. Accepts one value between:"
+				 		+ "<ul>"
+				 		+ "<li>multiSelection - allows multiple items to be selected</li>"
+				 		+ "<li>noSelection -  does not allow selection, but fires selection change events. Use this model if you want to know when a user selects an item, but do not want the view to update based on the selection</li>"
+				 		+ "<li>singleSelection - allows only one item to be selected a time</li>"
+				 		+ "</ul>")
 })
 @TagEvents({
-	@TagEvent(SelectionChangeEvtBind.class)
+	@TagEvent(value=SelectionChangeEvtBind.class, description="Inform the handler for onSelectionChange event. This event is fired when the widget's selection is changed.")
 })
 public interface HasDataFactory<C extends WidgetCreatorContext> extends HasRowsFactory<C>, HasCellPreviewHandlersFactory<C>
 {

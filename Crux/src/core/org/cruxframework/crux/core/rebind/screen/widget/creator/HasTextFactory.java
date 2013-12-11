@@ -17,20 +17,15 @@ package org.cruxframework.crux.core.rebind.screen.widget.creator;
 
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagAttributes({
-	@TagAttribute(value="text", supportsI18N=true) 
+	@TagAttribute(value="text", supportsI18N=true, description="Sets this object's text.") 
 })
-@TagAttributesDeclaration({
-	@TagAttributeDeclaration("bindPath")	
-})
-public interface HasTextFactory<C extends WidgetCreatorContext>
+public interface HasTextFactory<C extends WidgetCreatorContext> extends HasBindPathFactory<C>
 {
 }

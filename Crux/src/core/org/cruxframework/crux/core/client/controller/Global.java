@@ -25,7 +25,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * This annotation can be used to give a Global scope to a controller.
  * It only makes any effect if used on a {@link Controller} class.
  * <p>
- * A Global controller does not need to be imported on a screen to be used. All application screens
+ * A Global controller does not need to be imported on a screen to be used. All application views
  * will automatically import the controller. 
  * <p>
  * For example:
@@ -49,7 +49,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * }
  * </pre>
  * <p>
- * It can be used on a {@code .crux.xml} page, as illustrated by the following example: 
+ * It can be used on a {@code .crux.xml} or {@code .view.xml} page, as illustrated by the following example: 
  * <pre>
  * {@code <html} 
  *  xmlns="http://www.w3.org/1999/xhtml"

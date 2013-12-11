@@ -57,8 +57,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
  * </pre>
  * Any call made to the previous controller method ({@code myEventHandler}) will be preceded 
  * by a call to validation method ({@code validateMyEventHandler}). It applies to any event 
- * triggered by a {@code .crux.xml} page or a method called 
- * programatically.    
+ * triggered by a {@code .crux.xml} or {@code .view.xml} page.    
  * <p>
  * Validation method must obey the following constraints:  
  * <p>

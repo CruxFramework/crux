@@ -16,6 +16,7 @@
 package org.cruxframework.crux.core.client.db;
 
 /**
+ * Define a callback for database operations.
  * @author Thiago da Rosa de Bustamante
  *
  */
@@ -23,14 +24,18 @@ public class Callback
 {
 	protected AbstractDatabase db;
 	
+	/**
+	 * Called by Crux to bind the callback object to the database.
+	 * @param db database that performed the operation handled by this callback. 
+	 */
 	protected void setDb(AbstractDatabase db)
 	{
 		this.db = db;
 	}
 
 	/**
-	 * Called when an unexpected error occur.
-	 * @param message
+	 * Called when an unexpected error occur. 
+	 * @param message error message
 	 */
 	public void onError(String message)
 	{

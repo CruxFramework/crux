@@ -24,15 +24,15 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 
 /**
- * 
+ * A helper class to help on HasAllTouchHandlers widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagEvents({
-	@TagEvent(TouchStartEvtBind.class),
-	@TagEvent(TouchMoveEvtBind.class),
-	@TagEvent(TouchEndEvtBind.class),
-	@TagEvent(TouchCancelEvtBind.class)
+	@TagEvent(value=TouchStartEvtBind.class, description="Inform the handler for onTouchStarch event. This event is fired when the user start touching over the widget."),
+	@TagEvent(value=TouchMoveEvtBind.class, description="Inform the handler for onTouchMove event. This event is fired when the user moves his fingers touching over the widget."),
+	@TagEvent(value=TouchEndEvtBind.class, description="Inform the handler for onTouchEnd event. This event is fired when the user release his fingers after touching over the widget."),
+	@TagEvent(value=TouchCancelEvtBind.class, description="Inform the handler for onTouchCancel event. This event is fired if any external event with more priority than our website (e.g., an alert window, an incoming call, or a push notification) cancels the operation.")
 })	
 public interface HasAllTouchHandlersFactory<C extends WidgetCreatorContext>
 {

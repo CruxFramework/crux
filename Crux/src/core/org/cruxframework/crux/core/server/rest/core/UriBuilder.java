@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.cruxframework.crux.core.server.rest.annotation.Path;
 import org.cruxframework.crux.core.server.rest.util.Encode;
 import org.cruxframework.crux.core.server.rest.util.PathHelper;
-import org.cruxframework.crux.core.shared.rest.annotation.Path;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>

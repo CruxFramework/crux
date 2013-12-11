@@ -54,21 +54,21 @@ import com.google.gwt.dom.client.PartialSupport;
  * @author Thiago da Rosa de Bustamante
  */
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="id", required=true)
+	@TagAttributeDeclaration(value="id", required=true, description="Sets the identifier used to reference this widget on the crux view. ")
 })
 @TagAttributes({
-	@TagAttribute("width"),
-	@TagAttribute("height"),
-	@TagAttribute(value="styleName", processor=WidgetCreator.StyleNameProcessor.class, supportsResources=true),
-	@TagAttribute(value="visible", type=Boolean.class),
-	@TagAttribute(value="tooltip", supportsI18N=true, property="title"),
-	@TagAttribute(value="style", processor=WidgetCreator.StyleProcessor.class),
-	@TagAttribute(value="viewPermission", type=String.class, processor=WidgetCreator.ViewPermissionAttributeProcessor.class)
+	@TagAttribute(value="width", description="Sets the object's width, in CSS units (e.g. \"10px\", \"1em\"). This width does not include decorations such as border, margin, and padding."),
+	@TagAttribute(value="height", description="Sets the object's height, in CSS units (e.g. \"10px\", \"1em\"). This height does not include decorations such as border, margin, and padding."),
+	@TagAttribute(value="styleName", processor=WidgetCreator.StyleNameProcessor.class, supportsResources=true, description="Clears all of the element's style names and sets it to the given style."),
+	@TagAttribute(value="visible", type=Boolean.class, description="Sets whether this object is visible. true to show the object, false to hide it"),
+	@TagAttribute(value="tooltip", supportsI18N=true, property="title", description="Sets the HTML title property associated with this object. The title is the 'tool-tip' displayed to users when they hover over the object."),
+	@TagAttribute(value="style", processor=WidgetCreator.StyleProcessor.class, description="Sets the HTML style property of the widget's element"),
+	@TagAttribute(value="viewPermission", type=String.class, processor=WidgetCreator.ViewPermissionAttributeProcessor.class, description="A role that must be checked to verify if user can see this widget on the Screen. You must define a RoleManager to handle these permission validations.")
 })
 @TagEvents({
-	@TagEvent(LoadWidgetEvtProcessor.class),
-	@TagEvent(AttachEvtBind.class),
-	@TagEvent(DettachEvtBind.class)
+	@TagEvent(value=LoadWidgetEvtProcessor.class, description="Inform the handler for onLoadWidget event. This event is fired when the widget is loaded into its parent view."),
+	@TagEvent(value=AttachEvtBind.class, description="Inform the handler for onLoadWidget event. This event is fired every time the widget is attached to the DOM in the browser."),
+	@TagEvent(value=DettachEvtBind.class, description="Inform the handler for onLoadWidget event. This event is fired every time the widget is removed from the DOM in the browser.")
 })
 public abstract class WidgetCreator <C extends WidgetCreatorContext>
 {

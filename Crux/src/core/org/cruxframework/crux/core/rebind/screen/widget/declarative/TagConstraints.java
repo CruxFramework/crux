@@ -31,6 +31,10 @@ public @interface TagConstraints
 	String minOccurs() default "1";
 	String maxOccurs() default "1";
 	String tagName() default "";
+	/**
+	 * A description to be used to compose the documentation of the generated library 
+	 */
+	String description() default "";
 	Class<?> type() default Void.class;
 	String widgetProperty() default "";
 	boolean inheritsParentAttributes() default false;

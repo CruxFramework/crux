@@ -22,12 +22,20 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 
 /**
+ * A helper class to help on HasDirectionEstimator widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagAttributes({
 	@TagAttribute(value="directionEstimator", type=DirectionEstimator.class, defaultValue="defaultAlign", 
-			processor=DirectionEstimatorAttributeParser.class)
+			processor=DirectionEstimatorAttributeParser.class,
+			description="Set the SelectionModel used by this widget. Accepts one value between:"
+				 		+ "<ul>"
+				 		+ "<li>anyRtl - Estimates the direction of a given string using the \"any RTL\" heuristic: the return value is RTL if the string contains at least one RTL character. Otherwise, it is LTR.</li>"
+				 		+ "<li>firstStrong -  Estimates the direction of a given string using the \"first strong\" heuristic: The return value is determined by the first character in the string with strong directionality. If there is no such character, the return value is DEFAULT.</li>"
+				 		+ "<li>wordCount - Estimates the direction of a given string using the \"word count\" heuristic: If the number of RTL words is above a certain percentage of the total number of strongly directional words, returns RTL. Otherwise, if any words are strongly or weakly LTR, returns LTR. Otherwise, returns DEFAULT, which is used to mean \"neutral\". Numbers are counted as weakly LTR.</li>"
+				 		+ "<li>defaultAlign - use the default estimator</li>"
+				 		+ "</ul>")
 })	
 public interface HasDirectionEstimatorFactory<C extends WidgetCreatorContext>
 {

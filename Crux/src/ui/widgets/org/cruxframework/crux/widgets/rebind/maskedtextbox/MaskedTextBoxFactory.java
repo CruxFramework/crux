@@ -55,9 +55,6 @@ import org.cruxframework.crux.widgets.client.maskedtextbox.MaskedTextBox;
 	@TagAttribute(value="value", processor=MaskedTextBoxFactory.ValueAttributeParser.class),
 	@TagAttribute(value="clearIfNotValid", type=Boolean.class, defaultValue="true")
 })
-@TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="formatter", required=true)
-})
 public class MaskedTextBoxFactory extends WidgetCreator<WidgetCreatorContext> 
        implements HasDirectionFactory<WidgetCreatorContext>, HasNameFactory<WidgetCreatorContext>, 
                   HasValueChangeHandlersFactory<WidgetCreatorContext>, 

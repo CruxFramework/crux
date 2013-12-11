@@ -24,4 +24,5 @@ public interface CruxSchemaGenerator
 {
 	void generateSchemas() throws SchemaGeneratorException;
 	void generateCatalog() throws SchemaGeneratorException;
+	void generateDocumentation() throws SchemaGeneratorException;
 }

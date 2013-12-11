@@ -17,11 +17,14 @@ package org.cruxframework.crux.core.client.db;
 
 /**
  * Database delete operation callback. 
- * Use this callback to delete the key from object writen into the stores.
+ * Use this callback to delete the key from object written into the stores.
  * 
  * @author Samuel Almeida Cardoso
  */
 public abstract class DatabaseDeleteCallback extends Callback
 {
+	/**
+	 * Called when a delete operation is performed successfully.
+	 */
 	public abstract void onSuccess();
 }

@@ -52,10 +52,7 @@ class FileButton extends Composite implements HasChangeHandlers
 		style.setTextAlign(TextAlign.RIGHT);
 		style.setOpacity(0);
 		style.setProperty("cursor", "inherit");
-		
-		// Unnecessary (at least for Chrome, check others) and makes it overlap dialog boxes)
-		//style.setZIndex(2);
-		
+		style.setZIndex(2);
 		style.setWidth(100, Unit.PCT);
 		style.setHeight(100, Unit.PCT);
 		style.setTop(0, Unit.PX);
@@ -68,15 +65,10 @@ class FileButton extends Composite implements HasChangeHandlers
 		style.setPosition(Position.ABSOLUTE);
 		style.setTop(0, Unit.PX);
 		style.setLeft(0, Unit.PX);
-		
-		// Unnecessary (at least for Chrome, check others) and makes it overlap dialog boxes)
-		//style.setZIndex(1);
-		
+		style.setZIndex(1);
 		style.setWidth(100, Unit.PCT);
 		style.setHeight(100, Unit.PCT);
-		
 		mainPanel.add(visibleButton);
-		mainPanel.add(fileInput);
 		
 		initWidget(mainPanel);
 		setStyleName("crux-FileButton");

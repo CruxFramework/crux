@@ -46,9 +46,6 @@ import org.cruxframework.crux.widgets.client.maskedlabel.MaskedLabel;
 @TagAttributes({
 	@TagAttribute(value="text", processor=MaskedLabelFactory.TextAttributeParser.class)
 })
-@TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="formatter", required=true)
-})
 public class MaskedLabelFactory extends WidgetCreator<WidgetCreatorContext> 
 				implements HasDirectionFactory<WidgetCreatorContext>, HasClickHandlersFactory<WidgetCreatorContext>, 
 						   HasAllMouseHandlersFactory<WidgetCreatorContext>, 

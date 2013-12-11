@@ -32,11 +32,22 @@ public class VerticalMotionAnimation extends Animation
 	private int startTop;
 	private int finalTop;
  
+	/**
+	 * Constructor
+	 * @param element Element to be animated
+	 */
 	public VerticalMotionAnimation(Element element)
 	{
 		this.style = element.getStyle();
 	}
  
+
+	/**
+	 * Move the animated element from start position to final position
+	 * @param startLeft start top position
+	 * @param finalLeft final top position
+	 * @param milliseconds animation duration
+	 */
 	public void move(int startTop, int finalTop, int milliseconds)
 	{
 		this.startTop = startTop;

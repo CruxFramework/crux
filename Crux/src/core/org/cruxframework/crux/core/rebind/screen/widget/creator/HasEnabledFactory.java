@@ -29,8 +29,9 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
  *
  */
 @TagAttributes({
-	@TagAttribute(value="enabled", type=Boolean.class),
-	@TagAttribute(value="editPermission", type=String.class, processor=HasEnabledFactory.EditPermissionAttributeProcessor.class)
+	@TagAttribute(value="enabled", type=Boolean.class, description="Sets whether this widget is enabled."),
+	@TagAttribute(value="editPermission", type=String.class, processor=HasEnabledFactory.EditPermissionAttributeProcessor.class, 
+				  description="A role that must be checked to verify if user can edit this widget on the Screen. You must define a RoleManager to handle these permission validations.")
 })	
 public interface HasEnabledFactory<C extends WidgetCreatorContext>
 {

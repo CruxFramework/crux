@@ -22,12 +22,12 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 
 /**
+ * A helper class to help on HasAllFocusHandlers widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
- *
  */
 @TagEvents({
-	@TagEvent(FocusEvtBind.class),
-	@TagEvent(BlurEvtBind.class)
+	@TagEvent(value=FocusEvtBind.class, description="Inform the handler for onFocus event. This event is fired when the widget receives focus."),
+	@TagEvent(value=BlurEvtBind.class, description="Inform the handler for onBlur event. This event is fired when the widget loses focus.")
 })	
 public interface HasAllFocusHandlersFactory<C extends WidgetCreatorContext>
 {

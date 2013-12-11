@@ -16,6 +16,14 @@
 package org.cruxframework.crux.core.client.config;
 
 /**
+ * <p>
+ * Internal interface. Do not extend or implement this directly.
+ * Contains some configuration properties to inform Crux how to work.
+ * </p>
+ * <p>
+ * To change any of this configuration properties, create a property file for the
+ * {@link org.cruxframework.crux.core.config.Crux} resource interface.
+ * </p>
  * @author Thiago da Rosa de Bustamante
  *
  */

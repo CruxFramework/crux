@@ -285,7 +285,7 @@ public class DataSourceProxyCreator extends AbstractProxyCreator
 			}
 		}
 		return result.toString();
-	}
+	}	
 	
 	/**
 	 * @return

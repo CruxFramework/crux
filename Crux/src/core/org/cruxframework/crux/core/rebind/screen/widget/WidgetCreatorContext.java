@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.json.JSONObject;
 
@@ -49,10 +50,28 @@ public class WidgetCreatorContext
 	{
         return widgetElement.optString(propertyName);
 	}
+	public boolean readBooleanWidgetProperty(String propertyName, boolean defaultValue)
+	{
+		String property = readWidgetProperty(propertyName);
+		if (StringUtils.isEmpty(property))
+		{
+			return defaultValue;
+		}
+		return Boolean.parseBoolean(property);
+	}
 	public String readChildProperty(String propertyName)
 	{
 		return childElement.optString(propertyName);
-	}	
+	}
+	public boolean readBooleanChildProperty(String propertyName, boolean defaultValue)
+	{
+		String property = readChildProperty(propertyName);
+		if (StringUtils.isEmpty(property))
+		{
+			return defaultValue;
+		}
+		return Boolean.parseBoolean(property);
+	}
 	public void setChildElement(JSONObject childElement)
 	{
 		this.childElement = childElement;

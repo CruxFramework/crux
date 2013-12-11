@@ -26,8 +26,8 @@ public abstract class DatabaseWriteCallback<T> extends Callback
 {
 	/**
 	 * Called after a successfully write operation into the database (an add or put operation). 
-     * @param <K> The type of the key assigned to the writen object.
-	 * @param result
+     * @param <T> The type of the key assigned to the writen object.
+	 * @param result the object to be written
 	 */
 	public abstract void onSuccess(T result);
 }

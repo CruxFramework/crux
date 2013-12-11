@@ -23,13 +23,13 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 
 /**
+ * A helper class to help on HasAllKeyHandlers widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
- *
  */
 @TagEvents({
-	@TagEvent(KeyUpEvtBind.class),
-	@TagEvent(KeyPressEvtBind.class),
-	@TagEvent(KeyDownEvtBind.class)
+	@TagEvent(value=KeyUpEvtBind.class, description="Inform the handler for onKeyUp event. This event is fired when the user release a keyboard key."),
+	@TagEvent(value=KeyPressEvtBind.class, description="Inform the handler for onPress event. This event is fired when the user press a keyboard key."),
+	@TagEvent(value=KeyDownEvtBind.class, description="Inform the handler for onKeyDow event. This event is fired when the user pressed a keyboard key, before he release the key.")
 })	
 public interface HasAllKeyHandlersFactory<C extends WidgetCreatorContext>
 {

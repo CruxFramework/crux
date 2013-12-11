@@ -34,4 +34,8 @@ public @interface TagEvent
 {
 	Class<? extends EvtProcessor> value();	
 	Device[] supportedDevices() default {Device.all};
+	/**
+	 * A description to be used to compose the documentation of the generated library 
+	 */
+	String description() default "";
 }

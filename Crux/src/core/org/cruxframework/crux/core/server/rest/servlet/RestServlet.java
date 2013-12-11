@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.i18n.LocaleResolver;
 import org.cruxframework.crux.core.i18n.LocaleResolverInitializer;
+import org.cruxframework.crux.core.server.rest.annotation.HttpMethod;
 import org.cruxframework.crux.core.server.rest.core.HttpHeaders;
 import org.cruxframework.crux.core.server.rest.core.RequestPreprocessors;
 import org.cruxframework.crux.core.server.rest.core.dispatch.ResourceMethod.MethodReturn;
@@ -38,7 +39,6 @@ import org.cruxframework.crux.core.server.rest.spi.HttpUtil;
 import org.cruxframework.crux.core.server.rest.spi.RestFailure;
 import org.cruxframework.crux.core.server.rest.spi.UriInfo;
 import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
-import org.cruxframework.crux.core.shared.rest.annotation.HttpMethod;
 
 /**
  * @author Thiago da Rosa de Bustamante
