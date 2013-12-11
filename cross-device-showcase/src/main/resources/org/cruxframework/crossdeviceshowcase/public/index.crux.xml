@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:show="http://www.cruxframework.org/crux/showcase"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt">
+	
+	<head>
+		<title>Crux Framework - Cross-Device Showcase</title>
+		<meta name="fragment" content="!" />
+	</head>
+	
+	<body>
+		<script type="text/javascript" src="crossdeviceshowcase.nocache.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="../syntax-highlight/shCore.css" />
+		<link rel="stylesheet" type="text/css" href="../syntax-highlight/shCoreDefault.css" />
+		<link rel="stylesheet" type="text/css" href="../syntax-highlight/shThemeEclipse.css" />
+		
+		<script type="text/javascript" src="../syntax-highlight/shCore.js"></script>
+		<script type="text/javascript" src="../syntax-highlight/shBrushJava.js"></script>
+		<script type="text/javascript" src="../syntax-highlight/shBrushXml.js"></script>
+	
+		<script type="text/javascript">
+			function doHighlight()
+			{
+				SyntaxHighlighter.defaults['auto-links'] = false;
+				SyntaxHighlighter.defaults['quick-code'] = false;
+				SyntaxHighlighter.highlight();
+			}
+		</script>
+
+		<c:screen useController="mainController" useView="*" 
+				  smallViewport="user-scalable=no, width=320" 
+				  largeViewport="user-scalable=no, width=device-width, height=device-height" 
+				  useResource="xStandardResources,showcaseResources" height="100%"/>
+
+		<crux:menuTabsDisposal id="menuDisposal">
+			<crux:header>
+				<gwt:flowPanel id="topBarpanel"/>
+			</crux:header>
+			<crux:menuSection label="Elementos de Layout" additionalStyleName="layoutSectionIcon"/>
+			<crux:menuEntry label="Styled Panel" targetView="styledPanel"/>
+			<crux:menuEntry label="Form Display" targetView="formDisplay"/>
+			<crux:menuSection label="Elementos de Formulário"/>
+			<crux:menuEntry label="File Uploader" targetView="fileUploader"/>
+			<crux:menuSection label="Elementos de Imagem"/>
+			<crux:menuEntry label="Slide Show" targetView="slideshow"/>
+			<crux:menuSection label="Banco de Dados"/>
+			<crux:menuEntry label="CRUD Simples" targetView="simpleDatabase"/>
+		</crux:menuTabsDisposal>
+	
+	</body>
+</html>
