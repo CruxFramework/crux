@@ -1,0 +1,717 @@
+HTML
+{
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+BODY
+{
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+DIV, TD, LABEL, SPAN, INPUT, BUTTON
+{
+	font-size: 16px;
+	font-family:OpenSans,Verdana,Helvetica,Arial,sans-serif;
+	-webkit-font-smoothing: antialiased;
+	outline: 0;
+}
+INPUT, BUTTON
+{
+	transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+INPUT:focus, BUTTON:focus
+{
+	outline: 0;
+	border-color: #66AFE9;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+DIV, INPUT, BUTTON
+{
+	box-sizing: border-box;
+}
+
+@external crux-StyledPanel, crux-StyledPanelOuter, crux-FileUploader, dropArea;
+.crux-StyledPanelOuter
+{
+	padding: 8px;
+	min-width: 400px;
+}
+.crux-StyledPanel, .crux-FileUploader .dropArea
+{
+	display: block;
+	border: solid #EAEAEA 1px;
+	border-radius: 2px;
+	box-shadow: 0px 0px 10px rgba(90,90,90,0.1);
+	background-image: -webkit-linear-gradient(top,rgba(255,255,255,1)80%,rgba(240,240,240,0.3));
+	padding: 15px;
+}
+
+@external crux-Button, crux-FileUploader, fileInputButton;
+.crux-Button, .crux-FileUploader .fileInputButton
+{	    
+	color: #FFF;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	text-shadow: none;
+	border-radius: 1px;
+	height: 45px;
+	min-width: 110px;
+	-webkit-user-select: none;
+	padding: 8px 13px;
+	background-color: #81AA32;
+	box-shadow: 0px -20px 20px rgba(0, 0, 0, 0.1) inset;	
+	transition: box-shadow ease-in-out 0.15s;
+}
+.crux-Button:hover, .crux-FileUploader .fileInputButton:hover
+{
+	box-shadow: none;
+}
+
+
+@external crux-FormDisplay, formEntryLabel, formEntryData;
+.crux-FormDisplay .formEntryData, .crux-FormDisplay .formEntryLabel
+{
+	padding-bottom: 10px;
+}
+
+@external crux-MenuTabsDisposal, menuTabsSplitPanel, menuEntriesContainer, menuPanel, menuEntry;
+@external  menuSection, menuSection-closed, menuSectionEntries, menuSectionEntries-closed, menuTabsHeaderSplitPanel, menuTabsHeader;
+.crux-MenuTabsDisposal, .crux-MenuTabsDisposal .menuTabsSplitPanel, .crux-MenuTabsDisposal .menuTabsHeaderSplitPanel
+{
+	height: 100%;
+	padding: 0px;
+	background-color: #FFFFFF;	
+}
+/* Styling the TD that wraps the top bar  */
+TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
+{
+	height: 25px;
+}
+.crux-MenuTabsDisposal .menuTabsHeader
+{
+	background-color: #444949;
+	height: 25px;
+	text-align: right;
+	width: 100%;
+	border: solid 0px;
+	border-bottom: solid 1px #FFFFFF;
+}
+.crux-MenuTabsDisposal .menuEntriesContainer
+{
+	width: 300px;
+}
+/* Styling the TD that wraps the menu container */
+TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
+{
+	background-image: url(noise.png);
+	background-color: #EAEAEA;
+	width: 300px;
+	border: none;
+	border-right: solid 1px #EEEEEE;
+}
+.crux-MenuTabsDisposal .menuEntry
+{
+	margin: 0px;
+	border: solid 0px;
+	height: 40px;
+	background: white;
+	width: 85%;
+	margin-left: 15%;
+	box-shadow: 0px -20px 10px 0px rgba(0,0,0,0.02) inset;
+	color: #4c6879;
+	font-size: 16px;
+	-webkit-font-smoothing: antialiased;
+	text-shadow: none;
+	-webkit-user-select: none;
+	position: relative;
+	border-radius: 0px;
+	cursor: pointer;
+}
+.crux-MenuTabsDisposal .menuEntry:after
+{
+	content: "";
+	height: 40px;
+	width: 30px;
+	border: none;
+	position: absolute;
+	top: 0px;
+	background: #81aa32;
+	right: 0px;
+	box-shadow: 0px -10px 15px -1px rgba(0,80,0,0.1) inset;
+	color: white;
+	padding: 0px;
+	overflow: auto;
+	background-image: url(right-arrow.png);
+	background-position: center;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+.crux-MenuTabsDisposal .menuSection
+{
+	height: 50px;
+	color: #fff;
+	background-color: #4496c6;
+	box-shadow: inset 0px -10px 30px #3d8dbd;
+	font-size: 16px;
+	padding: 0px;
+	text-align: left;
+	line-height: 50px;
+	padding-left: 50px;
+	-webkit-font-smoothing: antialiased;
+	-webkit-user-select: none;
+	cursor: pointer;
+	border: solid 0px;
+	width: 100%;
+	position: relative;
+}
+.crux-MenuTabsDisposal .menuSection:after, .crux-MenuTabsDisposal .menuSection-closed:after 
+{
+	content: "...";
+	position: absolute;
+	right: 10px;
+	opacity: 0.0;
+	-webkit-user-select: none;
+	transition: opacity ease-in-out 0.5s;
+}
+.crux-MenuTabsDisposal .menuSection-closed:after 
+{
+	opacity: 0.4 !important;
+}
+.crux-MenuTabsDisposal .menuSectionEntries
+{
+	-webkit-transition: height 0.2s ease-in-out;
+	overflow: hidden;
+}
+.crux-MenuTabsDisposal .menuSectionEntries-closed
+{ 
+}
+
+@external crux-TabContainer, crux-TabPanelBottom; 
+@external crux-TabBar, crux-TabBarItem, crux-TabBarItem-selected, flapLabel, flapCloseButton;
+@external crux-RollingPanelPreviousWrapper, crux-RollingPanelPreviousWrapper-disabled, crux-RollingPanelPrevious;
+@external crux-RollingPanelNextWrapper, crux-RollingPanelNextWrapper-disabled, crux-RollingPanelNext;
+@external crux-TabBarFirst-wrapper, crux-TabBarRest-wrapper;  
+.crux-TabContainer
+{
+	background-color: #FFFFFF;
+}
+.crux-TabBar
+{
+	height: 55px;
+	background-color: #E6E6E6;
+	box-shadow: inset 0 -20px 20px -10px rgba(0, 0, 0, 0.2), 5px -0px 10px -2px rgba(0,0,0,0.15) inset;
+	
+}
+.crux-TabPanelBottom
+{
+	background-color: #FFFFFF;
+	height: 100%;
+	box-shadow: 10px 0px 20px -10px rgba(0,0,0,0.3) inset;
+	padding-bottom: 0px;
+	padding-top: 20px;
+	box-sizing: content-box;
+}
+.crux-TabBarItem
+{
+	height: 43px;
+	min-width: 140px;
+	background-color: #636969;
+	opacity: 0.75;
+	margin-left: 0px;
+	cursor: default;
+	-webkit-user-select: none;
+	box-shadow: -20px 0 20px -10px rgba(0, 0, 0, 0.2) inset, 0px -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
+	position: relative;
+	transition: all ease 0.3s;
+	white-space: nowrap;
+}
+.crux-TabBarItem-selected
+{
+	background-color: #4496C6;
+	opacity: 1;
+	box-shadow: 0px -20px 10px -10px rgba(0, 0, 0, 0.1) inset;
+}
+.crux-TabBarItem-selected:after
+{
+	position: absolute;
+	height: 0;
+	width: 0;
+	content: "";
+	border: solid 8px #fff;
+	-webkit-transform: rotate(45deg);
+	left: 80px;
+	bottom: -12px;
+}
+.crux-TabBarItem .flapLabel
+{
+	font-size: 16px;
+	color: #FFFFFF;
+	padding-top: 10px;
+	padding-left: 10px;
+	cursor: default;
+	-webkit-font-smoothing: antialiased;
+}
+.flapCloseButton 
+{
+	background-color: transparent;
+	-webkit-user-select: none;
+	transition: font-size ease-in-out 0.15s;	
+	height: 14px;
+	width: 14px;
+	margin-left: 5px;
+	margin-top: 2px;
+	text-align: center;
+	cursor: pointer;
+}
+.flapCloseButton:before 
+{
+	content: "X";
+	color: rgb(255, 255, 255);
+	-webkit-user-select: none;
+	padding-right: 1px;
+	font-family: arial;
+	font-size: 14px;
+	top: 8px;
+	position: absolute;
+	right: 8px;
+	-webkit-transition: all ease-in-out 0.1s;
+}
+.flapCloseButton:hover 
+{
+	font-size: 14px;
+}
+.flapCloseButton:hover:before 
+{
+	font-size: 16px;
+}
+.crux-RollingPanelPreviousWrapper, .crux-RollingPanelNextWrapper 
+{
+	width: 31px;
+	height: 55px;
+}
+.crux-RollingPanelPrevious, .crux-RollingPanelNext
+{
+	background-color: transparent;
+	height: 55px;
+	margin-top: 0px;
+	width: 31px;
+	color: transparent !important;
+	text-align: center;
+	font-size: 18px;
+	border: none;
+	position: relative;
+	cursor: pointer;
+}
+.crux-RollingPanelPrevious:after, .crux-RollingPanelNext:after
+{
+	height: 55px;
+	width: 30px;
+	position: absolute;
+	top: 0px;
+	background-position: center;
+	background-repeat: no-repeat;
+	content: "";
+	cursor: pointer;
+}
+.crux-RollingPanelPrevious:after
+{
+	left: 0px;
+	box-shadow: 10px -3px 10px -5px rgba(0, 0, 0, 0.2);
+	border-right: solid 1px rgba(255,255,255,0.3);
+	background-image: url(left-arrow.png);
+}
+.crux-RollingPanelNext:after
+{
+	right: 0px;
+	box-shadow: -10px -3px 10px -5px rgba(0, 0, 0, 0.2);
+	border-left: solid 1px rgba(255,255,255,0.3);
+	background-image: url(right-arrow.png);	
+}
+.crux-RollingPanelPrevious:hover, .crux-RollingPanelNext:hover 
+{
+	color: #FFFFFF;
+}
+.crux-RollingPanelPreviousWrapper-disabled
+{
+	visibility: hidden;
+}
+.crux-RollingPanelNextWrapper-disabled
+{
+	visibility: hidden;
+}
+.crux-TabBarFirst-wrapper, .crux-TabBarRest-wrapper
+{
+	display: none;
+}
+
+@external crux-FileUploader, dropArea, filesArea, filePanel, crux-ProgressBar, percentBar, cancelUploadButton, fileInputButton, thumbnailImage, chooseButton;
+.crux-FileUploader
+{
+	width: 400px;
+	margin-top: 10px;
+}
+.crux-FileUploader .chooseButton
+{
+	cursor: pointer;
+}
+.crux-FileUploader .fileInputButton
+{
+	background-color: #4496C6;
+	position: relative;
+	display: inline-block;
+	width: 170px;
+	line-height: 40px;
+	margin-top: 10px;	
+	cursor: pointer;
+}
+.crux-FileUploader .dropArea
+{
+    border-style: dashed;
+	min-height: 160px;
+	background-image: url(upload-icon.png);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.crux-FileUploader .filesArea
+{
+	background-color: #FFFFFF;
+}
+.crux-FileUploader .filePanel
+{
+	border: solid #eaeaea 1px;
+	border-radius: 2px;
+	box-shadow: 0 0 10px rgba(90,90,90,0.1);
+	background-image: -webkit-linear-gradient(top,rgba(255,255,255,1)80%,rgba(240,240,240,0.3));
+	padding: 10px;
+	width:calc(100% - 20px);
+	position: relative;
+	width: 100%;
+	height: 60px;
+}
+.crux-FileUploader .filePanel .thumbnailImage
+{
+	border: solid 1px #FFF;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	height: 40px;
+	width: 40px;
+	display: inline;
+	position: absolute;
+	top: 8px;
+	left: 8px;
+}
+.crux-FileUploader .filePanel .cancelUploadButton
+{
+	border: 0px solid;
+	-webkit-user-select: none;
+	transition: box-shadow ease-in-out 0.15s;
+	height: 20px;
+	width: 20px;
+	text-align: center;
+	padding: 0px;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	background: transparent;
+	cursor: pointer;
+}
+.crux-FileUploader .filePanel .cancelUploadButton:after 
+{
+	content: "X";
+	-webkit-user-select: none;
+	font-size: 14px;
+	line-height: 20px;
+	position: absolute;
+	top: 0px;
+	right: 5px;
+	color: #4496C6;
+	font-weight: normal;
+	cursor: pointer;
+}
+.crux-FileUploader .filePanel .crux-ProgressBar
+{
+	width: 280px;
+	border-radius: 1px;
+	height: 18px;
+	position: absolute;
+	top: 30px;
+	left: 55px;
+	margin: 0px;
+	padding: 0px;
+	border-top: solid 2px #EEE;;
+}
+
+.crux-FileUploader .filePanel .crux-ProgressBar .percentBar
+{
+	height: 18px !important;
+	border-radius: 1px;
+	border-top: solid 2px #A1CA52;
+	color: #618A12;
+	font-size: 11px;
+	line-height: 18px;
+	padding-left: 10px;
+	box-sizing: border-box;
+	position: absolute;
+	top: -2px;
+}
+
+.crux-FileUploader .filePanel .gwt-Label
+{
+	overflow: hidden;
+	width: 280px;
+	margin-left: 10px;
+	color: #4C6879;
+	position: absolute;
+	left: 55px;
+	top: 6px;
+	text-align: left;
+	padding: 0px;
+	box-sizing: border-box;
+	margin: 0px;
+	white-space: nowrap;
+}
+
+/******************************************************************************
+    Screen Blocker
+*******************************************************************************/
+
+@external crux-DefaultScreenBlocker, crux-ProgressDialogScreenBlocker, crux-MessageDialog, crux-MessageDialogScreenBlocker;
+.crux-ProgressDialogScreenBlocker, .crux-MessageDialogScreenBlocker
+{
+    background-color: #000000;
+    opacity: .45;
+
+    display: block;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.45);
+    height: 200%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 200%;
+    z-index: 98;
+}
+
+.crux-MessageDialog
+{
+    z-index: 99;
+}
+
+.crux-DefaultScreenBlocker
+{
+    background-color: #FFFFFF;
+    opacity: .01;
+    filter:"alpha(opacity=1)";
+    cursor: wait;
+}
+
+/******************************************************************************
+    RSS Panel
+*******************************************************************************/
+@external crux-RssPanel, rssPanelTitle, rssPanelBody, crux-entryTitle, crux-entryDate;
+.crux-RssPanel
+{
+    width: 100%;
+}
+.crux-RssPanel .rssPanelTitle
+{
+    margin-top: 0;
+    color: #004F5E;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.9);
+    font-size: 1.5em;
+    height: 50px;
+    margin-left: 10px;
+    font-weight: bold;  
+}
+
+.crux-RssPanel .rssPanelBody
+{
+    padding-left: 12px;
+    padding-right: 12px;
+    width: 100%;
+}
+
+.crux-RssPanel .rssPanelBody TD
+{
+    height: 40px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px rgba(255,255,255,0.3);
+}
+
+.crux-RssPanel .crux-entryTitle
+{
+    color: #333;
+    font-size: 15px;
+    font-family: Helvetica;
+    cursor: pointer;
+}
+
+.crux-RssPanel .crux-entryDate
+{
+    font-size: 11px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.4) inset, 0 1px 0 rgba(255,255,255,0.5);
+    color: white;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+    float: right;
+    padding: 3px 8px;
+}
+
+/******************************************************************************/
+
+@external gwt-TextBox;
+.gwt-TextBox
+{
+	height: 38px;
+	border: solid 1px rgba(28, 89, 148, 0.4);
+	width: 100%;
+	border-radius: 2px;
+	padding: 5px;	
+}
+@external gwt-Label;
+.gwt-Label
+{
+	color: #1C5994;
+	text-shadow: 0px 1px #FFFFFF;
+}
+
+
+/******************************************************************************
+	ListShuffle
+*******************************************************************************/
+
+@external crux-ListShuttle, toSelectColumn, selectedColumn, buttonsColumn;
+
+.crux-ListShuttle{
+
+}
+.crux-ListShuttle .toSelectColumn{
+	float:left;
+	width:40%;
+}
+.crux-ListShuttle .selectedColumn{
+    float:left;
+    width:40%;
+}
+.crux-ListShuttle .buttonsColumn{
+    float:left;
+    width:10%;
+    margin:0 5%;
+}
+
+.crux-ListShuttle .buttonsColumn button{
+    border-radius:0;
+    margin-top:-1px;
+}
+.crux-ListShuttle .buttonsColumn button:first-child{
+    border-radius:3px 3px 0 0;
+}
+.crux-ListShuttle .buttonsColumn button:last-child{
+    border-radius:0 0 3px 3px;
+}
+
+.crux-ListShuttle fieldset{
+    border:1px solid #ccc;
+    border-radius:3px;
+}
+
+@external crux-FlatDialog, dialogGlass, popupContent, dialogTitleBodySplit, dialogTopBar, dialogTopBarDragKnob, dialogTitle, dialogCloseButton, dialogBody, dialogResizer;  
+.crux-FlatDialog
+{
+	background-color: #FFF;
+	border-radius: 3px;
+	box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.7) !important;
+	-webkit-user-select: none;
+}
+.dialogGlass
+{
+	background-color: rgba(0, 0, 0, 0.2);
+	-webkit-user-select: none;
+}
+.crux-FlatDialog .dialogTitleBodySplit
+{
+	width: inherit;
+	height: inherit;
+	position: relative;
+	-webkit-user-select: none;
+}
+.crux-FlatDialog .dialogTopBar
+{
+	position: absolute;
+	padding-top: 10px;
+	height: 40px;
+	width: inherit;
+	top: 0px;
+	left: 0px;
+	box-shadow: 0 20px 10px -10px #FFF;
+	z-index: 1;
+	-webkit-user-select: none;
+}
+.crux-FlatDialog .dialogTopBarDragKnob
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background: transparent;
+	height: 100%;
+	width: 100%;
+	cursor: move;
+	-webkit-user-select: none;
+}
+.crux-FlatDialog .dialogTitle
+{
+	color: #4496C6;
+	text-align: center;
+	font-size: 18px;
+	-webkit-user-select: none;
+}
+.crux-FlatDialog .dialogCloseButton
+{
+	position: absolute;
+	right: 2px;
+	top: 2px;
+	background: rgba(0, 0, 0, 0);
+	border: none;
+	cursor: pointer;
+	-webkit-user-select: none;
+}
+.crux-FlatDialog .dialogCloseButton:after 
+{
+	content: "X";
+	color: #4496C6;
+	font-size: 18px;
+	-webkit-user-select: none;
+}
+.crux-FlatDialog .dialogBody
+{
+	width: inherit;
+	height: literal("calc(100% - 40px)");
+	overflow: scroll;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	position: absolute;
+	top: 40px;
+}
+
+.crux-FlatDialog .popupContent
+{
+	height: 100%;
+	width: 100%;
+}
+
+.crux-FlatDialog .dialogResizer
+{
+	position: absolute;
+	height: 12px;
+	width: 12px;
+	bottom: 2px;
+	right: 2px;
+	border: solid 2px #4496C6;
+	border-top: transparent;
+	border-left: transparent;
+	cursor: nwse-resize;
+	border-bottom-right-radius: 3px;
+	box-shadow: 2px 2px 2px #FFF, inset -5px -5px 10px #FFF;
+	-webkit-user-select: none;
+}

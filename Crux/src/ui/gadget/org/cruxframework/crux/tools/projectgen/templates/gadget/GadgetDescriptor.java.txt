@@ -1,0 +1,32 @@
+package ${modulePackage}.client;
+
+import org.cruxframework.crux.gadget.client.meta.GadgetInfo;
+import org.cruxframework.crux.gadget.client.meta.GadgetInfo.ModulePrefs;
+import org.cruxframework.crux.gadget.client.meta.GadgetInfo.UseLongManifestName;
+import org.cruxframework.crux.gadget.client.meta.GadgetInfo.UserPreferences;
+
+@UserPreferences(${gadgetUserPreferences}.class)
+@UseLongManifestName(${gadgetUseLongManifestName})
+@ModulePrefs(author = "${gadgetAuthor}", 
+		     author_aboutme = "${gadgetAuthorAboutMe}", 
+		     author_affiliation = "${gadgetAuthorAffiliation}",
+		     author_email = "${gadgetAuthorEmail}", 
+		     author_link = "${gadgetAuthorLink}", 
+		     author_location = "${gadgetAuthorLocation}", 
+		     author_photo = "${gadgetAuthorPhoto}", 
+		     author_quote = "${gadgetAuthorQuote}", 
+		     description = "${gadgetDescription}", 
+		     directory_title = "${gadgetDirectoryTitle}", 
+		     height = ${gadgetHeight}, 
+		     locales = ${gadgetLocales}, 
+		     scaling = ${gadgetScaling}, 
+		     screenshot = "${gadgetScreenshot}", 
+		     scrolling = ${gadgetScrolling}, 
+		     singleton = ${gadgetSingleton}, 
+		     thumbnail = "${gadgetThumbnail}", 
+		     title = "${gadgetTitle}", 
+		     title_url = "${gadgetTitleUrl}", 
+		     width = ${gadgetWidth})
+public interface ${projectName} extends GadgetInfo ${gadgetFeatures}
+{
+}

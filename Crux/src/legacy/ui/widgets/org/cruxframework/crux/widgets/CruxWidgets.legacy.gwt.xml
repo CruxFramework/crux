@@ -1,0 +1,55 @@
+<module>
+    <replace-with
+    	class="org.cruxframework.crux.widgets.client.dynatabs.TabInternalJSObjectsIEImpl">
+    	<when-type-is class="org.cruxframework.crux.widgets.client.dynatabs.TabInternalJSObjectsImpl" />
+    	<any>
+      		<when-property-is name="user.agent" value="ie6" />
+    		<when-property-is name="user.agent" value="ie8" />
+    		<when-property-is name="user.agent" value="ie9" />
+    	</any>
+    </replace-with>
+    <generate-with class="org.cruxframework.crux.widgets.rebind.PopupOpenerInvokerGenerator">
+		<when-type-assignable class="org.cruxframework.crux.widgets.client.dialog.PopupOpenerInvoker" />
+	</generate-with>
+	<generate-with class="org.cruxframework.crux.widgets.rebind.SiblingTabInvokerGenerator">
+		<when-type-assignable class="org.cruxframework.crux.widgets.client.dynatabs.SiblingTabInvoker" />
+	</generate-with>
+	<generate-with class="org.cruxframework.crux.widgets.rebind.TabInvokerGenerator">
+		<when-type-assignable class="org.cruxframework.crux.widgets.client.dynatabs.TabInvoker" />
+	</generate-with>
+    <generate-with class="org.cruxframework.crux.widgets.rebind.wizard.WizardDataSerializerGenerator">
+		<when-type-assignable class="org.cruxframework.crux.widgets.client.wizard.WizardDataSerializer" />
+	</generate-with>
+	<replace-with
+		class="org.cruxframework.crux.widgets.client.dialog.CruxInternalPopupController.PopupLoadListenerSafariImpl">
+		<when-type-assignable
+			class="org.cruxframework.crux.widgets.client.dialog.CruxInternalPopupController.PopupLoadListener" />
+		<any>
+			<when-property-is name="user.agent" value="safari" />
+		</any>
+	</replace-with>
+	<replace-with
+		class="org.cruxframework.crux.widgets.client.dialog.CruxInternalPopupController.PopupLoadListenerImpl">
+		<when-type-assignable
+			class="org.cruxframework.crux.widgets.client.dialog.CruxInternalPopupController.PopupLoadListener" />
+		<none>
+			<when-property-is name="user.agent" value="safari" />
+		</none>
+	</replace-with>
+	<replace-with
+    	class="org.cruxframework.crux.widgets.client.decoratedbutton.DecoratedButtonCSS2Impl">
+    	<when-type-is class="org.cruxframework.crux.widgets.client.decoratedbutton.DecoratedButtonIntf" />
+    	<any>
+      		<when-property-is name="user.agent" value="ie6" />
+    		<when-property-is name="user.agent" value="ie8" />
+    	</any>
+    </replace-with>
+	<replace-with
+    	class="org.cruxframework.crux.widgets.client.decoratedbutton.DecoratedButtonCSS3Impl">
+    	<when-type-is class="org.cruxframework.crux.widgets.client.decoratedbutton.DecoratedButtonIntf" />
+    	<none>
+      		<when-property-is name="user.agent" value="ie6" />
+    		<when-property-is name="user.agent" value="ie8" />
+    	</none>
+    </replace-with>
+</module>

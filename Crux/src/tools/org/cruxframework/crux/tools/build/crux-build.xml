@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<antlib>
+	<!-- Tasks -->
+	<taskdef name="legacyHandler" classname="org.cruxframework.crux.tools.build.LegacyHandlerTask" />
+	<typedef name="sourceFolder" classname="org.cruxframework.crux.tools.build.SourceFolder" />
+</antlib>
