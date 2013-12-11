@@ -342,9 +342,11 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 		{
 			boolean oldStyleHasDisplayNone = impl.getElement().getAttribute("style").contains("display: none");
 			String title = impl.getElement().getTitle();
+			String styleName = impl.getStyleName();
 			callHowToImplementInnerSetVisibleRect();
 			impl.setVisible(!oldStyleHasDisplayNone);
 			impl.setTitle(title);
+			impl.setStyleName(styleName);
 		}
 	}
 	
