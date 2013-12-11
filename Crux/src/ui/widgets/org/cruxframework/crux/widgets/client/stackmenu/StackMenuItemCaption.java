@@ -391,4 +391,12 @@ class StackMenuItemCaption extends Composite
 			canvas.addStyleDependentName("last");
 		}
 	}
+
+	/**
+	 * @return the stackMenu wrapping canvas
+	 */
+	public Grid getCanvas() 
+	{
+		return canvas;
+	}
 }
