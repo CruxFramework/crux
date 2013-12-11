@@ -28,8 +28,8 @@ public class FlatDialogBox extends PopupPanel implements Movable<Label>, Resizab
 	private SimplePanel body = new SimplePanel();;
 	private Label title = new Label();
 	private Button closeBtn = new Button();
-	private Label moveKnob;
-	private Label resizeKnob;
+	private Label moveHandle;
+	private Label resizeHandle;
 		
 	public FlatDialogBox() 
 	{
@@ -40,13 +40,13 @@ public class FlatDialogBox extends PopupPanel implements Movable<Label>, Resizab
 		body.setStyleName("dialogBody");
 
 		FlowPanel topBar = prepareTopBar();
-		resizeKnob = prepareResizer();
+		resizeHandle = prepareResizer();
 		
 		FlowPanel split = new FlowPanel();
 		split.setStyleName("dialogTitleBodySplit");
 		split.add(topBar);
 		split.add(body);
-		split.add(resizeKnob);
+		split.add(resizeHandle);
 		
 		super.setWidget(split);
 		
@@ -78,11 +78,11 @@ public class FlatDialogBox extends PopupPanel implements Movable<Label>, Resizab
 			}
 		});
 		
-		moveKnob = new Label();
-		moveKnob.setStyleName("dialogTopBarDragKnob");
+		moveHandle = new Label();
+		moveHandle.setStyleName("dialogTopBarDragHandle");
 		
 		topBar.add(title);
-		topBar.add(moveKnob);
+		topBar.add(moveHandle);
 		topBar.add(closeBtn);
 		
 		return topBar;
@@ -147,15 +147,15 @@ public class FlatDialogBox extends PopupPanel implements Movable<Label>, Resizab
 	}
 
 	@Override
-	public Label getKnob(DragAndDropFeature feature)
+	public Label getHandle(DragAndDropFeature feature)
 	{
 		if(DragAndDropFeature.MOVE.equals(feature))
 		{
-			return moveKnob;
+			return moveHandle;
 		}
 		else
 		{
-			return resizeKnob;
+			return resizeHandle;
 		}
 	}
 

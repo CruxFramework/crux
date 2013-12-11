@@ -616,7 +616,7 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
     border-radius:3px;
 }
 
-@external crux-FlatDialog, dialogGlass, popupContent, dialogTitleBodySplit, dialogTopBar, dialogTopBarDragKnob, dialogTitle, dialogCloseButton, dialogBody, dialogResizer;  
+@external crux-FlatDialog, dialogGlass, popupContent, dialogTitleBodySplit, dialogTopBar, dialogTopBarDragHandle, dialogTitle, dialogCloseButton, dialogBody, dialogResizer;  
 .crux-FlatDialog
 {
 	background-color: #FFF;
@@ -648,7 +648,7 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	z-index: 1;
 	-webkit-user-select: none;
 }
-.crux-FlatDialog .dialogTopBarDragKnob
+.crux-FlatDialog .dialogTopBarDragHandle
 {
 	position: absolute;
 	top: 0px;

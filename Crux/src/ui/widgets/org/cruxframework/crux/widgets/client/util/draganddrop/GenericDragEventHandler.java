@@ -41,9 +41,9 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 	 */
 	public void applyTo(Draggable<?> draggable)
 	{
-		draggable.getKnob(action.getFeature()).addMouseDownHandler(this);
-		draggable.getKnob(action.getFeature()).addMouseMoveHandler(this);
-		draggable.getKnob(action.getFeature()).addMouseUpHandler(this);			
+		draggable.getHandle(action.getFeature()).addMouseDownHandler(this);
+		draggable.getHandle(action.getFeature()).addMouseMoveHandler(this);
+		draggable.getHandle(action.getFeature()).addMouseUpHandler(this);			
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 			
 			dragging = true;
 
-			DOM.setCapture(action.getDraggable().getKnob(action.getFeature()).asWidget().getElement());
+			DOM.setCapture(action.getDraggable().getHandle(action.getFeature()).asWidget().getElement());
 
 			dragStartX = event.getClientX();
 			dragStartY = event.getClientY();
@@ -87,7 +87,7 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 	public void onMouseUp(MouseUpEvent event)
 	{
 		dragging = false;
-		DOM.releaseCapture(action.getDraggable().getKnob(action.getFeature()).asWidget().getElement());
+		DOM.releaseCapture(action.getDraggable().getHandle(action.getFeature()).asWidget().getElement());
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 	 */
 	public static interface Draggable<K extends IsWidget & HasAllMouseHandlers>
 	{
-		public K getKnob(DragAndDropFeature feature);
+		public K getHandle(DragAndDropFeature feature);
 	}
 	
 	/**
