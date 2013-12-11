@@ -1,0 +1,21 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	useController="homeController" 
+	title="Hello, Crux!"> 
+	
+	<crux:styledPanel id="outerPanel" height="200px">
+		<crux:formDisplay id="form">
+			<crux:entry label="What is your name?">
+				<gwt:textBox id="nameTextBox" width="200px"/>
+			</crux:entry>
+			<crux:entry horizontalAlignment="center">
+				<crux:button id="okButton" text="Go!" onSelect="homeController.sayHello" style="display:block"/>
+			</crux:entry>
+		</crux:formDisplay>
+	</crux:styledPanel>
+	
+</v:view>
