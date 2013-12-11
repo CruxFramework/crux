@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+
+    <welcome-file-list>
+        <welcome-file>cruxsite/index.html</welcome-file>
+    </welcome-file-list>
+
+    <context-param> 
+        <param-name>outputCharset</param-name> 
+        <param-value>UTF-8</param-value> 
+    </context-param> 
+
+    <listener>
+        <listener-class>org.cruxframework.crux.core.server.InitializerListener</listener-class>
+    </listener>
+    
+    <servlet>
+        <servlet-name>remoteServiceServlet</servlet-name>
+        <servlet-class>org.cruxframework.crux.core.server.dispatch.RemoteServiceServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>remoteServiceServlet</servlet-name>
+        <url-pattern>*.rpc</url-pattern>
+    </servlet-mapping>
+    
+    <filter>
+        <display-name>CrawlingFilter</display-name>
+        <filter-name>CrawlingFilter</filter-name>
+        <filter-class>org.cruxframework.crux.core.server.crawling.CrawlingFilter</filter-class>
+        <init-param>
+            <param-name>defaultSnaphot</param-name>
+            <param-value>section=home</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CrawlingFilter</filter-name>
+        <url-pattern>*.html</url-pattern>
+    </filter-mapping>
+
+    <!--antReplacementBlockBegin-->
+    <!--
+    ===========================================================================
+    Development time CRUX listener and filters: not required in production 
+    environment. The comments "antReplacementBlockBegin" e "antReplacementBlockEnd"   
+    are used by the ant task for removing the filters when generating the  
+    application distribution file. Don't remove those comments.
+    ===========================================================================         
+    -->
+    <listener>
+        <listener-class>org.cruxframework.crux.core.server.DevModeInitializerListener</listener-class>
+    </listener>
+    <filter>
+        <display-name>DeclarativeUIFilter</display-name>
+        <filter-name>DeclarativeUIFilter</filter-name>
+        <filter-class>org.cruxframework.crux.core.declarativeui.filter.DeclarativeUIFilter</filter-class>
+    </filter>
+    <filter-mapping> 
+        <filter-name>DeclarativeUIFilter</filter-name>
+        <url-pattern>*.html</url-pattern>
+    </filter-mapping>
+    <!--antReplacementBlockEnd-->
+
+</web-app>

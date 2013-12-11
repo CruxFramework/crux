@@ -1,0 +1,59 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	useController="mainController"> 
+	
+	<gwt:HTML id="viewTextPanel" styleName="viewTextPanel">
+		<section>
+			<h1>Ultra Veloz!</h1>
+			
+			<p>Desempenho é a palavra de ordem: com o Crux Framework é possível desenvolver aplicações Web inacreditavelmente velozes. Algumas
+			estratégias que adotamos para garantir velocidade máxima são:</p>
+			
+			<ul>
+				<li>
+					<h2>Trocas de páginas sem requisição ao servidor</h2>
+					<p>O Crux permite o desenvolvimento de sistemas baseados em "views", em vez de páginas. Você projeta e escreve as telas do sistema
+					em arquivos xhtml, assim como em outros frameworks conhecidos. Entretanto, em tempo de compilação, o Crux coleta e transforma esses 
+					arquivos em código JavaScript. O resultado é que todo o conteúdo necessário para a criação da interface gráfica é entregue ao 
+					cliente (e armazenado em seu cache) logo na primeira requisição. A geração do HTML das telas e o controle de navegação
+					ocorre 100% no navegador, desafogando o servidor, deixando-o disponível para tarefas mais nobres, como cuidar das regras de negócio.</p>
+				</li>	
+				<li>
+					<h2>Tratamento de eventos de interface no lado cliente</h2>
+					<p>Com o Crux, um evento de tela é tratado no próprio navegador. Você não precisa enviar requisições AJAX ao servidor apenas para
+					controlar a interface gráfica. É como se os Controllers da aplicação fossem deslocados para o lado cliente. O maior benefício dessa
+					abordagem é que não existe a necessidade de manter o estado das telas sincronizado com o servidor. Dados em sessão,
+					"ViewState" e inputs hidden são coisas do passado. A conversa entre cliente e servidor trata apenas de dados! 
+					</p>
+				</li>
+				<li>
+					<h2>CSS Sprites Automáticos</h2>
+					<p>Agrupe todas as imagens que quiser em um único (ou em múltiplos, se preferir) sprites CSS, de maneira declarativa!
+					Crie suas imagens e armazene-as em seu projeto de maneira convencional e organizada! Em tempo de compilação o Crux gera 
+					os CSS sprites para você, automaticamente.</p>
+				</li>	
+				<li>
+					<h2>Otimização de código</h2>
+					<p>O Crux usa o compilador GWT para gerar código JavaScript. Esse compilador é capaz de gerar código otimizado, ao eliminar trechos 
+					desnecessários, encurtar e fundir loopings, concatenar métodos, descartar variáveis ociosas e realizar diversas outras podas no código-fonte 
+					da aplicação. Além disso, ele gera JavaScript otimizado para cada navegador, garantindo performance máxima ao usuário, independente
+					da plataforma que ele utiliza.</p>
+				</li>	
+				<li>
+					<h2>Componentes desenhados sob-demanda</h2>
+					<p>Muitas vezes nos deparamos com regras de negócio que demandam a ocultação temporária de componentes na tela. Com a estratégia de 
+					lazy-rendering do Crux, componentes que estejam inicialmente invisíveis só são criados e atachados ao navegador no momento em que 
+					são necessários.</p>
+				</li>
+			</ul>
+		</section>
+	</gwt:HTML>		
+	
+	<div class="buttonBar">
+		<crux:button id="btnVoltar" onSelect="mainController.showViewInfo" text="Voltar"/>
+	</div>
+</v:view>

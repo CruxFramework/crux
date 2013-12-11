@@ -1,0 +1,45 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	useController="mainController" title="Home"> 
+	
+	<gwt:HTML id="viewTextPanel" styleName="viewTextPanel">
+		<section>
+			<h1>Multiplataforma com economia, simplicidade e controle.</h1>
+			
+			<p>Criar múltiplas versões do front-end da aplicação custa caro. Manter todas essas versões funcionando e em 
+			harmonia, curta mais caro ainda. O Crux elimina esse problema, permitindo que você crie uma única aplicação
+			que atenda a todos os principais tipos de dispositivos em uso no mercado.</p>
+			
+			<ul>
+				<li>
+					<h2>Componentes inteligentes e flexíveis</h2>
+					<p>Desenvolva aplicações Web que se adaptam ao dispositivo do cliente, seja ele um computador, tablet ou smartphone.
+					O Crux possui componentes gráficos inteligentes, que se adaptam automaticamente para garantir a melhor usabilidade 
+					de acordo com as características de cada dispositivo.</p>
+				</li>
+				<li>
+					<h2>Estendendo as features de compilação do GWT</h2>
+					<p>O Crux estende o mecanismo de compilação do GWT, adicionando novas features a ele. 
+					O tamanho da tela do dispositivo e as características de interação (touch screen, mouse, teclado, etc.) são 
+					levados em consideração, gerando scripts especializados para cada tipo de dispositivo.</p>
+				</li>
+				<li>
+					<h2>Especialização de resursos</h2>
+					<p>Com o Crux você pode definir imagens e arquivos CSS especializados para cada tipo diferente de dispositivo. 
+					Isso significa que você pode desenvolver aplicações mais enxutas, trafegando apenas
+					o que é necessário para cada cliente; e mais bonitas, aplicando estilos que respeitem as
+					limitações e explorem as capacidades de cada plataforma.</p>
+				</li>
+			</ul>
+		</section>
+	</gwt:HTML>		
+	
+	<div class="buttonBar">
+		<crux:button id="btnVoltar" onSelect="mainController.showViewInfo" text="Voltar"/>
+	</div>
+	
+</v:view>

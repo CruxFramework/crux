@@ -1,0 +1,79 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	useController="mainController" title="Quickstart" useResource="siteDeviceResources,siteCommonResources"
+	
+	> 
+	
+	<gwt:HTMLPanel id="viewTextPanel">
+	
+		<div class="container">
+		
+			<h2>Criando um projeto Crux em 5 minutos</h2>
+			
+			<p>Com o Maven é possível criar projetos Crux de forma rápida. Neste exemplo vamos mostrar como criar um projeto 
+			Hello World usando o Maven integrado ao ambiente Eclipse (plugin M2E).</p>
+			
+			<ol class="quickstartList">
+				<li>
+					<p>No menu do Eclipse, localize e selecione a opção <span class="code">File -> New -> Project</span></p>
+				</li>
+				<li>
+					<p>Selecione a opção <span class="code">Maven Project</span></p>
+				</li>
+				<li>
+					<p>Na janela de diálogo que se abrirá, clique no botão <span class="code">Next</span>.</p>
+				</li>
+				<li>
+					<p>Na campo <span class="code">Catalog</span>, selecione <span class="code">All Catalogs</span></p>
+				</li>
+				<li>
+					<p>No capo <span class="code">Filter</span>, digite <span class="code">crux</span></p>
+				</li>
+				<li>
+					<p>Selecione a opção <span class="code">crux-module-app</span>.</p>
+				</li>
+				<li>
+					<p>No próximo diálogo, informe um <span class="code">Group Id</span>, por exemplo, <span class="code">meus.testes.crux</span></p>
+				</li>
+				<li>
+					<p>Informe um <span class="code">Artifact Id</span>, por exemplo, <span class="code">HelloCrux</span></p>
+				</li>
+				<li>
+					<p>Informe um <span class="code">Package</span>, por exemplo, <span class="code">meus.testes.crux</span></p>
+				</li>
+				<li>
+					<p>Altere as propriedades do archetype. Informe <span class="code">HelloCrux</span> em <span class="code">module-name</span> e <span class="code">hellocrux</span> em <span class="code">module-short-name</span>.</p>
+				</li>
+				<li>
+					<p>Pressione o botão <span class="code">Finish</span> e pronto! Um projeto Crux será criado e estará pronto para você começar a explorar. Na imagem abaixo podemos ver a estrutura do projeto criado:</p>
+					<div align="center">
+						<crux:image id="projectStructureImage" url="${siteCommonResources.projectStructure}" />
+					</div>
+				</li>
+				<li>
+					<p>Localize o arquivo <span class="code">HelloCrux.launch</span>, na pasta raiz do projeto. Clique nele com o botão direito do mouse, selecione <span class="code">Run As</span> e, em seguida, <span class="code">HelloCrux</span>.</p>
+				</li>
+				<li>
+					<p>O console de depuração do GWT (DevMode) se abrirá. Quando habilitado, clique no botão <span class="code">Launch Default Browser</span>. Sua aplicação será aberta em uma janela do navegador e se parecerá com essa:</p>
+					<div align="center">
+						<crux:image id="projectRunningImage" url="${siteCommonResources.projectRunning}" />
+					</div>
+				</li>
+			</ol>
+			<h3 class="quickstartCongrats">
+				<b>Parabéns</b>, você criou seu primeiro projeto em Crux!
+			</h3>
+		</div>
+		<div class="separator"></div>
+		<div class="container">
+			<p class="quickstartInfo">
+				<b>Ainda tem dúvidas?</b> Tire elas lendo nosso <a href="#" class="defaultLink">blog</a>, perguntando no <a href="#" class="defaultLink">nosso fórum</a> ou <a href="#" class="defaultLink">entrando em contato</a>.
+			</p>
+		</div>
+	</gwt:HTMLPanel>
+	
+</v:view>
