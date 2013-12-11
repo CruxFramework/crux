@@ -37,6 +37,7 @@ import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JField;
+import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -270,24 +271,21 @@ public class DataSourceProxyCreator extends AbstractProxyCreator
 				JType fieldType = dtoType;
 				for (String fieldName : fields)
                 {
-					JField field = ((JClassType)fieldType).findField(fieldName.trim());
-					if (field == null)
-					{
-						throw new CruxGeneratorException("Error Generating DataSource ["+dataSourceClass.getName()+"]. Can not retrieve identifier field ["+identifier[i]+"].");
-					}
+					JClassType jClassFieldType = (JClassType)fieldType;
 					if (first)
 					{
 						fieldExpression.append(parentVariable);
 					}
 					first = false;
-					fieldExpression.append(JClassUtils.getFieldValueGet((JClassType)fieldType, field, "", false));
-					fieldType = field.getType();
+					JMethod method = JClassUtils.getMethod(jClassFieldType, JClassUtils.getGetterMethod(fieldName, jClassFieldType), new JType[]{});
+					fieldExpression.append(JClassUtils.getFieldValueGet(jClassFieldType, method, "", false));
+					fieldType = method.getReturnType();
                 }
 				result.append("+"+fieldExpression.toString());
 			}
 		}
 		return result.toString();
-	}	
+	}
 	
 	/**
 	 * @return

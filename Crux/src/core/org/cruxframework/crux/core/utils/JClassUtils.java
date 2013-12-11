@@ -722,6 +722,41 @@ public class JClassUtils
 	}
 	
 	/**
+	 * @see org.cruxframework.crux.core.utils.JClassUtils.getFieldValueGet(JClassType, JField, String, boolean)
+	 * @param voClass
+	 * @param fieldName
+	 * @param parentVariable
+	 * @param allowProtected
+	 * @return
+	 */
+	public static String getFieldValueGet(JClassType voClass, String fieldName, String parentVariable, boolean allowProtected)
+	{
+		return getFieldValueGet(
+				voClass, 
+				JClassUtils.getMethod(voClass, JClassUtils.getGetterMethod(fieldName, voClass), new JType[]{}), 
+				parentVariable, 
+				allowProtected);
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.core.utils.JClassUtils.getFieldValueGet(JClassType, JField, String, boolean)
+	 * @param voClass
+	 * @param jMethod
+	 * @param parentVariable
+	 * @param allowProtected
+	 * @return
+	 */
+	public static String getFieldValueGet(JClassType voClass, JMethod jMethod, String parentVariable, boolean allowProtected)
+	{
+		if (jMethod != null && (jMethod.isPublic() || (allowProtected && jMethod.isProtected())))
+		{
+			return (parentVariable+"."+jMethod.getName()+"()");
+		}
+
+		throw new CruxGeneratorException("Property ["+jMethod.getName()+"] could not be created. This is not visible neither has a getter/setter method.");
+	}
+	
+	/**
 	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
 	 * 
 	 * @param voClass
@@ -735,42 +770,8 @@ public class JClassUtils
 		{
 			return parentVariable+"."+field.getName();
 		}
-		else
-		{
-			String getterMethodName = "get"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-			try
-			{
-				JMethod method = voClass.getMethod(getterMethodName, new JType[]{});
-				if (method != null && (method.isPublic() || (allowProtected && method.isProtected())))
-				{
-					return (parentVariable+"."+getterMethodName+"()");
-				}
-				else
-				{
-					throw new CruxGeneratorException("Property ["+field.getName()+"] could not be created. This is not visible neither has a getter/setter method.");
-				}
-			}
-			catch (Exception e)
-			{
-				try
-				{
-					getterMethodName = "is"+Character.toUpperCase(field.getName().charAt(0))+field.getName().substring(1);
-					JMethod method = voClass.getMethod(getterMethodName, new JType[]{});
-					if (method != null && (method.isPublic() || (allowProtected && method.isProtected())))
-					{
-						return (parentVariable+"."+getterMethodName+"()");
-					}
-					else
-					{
-						throw new CruxGeneratorException("Property ["+field.getName()+"] could not be created. This is not visible neither has a getter/setter method.");
-					}
-				}
-				catch (Exception e1)
-				{
-					throw new CruxGeneratorException("Property ["+field.getName()+"] could not be created. This is not visible neither has a getter/setter method.");
-				}
-			}
-		}
+		
+		return getFieldValueGet(voClass, field.getName(), parentVariable, allowProtected);
 	}
 
 	public static boolean isValidSetterMethod(JMethod method)
