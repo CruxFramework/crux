@@ -293,6 +293,24 @@ public class JClassUtils
     }
 
 	/**
+	 * Retrieve a field from class. Searches also into the class hierarchy 
+	 * @param clazz class to search the field
+	 * @param fieldName field name
+	 * @return the field
+	 */
+	public static JField getField(JClassType clazz, String fieldName)
+    {
+	    JField field = null;
+	    JClassType superClass = clazz;
+	    while (field == null && superClass != null)
+	    {
+	    	field = superClass.findField(fieldName);
+	    	superClass = superClass.getSuperclass();
+	    }
+	    return field;
+    }
+
+	/**
 	 * 
 	 * @param clazz
 	 * @param methodName
@@ -722,55 +740,65 @@ public class JClassUtils
 	}
 	
 	/**
-	 * @see org.cruxframework.crux.core.utils.JClassUtils.getFieldValueGet(JClassType, JField, String, boolean)
-	 * @param voClass
-	 * @param fieldName
-	 * @param parentVariable
-	 * @param allowProtected
-	 * @return
+	 * Retrieve the property type on the given class
+	 * @param clazz base class
+	 * @param propertyName property name
+	 * @return property type or null, if property is not present
 	 */
-	public static String getFieldValueGet(JClassType voClass, String fieldName, String parentVariable, boolean allowProtected)
-	{
-		return getFieldValueGet(
-				voClass, 
-				JClassUtils.getMethod(voClass, JClassUtils.getGetterMethod(fieldName, voClass), new JType[]{}), 
-				parentVariable, 
-				allowProtected);
-	}
+	public static JType getPropertyType(JClassType clazz, String propertyName)
+    {
+	    JType propertyType = null;
+	    JMethod method = JClassUtils.getMethod(clazz, JClassUtils.getGetterMethod(propertyName, clazz), new JType[]{});
+	    if (method != null)
+	    {
+	    	propertyType = method.getReturnType();
+	    }
+	    else
+	    {
+	    	JField field = JClassUtils.getField(clazz, propertyName);
+	    	if (field != null)
+	    	{
+	    		propertyType = field.getType();
+	    	}
+	    }
+	    return propertyType;
+    }	
 	
 	/**
-	 * @see org.cruxframework.crux.core.utils.JClassUtils.getFieldValueGet(JClassType, JField, String, boolean)
-	 * @param voClass
-	 * @param jMethod
-	 * @param parentVariable
-	 * @param allowProtected
-	 * @return
+	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
+	 * @param clazz class where the property will be searched.
+	 * @param propertyName property name
+	 * @param parentVariable the name of the parent variable to use in generated expression
+	 * @param allowProtected if this expression allow protected fields and methods access
+	 * @return an expression in the form {@code <parentVar>.<propertyAccessor>}
 	 */
-	public static String getFieldValueGet(JClassType voClass, JMethod jMethod, String parentVariable, boolean allowProtected)
+	public static String getFieldValueGet(JClassType clazz, String propertyName, String parentVariable, boolean allowProtected)
 	{
+		JMethod jMethod = JClassUtils.getMethod(clazz, JClassUtils.getGetterMethod(propertyName, clazz), new JType[]{});
 		if (jMethod != null && (jMethod.isPublic() || (allowProtected && jMethod.isProtected())))
 		{
 			return (parentVariable+"."+jMethod.getName()+"()");
 		}
+		JField field = getField(clazz, propertyName);
 
-		throw new CruxGeneratorException("Property ["+jMethod.getName()+"] could not be created. This is not visible neither has a getter/setter method.");
+		if (field.isPublic() || (allowProtected && field.isProtected()))
+		{
+			return parentVariable+"."+field.getName();
+		}
+
+		throw new CruxGeneratorException("Property ["+propertyName+"] could not be created. It is not visible neither has a getter/setter method.");
 	}
 	
 	/**
 	 * Generates a property get block. First try to get the field directly, then try to use a javabean getter method.
-	 * 
 	 * @param voClass
 	 * @param field
 	 * @param parentVariable
 	 * @param allowProtected
 	 */
+	@Deprecated
 	public static String getFieldValueGet(JClassType voClass, JField field, String parentVariable, boolean allowProtected)
 	{
-		if (field.isPublic() || (allowProtected && field.isProtected()))
-		{
-			return parentVariable+"."+field.getName();
-		}
-		
 		return getFieldValueGet(voClass, field.getName(), parentVariable, allowProtected);
 	}
 
