@@ -70,6 +70,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Deprecated
+//TODO: @Legacy
 public @interface ParameterObject
 {
 	/**

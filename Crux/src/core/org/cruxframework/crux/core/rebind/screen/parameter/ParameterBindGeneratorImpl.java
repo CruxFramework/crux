@@ -36,6 +36,8 @@ import com.google.gwt.user.client.Window;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+//TODO: @Legacy
 public class ParameterBindGeneratorImpl implements ParameterBindGenerator
 {
 	@Override
