@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class SVNExplorer
 {
+	private static final String NOT_FOUND = "";
 	private static final long TOKEN = new Date().getTime(); 
 	private static final Log log = LogFactory.getLog(SVNExplorer.class);
 	
@@ -88,10 +89,10 @@ public class SVNExplorer
 			Matcher matcher = SVN_ENTRY_PATTERN.matcher(text);
 			while(matcher.find())
 			{
-				String entry = matcher.group();
+				String entry = matcher.group(1);
 				if(isValidSvnEntry(entry))
 				{
-					entries.add(path + entry);
+					entries.add(path + (!entry.startsWith("/") ? "/" : "") + entry);
 				}
 			}		
 		}
@@ -107,11 +108,14 @@ public class SVNExplorer
 	 */
 	private static String readURL(String url, boolean nullWhenNotFound) throws FileNotFoundException
 	{
-		String result = null;
+		String result = cachedResources.get(url);
 		
-		if(cachedResources.containsKey(url))
+		if(result != null)
 		{
-			result = cachedResources.get(url);
+			if(result.equals(NOT_FOUND))
+			{
+				result = null;
+			}
 		}
 		else
 		{
@@ -121,8 +125,11 @@ public class SVNExplorer
 			}
 			catch(Throwable t)
 			{
-				log.error(t.getMessage(), t);
-				throw new FileNotFoundException("File not found: " + url);
+				if(!nullWhenNotFound || !(t instanceof FileNotFoundException))
+				{
+					log.error(t.getMessage(), t);
+					throw new FileNotFoundException("File not found: " + url);
+				}
 			}
 			
 			if(result != null && result.contains("<title>404 Not Found</title>"))
@@ -130,7 +137,7 @@ public class SVNExplorer
 				result = null;
 			}
 			
-			cachedResources.put(url, result);
+			cachedResources.put(url, result != null ? result : NOT_FOUND);
 		}		
 
 		if(result == null && !nullWhenNotFound)
