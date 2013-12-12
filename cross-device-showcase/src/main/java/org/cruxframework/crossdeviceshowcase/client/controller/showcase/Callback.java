@@ -1,7 +1,7 @@
 package org.cruxframework.crossdeviceshowcase.client.controller.showcase;
 
 import org.cruxframework.crux.core.client.rpc.AsyncCallbackAdapter;
-import org.cruxframework.crux.widgets.client.dialog.Progress;
+import org.cruxframework.crux.widgets.client.dialog.ProgressBox;
 
 /**
  * A simple callback adapter which shows a progress message.
@@ -10,11 +10,11 @@ import org.cruxframework.crux.widgets.client.dialog.Progress;
  */
 public abstract class Callback<T> extends AsyncCallbackAdapter<T>
 {
-	private Progress progress;
+	private ProgressBox progress;
 
 	public Callback()
 	{
-		this.progress = Progress.show("Processando...");
+		this.progress = ProgressBox.show("Processando...");
 	}
 	
 	@Override
