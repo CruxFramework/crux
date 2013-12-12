@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.cruxframework.crossdeviceshowcase.client.data;
+package org.cruxframework.crossdeviceshowcase.client.controller.samples.simpledatabase;
 
 import java.util.Date;
 

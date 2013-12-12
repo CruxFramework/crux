@@ -3,7 +3,7 @@
  */
 package org.cruxframework.crossdeviceshowcase.client;
 
-import org.cruxframework.crossdeviceshowcase.client.data.Person;
+import org.cruxframework.crossdeviceshowcase.client.controller.samples.simpledatabase.Person;
 import org.cruxframework.crux.core.client.screen.views.BindableView;
 import org.cruxframework.crux.core.client.screen.views.ViewAccessor;
 

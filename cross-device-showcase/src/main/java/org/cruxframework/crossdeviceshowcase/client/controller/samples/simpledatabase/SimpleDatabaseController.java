@@ -1,13 +1,10 @@
 /**
  * 
  */
-package org.cruxframework.crossdeviceshowcase.client.controller;
+package org.cruxframework.crossdeviceshowcase.client.controller.samples.simpledatabase;
 
 import org.cruxframework.crossdeviceshowcase.client.ShowcaseMessages;
 import org.cruxframework.crossdeviceshowcase.client.Views;
-import org.cruxframework.crossdeviceshowcase.client.data.CompanyDatabase;
-import org.cruxframework.crossdeviceshowcase.client.data.Person;
-import org.cruxframework.crossdeviceshowcase.client.data.PersonResume;
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.controller.Controller;
 import org.cruxframework.crux.core.client.controller.Expose;
@@ -31,8 +28,8 @@ import org.cruxframework.crux.widgets.client.grid.Grid;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@Controller("databaseController")
-public class DatabaseController 
+@Controller("simpleDatabaseController")
+public class SimpleDatabaseController 
 {
 	@Inject(scope=Scope.DOCUMENT)
 	private CompanyDatabase database;

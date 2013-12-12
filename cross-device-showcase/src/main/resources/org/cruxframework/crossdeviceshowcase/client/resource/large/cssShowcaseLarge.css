@@ -10,7 +10,7 @@ BODY
 	position: relative;
 	background-image: url(noise.png);
 	border: solid 1px #CCCCCC;
-	box-shadow: 0 6px 15px rgba(200, 200, 200, 0.2);
+	box-shadow: 0 6px 15px rgba(200, 200, 200, 0.2), inset 0px 15px 20px #E0E0E0;
 	margin: 40px;
 	border-radius: 2px;
 	padding: 10px;
@@ -24,7 +24,7 @@ BODY
 	position: absolute;
 	top: -10px;
 	left: 30%;
-	border: 10px solid #ECECEC;
+	border: 10px solid #E0E0E0;
 	background-color: transparent;
 	display: block;
 	-webkit-transform: rotate(45deg);

@@ -4,8 +4,8 @@
 	xmlns:core="http://www.cruxframework.org/crux" 
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
-	useController="databaseController"
-	onActivate="databaseController.openPersonView" 
+	useController="simpleDatabaseController"
+	onActivate="simpleDatabaseController.openPersonView" 
 	dataObject="Person"
 	title="Edição de Pessoa"> 
 	
@@ -28,7 +28,7 @@
 					<gwt:integerBox id="numeroTextBox" bindPath="address.number"/>
 				</crux:entry>			
 				<crux:entry>
-					<crux:button id="btn" text="Salvar" onSelect="databaseController.savePerson"/>	
+					<crux:button id="btn" text="Salvar" onSelect="simpleDatabaseController.savePerson"/>	
 				</crux:entry>
 			</crux:formDisplay>	
 		</crux:styledPanel>

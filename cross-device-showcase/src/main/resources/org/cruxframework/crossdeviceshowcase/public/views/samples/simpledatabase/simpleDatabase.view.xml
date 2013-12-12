@@ -5,22 +5,22 @@
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	xmlns:showcase="http://www.cruxframework.org/templates/showcase"
-	useController="databaseController"
+	useController="simpleDatabaseController"
 	useDataSource="peopleDataSource" 
-	onActivate="databaseController.onActivate"  
+	onActivate="simpleDatabaseController.onActivate"  
 	title="CRUD Simples"> 
 	
 	<center>
 		<crux:styledPanel id="panel">
 			<gwt:flowPanel id="controls">
 				<crux:sequentialPager id="peoplePager" pageable="peopleGrid"/>
-				<crux:grid id="peopleGrid" autoLoadData="false" dataSource="peopleDataSource" pageSize="8" onRowDoubleClick="databaseController.editPerson">
+				<crux:grid id="peopleGrid" autoLoadData="false" dataSource="peopleDataSource" pageSize="8" onRowDoubleClick="simpleDatabaseController.editPerson">
 					<crux:dataColumn key="id"></crux:dataColumn>
 					<crux:dataColumn key="name"></crux:dataColumn>
 				</crux:grid>
 				<gwt:horizontalPanel id="buttons">
-					<crux:button id="add" text="Adicionar" onSelect="databaseController.add" />
-					<crux:button id="refresh" text="Atualizar Lista" onSelect="databaseController.refreshGrid" />
+					<crux:button id="add" text="Adicionar" onSelect="simpleDatabaseController.add" />
+					<crux:button id="refresh" text="Atualizar Lista" onSelect="simpleDatabaseController.refreshGrid" />
 				</gwt:horizontalPanel>
 			</gwt:flowPanel>
 		</crux:styledPanel>		

@@ -48,7 +48,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>fileUploadServlet</servlet-name>
-    <servlet-class>org.cruxframework.crossdeviceshowcase.server.FileUploadServlet</servlet-class>
+    <servlet-class>org.cruxframework.crossdeviceshowcase.server.showcase.FileUploadServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>fileUploadServlet</servlet-name>

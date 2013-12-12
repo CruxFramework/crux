@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.cruxframework.crossdeviceshowcase.client.data;
+package org.cruxframework.crossdeviceshowcase.client.controller.samples.simpledatabase;
 
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.db.Database;
