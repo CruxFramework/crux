@@ -1,4 +1,4 @@
-package org.cruxframework.crux.widgets.client.dialogcontainer;
+package org.cruxframework.crux.widgets.client.dialog;
 
 import org.cruxframework.crux.widgets.client.button.Button;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
@@ -17,43 +17,63 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A simple dialog box built upon DIV elements.
+ * The base implementation for dialog boxes.
  * @author Gesse Dafe
  */
-public class FlatDialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>
+public abstract class AbstractDialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>
 {
 	private static final int MIN_WIDTH = 100;
 	private static final int MIN_HEIGHT = 50;
 	
-	private SimplePanel body = new SimplePanel();;
+	private SimplePanel body = new SimplePanel();
 	private Label title = new Label();
 	private Button closeBtn = new Button();
 	private Label moveHandle;
 	private Label resizeHandle;
-		
-	public FlatDialogBox() 
+	
+	public AbstractDialogBox()
+	{
+		this(true, true, true);
+	}
+	
+	public AbstractDialogBox(boolean movable, boolean resizable, boolean closable) 
 	{
 		setStyleName("crux-FlatDialog");
 		setGlassEnabled(true);
 		setGlassStyleName("dialogGlass");
+
+		FlowPanel topBar = prepareTopBar(movable, closable);
 		
 		body.setStyleName("dialogBody");
 
-		FlowPanel topBar = prepareTopBar();
-		resizeHandle = prepareResizer();
-		
 		FlowPanel split = new FlowPanel();
 		split.setStyleName("dialogTitleBodySplit");
 		split.add(topBar);
 		split.add(body);
-		split.add(resizeHandle);
+		
+		if(resizable)
+		{
+			resizeHandle = prepareResizer();
+			split.add(resizeHandle);
+		}
 		
 		super.setWidget(split);
 		
-		MoveCapability.addMoveCapability(this);
-		ResizeCapability.addResizeCapability(this, MIN_WIDTH, MIN_HEIGHT);
+		if(movable)
+		{
+			MoveCapability.addMoveCapability(this);
+		}
+		
+		if(resizable)
+		{
+			ResizeCapability.addResizeCapability(this, MIN_WIDTH, MIN_HEIGHT);
+		}
 	}
 
+	/**
+	 * Prepares the handle used to resize the dialog
+	 * @return
+	 */
 	private Label prepareResizer() 
 	{
 		Label resizer = new Label();
@@ -61,41 +81,60 @@ public class FlatDialogBox extends PopupPanel implements Movable<Label>, Resizab
 		return resizer;
 	}
 
-	private FlowPanel prepareTopBar() 
+	/**
+	 * Creates the dialog's title bar 
+	 * @param movable
+	 * @param closable
+	 * @return
+	 */
+	private FlowPanel prepareTopBar(boolean movable, boolean closable) 
 	{
 		FlowPanel topBar = new FlowPanel();
 		topBar.setStyleName("dialogTopBar");
 		
 		title.setStyleName("dialogTitle");
-		
-		closeBtn.setStyleName("dialogCloseButton");
-		closeBtn.addSelectHandler(new SelectHandler() 
-		{
-			@Override
-			public void onSelect(SelectEvent event) 
-			{
-				hide();
-			}
-		});
-		
-		moveHandle = new Label();
-		moveHandle.setStyleName("dialogTopBarDragHandle");
-		
 		topBar.add(title);
-		topBar.add(moveHandle);
-		topBar.add(closeBtn);
+		
+		if(movable)
+		{
+			moveHandle = new Label();
+			moveHandle.setStyleName("dialogTopBarDragHandle");
+			topBar.add(moveHandle);
+		}		
+		
+		if(closable)
+		{
+			if(closable)
+			{
+				closeBtn.setStyleName("dialogCloseButton");
+				closeBtn.addSelectHandler(new SelectHandler() 
+				{
+					@Override
+					public void onSelect(SelectEvent event) 
+					{
+						hide();
+					}
+				});
+				topBar.add(closeBtn);
+			}
+		}
 		
 		return topBar;
 	}
 	
+	/**
+	 * Makes the dialog closable 
+	 * @param closeable
+	 */
+	public void setClosable(boolean closable)
+	{
+		closeBtn.setVisible(closable);
+	}
+	
+	@Override
 	public void setTitle(String text)
 	{
 		title.setText(text);
-	}
-	
-	public void setCloseble(boolean closeable)
-	{
-		closeBtn.setVisible(closeable);
 	}
 	
 	@Override

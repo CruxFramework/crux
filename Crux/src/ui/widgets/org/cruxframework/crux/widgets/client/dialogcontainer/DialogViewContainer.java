@@ -18,6 +18,7 @@ package org.cruxframework.crux.widgets.client.dialogcontainer;
 import org.cruxframework.crux.core.client.screen.views.SingleViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.widgets.client.dialog.DialogBox;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -33,7 +34,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 public class DialogViewContainer extends SingleViewContainer 
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-DialogViewContainer";
-	private FlatDialogBox dialog;
+	private DialogBox dialog;
 	private FlowPanel contentPanel; 
 	private View innerView;
 	private boolean unloadViewOnClose;
@@ -145,8 +146,8 @@ public class DialogViewContainer extends SingleViewContainer
 	{
 		super(null, true);
 		
-		dialog = new FlatDialogBox();
-		dialog.setCloseble(closeable);
+		dialog = new DialogBox();
+		dialog.setClosable(closeable);
 		dialog.setModal(modal);
 	
 		contentPanel = new FlowPanel();

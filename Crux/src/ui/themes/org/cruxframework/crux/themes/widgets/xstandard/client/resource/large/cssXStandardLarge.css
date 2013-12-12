@@ -715,3 +715,15 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	box-shadow: 2px 2px 2px #FFF, inset -5px -5px 10px #FFF;
 	-webkit-user-select: none;
 }
+
+@external crux-ProgressBox;
+.crux-ProgressBox
+{
+	width: 200px;
+	height: 35px;
+}
+.crux-ProgressBox .dialogTopBar
+{
+	box-shadow: none;
+	padding-top: 6px;
+}
