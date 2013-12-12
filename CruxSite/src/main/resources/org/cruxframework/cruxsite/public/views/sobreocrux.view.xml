@@ -4,47 +4,42 @@
 	xmlns:core="http://www.cruxframework.org/crux" 
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
-	useController="mainController" title="Home"> 
+	useController="mainController" title="O Crux | Crux Framework"> 
 	
-	<gwt:HTML id="viewTextPanel" styleName="viewTextPanel">
-		<section>
-			<h1>O que é o Crux Framework?</h1>
-			
-			<p>Conheça um pouco mais sobre essa ferramenta inovadora e 100% brasileira que permite a criação de aplicações
-			Web modernas, velozes e portáveis como você nunca viu.</p>
-			
+	<gwt:HTMLPanel id="infoContainer">
+		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
+			<h2>O Crux</h2>
 			<ul>
-				<li>
-					<h2>Maturidade</h2>
-					<p>Nascido em 2008, o Crux vem sendo utilizado em projetos de larga escala e alta complexidade desde então. 
-					São mais de 5 anos de aprimoramentos e correções, que fazem com que o Crux, hoje em sua 5ª versão, 
-					apresente maturidade plena para seu projeto.</p>
+				<li class="on">
+					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="O Crux"></crux:anchor>
 				</li>
 				<li>
-					<h2>100% brasileiro</h2>
-					<p>O Crux é um projeto totalmente idealizado e mantido por desenvolvedores brasileiros. Sua equipe é
-					composta por projetistas e desenvolvedores experientes, que empregam o conhecimento adquirido ao longo 
-					de suas carreiras com o objetivo de tornar mais simples a tarefa de desenvolver sistemas Web. 
-					</p>
+					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:whoUses" text="Quem Usa"></crux:anchor>
 				</li>
 				<li>
-					<h2>Open Source</h2>
-					<p>O Crux é um projeto totalmente livre e independente. Seu código encontra-se hospedado no 
-					<a href="https://code.google.com/p/crux-framework/" target="_blank">Google Code</a> e totalmente
-					disponível, sob a licença Apache 2.0, para sua análise e uso. Você pode baixar, compilar, modificar 
-					e redistribuir se quiser. Sem restrições.</p>
-				</li>
-				<li>
-					<h2>Bases sólidas</h2>
-					<p>A base para o desenvolvimento do framework Crux é o Google Web Toolkit (GWT), uma ferramenta 
-					criada pelo Google e hoje mantida como um projeto open source por equipes espalhadas pelo mundo.
-					O GWT está em constante evolução e cada dia mais rápido e poderoso.</p> 
+					<crux:anchor id="linkSupportedPlatforms" href="#topMenuDisposal:maintainer" text="Mantenedor"></crux:anchor>
 				</li>
 			</ul>
-		</section>
-	</gwt:HTML>		
-
-	<div class="buttonBar">
-		<crux:button id="btnVoltar" onSelect="mainController.showViewInfo" text="Voltar"/>
-	</div>
+		</gwt:HTMLPanel>
+		<div class="bigText">
+			<div class="container">
+				<h2>O que é?</h2>	
+				<p>Crux é um framework para desenvolvimento de aplicações Web criado sobre o Google Web Toolkit (GWT) para tirar proveito da velocidade e a facilidade do desenvolvimento utilizando em HTML aliada com o poder e a versatilidade do GTW, fazendo do Crux um verdadeiro framework para Web 2.0.</p>
+				<p>No Crux, os desenvolvedores criam as páginas web de forma declarativa, descrevendo a tela utilizando HTML como linguagem, o que é bastante simples, além habilitar sua aplicação para rodar em todos os modernos navegadores, sem código adicional.</p>
+				<p>O Crux completa o GWT para uso corporativo estendendo seus componentes e agregando camadas para acesso a Serviços de Negócio em arquitetura SOA, Bancos de Dados e outras tecnologias presentes no ambiente corporativo. Com a combinação Crux / GWT as fronteiras entre aplicações corporativas e para internet desaparecem, habilitando utilizar todos os modernos recursos como Cloud Computing, hospedagem da sua aplicação no Google App Engine, onde sua aplicação utiliza toda a infra-estrutura da Google, sendo necessário apenas codificá-la e publicá-la, ou o vasto universo de APIs disponíveis na Internet (mapas, redes sociais, ações, condições do tempo, etc.).O Crux completa o GWT para uso corporativo estendendo seus componentes e agregando camadas para acesso a Serviços de Negócio em arquitetura SOA, Bancos de Dados e outras tecnologias presentes no ambiente corporativo. Com a combinação Crux / GWT as fronteiras entre aplicações corporativas e para internet desaparecem, habilitando utilizar todos os modernos recursos como Cloud Computing, hospedagem da sua aplicação no Google App Engine, onde sua aplicação utiliza toda a infra-estrutura da Google, sendo necessário apenas codificá-la e publicá-la, ou o vasto universo de APIs disponíveis na Internet (mapas, redes sociais, ações, condições do tempo, etc.).</p>
+			</div>
+			<div class="separator"></div>
+			<div class="container">
+				<h2>História</h2>
+				<p>Criado em 2008 a partir de uma <a href="http://www.dcc.ufmg.br/pos/cursos/defesas/980M.PDF" title="PDF" target="_blank" class="defaultLink">dissertação de mestrado na Universidade Federal de Minas Gerais (UFMG)</a> o Crux vem sendo evoluído desde então pela Sysmap e é usado em projetos com seus principais clientes.</p>
+				<p>Em 2013 o Crux, que já era um projeto Open Source, passou a ser mantido pela Triggo Labs, uma startup brasileira com foco no desenvolvimento de novas tecnologias e produtos web baseados no Crux.</p>
+				<p>Atualmente a <a href="#" class="defaultLink">Triggo Labs</a> está em busca de novos colaboradores independentes e empresas dispostas a participar do desenvolvimento do Crux Framework.</p>
+			</div>
+			<div class="separator"></div>
+			<div class="container">
+				<h2>Licensa</h2>
+				<p style="margin-bottom:0;">O Código-fonte do Crux Framework é aberto, e licensiado sobre a <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank" class="defaultLink">Apache License 2.0</a>.</p>
+			</div>
+		</div>
+	</gwt:HTMLPanel>
 </v:view>

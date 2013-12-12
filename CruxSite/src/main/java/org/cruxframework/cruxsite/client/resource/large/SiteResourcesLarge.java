@@ -88,4 +88,19 @@ public interface SiteResourcesLarge extends ClientBundle
 
 	@Source("triggo-footer-logo.png")
 	ImageResource triggoFooterLogo();
+	
+	@Source("logo-sysmap.png")
+	ImageResource logoSysmap();
+	
+	@Source("user-img.png")
+	DataResource userBg();
+	
+	@Source("icon-3stars.png")
+	DataResource icon3stars();
+	
+	@Source("icon-2stars.png")
+	DataResource icon2stars();
+	
+	@Source("icon-1star.png")
+	DataResource icon1star();
 }

@@ -7,7 +7,23 @@
 	useController="mainController" title="Downloads"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
-		<p>{breadcrumb aqui}</p>
+		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
+			<h2>Saiba Mais</h2>
+			<ul>
+				<li class="on">
+					<crux:anchor id="linkInfo" href="#topMenuDisposal:info" text="Saiba Mais"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:compare" text="Comparativo"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkExamples" href="#topMenuDisposal:exemplos" text="Exemplos"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkSupportedPlatforms" href="#topMenuDisposal:manual" text="Manual"></crux:anchor>
+				</li>
+			</ul>
+		</gwt:HTMLPanel>
 		<section class="container">	
 			<h2>Saiba mais sobre o que o Crux pode lhe proporcionar:</h2>	
 		</section>

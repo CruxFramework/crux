@@ -1,0 +1,82 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	useController="mainController" title="Mantenedor | Crux Framework"> 
+	
+	<gwt:HTMLPanel id="infoContainer">
+		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
+			<h2>Mantenedor</h2>
+			<ul>
+				<li>
+					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="O Crux"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:whoUses" text="Quem Usa"></crux:anchor>
+				</li>
+				<li class="on">
+					<crux:anchor id="linkSupportedPlatforms" href="#topMenuDisposal:maintainer" text="Mantenedor"></crux:anchor>
+				</li>
+			</ul>
+		</gwt:HTMLPanel>
+		<div class="bigText">
+			<div class="container">
+				<h2>Equipe Crux</h2>	
+				<p>Atualmente o Crux conta com uma equipe de 5 membros responsáveis pela manutenção do framework.</p>
+				<ul class="teamList">
+					<li>
+						<div class="teamImg">
+						
+						</div>
+						<h4>Thiago Bustamante</h4>
+						<h5>Co-fundador</h5>
+						<h6>Desenvolvimento e Arquitetura</h6>
+					</li>
+					<li>
+						<div class="teamImg">
+						
+						</div>
+						<h4>Gessé Dafé</h4>
+						<h5>Co-fundador</h5>
+						<h6>Desenvolvimento e Arquitetura</h6>
+					</li>
+					<li>
+						<div class="teamImg">
+						
+						</div>
+						<h4>Samuel Cardoso</h4>
+						<h5>Co-fundador</h5>
+						<h6>Desenvolvimento e Arquitetura</h6>
+					</li>
+					<li>
+						<div class="teamImg">
+						
+						</div>
+						<h4>Juliano Santos</h4>
+						<h5>Gestor</h5>
+						<h6>Gestão e Supervisão</h6>
+					</li>
+					<li>
+						<div class="teamImg">
+						
+						</div>
+						<h4>Claudio Holanda</h4>
+						<h5>Fron-end</h5>
+						<h6>Desenvolvimento e Estilização</h6>
+					</li>
+					<div class="clear"></div>
+				</ul>
+				<p class="mt40">Gostaria de fazer parte do time? Atualmente o Crux Framework está <b>abrindo vagas</b>, <a href="#" class="defaultLink">clique aqui</a> para entrar em contato.</p>
+			</div>
+			<div class="separator"></div>
+			<div class="container">
+				<h2>Sobre a Triggo Labs</h2>	
+				<p>Crux é um framework para desenvolvimento de aplicações Web criado sobre o Google Web Toolkit (GWT) para tirar proveito da velocidade e a facilidade do desenvolvimento utilizando em HTML aliada com o poder e a versatilidade do GTW, fazendo do Crux um verdadeiro framework para Web 2.0.</p>
+				<p>No Crux, os desenvolvedores criam as páginas web de forma declarativa, descrevendo a tela utilizando HTML como linguagem, o que é bastante simples, além habilitar sua aplicação para rodar em todos os modernos navegadores, sem código adicional.</p>
+				<p>O Crux completa o GWT para uso corporativo estendendo seus componentes e agregando camadas para acesso a Serviços de Negócio em arquitetura SOA, Bancos de Dados e outras tecnologias presentes no ambiente corporativo. Com a combinação Crux / GWT as fronteiras entre aplicações corporativas e para internet desaparecem, habilitando utilizar todos os modernos recursos como Cloud Computing, hospedagem da sua aplicação no Google App Engine, onde sua aplicação utiliza toda a infra-estrutura da Google, sendo necessário apenas codificá-la e publicá-la, ou o vasto universo de APIs disponíveis na Internet (mapas, redes sociais, ações, condições do tempo, etc.).O Crux completa o GWT para uso corporativo estendendo seus componentes e agregando camadas para acesso a Serviços de Negócio em arquitetura SOA, Bancos de Dados e outras tecnologias presentes no ambiente corporativo. Com a combinação Crux / GWT as fronteiras entre aplicações corporativas e para internet desaparecem, habilitando utilizar todos os modernos recursos como Cloud Computing, hospedagem da sua aplicação no Google App Engine, onde sua aplicação utiliza toda a infra-estrutura da Google, sendo necessário apenas codificá-la e publicá-la, ou o vasto universo de APIs disponíveis na Internet (mapas, redes sociais, ações, condições do tempo, etc.).</p>
+			</div>
+		</div>
+	</gwt:HTMLPanel>
+</v:view>

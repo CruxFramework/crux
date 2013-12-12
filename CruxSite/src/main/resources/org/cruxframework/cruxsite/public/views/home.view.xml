@@ -26,8 +26,13 @@
 					<li>
 						<h2>O que é Crux?</h2>
 						<div class="greenBlock">
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut turpis velit, eleifend nec tempor vitae, ullamcorper eget erat. Vivamus nec pretium risus. Mauris magna mauris, suscipit iaculis fermentum non, sagittis sit amet metus.</p>
-							<p>Morbi convallis suscipit lacus, euismod viverra magna iaculis non. Suspendisse sagittis nunc dictum orci hendrerit fermentum.</p>
+							<p>
+							O <b>Crux Framework</b> remove as fronteiras das suas aplicações tornando a Internet sua extensão natural, trazendo infinitas oportunidades para o seu negócio.
+							</p>
+							<div class="separator"></div>
+							<p></p>
+							<crux:anchor id="gotoTheCrux" text="Saiba Mais" href="#topMenuDisposal:info" styleName="btnCrux btnSeeAll right"></crux:anchor>
+							<div class="clear"></div>
 						</div>
 					</li>
 					<li class="liLast">
@@ -57,7 +62,7 @@
 					</li>
 					<li class="andOthers">e outros...</li>
 					<li class="liLast">
-						<crux:anchor id="verOutrosClientes" text="Ver Todos" href="#topMenuDisposal:info" styleName="btnCrux btnSeeAll"></crux:anchor>
+						<crux:anchor id="gotoOtherCustomers" text="Ver Todos" href="#topMenuDisposal:info" styleName="btnCrux btnSeeAll"></crux:anchor>
 					</li>
 				</ul>
 			</div>

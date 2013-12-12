@@ -9,7 +9,24 @@
 	> 
 	
 	<gwt:HTMLPanel id="viewTextPanel">
-	
+		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
+			<h2>Quickstart</h2>
+			<!-- <ul>
+				<li class="on">
+					<crux:anchor id="linkInfo" href="#" text="O Crux"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkAdvantages" href="#" text="Vantagens"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkExamples" href="#" text="Exemplos"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkSupportedPlatforms" href="#" text="Plataformas Suportadas"></crux:anchor>
+				</li>
+			</ul> -->
+		</gwt:HTMLPanel>
+		
 		<div class="container">
 		
 			<h2>Criando um projeto Crux em 5 minutos</h2>

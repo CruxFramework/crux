@@ -201,7 +201,7 @@ h1, h2, h3, h4, h5, h6{
 	padding: 20px;
 	text-align: left;
 }
-.viewTextPanel, .viewTextPanel h1, .viewTextPanel h2, .viewTextPanel p 
+.viewTextPanel, .viewTextPanel h1, .viewTextPanel h3, .viewTextPanel p 
 {
 	color: #153A42;
 	text-shadow: rgba(255, 255, 255, 1) 0px 1px 0px;
@@ -369,8 +369,19 @@ h2{
 }
 .initItems .greenBlock p{
 	padding:0 10px;
-	font-size:14px;
-	line-height:24px;
+	font-size:18px;
+	line-height:25px;
+	font-weight:lighter;
+	color:#333;
+	font-family:'Open Sans', Arial, Helvetica, sans-serif;
+}
+.initItems .greenBlock .separator{
+	margin-top:-28px;
+	margin-bottom:0;
+}
+.initItems .greenBlock a{
+	margin:-8px 10px 10px;
+	display:inline-block;
 }
 
 @external separator, clear;
@@ -471,7 +482,7 @@ h2{
 	border:none;
 }
 @url urlIconArrowBtn iconArrowBtn;
-.whoUses .btnSeeAll{
+.btnSeeAll{
 	background:urlIconArrowBtn right center no-repeat #77a400;
 	text-align:left;
 	padding-right:57px;
@@ -669,3 +680,250 @@ h2{
 	padding:0 10px;	
 }
 
+
+@external subtitleBox, on, bigText;
+
+.subtitleBox{
+	border-radius:4px;
+	background:#a3b0b6;
+	background:linear-gradient(45deg,#a3b0b6,#adb8bf);
+	padding:20px;
+	overflow:hidden;
+	height:82px;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    font-weight:lighter;
+	
+}
+.subtitleBox h2{
+	font-size:25px;
+	color:#104b57;
+	margin:3px 0;
+	font-weight:lighter;
+	float:left;
+}
+.subtitleBox ul{
+	float:right;
+	margin:12px 0;
+	font-size:14px;
+}
+.subtitleBox ul li{
+	padding:0 13px;
+	color:#003c5e;
+	float:left;
+	position:relative;
+}
+.subtitleBox ul li:after{
+	content:'/';
+	position:absolute;
+	margin-top:-16px;
+	right:0;
+	margin-right:-1px;
+}
+.subtitleBox ul li:last-child{
+	padding-right:0;
+}
+.subtitleBox ul li:last-child:after{
+	content:'';	
+}
+.subtitleBox ul li.on a{
+	color:#fff;
+	font-weight:bold;
+}
+.subtitleBox ul li a{
+	display:block;
+}
+.bigText p{
+	font-size:15px;
+	line-height:27px;
+	color:#222;
+	text-align:justify;
+}
+
+
+@external left right;
+.left{
+	float:left;
+}
+.right{
+	float:right;
+}
+
+@external whoUsesBlocks;
+
+.whoUsesBlocks{
+	margin-top:40px;
+}
+.whoUsesBlocks > li{
+	float:left;
+	width:45%;
+	margin-right:5%;
+	padding:0;
+	text-align:center;
+}
+.whoUsesBlocks > li:last-child{
+	margin-right:0;
+	margin-left:5%;
+}
+.whoUsesBlocks > li > h3{
+	color:#00333e;
+	margin:0;
+	text-align:center;
+	font-size:22px;
+}
+.whoUsesBlocks > li > h4{
+	color:#999;
+	margin:3px 0 10px 0;
+	text-align:center;
+	font-size:16px;
+	font-weight:normal;
+}
+
+.whoUsesBlocks > li > img{
+	margin:15px 22px;
+}
+
+@external center;
+.center{
+	text-align:center;
+}
+
+@external teamList, teamImg;
+.teamList{
+	margin:10px 0 0;
+	padding:0;
+}
+.teamList li{
+	float:left;
+	margin-right:82px;
+	width:130px;
+}
+.teamList li:nth-child\(5\){
+	margin-right:0;
+}
+
+@url userBg userBg;
+.teamList .teamImg{
+	width:130px;
+	height:160px;
+	background:#fff;
+	box-shadow:0 0 0 1px rgba(0,0,0,0.1), 0 2px 10px rgba(0,0,0,0.1);
+	margin-bottom:10px;
+	background:userBg no-repeat bottom center #fff;
+}
+.teamList h4{
+	color:#003642;
+	font-size:13px;
+	font-weight:bold;
+	margin:0;
+}
+.teamList h5{
+	color:#646464;
+	font-size:13px;
+	font-weight:normal;
+	margin:0;
+}
+.teamList h6{
+	color:#1d1d1d;
+	font-size:11px;
+	font-weight:bold;
+	margin:0;
+}
+
+@external mt40;
+
+.mt40{
+	margin-top:40px;
+}
+
+@external successCasesResume;
+.successCasesResume{
+	padding:0;
+}
+.successCasesResume li{
+	padding:10px 0;
+	margin-bottom:10px;
+	text-align:left;
+	border-bottom:1px dotted rgba(0,0,0,0.1);
+}
+.successCasesResume li h4{
+	font-size:15px;
+	color:rgb(0, 51, 62);
+	font-weight:bold;
+	margin:0;
+}
+.successCasesResume li p{
+	margin:7px 0 0 0;
+	font-size:12px;
+}
+
+@external compareTable;
+.compareTable{
+	width:100%;
+	padding:0;
+	border-spacing:0;
+    border-collapse:collapse;
+}
+.compareTable thead tr th{
+	color:#fff;
+	text-align:center;
+	font-size:12px;
+	padding:7px 10px;
+}
+.compareTable thead tr th:first-child{
+	border-radius:4px 0 0 0;
+	font-style:italic;
+	font-weight:normal;	
+}
+.compareTable thead tr th:last-child{
+	border-radius:0 4px 0 0;	
+}
+.compareTable thead tr th:nth-child\(odd\){
+	background:#00303b;
+	box-shadow:-1px 0 0 rgba(0,0,0,0.15) inset;
+}
+.compareTable thead tr th:nth-child\(even\){
+	background:#002b35;
+	box-shadow:-1px 0 0 rgba(0,0,0,0.05) inset;
+}
+.compareTable tbody tr td{
+	border-bottom:1px solid #dbdbdb;
+	background:#f4f4f4;
+	padding:5px;
+	box-shadow:-1px 0 0 rgba(0,0,0,0.05) inset;
+	text-align:center;
+}
+.compareTable tbody tr td:first-child{
+	text-align:left;	
+}
+.compareTable tbody tr td:nth-child\(odd\){
+	box-shadow:-1px 0 0 rgba(0,0,0,0.15) inset;
+}
+.compareTable tbody tr td:nth-child\(even\){
+	background:#dbdbdb;
+	border-bottom:1px solid #c0c0c0;
+}
+
+@url icon1star icon1star;
+@url icon2stars icon2stars;
+@url icon3stars icon3stars;
+@external star1, star2, star3;
+.compareTable tbody tr td span.star1{
+	width:22px;
+	height:21px;
+	background:icon1star no-repeat center center;
+	display:inline-block;
+}
+.compareTable tbody tr td span.star2{
+	width:22px;
+	height:21px;
+	background:icon2stars no-repeat center center;
+	display:inline-block;
+}
+.compareTable tbody tr td span.star3{
+	width:22px;
+	height:21px;
+	background:icon3stars no-repeat center center;
+	display:inline-block;
+}
