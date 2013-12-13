@@ -18,121 +18,123 @@
 		<c:screen useController="mainController" useView="*" 
 			smallViewport="user-scalable=no, width=320" 
 			largeViewport="user-scalable=no, width=device-width, height=device-height"
-			useResource="siteDeviceResources,siteCommonResources"
-			 />
-		
-		<gwt:simplePanel id="siteHeader" styleName="siteHeader">
-			<gwt:HTMLPanel id="headerContent">
-				<div class="container containerHeader">
-					<crux:anchor id="cruxHeaderLogo" href="#topMenuDisposal:home" styleName="headerLogo"></crux:anchor>
-					
-					<div class="langButtons">
-						<crux:button id="ptbrLangButton" styleName="flagbr flag"></crux:button>
-						<crux:button id="enusLangButton" styleName="flagus flag"></crux:button>
-					</div>
-					
-					<div class="showcaseButton">
-						<crux:anchor id="showcaseButton" href="http://showcase.cruxframework.org/" target="_blank" styleName="showcaseBtn" text="Visite o Showcase" tooltip="Visitar o Showcase 5.0"></crux:anchor>
-					</div>
-					
-					<div class="clear"></div>
-					
-					<div class="showcaseTip"><b>5.0</b></div>
-					
-				</div>
-				<!--  old menu
-				<div class="viewContent">
-					<crux:topMenuDisposal id="menuDisposal" defaultView="home">
-						<crux:menuEntry targetView="home" label="Home"/>
-						<crux:menuEntry targetView="info" label="Saiba Mais"/>
-						<crux:menuEntry targetView="quickstart" label="Quick Start"/>
-						<crux:menuEntry targetView="exemplos" label="Exemplos"/>
-						<crux:menuEntry targetView="downloads" label="Downloads"/>
-					</crux:topMenuDisposal>
-				</div>
-				 -->
-				 <div class="viewContent">
-					<crux:topMenuDisposal id="menuDisposal" defaultView="home">
-						<crux:menuEntry targetView="home" label="Home"/>
-						<crux:menuEntry targetView="sobreocrux" label="O Crux"/>
-						<crux:menuEntry targetView="info" label="Saiba Mais"/>
-						<crux:menuEntry targetView="quickstart" label="Quick Start"/>
-						<crux:menuEntry targetView="exemplos" label="Downloads"/>
-						<crux:menuEntry targetView="downloads" label="Comunidade"/>
-					</crux:topMenuDisposal>
-				</div>
-				<div class="footer">
-					<div class="container">
-						<div class="footerLogo">
-							<div class="footerLogoLogo">
-								<crux:image id="cruxFooterLogo" url="${siteDeviceResources.cruxFooterLogo}" />
-							</div>
-							<div class="footerLogoEtc">
-								<b>Crux Framework</b>
-								<b>2013</b>
-								<span>Licensed under Apache 2.0</span>
-								<div class="clear"></div>
-							</div>
+			useResource="siteDeviceResources,siteCommonResources">
+			 
+			<gwt:simplePanel id="siteHeader" styleName="siteHeader">
+				<gwt:HTMLPanel id="headerContent">
+					<div class="container containerHeader">
+						<crux:anchor id="cruxHeaderLogo" href="#topMenuDisposal:home" styleName="headerLogo"></crux:anchor>
+						
+						<div class="langButtons">
+							<crux:button id="ptbrLangButton" styleName="flagbr flag"></crux:button>
+							<crux:button id="enusLangButton" styleName="flagus flag"></crux:button>
 						</div>
-						<ul class="footerUl">
-							<li class="footerUlTitle">O Crux</li>
-							<li>
-								<crux:anchor id="linkOQueE" href="#" text="O que é?"></crux:anchor>
-							</li>
-							<li>
-								<crux:anchor id="linkQuemUsa" href="#" text="Quem usa"></crux:anchor>
-							</li>
-							<li>
-								<crux:anchor id="linkCasesDeSucesso" href="#" text="Cases de Sucesso"></crux:anchor>
-							</li>
-							<li>
-								<crux:anchor id="linkMantenedor" href="#" text="Mantenedor"></crux:anchor>
-							</li>
-						</ul>
 						
-						<ul class="footerUl">
-							<li class="footerUlTitle">Saiba Mais</li>
-							<li>
-								<crux:anchor id="linkVantagens" href="#" text="Vantagens"></crux:anchor>
-							</li>
-							<li>
-								<crux:anchor id="linkQuickstart" href="#" text="Quickstart"></crux:anchor>
-							</li>
-							<li>
-								<crux:anchor id="linkExemplos" href="#" text="Exemplos"></crux:anchor>
-							</li>
-							<li>
-								<crux:anchor id="linkPlataformasSuportadas" href="#" text="Plataformas Suportadas"></crux:anchor>
-							</li>
-						</ul>
-						
-						<ul class="footerUl">
-							<li class="footerUlTitle">Comunidade</li>
-							<li>
-								<crux:anchor id="linkBlog" href="#" text="Blog"></crux:anchor>
-							</li>
-							<li>
-								<crux:anchor id="linkForum" href="#" text="Fórum"></crux:anchor>
-							</li>
-							<li>
-								<crux:anchor id="linkContribua" href="#" text="Contribua"></crux:anchor>
-							</li>
-							<li>
-								<crux:anchor id="linkFaq" href="#" text="FAQ"></crux:anchor>
-							</li>
-						</ul>
-						
-						<div class="triggoFooterLogo">
-							Mantido por:<br />
-							<crux:image id="triggoFooterLogo" url="${siteDeviceResources.triggoFooterLogo}" />
+						<div class="showcaseButton">
+							<crux:anchor id="showcaseButton" href="http://showcase.cruxframework.org/" target="_blank" styleName="showcaseBtn" text="Visite o Showcase" tooltip="Visitar o Showcase 5.0"></crux:anchor>
 						</div>
 						
 						<div class="clear"></div>
+						
+						<div class="showcaseTip"><b>5.0</b></div>
+						
 					</div>
-				</div>
-			</gwt:HTMLPanel>
-		</gwt:simplePanel>
-				
-		<!--<div class="topTag">Lançado 5.0.3-RC!</div>-->
+					<!--  old menu
+					<div class="viewContent">
+						<crux:topMenuDisposal id="menuDisposal" defaultView="home">
+							<crux:menuEntry targetView="home" label="Home"/>
+							<crux:menuEntry targetView="info" label="Saiba Mais"/>
+							<crux:menuEntry targetView="quickstart" label="Quick Start"/>
+							<crux:menuEntry targetView="exemplos" label="Exemplos"/>
+							<crux:menuEntry targetView="downloads" label="Downloads"/>
+						</crux:topMenuDisposal>
+					</div>
+					 -->
+					 <div class="viewContent">
+						<crux:topMenuDisposal id="menuDisposal" defaultView="home">
+							<crux:menuEntry targetView="home" label="Home"/>
+							<crux:menuEntry targetView="sobreocrux" label="O Crux"/>
+							<crux:menuEntry targetView="info" label="Saiba Mais"/>
+							<crux:menuEntry targetView="quickstart" label="Quick Start"/>
+							<crux:menuEntry targetView="downloads" label="Downloads"/>
+							<crux:menuEntry targetView="community" label="Comunidade"/>
+						</crux:topMenuDisposal>
+					</div>
+					<div class="footer">
+						<div class="container">
+							<div class="footerLogo">
+								<div class="footerLogoLogo">
+									<crux:image id="cruxFooterLogo" url="${siteDeviceResources.cruxFooterLogo}" />
+								</div>
+								<div class="footerLogoEtc">
+									<b>Crux Framework</b>
+									<b>2013</b>
+									<span>Licensed under Apache 2.0</span>
+									<div class="clear"></div>
+								</div>
+							</div>
+							<ul class="footerUl">
+								<li class="footerUlTitle">O Crux</li>
+								<li>
+									<crux:anchor id="linkOQueE" href="#" text="O que é?"></crux:anchor>
+								</li>
+								<li>
+									<crux:anchor id="linkQuemUsa" href="#" text="Quem usa"></crux:anchor>
+								</li>
+								<li>
+									<crux:anchor id="linkCasesDeSucesso" href="#" text="Cases de Sucesso"></crux:anchor>
+								</li>
+								<li>
+									<crux:anchor id="linkMantenedor" href="#" text="Mantenedor"></crux:anchor>
+								</li>
+							</ul>
+							
+							<ul class="footerUl">
+								<li class="footerUlTitle">Saiba Mais</li>
+								<li>
+									<crux:anchor id="linkVantagens" href="#" text="Vantagens"></crux:anchor>
+								</li>
+								<li>
+									<crux:anchor id="linkQuickstart" href="#" text="Quickstart"></crux:anchor>
+								</li>
+								<li>
+									<crux:anchor id="linkExemplos" href="#" text="Exemplos"></crux:anchor>
+								</li>
+								<li>
+									<crux:anchor id="linkPlataformasSuportadas" href="#" text="Plataformas Suportadas"></crux:anchor>
+								</li>
+							</ul>
+							
+							<ul class="footerUl">
+								<li class="footerUlTitle">Comunidade</li>
+								<li>
+									<crux:anchor id="linkBlog" href="#" text="Blog"></crux:anchor>
+								</li>
+								<li>
+									<crux:anchor id="linkForum" href="#" text="Fórum"></crux:anchor>
+								</li>
+								<li>
+									<crux:anchor id="linkContribua" href="#" text="Contribua"></crux:anchor>
+								</li>
+								<li>
+									<crux:anchor id="linkFaq" href="#" text="FAQ"></crux:anchor>
+								</li>
+							</ul>
+							
+							<div class="triggoFooterLogo">
+								Mantido por:<br />
+								<crux:image id="triggoFooterLogo" url="${siteDeviceResources.triggoFooterLogo}" />
+							</div>
+							
+							<div class="clear"></div>
+						</div>
+					</div>
+				</gwt:HTMLPanel>
+			</gwt:simplePanel>
+					
+			<!--<div class="topTag">Lançado 5.0.3-RC!</div>-->
+			 
+	</c:screen>
+		
 	</body>
 </html>

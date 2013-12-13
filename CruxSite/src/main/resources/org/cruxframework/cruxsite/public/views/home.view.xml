@@ -4,7 +4,8 @@
 	xmlns:core="http://www.cruxframework.org/crux" 
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
-	useController="mainController" title="Home" useResource="siteDeviceResources,siteCommonResources"
+	useController="mainController" title="Home"
+	useResource="siteDeviceResources,siteCommonResources"
 	onLoad="mainController.onLoad"
 	> 
 	
@@ -31,7 +32,7 @@
 							</p>
 							<div class="separator"></div>
 							<p></p>
-							<crux:anchor id="gotoTheCrux" text="Saiba Mais" href="#topMenuDisposal:info" styleName="btnCrux btnSeeAll right"></crux:anchor>
+							<crux:anchor id="gotoTheCrux" text="Saiba Mais" href="#topMenuDisposal:sobreocrux" styleName="btnCrux btnSeeAll right"></crux:anchor>
 							<div class="clear"></div>
 						</div>
 					</li>
@@ -62,7 +63,7 @@
 					</li>
 					<li class="andOthers">e outros...</li>
 					<li class="liLast">
-						<crux:anchor id="gotoOtherCustomers" text="Ver Todos" href="#topMenuDisposal:info" styleName="btnCrux btnSeeAll"></crux:anchor>
+						<crux:anchor id="gotoOtherCustomers" text="Ver Todos" href="#topMenuDisposal:whoUses" styleName="btnCrux btnSeeAll"></crux:anchor>
 					</li>
 				</ul>
 			</div>

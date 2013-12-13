@@ -927,3 +927,104 @@ h2{
 	background:icon3stars no-repeat center center;
 	display:inline-block;
 }
+
+@external examplesList, exampleCall, exampleText, exampleImg, svnName;
+.examplesList{
+	padding:0;
+}
+.examplesList li{
+	border-bottom:1px solid rgba(0,0,0,0.1);
+	padding-bottom:10px;
+	margin-bottom:10px;
+}
+.examplesList li p{
+	color:#373737;
+}
+.examplesList li .exampleCall{
+	width:100%;
+	height:113px;
+	border-radius:4px;
+	margin:5px 0;
+	background:#ccc;
+	position:relative;
+	overflow:hidden;
+}
+.examplesList li .exampleCall .exampleText{
+	position:relative;
+	z-index:2;
+	color:#fff;
+	text-shadow:0 1px 1px rgba(0,0,0,0.5);
+	padding:20px;
+}
+.examplesList li .exampleCall .exampleImg{
+	position:absolute;
+	z-index:1;
+	top:0;
+	left:0;
+	-moz-transition:all 0.25s ease-in-out;
+}
+.examplesList li:hover .exampleCall .exampleImg{
+	-moz-transition:all 0.25s ease-in-out;
+	-moz-transform:scale(1.1)
+}
+.examplesList li .exampleCall .exampleText h3{
+	font-size:35px;
+	font-weight:lighter;
+	float:left;
+	margin-top:12px;
+}
+.examplesList li .exampleCall .exampleText .svnName{
+	float:right;
+	padding:12px 30px;
+	border-radius:4px;
+	background:rgba(0,0,0,0.5);
+	text-align:center;
+	margin-top:9px;
+}
+
+@external manual, toc, chapter, programlisting, title;
+.manual{
+	position:relative;
+}
+.manual .toc{
+	position:absolute;
+	padding:10px;
+	left:0;
+	top:0;
+	border-radius:4px;
+	background:rgba(0,0,0,0.2);
+}
+.manual .toc li{
+	padding:5px 0;	
+}
+.manual .toc li a:hover{
+	-moz-transform:scale(1.1);
+	-moz-transition:all 0.2s linear;
+}
+.manual section.chapter{
+	margin-left:280px;
+	border-bottom:1px solid rgba(0,0,0,0.2);
+	box-shadow:0 2px 0 rgba(0,0,0,0.05);
+	padding-bottom:10px;
+}
+pre.programlisting{
+	text-wrap:wrap;
+	width:100%;
+	overflow-x:scroll;
+	background:rgba(0,0,0,0.6);
+	box-shadow:0 1px 3px rgba(0,0,0,0.2) inset;
+	color:#fff;
+	padding:5px 0;
+	text-shadow:0 1px 0 rgba(0,0,0,0.4);
+	border-radius:4px;
+}
+.manual section.chapter .toc{
+	position:relative;
+}
+.manual h1.title{
+	color:#074754;
+}
+.manual h2.title{
+	color:#222;
+	font-size:17px;
+}

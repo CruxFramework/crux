@@ -4,32 +4,83 @@
 	xmlns:core="http://www.cruxframework.org/crux" 
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
-	useController="mainController" title="Downloads"> 
-	
-	<div class="viewTextPanel">
-		
-		<h1>Aplicações exemplo com o Crux Framework</h1>
-		
-		<p>Encontre aqui aplicações exemplo construídas com o Crux Framework. Aprenda gradativamente, lendo o código, executando as aplicações
-		e modificando sua aparência e comportamento.</p>
-		
-		<center>
-			<!-- div class="itemSlot appSlot sampleApp">
-				<crux:button id="helloAppLabel" text="Hello World simples" onSelect="mainController.showViewExamples" styleName="infoButton"/>
-			</div -->
-		
-			<div class="itemSlot appSlot sampleApp">
-				<crux:button id="helloCrossAppLabel" text="Hello World multiplataforma" onSelect="mainController.showAppHelloCross" styleName="infoButton"/>
-			</div>
+	useController="mainController" title="Downloads"
+	useResource="siteDeviceResources,siteCommonResources"
+	> 
+
+	<gwt:HTMLPanel id="infoContainer">
+		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
+			<h2>Exemplos</h2>
+			<ul>
+				<li>
+					<crux:anchor id="linkInfo" href="#topMenuDisposal:info" text="Saiba Mais"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:compare" text="Comparativo"></crux:anchor>
+				</li>
+				<li class="on">
+					<crux:anchor id="linkExamples" href="#topMenuDisposal:exemplos" text="Exemplos"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkSupportedPlatforms" href="#topMenuDisposal:manual" text="Manual"></crux:anchor>
+				</li>
+			</ul>
+		</gwt:HTMLPanel>
+		<div class="container">
+			<h2>Aplicações exemplo com o Crux Framework</h2>	
+			<p>Encontre aqui aplicações exemplo construídas com o Crux Framework. Aprenda gradativamente, lendo o código, executando as aplicações e modificando sua aparência e comportamento.</p>
+			<ul class="examplesList">
+				<li>
+					<div class="exampleCall">
+						<div class="exampleText">
+							<h3>Hello World</h3>
+							<div class="svnName">
+								Projeto SVN:<br />
+								<b>HelloWorld</b>
+							</div>
+						</div>
+						<div class="exampleImg">
+							<crux:image id="bgHelloWorld" url="${siteDeviceResources.bgHelloWorld}" />
+						</div>
+					</div>
+					<p>Projeto simples utilizado somente para familiarização com o framework. Também pode ser rodado através da página Quickstart.</p>
+				</li>
+				<li>
+					<div class="exampleCall">
+						<div class="exampleText">
+							<h3>Showcase</h3>
+							<div class="svnName">
+								Projeto SVN:<br />
+								<b>CruxShowcase</b>
+							</div>
+						</div>
+						<div class="exampleImg">
+							<crux:image id="bgShowcase" url="${siteDeviceResources.bgShowcase}" />
+						</div>
+					</div>
+					<p>Este é o próprio projeto do showcase do Crux (que pode ser acessado aqui), fique a vontade para rodar e modificar em sua máquina.</p>
+				</li>
+			</ul>
+		</div>
+		<div class="separator"></div>
+		<div class="container">
+			<h2>Como eu uso os exemplos?</h2>	
 			
-			<div class="itemSlot appSlot sampleApp">
-				<crux:button id="siteAppLabel" text="Site do Crux, feito com o Crux" onSelect="mainController.showAppSite" styleName="infoButton"/>
-			</div>
-			
-			<div class="itemSlot appSlot sampleApp">
-				<crux:button id="showcaseAppLabel" text="Showcase multiplataforma" onSelect="mainController.showAppShowcase" styleName="infoButton"/>
-			</div>
-		</center>
-	</div>
+			<ol class="quickstartList">
+				<li>
+					<p>Adicione, no seu Eclipse, o repositório SVN do Crux: <b>http://crux-framework.googlecode.com/svn/branches/5.0.0/</b></p>
+				</li>
+				<li>
+					<p>Em seguida, faça checkout do nome do projeto que você escolheu dentre os exemplos acima.</p>
+				</li>
+				<li>
+					<p>Compile normalmente com o Maven</p>
+				</li>
+				<li>
+					<p>Clique com o botão direito no arquivo .launch existente na raiz do projeto e execute.</p>
+				</li>
+			</ol>
+		</div>
+	</gwt:HTMLPanel>
 	
 </v:view>

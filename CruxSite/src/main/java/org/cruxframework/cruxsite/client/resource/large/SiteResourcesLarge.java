@@ -103,4 +103,10 @@ public interface SiteResourcesLarge extends ClientBundle
 	
 	@Source("icon-1star.png")
 	DataResource icon1star();
+	
+	@Source("bg-helloworld.png")
+	ImageResource bgHelloWorld();
+	
+	@Source("bg-showcase.png")
+	ImageResource bgShowcase();
 }
