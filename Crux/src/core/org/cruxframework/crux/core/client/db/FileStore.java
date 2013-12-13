@@ -133,7 +133,7 @@ public interface FileStore
 	 */
 	void count(KeyRange<String> keyRange, DatabaseCountCallback callback);
 	/**
-	 * Creates a factory for {@link KeyRange} objects.
+	 * Creates a factory for {@link KeyRange} objects used by this store.
 	 * @return the factory
 	 */
 	KeyRangeFactory<String> getKeyRangeFactory();

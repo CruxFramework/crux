@@ -18,7 +18,7 @@ package org.cruxframework.crux.core.client.db;
 import com.google.gwt.core.client.JsArrayMixed;
 
 /**
- * <p>Represents a Cursor on Crux Database. Cursors can be used to iterate over the result of a database query.</p>
+ * <p>Represents a Cursor into Crux Database. Cursors can be used to iterate over the result of a database query.</p>
  * <p>
  * To open a cursor, you must ask to an {@link ObjectStore} or an {@link Index} object. Both classes define an openCursor method. 
  * </p>

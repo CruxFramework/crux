@@ -19,7 +19,10 @@ import org.cruxframework.crux.core.client.db.indexeddb.IDBKeyRange;
 
 
 /**
- * Specify a range of Keys. Used to openCursors on object stores or indexes.
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
+ * 
+ * Indexed DB implementation for KeyRange Interface. Use the interface {@link KeyRange} instead. 
+ * @author Thiago da Rosa de Bustamante
  * @param <K> The type of the key referenced by this KeyRange .
  * @author Thiago da Rosa de Bustamante
  *
