@@ -45,10 +45,12 @@
 			<crux:menuEntry label="Form Display" targetView="formDisplay"/>
 			<crux:menuSection label="Elementos de Formulário"/>
 			<crux:menuEntry label="File Uploader" targetView="fileUploader"/>
+			<crux:menuEntry label="Masked Label" targetView="maskedLabel"/>
 			<crux:menuSection label="Elementos de Imagem"/>
 			<crux:menuEntry label="Slide Show" targetView="slideshow"/>
-			<crux:menuSection label="Banco de Dados"/>
-			<crux:menuEntry label="CRUD Simples" targetView="simpleDatabase"/>
+			
+			<!-- crux:menuSection label="Banco de Dados"/>
+			<crux:menuEntry label="CRUD Simples" targetView="simpleDatabase"/-->
 		</crux:menuTabsDisposal>
 	
 	</body>

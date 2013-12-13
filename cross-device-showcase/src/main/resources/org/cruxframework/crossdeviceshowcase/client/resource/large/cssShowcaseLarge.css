@@ -2,7 +2,13 @@ BODY
 {
 	background-color: #CCCCCC;
 	background-image: -webkit-linear-gradient(#EEEEEE,#CCCCCC);
-}	
+}
+
+@external valueLabel; 
+.valueLabel
+{
+	color: #303030 !important;
+}
 
 @external speechBubble;
 .speechBubble
