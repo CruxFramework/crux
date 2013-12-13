@@ -33,9 +33,10 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import com.google.gwt.logging.client.LogConfiguration;
 
 /**
- * HTML5 AbstractDatabase based on IndexedDB (http://www.w3.org/TR/IndexedDB/).
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
+ * 
+ * Indexed DB implementation for Database Interface. Use the interface {@link Database} to define your databases. 
  * @author Thiago da Rosa de Bustamante
- *
  */
 public abstract class IDXAbstractDatabase extends AbstractDatabase 
 {

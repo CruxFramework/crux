@@ -22,5 +22,9 @@ package org.cruxframework.crux.core.client.db;
  */
 public abstract class FileStoreCursorCallback extends Callback
 {
+	/**
+	 * Called when an open cursor operation is performed successfully.
+	 * @param result the cursor
+	 */
 	public abstract void onSuccess(FileCursor result);
 }

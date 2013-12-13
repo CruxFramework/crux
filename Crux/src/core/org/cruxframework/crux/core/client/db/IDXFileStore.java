@@ -32,8 +32,10 @@ import org.cruxframework.crux.core.client.db.indexeddb.events.IDBObjectStoreEven
 import org.cruxframework.crux.core.client.file.Blob;
 
 /**
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
+ * 
+ * Indexed DB implementation for FileStore Interface. Use the interface {@link FileStore} instead. 
  * @author Thiago da Rosa de Bustamante
- *
  */
 public class IDXFileStore extends DBObject implements FileStore
 {

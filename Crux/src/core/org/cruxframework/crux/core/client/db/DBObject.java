@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import com.google.gwt.logging.client.LogConfiguration;
 
 /**
- * CRUX INTERNAL INTERFACE. DO NOT USE IT DIRECTLY.
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
  * 
  * <p>Base class for object objects that perform operations on Crux Database.</p> 
  * 
