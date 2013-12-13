@@ -569,8 +569,8 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	border-radius: 2px;
 	padding: 5px;	
 }
-@external gwt-Label;
-.gwt-Label
+@external gwt-Label, crux-MaskedLabel;
+.gwt-Label, .crux-MaskedLabel
 {
 	color: #1C5994;
 	text-shadow: 0px 1px #FFFFFF;
