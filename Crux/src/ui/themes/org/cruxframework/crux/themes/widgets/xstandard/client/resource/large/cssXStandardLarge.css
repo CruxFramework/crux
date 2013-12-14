@@ -455,7 +455,6 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	position: absolute;
 	top: -2px;
 }
-
 .crux-FileUploader .filePanel .gwt-Label
 {
 	overflow: hidden;
@@ -716,14 +715,65 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	-webkit-user-select: none;
 }
 
-@external crux-ProgressBox;
+@external crux-ProgressBox, crux-InfinityProgressBarAnimation, crux-InfinityProgressBar, progressBarSlot, progressBarFill;
 .crux-ProgressBox
 {
 	width: 200px;
-	height: 35px;
+	height: 60px;
 }
 .crux-ProgressBox .dialogTopBar
 {
 	box-shadow: none;
 	padding-top: 6px;
+}
+.crux-ProgressBox .dialogBody
+{
+	padding-left:20px
+	padding-right:20px
+}
+@-webkit-keyframes crux-InfinityProgressBarAnimation
+{
+	0%   {width:0%;left:0%}
+	19%  {width:40%;left:0%;}
+	38%  {width:0%;left:50%;}
+	57%  {width:40%;left:50%;}
+	75%  {width:0%;left:100%;}
+	100% {width:100%;left:0%}
+}
+@keyframes crux-InfinityProgressBarAnimation
+{
+	0%   {width:0%;left:0%}
+	19%  {width:40%;left:0%;}
+	38%  {width:0%;left:50%;}
+	57%  {width:40%;left:50%;}
+	75%  {width:0%;left:100%;}
+	100% {width:100%;left:0%}
+}	
+.crux-InfinityProgressBar
+{
+	width: 100%;
+	height: 1px;
+	position: relative;
+}
+.crux-InfinityProgressBar .progressBarSlot
+{
+	width: 100%;
+	height: 1px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	border-top: solid 2px #EEE;
+	box-sizing: border-box;
+}
+.crux-InfinityProgressBar .progressBarFill
+{
+	height: 1px;
+	border-top: solid 2px #B1DA62;
+	box-sizing: border-box;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	box-shadow: 0px 0px 20px rgba(161,202,82,0.7);
+	-webkit-animation: crux-InfinityProgressBarAnimation 2s linear infinite;
+	animation: crux-InfinityProgressBarAnimation 2s linear infinite;
 }
