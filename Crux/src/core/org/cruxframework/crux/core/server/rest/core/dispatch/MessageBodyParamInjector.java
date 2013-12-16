@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.codehaus.jackson.map.ObjectReader;
 import org.cruxframework.crux.core.server.rest.core.MediaType;
 import org.cruxframework.crux.core.server.rest.spi.BadRequestException;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
@@ -28,8 +29,6 @@ import org.cruxframework.crux.core.server.rest.spi.UnsupportedMediaTypeException
 import org.cruxframework.crux.core.server.rest.util.JsonUtil;
 import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.StreamUtils;
-
-import com.fasterxml.jackson.databind.ObjectReader;
 
 /**
  * 

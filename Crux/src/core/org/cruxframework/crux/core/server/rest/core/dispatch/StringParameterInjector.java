@@ -66,12 +66,12 @@ public class StringParameterInjector
 			}
 			catch (NoSuchMethodException ignored)
 			{
-
+				//No error, try valueOf method
 			}
-			if (constructor == null)
-			{
-				valueOf = findValueOfMethod();
-			}
+		}
+		if (constructor == null)
+		{
+			valueOf = findValueOfMethod();
 		}
 	}
 
@@ -89,6 +89,7 @@ public class StringParameterInjector
 	    }
 	    catch (NoSuchMethodException ignored)
 	    {
+			//No error, continue searching
 	    }
 	    try
 	    {
@@ -100,6 +101,7 @@ public class StringParameterInjector
 	    }
 	    catch (NoSuchMethodException ignored)
 	    {
+			//No error, continue searching
 	    }
 	    if (valueOf == null)
 	    {

@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.core.shared.rest;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * @author Thiago da Rosa de Bustamante

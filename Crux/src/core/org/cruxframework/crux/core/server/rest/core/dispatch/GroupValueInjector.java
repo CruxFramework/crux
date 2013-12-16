@@ -77,6 +77,8 @@ class GroupValueInjector implements ValueInjector
 		            		case path:
 		            			injectors.add(new PathParamInjector(propertyType, getParamName(paramPrefix, property.getName()), null));
 	            			break;
+		            		default:
+							break;
 	            		}
 	            	}
 	            	else

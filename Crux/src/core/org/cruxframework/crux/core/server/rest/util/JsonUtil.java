@@ -21,19 +21,18 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.codehaus.jackson.annotate.JsonTypeInfo;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectMapper.DefaultTypeResolverBuilder;
+import org.codehaus.jackson.map.ObjectMapper.DefaultTyping;
+import org.codehaus.jackson.map.ObjectReader;
+import org.codehaus.jackson.map.ObjectWriter;
+import org.codehaus.jackson.map.SerializationConfig.Feature;
+import org.codehaus.jackson.map.jsontype.TypeResolverBuilder;
+import org.codehaus.jackson.type.JavaType;
 import org.cruxframework.crux.core.shared.json.annotations.JsonSubTypes;
 import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.ClassUtils.PropertyInfo;
-
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectMapper.DefaultTypeResolverBuilder;
-import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -66,7 +65,7 @@ public class JsonUtil
 	
 	private static void setGlobalConfigurations(ObjectMapper mapper) 
 	{
-		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		mapper.configure(Feature.FAIL_ON_EMPTY_BEANS, false);
 	}
 
 	private static ObjectMapper getObjectMapper(Type type)
@@ -142,8 +141,6 @@ public class JsonUtil
 	
 	private static class SubTypeResolverBuilder extends DefaultTypeResolverBuilder
 	{
-        private static final long serialVersionUID = -7357920769133327574L;
-
 		public SubTypeResolverBuilder()
         {
 	        super(DefaultTyping.NON_FINAL);
