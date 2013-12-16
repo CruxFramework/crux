@@ -221,7 +221,7 @@ public abstract class AbstractKeyValueProxyCreator extends AbstractProxyCreator
     {
 		srcWriter.println("private "+JsArrayMixed.class.getCanonicalName()+" getNativeKey(Object[] key){");
 		srcWriter.println(JsArrayMixed.class.getCanonicalName()+ " result = "+JsArrayMixed.class.getCanonicalName()+".createArray().cast();");
-	    srcWriter.println("return getNativeKey(key, result);");
+	    srcWriter.println("getNativeKey(key, result);");
 	    srcWriter.println("return result;");
 	    srcWriter.println("}");
 	    srcWriter.println();

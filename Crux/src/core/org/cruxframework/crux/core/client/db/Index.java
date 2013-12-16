@@ -128,8 +128,10 @@ public abstract class Index<K, I, V> extends DBObject
 	public abstract boolean isUnique();
 	
 	/**
-	 * 
-	 * @return
+	 * This flag affects how the index behaves when the result of evaluating the index's key path yields an Array. 
+	 * If the multiEntry flag is false, then a single record whose key is an Array is added to the index. 
+	 * If the multiEntry flag is true, then the one record is added to the index for each item in the Array. 
+	 * @return true if this is a multi entry index.
 	 */
 	public abstract boolean isMultiEntry();
 	
