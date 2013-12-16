@@ -134,6 +134,10 @@ abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E
 		}
 		
 		//optimization: infer column type only once
+		if(array == null || array[0] == null)
+		{
+			return;
+		}
 		final boolean isStringColumn = getValue(columnName, array[0]) instanceof String;
 		
 		Arrays.sort(array, new Comparator<DataSourceRecord<E>>(){
