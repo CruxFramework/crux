@@ -737,6 +737,7 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 {
 	padding-left:20px;
 	padding-right:20px;
+	padding-top: 0px;
 }
 @-webkit-keyframes crux-InfinityProgressBarAnimation
 {
