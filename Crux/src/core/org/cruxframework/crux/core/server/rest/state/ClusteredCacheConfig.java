@@ -16,7 +16,7 @@
 package org.cruxframework.crux.core.server.rest.state;
 
 import org.cruxframework.crux.core.i18n.DefaultServerMessage;
-import org.cruxframework.crux.core.server.rest.annotation.GET;
+import org.cruxframework.crux.core.shared.rest.annotation.GET;
 import org.jgroups.JChannel;
 
 /**

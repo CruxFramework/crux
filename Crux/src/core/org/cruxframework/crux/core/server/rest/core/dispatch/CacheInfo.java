@@ -15,8 +15,8 @@
  */
 package org.cruxframework.crux.core.server.rest.core.dispatch;
 
-import org.cruxframework.crux.core.server.rest.annotation.GET;
-import org.cruxframework.crux.core.server.rest.annotation.GET.CacheControl;
+import org.cruxframework.crux.core.shared.rest.annotation.GET;
+import org.cruxframework.crux.core.shared.rest.annotation.GET.CacheControl;
 
 /**
  * @author Thiago da Rosa de Bustamante

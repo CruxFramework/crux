@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.server.rest.annotation;
+package org.cruxframework.crux.core.shared.rest.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,20 +21,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Indicates that the annotated method responds to HTTP PUT requests. 
+ * PUT operations are used to write data (insert or updates). PUT operations are idempotent, 
+ * which means it can be performed repeatedly without side-effects.
  * 
- * @author Thiago da Rosa de Bustamante
- *
+ * @see HttpMethod
  */
-@Target({ElementType.PARAMETER, ElementType.METHOD})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface QueryParam {
-    /**
-     * Defines the name of the HTTP query parameter whose value will be used
-     * to initialize the value of the annotated method argument, class field or
-     * bean property. The name is specified in decoded form, any percent encoded
-     * literals within the value will not be decoded and will instead be 
-     * treated as literal text. E.g. if the parameter name is "a b" then the 
-     * value of the annotation is "a b", <i>not</i> "a+b" or "a%20b".
-     */
-    String value();
+@HttpMethod(HttpMethod.PUT)
+public @interface PUT 
+{ 
+	/**
+	 * If this state validation is enabled, Crux will add an If-Match HTTP header to ensure that the PUT operation will only be 
+	 * executed if the client retains the current state of the resource being updated. 
+	 * @return
+	 */
+	StateValidationModel validatePreviousState() default StateValidationModel.NO_VALIDATE;
 }

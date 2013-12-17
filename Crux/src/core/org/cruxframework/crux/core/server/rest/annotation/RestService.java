@@ -21,6 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Used to specify a class as a REST service. 
+ * 
  * @author Thiago da Rosa de Bustamante
  *
  */
@@ -28,5 +30,49 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RestService
 {
+	/**
+	 * The name of the rest service.
+	 * @return
+	 */
 	String value();
+	
+	/**
+	 * Annotation used to inform that a given rest service class must support CORS requests.
+	 *  
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	public static @interface CorsSupport
+	{
+		/**
+		 * Origins allowed to make cors requests to this service.
+		 * @return list of origins allowed
+		 */
+		String[] allowOrigin() default {};
+		
+		/**
+		 * Origins allowed to make cors requests to this service. Inform a file name containing 
+		 * the origins allowed. The file must be visible into application's classpath and declare
+		 * one origin per line of the raw text file specified. 
+		 * @return list of origins allowed
+		 */
+		String allowOriginConfigFile() default "";
+
+		/**
+		 * By default, cookies are not included in CORS requests. Use this header to indicate that 
+		 * cookies should be included in CORS requests.
+		 * @return true if this service allow credentials sharing.
+		 */
+		boolean allowCredentials() default false;
+		
+		/**
+		 * Cors requests can only access the following headers by default: Cache-Control, Content-Language
+		 * Content-Type, Expires, Last-Modified and Pragma. If you want clients to be able to access other 
+		 * headers,use this property to expose them
+		 * @return list of non default headers to expose to cors clients.
+		 */
+		String[] exposeHeaders() default {};
+	}
 }

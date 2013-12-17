@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 cruxframework.org
+ * Copyright 2013 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,23 +13,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.server.rest.annotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.cruxframework.crux.core.client.rest;
 
 /**
- * 
+ * Defines a callback to be called when the rest service returns.
+ * @param <T> Rest service return type 
  * @author Thiago da Rosa de Bustamante
  *
  */
-@Target({ElementType.PARAMETER, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DefaultValue {
-    /**
-     * The default value.
-     */
-    String value();
+public interface Callback<T>
+{
+	/**
+	 * Called when the rest service returns something.
+	 * @param result the value returned
+	 */
+	void onSuccess(T result);
+	/**
+	 * Called when a problem occurred on rest service invocation.
+	 * @param e the error
+	 */
+	void onError(Exception e);
 }
+

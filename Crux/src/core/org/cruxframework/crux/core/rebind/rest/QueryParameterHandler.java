@@ -19,8 +19,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.server.rest.annotation.PathParam;
-import org.cruxframework.crux.core.server.rest.annotation.QueryParam;
+import org.cruxframework.crux.core.shared.rest.annotation.PathParam;
+import org.cruxframework.crux.core.shared.rest.annotation.QueryParam;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils.PropertyInfo;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 cruxframework.org.
+ * Copyright 2013 cruxframework.org
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.client.service;
+package org.cruxframework.crux.core.shared.rest.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,39 +21,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface RestProxy
-{
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.TYPE)
-	public static @interface TargetRestService
-	{
-		String value();
-	}
-	
-	public static interface Callback<T>
-	{
-		void onSuccess(T result);
-		void onError(Exception e);
-	}
-	
-	public static class RestError extends Exception
-	{
-        private static final long serialVersionUID = -147464971080325777L;
-		
-        private int status;
-        
-        public RestError(int status, String message)
-        {
-        	super(message);
-        	this.status = status; 
-        }
-        
-        public int getStatusCode()
-        {
-        	return status;
-        }
-	}
+@Target({ElementType.PARAMETER, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CookieParam {
+    /**
+     * Defines the name of the HTTP cookie whose value will be used
+     * to initialize the value of the annotated method argument, class field or
+     * bean property.
+     */
+    String value();
 }

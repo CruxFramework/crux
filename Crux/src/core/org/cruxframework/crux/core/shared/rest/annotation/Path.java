@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.server.rest.annotation;
+package org.cruxframework.crux.core.shared.rest.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

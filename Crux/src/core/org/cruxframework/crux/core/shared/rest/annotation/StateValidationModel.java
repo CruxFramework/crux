@@ -13,12 +13,8 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.server.rest.annotation;
+package org.cruxframework.crux.core.shared.rest.annotation;
 
-/**
- * @author Thiago da Rosa de Bustamante
- *
- */
 /**
  * Indicates if Crux must validate previous state of resources being updated. 
  * @author Thiago da Rosa de Bustamante

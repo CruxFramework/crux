@@ -3,12 +3,12 @@ package org.cruxframework.crux.core.server.rest.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import org.cruxframework.crux.core.server.rest.annotation.GET;
-import org.cruxframework.crux.core.server.rest.annotation.HttpMethod;
-import org.cruxframework.crux.core.server.rest.annotation.POST;
-import org.cruxframework.crux.core.server.rest.annotation.PUT;
-import org.cruxframework.crux.core.server.rest.annotation.StateValidationModel;
 import org.cruxframework.crux.core.server.rest.core.dispatch.CacheInfo;
+import org.cruxframework.crux.core.shared.rest.annotation.GET;
+import org.cruxframework.crux.core.shared.rest.annotation.HttpMethod;
+import org.cruxframework.crux.core.shared.rest.annotation.POST;
+import org.cruxframework.crux.core.shared.rest.annotation.PUT;
+import org.cruxframework.crux.core.shared.rest.annotation.StateValidationModel;
 
 /**
  * 

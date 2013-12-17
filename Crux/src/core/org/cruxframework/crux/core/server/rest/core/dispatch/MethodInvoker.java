@@ -23,18 +23,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.cruxframework.crux.core.server.rest.annotation.CookieParam;
-import org.cruxframework.crux.core.server.rest.annotation.DefaultValue;
-import org.cruxframework.crux.core.server.rest.annotation.FormParam;
-import org.cruxframework.crux.core.server.rest.annotation.HeaderParam;
-import org.cruxframework.crux.core.server.rest.annotation.PathParam;
-import org.cruxframework.crux.core.server.rest.annotation.QueryParam;
 import org.cruxframework.crux.core.server.rest.core.RequestPreprocessors;
 import org.cruxframework.crux.core.server.rest.spi.BadRequestException;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
 import org.cruxframework.crux.core.server.rest.spi.InternalServerErrorException;
 import org.cruxframework.crux.core.server.rest.spi.RestFailure;
 import org.cruxframework.crux.core.shared.rest.RestException;
+import org.cruxframework.crux.core.shared.rest.annotation.CookieParam;
+import org.cruxframework.crux.core.shared.rest.annotation.DefaultValue;
+import org.cruxframework.crux.core.shared.rest.annotation.FormParam;
+import org.cruxframework.crux.core.shared.rest.annotation.HeaderParam;
+import org.cruxframework.crux.core.shared.rest.annotation.PathParam;
+import org.cruxframework.crux.core.shared.rest.annotation.QueryParam;
 import org.cruxframework.crux.core.utils.ClassUtils;
 
 /**

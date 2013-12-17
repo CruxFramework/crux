@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.server.rest.annotation;
+package org.cruxframework.crux.core.shared.rest.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,14 +27,16 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FormParam {
+public @interface PathParam {
     /**
-     * Defines the name of the form parameter whose value will be used
-     * to initialize the value of the annotated method argument. The name is 
-     * specified in decoded form, any percent encoded literals within the value
-     * will not be decoded and will instead be treated as literal text. E.g. if
-     * the parameter name is "a b" then the value of the annotation is "a b", 
-     * <i>not</i> "a+b" or "a%20b".
+     * Defines the name of the URI template parameter whose value will be used
+     * to initialize the value of the annotated method parameter, class field or
+     * property. See {@link Path#value()} for a description of the syntax of
+     * template parameters.
+     * 
+     * <p>E.g. a class annotated with: <code>&#64;Path("widgets/{id}")</code>
+     * can have methods annotated whose arguments are annotated
+     * with <code>&#64;PathParam("id")</code>.
      */
     String value();
 }
