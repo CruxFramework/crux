@@ -1,0 +1,29 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:showcase="http://www.cruxframework.org/templates/showcase"
+	useController="progressBoxController" title="Progress Box"> 
+	
+	<center>
+		
+		<crux:styledPanel id="panel1" width="60%" height="200px">
+			<crux:button id="showProgressBtn" text="Exibir Progress Box" onSelect="progressBoxController.showProgress"/>
+		</crux:styledPanel>
+		
+		<showcase:info title="StyledPanel">
+			<showcase:description>
+				<p>
+					ProgressBox é um componente flutuante, usado para para indicar ao usuário que algum processamento 
+					interno está ocorrendo e evitar que ele realize outras ações antes que o processamento termine.
+					Pode ser exibido e ocultado programaticamente. É bastante útil nas chamadas 
+					a serviços remotos, devido à natureza assíncrona dessa comunicação. 					
+				</p>
+			</showcase:description>
+		</showcase:info>
+		
+	</center>		
+	
+</v:view>

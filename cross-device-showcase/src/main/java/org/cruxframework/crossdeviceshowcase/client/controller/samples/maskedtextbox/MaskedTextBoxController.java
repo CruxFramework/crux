@@ -17,6 +17,6 @@ public class MaskedTextBoxController
 	{
 		MaskedTextBox widget = View.of(this).getWidget("dateInput", MaskedTextBox.class);
 		Date date = (Date) widget.getUnformattedValue();
-		FlatMessageBox.show("Você informou a data: " + date, MessageType.ERROR);
+		FlatMessageBox.show("Você informou a data: " + date, MessageType.INFO);
 	}
 }

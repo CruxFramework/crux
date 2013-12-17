@@ -40,18 +40,24 @@
 			<crux:header>
 				<gwt:flowPanel id="topBarpanel"/>
 			</crux:header>
-			<crux:menuSection label="Elementos de Layout" additionalStyleName="layoutSectionIcon"/>
-			<crux:menuEntry label="Styled Panel" targetView="styledPanel"/>
-			<crux:menuEntry label="Form Display" targetView="formDisplay"/>
 			<crux:menuSection label="Elementos de Formulário"/>
 			<crux:menuEntry label="File Uploader" targetView="fileUploader"/>
 			<crux:menuEntry label="Masked Label" targetView="maskedLabel"/>
 			<crux:menuEntry label="Masked Text Box" targetView="maskedTextBox"/>
+			<crux:menuSection label="Elementos de Layout" additionalStyleName="layoutSectionIcon"/>
+			<crux:menuEntry label="Styled Panel" targetView="styledPanel"/>
+			<crux:menuEntry label="Form Display" targetView="formDisplay"/>
+			<crux:menuSection label="Caixas de Diálogo"/>
+			<crux:menuEntry label="Progress Box" targetView="progressBox"/>
+			<crux:menuEntry label="Dialog Box" targetView="dialogBox"/>
+			<crux:menuEntry label="Message Box" targetView="messageBox"/>
+			
+			<!-- 
 			<crux:menuSection label="Elementos de Imagem"/>
 			<crux:menuEntry label="Slide Show" targetView="slideshow"/>
-			
-			<!-- crux:menuSection label="Banco de Dados"/>
-			<crux:menuEntry label="CRUD Simples" targetView="simpleDatabase"/-->
+			<crux:menuSection label="Banco de Dados"/>
+			<crux:menuEntry label="CRUD Simples" targetView="simpleDatabase"/>
+			-->
 		</crux:menuTabsDisposal>
 	
 	</body>

@@ -1,0 +1,16 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	useController="dialogBoxController" title="Dialog Box"> 
+	
+	<center>
+		<gwt:flowPanel id="panel">
+			<gwt:label id="label" text="Uma DialogBox pode conter desde simples widgets até views inteiras!" style="margin-bottom:20px;margin-top:20px"/>
+			<crux:button id="btn" text="Fechar DialogBox" onSelect="dialogBoxController.closeDialog"/>		
+		</gwt:flowPanel>
+	</center>		
+	
+</v:view>

@@ -7,14 +7,29 @@
 	
 	useController="maskedTextBoxController" 
 	useFormatter="maskedDateFormatter" 
-	title="Masked Text Box" >
+	title="Masked Text Box">
+	
+	<style>
+		.dateInput
+		{
+			width: 110px;
+			text-align: center;
+		}
+		.thinButton
+		{
+			height: 24px;
+			padding-top: 0px;
+			line-height: 24px;
+			min-width: 0px;
+		}
+	</style>
 	
 	<center>
 		<crux:styledPanel id="panel">
 			<gwt:flowPanel id="flowPanel">
-				<gwt:label id="ipLabel" text="Informe uma Data:"/>
-				<crux:maskedTextBox id="dateInput" formatter="maskedDateFormatter" />
-				<crux:button id="btnParseDate" onSelect="maskedTextBoxController.readDate" text="OK"/>
+				<gwt:label id="ipLabel" text="Informe uma data:" style="margin:10px"/>
+				<crux:maskedTextBox id="dateInput" formatter="maskedDateFormatter" styleName="crux-MaskedTextBox dateInput"/>
+				<crux:button id="btnParseDate" onSelect="maskedTextBoxController.readDate" text="Verificar" styleName="crux-Button thinButton"/>
 			</gwt:flowPanel>			
 		</crux:styledPanel>
 		
