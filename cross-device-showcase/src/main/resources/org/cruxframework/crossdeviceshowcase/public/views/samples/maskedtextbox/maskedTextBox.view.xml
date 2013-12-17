@@ -1,0 +1,35 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:showcase="http://www.cruxframework.org/templates/showcase"
+	
+	useController="maskedTextBoxController" 
+	useFormatter="maskedDateFormatter" 
+	title="Masked Text Box" >
+	
+	<center>
+		<crux:styledPanel id="panel">
+			<gwt:flowPanel id="flowPanel">
+				<gwt:label id="ipLabel" text="Informe uma Data:"/>
+				<crux:maskedTextBox id="dateInput" formatter="maskedDateFormatter" />
+				<crux:button id="btnParseDate" onSelect="maskedTextBoxController.readDate" text="OK"/>
+			</gwt:flowPanel>			
+		</crux:styledPanel>
+		
+		<showcase:info title="MaskedTextBox">
+			<showcase:description>
+				<p>
+					MaskedTextBox é um componente de entrada de informações que tem a capacidade de ser associado 
+					a um Formatter para guiar o usuário durante o preenchimento e garantir a conversão dessas informações
+					em dados tipados a serem consumidos pela aplicação. 
+				</p>
+				<p> 
+					Neste exemplo associamos o MaskedTextBox para ler uma data digtada pelo usuário.
+				</p> 
+			</showcase:description>
+		</showcase:info>
+	</center>		
+	
+</v:view>

@@ -26,10 +26,10 @@
 		<crux:styledPanel id="panel">
 			<gwt:flowPanel id="imgPanel" styleName="guilePanel">
 				<crux:formDisplay id="form">
-					<crux:entry label="Nome:">
+					<crux:entry label="Personagem:">
 						<gwt:label id="nameLabel" text="Guile" styleName="gwt-Label valueLabel"/>
 					</crux:entry>
-					<crux:entry label="Nascimento:">
+					<crux:entry label="Data de Nascimento:">
 						<crux:maskedLabel id="birthDate" formatter="dateFormatter" styleName="crux-MaskedLabel valueLabel"/>
 					</crux:entry>
 				</crux:formDisplay>
@@ -40,12 +40,12 @@
 		<showcase:info title="MaskedLabel">
 			<showcase:description>
 				<p>
-					MaskedLabel é um componente de exibição de informações que pode ser associado 
+					MaskedLabel é um componente de exibição de informações que tem a capacidade de ser associado 
 					a um Formatter para exibir dados tipados em formato textual amigável. 
 				</p>
 				<p> 
 					Neste exemplo associamos o MaskedLabel a um formatador de data, para exibirmos
-					a data de cadastro do personagem.
+					a data de nascimento do personagem.
 				</p> 
 			</showcase:description>
 		</showcase:info>
