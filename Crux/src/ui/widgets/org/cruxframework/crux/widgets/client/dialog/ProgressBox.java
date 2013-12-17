@@ -24,7 +24,7 @@ public class ProgressBox extends AbstractDialogBox
 	 * Sets the message to be shown
 	 * @param message
 	 */
-	private void setMessage(String message)
+	public void setMessage(String message)
 	{
 		super.setTitle(message);
 	}

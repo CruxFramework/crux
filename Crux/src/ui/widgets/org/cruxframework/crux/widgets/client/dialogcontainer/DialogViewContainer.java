@@ -334,7 +334,7 @@ public class DialogViewContainer extends SingleViewContainer
 	 */
 	private boolean closeDialog(boolean unloadView, boolean closeDialog)
 	{
-		if (unloadView)
+		if (unloadView && innerView != null)
 		{
 			if (!remove(innerView))
 			{

@@ -20,11 +20,14 @@ DIV, TD, LABEL, SPAN, INPUT, BUTTON
 INPUT, BUTTON
 {
 	transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+	vertical-align: top;
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 INPUT:focus, BUTTON:focus
 {
 	outline: 0;
-	border-color: #66AFE9;
+	border: solid 1px #66AFE9;
 	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
 	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
 }
@@ -32,7 +35,6 @@ DIV, INPUT, BUTTON
 {
 	box-sizing: border-box;
 }
-
 @external crux-StyledPanel, crux-StyledPanelOuter, crux-FileUploader, dropArea;
 .crux-StyledPanelOuter
 {
@@ -560,8 +562,8 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 
 /******************************************************************************/
 
-@external gwt-TextBox;
-.gwt-TextBox
+@external gwt-TextBox, crux-MaskedTextBox;
+.gwt-TextBox, .crux-MaskedTextBox
 {
 	height: 38px;
 	border: solid 1px rgba(28, 89, 148, 0.4);
@@ -569,6 +571,7 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	border-radius: 2px;
 	padding: 5px;	
 }
+
 @external gwt-Label, crux-MaskedLabel;
 .gwt-Label, .crux-MaskedLabel
 {
@@ -689,12 +692,13 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 {
 	width: inherit;
 	height: literal("calc(100% - 40px)");
-	overflow: scroll;
+	overflow: auto;
 	border-bottom-right-radius: 3px;
 	border-bottom-left-radius: 3px;
 	position: absolute;
 	top: 40px;
-	min-height: inherit;
+	padding-top: 15px;
+	box-sizing: border-box;
 }
 .crux-Dialog .popupContent, .crux-ProgressBox .popupContent, .crux-FlatMessageBox .popupContent
 {
@@ -717,11 +721,6 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	box-shadow: 2px 2px 2px #FFF, inset -5px -5px 10px #FFF;
 	-webkit-user-select: none;
 }
-
-
-
-
-
 
 @external crux-ProgressBox, crux-InfinityProgressBarAnimation, crux-InfinityProgressBar, progressBarSlot, progressBarFill;
 .crux-ProgressBox
@@ -792,7 +791,7 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 {
 	max-width: 80%;
 	min-width: 500px;
-	min-height: 200px;
+	min-height: 180px;
 }
 .crux-FlatMessageBox .messageBoxContents
 {
@@ -803,6 +802,11 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 .crux-FlatMessageBox .dialogTopBar
 {
 	box-shadow: none;
+}
+.crux-FlatMessageBox .crux-Button
+{
+	margin-top: 40px;
+	margin-bottom: 10px;
 }
 .crux-FlatMessageBox-success .gwt-Label
 {
@@ -816,9 +820,9 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 {
 	color: #816A02;	
 }
-.crux-FlatMessageBox-warn .gwt-Label
+.crux-FlatMessageBox-error .gwt-Label
 {
-	color: #912A00;	
+	color: #B01010;
 }
 .crux-FlatMessageBox-info .crux-Button
 {
@@ -834,5 +838,5 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 }
 .crux-FlatMessageBox-error .crux-Button
 {
-	background-color: #912A00;	
+	background-color: #D11010;	
 }
