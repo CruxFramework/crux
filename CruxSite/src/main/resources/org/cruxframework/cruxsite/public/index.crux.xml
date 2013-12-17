@@ -25,18 +25,20 @@
 					<div class="container containerHeader">
 						<crux:anchor id="cruxHeaderLogo" href="#topMenuDisposal:home" styleName="headerLogo"></crux:anchor>
 						
+						<!--
 						<div class="langButtons">
 							<crux:button id="ptbrLangButton" styleName="flagbr flag"></crux:button>
 							<crux:button id="enusLangButton" styleName="flagus flag"></crux:button>
 						</div>
+						-->
 						
 						<div class="showcaseButton">
-							<crux:anchor id="showcaseButton" href="http://showcase.cruxframework.org/" target="_blank" styleName="showcaseBtn" text="Visite o Showcase" tooltip="Visitar o Showcase 5.0"></crux:anchor>
+							<crux:anchor id="showcaseButton" href="http://showcase.cruxframework.org/" target="_blank" styleName="showcaseBtn" text="Visite o Showcase" tooltip="Visitar o Showcase 5"></crux:anchor>
 						</div>
 						
 						<div class="clear"></div>
 						
-						<div class="showcaseTip"><b>5.0</b></div>
+						<div class="showcaseTip"><b>v . 5</b></div>
 						
 					</div>
 					<!--  old menu

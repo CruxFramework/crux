@@ -31,7 +31,11 @@
 				 -->
 				<!-- MANUAL STARTS HERE -->
 				<div class="manual">
+					
+					
+					
 					<div class="book" id="d5e1">
+					<div class="navigation">
          <div class="toc">
             <div class="toc-title">Table of Contents</div>
             <ul>
@@ -42,102 +46,239 @@
                   <ul>
                      <li>
                         <span class="sect1">
-                           <a href="#sec_CruxOqueE">1. O que é o Crux?</a>
+                           <a href="#sec_CruxOqueE">1.1. O que é o Crux?</a>
                         </span>
                         <ul>
                            <li>
                               <span class="sect2">
-                                 <a href="#d5e25">1.1. Crux and GWT</a>
+                                 <a href="#sec_exemplo">1.1.1. Crux and GWT</a>
                               </span>
                            </li>
                         </ul>
                      </li>
                      <li>
                         <span class="sect1">
-                           <a href="#sec_exemplo">2. Exemplos</a>
+                           <a href="#sec_CruxArtefatos">1.2. Crux Artifacts and Projects</a>
+                        </span>
+                     </li>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_Exemplo">1.3. Exemplos</a>
                         </span>
                      </li>
                   </ul>
                </li>
                <li>
                   <span class="chapter">
-                     <a href="#chp_QuickStart">2. Quick Start</a>
+                     <a href="#chp_quickstart">2. Quick Start</a>
+                  </span>
+               </li>
+               <li>
+                  <span class="chapter">
+                     <a href="#chp_inst_conf">3. Instalação e Configuração</a>
                   </span>
                   <ul>
                      <li>
                         <span class="sect1">
-                           <a href="#sec_Install">1. Install</a>
+                           <a href="#sec_nomesec">3.1. Via Maven Archetype</a>
+                        </span>
+                     </li>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_nomesec">3.2. Manualmente</a>
                         </span>
                      </li>
                   </ul>
                </li>
                <li>
                   <span class="chapter">
-                     <a href="#chp_nomechap">3. Coding Client Side</a>
+                     <a href="#chp_arquitetura">4. Visão Arquitetura</a>
+                  </span>
+               </li>
+               <li>
+                  <span class="chapter">
+                     <a href="#chp_view">5. Camada de Visualização</a>
                   </span>
                   <ul>
                      <li>
                         <span class="sect1">
-                           <a href="#sec_nomesec">1. Building User Interface</a>
+                           <a href="#sec_sec01">5.1. Criando Formulário</a>
                         </span>
                      </li>
                      <li>
                         <span class="sect1">
-                           <a href="#sec_nomesec">2. Screen</a>
+                           <a href="#sec_sec01">5.2. Criando Screen</a>
                         </span>
                         <ul>
                            <li>
                               <span class="sect2">
-                                 <a href="#sec_nomesec">2.1. Managing Events</a>
+                                 <a href="#sec_sec01">5.2.1. Eventos da Screen</a>
                               </span>
                            </li>
                         </ul>
                      </li>
-                  </ul>
-               </li>
-               <li>
-                  <span class="chapter">
-                     <a href="#chp_nomechap">4. Coding Server Side</a>
-                  </span>
-                  <ul>
                      <li>
                         <span class="sect1">
-                           <a href="#sec_nomesec">1. Seção 01</a>
+                           <a href="#sec_sec01">5.3.  Managing Events</a>
                         </span>
                      </li>
                   </ul>
                </li>
                <li>
                   <span class="chapter">
-                     <a href="#chp_nomechap">5. Crux Tools</a>
+                     <a href="#chp_controller">6. Camada de Controle</a>
                   </span>
                   <ul>
                      <li>
                         <span class="sect1">
-                           <a href="#sec_nomesec">1. Seção 01</a>
+                           <a href="#sec_sec01">6.1. Anotações</a>
+                        </span>
+                        <ul>
+                           <li>
+                              <span class="sect2">
+                                 <a href="#sec_sec02">6.1.1. A anotação @Controller </a>
+                              </span>
+                           </li>
+                           <li>
+                              <span class="sect2">
+                                 <a href="#sec_sec02">6.1.2. A anotação @Create</a>
+                              </span>
+                           </li>
+                           <li>
+                              <span class="sect2">
+                                 <a href="#sec_sec02">6.1.3. A anotação @Expose</a>
+                              </span>
+                           </li>
+                        </ul>
+                     </li>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_sec01">6.2. Value Binding</a>
+                        </span>
+                     </li>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_sec01">6.3. Using Controllers on Screen</a>
+                        </span>
+                     </li>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_sec01">6.4. Communication Between Controllers</a>
+                        </span>
+                     </li>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_sec01">6.5. Validation</a>
+                        </span>
+                     </li>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_sec01">6.6. Parameters Binding</a>
                         </span>
                      </li>
                   </ul>
                </li>
                <li>
                   <span class="chapter">
-                     <a href="#chp_nomechap">6. Project Layouts</a>
+                     <a href="#chp_model">7. Camada de Modelo</a>
                   </span>
                   <ul>
                      <li>
                         <span class="sect1">
-                           <a href="#sec_nomesec">1. Seção 01</a>
+                           <a href="#sec_sec01">7.1. Writing Server-Side Code</a>
+                        </span>
+                     </li>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_sec01">7.2. Setup</a>
                         </span>
                      </li>
                   </ul>
+               </li>
+               <li>
+                  <span class="chapter">
+                     <a href="#chp_tools">8. Ferramentas do Crux</a>
+                  </span>
+                  <ul>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_sec01">8.1. Schema Generator</a>
+                        </span>
+                     </li>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_sec01">8.2. Crux Compiler</a>
+                        </span>
+                     </li>
+                  </ul>
+               </li>
+               <li>
+                  <span class="chapter">
+                     <a href="#chp_archetypes">9. Archetypes</a>
+                  </span>
+                  <ul>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_nomesec">9.1. Application A</a>
+                        </span>
+                     </li>
+                     <li>
+                        <span class="sect1">
+                           <a href="#sec_nomesec">9.2. Application B</a>
+                        </span>
+                     </li>
+                  </ul>
+               </li>
+               <li>
+                  <span class="chapter">
+                     <a href="#chp_lib_comp">10. Biblioteca de Componentes</a>
+                  </span>
+               </li>
+               <li>
+                  <span class="chapter">
+                     <a href="#chp_lib_manual">11. Criação Componentes </a>
+                  </span>
+               </li>
+               <li>
+                  <span class="appendix">
+                     <a href="#apd_lib_manual">A.  FAQ </a>
+                  </span>
                </li>
             </ul>
          </div>
+         <div class="list-of-figures">
+            <div class="toc-title">List of Figures</div>
+            <ul>
+               <li>1.1. <a href="#d5e16"> Logo Crux </a>
+               </li>
+               <li>2.1. <a href="#d5e79">Estrutura Projeto Crux</a>
+               </li>
+               <li>2.2. <a href="#d5e86">Projeto Crux em execução</a>
+               </li>
+               <li>4.1. <a href="#d5e103"> Logo Crux </a>
+               </li>
+            </ul>
+         </div>
+         <div class="list-of-tables">
+            <div class="toc-title">List of Tables</div>
+            <ul>
+               <li>5.1. <a href="#d5e118">Sample Table</a>
+               </li>
+            </ul>
+         </div>
+         </div>
+
+
+
+
+
+
+
          <section class="chapter" id="chp_intro">
             <div class="titlepage">
                <div>
                   <div>
-                     <h1 class="title">Chapter 1. Introdução</h1>
+                     <h1 class="title">Chapter 1. Introdução</h1>
                   </div>
                </div>
             </div>
@@ -146,107 +287,174 @@
                <ul>
                   <li>
                      <span class="sect1">
-                        <a href="#sec_CruxOqueE">1. O que é o Crux?</a>
+                        <a href="#sec_CruxOqueE">1.1. O que é o Crux?</a>
                      </span>
                      <ul>
                         <li>
                            <span class="sect2">
-                              <a href="#d5e25">1.1. Crux and GWT</a>
+                              <a href="#sec_exemplo">1.1.1. Crux and GWT</a>
                            </span>
                         </li>
                      </ul>
                   </li>
                   <li>
                      <span class="sect1">
-                        <a href="#sec_exemplo">2. Exemplos</a>
+                        <a href="#sec_CruxArtefatos">1.2. Crux Artifacts and Projects</a>
+                     </span>
+                  </li>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_Exemplo">1.3. Exemplos</a>
                      </span>
                   </li>
                </ul>
             </div>
-	
-   
-	
+
+
             <section class="sect1" id="sec_CruxOqueE">
                <div class="titlepage">
                   <div>
                      <div>
-                        <h2 class="title" style="clear: both">1. O que é o Crux?</h2>
+                        <h2 class="title" style="clear: both">1.1. O que é o Crux?</h2>
                      </div>
                   </div>
                </div>
-	
-		
-		
+
+
                <p>Crux applications are basically <span class="bold">
                      <strong>GWT</strong>
-                  </span> applications. 
-		It means you must attempt to all GWT restrictions in terms of source code 
-		limitations and project structure directives. If you are not 
+                  </span>
+		applications.
+		It means you must attempt to all GWT restrictions in terms of source code
+		limitations and project structure directives. If you are not
 		familiar with GWT, please consult its documentation first.</p>
-		
-		
-               <p>This documentation will show you, in a detailed and gradual 
-		way, how to use the Crux framework, by exploring and exemplifying 
-		its features. Here you will also learn the concepts behind the code 
-		and understand how does Crux work internally. In order to easy 
+
+
+               <div class="figure" id="d5e16">
+                  <div class="figure-title">Figure 1.1.  Logo Crux </div>
+                  <div class="figure-contents">
+
+                     <div>
+                        <img src="images/small-transculent-blue.png" alt="Logo Crux"/>
+                     </div>
+
+                  </div>
+               </div>
+               <br class="figure-break"/>
+
+
+               <p>This documentation will show you, in a detailed and gradual
+		way, how to use the Crux framework, by exploring and exemplifying
+		its features. Here you will also learn the concepts behind the code
+		and understand how does Crux work internally. In order to easy
 		follow this documentation you will need:</p>
-		
-		
+
+
                <div class="orderedlist">
                   <ol class="orderedlist" type="i">
                      <li class="listitem">
-				
+
                         <p>A Java SE Development Kit (JDK), version 1.6 or higher;</p>
-			
+
                      </li>
                      <li class="listitem">
-				
-                        <p>An Eclipse IDE <a class="ulink" href="http://www.eclipse.org/" target="_top">Eclipse</a>
+
+                        <p>An Eclipse IDE
+				<a class="ulink" href="http://www.eclipse.org/" target="_top">Eclipse</a>
                         </p>
-				
+
                         <p/>
-			
+
                      </li>
                   </ol>
                </div>
-	
-		
-               <p>To see a live sample of Crux features, take a look at the Showcase Application. 1.1</p>
-		
-		
-               <section class="sect2" id="d5e25">
+
+
+               <p>To see a live sample of Crux features, take a look at the Showcase
+		   Application. 1.1</p>
+
+
+               <section class="sect2" id="sec_exemplo">
                   <div class="titlepage">
                      <div>
                         <div>
-                           <h3 class="title">1.1. Crux and GWT</h3>
+                           <h3 class="title">1.1.1. Crux and GWT</h3>
                         </div>
                      </div>
                   </div>
-			
-			
-			
+
+
                   <p>Current Crux version uses GWT 2.2.x and supports all its features.</p>
-		
+
+
                </section>
-		
-	
+
+
             </section>
-	
-	
-            <section class="sect1" id="sec_exemplo">
+
+
+
+
+            <section class="sect1" id="sec_CruxArtefatos">
                <div class="titlepage">
                   <div>
                      <div>
-                        <h2 class="title" style="clear: both">2. Exemplos</h2>
+                        <h2 class="title" style="clear: both">1.2. Crux Artifacts and Projects</h2>
                      </div>
                   </div>
                </div>
-		
-		
-    	
+
+
+               <p>Crux distribution includes a set of jar files:</p>
+
+
+               <div class="itemizedlist">
+                  <ul class="itemizedlist" style="list-style-type: disc; ">
+                     <li class="listitem">
+
+                        <p>crux-runtime.jar - The runtime jar of Crux framework.</p>
+
+                     </li>
+                     <li class="listitem">
+
+                        <p>crux-dev.jar - The Crux tools for development with Crux.</p>
+
+                     </li>
+                     <li class="listitem">
+
+                        <p>crux-themes.jar - The standard css to all Crux widgets.</p>
+
+                     </li>
+                     <li class="listitem">
+
+                        <p>crux-gadgets.jar - Support for Gadgets creation with Crux</p>
+
+                     </li>
+                     <li class="listitem">
+
+                        <p>crux-widgets.jar - The Crux widget library. </p>
+
+                     </li>
+                  </ul>
+               </div>
+
+
+            </section>
+
+
+            <section class="sect1" id="sec_Exemplo">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">1.3. Exemplos</h2>
+                     </div>
+                  </div>
+               </div>
+
+
                <p>Exemplo de java.</p>
 
-		
+
                <pre class="programlisting">
 		@Before
 		public void setUpFirefox() throws Exception {
@@ -255,21 +463,143 @@
 		    driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		}
 	    </pre>
-	
-	
+
+
             </section>
-	
+
 
          </section>
-   
-   
 
 
-         <section class="chapter" id="chp_QuickStart">
+
+
+         <section class="chapter" id="chp_quickstart">
             <div class="titlepage">
                <div>
                   <div>
-                     <h1 class="title">Chapter 2. Quick Start</h1>
+                     <h1 class="title">Chapter 2. Quick Start</h1>
+                  </div>
+               </div>
+            </div>
+
+
+
+            <p>Aprenda a criar um projeto Crux em 5 minutos. Com o Maven é possível criar
+  	  projetos Crux de forma rápida. Neste exemplo vamos mostrar como criar um projeto
+  	  <span class="italic">Hello World</span>  usando o Maven integrado ao
+  	  ambiente Eclipse (plugin M2E). </p>
+
+
+            <p> Para instalar o Crux, siga os seguintes passos no Eclipse: </p>
+
+
+            <div class="itemizedlist">
+               <ul class="itemizedlist" style="list-style-type: disc; ">
+                  <li class="listitem">
+
+                     <p>No menu do Eclipse, localize e selecione a opção
+			<span class="guimenu">File</span> ? <span class="guisubmenu">New</span> ? <span class="guisubmenu">Project</span>
+                     </p>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>Selecione a opção Maven Project e na janela de diálogo que se abrirá, clique no botão Next.</p>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>Na campo Catalog, selecione All Catalogs.</p>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>No capo Filter, digite crux.</p>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>Selecione a opção crux-module-app.</p>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>No próximo diálogo, informe um Group Id, por exemplo, meus.testes.crux .</p>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>Informe um Artifact Id, por exemplo, HelloCrux.</p>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>Informe um Package, por exemplo, meus.testes.crux.</p>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>Altere as propriedades do archetype. Informe HelloCrux em module-name e hellocrux em module-short-name.</p>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>Pressione o botão Finish e pronto! Um projeto Crux será criado e estará pronto para você começar a explorar. Na imagem abaixo podemos ver a estrutura do projeto criado:</p>
+
+                     <div class="figure" id="d5e79">
+                        <div class="figure-title">Figure 2.1. Estrutura Projeto Crux</div>
+                        <div class="figure-contents">
+
+                           <div>
+                              <img src="images/project-structure.jpg" alt="Estrutura Projeto Crux"/>
+                           </div>
+
+                        </div>
+                     </div>
+                     <br class="figure-break"/>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>Localize o arquivo HelloCrux.launch, na pasta raiz do projeto. Clique nele com o botão direito do mouse, selecione Run As e, em seguida, HelloCrux.</p>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>O console de depuração do GWT (DevMode) se abrirá. Quando habilitado, clique no botão Launch Default Browser. Sua aplicação será aberta em uma janela do navegador e se parecerá com essa:</p>
+
+                     <div class="figure" id="d5e86">
+                        <div class="figure-title">Figure 2.2. Projeto Crux em execução</div>
+                        <div class="figure-contents">
+
+                           <div>
+                              <img src="images/project-running.jpg" alt="Projeto Crux em execução"/>
+                           </div>
+
+                        </div>
+                     </div>
+                     <br class="figure-break"/>
+
+                  </li>
+                  <li class="listitem">
+
+                     <p>Parabéns, você criou seu primeiro projeto em Crux!</p>
+
+                  </li>
+               </ul>
+            </div>
+
+
+         </section>
+
+
+
+
+         <section class="chapter" id="chp_inst_conf">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">Chapter 3. Instalação e Configuração</h1>
                   </div>
                </div>
             </div>
@@ -278,93 +608,103 @@
                <ul>
                   <li>
                      <span class="sect1">
-                        <a href="#sec_Install">1. Install</a>
+                        <a href="#sec_nomesec">3.1. Via Maven Archetype</a>
+                     </span>
+                  </li>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_nomesec">3.2. Manualmente</a>
                      </span>
                   </li>
                </ul>
             </div>
-	
-  
-	
-            <section class="sect1" id="sec_Install">
+
+
+
+            <section class="sect1" id="sec_nomesec">
                <div class="titlepage">
                   <div>
                      <div>
-                        <h2 class="title" style="clear: both">1. Install</h2>
+                        <h2 class="title" style="clear: both">3.1. Via Maven Archetype</h2>
                      </div>
                   </div>
                </div>
-		
-	
-		
-               <p> Para instalar o Crux, siga os seguintes passos: </p>
-	
-		
-               <div class="itemizedlist">
-                  <ul class="itemizedlist" style="list-style-type: disc; ">
-                     <li class="listitem">
-				
-                        <p>Download the latest Crux release here</p>
-			
-                     </li>
-                     <li class="listitem">
-				
-                        <p>Unzip the archive into a folder you want. A folder named crux-x.x.x will be created.</p>
-			
-                     </li>
-                     <li class="listitem">
-				
-                        <p>Open a shell command window. Set crux-x.x.x as your current folder. </p>
-			
-                     </li>
-                     <li class="listitem">
-				
-                        <p>Be sure that your default JVM is the version 1.6 or higher (you can do this by running the command java -version)</p>
-			
-                     </li>
-                     <li class="listitem">
-				
-                        <p>Execute the start.cmd or start.sh file, according to your operating system. 
-				      The script will ask you about the location of the GWT jars. You will have two options: 
-				      1) Download them from the internet; 2) inform an existing GWT folder in your machine. 
-				      If you don't have the GWT 2.2 jars, select the first option. The next time you run the installer 
-				      script, this step will no longer be necessary.</p>
-			
-                     </li>
-                     <li class="listitem">
-				
-                        <p>The Crux QuickStart tool will start, opened in your default web browser:</p>
-				
-                        <div class="figure" id="d5e50">
-                           <div class="figure-title">Figure 2.1. Exemplo Imagem</div>
-                           <div class="figure-contents">
-					
-                              <div>
-                                 <img src="images/title.png" alt="Exemplo Imagem"/>
-                              </div>
-				
-                           </div>
-                        </div>
-                        <br class="figure-break"/>
-			
-                     </li>
-                  </ul>
+
+
+
+               <p> Blbalablabal </p>
+
+
+            </section>
+
+
+            <section class="sect1" id="sec_nomesec">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">3.2. Manualmente</h2>
+                     </div>
+                  </div>
                </div>
-	
-	
+
+
+
+               <p> Blbalablabal </p>
+
+
             </section>
 
 
          </section>
-   
-   
 
 
-         <section class="chapter" id="chp_nomechap">
+
+
+         <section class="chapter" id="chp_arquitetura">
             <div class="titlepage">
                <div>
                   <div>
-                     <h1 class="title">Chapter 3. Coding Client Side</h1>
+                     <h1 class="title">Chapter 4. Visão Arquitetura</h1>
+                  </div>
+               </div>
+            </div>
+
+
+
+            <p> MVC no Crux </p>
+
+
+            <p>When we talk about controllers residing on the client,
+	we are talking about faster applications. Unlike most existing Web MVC
+	frameworks, GWT-based solutions can manipulate the user interface where it
+	is cheapest to be done: directly and entirely within the browser, without
+	 accessing the server. This means you only call the server to send and receive
+	 business data. </p>
+
+
+            <div class="figure" id="d5e103">
+               <div class="figure-title">Figure 4.1.  Logo Crux </div>
+               <div class="figure-contents">
+
+                  <div>
+                     <img src="images/controller-client-side.gif" alt="Logo Crux"/>
+                  </div>
+
+               </div>
+            </div>
+            <br class="figure-break"/>
+
+
+         </section>
+
+
+
+
+         <section class="chapter" id="chp_view">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">Chapter 5. Camada de Visualização</h1>
                   </div>
                </div>
             </div>
@@ -373,174 +713,162 @@
                <ul>
                   <li>
                      <span class="sect1">
-                        <a href="#sec_nomesec">1. Building User Interface</a>
+                        <a href="#sec_sec01">5.1. Criando Formulário</a>
                      </span>
                   </li>
                   <li>
                      <span class="sect1">
-                        <a href="#sec_nomesec">2. Screen</a>
+                        <a href="#sec_sec01">5.2. Criando Screen</a>
                      </span>
                      <ul>
                         <li>
                            <span class="sect2">
-                              <a href="#sec_nomesec">2.1. Managing Events</a>
+                              <a href="#sec_sec01">5.2.1. Eventos da Screen</a>
                            </span>
                         </li>
                      </ul>
                   </li>
-               </ul>
-            </div>
-	
-  
-	
-            <section class="sect1" id="sec_nomesec">
-               <div class="titlepage">
-                  <div>
-                     <div>
-                        <h2 class="title" style="clear: both">1. Building User Interface</h2>
-                     </div>
-                  </div>
-               </div>
-		
-	
-		
-               <p> Blbalablabal </p>
-	
-	
-            </section>
-
-	
-            <section class="sect1" id="sec_nomesec">
-               <div class="titlepage">
-                  <div>
-                     <div>
-                        <h2 class="title" style="clear: both">2. Screen</h2>
-                     </div>
-                  </div>
-               </div>
-		
-	
-		
-               <p> Blbalablabal </p>
-	
-		
-               <section class="sect2" id="sec_nomesec">
-                  <div class="titlepage">
-                     <div>
-                        <div>
-                           <h3 class="title">2.1. Managing Events</h3>
-                        </div>
-                     </div>
-                  </div>
-			
-		
-			
-                  <section class="sect3" id="sec_nomesec">
-                     <div class="titlepage">
-                        <div>
-                           <div>
-                              <h4 class="title">2.1.1. Add Event Declaratively</h4>
-                           </div>
-                        </div>
-                     </div>
-				
-		
-				
-                     <p>To add an event declaratively, you must create a Controller and give it a name.
-				An event declaration must follow the pattern on ... . For example: </p>
-			 
-			
-                  </section>
-			
-                  <section class="sect3" id="sec_nomesec">
-                     <div class="titlepage">
-                        <div>
-                           <div>
-                              <h4 class="title">2.1.2. Add Event Programmatically</h4>
-                           </div>
-                        </div>
-                     </div>
-				
-		
-				
-                     <p>You can still use the default GWT mechanism to add handlers for 
-			      events programmatically, like: .</p>
-			
-                  </section>
-		  
-		
-               </section>
-		
-	
-            </section>
-
-
-         </section>  
-   
-   
-
-
-         <section class="chapter" id="chp_nomechap">
-            <div class="titlepage">
-               <div>
-                  <div>
-                     <h1 class="title">Chapter 4. Coding Server Side</h1>
-                  </div>
-               </div>
-            </div>
-            <div class="toc">
-               <div class="toc-title">Table of Contents</div>
-               <ul>
                   <li>
                      <span class="sect1">
-                        <a href="#sec_nomesec">1. Seção 01</a>
+                        <a href="#sec_sec01">5.3.  Managing Events</a>
                      </span>
                   </li>
                </ul>
             </div>
-	
-  
-	
-            <section class="sect1" id="sec_nomesec">
+
+
+
+            <p> Codificando a Camada de Visualisação </p>
+
+
+            <section class="sect1" id="sec_sec01">
                <div class="titlepage">
                   <div>
                      <div>
-                        <h2 class="title" style="clear: both">1. Seção 01</h2>
+                        <h2 class="title" style="clear: both">5.1. Criando Formulário</h2>
                      </div>
                   </div>
                </div>
-		
-	
-		
-               <div class="orderedlist">
-                  <ol class="orderedlist" type="1">
-                     <li class="listitem">
-		    
-                        <p>Add Event Declaratively</p>
-		   
-                     </li>
-                     <li class="listitem">
-		    
-                        <p>Add Event Programmatically.</p>
-		  
-                     </li>
-                  </ol>
+
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+            </section>
+
+
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">5.2. Criando Screen</h2>
+                     </div>
+                  </div>
                </div>
-	
-	
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+               <section class="sect2" id="sec_sec01">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h3 class="title">5.2.1. Eventos da Screen</h3>
+                        </div>
+                     </div>
+                  </div>
+
+
+                  <p>Crux Screen support the following events:</p>
+
+
+                  <div class="table" id="d5e118">
+                     <div class="table-title">Table 5.1. Sample Table</div>
+                     <div class="table-contents">
+
+
+                        <table style="border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; ">
+                           <colgroup>
+                              <col style="text-align: left; " class="c1"/>
+                              <col style="text-align: left; " class="c2"/>
+                           </colgroup>
+                           <thead>
+                              <tr>
+                                 <th style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Event</th>
+                                 <th style="text-align: left; border-bottom: 0.5pt solid ; ">Description</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr>
+                                 <td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Load</td>
+                                 <td style="text-align: left; border-bottom: 0.5pt solid ; ">Called when page loads. It is fired
+			        after the screen's building process is completed</td>
+                              </tr>
+                              <tr>
+                                 <td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Close</td>
+                                 <td style="text-align: left; border-bottom: 0.5pt solid ; ">Called when page is closed</td>
+                              </tr>
+                              <tr>
+                                 <td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Closing</td>
+                                 <td style="text-align: left; border-bottom: 0.5pt solid ; ">Called before close the page</td>
+                              </tr>
+                              <tr>
+                                 <td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Resize</td>
+                                 <td style="text-align: left; border-bottom: 0.5pt solid ; ">Called on page resize</td>
+                              </tr>
+                              <tr>
+                                 <td style="text-align: left; border-right: 0.5pt solid ; ">HistoryChanged</td>
+                                 <td style="text-align: left; ">Called when back button is pressed</td>
+                              </tr>
+                           </tbody>
+                        </table>
+
+                     </div>
+                  </div>
+                  <br class="table-break"/>
+
+
+               </section>
+
+
+            </section>
+
+
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">5.3.  Managing Events</h2>
+                     </div>
+                  </div>
+               </div>
+
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
             </section>
 
 
          </section>
-    
-    
 
 
-         <section class="chapter" id="chp_nomechap">
+
+
+         <section class="chapter" id="chp_controller">
             <div class="titlepage">
                <div>
                   <div>
-                     <h1 class="title">Chapter 5. Crux Tools</h1>
+                     <h1 class="title">Chapter 6. Camada de Controle</h1>
                   </div>
                </div>
             </div>
@@ -549,40 +877,233 @@
                <ul>
                   <li>
                      <span class="sect1">
-                        <a href="#sec_nomesec">1. Seção 01</a>
+                        <a href="#sec_sec01">6.1. Anotações</a>
+                     </span>
+                     <ul>
+                        <li>
+                           <span class="sect2">
+                              <a href="#sec_sec02">6.1.1. A anotação @Controller </a>
+                           </span>
+                        </li>
+                        <li>
+                           <span class="sect2">
+                              <a href="#sec_sec02">6.1.2. A anotação @Create</a>
+                           </span>
+                        </li>
+                        <li>
+                           <span class="sect2">
+                              <a href="#sec_sec02">6.1.3. A anotação @Expose</a>
+                           </span>
+                        </li>
+                     </ul>
+                  </li>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_sec01">6.2. Value Binding</a>
+                     </span>
+                  </li>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_sec01">6.3. Using Controllers on Screen</a>
+                     </span>
+                  </li>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_sec01">6.4. Communication Between Controllers</a>
+                     </span>
+                  </li>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_sec01">6.5. Validation</a>
+                     </span>
+                  </li>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_sec01">6.6. Parameters Binding</a>
                      </span>
                   </li>
                </ul>
             </div>
-	
-  
-	
-            <section class="sect1" id="sec_nomesec">
+
+
+
+            <p> Codificando a Controller </p>
+
+
+            <section class="sect1" id="sec_sec01">
                <div class="titlepage">
                   <div>
                      <div>
-                        <h2 class="title" style="clear: both">1. Seção 01</h2>
+                        <h2 class="title" style="clear: both">6.1. Anotações</h2>
                      </div>
                   </div>
                </div>
-		
-	
-		
-               <p> Blbalablabal </p>
-	
-	
+
+
+               <section class="sect2" id="sec_sec02">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h3 class="title">6.1.1. A anotação @Controller </h3>
+                        </div>
+                     </div>
+                  </div>
+
+
+                  <p>Any GWT widget can be used in user interface construction.
+			Consult the Widget Developer Manual for information about how to
+			use custom widgets with Crux.</p>
+
+
+               </section>
+
+
+               <section class="sect2" id="sec_sec02">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h3 class="title">6.1.2. A anotação @Create</h3>
+                        </div>
+                     </div>
+                  </div>
+
+
+
+                  <p>Any GWT widget can be used in user interface construction.
+			Consult the Widget Developer Manual for information about how to
+			use custom widgets with Crux.</p>
+
+
+               </section>
+
+
+               <section class="sect2" id="sec_sec02">
+                  <div class="titlepage">
+                     <div>
+                        <div>
+                           <h3 class="title">6.1.3. A anotação @Expose</h3>
+                        </div>
+                     </div>
+                  </div>
+
+
+
+                  <p>Any GWT widget can be used in user interface construction.
+			Consult the Widget Developer Manual for information about how to
+			use custom widgets with Crux.</p>
+
+
+               </section>
+
+
             </section>
 
 
-         </section>    
- 
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">6.2. Value Binding</h2>
+                     </div>
+                  </div>
+               </div>
 
 
-         <section class="chapter" id="chp_nomechap">
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+            </section>
+
+
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">6.3. Using Controllers on Screen</h2>
+                     </div>
+                  </div>
+               </div>
+
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+            </section>
+
+
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">6.4. Communication Between Controllers</h2>
+                     </div>
+                  </div>
+               </div>
+
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+            </section>
+
+
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">6.5. Validation</h2>
+                     </div>
+                  </div>
+               </div>
+
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+            </section>
+
+
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">6.6. Parameters Binding</h2>
+                     </div>
+                  </div>
+               </div>
+
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+            </section>
+
+
+         </section>
+
+
+
+
+         <section class="chapter" id="chp_model">
             <div class="titlepage">
                <div>
                   <div>
-                     <h1 class="title">Chapter 6. Project Layouts</h1>
+                     <h1 class="title">Chapter 7. Camada de Modelo</h1>
                   </div>
                </div>
             </div>
@@ -591,39 +1112,262 @@
                <ul>
                   <li>
                      <span class="sect1">
-                        <a href="#sec_nomesec">1. Seção 01</a>
+                        <a href="#sec_sec01">7.1. Writing Server-Side Code</a>
+                     </span>
+                  </li>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_sec01">7.2. Setup</a>
                      </span>
                   </li>
                </ul>
             </div>
-	
-  
-	
+
+
+
+            <p> Codificando o Modelo</p>
+
+
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">7.1. Writing Server-Side Code</h2>
+                     </div>
+                  </div>
+               </div>
+
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+            </section>
+
+
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">7.2. Setup</h2>
+                     </div>
+                  </div>
+               </div>
+
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+            </section>
+
+
+
+         </section>
+
+
+
+
+         <section class="chapter" id="chp_tools">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">Chapter 8. Ferramentas do Crux</h1>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <div class="toc-title">Table of Contents</div>
+               <ul>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_sec01">8.1. Schema Generator</a>
+                     </span>
+                  </li>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_sec01">8.2. Crux Compiler</a>
+                     </span>
+                  </li>
+               </ul>
+            </div>
+
+
+
+            <p> Blbalablabal </p>
+
+
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">8.1. Schema Generator</h2>
+                     </div>
+                  </div>
+               </div>
+
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+            </section>
+
+
+            <section class="sect1" id="sec_sec01">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">8.2. Crux Compiler</h2>
+                     </div>
+                  </div>
+               </div>
+
+
+
+               <p>Any GWT widget can be used in user interface construction.
+		Consult the Widget Developer Manual for information about how to
+		use custom widgets with Crux.</p>
+
+
+            </section>
+
+
+         </section>
+
+
+
+
+         <section class="chapter" id="chp_archetypes">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">Chapter 9. Archetypes</h1>
+                  </div>
+               </div>
+            </div>
+            <div class="toc">
+               <div class="toc-title">Table of Contents</div>
+               <ul>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_nomesec">9.1. Application A</a>
+                     </span>
+                  </li>
+                  <li>
+                     <span class="sect1">
+                        <a href="#sec_nomesec">9.2. Application B</a>
+                     </span>
+                  </li>
+               </ul>
+            </div>
+
+
+
             <section class="sect1" id="sec_nomesec">
                <div class="titlepage">
                   <div>
                      <div>
-                        <h2 class="title" style="clear: both">1. Seção 01</h2>
+                        <h2 class="title" style="clear: both">9.1. Application A</h2>
                      </div>
                   </div>
                </div>
-		
-	
-		
+
+
+
                <p> Blbalablabal </p>
-	
-	
+
+
             </section>
 
 
-         </section>    
+            <section class="sect1" id="sec_nomesec">
+               <div class="titlepage">
+                  <div>
+                     <div>
+                        <h2 class="title" style="clear: both">9.2. Application B</h2>
+                     </div>
+                  </div>
+               </div>
 
- 
- 
+
+
+               <p> Blbalablabal </p>
+
+
+            </section>
+
+         </section>
+
+
+
+
+         <section class="chapter" id="chp_lib_comp">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">Chapter 10. Biblioteca de Componentes</h1>
+                  </div>
+               </div>
+            </div>
+
+
+
+            <p> Biblioteca de Componentes - apresentar e link para doc </p>
+
+
+         </section>
+
+
+
+
+         <section class="chapter" id="chp_lib_manual">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">Chapter 11. Criação Componentes </h1>
+                  </div>
+               </div>
+            </div>
+
+
+
+            <p>  Criação Componentes  novo manual </p>
+
+
+         </section>
+
+
+
+
+         <section class="appendix" id="apd_lib_manual">
+            <div class="titlepage">
+               <div>
+                  <div>
+                     <h1 class="title">Appendix A.  FAQ </h1>
+                  </div>
+               </div>
+            </div>
+
+
+
+            <p>  FAQ do Crux </p>
+
+
+         </section>
+
+
 
       </div>
-				</div>
-								
+					
+					
+				</div>			
 			</div>
 		</div>
 	</gwt:HTMLPanel>

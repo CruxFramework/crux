@@ -1,0 +1,322 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	useController="mainController" title="Downloads"> 
+	
+	<gwt:HTMLPanel id="infoContainer">
+		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
+			<h2>FAQ</h2>
+			<ul>
+				<li>
+					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="Comunidade"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkAdvantages" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkSupportedPlatforms" href="https://groups.google.com/forum/#!forum/crux-framework" text="Forum"></crux:anchor>
+				</li>
+				<li class="on">
+					<crux:anchor id="linkSupportedFaq" href="#topMenuDisposal:faq" text="FAQ"></crux:anchor>
+				</li>
+			</ul>
+		</gwt:HTMLPanel>
+		<section class="container">	
+			<h2>Tem alguma dúvida básica? Confira a lista abaixo:</h2>	
+		</section>
+		<div class="container">
+		<gwt:stackPanel id="stackInfo">
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Mecanismo de templates inovador, que permite o reuso de páginas HTML</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml2">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml3">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml4">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml5">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml6">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml7">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml8">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml9">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml10">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml11">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml12">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml13">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml14">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml15">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml16">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml17">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml18">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml19">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml20">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml21">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml22">
+						<div class="stackContent">
+							<p>Text here</p>
+							<p>Text here</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+		</gwt:stackPanel>
+		</div>
+	</gwt:HTMLPanel>
+	
+</v:view>

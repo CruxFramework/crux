@@ -14,32 +14,27 @@
 					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="Comunidade"></crux:anchor>
 				</li>
 				<li>
-					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:whoUses" text="Quem Usa"></crux:anchor>
+					<crux:anchor id="linkAdvantages" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
 				</li>
 				<li>
-					<crux:anchor id="linkSupportedPlatforms" href="#topMenuDisposal:maintainer" text="Mantenedor"></crux:anchor>
+					<crux:anchor id="linkSupportedPlatforms" href="https://groups.google.com/forum/#!forum/crux-framework" text="Forum"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkSupportedFaq" href="#topMenuDisposal:faq" text="FAQ"></crux:anchor>
 				</li>
 			</ul>
 		</gwt:HTMLPanel>
-		<div class="bigText">
-			<div class="container">
-				<h2>O que é?</h2>	
-				<p>Crux é um framework para desenvolvimento de aplicações Web criado sobre o Google Web Toolkit (GWT) para tirar proveito da velocidade e a facilidade do desenvolvimento utilizando em HTML aliada com o poder e a versatilidade do GTW, fazendo do Crux um verdadeiro framework para Web 2.0.</p>
-				<p>No Crux, os desenvolvedores criam as páginas web de forma declarativa, descrevendo a tela utilizando HTML como linguagem, o que é bastante simples, além habilitar sua aplicação para rodar em todos os modernos navegadores, sem código adicional.</p>
-				<p>O Crux completa o GWT para uso corporativo estendendo seus componentes e agregando camadas para acesso a Serviços de Negócio em arquitetura SOA, Bancos de Dados e outras tecnologias presentes no ambiente corporativo. Com a combinação Crux / GWT as fronteiras entre aplicações corporativas e para internet desaparecem, habilitando utilizar todos os modernos recursos como Cloud Computing, hospedagem da sua aplicação no Google App Engine, onde sua aplicação utiliza toda a infra-estrutura da Google, sendo necessário apenas codificá-la e publicá-la, ou o vasto universo de APIs disponíveis na Internet (mapas, redes sociais, ações, condições do tempo, etc.).O Crux completa o GWT para uso corporativo estendendo seus componentes e agregando camadas para acesso a Serviços de Negócio em arquitetura SOA, Bancos de Dados e outras tecnologias presentes no ambiente corporativo. Com a combinação Crux / GWT as fronteiras entre aplicações corporativas e para internet desaparecem, habilitando utilizar todos os modernos recursos como Cloud Computing, hospedagem da sua aplicação no Google App Engine, onde sua aplicação utiliza toda a infra-estrutura da Google, sendo necessário apenas codificá-la e publicá-la, ou o vasto universo de APIs disponíveis na Internet (mapas, redes sociais, ações, condições do tempo, etc.).</p>
-			</div>
-			<div class="separator"></div>
-			<div class="container">
-				<h2>História</h2>
-				<p>Criado em 2008 a partir de uma <a href="http://www.dcc.ufmg.br/pos/cursos/defesas/980M.PDF" title="PDF" target="_blank" class="defaultLink">dissertação de mestrado na Universidade Federal de Minas Gerais (UFMG)</a> o Crux vem sendo evoluído desde então pela Sysmap e é usado em projetos com seus principais clientes.</p>
-				<p>Em 2013 o Crux, que já era um projeto Open Source, passou a ser mantido pela Triggo Labs, uma startup brasileira com foco no desenvolvimento de novas tecnologias e produtos web baseados no Crux.</p>
-				<p>Atualmente a <a href="#" class="defaultLink">Triggo Labs</a> está em busca de novos colaboradores independentes e empresas dispostas a participar do desenvolvimento do Crux Framework.</p>
-			</div>
-			<div class="separator"></div>
-			<div class="container">
-				<h2>Licensa</h2>
-				<p style="margin-bottom:0;">O Código-fonte do Crux Framework é aberto, e licensiado sobre a <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank" class="defaultLink">Apache License 2.0</a>.</p>
-			</div>
+		<div class="container">
+			<ul class="communityBlocks">
+				<li>
+					<h2>Aplicações com Crux</h2>
+					<p>Se você quer usar o Crux Framework para desenvolver aplicações Web crossdevice existe uma séria de recursos para que você possa aprender como usar o Crux Framework: ...</p>
+				</li>
+				<li>
+					<h2>Desenvolvimento do Crux</h2>
+					<p>Se você quer contribuir com desenvolvimento do Crux Framework ou de novos componentes para o Crux você pode baixar o repositório no google code (LINK AQUI) e enviar suas contribuições seguindo o formato (AQUI LINK do Manual) ...</p>
+				</li>
+			</ul>
 		</div>
 	</gwt:HTMLPanel>
 </v:view>

@@ -75,9 +75,9 @@ h1, h2, h3, h4, h5, h6{
 	background:transparent;
 	color: white;
 	font-weight: normal;
-	font-size: 13px;
-	padding-left: 30px;
-	padding-right: 30px;
+	font-size: 14px;
+	padding-left: 51px;
+	padding-right: 51px;
 	height: 46px;
 	cursor: pointer;
 	text-shadow:0 1px 1px rgba(0,0,0,0.44);
@@ -426,6 +426,7 @@ h2{
 	clear:right;
 	margin-top:35px;
 	border:none;
+	margin-right:1px;
 	border-radius:4px;
 	padding:8px 20px;
 	background:linear-gradient(#367381, #367988);
@@ -446,8 +447,7 @@ h2{
 	height:24px;
 	background:urlShowcaseTip no-repeat right top;
 	float:right;
-	margin-top:-41px;
-	margin-right:-1px;
+	margin-top:-62px;
 	font-weight:bold;
 	padding-right:1px;
 }
@@ -456,7 +456,9 @@ h2{
 	font-size:8px;
 	display:block;
 	-moz-transform:rotate(45deg);
-	text-align:right;
+	text-align:left;
+	margin-top:4px;
+	margin-left:8px;
 }
 
 @external whoUses, btnCrux, btnSeeAll, andOthers;
@@ -470,6 +472,25 @@ h2{
 	padding:10px 60px 10px 0;
 	color:#7f7f7f;
 }
+
+@external communityBlocks;
+.communityBlocks{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+.communityBlocks li{
+	float:left;
+	padding:0;
+	width:45%;
+	margin-right:10%;
+	text-align:justify;
+}
+.communityBlocks li:nth-child\(2\){
+	margin-right:0;
+}
+
+
 .btnCrux{
 	padding:9px 14px;
 	background:#77a400;
@@ -689,7 +710,7 @@ h2{
 	background:linear-gradient(45deg,#a3b0b6,#adb8bf);
 	padding:20px;
 	overflow:hidden;
-	height:82px;
+	height:60px;
 	-webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -699,13 +720,13 @@ h2{
 .subtitleBox h2{
 	font-size:25px;
 	color:#104b57;
-	margin:3px 0;
+	margin:-8px 0;
 	font-weight:lighter;
 	float:left;
 }
 .subtitleBox ul{
 	float:right;
-	margin:12px 0;
+	margin:2px 0;
 	font-size:14px;
 }
 .subtitleBox ul li{
@@ -982,30 +1003,35 @@ h2{
 	margin-top:9px;
 }
 
-@external manual, toc, chapter, programlisting, title;
+@external manual, toc, chapter, programlisting, title, navigation, sect2, list-of-figures, list-of-tables, toc-title, table-contents, appendix;
 .manual{
 	position:relative;
 }
-.manual .toc{
-	position:absolute;
-	padding:10px;
-	left:0;
-	top:0;
-	border-radius:4px;
-	background:rgba(0,0,0,0.2);
+.manual .toc, .manual .list-of-figures, .manual .list-of-tables{
+	 float:left;
+	 padding:10px;
+	 left:0;
+	 top:0;
+	 border-radius:4px;
+	 background:rgba(0,0,0,0.2);
+	 clear:left;
+	 margin-bottom:10px;
 }
 .manual .toc li{
 	padding:5px 0;	
 }
 .manual .toc li a:hover{
-	-moz-transform:scale(1.1);
-	-moz-transition:all 0.2s linear;
+	/*a:hover aqui*/
 }
 .manual section.chapter{
-	margin-left:280px;
+	margin-left:240px;
 	border-bottom:1px solid rgba(0,0,0,0.2);
 	box-shadow:0 2px 0 rgba(0,0,0,0.05);
 	padding-bottom:10px;
+}
+.manual section.chapter:last-child{
+	border-bottom:none;
+	box-shadow:none;
 }
 pre.programlisting{
 	text-wrap:wrap;
@@ -1027,4 +1053,53 @@ pre.programlisting{
 .manual h2.title{
 	color:#222;
 	font-size:17px;
+}
+.manual .navigation{
+	position:absolute;
+	top:0;
+	left:0;
+	max-width:200px;
+}
+.manual .toc-title{
+	font-weight:bold;
+	border-bottom:1px solid rgba(0,0,0,0.1);
+	padding-bottom:8px;
+}
+.manual section.chapter .toc{
+	width:100%;
+}
+.manual .table-contents table{
+	border-radius:5px;
+	border:none !important;
+	width:100%;
+	margin-top:15px;
+	background:#f5f5f5;
+	box-shadow:0 1px 5px rgba(0,0,0,0.1);
+	color:#444;
+}
+.manual .table-contents table tr{
+    border:none !important;
+}
+.manual .table-contents table tr td{
+	padding:5px 4px;
+	border:1px solid #999 !important;
+}
+.manual .table-contents table tr th{
+    padding:8px 4px;
+    border:1px solid #999 !important;
+    color:#222;
+    background:#eaeaea;
+    box-shadow:0 -2px 0 rgba(0,0,0,0.05) inset;
+}
+.manual .table-contents table tr:hover td{
+    background:#fff7b1;
+}
+.manual .sect2{
+	padding-left:40px;
+}
+.manual .navigation ul{
+    padding-left:15px;
+}
+.manual section.chapter.appendix{
+	background:red;
 }

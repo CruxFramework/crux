@@ -37,7 +37,7 @@
 						</div>
 					</li>
 					<li class="liLast">
-						<h2>Últimas do Blog</h2>
+						<h2>Posts do Blog</h2>
 						<div class="greenBlock">
 							<crux:rssPanel id="lastBlogEntries" title="" entryTitleStyleName="box" maxTitleSize="45" />
 						</div>
@@ -45,6 +45,9 @@
 					<div class="clear"></div>
 				</ul>
 			</div>
+			
+			<!--
+						
 			<div class="separator"></div>
 			<div class="container">
 				<h2 style="position:relative;">Quem usa</h2>
@@ -67,6 +70,7 @@
 					</li>
 				</ul>
 			</div>
+			-->
 		</gwt:HTMLPanel>
 	
 </v:view>
