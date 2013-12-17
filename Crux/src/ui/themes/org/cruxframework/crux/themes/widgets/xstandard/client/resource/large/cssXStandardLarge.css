@@ -74,6 +74,7 @@ DIV, INPUT, BUTTON
 .crux-FormDisplay .formEntryData, .crux-FormDisplay .formEntryLabel
 {
 	padding-bottom: 10px;
+	padding-right: 20px;
 }
 
 @external crux-MenuTabsDisposal, menuTabsSplitPanel, menuEntriesContainer, menuPanel, menuEntry;
@@ -615,8 +616,8 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
     border-radius:3px;
 }
 
-@external crux-FlatDialog, dialogGlass, popupContent, dialogTitleBodySplit, dialogTopBar, dialogTopBarDragHandle, dialogTitle, dialogCloseButton, dialogBody, dialogResizer;  
-.crux-FlatDialog
+@external crux-Dialog, dialogGlass, popupContent, dialogTitleBodySplit, dialogTopBar, dialogTopBarDragHandle, dialogTitle, dialogCloseButton, dialogBody, dialogResizer;  
+.crux-Dialog
 {
 	background-color: #FFF;
 	border-radius: 3px;
@@ -628,14 +629,14 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	background-color: rgba(0, 0, 0, 0.2);
 	-webkit-user-select: none;
 }
-.crux-FlatDialog .dialogTitleBodySplit
+.crux-Dialog .dialogTitleBodySplit
 {
 	width: inherit;
 	height: inherit;
 	position: relative;
 	-webkit-user-select: none;
 }
-.crux-FlatDialog .dialogTopBar
+.crux-Dialog .dialogTopBar
 {
 	position: absolute;
 	padding-top: 10px;
@@ -647,7 +648,7 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	z-index: 1;
 	-webkit-user-select: none;
 }
-.crux-FlatDialog .dialogTopBarDragHandle
+.crux-Dialog .dialogTopBarDragHandle
 {
 	position: absolute;
 	top: 0px;
@@ -658,14 +659,14 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	cursor: move;
 	-webkit-user-select: none;
 }
-.crux-FlatDialog .dialogTitle
+.crux-Dialog .dialogTitle
 {
 	color: #4496C6;
 	text-align: center;
 	font-size: 18px;
 	-webkit-user-select: none;
 }
-.crux-FlatDialog .dialogCloseButton
+.crux-Dialog .dialogCloseButton
 {
 	position: absolute;
 	right: 2px;
@@ -675,14 +676,14 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	cursor: pointer;
 	-webkit-user-select: none;
 }
-.crux-FlatDialog .dialogCloseButton:after 
+.crux-Dialog .dialogCloseButton:after 
 {
 	content: "X";
 	color: #4496C6;
 	font-size: 18px;
 	-webkit-user-select: none;
 }
-.crux-FlatDialog .dialogBody
+.crux-Dialog .dialogBody
 {
 	width: inherit;
 	height: literal("calc(100% - 40px)");
@@ -693,13 +694,13 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	top: 40px;
 }
 
-.crux-FlatDialog .popupContent
+.crux-Dialog .popupContent
 {
 	height: 100%;
 	width: 100%;
 }
 
-.crux-FlatDialog .dialogResizer
+.crux-Dialog .dialogResizer
 {
 	position: absolute;
 	height: 12px;
@@ -776,4 +777,55 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	box-shadow: 0px 0px 20px rgba(161,202,82,0.7);
 	-webkit-animation: crux-InfinityProgressBarAnimation 2s linear infinite;
 	animation: crux-InfinityProgressBarAnimation 2s linear infinite;
+}
+
+
+@external crux-FlatMessageBox, crux-FlatMessageBox-info, crux-FlatMessageBox-success, crux-FlatMessageBox-warn, crux-FlatMessageBox-error; 
+.crux-FlatMessageBox
+{
+	max-width: 80%;
+	min-width: 500px;
+	height: 200px;
+}
+.crux-FlatMessageBox .messageBoxContents
+{
+	margin-left: 20px;
+	margin-right: 20px;
+	text-align: center;
+}
+.crux-FlatMessageBox .crux-Button
+{
+	
+}
+.crux-FlatMessageBox-success .gwt-Label
+{
+	color: #517A02;	
+}
+.crux-FlatMessageBox-info .gwt-Label
+{
+	color: #4c6879;	
+}
+.crux-FlatMessageBox-warn .gwt-Label
+{
+	color: #816A02;	
+}
+.crux-FlatMessageBox-warn .gwt-Label
+{
+	color: #912A00;	
+}
+.crux-FlatMessageBox-info .crux-Button
+{
+	color: #4496C6;	
+}
+.crux-FlatMessageBox-success .crux-Button
+{
+	color: #517A02;	
+}
+.crux-FlatMessageBox-warn .crux-Button
+{
+	color: #816A02;	
+}
+.crux-FlatMessageBox-error .crux-Button
+{
+	color: #912A00;	
 }

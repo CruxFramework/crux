@@ -38,7 +38,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	
 	public AbstractDialogBox(boolean movable, boolean resizable, boolean closable) 
 	{
-		setStyleName("crux-FlatDialog");
+		setStyleName("crux-Dialog");
 		setGlassEnabled(true);
 		setGlassStyleName("dialogGlass");
 

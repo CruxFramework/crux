@@ -17,6 +17,7 @@ public class ProgressBox extends AbstractDialogBox
 	{
 		super(true, false, false);
 		addStyleName("crux-ProgressBox");
+		setWidget(createInfiniteProgressBar());
 	}
 	
 	/**
@@ -36,7 +37,6 @@ public class ProgressBox extends AbstractDialogBox
 	{
 		ProgressBox progressDialog = new ProgressBox(); 
 		progressDialog.setMessage(message);
-		progressDialog.setWidget(createInfiniteProgressBar());
 		progressDialog.show();
 		progressDialog.center();
 		return progressDialog;
@@ -46,7 +46,7 @@ public class ProgressBox extends AbstractDialogBox
 	 * Creates a progress bar animation to be inserted in progress box
 	 * @return
 	 */
-	private static Widget createInfiniteProgressBar() 
+	private Widget createInfiniteProgressBar() 
 	{
 		FlowPanel bar = new FlowPanel();
 		bar.setStyleName("crux-InfinityProgressBar");
