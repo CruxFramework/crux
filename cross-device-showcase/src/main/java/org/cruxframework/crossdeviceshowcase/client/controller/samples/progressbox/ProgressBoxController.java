@@ -9,8 +9,9 @@ import com.google.gwt.user.client.Timer;
 @Controller("progressBoxController")
 public class ProgressBoxController 
 {
+	private static int DURATION = 4;
 	private ProgressBox progress;
-	private int timeLeftToHide = 4;
+	private int timeLeftToHide = DURATION;
 	private Timer timer;	
 
 	@Expose
@@ -18,7 +19,7 @@ public class ProgressBoxController
 	{
 		progress = ProgressBox.show("");		
 		updateTitle();
-		progress.setWidth("240px");
+		progress.setWidth("300px");
 		
 		timer = new Timer()
 		{
@@ -30,7 +31,6 @@ public class ProgressBoxController
 				if(timeLeftToHide == 0)
 				{
 					hideProgress();
-					timer.cancel();
 				}
 				else
 				{
@@ -44,11 +44,13 @@ public class ProgressBoxController
 
 	private void updateTitle()
 	{
-		progress.setMessage("Esta mensagem desaparecerá em " + timeLeftToHide + " segundos");
+		progress.setMessage("Aguarde " + timeLeftToHide + " segundos");
 	}
 	
 	private void hideProgress()
 	{
 		progress.hide();
+		timer.cancel();
+		timeLeftToHide = DURATION;
 	}
 }
