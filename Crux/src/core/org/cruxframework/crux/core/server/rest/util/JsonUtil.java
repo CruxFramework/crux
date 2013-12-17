@@ -15,8 +15,11 @@
  */
 package org.cruxframework.crux.core.server.rest.util;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -27,9 +30,14 @@ import org.codehaus.jackson.map.ObjectMapper.DefaultTypeResolverBuilder;
 import org.codehaus.jackson.map.ObjectMapper.DefaultTyping;
 import org.codehaus.jackson.map.ObjectReader;
 import org.codehaus.jackson.map.ObjectWriter;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.SerializationConfig.Feature;
+import org.codehaus.jackson.map.introspect.BasicBeanDescription;
 import org.codehaus.jackson.map.jsontype.TypeResolverBuilder;
+import org.codehaus.jackson.map.ser.BeanPropertyWriter;
+import org.codehaus.jackson.map.ser.BeanSerializerFactory;
 import org.codehaus.jackson.type.JavaType;
+import org.cruxframework.crux.core.shared.json.annotations.JsonIgnore;
 import org.cruxframework.crux.core.shared.json.annotations.JsonSubTypes;
 import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.ClassUtils.PropertyInfo;
@@ -78,12 +86,14 @@ public class JsonUtil
 				if(defaultMapper == null)
 				{
 					defaultMapper = new ObjectMapper();
+					defaultMapper.setSerializerFactory(new CruxSerializerFactory());
 					subTypeAwareMapper = new ObjectMapper();
 					TypeResolverBuilder<?> builder = new SubTypeResolverBuilder();
 					builder = builder.init(JsonTypeInfo.Id.CLASS, null);
 					builder = builder.inclusion(JsonTypeInfo.As.PROPERTY);
 					builder = builder.typeProperty(JsonSubTypes.SUB_TYPE_SELECTOR);			
 					subTypeAwareMapper.setDefaultTyping(builder);
+					subTypeAwareMapper.setSerializerFactory(new CruxSerializerFactory());
 				}
 			}
 			finally
@@ -157,5 +167,44 @@ public class JsonUtil
 			
 		    return false;
 		}
+	}
+	
+	private static class CruxSerializerFactory extends BeanSerializerFactory
+	{
+		protected CruxSerializerFactory()
+        {
+	        super(new BeanSerializerFactory.ConfigImpl());
+        }
+
+		@Override
+		protected List<BeanPropertyWriter> filterBeanProperties(SerializationConfig serializationConfig, 
+																BasicBeanDescription beanDescription, 
+																List<BeanPropertyWriter> props)
+		{
+			//filter out standard properties (e.g. those marked with @JsonIgnore)
+	        props = super.filterBeanProperties(serializationConfig, beanDescription, props);
+
+	        Class<?> beanClass = beanDescription.getBeanClass();
+			//filter out standard properties (e.g. those marked with @org.cruxframework.crux.core.shared.json.annotations.JsonIgnore)
+	        for (Iterator<BeanPropertyWriter> iter = props.iterator(); iter.hasNext();) 
+	        {
+	        	BeanPropertyWriter beanPropertyWriter = iter.next();
+	        	String getterMethodName = ClassUtils.getGetterMethod(beanPropertyWriter.getName(), beanClass);
+	        	try
+                {
+	                Method getterMethod = beanClass.getMethod(getterMethodName);
+		        	if (getterMethod != null && getterMethod.isAnnotationPresent(JsonIgnore.class)) 
+		            {
+		                iter.remove();
+		            }
+                }
+	        	catch (Exception e)
+	        	{
+	        		//ignore property
+	        	}
+	        }
+
+	        return props;
+	    }		
 	}
 }

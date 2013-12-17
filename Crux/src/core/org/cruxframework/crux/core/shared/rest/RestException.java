@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.core.shared.rest;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.cruxframework.crux.core.shared.json.annotations.JsonIgnore;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -47,7 +47,6 @@ public class RestException extends Exception
 
 	@Override
 	@JsonIgnore
-	@org.cruxframework.crux.core.shared.json.annotations.JsonIgnore
 	public Throwable getCause()
 	{
 	    return super.getCause();
@@ -55,7 +54,6 @@ public class RestException extends Exception
 	
 	@Override
 	@JsonIgnore
-	@org.cruxframework.crux.core.shared.json.annotations.JsonIgnore
 	public StackTraceElement[] getStackTrace()
 	{
 	    return super.getStackTrace();
@@ -63,7 +61,6 @@ public class RestException extends Exception
 	
 	@Override
 	@JsonIgnore
-	@org.cruxframework.crux.core.shared.json.annotations.JsonIgnore
 	public void setStackTrace(StackTraceElement[] stackTrace)
 	{
 	    super.setStackTrace(stackTrace);
@@ -71,7 +68,6 @@ public class RestException extends Exception
 
 	@Override
 	@JsonIgnore
-	@org.cruxframework.crux.core.shared.json.annotations.JsonIgnore
 	public String getLocalizedMessage()
 	{
 	    return super.getLocalizedMessage();
