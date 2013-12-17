@@ -13,7 +13,7 @@
 			<crux:button id="showDialogBtn" text="Exibir Dialog Box" onSelect="dialogBoxController.openDialog"/>
 		</crux:styledPanel>
 		
-		<showcase:info title="StyledPanel">
+		<showcase:info title="DialogBox">
 			<showcase:description>
 				<p>
 					DialogBox são janelas flutuantes, que se sobrepõem à janela principal para realizar algum tipo 

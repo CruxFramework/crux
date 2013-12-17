@@ -13,7 +13,7 @@
 			<crux:button id="showProgressBtn" text="Exibir Progress Box" onSelect="progressBoxController.showProgress"/>
 		</crux:styledPanel>
 		
-		<showcase:info title="StyledPanel">
+		<showcase:info title="ProgressBox">
 			<showcase:description>
 				<p>
 					ProgressBox é um componente flutuante, usado para para indicar ao usuário que algum processamento 
