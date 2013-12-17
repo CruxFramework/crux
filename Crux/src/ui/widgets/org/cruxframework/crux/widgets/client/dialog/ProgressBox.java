@@ -16,7 +16,7 @@ public class ProgressBox extends AbstractDialogBox
 	public ProgressBox()
 	{
 		super(true, false, false);
-		addStyleName("crux-ProgressBox");
+		setStyleName("crux-ProgressBox");
 		setWidget(createInfiniteProgressBar());
 	}
 	

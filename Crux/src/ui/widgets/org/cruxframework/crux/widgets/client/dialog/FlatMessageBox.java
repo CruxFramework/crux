@@ -28,7 +28,7 @@ public class FlatMessageBox extends AbstractDialogBox
 	public FlatMessageBox()
 	{
 		super(true, true, false);
-		addStyleName("crux-FlatMessageBox");
+		setStyleName("crux-FlatMessageBox");
 		Widget content = createMessagePanel();
 		setWidget(content);
 	}
