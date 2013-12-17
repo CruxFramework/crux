@@ -46,6 +46,7 @@
 			<crux:menuSection label="Elementos de Formulário"/>
 			<crux:menuEntry label="File Uploader" targetView="fileUploader"/>
 			<crux:menuEntry label="Masked Label" targetView="maskedLabel"/>
+			<crux:menuEntry label="Masked Text Box" targetView="maskedTextBox"/>
 			<crux:menuSection label="Elementos de Imagem"/>
 			<crux:menuEntry label="Slide Show" targetView="slideshow"/>
 			
