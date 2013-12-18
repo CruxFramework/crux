@@ -477,17 +477,22 @@ h2{
 .communityBlocks{
 	margin:0;
 	padding:0;
-	list-style:none;
 }
-.communityBlocks li{
+.communityBlocks > li{
 	float:left;
 	padding:0;
 	width:45%;
 	margin-right:10%;
 	text-align:justify;
+	list-style:none;
 }
 .communityBlocks li:nth-child\(2\){
 	margin-right:0;
+}
+
+.communityBlocks > li ul li{
+	padding:4px 0;
+	list-style:circle;
 }
 
 
