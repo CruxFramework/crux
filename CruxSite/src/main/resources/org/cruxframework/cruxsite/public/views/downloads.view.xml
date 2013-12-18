@@ -9,23 +9,24 @@
 	<gwt:HTMLPanel id="infoContainer">
 		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
 			<h2>Download</h2>
-			<gwt:label id="asd" text="Wdwd" />
+			<gwt:label id="asd" text="" />
 		</gwt:HTMLPanel>
 		<div class="bigText">
 			<div class="container">
-				<h2>MAVEN - Arquetype</h2>
-				<p>Baixar ...</p>
+				<h2>Baixar os JARs do Crux</h2>	
+				<p>Baixar os arquivos JAR do: <a href="http://crux-framework.googlecode.com/files/crux-4.0.1.zip" title="v50" target="_blank" class="defaultLink">Crux 5.0</a>.</p>
+				<p>Baixar as: <a href="https://code.google.com/p/crux-framework/downloads/list" title="antigo" target="_blank" class="defaultLink">versões anteriores</a>.</p>
 			</div>
 			<div class="separator"></div>
 			<div class="container">
-				<h2>JAR</h2>	
-				<p>Baixar via JAR</p>
+				<h2>MAVEN - Arquetype</h2>
+				<p>Para usar um : <a href="http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml" title="antigo" target="_blank" class="defaultLink">http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml</a> </p>
 			</div>
 			<div class="separator"></div>
 			<div class="container">
 				<h2>Download do código-fonte</h2>
-				<p>O Crux Framework é Open-source. Isso significa que você é livre para
-baixar e utilizar ou alterar o código a sua maneira.<br />Link para o Google Code: https://code.google.com/p/crux-framework.</p>
+				<p>O Crux Framework é Open-source. Isso significa que você é livre para baixar e utilizar ou alterar o código a sua maneira. <br /> 
+				     <a href="https://crux-framework.googlecode.com/svn/trunk/Crux/" title="antigo" target="_blank" class="defaultLink">Repositório Trunk</a>.</p>
 			</div>
 		</div>
 	</gwt:HTMLPanel>

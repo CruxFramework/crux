@@ -37,9 +37,10 @@
 						<ul class="successCasesResume">
 							<li>
 								<h4>Vivo</h4>
-								<p>Duis lectus nisi, aliquet sed orci eget, venenatis volutpat sem. Nam eu orci sed nulla aliquet ullamcorper.</p>
-								<p>Praesent tincidunt eu orci feugiat volutpat. Ut vitae purus iaculis, facilisis tellus ac, varius lacus. Donec dignissim felis vitae lorem sagittis, ut semper massa porttitor.</p>
+								<p>A Vivo é a maior empresa de telecomunicações do Brasil, com 91,9 milhões de clientes, de acordo com resultados do balanço trimestral (3T12). Atuante em todo o território nacional a empresa está presente em mais de 3,7 mil cidades.</p>
+								<p>O Crux Framework foi adotado pela Vivo como framework para o desenvolvimento do sistema de front-end utilizado nas lojas e call centers (Vivo 360°). <a href="http://www.dcc.ufmg.br/pos/cursos/defesas/980M.PDF" title="caseVivo" target="_blank" class="defaultLink">SAIBA MAIS</a>.</p>
 							</li>
+							<!-- 
 							<li>
 								<h4>Unimed</h4>
 								<p>Duis lectus nisi, aliquet sed orci eget, venenatis volutpat sem. Nam eu orci sed nulla aliquet ullamcorper.</p>
@@ -55,6 +56,7 @@
 								<p>Duis lectus nisi, aliquet sed orci eget, venenatis volutpat sem. Nam eu orci sed nulla aliquet ullamcorper.</p>
 								<p>Praesent tincidunt eu orci feugiat volutpat. Ut vitae purus iaculis, facilisis tellus ac, varius lacus. Donec dignissim felis vitae lorem sagittis, ut semper massa porttitor.</p>
 							</li>
+							 -->
 						</ul>
 						
 					</li>
