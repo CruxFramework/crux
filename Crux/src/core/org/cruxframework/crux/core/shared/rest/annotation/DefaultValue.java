@@ -21,6 +21,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Default value for a REST method parameter.
+ * <p>
+ * See the following example:
+ * <pre>
+ * ..
+ * {@code @}{@link GET}
+ * {@code @}{@link Path}("test")
+ * public String testOperation({@code @}{@link CookieParam}("cookieName") {@code @}{@link DefaultValue}("default") String value) {
+ *    return null;
+ * }
+ * </pre>
+ * </p>
+ * <p>
+ * The value "default" will be passed to the value parameter when the cookie cookieName is not present on the HTTP request.
  * 
  * @author Thiago da Rosa de Bustamante
  *

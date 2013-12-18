@@ -22,7 +22,24 @@ import java.lang.annotation.Target;
 
 
 /**
- * 
+ * Used to define the path that will be associated to a REST operation, or a class with operations.
+ * <p>
+ * See the following example:
+ * <pre>
+ * {@code @}{@link Path}("rest")
+ * public class MyRestService{
+ *    {@code @}{@link GET}
+ *    {@code @}{@link Path}("test/{param1}")
+ *    public String testOperation({@code @}PathParam("param1") String value) {
+ *       return null;
+ *    }
+ * }
+ * </pre>
+ * </p>
+ * <p>
+ * The method testOperation will answer for requests done to the URI http://{@code <yourdomain>/<context>}/rest/test/{@code <anythingYouPassHere>} 
+ * </p>
+ *  
  * @author Thiago da Rosa de Bustamante
  *
  */

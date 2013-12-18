@@ -48,8 +48,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Abstraction for the entire page. It contains all widgets, containers and 
- * datasources.
+ * Abstraction for the entire page. It references the root view and declare methods to 
+ * act on the entire application page.
  * @author Thiago da Rosa de Bustamante
  *
  */

@@ -22,6 +22,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * <p>CRUX INTERNAL INTERFACE. DO NOT USE IT DIRECTLY. Use one of {@code @}{@link GET}, 
+ * {@code @}{@link PUT}, {@code @}{@link POST}, or {@code @}{@link DELETE} annotations.</p>
+ *    
  * Associates the name of a HTTP method with an annotation. A Java method annotated
  * with a runtime annotation that is itself annotated with this annotation will
  * be used to handle HTTP requests of the indicated HTTP method. It is an error

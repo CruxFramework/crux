@@ -21,7 +21,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Used to map a REST method parameter to a path parameter on the HTTP request
+ * <p>
+ * See the following example:
+ * <pre>
+ * ..
+ * {@code @}{@link GET}
+ * {@code @}{@link Path}("test/{param1}")
+ * public String testOperation({@code @}PathParam("param1") String value) {
+ *    return null;
+ * }
+ * </pre>
+ * </p>
+ * <p>
+ * The parameter value will be bound to the fragment extracted from the requested path 
+ * to the server. 
+ * </p>
  * @author Thiago da Rosa de Bustamante
  *
  */
