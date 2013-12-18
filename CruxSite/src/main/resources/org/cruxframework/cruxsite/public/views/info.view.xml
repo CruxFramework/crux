@@ -31,26 +31,29 @@
 		<gwt:stackPanel id="stackInfo">
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Mecanismo de templates inovador, que permite o reuso de páginas HTML</h4>
+					<h4 class="stackTitle">Padrão de arquitetura MVC</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>O Crux oferece um modelo de desenvolvimento fácil e natural para o desenvolvimento de aplicações web, baseado 
+							no padrão de projetos MVC (Model View Controller).</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Desempenho imbatível</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml2">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>Se você quer um único motivo para utilizar o Crux, este é "Desempenho". O Crux gera código GWT para construção das telas,
+							garantindo que este seja escrito da maneira mais eficiente para o GWT.
+							 </p>
+							 <p>Além disso, diversas técnicas de otimização são implementadas de forma automática para o desenvolvedor, como renderização de 
+							 componentes na tela apenas quando estes se tornam necessários pela aplicação.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
@@ -62,255 +65,127 @@
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml3">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>O Crux suporta componentes adaptáveis a diferentes tipos de dispositivos. Não se trata aqui de componentes que criam um único 
+							HTML que seja capaz de se apresentar em diferentes dispositivos.</p>
+							<p>Trata-se de componentes que podem montar HTML completamente distintos (e de forma personalizável) para cada tipo de dispositivo
+							alvo, mas mantendo um mesmo contrato de uso, garantindo que a aplicação possa ter um único código fonte adaptável a múlitplos 
+							dispositivos.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Suporte a trabalho Offline</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml4">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>O Crux suporta, de maneira simples e automática, a criação de aplicações offline. Este suporte engloba o uso de 
+							caches de aplicação (baseado em ApplicationCaches do HTML), suporte a Bancos de Dados no cliente (utilizando IndexedDB ou 
+							Web SQL do HTML5), além de monitores de conectividade inteligentes.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Suporte a serviços REST</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml5">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>O Crux oferece suporte a elaboração e exposição de serviços REST, assim como à criação de clientes capazes de 
+							consumir serviços definidos dentro da própria aplicação ou externos a ela.</p>
+							<p>O suporte REST contempla recursos avançados para garantir uma performance superior, mesmo em ambientes 
+							distribuídos, assim como uma forma simples e transparente de definir clientes.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">IoC no cliente</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml6">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>O Crux fornece um container de IoC (Inversion of Control) capaz de ser utilizado na camada cliente da aplicação. Este suporta
+							a definição personalisada de escopos para as variáveis criadas, além de diversas outras funcionalidades.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Value Binding</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml7">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>Binding automático de valores entre arquivos de visão (xhtml) e objetos de dados.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">APIs HTML (File, etc)</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml8">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>Crux suporta APIS HTML5 modernas, como File, Canvas, XMLHttpRequest2, ApplicationCache, Database e muitas outras.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Autorização e controle de perfil</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml9">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>O Crux permite que se defina gerenciadores de perfis para controlar a visualização e edição de elementos das telas.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Templates</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml10">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>Crux suporta a criação de templates, que embrulham blocos de código da visão para reuso nas telas.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Suporte para criação de Google Gadgets</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml11">
+					<gwt:HTMLPanel id="stackHtml10">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>Crux suporta exportar sua aplicação como um google gadget.</p>
+							<p>Isto permite que ela possa ser executada em containers de gadgets, como Orkut, Google+, Yahoo, etc..</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Grande biblioteca de componentes</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml12">
+					<gwt:HTMLPanel id="stackHtml10">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml13">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml14">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml15">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml16">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml17">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml18">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml19">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml20">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml21">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml22">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>O crux fornece uma biblioteca grande de componentes ricos e flexíveis para criação de aplicações voltadas para todos 
+							os tipos de dispositivos.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
