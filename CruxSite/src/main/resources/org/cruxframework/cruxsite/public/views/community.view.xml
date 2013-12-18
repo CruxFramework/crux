@@ -24,17 +24,28 @@
 				</li>
 			</ul>
 		</gwt:HTMLPanel>
+		
 		<div class="container">
 			<ul class="communityBlocks">
 				<li>
-					<h2>Aplicações com Crux</h2>
-					<p>Se você quer usar o Crux Framework para desenvolver aplicações Web crossdevice existe uma séria de recursos para que você possa aprender como usar o Crux Framework: ...</p>
+					<h2>Desenvolvimento de Aplicações com Crux</h2>
+					<p>Se você irá usar o Crux Framework para desenvolver aplicações Web crossdevice existe uma séria de recursos para que você possa aprender como usar o Crux Framework: </p>
+					<ul class="communityItens">
+					    <li> Saiba Mais </li>
+						<li> QuickStart </li>
+						<li> Manual </li>
+					</ul>
 				</li>
 				<li>
-					<h2>Desenvolvimento do Crux</h2>
-					<p>Se você quer contribuir com desenvolvimento do Crux Framework ou de novos componentes para o Crux você pode baixar o repositório no google code (LINK AQUI) e enviar suas contribuições seguindo o formato (AQUI LINK do Manual) ...</p>
+					<h2>Desenvolvimento do Crux Framework</h2>
+					<p>Se você irá contribuir com desenvolvimento do Crux Framework ou de novos componentes para o Crux você pode baixar o repositório no google code e enviar suas contribuições pelos canais da Comunidade.</p>
+				    <ul class="communityItens">
+						<li> Download </li>
+						<li> Google Code </li>
+					</ul>
 				</li>
 			</ul>
 		</div>
+		
 	</gwt:HTMLPanel>
 </v:view>
