@@ -39,7 +39,7 @@
 					
 					<div class="clear"></div>
 					
-					<div class="showcaseTip"><b>v . 5</b></div>
+					<div class="showcaseTip"><b>v5</b></div>
 					
 				</div>
 				
@@ -70,36 +70,36 @@
 						<ul class="footerUl">
 							<li class="footerUlTitle">O Crux</li>
 							<li>
-								<crux:anchor id="linkOQueE" href="#" text="O que é?"></crux:anchor>
+								<crux:anchor id="linkOQueE" href="#topMenuDisposal:sobreocrux" text="O que é?"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkQuemUsa" href="#" text="Quem usa"></crux:anchor>
+								<crux:anchor id="linkQuemUsa" href="#topMenuDisposal:whoUses" text="Quem usa"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkMantenedor" href="#" text="Mantenedor"></crux:anchor>
+								<crux:anchor id="linkMantenedor" href="#topMenuDisposal:maintainer" text="Mantenedor"></crux:anchor>
 							</li>
 						</ul>
 						
 						<ul class="footerUl">
 							<li class="footerUlTitle">Saiba Mais</li>
 							<li>
-								<crux:anchor id="linkVantagens" href="#" text="Comparativo"></crux:anchor>
+								<crux:anchor id="linkVantagens" href="#topMenuDisposal:compare" text="Comparativo"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkExemplos" href="#" text="Manual"></crux:anchor>
+								<crux:anchor id="linkExemplos" href="#topMenuDisposal:manual" text="Manual"></crux:anchor>
 							</li>
 						</ul>
 						
 						<ul class="footerUl">
 							<li class="footerUlTitle">Comunidade</li>
 							<li>
-								<crux:anchor id="linkBlog" href="#" text="Blog"></crux:anchor>
+								<crux:anchor id="linkBlog" target="_blank" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkForum" href="#" text="Fórum"></crux:anchor>
+								<crux:anchor id="linkForum" target="_blank" href="https://groups.google.com/forum/#!forum/crux-framework" text="Fórum"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkFaq" href="#" text="FAQ"></crux:anchor>
+								<crux:anchor id="linkFaq" href="#topMenuDisposal:faq" text="FAQ"></crux:anchor>
 							</li>
 						</ul>
 						

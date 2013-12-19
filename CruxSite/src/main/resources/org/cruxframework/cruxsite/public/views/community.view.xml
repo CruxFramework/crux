@@ -14,10 +14,10 @@
 					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="Comunidade"></crux:anchor>
 				</li>
 				<li>
-					<crux:anchor id="linkAdvantages" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
+					<crux:anchor id="linkAdvantages" target="_blank" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
 				</li>
 				<li>
-					<crux:anchor id="linkSupportedPlatforms" href="https://groups.google.com/forum/#!forum/crux-framework" text="Forum"></crux:anchor>
+					<crux:anchor id="linkSupportedPlatforms" target="_blank" href="https://groups.google.com/forum/#!forum/crux-framework" text="Forum"></crux:anchor>
 				</li>
 				<li>
 					<crux:anchor id="linkSupportedFaq" href="#topMenuDisposal:faq" text="FAQ"></crux:anchor>
