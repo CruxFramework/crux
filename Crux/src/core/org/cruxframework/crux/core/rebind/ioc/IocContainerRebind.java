@@ -103,7 +103,7 @@ public class IocContainerRebind extends AbstractProxyCreator
 		try
 		{
 			srcWriter.println("public  "+className+" get"+className.replace('.', '_')+"("+Scope.class.getCanonicalName()+" scope, String subscope){");
-			JClassType type = context.getTypeOracle().getType(className);
+			JClassType type = JClassUtils.getType(context.getTypeOracle(), className);
 
 			IocConfigImpl<?> iocConfig = (IocConfigImpl<?>) configurations.get(className);
 			Class<?> providerClass = iocConfig.getProviderClass();
