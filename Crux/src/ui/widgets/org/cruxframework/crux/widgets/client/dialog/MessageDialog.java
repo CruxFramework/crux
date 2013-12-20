@@ -28,6 +28,8 @@ import org.cruxframework.crux.widgets.client.event.OkHandler;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -334,7 +336,8 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
     }
 
 	@Override
-	public void onOrientationChange() {
+	public void onOrientationChange() 
+	{
 		if(openedDialogBoxes == null)
 		{
 			return;
@@ -342,7 +345,15 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 		
 		for(int i=0; i<openedDialogBoxes.size(); i++)
 		{
-			openedDialogBoxes.get(i).center();
+			final int index = i;
+			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
+			{
+				@Override
+				public boolean execute() {
+					openedDialogBoxes.get(index).center();
+					return false;
+				}
+			}, 1000);
 		}
 	}
 }
