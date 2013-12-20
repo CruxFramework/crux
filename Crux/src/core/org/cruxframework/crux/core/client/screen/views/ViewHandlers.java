@@ -478,14 +478,15 @@ public class ViewHandlers
 	 * @param orientationHandler
 	 */
 	private static native void removeOrientationChangeHandler(JavaScriptObject orientationHandler) /*-{
-
-		var supportsOrientationChange = 'onorientationchange' in $wnd;
-		
-		if (supportsOrientationChange)
+		var orientationEvent = 
+			"onorientationchange" in $wnd ? "onorientationchange" :
+			"orientationchange"   in $wnd ? "orientationchange"   :
+			"ondeviceorientation" in $wnd ? "ondeviceorientation" :
+			"deviceorientation"   in $wnd ? "deviceorientation"   : null;
+		if (orientationEvent != null)
 		{
-			$wnd.removeEventListener("orientationchange", orientationHandler);
+			$wnd.removeEventListener(orientationEvent, orientationHandler);
 		}
-		
 	}-*/;
 	
 	/**
@@ -493,24 +494,56 @@ public class ViewHandlers
 	 * @return
 	 */
 	private static native JavaScriptObject attachOrientationChangeHandler(OrientationChangeHandler handler)/*-{
-		if (@org.cruxframework.crux.core.client.screen.views.View::isOrientationChangeSupported()())
-		{	
-			$wnd.previousOrientation = $wnd.orientation;
-			var checkOrientation = function()
-			{
-			    if($wnd.orientation !== $wnd.previousOrientation)
-			    {
-			        $wnd.previousOrientation = $wnd.orientation;
-		        	handler.@org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler::onOrientationChange()();
-			    }
-			};
-		
-			$wnd.addEventListener("orientationchange", checkOrientation, false);
-			
-			return checkOrientation;
+		if (! @org.cruxframework.crux.core.client.screen.views.View::isOrientationChangeSupported()())
+		{
+			return null;
 		}
 		
-		return null;
+		var attachEvent,
+			eventListener,
+			orientationHandler;
+	 
+		if("onorientationchange" in $wnd || "orientationchange" in $wnd)
+		{
+			attachEvent = "onorientationchange";
+			eventListener = "orientationchange";
+			orientationHandler = function() { handler.@org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler::onOrientationChange()(); };
+			
+		} else if("ondeviceorientation" in $wnd || "deviceorientation" in $wnd)
+		{
+			var delta = 15;
+			attachEvent = "ondeviceorientation";
+			eventListener = "deviceorientation";
+			orientationHandler = function(event) 
+			{
+				var position = Math.abs(event.gamma);
+				if( (position >= -delta) && (position <= delta) )
+				{
+					$wnd.orientation = 'horizontal';
+					if($wnd.orientation !== $wnd.previousOrientation)
+					{
+						$wnd.previousOrientation = $wnd.orientation;
+						handler.@org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler::onOrientationChange()();
+					}
+				} else if( (position >= (90 - delta) ) && (position <= (90 + delta) ) )
+				{
+					$wnd.orientation = 'vertical';
+					if($wnd.orientation !== $wnd.previousOrientation)
+					{
+						$wnd.previousOrientation = $wnd.orientation;
+						handler.@org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler::onOrientationChange()();
+					}
+				}
+			};
+		}
+	
+		if($wnd.attachEvent) 
+		{
+			$wnd.attachEvent(attachEvent, orientationHandler);
+		} else if($wnd.addEventListener) 
+		{
+			$wnd.addEventListener(eventListener, orientationHandler, false);
+		}
 	}-*/;
 	
 	/**

@@ -417,7 +417,10 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	 * @return true is this page supports orientationChange and false otherwise.
 	 */
 	public static native boolean isOrientationChangeSupported()/*-{
-		return 'onorientationchange' in $wnd;
+		return "onorientationchange" in $wnd || 
+			   "orientationchange"   in $wnd ||
+			   "ondeviceorientation" in $wnd ||
+			   "deviceorientation"   in $wnd;
 	}-*/;
 	
 	@Override
