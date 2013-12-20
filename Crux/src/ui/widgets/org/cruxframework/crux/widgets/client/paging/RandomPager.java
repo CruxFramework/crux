@@ -58,7 +58,11 @@ public class RandomPager extends NavigationButtonsPager
 		
 		if(this.listBox.getItemCount() > 0)
 		{
+			listBox.setEnabled(true);
 			listBox.setSelectedIndex(getCurrentPage() - 1);
+		} else
+		{
+			listBox.setEnabled(false);
 		}
 	}
 
