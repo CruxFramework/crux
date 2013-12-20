@@ -36,6 +36,7 @@ import com.google.gwt.core.ext.typeinfo.JParameterizedType;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
+import com.google.gwt.core.ext.typeinfo.TypeOracle;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -120,8 +121,30 @@ public class JClassUtils
         {
 			throw new NoSuchFieldException(propertyPath);
         }
-    }		
+    }
 
+	public static JClassType getType(TypeOracle typeOracle, String className) throws NotFoundException
+	{
+		return getType(typeOracle, className, null);
+	}
+	
+	public static JClassType getType(TypeOracle typeOracle, String className, String viewName) throws NotFoundException
+	{
+		try
+		{
+			return typeOracle.getType(className);
+		} catch (Exception e)
+		{
+			String message = "Class ["+className+"] " + (viewName != null ? ", declared on view ["+viewName+"]," : "") + " could not be loaded. "
+			   + "\n Possible causes:"
+			   + "\n\t 1. Check if any type or subtype used by this class refers to another module and if this module is inherited in the .gwt.xml file."
+			   + "\n\t 2. Check if your class or its members belongs to a client package."
+			   + "\n\t 3. Check the versions of all your modules.";
+			
+			throw new NotFoundException(message, e);
+		}
+	}
+	
 	public static JType buildSetValueExpression(SourcePrinter out, JClassType dtoType, String propertyPath, String objectVariable, String value) 
 					throws NoSuchFieldException
     {
