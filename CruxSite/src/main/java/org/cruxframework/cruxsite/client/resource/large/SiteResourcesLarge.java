@@ -44,6 +44,9 @@ public interface SiteResourcesLarge extends ClientBundle
 	@Source("banner-fast.jpg")
 	ImageResource bannerFast();
 	
+	@Source("banner-productivity.jpg")
+	ImageResource bannerProductivity();
+	
 	@Source("banner-right-arrow.png")
 	ImageResource bannerRightArrow();
 	

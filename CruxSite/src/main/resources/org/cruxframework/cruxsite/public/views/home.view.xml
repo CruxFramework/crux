@@ -14,9 +14,7 @@
 				autoTransitionInterval="2000000" transitionDuration="400" width="100%">
 				<crux:banner image="${siteDeviceResources.bannerFast}" buttonLabel="" title="Desempenho" text="Aplicações rápidas e escaláveis. Baixo tráfego de rede, processamento cliente otimizado, e consumo de memória irrisório no servidor."/>
 				<crux:banner image="${siteDeviceResources.bannerCrossDevice}" buttonLabel="" title="Multi-Dispositivo!" text="Uma única aplicação que se adequa automaticamente a qualquer dispositivo, seja celular, tablet ou desktop."/>
-				<!-- 
-				<crux:banner image="${siteDeviceResources.bannerProductivity}" buttonLabel="" title="Produtividade" text="Codifique em Java e com o poder do GWT, mas com uma API de alto nível (Crux)."/>
-				-->
+				<crux:banner image="${siteDeviceResources.bannerProductivity}" buttonLabel="" title="Produtividade" text="Codifique em Java, com o poder do GWT, mas com uma API de alto nível provida pelo Crux."/>
 				
 			</crux:promoBanner>
 		</div>
