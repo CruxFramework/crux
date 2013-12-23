@@ -17,9 +17,9 @@
 		}
 		.thinButton
 		{
-			height: 24px;
+			height: 38px;
 			padding-top: 0px;
-			line-height: 24px;
+			line-height: 38px;
 			min-width: 0px;
 		}
 	</style>

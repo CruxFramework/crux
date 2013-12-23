@@ -21,6 +21,13 @@ public class MainController
 	public SVNServiceAsync service;
 	
 	@Expose
+	public void wellcome()
+	{
+		MenuTabsDisposal menuDisposal = (MenuTabsDisposal) Screen.get("menuDisposal");
+		menuDisposal.showView("wellcome");
+	}
+	
+	@Expose
 	public void showMenu()
 	{
 		MenuTabsDisposal menuDisposal = (MenuTabsDisposal) Screen.get("menuDisposal");

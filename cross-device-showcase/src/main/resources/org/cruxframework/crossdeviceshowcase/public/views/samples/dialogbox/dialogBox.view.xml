@@ -16,7 +16,7 @@
 		<showcase:info title="DialogBox">
 			<showcase:description>
 				<p>
-					DialogBox são janelas flutuantes, que se sobrepõem à janela principal para realizar algum tipo 
+					DialogBoxes são janelas flutuantes, que se sobrepõem à janela principal para realizar algum tipo 
 					de comunicação adicional com usuário. São bastante úteis para exibir porções de dados que ocupariam 
 					muito espaço na tela ou para tratar fluxos secundários nos casos de uso da aplicação.  					
 				</p>

@@ -1,0 +1,27 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:showcase="http://www.cruxframework.org/templates/showcase"
+	title="Boas Vindas"> 
+	
+	<center>
+		<div class="wellcomeText">
+			<h1>Bem Vindo ao ShowCase do Crux Framework 5!</h1>
+			<p>
+				O Crux Framework 5 provê uma série de componentes cross-device para aplicações Web. 
+				Neste showcase são apresentados exemplos de uso dos componentes oferecidos pelo Crux. 
+			</p>
+			<p>
+				Em cada exemplo é apresentado o componente, como é o seu funcionamento e sua apresentação na tela. 
+				Também está disponível para consulta o código fonte de cada exemplo.
+			</p>	
+			<p>	
+	 			Este site está em construção, a cada dia novos exemplos são elaborados e adicionados ao showcase.
+			</p>
+		</div>
+	</center>		
+	
+</v:view>
