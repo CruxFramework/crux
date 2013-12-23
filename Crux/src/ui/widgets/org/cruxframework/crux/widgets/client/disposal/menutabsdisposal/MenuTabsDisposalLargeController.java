@@ -211,4 +211,10 @@ public class MenuTabsDisposalLargeController extends DeviceAdaptiveController im
 		
 		return null;
 	}
+
+	@Override
+	public void showView(String targetView) 
+	{
+		showView(targetView, false);
+	}
 }

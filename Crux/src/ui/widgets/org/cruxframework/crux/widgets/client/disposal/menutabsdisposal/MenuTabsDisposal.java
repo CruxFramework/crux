@@ -38,4 +38,5 @@ public interface MenuTabsDisposal extends DeviceAdaptive
 	void addMenuSection(String label, String additionalStyleName);
 	void setHeaderContent(IsWidget widget);
 	String getCurrentView();
+	void showView(String targetView);
 }
