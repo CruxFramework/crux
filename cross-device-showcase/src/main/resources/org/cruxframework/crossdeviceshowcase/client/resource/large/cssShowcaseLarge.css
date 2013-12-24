@@ -69,13 +69,13 @@ BODY
 	background-image: url(img/logo-large.png);
 	background-position: center 10px;
 }
-
 @external layoutSectionIcon;
-@sprite .layoutSectionIcon {
-  gwt-image: "layoutSectionIcon";
+@url layoutSectionIconUrl layoutSectionIcon;
+.layoutSectionIcon {
+  background-image: layoutSectionIconUrl;
   background-position: 12px center;
+  background-repeat: no-repeat;
 }
-
 @external wellcomeText;
 .wellcomeText
 {
@@ -105,4 +105,36 @@ BODY
 	font-size: 16px;
 	-webkit-font-smoothing: antialiased;
 	
+}
+@external topBarIcon, siteIcon, projectIcon;
+.topBarIcon
+{
+	height: 25px;
+	box-sizing: border-box;
+	padding-left: 30px;
+	border: solid 1px transparent;
+	background-color: transparent;
+	color: #FFFFFF;
+	background-position: 0px center; 
+	cursor: pointer;
+	background-repeat: no-repeat;
+	margin-left: 20px;
+}
+.topBarIcon:hover
+{
+	text-decoration: underline;
+}
+@external siteIcon;
+@url siteIconUrl siteIcon;
+.siteIcon 
+{
+  background-image: siteIconUrl;
+  background-size: 22px;
+  background-position: 0px 0px;
+}
+@external projectIcon;
+@url projectIconUrl projectIcon;
+.projectIcon 
+{
+  background-image: projectIconUrl;
 }

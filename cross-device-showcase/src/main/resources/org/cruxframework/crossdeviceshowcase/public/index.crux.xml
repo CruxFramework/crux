@@ -39,7 +39,10 @@
 
 		<crux:menuTabsDisposal id="menuDisposal">
 			<crux:header>
-				<gwt:flowPanel id="topBarpanel"/>
+				<gwt:flowPanel id="topBarpanel">
+					<crux:button id="siteButton" text="site" onSelect="mainController.navigateToSite" styleName="topBarIcon siteIcon"/>
+					<crux:button id="projectButton" text="projeto" onSelect="mainController.navigateToProject" styleName="topBarIcon projectIcon"/>
+				</gwt:flowPanel>
 			</crux:header>
 			<crux:menuSection label="Elementos de Formulário"/>
 			<crux:menuEntry label="File Uploader" targetView="fileUploader"/>

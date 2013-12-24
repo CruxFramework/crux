@@ -13,6 +13,7 @@ import org.cruxframework.crux.widgets.client.disposal.menutabsdisposal.MenuTabsD
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 
 @Controller("mainController")
 public class MainController 
@@ -32,6 +33,18 @@ public class MainController
 	{
 		MenuTabsDisposal menuDisposal = (MenuTabsDisposal) Screen.get("menuDisposal");
 		menuDisposal.showMenu();
+	}
+	
+	@Expose
+	public void navigateToSite()
+	{
+		Window.open("http://www.cruxframework.org", "cruxSite", null);
+	}
+	
+	@Expose
+	public void navigateToProject()
+	{
+		Window.open("https://code.google.com/p/crux-framework", "cruxProject", null);
 	}
 	
 	@Expose
