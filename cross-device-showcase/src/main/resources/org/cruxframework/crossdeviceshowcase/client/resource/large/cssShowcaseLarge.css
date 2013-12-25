@@ -2,6 +2,8 @@ BODY
 {
 	background-color: #CCCCCC;
 	background-image: -webkit-linear-gradient(#EEEEEE,#CCCCCC);
+	background-image: -moz-linear-gradient(#EEEEEE,#CCCCCC);
+	background-image: linear-gradient(#EEEEEE,#CCCCCC);
 }
 
 @external valueLabel; 
@@ -34,6 +36,8 @@ BODY
 	background-color: transparent;
 	display: block;
 	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
 	height: 0px;
 	width: 0px;
 	border-bottom: solid 10px transparent;
@@ -47,6 +51,7 @@ BODY
 	color: #4c6879;
 	font-size: 14px;
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 .speechBubble H1
 {
@@ -56,6 +61,7 @@ BODY
 	margin-bottom: 10px;
 	padding-bottom: 10px;
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 	font-weight: normal;
 }
 
@@ -96,6 +102,7 @@ BODY
 	margin-bottom: 10px;
 	padding-bottom: 10px;
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 	font-weight: normal;
 }
 .wellcomeText P
@@ -104,13 +111,14 @@ BODY
 	color: #4c6879;
 	font-size: 16px;
 	-webkit-font-smoothing: antialiased;
-	
+	-moz-osx-font-smoothing: grayscale;
 }
 @external topBarIcon, siteIcon, projectIcon;
 .topBarIcon
 {
 	height: 25px;
 	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	padding-left: 30px;
 	border: solid 1px transparent;
 	background-color: transparent;

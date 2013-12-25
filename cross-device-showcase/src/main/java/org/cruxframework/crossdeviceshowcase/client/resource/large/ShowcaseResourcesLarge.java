@@ -19,7 +19,7 @@ import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.DataResource;
 
 /**
  * @author Gesse Dafe
@@ -32,5 +32,11 @@ public interface ShowcaseResourcesLarge extends ClientBundle
 	CssShowcaseLarge css();
 	
 	@Source("icon-layout.png")
-	ImageResource layoutSectionIcon();
+	DataResource layoutSectionIcon();
+	
+	@Source("icon-site.png")
+	DataResource siteIcon();
+	
+	@Source("icon-project.png")
+	DataResource projectIcon();
 }
