@@ -56,7 +56,7 @@ public class AntToMaven
 		if(StringUtils.isEmpty(file))
 		{
 			//throw new RuntimeException("Please inform a config file!");
-			file = "sampleInput.txt";
+			file = "src\\main\\resources\\org\\cruxframework\\cruxdevtools\\anttomaven\\sampleInput.txt";
 		}
 
 		String mavenHome = null;
