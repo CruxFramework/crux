@@ -110,7 +110,7 @@
 	<target name="generate-javadoc">
 		<mkdir dir="${javadoc.dir}"/>
 		<javadoc encoding="UTF-8" destdir="${javadoc.dir}" protected="true" source="1.5" classpathref="build.classpath" 
-			overview="${core.src.dir}/overview.html">
+			overview="${core.src.dir}/overview.html" useexternalfile="true">
 			<fileset dir="${core.src.dir}" />
 			<fileset dir="${module.src.dir}" />
 			<fileset dir="${gadget.src.dir}" />
