@@ -11,7 +11,7 @@
 			<h2>Comunidade</h2>
 			<ul>
 				<li class="on">
-					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="Comunidade"></crux:anchor>
+					<crux:anchor id="linkInfo" href="#topMenuDisposal:community" text="Comunidade"></crux:anchor>
 				</li>
 				<li>
 					<crux:anchor id="linkAdvantages" target="_blank" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
@@ -26,11 +26,11 @@
 		</gwt:HTMLPanel>
 		
 		<div class="container">
-			<ul class="communityBlocks">
+			<ul class="communityBlocks"  style="font-size: 15px;line-height: 27px;text-align: justify;">
 				<li>
 					<h2>Desenvolvimento de Aplicações com Crux</h2>
 					<p>Se você irá usar o Crux Framework para desenvolver aplicações Web crossdevice existe uma séria de recursos para que você possa aprender como usar o Crux Framework: </p>
-					<ul class="communityItens">
+					<ul class="communityItens" style="font-size: 15px;">
 					    <li> Saiba Mais </li>
 						<li> QuickStart </li>
 						<li> Manual </li>
@@ -39,9 +39,9 @@
 				<li>
 					<h2>Desenvolvimento do Crux Framework</h2>
 					<p>Se você irá contribuir com desenvolvimento do Crux Framework ou de novos componentes para o Crux você pode baixar o repositório no google code e enviar suas contribuições pelos canais da Comunidade.</p>
-				    <ul class="communityItens">
+				    <ul class="communityItens" style="font-size: 15px;">
 						<li> Download </li>
-						<li> Google Code </li>
+						<li>  <a href="http://code.google.com/p/crux-framework/source/checkout" title="GoogleCodeCrux" target="_blank" class="defaultLink">Source (Google Code)</a> </li>
 					</ul>
 				</li>
 			</ul>

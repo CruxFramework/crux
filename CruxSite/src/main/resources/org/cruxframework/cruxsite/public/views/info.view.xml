@@ -25,19 +25,25 @@
 			</ul>
 		</gwt:HTMLPanel>
 		<section class="container">	
-			<h2>Saiba mais sobre o que o Crux pode lhe proporcionar:</h2>	
+			<h2>Saiba mais sobre o que o Crux tem a oferecer:</h2>	
 		</section>
 		<div class="container">
 		<gwt:stackPanel id="stackInfo">
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Padrão de arquitetura MVC</h4>
+					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (<i>Cross-device</i>)</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml">
+					<gwt:HTMLPanel id="stackHtml3">
 						<div class="stackContent">
-							<p>O Crux oferece um modelo de desenvolvimento fácil e natural para o desenvolvimento de aplicações web, baseado 
-							no padrão de projetos MVC (Model View Controller).</p>
+							<p>O Crux suporta componentes adaptáveis a diferentes tipos de dispositivos
+							garantindo que a aplicação possa ter um único código fonte 
+							adaptável a múlitplos dispositivos. </p>
+							<p>Não se trata aqui de componentes que criam um único 
+							HTML que seja capaz de se apresentar em diferentes dispositivos.
+							Trata-se de componentes que podem montar HTML completamente distintos, 
+							e de forma personalizável, para cada tipo de dispositivo alvo, 
+							mas mantendo um mesmo contrato de uso. </p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
@@ -49,41 +55,56 @@
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml2">
 						<div class="stackContent">
-							<p>Se você quer um único motivo para utilizar o Crux, este é "Desempenho". O Crux gera código GWT para construção das telas,
-							garantindo que este seja escrito da maneira mais eficiente para o GWT.
+							<p>Se você quer um único motivo para utilizar o Crux, este é <b>Desempenho</b>. 
+							O compilador do Crux gera código no padrão do GWT para construção das telas
+							garantindo que este seja escrito da maneira mais eficiente para 
+							que o compilador GWT gere o código JavaScript.
 							 </p>
-							 <p>Além disso, diversas técnicas de otimização são implementadas de forma automática para o desenvolvedor, como renderização de 
-							 componentes na tela apenas quando estes se tornam necessários pela aplicação.</p>
+							 <p>Além disso, diversas técnicas de otimização são implementadas de forma 
+							 automática para o desenvolvedor, como: renderização de componentes na tela 
+							 apenas quando estes se tornam necessários pela aplicação; são eliminados trechos 
+							  desnecessários de código; são encurtados e fundidos loopings; 
+							  são descartadas variáveis ociosas.</p> 
+							  <p>Ele tamném gera JavaScript otimizado para cada 
+							  navegador, garantindo performance máxima ao usuário, independente da 
+							  plataforma que ele utilize.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Padrão de arquitetura <i>Model-View-Controller</i> (MVC) de forma simples</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml3">
+					<gwt:HTMLPanel id="stackHtml">
 						<div class="stackContent">
-							<p>O Crux suporta componentes adaptáveis a diferentes tipos de dispositivos. Não se trata aqui de componentes que criam um único 
-							HTML que seja capaz de se apresentar em diferentes dispositivos.</p>
-							<p>Trata-se de componentes que podem montar HTML completamente distintos (e de forma personalizável) para cada tipo de dispositivo
-							alvo, mas mantendo um mesmo contrato de uso, garantindo que a aplicação possa ter um único código fonte adaptável a múlitplos 
-							dispositivos.</p>
+							<p>O Crux oferece um modelo de desenvolvimento fácil e natural para o desenvolvimento 
+							de aplicações web, baseado no padrão de projetos MVC (<i>Model View Controller</i>).
+							Com o Crux é possível manter o <i>Controller</i> no cliente de forma simples e sem a 
+							necessidade de codificar em JavaScript, gerando o código em Java.</p>							
+							<p>	Desenvolva aplicações Web com simplicidade e coesão. Com o Crux, o abismo semântico entre 
+							cliente e servidor não existe mais. Você programa a estrutura da interface gráfica de 
+							maneira convencional, usando HTML e CSS.</p>
+							<p>Chamadas ao servidor são programadas de forma muito similar a chamadas Java locais. 
+							Os objetos de negócio existentes no lado servidor são acessíveis através de interfaces 
+							de invocação, que expõem métodos de negócio com assinaturas bem definidas, suportando 
+							parâmetros e devolvendo resultados fortemente tipados.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a trabalho Offline</h4>
+					<h4 class="stackTitle">Suporte a trabalho <i>Offline</i></h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml4">
 						<div class="stackContent">
-							<p>O Crux suporta, de maneira simples e automática, a criação de aplicações offline. Este suporte engloba o uso de 
-							caches de aplicação (baseado em ApplicationCaches do HTML), suporte a Bancos de Dados no cliente (utilizando IndexedDB ou 
-							Web SQL do HTML5), além de monitores de conectividade inteligentes.</p>
+							<p>O Crux suporta, de maneira simples e automática, a criação de aplicações <i>offline</i>. 
+							Este suporte engloba o uso de caches de aplicação, baseado em <i>ApplicationCaches</i> do HTML.
+							Suporte a Bancos de Dados no cliente, utilizando IndexedDB ou 
+							Web SQL do HTML5, além de monitores de conectividade inteligentes.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
@@ -105,37 +126,88 @@
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">IoC no cliente</h4>
+					<h4 class="stackTitle"><i>Inversion of Control</i> (IoC) no cliente</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml6">
 						<div class="stackContent">
-							<p>O Crux fornece um container de IoC (Inversion of Control) capaz de ser utilizado na camada cliente da aplicação. Este suporta
-							a definição personalisada de escopos para as variáveis criadas, além de diversas outras funcionalidades.</p>
+							<p>O Crux fornece um container de IoC (<i>Inversion of Control</i>) capaz de ser 
+							utilizado na camada cliente da aplicação. 
+							Este recurso suporta a definição personalisada de escopos para as variáveis criadas.</p>
+							<p>Com o Crux, um evento de tela é tratado no próprio navegador. 
+							Não é preciso enviar requisições AJAX ao servidor apenas para controlar a 
+							interface gráfica. 
+							É como se os <i>Controllers</i> da aplicação fossem deslocados para o lado cliente. 
+							O maior benefício dessa abordagem é que não existe a necessidade de manter o 
+							estado das telas sincronizado com o servidor. 
+							Dados em sessão, "ViewState" e inputs hidden são desnecessários,  
+							a troca de mensagens entre cliente e servidor trata apenas de dados.</p>				
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Value Binding</h4>
+					<h4 class="stackTitle"><i>Value Binding</i> automático</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml7">
 						<div class="stackContent">
-							<p>Binding automático de valores entre arquivos de visão (xhtml) e objetos de dados.</p>
+							<p><i>Binding</i> automático de valores entre arquivos de visão (xhtml) e objetos de dados.</p>
+							<!-- <p>Com o Crux é possível fazer a associação dos elementos de visão e os objetos de dados, e a partir deste ponto ...</p>  -->
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">APIs HTML (File, etc)</h4>
+					<h4 class="stackTitle">Suporte a APIs HTML</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml8">
 						<div class="stackContent">
-							<p>Crux suporta APIS HTML5 modernas, como File, Canvas, XMLHttpRequest2, ApplicationCache, Database e muitas outras.</p>
+							<p>O Crux suporta as APIs HTML 5 modernas como File, Canvas, XMLHttpRequest2, ApplicationCache, Database e muitas outras.</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Maior produtividade com criação de Templates</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml10">
+						<div class="stackContent">
+							<p>Crux suporta a criação de templates, que embrulham blocos de código da visão para reuso nas telas.</p>
+							<p>Aplicações com várias telas podem ser baseadas em templates que agilizam sua criação e manutenções futuras.</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Suporte para criação de Google Gadgets</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml10">
+						<div class="stackContent">
+							<p>O Crux permite que uma aplicação seja exportada como um google gadget.</p>
+							<p>Desta forma ela pode ser executada em containers de gadgets, como Orkut, Google+, Yahoo, entre outros.</p>
+						</div>
+					</gwt:HTMLPanel>
+				</gwt:widget>
+			</gwt:stackItem>
+			<gwt:stackItem>
+				<gwt:htmlTitle>
+					<h4 class="stackTitle">Uma rica biblioteca de componentes</h4>
+				</gwt:htmlTitle>
+				<gwt:widget>
+					<gwt:HTMLPanel id="stackHtml10">
+						<div class="stackContent">
+							<p>O crux fornece uma grande biblioteca componentes, rica e flexíveis para criação 
+							de aplicações voltadas para todos os tipos de dispositivos.</p>
+							<p>Sendo uma plataforma livre, novos componentes podem ser desenvolvidos e compartilhados 
+							pela própria comunidade de usuários do Crux.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
@@ -154,42 +226,21 @@
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Templates</h4>
+					<h4 class="stackTitle">Verificação em tempo de compilação de JavaScripts</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml10">
+					<gwt:HTMLPanel id="stackHtml9">
 						<div class="stackContent">
-							<p>Crux suporta a criação de templates, que embrulham blocos de código da visão para reuso nas telas.</p>
+							<p>	Aplicações Crux são sintática e semanticamente validadas em tempo de compilação. 
+							Isso significa que você detecta e corrige erros ainda na etapa de desenvolvimento, 
+							o que é muito mais barato e rápido.</p>
+							<p>Você também pode usar a IDE como o Eclipse para escrever o código da interface. 
+							Desfrute da robustez e da praticidade dos geradores e auto-completadores de 
+							código também no desenvolvimento do lado cliente da aplicação.</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte para criação de Google Gadgets</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml10">
-						<div class="stackContent">
-							<p>Crux suporta exportar sua aplicação como um google gadget.</p>
-							<p>Isto permite que ela possa ser executada em containers de gadgets, como Orkut, Google+, Yahoo, etc..</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Grande biblioteca de componentes</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml10">
-						<div class="stackContent">
-							<p>O crux fornece uma biblioteca grande de componentes ricos e flexíveis para criação de aplicações voltadas para todos 
-							os tipos de dispositivos.</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
+			</gwt:stackItem>			
 		</gwt:stackPanel>
 		</div>
 	</gwt:HTMLPanel>

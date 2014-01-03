@@ -26,35 +26,36 @@
 		</gwt:HTMLPanel>
 		<div class="bigText">
 			<div class="container">
-				<h2>Crux x Outros</h2>	
+				<h2>Crux frente a outros frameworks de mercado.</h2>	
+				<!-- 
 				<p>Saiba em quais pontos o Crux Framework se sobressai e como ele pode se tornar o framework ideal para o seu projeto.</p>
-				
+				 -->
 				<table class="compareTable">
 					<thead>
 						<tr>
-							<th>Funcionalidades</th>
-							<th>Crux + GWT</th>
-							<th>GWT (standalone)</th>
-							<th>JSF</th>
-							<th>Spring MVC</th>
+							<th style="width:52%;" >Recursos e Funcionalidades</th>
+							<th style="width:12%;">Crux 5</th>
+							<th style="width:12%;">GWT 2.5</th>
+							<th style="width:12%;">JSF 4</th>
+							<th style="width:12%;">Spring MVC 3</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>
-								Quantidade de Componentes
+							<td >
+								Baixo consumo de recursos no servidor: processamento, memória e rede.
 							</td>
 							<td>
 								<span class="star3"></span>
 							</td>
 							<td>
-								<span class="star2"></span>
+								<span class="star3"></span>
 							</td>
 							<td>
 								<span class="star1"></span>
 							</td>
 							<td>
-								<span class="star3"></span>
+								<span class="star1"></span>
 							</td>
 						</tr>
 						<tr>
@@ -62,13 +63,13 @@
 								Capacidade de Customização
 							</td>
 							<td>
-								<span class="star2"></span>
-							</td>
-							<td>
-								<span class="star1"></span>
+								<span class="star3"></span>
 							</td>
 							<td>
 								<span class="star2"></span>
+							</td>
+							<td>
+								<span class="star3"></span>
 							</td>
 							<td>
 								<span class="star3"></span>
@@ -93,10 +94,10 @@
 						</tr>
 						<tr>
 							<td>
-								Documentação
+								Documentação e Suporte
 							</td>
 							<td>
-								<span class="star1"></span>
+								<span class="star2"></span>
 							</td>
 							<td>
 								<span class="star2"></span>
@@ -106,6 +107,40 @@
 							</td>
 							<td>
 								<span class="star3"></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Suporte automático aos principais browsers: IE, Firefox, Chrome, Safari e Opera.
+							</td>
+							<td>
+								<span class="star3"></span>
+							</td>
+							<td>
+								<span class="star3"></span>
+							</td>
+							<td>
+								<span class="star1"></span>
+							</td>
+							<td>
+								<span class="star1"></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Multidispositivos (<i>crossdevice</i>) : desktops, tablets, smartphones e TVs.
+							</td>
+							<td>
+								<span class="star3"></span>
+							</td>
+							<td>
+								<span class="star2"></span>
+							</td>
+							<td>
+								<span class="star1"></span>
+							</td>
+							<td>
+								<span class="star1"></span>
 							</td>
 						</tr>
 						<tr>
@@ -113,57 +148,6 @@
 								Quantidade de Componentes
 							</td>
 							<td>
-								<span class="star3"></span>
-							</td>
-							<td>
-								<span class="star2"></span>
-							</td>
-							<td>
-								<span class="star1"></span>
-							</td>
-							<td>
-								<span class="star3"></span>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								Capacidade de Customização
-							</td>
-							<td>
-								<span class="star2"></span>
-							</td>
-							<td>
-								<span class="star1"></span>
-							</td>
-							<td>
-								<span class="star2"></span>
-							</td>
-							<td>
-								<span class="star3"></span>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								Facilidade na criação de novos componentes
-							</td>
-							<td>
-								<span class="star3"></span>
-							</td>
-							<td>
-								<span class="star2"></span>
-							</td>
-							<td>
-								<span class="star3"></span>
-							</td>
-							<td>
-								<span class="star2"></span>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								Documentação
-							</td>
-							<td>
 								<span class="star1"></span>
 							</td>
 							<td>
@@ -174,6 +158,23 @@
 							</td>
 							<td>
 								<span class="star3"></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Licença
+							</td>
+							<td>
+								<span>Apache 2.0</span>
+							</td>
+							<td>
+								<span>Apache 2.0</span>
+							</td>
+							<td>
+								<span>LGPL</span>
+							</td>
+							<td>
+								<span>Apache 2.0</span>
 							</td>
 						</tr>
 					</tbody>

@@ -11,7 +11,7 @@
 			<h2>FAQ</h2>
 			<ul>
 				<li>
-					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="Comunidade"></crux:anchor>
+					<crux:anchor id="linkInfo" href="#topMenuDisposal:community" text="Comunidade"></crux:anchor>
 				</li>
 				<li>
 					<crux:anchor id="linkAdvantages" target="_blank" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
@@ -25,75 +25,93 @@
 			</ul>
 		</gwt:HTMLPanel>
 		<section class="container">	
-			<h2>Tem alguma dúvida básica? Confira a lista abaixo:</h2>	
+			<h2>Tem alguma dúvida? Confira se já não existe uma resposta no FAQ abaixo:</h2>	
 		</section>
 		<div class="container">
 		<gwt:stackPanel id="stackInfo">
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Mecanismo de templates inovador, que permite o reuso de páginas HTML</h4>
+					<h4 class="stackTitle">Aplicações desenvolvidas com o Crux são crossdevice?</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>Sim. O Crux possui diversas widgets que estão preparadas para serem 
+							renderizadas nos dispositivos mais variados do mercado, e isso inclui até TVs! 
+							O framework também oferece um amplo canivete suíço para se implementar widgets 
+							crossdevices de forma simples e minimalista, evitando configurações repetitivas 
+							e desnecessárias. </p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Posso usar o Crux para fazer aplicações desktop?</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml2">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
+							<p>O Crux 5 oferece suporte a aplicações offline que, embora ainda devem estar 
+							contidas em um browser (ou um webview), podem ser executadas sem a necessidade de 
+							uma conexão ativa com o servidor, o que proporciona uma experiência semelhante a 
+							uma aplicação desktop. Ainda, existe uma forte corrente para trabalhar com 
+							aplicações nos moldes de uma aplicação desktop, mas renderizadas dentro 
+							de um navegador. </p>
+				        </div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Como consigo suporte para desenvolver usando o Crux?</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml3">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>Existem vários canais de suporte a comunidade, como o manual, 
+							o Forum e o próprio FAQ.</p>
+							<p>Empresas que desejam contratar um suporte corporativo para 
+							desenvolvimento usando o Crux Framework podem contactar a 
+							<a href="http://www.triggolabs.com/" title="Triggo" target="_blank" class="defaultLink">Triggo Labs</a>. </p> 
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Existe algum treinamento para o Crux 5?</h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml4">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>Será disponibilizado em breve o material de treinamento para o Crux 5. Aguardem</p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
 			<gwt:stackItem>
 				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
+					<h4 class="stackTitle">Ao compilar um módulo ou tentar abri-lo através do DevMode, o seguinte erro aparece em meu stacktrace: Class [CLASSNAME] , could not be loaded.  </h4>
 				</gwt:htmlTitle>
 				<gwt:widget>
 					<gwt:HTMLPanel id="stackHtml5">
 						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
+							<p>Possible causes: 1. Check if any type or subtype used by this class refers 
+							to another module and if this module is inherited in the .gwt.xml file.
+							2. Check if your class or its members belongs to a client package.
+							3. Check the versions of all your modules.</p>
+							<p>Isto acontece porque o GWT monta um mapa das classes que ele pode utilizar 
+							durante o deferred binding e, geralmente, quando há umas das possíveis causas 
+							descritas acima, a classe não é inserida neste mapa e o compilador do Crux não 
+							consegue encontrá-la. Para ajudar a identificar este problema, execute o compilador 
+							do Crux com o parâmetro "-strict" ... (continuar) </p>
 						</div>
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
+			
+			<!-- 
 			<gwt:stackItem>
 				<gwt:htmlTitle>
 					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
@@ -133,188 +151,9 @@
 					</gwt:HTMLPanel>
 				</gwt:widget>
 			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml9">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml10">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml11">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml12">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml13">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml14">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml15">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml16">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml17">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml18">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml19">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml20">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml21">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
-			<gwt:stackItem>
-				<gwt:htmlTitle>
-					<h4 class="stackTitle">Suporte a componentes Multi-Dispotivos (Cross-device)</h4>
-				</gwt:htmlTitle>
-				<gwt:widget>
-					<gwt:HTMLPanel id="stackHtml22">
-						<div class="stackContent">
-							<p>Text here</p>
-							<p>Text here</p>
-						</div>
-					</gwt:HTMLPanel>
-				</gwt:widget>
-			</gwt:stackItem>
+			
+			 -->
+			
 		</gwt:stackPanel>
 		</div>
 	</gwt:HTMLPanel>

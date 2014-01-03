@@ -1,0 +1,41 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	useController="mainController" title="O Crux | Crux Framework"> 
+	
+	<gwt:HTMLPanel id="infoContainer">
+		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
+			<h2>Case</h2>
+			<ul>
+				<li>
+					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="O Crux"></crux:anchor>
+				</li>
+				<li class="on">
+					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:cases" text="Case"></crux:anchor>
+				</li>
+				<li>
+					<crux:anchor id="linkSupportedPlatforms" href="#topMenuDisposal:maintainer" text="Mantenedor"></crux:anchor>
+				</li>
+			</ul>
+		</gwt:HTMLPanel>
+		<div class="bigText">
+			<div class="container">
+
+				<h2>Vivo</h2>
+				
+				<p>A Vivo é a maior empresa de telecomunicações do Brasil, com 91,9 milhões de clientes, de acordo com resultados do balanço trimestral (3T12). Atuante em todo o território nacional a empresa está presente em mais de 3,7 mil cidades.</p>
+				
+				<crux:image id="logoSysmap" url="${siteDeviceResources.logoSysmap}" />
+				
+				<p>O Crux Framework foi adotado pela Vivo como framework para o desenvolvimento do sistema de front-end utilizado nas lojas e call centers, o Vivo 360°. Baixe o <a href="http://prototipos.sysmap.com.br/triggo/CaseCrux-Vivo.pdf" title="caseVivo" target="_blank" class="defaultLink">Case da Vivo</a> (pdf).</p>
+			
+			</div>
+
+		</div>
+	</gwt:HTMLPanel>
+</v:view>
+
+

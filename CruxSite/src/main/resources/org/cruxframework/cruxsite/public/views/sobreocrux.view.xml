@@ -14,7 +14,7 @@
 					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="O Crux"></crux:anchor>
 				</li>
 				<li>
-					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:whoUses" text="Quem Usa"></crux:anchor>
+					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:cases" text="Case"></crux:anchor>
 				</li>
 				<li>
 					<crux:anchor id="linkSupportedPlatforms" href="#topMenuDisposal:maintainer" text="Mantenedor"></crux:anchor>

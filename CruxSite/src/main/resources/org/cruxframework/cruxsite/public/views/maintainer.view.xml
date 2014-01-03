@@ -14,7 +14,7 @@
 					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="O Crux"></crux:anchor>
 				</li>
 				<li>
-					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:whoUses" text="Quem Usa"></crux:anchor>
+					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:cases" text="Case"></crux:anchor>
 				</li>
 				<li class="on">
 					<crux:anchor id="linkSupportedPlatforms" href="#topMenuDisposal:maintainer" text="Mantenedor"></crux:anchor>
@@ -23,52 +23,35 @@
 		</gwt:HTMLPanel>
 		<div class="bigText">
 			<div class="container">
-				<h2>Equipe Crux</h2>	
-				<p>O Crux conta com uma equipe dedicada para a evolução e manutenção do framework.</p>
+			
+				<h2>A Triggo Labs</h2>	
+				
+				<p> A <a href="http://prototipos.sysmap.com.br/triggo/site/" title="Triggo" target="_blank" class="defaultLink">Triggo Labs</a> 
+				é uma startup que tem como desafio oferecer ao mercado uma plataforma de desenvolvimento de 
+				aplicações web que seja eficiente, escalável e que ofereça o máximo de produtividade para 
+				seus usuários.</p>
+				
+			</div>	
+			<div class="separator"></div>
+			<div class="container">
+			
+				<h2>Gestão Triggo Labs</h2>	
 				<ul class="teamList">
 					<li>
-						<!-- <div class="teamImg">  
-						</div> -->
-						<h4>Thiago Bustamante</h4>
-						<!-- <h5>Analista</h5>  -->
-						<h6>Desenvolvimento e Arquitetura</h6>
+						<h3>Geraldo Batista</h3>
+						<h5>CEO</h5>
 					</li>
 					<li>
-						<!-- <div class="teamImg">
-						</div> -->
-						<h4>Gessé Dafé</h4>
-						<!-- <h5>Analista</h5>  -->
-						<h6>Desenvolvimento e Arquitetura</h6>
+						<h3>Juliano Santos</h3>
+						<h5>Gerente de Operações</h5>
 					</li>
 					<li>
-						<!-- <div class="teamImg">
-						</div> -->
-						<h4>Samuel Cardoso</h4>
-						<!-- <h5>Analista</h5> -->
-						<h6>Desenvolvimento e Arquitetura</h6>
-					</li>
-					<li>
-						<!-- <div class="teamImg">
-						</div> -->
-						<h4>Juliano Santos</h4>
-						<!-- <h5>Gestor</h5> -->
-						<h6>Gestão e Supervisão</h6>
-					</li>
-					<li>
-						<!-- <div class="teamImg">
-						</div> -->
-						<h4>Claudio Holanda</h4>
-						<!-- <h5>Fron-end</h5> -->
-						<h6>Desenvolvimento e Estilização</h6>
+						<h3>Thiago Bustamante</h3>
+						<h5>Arquitetura e Pesquisa</h5>
 					</li>
 					<div class="clear"></div>
 				</ul>
-				<p class="mt40">Gostaria de fazer parte do time? O Crux Framework está em busca de colaboradores, entre em contato pelos canais da Comunidade.</p>
-			</div>
-			<div class="separator"></div>
-			<div class="container">
-				<h2>Sobre a Triggo Labs</h2>	
-				<p> A <a href="http://www.triggolabs.com/" title="Triggo" target="_blank" class="defaultLink">Triggo Labs</a> é uma startup que tem como desafio oferecer ao mercado uma plataforma de desenvolvimento de aplicações web que seja eficiente, escalável e que ofereça o máximo de produtividade para seus usuários.</p>
+			
 			</div>
 		</div>
 	</gwt:HTMLPanel>
