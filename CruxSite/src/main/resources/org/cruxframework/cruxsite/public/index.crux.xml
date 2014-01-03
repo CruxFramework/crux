@@ -73,7 +73,7 @@
 								<crux:anchor id="linkOQueE" href="#topMenuDisposal:sobreocrux" text="O que é?"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkQuemUsa" href="#topMenuDisposal:whoUses" text="Quem usa"></crux:anchor>
+								<crux:anchor id="linkQuemUsa" href="#topMenuDisposal:cases" text="Case"></crux:anchor>
 							</li>
 							<li>
 								<crux:anchor id="linkMantenedor" href="#topMenuDisposal:maintainer" text="Mantenedor"></crux:anchor>
