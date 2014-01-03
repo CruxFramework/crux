@@ -46,7 +46,7 @@
 				 <div class="viewContent">
 					<crux:topMenuDisposal id="menuDisposal" defaultView="home">
 						<crux:menuEntry targetView="home" label="Home"/>
-						<crux:menuEntry targetView="sobreocrux" label="O Crux"/>
+						<crux:menuEntry targetView="sobreocrux" label="O Crux"/>			
 						<crux:menuEntry targetView="info" label="Saiba Mais"/>
 						<crux:menuEntry targetView="quickstart" label="Quick Start"/>
 						<crux:menuEntry targetView="downloads" label="Downloads"/>
