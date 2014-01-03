@@ -75,7 +75,7 @@ h1, h2, h3, h4, h5, h6{
 	background:transparent;
 	color: white;
 	font-weight: normal;
-	font-size: 14px;
+	font-size: 16px;
 	padding-left: 51px;
 	padding-right: 51px;
 	height: 46px;
@@ -315,7 +315,7 @@ h2{
 	font-family:'Open Sans',sans-serif;
 	font-weight:normal;
 	color:#4a4a4a;
-	font-size:22px;
+	font-size:18px;
 	margin-bottom:12px;
 }
 @external siteHeader;
@@ -523,6 +523,11 @@ h2{
 	padding:25px 0;
 }
 
+@external submenu;
+.submenu li a:hover{
+	color:#f6f6f6;
+}
+
 @external footer, footerLogo, footerLogoLogo, footerLogoEtc, footerUl, footerUlTitle, triggoFooterLogo;
 .footer{
 	background:rgba(0,0,0,0.8);
@@ -720,7 +725,7 @@ h2{
 	background:linear-gradient(45deg,#a3b0b6,#adb8bf);
 	padding:20px;
 	overflow:hidden;
-	height:60px;
+	height:52px;
 	-webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -728,7 +733,7 @@ h2{
 	
 }
 .subtitleBox h2{
-	font-size:25px;
+	font-size:21px;
 	color:#104b57;
 	margin:-8px 0;
 	font-weight:lighter;

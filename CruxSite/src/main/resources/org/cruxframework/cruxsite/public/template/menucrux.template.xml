@@ -4,9 +4,10 @@
 			xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 			library="menus"> 
 
+
 <gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
 	<h2><i>Crux : </i>#{pageTitle}</h2>	
-	<ul>
+	<ul class="submenu">
 		<li>
 			<crux:anchor id="linkCrux" href="#topMenuDisposal:ocrux" text="O Crux"></crux:anchor>
 		</li>

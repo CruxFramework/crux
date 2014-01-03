@@ -6,7 +6,7 @@
 
 <gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
 	<h2><i>Aprenda : </i>#{pageTitle}</h2>	
-	<ul>
+	<ul class="submenu">
 		<li>
 			<crux:anchor id="linkQuickstart" href="#topMenuDisposal:quickstart" text="Quickstart"></crux:anchor>
 		</li>

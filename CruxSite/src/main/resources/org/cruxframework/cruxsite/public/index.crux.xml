@@ -49,13 +49,7 @@
 						<crux:menuEntry targetView="ocrux" label="Crux"/>
 						<crux:menuEntry targetView="saibamais" label="Conheça"/>
 						<crux:menuEntry targetView="quickstart" label="Aprenda"/>
-						<crux:menuEntry targetView="comunidade" label="Comunidade"/>			
-						<!--
-						<crux:menuEntry targetView="sobreocrux" label="O Crux"/> 
-						<crux:menuEntry targetView="info" label="Saiba Mais"/> 
-						<crux:menuEntry targetView="quickstart" label="Quick Start"/>
-						<crux:menuEntry targetView="downloads" label="Downloads"/>
-						<crux:menuEntry targetView="community" label="Comunidade"/> -->
+						<crux:menuEntry targetView="comunidade" label="Comunidade"/>
 					</crux:topMenuDisposal>
 				</div>
 				
@@ -73,38 +67,60 @@
 							</div>
 						</div>
 						<ul class="footerUl">
-							<li class="footerUlTitle">O Crux</li>
+							<li class="footerUlTitle">Crux</li>
 							<li>
-								<crux:anchor id="linkOQueE" href="#topMenuDisposal:sobreocrux" text="O que é?"></crux:anchor>
+								<crux:anchor id="link01" href="#topMenuDisposal:ocrux" text="O Crux"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkQuemUsa" href="#topMenuDisposal:cases" text="Case"></crux:anchor>
+								<crux:anchor id="link02" href="#topMenuDisposal:mantenedor" text="Mantenedor"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkMantenedor" href="#topMenuDisposal:maintainer" text="Mantenedor"></crux:anchor>
+								<crux:anchor id="link03" href="#topMenuDisposal:download" text="Download"></crux:anchor>
 							</li>
 						</ul>
 						
 						<ul class="footerUl">
-							<li class="footerUlTitle">Saiba Mais</li>
+							<li class="footerUlTitle">Conheça</li>
 							<li>
-								<crux:anchor id="linkVantagens" href="#topMenuDisposal:compare" text="Comparativo"></crux:anchor>
+								<crux:anchor id="link11" href="#topMenuDisposal:saibamais" text="Saiba Mais"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkExemplos" href="#topMenuDisposal:manual" text="Manual"></crux:anchor>
+								<crux:anchor id="link12" href="#topMenuDisposal:comparativo" text="Comparativo"></crux:anchor>
+							</li>
+							<li>
+								<crux:anchor id="link13" href="#topMenuDisposal:cases" text="Cases"></crux:anchor>
+							</li>
+							<li>
+								<crux:anchor id="link14" target="_blank" href="http://crux-crossdevice-showcase.appspot.com/crossdeviceshowcase/index.html" text="Showcase"></crux:anchor>
+							</li>
+						</ul>
+						
+						<ul class="footerUl">
+							<li class="footerUlTitle">Aprenda</li>
+							<li>
+								<crux:anchor id="link21" href="#topMenuDisposal:quickstart" text="Quickstart"></crux:anchor>
+							</li>
+							<li>
+								<crux:anchor id="link22" href="#topMenuDisposal:projexemplo" text="Projetos Exemplo"></crux:anchor>
+							</li>
+							<li>
+								<crux:anchor id="link23" href="#topMenuDisposal:manual" text="Manual"></crux:anchor>
+							</li>
+							<li>
+								<crux:anchor id="link24" href="#topMenuDisposal:faq" text="FAQ"></crux:anchor>
 							</li>
 						</ul>
 						
 						<ul class="footerUl">
 							<li class="footerUlTitle">Comunidade</li>
 							<li>
-								<crux:anchor id="linkBlog" target="_blank" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
+								<crux:anchor id="link31" href="#topMenuDisposal:comunidade" text="Apresentação"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkForum" target="_blank" href="https://groups.google.com/forum/#!forum/crux-framework" text="Fórum"></crux:anchor>
+								<crux:anchor id="link32" target="_blank" href="https://groups.google.com/forum/#!forum/crux-framework" text="Fórum"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="linkFaq" href="#topMenuDisposal:faq" text="FAQ"></crux:anchor>
+								<crux:anchor id="link33" target="_blank" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
 							</li>
 						</ul>
 						

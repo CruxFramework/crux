@@ -6,9 +6,9 @@
 
 <gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
 	<h2><i>Comunidade : </i>#{pageTitle}</h2>	
-	<ul>
+	<ul class="submenu">
 		<li>
-			<crux:anchor id="linkComunity" href="#topMenuDisposal:communidade" text="Apresentação"></crux:anchor>
+			<crux:anchor id="linkComunity" href="#topMenuDisposal:comunidade" text="Apresentação"></crux:anchor>
 		</li>
 		<li>
 			<crux:anchor id="linkForum" target="_blank" href="https://groups.google.com/forum/#!forum/crux-framework" text="Forum"></crux:anchor>

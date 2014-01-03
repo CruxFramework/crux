@@ -6,12 +6,12 @@
 
 <gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
 	<h2><i>Conheça : </i>#{pageTitle}</h2>	
-	<ul>
+	<ul class="submenu">
 		<li>
 			<crux:anchor id="linkKnow" href="#topMenuDisposal:saibamais" text="Saiba Mais"></crux:anchor>
 		</li>
 		<li>
-			<crux:anchor id="linkCompare" href="#topMenuDisposal:compare" text="Comparativo"></crux:anchor>
+			<crux:anchor id="linkCompare" href="#topMenuDisposal:comparativo" text="Comparativo"></crux:anchor>
 		</li>
 		<li>
 			<crux:anchor id="linkCase" href="#topMenuDisposal:cases" text="Cases"></crux:anchor>
