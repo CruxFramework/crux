@@ -689,7 +689,7 @@ h2{
 	color:#455359;
 	font-size:12px;
 	font-weight:normal;
-	font-size:14px;
+	font-size:15px;
 	padding:6px 10px;
 	margin:0 0 1px;
 	cursor:pointer;
@@ -822,13 +822,13 @@ h2{
 
 @external teamList, teamImg;
 .teamList{
-	margin:10px 0 0;
+	margin:5px 0 0;
 	padding:0;
 }
 .teamList li{
 	float:left;
-	margin-right:82px;
-	width:130px;
+	margin-right:30px;
+	width:210px;
 }
 .teamList li:nth-child\(5\){
 	margin-right:0;
@@ -1108,10 +1108,10 @@ pre.programlisting{
     background:#fff7b1;
 }
 .manual .sect2{
-	padding-left:40px;
+	padding-left:4px;
 }
 .manual .navigation ul{
-    padding-left:15px;
+    padding-left:5px;
 }
 .manual section.chapter.appendix{
 	background:red;
