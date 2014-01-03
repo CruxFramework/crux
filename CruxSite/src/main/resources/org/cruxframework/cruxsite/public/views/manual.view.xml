@@ -4,26 +4,13 @@
 	xmlns:core="http://www.cruxframework.org/crux" 
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
-	useController="mainController" title="Mantenedor | Crux Framework"> 
+	xmlns:t="http://www.cruxframework.org/templates/menus"
+	useController="mainController" title="Manual"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
-		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
-			<h2>Manual</h2>
-			<ul>
-				<li>
-					<crux:anchor id="linkInfo" href="#topMenuDisposal:info" text="Saiba Mais"></crux:anchor>
-				</li>
-				<li>
-					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:compare" text="Comparativo"></crux:anchor>
-				</li>
-				<li>
-					<crux:anchor id="linkExamples" href="#topMenuDisposal:exemplos" text="Exemplos"></crux:anchor>
-				</li>
-				<li class="on">
-					<crux:anchor id="linkSupportedPlatforms" href="#topMenuDisposal:manual" text="Manual"></crux:anchor>
-				</li>
-			</ul>
-		</gwt:HTMLPanel>
+	
+		<t:menuaprenda pageTitle="Manual" />
+	
 		<div class="bigText">
 			<div class="container">
 				<h2>Crux Framework 5 Manual</h2>	

@@ -8,9 +8,9 @@
 	useController="mainController" title="Download"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
-	
-	    <t:menucrux pageTitle="Download" />
-	
+		
+		<t:menucrux pageTitle="Downloads" />
+		
 		<div class="bigText">
 			<div class="container">
 				<h2>Baixar os JARs do Crux</h2>	

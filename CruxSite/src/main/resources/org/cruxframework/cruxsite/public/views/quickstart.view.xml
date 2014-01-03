@@ -4,28 +4,13 @@
 	xmlns:core="http://www.cruxframework.org/crux" 
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
-	useController="mainController" title="Quickstart" useResource="siteDeviceResources,siteCommonResources"
-	
-	> 
+	xmlns:t="http://www.cruxframework.org/templates/menus"
+	useController="mainController" title="Quickstart" 
+	useResource="siteDeviceResources,siteCommonResources"> 
 	
 	<gwt:HTMLPanel id="viewTextPanel">
-		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
-			<h2>Quickstart</h2>
-			<!-- <ul>
-				<li class="on">
-					<crux:anchor id="linkInfo" href="#" text="O Crux"></crux:anchor>
-				</li>
-				<li>
-					<crux:anchor id="linkAdvantages" href="#" text="Vantagens"></crux:anchor>
-				</li>
-				<li>
-					<crux:anchor id="linkExamples" href="#" text="Exemplos"></crux:anchor>
-				</li>
-				<li>
-					<crux:anchor id="linkSupportedPlatforms" href="#" text="Plataformas Suportadas"></crux:anchor>
-				</li>
-			</ul> -->
-		</gwt:HTMLPanel>
+	
+		<t:menuaprenda pageTitle="QuickStart" />
 		
 		<div class="container">
 		
@@ -88,7 +73,7 @@
 		<div class="separator"></div>
 		<div class="container">
 			<p class="quickstartInfo">
-				<b>Ainda tem dúvidas?</b> Tire elas lendo nosso <a href="#" class="defaultLink">blog</a>, perguntando no <a href="#" class="defaultLink">nosso fórum</a> ou <a href="#" class="defaultLink">entrando em contato</a>.
+				<b>Ainda tem dúvidas?</b> Tire elas lendo o <a href="#" class="defaultLink">Manual</a> ou perguntando no <a href="#" class="defaultLink">nosso fórum</a>.
 			</p>
 		</div>
 	</gwt:HTMLPanel>

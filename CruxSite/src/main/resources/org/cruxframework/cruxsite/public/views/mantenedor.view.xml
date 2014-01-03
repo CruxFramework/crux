@@ -1,0 +1,48 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:t="http://www.cruxframework.org/templates/menus"
+	useController="mainController" title="Mantenedor | Crux Framework"> 
+	
+	<gwt:HTMLPanel id="infoContainer">
+		
+		<t:menucrux pageTitle="Mantenedor" />
+				
+		<div class="bigText">
+			<div class="container">
+			
+				<h2>A Triggo Labs</h2>	
+				
+				<p> A <a href="http://prototipos.sysmap.com.br/triggo/site/" title="Triggo" target="_blank" class="defaultLink">Triggo Labs</a> 
+				é uma startup que tem como desafio oferecer ao mercado uma plataforma de desenvolvimento de 
+				aplicações web que seja eficiente, escalável e que ofereça o máximo de produtividade para 
+				seus usuários.</p>
+				
+			</div>	
+			<div class="separator"></div>
+			<div class="container">
+			
+				<h2>Gestão Triggo Labs</h2>	
+				<ul class="teamList">
+					<li>
+						<h3>Geraldo Batista</h3>
+						<h5>CEO</h5>
+					</li>
+					<li>
+						<h3>Juliano Santos</h3>
+						<h5>Gerente de Operações</h5>
+					</li>
+					<li>
+						<h3>Thiago Bustamante</h3>
+						<h5>Arquitetura e Pesquisa</h5>
+					</li>
+					<div class="clear"></div>
+				</ul>
+			
+			</div>
+		</div>
+	</gwt:HTMLPanel>
+</v:view>

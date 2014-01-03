@@ -4,26 +4,13 @@
 	xmlns:core="http://www.cruxframework.org/crux" 
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
-	useController="mainController" title="Downloads"> 
+	xmlns:t="http://www.cruxframework.org/templates/menus"
+	useController="mainController" title="FAQ"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
-		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
-			<h2>FAQ</h2>
-			<ul>
-				<li>
-					<crux:anchor id="linkInfo" href="#topMenuDisposal:community" text="Comunidade"></crux:anchor>
-				</li>
-				<li>
-					<crux:anchor id="linkAdvantages" target="_blank" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
-				</li>
-				<li>
-					<crux:anchor id="linkSupportedPlatforms" target="_blank" href="https://groups.google.com/forum/#!forum/crux-framework" text="Forum"></crux:anchor>
-				</li>
-				<li class="on">
-					<crux:anchor id="linkSupportedFaq" href="#topMenuDisposal:faq" text="FAQ"></crux:anchor>
-				</li>
-			</ul>
-		</gwt:HTMLPanel>
+	
+		<t:menuaprenda pageTitle="FAQ" />
+	
 		<section class="container">	
 			<h2>Tem alguma dúvida? Confira se já não existe uma resposta no FAQ abaixo:</h2>	
 		</section>

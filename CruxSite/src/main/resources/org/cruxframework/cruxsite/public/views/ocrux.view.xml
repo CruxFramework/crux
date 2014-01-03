@@ -1,0 +1,36 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:t="http://www.cruxframework.org/templates/menus"
+	useController="mainController" title="O Crux"> 
+	
+	<gwt:HTMLPanel id="infoContainer">
+		
+		<t:menucrux pageTitle="O Crux" />
+	
+		<div class="bigText">
+			<div class="container">
+				<h2>O que é?</h2>	
+				<p>O Crux é um framework para desenvolvimento de aplicações Web criado sobre o Google Web Toolkit (GWT). Ele foi projetado para tirar proveito da velocidade e da facilidade do desenvolvimento de aplicações corporativas utilizando HTML 5. Aliado ao poder e a versatilidade do GTW o Crux é um verdadeiro framework para Web 2.0.</p>
+				<p>No Crux, os desenvolvedores criam as páginas web de forma declarativa, descrevendo a tela utilizando HTML como linguagem, o que é bastante simples, além habilitar sua aplicação para ser executada em todos os navegadores modernos e em todas os dispositivos, sem código adicional.</p>
+				<p>O Crux complementa o GWT para uso corporativo estendendo seus componentes e agregando camadas para acesso a Serviços de Negócio em arquitetura SOA, Bancos de Dados e outras tecnologias presentes no ambiente corporativo.</p>
+				<p>Com a combinação Crux / GWT as fronteiras entre aplicações corporativas para a internet desaparecem, possibilidanto a utilização de recursos modernos como Cloud Computing e hospedagem da aplicação no Google App Engine, onde sua aplicação utiliza toda a infra-estrutura da Google, sendo necessário apenas codificá-la e publicá-la. Também permite o uso de um vasto universo de APIs disponíveis na Internet (mapas, redes sociais, ações, condições do tempo, etc.).</p>
+			</div>
+			<div class="separator"></div>
+			<div class="container">
+				<h2>História</h2>
+				<p>Criado em 2008 durante um trabalho de <a href="http://www.dcc.ufmg.br/pos/cursos/defesas/980M.PDF" title="PDF" target="_blank" class="defaultLink">mestrado na Universidade Federal de Minas Gerais (UFMG)</a> o Crux vem sendo evoluído desde então pela  <a href="http://www.sysmap.com.br/" title="Sysmap" target="_blank" class="defaultLink">Sysmap Soluctions</a> e é usado em projetos com seus principais clientes.</p>
+				<p>Em 2013 o Crux, que já era um projeto Open Source, passou a ser mantido pela <a href="http://www.triggolabs.com/" title="Triggo" target="_blank" class="defaultLink">Triggo Labs</a>, uma startup brasileira com foco no desenvolvimento de novas tecnologias e produtos web baseados no Crux.</p>
+				<p>Atualmente a <a href="http://www.triggolabs.com/" title="Triggo" target="_blank" class="defaultLink">Triggo Labs</a> está em busca de novos colaboradores independentes e empresas dispostas a participar do desenvolvimento do Crux Framework.</p>
+			</div>
+			<div class="separator"></div>
+			<div class="container">
+				<h2>Licensa</h2>
+				<p style="margin-bottom:0;">O Código-fonte do Crux Framework é aberto, e licensiado sobre a <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank" class="defaultLink">Apache License 2.0</a>.</p>
+			</div>
+		</div>
+	</gwt:HTMLPanel>
+</v:view>

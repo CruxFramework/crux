@@ -4,43 +4,34 @@
 	xmlns:core="http://www.cruxframework.org/crux" 
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:t="http://www.cruxframework.org/templates/menus"
 	useController="mainController" title="O Crux | Crux Framework"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
-		<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
-			<h2>Comunidade</h2>
-			<ul>
-				<li class="on">
-					<crux:anchor id="linkInfo" href="#topMenuDisposal:sobreocrux" text="Comunidade"></crux:anchor>
+		
+		<t:menucomunidade pageTitle="Apresentação" />
+		
+		<div class="container">
+			<ul class="communityBlocks"  style="font-size: 15px;line-height: 27px;text-align: justify;">
+				<li>
+					<h2>Desenvolvimento de Aplicações com Crux</h2>
+					<p>Se você irá usar o Crux Framework para desenvolver aplicações Web crossdevice existe uma séria de recursos para que você possa aprender como usar o Crux Framework: </p>
+					<ul class="communityItens" style="font-size: 15px;">
+					    <li> Saiba Mais </li>
+						<li> QuickStart </li>
+						<li> Manual </li>
+					</ul>
 				</li>
 				<li>
-					<crux:anchor id="linkAdvantages" href="#topMenuDisposal:whoUses" text="Blog"></crux:anchor>
-				</li>
-				<li>
-					<crux:anchor id="linkSupportedPlatforms" href="#topMenuDisposal:maintainer" text="Forum"></crux:anchor>
+					<h2>Desenvolvimento do Crux Framework</h2>
+					<p>Se você irá contribuir com desenvolvimento do Crux Framework ou de novos componentes para o Crux você pode baixar o repositório no google code e enviar suas contribuições pelos canais da Comunidade.</p>
+				    <ul class="communityItens" style="font-size: 15px;">
+						<li> Download </li>
+						<li>  <a href="http://code.google.com/p/crux-framework/source/checkout" title="GoogleCodeCrux" target="_blank" class="defaultLink">Source (Google Code)</a> </li>
+					</ul>
 				</li>
 			</ul>
-		</gwt:HTMLPanel>
-		<div class="bigText">
-			<div class="container">
-				<h2>Comunidade</h2>	
-				<p>A comunidade é composta por desenvolvedores ... </p>
-				<table>
-				  <tr>
-				 	 <td>
-						<p><b>Aplicações com o Crux</b></p>
-				        <p>Se você quer usar o Crux Framework para desenvolver aplicações Web crossdevice existe uma séria de recursos para que você possa aprender como usar  o Crux Framework: ...</p> 
-				     </td>
-				     <td>
-				      ...
-				     </td>
-				     <td>
-				        <p><b>Desenvolvimento do Crux</b></p>
-				        <p>Se você quer contribuir com desenvolvimento do Crux Framework ou de novos componentes para o Crux você pode baixar o repositório no google code (LINK AQUI) e enviar suas contribuições seguindo o formato (AQUI LINK do Manual) ...</p>
-				     </td>
-				  </tr>
-				</table>
-			</div>
 		</div>
+		
 	</gwt:HTMLPanel>
 </v:view>

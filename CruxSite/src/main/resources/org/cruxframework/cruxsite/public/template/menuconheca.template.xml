@@ -1,0 +1,25 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml" 
+			xmlns:t="http://www.cruxframework.org/templates" 
+			xmlns:crux="http://www.cruxframework.org/crux/widgets"
+			xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+			library="menus"> 
+
+<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
+	<h2><i>Conheça : </i>#{pageTitle}</h2>	
+	<ul>
+		<li>
+			<crux:anchor id="linkKnow" href="#topMenuDisposal:saibamais" text="Saiba Mais"></crux:anchor>
+		</li>
+		<li>
+			<crux:anchor id="linkCompare" href="#topMenuDisposal:compare" text="Comparativo"></crux:anchor>
+		</li>
+		<li>
+			<crux:anchor id="linkCase" href="#topMenuDisposal:cases" text="Cases"></crux:anchor>
+		</li>
+		<li>
+			<crux:anchor id="linkShowcase" target="_blank" href="http://crux-crossdevice-showcase.appspot.com/crossdeviceshowcase/index.html" text="Showcase"></crux:anchor>
+		</li>
+	</ul>
+</gwt:HTMLPanel> 
+
+</t:template> 

@@ -1,0 +1,22 @@
+<t:template xmlns="http://www.w3.org/1999/xhtml" 
+			xmlns:t="http://www.cruxframework.org/templates" 
+			xmlns:crux="http://www.cruxframework.org/crux/widgets"
+			xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+			library="menus"> 
+
+<gwt:HTMLPanel id="subtitleBox" styleName="subtitleBox container">
+	<h2><i>Comunidade : </i>#{pageTitle}</h2>	
+	<ul>
+		<li>
+			<crux:anchor id="linkComunity" href="#topMenuDisposal:communidade" text="Apresentação"></crux:anchor>
+		</li>
+		<li>
+			<crux:anchor id="linkForum" target="_blank" href="https://groups.google.com/forum/#!forum/crux-framework" text="Forum"></crux:anchor>
+		</li>
+		<li>
+			<crux:anchor id="linkBlog" target="_blank" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
+		</li>
+	</ul>
+</gwt:HTMLPanel> 
+
+</t:template> 
