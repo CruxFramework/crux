@@ -81,8 +81,11 @@ public class DownloadButton extends Composite implements HasSelectHandlers, HasH
 		{
 			if(downloadData != null)
 			{
+				//TODO: for security reasons IE8 cannot parse more than 32KB base64 data. Check for a workaround!
+				//@see http://danielmclaren.com/node/90
 				downloadAnchor.setHref(downloadData.getBase64Data());
 				downloadAnchor.setTarget(downloadData.getTarget());
+				//TODO: IE8 also don't have HTML5 support! Check for a workaround.
 				downloadAnchor.getElement().setAttribute("download", downloadData.getFilename());
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() 
 				{
