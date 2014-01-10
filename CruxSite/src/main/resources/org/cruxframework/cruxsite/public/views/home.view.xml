@@ -30,15 +30,16 @@
 							</p>
 							<div class="separator"></div>
 							<p></p>
-							<crux:anchor id="gotoTheCrux" text="Saiba Mais" href="#topMenuDisposal:sobreocrux" styleName="btnCrux btnSeeAll right"></crux:anchor>
+							<crux:anchor id="gotoTheCrux" text="Saiba Mais" href="#topMenuDisposal:ocrux" styleName="btnCrux btnSeeAll right"></crux:anchor>
 							<div class="clear"></div>
 						</div>
 					</li>
 					<li class="liLast">
 						<h2>Posts do Blog</h2>
 						<div class="greenBlock">
-							<crux:rssPanel id="lastBlogEntries" title="" entryTitleStyleName="box" maxTitleSize="45" />
+							<crux:rssPanel id="lastBlogEntries" title="" entryTitleStyleName="box" maxTitleSize="69" />
 						</div>
+						<crux:anchor id="quickstartButton" href="#topMenuDisposal:quickstart" text="Crux Quickstart" styleName="quickstartBannerBtn"></crux:anchor>
 					</li>
 					<div class="clear"></div>
 				</ul>

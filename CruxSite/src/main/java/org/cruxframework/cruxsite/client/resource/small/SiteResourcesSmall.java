@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ClientBundle.Source;
 
 /**
  * @author Gesse Dafe
@@ -32,11 +33,11 @@ public interface SiteResourcesSmall extends ClientBundle
 	@Source("cssSiteSmall.css")
 	CssSiteSmall css();
 	
-	@Source("top-menu-disposal-header-logo.png")
+	@Source("top-menu-disposal-header-logo.jpg")
 	DataResource topMenuDisposalHeaderLogo();
 	
-	@Source("banner-what-is-crux.jpg")
-	ImageResource bannerWhatIsCrux();
+	@Source("noise.png")
+	DataResource noiseBg();
 	
 	@Source("banner-cross-device.jpg")
 	ImageResource bannerCrossDevice();
@@ -44,21 +45,72 @@ public interface SiteResourcesSmall extends ClientBundle
 	@Source("banner-fast.jpg")
 	ImageResource bannerFast();
 	
-	@Source("banner-social.jpg")
-	ImageResource bannerSocial();
+	@Source("banner-productivity.jpg")
+	ImageResource bannerProductivity();
 	
-	@Source("banner-java.jpg")
-	ImageResource bannerJava();
+	@Source("banner-right-arrow.png")
+	ImageResource bannerRightArrow();
 	
-	@Source("icon-java.jpg")
-	ImageResource iconJava();
+	@Source("banner-left-arrow.png")
+	ImageResource bannerLeftArrow();
 	
-	@Source("icon-social.jpg")
-	ImageResource iconSocial();
-		
-	@Source("icon-cross-device.jpg")
-	ImageResource iconCrossDev();
+	@Source("view-text-panel-bg.png")
+	DataResource viewTextPanelBg();
 	
-	@Source("icon-fast.jpg")
-	ImageResource iconFast();
+	@Source("mountain-bg.png")
+	DataResource mountainBg();
+	
+	@Source("crux-header-logo.png")
+	DataResource cruxHeaderLogo();
+	
+	@Source("br-flag.png")
+	DataResource brFlag();
+	
+	@Source("uk-flag.png")
+	DataResource ukFlag();
+	
+	@Source("showcase-tip.png")
+	DataResource showcaseTip();
+	
+	@Source("logo-vivo.png")
+	ImageResource logoVivo();
+	
+	@Source("logo-tim.png")
+	ImageResource logoTim();
+	
+	@Source("logo-unimed.png")
+	ImageResource logoUnimed();
+	
+	@Source("logo-natura.png")
+	ImageResource logoNatura();
+	
+	@Source("icon-arrow-btn.png")
+	DataResource iconArrowBtn();
+	
+	@Source("crux-footer-logo.png")
+	ImageResource cruxFooterLogo();
+
+	@Source("triggo-footer-logo.png")
+	ImageResource triggoFooterLogo();
+	
+	@Source("logo-sysmap.png")
+	ImageResource logoSysmap();
+	
+	@Source("user-img.png")
+	DataResource userBg();
+	
+	@Source("icon-3stars.png")
+	DataResource icon3stars();
+	
+	@Source("icon-2stars.png")
+	DataResource icon2stars();
+	
+	@Source("icon-1star.png")
+	DataResource icon1star();
+	
+	@Source("bg-helloworld.png")
+	ImageResource bgHelloWorld();
+	
+	@Source("bg-showcase.png")
+	ImageResource bgShowcase();
 }

@@ -48,7 +48,7 @@ public class MainController
 			{
 				FeedApi feedLastBlogEntries = FeedApi.create("http://feeds.feedburner.com/cruxframework/blog");
 				feedLastBlogEntries.includeHistoricalEntries();
-				feedLastBlogEntries.setNumEntries(5);
+				feedLastBlogEntries.setNumEntries(3);
 
 				feedLastBlogEntries.load(new FeedCallback()
 				{
