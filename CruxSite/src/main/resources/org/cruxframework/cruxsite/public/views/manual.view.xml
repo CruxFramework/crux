@@ -410,37 +410,34 @@
 		
                <p>Esta é uma Screen, que será o ponto de entrada da aplicação.</p>
 
+<pre class="programlisting" style='color:#000000;background:#ffffff;'>
+&lt;html&gt;&lt;body style='color:#000000; background:#ffffff; '&gt;
+&lt;span style='color:#004a43; '&gt;&lt;!DOCTYPE html&gt;&lt;/span&gt;
+&lt;span style='color:#a65700; '&gt;&lt;&lt;/span&gt;&lt;span style='color:#800000; font-weight:bold; '&gt;html&lt;/span&gt;&lt;span style='color:#274796; '&gt; &lt;/span&gt;
+&lt;span style='color:#274796; '&gt;&#xa0;&#xa0;&#xa0;&#xa0;xmlns&lt;/span&gt;&lt;span style='color:#808030; '&gt;=&lt;/span&gt;&lt;span style='color:#0000e6; '&gt;"http://www.w3.org/1999/xhtml"&lt;/span&gt;&lt;span style='color:#274796; '&gt; &lt;/span&gt;
+&lt;span style='color:#274796; '&gt;&#xa0;&#xa0;&#xa0;&#xa0;xmlns:core&lt;/span&gt;&lt;span style='color:#808030; '&gt;=&lt;/span&gt;&lt;span style='color:#0000e6; '&gt;"http://www.cruxframework.org/crux"&lt;/span&gt;&lt;span style='color:#274796; '&gt; &lt;/span&gt;
+&lt;span style='color:#274796; '&gt;&#xa0;&#xa0;&#xa0;&#xa0;xmlns:crux&lt;/span&gt;&lt;span style='color:#808030; '&gt;=&lt;/span&gt;&lt;span style='color:#0000e6; '&gt;"http://www.cruxframework.org/crux/widgets"&lt;/span&gt;&lt;span style='color:#274796; '&gt;&lt;/span&gt;
+&lt;span style='color:#274796; '&gt;&#xa0;&#xa0;&#xa0;&#xa0;xmlns:gwt&lt;/span&gt;&lt;span style='color:#808030; '&gt;=&lt;/span&gt;&lt;span style='color:#0000e6; '&gt;"http://www.cruxframework.org/crux/gwt"&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;
 
-               <pre class="programlisting">
+    &lt;span style='color:#a65700; '&gt;&lt;&lt;/span&gt;&lt;span style='color:#800000; font-weight:bold; '&gt;head&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;
+        &lt;span style='color:#a65700; '&gt;&lt;&lt;/span&gt;&lt;span style='color:#800000; font-weight:bold; '&gt;title&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;My App&lt;span style='color:#a65700; '&gt;&lt;/&lt;/span&gt;&lt;span style='color:#800000; font-weight:bold; '&gt;title&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;
+    &lt;span style='color:#a65700; '&gt;&lt;/&lt;/span&gt;&lt;span style='color:#800000; font-weight:bold; '&gt;head&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;
 
-&lt;!DOCTYPE html&gt;
-&lt;html 
-    xmlns="http://www.w3.org/1999/xhtml" 
-    xmlns:core="http://www.cruxframework.org/crux" 
-    xmlns:crux="http://www.cruxframework.org/crux/widgets"
-    xmlns:gwt="http://www.cruxframework.org/crux/gwt"&gt;
-    
-    &lt;head&gt;
-        &lt;title&gt;My App&lt;/title&gt;
-    &lt;/head&gt;
-    
-    &lt;body&gt;
-        &lt;script type="text/javascript" src="../myapp/myapp.nocache.js"&gt;&lt;/script&gt;
-        
-        &lt;core:screen
-            useView="*" 
-            smallViewport="user-scalable=no, width=320"
-            largeViewport="user-scalable=no, width=device-width, height=device-height"/&gt;
-        
-        &lt;crux:simpleViewContainer id="views"&gt;
-            &lt;crux:view name="main"/&gt;
-        &lt;/crux:simpleViewContainer&gt;
-                
-    &lt;/body&gt;
-&lt;/html&gt;
- 
+    &lt;span style='color:#a65700; '&gt;&lt;&lt;/span&gt;&lt;span style='color:#800000; font-weight:bold; '&gt;body&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;
+        &lt;span style='color:#a65700; '&gt;&lt;&lt;/span&gt;&lt;span style='color:#800000; font-weight:bold; '&gt;script type="text/javascript" src="../myapp/myapp.nocache.js"&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&lt;/&lt;/span&gt;&lt;span style='color:#800000; font-weight:bold; '&gt;script&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;
+
+        &lt;span style='color:#a65700; '&gt;&lt;&lt;/span&gt;&lt;span style='color:#5f5035; '&gt;core:screen&lt;/span&gt;&lt;span style='color:#274796; '&gt;&lt;/span&gt;
+&lt;span style='color:#274796; '&gt;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;useView&lt;/span&gt;&lt;span style='color:#808030; '&gt;=&lt;/span&gt;&lt;span style='color:#0000e6; '&gt;"*"&lt;/span&gt;&lt;span style='color:#274796; '&gt; &lt;/span&gt;
+&lt;span style='color:#274796; '&gt;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;smallViewport&lt;/span&gt;&lt;span style='color:#808030; '&gt;=&lt;/span&gt;&lt;span style='color:#0000e6; '&gt;"user-scalable=no, width=320"&lt;/span&gt;&lt;span style='color:#274796; '&gt;&lt;/span&gt;
+&lt;span style='color:#274796; '&gt;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;largeViewport&lt;/span&gt;&lt;span style='color:#808030; '&gt;=&lt;/span&gt;&lt;span style='color:#0000e6; '&gt;"user-scalable=no, width=device-width, height=device-height"&lt;/span&gt;&lt;span style='color:#a65700; '&gt;/&gt;&lt;/span&gt;
+
+        &lt;span style='color:#a65700; '&gt;&lt;&lt;/span&gt;&lt;span style='color:#5f5035; '&gt;crux:simpleViewContainer&lt;/span&gt;&lt;span style='color:#274796; '&gt; &lt;/span&gt;&lt;span style='color:#074726; '&gt;id&lt;/span&gt;&lt;span style='color:#808030; '&gt;=&lt;/span&gt;&lt;span style='color:#0000e6; '&gt;"views"&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;
+            &lt;span style='color:#a65700; '&gt;&lt;&lt;/span&gt;&lt;span style='color:#5f5035; '&gt;crux:view&lt;/span&gt;&lt;span style='color:#274796; '&gt; &lt;/span&gt;&lt;span style='color:#074726; '&gt;name&lt;/span&gt;&lt;span style='color:#808030; '&gt;=&lt;/span&gt;&lt;span style='color:#0000e6; '&gt;"main"&lt;/span&gt;&lt;span style='color:#a65700; '&gt;/&gt;&lt;/span&gt;
+        &lt;span style='color:#a65700; '&gt;&lt;/&lt;/span&gt;&lt;span style='color:#5f5035; '&gt;crux:simpleViewContainer&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;
+
+    &lt;span style='color:#a65700; '&gt;&lt;/&lt;/span&gt;&lt;span style='color:#800000; font-weight:bold; '&gt;body&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;
+&lt;span style='color:#a65700; '&gt;&lt;/&lt;/span&gt;&lt;span style='color:#800000; font-weight:bold; '&gt;html&lt;/span&gt;&lt;span style='color:#a65700; '&gt;&gt;&lt;/span&gt;
 </pre>
-
 
                <p>Esta é uma View, que nada mais é que uma página Web que foi invocada a partir da Screen acima:</p>
 
