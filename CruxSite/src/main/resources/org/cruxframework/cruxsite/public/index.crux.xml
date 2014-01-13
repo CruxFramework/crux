@@ -10,6 +10,13 @@
 		<title>Crux Framework</title>
 		<meta name="fragment" content="!" />
 		<link rel="icon" type="image/gif" href="../favicon.gif"/>
+		
+		<!-- beta metatags (for tests) -->
+		<meta name="mobile-web-app-capable" content="yes" />
+		<link rel="apple-touch-icon-precomposed" sizes="196x196" href="http://prototipos.sysmap.com.br/crux/icon-196x196.png" />
+		<link rel="shortcut icon" sizes="196x196" href="http://prototipos.sysmap.com.br/crux/icon-196x196.png" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
 	</head>
 	
 	<body>
@@ -59,7 +66,7 @@
 					<div class="container">
 						<div class="footerLogo">
 							<div class="footerLogoLogo">
-								<crux:image id="cruxFooterLogo" url="${siteDeviceResources.cruxFooterLogo}" />
+								<crux:image id="cruxFooterLogo" url="${siteDeviceResources.cruxFooterLogo}" width="auto" height="auto" />
 							</div>
 							<div class="footerLogoEtc">
 								<b>Crux Framework</b>

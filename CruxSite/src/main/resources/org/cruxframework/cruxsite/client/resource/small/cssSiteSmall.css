@@ -54,12 +54,13 @@ h1, h2, h3, h4, h5, h6{
 }
 
 
-@url urlTopMenuDisposalHeaderLogo topMenuDisposalHeaderLogo; 
+@url cruxHeaderLogo cruxHeaderLogo; 
 @external crux-TopMenuDisposal, headerPanel, showMenuButton, menuPanel, menuEntry;
 .crux-TopMenuDisposal .headerPanel
 {
 	width:100%;
-	background: #003C47;
+	background:cruxHeaderLogo #003C47 right center no-repeat;
+	background-size:35px 36px;
 	border-top: solid 3px #C0D406;
 	box-shadow: 0px 1px 0px #639700 inset, 0 -2px 0 rgba(0,0,0,0.24) inset;
 	top:0;
@@ -303,6 +304,11 @@ a{
     float:left;
     margin-right:10px;
 }
+.footer .footerLogo .footerLogoLogo img{
+    width:50px !important;
+    height:72px !important;
+    background-size:100% 100% !important;
+}                        
 .footer .footerLogo .footerLogoEtc{
     float:left;
     padding-top:8px;
@@ -522,7 +528,7 @@ a{
 	padding-bottom:10px;
 	margin-bottom:10px;
 }
-.examplesList li:nth-last-child(2){
+.examplesList li:nth-last-child\(2\){
 	margin-bottom:0;
 	padding-bottom:0;
 	border-bottom:none;
@@ -811,6 +817,9 @@ pre.programlisting{
 @url icon2stars icon2stars;
 @url icon3stars icon3stars;
 @external star1, star2, star3;
+.compareTable tbody tr td span{
+	background-size:100% 100% !important;
+}
 .compareTable tbody tr td span.star1{
 	width:22px;
 	height:21px;
@@ -830,10 +839,12 @@ pre.programlisting{
 	display:inline-block;
 }
 
+@url mobileMenuButton mobileMenuButton;
 @external crux-TopMenuDisposal, showMenuButton;
 .crux-TopMenuDisposal .showMenuButton
 {
-	background:rgba(0,0,0,0.2);
+	background:mobileMenuButton center center no-repeat rgba(0,0,0,0.2);
+	background-size:26px 14px;
 	border-right:1px solid rgba(0,0,0,0.26);
 	height:50px;
 	width:45px;
@@ -848,14 +859,46 @@ pre.programlisting{
 	-webkit-overflow-scrolling:touch;
 }
 
-@external communityBlocks;
+@external communityBlocks, communityItens;
 .communityBlocks{
 	padding:0;
 }
 .communityBlocks li h2{
 	text-align:left;
 }
-.communityBlocks > li:nth-child(1){
-	border-bottom:1px solid #ccc;
+.communityBlocks > li:nth-child\(1\){
 	margin-bottom:10px;
+}
+
+.communityItens{
+    padding: 0;
+    border-radius:4px;
+    overflow:hidden;
+}
+.communityItens li{
+    color: white;
+    background:#77A400;
+    text-shadow:0 -1px 0 rgba(0,0,0,0.3);
+text-align:center;
+padding:5px;
+border-bottom:1px solid #658B00;
+}
+.communityItens li:last-child{
+    border-bottom:none;
+}
+.communityItens li a{
+    color:#fff;
+    font-weight:normal;
+}
+.communityItens p{
+    color:red !important;
+    font-size:11px
+}
+
+.quickstartBannerBtn{
+	margin-top:20px;
+	width:100%;
+	padding:20px 0;
+	background:#205C7E;
+	font-size:19px;
 }

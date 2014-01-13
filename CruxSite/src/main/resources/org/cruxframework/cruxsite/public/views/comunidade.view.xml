@@ -17,17 +17,27 @@
 					<h2>Desenvolvimento de Aplicações com Crux</h2>
 					<p>Se você irá usar o Crux Framework para desenvolver aplicações Web crossdevice existe uma séria de recursos para que você possa aprender como usar o Crux Framework: </p>
 					<ul class="communityItens" style="font-size: 15px;">
-					    <li> Saiba Mais </li>
-						<li> QuickStart </li>
-						<li> Manual </li>
+					    <li>
+					    	<crux:anchor id="linkSaibaMais" href="#topMenuDisposal:saibamais" text="Saiba Mais"></crux:anchor>
+					    </li>
+					    <li>
+					    	<crux:anchor id="linkQuickStart" href="#topMenuDisposal:quickstart" text="QuickStart"></crux:anchor>
+					    </li>
+					    <li>
+					    	<crux:anchor id="linkManual" href="#topMenuDisposal:manual" text="Manual"></crux:anchor>
+					    </li>
 					</ul>
 				</li>
 				<li>
 					<h2>Desenvolvimento do Crux Framework</h2>
 					<p>Se você irá contribuir com desenvolvimento do Crux Framework ou de novos componentes para o Crux você pode baixar o repositório no google code e enviar suas contribuições pelos canais da Comunidade.</p>
 				    <ul class="communityItens" style="font-size: 15px;">
-						<li> Download </li>
-						<li>  <a href="http://code.google.com/p/crux-framework/source/checkout" title="GoogleCodeCrux" target="_blank" class="defaultLink">Source (Google Code)</a> </li>
+						<li>
+					    	<crux:anchor id="linkDownloads" href="#topMenuDisposal:download" text="Downloads"></crux:anchor>
+						</li>
+						<li>
+							<crux:anchor id="linkGoogleCode" href="http://code.google.com/p/crux-framework/source/checkout" target="_blank" text="Source (Google Code)"></crux:anchor>
+						</li>
 					</ul>
 				</li>
 			</ul>

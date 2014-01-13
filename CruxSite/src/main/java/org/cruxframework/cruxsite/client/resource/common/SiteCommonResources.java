@@ -41,4 +41,7 @@ public interface SiteCommonResources extends ClientBundle
 	@Source("project-structure.jpg")
 	ImageResource projectStructure();
 	
+	@Source("logo-sysmap.png")
+	ImageResource logoSysmap();
+	
 }

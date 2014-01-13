@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.cruxsite.client.resource.small;
+package org.cruxframework.cruxsite.client.resource.largetouch;
 
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
@@ -21,17 +21,16 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ClientBundle.Source;
 
 /**
  * @author Gesse Dafe
  *
  */
-@Resource(value="siteDeviceResources", supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch})
-public interface SiteResourcesSmall extends ClientBundle
+@Resource(value="siteDeviceResources", supportedDevices={Device.largeDisplayTouch})
+public interface SiteResourcesLargeTouch extends ClientBundle
 {
-	@Source("cssSiteSmall.css")
-	CssSiteSmall css();
+	@Source("cssSiteLargeTouch.css")
+	CssSiteLargeTouch css();
 	
 	@Source("top-menu-disposal-header-logo.jpg")
 	DataResource topMenuDisposalHeaderLogo();
@@ -39,13 +38,13 @@ public interface SiteResourcesSmall extends ClientBundle
 	@Source("noise.png")
 	DataResource noiseBg();
 	
-	@Source("banner-cross-device@2x.jpg")
+	@Source("banner-cross-device.jpg")
 	ImageResource bannerCrossDevice();
 	
-	@Source("banner-fast@2x.jpg")
+	@Source("banner-fast.jpg")
 	ImageResource bannerFast();
 	
-	@Source("banner-productivity@2x.jpg")
+	@Source("banner-productivity.jpg")
 	ImageResource bannerProductivity();
 	
 	@Source("banner-right-arrow.png")
@@ -60,7 +59,7 @@ public interface SiteResourcesSmall extends ClientBundle
 	@Source("mountain-bg.png")
 	DataResource mountainBg();
 	
-	@Source("crux-header-logo@4x.png")
+	@Source("crux-header-logo.png")
 	DataResource cruxHeaderLogo();
 	
 	@Source("br-flag.png")
@@ -87,7 +86,7 @@ public interface SiteResourcesSmall extends ClientBundle
 	@Source("icon-arrow-btn.png")
 	DataResource iconArrowBtn();
 	
-	@Source("crux-footer-logo@4x.png")
+	@Source("crux-footer-logo.png")
 	ImageResource cruxFooterLogo();
 
 	@Source("triggo-footer-logo.png")
@@ -99,17 +98,14 @@ public interface SiteResourcesSmall extends ClientBundle
 	@Source("user-img.png")
 	DataResource userBg();
 	
-	@Source("icon-3stars@4x.png")
+	@Source("icon-3stars.png")
 	DataResource icon3stars();
 	
-	@Source("icon-2stars@4x.png")
+	@Source("icon-2stars.png")
 	DataResource icon2stars();
 	
-	@Source("icon-1star@4x.png")
+	@Source("icon-1star.png")
 	DataResource icon1star();
-	
-	@Source("icon-mobile-menu@4x.png")
-	DataResource mobileMenuButton();
 	
 	@Source("bg-helloworld.png")
 	ImageResource bgHelloWorld();

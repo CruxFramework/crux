@@ -23,10 +23,10 @@
 	
 	<!-- To choose for who should it compile -->
 	
-	<!-- <set-property name="device.features" value="largeDisplayMouse"/> -->
-	<!-- <set-property name="device.features" value="largeDisplayTouch"/> -->
+<!-- 	<set-property name="device.features" value="largeDisplayMouse"/> -->
+	<set-property name="device.features" value="largeDisplayTouch"/>
 	<!-- <set-property name="device.features" value="largeDisplayArrows"/> -->
-		<set-property name="device.features" value="smallDisplayTouch"/>
+	<!-- <set-property name="device.features" value="smallDisplayTouch"/> -->
 	<!-- <set-property name="device.features" value="smallDisplayArrows"/> -->
 	
 	<!-- To enable logging -->
