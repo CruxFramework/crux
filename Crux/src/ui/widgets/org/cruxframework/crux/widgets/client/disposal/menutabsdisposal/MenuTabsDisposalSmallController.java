@@ -16,116 +16,44 @@
 package org.cruxframework.crux.widgets.client.disposal.menutabsdisposal;
 
 import org.cruxframework.crux.core.client.controller.Controller;
-import org.cruxframework.crux.core.client.controller.crossdevice.DeviceAdaptiveController;
-import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.core.client.controller.Expose;
 import org.cruxframework.crux.core.client.screen.views.View;
-import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.widgets.client.button.Button;
-import org.cruxframework.crux.widgets.client.event.SelectEvent;
-import org.cruxframework.crux.widgets.client.event.SelectHandler;
 import org.cruxframework.crux.widgets.client.simplecontainer.SimpleViewContainer;
 import org.cruxframework.crux.widgets.client.swappanel.HorizontalSwapPanel;
 import org.cruxframework.crux.widgets.client.swappanel.HorizontalSwapPanel.Direction;
 
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 
 /**
  * @author Gesse Dafe
  */
 @Controller("menuTabsDisposalSmallController")
-public class MenuTabsDisposalSmallController extends DeviceAdaptiveController implements MenuTabsDisposal
+public class MenuTabsDisposalSmallController extends AbstractMenuTabsDisposalController
 {
-	private static final String HISTORY_PREFIX = "menuTabsDisposal:";
-	
 	private HorizontalSwapPanel swapPanel;
-	private FlowPanel menuPanel;
 	private SimpleViewContainer viewContainer;
 	
-	@Override
-	public void addMenuEntry(String label, final String targetView)
-	{
-		Button menuItem = new Button();
-		menuItem.addStyleName("menuEntry");
-		menuItem.setText(label);
-		menuItem.addSelectHandler(new SelectHandler()
-		{
-			@Override
-			public void onSelect(SelectEvent event)
-			{
-				showView(targetView, true, Direction.FORWARD);
-			}
-		});
-		
-		menuPanel.add(menuItem);
-	}
-
 	@Override
 	protected void init()
 	{
 		viewContainer = new SimpleViewContainer();
 		swapPanel = getChildWidget("swapPanel");
-		menuPanel = getChildWidget("menuPanel");
 		setStyleName("crux-MenuTabsDisposal");
-		
-		Screen.addHistoryChangedHandler(new ValueChangeHandler<String>() 
-		{
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) 
-			{
-				String token = event.getValue();
-				if(token != null && token.startsWith(HISTORY_PREFIX))
-				{
-					showView(token.replace(HISTORY_PREFIX, ""), false, Direction.BACKWARDS);
-				}
-			}
-		});
+		init((FlowPanel) getChildWidget("menuTabsHeader"), (FlowPanel)  getChildWidget("menuPanel"));
 	}
 
 	@Override
+	@Expose
 	public void showMenu()
 	{
-		swapPanel.transitTo(menuPanel, Direction.BACKWARDS);
-	}
-
-	@Override
-	public void addMenuSection(final String label, String additionalStyleName)
-	{
-		Label section = new Label();
-		section.setStyleName("menuSection");
-		section.getElement().getStyle().setDisplay(Display.BLOCK);
-		section.setText(label);
-
-		if(!StringUtils.isEmpty(additionalStyleName))
+		if(swapPanel.getCurrentWidget().equals(getMenuPanel()) && getLastVisitedView() != null)
 		{
-			section.addStyleName(additionalStyleName);
-		}
-		
-		menuPanel.add(section);
-	}
-	
-	private void showView(final String targetView, boolean saveHistoryToken, Direction direction) 
-	{
-		if(saveHistoryToken)
-		{
-			History.newItem(HISTORY_PREFIX + targetView);
+			showView(getLastVisitedView(), false, Direction.FORWARD);
 		}
 		else
 		{
-			viewContainer.showView(targetView);
-			swapPanel.transitTo(viewContainer, direction);
+			swapPanel.transitTo(getMenuPanel(), Direction.BACKWARDS);
 		}
-	}
-
-	@Override
-	public void setHeaderContent(IsWidget widget) 
-	{
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -142,8 +70,9 @@ public class MenuTabsDisposalSmallController extends DeviceAdaptiveController im
 	}
 
 	@Override
-	public void showView(String targetView) 
+	protected void doShowView(String targetView, Direction direction)
 	{
-		showView(targetView, true, Direction.FORWARD);
+		viewContainer.showView(targetView);
+		swapPanel.transitTo(viewContainer, direction);
 	}
 }

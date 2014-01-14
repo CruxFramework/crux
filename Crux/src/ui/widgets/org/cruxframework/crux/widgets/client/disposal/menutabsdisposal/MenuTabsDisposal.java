@@ -19,11 +19,12 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Template;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Templates;
+import org.cruxframework.crux.widgets.client.swappanel.HorizontalSwapPanel.Direction;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * @author Thiago da Rosa de Bustamante
+ * @author Gesse Dafe
  *
  */
 @Templates({
@@ -38,5 +39,5 @@ public interface MenuTabsDisposal extends DeviceAdaptive
 	void addMenuSection(String label, String additionalStyleName);
 	void setHeaderContent(IsWidget widget);
 	String getCurrentView();
-	void showView(String targetView);
+	void showView(String targetView, Direction direction);
 }

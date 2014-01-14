@@ -83,6 +83,7 @@ DIV, TD, LABEL, SPAN, INPUT, BUTTON
 *******************************************************************************/
 
 @external crux-DefaultScreenBlocker, crux-ProgressDialogScreenBlocker, crux-MessageDialog, crux-MessageDialogScreenBlocker;
+@external menuSection-closed, menuSectionEntries-closed, menuSectionEntries;
 .crux-ProgressDialogScreenBlocker, .crux-MessageDialogScreenBlocker
 {
     background-color: #000000;
@@ -111,33 +112,124 @@ DIV, TD, LABEL, SPAN, INPUT, BUTTON
     cursor: wait;
 }
 
-@external crux-MenuTabsDisposal, menuEntry, menuSection;
+@external crux-MenuTabsDisposal, menuTabsHeader, showMenuButton, menuTabsHeaderSplitPanel, menuEntry, menuSectionEntries, menuSection;
 .crux-MenuTabsDisposal
 {
-	padding: 5px;
+}
+
+/* Styling the TD that wraps the top bar  */
+TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
+{
+	height: 60px;
+}
+.crux-MenuTabsDisposal .menuTabsHeader
+{
+	background-color: #444949;
+	height: 60px;
+	text-align: right;
+	width: 100%;
+	border: solid 0px;
+	border-bottom: solid 1px #FFFFFF;
+}
+.crux-MenuTabsDisposal .showMenuButton
+{
+	background-image: urlTopMenuDisposalShowMenuButton;
+	background-repeat: no-repeat;
+	height: 40px;
+	width: 40px;
+	background-size: 25%;
+	margin-top: 10px;
+	margin-left: 0px;
+	background-position: center;
+	background-color: transparent;
+	border: none;
+	float: left;
+	-webkit-user-select: none;
+	outline: none;
 }
 .crux-MenuTabsDisposal .menuEntry
 {
-	width: 100%;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	border-radius: 0px !important;
-	border-top: 0px;
+	margin: 0px;
+	border: solid 0px;
+	height: 40px;
+	background: white;
+	width: 85%;
+	margin-left: 15%;
+	box-shadow: 0px -20px 10px 0px rgba(0,0,0,0.02) inset;
+	color: #4c6879;
+	font-size: 16px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-shadow: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	position: relative;
+	border-radius: 0px;
+	cursor: pointer;
+}
+.crux-MenuTabsDisposal .menuEntry:after
+{
+	content: "";
+	height: 40px;
+	width: 30px;
+	border: none;
+	position: absolute;
+	top: 0px;
+	background: #81aa32;
+	right: 0px;
+	box-shadow: 0px -10px 15px -1px rgba(0,80,0,0.1) inset;
+	color: white;
+	padding: 0px;
+	overflow: auto;
+	background-image: url(right-arrow.png);
+	background-position: center;
+	background-repeat: no-repeat;
+	cursor: pointer;
 }
 .crux-MenuTabsDisposal .menuSection
 {
-	margin-top: 15px;
-	color: #FFFFFF;
-	background-color: #606060;
-	text-shadow: 0 1px 0 #000000;
-	border-radius: 3px;
-	border-bottom-left-radius: 0px;
-	border-bottom-right-radius: 0px; 
+	height: 50px;
+	color: #fff;
+	background-color: #4496c6;
+	box-shadow: inset 0px -10px 30px #3d8dbd;
+	font-size: 16px;
+	padding: 0px;
+	text-align: left;
+	line-height: 50px;
+	padding-left: 50px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-moz-user-select: none;
 	-webkit-user-select: none;
-	padding: 12px;
-	text-align: center;
-	border: 1px solid #000000;
-	border-bottom: 1px solid rgba(0,0,0,0.3);
+	-ms-user-select: none;
+	cursor: pointer;
+	border: solid 0px;
+	width: 100%;
+	position: relative;
+}
+.crux-MenuTabsDisposal .menuSection:after, .crux-MenuTabsDisposal .menuSection-closed:after 
+{
+	content: "...";
+	position: absolute;
+	right: 10px;
+	opacity: 0.0;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	transition: opacity ease-in-out 0.5s;
+}
+.crux-MenuTabsDisposal .menuSection-closed:after 
+{
+	opacity: 0.4 !important;
+}
+.crux-MenuTabsDisposal .menuSectionEntries
+{
+	transition: height 0.2s ease-in-out;
+	overflow: hidden;
+}
+.crux-MenuTabsDisposal .menuSectionEntries-closed
+{ 
 }
 
 @url urlTopMenuDisposalShowMenuButton topMenuDisposalShowMenuButton; 
