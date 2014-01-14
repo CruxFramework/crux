@@ -9,6 +9,7 @@ import org.cruxframework.crux.core.client.ioc.Inject;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.widgets.client.dialogcontainer.DialogViewContainer;
 import org.cruxframework.crux.widgets.client.disposal.menutabsdisposal.MenuTabsDisposal;
+import org.cruxframework.crux.widgets.client.swappanel.HorizontalSwapPanel.Direction;
 
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.DOM;
@@ -25,7 +26,7 @@ public class MainController
 	public void wellcome()
 	{
 		MenuTabsDisposal menuDisposal = (MenuTabsDisposal) Screen.get("menuDisposal");
-		menuDisposal.showView("wellcome");
+		menuDisposal.showView("wellcome", Direction.FORWARD);
 	}
 	
 	@Expose
