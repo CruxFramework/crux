@@ -33,6 +33,7 @@ import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.collection.FastMap;
 import org.cruxframework.crux.core.client.rest.Callback;
 import org.cruxframework.crux.core.client.rest.RestError;
+import org.cruxframework.crux.core.client.rest.RestProxy;
 import org.cruxframework.crux.core.client.rest.RestProxy.TargetRestService;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
@@ -91,11 +92,13 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 	private boolean mustGenerateStateControlMethods;
 	private QueryParameterHandler queryParameterHandler;
 	private BodyParameterHandler bodyParameterHandler;
+	private JClassType restProxyType;
 
 	public CruxRestProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
 	{
 		super(logger, context, baseIntf, false);
 		callbackType = context.getTypeOracle().findType(Callback.class.getCanonicalName());
+		restProxyType = context.getTypeOracle().findType(RestProxy.class.getCanonicalName());
 		javascriptObjectType = context.getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
 		restImplementationClass = getRestImplementationClass(baseIntf);
 		queryParameterHandler = new QueryParameterHandler(context);
@@ -206,18 +209,21 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		JMethod[] methods = baseIntf.getOverridableMethods();
 		for (JMethod method : methods)
 		{
-			Method implementationMethod = getImplementationMethod(method);
-			String methodURI = getRestURI(method, implementationMethod);
-			StateValidationModel validationModel = HttpMethodHelper.getStateValidationModel(implementationMethod);
-			if (validationModel != null && !validationModel.equals(StateValidationModel.NO_VALIDATE))
+			if (!restProxyType.equals(method.getEnclosingType()))
 			{
-				updateMethods.put(methodURI, implementationMethod);
+				Method implementationMethod = getImplementationMethod(method);
+				String methodURI = getRestURI(method, implementationMethod);
+				StateValidationModel validationModel = HttpMethodHelper.getStateValidationModel(implementationMethod);
+				if (validationModel != null && !validationModel.equals(StateValidationModel.NO_VALIDATE))
+				{
+					updateMethods.put(methodURI, implementationMethod);
+				}
+				else if (implementationMethod.getAnnotation(GET.class) != null)
+				{
+					readMethods.put(methodURI, implementationMethod);
+				}
+				restMethods.add(new RestMethodInfo(method, implementationMethod, methodURI));
 			}
-			else if (implementationMethod.getAnnotation(GET.class) != null)
-			{
-				readMethods.put(methodURI, implementationMethod);
-			}
-			restMethods.add(new RestMethodInfo(method, implementationMethod, methodURI));
 		}
 
 		mustGenerateStateControlMethods = false;
@@ -564,12 +570,12 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		JType[] parameterTypes = method.getParameterTypes();
 		if (parameterTypes == null || parameterTypes.length < 1)
 		{
-			throw new CruxGeneratorException("Invalid signature for rest proxy method. Any method must have a last parameter of type RestProxy.Callback");
+			throw new CruxGeneratorException("Invalid signature for rest proxy method. Any method must have a last parameter of type Callback");
 		}
 		JClassType lastParameterType = parameterTypes[parameterTypes.length - 1].isClassOrInterface();
 		if (lastParameterType == null || !callbackType.isAssignableFrom(lastParameterType))
 		{
-			throw new CruxGeneratorException("Invalid signature for rest proxy method. Any method must have a last parameter of type RestProxy.Callback");
+			throw new CruxGeneratorException("Invalid signature for rest proxy method. Any method must have a last parameter of type Callback");
 		}
 	}
 
