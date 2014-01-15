@@ -70,8 +70,10 @@ public abstract class ScreenResourcesScanner
 			try
 			{
 				URLIterator it = IteratorFactory.create(url, filter);
-				while (it.next() != null); 
-
+				if (it != null)
+				{
+					while (it.next() != null); 
+				}
 			}
 			catch (IOException e)
 			{

@@ -39,8 +39,8 @@ import com.google.gwt.editor.client.Editor.Path;
  * public class MyRestService
  * {
  *    {@code @}{@link GET}
- *    {@code @}{@link Path}("hello/${userName}")
- *    public String sayHello({@code @}{@link PathParam} String userName)
+ *    {@code @}{@link Path}("hello/{userName}")
+ *    public String sayHello({@code @}{@link PathParam}("userName") String userName)
  *    {
  *        return "Hello "+userName+"!";
  *    }
