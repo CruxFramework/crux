@@ -268,7 +268,10 @@ public class AnnotationDB extends AbstractScanner implements Serializable
 				};
 	
 				URLIterator it = IteratorFactory.create(url, filter);
-	
+				if(it == null)
+				{
+					return;
+				}
 				URL found;
 				while ((found = it.next()) != null)
 				{
