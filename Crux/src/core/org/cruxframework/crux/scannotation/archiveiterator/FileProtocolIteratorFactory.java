@@ -20,6 +20,10 @@ public class FileProtocolIteratorFactory implements DirectoryIteratorFactory
 		try
 		{
 			File f = new File(url.toURI());
+			if (!f.exists())
+			{
+				return null;
+			}
 			if (f.isDirectory())
 			{
 				return new FileIterator(f, filter);

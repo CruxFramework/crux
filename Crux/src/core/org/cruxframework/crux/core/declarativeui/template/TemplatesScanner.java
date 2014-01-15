@@ -96,6 +96,10 @@ public class TemplatesScanner extends AbstractScanner
 			try
 			{
 				URLIterator it = IteratorFactory.create(url, filter);
+				if (it == null)
+				{
+					return;
+				}
 				URL found;
 				while ((found = it.next()) != null)
 				{

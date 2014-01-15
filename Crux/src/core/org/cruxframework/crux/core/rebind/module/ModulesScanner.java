@@ -181,6 +181,10 @@ public class ModulesScanner extends AbstractScanner
 			try
 			{
 				URLIterator it = IteratorFactory.create(url, filter);
+				if (it == null)
+				{
+					return;
+				}
 				URL found = null;
 				while ((found = it.next()) != null)
 				{

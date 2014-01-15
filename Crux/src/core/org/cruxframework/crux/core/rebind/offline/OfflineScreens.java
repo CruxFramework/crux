@@ -95,9 +95,12 @@ public class OfflineScreens
 			{
 				URLIterator it = IteratorFactory.create(url, filter);
 				URL found;
-				while ((found = it.next()) != null)
+				if (it != null)
 				{
-					screens.add(found);
+					while ((found = it.next()) != null)
+					{
+						screens.add(found);
+					}
 				}
 			}
 			catch (IOException e)
