@@ -670,9 +670,6 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	height: inherit;
 	min-height: inherit;
 	position: relative;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
 }
 .crux-Dialog .dialogTopBar, .crux-ProgressBox .dialogTopBar, .crux-FlatMessageBox .dialogTopBar
 {
