@@ -11,6 +11,8 @@ import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
 import org.cruxframework.crux.widgets.client.swappanel.HorizontalSwapPanel.Direction;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -79,17 +81,29 @@ abstract class AbstractMenuTabsDisposalController extends DeviceAdaptiveControll
 		}
 	}
 
-	protected void showView(String targetView, boolean saveHistory, Direction direction) 
+	protected void showView(final String targetView, boolean saveHistory, Direction direction) 
 	{
 		if(saveHistory)
 		{
-			History.newItem(HISTORY_PREFIX + targetView);
+			if(lastVisitedView == null || !lastVisitedView.equals(targetView))
+			{
+				ScheduledCommand cmd = new ScheduledCommand()
+				{
+					@Override
+					public void execute()
+					{
+						History.newItem(HISTORY_PREFIX + targetView);
+					}
+				};
+				
+				Scheduler.get().scheduleDeferred(cmd );
+
+				return;
+			}
 		}
-		else
-		{
-			lastVisitedView = targetView;
-			doShowView(targetView, direction);
-		}
+		
+		lastVisitedView = targetView;
+		doShowView(targetView, direction);
 	}
 
 	@Override
@@ -175,7 +189,7 @@ abstract class AbstractMenuTabsDisposalController extends DeviceAdaptiveControll
 	@Override
 	public final void showView(String targetView, Direction direction) 
 	{
-		showView(targetView, false, Direction.FORWARD);
+		showView(targetView, true, Direction.FORWARD);
 	}
 	
 	public FlowPanel getMenuPanel()
