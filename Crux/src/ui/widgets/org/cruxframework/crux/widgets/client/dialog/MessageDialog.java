@@ -228,6 +228,30 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	 */
 	public void show()
 	{
+		//if it's a touch device, then we should wait for virtual keyboard to get closed.
+		//Otherwise the dialog message will not be properly centered in screen.  
+		if(Screen.isTouchDevice())
+		{
+			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
+			{
+				@Override
+				public boolean execute() 
+				{
+					doShow();
+					return false;
+				}
+			}, 1000);
+		} else 
+		{
+			doShow();
+		}
+	}
+	
+	/**
+	 * Show message dilaog. The dialog is centered and the screen is blocked for edition
+	 */
+	private void doShow()
+	{
 		try
 		{
 			Screen.blockToUser("crux-MessageDialogScreenBlocker");

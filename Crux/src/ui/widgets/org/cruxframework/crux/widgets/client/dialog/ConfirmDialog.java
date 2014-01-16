@@ -28,6 +28,8 @@ import org.cruxframework.crux.widgets.client.event.OkHandler;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -204,6 +206,30 @@ public class ConfirmDialog  implements HasOkHandlers, HasCancelHandlers, HasAnim
 	 * Show message dilaog. The dialog is centered and the screen is blocked for edition
 	 */
 	public void show()
+	{
+		//if it's a touch device, then we should wait for virtual keyboard to get closed.
+		//Otherwise the dialog message will not be properly centered in screen.  
+		if(Screen.isTouchDevice())
+		{
+			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
+			{
+				@Override
+				public boolean execute() 
+				{
+					doShow();
+					return false;
+				}
+			}, 1000);
+		} else 
+		{
+			doShow();
+		}
+	}
+	
+	/**
+	 * Show message dilaog. The dialog is centered and the screen is blocked for edition
+	 */
+	private void doShow()
 	{
 		try
 		{

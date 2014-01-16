@@ -675,6 +675,15 @@ public class Screen
 		return (userAgent.indexOf("android") > 0);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean isTouchDevice()
+	{
+		return isIos() || isAndroid();
+	}
+	
     public static native void reload() /*-{
     	$wnd.top.location.reload();
   	}-*/;
