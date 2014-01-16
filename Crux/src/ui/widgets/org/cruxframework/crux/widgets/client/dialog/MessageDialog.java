@@ -228,6 +228,15 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	 */
 	public void show()
 	{
+		try
+		{
+			Screen.blockToUser("crux-ConfirmDialogScreenBlocker");
+		} catch (Exception e)
+		{
+			Crux.getErrorHandler().handleError(e);
+			Screen.unblockToUser();
+		}
+		
 		//if it's a touch device, then we should wait for virtual keyboard to get closed.
 		//Otherwise the dialog message will not be properly centered in screen.  
 		if(Screen.isTouchDevice())
@@ -254,7 +263,6 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	{
 		try
 		{
-			Screen.blockToUser("crux-MessageDialogScreenBlocker");
 			openedDialogBoxes.add(dialogBox);
 			dialogBox.center();
 			dialogBox.show();
