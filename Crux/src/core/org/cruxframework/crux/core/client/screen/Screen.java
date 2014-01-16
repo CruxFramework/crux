@@ -664,7 +664,16 @@ public class Screen
 		String userAgent = Window.Navigator.getUserAgent().toLowerCase();
 		return (userAgent.indexOf("iphone") > 0 || userAgent.indexOf("ipod") > 0 || userAgent.indexOf("ipad") > 0);
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean isTouchDevice()
+	{
+		return isIos() || isAndroid();
+	}
+	
 	/**
 	 * 
 	 * @return
