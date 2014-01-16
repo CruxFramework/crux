@@ -4,7 +4,7 @@
 	xmlns:c="http://www.cruxframework.org/crux" 
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
-	xmlns:site="http://www.cruxframework.org/crux/site" >
+	xmlns:site="http://www.cruxframework.org/crux/site">
 	
 	<head>
 		<title>Crux Framework</title>

@@ -20,7 +20,7 @@
 			<div class="separator"></div>
 			<div class="container">
 				<h2>MAVEN - Arquetype</h2>
-				<p>Para usar um : <a href="http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml" title="antigo" target="_blank" class="defaultLink">http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml</a> </p>
+				<p>Para usar um: <a href="http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml" title="antigo" target="_blank" class="defaultLink">http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml</a> </p>
 			</div>
 			<div class="separator"></div>
 			<div class="container">

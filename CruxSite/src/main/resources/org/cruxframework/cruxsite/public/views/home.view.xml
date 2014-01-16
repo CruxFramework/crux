@@ -9,7 +9,7 @@
 	onLoad="mainController.onLoad"
 	> 
 	
-		<div class="container">
+		<div class="container containerBanner">
 			<crux:promoBanner id="promoBanner" largeBannersHeight="312px" smallBannersHeight="312px" 
 				autoTransitionInterval="2000000" transitionDuration="400" width="100%">
 				<crux:banner image="${siteDeviceResources.bannerFast}" buttonLabel="" title="Desempenho" text="Aplicações rápidas e escaláveis. Baixo tráfego de rede, processamento cliente otimizado, e consumo de memória irrisório no servidor."/>
