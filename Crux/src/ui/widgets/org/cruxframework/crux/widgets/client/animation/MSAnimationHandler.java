@@ -292,8 +292,12 @@ class MSAnimationHandler implements AnimationHandler
 		{
 			callback.@org.cruxframework.crux.widgets.client.animation.Animation.Callback::onTransitionCompleted()();
 			el.removeEventListener('msTransitionEnd', func);
+			//ie10
+			el.removeEventListener('transitionend', func);
 		};
-			el.addEventListener('msTransitionEnd', func); 			
+			el.addEventListener('msTransitionEnd', func);
+			//ie10
+			el.addEventListener('transitionend', func); 	 			
 	}-*/;
 
 	private native void resetTransition(Element el)/*-{
