@@ -239,7 +239,7 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 		
 		//if it's a touch device, then we should wait for virtual keyboard to get closed.
 		//Otherwise the dialog message will not be properly centered in screen.  
-		if(Screen.isTouchDevice())
+		if(Screen.isMobileDevice())
 		{
 			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
 			{

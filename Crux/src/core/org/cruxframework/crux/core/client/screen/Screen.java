@@ -679,7 +679,7 @@ public class Screen
 	 * 
 	 * @return
 	 */
-	public static boolean isTouchDevice()
+	public static boolean isMobileDevice()
 	{
 		return isIos() || isAndroid();
 	}
