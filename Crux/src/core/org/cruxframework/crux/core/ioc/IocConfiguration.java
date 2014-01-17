@@ -16,8 +16,9 @@
 package org.cruxframework.crux.core.ioc;
 
 /**
+ * Base interface for an IoC configuration class.
+ *  
  * @author Thiago da Rosa de Bustamante
- *
  */
 public interface IocConfiguration
 {

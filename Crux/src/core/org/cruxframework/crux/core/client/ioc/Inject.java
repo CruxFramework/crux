@@ -42,6 +42,12 @@ import java.lang.annotation.Target;
 public @interface Inject 
 {
 	public static enum Scope{LOCAL, DOCUMENT, VIEW}
+	/**
+	 * Defines the scope where the created object will be saved
+	 */
 	Scope scope() default Scope.LOCAL;
+	/**
+	 * Used to create a custom scope inside one of the main scope, defined by the scope attribute. 
+	 */
 	String subscope() default "";
 }
