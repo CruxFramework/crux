@@ -50,6 +50,15 @@ public class WidgetCreatorContext
 	{
         return widgetElement.optString(propertyName);
 	}
+	public String readWidgetProperty(String propertyName, String defaultValue)
+	{
+		String property = readWidgetProperty(propertyName);
+		if (StringUtils.isEmpty(property))
+		{
+			return defaultValue;
+		}
+		return property;
+	}
 	public boolean readBooleanWidgetProperty(String propertyName, boolean defaultValue)
 	{
 		String property = readWidgetProperty(propertyName);
@@ -62,6 +71,15 @@ public class WidgetCreatorContext
 	public String readChildProperty(String propertyName)
 	{
 		return childElement.optString(propertyName);
+	}
+	public String readChildProperty(String propertyName, String defaultValue)
+	{
+		String property = readChildProperty(propertyName);
+		if (StringUtils.isEmpty(property))
+		{
+			return defaultValue;
+		}
+		return property;
 	}
 	public boolean readBooleanChildProperty(String propertyName, boolean defaultValue)
 	{

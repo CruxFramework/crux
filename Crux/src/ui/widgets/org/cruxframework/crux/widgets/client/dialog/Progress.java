@@ -16,8 +16,11 @@
 package org.cruxframework.crux.widgets.client.dialog;
 
 import org.cruxframework.crux.core.client.Crux;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive;
 import org.cruxframework.crux.core.client.screen.Screen;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasAnimation;
@@ -89,12 +92,37 @@ public class Progress implements HasAnimation, IsWidget
 
 	public void show()
 	{
+		Screen.blockToUser("crux-ProgressDialogScreenBlocker");
+		
+		//if it's a touch device, then we should wait for virtual keyboard to get closed.
+		//Otherwise the dialog message will not be properly centered in screen.  
+		if(Screen.getCurrentDevice().getInput().equals(DeviceAdaptive.Input.touch))
+		{
+			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
+			{
+				@Override
+				public boolean execute() 
+				{
+					doShow();
+					return false;
+				}
+			}, 1000);
+		}
+		else 
+		{
+			doShow();
+		}
+	}
+	
+	/**
+	 * Show message dilaog. The dialog is centered and the screen is blocked for edition
+	 */
+	private void doShow()
+	{
 		try
 		{
-			Screen.blockToUser("crux-ProgressDialogScreenBlocker");
-
 			dialog.center();
-			dialog.show();				
+			dialog.show();
 		}
 		catch (Exception e)
 		{
