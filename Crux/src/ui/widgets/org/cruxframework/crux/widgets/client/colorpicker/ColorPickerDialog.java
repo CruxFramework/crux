@@ -19,6 +19,7 @@ package org.cruxframework.crux.widgets.client.colorpicker;
 import java.util.Arrays;
 import java.util.List;
 
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler;
 import org.cruxframework.crux.widgets.client.WidgetMessages;
@@ -29,6 +30,8 @@ import org.cruxframework.crux.widgets.client.event.SelectHandler;
 import org.cruxframework.crux.widgets.client.util.ColorUtils;
 
 import com.google.gwt.canvas.client.Canvas;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.PartialSupport;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
@@ -167,6 +170,33 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 		return new Button(text, buttonSelectHandler);
 	}
 
+	@Override
+	public void show()
+	{
+		//if it's a touch device, then we should wait for virtual keyboard to get closed.
+		//Otherwise the dialog message will not be properly centered in screen.  
+		if(Screen.getCurrentDevice().getInput().equals(DeviceAdaptive.Input.touch))
+		{
+			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
+			{
+				@Override
+				public boolean execute() 
+				{
+					doShow();
+					return false;
+				}
+			}, 1000);
+		} else 
+		{
+			doShow();
+		}
+	}
+	
+	private void doShow()
+	{
+	    super.show();
+	}
+	
 	protected HorizontalPanel createDialogArea()
 	{
 		setText(messages.colorPickerDialogSelectColor());
