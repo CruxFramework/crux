@@ -1202,6 +1202,7 @@ pre.programlisting{
 	margin-top:10px;
 }
 
+/*
 @external logoSysmap;
 @url logoSysmap logoSysmap;
 .logoSysmap{
@@ -1210,3 +1211,4 @@ pre.programlisting{
 	background:logoSysmap no-repeat;
 	display:inline-block;
 }
+*/

@@ -12,9 +12,9 @@
 		<div class="container containerBanner">
 			<crux:promoBanner id="promoBanner" largeBannersHeight="312px" smallBannersHeight="312px" 
 				autoTransitionInterval="2000000" transitionDuration="400" width="100%">
-				<crux:banner image="${siteDeviceResources.bannerFast}" buttonLabel="" title="Desempenho" text="Aplicações rápidas e escaláveis. Baixo tráfego de rede, processamento cliente otimizado, e consumo de memória irrisório no servidor."/>
-				<crux:banner image="${siteDeviceResources.bannerCrossDevice}" buttonLabel="" title="Multi-Dispositivo!" text="Uma única aplicação que se adequa automaticamente a qualquer dispositivo, seja celular, tablet ou desktop."/>
-				<crux:banner image="${siteDeviceResources.bannerProductivity}" buttonLabel="" title="Produtividade" text="Codifique em Java, com o poder do GWT, mas com uma API de alto nível provida pelo Crux."/>
+				<crux:banner image="${siteDeviceResources.bannerFast}" buttonLabel="" title="Desempenho" text="Aplicações rápidas e escaláveis. Baixo tráfego de rede, processamento no cliente otimizado e consumo de memória irrisório no servidor."/>
+				<crux:banner image="${siteDeviceResources.bannerCrossDevice}" buttonLabel="" title="Multi-Dispositivo!" text="Uma única aplicação que se adequa automaticamente a qualquer tipo de dispositivo: celular, tablet, desktop ou TV."/>
+				<crux:banner image="${siteDeviceResources.bannerProductivity}" buttonLabel="" title="Produtividade" text="Codifique em Java com o poder do GWT, mas, em uma API de alto nível provida pelo Crux."/>
 				
 			</crux:promoBanner>
 		</div>
@@ -35,11 +35,11 @@
 						</div>
 					</li>
 					<li class="liLast">
+						<crux:anchor id="quickstartButton" href="#topMenuDisposal:quickstart" text="Crux Quickstart" styleName="quickstartBannerBtn"></crux:anchor>
 						<h2>Posts do Blog</h2>
 						<div class="greenBlock">
 							<crux:rssPanel id="lastBlogEntries" title="" entryTitleStyleName="box" maxTitleSize="69" />
 						</div>
-						<crux:anchor id="quickstartButton" href="#topMenuDisposal:quickstart" text="Crux Quickstart" styleName="quickstartBannerBtn"></crux:anchor>
 					</li>
 					<div class="clear"></div>
 				</ul>

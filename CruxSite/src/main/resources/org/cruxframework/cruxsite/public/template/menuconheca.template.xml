@@ -17,7 +17,7 @@
 			<crux:anchor id="linkCase" href="#topMenuDisposal:cases" text="Cases"></crux:anchor>
 		</li>
 		<li>
-			<crux:anchor id="linkShowcase" target="_blank" href="http://crux-crossdevice-showcase.appspot.com/crossdeviceshowcase/index.html" text="Showcase"></crux:anchor>
+			<crux:anchor id="linkShowcase" target="_blank" href="http://showcase5.cruxframework.org/" text="Showcase 5"></crux:anchor>
 		</li>
 	</ul>
 </gwt:HTMLPanel> 

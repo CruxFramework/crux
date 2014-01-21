@@ -30,14 +30,18 @@
 				<ul class="buttonsDownload">
 					<li>
 						<h2>Maven - Arquetype</h2>
-						<p>Para usar um: <a href="http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml" title="antigo" target="_blank" class="defaultLink">http://oss.sonatype.org/content/repos<br />itories/snapshots/archetype-catalog.xml</a> </p>
+						<p> Em breve vamos disponibilidar arquetypes para projetos em Crux. </p>
+						<!-- <p>Para usar um: <a href="http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml" title="antigo" target="_blank" class="defaultLink">http://oss.sonatype.org/content/repos<br />itories/snapshots/archetype-catalog.xml</a> </p>
+						 -->
 					</li>
 					<li>
 						<h2>Download do Código-Fonte</h2>
 						<crux:anchor href="https://crux-framework.googlecode.com/svn/trunk/Crux/" text="Download do Código-Fonte (SVN)" id="sourceCodeBtn" styleName="btn btn-bigblue"></crux:anchor> 
 						<p>
 							O Crux Framework é Open-source. Isso significa que você é livre para baixar e utilizar ou alterar o código a sua maneira. <br /> 
+							<!-- 
 				     		<a href="https://crux-framework.googlecode.com/svn/trunk/Crux/" title="antigo" target="_blank" class="defaultLink">Repositório Trunk</a>.
+				     		 -->
 				     	</p>
 					</li>
 					<div class="clear"></div>
