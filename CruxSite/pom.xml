@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cruxframework</groupId>
     <artifactId>CruxSite</artifactId>
-    <version>5.0.0</version>
+    <version>1.3</version>
     <name>cruxsite</name>
     <packaging>war</packaging>
     <description>Crux Site</description>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cruxVersion>5.0.4.3</cruxVersion>
+        <cruxVersion>5.0.4.13</cruxVersion>
         <webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory>
         <webinf.folder>${webappDirectory}/WEB-INF/</webinf.folder>
         <webinf.lib.folder>${webinf.folder}/lib/</webinf.lib.folder>
