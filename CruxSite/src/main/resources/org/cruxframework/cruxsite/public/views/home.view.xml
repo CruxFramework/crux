@@ -12,10 +12,12 @@
 		<div class="container containerBanner">
 			<crux:promoBanner id="promoBanner" largeBannersHeight="312px" smallBannersHeight="312px" 
 				autoTransitionInterval="2000000" transitionDuration="400" width="100%">
-				<crux:banner image="${siteDeviceResources.bannerFast}" buttonLabel="" title="Desempenho" text="Aplicações rápidas e escaláveis. Baixo tráfego de rede, processamento no cliente otimizado e consumo de memória irrisório no servidor."/>
-				<crux:banner image="${siteDeviceResources.bannerCrossDevice}" buttonLabel="" title="Multi-Dispositivo!" text="Uma única aplicação que se adequa automaticamente a qualquer tipo de dispositivo: celular, tablet, desktop ou TV."/>
-				<crux:banner image="${siteDeviceResources.bannerProductivity}" buttonLabel="" title="Produtividade" text="Codifique em Java com o poder do GWT, mas, em uma API de alto nível provida pelo Crux."/>
-				
+				<crux:banner image="${siteDeviceResources.bannerFast}" buttonLabel="" title="Desempenho" 
+				             text="Aplicações rápidas e escaláveis. Baixo tráfego de rede, processamento no cliente otimizado e consumo de memória irrisório no servidor."/>
+				<crux:banner image="${siteDeviceResources.bannerCrossDevice}" buttonLabel="" title="Multi-Dispositivo!" 
+				             text="Uma única aplicação que se adequa automaticamente a qualquer tipo de dispositivo: celular, tablet, desktop ou TV."/>
+				<crux:banner image="${siteDeviceResources.bannerProductivity}" buttonLabel="" title="Produtividade" 
+				             text="Codifique em Java com o poder do GWT, mas, em uma API de alto nível provida pelo Crux."/>
 			</crux:promoBanner>
 		</div>
 		
@@ -26,7 +28,8 @@
 						<h2>O que é Crux?</h2>
 						<div class="greenBlock">
 							<p>
-							O <b>Crux Framework</b> remove as fronteiras das suas aplicações tornando a Internet sua extensão natural, trazendo infinitas oportunidades para o seu negócio.
+							O <b>Crux Framework</b> traz infinitas oportunidades para o seu negócio  
+							tornando a Internet uma extensão natural para as suas aplicações.
 							</p>
 							<div class="separator"></div>
 							<p></p>

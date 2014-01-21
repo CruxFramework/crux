@@ -16,7 +16,7 @@
 				<ul class="buttonsDownload">
 					<li>
 						<h2>Baixar os JARs do Crux</h2>
-						<crux:anchor href="http://crux-framework.googlecode.com/files/crux-4.0.1.zip" text="Download .JAR (v5.0)" id="downloadJarBtn" styleName="btn btn-bigblue"></crux:anchor> 
+						<crux:anchor href="http://crux-framework.googlecode.com/files/crux-5.0.4.zip" text="Download .JAR (v5.0.4)" id="downloadJarBtn" styleName="btn btn-bigblue"></crux:anchor> 
 					</li>
 					<li>
 						<h2>Versões Anteriores</h2>
@@ -38,7 +38,7 @@
 						<h2>Download do Código-Fonte</h2>
 						<crux:anchor href="https://crux-framework.googlecode.com/svn/trunk/Crux/" text="Download do Código-Fonte (SVN)" id="sourceCodeBtn" styleName="btn btn-bigblue"></crux:anchor> 
 						<p>
-							O Crux Framework é Open-source. Isso significa que você é livre para baixar e utilizar ou alterar o código a sua maneira. <br /> 
+							O Crux Framework é Open-source. Isso significa que você é livre para baixar, utilizar e alterar o código a sua maneira. <br /> 
 							<!-- 
 				     		<a href="https://crux-framework.googlecode.com/svn/trunk/Crux/" title="antigo" target="_blank" class="defaultLink">Repositório Trunk</a>.
 				     		 -->
