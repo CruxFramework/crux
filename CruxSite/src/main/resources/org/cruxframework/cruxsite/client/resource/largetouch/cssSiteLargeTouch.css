@@ -1186,7 +1186,29 @@ pre.programlisting{
 .quickstartBannerBtn:hover{
 	background:#084c58;
 }
+
 @external containerBanner;
 .containerBanner{
 	padding:0 !important;
+}
+
+@external buttonsDownload, btn-bigblue;
+.buttonsDownload{
+	list-style:none;
+	padding:0;
+	margin:0;
+}
+.buttonsDownload li{
+	float:left;
+	width:50%;
+	
+}
+.btn-bigblue{
+	padding:15px 30px;
+	color:#fff;
+	font-size:14px;
+	border-radius:4px;
+	background:#01404e;
+	display:inline-block;
+	margin-top:10px;
 }

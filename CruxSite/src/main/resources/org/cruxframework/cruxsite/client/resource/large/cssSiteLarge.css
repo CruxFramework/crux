@@ -1180,3 +1180,33 @@ pre.programlisting{
 .quickstartBannerBtn:hover{
 	background:#084c58;
 }
+
+@external buttonsDownload, btn-bigblue;
+.buttonsDownload{
+	list-style:none;
+	padding:0;
+	margin:0;
+}
+.buttonsDownload li{
+	float:left;
+	width:50%;
+	
+}
+.btn-bigblue{
+	padding:15px 30px;
+	color:#fff;
+	font-size:14px;
+	border-radius:4px;
+	background:#01404e;
+	display:inline-block;
+	margin-top:10px;
+}
+
+@external logoSysmap;
+@url logoSysmap logoSysmap;
+.logoSysmap{
+	width:141px;
+	height:47px;
+	background:logoSysmap no-repeat;
+	display:inline-block;
+}
