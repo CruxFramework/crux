@@ -14,18 +14,25 @@
 		<div class="bigText">
 			<div class="container">
 			
-				<h2>A Triggo Labs</h2>	
+				<h2>Triggo Labs</h2>	
 				
 				<p> A <a href="http://prototipos.sysmap.com.br/triggo/site/" title="Triggo" target="_blank" class="defaultLink">Triggo Labs</a> 
 				é uma startup que tem como desafio oferecer ao mercado uma plataforma de desenvolvimento de 
 				aplicações web que seja eficiente, escalável e que ofereça o máximo de produtividade para 
 				seus usuários.</p>
 				
+				<p>Uma equipe altamente qualificada está dedicada a fazer do Crux uma ferramenta cada vez mais
+				poderosa. Como o Crux é uma framework livre, a comunidade também pode contribuir com a evolução
+				do Crux. Veja como participar da comunidade de usuários do Crux. </p>
+				
 			</div>	
 			<div class="separator"></div>
 			<div class="container">
 			
 				<h2>Gestão Triggo Labs</h2>	
+				
+				<p>O corpo gestor da Triggo Labs:</p>
+				
 				<ul class="teamList">
 					<li>
 						<h3>Geraldo Batista</h3>

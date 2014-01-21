@@ -15,7 +15,8 @@
 			<ul class="communityBlocks"  style="font-size: 15px;line-height: 27px;text-align: justify;">
 				<li>
 					<h2>Desenvolvimento de Aplicações com Crux</h2>
-					<p>Se você irá usar o Crux Framework para desenvolver aplicações Web crossdevice existe uma séria de recursos para que você possa aprender como usar o Crux Framework: </p>
+					<p>Se você irá usar o Crux Framework para desenvolver aplicações Web crossdevice existe uma séria de recursos 
+					para que você possa conhecer e aprender como usar o Crux Framework: </p>
 					<ul class="communityItens" style="font-size: 15px;">
 					    <li>
 					    	<crux:anchor id="linkSaibaMais" href="#topMenuDisposal:saibamais" text="Saiba Mais"></crux:anchor>
@@ -30,7 +31,8 @@
 				</li>
 				<li>
 					<h2>Desenvolvimento do Crux Framework</h2>
-					<p>Se você irá contribuir com desenvolvimento do Crux Framework ou de novos componentes para o Crux você pode baixar o repositório no google code e enviar suas contribuições pelos canais da Comunidade.</p>
+					<p>Se você irá contribuir com desenvolvimento do Crux Framework ou de novos componentes para o Crux você pode 
+					baixar o repositório no google code e enviar suas contribuições pelos canais da Comunidade.</p>
 				    <ul class="communityItens" style="font-size: 15px;">
 						<li>
 					    	<crux:anchor id="linkDownloads" href="#topMenuDisposal:download" text="Downloads"></crux:anchor>
