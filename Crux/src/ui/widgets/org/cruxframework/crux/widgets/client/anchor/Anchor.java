@@ -42,7 +42,7 @@ import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasHTML;
 
 /**
- * A cross device anchor, that use touch events on touch enabled devices to implement Google Fast Buttons
+ * A cross devdice anchor, that use touch events on touch enabled devices to implement Google Fast Buttons
  * @author Thiago da Rosa de Bustamante
  *
  */
