@@ -810,7 +810,6 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("<xs:attribute name=\"fragment\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"useController\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"useResource\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"useSerializable\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"useFormatter\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"useDataSource\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"useView\" type=\"xs:string\"/>");
@@ -1323,7 +1322,6 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("<xs:attribute name=\"library\" type=\"xs:string\" use=\"required\"/>");
 		out.println("<xs:attribute name=\"useController\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"useResource\" type=\"xs:string\"/>");
-		out.println("<xs:attribute name=\"useSerializable\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"useFormatter\" type=\"xs:string\"/>");
 		out.println("<xs:attribute name=\"useDataSource\" type=\"xs:string\"/>");
 		out.println("</xs:complexType>");
