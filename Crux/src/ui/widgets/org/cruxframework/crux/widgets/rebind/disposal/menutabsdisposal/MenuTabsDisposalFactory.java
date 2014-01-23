@@ -18,7 +18,7 @@ import org.cruxframework.crux.widgets.client.disposal.menutabsdisposal.MenuTabsD
 
 /**
  * 
- * @author Thiago da Rosa de Bustamante
+ * @author Gesse Dafe
  *
  */
 @DeclarativeFactory(library="widgets", id="menuTabsDisposal", targetWidget=MenuTabsDisposal.class)
