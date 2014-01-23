@@ -34,4 +34,8 @@ public @interface TagAttributeDeclaration
 	boolean required() default false;
 	boolean supportsI18N() default false;
 	boolean supportsResources() default false;
+	/**
+	 * A description to be used to compose the documentation of the generated library 
+	 */
+	String description() default "";
 }

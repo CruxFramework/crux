@@ -38,6 +38,7 @@ public class SchemaGenerator
 		CruxSchemaGenerator generator = CruxSchemaGeneratorFactory.createSchemaGenerator(projectBaseDir, outputDir, webDir);
 		generator.generateSchemas();
 		generator.generateCatalog();
+		generator.generateDocumentation();
 	}
 	
 	/**

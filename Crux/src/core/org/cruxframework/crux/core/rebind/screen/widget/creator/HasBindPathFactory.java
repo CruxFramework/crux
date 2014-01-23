@@ -16,17 +16,17 @@
 package org.cruxframework.crux.core.rebind.screen.widget.creator;
 
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.event.ValueChangeEvtBind;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
 
 /**
+ * A helper class to help on widgets that supports binding with dataObjects on View creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
-@TagEvents({
-	@TagEvent(ValueChangeEvtBind.class)
+@TagAttributesDeclaration({
+	@TagAttributeDeclaration(value="bindPath", description="Sets a property path (eg. property1.proerty2) on the View's associated dataObject. Crux will handle data binding between this dataObject property and this widget. To transfer data between objects and views, cast your view to BindableView and call getData and setData methods. ")	
 })	
-public interface HasValueChangeHandlersFactory<C extends WidgetCreatorContext> extends HasBindPathFactory<C>
+public interface HasBindPathFactory<C extends WidgetCreatorContext>
 {
 }

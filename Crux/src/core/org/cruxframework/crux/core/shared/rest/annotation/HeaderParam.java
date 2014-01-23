@@ -22,7 +22,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Used to map a REST method parameter to a header on the HTTP request
+ * <p>
+ * See the following example:
+ * <pre>
+ * ..
+ * {@code @}{@link GET}
+ * {@code @}{@link Path}("test")
+ * public String testOperation({@code @}HeaderParam("header") String value) {
+ *    return null;
+ * }
+ * </pre>
+ * </p>
+ * <p>
+ * The header "header" will be bound to the value parameter when processing this method 
+ * invocation.
+ * </p>
  * @author Thiago da Rosa de Bustamante
  *
  */

@@ -168,7 +168,7 @@ public class IDBDatabaseProxyCreator extends AbstractDatabaseProxyCreator
         {
 			if (index.keyPath.length == 1)
 			{//TODO ensureValidIdentifier... remove ',' etc
-				generateIndexCreation(srcWriter, index.keyPath[0], index.unique, index.multiEntry, index.indexName, objectStoreVar, indexNamesVar);
+				generateIndexCreation(srcWriter, index.keyPath[0], index.unique, false, index.indexName, objectStoreVar, indexNamesVar);
 			}
 			else
 			{

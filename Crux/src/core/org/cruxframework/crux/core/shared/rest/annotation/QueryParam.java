@@ -21,7 +21,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Used to map a REST method parameter to a query parameter on the HTTP request
+ * <p>
+ * See the following example:
+ * <pre>
+ * ..
+ * {@code @}{@link GET}
+ * {@code @}{@link Path}("test")
+ * public String testOperation({@code @}QueryParam("param1") String value) {
+ *    return null;
+ * }
+ * </pre>
+ * </p>
+ * <p>
+ * The parameter value will be bound to the query "param1" parameter sent to the server. 
+ * </p>
  * @author Thiago da Rosa de Bustamante
  *
  */

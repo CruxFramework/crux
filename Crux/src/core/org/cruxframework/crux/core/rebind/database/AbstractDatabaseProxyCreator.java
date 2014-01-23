@@ -139,11 +139,10 @@ public abstract class AbstractDatabaseProxyCreator extends AbstractInterfaceWrap
 			{
 				throw new CruxGeneratorException("Can not create an index without a key definition. Index ["+indexName+"] ObjectStore["+objectStoreName+"] Datasource ["+databaseMetadata.name()+"].");
 			}
-			indexesCreated.add(new IndexData(index.keyPath(), index.unique(), index.multiEntry(), indexName));
+			indexesCreated.add(new IndexData(index.keyPath(), index.unique(), index.keyPath().length > 1, indexName)); // && index.multiEntry()
 		}
 	}
 	
-
 	protected List<IndexData> getIndexFromAnnotations(JClassType objectStoreTarget, String prefix)
     {
 		List<IndexData> result = new ArrayList<IndexData>();

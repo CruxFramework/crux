@@ -21,11 +21,12 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 
 /**
+ * A helper class to help on HasChangeHandlers widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagEvents({
-	@TagEvent(ChangeEvtBind.class)
+	@TagEvent(value=ChangeEvtBind.class, description="Inform the handler for onChange event. This event is fired when the widget's value changes.")
 })	
 public interface HasChangeHandlersFactory<C extends WidgetCreatorContext>
 {

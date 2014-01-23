@@ -21,9 +21,23 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
+ * Used to map a REST parameter to a cookie on the HTTP request
+ * <p>
+ * See the following example:
+ * <pre>
+ * ..
+ * {@code @}{@link GET}
+ * {@code @}{@link Path}("test")
+ * public String testOperation({@code @}CookieParam("cookieName") String value) {
+ *    return null;
+ * }
+ * </pre>
+ * </p>
+ * <p>
+ * The cookie cookieName will be bound to the value parameter when processing this method 
+ * invocation.
+ * </p>
  * @author Thiago da Rosa de Bustamante
- *
  */
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

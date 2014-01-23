@@ -21,7 +21,7 @@ import java.util.Map;
 import org.cruxframework.crux.core.client.ioc.Inject;
 
 /**
- * Base class for an IoC configuration class. Crux engine search for all subclasses of IocContainerConfig and 
+ * Base class for an IoC configuration class. Crux engine search for all subclasses of IocContainerConfigurations and 
  * invoke their configure method. 
  * 
  * @author Thiago da Rosa de Bustamante

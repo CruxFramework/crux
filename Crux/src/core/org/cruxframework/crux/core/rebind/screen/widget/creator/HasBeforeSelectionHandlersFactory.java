@@ -21,11 +21,12 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 
 /**
+ * A helper class to help on HasBeforeSelectionHandlers widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagEvents({
-	@TagEvent(BeforeSelectionEvtBind.class)
+	@TagEvent(value=BeforeSelectionEvtBind.class, description="Inform the handler for onBeforeSelection event. This event is fired when the user tries to select the widget, before the selection is triggered.")
 })	
 public interface HasBeforeSelectionHandlersFactory<C extends WidgetCreatorContext>
 {

@@ -121,7 +121,7 @@ public class ViewWidgetConsumer implements LazyCompatibleWidgetConsumer
 			}
 			else
 			{
-				getExpression = "null";
+				getExpression = getEmptyValueExpression(propertyType, bindPath, dataObjectClassName);
 			}
 			JClassUtils.buildSetValueExpression(srcWriter, dataObjectType, bindPath, dataObjectVariable, getExpression);
 			srcWriter.println("}");
@@ -151,6 +151,29 @@ public class ViewWidgetConsumer implements LazyCompatibleWidgetConsumer
 		return getExpression;
 	}
 	
+	protected String getEmptyValueExpression(JType propertyType, String bindPath, String dataObjectClassName)
+	{
+		String getExpression;
+		JPrimitiveType primitiveType = propertyType.isPrimitive();
+		if (primitiveType == null)
+		{
+			getExpression = "null";
+		}
+		else if (primitiveType.equals(JPrimitiveType.BOOLEAN))
+		{
+			getExpression = "false";
+		}
+		else if (!primitiveType.equals(JPrimitiveType.VOID))
+		{
+			getExpression = "0";
+		}
+		else
+		{
+			throw new CruxGeneratorException("Invalid binding path ["+bindPath+"] on target dataobject ["+dataObjectClassName+"]. Property can not be void.");
+		}
+		return getExpression;
+	}
+
 	protected void generateCopyToCode(SourcePrinter srcWriter, String dataObjectVariable, 
 			String widgetVariable, JClassType dataObjectType, JClassType widgetClass, String bindPath) throws NoSuchFieldException
 	{

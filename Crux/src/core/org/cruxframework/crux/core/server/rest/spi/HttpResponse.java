@@ -8,11 +8,10 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.map.ObjectWriter;
 import org.cruxframework.crux.core.server.rest.core.MediaType;
 import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
 import org.cruxframework.crux.core.server.rest.util.JsonUtil;
-
-import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
  * 

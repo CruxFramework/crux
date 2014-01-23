@@ -83,7 +83,6 @@ public @interface DatabaseDef
 		String name() default "";
 		String[] keyPath();
 		boolean unique() default false;
-		boolean multiEntry() default false;
 	}
 
 	public static class Empty{}

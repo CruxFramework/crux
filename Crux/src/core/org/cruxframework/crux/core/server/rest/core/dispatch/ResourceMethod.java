@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.server.rest.core.dispatch;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.codehaus.jackson.map.ObjectWriter;
 import org.cruxframework.crux.core.server.rest.core.EntityTag;
 import org.cruxframework.crux.core.server.rest.core.HttpRequestAware;
 import org.cruxframework.crux.core.server.rest.core.HttpResponseAware;
@@ -36,9 +38,6 @@ import org.cruxframework.crux.core.server.rest.util.HttpMethodHelper;
 import org.cruxframework.crux.core.server.rest.util.JsonUtil;
 import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.EncryptUtils;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
  * 
@@ -186,14 +185,14 @@ public class ResourceMethod
 				retVal = getReturnWriter().writeValueAsString(rtn);
 			}
 		}
-		catch (JsonProcessingException e)
+		catch (Exception e)
 		{
 			throw new InternalServerErrorException("Error serializing rest service return", "Error processing requested service", e); 
 		}
 		return new MethodReturn(hasReturnType, retVal, exeptionData, cacheInfo, null, isEtagGenerationEnabled());
 	}
 
-	private String getExceptionData(Exception e) throws JsonProcessingException
+	private String getExceptionData(Exception e) throws IOException 
     {
 	    return "{\"exId\": \"" + getExceptionId(e) + "\", \"exData\": " + getExceptionWriter(e).writeValueAsString(e) + "}";
     }

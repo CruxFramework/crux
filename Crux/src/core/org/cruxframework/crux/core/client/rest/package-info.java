@@ -13,16 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.tools.schema;
-
-
 /**
- * @author Thiago da Rosa de Bustamante
+ * Contains all necessary code for write proxies on application's client side to call
+ * REST services.
+ *
+ * <h2>Package Specification</h2>
+ *
+ * <p>Start with the following classes:</p>
+ * <li>{@link org.cruxframework.crux.core.client.rest.RestProxy}</li>
+ * <li>{@link org.cruxframework.crux.core.client.rest.Callback}</li>
  *
  */
-public interface CruxSchemaGenerator
-{
-	void generateSchemas() throws SchemaGeneratorException;
-	void generateCatalog() throws SchemaGeneratorException;
-	void generateDocumentation() throws SchemaGeneratorException;
-}
+package org.cruxframework.crux.core.client.rest;

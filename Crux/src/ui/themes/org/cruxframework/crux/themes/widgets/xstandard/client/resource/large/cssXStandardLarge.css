@@ -647,18 +647,21 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 }
 
 /* common for all dialogs */
-@external crux-Dialog, dialogGlass, popupContent, dialogTitleBodySplit, dialogTopBar, dialogTopBarDragHandle, dialogTitle, dialogCloseButton, dialogBody, dialogResizer;  
+@external crux-Dialog, dialogGlass, popupContent, dialogTitleBodySplit, dialogTopBar, dialogTopBarDragHandle, dialogTitle, dialogCloseButton, dialogBody, dialogResizer, crux-FlatDialog, crux-FlatMessageBox;  
 .dialogGlass
 {
 	background-color: rgba(0, 0, 0, 0.2);
-	-moz-user-select: none;
+	position: fixed !important;
 }
-.crux-Dialog, .crux-ProgressBox, .crux-FlatMessageBox
+
+.crux-Dialog, .crux-ProgressBox, .crux-FlatMessageBox, .crux-FlatDialog
 {
 	background-color: #FFF;
 	border-radius: 3px;
 	box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.7) !important;
+	position: fixed !important;
 }
+
 .crux-Dialog .dialogTitleBodySplit, .crux-ProgressBox .dialogTitleBodySplit, .crux-FlatMessageBox .dialogTitleBodySplit
 {
 	width: inherit;

@@ -42,4 +42,8 @@ public @interface TagAttribute
 	Class<?> processor() default AttributeProcessor.NoParser.class;
 	boolean xsdIgnore() default false;
 	Device[] supportedDevices() default {Device.all};
+	/**
+	 * A description to be used to compose the documentation of the generated library 
+	 */
+	String description() default "";
 }

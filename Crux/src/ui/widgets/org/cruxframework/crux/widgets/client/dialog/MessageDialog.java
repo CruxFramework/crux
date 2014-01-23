@@ -17,6 +17,7 @@ package org.cruxframework.crux.widgets.client.dialog;
 
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.collection.FastList;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler;
 import org.cruxframework.crux.widgets.client.WidgetMessages;
@@ -223,39 +224,16 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 		return dialogBox.addHandler(handler, OkEvent.getType());
 	}	
 
-	private void doShow()
-	{
-		try
-		{
-			openedDialogBoxes.add(dialogBox);
-			dialogBox.center();
-			dialogBox.show();
-			okButton.setFocus(true);
-		}
-		catch (Exception e)
-		{
-			Crux.getErrorHandler().handleError(e);
-			Screen.unblockToUser();
-		}
-	}
-	
 	/**
 	 * Show message dilaog. The dialog is centered and the screen is blocked for edition
 	 */
 	public void show()
 	{
-		try
-		{
-			Screen.blockToUser("crux-ConfirmDialogScreenBlocker");
-		} catch (Exception e)
-		{
-			Crux.getErrorHandler().handleError(e);
-			Screen.unblockToUser();
-		}
+		Screen.blockToUser("crux-ConfirmDialogScreenBlocker");
 		
 		//if it's a touch device, then we should wait for virtual keyboard to get closed.
 		//Otherwise the dialog message will not be properly centered in screen.  
-		if(Screen.isTouchDevice())
+		if(Screen.getCurrentDevice().getInput().equals(DeviceAdaptive.Input.touch))
 		{
 			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
 			{
@@ -269,6 +247,25 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 		} else 
 		{
 			doShow();
+		}
+	}
+	
+	/**
+	 * Show message dilaog. The dialog is centered and the screen is blocked for edition
+	 */
+	private void doShow()
+	{
+		try
+		{
+			openedDialogBoxes.add(dialogBox);
+			dialogBox.center();
+			dialogBox.show();
+			okButton.setFocus(true);
+		}
+		catch (Exception e)
+		{
+			Crux.getErrorHandler().handleError(e);
+			Screen.unblockToUser();
 		}
 	}
 

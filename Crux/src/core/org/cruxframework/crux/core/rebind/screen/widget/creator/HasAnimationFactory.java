@@ -20,11 +20,12 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 
 /**
+ * A helper class to help on HasAnimationHandlers widgets creation, based on crux pages metadata.
  * @author Thiago da Rosa de Bustamante
  *
  */
 @TagAttributes({
-	@TagAttribute(value="animationEnabled", type=Boolean.class)
+	@TagAttribute(value="animationEnabled", type=Boolean.class, description="Enable or disable animations.")
 })	
 public interface HasAnimationFactory<C extends WidgetCreatorContext>
 {
