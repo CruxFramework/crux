@@ -31,11 +31,21 @@ public class HorizontalMotionAnimation extends Animation
 	private int startLeft;
 	private int finalLeft;
  
+	/**
+	 * Constructor
+	 * @param element Element to be animated
+	 */
 	public HorizontalMotionAnimation(Element element)
 	{
 		this.style = element.getStyle();
 	}
  
+	/**
+	 * Move the animated element from start position to final position
+	 * @param startLeft start left position
+	 * @param finalLeft final left position
+	 * @param milliseconds animation duration
+	 */
 	public void move(int startLeft, int finalLeft, int milliseconds)
 	{
 		this.startLeft = startLeft;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 cruxframework.org.
+ * Copyright 2013 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,16 +14,16 @@
  * the License.
  */
 /**
- * Contains all necessary code for write the application's controller layer, 
- * according with <a href="http://martinfowler.com/eaaCatalog/modelViewController.html">MVC pattern</a>.
+ * Contains a set of utilitary interfaces that help you with basic bean operations, 
+ * like comparations, validations and copies.
  *
  * <h2>Package Specification</h2>
  *
- * <p>This package contains the annotations needed to register a class as a Controller 
- * on Crux Framework.</p>
  * <p>Start with the following classes:</p>
- * <li>{@link org.cruxframework.crux.core.client.controller.Controller}</li>
- * <li>{@link org.cruxframework.crux.core.client.controller.Expose}</li>
+ * <li>{@link org.cruxframework.crux.core.client.bean.BeanComparator}</li>
+ * <li>{@link org.cruxframework.crux.core.client.bean.BeanCopier}</li>
+ * <li>{@link org.cruxframework.crux.core.client.bean.BeanContentValidator}</li>
+ * <li>{@link org.cruxframework.crux.core.client.bean.JsonEncoder}</li>
  *
  */
-package org.cruxframework.crux.core.client.controller;
+package org.cruxframework.crux.core.client.bean;

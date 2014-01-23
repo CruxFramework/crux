@@ -20,7 +20,8 @@ import java.util.HashMap;
 import com.google.gwt.core.client.GWT;
 
 /**
- * Lightweight map implementation.
+ * Lightweight map implementation. This implementation has a superior performance compared
+ * to HashMap. It uses native javascript implementation to increase performance.
  * 
  * @param <V> value type
  */
@@ -30,7 +31,7 @@ public class FastMap<V>
 	private HashMap<String, V> javaMap;
 
 	/**
-	 * 
+	 * Default Constructor
 	 */
 	public FastMap()
 	{

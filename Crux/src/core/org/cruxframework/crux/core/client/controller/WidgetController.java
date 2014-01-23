@@ -24,10 +24,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * This annotation is used to link the import of a {@link Controller} class to the presence 
- * of a particular type of widget in the {@code .crux.xml} page.
+ * of a particular type of widget in the {@code .view.xml} page.
  * <p>
  * If a {@link Controller} class is annotated with {@code @}WidgetController annotation, it is 
- * automatically imported by screen if the target widget is present in the page. 
+ * automatically imported by view if the target widget is present in the page. 
  * <p>
  * For example:
  * <pre>

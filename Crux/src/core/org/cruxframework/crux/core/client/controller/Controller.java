@@ -25,7 +25,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 /**
  * This annotation can be used to expose a class as a Crux controller.
  * <p>
- * Controller classes can be refereed from a {@code .crux.xml} page and contain the methods
+ * Controller classes can be refereed from a view page ({@code .crux.xml} and {@code .view.xml} files) and contain the methods
  * used to handle events triggered by the user interface (the pages). 
  * 
  *<p>
@@ -42,7 +42,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
  * }
  * </pre>
  * <p>
- * It can be used on a {@code .crux.xml} page, as illustrated by the following example:
+ * It can be used inside a {@code .crux.xml} page, as illustrated by the following example:
  * <pre>
  * {@code <html} 
  *  xmlns="http://www.w3.org/1999/xhtml"
@@ -60,7 +60,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
  * is associated with click events of the widget {@code myButton}.
  * 
  * @see Expose  
- * @see Create  
+ * @see Inject  
  * @author Thiago da Rosa de Bustamante
  *
  */
@@ -69,7 +69,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 public @interface Controller 
 {
 	/**
-	 * The name associated with the controller. This name is used on {@code .crux.xml} 
+	 * The name associated with the controller. This name is used on {@code .crux.xml} and {@code .view.xml} 
 	 * pages to identify the controller. 
 	 */
 	String value();
@@ -88,7 +88,6 @@ public @interface Controller
 	 * You can choose to use the annotated class only for a restricted list of devices. This allow
 	 * you to create two different classes using the same controller name, but one target a collection 
 	 * of devices and the other targets a different collection.
-	 * @return
 	 */
 	Device[] supportedDevices() default {Device.all};
 }
