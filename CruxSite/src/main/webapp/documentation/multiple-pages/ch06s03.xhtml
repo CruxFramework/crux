@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>6.3. Value Binding</title><link rel="stylesheet" type="text/css" href="style.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="prev" href="ch06s02.xhtml" title="6.2. Inversion of Control (IoC)"/><link rel="next" href="ch06s04.xhtml" title="6.4. Usando as Controllers na View"/></head><body><header><div class="navheader"><table style="width: 100%; "><tr><th style="text-align: center; " colspan="3">6.3. Value Binding</th></tr><tr><td style="width: 20%; text-align: left; "><a accesskey="p" href="ch06s02.xhtml">Prev</a> </td><th style="width: 60%; text-align: center; ">Chapter 6. Camada de Controle</th><td style="width: 20%; text-align: right; "> <a accesskey="n" href="ch06s04.xhtml">Next</a></td></tr></table><hr/></div></header><section class="sect1" id="sec_control_valuebind"><div class="titlepage"><div><div><h2 class="title" style="clear: both">6.3. Value Binding</h2></div></div></div>
+		
+
+		<div class="note"><h3 class="title">Note</h3>
+			<p> Aqui será inserido o seguinte conteúdo:</p>
+			<div class="itemizedlist"><ul style="list-style-type: disc; " class="itemizedlist"><li class="listitem">
+			    <p>ToDo :  Apresentar o @DataObject (@ValueObject no Crux 4), @ViewBinder (@ScreenBind no Crux 4) , ViewBindale.</p>
+			  </li><li class="listitem">
+			    <p>ToDo :  Exemplos de bindPath nos arquivos de view.</p>
+			  </li><li class="listitem">
+			    <p>ToDo :  Como ler e escrever para um DTO atraves de uma view bindable.</p>
+			  </li></ul></div> 
+		</div>
+
+		
+			
+		<p>O Crux provê um mecanismo para ajudar a vincular os valores nos componentes da tela (view)
+		e os objetos de dados (classes) e fazer atualizações através de comandos na 
+		<span class="italic">Controller</span>.</p> 
+
+		<p>Para criar um objeto de dados na <span class="italic">Controller</span> deve ser usada a
+		anotação <span class="italic">@DataObjetct</span>.
+		Desta forma o Crux pode popular os objetos de dados com os valores presentes nos componentes da tela 
+		antes de rodar os métodos de tratamento de eventos. 
+		Após a execução dos métodos de tratamento de eventos, os valores dos componentes da tela também podem
+		ser atualizados com os novos valores gerados nos objetos de dados. 
+		Essas atualizações são feitas a através dos comandos <span class="italic">getData</span> e 
+		<span class="italic">setData</span>. A seguir é apresentado um exemplo de como usar esse recurso:</p>
+		
+		<p>Essa é uma classe de dados para uma "pessoa" com a anotação <span class="italic">@DataObjetct</span>.
+		Ela possui dois atributos: name e phone.</p>
+
+		<pre class="programlisting">
+
+@DataObjetct("pessoa")
+public class Person
+{
+        private String name;
+        private String phone;
+        
+        public String getName() {
+                return name;
+        }
+        public void setName(String name) {
+                this.name = name;
+        }
+        public String getPhone() {
+                return phone;
+        }
+        public void setPhone(String phone) {
+                this.phone = phone;
+        }
+}
+
+		</pre>
+
+		<p>Na <span class="italic">View</span> "cadPerson.view.xml" o objeto de dados criado anteriormente é 
+		vinculado pelo atributo <span class="italic">dataObject</span>, que no caso recebe o valor "pessoa".
+		O componente "txtName" vai ser vinculado ao campo "name" do objeto "pessoa". Isso é feito pela parâmetro 
+		<span class="italic">bindPath</span>. O mesmo será feito para o "phone". Veja o exemplo: </p>
+
+		<pre class="programlisting">
+
+&lt;v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	useController="myController" dataObject="pessoa" 
+	title="cadPerson"&gt;
+	&lt;crux:styledPanel id="outerPanel" height="200px"&gt;
+		&lt;crux:formDisplay id="form"&gt;
+			&lt;crux:entry label="Name:"&gt;
+				&lt;gwt:textBox id="txtName" bindPath="name" width="200px"/&gt;
+			&lt;/crux:entry&gt;
+			&lt;crux:entry label="Phone:"&gt;
+				&lt;gwt:textBox id="txtPhone" bindPath="phone" width="200px"/&gt;
+			&lt;/crux:entry&gt;
+			&lt;crux:entry horizontalAlignment="center"&gt;
+				&lt;crux:button id="btnPrint" text="Back" onSelect="homeController.printData"/&gt;
+			&lt;/crux:entry&gt;
+		&lt;/crux:formDisplay&gt;
+	&lt;/crux:styledPanel&gt;
+&lt;/v:view&gt;
+
+		</pre>
+
+		<p>Na <span class="italic">Controller</span> quando o método <span class="italic">printData</span> é acionado,
+		os dados que estão preenchidos nos campos da <span class="italic">view</span> devem ser impressos. 
+		Para isso os dados devem ser adicionados à classe "pessoa" para serem manipulados. 
+		Com o <span class="italic">getData</span> essa copia é feita de maneira atomática. Veja o exemplo:</p>
+
+		<pre class="programlisting">
+
+@Controller("myController")
+public class MyClass
+{
+   	@Inject
+	public CadPersonView cadP;
+	
+	@Expose
+	public void printData()
+	{
+		Person p = cadP.cadPerson().getData();
+		System.out.println(" Name: " + p.getName() );
+	}
+	
+	public interface CadPersonView extends ViewAccessor
+	{
+	    BindableView&lt;Person&gt; cadPerson();
+	}
+}
+
+		</pre>
+		
+		<p>Foi criada uma interface (CadPersonView) que extende a <span class="italic">ViewAccessor</span> para 
+		a view "cadPerson". Um objeto (cadP) é injetado pela controller para permitir acesso aos campos da view.
+		Quando o método <span class="italic">printData</span> é executado, os dados dos componentes da view são
+		copiados para o objeto "p" (do tipo Person) através do <span class="italic">getData()</span>.</p>
+			
+		<p>Caso algum método execute alguma alteração nos dados do objeto eles podem ser novamente enviados para a
+		tela (view) com	o comando <span class="italic">setData()</span>. 
+		Veja a seguir um exemplo de um método que utiliza o setData: </p>
+
+		<pre class="programlisting">
+
+@Controller("myController")
+public class MyClass
+{
+	// ...
+	@Expose
+	public void alterData()
+	{
+		Person p = new Person();
+		p.setName("Anakin Skywalker");
+		p.setPhone("1234-5678");
+		cadP.cadPerson().setData(p);
+	}
+	// ...
+}
+
+		</pre>
+
+	</section><footer><div class="navfooter"><hr/><table style="width: 100%; "><tr><td style="width: 40%; text-align: left; "><a accesskey="p" href="ch06s02.xhtml">Prev</a> </td><td style="width: 20%; text-align: center; "><a accesskey="u" href="ch06.xhtml">Up</a></td><td style="width: 40%; text-align: right; "> <a accesskey="n" href="ch06s04.xhtml">Next</a></td></tr><tr><td style="width: 40%; text-align: left; vertical-align: top; ">6.2. Inversion of Control (IoC) </td><td style="width: 20%; text-align: center; "><a accesskey="h" href="index.xhtml">Home</a></td><td style="width: 40%; text-align: right; vertical-align: top; "> 6.4. Usando as Controllers na View</td></tr></table></div></footer></body></html>

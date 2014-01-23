@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>6.2. Inversion of Control (IoC)</title><link rel="stylesheet" type="text/css" href="style.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="prev" href="ch06.xhtml" title="Chapter 6. Camada de Controle"/><link rel="next" href="ch06s03.xhtml" title="6.3. Value Binding"/></head><body><header><div class="navheader"><table style="width: 100%; "><tr><th style="text-align: center; " colspan="3">6.2. Inversion of Control (IoC)</th></tr><tr><td style="width: 20%; text-align: left; "><a accesskey="p" href="ch06.xhtml">Prev</a> </td><th style="width: 60%; text-align: center; ">Chapter 6. Camada de Controle</th><td style="width: 20%; text-align: right; "> <a accesskey="n" href="ch06s03.xhtml">Next</a></td></tr></table><hr/></div></header><section class="sect1" id="sec_control_ioc"><div class="titlepage"><div><div><h2 class="title" style="clear: both">6.2. Inversion of Control (IoC)</h2></div></div></div>
+		
+		<p>O Crux disponibiliza um container IoC para o lado cliente da aplicação. Classes no lado cliente podem ser anotadas com a 
+		anotação <code class="code">@Inject</code> para popular suas propriedades a partir do container IoC.</p>
+		
+		<p>Para que uma propriedade da classe cliente possa ser atribuída pelo container IoC, é necessário que a mesma:</p>
+
+		<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+				<p>Tenha visibilidade pública. Para isso, o atributo deve ser público ou possuir um método de escrita (setter) público.</p>
+			</li><li class="listitem">
+				<p>Esteja marcada com a anotação  <span class="italic">@Inject</span>.</p>
+			</li></ul></div>
+
+		<p>Veja o exemplo abaixo:</p>
+
+		<div class="example" id="iocControllerProperties"><div class="example-title">Example 6.4. Propriedades injetadas pelo container IoC</div><div class="example-contents">
+		    
+			<pre class="programlisting">
+	 			<!-- Generator: GNU source-highlight 2.1.2
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --><pre xmlns=""><tt>@<b><font color="#000000">Controller</font></b><font color="#990000">(</font><font color="#FF0000">"myIoCController"</font><font color="#990000">)</font>
+<b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> MyIoCController <font color="#FF0000">{</font>
+    @Inject
+    <b><font color="#0000FF">private</font></b> GreetingServiceAsync service<font color="#990000">;</font> 
+    
+    <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">setService</font></b><font color="#990000">(</font>GreetingServiceAsync service<font color="#990000">)</font> <font color="#FF0000">{</font>
+    	<b><font color="#0000FF">this</font></b><font color="#990000">.</font>service <font color="#990000">=</font> service<font color="#990000">;</font>
+    <font color="#FF0000">}</font>
+    
+    @Inject
+    <b><font color="#0000FF">public</font></b> AnotherPojo property<font color="#990000">;</font>
+
+    @Inject
+    <b><font color="#0000FF">private</font></b> OtherPojo property2<font color="#990000">;</font> <i><font color="#9A1900">//</font></i><i><font color="#9A1900">NOT VALID.</font></i>
+
+    <i><font color="#9A1900">//</font></i><i><font color="#9A1900"> other event handlers</font></i>
+<font color="#FF0000">}</font>
+</tt></pre>
+			</pre>
+		</div></div><br class="example-break"/>
+
+		<p>Repare que a propriedade <code class="code">property2</code> não pode ser atribuída pelo container, pois não obedece os critérios definidos acima.</p>
+
+		<p>Outro ponto importante é que a classe <code class="code">AnotherPojo</code>, referenciada no exemplo acima, também pode definir propriedades a serem 
+		injetadas pelo container, da mesma forma como foi demonstrado nesta classe de controle.</p>
+
+		<section class="sect2" id="sec_control_ioc_scope"><div class="titlepage"><div><div><h3 class="title">6.2.1. Escopo dos objetos criados</h3></div></div></div>
+			
+
+			<p>Pode-se definir o escopo utilizado para leitura dos objetos a serem injetados pelo container IoC. A anotação <code class="code">@Inject</code> possui uma
+			propriedade chamada <code class="code">scope</code> que define o escopo do objeto injetado. Veja o exemplo abaixo:</p>
+
+			<div class="example" id="iocControllerScope"><div class="example-title">Example 6.5. Escopo dos objetos junto ao container IoC</div><div class="example-contents">
+			    
+				<pre class="programlisting">
+		 			<!-- Generator: GNU source-highlight 2.1.2
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --><pre xmlns=""><tt>@<b><font color="#000000">Controller</font></b><font color="#990000">(</font><font color="#FF0000">"myIoCController"</font><font color="#990000">)</font>
+<b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> MyIoCController <font color="#FF0000">{</font>
+	
+	@<b><font color="#000000">Inject</font></b><font color="#990000">(</font>scope<font color="#990000">=</font>Scope<font color="#990000">.</font>DOCUMENT<font color="#990000">)</font>
+	<b><font color="#0000FF">public</font></b> AnotherPojo property<font color="#990000">;</font>
+
+	@<b><font color="#000000">Inject</font></b><font color="#990000">(</font>scope<font color="#990000">=</font>Scope<font color="#990000">.</font>VIEW<font color="#990000">)</font>
+	<b><font color="#0000FF">public</font></b> AnotherPojo property2<font color="#990000">;</font>
+
+	@<b><font color="#000000">Inject</font></b><font color="#990000">(</font>scope<font color="#990000">=</font>Scope<font color="#990000">.</font>LOCAL<font color="#990000">)</font>
+	<b><font color="#0000FF">public</font></b> AnotherPojo property3<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+</tt></pre>
+				</pre>
+			</div></div><br class="example-break"/>
+			
+			<p>Existem três tipos de escopo suportados pelo Crux, descritos na tabela abaixo:</p>
+			
+			<div class="table" id="d5e712"><div class="table-title">Table 6.2. Tipos de Escopo suportados pelo container IoC</div><div class="table-contents">
+				
+				<table style="border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col style="text-align: left; " class="c1"/><col style="text-align: left; " class="c2"/></colgroup><thead><tr><th style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> Nome </th><th style="text-align: left; border-bottom: 0.5pt solid ; "> Descrição </th></tr></thead><tbody><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "><code class="code">Scope.LOCAL</code></td><td style="text-align: left; border-bottom: 0.5pt solid ; "> O objeto injetado tem escopo apenas local. Cada vez que um objeto é injetado com escopo local, 
+							uma nova instância é criada pelo container.</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "><code class="code">Scope.DOCUMENT</code></td><td style="text-align: left; border-bottom: 0.5pt solid ; "> O objeto injetado tem escopo associado ao Document da aplicação. Todas as classes carregadas por todas as views 
+							que injetarem um objeto com este escopo irão compartilhar a mesma referência.</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; "><code class="code">Scope.VIEW</code></td><td style="text-align: left; "> O objeto injetado tem escopo associado à <code class="code">View</code> corrente. Todas as classes carregadas dentro da 
+							<code class="code">View</code> corrente que injetarem um objeto com este escopo irão compartilhar a mesma referência.</td></tr></tbody></table>
+			</div></div><br class="table-break"/>
+			
+			<p>Caso não seja informado nada, o valor padrão para o escopo da injeção é <code class="code">Scope.LOCAL</code>.</p>
+
+			<p>É possível, também, definir subescopos personalizados, através da propriedade <code class="code">subscope</code> da anotação <code class="code">@Inject</code>.
+			Veja o exemplo abaixo:</p>
+			
+			<div class="example" id="iocControllerSubscope"><div class="example-title">Example 6.6. Sub-escopo para objetos junto ao container IoC</div><div class="example-contents">
+			    
+				<pre class="programlisting">
+		 			<!-- Generator: GNU source-highlight 2.1.2
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --><pre xmlns=""><tt>@<b><font color="#000000">Controller</font></b><font color="#990000">(</font><font color="#FF0000">"myIoCController"</font><font color="#990000">)</font>
+<b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> MyIoCController <font color="#FF0000">{</font>
+	
+	@<b><font color="#000000">Inject</font></b><font color="#990000">(</font>scope<font color="#990000">=</font>Scope<font color="#990000">.</font>DOCUMENT<font color="#990000">,</font> subscope<font color="#990000">=</font><font color="#FF0000">"Atendimento"</font><font color="#990000">)</font>
+	<b><font color="#0000FF">public</font></b> AnotherPojo property<font color="#990000">;</font>
+
+	@<b><font color="#000000">Inject</font></b><font color="#990000">(</font>scope<font color="#990000">=</font>Scope<font color="#990000">.</font>VIEW<font color="#990000">,</font> subscope<font color="#990000">=</font><font color="#FF0000">"Custom"</font><font color="#990000">)</font>
+	<b><font color="#0000FF">public</font></b> AnotherPojo property2<font color="#990000">;</font>
+
+	@<b><font color="#000000">Inject</font></b><font color="#990000">(</font>scope<font color="#990000">=</font>Scope<font color="#990000">.</font>LOCAL<font color="#990000">)</font>
+	<b><font color="#0000FF">public</font></b> AnotherPojo property3<font color="#990000">;</font>
+<font color="#FF0000">}</font>
+</tt></pre>
+				</pre>
+			</div></div><br class="example-break"/>
+			
+			<p>O mapeamento feito para a propriedade <code class="code">property</code>, por exemplo, define um escopo chamado <code class="code">"Atendimento"</code> 
+			dentro do escopo global <code class="code">Scope.DOCUMENT</code>. Desta forma, duas classes que acessem esta propriedade com estas mesmas
+			informações de escopo, irão compartilhar a mesma instância, mesmo que localizadas em <code class="code">Views</code> diferentes.</p>
+			
+			<p>O mapeamento feito para a propriedade <code class="code">property2</code>, cria um escopo chamado <code class="code">"Custom"</code> 
+			dentro do escopo <code class="code">Scope.VIEW</code>. Desta forma, duas classes que acessem esta propriedade com estas mesmas
+			informações de escopo, irão compartilhar a mesma instância apenas se estiverem na mesma <code class="code">View</code>. Cada 
+			<code class="code">View</code> irá conter uma cópia particular do contexto <code class="code">"Custom"</code>.</p>
+			
+			<p>Caso o escopo principal seja definido como <code class="code">Scope.LOCAL</code>, qualquer informação de subescopo será ignorada.</p>
+
+		</section>
+
+		<section class="sect2" id="sec_control_ioc_conf"><div class="titlepage"><div><div><h3 class="title">6.2.2. Configurações globais do container</h3></div></div></div>
+			
+
+			<p>Para realizar configurações adicionais junto ao container IoC do Crux, deve-se criar uma classe que estenda 
+			<code class="code">IocContainerConfigurations</code>. Veja o exemplo abaixo:</p>
+
+			<div class="example" id="iocConfig"><div class="example-title">Example 6.7. Configuração do Container IoC</div><div class="example-contents">
+			    
+				<pre class="programlisting">
+		 			<!-- Generator: GNU source-highlight 2.1.2
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --><pre xmlns=""><tt><b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> MyConfigurations <b><font color="#0000FF">extends</font></b> IocContainerConfigurations <font color="#FF0000">{</font>
+
+    <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">configure</font></b><font color="#990000">(</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+        <b><font color="#000000">bindType</font></b><font color="#990000">(</font>List<font color="#990000">.</font><b><font color="#0000FF">class</font></b><font color="#990000">)</font><font color="#990000">.</font><b><font color="#000000">toClass</font></b><font color="#990000">(</font>ArrayList<font color="#990000">.</font><b><font color="#0000FF">class</font></b><font color="#990000">)</font><font color="#990000">;</font>
+        <b><font color="#000000">bindType</font></b><font color="#990000">(</font>MyBaseType<font color="#990000">.</font><b><font color="#0000FF">class</font></b><font color="#990000">)</font><font color="#990000">.</font><b><font color="#000000">toProvider</font></b><font color="#990000">(</font>MyBaseTypeProvider<font color="#990000">.</font><b><font color="#0000FF">class</font></b><font color="#990000">)</font><font color="#990000">;</font>
+    <font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+</tt></pre>
+				</pre>
+			</div></div><br class="example-break"/>
+			
+			<p>O exemplo acima instrui o Crux a retornar instâncias do tipo <code class="code">ArrayList</code> toda vez que um objeto do tipo <code class="code">List</code> 
+			for solicitado para o container. Além disso, ele associa um provider para a classe <code class="code">MyBaseType</code>. Desta forma, sempre que um objeto 
+			deste tipo precisar ser criado pelo container, este provider será acionado para criação do objeto.</p>
+
+			<p>Para objetos de quaisquer outros tipos, além dos mapeados no arquivo de configuração acima, o Crux utilizará um provider padrão 
+			que simplesmente executa o comando <code class="code">GWT.create()</code> para a criação do objeto do tipo solicitado.</p>
+			
+			<p>O exemplo abaixo mostra um provider que poderia ser usado para criação de objetos do tipo <code class="code">MyBaseType</code>:</p>
+
+			<div class="example" id="iocConfigProvider"><div class="example-title">Example 6.8. Definição de um provider para o Container IoC</div><div class="example-contents">
+			    
+				<pre class="programlisting">
+		 			<!-- Generator: GNU source-highlight 2.1.2
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --><pre xmlns=""><tt><b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> MyBaseTypeProvider <b><font color="#0000FF">extends</font></b> IocProvider<font color="#990000">&lt;</font>MyBaseType<font color="#990000">&gt;</font> <font color="#FF0000">{</font>
+
+    <b><font color="#0000FF">public</font></b> MyBaseType <b><font color="#000000">get</font></b><font color="#990000">(</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+        <b><font color="#0000FF">if</font></b> <font color="#990000">(</font>Permissions<font color="#990000">.</font><b><font color="#000000">hasRole</font></b><font color="#990000">(</font><font color="#FF0000">"specialRole"</font><font color="#990000">)</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+            <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">new</font></b> <b><font color="#000000">MySpecialType</font></b><font color="#990000">(</font><font color="#990000">)</font><font color="#990000">;</font>
+        <font color="#FF0000">}</font>
+        <b><font color="#0000FF">return</font></b> <b><font color="#0000FF">new</font></b> <b><font color="#000000">MySimpleType</font></b><font color="#990000">(</font><font color="#990000">)</font><font color="#990000">;</font>
+    <font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+</tt></pre>
+				</pre>
+			</div></div><br class="example-break"/>
+			
+			<p>Para adicionar uma nova classe de configuração, basta criar uma classe que estenda 
+			<code class="code">IocContainerConfigurations</code>. Pode-se adicionar quantas classes de configuração se deseje. Estas classes devem 
+			estar dentro do classpath da aplicação e o Crux automaticamente as identificará.</p>
+			
+			<p>As classes de configuração são executadas pelo Crux para a geração do código do container. Desta forma, elas são chamadas apenas durante
+			a compilação do código java para javascript. Por isso, elas não necessitam estar na pasta que contém o código cliente da aplicação 
+			(pasta <code class="code">client</code> do módulo GWT, que será convertida para javascript). Elas não são necessárias no código gerado, mas apenas durante 
+			seu processo de geração. </p>
+			
+			<p>As classes configuradas no container, no entanto, são classes que serão usadas na execução do código no cliente, assim como as classes
+			<code class="code">providers</code> definidas. Todas elas devem pertencer à pasta cliente da aplicação.</p>
+		</section>
+	</section><footer><div class="navfooter"><hr/><table style="width: 100%; "><tr><td style="width: 40%; text-align: left; "><a accesskey="p" href="ch06.xhtml">Prev</a> </td><td style="width: 20%; text-align: center; "><a accesskey="u" href="ch06.xhtml">Up</a></td><td style="width: 40%; text-align: right; "> <a accesskey="n" href="ch06s03.xhtml">Next</a></td></tr><tr><td style="width: 40%; text-align: left; vertical-align: top; ">Chapter 6. Camada de Controle </td><td style="width: 20%; text-align: center; "><a accesskey="h" href="index.xhtml">Home</a></td><td style="width: 40%; text-align: right; vertical-align: top; "> 6.3. Value Binding</td></tr></table></div></footer></body></html>

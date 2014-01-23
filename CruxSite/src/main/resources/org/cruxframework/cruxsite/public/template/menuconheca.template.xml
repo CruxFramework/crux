@@ -13,9 +13,9 @@
 		<li>
 			<crux:anchor id="linkCompare" href="#topMenuDisposal:comparativo" text="Comparativo"></crux:anchor>
 		</li>
-		<li>
-			<crux:anchor id="linkCase" href="#topMenuDisposal:cases" text="Cases"></crux:anchor>
-		</li>
+<!-- 		<li> -->
+<!-- 			<crux:anchor id="linkCase" href="#topMenuDisposal:cases" text="Cases"></crux:anchor> -->
+<!-- 		</li> -->
 		<li>
 			<crux:anchor id="linkShowcase" target="_blank" href="http://showcase5.cruxframework.org/" text="Showcase 5"></crux:anchor>
 		</li>

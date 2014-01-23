@@ -1,0 +1,201 @@
+/**//**//**//**//**//**//**//**//**//**/
+/**//**//**//**//**//**//**//**//**//**/
+/**//**//**//**//**//**//**//**//**//**/
+body{
+	margin:80px 10px 0 310px;
+	padding-left:20px;
+	background:url(images/noise.png) repeat #eee;
+	color:#333;
+	font-family:Arial, Helvetica Neue, Helvetica, Roboto, sans-serif;
+	overflow-x:hidden;
+}
+
+a{
+	color:inherit;
+	text-decoration:none;
+}
+
+ul{
+	list-style:none;
+}
+
+ul li{
+	
+}
+
+.right{
+	float:right;
+}
+
+.book > .titlepage{
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	background:#002d37;
+	color:#fff;
+	z-index:5;
+	box-shadow:0 3px rgba(0,0,0,0.1), 0 -1px 0 rgba(0,0,0,.5) inset;
+}
+
+.book > .titlepage a{
+	padding:7px 10px;
+	display:inline-block;
+	border-radius:3px;
+	color:#fff;
+	background:rgba(0,0,0,0.3);
+	font-size:13px;
+	margin-right:10px;
+	font-weight:normal;
+	box-shadow:0 0 0 1px rgba(255,255,255,0.1);
+	margin-top:-3px;
+}
+
+.book > .titlepage a:nth-child(1){
+	margin-right:0 !important;
+}
+
+.book > .titlepage a:hover{
+	background:rgba(0,0,0,0.5);
+}
+
+.book > .titlepage .title{
+	margin:20px;
+	font-size:18px;
+}
+
+.authorgroup, .pubdate, .book > .titlepage hr{
+	display:none;
+}
+.sidemenu{
+	width:300px;
+	height:calc(100% - 62px);
+	position:fixed;
+	left:0;
+	top:62px;
+	overflow-y:auto; 
+	background:rgba(0,0,0,0.2);
+	box-shadow:-2px 0 4px rgba(0,0,0,0.1) inset, 2px 0 0 rgba(0,0,0,0.05);
+}
+.sectionsContainer{
+
+}
+
+.sectionsContainer img{
+	border: 1px solid rgba(0,0,0,0.3);
+	box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+
+.sidemenu ul{
+	padding-left:20px;
+}
+.sidemenu > ul > li{
+}
+.sidemenu > div > ul > li > span:nth-child(1){
+	font-weight:bold;
+}
+.sidemenu ul li{
+	padding:6px 0;
+	font-size:13px;
+	color:#111;
+	text-shadow:0 1px 0 rgba(255,255,255,0.4);
+}
+.sidemenu ul li a:hover{
+	color:#DC143C;
+}
+.sidemenu .toc-title{
+	text-align:center;
+	padding:20px;
+	font-weight:bold;
+	color:#fff;
+	background: linear-gradient(#77a400 70%, #5d8100 100%);
+	box-shadow: 0 2px 0 #a1c400 inset;
+	border-bottom: 1px solid #425b00;
+	text-shadow:0 -1px 0 rgba(0,0,0,0.5);
+}
+
+.programlisting{
+	background:white;
+	padding:0 6px;
+	border-radius:4px;
+	border: 1px solid rgba(0,0,0,0.3);
+	box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+	white-space: pre !important;
+	-webkit-text-stroke:4px rgba(0,0,0,0.05);
+	padding-left:48px;
+	position:relative;
+	overflow-y:hidden;
+	line-height:17px;
+}
+.programlisting pre{
+	margin:0;
+}
+.programlisting:before{
+	content:'1 \A 2 \A 3 \A 4 \A 5 \A 6 \A 7 \A 8 \A 9 \A 10 \A 11 \A 12 \A 13 \A 14 \A 15 \A 16 \A 17 \A 18 \A 19 \A 20 \A 21 \A 22 \A 23 \A 24 \A 25 \A 26 \A 27 \A 28 \A 29 \A 30 \A 31 \A 32 \A 33 \A 34 \A 35 \A 36 \A 37 \A 38 \A 39 \A 40 \A 41 \A 42 \A 43 \A 44 \A 45 \A 46 \A 47 \A 48 \A 49 \A 50 \A 51 \A 52 \A 53 \A 54 \A 55 \A 56 \A 57 \A 58 \A 59 \A 60 \A 61 \A 62 \A 63 \A 64 \A 65 \A 66 \A 67 \A 68 \A 69 \A 70 \A 71 \A 72 \A 73 \A 74 \A 75 \A 76 \A 77 \A 78 \A 79 \A 80 \A 81 \A 82 \A 83 \A 84 \A 85 \A 86 \A 87 \A 88 \A 89 \A 90 \A 91 \A 92 \A 93 \A 94 \A 95 \A 96 \A 97 \A 98 \A 99 \A 100 \A 101 \A 102 \A 103 \A 104 \A 105 \A 106 \A 107 \A 108 \A 109 \A 110 \A 111 \A 112 \A 113 \A 114 \A 115 \A 116 \A 117 \A 118 \A 119 \A 120 \A 121 \A 122 \A 123 \A 124 \A 125 \A 126 \A 127 \A 128 \A 129 \A 130 \A 131 \A 132 \A 133 \A 134 \A 135 \A 136 \A 137 \A 138 \A 139 \A 140 \A 141 \A 142 \A 143 \A 144 \A 145 \A 146 \A 147 \A 148 \A 149 \A 150 \A 151 \A 152 \A 153 \A 154 \A 155 \A 156 \A 157 \A 158 \A 159 \A 160 \A 161 \A 162 \A 163 \A 164 \A 165 \A 166 \A 167 \A 168 \A 169 \A 170 \A 171 \A 172 \A 173 \A 174 \A 175 \A 176 \A 177 \A 178 \A 179 \A 180 \A 181 \A 182 \A 183 \A 184 \A 185 \A 186 \A 187 \A 188 \A 189 \A 190 \A 191 \A 192 \A 193 \A 194 \A 195 \A 196 \A 197 \A 198 \A 199 \A 200 \A 201 \A 202 \A 203 \A 204 \A 205 \A 206 \A 207 \A 208 \A 209 \A 210 \A 211 \A 212 \A 213 \A 214 \A 215 \A 216 \A 217 \A 218 \A 219 \A 220 \A 221 \A 222 \A 223 \A 224 \A 225 \A 226 \A 227 \A 228 \A 229 \A 230 \A 231 \A 232 \A 233 \A 234 \A 235 \A 236 \A 237 \A 238 \A 239 \A 240 \A 241 \A 242 \A 243 \A 244 \A 245 \A 246 \A 247 \A 248 \A 249 \A 250 \A 251 \A 252 \A 253 \A 254 \A 255 \A 256 \A 257 \A 258 \A 259 \A 260 \A 261 \A 262 \A 263 \A 264 \A 265 \A 266 \A 267 \A 268 \A 269 \A 270 \A 271 \A 272 \A 273 \A 274 \A 275 \A 276 \A 277 \A 278 \A 279 \A 280 \A 281 \A 282 \A 283 \A 284 \A 285 \A 286 \A 287 \A 288 \A 289 \A 290 \A 291 \A 292 \A 293 \A 294 \A 295 \A 296 \A 297 \A 298 \A 299 \A 300 \A 301 \A 302 \A 303 \A 304 \A 305 \A 306 \A 307 \A 308 \A 309 \A 310 \A 311 \A 312 \A 313 \A 314 \A 315 \A 316 \A 317 \A 318 \A 319 \A 320 \A 321 \A 322 \A 323 \A 324 \A 325 \A 326 \A 327 \A 328 \A 329 \A 330 \A 331 \A 332 \A 333 \A 334 \A 335 \A 336 \A 337 \A 338 \A 339 \A 340 \A 341 \A 342 \A 343 \A 344 \A 345 \A 346 \A 347 \A 348 \A 349 \A 350 \A 351 \A 352 \A 353 \A 354 \A 355 \A 356 \A 357 \A 358 \A 359 \A 360 \A 361 \A 362 \A 363 \A 364 \A 365 \A 366 \A 367 \A 368 \A 369 \A 370 \A 371 \A 372 \A 373 \A 374 \A 375 \A 376 \A 377 \A 378 \A 379 \A 380 \A 381 \A 382 \A 383 \A 384 \A 385 \A 386 \A 387 \A 388 \A 389 \A 390 \A 391 \A 392 \A 393 \A 394 \A 395 \A 396 \A 397 \A 398 \A 399 \A 400';
+	background:#eee;
+	position:absolute;
+	z-index:2;
+	top:0;
+	left:0;
+	padding:0 1px 0 10px;
+	border-radius:4px 0 0 4px;
+	box-shadow:-1px 0 2px rgba(0,0,0,0.1) inset;
+	height:100% !important;
+	text-align:right;
+}
+
+.sectionsContainer > section{
+	border-bottom:1px solid rgba(0,0,0,0.3);
+	box-shadow:0 10px 0 rgba(0,0,0,0.05);
+	padding-bottom:50px;
+	margin-bottom:60px;
+}
+.sectionsContainer h1{
+	font-weight:bold;
+	font-size:30px;
+	color:#444;
+	text-shadow:0 2px 0 rgba(255,255,255,0.8);
+}
+.sectionsContainer h2{
+	font-size:19px;
+	font-weight: regular;
+}
+.sectionsContainer section > .toc > .toc{
+	background:rgba(0,0,0,0.2);
+	font-size:13px;
+	text-shadow:0 1px 0 rgba(255,255,255,0.4);
+	margin:0;
+	padding:10px;
+	border-radius:0 0 4px 4px;
+}
+.sectionsContainer section > .toc > .toc a{
+	display:inline-block;
+	padding:5px 0;
+}
+.sectionsContainer section > .toc > .toc a:hover{
+	color:#DC143C;
+}
+.sectionsContainer section > .toc .toc-title{
+	text-align:center;
+	padding:10px;
+	font-weight:bold;
+	font-size:14px;
+	color:#fff;
+	background: linear-gradient(#77a400 50%, #5d8100 100%);
+	box-shadow: 0 2px 0 #a1c400 inset;
+	border-bottom: 1px solid #425b00;
+	text-shadow:0 -1px 0 rgba(0,0,0,0.5);
+	border-radius:4px 4px 0 0;
+}
+
+font[color="#FF0000"] {
+	color:#138B96;
+}
+
+font[color="#009900"] {
+	color:#5EA800;
+}
+
+font[color="#0000FF"] {
+	color: #0763AC;
+}

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 7. Camada de Modelo</title><link rel="stylesheet" type="text/css" href="style.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="prev" href="ch06s08.xhtml" title="6.8. Chamada de Serviços REST"/><link rel="next" href="ch07s02.xhtml" title="7.2. Servidor acesso via REST"/></head><body><header><div class="navheader"><table style="width: 100%; "><tr><th style="text-align: center; " colspan="3">Chapter 7. Camada de Modelo</th></tr><tr><td style="width: 20%; text-align: left; "><a accesskey="p" href="ch06s08.xhtml">Prev</a> </td><th style="width: 60%; text-align: center; "> </th><td style="width: 20%; text-align: right; "> <a accesskey="n" href="ch07s02.xhtml">Next</a></td></tr></table><hr/></div></header><section class="chapter" id="chp_model"><div class="titlepage"><div><div><h1 class="title">Chapter 7. Camada de Modelo</h1></div></div></div><div class="toc"><div class="toc-title">Table of Contents</div><ul class="toc"><li><span class="sect1"><a href="ch07.xhtml#sec_model_rpc">7.1. Servidor acesso via RPC</a></span></li><li><span class="sect1"><a href="ch07s02.xhtml">7.2. Servidor acesso via REST</a></span></li><li><span class="sect1"><a href="ch07s03.xhtml">7.3. Banco de Dados</a></span><ul><li><span class="sect2"><a href="ch07s03.xhtml#sec_model_bd_on">7.3.1. Banco Online</a></span></li><li><span class="sect2"><a href="ch07s03.xhtml#sec_model_bd_off">7.3.2. Banco Offline</a></span></li></ul></li><li><span class="sect1"><a href="ch07s04.xhtml">7.4. Setup</a></span><ul><li><span class="sect2"><a href="ch07s04.xhtml#sec_model_setup_webxml">7.4.1. Arquivo web.xml</a></span></li></ul></li></ul></div>
+	
+
+	<p> Codificando o Modelo</p>
+
+	<section class="sect1" id="sec_model_rpc"><div class="titlepage"><div><div><h2 class="title" style="clear: both">7.1. Servidor acesso via RPC</h2></div></div></div>
+		
+
+		<div class="note"><h3 class="title">Note</h3>
+			<p> Aqui será inserido o seguinte conteúdo:</p>
+			<div class="itemizedlist"><ul style="list-style-type: disc; " class="itemizedlist"><li class="listitem">
+			    <p>ToDo :  O que é, quando e como usar.</p>
+			  </li><li class="listitem">
+			    <p>ToDo :  Um ....</p>
+			  </li></ul></div> 
+		</div>
+		
+		
+		
+		<p>O Crux possui funcionalidades para facilitar o uso do 
+		<a class="ulink" href="http://www.gwtproject.org/doc/latest/tutorial/RPC.html" target="_top">GWT RPC</a>, 
+		como informado anteriormente.
+		No lado do servidor, a principal diferença entre o GWT e o Crux é que a implementação da classe
+		de serviço não precisa extender a <span class="italic">RemoteServiceServlet</span>.</p>
+		
+		
+		<p> A <span class="italic">RemoteServiceServlet</span> não é nada mais do que um POJO
+		e necessitam de ser implementedas as interfaces de negócio. Veja o exemplo a seguir:</p>
+
+		<pre class="programlisting">
+
+public interface GreetingService extends RemoteService{
+        public String getHelloMessage(String name);
+}
+
+public class GreetingServiceImpl implements GreetingService{
+   public String getHelloMessage(String name){
+      return "Server says: Hello, " + name + "!'";
+   }
+}
+
+		</pre>
+
+		<p/>
+
+		<p>Para encontrar qual implementação será usada pora uma dada interface o Crux
+		busca por classes que implementam a interface e utiliza a primeira encontrada.
+		Esse comportamento pode ser alterado como mostrado na seção ...</p>
+		
+		<p>Se for necessário que a classe de serviço acesse objetos dos tipos
+        HttpServletRequest, HttpServletResponse ou HttpSession, também podem ser
+        implementadas uma ou mais destas interfaces:</p>
+
+		<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+		    <p> RequestAware - permite que o serviço tenha acesso a objetos HttpServletRequest.</p>
+		  </li><li class="listitem">
+		    <p> ResponseAware - permite que o serviço tenha acesso a objetos HttpServletResponse.</p>
+		  </li><li class="listitem">
+		    <p> SessionAware - permite que o serviço tenha acesso a objetos HttpSession.</p>
+		  </li></ul></div> 
+    
+		<pre class="programlisting">
+
+public class GreetingServiceImpl implements GreetingService, RequestAware, ResponseAware{
+   private HttpServletRequest request;
+   private HttpServletResponse response;
+        
+   public void setRequest(HttpServletRequest request){
+      this.request = request;
+   }
+   public void setResponse(HttpServletResponse response){
+      this.response = response;
+   }
+   ...   
+}
+
+		</pre>	
+		
+	</section>
+
+	
+
+	
+
+	
+
+</section><footer><div class="navfooter"><hr/><table style="width: 100%; "><tr><td style="width: 40%; text-align: left; "><a accesskey="p" href="ch06s08.xhtml">Prev</a> </td><td style="width: 20%; text-align: center; "> </td><td style="width: 40%; text-align: right; "> <a accesskey="n" href="ch07s02.xhtml">Next</a></td></tr><tr><td style="width: 40%; text-align: left; vertical-align: top; ">6.8. Chamada de Serviços REST </td><td style="width: 20%; text-align: center; "><a accesskey="h" href="index.xhtml">Home</a></td><td style="width: 40%; text-align: right; vertical-align: top; "> 7.2. Servidor acesso via REST</td></tr></table></div></footer></body></html>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>6.8. Chamada de Serviços REST</title><link rel="stylesheet" type="text/css" href="style.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="prev" href="ch06s07.xhtml" title="6.7. Chamada de Serviços RPC"/><link rel="next" href="ch07.xhtml" title="Chapter 7. Camada de Modelo"/></head><body><header><div class="navheader"><table style="width: 100%; "><tr><th style="text-align: center; " colspan="3">6.8. Chamada de Serviços REST</th></tr><tr><td style="width: 20%; text-align: left; "><a accesskey="p" href="ch06s07.xhtml">Prev</a> </td><th style="width: 60%; text-align: center; ">Chapter 6. Camada de Controle</th><td style="width: 20%; text-align: right; "> <a accesskey="n" href="ch07.xhtml">Next</a></td></tr></table><hr/></div></header><section class="sect1" id="sec_control_rest_call"><div class="titlepage"><div><div><h2 class="title" style="clear: both">6.8. Chamada de Serviços REST</h2></div></div></div>
+		
+
+		<p>O Crux oferece suporte a chamadas de serviços REST de forma simples e poderosa. É possível criar proxies capazes de abstrair a 
+		comunicação com o servidor de maneira análoga ao mecanismo de RPC apresentado na seção
+		<a class="xref" href="ch06s07.xhtml" title="6.7. Chamada de Serviços RPC">Chamada de Serviços RPC</a>.</p>
+		
+		<p>Esta seção mostra como chamar um serviço REST a partir do lado cliente da aplicação.
+		A seção <a class="xref" href="ch07s02.xhtml" title="7.2. Servidor acesso via REST">Servidor acesso via REST</a> mostra como esses servicos podem ser criados no servidor pelo Crux.</p>
+		
+		<p>Como exemplo, veja o seguinte serviço REST definido no lado server da aplicação:</p>
+		<div class="example" id="serviceREST"><div class="example-title">Example 6.14. MyRestService.java</div><div class="example-contents">
+		    
+			<pre class="programlisting">
+	 			<!-- Generator: GNU source-highlight 2.1.2
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --><pre xmlns=""><tt>@<b><font color="#000000">RestService</font></b><font color="#990000">(</font><font color="#FF0000">"myService"</font><font color="#990000">)</font>
+@<b><font color="#000000">Path</font></b><font color="#990000">(</font><font color="#FF0000">"test"</font><font color="#990000">)</font>
+<b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> MyRestService <font color="#FF0000">{</font>
+	@GET
+	@<b><font color="#000000">Path</font></b><font color="#990000">(</font><font color="#FF0000">"hello/{userName}"</font><font color="#990000">)</font>
+	<b><font color="#0000FF">public</font></b> String <b><font color="#000000">sayHello</font></b><font color="#990000">(</font>@<b><font color="#000000">PathParam</font></b><font color="#990000">(</font><font color="#FF0000">"userName"</font><font color="#990000">)</font> String userName<font color="#990000">)</font> <font color="#FF0000">{</font>
+		<b><font color="#0000FF">return</font></b> <font color="#FF0000">"Hello "</font> <font color="#990000">+</font> userName <font color="#990000">+</font> <font color="#FF0000">"!"</font><font color="#990000">;</font>
+	<font color="#FF0000">}</font>
+<font color="#FF0000">}</font></tt></pre>
+			</pre>
+		</div></div><br class="example-break"/>
+		
+		<p>Repare que todas as informações necessárias para o mapeamento do serviço rest estão definidas nesta classe, 
+		como path, tipo de método a ser utilizado, etc. Este mapeamento é melhor detalhado na seção 
+		<a class="xref" href="ch07s02.xhtml" title="7.2. Servidor acesso via REST">Servidor acesso via REST</a>.</p>
+		
+		<p>O serviço declarado pode ser chamado pelo lado cliente da aplicação através da proxy REST, definida pela interface:</p>
+		<div class="example" id="clientProxyREST"><div class="example-title">Example 6.15. MyRestClient.java</div><div class="example-contents">
+		    
+			<pre class="programlisting">
+	 			<!-- Generator: GNU source-highlight 2.1.2
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --><pre xmlns=""><tt>@<b><font color="#000000">TargetRestService</font></b><font color="#990000">(</font><font color="#FF0000">"myService"</font><font color="#990000">)</font>
+<b><font color="#0000FF">public</font></b> <b><font color="#0000FF">interface</font></b> MyRestClient <b><font color="#0000FF">extends</font></b> RestProxy <font color="#FF0000">{</font>
+	<font color="#009900">void</font> <b><font color="#000000">sayHello</font></b><font color="#990000">(</font>String userName<font color="#990000">,</font> Callback<font color="#990000">&lt;</font>String<font color="#990000">&gt;</font> callback<font color="#990000">)</font><font color="#990000">;</font>
+<font color="#FF0000">}</font></tt></pre>
+			</pre>
+		</div></div><br class="example-break"/>
+		
+		<p>Esta interface informa através da anotação <span class="italic">@TargetRestService</span> o nome de serviço que será utilizado
+		para mapear a classe alvo da invocação. Repare que o valor passado aqui deve coincidir com o valor declarado na classe de serviço no servidor, 
+		na anotação <span class="italic">@RestService</span>.</p>
+		
+		<p>Observe que a interface cliente, usada para chamada do serviço, deve declarar métodos que possuam assinaturas compatíveis com as 
+		assinaturas dos métodos de serviço definidos na classe do servidor. Para que as assinaturas sejam compatíveis, é necessário que:</p>
+		
+		<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+				<p>Os nomes dos métodos sejam iguais.</p>
+			</li><li class="listitem">
+				<p>Os métodos devem possuir listas de parâmetros compatíveis. Além dos parâmetros a serem passados para o método da classe de serviço 
+				no servidor, o método da interface cliente deve adicionar um parâmetro à sua lista de parâmetros do tipo <code class="code">Callback&lt;T&gt;</code>, onde T deve ser
+				compatível com o tipo de retorno do método da classe de serviço no servidor. </p>
+			</li><li class="listitem">
+				<p>Os parâmetros passados pela interface cliente para a classe no servidor devem ser de tipos compatíveis para serialização.</p>
+			</li><li class="listitem">
+				<p>O tipo de retorno dos métodos definidos na interface cliente deve ser void.</p>
+			</li></ul></div>
+		
+		<p>Para utilizar a interface proxy em seu código, basta obter uma instância desta proxy através da anotação
+		 <span class="italic">@Inject</span> ou de uma chamada ao método
+		<span class="italic">GWT.create</span>, como pode ser observado no exemplo abaixo:</p>
+		
+		<div class="example" id="clientControllerREST"><div class="example-title">Example 6.16. MyController.java</div><div class="example-contents">
+		    
+			<pre class="programlisting">
+	 			<!-- Generator: GNU source-highlight 2.1.2
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --><pre xmlns=""><tt>@<b><font color="#000000">Controller</font></b><font color="#990000">(</font><font color="#FF0000">"myController"</font><font color="#990000">)</font>
+<b><font color="#0000FF">public</font></b> <b><font color="#0000FF">class</font></b> MyController <font color="#FF0000">{</font>
+    @Inject
+    <b><font color="#0000FF">private</font></b> MyRestClient service<font color="#990000">;</font> 
+    
+    <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">setService</font></b><font color="#990000">(</font>MyRestClient service<font color="#990000">)</font> <font color="#FF0000">{</font>
+    	<b><font color="#0000FF">this</font></b><font color="#990000">.</font>service <font color="#990000">=</font> service<font color="#990000">;</font>
+    <font color="#FF0000">}</font>
+    
+    @Expose
+    <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">sayHello</font></b><font color="#990000">(</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+    	service<font color="#990000">.</font><b><font color="#000000">sayHello</font></b><font color="#990000">(</font><font color="#FF0000">"Thiago"</font><font color="#990000">,</font> <b><font color="#0000FF">new</font></b> Callback<font color="#990000">&lt;</font>String<font color="#990000">&gt;</font><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">)</font><font color="#FF0000">{</font>
+    		@Override
+    		<b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">onSuccess</font></b><font color="#990000">(</font>String result<font color="#990000">)</font><font color="#FF0000">{</font>
+    			Window<font color="#990000">.</font><b><font color="#000000">alert</font></b><font color="#990000">(</font>result<font color="#990000">)</font><font color="#990000">;</font>
+    		<font color="#FF0000">}</font>
+    		@Override
+    		<b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">onError</font></b><font color="#990000">(</font>Exception e<font color="#990000">)</font><font color="#FF0000">{</font>
+    			Window<font color="#990000">.</font><b><font color="#000000">alert</font></b><font color="#990000">(</font>e<font color="#990000">.</font><b><font color="#000000">getMessage</font></b><font color="#990000">(</font><font color="#990000">)</font><font color="#990000">)</font><font color="#990000">;</font>
+    		<font color="#FF0000">}</font>
+    	<font color="#FF0000">}</font><font color="#990000">)</font><font color="#990000">;</font>
+    <font color="#FF0000">}</font>
+
+    @Expose
+    <b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">sayHello2</font></b><font color="#990000">(</font><font color="#990000">)</font> <font color="#FF0000">{</font>
+    	<i><font color="#9A1900">//</font></i><i><font color="#9A1900"> You can instantiate the service proxy with GWT.create too.</font></i>
+    	GreetingServiceAsync service <font color="#990000">=</font> GWT<font color="#990000">.</font><b><font color="#000000">create</font></b><font color="#990000">(</font>MyRestClient<font color="#990000">.</font><b><font color="#0000FF">class</font></b><font color="#990000">)</font><font color="#990000">;</font>
+    	service<font color="#990000">.</font><b><font color="#000000">sayHello</font></b><font color="#990000">(</font><font color="#FF0000">"Thiago"</font><font color="#990000">,</font> <b><font color="#0000FF">new</font></b> Callback<font color="#990000">&lt;</font>String<font color="#990000">&gt;</font><font color="#990000">(</font><b><font color="#0000FF">this</font></b><font color="#990000">)</font><font color="#FF0000">{</font>
+    		@Override
+    		<b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">onSuccess</font></b><font color="#990000">(</font>String result<font color="#990000">)</font><font color="#FF0000">{</font>
+    			Window<font color="#990000">.</font><b><font color="#000000">alert</font></b><font color="#990000">(</font>result<font color="#990000">)</font><font color="#990000">;</font>
+    		<font color="#FF0000">}</font>
+    		@Override
+    		<b><font color="#0000FF">public</font></b> <font color="#009900">void</font> <b><font color="#000000">onError</font></b><font color="#990000">(</font>Exception e<font color="#990000">)</font><font color="#FF0000">{</font>
+    			Window<font color="#990000">.</font><b><font color="#000000">alert</font></b><font color="#990000">(</font>e<font color="#990000">.</font><b><font color="#000000">getMessage</font></b><font color="#990000">(</font><font color="#990000">)</font><font color="#990000">)</font><font color="#990000">;</font>
+    		<font color="#FF0000">}</font>
+    	<font color="#FF0000">}</font><font color="#990000">)</font><font color="#990000">;</font>
+    <font color="#FF0000">}</font>
+<font color="#FF0000">}</font>
+</tt></pre>
+			</pre>
+		</div></div><br class="example-break"/>
+		
+	</section><footer><div class="navfooter"><hr/><table style="width: 100%; "><tr><td style="width: 40%; text-align: left; "><a accesskey="p" href="ch06s07.xhtml">Prev</a> </td><td style="width: 20%; text-align: center; "><a accesskey="u" href="ch06.xhtml">Up</a></td><td style="width: 40%; text-align: right; "> <a accesskey="n" href="ch07.xhtml">Next</a></td></tr><tr><td style="width: 40%; text-align: left; vertical-align: top; ">6.7. Chamada de Serviços RPC </td><td style="width: 20%; text-align: center; "><a accesskey="h" href="index.xhtml">Home</a></td><td style="width: 40%; text-align: right; vertical-align: top; "> Chapter 7. Camada de Modelo</td></tr></table></div></footer></body></html>

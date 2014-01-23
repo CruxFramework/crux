@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>5.2. Screen</title><link rel="stylesheet" type="text/css" href="style.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="prev" href="ch05.xhtml" title="Chapter 5. Camada de Visão"/><link rel="next" href="ch05s03.xhtml" title="5.3. View"/></head><body><header><div class="navheader"><table style="width: 100%; "><tr><th style="text-align: center; " colspan="3">5.2. Screen</th></tr><tr><td style="width: 20%; text-align: left; "><a accesskey="p" href="ch05.xhtml">Prev</a> </td><th style="width: 60%; text-align: center; ">Chapter 5. Camada de Visão</th><td style="width: 20%; text-align: right; "> <a accesskey="n" href="ch05s03.xhtml">Next</a></td></tr></table><hr/></div></header><section class="sect1" id="sec_view_screen"><div class="titlepage"><div><div><h2 class="title" style="clear: both">5.2. Screen</h2></div></div></div>
+		
+
+		 <div class="note"><h3 class="title">Note</h3>
+			<p> Aqui será inserido o seguinte conteúdo:</p>
+			<div class="itemizedlist"><ul style="list-style-type: disc; " class="itemizedlist"><li class="listitem">
+			    <p>ToDo :  os atributos e eventos de uma screen.</p>
+			  </li><li class="listitem">
+			    <p>ToDo :  O objeto Screen e como ele pode ser usado nas controllers para refernciar objetos na tela.</p>
+			  </li></ul></div> 
+		 </div>
+
+		
+
+		<p>A <span class="italic">sreen</span> no Crux é uma abstração para um documento, que por sua vêz pode conter 
+		várias páginas (views). Ela é definida nos arquivos <span class="emphasis"><em>.crux.xml</em></span> que são arquivos XHTML.
+		A <span class="italic">screen</span> vem declarada no corpo da página. Veja o exemplo a seguir. </p>
+
+		<div class="example" id="viewScreenHello"><div class="example-title">Example 5.2. index.crux.xml</div><div class="example-contents">
+		    
+			<pre class="programlisting">
+	 			<!-- Generator: GNU source-highlight 2.1.2
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite --><pre xmlns=""><tt><b><font color="#000080">&lt;!DOCTYPE</font></b> <font color="#009900">html</font><b><font color="#000080">&gt;</font></b>
+<b><font color="#0000FF">&lt;html</font></b> 
+    <font color="#009900">xmlns</font>=<font color="#FF0000">"</font><font color="#FF0000">http://www.w3.org/1999/xhtml</font><font color="#FF0000">"</font> 
+    <font color="#009900">xmlns</font>:<font color="#009900">core</font>=<font color="#FF0000">"</font><font color="#FF0000">http://www.cruxframework.org/crux</font><font color="#FF0000">"</font> 
+    <font color="#009900">xmlns</font>:<font color="#009900">crux</font>=<font color="#FF0000">"</font><font color="#FF0000">http://www.cruxframework.org/crux/widgets</font><font color="#FF0000">"</font>
+    <font color="#009900">xmlns</font>:<font color="#009900">gwt</font>=<font color="#FF0000">"</font><font color="#FF0000">http://www.cruxframework.org/crux/gwt</font><font color="#FF0000">"</font><b><font color="#0000FF">&gt;</font></b>
+    <b><font color="#0000FF">&lt;head&gt;</font></b> <b><font color="#0000FF">&lt;title&gt;</font></b>Exemplos CRUX<b><font color="#0000FF">&lt;/title&gt;</font></b> <b><font color="#0000FF">&lt;/head&gt;</font></b>
+    <b><font color="#0000FF">&lt;body&gt;</font></b>
+        <b><font color="#0000FF">&lt;script</font></b> <font color="#009900">type</font>=<font color="#FF0000">"</font><font color="#FF0000">text/javascript</font><font color="#FF0000">"</font> <font color="#009900">src</font>=<font color="#FF0000">"</font><font color="#FF0000">../exemploscrux/exemploscrux.nocache.js</font><font color="#FF0000">"</font><b><font color="#0000FF">&gt;</font></b><b><font color="#0000FF">&lt;/script&gt;</font></b>
+        <b><font color="#0000FF">&lt;core:screen</font></b> <font color="#009900">useView</font>=<font color="#FF0000">"</font><font color="#FF0000">**/views/*</font><font color="#FF0000">"</font>
+            <font color="#009900">smallViewport</font>=<font color="#FF0000">"</font><font color="#FF0000">user-scalable=no, width=320</font><font color="#FF0000">"</font>
+            <font color="#009900">largeViewport</font>=<font color="#FF0000">"</font><font color="#FF0000">user-scalable=no, width=device-width, height=device-height</font><font color="#FF0000">"</font> <b><font color="#0000FF">/&gt;</font></b>
+        <b><font color="#0000FF">&lt;crux:horizontalSwapViewContainer</font></b> <font color="#009900">id</font>=<font color="#FF0000">"</font><font color="#FF0000">views</font><font color="#FF0000">"</font> <font color="#009900">height</font>=<font color="#FF0000">"</font><font color="#FF0000">100%</font><font color="#FF0000">"</font> <font color="#009900">width</font>=<font color="#FF0000">"</font><font color="#FF0000">100%</font><font color="#FF0000">"</font><b><font color="#0000FF">&gt;</font></b>
+            <b><font color="#0000FF">&lt;crux:view</font></b> <font color="#009900">name</font>=<font color="#FF0000">"</font><font color="#FF0000">mainhello</font><font color="#FF0000">"</font> <font color="#009900">active</font>=<font color="#FF0000">"</font><font color="#FF0000">true</font><font color="#FF0000">"</font><b><font color="#0000FF">/&gt;</font></b>
+        <b><font color="#0000FF">&lt;/crux:horizontalSwapViewContainer&gt;</font></b> 
+    <b><font color="#0000FF">&lt;/body&gt;</font></b>
+<b><font color="#0000FF">&lt;/html&gt;</font></b>
+</tt></pre>
+			</pre>
+		</div></div><br class="example-break"/>
+
+		<p> A <span class="italic">screen</span> se liga ao documento principal da página e cria a 
+		<span class="italic">view</span> inicial declarada em : <code class="code">crux:view</code>. Na screen não definidos 
+		os elementos da página a ser exibida, essas informações serão definidas nas <span class="italic">views</span>
+		ou em um template.</p>
+
+		<p>Existe um DOM associado a <span class="italic">screen</span> que é compartilhado por todas as views .... </p>
+
+		<p>A diretiva <code class="code">script</code> no exemplo informa que o .... </p>
+
+		<p>A <code class="code">c:screen</code> define como será  .... </p>
+
+		<p>Também pode ser definida uma <span class="italic">controller</span> na <span class="italic">screen</span>
+		e algum método ser executado ... </p>
+
+		<p>Neste exemplo foi utilizado a diretiva <code class="code">crux:horizontalSwapViewContainer</code>,
+		assim as trocas entre as views terão um efeito de "deslizar" ao serem alterada. </p>
+
+		<section class="sect2" id="sec_view_screen_atrib"><div class="titlepage"><div><div><h3 class="title">5.2.1. Atributos da Screen</h3></div></div></div>
+			
+			
+			<p>Alguns atributos da Screen:</p>
+
+			<div class="table" id="d5e361"><div class="table-title">Table 5.1. Atributos da Screen</div><div class="table-contents">
+				
+				<table style="border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col style="text-align: left; " class="c1"/><col style="text-align: left; " class="c2"/></colgroup><thead><tr><th style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">Atributo</th><th style="text-align: left; border-bottom: 0.5pt solid ; ">Descrição</th></tr></thead><tbody><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">useController</td><td style="text-align: left; border-bottom: 0.5pt solid ; ">Define qual será a controler da Screen</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; ">useView</td><td style="text-align: left; border-bottom: 0.5pt solid ; ">...	</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; ">Viewports</td><td style="text-align: left; ">Para cada viewport podem ser definidas os detalhes de
+							apresentação da tela. Temos: smallViewport, largeViewport ... </td></tr></tbody></table>
+			</div></div><br class="table-break"/>
+			
+		</section>
+		
+		<section class="sect2" id="sec_view_screen_event"><div class="titlepage"><div><div><h3 class="title">5.2.2. Eventos da Screen</h3></div></div></div>
+			
+			
+			<p>Os eventos da Screen são:</p>
+			
+			<div class="table" id="d5e383"><div class="table-title">Table 5.2. Eventos da Screen</div><div class="table-contents">
+				
+				<table style="border-collapse: collapse; border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; "><colgroup><col style="text-align: left; " class="c1"/><col style="text-align: left; " class="c2"/></colgroup><thead><tr><th style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> Evento </th><th style="text-align: left; border-bottom: 0.5pt solid ; "> Descrição </th></tr></thead><tbody><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> Load </td><td style="text-align: left; border-bottom: 0.5pt solid ; ">Chamado quando a tela é carregada (load). Esse evento somente é disparado 
+							depois que o processo de carregamento da página é concluído. </td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> Close </td><td style="text-align: left; border-bottom: 0.5pt solid ; "> Chamado quando a pagina é fechada. </td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> Closing </td><td style="text-align: left; border-bottom: 0.5pt solid ; "> Chamado antes de fechar a página.</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; border-bottom: 0.5pt solid ; "> Resize </td><td style="text-align: left; border-bottom: 0.5pt solid ; "> Chamado quando a pagina é redimencionada.</td></tr><tr><td style="text-align: left; border-right: 0.5pt solid ; "> HistoryChanged </td><td style="text-align: left; "> Chamado quando o botão de voltar do browser é acionado.</td></tr></tbody></table>
+			</div></div><br class="table-break"/>
+
+		</section>
+
+	</section><footer><div class="navfooter"><hr/><table style="width: 100%; "><tr><td style="width: 40%; text-align: left; "><a accesskey="p" href="ch05.xhtml">Prev</a> </td><td style="width: 20%; text-align: center; "><a accesskey="u" href="ch05.xhtml">Up</a></td><td style="width: 40%; text-align: right; "> <a accesskey="n" href="ch05s03.xhtml">Next</a></td></tr><tr><td style="width: 40%; text-align: left; vertical-align: top; ">Chapter 5. Camada de Visão </td><td style="width: 20%; text-align: center; "><a accesskey="h" href="index.xhtml">Home</a></td><td style="width: 40%; text-align: right; vertical-align: top; "> 5.3. View</td></tr></table></div></footer></body></html>

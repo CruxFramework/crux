@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>Chapter 5. Camada de Visão</title><link rel="stylesheet" type="text/css" href="style.css"/><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"/><link rel="prev" href="ch04.xhtml" title="Chapter 4. Visão Arquitetura"/><link rel="next" href="ch05s02.xhtml" title="5.2. Screen"/></head><body><header><div class="navheader"><table style="width: 100%; "><tr><th style="text-align: center; " colspan="3">Chapter 5. Camada de Visão</th></tr><tr><td style="width: 20%; text-align: left; "><a accesskey="p" href="ch04.xhtml">Prev</a> </td><th style="width: 60%; text-align: center; "> </th><td style="width: 20%; text-align: right; "> <a accesskey="n" href="ch05s02.xhtml">Next</a></td></tr></table><hr/></div></header><section class="chapter" id="chp_view"><div class="titlepage"><div><div><h1 class="title">Chapter 5. Camada de Visão</h1></div></div></div><div class="toc"><div class="toc-title">Table of Contents</div><ul class="toc"><li><span class="sect1"><a href="ch05.xhtml#sec_view_concepts">5.1.  Conceitos Principais</a></span></li><li><span class="sect1"><a href="ch05s02.xhtml">5.2. Screen</a></span><ul><li><span class="sect2"><a href="ch05s02.xhtml#sec_view_screen_atrib">5.2.1. Atributos da Screen</a></span></li><li><span class="sect2"><a href="ch05s02.xhtml#sec_view_screen_event">5.2.2. Eventos da Screen</a></span></li></ul></li><li><span class="sect1"><a href="ch05s03.xhtml">5.3. View</a></span><ul><li><span class="sect2"><a href="ch05s03.xhtml#sec_view_view_atrib">5.3.1. Atributos da View</a></span></li><li><span class="sect2"><a href="ch05s03.xhtml#sec_view_view_event">5.3.2. Eventos da View</a></span></li></ul></li><li><span class="sect1"><a href="ch05s04.xhtml">5.4. Template</a></span><ul><li><span class="sect2"><a href="ch05s04.xhtml#sec_view_template_parameter">5.4.1. Parametrizando Templates</a></span></li><li><span class="sect2"><a href="ch05s04.xhtml#sec_view_template_component">5.4.2. Templates de Blocos</a></span></li><li><span class="sect2"><a href="ch05s04.xhtml#sec_view_template_layout">5.4.3. Templates de Layouts</a></span></li></ul></li><li><span class="sect1"><a href="ch05s05.xhtml">5.5. Chamada de Eventos</a></span></li></ul></div>
+	
+
+	<p>Neste capítulo é apresentado em detalhes a camada de visão do Crux Framework.
+	A camada de visão no Crux é codificada de forma declarativa atraves de arquivos XML,
+	assim, as telas do sistema são projetadas e escritas em arquivos XHTML.
+	O Crux a partir de versão 5 permite o desenvolvimento de sistemas baseados 
+	em <span class="italic">views</span>, e não mais só em <span class="italic">screens</span>.</p>
+	
+	<section class="sect1" id="sec_view_concepts"><div class="titlepage"><div><div><h2 class="title" style="clear: both">5.1.  Conceitos Principais</h2></div></div></div>
+		
+
+		<div class="note"><h3 class="title">Note</h3>
+	        <p> Aqui será inserido o seguinte conteúdo:</p>
+			<div class="itemizedlist"><ul style="list-style-type: disc; " class="itemizedlist"><li class="listitem">
+			    <p>ToDo :  Os tipos de arquivo de visão e pra que servem cada um deles.</p>
+			  </li><li class="listitem">
+			    <p>ToDo :  Os arquivos ".crux.xml." - Descreve-los como arquivos XHTML que estão associados à Screen. 
+			          Eles se ligam ao document principal da página e criam a rootView, que é uma view especial, 
+			          associada ao body da pagina e que não é descarregada enquanto a aplicação (página) estiver aberta.</p>
+			  </li><li class="listitem">
+			    <p>ToDo :  Os containers de view e sobre as views. Os arquivos ".view.xml"</p>
+			  </li><li class="listitem">
+			    <p>ToDo :  Descrição da função de um templates. Os arquivos ".template.xml".</p>
+			  </li><li class="listitem">
+			    <p>ToDo :  Os widgets e biliotecas de componentes no Crux. Como elas são importadas na 
+			      tela atraves de namespaces.</p>
+			  </li><li class="listitem">
+			    <p>ToDo :  Os arquivos XSDs no Crux, sobre o gerador de schemas da possibilidade de 
+			        se adicionar novas bibliotecas personalizadas.</p>
+			  </li></ul></div> 
+		</div>		
+		
+		
+
+		<p>No crux existem três tipos de arquivos da camada de visão, onde cada um é usado em um contexto e com uma função. São eles:</p>
+		<div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+				<p><span class="bold"><strong>Screen</strong></span> : é definida no arquivo <span class="emphasis"><em>.crux.xml</em></span> que é um arquivo XHTML. </p>
+			</li><li class="listitem">
+				<p><span class="bold"><strong>View</strong></span> : é definida no arquivo <span class="emphasis"><em>.view.xml</em></span> que é um "fragmento" de arquivo XHTML.  </p>
+			</li><li class="listitem">
+				<p><span class="bold"><strong>Template</strong></span> : é definida no arquivo <span class="emphasis"><em>.template.xml</em></span> que é um um arquivo XHTML, em geral parametrizado.</p>
+			</li></ul></div>
+
+		<p>Nos cabeçalhos dos arquivos de visão são definidas os namespaces de acordo com o 
+		os elementos que serão utilizados no arquivo. No exemplo a seguir estão os namespaces de 
+		um arquivo de Screen. </p>
+
+		<div class="example" id="viewNamespace"><div class="example-title">Example 5.1. namespaces</div><div class="example-contents">
+		    
+			<pre class="programlisting">
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:core="http://www.cruxframework.org/crux" 
+xmlns:crux="http://www.cruxframework.org/crux/widgets"
+xmlns:gwt="http://www.cruxframework.org/crux/gwt"		
+			</pre>
+		</div></div><br class="example-break"/>
+
+	</section>
+
+	
+
+	
+
+	
+
+	
+
+</section><footer><div class="navfooter"><hr/><table style="width: 100%; "><tr><td style="width: 40%; text-align: left; "><a accesskey="p" href="ch04.xhtml">Prev</a> </td><td style="width: 20%; text-align: center; "> </td><td style="width: 40%; text-align: right; "> <a accesskey="n" href="ch05s02.xhtml">Next</a></td></tr><tr><td style="width: 40%; text-align: left; vertical-align: top; ">Chapter 4. Visão Arquitetura </td><td style="width: 20%; text-align: center; "><a accesskey="h" href="index.xhtml">Home</a></td><td style="width: 40%; text-align: right; vertical-align: top; "> 5.2. Screen</td></tr></table></div></footer></body></html>

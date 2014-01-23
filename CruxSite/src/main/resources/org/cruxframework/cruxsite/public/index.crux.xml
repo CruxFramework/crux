@@ -96,9 +96,9 @@
 							<li>
 								<crux:anchor id="link12" href="#topMenuDisposal:comparativo" text="Comparativo"></crux:anchor>
 							</li>
-							<li>
-								<crux:anchor id="link13" href="#topMenuDisposal:cases" text="Cases"></crux:anchor>
-							</li>
+<!-- 							<li> -->
+<!-- 								<crux:anchor id="link13" href="#topMenuDisposal:cases" text="Cases"></crux:anchor> -->
+<!-- 							</li> -->
 							<li>
 								<crux:anchor id="link14" target="_blank" href="http://showcase5.cruxframework.org/" text="Showcase 5"></crux:anchor>
 							</li>
