@@ -20,13 +20,15 @@
 					aplicações corporativas utilizando HTML5. O Crux é um verdadeiro 
 					framework para Web 2.0.
 				</p>
-				<p>O desenvolvedor pode criar as páginas web de forma
+				<p>No Crux o desenvolvedor pode criar as páginas web de forma
 					declarativa, descrevendo a tela utilizando XHTML como linguagem, o que
-					é bastante simples. Usando o Crux sua aplicação também está habilitada 
+					é bastante simples. A sua aplicação também está habilitada 
 					para ser executada em todos os navegadores modernos e em vários 
 					dispositivos, sem código adicional.
-				    O Crux complementa o GWT para uso corporativo estendendo seus
-					componentes e agregando camadas para acesso a serviços de negócio em
+				</p>
+				<p>	
+				    Complementanto o GWT para uso corporativo, o Crux estende os
+					componentes e agrega camadas para acesso a serviços de negócio em
 					arquitetura SOA, bancos de dados e outras tecnologias presentes no
 					ambiente corporativo.</p>
 				<p>A combinação Crux/GWT possibilita a utilização
@@ -46,10 +48,10 @@
 				<a href="http://www.sysmap.com.br/" title="Sysmap" target="_blank"
 					class="defaultLink">Sysmap Soluctions</a>
 				e é usado em projetos com seus principais clientes.	</p>
-				<p>	Em 2013 o Crux, que já era um projeto Open Source, passou a ser
+				Em 2013 o Crux, que já era um projeto Open Source, passou a ser
 				mantido pela <a href="http://www.triggolabs.com/" title="Triggo" target="_blank"
 				class="defaultLink">Triggo Labs</a>, uma startup brasileira com foco no 
-				desenvolvimento de novas tecnologias e produtos web baseados no Crux.</p>
+				desenvolvimento de novas tecnologias e produtos web baseados no Crux.
 				<p>Atualmente estamos em busca de novos colaboradores independentes e
 					empresas dispostas a participar do desenvolvimento do Crux Framework.
 				</p>
