@@ -6,6 +6,6 @@
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	useController="mainController" title="Código Fonte">
 	
-	<span id="sourceEditor"></span>
+	<gwt:simplePanel id="sourceEditor"></gwt:simplePanel>
 	
 </v:view>

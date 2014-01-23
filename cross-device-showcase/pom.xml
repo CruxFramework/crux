@@ -180,13 +180,14 @@
 									<!-- change these two parameters if you need to modify memory settings -->
 									<jvmarg value="-Xmx768M" />
 									<jvmarg value="-Xms256M" />
+									<jvmarg value="-Xss1M" />
 						
 									<arg value="-localWorkers" />
 									<arg value="2" />
 						
+									<!-- use these parameters if you want to modify GWT output settings
 									<arg value="-style"/>
 									<arg value="DETAILED"/>
-									<!-- use these parameters if you want to modify GWT output settings
 									<arg value="-logLevel"/>
 									<arg value="DEBUG"/>
 									-->
@@ -262,6 +263,7 @@
 							
 									<jvmarg value="-Xmx768M" />
 									<jvmarg value="-Xms256M" />
+									<jvmarg value="-Xss1M" />
 								</java>
 				    		</target>
 			            </configuration>

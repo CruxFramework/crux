@@ -58,7 +58,6 @@ public class SVNExplorer
 		paths.addAll(controllers);
 		paths.addAll(asyncs);
 		paths.addAll(services);
-		paths.addAll(views);
 		
 		return paths;
 	}

@@ -7,14 +7,20 @@ import org.cruxframework.crux.core.client.controller.Controller;
 import org.cruxframework.crux.core.client.controller.Expose;
 import org.cruxframework.crux.core.client.ioc.Inject;
 import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.core.client.screen.views.View;
+import org.cruxframework.crux.core.client.screen.views.ViewActivateEvent;
+import org.cruxframework.crux.core.client.screen.views.ViewActivateHandler;
 import org.cruxframework.crux.widgets.client.dialogcontainer.DialogViewContainer;
 import org.cruxframework.crux.widgets.client.disposal.menutabsdisposal.MenuTabsDisposal;
+import org.cruxframework.crux.widgets.client.disposal.panelchoicedisposal.PanelChoiceDisposal;
 import org.cruxframework.crux.widgets.client.swappanel.HorizontalSwapPanel.Direction;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Widget;
 
 @Controller("mainController")
 public class MainController 
@@ -61,15 +67,7 @@ public class MainController
 			{
 				if(result.size() > 0)
 				{
-					String firstFile = result.get(0);
-					service.getSourceFile(firstFile, new Callback<String>()
-					{
-						@Override
-						public void applyResult(String result)
-						{
-							showSourcesDialog(result);
-						}
-					});
+					showSourcesDialog(result);
 				}
 			}			
 		});
@@ -77,21 +75,83 @@ public class MainController
 
 	/**
 	 * Shows a dialog box with the source files contents
-	 * @param result
+	 * @param files
 	 */
-	private void showSourcesDialog(String result)
+	private void showSourcesDialog(final List<String> files)
 	{
-		DialogViewContainer dialog = DialogViewContainer.createDialog("sourceCode");
+		DialogViewContainer dialog = DialogViewContainer.createDialog("sourcesPopup");
 		dialog.setWidth("80%");
 		dialog.setHeight("90%");
 		dialog.openDialog();
 		dialog.center();
 		
-		Element editor = DOM.getElementById("sourceEditor");
-		String brush = "class=\"brush:xml\"";
-		result = new SafeHtmlBuilder().appendEscaped(result).toSafeHtml().asString();
-		editor.setInnerHTML("<pre " + brush + ">" + result + "</pre>");
-		syntaxHighlight();						
+		final PanelChoiceDisposal sourceChoice = dialog.getView().getWidget("sourceChoice", PanelChoiceDisposal.class);
+		
+		for (int i = files.size() - 1; i >= 0; i--)
+		{
+			final String path = files.get(i);
+			final String fileName = getFileName(path);
+			addSourceChoice(sourceChoice, path, fileName);
+		}
+		
+		if(files.size() > 0)
+		{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand()
+			{
+				@Override
+				public void execute()
+				{
+					String fileName = getFileName(files.get(0));
+					sourceChoice.choose(fileName, fileName);
+				}
+			});
+		}						
+	}
+
+	/**
+	 * @param sourceChoice
+	 * @param path
+	 * @param fileName
+	 */
+	private void addSourceChoice(final PanelChoiceDisposal sourceChoice, final String path, final String fileName)
+	{
+		sourceChoice.addChoice(fileName, fileName, "sourceCode", new ViewActivateHandler()
+		{
+			private boolean loaded = false;
+			
+			@Override
+			public void onActivate(ViewActivateEvent event)
+			{
+				if(!loaded)
+				{
+					loaded = true;
+					
+					service.getSourceFile(path, new Callback<String>()
+					{
+						@Override
+						public void applyResult(String source)
+						{
+							View view = View.getView(fileName);
+							Widget sourceEditor = view.getWidget("sourceEditor");
+							Element editor = sourceEditor.getElement();
+							String brush = "class=\"brush:" + (fileName.endsWith("java") ? "java": "xml") + "\"";
+							source = new SafeHtmlBuilder().appendEscaped(source).toSafeHtml().asString();
+							editor.setInnerHTML("<pre " + brush + ">" + source + "</pre>");
+							syntaxHighlight();
+						}
+					});
+				}
+			}
+		});
+	}
+
+	/**
+	 * @param path
+	 * @return
+	 */
+	private String getFileName(final String path)
+	{
+		return path.indexOf("/") >= 0 ? path.substring(path.lastIndexOf("/") + 1) : path;
 	}
 	
 	public native void syntaxHighlight()/*-{
