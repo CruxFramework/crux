@@ -17,6 +17,9 @@ package org.cruxframework.crux.core.client.db;
 
 
 /**
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
+ * 
+ * <p>Base class for object stores on Crux Database. Use the interface ObjectStore to access your stores.</p> 
  * @author Thiago da Rosa de Bustamante
  *
  */
@@ -26,11 +29,6 @@ public abstract class AbstractObjectStore<K, V> extends DBObject implements Obje
 	{
 		super(db);
 	}
-	
-	public abstract String[] getIndexNames();
-	
-	@Override
-	public abstract boolean isAutoIncrement();
 	
 	@Override
 	public void put(V object) 

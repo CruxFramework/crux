@@ -22,6 +22,9 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 
 /**
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
+ * 
+ * Indexed DB implementation for Cursor Interface. Use the interface {@link Cursor} instead. 
  * @author Thiago da Rosa de Bustamante
  * @param <K> The type of the key used to identify objects into the cursor.
  * @param <V> The type of the objects referenced by this cursor 

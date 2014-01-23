@@ -23,8 +23,10 @@ import org.cruxframework.crux.core.client.db.indexeddb.events.IDBErrorEvent;
 import org.cruxframework.crux.core.client.db.indexeddb.events.IDBEvent;
 
 /**
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
+ * 
+ * Indexed DB implementation for ObjectStore Interface. Use the interface {@link ObjectStore} instead. 
  * @author Thiago da Rosa de Bustamante
- *
  */
 public abstract class IDXAbstractObjectStore<K, V> extends AbstractObjectStore<K, V> 
 {

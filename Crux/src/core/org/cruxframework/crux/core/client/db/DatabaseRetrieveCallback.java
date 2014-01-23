@@ -25,8 +25,8 @@ public abstract class DatabaseRetrieveCallback<T> extends Callback
 {
 	/**
 	 * Called after a successfully read operation into the database (a get operation). 
-     * @param <K> The type of the retrieved object.
-	 * @param result
+     * @param <T> The type of the retrieved object.
+	 * @param result the object retrieved
 	 */
 	public abstract void onSuccess(T result);
 }

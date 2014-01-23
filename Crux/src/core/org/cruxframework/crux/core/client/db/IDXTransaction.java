@@ -27,9 +27,10 @@ import org.cruxframework.crux.core.client.db.indexeddb.events.IDBErrorEvent;
 import com.google.gwt.logging.client.LogConfiguration;
 
 /**
- * A transaction on Crux Database, To create transactions, use one of {@link Database}'s getTransaction() method.
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
+ * 
+ * Indexed DB implementation for Transaction Interface. Use the interface {@link Transaction} instead. 
  * @author Thiago da Rosa de Bustamante
- *
  */
 public class IDXTransaction extends Transaction
 {

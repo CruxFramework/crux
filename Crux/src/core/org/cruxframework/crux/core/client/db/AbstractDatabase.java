@@ -23,10 +23,10 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import com.google.gwt.core.client.GWT;
 
 /**
- * HTML5 AbstractDatabase based on IndexedDB (http://www.w3.org/TR/IndexedDB/).
- * Supported also on WEB SQL capable browsers. 
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
+ * 
+ * Base class for Crux databases. Use the interface Database to define your databases 
  * @author Thiago da Rosa de Bustamante
- *
  */
 public abstract class AbstractDatabase implements Database
 {

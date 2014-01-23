@@ -22,7 +22,10 @@ import org.cruxframework.crux.core.client.db.indexeddb.events.IDBCountEvent;
 import org.cruxframework.crux.core.client.db.indexeddb.events.IDBErrorEvent;
 
 /**
- * Represents an index into this database.
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
+ * 
+ * Indexed DB implementation for Index Interface. Use the interface {@link Index} instead. 
+ * @author Thiago da Rosa de Bustamante
  * @param <K> object key type
  * @param <I> index key type. The type of the indexed column
  * @param <V> object type

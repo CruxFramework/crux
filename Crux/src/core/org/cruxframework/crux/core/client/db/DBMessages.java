@@ -18,8 +18,8 @@ package org.cruxframework.crux.core.client.db;
 import com.google.gwt.i18n.client.Messages;
 
 /**
+ * Resource messages used on Crux database system.
  * @author Thiago da Rosa de Bustamante
- *
  */
 public interface DBMessages extends Messages
 {

@@ -15,9 +15,32 @@
  */
 package org.cruxframework.crux.core.client.db;
 
+import org.cruxframework.crux.core.client.db.Transaction.Mode;
 import org.cruxframework.crux.core.client.file.Blob;
 
 /**
+ * Represents a cursor of files stored into the database.
+ * 
+ * <p>
+ * To open a file cursor, you must ask to a {@link FileStore} object. 
+ * </p>
+ * <p>
+ * See the following example:
+ * <pre>
+ * {@link Transaction} transaction = database.getTransaction(new String[]{FileStore.OBJECT_STORE_NAME}, {@link Mode}.readWrite);
+ * transaction.getFileStore().openCursor(new {@link FileStoreCursorCallback}(){
+ *   @Override
+ *   public void onSuccess(FileCursor result){
+ *     if (result != null && result.getValue() != null) {
+ *       String fileName = result.getKey();
+ *       Blob file = result.getValue();
+ *       continueCusror();
+ *     }
+ *   }
+ * });
+ * </pre>
+ * </p>
+ * 
  * @author Thiago da Rosa de Bustamante
  *
  */

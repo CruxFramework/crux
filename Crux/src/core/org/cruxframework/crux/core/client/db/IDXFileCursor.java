@@ -21,8 +21,10 @@ import org.cruxframework.crux.core.client.file.Blob;
 import com.google.gwt.core.client.JsArrayMixed;
 
 /**
+ * CRUX INTERNAL CLASS. DO NOT USE IT DIRECTLY.
+ * 
+ * Indexed DB implementation for FileCursor Interface. Use the interface {@link FileCursor} instead. 
  * @author Thiago da Rosa de Bustamante
- *
  */
 public class IDXFileCursor extends IDXCursor<String, Blob> implements FileCursor
 {

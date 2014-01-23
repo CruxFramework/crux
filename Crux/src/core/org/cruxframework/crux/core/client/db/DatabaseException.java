@@ -16,28 +16,44 @@
 package org.cruxframework.crux.core.client.db;
 
 /**
+ * Represents an error on Crux Database.
  * @author Thiago da Rosa de Bustamante
- *
  */
 public class DatabaseException extends RuntimeException
 {
     private static final long serialVersionUID = -8809931291701089427L;
 
+    /**
+     * Constructor
+     */
 	public DatabaseException()
     {
 	    super();
     }
 
+	/**
+	 * Constructor
+	 * @param message error message
+	 * @param t cause error
+	 */
 	public DatabaseException(String message, Throwable t)
     {
 	    super(message, t);
     }
 
+	/**
+	 * Constructor
+	 * @param message error message
+	 */
 	public DatabaseException(String message)
     {
 	    super(message);
     }
 
+	/**
+	 * Constructor
+	 * @param t cause error
+	 */
 	public DatabaseException(Throwable t)
     {
 	    super(t);

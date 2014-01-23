@@ -23,5 +23,9 @@ package org.cruxframework.crux.core.client.db;
  */
 public abstract class DatabaseCountCallback extends Callback
 {
+	/**
+	 * Called when a count operation is performed successfully.
+	 * @param result number of objects returned
+	 */
 	public abstract void onSuccess(int result);
 }

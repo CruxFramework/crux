@@ -19,10 +19,18 @@ package org.cruxframework.crux.core.client.db;
  * Handle all database errors, when no error function is specified on 
  * database callback operation.
  * @author Thiago da Rosa de Bustamante
- *
  */
 public interface DatabaseErrorHandler
 {
+	/**
+	 * Called when an uncaught error occurred on a database operation.
+	 * @param message error message
+	 */
 	void onError(String message);
+	/**
+	 * Called when an uncaught error occurred on a database operation.
+	 * @param message error message
+	 * @param t the error 
+	 */
 	void onError(String message, Throwable t);
 }
