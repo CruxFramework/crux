@@ -9,7 +9,7 @@
 	
 	<gwt:HTMLPanel id="infoContainer">
 		
-		<t:menucrux pageTitle="Documentação" />
+		<t:menuaprenda pageTitle="Documentação" />
 		
 		<div class="bigText">
 			<div class="container">

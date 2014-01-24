@@ -1213,3 +1213,8 @@ pre.programlisting{
 	display:inline-block;
 }
 */
+
+@external communityItens;
+.communityItens{
+	padding-left:20px;
+}
