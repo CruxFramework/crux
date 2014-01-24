@@ -40,6 +40,26 @@
 	<target name="init">
 	</target>
 
+    <macrodef name="copyFilesStage">
+    	<attribute name="archetypepath"/>
+        <sequential>
+            <copy todir="${dist}">
+                <fileset dir="@{archetypepath}" />
+                <globmapper from="*.jar" to="*.jar"/>
+            </copy>
+            
+            <copy todir="${dist}">
+                <fileset dir="@{archetypepath}" />
+                <globmapper from="*.jar" to="*-javadoc.jar"/>
+            </copy>
+
+            <copy todir="${dist}">
+                <fileset dir="@{archetypepath}" />
+                <globmapper from="*.jar" to="*-sources.jar"/>
+            </copy>
+        </sequential>
+    </macrodef>
+	
     <target name="copy-dist">
     	<delete dir="${dist}" failonerror="no" />
     	<mkdir dir="${dist}" />
@@ -67,7 +87,13 @@
 	</target>
 
 	<!-- before this, update project version (both build.xml and pom.xml) from SNAPSHOT to RELEASE -->
-	<target name="stage" depends="copy-dist" description="deploy release version to Maven staging repository">
+	<target name="stage" description="deploy release version to Maven staging repository">
+		<!-- get and prepare jars to send -->
+		<delete dir="${dist}" failonerror="no" />
+		<mkdir dir="${dist}" />
+		<copyFilesStage archetypepath="../../../${artifactId_crux-module-app}/target"/>
+		<copyFilesStage archetypepath="../../../${artifactId_crux-module-container-app}/target"/>
+		
 		<!-- sign and deploy the main artifact -->
 		<artifact:mvn>
 			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
@@ -77,6 +103,7 @@
 			<arg value="-Dfile=${maven-jar_crux-module-app}" />
 			<arg value="-Pgpg" />
 		</artifact:mvn>
+		
 		<artifact:mvn>
             <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
             <arg value="-Durl=${maven-staging-repository-url}" />
