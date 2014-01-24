@@ -113,7 +113,7 @@
 								<crux:anchor id="link22" href="#topMenuDisposal:projexemplo" text="Projetos Exemplo"></crux:anchor>
 							</li>
 							<li>
-								<crux:anchor id="link23" href="#topMenuDisposal:manual" text="Manual"></crux:anchor>
+								<crux:anchor id="link23" href="#topMenuDisposal:manual" text="Documentação"></crux:anchor>
 							</li>
 							<li>
 								<crux:anchor id="link24" href="#topMenuDisposal:faq" text="FAQ"></crux:anchor>

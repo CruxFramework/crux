@@ -16,36 +16,39 @@
 			<h2>Aplicações exemplo com o Crux Framework</h2>	
 			<p>Encontre aqui aplicações exemplo construídas com o Crux Framework. Aprenda gradativamente, lendo o código, executando as aplicações e modificando sua aparência e comportamento.</p>
 			<ul class="examplesList">
-				<li>
-					<div class="exampleCall">
-						<div class="exampleText">
-							<h3>Hello World</h3>
-							<div class="svnName">
-								Projeto SVN:<br />
-								<b>HelloWorld</b>
-							</div>
-						</div>
-						<div class="exampleImg">
-							<crux:image id="bgHelloWorld" url="${siteDeviceResources.bgHelloWorld}" />
-						</div>
-					</div>
-					<p>Projeto simples utilizado somente para familiarização com o framework. Também pode ser rodado através da página Quickstart.</p>
-				</li>
+				
 				<li>
 					<div class="exampleCall">
 						<div class="exampleText">
 							<h3>Showcase</h3>
 							<div class="svnName">
 								Projeto SVN:<br />
-								<b>CruxShowcase</b>
+								<b>cross-device-showcase</b>
 							</div>
 						</div>
 						<div class="exampleImg">
 							<crux:image id="bgShowcase" url="${siteDeviceResources.bgShowcase}" />
 						</div>
 					</div>
-					<p>Este é o próprio projeto do showcase do Crux (que pode ser acessado aqui), fique a vontade para rodar e modificar em sua máquina.</p>
+					<p>Este é o projeto do showcase do Crux (que pode ser acessado aqui), fique a vontade para rodar e modificar em sua máquina.</p>
 				</li>
+                
+                <li>
+                    <div class="exampleCall">
+                        <div class="exampleText">
+                            <h3>Crux Site</h3>
+                            <div class="svnName">
+                                Projeto SVN:<br />
+                                <b>CruxSite</b>
+                            </div>
+                        </div>
+                        <div class="exampleImg">
+                            <crux:image id="bgHelloWorld" url="${siteDeviceResources.bgHelloWorld}" />
+                        </div>
+                    </div>
+                    <p>O próprio site do Crux é um projeto de exemplo para familiarização com o framework.</p>
+                </li>
+                
 			</ul>
 		</div>
 		<div class="separator"></div>
@@ -54,7 +57,7 @@
 			
 			<ol class="quickstartList">
 				<li>
-					<p>Adicione, no seu Eclipse, o repositório SVN do Crux: <b>http://crux-framework.googlecode.com/svn/branches/5.0.0/</b></p>
+					<p>Adicione, no seu Eclipse, o repositório SVN do Crux: <b>https://crux-framework.googlecode.com/svn/trunk/NOME-PROJETO</b></p>
 				</li>
 				<li>
 					<p>Em seguida, faça checkout do nome do projeto que você escolheu dentre os exemplos acima.</p>
@@ -63,7 +66,7 @@
 					<p>Compile normalmente com o Maven</p>
 				</li>
 				<li>
-					<p>Clique com o botão direito no arquivo .launch existente na raiz do projeto e execute.</p>
+					<p>Clique com o botão direito no arquivo <i>.launch</i> existente na raiz do projeto e execute.</p>
 				</li>
 			</ol>
 		</div>
