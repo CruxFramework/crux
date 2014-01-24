@@ -15,9 +15,9 @@
 			<div class="container">
 				<ul>
 					<li>
-						<h2>Documentação Crux 5</h2>
-						<crux:anchor href="../documentation/single-page/index.html" target="_blank" text="Documentação Página Única" id="manualSinglePageBtn" styleName="btn btn-bigblue"></crux:anchor> 
-						<crux:anchor href="../documentation/multiple-pages/index.html" target="_blank" text="Documentação Multiplas Páginas" id="manualMultiplePageBtn" styleName="btn btn-bigblue"></crux:anchor>
+						<h2>Manual Crux 5</h2>
+						<crux:anchor href="../documentation/single-page/index.html" target="_blank" text="Manual Página Única" id="manualSinglePageBtn" styleName="btn btn-bigblue"></crux:anchor> 
+						<crux:anchor href="../documentation/multiple-pages/index.html" target="_blank" text="Manual Multiplas Páginas" id="manualMultiplePageBtn" styleName="btn btn-bigblue"></crux:anchor>
 <!-- 						<crux:anchor href="../documentation/pdf/" text="Documentação .PDF" target="_blank" id="manualPdfBtn" styleName="btn btn-bigblue"></crux:anchor>  -->
 					</li>
 					<div class="clear"></div>

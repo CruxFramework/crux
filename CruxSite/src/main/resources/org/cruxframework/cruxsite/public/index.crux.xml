@@ -57,7 +57,7 @@
 						<crux:menuEntry targetView="home" label="Home"/>
 						<crux:menuEntry targetView="ocrux" label="Crux"/>
 						<crux:menuEntry targetView="saibamais" label="Conheça"/>
-						<crux:menuEntry targetView="quickstart" label="Aprenda"/>
+						<crux:menuEntry targetView="manual" label="Aprenda"/>
 						<crux:menuEntry targetView="comunidade" label="Comunidade"/>
 					</crux:topMenuDisposal>
 				</div>
@@ -106,14 +106,14 @@
 						
 						<ul class="footerUl">
 							<li class="footerUlTitle">Aprenda</li>
+                            <li>
+                                <crux:anchor id="link23" href="#topMenuDisposal:manual" text="Documentação"></crux:anchor>
+                            </li>
 							<li>
 								<crux:anchor id="link21" href="#topMenuDisposal:quickstart" text="Quickstart"></crux:anchor>
 							</li>
 							<li>
 								<crux:anchor id="link22" href="#topMenuDisposal:projexemplo" text="Projetos Exemplo"></crux:anchor>
-							</li>
-							<li>
-								<crux:anchor id="link23" href="#topMenuDisposal:manual" text="Documentação"></crux:anchor>
 							</li>
 							<li>
 								<crux:anchor id="link24" href="#topMenuDisposal:faq" text="FAQ"></crux:anchor>

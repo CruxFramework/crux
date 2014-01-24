@@ -8,13 +8,13 @@
 	<h2><i>Aprenda : </i>#{pageTitle}</h2>	
 	<ul class="submenu">
 		<li>
+            <crux:anchor id="linkManual" href="#topMenuDisposal:manual" text="Documentação"></crux:anchor>
+        </li>
+        <li>
 			<crux:anchor id="linkQuickstart" href="#topMenuDisposal:quickstart" text="Quickstart"></crux:anchor>
 		</li>
 		<li>
 			<crux:anchor id="linkExample" href="#topMenuDisposal:projexemplo" text="Projetos Exemplo"></crux:anchor>
-		</li>
-		<li>
-			<crux:anchor id="linkManual" href="#topMenuDisposal:manual" text="Documentação"></crux:anchor>
 		</li>
 		<li>
 			<crux:anchor id="linkFaq"  href="#topMenuDisposal:faq" text="FAQ"></crux:anchor>
