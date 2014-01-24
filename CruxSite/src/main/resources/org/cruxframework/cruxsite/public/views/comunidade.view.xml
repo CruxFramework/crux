@@ -25,7 +25,7 @@
 					    	<crux:anchor id="linkQuickStart" href="#topMenuDisposal:quickstart" styleName="defaultLink" text="QuickStart"></crux:anchor>
 					    </li>
 					    <li>
-					    	<crux:anchor id="linkManual" href="#topMenuDisposal:manual" styleName="defaultLink" text="Manual"></crux:anchor>
+					    	<crux:anchor id="linkManual" href="#topMenuDisposal:manual" styleName="defaultLink" text="Documentação"></crux:anchor>
 					    </li>
 					</ul>
 				</li>

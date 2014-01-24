@@ -28,7 +28,7 @@
 				<ul>
 					<li>
 						<h2>Javadoc Crux 5</h2>
-						<crux:anchor href="../documentation/pdf/" text="Javadoc Crux 5" target="_blank" id="javadocBtn" styleName="btn btn-bigblue"></crux:anchor> 
+						<crux:anchor href="../documentation/javadoc/index.html" text="Javadoc Crux 5" target="_blank" id="javadocBtn" styleName="btn btn-bigblue"></crux:anchor> 
 					</li>
 					<div class="clear"></div>
 				</ul>
