@@ -9,8 +9,11 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
+import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
 
 
 
@@ -27,7 +30,8 @@ public class ZIPProtocolIterator implements URLIterator
 	protected boolean initial = true;
 	protected boolean closed = false;
 	protected URL zip;
-
+	private static final Log LOG = LogFactory.getLog(ClasspathUrlFinder.class);
+	
 	public ZIPProtocolIterator(URL zip, Filter filter, String pathInZip) throws IOException, URISyntaxException
 	{
 		if (zip.toString().startsWith("file:"))
@@ -69,9 +73,10 @@ public class ZIPProtocolIterator implements URLIterator
 				close();
 			}
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
-			throw new RuntimeException("failed to browse jar", e);
+			LOG.warn("failed to browse jar", e);
+			close();
 		}
 	}
 	

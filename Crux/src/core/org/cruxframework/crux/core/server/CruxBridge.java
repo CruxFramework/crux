@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.apache.commons.logging.Log;
@@ -82,6 +83,7 @@ public class CruxBridge
 	 */
 	public String getLastPageRequested() 
 	{
+		BufferedReader reader = null;
 		try 
 		{
 			if (singleVM)
@@ -91,7 +93,7 @@ public class CruxBridge
 			else
 			{
 				checkScreenRequestedFile();
-				BufferedReader reader = new BufferedReader(new FileReader(screenRequestedFile));
+				reader = new BufferedReader(new FileReader(screenRequestedFile));
 				return reader.readLine();
 			}
 		} 
@@ -99,6 +101,15 @@ public class CruxBridge
 		{
 			logger.error("Error reading screen id.", e);
 			return null;
+		} finally 
+		{
+			try 
+			{
+				reader.close();
+			} catch (IOException e) 
+			{
+				logger.error(e);
+			}
 		}
 	}
 
@@ -108,6 +119,7 @@ public class CruxBridge
 	 */
 	public String getOutputCharset() 
 	{
+		BufferedReader reader = null;
 		try 
 		{
 			if (singleVM)
@@ -117,7 +129,7 @@ public class CruxBridge
 			else
 			{
 				checkOutputCharsetFile();
-				BufferedReader reader = new BufferedReader(new FileReader(outputCharsetFile));
+				reader = new BufferedReader(new FileReader(outputCharsetFile));
 				return reader.readLine();
 			}
 		} 
@@ -125,6 +137,15 @@ public class CruxBridge
 		{
 			logger.error("Error reading outputCharset.", e);
 			return null;
+		} finally 
+		{
+			try 
+			{
+				reader.close();
+			} catch (IOException e) 
+			{
+				logger.error(e);
+			}
 		}
 	}
 
@@ -134,6 +155,7 @@ public class CruxBridge
 	 */
 	public String getScanAllowedPackages() 
 	{
+		BufferedReader reader = null;
 		try 
 		{
 			if (singleVM)
@@ -143,7 +165,7 @@ public class CruxBridge
 			else
 			{
 				checkScanAllowedPackagesFile();
-				BufferedReader reader = new BufferedReader(new FileReader(scanAllowedPackagesFile));
+				reader = new BufferedReader(new FileReader(scanAllowedPackagesFile));
 				return reader.readLine();
 			}
 		} 
@@ -151,6 +173,15 @@ public class CruxBridge
 		{
 			logger.debug("Error reading allowedPackages.", e);
 			return null;
+		} finally 
+		{
+			try 
+			{
+				reader.close();
+			} catch (IOException e) 
+			{
+				logger.error(e);
+			}
 		}
 	}
 
@@ -160,6 +191,7 @@ public class CruxBridge
 	 */
 	public String getScanIgnoredPackages() 
 	{
+		BufferedReader reader = null;
 		try 
 		{
 			if (singleVM)
@@ -169,7 +201,7 @@ public class CruxBridge
 			else
 			{
 				checkScanIgnoredPackagesFile();
-				BufferedReader reader = new BufferedReader(new FileReader(scanIgnoredPackagesFile));
+				reader = new BufferedReader(new FileReader(scanIgnoredPackagesFile));
 				return reader.readLine();
 			}
 		} 
@@ -177,6 +209,15 @@ public class CruxBridge
 		{
 			logger.debug("Error reading ignoredPackages.", e);
 			return null;
+		} finally 
+		{
+			try 
+			{
+				reader.close();
+			} catch (IOException e) 
+			{
+				logger.error(e);
+			}
 		}
 	}
 	
@@ -186,6 +227,7 @@ public class CruxBridge
 	 */
 	public String getWebinfClasses() 
 	{
+		BufferedReader reader = null;
 		try 
 		{
 			if (singleVM)
@@ -195,7 +237,7 @@ public class CruxBridge
 			else
 			{
 				checkWebinfClassesFile();
-				BufferedReader reader = new BufferedReader(new FileReader(webinfClassesFile));
+				reader = new BufferedReader(new FileReader(webinfClassesFile));
 				return reader.readLine();
 			}
 		} 
@@ -203,6 +245,15 @@ public class CruxBridge
 		{
 			logger.debug("Error reading webinfClasses.", e);
 			return null;
+		} finally 
+		{
+			try 
+			{
+				reader.close();
+			} catch (IOException e) 
+			{
+				logger.error(e);
+			}
 		}
 	}
 
@@ -212,6 +263,7 @@ public class CruxBridge
 	 */
 	public String getWebinfLib() 
 	{
+		BufferedReader reader = null;
 		try 
 		{
 			if (singleVM)
@@ -221,7 +273,7 @@ public class CruxBridge
 			else
 			{
 				checkWebinfLibFile();
-				BufferedReader reader = new BufferedReader(new FileReader(webinfLibFile));
+				reader = new BufferedReader(new FileReader(webinfLibFile));
 				return reader.readLine();
 			}
 		} 
@@ -229,6 +281,15 @@ public class CruxBridge
 		{
 			logger.debug("Error reading webinfLib.", e);
 			return null;
+		} finally 
+		{
+			try 
+			{
+				reader.close();
+			} catch (IOException e) 
+			{
+				logger.error(e);
+			}
 		}
 	}
 
