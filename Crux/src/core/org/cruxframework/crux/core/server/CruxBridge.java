@@ -103,13 +103,21 @@ public class CruxBridge
 			return null;
 		} finally 
 		{
-			try 
+			closeReader(reader);
+		}
+	}
+
+	private void closeReader(BufferedReader reader) 
+	{
+		try 
+		{
+			if(reader != null)
 			{
 				reader.close();
-			} catch (IOException e) 
-			{
-				logger.error(e);
 			}
+		} catch (IOException e) 
+		{
+			logger.error(e);
 		}
 	}
 
@@ -139,13 +147,7 @@ public class CruxBridge
 			return null;
 		} finally 
 		{
-			try 
-			{
-				reader.close();
-			} catch (IOException e) 
-			{
-				logger.error(e);
-			}
+			closeReader(reader);
 		}
 	}
 
@@ -175,13 +177,7 @@ public class CruxBridge
 			return null;
 		} finally 
 		{
-			try 
-			{
-				reader.close();
-			} catch (IOException e) 
-			{
-				logger.error(e);
-			}
+			closeReader(reader);
 		}
 	}
 
@@ -211,13 +207,7 @@ public class CruxBridge
 			return null;
 		} finally 
 		{
-			try 
-			{
-				reader.close();
-			} catch (IOException e) 
-			{
-				logger.error(e);
-			}
+			closeReader(reader);
 		}
 	}
 	
@@ -247,13 +237,7 @@ public class CruxBridge
 			return null;
 		} finally 
 		{
-			try 
-			{
-				reader.close();
-			} catch (IOException e) 
-			{
-				logger.error(e);
-			}
+			closeReader(reader);
 		}
 	}
 
@@ -283,13 +267,7 @@ public class CruxBridge
 			return null;
 		} finally 
 		{
-			try 
-			{
-				reader.close();
-			} catch (IOException e) 
-			{
-				logger.error(e);
-			}
+			closeReader(reader);
 		}
 	}
 
