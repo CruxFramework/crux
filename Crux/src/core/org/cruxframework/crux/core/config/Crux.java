@@ -43,6 +43,12 @@ public interface Crux
 	@DefaultServerMessage("true")
 	String enableHotDeploymentForWebDirs();
 
+	@DefaultServerMessage("")
+	String scanAllowedPackages();
+	
+	@DefaultServerMessage("")
+	String scanIgnoredPackages();
+	
 	@DefaultServerMessage("true")
 	String enableGenerateHTMLDoctype();
 	

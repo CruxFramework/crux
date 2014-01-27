@@ -16,13 +16,19 @@
 package org.cruxframework.crux.core.server.scan;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
+import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
+import org.cruxframework.crux.core.utils.RegexpPatterns;
+import org.cruxframework.crux.scannotation.AbstractScanner;
 import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
 
 
@@ -31,19 +37,35 @@ import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ScannerURLS 
+public class ScannerURLS extends AbstractScanner 
 {
 	static URL[] urls;
 	private static final Lock lock = new ReentrantLock();
 
 	private static final Log logger = LogFactory.getLog(ScannerURLS.class);
 	
+	private static final ScannerURLS instance = new ScannerURLS();
+	
 	/**
 	 * 
 	 */
 	private ScannerURLS()
 	{
+		//TODO: check why letting DEFAULT_IGNORED_PACKAGES doesn't allow application to run!
+		setIgnoredPackages(new String[0]);
 		
+		initializeAllowedOrIgnoredPackages();
+		String[] ignoredPackages = RegexpPatterns.REGEXP_COMMA.split(ConfigurationFactory.getConfigurations().scanIgnoredPackages());
+		String[] allowedPackages = RegexpPatterns.REGEXP_COMMA.split(ConfigurationFactory.getConfigurations().scanAllowedPackages());
+		for (String ignored : ignoredPackages) 
+		{
+			addIgnoredPackage(ignored.trim());
+		}
+		
+		for (String allowed : allowedPackages) 
+		{
+			addAllowedPackage(allowed.trim());
+		}
 	}
 	
 	/**
@@ -108,6 +130,45 @@ public class ScannerURLS
 			{
 				urls = ClasspathUrlFinder.findClassPaths();
 			}
+			
+			//add or remove allowed or ignored packages
+			ArrayList<URL> filteredURLs = new ArrayList<URL>();
+			
+			for(URL url : urls)
+			{
+				if(instance.getIgnoredPackages() != null)
+				{
+					boolean hasAnyIgnoredPackage = false;
+					for(String ignoredPackage : instance.getIgnoredPackages())
+					{
+						if(url.getPath().contains(ignoredPackage))
+						{
+							hasAnyIgnoredPackage = true;
+							break;
+						}	
+					}
+					if(hasAnyIgnoredPackage)
+					{
+						continue;
+					} else
+					{
+						filteredURLs.add(url);
+					}
+				}
+				
+				if(instance.getAllowedPackages() != null)
+				{
+					for(String allowedPackage : instance.getAllowedPackages())
+					{
+						if(url.getPath().contains(allowedPackage))
+						{
+							filteredURLs.add(url);
+						}	
+					}
+				}
+			}
+			urls = new URL[filteredURLs.size()];
+			urls = filteredURLs.toArray(urls);
 		}
 		finally
 		{
@@ -115,6 +176,30 @@ public class ScannerURLS
 		}
 		
 		return urls;
+	}
+	
+	private void initializeAllowedOrIgnoredPackages()
+	{
+		addRequiredPackage("org.cruxframework.crux");
+		String scanAllowedPackages = CruxBridge.getInstance().getScanAllowedPackages();
+		if (!StringUtils.isEmpty(scanAllowedPackages))
+		{
+			String[] allowedPackages = RegexpPatterns.REGEXP_COMMA.split(scanAllowedPackages);
+			for (String allowed : allowedPackages) 
+			{
+				addAllowedPackage(allowed.trim());
+			}
+		}
+		
+		String scanIgnoredPackages = CruxBridge.getInstance().getScanIgnoredPackages();
+		if (!StringUtils.isEmpty(scanIgnoredPackages))
+		{
+			String[] ignoredPackages = RegexpPatterns.REGEXP_COMMA.split(scanIgnoredPackages);
+			for (String ignored : ignoredPackages) 
+			{
+				addIgnoredPackage(ignored.trim());
+			}
+		}
 	}
 	
 	/**
