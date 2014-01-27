@@ -55,16 +55,32 @@ public class ScannerURLS extends AbstractScanner
 		setIgnoredPackages(new String[0]);
 		
 		initializeAllowedOrIgnoredPackages();
-		String[] ignoredPackages = RegexpPatterns.REGEXP_COMMA.split(ConfigurationFactory.getConfigurations().scanIgnoredPackages());
-		String[] allowedPackages = RegexpPatterns.REGEXP_COMMA.split(ConfigurationFactory.getConfigurations().scanAllowedPackages());
-		for (String ignored : ignoredPackages) 
+		
+		String[] ignoredPackages = null;
+		if(!StringUtils.isEmpty(ConfigurationFactory.getConfigurations().scanIgnoredPackages()))
 		{
-			addIgnoredPackage(ignored.trim());
+			ignoredPackages = RegexpPatterns.REGEXP_COMMA.split(ConfigurationFactory.getConfigurations().scanIgnoredPackages());
+		}
+		String[] allowedPackages = null; 
+		if(!StringUtils.isEmpty(ConfigurationFactory.getConfigurations().scanAllowedPackages()))
+		{
+			allowedPackages = RegexpPatterns.REGEXP_COMMA.split(ConfigurationFactory.getConfigurations().scanAllowedPackages());
 		}
 		
-		for (String allowed : allowedPackages) 
+		if(ignoredPackages != null)
 		{
-			addAllowedPackage(allowed.trim());
+			for (String ignored : ignoredPackages) 
+			{
+				addIgnoredPackage(ignored.trim());
+			}
+		}
+		
+		if(allowedPackages != null)
+		{
+			for (String allowed : allowedPackages) 
+			{
+				addAllowedPackage(allowed.trim());
+			}
 		}
 	}
 	
@@ -133,11 +149,13 @@ public class ScannerURLS extends AbstractScanner
 			
 			//add or remove allowed or ignored packages
 			ArrayList<URL> filteredURLs = new ArrayList<URL>();
-			
+			boolean packageRestrictionEnabled = false;
 			for(URL url : urls)
 			{
-				if(instance.getIgnoredPackages() != null)
+				if(instance.getIgnoredPackages() != null && instance.getIgnoredPackages().length > 0)
 				{
+					packageRestrictionEnabled = true;
+					
 					boolean hasAnyIgnoredPackage = false;
 					for(String ignoredPackage : instance.getIgnoredPackages())
 					{
@@ -156,8 +174,10 @@ public class ScannerURLS extends AbstractScanner
 					}
 				}
 				
-				if(instance.getAllowedPackages() != null)
+				if(instance.getAllowedPackages() != null && instance.getAllowedPackages().length > 0)
 				{
+					packageRestrictionEnabled = true;
+					
 					for(String allowedPackage : instance.getAllowedPackages())
 					{
 						if(url.getPath().contains(allowedPackage))
@@ -167,8 +187,12 @@ public class ScannerURLS extends AbstractScanner
 					}
 				}
 			}
-			urls = new URL[filteredURLs.size()];
-			urls = filteredURLs.toArray(urls);
+			
+			if(packageRestrictionEnabled) 
+			{
+				urls = new URL[filteredURLs.size()];
+				urls = filteredURLs.toArray(urls);
+			}
 		}
 		finally
 		{
