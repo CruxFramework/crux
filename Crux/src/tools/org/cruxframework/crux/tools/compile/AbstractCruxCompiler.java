@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.server.CruxBridge;
@@ -41,6 +42,7 @@ import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
+
 
 
 import com.google.gwt.dev.Compiler;
@@ -250,7 +252,7 @@ public abstract class AbstractCruxCompiler
 	 */
 	public void setScanAllowedPackages(String packages)
     {
-	    CruxBridge.getInstance().registerScanAllowedPackages(packages);
+		ConfigurationFactory.getConfigurations().setScanAllowedPackages(packages);
     }
 
 	/**
@@ -258,7 +260,7 @@ public abstract class AbstractCruxCompiler
 	 */
 	public void setScanIgnoredPackages(String packages)
     {
-	    CruxBridge.getInstance().registerScanIgnoredPackages(packages);
+		ConfigurationFactory.getConfigurations().setScanIgnoredPackages(packages);
     }
 
 	/**
@@ -303,8 +305,6 @@ public abstract class AbstractCruxCompiler
 	 */
 	protected void clearCruxBridgeProperties()
     {
-	    CruxBridge.getInstance().registerScanAllowedPackages("");
-		CruxBridge.getInstance().registerScanIgnoredPackages("");
 		CruxBridge.getInstance().registerLastPageRequested("");
     }
 

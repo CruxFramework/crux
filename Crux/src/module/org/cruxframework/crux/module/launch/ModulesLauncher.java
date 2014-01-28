@@ -73,8 +73,6 @@ public class ModulesLauncher
 		
 		CruxBridge.getInstance().registerWebinfClasses(webinfClassesDir.toURI().toURL().toString());
 		CruxBridge.getInstance().registerWebinfLib(webinfLibDir.toURI().toURL().toString());
-		CruxBridge.getInstance().registerScanIgnoredPackages("");
-		CruxBridge.getInstance().registerScanAllowedPackages("");
 
 		List<String> modules = new ArrayList<String>();
 		for (String moduleName : developmentModules)
