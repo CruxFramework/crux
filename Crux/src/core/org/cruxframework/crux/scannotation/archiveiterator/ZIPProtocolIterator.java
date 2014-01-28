@@ -13,7 +13,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
-import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
 
 
 
@@ -30,7 +29,7 @@ public class ZIPProtocolIterator implements URLIterator
 	protected boolean initial = true;
 	protected boolean closed = false;
 	protected URL zip;
-	private static final Log LOG = LogFactory.getLog(ClasspathUrlFinder.class);
+	private static final Log LOG = LogFactory.getLog(ZIPProtocolIterator.class);
 	
 	public ZIPProtocolIterator(URL zip, Filter filter, String pathInZip) throws IOException, URISyntaxException
 	{
