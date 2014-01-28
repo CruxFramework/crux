@@ -26,6 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.server.scan.ScannerURLS;
+import org.cruxframework.crux.scannotation.AbstractScanner;
 import org.cruxframework.crux.scannotation.archiveiterator.Filter;
 import org.cruxframework.crux.scannotation.archiveiterator.IteratorFactory;
 import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
@@ -36,19 +37,18 @@ import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class ScreenResourcesScanner 
+public abstract class ScreenResourcesScanner extends AbstractScanner
 {
 	private static Map<String, Set<String>> pagesPerModule = null;
 	private static Lock lock = new ReentrantLock();
 	
 	private Set<String> scanArchives()
 	{
-//		URL[] urls = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
 		URL[] urls = ScannerURLS.getWebURLsForSearch();
 		final Set<String> screens = new HashSet<String>();
 		final ScreenResourcesScanner scanner = this;
 		
-		for (URL url : urls)
+		for (final URL url : urls)
 		{
 			Filter filter = new Filter()
 			{
@@ -60,7 +60,10 @@ public abstract class ScreenResourcesScanner
 						{
 							filename = filename.substring(1);
 						}
-						screens.add(filename);
+						if (!ignoreScan(url, filename))
+						{
+							screens.add(filename);
+						}
 						return true;
 					}
 					return false;

@@ -45,10 +45,6 @@ public class CruxBridge
 	private static CruxBridge instance = new CruxBridge();
 	private static final Log logger = LogFactory.getLog(CruxBridge.class);
 
-	private String scanAllowedPackages = null;
-	private File scanAllowedPackagesFile;
-	private String scanIgnoredPackages = null;
-	private File scanIgnoredPackagesFile;
 	private String screenRequested = null;
 	private String outputCharset = null;
 	
@@ -144,66 +140,6 @@ public class CruxBridge
 		catch (Exception e) 
 		{
 			logger.error("Error reading outputCharset.", e);
-			return null;
-		} finally 
-		{
-			closeReader(reader);
-		}
-	}
-
-	/**
-	 * Return the last page requested by client.
-	 * @return
-	 */
-	public String getScanAllowedPackages() 
-	{
-		BufferedReader reader = null;
-		try 
-		{
-			if (singleVM)
-			{
-				return scanAllowedPackages;
-			}
-			else
-			{
-				checkScanAllowedPackagesFile();
-				reader = new BufferedReader(new FileReader(scanAllowedPackagesFile));
-				return reader.readLine();
-			}
-		} 
-		catch (Exception e) 
-		{
-			logger.debug("Error reading allowedPackages.", e);
-			return null;
-		} finally 
-		{
-			closeReader(reader);
-		}
-	}
-
-	/**
-	 * Return the last page requested by client.
-	 * @return
-	 */
-	public String getScanIgnoredPackages() 
-	{
-		BufferedReader reader = null;
-		try 
-		{
-			if (singleVM)
-			{
-				return scanIgnoredPackages;
-			}
-			else
-			{
-				checkScanIgnoredPackagesFile();
-				reader = new BufferedReader(new FileReader(scanIgnoredPackagesFile));
-				return reader.readLine();
-			}
-		} 
-		catch (Exception e) 
-		{
-			logger.debug("Error reading ignoredPackages.", e);
 			return null;
 		} finally 
 		{
@@ -332,58 +268,6 @@ public class CruxBridge
 	}
 
 	/**
-	 * @param allowedPackages
-	 */
-	public void registerScanAllowedPackages(String allowedPackages)
-	{
-		PrintWriter writer;
-		try 
-		{
-			if (singleVM)
-			{
-				scanAllowedPackages = allowedPackages;
-			}
-			else
-			{
-				checkScanAllowedPackagesFile();
-				writer = new PrintWriter(scanAllowedPackagesFile);
-				writer.println(allowedPackages);
-				writer.close();
-			}
-		} 
-		catch (FileNotFoundException e) 
-		{
-			logger.error("Error registering allowedPackages.", e);
-		}
-	}
-
-	/**
-	 * @param ignoredPackages
-	 */
-	public void registerScanIgnoredPackages(String ignoredPackages)
-	{
-		PrintWriter writer;
-		try 
-		{
-			if (singleVM)
-			{
-				scanIgnoredPackages = ignoredPackages;
-			}
-			else
-			{
-				checkScanIgnoredPackagesFile();
-				writer = new PrintWriter(scanIgnoredPackagesFile);
-				writer.println(ignoredPackages);
-				writer.close();
-			}
-		} 
-		catch (FileNotFoundException e) 
-		{
-			logger.error("Error registering ignoredPackages.", e);
-		}
-	}
-
-	/**
 	 * @param webinfClasses
 	 */
 	public void registerWebinfClasses(String webinfClasses)
@@ -444,22 +328,6 @@ public class CruxBridge
 		this.singleVM = singleVM;
 	}
 
-	private void checkScanAllowedPackagesFile()
-    {
-	    if (scanAllowedPackagesFile == null)
-	    {
-	    	initializeScanAllowedPackagesFile();
-	    }
-    }
-
-	private void checkScanIgnoredPackagesFile()
-    {
-	    if (scanIgnoredPackagesFile == null)
-	    {
-	    	initializeScanIgnoredPackagesFile();
-	    }
-    }
-	
 	/**
 	 * 
 	 */
@@ -502,30 +370,6 @@ public class CruxBridge
 	    {
 	    	initializeWebinfLibFile();
 	    }
-    }
-
-	/**
-	 * 
-	 */
-	private synchronized void initializeScanAllowedPackagesFile()
-    {
-		if (scanAllowedPackagesFile == null)
-		{
-			String tmpDir = FileUtils.getTempDir();
-			scanAllowedPackagesFile = new File(tmpDir+"scanAllowedPackagesFile");
-		}
-    }
-
-	/**
-	 * 
-	 */
-	private synchronized void initializeScanIgnoredPackagesFile()
-    {
-		if (scanIgnoredPackagesFile == null)
-		{
-			String tmpDir = FileUtils.getTempDir();
-			scanIgnoredPackagesFile = new File(tmpDir+"scanIgnoredPackagesFile");
-		}
     }
 
 	/**

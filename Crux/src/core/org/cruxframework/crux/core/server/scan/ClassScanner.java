@@ -25,8 +25,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.server.CruxBridge;
-import org.cruxframework.crux.core.utils.RegexpPatterns;
 
 
 /**
@@ -51,7 +49,6 @@ public class ClassScanner
 	
 	/**
 	 * 
-	 * @param urls
 	 */
 	public static void initialize() 
 	{
@@ -93,28 +90,6 @@ public class ClassScanner
 	private static void initializeAllowedPackages()
 	{
 		scannerDB.addIgnoredPackage("org.cruxframework.crux.core.rebind.screen.wrapper");
-		scannerDB.addRequiredPackage("org.cruxframework.crux");
-		scannerDB.addRequiredPackage("com.google.gwt.i18n.client");
-		
-		String scanAllowedPackages = CruxBridge.getInstance().getScanAllowedPackages();
-		if (scanAllowedPackages != null && scanAllowedPackages.length() > 0)
-		{
-			String[] allowedPackages = RegexpPatterns.REGEXP_COMMA.split(scanAllowedPackages);
-			for (String allowed : allowedPackages) 
-			{
-				scannerDB.addAllowedPackage(allowed.trim());
-			}
-		}
-		
-		String scanIgnoredPackages = CruxBridge.getInstance().getScanIgnoredPackages();
-		if (scanIgnoredPackages != null && scanIgnoredPackages.length() > 0)
-		{
-			String[] ignoredPackages = RegexpPatterns.REGEXP_COMMA.split(scanIgnoredPackages);
-			for (String ignored : ignoredPackages) 
-			{
-				scannerDB.addIgnoredPackage(ignored.trim());
-			}
-		}
 	}
 
 	/**

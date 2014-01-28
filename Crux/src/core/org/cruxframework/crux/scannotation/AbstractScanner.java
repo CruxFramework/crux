@@ -20,6 +20,10 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
+import org.cruxframework.crux.core.utils.RegexpPatterns;
+
 /**
  * @author Thiago da Rosa de Bustamante 
  *
@@ -32,25 +36,48 @@ public abstract class AbstractScanner
 	
 	protected String[] DEFAULT_IGNORED_PACKAGES = {"javax", "java", "sun", "com.sun", "org.apache", 
 			"net.sf.saxon", "javassist", "junit"};
+	protected String[] DEFAULT_REQUIRED_PACKAGES = {"org.cruxframework.crux"};
 
 	/**
 	 * 
 	 */
 	public AbstractScanner()
 	{
-		initializeDefaultIgnoredPackages();
+		initializeDefaultSearchPackages();
 	}
 	
 	/**
 	 * 
 	 */
-	private void initializeDefaultIgnoredPackages()
+	private void initializeDefaultSearchPackages()
 	{
 		for (String pkg : DEFAULT_IGNORED_PACKAGES)
 		{
-			ignoredPackages.add(pkg);
+			addIgnoredPackage(pkg);
+		}
+		for (String pkg : DEFAULT_REQUIRED_PACKAGES)
+		{
+			addRequiredPackage(pkg);
+		}
+		String scanAllowedPackages = ConfigurationFactory.getConfigurations().scanAllowedPackages();
+		if (!StringUtils.isEmpty(scanAllowedPackages))
+		{
+			String[] allowedPackages = RegexpPatterns.REGEXP_COMMA.split(scanAllowedPackages);
+			for (String allowed : allowedPackages) 
+			{
+				addAllowedPackage(allowed.trim());
+			}
 		}
 		
+		String scanIgnoredPackages = ConfigurationFactory.getConfigurations().scanIgnoredPackages();
+		if (!StringUtils.isEmpty(scanIgnoredPackages))
+		{
+			String[] ignoredPackages = RegexpPatterns.REGEXP_COMMA.split(scanIgnoredPackages);
+			for (String ignored : ignoredPackages) 
+			{
+				addIgnoredPackage(ignored.trim());
+			}
+		}
 	}
 	
 	/**

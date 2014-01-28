@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.core.rebind.offline;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,11 +24,6 @@ import java.util.Set;
 import org.cruxframework.crux.core.rebind.screen.OfflineScreen;
 import org.cruxframework.crux.core.rebind.screen.OfflineScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
-import org.cruxframework.crux.core.rebind.screen.ScreenResourcesScannerException;
-import org.cruxframework.crux.core.server.scan.ScannerURLS;
-import org.cruxframework.crux.scannotation.archiveiterator.Filter;
-import org.cruxframework.crux.scannotation.archiveiterator.IteratorFactory;
-import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -58,7 +52,7 @@ public class OfflineScreens
 	 */
 	private static void createOfflinePagesMapForModule(Map<String, Set<OfflineScreen>> modulePages) throws ScreenConfigException
 	{
-		Set<URL> archives = scanOfflineArchives();
+		Set<URL> archives = new OfflineScreensScanner().scanOfflineArchives();
 		for (URL screenURL : archives)
 		{
 			OfflineScreen screen = OfflineScreenFactory.getInstance().getOfflineScreen(screenURL);
@@ -75,44 +69,4 @@ public class OfflineScreens
 		}
 	}
 
-	private static Set<URL> scanOfflineArchives()
-	{
-//		URL[] urls = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
-		URL[] urls = ScannerURLS.getWebURLsForSearch();
-		final Set<URL> screens = new HashSet<URL>();
-		
-		for (URL url : urls)
-		{
-			Filter filter = new Filter()
-			{
-				public boolean accepts(String filename)
-				{
-					return (acceptsOffline(filename));
-				}
-			};
-
-			try
-			{
-				URLIterator it = IteratorFactory.create(url, filter);
-				URL found;
-				if (it != null)
-				{
-					while ((found = it.next()) != null)
-					{
-						screens.add(found);
-					}
-				}
-			}
-			catch (IOException e)
-			{
-				throw new ScreenResourcesScannerException("Error initializing screenResourceScanner.", e);
-			}
-		}
-		return screens;
-	}
-	
-	protected static boolean acceptsOffline(String urlString)
-	{
-		return urlString != null && urlString.endsWith(".offline.xml");
-	}
 }

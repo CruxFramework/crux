@@ -68,29 +68,17 @@ public class InitializerListener implements ServletContextListener
 			}
 			else
 			{
-				//TODO - Thiago documentar isso no wiki
-				//TODO - Thiago remover quebras de linha e espacos antes de gravar....
-
 				String classScannerAllowedPackages = contextEvent.getServletContext().getInitParameter("classScannerAllowedPackages");
 				if (classScannerAllowedPackages != null && classScannerAllowedPackages.length() > 0)
 				{
-					CruxBridge.getInstance().registerScanAllowedPackages(classScannerAllowedPackages);
-				}
-				else
-				{
-					CruxBridge.getInstance().registerScanAllowedPackages("");
+					ConfigurationFactory.getConfigurations().setScanAllowedPackages(classScannerAllowedPackages);
 				}
 
 				String classScannerIgnoredPackages = contextEvent.getServletContext().getInitParameter("classScannerIgnoredPackages");
 				if (classScannerIgnoredPackages != null && classScannerIgnoredPackages.length() > 0)
 				{
-					CruxBridge.getInstance().registerScanIgnoredPackages(classScannerIgnoredPackages);
+					ConfigurationFactory.getConfigurations().setScanIgnoredPackages(classScannerIgnoredPackages);
 				}
-				else
-				{
-					CruxBridge.getInstance().registerScanIgnoredPackages("");
-				}
-				ConfigurationFactory.getConfigurations();
 				ClassPathResolverInitializer.getClassPathResolver().initialize();
 			}
 			ServiceFactoryInitializer.initialize(context);

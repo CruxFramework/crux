@@ -42,12 +42,14 @@ import org.w3c.dom.Document;
  */
 public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 {
+	private DeclarativeUIScreenResourceScanner scanner = new DeclarativeUIScreenResourceScanner();;
+
 	/**
 	 * 
 	 */
 	public Set<String> getAllScreenIDs(String module) throws ScreenConfigException
 	{
-		return new DeclarativeUIScreenResourceScanner().getPages(module);
+		return scanner.getPages(module);
 	}
 
 	/**

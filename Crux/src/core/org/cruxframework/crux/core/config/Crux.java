@@ -80,6 +80,8 @@ public interface Crux
 	void setLocaleResolver(String value);
 	void setServiceFactory(String value);
 	void setParameterBindGenerator(String value);
+	void setScanAllowedPackages(String value);
+	void setScanIgnoredPackages(String value);
 	//TODO atualizar wiki com as opções correntes
 
 	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.state.ClusteredResourceStateHandler")
