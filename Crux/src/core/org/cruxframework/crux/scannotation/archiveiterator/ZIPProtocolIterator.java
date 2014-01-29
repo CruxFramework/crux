@@ -74,7 +74,8 @@ public class ZIPProtocolIterator implements URLIterator
 		}
 		catch (Exception e)
 		{
-			LOG.warn("failed to browse jar", e);
+			next = null;
+			LOG.error("failed to browse jar", e);
 			close();
 		}
 	}
