@@ -20,8 +20,8 @@
 
 	<scm>
 		<connection>scm:svn:http://crux-framework.googlecode.com/svn/branches/archetypes/</connection>
-		<developerConnection>scm:svn:https://crux-framework.googlecode.com/svn/branches/5.0.0/archetypes</developerConnection>
-		<url>https://crux-framework.googlecode.com/svn/branches/5.0.0/archetypes</url>
+		<developerConnection>scm:svn:https://crux-framework.googlecode.com/svn/branches/5.0/archetypes</developerConnection>
+		<url>https://crux-framework.googlecode.com/svn/branches/5.0/archetypes</url>
 	</scm>
 
 	<modules>
