@@ -36,7 +36,7 @@ public abstract class AbstractScanner
 	
 	protected String[] DEFAULT_IGNORED_PACKAGES = {"javax", "java", "sun", "com.sun", "org.apache", 
 			"net.sf.saxon", "javassist", "junit"};
-	protected String[] DEFAULT_REQUIRED_PACKAGES = {"org.cruxframework.crux"};
+	protected String[] DEFAULT_REQUIRED_PACKAGES = {"org.cruxframework.crux", "com.google.gwt.i18n"};
 
 	/**
 	 * 

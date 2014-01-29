@@ -16,6 +16,7 @@
 package org.cruxframework.crux.core.rebind.screen.wrapper;
 
 import org.cruxframework.crux.core.client.Crux;
+import org.cruxframework.crux.core.client.screen.views.Target;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractViewBindableProxyCreator;
@@ -93,7 +94,13 @@ public class WidgetAccessorProxyCreator extends AbstractViewBindableProxyCreator
 			if(method.getParameters().length == 0)
 			{
 				String widgetName;
-				if (returnTypeClass != null && name.startsWith("get"))
+				Target target = method.getAnnotation(Target.class);
+				if (target != null) 
+				{
+					widgetName = target.value();
+					generateWrapperMethod(sourceWriter, returnType, name, widgetName);
+				}
+				else if (returnTypeClass != null && name.startsWith("get"))
 				{
 					widgetName = name.substring(3);
 					if (widgetName.length() > 0)

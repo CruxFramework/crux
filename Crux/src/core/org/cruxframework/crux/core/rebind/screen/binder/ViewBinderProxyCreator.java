@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.screen.binder;
 
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.formatter.HasFormatter;
+import org.cruxframework.crux.core.client.screen.views.Target;
 import org.cruxframework.crux.core.client.screen.views.ViewBinder;
 import org.cruxframework.crux.core.rebind.AbstractViewBindableProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
@@ -60,7 +61,6 @@ public class ViewBinderProxyCreator extends AbstractViewBindableProxyCreator
         {
         	throw new CruxGeneratorException(e.getMessage(), e);
         }
-	    
     }
 
 	@Override
@@ -117,9 +117,28 @@ public class ViewBinderProxyCreator extends AbstractViewBindableProxyCreator
 		String name = method.getName();
 
 		String widgetName;
+		Target target = method.getAnnotation(Target.class);
+		if (target != null) 
+		{
+			widgetName = target.value();
+		}
+		else
+		{
+			if (name.length() > 3)
+			{
+				widgetName = ""+Character.toLowerCase(name.charAt(3));
+				if (name.length() > 4)
+				{
+					widgetName += name.substring(4);
+				}
+			}
+			else 
+			{
+				widgetName = "";
+			}
+		}
 		if (name.startsWith("get"))
 		{
-			widgetName = name.substring(3);
 			if (widgetName.length() > 0)
 			{
 				JType returnType = method.getReturnType();
@@ -128,7 +147,6 @@ public class ViewBinderProxyCreator extends AbstractViewBindableProxyCreator
 		}
 		else if (name.startsWith("set"))
 		{
-			widgetName = name.substring(3);
 			if (widgetName.length() > 0)
 			{
 				JType parameterType = method.getParameterTypes()[0];
@@ -145,13 +163,12 @@ public class ViewBinderProxyCreator extends AbstractViewBindableProxyCreator
 	 */
 	private void generateWrapperMethodForSetter(SourcePrinter sourceWriter, JType parameterType, String methodName, String widgetName)
     {
-		String widgetNameFirstLower = Character.toLowerCase(widgetName.charAt(0)) + widgetName.substring(1);
 		String parameterClassName = JClassUtils.getGenericDeclForType(parameterType);
 		sourceWriter.println("public void " + methodName+"("+parameterType.getParameterizedQualifiedSourceName()+" value){");
 
 		if (JClassUtils.isSimpleType(parameterType)) 
 		{
-			sourceWriter.println("IsWidget w = _getFromView(\""+widgetNameFirstLower+"\");");
+			sourceWriter.println("IsWidget w = _getFromView(\""+widgetName+"\");");
 			
 			sourceWriter.println("if (w != null) {");
 			sourceWriter.println("if (w instanceof HasValue) {");
@@ -192,13 +209,12 @@ public class ViewBinderProxyCreator extends AbstractViewBindableProxyCreator
 	 */
 	private void generateWrapperMethodForGetter(SourcePrinter sourceWriter, JType returnType, String methodName, String widgetName)
 	{
-		String widgetNameFirstLower = Character.toLowerCase(widgetName.charAt(0)) + widgetName.substring(1);
 		String returnClassName = JClassUtils.getGenericDeclForType(returnType);
 		sourceWriter.println("public "+returnType.getParameterizedQualifiedSourceName()+" " + methodName+"(){");
 
 		if (JClassUtils.isSimpleType(returnType)) 
 		{
-			sourceWriter.println("IsWidget w = _getFromView(\""+widgetNameFirstLower+"\");");
+			sourceWriter.println("IsWidget w = _getFromView(\""+widgetName+"\");");
 			
 			sourceWriter.println("if (w != null) {");
 			sourceWriter.println("if (w instanceof HasValue) {");
