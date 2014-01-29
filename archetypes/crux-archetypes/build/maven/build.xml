@@ -14,10 +14,20 @@
 	<!-- define Maven coordinates -->
 	<property name="groupId" value="org.cruxframework" />
 	
+	<property name="artifactId_crux-archetypes" value="crux-archetypes" />
+	<property name="artifactId_crux-base-archetype" value="crux-base-archetype" />
 	<property name="artifactId_crux-module-app" value="crux-module-app" />
 	<property name="artifactId_crux-module-container-app" value="crux-module-container-app" />
 	
 	<!-- define artifacts' name, which follows the convention of Maven -->
+    <property name="maven-jar_crux-archetypes" value="${dist}/${artifactId_crux-archetypes}-${version}.pom" />
+    <property name="maven-javadoc-jar_crux-archetypes" value="${dist}/${artifactId_crux-archetypes}-${version}-javadoc.pom" />
+    <property name="maven-sources-jar_crux-archetypes" value="${dist}/${artifactId_crux-archetypes}-${version}-sources.pom" />
+	
+    <property name="maven-jar_crux-base-archetype" value="${dist}/${artifactId_crux-base-archetype}-${version}.pom" />
+    <property name="maven-javadoc-jar_crux-base-archetype" value="${dist}/${artifactId_crux-base-archetype}-${version}-javadoc.pom" />
+    <property name="maven-sources-jar_crux-base-archetype" value="${dist}/${artifactId_crux-base-archetype}-${version}-sources.pom" />
+	
 	<property name="maven-jar_crux-module-app" value="${dist}/${artifactId_crux-module-app}-${version}.jar" />
 	<property name="maven-javadoc-jar_crux-module-app" value="${dist}/${artifactId_crux-module-app}-${version}-javadoc.jar" />
 	<property name="maven-sources-jar_crux-module-app" value="${dist}/${artifactId_crux-module-app}-${version}-sources.jar" />
@@ -40,6 +50,18 @@
 	<target name="init">
 	</target>
 
+	<macrodef name="copyPomStage">
+        <attribute name="archetypepath"/>
+        <sequential>
+            <copy todir="${dist}">
+                <fileset dir="@{archetypepath}" />
+                <globmapper from="*.xml" to="*.pom"/>
+            </copy>
+            
+
+        </sequential>
+    </macrodef>
+	
     <macrodef name="copyFilesStage">
     	<attribute name="archetypepath"/>
         <sequential>
@@ -71,6 +93,20 @@
 
 	<target name="deploy" depends="copy-dist" description="deploy snapshot version to Maven snapshot repository">
 		<artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file" />
+            <arg value="-Durl=${maven-snapshots-repository-url}" />
+            <arg value="-DrepositoryId=${maven-snapshots-repository-id}" />
+            <arg value="-DpomFile=${poms}/pom_crux-archetypes.xml" />
+            <arg value="-Dfile=${maven-jar_crux-archetypes}" />
+        </artifact:mvn>
+        <artifact:mvn>
+            <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file" />
+            <arg value="-Durl=${maven-snapshots-repository-url}" />
+            <arg value="-DrepositoryId=${maven-snapshots-repository-id}" />
+            <arg value="-DpomFile=${poms}/pom_crux-base-archetype.xml" />
+            <arg value="-Dfile=${maven-jar_crux-base-archetype}" />
+        </artifact:mvn>
+		<artifact:mvn>
 			<arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file" />
 			<arg value="-Durl=${maven-snapshots-repository-url}" />
 			<arg value="-DrepositoryId=${maven-snapshots-repository-id}" />
@@ -91,67 +127,9 @@
 		<!-- get and prepare jars to send -->
 		<delete dir="${dist}" failonerror="no" />
 		<mkdir dir="${dist}" />
-		<copyFilesStage archetypepath="../../../${artifactId_crux-module-app}/target"/>
-		<copyFilesStage archetypepath="../../../${artifactId_crux-module-container-app}/target"/>
+		<copyPomStage archetypepath="../../../${artifactId_crux-archetypes}"/>
 		
-		<!-- sign and deploy the main artifact -->
-		<artifact:mvn>
-			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
-			<arg value="-Durl=${maven-staging-repository-url}" />
-			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
-			<arg value="-DpomFile=${poms}/pom_crux-module-app.xml" />
-			<arg value="-Dfile=${maven-jar_crux-module-app}" />
-			<arg value="-Pgpg" />
-		</artifact:mvn>
-		
-		<artifact:mvn>
-            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
-            <arg value="-Durl=${maven-staging-repository-url}" />
-            <arg value="-DrepositoryId=${maven-staging-repository-id}" />
-            <arg value="-DpomFile=${poms}/pom_crux-module-container-app.xml" />
-            <arg value="-Dfile=${maven-jar_crux-module-container-app}" />
-            <arg value="-Pgpg" />
-        </artifact:mvn>
-		
-		<!-- sign and deploy the sources artifact -->
-		<artifact:mvn>
-			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
-			<arg value="-Durl=${maven-staging-repository-url}" />
-			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
-			<arg value="-DpomFile=${poms}/pom_crux-module-app.xml" />
-			<arg value="-Dfile=${maven-sources-jar_crux-module-app}" />
-			<arg value="-Dclassifier=sources" />
-			<arg value="-Pgpg" />
-		</artifact:mvn>
-		<artifact:mvn>
-            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
-            <arg value="-Durl=${maven-staging-repository-url}" />
-            <arg value="-DrepositoryId=${maven-staging-repository-id}" />
-            <arg value="-DpomFile=${poms}/pom_crux-module-container-app.xml" />
-            <arg value="-Dfile=${maven-sources-jar_crux-module-container-app}" />
-            <arg value="-Dclassifier=sources" />
-            <arg value="-Pgpg" />
-        </artifact:mvn>
-		
-		<!-- sign and deploy the javadoc artifact -->
-		<artifact:mvn>
-			<arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
-			<arg value="-Durl=${maven-staging-repository-url}" />
-			<arg value="-DrepositoryId=${maven-staging-repository-id}" />
-			<arg value="-DpomFile=${poms}/pom_crux-module-app.xml" />
-			<arg value="-Dfile=${maven-javadoc-jar_crux-module-app}" />
-			<arg value="-Dclassifier=javadoc" />
-			<arg value="-Pgpg" />
-		</artifact:mvn>
-		<artifact:mvn>
-            <arg value="org.apache.maven.plugins:maven-gpg-plugin:1.3:sign-and-deploy-file" />
-            <arg value="-Durl=${maven-staging-repository-url}" />
-            <arg value="-DrepositoryId=${maven-staging-repository-id}" />
-            <arg value="-DpomFile=${poms}/pom_crux-module-container-app.xml" />
-            <arg value="-Dfile=${maven-javadoc-jar_crux-module-container-app}" />
-            <arg value="-Dclassifier=javadoc" />
-            <arg value="-Pgpg" />
-        </artifact:mvn>
+
 	</target>
 
 </project>
