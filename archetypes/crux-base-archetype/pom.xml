@@ -19,9 +19,9 @@
 	</properties>
 
 	<scm>
-		<connection>scm:svn:http://crux-framework.googlecode.com/svn/branches/5.0/archetypes</connection>
-		<developerConnection>scm:svn:https://crux-framework.googlecode.com/svn/branches/5.0/archetypes</developerConnection>
-		<url>https://crux-framework.googlecode.com/svn/branches/5.0/archetypes</url>
+		<connection>scm:svn:http://crux-framework.googlecode.com/svn/trunk/archetypes</connection>
+		<developerConnection>scm:svn:https://crux-framework.googlecode.com/svn/trunk/archetypes</developerConnection>
+		<url>https://crux-framework.googlecode.com/svn/trunk/archetypes</url>
 	</scm>
 
 	<build>
