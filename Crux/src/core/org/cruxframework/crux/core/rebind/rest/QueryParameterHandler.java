@@ -88,21 +88,35 @@ class QueryParameterHandler extends AbstractParameterHelper
 				{
 					JParameter parameter = parameters[i];
 					JType parameterType = parameter.getType();
-					String parameterName = parameter.getName();
+					String parameterName = getParameterName(annotation);
+					String parameterExpression = parameter.getName();
 					if (JClassUtils.isSimpleType(parameterType))
 					{
 						generateMethodParamToCodeForSimpleType(srcWriter, parameterStringVariable, parameterType, parameterName, 
-								parameterName, (parameterType.isPrimitive() != null?"true":parameterName+"!=null"));
+								parameterExpression, (parameterType.isPrimitive() != null?"true":parameterExpression+"!=null"));
 					}
 					else
 					{
 						generateMethodParamToCodeForComplexType(srcWriter, parameterStringVariable, parameterType, 
-								parameterName, parameterName, parameterName+"!=null"); 
+								parameterName, parameterExpression, parameterExpression+"!=null"); 
 					}
 				}
 			}
 		}
 	}
+
+	private String getParameterName(Annotation annotation)
+    {
+		if (annotation instanceof QueryParam)
+		{
+			return ((QueryParam)annotation).value();
+		}
+		else if (annotation instanceof PathParam)
+		{
+			return ((PathParam)annotation).value();
+		}
+	    return null;
+    }
 
 	private void buildQueryStringForComplexType(StringBuilder str, String name, JType parameterType, String value)
     {
