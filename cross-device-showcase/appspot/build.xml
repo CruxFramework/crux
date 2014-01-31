@@ -51,6 +51,7 @@
 			 </classpath>
 		     <arg value="--email=${appengine.email}" />
 		     <arg value="--passin" />
+			<arg value="--version=${appengine.version}" />
 		     <arg value="update" />
 		     <arg value="../${target.dir}/${final.name}" />
 		 </java>	
