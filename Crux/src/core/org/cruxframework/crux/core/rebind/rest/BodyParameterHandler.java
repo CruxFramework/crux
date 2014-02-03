@@ -56,7 +56,6 @@ class BodyParameterHandler extends AbstractParameterHelper
 	
 	public void generateMethodParamToBodyCode(SourcePrinter srcWriter, RestMethodInfo methodInfo, String builder, String httpMethod)
 	{
-		Annotation[][] parameterAnnotations = methodInfo.implementationMethod.getParameterAnnotations();
 		JParameter[] parameters = methodInfo.method.getParameters();
 		boolean formEncoded = false;
 		boolean hasBodyObject = false;
@@ -66,9 +65,9 @@ class BodyParameterHandler extends AbstractParameterHelper
 		{
 			srcWriter.println("String requestData = "+EscapeUtils.quote(formString)+";");
 		}
-		for (int i = 0; i< parameterAnnotations.length; i++)
+		for (int i = 0; i< methodInfo.parameterAnnotations.length; i++)
 		{
-			Annotation[] annotations = parameterAnnotations[i];
+			Annotation[] annotations = methodInfo.parameterAnnotations[i];
 			if (annotations == null || annotations.length == 0)
 			{ // JSON on body
 				if(hasBodyObject)
@@ -114,14 +113,13 @@ class BodyParameterHandler extends AbstractParameterHelper
 	{
 		StringBuilder str = new StringBuilder();
 		boolean first = true;
-		Annotation[][] parameterAnnotations = methodInfo.implementationMethod.getParameterAnnotations();
 		JParameter[] parameters = methodInfo.method.getParameters();
 
 		try
 		{
-			for (int i = 0; i< parameterAnnotations.length; i++)
+			for (int i = 0; i< methodInfo.parameterAnnotations.length; i++)
 			{
-				Annotation[] annotations = parameterAnnotations[i];
+				Annotation[] annotations = methodInfo.parameterAnnotations[i];
 				for (Annotation annotation : annotations)
 				{
 					if (annotation instanceof FormParam)
@@ -133,11 +131,11 @@ class BodyParameterHandler extends AbstractParameterHelper
 						first = false;
 						if (JClassUtils.isSimpleType(parameters[i].getType()))
 						{
-							buildFormStringForSimpleType(str, parameters[i].getName(), ((FormParam)annotation).value());
+							buildFormStringForSimpleType(str, ((FormParam)annotation).value());
 						}
 						else
 						{
-							buildFormStringForComplexType(str, parameters[i].getName(), parameters[i].getType(), ((FormParam)annotation).value());
+							buildFormStringForComplexType(str, parameters[i].getType(), ((FormParam)annotation).value());
 						}
 					}
 				}
@@ -145,7 +143,7 @@ class BodyParameterHandler extends AbstractParameterHelper
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			throw new CruxGeneratorException("Unsupported encoding for parameter name on method ["+methodInfo.implementationMethod.toString()+"]");
+			throw new CruxGeneratorException("Unsupported encoding for parameter name on method ["+methodInfo.method.toString()+"]");
 		}
 		return str.toString();
 	}
@@ -307,7 +305,7 @@ class BodyParameterHandler extends AbstractParameterHelper
     }
 
 	
-	private void buildFormStringForComplexType(StringBuilder str, String name, JType parameterType, String value) throws UnsupportedEncodingException
+	private void buildFormStringForComplexType(StringBuilder str, JType parameterType, String value) throws UnsupportedEncodingException
     {
 		PropertyInfo[] propertiesInfo = JClassUtils.extractBeanPropertiesInfo(parameterType.isClassOrInterface());
 		boolean first = true;
@@ -320,17 +318,17 @@ class BodyParameterHandler extends AbstractParameterHelper
 			first = false;
 	        if (JClassUtils.isSimpleType(propertyInfo.getType()))
 	        {
-				buildFormStringForSimpleType(str, name+"."+propertyInfo.getName(), value+"."+propertyInfo.getName());
+				buildFormStringForSimpleType(str, value+"."+propertyInfo.getName());
 	        }
 	        else
 	        {
-				buildFormStringForComplexType(str, name+"."+propertyInfo.getName(), propertyInfo.getType(), value+"."+propertyInfo.getName());
+				buildFormStringForComplexType(str, propertyInfo.getType(), value+"."+propertyInfo.getName());
 	        }
         }
     }
 	
-	private void buildFormStringForSimpleType(StringBuilder str, String parameterExpression, String parameterName) throws UnsupportedEncodingException
+	private void buildFormStringForSimpleType(StringBuilder str, String parameterName) throws UnsupportedEncodingException
     {
-	    str.append(URLEncoder.encode(parameterName, "UTF-8")+"={"+parameterExpression+"}");
+	    str.append(URLEncoder.encode(parameterName, "UTF-8")+"={"+parameterName+"}");
     }
 }

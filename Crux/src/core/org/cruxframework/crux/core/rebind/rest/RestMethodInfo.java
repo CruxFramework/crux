@@ -15,7 +15,9 @@
  */
 package org.cruxframework.crux.core.rebind.rest;
 
-import java.lang.reflect.Method;
+import java.lang.annotation.Annotation;
+
+import org.cruxframework.crux.core.shared.rest.annotation.StateValidationModel;
 
 import com.google.gwt.core.ext.typeinfo.JMethod;
 
@@ -26,13 +28,20 @@ import com.google.gwt.core.ext.typeinfo.JMethod;
 class RestMethodInfo
 {
 	protected JMethod method;
-	protected Method implementationMethod;
+	protected Annotation[][] parameterAnnotations;
 	protected String methodURI;
+	protected String httpMethod;
+	protected StateValidationModel validationModel;
+	public boolean isReadMethod;
 	
-	public RestMethodInfo(JMethod method, Method implementationMethod, String methodURI)
+	public RestMethodInfo(JMethod method, Annotation[][] parameterAnnotations, String methodURI, String httpMethod,
+			StateValidationModel validationModel, boolean isReadMethod)
     {
 		this.method = method;
-		this.implementationMethod = implementationMethod;
+		this.parameterAnnotations = parameterAnnotations;
 		this.methodURI = methodURI;
+		this.httpMethod = httpMethod;
+		this.validationModel = validationModel;
+		this.isReadMethod = isReadMethod;
     }
 }

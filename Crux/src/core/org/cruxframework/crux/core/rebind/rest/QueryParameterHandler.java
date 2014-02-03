@@ -16,7 +16,6 @@
 package org.cruxframework.crux.core.rebind.rest;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.shared.rest.annotation.PathParam;
@@ -40,11 +39,10 @@ class QueryParameterHandler extends AbstractParameterHelper
 		super(context);
     }
 	
-	public String getQueryString(JMethod method, Method implementationMethod)
+	public String getQueryString(JMethod method, Annotation[][] parameterAnnotations)
 	{
 		StringBuilder str = new StringBuilder();
 		boolean first = true;
-		Annotation[][] parameterAnnotations = implementationMethod.getParameterAnnotations();
 		JParameter[] parameters = method.getParameters();
 
 		for (int i = 0; i< parameterAnnotations.length; i++)
@@ -61,11 +59,11 @@ class QueryParameterHandler extends AbstractParameterHelper
 					first = false;
 					if (JClassUtils.isSimpleType(parameters[i].getType()))
 					{
-						buildQueryStringForSimpleType(str, parameters[i].getName(), ((QueryParam)annotation).value());
+						buildQueryStringForSimpleType(str, ((QueryParam)annotation).value());
 					}
 					else
 					{
-						buildQueryStringForComplexType(str, parameters[i].getName(), parameters[i].getType(), ((QueryParam)annotation).value());
+						buildQueryStringForComplexType(str, parameters[i].getType(), ((QueryParam)annotation).value());
 					}
 				}
 			}
@@ -76,12 +74,11 @@ class QueryParameterHandler extends AbstractParameterHelper
 
 	public void generateMethodParamToURICode(SourcePrinter srcWriter, RestMethodInfo methodInfo, String parameterStringVariable)
 	{
-		Annotation[][] parameterAnnotations = methodInfo.implementationMethod.getParameterAnnotations();
 		JParameter[] parameters = methodInfo.method.getParameters();
 
-		for (int i = 0; i< parameterAnnotations.length; i++)
+		for (int i = 0; i< methodInfo.parameterAnnotations.length; i++)
 		{
-			Annotation[] annotations = parameterAnnotations[i];
+			Annotation[] annotations = methodInfo.parameterAnnotations[i];
 			for (Annotation annotation : annotations)
 			{
 				if ((annotation instanceof QueryParam) || (annotation instanceof PathParam))
@@ -118,7 +115,7 @@ class QueryParameterHandler extends AbstractParameterHelper
 	    return null;
     }
 
-	private void buildQueryStringForComplexType(StringBuilder str, String name, JType parameterType, String value)
+	private void buildQueryStringForComplexType(StringBuilder str, JType parameterType, String value)
     {
 		PropertyInfo[] propertiesInfo = JClassUtils.extractBeanPropertiesInfo(parameterType.isClassOrInterface());
 		boolean first = true;
@@ -131,17 +128,17 @@ class QueryParameterHandler extends AbstractParameterHelper
 			first = false;
 	        if (JClassUtils.isSimpleType(propertyInfo.getType()))
 	        {
-				buildQueryStringForSimpleType(str, name+"."+propertyInfo.getName(), value+"."+propertyInfo.getName());
+				buildQueryStringForSimpleType(str, value+"."+propertyInfo.getName());
 	        }
 	        else
 	        {
-				buildQueryStringForComplexType(str, name+"."+propertyInfo.getName(), propertyInfo.getType(), value+"."+propertyInfo.getName());
+				buildQueryStringForComplexType(str, propertyInfo.getType(), value+"."+propertyInfo.getName());
 	        }
         }
     }
 
-	private void buildQueryStringForSimpleType(StringBuilder str, String parameterExpression, String parameterName)
+	private void buildQueryStringForSimpleType(StringBuilder str, String parameterName)
     {
-	    str.append(parameterName+"={"+parameterExpression+"}");
+	    str.append(parameterName+"={"+parameterName+"}");
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.rebind.rest;
 
+import org.cruxframework.crux.core.client.rest.RestProxy.TargetRestService;
 import org.cruxframework.crux.core.rebind.AbstractGenerator;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 
@@ -35,6 +36,11 @@ public class CruxRestProxyGenerator extends AbstractGenerator
 	@Override
     protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf) throws UnableToCompleteException
     {
-	    return new CruxRestProxyCreator(logger, ctx, baseIntf);
+		TargetRestService restService = baseIntf.getAnnotation(TargetRestService.class);
+		if (restService != null)
+		{
+			return new CruxRestProxyCreatorFromServeMetadata(logger, ctx, baseIntf);
+		}
+		return new CruxRestProxyCreatorFromClientMetadata(logger, ctx, baseIntf);
     }
 }

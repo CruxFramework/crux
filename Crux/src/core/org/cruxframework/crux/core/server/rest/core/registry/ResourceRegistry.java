@@ -219,7 +219,7 @@ public class ResourceRegistry
 			String httpMethod = null;
             try
             {
-	            httpMethod = HttpMethodHelper.getHttpMethod(method);
+	            httpMethod = HttpMethodHelper.getHttpMethod(method.getAnnotations());
             }
             catch (InvalidRestMethod e)
             {

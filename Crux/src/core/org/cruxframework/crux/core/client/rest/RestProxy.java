@@ -28,7 +28,7 @@ import com.google.gwt.editor.client.Editor.Path;
 /**
  * Base interface to define REST clients. It can be used to invoke services 
  * defined with {@code @}{@link org.cruxframework.crux.core.server.rest.annotation.RestService} 
- * annotation 
+ * annotation or external services.
  * </p>
  * 
  * <p>
@@ -58,6 +58,31 @@ import com.google.gwt.editor.client.Editor.Path;
  * </pre>
  * </p>
  *   
+ * <p>
+ * It is possible also to create a rest proxy to invoke external services that are not necessarily defined using 
+ * Crux at the server side. When Crux does not find the annotation {@code @TargetRestService} on the proxy interface, 
+ * it searches for rest annotations on proxy methods to realize how to build the requests to rest services. 
+ * </p>
+ * <p>
+ * For example, see the following client rest proxy:
+ * <pre>
+ * {@code @TargetEndPoint}("http://targethost/rest")
+ * {@code @}{@link Path}("test")
+ * public interface MyRestServiceProxy extends RestProxy
+ * {
+ *    {@code @}{@link GET}
+ *    {@code @}{@link Path}("hello/${userName}")
+ *    void sayHello({@code @}{@link PathParam} String userName, Callback{@code <String>} callback);
+ * }
+ * </pre>
+ * </p>
+ * <p>
+ * It Could be used to call a rest service located on http://targethost/rest/. Calling 
+ * MyRestServiceProxy.sayHello("Thiago") would make a request to 
+ * http://targethost/rest/test/hello/Thiago URI and expect to receive an String as result.
+ * </p>
+ *   
+ *   
  * @author Thiago da Rosa de Bustamante
  *
  */
@@ -82,9 +107,47 @@ public interface RestProxy
 		/**
 		 * The name of the rest service. You must inform the same name you used on 
 		 * {@code @}{@link org.cruxframework.crux.core.server.rest.annotation.RestService} annotation value, 
-		 * on server rest service class.
+		 * on server rest service class. If the proxy interface is not annotated with this annotation, 
+		 * Crux will search for rest annotations on proxy methods to realize how to build the requests to rest services.
 		 * @return rest service name
 		 */
 		String value();
+	}
+	
+	/**
+	 * Annotation used to associate an end point address to the current proxy. 
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	public static @interface TargetEndPoint
+	{
+		/**
+		 * The address of the rest service endPoint.
+		 * @return rest service endPoint
+		 */
+		String value();
+	}
+
+	/**
+	 * A marker interface to specify that the calls made to the service must be made
+	 * through jsonP. The server must support jsonP. It can be used to access cross site 
+	 * services that does not allow the current domain through CORS.
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	public static @interface UseJsonP
+	{
+		/**
+		 * Inform the name of the jsonp callback parameter. If not specified, "callback" is used.
+		 */
+		String callbackParam() default "";
+		/**
+		 * Inform the name of the jsonp error callback parameter. If not specified, no failure callback function is called.
+		 */
+		String failureCallbackParam() default "";
 	}
 }

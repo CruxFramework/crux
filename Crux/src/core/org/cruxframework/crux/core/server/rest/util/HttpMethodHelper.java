@@ -23,15 +23,15 @@ public class HttpMethodHelper
 	 * @return
 	 * @throws InvalidRestMethod 
 	 */
-	public static String getHttpMethod(Method method) throws InvalidRestMethod
+	public static String getHttpMethod(Annotation[] annotations) throws InvalidRestMethod
 	{
-		return getHttpMethod(method, true);
+		return getHttpMethod(annotations, true);
 	}
 	
-	public static String getHttpMethod(Method method, boolean allowNull) throws InvalidRestMethod
+	public static String getHttpMethod(Annotation[] annotations, boolean allowNull) throws InvalidRestMethod
 	{
 		String httpMethod = null;
-		for (Annotation annotation : method.getAnnotations())
+		for (Annotation annotation : annotations)
 		{
 			HttpMethod http = annotation.annotationType().getAnnotation(HttpMethod.class);
 			if (http != null)

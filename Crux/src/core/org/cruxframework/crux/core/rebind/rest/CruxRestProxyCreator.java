@@ -15,16 +15,9 @@
  */
 package org.cruxframework.crux.core.rebind.rest;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,32 +27,24 @@ import org.cruxframework.crux.core.client.collection.FastMap;
 import org.cruxframework.crux.core.client.rest.Callback;
 import org.cruxframework.crux.core.client.rest.RestError;
 import org.cruxframework.crux.core.client.rest.RestProxy;
-import org.cruxframework.crux.core.client.rest.RestProxy.TargetRestService;
+import org.cruxframework.crux.core.client.rest.RestProxy.UseJsonP;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.server.rest.core.registry.RestServiceScanner;
 import org.cruxframework.crux.core.server.rest.util.Encode;
 import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
-import org.cruxframework.crux.core.server.rest.util.HttpMethodHelper;
 import org.cruxframework.crux.core.server.rest.util.InvalidRestMethod;
-import org.cruxframework.crux.core.shared.rest.RestException;
-import org.cruxframework.crux.core.shared.rest.annotation.GET;
 import org.cruxframework.crux.core.shared.rest.annotation.Path;
 import org.cruxframework.crux.core.shared.rest.annotation.StateValidationModel;
-import org.cruxframework.crux.core.utils.EncryptUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JEnumConstant;
-import com.google.gwt.core.ext.typeinfo.JEnumType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
@@ -69,10 +54,13 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.logging.client.LogConfiguration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * This class creates a client proxy for calling rest services
@@ -80,19 +68,22 @@ import com.google.gwt.logging.client.LogConfiguration;
  * @author Thiago da Rosa de Bustamante
  * 
  */
-public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
+public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 {
-	private Class<?> restImplementationClass;
-	private JClassType callbackType;
-	private JClassType javascriptObjectType;
-	private String serviceBasePath;
-	private Map<String, Method> readMethods = new HashMap<String, Method>();
-	private Map<String, Method> updateMethods = new HashMap<String, Method>();
-	private Set<RestMethodInfo> restMethods = new HashSet<RestMethodInfo>();
-	private boolean mustGenerateStateControlMethods;
-	private QueryParameterHandler queryParameterHandler;
-	private BodyParameterHandler bodyParameterHandler;
-	private JClassType restProxyType;
+	protected JClassType callbackType;
+	protected JClassType javascriptObjectType;
+	protected String serviceBasePath;
+	protected Set<String> readMethods = new HashSet<String>();
+	protected Set<String> updateMethods = new HashSet<String>();
+	protected Set<RestMethodInfo> restMethods = new HashSet<RestMethodInfo>();
+	protected boolean mustGenerateStateControlMethods;
+	protected QueryParameterHandler queryParameterHandler;
+	protected BodyParameterHandler bodyParameterHandler;
+	protected JClassType restProxyType;
+	protected boolean useJsonP;
+	protected String jsonPCallbackParam;
+	protected String jsonPFailureCallbackParam;
+	protected JsonPRestCreatorHelper jsonPRestCreatorHelper;
 
 	public CruxRestProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
 	{
@@ -100,57 +91,29 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		callbackType = context.getTypeOracle().findType(Callback.class.getCanonicalName());
 		restProxyType = context.getTypeOracle().findType(RestProxy.class.getCanonicalName());
 		javascriptObjectType = context.getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
-		restImplementationClass = getRestImplementationClass(baseIntf);
+		UseJsonP jsonP = baseIntf.getAnnotation(UseJsonP.class);
+		useJsonP = jsonP != null;
+		if (useJsonP)
+		{
+			jsonPRestCreatorHelper = new JsonPRestCreatorHelper(context, logger);
+			jsonPCallbackParam = jsonP.callbackParam();
+			jsonPFailureCallbackParam = jsonP.failureCallbackParam();
+		}
 		queryParameterHandler = new QueryParameterHandler(context);
 		bodyParameterHandler = new BodyParameterHandler(logger, context);
-		String basePath;
-		try
-		{
-			basePath = context.getPropertyOracle().getConfigurationProperty("crux.rest.base.path").getValues().get(0);
-			if (basePath.endsWith("/"))
-			{
-				basePath = basePath.substring(0, basePath.length()-1);
-			}
-		}
-		catch (Exception e)
-		{
-			basePath = "rest";
-		}
-		String value = restImplementationClass.getAnnotation(Path.class).value();
-		if (value.startsWith("/"))
-		{
-			value = value.substring(1);
-		}
-		serviceBasePath = basePath+"/"+value;
+		serviceBasePath = getServiceBasePath(context);
 		initializeRestMethods();
 	}
 
-	protected Class<?> getRestImplementationClass(JClassType baseIntf)
-	{
-		TargetRestService restService = baseIntf.getAnnotation(TargetRestService.class);
-		if (restService == null)
-		{
-			throw new CruxGeneratorException("Can not create the rest proxy. Use @RestProxy.TargetRestService annotation to inform the target of current proxy.");
-		}
-		String serviceClassName = RestServiceScanner.getInstance().getServiceClassName(restService.value());
-		Class<?> restImplementationClass;
-		try
-		{
-			restImplementationClass = Class.forName(serviceClassName);
-		}
-		catch (ClassNotFoundException e)
-		{
-			throw new CruxGeneratorException("Can not create the rest proxy. Can not found the implementationClass.");
-		}
-		return restImplementationClass;
-	}
+	protected abstract String getServiceBasePath(GeneratorContext context);
+	protected abstract void generateHostPathInitialization(SourcePrinter srcWriter);
+	protected abstract RestMethodInfo getRestMethodInfo(JMethod method) throws InvalidRestMethod;
 
 	@Override
 	protected void generateProxyContructor(SourcePrinter srcWriter) throws CruxGeneratorException 
 	{
 		srcWriter.println("public "+getProxySimpleName()+"(){");
-		srcWriter.println("__hostPath = com.google.gwt.core.client.GWT.getModuleBaseURL();");
-		srcWriter.println("__hostPath = __hostPath.substring(0, __hostPath.lastIndexOf(com.google.gwt.core.client.GWT.getModuleName()));");
+		generateHostPathInitialization(srcWriter);
 		srcWriter.println("}");
 	}
 
@@ -185,7 +148,7 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		srcWriter.println("this.__hostPath = address;");
 		srcWriter.println("}");
 	}
-	
+
 	protected void generateStateControlMethods(SourcePrinter srcWriter)
 	{
 		srcWriter.println("public boolean __readCurrentEtag(String uri, RequestBuilder builder, boolean required){");
@@ -209,32 +172,41 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		JMethod[] methods = baseIntf.getOverridableMethods();
 		for (JMethod method : methods)
 		{
-			if (!restProxyType.equals(method.getEnclosingType()))
+			try
 			{
-				Method implementationMethod = getImplementationMethod(method);
-				String methodURI = getRestURI(method, implementationMethod);
-				StateValidationModel validationModel = HttpMethodHelper.getStateValidationModel(implementationMethod);
-				if (validationModel != null && !validationModel.equals(StateValidationModel.NO_VALIDATE))
+				if (!restProxyType.equals(method.getEnclosingType()))
 				{
-					updateMethods.put(methodURI, implementationMethod);
+					validateProxyMethod(method);
+					RestMethodInfo methodInfo = getRestMethodInfo(method);
+					
+					if (useJsonP)
+					{
+						if (methodInfo.isReadMethod)
+						{
+							readMethods.add(methodInfo.methodURI);
+						}
+						else if (methodInfo.validationModel != null && !methodInfo.validationModel.equals(StateValidationModel.NO_VALIDATE))
+						{
+							updateMethods.add(methodInfo.methodURI);
+						}
+					}
+					
+					restMethods.add(methodInfo);
 				}
-				else if (implementationMethod.getAnnotation(GET.class) != null)
-				{
-					readMethods.put(methodURI, implementationMethod);
-				}
-				restMethods.add(new RestMethodInfo(method, implementationMethod, methodURI));
+			}
+			catch (InvalidRestMethod e)
+			{
+				throw new CruxGeneratorException("Invalid Method: " + method.getEnclosingType().getName() + "." + method.getName() + "().", e);
 			}
 		}
 
 		mustGenerateStateControlMethods = false;
-		for (Entry<String, Method> entry : updateMethods.entrySet())
+		for (String methodURI : updateMethods)
 		{
-			Method method = entry.getValue();
-			Method readMethod = readMethods.get(entry.getKey());
-			if (readMethod == null)
+			if (!readMethods.contains(methodURI))
 			{
 				throw new CruxGeneratorException("Can not create the rest proxy. Can not found the " +
-						"GET method for state dependent write method ["+method.toString()+"].");
+						"GET method for state dependent write method ["+methodURI+"].");
 			}
 			mustGenerateStateControlMethods = true; 
 		}
@@ -242,56 +214,66 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 
 	protected void generateWrapperMethod(RestMethodInfo methodInfo, SourcePrinter srcWriter)
 	{
-		try
+		List<JParameter> parameters = generateProxyWrapperMethodDeclaration(srcWriter, methodInfo.method);
+		JParameter callbackParameter = parameters.get(parameters.size()-1);
+		String callbackResultTypeName = getCallbackResultTypeName(callbackParameter.getType().isClassOrInterface());
+		String callbackParameterName = callbackParameter.getName();
+
+		srcWriter.println("String baseURIPath = " + EscapeUtils.quote(methodInfo.methodURI) + ";");
+		queryParameterHandler.generateMethodParamToURICode(srcWriter, methodInfo, "baseURIPath");
+		srcWriter.println("final String restURI = __hostPath + baseURIPath;");
+
+		if (useJsonP)
 		{
-			List<JParameter> parameters = generateProxyWrapperMethodDeclaration(srcWriter, methodInfo.method);
-			String httpMethod = HttpMethodHelper.getHttpMethod(methodInfo.implementationMethod, false);
-			JParameter callbackParameter = parameters.get(parameters.size()-1);
-			String callbackResultTypeName = getCallbackResultTypeName(callbackParameter.getType().isClassOrInterface());
-			String callbackParameterName = callbackParameter.getName();
-
-			srcWriter.println("String baseURIPath = " + EscapeUtils.quote(methodInfo.methodURI) + ";");
-			queryParameterHandler.generateMethodParamToURICode(srcWriter, methodInfo, "baseURIPath");
-			srcWriter.println("final String restURI = __hostPath + baseURIPath;");
-
-			srcWriter.println("RequestBuilder builder = new RequestBuilder(RequestBuilder."+httpMethod+", restURI);");
-			setLocaleInfo(srcWriter, "builder");
-			srcWriter.println("builder.setCallback(new RequestCallback(){");
-
-			srcWriter.println("public void onResponseReceived(Request request, Response response){");
-			srcWriter.println("int s = (response.getStatusCode()-200);");
-			srcWriter.println("if (s >= 0 && s < 10){");
-			generateSuccessCallHandlingCode(methodInfo, srcWriter, callbackParameter, callbackResultTypeName, callbackParameterName);
-			srcWriter.println("}else{ ");
-			generateExceptionCallHandlingCode(methodInfo, srcWriter, callbackParameterName);
-			srcWriter.println("}");
-			srcWriter.println("}");
-
-			srcWriter.println("public void onError(Request request, Throwable exception){");
-			srcWriter.println(callbackParameterName+".onError(new RestError(-1, Crux.getMessages().restServiceUnexpectedError(exception.getMessage())));");
-			srcWriter.println("}");
-			srcWriter.println("});");
-
-			srcWriter.println("try{");
-			bodyParameterHandler.generateMethodParamToBodyCode(srcWriter, methodInfo, "builder", httpMethod);
-			generateValidateStateBlock(srcWriter, methodInfo.implementationMethod, "builder", "restURI", methodInfo.methodURI, callbackParameterName);
-			generateXSRFHeaderProtectionForWrites(httpMethod, "builder", srcWriter);
-			srcWriter.println("builder.send();");
-			srcWriter.println("}catch (Exception e){");
-			srcWriter.println(callbackParameterName+".onError(new RestError(-1, Crux.getMessages().restServiceUnexpectedError(e.getMessage())));");
-			srcWriter.println("}");
-			srcWriter.println("}");
+			jsonPRestCreatorHelper.generateJSONPInvocation(methodInfo, srcWriter, callbackParameter, callbackResultTypeName, 
+										callbackParameterName, "restURI", jsonPCallbackParam, jsonPFailureCallbackParam);
 		}
-		catch (InvalidRestMethod e)
+		else
 		{
-			throw new CruxGeneratorException("Invalid Method: " + methodInfo.method.getEnclosingType().getName() + "." + methodInfo.method.getName() + "().", e);
+			generateAJAXInvocation(methodInfo, srcWriter, callbackParameter, callbackResultTypeName, callbackParameterName, "restURI");
 		}
+		srcWriter.println("}");
 	}
+
+
+	protected void generateAJAXInvocation(RestMethodInfo methodInfo, SourcePrinter srcWriter, JParameter callbackParameter, 
+			String callbackResultTypeName, String callbackParameterName, String restURIParam)
+    {
+	    srcWriter.println("RequestBuilder builder = new RequestBuilder(RequestBuilder."+methodInfo.httpMethod+", "+restURIParam+");");
+		setLocaleInfo(srcWriter, "builder");
+		srcWriter.println("builder.setCallback(new RequestCallback(){");
+
+		srcWriter.println("public void onResponseReceived(Request request, Response response){");
+		srcWriter.println("int s = (response.getStatusCode()-200);");
+		srcWriter.println("if (s >= 0 && s < 10){");
+		generateSuccessCallHandlingCode(methodInfo, srcWriter, callbackParameter, callbackResultTypeName, callbackParameterName, restURIParam);
+		srcWriter.println("}else{ ");
+		generateExceptionCallHandlingCode(methodInfo, srcWriter, callbackParameterName);
+		srcWriter.println("}");
+		srcWriter.println("}");
+
+		srcWriter.println("public void onError(Request request, Throwable exception){");
+		srcWriter.println(callbackParameterName+".onError(new RestError(-1, Crux.getMessages().restServiceUnexpectedError(exception.getMessage())));");
+		srcWriter.println("}");
+		srcWriter.println("});");
+
+		srcWriter.println("try{");
+		bodyParameterHandler.generateMethodParamToBodyCode(srcWriter, methodInfo, "builder", methodInfo.httpMethod);
+		generateValidateStateBlock(srcWriter, methodInfo.validationModel, "builder", restURIParam, methodInfo.methodURI, callbackParameterName);
+		generateXSRFHeaderProtectionForWrites(methodInfo.httpMethod, "builder", srcWriter);
+		srcWriter.println("builder.send();");
+		srcWriter.println("}catch (Exception e){");
+		srcWriter.println(callbackParameterName+".onError(new RestError(-1, Crux.getMessages().restServiceUnexpectedError(e.getMessage())));");
+		srcWriter.println("}");
+    }
 
 	protected void generateExceptionCallHandlingCode(RestMethodInfo methodInfo, SourcePrinter srcWriter, String callbackParameterName)
 	{
 		try
 		{
+			srcWriter.println("if (LogConfiguration.loggingIsEnabled()){");
+			srcWriter.println("__log.log(Level.SEVERE, \"Error received from service: \"+response.getText());");
+			srcWriter.println("}");
 			//try to parse response object
 			srcWriter.println("JSONObject jsonObject = null;");
 			srcWriter.println("try {");
@@ -301,46 +283,8 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 			srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), response.getText()));");
 			srcWriter.println("return;");
 			srcWriter.println("}");
-			
-			Class<?>[] restExceptionTypes = getRestExceptionTypes(methodInfo.implementationMethod);
-			if (restExceptionTypes != null && restExceptionTypes.length > 0)
-			{
-				srcWriter.println("JSONValue exId = jsonObject.get(\"exId\");");
-				srcWriter.println("if (exId == null){");
-				srcWriter.println("JSONValue jsonErrorMsg = jsonObject.get(\"message\");");
-				srcWriter.println("String stringJsonErrorMsg = (jsonErrorMsg != null && jsonErrorMsg.isString() != null) ? jsonErrorMsg.isString().stringValue() : \"\";");
-				srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), stringJsonErrorMsg));");
-				srcWriter.println("} else {");
-				srcWriter.println("String hash = exId.isString().stringValue();");
-				boolean first = true;
-				for (Class<?> restException : restExceptionTypes)
-				{
-					JClassType exceptionType = context.getTypeOracle().findType(restException.getCanonicalName());
-					if (exceptionType == null)
-					{
-						throw new CruxGeneratorException("Exception type ["+restException.getCanonicalName()+"] can not be used on client code. Add this exeption to a GWT client package.");
-					}
-					if (!first)
-					{
-						srcWriter.print("else ");
-					}
-					first = false;
-					srcWriter.println("if (StringUtils.unsafeEquals(hash,"+EscapeUtils.quote(EncryptUtils.hash(exceptionType.getParameterizedQualifiedSourceName()))+")){");
-					String serializerName = new JSonSerializerProxyCreator(context, logger, exceptionType).create();
-					srcWriter.println("Exception ex = new "+serializerName+"().decode(jsonObject.get(\"exData\"));");
-					srcWriter.println(callbackParameterName+".onError(ex);");
-					srcWriter.println("}");
-				}
-				srcWriter.println("else {");
-				srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), jsonObject.get(\"exData\").toString()));");
-				srcWriter.println("}");
-				
-				srcWriter.println("}");
-			}
-			else
-			{
-				srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), (jsonObject.get(\"message\") != null && jsonObject.get(\"message\").isString() != null) ? jsonObject.get(\"message\").isString().stringValue() : \"\"));");
-			}
+
+			srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), (jsonObject.get(\"message\") != null && jsonObject.get(\"message\").isString() != null) ? jsonObject.get(\"message\").isString().stringValue() : \"\"));");
 		}
 		catch (Exception e) 
 		{
@@ -348,22 +292,8 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		}
 	}
 
-	protected Class<?>[] getRestExceptionTypes(Method method)
-	{
-		List<Class<?>> result = new ArrayList<Class<?>>();
-		Class<?>[] types = method.getExceptionTypes();
-		for (Class<?> exceptionClass : types)
-		{
-			if (RestException.class.isAssignableFrom(exceptionClass))
-			{
-				result.add(exceptionClass);
-			}
-		}
-		return result.toArray(new Class[result.size()]);
-	}
-
 	protected void generateSuccessCallHandlingCode(RestMethodInfo methodInfo, SourcePrinter srcWriter, 
-			JParameter callbackParameter, String callbackResultTypeName, String callbackParameterName)
+			JParameter callbackParameter, String callbackResultTypeName, String callbackParameterName, String restURIParam)
 	{
 		if (!callbackResultTypeName.equalsIgnoreCase("void"))
 		{
@@ -382,7 +312,7 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 				String serializerName = new JSonSerializerProxyCreator(context, logger, callbackResultType).create();
 				srcWriter.println(callbackResultTypeName+" result = new "+serializerName+"().decode(jsonValue);");
 			}
-			generateSalveStateBlock(srcWriter, methodInfo.implementationMethod, "response", "restURI", methodInfo.methodURI);
+			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, "response", restURIParam, methodInfo.methodURI);
 			srcWriter.println(callbackParameterName+".onSuccess(result);");
 			srcWriter.println("}catch (Exception e){");
 			srcWriter.println("if (LogConfiguration.loggingIsEnabled()){");
@@ -391,20 +321,19 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 			srcWriter.println("}");
 			srcWriter.println("}");
 			srcWriter.println("}else {");
-			generateSalveStateBlock(srcWriter, methodInfo.implementationMethod, "response", "restURI", methodInfo.methodURI);
+			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, "response", restURIParam, methodInfo.methodURI);
 			srcWriter.println(callbackParameterName+".onSuccess(null);");
 			srcWriter.println("}");
 		}
 		else
 		{
-			generateSalveStateBlock(srcWriter, methodInfo.implementationMethod, "response", "restURI", methodInfo.methodURI);
+			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, "response", restURIParam, methodInfo.methodURI);
 			srcWriter.println(callbackParameterName+".onSuccess(null);");
 		}
 	}
 
 	protected void setLocaleInfo(SourcePrinter srcWriter, String builderVariable)
 	{
-
 		srcWriter.println("String _locale = "+Screen.class.getCanonicalName()+".getLocale();");
 		srcWriter.println("if (_locale != null){");
 		srcWriter.println(builderVariable+".setHeader(\""+HttpHeaderNames.ACCEPT_LANGUAGE+"\", _locale.replace('_', '-'));");//	pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3
@@ -419,23 +348,21 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		}
 	}
 
-	protected void generateSalveStateBlock(SourcePrinter srcWriter, Method method, String responseVar, String uriVar, String uri)
+	protected void generateSaveStateBlock(SourcePrinter srcWriter, boolean isReadMethod, String responseVar, String uriVar, String uri)
 	{
-		if (readMethods.containsKey(uri) && updateMethods.containsKey(uri))
+		if (mustGenerateStateControlMethods && readMethods.contains(uri) && updateMethods.contains(uri))
 		{
-			GET get = method.getAnnotation(GET.class);
-			if (get != null)
+			if (isReadMethod)
 			{
 				srcWriter.println("__saveCurrentEtag("+uriVar+", "+responseVar+");");
 			}
 		}
 	}
 
-	protected void generateValidateStateBlock(SourcePrinter srcWriter, Method method, String builderVar, String uriVar, String uri, String callbackParameterName)
+	protected void generateValidateStateBlock(SourcePrinter srcWriter, StateValidationModel validationModel, String builderVar, String uriVar, String uri, String callbackParameterName)
 	{
-		if (readMethods.containsKey(uri) && updateMethods.containsKey(uri))
+		if (mustGenerateStateControlMethods &&  readMethods.contains(uri) && updateMethods.contains(uri))
 		{
-			StateValidationModel validationModel = HttpMethodHelper.getStateValidationModel(method);
 			if (validationModel != null)
 			{
 				srcWriter.println("if (!__readCurrentEtag("+uriVar+", "+builderVar+","+validationModel.equals(StateValidationModel.ENSURE_STATE_MATCHES)+")){");
@@ -456,15 +383,14 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		return jClassType.getParameterizedQualifiedSourceName();
 	}
 
-	protected String getRestURI(JMethod method, Method implementationMethod)
+	protected String getRestURI(JMethod method, Annotation[][] parameterAnnotations, Path path)
 	{
 		String methodPath = paths(serviceBasePath);
-		Path path = implementationMethod.getAnnotation(Path.class);
 		if (path != null)
 		{
 			methodPath = paths(methodPath, path.value());
 		}
-		String queryString = queryParameterHandler.getQueryString(method, implementationMethod);
+		String queryString = queryParameterHandler.getQueryString(method, parameterAnnotations);
 		if (queryString.length() > 0)
 		{
 			return methodPath+"?"+queryString;
@@ -533,32 +459,16 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 				JsonUtils.class.getCanonicalName(), 
 				JSONValue.class.getCanonicalName(),
 				JSONObject.class.getCanonicalName(),
+				JSONNumber.class.getCanonicalName(),
 				JSONParser.class.getCanonicalName(), 
 				URL.class.getCanonicalName(), 
 				Crux.class.getCanonicalName(),
 				Callback.class.getCanonicalName(),
 				StringUtils.class.getCanonicalName(),
-				RestError.class.getCanonicalName()
+				RestError.class.getCanonicalName(),
+				JsonpRequestBuilder.class.getCanonicalName(), 
+				AsyncCallback.class.getCanonicalName()
 		};
-	}
-
-	protected Method getImplementationMethod(JMethod method)
-	{
-		validateProxyMethod(method);
-		Method implementationMethod = null;
-
-		Method[] allMethods = restImplementationClass.getMethods();
-		for (Method m: allMethods)
-		{
-			if (m.getName().equals(method.getName()))
-			{
-				implementationMethod = m;
-				break;
-			}
-		}					
-
-		validateImplementationMethod(method, implementationMethod);
-		return implementationMethod;
 	}
 
 	protected void validateProxyMethod(JMethod method)
@@ -577,174 +487,5 @@ public class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		{
 			throw new CruxGeneratorException("Invalid signature for rest proxy method. Any method must have a last parameter of type Callback");
 		}
-	}
-
-	protected void validateImplementationMethod(JMethod method, Method implementationMethod)
-	{
-		if (implementationMethod == null)
-		{
-			throw new CruxGeneratorException("Invalid signature for rest proxy method. Can not found the implementation method: "+
-					method.getName()+", on class: "+restImplementationClass.getCanonicalName());
-		}
-
-		Class<?>[] implTypes = implementationMethod.getParameterTypes();
-		JType[] proxyTypes = method.getParameterTypes();
-
-		if ((proxyTypes.length -1)!= implTypes.length)
-		{
-			throw new CruxGeneratorException("Invalid signature for rest proxy method. The implementation method: "+
-					method.getName()+", on class: "+restImplementationClass.getCanonicalName() + " does not match the parameters list.");
-		}
-		for (int i=0; i<implTypes.length; i++)
-		{
-			if (!isTypesCompatiblesForSerialization(implTypes[i], proxyTypes[i]))
-			{
-				throw new CruxGeneratorException("Invalid signature for rest proxy method. Incompatible parameters on method["+method.getReadableDeclaration()+"]");
-			}
-		}
-
-		JClassType lastParameterType = proxyTypes[proxyTypes.length - 1].isClassOrInterface();
-		if (!isTypesCompatiblesForSerialization(implementationMethod.getReturnType(), JClassUtils.getTypeArgForGenericType(lastParameterType)))
-		{
-			throw new CruxGeneratorException("Invalid signature for rest proxy method. Return type of implementation method is not compatible with Callback's type. Method["+method.getReadableDeclaration()+"]");
-		}
-	}
-
-	protected boolean isTypesCompatiblesForSerialization(Class<?> class1, JType jType)
-	{
-		if (jType.isEnum() != null)
-		{
-			return isEnumTypesCompatibles(class1, jType.isEnum());
-		}
-		else if (JClassUtils.isSimpleType(jType))
-		{
-			return (getAllowedType(jType).contains(class1));
-		}
-		else
-		{ 
-			JClassType classOrInterface = jType.isClassOrInterface();
-			if (classOrInterface != null)
-			{
-				if (javascriptObjectType.isAssignableFrom(classOrInterface))
-				{
-					if (classOrInterface.getQualifiedSourceName().equals(JsArray.class.getCanonicalName()))
-					{
-						boolean validArray = false;
-						if (class1.isArray())
-						{
-							Class<?> componentType = class1.getComponentType();
-							JClassType jClassType = jType.isClassOrInterface();
-							validArray = jClassType != null && isTypesCompatiblesForSerialization(componentType, JClassUtils.getTypeArgForGenericType(jClassType));
-						}
-						return validArray || (List.class.isAssignableFrom(class1)) || (Set.class.isAssignableFrom(class1));
-					}
-					else
-					{
-						return true;
-					}
-				}
-			}
-		}
-		//Use a jsonEncorer implicitly
-		return true;
-	}
-
-	protected boolean isEnumTypesCompatibles(Class<?> class1, JEnumType jType)
-	{
-		if (class1.isEnum())
-		{
-			Object[] values1 = class1.getEnumConstants();
-			JEnumConstant[] values2 = jType.getEnumConstants();
-			if (values1.length != values2.length)
-			{
-				return false;
-			}
-			for (JEnumConstant jEnumConstant : values2)
-			{
-				String name = jEnumConstant.getName();
-				boolean found = false;
-				for (Object enumConstant : values1)
-				{
-					if (name.equals(enumConstant.toString()))
-					{
-						found = true;
-						break;
-					}
-				}
-				if (!found)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-		else if (String.class.isAssignableFrom(class1))
-		{
-			return true;
-		}
-		return false;
-	}
-
-	protected static List<Class<?>> getAllowedType(JType jType)
-	{
-		List<Class<?>> result = new ArrayList<Class<?>>();
-		JPrimitiveType primitiveType = jType.isPrimitive();
-		if (primitiveType == JPrimitiveType.INT || jType.getQualifiedSourceName().equals(Integer.class.getCanonicalName()))
-		{
-			result.add(Integer.TYPE);
-			result.add(Integer.class);
-		}
-		else if (primitiveType == JPrimitiveType.SHORT || jType.getQualifiedSourceName().equals(Short.class.getCanonicalName()))
-		{
-			result.add(Short.TYPE);
-			result.add(Short.class);
-		}
-		else if (primitiveType == JPrimitiveType.LONG || jType.getQualifiedSourceName().equals(Long.class.getCanonicalName()))
-		{
-			result.add(Long.TYPE);
-			result.add(Long.class);
-		}
-		else if (primitiveType == JPrimitiveType.BYTE || jType.getQualifiedSourceName().equals(Byte.class.getCanonicalName()))
-		{
-			result.add(Byte.TYPE);
-			result.add(Byte.class);
-		}
-		else if (primitiveType == JPrimitiveType.FLOAT || jType.getQualifiedSourceName().equals(Float.class.getCanonicalName()))
-		{
-			result.add(Float.TYPE);
-			result.add(Float.class);
-		}
-		else if (primitiveType == JPrimitiveType.DOUBLE || jType.getQualifiedSourceName().equals(Double.class.getCanonicalName()))
-		{
-			result.add(Double.TYPE);
-			result.add(Double.class);
-		}
-		else if (primitiveType == JPrimitiveType.BOOLEAN || jType.getQualifiedSourceName().equals(Boolean.class.getCanonicalName()))
-		{
-			result.add(Boolean.TYPE);
-			result.add(Boolean.class);
-		}
-		else if (primitiveType == JPrimitiveType.CHAR || jType.getQualifiedSourceName().equals(Character.class.getCanonicalName()))
-		{
-			result.add(Character.TYPE);
-			result.add(Character.class);
-		}
-		else if (jType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
-		{
-			result.add(String.class);
-		}
-		else if (jType.getQualifiedSourceName().equals(Date.class.getCanonicalName()))
-		{
-			result.add(Date.class);
-		}
-		else if (jType.getQualifiedSourceName().equals(BigInteger.class.getCanonicalName()))
-		{
-			result.add(BigInteger.class);
-		}
-		else if (jType.getQualifiedSourceName().equals(BigDecimal.class.getCanonicalName()))
-		{
-			result.add(BigDecimal.class);
-		}
-		return result;
 	}
 }
