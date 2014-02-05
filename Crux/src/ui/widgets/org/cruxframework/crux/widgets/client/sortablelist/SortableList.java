@@ -21,6 +21,9 @@ import java.util.List;
 import org.cruxframework.crux.widgets.client.button.Button;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
+import org.cruxframework.crux.widgets.client.util.draganddrop.GenericDragEventHandler.DragAndDropFeature;
+import org.cruxframework.crux.widgets.client.util.draganddrop.MoveCapability;
+import org.cruxframework.crux.widgets.client.util.draganddrop.MoveCapability.Movable;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -28,6 +31,7 @@ import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SingleSelectionModel;
 
@@ -35,11 +39,53 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * @author Samuel Almeida Cardoso
  * @param <Widget> the SortableList type object.
  */
-public class SortableList extends Composite implements ISortableList<Widget>
+public class SortableList extends Composite implements ISortableList<Widget> 
 {
+	
+	public class MoveableWidget extends Widget implements Movable<Label> 
+	{
+		private FlowPanel wrapper;
+		private Label moveHandle;
+		
+		public MoveableWidget(Widget widget) 
+		{
+			wrapper = new FlowPanel();
+			moveHandle = new Label();
+			moveHandle.setStyleName("dialogTopBarDragHandle");
+			
+			wrapper.add(moveHandle);
+			wrapper.add(widget);
+		}
+		
+		@Override
+		public void setPosition(int x, int y) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public int getAbsoluteLeft() {
+			return 0;
+		}
+
+		@Override
+		public int getAbsoluteTop() {
+			return 0;
+		}
+
+		@Override
+		public Widget asWidget() {
+			return wrapper;
+		}
+		
+		@Override
+		public Label getHandle(DragAndDropFeature feature) {
+			return moveHandle;
+		}
+	}
+	
 	private boolean enabled;
 	
-	private List<Widget> items;
+	private List<MoveableWidget> items;
 	private BeanRenderer<Widget> beanRenderer;
 
 	protected FlowPanel sortableList;
@@ -95,7 +141,7 @@ public class SortableList extends Composite implements ISortableList<Widget>
 		setItems(items);
 		bindHandlers();
 		initWidget(sortableList);
-		setStyleName("crux-ListShuttle");
+		setStyleName("crux-SortableList");
 	}
 
 	private void updateAvailableList() 
@@ -205,11 +251,21 @@ public class SortableList extends Composite implements ISortableList<Widget>
 	@Override
 	public void setItems(List<Widget> items) 
 	{
-		this.items = items;
-
-		if (getItems() != null && !getItems().isEmpty()) 
+		if(items == null || items.isEmpty())
 		{
-			getItems().remove(getItems());
+			return;
+		}
+		
+		if(this.items == null)
+		{
+			this.items = new ArrayList<MoveableWidget>();
+		}
+		
+		for(Widget widget : items)
+		{
+			MoveableWidget e = new MoveableWidget(widget);
+			MoveCapability.addMoveCapability(e);
+			this.items.add(e);
 		}
 
 		updateAvailableList();
@@ -220,9 +276,17 @@ public class SortableList extends Composite implements ISortableList<Widget>
 	{
 		if (items == null) 
 		{
-			items = new ArrayList<Widget>();
+			items = new ArrayList<MoveableWidget>();
 		}
-		return items;
+		
+		ArrayList<Widget> listWidgets = new ArrayList<Widget>();
+		
+		for(MoveableWidget moveableWidget : items)
+		{
+			listWidgets.add(moveableWidget.asWidget());
+		}
+		
+		return listWidgets;
 	}
 
 	@Override
@@ -248,8 +312,9 @@ public class SortableList extends Composite implements ISortableList<Widget>
 	}
 
 	@Override
-	public void addItem(Widget widget) {
-		getItems().add(widget);	
+	public void addItem(Widget widget) 
+	{
+		getItems().add(new MoveableWidget(widget));	
 	}
 
 	@Override
