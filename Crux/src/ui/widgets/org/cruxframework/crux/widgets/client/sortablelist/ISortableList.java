@@ -25,13 +25,34 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface ISortableList<T extends Widget> extends HasEnabled
 {
+	/**
+	 * @param widget adds a widget to the list.
+	 */
 	public void addItem(T widget);
+	/**
+	 * @param widget the widget to be removed from list
+	 * @return true if it's removed and false otherwise
+	 */
 	public boolean removeItem(T widget);
+	/**
+	 * @param index the widget index to be removed from list 
+	 * @return true if it's removed and false otherwise
+	 */
 	public boolean removeItem(int index);
-	
+	/**
+	 * @return all the widget items
+	 */
 	public List<T> getItems();
+	/**
+	 * @param items add the items to the list
+	 */
 	public void setItems(List<T> items);
-	
+	/**
+	 * @param beanRenderer set's how the widget should be rendered in screen
+	 */
 	void setBeanRenderer(SortableList.BeanRenderer<Widget> beanRenderer);
+	/**
+	 * @param headerFieldset set's the component header
+	 */
 	void setHeader(String headerFieldset);
 }
