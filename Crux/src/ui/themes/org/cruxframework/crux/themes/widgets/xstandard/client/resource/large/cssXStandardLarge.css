@@ -614,36 +614,53 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 
 .crux-sortableList
 {
-    display: table;
+/*     display: table; */
     max-width: 20%;
 }
 .crux-sortableList .listColumn
 {
-    width: 10%;
     text-align: center;
-    display: table-cell;
+/*     display: table-cell; */
 }
-.crux-sortableList .buttonsColumn
-{
-    width:20%;
-    margin:0 1%;
-    display: table-cell;
-    vertical-align: middle;
+.crux-sortableList .buttonsColumn{
+    margin:10px;
+    text-align:center
 }
-.crux-sortableList .buttonsColumn button
-{
+.crux-sortableList .buttonsColumn button{
     border-radius:0;
-    margin-top:-1px;
+    margin-left:-1px;
+    width:25% !important;
+    min-width:0;
+    position:relative;
 }
-.crux-sortableList .buttonsColumn button:first-child
-{
-    border-radius:3px 3px 0 0;
+.crux-sortableList .buttonsColumn button{
+    text-shadow:none;
+    color:rgba(0,0,0,0); 
 }
-.crux-sortableList .buttonsColumn button:last-child
-{
-    border-radius:0 0 3px 3px;
+.crux-sortableList .buttonsColumn button:first-child{
+    border-radius:3px 0 0 3px;    
 }
-
+.crux-sortableList .buttonsColumn button:before{
+    position:absolute;
+    color:white;
+    text-shadow:0 1px 1px rgba(0,0,0,0.2);
+    z-index:4;
+    font-size:17px;
+}
+.crux-sortableList .buttonsColumn button:nth-child\(1\):before{
+    content:'\25b2';
+}
+.crux-sortableList .buttonsColumn button:nth-child\(2\):before{
+    content:'\25bc';
+    width:1px;
+    line-height:6px;
+    margin-top:3px;
+    left:50%;
+    margin-left:-7px
+}
+.crux-sortableList .buttonsColumn button:last-child{
+    border-radius:0 3px 3px 0;
+}
 .crux-sortableList .listColumnFieldset 
 {
     border:1px solid #ccc;
