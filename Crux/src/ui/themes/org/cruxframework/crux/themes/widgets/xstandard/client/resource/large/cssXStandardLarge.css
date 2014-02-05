@@ -606,6 +606,49 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	text-shadow: 0px 1px #FFFFFF;
 }
 
+/******************************************************************************
+    SortableList
+*******************************************************************************/
+
+@external crux-sortableList, crux-sortableList toSelectColumn, crux-sortableList selectedColumn, crux-sortableList buttonsColumn, crux-sortableList listColumn, crux-sortableList listColumnFieldset;
+
+.crux-sortableList
+{
+    display: table;
+    max-width: 20%;
+}
+.crux-sortableList .listColumn
+{
+    width: 10%;
+    text-align: center;
+    display: table-cell;
+}
+.crux-sortableList .buttonsColumn
+{
+    width:20%;
+    margin:0 1%;
+    display: table-cell;
+    vertical-align: middle;
+}
+.crux-sortableList .buttonsColumn button
+{
+    border-radius:0;
+    margin-top:-1px;
+}
+.crux-sortableList .buttonsColumn button:first-child
+{
+    border-radius:3px 3px 0 0;
+}
+.crux-sortableList .buttonsColumn button:last-child
+{
+    border-radius:0 0 3px 3px;
+}
+
+.crux-sortableList .listColumnFieldset 
+{
+    border:1px solid #ccc;
+    border-radius:3px;
+}
 
 /******************************************************************************
 	ListShuffle

@@ -26,8 +26,8 @@ import com.google.gwt.user.client.ui.Widget;
 public interface ISortableList<T extends Widget> extends HasEnabled
 {
 	public void addItem(T widget);
-	public void removeItem(T widget);
-	public void removeItem(int index);
+	public boolean removeItem(T widget);
+	public boolean removeItem(int index);
 	
 	public List<T> getItems();
 	public void setItems(List<T> items);
