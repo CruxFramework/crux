@@ -24,6 +24,16 @@
         <url-pattern>*.rpc</url-pattern>
     </servlet-mapping>
     
+    <servlet>
+        <servlet-name>restServiceServlet</servlet-name>
+        <servlet-class>org.cruxframework.crux.core.server.rest.servlet.RestServlet</servlet-class>
+    </servlet>
+ 
+    <servlet-mapping>
+        <servlet-name>restServiceServlet</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <display-name>CrawlingFilter</display-name>
         <filter-name>CrawlingFilter</filter-name>
@@ -47,18 +57,26 @@
     application distribution file. Don't remove those comments.
     ===========================================================================         
     -->
-    <listener>
+	<listener>
         <listener-class>org.cruxframework.crux.core.server.DevModeInitializerListener</listener-class>
     </listener>
-    <filter>
-        <display-name>DeclarativeUIFilter</display-name>
-        <filter-name>DeclarativeUIFilter</filter-name>
-        <filter-class>org.cruxframework.crux.core.declarativeui.filter.DeclarativeUIFilter</filter-class>
-    </filter>
-    <filter-mapping> 
-        <filter-name>DeclarativeUIFilter</filter-name>
-        <url-pattern>*.html</url-pattern>
-    </filter-mapping>
+	<filter>
+		<display-name>ModulesDeclarativeUIFilter</display-name>
+		<filter-name>ModulesDeclarativeUIFilter</filter-name>
+		<filter-class>org.cruxframework.crux.module.filter.ModulesDeclarativeUIFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ModulesDeclarativeUIFilter</filter-name>
+		<url-pattern>*.html</url-pattern>
+	</filter-mapping>
+    <servlet>
+        <servlet-name>testViewServlet</servlet-name>
+        <servlet-class>org.cruxframework.crux.module.development.ModulesViewTester</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>testViewServlet</servlet-name>
+        <url-pattern>/viewTester/*</url-pattern>
+    </servlet-mapping>
     <!--antReplacementBlockEnd-->
 
 </web-app>
