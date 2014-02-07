@@ -1,0 +1,93 @@
+package $packageName;
+
+#foreach ($importItem in $imports)
+import $importItem;
+#end
+
+public abstract class $className extends BaseController
+{
+#if(!$compositeIdentifier)#set($idAnnotation="@Parameter")
+	$idAnnotation
+	protected $identifierType $identifierName;
+#end
+##
+#set ($entityNameLower = $entity.substring(0,1).toLowerCase() + $entity.substring(1))
+#set ($remoteInterfaceAsync = $remoteInterface+"Async")
+##
+	@Create
+	protected $remoteInterfaceAsync service;
+
+	@Create
+	protected $entity $entityNameLower;
+
+	@Create
+	protected ${screenClassName} screen;
+
+	@Override
+	protected void retrieve()
+	{
+		service.retrieve(${entityNameLower}.get${identifierType}, new AsyncCallbackAdapter<$entity>(this){
+			public void onComplete($entity result)
+			{
+				$entityNameLower = result;
+			}
+		});
+	}
+
+	@Override
+	protected void delete()
+	{
+		service.delete(${entityNameLower}.get${identifierType}, new AsyncCallbackAdapter<Void>(this){
+			public void onComplete(Void result)
+			{
+				$entityNameLower = new $entity();
+				onOperationExecuted("Entity Deleted");
+			}
+		});
+	}
+
+	@Override
+	protected void create()
+	{
+		service.create(${entityNameLower}, new AsyncCallbackAdapter<$entity>(this){
+			public void onComplete($entity result)
+			{
+				$entityNameLower = result;
+				onOperationExecuted("Entity Saved");
+			}
+		});
+	}
+
+	@Override
+	protected void update()
+	{
+		service.update($entityNameLower, new AsyncCallbackAdapter<Void>(this){
+			public void onComplete(Void result)
+			{
+				onOperationExecuted("Entity Updated");
+			}
+		});
+	}
+
+	@Override
+	protected boolean hasIdentifier()
+	{
+#if($compositeIdentifier)
+		return (${entityNameLower}.get${identifierType} != null#foreach ($identifierField in $identifierFields)#set($fieldNameGetter = "get"+$identifierField.substring(0,1).toUpperCase() + $identifierField.substring(1)+"()") && ${entityNameLower}.get${identifierType}.${fieldNameGetter} != null #end);
+#else
+		return (${entityNameLower}.get${identifierType} != null);
+#end
+	}
+
+	@Override
+	protected Map<String,Widget> createRequiredFields()
+	{
+		Map<String,Widget> requiredFields = new LinkedHashMap<String,Widget>();
+
+#foreach($field in $requiredFields.entrySet())
+		requiredFields.put("$field.getKey()", screen.get$textUtils.toJavaIdentifier($field.getValue(), true)());
+#end
+
+		return requiredFields;
+	}
+}

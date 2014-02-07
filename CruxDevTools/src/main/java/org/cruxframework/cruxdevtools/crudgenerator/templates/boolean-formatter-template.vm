@@ -1,0 +1,29 @@
+package $packageName;
+
+#foreach ($importItem in $imports)
+import $importItem;
+#end
+
+@FormatterName("boolean")
+public class BooleanFormatter implements Formatter
+{
+
+	public String format(Object input)
+	{
+		if (input == null || !(input instanceof Boolean))
+		{
+			return null;
+		}
+
+		return ((Boolean)input ? "Yes" : "No");
+	}
+
+	public Object unformat(String input) throws InvalidFormatException
+	{
+		if (input == null || !(input instanceof String))
+		{
+			return null;
+		}
+		return (input.equalsIgnoreCase("Yes") ? Boolean.TRUE : Boolean.FALSE);
+	}
+}

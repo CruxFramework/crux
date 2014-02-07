@@ -1,0 +1,101 @@
+package $packageName;
+
+#foreach ($importItem in $imports)
+import $importItem;
+#end
+
+public abstract class $className
+{
+	@Expose
+	public void onLoad()
+	{
+		if (hasIdentifier())
+		{
+			retrieve();
+		}
+	}
+
+	@Expose
+	public void onSaveClick()
+	{
+		if (validateRequiredFields())
+		{
+			if (!hasIdentifier())
+			{
+				create();
+			}
+			else
+			{
+				update();
+			}
+		}
+	}
+
+	@Expose
+	public void onDeleteClick()
+	{
+		delete();
+	}
+
+
+	protected boolean validateRequiredFields()
+	{
+		Map<String, Widget> requiredFields = createRequiredFields();
+
+		boolean validField = false;
+
+		for(Entry<String, Widget> requiredField: requiredFields.entrySet())
+		{
+
+			Widget widget = requiredField.getValue();
+
+			if (widget instanceof SingleSelect)
+			{
+				validField = ((SingleSelect) widget).getSelectedIndex() != 0;
+			}
+			else if (widget instanceof TextBox)
+			{
+				validField = ((TextBox) widget) != null && !((TextBox) widget).getValue().equals("");
+			}
+			else if (widget instanceof MaskedTextBox)
+			{
+				validField = ((MaskedTextBox) widget) != null && !((MaskedTextBox) widget).getValue().equals("");
+			}
+			else if (widget instanceof TextArea)
+			{
+				validField = ((TextArea) widget) != null && !((TextArea) widget).getValue().equals("");
+			}
+			else if (widget instanceof DateBox)
+			{
+				validField = ((TextBox) widget) != null && !((TextBox) widget).getValue().equals("");
+			}
+
+			if(!validField)
+			{
+				break;
+			}
+		}
+
+		if(!validField)
+		{
+			onOperationExecuted("Please enter the required fields");
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	protected void onOperationExecuted(String message)
+	{
+		Window.alert(message);
+	}
+
+	protected abstract void create();
+	protected abstract void retrieve();
+	protected abstract void update();
+	protected abstract void delete();
+	protected abstract boolean hasIdentifier();
+	protected abstract Map<String,Widget> createRequiredFields();
+}

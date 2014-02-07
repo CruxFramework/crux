@@ -1,0 +1,187 @@
+<html
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://www.cruxframework.org/crux"
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+>
+	<head>
+		<title>$textUtils.toJavaIdentifier($entity,true) Page</title>
+
+		<link rel="stylesheet" type="text/css" href="style.css"/>
+
+	</head>
+	<body>
+		<script type="text/javascript" src="../${entity}/${entity}.nocache.js"></script>
+
+		<c:screen useController="${entity}Controller" onLoad="${entity}Controller.onLoad" />
+
+		<div id="_crux_crudPanel">
+       		<div class="topFlexTable">
+           		CRUD Generator
+           	</div>
+
+			<gwt:flexTable id="${entity}FlexTable" width="100%">
+#foreach ($field in $fields)
+				<gwt:row>
+					<gwt:cell>
+						<gwt:widget>
+#if($field.isRequired())
+							<gwt:horizontalPanel id="$field.getName()LabelHorizontalPanel">
+								<gwt:cell horizontalAlignment="left">
+									<gwt:label id="$field.getName()Label"#createLabelAttribute($field)/>
+								</gwt:cell>
+								<gwt:cell>
+									<gwt:label id="$field.getName()RequiredLabel" text="*"/>
+								</gwt:cell>
+							</gwt:horizontalPanel>
+#else
+							<gwt:label id="$field.getName()Label"#createLabelAttribute($field)/>
+#end
+						</gwt:widget>
+					</gwt:cell>
+					<gwt:cell>
+						<gwt:widget>
+#createFields($field)
+						</gwt:widget>
+					</gwt:cell>
+				</gwt:row>
+#end
+			</gwt:flexTable>
+			<gwt:flexTable id="buttonPanel" width="100%">
+				<gwt:row>
+					<gwt:cell >
+						<gwt:widget>
+							<gwt:horizontalPanel id="buttonHorizontalPanel" styleName="separator" width="100%" spacing="2">
+								<gwt:cell horizontalAlignment="right">
+									<gwt:button id="${entity}SaveButton" text="Save" onClick="${entity}Controller.onSaveClick"/>
+								</gwt:cell>
+								<gwt:cell horizontalAlignment="left">
+									<gwt:button id="${entity}DeleteButton" text="Delete" onClick="${entity}Controller.onDeleteClick" />
+								</gwt:cell>
+							</gwt:horizontalPanel>
+						</gwt:widget>
+					</gwt:cell>
+				</gwt:row>
+			</gwt:flexTable>
+		</div>
+	</body>
+</html>
+######## CREATE FIELDS
+#macro (createFields $field)
+#if($field.getFieldGUI() == "Label")
+   #if($field.getFormatter() || $field.getFieldType() != "String")
+		#createMaskedLabel($field)
+   #else
+		#createLabel($field)
+   #end
+#elseif($field.getFieldGUI() == "Text")
+   #if($field.getFormatter() || $field.getFieldType() != "String")
+		#createMaskedTextBox($field)
+   #else
+		#createTextBox($field)
+   #end
+#elseif($field.getFieldGUI() == "LongText")
+	#createTextArea($field)
+#elseif ($field.getFieldGUI() == "Calendar")
+	#createCalendar($field)
+#elseif ($field.getFieldGUI() == "ListBox")
+	#createListBox($field)
+#elseif ($field.getFieldGUI() == "CheckBox")
+	#createCheckBox($field)
+#elseif ($field.getFieldGUI() == "RadioBox")
+	#createRadioBox($field)
+#end
+#end
+######## CREATE LABEL
+#macro (createLabel $field)
+				<gwt:label id="$field.getName()"/>
+#end
+######## CREATE TEXTBOX
+#macro (createMaskedLabel $field)
+					<crux:maskedLabel id="$field.getName()"#createFormatterAttribute($field)/>
+#end
+######## CREATE TEXTBOX
+#macro (createTextBox $field)
+				<gwt:textBox id="$field.getName()"#createMaxLenghtAttribute($field)#createEnabledAttribute($field)/>
+#end
+######## CREATE MASKEDTEXTBOX
+#macro (createMaskedTextBox $field)
+					<crux:maskedTextBox id="$field.getName()"#createMaxLenghtAttribute($field)#createFormatterAttribute($field)#createEnabledAttribute($field)/>
+#end
+######## CREATE TEXTAREA
+#macro (createTextArea $field)
+					<gwt:textArea id="$field.getName()"#createMaxLenghtAttribute($field)#createEnabledAttribute($field)/>
+#end
+######## CREATE CALENDAR
+#macro (createCalendar $field)
+					<gwt:dateBox id="$field.getName()" pattern="dd/MM/yyyy"#createEnabledAttribute($field)/>
+#end
+######## CREATE LISTBOX
+#macro (createListBox $field)
+						<crux:singleSelect id="$field.getName()" #createEnabledAttribute($field)>
+#createListBoxItem($field)
+#end
+######## CREATE CHECKBOX
+#macro (createCheckBox $field)
+#if($field.getAcceptableValues().size() > 1)
+						<gwt:verticalPanel id="${field.getName()}VerticalPanel" horizontalAlignment="left">
+#createCheckBoxItem($field)
+							</gwt:verticalPanel>
+#else
+#createCheckBoxItem($field, "						")
+#end
+#end
+######## CREATE RADIOBOX
+#macro (createRadioBox $field)
+#if($field.getAcceptableValues().size() > 1)
+						<gwt:horizontalPanel id="${field.getName()}HorizontalPanel">
+#createRadioButtonItem($field,"								")
+							</gwt:horizontalPanel>
+#else
+#createRadioButtonItem($field, "						")
+#end
+#end
+############ CREATE THE LABEL ATTRIBUTE
+#macro (createLabelAttribute $field)
+#if($field.getLabel()) text="$field.getLabel()"#end
+#end
+############ CREATE THE MAXLENGHT ATTRIBUTE
+#macro (createMaxLenghtAttribute $field)
+#if($field.getMaxLenght() > 0) maxLength="$field.getMaxLenght()"#end
+#end
+########### CREATE THE ENABLED ATTRIBUTE
+#macro (createEnabledAttribute $field)
+#set ($enabled = !$field.isDisabled())
+#if(!$enabled) enabled="$enabled"#end
+#end
+########### CREATE THE FORMATTER ATTRIBUTE
+#macro (createFormatterAttribute $field)
+#if($field.getFormatter()) formatter="$field.getFormatter()"
+#elseif($field.getFieldType() == "Decimal") formatter="decimal" #elseif ($field.getFieldType() == "Integer") formatter="number" #elseif ($field.getFieldType() == "Date") formatter="date" #elseif ($field.getFieldType() == "Boolean") formatter="boolean" #end
+#end
+########### CREATE THE CHECKED ATTRIBUTE
+#macro (createCheckedAttribute $count)
+#if($count == 1) checked="true"#end
+#end
+########## CREATE ITEM OF LISTBOX
+#macro (createListBoxItem $field)
+								<crux:item label="--Select--" value=""/>
+#foreach ($item in $field.getAcceptableValues())
+								<crux:item label="$item.getLabel()" value="$item.getValue()"/>
+#end
+							</crux:singleSelect>
+#end
+######### CREATE ITEM OF RADIOBUTTON
+#macro (createRadioButtonItem $field $indent)
+#foreach($item in $field.getAcceptableValues())
+${indent}<gwt:radioButton id="$textUtils.toJavaIdentifier($item.getLabel(),false)" text="$item.getLabel()" formValue="$item.getValue()" name="$field.getName()"#createCheckedAttribute($foreach.count)  #createEnabledAttribute($field) />
+#end
+#end
+######### CREATE ITEM OF CHECKBOX
+#macro (createCheckBoxItem $field)
+#foreach($item in $field.getAcceptableValues())
+								<gwt:cell horizontalAlignment="left">
+									<gwt:checkBox id="$textUtils.toJavaIdentifier($item.getLabel(),false)" text="$item.getLabel()" formValue="$item.getValue()" #createEnabledAttribute($field)/>
+		 						</gwt:cell>
+#end
+#end

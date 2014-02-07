@@ -1,0 +1,12 @@
+package $packageName;
+
+#foreach ($importItem in $imports)
+import $importItem;
+#end
+
+public interface $className extends ScreenWrapper
+{
+#foreach($field in $fields.entrySet())
+	public $field.getValue() get${field.getKey()}();
+#end
+}

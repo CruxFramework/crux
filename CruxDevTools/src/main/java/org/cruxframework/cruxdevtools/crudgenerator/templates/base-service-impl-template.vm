@@ -1,0 +1,28 @@
+package $packageName;
+
+#foreach ($importItem in $imports)
+import $importItem;
+#end
+
+public class $className<E, K>
+{
+	public K create(E entity)
+	{
+		return null;
+	}
+	
+	public E retrieve(K key)
+	{
+		return null;
+	}
+	
+	public void update(E entity)
+	{
+	
+	}
+	
+	public void delete(K key)
+	{
+	
+	}
+}

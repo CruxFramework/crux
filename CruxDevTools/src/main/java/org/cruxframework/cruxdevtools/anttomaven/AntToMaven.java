@@ -48,7 +48,7 @@ public class AntToMaven
 
 	private static final String JAVA_FILES = ".java";
 	private static final String RESOURCES_FILES = ".css .js .png .jpg .gif .jpeg";
-	private static final String GWT_CRUX_FILES = ".gwt.xml .module.xml .view.xml .crux.xml .template.xml .xdevice.xml";
+	private static final String GWT_CRUX_FILES = ".gwt.xml .module.xml .view.xml .crux.xml .template.xml .xdevice.xml .ui.xml";
 
 	public static void main(String[] args) 
 	{

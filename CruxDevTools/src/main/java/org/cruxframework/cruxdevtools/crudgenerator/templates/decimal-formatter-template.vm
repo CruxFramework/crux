@@ -1,0 +1,51 @@
+package $packageName;
+
+#foreach ($importItem in $imports)
+import $importItem;
+#end
+
+@FormatterName("decimal")
+public class DecimalFormatter implements Formatter
+{
+	public String format(Object input) throws InvalidFormatException
+	{
+		if (input != null)
+		{
+			Double valor = 0d;
+
+			if(input instanceof Number)
+			{
+				valor = ((Number)input).doubleValue();
+			}
+			else if(input instanceof String)
+			{
+				valor = Double.parseDouble(input.toString());
+			}
+
+			#set  ($escape = '#' )
+			NumberFormat formatter = NumberFormat.getFormat("#,${escape}${escape}0.00");
+			return formatter.format(valor);
+		}
+
+		return null;
+	}
+
+	public Object unformat(String input) throws InvalidFormatException
+	{
+		if (input != null)
+		{
+			input = input.replaceAll("[^0-9,]", "");
+			input = input.replaceAll(",", ".");
+			try
+			{
+				return Double.parseDouble(input.trim());
+			}
+			catch (NumberFormatException e)
+			{
+				return null;
+			}
+		}
+
+		return null;
+	}
+}

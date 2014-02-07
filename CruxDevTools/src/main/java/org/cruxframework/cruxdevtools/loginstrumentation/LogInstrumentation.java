@@ -39,7 +39,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 public class LogInstrumentation 
 {
 	//Set the root dir path
-	private static final String DIR_PATH = "<<ROOT_DIR_PATH>>";
+	private static final String DIR_PATH = "C:\\workspaces\\vivo360\\NFO-Vivo360-Lojas-26.1.0-safari\\src\\br\\com\\vivo\\nfo\\nfovivo360lojas\\client\\";
 	
 	private static Map<String, List<MethodLocation>> mapMethodLocation = new HashMap<String, List<MethodLocation>>();
 	private static Map<String, VariableLocation> mapVariableLocation = new HashMap<String, VariableLocation>();

@@ -23,6 +23,33 @@
 			<version>1.1.0-v20070606-0010</version>
 		</dependency>
 
+
+        <!-- used in CRUD Generator -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cruxframework</groupId>
+			<artifactId>crux-dev</artifactId>
+			<version>5.0.4</version>
+		</dependency>
+		<dependency>
+            <groupId>org.cruxframework</groupId>
+            <artifactId>crux-widgets</artifactId>
+            <version>5.0.4</version>
+        </dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>2.5.1</version>
+		</dependency>
+		<dependency>
+	      <groupId>org.apache.velocity</groupId>
+	      <artifactId>velocity</artifactId>
+	      <version>1.7</version>
+	    </dependency>
 	</dependencies>
 
 </project>

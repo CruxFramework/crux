@@ -1,0 +1,13 @@
+package $packageName;
+
+#foreach ($importItem in $imports)
+import $importItem;
+#end
+
+public interface $className<E, K> extends RemoteService
+{
+	K create(E entity);
+	E retrieve(K key);
+	void update(E entity);
+	void delete(K key);
+}

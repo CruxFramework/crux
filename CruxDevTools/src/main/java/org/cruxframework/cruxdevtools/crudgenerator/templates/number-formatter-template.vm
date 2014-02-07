@@ -1,0 +1,37 @@
+package $packageName;
+
+#foreach ($importItem in $imports)
+import $importItem;
+#end
+
+@FormatterName("number")
+public class NumberFormatter implements Formatter
+{
+	public String format(Object input)
+	{
+
+		if(input != null)
+		{
+		   return input.toString();
+	    }
+
+		return null;
+	}
+
+	public Object unformat(String input) throws InvalidFormatException
+	{
+		try
+		{
+			if(input != null)
+			{
+			   return new Integer(input.toString());
+		    }
+		}
+		catch (NumberFormatException e)
+		{
+			return null;
+		}
+
+		return null;
+	}
+}
