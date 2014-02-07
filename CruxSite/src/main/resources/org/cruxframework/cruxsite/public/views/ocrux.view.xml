@@ -30,17 +30,30 @@
 				    Complementanto o GWT para uso corporativo, o Crux estende os
 					componentes e agrega camadas para acesso a serviços de negócio em
 					arquitetura SOA, bancos de dados e outras tecnologias presentes no
-					ambiente corporativo.</p>
+					ambiente corporativo.
+                </p>
 				<p>A combinação Crux/GWT possibilita a utilização
 					de recursos modernos de Cloud Computing e hospedagem da aplicação no
 					Google App Engine utilizando toda a infra-estrutura
 					da Google, sendo necessário apenas codificá-la e publicá-la. Também
 					permite o uso de um vasto universo de APIs disponíveis na Internet
-					como mapas, redes sociais, ações, condições do tempo entre outras.</p>
+					como mapas, redes sociais, ações, condições do tempo entre outras.
+                </p>
 			</div>
-			<div class="separator"></div>
+			
+            <div class="separator"></div>
+            
 			<div class="container">
-				<h2>História</h2>
+				<h2>Um pouco de História</h2>
+                
+                <p> <b>Crux</b> é um termo em inglês que pode significar o ponto central de uma argumentação 
+                ou um problema muito complexo. No jargão dos esportitas de escalada o "crux" é parte mais 
+                difícil de uma via. 
+                Esse nome representa bem o Crux Framework, pois a proposta é justamente resolver os problemas 
+                mais complexos no desevolvimento de aplicação, oferecendo a seus usuários uma forma 
+                simples de transformar ideias em soluções.
+                </p>
+                
 				<p>	Criado em 2008 durante um trabalho de
     				<a href="http://www.dcc.ufmg.br/pos/cursos/defesas/980M.PDF" title="PDF"
     				target="_blank" class="defaultLink">mestrado na Universidade Federal de Minas Gerais
@@ -56,7 +69,9 @@
 					empresas dispostas a participar do desenvolvimento do Crux Framework.
 				</p>
 			</div>
+            
 			<div class="separator"></div>
+            
 			<div class="container">
 				<h2>Licensa</h2>
 				<p style="margin-bottom:0;">O Código-fonte do Crux Framework é aberto, e licensiado sobre a 

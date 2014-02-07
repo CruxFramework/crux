@@ -30,6 +30,11 @@
 			<div class="separator"></div>
 			<div class="container">
 				<ul class="buttonsDownload">
+                    <li>
+                        <h2>Maven dependencias</h2>
+                        <crux:anchor href="../downloads/crux-pom.txt" target="_blank" text="Dependências Maven (XML)" 
+                                     id="mavenDepBtn" styleName="btn btn-bigblue"></crux:anchor>
+                    </li>
 					<li>
 						<h2>Download do Código-Fonte</h2>
 						<crux:anchor href="https://crux-framework.googlecode.com/svn/tags/5.0.4/" target="_blank" text="Acessar SVN tag 5.0.4" 

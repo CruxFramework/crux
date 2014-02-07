@@ -18,8 +18,13 @@
 			
 			<p>Com o Maven é possível criar projetos Crux de forma rápida. Neste exemplo vamos mostrar como criar um projeto 
 			Hello World usando o Maven integrado ao ambiente Eclipse (plugin M2E).</p>
+            
 			
 			<ol class="quickstartList">
+                <li>
+                        <p>Baixe o arquivo XML de catálogo: <crux:anchor href="../downloads/crux-archetypes-5.0.4-catalog.xml" target="_blank" 
+                                                      text="crux-archetypes-5.0.4-catalog.xml" id="catalogBtn"></crux:anchor></p>
+                </li>
 				<li>
 					<p>No menu do Eclipse, localize e selecione a opção <span class="code">File -> New -> Project</span></p>
 				</li>
@@ -27,11 +32,17 @@
 					<p>Selecione a opção <span class="code">Maven Project</span></p>
 				</li>
 				<li>
-					<p>Na janela de diálogo que se abrirá, clique no botão <span class="code">Next</span>.</p>
+					<p>Na janela de diálogo que se abrirá (New Maven Project - Select project name and location), clique no botão <span class="code">Next</span>.</p>
 				</li>
-				<li>
-					<p>Na campo <span class="code">Catalog</span>, selecione <span class="code">All Catalogs</span></p>
-				</li>
+                <li>
+                    <p>Clique no botão <span class="code">Configure...</span> no canto superior direito, e na tela seguinte no botão <span class="code">Add Local Catalog...</span>.</p>
+                </li>
+                <li>
+                    <p>Selecione o arquivo XML baixado anteriormente pelo botão <span class="code">Browse...</span> e em descrição digite <span class="code">Catalogo Crux 5.0.4</span>.</p>
+                </li>
+                <li>
+                    <p>Clique em <span class="code">Ok</span> nas duas telas retornando a tela inicial (New Maven Project).</p>
+                </li>
 				<li>
 					<p>No capo <span class="code">Filter</span>, digite <span class="code">crux</span></p>
 				</li>
@@ -73,7 +84,7 @@
 		<div class="separator"></div>
 		<div class="container">
 			<p class="quickstartInfo">
-				<b>Ainda tem dúvidas?</b> Tire elas lendo o <a href="#" class="defaultLink">Manual</a> ou perguntando no <a href="#" class="defaultLink">nosso fórum</a>.
+				<b>Ainda tem dúvidas?</b> Tire elas lendo a <a href="#topMenuDisposal:manual" class="linkManual">Documentação</a> ou perguntando no <a href="https://groups.google.com/forum/#!forum/crux-framework" class="linkForum">fórum</a> do Crux.
 			</p>
 		</div>
 	</gwt:HTMLPanel>
