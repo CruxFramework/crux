@@ -32,25 +32,28 @@ public class RestDispatcher
 {
 	private static final Log logger = LogFactory.getLog(RestDispatcher.class);
 
-	public static MethodReturn dispatch(HttpRequest request, HttpResponse response) throws RestFailure
+	public static MethodReturn dispatch(HttpRequest request, HttpResponse response, boolean preflightRequest) throws RestFailure
 	{
-		ResourceMethod invoker = RestDispatcher.getInvoker(request);
-		MethodReturn methodReturn = invoker.invoke(request, response);
+		ResourceMethod invoker = getInvoker(request, !preflightRequest);
+		MethodReturn methodReturn = null;
+		if (invoker.checkCorsPermissions(request, response, preflightRequest) && !preflightRequest)
+		{
+			methodReturn = invoker.invoke(request, response);
+		}
 		return methodReturn;
 	}
 
-	public static ResourceMethod getInvoker(HttpRequest request) throws RestFailure
+	private static ResourceMethod getInvoker(HttpRequest request, boolean ensureExists) throws RestFailure
 	{
 		if (logger.isDebugEnabled())
 		{
 			logger.debug("PathInfo: " + request.getUri().getPath());
 		}
 		ResourceMethod invoker = ResourceRegistry.getInstance().getResourceMethod(request);
-		if (invoker == null)
+		if (ensureExists && invoker == null)
 		{
 			throw new NotFoundException("Unable to find resource associated with path: " + request.getUri().getPath());
 		}
 		return invoker;
 	}
-
 }

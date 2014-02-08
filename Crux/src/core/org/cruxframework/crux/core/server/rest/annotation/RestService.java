@@ -43,7 +43,7 @@ public @interface RestService
 	 *
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.TYPE)
+	@Target({ElementType.TYPE, ElementType.METHOD})
 	public static @interface CorsSupport
 	{
 		/**
@@ -74,5 +74,25 @@ public @interface RestService
 		 * @return list of non default headers to expose to cors clients.
 		 */
 		String[] exposeHeaders() default {};
+
+		/**
+		 * Specify a cache time for pre-flight CORS requests 
+		 * @return
+		 */
+		int maxAge();
 	}
+	
+	/**
+	 * Annotation used to inform that a given rest service class must support JsonP requests.
+	 *  
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target({ElementType.TYPE, ElementType.METHOD})
+	public static @interface JsonPSupport
+	{
+		String callbackParam() default "callback";
+	}
+	
 }

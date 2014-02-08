@@ -48,9 +48,6 @@ public class CruxRestProxyCreatorFromClientMetadata extends CruxRestProxyCreator
 	@Override
     protected String getServiceBasePath(GeneratorContext context)
     {
-		TargetEndPoint targetEndPoint = baseIntf.getAnnotation(TargetEndPoint.class);
-	    String basePath = targetEndPoint != null? targetEndPoint.value() : "";
-	    
 		String value = baseIntf.getAnnotation(Path.class).value();
 		if (value == null)
 		{
@@ -60,13 +57,20 @@ public class CruxRestProxyCreatorFromClientMetadata extends CruxRestProxyCreator
 		{
 			value = value.substring(1);
 		}
-		return basePath+"/"+value;
+		return value;
     }
 
 	@Override
     protected void generateHostPathInitialization(SourcePrinter srcWriter)
     {
-	    srcWriter.println("__hostPath = \"\";");
+		TargetEndPoint targetEndPoint = baseIntf.getAnnotation(TargetEndPoint.class);
+	    String basePath = targetEndPoint != null? targetEndPoint.value() : "";
+		if (basePath.endsWith("/"))
+		{
+			basePath = basePath.substring(0, basePath.length()-1);
+		}
+		
+	    srcWriter.println("__hostPath = \""+basePath+"\";");
     }
 
 	@Override

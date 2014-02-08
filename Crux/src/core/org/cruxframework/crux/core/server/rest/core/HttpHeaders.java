@@ -7,44 +7,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
 import org.cruxframework.crux.core.server.rest.util.DateUtil;
+import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
 import org.cruxframework.crux.core.server.rest.util.LocaleHelper;
 import org.cruxframework.crux.core.server.rest.util.MediaTypeHelper;
 import org.cruxframework.crux.core.server.rest.util.WeightedLanguage;
 
 public class HttpHeaders
 {
-	public static final String ACCEPT = "Accept";
-	public static final String ACCEPT_CHARSET = "Accept-Charset";
-	public static final String ACCEPT_ENCODING = "Accept-Encoding";
-	public static final String ACCEPT_LANGUAGE = "Accept-Language";
-	public static final String ALLOW = "Allow";
-	public static final String AUTHORIZATION = "Authorization";
-	public static final String CACHE_CONTROL = "Cache-Control";
-	public static final String CONTENT_ENCODING = "Content-Encoding";
-	public static final String CONTENT_LANGUAGE = "Content-Language";
-	public static final String CONTENT_LENGTH = "Content-Length";
-	public static final String CONTENT_LOCATION = "Content-Location";
-	public static final String CONTENT_TYPE = "Content-Type";
-	public static final String DATE = "Date";
-	public static final String ETAG = "ETag";
-	public static final String EXPIRES = "Expires";
-	public static final String HOST = "Host";
-	public static final String IF_MATCH = "If-Match";
-	public static final String IF_MODIFIED_SINCE = "If-Modified-Since";
-	public static final String IF_NONE_MATCH = "If-None-Match";
-	public static final String IF_UNMODIFIED_SINCE = "If-Unmodified-Since";
-	public static final String LAST_MODIFIED = "Last-Modified";
-	public static final String LOCATION = "Location";
-	public static final String LINK = "Link";
-	public static final String RETRY_AFTER = "Retry-After";
-	public static final String USER_AGENT = "User-Agent";
-	public static final String VARY = "Vary";
-	public static final String WWW_AUTHENTICATE = "WWW-Authenticate";
-	public static final String COOKIE = "Cookie";
-	public static final String SET_COOKIE = "Set-Cookie";
-
 	private MultivaluedMap<String, String> requestHeaders;
 	private List<MediaType> acceptableMediaTypes;
 	private MediaType mediaType;
@@ -146,7 +116,7 @@ public class HttpHeaders
 
 	public Date getDate()
 	{
-		String date = requestHeaders.getFirst(DATE);
+		String date = requestHeaders.getFirst(HttpHeaderNames.DATE);
 		if (date == null)
 			return null;
 		return DateUtil.parseDate(date);
@@ -154,7 +124,7 @@ public class HttpHeaders
 
 	public int getLength()
 	{
-		String cl = requestHeaders.getFirst(CONTENT_LENGTH);
+		String cl = requestHeaders.getFirst(HttpHeaderNames.CONTENT_LENGTH);
 		if (cl == null)
 			return -1;
 		return Integer.parseInt(cl);

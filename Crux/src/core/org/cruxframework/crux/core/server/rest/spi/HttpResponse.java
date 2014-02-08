@@ -45,6 +45,11 @@ public class HttpResponse
 		this.response.setStatus(status);
 	}
 
+	public void sendEmptyResponse()
+	{
+		response.setContentLength(0);
+		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+	}
 	
 	/**
 	 * Flushes the response as a file.

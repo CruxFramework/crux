@@ -146,6 +146,10 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 	{
 		srcWriter.println("public void setEndpoint(String address){");
 		srcWriter.println("this.__hostPath = address;");
+		srcWriter.println("if (__hostPath.endsWith(\"/\")){");
+		srcWriter.println("__hostPath = __hostPath.substring(0, __hostPath.length()-1);");
+		srcWriter.println("}");
+
 		srcWriter.println("}");
 	}
 

@@ -42,6 +42,10 @@ import java.lang.annotation.Target;
 public @interface HttpMethod {
     
     /**
+     * HTTP OPTIONS method
+     */
+    public static final String OPTIONS="OPTIONS";
+    /**
      * HTTP GET method
      */
     public static final String GET="GET";

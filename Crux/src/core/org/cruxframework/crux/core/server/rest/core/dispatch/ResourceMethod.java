@@ -21,19 +21,25 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.codehaus.jackson.map.ObjectWriter;
+import org.cruxframework.crux.core.server.rest.annotation.RestService.CorsSupport;
+import org.cruxframework.crux.core.server.rest.annotation.RestService.JsonPSupport;
 import org.cruxframework.crux.core.server.rest.core.EntityTag;
 import org.cruxframework.crux.core.server.rest.core.HttpRequestAware;
 import org.cruxframework.crux.core.server.rest.core.HttpResponseAware;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
 import org.cruxframework.crux.core.server.rest.spi.HttpResponse;
+import org.cruxframework.crux.core.server.rest.spi.HttpServletResponseHeaders;
 import org.cruxframework.crux.core.server.rest.spi.InternalServerErrorException;
 import org.cruxframework.crux.core.server.rest.spi.RestFailure;
 import org.cruxframework.crux.core.server.rest.state.ResourceStateConfig;
+import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
 import org.cruxframework.crux.core.server.rest.util.HttpMethodHelper;
 import org.cruxframework.crux.core.server.rest.util.JsonUtil;
 import org.cruxframework.crux.core.utils.ClassUtils;
@@ -59,6 +65,8 @@ public class ResourceMethod
 	protected Map<String, String> exceptionIds = new HashMap<String, String>();
 	protected CacheInfo cacheInfo;
 	protected boolean hasReturnType;
+	protected JsonPData jsonPData;
+	protected CorsData corsData;
 	private boolean etagGenerationEnabled = false;
 	private boolean isRequestAware;
 	private boolean isResponseAware;;
@@ -80,9 +88,41 @@ public class ResourceMethod
 
 		this.methodInvoker = new MethodInvoker(resourceClass, method, httpMethod);
 		this.cacheInfo = HttpMethodHelper.getCacheInfoForGET(method);
-
+		CorsSupport corsSupport = method.getAnnotation(CorsSupport.class);
+		if (corsSupport == null)
+		{
+			corsSupport = resourceClass.getAnnotation(CorsSupport.class);			
+		}
+		this.corsData = CorsData.parseCorsData(corsSupport);
+		JsonPSupport jsonPSupport = method.getAnnotation(JsonPSupport.class);
+		if (corsSupport == null)
+		{
+			jsonPSupport = resourceClass.getAnnotation(JsonPSupport.class);			
+		}
+		this.jsonPData = JsonPData.parseJsonPData(jsonPSupport);
 	}
 
+	public boolean supportsCors()
+	{
+		return corsData != null;
+	}
+	
+	public boolean supportsJsonP()
+	{
+		return jsonPData != null;
+	}
+	
+	public void setCorsAllowedMethods(List<String> methods)
+	{
+		if (supportsCors())
+		{
+			for (String method : methods)
+            {
+				corsData.addAllowMethod(method);
+            }
+		}
+	}
+	
 	public Type getGenericReturnType()
 	{
 		return genericReturnType;
@@ -154,6 +194,51 @@ public class ResourceMethod
 		return httpMethod;
 	}
 
+	public boolean checkCorsPermissions(HttpRequest request, HttpResponse response, boolean preflightRequest)
+    {
+		boolean allowed = true;
+		if (supportsCors())
+		{
+			String origin = request.getHttpHeaders().getHeaderString(HttpHeaderNames.ORIGIN);
+			if (corsData.isOriginAllowed(origin))
+			{
+				HttpServletResponseHeaders outputHeaders = response.getOutputHeaders();
+				outputHeaders.putSingle(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, corsData.isAllOriginsAllowed()?"*":origin);
+				outputHeaders.add(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);// Needed to make proxy caches works
+				if (corsData.isAllowCredentials())
+				{
+					outputHeaders.putSingle(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+				}
+				Iterator<String> exposeHeaders = corsData.getExposeHeaders();
+				while (exposeHeaders.hasNext())
+				{
+					outputHeaders.add(HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS, exposeHeaders.next());
+				}
+				if (preflightRequest)
+				{
+					Iterator<String> allowMethods = corsData.getAllowMethods();
+					while (allowMethods.hasNext())
+					{
+						outputHeaders.add(HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS, allowMethods.next());
+					}
+					if (corsData.getMaxAge() >= 0)
+					{
+						outputHeaders.putSingle(HttpHeaderNames.ACCESS_CONTROL_MAX_AGE, corsData.getMaxAge());
+					}
+					if (!corsData.isAllowMethod(request.getHttpMethod()))
+					{
+						allowed = false;
+					}
+				}
+			}
+			else
+			{
+				allowed = (origin == null); // Same origin requests can send no origin header.
+			}
+		}
+		return allowed;
+    }
+
 	private Object createTarget(HttpRequest request, HttpResponse response) throws InstantiationException, IllegalAccessException
 	{
 		//TODO criar um restServiceFactory para instanciar isso, a fim de permitir integracao com spring, guice, etc
@@ -178,11 +263,11 @@ public class ResourceMethod
 		{
 			if (rtn != null && rtn instanceof Exception)
 			{
-				exeptionData = getExceptionData((Exception) rtn);
+				exeptionData = getReturnedValue(request, getExceptionData((Exception) rtn));
 			}
 			else if (hasReturnType && rtn != null)
 			{
-				retVal = getReturnWriter().writeValueAsString(rtn);
+				retVal = getReturnedValue(request, getReturnWriter().writeValueAsString(rtn));
 			}
 		}
 		catch (Exception e)
@@ -192,6 +277,19 @@ public class ResourceMethod
 		return new MethodReturn(hasReturnType, retVal, exeptionData, cacheInfo, null, isEtagGenerationEnabled());
 	}
 
+	private String getReturnedValue(HttpRequest request, String value)
+	{
+		if (supportsJsonP())
+		{
+			String callbackParam = request.getUri().getQueryParameters().getFirst(jsonPData.getCallbackParameter());
+			if (callbackParam != null && callbackParam.length() > 0)
+			{
+				value = callbackParam+"("+value+");";
+			}
+		}
+		return value;
+	}
+	
 	private String getExceptionData(Exception e) throws IOException 
     {
 	    return "{\"exId\": \"" + getExceptionId(e) + "\", \"exData\": " + getExceptionWriter(e).writeValueAsString(e) + "}";
@@ -281,7 +379,8 @@ public class ResourceMethod
 		protected final boolean etagGenerationEnabled;
 		protected String checkedExceptionData;
 
-		protected MethodReturn(boolean hasReturnType, String ret, String exceptionData, CacheInfo cacheInfo, ConditionalResponse conditionalResponse, boolean etagGenerationEnabled)
+		protected MethodReturn(boolean hasReturnType, String ret, String exceptionData, CacheInfo cacheInfo, ConditionalResponse conditionalResponse, 
+							   boolean etagGenerationEnabled)
 		{
 			this.hasReturnType = hasReturnType;
 			this.ret = ret;

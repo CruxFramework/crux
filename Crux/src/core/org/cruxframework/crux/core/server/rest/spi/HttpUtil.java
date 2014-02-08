@@ -199,7 +199,7 @@ public class HttpUtil
 	{
 		assert (request != null);
 
-		String acceptEncoding = request.getHttpHeaders().getHeaderString(HttpHeaders.ACCEPT_ENCODING);
+		String acceptEncoding = request.getHttpHeaders().getHeaderString(HttpHeaderNames.ACCEPT_ENCODING);
 		if (null == acceptEncoding)
 		{
 			return false;
@@ -223,7 +223,11 @@ public class HttpUtil
 	public static void writeResponse(HttpRequest request, HttpResponse response, MethodReturn methodReturn) throws IOException
 	{
 		HttpServletResponseHeaders outputHeaders = response.getOutputHeaders();
-		if (methodReturn.getCheckedExceptionData() != null)
+		if (methodReturn == null)
+		{
+			response.sendEmptyResponse();
+		}
+		else if (methodReturn.getCheckedExceptionData() != null)
 		{
 			response.sendError(HttpResponseCodes.SC_FORBIDDEN, methodReturn.getCheckedExceptionData());
 		}
@@ -295,7 +299,7 @@ public class HttpUtil
 		}
 		else
 		{
-			outputHeaders.putSingle(HttpHeaderNames.VARY, HttpHeaderNames.ACCEPT_LANGUAGE);
+			outputHeaders.add(HttpHeaderNames.VARY, HttpHeaderNames.ACCEPT_LANGUAGE);
 			long expires = cacheInfo.defineExpires();
 			outputHeaders.addDateHeader(HttpHeaderNames.EXPIRES, expires);
 			if (etag != null)

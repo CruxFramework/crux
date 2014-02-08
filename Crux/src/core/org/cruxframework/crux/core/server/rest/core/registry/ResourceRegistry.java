@@ -147,10 +147,40 @@ public class ResourceRegistry
 				}
 			}
 		}
-		checkCondiionalWriteMethods(validRestMethods);
+		checkConditionalWriteMethods(validRestMethods);
+		createCorsAllowedMethodsList(validRestMethods);
 	}
 
-	private void checkCondiionalWriteMethods(Map<String, List<RestMethodRegistrationInfo>> validRestMethods)
+	private void createCorsAllowedMethodsList(Map<String, List<RestMethodRegistrationInfo>> validRestMethods)
+    {
+		for (Entry<String, List<RestMethodRegistrationInfo>> entry : validRestMethods.entrySet())
+        {
+	        List<RestMethodRegistrationInfo> methods = entry.getValue();
+			if (methods.size() > 0)
+	        {
+				List<String> allowedMethodsForPath = new ArrayList<String>();
+				for (RestMethodRegistrationInfo methodInfo : methods)
+                {
+					if (methodInfo.invoker.supportsCors())
+					{
+						allowedMethodsForPath.add(methodInfo.invoker.getHttpMethod());
+					}
+                }
+				if (allowedMethodsForPath.size() > 0)
+				{
+					for (RestMethodRegistrationInfo methodInfo : methods)
+	                {
+						if (methodInfo.invoker.supportsCors())
+						{
+							methodInfo.invoker.setCorsAllowedMethods(allowedMethodsForPath);
+						}
+	                }
+				}
+	        }
+        }
+    }
+
+	private void checkConditionalWriteMethods(Map<String, List<RestMethodRegistrationInfo>> validRestMethods)
     {
 		for (Entry<String, List<RestMethodRegistrationInfo>> entry : validRestMethods.entrySet())
         {

@@ -50,6 +50,16 @@ public class RestServlet extends HttpServlet
 	private static final long serialVersionUID = -4338760751718522206L;
 
 	@Override
+	protected void doOptions(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+	{
+		if (logger.isDebugEnabled())
+		{
+			logger.debug("Preflight request received");
+		}
+		processCorsPreflightRequest(req, res);
+	}
+
+	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
 		processRequestForWriteOperation(req, resp, HttpMethod.POST);
@@ -89,6 +99,10 @@ public class RestServlet extends HttpServlet
 	
 	protected void processRequest(HttpServletRequest req, HttpServletResponse res, String method) throws IOException
 	{
+		if (logger.isDebugEnabled())
+		{
+			logger.debug("Request received. Method ["+method+"]");
+		}
 		if (!RestServiceScanner.isInitialized())
 		{
 			RestServiceScanner.initialize(getServletContext());
@@ -114,7 +128,7 @@ public class RestServlet extends HttpServlet
 		try
 		{
 			localeInitializedByServlet = initUserLocaleResolver(request);
-			MethodReturn methodReturn = RestDispatcher.dispatch(request, response);
+			MethodReturn methodReturn = RestDispatcher.dispatch(request, response, false);
 			if (!response.isCommitted())
 			{
 				HttpUtil.writeResponse(request, response, methodReturn);
@@ -154,6 +168,44 @@ public class RestServlet extends HttpServlet
 		return false;
 	}
 
+	protected void processCorsPreflightRequest(HttpServletRequest req, HttpServletResponse res) throws IOException
+    {
+	    if (!RestServiceScanner.isInitialized())
+		{
+			RestServiceScanner.initialize(getServletContext());
+		}
+		HttpHeaders headers = null;
+		UriInfo uriInfo = null;
+		try
+		{
+			headers = HttpUtil.extractHttpHeaders(req);
+			uriInfo = HttpUtil.extractUriInfo(req);
+		}
+		catch (Exception e)
+		{
+			HttpUtil.sendError(res, HttpServletResponse.SC_BAD_REQUEST, "Failed to parse request.");
+			logger.warn("Failed to parse request.", e);
+			return;
+		}
+		
+		HttpResponse response = new HttpResponse(res);
+		String httpActualMethod = headers.getHeaderString(HttpHeaderNames.ACCESS_CONTROL_REQUEST_METHOD);
+		if (httpActualMethod != null && httpActualMethod.length() > 0)
+		{
+			HttpRequest request = new HttpRequest(req, headers, uriInfo, httpActualMethod);
+			try
+			{
+				RestDispatcher.dispatch(request, response, true);
+			}
+			catch (Exception e) 
+			{
+				response.sendException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error processing request.");
+				logger.error(e.getMessage(), e);
+			}
+		}
+		response.sendEmptyResponse();
+    }
+	
 	@Override
 	public void init(ServletConfig config) throws ServletException
 	{
@@ -176,4 +228,3 @@ public class RestServlet extends HttpServlet
 	    }
 	}
 }
-//TODO syncrhonizerToken

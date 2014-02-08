@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.cruxframework.crux.core.client.rest.RestProxy.TargetEndPoint;
 import org.cruxframework.crux.core.client.rest.RestProxy.TargetRestService;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
@@ -65,8 +66,22 @@ public class CruxRestProxyCreatorFromServeMetadata extends CruxRestProxyCreator
 	@Override
 	protected void generateHostPathInitialization(SourcePrinter srcWriter)
     {
-	    srcWriter.println("__hostPath = com.google.gwt.core.client.GWT.getModuleBaseURL();");
-		srcWriter.println("__hostPath = __hostPath.substring(0, __hostPath.lastIndexOf(com.google.gwt.core.client.GWT.getModuleName()));");
+		TargetEndPoint targetEndPoint = baseIntf.getAnnotation(TargetEndPoint.class);
+		if (targetEndPoint != null)
+		{
+			String basePath = targetEndPoint.value();
+			if (basePath.endsWith("/"))
+			{
+				basePath = basePath.substring(0, basePath.length()-1);
+			}
+
+			srcWriter.println("__hostPath = \""+basePath+"\";");
+		}
+		else
+		{
+			srcWriter.println("__hostPath = com.google.gwt.core.client.GWT.getModuleBaseURL();");
+			srcWriter.println("__hostPath = __hostPath.substring(0, __hostPath.lastIndexOf(com.google.gwt.core.client.GWT.getModuleName()));");
+		}
     }
 	
 	@Override
