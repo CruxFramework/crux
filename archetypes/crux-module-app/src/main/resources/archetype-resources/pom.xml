@@ -16,6 +16,7 @@
 		<webappSourceDir>${basedir}/src/main/webapp</webappSourceDir>
 		<sourceDir>${project.build.sourceDirectory}</sourceDir>
         <xsd.dir>${basedir}/xsd</xsd.dir>
+        <crawling.dir>${basedir}/crawling</crawling.dir>
 	</properties>
 	
 	<dependencies>
@@ -228,6 +229,51 @@
 				</plugins>
 			</build>
 		</profile>
+		<!-- Run Crawling Tool -->
+        <profile>
+            <id>run-crawling-tool</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.6</version>
+                        <configuration>
+                            <target>
+                                <echo message="Running CrawlingTool..." />
+                                
+                                <java classname="org.cruxframework.crux.tools.crawling.CrawlingTool"
+                                    fork="true">
+                                    <classpath>
+                                        <path refid="maven.compile.classpath" />
+                                        <pathelement location="${webinf.classes.folder}" />
+                                    </classpath>
+                                    <arg value="outputDir" />
+                                    <arg value="${crawling.dir}" />
+                            
+                                    <arg value="applicationBaseURL" />
+                                    <arg value="${webappDirectory}" />
+                            
+                                    <arg value="javascriptTime" />
+                                    <arg value="2000" />
+                                    
+                                    <arg value="urls" />
+                                    <arg value="${webappDirectory}/index.html" />
+                                    
+                                    <arg value="stopOnErrors" />
+                                    <arg value="false" />
+                            
+                                    <jvmarg value="-Xmx768M" />
+                                    <jvmarg value="-Xms256M" />
+                                </java>
+                            </target>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 	</profiles>	
 </project>
 		
