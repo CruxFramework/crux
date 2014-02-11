@@ -46,8 +46,9 @@ public class MainController
 
 			public void onLoad()
 			{
-				FeedApi feedLastBlogEntries = FeedApi.create("http://feeds.feedburner.com/cruxframework/blog");
-				feedLastBlogEntries.includeHistoricalEntries();
+				FeedApi feedLastBlogEntries = FeedApi.create("http://feeds.feedburner.com/cruxframework");
+				//this will only get feeds from cache.
+				//feedLastBlogEntries.includeHistoricalEntries();
 				feedLastBlogEntries.setNumEntries(3);
 
 				feedLastBlogEntries.load(new FeedCallback()
