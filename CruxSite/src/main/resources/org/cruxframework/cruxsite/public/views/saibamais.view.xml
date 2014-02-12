@@ -52,7 +52,7 @@
 							 apenas quando estes se tornam necessários pela aplicação; são eliminados trechos 
 							  desnecessários de código; são encurtados e fundidos loopings; 
 							  são descartadas variáveis ociosas.</p> 
-							  <p>Ele tamném gera JavaScript otimizado para cada 
+							  <p>Ele também gera JavaScript otimizado para cada 
 							  navegador, garantindo performance máxima ao usuário, independente da 
 							  plataforma que ele utilize.</p>
 						</div>
