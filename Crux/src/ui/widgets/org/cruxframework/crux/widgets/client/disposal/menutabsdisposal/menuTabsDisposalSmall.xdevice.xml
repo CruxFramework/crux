@@ -5,18 +5,13 @@
 		   xmlns:xdev="http://www.cruxframework.org/crux/crossDevice"
            useController="menuTabsDisposalSmallController">
 	
-	
-	<gwt:verticalPanel id="menuTabsHeaderSplitPanel" spacing="0" styleName="menuTabsHeaderSplitPanel" height="100%" width="100%" >
-		<gwt:cell>
-			<gwt:flowPanel id="menuTabsHeader" styleName="menuTabsHeader">
-				<gwt:label id="showMenuButton" styleName="showMenuButton" onTouchStart="menuTabsDisposalSmallController.showMenu"/>
-			</gwt:flowPanel>
-		</gwt:cell>
-		<gwt:cell>
-			<crux:horizontalSwapPanel id="swapPanel" width="100%">
-				<gwt:flowPanel id="menuPanel" styleName="menuEntriesContainer"/>
-			</crux:horizontalSwapPanel>
-		</gwt:cell>
-	</gwt:verticalPanel>
+	<gwt:flowPanel id="menuTabsHeaderSplitPanel" styleName="menuTabsHeaderSplitPanel" height="100%" width="100%" >
+		<gwt:flowPanel id="menuTabsHeader" styleName="menuTabsHeader">
+			<gwt:label id="showMenuButton" styleName="showMenuButton" onTouchStart="menuTabsDisposalSmallController.showMenu"/>
+		</gwt:flowPanel>
+		<crux:horizontalSwapPanel id="swapPanel" width="100%">
+			<gwt:flowPanel id="menuPanel" styleName="menuEntriesContainer"/>
+		</crux:horizontalSwapPanel>
+	</gwt:flowPanel>
 	
 </x:xdevice>
