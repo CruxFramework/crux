@@ -79,7 +79,7 @@ public class CruxRestProxyCreatorFromServeMetadata extends CruxRestProxyCreator
 		}
 		else
 		{
-			srcWriter.println("__hostPath = com.google.gwt.core.client.GWT.getModuleBaseURL();");
+			srcWriter.println("__hostPath = com.google.gwt.core.client.GWT.getHostPageBaseURL();");
 			srcWriter.println("__hostPath = __hostPath.substring(0, __hostPath.lastIndexOf(com.google.gwt.core.client.GWT.getModuleName()));");
 		}
     }
