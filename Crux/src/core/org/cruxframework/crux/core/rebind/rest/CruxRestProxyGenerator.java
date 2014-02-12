@@ -39,7 +39,7 @@ public class CruxRestProxyGenerator extends AbstractGenerator
 		TargetRestService restService = baseIntf.getAnnotation(TargetRestService.class);
 		if (restService != null)
 		{
-			return new CruxRestProxyCreatorFromServeMetadata(logger, ctx, baseIntf);
+			return new CruxRestProxyCreatorFromServerMetadata(logger, ctx, baseIntf);
 		}
 		return new CruxRestProxyCreatorFromClientMetadata(logger, ctx, baseIntf);
     }

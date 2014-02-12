@@ -39,6 +39,7 @@ import org.cruxframework.crux.core.utils.EncryptUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -54,11 +55,11 @@ import com.google.gwt.core.ext.typeinfo.JType;
  * @author Thiago da Rosa de Bustamante
  * 
  */
-public class CruxRestProxyCreatorFromServeMetadata extends CruxRestProxyCreator
+public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 {
 	private Class<?> restImplementationClass;
 
-	public CruxRestProxyCreatorFromServeMetadata(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public CruxRestProxyCreatorFromServerMetadata(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
 	{
 		super(logger, context, baseIntf);
 	}
@@ -79,7 +80,28 @@ public class CruxRestProxyCreatorFromServeMetadata extends CruxRestProxyCreator
 		}
 		else
 		{
-			srcWriter.println("__hostPath = com.google.gwt.core.client.GWT.getHostPageBaseURL();");
+			boolean basePathContainsModuleName = false;
+			try
+			{
+				ConfigurationProperty property = context.getPropertyOracle().getConfigurationProperty("baseURIPathContainsModuleName");
+				List<String> values = property.getValues();
+		        if (values != null && values.size() > 0)
+		        {
+		        	basePathContainsModuleName = Boolean.valueOf(values.get(0));
+		        }
+			} catch (Exception e) 
+			{
+				//log it?
+				basePathContainsModuleName = false;
+			}
+	        
+			if(basePathContainsModuleName)
+			{
+				srcWriter.println("__hostPath = com.google.gwt.core.client.GWT.getHostPageBaseURL();");
+			} else 
+			{
+				srcWriter.println("__hostPath = com.google.gwt.core.client.GWT.getModuleBaseURL();");
+			}
 			srcWriter.println("__hostPath = __hostPath.substring(0, __hostPath.lastIndexOf(com.google.gwt.core.client.GWT.getModuleName()));");
 		}
     }
