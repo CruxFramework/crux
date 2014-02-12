@@ -80,22 +80,22 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 		}
 		else
 		{
-			boolean basePathContainsModuleName = false;
+			boolean hostPageBaseURL = false;
 			try
 			{
-				ConfigurationProperty property = context.getPropertyOracle().getConfigurationProperty("baseURIPathContainsModuleName");
+				ConfigurationProperty property = context.getPropertyOracle().getConfigurationProperty("hostPageBaseURL");
 				List<String> values = property.getValues();
 		        if (values != null && values.size() > 0)
 		        {
-		        	basePathContainsModuleName = Boolean.valueOf(values.get(0));
+		        	hostPageBaseURL = Boolean.valueOf(values.get(0));
 		        }
 			} catch (Exception e) 
 			{
 				//log it?
-				basePathContainsModuleName = false;
+				hostPageBaseURL = false;
 			}
 	        
-			if(basePathContainsModuleName)
+			if(hostPageBaseURL)
 			{
 				srcWriter.println("__hostPath = com.google.gwt.core.client.GWT.getHostPageBaseURL();");
 			} else 
