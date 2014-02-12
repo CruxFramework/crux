@@ -120,7 +120,7 @@
 						<div class="stackContent">
 							<p>O Crux fornece um container de IoC (<i>Inversion of Control</i>) capaz de ser 
 							utilizado na camada cliente da aplicação. 
-							Este recurso suporta a definição personalisada de escopos para as variáveis criadas.</p>
+							Este recurso suporta a definição personalizada de escopos para as variáveis criadas.</p>
 							<p>Com o Crux, um evento de tela é tratado no próprio navegador. 
 							Não é preciso enviar requisições AJAX ao servidor apenas para controlar a 
 							interface gráfica. 
