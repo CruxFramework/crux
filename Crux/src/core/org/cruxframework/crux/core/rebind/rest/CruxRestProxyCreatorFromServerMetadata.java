@@ -27,6 +27,7 @@ import java.util.Set;
 import org.cruxframework.crux.core.client.rest.RestProxy.TargetEndPoint;
 import org.cruxframework.crux.core.client.rest.RestProxy.TargetRestService;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceScanner;
 import org.cruxframework.crux.core.server.rest.util.HttpMethodHelper;
@@ -39,7 +40,6 @@ import org.cruxframework.crux.core.utils.EncryptUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -80,22 +80,7 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 		}
 		else
 		{
-			boolean hostPageBaseURL = false;
-			try
-			{
-				ConfigurationProperty property = context.getPropertyOracle().getConfigurationProperty("hostPageBaseURL");
-				List<String> values = property.getValues();
-		        if (values != null && values.size() > 0)
-		        {
-		        	hostPageBaseURL = Boolean.valueOf(values.get(0));
-		        }
-			} catch (Exception e) 
-			{
-				//log it?
-				hostPageBaseURL = false;
-			}
-	        
-			if(hostPageBaseURL)
+			if(Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableRestHostPageBaseURL()))
 			{
 				srcWriter.println("__hostPath = com.google.gwt.core.client.GWT.getHostPageBaseURL();");
 			} else 

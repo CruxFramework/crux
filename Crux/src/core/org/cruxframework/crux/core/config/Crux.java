@@ -42,6 +42,9 @@ public interface Crux
 
 	@DefaultServerMessage("true")
 	String enableHotDeploymentForWebDirs();
+	
+	@DefaultServerMessage("false")
+	String enableRestHostPageBaseURL();
 
 	@DefaultServerMessage("")
 	String scanAllowedPackages();
