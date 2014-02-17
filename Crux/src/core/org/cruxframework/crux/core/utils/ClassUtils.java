@@ -424,6 +424,52 @@ public class ClassUtils
 		return result.toArray(new PropertyInfo[result.size()]);
 	}
 
+	public static Class<?> getTypeVariableTarget(TypeVariable<?> typeVariable, Class<?> baseClass, Class<?> declaringClass)
+	{
+		Type baseType = getGenericDeclaringType(baseClass, declaringClass);
+		if (baseType != null)
+		{
+			Type result = getPropertyType(typeVariable, baseType, getRawType(baseType));
+			if (result instanceof Class)
+			{
+				return (Class<?>) result;
+			}
+		}
+		return getRawType(typeVariable);
+	}
+	
+	private static Type getGenericDeclaringType(Class<?> baseClass, Class<?> declaringClass)
+    {
+		if (baseClass.equals(declaringClass))
+		{
+			return baseClass;
+		}
+		
+		if (declaringClass.isInterface())
+		{
+			Type[] interfaces = baseClass.getGenericInterfaces();
+			for (Type type : interfaces)
+            {
+	            if (type instanceof ParameterizedType)
+	            {
+	            	if (((ParameterizedType)type).getRawType().equals(declaringClass))
+	            	{
+	            		return type;
+	            	}
+	            }
+            }
+		}
+		else
+		{
+			Class<?> superclass = baseClass.getSuperclass();
+			if (superclass != null && superclass.equals(declaringClass))
+			{
+				return baseClass.getGenericSuperclass();
+			}
+		}
+	    return null;
+    }
+
 	private static Type getPropertyType(Type propertyType, Type baseClass, Class<?> baseRawType)
     {
 		Type result = null;
