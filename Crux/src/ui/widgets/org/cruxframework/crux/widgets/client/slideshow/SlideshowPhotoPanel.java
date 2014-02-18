@@ -19,10 +19,10 @@ import org.cruxframework.crux.widgets.client.event.swap.SwapEvent;
 import org.cruxframework.crux.widgets.client.event.swap.SwapHandler;
 import org.cruxframework.crux.widgets.client.event.tap.TapEvent;
 import org.cruxframework.crux.widgets.client.event.tap.TapHandler;
+import org.cruxframework.crux.widgets.client.slider.ContentProvider;
 import org.cruxframework.crux.widgets.client.slider.SlidingEvent;
 import org.cruxframework.crux.widgets.client.slider.SlidingHandler;
 import org.cruxframework.crux.widgets.client.slider.TouchSlider;
-import org.cruxframework.crux.widgets.client.slider.TouchSlider.ContentProvider;
 import org.cruxframework.crux.widgets.client.swappanel.HorizontalSwapPanel;
 import org.cruxframework.crux.widgets.client.swappanel.HorizontalSwapPanel.Direction;
 
