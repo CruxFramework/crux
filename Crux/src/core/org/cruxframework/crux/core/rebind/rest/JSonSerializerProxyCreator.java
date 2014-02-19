@@ -35,6 +35,7 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.shared.json.annotations.JsonIgnore;
+import org.cruxframework.crux.core.shared.json.annotations.JsonProperty;
 import org.cruxframework.crux.core.shared.json.annotations.JsonSubTypes;
 import org.cruxframework.crux.core.shared.json.annotations.JsonSubTypes.Type;
 import org.cruxframework.crux.core.utils.JClassUtils;
@@ -540,7 +541,15 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 		{
 			if (method.getAnnotation(JsonIgnore.class) == null)
 			{
-				String property = JClassUtils.getPropertyForGetterOrSetterMethod(method).toLowerCase();
+				String property = null;
+				JsonProperty jsonProperty = method.getAnnotation(JsonProperty.class);
+				if (jsonProperty != null)
+				{
+					property = jsonProperty.value(); 
+					
+				} else {
+					property = JClassUtils.getPropertyForGetterOrSetterMethod(method);
+				}
 				JType paramType = method.getParameterTypes()[0];
 				String serializerName = getSerializerForType(paramType);
 				srcWriter.println(resultObjectVar+"."+method.getName()+"(new "+serializerName+"().decode("+jsonObjectVar+".get("+EscapeUtils.quote(property)+")));");
@@ -607,7 +616,16 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 		{
 			if (method.getAnnotation(JsonIgnore.class) == null)
 			{
-				String property = JClassUtils.getPropertyForGetterOrSetterMethod(method).toLowerCase();
+				String property = null;
+				JsonProperty jsonProperty = method.getAnnotation(JsonProperty.class);
+				if (jsonProperty != null)
+				{
+					property = jsonProperty.value(); 
+					
+				} else {
+					property = JClassUtils.getPropertyForGetterOrSetterMethod(method);
+				}
+				
 				JType returnType = method.getReturnType();
 				String serializerName = getSerializerForType(returnType); 
 				boolean primitive = returnType.isPrimitive() != null;
