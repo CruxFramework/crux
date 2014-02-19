@@ -244,7 +244,7 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 		Method[] allMethods = clazz.getDeclaredMethods();
 		for (Method m: allMethods)
 		{
-			if (m.getName().equals(method.getName()))
+			if (!m.isSynthetic() && m.getName().equals(method.getName()))
 			{
 				return m;
 			}
