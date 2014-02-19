@@ -487,7 +487,8 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 	private void generateDecodeStringForCustomType(SourcePrinter srcWriter, JClassType objectType, String jsonValueVar, String resultObjectVar, String resultSourceName)
 	{
 		JsonSubTypes jsonSubTypesClass = objectType.getAnnotation(JsonSubTypes.class);
-		if (jsonSubTypesClass != null && jsonSubTypesClass.value() != null)
+		boolean hasJsonSubTypes = jsonSubTypesClass != null && jsonSubTypesClass.value() != null;
+		if (hasJsonSubTypes)
 		{
 			boolean first = true;
 			for(Type innerObject : jsonSubTypesClass.value())
@@ -496,7 +497,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 				{
 					srcWriter.println("else ");
 				}
-				first = true;
+				first = false;
 				srcWriter.println("if ("+StringUtils.class.getCanonicalName()+".unsafeEquals("+jsonValueVar+".isObject().get("+
 										EscapeUtils.quote(JsonSubTypes.SUB_TYPE_SELECTOR)+").isString().stringValue(),"+
 										EscapeUtils.quote(innerObject.value().getName())+")){");
@@ -505,12 +506,18 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 				srcWriter.println(resultObjectVar+" = new "+serializerName+"().decode("+jsonValueVar+");");
 				srcWriter.println("}");
 			}
-			return;
+			if (!first)
+			{
+				srcWriter.println("else ");
+			}
+			srcWriter.println("if ("+StringUtils.class.getCanonicalName()+".unsafeEquals("+jsonValueVar+".isObject().get("+
+					EscapeUtils.quote(JsonSubTypes.SUB_TYPE_SELECTOR)+").isString().stringValue(),"+
+					EscapeUtils.quote(objectType.getQualifiedSourceName())+")){");
+			srcWriter.println(resultObjectVar+" = GWT.create("+objectType.getParameterizedQualifiedSourceName()+".class);");
 		}
 
 		String jsonObjectVar = nameFactory.createName("jsonObject");
 		srcWriter.println("JSONObject "+jsonObjectVar+" = "+jsonValueVar+".isObject();");
-		
 		if (objectType.isAssignableTo(exceptionType) && objectType.findConstructor(new JType[]{stringType}) != null)
 		{
 			srcWriter.println("if ("+jsonObjectVar+".containsKey(\"message\")){");
@@ -521,7 +528,10 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 		}
 		else
 		{
-			srcWriter.println(resultObjectVar+" = GWT.create("+resultSourceName+".class);");
+			if(!hasJsonSubTypes)
+			{
+				srcWriter.println(resultObjectVar+" = GWT.create("+resultSourceName+".class);");
+			}
 		}
 
 		List<JMethod> setterMethods = JClassUtils.getSetterMethods(objectType);
@@ -535,6 +545,11 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 				String serializerName = getSerializerForType(paramType);
 				srcWriter.println(resultObjectVar+"."+method.getName()+"(new "+serializerName+"().decode("+jsonObjectVar+".get("+EscapeUtils.quote(property)+")));");
 			}
+		}
+		
+		if (hasJsonSubTypes)
+		{
+			srcWriter.println("}");
 		}
 		srcWriter.println("}");
 	}
@@ -559,7 +574,8 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 	private void generateEncodeStringForCustomType(SourcePrinter srcWriter, JClassType objectType, String objectVar, String resultJSONValueVar)
 	{
 		JsonSubTypes jsonSubTypesClass = objectType.getAnnotation(JsonSubTypes.class);
-		if (jsonSubTypesClass != null && jsonSubTypesClass.value() != null)
+		boolean hasJsonSubTypes = jsonSubTypesClass != null && jsonSubTypesClass.value() != null;
+		if (hasJsonSubTypes)
 		{
 			boolean first = true;
 			for(Type innerObject : jsonSubTypesClass.value())
@@ -579,10 +595,13 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 			srcWriter.println("if ("+resultJSONValueVar+" != null){");
 			srcWriter.println(resultJSONValueVar+".isObject().put("+EscapeUtils.quote(JsonSubTypes.SUB_TYPE_SELECTOR)+", new JSONString("+objectVar+".getClass().getName()));");
 			srcWriter.println("}");
-			return;
 		}
 		
-		srcWriter.println(resultJSONValueVar+" = new JSONObject();");
+		if(!hasJsonSubTypes)
+		{
+			srcWriter.println(resultJSONValueVar+" = new JSONObject();");
+		}
+		
 		List<JMethod> getterMethods = JClassUtils.getGetterMethods(objectType);
 		for (JMethod method : getterMethods)
 		{
