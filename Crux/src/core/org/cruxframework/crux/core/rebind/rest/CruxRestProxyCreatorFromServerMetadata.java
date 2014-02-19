@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.rest;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -233,21 +234,29 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 
 	private Method getImplementationMethod(JMethod method)
 	{
-		Method implementationMethod = null;
+		Method implementationMethod = getImplementationMethod(method, restImplementationClass);					
+		validateImplementationMethod(method, implementationMethod);
+		return implementationMethod;
+	}
 
-		Method[] allMethods = restImplementationClass.getMethods();
+	private Method getImplementationMethod(JMethod method, Class<?> clazz)
+    {
+		Method[] allMethods = clazz.getDeclaredMethods();
 		for (Method m: allMethods)
 		{
 			if (m.getName().equals(method.getName()))
 			{
-				implementationMethod = m;
-				break;
+				return m;
 			}
-		}					
-
-		validateImplementationMethod(method, implementationMethod);
-		return implementationMethod;
-	}
+		}
+		Class<?> superClass = clazz.getSuperclass();
+		if (superClass != null)
+		{
+			return getImplementationMethod(method, superClass);
+		}
+		
+	    return null;
+    }
 
 	private void validateImplementationMethod(JMethod method, Method implementationMethod)
 	{
@@ -255,6 +264,12 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 		{
 			throw new CruxGeneratorException("Invalid signature for rest proxy method. Can not found the implementation method: "+
 					method.getName()+", on class: "+restImplementationClass.getCanonicalName());
+		}
+		
+		if (!Modifier.isPublic(implementationMethod.getModifiers()))
+		{
+			throw new CruxGeneratorException("Invalid signature for rest proxy method. Implementation method: "+
+					method.getName()+", on class: "+restImplementationClass.getCanonicalName()+", is not public.");
 		}
 
 		Class<?>[] implTypes = implementationMethod.getParameterTypes();
