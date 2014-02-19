@@ -540,7 +540,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 		{
 			if (method.getAnnotation(JsonIgnore.class) == null)
 			{
-				String property = JClassUtils.getPropertyForGetterOrSetterMethod(method);
+				String property = JClassUtils.getPropertyForGetterOrSetterMethod(method).toLowerCase();
 				JType paramType = method.getParameterTypes()[0];
 				String serializerName = getSerializerForType(paramType);
 				srcWriter.println(resultObjectVar+"."+method.getName()+"(new "+serializerName+"().decode("+jsonObjectVar+".get("+EscapeUtils.quote(property)+")));");
@@ -607,7 +607,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 		{
 			if (method.getAnnotation(JsonIgnore.class) == null)
 			{
-				String property = JClassUtils.getPropertyForGetterOrSetterMethod(method);
+				String property = JClassUtils.getPropertyForGetterOrSetterMethod(method).toLowerCase();
 				JType returnType = method.getReturnType();
 				String serializerName = getSerializerForType(returnType); 
 				boolean primitive = returnType.isPrimitive() != null;
