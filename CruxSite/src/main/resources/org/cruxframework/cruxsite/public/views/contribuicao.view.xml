@@ -1,0 +1,85 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:t="http://www.cruxframework.org/templates/menus"
+	useController="mainController" title="Contribuição"> 
+	
+	<gwt:HTMLPanel id="infoContainer">
+		
+		<t:menucomunidade pageTitle="Contribuição" />
+	
+		<div class="bigText">
+			<div class="container">
+				<h2>Como contribuir?</h2>
+				<p>Para contribuir com o desenvolvimento do Crux você pode repostar bugs no código e/ou enviar enviar o código de correção.  
+				Caso seja criado algum componente novo ele também pode ser distribuído para os demais usuários do Crux.  
+                Outra forma, não menos importante de contribuir, é ajudando novos usuários a usar o Crux respondendo às dúvidas no forum.  
+                </p>
+			</div>
+			
+            <div class="separator"></div>
+            
+			<div class="container">
+				<h2>Reportar Bugs</h2>
+                <p>O report de bugs ou proposta de melhorias podem ser feitas através de Issues no próprio Google Code. 
+                   Por padrão os Issues devem ser feitos na lingua inglesa. 
+                </p>
+                <p>Ao enviar as informações sobre um bug seja o mais claro possível. Além disso descreva o ambiente e o 
+                passo-a-passo para que seja possível reproduzir o bug. Quanto melhor a descrição do bug mais rápido os 
+                desenvolvedores do Crux poderão fazer a correção. 
+                </p>
+                <p>Acesse a página do Google Code do Crux Framework: </p>
+                <ul class="communityItens" style="font-size: 15px;">
+                    <li>
+                        <crux:anchor id="linkNovosIssues" href="http://code.google.com/p/crux-framework/issues/list" 
+                                       target="_blank" styleName="defaultLink" text="Issue (Google Code)"></crux:anchor>
+                    </li>
+                </ul>
+                <p><b>Lembre-se</b>: antes de criar um novo Issue, verifique se esse mesmo bug ainda não foi reportado. </p>
+			</div>
+            
+			<div class="separator"></div>
+            
+			<div class="container">
+				<h2>Enviar Correção</h2>
+                <p>Se você é um desenvolvedor de software e já fez alguma correção ou melhoria no código do Crux localmente, envie sua
+                contribuição para o projeto e ajude o Crux a se tornar uma ferramenta melhor para mais usuários.
+                </p>
+                <p>Para enviar um código de correção existem alguns procedimentos para que seja possível garantir a segurança do Crux e
+                evitar danos colaterais.   
+                </p>
+                
+                <p>Em breve vamos disponibilizar os procedimentos para envio de código com contribuições.   
+                </p>
+                
+                <!-- 
+                <para>Baixe o guia de envio de patchs de correção do Crux:</para>
+                <ul class="communityItens" style="font-size: 15px;">
+                    <li>
+                        <crux:anchor id="linkNovosIssues2" href="http://www.cruxframework.org/documentation/single-page/index.html#apd_contrib" 
+                                      target="_blank"  styleName="defaultLink" text="Envio de patchs Crux"></crux:anchor>
+                    </li>
+                </ul>
+                 -->
+			</div>
+            
+            <div class="separator"></div>
+            
+            <div class="container">
+                <h2>Apoio a outros usuários</h2>
+                <p>Se você já é um usuário com fluencia no desenvolvimento com o Crux Framework, ajude os novos usuários a 
+                utilizarem em seus projetos todos os recursos que o Crux tem a oferecer. Acesse: </p>
+                <ul class="communityItens" style="font-size: 15px;">
+                    <li>
+                        <crux:anchor id="linkForum2" href="https://groups.google.com/forum/#!forum/crux-framework" styleName="defaultLink" 
+                                        target="_blank" text="Forum do Crux Framework"></crux:anchor>
+                    </li>
+                </ul>
+            </div>
+            
+		</div>
+	</gwt:HTMLPanel>
+</v:view>

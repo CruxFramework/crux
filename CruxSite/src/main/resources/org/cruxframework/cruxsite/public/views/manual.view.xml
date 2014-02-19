@@ -18,7 +18,7 @@
 						<h2>Manual Crux 5</h2>
 						<crux:anchor href="../documentation/single-page/index.html" target="_blank" text="Manual Página Única" id="manualSinglePageBtn" styleName="btn btn-bigblue"></crux:anchor> 
 						<crux:anchor href="../documentation/multiple-pages/index.html" target="_blank" text="Manual Multiplas Páginas" id="manualMultiplePageBtn" styleName="btn btn-bigblue"></crux:anchor>
-<!-- 						<crux:anchor href="../documentation/pdf/" text="Documentação .PDF" target="_blank" id="manualPdfBtn" styleName="btn btn-bigblue"></crux:anchor>  -->
+                        <crux:anchor href="../documentation/pdf/manual-crux-5.0.pdf" text="Documentação .PDF" target="_blank" id="manualPdfBtn" styleName="btn btn-bigblue"></crux:anchor>
 					</li>
 					<div class="clear"></div>
 				</ul>	

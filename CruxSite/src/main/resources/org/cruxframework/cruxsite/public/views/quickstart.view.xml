@@ -81,12 +81,17 @@
 				<b>Parabéns</b>, você criou seu primeiro projeto em Crux!
 			</h3>
 		</div>
-		<div class="separator"></div>
-		<div class="container">
-			<p class="quickstartInfo">
-				<b>Ainda tem dúvidas?</b> Tire elas lendo a <a href="#topMenuDisposal:manual" class="linkManual">Documentação</a> ou perguntando no <a href="https://groups.google.com/forum/#!forum/crux-framework" class="linkForum">fórum</a> do Crux.
-			</p>
-		</div>
+        
+        <div class="separator"></div>
+        
+        
+        <div class="container">
+            
+            <p>Para saber mais sobre os recursos do Crux Framework e como usa-los, 
+            acesse o <crux:anchor id="linkManual2" href="#topMenuDisposal:manual" styleName="defaultLink" text="Manual"></crux:anchor> do Crux.</p>
+		
+        </div>
+        
 	</gwt:HTMLPanel>
 	
 </v:view>

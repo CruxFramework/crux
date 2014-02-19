@@ -30,7 +30,7 @@
 							<crux:image id="bgShowcase" url="${siteDeviceResources.bgShowcase}" />
 						</div>
 					</div>
-					<p>Este é o projeto do showcase do Crux (que pode ser acessado aqui), fique a vontade para rodar e modificar em sua máquina.</p>
+					<p>Este é o projeto do showcase do Crux, fique a vontade para rodar e modificar em sua máquina.</p>
 				</li>
                 
                 <li>
@@ -57,10 +57,10 @@
 			
 			<ol class="quickstartList">
 				<li>
-					<p>Adicione, no seu Eclipse, o repositório SVN do Crux: <b>https://crux-framework.googlecode.com/svn/trunk/NOME-PROJETO</b></p>
+					<p>Adicione, no seu Eclipse, o repositório SVN do Crux: <b>https://crux-framework.googlecode.com/svn/trunk/"NOME-PROJETO"</b></p>
 				</li>
 				<li>
-					<p>Em seguida, faça checkout do nome do projeto que você escolheu dentre os exemplos acima.</p>
+					<p>Em seguida, faça checkout do projeto que você escolheu dentre os exemplos acima.</p>
 				</li>
 				<li>
 					<p>Compile normalmente com o Maven</p>

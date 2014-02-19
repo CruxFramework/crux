@@ -44,4 +44,8 @@ public interface SiteCommonResources extends ClientBundle
 	@Source("logo-sysmap.png")
 	ImageResource logoSysmap();
 	
+	@Source("arquitetura1.png")
+	ImageResource architectureCrux();
+	
+	
 }

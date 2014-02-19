@@ -5,7 +5,8 @@
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	xmlns:t="http://www.cruxframework.org/templates/menus"
-	useController="mainController" title="O Crux"> 
+	useController="mainController" title="O Crux"
+    useResource="siteCommonResources"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
 		
@@ -20,27 +21,54 @@
 					aplicações corporativas utilizando HTML5. O Crux é um verdadeiro 
 					framework para Web 2.0.
 				</p>
-				<p>No Crux o desenvolvedor pode criar as páginas web de forma
-					declarativa, descrevendo a tela utilizando XHTML como linguagem, o que
-					é bastante simples. A sua aplicação também está habilitada 
-					para ser executada em todos os navegadores modernos e em vários 
-					dispositivos, sem código adicional.
+				<p>Utilizando o Crux o desenvolvedor pode criar páginas web de forma
+					declarativa, descrevendo a interface utilizando XHTML como linguagem, 
+                    o que é bastante simples. 
+                    A aplicação gerada também está habilitada para ser executada em 
+                    todos os navegadores modernos e em vários dispositivos, 
+                    sem código adicional.
 				</p>
 				<p>	
-				    Complementanto o GWT para uso corporativo, o Crux estende os
+				    Complementando o GWT para uso corporativo, o Crux estende os
 					componentes e agrega camadas para acesso a serviços de negócio em
-					arquitetura SOA, bancos de dados e outras tecnologias presentes no
-					ambiente corporativo.
+					arquitetura SOA, bancos de dados e outras tecnologias de mercado.
                 </p>
 				<p>A combinação Crux/GWT possibilita a utilização
 					de recursos modernos de Cloud Computing e hospedagem da aplicação no
-					Google App Engine utilizando toda a infra-estrutura
-					da Google, sendo necessário apenas codificá-la e publicá-la. Também
-					permite o uso de um vasto universo de APIs disponíveis na Internet
-					como mapas, redes sociais, ações, condições do tempo entre outras.
+					Google App Engine, utilizando toda a infra-estrutura
+					da Google, sendo necessário apenas codificá-la e publicá-la. 
+                    Também permite o uso de um vasto universo de APIs disponíveis na 
+                    Internet como mapas, redes sociais, ações, 
+                    condições do tempo entre outras.
                 </p>
 			</div>
 			
+            <div class="separator"></div>
+           
+            <div class="container">
+                <h2>Visão da Arquitetura</h2>
+                
+                <p>O Crux é um framework de front-end. Para codificação de atividades relacionadas ao back-end, 
+                o desenvolvedor está livre para usar os frameworks de mercado que achar mais convenientes.
+                É oferecido pelo Crux uma implementação de MVC (Model, View e Controller) de fácil utilização.
+                </p>
+                  
+                <p>O diferencial na proposta do Crux é que as camadas de visualização e controle (de interface) estão alocada no cliente. 
+                Esta estratégia garante um desempenho consideravelmente superior às arquiteturas onde a camada de controle está no servidor, 
+                uma vez que dados de controle da página não precisam trafegar pela rede para serem processados e o estado da tela é 
+                mantido no cliente. 
+                O trafego de dados pela rede somente é usado quando é efetivamente necessário, que é para a acesso a camada de modelo.
+                </p>
+
+                <p>A figura a seguir ilustra os componentes do Crux e como são feitas as suas interações. Camadas de visualização e 
+                controle sendo executadas no cliente e comunicando via REST ou RPC com a camada de modelo no servidor. 
+                </p>
+                
+                <div align="center">
+					<crux:image id="architectureCrux" url="${siteCommonResources.architectureCrux}" />
+				</div>
+                
+            </div>     
             <div class="separator"></div>
             
 			<div class="container">
@@ -54,12 +82,16 @@
                 simples de transformar ideias em soluções.
                 </p>
                 
-				<p>	Criado em 2008 durante um trabalho de
+				<p>	Idealizado em 2008 durante o trabalho de
     				<a href="http://www.dcc.ufmg.br/pos/cursos/defesas/980M.PDF" title="PDF"
     				target="_blank" class="defaultLink">mestrado na Universidade Federal de Minas Gerais
-    				(UFMG)</a>	o Crux vem sendo evoluído desde então pela
+    				(UFMG)</a>, o Crux foi sendo evoluído desde então pela
     				<a href="http://www.sysmap.com.br/" title="Sysmap" target="_blank" class="defaultLink">Sysmap Solutions</a>
     				e é usado em projetos com seus principais clientes.
+                    Durante os ultimos anos o Crux passou por grandes mudanças, sempre
+                    buscando ser o mais eficinente e usual possível.
+                    Atualmente pode-se dizer que ele é um framework maduro, que está na sua
+                    quinta geração.
     				Em 2013 o Crux, que já era um projeto Open Source, passou a ser
     				mantido pela <a href="http://www.triggolabs.com/" title="Triggo" target="_blank"
     				class="defaultLink">Triggo Labs</a>, uma startup brasileira com foco no 

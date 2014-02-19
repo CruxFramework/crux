@@ -131,6 +131,9 @@
 							<li>
 								<crux:anchor id="link33" target="_blank" href="http://blog.cruxframework.org/" text="Blog"></crux:anchor>
 							</li>
+                            <li>
+                                <crux:anchor id="link34" href="#topMenuDisposal:contribuicao" text="Contribuição"></crux:anchor>
+                            </li>
 						</ul>
 						
 						<div class="triggoFooterLogo">
