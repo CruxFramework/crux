@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.animation;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -26,6 +28,8 @@ import com.google.gwt.dom.client.Style.Unit;
  * 
  * @author Gesse Dafe
  */
+@Deprecated
+@Legacy
 public class VerticalMotionAnimation extends Animation
 {
 	private final Style style;

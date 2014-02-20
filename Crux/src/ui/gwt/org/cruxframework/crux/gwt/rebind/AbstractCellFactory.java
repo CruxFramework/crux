@@ -21,6 +21,7 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.cell.CustomCells;
 import org.cruxframework.crux.core.rebind.dto.DataObjects;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
@@ -54,7 +55,6 @@ import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.cell.client.TextInputCell;
-import com.google.gwt.view.client.ProvidesKey;
 
 
 /**
@@ -83,38 +83,6 @@ public abstract class AbstractCellFactory<C extends WidgetCreatorContext> extend
 		return dataObjectClass;
     }
 
-	/**
-	 * @param metaElem
-	 * @return
-	 */
-	protected String getkeyProvider(SourcePrinter out, JSONObject metaElem)
-    {
-		String varName = createVariableName("provider");
-		String dataObject = metaElem.optString("dataObject");
-		String dataObjectClass = DataObjects.getDataObject(dataObject);
-		String[] dataObjectIds = DataObjects.getDataObjectIdentifiers(dataObject);
-		if (dataObjectIds == null || dataObjectIds.length == 0)
-		{
-			return "("+ProvidesKey.class.getCanonicalName()+"<"+dataObjectClass+">)null";
-		}
-		
-		out.println(ProvidesKey.class.getCanonicalName()+"<"+dataObjectClass+"> "+varName+"=new "+ 
-				ProvidesKey.class.getCanonicalName()+"<"+dataObjectClass+">(){");
-		
-		out.println("public Object getKey("+dataObjectClass+" item){"); 
-		out.print("return (item == null) ? null :\"\"");
-		for (String id : dataObjectIds)
-        {
-			out.print("+item."+id);
-        }
-		out.println(";"); 
-		
-		out.println("}"); 
-		out.println("};"); 
-		
-		return varName;
-    }
-	
 	/**
 	 * @param out
 	 * @param metaElem
@@ -315,9 +283,10 @@ public abstract class AbstractCellFactory<C extends WidgetCreatorContext> extend
 	 */
 	protected void getCustomCell(SourcePrinter out, JSONObject child)
     {
-	    String cellFactoryMethod = child.optString("cellFactoryMethod");
-	    assert (!StringUtils.isEmpty(cellFactoryMethod));
-	    EvtProcessor.printEvtCall(out, cellFactoryMethod, "loadCell", (String)null, null, this);
+	    String cellName = child.optString("cellName");
+	    assert (!StringUtils.isEmpty(cellName));
+		out.println("new "+CustomCells.getCustomCell(cellName)+"();");
+		//TODO validar se o tipo do objeto informado no dataObject é compatível com o tipo do objeto renderizado pelo customCell (e também pelo dataProvider)
     }
 	
 	/**
@@ -347,7 +316,7 @@ public abstract class AbstractCellFactory<C extends WidgetCreatorContext> extend
 	
 	@TagConstraints(tagName="customCell")
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="cellFactoryMethod", required=true)
+		@TagAttributeDeclaration(value="cellName", required=true)
 	})
 	public static class CustomCellProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
 

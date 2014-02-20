@@ -1,8 +1,0 @@
-<x:xdevice xmlns:x="http://www.cruxframework.org/xdevice"
-           xmlns:gwt="http://www.cruxframework.org/crux/gwt" 
-           useController="topToolBarTouchSmallController">
-     <gwt:flowPanel id="topToolBarFloatingPanel" width="100%" style="position:absolute;">
-		<gwt:flowPanel id="canvas" width="100%" styleName="canvas"></gwt:flowPanel>     
-		<gwt:focusPanel id="grip" width="100%" styleName="grip" style="overflow:hidden;" ></gwt:focusPanel>     
-     </gwt:flowPanel>
-</x:xdevice>

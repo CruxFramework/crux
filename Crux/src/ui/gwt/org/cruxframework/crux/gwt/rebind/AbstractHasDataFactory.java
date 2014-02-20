@@ -42,7 +42,6 @@ public abstract class AbstractHasDataFactory<C extends WidgetCreatorContext> ext
 	public void instantiateWidget(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 		String className = getWidgetClassName()+"<"+getDataObject(context.getWidgetElement())+">";
-		String keyProvider = getkeyProvider(out, context.getWidgetElement());
-		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+keyProvider+");");
+		out.println("final "+className + " " + context.getWidget()+" = new "+className+"();");
 	}
 }

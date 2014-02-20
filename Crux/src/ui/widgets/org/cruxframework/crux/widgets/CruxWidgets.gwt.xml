@@ -77,42 +77,6 @@
     		<when-property-is name="user.agent" value="ie8" />
     	</any>
     </replace-with>
-    <replace-with
-    	class="org.cruxframework.crux.widgets.client.animation.WebkitAnimationHandler">
-    	<when-type-is class="org.cruxframework.crux.widgets.client.animation.Animation.AnimationHandler" />
-    	<any>
-      		<when-property-is name="user.agent" value="safari" />
-    	</any>
-    </replace-with>
-    <replace-with
-    	class="org.cruxframework.crux.widgets.client.animation.MozAnimationHandler">
-    	<when-type-is class="org.cruxframework.crux.widgets.client.animation.Animation.AnimationHandler" />
-    	<any>
-      		<when-property-is name="user.agent" value="gecko1_8" />
-    	</any>
-    </replace-with>
-    <replace-with
-    	class="org.cruxframework.crux.widgets.client.animation.OAnimationHandler">
-    	<when-type-is class="org.cruxframework.crux.widgets.client.animation.Animation.AnimationHandler" />
-    	<any>
-      		<when-property-is name="user.agent" value="opera" />
-    	</any>
-    </replace-with>
-    <replace-with
-    	class="org.cruxframework.crux.widgets.client.animation.MSAnimationHandler">
-    	<when-type-is class="org.cruxframework.crux.widgets.client.animation.Animation.AnimationHandler" />
-    	<any>
-      		<when-property-is name="user.agent" value="ie9" />
-    	</any>
-    </replace-with>
-    <replace-with
-    	class="org.cruxframework.crux.widgets.client.animation.UnsupportedAnimationHandler">
-    	<when-type-is class="org.cruxframework.crux.widgets.client.animation.Animation.AnimationHandler" />
-    	<any>
-      		<when-property-is name="user.agent" value="ie6" />
-      		<when-property-is name="user.agent" value="ie8" />
-    	</any>
-    </replace-with>
     
     <!-- RssPanel widget -->
     <replace-with class="org.cruxframework.crux.widgets.client.rss.RssPanel.RssPanelLargeImpl">

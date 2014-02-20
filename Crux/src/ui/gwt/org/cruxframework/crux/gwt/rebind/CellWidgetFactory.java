@@ -47,8 +47,7 @@ public class CellWidgetFactory extends AbstractCellFactory<WidgetCreatorContext>
 	{
 		String className = getWidgetClassName()+"<"+getDataObject(context.getWidgetElement())+">";
 		String cell = getCell(out, context.getWidgetElement(), context.getWidgetId());
-		String keyProvider = getkeyProvider(out, context.getWidgetElement());
-		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+cell+", "+keyProvider+");");
+		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+cell+");");
 	}
 	
 	@Override
