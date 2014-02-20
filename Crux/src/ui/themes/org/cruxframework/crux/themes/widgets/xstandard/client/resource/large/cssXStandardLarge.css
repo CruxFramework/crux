@@ -106,15 +106,18 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 .crux-MenuTabsDisposal .menuEntriesContainer
 {
 	width: 300px;
+	position:absolute;
+	top:0;
+	left:0;
+	background:url(img/logo-large.png) no-repeat 0 10px #f5f5f5;
 }
-/* Styling the TD that wraps the menu container */
-TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
+.menuTabsSplitPanel
 {
 	background-image: url(noise.png);
 	background-color: #EAEAEA;
-	width: 300px;
 	border: none;
 	border-right: solid 1px #EEEEEE;
+	padding-left:300px;
 }
 .crux-MenuTabsDisposal .menuEntry
 {
@@ -140,7 +143,7 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 .crux-MenuTabsDisposal .menuEntry:after
 {
 	content: "";
-	height: 40px;
+	height: 100%;
 	width: 30px;
 	border: none;
 	position: absolute;
@@ -256,10 +259,6 @@ TABLE.menuTabsSplitPanel>TBODY>TR>TD:first-child
 	width: 0;
 	content: "";
 	border: solid 8px #fff;
-	-webkit-transform: rotate(45deg);
-	-ms-transform: rotate(45deg); 
-	-moz-transform: rotate(45deg);
-	transform: rotate(45deg);
 	left: 80px;
 	bottom: -12px;
 }

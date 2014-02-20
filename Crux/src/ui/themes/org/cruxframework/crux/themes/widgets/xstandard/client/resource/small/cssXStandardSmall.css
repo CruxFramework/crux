@@ -223,6 +223,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 {
 	opacity: 0.4 !important;
 }
+
 .crux-MenuTabsDisposal .menuSectionEntries
 {
 	transition: height 0.2s ease-in-out;
@@ -230,6 +231,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 }
 .crux-MenuTabsDisposal .menuSectionEntries-closed
 { 
+	height:0;
 }
 
 @url urlTopMenuDisposalShowMenuButton topMenuDisposalShowMenuButton; 
