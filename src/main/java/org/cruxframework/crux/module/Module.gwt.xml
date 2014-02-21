@@ -1,0 +1,10 @@
+<module>
+
+	<!-- Inherit the core Crux stuff.                  -->
+	<inherits name='org.cruxframework.crux.core.Crux'/>
+
+	<!-- Specify the generator for client configurations .-->
+	<generate-with class="org.cruxframework.crux.module.rebind.ConfigGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.config.CruxClientConfig" />
+	</generate-with>
+</module>
