@@ -91,6 +91,10 @@ public class HttpRequest
 		request.removeAttribute(name);
 	}
 
+	
+	/**
+	 * @see javax.servlet.http.HttpServletRequest.getUserPrincipal() 
+	 */
 	public Principal getUserPrincipal()
 	{
 		return request.getUserPrincipal();
