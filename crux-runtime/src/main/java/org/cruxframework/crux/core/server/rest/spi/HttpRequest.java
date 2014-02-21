@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.Principal;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -90,6 +91,11 @@ public class HttpRequest
 		request.removeAttribute(name);
 	}
 
+	public Principal getUserPrincipal()
+	{
+		return request.getUserPrincipal();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public Enumeration<String> getAttributeNames()
 	{
