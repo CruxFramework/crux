@@ -8,6 +8,11 @@
 	<name>Crux Widgets</name>
 	<description>Crux Widgets Library</description>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<cruxVersion>5.1.0</cruxVersion>
+	</properties>
+
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
@@ -19,10 +24,6 @@
 		<developerConnection>scm:svn:https://crux-framework.googlecode.com/svn/trunk/crux-widgets</developerConnection>
 		<url>https://crux-framework.googlecode.com/svn/trunk/crux-widgets</url>
 	</scm>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cruxVersion>5.1.0</cruxVersion>
-	</properties>
 
     <dependencies>
         <dependency>
@@ -43,8 +44,7 @@
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
 				<includes>
-					<include>**/*.*xml</include>
-					<include>**/*.*properties</include>
+					<include>**/*</include>
 				</includes>
 			</resource>
 		</resources>
