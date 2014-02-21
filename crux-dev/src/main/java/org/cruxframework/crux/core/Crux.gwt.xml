@@ -1,0 +1,212 @@
+<module>
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+    <inherits name="com.google.gwt.http.HTTP"/>
+	<inherits name='com.google.gwt.user.User'/>
+	<inherits name='com.google.gwt.json.JSON'/>
+    <inherits name='com.google.gwt.xml.XML'/>
+	<inherits name="com.google.gwt.resources.Resources" />
+	<inherits name="com.google.gwt.logging.Logging"/>
+
+    <inherits name="org.cruxframework.crux.core.CruxShared"/>
+    <set-property name="gwt.logging.enabled" value="FALSE"/>    
+		
+	<!-- Cross-dDevice support -->
+	<!-- Property to identify the device screen features -->
+    <define-property name="device.features" values="largeDisplayMouse" />
+
+	<!-- Specify the app entry point class.                   -->
+	<entry-point class='org.cruxframework.crux.core.client.Crux'/>
+
+	<!-- Servlet used to handle RPC event calls.              -->
+	<servlet path="/crux.rpc" class="org.cruxframework.crux.core.server.dispatch.RemoteServiceServlet"/>
+
+    <!-- Generates -->
+
+	<!-- Specify the generator for registered widgets.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.screen.views.ViewFactory" />
+	</generate-with>
+	
+	<!-- Specify the generator for registered formatters.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.formatter.RegisteredClientFormattersGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.formatter.RegisteredClientFormatters" />
+	</generate-with>
+	
+	<!-- Specify the generator for screen wrappers.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.screen.wrapper.WidgetAccessorGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.screen.views.WidgetAccessor" />
+	</generate-with>
+
+	<!-- Specify the generator for screen binders.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.screen.binder.ViewBinderGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.screen.views.ViewBinder" />
+	</generate-with>
+
+	<!-- Specify the generator for controller wrappers.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.controller.wrapper.ControllerAccessorGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.screen.views.ControllerAccessor" />
+	</generate-with>
+
+	<!-- Specify the generator for view accessor.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.screen.wrapper.ViewAccessorGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.screen.views.ViewAccessor" />
+	</generate-with>
+
+	<!-- Specify the generator for client configurations .-->
+	<generate-with class="org.cruxframework.crux.core.rebind.config.CruxClientConfigGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.config.CruxClientConfig" />
+	</generate-with>
+
+	<!-- Specify the default implementation to ErrorHandler.-->
+	<replace-with class="org.cruxframework.crux.core.client.errors.ErrorHandlerImpl">
+		<when-type-assignable class="org.cruxframework.crux.core.client.errors.ErrorHandler" />
+	</replace-with>
+
+	<!-- Specify the default implementation to ValidationErrorHandler.-->
+	<replace-with class="org.cruxframework.crux.core.client.errors.ErrorHandlerImpl">
+		<when-type-assignable class="org.cruxframework.crux.core.client.errors.ValidationErrorHandler" />
+	</replace-with>
+
+	<!-- Specify the generator for RPC stubs.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.rpc.CruxServiceGenerator">
+		<when-type-assignable class="com.google.gwt.user.client.rpc.RemoteService"/>
+	</generate-with>
+
+	<!-- Specify the generator for REST Proxies.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.rest.CruxRestProxyGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.rest.RestProxy"/>
+	</generate-with>
+
+	<!-- Specify the generator for Device Adaptive stubs.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.crossdevice.DeviceAdaptiveGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.screen.DeviceAdaptive"/>
+	</generate-with>
+	
+	<!-- Specify the generator for BeanCopier.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.bean.BeanCopierGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.bean.BeanCopier"/>
+	</generate-with>
+
+	<!-- Specify the generator for BeanComparator.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.bean.BeanComparatorGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.bean.BeanComparator"/>
+	</generate-with>
+
+	<!-- Specify the generator for BeanComparator.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.bean.BeanContentValidatorGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.bean.BeanContentValidator"/>
+	</generate-with>
+
+	<!-- Specify the generator for JsonEncoder.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.bean.JsonEncoderProxyGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.bean.JsonEncoder"/>
+	</generate-with>
+
+	<!-- Specify the generator for Database.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.database.DatabaseProxyGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.db.Database"/>
+	</generate-with>
+	
+	<!-- Replaces -->
+
+	<!-- Specify Default implementation for Roles management -->
+    <replace-with
+        class="org.cruxframework.crux.core.client.permission.DefaultRoleManager">
+        <when-type-is class="org.cruxframework.crux.core.client.permission.RoleManager" />
+    </replace-with>
+    <replace-with
+        class="org.cruxframework.crux.core.client.permission.DefaultPermissionsUIHandler">
+        <when-type-is class="org.cruxframework.crux.core.client.permission.PermissionsUIHandler" />
+    </replace-with>
+	
+	<!-- Specify Default implementation for Collator -->
+    <replace-with
+        class="org.cruxframework.crux.core.client.utils.StringUtils.CollatorFFandIE">
+        <when-type-is class="org.cruxframework.crux.core.client.utils.StringUtils.Collator" />
+    </replace-with>
+    <replace-with
+        class="org.cruxframework.crux.core.client.utils.StringUtils.CollatorSafari">
+        <when-type-is class="org.cruxframework.crux.core.client.utils.StringUtils.Collator" />
+        <when-property-is name="user.agent" value="safari"/>
+    </replace-with>   
+        
+	<!-- Specify ie6 implementation for screen blocker -->
+	<replace-with class="org.cruxframework.crux.core.client.screen.widgets.ScreenBlocker.ScreenBlockerIE6_7">
+    	<when-type-is class="org.cruxframework.crux.core.client.screen.widgets.ScreenBlocker.ScreenBlockerImpl" />
+   		<when-property-is name="user.agent" value="ie6" />
+    </replace-with>    
+    <replace-with class="org.cruxframework.crux.core.client.screen.widgets.ScreenBlocker.ScreenBlockerOtherBrowsers">
+        <when-type-is class="org.cruxframework.crux.core.client.screen.widgets.ScreenBlocker.ScreenBlockerImpl" />
+        <none>
+            <when-property-is name="user.agent" value="ie6" />
+        </none>
+    </replace-with>    
+
+	<!-- Specify ie6 implementation for scriptInjector -->
+	<replace-with
+    	class="org.cruxframework.crux.core.client.utils.ScriptTagHandler.IEScriptInjector">
+    	<when-type-is class="org.cruxframework.crux.core.client.utils.ScriptTagHandler.ScriptInjector" />
+		<any>
+			<when-property-is name="user.agent" value="ie6" />
+			<when-property-is name="user.agent" value="ie8" />
+			<when-property-is name="user.agent" value="ie9" />
+		</any>
+    </replace-with>	
+
+	<!-- Specify Base64 Implementation -->
+	<replace-with
+    	class="org.cruxframework.crux.core.client.encoder.Base64.NativeImpl">
+    	<when-type-is class="org.cruxframework.crux.core.client.encoder.Base64.Impl" />
+   		<none>
+ 	  		<when-property-is name="user.agent" value="ie6" />
+ 	  		<when-property-is name="user.agent" value="ie8" />
+ 	  		<when-property-is name="user.agent" value="ie9" />
+   		</none>
+    </replace-with>    
+	<replace-with
+    	class="org.cruxframework.crux.core.client.encoder.Base64.EmulatedImpl">
+    	<when-type-is class="org.cruxframework.crux.core.client.encoder.Base64.Impl" />
+   		<any>
+ 	  		<when-property-is name="user.agent" value="ie6" />
+ 	  		<when-property-is name="user.agent" value="ie8" />
+ 	  		<when-property-is name="user.agent" value="ie9" />
+   		</any>
+    </replace-with>    
+    <replace-with
+    	class="org.cruxframework.crux.core.client.animation.WebkitAnimationHandler">
+    	<when-type-is class="org.cruxframework.crux.core.client.animation.Animation.AnimationHandler" />
+    	<any>
+      		<when-property-is name="user.agent" value="safari" />
+    	</any>
+    </replace-with>
+    <replace-with
+    	class="org.cruxframework.crux.core.client.animation.MozAnimationHandler">
+    	<when-type-is class="org.cruxframework.crux.core.client.animation.Animation.AnimationHandler" />
+    	<any>
+      		<when-property-is name="user.agent" value="gecko1_8" />
+    	</any>
+    </replace-with>
+    <replace-with
+    	class="org.cruxframework.crux.core.client.animation.OAnimationHandler">
+    	<when-type-is class="org.cruxframework.crux.core.client.animation.Animation.AnimationHandler" />
+    	<any>
+      		<when-property-is name="user.agent" value="opera" />
+    	</any>
+    </replace-with>
+    <replace-with
+    	class="org.cruxframework.crux.core.client.animation.MSAnimationHandler">
+    	<when-type-is class="org.cruxframework.crux.core.client.animation.Animation.AnimationHandler" />
+    	<any>
+      		<when-property-is name="user.agent" value="ie9" />
+    	</any>
+    </replace-with>
+    <replace-with
+    	class="org.cruxframework.crux.core.client.animation.UnsupportedAnimationHandler">
+    	<when-type-is class="org.cruxframework.crux.core.client.animation.Animation.AnimationHandler" />
+    	<any>
+      		<when-property-is name="user.agent" value="ie6" />
+      		<when-property-is name="user.agent" value="ie8" />
+    	</any>
+    </replace-with>
+
+</module>
