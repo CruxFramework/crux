@@ -4,7 +4,7 @@
 	<groupId>org.cruxframework</groupId>
 	<artifactId>crux-widgets</artifactId>
 	<packaging>jar</packaging>
-	<version>{cruxVersion}</version>
+	<version>${cruxVersion}</version>
 	<name>Crux Widgets</name>
 	<description>Crux Widgets Library</description>
 
