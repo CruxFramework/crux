@@ -3,12 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cruxframework</groupId>
 	<artifactId>crux-gadgets-runtime</artifactId>
-	<version>5.1.0</version>
+	<version>${cruxVersion}</version>
 	<name>Crux Gadgets - Runtime</name>
 	<description>Crux Gadgets - Runtime components</description>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <cruxVersion>5.1.0.5</cruxVersion>
 	</properties>
 
 	<licenses>
@@ -53,7 +54,7 @@
 		<dependency>
 			<groupId>org.cruxframework</groupId>
 			<artifactId>crux-runtime</artifactId>
-			<version>5.1.0</version>
+			<version>${cruxVersion}</version>
 		</dependency>
 	</dependencies>
 

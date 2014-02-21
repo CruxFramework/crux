@@ -3,12 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cruxframework</groupId>
 	<artifactId>crux-runtime</artifactId>
-	<version>5.1.0</version>
+	<version>${cruxVersion}</version>
 	<name>Crux Core - Runtime</name>
 	<description>Runtime components of Crux Core</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <cruxVersion>5.1.0.5</cruxVersion>
 	</properties>
 
 	<licenses>

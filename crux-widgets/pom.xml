@@ -4,15 +4,15 @@
 	<groupId>org.cruxframework</groupId>
 	<artifactId>crux-widgets</artifactId>
 	<packaging>jar</packaging>
-	<version>5.1.0</version>
+	<version>{cruxVersion}</version>
 	<name>Crux Widgets</name>
 	<description>Crux Widgets Library</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cruxVersion>5.1.0</cruxVersion>
+		<cruxVersion>5.1.0.5</cruxVersion>
 	</properties>
-
+	
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
