@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cruxframework</groupId>
 	<artifactId>crux-dev</artifactId>
-	<version>${cruxVersion}</version>
+	<version>5.1.0</version>
 	<name>Crux Core - Development</name>
 	<description>Crux Core - Development components</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cruxVersion>5.1.0.5</cruxVersion>
+		<cruxVersion>5.1.0</cruxVersion>
 	</properties>
 
 	<parent>
@@ -26,11 +26,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>http://code.google.com/p/crux-framework/</url>
-		<connection>http://code.google.com/p/crux-framework/source/browse/trunk
-		</connection>
-		<developerConnection>https://code.google.com/p/crux-framework/source/browse/trunk
-		</developerConnection>
+		<url>https://crux-framework.googlecode.com/svn/trunk/crux-dev</url>
+		<connection>https://crux-framework.googlecode.com/svn/trunk/crux-dev</connection>
+		<developerConnection>https://crux-framework.googlecode.com/svn/trunk/crux-dev</developerConnection>
 	</scm>
 	<developers>
 		<developer>
