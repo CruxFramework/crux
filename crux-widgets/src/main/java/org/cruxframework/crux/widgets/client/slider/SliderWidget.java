@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author samuel@cruxframework.org
  * A widget slider that can swap between widgets.
  */
-public interface SliderWidget extends IsWidget, HasSwapHandlers, OrientationChangeHandler, Pageable
+interface SliderWidget extends IsWidget, HasSwapHandlers, OrientationChangeHandler, Pageable
 {
 	public ContentProvider getContentProvider();
 	public void setContentProvider(ContentProvider contentProvider);
