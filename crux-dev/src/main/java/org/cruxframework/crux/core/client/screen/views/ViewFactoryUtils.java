@@ -44,7 +44,7 @@ public class ViewFactoryUtils
 	    Element element = widget.getElement();
 	    if (StringUtils.isEmpty(element.getId()))
 	    {
-	    	element.setId(view.getPrefix()+widgetId);
+	    	element.setId(view.getId()+"_"+widgetId);
 	    }
     }
 	
