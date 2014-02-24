@@ -260,6 +260,22 @@
 		</any>
 	</replace-with>
 	
+	<!-- Slider -->
+    <replace-with class="org.cruxframework.crux.widgets.client.slider.Slider.InnerNoTouchSlider">
+        <when-type-assignable class="org.cruxframework.crux.widgets.client.slider.Slider.GeneratedSlider" />
+        <none>
+            <when-property-is name="device.features" value="smallDisplayTouch" />
+            <when-property-is name="device.features" value="largeDisplayTouch" />
+        </none>
+    </replace-with>
+    <replace-with class="org.cruxframework.crux.widgets.client.slider.Slider.InnerTouchSlider">
+        <when-type-assignable class="org.cruxframework.crux.widgets.client.slider.Slider.GeneratedSlider" />
+        <any>
+            <when-property-is name="device.features" value="smallDisplayTouch" />
+            <when-property-is name="device.features" value="largeDisplayTouch" />
+        </any>
+    </replace-with>
+	
     <!-- RollingPanel -->
 	<replace-with class="org.cruxframework.crux.widgets.client.rollingpanel.RollingPanelNoTouchImpl">
 		<when-type-assignable class="org.cruxframework.crux.widgets.client.rollingpanel.RollingPanel.PanelImplementation" />
