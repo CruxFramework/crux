@@ -2,7 +2,6 @@
 		   xmlns:x="http://www.cruxframework.org/xdevice"
            xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 		   xmlns:crux="http://www.cruxframework.org/crux/widgets"
-		   xmlns:xdev="http://www.cruxframework.org/crux/crossDevice"
            useController="panelChoiceDisposalLargeController" height="100%">
 
 	<crux:tabViewContainer id="viewContainer" height="100%" width="100%" />
