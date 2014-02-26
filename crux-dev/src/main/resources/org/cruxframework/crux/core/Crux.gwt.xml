@@ -107,6 +107,10 @@
 		<when-type-assignable class="org.cruxframework.crux.core.client.db.Database"/>
 	</generate-with>
 	
+	<!-- Specify the generator for runtimeIocContainer.     -->
+	<generate-with class="org.cruxframework.crux.core.rebind.ioc.RuntimeContainerGenerator">
+		<when-type-assignable class="org.cruxframework.crux.core.client.ioc.RuntimeIoCContainer" />
+	</generate-with>
 	<!-- Replaces -->
 
 	<!-- Specify Default implementation for Roles management -->
