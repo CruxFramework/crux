@@ -30,6 +30,31 @@ import com.google.gwt.typedarrays.shared.Uint8Array;
 public class FileUtils
 {
 	/**
+	 * Get the file extension based in the filename
+	 * @param fileName
+	 * @return
+	 */
+	public static String getFileExtension(String fileName)
+	{
+		String extension = "";
+
+		if(fileName == null || fileName == "")
+		{
+			return extension;
+		}
+
+		int i = fileName.lastIndexOf('.');
+		int p = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+
+		if (i > p)
+		{
+			extension = fileName.substring(i+1);
+		}
+
+		return extension;
+	}
+	
+	/**
 	 * Create a new Blob from the dataURI string
 	 * @param dataURI
 	 * @return
