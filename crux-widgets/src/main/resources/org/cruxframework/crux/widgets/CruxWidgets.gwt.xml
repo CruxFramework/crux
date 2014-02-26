@@ -131,6 +131,22 @@
 			<when-property-is name="device.features" value="largeDisplayTouch" />
 		</any>
 	</replace-with>
+	
+	<!-- Download Button  -->
+    <replace-with class="org.cruxframework.crux.widgets.client.button.DownloadButton.DownloadButtonOtherBrowsers">
+        <when-type-assignable class="org.cruxframework.crux.widgets.client.button.DownloadButton.DownloadButtonCommon" />
+        <any>
+            <when-property-is name="user.agent" value="safari" />
+            <when-property-is name="user.agent" value="opera" />
+        </any>
+    </replace-with>
+    <replace-with class="org.cruxframework.crux.widgets.client.button.DownloadButton.DownloadButtonIE">
+        <when-type-assignable class="org.cruxframework.crux.widgets.client.button.DownloadButton.DownloadButtonCommon" />
+        <none>
+            <when-property-is name="user.agent" value="safari" />
+            <when-property-is name="user.agent" value="opera" />
+        </none>
+    </replace-with>
 
     <!-- StackMenu -->
     <replace-with class="org.cruxframework.crux.widgets.client.stackmenu.StackMenuItemCaption.NoTouchImpl">

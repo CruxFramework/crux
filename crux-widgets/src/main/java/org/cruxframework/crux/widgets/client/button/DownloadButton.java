@@ -21,6 +21,7 @@ import org.cruxframework.crux.widgets.client.event.SelectHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.PartialSupport;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
@@ -37,8 +38,15 @@ import com.google.gwt.user.client.ui.HasHTML;
 /**
  * A cross device download button, that use touch events on touch enabled devices.
  * @author Samuel Almeida Cardoso
- *
+ * 
+ * @PartialSupport Depends on:
+ * http://caniuse.com/blobbuilder
+ * 
+ * 
+ * nice reference:
+ * http://hackworthy.blogspot.com.br/2012/05/savedownload-data-generated-in.html
  */
+@PartialSupport
 public class DownloadButton extends Composite implements HasSelectHandlers, HasHTML, HasSafeHtml, HasAllFocusHandlers, HasEnabled
 {
 	private DownloadButtonCommon impl;
@@ -72,11 +80,19 @@ public class DownloadButton extends Composite implements HasSelectHandlers, HasH
 	
 	public static class DownloadButtonCommon extends Button
 	{
-		private native void clickElement(Element elem) /*-{
+		public void fireDownload(DownloadData downloadData, final Anchor downloadAnchor)
+		{
+			//DO NOTHING
+		}
+		
+		protected native void clickElement(Element elem) /*-{
     		elem.click();
     		//elem.onclick.call(elem);
 		}-*/;
-		
+	}
+	
+	public static class DownloadButtonOtherBrowsers extends DownloadButtonCommon
+	{
 		public void fireDownload(DownloadData downloadData, final Anchor downloadAnchor) 
 		{
 			if(downloadData != null)
@@ -99,6 +115,96 @@ public class DownloadButton extends Composite implements HasSelectHandlers, HasH
 		}
 	}
 
+	public static class DownloadButtonIE extends DownloadButtonCommon
+	{
+		public void fireDownload(DownloadData downloadData, final Anchor downloadAnchor) 
+		{
+			if(downloadData != null)
+			{
+				fireDownloadWindow(downloadData.getBase64Data(), downloadData.getFilename(), "jpg");
+			}
+		}
+		
+		private native void fireDownloadWindow(String data, String name, String mimeType)  /*-{
+			var showSave;
+			var DownloadAttributeSupport = 'download' in document.createElement('a');
+			var BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder;
+			navigator.saveBlob = navigator.saveBlob || navigator.msSaveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
+			window.saveAs = window.saveAs || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs;
+			
+			// Blobs and saveAs (or saveBlob) :
+			if (BlobBuilder && (window.saveAs || navigator.saveBlob)) 
+			{
+				// Currently only IE 10 supports this, but I hope other browsers will also implement the saveAs/saveBlob method eventually.
+				showSave = function (data, name, mimetype) {
+					data = data.substring(data.indexOf("base64,") + "base64,".length,data.length);
+
+					// Convert from base64 to an ArrayBuffer
+					var byteString = atob(data);
+					var buffer = new ArrayBuffer(byteString.length);
+					var intArray = new Uint8Array(buffer);
+					for (var i = 0; i < byteString.length; i++) {
+					    intArray[i] = byteString.charCodeAt(i);
+					}
+					
+					// Use the native blob constructor
+					var blob = new Blob([buffer], {type: "image/png"});
+					
+					if (!name) name = "Download.bin";
+					
+					if (window.saveAs) 
+					{
+						window.saveAs(blob, name);
+					} else 
+					{
+						navigator.saveBlob(blob, name);
+					}
+				};
+			}
+			// Blobs and object URLs:
+			else if (DownloadAttributeSupport) 
+			{
+				// Currently WebKit and Gecko support BlobBuilder and object URLs.
+				showSave = function (data, name, mimetype) {
+					if (!mimetype) mimetype = "application/octet-stream";
+					if (DownloadAttributeSupport) {
+						// Currently only Chrome (since 14-dot-something) supports the download attribute for anchor elements.
+						var link = document.createElement("a");
+						link.setAttribute("href",data);
+						link.setAttribute("download",name||"Download.bin");
+						// Now I need to simulate a click on the link.
+						// IE 10 has the better msSaveBlob method and older IE versions do not support the BlobBuilder interface
+						// and object URLs, so we don't need the MS way to build an event object here.
+						var event = document.createEvent('MouseEvents');
+						event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+						link.dispatchEvent(event);
+					}
+				};
+			}
+			// data:-URLs:
+			else if (!/\bMSIE\b/.test(navigator.userAgent)) 
+			{
+				// IE does not support URLs longer than 2048 characters (actually bytes), so it is useless for data:-URLs.
+				// Also it seems not to support window.open in combination with data:-URLs at all.
+				showSave = function (data, name, mimetype) {
+					if (!mimetype) mimetype = "application/octet-stream";
+					// Again I need to filter the mime type so a download is forced.
+					// Note that encodeURIComponent produces UTF-8 encoded text. The mime type should contain
+					// the charset=UTF-8 parameter. In case you don't want the data to be encoded as UTF-8
+					// you could use escape(data) instead.
+					window.open("data:"+mimetype+","+encodeURIComponent(data), '_blank', '');
+				};
+			}
+			
+			if (!showSave) 
+			{
+				alert("Your browser does not support any method of saving JavaScript gnerated data to files.");
+				return;
+			}
+			showSave(data,name,mimeType);
+		}-*/;
+	}
+	
 	public DownloadButton()
 	{
 		FlowPanel wrapper = new FlowPanel();
