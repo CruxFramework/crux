@@ -57,11 +57,11 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
  */
 public class IocContainerRebind extends AbstractProxyCreator
 { 
-	private final View view;
-	private Map<String, IocConfig<?>> configurations;
-	private JClassType viewBindableType;
-	private JClassType remoteServiceType;
-	private Device device;
+	protected final View view;
+	protected Map<String, IocConfig<?>> configurations;
+	protected JClassType viewBindableType;
+	protected JClassType remoteServiceType;
+	protected Device device;
 
 	public IocContainerRebind(TreeLogger logger, GeneratorContext context, View view, String device)
     {
@@ -333,7 +333,7 @@ public class IocContainerRebind extends AbstractProxyCreator
 	@Override
 	public String getProxySimpleName()
 	{
-		String className = view.getId()+"_"+device.toString(); 
+		String className = (view != null ? view.getId():"")+"_"+device.toString(); 
 		className = className.replaceAll("[\\W]", "_");
 		return "IocContainer_"+className;
 	}

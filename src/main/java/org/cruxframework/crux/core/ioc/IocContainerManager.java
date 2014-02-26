@@ -99,8 +99,11 @@ public class IocContainerManager
 		Map<String, IocConfig<?>> viewConfigurations = new HashMap<String, IocConfig<?>>();
 		viewConfigurations.putAll(globalConfigurations);
 		
-		bindImplicityInjectcionsForControllers(view, viewConfigurations, device);
-		bindImplicityInjectcionsForDatasources(view, viewConfigurations, device);
+		if (view != null)
+		{
+			bindImplicityInjectcionsForControllers(view, viewConfigurations, device);
+			bindImplicityInjectcionsForDatasources(view, viewConfigurations, device);
+		}
 		
 		return viewConfigurations;
 	}

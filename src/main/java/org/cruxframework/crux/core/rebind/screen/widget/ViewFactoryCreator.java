@@ -28,6 +28,7 @@ import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.controller.RegisteredControllers;
 import org.cruxframework.crux.core.client.datasource.DataSource;
 import org.cruxframework.crux.core.client.datasource.RegisteredDataSources;
+import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
@@ -288,7 +289,11 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 	protected void generateGetIocContainerMethod(SourcePrinter printer)
     {
-    	printer.println("public "+ iocContainerClassName +" getIocContainer(){");
+    	printer.println("public "+ IocContainer.class.getCanonicalName() +" getIocContainer(){");
+    	printer.println("return iocContainer;");
+    	printer.println("}");
+
+    	printer.println("public "+ iocContainerClassName +" getTypedIocContainer(){");
     	printer.println("return iocContainer;");
     	printer.println("}");
     }
