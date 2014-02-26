@@ -19,12 +19,15 @@ import org.cruxframework.crux.core.client.ioc.Inject.Scope;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.screen.views.ViewAware;
 
+import com.google.gwt.core.client.GWT;
+
 /**
  * @author Thiago da Rosa de Bustamante
  * 
  */
 public abstract class IocContainer implements ViewAware
 {
+	private RuntimeIoCContainer runtimeIoCContainer = null;
 	private static IocLocalScope _localScope = new IocLocalScope();
 	private static IocPersistentScope _documentScope = new IocPersistentScope();
 	private IocPersistentScope _viewScope = new IocPersistentScope();
@@ -37,8 +40,55 @@ public abstract class IocContainer implements ViewAware
 	public IocContainer(View view)
     {
 		this.view = view;
+		runtimeIoCContainer = GWT.create(RuntimeIoCContainer.class);
+		runtimeIoCContainer.setIoCContainer(this);
     }
 	
+	/**
+	 * Retrieve an object from IoCContainer
+	 * @param clazz object class
+	 * @return object instance
+	 */
+	public <T> T get(Class<T> clazz)
+	{
+		return get(clazz, Scope.LOCAL, null);
+	}
+
+	/**
+	 * Retrieve an object from IoCContainer
+	 * @param clazz object class
+	 * @param scope scope to search for the instance
+	 * @return object instance
+	 */
+	public <T> T get(Class<T> clazz, Scope scope)
+	{
+		return get(clazz, scope, null);
+	}
+
+	/**
+	 * Retrieve an object from IoCContainer
+	 * @param clazz object class
+	 * @param scope scope to search for the instance
+	 * @param subscope subscope to search for the instance
+	 * @return object instance
+	 */
+	public <T> T get(Class<T> clazz, Scope scope, String subscope)
+	{
+		return runtimeIoCContainer.get(clazz, scope, subscope);
+	}
+	
+	@Override
+	public String getBoundCruxViewId()
+	{
+	    return (this.view == null? null:this.view.getId());
+	}
+
+	@Override
+	public View getBoundCruxView()
+	{
+	    return this.view;
+	}
+
 	/**
 	 * Retrieve the scope controller for the requested scope
 	 * @param scope
@@ -53,17 +103,5 @@ public abstract class IocContainer implements ViewAware
 			case VIEW: return this._viewScope;
 			default: return _localScope;
 		}
-	}
-	
-	@Override
-	public String getBoundCruxViewId()
-	{
-	    return (this.view == null? null:this.view.getId());
-	}
-
-	@Override
-	public View getBoundCruxView()
-	{
-	    return this.view;
 	}
 }

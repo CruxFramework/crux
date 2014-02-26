@@ -25,6 +25,7 @@ import org.cruxframework.crux.core.client.collection.FastMap;
 import org.cruxframework.crux.core.client.collection.Map;
 import org.cruxframework.crux.core.client.controller.RegisteredControllers;
 import org.cruxframework.crux.core.client.datasource.DataSource;
+import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
@@ -1103,6 +1104,12 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	 * @return
 	 */
 	public abstract RegisteredControllers getRegisteredControllers();
+
+	/**
+	 * Retrieve the IoCContainer instance associated with this view
+	 * @return
+	 */
+	public abstract IocContainer getIocContainer();
 	
 	/**
 	 * Called by View container to render the view into the screen

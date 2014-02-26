@@ -19,11 +19,32 @@ import org.cruxframework.crux.core.client.ioc.IocProvider;
 
 
 /**
+ * A Type binding configuration for Crux IoC container.
  * @author Thiago da Rosa de Bustamante
  *
  */
 public interface IocConfig<T>
 {
+	/**
+	 * Bound a provider class that will be used to instantiate new objects by IOC container.
+	 * @param providerClass
+	 * @return
+	 */
 	IocConfig<T> toProvider(Class<? extends IocProvider<? extends T>> providerClass);
+	/**
+	 * Bound a new concrete class that will be returned when given class is requested to IOC container. The given class
+	 * must be assignable to <T>
+	 * @param toClass
+	 * @return
+	 */
 	IocConfig<T> toClass(Class<? extends T> toClass);
+	/**
+	 * By default, types assigned to container can not be requested directly by user programmatically. It can be changed
+	 * by enabling this property. Then, you can request the bound type directly to container doing:
+	 * {@code view.getIoCContainer().get(MyType.class, scope, subscope);}
+	 * 
+	 * @param accessible
+	 * @return
+	 */
+	IocConfig<T> runtimeAccessible(boolean accessible);
 }

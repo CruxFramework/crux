@@ -27,12 +27,20 @@ public class IocConfigImpl<T> implements IocConfig<T>
 	private final Class<T> boundClass;
 	private Class<? extends IocProvider<? extends T>> providerClass = null;
 	private Class<? extends T> toClass;
+	private boolean accessible;
 	
 	public IocConfigImpl(Class<T> clazz)
     {
 		this.boundClass = clazz;
     }
 
+	@Override
+	public IocConfig<T> runtimeAccessible(boolean accessible)
+	{
+	    this.accessible = accessible;
+		return this;
+	}
+	
 	public IocConfigImpl<T> toProvider(Class<? extends IocProvider<? extends T>> providerClass)
 	{
 		if (this.toClass != null)
@@ -53,6 +61,11 @@ public class IocConfigImpl<T> implements IocConfig<T>
 		return this;
 	}
 
+	public boolean isRuntimeAccessible()
+	{
+		return accessible;
+	}
+	
 	public Class<T> getBoundClass()
     {
     	return boundClass;

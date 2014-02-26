@@ -207,7 +207,7 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 		String genClass = new ControllerProxyCreator(logger, context, controllerClass).create();
 		srcWriter.println("this._controller = new "+genClass+"("+viewVariable+");");
 		srcWriter.println("(("+DeviceAdaptiveController.class.getCanonicalName()+")this._controller).setBoundWidget(this);");
-		IocContainerRebind.injectFieldsAndMethods(srcWriter, controllerClass, "this._controller", viewVariable+".getIocContainer()", view, device);
+		IocContainerRebind.injectFieldsAndMethods(srcWriter, controllerClass, "this._controller", viewVariable+".getTypedIocContainer()", view, device);
 	}
 	
 	@Override
