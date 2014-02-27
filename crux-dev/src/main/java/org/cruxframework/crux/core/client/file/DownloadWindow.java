@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.core.client.file;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.PartialSupport;
 
 /**
@@ -23,10 +22,8 @@ import com.google.gwt.dom.client.PartialSupport;
  *
  */
 @PartialSupport
-public class DownloadWindow extends JavaScriptObject
+public class DownloadWindow
 {
-	protected DownloadWindow(){}
-	
 	private static DownloadWindow instance;
 	
 	private static class NavigatorWindow extends DownloadWindow 
@@ -39,18 +36,13 @@ public class DownloadWindow extends JavaScriptObject
 			return false;
 		}-*/;
 		
-		protected static native NavigatorWindow getInstance()/*-{
-			return $wnd.navigator.saveBlob || $wnd.navigator.msSaveBlob || $wnd.navigator.mozSaveBlob || $wnd.navigator.webkitSaveBlob;
-		}-*/;
-		
 		public native final void openSaveAsWindow(Blob blob, String name)
 		/*-{
-			var saveBlobVar = navigator.saveBlob || navigator.msSaveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
-			if(saveBlobVar)
+			if(!navigator.saveBlob)
 			{
-			 	saveBlobVar.saveBlob(blob, name);
-			 	return;
+				navigator.saveBlob = navigator.saveBlob || navigator.msSaveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
 			}
+		 	navigator.saveBlob(blob, name);
 		}-*/;
 	}
 	
@@ -64,18 +56,13 @@ public class DownloadWindow extends JavaScriptObject
 			return false;
 		}-*/;
 		
-		protected static native NavigatorWindow getInstance()/*-{
-			return $wnd.saveAs || $wnd.webkitSaveAs || $wnd.mozSaveAs || $wnd.msSaveAs;
-		}-*/;
-		
 		public native final void openSaveAsWindow(Blob blob, String name)
 		/*-{
-			var saveWinVar = $wnd.saveAs || $wnd.webkitSaveAs || $wnd.mozSaveAs || $wnd.msSaveAs;
-			if(saveWinVar)
+			if(!$wnd.saveAs)
 			{
-				saveWinVar.saveAs(blob, name);
-				return;
+				$wnd.saveAs = $wnd.saveAs || $wnd.webkitSaveAs || $wnd.mozSaveAs || $wnd.msSaveAs;
 			}
+			$wnd.saveAs(blob, name);
 		}-*/;
 	}
 	
@@ -88,9 +75,9 @@ public class DownloadWindow extends JavaScriptObject
 	{
 		if (isSupported())
 		{
-			if(instance != null)
+			if(instance == null)
 			{
-				instance = new DownloadWindow();
+				instance = SaveWindow.isSupported() ? new SaveWindow() : new NavigatorWindow();
 			}
 			return instance;
 		}
@@ -99,17 +86,7 @@ public class DownloadWindow extends JavaScriptObject
 	
 	public void openSaveAsWindow(Blob blob, String name)
 	{
-		if(NavigatorWindow.isSupported())
-		{
-			NavigatorWindow.getInstance().openSaveAsWindow(blob, name);
-			return;
-		}
-		
-		if(SaveWindow.isSupported())
-		{
-			SaveWindow.getInstance().openSaveAsWindow(blob, name);
-			return;
-		}
+		instance.openSaveAsWindow(blob,name);
 	}
 }
 

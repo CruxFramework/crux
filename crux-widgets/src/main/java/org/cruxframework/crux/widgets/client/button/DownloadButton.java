@@ -15,12 +15,20 @@
  */
 package org.cruxframework.crux.widgets.client.button;
 
+import org.cruxframework.crux.core.client.file.Blob;
+import org.cruxframework.crux.core.client.file.DownloadWindow;
 import org.cruxframework.crux.core.client.utils.Base64Utils;
+import org.cruxframework.crux.core.client.utils.FileUtils;
+import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.widgets.client.anchor.Anchor;
 import org.cruxframework.crux.widgets.client.event.HasSelectHandlers;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
@@ -30,8 +38,7 @@ import com.google.gwt.user.client.ui.HasText;
  * @author Samuel Almeida Cardoso
  * 
  * @PartialSupport Depends on:
- * http://caniuse.com/blobbuilder
- * 
+ * http://caniuse.com/bloburls
  * 
  * nice reference:
  * http://hackworthy.blogspot.com.br/2012/05/savedownload-data-generated-in.html
@@ -84,88 +91,47 @@ public class DownloadButton extends Composite implements HasText, HasEnabled, Ha
 		{
 			if(downloadData != null)
 			{
-				fireDownloadWindow(downloadData.getBase64Data(), downloadData.getFilename(), 
+				fireWindowDownload(downloadData.getBase64Data(), downloadData.getFilename(), 
 						Base64Utils.getMimeTypeFromBase64Data(downloadData.getBase64Data()));
 			}
 		}
 		
-		private native void fireDownloadWindow(String data, String name, String mimeType)  /*-{
-			var showSave;
-			var DownloadAttributeSupport = 'download' in document.createElement('a');
-			var BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder;
-			navigator.saveBlob = navigator.saveBlob || navigator.msSaveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
-			window.saveAs = window.saveAs || window.webkitSaveAs || window.mozSaveAs || window.msSaveAs;
+		private void fireWindowDownload(String base64Data, String filename, String mimeTypeFromBase64Data) 
+		{
+			String newFilename = StringUtils.isEmpty(filename) ? "download.bin" : filename;
+			String newMimeType = StringUtils.isEmpty(mimeTypeFromBase64Data) ? "application/octet-stream" : mimeTypeFromBase64Data;
 			
-			// Blobs and saveAs (or saveBlob) :
-			if (BlobBuilder && (window.saveAs || navigator.saveBlob)) 
+			if(Blob.isSupported() && DownloadWindow.isSupported())
 			{
-				// Currently only IE 10 supports this, but I hope other browsers will also implement the saveAs/saveBlob method eventually.
-				showSave = function (data, name, mimetype) {
-					data = data.substring(data.indexOf("base64,") + "base64,".length,data.length);
+				Blob blob = FileUtils.fromDataURI(base64Data);
+				DownloadWindow.createIfSupported().openSaveAsWindow(blob, newFilename);
+			} else if(hasHTML5DownloadAttributeSupport())
+			{
+				Anchor a = new Anchor();
+				a.setHref(base64Data);
+				a.setTarget("_blank");
+				a.getElement().setAttribute("download", newFilename);
+				clickElement(a.getElement());
+			} else
+			{
+				// Note that encodeURIComponent produces UTF-8 encoded text. The mime type should contain
+				// the charset=UTF-8 parameter. In case you don't want the data to be encoded as UTF-8
+				// you could use escape(data) instead.
+				// Javascript: window.open("data:"+mimetype+","+encodeURIComponent(data), '_blank', '');
+				// Is it working? If is not, read:
+				//http://stackoverflow.com/questions/607176/java-equivalent-to-javascripts-encodeuricomponent-that-produces-identical-outpu
+				Window.open("data:"+newMimeType, URL.encodeQueryString(Base64Utils.ensurePlainBase64(base64Data)), "_blank");
+			}
+		}
+		
+		private native void clickElement(Element element) /*-{
+			var event = document.createEvent('MouseEvents');
+			event.initMouseEvent('click', true, true, $wnd, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+			element.dispatchEvent(event);
+		}-*/;
 
-					// Convert from base64 to an ArrayBuffer
-					var byteString = atob(data);
-					var buffer = new ArrayBuffer(byteString.length);
-					var intArray = new Uint8Array(buffer);
-					for (var i = 0; i < byteString.length; i++) {
-					    intArray[i] = byteString.charCodeAt(i);
-					}
-					
-					// Use the native blob constructor
-					var blob = new Blob([buffer], {type: mimeType});
-					
-					if (!name) name = "Download.bin";
-					
-					if (window.saveAs) 
-					{
-						window.saveAs(blob, name);
-					} else 
-					{
-						navigator.saveBlob(blob, name);
-					}
-				};
-			}
-			// Blobs and object URLs:
-			else if (DownloadAttributeSupport) 
-			{
-				// Currently WebKit and Gecko support BlobBuilder and object URLs.
-				showSave = function (data, name, mimetype) {
-					if (!mimetype) mimetype = "application/octet-stream";
-					if (DownloadAttributeSupport) {
-						// Currently only Chrome (since 14-dot-something) supports the download attribute for anchor elements.
-						var link = document.createElement("a");
-						link.setAttribute("href",data);
-						link.setAttribute("download",name||"Download.bin");
-						// Now I need to simulate a click on the link.
-						// IE 10 has the better msSaveBlob method and older IE versions do not support the BlobBuilder interface
-						// and object URLs, so we don't need the MS way to build an event object here.
-						var event = document.createEvent('MouseEvents');
-						event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-						link.dispatchEvent(event);
-					}
-				};
-			}
-			// data:-URLs:
-			else if (!/\bMSIE\b/.test(navigator.userAgent)) 
-			{
-				// IE does not support URLs longer than 2048 characters (actually bytes), so it is useless for data:-URLs.
-				// Also it seems not to support window.open in combination with data:-URLs at all.
-				showSave = function (data, name, mimetype) {
-					if (!mimetype) mimetype = "application/octet-stream";
-					// Again I need to filter the mime type so a download is forced.
-					// Note that encodeURIComponent produces UTF-8 encoded text. The mime type should contain
-					// the charset=UTF-8 parameter. In case you don't want the data to be encoded as UTF-8
-					// you could use escape(data) instead.
-					window.open("data:"+mimetype+","+encodeURIComponent(data), '_blank', '');
-				};
-			}
-			
-			if (!showSave) 
-			{
-				alert("Your browser does not support any method of saving JavaScript gnerated data to files.");
-				return;
-			}
-			showSave(data,name,mimeType);
+		private native boolean hasHTML5DownloadAttributeSupport() /*-{
+			return 'download' in document.createElement('a');
 		}-*/;
 	}
 	
