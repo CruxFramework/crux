@@ -1,52 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.cruxframework</groupId>
 	<artifactId>crux-dev</artifactId>
-	<version>5.1.0</version>
 	<name>Crux Core - Development</name>
 	<description>Crux Core - Development components</description>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cruxVersion>5.1.0</cruxVersion>
-	</properties>
-
 	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
-
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<scm>
-		<url>https://crux-framework.googlecode.com/svn/trunk/crux-dev</url>
-		<connection>https://crux-framework.googlecode.com/svn/trunk/crux-dev</connection>
-		<developerConnection>https://crux-framework.googlecode.com/svn/trunk/crux-dev</developerConnection>
-	</scm>
-	<developers>
-		<developer>
-			<id>thiago</id>
-			<name>Thiago da Rosa de Bustamante</name>
-			<email>thiago@cruxframework.org</email>
-		</developer>
-		<developer>
-			<id>gesse</id>
-			<name>Gessé Dafé</name>
-			<email>gesse@cruxframework.org</email>
-		</developer>
-		<developer>
-			<id>samuel</id>
-			<name>Samuel Almeida Cardoso</name>
-			<email>samuel@cruxframework.org</email>
-		</developer>
-	</developers>
+        <groupId>org.cruxframework</groupId>
+        <artifactId>crux-core</artifactId>
+        <version>${cruxVersion}</version>
+        <relativePath>../crux-core/pom.xml</relativePath>  
+    </parent>
 
 	<dependencies>
 		<dependency>
@@ -58,46 +22,22 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
 			<version>2.5.1</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>2.5.1</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-codeserver</artifactId>
 			<version>2.5.1</version>
-			<scope>compile</scope>
 		</dependency>
+		<dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>2.5.1</version>
+        </dependency>
 	</dependencies>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/main/java</directory>
-				<includes>
-					<include>**/*.java</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>**/*</include>
-				</includes>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
