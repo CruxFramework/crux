@@ -115,7 +115,7 @@ public class Array<E> extends JavaScriptObject
 	}
 
 	public final native int size() /*-{
-		return this.length;
+		return this ? this.length : 0;
 	}-*/;
 
 	private native void jsniAdd(E elem) /*-{
