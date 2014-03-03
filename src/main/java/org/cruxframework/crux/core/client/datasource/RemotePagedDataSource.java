@@ -380,7 +380,7 @@ implements MeasurableRemoteDataSource<T>
 	 */
 	public T getBoundObject()
 	{
-		return super.getBoundObject(getRecord());
+		return getBoundObject(getRecord());
 	}
 	
 	/**
