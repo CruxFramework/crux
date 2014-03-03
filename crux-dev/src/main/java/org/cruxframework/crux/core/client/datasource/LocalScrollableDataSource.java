@@ -151,7 +151,7 @@ public abstract class LocalScrollableDataSource<T> extends AbstractScrollableDat
 	 */
 	public T getBoundObject()
 	{
-		return super.getBoundObject(getRecord());
+		return getBoundObject(getRecord());
 	}
 	
 	/**
