@@ -29,6 +29,9 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.controller.Controller;
 import org.cruxframework.crux.core.client.datasource.annotation.DataSource;
 import org.cruxframework.crux.core.client.ioc.Inject;
+import org.cruxframework.crux.core.client.ioc.IoCResource;
+import org.cruxframework.crux.core.client.ioc.IoCResource.NoClass;
+import org.cruxframework.crux.core.client.ioc.IoCResource.NoProvider;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.rebind.controller.ClientControllers;
 import org.cruxframework.crux.core.rebind.datasource.DataSources;
@@ -73,6 +76,8 @@ public class IocContainerManager
 						}
 					}
 				}
+				
+				configureAnnotatedClasses();
 			}
 			catch (Exception e)
 			{
@@ -80,6 +85,35 @@ public class IocContainerManager
 			}
 		}
 	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+    private static void configureAnnotatedClasses() throws ClassNotFoundException
+    {
+		Map<String, IocConfig<?>> globalConfigurations = IocContainerConfigurations.getConfigurations();
+		Set<String> configurations =  ClassScanner.searchClassesByAnnotation(IoCResource.class);
+		if (configurations != null)
+		{
+			for (String resourceClassName : configurations)
+			{
+				if (!globalConfigurations.containsKey(resourceClassName))
+				{
+					Class<?> clazz = Class.forName(resourceClassName);
+					IoCResource ioCResource = clazz.getAnnotation(IoCResource.class);
+					bindTypeImplicitly(clazz, globalConfigurations);
+					IocConfig<?> iocConfig = globalConfigurations.get(resourceClassName);
+					if (!ioCResource.bindClass().equals(NoClass.class))
+					{
+						iocConfig.toClass((Class) ioCResource.bindClass());
+					}
+					if (!ioCResource.provider().equals(NoProvider.class))
+					{
+						iocConfig.toProvider((Class)ioCResource.provider());
+					}
+					iocConfig.runtimeAccessible(ioCResource.runtimeAccessible());
+				}
+			}
+		}
+    }
 
 	/**
 	 * 
