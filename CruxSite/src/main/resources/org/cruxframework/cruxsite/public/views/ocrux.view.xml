@@ -53,7 +53,7 @@
                 É oferecido pelo Crux uma implementação de MVC (Model, View e Controller) de fácil utilização.
                 </p>
                   
-                <p>O diferencial na proposta do Crux é que as camadas de visualização e controle (de interface) estão alocada no cliente. 
+                <p>O diferencial na proposta do Crux é que as camadas de visualização e controle (de interface) estão alocadas no cliente. 
                 Esta estratégia garante um desempenho consideravelmente superior às arquiteturas onde a camada de controle está no servidor, 
                 uma vez que dados de controle da página não precisam trafegar pela rede para serem processados e o estado da tela é 
                 mantido no cliente. 

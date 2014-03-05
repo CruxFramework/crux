@@ -28,7 +28,7 @@
                    Por padrão os Issues devem ser feitos na lingua inglesa. 
                 </p>
                 <p>Ao enviar as informações sobre um bug seja o mais claro possível. Além disso descreva o ambiente e o 
-                passo-a-passo para que seja possível reproduzir o bug. Quanto melhor a descrição do bug mais rápido os 
+                passo-a-passo para que seja possível reproduzi-lo. Quanto melhor a descrição do bug mais rápido os 
                 desenvolvedores do Crux poderão fazer a correção. 
                 </p>
                 <p>Acesse a página do Google Code do Crux Framework: </p>
@@ -70,7 +70,7 @@
             
             <div class="container">
                 <h2>Apoio a outros usuários</h2>
-                <p>Se você já é um usuário com fluencia no desenvolvimento com o Crux Framework, ajude os novos usuários a 
+                <p>Se você já é um usuário com fluência no desenvolvimento com o Crux Framework, ajude os novos usuários a 
                 utilizarem em seus projetos todos os recursos que o Crux tem a oferecer. Acesse: </p>
                 <ul class="communityItens" style="font-size: 15px;">
                     <li>
