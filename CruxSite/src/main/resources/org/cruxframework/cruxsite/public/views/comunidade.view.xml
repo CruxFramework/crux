@@ -37,7 +37,7 @@
 					<h2>Desenvolvimento do Crux Framework</h2>
 					<p>Caso você queira participar do desenvolvimento do Crux Framework ou de novos componentes Crux você pode 
 					baixar os fontes e enviar suas contribuições. </p>
-				    <p>O Crux Framework é open source e seu código está disponivel para download: </p>
+				    <p>O Crux Framework é open source e seu código está disponível para download: </p>
                     <ul class="communityItens" style="font-size: 15px;">
 						<li>
 							<crux:anchor id="linkGoogleCode" href="http://code.google.com/p/crux-framework/source/checkout" styleName="defaultLink" 

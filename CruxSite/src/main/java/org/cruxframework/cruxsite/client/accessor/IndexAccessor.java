@@ -5,4 +5,5 @@ import org.cruxframework.crux.widgets.client.rss.RssPanel;
 
 public interface IndexAccessor extends WidgetAccessor {
 	RssPanel lastBlogEntries();
+
 }

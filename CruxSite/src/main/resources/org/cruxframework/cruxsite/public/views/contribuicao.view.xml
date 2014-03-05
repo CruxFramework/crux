@@ -13,10 +13,10 @@
 	
 		<div class="bigText">
 			<div class="container">
-				<h2>Como contribuir?</h2>
-				<p>Para contribuir com o desenvolvimento do Crux você pode repostar bugs no código e/ou enviar enviar o código de correção.  
+				<h2>Como Contribuir?</h2>
+				<p>Para contribuir com o desenvolvimento do Crux você pode repostar bugs no código e/ou enviar o código de correção.  
 				Caso seja criado algum componente novo ele também pode ser distribuído para os demais usuários do Crux.  
-                Outra forma, não menos importante de contribuir, é ajudando novos usuários a usar o Crux respondendo às dúvidas no forum.  
+                Outra forma, não menos importante de contribuir, é ajudando novos usuários a usar o Crux respondendo às dúvidas no fórum.  
                 </p>
 			</div>
 			
@@ -24,10 +24,10 @@
             
 			<div class="container">
 				<h2>Reportar Bugs</h2>
-                <p>O report de bugs ou proposta de melhorias podem ser feitas através de Issues no próprio Google Code. 
-                   Por padrão os Issues devem ser feitos na lingua inglesa. 
+                <p>O envio de bugs ou proposta de melhorias podem ser feitas através de <i>Issues</i> no próprio Google Code. 
+                   Por padrão os <i>Issues</i> devem ser feitos na língua  inglesa. 
                 </p>
-                <p>Ao enviar as informações sobre um bug seja o mais claro possível. Além disso descreva o ambiente e o 
+                <p>Ao enviar as informações sobre um bug seja o mais claro possível. Além disso, descreva o ambiente e o 
                 passo-a-passo para que seja possível reproduzi-lo. Quanto melhor a descrição do bug mais rápido os 
                 desenvolvedores do Crux poderão fazer a correção. 
                 </p>
@@ -38,7 +38,7 @@
                                        target="_blank" styleName="defaultLink" text="Issue (Google Code)"></crux:anchor>
                     </li>
                 </ul>
-                <p><b>Lembre-se</b>: antes de criar um novo Issue, verifique se esse mesmo bug ainda não foi reportado. </p>
+                <p><b>Lembre-se</b>: antes de criar um novo <i>Issues</i>, verifique se esse mesmo bug ainda não foi reportado. </p>
 			</div>
             
 			<div class="separator"></div>

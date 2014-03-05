@@ -16,12 +16,12 @@
 				<ul class="buttonsDownload">
 					<li>
 						<h2>Baixar os JARs do Crux</h2>
-						<crux:anchor href="../downloads/crux-5.0.4.zip" target="_blank" text="Download .JAR (v5.0.4)" 
+						<crux:anchor href="https://www.dropbox.com/s/fppjxadj3waodn1/crux-5.0.4.zip" target="_blank" text="Download .JAR (v5.0.4)" 
                                      id="downloadJarBtn" styleName="btn btn-bigblue"></crux:anchor> 
 					</li>
 					<li>
 						<h2>Versões Anteriores do Crux</h2>
-						<crux:anchor href="https://code.google.com/p/crux-framework/downloads/list" target="_blank" text="Visualizar versões anteriores" 
+						<crux:anchor href="http://cruxfile.appspot.com/" target="_blank" text="Todas as versões" 
                                      id="olderVersionsBtn" styleName="btn btn-bigblue"></crux:anchor> 
 					</li>
 					<div class="clear"></div>
@@ -53,8 +53,8 @@
 			<div class="container">
 				<ul class="buttonsDownload">
 					<li>
-						<h2>Maven - <i>Arquetype</i></h2>
-						<p> Em breve vamos disponibilidar <i>arquetypes</i> para projetos em Crux. </p>
+						<h2>Maven - <i>Archetype</i></h2>
+						<p> Em breve serão disponibilizados novos <i>archetypes</i> para projetos em Crux. </p>
 						<!-- <p>Para usar um: <a href="http://oss.sonatype.org/content/repositories/snapshots/archetype-catalog.xml" title="antigo" target="_blank" class="defaultLink">http://oss.sonatype.org/content/repos<br />itories/snapshots/archetype-catalog.xml</a> </p>
 						 -->
 					</li>

@@ -25,7 +25,7 @@
 						<div class="stackContent">
 							<p>O Crux suporta componentes adaptáveis a diferentes tipos de dispositivos
 							garantindo que a aplicação possa ter um único código fonte 
-							adaptável a múlitplos dispositivos. </p>
+							adaptável a múltiplos dispositivos. </p>
 							<p>Não se trata aqui de componentes que criam um único 
 							HTML que seja capaz de se apresentar em diferentes dispositivos.
 							Trata-se de componentes que podem montar HTML completamente distintos, 
@@ -105,7 +105,7 @@
 						<div class="stackContent">
 							<p>O Crux oferece suporte a elaboração e exposição de serviços REST, assim como à criação de clientes capazes de 
 							consumir serviços definidos dentro da própria aplicação ou externos a ela.</p>
-							<p>O suporte REST contempla recursos avançados para garantir uma performance superior, mesmo em ambientes 
+							<p>O suporte REST contempla recursos avançados para garantir um desempenho superior, mesmo em ambientes 
 							distribuídos, assim como uma forma simples e transparente de definir clientes.</p>
 						</div>
 					</gwt:HTMLPanel>

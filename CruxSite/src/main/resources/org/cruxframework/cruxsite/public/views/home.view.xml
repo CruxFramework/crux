@@ -13,9 +13,9 @@
 			<crux:promoBanner id="promoBanner" largeBannersHeight="312px" smallBannersHeight="312px" 
 				autoTransitionInterval="2000000" transitionDuration="400" width="100%">
 				<crux:banner image="${siteDeviceResources.bannerFast}" buttonLabel="" title="Desempenho" 
-				             text="Aplicações rápidas e escaláveis. Baixo tráfego de rede, processamento no cliente otimizado e consumo de memória irrisório no servidor."/>
+				             text="Aplicações rápidas e escaláveis. Baixo tráfego de rede, processamento no cliente otimizado e consumo irrisório de memória no servidor."/>
 				<crux:banner image="${siteDeviceResources.bannerCrossDevice}" buttonLabel="" title="Multi-Dispositivo!" 
-				             text="Uma única aplicação que se adequa automaticamente a qualquer tipo de dispositivo: celular, tablet, desktop ou TV."/>
+				             text="Uma única aplicação que se adequa automaticamente a qualquer tipo de dispositivo: smartphone, tablet, desktop ou TV."/>
 				<crux:banner image="${siteDeviceResources.bannerProductivity}" buttonLabel="" title="Produtividade" 
 				             text="Codifique em Java com o poder do GWT, mas, em uma API de alto nível provida pelo Crux."/>
 			</crux:promoBanner>
@@ -39,7 +39,7 @@
 					</li>
 					<li class="liLast">
 						<crux:anchor id="quickstartButton" href="#topMenuDisposal:quickstart" text="Crux Quickstart" styleName="quickstartBannerBtn"></crux:anchor>
-						<h2>Posts do Blog</h2>
+						<h2>Posts do Blog do Crux</h2>
 						<div class="greenBlock">
 							<crux:rssPanel id="lastBlogEntries" title="" entryTitleStyleName="box" maxTitleSize="69" />
 						</div>

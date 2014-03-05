@@ -5,20 +5,21 @@
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	xmlns:t="http://www.cruxframework.org/templates/menus"
-	useController="mainController" title="Documentação"> 
+	useController="mainController" title="Documentação"
+    onLoad="mainController.manualOnLoad"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
 		
 		<t:menuaprenda pageTitle="Documentação" />
 		
-		<div class="bigText">
+ 	      <div class="bigText">
 			<div class="container">
 				<ul>
 					<li>
-						<h2>Manual Crux 5</h2>
-						<crux:anchor href="../documentation/single-page/index.html" target="_blank" text="Manual Página Única" id="manualSinglePageBtn" styleName="btn btn-bigblue"></crux:anchor> 
-						<crux:anchor href="../documentation/multiple-pages/index.html" target="_blank" text="Manual Multiplas Páginas" id="manualMultiplePageBtn" styleName="btn btn-bigblue"></crux:anchor>
-                        <crux:anchor href="../documentation/pdf/manual-crux-5.0.pdf" text="Documentação .PDF" target="_blank" id="manualPdfBtn" styleName="btn btn-bigblue"></crux:anchor>
+						<h2>Manual Crux 5.0</h2>
+						<crux:anchor href="#/single-page/index.html" target="_blank" text="Página Única" id="manualSinglePageBtn" styleName="btn btn-bigblue"></crux:anchor> 
+						<crux:anchor href="#/multiple-pages/index.html" target="_blank" text="Várias Páginas" id="manualMultiplePageBtn" styleName="btn btn-bigblue"></crux:anchor>
+                        <crux:anchor href="#/pdf/manual-crux-5.0.pdf" text="Versão PDF" target="_blank" id="manualPdfBtn" styleName="btn btn-bigblue"></crux:anchor>
 					</li>
 					<div class="clear"></div>
 				</ul>	
@@ -28,11 +29,22 @@
 				<ul>
 					<li>
 						<h2>Javadoc Crux 5</h2>
-						<crux:anchor href="../documentation/javadoc/index.html" text="Javadoc Crux 5" target="_blank" id="javadocBtn" styleName="btn btn-bigblue"></crux:anchor> 
+						<crux:anchor href="#/javadoc/index.html" text="Javadoc" target="_blank" id="javadocBtn" styleName="btn btn-bigblue"></crux:anchor> 
 					</li>
 					<div class="clear"></div>
 				</ul>
 			</div>
+            <div class="separator"></div>
+            <div class="container">
+                <ul>
+                    <li>
+                        <h2>Versões Anteriores</h2>
+                        <crux:anchor href="http://code.google.com/p/crux-framework/wiki/UserManual" target="_blank" text="Manual Crux 4" id="manualCrux4Btn" styleName="btn btn-bigblue"></crux:anchor>
+                    </li>
+                    <div class="clear"></div>
+                </ul>
+            </div>
 		</div>
+         
 	</gwt:HTMLPanel>
 </v:view>

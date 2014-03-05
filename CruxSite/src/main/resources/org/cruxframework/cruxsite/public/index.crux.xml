@@ -22,7 +22,7 @@
 	<body>
 		<script type="text/javascript" src="../cruxsite/cruxsite.nocache.js"></script>
 		
-		<c:screen useController="mainController" useView="**/views/*"
+		<c:screen useView="**/views/*"
 			smallViewport="user-scalable=no, width=320"
 			largeViewport="user-scalable=no, width=device-width, height=device-height"
 			useResource="siteDeviceResources,siteCommonResources" />
@@ -30,6 +30,7 @@
 		<gwt:simplePanel id="siteHeader" styleName="siteHeader">
 			<gwt:HTMLPanel id="headerContent">
 				<div class="container containerHeader">
+                
 					<crux:anchor id="cruxHeaderLogo" href="#topMenuDisposal:home" styleName="headerLogo"></crux:anchor>
 					
 					<!--  PARA VERSÃO em INGLES
