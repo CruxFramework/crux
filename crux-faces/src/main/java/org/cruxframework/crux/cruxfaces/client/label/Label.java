@@ -15,161 +15,24 @@
  */
 package org.cruxframework.crux.cruxfaces.client.label;
 
-import org.cruxframework.crux.cruxfaces.client.event.HasSelectHandlers;
-import org.cruxframework.crux.cruxfaces.client.event.SelectEvent;
-import org.cruxframework.crux.cruxfaces.client.event.SelectHandler;
+import org.cruxframework.crux.cruxfaces.client.select.SelectableWidget;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.Touch;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.TouchEndEvent;
-import com.google.gwt.event.dom.client.TouchEndHandler;
-import com.google.gwt.event.dom.client.TouchMoveEvent;
-import com.google.gwt.event.dom.client.TouchMoveHandler;
-import com.google.gwt.event.dom.client.TouchStartEvent;
-import com.google.gwt.event.dom.client.TouchStartHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.HasDirection.Direction;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasAutoHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasDirectionalText;
 import com.google.gwt.user.client.ui.HasWordWrap;
 
 /**
+ * A cross device label, that use touch events on touch enabled devices to implement Google Fast Buttons
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class Label extends Composite implements HasSelectHandlers, HasDirectionalText, HasWordWrap, HasAutoHorizontalAlignment
+public class Label extends SelectableWidget implements HasDirectionalText, HasWordWrap, HasAutoHorizontalAlignment
 {
-	private LabelEventsHandler impl;
 	private InternalLabel label;
-
-	//Extrair esse handler pra que possa reaproveitar parar todos os componentes 
-	// que queriam implementar o fast click. Criar um componente abstrato, que estenda
-	// o composite e que possa ser o cara base pra esse handler generico. Eh importante
-	//que o handler generico tenha set e is enabled. componentes como o label, que nao 
-	//sao hasEnabled, nao chamam essas propriedades do handler e nao sao impactados desta
-	//forma.
-	static abstract class LabelEventsHandler
-	{
-		protected Label label;
-		protected boolean preventDefaultTouchEvents = false;
-
-		protected void setLabel(Label label)
-		{
-			this.label = label;
-		}
-		
-		protected void select()
-		{
-			SelectEvent.fire(label);
-		}
-
-		protected void setPreventDefaultTouchEvents(boolean preventDefaultTouchEvents)
-		{
-			this.preventDefaultTouchEvents = preventDefaultTouchEvents;
-		}
-
-		protected abstract void handleLabel();
-	}
-
-	/**
-	 * Implementation for non touch devices
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	static class LabelEventsHandlerNoTouchImpl extends LabelEventsHandler
-	{
-		public void handleLabel()
-		{
-			label.addClickHandler(new ClickHandler()
-			{
-				@Override
-				public void onClick(ClickEvent event)
-				{
-					select();
-				}
-			});
-		}
-	}
-
-	/**
-	 * Implementation for touch devices
-	 * @author Thiago da Rosa de Bustamante
-	 *
-	 */
-	static class LabelEventsHandlerTouchImpl extends LabelEventsHandler implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
-	{
-		private static final int TAP_EVENT_THRESHOLD = 5;
-		private int startX;
-		private int startY;
-		private HandlerRegistration touchMoveHandler;
-		private HandlerRegistration touchEndHandler;
-
-		public void handleLabel()
-		{
-			label.addTouchStartHandler(this);
-		}
-
-		@Override
-		public void onTouchEnd(TouchEndEvent event)
-		{
-			event.stopPropagation();
-			if (preventDefaultTouchEvents)
-			{
-				event.preventDefault();
-			}
-			select();
-			resetHandlers();
-		}
-
-		@Override
-		public void onTouchMove(TouchMoveEvent event)
-		{
-			if (preventDefaultTouchEvents)
-			{
-				event.preventDefault();
-			}
-			Touch touch = event.getTouches().get(0);
-			if (Math.abs(touch.getClientX() - this.startX) > TAP_EVENT_THRESHOLD || Math.abs(touch.getClientY() - this.startY) > TAP_EVENT_THRESHOLD) 
-			{
-				this.resetHandlers();
-			}
-		}
-
-		@Override
-		public void onTouchStart(TouchStartEvent event)
-		{
-			event.stopPropagation();
-			if (preventDefaultTouchEvents)
-			{
-				event.preventDefault();
-			}
-			Touch touch = event.getTouches().get(0);
-			startX = touch.getClientX();
-			startY = touch.getClientY();
-			touchMoveHandler = label.addTouchMoveHandler(this);
-			touchEndHandler = label.addTouchEndHandler(this);
-		}
-
-		private void resetHandlers()
-		{
-			if(touchMoveHandler != null)
-			{
-				touchMoveHandler.removeHandler();
-				touchMoveHandler = null;
-			}
-			if(touchEndHandler != null)
-			{
-				touchEndHandler.removeHandler();
-				touchEndHandler = null;
-			}
-		}
-	}
 
 	public Label()
 	{
@@ -203,45 +66,6 @@ public class Label extends Composite implements HasSelectHandlers, HasDirectiona
 	{
 		this.label = label;
 		initWidget(label);
-		impl = GWT.create(LabelEventsHandler.class);
-		impl.setLabel(this);
-		impl.handleLabel();
-	}
-
-	@Override
-	public HandlerRegistration addSelectHandler(SelectHandler handler)
-	{
-		return addHandler(handler, SelectEvent.getType());
-	}
-	
-	public void select()
-	{
-		impl.select();
-	}
-	
-	public void setPreventDefaultTouchEvents(boolean preventDefaultTouchEvents)
-	{
-		impl.setPreventDefaultTouchEvents(preventDefaultTouchEvents);
-	}
-
-	protected HandlerRegistration addTouchEndHandler(TouchEndHandler handler)
-	{
-		return addDomHandler(handler, TouchEndEvent.getType());
-	}
-
-	protected HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler)
-	{
-		return addDomHandler(handler, TouchMoveEvent.getType());
-	}
-
-	protected HandlerRegistration addTouchStartHandler(TouchStartHandler handler)
-	{
-		return addDomHandler(handler, TouchStartEvent.getType());
-	}
-	
-	protected HandlerRegistration addClickHandler(ClickHandler handler)
-	{
-		return addDomHandler(handler, ClickEvent.getType());
 	}
 
 	@Override

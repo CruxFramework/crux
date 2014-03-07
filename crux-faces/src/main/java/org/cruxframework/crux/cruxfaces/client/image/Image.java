@@ -15,275 +15,111 @@
  */
 package org.cruxframework.crux.cruxfaces.client.image;
 
-import org.cruxframework.crux.cruxfaces.client.event.HasSelectHandlers;
-import org.cruxframework.crux.cruxfaces.client.event.SelectEvent;
-import org.cruxframework.crux.cruxfaces.client.event.SelectHandler;
+import org.cruxframework.crux.cruxfaces.client.select.SelectableWidget;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Touch;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.HasErrorHandlers;
 import com.google.gwt.event.dom.client.HasLoadHandlers;
 import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.event.dom.client.TouchEndEvent;
-import com.google.gwt.event.dom.client.TouchEndHandler;
-import com.google.gwt.event.dom.client.TouchMoveEvent;
-import com.google.gwt.event.dom.client.TouchMoveHandler;
-import com.google.gwt.event.dom.client.TouchStartEvent;
-import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 
 /**
  * @author Thiago da Rosa de Bustamante
  * 
  */
-public class Image extends Composite implements HasSelectHandlers, HasLoadHandlers, HasErrorHandlers, HasEnabled
+public class Image extends SelectableWidget implements HasLoadHandlers, HasErrorHandlers, HasEnabled
 {
-	static abstract class ImageImpl extends com.google.gwt.user.client.ui.Image implements HasSelectHandlers, HasEnabled
-	{
-		protected boolean preventDefaultTouchEvents = false;
-		private boolean enabled = true;
-		protected abstract void select();
-
-		public HandlerRegistration addSelectHandler(SelectHandler handler)
-		{
-			return addHandler(handler, SelectEvent.getType());
-		}
-
-		protected void setPreventDefaultTouchEvents(boolean preventDefaultTouchEvents)
-		{
-			this.preventDefaultTouchEvents = preventDefaultTouchEvents;
-		}
-		
-		@Override
-		public boolean isEnabled()
-		{
-		    return enabled;
-		}
-		
-		@Override
-		public void setEnabled(boolean enabled)
-		{
-			this.enabled = enabled;
-		}
-	}
-
-	static class NoTouchImpl extends ImageImpl 
-	{
-		public NoTouchImpl()
-		{
-			addClickHandler(new ClickHandler()
-			{
-				@Override
-				public void onClick(ClickEvent event)
-				{
-					if (isEnabled())
-					{
-						SelectEvent selectEvent = SelectEvent.fire(NoTouchImpl.this);
-						if (selectEvent.isCanceled())
-						{
-							event.preventDefault();
-						}
-					}
-				}
-			});
-		}
-
-		@Override
-		protected void select()
-		{
-			SelectEvent.fire(NoTouchImpl.this);
-		}
-	}
-
-	static class TouchImpl extends ImageImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
-	{
-		private static final int TAP_EVENT_THRESHOLD = 5;
-		private int startX;
-		private int startY;
-		private HandlerRegistration touchMoveHandler;
-		private HandlerRegistration touchEndHandler;
-
-		public TouchImpl()
-		{
-			addTouchStartHandler(this);
-		}
-
-		@Override
-		protected void select()
-		{
-			SelectEvent.fire(this);
-		}
-
-		@Override
-		public void onTouchEnd(TouchEndEvent event)
-		{
-			if (preventDefaultTouchEvents)
-			{
-				event.preventDefault();
-			}
-			event.stopPropagation();
-			if (isEnabled())
-			{
-				SelectEvent.fire(this);
-			}
-			resetHandlers();
-		}
-
-		@Override
-		public void onTouchMove(TouchMoveEvent event)
-		{
-			if (preventDefaultTouchEvents)
-			{
-				event.preventDefault();
-			}
-			Touch touch = event.getTouches().get(0);
-			if (Math.abs(touch.getClientX() - this.startX) > TAP_EVENT_THRESHOLD || Math.abs(touch.getClientY() - this.startY) > TAP_EVENT_THRESHOLD) 
-			{
-				this.resetHandlers();
-			}
-		}
-
-		@Override
-		public void onTouchStart(TouchStartEvent event)
-		{
-			event.stopPropagation();
-			if (preventDefaultTouchEvents)
-			{
-				event.preventDefault();
-			}
-			Touch touch = event.getTouches().get(0);
-			startX = touch.getClientX();
-			startY = touch.getClientY();
-			touchMoveHandler = addTouchMoveHandler(this);
-			touchEndHandler = addTouchEndHandler(this);
-		}
-
-		private void resetHandlers()
-		{
-			if(touchMoveHandler != null)
-			{
-				touchMoveHandler.removeHandler();
-				touchMoveHandler = null;
-			}
-			if(touchEndHandler != null)
-			{
-				touchEndHandler.removeHandler();
-				touchEndHandler = null;
-			}
-		}
-
-	}
-
-	private ImageImpl impl;
-
+	private static final String DEFAULT_STYLE_NAME = "faces-Image";
+	private com.google.gwt.user.client.ui.Image image;
 	public Image()
 	{
-		impl = GWT.create(ImageImpl.class);
-		initWidget(impl.asWidget());
-		setStyleName("crux-Image");
+		this(new com.google.gwt.user.client.ui.Image());
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	public Image(ImageResource resource)
 	{
-		this();
-		setResource(resource);
+		this(new com.google.gwt.user.client.ui.Image(resource));
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	public Image(String url)
 	{
-		this();
-		setUrl(url);
+		this(new com.google.gwt.user.client.ui.Image(url));
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	public Image(SafeUri url)
 	{
-		this();
-		setUrl(url);
+		this(new com.google.gwt.user.client.ui.Image(url));
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	public Image(final String url, final int left, final int top, final int width, final int height)
 	{
-		this();
-		Scheduler.get().scheduleDeferred(new ScheduledCommand()
-		{
-			@Override
-			public void execute()
-			{
-				setUrlAndVisibleRect(url, left, top, width, height);
-			}
-		});
+		this(new com.google.gwt.user.client.ui.Image(url, left, top, width, height));
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
 	public Image(final SafeUri url, final int left, final int top, final int width, final int height)
 	{
-		this();
-		Scheduler.get().scheduleDeferred(new ScheduledCommand()
-		{
-			@Override
-			public void execute()
-			{
-				setUrlAndVisibleRect(url, left, top, width, height);
-			}
-		});
+		this(new com.google.gwt.user.client.ui.Image(url, left, top, width, height));
+		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
-	public int getWidth()
+	public Image(ImageElement element)
 	{
-		return impl.getWidth();
+		this(new InternalImage(element));
 	}
-
+	
+	protected Image(com.google.gwt.user.client.ui.Image image)
+	{
+		this.image = image;
+		initWidget(this.image);
+	}
+	
 	public String getUrl()
 	{
-		return impl.getUrl();
+		return image.getUrl();
 	}
 
 	public int getOriginTop()
 	{
-		return impl.getOriginTop();
+		return image.getOriginTop();
 	}
 
 	public int getOriginLeft()
 	{
-		return impl.getOriginLeft();
-	}
-
-	public int getHeight()
-	{
-		return impl.getHeight();
+		return image.getOriginLeft();
 	}
 
 	public String getAltText()
 	{
-		return impl.getAltText();
+		return image.getAltText();
 	}
 
 	public void setAltText(String altText)
 	{
-		impl.setAltText(altText);
+		image.setAltText(altText);
 	}
 
 	public void setResource(ImageResource resource)
 	{
-		impl.setResource(resource);
+		image.setResource(resource);
 	}
 
 	public void setUrl(SafeUri url)
 	{
-		impl.setUrl(url);
+		image.setUrl(url);
 	}
 
 	public void setUrl(String url)
 	{
-		impl.setUrl(url);
+		image.setUrl(url);
 	}
 
 	public void setUrlAndVisibleRect(final SafeUri url, final int left, final int top, final int width, final int height)
@@ -291,7 +127,7 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 		new GWTFixImage() {
 			@Override
 			public void callHowToImplementInnerSetVisibleRect() {
-				impl.setUrlAndVisibleRect(url, left, top, width, height);		
+				image.setUrlAndVisibleRect(url, left, top, width, height);		
 			}
 		};
 	}
@@ -301,7 +137,7 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 		new GWTFixImage() {
 			@Override
 			public void callHowToImplementInnerSetVisibleRect() {
-				impl.setUrlAndVisibleRect(url, left, top, width, height);		
+				image.setUrlAndVisibleRect(url, left, top, width, height);		
 			}
 		};
 	}
@@ -311,7 +147,7 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 		new GWTFixImage() {
 			@Override
 			public void callHowToImplementInnerSetVisibleRect() {
-				impl.setVisibleRect(left, top, width, height);		
+				image.setVisibleRect(left, top, width, height);		
 			}
 		};
 	}
@@ -340,20 +176,20 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 		
 		public void setVisibleRect()
 		{
-			boolean oldStyleHasDisplayNone = impl.getElement().getAttribute("style").contains("display: none");
-			String title = impl.getElement().getTitle();
-			String styleName = impl.getStyleName();
+			boolean oldStyleHasDisplayNone = image.getElement().getAttribute("style").contains("display: none");
+			String title = image.getElement().getTitle();
+			String styleName = image.getStyleName();
 			callHowToImplementInnerSetVisibleRect();
-			impl.setVisible(!oldStyleHasDisplayNone);
-			impl.setTitle(title);
-			impl.setStyleName(styleName);
+			image.setVisible(!oldStyleHasDisplayNone);
+			image.setTitle(title);
+			image.setStyleName(styleName);
 		}
 	}
 	
 	@Override
 	public boolean isEnabled()
 	{
-		return impl.isEnabled();
+		return getSelectEventsHandler().isEnabled();
 	}
 
 	@Override
@@ -361,7 +197,7 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 	{
 		if (enabled != isEnabled())
 		{
-			impl.setEnabled(enabled);
+			getSelectEventsHandler().setEnabled(enabled);
 			if (enabled)
 			{
 				removeStyleDependentName("disabled");
@@ -376,23 +212,20 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 	@Override
 	public HandlerRegistration addErrorHandler(ErrorHandler handler)
 	{
-		return impl.addErrorHandler(handler);
+		return image.addErrorHandler(handler);
 	}
 
 	@Override
 	public HandlerRegistration addLoadHandler(LoadHandler handler)
 	{
-		return impl.addLoadHandler(handler);
+		return image.addLoadHandler(handler);
 	}
-
-	@Override
-	public HandlerRegistration addSelectHandler(SelectHandler handler)
+	
+	private static class InternalImage extends com.google.gwt.user.client.ui.Image
 	{
-		return impl.addSelectHandler(handler);
-	}
-
-	public void setPreventDefaultTouchEvents(boolean preventDefaultTouchEvents)
-	{
-		impl.setPreventDefaultTouchEvents(preventDefaultTouchEvents);
+		public InternalImage(ImageElement element)
+		{
+			super(element);
+		}
 	}
 }
