@@ -326,6 +326,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	border: none;
 	position: relative;
 	cursor: pointer;
+	z-index: 9999;
 }
 .crux-RollingPanelPrevious:after, .crux-RollingPanelNext:after
 {
