@@ -99,7 +99,7 @@ public class MessageBodyParamInjector extends StringParameterInjector implements
                 }
                 catch (Exception e)
                 {
-        			throw new BadRequestException("Can not read request body for path: " + request.getUri().getPath());
+        			throw new BadRequestException("Can not read request body for path: " + request.getUri().getPath(), e);
                 }
 			}
 			else
