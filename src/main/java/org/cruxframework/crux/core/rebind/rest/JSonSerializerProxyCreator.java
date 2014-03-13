@@ -591,7 +591,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 			{
 				if (!first)
 				{
-					srcWriter.print("else ");					
+					srcWriter.print("else ");
 				}
 				first = false;
 				srcWriter.println("if ("+StringUtils.class.getCanonicalName()+".unsafeEquals("+objectVar+".getClass().getName(),"+EscapeUtils.quote(innerObject.value().getName())+")){");
@@ -601,7 +601,15 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 
 				srcWriter.println("}");
 			}
-			srcWriter.println("if ("+resultJSONValueVar+" != null){");
+			if (!first)
+			{
+				srcWriter.print("else ");
+			}			
+			srcWriter.println("if ("+StringUtils.class.getCanonicalName()+".unsafeEquals("+objectVar+".getClass().getName(),"+EscapeUtils.quote(objectType.getQualifiedSourceName())+")){");
+			srcWriter.println(resultJSONValueVar+" = new JSONObject();");
+			srcWriter.println("}");
+			
+			srcWriter.println("if ("+resultJSONValueVar+" != null && !JSONNull.getInstance().equals("+resultJSONValueVar+")){");
 			srcWriter.println(resultJSONValueVar+".isObject().put("+EscapeUtils.quote(JsonSubTypes.SUB_TYPE_SELECTOR)+", new JSONString("+objectVar+".getClass().getName()));");
 			srcWriter.println("}");
 		}
@@ -611,6 +619,14 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 			srcWriter.println(resultJSONValueVar+" = new JSONObject();");
 		}
 		
+		srcWriter.println("if ("+resultJSONValueVar+" != null && !JSONNull.getInstance().equals("+resultJSONValueVar+")){");
+		generateEncodeStringForCustomTypeInnerProperties(srcWriter, objectType, objectVar, resultJSONValueVar);
+		srcWriter.println("}");
+	}
+
+	private void generateEncodeStringForCustomTypeInnerProperties(SourcePrinter srcWriter, 
+			JClassType objectType, String objectVar, String resultJSONValueVar) 
+	{
 		List<JMethod> getterMethods = JClassUtils.getGetterMethods(objectType);
 		for (JMethod method : getterMethods)
 		{
