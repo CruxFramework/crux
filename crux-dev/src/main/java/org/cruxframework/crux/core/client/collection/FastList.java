@@ -153,6 +153,23 @@ public class FastList<V>
 			return javaArray.remove(index);
 		}
 	}
+
+	/**
+	 * Remove the given element from the list.
+	 * @param value
+	 * @return true if removed
+	 */
+	public boolean remove(V value)
+    {
+		int index = indexOf(value);
+		if (index >= 0)
+		{
+			remove(index);
+			return true;
+		}
+		return false;
+    }
+	
 	
 	/**
 	 * Return the list size
