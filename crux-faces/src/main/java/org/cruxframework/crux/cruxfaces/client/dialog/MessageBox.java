@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A simple dialog which shows messages
  * @author Gesse Dafe
+ * @author Thiago da Rosa de Bustamante
  */
 public class MessageBox extends DialogBox implements HasOkHandlers
 {
@@ -50,19 +51,20 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 	 */
 	public MessageBox()
 	{
-		this(true, true, true, DEFAULT_STYLE_NAME);
+		this(true, true, true, false, DEFAULT_STYLE_NAME);
 	}
 	
 	/**
 	 * Creates a message box
 	 * @param movable if true, the window can be dragged
 	 * @param resizable if true, the window can be resized
-	 * @param closable if true, the window can be clased by a button on the title bar
+	 * @param closable if true, the window can be classed by a button on the title bar
+	 * @param modal if true this dialog disables events that does not target the dialog 
 	 * @param styleName the dialog base CSS class name
 	 */
-	public MessageBox(boolean movable, boolean resizable, boolean closable, String styleName)
+	public MessageBox(boolean movable, boolean resizable, boolean closable, boolean modal, String styleName)
 	{
-		super(movable, resizable, closable, styleName);
+		super(movable, resizable, closable, modal, styleName);
 		setStyleName(styleName);
 		Widget content = createMessagePanel();
 		setWidget(content);
@@ -75,7 +77,7 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 	 */
 	public static MessageBox show(String message, MessageType type)
 	{
-		return show(message, type, true, true, true, DEFAULT_STYLE_NAME);
+		return show(message, type, true, true, true, false, DEFAULT_STYLE_NAME);
 	}
 	
 	/**
@@ -85,12 +87,33 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 	 * @param movable if true, the window can be dragged
 	 * @param resizable if true, the window can be resized
 	 * @param closable if true, the window can be clased by a button on the title bar
+	 * @param modal if true this dialog disables events that does not target the dialog 
 	 * @param styleName the dialog base CSS class name
 	 */
-	public static MessageBox show(String message, MessageType type, boolean movable, boolean resizable, boolean closable, String styleName)
+	public static MessageBox show(String message, MessageType type, boolean movable, boolean resizable, boolean closable, boolean modal, String styleName)
 	{
-		MessageBox msgBox = new MessageBox(movable, resizable, closable, styleName); 
+		return show(null, message, type, movable, resizable, closable, modal, styleName);
+	}
+
+	/**
+	 * Shows a message box
+	 * @param title the dilog box title.
+	 * @param message the text to be displayed
+	 * @param type the message type, used to apply a particular style
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 * @param closable if true, the window can be clased by a button on the title bar
+	 * @param modal if true this dialog disables events that does not target the dialog 
+	 * @param styleName the dialog base CSS class name
+	 */
+	public static MessageBox show(String title, String message, MessageType type, boolean movable, boolean resizable, boolean closable, boolean modal, String styleName)
+	{
+		MessageBox msgBox = new MessageBox(movable, resizable, closable, modal, styleName); 
 		msgBox.setMessage(message, type);
+		if (title != null)
+		{
+			msgBox.setTitle(title);
+		}
 		msgBox.show();
 		msgBox.center();
 		return msgBox;

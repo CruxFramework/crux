@@ -36,15 +36,15 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A simple dialog box built upon DIV elements.
  * @author Gesse Dafe
+ * @author Thiago da Rosa de Bustamante
  */
-public abstract class DialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>
+public class DialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-DialogBox";
 	private static final int MIN_WIDTH = 100;
@@ -63,7 +63,7 @@ public abstract class DialogBox extends PopupPanel implements Movable<Label>, Re
 	 */
 	public DialogBox()
 	{
-		this(true, true, true, DEFAULT_STYLE_NAME);
+		this(true, true, true, false, DEFAULT_STYLE_NAME);
 	}
 	
 	/**
@@ -72,9 +72,9 @@ public abstract class DialogBox extends PopupPanel implements Movable<Label>, Re
 	 * @param resizable
 	 * @param closable
 	 */
-	public DialogBox(boolean movable, boolean resizable, boolean closable) 
+	public DialogBox(boolean movable, boolean resizable, boolean closable, boolean modal) 
 	{
-		this(movable, resizable, closable, DEFAULT_STYLE_NAME);
+		this(movable, resizable, closable, modal, DEFAULT_STYLE_NAME);
 	}
 	
 	/**
@@ -82,12 +82,12 @@ public abstract class DialogBox extends PopupPanel implements Movable<Label>, Re
 	 * @param movable
 	 * @param resizable
 	 * @param closable
+	 * @param modal 
 	 * @param baseStyleName
 	 */
-	protected DialogBox(boolean movable, boolean resizable, boolean closable, String baseStyleName) 
+	protected DialogBox(boolean movable, boolean resizable, boolean closable, boolean modal, String baseStyleName) 
 	{
 		setStyleName(baseStyleName);
-		setGlassEnabled(true);
 		setGlassStyleName("dialogGlass");
 
 		FlowPanel topBar = prepareTopBar(movable, closable);
@@ -127,6 +127,38 @@ public abstract class DialogBox extends PopupPanel implements Movable<Label>, Re
 				}
 			});
 		}
+	}
+
+	/**
+	 * Shows a dialog box
+	 * @param widget the content widget displayed by this dialog
+	 */
+	public static DialogBox show(IsWidget widget)
+	{
+		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAME);
+	}
+
+	/**
+	 * Shows a dialog box
+	 * @param title the dilog box title.
+	 * @param widget the content widget displayed by this dialog
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 * @param closable if true, the window can be clased by a button on the title bar
+	 * @param modal if true this dialog disables events that does not target the dialog 
+	 * @param styleName the dialog base CSS class name
+	 */
+	public static DialogBox show(String title, IsWidget widget, boolean movable, boolean resizable, boolean closable, boolean modal, String styleName)
+	{
+		DialogBox msgBox = new DialogBox(movable, resizable, closable, modal, styleName); 
+		msgBox.setWidget(widget);
+		if (title != null)
+		{
+			msgBox.setTitle(title);
+		}
+		msgBox.show();
+		msgBox.center();
+		return msgBox;
 	}
 
 	/**
@@ -289,7 +321,7 @@ public abstract class DialogBox extends PopupPanel implements Movable<Label>, Re
 	}
 
 	@Override
-	public void hide(boolean autoClosed)
+	protected void hide(boolean autoClosed)
 	{
 	    super.hide(autoClosed);
 	    openDialogs.remove(this);
