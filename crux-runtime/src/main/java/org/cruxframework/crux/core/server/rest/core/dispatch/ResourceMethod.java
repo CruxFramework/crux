@@ -242,8 +242,8 @@ public class ResourceMethod
 
 	private Object createTarget(HttpRequest request, HttpResponse response) throws InstantiationException, IllegalAccessException
 	{
-		//TODO criar um restServiceFactory para instanciar isso, a fim de permitir integracao com spring, guice, etc
-		Object target = resourceClass.newInstance();
+		Object target = getRestServiceFactory(request).getService(resourceClass);
+		
 		if (isRequestAware)
 		{
 			((HttpRequestAware)target).setRequest(request);
@@ -254,6 +254,7 @@ public class ResourceMethod
 		}
 		return target;
 	}
+
 
 	private MethodReturn invoke(HttpRequest request, Object target)
 	{
@@ -453,5 +454,15 @@ public class ResourceMethod
 		{
 			this.checkedExceptionData = checkedExceptionData;
 		}
+	}
+	
+	private RestServiceFactory getRestServiceFactory(HttpRequest request)
+	{
+		if (!RestServiceFactoryInitializer.isFactoryInitialized())
+		{
+			RestServiceFactoryInitializer.initialize(request.getSession(true).getServletContext());
+		}
+		
+		return RestServiceFactoryInitializer.getServiceFactory();
 	}
 }
