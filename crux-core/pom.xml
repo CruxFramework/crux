@@ -27,8 +27,8 @@
         <javadoc.dir>${basedir}/javadoc</javadoc.dir>
     </properties>
 
-	<!-- ATTENTION: Due to a Maven reator bug not fixed yet, first time you run
-	this project, comment those modules lines. -->
+	<!-- ATTENTION: Due to a Maven reactor bug not fixed yet,
+	first time you run this project, comment those modules lines. -->
     <modules>
         <module>../crux-runtime</module>
         <module>../crux-dev</module>
