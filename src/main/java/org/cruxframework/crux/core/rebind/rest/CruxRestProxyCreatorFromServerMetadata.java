@@ -30,7 +30,7 @@ import org.cruxframework.crux.core.client.rest.RestProxy.TargetRestService;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.server.rest.core.registry.RestServiceScanner;
+import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.util.HttpMethodHelper;
 import org.cruxframework.crux.core.server.rest.util.InvalidRestMethod;
 import org.cruxframework.crux.core.shared.rest.RestException;
@@ -205,17 +205,15 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 		{
 			throw new CruxGeneratorException("Can not create the rest proxy. Use @RestProxy.TargetRestService annotation to inform the target of current proxy.");
 		}
-		String serviceClassName = RestServiceScanner.getInstance().getServiceClassName(restService.value());
-		Class<?> restImplementationClass;
+		String serviceName = restService.value();
 		try
 		{
-			restImplementationClass = Class.forName(serviceClassName);
+			return RestServiceFactoryInitializer.getServiceFactory().getServiceClass(serviceName);
 		}
-		catch (ClassNotFoundException e)
+		catch (Exception e)
 		{
-			throw new CruxGeneratorException("Can not create the rest proxy. Can not found the implementationClass.");
+			throw new CruxGeneratorException("Can not create the rest proxy. Can not found the implementationClass for service name ["+serviceName+"].");
 		}
-		return restImplementationClass;
 	}
 
 	private Class<?>[] getRestExceptionTypes(Method method)
