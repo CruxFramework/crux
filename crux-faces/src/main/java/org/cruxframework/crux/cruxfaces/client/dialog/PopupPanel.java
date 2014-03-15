@@ -44,6 +44,7 @@ import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.UIObject;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A panel that can "pop up" over other widgets. It overlays the browser's
@@ -73,6 +74,10 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 	private boolean glassShowing;
 
 	private boolean centered;
+
+	private String desiredHeight;
+
+	private String desiredWidth;
 
 	/**
 	 * Creates an empty popup panel. A child widget must be added to it before
@@ -422,6 +427,69 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 	}
 
 	@Override
+	public void setWidget(Widget w)
+	{
+		super.setWidget(w);
+		maybeUpdateSize();
+	}
+
+	/**
+	 * Sets the width of the panel's child widget. If the panel's child widget
+	 * has not been set, the width passed in will be cached and used to set the
+	 * width immediately after the child widget is set.
+	 * 
+	 * <p>
+	 * Note that subclasses may have a different behavior. A subclass may decide
+	 * not to change the width of the child widget. It may instead decide to
+	 * change the width of an internal panel widget, which contains the child
+	 * widget.
+	 * </p>
+	 * 
+	 * @param width
+	 *            the object's new width, in CSS units (e.g. "10px", "1em")
+	 */
+	@Override
+	public void setWidth(String width)
+	{
+		desiredWidth = width;
+		maybeUpdateSize();
+		// If the user cleared the size, revert to not trying to control
+		// children.
+		if (width.length() == 0)
+		{
+			desiredWidth = null;
+		}
+	}
+	
+	/**
+	 * Sets the height of the panel's child widget. If the panel's child widget
+	 * has not been set, the height passed in will be cached and used to set the
+	 * height immediately after the child widget is set.
+	 * 
+	 * <p>
+	 * Note that subclasses may have a different behavior. A subclass may decide
+	 * not to change the height of the child widget. It may instead decide to
+	 * change the height of an internal panel widget, which contains the child
+	 * widget.
+	 * </p>
+	 * 
+	 * @param height
+	 *            the object's new height, in CSS units (e.g. "10px", "1em")
+	 */
+	@Override
+	public void setHeight(String height)
+	{
+		desiredHeight = height;
+		maybeUpdateSize();
+		// If the user cleared the size, revert to not trying to control
+		// children.
+		if (height.length() == 0)
+		{
+			desiredHeight = null;
+		}
+	}	
+	
+	@Override
 	public void onPreviewNativeEvent(NativePreviewEvent event)
 	{
 		if (event.isCanceled())
@@ -514,7 +582,29 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 	{
 		return DOMUtils.getBoundingClientRect(getElement());
 	}
-	
+
+	/**
+	 * We control size by setting our child widget's size. However, if we don't
+	 * currently have a child, we record the size the user wanted so that when
+	 * we do get a child, we can set it correctly. Until size is explicitly
+	 * cleared, any child put into the popup will be given that size.
+	 */
+	private void maybeUpdateSize()
+	{
+		Widget w = super.getWidget();
+		if (w != null)
+		{
+			if (desiredHeight != null)
+			{
+				w.setHeight(desiredHeight);
+			}
+			if (desiredWidth != null)
+			{
+				w.setWidth(desiredWidth);
+			}
+		}
+	}
+
 	private void centralizeMe()
 	{
 		Style style = getElement().getStyle();
