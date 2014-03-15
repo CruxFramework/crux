@@ -16,8 +16,6 @@
 package org.cruxframework.crux.core.server.rest.core.registry;
 
 import java.util.Iterator;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.ServletContext;
 
@@ -35,12 +33,9 @@ import org.cruxframework.crux.core.server.scan.ClassScanner;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class RestServiceScanner 
+public class RestServiceFactoryImpl implements RestServiceFactory
 {
-	private static final Log logger = LogFactory.getLog(RestServiceScanner.class);
-	private static final RestServiceScanner instance = new RestServiceScanner();
-	private static final Lock initializeLock = new ReentrantLock();
-	private static boolean initialized = false;
+	private static final Log logger = LogFactory.getLog(RestServiceFactoryImpl.class);
 	
 	/**
 	 * This class uses a file generated during application compilation to find out rest service classes.
@@ -115,7 +110,7 @@ public class RestServiceScanner
 	/**
 	 * This Constructor select the best strategy to use. 
 	 */
-	private RestServiceScanner()
+	public RestServiceFactoryImpl()
 	{
 		if (Environment.isProduction() ||  Boolean.parseBoolean(ConfigurationFactory.getConfigurations().useCompileTimeClassScanningForDevelopment()))
 		{
@@ -132,77 +127,51 @@ public class RestServiceScanner
 	 * @param serviceName
 	 * @return
 	 */
-	public String getServiceClassName(String serviceName) 
+	public Class<?> getServiceClass(String serviceName) 
 	{
-		if (!isInitialized())
-		{
-			initialize(null);
-		}
-		return strategy.getServiceClassName(serviceName);
+		try
+        {
+	        return Class.forName(strategy.getServiceClassName(serviceName));
+        }
+        catch (ClassNotFoundException e)
+        {
+			String msg = "Can not found class  associated with service ["+serviceName+"]";
+			logger.error(msg, e);
+			throw new RuntimeException(msg, e);
+        }
 	}
 	
 	public Iterator<String> iterateRestServices()
 	{
-		if (!isInitialized())
-		{
-			initialize(null);
-		}
 		return strategy.iterateRestServices();
 	}
-
-	/**
-	 * 
-	 * @param context
-	 */
-	private void initializeScanner(ServletContext context) 
+	
+	@Override
+	public void initialize(ServletContext context)
 	{
 		if (!strategy.initialize(context))
 		{
 			if (strategy instanceof CompileTimeStrategy)
 			{
-				logger.info("Error initializing services. Using runtime strategy for services...");
+				logger.info("Error initializing REST services. Using runtime strategy for services...");
 				strategy = new RuntimeStrategy();
 				strategy.initialize(context);
 			}
 		}
 	}
 	
-	public static RestServiceScanner getInstance()
-	{
-		return instance;
-	}
-	
-	public static void initialize(ServletContext context)
-	{
-		if (!initialized)
+	@Override
+    public Object getService(Class<?> serviceClass)
+    {
+		try 
 		{
-			initializeLock.lock();
-			try
-			{
-				if (!initialized)
-				{
-					instance.initializeScanner(context);
-					if (logger.isInfoEnabled())
-					{
-						logger.info("Server services registered.");
-					}
-					initialized = true;
-				}
-			}
-			finally
-			{
-				initializeLock.unlock();
-			}
+			return serviceClass.newInstance();
+		} 
+		catch (Exception e) 
+		{
+			String msg = "Error creating REST service for class [" + serviceClass.getCanonicalName() + "].";
+			logger.error(msg, e);
+			throw new RuntimeException(msg, e);
 		}
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public static boolean isInitialized()
-	{
-		return initialized;
-	}
-	
+    }
 }

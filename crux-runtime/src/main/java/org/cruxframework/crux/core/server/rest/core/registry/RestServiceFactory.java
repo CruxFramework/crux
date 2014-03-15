@@ -13,7 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.server.rest.core.dispatch;
+package org.cruxframework.crux.core.server.rest.core.registry;
+
+import java.util.Iterator;
 
 import javax.servlet.ServletContext;
 
@@ -26,4 +28,6 @@ public interface RestServiceFactory
 {
 	Object getService(Class<?> serviceClass);
 	void initialize(ServletContext context);
+	Iterator<String> iterateRestServices();
+	Class<?> getServiceClass(String serviceName);
 }

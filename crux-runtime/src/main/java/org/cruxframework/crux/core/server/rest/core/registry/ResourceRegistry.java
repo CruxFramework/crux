@@ -336,20 +336,20 @@ public class ResourceRegistry
 
 	private static void initializeRegistry()
     {
-	    RestServiceScanner serviceScanner = RestServiceScanner.getInstance();
+	    RestServiceFactory serviceScanner = RestServiceFactoryInitializer.getServiceFactory();
 		Iterator<String> restServices = serviceScanner.iterateRestServices();
 		
 		while (restServices.hasNext())
 		{
 			String service = restServices.next();
-			String serviceClassName = serviceScanner.getServiceClassName(service);
 			try
-            {
-	            instance.addResource(Class.forName(serviceClassName), "");
+			{
+				Class<?> serviceClass = serviceScanner.getServiceClass(service);
+	            instance.addResource(serviceClass, "");
             }
-            catch (ClassNotFoundException e)
+            catch (Exception e)
             {
-            	logger.error("Error initializing rest service class [{"+serviceClassName+"}]", e);
+            	logger.error("Error initializing rest service class for service ["+service+"]", e);
             }
 		}
 		initialized = true;

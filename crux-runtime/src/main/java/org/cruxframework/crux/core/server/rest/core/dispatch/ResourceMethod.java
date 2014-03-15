@@ -34,6 +34,7 @@ import org.cruxframework.crux.core.server.rest.annotation.RestService.JsonPSuppo
 import org.cruxframework.crux.core.server.rest.core.EntityTag;
 import org.cruxframework.crux.core.server.rest.core.HttpRequestAware;
 import org.cruxframework.crux.core.server.rest.core.HttpResponseAware;
+import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
 import org.cruxframework.crux.core.server.rest.spi.HttpResponse;
 import org.cruxframework.crux.core.server.rest.spi.HttpServletResponseHeaders;
@@ -242,7 +243,7 @@ public class ResourceMethod
 
 	private Object createTarget(HttpRequest request, HttpResponse response) throws InstantiationException, IllegalAccessException
 	{
-		Object target = getRestServiceFactory(request).getService(resourceClass);
+		Object target = RestServiceFactoryInitializer.getServiceFactory().getService(resourceClass);
 		
 		if (isRequestAware)
 		{
@@ -454,15 +455,5 @@ public class ResourceMethod
 		{
 			this.checkedExceptionData = checkedExceptionData;
 		}
-	}
-	
-	private RestServiceFactory getRestServiceFactory(HttpRequest request)
-	{
-		if (!RestServiceFactoryInitializer.isFactoryInitialized())
-		{
-			RestServiceFactoryInitializer.initialize(request.getSession(true).getServletContext());
-		}
-		
-		return RestServiceFactoryInitializer.getServiceFactory();
 	}
 }

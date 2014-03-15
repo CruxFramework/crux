@@ -31,7 +31,7 @@ import org.cruxframework.crux.core.server.rest.core.HttpHeaders;
 import org.cruxframework.crux.core.server.rest.core.RequestPreprocessors;
 import org.cruxframework.crux.core.server.rest.core.dispatch.ResourceMethod.MethodReturn;
 import org.cruxframework.crux.core.server.rest.core.dispatch.RestDispatcher;
-import org.cruxframework.crux.core.server.rest.core.registry.RestServiceScanner;
+import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
 import org.cruxframework.crux.core.server.rest.spi.HttpResponse;
 import org.cruxframework.crux.core.server.rest.spi.HttpUtil;
@@ -103,9 +103,9 @@ public class RestServlet extends HttpServlet
 		{
 			logger.debug("Request received. Method ["+method+"]");
 		}
-		if (!RestServiceScanner.isInitialized())
+		if (!RestServiceFactoryInitializer.isFactoryInitialized())
 		{
-			RestServiceScanner.initialize(getServletContext());
+			RestServiceFactoryInitializer.initialize(getServletContext());
 		}
 		HttpHeaders headers = null;
 		UriInfo uriInfo = null;
@@ -170,9 +170,9 @@ public class RestServlet extends HttpServlet
 
 	protected void processCorsPreflightRequest(HttpServletRequest req, HttpServletResponse res) throws IOException
     {
-	    if (!RestServiceScanner.isInitialized())
+		if (!RestServiceFactoryInitializer.isFactoryInitialized())
 		{
-			RestServiceScanner.initialize(getServletContext());
+			RestServiceFactoryInitializer.initialize(getServletContext());
 		}
 		HttpHeaders headers = null;
 		UriInfo uriInfo = null;

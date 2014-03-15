@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
-import org.cruxframework.crux.core.server.rest.core.registry.RestServiceScanner;
+import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
 
 
 /**
@@ -83,7 +83,7 @@ public class InitializerListener implements ServletContextListener
 				ClassPathResolverInitializer.getClassPathResolver().initialize();
 			}
 			ServiceFactoryInitializer.initialize(context);
-			RestServiceScanner.initialize(context);
+			RestServiceFactoryInitializer.initialize(context);
 			
 		}
 		catch (Throwable e) 

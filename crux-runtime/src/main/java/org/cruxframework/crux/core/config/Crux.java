@@ -25,7 +25,7 @@ public interface Crux
 	@DefaultServerMessage("org.cruxframework.crux.core.server.dispatch.ServiceFactoryImpl")
 	String serviceFactory();
 	
-	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.core.dispatch.RestServiceFactoryImpl")
+	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryImpl")
 	String restServiceFactory();
 	
 	@DefaultServerMessage("org.cruxframework.crux.core.i18n.LocaleResolverImpl")
