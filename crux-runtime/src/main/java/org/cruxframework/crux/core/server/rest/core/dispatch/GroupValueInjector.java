@@ -105,15 +105,19 @@ class GroupValueInjector implements ValueInjector
 	private String getParamName(String paramPrefix, String name)
     {
 		StringBuilder builder = new StringBuilder();
-		if (paramPrefix!= null)
+		
+		if (paramPrefix!= null && paramPrefix.trim().length() > 0)
 		{
 			builder.append(paramPrefix);
+			
 			if (!paramPrefix.endsWith("."))
 			{
 				builder.append(".");
 			}
 		}
+		
 		builder.append(name);
+		
 	    return builder.toString();
     }
 
