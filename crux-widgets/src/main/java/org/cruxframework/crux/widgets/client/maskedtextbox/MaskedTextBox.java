@@ -54,6 +54,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.HasDirection;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasName;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -64,7 +65,8 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class MaskedTextBox extends Composite implements HasFormatter, HasDirection, HasChangeHandlers, HasValueChangeHandlers<String>,
 														HasClickHandlers, HasAllFocusHandlers, HasAllKeyHandlers,
-														HasAllMouseHandlers, HasName, HasPasteHandlers, HasDoubleClickHandlers
+														HasAllMouseHandlers, HasName, HasPasteHandlers, HasDoubleClickHandlers, 
+														HasEnabled
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-MaskedTextBox" ;
 
@@ -413,11 +415,13 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 		return textBox.getTabIndex();
 	}
 	
+	@Override
 	public boolean isEnabled() 
 	{
 		return textBox.isEnabled();  
 	}
 
+	@Override
 	public void setEnabled(boolean enabled) 
 	{
 		textBox.setEnabled(enabled);
@@ -469,4 +473,5 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 			masked.applyMask(this, clearIfNotValid);
 		}
 	}
+	
 }
