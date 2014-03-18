@@ -326,7 +326,7 @@ public class IDBIndexProxyCreator extends IDBAbstractKeyValueProxyCreator
 	public String getProxySimpleName()
 	{
 		String typeName = indexName.replaceAll("\\W", "_");
-		return typeName+"_Index";
+		return objectStoreName + "_" + typeName+"_Index";
 	}
 
 	@Override

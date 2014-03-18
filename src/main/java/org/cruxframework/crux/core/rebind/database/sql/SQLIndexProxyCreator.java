@@ -137,7 +137,7 @@ public class SQLIndexProxyCreator extends SQLAbstractKeyValueProxyCreator
 	public String getProxySimpleName()
 	{
 		String typeName = indexName.replaceAll("\\W", "_");
-		return typeName+"SQL__Index";
+		return objectStoreName + "_" + typeName+"SQL__Index";
 	}
 
 	@Override
