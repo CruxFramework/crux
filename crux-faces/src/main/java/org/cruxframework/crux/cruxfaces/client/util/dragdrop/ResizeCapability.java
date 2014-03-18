@@ -60,6 +60,7 @@ public class ResizeCapability
 		@Override
 		public void onStartDrag()
 		{
+			super.onStartDrag();
 			originalWidth = getDraggable().getAbsoluteWidth();
 			originalHeight = getDraggable().getAbsoluteHeight();
 		}

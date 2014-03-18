@@ -87,6 +87,7 @@ public class DialogBox extends PopupPanel implements Movable<Label>, Resizable<L
 	 */
 	protected DialogBox(boolean movable, boolean resizable, boolean closable, boolean modal, String baseStyleName) 
 	{
+		super(false, modal);
 		setStyleName(baseStyleName);
 		setGlassStyleName("dialogGlass");
 
@@ -264,18 +265,18 @@ public class DialogBox extends PopupPanel implements Movable<Label>, Resizable<L
 		return body.getWidget();
 	}
 	
-	@Override
-	public void setWidth(String width) 
-	{
-		getElement().getStyle().setProperty("width", width);
-	}
-	
-	@Override
-	public void setHeight(String height) 
-	{
-		getElement().getStyle().setProperty("height", height);
-	}
-
+//	@Override
+//	public void setWidth(String width) 
+//	{
+//		getElement().getStyle().setProperty("width", width);
+//	}
+//	
+//	@Override
+//	public void setHeight(String height) 
+//	{
+//		getElement().getStyle().setProperty("height", height);
+//	}
+//
 	@Override
 	public Label getHandle(DragAndDropFeature feature)
 	{

@@ -1,0 +1,287 @@
+HTML
+{
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+BODY
+{
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+DIV, TD, LABEL, SPAN, INPUT, BUTTON
+{
+	font-size: 16px;
+	font-family:OpenSans,Verdana,Helvetica,Arial,sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	outline: 0;
+}
+INPUT, BUTTON
+{
+	transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+	vertical-align: top;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+INPUT:focus, BUTTON:focus
+{
+	outline: 0;
+	border: solid 1px #66AFE9;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+DIV, INPUT, BUTTON
+{
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+@external dragging;
+.dragging *{
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+/* common for all dialogs */
+@external faces-MessageBox, faces-DialogBox, dialogGlass, popupContent, dialogTitleBodySplit, dialogTopBar, dialogTopBarDragHandle, dialogTitle, dialogCloseButton, dialogBody, dialogResizer;  
+.dialogGlass
+{
+	background-color: rgba(0, 0, 0, 0.2);
+	position: fixed !important;
+}
+
+.faces-DialogBox, .faces-ProgressBox, .faces-MessageBox
+{
+	background-color: #FFF;
+	border-radius: 3px;
+	box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.7) !important;
+	position: fixed !important;
+}
+
+.faces-DialogBox .dialogTitleBodySplit, .faces-ProgressBox .dialogTitleBodySplit, .faces-MessageBox .dialogTitleBodySplit
+{
+	width: inherit;
+	height: inherit;
+	min-height: inherit;
+	position: relative;
+}
+.faces-DialogBox .dialogTopBar, .faces-ProgressBox .dialogTopBar, .faces-MessageBox .dialogTopBar
+{
+	position: absolute;
+	padding-top: 10px;
+	height: 40px;
+	width: inherit;
+	top: 0px;
+	left: 0px;
+	box-shadow: 0 20px 10px -10px #FFF;
+	z-index: 1;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+.faces-DialogBox .dialogTopBarDragHandle, .faces-ProgressBox .dialogTopBarDragHandle, .faces-MessageBox .dialogTopBarDragHandle
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background: transparent;
+	height: 100%;
+	width: 100%;
+	cursor: move;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+.faces-DialogBox .dialogTitle, .faces-ProgressBox .dialogTitle, .faces-MessageBox .dialogTitle
+{
+	color: #4496C6;
+	text-align: center;
+	font-size: 18px;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+.faces-DialogBox .dialogCloseButton, .faces-ProgressBox .dialogCloseButton, .faces-MessageBox .dialogCloseButton
+{
+	position: absolute;
+	right: 2px;
+	top: 2px;
+	background: rgba(0, 0, 0, 0);
+	border: none;
+	cursor: pointer;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+.faces-DialogBox .dialogCloseButton:after, .faces-ProgressBox .dialogCloseButton:after, .faces-MessageBox .dialogCloseButton:after 
+{
+	content: "X";
+	color: #4496C6;
+	font-size: 18px;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+.faces-DialogBox .dialogBody, .faces-ProgressBox .dialogBody, .faces-MessageBox .dialogBody
+{
+	width: inherit;
+	height: literal("calc(100% - 40px)");
+	overflow: auto;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	position: absolute;
+	top: 40px;
+	padding-top: 15px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+.faces-DialogBox .popupContent, .faces-ProgressBox .popupContent, .faces-MessageBox .popupContent
+{
+	height: 100%;
+	min-height: inherit;
+	width: 100%;
+}
+.faces-DialogBox .dialogResizer, .faces-MessageBox .dialogResizer
+{
+	position: absolute;
+	height: 12px;
+	width: 12px;
+	bottom: 2px;
+	right: 2px;
+	border: solid 2px #4496C6;
+	border-top: transparent;
+	border-left: transparent;
+	cursor: nwse-resize;
+	border-bottom-right-radius: 3px;
+	box-shadow: 2px 2px 2px #FFF, inset -5px -5px 10px #FFF;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+@external faces-ProgressBox, faces-InfinityProgressBarAnimation, faces-InfinityProgressBar, progressBarSlot, progressBarFill;
+.faces-ProgressBox
+{
+	width: 200px;
+	height: 60px;
+}
+.faces-ProgressBox .dialogTopBar
+{
+	box-shadow: none;
+	padding-top: 6px;
+}
+.faces-ProgressBox .dialogBody
+{
+	padding-left:20px;
+	padding-right:20px;
+	padding-top: 0px;
+}
+@-webkit-keyframes faces-InfinityProgressBarAnimation
+{
+	0%   {width:0%;left:0%}
+	19%  {width:40%;left:0%;}
+	38%  {width:0%;left:50%;}
+	57%  {width:40%;left:50%;}
+	75%  {width:0%;left:100%;}
+	100% {width:100%;left:0%}
+}
+@keyframes faces-InfinityProgressBarAnimation
+{
+	0%   {width:0%;left:0%}
+	19%  {width:40%;left:0%;}
+	38%  {width:0%;left:50%;}
+	57%  {width:40%;left:50%;}
+	75%  {width:0%;left:100%;}
+	100% {width:100%;left:0%}
+}	
+.faces-InfinityProgressBar
+{
+	width: 100%;
+	height: 1px;
+	position: relative;
+}
+.faces-InfinityProgressBar .progressBarSlot
+{
+	width: 100%;
+	height: 1px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	border-top: solid 2px #EEE;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+.faces-InfinityProgressBar .progressBarFill
+{
+	height: 1px;
+	border-top: solid 2px #B1DA62;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	box-shadow: 0px 0px 20px rgba(161,202,82,0.7);
+	-webkit-animation: faces-InfinityProgressBarAnimation 2s linear infinite;
+	animation: faces-InfinityProgressBarAnimation 2s linear infinite;
+}
+
+
+@external faces-MessageBox, messageBoxContents, faces-MessageBox-info, faces-MessageBox-success, faces-MessageBox-warn, faces-MessageBox-error;
+.faces-MessageBox
+{
+	max-width: 80%;
+	min-width: 500px;
+	min-height: 180px;
+}
+.faces-MessageBox .messageBoxContents
+{
+	margin-left: 20px;
+	margin-right: 20px;
+	text-align: center;
+}
+.faces-MessageBox .dialogTopBar
+{
+	box-shadow: none;
+}
+.faces-MessageBox .faces-Button
+{
+	margin-top: 40px;
+	margin-bottom: 10px;
+}
+.faces-MessageBox-success .gwt-Label
+{
+	color: #517A02;	
+}
+.faces-MessageBox-info .gwt-Label
+{
+	color: #4c6879;	
+}
+.faces-MessageBox-warn .gwt-Label
+{
+	color: #816A02;	
+}
+.faces-MessageBox-error .gwt-Label
+{
+	color: #B01010;
+}
+.faces-MessageBox-info .faces-Button
+{
+	background-color: #4496C6;	
+}
+.faces-MessageBox-success .faces-Button
+{
+	background-color: #517A02;	
+}
+.faces-MessageBox-warn .faces-Button
+{
+	background-color: #816A02;	
+}
+.faces-MessageBox-error .faces-Button
+{
+	background-color: #D11010;	
+}
+
+@external gwt-Label, faces-Button; 
+

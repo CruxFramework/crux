@@ -55,6 +55,7 @@ public class MoveCapability
 		@Override
 		public void onStartDrag()
 		{
+			super.onStartDrag();
 			originalLeft = getDraggable().getAbsoluteLeft();
 			originalTop = getDraggable().getAbsoluteTop();
 		}

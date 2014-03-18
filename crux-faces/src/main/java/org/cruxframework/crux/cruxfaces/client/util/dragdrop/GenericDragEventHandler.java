@@ -1,5 +1,7 @@
 package org.cruxframework.crux.cruxfaces.client.util.dragdrop;
 
+import org.cruxframework.crux.core.client.utils.StyleUtils;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -18,6 +20,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler, MouseMoveHandler
 {
+	public static final String DRAGGING_STYLE = "dragging";
 	private DragAction<?> action;
 	
 	private int dragStartX;
@@ -87,6 +90,7 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 	public void onMouseUp(MouseUpEvent event)
 	{
 		dragging = false;
+		action.onEndDrag();
 		DOM.releaseCapture(action.getDraggable().getHandle(action.getFeature()).asWidget().getElement());
 	}
 	
@@ -108,9 +112,12 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 		}
 		
 		/**
-		 * Action to me taken when drag starts
+		 * Action to be taken when drag starts
 		 */
-		public abstract void onStartDrag();
+		public void onStartDrag()
+		{
+			StyleUtils.addStyleName(Document.get().getBody(), DRAGGING_STYLE);
+		}
 		
 		/**
 		 * Gets the feature associated to this action
@@ -119,7 +126,7 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 		public abstract DragAndDropFeature getFeature();
 		
 		/**
-		 * Action to me taken when drag happens
+		 * Action to be taken when drag happens
 		 * @param x
 		 * @param y
 		 * @param dragStartX
@@ -127,6 +134,14 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 		 */
 		public abstract void onDrag(int x, int y, int dragStartX, int dragStartY);
 
+		/**
+		 * Action to be taken when drag ends
+		 */
+		public void onEndDrag()
+		{
+			StyleUtils.removeStyleName(Document.get().getBody(), DRAGGING_STYLE);
+		}
+		
 		/**
 		 * @return
 		 */
@@ -142,7 +157,7 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 	 */
 	public static interface Draggable<K extends IsWidget & HasAllMouseHandlers>
 	{
-		public K getHandle(DragAndDropFeature feature);
+		K getHandle(DragAndDropFeature feature);
 	}
 	
 	/**
