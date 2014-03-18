@@ -177,36 +177,36 @@
    		</any>
     </replace-with>    
     <replace-with
-    	class="org.cruxframework.crux.core.client.animation.WebkitAnimationHandler">
-    	<when-type-is class="org.cruxframework.crux.core.client.animation.Animation.AnimationHandler" />
+    	class="org.cruxframework.crux.core.client.css.transition.WebkitTransitionHandler">
+    	<when-type-is class="org.cruxframework.crux.core.client.css.transition.Transition.TransitionHandler" />
     	<any>
       		<when-property-is name="user.agent" value="safari" />
     	</any>
     </replace-with>
     <replace-with
-    	class="org.cruxframework.crux.core.client.animation.MozAnimationHandler">
-    	<when-type-is class="org.cruxframework.crux.core.client.animation.Animation.AnimationHandler" />
+    	class="org.cruxframework.crux.core.client.css.transition.MozTransitionHandler">
+    	<when-type-is class="org.cruxframework.crux.core.client.css.transition.Transition.TransitionHandler" />
     	<any>
       		<when-property-is name="user.agent" value="gecko1_8" />
     	</any>
     </replace-with>
     <replace-with
-    	class="org.cruxframework.crux.core.client.animation.OAnimationHandler">
-    	<when-type-is class="org.cruxframework.crux.core.client.animation.Animation.AnimationHandler" />
+    	class="org.cruxframework.crux.core.client.css.transition.OTransitionHandler">
+    	<when-type-is class="org.cruxframework.crux.core.client.css.transition.Transition.TransitionHandler" />
     	<any>
       		<when-property-is name="user.agent" value="opera" />
     	</any>
     </replace-with>
     <replace-with
-    	class="org.cruxframework.crux.core.client.animation.MSAnimationHandler">
-    	<when-type-is class="org.cruxframework.crux.core.client.animation.Animation.AnimationHandler" />
+    	class="org.cruxframework.crux.core.client.css.transition.MSTransitionHandler">
+    	<when-type-is class="org.cruxframework.crux.core.client.css.transition.Transition.TransitionHandler" />
     	<any>
       		<when-property-is name="user.agent" value="ie9" />
     	</any>
     </replace-with>
     <replace-with
-    	class="org.cruxframework.crux.core.client.animation.UnsupportedAnimationHandler">
-    	<when-type-is class="org.cruxframework.crux.core.client.animation.Animation.AnimationHandler" />
+    	class="org.cruxframework.crux.core.client.css.transition.UnsupportedTransitionHandler">
+    	<when-type-is class="org.cruxframework.crux.core.client.css.transition.Transition.TransitionHandler" />
     	<any>
       		<when-property-is name="user.agent" value="ie6" />
       		<when-property-is name="user.agent" value="ie8" />
