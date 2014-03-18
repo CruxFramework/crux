@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.remote.ErrorHandlerService;
 import org.cruxframework.crux.core.client.remote.ErrorHandlerServiceAsync;
-import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -30,6 +29,7 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -73,6 +73,8 @@ public class SuperErrorHandlerImpl implements ErrorHandler, ValidationErrorHandl
 	private static Logger logger = Logger.getLogger(Crux.class.getName());
 	
 	private static ErrorHandlerServiceAsync errorHandlerService = null;
+	
+	private SuperErrorHandlerResource resources = GWT.create(SuperErrorHandlerResource.class);
 	
 	private ErrorHandlerServiceAsync getErrorHandlerService()
 	{
@@ -124,22 +126,37 @@ public class SuperErrorHandlerImpl implements ErrorHandler, ValidationErrorHandl
 						GWT.log(errorMessage, t);
 						return;
 					}
+					resources.css().ensureInjected();
 					
-					StringBuffer sb = new StringBuffer();
 					for(Throwable throwable : result)
 					{
-						sb.append(throwable.getMessage() + "\n");
+						FlowPanel errorMsgContainer = new FlowPanel();
+						errorMsgContainer.setStyleName(resources.css().errorMsgContainer());
+						
+						FlowPanel errorMsgContainerHeader = new FlowPanel();
+						errorMsgContainerHeader.setStyleName(resources.css().errorMsgContainerHeader());
+						Label labelHeader = new Label();
+						labelHeader.setText(throwable.getMessage());
+						errorMsgContainerHeader.add(labelHeader);
+						errorMsgContainer.add(errorMsgContainerHeader);
+						
+						StringBuffer sb = new StringBuffer();
 						if(throwable.getStackTrace() != null)
 						{
 							for(StackTraceElement stackTraceElement : throwable.getStackTrace())
 							{
 								sb.append(stackTraceElement.toString() + "\n");
 							}
+
+							FlowPanel errorMsgContainerBody = new FlowPanel();
+							errorMsgContainerBody.setStyleName(resources.css().errorMsgContainerBody());
+							Label labelStack = new Label();
+							labelStack.setText(sb.toString());
+							errorMsgContainerBody.add(labelStack);
+							errorMsgContainer.add(errorMsgContainerBody);
 						}
+						Document.get().getBody().appendChild(errorMsgContainer.getElement());
 					}
-					Label labelStack = new Label();
-					labelStack.setText(sb.toString());
-					Document.get().getBody().appendChild(labelStack.getElement());
 				}
 				
 				@Override
