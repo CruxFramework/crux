@@ -35,4 +35,26 @@ public class ClassPathUtils
 			throw new IOException("Error, could not add URL to system classloader.");
 		}
 	}
+	
+	public static void removeURL(URL u) throws IOException 
+	{
+
+		URLClassLoader sysloader = (URLClassLoader)ClassLoader.getSystemClassLoader();
+		Class<?> sysclass = URLClassLoader.class;
+
+		try 
+		{
+			Method method = sysclass.getDeclaredMethod("addURL",parameters);
+			method.setAccessible(true);
+			method.invoke(sysloader,new Object[]{ u });
+
+			String classpath = System.getProperty("java.class.path");
+			classpath = classpath.replace(new File(u.toURI()).getCanonicalPath() + File.pathSeparatorChar, "");
+	    	System.setProperty("java.class.path", classpath);
+		} 
+		catch (Throwable t) 
+		{
+			throw new IOException("Error, could not remove URL to system classloader.");
+		}
+	}
 }
