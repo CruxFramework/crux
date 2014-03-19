@@ -13,20 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.server.logging;
+package org.cruxframework.crux.core.aspect;
 
 import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
+import org.cruxframework.crux.core.server.logging.LoggingErrorDAO;
 
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
 
 /**
  * @author Samuel Cardoso
- *
+ * This aspect point instruments the GWT TreeLogger class saving their exceptions in a local file.
  */
 @Aspect
 public class LoggingErrorHandlerAspect 

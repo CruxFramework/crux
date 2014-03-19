@@ -16,14 +16,18 @@
 package org.cruxframework.crux.module.launch;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aspectj.tools.ajc.Main;
+import org.cruxframework.crux.core.aspect.LoggingErrorHandlerAspect;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.module.CruxModuleHandler;
+import org.cruxframework.crux.tools.compile.utils.ClassPathUtils;
 
 
 /**
@@ -39,6 +43,8 @@ public class ModulesLauncher
 	 */
 	public static void main(String[] args) throws MalformedURLException
 	{
+		//tryingToInvokeAspect();
+        
 		String[] developmentModules = CruxModuleHandler.getDevelopmentModules();
 		if (developmentModules==null || developmentModules.length ==0)
 		{
@@ -88,5 +94,45 @@ public class ModulesLauncher
 		System.arraycopy(modules.toArray(new String[modules.size()]), 0, newArgs, args.length, modules.size());
 		
 		com.google.gwt.dev.DevMode.main(newArgs);
+	}
+
+	/**
+	 * TODO: finish this!!!
+	 * Is generating the correct file!
+	 */
+	@SuppressWarnings("unused")
+	private static void tryingToInvokeAspect() 
+	{
+		String jarToWeave = "gwt-dev-2.5.1.jar";
+		String classpath = System.getProperty("java.class.path");
+		String jarToWeavePath = classpath.substring(0, classpath.indexOf(jarToWeave) + jarToWeave.length());
+		jarToWeavePath = jarToWeavePath.substring(jarToWeavePath.lastIndexOf(";")+1, jarToWeavePath.length());
+		
+		String jarWeavedPath = jarToWeavePath.substring(0, jarToWeavePath.lastIndexOf(".jar"))+"_weaved.jar";
+		
+		String aspect = LoggingErrorHandlerAspect.class.getProtectionDomain().getCodeSource().getLocation().getPath()+(LoggingErrorHandlerAspect.class.getPackage().getName()).replace(".", "/");
+		aspect = aspect.substring(1, aspect.length());
+		
+		String[] ajcArgs = {
+            "-sourceroots", aspect,
+            "-inpath", jarToWeavePath,
+            "-noExit",
+            "-Xlint:ignore",
+            "-outjar", jarWeavedPath,
+            "-1.5"
+        };
+		
+		File fileJarToWeave = new File(jarToWeavePath);
+		File fileJarWeaved = new File(jarWeavedPath);
+		
+        try 
+        {
+			Main.main(ajcArgs);
+			ClassPathUtils.removeURL(fileJarToWeave.toURI().toURL());
+			ClassPathUtils.addURL(fileJarWeaved.toURI().toURL());
+		} catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 }
