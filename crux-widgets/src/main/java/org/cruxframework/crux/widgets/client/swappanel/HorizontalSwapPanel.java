@@ -15,8 +15,8 @@
  */
 package org.cruxframework.crux.widgets.client.swappanel;
  
-import org.cruxframework.crux.core.client.animation.Animation;
-import org.cruxframework.crux.core.client.animation.Animation.Callback;
+import org.cruxframework.crux.core.client.css.transition.Transition;
+import org.cruxframework.crux.core.client.css.transition.Transition.Callback;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.widgets.client.event.swap.HasSwapHandlers;
 import org.cruxframework.crux.widgets.client.event.swap.SwapEvent;
@@ -70,8 +70,8 @@ public class HorizontalSwapPanel extends Composite implements HasSwapHandlers
 		configureCurrentPanel();
 		configureNextPanel();
 		
-		Animation.hideBackface(currentPanel);
-		Animation.hideBackface(nextPanel);
+		Transition.hideBackface(currentPanel);
+		Transition.hideBackface(nextPanel);
 		
 		contentPanel.add(currentPanel);
 		contentPanel.add(nextPanel);
@@ -102,15 +102,15 @@ public class HorizontalSwapPanel extends Composite implements HasSwapHandlers
 			if (outWidget != null)
 			{
 				final int duration = transitionDuration / 2;
-				Animation.fadeOut(outWidget, duration, new Callback()
+				Transition.fadeOut(outWidget, duration, new Callback()
 				{
 					@Override
 					public void onTransitionCompleted()
 					{
 						currentPanel.clear();
 						currentPanel.add(widget);
-						Animation.clearFadeTransitions(outWidget);
-						Animation.fadeIn(widget, duration, null);
+						Transition.clearFadeTransitions(outWidget);
+						Transition.fadeIn(widget, duration, null);
 					}
 				});
 			}
@@ -214,7 +214,7 @@ public class HorizontalSwapPanel extends Composite implements HasSwapHandlers
 
 	private void configureCurrentPanel() 
 	{
-		Animation.resetTransition(currentPanel);
+		Transition.resetTransition(currentPanel);
 
 		Style style = currentPanel.getElement().getStyle();
 
@@ -264,7 +264,7 @@ public class HorizontalSwapPanel extends Composite implements HasSwapHandlers
 			left = -contentPanel.getOffsetWidth();
 		}
 		
-		Animation.translateX(nextPanel, left, null);
+		Transition.translateX(nextPanel, left, null);
 		Style style = nextPanel.getElement().getStyle();
 		style.setVisibility(Visibility.VISIBLE);
 		style.setOpacity(1);		
@@ -286,7 +286,7 @@ public class HorizontalSwapPanel extends Composite implements HasSwapHandlers
 		int currentPanelHeight = currentPanel.getWidget() != null ? currentPanel.getWidget().getOffsetHeight() : currentPanel.getOffsetHeight();
 		if (contentPanel.getOffsetHeight() != currentPanelHeight)
 		{
-			Animation.setHeight(contentPanel, currentPanelHeight, HEIGHT_TRANSITION_DURATION, new Callback()
+			Transition.setHeight(contentPanel, currentPanelHeight, HEIGHT_TRANSITION_DURATION, new Callback()
 			{
 				@Override
 				public void onTransitionCompleted()
@@ -332,8 +332,8 @@ public class HorizontalSwapPanel extends Composite implements HasSwapHandlers
 			delta = -delta;
 		}
 		
-		Animation.translateX(currentPanel, delta, transitionDuration, null);
-		Animation.translateX(nextPanel, 0, transitionDuration, new Callback()
+		Transition.translateX(currentPanel, delta, transitionDuration, null);
+		Transition.translateX(nextPanel, 0, transitionDuration, new Callback()
 		{
 			@Override
 			public void onTransitionCompleted()

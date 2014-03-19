@@ -17,8 +17,8 @@ package org.cruxframework.crux.widgets.client.slider;
 
 import java.util.Date;
 
-import org.cruxframework.crux.core.client.animation.Animation;
-import org.cruxframework.crux.core.client.animation.Animation.Callback;
+import org.cruxframework.crux.core.client.css.transition.Transition;
+import org.cruxframework.crux.core.client.css.transition.Transition.Callback;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler;
 import org.cruxframework.crux.widgets.client.event.swap.HasSwapHandlers;
@@ -319,16 +319,16 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 		if ((diff < 0 && hasNextPanel) || (diff > 0 && hasPreviousPanel))
 		{
 			currentTouchPosition = clientX;
-			Animation.translateX(getCurrentPanel(), diff, null);
+			Transition.translateX(getCurrentPanel(), diff, null);
 			if (hasPreviousPanel)
 			{
 				Widget previousPanel = getPreviousPanel();
-				Animation.translateX(previousPanel, diff-previousPanel.getOffsetWidth(), null);
+				Transition.translateX(previousPanel, diff-previousPanel.getOffsetWidth(), null);
 			}
 			if (hasNextPanel)
 			{
 				Widget nextPanel = getNextPanel();
-				Animation.translateX(nextPanel, diff+nextPanel.getOffsetWidth(), null);
+				Transition.translateX(nextPanel, diff+nextPanel.getOffsetWidth(), null);
 			}
 		}
 		if (!didMove && (Math.abs(diff) > TAP_EVENT_THRESHOLD))
@@ -362,16 +362,16 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 
 			if (hasNextPanel || hasPreviousPanel)
 			{
-				Animation.translateX(getCurrentPanel(), 0, null);
+				Transition.translateX(getCurrentPanel(), 0, null);
 				if (hasPreviousPanel)
 				{
 					Widget previousPanel = getPreviousPanel();
-					Animation.translateX(previousPanel, -previousPanel.getOffsetWidth(), null);
+					Transition.translateX(previousPanel, -previousPanel.getOffsetWidth(), null);
 				}
 				if (hasNextPanel)
 				{
 					Widget nextPanel = getNextPanel();
-					Animation.translateX(nextPanel, nextPanel.getOffsetWidth(), null);
+					Transition.translateX(nextPanel, nextPanel.getOffsetWidth(), null);
 				}
 			}
 		}
@@ -449,7 +449,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 		{
 			SlidingEvent.fire(this, true);
 		}
-		Animation.translateX(getCurrentPanel(), slideBy, slideTransitionDuration, new Callback()
+		Transition.translateX(getCurrentPanel(), slideBy, slideTransitionDuration, new Callback()
 		{
 			@Override
 			public void onTransitionCompleted()
@@ -463,12 +463,12 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 		if (hasPreviousWidget())
 		{
 			Widget previousPanel = getPreviousPanel();
-			Animation.translateX(previousPanel, slideBy-previousPanel.getOffsetWidth(), slideTransitionDuration, null);
+			Transition.translateX(previousPanel, slideBy-previousPanel.getOffsetWidth(), slideTransitionDuration, null);
 		}
 		if (hasNextWidget())
 		{
 			Widget nextPanel = getNextPanel();
-			Animation.translateX(nextPanel, slideBy+nextPanel.getOffsetWidth(), slideTransitionDuration, null);
+			Transition.translateX(nextPanel, slideBy+nextPanel.getOffsetWidth(), slideTransitionDuration, null);
 		}
 	}
 
@@ -619,7 +619,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 	private void configureCurrentPanel() 
 	{
 		Widget currentPanel = getCurrentPanel();
-		Animation.resetTransition(currentPanel);
+		Transition.resetTransition(currentPanel);
 		currentPanel.setVisible(true);
 		//-webkit-backface-visibility: hidden;
 
@@ -629,7 +629,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 	{
 		panel.setVisible(true);
 		int width = panel.getOffsetWidth();
-		Animation.translateX(panel, forward?width:-width, null);
+		Transition.translateX(panel, forward?width:-width, null);
 		//-webkit-backface-visibility: hidden;
 	}
 

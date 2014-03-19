@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante
- * @Deprecated Use org.cruxframework.crux.core.client.animation.Animation instead
+ * @Deprecated Use org.cruxframework.crux.core.client.animation.Transition instead
  */
 @Deprecated
 public class Animation
@@ -34,7 +34,7 @@ public class Animation
 	 */
 	public static void translateX(Widget widget, int diff, Callback callback)
 	{
-		org.cruxframework.crux.core.client.animation.Animation.translateX(widget, diff, callback);
+		org.cruxframework.crux.core.client.css.transition.Transition.translateX(widget, diff, callback);
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public class Animation
 	 */
 	public static void translateX(Widget widget, int diff, int duration, Callback callback)
 	{
-		org.cruxframework.crux.core.client.animation.Animation.translateX(widget, diff, duration, callback);
+		org.cruxframework.crux.core.client.css.transition.Transition.translateX(widget, diff, duration, callback);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class Animation
 	 */
 	public static void setHeight(Widget widget, String height, int duration, Callback callback)
 	{
-		org.cruxframework.crux.core.client.animation.Animation.setHeight(widget, height, duration, callback);
+		org.cruxframework.crux.core.client.css.transition.Transition.setHeight(widget, height, duration, callback);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class Animation
 	 */
 	public static void setHeight(Widget widget, int height, int duration, Callback callback)
 	{
-		org.cruxframework.crux.core.client.animation.Animation.setHeight(widget, height, duration, callback);
+		org.cruxframework.crux.core.client.css.transition.Transition.setHeight(widget, height, duration, callback);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class Animation
 	 */
 	public static void resetTransition(Widget widget)
 	{
-		org.cruxframework.crux.core.client.animation.Animation.resetTransition(widget);
+		org.cruxframework.crux.core.client.css.transition.Transition.resetTransition(widget);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class Animation
 	 */
 	public static void hideBackface(Widget widget)
 	{
-		org.cruxframework.crux.core.client.animation.Animation.hideBackface(widget);
+		org.cruxframework.crux.core.client.css.transition.Transition.hideBackface(widget);
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class Animation
 			@Override
 			public void execute()
 			{
-				org.cruxframework.crux.core.client.animation.Animation.fade(outWidget, inWidget, duration, callback);
+				org.cruxframework.crux.core.client.css.transition.Transition.fade(outWidget, inWidget, duration, callback);
 			}
 		});
 	}
@@ -119,7 +119,7 @@ public class Animation
 	 */
 	public static void fadeOut(Widget outWidget, int duration, Callback callback)
 	{
-		org.cruxframework.crux.core.client.animation.Animation.fadeOut(outWidget, duration, callback);
+		org.cruxframework.crux.core.client.css.transition.Transition.fadeOut(outWidget, duration, callback);
 	}
 	
 	/**
@@ -128,7 +128,7 @@ public class Animation
 	 */
 	public static void clearFadeTransitions(Widget widget)
     {
-		org.cruxframework.crux.core.client.animation.Animation.clearFadeTransitions(widget);
+		org.cruxframework.crux.core.client.css.transition.Transition.clearFadeTransitions(widget);
     }
 	
 	/**
@@ -145,7 +145,7 @@ public class Animation
 			@Override
 			public void execute()
 			{
-				org.cruxframework.crux.core.client.animation.Animation.fadeIn(inWidget, duration, callback);
+				org.cruxframework.crux.core.client.css.transition.Transition.fadeIn(inWidget, duration, callback);
 			}
 		});
 	}
@@ -155,7 +155,7 @@ public class Animation
 	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
-	public static interface Callback extends org.cruxframework.crux.core.client.animation.Animation.Callback
+	public static interface Callback extends org.cruxframework.crux.core.client.css.transition.Transition.Callback
 	{
 	}
 
