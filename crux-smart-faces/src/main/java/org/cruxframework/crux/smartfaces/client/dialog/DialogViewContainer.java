@@ -19,19 +19,19 @@ import org.cruxframework.crux.core.client.screen.views.SingleViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
+import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimation;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
  * A View Container that render its views inside a floating dialog box.
  * @author Thiago da Rosa de Bustamante
  */
-public class DialogViewContainer extends SingleViewContainer implements HasAnimation
+public class DialogViewContainer extends SingleViewContainer implements HasDialogAnimation
 {
 	private DialogBox dialog;
 	private FlowPanel contentPanel; 
@@ -260,6 +260,75 @@ public class DialogViewContainer extends SingleViewContainer implements HasAnima
     {
     	this.unloadViewOnClose = unloadViewOnClose;
     }
+	
+	/**
+	 * Enable or disable the autoHide feature. When enabled, the popup will be
+	 * automatically hidden when the user clicks outside of it.
+	 * 
+	 * @param autoHide
+	 *            true to enable autoHide, false to disable
+	 */
+	public void setAutoHideEnabled(boolean autoHide)
+	{
+		dialog.setAutoHideEnabled(autoHide);;
+	}
+
+	/**
+	 * Returns <code>true</code> if the popup should be automatically hidden
+	 * when the user clicks outside of it.
+	 * 
+	 * @return true if autoHide is enabled, false if disabled
+	 */
+	public boolean isAutoHideEnabled()
+	{
+		return dialog.isAutoHideEnabled();
+	}
+
+	/**
+	 * Returns <code>true</code> if the popup should be automatically hidden
+	 * when the history token changes, such as when the user presses the
+	 * browser's back button.
+	 * 
+	 * @return true if enabled, false if disabled
+	 */
+	public boolean isAutoHideOnHistoryEventsEnabled()
+	{
+		return dialog.isAutoHideOnHistoryEventsEnabled();
+	}
+	
+	/**
+	 * Enable or disable autoHide on history change events. When enabled, the
+	 * popup will be automatically hidden when the history token changes, such
+	 * as when the user presses the browser's back button. Disabled by default.
+	 * 
+	 * @param enabled
+	 *            true to enable, false to disable
+	 */
+	public void setAutoHideOnHistoryEventsEnabled(boolean enabled) 
+	{
+		dialog.setAutoHideOnHistoryEventsEnabled(enabled);
+	}
+
+	/**
+	 * Sets the style name to be used on the glass element. 
+	 * 
+	 * @param glassStyleName
+	 *            the glass element's style name
+	 */
+	public void setGlassStyleName(String glassStyleName)
+	{
+		dialog.setGlassStyleName(glassStyleName);
+	}
+
+	/**
+	 * Gets the style name to be used on the glass element. 
+	 * 
+	 * @return the glass element's style name
+	 */
+	public String getGlassStyleName()
+	{
+		return dialog.getGlassStyleName();
+	}	
 
 	/**
 	 * Defines the animation used to animate popup entrances and exits
@@ -450,6 +519,6 @@ public class DialogViewContainer extends SingleViewContainer implements HasAnima
 	@Override
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
 	{
-		this.dialog.setTitle(title);
+		this.dialog.setDialogTitle(title);
 	}
 }

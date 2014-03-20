@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.client.dialog;
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.css.animation.Animation;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
+import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimation;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -42,7 +43,6 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.UIObject;
@@ -58,7 +58,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Thiago da Rosa de Bustamante
  */
-public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHandlers<PopupPanel>, NativePreviewHandler
+public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCloseHandlers<PopupPanel>, NativePreviewHandler
 {
 	private static final String DEFAULT_GLASS_STYLE_NAME = "faces-PopupPanelGlass";
 	

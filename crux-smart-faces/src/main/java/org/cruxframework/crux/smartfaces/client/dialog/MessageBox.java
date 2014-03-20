@@ -28,6 +28,7 @@ import org.cruxframework.crux.smartfaces.client.label.Label;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -68,7 +69,7 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 		super(movable, resizable, closable, modal, styleName);
 		setStyleName(styleName);
 		Widget content = createMessagePanel();
-		setWidget(content);
+		super.setWidget(content);
 	}
 	
 	/**
@@ -161,7 +162,7 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 		msgBox.setMessage(message, type);
 		if (title != null)
 		{
-			msgBox.setTitle(title);
+			msgBox.setDialogTitle(title);
 		}
 		msgBox.setAnimation(animation);
 		msgBox.center();
@@ -183,6 +184,19 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 		this.addStyleDependentName(type.name().toLowerCase());
 	}
 	
+
+	@Override
+	public void setWidget(IsWidget w)
+	{
+		//Ignores
+	}
+	
+	@Override
+	public void setWidget(Widget w)
+	{
+		//Ignores
+	}
+
 	/**
 	 * Changes the hide button's text
 	 * @param btnText

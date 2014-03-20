@@ -33,6 +33,7 @@ import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -67,7 +68,7 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 		super(movable, resizable, false, true, styleName);
 		setStyleName(styleName);
 		Widget content = createMessagePanel();
-		setWidget(content);
+		super.setWidget(content);
 	}
 	
 	/**
@@ -126,7 +127,7 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 			CancelHandler cancelHandler, String styleName, DialogAnimation animation)
 	{
 		Confirm confirm = new Confirm(); 
-		confirm.setTitle(dialogTitle);
+		confirm.setDialogTitle(dialogTitle);
 		confirm.setOkLabel(okLabel);
 		confirm.setCancelLabel(cancelLabel);
 		confirm.setMessage(message);
@@ -142,6 +143,18 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 		}
 		confirm.center();
 		return confirm;
+	}
+
+	@Override
+	public void setWidget(IsWidget w)
+	{
+		//Ignores
+	}
+	
+	@Override
+	public void setWidget(Widget w)
+	{
+		//Ignores
 	}
 
 	/**

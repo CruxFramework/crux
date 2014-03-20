@@ -183,7 +183,7 @@ public class DialogBox extends PopupPanel implements Movable<Label>, Resizable<L
 		msgBox.setWidget(widget);
 		if (title != null)
 		{
-			msgBox.setTitle(title);
+			msgBox.setDialogTitle(title);
 		}
 		msgBox.setAnimation(animation);
 		msgBox.center();
@@ -251,8 +251,7 @@ public class DialogBox extends PopupPanel implements Movable<Label>, Resizable<L
 		closeBtn.setVisible(closable);
 	}
 	
-	@Override
-	public void setTitle(String text)
+	public void setDialogTitle(String text)
 	{
 		title.setText(text);
 	}
