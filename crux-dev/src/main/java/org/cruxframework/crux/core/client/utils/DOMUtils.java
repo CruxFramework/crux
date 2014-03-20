@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.client.utils;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -30,7 +31,7 @@ public class DOMUtils
 	 * @return
 	 */
 	public static native TextRectangle getBoundingClientRect(Element element)/*-{
-		element.getBoundingClientRect();
+		return element.getBoundingClientRect();
 	}-*/;
 	
 	public static class TextRectangle extends JavaScriptObject
@@ -53,4 +54,21 @@ public class DOMUtils
 			return this.bottom;
 		}-*/;
 	}
+	
+	public static native void addOneTimeHandler(Element el, String eventName, EvtHandler evtHandler)/*-{
+		var func;
+		func = function(evt) 
+		{
+			el.removeEventListener(eventName, func);
+			evtHandler.@org.cruxframework.crux.core.client.utils.DOMUtils.EvtHandler::onEvent(Lcom/google/gwt/dom/client/NativeEvent;)(evt);
+		};
+		el.addEventListener(eventName, func); 			
+	}-*/;
+	
+	public static interface EvtHandler
+	{
+		void onEvent(NativeEvent evt);
+	}
+	
+	
 }
