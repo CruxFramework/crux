@@ -1,0 +1,3 @@
+<module rename-to='smartfaces'>
+	<inherits name='org.cruxframework.crux.core.Crux'/>
+</module>
