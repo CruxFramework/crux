@@ -49,9 +49,9 @@ import com.google.gwt.core.ext.typeinfo.JType;
 @TagAttributes({
 	@TagAttribute(value="pageSize", type=Integer.class, description="The number of widgets that is loaded from the datasource on each data request."),
 	@TagAttribute(value="autoLoadData", type=Boolean.class, description="If true, ask bound datasource for data when widget is created."),
-	@TagAttribute(value="dataSource", processor=ListFactory.DataSourceAttributeParser.class, required=true, description="The datasource that provides data for this widget.")
+	@TagAttribute(value="dataSource", processor=ScrollableListFactory.DataSourceAttributeParser.class, required=true, description="The datasource that provides data for this widget.")
 })
-public class ListFactory extends WidgetCreator<WidgetCreatorContext>
+public class ScrollableListFactory extends WidgetCreator<WidgetCreatorContext>
 {
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException

@@ -283,5 +283,12 @@ DIV, INPUT, BUTTON
 	background-color: #D11010;	
 }
 
+.faces-DialogBox
+{
+	min-width: 400px;
+	min-height: 180px;
+}
+
+
 @external gwt-Label, faces-Button; 
 

@@ -19,7 +19,10 @@ import org.cruxframework.crux.core.client.screen.views.SingleViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
+import org.cruxframework.crux.smartfaces.client.label.Label;
 
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.Panel;
@@ -211,13 +214,30 @@ public class DialogViewContainer extends SingleViewContainer implements HasAnima
 	 */
 	public DialogViewContainer(boolean movable, boolean resizable, boolean closable, boolean modal, String baseStyleName)
 	{
-		super(new DialogBox(movable, resizable, closable, modal, baseStyleName), true);
+		super(null, true);
 		unloadViewOnClose = true;
 
-		dialog = getMainWidget();
+		dialog = new DialogBox(movable, resizable, closable, modal, baseStyleName);
 		contentPanel = new FlowPanel();
 		contentPanel.setWidth("100%");
 		dialog.setWidget(contentPanel);
+		dialog.addAttachHandler(new Handler()
+		{
+			@Override
+			public void onAttachOrDetach(AttachEvent event)
+			{
+				if (event.isAttached())
+				{
+					bindToDOM();
+				}
+				else
+				{
+					unbindToDOM();
+				}
+			}
+		});
+		
+		initWidget(new Label());
 	}
 
 	/**
@@ -272,6 +292,36 @@ public class DialogViewContainer extends SingleViewContainer implements HasAnima
 	}
 
 	/**
+	 * Set the dialog dimensions.
+	 * @param width dialog width
+	 * @param height dialog height
+	 */
+	public void setSize(String width, String height)
+	{
+		dialog.setSize(width, height);
+	}
+
+	/**
+	 * Set the dialog width
+	 * @param width dialog width
+	 */
+	@Override
+	public void setWidth(String width)
+	{
+		dialog.setWidth(width);
+	}
+
+	/**
+	 * Set the dialog height
+	 * @param width dialog height
+	 */
+	@Override
+	public void setHeight(String height)
+	{
+		dialog.setHeight(height);
+	}
+
+	/**
 	 * Set the dialog position
 	 * @param left dialog left position
 	 * @param top dialog top position
@@ -281,6 +331,30 @@ public class DialogViewContainer extends SingleViewContainer implements HasAnima
 		dialog.setPopupPosition(left, top);
 	}
 	
+	@Override
+	public void setStyleName(String style)
+	{
+		dialog.setStyleName(style);
+	}
+
+	@Override
+	public void setStyleDependentName(String styleSuffix, boolean add)
+	{
+		dialog.setStyleDependentName(styleSuffix, add);
+	}
+	
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		dialog.setStyleName(style, add);
+	}
+
+	@Override
+	public void setStylePrimaryName(String style)
+	{
+		dialog.setStylePrimaryName(style);
+	}
+
 	/**
 	 * Open the dialog container and center it on the screen. If the container is already opened, just center it on the screen.
 	 */
@@ -302,7 +376,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasAnima
 	/**
 	 * Open the container dialog box. Assert that you previously loaded a view inside the container. 
 	 */
-	public void openDialog()
+	public void show()
 	{
 		assert(innerView != null):"There is no View loaded into this container.";
 		dialog.show();
@@ -311,9 +385,9 @@ public class DialogViewContainer extends SingleViewContainer implements HasAnima
 	/**
 	 * Close the container dialog.
 	 */
-	public void closeDialog()
+	public void hide()
 	{
-		closeDialog(unloadViewOnClose);
+		hide(unloadViewOnClose);
 	}
 
 	/**
@@ -324,7 +398,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasAnima
 	 * @param unloadView if true, unload the current view before close the container.
 	 * @return if the dialog was closed.
 	 */
-	public boolean closeDialog(boolean unloadView)
+	public boolean hide(boolean unloadView)
 	{
 		if (unloadView)
 		{
