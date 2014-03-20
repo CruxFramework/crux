@@ -349,6 +349,15 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 	}
 
 	/**
+	 * Returns <code>true</code> if the popup opens a modal window
+	 * @return true if modal
+	 */
+	public boolean isModal()
+	{
+		return modal;
+	}
+	
+	/**
 	 * Enable or disable autoHide on history change events. When enabled, the
 	 * popup will be automatically hidden when the history token changes, such
 	 * as when the user presses the browser's back button. Disabled by default.

@@ -47,7 +47,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>
 {
-	private static final String DEFAULT_STYLE_NAME = "faces-DialogBox";
+	public static final String DEFAULT_STYLE_NAME = "faces-DialogBox";
 	private static final int MIN_WIDTH = 100;
 	private static final int MIN_HEIGHT = 50;
 	private static List<DialogBox> openDialogs = new ArrayList<DialogBox>();
@@ -244,7 +244,7 @@ public class DialogBox extends PopupPanel implements Movable<Label>, Resizable<L
 	
 	/**
 	 * Makes the dialog closable 
-	 * @param closeable
+	 * @param closable
 	 */
 	public void setClosable(boolean closable)
 	{
