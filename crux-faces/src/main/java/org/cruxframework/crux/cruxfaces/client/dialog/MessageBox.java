@@ -18,6 +18,7 @@ package org.cruxframework.crux.cruxfaces.client.dialog;
 
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.cruxfaces.client.button.Button;
+import org.cruxframework.crux.cruxfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.cruxfaces.client.event.HasOkHandlers;
 import org.cruxframework.crux.cruxfaces.client.event.OkEvent;
 import org.cruxframework.crux.cruxfaces.client.event.OkHandler;
@@ -77,7 +78,18 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 	 */
 	public static MessageBox show(String message, MessageType type)
 	{
-		return show(message, type, true, true, true, false, DEFAULT_STYLE_NAME);
+		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAME, null);
+	}
+	
+	/**
+	 * Shows a message box
+	 * @param message the text to be displayed
+	 * @param type the message type, used to apply a particular style
+	 * @param animation animation to be used on dialog entrances and exits
+	 */
+	public static MessageBox show(String message, MessageType type, DialogAnimation animation)
+	{
+		return show(null, message, type, true, true, true, false, DEFAULT_STYLE_NAME, animation);
 	}
 	
 	/**
@@ -90,9 +102,27 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 	 * @param modal if true this dialog disables events that does not target the dialog 
 	 * @param styleName the dialog base CSS class name
 	 */
-	public static MessageBox show(String message, MessageType type, boolean movable, boolean resizable, boolean closable, boolean modal, String styleName)
+	public static MessageBox show(String message, MessageType type, boolean movable, boolean resizable, boolean closable, 
+									boolean modal, String styleName)
 	{
-		return show(null, message, type, movable, resizable, closable, modal, styleName);
+		return show(null, message, type, movable, resizable, closable, modal, styleName, null);
+	}
+
+	/**
+	 * Shows a message box
+	 * @param message the text to be displayed
+	 * @param type the message type, used to apply a particular style
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 * @param closable if true, the window can be clased by a button on the title bar
+	 * @param modal if true this dialog disables events that does not target the dialog 
+	 * @param styleName the dialog base CSS class name
+	 * @param animation animation to be used on dialog entrances and exits
+	 */
+	public static MessageBox show(String message, MessageType type, boolean movable, boolean resizable, boolean closable, 
+									boolean modal, String styleName, DialogAnimation animation)
+	{
+		return show(null, message, type, movable, resizable, closable, modal, styleName, animation);
 	}
 
 	/**
@@ -106,7 +136,26 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 	 * @param modal if true this dialog disables events that does not target the dialog 
 	 * @param styleName the dialog base CSS class name
 	 */
-	public static MessageBox show(String title, String message, MessageType type, boolean movable, boolean resizable, boolean closable, boolean modal, String styleName)
+	public static MessageBox show(String title, String message, MessageType type, boolean movable, boolean resizable, 
+								boolean closable, boolean modal, String styleName)
+	{
+		return show(title, message, type, movable, resizable, closable, modal, styleName, null);
+	}
+	
+	/**
+	 * Shows a message box
+	 * @param title the dilog box title.
+	 * @param message the text to be displayed
+	 * @param type the message type, used to apply a particular style
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 * @param closable if true, the window can be clased by a button on the title bar
+	 * @param modal if true this dialog disables events that does not target the dialog 
+	 * @param styleName the dialog base CSS class name
+	 * @param animation animation to be used on dialog entrances and exits
+	 */
+	public static MessageBox show(String title, String message, MessageType type, boolean movable, boolean resizable, 
+								boolean closable, boolean modal, String styleName, DialogAnimation animation)
 	{
 		MessageBox msgBox = new MessageBox(movable, resizable, closable, modal, styleName); 
 		msgBox.setMessage(message, type);
@@ -114,7 +163,7 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 		{
 			msgBox.setTitle(title);
 		}
-		msgBox.show();
+		msgBox.setAnimation(animation);
 		msgBox.center();
 		return msgBox;
 	}
