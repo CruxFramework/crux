@@ -16,9 +16,11 @@
 package org.cruxframework.crux.cruxfaces.client.dialog;
 
 import org.cruxframework.crux.core.client.collection.FastList;
-import org.cruxframework.crux.core.client.utils.DOMUtils;
-import org.cruxframework.crux.core.client.utils.DOMUtils.TextRectangle;
+import org.cruxframework.crux.core.client.css.animation.Animation;
+import org.cruxframework.crux.cruxfaces.client.dialog.animation.DialogAnimation;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -73,7 +75,10 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 	private boolean glassShowing;
 	private boolean centered;
 	private com.google.gwt.user.client.Element containerElement;
-
+	private DialogAnimation animation;
+	private boolean animating;
+	
+	
 	/**
 	 * Creates an empty popup panel. A child widget must be added to it before
 	 * it is shown.
@@ -184,20 +189,7 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 	 */
 	public void show()
 	{
-		if (showing)
-		{
-			return;
-		}
-		else if (isAttached())
-		{
-			// The popup is attached directly to another panel, so we need to
-			// remove
-			// it from its parent before showing it. This is a weird use case,
-			// but
-			// since PopupPanel is a Widget, its legal.
-			this.removeFromParent();
-		}
-		setState(true, false);
+		doShow(isAnimationEnabled());
 	}
 
 	/**
@@ -214,11 +206,15 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 	public final void showRelativeTo(final UIObject target)
 	{
 		setVisible(false);
-		show();
+		doShow(false);
 		setPopupPosition(getLeftRelativeObject(target), getTopRelativeObject(target));
 		setVisible(true);
+		if (isAnimationEnabled())
+		{
+			runEntranceAnimation(null);
+		}
 	}
-	
+
 	/**
 	 * Centers the popup in the browser window and shows it. If the popup was
 	 * already showing, then it is centered.
@@ -227,11 +223,30 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 	{
 		if (!centered)
 		{
-			centralizeMe();
-
-			if (!showing)
+			if (animating)
 			{
-				show();
+				fixPositionToCenter();
+				Scheduler.get().scheduleFixedPeriod(new RepeatingCommand()
+				{
+					@Override
+					public boolean execute()
+					{
+						if (animating)
+						{
+							return true;
+						}
+						centralizeMe();
+						return false;
+					}
+				}, 10);
+			}
+			else
+			{
+				centralizeMe();
+				if (!showing)
+				{
+					show();
+				}
 			}
 		}
 	}	
@@ -276,6 +291,16 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 		return addHandler(handler, CloseEvent.getType());
 	}
 
+	/**
+	 * Defines the animation used to animate popup entrances and exits
+	 * @param animation
+	 */
+	public void setAnimation(DialogAnimation animation)
+	{
+		this.animation = animation;
+		setAnimationEnabled(animation != null);
+	}
+	
 	@Override
 	public boolean isAnimationEnabled()
 	{
@@ -334,26 +359,6 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 	public void setAutoHideOnHistoryEventsEnabled(boolean enabled)
 	{
 		this.autoHideOnHistoryEvents = enabled;
-	}
-
-	/**
-	 * Gets the popup's left position relative to the browser's client area.
-	 * 
-	 * @return the popup's left position
-	 */
-	public int getPopupLeft()
-	{
-		return getBoundingClientRect().getLeft();
-	}
-
-	/**
-	 * Gets the popup's top position relative to the browser's client area.
-	 * 
-	 * @return the popup's top position
-	 */
-	public int getPopupTop()
-	{
-		return getBoundingClientRect().getTop();
 	}
 
 	@Override
@@ -496,7 +501,7 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 		// RootPanel.
 		if (isShowing())
 		{
-			setState(false, true);
+			setState(false, true, false, null);
 		}
 	}
 	
@@ -509,19 +514,135 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 	 *            {@link CloseHandler#onClose(CloseEvent)} when the popup is
 	 *            closed
 	 */
-	protected void hide(boolean autoClosed)
+	protected void hide(final boolean autoClosed)
 	{
-		if (!showing)
+		doHide(true, autoClosed, isAnimationEnabled());
+	}
+
+	private void runEntranceAnimation(final StateChangeCallback callback)
+    {
+	    animating = true;
+	    getDialogAnimation().animateEntrance(this, new Animation.Callback()
+	    {
+	    	@Override
+	    	public void onAnimationCompleted()
+	    	{
+	    		animating = false;
+	    		if (callback != null)
+	    		{
+	    			callback.onStateChange();
+	    		}
+	    	}
+	    });
+    }
+	
+	private DialogAnimation getDialogAnimation()
+	{
+		if (animation == null)
+		{
+			animation = DialogAnimation.bounce;
+		}
+		return animation;
+	}
+	
+	private void doHide(boolean fireEvent, final boolean autoClosed, boolean animated)
+    {
+	    if (!showing)
 		{
 			return;
 		}
-		setState(false, false);
-		CloseEvent.fire(this, this, autoClosed);
+		if (animated && centered)
+		{
+			fixPositionToCenter();
+		}
+		if (fireEvent)
+		{
+			setState(false, false, animated, new StateChangeCallback()
+			{
+				@Override
+				public void onStateChange()
+				{
+					CloseEvent.fire(PopupPanel.this, PopupPanel.this, autoClosed);
+				}
+			});
+		}
+		else
+		{
+			setState(false, false, animated, null);
+		}
+    }
+
+	private void fixPositionToCenter()
+    {
+		int left = getPopupLeftToCenter();
+		int top = getPopupTopToCenter();
+		setPopupPosition(left, top);
+    }
+
+	/**
+	 * Gets the popup's left position relative to the browser's center area.
+	 * 
+	 * @return the popup's left position
+	 */
+	private int getPopupLeftToCenter()
+	{
+		int windowLeft = Window.getScrollLeft();
+		int windowWidth = Window.getClientWidth();
+		int centerLeft = (windowWidth / 2) + windowLeft;
+		
+		int offsetWidth = getOffsetWidth();
+		return centerLeft - (offsetWidth / 2);
 	}
 
-	private TextRectangle getBoundingClientRect()
+	/**
+	 * Gets the popup's top position relative to the browser's center area.
+	 * 
+	 * @return the popup's top position
+	 */
+	private int getPopupTopToCenter()
 	{
-		return DOMUtils.getBoundingClientRect(getElement());
+		int windowTop = Window.getScrollTop();
+		int windowHeight = Window.getClientHeight();
+		int centerTop = (windowHeight / 2) + windowTop;
+
+		int offsetHeight = getOffsetHeight();
+		return centerTop - (offsetHeight / 2);
+	}
+
+	private void doShow(final boolean animated)
+	{
+		if (showing)
+		{
+			return;
+		}
+		else if (isAttached())
+		{
+			// The popup is attached directly to another panel, so we need to
+			// remove
+			// it from its parent before showing it. This is a weird use case,
+			// but
+			// since PopupPanel is a Widget, its legal.
+			this.removeFromParent();
+		}
+		if (centered && animated)
+		{
+			setVisible(false);
+			setState(true, false, false, null);
+			fixPositionToCenter();
+			setVisible(true);
+			runEntranceAnimation(new StateChangeCallback()
+			{
+				@Override
+				public void onStateChange()
+				{
+					centralizeMe();
+				}
+			});
+		}
+		else
+		{
+			setState(true, false, animated, null);
+		}
 	}
 
 	private void centralizeMe()
@@ -542,7 +663,7 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 		centered = false;
 	}
 	
-	private void setState(boolean showing, boolean unloading)
+	private void setState(boolean showing, boolean unloading, boolean animated, final StateChangeCallback callback)
     {
 	    this.showing = showing;
 		updateHandlers();
@@ -550,13 +671,56 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 		maybeShowGlass();
 		if (showing)
 		{
+			if (animated)
+			{
+				animating = true;
+				getDialogAnimation().animateEntrance(this, new Animation.Callback()
+				{
+					@Override
+                    public void onAnimationCompleted()
+                    {
+						animating = false;
+						if (callback != null)
+						{
+							callback.onStateChange();
+						}
+                    }
+				});
+			}
 			RootPanel.get().add(this);
+			if (!animated && callback != null)
+			{
+				callback.onStateChange();
+			}
 		}
 		else
 		{
 			if (!unloading)
 			{
-				RootPanel.get().remove(this);
+				if (animated)
+				{
+					animating = true;
+					getDialogAnimation().animateExit(this, new Animation.Callback(){
+						@Override
+						public void onAnimationCompleted()
+						{
+							animating = false;
+							RootPanel.get().remove(PopupPanel.this);
+							if (callback != null)
+							{
+								callback.onStateChange();
+							}
+						}
+					});
+				}
+				else
+				{
+					RootPanel.get().remove(PopupPanel.this);
+					if (callback != null)
+					{
+						callback.onStateChange();
+					}
+				}
 			}
 		}
 	}
@@ -729,5 +893,10 @@ public class PopupPanel extends SimplePanel implements HasAnimation, HasCloseHan
 			top += relativeObject.getOffsetHeight();
 		}
 		return top;
+	}
+	
+	private static interface StateChangeCallback
+	{
+		void onStateChange();
 	}
 }
