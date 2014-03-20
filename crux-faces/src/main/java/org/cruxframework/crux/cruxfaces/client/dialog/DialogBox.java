@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.cruxfaces.client.button.Button;
+import org.cruxframework.crux.cruxfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.cruxfaces.client.event.SelectEvent;
 import org.cruxframework.crux.cruxfaces.client.event.SelectHandler;
 import org.cruxframework.crux.cruxfaces.client.util.dragdrop.GenericDragEventHandler.DragAndDropFeature;
@@ -136,7 +137,17 @@ public class DialogBox extends PopupPanel implements Movable<Label>, Resizable<L
 	 */
 	public static DialogBox show(IsWidget widget)
 	{
-		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAME);
+		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAME, null);
+	}
+
+	/**
+	 * Shows a dialog box
+	 * @param widget the content widget displayed by this dialog
+	 * @param animation animates the dialog while showing or hiding
+	 */
+	public static DialogBox show(IsWidget widget, DialogAnimation animation)
+	{
+		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAME, animation);
 	}
 
 	/**
@@ -151,13 +162,30 @@ public class DialogBox extends PopupPanel implements Movable<Label>, Resizable<L
 	 */
 	public static DialogBox show(String title, IsWidget widget, boolean movable, boolean resizable, boolean closable, boolean modal, String styleName)
 	{
+		return show(title, widget, movable, resizable, closable, modal, styleName, null);
+	}
+
+	/**
+	 * Shows a dialog box
+	 * @param title the dilog box title.
+	 * @param widget the content widget displayed by this dialog
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 * @param closable if true, the window can be clased by a button on the title bar
+	 * @param modal if true this dialog disables events that does not target the dialog 
+	 * @param styleName the dialog base CSS class name
+	 * @param animation animates the dialog while showing or hiding
+	 */
+	public static DialogBox show(String title, IsWidget widget, boolean movable, boolean resizable, boolean closable, 
+								boolean modal, String styleName, DialogAnimation animation)
+	{
 		DialogBox msgBox = new DialogBox(movable, resizable, closable, modal, styleName); 
 		msgBox.setWidget(widget);
 		if (title != null)
 		{
 			msgBox.setTitle(title);
 		}
-		msgBox.show();
+		msgBox.setAnimation(animation);
 		msgBox.center();
 		return msgBox;
 	}
@@ -265,18 +293,6 @@ public class DialogBox extends PopupPanel implements Movable<Label>, Resizable<L
 		return body.getWidget();
 	}
 	
-//	@Override
-//	public void setWidth(String width) 
-//	{
-//		getElement().getStyle().setProperty("width", width);
-//	}
-//	
-//	@Override
-//	public void setHeight(String height) 
-//	{
-//		getElement().getStyle().setProperty("height", height);
-//	}
-//
 	@Override
 	public Label getHandle(DragAndDropFeature feature)
 	{

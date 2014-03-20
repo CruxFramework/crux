@@ -19,6 +19,7 @@ package org.cruxframework.crux.cruxfaces.client.dialog;
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.cruxfaces.client.WidgetMsgFactory;
 import org.cruxframework.crux.cruxfaces.client.button.Button;
+import org.cruxframework.crux.cruxfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.cruxfaces.client.event.CancelEvent;
 import org.cruxframework.crux.cruxfaces.client.event.CancelHandler;
 import org.cruxframework.crux.cruxfaces.client.event.HasCancelHandlers;
@@ -47,7 +48,7 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 	private Button cancelButton;
 
 	/**
-	 * Creates a message box
+	 * Creates a confirm
 	 */
 	public Confirm()
 	{
@@ -71,42 +72,58 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 	
 	/**
 	 * Shows a confirm dialog
-	 * @param title the text to be displayed as the caption of the message box 
-	 * @param message the text to be displayed in the body of the message box
+	 * @param title the text to be displayed as the caption of the confirm 
+	 * @param message the text to be displayed in the body of the confirm
 	 * @param okHandler a handler for the OK button click event
 	 * @param cancelHandler a handler for the Cancel button click event
 	 */
 	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler)
 	{
-		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), okHandler, cancelHandler, DEFAULT_STYLE_NAME, false);
+		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
+				okHandler, cancelHandler, DEFAULT_STYLE_NAME, null);
 	}
 	
 	/**
 	 * Shows a confirm dialog
-	 * @param title the text to be displayed as the caption of the message box 
-	 * @param message the text to be displayed in the body of the message box
-	 * @param okLabel the text to be displayed in the body of the message box
-	 * @param cancelLabel the text to be displayed in the body of the message box
+	 * @param title the text to be displayed as the caption of the confirm 
+	 * @param message the text to be displayed in the body of the confirm
+	 * @param okHandler a handler for the OK button click event
+	 * @param cancelHandler a handler for the Cancel button click event
+	 * @param animation animates the dialog while showing or hiding the confirm
+	 */
+	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, DialogAnimation animation)
+	{
+		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
+				okHandler, cancelHandler, DEFAULT_STYLE_NAME, animation);
+	}
+
+	/**
+	 * Shows a confirm dialog
+	 * @param title the text to be displayed as the caption of the confirm 
+	 * @param message the text to be displayed in the body of the confirm
+	 * @param okLabel the text to be displayed in the body of the confirm
+	 * @param cancelLabel the text to be displayed in the body of the confirm
 	 * @param okHandler a handler for the OK button click event
 	 * @param cancelHandler a handler for the Cancel button click event
 	 */
 	public static Confirm show(String title, String message, String okLabel, String cancelLabel, OkHandler okHandler, CancelHandler cancelHandler)
 	{
-		return show(title, message, okLabel, cancelLabel, okHandler, cancelHandler, DEFAULT_STYLE_NAME, false);
+		return show(title, message, okLabel, cancelLabel, okHandler, cancelHandler, DEFAULT_STYLE_NAME, null);
 	}
 
 	/**
 	 * Shows a confirm dialog
-	 * @param title the text to be displayed as the caption of the message box 
-	 * @param message the text to be displayed in the body of the message box
-	 * @param okLabel the text to be displayed in the body of the message box
-	 * @param cancelLabel the text to be displayed in the body of the message box
+	 * @param title the text to be displayed as the caption of the confirm 
+	 * @param message the text to be displayed in the body of the confirm
+	 * @param okLabel the text to be displayed in the body of the confirm
+	 * @param cancelLabel the text to be displayed in the body of the confirm
 	 * @param okHandler a handler for the OK button click event
 	 * @param cancelHandler a handler for the Cancel button click event
-	 * @param styleName the name of the CSS class to be applied in the message box element 
-	 * @param animationEnabled true to enable animations while showing or hiding the message box
+	 * @param styleName the name of the CSS class to be applied in the confirm element 
+	 * @param animation animates the dialog while showing or hiding the confirm
 	 */
-	public static Confirm show(String dialogTitle, String message, String okLabel, String cancelLabel, OkHandler okHandler, CancelHandler cancelHandler, String styleName, boolean animationEnabled)
+	public static Confirm show(String dialogTitle, String message, String okLabel, String cancelLabel, OkHandler okHandler, 
+			CancelHandler cancelHandler, String styleName, DialogAnimation animation)
 	{
 		Confirm confirm = new Confirm(); 
 		confirm.setTitle(dialogTitle);
@@ -114,7 +131,7 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 		confirm.setCancelLabel(cancelLabel);
 		confirm.setMessage(message);
 		confirm.setStyleName(styleName);
-		confirm.setAnimationEnabled(animationEnabled);
+		confirm.setAnimation(animation);
 		if (okHandler != null)
 		{
 			confirm.addOkHandler(okHandler);
@@ -123,7 +140,6 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 		{
 			confirm.addCancelHandler(cancelHandler);
 		}
-		confirm.show();
 		confirm.center();
 		return confirm;
 	}
