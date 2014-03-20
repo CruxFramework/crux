@@ -27,7 +27,7 @@
 		<showcase:info title="Textbox">
 			<showcase:description>
 				<p>
-					Textboxes são campos de texto simples. Podem ser estilizados dependendo do seu estado, 
+					Textboxes são campos de texto simples fornecidos pelo GWT. Podem ser estilizados dependendo do seu estado, 
 					e mostram de forma visal seu estado atual para o usuário.				
 				</p>
 			</showcase:description>

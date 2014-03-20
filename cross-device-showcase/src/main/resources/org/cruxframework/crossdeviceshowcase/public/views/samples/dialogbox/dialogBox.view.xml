@@ -10,7 +10,7 @@
 	<center>
 		
 		<crux:styledPanel id="panel1">
-			<crux:button id="showDialogBtn" text="Exibir Dialog Box" onSelect="dialogBoxController.openDialog"/>
+			<crux:button id="showDialogBtn" text="Exibir Dialog Box" onSelect="dialogBoxController.openDialog" />
 		</crux:styledPanel>
 		
 		<showcase:info title="DialogBox">
