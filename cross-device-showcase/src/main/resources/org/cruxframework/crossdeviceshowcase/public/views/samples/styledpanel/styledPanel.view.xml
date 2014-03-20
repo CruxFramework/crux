@@ -9,7 +9,7 @@
 	
 	<center>
 		
-		<crux:styledPanel id="panel1" width="60%" height="200px">
+		<crux:styledPanel id="panel1" height="110px" width="400px">
 		</crux:styledPanel>
 		
 		<showcase:info title="StyledPanel">

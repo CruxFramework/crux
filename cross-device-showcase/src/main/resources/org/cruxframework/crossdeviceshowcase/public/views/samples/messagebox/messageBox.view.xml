@@ -9,7 +9,7 @@
 	
 	<center>
 		
-		<crux:styledPanel id="styled" width="80%" height="200px">
+		<crux:styledPanel id="styled">
 			<gwt:flowPanel id="flow" width="100%">
 				<crux:button id="showMessageBtnInfo" text="Exibir Informação" onSelect="messageBoxController.showInfo"/>
 				<crux:button id="showMessageBtnSuccess" text="Exibir Sucesso" onSelect="messageBoxController.showSuccess"/>
@@ -21,9 +21,9 @@
 		<showcase:info title="MessageBox">
 			<showcase:description>
 				<p>
-					MessageBox é uma janela flutuante usada para exibir informações textuais ao usuário. De acordo
-					com a categoria da mensagem exibida (INFO, SUCCESS, WARN ou ERROR), o MessageBox apresenta
-					um estilo visual específico.
+					MessageBox é uma janela flutuante usada para exibir informações textuais ao usuário.
+					De acordo com a categoria da mensagem exibida ( <code>INFO</code>, <code>SUCCESS</code>,
+					<code>WARN</code> ou <code>ERROR</code>), o MessageBox apresenta um estilo visual específico.
 				</p>
 			</showcase:description>
 		</showcase:info>

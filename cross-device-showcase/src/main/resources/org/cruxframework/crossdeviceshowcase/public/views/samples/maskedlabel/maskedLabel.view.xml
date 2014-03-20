@@ -10,18 +10,6 @@
 	useFormatter="dateFormatter" 
 	title="Masked Label" >
 	
-	
-	<style>
-		.guilePanel
-		{
-			background: url(img/guile.png) no-repeat left;
-			background-size: 100px;
-			padding-left: 100px;
-			height: 100px;
-			padding-top: 15px;			
-		}
-	</style>
-	
 	<center>
 		<crux:styledPanel id="panel">
 			<gwt:flowPanel id="imgPanel" styleName="guilePanel">

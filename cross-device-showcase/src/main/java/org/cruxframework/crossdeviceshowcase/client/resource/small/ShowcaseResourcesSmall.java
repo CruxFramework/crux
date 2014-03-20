@@ -34,9 +34,15 @@ public interface ShowcaseResourcesSmall extends ClientBundle
 	@Source("icon-layout.png")
 	DataResource layoutSectionIcon();
 	
-	@Source("icon-site.png")
-	DataResource siteIcon();
+	@Source("svg-icon-house.svg")
+	DataResource svgIconHouse();
 	
-	@Source("icon-project.png")
-	DataResource projectIcon();
+	@Source("svg-icon-code.svg")
+	DataResource svgIconCode();
+	
+	@Source("svg-icon-arrow.svg")
+	DataResource svgIconArrow();
+	
+	@Source("svg-icon-menu.svg")
+	DataResource svgIconMenu();
 }

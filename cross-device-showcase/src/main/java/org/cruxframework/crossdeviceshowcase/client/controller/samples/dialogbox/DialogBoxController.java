@@ -15,7 +15,8 @@ public class DialogBoxController
 		dialog = DialogViewContainer.createDialog("dialogBoxTarget");
 		dialog.setTitle("Caixa de Diálogo Contendo uma View");
 		dialog.setWidth("600px");
-		dialog.setHeight("200px");		
+		dialog.setHeight("200px");
+		dialog.isModal();
 		dialog.openDialog();
 		dialog.center();
 	}

@@ -1,24 +1,31 @@
-BODY
+@external *;
+
+@url layoutSectionIconUrl layoutSectionIcon;
+@url siteIconUrl siteIcon;
+@url projectIconUrl projectIcon;
+
+body
 {
-	background-color: #CCCCCC;
-	background-image: -webkit-linear-gradient(#EEEEEE,#CCCCCC);
-	background-image: -moz-linear-gradient(#EEEEEE,#CCCCCC);
-	background-image: linear-gradient(#EEEEEE,#CCCCCC);
+	/*
+	There is no need to add other vendor prefixes such as -moz, -ms, -o...
+	as all desktop browsers now support linear-gradient without prefix.
+	(iOS < 7 and Android < 4.4 still needs it)
+	*/
+	background-color:#e2e2e2;
+	background-image:linear-gradient(#eee,#ccc);
 }
 
-@external valueLabel; 
 .valueLabel
 {
 	color: #303030 !important;
 }
 
-@external speechBubble;
 .speechBubble
 {
 	position: relative;
 	background-image: url(noise.png);
 	border: solid 1px #CCCCCC;
-	box-shadow: 0 6px 15px rgba(200, 200, 200, 0.2), inset 0px 15px 20px #E0E0E0;
+	box-shadow:0px 1px 4px rgba(0, 0, 0, 0.1);
 	margin: 40px;
 	border-radius: 2px;
 	padding: 10px;
@@ -31,41 +38,47 @@ BODY
 	content: "";
 	position: absolute;
 	top: -10px;
-	left: 30%;
-	border: 10px solid #E0E0E0;
+	left:50%;
+	margin-left:-10px;
+	border: 10px solid #f4f4f4;
 	background-color: transparent;
 	display: block;
 	-webkit-transform: rotate(45deg);
 	-moz-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
 	transform: rotate(45deg);
 	height: 0px;
 	width: 0px;
 	border-bottom: solid 10px transparent;
 	border-right: solid 10px transparent;
-	box-shadow: -1px -1px 0px #CCCCCC;
+	box-shadow: -1px -1px 0px rgb(180,180,180);
 }
-.speechBubble P
+.speechBubble p
 {
 	text-align: justify;
 	text-shadow: 0 1px rgba(255,255,255,0.6);
 	color: #4c6879;
 	font-size: 14px;
+	line-height:20px;
 	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
 }
-.speechBubble H1
+.speechBubble h1
 {
-	color: #4c6879;
-	text-shadow: 0 1px rgba(255,255,255,0.6);
-	font-size: 20px;
-	margin-bottom: 10px;
-	padding-bottom: 10px;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	font-weight: normal;
+	width:100%;
+	padding:10px;
+	margin:-10px 0 0 -10px;
+	color:#4c6879;
+	text-shadow:0 1px rgba(255,255,255,0.6);
+	font-size:20px;
+	border-bottom:1px solid #ccc;
+	background:rgba(255,255,255,0.5);
+	-webkit-font-smoothing:antialiased;
+	font-weight:normal;
+	box-sizing:content-box;
+	-moz-box-sizing:content-box;
+	-webkit-box-sizing:content-box;
 }
-
-@external crux-MenuTabsDisposal, menuEntriesContainer, menuPanel;  
+ 
 .crux-MenuTabsDisposal .menuEntriesContainer
 {
 	padding-top: 90px;
@@ -75,14 +88,15 @@ BODY
 	background-image: url(img/logo-large.png);
 	background-position: center 10px;
 }
-@external layoutSectionIcon;
-@url layoutSectionIconUrl layoutSectionIcon;
-.layoutSectionIcon {
+
+
+.layoutSectionIcon
+{
   background-image: layoutSectionIconUrl;
   background-position: 12px center;
   background-repeat: no-repeat;
 }
-@external wellcomeText;
+
 .wellcomeText
 {
 	width: 70%;
@@ -95,7 +109,7 @@ BODY
 	margin-top: 20px;
 	box-shadow: 0px 10px 30px rgba(0,0,0,0.1);
 }
-.wellcomeText H1
+.wellcomeText h1
 {
 	color: rgb(76, 104, 121);
 	font-size: 22px;
@@ -105,7 +119,7 @@ BODY
 	-moz-osx-font-smoothing: grayscale;
 	font-weight: normal;
 }
-.wellcomeText P
+.wellcomeText p
 {
 	text-align: justify;
 	color: #4c6879;
@@ -113,7 +127,6 @@ BODY
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
-@external topBarIcon, siteIcon, projectIcon;
 .topBarIcon
 {
 	height: 25px;
@@ -132,17 +145,218 @@ BODY
 {
 	text-decoration: underline;
 }
-@external siteIcon;
-@url siteIconUrl siteIcon;
+
 .siteIcon 
 {
   background-image: siteIconUrl;
   background-size: 22px;
   background-position: 0px 0px;
 }
-@external projectIcon;
-@url projectIconUrl projectIcon;
+
 .projectIcon 
 {
   background-image: projectIconUrl;
+}
+
+.flapCloseButton:before
+{
+	content:'' !important;
+	width:15px;
+	height:16px;
+	background:url(data:image/svg+xml;charset=utf-8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB3aWR0aD0iMTBweCIgaGVpZ2h0PSIxMHB4IiB2aWV3Qm94PSIwIDAgMTAgMTAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwIDEwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTUuMDA5LDAuNjQxYzEuMTY4LDAsMi4yNjUsMC40NTQsMy4wOSwxLjI4QzguOTIyLDIuNzQ2LDkuMzc4LDMuODQzLDkuMzc4LDUuMDEKCWMwLDEuMTY3LTAuNDU2LDIuMjY0LTEuMjc5LDMuMDg5Yy0wLjgyNSwwLjgyMy0xLjkyMiwxLjI3OS0zLjA5LDEuMjc5Yy0xLjE2NiwwLTIuMjYzLTAuNDU2LTMuMDg5LTEuMjc5CglDMS4wOTUsNy4yNzMsMC42NDEsNi4xNzcsMC42NDEsNS4wMWMwLTEuMTY3LDAuNDU0LTIuMjY0LDEuMjc5LTMuMDg5QzIuNzQ2LDEuMDk1LDMuODQzLDAuNjQxLDUuMDA5LDAuNjQxIE01LjAwOSwwLjAxNwoJYy0yLjc1NywwLTQuOTkyLDIuMjM1LTQuOTkyLDQuOTkzYzAsMi43NTcsMi4yMzUsNC45OTIsNC45OTIsNC45OTJjMi43NTgsMCw0Ljk5My0yLjIzNSw0Ljk5My00Ljk5MgoJQzEwLjAwMiwyLjI1MSw3Ljc2NywwLjAxNyw1LjAwOSwwLjAxN0w1LjAwOSwwLjAxN3ogTTUuODkzLDUuMDFsMS40MzEtMS40MzJjMC4yNDMtMC4yNDMsMC4yNDMtMC42MzksMC0wLjg4MwoJYy0wLjI0NC0wLjI0My0wLjYzOS0wLjI0My0wLjg4MywwTDUuMDA5LDQuMTI4bC0xLjQzLTEuNDMzYy0wLjI0My0wLjI0My0wLjYzOS0wLjI0My0wLjg4MywwYy0wLjI0NCwwLjI0NC0wLjI0NCwwLjY0LDAsMC44ODMKCUw0LjEyNyw1LjAxTDIuNjk2LDYuNDRjLTAuMjQ0LDAuMjQ0LTAuMjQ0LDAuNjQsMCwwLjg4M2MwLjEyMiwwLjEyMSwwLjI4MSwwLjE4NCwwLjQ0MSwwLjE4NGMwLjE2LDAsMC4zMTktMC4wNjMsMC40NDEtMC4xODQKCWwxLjQzLTEuNDMxTDYuNDQsNy4zMjNjMC4xMiwwLjEyMSwwLjI4MSwwLjE4NCwwLjQ0MSwwLjE4NHMwLjMxOS0wLjA2MywwLjQ0MS0wLjE4NGMwLjI0My0wLjI0MywwLjI0My0wLjYzOSwwLTAuODgzTDUuODkzLDUuMDF6IgoJLz4KPC9zdmc+) !important;
+	background-size:100% 100% !important;
+	top:14px !important;
+	opacity:0.6;
+}
+.flapCloseButton:hover:before
+{
+	opacity:1;
+}
+.flapLabel
+{
+	font-size:14px !important;
+	padding-right:5px;
+	text-shadow:0 1px 0 rgba(0,0,0,0.08);
+}
+
+.crux-TabBarItem
+{
+	box-shadow:0 4px 0 rgba(0,0,0,0.12) inset, -1px 0 0 rgba(0,0,0,0.1) inset !important;
+	background:linear-gradient(#848989 66%, #6c7070 100%) !important;
+	cursor:pointer !important;
+}
+.crux-TabBarItem:hover
+{
+	box-shadow:0 4px 0 rgba(0,0,0,0.12) inset, -1px 0 0 rgba(0,0,0,0.1) inset !important;
+	background:linear-gradient(#808080 66%, #5c7070 100%) !important;
+}
+.crux-TabBarItem:active
+{
+	box-shadow:0 4px 0 rgba(0,0,0,0.12) inset, -1px 0 0 rgba(0,0,0,0.1) inset !important;
+	background:linear-gradient(#777 66%, #777 100%) !important;
+}
+
+.crux-TabBarItem-selected
+{
+	box-shadow:0 4px 0 rgba(0,0,0,0.12) inset !important;
+	background:linear-gradient(#4496c6 66%, #387ba2 100%) !important;
+}
+.crux-TabBarItem-selected:hover
+{
+	box-shadow:0 4px 0 rgba(0,0,0,0.12) inset !important;
+	background:linear-gradient(#4496c6 66%, #387ba2 100%) !important;
+}
+.crux-TabBarItem-selected:active
+{
+	box-shadow:0 4px 0 rgba(0,0,0,0.12) inset !important;
+	background:linear-gradient(#4496c6 66%, #387ba2 100%) !important;
+}
+
+.crux-TabBarItem-selected:after
+{
+	content:'';
+	width:0; 
+	height:0; 
+	border:none !important;
+	border-left:8px solid transparent !important;
+	border-right:8px solid transparent !important;
+	border-bottom:8px solid white !important;
+	left:50% !important;
+	margin-left:-8px !important;
+	bottom:0 !important;
+	-webkit-transform:none !important;
+}
+
+.crux-TabBarItem .flapLabel
+{
+	cursor:pointer !important;
+}
+
+.speechBubble .crux-Button
+{
+	background: linear-gradient(rgba(255, 255, 255, 0.4), rgba(100, 100, 100, 0.08));
+	font-size: 13px;
+	color: #333;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	width: auto;
+	height: auto;
+	padding: 10px 15px;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 0 3px rgba(102, 175, 233, 0.24) inset;
+	border:1px solid #66AFE9;
+}
+
+.speechBubble .crux-Button:hover
+{
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 0 3px rgba(255, 255, 255, 0.44) inset;
+}
+.speechBubble .crux-Button:active
+{
+	background: linear-gradient(rgba(100, 100, 100, 0.08), rgba(100, 100, 100, 0.08));
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) inset, 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.menuTabsSplitPanel
+{
+	padding-left:300px !important;
+}
+.crux-MenuTabsDisposal .menuEntry
+{
+	font-size:14px !important;
+	text-align:left !important;
+	height:auto !important;
+	box-shadow:0 -1px 0 rgba(0,0,0,0.05) inset !important;
+}
+.activeView
+{
+	display:none;
+}
+.guilePanel
+{
+	background:url(img/guile.png) no-repeat left;
+	background-size: 100px;
+	padding-left: 100px;
+	min-height: 100px;
+	overflow:auto;	
+}
+.guilePanel .crux-FormDisplay
+{
+	margin-top:22px;
+}
+.guilePanel .crux-FormDisplay td
+{
+	border-top:none;
+}
+.desestylize .crux-StyledPanel
+{
+	border:none;
+	box-shadow:none;
+}
+.smallWidthInput
+{
+	width:120px;
+}
+.bigStyledPanel
+{
+	width:86%;
+	height:200px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.btn-Group
+{
+	overflow:hidden;
+}
+.btn-Group .gwt-RadioButton
+{
+	border:1px solid #ccc;
+	border-left:none;	
+	margin-left:-5px;
+	display:inline-block;
+	overflow:hidden;
+}
+.btn-Group .gwt-RadioButton:first-child
+{
+	background:#fff;
+	border-radius:3px 0 0 3px;
+	border-left:1px solid #ccc;
+	margin-left:0;
+}
+.btn-Group .gwt-RadioButton:last-child
+{
+	border-radius:0 3px 3px 0;
+}
+.btn-Group .gwt-RadioButton:hover
+{
+	background:#eee;
+}
+.btn-Group .gwt-RadioButton:active
+{
+	box-shadow:0 1px 1px rgba(0, 0, 0, 0.1) inset;
+}
+.btn-Group .gwt-RadioButton input
+{
+	position:absolute;
+	top:-100px;
+	visibility:hidden;
+}
+.btn-Group .gwt-RadioButton label
+{
+	display:inline-block;
+	padding:5px 7px;
+	color:#333;
+	font-size:13px;
+	cursor:pointer;
+}
+.btn-Group .gwt-RadioButton input:checked + label
+{
+	background:#f1f1f1;
+}
+.syntaxhighlighter code, .syntaxhighlighter pre
+{
+	box-shadow:none;
+}
+.w200
+{
+	width:200px;
 }

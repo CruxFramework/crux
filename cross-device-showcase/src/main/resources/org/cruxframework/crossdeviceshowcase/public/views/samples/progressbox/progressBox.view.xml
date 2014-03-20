@@ -9,7 +9,7 @@
 	
 	<center>
 		
-		<crux:styledPanel id="panel1" width="60%" height="200px">
+		<crux:styledPanel id="panel1">
 			<crux:button id="showProgressBtn" text="Exibir Progress Box" onSelect="progressBoxController.showProgress"/>
 		</crux:styledPanel>
 		

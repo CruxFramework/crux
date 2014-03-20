@@ -8,9 +8,8 @@
 	
 	<center>
 		<gwt:flowPanel id="panel">
-			<gwt:label id="label" text="Uma DialogBox pode conter desde simples widgets até views inteiras!" style="margin-bottom:20px;margin-top:20px"/>
+			<gwt:label id="label" text="Uma DialogBox pode conter desde simples widgets até views inteiras!"/>
 			<crux:button id="btn" text="Fechar Dialog Box" onSelect="dialogBoxController.closeDialog"/>		
 		</gwt:flowPanel>
 	</center>		
-	
 </v:view>

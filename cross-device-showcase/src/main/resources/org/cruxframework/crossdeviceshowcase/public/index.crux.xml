@@ -40,6 +40,7 @@
 		<crux:menuTabsDisposal id="menuDisposal">
 			<crux:header>
 				<gwt:flowPanel id="topBarpanel">
+					<gwt:label text="Welcome" id="activeViewPage" styleName="activeView"></gwt:label>
 					<crux:button id="siteButton" text="site" onSelect="mainController.navigateToSite" styleName="topBarIcon siteIcon"/>
 					<crux:button id="projectButton" text="projeto" onSelect="mainController.navigateToProject" styleName="topBarIcon projectIcon"/>
 				</gwt:flowPanel>
@@ -48,6 +49,8 @@
 			<crux:menuEntry label="File Uploader" targetView="fileUploader"/>
 			<crux:menuEntry label="Masked Label" targetView="maskedLabel"/>
 			<crux:menuEntry label="Masked Text Box" targetView="maskedTextBox"/>
+			<crux:menuEntry label="Button" targetView="cruxButton"/>
+			<crux:menuEntry label="Textbox" targetView="gwtTextBox"/>
 			<crux:menuSection label="Elementos de Layout" additionalStyleName="layoutSectionIcon"/>
 			<crux:menuEntry label="Styled Panel" targetView="styledPanel"/>
 			<crux:menuEntry label="Form Display" targetView="formDisplay"/>

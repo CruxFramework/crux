@@ -10,12 +10,11 @@
 	
 	<div class="speechBubble">
 		<h1>#{title}</h1>
-		<gwt:HTML id="descriptionCointainer">
+		<gwt:HTMLPanel id="descriptionCointainer">
 			<t:section name="description"/>
-		</gwt:HTML>
+		</gwt:HTMLPanel>
 		<center>
 			<crux:button id="buttonShowCode" onSelect="mainController.exibirCodigoFonte" text="Ver Código Fonte" style="margin:10px"/>
 		</center>
 	</div>
-	
 </t:template>

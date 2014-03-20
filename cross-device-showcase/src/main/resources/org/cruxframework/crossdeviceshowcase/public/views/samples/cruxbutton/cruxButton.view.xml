@@ -1,0 +1,38 @@
+<v:view 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:v="http://www.cruxframework.org/view" 
+	xmlns:core="http://www.cruxframework.org/crux" 
+	xmlns:crux="http://www.cruxframework.org/crux/widgets"
+	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+	xmlns:showcase="http://www.cruxframework.org/templates/showcase"
+	useController="cruxButtonController" title="Button"> 
+	
+	<center>
+		
+		<crux:styledPanel id="panel1">
+			<gwt:HTMLPanel id="html">
+				<crux:button id="cruxBtn" text="Eu sou um button!" />
+				<hr />
+				<h4>Estados:</h4>
+				<div class="btn-Group">
+					<gwt:radioButton name="color" onChange="cruxButtonController.handleDefault" id="radioDefault" text="Default" checked="true"></gwt:radioButton>
+					<gwt:radioButton name="color" onChange="cruxButtonController.handleSuccess" id="radioSuccess" text="Success"></gwt:radioButton>
+					<gwt:radioButton name="color" onChange="cruxButtonController.handleWarning" id="radioWarning" text="Warning"></gwt:radioButton>
+					<gwt:radioButton name="color" onChange="cruxButtonController.handleError" id="radioError" text="Error"></gwt:radioButton>
+				</div>
+			</gwt:HTMLPanel>
+		</crux:styledPanel>
+		
+		<showcase:info title="Button">
+			<showcase:description>
+				<p>
+					Buttons são elementos que disparam ações quando clicados, este componente foi feito pensando também em 
+					dispositivos de toque, tratando os eventos de forma diferenciada em um smartphone ou tablet, por exemplo. 
+										
+				</p>
+			</showcase:description>
+		</showcase:info>
+		
+	</center>		
+	
+</v:view>

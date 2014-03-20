@@ -27,7 +27,7 @@
 					</gwt:horizontalPanel>
 				</crux:entry>			
 				<crux:entry horizontalAlignment="center">
-					<crux:button id="btn" text="Fechar" onSelect="mainController.showMenu" style="margin-top:20px"/>	
+					<crux:button id="btn" text="Fechar" onSelect="mainController.showMenu"/>	
 				</crux:entry>
 			</crux:formDisplay>	
 		</crux:styledPanel>

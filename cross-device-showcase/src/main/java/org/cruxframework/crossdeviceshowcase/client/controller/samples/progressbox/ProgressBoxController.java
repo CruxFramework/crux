@@ -9,7 +9,7 @@ import com.google.gwt.user.client.Timer;
 @Controller("progressBoxController")
 public class ProgressBoxController 
 {
-	private static int DURATION = 6;
+	private static int DURATION = 5;
 	private ProgressBox progress;
 	private int timeLeftToHide = DURATION;
 	private Timer timer;	
@@ -19,7 +19,6 @@ public class ProgressBoxController
 	{
 		progress = ProgressBox.show("");		
 		updateTitle();
-		progress.setWidth("300px");
 		
 		timer = new Timer()
 		{

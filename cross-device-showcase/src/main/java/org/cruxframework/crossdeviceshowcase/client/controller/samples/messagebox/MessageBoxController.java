@@ -34,6 +34,6 @@ public class MessageBoxController
 	
 	private void showMessage(MessageType type)
 	{
-		FlatMessageBox.show("Esta é uma mensagem do tipo " + type.name(), type);
+		FlatMessageBox.show("Esta é uma mensagem do tipo "+ type.name(), type);
 	}
 }
