@@ -10,7 +10,7 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cruxVersion>5.0.4</cruxVersion>
+        <cruxVersion>5.1.0.7</cruxVersion>
         <webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory>
         <webinf.folder>${webappDirectory}/WEB-INF/</webinf.folder>
 		<webinf.lib.folder>${webinf.folder}/lib/</webinf.lib.folder>
@@ -34,11 +34,6 @@
 		<dependency>
 			<groupId>org.cruxframework</groupId>
 			<artifactId>crux-widgets</artifactId>
-			<version>${cruxVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cruxframework</groupId>
-			<artifactId>crux-themes</artifactId>
 			<version>${cruxVersion}</version>
 		</dependency>
 		<dependency>
