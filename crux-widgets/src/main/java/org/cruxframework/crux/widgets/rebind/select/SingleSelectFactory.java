@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.widgets.rebind.select;
 
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasValueFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
@@ -31,7 +33,7 @@ import org.cruxframework.crux.widgets.client.select.SingleSelect;
 	@TagChild(SingleSelectFactory.SelectItemsProcessor.class)
 })
 
-public class SingleSelectFactory extends AbstractListBoxFactory
+public class SingleSelectFactory extends AbstractListBoxFactory implements HasValueFactory<WidgetCreatorContext>
 {
 	public static class SelectItemsProcessor extends ItemsProcessor
 	{
