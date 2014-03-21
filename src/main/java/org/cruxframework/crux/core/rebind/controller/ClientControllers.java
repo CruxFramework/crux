@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 
 /**
- * Maps all controllersCanonicalNames in a module.
+ * Maps all controllers in a module.
  * @author Thiago Bustamante
  *
  */
@@ -118,7 +118,7 @@ public class ClientControllers
 				}
 				catch (ClassNotFoundException e) 
 				{
-					logger.error("Error initializing client controller.",e);
+					logger.error("Error initializing client controller ["+controller+"].",e);
 				}
 			}
 		}
