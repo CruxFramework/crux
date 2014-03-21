@@ -27,6 +27,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 @TagEvents({
 	@TagEvent(ValueChangeEvtBind.class)
 })	
-public interface HasValueChangeHandlersFactory<C extends WidgetCreatorContext> extends HasBindPathFactory<C>
+public interface HasValueChangeHandlersFactory<C extends WidgetCreatorContext> extends HasValueFactory<C>
 {
 }

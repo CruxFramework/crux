@@ -25,7 +25,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
  *
  */
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="bindPath", description="Sets a property path (eg. property1.proerty2) on the View's associated dataObject. Crux will handle data binding between this dataObject property and this widget. To transfer data between objects and views, cast your view to BindableView and call getData and setData methods. ")	
+	@TagAttributeDeclaration(value="bindPath", description="Sets a property path (eg. property1.proerty2) on the View's associated dataObject. Crux will handle data binding between this dataObject property and this widget. To transfer data between objects and views, cast your view to BindableView and call getData and setData methods."),	
+	@TagAttributeDeclaration(value="bindConverter", description="Specify a type converter to handle type differences betwwen the dataObject property type and the type expected by the bound widget. You can use one of the standard converters on TypeConverters utility class or create your own, extending TypeConverter interface.")	
 })	
 public interface HasBindPathFactory<C extends WidgetCreatorContext>
 {

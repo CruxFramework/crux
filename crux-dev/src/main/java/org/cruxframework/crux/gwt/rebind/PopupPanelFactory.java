@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 
 /**
- * Represents a PopupPanelFactory
+ * A factory for PopupPanel widgets
  * @author Thiago Bustamante
  *
  */
