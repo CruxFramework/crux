@@ -15,6 +15,15 @@ body
 	background-image:linear-gradient(#eee,#ccc);
 }
 
+.rs-left
+{
+	float:left;
+}
+.rs-right
+{
+	float:right;
+}
+
 .valueLabel
 {
 	color: #303030 !important;
@@ -363,4 +372,14 @@ body
 .smallWidthInput
 {
 	width:130px;
+}
+.styledWrap{
+	width:410px;
+	margin:0 auto;
+}
+.styledWrap > .rs-left:first-child{
+	margin-right:8px;
+}
+.clear{
+	clear:both;
 }

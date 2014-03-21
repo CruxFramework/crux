@@ -303,3 +303,11 @@ body
 {
 	box-shadow:none;
 }
+.styledWrap
+{
+	margin:10px 0 3px;
+}
+.styledWrap > .rs-left:first-child
+{
+	margin-bottom:8px;
+}

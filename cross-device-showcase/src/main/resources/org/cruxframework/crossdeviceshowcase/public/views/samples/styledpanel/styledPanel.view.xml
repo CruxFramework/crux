@@ -9,8 +9,15 @@
 	
 	<center>
 		
-		<crux:styledPanel id="panel1" height="110px" width="400px">
-		</crux:styledPanel>
+		<gwt:HTMLPanel id="styledWrap" styleName="styledWrap">
+			<crux:styledPanel id="panel1" height="110px" width="200px" styleName="rs-left">
+				<crux:button id="btnSample" text="Eu sou um botão" />
+			</crux:styledPanel>
+			<crux:styledPanel id="panel2" height="110px" width="200px" styleName="rs-left">
+				<gwt:label id="txtSample" text="E eu sou um texto." />
+			</crux:styledPanel>
+			<gwt:simplePanel id="clear" styleName="clear"></gwt:simplePanel>
+		</gwt:HTMLPanel>
 		
 		<showcase:info title="StyledPanel">
 			<showcase:description>

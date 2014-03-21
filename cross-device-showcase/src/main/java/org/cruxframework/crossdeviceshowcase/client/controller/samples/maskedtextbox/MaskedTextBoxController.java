@@ -32,8 +32,7 @@ public class MaskedTextBoxController
 		
         if(widget.getValue().isEmpty())
         {
-        	this.changeState("warn");
-        	FlatMessageBox.show("Campo vazio. Você esqueceu de preencher o campo?", MessageType.WARN);
+        	FlatMessageBox.show("Campo vazio. Por favor preencha o campo.", MessageType.WARN);
         }
         /*
          * This is a poor date format validation, just as an example, feel free to update it
@@ -42,7 +41,7 @@ public class MaskedTextBoxController
         else if(!widget.getValue().matches("[0-1][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]"))
         {
         	this.changeState("warn");
-        	FlatMessageBox.show("Você computou um valor inválido, o formato deve ser \"dd/mm/aaaa\".", MessageType.WARN);
+        	FlatMessageBox.show("Favor informar um valor válido no formato: \"dd/mm/aaaa\".", MessageType.WARN);
         }
         else
         {
