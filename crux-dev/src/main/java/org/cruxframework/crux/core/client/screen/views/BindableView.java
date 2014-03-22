@@ -54,6 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class BindableView<T> extends View
 {
 	protected FastMap<PropertyBinder<T>> binders = new FastMap<BindableView.PropertyBinder<T>>();
+	private T dataObject;
 	
 	/**
 	 * 
@@ -76,7 +77,10 @@ public abstract class BindableView<T> extends View
 	 */
 	public T getData()
 	{
-		T dataObject = createDataObject();
+		if (dataObject == null)
+		{
+			dataObject = createDataObject();
+		}
 		
 		FastList<String> keys = binders.keys();
 		int size = keys.size();
@@ -102,6 +106,7 @@ public abstract class BindableView<T> extends View
 			String id = keys.get(i);
 			binders.get(id).copyTo(dataObject, getWidget(id));
 		}
+		this.dataObject = dataObject;
 	}
 	
 	/**

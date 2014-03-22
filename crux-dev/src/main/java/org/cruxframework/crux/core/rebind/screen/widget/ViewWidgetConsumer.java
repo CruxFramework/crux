@@ -143,25 +143,21 @@ public class ViewWidgetConsumer implements LazyCompatibleWidgetConsumer
 			if (widgetClass.isAssignableTo(hasValueType))
 			{
 				getExpression = getNullSafeExpression("(("+HasValue.class.getCanonicalName()+"<"+propertyClassName+">)"+widgetVariable+").getValue()", 
-												propertyType, bindPath, dataObjectClassName);
+												propertyType, bindPath, dataObjectClassName, converterVariable);
 			}
 			else if (widgetClass.isAssignableTo(hasFormatterType))
 			{
 				getExpression = getNullSafeExpression("("+propertyClassName+")(("+HasFormatter.class.getCanonicalName()+")w).getUnformattedValue()", 
-												propertyType, bindPath, dataObjectClassName);
+												propertyType, bindPath, dataObjectClassName, converterVariable);
 			} 
 			else if (widgetClass.isAssignableTo(hasTextType))
 			{
-				getExpression = getNullSafeExpression("(("+HasText.class.getCanonicalName()+")w).getText()", propertyType, bindPath, dataObjectClassName);
+				getExpression = getNullSafeExpression("(("+HasText.class.getCanonicalName()+")w).getText()", propertyType, bindPath, dataObjectClassName, 
+												converterVariable);
 			}
 			else
 			{
 				getExpression = getEmptyValueExpression(propertyType, bindPath, dataObjectClassName);
-			}
-			
-			if (converterVariable != null)
-			{
-				getExpression = converterVariable+".from(" + getExpression + ")";
 			}
 			
 			JClassUtils.buildSetValueExpression(srcWriter, dataObjectType, bindPath, dataObjectVariable, getExpression);
@@ -169,8 +165,12 @@ public class ViewWidgetConsumer implements LazyCompatibleWidgetConsumer
 		}
     }
 
-	protected String getNullSafeExpression(String expression, JType propertyType, String bindPath, String dataObjectClassName)
+	protected String getNullSafeExpression(String expression, JType propertyType, String bindPath, String dataObjectClassName, String converterVariable)
 	{
+		if (converterVariable != null)
+		{
+			expression = converterVariable+".from(" + expression + ")";
+		}
 		String getExpression;
 		JPrimitiveType primitiveType = propertyType.isPrimitive();
 		if (primitiveType == null)

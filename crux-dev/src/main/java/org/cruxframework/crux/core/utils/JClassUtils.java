@@ -1010,20 +1010,20 @@ public class JClassUtils
 	    return jClassType;
     }
 	
-	public static JClassType[] getActualParameterTypes(JClassType baseIntf, JClassType desiredInterfaceType)
+	public static JClassType[] getActualParameterTypes(JClassType baseType, JClassType desiredInterfaceType)
 	{
-		JClassType[] interfaces = baseIntf.getImplementedInterfaces();
+		Set<? extends JClassType> interfaces = baseType.getFlattenedSupertypeHierarchy();
 		for (JClassType intf : interfaces)
 		{
 			JParameterizedType parameterized = intf.isParameterized();
 			if (parameterized != null)
 			{
-				if (parameterized.getBaseType().equals(desiredInterfaceType))
+				if (parameterized.getBaseType().getQualifiedSourceName().equals(desiredInterfaceType.getQualifiedSourceName()))
 				{
 					return parameterized.getTypeArgs();
 				}
 			}
 		}
-		throw new RuntimeException("Desired interface is nor parameterized or baseIntef does not extends that interface.");
+		throw new RuntimeException("Desired interface ["+desiredInterfaceType.getQualifiedSourceName()+"] is nor parameterized or baseIntef does not extends that interface.");
 	}
 }
