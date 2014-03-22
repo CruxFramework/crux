@@ -31,7 +31,7 @@ import org.cruxframework.crux.smartfaces.client.list.ScrollableList.Renderer;
 
 
 /**
- * Maps all custom cells.
+ * Maps all renderers.
  * @author Thiago da Rosa de Bustamante
  *
  */
@@ -76,11 +76,11 @@ public class Renderers
 		Set<String> cellNames =  ClassScanner.searchClassesByAnnotation(Renderer.class);
 		if (cellNames != null)
 		{
-			for (String cellClass : cellNames) 
+			for (String rendererClass : cellNames) 
 			{
 				try 
 				{
-					Class<?> dataClass = Class.forName(cellClass);
+					Class<?> dataClass = Class.forName(rendererClass);
 					Renderer annot = dataClass.getAnnotation(Renderer.class);
 					if (renderers.containsKey(annot.value()))
 					{
@@ -91,7 +91,7 @@ public class Renderers
 				} 
 				catch (ClassNotFoundException e) 
 				{
-					logger.error("Error initializing Renderers.",e);
+					logger.error("Error initializing Renderer ["+rendererClass+"].",e);
 				}
 			}
 		}
