@@ -57,4 +57,38 @@ public abstract class TypeConverters
 	        return (!StringUtils.isEmpty(b)?Integer.parseInt(b):null);
         }
 	}
+	
+	@TypeConverter.Converter("stringDouble")
+	public static class StringDoubleConverter implements TypeConverter<String, Double>
+	{
+		@Override
+        public Double to(String a)
+        {
+	        return (!StringUtils.isEmpty(a)?Double.parseDouble(a):null);
+        }
+
+		@Override
+        public String from(Double b)
+        {
+	        return (b!=null?b.toString():null);
+        }
+	}
+
+	@TypeConverter.Converter("doubleString")
+	public static class DoubleStringConverter implements TypeConverter<Double, String>
+	{
+
+		@Override
+        public String to(Double a)
+        {
+	        return (a!=null?a.toString():null);
+        }
+
+		@Override
+        public Double from(String b)
+        {
+	        return (!StringUtils.isEmpty(b)?Double.parseDouble(b):null);
+        }
+	}
+	
 }
