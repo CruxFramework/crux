@@ -22,6 +22,7 @@ import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimat
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
@@ -739,17 +740,20 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 */
 	private void maybeShowGlass()
 	{
+		BodyElement body = Document.get().getBody();
 		if (showing)
 		{
 			if (modal)
 			{
-				Document.get().getBody().appendChild(glass);
+				body.appendChild(glass);
+				body.addClassName("unselectable");
 				glassShowing = true;
 			}
 		}
 		else if (glassShowing)
 		{
-			Document.get().getBody().removeChild(glass);
+			body.removeChild(glass);
+			body.removeClassName("unselectable");
 			glassShowing = false;
 		}
 	}
