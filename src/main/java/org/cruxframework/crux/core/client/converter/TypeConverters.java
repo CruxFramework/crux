@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.converter;
 
+import org.cruxframework.crux.core.client.utils.StringUtils;
+
 /**
  * @author Thiago da Rosa de Bustamante
  *
@@ -29,7 +31,7 @@ public abstract class TypeConverters
 		@Override
         public Integer to(String a)
         {
-	        return (a!=null?Integer.parseInt(a):null);
+	        return (!StringUtils.isEmpty(a)?Integer.parseInt(a):null);
         }
 
 		@Override
@@ -52,7 +54,7 @@ public abstract class TypeConverters
 		@Override
         public Integer from(String b)
         {
-	        return (b!=null?Integer.parseInt(b):null);
+	        return (!StringUtils.isEmpty(b)?Integer.parseInt(b):null);
         }
 	}
 }
