@@ -19,6 +19,8 @@ import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.DataResource;
+import com.google.gwt.resources.client.ClientBundle.Source;
 
 /**
  * @author Gesse Dafe
@@ -28,4 +30,16 @@ public interface XStandardResourcesLarge extends ClientBundle
 {
 	@Source("cssXStandardLarge.css")
 	CssXStandardLarge css();
+	
+	@Source("svg-icon-close.svg")
+	DataResource svgIconClose();
+	
+	@Source("svg-icon-danger.svg")
+	DataResource svgIconDanger();
+	
+	@Source("svg-icon-warning.svg")
+	DataResource svgIconWarning();
+	
+	@Source("svg-icon-success.svg")
+	DataResource svgIconSuccess();
 }

@@ -33,4 +33,17 @@ public interface XStandardResourcesSmall extends ClientBundle
 	
 	@Source("top-menu-disposal-menu-btn.png")
 	DataResource topMenuDisposalShowMenuButton();
+	
+	@Source("svg-icon-close.svg")
+	DataResource svgIconClose();
+	
+	@Source("svg-icon-danger.svg")
+	DataResource svgIconDanger();
+	
+	@Source("svg-icon-warning.svg")
+	DataResource svgIconWarning();
+	
+	@Source("svg-icon-success.svg")
+	DataResource svgIconSuccess();
+
 }
