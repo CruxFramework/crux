@@ -40,9 +40,6 @@ public class MainController
 	{
 		MenuTabsDisposal menuDisposal = (MenuTabsDisposal) Screen.get("menuDisposal");
 		menuDisposal.showMenu();
-		//menuDisposal.setTogglable(false);
-		//menuDisposal.setTransitionSpeed(50);
-		
 	}
 	
 	@Expose
