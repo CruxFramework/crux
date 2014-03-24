@@ -861,7 +861,13 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 		{
 			prepareViewObjects();
 			registerLoadedView();
-			createWidgets();
+			try
+			{
+				createWidgets();	
+			} catch (Throwable e)
+			{
+				logger.log(Level.SEVERE, e.getMessage(), e);
+			}
 			loaded = true;
 			fireLoadEvent(paramenter);
 		}
