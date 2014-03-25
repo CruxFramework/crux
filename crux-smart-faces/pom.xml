@@ -9,7 +9,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cruxVersion>5.1.0.8</cruxVersion>
+		<cruxVersion>5.1.0.9</cruxVersion>
 	</properties>
 	
 	<parent>
