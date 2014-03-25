@@ -19,6 +19,7 @@ import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -33,6 +34,16 @@ public class ViewFactoryUtils
 	private static final String LAZY_CHILDREN_PANEL_PREFIX = "_chld_";
 	private static final String LAZY_PANEL_PREFIX = "_lazy_";
 	private static final int LAZY_PANEL_PREFIX_LENGTH = LAZY_CHILDREN_PANEL_PREFIX.length();
+	
+	/**
+	 * @param widgetId
+	 * @param widget
+	 * @param view
+	 */
+	public static void updateWidgetElementId(String widgetId, IsWidget widget, View view)
+	{
+		updateWidgetElementId(widgetId, widget.asWidget(), view);
+	}
 	
 	/**
 	 * @param widgetId
