@@ -60,6 +60,15 @@ public class FlatMessageBox extends AbstractDialogBox
 			this.removeStyleDependentName(anyType.name().toLowerCase());
 		}
 		this.addStyleDependentName(type.name().toLowerCase());
+		this.setStyleNameButton(type.name().toLowerCase());
+	}
+	
+	/**
+	 * Sets a styleName to the button according to the message type
+	 */
+	private void setStyleNameButton(String type)
+	{
+		hideButton.addStyleName(type.toLowerCase());
 	}
 	
 	/**
