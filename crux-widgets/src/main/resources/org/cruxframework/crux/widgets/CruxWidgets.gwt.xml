@@ -336,5 +336,14 @@
 			<when-property-is name="device.features" value="smallDisplayArrows" />
 		</none>
 	</replace-with>
+	
+	<!-- DateBox -->
+    <replace-with class="org.cruxframework.crux.widgets.client.datebox.DefaultDateBox">
+        <when-type-assignable class="org.cruxframework.crux.widgets.client.datebox.DateBox.CommonDateBox" />
+        <none>
+            <when-property-is name="device.features" value="smallDisplayTouch" />
+            <when-property-is name="device.features" value="smallDisplayArrows" />
+        </none>
+    </replace-with>
     
 </module>
