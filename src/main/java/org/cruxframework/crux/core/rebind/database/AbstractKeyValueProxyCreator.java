@@ -196,11 +196,25 @@ public abstract class AbstractKeyValueProxyCreator extends AbstractProxyCreator
 			}
 			else if (jType.equals(integerType) || (jType.equals(JPrimitiveType.INT)))
 			{
-				srcWriter.println("result.push((int)"+keyVar+");");
+				if (keyPath.length > 1)
+				{
+					srcWriter.println("result.push((Integer)"+keyVar+");");
+				}
+				else
+				{
+					srcWriter.println("result.push((int)"+keyVar+");");
+				}
 			}
 			else if (jType.equals(doubleType) || (jType.equals(JPrimitiveType.DOUBLE)))
 			{
-				srcWriter.println("result.push((double)"+keyVar+");");
+				if (keyPath.length > 1)
+				{
+					srcWriter.println("result.push((Double)"+keyVar+");");
+				}
+				else
+				{
+					srcWriter.println("result.push((double)"+keyVar+");");
+				}
 			}
 			else if (jType.equals(dateType))
 			{
