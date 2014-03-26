@@ -17,7 +17,7 @@ package org.cruxframework.crux.widgets.client.datebox;
 
 import java.util.Date;
 
-import org.cruxframework.crux.widgets.client.datebox.gwtoverride.CruxFormat;
+import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
 import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
 import org.cruxframework.crux.widgets.client.util.type.CruxWidget;
 
@@ -27,9 +27,9 @@ import com.google.gwt.user.client.ui.TextBox;
  * @author samuel.cardoso
  *
  */
-public interface IDateBox extends CruxWidget 
+interface IDateBox extends CruxWidget 
 {
-	public CruxFormat getFormat();
+	public Format getFormat();
 	public int getTabIndex();
 	public TextBox getTextBox();
 	public DatePicker getDatePicker();
@@ -40,7 +40,7 @@ public interface IDateBox extends CruxWidget
 	public void setAccessKey(char key);
 	public void setEnabled(boolean enabled);
 	public void setFocus(boolean focused);
-	public void setFormat(CruxFormat format);
+	public void setFormat(Format format);
 	public void setValue(Date date);
 	public void showDatePicker();
 }

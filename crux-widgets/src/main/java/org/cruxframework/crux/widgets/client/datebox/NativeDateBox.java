@@ -17,11 +17,10 @@ package org.cruxframework.crux.widgets.client.datebox;
 
 import com.google.gwt.user.client.ui.Composite;
 
-
 /**
  * A native implementation for DatePicker component
  * @author samuel.cardoso
  */
-public abstract class NativeDateBox extends Composite implements IDateBox
+abstract class NativeDateBox extends Composite implements IDateBox
 {
 }

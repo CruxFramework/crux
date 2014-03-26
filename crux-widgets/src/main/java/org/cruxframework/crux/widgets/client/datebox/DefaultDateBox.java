@@ -17,8 +17,8 @@ package org.cruxframework.crux.widgets.client.datebox;
 
 import java.util.Date;
 
-import org.cruxframework.crux.widgets.client.datebox.gwtoverride.CruxDateBox;
-import org.cruxframework.crux.widgets.client.datebox.gwtoverride.CruxFormat;
+import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox;
+import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
 import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -28,13 +28,13 @@ import com.google.gwt.user.client.ui.TextBox;
  * A default implementation for DatePicker
  * @author Samuel Almeida Cardoso
  */
-public class DefaultDateBox extends Composite implements IDateBox
+class DefaultDateBox extends Composite implements IDateBox
 {
-	private CruxDateBox impl;
+	private DateBox impl;
 	
 	public DefaultDateBox()
 	{
-		impl = new CruxDateBox();
+		impl = new DateBox();
 		initWidget(impl);
 		setStyleName(getBaseStyleName());
 	}
@@ -46,7 +46,7 @@ public class DefaultDateBox extends Composite implements IDateBox
 	}
 
 	@Override
-	public CruxFormat getFormat() 
+	public Format getFormat() 
 	{
 		return impl.getFormat();
 	}
@@ -112,7 +112,7 @@ public class DefaultDateBox extends Composite implements IDateBox
 	}
 
 	@Override
-	public void setFormat(CruxFormat format) 
+	public void setFormat(Format format) 
 	{
 		impl.setFormat(format);
 	}
