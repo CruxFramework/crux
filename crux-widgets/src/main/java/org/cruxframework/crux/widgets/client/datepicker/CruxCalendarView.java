@@ -13,26 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 package org.cruxframework.crux.widgets.client.datepicker;
 
-import org.cruxframework.crux.widgets.client.util.type.CruxWidget;
-
+import org.cruxframework.crux.widgets.client.datepicker.gwtoverride.DefaultCalendarView;
 
 /**
  * @author samuel.cardoso
  *
  */
-public class DatePicker extends org.cruxframework.crux.widgets.client.datepicker.gwtoverride.DatePicker implements CruxWidget
+public final class CruxCalendarView extends DefaultCalendarView 
 {
-	public DatePicker() 
-	{
-		super(new CruxMonthSelector(), new CruxCalendarView(), new CruxCalendarModel());
-		setStyleName(getBaseStyleName());
-	}
-
-	@Override
-	public String getBaseStyleName() 
-	{
-		return "crux-DatePicker";
-	}
 }

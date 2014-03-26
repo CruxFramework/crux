@@ -16,13 +16,14 @@
 
 package org.cruxframework.crux.widgets.client.datepicker;
 
+import org.cruxframework.crux.widgets.client.datepicker.gwtoverride.MonthSelector;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.PushButton;
-import com.google.gwt.user.datepicker.client.MonthSelector;
 
 /**
  * @author samuel.cardoso
