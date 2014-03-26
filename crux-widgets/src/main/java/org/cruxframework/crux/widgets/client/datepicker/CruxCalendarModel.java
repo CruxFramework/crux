@@ -15,7 +15,8 @@
  */
 package org.cruxframework.crux.widgets.client.datepicker;
 
-import com.google.gwt.user.datepicker.client.CalendarModel;
+import org.cruxframework.crux.widgets.client.datepicker.gwtoverride.CalendarModel;
+
 
 /**
  * @author samuel.cardoso
