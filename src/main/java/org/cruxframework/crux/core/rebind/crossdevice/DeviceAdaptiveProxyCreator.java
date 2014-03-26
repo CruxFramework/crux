@@ -121,6 +121,16 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 		}
 		
 		controllerClass = context.getTypeOracle().findType(controllerClassName);
+		if (controllerClass == null)
+		{
+    		String message = "Controller class ["+controllerName+"] , declared on view ["+view.getId()+"], could not be loaded. "
+					   + "\n Possible causes:"
+					   + "\n\t 1. Check if any type or subtype used by controller refers to another module and if this module is inherited in the .gwt.xml file."
+					   + "\n\t 2. Check if your controller or its members belongs to a client package."
+					   + "\n\t 3. Check the versions of all your modules.";
+			
+			throw new CruxGeneratorException(message);
+		}
 		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
 		if (controllerAnnot == null)
 		{
