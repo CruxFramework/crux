@@ -53,14 +53,15 @@ public class ViewWidgetConsumer implements LazyCompatibleWidgetConsumer
 	public ViewWidgetConsumer(ViewFactoryCreator viewFactoryCreator)
 	{
 		this.viewFactoryCreator = viewFactoryCreator;
-		hasValueType = viewFactoryCreator.getContext().getTypeOracle().findType(HasValue.class.getCanonicalName());
-		hasFormatterType = viewFactoryCreator.getContext().getTypeOracle().findType(HasFormatter.class.getCanonicalName());
-		hasTextType = viewFactoryCreator.getContext().getTypeOracle().findType(HasText.class.getCanonicalName());
-		typeConverterType = viewFactoryCreator.getContext().getTypeOracle().findType(TypeConverter.class.getCanonicalName());
 	}
 
 	public void consume(SourcePrinter out, String widgetId, String widgetVariableName, String widgetType, JSONObject metaElem)
 	{
+		hasValueType = viewFactoryCreator.getContext().getTypeOracle().findType(HasValue.class.getCanonicalName());
+		hasFormatterType = viewFactoryCreator.getContext().getTypeOracle().findType(HasFormatter.class.getCanonicalName());
+		hasTextType = viewFactoryCreator.getContext().getTypeOracle().findType(HasText.class.getCanonicalName());
+		typeConverterType = viewFactoryCreator.getContext().getTypeOracle().findType(TypeConverter.class.getCanonicalName());
+
 		String bindPath = metaElem.optString("bindPath");
 		String bindConverter = metaElem.optString("bindConverter");
 		if (viewFactoryCreator.isDataBindEnabled() && !StringUtils.isEmpty(bindPath))
