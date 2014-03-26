@@ -17,7 +17,7 @@ package org.cruxframework.crux.widgets.client.datebox;
 
 import java.util.Date;
 
-import org.cruxframework.crux.widgets.client.datebox.gwtoverride.CruxFormat;
+import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
 import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
 
 import com.google.gwt.core.shared.GWT;
@@ -55,7 +55,7 @@ public class DateBox extends Composite implements IDateBox
 	}
 
 	@Override
-	public CruxFormat getFormat() 
+	public Format getFormat() 
 	{
 		return impl.getFormat();
 	}
@@ -121,7 +121,7 @@ public class DateBox extends Composite implements IDateBox
 	}
 
 	@Override
-	public void setFormat(CruxFormat format) 
+	public void setFormat(Format format) 
 	{
 		impl.setFormat(format);
 	}
