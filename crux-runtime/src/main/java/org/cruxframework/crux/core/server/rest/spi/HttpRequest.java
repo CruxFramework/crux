@@ -186,16 +186,6 @@ public class HttpRequest
 		return httpMethod;
 	}
 	
-	public HttpSession getSession()
-	{
-		return request.getSession();
-	}
-
-	public HttpSession getSession(boolean create)
-	{
-		return request.getSession(create);
-	}
-
 	protected MultivaluedMap<String, String> parseForm(InputStream entityStream) throws IOException
 	{
 		char[] buffer = new char[100];
@@ -232,6 +222,30 @@ public class HttpRequest
 		return formData;
 	}
 
+	/**
+	 * @see javax.servlet.http.HttpServletRequest.getSession()
+	 */
+	public HttpSession getSession()
+	{
+		return request.getSession();
+	}
+
+	/**
+	 * @see javax.servlet.http.HttpServletRequest.getSession(boolean)
+	 */
+	public HttpSession getSession(boolean create)
+	{
+		return request.getSession(create);
+	}
+	
+	/**
+	 * @see javax.servlet.http.HttpServletRequest.getContextPath()
+	 */
+	public String getContextPath()
+	{
+		return request.getContextPath();
+	}
+	
 	/**
 	 * @see request.getLocale();
 	 * @return the current locale.
