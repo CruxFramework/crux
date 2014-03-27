@@ -397,7 +397,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public void setPosition(int left, int top)
 	{
-		dialog.setPopupPosition(left, top);
+		dialog.setPosition(left, top);
 	}
 	
 	@Override

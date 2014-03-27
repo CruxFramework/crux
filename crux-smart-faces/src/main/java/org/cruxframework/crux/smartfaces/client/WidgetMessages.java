@@ -29,4 +29,7 @@ public interface WidgetMessages extends Messages
 
 	@DefaultMessage("Cancel")
 	String cancelLabel();
+
+	@DefaultMessage("Can not add a widget on this Dialog.")
+	String canNotAddWidgetOnThisDialog();
 }

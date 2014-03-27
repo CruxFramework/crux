@@ -78,6 +78,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	private com.google.gwt.user.client.Element containerElement;
 	private DialogAnimation animation;
 	private boolean animating;
+	private int left = -1;
+	private int top = -1;
 	
 	
 	/**
@@ -135,7 +137,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		containerElement = Document.get().createDivElement().cast();
 		super.getContainerElement().appendChild(containerElement);
 		getElement().getStyle().setPosition(Position.ABSOLUTE);
-	    setPopupPosition(0, 0);
+	    setPosition(0, 0);
 	    setStyleName(getContainerElement(), "popupContent");
 	    
 	}
@@ -208,7 +210,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	{
 		setVisible(false);
 		doShow(false);
-		setPopupPosition(getLeftRelativeObject(target), getTopRelativeObject(target));
+		setPosition(getLeftRelativeObject(target), getTopRelativeObject(target));
 		setVisible(true);
 		if (isAnimationEnabled())
 		{
@@ -386,7 +388,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 * @param top
 	 *            the top position, in pixels
 	 */
-	public void setPopupPosition(int left, int top)
+	public void setPosition(int left, int top)
 	{
 		if (centered)
 		{
@@ -399,11 +401,11 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		left -= document.getBodyOffsetLeft();
 		top -= document.getBodyOffsetTop();
 
-		Style style = getElement().getStyle();
-		style.setPropertyPx("left", left);
-		style.setPropertyPx("top", top);
+		this.left = left;
+		this.top = top;
+		setPopupPositionStyle(left, top);
 	}
-	
+
 	/**
 	 * Sets whether this object is visible. This method just sets the
 	 * <code>visibility</code> style attribute. You need to call {@link #show()}
@@ -586,7 +588,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
     {
 		int left = getPopupLeftToCenter();
 		int top = getPopupTopToCenter();
-		setPopupPosition(left, top);
+		setPosition(left, top);
     }
 
 	/**
@@ -662,6 +664,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		style.setTop(50, Unit.PCT);
 		style.setProperty("webkitTransform", "translateY(-50%) translateX(-50%)");
 		style.setProperty("transform", "translateY(-50%) translateX(-50%)");
+		left = -1;
+		top = -1;
 		centered = true;
 	}
 	
@@ -672,6 +676,13 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		style.clearProperty("transform");
 		centered = false;
 	}
+	
+	private void setPopupPositionStyle(int left, int top)
+    {
+	    Style style = getElement().getStyle();
+		style.setPropertyPx("left", left);
+		style.setPropertyPx("top", top);
+    }
 	
 	private void setState(boolean showing, boolean unloading, boolean animated, final StateChangeCallback callback)
     {
@@ -715,17 +726,18 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 						public void onAnimationCompleted()
 						{
 							animating = false;
-							RootPanel.get().remove(PopupPanel.this);
+							removePopupFromDOM();
 							if (callback != null)
 							{
 								callback.onStateChange();
 							}
 						}
+
 					});
 				}
 				else
 				{
-					RootPanel.get().remove(PopupPanel.this);
+					removePopupFromDOM();
 					if (callback != null)
 					{
 						callback.onStateChange();
@@ -733,6 +745,16 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 				}
 			}
 		}
+	}
+
+	private void removePopupFromDOM()
+	{
+		if (centered)
+		{
+			fixPositionToCenter();
+		}
+		RootPanel.get().remove(PopupPanel.this);
+		setPopupPositionStyle(left, top);		
 	}
 
 	/**

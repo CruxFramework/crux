@@ -21,7 +21,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasCloseHandlersFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.HasHTMLFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
@@ -58,8 +57,7 @@ import org.cruxframework.crux.smartfaces.rebind.event.OkEvtBind;
 })
 public class MessageBoxFactory extends PanelFactory<WidgetCreatorContext>
        implements DialogFactory<WidgetCreatorContext>, 
-                  HasCloseHandlersFactory<WidgetCreatorContext>, 
-                  HasHTMLFactory<WidgetCreatorContext>
+                  HasCloseHandlersFactory<WidgetCreatorContext> 
 {
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException

@@ -40,9 +40,9 @@ import com.google.gwt.user.client.ui.Widget;
  * A simple confirm dialog box
  * @author Thiago da Rosa de Bustamante
  */
-public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandlers
+public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCancelHandlers
 {
-	private static final String DEFAULT_STYLE_NAME = "faces-Confirm";
+	public static final String DEFAULT_STYLE_NAME = "faces-Confirm";
 
 	private Label msgLabel;
 	private Button okButton;
@@ -90,12 +90,43 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 	 * @param message the text to be displayed in the body of the confirm
 	 * @param okHandler a handler for the OK button click event
 	 * @param cancelHandler a handler for the Cancel button click event
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 */
+	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, boolean movable, boolean resizable)
+	{
+		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
+				okHandler, cancelHandler, movable, resizable, DEFAULT_STYLE_NAME, null);
+	}
+	
+	/**
+	 * Shows a confirm dialog
+	 * @param title the text to be displayed as the caption of the confirm 
+	 * @param message the text to be displayed in the body of the confirm
+	 * @param okHandler a handler for the OK button click event
+	 * @param cancelHandler a handler for the Cancel button click event
 	 * @param animation animates the dialog while showing or hiding the confirm
 	 */
 	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, DialogAnimation animation)
 	{
 		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
 				okHandler, cancelHandler, DEFAULT_STYLE_NAME, animation);
+	}
+
+	/**
+	 * Shows a confirm dialog
+	 * @param title the text to be displayed as the caption of the confirm 
+	 * @param message the text to be displayed in the body of the confirm
+	 * @param okHandler a handler for the OK button click event
+	 * @param cancelHandler a handler for the Cancel button click event
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 * @param animation animates the dialog while showing or hiding the confirm
+	 */
+	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, boolean movable, boolean resizable, DialogAnimation animation)
+	{
+		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
+				okHandler, cancelHandler, movable, resizable, DEFAULT_STYLE_NAME, animation);
 	}
 
 	/**
@@ -120,18 +151,55 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 	 * @param cancelLabel the text to be displayed in the body of the confirm
 	 * @param okHandler a handler for the OK button click event
 	 * @param cancelHandler a handler for the Cancel button click event
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 */
+	public static Confirm show(String title, String message, String okLabel, String cancelLabel, OkHandler okHandler, CancelHandler cancelHandler, 
+			boolean movable, boolean resizable)
+	{
+		return show(title, message, okLabel, cancelLabel, okHandler, cancelHandler, movable, resizable, DEFAULT_STYLE_NAME, null);
+	}
+
+	/**
+	 * Shows a confirm dialog
+	 * @param title the text to be displayed as the caption of the confirm 
+	 * @param message the text to be displayed in the body of the confirm
+	 * @param okLabel the text to be displayed in the body of the confirm
+	 * @param cancelLabel the text to be displayed in the body of the confirm
+	 * @param okHandler a handler for the OK button click event
+	 * @param cancelHandler a handler for the Cancel button click event
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
 	 * @param styleName the name of the CSS class to be applied in the confirm element 
 	 * @param animation animates the dialog while showing or hiding the confirm
 	 */
 	public static Confirm show(String dialogTitle, String message, String okLabel, String cancelLabel, OkHandler okHandler, 
 			CancelHandler cancelHandler, String styleName, DialogAnimation animation)
 	{
-		Confirm confirm = new Confirm(); 
+		return show(dialogTitle, message, okLabel, cancelLabel, okHandler, cancelHandler, true, false, styleName, animation);
+	}
+
+	/**
+	 * Shows a confirm dialog
+	 * @param title the text to be displayed as the caption of the confirm 
+	 * @param message the text to be displayed in the body of the confirm
+	 * @param okLabel the text to be displayed in the body of the confirm
+	 * @param cancelLabel the text to be displayed in the body of the confirm
+	 * @param okHandler a handler for the OK button click event
+	 * @param cancelHandler a handler for the Cancel button click event
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 * @param styleName the name of the CSS class to be applied in the confirm element 
+	 * @param animation animates the dialog while showing or hiding the confirm
+	 */
+	public static Confirm show(String dialogTitle, String message, String okLabel, String cancelLabel, OkHandler okHandler, 
+			CancelHandler cancelHandler, boolean movable, boolean resizable, String styleName, DialogAnimation animation)
+	{
+		Confirm confirm = new Confirm(movable, resizable, styleName); 
 		confirm.setDialogTitle(dialogTitle);
 		confirm.setOkLabel(okLabel);
 		confirm.setCancelLabel(cancelLabel);
 		confirm.setMessage(message);
-		confirm.setStyleName(styleName);
 		confirm.setAnimation(animation);
 		if (okHandler != null)
 		{
@@ -148,13 +216,13 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 	@Override
 	public void setWidget(IsWidget w)
 	{
-		//Ignores
+		throw new UnsupportedOperationException(WidgetMsgFactory.getMessages().canNotAddWidgetOnThisDialog());
 	}
 	
 	@Override
 	public void setWidget(Widget w)
 	{
-		//Ignores
+		throw new UnsupportedOperationException(WidgetMsgFactory.getMessages().canNotAddWidgetOnThisDialog());
 	}
 
 	/**
@@ -202,13 +270,13 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 	}	
 
 	/**
-	 * Creates a progress bar animation to be inserted in progress box
+	 * Creates the message panel to be inserted in confirm
 	 * @return
 	 */
 	private Widget createMessagePanel() 
 	{
 		FlowPanel contents = new FlowPanel();
-		contents.setStyleName("messageBoxContents");
+		contents.setStyleName("confirmContents");
 		
 		msgLabel = new Label();
 		contents.add(msgLabel);
@@ -217,6 +285,7 @@ public class Confirm extends DialogBox implements HasOkHandlers, HasCancelHandle
 		cancelButton = createCancelButton();
 		
 		NavPanel buttons = new NavPanel();
+		buttons.setStyleName("confirmButtons");
 		
 		buttons.add(okButton);
 		buttons.add(cancelButton);

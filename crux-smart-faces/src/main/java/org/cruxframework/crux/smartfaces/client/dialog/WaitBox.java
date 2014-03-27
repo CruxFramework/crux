@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A simple dialog which shows a wait widget and a message
  * @author Thiago da Rosa de Bustamante
  */
-public class WaitBox extends DialogBox
+public class WaitBox extends AbstractDialogBox
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-WaitBox";
 

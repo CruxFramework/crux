@@ -17,6 +17,7 @@ package org.cruxframework.crux.smartfaces.client.dialog;
 
 
 import org.cruxframework.crux.core.client.Crux;
+import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.event.HasOkHandlers;
@@ -36,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Gesse Dafe
  * @author Thiago da Rosa de Bustamante
  */
-public class MessageBox extends DialogBox implements HasOkHandlers
+public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-MessageBox";
 
@@ -188,13 +189,13 @@ public class MessageBox extends DialogBox implements HasOkHandlers
 	@Override
 	public void setWidget(IsWidget w)
 	{
-		//Ignores
+		throw new UnsupportedOperationException(WidgetMsgFactory.getMessages().canNotAddWidgetOnThisDialog());
 	}
 	
 	@Override
 	public void setWidget(Widget w)
 	{
-		//Ignores
+		throw new UnsupportedOperationException(WidgetMsgFactory.getMessages().canNotAddWidgetOnThisDialog());
 	}
 
 	/**

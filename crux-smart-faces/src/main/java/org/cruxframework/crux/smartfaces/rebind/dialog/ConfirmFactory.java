@@ -20,7 +20,6 @@ import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasCloseHandlersFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.HasHTMLFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
@@ -30,8 +29,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.gwt.rebind.PanelFactory;
 import org.cruxframework.crux.smartfaces.client.dialog.Confirm;
-import org.cruxframework.crux.smartfaces.client.dialog.DialogBox;
-import org.cruxframework.crux.smartfaces.client.dialog.MessageBox.MessageType;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.cruxframework.crux.smartfaces.rebind.event.CancelEvtBind;
 import org.cruxframework.crux.smartfaces.rebind.event.OkEvtBind;
@@ -50,8 +47,7 @@ import org.cruxframework.crux.smartfaces.rebind.event.OkEvtBind;
 })
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="movable", type=Boolean.class, defaultValue="true", description="If true, the window can be dragged on the screen"),
-	@TagAttributeDeclaration(value="resizable", type=Boolean.class, defaultValue="false", description="If true, the window can be resized"),
-	@TagAttributeDeclaration(value="messageType", type=MessageType.class, defaultValue="INFO", description="The type of the message presented by this box. It changes the message box style, to customize the dialog when errors or warnings is presented.")
+	@TagAttributeDeclaration(value="resizable", type=Boolean.class, defaultValue="false", description="If true, the window can be resized")
 })
 @TagEvents({
 	@TagEvent(value=OkEvtBind.class, description="Event triggered when the confirm ok button is selected."),
@@ -59,8 +55,7 @@ import org.cruxframework.crux.smartfaces.rebind.event.OkEvtBind;
 })
 public class ConfirmFactory extends PanelFactory<WidgetCreatorContext>
        implements DialogFactory<WidgetCreatorContext>, 
-                  HasCloseHandlersFactory<WidgetCreatorContext>, 
-                  HasHTMLFactory<WidgetCreatorContext>
+                  HasCloseHandlersFactory<WidgetCreatorContext> 
 {
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
@@ -68,7 +63,7 @@ public class ConfirmFactory extends PanelFactory<WidgetCreatorContext>
 		String className = getWidgetClassName();
 		boolean movable = context.readBooleanWidgetProperty("movable", true);
 		boolean resizable = context.readBooleanWidgetProperty("resizable", false);
-		String styleName = context.readWidgetProperty("styleName", DialogBox.DEFAULT_STYLE_NAME);
+		String styleName = context.readWidgetProperty("styleName", Confirm.DEFAULT_STYLE_NAME);
 		
 		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+movable+", "+resizable+", "+EscapeUtils.quote(styleName)+");");
 	}

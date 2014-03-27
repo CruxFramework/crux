@@ -20,7 +20,6 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAnimationFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasCloseHandlersFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.HasHTMLFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
@@ -54,8 +53,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 })
 public class DialogBoxFactory extends PanelFactory<WidgetCreatorContext>
        implements HasAnimationFactory<WidgetCreatorContext>, 
-                  HasCloseHandlersFactory<WidgetCreatorContext>, 
-                  HasHTMLFactory<WidgetCreatorContext>
+                  HasCloseHandlersFactory<WidgetCreatorContext>
 {
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException

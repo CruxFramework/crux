@@ -37,22 +37,22 @@ DIV, INPUT, BUTTON
 	-moz-box-sizing: border-box;
 }
 
-@external dragging, unselectable;
+@external *;
+
+/* --------------------   common for all dialogs  -----------------------*/
 .dragging, .unselectable *{
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
 }
 
-/* common for all dialogs */
-@external faces-MessageBox, faces-DialogBox, dialogGlass, popupContent, dialogTitleBodySplit, dialogTopBar, dialogTopBarDragHandle, dialogTitle, dialogCloseButton, dialogBody, dialogResizer;  
 .dialogGlass
 {
 	background-color: rgba(0, 0, 0, 0.2);
 	position: fixed !important;
 }
 
-.faces-DialogBox, .faces-WaitBox, .faces-MessageBox
+.faces-DialogBox, .faces-WaitBox, .faces-MessageBox, .faces-Confirm, .faces-QuestionBox
 {
 	background-color: #FFF;
 	border-radius: 3px;
@@ -60,14 +60,16 @@ DIV, INPUT, BUTTON
 	position: fixed !important;
 }
 
-.faces-DialogBox .dialogTitleBodySplit, .faces-WaitBox .dialogTitleBodySplit, .faces-MessageBox .dialogTitleBodySplit
+.faces-DialogBox .dialogTitleBodySplit, .faces-WaitBox .dialogTitleBodySplit, .faces-MessageBox .dialogTitleBodySplit,
+.faces-Confirm .dialogTitleBodySplit, .faces-QuestionBox .dialogTitleBodySplit
 {
 	width: inherit;
 	height: inherit;
 	min-height: inherit;
 	position: relative;
 }
-.faces-DialogBox .dialogTopBar, .faces-WaitBox .dialogTopBar, .faces-MessageBox .dialogTopBar
+.faces-DialogBox .dialogTopBar, .faces-WaitBox .dialogTopBar, .faces-MessageBox .dialogTopBar, 
+.faces-ConfirmBox .dialogTopBar, .faces-QuestionBox .dialogTopBar
 {
 	position: absolute;
 	padding-top: 10px;
@@ -81,7 +83,8 @@ DIV, INPUT, BUTTON
 	-webkit-user-select: none;
 	-ms-user-select: none;
 }
-.faces-DialogBox .dialogTopBarDragHandle, .faces-WaitBox .dialogTopBarDragHandle, .faces-MessageBox .dialogTopBarDragHandle
+.faces-DialogBox .dialogTopBarDragHandle, .faces-WaitBox .dialogTopBarDragHandle, .faces-MessageBox .dialogTopBarDragHandle, 
+.faces-Confirm .dialogTopBarDragHandle, .faces-QuestionBox .dialogTopBarDragHandle
 {
 	position: absolute;
 	top: 0px;
@@ -94,7 +97,7 @@ DIV, INPUT, BUTTON
 	-webkit-user-select: none;
 	-ms-user-select: none;
 }
-.faces-DialogBox .dialogTitle, .faces-WaitBox .dialogTitle, .faces-MessageBox .dialogTitle
+.faces-DialogBox .dialogTitle, .faces-WaitBox .dialogTitle, .faces-MessageBox .dialogTitle, .faces-Confirm .dialogTitle, .faces-QuestionBox .dialogTitle
 {
 	color: #4496C6;
 	text-align: center;
@@ -103,7 +106,7 @@ DIV, INPUT, BUTTON
 	-webkit-user-select: none;
 	-ms-user-select: none;
 }
-.faces-DialogBox .dialogCloseButton, .faces-WaitBox .dialogCloseButton, .faces-MessageBox .dialogCloseButton
+.faces-DialogBox .dialogCloseButton, .faces-WaitBox .dialogCloseButton, .faces-MessageBox .dialogCloseButton, .faces-QuestionBox .dialogCloseButton
 {
 	position: absolute;
 	right: 2px;
@@ -115,7 +118,8 @@ DIV, INPUT, BUTTON
 	-webkit-user-select: none;
 	-ms-user-select: none;
 }
-.faces-DialogBox .dialogCloseButton:after, .faces-WaitBox .dialogCloseButton:after, .faces-MessageBox .dialogCloseButton:after 
+.faces-DialogBox .dialogCloseButton:after, .faces-WaitBox .dialogCloseButton:after, .faces-MessageBox .dialogCloseButton:after, 
+.faces-QuestionBox .dialogCloseButton:after 
 {
 	content: "X";
 	color: #4496C6;
@@ -124,7 +128,7 @@ DIV, INPUT, BUTTON
 	-webkit-user-select: none;
 	-ms-user-select: none;
 }
-.faces-DialogBox .dialogBody, .faces-WaitBox .dialogBody, .faces-MessageBox .dialogBody
+.faces-DialogBox .dialogBody, .faces-WaitBox .dialogBody, .faces-MessageBox .dialogBody, .faces-Confirm .dialogBody, .faces-QuestionBox .dialogBody
 {
 	width: inherit;
 	height: literal("calc(100% - 40px)");
@@ -137,13 +141,13 @@ DIV, INPUT, BUTTON
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 }
-.faces-DialogBox .popupContent, .faces-WaitBox .popupContent, .faces-MessageBox .popupContent
+.faces-DialogBox .popupContent, .faces-WaitBox .popupContent, .faces-MessageBox .popupContent, .faces-Confirm .popupContent, .faces-QuestionBox .popupContent
 {
 	height: 100%;
 	min-height: inherit;
 	width: 100%;
 }
-.faces-DialogBox .dialogResizer, .faces-MessageBox .dialogResizer
+.faces-DialogBox .dialogResizer, .faces-MessageBox .dialogResizer, .faces-Confirm .dialogResizer, .faces-QuestionBox .dialogResizer
 {
 	position: absolute;
 	height: 12px;
@@ -161,7 +165,6 @@ DIV, INPUT, BUTTON
 	-ms-user-select: none;
 }
 
-@external faces-WaitBox, faces-InfinityProgressBarAnimation, faces-InfinityProgressBar, progressBarSlot, progressBarFill;
 .faces-WaitBox
 {
 	width: 400px;
@@ -229,8 +232,6 @@ DIV, INPUT, BUTTON
 	animation: faces-InfinityProgressBarAnimation 2s linear infinite;
 }
 
-
-@external faces-MessageBox, messageBoxContents, faces-MessageBox-info, faces-MessageBox-success, faces-MessageBox-warn, faces-MessageBox-error;
 .faces-MessageBox
 {
 	max-width: 80%;
@@ -291,6 +292,63 @@ DIV, INPUT, BUTTON
 	min-height: 180px;
 }
 
+.faces-Confirm
+{
+	max-width: 80%;
+	min-width: 400px;
+	min-height: 180px;
+}
+.faces-Confirm .confirmContents
+{
+	margin-left: 20px;
+	margin-right: 20px;
+	text-align: center;
+}
+.faces-Confirm .dialogTopBar
+{
+	box-shadow: none;
+}
+.faces-Confirm .gwt-Label
+{
+	color: #4c6879;	
+}
 
-@external gwt-Label, faces-Button; 
+.faces-Confirm .faces-Button
+{
+	margin-top: 40px;
+	margin-bottom: 10px;
+	background-color: #4496C6;	
+}
+
+.faces-QuestionBox
+{
+	max-width: 80%;
+	min-width: 400px;
+	min-height: 180px;
+}
+.faces-QuestionBox .questionContents
+{
+	margin-left: 20px;
+	margin-right: 20px;
+	text-align: center;
+}
+.faces-QuestionBox .questionButtons
+{
+}
+.faces-QuestionBox .dialogTopBar
+{
+	box-shadow: none;
+}
+.faces-QuestionBox .gwt-Label
+{
+	color: #4c6879;	
+}
+
+.faces-QuestionBox .faces-Button
+{
+	margin-top: 40px;
+	margin-bottom: 10px;
+	background-color: #4496C6;	
+}
+
 
