@@ -64,7 +64,7 @@ public interface Crux
 	@DefaultServerMessage("false")
 	String preferWebSQLForNativeDB();
 
-	@DefaultServerMessage("false")
+	@DefaultServerMessage("true")
 	String renderWidgetsWithIDs();
 
 	@DefaultServerMessage("false")
