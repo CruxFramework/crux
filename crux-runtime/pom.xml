@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>crux-runtime</artifactId>
 	<name>Crux Core - Runtime</name>
-	<version>5.1.0.9</version>
+	<version>5.1.0.10</version>
 	<description>Runtime components of Crux Core</description>
 
     <parent>
         <groupId>org.cruxframework</groupId>
         <artifactId>crux-core</artifactId>
-        <version>5.1.0.9</version>
+        <version>5.1.0.10</version>
     </parent>
 	
 	<dependencies>
