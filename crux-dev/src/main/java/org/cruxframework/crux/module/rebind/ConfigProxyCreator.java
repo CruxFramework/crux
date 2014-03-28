@@ -45,7 +45,7 @@ public class ConfigProxyCreator extends CruxClientConfigProxyCreator
 		else
 		{
 			String[] developmentModules = Environment.isProduction()?null:CruxModuleHandler.getDevelopmentModules();
-			if (developmentModules != null)
+			if (developmentModules != null && developmentModules.length > 0)
 			{
 				sourceWriter.println("if (url == null){");
 				sourceWriter.println("return false;");
@@ -56,6 +56,7 @@ public class ConfigProxyCreator extends CruxClientConfigProxyCreator
 				sourceWriter.println("if (index  > 0){");
 				sourceWriter.println("urlWithoutParameters = url.substring(0,index);");
 				sourceWriter.println("}");
+				
 				for (String moduleName : developmentModules)
 				{
 					String[] pages = CruxModuleHandler.getCruxModule(moduleName).getPages();
