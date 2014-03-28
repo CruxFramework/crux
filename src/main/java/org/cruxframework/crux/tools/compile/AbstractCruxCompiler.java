@@ -34,6 +34,8 @@ import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
+import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
+import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.scan.ClassScanner;
 import org.cruxframework.crux.core.utils.FileUtils;
 import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
@@ -42,6 +44,7 @@ import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
+
 
 
 
@@ -104,6 +107,8 @@ public abstract class AbstractCruxCompiler
 			compileJavaSource();
 			initializeCompiler();
 			List<URL> urls = getURLs();
+			ServiceFactoryInitializer.initialize(null);
+			RestServiceFactoryInitializer.initialize(null);
 			for (URL url : urls)
 			{
 				Module module = ModuleUtils.findModuleFromPageUrl(url);
