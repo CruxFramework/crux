@@ -17,18 +17,20 @@ package org.cruxframework.crux.widgets.client.datebox;
 
 import java.util.Date;
 
+import org.cruxframework.crux.widgets.client.datebox.DateBox.CommonDateBox;
 import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox;
 import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
 import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
 
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * A default implementation for DatePicker
  * @author Samuel Almeida Cardoso
  */
-class DefaultDateBox extends Composite implements IDateBox
+class DefaultDateBox extends CommonDateBox
 {
 	private DateBox impl;
 	
@@ -38,13 +40,13 @@ class DefaultDateBox extends Composite implements IDateBox
 		initWidget(impl);
 		setStyleName(getBaseStyleName());
 	}
-	
-	@Override
-	public String getBaseStyleName() 
-	{
-		return impl.getStyleName();
-	}
 
+	@Override
+	public void showDatePicker() 
+	{
+		impl.showDatePicker();
+	}
+	
 	@Override
 	public Format getFormat() 
 	{
@@ -124,8 +126,20 @@ class DefaultDateBox extends Composite implements IDateBox
 	}
 
 	@Override
-	public void showDatePicker() 
+	public void setValue(Date value, boolean fireEvents) 
 	{
-		impl.showDatePicker();	
+		impl.setValue(value, fireEvents);
+	}
+
+	@Override
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Date> handler) 
+	{
+		return impl.addValueChangeHandler(handler);
+	}
+
+	@Override
+	public void setTabIndex(int index) 
+	{
+		impl.setTabIndex(index);	
 	}
 }

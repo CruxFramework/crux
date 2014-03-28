@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.widgets.client.datepicker;
 
+import java.util.Date;
+
 import org.cruxframework.crux.widgets.client.util.type.CruxWidget;
 
 
@@ -24,6 +26,8 @@ import org.cruxframework.crux.widgets.client.util.type.CruxWidget;
  */
 public class DatePicker extends org.cruxframework.crux.widgets.client.datepicker.gwtoverride.DatePicker implements CruxWidget
 {
+	private Date monthToOpen;
+	
 	public DatePicker() 
 	{
 		super(new CruxMonthSelector(), new CruxCalendarView(), new CruxCalendarModel());
@@ -34,5 +38,16 @@ public class DatePicker extends org.cruxframework.crux.widgets.client.datepicker
 	public String getBaseStyleName() 
 	{
 		return "crux-DatePicker";
+	}
+
+	public Date getMonthToOpen() 
+	{
+		return monthToOpen;
+	}
+	
+
+	public void setMonthToOpen(Date monthToOpen) 
+	{
+		this.monthToOpen = monthToOpen;
 	}
 }

@@ -21,6 +21,8 @@ import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
 import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -30,16 +32,16 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class DateBox extends Composite implements IDateBox
 {
-	public static abstract class CommonDateBox extends Composite implements IDateBox
+	private IDateBox impl;
+	
+	protected static abstract class CommonDateBox extends Composite implements IDateBox
 	{
 		@Override
 		public String getBaseStyleName() 
 		{
 			return "crux-DateBox";
-		}		
+		}
 	}
-	
-	private IDateBox impl;
 	
 	public DateBox()
 	{
@@ -136,5 +138,23 @@ public class DateBox extends Composite implements IDateBox
 	public void showDatePicker() 
 	{
 		impl.showDatePicker();	
+	}
+
+	@Override
+	public void setValue(Date value, boolean fireEvents) 
+	{
+		impl.setValue(value, fireEvents);
+	}
+
+	@Override
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Date> handler) 
+	{
+		return impl.addValueChangeHandler(handler);
+	}
+
+	@Override
+	public void setTabIndex(int index) 
+	{
+		impl.setTabIndex(index);	
 	}
 }

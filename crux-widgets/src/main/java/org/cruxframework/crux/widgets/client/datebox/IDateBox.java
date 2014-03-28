@@ -21,13 +21,15 @@ import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
 import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
 import org.cruxframework.crux.widgets.client.util.type.CruxWidget;
 
+import com.google.gwt.user.client.ui.Focusable;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * @author samuel.cardoso
  *
  */
-interface IDateBox extends CruxWidget 
+interface IDateBox extends CruxWidget, HasValue<Date>, Focusable
 {
 	public Format getFormat();
 	public int getTabIndex();

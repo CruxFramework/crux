@@ -466,15 +466,24 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 	/**
 	 * Parses the current date box's value and shows that date.
 	 */
-	public void showDatePicker() {
-		Date current = parseDate(false);
-		if (current == null) {
-			current = new Date();
+	public void showDatePicker() 
+	{
+		Date currentMonth = null; 
+		if(getDatePicker().getMonthToOpen() == null)
+		{
+			currentMonth = parseDate(false);
+			if (currentMonth == null) {
+				currentMonth = new Date();
+			}	
+		} else
+		{
+			currentMonth = getDatePicker().getMonthToOpen();
 		}
-		picker.setCurrentMonth(current);
+		
+		picker.setCurrentMonth(currentMonth);
 		popup.showRelativeTo(this);
 	}
-
+	
 	private Date parseDate(boolean reportError) {
 		if (reportError) {
 			getFormat().reset(this, false);
@@ -513,6 +522,11 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 		if (fireNullValues || (parsedDate != null)) {
 			setValue(picker.getValue(), parsedDate, true, false);
 		}
+	}
+
+	public PopupPanel getPopup() 
+	{
+		return popup;
 	}
 
 }
