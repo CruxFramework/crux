@@ -30,9 +30,9 @@ import com.google.gwt.user.client.ui.TextBox;
  * A default implementation for DatePicker
  * @author Samuel Almeida Cardoso
  */
-class DefaultDateBox extends CommonDateBox
+public class DefaultDateBox extends CommonDateBox
 {
-	private DateBox impl;
+	protected DateBox impl;
 	
 	public DefaultDateBox()
 	{

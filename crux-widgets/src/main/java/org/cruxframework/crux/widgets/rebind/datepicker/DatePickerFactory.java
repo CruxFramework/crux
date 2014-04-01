@@ -28,14 +28,14 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
-import org.cruxframework.crux.widgets.client.button.DownloadButton;
+import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
 import org.cruxframework.crux.widgets.rebind.event.SelectEvtBind;
 
 /**
  * @author Samuel Almeida Cardoso - <code>samuel.cardoso@cruxframework.org</code>
  *
  */
-@DeclarativeFactory(library="widgets", id="datePicker", targetWidget=DownloadButton.class)
+@DeclarativeFactory(library="widgets", id="datePicker", targetWidget=DatePicker.class)
 @TagChildren({
 	@TagChild(value=DatePickerFactory.ContentProcessor.class, autoProcess=false)
 })

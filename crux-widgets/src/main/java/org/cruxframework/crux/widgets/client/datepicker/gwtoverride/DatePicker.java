@@ -703,7 +703,7 @@ public class DatePicker extends Composite implements
    *
    * @return the view
    */
-  protected final CalendarView getView() {
+  public final CalendarView getView() {
     return view;
   }
 

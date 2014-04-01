@@ -15,13 +15,38 @@
  */
 package org.cruxframework.crux.widgets.client.datebox;
 
-import org.cruxframework.crux.widgets.client.datebox.DateBox.CommonDateBox;
+import org.cruxframework.crux.widgets.client.datepicker.CruxCalendarView;
 
+import com.google.gwt.user.client.Window;
 
 /**
  * A native implementation for DatePicker component
  * @author samuel.cardoso
  */
-abstract class NativeDateBox extends CommonDateBox
+public class NativeDateBox extends DefaultDateBox
 {
+	public NativeDateBox()
+	{
+		super();
+//		impl.getPopup().getElement().setId("testeeee");
+//		impl.getPopup().setHeight("100%");
+//		impl.getPopup().setWidth("100%");
+//		
+//		impl.getDatePicker().setHeight("100%");
+//		impl.getDatePicker().setWidth("100%");
+		
+		CruxCalendarView view = (CruxCalendarView) impl.getDatePicker().getView();
+		view.getGrid().setHeight(Window.getClientHeight()+"px");
+		view.getGrid().setWidth(Window.getClientWidth()+"px");
+		
+//		Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+//		{
+//			@Override
+//			public void execute() 
+//			{
+//				view.getGrid().setHeight("1000px");
+//				view.getGrid().setWidth("1000px");
+//			}
+//		});
+	}
 }
