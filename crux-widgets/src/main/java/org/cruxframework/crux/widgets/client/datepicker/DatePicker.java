@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.cruxframework.crux.widgets.client.util.type.CruxWidget;
 
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 
 /**
  * @author samuel.cardoso
@@ -40,6 +41,20 @@ public class DatePicker extends org.cruxframework.crux.widgets.client.datepicker
 		return "crux-DatePicker";
 	}
 
+	/**
+	 * Add a style name to the given dates.
+	 */
+	public void addStyleToDates(String styleName, Date initDate, Date finalDate)
+	{
+		Date currentDate = CalendarUtil.copyDate(initDate);
+		int days = CalendarUtil.getDaysBetween(initDate, finalDate);
+		for(int i=0; i<days; i++)
+		{
+			CalendarUtil.addDaysToDate(currentDate, 1);
+			addStyleToDates(styleName, currentDate);
+		}
+	}
+	
 	public Date getMonthToOpen() 
 	{
 		return monthToOpen;

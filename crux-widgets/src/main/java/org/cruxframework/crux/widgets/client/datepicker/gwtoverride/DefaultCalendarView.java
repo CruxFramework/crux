@@ -35,7 +35,7 @@ public class DefaultCalendarView extends CalendarView {
   /**
    * Cell grid.
    */
-  // Javac bug requires that date be fully specified here.
+  public // Javac bug requires that date be fully specified here.
   class CellGrid extends CellGridImpl<java.util.Date> {
     /**
      * A cell representing a date.
@@ -148,7 +148,7 @@ public class DefaultCalendarView extends CalendarView {
     }
   }
 
-  private CellGrid grid = new CellGrid();
+  public CellGrid grid = new CellGrid();
 
   private Date firstDisplayed;
 

@@ -16,21 +16,21 @@
 
 package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.impl.ElementMapperImpl;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Highlighting, selectable cell grid. Used to help construct the default
@@ -38,9 +38,9 @@ import java.util.Iterator;
  * 
  * @param <V> type of value in grid.
  */
-abstract class CellGridImpl<V> extends Grid {
+public abstract class CellGridImpl<V> extends Grid {
 
-  abstract class Cell extends Widget {
+  public abstract class Cell extends Widget {
     private boolean enabled = true;
     private V value;
     private int index;

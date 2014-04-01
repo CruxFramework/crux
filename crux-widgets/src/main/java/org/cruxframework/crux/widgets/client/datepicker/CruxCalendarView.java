@@ -24,4 +24,10 @@ import org.cruxframework.crux.widgets.client.datepicker.gwtoverride.DefaultCalen
  */
 public final class CruxCalendarView extends DefaultCalendarView 
 {
+	
+	public CellGrid getGrid()
+	{
+		return grid;
+	}
+	
 }

@@ -133,7 +133,7 @@ public final class CruxMonthSelector extends MonthSelector
 		});
 		return button;
 	}
-
+	
 	private void increaseMonth() 
 	{
 		addMonths(+1);

@@ -1,2 +1,2 @@
 This package contains extracted classes from GWT version 2.5.1
--> Only method and package visibility was changed on these files sources
+-> Only property, method and package visibility was changed on these files sources
