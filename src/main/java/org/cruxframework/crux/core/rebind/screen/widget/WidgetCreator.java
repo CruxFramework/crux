@@ -537,7 +537,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		}
 		else
 		{
-			out.println("final "+className + " " + context.getWidget()+" = new "+className+"();");
+			out.println("final "+className + " " + context.getWidget()+" = GWT.create("+className+".class);");
 		}
 	}
 	
