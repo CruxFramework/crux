@@ -92,7 +92,7 @@ public final class CruxMonthSelector extends MonthSelector
 	private PushButton getNextYearButton() 
 	{
 		PushButton button = new PushButton();
-		button.getUpFace().setHTML("&#9656;");
+		button.getUpFace().setHTML("<center>&#9656;</center>");
 		//forwards.setStyleName(css().nextButton());
 		button.addClickHandler(new ClickHandler() 
 		{
@@ -107,7 +107,7 @@ public final class CruxMonthSelector extends MonthSelector
 	private PushButton getPrevYearButton() 
 	{
 		PushButton button = new PushButton();
-		button.getUpFace().setHTML("&#9666;");
+		button.getUpFace().setHTML("<center>&#9666;</center>");
 		//forwards.setStyleName(css().nextButton());
 		button.addClickHandler(new ClickHandler() 
 		{
@@ -122,7 +122,7 @@ public final class CruxMonthSelector extends MonthSelector
 	private PushButton getNextMonthButton() 
 	{
 		PushButton button = new PushButton();
-		button.getUpFace().setHTML("&raquo;");
+		button.getUpFace().setHTML("<center>&raquo;</center>");
 		//forwards.setStyleName(css().nextButton());
 		button.addClickHandler(new ClickHandler() 
 		{
@@ -166,8 +166,13 @@ public final class CruxMonthSelector extends MonthSelector
 			}
 		});
 
-		button.getUpFace().setHTML("&laquo;");
+		button.getUpFace().setHTML("<center>&laquo;</center>");
 		//backwards.setStyleName(css().previousButton());
 		return button;
+	}
+
+	public Grid getGrid() 
+	{
+		return grid;
 	}
 }

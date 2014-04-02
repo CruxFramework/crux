@@ -16,8 +16,10 @@
 package org.cruxframework.crux.widgets.client.datebox;
 
 import org.cruxframework.crux.widgets.client.datepicker.CruxCalendarView;
+import org.cruxframework.crux.widgets.client.datepicker.CruxMonthSelector;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 
 /**
  * A native implementation for DatePicker component
@@ -28,25 +30,18 @@ public class NativeDateBox extends DefaultDateBox
 	public NativeDateBox()
 	{
 		super();
-//		impl.getPopup().getElement().setId("testeeee");
-//		impl.getPopup().setHeight("100%");
-//		impl.getPopup().setWidth("100%");
-//		
-//		impl.getDatePicker().setHeight("100%");
-//		impl.getDatePicker().setWidth("100%");
-		
 		CruxCalendarView view = (CruxCalendarView) impl.getDatePicker().getView();
 		view.getGrid().setHeight(Window.getClientHeight()+"px");
 		view.getGrid().setWidth(Window.getClientWidth()+"px");
 		
-//		Scheduler.get().scheduleDeferred(new ScheduledCommand() 
-//		{
-//			@Override
-//			public void execute() 
-//			{
-//				view.getGrid().setHeight("1000px");
-//				view.getGrid().setWidth("1000px");
-//			}
-//		});
+		CruxMonthSelector monthSelector = (CruxMonthSelector) impl.getDatePicker().getMonthSelector();
+		monthSelector.getGrid().setWidth(Window.getClientWidth()+"px");
+		
+		CellFormatter formatter = monthSelector.getGrid().getCellFormatter();
+		formatter.setWidth(0, 0, "15%");
+		formatter.setWidth(0, 1, "15%");
+		formatter.setWidth(0, 2, "40%");
+		formatter.setWidth(0, 3, "15%");
+		formatter.setWidth(0, 4, "15%");
 	}
 }

@@ -694,7 +694,7 @@ public class DatePicker extends Composite implements
    *
    * @return the month selector
    */
-  protected final MonthSelector getMonthSelector() {
+  public final MonthSelector getMonthSelector() {
     return monthAndYearSelector;
   }
 
