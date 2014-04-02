@@ -5,11 +5,15 @@
 	<artifactId>crux-core</artifactId>
 	<packaging>pom</packaging>
 	<name>Crux Core</name>
-	<version>5.1.0.10</version>
+	<version>5.1.0</version>
 	<description>Core of Crux Framework</description>
 
     <!--
         ********************** DEPLOY **********************
+        **************** Current .X version ****************
+        11
+        i.e. replace 5.1.0-SNAPSHOT for 5.1.0.12 
+        ****************************************************
         -> Redefine crux version in all artifacts (maven bug!) and then:
         
         (Sonatype)
@@ -18,7 +22,7 @@
           after this enter in the sonatype nexus manager and close and 
           promove the created repository.
         (Internal)  
-        - as Stage version: append .X to cruxVersion without SNAPSHOT 
+        - as Stage version: append .X to cruxVersion removing SNAPSHOT suffix 
           and run 'clean deploy' with profile 'internal' 
      -->
 
@@ -28,7 +32,7 @@
     </properties>
 
 	<!-- ATTENTION: Due to a Maven reactor bug not fixed yet,
-	first time you run this project, comment those modules lines. -->
+	first time you run this project, comment those modules lines. --> 
     <modules>
         <module>../crux-runtime</module>
         <module>../crux-dev</module>
