@@ -63,6 +63,12 @@ public class ServicesCompileMap
 	 */
 	public static boolean initialize(ServletContext context)
 	{
+		if(context == null)
+		{
+			logger.info("Context NULL: not running from web.");
+			return false;
+		}
+		
 		Properties properties = new Properties();
 		try
 		{

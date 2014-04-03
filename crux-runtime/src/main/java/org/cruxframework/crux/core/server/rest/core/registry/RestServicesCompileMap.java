@@ -61,24 +61,27 @@ public class RestServicesCompileMap
 	 */
 	public static boolean initialize(ServletContext context)
 	{
-		if (context != null)
+		if(context == null)
 		{
-			Properties properties = new Properties();
-			try
+			logger.info("Context NULL: not running from web.");
+			return false;
+		}
+		
+		Properties properties = new Properties();
+		try
+		{
+			properties.load(context.getResourceAsStream("/META-INF/crux-rest"));
+			Enumeration<?> serviceNames = (Enumeration<?>) properties.propertyNames();
+			while (serviceNames.hasMoreElements())
 			{
-				properties.load(context.getResourceAsStream("/META-INF/crux-rest"));
-				Enumeration<?> serviceNames = (Enumeration<?>) properties.propertyNames();
-				while (serviceNames.hasMoreElements())
-				{
-					String serviceName = (String) serviceNames.nextElement();
-					remoteServices.put(serviceName, properties.getProperty(serviceName));
-				}
-				return true;
+				String serviceName = (String) serviceNames.nextElement();
+				remoteServices.put(serviceName, properties.getProperty(serviceName));
 			}
-			catch (Exception e)
-			{
-				logger.info("Error initializing services.",e);
-			}
+			return true;
+		}
+		catch (Exception e)
+		{
+			logger.info("Error initializing services.",e);
 		}
 		return false;
 	}
