@@ -37,6 +37,7 @@ public class Progress implements HasAnimation, IsWidget
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-Progress" ;
 
+	private boolean isProgressShowing;
 	private DialogBox dialog = null;
 	private Label messageLabel = null;
 
@@ -93,6 +94,7 @@ public class Progress implements HasAnimation, IsWidget
 	public void show()
 	{
 		Screen.blockToUser("crux-ProgressDialogScreenBlocker");
+		isProgressShowing = true;
 		
 		//if it's a touch device, then we should wait for virtual keyboard to get closed.
 		//Otherwise the dialog message will not be properly centered in screen.  
@@ -123,6 +125,7 @@ public class Progress implements HasAnimation, IsWidget
 		{
 			dialog.center();
 			dialog.show();
+			isProgressShowing = false;
 		}
 		catch (Exception e)
 		{
@@ -136,8 +139,22 @@ public class Progress implements HasAnimation, IsWidget
 	 */
 	public void hide()
 	{
-		dialog.hide();
-		Screen.unblockToUser();
+		//This makes sure that 'hide' will not be invoked before 'show'.
+		//This generaly occurs when there is a short gap between show-hide (fast requests).
+		Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() 
+		{
+			@Override
+			public boolean execute() 
+			{
+				if(isProgressShowing)
+				{
+					return true;
+				}
+				dialog.hide();
+				Screen.unblockToUser();		
+				return false;
+			}
+		}, 500);
 	}
 	
 	@Override
