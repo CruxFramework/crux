@@ -27,12 +27,11 @@ import com.google.gwt.user.datepicker.client.CalendarUtil;
  */
 public class DatePicker extends org.cruxframework.crux.widgets.client.datepicker.gwtoverride.DatePicker implements CruxWidget
 {
-	private static final CruxMonthSelector MONTH_AND_YEAR_SELECTOR = new CruxMonthSelector();
 	private Date monthToOpen;
 	
 	public DatePicker() 
 	{
-		super(MONTH_AND_YEAR_SELECTOR, new CruxCalendarView(), new CruxCalendarModel());
+		super(new CruxMonthSelector(), new CruxCalendarView(), new CruxCalendarModel());
 		setStyleName(getBaseStyleName());
 	}
 
