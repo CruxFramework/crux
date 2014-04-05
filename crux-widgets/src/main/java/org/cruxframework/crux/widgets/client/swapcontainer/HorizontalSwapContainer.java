@@ -45,6 +45,7 @@ public class HorizontalSwapContainer extends SingleViewContainer implements HasC
 	private Panel swap;
 	private boolean autoRemoveInactiveViews = false;
 	private boolean animationEnabled = true;
+	private boolean inheritHeightForPanels = false;
 	
 	public HorizontalSwapContainer()
 	{
@@ -52,11 +53,7 @@ public class HorizontalSwapContainer extends SingleViewContainer implements HasC
 		swapPanel = getMainWidget();
 		swapPanel.setStyleName(DEFAULT_STYLE_NAME);
 		active = new SimplePanel();
-//		active.setWidth("inherit");
-//		active.setHeight("inherit");
 		swap = new SimplePanel();
-//		swap.setWidth("inherit");
-//		swap.setHeight("inherit");
 	}
 
 	/**
@@ -68,6 +65,26 @@ public class HorizontalSwapContainer extends SingleViewContainer implements HasC
     	return autoRemoveInactiveViews;
     }
 
+	public boolean isInheritHeightForPanels()
+	{
+		return inheritHeightForPanels;
+	}
+	
+	public void setInheritHeightForPanels(boolean inheritHeightForPanels)
+	{
+		this.inheritHeightForPanels = inheritHeightForPanels;
+		if (inheritHeightForPanels)
+		{
+			active.setHeight("inherit");
+			swap.setHeight("inherit");
+		}
+		else
+		{
+			active.setHeight("");
+			swap.setHeight("");
+		}
+	}
+	
 	/**
 	 * 
 	 * @param autoRemoveInactiveViews

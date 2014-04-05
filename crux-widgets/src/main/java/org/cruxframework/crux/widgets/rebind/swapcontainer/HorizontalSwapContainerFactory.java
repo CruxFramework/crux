@@ -53,7 +53,8 @@ class HorizontalSwapContainerContext extends WidgetCreatorContext
 	@TagAttribute(value="transitionDuration", type=Integer.class, required=false, defaultValue="500"), 
 	@TagAttribute(value="autoRemoveInactiveViews", type=Boolean.class, defaultValue="false"), 
 	@TagAttribute(value="animationEnabledForLargeDevices", type=Boolean.class, defaultValue="true"), 
-	@TagAttribute(value="animationEnabledForSmallDevices", type=Boolean.class, defaultValue="true") 
+	@TagAttribute(value="animationEnabledForSmallDevices", type=Boolean.class, defaultValue="true"),
+	@TagAttribute(value="inheritHeightForPanels", type=Boolean.class, defaultValue="false")
 })
 @TagEvents({
 	@TagEvent(ChangeViewEvtBind.class)
