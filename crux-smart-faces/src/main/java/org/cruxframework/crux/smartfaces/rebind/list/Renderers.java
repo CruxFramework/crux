@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.server.scan.ClassScanner;
+import org.cruxframework.crux.scanner.ClassScanner;
 import org.cruxframework.crux.smartfaces.client.list.ScrollableList.Renderer;
 
 

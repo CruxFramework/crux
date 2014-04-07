@@ -14,6 +14,8 @@ import org.cruxframework.crux.core.client.datasource.PagedDataSource;
 import org.cruxframework.crux.core.client.datasource.RemoteDataSource;
 import org.cruxframework.crux.core.client.datasource.RemoteDataSourceCallback;
 
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -28,6 +30,8 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  */
 public class ScrollableList<T> extends Composite implements HasDataSource<PagedDataSource<T>>
 {
+	private static final String FACES_SCROLLABLE_LIST = "faces-ScrollableList";
+	
 	private PagedDataSource<T> dataSource;
 	private int pageSize = 25;
 	private boolean loaded;
@@ -36,6 +40,7 @@ public class ScrollableList<T> extends Composite implements HasDataSource<PagedD
 	private ScrollPanel scrollable = new ScrollPanel();
 	private FlowPanel contentPanel = new FlowPanel();
 	private ListRenderer<T> renderer;
+	private DivElement loadingElement;
 
 	public ScrollableList(ListRenderer<T> renderer)
     {
@@ -43,6 +48,7 @@ public class ScrollableList<T> extends Composite implements HasDataSource<PagedD
 		this.renderer = renderer;
 		scrollable.add(contentPanel);
 		initWidget(scrollable);
+		setStyleName(FACES_SCROLLABLE_LIST);
 		// Do not let the scrollable take tab focus.
 		scrollable.getElement().setTabIndex(-1);
 
@@ -150,6 +156,7 @@ public class ScrollableList<T> extends Composite implements HasDataSource<PagedD
 	{
 		if(!this.loaded)
 		{
+			maybeShowLoadingElement();
 			if(this.dataSource instanceof RemoteDataSource)
 			{
 				if(this.dataSource instanceof MeasurableDataSource)
@@ -180,7 +187,11 @@ public class ScrollableList<T> extends Composite implements HasDataSource<PagedD
 		{
 			this.dataSource.nextPage();
 
-			if(!(this.dataSource instanceof RemoteDataSource<?>))
+			if(this.dataSource instanceof RemoteDataSource<?>)
+			{
+				maybeShowLoadingElement();				
+			}
+			else
 			{
 				render();
 			}
@@ -198,23 +209,49 @@ public class ScrollableList<T> extends Composite implements HasDataSource<PagedD
 	
 	protected void render()
     {
-	    int rowCount = getRowsToBeRendered();
-	    
-	    for (int i=0; i<rowCount; i++)
+		try
+		{
+			int rowCount = getRowsToBeRendered();
+
+			for (int i=0; i<rowCount; i++)
+			{
+				IsWidget widget = renderer.render(dataSource.getBoundObject());
+				contentPanel.add(widget);
+				if (dataSource.hasNextRecord())
+				{
+					dataSource.nextRecord();
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+	    finally
 	    {
-	    	IsWidget widget = renderer.render(dataSource.getBoundObject());
-	    	contentPanel.add(widget);
-	    	if (dataSource.hasNextRecord())
-	    	{
-	    		dataSource.nextRecord();
-	    	}
-	    	else
-	    	{
-	    		break;
-	    	}
+	    	maybeHideLoadingElement();
 	    }
     }
 
+	protected void maybeShowLoadingElement()
+	{
+		if (loadingElement == null)
+		{
+			loadingElement = Document.get().createDivElement();
+			loadingElement.setClassName("listLoading");
+			Document.get().getBody().appendChild(loadingElement);
+		}
+	}
+
+	protected void maybeHideLoadingElement()
+	{
+		if (loadingElement != null)
+		{
+			loadingElement.removeFromParent();
+			loadingElement = null;
+		}
+	}
+	
 	protected int getRowsToBeRendered()
 	{
 		if(isDataLoaded())
@@ -222,6 +259,10 @@ public class ScrollableList<T> extends Composite implements HasDataSource<PagedD
 			if(this.dataSource.getCurrentPage() == 0)
 			{
 				this.dataSource.nextPage();
+				if (dataSource instanceof RemoteDataSource)
+				{
+					maybeShowLoadingElement();
+				}
 			}
 
 			return this.dataSource.getCurrentPageSize();
