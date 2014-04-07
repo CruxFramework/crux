@@ -57,6 +57,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
     {
 	    super(logger, context, cacheable);
 		this.baseIntf = baseIntf;
+		DevelopmentScanners.initializeScanners();
     }
 
 	/**

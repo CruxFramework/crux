@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.declarativeui.template.Templates;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.ViewFactory;
-import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
+import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 
 
 /**

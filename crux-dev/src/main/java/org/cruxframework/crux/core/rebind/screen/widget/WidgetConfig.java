@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.screen.RequiresResizeFactory;
-import org.cruxframework.crux.core.server.scan.ClassScanner;
+import org.cruxframework.crux.scanner.ClassScanner;
 
 
 /**
@@ -127,7 +127,7 @@ public class WidgetConfig
 	{
 		if (config == null)
 		{
-			initializeWidgetConfig();
+			initialize();
 		}
 		return config.get(id);
 	}
@@ -142,7 +142,7 @@ public class WidgetConfig
 	{
 		if (config == null)
 		{
-			initializeWidgetConfig();
+			initialize();
 		}
 		return config.get(library+"_"+id);
 	}
@@ -155,7 +155,7 @@ public class WidgetConfig
 	{
 		if (registeredLibraries == null)
 		{
-			initializeWidgetConfig();
+			initialize();
 		}
 		
 		return registeredLibraries.keySet();

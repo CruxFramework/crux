@@ -29,8 +29,8 @@ import org.cruxframework.crux.core.client.formatter.annotation.FormatterName;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.server.scan.ClassScanner;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
+import org.cruxframework.crux.scanner.ClassScanner;
 
 
 /**

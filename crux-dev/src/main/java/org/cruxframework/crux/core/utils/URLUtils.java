@@ -20,7 +20,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.cruxframework.crux.scannotation.URLStreamManager;
+import org.cruxframework.crux.scanner.URLStreamManager;
 
 
 /**
@@ -70,7 +70,6 @@ public class URLUtils
 	 */
 	public static URL isValidURL(String urlString)
 	{
-	
 		try 
 		{
 			return new URL(urlString);

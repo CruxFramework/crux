@@ -1105,7 +1105,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 			if (!metaElement.has("_type"))
 			{
-				throw new CruxGeneratorException("Crux Meta Data contains an invalid meta element (without type attribute). View ID["+view.getId()+"]");
+				throw new CruxGeneratorException("Crux Meta Data contains an invalid meta element (without type attribute). View ID["+view.getId()+"]. "
+						+ "Validade your view file.");
 			}
 			if (isValidWidget(metaElement))
 			{

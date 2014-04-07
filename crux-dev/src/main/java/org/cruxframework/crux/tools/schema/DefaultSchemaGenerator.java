@@ -39,8 +39,8 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.template.TemplateParser;
 import org.cruxframework.crux.core.declarativeui.template.Templates;
-import org.cruxframework.crux.core.declarativeui.template.TemplatesScanner;
 import org.cruxframework.crux.core.i18n.MessagesFactory;
+import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetConfig;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
@@ -67,11 +67,10 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
-import org.cruxframework.crux.core.server.scan.ClassScanner;
-import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.StreamUtils;
 import org.cruxframework.crux.core.utils.ViewUtils;
-import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
+import org.cruxframework.crux.scanner.ClasspathUrlFinder;
+import org.cruxframework.crux.scanner.Scanners;
 import org.w3c.dom.Document;
 
 import com.google.gwt.resources.client.ResourcePrototype;
@@ -213,6 +212,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			for (File file: destDir.listFiles())
 			{
 				String fileName = file.getName();
+				logger.info("Generating Documentation for library ["+fileName+"].");
 				if (fileName.endsWith("xsd"))
 				{
 					transformer.setParameter("title", schemaMessages.documentationTitle(fileName.substring(0, fileName.length() - 4).toUpperCase()));
@@ -235,6 +235,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 					transformer.transform(in, out);
 				}
 			}
+			logger.info("All documentation generated.");
 		}
 		catch (Exception e)
 		{
@@ -252,11 +253,10 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		{
 			CruxBridge.getInstance().setSingleVM(true);
 			ConfigurationFactory.getConfigurations().setEnableHotDeploymentForWebDirs(false);
-			ConfigurationFactory.getConfigurations().setEnableWebRootScannerCache(true);
 			URL[] urls = ClasspathUrlFinder.findClassPaths();
-			ClassScanner.initialize(urls);
-			TemplatesScanner.initialize(urls);
-
+			Scanners.setSearchURLs(urls);
+			DevelopmentScanners.initializeScanners();
+			
 			if (webDir == null)
 			{
 				webDir = new File(projectBaseDir, "war/");

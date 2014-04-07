@@ -16,6 +16,7 @@
 package org.cruxframework.crux.core.declarativeui;
 
 import org.cruxframework.crux.core.rebind.screen.ScreenResourcesScanner;
+import org.cruxframework.crux.scanner.Scanners;
 
 
 /**
@@ -25,6 +26,27 @@ import org.cruxframework.crux.core.rebind.screen.ScreenResourcesScanner;
  */
 public class DeclarativeUIScreenResourceScanner extends ScreenResourcesScanner
 {
+	private static boolean initialized = false;
+	private static DeclarativeUIScreenResourceScanner instance = new DeclarativeUIScreenResourceScanner();
+	
+	public static DeclarativeUIScreenResourceScanner getInstance()
+	{
+		return instance;
+	}
+	
+	protected DeclarativeUIScreenResourceScanner()
+    {
+    }
+	
+	public static synchronized void initializeScanner()
+	{
+		if (!initialized)
+		{
+			Scanners.registerScanner(getInstance());
+			initialized = true;
+		}
+	}
+	
 	protected boolean accepts(String urlString)
 	{
 		return urlString != null && urlString.endsWith(".crux.xml")  && !urlString.endsWith("cruxViewTester.crux.xml");
