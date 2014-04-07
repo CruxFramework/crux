@@ -20,7 +20,6 @@ import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.HasDialogAnimation;
-import org.cruxframework.crux.smartfaces.client.label.Label;
 
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
@@ -60,6 +59,19 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 		container.center();
 	}
 
+	/**
+	 * Opens a dialog container using a non static way. 
+	 * @param viewName name of the view to be opened
+	 * @param animation animates the dialog while showing or hiding
+	 */
+	public void showView(String viewName, DialogAnimation animation)
+	{
+		assert(dialog != null):"Dialog is not created yet.";
+		dialog.setAnimation(animation);
+		dialog.show();
+		dialog.center();
+	}
+	
 	/**
 	 * Create a dialog container, load the given view into the container and open the dialog box. 
 	 * @param viewName name of the view to be opened
@@ -237,7 +249,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 			}
 		});
 		
-		initWidget(new Label());
+		initWidget(dialog);
 	}
 
 	/**
