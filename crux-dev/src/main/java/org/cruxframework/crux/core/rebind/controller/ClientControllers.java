@@ -34,7 +34,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetConfig;
-import org.cruxframework.crux.core.server.scan.ClassScanner;
+import org.cruxframework.crux.scanner.ClassScanner;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

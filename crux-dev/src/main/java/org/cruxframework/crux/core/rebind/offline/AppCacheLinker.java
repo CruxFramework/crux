@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.screen.OfflineScreen;
+import org.cruxframework.crux.core.rebind.screen.OfflineScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
@@ -91,11 +92,13 @@ public class AppCacheLinker extends AbstractLinker
 			{
 				try
 				{
-					Set<OfflineScreen> offlinePages = OfflineScreens.getOfflinePages(context.getModuleName());
+					Set<String> offlinePages = OfflineScreens.getOfflineIds(context.getModuleName());
 					if (offlinePages != null)
 					{
-						for (OfflineScreen offlineScreen : offlinePages)
+						for (String offlineScreenID : offlinePages)
 						{
+							Document screen = OfflineScreens.getOfflineScreen(offlineScreenID);
+							OfflineScreen offlineScreen = OfflineScreenFactory.getInstance().getOfflineScreen(offlineScreenID, screen);
 							emitOfflineArtifacts(logger, context, artifactset, offlineScreen);
 						}
 					}

@@ -23,14 +23,15 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.server.dispatch.Services;
 import org.cruxframework.crux.core.server.rest.annotation.RestService;
-import org.cruxframework.crux.core.server.scan.ClassScanner;
-import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
+import org.cruxframework.crux.scanner.ClassScanner;
+import org.cruxframework.crux.scanner.ClasspathUrlFinder;
+import org.cruxframework.crux.scanner.Scanners;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
-
 
 import com.google.gwt.user.client.rpc.RemoteService;
 
@@ -48,7 +49,8 @@ public class ServiceMapper
 	 */
 	public ServiceMapper()
 	{
-		ClassScanner.initialize(ClasspathUrlFinder.findClassPaths());
+		Scanners.setSearchURLs(ClasspathUrlFinder.findClassPaths());
+        DevelopmentScanners.initializeScanners();
 	}
 	
 	/**

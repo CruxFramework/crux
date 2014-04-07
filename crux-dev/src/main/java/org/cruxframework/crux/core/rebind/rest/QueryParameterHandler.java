@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.rest;
 
 import java.lang.annotation.Annotation;
 
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.shared.rest.annotation.PathParam;
 import org.cruxframework.crux.core.shared.rest.annotation.QueryParam;
@@ -126,13 +127,14 @@ class QueryParameterHandler extends AbstractParameterHelper
 				str.append("&");
 			}
 			first = false;
-	        if (JClassUtils.isSimpleType(propertyInfo.getType()))
+	        String parameterName = (StringUtils.isEmpty(value)?propertyInfo.getName():value+"."+propertyInfo.getName());
+			if (JClassUtils.isSimpleType(propertyInfo.getType()))
 	        {
-				buildQueryStringForSimpleType(str, value+"."+propertyInfo.getName());
+				buildQueryStringForSimpleType(str, parameterName);
 	        }
 	        else
 	        {
-				buildQueryStringForComplexType(str, propertyInfo.getType(), value+"."+propertyInfo.getName());
+				buildQueryStringForComplexType(str, propertyInfo.getType(), parameterName);
 	        }
         }
     }

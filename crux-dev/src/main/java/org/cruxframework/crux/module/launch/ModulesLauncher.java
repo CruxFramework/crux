@@ -16,18 +16,16 @@
 package org.cruxframework.crux.module.launch;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aspectj.tools.ajc.Main;
-import org.cruxframework.crux.core.aspect.LoggingErrorHandlerAspect;
+import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.server.CruxBridge;
+import org.cruxframework.crux.module.CruxModuleBridge;
 import org.cruxframework.crux.module.CruxModuleHandler;
-import org.cruxframework.crux.tools.compile.utils.ClassPathUtils;
 
 
 /**
@@ -43,8 +41,9 @@ public class ModulesLauncher
 	 */
 	public static void main(String[] args) throws MalformedURLException
 	{
-		//tryingToInvokeAspect();
-        
+		CruxModuleBridge.getInstance().registerCurrentModule("");
+		DevelopmentScanners.initializeScanners();
+		
 		String[] developmentModules = CruxModuleHandler.getDevelopmentModules();
 		if (developmentModules==null || developmentModules.length ==0)
 		{
@@ -56,12 +55,13 @@ public class ModulesLauncher
 		for (int i=0; i< (args.length-1); i++)
         {
 			String arg = args[i];
-	        if ("-webDir".equals(arg))
+			if ("-webDir".equals(arg))
 	        {
 	        	webDir = args[i+1];
 	        	//change to -war
 	        	args[i] = "-war";
-	        } else if("-war".equals(arg))
+	        } 
+	        else if("-war".equals(arg))
 	        {
 	        	webDir = args[i+1];
 	        	if(warParamFound)
@@ -73,6 +73,12 @@ public class ModulesLauncher
 	        	warParamFound = true;
 	        }
         }
+		
+		String initialModule = getModule(args);
+		if (initialModule != null && initialModule.length() > 0)
+		{
+			CruxModuleBridge.getInstance().registerCurrentModule(initialModule);
+		}
 		
 		File webinfClassesDir = new File(webDir, "WEB-INF/classes");
 		File webinfLibDir = new File(webDir, "WEB-INF/lib");
@@ -89,6 +95,7 @@ public class ModulesLauncher
 				modules.add(module.getFullName());
 			}
 		}
+		
 		String[] newArgs = new String[args.length+modules.size()];
 		System.arraycopy(args, 0, newArgs, 0, args.length);
 		System.arraycopy(modules.toArray(new String[modules.size()]), 0, newArgs, args.length, modules.size());
@@ -96,43 +103,75 @@ public class ModulesLauncher
 		com.google.gwt.dev.DevMode.main(newArgs);
 	}
 
-	/**
-	 * TODO: finish this!!!
-	 * Is generating the correct file!
-	 */
-	@SuppressWarnings("unused")
-	private static void tryingToInvokeAspect() 
-	{
-		String jarToWeave = "gwt-dev-2.5.1.jar";
-		String classpath = System.getProperty("java.class.path");
-		String jarToWeavePath = classpath.substring(0, classpath.indexOf(jarToWeave) + jarToWeave.length());
-		jarToWeavePath = jarToWeavePath.substring(jarToWeavePath.lastIndexOf(";")+1, jarToWeavePath.length());
-		
-		String jarWeavedPath = jarToWeavePath.substring(0, jarToWeavePath.lastIndexOf(".jar"))+"_weaved.jar";
-		
-		String aspect = LoggingErrorHandlerAspect.class.getProtectionDomain().getCodeSource().getLocation().getPath()+(LoggingErrorHandlerAspect.class.getPackage().getName()).replace(".", "/");
-		aspect = aspect.substring(1, aspect.length());
-		
-		String[] ajcArgs = {
-            "-sourceroots", aspect,
-            "-inpath", jarToWeavePath,
-            "-noExit",
-            "-Xlint:ignore",
-            "-outjar", jarWeavedPath,
-            "-1.5"
-        };
-		
-		File fileJarToWeave = new File(jarToWeavePath);
-		File fileJarWeaved = new File(jarWeavedPath);
-		
-        try 
+	private static String getModule(String[] args)
+    {
+		String startupUrl = null;
+		String module = null;
+		for (int i=0; i< (args.length-1); i++)
         {
-			Main.main(ajcArgs);
-			ClassPathUtils.removeURL(fileJarToWeave.toURI().toURL());
-			ClassPathUtils.addURL(fileJarWeaved.toURI().toURL());
-		} catch (IOException e) 
+			String arg = args[i];
+	        if ("-startupUrl".equals(arg))
+	        {
+	        	startupUrl = args[i+1];
+	        }
+	        else if ("-module".equals(arg))
+	        {
+	        	module = args[i+1];
+	        } 
+        }
+		if (module == null || module.length() == 0)
 		{
-			e.printStackTrace();
+			if (startupUrl != null && startupUrl.length() > 0)
+			{
+				int index = startupUrl.indexOf('/');
+				if (index > 0)
+				{
+					module = startupUrl.substring(0, index);
+				}
+			}
 		}
-	}
+		
+	    return module;
+    }
+	
+//
+//	/**
+//	 * TODO: finish this!!!
+//	 * Is generating the correct file!
+//	 */
+//	@SuppressWarnings("unused")
+//	private static void tryingToInvokeAspect() 
+//	{
+//		String jarToWeave = "gwt-dev-2.5.1.jar";
+//		String classpath = System.getProperty("java.class.path");
+//		String jarToWeavePath = classpath.substring(0, classpath.indexOf(jarToWeave) + jarToWeave.length());
+//		jarToWeavePath = jarToWeavePath.substring(jarToWeavePath.lastIndexOf(";")+1, jarToWeavePath.length());
+//		
+//		String jarWeavedPath = jarToWeavePath.substring(0, jarToWeavePath.lastIndexOf(".jar"))+"_weaved.jar";
+//		
+//		String aspect = LoggingErrorHandlerAspect.class.getProtectionDomain().getCodeSource().getLocation().getPath()+(LoggingErrorHandlerAspect.class.getPackage().getName()).replace(".", "/");
+//		aspect = aspect.substring(1, aspect.length());
+//		
+//		String[] ajcArgs = {
+//            "-sourceroots", aspect,
+//            "-inpath", jarToWeavePath,
+//            "-noExit",
+//            "-Xlint:ignore",
+//            "-outjar", jarWeavedPath,
+//            "-1.5"
+//        };
+//		
+//		File fileJarToWeave = new File(jarToWeavePath);
+//		File fileJarWeaved = new File(jarWeavedPath);
+//		
+//        try 
+//        {
+//			Main.main(ajcArgs);
+//			ClassPathUtils.removeURL(fileJarToWeave.toURI().toURL());
+//			ClassPathUtils.addURL(fileJarWeaved.toURI().toURL());
+//		} catch (IOException e) 
+//		{
+//			e.printStackTrace();
+//		}
+//	}	
 }

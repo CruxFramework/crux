@@ -150,7 +150,9 @@ public class Network implements HasNetworkHandlers
                     		onCacheHitEvent();
 	                    break;
                     	case onError:
-                    		onCacheFailedEvent();                    		
+                    		onCacheFailedEvent();
+                    	default:
+                    		//ignores
                     }
 				}
 			});
