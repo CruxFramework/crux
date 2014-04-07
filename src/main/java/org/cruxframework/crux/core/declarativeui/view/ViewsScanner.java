@@ -15,20 +15,17 @@
  */
 package org.cruxframework.crux.core.declarativeui.view;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import org.cruxframework.crux.core.config.ConfigurationFactory;
-import org.cruxframework.crux.core.server.scan.ScannerURLS;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
-import org.cruxframework.crux.scannotation.AbstractScanner;
-import org.cruxframework.crux.scannotation.archiveiterator.Filter;
-import org.cruxframework.crux.scannotation.archiveiterator.IteratorFactory;
-import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
+import org.cruxframework.crux.scanner.AbstractScanner;
+import org.cruxframework.crux.scanner.ScannerRegistration.ScannerMatch;
+import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.scanner.Scanners.ScannerCallback;
+import org.cruxframework.crux.scanner.archiveiterator.Filter;
 
 
 /**
@@ -39,8 +36,7 @@ import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
 public class ViewsScanner extends AbstractScanner
 {
 	private static final ViewsScanner instance = new ViewsScanner();
-	private static URL[] urlsForSearch = null;
-	private static final Lock lock = new ReentrantLock(); 
+	private static boolean initialized = false;
 	
 	/**
 	 * 
@@ -49,42 +45,46 @@ public class ViewsScanner extends AbstractScanner
 	{
 	}
 
-	/**
-	 * 
-	 * @param urls
-	 */
-	private void scanArchives(URL... urls)
+	public static synchronized void initializeScanner()
 	{
-		// used to handle duplicated entries on classpath
-		Set<String> foundViews = new HashSet<String>();
-		
-		for (final URL url : urls)
+		if (!initialized)
 		{
-			Filter filter = new Filter()
-			{
-				public boolean accepts(String fileName)
-				{
-					if (fileName.endsWith(".view.xml"))
-					{
-						if (!ignoreScan(url, fileName))
-						{
-							return true;
-						}
-					}
-					return false;
-				}
-			};
+			Scanners.registerScanner(getInstance());
+			initialized = true;
+		}
+	}
 
-			try
+	@Override
+	public Filter getScannerFilter()
+	{
+		return new Filter()
+		{
+			public boolean accepts(String fileName)
 			{
-				URLIterator it = IteratorFactory.create(url, filter);
-				if (it == null)
+				if (fileName.endsWith(".view.xml"))
 				{
-					return;
+					return true;
 				}
-				URL found;
-				while ((found = it.next()) != null)
+				return false;
+			}
+		};
+	}
+	
+	@Override
+	public ScannerCallback getScannerCallback()
+	{
+	    return new ScannerCallback()
+		{
+			@Override
+			public void onFound(List<ScannerMatch> scanResult)
+			{
+				// used to handle duplicated entries on classpath
+				Set<String> foundViews = new HashSet<String>();
+				
+				for (ScannerMatch match : scanResult)
 				{
+					URL found = match.getMatch();
+					
 					String urlString = found.toString();
 					if (!foundViews.contains(urlString))
 					{
@@ -92,50 +92,26 @@ public class ViewsScanner extends AbstractScanner
 						Views.registerView(getViewId(urlString), found);
 					}
 				}
+				Views.setInitialized();
 			}
-			catch (IOException e)
-			{
-				throw new ViewException("Error initializing ViewScanner.", e);
-			}
-		}
+		};
 	}
-
-	/**
-	 * 
-	 */
-	public void scanArchives()
+	
+	@Override
+	public void resetScanner()
 	{
-		if (Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableWebRootScannerCache()))
-		{
-			if (urlsForSearch == null)
-			{
-				initialize(ScannerURLS.getWebURLsForSearch());
-			}
-			scanArchives(urlsForSearch);
-		}
-		else
-		{
-			scanArchives(ScannerURLS.getWebURLsForSearch());
-		}
+		Views.reset();
 	}
 	
 	/**
 	 * 
 	 * @param urls
 	 */
-	public static void initialize(URL[] urls)
+	public void scanArchives()
 	{
-		lock.lock();
-		try
-		{
-			urlsForSearch = urls;
-		}
-		finally
-		{
-			lock.unlock();
-		}
+		runScanner();
 	}
-	
+		
 	/**
 	 * 
 	 * @param fileName

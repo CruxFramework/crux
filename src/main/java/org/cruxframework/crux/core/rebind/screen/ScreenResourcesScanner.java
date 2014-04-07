@@ -15,21 +15,22 @@
  */
 package org.cruxframework.crux.core.rebind.screen;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import org.cruxframework.crux.core.config.ConfigurationFactory;
-import org.cruxframework.crux.core.server.scan.ScannerURLS;
-import org.cruxframework.crux.scannotation.AbstractScanner;
-import org.cruxframework.crux.scannotation.archiveiterator.Filter;
-import org.cruxframework.crux.scannotation.archiveiterator.IteratorFactory;
-import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
+import org.cruxframework.crux.core.declarativeui.ViewProcessor;
+import org.cruxframework.crux.scanner.AbstractScanner;
+import org.cruxframework.crux.scanner.ScannerException;
+import org.cruxframework.crux.scanner.ScannerRegistration.ScannerMatch;
+import org.cruxframework.crux.scanner.Scanners.ScannerCallback;
+import org.cruxframework.crux.scanner.URLStreamManager;
+import org.cruxframework.crux.scanner.archiveiterator.Filter;
+import org.w3c.dom.Document;
 
 
 /**
@@ -39,65 +40,61 @@ import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
  */
 public abstract class ScreenResourcesScanner extends AbstractScanner
 {
-	private static Map<String, Set<String>> pagesPerModule = null;
-	private static Lock lock = new ReentrantLock();
+	private static Map<String, Set<String>> pagesPerModule = new HashMap<String, Set<String>>();
+	private static boolean initialized = false;
 	
-	private Set<String> scanArchives()
+	@Override
+	public Filter getScannerFilter()
 	{
-		URL[] urls = ScannerURLS.getWebURLsForSearch();
-		final Set<String> screens = new HashSet<String>();
 		final ScreenResourcesScanner scanner = this;
-		
-		for (final URL url : urls)
+		return new Filter()
 		{
-			Filter filter = new Filter()
+			public boolean accepts(String fileName)
 			{
-				public boolean accepts(String filename)
+				if (scanner.accepts(fileName))
 				{
-					if (scanner.accepts(filename))
-					{
-						if (filename.startsWith("/"))
-						{
-							filename = filename.substring(1);
-						}
-						if (!ignoreScan(url, filename))
-						{
-							screens.add(filename);
-						}
-						return true;
-					}
-					return false;
+					return true;
 				}
-			};
+				return false;
+			}
+		};
+	}
 
-			try
+	@Override
+	public ScannerCallback getScannerCallback()
+	{
+	    return new ScannerCallback()
+		{
+			@Override
+			public void onFound(List<ScannerMatch> scanResult)
 			{
-				URLIterator it = IteratorFactory.create(url, filter);
-				if (it != null)
+				try
 				{
-					while (it.next() != null); 
+					for (ScannerMatch match : scanResult)
+					{
+						URL found = match.getMatch();
+						Document screenDocument = getScreenDocument(found);
+						String module = ScreenFactory.getInstance().getScreenModule(screenDocument);
+						registerPageForModule(module, found.toString());
+					}
+					setInitialized();
+				}
+				catch(Exception e)
+				{
+					throw new ScannerException("Error searching for screen files", e);
 				}
 			}
-			catch (IOException e)
-			{
-				throw new ScreenResourcesScannerException("Error initializing screenResourceScanner.", e);
-			}
-		}
-		return screens;
+
+		};
 	}
 	
 	public Set<String> getPages(String module) throws ScreenConfigException
 	{
-		if (Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableWebRootScannerCache()))
+		if (!initialized)
 		{
-			return getCachedPages(module);
+			initialize();
 		}
-		else
-		{
-			HashMap<String, Set<String>> modulePages = new HashMap<String, Set<String>>();
-			createPagesMapForModule(modulePages);
-			return modulePages.get(module);
-		}
+		return pagesPerModule.get(module);
 	}
 	
 	/**
@@ -106,53 +103,68 @@ public abstract class ScreenResourcesScanner extends AbstractScanner
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	private Set<String> getCachedPages(String module) throws ScreenConfigException
+	public synchronized void initialize()
 	{
-		if (pagesPerModule == null)
+		if (!initialized)
 		{
-			lock.lock();
-			try
-			{
-				if (pagesPerModule == null)
-				{
-					pagesPerModule = new HashMap<String, Set<String>>();
-					createPagesMapForModule(pagesPerModule);
-				}
-			}
-			finally
-			{
-				lock.unlock();
-			}
+			pagesPerModule.clear();
+			scanArchives();
+			initialized = true;
 		}
-		
-		return pagesPerModule.get(module);
 	}
 
+	@Override
+	public void resetScanner()
+	{
+		initialized = false;
+		pagesPerModule.clear();
+	}
+	
 	/**
-	 * 
-	 * @param modulePages
-	 * @param includeInternal
+	 * @param module
+	 * @param screenId
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	private void createPagesMapForModule(Map<String, Set<String>> modulePages) throws ScreenConfigException
+	private void registerPageForModule(String module, String screenId)
 	{
-		Set<String> archives = scanArchives();
-		for (String screenID : archives)
+		Set<String> pages = pagesPerModule.get(module);
+		if (pages == null)
 		{
-			Screen screen = ScreenFactory.getInstance().getScreen(screenID, null);
-			if(screen != null)
-			{
-				Set<String> pages = modulePages.get(screen.getModule());
-				if (pages == null)
-				{
-					pages = new HashSet<String>();
-					modulePages.put(screen.getModule(), pages);
-				}
-				pages.add(screenID);
-			}
+			pages = new HashSet<String>();
+			pagesPerModule.put(module, pages);
 		}
+		pages.add(screenId);
 	}
 	
+	private Document getScreenDocument(URL screenURL)
+	{
+		URLStreamManager manager = new URLStreamManager(screenURL);
+		InputStream stream = manager.open();
+		try
+        {
+			Document screen = ViewProcessor.getView(stream, null);
+	        return screen;
+        }
+        catch (Exception e)
+        {
+	        throw new ScannerException("Error reading offline screen.", e);
+        }
+        finally
+        {
+        	manager.close();
+        }
+	}
+	
+	private void scanArchives()
+	{
+		runScanner();
+	}
+	
+	private static void setInitialized()
+	{
+		initialized = true;
+	}
+
 	protected abstract boolean accepts(String urlString);
 }

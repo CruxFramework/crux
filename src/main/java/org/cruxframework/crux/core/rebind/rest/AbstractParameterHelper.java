@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.rest;
 
 import java.util.Date;
 
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils.PropertyInfo;
@@ -46,10 +47,11 @@ abstract class AbstractParameterHelper
 		PropertyInfo[] propertiesInfo = JClassUtils.extractBeanPropertiesInfo(parameterType.isClassOrInterface());
 		for (PropertyInfo propertyInfo : propertiesInfo)
         {
-	        if (JClassUtils.isSimpleType(propertyInfo.getType()))
+	        String newParameterName = (StringUtils.isEmpty(parameterName)?propertyInfo.getName():parameterName+"."+propertyInfo.getName());
+			if (JClassUtils.isSimpleType(propertyInfo.getType()))
 	        {
 	        	generateMethodParamToCodeForSimpleType(srcWriter, parameterStringVariable, propertyInfo.getType(), 
-	        			parameterName+"."+propertyInfo.getName(), parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()", 
+	        			newParameterName, parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()", 
 	        			(propertyInfo.getType().isPrimitive()!=null?
 	        					parameterCheckExpression:
 	        					parameterCheckExpression + " && " + parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()!=null"));
@@ -57,7 +59,7 @@ abstract class AbstractParameterHelper
 	        else
 	        {
 	        	generateMethodParamToCodeForComplexType(srcWriter, parameterStringVariable, propertyInfo.getType(), 
-	        			parameterName+"."+propertyInfo.getName(), parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()", 
+	        			newParameterName, parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()", 
 	        			parameterCheckExpression + " && " + parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()!=null");
 	        }
         }

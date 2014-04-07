@@ -22,8 +22,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,12 +34,12 @@ import org.cruxframework.crux.classpath.PackageFileURLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
-import org.cruxframework.crux.core.server.scan.ScannerURLS;
-import org.cruxframework.crux.scannotation.AbstractScanner;
-import org.cruxframework.crux.scannotation.URLStreamManager;
-import org.cruxframework.crux.scannotation.archiveiterator.Filter;
-import org.cruxframework.crux.scannotation.archiveiterator.IteratorFactory;
-import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
+import org.cruxframework.crux.scanner.AbstractScanner;
+import org.cruxframework.crux.scanner.ScannerRegistration.ScannerMatch;
+import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.scanner.Scanners.ScannerCallback;
+import org.cruxframework.crux.scanner.URLStreamManager;
+import org.cruxframework.crux.scanner.archiveiterator.Filter;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -57,9 +56,8 @@ public class ModulesScanner extends AbstractScanner
 	private static final Log logger = LogFactory.getLog(ModulesScanner.class);
 	private static final ModulesScanner instance = new ModulesScanner();
 	private DocumentBuilder documentBuilder;
-	private static URL[] urlsForSearch = null;
-	private static final Lock lock = new ReentrantLock();
 	private String[] classesDir; 
+	private static boolean initialized = false;
 	
 	/**
 	 * 
@@ -94,76 +92,50 @@ public class ModulesScanner extends AbstractScanner
 			throw new ModuleException("Can not find the web classes dir.", e);
 		}
 	}
-	
-	/**
-	 * 
-	 */
-	public void scanArchives()
-	{
-		if (urlsForSearch == null)
-		{
-			initialize(ScannerURLS.getURLsForSearch());
-		}
-		scanArchives(urlsForSearch);
-	}
-	
-	/**
-	 * 
-	 * @param urls
-	 */
-	public static void initialize(URL[] urls)
-	{
-		lock.lock();
-		try
-		{
-			urlsForSearch = urls;
-		}
-		finally
-		{
-			lock.unlock();
-		}
-	}
-	
-	/**
-	 * 
-	 * @param urls
-	 */
-	private void scanArchives(URL... urls)
-	{
-		for (final URL url : urls)
-		{
-			Filter filter = new Filter()
-			{
-				public boolean accepts(String fileName)
-				{
-					if (fileName.endsWith(".gwt.xml"))
-					{
-						if (!ignoreScan(url, fileName))
-						{
-							return true;
-						}
-					}
-					return false;
-				}
-			};
 
-			try
+	public static synchronized void initializeScanner()
+	{
+		if (!initialized)
+		{
+			Scanners.registerScanner(getInstance());
+			initialized = true;
+		}
+	}
+	
+	@Override
+	public Filter getScannerFilter()
+	{
+		return new Filter()
+		{
+			public boolean accepts(String fileName)
 			{
-				URLIterator it = IteratorFactory.create(url, filter);
-				if (it == null)
+				if (fileName.endsWith(".gwt.xml"))
 				{
-					return;
+					return true;
 				}
-				URL found = null;
-				while ((found = it.next()) != null)
+				return false;
+			}
+		};
+	}
+	
+	@Override
+	public ScannerCallback getScannerCallback()
+	{
+	    return new ScannerCallback()
+		{
+			@Override
+			public void onFound(List<ScannerMatch> scanResult)
+			{
+				for (ScannerMatch match : scanResult)
 				{
+					URL found = match.getMatch();
 					URLStreamManager urlManager = new URLStreamManager(found);
 
 					try
 					{
 						InputStream stream = urlManager.open();						
 						Document module = documentBuilder.parse(stream);
-						Modules.getInstance().registerModule(found, getModuleName(url, found), module);
+						Modules.getInstance().registerModule(found, getModuleName(match.getParentURL(), found), module);
 					}
 					catch (Exception e) 
 					{
@@ -174,12 +146,24 @@ public class ModulesScanner extends AbstractScanner
 						urlManager.close();
 					}
 				}
+				Modules.getInstance().setInitialized();
 			}
-			catch (IOException e)
-			{
-				throw new ModuleException("Error initializing modulesScanner.", e);
-			}
-		}
+		};
+	}
+	
+	@Override
+	public void resetScanner()
+	{
+		Modules.getInstance().reset();
+	}
+	
+	/**
+	 * 
+	 * @param urls
+	 */
+	public void scanArchives()
+	{
+		runScanner();
 	}
 
 	/**

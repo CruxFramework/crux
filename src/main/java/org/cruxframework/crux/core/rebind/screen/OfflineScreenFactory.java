@@ -15,14 +15,8 @@
  */
 package org.cruxframework.crux.core.rebind.screen;
 
-import java.io.InputStream;
-import java.net.URL;
-
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.module.Modules;
-import org.cruxframework.crux.core.utils.XMLUtils;
-import org.cruxframework.crux.core.utils.XMLUtils.XMLException;
-import org.cruxframework.crux.scannotation.URLStreamManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -52,26 +46,7 @@ public class OfflineScreenFactory
 		return instance;
 	}
 	
-	public OfflineScreen getOfflineScreen(URL screenURL) throws ScreenConfigException
-	{
-		URLStreamManager manager = new URLStreamManager(screenURL);
-		InputStream stream = manager.open();
-		try
-        {
-	        Document screen = XMLUtils.createNSUnawareDocument(stream);
-	        return parseDocument(screenURL.toString(), screen);
-        }
-        catch (XMLException e)
-        {
-	        throw new ScreenConfigException("Error reading offline screen.", e);
-        }
-        finally
-        {
-        	manager.close();
-        }
-	}
-
-	private OfflineScreen parseDocument(String id, Document screen) throws ScreenConfigException
+	public OfflineScreen getOfflineScreen(String id, Document screen) throws ScreenConfigException
     {
 		Element screenElement = screen.getDocumentElement();
 		String moduleName = screenElement.getAttribute("moduleName");

@@ -73,7 +73,7 @@ public class CrossDevicesTemplateParser
     {
 	    try
 	    {
-	    	return ViewFactory.getInstance().getView(deviceAdaptive+"_"+device, template, false);
+	    	return ViewFactory.getInstance().getView(deviceAdaptive, device.toString(), template, false);
 	    }
 	    catch (Exception e)
 	    {

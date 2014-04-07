@@ -316,13 +316,14 @@ class BodyParameterHandler extends AbstractParameterHelper
 				str.append("&");
 			}
 			first = false;
-	        if (JClassUtils.isSimpleType(propertyInfo.getType()))
+	        String parameterName = (StringUtils.isEmpty(value)?propertyInfo.getName():value+"."+propertyInfo.getName());
+			if (JClassUtils.isSimpleType(propertyInfo.getType()))
 	        {
-				buildFormStringForSimpleType(str, value+"."+propertyInfo.getName());
+				buildFormStringForSimpleType(str, parameterName);
 	        }
 	        else
 	        {
-				buildFormStringForComplexType(str, propertyInfo.getType(), value+"."+propertyInfo.getName());
+				buildFormStringForComplexType(str, propertyInfo.getType(), parameterName);
 	        }
         }
     }

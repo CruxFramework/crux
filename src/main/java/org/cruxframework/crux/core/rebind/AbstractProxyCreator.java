@@ -192,7 +192,7 @@ public abstract class AbstractProxyCreator
 	 * @return
 	 */
 	protected boolean isCrux2OldInterfacesCompatibilityEnabled()
-    {
+    {//TODO remover isso
 		String value;
 		try
         {
