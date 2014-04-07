@@ -32,7 +32,7 @@ import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializ
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.core.utils.URLUtils;
-import org.cruxframework.crux.scannotation.URLStreamManager;
+import org.cruxframework.crux.scanner.URLStreamManager;
 import org.w3c.dom.Document;
 
 /**
@@ -42,14 +42,12 @@ import org.w3c.dom.Document;
  */
 public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 {
-	private DeclarativeUIScreenResourceScanner scanner = new DeclarativeUIScreenResourceScanner();;
-
 	/**
 	 * 
 	 */
 	public Set<String> getAllScreenIDs(String module) throws ScreenConfigException
 	{
-		return scanner.getPages(module);
+		return DeclarativeUIScreenResourceScanner.getInstance().getPages(module);
 	}
 
 	/**

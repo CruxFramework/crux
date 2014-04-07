@@ -21,7 +21,9 @@ import javax.servlet.ServletContextListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetConfig;
+import org.cruxframework.crux.core.rebind.DevelopmentScanners;
+import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.scanner.Scanners.ScannerRegistrations;
 
 
 /**
@@ -49,7 +51,20 @@ public class DevModeInitializerListener implements ServletContextListener
 		}
 		if (!Environment.isProduction())
 		{
-			WidgetConfig.initialize();
+			Scanners.registerScanners(new ScannerRegistrations()
+			{
+				@Override
+				public boolean initializeEagerly()
+				{
+					return true; //We need to ensure scanners are initialized before any attempt to use any feature that requires scanning. 
+				}
+				
+				@Override
+				public void doRegistrations()
+				{
+					DevelopmentScanners.initializeScanners();
+				}
+			});
 		}
     }
 

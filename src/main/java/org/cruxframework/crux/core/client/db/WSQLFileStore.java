@@ -43,7 +43,7 @@ import com.google.gwt.json.client.JSONObject;
 
 /**
  * @author Thiago da Rosa de Bustamante
- *
+ * TODO implement web sql version of filestore
  */
 public class WSQLFileStore //extends WSQLAbstractObjectStore<String, Blob> implements FileStore
 {

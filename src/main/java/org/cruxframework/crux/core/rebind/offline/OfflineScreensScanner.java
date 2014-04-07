@@ -15,17 +15,23 @@
  */
 package org.cruxframework.crux.core.rebind.offline;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import org.cruxframework.crux.core.rebind.screen.ScreenResourcesScannerException;
-import org.cruxframework.crux.core.server.scan.ScannerURLS;
-import org.cruxframework.crux.scannotation.AbstractScanner;
-import org.cruxframework.crux.scannotation.archiveiterator.Filter;
-import org.cruxframework.crux.scannotation.archiveiterator.IteratorFactory;
-import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
+import org.cruxframework.crux.core.utils.XMLUtils;
+import org.cruxframework.crux.core.utils.XMLUtils.XMLException;
+import org.cruxframework.crux.scanner.AbstractScanner;
+import org.cruxframework.crux.scanner.ScannerException;
+import org.cruxframework.crux.scanner.ScannerRegistration.ScannerMatch;
+import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.scanner.Scanners.ScannerCallback;
+import org.cruxframework.crux.scanner.URLStreamManager;
+import org.cruxframework.crux.scanner.archiveiterator.Filter;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -33,44 +39,100 @@ import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
  */
 public class OfflineScreensScanner extends AbstractScanner
 {
-	public Set<URL> scanOfflineArchives()
+	private static boolean initialized = false;
+	private static OfflineScreensScanner instance = new OfflineScreensScanner();
+	
+	public static OfflineScreensScanner getInstance()
 	{
-		URL[] urls = ScannerURLS.getWebURLsForSearch();
-		final Set<URL> screens = new HashSet<URL>();
-		
-		for (final URL url : urls)
-		{
-			Filter filter = new Filter()
-			{
-				public boolean accepts(String filename)
-				{
-					return (!ignoreScan(url, filename) && acceptsOffline(filename));
-				}
-			};
-
-			try
-			{
-				URLIterator it = IteratorFactory.create(url, filter);
-				URL found;
-				if (it != null)
-				{
-					while ((found = it.next()) != null)
-					{
-						screens.add(found);
-					}
-				}
-			}
-			catch (IOException e)
-			{
-				throw new ScreenResourcesScannerException("Error initializing screenResourceScanner.", e);
-			}
-		}
-		return screens;
+		return instance;
 	}
 	
-	protected boolean acceptsOffline(String urlString)
+	public static synchronized void initializeScanner()
 	{
-		return urlString != null && urlString.endsWith(".offline.xml");
+		if (!initialized)
+		{
+			Scanners.registerScanner(getInstance());
+			initialized = true;
+		}
 	}
 
+	@Override
+	public Filter getScannerFilter()
+	{
+		return new Filter()
+		{
+			public boolean accepts(String fileName)
+			{
+				if (fileName.endsWith(".offline.xml"))
+				{
+					return true;
+				}
+				return false;
+			}
+		};
+	}
+	
+	@Override
+	public ScannerCallback getScannerCallback()
+	{
+	    return new ScannerCallback()
+		{
+			@Override
+			public void onFound(List<ScannerMatch> scanResult)
+			{
+				// used to handle duplicated entries on classpath
+				Set<String> foundViews = new HashSet<String>();
+				
+				for (ScannerMatch match : scanResult)
+				{
+					URL found = match.getMatch();
+					
+					String urlString = found.toString();
+					if (!foundViews.contains(urlString))
+					{
+						foundViews.add(urlString);
+						Document screen = getOfflineScreen(found);
+						OfflineScreens.registerOfflinePageForModule(screen, found.toString(), getModule(screen));
+					}
+				}
+				OfflineScreens.setInitialized();
+			}
+		};
+	}
+		
+	@Override
+	public void resetScanner()
+	{
+		OfflineScreens.reset();	    
+	}
+	
+	public void scanArchives()
+	{
+		runScanner();
+	}
+	
+	private String getModule(Document screen)
+	{
+		Element screenElement = screen.getDocumentElement();
+		return screenElement.getAttribute("moduleName");
+	}
+	
+	private Document getOfflineScreen(URL screenURL)
+	{
+		URLStreamManager manager = new URLStreamManager(screenURL);
+		InputStream stream = manager.open();
+		try
+        {
+	        Document screen = XMLUtils.createNSUnawareDocument(stream);
+	        return screen;
+        }
+        catch (XMLException e)
+        {
+	        throw new ScannerException("Error reading offline screen.", e);
+        }
+        finally
+        {
+        	manager.close();
+        }
+	}
 }

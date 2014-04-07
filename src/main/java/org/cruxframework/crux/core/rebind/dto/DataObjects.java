@@ -32,8 +32,8 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.dto.DataObjectIdentifier;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.server.scan.ClassScanner;
 import org.cruxframework.crux.core.utils.ClassUtils;
+import org.cruxframework.crux.scanner.ClassScanner;
 
 
 /**
