@@ -15,10 +15,13 @@
  */
 package org.cruxframework.crux.gadget.rebind.scanner;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.declarativeui.DeclarativeUIScreenResourceScanner;
 import org.cruxframework.crux.core.rebind.screen.Screen;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
+import org.cruxframework.crux.scanner.Scanners;
 
 
 /**
@@ -30,6 +33,30 @@ import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
  */
 public class GadgetScreenResourceScanner extends DeclarativeUIScreenResourceScanner
 {
+
+	private static final Log logger = LogFactory.getLog(DeclarativeUIScreenResourceScanner.class);
+	private static boolean initialized = false;
+	private static GadgetScreenResourceScanner instance = new GadgetScreenResourceScanner();
+	
+	public static GadgetScreenResourceScanner getInstance()
+	{
+		return instance;
+	}
+
+	public static synchronized void initializeScanner()
+	{
+		if (!initialized)
+		{
+			if (logger.isInfoEnabled())
+			{
+				logger.info("Initializing screen resources scanner...");
+			}
+			Scanners.registerScanner(getInstance());
+			initialized = true;
+		}
+	}
+	
+	
 	/**
 	 * @see org.cruxframework.crux.core.declarativeui.DeclarativeUIScreenResourceScanner#accepts(java.lang.String)
 	 */
