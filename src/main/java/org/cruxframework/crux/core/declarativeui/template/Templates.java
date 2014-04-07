@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.hotdeploy.HotDeploymentScanner;
+import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.utils.URLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -171,7 +172,7 @@ public class Templates
 	
 	static void setInitialized()
     {
-		if (!hotDeploymentScannerStarted && Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()))
+		if (!hotDeploymentScannerStarted && Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()) && !Environment.isProduction())
 		{
 			hotDeploymentScannerStarted = true;
 			HotDeploymentScanner.scanWebDirs();
