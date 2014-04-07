@@ -18,8 +18,8 @@ package org.cruxframework.crux.classpath;
 import java.io.File;
 import java.net.URL;
 
-import org.cruxframework.crux.scannotation.archiveiterator.DirectoryIteratorFactory;
-import org.cruxframework.crux.scannotation.archiveiterator.FileProtocolIteratorFactory;
+import org.cruxframework.crux.scanner.archiveiterator.DirectoryIteratorFactory;
+import org.cruxframework.crux.scanner.archiveiterator.FileProtocolIteratorFactory;
 
 
 /**

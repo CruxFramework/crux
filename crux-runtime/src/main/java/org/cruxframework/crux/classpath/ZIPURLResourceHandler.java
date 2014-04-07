@@ -17,8 +17,8 @@ package org.cruxframework.crux.classpath;
 
 import java.net.URL;
 
-import org.cruxframework.crux.scannotation.archiveiterator.DirectoryIteratorFactory;
-import org.cruxframework.crux.scannotation.archiveiterator.ZIPProtocolIteratorFactory;
+import org.cruxframework.crux.scanner.archiveiterator.DirectoryIteratorFactory;
+import org.cruxframework.crux.scanner.archiveiterator.ZIPProtocolIteratorFactory;
 
 
 /**

@@ -26,8 +26,12 @@ import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.InitializerListener;
-import org.cruxframework.crux.scannotation.archiveiterator.Filter;
-import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
+import org.cruxframework.crux.scanner.AbstractScanner;
+import org.cruxframework.crux.scanner.ScannerRegistration;
+import org.cruxframework.crux.scanner.ScannerRegistration.ScannerMatch;
+import org.cruxframework.crux.scanner.Scanners.ScannerCallback;
+import org.cruxframework.crux.scanner.archiveiterator.Filter;
+import org.cruxframework.crux.scanner.archiveiterator.URLIterator;
 
 
 /**
@@ -100,16 +104,39 @@ public class ClassPathResolverImpl implements ClassPathResolver
 				final URL libDir = findWebInfLibPath();
 
 				final URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(libDir.getProtocol());
-				URLIterator iterator = resourceHandler.getDirectoryIteratorFactory().create(libDir, new Filter(){
-					public boolean accepts(String filename)
+				List<ScannerRegistration> scanners = new ArrayList<ScannerRegistration>();
+				
+				ScannerRegistration scanner = new ScannerRegistration(new AbstractScanner()
+				{
+					@Override
+					public Filter getScannerFilter()
 					{
-						return (filename.endsWith(".jar"));
+						return new Filter(){
+							public boolean accepts(String filename)
+							{
+								return (filename.endsWith(".jar"));
+							}
+						};
+					}
+					@Override
+					public ScannerCallback getScannerCallback()
+					{
+					    return null;
+					}
+					
+					@Override
+					public void resetScanner()
+					{
 					}
 				});
-				URL found;
-				while ((found = iterator.next()) != null)
+				scanners.add(scanner);
+				
+				URLIterator iterator = resourceHandler.getDirectoryIteratorFactory().create(libDir, scanners);
+				iterator.search();
+
+				for (ScannerMatch match : scanner.getAllMatches())
 				{
-					webInfLibJars.add(found);
+					webInfLibJars.add(match.getMatch());
 				}
 			}
 			catch (Exception e)

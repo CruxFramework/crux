@@ -21,10 +21,11 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.config.ConfigurationFactory;
-import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
+import org.cruxframework.crux.scanner.ClassScanner;
+import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.scanner.Scanners.ScannerRegistrations;
 
 
 /**
@@ -64,23 +65,21 @@ public class InitializerListener implements ServletContextListener
 			context = contextEvent.getServletContext();
 			if (Environment.isProduction())
 			{
-				CruxBridge.getInstance().setSingleVM(true);	
-			}
-			else
-			{
-				//TODO remover esses parametros daqui. passar apenas pelo Crux.properties
-				String classScannerAllowedPackages = contextEvent.getServletContext().getInitParameter("classScannerAllowedPackages");
-				if (classScannerAllowedPackages != null && classScannerAllowedPackages.length() > 0)
+				CruxBridge.getInstance().setSingleVM(true);
+				Scanners.registerScanners(new ScannerRegistrations()
 				{
-					ConfigurationFactory.getConfigurations().setScanAllowedPackages(classScannerAllowedPackages);
-				}
-
-				String classScannerIgnoredPackages = contextEvent.getServletContext().getInitParameter("classScannerIgnoredPackages");
-				if (classScannerIgnoredPackages != null && classScannerIgnoredPackages.length() > 0)
-				{
-					ConfigurationFactory.getConfigurations().setScanIgnoredPackages(classScannerIgnoredPackages);
-				}
-				ClassPathResolverInitializer.getClassPathResolver().initialize();
+					@Override
+					public boolean initializeEagerly()
+					{
+						return false;
+					}
+					
+					@Override
+					public void doRegistrations()
+					{
+						ClassScanner.initializeScanner();
+					}
+				});
 			}
 			ServiceFactoryInitializer.initialize(context);
 			RestServiceFactoryInitializer.initialize(context);

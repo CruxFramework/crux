@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.server.rest.annotation.RestService;
-import org.cruxframework.crux.core.server.scan.ClassScanner;
+import org.cruxframework.crux.scanner.ClassScanner;
 
 
 /**

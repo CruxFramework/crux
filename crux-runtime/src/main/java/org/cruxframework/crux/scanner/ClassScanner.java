@@ -13,15 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.server.scan;
+package org.cruxframework.crux.scanner;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,148 +30,64 @@ import org.apache.commons.logging.LogFactory;
 public class ClassScanner
 {
 	private static final Log logger = LogFactory.getLog(ClassScanner.class);
-	private static final Lock lock = new ReentrantLock();
 
-	private static ScannerDB scannerDB = new ScannerDB();
+	private static AnnotationDB scannerDB = new AnnotationDB();
 	private static boolean initialized = false;
+	private static boolean scannerInitialized = false;
 
 	/**
 	 * 
 	 */
 	private ClassScanner()
 	{
+	}
 		
-	}
-	
-	/**
-	 * 
-	 */
-	public static void initialize() 
-	{
-		initialize(ScannerURLS.getURLsForSearch());
-	}
-	
 	/**
 	 * 
 	 * @param urls
 	 */
-	public static void initialize(URL[] urls) 
+	public synchronized static void initialize() 
 	{
 		if (!isInitialized())
 		{
-			lock.lock();
-			try
+			if (!scannerInitialized)
 			{
-				if (!isInitialized())
-				{
-					initializeAllowedPackages();
-					scannerDB.setScanFieldAnnotations(false);
-					scannerDB.setScanMethodAnnotations(false);
-					scannerDB.setScanParameterAnnotations(false);
-					scannerDB.setScanClassAnnotations(true);
-					buildIndex(urls);
-					initialized = true;
-				}
+				initializeScanner();
 			}
-			finally
-			{
-				lock.unlock();
-			}
+			buildIndex();
+			setInitialized();
 		}
 	}
-	
-	/**
-	 * 
-	 */
-	private static void initializeAllowedPackages()
-	{
-		scannerDB.addIgnoredPackage("org.cruxframework.crux.core.rebind.screen.wrapper");
-	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public static String[] getIgnoredPackages()
-	{
-		return scannerDB.getIgnoredPackages();
-	}
+	static void setInitialized()
+    {
+	    initialized = true;
+    }
 
-	/**
-	 * 
-	 * @param ignoredPackages
-	 */
-	public static void setIgnoredPackages(String[] ignoredPackages)
+	public static void reset()
 	{
-		scannerDB.setIgnoredPackages(ignoredPackages);
+		initialized = false;
 	}
 	
-	/**
-	 * @param ignoredPackage
-	 */
-	public static void addIgnoredPackage(String ignoredPackage)
-	{
-		scannerDB.addIgnoredPackage(ignoredPackage);
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static String[] getAllowedPackages()
-	{
-		return scannerDB.getAllowedPackages();
-	}
-
-	/**
-	 * 
-	 * @param ignoredPackages
-	 */
-	public static void setAllowedPackages(String[] allowedPackages)
-	{
-		scannerDB.setAllowedPackages(allowedPackages);
-	}
+	public static void initializeScanner()
+    {
+		if (!scannerInitialized)
+		{
+			Scanners.registerScanner(scannerDB);
+			scannerDB.setScanFieldAnnotations(false);
+			scannerDB.setScanMethodAnnotations(false);
+			scannerDB.setScanParameterAnnotations(false);
+			scannerInitialized = true;
+		}
+    }
 	
-	/**
-	 * @param ignoredPackage
-	 */
-	public static void addAllowedPackage(String allowedPackage)
-	{
-		scannerDB.addAllowedPackage(allowedPackage);
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public static String[] getRequiredPackages()
-	{
-		return scannerDB.getRequiredPackages();
-	}
-
-	/**
-	 * 
-	 * @param ignoredPackages
-	 */
-	public static void setRequiredPackages(String[] requiredPackages)
-	{
-		scannerDB.setRequiredPackages(requiredPackages);
-	}
-	
-	/**
-	 * @param ignoredPackage
-	 */
-	public static void addRequiredPackage(String requiredPackage)
-	{
-		scannerDB.addRequiredPackage(requiredPackage);
-	}
 
 	/**
 	 * 
 	 * @param urls
 	 * @throws ClassScannerException
 	 */
-	private static void buildIndex(URL[] urls) throws ClassScannerException
+	private static void buildIndex() throws ClassScannerException
 	{
 		try
 		{
@@ -184,9 +96,9 @@ public class ClassScanner
 				logger.info("Building index of annotations for classes.");
 			}
 
-			scannerDB.scanArchives(urls);
+			scannerDB.scanArchives();
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			throw new ClassScannerException("Error creating index of annotations.", e);
 		}

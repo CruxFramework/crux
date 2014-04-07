@@ -41,9 +41,6 @@ public interface Crux
 	String enableChildrenWindowsDebug();
 
 	@DefaultServerMessage("true")
-	String enableWebRootScannerCache();
-
-	@DefaultServerMessage("true")
 	String enableHotDeploymentForWebDirs();
 	
 	@DefaultServerMessage("false")
@@ -55,6 +52,9 @@ public interface Crux
 	@DefaultServerMessage("")
 	String scanIgnoredPackages();
 	
+	@DefaultServerMessage("")
+	String scanIgnoredLibs();
+	
 	@DefaultServerMessage("true")
 	String enableGenerateHTMLDoctype();
 	
@@ -64,7 +64,7 @@ public interface Crux
 	@DefaultServerMessage("false")
 	String preferWebSQLForNativeDB();
 
-	@DefaultServerMessage("true")
+	@DefaultServerMessage("false")
 	String renderWidgetsWithIDs();
 
 	@DefaultServerMessage("false")
@@ -73,7 +73,6 @@ public interface Crux
 	@DefaultServerMessage("true")
 	String enableCrossDocumentSupport();
 
-	void setEnableWebRootScannerCache(Boolean value);
 	void setEnableChildrenWindowsDebug(Boolean value);
 	void setEnableHotDeploymentForWebDirs(Boolean value);
 	void setRenderWidgetsWithIDs(Boolean value);

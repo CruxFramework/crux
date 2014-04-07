@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.server.scan;
+package org.cruxframework.crux.scanner;
 
 import java.net.URL;
 import java.util.concurrent.locks.Lock;
@@ -23,7 +23,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
-import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
 
 
 /**
