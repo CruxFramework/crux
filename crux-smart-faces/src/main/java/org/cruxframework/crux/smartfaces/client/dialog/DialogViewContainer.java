@@ -73,6 +73,18 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	}
 	
 	/**
+	 * Opens a dialog container using a non static way. 
+	 * @param viewName name of the view to be opened
+	 * @param animation animates the dialog while showing or hiding
+	 */
+	public void showView(String viewName)
+	{
+		assert(dialog != null):"Dialog is not created yet.";
+		dialog.show();
+		dialog.center();
+	}
+	
+	/**
 	 * Create a dialog container, load the given view into the container and open the dialog box. 
 	 * @param viewName name of the view to be opened
 	 * @param viewId ID to be used to identify the opened view
