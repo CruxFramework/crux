@@ -26,8 +26,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Template;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Templates;
+import org.cruxframework.crux.core.server.scan.ClassScanner;
 import org.cruxframework.crux.core.utils.ClassUtils;
-import org.cruxframework.crux.scanner.ClassScanner;
+import org.cruxframework.crux.scannotation.AbstractScanner;
 import org.w3c.dom.Document;
 
 
@@ -36,7 +37,7 @@ import org.w3c.dom.Document;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class CrossDevicesScanner 
+public class CrossDevicesScanner extends AbstractScanner
 {
 	private static final CrossDevicesScanner instance = new CrossDevicesScanner();
 	private DocumentBuilder documentBuilder;

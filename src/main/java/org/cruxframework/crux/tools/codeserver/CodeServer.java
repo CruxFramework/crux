@@ -24,16 +24,14 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.rebind.DevelopmentScanners;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.CruxBridge;
-import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
-import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
+import org.cruxframework.crux.core.server.scan.ClassScanner;
 import org.cruxframework.crux.module.CruxModuleBridge;
 import org.cruxframework.crux.module.config.CruxModuleConfigurationFactory;
-import org.cruxframework.crux.scanner.ClasspathUrlFinder;
-import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
 import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
@@ -107,15 +105,12 @@ public class CodeServer
 
 	protected void execute() throws Exception
     {
+		ConfigurationFactory.getConfigurations().setEnableWebRootScannerCache(false);
 		CruxModuleConfigurationFactory.getConfigurations().setDevelopmentModules("");
 		CruxModuleBridge.getInstance().registerCurrentModule(moduleName);
 		URL[] urls = ClasspathUrlFinder.findClassPaths();
-		Scanners.setSearchURLs(urls);
 		ModuleUtils.initializeScannerURLs(urls);
-		DevelopmentScanners.initializeScanners();
-		ServiceFactoryInitializer.initialize(null);
-		RestServiceFactoryInitializer.initialize(null);
-		
+		ClassScanner.initialize(urls);
 		Set<String> screenIDs = null;
 		try
         {

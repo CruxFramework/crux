@@ -35,7 +35,7 @@ import org.cruxframework.crux.core.rebind.datasource.DataSources;
 import org.cruxframework.crux.core.rebind.formatter.Formatters;
 import org.cruxframework.crux.core.rebind.resources.Resources;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
-import org.cruxframework.crux.scanner.URLStreamManager;
+import org.cruxframework.crux.scannotation.URLStreamManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,10 +90,9 @@ public class ViewFactory
 	 */
 	public View getView(String id, String device) throws ScreenConfigException
 	{
-		String cacheKey = getCacheKey(id, device);
-		if (viewCache.containsKey(cacheKey))
+		if (viewCache.containsKey(id))
 		{
-			return viewCache.get(cacheKey);
+			return viewCache.get(id);
 		}
 		URL view = Views.getView(id);
 		
@@ -106,7 +105,7 @@ public class ViewFactory
 		{
 			throw new ScreenConfigException("View ["+id+"] not found!");
 		}
-		return getView(id, device, viewDoc, false);
+		return getView(id, viewDoc, false);
 	}
 	
 	/**
@@ -117,23 +116,22 @@ public class ViewFactory
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	public View getView(String id, String device, Document view, boolean rootView) throws ScreenConfigException
+	public View getView(String id, Document view, boolean rootView) throws ScreenConfigException
 	{
-		String cacheKey = getCacheKey(id, device);
-		if (viewCache.containsKey(cacheKey))
+		if (viewCache.containsKey(id))
 		{
-			return viewCache.get(cacheKey);
+			return viewCache.get(id);
 		}
 		viewLock.lock();
 		try 
 		{
-			if (viewCache.containsKey(cacheKey))
+			if (viewCache.containsKey(id))
 			{
-				return viewCache.get(cacheKey);
+				return viewCache.get(id);
 			}
 			JSONObject metadata = ViewProcessor.extractWidgetsMetadata(id, view, rootView);
 			View result = parseView(id, metadata, rootView);
-			viewCache.put(cacheKey, result);
+			viewCache.put(id, result);
 			return result;
 		} 
 		catch (Throwable e) 
@@ -161,18 +159,7 @@ public class ViewFactory
 		}
 		return false;
 	}
-
-	/**
-	 * Builds the cache key
-	 * @param id
-	 * @param device
-	 * @return
-	 */
-	private String getCacheKey(String id, String device)
-	{
-		return id+"_"+device;
-	}
-	
+		
 	/**
 	 * Creates a widget based in its metadata information.
 	 * 
@@ -329,7 +316,7 @@ public class ViewFactory
 					} 
 					catch (ScreenConfigException e) 
 					{
-						throw new ScreenConfigException("Error creating widget on view ["+id+"].", e);
+						throw new ScreenConfigException("Error creating widget ["+id+"].", e);
 					}
 				}
 			}

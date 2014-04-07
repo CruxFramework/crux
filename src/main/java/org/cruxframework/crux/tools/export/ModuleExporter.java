@@ -30,18 +30,17 @@ import java.util.jar.Manifest;
 import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
+import org.cruxframework.crux.core.server.scan.ClassScanner;
 import org.cruxframework.crux.core.utils.FileUtils;
 import org.cruxframework.crux.module.CruxModule;
 import org.cruxframework.crux.module.CruxModuleHandler;
 import org.cruxframework.crux.module.ModuleRef;
 import org.cruxframework.crux.module.classpath.ModuleClassPathResolver;
 import org.cruxframework.crux.module.validation.CruxModuleValidator;
-import org.cruxframework.crux.scanner.ClasspathUrlFinder;
-import org.cruxframework.crux.scanner.Scanners;
-import org.cruxframework.crux.scanner.URLStreamManager;
+import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
+import org.cruxframework.crux.scannotation.URLStreamManager;
 import org.cruxframework.crux.tools.compile.CompilerException;
 import org.cruxframework.crux.tools.compile.CruxModuleCompiler;
 import org.cruxframework.crux.tools.compile.JCompiler;
@@ -405,8 +404,7 @@ public class ModuleExporter
         {
 	        URL[] urls = ClasspathUrlFinder.findClassPaths();
 	        ModuleUtils.initializeScannerURLs(urls);
-	        Scanners.setSearchURLs(urls);
-	        DevelopmentScanners.initializeScanners();
+	        ClassScanner.initialize(urls);
 
 	        cruxCompiler = new CruxModuleCompiler();
 	        

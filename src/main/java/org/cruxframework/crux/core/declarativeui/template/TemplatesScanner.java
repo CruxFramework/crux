@@ -15,21 +15,26 @@
  */
 package org.cruxframework.crux.core.declarativeui.template;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.cruxframework.crux.core.config.ConfigurationFactory;
+import org.cruxframework.crux.core.server.scan.ScannerURLS;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
-import org.cruxframework.crux.scanner.AbstractScanner;
-import org.cruxframework.crux.scanner.ScannerRegistration.ScannerMatch;
-import org.cruxframework.crux.scanner.Scanners;
-import org.cruxframework.crux.scanner.Scanners.ScannerCallback;
-import org.cruxframework.crux.scanner.URLStreamManager;
-import org.cruxframework.crux.scanner.archiveiterator.Filter;
+import org.cruxframework.crux.scannotation.AbstractScanner;
+import org.cruxframework.crux.scannotation.URLStreamManager;
+import org.cruxframework.crux.scannotation.archiveiterator.Filter;
+import org.cruxframework.crux.scannotation.archiveiterator.IteratorFactory;
+import org.cruxframework.crux.scannotation.archiveiterator.URLIterator;
 import org.w3c.dom.Document;
 
 
@@ -42,7 +47,8 @@ public class TemplatesScanner extends AbstractScanner
 {
 	private static final TemplatesScanner instance = new TemplatesScanner();
 	private DocumentBuilder documentBuilder;
-	private static boolean initialized = false;
+	private static URL[] urlsForSearch = null;
+	private static final Lock lock = new ReentrantLock(); 
 	
 	/**
 	 * 
@@ -61,80 +67,108 @@ public class TemplatesScanner extends AbstractScanner
 		}
 	}
 
-	public static synchronized void initializeScanner()
+	/**
+	 * 
+	 * @param urls
+	 */
+	private void scanArchives(URL... urls)
 	{
-		if (!initialized)
+		// used to handle duplicated entries on classpath
+		Set<String> foundTemplates = new HashSet<String>();
+		
+		for (final URL url : urls)
 		{
-			Scanners.registerScanner(getInstance());
-			initialized = true;
+			Filter filter = new Filter()
+			{
+				public boolean accepts(String fileName)
+				{
+					if (fileName.endsWith(".template.xml"))
+					{
+						if (!ignoreScan(url, fileName))
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+			};
+
+			try
+			{
+				URLIterator it = IteratorFactory.create(url, filter);
+				if (it == null)
+				{
+					return;
+				}
+				URL found;
+				while ((found = it.next()) != null)
+				{
+					String urlString = found.toString();
+					if (!foundTemplates.contains(urlString))
+					{
+						try
+						{
+							foundTemplates.add(urlString);
+							URLStreamManager manager = new URLStreamManager(found);
+							InputStream stream = manager.open();
+							Document template = documentBuilder.parse(stream);
+							manager.close();
+							Templates.registerTemplate(getTemplateId(urlString), template);
+						}
+						catch (TemplateException e)
+						{
+							throw e;
+						}
+						catch (Exception e)
+						{
+							throw new TemplateException("Error parsing template file: ["+urlString+"]", e);
+						}
+					}
+				}
+			}
+			catch (IOException e)
+			{
+				throw new TemplateException("Error initializing TemplateScanner.", e);
+			}
 		}
 	}
-	
-	@Override
-	public Filter getScannerFilter()
+
+	/**
+	 * 
+	 */
+	public void scanArchives()
 	{
-		return new Filter()
+		if (Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableWebRootScannerCache()))
 		{
-			public boolean accepts(String fileName)
+			if (urlsForSearch == null)
 			{
-				if (fileName.endsWith(".template.xml"))
-				{
-					return true;
-				}
-				return false;
+				initialize(ScannerURLS.getWebURLsForSearch());
 			}
-		};
-	}
-	
-	@Override
-	public ScannerCallback getScannerCallback()
-	{
-	    return new ScannerCallback(){
-			@Override
-            public void onFound(List<ScannerMatch> scanResult)
-            {
-				for (ScannerMatch match : scanResult)
-				{
-					URL found = match.getMatch();
-					
-					String urlString = found.toString();
-					try
-					{
-						URLStreamManager manager = new URLStreamManager(found);
-						InputStream stream = manager.open();
-						Document template = documentBuilder.parse(stream);
-						manager.close();
-						Templates.registerTemplate(getTemplateId(urlString), template, found);
-					}
-					catch (TemplateException e)
-					{
-						throw e;
-					}
-					catch (Exception e)
-					{
-						throw new TemplateException("Error parsing template file: ["+urlString+"]", e);
-					}
-				}
-				Templates.setInitialized();
-            }
-		};
-	}
-	
-	@Override
-	public void resetScanner()
-	{
-		Templates.reset();
+			scanArchives(urlsForSearch);
+		}
+		else
+		{
+			scanArchives(ScannerURLS.getWebURLsForSearch());
+		}
 	}
 	
 	/**
 	 * 
 	 * @param urls
 	 */
-	public void scanArchives()
+	public static void initialize(URL[] urls)
 	{
-		runScanner();
+		lock.lock();
+		try
+		{
+			urlsForSearch = urls;
+		}
+		finally
+		{
+			lock.unlock();
+		}
 	}
-
+	
 	/**
 	 * 
 	 * @param fileName

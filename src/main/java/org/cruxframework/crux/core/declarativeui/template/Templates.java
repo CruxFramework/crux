@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.core.declarativeui.template;
  
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,12 +22,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.hotdeploy.HotDeploymentScanner;
-import org.cruxframework.crux.core.utils.URLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -44,14 +44,13 @@ import org.w3c.dom.Text;
 public class Templates 
 {
 	private static boolean hotDeploymentScannerStarted = false;
+	private static final Lock lock = new ReentrantLock();
 	private static final Log logger = LogFactory.getLog(Templates.class);
-	private static Map<String, Set<String>> registeredLibraries = new HashMap<String, Set<String>>();
+	private static Map<String, Set<String>> registeredLibraries = null;
 	private static boolean starting = false;
-	private static Map<String, Document> templates = new HashMap<String, Document>();
-	private static Map<String, Set<String>> widgetTemplates = new HashMap<String, Set<String>>();
-	private static Map<String, URL> foundTemplates = new HashMap<String, URL>();
-
-	private static boolean initialized = false;
+	private static Map<String, Document> templates = null;
+	private static Map<String, Set<String>> widgetTemplates = null;
+	
 
 	/**
 	 * 
@@ -59,7 +58,7 @@ public class Templates
 	 */
 	public static Set<String> getRegisteredLibraries()
 	{
-		if (!initialized)
+		if (registeredLibraries == null)
 		{
 			initialize();
 		}
@@ -74,7 +73,7 @@ public class Templates
 	 */
 	public static Set<String> getRegisteredLibraryWidgetTemplates(String library)
 	{
-		if (!initialized)
+		if (widgetTemplates == null)
 		{
 			initialize();
 		}
@@ -89,7 +88,7 @@ public class Templates
 	 */
 	public static Set<String> getRegisteredLibraryTemplates(String library)
 	{
-		if (!initialized)
+		if (registeredLibraries == null)
 		{
 			initialize();
 		}
@@ -116,7 +115,7 @@ public class Templates
 	 */
 	public static Document getTemplate(String library, String id, boolean clone)
 	{
-		if (!initialized)
+		if (templates == null)
 		{
 			initialize();
 		}
@@ -131,21 +130,26 @@ public class Templates
 	/**
 	 * 
 	 */
-	public static synchronized void initialize()
+	public static void initialize()
 	{
-		if (initialized)
+		if (templates != null)
 		{
 			return;
 		}
-		starting = true;
-		templates.clear();
-		widgetTemplates.clear();
-		registeredLibraries.clear();
-		foundTemplates.clear();
-		logger.info("Searching for template files.");
-		TemplatesScanner.getInstance().scanArchives();
-		initializeWidgetTemplates();
-		setInitialized();
+		try
+		{
+			lock.lock();
+			if (templates != null)
+			{
+				return;
+			}
+			
+			initializeTemplates();
+		}
+		finally
+		{
+			lock.unlock();
+		}
 	}
 
 	/**
@@ -153,24 +157,24 @@ public class Templates
 	 */
 	public static void restart()
 	{
-		initialized = false;
+		templates = null;
 		initialize();
 	}
-
+	
 	/**
 	 * 
 	 */
-	public static void reset()
+	protected static void initializeTemplates()
 	{
-		initialized = false;
-		templates.clear();
-		widgetTemplates.clear();
-		registeredLibraries.clear();
-		foundTemplates.clear();
-	}
-	
-	static void setInitialized()
-    {
+		starting = true;
+		templates = new HashMap<String, Document>();
+		widgetTemplates = new HashMap<String, Set<String>>();
+		registeredLibraries = new HashMap<String, Set<String>>();
+		logger.info("Searching for template files.");
+		TemplatesScanner.getInstance().scanArchives();
+		
+		initializeWidgetTemplates();
+		
 		if (!hotDeploymentScannerStarted && Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()))
 		{
 			hotDeploymentScannerStarted = true;
@@ -178,8 +182,7 @@ public class Templates
 		}
 		
 		starting = false;
-	    initialized = true;
-    }
+	}
 
 	/**
 	 * @param parentElement
@@ -263,18 +266,13 @@ public class Templates
 	 * @param templateId
 	 * @param template
 	 */
-	static void registerTemplate(String templateId, Document template, URL templateURL)
+	static void registerTemplate(String templateId, Document template)
 	{
 		Element templateElement = template.getDocumentElement();
 		String library = templateElement.getAttribute("library");
-		String key = library+"_"+templateId;
-		if (templates.containsKey(key))
+		if (templates.containsKey(library+"_"+templateId))
 		{
-			URL registeredURL = foundTemplates.get(key);
-			if (!URLUtils.isIdenticResource(templateURL, registeredURL, templateId+".template.xml"))
-			{
-				throw new TemplateException("Duplicated template found. Library: ["+library+"]. Template: ["+templateId+"].");
-			}
+			throw new TemplateException("Duplicated template found. Library: ["+library+"]. Template: ["+templateId+"].");
 		}
 		
 		if (!registeredLibraries.containsKey(library))
@@ -283,8 +281,7 @@ public class Templates
 		}
 		registeredLibraries.get(library).add(templateId);
 		
-		templates.put(key, template);
-		foundTemplates.put(key, templateURL);
+		templates.put(library+"_"+templateId, template);
 	}
 	
 	/**

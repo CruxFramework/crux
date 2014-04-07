@@ -15,13 +15,15 @@
  */
 package org.cruxframework.crux.core.rebind.offline;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.cruxframework.crux.core.rebind.screen.OfflineScreen;
+import org.cruxframework.crux.core.rebind.screen.OfflineScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
-import org.w3c.dom.Document;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -29,82 +31,42 @@ import org.w3c.dom.Document;
  */
 public class OfflineScreens
 {
-	private static Map<String, Set<String>> moduleOfflineIDs = new HashMap<String, Set<String>>();
-	private static Map<String, Document> moduleOfflineDocument = new HashMap<String, Document>();
-	private static boolean initialized = false;
-	
-	private OfflineScreens(){}
-	
 	/**
 	 * 
 	 * @param module
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	public static Set<String> getOfflineIds(String module)
+	public static Set<OfflineScreen> getOfflinePages(String module) throws ScreenConfigException
     {
-		if (!initialized)
-		{
-			initialize();
-		}
-		return moduleOfflineIDs.get(module);
+		HashMap<String, Set<OfflineScreen>> modulePages = new HashMap<String, Set<OfflineScreen>>();
+		createOfflinePagesMapForModule(modulePages);
+		return modulePages.get(module);
     }
-	
-	public static Document getOfflineScreen(String id)
-    {
-		if (!initialized)
-		{
-			initialize();
-		}
-		return moduleOfflineDocument.get(id);
-    }
-	
-	/**
-	 * 
-	 */
-	static void setInitialized()
-	{
-		initialized = true;
-	}
-	
-	static synchronized void initialize()
-	{
-		if (!initialized)
-		{
-			moduleOfflineIDs.clear();
-			moduleOfflineDocument.clear();
-			OfflineScreensScanner.getInstance().scanArchives();
-			setInitialized();
-		}
-	}
-	
-	static void restart()
-	{
-		initialized = false;
-		initialize();
-	}
-	
-	static void reset()
-	{
-		initialized = false;
-		moduleOfflineDocument.clear();
-		moduleOfflineIDs.clear();
-	}
-	
+		
 	/**
 	 * 
 	 * @param modulePages
 	 * @return
+	 * @throws ScreenConfigException
 	 */
-	static void registerOfflinePageForModule(Document screen, String id, String module) 
+	private static void createOfflinePagesMapForModule(Map<String, Set<OfflineScreen>> modulePages) throws ScreenConfigException
 	{
-		Set<String> ids = moduleOfflineIDs.get(module);
-		if (ids == null)
+		Set<URL> archives = new OfflineScreensScanner().scanOfflineArchives();
+		for (URL screenURL : archives)
 		{
-			ids = new HashSet<String>();
-			moduleOfflineIDs.put(module, ids);
+			OfflineScreen screen = OfflineScreenFactory.getInstance().getOfflineScreen(screenURL);
+			if(screen != null)
+			{
+				Set<OfflineScreen> pages = modulePages.get(screen.getModule());
+				if (pages == null)
+				{
+					pages = new HashSet<OfflineScreen>();
+					modulePages.put(screen.getModule(), pages);
+				}
+				pages.add(screen);
+			}
 		}
-		ids.add(id);
-		moduleOfflineDocument.put(id, screen);
 	}
+
 }

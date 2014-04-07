@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,9 +41,9 @@ import org.cruxframework.crux.core.utils.URLUtils;
  */
 public class Views 
 {
+	private static final Lock lock = new ReentrantLock();
 	private static final Log logger = LogFactory.getLog(Views.class);
-	private static Map<String, List<URL>> views = new HashMap<String, List<URL>>();
-	private static boolean initialized = false;
+	private static Map<String, List<URL>> views = null;
 	
 	/**
 	 * 
@@ -50,7 +52,7 @@ public class Views
 	 */
 	public static URL getView(String id)
 	{
-		if (!initialized)
+		if (views == null)
 		{
 			initialize();
 		}
@@ -61,41 +63,37 @@ public class Views
 	/**
 	 * 
 	 */
-	public static synchronized void initialize()
+	public static void initialize()
 	{
-		if (initialized)
+		if (views != null)
 		{
 			return;
 		}
-		views.clear();
-		logger.info("Searching for view files.");
-		ViewsScanner.getInstance().scanArchives();
-		setInitialized();
+		try
+		{
+			lock.lock();
+			if (views != null)
+			{
+				return;
+			}
+			
+			initializeViews();
+		}
+		finally
+		{
+			lock.unlock();
+		}
 	}
 
-	static void setInitialized()
-	{
-		initialized = true;
-	}
-	
 	/**
 	 * 
 	 */
 	public static void restart()
 	{
-		initialized = false;
+		views = null;
 		initialize();
 	}
 	
-	/**
-	 * 
-	 */
-	public static void reset()
-	{
-		initialized = false;
-		views.clear();
-	}
-
 	/**
 	 * 
 	 * @param viewsLocator
@@ -103,7 +101,7 @@ public class Views
 	 */
 	public static List<String> getViews(String viewsLocator)
 	{
-		if (!initialized)
+		if (views == null)
 		{
 			initialize();
 		}
@@ -206,6 +204,7 @@ public class Views
 	
 	private static void extractFolderViews(List<String> result, URL baseFolder, FilePatternHandler handler)
 	{
+	//TODO modificar o scanner de templates para identificar duplicatas....assim como o de views	
 		for (String viewId : views.keySet())
         {
 			List<URL> urls = views.get(viewId);
@@ -225,6 +224,16 @@ public class Views
                 }
 			}
 		}
+	}
+
+	/**
+	 * 
+	 */
+	protected static void initializeViews()
+	{
+		views = new HashMap<String, List<URL>>();
+		logger.info("Searching for view files.");
+		ViewsScanner.getInstance().scanArchives();
 	}
 
 	/**

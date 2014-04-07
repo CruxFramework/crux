@@ -31,20 +31,22 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
-import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
+import org.cruxframework.crux.core.server.scan.ClassScanner;
 import org.cruxframework.crux.core.utils.FileUtils;
-import org.cruxframework.crux.scanner.ClasspathUrlFinder;
-import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.scannotation.ClasspathUrlFinder;
 import org.cruxframework.crux.tools.compile.utils.ClassPathUtils;
 import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
+
+
+
 
 import com.google.gwt.dev.Compiler;
 
@@ -167,8 +169,7 @@ public abstract class AbstractCruxCompiler
 		{
 			URL[] urls = ClasspathUrlFinder.findClassPaths();
 			ModuleUtils.initializeScannerURLs(urls);
-			Scanners.setSearchURLs(urls);
-			DevelopmentScanners.initializeScanners();
+			ClassScanner.initialize(urls);
 
 			initializeProcessors();
 			for (int i=0; i< this.preProcessors.size(); i++)

@@ -23,12 +23,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.cruxframework.crux.core.client.i18n.MessageName;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.scanner.ClassScanner;
+import org.cruxframework.crux.core.server.scan.ClassScanner;
 
 import com.google.gwt.i18n.client.LocalizableResource;
 
 /**
- * Class for retrieve the messages interface, based on the annotation MessageName.
+ * Class for retrieve the messages interface, based on the annotation MessageName or on the class SimpleName, if annotation not present
  * @author Thiago da Rosa de Bustamante
  */
 public class MessageClasses 
@@ -70,14 +70,30 @@ public class MessageClasses
 						{
 							Class<?> messageClass = Class.forName(message);
 							MessageName messageNameAnnot = messageClass.getAnnotation(MessageName.class);
-							if (messageNameAnnot != null)
+							if (messageNameAnnot!= null)
 							{
-								String messageKey = messageNameAnnot.value();
-								if (messagesClasses.containsKey(messageKey))
+								if (messagesClasses.containsKey(messageNameAnnot.value()))
 								{
-									throw new CruxGeneratorException("Duplicated Message Key: ["+messageKey+"].");
+									throw new CruxGeneratorException("Duplicated Message Key: ["+messageNameAnnot.value()+"].");
 								}
-								messagesClasses.put(messageKey, messageClass.getCanonicalName());
+								messagesClasses.put(messageNameAnnot.value(), messageClass.getCanonicalName());
+							}
+							else
+							{
+								String className = messageClass.getSimpleName();
+								if (className.length() > 1)
+								{
+									className = Character.toLowerCase(className.charAt(0)) + className.substring(1);
+								}
+								else
+								{
+									className = className.toLowerCase();
+								}
+								if (messagesClasses.containsKey(className))
+								{
+									throw new CruxGeneratorException("Duplicated Message Key: ["+className+"].");
+								}
+								messagesClasses.put(className, messageClass.getCanonicalName());
 							}
 						}
 					}

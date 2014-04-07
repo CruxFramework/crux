@@ -19,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.apache.commons.logging.Log;
@@ -84,39 +83,15 @@ public class CruxModuleBridge
 	 */
 	public String getCurrentModule() 
 	{
-		BufferedReader reader = null;
 		try 
 		{
-			reader = new BufferedReader(new FileReader(currentModuleBridgeFile));
+			BufferedReader reader = new BufferedReader(new FileReader(currentModuleBridgeFile));
 			return reader.readLine();
 		} 
 		catch (Exception e) 
 		{
 			logger.info("No module registered under the bridge module. Assuming the development module");
 			return null;
-		}
-		finally
-		{
-			closeReader(reader);
-		}
-	}
-	
-	/**
-	 * 
-	 * @param reader
-	 */
-	private void closeReader(BufferedReader reader)
-	{
-		try
-		{
-			if (reader != null)
-			{
-				reader.close();
-			}
-		}
-		catch (IOException e)
-		{
-			logger.error(e);
 		}
 	}
 }

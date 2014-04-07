@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.datasource.DataSource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.scanner.ClassScanner;
+import org.cruxframework.crux.core.server.scan.ClassScanner;
 
 
 /**

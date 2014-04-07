@@ -32,6 +32,7 @@ import org.cruxframework.crux.classpath.PackageFileURLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
@@ -66,6 +67,7 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	
 	public CruxModuleCompiler()
     {
+		ConfigurationFactory.getConfigurations().setEnableWebRootScannerCache(false);
 		CruxModuleConfigurationFactory.getConfigurations().setDevelopmentModules("");
     }
 	

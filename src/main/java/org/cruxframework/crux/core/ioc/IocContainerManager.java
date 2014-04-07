@@ -36,8 +36,8 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.rebind.controller.ClientControllers;
 import org.cruxframework.crux.core.rebind.datasource.DataSources;
 import org.cruxframework.crux.core.rebind.screen.View;
+import org.cruxframework.crux.core.server.scan.ClassScanner;
 import org.cruxframework.crux.core.utils.ClassUtils;
-import org.cruxframework.crux.scanner.ClassScanner;
 
 /**
  * @author Thiago da Rosa de Bustamante

@@ -25,10 +25,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
-import org.cruxframework.crux.core.rebind.DevelopmentScanners;
+import org.cruxframework.crux.core.declarativeui.template.TemplatesScanner;
+import org.cruxframework.crux.core.declarativeui.view.ViewsScanner;
 import org.cruxframework.crux.core.rebind.module.Module;
-import org.cruxframework.crux.scanner.Scanners;
-import org.cruxframework.crux.scanner.URLStreamManager;
+import org.cruxframework.crux.core.server.scan.ClassScanner;
+import org.cruxframework.crux.scannotation.URLStreamManager;
 import org.cruxframework.crux.tools.compile.CruxPreProcessor;
 import org.w3c.dom.Document;
 
@@ -188,7 +189,8 @@ public abstract class AbstractDeclarativeUIPreProcessor implements CruxPreProces
 
 	public void initialize(URL[] urls)
 	{
-		Scanners.setSearchURLs(urls);
-		DevelopmentScanners.initializeScanners();
+		ClassScanner.initialize(urls);
+		TemplatesScanner.initialize(urls);
+		ViewsScanner.initialize(urls);
 	}
 }
