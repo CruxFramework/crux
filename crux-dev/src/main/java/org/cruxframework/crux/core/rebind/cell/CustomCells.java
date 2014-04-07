@@ -26,7 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.cell.CustomCell;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.scanner.ClassScanner;
+import org.cruxframework.crux.core.server.scan.ClassScanner;
 
 
 /**

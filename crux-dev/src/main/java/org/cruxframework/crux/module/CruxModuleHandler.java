@@ -38,7 +38,7 @@ import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.module.config.CruxModuleConfigurationFactory;
 import org.cruxframework.crux.module.validation.CruxModuleValidator;
-import org.cruxframework.crux.scanner.URLStreamManager;
+import org.cruxframework.crux.scannotation.URLStreamManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -119,7 +119,7 @@ public class CruxModuleHandler
 			}
 			else
 			{
-				throw new CruxModuleException("No development module found. Define it using the 'developmentModules' properties on CruxModuleConfig.properties file.");
+				throw new CruxModuleException("No development module found. Define it using the 'developmentModule' properties on CruxModuleConfig.properties file.");
 			}
 		}		
 		return getCruxModule(currentModule);

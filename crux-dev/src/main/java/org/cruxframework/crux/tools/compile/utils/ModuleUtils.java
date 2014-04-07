@@ -25,8 +25,8 @@ import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.module.ModulesScanner;
-import org.cruxframework.crux.scanner.ScannerURLS;
-import org.cruxframework.crux.scanner.URLStreamManager;
+import org.cruxframework.crux.core.server.scan.ScannerURLS;
+import org.cruxframework.crux.scannotation.URLStreamManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -43,7 +43,6 @@ public class ModuleUtils
 	public static void initializeScannerURLs(URL[] urls)
 	{
 		ScannerURLS.setURLsForSearch(urls);
-		ModulesScanner.initializeScanner();
 		List<String> classesDir = new ArrayList<String>();
 		for (URL url : urls)
 		{

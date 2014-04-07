@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,12 +46,11 @@ import org.w3c.dom.NodeList;
  */
 public class Modules 
 {
+	protected Map<String, Module> modules = null;
+	protected Map<String, String> moduleAliases = null;
 	private static final Log logger = LogFactory.getLog(Modules.class);
+	private static final Lock lock = new ReentrantLock();
 
-	protected Map<String, Module> modules = new HashMap<String, Module>();
-	protected Map<String, String> moduleAliases = new HashMap<String, String>();
-	protected boolean initialized = false;
-	
 	private static Modules instance = new Modules();
 	
 	protected Modules()
@@ -61,28 +62,29 @@ public class Modules
 		return instance;
 	}
 	
-	public void reset()
-	{
-		initialized = false;
-		modules.clear();;
-		moduleAliases.clear();;
-	}
-	
 	/**
 	 * 
 	 */
-	public synchronized void initialize()
+	public void initialize()
 	{
-		if (initialized)
+		if (modules != null)
 		{
 			return;
 		}
+		try
+		{
+			lock.lock();
+			if (modules != null)
+			{
+				return;
+			}
 			
-		modules.clear();;
-		moduleAliases.clear();;
-		logger.info("Searching for modules.");
-		ModulesScanner.getInstance().scanArchives();
-		setInitialized();
+			initializeModules();
+		}
+		finally
+		{
+			lock.unlock();
+		}
 	}
 	
 	/**
@@ -92,11 +94,15 @@ public class Modules
 	 */
 	public Module getModule(String id)
 	{
-		if (!initialized)
+		if (modules == null)
 		{
 			initialize();
 		}
-		return getModuleEager(id);
+		if (moduleAliases.containsKey(id))
+		{
+			id = moduleAliases.get(id);
+		}
+		return modules.get(id);
 	}
 	
 	/**
@@ -105,7 +111,7 @@ public class Modules
 	 */
 	public Iterator<Module> iterateModules()
 	{
-		if (!initialized)
+		if (modules == null)
 		{
 			initialize();
 		}
@@ -257,6 +263,7 @@ public class Modules
 		Module module = getModule(moduleId);
 		if (module != null)
 		{
+			
 			for(String source: module.getSources())
 			{
 				if (controller.startsWith(module.getRootPath()+source))
@@ -315,6 +322,17 @@ public class Modules
 
 	/**
 	 * 
+	 */
+	protected void initializeModules()
+	{
+		modules = new HashMap<String, Module>();
+		moduleAliases = new HashMap<String, String>();
+		logger.info("Searching for modules.");
+		ModulesScanner.getInstance().scanArchives();
+	}
+
+	/**
+	 * 
 	 * @param templateId
 	 * @param template
 	 */
@@ -323,17 +341,10 @@ public class Modules
 		Module module;;
 		if (moduleAliases.containsKey(moduleFullName))
 		{
-			module = getModuleEager(moduleFullName);
-			try
+			module = getModule(moduleFullName);
+			if (!URLUtils.isIdenticResource(moduleDescriptor, module.getDescriptorURL(), moduleFullName+".gwt.xml"))
 			{
-				if (!URLUtils.isIdenticResource(moduleDescriptor, module.getDescriptorURL(), moduleFullName+".gwt.xml"))
-				{
-					throw new ModuleException("Duplicated module descriptor. Module ["+moduleFullName+"] is already registered.");
-				}
-			}
-			catch (Exception e)
-			{
-				logger.error("Erro : moduleName["+moduleFullName+"], module="+module, e);
+				throw new ModuleException("Duplicated module descriptor. Module ["+moduleFullName+"] is already registered.");
 			}
 		}
 		else
@@ -353,25 +364,6 @@ public class Modules
 			moduleAliases.put(moduleFullName, module.getName());
 		}
 		return module;
-	}
-
-	void setInitialized()
-    {
-	    initialized = true;
-    }
-	
-	/**
-	 * Retrieve the module if Modules contains that id, even when it is not initialized yet.
-	 * @param id
-	 * @return
-	 */
-	private Module getModuleEager(String id)
-	{
-		if (moduleAliases.containsKey(id))
-		{
-			id = moduleAliases.get(id);
-		}
-		return modules.get(id);
 	}
 
 	/**

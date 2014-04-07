@@ -21,7 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.DeclarativeUIScreenResolver;
-import org.cruxframework.crux.scanner.ClassScanner;
+import org.cruxframework.crux.core.server.scan.ClassScanner;
 
 
 /**

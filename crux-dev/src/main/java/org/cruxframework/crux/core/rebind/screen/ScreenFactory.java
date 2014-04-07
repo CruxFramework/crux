@@ -84,7 +84,7 @@ public class ScreenFactory
 		try 
 		{
 			long lastModified = getScreenLastModified(id);
-			String cacheId = device==null?id:id+"_"+device;
+			String cacheId = device==null?id:id+device;
 			
 			Screen screen = getFromCache(id, cacheId, lastModified);
 			if (screen != null)
@@ -114,7 +114,7 @@ public class ScreenFactory
 					{
 						throw new ScreenConfigException("Screen ["+id+"] not found!");
 					}
-					screen = parseScreen(id, device, screenView);
+					screen = parseScreen(id, screenView);
 					if(screen != null)
 					{
 						screenCache.put(cacheId, screen);
@@ -273,13 +273,12 @@ public class ScreenFactory
 	/**
 	 * Parse the HTML page and build the Crux Screen. 
 	 * @param id
-	 * @param device
 	 * @param screenView
 	 * @return
 	 * @throws IOException
 	 * @throws ScreenConfigException 
 	 */
-	private Screen parseScreen(String id, String device, Document screenView) throws IOException, ScreenConfigException
+	private Screen parseScreen(String id, Document screenView) throws IOException, ScreenConfigException
 	{
 		Screen screen = null;
 		String screenModule = getScreenModule(screenView);
@@ -287,7 +286,7 @@ public class ScreenFactory
 		if(screenModule != null)
 		{
 			String relativeScreenId = getRelativeScreenId(id, screenModule);
-			View rootView = ViewFactory.getInstance().getView(screenModule+"/"+relativeScreenId, device, screenView, true);
+			View rootView = ViewFactory.getInstance().getView(screenModule+"/"+relativeScreenId, screenView, true);
 			
 			screen = new Screen(id, relativeScreenId, screenModule, rootView);
 		}
