@@ -63,16 +63,17 @@ public class ServicesCompileMap
 	 */
 	public static boolean initialize(ServletContext context)
 	{
-		if(context == null)
-		{
-			logger.info("Context NULL: not running from web.");
-			return false;
-		}
-		
 		Properties properties = new Properties();
 		try
 		{
-			properties.load(context.getResourceAsStream("/META-INF/crux-remote"));
+			if (context != null)
+			{
+				properties.load(context.getResourceAsStream("/META-INF/crux-remote"));
+			}
+			else
+			{
+				properties.load(ServicesCompileMap.class.getResourceAsStream("/META-INF/crux-remote"));
+			}
 			Enumeration<?> serviceNames = (Enumeration<?>) properties.propertyNames();
 			while (serviceNames.hasMoreElements())
 			{
@@ -83,7 +84,7 @@ public class ServicesCompileMap
 		}
 		catch (Exception e)
 		{
-			logger.info("Error initializing services.",e);
+			logger.info("Error initializing services with service maps strategy...");
 		}
 		return false;
 	}

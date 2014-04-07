@@ -21,8 +21,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.server.Environment;
-import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
-import org.cruxframework.crux.core.server.scan.ClassScanner;
 
 
 /**
@@ -107,8 +105,6 @@ public class ServiceFactoryImpl implements ServiceFactory
 
 		public boolean initialize(ServletContext context)
 		{
-			ClassPathResolverInitializer.getClassPathResolver().initialize();
-			ClassScanner.initialize();
 			return true;
 		}
 	}
