@@ -122,6 +122,15 @@ public class HttpResponse
 		return exceptionDataWriter.writeValueAsString(exceptionData);
 	}
 
+	/**
+	 * @see response.sendRedirect(location);
+	 * @throws IOException 
+	 */
+	public void sendRedirect(String location) throws IOException 
+	{
+		response.sendRedirect(location);
+	}
+	
 	public boolean isCommitted()
 	{
 		return response.isCommitted();
