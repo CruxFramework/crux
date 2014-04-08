@@ -133,7 +133,6 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 }
 .crux-MenuTabsDisposal .showMenuButton
 {
-	background-image: urlTopMenuDisposalShowMenuButton;
 	background-repeat: no-repeat;
 	height: 40px;
 	width: 40px;
@@ -234,11 +233,9 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	height:0;
 }
 
-@url urlTopMenuDisposalShowMenuButton topMenuDisposalShowMenuButton; 
 @external crux-TopMenuDisposal, headerPanel, showMenuButton, menuPanel, menuEntry;
 .crux-TopMenuDisposal .showMenuButton
 {
-	background-image: urlTopMenuDisposalShowMenuButton;
 	background-repeat: no-repeat;
 	height: 40px;
 	width: 40px;
