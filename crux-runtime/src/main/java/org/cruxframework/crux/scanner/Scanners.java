@@ -46,7 +46,8 @@ public final class Scanners
 	protected static final String[] DEFAULT_IGNORED_PACKAGES = {"javax", "java", "sun", "com.sun", "org.apache", "net.sf.saxon", "javassist", 
 																"junit", "org.cruxframework.crux.core.rebind.screen.wrapper"};
 	protected static final String[] DEFAULT_REQUIRED_PACKAGES = {"org.cruxframework.crux", "com.google.gwt.i18n"};
-
+	protected static final String[] DEFAULT_REQUIRED_LIBS = {"gwt-user*.jar", "crux-*.jar"};
+	
 	protected static Set<String> ignoredPackages = new LinkedHashSet<String>();
 	protected static Set<String> allowedPackages = new LinkedHashSet<String>();
 	protected static Set<String> requiredPackages = new LinkedHashSet<String>();
@@ -54,7 +55,8 @@ public final class Scanners
 	private static Map<String, ScannerRegistration> registrations = new HashMap<String, ScannerRegistration>();
 	private static URL[] urls;
 	private static boolean initialized = false;
-	private static FilePatternHandler ignoreLibsHandler;
+	private static FilePatternHandler allowedLibsHandler;
+	private static FilePatternHandler requiredLibsHandler;
 
 	private Scanners()
 	{
@@ -322,14 +324,18 @@ public final class Scanners
 	 * @param lib
 	 * @return
 	 */
-	public static boolean ignoreEntry(String lib)
+	private static boolean ignoreEntry(String lib)
 	{
-		if (ignoreLibsHandler != null)
+		String libLowerCase = lib.toLowerCase();
+		if (libLowerCase.endsWith(".jar") || libLowerCase.endsWith(".zip"))
 		{
-			String libLowerCase = lib.toLowerCase();
-			if (libLowerCase.endsWith(".jar") || libLowerCase.endsWith(".zip"))
+			if (allowedLibsHandler != null)
 			{
-				return !ignoreLibsHandler.isValidEntry(lib);
+				if (requiredLibsHandler != null && requiredLibsHandler.isValidEntry(lib))
+				{
+					return false;
+				}
+				return (!allowedLibsHandler.isValidEntry(lib));
 			}
 		}
 		return false;
@@ -423,13 +429,28 @@ public final class Scanners
 			}
 
 			String scanIgnoredLibs = ConfigurationFactory.getConfigurations().scanIgnoredLibs();
-			if (scanIgnoredLibs != null && scanIgnoredLibs.length() > 0)
+			String scanAllowedLibs = ConfigurationFactory.getConfigurations().scanAllowedLibs();
+			if ((scanIgnoredLibs != null && scanIgnoredLibs.length() > 0) ||
+				(scanAllowedLibs != null && scanAllowedLibs.length() > 0))	
 			{
-				ignoreLibsHandler = new FilePatternHandler(null, scanIgnoredLibs);
+				allowedLibsHandler = new FilePatternHandler(scanAllowedLibs, scanIgnoredLibs);
+				requiredLibsHandler = new FilePatternHandler(getRequiredLibs(), null);
 			}
 			initialized = true;
 		}
-	}	
+	}
+
+	private static String getRequiredLibs()
+    {
+	    String delim = "";
+	    StringBuilder sb = new StringBuilder();
+	    for(String i: DEFAULT_REQUIRED_LIBS)
+	    {
+	        sb.append(delim).append(i);
+	        delim = ",";
+	    }
+	    return sb.toString();
+    }	
 	
 	/**
 	 * Returns true if there is a resource with the given URL

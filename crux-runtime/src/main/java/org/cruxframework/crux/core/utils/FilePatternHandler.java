@@ -85,14 +85,17 @@ public class FilePatternHandler
 	        }
         }
 		
-	    for (Pattern pattern : excludesPatterns)
-        {
-	        if (pattern.matcher(entryName).matches())
-	        {
-	        	isValid = false;
-	        	break;
-	        }
-        }
+	    if (isValid)
+	    {
+	    	for (Pattern pattern : excludesPatterns)
+	    	{
+	    		if (pattern.matcher(entryName).matches())
+	    		{
+	    			isValid = false;
+	    			break;
+	    		}
+	    	}
+	    }
 	    return isValid;
     }
 
