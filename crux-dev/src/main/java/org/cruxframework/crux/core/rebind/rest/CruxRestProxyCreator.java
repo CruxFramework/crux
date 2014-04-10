@@ -306,18 +306,24 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 			srcWriter.println("if (Response.SC_NO_CONTENT != response.getStatusCode() && !"+StringUtils.class.getCanonicalName()+".isEmpty(jsonText)){");
 			srcWriter.println("try{");
 
+			String resultVariable = "result";
+			if (callbackParameter.getName().equals(resultVariable))
+			{
+				resultVariable += "0";
+			}
+			
 			if (callbackResultType != null && callbackResultType.isAssignableTo(javascriptObjectType))
 			{
-				srcWriter.println(callbackResultTypeName+" result = "+JsonUtils.class.getCanonicalName()+".safeEval(jsonText);");
+				srcWriter.println(callbackResultTypeName+" "+resultVariable+" = "+JsonUtils.class.getCanonicalName()+".safeEval(jsonText);");
 			}
 			else
 			{
 				srcWriter.println("JSONValue jsonValue = JSONParser.parseStrict(jsonText);");
 				String serializerName = new JSonSerializerProxyCreator(context, logger, callbackResultType).create();
-				srcWriter.println(callbackResultTypeName+" result = new "+serializerName+"().decode(jsonValue);");
+				srcWriter.println(callbackResultTypeName+" "+resultVariable+" = new "+serializerName+"().decode(jsonValue);");
 			}
 			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, "response", restURIParam, methodInfo.methodURI);
-			srcWriter.println(callbackParameterName+".onSuccess(result);");
+			srcWriter.println(callbackParameterName+".onSuccess("+resultVariable+");");
 			srcWriter.println("}catch (Exception e){");
 			srcWriter.println("if (LogConfiguration.loggingIsEnabled()){");
 			srcWriter.println("__log.log(Level.SEVERE, e.getMessage(), e);");
