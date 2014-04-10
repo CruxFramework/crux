@@ -133,45 +133,4 @@ public class ModulesLauncher
 		
 	    return module;
     }
-	
-//
-//	/**
-//	 * TODO: finish this!!!
-//	 * Is generating the correct file!
-//	 */
-//	@SuppressWarnings("unused")
-//	private static void tryingToInvokeAspect() 
-//	{
-//		String jarToWeave = "gwt-dev-2.5.1.jar";
-//		String classpath = System.getProperty("java.class.path");
-//		String jarToWeavePath = classpath.substring(0, classpath.indexOf(jarToWeave) + jarToWeave.length());
-//		jarToWeavePath = jarToWeavePath.substring(jarToWeavePath.lastIndexOf(";")+1, jarToWeavePath.length());
-//		
-//		String jarWeavedPath = jarToWeavePath.substring(0, jarToWeavePath.lastIndexOf(".jar"))+"_weaved.jar";
-//		
-//		String aspect = LoggingErrorHandlerAspect.class.getProtectionDomain().getCodeSource().getLocation().getPath()+(LoggingErrorHandlerAspect.class.getPackage().getName()).replace(".", "/");
-//		aspect = aspect.substring(1, aspect.length());
-//		
-//		String[] ajcArgs = {
-//            "-sourceroots", aspect,
-//            "-inpath", jarToWeavePath,
-//            "-noExit",
-//            "-Xlint:ignore",
-//            "-outjar", jarWeavedPath,
-//            "-1.5"
-//        };
-//		
-//		File fileJarToWeave = new File(jarToWeavePath);
-//		File fileJarWeaved = new File(jarWeavedPath);
-//		
-//        try 
-//        {
-//			Main.main(ajcArgs);
-//			ClassPathUtils.removeURL(fileJarToWeave.toURI().toURL());
-//			ClassPathUtils.addURL(fileJarWeaved.toURI().toURL());
-//		} catch (IOException e) 
-//		{
-//			e.printStackTrace();
-//		}
-//	}	
 }
