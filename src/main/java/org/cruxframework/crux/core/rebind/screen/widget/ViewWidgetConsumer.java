@@ -49,6 +49,7 @@ public class ViewWidgetConsumer implements LazyCompatibleWidgetConsumer
 	private JClassType hasFormatterType;
 	private JClassType hasTextType;
 	private JClassType typeConverterType;
+	private JClassType stringType;
 
 	public ViewWidgetConsumer(ViewFactoryCreator viewFactoryCreator)
 	{
@@ -61,6 +62,7 @@ public class ViewWidgetConsumer implements LazyCompatibleWidgetConsumer
 		hasFormatterType = viewFactoryCreator.getContext().getTypeOracle().findType(HasFormatter.class.getCanonicalName());
 		hasTextType = viewFactoryCreator.getContext().getTypeOracle().findType(HasText.class.getCanonicalName());
 		typeConverterType = viewFactoryCreator.getContext().getTypeOracle().findType(TypeConverter.class.getCanonicalName());
+		stringType = viewFactoryCreator.getContext().getTypeOracle().findType(String.class.getCanonicalName());
 
 		String bindPath = metaElem.optString("bindPath");
 		String bindConverter = metaElem.optString("bindConverter");
@@ -262,13 +264,28 @@ public class ViewWidgetConsumer implements LazyCompatibleWidgetConsumer
 	private void validateConverter(JClassType converterType, JClassType widgetClass, JClassType propertyType)
 	{
 		JClassType[] types = JClassUtils.getActualParameterTypes(converterType, typeConverterType);
-		JClassType[] widgetValueType = JClassUtils.getActualParameterTypes(widgetClass, hasValueType);
+		JClassType widgetType = null;
+
+		if (widgetClass.isAssignableTo(hasValueType))
+		{
+			JClassType[] widgetValueType = JClassUtils.getActualParameterTypes(widgetClass, hasValueType);
+			widgetType = widgetValueType[0];
+		}
+		else if (widgetClass.isAssignableTo(hasTextType))
+		{
+			widgetType = stringType;
+		}
+		else
+		{
+			throw new CruxGeneratorException("converter ["+converterType.getQualifiedSourceName()+
+					"] can not be used to convert values to widget of type ["+widgetClass.getQualifiedSourceName()+"]. Incompatible types.");
+		}
 		if (!propertyType.isAssignableTo(types[0]))
 		{
 			throw new CruxGeneratorException("converter ["+converterType.getQualifiedSourceName()+
 					"] can not be used to convert values to widget of type ["+widgetClass.getQualifiedSourceName()+"]. Incompatible types.");
 		}
-		if (!widgetValueType[0].isAssignableTo(types[1]))
+		if (!widgetType.isAssignableTo(types[1]))
 		{
 			throw new CruxGeneratorException("converter ["+converterType.getQualifiedSourceName()+
 					"] can not be used to convert values to property of type ["+propertyType.getQualifiedSourceName()+"]. Incompatible types.");
