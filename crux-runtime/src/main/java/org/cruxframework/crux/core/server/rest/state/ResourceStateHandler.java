@@ -32,5 +32,6 @@ public interface ResourceStateHandler
 	ResourceState add(String uri, long dateModified, long expires, String etag);
 	ResourceState get(String uri);
 	void remove(String uri);
+	void removeMacthes(String... expr);
 	void clear();
 }

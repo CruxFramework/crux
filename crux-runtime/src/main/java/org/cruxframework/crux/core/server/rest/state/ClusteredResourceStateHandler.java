@@ -16,9 +16,12 @@
 package org.cruxframework.crux.core.server.rest.state;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.utils.FilePatternHandler;
 import org.jgroups.blocks.Cache;
 import org.jgroups.blocks.ReplCache;
 
@@ -52,7 +55,7 @@ public class ClusteredResourceStateHandler implements ResourceStateHandler
 
 	public static class CacheEntry implements ResourceState, Serializable
 	{
-        private static final long serialVersionUID = -7144309067971959838L;
+		private static final long serialVersionUID = -7144309067971959838L;
 		private final long dateModifiedMilis;
 		private final long expires;
 		private final String etag;
@@ -63,100 +66,120 @@ public class ClusteredResourceStateHandler implements ResourceStateHandler
 			this.expires = expires;
 			this.etag = etag;
 		}
-		
-		@Override
-        public long getDateModified()
-        {
-	        return dateModifiedMilis;
-        }
 
 		@Override
-        public String getEtag()
-        {
-	        return etag;
-        }
+		public long getDateModified()
+		{
+			return dateModifiedMilis;
+		}
 
 		@Override
-        public boolean isExpired()
-        {
-	        return System.currentTimeMillis() - dateModifiedMilis >= expires;
-        }
+		public String getEtag()
+		{
+			return etag;
+		}
+
+		@Override
+		public boolean isExpired()
+		{
+			return System.currentTimeMillis() - dateModifiedMilis >= expires;
+		}
 	}
 
 	/**
 	 * 
 	 */
 	public ClusteredResourceStateHandler()
-    {
+	{
 		try
-        {
+		{
 			ClusteredCacheConfig config = ClusteredCacheConfigurationFactory.getConfigurations();
-			
+
 			replCount = Short.parseShort(config.replCount());
-	        cache = new ReplCache<String, CacheEntry>(config.channelConfigPropertyFile(), config.clusterName());
-	        cache.setMigrateData(true);
-	        cache.setCallTimeout(Integer.parseInt(config.rpcTimeout()));
-	        cache.setCachingTime(Integer.parseInt(config.cachingTime()));
-	        cache.setDefaultReplicationCount(replCount);
-	        if (Boolean.parseBoolean(config.useL1Cache()))
-	        {
-		        Cache<String,CacheEntry> l1Cache=new Cache<String,CacheEntry>();
-		        cache.setL1Cache(l1Cache);
-		        int l1ReapingInterval = Integer.parseInt(config.l1ReapingInterval());
-		        if (l1ReapingInterval > 0)
-		        {
-		        	l1Cache.enableReaping(l1ReapingInterval);
-		        }
-		        int l1MaxNumberOfEntries = Integer.parseInt(config.l1MaxNumberOfEntries());
-		        if (l1MaxNumberOfEntries > 0)
-		        {
-		        	l1Cache.setMaxNumberOfEntries(l1MaxNumberOfEntries);
-		        }
-	        }
-	        Cache<String,ReplCache.Value<CacheEntry>> l2Cache=cache.getL2Cache();
-	        int l2ReapingInterval = Integer.parseInt(config.l2ReapingInterval());
-	        if (l2ReapingInterval > 0)
-	        {
-	        	l2Cache.enableReaping(l2ReapingInterval);
-	        }
-	        int l2MaxNumberOfEntries = Integer.parseInt(config.l2MaxNumberOfEntries());
-	        if (l2MaxNumberOfEntries > 0)
-	        {
-	        	l2Cache.setMaxNumberOfEntries(l2MaxNumberOfEntries);
-	        }
-	        
-	        cache.start();
-        }
-        catch (Exception e)
-        {
-        	logger.error("Error connecting to resources distributed cache", e);
-	        e.printStackTrace();
-        }
-    }
-	
+			cache = new ReplCache<String, CacheEntry>(config.channelConfigPropertyFile(), config.clusterName());
+			cache.setMigrateData(true);
+			cache.setCallTimeout(Integer.parseInt(config.rpcTimeout()));
+			cache.setCachingTime(Integer.parseInt(config.cachingTime()));
+			cache.setDefaultReplicationCount(replCount);
+			if (Boolean.parseBoolean(config.useL1Cache()))
+			{
+				Cache<String,CacheEntry> l1Cache=new Cache<String,CacheEntry>();
+				cache.setL1Cache(l1Cache);
+				int l1ReapingInterval = Integer.parseInt(config.l1ReapingInterval());
+				if (l1ReapingInterval > 0)
+				{
+					l1Cache.enableReaping(l1ReapingInterval);
+				}
+				int l1MaxNumberOfEntries = Integer.parseInt(config.l1MaxNumberOfEntries());
+				if (l1MaxNumberOfEntries > 0)
+				{
+					l1Cache.setMaxNumberOfEntries(l1MaxNumberOfEntries);
+				}
+			}
+			Cache<String,ReplCache.Value<CacheEntry>> l2Cache=cache.getL2Cache();
+			int l2ReapingInterval = Integer.parseInt(config.l2ReapingInterval());
+			if (l2ReapingInterval > 0)
+			{
+				l2Cache.enableReaping(l2ReapingInterval);
+			}
+			int l2MaxNumberOfEntries = Integer.parseInt(config.l2MaxNumberOfEntries());
+			if (l2MaxNumberOfEntries > 0)
+			{
+				l2Cache.setMaxNumberOfEntries(l2MaxNumberOfEntries);
+			}
+
+			cache.start();
+		}
+		catch (Exception e)
+		{
+			logger.error("Error connecting to resources distributed cache", e);
+			e.printStackTrace();
+		}
+	}
+
 	@Override
-    public ResourceState add(String uri, long dateModified, long expires, String etag)
-    {
+	public ResourceState add(String uri, long dateModified, long expires, String etag)
+	{
 		CacheEntry cacheEntry = new CacheEntry(dateModified, expires, etag);
 		cache.put(uri, cacheEntry, replCount, expires);//(key, val, repl_count, timeout, synchronous)
-	    return cacheEntry;
-    }
+		return cacheEntry;
+	}
 
 	@Override
-    public ResourceState get(String uri)
-    {
-	    return cache.get(uri);
-    }
+	public ResourceState get(String uri)
+	{
+		return cache.get(uri);
+	}
 
 	@Override
-    public void remove(String uri)
-    {
+	public void remove(String uri)
+	{
 		cache.remove(uri);
-    }
+	}
 
 	@Override
-    public void clear()
-    {
+	public void removeMacthes(String... expr)
+	{
+		Set<String> keys = cache.getL2Cache().getInternalMap().keySet();
+		Set<String> keysToRemove = new HashSet<String>();
+		FilePatternHandler patternHandler = new FilePatternHandler(expr, null);
+
+		for (String key : keys)
+		{
+			if (patternHandler.isValidEntry(key))
+			{
+				keysToRemove.add(key);
+			}
+		}
+		for (String key : keysToRemove)
+		{
+			cache.remove(key, true);
+		}	        
+	}
+	
+	@Override
+	public void clear()
+	{
 		cache.clear();
-    }
+	}
 }

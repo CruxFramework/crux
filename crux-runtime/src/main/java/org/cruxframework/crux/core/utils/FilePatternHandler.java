@@ -27,9 +27,9 @@ import java.util.regex.Pattern;
 public class FilePatternHandler
 {
 	private static final String PATTERN_SPECIAL_CHARACTERS = "\\{}[]()+?$&^-|.!";
-	private final String excludes;
+	private String excludes;
 	private List<Pattern> excludesPatterns = new ArrayList<Pattern>();
-	private final String includes;
+	private String includes;
 	private List<Pattern> includesPatterns = new ArrayList<Pattern>();
 
 	
@@ -39,8 +39,16 @@ public class FilePatternHandler
 	 */
 	public FilePatternHandler(String includes, String excludes)
     {
-		this.includes = includes;
-		this.excludes = excludes;
+		processIncludesPatterns(includes);
+		processExcludesPatterns(excludes);
+    }
+	
+	/**
+	 * @param includes
+	 * @param excludes
+	 */
+	public FilePatternHandler(String[] includes, String[] excludes)
+    {
 		processIncludesPatterns(includes);
 		processExcludesPatterns(excludes);
     }
@@ -143,8 +151,28 @@ public class FilePatternHandler
 	            this.excludesPatterns.add(Pattern.compile(translatePattern(excludePattern), Pattern.CASE_INSENSITIVE));
             }
 		}
+	    this.excludes = excludes;
     }
 	
+	/**
+	 * @param excludes
+	 */
+	private void processExcludesPatterns(String[] excludes)
+    {
+	    if (excludes != null)
+		{
+	    	StringBuilder sb = new StringBuilder();
+	    	String delim = "";
+			for (String excludePattern : excludes)
+            {
+	            this.excludesPatterns.add(Pattern.compile(translatePattern(excludePattern), Pattern.CASE_INSENSITIVE));
+	            sb.append(delim).append(excludePattern);
+	            delim = ",";
+            }
+			this.excludes = sb.toString();
+		}
+    }
+
 	/**
 	 * @param includes
 	 */
@@ -158,8 +186,28 @@ public class FilePatternHandler
 	            this.includesPatterns.add(Pattern.compile(translatePattern(includePattern), Pattern.CASE_INSENSITIVE));
             }
 		}
+		this.includes = includes;
     }	
 	
+	/**
+	 * @param includes
+	 */
+	private void processIncludesPatterns(String[] includes)
+    {
+	    if (includes != null)
+		{
+	    	StringBuilder sb = new StringBuilder();
+	    	String delim = "";
+			for (String includePattern : includes)
+            {
+	            this.includesPatterns.add(Pattern.compile(translatePattern(includePattern), Pattern.CASE_INSENSITIVE));
+	            sb.append(delim).append(includePattern);
+	            delim = ",";
+            }
+			this.includes = sb.toString();
+		}
+    }	
+
 	/**
 	 * @param pattern
 	 * @return

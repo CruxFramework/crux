@@ -16,8 +16,12 @@
 package org.cruxframework.crux.core.server.rest.state;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+
+import org.cruxframework.crux.core.utils.FilePatternHandler;
 
 /**
  * It is a very basic implementation for ResourceStateHandler interface that is designed to run only
@@ -117,5 +121,23 @@ public class NoClusteredResourceStateHandler implements ResourceStateHandler
     public void clear()
     {
 		cache.clear();
+    }
+
+	@Override
+    public void removeMacthes(String... expr)
+    {
+	   Set<String> keys = cache.keySet();
+	   
+	   FilePatternHandler patternHandler = new FilePatternHandler(expr, null);
+	   
+	   Iterator<String> iterator = keys.iterator();
+	   while (iterator.hasNext())
+	   {
+		   String key =  iterator.next();
+		   if (patternHandler.isValidEntry(key))
+		   {
+			   iterator.remove();
+		   }
+	   }
     }
 }
