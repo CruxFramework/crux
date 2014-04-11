@@ -15,10 +15,8 @@
  */
 package org.cruxframework.crux.module.rebind;
 
-import org.cruxframework.crux.core.config.ConfigurationFactory;
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.rebind.config.CruxClientConfigProxyCreator;
-import org.cruxframework.crux.core.server.Environment;
-import org.cruxframework.crux.module.CruxModuleHandler;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -27,6 +25,8 @@ import com.google.gwt.core.ext.TreeLogger;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public class ConfigProxyCreator extends CruxClientConfigProxyCreator
 {
 	public ConfigProxyCreator(TreeLogger logger, GeneratorContext context)
@@ -37,42 +37,6 @@ public class ConfigProxyCreator extends CruxClientConfigProxyCreator
 	@Override
 	protected void generateEnableChildrenWindowsDebugMethod(SourcePrinter sourceWriter)
 	{
-		sourceWriter.println("public boolean enableDebugForURL(String url){");
-		if (!Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableChildrenWindowsDebug()))
-		{
-			sourceWriter.println("return false;");
-		}
-		else
-		{
-			String[] developmentModules = Environment.isProduction()?null:CruxModuleHandler.getDevelopmentModules();
-			if (developmentModules != null && developmentModules.length > 0)
-			{
-				sourceWriter.println("if (url == null){");
-				sourceWriter.println("return false;");
-				sourceWriter.println("}");
-
-				sourceWriter.println("String urlWithoutParameters = url;");
-				sourceWriter.println("int index = url.indexOf(\"?\");");
-				sourceWriter.println("if (index  > 0){");
-				sourceWriter.println("urlWithoutParameters = url.substring(0,index);");
-				sourceWriter.println("}");
-				
-				for (String moduleName : developmentModules)
-				{
-					String[] pages = CruxModuleHandler.getCruxModule(moduleName).getPages();
-					if (pages != null)
-					{
-						for (String page : pages)
-						{
-							sourceWriter.println("if (urlWithoutParameters.endsWith(\""+page+"\")){");
-							sourceWriter.println("return true;");
-							sourceWriter.println("}");
-						}
-					}
-				}
-			}
-			sourceWriter.println("return false;");
-		}
-		sourceWriter.println("}");
+		super.generateEnableChildrenWindowsDebugMethod(sourceWriter);
 	}
 }

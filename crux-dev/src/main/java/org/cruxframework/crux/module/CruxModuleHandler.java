@@ -35,8 +35,6 @@ import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.module.Modules;
-import org.cruxframework.crux.core.utils.RegexpPatterns;
-import org.cruxframework.crux.module.config.CruxModuleConfigurationFactory;
 import org.cruxframework.crux.module.validation.CruxModuleValidator;
 import org.cruxframework.crux.scanner.URLStreamManager;
 import org.w3c.dom.Document;
@@ -125,26 +123,6 @@ public class CruxModuleHandler
 		return getCruxModule(currentModule);
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	public static String[] getDevelopmentModules()
-	{
-		String developmentModules = CruxModuleConfigurationFactory.getConfigurations().developmentModules();
-		if (developmentModules == null)
-		{
-			return new String[0];
-		}
-		String[] modules = RegexpPatterns.REGEXP_COMMA.split(developmentModules);
-		for (int i=0; i< modules.length; i++)
-		{
-			modules[i] = modules[i].trim();
-		}
-		return modules;
-	}
-	
-	
 	/**
 	 * 
 	 * @param module

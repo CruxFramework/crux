@@ -17,15 +17,12 @@ package org.cruxframework.crux.module.launch;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.module.CruxModuleBridge;
-import org.cruxframework.crux.module.CruxModuleHandler;
 
 
 /**
@@ -43,12 +40,6 @@ public class ModulesLauncher
 	{
 		CruxModuleBridge.getInstance().registerCurrentModule("");
 		DevelopmentScanners.initializeScanners();
-		
-		String[] developmentModules = CruxModuleHandler.getDevelopmentModules();
-		if (developmentModules==null || developmentModules.length ==0)
-		{
-			throw new RuntimeException("No development module specified.");
-		}
 		
 		String webDir = "./war/";
 		boolean warParamFound = false;
@@ -86,19 +77,15 @@ public class ModulesLauncher
 		CruxBridge.getInstance().registerWebinfClasses(webinfClassesDir.toURI().toURL().toString());
 		CruxBridge.getInstance().registerWebinfLib(webinfLibDir.toURI().toURL().toString());
 
-		List<String> modules = new ArrayList<String>();
-		for (String moduleName : developmentModules)
+		Module module = Modules.getInstance().getModule(initialModule);
+		if (module != null)
 		{
-			Module module = Modules.getInstance().getModule(moduleName);
-			if (module != null)
-			{
-				modules.add(module.getFullName());
-			}
+			initialModule = module.getFullName();
 		}
 		
-		String[] newArgs = new String[args.length+modules.size()];
+		String[] newArgs = new String[args.length+1];
 		System.arraycopy(args, 0, newArgs, 0, args.length);
-		System.arraycopy(modules.toArray(new String[modules.size()]), 0, newArgs, args.length, modules.size());
+		newArgs[args.length] = initialModule;
 		
 		com.google.gwt.dev.DevMode.main(newArgs);
 	}

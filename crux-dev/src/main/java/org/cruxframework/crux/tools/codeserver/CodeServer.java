@@ -31,7 +31,6 @@ import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
 import org.cruxframework.crux.module.CruxModuleBridge;
-import org.cruxframework.crux.module.config.CruxModuleConfigurationFactory;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
 import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
@@ -107,7 +106,6 @@ public class CodeServer
 
 	protected void execute() throws Exception
     {
-		CruxModuleConfigurationFactory.getConfigurations().setDevelopmentModules("");
 		CruxModuleBridge.getInstance().registerCurrentModule(moduleName);
 		URL[] urls = ClasspathUrlFinder.findClassPaths();
 		Scanners.setSearchURLs(urls);

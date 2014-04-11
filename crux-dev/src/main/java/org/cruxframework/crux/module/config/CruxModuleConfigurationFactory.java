@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.module.config;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.config.AbstractPropertiesFactory;
 import org.cruxframework.crux.core.config.ConfigurationInvocationHandler;
 import org.cruxframework.crux.core.config.ConstantsInvocationHandler;
@@ -28,6 +29,8 @@ import org.cruxframework.crux.core.i18n.MessageException;
  * @author Gesse S. F. Dafe <code>gessedafe@gmail.com</code>
  *
  */
+@Deprecated
+@Legacy
 public class CruxModuleConfigurationFactory extends AbstractPropertiesFactory
 {
 	protected static final CruxModuleConfigurationFactory instance = new CruxModuleConfigurationFactory();

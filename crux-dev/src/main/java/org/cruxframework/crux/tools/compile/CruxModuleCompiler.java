@@ -41,7 +41,6 @@ import org.cruxframework.crux.module.CruxModuleBridge;
 import org.cruxframework.crux.module.CruxModuleException;
 import org.cruxframework.crux.module.CruxModuleHandler;
 import org.cruxframework.crux.module.ModuleRef;
-import org.cruxframework.crux.module.config.CruxModuleConfigurationFactory;
 import org.cruxframework.crux.module.validation.CruxModuleValidator;
 import org.cruxframework.crux.tools.export.ModuleExporter;
 import org.cruxframework.crux.tools.jar.JarExtractor;
@@ -63,12 +62,7 @@ public class CruxModuleCompiler extends AbstractCruxCompiler
 	private boolean forceModulesCompilation = false;
 	private String moduleName;
 	private Map<String, Boolean> mustCompileCache = new HashMap<String, Boolean>();
-	
-	public CruxModuleCompiler()
-    {
-		CruxModuleConfigurationFactory.getConfigurations().setDevelopmentModules("");
-    }
-	
+		
 	
 	@Override
 	protected ConsoleParametersProcessor createParametersProcessor()

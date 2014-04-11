@@ -32,7 +32,6 @@ import org.cruxframework.crux.core.server.CruxAbstractFilter;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.utils.StreamUtils;
 import org.cruxframework.crux.module.CruxModuleBridge;
-import org.cruxframework.crux.module.CruxModuleHandler;
 
 
 /**
@@ -50,7 +49,10 @@ public class ModulesDeclarativeUIFilter extends CruxAbstractFilter
 	public void init(FilterConfig config) throws ServletException
 	{
 		super.init(config);
-		modulesUrlPrefix = config.getInitParameter("modulesUrlPrefix");
+		if (!production)
+		{
+			modulesUrlPrefix = config.getInitParameter("modulesUrlPrefix");
+		}
 	}
 	
 	@Override
@@ -109,14 +111,7 @@ public class ModulesDeclarativeUIFilter extends CruxAbstractFilter
 			{
 				result = removeStringPrefix(result, modulesUrlPrefix);
 			}
-			String[] developmentModules = CruxModuleHandler.getDevelopmentModules();
-			for (String currentModuleName : developmentModules)
-			{
-				if (result.startsWith(currentModuleName+"/"))
-				{
-					return result;
-				}
-			}
+			return result;
 		}
 		return null;
 	}
