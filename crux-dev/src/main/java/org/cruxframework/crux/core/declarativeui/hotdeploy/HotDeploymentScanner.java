@@ -18,8 +18,10 @@ package org.cruxframework.crux.core.declarativeui.hotdeploy;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -42,9 +44,9 @@ public class HotDeploymentScanner
 {
 	private static final Log logger = LogFactory.getLog(HotDeploymentScanner.class);
 
-	private ScheduledExecutorService threadPool;
-	private Map<String, Long> lastModified = new HashMap<String, Long>();
-	private Set<File> files = new HashSet<File>();
+	private final ScheduledExecutorService threadPool;
+	private final Map<String, Long> lastModified = new HashMap<String, Long>();
+	private final Set<File> files = new HashSet<File>();
 	
 	/**
 	 * 
@@ -72,6 +74,7 @@ public class HotDeploymentScanner
 		if (files.size() > 0)
 		{
 			threadPool.scheduleWithFixedDelay(new Runnable(){
+				@Override
 				public void run()
 				{
 					for (File file : files)
@@ -170,25 +173,37 @@ public class HotDeploymentScanner
 	public static void scanWebDirs()
 	{
 		URL[] dirs = ClasspathUrlFinder.findClassPaths();
-		HotDeploymentScanner scanner = new HotDeploymentScanner(dirs.length);
-
+		List<URL> srcDir = new ArrayList<URL>(0);
+		
+		/* avoid scanning jar files */
 		for (URL url : dirs)
 		{
-			if (url.getProtocol().equalsIgnoreCase("file"))
+			if (!url.toString().endsWith(".jar"))
 			{
-				try
+				srcDir.add(url);
+			}
+		}
+		
+		HotDeploymentScanner scanner = new HotDeploymentScanner(srcDir.size());
+		
+		for (URL url : srcDir)
+		{
+			try
+			{
+				final File file = new File(url.toURI());
+				
+				if (file.isDirectory() || 
+						file.getName().endsWith("template.xml") || 
+						file.getName().endsWith("view.xml") || 
+						file.getName().endsWith("crux.xml") || 
+						file.getName().endsWith("xdevice.xml"))
 				{
-					final File file = new File(url.toURI());
-					
-					if (file.isDirectory() || file.getName().endsWith("template.xml") || file.getName().endsWith("view.xml"))
-					{
-						scanner.addFile(file);
-					}
+					scanner.addFile(file);
 				}
-				catch (URISyntaxException e)
-				{
-					logger.info("Error scanning dir: ["+url.toString()+"].", e);
-				}
+			}
+			catch (URISyntaxException e)
+			{
+				logger.info("Error scanning dir: ["+url.toString()+"].", e);
 			}
 		}
 		scanner.startScanner();
