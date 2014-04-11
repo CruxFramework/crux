@@ -15,16 +15,16 @@
  */
 package org.cruxframework.crux.widgets.rebind.datebox;
 
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
-import org.cruxframework.crux.gwt.rebind.TextBoxFactory;
 import org.cruxframework.crux.widgets.client.datebox.DateBox;
 
 /**
  * @author samuel.cardoso
  */
 @DeclarativeFactory(id="dateBox", library="widgets", targetWidget=DateBox.class)
-public class DateBoxFactory extends TextBoxFactory
+public class DateBoxFactory extends WidgetCreator<WidgetCreatorContext>
 {
     @Override
     public WidgetCreatorContext instantiateContext()
