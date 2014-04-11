@@ -44,6 +44,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
@@ -192,7 +193,12 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 		srcWriter.println(resultSourceName + " "+resultObjectVar + " = " + JClassUtils.getEmptyValueForType(objectType) +";");
 		srcWriter.println("if ("+jsonValueVar+" != null && "+jsonValueVar+".isNull() == null){");
 
-		if(objectType.getQualifiedSourceName().equals(Void.class.getCanonicalName())) 
+		JArrayType objectArrayType = objectType.isArray();
+		if (objectArrayType != null)
+		{
+			generateDecodeStringForArrayType(srcWriter, objectArrayType, jsonValueVar, resultObjectVar, resultSourceName);
+		}
+		else if(objectType.getQualifiedSourceName().equals(Void.class.getCanonicalName())) 
 		{
 			srcWriter.println("return null;");
 		}
@@ -224,6 +230,24 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 		return resultObjectVar;
 	}
 
+	private void generateDecodeStringForArrayType(SourcePrinter srcWriter, JArrayType objectArrayType, String jsonValueVar, 
+			String resultObjectVar, String resultSourceName)
+    {
+		JType targetObjectType = objectArrayType.getComponentType();
+		String jsonCollectionVar = generateJSONValueCollectionForDecode(srcWriter, jsonValueVar, true);
+		
+		srcWriter.println(resultObjectVar+" = new "+targetObjectType.getParameterizedQualifiedSourceName()+"["+jsonCollectionVar+".size()];");
+		
+		String loopIndexVar = nameFactory.createName("i");
+		String loopJsonVar = nameFactory.createName("loopJsonVar");
+		
+		srcWriter.println("for (int "+loopIndexVar+"=0; "+loopIndexVar+" < "+jsonCollectionVar+".size(); "+loopIndexVar+"++){");
+		srcWriter.println("JSONValue "+loopJsonVar+"="+jsonCollectionVar + ".get("+loopIndexVar+");");
+		String decodedJsonValue = generateDecodeJsonValue(srcWriter, targetObjectType, loopJsonVar);
+		srcWriter.println(resultObjectVar+"["+loopIndexVar+"] = "+decodedJsonValue+";");
+		srcWriter.println("}");
+    }
+	
 	private String generateEncodeObject(SourcePrinter srcWriter, JType objectType, String objectVar)
 	{
 		String resultJSONValueVar = nameFactory.createName("json");
@@ -236,7 +260,12 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 			srcWriter.println("if ("+objectVar+" != null){");
 		}
 
-		if (JClassUtils.isSimpleType(objectType))
+		JArrayType objectArrayType = objectType.isArray();
+		if (objectArrayType != null)
+		{
+			generateEncodeStringForArrayType(srcWriter, objectArrayType, objectVar, resultJSONValueVar);
+		}
+		else if (JClassUtils.isSimpleType(objectType))
 		{
 			generateEncodeStringForJsonFriendlyType(srcWriter, objectType, objectVar, resultJSONValueVar);
 		}
@@ -265,6 +294,18 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 			srcWriter.println("}");
 		}
 		return resultJSONValueVar;
+	}
+
+	private void generateEncodeStringForArrayType(SourcePrinter srcWriter, JArrayType objectArrayType, String objectVar, String resultJSONValueVar)
+    {
+		JType targetObjectType = objectArrayType.getComponentType();
+		generateJSONValueCollectionForEncode(srcWriter, resultJSONValueVar, true);
+
+		String loopObjVar = nameFactory.createName("loopObjVar");
+		srcWriter.println("for ("+targetObjectType.getParameterizedQualifiedSourceName()+" "+loopObjVar+": "+objectVar+"){");
+		String encodedObjectVar = generateEncodeObject(srcWriter, targetObjectType, loopObjVar);
+		srcWriter.println(resultJSONValueVar+".isArray().set("+resultJSONValueVar+".isArray().size(), "+encodedObjectVar+");");
+		srcWriter.println("}");
 	}
 
 	private boolean isCollection(JClassType objectType)
