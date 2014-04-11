@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.module.config;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.i18n.DefaultServerMessage;
 
 
@@ -22,13 +23,12 @@ import org.cruxframework.crux.core.i18n.DefaultServerMessage;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public interface CruxModuleConfig
 {
-	String developmentModules();
-
 	@DefaultServerMessage("org.cruxframework.crux.module.validation.DecimalNotationVersionChecker")
 	String cruxModuleVersionChecker();
 	
-	void setDevelopmentModules(String value);
 	void setCruxModuleVersionChecker(String value);
 }
