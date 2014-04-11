@@ -18,7 +18,6 @@ package org.cruxframework.crux.tools.schema;
 import java.io.File;
 import java.util.Map;
 
-import org.cruxframework.crux.tools.compile.CruxLauncher;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
@@ -28,7 +27,7 @@ import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class SchemaGenerator extends CruxLauncher
+public class SchemaGenerator
 {
 	/**
 	 *  

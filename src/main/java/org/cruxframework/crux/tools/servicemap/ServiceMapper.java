@@ -30,7 +30,7 @@ import org.cruxframework.crux.core.server.rest.annotation.RestService;
 import org.cruxframework.crux.scanner.ClassScanner;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
-import org.cruxframework.crux.tools.compile.CruxLauncher;
+import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
@@ -42,7 +42,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * implementation classes
  * @author Thiago da Rosa de Bustamante
  */
-public class ServiceMapper extends CruxLauncher
+public class ServiceMapper
 {
 	private File projectDir;
 
@@ -206,11 +206,9 @@ public class ServiceMapper extends CruxLauncher
 	 */
 	public static void main(String[] args) throws MalformedURLException
 	{
-		registerFilesCruxBridge(args);
 		ServiceMapper serviceMapper = new ServiceMapper();
 		ConsoleParametersProcessor parametersProcessor = serviceMapper.createParametersProcessor();
 		Map<String, ConsoleParameter> parameters = parametersProcessor.processConsoleParameters(args);
-
 		if (parameters.containsKey("-help") || parameters.containsKey("-h"))
 		{
 			parametersProcessor.showsUsageScreen();
@@ -218,8 +216,28 @@ public class ServiceMapper extends CruxLauncher
 		else
 		{
 			serviceMapper.processParameters(parameters.values());
+			
+			adaptArgumentToWebdir(args);
+			CruxRegisterUtil.registerFilesCruxBridge(args);
+			
 			serviceMapper.generateServicesMap();
 			serviceMapper.generateRestServicesMap();
+		}
+	}
+
+	private static void adaptArgumentToWebdir(String[] args) {
+		if(args != null)
+		{
+			for (int i=0; i< (args.length-1); i++)
+			{
+				String arg = args[i];
+				if ("projectDir".equals(arg))
+				{
+					//change to -war
+					args[i] = "-webDir";
+					break;
+				}
+			}
 		}
 	}
 }

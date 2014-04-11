@@ -17,15 +17,16 @@ package org.cruxframework.crux.module.launch;
 
 import java.net.MalformedURLException;
 
-import org.cruxframework.crux.module.CruxModuleBridge;
-import org.cruxframework.crux.tools.compile.CruxLauncher;
+import org.cruxframework.crux.core.rebind.module.Module;
+import org.cruxframework.crux.core.rebind.module.Modules;
+import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
 
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ModulesLauncher extends CruxLauncher
+public class ModulesLauncher
 {
 	/**
 	 * 
@@ -34,11 +35,18 @@ public class ModulesLauncher extends CruxLauncher
 	 */
 	public static void main(String[] args) throws MalformedURLException
 	{
-		registerFilesCruxBridge(args);
+		CruxRegisterUtil.registerFilesCruxBridge(args);
+		
+		String initialModule = CruxRegisterUtil.getModule(args);
+		Module module = Modules.getInstance().getModule(initialModule);
+		if (module != null)
+		{
+			initialModule = module.getFullName();
+		}
 		
 		String[] newArgs = new String[args.length+1];
 		System.arraycopy(args, 0, newArgs, 0, args.length);
-		newArgs[args.length] = CruxModuleBridge.getInstance().getCurrentModule();
+		newArgs[args.length] = initialModule;
 		
 		com.google.gwt.dev.DevMode.main(newArgs);
 	}

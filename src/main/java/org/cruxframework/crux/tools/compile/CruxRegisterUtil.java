@@ -3,12 +3,16 @@ package org.cruxframework.crux.tools.compile;
 import java.io.File;
 import java.net.MalformedURLException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.module.CruxModuleBridge;
 
-public class CruxLauncher 
+public class CruxRegisterUtil 
 {
+	private static final Log logger = LogFactory.getLog(CruxRegisterUtil.class);
+	
 	public static void registerFilesCruxBridge(String[] args) throws MalformedURLException 
 	{
 		eraseAllCruxBridgeFiles();
@@ -41,6 +45,10 @@ public class CruxLauncher
 					warParamFound = true;
 				}
 			}
+			for(String arg : args)
+			{
+				logger.info("using args: " + arg);
+			}
 			
 			String initialModule = getModule(args);
 			if (initialModule != null && initialModule.length() > 0)
@@ -61,7 +69,7 @@ public class CruxLauncher
 		// TODO Auto-generated method stub
 	}
 
-	private static String getModule(String[] args)
+	public static String getModule(String[] args)
     {
 		String startupUrl = null;
 		String module = null;
