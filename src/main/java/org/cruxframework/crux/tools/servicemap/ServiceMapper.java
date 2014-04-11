@@ -25,13 +25,12 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
-import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.dispatch.Services;
 import org.cruxframework.crux.core.server.rest.annotation.RestService;
-import org.cruxframework.crux.module.CruxModuleBridge;
 import org.cruxframework.crux.scanner.ClassScanner;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.tools.compile.CruxLauncher;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
@@ -43,7 +42,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
  * implementation classes
  * @author Thiago da Rosa de Bustamante
  */
-public class ServiceMapper
+public class ServiceMapper extends CruxLauncher
 {
 	private File projectDir;
 
@@ -200,8 +199,6 @@ public class ServiceMapper
         }
     }		
 	
-	
-	
 	/**
 	 * Starts ServiceMapper program
 	 * @param args
@@ -209,6 +206,7 @@ public class ServiceMapper
 	 */
 	public static void main(String[] args) throws MalformedURLException
 	{
+		registerFilesCruxBridge(args);
 		ServiceMapper serviceMapper = new ServiceMapper();
 		ConsoleParametersProcessor parametersProcessor = serviceMapper.createParametersProcessor();
 		Map<String, ConsoleParameter> parameters = parametersProcessor.processConsoleParameters(args);
@@ -219,79 +217,9 @@ public class ServiceMapper
 		}
 		else
 		{
-
-			String webDir = "./war/";
-			boolean warParamFound = false;
-			for (int i=0; i< (args.length-1); i++)
-	        {
-				String arg = args[i];
-				if ("-webDir".equals(arg))
-		        {
-		        	webDir = args[i+1];
-		        	//change to -war
-		        	args[i] = "-war";
-		        } 
-		        else if("-war".equals(arg))
-		        {
-		        	webDir = args[i+1];
-		        	if(warParamFound)
-		        	{
-		        		//kill this duplicated param
-		        		args[i] = "";
-		        		args[i+1] = "";
-		        	}
-		        	warParamFound = true;
-		        }
-	        }
-			
-			String initialModule = getModule(args);
-			if (initialModule != null && initialModule.length() > 0)
-			{
-				CruxModuleBridge.getInstance().registerCurrentModule(initialModule);
-			}
-			
-			File webinfClassesDir = new File(webDir, "WEB-INF/classes");
-			File webinfLibDir = new File(webDir, "WEB-INF/lib");
-			
-			CruxBridge.getInstance().registerWebinfClasses(webinfClassesDir.toURI().toURL().toString());
-			CruxBridge.getInstance().registerWebinfLib(webinfLibDir.toURI().toURL().toString());
-
-			
 			serviceMapper.processParameters(parameters.values());
 			serviceMapper.generateServicesMap();
 			serviceMapper.generateRestServicesMap();
 		}
 	}
-	
-	
-	private static String getModule(String[] args)
-  {
-	String startupUrl = null;
-	String module = null;
-	for (int i=0; i< (args.length-1); i++)
-      {
-		String arg = args[i];
-        if ("-startupUrl".equals(arg))
-        {
-        	startupUrl = args[i+1];
-        }
-        else if ("-module".equals(arg))
-        {
-        	module = args[i+1];
-        } 
-      }
-	if (module == null || module.length() == 0)
-	{
-		if (startupUrl != null && startupUrl.length() > 0)
-		{
-			int index = startupUrl.indexOf('/');
-			if (index > 0)
-			{
-				module = startupUrl.substring(0, index);
-			}
-		}
-	}
-	
-    return module;
-  }
 }
