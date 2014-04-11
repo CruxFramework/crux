@@ -29,7 +29,7 @@ import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class CruxCompiler extends CruxLauncher
+public class CruxCompiler
 {
 	private static final Log logger = LogFactory.getLog(CruxCompiler.class);
 	

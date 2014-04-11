@@ -30,7 +30,6 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.server.crawling.CrawlingException;
 import org.cruxframework.crux.core.server.crawling.CrawlingUtils;
 import org.cruxframework.crux.core.utils.StreamUtils;
-import org.cruxframework.crux.tools.compile.CruxLauncher;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
@@ -48,7 +47,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class CrawlingTool extends CruxLauncher
+public class CrawlingTool
 {
 	private static final Log logger = LogFactory.getLog(CrawlingTool.class);
 

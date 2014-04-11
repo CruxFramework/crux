@@ -33,7 +33,6 @@ import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryI
 import org.cruxframework.crux.module.CruxModuleBridge;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
-import org.cruxframework.crux.tools.compile.CruxLauncher;
 import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
@@ -44,7 +43,7 @@ import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class CodeServer extends CruxLauncher
+public class CodeServer
 {
 	private static final Log logger = LogFactory.getLog(CodeServer.class);
 
