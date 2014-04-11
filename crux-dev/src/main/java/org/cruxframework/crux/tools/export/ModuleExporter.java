@@ -43,6 +43,7 @@ import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
 import org.cruxframework.crux.scanner.URLStreamManager;
 import org.cruxframework.crux.tools.compile.CompilerException;
+import org.cruxframework.crux.tools.compile.CruxLauncher;
 import org.cruxframework.crux.tools.compile.CruxModuleCompiler;
 import org.cruxframework.crux.tools.compile.JCompiler;
 import org.cruxframework.crux.tools.compile.utils.ClassPathUtils;
@@ -60,7 +61,7 @@ import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ModuleExporter
+public class ModuleExporter extends CruxLauncher
 {
 	public static final String CRUX_MODULE_EXPORT_PAGES = "cruxModuleExportPages";
 	public static final String CRUX_MODULE_EXPORT = "cruxModuleExport";
