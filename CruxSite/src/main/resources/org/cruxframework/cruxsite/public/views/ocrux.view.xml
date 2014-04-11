@@ -5,8 +5,10 @@
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	xmlns:t="http://www.cruxframework.org/templates/menus"
-	useController="mainController" title="O Crux"
-    useResource="siteCommonResources"> 
+	useController="mainController, viewsController,"
+    onActivate="viewsController.onActivate" 
+    useResource="siteCommonResources"
+    title="O Crux"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
 		
@@ -60,7 +62,7 @@
                 estão alocada no cliente. 
                 Esta estratégia garante um desempenho consideravelmente superior às arquiteturas onde a camada de 
                 controle está no servidor, uma vez que dados de controle da página não precisam trafegar pela rede para 
-                serem processados e o estado da tela é mantido no cliente. 
+                serem processados. Assim o estado da tela é mantido no cliente. 
                 O trafego de dados pela rede somente é usado quando é efetivamente necessário, que é para o acesso 
                 à camada de modelo.
                 </p>
@@ -70,7 +72,7 @@
                 a camada de modelo no servidor. 
                 </p>
                 
-                <div>
+                <div align="center">
 					<crux:image id="architectureCrux" url="${siteCommonResources.architectureCrux}" />
 				</div>
                 
@@ -100,8 +102,8 @@
                     quinta geração.
     				Em 2013 o Crux, que já era um projeto Open Source, passou a ser
     				mantido pela <a href="http://www.triggolabs.com/" title="Triggo" target="_blank"
-    				class="defaultLink">Triggo Labs</a>, uma startup brasileira com foco no 
-    				desenvolvimento de novas tecnologias e produtos web baseados no Crux.
+    				class="defaultLink">Triggo Labs</a>, uma empresa brasileira com foco no 
+    				desenvolvimento de novas tecnologias e produtos web e mobile baseados no Crux.
 				</p>
                 <p> Atualmente estamos em busca de novos colaboradores independentes e
 					empresas dispostas a participar do desenvolvimento do Crux Framework.

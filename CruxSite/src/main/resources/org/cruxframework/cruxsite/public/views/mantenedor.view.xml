@@ -5,7 +5,9 @@
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	xmlns:t="http://www.cruxframework.org/templates/menus"
-	useController="mainController" title="Mantenedor | Crux Framework"> 
+	useController="mainController, viewsController,"
+    onActivate="viewsController.onActivate" 
+    title="Mantenedor"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
 		
@@ -17,13 +19,12 @@
 				<h2>Triggo Labs</h2>	
 				
 				<p> A <a href="http://www.triggolabs.com/" title="Triggo" target="_blank" class="defaultLink">Triggo Labs</a> 
-				é uma startup que tem como desafio oferecer ao mercado uma plataforma de desenvolvimento de 
-				aplicações web que seja eficiente, escalável e que ofereça o máximo de produtividade para 
-				seus usuários.</p>
+				tem como desafio oferecer ao mercado uma plataforma de desenvolvimento de aplicações web e mobile que seja 
+                eficiente, escalável e que ofereça o máximo de produtividade para seus usuários.</p>
 				
 				<p>Uma equipe altamente qualificada está dedicada a fazer do Crux uma ferramenta cada vez mais
 				poderosa. Como o Crux é uma framework livre, a comunidade também pode contribuir com a evolução
-				do Crux. Veja como participar da comunidade de usuários do Crux. </p>
+				do Crux.</p>
 				
 			</div>	
 			<div class="separator"></div>

@@ -4,9 +4,11 @@
 	xmlns:core="http://www.cruxframework.org/crux" 
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
-	useController="mainController" title="Home"
+	useController="mainController, viewsController,"
+    onActivate="viewsController.onActivate" 
+    title="Home"
 	useResource="siteDeviceResources,siteCommonResources"
-	onLoad="mainController.onLoad"
+
 	> 
 	
 		<div class="container containerBanner">

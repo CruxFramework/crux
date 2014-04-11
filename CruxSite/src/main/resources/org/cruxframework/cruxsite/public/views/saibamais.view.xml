@@ -5,7 +5,9 @@
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	xmlns:t="http://www.cruxframework.org/templates/menus"
-	useController="mainController" title="Saiba Mais"> 
+	useController="mainController, viewsController,"
+    onActivate="viewsController.onActivate" 
+    title="Saiba Mais"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
 		

@@ -5,7 +5,9 @@
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	xmlns:t="http://www.cruxframework.org/templates/menus"
-	useController="mainController" title="Projetos Exemplo"
+	useController="mainController, viewsController,"
+    onActivate="viewsController.onActivate" 
+    title="Projetos Exemplo"
 	useResource="siteDeviceResources,siteCommonResources"> 
 
 	<gwt:HTMLPanel id="infoContainer">

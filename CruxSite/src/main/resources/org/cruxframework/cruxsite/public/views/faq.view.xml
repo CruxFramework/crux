@@ -5,7 +5,14 @@
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	xmlns:t="http://www.cruxframework.org/templates/menus"
-	useController="mainController" title="FAQ"> 
+    useController="mainController, viewsController,"
+    onActivate="viewsController.onActivate"
+    title="FAQ"> 
+
+    <!-- 
+    useController="mainController, downloadController"
+    onActivate="downloadController.onActivate"
+     -->
 	
 	<gwt:HTMLPanel id="infoContainer">
 	

@@ -5,8 +5,10 @@
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	xmlns:t="http://www.cruxframework.org/templates/menus"
-	useController="mainController" title="O Crux | Crux Framework"> 
-	
+	useController="mainController, viewsController,"
+    onActivate="viewsController.onActivate" 
+    title="Comunidade"> 
+    
 	<gwt:HTMLPanel id="infoContainer">
 		
 		<t:menucomunidade pageTitle="Apresentação" />
@@ -15,7 +17,7 @@
 			<ul class="communityBlocks"  style="font-size: 15px;line-height: 27px;text-align: justify;">
 				<li>
 					<h2>Desenvolvimento de Aplicações com Crux</h2>
-					<p>Existe uma séria de recursos para que você possa conhecer e aprender como usar o Crux Framework: </p>
+					<p>Existem vários recursos para conhecer e aprender a desenvolver usando o Crux Framework: </p>
 					<ul class="communityItens" style="font-size: 15px;">
 					    <li>
 					    	<crux:anchor id="linkSaibaMais" href="#topMenuDisposal:saibamais" styleName="defaultLink" text="Saiba Mais"></crux:anchor>
@@ -26,18 +28,20 @@
 					    <li>
 					    	<crux:anchor id="linkManual" href="#topMenuDisposal:manual" styleName="defaultLink" text="Documentação"></crux:anchor>
 					    </li>
+                        <li>
+                            <crux:anchor id="linkProjExemplo" href="#topMenuDisposal:projexemplo" styleName="defaultLink" text="Projetos de Exemplo"></crux:anchor>
+                        </li>
 					</ul>
-                    <p>Se ainda tiver duvidas sobre como usar o Crux Framework acesse o <a href="https://groups.google.com/forum/#!forum/crux-framework" 
-                    title="Issue" target="_blank" class="defaultLink">Forum</a> do Crux.
+                    <p>Caso tenha alguma duvida ou problema ao usar o Crux Framework acesse o <a href="https://groups.google.com/forum/#!forum/crux-framework" 
+                    title="Issue" target="_blank" class="defaultLink">Forum</a> do Crux. Lá você pode pesquisar ou enviar a sua dúvida.
                     </p>
-                    <p>Caso encontre algum bug no Crux Framework crie uma nova <a href="http://code.google.com/p/crux-framework/issues/list" 
-                    title="Issue" target="_blank" class="defaultLink">Issue (Google Code)</a> para a equipe do Crux. </p>
+                    <p>Caso encontre algum bug no Crux Framework, ajude-nos criando um <a href="http://code.google.com/p/crux-framework/issues/list" 
+                    title="Issue" target="_blank" class="defaultLink">Issue (Google Code)</a>. </p>
 				</li>
 				<li>
 					<h2>Desenvolvimento do Crux Framework</h2>
-					<p>Caso você queira participar do desenvolvimento do Crux Framework ou de novos componentes Crux você pode 
-					baixar os fontes e enviar suas contribuições. </p>
-				    <p>O Crux Framework é open source e seu código está disponível para download: </p>
+					<p>Para participar do desenvolvimento do Crux Framework ou de novos componentes Crux basta baixar os fontes e enviar suas contribuições. </p>
+				    <p>O Crux Framework é open source e seu código está disponível para download em: </p>
                     <ul class="communityItens" style="font-size: 15px;">
 						<li>
 							<crux:anchor id="linkGoogleCode" href="http://code.google.com/p/crux-framework/source/checkout" styleName="defaultLink" 

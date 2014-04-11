@@ -25,7 +25,10 @@
 		<c:screen useView="**/views/*"
 			smallViewport="user-scalable=no, width=320"
 			largeViewport="user-scalable=no, width=device-width, height=device-height"
-			useResource="siteDeviceResources,siteCommonResources" />
+			useResource="siteDeviceResources,siteCommonResources"
+            useController="mainController" 
+            onLoad="mainController.onLoad"
+                />
 			 
 		<gwt:simplePanel id="siteHeader" styleName="siteHeader">
 			<gwt:HTMLPanel id="headerContent">

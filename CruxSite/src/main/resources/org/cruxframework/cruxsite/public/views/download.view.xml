@@ -5,7 +5,9 @@
 	xmlns:crux="http://www.cruxframework.org/crux/widgets"
 	xmlns:gwt="http://www.cruxframework.org/crux/gwt"
 	xmlns:t="http://www.cruxframework.org/templates/menus"
-	useController="mainController" title="Download"> 
+	useController="mainController, viewsController, downloadController"
+    onActivate="viewsController.onActivate" 
+    title="Download"> 
 	
 	<gwt:HTMLPanel id="infoContainer">
 		
@@ -17,11 +19,12 @@
 					<li>
 						<h2>Baixar os JARs do Crux</h2>
 						<crux:anchor href="https://www.dropbox.com/s/fppjxadj3waodn1/crux-5.0.4.zip" target="_blank" text="Download .JAR (v5.0.4)" 
-                                     id="downloadJarBtn" styleName="btn btn-bigblue"></crux:anchor> 
+                                     id="downloadJarBtn" styleName="btn btn-bigblue" onSelect="downloadController.downloadCrux"></crux:anchor> 
 					</li>
 					<li>
 						<h2>Versões Anteriores do Crux</h2>
-						<crux:anchor href="http://cruxfile.appspot.com/" target="_blank" text="Todas as versões" 
+						<crux:anchor href="https://code.google.com/p/crux-framework/downloads/" 
+                                     target="_blank" text="Todas as versões" 
                                      id="olderVersionsBtn" styleName="btn btn-bigblue"></crux:anchor> 
 					</li>
 					<div class="clear"></div>
@@ -33,12 +36,12 @@
                     <li>
                         <h2>Maven</h2>
                         <crux:anchor href="../downloads/crux-pom.txt" target="_blank" text="Dependências Maven (XML)" 
-                                     id="mavenDepBtn" styleName="btn btn-bigblue"></crux:anchor>
+                                     id="mavenDepBtn" styleName="btn btn-bigblue" onSelect="downloadController.mavenCrux"></crux:anchor>
                     </li>
 					<li>
 						<h2>Download do Código-Fonte</h2>
 						<crux:anchor href="https://crux-framework.googlecode.com/svn/tags/5.0.4/" target="_blank" text="Acessar SVN tag 5.0.4" 
-                                     id="sourceCodeBtn" styleName="btn btn-bigblue"></crux:anchor> 
+                                     id="sourceCodeBtn" styleName="btn btn-bigblue" onSelect="downloadController.sourceCrux"></crux:anchor> 
 						<p>
 							O Crux Framework é Open-source, isso significa que você é livre para baixar e utilizar ou alterar o código a sua maneira. <br /> 
 							<!-- 
