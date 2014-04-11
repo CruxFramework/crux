@@ -11,8 +11,8 @@
     <!--
         ********************** DEPLOY **********************
         **************** Current .X version ****************
-        13
-        i.e. replace 5.1.0 for 5.1.0.13 
+        16
+        i.e. replace 5.1.0-SNAPSHOT for 5.1.0.13 
         ****************************************************
         -> Redefine crux version in all artifacts (maven bug!) and then:
         
