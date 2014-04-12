@@ -30,6 +30,7 @@ public class Module
 	private String[] publicPaths;
 	private Set<String> inherits;
 	private URL descriptorURL;
+	private URL location;
 	private String rootPath;
 	
 	public Set<String> getInherits()
@@ -79,6 +80,14 @@ public class Module
 	public void setDescriptorURL(URL descriptorURL)
 	{
 		this.descriptorURL = descriptorURL;
+	}
+	public URL getLocation()
+	{
+		return location;
+	}
+	public void setLocation(URL location)
+	{
+		this.location = location;
 	}
 	public String getRootPath()
 	{

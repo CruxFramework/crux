@@ -15,37 +15,15 @@
  */
 package org.cruxframework.crux.tools.compile;
 
-import org.apache.tools.ant.taskdefs.Java;
+import org.cruxframework.crux.core.client.Legacy;
 
 
 /**
  * 
  * @author Thiago da Rosa de Bustamante
  */
-
-public class CruxModulesCompilerTask extends AbstractCruxCompilerTask
+@Deprecated
+@Legacy
+public class CruxModulesCompilerTask extends CruxCompilerTask
 {
-	private boolean forceModulesCompilation = false;
-	
-	@Override
-	protected void addCompilerParameters(Java javatask) throws Exception
-	{
-	    super.addCompilerParameters(javatask);
-	    
-		javatask.createJvmarg().setValue("-DCruxToolsConfig.compilerClass="+CruxModuleCompiler.class.getName());
-		if (forceModulesCompilation)
-		{
-			javatask.createArg().setValue("-forceModulesCompilation");
-		}
-	}
-
-	/**
-	 * @param forceModulesCompilation
-	 */
-	public void setForceModulesCompilation(Boolean forceModulesCompilation)
-    {
-    	this.forceModulesCompilation = forceModulesCompilation;
-    }
-	
-	
 }

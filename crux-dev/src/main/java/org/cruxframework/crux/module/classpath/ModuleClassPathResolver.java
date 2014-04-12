@@ -15,15 +15,10 @@
  */
 package org.cruxframework.crux.module.classpath;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.cruxframework.crux.classpath.URLResourceHandler;
-import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverImpl;
-import org.cruxframework.crux.module.CruxModule;
-import org.cruxframework.crux.module.CruxModuleHandler;
 
 
 /**
@@ -31,36 +26,15 @@ import org.cruxframework.crux.module.CruxModuleHandler;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public class ModuleClassPathResolver extends ClassPathResolverImpl
 {
-	/**
-	 * @see org.cruxframework.crux.core.server.classpath.ClassPathResolverImpl#findWebBaseDirs()
-	 */
-	@Override
-	public URL[] findWebBaseDirs()
-	{
-		try
-		{
-			List<URL> urls = new ArrayList<URL>();
- 
-			CruxModule cruxModule = CruxModuleHandler.getCurrentModule();
-			URL moduleLocation = cruxModule.getLocation();
-			URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(moduleLocation.getProtocol());
-			for(String publicPath: cruxModule.getGwtModule().getPublicPaths())
-			{
-				urls.add(resourceHandler.getChildResource(moduleLocation, publicPath));
-			}
-			return urls.toArray(new URL[urls.size()]);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e.getMessage(), e);
-		}
-	}
+	private static final Log log = LogFactory.getLog(ModuleClassPathResolver.class);
 	
-	@Override
-	public void initialize()
-	{
-	    // Do nothing
-	}
+	public ModuleClassPathResolver()
+    {
+	    log.warn("ModuleClassPathResolver is deprecated. Use "+ClassPathResolverImpl.class.getCanonicalName());
+    }
+	
 }

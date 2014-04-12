@@ -25,6 +25,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +34,7 @@ import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.rebind.module.Module;
+import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
@@ -104,25 +106,21 @@ public abstract class AbstractCruxCompiler
 		{
 			compileJavaSource();
 			initializeCompiler();
-			List<URL> urls = getURLs();
 			ServiceFactoryInitializer.initialize(null);
 			RestServiceFactoryInitializer.initialize(null);
-			for (URL url : urls)
+			for (Module module : getModules())
 			{
-				Module module = ModuleUtils.findModuleFromPageUrl(url);
-				if (module != null)
+				boolean isModuleNotCompiled = !isModuleCompiled(module);
+				if (isModuleNotCompiled)
 				{
-					boolean isModuleNotCompiled = !isModuleCompiled(module);
-					if (isModuleNotCompiled)
-					{
-						deleteModuleOutputDir(module);
-					}
-					doCompileModule(url, module);
+					deleteModuleOutputDir(module);
 				}
-				else
-				{
-					logger.info("File [" + url.toString() + "] has no module declaration. Skipping compilation.");
-				}
+				
+				Set<String> allScreenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(module.getName());
+				for (String screenID : allScreenIDs)
+                {
+					doCompileModule(new URL(screenID), module);
+                }
 			}
 			releaseCompilerResources();
 		} 
@@ -365,18 +363,21 @@ public abstract class AbstractCruxCompiler
 		}
     }
 
-	//Wildcard is not supported by all JVM's, so let's use ';' approach.
-	private String getClasspath() {
+	private String getClasspath()
+	{
+		//Wildcard is not supported by all JVM's, so let's use ';' approach.
 		File[] listOfFiles = classpathDir.listFiles();
 		StringBuffer classpath = new StringBuffer();
-		for (int i = 0; i < listOfFiles.length; i++) {
-		  if (listOfFiles[i].isFile()) {
-			  classpath.append(listOfFiles[i].getAbsolutePath()+";");
-		  }
+		for (int i = 0; i < listOfFiles.length; i++)
+		{
+			if (listOfFiles[i].isFile())
+			{
+				classpath.append(listOfFiles[i].getAbsolutePath() + ";");
+			}
 		}
 		return classpath.toString();
-    }
-	
+	}
+
 	/**
 	 * @return
 	 */
@@ -575,10 +576,10 @@ public abstract class AbstractCruxCompiler
     }
 	
 	/**
-	 * Gets the list of URLs that will be compiled
+	 * Gets the list of modules that will be compiled
 	 * @return
 	 */
-	protected abstract List<URL> getURLs() throws Exception;
+	protected abstract List<Module> getModules() throws Exception;
 	
 	/**
 	 * @throws IOException
@@ -792,7 +793,6 @@ public abstract class AbstractCruxCompiler
 	    	try
             {
 	    		this.classpathDir = new File(parameter.getValue());
-	    		//TODO: change for system jar separator ';'. Where is it???
 	    		String[] classpaths = getClasspath().split(";");
 	    		for(String classpath : classpaths)
 	    		{

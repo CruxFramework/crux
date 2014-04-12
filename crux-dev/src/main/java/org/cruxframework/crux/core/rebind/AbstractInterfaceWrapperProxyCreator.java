@@ -193,8 +193,8 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 		{
 			try
 			{
-				List<String> viewList = Views.getViews("*");
 				String moduleId = getModule();
+				List<String> viewList = Views.getViews("*", moduleId);
 				for (String viewName : viewList)
 				{
 					URL url = Views.getView(viewName);
@@ -295,7 +295,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 				{
 					added.add(viewLocator);
 					
-					List<String> viewList = Views.getViews(viewLocator);
+					List<String> viewList = Views.getViews(viewLocator, moduleId);
 					for (String viewName : viewList)
                     {
 						URL url = Views.getView(viewName);
