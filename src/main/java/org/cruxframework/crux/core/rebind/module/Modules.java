@@ -130,14 +130,11 @@ public class Modules
 	 */
 	public boolean isResourceOnModulePathOrContext(URL url, String moduleId)
 	{
-		URL[] webBaseDirs = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
-		for (URL webBaseURL : webBaseDirs)
-        {
-			if (url.toString().startsWith(webBaseURL.toString()))
-			{
-				return true;
-			}
-        }
+		URL webBaseURL = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
+		if (url.toString().startsWith(webBaseURL.toString()))
+		{
+			return true;
+		}
 		
 		return isResourceOnModulePath(url, moduleId, new HashSet<String>());
 	}
@@ -165,7 +162,7 @@ public class Modules
 			Set<String> allScreenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(module.getName());
 			if (allScreenIDs != null)
 			{
-				URL location = getModuleRootURL(module);
+				URL location = module.getLocation();
 				pages = new String[allScreenIDs.size()];
 				int i=0;
 				for (String screenID : allScreenIDs)
@@ -193,7 +190,7 @@ public class Modules
 	 */
 	public String getRelativeScreenId(Module module, String screenID)
 	{
-		URL location = getModuleRootURL(module);
+		URL location = module.getLocation();
 		return getRelativeScreenId(module, screenID, location);
 	}
 
@@ -210,18 +207,6 @@ public class Modules
 		moduleRoot = urlResourceHandler.getParentDir(moduleRoot);
 		urlResourceHandler.getChildResource(moduleRoot, path);
 	    return moduleRoot;
-    }
-
-	/**
-	 * 
-	 * @param module
-	 * @return
-	 */
-	public URL getModuleRootURL(Module module)
-    {
-	    URL location = module.getDescriptorURL();
-		location = URLResourceHandlersRegistry.getURLResourceHandler(location.getProtocol()).getParentDir(location);
-	    return location;
     }
 
 	/**
@@ -349,6 +334,11 @@ public class Modules
 			module.setRootPath(getModuleRootPath(moduleFullName));
 			module.setInherits(getModuleInherits(element));
 			module.setDescriptorURL(moduleDescriptor);
+			
+			URL location = module.getDescriptorURL();
+			location = URLResourceHandlersRegistry.getURLResourceHandler(location.getProtocol()).getParentDir(location);
+			module.setLocation(location);
+
 			modules.put(module.getName(), module);
 			moduleAliases.put(moduleFullName, module.getName());
 		}
@@ -494,27 +484,23 @@ public class Modules
 	/**
 	 * @param module
 	 * @param screenID
-	 * @param location
+	 * @param moduleRootLocation
 	 * @return
 	 */
-	private String getRelativeScreenId(Module module, String screenID, URL location)
+	private String getRelativeScreenId(Module module, String screenID, URL moduleRootLocation)
 	{
-		String locationStr = location.toString();
+		String locationStr = moduleRootLocation.toString();
 		if (screenID.startsWith(locationStr))
 		{
 			screenID = screenID.substring(locationStr.length());
 		}
 		else
 		{
-			URL[] webBaseDirs = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
-			for (URL webDir : webBaseDirs)
+			URL webDir = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
+			String webDirStr = webDir.toString();
+			if (screenID.startsWith(webDirStr))
 			{
-				String webDirStr = webDir.toString();
-				if (screenID.startsWith(webDirStr))
-				{
-					screenID = screenID.substring(webDirStr.length());
-					break;
-				}
+				screenID = screenID.substring(webDirStr.length());
 			}
 			int index = screenID.indexOf("/");
 			if (index > 0)

@@ -41,6 +41,7 @@ import org.w3c.dom.Document;
 public abstract class ScreenResourcesScanner extends AbstractScanner
 {
 	private static Map<String, Set<String>> pagesPerModule = new HashMap<String, Set<String>>();
+	private static Set<String> allPages = new HashSet<String>();
 	private static boolean initialized = false;
 	
 	@Override
@@ -88,11 +89,24 @@ public abstract class ScreenResourcesScanner extends AbstractScanner
 		};
 	}
 	
+	public Set<String> getAppModules()
+    {
+		if (!initialized)
+		{
+			initialize();
+		}
+	    return pagesPerModule.keySet();
+    }
+
 	public Set<String> getPages(String module) throws ScreenConfigException
 	{
 		if (!initialized)
 		{
 			initialize();
+		}
+		if (module == null || module.length() == 0)
+		{
+			return allPages;
 		}
 		return pagesPerModule.get(module);
 	}
@@ -108,6 +122,7 @@ public abstract class ScreenResourcesScanner extends AbstractScanner
 		if (!initialized)
 		{
 			pagesPerModule.clear();
+			allPages.clear();
 			scanArchives();
 			initialized = true;
 		}
@@ -118,6 +133,7 @@ public abstract class ScreenResourcesScanner extends AbstractScanner
 	{
 		initialized = false;
 		pagesPerModule.clear();
+		allPages.clear();
 	}
 	
 	/**
@@ -135,6 +151,7 @@ public abstract class ScreenResourcesScanner extends AbstractScanner
 			pagesPerModule.put(module, pages);
 		}
 		pages.add(screenId);
+		allPages.add(screenId);
 	}
 	
 	private Document getScreenDocument(URL screenURL)

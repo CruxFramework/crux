@@ -24,9 +24,9 @@ import java.util.Set;
 import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.screen.Screen;
+import org.cruxframework.crux.core.rebind.module.Module;
+import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
-import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolver;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
@@ -42,6 +42,11 @@ import org.w3c.dom.Document;
  */
 public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 {
+	public Set<String> getAllAppModules()
+	{
+		return DeclarativeUIScreenResourceScanner.getInstance().getAppModules();
+	}
+	
 	/**
 	 * 
 	 */
@@ -53,20 +58,20 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 	/**
 	 * 
 	 */
-	public Document getRootView(String relativeScreenId, String module, String device) throws CruxGeneratorException
+	public Document getRootView(String relativeScreenId, String moduleId, String device) throws CruxGeneratorException
     {
 		try
         {
-        	Set<String> screenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(module);
+        	Set<String> screenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(moduleId);
+        	Module module = Modules.getInstance().getModule(moduleId);
         	
-        	if (screenIDs == null)
+        	if (screenIDs == null || module == null)
         	{
-        		throw new ScreenConfigException("Can not find the module ["+module+"].");
+        		throw new ScreenConfigException("Can not find pages for module ["+moduleId+"]");
         	}
         	for (String screenID : screenIDs)
         	{
-        		Screen screen = ScreenFactory.getInstance().getScreen(screenID, device);
-        		if(screen != null && screen.getRelativeId().equals(relativeScreenId))
+        		if(Modules.getInstance().getRelativeScreenId(module, screenID).equals(relativeScreenId))
         		{
         			return getRootView(screenID, device);
         		}
@@ -86,32 +91,21 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
     {
 		try
 		{
-			URL[] webBaseDirs = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
+			URL webBaseDir = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
 			URL screenURL = null;
 			InputStream inputStream = null;
 			URLStreamManager manager = null;
 			
 			screenId = RegexpPatterns.REGEXP_BACKSLASH.matcher(screenId).replaceAll("/").replace(".html", ".crux.xml");
 
-			for (URL webBaseDir: webBaseDirs)
-			{
-				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(webBaseDir.getProtocol());
-				screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
-				manager = new URLStreamManager(screenURL);
-				inputStream = manager.open();
-				if (inputStream != null)
-				{
-					break;
-				}
-				else
-				{
-					manager.close(); // the possible underlying jar must be closed despite of the existence of the referred resource
-				}
-			}	
+			URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(webBaseDir.getProtocol());
+			screenURL = resourceHandler.getChildResource(webBaseDir, screenId);
+			manager = new URLStreamManager(screenURL);
+			inputStream = manager.open();
 			
 			if (inputStream == null)
 			{
-				
+				manager.close(); // the possible underlying jar must be closed despite of the existence of the referred resource
 				screenURL = URLUtils.isValidURL(screenId);
 				
 				if (screenURL == null)

@@ -99,9 +99,10 @@ public class Views
 	/**
 	 * 
 	 * @param viewsLocator
+	 * @param moduleId 
 	 * @return
 	 */
-	public static List<String> getViews(String viewsLocator)
+	public static List<String> getViews(String viewsLocator, String moduleId)
 	{
 		if (!initialized)
 		{
@@ -122,12 +123,21 @@ public class Views
 		}
 		else if (isFolderLocator(viewsLocator))
 		{
-			URL[] webBaseDirs = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs();
 			FilePatternHandler handler = new FilePatternHandler(viewsLocator, null);
-			for (URL url : webBaseDirs)
-            {
-				extractFolderViews(result, url, handler);
-            }
+			URL url = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
+			
+			extractFolderViews(result, url, handler);
+			
+			if (moduleId != null)
+			{
+				Module module = Modules.getInstance().getModule(moduleId);
+				URL moduleLocation = module.getLocation();
+				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(moduleLocation.getProtocol());
+				for(String publicPath: module.getPublicPaths())
+				{
+					extractFolderViews(result, resourceHandler.getChildResource(moduleLocation, publicPath), handler);
+				}
+			}
 		}
 			
 		return result;

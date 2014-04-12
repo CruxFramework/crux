@@ -3,21 +3,13 @@ package org.cruxframework.crux.tools.compile;
 import java.io.File;
 import java.net.MalformedURLException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.server.CruxBridge;
-import org.cruxframework.crux.module.CruxModuleBridge;
 
 public class CruxRegisterUtil 
 {
-	private static final Log logger = LogFactory.getLog(CruxRegisterUtil.class);
-	
 	public static void registerFilesCruxBridge(String[] args) throws MalformedURLException 
 	{
-		eraseAllCruxBridgeFiles();
-		
-		CruxModuleBridge.getInstance().registerCurrentModule("");
 		DevelopmentScanners.initializeScanners();
 		
 		String webDir = "./war/";
@@ -45,16 +37,6 @@ public class CruxRegisterUtil
 					warParamFound = true;
 				}
 			}
-			for(String arg : args)
-			{
-				logger.info("using args: " + arg);
-			}
-			
-			String initialModule = getModule(args);
-			if (initialModule != null && initialModule.length() > 0)
-			{
-				CruxModuleBridge.getInstance().registerCurrentModule(initialModule);
-			}
 		}
 		
 		File webinfClassesDir = new File(webDir, "WEB-INF/classes");
@@ -64,11 +46,6 @@ public class CruxRegisterUtil
 		CruxBridge.getInstance().registerWebinfLib(webinfLibDir.toURI().toURL().toString());
 	}
 	
-	private static void eraseAllCruxBridgeFiles() 
-	{
-		// TODO Auto-generated method stub
-	}
-
 	public static String getModule(String[] args)
     {
 		String startupUrl = null;

@@ -23,7 +23,7 @@ import org.cruxframework.crux.core.i18n.DefaultServerMessage;
  */
 public interface CruxToolsConfig
 {
-	@DefaultServerMessage("org.cruxframework.crux.tools.compile.MonolithicApplicationCompiler")
+	@DefaultServerMessage("org.cruxframework.crux.tools.compile.ApplicationCompiler")
 	String compilerClass();
 	@DefaultServerMessage("org.cruxframework.crux.tools.schema.DefaultSchemaGenerator")
 	String schemaGeneratorClass();

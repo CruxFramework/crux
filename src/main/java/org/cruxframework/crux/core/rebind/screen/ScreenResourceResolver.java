@@ -70,4 +70,10 @@ public interface ScreenResourceResolver
 	 * @throws ScreenConfigException 
 	 */
 	Set<String> getAllScreenIDs(String module) throws ScreenConfigException;
+	
+	/**
+	 * List all modules that have at least one crux.xml page (and needs to be compiled)
+	 * @return
+	 */
+	Set<String> getAllAppModules();
 }

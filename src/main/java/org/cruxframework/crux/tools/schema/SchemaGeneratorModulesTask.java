@@ -15,20 +15,16 @@
  */
 package org.cruxframework.crux.tools.schema;
 
-import org.apache.tools.ant.taskdefs.Java;
+import org.cruxframework.crux.core.client.Legacy;
+
 
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public class SchemaGeneratorModulesTask extends SchemaGeneratorTask
 {
-	@Override
-	protected void addCompilerParameters(Java javatask) throws Exception
-	{
-	    super.addCompilerParameters(javatask);
-	    
-		javatask.createJvmarg().setValue("-DCruxToolsConfig.schemaGeneratorClass="+ModuleSchemaGenerator.class.getName());
-	}
 }

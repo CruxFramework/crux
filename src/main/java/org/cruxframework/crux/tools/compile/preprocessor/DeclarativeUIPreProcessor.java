@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
+import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.tools.compile.CruxPreProcessor;
 
 
@@ -27,55 +29,49 @@ import org.cruxframework.crux.tools.compile.CruxPreProcessor;
  */
 public class DeclarativeUIPreProcessor extends AbstractDeclarativeUIPreProcessor implements CruxPreProcessor
 {
-	private String keepDirStructureUnder = null;
+	private Module module;
 	
-
-	/**
-	 * @param urlFile
-	 * @return
-	 * @throws IOException
-	 */
-	protected File getDestDir(URL urlFile) throws IOException {
-		File parentDir;
+	@Override
+	public URL preProcess(URL url, Module module) throws IOException, InterfaceConfigException 
+	{
+		this.module = module;
+		return super.preProcess(url, module);
+	}
+	
+	
+	@Override
+	protected File getDestDir(URL urlFile) throws IOException
+	{
+		File parentDir = outputDir;
 		if(!outputDir.exists())
 		{
 			outputDir.mkdirs();
 		}
 		
-		if(keepDirStructureUnder != null)
+		String outputPath = outputDir.getCanonicalPath();
+		outputPath = outputPath.replaceAll("[\\\\]", "/");
+
+		String originalModulePath = urlFile.toString();		
+		URL moduleRoot = module.getLocation();
+		String moduleRootString = moduleRoot.toString();
+		if (moduleRootString.endsWith("/"))
 		{
-			keepDirStructureUnder = keepDirStructureUnder.replaceAll("[\\\\]", "/");
-			keepDirStructureUnder = keepDirStructureUnder.replaceAll("[\\\\]", "/");
-			
-			String outputPath = outputDir.getCanonicalPath();
-			outputPath = outputPath.replaceAll("[\\\\]", "/");
-								
-			String originalFilePath = urlFile.toString();
-//			originalFilePath = originalFilePath.replaceAll("[\\\\]", "/");
-			
-			int indexOfDirStruct = originalFilePath.indexOf(keepDirStructureUnder);
+			moduleRootString = moduleRootString.substring(0, moduleRootString.length()-1);
+		}
+		
+		for (String publicPath : module.getPublicPaths()) 
+		{
+			int indexOfDirStruct = originalModulePath.indexOf(moduleRootString+"/"+publicPath);
 			
 			if(indexOfDirStruct >= 0)
 			{
-				String fileRelativePath = originalFilePath.substring(indexOfDirStruct + keepDirStructureUnder.length());
+				String fileRelativePath = originalModulePath.substring(indexOfDirStruct + (moduleRootString+"/"+publicPath).length());
 				fileRelativePath = fileRelativePath.substring(0, fileRelativePath.lastIndexOf("/"));
 				fileRelativePath = fileRelativePath.startsWith("/") ? fileRelativePath.substring(1) : fileRelativePath;
-				parentDir = new File(outputPath + "/" + fileRelativePath + "/");
+				parentDir = new File(outputPath + "/" + module.getName() + "/" + fileRelativePath + "/");
 			}
-			else
-			{
-				parentDir = outputDir;
-			}
-		}
-		else
-		{
-			parentDir = outputDir;
+			
 		}
 		return parentDir;
-	}
-	
-	public void setKeepDirStructureUnder(String keepDirStructureUnder)
-	{
-		this.keepDirStructureUnder = keepDirStructureUnder;
 	}
 }
