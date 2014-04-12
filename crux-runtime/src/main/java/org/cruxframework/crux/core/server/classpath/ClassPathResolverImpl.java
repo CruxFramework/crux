@@ -42,17 +42,17 @@ import org.cruxframework.crux.scanner.archiveiterator.URLIterator;
  */
 public class ClassPathResolverImpl implements ClassPathResolver
 {
-	private URL[] webBaseDirs = null;
+	private URL webBaseDir = null;
 	private URL webInfClassesPath = null;
 	private List<URL> webInfLibJars = null;
 	private URL webInfLibPath = null;
 	
 	/**
-	 * @see org.cruxframework.crux.core.server.classpath.ClassPathResolver#findWebBaseDirs()
+	 * @see org.cruxframework.crux.core.server.classpath.ClassPathResolver#findWebBaseDir()
 	 */
-	public synchronized URL[] findWebBaseDirs()
+	public synchronized URL findWebBaseDir()
 	{
-		if (webBaseDirs == null)
+		if (webBaseDir == null)
 		{
 			try
 			{
@@ -61,15 +61,14 @@ public class ClassPathResolverImpl implements ClassPathResolver
 
 				url = resourceHandler.getParentDir(url);
 				url = resourceHandler.getParentDir(url);
-				webBaseDirs = new URL[1]; 
-				webBaseDirs[0] = url;
+				webBaseDir = url; 
 			}
 			catch (Exception e)
 			{
 				throw new RuntimeException(e.getMessage(), e);
 			}
 		}
-		return webBaseDirs;
+		return webBaseDir;
 	}
 
 	/**
@@ -171,18 +170,18 @@ public class ClassPathResolverImpl implements ClassPathResolver
 	 */
 	public void initialize()
     {
-		findWebBaseDirs();
+		findWebBaseDir();
 		findWebInfClassesPath();
 		findWebInfLibJars();
 		findWebInfLibPath();
     }
 
 	/**
-	 * @see org.cruxframework.crux.core.server.classpath.ClassPathResolver#setWebBaseDirs(java.net.URL[])
+	 * @see org.cruxframework.crux.core.server.classpath.ClassPathResolver#setWebBaseDirs(java.net.URL)
 	 */
-	public synchronized void setWebBaseDirs(URL[] url)
+	public synchronized void setWebBaseDir(URL url)
     {
-		webBaseDirs = url;
+		webBaseDir = url;
     }
 
 	/**

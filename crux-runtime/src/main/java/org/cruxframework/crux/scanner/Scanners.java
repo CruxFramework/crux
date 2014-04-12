@@ -150,9 +150,9 @@ public final class Scanners
 
 			if (urls == null)
 			{
-				/* If URLs is not informed, Crux used default URLS on classpath, plus the web public folders on each
+				/* If URLs is not informed, Crux used default URLs on classpath, plus the web public folders on each
 					 Crux module. The process to build the crux modules list needs to use other scanners. So, to avoid
-					 an infinite loop, we need to pre scan the URLS that do not need to search the web folders and then
+					 an infinite loop, we need to pre scan the URLs that do not need to search the web folders and then
 					 continue with web folders scanning. */
 				urls = fiterLibs(ScannerURLS.getURLsForSearch());
 				scan(scanners, urls);
@@ -160,7 +160,8 @@ public final class Scanners
 				{
 					try
 					{
-						URL[] webDirs = fiterLibs(ClassPathResolverInitializer.getClassPathResolver().findWebBaseDirs());
+						URL[] webDirs = new URL[]{ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir()};
+						webDirs = fiterLibs(webDirs);
 						scan(scanners, webDirs);
 					}
 					catch (Exception e)

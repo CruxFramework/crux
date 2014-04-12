@@ -47,8 +47,7 @@ public interface ClassPathResolver
 	 * 
 	 * @return An Array of URLs pointing to application's web directories
 	 */
-	URL[] findWebBaseDirs();
-	
+	URL findWebBaseDir();
 	
 	/**
 	 * @param url new path to web-inf/classes folder 
@@ -68,7 +67,7 @@ public interface ClassPathResolver
 	/**
 	 * @param url list of applications web folders
 	 */
-	void setWebBaseDirs(URL[] url);
+	void setWebBaseDir(URL url);
 
 	/**
 	 * Initialize the classpath resolver
