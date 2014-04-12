@@ -3,6 +3,5 @@
 	<taskdef name="cruxmodulecompiler" classname="org.cruxframework.crux.tools.compile.CruxModulesCompilerTask" />
 	<taskdef name="blockremove" classname="org.cruxframework.crux.tools.compile.utils.BlockRemoveTask" />
 	<taskdef name="generateSchemas" classname="org.cruxframework.crux.tools.schema.SchemaGeneratorModulesTask" />
-	<taskdef name="moduleExporter" classname="org.cruxframework.crux.tools.export.ModuleExporterTask" />
 	<taskdef name="serviceMapper" classname="org.cruxframework.crux.tools.servicemap.ServiceMapperTask" />
 </antlib>
