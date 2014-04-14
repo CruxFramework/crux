@@ -352,5 +352,24 @@
             <when-property-is name="device.features" value="smallDisplayArrows" />
         </any>
     </replace-with>
+    <replace-with
+		class="org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGrid.GridLargeImpl">
+		<when-type-assignable
+			class="org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGrid.GridImpl" />
+		<any>
+			<when-property-is name="device.features" value="largeDisplayMouse" />
+			<when-property-is name="device.features" value="largeDisplayTouch" />
+			<when-property-is name="device.features" value="largeDisplayArrows" />
+		</any>
+	</replace-with>
+	<replace-with
+		class="org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGrid.GridSmallImpl">
+		<when-type-assignable
+			class="org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGrid.GridImpl" />
+		<any>
+			<when-property-is name="device.features" value="smallDisplayTouch" />
+			<when-property-is name="device.features" value="smallDisplayArrows" />
+		</any>
+	</replace-with>
     
 </module>
