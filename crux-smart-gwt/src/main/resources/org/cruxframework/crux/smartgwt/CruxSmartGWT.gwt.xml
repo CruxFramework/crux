@@ -1,0 +1,12 @@
+<module rename-to='CruxSmartGWT'>
+    <inherits name="org.cruxframework.crux.core.Crux"/>
+    <inherits name="com.smartgwt.SmartGwt"/>
+    <inherits name="com.smartgwt.tools.SmartGwtTools"/>
+    <inherits name="com.smartclient.theme.graphite.GraphiteResources"/>
+<!--     <inherits name="com.smartclient.theme.enterprise.EnterpriseResources"/> -->
+<!--     <inherits name="com.smartclient.theme.enterpriseblue.EnterpriseBlueResources"/> -->
+<!--     <inherits name="com.smartclient.theme.simplicity.SimplicityResources"/> -->
+
+ 	<script src="js/initSmartGWT.js"/>
+ 
+</module> 	
