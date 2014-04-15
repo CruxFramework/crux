@@ -5,14 +5,14 @@
 	<artifactId>crux-core</artifactId>
 	<packaging>pom</packaging>
 	<name>Crux Core</name>
-	<version>5.1.0</version>
+	<version>5.2.0</version>
 	<description>Core of Crux Framework</description>
 
     <!--
         ********************** DEPLOY **********************
         **************** Current .X version ****************
-        16
-        i.e. replace 5.1.0-SNAPSHOT for 5.1.0.13 
+        1
+        i.e. replace 5.2.0-SNAPSHOT for 5.2.0.1
         ****************************************************
         -> Redefine crux version in all artifacts (maven bug!) and then:
         
