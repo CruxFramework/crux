@@ -90,6 +90,11 @@ public class ScannerRegistration
 			allMatches.clear();
 			allMatches = null;
 		}
+		if (scanMatches != null)
+		{
+			scanMatches.clear();
+			scanMatches = null;
+		}
 		scanner.resetScanner();
 	}
 

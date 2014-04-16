@@ -28,12 +28,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.cruxframework.crux.classpath.URLResourceHandler;
+import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
 import org.cruxframework.crux.core.utils.FilePatternHandler;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.scanner.ScannerRegistration.ScannerMatch;
+import org.cruxframework.crux.scanner.archiveiterator.Filter;
 import org.cruxframework.crux.scanner.archiveiterator.IteratorFactory;
 import org.cruxframework.crux.scanner.archiveiterator.URLIterator;
 
@@ -110,116 +113,6 @@ public final class Scanners
 	{
 		return registrations.containsKey(scannerClass.getCanonicalName());
 	}
-
-	/**
-	 * Reset all scanner results.
-	 * @param scannerClass
-	 */
-	public static void resetScanners()
-	{
-		for (ScannerRegistration scannerRegistration : registrations.values())
-        {
-			scannerRegistration.resetScanner();
-        }
-	}
-	
-	/**
-	 * Reset a specific scanner result. Used to support hot deployment
-	 * @param scannerClass
-	 */
-	public static void resetScanner(Class<? extends AbstractScanner> scannerClass)
-	{
-		ScannerRegistration scannerRegistration = registrations.get(scannerClass.getCanonicalName());
-		if (scannerRegistration != null)
-		{
-			scannerRegistration.resetScanner();
-		}
-	}
-
-	/**
-	 * Scan the project and returns the result associated to the given scanner
-	 * @param scannerClass
-	 * @return
-	 */
-	public static void scan()
-	{
-		List<ScannerRegistration> scanners = getScannersToRun();
-		if (scanners.size() > 0)
-		{
-			URL[] urls = getSearchURLs();
-
-			if (urls == null)
-			{
-				/* If URLs is not informed, Crux used default URLs on classpath, plus the web public folders on each
-					 Crux module. The process to build the crux modules list needs to use other scanners. So, to avoid
-					 an infinite loop, we need to pre scan the URLs that do not need to search the web folders and then
-					 continue with web folders scanning. */
-				urls = fiterLibs(ScannerURLS.getURLsForSearch());
-				scan(scanners, urls);
-				if (!Environment.isProduction())
-				{
-					try
-					{
-						URL[] webDirs = new URL[]{ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir()};
-						webDirs = fiterLibs(webDirs);
-						scan(scanners, webDirs);
-					}
-					catch (Exception e)
-					{
-						throw new ScannerException("Error scanning resources. Check if Scanners engine was properly initialized. "
-								+ "Verify if your application configures DevModeInitializerListener on web.xml properly.", e);
-					}
-				}
-			}
-			else
-			{
-				scan(scanners, urls);
-			}
-		}
-	}
-
-	/**
-	 * Scan the project and returns the result associated to the given scanner
-	 * @param scanners
-	 * @param urls
-	 */
-	private static void scan(List<ScannerRegistration> scanners, URL[] urls)
-    {
-	    for (ScannerRegistration scannerRegistration : scanners)
-        {
-	    	//Incremental scanning. Only notify about the matches on that scanning step.
-	    	scannerRegistration.startScanning();
-        }
-	    for (final URL url : urls)
-	    {
-	    	try
-	    	{
-	    		if (resourceExists(url))
-	    		{
-	    			URLIterator it = IteratorFactory.create(url, scanners);
-	    			it.search();
-	    		}
-	    	}
-	    	catch (IOException e)
-	    	{
-	    		throw new ScannerException("Error running crux scanners.", e);
-	    	}
-	    }
-	    for (ScannerRegistration scannerRegistration : scanners)
-        {
-	    	//Incremental scanning. Only notify about the matches on that scanning step.
-	    	List<ScannerMatch> matches = scannerRegistration.getScanMatches();
-	    	if (matches != null && matches.size() > 0)
-	    	{
-	    		ScannerCallback callback = scannerRegistration.getCallback();
-	    		if (callback != null)
-	    		{
-	    			callback.onFound(matches);
-	    		}
-	    	}
-	    	scannerRegistration.endScanning();
-        }
-    }
 
 	/**
 	 * 
@@ -322,28 +215,6 @@ public final class Scanners
 
 	/**
 	 * 
-	 * @param lib
-	 * @return
-	 */
-	private static boolean ignoreEntry(String lib)
-	{
-		String libLowerCase = lib.toLowerCase();
-		if (libLowerCase.endsWith(".jar") || libLowerCase.endsWith(".zip"))
-		{
-			if (allowedLibsHandler != null)
-			{
-				if (requiredLibsHandler != null && requiredLibsHandler.isValidEntry(lib))
-				{
-					return false;
-				}
-				return (!allowedLibsHandler.isValidEntry(lib));
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 
 	 * @param intf
 	 * @return
 	 */
@@ -389,6 +260,181 @@ public final class Scanners
 			if (intf.startsWith(ignored + "."))
 			{
 				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Reset all scanner results.
+	 * @param scannerClass
+	 */
+	public static void resetScanners()
+	{
+		for (ScannerRegistration scannerRegistration : registrations.values())
+        {
+			scannerRegistration.resetScanner();
+        }
+	}
+	
+	/**
+	 * Reset a specific scanner result. Used to support hot deployment
+	 * @param scannerClass
+	 */
+	public static void resetScanner(Class<? extends AbstractScanner> scannerClass)
+	{
+		ScannerRegistration scannerRegistration = registrations.get(scannerClass.getCanonicalName());
+		if (scannerRegistration != null)
+		{
+			scannerRegistration.resetScanner();
+		}
+	}
+
+	/**
+	 * Scan the project and returns the result associated to the given scanner
+	 * @param scannerClass
+	 * @return
+	 */
+	public static void scan()
+	{
+		List<ScannerRegistration> scanners = getScannersToRun();
+		if (scanners.size() > 0)
+		{
+			URL[] urls = getSearchURLs();
+
+			if (urls == null)
+			{
+				/* If URLs is not informed, Crux used default URLs on classpath, plus the web public folders on each
+					 Crux module. The process to build the crux modules list needs to use other scanners. So, to avoid
+					 an infinite loop, we need to pre scan the URLs that do not need to search the web folders and then
+					 continue with web folders scanning. */
+				urls = fiterLibs(ScannerURLS.getURLsForSearch());
+				scan(scanners, urls);
+				if (!Environment.isProduction())
+				{
+					try
+					{
+						URL[] webDirs = new URL[]{ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir()};
+						webDirs = fiterLibs(webDirs);
+						scan(scanners, webDirs);
+					}
+					catch (Exception e)
+					{
+						throw new ScannerException("Error scanning resources. Check if Scanners engine was properly initialized. "
+								+ "Verify if your application configures DevModeInitializerListener on web.xml properly.", e);
+					}
+				}
+			}
+			else
+			{
+				scan(scanners, urls);
+			}
+		}
+	}
+
+	public static List<URL> search(URL baseLocation, final Filter filter) throws IOException
+	{
+		final URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(baseLocation.getProtocol());
+		List<ScannerRegistration> scanners = new ArrayList<ScannerRegistration>();
+		
+		ScannerRegistration scanner = new ScannerRegistration(new AbstractScanner()
+		{
+			@Override
+			public Filter getScannerFilter()
+			{
+				return filter;
+			}
+			@Override
+			public ScannerCallback getScannerCallback()
+			{
+			    return null;
+			}
+			
+			@Override
+			public void resetScanner()
+			{
+			}
+		});
+		scanners.add(scanner);
+		
+		scanner.setScanned();
+		scanner.startScanning();
+
+		URLIterator iterator = resourceHandler.getDirectoryIteratorFactory().create(baseLocation, scanners);
+		iterator.search();
+
+		List<URL> result = new ArrayList<URL>();
+		
+		for (ScannerMatch match : scanner.getAllMatches())
+		{
+			result.add(match.getMatch());
+		}
+		
+		scanner.resetScanner();
+		
+		return result;
+	}
+	
+	/**
+	 * Scan the project and returns the result associated to the given scanner
+	 * @param scanners
+	 * @param urls
+	 */
+	private static void scan(List<ScannerRegistration> scanners, URL[] urls)
+    {
+	    for (ScannerRegistration scannerRegistration : scanners)
+        {
+	    	//Incremental scanning. Only notify about the matches on that scanning step.
+	    	scannerRegistration.startScanning();
+        }
+	    for (final URL url : urls)
+	    {
+	    	try
+	    	{
+	    		if (resourceExists(url))
+	    		{
+	    			URLIterator it = IteratorFactory.create(url, scanners);
+	    			it.search();
+	    		}
+	    	}
+	    	catch (IOException e)
+	    	{
+	    		throw new ScannerException("Error running crux scanners.", e);
+	    	}
+	    }
+	    for (ScannerRegistration scannerRegistration : scanners)
+        {
+	    	//Incremental scanning. Only notify about the matches on that scanning step.
+	    	List<ScannerMatch> matches = scannerRegistration.getScanMatches();
+	    	if (matches != null && matches.size() > 0)
+	    	{
+	    		ScannerCallback callback = scannerRegistration.getCallback();
+	    		if (callback != null)
+	    		{
+	    			callback.onFound(matches);
+	    		}
+	    	}
+	    	scannerRegistration.endScanning();
+        }
+    }
+
+	/**
+	 * 
+	 * @param lib
+	 * @return
+	 */
+	private static boolean ignoreEntry(String lib)
+	{
+		String libLowerCase = lib.toLowerCase();
+		if (libLowerCase.endsWith(".jar") || libLowerCase.endsWith(".zip"))
+		{
+			if (allowedLibsHandler != null)
+			{
+				if (requiredLibsHandler != null && requiredLibsHandler.isValidEntry(lib))
+				{
+					return false;
+				}
+				return (!allowedLibsHandler.isValidEntry(lib));
 			}
 		}
 		return false;

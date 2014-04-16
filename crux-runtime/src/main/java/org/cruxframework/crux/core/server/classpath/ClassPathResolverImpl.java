@@ -26,12 +26,8 @@ import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.InitializerListener;
-import org.cruxframework.crux.scanner.AbstractScanner;
-import org.cruxframework.crux.scanner.ScannerRegistration;
-import org.cruxframework.crux.scanner.ScannerRegistration.ScannerMatch;
-import org.cruxframework.crux.scanner.Scanners.ScannerCallback;
+import org.cruxframework.crux.scanner.Scanners;
 import org.cruxframework.crux.scanner.archiveiterator.Filter;
-import org.cruxframework.crux.scanner.archiveiterator.URLIterator;
 
 
 /**
@@ -99,44 +95,13 @@ public class ClassPathResolverImpl implements ClassPathResolver
 		{
 			try
 			{
-				webInfLibJars = new ArrayList<URL>();
 				final URL libDir = findWebInfLibPath();
-
-				final URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(libDir.getProtocol());
-				List<ScannerRegistration> scanners = new ArrayList<ScannerRegistration>();
-				
-				ScannerRegistration scanner = new ScannerRegistration(new AbstractScanner()
-				{
-					@Override
-					public Filter getScannerFilter()
+				webInfLibJars = Scanners.search(libDir, new Filter(){
+					public boolean accepts(String filename)
 					{
-						return new Filter(){
-							public boolean accepts(String filename)
-							{
-								return (filename.endsWith(".jar"));
-							}
-						};
-					}
-					@Override
-					public ScannerCallback getScannerCallback()
-					{
-					    return null;
-					}
-					
-					@Override
-					public void resetScanner()
-					{
+						return (filename.endsWith(".jar"));
 					}
 				});
-				scanners.add(scanner);
-				
-				URLIterator iterator = resourceHandler.getDirectoryIteratorFactory().create(libDir, scanners);
-				iterator.search();
-
-				for (ScannerMatch match : scanner.getAllMatches())
-				{
-					webInfLibJars.add(match.getMatch());
-				}
 			}
 			catch (Exception e)
 			{
