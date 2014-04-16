@@ -38,6 +38,7 @@ public class DefaultDateBox extends CommonDateBox
 	{
 		impl = new DateBox();
 		initWidget(impl);
+		impl.getPopup().setStyleName("crux-popupPanel");
 		setStyleName(getBaseStyleName());
 	}
 
