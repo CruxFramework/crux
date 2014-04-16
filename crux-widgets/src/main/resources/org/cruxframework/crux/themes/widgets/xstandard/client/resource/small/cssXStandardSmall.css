@@ -3,6 +3,7 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 
 @external *;
 
+@url detailIcon detailIcon;
 @url svgIconDanger svgIconDanger;
 @url svgIconWarning svgIconWarning;
 @url svgIconSuccess svgIconSuccess;
@@ -213,7 +214,7 @@ a.crux-Button:hover{
 	padding-right:35px;
 }
 .gwt-TextBox.error:hover{
-	border-color:#96130f;
+	border-color:#96130f;''
 }
 .gwt-TextBox.error:focus{
 	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(255,0,0,0.4);
@@ -901,4 +902,18 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 .crux-FlatMessageBox .dialogBody
 {
 	font-weight:normal;
+}
+.detail-icon{
+	background: detailIcon no-repeat center rgba(0,0,0,0.0);
+}
+
+.grid-detail-dialogbox {
+	font-size: 11px;
+	background-color: rgba(255,255,255,0.6);
+	border: 1px solid #aaa;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+	padding: 1.25em;
+	border-radius: 6px;
+	z-index: 98;
+	color: #000;
 }
