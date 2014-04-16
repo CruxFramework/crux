@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="crux-site">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <property name="java-output-path" value="/crux-site/target/classes"/>
+        <property name="component.exclusion.patterns" value="WEB-INF/web.xml,**/gwt-dev*.jar,**/gwt-codeserver*.jar,**/gwt-user*.jar,**/validation-api*.jar,**/crux-dev*.jar,**/crux-widgets*.jar,**/crux-themes*.jar,**/*.view.xml,**/*.crux.xml,**/*.template.xml,**/*.offline.xml,**/*.xdevice.xml"/>
+        <property name="context-root" value="crux-site"/>
+    </wb-module>
+</project-modules>
