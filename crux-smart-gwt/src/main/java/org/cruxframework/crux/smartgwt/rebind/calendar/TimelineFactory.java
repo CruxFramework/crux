@@ -1,17 +1,19 @@
-package org.cruxframework.crux.smartgwt.rebind.testesfy;
+package org.cruxframework.crux.smartgwt.rebind.calendar;
 
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.smartgwt.client.calendar.Timeline;
 
-import com.smartgwt.client.widgets.layout.VStack;
+/**
+ * Factory for Timeline SmartGWT
+ * @author Flávia Yeshua
+ *
+ */
+@DeclarativeFactory(library="smartgwt", id="timeline", targetWidget=Timeline.class)
 
 
-
-@DeclarativeFactory(library="smartgwt", id="testes", targetWidget=VStack.class)
-
-	
-public class TestesFactory extends WidgetCreator<WidgetCreatorContext>
+public class TimelineFactory extends WidgetCreator<WidgetCreatorContext>
 							
 {
 	@Override
