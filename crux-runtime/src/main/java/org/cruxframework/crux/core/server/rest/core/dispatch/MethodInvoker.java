@@ -29,7 +29,6 @@ import org.cruxframework.crux.core.server.rest.spi.BadRequestException;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
 import org.cruxframework.crux.core.server.rest.spi.InternalServerErrorException;
 import org.cruxframework.crux.core.server.rest.spi.RestFailure;
-import org.cruxframework.crux.core.shared.rest.RestException;
 import org.cruxframework.crux.core.shared.rest.annotation.CookieParam;
 import org.cruxframework.crux.core.shared.rest.annotation.DefaultValue;
 import org.cruxframework.crux.core.shared.rest.annotation.FormParam;
@@ -50,14 +49,14 @@ public class MethodInvoker
 	protected Method method;
 	protected Class<?> rootClass;
 	protected ValueInjector[] params;
-	protected List<RequestPreprocessor> preprocessors; 
-	private Class<?>[] exceptionTypes;
+	protected List<RequestPreprocessor> preprocessors;
+	private RestErrorHandler restErrorHandler; 
 
 	public MethodInvoker(Class<?> root, Method method, String httpMethod)
 	{
 		this.method = method;
-		this.exceptionTypes = getRestExceptionTypes(method);
 		this.rootClass = root;
+		this.restErrorHandler = RestErrorHandlerFactory.createErrorHandler(method);
 		this.params = new ValueInjector[method.getParameterTypes().length];
 		Type[] genericParameterTypes = method.getGenericParameterTypes();
 		for (int i = 0; i < genericParameterTypes.length; i++)
@@ -126,17 +125,7 @@ public class MethodInvoker
 		}
 		catch (InvocationTargetException e)
 		{
-			Throwable cause = e.getCause();
-			if (isCheckedException(cause))
-			{
-				cause.setStackTrace(new StackTraceElement[]{});
-				return cause;
-			}
-			else
-			{
-				throw new InternalServerErrorException("Can not execute requested service. Unchecked Exception occurred on method: "+method.toString(), 
-						"Can not execute requested service", cause);
-			}
+			return restErrorHandler.handleError(e);
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -167,21 +156,6 @@ public class MethodInvoker
 		}
 	}
 
-	protected Class<?>[] getRestExceptionTypes(Method method)
-    {
-		List<Class<?>> result = new ArrayList<Class<?>>();
-	    Class<?>[] types = method.getExceptionTypes();
-	    for (Class<?> exceptionClass : types)
-        {
-            if (RestException.class.isAssignableFrom(exceptionClass))
-            {
-            	result.add(exceptionClass);
-            }
-        }
-		return result.toArray(new Class[result.size()]);
-    }
-
-
 	protected void initializePreprocessors() throws RequestProcessorException
     {
 	    preprocessors = new ArrayList<RequestPreprocessor>();
@@ -205,21 +179,6 @@ public class MethodInvoker
         }
     }
 
-	protected boolean isCheckedException(Throwable throwable)
-	{
-		if (exceptionTypes != null)
-		{
-			for (Class<?> exception : exceptionTypes)
-            {
-	            if (exception.isAssignableFrom(throwable.getClass()))
-	            {
-	            	return true;
-	            }
-            }
-		}
-		return false;
-	}
-	
 	protected static ValueInjector createParameterExtractor(Class<?> injectTargetClass, Type type, Annotation[] annotations)
 	{
 		if (ClassUtils.isSimpleType(type))

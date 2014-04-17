@@ -28,6 +28,9 @@ public interface Crux
 	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryImpl")
 	String restServiceFactory();
 	
+	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.core.dispatch.RestErrorHandlerImpl")
+	String restErrorHandler();
+
 	@DefaultServerMessage("org.cruxframework.crux.core.i18n.LocaleResolverImpl")
 	String localeResolver();
 
