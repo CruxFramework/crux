@@ -30,7 +30,10 @@ public interface SchemaMessages
 	String screenDescription();
 
 	@DefaultServerMessage("Points to a resource on the application that must be manually insert into the application cache manifest list.")
-	String offlineContentDescription();
+	String offlineIncludesDescription();
+
+	@DefaultServerMessage("Specify which resources must be excluded from cache on appCache manifest file.")
+	String offlineExcludesDescription();
 
 	@DefaultServerMessage("Define a new offline page. Offline pages associates themselves to a normal page and give it offline capabilities.")
 	String offlineScreenDescription();
@@ -76,5 +79,4 @@ public interface SchemaMessages
 
 	@DefaultServerMessage("Image")
 	String illustrationDescription();
-
 }

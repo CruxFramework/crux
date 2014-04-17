@@ -67,12 +67,47 @@ public class OfflineScreenFactory
 			Node item = nodes.item(i);
 			if (item instanceof Element)
 			{
-				String resourceName = ((Element)item).getAttribute("resourceName");
-				result.addOfflineResource(resourceName);
+				String localName = item.getLocalName();
+				if (localName.equals("includes"))
+				{
+					processIncludes(result, item);
+				}
+				else if (localName.equals("excludes"))
+				{
+					processExcludes(result, item);
+				} 
 			}
 		}
 	    
 	    return result;
+    }
+
+	private void processExcludes(OfflineScreen result, Node item)
+    {
+		NodeList children = item.getChildNodes();
+		for (int i=0; i < children.getLength(); i++)
+		{
+			Node child = children.item(i);
+			if (child instanceof Element)
+			{
+				String exclude = ((Element) child).getAttribute("path");
+				result.addExclude(exclude);
+			}
+		}
+    }
+
+	private void processIncludes(OfflineScreen result, Node item)
+    {
+		NodeList children = item.getChildNodes();
+		for (int i=0; i < children.getLength(); i++)
+		{
+			Node child = children.item(i);
+			if (child instanceof Element)
+			{
+				String include = ((Element) child).getAttribute("path");
+				result.addInclude(include);
+			}
+		}
     }
 
 }

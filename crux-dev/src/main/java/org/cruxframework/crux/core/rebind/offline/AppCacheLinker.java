@@ -36,6 +36,7 @@ import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.CruxBridge;
+import org.cruxframework.crux.core.utils.FilePatternHandler;
 import org.w3c.dom.Document;
 
 import com.google.gwt.core.ext.LinkerContext;
@@ -118,7 +119,7 @@ public class AppCacheLinker extends AbstractLinker
 	{
 		String screenID = getTargetScreenId(context, logger, offlineScreen.getRefScreen());
 		emitMainAppCache(logger, context, artifacts);
-		emitPermutationsAppCache(logger, context, artifacts, screenID);
+		emitPermutationsAppCache(logger, context, artifacts, screenID, offlineScreen);
 		emitOfflinePage(logger, context, artifacts, offlineScreen.getId());
 	}
 
@@ -239,7 +240,8 @@ public class AppCacheLinker extends AbstractLinker
 		generatedManifestNames.put(permutationName, permutationStrongName);
 	}
 
-	private void emitPermutationsAppCache(TreeLogger logger, LinkerContext context, ArtifactSet artifacts, String startScreenId) throws UnableToCompleteException
+	private void emitPermutationsAppCache(TreeLogger logger, LinkerContext context, ArtifactSet artifacts, String startScreenId, 
+			OfflineScreen offlineScreen) throws UnableToCompleteException
 	{
 		for (EmittedArtifact emitted : artifacts.find(EmittedArtifact.class))
 		{
@@ -263,7 +265,7 @@ public class AppCacheLinker extends AbstractLinker
 		{
 			Set<String> set = generatedManifestResources.get(permutationName);
 			set.addAll(cachedArtifacts);
-			artifacts.add(createCacheManifest(context, logger, set, permutationName, startScreenId));
+			artifacts.add(createCacheManifest(context, logger, set, permutationName, startScreenId, offlineScreen));
 			artifacts.add(createCacheManifestLoader(context, logger, permutationName, startScreenId));
 		}
 	}
@@ -308,8 +310,18 @@ public class AppCacheLinker extends AbstractLinker
 		}
 		return false;
 	}
+	
+	private boolean acceptCachedResource(String fileName, OfflineScreen offlineScreen)
+	{
+		String[] includes = offlineScreen.getIncludes();
+		String[] excludes = offlineScreen.getExcludes();
+		
+		FilePatternHandler pattern = new FilePatternHandler(includes, excludes);
+		return pattern.isValidEntry(fileName);
+	}
 
-	private Artifact<?> createCacheManifest(LinkerContext context, TreeLogger logger, Set<String> artifacts, String permutationName, String startScreenId) throws UnableToCompleteException
+	private Artifact<?> createCacheManifest(LinkerContext context, TreeLogger logger, Set<String> artifacts, 
+										String permutationName, String startScreenId, OfflineScreen offlineScreen) throws UnableToCompleteException
 	{
 		String moduleName = context.getModuleName();
 		
@@ -324,7 +336,7 @@ public class AppCacheLinker extends AbstractLinker
 
 		for (String fn : artifacts)
 		{
-			if (!fn.endsWith("hosted.html"))
+			if (!fn.endsWith("hosted.html") && acceptCachedResource(moduleName + "/" + fn, offlineScreen))
 			{
 				builder.append("/{context}/" + moduleName + "/" + fn + "\n");
 			}
