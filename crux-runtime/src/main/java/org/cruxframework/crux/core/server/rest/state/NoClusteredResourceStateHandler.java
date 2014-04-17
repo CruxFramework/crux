@@ -21,39 +21,38 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.cruxframework.crux.core.utils.FilePatternHandler;
-
 /**
- * It is a very basic implementation for ResourceStateHandler interface that is designed to run only
- * on NO CUSTERED environment. It uses a simple LRUMap to keep the resource state into local machine's
- * memory.
+ * It is a very basic implementation for ResourceStateHandler interface that is
+ * designed to run only on NO CUSTERED environment. It uses a simple LRUMap to
+ * keep the resource state into local machine's memory.
  * 
- * To configure the cache, you can create a file named NoClusteredCacheConfig.properties and configure 
- * the property maxNumberOfEntries to set the max number of entries into the map.
+ * To configure the cache, you can create a file named
+ * NoClusteredCacheConfig.properties and configure the property
+ * maxNumberOfEntries to set the max number of entries into the map.
  * 
  * @author Thiago da Rosa de Bustamante
- *
+ * 
  */
 public class NoClusteredResourceStateHandler implements ResourceStateHandler
 {
 	public static class LRUMap<K, V> extends LinkedHashMap<K, V>
 	{
-        private static final long serialVersionUID = -8939312812258005339L;
+		private static final long serialVersionUID = -8939312812258005339L;
 		private final int maxEntries;
 
-        public LRUMap(int maxEntries)
-        {
-        	super(maxEntries, 0.75f, true);
+		public LRUMap(int maxEntries)
+		{
+			super(maxEntries, 0.75f, true);
 			this.maxEntries = maxEntries;
-        }
-        
+		}
+
 		@Override
 		protected boolean removeEldestEntry(java.util.Map.Entry<K, V> eldest)
 		{
-		    return super.size() > maxEntries;
+			return super.size() > maxEntries;
 		}
 	}
-	
+
 	public static class CacheEntry implements ResourceState
 	{
 		private final long dateModifiedMilis;
@@ -66,78 +65,80 @@ public class NoClusteredResourceStateHandler implements ResourceStateHandler
 			this.expires = expires;
 			this.etag = etag;
 		}
-		
-		@Override
-        public long getDateModified()
-        {
-	        return dateModifiedMilis;
-        }
 
 		@Override
-        public String getEtag()
-        {
-	        return etag;
-        }
+		public long getDateModified()
+		{
+			return dateModifiedMilis;
+		}
 
 		@Override
-        public boolean isExpired()
-        {
-	        return System.currentTimeMillis() - dateModifiedMilis >= expires;
-        }
+		public String getEtag()
+		{
+			return etag;
+		}
+
+		@Override
+		public boolean isExpired()
+		{
+			return System.currentTimeMillis() - dateModifiedMilis >= expires;
+		}
 	}
-	
+
 	private Map<String, CacheEntry> cache;
-	
+
 	/**
 	 * 
 	 */
 	public NoClusteredResourceStateHandler()
-    {
+	{
 		int maxCacheItems = Integer.parseInt(NoClusteredCacheConfigurationFactory.getConfigurations().maxNumberOfEntries());
 		cache = Collections.synchronizedMap(new LRUMap<String, CacheEntry>(maxCacheItems));
-    }
-	
+	}
+
 	@Override
-    public ResourceState add(String uri, long dateModified, long expires, String etag)
-    {
+	public ResourceState add(String uri, long dateModified, long expires, String etag)
+	{
 		CacheEntry cacheEntry = new CacheEntry(dateModified, expires, etag);
 		cache.put(uri, cacheEntry);
-	    return cacheEntry;
-    }
+		return cacheEntry;
+	}
 
 	@Override
-    public ResourceState get(String uri)
-    {
-	    return cache.get(uri);
-    }
+	public ResourceState get(String uri)
+	{
+		return cache.get(uri);
+	}
 
 	@Override
-    public void remove(String uri)
-    {
+	public void remove(String uri)
+	{
 		cache.remove(uri);
-    }
+	}
 
 	@Override
-    public void clear()
-    {
+	public void clear()
+	{
 		cache.clear();
-    }
+	}
 
 	@Override
-    public void removeMacthes(String... expr)
-    {
-	   Set<String> keys = cache.keySet();
-	   
-	   FilePatternHandler patternHandler = new FilePatternHandler(expr, null);
-	   
-	   Iterator<String> iterator = keys.iterator();
-	   while (iterator.hasNext())
-	   {
-		   String key =  iterator.next();
-		   if (patternHandler.isValidEntry(key))
-		   {
-			   iterator.remove();
-		   }
-	   }
-    }
+	public void removeSegments(String... baseURIs)
+	{
+		Set<String> keys = cache.keySet();
+
+		Iterator<String> iterator = keys.iterator();
+		while (iterator.hasNext())
+		{
+			String key = iterator.next();
+			for (String baseURI : baseURIs)
+			{
+				if (key.startsWith(baseURI))
+				{
+					iterator.remove();
+					break;
+				}
+			}
+		}
+	}
 }

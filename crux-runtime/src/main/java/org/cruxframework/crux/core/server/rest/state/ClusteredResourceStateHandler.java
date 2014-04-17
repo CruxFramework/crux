@@ -21,7 +21,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.utils.FilePatternHandler;
 import org.jgroups.blocks.Cache;
 import org.jgroups.blocks.ReplCache;
 
@@ -158,17 +157,19 @@ public class ClusteredResourceStateHandler implements ResourceStateHandler
 	}
 
 	@Override
-	public void removeMacthes(String... expr)
+	public void removeSegments(String... baseURIs)
 	{
 		Set<String> keys = cache.getL2Cache().getInternalMap().keySet();
 		Set<String> keysToRemove = new HashSet<String>();
-		FilePatternHandler patternHandler = new FilePatternHandler(expr, null);
-
 		for (String key : keys)
 		{
-			if (patternHandler.isValidEntry(key))
+			for (String baseURI: baseURIs)
 			{
-				keysToRemove.add(key);
+				if (key.startsWith(baseURI))
+				{
+					keysToRemove.add(key);
+					break;
+				}
 			}
 		}
 		for (String key : keysToRemove)
