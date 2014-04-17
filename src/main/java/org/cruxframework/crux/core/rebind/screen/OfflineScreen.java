@@ -16,7 +16,6 @@
 package org.cruxframework.crux.core.rebind.screen;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,7 +26,8 @@ public class OfflineScreen
 {
 	private final String module;
 	private final String refScreen;
-	private final List<String> offlineResources;
+	private final List<String> includes;
+	private final List<String> excludes;
 	private final String id;
 	
 	public OfflineScreen(String id, String module, String refScreen)
@@ -35,7 +35,8 @@ public class OfflineScreen
 		this.id = id;
 		this.module = module;
 		this.refScreen = refScreen;
-		this.offlineResources = new ArrayList<String>();
+		this.includes = new ArrayList<String>();
+		this.excludes = new ArrayList<String>();
     }
 
 	public String getModule()
@@ -48,18 +49,28 @@ public class OfflineScreen
     	return refScreen;
     }
 
-	public Iterator<String> iterateOfflineResources()
-	{
-		return offlineResources.iterator();
-	}
-	
-	public void addOfflineResource(String path)
-	{
-		offlineResources.add(path);
-	}
-
 	public String getId()
     {
 	    return id;
+    }
+
+	public void addInclude(String include)
+	{
+		includes.add(include);
+	}
+
+	public void addExclude(String exclude)
+	{
+		excludes.add(exclude);
+	}
+	
+	public String[] getIncludes()
+    {
+	    return includes.toArray(new String[includes.size()]);
+    }
+
+	public String[] getExcludes()
+    {
+	    return excludes.toArray(new String[excludes.size()]);
     }
 }

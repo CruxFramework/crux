@@ -777,14 +777,48 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 */
 	private void generateOfflineScreenElement(PrintStream out)
 	{
-		out.println("<xs:element name=\"offlineContent\" type=\"OfflineContent\">");
+		out.println("<xs:element name=\"includes\" type=\"Includes\">");
 		out.println("<xs:annotation>");
-		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineContentDescription())+"</xs:documentation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineIncludesDescription())+"</xs:documentation>");
 		out.println("</xs:annotation>");
 		out.println("</xs:element>");
 		
-		out.println("<xs:complexType name=\"OfflineContent\" mixed=\"true\">");
-		out.println("<xs:attribute name=\"resourceName\" type=\"xs:string\" use=\"required\"/>");
+		out.println("<xs:element name=\"excludes\" type=\"Excludes\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineExcludesDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+
+		out.println("<xs:element name=\"include\" type=\"Include\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineIncludesDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+		
+		out.println("<xs:element name=\"exclude\" type=\"Exclude\">");
+		out.println("<xs:annotation>");
+		out.println("<xs:documentation>"+StringEscapeUtils.escapeXml(schemaMessages.offlineExcludesDescription())+"</xs:documentation>");
+		out.println("</xs:annotation>");
+		out.println("</xs:element>");
+
+		out.println("<xs:complexType name=\"Includes\" mixed=\"true\">");
+		out.println("<xs:choice minOccurs=\"0\" maxOccurs=\"unbounded\">");
+		out.println("<xs:element ref=\"include\" />");
+		out.println("</xs:choice>");
+		out.println("</xs:complexType>");
+
+		out.println("<xs:complexType name=\"Excludes\" mixed=\"true\">");
+		out.println("<xs:choice minOccurs=\"0\" maxOccurs=\"unbounded\">");
+		out.println("<xs:element ref=\"exclude\" />");
+		out.println("</xs:choice>");
+		out.println("</xs:complexType>");
+
+		out.println("<xs:complexType name=\"Include\" mixed=\"true\">");
+		out.println("<xs:attribute name=\"path\" type=\"xs:string\" use=\"required\"/>");
+		out.println("</xs:complexType>");
+
+		out.println("<xs:complexType name=\"Exclude\" mixed=\"true\">");
+		out.println("<xs:attribute name=\"path\" type=\"xs:string\" use=\"required\"/>");
 		out.println("</xs:complexType>");
 
 		out.println("<xs:element name=\"offlineScreen\" type=\"OfflineScreen\">");
@@ -794,7 +828,8 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		out.println("</xs:element>");
 		out.println("<xs:complexType name=\"OfflineScreen\" mixed=\"true\">");
 		out.println("<xs:choice minOccurs=\"0\" maxOccurs=\"unbounded\">");
-		out.println("<xs:element ref=\"offlineContent\" />");
+		out.println("<xs:element ref=\"includes\" />");
+		out.println("<xs:element ref=\"excludes\" />");
 		out.println("</xs:choice>");
 		out.println("<xs:attribute name=\"moduleName\" type=\"xs:string\" use=\"required\"/>");
 		out.println("<xs:attribute name=\"screenId\" type=\"xs:string\" use=\"required\"/>");
