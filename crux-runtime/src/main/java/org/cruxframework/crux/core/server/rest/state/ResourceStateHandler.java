@@ -17,11 +17,16 @@ package org.cruxframework.crux.core.server.rest.state;
 
 
 /**
+ * Control the etags, dateModified and expires of rest services that can be cached. 
  * @author Thiago da Rosa de Bustamante
  * 
  */
 public interface ResourceStateHandler
 {
+	/**
+	 * Contains state information about a given rest URI
+	 * @author Thiago da Rosa de Bustamante
+	 */
 	public static interface ResourceState
 	{
 		long getDateModified();
@@ -29,9 +34,37 @@ public interface ResourceStateHandler
 		String getEtag();
 	}
 
+	/**
+	 * Add state information about one rest URI
+	 * @param uri
+	 * @param dateModified
+	 * @param expires
+	 * @param etag
+	 * @return
+	 */
 	ResourceState add(String uri, long dateModified, long expires, String etag);
+	
+	/**
+	 * Retrieve state information about one rest URI
+	 * @param uri
+	 * @return
+	 */
 	ResourceState get(String uri);
+	
+	/**
+	 * Clear the state information about one rest URI
+	 * @param uri
+	 */
 	void remove(String uri);
-	void removeMacthes(String... expr);
+	
+	/**
+	 * Clear the state information about any rest URI that starts with one of the baseURIs provided 
+	 * @param baseURIs
+	 */
+	void removeSegments(String... baseURIs);
+	
+	/**
+	 * Clear all state information from rest URIs
+	 */
 	void clear();
 }
