@@ -311,15 +311,6 @@ public class AppCacheLinker extends AbstractLinker
 		return false;
 	}
 	
-	private boolean acceptCachedResource(String fileName, OfflineScreen offlineScreen)
-	{
-		String[] includes = offlineScreen.getIncludes();
-		String[] excludes = offlineScreen.getExcludes();
-		
-		FilePatternHandler pattern = new FilePatternHandler(includes, excludes);
-		return pattern.isValidEntry(fileName);
-	}
-
 	private Artifact<?> createCacheManifest(LinkerContext context, TreeLogger logger, Set<String> artifacts, 
 										String permutationName, String startScreenId, OfflineScreen offlineScreen) throws UnableToCompleteException
 	{
@@ -334,9 +325,10 @@ public class AppCacheLinker extends AbstractLinker
 			builder.append("/{context}/" + moduleName + "/" + startScreenId + "\n");
 		}
 
+		FilePatternHandler pattern = new FilePatternHandler(offlineScreen.getIncludes(), offlineScreen.getExcludes());
 		for (String fn : artifacts)
 		{
-			if (!fn.endsWith("hosted.html") && acceptCachedResource(moduleName + "/" + fn, offlineScreen))
+			if (!fn.endsWith("hosted.html") && pattern.isValidEntry(moduleName + "/" + fn))
 			{
 				builder.append("/{context}/" + moduleName + "/" + fn + "\n");
 			}
