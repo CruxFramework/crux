@@ -36,8 +36,6 @@
     <modules>
         <module>../crux-runtime</module>
         <module>../crux-dev</module>
-        <module>../crux-gadgets-runtime</module>
-        <module>../crux-gadgets</module>
         <module>../crux-widgets</module>
     </modules>
 
