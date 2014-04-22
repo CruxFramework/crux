@@ -908,12 +908,13 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 }
 
 .grid-detail-dialogbox {
-	font-size: 11px;
-	background-color: rgba(255,255,255,0.6);
+	font-size: 14px;
+	background-color: rgba(255,255,255,1.0);
 	border: 1px solid #aaa;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
 	padding: 1.25em;
 	border-radius: 6px;
 	z-index: 98;
 	color: #000;
+	
 }

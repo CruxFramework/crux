@@ -576,8 +576,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 		    CloseButtonCaption ref = (CloseButtonCaption) this.getCaption();
 		    PushButton closeButton = ref.getCloseButton();
-		    closeButton.setHeight("16px");
-		    closeButton.setWidth("16px");
+		    closeButton.setHeight("24px");
+		    closeButton.setWidth("24px");
 		    closeButton.addClickHandler(new ClickHandler()
 			{
 				@Override
@@ -645,6 +645,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 				vPanel.add(button);
 			}
 
+			vPanel.setHeight("100%");
 			setWidget(vPanel);
 		}
 
@@ -706,7 +707,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    super();
 	    setWidth( "100%" );
 	    setStyleName("caption");
-	    closeDialog = new PushButton("X");
+	    closeDialog = new PushButton("  X  ");
 	    closeDialog.setStyleName("close");
 	    text = new InlineLabel(label);
 	    add(text);
