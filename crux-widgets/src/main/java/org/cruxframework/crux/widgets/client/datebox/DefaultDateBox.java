@@ -143,4 +143,11 @@ public class DefaultDateBox extends CommonDateBox
 	{
 		impl.setTabIndex(index);	
 	}
+
+	@Override
+	public void setReadOnly(boolean readOnly) 
+	{
+		impl.getTextBox().setReadOnly(readOnly);
+		impl.setEnabled(!readOnly);
+	}
 }

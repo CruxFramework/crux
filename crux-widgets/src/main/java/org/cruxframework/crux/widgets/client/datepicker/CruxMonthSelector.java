@@ -73,6 +73,7 @@ public final class CruxMonthSelector extends MonthSelector
 		
 		// Set up grid.
 		grid = new Grid(1, 5);
+		grid.setStyleName("datePickerMonthSelector");
 		grid.setWidget(0, 0, prevYear);
 		grid.setWidget(0, 1, prevMonth);
 		grid.setWidget(0, 3, nextMonth);

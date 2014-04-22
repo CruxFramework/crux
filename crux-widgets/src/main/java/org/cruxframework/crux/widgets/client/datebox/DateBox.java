@@ -157,4 +157,10 @@ public class DateBox extends Composite implements IDateBox
 	{
 		impl.setTabIndex(index);	
 	}
+
+	@Override
+	public void setReadOnly(boolean readOnly) 
+	{
+		impl.setReadOnly(readOnly);
+	}
 }
