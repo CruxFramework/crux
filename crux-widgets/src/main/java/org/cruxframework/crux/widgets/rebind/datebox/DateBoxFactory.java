@@ -153,7 +153,7 @@ public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext>
 
 		if (pattern != null && pattern.trim().length() > 0)
 		{
-			out.println(Format.class.getCanonicalName()+" "+format+"=new "+org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.DefaultFormat.class.getCanonicalName()+
+			out.println(Format.class.getCanonicalName()+" "+format+"= ("+Format.class.getCanonicalName()+") new "+org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.DefaultFormat.class.getCanonicalName()+
 					"("+DateFormatUtil.class.getCanonicalName()+".getDateTimeFormat("+EscapeUtils.quote(pattern)+"));");
 		}
 		else
