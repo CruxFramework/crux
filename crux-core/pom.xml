@@ -5,10 +5,10 @@
 	<artifactId>crux-core</artifactId>
 	<packaging>pom</packaging>
 	<name>Crux Core</name>
-	<version>5.2.0</version>
+	<version>5.2.0-SNAPSHOT</version>
 	<description>Core of Crux Framework</description>
 
-    <!--
+<!--
         ********************** DEPLOY **********************
         **************** Current .X version ****************
         1
@@ -26,24 +26,22 @@
           and run 'clean deploy' with profile 'internal' 
      -->
 
-    <properties>
+	<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javadoc.dir>${basedir}/javadoc</javadoc.dir>
     </properties>
 
-	<!-- ATTENTION: Due to a Maven reactor bug not fixed yet,
-	first time you run this project, comment those modules lines. --> 
     <modules>
         <module>../crux-runtime</module>
         <module>../crux-dev</module>
         <module>../crux-widgets</module>
     </modules>
 
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
 	<licenses>
 		<license>
@@ -124,57 +122,57 @@
         </plugins>
     </build>
     
-    <profiles>
-	    <profile>
-	       <id>internal</id>
-		   <distributionManagement>
-			   <repository>
-				   <id>crux-internal-repository</id>
-				   <name>Crux Internal Repository</name>
-				   <url>http://repo.sysmap.com.br/artifactory/sysmap-internal</url>
-			   </repository>
-		  </distributionManagement>
-		  <build>
-			  <!-- 
-			  <plugins>
-			      <plugin>
-	                    <groupId>org.codehaus.mojo</groupId>
-	                    <artifactId>autoincrement-versions-maven-plugin</artifactId>
-	                    <version>2.0-SNAPSHOT</version>
-	                    <executions>
-	                            <execution>
-	                                    <id>update-pom-versions</id>
-	                                    <goals>
-	                                            <goal>increment</goal>
-	                                            <goal>commit</goal>
-	                                    </goals>
-	                                    <phase>deploy</phase>
-	                                    <configuration>
-	                                            <autoIncrementVersion>true</autoIncrementVersion>
-	                                    </configuration>
-	                            </execution>
-	                    </executions>
-	                </plugin>
-	                <plugin>
-		                <groupId>org.codehaus.mojo</groupId>
-		                <artifactId>buildnumber-maven-plugin</artifactId>
-		                <version>1.2</version>
-		                <executions>
-		                    <execution>
-		                        <phase>validate</phase>
-		                        <goals>
-		                            <goal>create</goal>
-		                        </goals>
-		                    </execution>
-		                </executions>
-		                <configuration>
-		                    <doCheck>false</doCheck>
-		                    <doUpdate>true</doUpdate>
-		                </configuration>
-		            </plugin>   
-	          </plugins>
-	          -->
-		  </build>
-	    </profile>
+        <profiles>
+        <profile>
+           <id>internal</id>
+           <distributionManagement>
+               <repository>
+                   <id>crux-internal-repository</id>
+                   <name>Crux Internal Repository</name>
+                   <url>http://repo.sysmap.com.br/artifactory/sysmap-internal</url>
+               </repository>
+          </distributionManagement>
+          <build>
+              <!-- 
+              <plugins>
+                  <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>autoincrement-versions-maven-plugin</artifactId>
+                        <version>2.0-SNAPSHOT</version>
+                        <executions>
+                                <execution>
+                                        <id>update-pom-versions</id>
+                                        <goals>
+                                                <goal>increment</goal>
+                                                <goal>commit</goal>
+                                        </goals>
+                                        <phase>deploy</phase>
+                                        <configuration>
+                                                <autoIncrementVersion>true</autoIncrementVersion>
+                                        </configuration>
+                                </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>buildnumber-maven-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>create</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <doCheck>false</doCheck>
+                            <doUpdate>true</doUpdate>
+                        </configuration>
+                    </plugin>   
+              </plugins>
+              -->
+          </build>
+        </profile>
     </profiles>
 </project>
