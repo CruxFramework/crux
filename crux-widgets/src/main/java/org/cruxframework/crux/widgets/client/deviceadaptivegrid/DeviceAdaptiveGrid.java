@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014 cruxframework.org.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.cruxframework.crux.widgets.client.deviceadaptivegrid;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,7 +61,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 /**
- * @author breno.lages
+ * @author wesley.diniz
  *
  */
 public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSource<PagedDataSource<?>>
@@ -63,18 +78,16 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	}
 
 	/**
-	 * @param dataSource
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#setDataSource(org.cruxframework.crux.core.client.datasource.PagedDataSource)
+	 * @param dataSource The datasource used to fill the grid
 	 */
 	public void setDataSource(PagedDataSource<?> dataSource)
 	{
 		gridImpl.setDataSource(dataSource);
 	}
 
-
+	
 	/**
-	 *
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#loadData()
+	 *  @see org.cruxframework.crux.widgets.client.grid.Grid#loadData()
 	 */
 	public void loadData()
 	{
@@ -83,9 +96,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 	/**
-	 *
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#clear()
-	 */
+	 * @see org.cruxframework.crux.widgets.client.grid.AbstractGrid#clear()
+	 **/
 	public void clear()
 	{
 		gridImpl.clear();
@@ -94,9 +106,9 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 	/**
-	 * @param handler
-	 * @return
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#addRowRenderHandler(org.cruxframework.crux.widgets.client.event.row.RowRenderHandler)
+	 * @param handler Event handler
+	 * @return HandlerRegistration
+	 * @see Add a rowrender event handler
 	 */
 	public HandlerRegistration addRowRenderHandler(RowRenderHandler handler)
 	{
@@ -104,8 +116,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	}
 
 	/**
-	 * @return
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#getCurrentPageSize()
+	 * @return page number
+	 * @see org.cruxframework.crux.widgets.client.grid.Grid#getCurrentPageSize()
 	 */
 	public int getCurrentPageSize()
 	{
@@ -114,8 +126,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 	/**
-	 * @return
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#getDataSource()
+	 * @return PagedDataSource object
+	 * @see org.cruxframework.crux.widgets.client.grid.Grid#getDataSource()
 	 */
 	public PagedDataSource<?> getDataSource()
 	{
@@ -124,8 +136,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 	/**
-	 * @return
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#getCurrentPageRows()
+	 * @return List of the rows in current page
+	 * @see org.cruxframework.crux.widgets.client.grid.Grid#getCurrentPageRows()
 	 */
 	public List<DataRow> getCurrentPageRows()
 	{
@@ -134,8 +146,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 	/**
-	 *
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#refresh()
+	 * @see org.cruxframework.crux.widgets.client.grid.AbstractGrid#refresh()
 	 */
 	public void refresh()
 	{
@@ -143,10 +154,9 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	}
 
 
-
 	/**
-	 * @return
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#getSelectedRows()
+	 * @return A list with selected rows
+	 * @see org.cruxframework.crux.widgets.client.grid.Grid#getSelectedRows()
 	 */
 	public List<DataRow> getSelectedRows()
 	{
@@ -154,11 +164,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	}
 
 
-
-
 	/**
-	 *
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#nextPage()
+	 * @see org.cruxframework.crux.widgets.client.grid.Grid#nextPage()
 	 */
 	public void nextPage()
 	{
@@ -167,8 +174,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 	/**
-	 *
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#previousPage()
+	 * @see org.cruxframework.crux.widgets.client.grid.Grid#previousPage()
 	 */
 	public void previousPage()
 	{
@@ -178,7 +184,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 	/**
 	 * @param pager
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#setPager(org.cruxframework.crux.widgets.client.paging.Pager)
+	 *  @see org.cruxframework.crux.widgets.client.grid.Grid#setPager(org.cruxframework.crux.widgets.client.paging.Pager)
 	 */
 	public void setPager(Pager pager)
 	{
@@ -187,8 +193,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 	/**
-	 * @param page
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#goToPage(int)
+	 * @param page The page of the requested index
+	 * @see org.cruxframework.crux.widgets.client.grid.Grid#goToPage(int)
 	 */
 	public void goToPage(int page)
 	{
@@ -198,8 +204,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 	/**
 	 * @param w
-	 * @return
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#getRow(com.google.gwt.user.client.ui.Widget)
+	 * @return The datarow that contains the informed widget
+	 * @see org.cruxframework.crux.widgets.client.grid.Grid#getRow(com.google.gwt.user.client.ui.Widget)
 	 */
 	public DataRow getRow(Widget w)
 	{
@@ -209,8 +215,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 	/**
-	 * @return
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#getPageCount()
+	 * @return Page count
+	 * @see org.cruxframework.crux.widgets.client.grid.Grid#getPageCount()
 	 */
 	public int getPageCount()
 	{
@@ -219,8 +225,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 	/**
-	 * @return
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#isDataLoaded()
+	 * @return Verify if there is any data loaded
+	 * @see org.cruxframework.crux.widgets.client.grid.Grid#isDataLoaded()
 	 */
 	public boolean isDataLoaded()
 	{
@@ -229,9 +235,9 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 	/**
-	 * @param key
-	 * @return
-	 * @see br.com.mca.comissionamento.core.client.widget.grid.DeviceAdaptiveGrid.GridImpl#getActionWidget(java.lang.String)
+	 * Retrieve the widget associated to the grid component
+	 * @param id
+	 * @return Widget
 	 */
 	public Widget getActionWidget(String key)
 	{
@@ -239,27 +245,25 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	}
 
 	/**
-	 * Inicializa o componente de Grid
-	 * @param columnDefinitions
-	 * @param pageSize
-	 * @param rowSelection
-	 * @param cellSpacing
-	 * @param autoLoadData
-	 * @param stretchColumns
-	 * @param highlightRowOnMouseOver
+	 * Initialize grid component
+	 * @param columnDefinitions The definition of grid`s columns
+	 * @param pageSize The maximum size of a page
+	 * @param rowSelection Row selection mode
+	 * @param cellSpacing Space between cells
+	 * @param autoLoadData Load data automatically
+	 * @param stretchColumns Stretch columns to content, if needed
+	 * @param highlightRowOnMouseOver Highlight row when the mouse cursor is over it
 	 * @param emptyDataFilling
-	 * @param fixedCellSize
-	 * @param defaultSortingColumn
-	 * @param defaultSortingType
+	 * @param fixedCellSize Fix the size of all cells
+	 * @param defaultSortingColumn The default column used to sort data
+	 * @param defaultSortingType Sorting type
 	 */
-	//CHECKSTYLE:OFF
 	public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
 			int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
 			boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType)
 	{
 		this.gridImpl.initGrid(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType);
 	}
-	//CHECKSTYLE:ON
 
 	static abstract class GridImpl extends SimplePanel
 	{
@@ -267,18 +271,18 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		protected DeviceAdaptiveGridColumnDefinitions columnDefinitions;
 
 		/**
-		 * Inicializa o componente de Grid
-		 * @param columnDefinitions
-		 * @param pageSize
-		 * @param rowSelection
-		 * @param cellSpacing
-		 * @param autoLoadData
-		 * @param stretchColumns
-		 * @param highlightRowOnMouseOver
+		 * Initialize grid component
+		 * @param columnDefinitions The definition of grid`s columns
+		 * @param pageSize The maximum size of a page
+		 * @param rowSelection Row selection mode
+		 * @param cellSpacing Space between cells
+		 * @param autoLoadData Load data automatically
+		 * @param stretchColumns Stretch columns to content, if needed
+		 * @param highlightRowOnMouseOver Highlight row when the mouse cursor is over it
 		 * @param emptyDataFilling
-		 * @param fixedCellSize
-		 * @param defaultSortingColumn
-		 * @param defaultSortingType
+		 * @param fixedCellSize Fix the size of all cells
+		 * @param defaultSortingColumn The default column used to sort data
+		 * @param defaultSortingType Sorting type
 		 */
 		public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
 				int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
@@ -328,7 +332,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		}
 
 		/**
-		 * @return
+		 * @return List of selected rows
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#getSelectedRows()
 		 */
 		public List<DataRow> getSelectedRows()
@@ -338,7 +342,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 		/**
-		 * @return
+		 * @return The current page size
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#getCurrentPageSize()
 		 */
 		public int getCurrentPageSize()
@@ -347,7 +351,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		}
 
 		/**
-		 * @return
+		 * @return PagedDataSource
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#getDataSource()
 		 */
 		public PagedDataSource<?> getDataSource()
@@ -356,7 +360,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		}
 
 		/**
-		 * @return
+		 * @return List of the rows in current page
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#getCurrentPageRows()
 		 */
 		public List<DataRow> getCurrentPageRows()
@@ -367,7 +371,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 		/**
 		 * @param w
-		 * @return
+		 * @return The datarow that contains the informed widget
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#getRow(com.google.gwt.user.client.ui.Widget)
 		 */
 		public DataRow getRow(Widget w)
@@ -377,7 +381,6 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 		/**
-		 *
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#nextPage()
 		 */
 		public void nextPage()
@@ -386,7 +389,6 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		}
 
 		/**
-		 *
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#previousPage()
 		 */
 		public void previousPage()
@@ -400,7 +402,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		 */
 		public void setPager(Pager pager)
 		{
-			//FIXME grid.setPager(pager);
+			grid.setPager(pager);
 		}
 
 		/**
@@ -414,7 +416,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 		/**
-		 * @return
+		 * @return Page count
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#getPageCount()
 		 */
 		public int getPageCount()
@@ -423,7 +425,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		}
 
 		/**
-		 * @return
+		 * @return Verify if there is any data loaded
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#isDataLoaded()
 		 */
 		public boolean isDataLoaded()
@@ -431,11 +433,9 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 			return grid.isDataLoaded();
 		}
 
-
-
 		/**
-		 * @param handler
-		 * @return
+		 * @param handler Event handler
+		 * @return HandlerRegistration
 		 * @see org.cruxframework.crux.widgets.client.grid.AbstractGrid#addRowRenderHandler(org.cruxframework.crux.widgets.client.event.row.RowRenderHandler)
 		 */
 		public HandlerRegistration addRowRenderHandler(RowRenderHandler handler)
@@ -444,8 +444,8 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		}
 
 		/**
-		 * Recupera colunas definidas para o dispositivo Large (DEFAULT)
-		 * @return
+		 * Retrieve the columns defined to a Large device
+		 * @return ColumnDefinitions to a large device
 		 */
 		protected ColumnDefinitions getGridColumnDefinitionsByDevice()
 		{
@@ -454,7 +454,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 
 		/**
-		 * Recupera widget associada ao grid
+		 * Retrieve the widget associated to the grid component
 		 * @param id
 		 * @return Widget
 		 */
@@ -465,8 +465,11 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	{
 		HashMap<String, Button> actionsWidgets = new HashMap<String, Button>();
 
+		
+		/**
+		 * @see org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGrid.GridImpl#initGrid(org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGridColumnDefinitions, int, org.cruxframework.crux.widgets.client.grid.RowSelectionModel, int, boolean, boolean, boolean, java.lang.String, boolean, java.lang.String, org.cruxframework.crux.widgets.client.grid.Grid.SortingType)
+		 */
 		@Override
-		//CHECKSTYLE:OFF
 		public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
 				boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType)
 		{
@@ -474,10 +477,9 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 			initActionColumns();
 		}
-		//CHECKSTYLE:ON
 
 		/**
-		 * Pré inicializa as ações disponibilidas no detalhe do grid, visão mobile
+		 * initialize the actions available on grid detail when in mobile visualization
 		 */
 		private void initActionColumns()
 		{
@@ -503,6 +505,10 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 			}
 		}
 
+		
+		/**
+		 * @see org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGrid.GridImpl#getGridColumnDefinitionsByDevice()
+		 */
 		@Override
 		protected ColumnDefinitions getGridColumnDefinitionsByDevice()
 		{
@@ -536,6 +542,11 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 			return smallColumnDefinitions;
 		}
 
+		/**
+		 * @param w
+		 * @return The data row that contains the informed widget
+		 * @see org.cruxframework.crux.widgets.client.grid.Grid#getRow(com.google.gwt.user.client.ui.Widget)
+		 */
 		@Override
 		public DataRow getRow(Widget w)
 		{
@@ -556,6 +567,11 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		    return ret;
 		}
 
+		/**
+		 * Retrieve the widget associated to the grid component
+		 * @param id
+		 * @return Widget
+		 */
 		@Override
 		public Widget getActionWidget(String key)
 		{
@@ -566,6 +582,11 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	{
 		private final DataRow row;
 
+		/**
+		 * @param actionWidgets Button that will be showed on mobile visualization
+		 * @param columnDefinitions ColumnDefinitions
+		 * @param row DataRow
+		 */
 		public DetailDialogBox(HashMap<String, Button> actionWidgets, DeviceAdaptiveGridColumnDefinitions columnDefinitions, DataRow row)
 		{
 
@@ -590,6 +611,10 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		    buildDialogContents(actionWidgets, columnDefinitions);
 		}
 
+		
+		/**
+		 * @see com.google.gwt.user.client.ui.DialogBox#show()
+		 */
 		@Override
 		public void show()
 		{
@@ -597,6 +622,11 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 			super.center();
 		}
 
+		/**
+		 * @param w
+		 * @return The data row that contains the informed widget
+		 * @see org.cruxframework.crux.widgets.client.grid.Grid#getRow(com.google.gwt.user.client.ui.Widget)
+		 */
 		public DataRow getRow()
 		{
 			return row;
@@ -677,12 +707,20 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 	static class GridLargeImpl extends GridImpl
 	{
+		
+		/**
+		 * @see org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGrid.GridImpl#getGridColumnDefinitionsByDevice()
+		 */
 		@Override
 		protected ColumnDefinitions getGridColumnDefinitionsByDevice()
 		{
 			return this.columnDefinitions.getLargeColumnDefinitions();
 		}
 
+		
+		/**
+		 * @see org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGrid.GridImpl#getActionWidget(java.lang.String)
+		 */
 		@Override
 		public Widget getActionWidget(String key)
 		{
@@ -696,13 +734,17 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	  protected PushButton closeDialog;
 
 	  /**
-	   * @return the button at caption
+	   * @return the close button
 	   */
 	  public PushButton getCloseButton()
 	  {
 	    return closeDialog;
 	  }
-	  public CloseButtonCaption( String label )
+	 
+	  /**
+	 * @param label
+	 */
+	public CloseButtonCaption( String label )
 	  {
 	    super();
 	    setWidth( "100%" );
@@ -714,7 +756,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    add(closeDialog);
 	    setCellWidth( closeDialog, "1px" );
 	  }
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.event.dom.client.HasMouseDownHandlers#addMouseDownHandler(com.google.gwt.event.dom.client.MouseDownHandler)
 	   */
 	  @Override
@@ -723,7 +765,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    return addMouseDownHandler( handler );
 	  }
 
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.event.dom.client.HasMouseUpHandlers#addMouseUpHandler(com.google.gwt.event.dom.client.MouseUpHandler)
 	   */
 	  @Override
@@ -732,7 +774,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    return addMouseUpHandler( handler );
 	  }
 
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.event.dom.client.HasMouseOutHandlers#addMouseOutHandler(com.google.gwt.event.dom.client.MouseOutHandler)
 	   */
 	  @Override
@@ -741,7 +783,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    return addMouseOutHandler( handler );
 	  }
 
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.event.dom.client.HasMouseOverHandlers#addMouseOverHandler(com.google.gwt.event.dom.client.MouseOverHandler)
 	   */
 	  @Override
@@ -750,7 +792,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    return addMouseOverHandler( handler );
 	  }
 
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.event.dom.client.HasMouseMoveHandlers#addMouseMoveHandler(com.google.gwt.event.dom.client.MouseMoveHandler)
 	   */
 	  @Override
@@ -759,7 +801,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    return addMouseMoveHandler( handler );
 	  }
 
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.event.dom.client.HasMouseWheelHandlers#addMouseWheelHandler(com.google.gwt.event.dom.client.MouseWheelHandler)
 	   */
 	  @Override
@@ -768,7 +810,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    return addMouseWheelHandler( handler );
 	  }
 
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.user.client.ui.HasHTML#getHTML()
 	   */
 	  @Override
@@ -777,7 +819,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    return getElement().getInnerHTML();
 	  }
 
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.user.client.ui.HasHTML#setHTML(java.lang.String)
 	   */
 	  @Override
@@ -787,7 +829,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    insert( text, 1 );
 	  }
 
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.user.client.ui.HasText#getText()
 	   */
 	  @Override
@@ -796,7 +838,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    return text.getText();
 	  }
 
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.user.client.ui.HasText#setText(java.lang.String)
 	   */
 	  @Override
@@ -805,7 +847,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    this.text.setText( text );
 	  }
 
-	  /* (non-Javadoc)
+	  /**
 	   * @see com.google.gwt.safehtml.client.HasSafeHtml#setHTML(com.google.gwt.safehtml.shared.SafeHtml)
 	   */
 	  @Override
