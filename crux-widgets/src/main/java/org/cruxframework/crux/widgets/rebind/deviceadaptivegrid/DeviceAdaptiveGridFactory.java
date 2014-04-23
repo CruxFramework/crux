@@ -50,7 +50,6 @@ import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
-//CHECKSTYLE:OFF
 @DeclarativeFactory(id="adaptiveGrid", library="widgets", targetWidget=DeviceAdaptiveGrid.class)
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="pageSize", type=Integer.class, defaultValue="8"),
