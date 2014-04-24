@@ -40,11 +40,10 @@ import org.cruxframework.crux.gwt.client.LoadFormatEvent;
 import org.cruxframework.crux.gwt.rebind.CompositeFactory;
 import org.cruxframework.crux.gwt.rebind.DatePickerFactory;
 import org.cruxframework.crux.widgets.client.datebox.DateBox;
+import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.DefaultFormat;
 import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
 
 /**
  * @author samuel.cardoso
