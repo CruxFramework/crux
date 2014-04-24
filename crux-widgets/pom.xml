@@ -6,19 +6,18 @@
 	<version>5.2.0-SNAPSHOT</version>
 	<description>Crux Widgets Library</description>
 
-    <parent>
-        <groupId>org.cruxframework</groupId>
-        <artifactId>crux-core</artifactId>
-        <version>5.2.0-SNAPSHOT</version>
-        <relativePath>../crux-core/pom.xml</relativePath>
-    </parent>
-    
-    <dependencies>
-        <dependency>
-            <groupId>org.cruxframework</groupId>
-            <artifactId>crux-dev</artifactId>
-            <version>5.2.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+	<parent>
+		<groupId>org.cruxframework</groupId>
+		<artifactId>crux-parent</artifactId>
+		<version>5.2.0</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.cruxframework</groupId>
+			<artifactId>crux-dev</artifactId>
+			<version>5.2.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 
 </project>
