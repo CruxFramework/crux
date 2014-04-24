@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.cruxframework.crux.core.server.rest.spi.BadRequestException;
 import org.cruxframework.crux.core.utils.ClassUtils;
 
@@ -131,7 +130,7 @@ public class StringParameterInjector
 				strVal = defaultValue;
 			}
 		}
-		if (isDate && StringUtils.isNumeric(strVal))  
+		if (isDate && isNumeric(strVal))  
 		{
 			return new Date(Long.parseLong(strVal));
 		}
@@ -163,4 +162,26 @@ public class StringParameterInjector
 		}
 		return null;
 	}
+
+	private boolean isNumeric(String str)
+    {
+		if (str == null)
+		{
+			return false;
+		}
+		int sz = str.length();
+		int startPos = 0;
+		if (sz > 0 && str.charAt(0) == '-')
+		{
+			startPos = 1;
+		}
+		for (int i = startPos; i < sz; i++)
+		{
+			if (!Character.isDigit(str.charAt(i)))
+			{
+				return false;
+			}
+		}
+		return true;
+    }
 }
