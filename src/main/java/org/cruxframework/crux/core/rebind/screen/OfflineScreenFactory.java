@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.rebind.screen;
 
+import org.apache.commons.lang.StringUtils;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.w3c.dom.Document;
@@ -68,14 +69,17 @@ public class OfflineScreenFactory
 			if (item instanceof Element)
 			{
 				String localName = item.getLocalName();
-				if (localName.equals("includes"))
+				if(!StringUtils.isEmpty(localName))
 				{
-					processIncludes(result, item);
+					if (localName.equals("includes"))
+					{
+						processIncludes(result, item);
+					}
+					else if (localName.equals("excludes"))
+					{
+						processExcludes(result, item);
+					} 
 				}
-				else if (localName.equals("excludes"))
-				{
-					processExcludes(result, item);
-				} 
 			}
 		}
 	    
