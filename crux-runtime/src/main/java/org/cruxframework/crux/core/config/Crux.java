@@ -19,9 +19,6 @@ import org.cruxframework.crux.core.i18n.DefaultServerMessage;
 
 public interface Crux 
 {
-	@DefaultServerMessage("org.cruxframework.crux.core.rebind.screen.parameter.ParameterBindGeneratorImpl")
-	String parameterBindGenerator();
-
 	@DefaultServerMessage("org.cruxframework.crux.core.server.dispatch.ServiceFactoryImpl")
 	String serviceFactory();
 	
@@ -40,6 +37,7 @@ public interface Crux
 	@DefaultServerMessage("org.cruxframework.crux.core.server.classpath.ClassPathResolverImpl")
 	String classPathResolver();
 	
+	//TODO: Vintage Crux: Remove it!
 	@DefaultServerMessage("true")
 	String enableChildrenWindowsDebug();
 
@@ -64,6 +62,7 @@ public interface Crux
 	@DefaultServerMessage("true")
 	String enableGenerateHTMLDoctype();
 	
+	//TODO: Vintage Crux: Remove it!
 	@DefaultServerMessage("false")
 	String enableCrux2OldInterfacesCompatibility();
 	
@@ -75,9 +74,6 @@ public interface Crux
 
 	@DefaultServerMessage("false")
 	String useCompileTimeClassScanningForDevelopment();
-
-	@DefaultServerMessage("true")
-	String enableCrossDocumentSupport();
 
 	void setEnableChildrenWindowsDebug(Boolean value);
 	void setEnableHotDeploymentForWebDirs(Boolean value);
