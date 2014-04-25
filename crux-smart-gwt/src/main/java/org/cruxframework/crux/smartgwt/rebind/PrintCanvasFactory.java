@@ -1,25 +1,26 @@
-package org.cruxframework.crux.smartgwt.rebind.plugins;
+package org.cruxframework.crux.smartgwt.rebind;
 
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
-import org.cruxframework.crux.smartgwt.client.plugins.SVG;
+
+import org.cruxframework.crux.smartgwt.client.PrintCanvas;
 
 /**
- * Factory for SVG SmartGWT
+ * Factory for PrintCanvas SmartGWT
  * @author Flávia Yeshua
  *
  */
-@DeclarativeFactory(library="smartgwt", id="svg", targetWidget=SVG.class)
+@DeclarativeFactory(library="smartgwt", id="printCanvas", targetWidget=PrintCanvas.class)
 
 @TagAttributes({
-	@TagAttribute("pluginsPage"),
-	@TagAttribute("src")
+	@TagAttribute("externalStylesheet"),
+	@TagAttribute("printFrameURL")
 }) 
-
-public class SVGFactory extends WidgetCreator<WidgetCreatorContext>
+	
+public class PrintCanvasFactory extends WidgetCreator<WidgetCreatorContext>
 							
 {
 	@Override

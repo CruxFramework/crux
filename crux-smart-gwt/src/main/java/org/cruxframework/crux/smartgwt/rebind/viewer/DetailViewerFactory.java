@@ -38,8 +38,7 @@ import org.cruxframework.crux.smartgwt.client.viewer.DetailViewer;
 	@TagAttribute("fetchOperation"),
 	@TagAttribute("updateOperation"),
 	@TagAttribute("addOperation"),
-	@TagAttribute("removeOperation"),
-	@TagAttribute("ruplicateDragMessage"),	
+	@TagAttribute("removeOperation"),	
 	@TagAttribute("hiliteProperty"),
 	@TagAttribute("hiliteState"),
 	@TagAttribute("dragTrackerStyle"),
@@ -48,7 +47,7 @@ import org.cruxframework.crux.smartgwt.client.viewer.DetailViewer;
 	@TagAttribute("addSummaryFieldText"),
 	@TagAttribute("editSummaryFieldText"),
 	@TagAttribute("titleField")
-}) 
+})
 	
 public class DetailViewerFactory extends WidgetCreator<WidgetCreatorContext>
 							

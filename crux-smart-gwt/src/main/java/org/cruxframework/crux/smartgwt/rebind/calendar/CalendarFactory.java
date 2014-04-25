@@ -54,7 +54,7 @@ import org.cruxframework.crux.smartgwt.client.calendar.Calendar;
 	@TagAttribute("titleField")
 }) 
 
-public class FacetChartFactory extends WidgetCreator<WidgetCreatorContext>
+public class CalendarFactory extends WidgetCreator<WidgetCreatorContext>
 							
 {
 	@Override
