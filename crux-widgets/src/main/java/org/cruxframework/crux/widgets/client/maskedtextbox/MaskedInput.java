@@ -99,7 +99,7 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 				{
 					// partial validation
 					this.length--;
-					this.partialPosition = i;
+					this.partialPosition = i - offset;
 					internalBuffer[i - offset] = '?';
 				}
 			} else if (c == '"')
@@ -149,7 +149,7 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 		
 		// copying chars from internal buffer
 		int numQuestionMark = 0;
-		for (int j = 0; j < this.length; j++)
+		for (int j = 0; j < (internalBuffer.length - offset); j++)
 		{
 			char aux = internalBuffer[j];
 			// ignore '?'
