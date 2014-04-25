@@ -78,7 +78,6 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 	{
 		this.maskedTextBox = maskedTextBox;
 		this.placeHolder = placeHolder;
-		this.partialPosition = mask.length();;
 		char[] internalBuffer = new char[mask.length()];
 		this.length = mask.length();
 		this.clearIfNotValid = clearIfNotValid;
@@ -86,42 +85,42 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 		boolean escapeModeEnabled = false;
 		int offset = 0;
 
-		for (int i=0; i< mask.length(); i++)
+		for (int i = 0; i < mask.length(); i++)
 		{
 			char c = mask.charAt(i);
 			
-			/* partial validation */
 			if (c == '?')
 			{
-				/* if escape mode is enabled, nothing to do */
 				if (escapeModeEnabled)
 				{
 					internalBuffer[i - offset] = c;
 					this.tests.add(null);
 				} else
 				{
+					// partial validation
 					this.length--;
-					this.partialPosition = i;					
+					this.partialPosition = i;
+					internalBuffer[i - offset] = '?';
 				}
 			} else if (c == '"')
 			{
-				/* escape mode control */
+				// turn on or turn off escape mode 
 				escapeModeEnabled = !escapeModeEnabled;
 				this.length--;
 				offset++;
-			} else
+			} 
+				else
 			{
-				
 				if (escapeModeEnabled)
 				{
-					/* if escape mode is enabled */
+					// if escape mode is enabled
 					internalBuffer[i - offset] = c;
 					this.tests.add(null);
 				} else
 				{
 					String key = "" + c;
 					
-					/* if escape mode is disabled */
+					// if escape mode is disabled
 					if (!definitions.containsKey(key) && Character.isLetterOrDigit(c))
 					{
 						throw new IllegalArgumentException("Character '" + c + 
@@ -140,9 +139,28 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 			}
 		}
 		
+		// if there aren't '?', all string must be evaluated
+		if (this.partialPosition == -1)
+		{
+			this.partialPosition = this.length;
+		}
+		
 		this.buffer = new char[length];
 		
-		System.arraycopy(internalBuffer, 0, this.buffer, 0, length);
+		// copying chars from internal buffer
+		int numQuestionMark = 0;
+		for (int j = 0; j < this.length; j++)
+		{
+			char aux = internalBuffer[j];
+			// ignore '?'
+			if (aux == '?')
+			{
+				numQuestionMark++;
+				continue;
+			}
+			this.buffer[j - numQuestionMark] = aux;
+		}
+		
 		this.textBox = maskedTextBox.textBox;
 		keyDownHandlerRegistration = this.textBox.addKeyDownHandler(this);
 		keyPressHandlerRegistration = this.textBox.addKeyPressHandler(this);
@@ -503,15 +521,15 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 		int pos = 0;
 		int i = 0;
 
-		for (i=0; i<length; i++)
+		for (i = 0; i < length; i++)
 		{
 			if (tests.get(i) != null && tests.get(i).length() > 0)
 			{
 				buffer[i] = placeHolder;
 				while (pos++ < test.length())
 				{
-					char c = test.charAt(pos-1);
-					if ((""+c).matches(tests.get(i)))
+					char c = test.charAt(pos - 1);
+					if (("" + c).matches(tests.get(i)))
 					{
 						buffer[i] = c;
 						lastMatch = i;
@@ -522,6 +540,9 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 				{
 					break;
 				}
+			} else
+			{
+				lastMatch = i;
 			}
 		}
 		if (!allow && lastMatch+1 < partialPosition)
