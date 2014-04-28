@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Define base properties that all Crux Widges must have.
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
 public interface CruxWidget extends IsWidget
 {
