@@ -1,1 +1,0 @@
-var isomorphicDir = "../sc/";
