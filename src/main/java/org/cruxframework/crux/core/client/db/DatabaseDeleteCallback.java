@@ -19,7 +19,7 @@ package org.cruxframework.crux.core.client.db;
  * Database delete operation callback. 
  * Use this callback to delete the key from object written into the stores.
  * 
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
 public abstract class DatabaseDeleteCallback extends Callback
 {
