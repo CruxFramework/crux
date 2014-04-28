@@ -21,7 +21,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import com.google.gwt.resources.client.ClientBundle;
 
 /**
- * @author Samuel Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 @Resource(value="xStandardResources", supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch})

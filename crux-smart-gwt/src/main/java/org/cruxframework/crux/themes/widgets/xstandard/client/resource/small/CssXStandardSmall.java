@@ -18,7 +18,7 @@ package org.cruxframework.crux.themes.widgets.xstandard.client.resource.small;
 import com.google.gwt.resources.client.CssResource;
 
 /**
- * @author Samuel Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 public interface CssXStandardSmall extends CssResource
