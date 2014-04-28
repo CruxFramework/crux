@@ -517,42 +517,44 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 	private int checkVal(boolean allow)
 	{
 		String test = textBox.getText();
-		int lastMatch = -1;
-		int pos = 0;
+//		int lastMatch = -1;
+//		int pos = 0;
 		int i = 0;
+		int firstNoMatch = test.length();
 
-		for (i = 0; i < length; i++)
+		for (i = 0; i < test.length(); i++)
 		{
+			char c = test.charAt(i);
+			
 			if (tests.get(i) != null && tests.get(i).length() > 0)
 			{
-				buffer[i] = placeHolder;
-				while (pos++ < test.length())
+				if (("" + c).matches(tests.get(i)))
 				{
-					char c = test.charAt(pos - 1);
-					if (("" + c).matches(tests.get(i)))
+					buffer[i] = c;
+				} else
+				{
+					buffer[i] = placeHolder;
+					if (firstNoMatch == test.length())
 					{
-						buffer[i] = c;
-						lastMatch = i;
-						break;
+						firstNoMatch = i;
 					}
-				}
-				if (pos > test.length())
-				{
-					break;
 				}
 			} else
 			{
-				lastMatch = i;
+				buffer[i] = c;
 			}
 		}
-		if (!allow && lastMatch+1 < partialPosition)
+		
+		int lastMatch = firstNoMatch - 1;
+		
+		if (!allow && lastMatch + 1 < partialPosition)
 		{
 			if (clearIfNotValid)
 			{
 				textBox.setText("");
 				clearBuffer(0, length);
 			}
-		} else if (allow || lastMatch+1 >= partialPosition)
+		} else if (allow || lastMatch + 1 >= partialPosition)
 		{
 			writeBuffer();
 			if (!allow)
