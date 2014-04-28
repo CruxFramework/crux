@@ -32,10 +32,10 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 /**
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  * @param <Widget> the SortableList type object.
  */
-//TODO refatorar esta widget... esse esquema de renderer para widget vai gerar problema
+//TODO refactor this! This way of rendering this widget is not a good practice.
 public class SortableList extends Composite implements ISortableList<Widget>
 {
 	private boolean enabled;

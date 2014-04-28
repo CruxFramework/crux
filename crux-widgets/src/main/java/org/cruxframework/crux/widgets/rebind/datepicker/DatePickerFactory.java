@@ -32,7 +32,7 @@ import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
 import org.cruxframework.crux.widgets.rebind.event.SelectEvtBind;
 
 /**
- * @author Samuel Almeida Cardoso - <code>samuel.cardoso@cruxframework.org</code>
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 @DeclarativeFactory(library="widgets", id="datePicker", targetWidget=DatePicker.class)

@@ -78,7 +78,7 @@ public class ColumnDefinitions
 	 * @param key
 	 * @param considerInvisibleColumns 
 	 */
-	//TODO: samuel.cardoso: check invalid conversion type int -> string | string -> int - add a try catch
+	//TODO: check invalid conversion type int -> string | string -> int - add a try catch
 	int getColumnIndex(String key, boolean considerInvisibleColumns)
 	{
 		if(!considerInvisibleColumns)

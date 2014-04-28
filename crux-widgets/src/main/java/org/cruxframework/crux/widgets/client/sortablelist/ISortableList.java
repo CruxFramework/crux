@@ -21,9 +21,9 @@ import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
-//TODO remover essa interface
+//TODO remove this deprecated interface
 public interface ISortableList<T extends Widget> extends HasEnabled
 {
 	/**

@@ -69,7 +69,7 @@ class StackMenuItemCaption extends Composite
 	}
 
 	/**
-	 * @author samuel.cardoso
+	 * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
 	 * Focus area (clicked or touched area) implementation.
 	 */
 	static abstract class FocusAreaStackImpl extends FocusPanel implements HasSelectHandlers
@@ -94,7 +94,7 @@ class StackMenuItemCaption extends Composite
 	}
 
 	/**
-	 * @author samuel.cardoso
+	 * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
 	 * Implementation for notouch devices.
 	 *
 	 */
@@ -184,7 +184,7 @@ class StackMenuItemCaption extends Composite
 	}
 
 	/**
-	 * @author samuel.cardoso
+	 * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
 	 * Implementation for touch devices.
 	 */
 	static class TouchImpl extends FocusAreaStackImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler

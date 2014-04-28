@@ -33,7 +33,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 /**
  * @author Jair Elton
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  * @param <T> the ListShuttle type object.
  */
 //TODO refatorar este componente

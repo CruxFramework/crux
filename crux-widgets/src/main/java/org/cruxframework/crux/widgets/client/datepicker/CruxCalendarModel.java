@@ -19,7 +19,7 @@ import org.cruxframework.crux.widgets.client.datepicker.gwtoverride.CalendarMode
 
 
 /**
- * @author samuel.cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
 public final class CruxCalendarModel extends CalendarModel
 {

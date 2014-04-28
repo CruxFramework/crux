@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * A default implementation for DatePicker
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
 public class DefaultDateBox extends CommonDateBox
 {

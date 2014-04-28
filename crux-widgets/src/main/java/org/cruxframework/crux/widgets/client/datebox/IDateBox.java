@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
- * @author samuel.cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 interface IDateBox extends CruxWidget, HasValue<Date>, Focusable, HasValueChangeHandlers<Date>

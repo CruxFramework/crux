@@ -46,7 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * @author samuel.cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 @DeclarativeFactory(id="dateBox", library="widgets", targetWidget=DateBox.class)

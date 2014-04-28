@@ -19,7 +19,7 @@ package org.cruxframework.crux.widgets.client.datepicker;
 import org.cruxframework.crux.widgets.client.datepicker.gwtoverride.DefaultCalendarView;
 
 /**
- * @author samuel.cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 public final class CruxCalendarView extends DefaultCalendarView 

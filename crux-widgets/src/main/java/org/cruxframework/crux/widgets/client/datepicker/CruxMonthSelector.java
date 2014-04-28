@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.PushButton;
 
 /**
- * @author samuel.cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 public final class CruxMonthSelector extends MonthSelector 

@@ -22,7 +22,7 @@ import org.cruxframework.crux.widgets.client.util.type.CruxWidget;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 
 /**
- * @author samuel.cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 public class DatePicker extends org.cruxframework.crux.widgets.client.datepicker.gwtoverride.DatePicker implements CruxWidget

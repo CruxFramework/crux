@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.HasText;
 
 /**
  * A cross device download button, that use touch events on touch enabled devices.
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  * 
  * @PartialSupport Depends on:
  * http://caniuse.com/bloburls

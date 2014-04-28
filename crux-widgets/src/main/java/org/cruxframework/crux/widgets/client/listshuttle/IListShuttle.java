@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.HasEnabled;
 
 /**
  * @author Jair Elton
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
 //TODO remover essas interfaces IWidgets todas
 public interface IListShuttle<T> extends HasEnabled

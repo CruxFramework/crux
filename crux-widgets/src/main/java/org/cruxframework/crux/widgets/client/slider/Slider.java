@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * @author samuel@cruxframework.org
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  * A crossdevice panel that swaps its contents using slide animations.
  */
 public class Slider extends Composite implements SliderWidget

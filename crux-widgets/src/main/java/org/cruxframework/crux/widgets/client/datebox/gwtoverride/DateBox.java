@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * CruxDateBox
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
 public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 	IsEditor<LeafValueEditor<Date>> {

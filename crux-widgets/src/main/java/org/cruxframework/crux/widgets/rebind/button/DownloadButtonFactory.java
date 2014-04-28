@@ -17,7 +17,7 @@ import org.cruxframework.crux.widgets.client.button.DownloadButton;
 import org.cruxframework.crux.widgets.rebind.event.SelectEvtBind;
 
 /**
- * @author Samuel Almeida Cardoso - <code>samuel.cardoso@cruxframework.org</code>
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 @DeclarativeFactory(library="widgets", id="downloadButton", targetWidget=DownloadButton.class)
