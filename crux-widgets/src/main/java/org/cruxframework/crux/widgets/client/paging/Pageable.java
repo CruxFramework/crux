@@ -1,5 +1,10 @@
 package org.cruxframework.crux.widgets.client.paging;
 
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante
+ *
+ */
 public interface Pageable
 {
 	/**
@@ -14,7 +19,7 @@ public interface Pageable
 	
 	/**
 	 * Return the total number of pages
-	 * @return -1 if unknown
+	 * @return number of pages, -1 if unknown.
 	 */
 	int getPageCount();
 	
@@ -26,12 +31,12 @@ public interface Pageable
 	
 	/**
 	 * Moves the pageable's cursor to an arbitrary page
-	 * @param page
+	 * @param page page number
 	 */
 	void goToPage(int page);
 	
 	/**
-	 * Checks if pageable data is already avaiable
+	 * Checks if pageable data is already available
 	 * @param page
 	 */
 	boolean isDataLoaded();	

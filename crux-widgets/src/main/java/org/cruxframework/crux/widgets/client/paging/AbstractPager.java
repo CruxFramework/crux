@@ -131,7 +131,7 @@ public abstract class AbstractPager extends Composite implements Pager
 	}
 
 	/**
-	 * If there is no pageable set, throws <code>IllegalStateException</code>
+	 * If there is no pageable set, throws {@link IllegalStateException}
 	 */
 	protected void checkPageable()
 	{

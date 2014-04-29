@@ -154,6 +154,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	 */
 	public void setDataSource(PagedDataSource<?> dataSource)
 	{
+		setDataSource(dataSource, autoLoadData);
+	}
+	
+	@Override
+	public void setDataSource(PagedDataSource<?> dataSource, boolean autoLoadData)
+	{
 		this.dataSource = dataSource;
 		this.dataSource.setPageSize(this.pageSize);
 
@@ -197,11 +203,16 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				public void execute()
 				{
 					loaded = true;
+				}
+
+				@Override
+                public void pageChanged(int startRecord, int endRecord)
+                {
 					if(!autoSort())
 					{
 						render();
 					}
-				}
+                }
 			});
 
 			if(autoLoadData)
@@ -766,11 +777,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		if(isDataLoaded())
 		{
 			this.dataSource.nextPage();
-
-			if(!(this.dataSource instanceof RemoteDataSource<?>))
-			{
-				render();
-			}
 		}
 	}
 
@@ -779,11 +785,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		if(isDataLoaded())
 		{
 			this.dataSource.previousPage();
-
-			if(!(this.dataSource instanceof RemoteDataSource<?>))
-			{
-				render();
-			}
 		}
 	}
 
@@ -946,11 +947,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			if(this.dataSource instanceof MeasurablePagedDataSource<?>)
 			{
 				((MeasurablePagedDataSource<?>) this.dataSource).setCurrentPage(page);
-
-				if(!(this.dataSource instanceof RemoteDataSource<?>))
-				{
-					render();
-				}
 			}
 			else
 			{
