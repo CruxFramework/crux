@@ -13,12 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.client.datasource;
+package org.cruxframework.crux.core.client.datasource.pager;
 
-/**
- * @author Thiago da Rosa de Bustamante
- *
- */
-public interface StreamingDataSource<E> extends RemoteDataSource<E>, PagedDataSource<E>
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HasHandlers;
+
+public interface HasPageHandlers extends HasHandlers 
 {
+	HandlerRegistration addPageHandler(PageHandler handler);
 }

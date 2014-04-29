@@ -13,12 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.client.datasource;
+package org.cruxframework.crux.core.client.datasource.pager;
+
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * @author Thiago da Rosa de Bustamante
- *
+ * TODO - Gesse - Comment this
+ * @author Gesse S. F. Dafe
  */
-public interface StreamingDataSource<E> extends RemoteDataSource<E>, PagedDataSource<E>
+public interface PageHandler extends EventHandler
 {
+	void onPage(PageEvent event);
 }

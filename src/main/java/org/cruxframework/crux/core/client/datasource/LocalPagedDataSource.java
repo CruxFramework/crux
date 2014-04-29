@@ -115,9 +115,43 @@ public abstract class LocalPagedDataSource<T> extends AbstractPagedDataSource<T>
 		if (this.loadCallback != null)
 		{
 			this.loadCallback.execute();
+			loadCallback.pageChanged(getPageStartRecord(), getPageEndRecord());
 		}
 	}
 
+	@Override
+	public boolean nextPage()
+	{
+		if (super.nextPage())
+		{
+			loadCallback.pageChanged(getPageStartRecord(), getPageEndRecord());
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean previousPage()
+	{
+		if (super.previousPage())
+		{
+			loadCallback.pageChanged(getPageStartRecord(), getPageEndRecord());
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean setCurrentPage(int pageNumber)
+	{
+		if (super.setCurrentPage(pageNumber))
+		{
+			loadCallback.pageChanged(getPageStartRecord(), getPageEndRecord());
+			return true;
+		}
+		return false;
+	}
+	
 	public void updateData(T[] data)
 	{
 	}	
