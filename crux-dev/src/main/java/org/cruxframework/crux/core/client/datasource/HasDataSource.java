@@ -21,6 +21,6 @@ package org.cruxframework.crux.core.client.datasource;
  */
 public interface HasDataSource<T extends DataSource<?>>
 {
-	void setDataSource(T datasource);
+	void setDataSource(T datasource, boolean autoLoadData);
 	T getDataSource();
 }

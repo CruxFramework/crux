@@ -27,6 +27,7 @@ import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.collection.FastMap;
 import org.cruxframework.crux.core.client.controller.Controller;
 import org.cruxframework.crux.core.client.controller.Expose;
+import org.cruxframework.crux.core.client.controller.Factory;
 import org.cruxframework.crux.core.client.controller.Validate;
 import org.cruxframework.crux.core.client.event.BaseEvent;
 import org.cruxframework.crux.core.client.formatter.HasFormatter;
@@ -244,7 +245,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 				generateProxyExposedMethodSignature(sourceWriter, new NameFactory(), method);
 				sourceWriter.println("{");
 				
-				logDebugMessage(sourceWriter, "\"Calling client event: Controller["+controllerName+"], Method["+method.getName()+"]\"");
+				logDebugMessage(sourceWriter, "\"Calling client method: Controller["+controllerName+"], Method["+method.getName()+"]\"");
 
 				JType returnType = method.getReturnType().getErasedType();
 				boolean hasReturn = returnType != JPrimitiveType.VOID;
@@ -264,7 +265,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 			    	generateMethodvalidationCall(sourceWriter, method, validateMethod);
 			    	sourceWriter.println("}catch (Throwable e1){");
 			    	sourceWriter.println("Crux.getValidationErrorHandler().handleValidationError(e1.getLocalizedMessage());");
-					logDebugMessage(sourceWriter, "\"Client event not called due to a Validation error: Controller["+controllerName+"], Method["+method.getName()+"]\"");
+					logDebugMessage(sourceWriter, "\"Client method not called due to a Validation error: Controller["+controllerName+"], Method["+method.getName()+"]\"");
 			    	if (hasReturn)
 			    	{
 				    	sourceWriter.println("return null;");
@@ -283,7 +284,7 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 		    	
 		    	generateExposedMethodCall(sourceWriter, method);
 		    						
-				logDebugMessage(sourceWriter, "\"Client event executed: Controller["+controllerName+"], Method["+method.getName()+"]\"");
+				logDebugMessage(sourceWriter, "\"Client method executed: Controller["+controllerName+"], Method["+method.getName()+"]\"");
 		    	if (hasReturn)
 		    	{
 					sourceWriter.println("return ret;");
@@ -360,33 +361,50 @@ public class ControllerProxyCreator extends AbstractProxyCreator
 	        {
 	        	return false;
 	        }
-	        
-	        JParameter[] parameters = method.getParameters();
-	        if (parameters != null && parameters.length != 0 && parameters.length != 1)
+	        boolean exposed = method.getAnnotation(Expose.class) != null;
+			boolean factory = method.getAnnotation(Factory.class) != null;
+			if ((exposed && factory) || (!exposed && !factory))
 	        {
 	        	return false;
 	        }
-	        if (parameters != null && parameters.length == 1)
+			
+			JParameter[] parameters = method.getParameters();
+	        if (exposed)
 	        {
-	        	JClassType gwtEventType = controllerClass.getOracle().getType(GwtEvent.class.getCanonicalName());
-	        	JClassType cruxEventType = controllerClass.getOracle().getType(BaseEvent.class.getCanonicalName());
-	        	JClassType parameterType = parameters[0].getType().isClassOrInterface();
-	        	if (parameterType == null || (!gwtEventType.isAssignableFrom(parameterType) && !cruxEventType.isAssignableFrom(parameterType)))
+	        	if (parameters != null && parameters.length != 0 && parameters.length != 1)
+	        	{
+	        		return false;
+	        	}
+	        	if (parameters != null && parameters.length == 1)
+	        	{
+	        		JClassType gwtEventType = controllerClass.getOracle().getType(GwtEvent.class.getCanonicalName());
+	        		JClassType cruxEventType = controllerClass.getOracle().getType(BaseEvent.class.getCanonicalName());
+	        		JClassType parameterType = parameters[0].getType().isClassOrInterface();
+	        		if (parameterType == null || (!gwtEventType.isAssignableFrom(parameterType) && !cruxEventType.isAssignableFrom(parameterType)))
+	        		{
+	        			return false;
+	        		}
+	        	}
+	        }
+	        else if (factory)
+	        {
+	        	if (parameters == null || parameters.length != 1)
+	        	{
+	        		return false;
+	        	}
+				JType returnType = method.getReturnType().getErasedType();
+				boolean hasReturn = returnType != JPrimitiveType.VOID;
+	        	if (!hasReturn)
 	        	{
 	        		return false;
 	        	}
 	        }
-	        
 	        JClassType objectType = controllerClass.getOracle().getType(Object.class.getCanonicalName());
 	        if (method.getEnclosingType().equals(objectType))
 	        {
 	        	return false;
 	        }
 	        
-	        if (method.getAnnotation(Expose.class) == null)
-	        {
-	        	return false;
-	        }
 	        
 	        return true;
         }

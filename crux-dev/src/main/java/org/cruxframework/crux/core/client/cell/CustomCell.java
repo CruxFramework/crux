@@ -20,12 +20,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Legacy
+@Deprecated
 public @interface CustomCell 
 {
 	String value();
