@@ -90,7 +90,7 @@ public class ModuleUtils
 		URLStreamManager manager = new URLStreamManager(pageFile);
 		try
 		{
-			source = ViewProcessor.getView(manager.open(), null);
+			source = ViewProcessor.getView(manager.open(), pageFile.getPath(), null);
 			manager.close();
 		}
 		catch (Exception e)

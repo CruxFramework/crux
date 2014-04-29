@@ -99,7 +99,7 @@ public class ViewFactory
 		
 		URLStreamManager manager = new URLStreamManager(view);
 		InputStream inputStream = manager.open();
-		Document viewDoc = ViewProcessor.getView(inputStream, device);
+		Document viewDoc = ViewProcessor.getView(inputStream, id, device);
 		manager.close();
 		
 		if (viewDoc == null)

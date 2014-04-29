@@ -123,7 +123,7 @@ public class OfflineScreensScanner extends AbstractScanner
 		InputStream stream = manager.open();
 		try
         {
-	        Document screen = XMLUtils.createNSUnawareDocument(stream);
+	        Document screen = XMLUtils.createNSUnawareDocument(stream, screenURL.getPath());
 	        return screen;
         }
         catch (XMLException e)

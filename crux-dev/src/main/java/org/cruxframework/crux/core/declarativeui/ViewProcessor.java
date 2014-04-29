@@ -63,19 +63,10 @@ public class ViewProcessor
 	 * @param device
 	 * @return
 	 */
-	public static Document getView(InputStream file, String device)
+	public static Document getView(InputStream file, String filename, String device)
 	{
 		init();
-		
-		try
-		{
-			return loadCruxPage(file, device);
-		}
-		catch (Exception e)
-		{
-			log.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
+		return loadCruxPage(file, filename, device);
 	}
 	
 	/**
@@ -242,7 +233,7 @@ public class ViewProcessor
 	 * @return
 	 * @throws ViewParserException
 	 */
-	private static Document loadCruxPage(InputStream file, String device) throws ViewParserException
+	private static Document loadCruxPage(InputStream file, String filename, String device)
 	{
 		try
 		{
@@ -251,7 +242,8 @@ public class ViewProcessor
 		}
 		catch (Exception e)
 		{
-			throw new ViewParserException(e.getMessage(), e);
+			log.error("Error parsing file: ["+filename+"] for DeviceAdaptive interface ["+device+"]: " + e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 	

@@ -134,7 +134,7 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 				return null;
 			}
 			
-			Document result = ViewProcessor.getView(inputStream, device);
+			Document result = ViewProcessor.getView(inputStream, screenURL.getPath(), device);
 						
 			if(manager != null)
 			{
