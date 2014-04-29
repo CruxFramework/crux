@@ -16,4 +16,11 @@
 			<when-property-is name="device.features" value="largeDisplayTouch" />
 		</any>
 	</replace-with>
+	<replace-with class="org.cruxframework.crux.smartfaces.client.pager.NavigationButtonsPager.TouchButtonCreator">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.pager.NavigationButtonsPager.ButtonCreator" />
+		<any>
+			<when-property-is name="device.features" value="smallDisplayTouch" />
+			<when-property-is name="device.features" value="largeDisplayTouch" />
+		</any>
+	</replace-with>
 </module>
