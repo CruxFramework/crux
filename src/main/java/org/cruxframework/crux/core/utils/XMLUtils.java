@@ -59,7 +59,7 @@ public class XMLUtils
 	 * @return
 	 * @throws XMLException
 	 */
-	public static Document createNSUnawareDocument(InputStream stream) throws XMLException
+	public static Document createNSUnawareDocument(InputStream stream, String filename) throws XMLException
 	{
 		try
 		{
@@ -68,7 +68,7 @@ public class XMLUtils
 		}
 		catch (Exception e)
 		{
-			log.error(e.getMessage(), e);
+			log.error("Error parsing file: ["+filename+"]: " + e.getMessage(), e);
 			throw new XMLException(e.getMessage(), e);
 		}
 	}

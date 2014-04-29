@@ -160,7 +160,7 @@ public abstract class ScreenResourcesScanner extends AbstractScanner
 		InputStream stream = manager.open();
 		try
         {
-			Document screen = ViewProcessor.getView(stream, null);
+			Document screen = ViewProcessor.getView(stream, screenURL.getPath(), null);
 	        return screen;
         }
         catch (Exception e)

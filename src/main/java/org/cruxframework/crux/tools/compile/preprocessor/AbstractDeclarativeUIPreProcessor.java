@@ -101,7 +101,7 @@ public abstract class AbstractDeclarativeUIPreProcessor implements CruxPreProces
 		ViewProcessor.setOutputCharset(outputCharset);
 		FileOutputStream out = new FileOutputStream(preprocessedFile);
 		URLStreamManager manager = new URLStreamManager(url);
-		Document screen = ViewProcessor.getView(manager.open(), null);
+		Document screen = ViewProcessor.getView(manager.open(), url.getPath(), null);
 		ViewProcessor.generateHTML(url.toString(), screen, out);
 		manager.close();
 		out.flush();
