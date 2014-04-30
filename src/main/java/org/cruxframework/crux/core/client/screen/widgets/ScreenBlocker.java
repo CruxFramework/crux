@@ -19,6 +19,7 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -43,7 +44,8 @@ public class ScreenBlocker extends Composite
 		@Override
 		public void onTouchStart(TouchStartEvent event) 
 		{
-			event.preventDefault();
+			Window.alert("aaaaa");
+			//event.preventDefault();
 		}
 	}
 	
@@ -51,7 +53,7 @@ public class ScreenBlocker extends Composite
 	{
 		screenBlockerImpl = GWT.create(ScreenBlockerImpl.class);
 		initWidget(screenBlockerImpl);
-		setStyleName(blockingDivStyleName);
+		setStyleName(blockingDivStyleName + "aaaaaaaaa");
 	}
 	
 	private static void expandElementToScreen(Widget widget)

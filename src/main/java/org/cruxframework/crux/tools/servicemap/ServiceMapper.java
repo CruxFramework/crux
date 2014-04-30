@@ -217,27 +217,10 @@ public class ServiceMapper
 		{
 			serviceMapper.processParameters(parameters.values());
 			
-			adaptArgumentToWebdir(args);
 			CruxRegisterUtil.registerFilesCruxBridge(args);
 			
 			serviceMapper.generateServicesMap();
 			serviceMapper.generateRestServicesMap();
-		}
-	}
-
-	private static void adaptArgumentToWebdir(String[] args) {
-		if(args != null)
-		{
-			for (int i=0; i< (args.length-1); i++)
-			{
-				String arg = args[i];
-				if ("projectDir".equals(arg))
-				{
-					//change to -war
-					args[i] = "-webDir";
-					break;
-				}
-			}
 		}
 	}
 }
