@@ -75,32 +75,6 @@ public class FileUtils
 	}
 
 	/**
-	 * @param file
-	 * @return
-	 */
-	public static boolean removeRecursively(File file)
-	{
-		if(file != null && file.isDirectory())
-		{
-			for(File innerFile : file.listFiles())
-			{
-				removeRecursively(innerFile);
-			}
-			if(!file.delete())
-			{
-				return false;
-			}
-		} else
-		{
-			if(!file.delete())
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	/**
 	 * @param text
 	 * @param f
 	 * @throws IOException
