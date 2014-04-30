@@ -70,7 +70,7 @@ public class ViewTester extends HttpServlet
 	    screenContent = screenContent.replace("{moduleName}", moduleName);
 	    ByteArrayInputStream inputStream = new ByteArrayInputStream(screenContent.getBytes("UTF-8"));
 
-	    Document screen = ViewProcessor.getView(inputStream, null, null);
+	    Document screen = ViewProcessor.getView(inputStream, ViewTesterScreen.getTestViewScreenSuffix(), null);
 	    ViewProcessor.generateHTML(ViewTesterScreen.getTestViewScreenSuffix(), screen, resp.getOutputStream());
     }
 }
