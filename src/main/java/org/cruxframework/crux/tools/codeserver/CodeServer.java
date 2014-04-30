@@ -30,9 +30,9 @@ import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializ
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
-import org.cruxframework.crux.core.utils.FileUtils;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
 import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
@@ -109,7 +109,7 @@ public class CodeServer
 		URL[] urls = ClasspathUrlFinder.findClassPaths();
 		Scanners.setSearchURLs(urls);
 		ModuleUtils.initializeScannerURLs(urls);
-		registerCruxCompilationFolder();
+		CruxRegisterUtil.registerFilesCruxBridge(null);
 		DevelopmentScanners.initializeScanners();
 		ServiceFactoryInitializer.initialize(null);
 		RestServiceFactoryInitializer.initialize(null);
@@ -132,13 +132,6 @@ public class CodeServer
 			com.google.gwt.dev.codeserver.CodeServer.main(args);
 		}
     }
-
-	private void registerCruxCompilationFolder() 
-	{
-		FileUtils.setTempDir();
-		CruxBridge.removeOldCompilationFiles();
-		FileUtils.getTempDirFile();
-	}
 
 	protected String[] getServerParameters()
     {
