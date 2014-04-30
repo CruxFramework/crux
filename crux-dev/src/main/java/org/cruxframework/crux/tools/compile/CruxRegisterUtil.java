@@ -54,7 +54,6 @@ public class CruxRegisterUtil
 
 	public static void removeOldTempFiles() 
 	{
-		//remove old temp files
 		FileUtils.setTempDir();
 		CruxBridge.removeOldCompilationFiles();
 		FileUtils.getTempDirFile();

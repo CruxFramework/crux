@@ -64,9 +64,12 @@ public class CruxBridge
 	
 	public static void removeOldCompilationFiles()
 	{
-		if(!FileUtils.recursiveDelete(FileUtils.getTempDirFile()))
+		File tempDirFile = FileUtils.getTempDirFile();
+		if(!FileUtils.recursiveDelete(tempDirFile))
 		{
-			handleCriticalError("Temp files inside temp compilation folder could not be deleted.", new IOException());
+			handleCriticalError("Temp files inside crux compilation folder [" +
+					tempDirFile.getPath() +
+					"] could not be deleted. Check if your SO is not blocking this operation.", new IOException());
 		}
 	}
 

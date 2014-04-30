@@ -23,7 +23,7 @@ public interface Crux
 	String serviceFactory();
 	
 	@DefaultServerMessage("crux_comp")
-	String tempFolder();
+	String cruxCompilationTempFolder();
 	
 	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryImpl")
 	String restServiceFactory();

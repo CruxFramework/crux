@@ -38,6 +38,7 @@ import org.cruxframework.crux.core.config.ConfigurationFactory;
 
 /**
  * @author Gesse S. F. Dafe - <code>gesse@sysmap.com.br</code>
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
 public class FileUtils
 {
@@ -219,7 +220,7 @@ public class FileUtils
 	public static void setTempDir()
 	{
 		String tmpDir = System.getProperty("java.io.tmpdir");
-		setTempDir(tmpDir + File.separator + ConfigurationFactory.getConfigurations().tempFolder());
+		setTempDir(tmpDir + File.separator + ConfigurationFactory.getConfigurations().cruxCompilationTempFolder());
 	}
 
 	/**
