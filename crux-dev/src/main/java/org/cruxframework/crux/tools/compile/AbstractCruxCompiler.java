@@ -89,7 +89,7 @@ public abstract class AbstractCruxCompiler
 	public AbstractCruxCompiler()
 	{
 		CruxBridge.getInstance().setSingleVM(true);
-		clearCruxBridgeProperties();
+		CruxBridge.removeOldCompilationFiles();
 	}
 
 	/**
@@ -302,14 +302,6 @@ public abstract class AbstractCruxCompiler
 		this.preProcessors.add(preProcessor);
 	}
 	
-	/**
-	 * 
-	 */
-	protected void clearCruxBridgeProperties()
-    {
-		CruxBridge.getInstance().registerLastPageRequested("");
-    }
-
 	/**
 	 * Compile files using GWT compiler
 	 * @param url

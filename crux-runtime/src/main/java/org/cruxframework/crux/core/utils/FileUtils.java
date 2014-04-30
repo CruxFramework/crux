@@ -34,6 +34,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.cruxframework.crux.core.config.ConfigurationFactory;
+
 /**
  * @author Gesse S. F. Dafe - <code>gesse@sysmap.com.br</code>
  */
@@ -49,16 +51,16 @@ public class FileUtils
 	{
 		return read(new FileInputStream(file));
 	}
-	
+
 	/**
 	 * @param in
 	 * @return
 	 * @throws IOException
 	 */
 	public static String read(InputStream in) throws IOException
-    {
+	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		
+
 		int read = 0;
 		byte[] buff = new byte[1024];
 		while((read = in.read(buff)) > 0)
@@ -68,9 +70,35 @@ public class FileUtils
 		in.close();
 		out.flush();
 		out.close();
-				
+
 		return new String(out.toByteArray());
-    }
+	}
+
+	/**
+	 * @param file
+	 * @return
+	 */
+	public static boolean removeRecursively(File file)
+	{
+		if(file != null && file.isDirectory())
+		{
+			for(File innerFile : file.listFiles())
+			{
+				removeRecursively(innerFile);
+			}
+			if(!file.delete())
+			{
+				return false;
+			}
+		} else
+		{
+			if(!file.delete())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 	
 	/**
 	 * @param text
@@ -78,21 +106,21 @@ public class FileUtils
 	 * @throws IOException
 	 */
 	public static void write(String text, File f) throws IOException
-    {
+	{
 		FileOutputStream out = new FileOutputStream(f);
 		out.write(text.getBytes());
 		out.close();
-    }
-	
+	}
+
 	/**
 	 * @param in
 	 * @param f
 	 * @throws IOException
 	 */
 	public static void write(InputStream in, File f) throws IOException
-    {
+	{
 		FileOutputStream out = new FileOutputStream(f);
-		
+
 		int read = 0;
 		byte[] buff = new byte[1024];
 		while((read = in.read(buff)) > 0)
@@ -101,7 +129,7 @@ public class FileUtils
 		}
 		in.close();
 		out.close();
-    }
+	}
 
 	/**
 	 * @param file
@@ -109,13 +137,13 @@ public class FileUtils
 	public static boolean recursiveDelete(File file)
 	{
 		boolean success = true;
-		
+
 		if(file != null && file.exists())
 		{
 			if(file.isDirectory())
 			{
 				File[] files = file.listFiles();
-				
+
 				if(files != null)
 				{
 					for (File child : files)
@@ -124,13 +152,13 @@ public class FileUtils
 					}
 				}
 			}
-			
+
 			success = file.delete();
 		}
-		
+
 		return success;
 	}
-	
+
 	/**
 	 * @param sourceDir
 	 * @param destDir
@@ -153,7 +181,7 @@ public class FileUtils
 		FilePatternHandler handler = new FilePatternHandler(includes, excludes);
 		copyFilesFromDir(sourceDir, destDir, handler, sourceDir.getCanonicalPath().length());
 	}
-	
+
 	/**
 	 * @param sourceDir
 	 * @param destDir
@@ -166,7 +194,7 @@ public class FileUtils
 		{
 			destDir.mkdirs();
 		}
-		
+
 		File[] files = sourceDir.listFiles();
 		if (files != null)
 		{
@@ -207,10 +235,27 @@ public class FileUtils
 		{
 			name += "/";
 		}
-			
+
 		return name;
 	}
-	
+
+	/**
+	 * Set the default TempDir
+	 */
+	public static void setTempDir()
+	{
+		String tmpDir = System.getProperty("java.io.tmpdir");
+		setTempDir(tmpDir + File.separator + ConfigurationFactory.getConfigurations().tempFolder());
+	}
+
+	/**
+	 * @param tempDir
+	 */
+	public static void setTempDir(String tempDir)
+	{
+		System.setProperty("java.io.tmpdir", tempDir);
+	}
+
 	/**
 	 * 
 	 * @return
@@ -224,16 +269,21 @@ public class FileUtils
 		}
 		return tmpDir;
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public static File getTempDirFile()
 	{
-		return new File(getTempDir());
+		File dir = new File(getTempDir());
+		if (!dir.exists() & !dir.mkdir()) 
+		{
+			return null;
+		}
+		return dir;
 	}
-	
+
 	/**
 	 * @param sourceLocation
 	 * @param targetLocation
@@ -262,7 +312,7 @@ public class FileUtils
 			StreamUtils.write(new FileInputStream(sourceLocation), new FileOutputStream(targetLocation), true);
 		}
 	}
-	
+
 	/**
 	 * Recursively gets all files with a given extension contained in a directory
 	 * @param path
@@ -274,7 +324,7 @@ public class FileUtils
 		scanFiles(path, extension, result);
 		return result;
 	}
-	
+
 	/**
 	 * Recursively gets all files with a given extension contained in a directory
 	 * @param path
@@ -292,7 +342,7 @@ public class FileUtils
 					return file.getName().endsWith(extension) || file.isDirectory();
 				}
 			});
-			
+
 			if (found != null)
 			{
 				for (File file : found)
@@ -309,7 +359,7 @@ public class FileUtils
 			}
 		}
 	}
-	
+
 	/**
 	 * Recursively gets all files with a given extension contained in a directory
 	 * @param path
@@ -320,7 +370,7 @@ public class FileUtils
 		scanFiles(path, result);
 		return result;
 	}
-	
+
 	/**
 	 * Recursively gets all files with a given extension contained in a directory
 	 * @param path
@@ -337,7 +387,7 @@ public class FileUtils
 					return true;
 				}
 			});
-			
+
 			if (found != null)
 			{
 				for (File file : found)
@@ -351,7 +401,7 @@ public class FileUtils
 			result.add(path);
 		}
 	}
-	
+
 	/**
 	 * Unzips a file to an output directory 
 	 * @param zippedFile
@@ -361,9 +411,9 @@ public class FileUtils
 	public static void unzip(File zippedFile, File outputDirectory) throws IOException
 	{
 		Set<String> added = new HashSet<String>();
-		
+
 		ZipInputStream inStream = null;
-		
+
 		try
 		{
 			inStream = new ZipInputStream(new FileInputStream(zippedFile));
@@ -386,7 +436,7 @@ public class FileUtils
 					{
 						extractFileFromZip(inStream, buffer, outputFile);
 					}
-				
+
 					added.add(name);	        		 
 				}
 			}
@@ -401,7 +451,7 @@ public class FileUtils
 			}
 		}
 	}
-	
+
 	public static void zip(File inputDirectory, File zippedFile, FileFilter filter) 
 	{
 		int BUFFER = 2048;
@@ -414,7 +464,7 @@ public class FileUtils
 			byte data[] = new byte[BUFFER];
 			// get a list of files from current directory
 			File files[];
-			
+
 			if (filter!= null)
 			{
 				files = inputDirectory.listFiles(filter);	
@@ -453,30 +503,30 @@ public class FileUtils
 	 * @throws IOException
 	 */
 	private static void extractFileFromZip(ZipInputStream inStream, byte[] buffer, File outputFile) throws FileNotFoundException, IOException
-    {
-	    int nrBytesRead;
-	    if(!outputFile.getParentFile().exists())
-	    {
-	    	outputFile.getParentFile().mkdirs();
-	    }
-	    
-	    OutputStream outStream = new FileOutputStream(outputFile);
-	    try
-	    {
-	    	while ((nrBytesRead = inStream.read(buffer)) > 0) 
-	    	{
-	    		outStream.write(buffer, 0, nrBytesRead);
-	    	}
-	    }
-	    finally
-	    {
-	    	if (outStream != null)
-	    	{
-	    		outStream.close();
-	    	}
-	    }
-    }
-	
+	{
+		int nrBytesRead;
+		if(!outputFile.getParentFile().exists())
+		{
+			outputFile.getParentFile().mkdirs();
+		}
+
+		OutputStream outStream = new FileOutputStream(outputFile);
+		try
+		{
+			while ((nrBytesRead = inStream.read(buffer)) > 0) 
+			{
+				outStream.write(buffer, 0, nrBytesRead);
+			}
+		}
+		finally
+		{
+			if (outStream != null)
+			{
+				outStream.close();
+			}
+		}
+	}
+
 	/**
 	 * Copies a file;
 	 * @param source
@@ -487,7 +537,7 @@ public class FileUtils
 	{
 		FileOutputStream out = null;
 		FileInputStream in = null;
-		
+
 		try
 		{
 			destination.getParentFile().mkdirs();

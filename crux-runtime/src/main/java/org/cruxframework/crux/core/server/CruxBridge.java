@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.utils.FileUtils;
@@ -59,6 +60,17 @@ public class CruxBridge
 	 */
 	private CruxBridge()
 	{
+		FileUtils.setTempDir();
+		removeOldCompilationFiles();
+		FileUtils.getTempDirFile();
+	}
+	
+	public static void removeOldCompilationFiles()
+	{
+		if(!FileUtils.removeRecursively(FileUtils.getTempDirFile()))
+		{
+			handleCriticalError("Temp file inside temp folder could not be deleted.", new IOException());
+		}
 	}
 
 	/**
@@ -69,6 +81,13 @@ public class CruxBridge
 	public static CruxBridge getInstance()
 	{
 		return instance;
+	}
+	
+	private static void handleCriticalError(String message, Exception e)
+	{
+		logger.error("CruxBridge critical error [CruxKernel panic error]: " + message, e);
+		//kills JVM
+		System.exit(1);
 	}
 
 	/**
@@ -88,13 +107,19 @@ public class CruxBridge
 			else
 			{
 				checkScreenRequestedFile();
-				reader = new BufferedReader(new FileReader(screenRequestedFile));
+				try
+				{
+					reader = new BufferedReader(new FileReader(screenRequestedFile));
+				} catch (FileNotFoundException e)
+				{
+					handleCriticalError("Error getting lastPageRequestedFile.", e);
+				}
 				return reader.readLine();
 			}
 		}
 		catch (Exception e)
 		{
-			logger.error("Error reading screen id.", e);
+			handleCriticalError("Error getting lastPageRequestedFile.", e);
 			return null;
 		}
 		finally
@@ -120,13 +145,20 @@ public class CruxBridge
 			else
 			{
 				checkOutputCharsetFile();
-				reader = new BufferedReader(new FileReader(outputCharsetFile));
+				try
+				{
+					reader = new BufferedReader(new FileReader(outputCharsetFile));	
+				} catch (FileNotFoundException e)
+				{
+					handleCriticalError("Error getting outputCharset.", e);
+				}
+
 				return reader.readLine();
 			}
 		}
 		catch (Exception e)
 		{
-			logger.error("Error reading outputCharset.", e);
+			handleCriticalError("Error getting outputCharset.", e);
 			return null;
 		}
 		finally
@@ -152,13 +184,19 @@ public class CruxBridge
 			else
 			{
 				checkWebinfClassesFile();
-				reader = new BufferedReader(new FileReader(webinfClassesFile));
+				try
+				{
+					reader = new BufferedReader(new FileReader(webinfClassesFile));
+				} catch (FileNotFoundException e)
+				{
+					handleCriticalError("Error getting webinfClasses.", e);
+				}
 				return reader.readLine();
 			}
 		}
 		catch (Exception e)
 		{
-			logger.debug("Error reading webinfClasses.", e);
+			handleCriticalError("Error getting webinfClasses.", e);
 			return null;
 		}
 		finally
@@ -184,13 +222,19 @@ public class CruxBridge
 			else
 			{
 				checkWebinfLibFile();
-				reader = new BufferedReader(new FileReader(webinfLibFile));
+				try
+				{
+					reader = new BufferedReader(new FileReader(webinfLibFile));
+				} catch (FileNotFoundException e)
+				{
+					handleCriticalError("Error getting webinfLib.", e);
+				}
 				return reader.readLine();
 			}
 		}
 		catch (Exception e)
 		{
-			logger.debug("Error reading webinfLib.", e);
+			handleCriticalError("Error getting webinfLib.", e);
 			return null;
 		}
 		finally
@@ -209,6 +253,11 @@ public class CruxBridge
 
 	public void registerPageOutputCharset(String charset)
 	{
+		if(StringUtils.isEmpty(charset))
+		{
+			handleCriticalError("Error registering charset.", null);
+		}
+		
 		PrintWriter writer;
 		try
 		{
@@ -237,6 +286,11 @@ public class CruxBridge
 	 */
 	public void registerLastPageRequested(String lastPage)
 	{
+		if(StringUtils.isEmpty(lastPage))
+		{
+			handleCriticalError("Error registering lastPage.", null);
+		}
+		
 		PrintWriter writer;
 		try
 		{
@@ -263,6 +317,11 @@ public class CruxBridge
 	 */
 	public void registerWebinfClasses(String webinfClasses)
 	{
+		if(StringUtils.isEmpty(webinfClasses))
+		{
+			handleCriticalError("Error registering webInfClasses.", null);
+		}
+		
 		PrintWriter writer;
 		try
 		{
@@ -289,6 +348,11 @@ public class CruxBridge
 	 */
 	public void registerWebinfLib(String webinfLib)
 	{
+		if(StringUtils.isEmpty(webinfLib))
+		{
+			handleCriticalError("Error registering webinfLib.", null);
+		}
+		
 		PrintWriter writer;
 		try
 		{
