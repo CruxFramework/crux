@@ -59,9 +59,10 @@ public class DataColumnEditorCreatorFactory
 		this.loggerVariable = getLoggerVariable;
 		this.declaredMessages = declaredMessages;
 		
-		this.printer = gridFactory.getSubTypeWriter(
+		this.printer = gridFactory.getSubTypeWriter(packageName,
     		classSimpleName, DataColumnEditorCreators.class.getCanonicalName() + ".GenericDataColumnEditorCreator", 
-    		getImports(), null, false);
+    		null, getImports(), false);
+		
 	}
 
 	/**
@@ -112,7 +113,7 @@ public class DataColumnEditorCreatorFactory
 		imports.add(Logger.class.getCanonicalName());
 		imports.add(Level.class.getCanonicalName());
 		imports.add(DataColumnDefinition.class.getCanonicalName());
-		
+		imports.add("com.google.gwt.core.client.GWT");
 	    return imports.toArray(new String[imports.size()]);
     }
 }

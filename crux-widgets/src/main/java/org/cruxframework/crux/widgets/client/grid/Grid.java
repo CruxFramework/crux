@@ -66,6 +66,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -553,6 +554,10 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			else if(widget instanceof HasValue)
 			{
 				value = ((HasValue<?>) widget).getValue();
+			} else if (widget instanceof ListBox)
+			{
+				value = ((ListBox) widget).getValue(((ListBox) widget)
+						.getSelectedIndex());
 			}
 
 			dataSource.setValue(value, key, row.getDataSourceRecord());
@@ -1183,6 +1188,19 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			renderRow(row, row.getDataSourceRecord(), true, focusCellKey);
 
 			row.setEditMode(true);
+		}
+	}
+
+	/** Finish the editing of the selected row, 
+	 *  hiding the widget and commiting its value to datasource
+	 * @param row
+	 */
+	public void finishEditing(Row row)
+	{
+		if (currentEditingRow != null && !(row.equals(currentEditingRow)))
+		{
+			currentEditingRow.setEditMode(false);
+			swapCurrentEditingRow(null);
 		}
 	}
 

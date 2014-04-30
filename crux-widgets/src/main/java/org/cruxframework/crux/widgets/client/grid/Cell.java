@@ -92,6 +92,8 @@ public class Cell extends Composite
 
 		if (type == Event.ONCLICK)
 		{
+			((Grid)grid).finishEditing(row);
+			
 			if(selectRowOnClick && row.isEnabled())
 			{
 				boolean status = row.isSelected();
@@ -115,7 +117,6 @@ public class Cell extends Composite
 			{
 				grid.fireRowDoubleClickEvent(row);
 			}
-			
 			return;
 		}
 		
