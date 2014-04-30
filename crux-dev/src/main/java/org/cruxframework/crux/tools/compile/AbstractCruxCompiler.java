@@ -89,7 +89,7 @@ public abstract class AbstractCruxCompiler
 	public AbstractCruxCompiler()
 	{
 		CruxBridge.getInstance().setSingleVM(true);
-		CruxBridge.removeOldCompilationFiles();
+		CruxRegisterUtil.removeOldTempFiles();
 	}
 
 	/**

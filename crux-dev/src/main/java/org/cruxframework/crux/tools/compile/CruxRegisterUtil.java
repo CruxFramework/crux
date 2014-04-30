@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import org.apache.commons.lang.StringUtils;
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.server.CruxBridge;
+import org.cruxframework.crux.core.utils.FileUtils;
 
 /**
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
@@ -30,6 +31,8 @@ public class CruxRegisterUtil
 {
 	public static void registerFilesCruxBridge(String[] args) throws MalformedURLException 
 	{
+		removeOldTempFiles();
+		
 		String newParams[] = adaptArgumentToWebdir(args);
 		
 		if(!StringUtils.isEmpty(newParams[0]))
@@ -47,6 +50,14 @@ public class CruxRegisterUtil
 		}
 		
 		DevelopmentScanners.initializeScanners();
+	}
+
+	public static void removeOldTempFiles() 
+	{
+		//remove old temp files
+		FileUtils.setTempDir();
+		CruxBridge.removeOldCompilationFiles();
+		FileUtils.getTempDirFile();
 	}
 
 	private static String[] adaptArgumentToWebdir(String[] args) 

@@ -60,16 +60,13 @@ public class CruxBridge
 	 */
 	private CruxBridge()
 	{
-		FileUtils.setTempDir();
-		removeOldCompilationFiles();
-		FileUtils.getTempDirFile();
 	}
 	
 	public static void removeOldCompilationFiles()
 	{
-		if(!FileUtils.removeRecursively(FileUtils.getTempDirFile()))
+		if(!FileUtils.recursiveDelete(FileUtils.getTempDirFile()))
 		{
-			handleCriticalError("Temp file inside temp folder could not be deleted.", new IOException());
+			handleCriticalError("Temp files inside temp compilation folder could not be deleted.", new IOException());
 		}
 	}
 
@@ -85,7 +82,7 @@ public class CruxBridge
 	
 	private static void handleCriticalError(String message, Exception e)
 	{
-		logger.error("CruxBridge critical error [CruxKernel panic error]: " + message, e);
+		logger.error("CruxBridge critical error: " + message, e);
 		//kills JVM
 		System.exit(1);
 	}
