@@ -102,8 +102,13 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 
 	private void generateWidgetCreationForCellByTemplate(SourcePrinter out, C context, JSONObject child, String dataObjectName)
     {
-	    out.println("public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObjectName+" value){");
-	    String childWidget = createChildWidget(out, child, WidgetConsumer.EMPTY_WIDGET_CONSUMER, true, context);
+		child = ensureFirstChild(child, false, context.getWidgetId());
+		String widgetClassName =  getChildWidgetClassName(child);
+		JClassType widgetClassType =  getContext().getTypeOracle().findType(widgetClassName);
+		WidgetConsumer widgetConsumer = new PageableWidgetConsumer(getContext(), widgetClassType, getDataObject(context), "value", getView().getId(), context.getWidgetId());
+		
+		out.println("public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObjectName+" value){");
+	    String childWidget = createChildWidget(out, child, widgetConsumer, true, context);
 	    out.println("return "+childWidget+";");
 	    out.println("}");
     }
