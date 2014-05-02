@@ -51,7 +51,12 @@ public class JClassUtils
     {
         if (StringUtils.isEmpty(propertyPath))
         {
-			throw new NoSuchFieldException(propertyPath);
+			out.append(objectVariable);
+        	if (finishCommand)
+        	{
+        		out.append(";");
+        	}
+        	return dtoType;
         }
         String[] props;
         if (propertyPath.contains("."))
@@ -133,7 +138,8 @@ public class JClassUtils
 		try
 		{
 			return typeOracle.getType(className);
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			String message = "Class ["+className+"] " + (viewName != null ? ", declared on view ["+viewName+"]," : "") + " could not be loaded. "
 			   + "\n Possible causes:"

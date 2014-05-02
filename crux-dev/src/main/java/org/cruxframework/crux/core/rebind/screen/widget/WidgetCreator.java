@@ -490,7 +490,20 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 */
 	public Class<?> getWidgetClass()
     {
-	    return viewFactory.getWidgetCreatorHelper(getWidgetFactoryDeclaration()).getWidgetType();
+	    return getWidgetClass(getWidgetFactoryDeclaration());
+    }
+
+	/**
+	 * @return
+	 */
+	public Class<?> getWidgetClass(String widgetDeclaration)
+    {
+		WidgetCreatorHelper widgetCreatorHelper = viewFactory.getWidgetCreatorHelper(widgetDeclaration);
+		if (widgetCreatorHelper == null)
+		{
+			throw new CruxGeneratorException("No widget registered for declaration ["+widgetDeclaration+"]."); 
+		}
+		return widgetCreatorHelper.getWidgetType();
     }
 
 	/**
