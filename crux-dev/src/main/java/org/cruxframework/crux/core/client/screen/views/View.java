@@ -811,12 +811,15 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			final ViewActivateEvent event = new ViewActivateEvent(this, this.getId(), parameter);
 			Scheduler.get().scheduleDeferred(new ScheduledCommand()
 			{
+				//IE Bug. It does not found attachHandlers reference when running on a setTimeout function
+				private FastList<ViewActivateHandler> handlers = attachHandlers;
+				
 				@Override
 				public void execute()
 				{
-					for (int i = 0; i < attachHandlers.size(); i++)
+					for (int i = 0; i < handlers.size(); i++)
 					{
-						ViewActivateHandler handler = attachHandlers.get(i);
+						ViewActivateHandler handler = handlers.get(i);
 						handler.onActivate(event);
 					}
 				}
