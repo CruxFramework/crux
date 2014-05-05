@@ -107,7 +107,13 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		gridImpl.clear();
 	}
 
-
+	/**
+	 * @return
+	 */
+	public ColumnDefinitions getGridColumnDefinitionsByDevice()
+	{
+		return gridImpl.getGridColumnDefinitionsByDevice();
+	}
 
 	/**
 	 * @param handler Event handler
@@ -456,7 +462,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		 * Retrieve the columns defined to a Large device
 		 * @return ColumnDefinitions to a large device
 		 */
-		public ColumnDefinitions getGridColumnDefinitionsByDevice()
+		protected ColumnDefinitions getGridColumnDefinitionsByDevice()
 		{
 			return columnDefinitions.getLargeColumnDefinitions();
 		}
@@ -519,7 +525,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		 * @see org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGrid.GridImpl#getGridColumnDefinitionsByDevice()
 		 */
 		@Override
-		public ColumnDefinitions getGridColumnDefinitionsByDevice()
+		protected ColumnDefinitions getGridColumnDefinitionsByDevice()
 		{
 			ColumnDefinitions smallColumnDefinitions = this.columnDefinitions.getSmallColumnDefinitions();
 
@@ -721,7 +727,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		 * @see org.cruxframework.crux.widgets.client.deviceadaptivegrid.DeviceAdaptiveGrid.GridImpl#getGridColumnDefinitionsByDevice()
 		 */
 		@Override
-		public ColumnDefinitions getGridColumnDefinitionsByDevice()
+		protected ColumnDefinitions getGridColumnDefinitionsByDevice()
 		{
 			return this.columnDefinitions.getLargeColumnDefinitions();
 		}
