@@ -24,6 +24,13 @@ import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
+import com.google.gwt.event.dom.client.HasAllKeyHandlers;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -43,7 +50,7 @@ import com.google.gwt.user.client.ui.ValueBoxBase;
  *
  */
 //TODO refatorar isso. Deveriamos ter no futuro boxs usando html5 apenas
-public class NumberTextBox extends Composite implements HasValue<Integer>, HasEnabled, HasAllFocusHandlers, HasName 
+public class NumberTextBox extends Composite implements HasValue<Integer>, HasEnabled, HasAllFocusHandlers, HasName, HasAllKeyHandlers
 {
 	private Impl impl;
 
@@ -386,6 +393,24 @@ public class NumberTextBox extends Composite implements HasValue<Integer>, HasEn
 	public void setMaxLength(int length)
 	{
 		impl.setMaxLength(length);
+	}
+
+	@Override
+	public HandlerRegistration addKeyUpHandler(KeyUpHandler handler)
+	{
+		return this.addDomHandler(handler, KeyUpEvent.getType());
+	}
+
+	@Override
+	public HandlerRegistration addKeyDownHandler(KeyDownHandler handler)
+	{
+		return this.addDomHandler(handler, KeyDownEvent.getType());
+	}
+
+	@Override
+	public HandlerRegistration addKeyPressHandler(KeyPressHandler handler)
+	{
+		return this.addDomHandler(handler, KeyPressEvent.getType());
 	}
 
 }
