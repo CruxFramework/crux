@@ -55,10 +55,10 @@ public class Zoom
 	private boolean keepPan = true;
 	
 	// The current zoom level (scale)
-	private Double level = 1d;
+	private double level = 1d;
 
 	// The current mouse position, used for panning
-	private	Integer mouseX = 0, mouseY = 0;
+	private	double mouseX = 0, mouseY = 0;
 
 	// Timeout before pan is activated
 	private Integer panEngageTimeout = -1, panUpdateInterval = -1;
@@ -79,7 +79,7 @@ public class Zoom
 		return $wnd.innerHeight;
 	}-*/;
 
-	public native double getTopBoundingClientRect(Element element) /*-{
+	public native double getWidthBoundingClientRect(Element element) /*-{
 		return element.getBoundingClientRect().width;
 	}-*/;
 
@@ -87,11 +87,15 @@ public class Zoom
 		return element.getBoundingClientRect().left;
 	}-*/;
 
+	public native double getTopBoundingClientRect(Element element) /*-{
+		return element.getBoundingClientRect().top;
+	}-*/;
+	
 	public native double getRightBoundingClientRect(Element element) /*-{
 		return element.getBoundingClientRect().right;
 	}-*/;
 
-	public native double getBottomBoundingClientRect(Element element) /*-{
+	public native double getHeightBoundingClientRect(Element element) /*-{
 		return element.getBoundingClientRect().height;
 	}-*/;
 
@@ -117,15 +121,15 @@ public class Zoom
 		// Zoom out if the user hits escape
 		$doc.addEventListener( 'keyup', function( event ) {
 			if( this.@org.cruxframework.crux.core.client.animation.Zoom::getLevel()() !== 1 && event.keyCode === 27 ) {
-				zoom.out();
+				this.@org.cruxframework.crux.core.client.animation.Zoom::out()();
 			}
 		} );
 
 		// Monitor mouse movement for panning
 		$doc.addEventListener( 'mousemove', function( event ) {
 			if( this.@org.cruxframework.crux.core.client.animation.Zoom::getLevel()() !== 1 ) {
-				this.@org.cruxframework.crux.core.client.animation.Zoom::setMouseX(Ljava/lang/Integer;)(event.clientX);
-				this.@org.cruxframework.crux.core.client.animation.Zoom::setMouseY(Ljava/lang/Integer;)(event.clientY);
+				this.@org.cruxframework.crux.core.client.animation.Zoom::setMouseX(D)(event.clientX);
+				this.@org.cruxframework.crux.core.client.animation.Zoom::setMouseY(D)(event.clientY);
 			}
 		} );
 	}-*/;
@@ -141,7 +145,7 @@ public class Zoom
 	 * @param scale
 	 */
 	public native void magnify(double pageOffsetX, double pageOffsetY, double elementOffsetX, double elementOffsetY, double scale) /*-{
-		if( this.@org.cruxframework.crux.core.client.animation.Zoom::isSupported()() ) {
+		if( @org.cruxframework.crux.core.client.animation.Zoom::isSupported()() ) {
 			var origin = pageOffsetX +'px '+ pageOffsetY +'px',
 				transform = 'translate('+ -elementOffsetX +'px,'+ -elementOffsetY +'px) scale('+ scale +')';
 
@@ -178,7 +182,7 @@ public class Zoom
 				$doc.body.style.zoom = scale;
 			}
 		}
-		this.@org.cruxframework.crux.core.client.animation.Zoom::setLevel(Ljava/lang/Double;)(scale);
+		this.@org.cruxframework.crux.core.client.animation.Zoom::setLevel(D)(scale);
 	}-*/;
 
 	/**
@@ -243,14 +247,14 @@ public class Zoom
 		}
 
 		// Space around the zoomed in element to leave on screen
-		Integer padding = 20;
-		Double width = getTopBoundingClientRect(element) + ( padding * 2 );
-		Double height = getBottomBoundingClientRect(element) + ( padding * 2 );
-		Double x = getLeftBoundingClientRect(element) - padding;
-		Double y = getRightBoundingClientRect(element) - padding;
+		int padding = 20;
+		double width = getWidthBoundingClientRect(element) + ( padding * 2 );
+		double height = getHeightBoundingClientRect(element) + ( padding * 2 );
+		double x = getLeftBoundingClientRect(element) - padding;
+		double y = getTopBoundingClientRect(element) - padding;
 
 		// If width/height values are set, calculate scale from those values
-		Double scale = Math.max( Math.min( getWindowInnerWidth() / width, getWindowInnerHeight() / height ), 1 );
+		double scale = Math.max( Math.min( getWindowInnerWidth() / width, getWindowInnerHeight() / height ), 1 );
 
 		if(scale > 1)
 		{
@@ -300,32 +304,32 @@ public class Zoom
 		level = 1d;
 	}
 
-	public void setMouseX(Integer mouseX) 
+	public void setMouseX(double mouseX) 
 	{
 		this.mouseX = mouseX;
 	}
 
-	public Integer getMouseX() 
+	public double getMouseX() 
 	{
 		return mouseX;
 	}
 
-	public void setMouseY(Integer mouseY) 
+	public void setMouseY(double mouseY) 
 	{
 		this.mouseY = mouseY;
 	}
 
-	public Integer getMouseY() 
+	public double getMouseY() 
 	{
 		return mouseY;
 	}
 
-	public void setLevel(Double level) 
+	public void setLevel(double level) 
 	{
 		this.level = level;
 	}
 
-	public Double getLevel() 
+	public double getLevel() 
 	{
 		return level;
 	}
