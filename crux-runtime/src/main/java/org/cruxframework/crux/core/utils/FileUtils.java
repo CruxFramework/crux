@@ -219,8 +219,13 @@ public class FileUtils
 	 */
 	public static void setTempDir()
 	{
-		String tmpDir = System.getProperty("java.io.tmpdir");
-		setTempDir(tmpDir + File.separator + ConfigurationFactory.getConfigurations().cruxCompilationTempFolder());
+		if(Boolean.parseBoolean(ConfigurationFactory.getConfigurations().isRelativeCruxCompilationTempFolder()))
+		{
+			setTempDir(System.getProperty("java.io.tmpdir") + File.separator + ConfigurationFactory.getConfigurations().cruxCompilationTempFolder());
+		} else
+		{
+			setTempDir(ConfigurationFactory.getConfigurations().cruxCompilationTempFolder());
+		}
 	}
 
 	/**
