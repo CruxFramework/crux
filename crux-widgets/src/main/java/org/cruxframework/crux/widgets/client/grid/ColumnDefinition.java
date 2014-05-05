@@ -18,8 +18,8 @@ package org.cruxframework.crux.widgets.client.grid;
 import org.cruxframework.crux.core.client.utils.ObjectUtils;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 
 public class ColumnDefinition
@@ -32,6 +32,7 @@ public class ColumnDefinition
 	boolean frozen;
 	HorizontalAlignmentConstant horizontalAlign;
 	VerticalAlignmentConstant verticalAlign;
+	private ColumnEditorValidator columnEditorValidator;
 	
 	protected boolean isDataColumn = false;
 	
@@ -248,4 +249,23 @@ public class ColumnDefinition
 	{
 		this.isDataColumn = dataColumn;
 	}
+	
+
+	/**
+	 * @return ColumnEditorValidator Interface to validate the column value
+	 */
+	public ColumnEditorValidator getColumnEditorValidator()
+	{
+		return columnEditorValidator;
+	}
+	
+	/**
+	 * Interface to validate the column value
+	 * @param columnEditorValidator
+	 */
+	public void setColumnEditorValidator(ColumnEditorValidator columnEditorValidator)
+	{
+		this.columnEditorValidator = columnEditorValidator;
+	}
+
 }

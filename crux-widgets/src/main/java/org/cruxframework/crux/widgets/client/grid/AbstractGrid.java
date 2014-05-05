@@ -579,6 +579,19 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * @param row
 	 */
 	protected abstract void fireRowClickEvent(R row);
+	
+	
+	/** Fires a row edit event
+	 * @param row
+	 */
+	protected abstract void fireRowEditEvent(R row);
+	
+	
+	/** Fires a before row edit event
+	 * @param row
+	 */
+	protected abstract void fireBeforeRowEditEvent(R row);
+	
 		
 	/**
 	 * Fires a row double click event
