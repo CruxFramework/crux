@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.widgets.client.rss.feed;
 
+import org.cruxframework.crux.core.client.Crux;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -172,7 +174,7 @@ public final class Loader {
    }-*/;
 
   private static void setupDocument(Element doc, String apiKey) {
-    String docContents = Resources.bootstrap();
+    String docContents = Resources.bootstrap(Crux.getConfig().googleFeedAPIUseHTTPS());
     docContents = docContents.replaceAll("KEY", (apiKey != null) ? "?key=" + apiKey : "");
 
     openDocument(doc);

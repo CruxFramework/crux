@@ -55,15 +55,23 @@ public class CruxClientConfigProxyCreator extends AbstractInterfaceWrapperProxyC
 		generateEnableChildrenWindowsDebugMethod(sourceWriter);
 		generateEnableCrux2OldInterfacesCompatibility(sourceWriter);
 		generatePreferWebSQLForNativeDB(sourceWriter);
+		generateGoogleFeedAPIUseHTTPS(sourceWriter);
     }
 
+	protected void generateGoogleFeedAPIUseHTTPS(SourcePrinter sourceWriter)
+    {
+		sourceWriter.println("public boolean googleFeedAPIUseHTTPS(){");
+		sourceWriter.println("return " + ConfigurationFactory.getConfigurations().googleFeedAPIUseHTTPS() + ";");
+		sourceWriter.println("}");
+    }
+	
 	protected void generatePreferWebSQLForNativeDB(SourcePrinter sourceWriter)
     {
 		sourceWriter.println("public boolean preferWebSQLForNativeDB(){");
 		sourceWriter.println("return " + ConfigurationFactory.getConfigurations().preferWebSQLForNativeDB() + ";");
 		sourceWriter.println("}");
     }
-
+	
 	/**
 	 * @param sourceWriter
 	 */

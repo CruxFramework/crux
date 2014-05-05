@@ -32,4 +32,5 @@ public interface CruxClientConfig
 	boolean enableDebugForURL(String url);
 	boolean enableCrux2OldInterfacesCompatibility();
 	boolean preferWebSQLForNativeDB();
+	boolean googleFeedAPIUseHTTPS();
 }

@@ -17,10 +17,10 @@ package org.cruxframework.crux.widgets.client.rss.feed;
 
 public class Resources
 {
-	public static String bootstrap()
+	public static String bootstrap(boolean useHTTPS)
 	{
 		return "<html>\n<head>\n"+
-			   "<script type=\"text/javascript\" src=\"http://www.google.com/jsapiKEY\"></script>\n"+
+			   "<script type=\"text/javascript\" src=\"" + (useHTTPS ? "https" : "http") + "://www.google.com/jsapiKEY\"></script>\n"+
 			   "<script type=\"text/javascript\">\n"+
 			   "try {"+
 			   "google.load('feeds', '1', {'nocss' : true});"+
