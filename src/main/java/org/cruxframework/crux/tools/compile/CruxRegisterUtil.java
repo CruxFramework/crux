@@ -54,8 +54,10 @@ public class CruxRegisterUtil
 
 	public static void removeOldTempFiles() 
 	{
+		//Gets the crux compilation temp dir
 		FileUtils.setTempDir();
 		CruxBridge.removeOldCompilationFiles();
+		//Makes sure that the file is present
 		FileUtils.getTempDirFile();
 	}
 
