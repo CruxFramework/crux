@@ -59,7 +59,7 @@ public class ColumnDefinitions
 	/**
 	 * Gets all registered columns definition
 	 */
-	FastList<ColumnDefinition> getDefinitions()
+	public FastList<ColumnDefinition> getDefinitions()
 	{
 		return definitionsInOrder;
 	}
@@ -68,7 +68,7 @@ public class ColumnDefinitions
 	 * Gets a registered column definition by its key
 	 * @param key
 	 */
-	ColumnDefinition getDefinition(String key)
+	public ColumnDefinition getDefinition(String key)
 	{
 		return definitionsByKey.get(key);
 	}
@@ -79,7 +79,7 @@ public class ColumnDefinitions
 	 * @param considerInvisibleColumns 
 	 */
 	//TODO: check invalid conversion type int -> string | string -> int - add a try catch
-	int getColumnIndex(String key, boolean considerInvisibleColumns)
+	public int getColumnIndex(String key, boolean considerInvisibleColumns)
 	{
 		if(!considerInvisibleColumns)
 		{
@@ -125,7 +125,7 @@ public class ColumnDefinitions
 	 * Gets the number of columns that will be rendered
 	 * @return the visible column count
 	 */
-	int getVisibleColumnCount()
+	public int getVisibleColumnCount()
 	{
 		if(this.visibleColumnCount == -1)
 		{
