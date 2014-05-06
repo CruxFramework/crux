@@ -163,7 +163,7 @@ implements HasHTMLFactory<RichTextAreaContext>, HasInitializeHandlersFactory<Ric
 		String formatter = ViewFactoryCreator.createVariableName("formatter");
 		printlnPostProcessing(Formatter.class.getCanonicalName()+" "+formatter+" = "+context.getWidget()+".getFormatter();");
 		
-		printlnPostProcessing("if (formatter != null){");
+		printlnPostProcessing("if ("+formatter+" != null){");
 			if (context.declaredProperties.containsKey("backColor"))
 			{
 				printlnPostProcessing(formatter+".setBackColor("+EscapeUtils.quote(context.declaredProperties.get("backColor"))+");");
@@ -203,54 +203,54 @@ implements HasHTMLFactory<RichTextAreaContext>, HasInitializeHandlersFactory<Ric
 				default:
 					printlnPostProcessing(formatter+".setFontSize("+FontSize.class.getCanonicalName()+".MEDIUM);");
 				}
+			}
 			printlnPostProcessing("}");
 
-			if (context.declaredProperties.containsKey("foreColor"))
-			{
-				printlnPostProcessing(formatter+".setForeColor("+EscapeUtils.quote(context.declaredProperties.get("foreColor"))+");");
-			}
+		if (context.declaredProperties.containsKey("foreColor"))
+		{
+			printlnPostProcessing(formatter+".setForeColor("+EscapeUtils.quote(context.declaredProperties.get("foreColor"))+");");
+		}
 
-			if (context.declaredProperties.containsKey("justification"))
+		if (context.declaredProperties.containsKey("justification"))
+		{
+			String justification = context.declaredProperties.get("justification");
+			if (justification.equalsIgnoreCase("center"))
 			{
-				String justification = context.declaredProperties.get("justification");
-				if (justification.equalsIgnoreCase("center"))
-				{
-					printlnPostProcessing(formatter+".setJustification("+Justification.class.getCanonicalName()+".CENTER);");
-				}
-				else if (justification.equalsIgnoreCase("left"))
-				{
-					printlnPostProcessing(formatter+".setJustification("+Justification.class.getCanonicalName()+".LEFT);");
-				}
-				else if (justification.equalsIgnoreCase("right"))
-				{
-					printlnPostProcessing(formatter+".setJustification("+Justification.class.getCanonicalName()+".RIGHT);");
-				}
+				printlnPostProcessing(formatter+".setJustification("+Justification.class.getCanonicalName()+".CENTER);");
 			}
+			else if (justification.equalsIgnoreCase("left"))
+			{
+				printlnPostProcessing(formatter+".setJustification("+Justification.class.getCanonicalName()+".LEFT);");
+			}
+			else if (justification.equalsIgnoreCase("right"))
+			{
+				printlnPostProcessing(formatter+".setJustification("+Justification.class.getCanonicalName()+".RIGHT);");
+			}
+		}
 
-			if (context.declaredProperties.containsKey("bold") && Boolean.parseBoolean(context.declaredProperties.get("bold")))
-			{
-				printlnPostProcessing(formatter+".toggleBold();");
-			}
-			if (context.declaredProperties.containsKey("italic") && Boolean.parseBoolean(context.declaredProperties.get("italic")))
-			{
-				printlnPostProcessing(formatter+".toggleItalic();");
-			}
-			if (context.declaredProperties.containsKey("subscript") && Boolean.parseBoolean(context.declaredProperties.get("subscript")))
-			{
-				printlnPostProcessing(formatter+".toggleSubscript();");
-			}
-			if (context.declaredProperties.containsKey("superscript") && Boolean.parseBoolean(context.declaredProperties.get("superscript")))
-			{
-				printlnPostProcessing(formatter+".toggleSuperscript();");
-			}
-			if (context.declaredProperties.containsKey("underline") && Boolean.parseBoolean(context.declaredProperties.get("underline")))
-			{
-				printlnPostProcessing(formatter+".toggleUnderline();");
-			}
-			if (context.declaredProperties.containsKey("strikethrough") && Boolean.parseBoolean(context.declaredProperties.get("strikethrough")))
-			{
-				printlnPostProcessing(formatter+".toggleStrikethrough();");
-			}
+		if (context.declaredProperties.containsKey("bold") && Boolean.parseBoolean(context.declaredProperties.get("bold")))
+		{
+			printlnPostProcessing(formatter+".toggleBold();");
+		}
+		if (context.declaredProperties.containsKey("italic") && Boolean.parseBoolean(context.declaredProperties.get("italic")))
+		{
+			printlnPostProcessing(formatter+".toggleItalic();");
+		}
+		if (context.declaredProperties.containsKey("subscript") && Boolean.parseBoolean(context.declaredProperties.get("subscript")))
+		{
+			printlnPostProcessing(formatter+".toggleSubscript();");
+		}
+		if (context.declaredProperties.containsKey("superscript") && Boolean.parseBoolean(context.declaredProperties.get("superscript")))
+		{
+			printlnPostProcessing(formatter+".toggleSuperscript();");
+		}
+		if (context.declaredProperties.containsKey("underline") && Boolean.parseBoolean(context.declaredProperties.get("underline")))
+		{
+			printlnPostProcessing(formatter+".toggleUnderline();");
+		}
+		if (context.declaredProperties.containsKey("strikethrough") && Boolean.parseBoolean(context.declaredProperties.get("strikethrough")))
+		{
+			printlnPostProcessing(formatter+".toggleStrikethrough();");
 		}
 	}
 	
