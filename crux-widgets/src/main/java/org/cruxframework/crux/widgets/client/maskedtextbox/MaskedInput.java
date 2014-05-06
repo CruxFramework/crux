@@ -508,7 +508,7 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 			}
 		}
 	}
-
+	
 	/**
 	 *
 	 * @param allow
@@ -517,44 +517,40 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 	private int checkVal(boolean allow)
 	{
 		String test = textBox.getText();
-//		int lastMatch = -1;
-//		int pos = 0;
-		int i = 0;
-		int firstNoMatch = test.length();
+		int lastMatch = -1;
+		int pos=0;
+		int i=0;
 
-		for (i = 0; i < test.length(); i++)
+		for (i=0; i<length; i++)
 		{
-			char c = test.charAt(i);
-			
 			if (tests.get(i) != null && tests.get(i).length() > 0)
 			{
-				if (("" + c).matches(tests.get(i)))
+				buffer[i] = placeHolder;
+				while (pos++ < test.length())
 				{
-					buffer[i] = c;
-				} else
-				{
-					buffer[i] = placeHolder;
-					if (firstNoMatch == test.length())
+					char c = test.charAt(pos-1);
+					if ((""+c).matches(tests.get(i)))
 					{
-						firstNoMatch = i;
+						buffer[i] = c;
+						lastMatch = i;
+						break;
 					}
 				}
-			} else
-			{
-				buffer[i] = c;
+				if (pos > test.length())
+				{
+					break;
+				}
 			}
 		}
-		
-		int lastMatch = firstNoMatch - 1;
-		
-		if (!allow && lastMatch + 1 < partialPosition)
+		if (!allow && lastMatch+1 < partialPosition)
 		{
-			if (clearIfNotValid)
+			if(clearIfNotValid)
 			{
 				textBox.setText("");
 				clearBuffer(0, length);
 			}
-		} else if (allow || lastMatch + 1 >= partialPosition)
+		}
+		else if (allow || lastMatch+1 >= partialPosition)
 		{
 			writeBuffer();
 			if (!allow)
