@@ -9,6 +9,13 @@ import org.cruxframework.crux.widgets.client.util.draganddrop.MoveCapability.Mov
 import org.cruxframework.crux.widgets.client.util.draganddrop.ResizeCapability;
 import org.cruxframework.crux.widgets.client.util.draganddrop.ResizeCapability.Resizable;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.logical.shared.HasOpenHandlers;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
@@ -20,7 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
  * The base implementation for dialog boxes.
  * @author Gesse Dafe
  */
-public abstract class AbstractDialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>
+public abstract class AbstractDialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>, HasCloseHandlers<PopupPanel>, HasOpenHandlers<PopupPanel>
 {
 	private static final int MIN_WIDTH = 100;
 	private static final int MIN_HEIGHT = 50;
@@ -81,6 +88,20 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 		return resizer;
 	}
 
+	@Override
+	public void show() 
+	{
+		super.show();
+		OpenEvent.fire(AbstractDialogBox.this, AbstractDialogBox.this);
+	}
+	
+	@Override
+	public void hide() 
+	{
+		super.hide();
+		CloseEvent.fire(AbstractDialogBox.this, AbstractDialogBox.this);
+	}
+	
 	/**
 	 * Creates the dialog's title bar 
 	 * @param movable
@@ -220,5 +241,17 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	public int getAbsoluteHeight()
 	{
 		return getElement().getOffsetHeight();
+	}
+	
+	@Override
+	public HandlerRegistration addCloseHandler(CloseHandler<PopupPanel> handler)
+	{
+		return addHandler(handler, CloseEvent.getType());
+	}
+	
+	@Override
+	public HandlerRegistration addOpenHandler(OpenHandler<PopupPanel> handler) 
+	{
+		return addHandler(handler, OpenEvent.getType());
 	}
 }
