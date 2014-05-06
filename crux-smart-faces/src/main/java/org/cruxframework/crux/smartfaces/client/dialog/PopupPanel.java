@@ -34,6 +34,9 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.logical.shared.HasOpenHandlers;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -59,7 +62,7 @@ import com.google.gwt.user.client.ui.UIObject;
  * 
  * @author Thiago da Rosa de Bustamante
  */
-public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCloseHandlers<PopupPanel>, NativePreviewHandler
+public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCloseHandlers<PopupPanel>, HasOpenHandlers<PopupPanel>, NativePreviewHandler
 {
 	private static final String DEFAULT_GLASS_STYLE_NAME = "faces-PopupPanelGlass";
 	
@@ -292,6 +295,12 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	public HandlerRegistration addCloseHandler(CloseHandler<PopupPanel> handler)
 	{
 		return addHandler(handler, CloseEvent.getType());
+	}
+	
+	@Override
+	public HandlerRegistration addOpenHandler(OpenHandler<PopupPanel> handler) 
+	{
+		return addHandler(handler, OpenEvent.getType());
 	}
 
 	/**
@@ -639,7 +648,14 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		if (centered && animated)
 		{
 			setVisible(false);
-			setState(true, false, false, null);
+			setState(true, false, false, new StateChangeCallback()
+			{
+				@Override
+				public void onStateChange()
+				{
+					OpenEvent.fire(PopupPanel.this, PopupPanel.this);
+				}
+			});
 			fixPositionToCenter();
 			setVisible(true);
 			runEntranceAnimation(new StateChangeCallback()
@@ -653,7 +669,14 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 		else
 		{
-			setState(true, false, animated, null);
+			setState(true, false, animated, new StateChangeCallback()
+			{
+				@Override
+				public void onStateChange()
+				{
+					OpenEvent.fire(PopupPanel.this, PopupPanel.this);
+				}
+			});
 		}
 	}
 
