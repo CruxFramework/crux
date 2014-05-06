@@ -31,6 +31,12 @@ import org.cruxframework.crux.widgets.client.event.SelectHandler;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.HasCloseHandlers;
+import com.google.gwt.event.logical.shared.HasOpenHandlers;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -47,7 +53,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ConfirmDialog  implements HasOkHandlers, HasCancelHandlers, HasAnimation, IsWidget
+public class ConfirmDialog  implements HasOkHandlers, HasCancelHandlers, HasAnimation, IsWidget, HasCloseHandlers<ConfirmDialog>, HasOpenHandlers<ConfirmDialog>
 {
 	private static final String DEFAULT_STYLE_NAME = "crux-ConfirmDialog";
 	private DialogBox dialogBox;
@@ -239,12 +245,12 @@ public class ConfirmDialog  implements HasOkHandlers, HasCancelHandlers, HasAnim
 			dialogBox.center();
 			dialogBox.show();
 			okButton.setFocus(true);
+			OpenEvent.fire(ConfirmDialog.this, ConfirmDialog.this);
 		}
 		catch (Exception e)
 		{
 			Crux.getErrorHandler().handleError(e);
 			Screen.unblockToUser();
-			
 		}
 	}
 
@@ -255,6 +261,7 @@ public class ConfirmDialog  implements HasOkHandlers, HasCancelHandlers, HasAnim
 	{
 		dialogBox.hide();
 		Screen.unblockToUser();
+		CloseEvent.fire(ConfirmDialog.this, ConfirmDialog.this);
 	}
 	
 	/**
@@ -426,4 +433,16 @@ public class ConfirmDialog  implements HasOkHandlers, HasCancelHandlers, HasAnim
     {
 		dialogBox.fireEvent(event);
     }
+	
+	@Override
+	public HandlerRegistration addCloseHandler(CloseHandler<ConfirmDialog> handler)
+	{
+		return dialogBox.addHandler(handler, CloseEvent.getType());
+	}
+	
+	@Override
+	public HandlerRegistration addOpenHandler(OpenHandler<ConfirmDialog> handler) 
+	{
+		return dialogBox.addHandler(handler, OpenEvent.getType());
+	}
 }
