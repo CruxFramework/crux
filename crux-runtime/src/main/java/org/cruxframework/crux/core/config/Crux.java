@@ -28,9 +28,6 @@ public interface Crux
 	@DefaultServerMessage("true")
 	String isRelativeCruxCompilationTempFolder();
 	
-	@DefaultServerMessage("false")
-	String googleFeedAPIUseHTTPS();
-	
 	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryImpl")
 	String restServiceFactory();
 	
