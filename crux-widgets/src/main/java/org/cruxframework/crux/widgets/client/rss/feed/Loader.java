@@ -173,7 +173,7 @@ public final class Loader {
    }-*/;
 
   private static void setupDocument(Element doc, String apiKey) {
-    String docContents = Resources.bootstrap(Window.Location.getProtocol().equals("https"));
+    String docContents = Resources.bootstrap(Window.Location.getProtocol().equals("https:"));
     docContents = docContents.replaceAll("KEY", (apiKey != null) ? "?key=" + apiKey : "");
 
     openDocument(doc);
