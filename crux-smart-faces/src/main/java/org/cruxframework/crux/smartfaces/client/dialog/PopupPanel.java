@@ -15,6 +15,9 @@
  */
 package org.cruxframework.crux.smartfaces.client.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.css.animation.Animation;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
@@ -84,6 +87,8 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	private int left = -1;
 	private int top = -1;
 	
+	private static List<CloseHandler<PopupPanel>> defaultCloseHandlers = new ArrayList<CloseHandler<PopupPanel>>();
+	private static List<OpenHandler<PopupPanel>> defaultOpenHandlers = new ArrayList<OpenHandler<PopupPanel>>();
 	
 	/**
 	 * Creates an empty popup panel. A child widget must be added to it before
@@ -136,13 +141,28 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 			style.setBottom(0, Unit.PX);
 			style.setRight(0, Unit.PX);
 		}
+
+		if(defaultCloseHandlers != null)
+		{
+			for(CloseHandler<PopupPanel> closeHandler : defaultCloseHandlers)
+			{
+				this.addCloseHandler(closeHandler);
+			}
+		}
+		
+		if(defaultOpenHandlers != null)
+		{
+			for(OpenHandler<PopupPanel> openHandler : defaultOpenHandlers)
+			{
+				this.addOpenHandler(openHandler);
+			}
+		}
 		
 		containerElement = Document.get().createDivElement().cast();
 		super.getContainerElement().appendChild(containerElement);
 		getElement().getStyle().setPosition(Position.ABSOLUTE);
 	    setPosition(0, 0);
 	    setStyleName(getContainerElement(), "popupContent");
-	    
 	}
 	
 	/**
@@ -956,5 +976,31 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	private static interface StateChangeCallback
 	{
 		void onStateChange();
+	}
+	
+	/**
+	 * Add a default open handler that will be appended to each created object
+	 * @param defaultOpenHandler
+	 */
+	public static void addDefaultOpenHandler(OpenHandler<PopupPanel> defaultOpenHandler) 
+	{
+		if(defaultOpenHandlers == null)
+		{
+			defaultOpenHandlers = new ArrayList<OpenHandler<PopupPanel>>();
+		}
+		defaultOpenHandlers.add(defaultOpenHandler);
+	}
+	
+	/**
+	 * Add a default close handler that will be appended to each created object
+	 * @param defaultCloseHandler
+	 */
+	public static void addDefaultCloseHandler(CloseHandler<PopupPanel> defaultCloseHandler) 
+	{
+		if(defaultCloseHandlers == null)
+		{
+			defaultCloseHandlers = new ArrayList<CloseHandler<PopupPanel>>();
+		}
+		defaultCloseHandlers.add(defaultCloseHandler);
 	}
 }
