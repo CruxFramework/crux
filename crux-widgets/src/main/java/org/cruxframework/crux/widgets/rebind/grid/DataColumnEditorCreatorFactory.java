@@ -113,7 +113,7 @@ public class DataColumnEditorCreatorFactory
 		imports.add(Logger.class.getCanonicalName());
 		imports.add(Level.class.getCanonicalName());
 		imports.add(DataColumnDefinition.class.getCanonicalName());
-		imports.add("com.google.gwt.core.client.GWT");
+		imports.add(GWT.class.getCanonicalName());
 	    return imports.toArray(new String[imports.size()]);
     }
 }
