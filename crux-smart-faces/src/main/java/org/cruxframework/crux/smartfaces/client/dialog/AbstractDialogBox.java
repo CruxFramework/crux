@@ -31,6 +31,7 @@ import org.cruxframework.crux.smartfaces.client.util.dragdrop.ResizeCapability.R
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -51,6 +52,9 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	private static final int MIN_HEIGHT = 50;
 	private static List<AbstractDialogBox> openDialogs = new ArrayList<AbstractDialogBox>();
 	private static HandlerRegistration closeHandler;
+	
+	private static List<CloseHandler<PopupPanel>> defaultCloseHandlers = new ArrayList<CloseHandler<PopupPanel>>();
+	private static List<OpenHandler<PopupPanel>> defaultOpenHandlers = new ArrayList<OpenHandler<PopupPanel>>();
 	
 	private SimplePanel body = new SimplePanel();
 	private Label title = new Label();
@@ -104,6 +108,22 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 		{
 			resizeHandle = prepareResizer();
 			split.add(resizeHandle);
+		}
+		
+		if(defaultCloseHandlers != null)
+		{
+			for(CloseHandler<PopupPanel> closeHandler : defaultCloseHandlers)
+			{
+				this.addCloseHandler(closeHandler);
+			}
+		}
+		
+		if(defaultOpenHandlers != null)
+		{
+			for(OpenHandler<PopupPanel> openHandler : defaultOpenHandlers)
+			{
+				this.addOpenHandler(openHandler);
+			}
 		}
 		
 		super.setWidget(split);
