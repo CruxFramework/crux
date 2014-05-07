@@ -1,5 +1,8 @@
 package org.cruxframework.crux.widgets.client.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.cruxframework.crux.widgets.client.button.Button;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
@@ -38,6 +41,9 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	private Label moveHandle;
 	private Label resizeHandle;
 	
+	private static List<CloseHandler<PopupPanel>> defaultCloseHandlers = new ArrayList<CloseHandler<PopupPanel>>();
+	private static List<OpenHandler<PopupPanel>> defaultOpenHandlers = new ArrayList<OpenHandler<PopupPanel>>();
+	
 	public AbstractDialogBox()
 	{
 		this(true, true, true);
@@ -57,6 +63,22 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 		split.setStyleName("dialogTitleBodySplit");
 		split.add(topBar);
 		split.add(body);
+		
+		if(defaultCloseHandlers != null)
+		{
+			for(CloseHandler<PopupPanel> closeHandler : defaultCloseHandlers)
+			{
+				this.addCloseHandler(closeHandler);
+			}
+		}
+		
+		if(defaultOpenHandlers != null)
+		{
+			for(OpenHandler<PopupPanel> openHandler : defaultOpenHandlers)
+			{
+				this.addOpenHandler(openHandler);
+			}
+		}
 		
 		if(resizable)
 		{
@@ -253,5 +275,31 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	public HandlerRegistration addOpenHandler(OpenHandler<PopupPanel> handler) 
 	{
 		return addHandler(handler, OpenEvent.getType());
+	}
+	
+	/**
+	 * Add a default open handler that will be appended to each created object
+	 * @param defaultOpenHandler
+	 */
+	public static void addDefaultOpenHandler(OpenHandler<PopupPanel> defaultOpenHandler) 
+	{
+		if(defaultOpenHandlers == null)
+		{
+			defaultOpenHandlers = new ArrayList<OpenHandler<PopupPanel>>();
+		}
+		defaultOpenHandlers.add(defaultOpenHandler);
+	}
+	
+	/**
+	 * Add a default close handler that will be appended to each created object
+	 * @param defaultCloseHandler
+	 */
+	public static void addDefaultCloseHandler(CloseHandler<PopupPanel> defaultCloseHandler) 
+	{
+		if(defaultCloseHandlers == null)
+		{
+			defaultCloseHandlers = new ArrayList<CloseHandler<PopupPanel>>();
+		}
+		defaultCloseHandlers.add(defaultCloseHandler);
 	}
 }
