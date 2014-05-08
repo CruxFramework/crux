@@ -20,7 +20,7 @@ import com.google.gwt.core.client.GWT;
 /**
  * @author Gesse S. F. Dafe
  * @author Thiago da Rosa de Bustamante
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
 public class StringUtils
 {
@@ -47,7 +47,7 @@ public class StringUtils
 	}
 	
 	/**
-	 * @author samuel.cardoso
+	 * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
 	 */
 	public interface Collator
 	{

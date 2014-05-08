@@ -32,6 +32,7 @@ import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
 import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
@@ -108,6 +109,7 @@ public class CodeServer
 		URL[] urls = ClasspathUrlFinder.findClassPaths();
 		Scanners.setSearchURLs(urls);
 		ModuleUtils.initializeScannerURLs(urls);
+		CruxRegisterUtil.registerFilesCruxBridge(null);
 		DevelopmentScanners.initializeScanners();
 		ServiceFactoryInitializer.initialize(null);
 		RestServiceFactoryInitializer.initialize(null);

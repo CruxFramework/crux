@@ -18,7 +18,7 @@ package org.cruxframework.crux.core.client.db.indexeddb.events;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 public class IDBObjectDeleteEvent extends JavaScriptObject

@@ -22,4 +22,5 @@ package org.cruxframework.crux.core.client.datasource;
 public interface LocalDataSourceCallback
 {
 	void execute();
+	void pageChanged(int startRecord, int endRecord);
 }

@@ -16,7 +16,7 @@
 package org.cruxframework.crux.core.client.utils;
 
 /**
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 public class Base64Utils

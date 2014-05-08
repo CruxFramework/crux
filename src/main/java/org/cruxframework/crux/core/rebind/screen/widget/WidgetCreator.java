@@ -413,6 +413,23 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
     {
     	return viewFactory.getSubTypeWriter(subType, superClass, interfaces, imports, isInterface);
     }
+    
+    
+    /**
+	 * Create a new printer for a subType.  That subType will be declared on the package name informed in the first parameter
+	 * 
+	 * @param packageName
+     * @param subType
+     * @param superClass
+     * @param interfaces
+     * @param imports
+     * @param isInterface
+     * @return 
+     */
+    public SourcePrinter getSubTypeWriter(String packageName,String subType, String superClass, String[] interfaces, String[] imports, boolean isInterface)
+    {
+    	return viewFactory.getSubTypeWriter(packageName,subType, superClass, interfaces, imports, isInterface);
+    }
 	
 	
 	/**
@@ -473,7 +490,20 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 */
 	public Class<?> getWidgetClass()
     {
-	    return viewFactory.getWidgetCreatorHelper(getWidgetFactoryDeclaration()).getWidgetType();
+	    return getWidgetClass(getWidgetFactoryDeclaration());
+    }
+
+	/**
+	 * @return
+	 */
+	public Class<?> getWidgetClass(String widgetDeclaration)
+    {
+		WidgetCreatorHelper widgetCreatorHelper = viewFactory.getWidgetCreatorHelper(widgetDeclaration);
+		if (widgetCreatorHelper == null)
+		{
+			throw new CruxGeneratorException("No widget registered for declaration ["+widgetDeclaration+"]."); 
+		}
+		return widgetCreatorHelper.getWidgetType();
     }
 
 	/**
