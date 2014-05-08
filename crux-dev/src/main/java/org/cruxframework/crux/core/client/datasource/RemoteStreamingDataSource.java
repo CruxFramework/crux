@@ -678,5 +678,5 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 	public T getBoundObject(DataSourceRecord<T> record)
 	{
 		return null;
-	}	
+	}
 }

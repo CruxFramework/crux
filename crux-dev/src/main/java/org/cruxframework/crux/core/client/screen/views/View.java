@@ -813,7 +813,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			{
 				//IE Bug. It does not found attachHandlers reference when running on a setTimeout function
 				private FastList<ViewActivateHandler> handlers = attachHandlers;
-
+				
 				@Override
 				public void execute()
 				{

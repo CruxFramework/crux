@@ -19,38 +19,30 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import com.google.gwt.event.dom.client.ClickEvent;
 /**
- * This annotation can be used to expose a controller method as an event handler method.
+ * This annotation can be used to expose a controller method as an factory method.
  * It only makes any effect if used on methods of a {@link Controller} class.
  * <p>
  * Methods annotated with this annotation can be refereed on {@code .crux.xml} and {@code .view.xml} pages. 
- * A method must obey the following constraints to be exposed as an event handler:  
+ * A method must obey the following constraints to be exposed as a factory:  
  * <p>
- * 1) Be annotated with {@code @}Expose annotation.
+ * 1) Be annotated with {@code @}Factory annotation.
  * <p>
  * 2) Have public visibility.
  * <p>
- * 3) Have no parameter or have only one parameter, with type equals to the type of the event
- * handled by the method.
+ * 3) Have only one parameter (The factory input).
+ * <p>
+ * 4) Return a value (not void). This is the factory output.
  * <p>
  * For example:
  * <pre>
  * {@code @}{@link Controller}("myController")
  * public class MyController
  * {
- *    {@code @}Expose
- *    public void myEventHandler()
+ *    {@code @}Factory
+ *    public Label myWidgetFactory(Person person)
  *    {
- *    	Window.alert("event dispatched!");
- *    }
- *    
- *    //Only can handle click events 
- *    {@code @}Expose
- *    public void myClickEventHandler({@link ClickEvent} event)
- *    {
- *    	Window.alert("event dispatched!");
+ *    	return new Label(person.getName());
  *    }
  * }
  * </pre>
@@ -61,10 +53,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
  *  xmlns="http://www.w3.org/1999/xhtml"
  *  xmlns:c="http://www.cruxframework.org/crux"  
  *  xmlns:g="http://www.cruxframework.org/crux/gwt"{@code >}
+ *  xmlns:faces="http://www.cruxframework.org/crux/smart-faces"
  *     {@code <body>}
- *        {@code <c:screen} useController="myController" {@code />}
- *        {@code <g:button} id="myButton" onClick="myController.myClickEventHandler" 
- *            onDoubleClick="myController.myEventHandler" text="My Button" {@code ></g:button>}
+ *        {@code <c:screen} useController="myController" useDataSource="personDS" {@code />}
+ *          {@code <faces:widgetList dataSource="personDS" id="people" autoLoadData="true" pageSize="20" width="100%" height="100%">
+ *               <faces:widgetFactoryOnController onCreateWidget="myController.myWidgetFactory"/>
+ *          </faces:widgetList>}
  *     {@code </body>}
  *  {@code </html>}
  * </pre>
@@ -75,5 +69,5 @@ import com.google.gwt.event.dom.client.ClickEvent;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Expose {
+public @interface Factory {
 }

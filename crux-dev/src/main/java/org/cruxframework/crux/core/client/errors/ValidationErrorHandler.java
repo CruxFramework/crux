@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
  * </pre>
 
  * @author Thiago da Rosa de Bustamante
- * @author Samuel Almeida Cardoso
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
 public interface ValidationErrorHandler
 {

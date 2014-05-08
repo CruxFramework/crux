@@ -158,4 +158,9 @@ public abstract class AbstractViewBindableProxyCreator extends AbstractWrapperPr
 		srcWriter.println("return ret;");
 		srcWriter.println("}");
 	}
+	
+	protected void generateCheckView(SourcePrinter sourceWriter)
+    {
+	    sourceWriter.println("assert(__view != null):"+EscapeUtils.quote("View [") + "+this.__view+" +EscapeUtils.quote("] was not loaded. Ensure that desired view is loaded by the application (through useView declaration).")+";");
+    }
 }

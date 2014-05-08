@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 cruxframework.org.
+ * Copyright 2014 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,18 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.client.db;
+package org.cruxframework.crux.core.client.factory;
+
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * Database delete operation callback. 
- * Use this callback to delete the key from object written into the stores.
- * 
- * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
+ * @author Thiago da Rosa de Bustamante
+ *
  */
-public abstract class DatabaseDeleteCallback extends Callback
+public interface WidgetFactory<T>
 {
-	/**
-	 * Called when a delete operation is performed successfully.
-	 */
-	public abstract void onSuccess();
+	IsWidget createWidget(T value);
 }

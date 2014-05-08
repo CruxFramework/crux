@@ -18,7 +18,6 @@ package org.cruxframework.crux.core.rebind.screen.wrapper;
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.screen.views.Target;
 import org.cruxframework.crux.core.client.screen.views.View;
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractViewBindableProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 
@@ -136,7 +135,7 @@ public class WidgetAccessorProxyCreator extends AbstractViewBindableProxyCreator
 		String classSourceName = returnType.getParameterizedQualifiedSourceName();
 		sourceWriter.println("public "+classSourceName+" " + name+"(){");
 		sourceWriter.println(View.class.getCanonicalName()+" __view = "+View.class.getCanonicalName()+".getView(this.__view);");
-		sourceWriter.println("assert(__view != null):"+EscapeUtils.quote("View was not loaded. Ensure that desired view is loaded by the application (through useView declaration).")+";");
+		generateCheckView(sourceWriter);
 		sourceWriter.println("return ("+classSourceName+")__view.getWidget(\""+widgetName+"\");");
 		sourceWriter.println("}");
     }
