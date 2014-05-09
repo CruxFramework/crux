@@ -88,7 +88,7 @@ public class JsonPRestCreatorHelper
 	    srcWriter.println("public void onSuccess(String jsonText){");
 		srcWriter.println("try{");
 
-		srcWriter.println("JSONValue jsonValue = JSONParser.parseStrict(jsonText);");
+		srcWriter.println("JSONValue jsonValue = new JSONString(jsonText);");
 		String serializerName = new JSonSerializerProxyCreator(context, logger, callbackResultType).create();
 		srcWriter.println(callbackResultTypeName+" result = new "+serializerName+"().decode(jsonValue);");
 		

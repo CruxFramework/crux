@@ -57,6 +57,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.jsonp.client.JsonpRequestBuilder;
 import com.google.gwt.logging.client.LogConfiguration;
@@ -470,6 +471,7 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 				JSONValue.class.getCanonicalName(),
 				JSONObject.class.getCanonicalName(),
 				JSONNumber.class.getCanonicalName(),
+				JSONString.class.getCanonicalName(),
 				JSONParser.class.getCanonicalName(), 
 				URL.class.getCanonicalName(), 
 				Crux.class.getCanonicalName(),
