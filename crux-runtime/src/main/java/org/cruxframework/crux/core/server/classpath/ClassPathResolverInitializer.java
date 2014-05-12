@@ -60,7 +60,5 @@ public class ClassPathResolverInitializer
 	{
 		ClassPathResolverInitializer.classPathResolver = classPathResolver;
 	}
-	
-	
 
 }
