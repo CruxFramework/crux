@@ -274,7 +274,9 @@ public class Templates
 			URL registeredURL = foundTemplates.get(key);
 			if (!URLUtils.isIdenticResource(templateURL, registeredURL, templateId+".template.xml"))
 			{
-				throw new TemplateException("Duplicated template found. Library: ["+library+"]. Template: ["+templateId+"].");
+				logger.warn("Duplicated template found. Library: ["+library+"]. Template: ["+templateId+"].");
+				return;
+				//throw new TemplateException("Duplicated template found. Library: ["+library+"]. Template: ["+templateId+"].");
 			}
 		}
 		
