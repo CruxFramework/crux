@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
 import org.w3c.dom.Document;
 
@@ -29,6 +31,7 @@ import org.w3c.dom.Document;
  */
 public class OfflineScreens
 {
+	private static final Log logger = LogFactory.getLog(OfflineScreens.class);
 	private static Map<String, Set<String>> moduleOfflineIDs = new HashMap<String, Set<String>>();
 	private static Map<String, Document> moduleOfflineDocument = new HashMap<String, Document>();
 	private static boolean initialized = false;
@@ -104,6 +107,13 @@ public class OfflineScreens
 			ids = new HashSet<String>();
 			moduleOfflineIDs.put(module, ids);
 		}
+		
+		if(ids.contains(id))
+		{
+			logger.warn("Duplicated offline page found. Module: ["+module+"]. Id: ["+id+"].");
+			return;
+		}
+		
 		ids.add(id);
 		moduleOfflineDocument.put(id, screen);
 	}
