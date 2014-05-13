@@ -72,6 +72,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 /**
  * @author Gesse S. F. Dafe
  */
+//TODO: documentation - don't forget @CellName
 @DeclarativeFactory(id="grid", library="widgets", targetWidget=Grid.class)
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="pageSize", type=Integer.class, defaultValue="8"),
