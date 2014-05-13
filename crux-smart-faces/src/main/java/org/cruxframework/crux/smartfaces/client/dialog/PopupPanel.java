@@ -142,21 +142,35 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 			style.setRight(0, Unit.PX);
 		}
 
-		if(defaultCloseHandlers != null)
+		addCloseHandler(new CloseHandler<PopupPanel>()
 		{
-			for(CloseHandler<PopupPanel> closeHandler : defaultCloseHandlers)
-			{
-				this.addCloseHandler(closeHandler);
-			}
-		}
-		
-		if(defaultOpenHandlers != null)
+			@Override
+            public void onClose(CloseEvent<PopupPanel> event)
+            {
+				if(defaultCloseHandlers != null)
+				{
+					for(CloseHandler<PopupPanel> closeHandler : defaultCloseHandlers)
+					{
+						closeHandler.onClose(event);
+					}
+				}
+            }
+		});
+
+		addOpenHandler(new OpenHandler<PopupPanel>()
 		{
-			for(OpenHandler<PopupPanel> openHandler : defaultOpenHandlers)
-			{
-				this.addOpenHandler(openHandler);
-			}
-		}
+			@Override
+            public void onOpen(OpenEvent<PopupPanel> event)
+            {
+				if(defaultOpenHandlers != null)
+				{
+					for(OpenHandler<PopupPanel> openHandler : defaultOpenHandlers)
+					{
+						openHandler.onOpen(event);;
+					}
+				}
+            }
+		});
 		
 		containerElement = Document.get().createDivElement().cast();
 		super.getContainerElement().appendChild(containerElement);
