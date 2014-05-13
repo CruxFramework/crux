@@ -195,9 +195,7 @@ public class CrossDevices
 	{
 		if (templates.containsKey(deviceAdaptive+"_"+device.toString()))
 		{
-			logger.warn("Duplicated cross device file found. Library: ["+deviceAdaptive+"]. Template: ["+device.toString()+"].");
-			return;
-			//throw new CrossDevicesException("Duplicated cross device file found. Library: ["+deviceAdaptive+"]. Template: ["+device.toString()+"].");
+			throw new CrossDevicesException("Duplicated cross device file found. Library: ["+deviceAdaptive+"]. Template: ["+device.toString()+"].");
 		}
 		
 		if (!registeredDevices.containsKey(deviceAdaptive))

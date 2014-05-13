@@ -251,9 +251,7 @@ public class Views
 			{
 				if (!URLUtils.isIdenticResource(urls.get(0), view, viewId+".view.xml"))
 				{
-					logger.warn("Duplicated view identifier. View ["+viewId+"] is already registered.");
-					return;
-					//throw new ViewException("Duplicated view identifier. View ["+viewId+"] is already registered.");
+					throw new ViewException("Duplicated view identifier. View ["+viewId+"] is already registered.");
 				}
 			}
 			urls.add(view);
