@@ -58,13 +58,17 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.UIObject;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -89,6 +93,8 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	private boolean showRowDetailsIcon;
 	private boolean freezeHeaders;
 	private Boolean hasFrozenColumns;
+	private VerticalPanel verticalPanel;
+	private Label labelInfo;
 	
 	/**
 	 * Handles the event fired when the details of some row becomes visible.
@@ -201,9 +207,12 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		this.freezeHeaders = freezeHeaders;
 		this.showRowDetailsIcon = this.rowDetailWidgetCreator != null && showRowDetailsIcon;
 		
+		verticalPanel = new VerticalPanel();
+		
 		scrollingArea = new ScrollPanel();
 		scrollingArea.setStyleName(DEFAULT_STYLE_NAME);
-		initWidget(scrollingArea);
+		verticalPanel.add(scrollingArea);
+		initWidget(verticalPanel);
 		
 		if(hasFrozenCells())
 		{
@@ -241,6 +250,9 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		}
 		
 		scrollingArea.add(table.asWidget());
+		labelInfo = new Label();
+		labelInfo.setVisible(false);
+		verticalPanel.add(labelInfo);
 	}
 	
 	/**
@@ -934,5 +946,58 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Displays a message bellow the grid component
+	 * @param message
+	 */
+	public void setInfoMessage(String message)
+	{
+		setMessage(message, "msg-info-grid");
+	}
+
+	private void setMessage(String message, String cssClass)
+	{
+		Timer timer = new Timer() {
+			@Override
+			public void run()
+			{
+				labelInfo.setVisible(false);
+			}
+		};
+		
+		labelInfo.setStyleName(cssClass);
+		labelInfo.setText(message);
+		labelInfo.setVisible(true);
+		
+		timer.schedule(5000);
+	}
+	
+	/**
+	 * Displays a message bellow the grid component
+	 * @param message
+	 */
+	public void setErrorMessage(String message)
+	{
+		setMessage(message, "msg-error-grid");
+	}
+	
+	/**
+	 * Displays a message bellow the grid component
+	 * @param message
+	 */
+	public void setWarningMessage(String message)
+	{
+		setMessage(message, "msg-warning-grid");
+	}
+	
+	/**
+	 * Displays a message bellow the grid component
+	 * @param message
+	 */
+	public void setSuccessMessage(String message)
+	{
+		setMessage(message, "msg-success-grid");
 	}
 }

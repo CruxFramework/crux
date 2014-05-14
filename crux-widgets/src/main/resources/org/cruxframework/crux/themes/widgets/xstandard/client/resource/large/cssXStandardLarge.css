@@ -1329,5 +1329,75 @@ DIV, INPUT, BUTTON
 /***********************************************************/
 /***********************************************************/
 
+.msg-error-grid
+{
+	font-size:11px;
+	color: #FF2C19;
+	font-weight: bolder;
+	text-align: center;
+}
+
+.msg-success-grid
+{
+	font-size:11px;
+	color: #297A30;
+	font-weight: bolder;
+	text-align: center;
+}
+
+.msg-warning-grid
+{
+	font-size:11px;
+	color: #C4C04F;
+	font-weight: bolder;
+	text-align: center;
+}
+
+
+.msg-info-grid
+{
+	font-size:11px;
+	color: #2D3E86;
+	font-weight: bolder;
+	text-align: center;
+}
+
+
+.grid tr:hover{
+	background: #E4F6F1;
+}
+
+.grid tr
+{
+	height: 31px;
+}
+
+.grid td
+{
+	border: 1px solid #D4D4D4;
+	min-width: 100px;
+	background: #FFF !important;
+}
+
+.textboxSimple
+{
+	padding: 0px;
+	height: 30px;
+}
+
+.grid tr:first-child
+{
+	background: #4294C4;
+}
+
+.grid tr:first-child:HOVER
+{
+	background: #4294C4;
+}
+
+.header
+{
+	background: #FF0000;
+}
 
 

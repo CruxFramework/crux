@@ -26,6 +26,7 @@ import org.cruxframework.crux.widgets.client.event.SelectHandler;
 import org.cruxframework.crux.widgets.client.event.row.RowRenderHandler;
 import org.cruxframework.crux.widgets.client.grid.ColumnDefinition;
 import org.cruxframework.crux.widgets.client.grid.ColumnDefinitions;
+import org.cruxframework.crux.widgets.client.grid.ColumnEditorValidator;
 import org.cruxframework.crux.widgets.client.grid.DataColumnDefinition;
 import org.cruxframework.crux.widgets.client.grid.DataRow;
 import org.cruxframework.crux.widgets.client.grid.Grid;
@@ -47,6 +48,7 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox.Caption;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -88,6 +90,15 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	public void setDataSource(PagedDataSource<?> dataSource, boolean autoLoadData)
 	{
 		gridImpl.setDataSource(dataSource, autoLoadData);
+	}
+	
+	/** Add a validator to a editable column
+	 * @param key
+	 * @param columnEditorValidator
+	 */
+	public void addColumnEditorValidator(String key, ColumnEditorValidator columnEditorValidator)
+	{
+		gridImpl.addColumnEditorValidator(key, columnEditorValidator);
 	}
 	
 	/**
@@ -305,6 +316,15 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 			setWidget(this.grid);
 		}
 
+		/** Add a validator to a editable column
+		 * @param key
+		 * @param columnEditorValidator
+		 */
+		public void addColumnEditorValidator(String key, ColumnEditorValidator columnEditorValidator)
+		{
+			grid.addColumnEditorValidator(key,columnEditorValidator);
+		}
+		
 		/**
 		 * @param dataSource
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#setDataSource(org.cruxframework.crux.core.client.datasource.PagedDataSource)
@@ -319,6 +339,42 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 			grid.setDataSource(dataSource, autoLoadData);
 		}
 
+		/**
+		 * Displays a message bellow the grid component
+		 * @param message
+		 */
+		public void setInfoMessage(String message)
+		{
+			grid.setInfoMessage(message);
+		}
+
+		/**
+		 * Displays a message bellow the grid component
+		 * @param message
+		 */
+		public void setErrorMessage(String message)
+		{
+			grid.setErrorMessage(message);
+		}
+		
+		/**
+		 * Displays a message bellow the grid component
+		 * @param message
+		 */
+		public void setWarningMessage(String message)
+		{
+			grid.setWarningMessage(message);
+		}
+		
+		/**
+		 * Displays a message bellow the grid component
+		 * @param message
+		 */
+		public void setSuccessMessage(String message)
+		{
+			grid.setSuccessMessage(message);
+		}
+		
 		/**
 		 *
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#loadData()
@@ -871,4 +927,41 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    setHTML( html.asString() );
 	  }
 	}
+	
+	/**
+	 * Displays a message bellow the grid component
+	 * @param message
+	 */
+	public void setInfoMessage(String message)
+	{
+		gridImpl.setInfoMessage(message);
+	}
+
+	/**
+	 * Displays a message bellow the grid component
+	 * @param message
+	 */
+	public void setErrorMessage(String message)
+	{
+		gridImpl.setErrorMessage(message);
+	}
+	
+	/**
+	 * Displays a message bellow the grid component
+	 * @param message
+	 */
+	public void setWarningMessage(String message)
+	{
+		gridImpl.setWarningMessage(message);
+	}
+	
+	/**
+	 * Displays a message bellow the grid component
+	 * @param message
+	 */
+	public void setSuccessMessage(String message)
+	{
+		gridImpl.setSuccessMessage(message);
+	}
+	
 }
