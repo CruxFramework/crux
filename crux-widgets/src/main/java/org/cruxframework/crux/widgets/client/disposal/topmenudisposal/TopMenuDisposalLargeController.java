@@ -39,6 +39,8 @@ public class TopMenuDisposalLargeController extends DeviceAdaptiveController imp
 	
 	private MenuBar menuBar;
 	private SimpleViewContainer viewContainer;
+
+	private String viewName;
 	
 	@Override
 	public void addMenuEntry(final String label, final String targetView)
@@ -75,6 +77,22 @@ public class TopMenuDisposalLargeController extends DeviceAdaptiveController imp
 				}
 			}
 		});
+		
+		//Favorites
+		String hash = com.google.gwt.user.client.Window.Location.getHash();
+		if(hash != null && hash.startsWith(HASH + HISTORY_PREFIX))
+		{
+			String currentViewName = hash.replace(HASH + HISTORY_PREFIX, "");
+			showView(currentViewName, false);
+			History.newItem(HISTORY_PREFIX + currentViewName);
+		}
+		
+		//DefaultView
+		if(viewName != null)
+		{
+			showView(viewName.replace(HISTORY_PREFIX, ""), false);
+			History.newItem(HISTORY_PREFIX + viewName);
+		}
 	}
 
 	@Override
@@ -100,8 +118,6 @@ public class TopMenuDisposalLargeController extends DeviceAdaptiveController imp
 	@Override
 	public void setDefaultView(String viewName) 
 	{
-		viewContainer.showView(viewName);
-		Window.scrollTo(0, 0);
-		History.newItem(HISTORY_PREFIX + viewName);
+		this.viewName = viewName;
 	}
 }

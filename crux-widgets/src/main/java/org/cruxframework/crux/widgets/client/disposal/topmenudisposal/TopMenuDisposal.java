@@ -31,6 +31,8 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Templates;
 })
 public interface TopMenuDisposal extends DeviceAdaptive
 {
+	public static final String HASH = "#";
+	
 	void showMenu();
 	void addMenuEntry(String label, String targetView);
 	void showView(String viewName, boolean saveHistory);

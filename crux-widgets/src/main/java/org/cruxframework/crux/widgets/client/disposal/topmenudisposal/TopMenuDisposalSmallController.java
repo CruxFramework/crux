@@ -45,6 +45,8 @@ public class TopMenuDisposalSmallController extends DeviceAdaptiveController imp
 	private FlowPanel menuPanel;
 	private SimpleViewContainer viewContainer;
 	private String lastVisitedView = null;
+
+	private String viewName;
 	
 	@Override
 	public void addMenuEntry(String label, final String targetView)
@@ -85,6 +87,26 @@ public class TopMenuDisposalSmallController extends DeviceAdaptiveController imp
 				}
 			}
 		});
+		
+		//Favorites
+		String hash = com.google.gwt.user.client.Window.Location.getHash();
+		if(hash != null && hash.startsWith(HASH + HISTORY_PREFIX))
+		{
+			String currentViewName = hash.replace(HASH + HISTORY_PREFIX, "");
+			showView(currentViewName, false);
+			History.newItem(HISTORY_PREFIX + currentViewName);
+			return;
+		}
+		
+		//DefaultView
+		if(lastVisitedView == null)
+		{
+			viewContainer.showView(viewName);
+			lastVisitedView = viewName;
+			Window.scrollTo(0, 0);
+			History.newItem(HISTORY_PREFIX + viewName);
+			return;
+		}
 	}
 
 	@Expose
@@ -127,12 +149,6 @@ public class TopMenuDisposalSmallController extends DeviceAdaptiveController imp
 	@Override
 	public void setDefaultView(String viewName) 
 	{
-		if(lastVisitedView == null)
-		{
-			viewContainer.showView(viewName);
-			lastVisitedView = viewName;
-			Window.scrollTo(0, 0);
-			History.newItem(HISTORY_PREFIX + viewName);
-		}
+		this.viewName = viewName;
 	}
 }
