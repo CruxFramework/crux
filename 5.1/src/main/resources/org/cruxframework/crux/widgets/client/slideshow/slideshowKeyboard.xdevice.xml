@@ -1,0 +1,8 @@
+<x:xdevice xmlns:x="http://www.cruxframework.org/xdevice"
+           xmlns:gwt="http://www.cruxframework.org/crux/gwt" 
+           useController="slideshowKeyboardController">
+     <gwt:focusPanel id="focusPanel" onKeyDown="slideshowKeyboardController.onFocusPanelKeyDown">
+     	<gwt:dockPanel id="table" width="100%" height="100%">
+     	</gwt:dockPanel>
+     </gwt:focusPanel>
+</x:xdevice>

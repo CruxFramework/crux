@@ -1,0 +1,18 @@
+<x:xdevice xmlns="http://www.w3.org/1999/xhtml"
+		   xmlns:x="http://www.cruxframework.org/xdevice"
+           xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+		   xmlns:crux="http://www.cruxframework.org/crux/widgets"
+		   xmlns:xdev="http://www.cruxframework.org/crux/crossDevice"
+           useController="topMenuDisposalSmallController">
+	
+	<gwt:simplePanel id="header" styleName="headerPanel">
+		<gwt:label id="showMenuButton" styleName="showMenuButton" onTouchStart="topMenuDisposalSmallController.onShowMenu"/>
+	</gwt:simplePanel>
+	
+	<crux:horizontalSwapPanel id="swapPanel" width="100%" transitionDuration="200" useFadeTransitions="false">
+		<crux:simpleViewContainer id="viewContainer"/>
+	</crux:horizontalSwapPanel>
+	
+	<gwt:flowPanel id="menuPanel" styleName="menuPanel"/>
+	
+</x:xdevice>
