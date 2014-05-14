@@ -26,6 +26,8 @@ import org.cruxframework.crux.widgets.client.simplecontainer.SimpleViewContainer
 import org.cruxframework.crux.widgets.client.swappanel.HorizontalSwapPanel;
 import org.cruxframework.crux.widgets.client.swappanel.HorizontalSwapPanel.Direction;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -88,25 +90,32 @@ public class TopMenuDisposalSmallController extends DeviceAdaptiveController imp
 			}
 		});
 		
-		//Favorites
-		String hash = com.google.gwt.user.client.Window.Location.getHash();
-		if(hash != null && hash.startsWith(HASH + HISTORY_PREFIX))
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() 
 		{
-			String currentViewName = hash.replace(HASH + HISTORY_PREFIX, "");
-			showView(currentViewName, false);
-			History.newItem(HISTORY_PREFIX + currentViewName);
-			return;
-		}
-		
-		//DefaultView
-		if(lastVisitedView == null)
-		{
-			viewContainer.showView(viewName);
-			lastVisitedView = viewName;
-			Window.scrollTo(0, 0);
-			History.newItem(HISTORY_PREFIX + viewName);
-			return;
-		}
+			@Override
+			public void execute() 
+			{
+				//Favorites
+				String hash = com.google.gwt.user.client.Window.Location.getHash();
+				if(hash != null && hash.startsWith(HASH + HISTORY_PREFIX))
+				{
+					String currentViewName = hash.replace(HASH + HISTORY_PREFIX, "");
+					showView(currentViewName, false);
+					History.newItem(HISTORY_PREFIX + currentViewName);
+					return;
+				}
+				
+				//DefaultView
+				if(lastVisitedView == null)
+				{
+					viewContainer.showView(viewName);
+					lastVisitedView = viewName;
+					Window.scrollTo(0, 0);
+					History.newItem(HISTORY_PREFIX + viewName);
+					return;
+				}
+			}
+		});
 	}
 
 	@Expose
