@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.ioc;
 
+import org.cruxframework.crux.core.client.ioc.IoCResource.Scope;
 import org.cruxframework.crux.core.client.ioc.IocProvider;
 
 
@@ -28,6 +29,7 @@ public class IocConfigImpl<T> implements IocConfig<T>
 	private Class<? extends IocProvider<? extends T>> providerClass = null;
 	private Class<? extends T> toClass;
 	private boolean accessible;
+	private Scope scope = Scope.LOCAL;
 	
 	public IocConfigImpl(Class<T> clazz)
     {
@@ -61,6 +63,13 @@ public class IocConfigImpl<T> implements IocConfig<T>
 		return this;
 	}
 
+	@Override
+    public IocConfigImpl<T> scope(Scope scope)
+    {
+		this.scope = scope;
+	    return this;
+    }
+
 	public boolean isRuntimeAccessible()
 	{
 		return accessible;
@@ -80,5 +89,9 @@ public class IocConfigImpl<T> implements IocConfig<T>
     {
     	return toClass;
     }
-
+	
+	public Scope getScope()
+	{
+		return scope==null?Scope.LOCAL:scope;
+	}
 }

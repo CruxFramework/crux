@@ -15,7 +15,8 @@
  */
 package org.cruxframework.crux.core.client.ioc;
 
-import org.cruxframework.crux.core.client.ioc.Inject.Scope;
+import org.cruxframework.crux.core.client.ioc.IoCResource.Scope;
+
 
 /**
  * @author Thiago da Rosa de Bustamante

@@ -20,6 +20,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 /**
  * This annotation can be used to bind fields to objects according with CruxIocContainer 
  * configurations.
@@ -41,13 +43,24 @@ import java.lang.annotation.Target;
 @Target(value={ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 public @interface Inject 
 {
-	public static enum Scope{LOCAL, DOCUMENT, VIEW}
+	/**
+	 * @deprecated Use {@link IoCResource.Scope} instead
+	 */
+	@Deprecated
+	@Legacy
+	public static enum Scope{LOCAL, DOCUMENT, VIEW, DEFAULT}
+	
 	/**
 	 * Defines the scope where the created object will be saved
 	 */
-	Scope scope() default Scope.LOCAL;
+	@Deprecated
+	@Legacy
+	Scope scope() default Scope.DEFAULT;
+	
 	/**
 	 * Used to create a custom scope inside one of the main scope, defined by the scope attribute. 
 	 */
+	@Deprecated
+	@Legacy
 	String subscope() default "";
 }

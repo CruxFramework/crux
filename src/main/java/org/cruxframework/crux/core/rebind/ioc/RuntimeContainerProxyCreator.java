@@ -19,8 +19,8 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.cruxframework.crux.core.client.ioc.IoCResource.Scope;
 import org.cruxframework.crux.core.client.ioc.RuntimeIoCContainer;
-import org.cruxframework.crux.core.client.ioc.Inject.Scope;
 import org.cruxframework.crux.core.client.ioc.IoCContainerException;
 import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.ioc.IocProvider;
@@ -69,6 +69,7 @@ public class RuntimeContainerProxyCreator extends IocContainerRebind
 	{
 	    super.generateProxyMethods(srcWriter);
 	    generateGetMethod(srcWriter);
+	    generateGetScopedMethod(srcWriter);
 	    generateSetContainerMethod(srcWriter);
 	    generateGetScopeMethod(srcWriter);
 	}
@@ -88,6 +89,36 @@ public class RuntimeContainerProxyCreator extends IocContainerRebind
     }
 	
 	protected void generateGetMethod(SourcePrinter srcWriter)
+    {
+		srcWriter.println("public <T> T get(Class<T> clazz){");
+
+		srcWriter.println("String className = clazz.getName();");
+		Iterator<Entry<String, IocConfig<?>>> classes = configurations.entrySet().iterator();
+		boolean needsElse = false;
+		while (classes.hasNext())
+		{
+			Entry<String, IocConfig<?>> entry = classes.next();
+			IocConfigImpl<?> iocConfig = (IocConfigImpl<?>)entry.getValue();
+			String className = entry.getKey();
+			if (iocConfig.isRuntimeAccessible())
+			{
+				if (needsElse)
+				{
+					srcWriter.print("else ");
+				}
+				needsElse = true;
+
+				srcWriter.println("if (StringUtils.unsafeEquals(className, "+EscapeUtils.quote(className)+")){");
+				srcWriter.println("return (T) get"+className.replace('.', '_')+"("+Scope.class.getCanonicalName()+"."+iocConfig.getScope().name()+",null);");
+				srcWriter.println("}");
+			}
+		}
+		
+		srcWriter.println("throw new IoCContainerException(\"Class not bound to IoCContainer [\"+className+\"]\");");
+		srcWriter.println("}");
+    }
+
+	protected void generateGetScopedMethod(SourcePrinter srcWriter)
     {
 		srcWriter.println("public <T> T get(Class<T> clazz, Scope scope, String subscope){");
 
@@ -115,7 +146,7 @@ public class RuntimeContainerProxyCreator extends IocContainerRebind
 		srcWriter.println("throw new IoCContainerException(\"Class not bound to IoCContainer [\"+className+\"]\");");
 		srcWriter.println("}");
     }
-
+	
 	@Override
 	protected String[] getImports()
 	{

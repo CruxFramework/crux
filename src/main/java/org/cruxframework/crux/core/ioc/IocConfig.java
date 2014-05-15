@@ -16,6 +16,7 @@
 package org.cruxframework.crux.core.ioc;
 
 import org.cruxframework.crux.core.client.ioc.IocProvider;
+import org.cruxframework.crux.core.client.ioc.IoCResource.Scope;
 
 
 /**
@@ -47,4 +48,9 @@ public interface IocConfig<T>
 	 * @return
 	 */
 	IocConfig<T> runtimeAccessible(boolean accessible);
+	
+	/**
+	 * Defines the scope where the created object will be saved
+	 */
+	IocConfig<T> scope(Scope scope);
 }
