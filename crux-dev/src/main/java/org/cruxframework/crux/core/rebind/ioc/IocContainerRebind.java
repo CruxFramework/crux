@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cruxframework.crux.core.client.ioc.Inject;
-import org.cruxframework.crux.core.client.ioc.Inject.Scope;
+import org.cruxframework.crux.core.client.ioc.IoCResource.Scope;
 import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.ioc.IocProvider;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
@@ -99,7 +99,6 @@ public class IocContainerRebind extends AbstractProxyCreator
 	 */
 	private void generateContainerInstatiationMethod(SourcePrinter srcWriter, String className)
 	{
-
 		try
 		{
 			srcWriter.println("public  "+className+" get"+className.replace('.', '_')+"("+Scope.class.getCanonicalName()+" scope, String subscope){");
@@ -136,7 +135,7 @@ public class IocContainerRebind extends AbstractProxyCreator
 
 			if (type.isAssignableTo(viewBindableType))
 			{
-				srcWriter.println("if (scope != "+Scope.class.getCanonicalName()+ "."+Scope.DOCUMENT.name()+" && result.getBoundCruxViewId() == null){");
+				srcWriter.println("if (scope != "+Scope.class.getCanonicalName()+ "."+Scope.SINGLETON.name()+" && result.getBoundCruxViewId() == null){");
 				srcWriter.println("result.bindCruxView(this.getBoundCruxViewId());");
 				srcWriter.println("}");
 			}
@@ -374,7 +373,8 @@ public class IocContainerRebind extends AbstractProxyCreator
 	    return imports;
     }
 
-	private static String getFieldInjectionExpression(JField field, String iocContainerVariable, Map<String, IocConfig<?>> configurations)
+	@SuppressWarnings("deprecation")
+    private static String getFieldInjectionExpression(JField field, String iocContainerVariable, Map<String, IocConfig<?>> configurations)
     {
 		Inject inject = field.getAnnotation(Inject.class);
 		if (inject != null)
@@ -388,8 +388,13 @@ public class IocContainerRebind extends AbstractProxyCreator
 					IocConfigImpl<?> iocConfig = (IocConfigImpl<?>) configurations.get(fieldTypeName);
 					if (iocConfig != null)
 					{
+						if (inject.scope().equals(org.cruxframework.crux.core.client.ioc.Inject.Scope.DEFAULT))
+						{
+							return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
+									"("+Scope.class.getCanonicalName()+"."+iocConfig.getScope().name()+", null)";
+						}
 						return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
-						"("+Scope.class.getCanonicalName()+"."+inject.scope().name()+", "+EscapeUtils.quote(inject.subscope())+")";
+								"("+Scope.class.getCanonicalName()+"."+getScopeName(inject.scope())+", "+EscapeUtils.quote(inject.subscope())+")";
 					}
 					else
 					{
@@ -407,9 +412,24 @@ public class IocContainerRebind extends AbstractProxyCreator
 			}
 		}
 	    return null;
+    }
+
+	@SuppressWarnings("deprecation")
+    private static String getScopeName(org.cruxframework.crux.core.client.ioc.Inject.Scope scope)
+    {
+		switch (scope)
+        {
+			case DOCUMENT:
+				return Scope.SINGLETON.name();
+			case DEFAULT:
+				return Scope.LOCAL.name();
+			default:
+				return scope.name();
+		}
     }	
 
-	private static String getParameterInjectionExpression(JParameter parameter, String iocContainerVariable, Map<String, IocConfig<?>> configurations)
+	@SuppressWarnings("deprecation")
+    private static String getParameterInjectionExpression(JParameter parameter, String iocContainerVariable, Map<String, IocConfig<?>> configurations)
     {
 		JType parameterType = parameter.getType();
 		if (parameterType.isClassOrInterface() != null)
@@ -419,8 +439,13 @@ public class IocContainerRebind extends AbstractProxyCreator
 			if (iocConfig != null)
 			{
 				Inject inject = getInjectAnnotation(parameter);
+				if (inject.scope().equals(org.cruxframework.crux.core.client.ioc.Inject.Scope.DEFAULT))
+				{
+					return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
+							"("+Scope.class.getCanonicalName()+"."+iocConfig.getScope().name()+", null)";
+				}
 				return iocContainerVariable+".get"+fieldTypeName.replace('.', '_')+
-				"("+Scope.class.getCanonicalName()+"."+inject.scope().name()+", "+EscapeUtils.quote(inject.subscope())+")";
+						"("+Scope.class.getCanonicalName()+"."+getScopeName(inject.scope())+", "+EscapeUtils.quote(inject.subscope())+")";
 			}
 			else
 			{

@@ -40,10 +40,29 @@ import java.lang.annotation.Target;
 @Target(value=ElementType.TYPE)
 public @interface IoCResource 
 {
+	public static enum Scope{LOCAL, SINGLETON, VIEW}
+
+	/**
+	 * A provider to instantiate the objects for the annotated class.
+	 * @return
+	 */
 	Class<? extends IocProvider<?>> provider() default NoProvider.class;
+
+	/**
+	 * The implementation class created for the annotated class. If empty, the own class will be used.
+	 */
 	Class<?> bindClass() default NoClass.class;
+
+	/**
+	 * If true, the annotated class would be accessible by IoCContainer at runtime.
+	 */
 	boolean runtimeAccessible() default false;
-	
+
+	/**
+	 * Defines the scope where the created object will be saved
+	 */
+	Scope scope() default Scope.LOCAL;
+		
 	public static class NoProvider implements IocProvider<Object>
 	{
         public Object get()

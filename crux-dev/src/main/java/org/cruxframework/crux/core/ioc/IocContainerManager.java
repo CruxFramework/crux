@@ -110,6 +110,7 @@ public class IocContainerManager
 						iocConfig.toProvider((Class)ioCResource.provider());
 					}
 					iocConfig.runtimeAccessible(ioCResource.runtimeAccessible());
+					iocConfig.scope(ioCResource.scope());
 				}
 			}
 		}

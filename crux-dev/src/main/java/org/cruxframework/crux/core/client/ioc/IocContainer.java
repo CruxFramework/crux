@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.core.client.ioc;
 
-import org.cruxframework.crux.core.client.ioc.Inject.Scope;
+import org.cruxframework.crux.core.client.ioc.IoCResource.Scope;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.screen.views.ViewAware;
 
@@ -99,7 +99,7 @@ public abstract class IocContainer implements ViewAware
 		switch (scope)
 		{
 			case LOCAL: return _localScope;
-			case DOCUMENT: return _documentScope;
+			case SINGLETON: return _documentScope;
 			case VIEW: return this._viewScope;
 			default: return _localScope;
 		}
