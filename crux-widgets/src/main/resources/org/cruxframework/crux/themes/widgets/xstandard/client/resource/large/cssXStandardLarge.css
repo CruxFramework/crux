@@ -7,6 +7,7 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 @url svgIconWarning svgIconWarning;
 @url svgIconSuccess svgIconSuccess;
 @url svgIconClose svgIconClose;
+@url svgIconArrow svgIconArrow;
 
 *:focus{
 	outline:none;
@@ -1237,7 +1238,8 @@ DIV, INPUT, BUTTON
 .dialogMiddleCenter{
 	padding:10px;
 }
-.dialogMiddleCenter button{
+.dialogMiddleCenter button
+{
 	margin-top:20px;
 }
 .closeButton{
@@ -1250,7 +1252,8 @@ DIV, INPUT, BUTTON
 	background:svgIconClose;
 	background-size:100% auto;
 }
-.crux-DialogViewContainer .dialogResizer{
+.crux-DialogViewContainer .dialogResizer
+{
 	position: absolute;
 	height: 12px;
 	width: 12px;
@@ -1267,10 +1270,12 @@ DIV, INPUT, BUTTON
 	background: linear-gradient(135deg, #FFF 50%, #AAA 50.1%, #EEE 60%);
 	padding: 10px;
 }
-.crux-DialogViewContainer .dialogResizer:hover{
+.crux-DialogViewContainer .dialogResizer:hover
+{
 	background: linear-gradient(135deg, #FFF 50%, #AAA 50.1%, #e0e0e0 60%);
 }
-.crux-DialogViewContainer .dialogResizer:before{
+.crux-DialogViewContainer .dialogResizer:before
+{
 	content: "";
 	position: absolute;
 	height: 7px;
@@ -1287,7 +1292,9 @@ DIV, INPUT, BUTTON
 	-ms-user-select: none;
 	-webkit-transform: rotate(135deg);
 }
-.crux-DialogViewContainer .dialogResizer:after{
+
+.crux-DialogViewContainer .dialogResizer:after
+{
 	content: "";
 	position: absolute;
 	height: 7px;
@@ -1305,7 +1312,8 @@ DIV, INPUT, BUTTON
 	-webkit-transform: rotate(135deg);
 }
 
-.detailImage{
+.detailImage
+{
     height:100%;
     right:0;
     position:fixed;
@@ -1313,9 +1321,10 @@ DIV, INPUT, BUTTON
     width:100%;
     z-index:98;
     -moz-box-sizing:border-box;
-    }
+}
 
-.grid-detail-dialogbox {
+.grid-detail-dialogbox
+{
 	font-size: 11px;
 	background-color: white;
 	border: 1px solid #aaa;
@@ -1325,9 +1334,6 @@ DIV, INPUT, BUTTON
 	z-index: 98;
 	color: #444;
 }
-
-/***********************************************************/
-/***********************************************************/
 
 .msg-error-grid
 {
@@ -1362,9 +1368,12 @@ DIV, INPUT, BUTTON
 	text-align: center;
 }
 
+/****************
+    AdaptiveGrid
+****************/
 
-.grid tr:hover{
-	background: #E4F6F1;
+.grid{
+	margin:20px 0;
 }
 
 .grid tr
@@ -1379,25 +1388,136 @@ DIV, INPUT, BUTTON
 	background: #FFF !important;
 }
 
-.textboxSimple
+.grid th
 {
-	padding: 0px;
-	height: 30px;
+	background: #E4F6F1 !important;
 }
 
-.grid tr:first-child
+.grid .columnHeadersRow .columnHeader table td
 {
-	background: #4294C4;
+	border:none;
+	background:none !important;
+	color:#1c5994;
+	font-weight:bold;
+}
+.grid .columnHeadersRow .columnHeader table td .label
+{
+	padding:0 10px;
+}
+.grid .gwt-Label, .grid .crux-MaskedLabel
+{
+	color:#222;
+	text-align:left;
+	padding:0 10px;
+}
+.grid .columnHeader
+{
+	background:#f7f7f7;
+	box-shadow:0 -2px 0 #eaeaea inset;
+}
+.grid .columnSorter
+{
+	text-align:left;
+}
+.grid .columnSorter table{
+	width:100%;
+}
+.grid .columnSorter.columnSorter-asc .arrow
+{
+	width:0;
+	height:0;
+	float:right;
+	margin-right:10px;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;	
+	border-bottom: 5px solid #111;
+}
+.grid .columnSorter.columnSorter-desc .arrow
+{
+	width:0;
+	height:0;
+	float:right;
+	margin-right:10px;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;	
+	border-top: 5px solid #111;
+}
+.grid .crux-Cell .columnHeader .columnSorter
+{
+	cursor:pointer;
 }
 
-.grid tr:first-child:HOVER
+/****************
+    StoryBoard
+****************/
+
+.storeItem
 {
-	background: #4294C4;
+	margin-right:20px;
+	margin-bottom:20px;
 }
 
-.header
+/****************
+    PromoBanner
+****************/
+
+.promoBannerImage
 {
-	background: #FF0000;
+	background-repeat:no-repeat;
+	background-position:center center;
+	background-color:#acdf53;
+	color:white;
+}
+.messagePanel
+{
+	width:100%;
+	height:100%;
+}
+.messagePanel td
+{
+	vertical-align:middle !important;
+}
+.messagePanel .title
+{
+	text-align:center;
+	font-size:30px;
+	text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1), 0 3px 2px rgba(0,0,0,0.1), 0 4px 3px rgba(0,0,0,0.1), 0 6px 3px rgba(0,0,0,0.1);
+	color:#fff;
+}
+.messagePanel .text
+{
+	text-align:center;
+	color:#fff;
+	font-size:17px;
+	text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1);
+	
+}
+.bannersArea
+{
+	margin:10px;
+	border-radius:5px;
+	overflow:hidden;
 }
 
+.bannersArea .leftArrow, .bannersArea .rightArrow
+{
+	width:50px;
+	height:90px;
+	background:svgIconArrow no-repeat center rgba(0,0,0,0.2);
+	background-size:22px auto;
+	border-radius:4px 0 0 4px;
+}
 
+.bannersArea .leftArrow:hover, .bannersArea .rightArrow:hover
+{
+	background:svgIconArrow no-repeat center rgba(0,0,0,0.35);
+	background-size:22px auto;
+}
+
+.bannersArea .leftArrow
+{
+	-webkit-transform:rotate(-180deg);
+	-moz-transform:rotate(-180deg);
+	-ms-transform:rotate(-180deg);
+	transform:rotate(-180deg);
+}

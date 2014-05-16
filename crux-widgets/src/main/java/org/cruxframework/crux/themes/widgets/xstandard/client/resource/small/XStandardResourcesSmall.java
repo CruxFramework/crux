@@ -46,7 +46,7 @@ public interface XStandardResourcesSmall extends ClientBundle
 	@Source("svg-icon-success.svg")
 	DataResource svgIconSuccess();
 	
-	@Source("detail-icon.png")
-	DataResource detailIcon();
+	@Source("svg-icon-detail.svg")
+	DataResource svgIconDetail();
 
 }
