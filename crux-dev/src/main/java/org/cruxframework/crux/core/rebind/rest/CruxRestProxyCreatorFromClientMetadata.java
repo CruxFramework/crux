@@ -53,9 +53,9 @@ public class CruxRestProxyCreatorFromClientMetadata extends CruxRestProxyCreator
 		{
 			value = "";
 		}
-		else if (value.startsWith("/"))
+		else if (!value.startsWith("/"))
 		{
-			value = value.substring(1);
+			value = "/"+value;
 		}
 		return value;
     }
