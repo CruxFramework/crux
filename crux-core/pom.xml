@@ -5,7 +5,7 @@
 	<artifactId>crux-core</artifactId>
 	<packaging>pom</packaging>
 	<name>Crux Core</name>
-	<version>5.1.0</version>
+	<version>1.0.0</version>
 	<description>Core of Crux Framework</description>
 
 	<!-- ********************** DEPLOY ********************** **************** 
@@ -27,7 +27,6 @@
 	<modules>
 		<module>../crux-runtime</module>
 		<module>../crux-dev</module>
-		<module>../crux-widgets</module>
 	</modules>
 
 	<parent>
