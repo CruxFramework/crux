@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.cruxframework</groupId>
 		<artifactId>crux-parent</artifactId>
-		<version>5.2.0</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<dependencies>

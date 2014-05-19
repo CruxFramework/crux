@@ -5,7 +5,7 @@
 	<artifactId>crux-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>Crux Parent</name>
-	<version>5.2.0</version>
+	<version>1.0.0</version>
 	<description>Crux Framework parent POM</description>
 
 	<properties>
@@ -77,4 +77,75 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+        <!-- Deploy at sonatype repository -->
+        <profile>
+            <id>sonatype_stage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <docencoding>${project.build.sourceEncoding}</docencoding>
+                                    <charset>${project.build.sourceEncoding}</charset>
+                                    <outputDirectory>${javadoc.dir}</outputDirectory>
+                                    <overview>${javadoc.dir}/overview.html</overview>
+                                    <source>1.5</source>
+                                    <destDir></destDir>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Deploy at internal repository -->
+        <profile>
+            <id>internal</id>
+            <distributionManagement>
+                <repository>
+                    <id>crux-internal-repository</id>
+                    <name>Crux Internal Repository</name>
+                    <url>http://repo.sysmap.com.br/artifactory/sysmap-internal</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>
