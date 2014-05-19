@@ -8,171 +8,141 @@
 	<version>1.0.0</version>
 	<description>Core of Crux Framework</description>
 
-	<!-- ********************** DEPLOY ********************** **************** 
-		Current .X version **************** 16 i.e. replace 5.1.0 for 5.1.0.13 **************************************************** 
-		-> Redefine crux version in all artifacts (maven bug!) and then: (Sonatype) 
-		- as Snapshot: append -SNAPSHOT to cruxVersion and run 'clean deploy' - as 
-		Stage: remove -SNAPSHOT from cruxVersion and run 'clean deploy' after this 
-		enter in the sonatype nexus manager and close and promove the created repository. 
-		(Internal) - as Stage version: append .X to cruxVersion removing SNAPSHOT 
-		suffix and run 'clean deploy' with profile 'internal' -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javadoc.dir>${basedir}/javadoc</javadoc.dir>
+    </properties>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<javadoc.dir>${basedir}/javadoc</javadoc.dir>
-	</properties>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+        <relativePath>org.sonatype.oss:oss-parent</relativePath>
+    </parent>
 
-	<!-- ATTENTION: Due to a Maven reactor bug not fixed yet, first time you 
-		run this project, comment those modules lines. -->
-	<modules>
-		<module>../crux-runtime</module>
-		<module>../crux-dev</module>
-	</modules>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    
+    <developers>
+        <developer>
+            <id>thiago</id>
+            <name>Thiago da Rosa de Bustamante</name>
+            <email>thiago@cruxframework.org</email>
+        </developer>
+        <developer>
+            <id>gesse</id>
+            <name>Gessé Dafé</name>
+            <email>gesse@cruxframework.org</email>
+        </developer>
+        <developer>
+            <id>samuel</id>
+            <name>Samuel Almeida Cardoso</name>
+            <email>samuel@cruxframework.org</email>
+        </developer>
+        <developer>
+            <id>alexandre.costa</id>
+            <name>Alexandre Augusto de Souza Costa</name>
+            <email>alexandre@triggolabs.org</email>
+        </developer>
+    </developers>
 
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java</directory>
+                <includes>
+                    <include>**/*.java</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <profiles>
+        <!-- Deploy at sonatype repository -->
+        <profile>
+            <id>sonatype_stage</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <docencoding>${project.build.sourceEncoding}</docencoding>
+                                    <charset>${project.build.sourceEncoding}</charset>
+                                    <outputDirectory>${javadoc.dir}</outputDirectory>
+                                    <overview>${javadoc.dir}/overview.html</overview>
+                                    <source>1.5</source>
+                                    <destDir></destDir>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<developers>
-		<developer>
-			<id>thiago</id>
-			<name>Thiago da Rosa de Bustamante</name>
-			<email>thiago@cruxframework.org</email>
-		</developer>
-		<developer>
-			<id>gesse</id>
-			<name>Gessé Dafé</name>
-			<email>gesse@cruxframework.org</email>
-		</developer>
-		<developer>
-			<id>samuel</id>
-			<name>Samuel Almeida Cardoso</name>
-			<email>samuel@cruxframework.org</email>
-		</developer>
-	</developers>
-
-	<build>
-		<resources>
-			<resource>
-				<directory>${basedir}/src/main/java</directory>
-				<includes>
-					<include>**/*.java</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>**/*</include>
-				</includes>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
-				<configuration>
-					<docencoding>${project.build.sourceEncoding}</docencoding>
-					<charset>${project.build.sourceEncoding}</charset>
-					<outputDirectory>${javadoc.dir}</outputDirectory>
-					<overview>${javadoc.dir}/overview.html</overview>
-					<source>1.5</source>
-					<destDir></destDir>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-	<profiles>
-		<profile>
-			<id>sonatype_stage</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>internal</id>
-			<distributionManagement>
-				<repository>
-					<id>crux-internal-repository</id>
-					<name>Crux Internal Repository</name>
-					<url>http://repo.sysmap.com.br/artifactory/sysmap-internal</url>
-				</repository>
-			</distributionManagement>
-			<build>
-				<!-- Bugged plugins!!! -->
-				<!-- <pluginRepositories> <pluginRepository> <id>autoincrement-versions-maven-plugin</id> 
-					<name>autoincrement-versions-maven-plugin</name> <url>http://autoincrement-versions-maven-plugin.googlecode.com/svn/repo</url> 
-					<snapshots> <enabled>true</enabled> </snapshots> </pluginRepository> </pluginRepositories> -->
-
-				<!-- <plugins> <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>autoincrement-versions-maven-plugin</artifactId> 
-					<version>2.0-SNAPSHOT</version> <executions> <execution> <id>update-pom-versions</id> 
-					<goals> <goal>increment</goal> <goal>commit</goal> </goals> <phase>deploy</phase> 
-					<configuration> <autoIncrementVersion>true</autoIncrementVersion> </configuration> 
-					</execution> </executions> </plugin> <plugin> <groupId>org.codehaus.mojo</groupId> 
-					<artifactId>buildnumber-maven-plugin</artifactId> <version>1.2</version> 
-					<executions> <execution> <phase>validate</phase> <goals> <goal>create</goal> 
-					</goals> </execution> </executions> <configuration> <doCheck>false</doCheck> 
-					<doUpdate>true</doUpdate> </configuration> </plugin> </plugins> -->
-			</build>
-		</profile>
-	</profiles>
+        <!-- Deploy at internal repository -->
+        <profile>
+            <id>internal</id>
+            <distributionManagement>
+                <repository>
+                    <id>crux-internal-repository</id>
+                    <name>Crux Internal Repository</name>
+                    <url>http://repo.sysmap.com.br/artifactory/sysmap-internal</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>
