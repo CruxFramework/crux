@@ -8,6 +8,8 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 @url svgIconSuccess svgIconSuccess;
 @url svgIconClose svgIconClose;
 @url svgIconArrow svgIconArrow;
+@url svgIconPlay svgIconPlay;
+@url svgIconPause svgIconPause;
 
 *:focus{
 	outline:none;
@@ -1520,4 +1522,89 @@ DIV, INPUT, BUTTON
 	-moz-transform:rotate(-180deg);
 	-ms-transform:rotate(-180deg);
 	transform:rotate(-180deg);
+}
+
+.crux-Slideshow td
+{
+	text-align:center;
+}
+
+.crux-SlideshowComponent .crux-RollingPanelBody
+{
+	width:auto !important;
+	border-radius:3px;
+	overflow:hidden;
+	box-shadow:0 0 0 1px rgba(0,0,0,0.9);
+	display:inline-block;
+	background:#000;
+	height:45px;
+}
+
+.crux-SlideshowComponent .crux-RollingPanelBody .thumbnail
+{
+	margin:0 1px 0 0 !important;
+	opacity:0.6;
+}
+
+.crux-SlideshowComponent .crux-RollingPanelBody table tr td:last-child .thumbnail
+{
+	margin-right:0 !important;
+}
+
+.crux-SlideshowComponent .crux-RollingPanelBody .thumbnail:hover
+{
+	opacity:1;
+}
+
+.crux-SlideshowComponent .crux-RollingPanelBody .thumbnail.thumbnail-selected
+{
+	opacity:1;
+}
+
+.crux-Slideshow .crux-SlideshowNavigator
+{
+	width:auto !important;
+	display:inline-block;
+	padding:5px 30px;	
+	font-weight:bold;
+	border-radius:50px;
+	border:2px solid #797979;
+	margin:10px 0;
+}
+.crux-Slideshow .crux-SlideshowNavigator .gwt-Label
+{
+	color:#797979 !important;
+	text-align:none !important;
+	font-size:12px !important;
+}
+.crux-SlideshowComponent .crux-Photo .gwt-Image
+{
+	box-shadow:0 0 54px rgba(0,0,0,0.33);
+	margin:50px 0;
+}
+.crux-SlideshowPlayPanel
+{
+	width:37px;
+	height:37px;
+	border-radius:2px;
+	border:2px solid #6c6c6c;
+	background:svgIconPlay no-repeat no-repeat 10px center transparent;
+	border-radius:37px;
+	margin-top:-40px;
+	margin-bottom:15px;
+	position:relative;
+	z-index:2;
+}
+.crux-SlideshowPlayPanel.crux-SlideshowPlayPanel-playing
+{
+	background:svgIconPause no-repeat no-repeat 9px center transparent;
+}
+.crux-SlideshowPhotoDescription
+{
+	width:50% !important;
+	display:block;
+	border-top:1px solid #ccc;
+	padding-top:10px;
+	color:#888;
+	margin:-56px auto 10px;
 }
