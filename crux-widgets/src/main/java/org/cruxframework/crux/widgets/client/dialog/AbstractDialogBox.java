@@ -12,8 +12,6 @@ import org.cruxframework.crux.widgets.client.util.draganddrop.MoveCapability.Mov
 import org.cruxframework.crux.widgets.client.util.draganddrop.ResizeCapability;
 import org.cruxframework.crux.widgets.client.util.draganddrop.ResizeCapability.Resizable;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -116,19 +114,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	public void show() 
 	{
 		super.show();
-		Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
-		{
-			@Override
-			public boolean execute() 
-			{
-				if(isShowing())
-				{
-					return true;
-				}
-				OpenEvent.fire(AbstractDialogBox.this, AbstractDialogBox.this);				
-				return false;
-			}
-		}, 100);
+		OpenEvent.fire(AbstractDialogBox.this, AbstractDialogBox.this);
 	}
 	
 	@Override

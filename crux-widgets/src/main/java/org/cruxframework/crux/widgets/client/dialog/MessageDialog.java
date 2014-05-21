@@ -289,19 +289,7 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 			dialogBox.center();
 			dialogBox.show();
 			okButton.setFocus(true);
-			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
-			{
-				@Override
-				public boolean execute() 
-				{
-					if(dialogBox.isShowing())
-					{
-						return true;
-					}
-					OpenEvent.fire(MessageDialog.this, MessageDialog.this);				
-					return false;
-				}
-			}, 100);
+			OpenEvent.fire(MessageDialog.this, MessageDialog.this);
 		}
 		catch (Exception e)
 		{

@@ -267,19 +267,7 @@ public class ConfirmDialog  implements HasOkHandlers, HasCancelHandlers, HasAnim
 			dialogBox.center();
 			dialogBox.show();
 			okButton.setFocus(true);
-			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
-			{
-				@Override
-				public boolean execute() 
-				{
-					if(dialogBox.isShowing())
-					{
-						return true;
-					}
-					OpenEvent.fire(ConfirmDialog.this, ConfirmDialog.this);				
-					return false;
-				}
-			}, 100);
+			OpenEvent.fire(ConfirmDialog.this, ConfirmDialog.this);
 		}
 		catch (Exception e)
 		{
