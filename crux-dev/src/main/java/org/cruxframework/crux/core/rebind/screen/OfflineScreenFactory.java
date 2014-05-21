@@ -48,7 +48,7 @@ public class OfflineScreenFactory
 	}
 	
 	public OfflineScreen getOfflineScreen(String id, Document screen) throws ScreenConfigException
-    {
+  {
 		Element screenElement = screen.getDocumentElement();
 		String moduleName = screenElement.getAttribute("moduleName");
 		String screenId = screenElement.getAttribute("screenId");
@@ -63,19 +63,19 @@ public class OfflineScreenFactory
 		OfflineScreen result = new OfflineScreen(relativeScreenId, moduleName, screenId);
 
 		NodeList nodes = screenElement.getChildNodes();
-		for (int i=0; i < nodes.getLength(); i++)
+		for (int i = 0; i < nodes.getLength(); i++)
 		{
 			Node item = nodes.item(i);
 			if (item instanceof Element)
 			{
-				String localName = item.getLocalName();
-				if(!StringUtils.isEmpty(localName))
+				String nodeName = item.getNodeName();
+				if(!StringUtils.isEmpty(nodeName))
 				{
-					if (localName.equals("includes"))
+					if (nodeName.equals("includes"))
 					{
 						processIncludes(result, item);
 					}
-					else if (localName.equals("excludes"))
+					else if (nodeName.equals("excludes"))
 					{
 						processExcludes(result, item);
 					} 
@@ -83,13 +83,13 @@ public class OfflineScreenFactory
 			}
 		}
 	    
-	    return result;
-    }
+    return result;
+  }
 
 	private void processExcludes(OfflineScreen result, Node item)
-    {
+  {
 		NodeList children = item.getChildNodes();
-		for (int i=0; i < children.getLength(); i++)
+		for (int i = 0; i < children.getLength(); i++)
 		{
 			Node child = children.item(i);
 			if (child instanceof Element)
@@ -98,12 +98,12 @@ public class OfflineScreenFactory
 				result.addExclude(exclude);
 			}
 		}
-    }
+  }
 
 	private void processIncludes(OfflineScreen result, Node item)
-    {
+  {
 		NodeList children = item.getChildNodes();
-		for (int i=0; i < children.getLength(); i++)
+		for (int i = 0; i < children.getLength(); i++)
 		{
 			Node child = children.item(i);
 			if (child instanceof Element)
@@ -112,6 +112,5 @@ public class OfflineScreenFactory
 				result.addInclude(include);
 			}
 		}
-    }
-
+  }
 }
