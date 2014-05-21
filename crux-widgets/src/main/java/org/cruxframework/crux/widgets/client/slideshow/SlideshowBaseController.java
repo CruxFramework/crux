@@ -51,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
 //TODO refatorar isso para nao ter table. Verificar se vale a pena
 public abstract class SlideshowBaseController extends DeviceAdaptiveController implements Slideshow, OrientationChangeHandler
 {
-	protected static final boolean SCALE_IMAGES = true;//TODO make this customizable
+	protected boolean SCALE_IMAGES = true;
 	protected static enum SlideshowEvent{AlbumLoaded, PhotoLoaded, StartPlaying, StopPlaying}
 
 	protected SlideshowPhotoPanel photoPanel;
@@ -643,5 +643,15 @@ public abstract class SlideshowBaseController extends DeviceAdaptiveController i
 	    imagesCache.clear();
 		activeImage = -1;
 		previousImage = -1;
+	}
+	
+	public boolean isScaleImages() 
+	{
+		return SCALE_IMAGES;
+	}
+
+	public void setScaleImages(boolean scaleImages) 
+	{
+		SCALE_IMAGES = scaleImages;
 	}
 }

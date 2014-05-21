@@ -97,4 +97,6 @@ public interface Slideshow extends DeviceAdaptive
 	void setAlbumService(AlbumService albumService);
 	void load(Callback callback);
 	SlideshowPhotoPanel getPhotoPanel();
+	boolean isScaleImages(); 
+	void setScaleImages(boolean scaleImages); 
 }

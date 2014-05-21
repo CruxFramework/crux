@@ -48,6 +48,7 @@ class SlideshowContext extends WidgetCreatorContext
 	@TagAttribute(value="transitionDelay", type=Integer.class, defaultValue="5000")
 })
 @TagAttributesDeclaration({
+	@TagAttributeDeclaration(value="scaleImages", type=Boolean.class, defaultValue="true"),
 	@TagAttributeDeclaration(value="autoPlay", type=Boolean.class, defaultValue="false"),
 	@TagAttributeDeclaration(value="loadOnStartup", type=Boolean.class, defaultValue="false")
 })
