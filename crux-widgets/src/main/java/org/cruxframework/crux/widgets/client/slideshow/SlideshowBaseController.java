@@ -26,6 +26,7 @@ import org.cruxframework.crux.widgets.client.slideshow.data.Photo;
 import org.cruxframework.crux.widgets.client.slideshow.data.PhotoAlbum;
 
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
@@ -567,30 +568,44 @@ public abstract class SlideshowBaseController extends DeviceAdaptiveController i
 	 * @param photo
 	 * @param image
 	 */
-    protected void adjustImageSize(Widget referencePanel, Photo photo, Image image)
+    protected void adjustImageSize(final Widget referencePanel, final Photo photo, final Image image)
     {
-    	if(photo.getWidth() == 0 || photo.getWidth() == 0)
+    	Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
     	{
-    		return;
-    	}
-    	
-		if (SCALE_IMAGES)
-		{
-			double scaleWidth = referencePanel.getOffsetWidth() / ((double)photo.getWidth());
-			double scaleHeight = referencePanel.getOffsetHeight() / ((double)photo.getHeight());
-
-			double scale = Math.min(scaleWidth, scaleHeight);
-			if (scale > 0)
+			@Override
+			public boolean execute() 
 			{
-				image.setWidth(Math.round(photo.getWidth()*scale)+"px");
-				image.setHeight(Math.round(photo.getHeight()*scale)+"px");
+				//Wait for panel to be at DOM
+				if(referencePanel.getOffsetHeight() == 0)
+				{
+					return true;
+				}
+				
+				if(photo.getWidth() == 0 || photo.getWidth() == 0)
+		    	{
+		    		return false;
+		    	}
+		    	
+				if (SCALE_IMAGES)
+				{
+					double scaleWidth = referencePanel.getOffsetWidth() / ((double)photo.getWidth());
+					double scaleHeight = referencePanel.getOffsetHeight() / ((double)photo.getHeight());
+					double scale = Math.min(scaleWidth, scaleHeight);
+					if (scale > 0)
+					{
+						image.setWidth(Math.round(photo.getWidth()*scale)+"px");
+						image.setHeight(Math.round(photo.getHeight()*scale)+"px");
+					}
+				}
+				else
+				{
+					image.setWidth(photo.getWidth()+"px");
+					image.setHeight(photo.getHeight()+"px");
+				}
+				
+				return false;
 			}
-		}
-		else
-		{
-			image.setWidth(photo.getWidth()+"px");
-			image.setHeight(photo.getHeight()+"px");
-		}
+		}, 100);
     }
 	
 	/**
