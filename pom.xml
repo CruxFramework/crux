@@ -27,9 +27,9 @@
    -->
      
 	<modules>
-		<module>../crux-core</module>
-		<module>../crux-runtime</module>
-		<module>../crux-dev</module>
+		<module>crux-core</module>
+		<module>crux-runtime</module>
+		<module>crux-dev</module>
 	</modules>
 
 	<build>
