@@ -135,20 +135,20 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
     }
 
 	@Override
-	protected void generateExceptionCallHandlingCode(RestMethodInfo methodInfo, SourcePrinter srcWriter, String callbackParameterName)
+	protected void generateExceptionCallHandlingCode(RestMethodInfo methodInfo, SourcePrinter srcWriter, String callbackParameterName, String responseVariable)
 	{
 		try
 		{
 			srcWriter.println("if (LogConfiguration.loggingIsEnabled()){");
-			srcWriter.println("__log.log(Level.SEVERE, \"Error received from service: \"+response.getText());");
+			srcWriter.println("__log.log(Level.SEVERE, \"Error received from service: \"+"+responseVariable+".getText());");
 			srcWriter.println("}");
 			//try to parse response object
 			srcWriter.println("JSONObject jsonObject = null;");
 			srcWriter.println("try {");
-			srcWriter.println("jsonObject = JSONParser.parseStrict(response.getText()).isObject();");
+			srcWriter.println("jsonObject = JSONParser.parseStrict("+responseVariable+".getText()).isObject();");
 			//For instance if we have 400-404 server response, the object is not a json value. This will make JSON throws an Exception
 			srcWriter.println("} catch (Exception exception) {");
-			srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), response.getText()));");
+			srcWriter.println(callbackParameterName+".onError(new RestError("+responseVariable+".getStatusCode(), "+responseVariable+".getText()));");
 			srcWriter.println("return;");
 			srcWriter.println("}");
 
@@ -159,7 +159,7 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 				srcWriter.println("if (exId == null){");
 				srcWriter.println("JSONValue jsonErrorMsg = jsonObject.get(\"message\");");
 				srcWriter.println("String stringJsonErrorMsg = (jsonErrorMsg != null && jsonErrorMsg.isString() != null) ? jsonErrorMsg.isString().stringValue() : \"\";");
-				srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), stringJsonErrorMsg));");
+				srcWriter.println(callbackParameterName+".onError(new RestError("+responseVariable+".getStatusCode(), stringJsonErrorMsg));");
 				srcWriter.println("} else {");
 				srcWriter.println("String hash = exId.isString().stringValue();");
 				boolean first = true;
@@ -182,14 +182,14 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 					srcWriter.println("}");
 				}
 				srcWriter.println("else {");
-				srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), jsonObject.get(\"exData\").toString()));");
+				srcWriter.println(callbackParameterName+".onError(new RestError("+responseVariable+".getStatusCode(), jsonObject.get(\"exData\").toString()));");
 				srcWriter.println("}");
 
 				srcWriter.println("}");
 			}
 			else
 			{
-				srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), (jsonObject.get(\"message\") != null && jsonObject.get(\"message\").isString() != null) ? jsonObject.get(\"message\").isString().stringValue() : \"\"));");
+				srcWriter.println(callbackParameterName+".onError(new RestError("+responseVariable+".getStatusCode(), (jsonObject.get(\"message\") != null && jsonObject.get(\"message\").isString() != null) ? jsonObject.get(\"message\").isString().stringValue() : \"\"));");
 			}
 		}
 		catch (Exception e) 
