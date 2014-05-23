@@ -16,6 +16,8 @@
 package org.cruxframework.crux.core.rebind.rest;
 
 import java.lang.annotation.Annotation;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,6 +73,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxyCreator
 {
+	private static final String RANDOM_TOKEN = new BigInteger(130, new SecureRandom()).toString(32).substring(0, 5); 
 	protected JClassType callbackType;
 	protected JClassType javascriptObjectType;
 	protected String serviceBasePath;
@@ -150,7 +153,6 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		srcWriter.println("if (__hostPath.endsWith(\"/\")){");
 		srcWriter.println("__hostPath = __hostPath.substring(0, __hostPath.length()-1);");
 		srcWriter.println("}");
-
 		srcWriter.println("}");
 	}
 
@@ -248,12 +250,14 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		setLocaleInfo(srcWriter, "builder");
 		srcWriter.println("builder.setCallback(new RequestCallback(){");
 
-		srcWriter.println("public void onResponseReceived(Request request, Response response){");
-		srcWriter.println("int s = (response.getStatusCode()-200);");
+		String responseVariable = getNonConflictedVarName("response", callbackParameter.getName());
+		
+		srcWriter.println("public void onResponseReceived(Request request, Response "+responseVariable+"){");
+		srcWriter.println("int s = ("+responseVariable+".getStatusCode()-200);");
 		srcWriter.println("if (s >= 0 && s < 10){");
 		generateSuccessCallHandlingCode(methodInfo, srcWriter, callbackParameter, callbackResultTypeName, callbackParameterName, restURIParam);
 		srcWriter.println("}else{ ");
-		generateExceptionCallHandlingCode(methodInfo, srcWriter, callbackParameterName);
+		generateExceptionCallHandlingCode(methodInfo, srcWriter, callbackParameterName, responseVariable);
 		srcWriter.println("}");
 		srcWriter.println("}");
 
@@ -272,47 +276,55 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		srcWriter.println("}");
     }
 
-	protected void generateExceptionCallHandlingCode(RestMethodInfo methodInfo, SourcePrinter srcWriter, String callbackParameterName)
+	protected void generateExceptionCallHandlingCode(RestMethodInfo methodInfo, SourcePrinter srcWriter, String callbackParameterName, String responseVariable)
 	{
 		try
 		{
 			srcWriter.println("if (LogConfiguration.loggingIsEnabled()){");
-			srcWriter.println("__log.log(Level.SEVERE, \"Error received from service: \"+response.getText());");
+			srcWriter.println("__log.log(Level.SEVERE, \"Error received from service: \"+"+responseVariable+".getText());");
 			srcWriter.println("}");
 			//try to parse response object
 			srcWriter.println("JSONObject jsonObject = null;");
 			srcWriter.println("try {");
-			srcWriter.println("jsonObject = JSONParser.parseStrict(response.getText()).isObject();");
+			srcWriter.println("jsonObject = JSONParser.parseStrict("+responseVariable+".getText()).isObject();");
 			//For instance if we have 400-404 server response, the object is not a json value. This will make JSON throws an Exception
 			srcWriter.println("} catch (Exception exception) {");
-			srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), response.getText()));");
+			srcWriter.println(callbackParameterName+".onError(new RestError("+responseVariable+".getStatusCode(), "+responseVariable+".getText()));");
 			srcWriter.println("return;");
 			srcWriter.println("}");
 
-			srcWriter.println(callbackParameterName+".onError(new RestError(response.getStatusCode(), (jsonObject.get(\"message\") != null && jsonObject.get(\"message\").isString() != null) ? jsonObject.get(\"message\").isString().stringValue() : \"\"));");
+			srcWriter.println(callbackParameterName+".onError(new RestError("+responseVariable+".getStatusCode(), (jsonObject.get(\"message\") != null && jsonObject.get(\"message\").isString() != null) ? jsonObject.get(\"message\").isString().stringValue() : \"\"));");
 		}
 		catch (Exception e) 
 		{
 			throw new CruxGeneratorException("Error generatirng exception handlers for type ["+baseIntf.getParameterizedQualifiedSourceName()+"].", e);
 		}
 	}
+	
+	//TODO: put this in a DeferredBindingUtils class
+	private static String getNonConflictedVarName(String originalVar, String possibleConflictedVar)
+	{
+		if (possibleConflictedVar.equals(originalVar))
+		{
+			return originalVar + "_" + RANDOM_TOKEN;
+		}
+		//return the same variable to improve code legibility
+		return originalVar;
+	}
 
 	protected void generateSuccessCallHandlingCode(RestMethodInfo methodInfo, SourcePrinter srcWriter, 
 			JParameter callbackParameter, String callbackResultTypeName, String callbackParameterName, String restURIParam)
 	{
+		String resultVariable = getNonConflictedVarName("result", callbackParameter.getName());
+		String responseVariable = getNonConflictedVarName("response", callbackParameter.getName());
+		
 		if (!callbackResultTypeName.equalsIgnoreCase("void"))
 		{
 			JClassType callbackResultType = JClassUtils.getTypeArgForGenericType(callbackParameter.getType().isClassOrInterface());
-			srcWriter.println("String jsonText = response.getText();");
-			srcWriter.println("if (Response.SC_NO_CONTENT != response.getStatusCode() && !"+StringUtils.class.getCanonicalName()+".isEmpty(jsonText)){");
+			srcWriter.println("String jsonText = "+responseVariable+".getText();");
+			srcWriter.println("if (Response.SC_NO_CONTENT != "+responseVariable+".getStatusCode() && !"+StringUtils.class.getCanonicalName()+".isEmpty(jsonText)){");
 			srcWriter.println("try{");
 
-			String resultVariable = "result";
-			if (callbackParameter.getName().equals(resultVariable))
-			{
-				resultVariable += "0";
-			}
-			
 			if (callbackResultType != null && callbackResultType.isAssignableTo(javascriptObjectType))
 			{
 				srcWriter.println(callbackResultTypeName+" "+resultVariable+" = "+JsonUtils.class.getCanonicalName()+".safeEval(jsonText);");
@@ -323,7 +335,7 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 				String serializerName = new JSonSerializerProxyCreator(context, logger, callbackResultType).create();
 				srcWriter.println(callbackResultTypeName+" "+resultVariable+" = new "+serializerName+"().decode(jsonValue);");
 			}
-			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, "response", restURIParam, methodInfo.methodURI);
+			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, responseVariable, restURIParam, methodInfo.methodURI);
 			srcWriter.println(callbackParameterName+".onSuccess("+resultVariable+");");
 			srcWriter.println("}catch (Exception e){");
 			srcWriter.println("if (LogConfiguration.loggingIsEnabled()){");
@@ -332,13 +344,13 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 			srcWriter.println("}");
 			srcWriter.println("}");
 			srcWriter.println("}else {");
-			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, "response", restURIParam, methodInfo.methodURI);
+			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, responseVariable, restURIParam, methodInfo.methodURI);
 			srcWriter.println(callbackParameterName+".onSuccess(null);");
 			srcWriter.println("}");
 		}
 		else
 		{
-			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, "response", restURIParam, methodInfo.methodURI);
+			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, responseVariable, restURIParam, methodInfo.methodURI);
 			srcWriter.println(callbackParameterName+".onSuccess(null);");
 		}
 	}
