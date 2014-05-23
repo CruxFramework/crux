@@ -96,7 +96,7 @@ public class ClassUtils
 	 */
 	public static boolean hasStringConstructor(Class<?> rawType)
 	{
-		return rawType.getCanonicalName().equals(Character.TYPE.getCanonicalName());
+		return !hasCharacterConstructor(rawType);
 	}
 	
 	/**
