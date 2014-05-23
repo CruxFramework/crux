@@ -99,6 +99,11 @@ DIV, INPUT, BUTTON
 	color:#fff;
 	margin:0 2px;
 	text-shadow:0 1px 0 rgba(0,0,0,0.15);
+	
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 .crux-Button:hover, .crux-FileUploader .fileInputButton:hover, .previousMessageButton:hover, .nextMessageButton:hover{
 	border-color:#084471;
