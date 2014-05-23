@@ -436,7 +436,7 @@ public class JClassUtils
 		}
 		else if (expectedType == JPrimitiveType.CHAR || Character.class.getCanonicalName().equals(expectedType.getQualifiedSourceName()))
 		{
-			return valueVariable+".charAt(0)";
+			return valueVariable+".charAt(1)";
 		}
 		else if (Date.class.getCanonicalName().equals(expectedType.getQualifiedSourceName()))
 		{
