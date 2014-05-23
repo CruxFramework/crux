@@ -80,17 +80,16 @@ DIV, INPUT, BUTTON
 	padding: 8px;
 	/*min-width: 400px;*/
 }
-.crux-StyledPanel, .crux-FileUploader .dropArea{
+.crux-StyledPanel, .crux-FileUploader .dropArea, .crux-FileUploader .filePanel, .crux-ScrollBanner{
 	display: block;
-	border: solid #EAEAEA 1px;
-	border-radius: 2px;
-	box-shadow: 0px 0px 10px rgba(90,90,90,0.1);
+	border: solid #C7C7C7 1px;
+	box-shadow: 0 1px 3px rgba(90, 90, 90, 0.2);
 	padding: 15px;
 }
 
 @external crux-Button, crux-FileUploader, fileInputButton;
 /*BUTTON DEFAULT*/
-.crux-Button, .crux-FileUploader .fileInputButton{
+.crux-Button, .crux-FileUploader .fileInputButton, .previousMessageButton, .nextMessageButton{
 	background:linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1)) #4496c6;
 	box-shadow:0 1px 0 rgba(255, 255, 255, 0.1) inset;
 	border:1px solid #1a6299;
@@ -101,13 +100,13 @@ DIV, INPUT, BUTTON
 	margin:0 2px;
 	text-shadow:0 1px 0 rgba(0,0,0,0.15);
 }
-.crux-Button:hover, .crux-FileUploader .fileInputButton:hover{
+.crux-Button:hover, .crux-FileUploader .fileInputButton:hover, .previousMessageButton:hover, .nextMessageButton:hover{
 	border-color:#084471;
 }
-.crux-Button:focus, .crux-FileUploader .fileInputButton:focus{
+.crux-Button:focus, .crux-FileUploader .fileInputButton:focus, .previousMessageButton:focus, .nextMessageButton:focus{
 	box-shadow:0 0 0 3px rgba(0,0,0,0.12);
 }
-.crux-Button:focus:active, .crux-FileUploader .fileInputButton:focus:active{
+.crux-Button:focus:active, .crux-FileUploader .fileInputButton:focus:active, .previousMessageButton:active, .nextMessageButton:active{
 	box-shadow:0 2px 2px rgba(0,0,0,0.2) inset, 0 0 0 3px rgba(0,0,0,0.12);
 }
 
@@ -478,7 +477,6 @@ DIV, INPUT, BUTTON
 .crux-FileUploader
 {
 	width: 400px;
-	margin-top: 10px;
 }
 .crux-FileUploader .chooseButton
 {
@@ -488,21 +486,16 @@ DIV, INPUT, BUTTON
 {
     border-style: dashed;
 	min-height: 160px;
-	background-image: url(upload-icon.png);
-	background-position: center;
-	background-repeat: no-repeat;
+	background: url(upload-icon.png) no-repeat center #f5f5f5;
+	box-shadow:none;
 }
 .crux-FileUploader .filesArea
 {
-	background-color: #FFFFFF;
+	background-color:#f5f5f5;
 }
 .crux-FileUploader .filePanel
 {
-	border: solid #eaeaea 1px;
-	border-radius: 2px;
-	box-shadow: 0 0 10px rgba(90,90,90,0.1);
-	background-image:linear-gradient(top,rgba(255,255,255,1)80%,rgba(240,240,240,0.3));
-	padding: 10px;
+	background:#fff;
 	width:literal("calc(100% - 20px)");
 	position: relative;
 	width: 100%;
@@ -669,8 +662,8 @@ DIV, INPUT, BUTTON
 
 /******************************************************************************/
 
-/*INPUT TEXT*/
-.gwt-TextBox{
+/*INPUT/TEXTAREA TEXT*/
+.gwt-TextBox, .gwt-TextArea{
 	background:#fff;
 	color:#444;
 	padding:8px 8px;
@@ -679,89 +672,89 @@ DIV, INPUT, BUTTON
 	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset;
 	margin-bottom:10px;
 }
-.gwt-TextBox:hover{
+.gwt-TextBox:hover, .gwt-TextArea:hover{
 	border:1px solid #5c87b0;
 }
-.gwt-TextBox:focus{
+.gwt-TextBox:focus, .gwt-TextArea:focus{
 	border:1px solid #66afe9;
 	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(102,175,233,0.75);
 }
 
-/*INPUT SUCCESS*/
-.gwt-TextBox.success{
+/*INPUT/TEXTAREA SUCCESS*/
+.gwt-TextBox.success, .gwt-TextArea.success{
 	border:1px solid #6d991a;
 	background:svgIconSuccess no-repeat 96% center #fff;
 	background-position:right 6px center;
 	padding-right:30px;
 	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset, -30px 0 0 rgba(70, 180, 0, 0.18) inset;
 }
-.gwt-TextBox.success:hover{
+.gwt-TextBox.success:hover, .gwt-TextArea.success:hover{
 	border-color:#527808;
 }
-.gwt-TextBox.success:focus{
+.gwt-TextBox.success:focus, .gwt-TextArea.success:focus{
 	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(0,255,0,0.4), -30px 0 0 rgba(70, 180, 0, 0.18) inset;
 }
 
-/*INPUT WARNING*/
-.gwt-TextBox.warn{
+/*INPUT/TEXTAREA WARNING*/
+.gwt-TextBox.warn, .gwt-TextArea.warn{
 	border:1px solid #d58512;
 	background:svgIconWarning no-repeat 96% center #fff;
 	background-position:right 6px center;
 	padding-right:30px;
 	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset, -30px 0 0 rgba(190, 180, 0, 0.18) inset;
 }
-.gwt-TextBox.warn:hover{
+.gwt-TextBox.warn:hover, .gwt-TextArea.warn:hover{
 	border-color:#b76f09;
 }
-.gwt-TextBox.warn:focus{
+.gwt-TextBox.warn:focus, .gwt-TextArea.warn:focus{
 	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(255,168,0,0.6), -30px 0 0 rgba(190, 180, 0, 0.18) inset;
 }
 
-/*INPUT ERROR*/
-.gwt-TextBox.error{
+/*INPUT/TEXTAREA ERROR*/
+.gwt-TextBox.error, .gwt-TextArea.error{
 	border:1px solid #ac2925;
 	background:svgIconDanger no-repeat 96% center #fff;
 	background-position:right 6px center;
 	padding-right:30px;
 	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset, -30px 0 0 rgba(190, 80, 30, 0.18) inset;
 }
-.gwt-TextBox.error:hover{
+.gwt-TextBox.error:hover, .gwt-TextArea.error:hover{
 	border-color:#96130f;
 }
-.gwt-TextBox.error:focus{
+.gwt-TextBox.error:focus, .gwt-TextArea.error:focus{
 	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(255,0,0,0.4), -30px 0 0 rgba(190, 80, 30, 0.18) inset;
 }
 
-/*INPUT SIZES*/
-.gwt-TextBox.mini{
+/*INPUT/TEXTAREA SIZES*/
+.gwt-TextBox.mini, .gwt-TextArea.mini{
 	font-size:70%;
 	padding:4px 7px;
 }
-.gwt-TextBox.xsmall{
+.gwt-TextBox.xsmall, .gwt-TextArea.xsmall{
 	font-size:70%;
 	padding:6px 10px;
 }
-.gwt-TextBox.small{
+.gwt-TextBox.small, .gwt-TextArea.small{
 	font-size:80%;
 	padding:8px 12px;
 }
-.gwt-TextBox.large{
+.gwt-TextBox.large, .gwt-TextArea.large{
 	font-size:115%;
 }
-.gwt-TextBox.xlarge{
+.gwt-TextBox.xlarge, .gwt-TextArea.xlarge{
 	font-size:130%;
 }
 
-/*INPUT STYLES*/
-.gwt-TextBox.bullet{
+/*INPUT/TEXTAREA STYLES*/
+.gwt-TextBox.bullet, .gwt-TextArea.bullet{
 	border-radius:500px;
 }
-.gwt-TextBox.round{
+.gwt-TextBox.round, .gwt-TextArea.round{
 	border-radius:3px;
 }
 
-/*INPUT DISABLED*/
-.gwt-TextBox:disabled{
+/*INPUT/TEXTAREA DISABLED*/
+.gwt-TextBox:disabled, .gwt-TextArea:disabled{
 	background:#e5e5e5;
 	border:1px solid #a5a5a5;
 	color:#9c9c9c;
@@ -1607,4 +1600,59 @@ DIV, INPUT, BUTTON
 	padding-top:10px;
 	color:#888;
 	margin:-56px auto 10px;
+}
+
+
+/****************
+   ScrollBanner
+****************/
+
+.crux-ScrollBanner
+{
+	padding:10px;
+	background:#fff;
+}
+
+.crux-ScrollBanner > tbody > tr > td:first-child
+{
+	width:100% !important;
+}
+
+
+.crux-ScrollBanner .message
+{
+	padding:10px;
+	letter-spacing: -1px;
+}
+
+.crux-ScrollBanner .messageCount
+{
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	font-size:13px;
+	padding:5px 0;
+	margin:0 2px;
+}
+
+.crux-ScrollBanner .previousMessageButton .gwt-Label
+{
+	width:0;
+	height:0;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;	
+	border-bottom: 5px solid #fff;
+}
+
+.crux-ScrollBanner .nextMessageButton .gwt-Label
+{
+	width:0;
+	height:0;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;	
+	border-top: 5px solid #fff;
+}
+
+.crux-ScrollBanner .previousMessageButton, .nextMessageButton
+{
+	padding:8px 9px;
 }

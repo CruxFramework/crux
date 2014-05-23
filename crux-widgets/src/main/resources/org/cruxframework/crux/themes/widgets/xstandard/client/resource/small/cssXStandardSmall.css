@@ -51,7 +51,7 @@ body{
 	padding: 8px;
 	width: 100%;
 }
-.crux-StyledPanel
+.crux-StyledPanel, .crux-ScrollBanner
 {
 	background:#fff;
 	box-shadow:0 0 0 1px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
@@ -160,7 +160,7 @@ a.crux-Button:hover{
 }
 
 	/*INPUT TEXT*/
-.gwt-TextBox{
+.gwt-TextBox, .gwt-TextArea{
 	background:#fff;
 	font-size:115%;
 	color:#444;
@@ -173,83 +173,83 @@ a.crux-Button:hover{
 	margin-bottom:10px;
 	background-size:auto 50% !important;
 }
-.gwt-TextBox:hover{
+.gwt-TextBox:hover, .gwt-TextArea:hover{
 	border:1px solid #5c87b0;
 }
-.gwt-TextBox:focus{
+.gwt-TextBox:focus, .gwt-TextArea:focus{
 	border:1px solid #66afe9;
 	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(102,175,233,0.75);
 }
 
 /*INPUT SUCCESS*/
-.gwt-TextBox.success{
+.gwt-TextBox.success, .gwt-TextArea.success{
 	border:1px solid #6d991a;
 	background:svgIconSuccess no-repeat 98% center #fff;
 	padding-right:35px;
 }
-.gwt-TextBox.success:hover{
+.gwt-TextBox.success:hover, .gwt-TextArea.success:hover{
 	border-color:#527808;
 }
-.gwt-TextBox.success:focus{
+.gwt-TextBox.success:focus,, .gwt-TextArea.success:focus{
 	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(0,255,0,0.4);
 }
 
 /*INPUT WARNING*/
-.gwt-TextBox.warn{
+.gwt-TextBox.warn, .gwt-TextArea.warn{
 	border:1px solid #d58512;
 	background:svgIconWarning no-repeat 98% center #fff;
 	padding-right:35px;
 }
-.gwt-TextBox.warn:hover{
+.gwt-TextBox.warn:hover, .gwt-TextArea.warn:hover{
 	border-color:#b76f09;
 }
-.gwt-TextBox.warn:focus{
+.gwt-TextBox.warn:focus, .gwt-TextArea.warn:focus{
 	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(255,168,0,0.6);
 }
 
 /*INPUT DANGER*/
-.gwt-TextBox.error{
+.gwt-TextBox.error, .gwt-TextArea.error{
 	border:1px solid #ac2925;
 	background:svgIconDanger no-repeat 98% center #fff;
 	padding-right:35px;
 }
-.gwt-TextBox.error:hover{
+.gwt-TextBox.error:hover, .gwt-TextArea.error:hover{
 	border-color:#96130f;''
 }
-.gwt-TextBox.error:focus{
+.gwt-TextBox.error:focus, .gwt-TextArea.error:focus{
 	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(255,0,0,0.4);
 }
 
 /*INPUT SIZES*/
-.gwt-TextBox.mini{
+.gwt-TextBox.mini, .gwt-TextArea.mini{
 	font-size:70%;
 	padding:4px 7px;
 }
-.gwt-TextBox.xsmall{
+.gwt-TextBox.xsmall, .gwt-TextArea.xsmall{
 	font-size:70%;
 	padding:6px 10px;
 }
-.gwt-TextBox.small{
+.gwt-TextBox.small, .gwt-TextArea.small{
 	font-size:80%;
 	padding:8px 12px;
 }
-.gwt-TextBox.large{
+.gwt-TextBox.large, .gwt-TextArea.large{
 	font-size:115%;
 }
-.gwt-TextBox.xlarge{
+.gwt-TextBox.xlarge, .gwt-TextArea.xlarge{
 	font-size:130%;
 }
 
 /*INPUT STYLES*/
-.gwt-TextBox.bullet{
+.gwt-TextBox.bullet, .gwt-TextArea.bullet{
 	border-radius:500px;
 }
-.gwt-TextBox.round{
+.gwt-TextBox.round, .gwt-TextArea.round{
 	border-radius:3px;
 }
 
 /*INPUT DISABLED*/
-.gwt-TextBox:disabled{
+.gwt-TextBox:disabled, .gwt-TextArea:disabled{
 	background:#e5e5e5;
 	border:1px solid #a5a5a5;
 	color:#9c9c9c;
@@ -1026,15 +1026,18 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	background-color:#acdf53;
 	color:white;
 }
+
 .messagePanel
 {
 	width:100%;
 	height:100%;
 }
+
 .messagePanel td
 {
 	vertical-align:middle !important;
 }
+
 .messagePanel .title
 {
 	text-align:center;
@@ -1042,6 +1045,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1), 0 3px 2px rgba(0,0,0,0.1), 0 4px 3px rgba(0,0,0,0.1), 0 6px 3px rgba(0,0,0,0.1);
 	color:#fff;
 }
+
 .messagePanel .text
 {
 	text-align:center;
@@ -1050,9 +1054,60 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1);
 	
 }
+
 .bannersArea
 {
 	margin:10px;
 	border-radius:5px;
 	overflow:hidden;
+}
+
+
+/****************
+   ScrollBanner
+****************/
+
+.crux-ScrollBanner
+{
+	padding:10px;
+	background:#fff;
+}
+
+.crux-ScrollBanner > tbody > tr > td:first-child
+{
+	width:100% !important;
+}
+
+
+.crux-ScrollBanner .message
+{
+	padding:10px;
+	letter-spacing: -1px;
+}
+
+.crux-ScrollBanner .messageCount
+{
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	font-size:13px;
+	padding:5px 0;
+	margin:0 2px;
+}
+
+.crux-ScrollBanner .previousMessageButton .gwt-Label
+{
+	width:0;
+	height:0;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;	
+	border-bottom: 5px solid #fff;
+}
+
+.crux-ScrollBanner .nextMessageButton .gwt-Label
+{
+	width:0;
+	height:0;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;	
+	border-top: 5px solid #fff;
 }
