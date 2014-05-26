@@ -38,6 +38,7 @@ import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.text.client.IntegerParser;
 import com.google.gwt.text.client.IntegerRenderer;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasName;
 import com.google.gwt.user.client.ui.HasValue;
@@ -50,11 +51,11 @@ import com.google.gwt.user.client.ui.ValueBoxBase;
  *
  */
 //TODO refatorar isso. Deveriamos ter no futuro boxs usando html5 apenas
-public class NumberTextBox extends Composite implements HasValue<Integer>, HasEnabled, HasAllFocusHandlers, HasName, HasAllKeyHandlers
+public class NumberTextBox extends Composite implements HasValue<Integer>, HasEnabled, HasAllFocusHandlers, HasName, HasAllKeyHandlers, Focusable
 {
 	private Impl impl;
 
-	static interface Impl extends IsWidget, HasValue<Integer>, HasEnabled, HasAllFocusHandlers, HasName 
+	static interface Impl extends IsWidget, HasValue<Integer>, HasEnabled, HasAllFocusHandlers, HasName, Focusable
 	{
 		int getMaxLength();
 		void setMaxLength(int length);
@@ -156,6 +157,30 @@ public class NumberTextBox extends Composite implements HasValue<Integer>, HasEn
         {
 			box.setMaxLength(length);
         }
+
+		@Override
+		public int getTabIndex() 
+		{
+			return box.getTabIndex();
+		}
+
+		@Override
+		public void setAccessKey(char key) 
+		{
+			box.setAccessKey(key);	
+		}
+
+		@Override
+		public void setFocus(boolean focused) 
+		{
+			box.setFocus(focused);	
+		}
+
+		@Override
+		public void setTabIndex(int index) 
+		{
+			box.setTabIndex(index);	
+		}
 	}
 	
 	static class DevicesImpl extends Composite implements Impl
@@ -316,6 +341,30 @@ public class NumberTextBox extends Composite implements HasValue<Integer>, HasEn
 				((IntegerBox)impl).setMaxLength(length);
 			}
         }
+
+		@Override
+		public int getTabIndex() 
+		{
+			return impl.getTabIndex();
+		}
+
+		@Override
+		public void setAccessKey(char key) 
+		{
+			impl.setAccessKey(key);	
+		}
+
+		@Override
+		public void setFocus(boolean focused) 
+		{
+			impl.setFocus(focused);	
+		}
+
+		@Override
+		public void setTabIndex(int index) 
+		{
+			impl.setTabIndex(index);	
+		}
 	}
 	
 	public NumberTextBox()
@@ -411,6 +460,30 @@ public class NumberTextBox extends Composite implements HasValue<Integer>, HasEn
 	public HandlerRegistration addKeyPressHandler(KeyPressHandler handler)
 	{
 		return this.addDomHandler(handler, KeyPressEvent.getType());
+	}
+
+	@Override
+	public int getTabIndex() 
+	{
+		return impl.getTabIndex();
+	}
+
+	@Override
+	public void setAccessKey(char key) 
+	{
+		impl.setAccessKey(key);	
+	}
+
+	@Override
+	public void setFocus(boolean focused) 
+	{
+		impl.setFocus(focused);
+	}
+
+	@Override
+	public void setTabIndex(int index) 
+	{
+		impl.setTabIndex(index);	
 	}
 
 }
