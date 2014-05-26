@@ -13,12 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.widgets.client.datebox.gwtoverride;
+package org.cruxframework.crux.widgets.client.datebox;
 
 import java.util.Date;
 
+import org.cruxframework.crux.widgets.client.datebox.DateBox.CruxFormat;
 import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
-import org.cruxframework.crux.widgets.client.datepicker.gwtoverride.DateChangeEvent;
+import org.cruxframework.crux.widgets.client.datepicker.GWTOverriddenDateChangeEvent;
+import org.cruxframework.crux.widgets.client.maskedtextbox.MaskedTextBox;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -45,16 +47,20 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * CruxDateBox
+ * This is a GWT Class and had to be fully overridden because method visibility that
+ * didn't allowed me to override the method itself.   
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
-public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
+class GWTOverriddenDateBox extends Composite implements HasEnabled, HasValue<Date>,
 	IsEditor<LeafValueEditor<Date>> {
+	
+	private IFormatToFormatterConverter formatter = null;
+	
 	/**
-	 * Default {@link DateBox.Format} class. The date is first parsed using the
+	 * Default {@link GWTOverriddenDateBox.Format} class. The date is first parsed using the
 	 * {@link DateTimeFormat} supplied by the user, or
 	 * {@link DateTimeFormat#getMediumDateFormat()} by default.
 	 * <p>
@@ -62,15 +68,15 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 	 * parsing.
 	 * </p>
 	 * If that fails, the <code>dateBoxFormatError</code> css style is applied to
-	 * the {@link DateBox}. The style will be removed when either a successful
-	 * {@link #parse(DateBox,String, boolean)} is called or
-	 * {@link #format(DateBox,Date)} is called.
+	 * the {@link GWTOverriddenDateBox}. The style will be removed when either a successful
+	 * {@link #parse(GWTOverriddenDateBox,String, boolean)} is called or
+	 * {@link #format(GWTOverriddenDateBox,Date)} is called.
 	 * <p>
-	 * Use a different {@link DateBox.Format} instance to change that behavior.
+	 * Use a different {@link GWTOverriddenDateBox.Format} instance to change that behavior.
 	 * </p>
 	 */
-	public static class DefaultFormat implements Format {
-
+	public static class DefaultFormat implements CruxFormat 
+	{
 		private final DateTimeFormat dateTimeFormat;
 
 		/**
@@ -91,7 +97,7 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 			this.dateTimeFormat = dateTimeFormat;
 		}
 
-		public String format(DateBox box, Date date) {
+		public String format(GWTOverriddenDateBox box, Date date) {
 			if (date == null) {
 				return "";
 			} else {
@@ -109,7 +115,7 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 		}
 
 		@SuppressWarnings("deprecation")
-		public Date parse(DateBox dateBox, String dateText, boolean reportError) {
+		public Date parse(GWTOverriddenDateBox dateBox, String dateText, boolean reportError) {
 			Date date = null;
 			try {
 				if (dateText.length() > 0) {
@@ -128,8 +134,14 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 			return date;
 		}
 
-		public void reset(DateBox dateBox, boolean abandon) {
+		public void reset(GWTOverriddenDateBox dateBox, boolean abandon) {
 			dateBox.removeStyleName(DATE_BOX_FORMAT_ERROR);
+		}
+
+		@Override
+		public String getPattern() 
+		{
+			return dateTimeFormat.getPattern();
 		}
 	}
 
@@ -147,7 +159,7 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 	     * @param date the date to format
 	     * @return the formatted date as a string
 	     */
-	    String format(DateBox dateBox, Date date);
+	    String format(GWTOverriddenDateBox dateBox, Date date);
 
 	    /**
 	     * Parses the provided string as a date.
@@ -158,7 +170,7 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 	     *          user?
 	     * @return the date created, or null if there was a parse error
 	     */
-	    Date parse(DateBox dateBox, String text, boolean reportError);
+	    Date parse(GWTOverriddenDateBox dateBox, String text, boolean reportError);
 
 	    /**
 	     * If the format did any modifications to the date box's styling, reset them
@@ -167,7 +179,7 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 	     * @param abandon true when the current format is being replaced by another
 	     * @param dateBox the date box
 	     */
-	    void reset(DateBox dateBox, boolean abandon);
+	    void reset(GWTOverriddenDateBox dateBox, boolean abandon);
 	  }
 	
 	private class DateBoxHandler implements ValueChangeHandler<Date>,
@@ -230,20 +242,20 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 	/**
 	 * Default style name.
 	 */
-	public static final String DEFAULT_STYLENAME = "gwt-DateBox";
+	public static final String DEFAULT_STYLENAME = "gwt-Date";
 	private static final DefaultFormat DEFAULT_FORMAT = GWT.create(DefaultFormat.class);
 	private final PopupPanel popup;
-	private final TextBox box = new TextBox();
+	private final MaskedTextBox box = new MaskedTextBox();
 	private final DatePicker picker;
 	private LeafValueEditor<Date> editor;
-	private Format format;
+	private CruxFormat format;
 	private boolean allowDPShow = true;
 	private boolean fireNullValues = false;
 
 	/**
 	 * Create a date box with a new {@link DatePicker}.
 	 */
-	public DateBox() {
+	public GWTOverriddenDateBox() {
 		this(new DatePicker(), null, DEFAULT_FORMAT);
 	}
 
@@ -254,7 +266,7 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 	 * @param picker the picker to drop down from the date box
 	 * @param format to use to parse and format dates
 	 */
-	public DateBox(DatePicker picker, Date date, Format format) {
+	public GWTOverriddenDateBox(DatePicker picker, Date date, final CruxFormat format) {
 		this.picker = picker;
 		this.popup = new PopupPanel(true);
 		assert format != null : "You may not construct a date box with a null format";
@@ -273,8 +285,10 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 		box.addBlurHandler(handler);
 		box.addClickHandler(handler);
 		box.addKeyDownHandler(handler);
-		box.setDirectionEstimator(false);
+		box.setClearIfNotValid(true);
+		
 		popup.addCloseHandler(handler);
+		
 		setValue(date);
 	}
 
@@ -284,7 +298,7 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 	}
 
 	/**
-	 * Returns a {@link TakesValueEditor} backed by the DateBox.
+	 * Returns a {@link TakesValueEditor} backed by the DateBoxGWTOverridden.
 	 */
 	public LeafValueEditor<Date> asEditor() {
 		if (editor == null) {
@@ -293,15 +307,15 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 		return editor;
 	}
 
-	/**
-	 * Gets the current cursor position in the date box.
-	 *
-	 * @return the cursor position
-	 *
-	 */
-	public int getCursorPos() {
-		return box.getCursorPos();
-	}
+//	/**
+//	 * Gets the current cursor position in the date box.
+//	 *
+//	 * @return the cursor position
+//	 *
+//	 */
+//	public int getCursorPos() {
+//		return box.getCursorPos();
+//	}
 
 	/**
 	 * Gets the date picker.
@@ -322,11 +336,11 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 
 	/**
 	 * Gets the format instance used to control formatting and parsing of this
-	 * {@link DateBox}.
+	 * {@link GWTOverriddenDateBox}.
 	 *
 	 * @return the format
 	 */
-	public Format getFormat() {
+	public CruxFormat getFormat() {
 		return format;
 	}
 
@@ -344,7 +358,7 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 	 *
 	 * @return the text box used to enter the formatted date
 	 */
-	public TextBox getTextBox() {
+	public MaskedTextBox getTextBox() {
 		return box;
 	}
 
@@ -418,12 +432,12 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 
 	/**
 	 * Sets the format used to control formatting and parsing of dates in this
-	 * {@link DateBox}. If this {@link DateBox} is not empty, the contents of date
+	 * {@link GWTOverriddenDateBox}. If this {@link GWTOverriddenDateBox} is not empty, the contents of date
 	 * box will be replaced with current contents in the new format.
 	 *
 	 * @param format the new date format
 	 */
-	public void setFormat(Format format) {
+	public void setFormat(final CruxFormat format) {
 		assert format != null : "A Date box may not have a null format";
 		if (this.format != format) {
 			Date date = getValue();
@@ -437,8 +451,11 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 			this.format = format;
 			setValue(date);
 		}
+		this.formatter = GWT.create(FormatToFormatterConverter.class);
+		formatter.setFormat(format);
+		box.setFormatter(formatter);
 	}
-
+	
 	/**
 	 * Sets the date box's position in the tab index. If more than one widget has
 	 * the same tab index, each such widget will receive focus in an arbitrary
@@ -488,7 +505,7 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 		if (reportError) {
 			getFormat().reset(this, false);
 		}
-		String text = box.getText().trim();
+		String text = box.getValue().trim();
 		return getFormat().parse(this, text, reportError);
 	}
 
@@ -509,11 +526,11 @@ public class DateBox extends Composite implements HasEnabled, HasValue<Date>,
 
 		if (updateText) {
 			format.reset(this, false);
-			box.setText(getFormat().format(this, date));
+			box.setUnformattedValue(date);
 		}
 
 		if (fireEvents) {
-			DateChangeEvent.fireIfNotEqualDates(this, oldDate, date);
+			GWTOverriddenDateChangeEvent.fireIfNotEqualDates(this, oldDate, date);
 		}
 	}
 

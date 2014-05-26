@@ -14,27 +14,27 @@
  * the License.
  */
 
-package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
+package org.cruxframework.crux.widgets.client.datepicker;
 
 import java.util.Date;
 
 /**
  * The CalendarView is a calendar grid that represents the current view of a
- * {@link DatePicker}. Note, the calendar view only deals with the currently
+ * {@link GWTOverriddenDatePicker}. Note, the calendar view only deals with the currently
  * visible dates and all state is flushed when the calendar view is refreshed.
  * 
  */
-public abstract class CalendarView extends DatePickerComponent {
+abstract class GWTOverriddenCalendarView extends GWTOverriddenDatePickerComponent {
 
   /**
    * Constructor.
    */
-  public CalendarView() {
+  public GWTOverriddenCalendarView() {
   }
 
   /**
    * Adds a style name to the cell of the supplied date. This style is only set
-   * until the next time the {@link CalendarView} is refreshed.
+   * until the next time the {@link GWTOverriddenCalendarView} is refreshed.
    * 
    * @param styleName style name to add
    * @param date date that will have the supplied style added

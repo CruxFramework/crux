@@ -13,11 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
+package org.cruxframework.crux.widgets.client.datepicker;
 
 import java.util.Date;
 
-import org.cruxframework.crux.widgets.client.datepicker.gwtoverride.DefaultCalendarView.CellGrid.DateCell;
+import org.cruxframework.crux.widgets.client.datepicker.GWTOverriddenDefaultCalendarView.CellGrid.DateCell;
 
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.aria.client.SelectedValue;
@@ -30,13 +30,13 @@ import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
  */
 
 @SuppressWarnings(/* Date manipulation required */{"deprecation"})
-public class DefaultCalendarView extends CalendarView {
+class GWTOverriddenDefaultCalendarView extends GWTOverriddenCalendarView {
 
   /**
    * Cell grid.
    */
   public // Javac bug requires that date be fully specified here.
-  class CellGrid extends CellGridImpl<java.util.Date> {
+  class CellGrid extends GWTOverriddenCellGridImpl<java.util.Date> {
     /**
      * A cell representing a date.
      */
@@ -140,7 +140,7 @@ public class DefaultCalendarView extends CalendarView {
     }
 
     CellGrid() {
-      resize(CalendarModel.WEEKS_IN_MONTH + 1, CalendarModel.DAYS_IN_WEEK);
+      resize(GWTOverriddenCalendarModel.WEEKS_IN_MONTH + 1, GWTOverriddenCalendarModel.DAYS_IN_WEEK);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class DefaultCalendarView extends CalendarView {
   /**
    * Constructor.
    */
-  public DefaultCalendarView() {
+  public GWTOverriddenDefaultCalendarView() {
   }
 
   @Override
@@ -191,14 +191,14 @@ public class DefaultCalendarView extends CalendarView {
 
     if (firstDisplayed.getDate() == 1) {
       // show one empty week if date is Monday is the first in month.
-      CalendarUtil.addDaysToDate(firstDisplayed, -7);
+      GWTOverriddenCalendarUtil.addDaysToDate(firstDisplayed, -7);
     }
 
     lastDisplayed.setTime(firstDisplayed.getTime());
 
     for (int i = 0; i < grid.getNumCells(); i++) {
       if (i != 0) {
-        CalendarUtil.addDaysToDate(lastDisplayed, 1);
+        GWTOverriddenCalendarUtil.addDaysToDate(lastDisplayed, 1);
       }
       DateCell cell = (DateCell) grid.getCell(i);
       cell.update(lastDisplayed);
@@ -236,13 +236,13 @@ public class DefaultCalendarView extends CalendarView {
     int weekendEndColumn = -1;
 
     // Set up the day labels.
-    for (int i = 0; i < CalendarModel.DAYS_IN_WEEK; i++) {
-      int shift = CalendarUtil.getStartingDayOfWeek();
-      int dayIdx = i + shift < CalendarModel.DAYS_IN_WEEK ? i + shift : i
-          + shift - CalendarModel.DAYS_IN_WEEK;
+    for (int i = 0; i < GWTOverriddenCalendarModel.DAYS_IN_WEEK; i++) {
+      int shift = GWTOverriddenCalendarUtil.getStartingDayOfWeek();
+      int dayIdx = i + shift < GWTOverriddenCalendarModel.DAYS_IN_WEEK ? i + shift : i
+          + shift - GWTOverriddenCalendarModel.DAYS_IN_WEEK;
       grid.setText(0, i, getModel().formatDayOfWeek(dayIdx));
 
-      if (CalendarUtil.isWeekend(dayIdx)) {
+      if (GWTOverriddenCalendarUtil.isWeekend(dayIdx)) {
         formatter.setStyleName(0, i, css().weekendLabel());
         if (weekendStartColumn == -1) {
           weekendStartColumn = i;
@@ -255,8 +255,8 @@ public class DefaultCalendarView extends CalendarView {
     }
 
     // Set up the calendar grid.
-    for (int row = 1; row <= CalendarModel.WEEKS_IN_MONTH; row++) {
-      for (int column = 0; column < CalendarModel.DAYS_IN_WEEK; column++) {
+    for (int row = 1; row <= GWTOverriddenCalendarModel.WEEKS_IN_MONTH; row++) {
+      for (int column = 0; column < GWTOverriddenCalendarModel.DAYS_IN_WEEK; column++) {
         DateCell cell = grid.new DateCell(column == weekendStartColumn
             || column == weekendEndColumn);
         grid.setWidget(row, column, cell);
@@ -267,7 +267,7 @@ public class DefaultCalendarView extends CalendarView {
   }
 
   private DateCell getCell(Date d) {
-    int index = CalendarUtil.getDaysBetween(firstDisplayed, d);
+    int index = GWTOverriddenCalendarUtil.getDaysBetween(firstDisplayed, d);
     if (index < 0 || grid.getNumCells() <= index) {
       return null;
     }

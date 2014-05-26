@@ -25,7 +25,7 @@ import com.google.gwt.user.datepicker.client.CalendarUtil;
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-public class DatePicker extends org.cruxframework.crux.widgets.client.datepicker.gwtoverride.DatePicker implements CruxWidget
+public class DatePicker extends org.cruxframework.crux.widgets.client.datepicker.GWTOverriddenDatePicker implements CruxWidget
 {
 	private Date monthToOpen;
 	

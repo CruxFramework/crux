@@ -13,10 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
+package org.cruxframework.crux.widgets.client.datepicker;
 
 /**
  * Abstract month selector widget.
  */
-public abstract class MonthSelector extends DatePickerComponent {
+abstract class GWTOverriddenMonthSelector extends GWTOverriddenDatePickerComponent {
 }

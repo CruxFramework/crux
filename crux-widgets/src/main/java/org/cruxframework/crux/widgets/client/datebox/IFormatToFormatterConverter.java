@@ -13,19 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+package org.cruxframework.crux.widgets.client.datebox;
 
-package org.cruxframework.crux.widgets.client.datepicker;
+import org.cruxframework.crux.core.client.formatter.Formatter;
+import org.cruxframework.crux.widgets.client.datebox.DateBox.CruxFormat;
 
-
-/**
- * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
- *
- */
-public final class CruxCalendarView extends GWTOverriddenDefaultCalendarView 
+public interface IFormatToFormatterConverter extends Formatter
 {
-	public CellGrid getGrid()
-	{
-		return grid;
-	}
-	
+	public CruxFormat getFormat(); 
+	public void setFormat(CruxFormat format); 
 }

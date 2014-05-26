@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
+package org.cruxframework.crux.widgets.client.datepicker;
 
 import com.google.gwt.editor.client.IsEditor;
 import com.google.gwt.editor.client.LeafValueEditor;
@@ -89,7 +89,7 @@ import java.util.Map;
  * {@example com.google.gwt.examples.DatePickerExample}
  * </p>
  */
-public class DatePicker extends Composite implements
+class GWTOverriddenDatePicker extends Composite implements
     HasHighlightHandlers<Date>, HasShowRangeHandlers<Date>, HasValue<Date>,
     IsEditor<LeafValueEditor<Date>> {
 
@@ -221,7 +221,7 @@ public class DatePicker extends Composite implements
 
     @Override
     public Date getHighlighted() {
-      return CalendarUtil.copyDate(super.getHighlighted());
+      return GWTOverriddenCalendarUtil.copyDate(super.getHighlighted());
     }
   }
 
@@ -267,9 +267,9 @@ public class DatePicker extends Composite implements
 
   private final DateStyler styler = new DateStyler();
 
-  private final MonthSelector monthAndYearSelector;
-  private final CalendarView view;
-  private final CalendarModel model;
+  private final GWTOverriddenMonthSelector monthAndYearSelector;
+  private final GWTOverriddenCalendarView view;
+  private final GWTOverriddenCalendarModel model;
   private Date value;
   private Date highlighted;
   private StandardCss css = StandardCss.DEFAULT;
@@ -281,9 +281,9 @@ public class DatePicker extends Composite implements
   /**
    * Create a new date picker.
    */
-  public DatePicker() {
-    this(new DefaultMonthSelector(), new DefaultCalendarView(),
-        new CalendarModel());
+  public GWTOverriddenDatePicker() {
+    this(new GWTOverriddenDefaultMonthSelector(), new GWTOverriddenDefaultCalendarView(),
+        new GWTOverriddenCalendarModel());
   }
 
   /**
@@ -294,8 +294,8 @@ public class DatePicker extends Composite implements
    * @param model the model
    */
 
-  protected DatePicker(MonthSelector monthAndYearSelector, CalendarView view,
-      CalendarModel model) {
+  protected GWTOverriddenDatePicker(GWTOverriddenMonthSelector monthAndYearSelector, GWTOverriddenCalendarView view,
+      GWTOverriddenCalendarModel model) {
 
     this.model = model;
     this.monthAndYearSelector = monthAndYearSelector;
@@ -442,7 +442,7 @@ public class DatePicker extends Composite implements
    * @return the highlighted date
    */
   public final Date getHighlightedDate() {
-    return CalendarUtil.copyDate(highlighted);
+    return GWTOverriddenCalendarUtil.copyDate(highlighted);
   }
 
   /**
@@ -479,7 +479,7 @@ public class DatePicker extends Composite implements
    * @return the selected date, or null
    */
   public final Date getValue() {
-    return CalendarUtil.copyDate(value);
+    return GWTOverriddenCalendarUtil.copyDate(value);
   }
 
   /**
@@ -502,11 +502,11 @@ public class DatePicker extends Composite implements
    * @return is the date currently shown
    */
   public boolean isDateVisible(Date date) {
-    CalendarView r = getView();
+    GWTOverriddenCalendarView r = getView();
     Date first = r.getFirstDate();
     Date last = r.getLastDate();
-    return (date != null && (CalendarUtil.isSameDate(first, date)
-        || CalendarUtil.isSameDate(last, date) || (first.before(date) && last.after(date))));
+    return (date != null && (GWTOverriddenCalendarUtil.isSameDate(first, date)
+        || GWTOverriddenCalendarUtil.isSameDate(last, date) || (first.before(date) && last.after(date))));
   }
 
   /**
@@ -648,7 +648,7 @@ public class DatePicker extends Composite implements
   }
 
   /**
-   * Sets the {@link DatePicker}'s value.
+   * Sets the {@link GWTOverriddenDatePicker}'s value.
    *
    * @param newValue the new value
    */
@@ -657,7 +657,7 @@ public class DatePicker extends Composite implements
   }
 
   /**
-   * Sets the {@link DatePicker}'s value.
+   * Sets the {@link GWTOverriddenDatePicker}'s value.
    *
    * @param newValue the new value for this date picker
    * @param fireEvents should events be fired.
@@ -669,41 +669,41 @@ public class DatePicker extends Composite implements
       removeStyleFromDates(css().dayIsValue(), oldValue);
     }
 
-    value = CalendarUtil.copyDate(newValue);
+    value = GWTOverriddenCalendarUtil.copyDate(newValue);
     if (value != null) {
       addStyleToDates(css().dayIsValue(), value);
     }
     getView().setAriaSelectedCell(newValue);
 
     if (fireEvents) {
-      DateChangeEvent.fireIfNotEqualDates(this, oldValue, newValue);
+      GWTOverriddenDateChangeEvent.fireIfNotEqualDates(this, oldValue, newValue);
     }
   }
 
   /**
-   * Gets the {@link CalendarModel} associated with this date picker.
+   * Gets the {@link GWTOverriddenCalendarModel} associated with this date picker.
    *
    * @return the model
    */
-  protected final CalendarModel getModel() {
+  protected final GWTOverriddenCalendarModel getModel() {
     return model;
   }
 
   /**
-   * Gets the {@link MonthSelector} associated with this date picker.
+   * Gets the {@link GWTOverriddenMonthSelector} associated with this date picker.
    *
    * @return the month selector
    */
-  public final MonthSelector getMonthSelector() {
+  public final GWTOverriddenMonthSelector getMonthSelector() {
     return monthAndYearSelector;
   }
 
   /**
-   * Gets the {@link CalendarView} associated with this date picker.
+   * Gets the {@link GWTOverriddenCalendarView} associated with this date picker.
    *
    * @return the view
    */
-  public final CalendarView getView() {
+  public final GWTOverriddenCalendarView getView() {
     return view;
   }
 

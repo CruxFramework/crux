@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
  * A native implementation for DatePicker component
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
-public class NativeDateBox extends DefaultDateBox
+class NativeDateBox extends DefaultDateBox
 {
 	public NativeDateBox()
 	{

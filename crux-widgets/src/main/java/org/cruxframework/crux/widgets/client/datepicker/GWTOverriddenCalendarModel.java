@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
+package org.cruxframework.crux.widgets.client.datepicker;
 
 import java.util.Date;
 
@@ -22,11 +22,11 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 
 /**
- * Model used to get calendar information for {@link DatePicker} and its
+ * Model used to get calendar information for {@link GWTOverriddenDatePicker} and its
  * subclasses.
  */
 @SuppressWarnings(/* Required to use Date API in gwt */{"deprecation"})
-public class CalendarModel {
+class GWTOverriddenCalendarModel {
 
   /**
    * The number of weeks normally displayed in a month.
@@ -47,10 +47,10 @@ public class CalendarModel {
   /**
    * Constructor.
    */
-  public CalendarModel() {
+  public GWTOverriddenCalendarModel() {
     currentMonth = new Date();
 
-    CalendarUtil.setToFirstDayOfMonth(currentMonth);
+    GWTOverriddenCalendarUtil.setToFirstDayOfMonth(currentMonth);
 
     // Finding day of week names
     Date date = new Date();
@@ -105,7 +105,7 @@ public class CalendarModel {
    */
   public Date getCurrentFirstDayOfFirstWeek() {
     int wkDayOfMonth1st = currentMonth.getDay();
-    int start = CalendarUtil.getStartingDayOfWeek();
+    int start = GWTOverriddenCalendarUtil.getStartingDayOfWeek();
     if (wkDayOfMonth1st == start) {
       // always return a copy to allow SimpleCalendarView to adjust first
       // display date
@@ -114,7 +114,7 @@ public class CalendarModel {
       Date d = new Date(currentMonth.getTime());
       int offset = wkDayOfMonth1st - start > 0 ? wkDayOfMonth1st - start
           : DAYS_IN_WEEK - (start - wkDayOfMonth1st);
-      CalendarUtil.addDaysToDate(d, -offset);
+      GWTOverriddenCalendarUtil.addDaysToDate(d, -offset);
       return d;
     }
   }
@@ -156,7 +156,7 @@ public class CalendarModel {
    * @param deltaMonths - number of months to be added to the current date
    */
   public void shiftCurrentMonth(int deltaMonths) {
-    CalendarUtil.addMonthsToDate(currentMonth, deltaMonths);
+    GWTOverriddenCalendarUtil.addMonthsToDate(currentMonth, deltaMonths);
     refresh();
   }
 

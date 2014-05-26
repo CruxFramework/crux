@@ -14,19 +14,19 @@
  * the License.
  */
 
-package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
+package org.cruxframework.crux.widgets.client.datepicker;
 
 import com.google.gwt.user.client.ui.Composite;
 
 /**
  * Package protected class used to combine functionality for the
- * {@link MonthSelector} and {@link CalendarView} components.
+ * {@link GWTOverriddenMonthSelector} and {@link GWTOverriddenCalendarView} components.
  * 
  */
-abstract class DatePickerComponent extends Composite {
-  private DatePicker datePicker;
+abstract class GWTOverriddenDatePickerComponent extends Composite {
+  private GWTOverriddenDatePicker datePicker;
 
-  public CalendarModel getModel() {
+  public GWTOverriddenCalendarModel getModel() {
     return datePicker.getModel();
   }
 
@@ -35,20 +35,20 @@ abstract class DatePickerComponent extends Composite {
     getDatePicker().refreshAll();
   }
 
-  protected DatePicker getDatePicker() {
+  protected GWTOverriddenDatePicker getDatePicker() {
     return datePicker;
   }
 
   /**
    * Refresh the component. Usually called because the model's current date has
-   * changed. In general, only should be called by {@link DatePicker}. Use
+   * changed. In general, only should be called by {@link GWTOverriddenDatePicker}. Use
    * refreshAll() if you need to refresh all components.
    */
   protected abstract void refresh();
 
   /**
-   * Refreshes the {@link DatePicker}, {@link CalendarView}, and
-   * {@link CalendarModel}.
+   * Refreshes the {@link GWTOverriddenDatePicker}, {@link GWTOverriddenCalendarView}, and
+   * {@link GWTOverriddenCalendarModel}.
    */
   protected void refreshAll() {
     getDatePicker().refreshAll();
@@ -59,11 +59,11 @@ abstract class DatePickerComponent extends Composite {
    */
   protected abstract void setup();
 
-  DatePicker.StandardCss css() {
+  GWTOverriddenDatePicker.StandardCss css() {
     return datePicker.css();
   }
 
-  void setDatePicker(DatePicker me) {
+  void setDatePicker(GWTOverriddenDatePicker me) {
     this.datePicker = me;
   }
 }

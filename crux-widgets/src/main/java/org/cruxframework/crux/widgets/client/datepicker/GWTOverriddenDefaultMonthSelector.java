@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
+package org.cruxframework.crux.widgets.client.datepicker;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,11 +24,11 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 
 /**
- * A simple {@link MonthSelector} used for the default date picker. Not
+ * A simple {@link GWTOverriddenMonthSelector} used for the default date picker. Not
  * extensible as we wish to evolve it freely over time.
  */
 
-public final class DefaultMonthSelector extends MonthSelector {
+final class GWTOverriddenDefaultMonthSelector extends GWTOverriddenMonthSelector {
 
   private PushButton backwards;
   private PushButton forwards;
@@ -37,7 +37,7 @@ public final class DefaultMonthSelector extends MonthSelector {
   /**
    * Constructor.
    */
-  public DefaultMonthSelector() {
+  public GWTOverriddenDefaultMonthSelector() {
   }
 
   /**

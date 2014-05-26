@@ -17,14 +17,17 @@ package org.cruxframework.crux.widgets.client.datebox;
 
 import java.util.Date;
 
-import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
+import org.cruxframework.crux.widgets.client.datebox.GWTOverriddenDateBox.DefaultFormat;
+import org.cruxframework.crux.widgets.client.datebox.GWTOverriddenDateBox.Format;
 import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
+import org.cruxframework.crux.widgets.client.maskedtextbox.MaskedTextBox;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * DatePicker
@@ -32,6 +35,22 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class DateBox extends Composite implements IDateBox
 {
+	//**************************************************
+	//Exposing GWT DefaultFormat class
+	public static class CruxDefaultFormat extends DefaultFormat
+	{
+		public CruxDefaultFormat(DateTimeFormat dateTimeFormat) 
+		{
+			super(dateTimeFormat);
+		}
+	}
+	//Exposing GWT Format class (cross reference!)
+	public interface CruxFormat extends Format
+	{
+		public String getPattern();
+	}
+	//**************************************************
+	
 	private IDateBox impl;
 	
 	protected static abstract class CommonDateBox extends Composite implements IDateBox
@@ -57,7 +76,7 @@ public class DateBox extends Composite implements IDateBox
 	}
 
 	@Override
-	public Format getFormat() 
+	public CruxFormat getFormat() 
 	{
 		return impl.getFormat();
 	}
@@ -69,7 +88,7 @@ public class DateBox extends Composite implements IDateBox
 	}
 
 	@Override
-	public TextBox getTextBox() 
+	public MaskedTextBox getTextBox() 
 	{
 		return impl.getTextBox();
 	}
@@ -123,7 +142,7 @@ public class DateBox extends Composite implements IDateBox
 	}
 
 	@Override
-	public void setFormat(Format format) 
+	public void setFormat(CruxFormat format) 
 	{
 		impl.setFormat(format);
 	}
@@ -162,5 +181,11 @@ public class DateBox extends Composite implements IDateBox
 	public void setReadOnly(boolean readOnly) 
 	{
 		impl.setReadOnly(readOnly);
+	}
+
+	@Override
+	public UIObject getPopup() 
+	{
+		return impl.getPopup();
 	}
 }

@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
+package org.cruxframework.crux.widgets.client.datepicker;
 
 import java.util.Date;
 
@@ -25,7 +25,7 @@ import com.google.gwt.i18n.client.LocaleInfo;
 /**
  * Useful utilities for creating views of a calendar.
  */
-public class CalendarUtil {
+class GWTOverriddenCalendarUtil {
 
   private static int firstDayOfWeekend;
   private static int lastDayOfWeekend;

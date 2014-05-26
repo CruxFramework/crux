@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
+package org.cruxframework.crux.widgets.client.datepicker;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @param <V> type of value in grid.
  */
-public abstract class CellGridImpl<V> extends Grid {
+abstract class GWTOverriddenCellGridImpl<V> extends Grid {
 
   public abstract class Cell extends Widget {
     private boolean enabled = true;
@@ -167,7 +167,7 @@ public abstract class CellGridImpl<V> extends Grid {
   private ElementMapperImpl<Cell> elementToCell = new ElementMapperImpl<Cell>();
   private ArrayList<Cell> cellList = new ArrayList<Cell>();
 
-  protected CellGridImpl() {
+  protected GWTOverriddenCellGridImpl() {
     setCellPadding(0);
     setCellSpacing(0);
     setBorderWidth(0);

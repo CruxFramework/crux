@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.cruxframework.crux.widgets.client.datepicker.gwtoverride;
+package org.cruxframework.crux.widgets.client.datepicker;
 
 import java.util.Date;
 
@@ -25,7 +25,7 @@ import com.google.gwt.event.shared.HasHandlers;
 /**
  * Creates a new value every time a date is accessed.
  */
-public class DateChangeEvent extends ValueChangeEvent<Date> {
+public class GWTOverriddenDateChangeEvent extends ValueChangeEvent<Date> {
 
   /**
    * Fires value change event if the old value is not equal to the new value.
@@ -40,7 +40,7 @@ public class DateChangeEvent extends ValueChangeEvent<Date> {
   public static <S extends HasValueChangeHandlers<Date> & HasHandlers> void fireIfNotEqualDates(
       S source, Date oldValue, Date newValue) {
     if (ValueChangeEvent.shouldFire(source, oldValue, newValue)) {
-      source.fireEvent(new DateChangeEvent(newValue));
+      source.fireEvent(new GWTOverriddenDateChangeEvent(newValue));
     }
   }
 
@@ -49,13 +49,13 @@ public class DateChangeEvent extends ValueChangeEvent<Date> {
    * 
    * @param value the value
    */
-  protected DateChangeEvent(Date value) {
+  protected GWTOverriddenDateChangeEvent(Date value) {
     // The date must be copied in case one handler causes it to change.
-    super(CalendarUtil.copyDate(value));
+    super(GWTOverriddenCalendarUtil.copyDate(value));
   }
 
   @Override
   public Date getValue() {
-    return CalendarUtil.copyDate(super.getValue());
+    return GWTOverriddenCalendarUtil.copyDate(super.getValue());
   }
 }

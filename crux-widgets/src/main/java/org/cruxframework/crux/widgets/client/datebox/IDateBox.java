@@ -17,14 +17,15 @@ package org.cruxframework.crux.widgets.client.datebox;
 
 import java.util.Date;
 
-import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
+import org.cruxframework.crux.widgets.client.datebox.DateBox.CruxFormat;
 import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
+import org.cruxframework.crux.widgets.client.maskedtextbox.MaskedTextBox;
 import org.cruxframework.crux.widgets.client.util.type.CruxWidget;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
@@ -32,9 +33,10 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 interface IDateBox extends CruxWidget, HasValue<Date>, Focusable, HasValueChangeHandlers<Date>
 {
-	public Format getFormat();
+	public CruxFormat getFormat();
+	public UIObject getPopup();
 	public int getTabIndex();
-	public TextBox getTextBox();
+	public MaskedTextBox getTextBox();
 	public DatePicker getDatePicker();
 	public Date getValue();
 	public void hideDatePicker();
@@ -44,7 +46,7 @@ interface IDateBox extends CruxWidget, HasValue<Date>, Focusable, HasValueChange
 	public void setEnabled(boolean enabled);
 	public void setReadOnly(boolean readOnly);
 	public void setFocus(boolean focused);
-	public void setFormat(Format format);
+	public void setFormat(CruxFormat format);
 	public void setValue(Date date);
 	public void showDatePicker();
 }

@@ -16,8 +16,6 @@
 
 package org.cruxframework.crux.widgets.client.datepicker;
 
-import org.cruxframework.crux.widgets.client.datepicker.gwtoverride.MonthSelector;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -29,7 +27,7 @@ import com.google.gwt.user.client.ui.PushButton;
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-public final class CruxMonthSelector extends MonthSelector 
+public final class CruxMonthSelector extends GWTOverriddenMonthSelector 
 {
 	private PushButton prevMonth;
 	private PushButton nextMonth;

@@ -416,6 +416,11 @@
 
 	<!-- DateBox -->
 	<replace-with
+        class="org.cruxframework.crux.widgets.client.datebox.FormatToFormatterConverter">
+        <when-type-assignable class="org.cruxframework.crux.widgets.client.datebox.IFormatToFormatterConverter" />
+    </replace-with>
+    
+	<replace-with
 		class="org.cruxframework.crux.widgets.client.datebox.DefaultDateBox">
 		<when-type-assignable
 			class="org.cruxframework.crux.widgets.client.datebox.DateBox.CommonDateBox" />

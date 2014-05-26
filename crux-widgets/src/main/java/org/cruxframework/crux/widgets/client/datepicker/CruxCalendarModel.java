@@ -15,12 +15,11 @@
  */
 package org.cruxframework.crux.widgets.client.datepicker;
 
-import org.cruxframework.crux.widgets.client.datepicker.gwtoverride.CalendarModel;
 
 
 /**
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
-public final class CruxCalendarModel extends CalendarModel
+final class CruxCalendarModel extends GWTOverriddenCalendarModel
 {
 }

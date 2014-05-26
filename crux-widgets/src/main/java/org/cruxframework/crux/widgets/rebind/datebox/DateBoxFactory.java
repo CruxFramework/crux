@@ -40,8 +40,8 @@ import org.cruxframework.crux.gwt.client.LoadFormatEvent;
 import org.cruxframework.crux.gwt.rebind.CompositeFactory;
 import org.cruxframework.crux.gwt.rebind.DatePickerFactory;
 import org.cruxframework.crux.widgets.client.datebox.DateBox;
-import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.DefaultFormat;
-import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
+import org.cruxframework.crux.widgets.client.datebox.DateBox.CruxDefaultFormat;
+import org.cruxframework.crux.widgets.client.datebox.DateBox.CruxFormat;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -60,7 +60,6 @@ import org.json.JSONObject;
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration("value"),
 	@TagAttributeDeclaration("pattern"),
-	@TagAttributeDeclaration("mask"),
 	@TagAttributeDeclaration(value="reportFormatError", type=Boolean.class)
 })
 @TagEventsDeclaration({
@@ -93,7 +92,7 @@ public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext>
 			String date = ViewFactoryCreator.createVariableName("date");
 			out.println(Date.class.getCanonicalName()+" "+date+" = "+widget+".getFormat().parse("+widget+", "+EscapeUtils.quote(value)+", "+reportError+");");
 			out.println(widget+".setValue("+date+");");
-			out.println("}catch(ValidateException e){/* nada a fazer*/}");
+			out.println("}catch(ValidateException e){/* do nothing */}");
 		}
 	}
 
@@ -152,7 +151,7 @@ public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext>
 
 		if (pattern != null && pattern.trim().length() > 0)
 		{
-			out.println(Format.class.getCanonicalName()+" "+format+"= ("+Format.class.getCanonicalName()+") new "+org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.DefaultFormat.class.getCanonicalName()+
+			out.println(CruxFormat.class.getCanonicalName()+" "+format+"= ("+CruxFormat.class.getCanonicalName()+") new "+org.cruxframework.crux.widgets.client.datebox.DateBox.CruxDefaultFormat.class.getCanonicalName()+
 					"("+DateFormatUtil.class.getCanonicalName()+".getDateTimeFormat("+EscapeUtils.quote(pattern)+"));");
 		}
 		else
@@ -168,12 +167,12 @@ public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext>
 				out.println("final Event "+event+" = Events.getEvent("+EscapeUtils.quote("onLoadImage")+", "+ EscapeUtils.quote(eventLoadFormat)+");");
 				out.println(LoadFormatEvent.class.getCanonicalName()+"<"+getWidgetClassName()+"> "+loadEvent+
 						" = new "+LoadFormatEvent.class.getCanonicalName()+"<"+getWidgetClassName()+">("+EscapeUtils.quote(context.getWidgetId())+");");
-				out.println(Format.class.getCanonicalName()+" "+format+
-						" = ("+Format.class.getCanonicalName()+") Events.callEvent("+event+", "+loadEvent+");");
+				out.println(CruxFormat.class.getCanonicalName()+" "+format+
+						" = ("+CruxFormat.class.getCanonicalName()+") Events.callEvent("+event+", "+loadEvent+");");
 			}
 			else
 			{
-				out.println(Format.class.getCanonicalName()+" "+format+"=GWT.create("+DefaultFormat.class.getCanonicalName()+".class);");
+				out.println(CruxFormat.class.getCanonicalName()+" "+format+"=GWT.create("+CruxDefaultFormat.class.getCanonicalName()+".class);");
 			}
 		}
 

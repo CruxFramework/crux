@@ -18,25 +18,25 @@ package org.cruxframework.crux.widgets.client.datebox;
 import java.util.Date;
 
 import org.cruxframework.crux.widgets.client.datebox.DateBox.CommonDateBox;
-import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox;
-import org.cruxframework.crux.widgets.client.datebox.gwtoverride.DateBox.Format;
+import org.cruxframework.crux.widgets.client.datebox.DateBox.CruxFormat;
 import org.cruxframework.crux.widgets.client.datepicker.DatePicker;
+import org.cruxframework.crux.widgets.client.maskedtextbox.MaskedTextBox;
 
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * A default implementation for DatePicker
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
-public class DefaultDateBox extends CommonDateBox
+class DefaultDateBox extends CommonDateBox
 {
-	protected DateBox impl;
+	protected GWTOverriddenDateBox impl;
 	
 	public DefaultDateBox()
 	{
-		impl = new DateBox();
+		impl = new GWTOverriddenDateBox();
 		initWidget(impl);
 		impl.getPopup().setStyleName("crux-popupPanel");
 		setStyleName(getBaseStyleName());
@@ -49,9 +49,9 @@ public class DefaultDateBox extends CommonDateBox
 	}
 	
 	@Override
-	public Format getFormat() 
+	public CruxFormat getFormat() 
 	{
-		return impl.getFormat();
+		return (CruxFormat) impl.getFormat();
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class DefaultDateBox extends CommonDateBox
 	}
 
 	@Override
-	public TextBox getTextBox() 
+	public MaskedTextBox getTextBox() 
 	{
 		return impl.getTextBox();
 	}
@@ -115,7 +115,7 @@ public class DefaultDateBox extends CommonDateBox
 	}
 
 	@Override
-	public void setFormat(Format format) 
+	public void setFormat(CruxFormat format) 
 	{
 		impl.setFormat(format);
 	}
@@ -149,5 +149,11 @@ public class DefaultDateBox extends CommonDateBox
 	{
 		impl.getTextBox().setReadOnly(readOnly);
 		impl.setEnabled(!readOnly);
+	}
+
+	@Override
+	public UIObject getPopup() 
+	{
+		return impl.getPopup();
 	}
 }
