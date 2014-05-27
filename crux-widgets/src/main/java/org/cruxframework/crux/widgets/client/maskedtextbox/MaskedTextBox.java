@@ -275,6 +275,33 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 	{
 		return textBox.getValue();
 	}
+	
+	public String getText()
+	{
+		return getValue();
+	}
+	
+	public void setValue(Object value)
+	{
+		if (this.formatter != null)
+		{
+			try 
+			{
+				textBox.setValue(this.formatter.format(value));
+			} 
+			catch (Exception e) 
+			{
+				if(clearIfNotValid)
+				{
+					textBox.setValue(null);	
+				}
+			}
+		}
+		else
+		{
+			textBox.setValue(value.toString());
+		}
+	}
 
 	/**
 	 * 
