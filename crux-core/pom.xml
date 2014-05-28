@@ -13,14 +13,12 @@
         <javadoc.dir>${basedir}/javadoc</javadoc.dir>
     </properties>
 
-<!--
     <modules>
 	    <module>../crux-runtime</module>
 	    <module>../crux-dev</module>
 	    <module>../crux-widgets</module>
 	    <module>../crux-smart-faces</module>
     </modules>
--->
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -152,7 +150,7 @@
                 <repository>
                     <id>crux-internal-repository</id>
                     <name>Crux Internal Repository</name>
-                    <url>http://repo.sysmap.com.br/artifactory/sysmap-internal</url>
+                    <url>http://repo.sysmap.com.br/artifactory/cruxframework</url>
                 </repository>
             </distributionManagement>
         </profile>
