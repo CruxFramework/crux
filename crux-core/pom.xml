@@ -13,12 +13,28 @@
         <javadoc.dir>${basedir}/javadoc</javadoc.dir>
     </properties>
 
-    <modules>
-	    <module>../crux-runtime</module>
-	    <module>../crux-dev</module>
-	    <module>../crux-widgets</module>
-	    <module>../crux-smart-faces</module>
-    </modules>
+    <!--
+    ********************** DEPLOY **********************
+    replace 5.1.0 for 5.1.0.X 
+    ****************************************************
+    -> Redefine crux version in all artifacts (due to a maven bug!) and then:
+    
+    (Sonatype)
+    - as Snapshot: append -SNAPSHOT to cruxVersion and run 'clean deploy';
+    - as Stage: remove -SNAPSHOT from cruxVersion and run 'clean deploy'
+      with profile 'sonatype_stage'. After this enter in the sonatype 
+      nexus manager and close and promove the created repository.
+    (Internal)  
+    - as Stage version: append .X to cruxVersion removing SNAPSHOT suffix 
+      and run 'clean deploy' with profile 'profile-add-internal-repo-distribution-management' 
+   -->
+
+<!--     <modules> -->
+<!-- 	    <module>../crux-runtime</module> -->
+<!-- 	    <module>../crux-dev</module> -->
+<!-- 	    <module>../crux-widgets</module> -->
+<!-- 	    <module>../crux-smart-faces</module> -->
+<!--     </modules> -->
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -143,14 +159,15 @@
             </build>
         </profile>
 
-        <!-- Deploy at internal repository -->
+        <!-- Crux (and Sysmap) repository -->
+        <!-- *note: this setting has to be duplicated here (it is also in settings.xml) -->
         <profile>
-            <id>internal</id>
+            <id>profile-add-internal-repo-distribution-management</id>
             <distributionManagement>
                 <repository>
-                    <id>crux-internal-repository</id>
+                    <id>crux</id>
                     <name>Crux Internal Repository</name>
-                    <url>http://repo.sysmap.com.br/artifactory/cruxframework</url>
+                    <url>${internal.repository}</url>
                 </repository>
             </distributionManagement>
         </profile>
