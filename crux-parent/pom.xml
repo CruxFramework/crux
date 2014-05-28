@@ -136,14 +136,15 @@
             </build>
         </profile>
 
-        <!-- Deploy at internal repository -->
+        <!-- Crux (and Sysmap) repository -->
+        <!-- *note: this setting has to be duplicated here (it is also in settings.xml) -->
         <profile>
-            <id>internal</id>
+            <id>profile-add-internal-repo-distribution-management</id>
             <distributionManagement>
                 <repository>
-                    <id>crux-internal-repository</id>
+                    <id>crux</id>
                     <name>Crux Internal Repository</name>
-                    <url>http://repo.sysmap.com.br/artifactory/cruxframework</url>
+                    <url>${internal.repository}</url>
                 </repository>
             </distributionManagement>
         </profile>

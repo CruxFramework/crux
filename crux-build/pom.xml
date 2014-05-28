@@ -8,22 +8,20 @@
 	<name>Crux Build</name>
 	<description>Crux Framework build POM</description>
 
-  <!--
+    <!--
     ********************** DEPLOY **********************
-    **************** Current .X version ****************
-    13
-    i.e. replace 5.1.0 for 5.1.0.13 
+    replace 5.1.0 for 5.1.0.X 
     ****************************************************
-    -> Redefine crux version in all artifacts (maven bug!) and then:
+    -> Redefine crux version in all artifacts (due to a maven bug!) and then:
     
     (Sonatype)
-    - as Snapshot: append -SNAPSHOT to cruxVersion and run 'clean deploy'
+    - as Snapshot: append -SNAPSHOT to cruxVersion and run 'clean deploy';
     - as Stage: remove -SNAPSHOT from cruxVersion and run 'clean deploy'
-      after this enter in the sonatype nexus manager and close and 
-      promove the created repository.
+      with profile 'sonatype_stage'. After this enter in the sonatype 
+      nexus manager and close and promove the created repository.
     (Internal)  
     - as Stage version: append .X to cruxVersion removing SNAPSHOT suffix 
-      and run 'clean deploy' with profile 'internal' 
+      and run 'clean deploy' with profile 'profile-add-internal-repo-distribution-management' 
    -->
      
 	<modules>
