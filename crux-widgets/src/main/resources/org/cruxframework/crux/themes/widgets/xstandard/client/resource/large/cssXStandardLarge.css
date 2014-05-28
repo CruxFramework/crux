@@ -10,6 +10,7 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 @url svgIconArrow svgIconArrow;
 @url svgIconPlay svgIconPlay;
 @url svgIconPause svgIconPause;
+@url svgIconFile svgIconFile;
 
 *:focus{
 	outline:none;
@@ -508,14 +509,21 @@ DIV, INPUT, BUTTON
 }
 .crux-FileUploader .filePanel .thumbnailImage
 {
-	border: solid 1px #FFF;
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	border: solid 1px #c0c0c0;
 	height: 40px;
 	width: 40px;
 	display: inline;
 	position: absolute;
 	top: 8px;
 	left: 8px;
+}
+.crux-FileUploader .filePanel .thumbnailImage.noPreview
+{
+	background:svgIconFile no-repeat center 6px #eee;
+	color:#777;
+	font-size:10px;
+	text-align:center;
+	line-height:56px;
 }
 .crux-FileUploader .filePanel .cancelUploadButton
 {
@@ -1521,6 +1529,30 @@ DIV, INPUT, BUTTON
 	-ms-transform:rotate(-180deg);
 	transform:rotate(-180deg);
 }
+
+.bullets
+{
+	margin:10px 0 10px 10px;
+}
+
+.bullets .bullet
+{
+	width:8px;
+	height:8px;
+	background:rgba(0,0,0,0.4);
+	border-radius:10px;
+	margin-right:10px;
+}
+
+.bullets .bullet.bullet-active
+{
+	background:rgba(0,0,0,0.7);
+}
+
+
+/****************
+   ScrollBanner
+****************/
 
 .crux-Slideshow td
 {

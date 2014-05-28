@@ -83,7 +83,17 @@ abstract class AbstractFileUploader extends Composite implements HasEnabled, Has
 			+ "image/tif,"
 			+ "image/gif,"
 			+ "image/png,"
-			+ "image/raw";
+			+ "image/raw"
+			+ "image/svg+xml";
+	
+	public static final String SUPPORTED_IMAGES_EXTENSIONS = 
+			  "jpg,"
+			+ "jpeg,"
+			+ "tif,"
+			+ "gif,"
+			+ "png,"
+			+ "raw"
+			+ "svg";
 	
 	static final int HTTP_STATUS_NON_HTTP = 0;
 	static final int HTTP_STATUS_OK = 200;
@@ -444,23 +454,49 @@ abstract class AbstractFileUploader extends Composite implements HasEnabled, Has
 		}
 		return filePanel;
 	}
+	
+	private String retrieveFileExtension(String fileName)
+	{
+		String extension = "";
+
+		int i = fileName.lastIndexOf('.');
+		if (i > 0) {
+		    extension = fileName.substring(i+1);
+		}
+		
+		return extension;
+	}
 
 	protected void createThumbnailIfSupported(Blob file, final FlowPanel filePanel) {
 		FileReader fileReader = FileReader.createIfSupported();
-		//if is supported and is image create it, otherwise return.
-		if(fileReader == null || !SUPPORTED_IMAGES_MIMETYPES.contains(file.getType()))
-		{
-			return;
-		}
 		
-		fileReader.readAsDataURL(file, new ReaderStringCallback() {
-			public void onComplete(String result) {
-				Image image = new Image(result);
-				image.setStyleName("thumbnailImage");
-				image.getElement().getStyle().setFloat(Float.LEFT);
-				filePanel.add(image);
-			}
-		});
+		// if is supported and is image create it, otherwise create a visual fallback.
+		// image must have mimetype AND extension of images to pass
+		if(fileReader == null || !SUPPORTED_IMAGES_MIMETYPES.contains(file.getType()) || !SUPPORTED_IMAGES_EXTENSIONS.contains(this.retrieveFileExtension(((File) file).getName())))
+		{
+						
+			String fileExt = "." + this.retrieveFileExtension(((File) file).getName());
+			
+			Label label = new Label();
+			label.setStyleName("thumbnailImage noPreview");
+			label.setText(fileExt);
+			filePanel.add(label);
+			return;
+			
+		}
+		else
+		{	
+			
+			fileReader.readAsDataURL(file, new ReaderStringCallback() {
+				public void onComplete(String result) {
+					Image image = new Image(result);
+					image.setStyleName("thumbnailImage");
+					image.getElement().getStyle().setFloat(Float.LEFT);
+					filePanel.add(image);
+				}
+			});
+			
+		}
 	}
 
 	protected Button createDeleteButton(final String fileName)

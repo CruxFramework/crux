@@ -50,4 +50,7 @@ public interface XStandardResourcesLarge extends ClientBundle
 	
 	@Source("svg-icon-pause.svg")
 	DataResource svgIconPause();
+	
+	@Source("svg-icon-file.svg")
+	DataResource svgIconFile();
 }

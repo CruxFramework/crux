@@ -56,6 +56,7 @@ body{
 	background:#fff;
 	box-shadow:0 0 0 1px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
 	padding:10px;
+	margin-top:10px;
 }
 .crux-styledPanel h1,.crux-styledPanel h2,.crux-styledPanel h3,.crux-styledPanel h4,.crux-styledPanel h5,.crux-styledPanel h6{
 	margin-top:10px;
@@ -76,7 +77,7 @@ a.crux-Button:hover{
 	color:#fff;
 }
 
-.crux-Button, .fileInputButton{
+.crux-Button, .fileInputButton, .previousMessageButton, .nextMessageButton{
 	background:#4496c6;
 	border:1px solid #1a6299;
 	padding:14px 14px;
@@ -88,13 +89,13 @@ a.crux-Button:hover{
 	width:100%;
 	margin-bottom:3px;
 }
-.crux-Button:hover{
+.crux-Button:hover, .previousMessageButton:hover, .nextMessageButton:hover{
 	border-color:#084471;
 }
-.crux-Button:focus, .fileInputButton:focus{
+.crux-Button:focus, .fileInputButton:focus, .previousMessageButton:focus, .nextMessageButton:focus{
 	box-shadow:0 0 0 3px rgba(0,0,0,0.22);
 }
-.crux-Button:focus:active, .fileInputButton:focus:active{
+.crux-Button:focus:active, .fileInputButton:focus:active, .previousMessageButton:active, .nextMessageButton:active{
 	box-shadow:0 2px 2px rgba(0,0,0,0.2) inset, 0 0 0 3px rgba(0,0,0,0.12);
 }
 
@@ -1010,10 +1011,13 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 .crux-Storyboard .item
 {
 	padding:0 10px;
-	margin:10px 0;
 	height:auto !important;
 }
 
+.crux-Storyboard .item .crux-StyledPanelOuter
+{
+	padding:0;
+}
 
 /****************
     PromoBanner
@@ -1042,7 +1046,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 {
 	text-align:center;
 	font-size:30px;
-	text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1), 0 3px 2px rgba(0,0,0,0.1), 0 4px 3px rgba(0,0,0,0.1), 0 6px 3px rgba(0,0,0,0.1);
+	text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1), 0 3px 2px rgba(0,0,0,0.1);
 	color:#fff;
 }
 
@@ -1062,6 +1066,25 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	overflow:hidden;
 }
 
+.bullets
+{
+	margin:10px 0 10px 10px;
+}
+
+.bullets .bullet
+{
+	width:8px;
+	height:8px;
+	background:rgba(0,0,0,0.4);
+	border-radius:10px;
+	margin-right:10px;
+}
+
+.bullets .bullet.bullet-active
+{
+	background:rgba(0,0,0,0.7);
+}
+
 
 /****************
    ScrollBanner
@@ -1078,6 +1101,11 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	width:100% !important;
 }
 
+.crux-ScrollBanner > tbody > tr > td:last-child
+{
+	width:50px !important;
+}
+
 
 .crux-ScrollBanner .message
 {
@@ -1088,10 +1116,16 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 .crux-ScrollBanner .messageCount
 {
 	border-left:1px solid #ccc;
-	border-right:1px solid #ccc;
-	font-size:13px;
-	padding:5px 0;
-	margin:0 2px;
+	font-size:15px;
+	padding:6px 0 6px 1px;
+	margin-left:1px;
+}
+
+.crux-ScrollBanner .previousMessageButton, .crux-ScrollBanner .nextMessageButton
+{
+	margin-bottom:0;
+	margin-left:1px;
+	padding:8px 14px;
 }
 
 .crux-ScrollBanner .previousMessageButton .gwt-Label
@@ -1110,4 +1144,5 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	border-left: 5px solid transparent;
 	border-right: 5px solid transparent;	
 	border-top: 5px solid #fff;
+	margin-top:1px;
 }
