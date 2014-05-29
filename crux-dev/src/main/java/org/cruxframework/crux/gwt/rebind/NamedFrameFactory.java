@@ -66,7 +66,7 @@ public class NamedFrameFactory extends WidgetCreator<WidgetCreatorContext>
         public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String attributeValue)
         {
 			String widget = context.getWidget();
-			out.println(widget+".setUrl(Screen.appendDebugParameters("+EscapeUtils.quote(attributeValue)+"));");
+			out.println(widget+".setUrl("+EscapeUtils.quote(attributeValue)+");");
         }
 	}
 	
