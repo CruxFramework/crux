@@ -450,6 +450,8 @@ public abstract class AbstractCruxCompiler
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-compileReport", "Create a compile report that tells the Story of Your Compile.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-draftCompile", "Disable compiler optimizations and run faster.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-strict", "Only succeed if no input files have errors.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-XenableClosureCompiler", "Enable JS size optimizations.", false, true));
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-XfragmentCount", "Enable automatic fragment merging.", false, false));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-h", "Display the usage screen.", false, true));
 		return parametersProcessor;	
@@ -666,65 +668,65 @@ public abstract class AbstractCruxCompiler
 	{
 		for (ConsoleParameter parameter : parameters)
         {
-	        if (parameter.getName().equals("-gen") || parameter.getName().equals("-style") || parameter.getName().equals("-extra") || parameter.getName().equals("-localWorkers")
-	        		|| parameter.getName().equals("-logLevel"))
+	        String parameterName = parameter.getName();
+	        //GWT Parameters
+			if (parameterName.equals("-gen")                 || 
+				parameterName.equals("-style")               || 
+				parameterName.equals("-extra")               || 
+				parameterName.equals("-localWorkers")        || 
+				parameterName.equals("-logLevel")            ||
+				parameterName.equals("-XfragmentCount"))
 	        {
-	        	gwtCompilerArgs.add(parameter.getName());
+	        	gwtCompilerArgs.add(parameterName);
 	        	gwtCompilerArgs.add(parameter.getValue());
 	        }
-	        else if (parameter.getName().equals("-compileReport"))
+	        else if (parameterName.equals("-compileReport") ||
+	        		 parameterName.equals("-strict")        ||
+	        		 parameterName.equals("-draftCompile")  ||
+	        		 parameterName.equals("-validateOnly")  ||
+	        		 parameterName.equals("-XenableClosureCompiler")
+	        		)
 	        {
-	        	gwtCompilerArgs.add(parameter.getName());
+	        	gwtCompilerArgs.add(parameterName);
 	        }
-	        else if (parameter.getName().equals("-strict"))
-	        {
-	        	gwtCompilerArgs.add(parameter.getName());
-	        }
-	        else if (parameter.getName().equals("-draftCompile"))
-	        {
-	        	gwtCompilerArgs.add(parameter.getName());
-	        }
-	        else if (parameter.getName().equals("-validateOnly"))
-	        {
-	        	gwtCompilerArgs.add(parameter.getName());
-	        }
-	        else if (parameter.getName().equals("outputDir"))
+			//Crux Parameters
+	        else if (parameterName.equals("outputDir"))
 	        {
 	        	setOutputDir(new File(parameter.getValue()));
 	        }
-	        else if (parameter.getName().equals("webDir"))
+	        else if (parameterName.equals("webDir"))
 	        {
 	        	setWebDir(new File(parameter.getValue()));
 	        }
-	        else if (parameter.getName().equals("scanAllowedPackages"))
+	        else if (parameterName.equals("scanAllowedPackages"))
 	        {
 	    	    setScanAllowedPackages(parameter.getValue());
 	        }
-	        else if (parameter.getName().equals("scanIgnoredPackages"))
+	        else if (parameterName.equals("scanIgnoredPackages"))
 	        {
 	    	    setScanIgnoredPackages(parameter.getValue());
 	        }
-	        else if (parameter.getName().equals("pagesOutputDir"))
+	        else if (parameterName.equals("pagesOutputDir"))
 	        {
 	        	this.pagesOutputDir = new File(parameter.getValue());
 	        }
-	        else if (parameter.getName().equals("-indentPages"))
+	        else if (parameterName.equals("-indentPages"))
 	        {
 	        	this.indentPages = true;
 	        }
-	        else if (parameter.getName().equals("-keepPagesGeneratedFiles"))
+	        else if (parameterName.equals("-keepPagesGeneratedFiles"))
 	        {
 	        	this.keepPagesGeneratedFiles = true;
 	        }
-	        else if (parameter.getName().equals("outputCharset"))
+	        else if (parameterName.equals("outputCharset"))
 	        {
 	        	setOutputCharset(parameter.getValue());
 	        }
-	        else if (parameter.getName().equals("-doNotPreCompileJavaSource"))
+	        else if (parameterName.equals("-doNotPreCompileJavaSource"))
 	        {
 	        	this.preCompileJavaSource = false;
 	        }
-	        else if (parameter.getName().equals("pageFileExtension"))
+	        else if (parameterName.equals("pageFileExtension"))
 	        {
 	        	this.pageFileExtension = parameter.getValue();
 	        }
