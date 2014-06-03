@@ -1,0 +1,603 @@
+/*! normalize.css v3.0.0 | MIT License | git.io/normalize */
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background:0 0}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:700}dfn{font-style:italic}h1{font-size:2em;margin:.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-.5em}sub{bottom:-.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type=button],input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type=checkbox],input[type=radio]{box-sizing:border-box;padding:0}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{height:auto}input[type=search]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:700}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}
+
+@external *;
+
+@url svgIconDanger svgIconDanger;
+@url svgIconWarning svgIconWarning;
+@url svgIconSuccess svgIconSuccess;
+@url svgIconClose svgIconClose;
+@url svgIconFile svgIconFile;
+
+
+*:focus, *:active, *:hover
+{
+	/**
+	* Prevent that blue (or black, if in iOS) overlay on an element
+	* if you tap it. Or yellow border if in desktop.
+	*/
+	outline:none;
+	-webkit-tap-hightlight-color:rgba(0,0,0,0);
+}
+
+*, *:before, *:after
+{
+  /**
+  * Prevent elements from outgrowing when padding is added
+  * (keeps the same width no matter what)
+  */
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+*[disabled]{
+	cursor:not-allowed !important;
+}
+
+hr{
+	background:#e3e3e3;
+	height:1px;
+	margin:10px 0;
+	border:none;
+}
+
+pre, code{
+	background: #F3F7F8;
+	color: #6377CB;
+	font-weight: bold;
+	font-size: 13px;
+	padding: 2px 4px;
+	border-radius: 2px;
+	box-shadow:0 0 0 1px rgba(0,0,0,0.1);
+}
+
+html
+{
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+body
+{
+	background:#fff;
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+	font-size: 14px;
+	font-family:OpenSans,Verdana,Helvetica,Arial,sans-serif;
+}
+
+input, button
+{
+	vertical-align: top;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+/****************
+     Buttons
+****************/
+
+a.crux-Button
+{
+	white-space:nowrap;
+}
+
+a.crux-Button:hover
+{
+	text-decoration:none;
+	color:#fff;
+}
+
+.crux-Button,
+.crux-FileUploader .fileInputButton,
+.previousMessageButton,
+.nextMessageButton
+{
+    background:#4496c6; 
+    border:1px solid #1a6299;
+    padding:8px 14px;
+    border-radius:1px;
+    font-size:100%;
+    color:#fff;
+    text-shadow:0 1px 0 rgba(0,0,0,0.15);
+}
+
+.crux-Button:hover,
+.previousMessageButton:hover,
+.nextMessageButton:hover
+{
+	border-color:#084471;
+}
+
+.crux-Button:focus,
+.fileInputButton:focus,
+.previousMessageButton:focus,
+.nextMessageButton:focus
+{
+	box-shadow:0 0 0 3px rgba(0,0,0,0.22);
+}
+
+.crux-Button:focus:active,
+.fileInputButton:focus:active,
+.previousMessageButton:active,
+.nextMessageButton:active
+{
+	box-shadow:0 2px 2px rgba(0,0,0,0.2) inset, 0 0 0 3px rgba(0,0,0,0.12);
+}
+
+/*BUTTON SUCCESS*/
+.crux-Button.success,
+.crux-FlatMessageBox-success .crux-Button{
+	background:#81aa33;
+	border:1px solid #6d991a;
+}
+.crux-Button.success:hover,
+.crux-FlatMessageBox-success .crux-Button:hover{
+	border-color:#527808;
+}
+
+/*BUTTON WARNING*/
+.crux-Button.warn,
+.crux-FlatMessageBox-warn .crux-Button{
+	background:#ed9c28;
+	border:1px solid #d58512;
+}
+.crux-Button.warn:hover,
+.crux-FlatMessageBox-warn .crux-Button:hover{
+	border-color:#b76f09;
+}
+
+/*BUTTON DANGER*/
+.crux-Button.error,
+.crux-FlatMessageBox-error .crux-Button{
+	background:#d2322d;
+	border:1px solid #ac2925;
+}
+.crux-Button.error:hover,
+.crux-FlatMessageBox-error .crux-Button:hover{
+	border-color:#96130f;
+}
+
+/*BUTTON DISABLED*/
+.crux-Button:disabled{
+	background:#e5e5e5;
+	border:1px solid #a5a5a5;
+	color:#9c9c9c;
+	text-shadow:0 1px 0 rgba(255,255,255,0.6);
+}
+
+/*BUTTON STYLES*/
+.crux-Button.bullet{
+	border-radius:500px;
+}
+.crux-Button.round{
+	border-radius:3px;
+}
+
+/*BUTTON SIZES*/
+.crux-Button.mini{
+	font-size:70%;
+	padding:4px 7px;
+}
+.crux-Button.xsmall{
+	font-size:70%;
+}
+.crux-Button.small{
+	font-size:85%;
+}
+.crux-Button.large{
+	font-size:110%;
+}
+.crux-Button.xlarge{
+	font-size:130%;
+}
+
+/***************/
+
+/****************
+Inputs / Textarea
+****************/
+
+.gwt-TextBox,
+.gwt-TextArea
+{
+	background:#fff;
+	color:#444;
+	padding:8px 8px;
+	border-radius:1px;
+	border:1px solid #92aec8;
+	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset;
+	margin-bottom:10px;
+}
+
+.gwt-TextBox:hover,
+.gwt-TextArea:hover
+{
+	border:1px solid #5c87b0;
+}
+
+.gwt-TextBox:focus,
+.gwt-TextArea:focus
+{
+	border:1px solid #66afe9;
+	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(102,175,233,0.75);
+}
+
+/* SUCCESS */
+.gwt-TextBox.success,
+.gwt-TextArea.success
+{
+	border:1px solid #6d991a;
+	background:svgIconSuccess no-repeat 96% center #fff;
+	background-position:right 6px center;
+	padding-right:30px;
+	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset, -30px 0 0 rgba(70, 180, 0, 0.18) inset;
+}
+
+.gwt-TextBox.success:hover,
+.gwt-TextArea.success:hover
+{
+	border-color:#527808;
+}
+.gwt-TextBox.success:focus,
+.gwt-TextArea.success:focus
+{
+	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(0,255,0,0.4), -30px 0 0 rgba(70, 180, 0, 0.18) inset;
+}
+
+/* WARNING */
+.gwt-TextBox.warn,
+.gwt-TextArea.warn
+{
+	border:1px solid #d58512;
+	background:svgIconWarning no-repeat 96% center #fff;
+	background-position:right 6px center;
+	padding-right:30px;
+	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset, -30px 0 0 rgba(190, 180, 0, 0.18) inset;
+}
+
+.gwt-TextBox.warn:hover,
+.gwt-TextArea.warn:hover
+{
+	border-color:#b76f09;
+}
+
+.gwt-TextBox.warn:focus,
+.gwt-TextArea.warn:focus
+{
+	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(255,168,0,0.6), -30px 0 0 rgba(190, 180, 0, 0.18) inset;
+}
+
+/* ERROR */
+.gwt-TextBox.error,
+.gwt-TextArea.error
+{
+	border:1px solid #ac2925;
+	background:svgIconDanger no-repeat 96% center #fff;
+	background-position:right 6px center;
+	padding-right:30px;
+	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset, -30px 0 0 rgba(190, 80, 30, 0.18) inset;
+}
+
+.gwt-TextBox.error:hover,
+.gwt-TextArea.error:hover
+{
+	border-color:#96130f;
+}
+
+.gwt-TextBox.error:focus,
+.gwt-TextArea.error:focus
+{
+	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(255,0,0,0.4), -30px 0 0 rgba(190, 80, 30, 0.18) inset;
+}
+
+/* SIZES */
+.gwt-TextBox.mini,
+.gwt-TextArea.mini
+{
+	font-size:70%;
+	padding:4px 7px;
+}
+
+.gwt-TextBox.xsmall,
+.gwt-TextArea.xsmall
+{
+	font-size:70%;
+	padding:6px 10px;
+}
+
+.gwt-TextBox.small,
+.gwt-TextArea.small
+{
+	font-size:80%;
+	padding:8px 12px;
+}
+
+.gwt-TextBox.large,
+.gwt-TextArea.large
+{
+	font-size:115%;
+}
+
+.gwt-TextBox.xlarge,
+.gwt-TextArea.xlarge
+{
+	font-size:130%;
+}
+
+/* STYLES */
+.gwt-TextBox.bullet,
+.gwt-TextArea.bullet
+{
+	border-radius:500px;
+}
+.gwt-TextBox.round,
+.gwt-TextArea.round
+{
+	border-radius:3px;
+}
+
+/* DISABLED */
+.gwt-TextBox:disabled,
+.gwt-TextArea:disabled
+{
+	background:#e5e5e5;
+	border:1px solid #a5a5a5;
+	color:#9c9c9c;
+	text-shadow:0 1px 0 rgba(255,255,255,0.6);
+}
+
+/**********/
+
+/****************
+   StyledPanel
+****************/
+.crux-StyledPanelOuter
+{
+	padding: 8px;
+	width: 100%;
+}
+
+.crux-StyledPanel,
+.crux-FileUploader .dropArea,
+.crux-FileUploader .filePanel,
+.crux-ScrollBanner
+{
+	background:#fff;
+	display:block;
+	border:solid #C7C7C7 1px;
+	box-shadow:0 1px 3px rgba(90, 90, 90, 0.2);
+	padding:15px;
+}
+
+/**********/
+
+.crux-FormDisplay .formEntryData:first-child,
+.crux-FormDisplay .formEntryLabel
+{
+	padding-bottom: 10px;
+	padding-right: 20px;
+}
+
+/******************************************************************************
+    Screen Blocker
+*******************************************************************************/
+.crux-ProgressDialogScreenBlocker, .crux-MessageDialogScreenBlocker
+{
+    background-color: #000000;
+    opacity: .45;
+
+    display: block;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.45);
+    height: 200%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 200%;
+    z-index: 98;
+}
+
+.crux-MessageDialog
+{
+    z-index: 99;
+}
+
+.crux-DefaultScreenBlocker
+{
+    background-color: #FFFFFF;
+    opacity: .01;
+    filter:"alpha(opacity=1)";
+    cursor: wait;
+}
+
+.crux-RssPanel .rssPanelTitle
+{
+    margin-top: 0;
+    font-weight:bold;
+}
+
+.crux-RssPanel .rssPanelBody
+{
+    width: 100%;
+}
+
+.crux-RssPanel .rssPanelBody TD
+{
+    height: 40px;
+    box-shadow: 0 1px rgba(255,255,255,0.3);
+}
+
+.dialogGlass
+{
+	background-color: rgba(0, 0, 0, 0.2);
+	position: fixed !important;
+	z-index:8;
+}
+
+.crux-InfinityProgressBar
+{
+	width: 100%;
+	height: 1px;
+	position: relative;
+}
+
+.crux-InfinityProgressBar .progressBarSlot
+{
+	width: 100%;
+	height: 1px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	border-top: solid 2px #EEE;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+}
+
+.crux-InfinityProgressBar .progressBarFill
+{
+	height: 1px;
+	border-top: solid 2px #B1DA62;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	box-shadow: 0px 0px 20px rgba(161,202,82,0.7);
+	-webkit-animation: crux-InfinityProgressBarAnimation 2s linear infinite;
+	animation: crux-InfinityProgressBarAnimation 2s linear infinite;
+}
+
+.crux-FileUploader .chooseButton
+{
+	cursor: pointer;
+}
+
+.crux-FileUploader .dropArea
+{
+    border-style: dashed;
+	min-height: 160px;
+	background: url(upload-icon.png) no-repeat center #f5f5f5;
+	box-shadow:none;
+}
+
+.crux-FileUploader .filesArea
+{
+	background-color:#f5f5f5;
+}
+
+.crux-FileUploader .filePanel .thumbnailImage
+{
+	border: solid 1px #c0c0c0;
+	height: 40px;
+	width: 40px;
+	display: inline;
+	position: absolute;
+	top: 8px;
+	left: 8px;
+}
+
+.crux-FileUploader .filePanel .thumbnailImage.noPreview
+{
+	background:svgIconFile no-repeat center 6px #eee;
+	color:#777;
+	font-size:10px;
+	text-align:center;
+	line-height:56px;
+	letter-spacing:-1px;
+	padding-right:3px;
+}
+
+.crux-FileUploader .filePanel .crux-ProgressBar
+{
+	width: 280px;
+	border-radius: 1px;
+	height: 18px;
+	position: absolute;
+	top: 30px;
+	left: 55px;
+	margin: 0px;
+	padding: 0px;
+	border-top: solid 2px #EEE;;
+}
+
+.crux-FileUploader .filePanel .crux-ProgressBar .percentBar
+{
+	height: 18px !important;
+	border-radius: 1px;
+	border-top: solid 2px #A1CA52;
+	color: #618A12;
+	font-size: 11px;
+	line-height: 18px;
+	padding-left: 1px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	position: absolute;
+	top: -2px;
+}
+
+/****************
+   ColorPicker
+****************/
+.crux-ColorPickerDialog .previewPanel
+{
+	width:20px;
+	height:20px;
+	float:right;
+	border-radius:2px;
+	margin-right:3px;
+}
+
+.crux-ColorPickerDialog .crux-SaturationLightnessPicker
+{
+	box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.07), 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.crux-ColorPickerDialog .crux-HuePicker
+{
+	margin-left:10px;
+}
+
+.crux-ColorPickerDialog .dialogMiddleCenter
+{
+	padding:10px 0 10px 3px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@-webkit-keyframes crux-InfinityProgressBarAnimation
+{
+	0%   {width:0%;left:0%}
+	14%  {width:40%;left:0%;}
+	28%  {width:0%;left:50%;}
+	42%  {width:40%;left:50%;}
+	56%  {width:0%;left:100%;}
+	85%  {width:100%;left:0%}
+    100% {width:0%;left:0%}
+}
+@keyframes crux-InfinityProgressBarAnimation
+{
+	0%   {width:0%;left:0%}
+	14%  {width:40%;left:0%;}
+	28%  {width:0%;left:50%;}
+	42%  {width:40%;left:50%;}
+	56%  {width:0%;left:100%;}
+	85%  {width:100%;left:0%}
+    100% {width:0%;left:0%}
+}	

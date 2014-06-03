@@ -13,14 +13,28 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.themes.widgets.xstandard.client.resource.small;
+package org.cruxframework.crux.themes.widgets.xstandard.client.resource.common;
 
-import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.DataResource;
 
 /**
  * @author Gesse Dafe
- *
  */
-public interface CssXStandardSmall extends CssResource
+public interface XStandardResourcesCommon extends ClientBundle
 {
+	@Source("svg-icon-file.svg")
+	DataResource svgIconFile();
+	
+	@Source("svg-icon-close.svg")
+	DataResource svgIconClose();
+	
+	@Source("svg-icon-danger.svg")
+	DataResource svgIconDanger();
+	
+	@Source("svg-icon-warning.svg")
+	DataResource svgIconWarning();
+	
+	@Source("svg-icon-success.svg")
+	DataResource svgIconSuccess();
 }

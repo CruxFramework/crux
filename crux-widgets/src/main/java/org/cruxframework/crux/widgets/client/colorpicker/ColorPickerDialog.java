@@ -88,7 +88,7 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 		dialogArea = createDialogArea();
 		panel.add(dialogArea);
 		panel.add(createControlBar());
-		setStyleName("Crux-ColorPickerDialog");
+		setStyleName("crux-ColorPickerDialog");
 		setWidget(panel);
 		handleOrientationChangeHandlers();
 	}
@@ -138,7 +138,7 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 		FlowPanel buttonBar = createButtonBar();
 		panel.add(buttonBar);
 		previewPanel = new SimplePanel();
-		previewPanel.setPixelSize(26, 26);
+		previewPanel.addStyleName("previewPanel");
 		panel.add(previewPanel);
 		panel.setCellHorizontalAlignment(previewPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 		panel.setCellVerticalAlignment(buttonBar, HasVerticalAlignment.ALIGN_BOTTOM);
