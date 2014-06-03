@@ -143,7 +143,7 @@ public abstract class AbstractCruxCompilerTask extends Task
 		catch (Throwable e) 
 		{
 			log(e.getMessage(), Project.MSG_ERR);
-			new BuildException(e.getMessage(), e);
+			throw new BuildException(e.getMessage(), e);
 		}
 	}
 	
