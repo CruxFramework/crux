@@ -114,22 +114,14 @@ class GWTOverriddenDateBox extends Composite implements HasEnabled, HasValue<Dat
 			return dateTimeFormat;
 		}
 
-		@SuppressWarnings("deprecation")
 		public Date parse(GWTOverriddenDateBox dateBox, String dateText, boolean reportError) {
 			Date date = null;
 			try {
 				if (dateText.length() > 0) {
-					date = dateTimeFormat.parse(dateText);
+					date = dateTimeFormat.parseStrict(dateText);
 				}
 			} catch (IllegalArgumentException exception) {
-				try {
-					date = new Date(dateText);
-				} catch (IllegalArgumentException e) {
-					if (reportError) {
-						dateBox.addStyleName(DATE_BOX_FORMAT_ERROR);
-					}
-					return null;
-				}
+				return null;
 			}
 			return date;
 		}
@@ -538,6 +530,11 @@ class GWTOverriddenDateBox extends Composite implements HasEnabled, HasValue<Dat
 		Date parsedDate = parseDate(true);
 		if (fireNullValues || (parsedDate != null)) {
 			setValue(picker.getValue(), parsedDate, true, false);
+		}
+		
+		if(parsedDate == null)
+		{
+			box.setUnformattedValue(null);
 		}
 	}
 

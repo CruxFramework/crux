@@ -62,7 +62,7 @@ public class FormatToFormatterConverter extends MaskedTextBoxBaseFormatter imple
 		Date parsedValue = null;
 		try
 		{
-			parsedValue = boxFormat.parse(input);	
+			parsedValue = boxFormat.parseStrict(input);	
 		} catch(IllegalArgumentException e)
 		{
 			return null;
