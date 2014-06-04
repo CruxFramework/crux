@@ -28,7 +28,7 @@ import com.google.gwt.resources.client.DataResource;
 @Resource(value="xStandardResources", supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch})
 public interface XStandardResourcesSmall extends XStandardResourcesCommon
 {
-	@Source({"../common/cssXStandardCommon.css","cssXStandardSmall.css"})
+	@Source({"org/cruxframework/crux/themes/widgets/xstandard/client/resource/common/cssXStandardCommon.css","cssXStandardSmall.css"})
 	CssXStandardSmall css();
 	
 	@Source("top-menu-disposal-menu-btn.png")

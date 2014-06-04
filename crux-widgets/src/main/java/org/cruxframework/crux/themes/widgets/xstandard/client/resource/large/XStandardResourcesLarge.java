@@ -27,7 +27,9 @@ import com.google.gwt.resources.client.DataResource;
 @Resource(value="xStandardResources", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch})
 public interface XStandardResourcesLarge extends XStandardResourcesCommon
 {
-	@Source({"../common/cssXStandardCommon.css","cssXStandardLarge.css"})
+	
+	
+	@Source({"org/cruxframework/crux/themes/widgets/xstandard/client/resource/common/cssXStandardCommon.css","cssXStandardLarge.css"})
 	CssXStandardLarge css();
 	
 	@Source("svg-icon-arrow.svg")
