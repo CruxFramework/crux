@@ -30,6 +30,7 @@
 		<module>crux-core</module>
 		<module>crux-runtime</module>
 		<module>crux-dev</module>
+		<module>crux-widgets</module>
 	</modules>
 
 	<build>
