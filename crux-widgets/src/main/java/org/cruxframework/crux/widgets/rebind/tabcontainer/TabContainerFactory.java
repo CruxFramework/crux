@@ -67,6 +67,9 @@ public class TabContainerFactory extends WidgetCreator<WidgetCreatorContext>
 		@Override
 		public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 		{
+			if (beforeFocusEvtBind == null) beforeFocusEvtBind = new BeforeFocusEvtBind(getWidgetCreator());
+			if (beforeBlurEvtBind == null) beforeBlurEvtBind = new BeforeBlurEvtBind(getWidgetCreator());
+			
 			String name = context.readChildProperty("name");
 			String id = context.readChildProperty("id");
 			if (StringUtils.isEmpty(id))
@@ -108,9 +111,6 @@ public class TabContainerFactory extends WidgetCreator<WidgetCreatorContext>
 			String tab = ViewFactoryCreator.createVariableName("tab");
 			out.print(Tab.class.getCanonicalName()+" " +tab+" = "+rootWidget+".getTab("+EscapeUtils.quote(id)+");");
 			
-			if (beforeFocusEvtBind == null) beforeFocusEvtBind = new BeforeFocusEvtBind(getWidgetCreator());
-			if (beforeBlurEvtBind == null) beforeBlurEvtBind = new BeforeBlurEvtBind(getWidgetCreator());
-
 			if (!StringUtils.isEmpty(beforeFocusEvt))
 			{
 				beforeFocusEvtBind.processEvent(out, beforeFocusEvt, tab, null);
