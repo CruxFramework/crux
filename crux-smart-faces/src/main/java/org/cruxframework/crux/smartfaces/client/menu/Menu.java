@@ -23,6 +23,7 @@ import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -260,12 +261,12 @@ public class Menu extends Composite implements MenuWidget
 		{
 			newMenu = true;
 			root = new MenuItem(null, true);
-			menu.add(root.getItem());
+			menu.getElement().appendChild(root.getElement());
 		}
 
 		MenuItem placeToInsert = findKeyInMenu(root, key);
-		MenuItem myItemLI = new MenuItem(item, false);
-		int hasCode = myItemLI.hashCode();
+		MenuItem myItemLI = new MenuItem(item.getElement(), false);
+		int hashCode = myItemLI.hashCode();
 		
 		//insert LI as the next child
 		if(placeToInsert.getChildren() != null && !placeToInsert.getChildren().isEmpty() || newMenu)
@@ -273,15 +274,15 @@ public class Menu extends Composite implements MenuWidget
 			placeToInsert.add(myItemLI);
 			placeToInsert.getElement().appendChild(myItemLI.getElement());
 			
-			return hasCode;
+			return hashCode;
 		} 
 		//insert UL as the next child
 		else 
 		{
-			MenuItem myItemUL = new MenuItem(item, true);
+			MenuItem myItemUL = new MenuItem(DOM.clone(item.getElement(), true), true);
 			placeToInsert.add(myItemLI);
 			placeToInsert.getElement().appendChild(myItemUL.getElement());
-			return hasCode;
+			return hashCode;
 		}
 	}
 

@@ -20,8 +20,7 @@ import java.util.ArrayList;
 import org.cruxframework.crux.smartfaces.client.list.ListItem;
 import org.cruxframework.crux.smartfaces.client.list.OrderedList;
 
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.dom.client.Element;
 
 /**
  * A cross device menu item
@@ -30,7 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 class MenuItem
 {
-	private Widget widget;
+	private Element element;
 	private int hashCode;
 	private ArrayList<MenuItem> children;
 	
@@ -44,7 +43,7 @@ class MenuItem
 //		this.hashCode = item.hashCode();
 //	}
 	
-	public MenuItem(Widget item, boolean wrapInUL)
+	public MenuItem(Element item, boolean wrapInUL)
 	{
 		if(item == null)
 		{
@@ -53,13 +52,12 @@ class MenuItem
 		{
 			this.hashCode = item.hashCode();
 		}
-		this.children = null;
 		
 		ListItem li = new ListItem();
 		li.setStyleName("crux-LIItem");
 		if(item != null)
 		{
-			li.add(item);
+			li.getElement().appendChild(item);
 		}
 		
 		if(wrapInUL)
@@ -69,22 +67,18 @@ class MenuItem
 			if(item != null)
 			{
 				ul.add(li);	
-			} else
-			{
-				item = ul;
 			}
-			this.widget = ul;
+			this.element = ul.getElement();
 		} else
 		{
-			this.widget = li;
+			this.element = li.getElement();
 		}
 	}
-	
 	
 	@Override
 	public String toString() 
 	{
-		return widget.toString();
+		return element.toString();
 	}
 	
 	@Override
@@ -96,7 +90,7 @@ class MenuItem
 	@Override
 	public boolean equals(Object obj) 
 	{
-		return widget.equals(obj);
+		return element.equals(obj);
 	}
 
 	public Integer add(MenuItem w) 
@@ -124,12 +118,8 @@ class MenuItem
 		return children;
 	}
 
-	public Node getElement() {
-		// TODO Auto-generated method stub
-		return widget.getElement();
-	}
-
-	public Widget getItem() {
-		return widget;
+	public Element getElement() 
+	{
+		return element;
 	}
 }
