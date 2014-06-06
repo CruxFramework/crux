@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import org.cruxframework.crux.smartfaces.client.list.ListItem;
 import org.cruxframework.crux.smartfaces.client.list.OrderedList;
 
-import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A cross device menu item
@@ -43,36 +44,51 @@ class MenuItem
 //		this.hashCode = item.hashCode();
 //	}
 	
-	public MenuItem(Element item, boolean wrapInUL)
+	public boolean isRoot()
 	{
-		if(item == null)
+		return hashCode == 0;
+	}
+	
+	public MenuItem(OrderedList ul) 
+	{
+		ul.setStyleName("faces-ULItem");
+		Element li = (Element) ul.getElement().getFirstChild();
+		Element item = (Element) li.getFirstChild();
+		this.hashCode = item.hashCode();		
+		this.element = li;
+	}
+	
+	public MenuItem(ListItem li) 
+	{
+		li.setStyleName("faces-LIItem");
+		this.hashCode = element.hashCode();		
+		this.element = li.getElement();
+	}
+	
+	public MenuItem(Widget widget)
+	{
+		this(widget.getElement(), false);
+	}
+	
+	public MenuItem(Element item)
+	{
+		this(item, false);
+	}
+	
+	public MenuItem(Element item, boolean isRoot)
+	{
+		if(isRoot)
 		{
+			this.element = item;
 			this.hashCode = 0;
-		} else 
-		{
-			this.hashCode = item.hashCode();
+			return;
 		}
 		
 		ListItem li = new ListItem();
-		li.setStyleName("crux-LIItem");
-		if(item != null)
-		{
-			li.getElement().appendChild(item);
-		}
-		
-		if(wrapInUL)
-		{
-			OrderedList ul = new OrderedList();
-			ul.setStyleName("crux-ULItem");
-			if(item != null)
-			{
-				ul.add(li);	
-			}
-			this.element = ul.getElement();
-		} else
-		{
-			this.element = li.getElement();
-		}
+		li.setStyleName("faces-LIItem");
+		li.getElement().appendChild(item);
+		this.hashCode = item.hashCode();		
+		this.element = li.getElement();
 	}
 	
 	@Override

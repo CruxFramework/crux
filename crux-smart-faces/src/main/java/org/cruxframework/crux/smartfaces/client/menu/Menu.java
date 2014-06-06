@@ -18,12 +18,13 @@ package org.cruxframework.crux.smartfaces.client.menu;
 import java.util.Iterator;
 
 import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.smartfaces.client.list.ListItem;
+import org.cruxframework.crux.smartfaces.client.list.OrderedList;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -256,33 +257,38 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public int addItem(int key, Widget item) 
 	{
-		boolean newMenu = false;
 		if(root == null)
 		{
-			newMenu = true;
-			root = new MenuItem(null, true);
-			menu.getElement().appendChild(root.getElement());
+			root = new MenuItem(menu.getElement(), true);
 		}
-
 		MenuItem placeToInsert = findKeyInMenu(root, key);
-		MenuItem myItemLI = new MenuItem(item.getElement(), false);
-		int hashCode = myItemLI.hashCode();
 		
 		//insert LI as the next child
-		if(placeToInsert.getChildren() != null && !placeToInsert.getChildren().isEmpty() || newMenu)
+		if(placeToInsert.getChildren() != null && !placeToInsert.getChildren().isEmpty())
 		{
+			MenuItem myItemLI = new MenuItem(item.getElement());
+			if(placeToInsert.isRoot())
+			{
+				placeToInsert.getElement().getFirstChild().appendChild(myItemLI.getElement());	
+			} else
+			{
+				placeToInsert.getElement().getLastChild().appendChild(myItemLI.getElement());
+			}
 			placeToInsert.add(myItemLI);
-			placeToInsert.getElement().appendChild(myItemLI.getElement());
-			
-			return hashCode;
+			return myItemLI.hashCode();
 		} 
 		//insert UL as the next child
 		else 
 		{
-			MenuItem myItemUL = new MenuItem(DOM.clone(item.getElement(), true), true);
+			OrderedList ul = new OrderedList();
+			ListItem li = new ListItem();
+			li.getElement().appendChild(item.getElement());
+			ul.add(li);
+			
+			MenuItem myItemLI = new MenuItem(ul);
 			placeToInsert.add(myItemLI);
-			placeToInsert.getElement().appendChild(myItemUL.getElement());
-			return hashCode;
+			placeToInsert.getElement().appendChild(ul.getElement());	
+			return myItemLI.hashCode();
 		}
 	}
 
