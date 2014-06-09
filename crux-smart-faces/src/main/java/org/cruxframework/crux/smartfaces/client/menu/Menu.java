@@ -24,8 +24,6 @@ import org.cruxframework.crux.smartfaces.client.list.OrderedList;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.aria.client.Roles;
-import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Widget;
@@ -49,7 +47,7 @@ public class Menu extends Composite implements MenuWidget
 	{
 		menu = new NavPanel();
 		menu.asWidget().setStyleName("faces-Menu");
-		initWidget((Widget) menu);
+		initWidget(menu);
 
 		setType(type);
 		setOrientation(orientation);
@@ -66,6 +64,7 @@ public class Menu extends Composite implements MenuWidget
 		return false;
 	}
 
+	//OK
 	@Override
 	public void setAnimationEnabled(boolean enable) 
 	{
@@ -84,7 +83,7 @@ public class Menu extends Composite implements MenuWidget
 	{
 		this.enabled = enabled;
 		
-		ArrayList<MenuItem> itemsWithEnabledProperty = MenuUtils.findHasWidgetsInMenu(root);
+		ArrayList<MenuItem> itemsWithEnabledProperty = MenuUtils.findHasEnabledInMenu(root);
 		
 		if(itemsWithEnabledProperty == null)
 		{
@@ -97,79 +96,7 @@ public class Menu extends Composite implements MenuWidget
 		}
 	}
 
-	@Override
-	public int getTabIndex() 
-	{
-		return 0;
-	}
-
-	@Override
-	public void setAccessKey(char key) 
-	{
-	}
-
-	@Override
-	public void setFocus(boolean focused) 
-	{
-	}
-
-	@Override
-	public void setTabIndex(int index) 
-	{
-	}
-
-	@Override
-	public int getHorizontalScrollPosition() 
-	{
-		return 0;
-	}
-
-	@Override
-	public int getMaximumHorizontalScrollPosition() 
-	{
-		return 0;
-	}
-
-	@Override
-	public int getMinimumHorizontalScrollPosition() 
-	{
-		return 0;
-	}
-
-	@Override
-	public void setHorizontalScrollPosition(int position) 
-	{
-	}
-
-	@Override
-	public int getMaximumVerticalScrollPosition() 
-	{
-		return 0;
-	}
-
-	@Override
-	public int getMinimumVerticalScrollPosition() 
-	{
-		return 0;
-	}
-
-	@Override
-	public int getVerticalScrollPosition() 
-	{
-		return 0;
-	}
-
-	@Override
-	public void setVerticalScrollPosition(int position) 
-	{
-	}
-
-	@Override
-	public HandlerRegistration addScrollHandler(ScrollHandler handler) 
-	{
-		return null;
-	}
-
+	//OK
 	@Override
 	public void add(Widget w) 
 	{
@@ -184,13 +111,28 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public Iterator<Widget> iterator() 
 	{
-		return null;
+		ArrayList<MenuItem> allMenuItems = MenuUtils.getAllMenuItems(this.root);
+		
+		if(allMenuItems == null)
+		{
+			return null;
+		}
+		
+		ArrayList<Widget> widgets = new ArrayList<Widget>();
+		
+		for(MenuItem menuItem : allMenuItems)
+		{
+			widgets.add(menuItem.getWidget());
+		}
+		
+		return widgets.iterator();
 	}
 
+	//OK
 	@Override
 	public boolean remove(Widget w) 
 	{
-		return false;
+		return removeItem(w);
 	}
 
 	@Override
@@ -247,13 +189,19 @@ public class Menu extends Composite implements MenuWidget
 		{
 		case FLIP:
 			addStyleDependentName("flip");
+			removeStyleDependentName("stack");
+			removeStyleDependentName("tree");
 			Roles.getSliderRole().set(getElement());
 			break;
 		case STACK:
+			removeStyleDependentName("flip");
 			addStyleDependentName("stack");
+			removeStyleDependentName("tree");
 			Roles.getListRole().set(getElement());
 			break;
 		case TREE:
+			removeStyleDependentName("flip");
+			removeStyleDependentName("stack");
 			addStyleDependentName("tree");
 			Roles.getTreeRole().set(getElement());
 			break;
@@ -277,7 +225,7 @@ public class Menu extends Composite implements MenuWidget
 		{
 			root = new MenuItem(menu, true);
 		}
-		MenuItem placeToInsert = MenuUtils.findKeyInMenu(root, key);
+		MenuItem placeToInsert = MenuUtils.findInMenuByKey(root, key);
 		
 		//insert LI as the next child
 		if(placeToInsert.getChildren() != null && !placeToInsert.getChildren().isEmpty())
@@ -316,45 +264,37 @@ public class Menu extends Composite implements MenuWidget
 	}
 
 	@Override
-	public boolean removeItem(Widget root, Widget widget) 
-	{
-		return false;
-	}
-
-	@Override
 	public boolean removeItem(int key) 
 	{
 		return false;
 	}
 
+	//OK
 	@Override
 	public void collapseAll() 
 	{
+		MenuUtils.applyRemoveClass("faces-colapsed", true, MenuUtils.getAllMenuItems(this.root));
 	}
 
-	@Override
-	public void collapseAll(Widget root) 
-	{
-	}
-
+	//OK
 	@Override
 	public void collapse(Widget root) 
 	{
+		MenuUtils.applyRemoveClass("faces-colapsed", true, MenuUtils.findInMenuByWidget(this.root, root));
 	}
 
+	//OK
 	@Override
 	public void expandAll() 
 	{
+		MenuUtils.applyRemoveClass("faces-colapsed", false, MenuUtils.getAllMenuItems(this.root));
 	}
 
-	@Override
-	public void expandAll(Widget root) 
-	{
-	}
-
+	//OK
 	@Override
 	public void expand(Widget root) 
 	{
+		MenuUtils.applyRemoveClass("faces-colapsed", false, MenuUtils.findInMenuByWidget(this.root, root));
 	}
 
 	public Orientation getCurrentOrientation() 

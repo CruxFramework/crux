@@ -1,17 +1,14 @@
 package org.cruxframework.crux.smartfaces.client.menu;
 
-import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.HasScrolling;
-import com.google.gwt.user.client.ui.HasVerticalScrolling;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HasWordWrap;
 import com.google.gwt.user.client.ui.Widget;
 
-public interface MenuWidget extends HasAnimation, HasEnabled, Focusable, HasScrolling, 
-	HasVerticalScrolling, HasVisibility, HasWidgets, HasWordWrap 
+public interface MenuWidget extends HasAnimation, HasEnabled, 
+	HasVisibility, HasWidgets, HasWordWrap 
 {
 	public static enum Orientation
 	{
@@ -58,14 +55,11 @@ public interface MenuWidget extends HasAnimation, HasEnabled, Focusable, HasScro
 //	public int addItem(Widget root, String label, ViewContainer viewContainer, String viewName);
 	
 	public boolean removeItem(Widget root);
-	public boolean removeItem(Widget root, Widget widget);
 	public boolean removeItem(int key);
 	
 	public void collapseAll();
-	public void collapseAll(Widget root);
 	public void collapse(Widget root);
 	
 	public void expandAll();
-	public void expandAll(Widget root);
 	public void expand(Widget root);
 }
