@@ -200,11 +200,11 @@ public class Menu extends Composite implements MenuWidget
 		{
 		case HORIZONTAL:
 			removeStyleName("vertical");
-			addStyleName("horizontal");
+			removeStyleDependentName("horizontal");
 			break;
 		case VERTICAL:
 			removeStyleName("horizontal");
-			addStyleName("vertical");
+			removeStyleDependentName("vertical");
 			break;
 		default:
 			break;
@@ -224,21 +224,21 @@ public class Menu extends Composite implements MenuWidget
 		String deviceName = Screen.getCurrentDevice().toString();
 		if(!getStyleName().contains(deviceName))
 		{
-			addStyleName(deviceName);
+			removeStyleDependentName(deviceName);
 		}
 
 		switch(type)
 		{
 		case FLIP:
-			addStyleName("flip");
+			removeStyleDependentName("flip");
 			Roles.getSliderRole().set(getElement());
 			break;
 		case STACK:
-			addStyleName("stack");
+			removeStyleDependentName("stack");
 			Roles.getListRole().set(getElement());
 			break;
 		case TREE:
-			addStyleName("tree");
+			removeStyleDependentName("tree");
 			Roles.getTreeRole().set(getElement());
 			break;
 		default:
