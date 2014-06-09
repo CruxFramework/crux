@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.menu;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.cruxframework.crux.core.client.screen.Screen;
@@ -26,20 +27,20 @@ import com.google.gwt.aria.client.Roles;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A cross device menu
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
- * http://jsfiddle.net/XvDS2/2/
+ * @autor Claudio Holanda (claudio.junior@cruxframework.org)
  *
  */
 public class Menu extends Composite implements MenuWidget 
 {
-	@SuppressWarnings("unused")
 	private Type currentType;
-	@SuppressWarnings("unused")
 	private Orientation currentOrientation;
+	private boolean enabled = true;
 
 	private NavPanel menu;
 	private MenuItem root;
@@ -70,15 +71,30 @@ public class Menu extends Composite implements MenuWidget
 	{
 	}
 
+	//OK
 	@Override
 	public boolean isEnabled() 
 	{
-		return false;
+		return enabled;
 	}
 
+	//OK
 	@Override
 	public void setEnabled(boolean enabled) 
 	{
+		this.enabled = enabled;
+		
+		ArrayList<MenuItem> itemsWithEnabledProperty = MenuUtils.findHasWidgetsInMenu(root);
+		
+		if(itemsWithEnabledProperty == null)
+		{
+			return;
+		}
+		
+		for(MenuItem menuItem : itemsWithEnabledProperty)
+		{
+			((HasEnabled) menuItem.getWidget()).setEnabled(enabled);
+		}
 	}
 
 	@Override
@@ -259,23 +275,23 @@ public class Menu extends Composite implements MenuWidget
 	{
 		if(root == null)
 		{
-			root = new MenuItem(menu.getElement(), true);
+			root = new MenuItem(menu, true);
 		}
-		MenuItem placeToInsert = findKeyInMenu(root, key);
+		MenuItem placeToInsert = MenuUtils.findKeyInMenu(root, key);
 		
 		//insert LI as the next child
 		if(placeToInsert.getChildren() != null && !placeToInsert.getChildren().isEmpty())
 		{
-			MenuItem myItemLI = new MenuItem(item.getElement());
+			MenuItem myItem = new MenuItem(item);
 			if(placeToInsert.isRoot())
 			{
-				placeToInsert.getElement().getFirstChild().appendChild(myItemLI.getElement());	
+				placeToInsert.getLIElement().getFirstChild().appendChild(myItem.getLIElement());	
 			} else
 			{
-				placeToInsert.getElement().getLastChild().appendChild(myItemLI.getElement());
+				placeToInsert.getLIElement().getLastChild().appendChild(myItem.getLIElement());
 			}
-			placeToInsert.add(myItemLI);
-			return myItemLI.hashCode();
+			placeToInsert.add(myItem);
+			return myItem.hashCode();
 		} 
 		//insert UL as the next child
 		else 
@@ -286,40 +302,11 @@ public class Menu extends Composite implements MenuWidget
 			li.getElement().appendChild(item.getElement());
 			ul.add(li);
 			
-			MenuItem myItemLI = new MenuItem(ul);
-			placeToInsert.add(myItemLI);
-			placeToInsert.getElement().appendChild(ul.getElement());	
-			return myItemLI.hashCode();
+			MenuItem myItem = new MenuItem(ul, item);
+			placeToInsert.add(myItem);
+			placeToInsert.getLIElement().appendChild(ul.getElement());	
+			return myItem.hashCode();
 		}
-	}
-
-	private MenuItem findKeyInMenu(MenuItem menuItem, int key) 
-	{
-		if(menuItem == null)
-		{
-			return null;
-		}
-		
-		if(menuItem.hashCode() == key)
-		{
-			return menuItem;
-		}
-		
-		if(menuItem.getChildren() == null)
-		{
-			return null;
-		}
-		
-		for(MenuItem childrenMenuItem : menuItem.getChildren())
-		{
-			MenuItem findKeyInMenu = findKeyInMenu(childrenMenuItem, key);
-			if(findKeyInMenu != null)
-			{
-				return findKeyInMenu;
-			}
-		}
-		
-		return null;
 	}
 
 	@Override
@@ -368,6 +355,16 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public void expand(Widget root) 
 	{
+	}
+
+	public Orientation getCurrentOrientation() 
+	{
+		return currentOrientation;
+	}
+
+	public Type getCurrentType() 
+	{
+		return currentType;
 	}
 
 }

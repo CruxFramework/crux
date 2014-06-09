@@ -30,9 +30,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 class MenuItem
 {
-	private Element element;
-	private int hashCode;
+	private Element liElement;
+	private Widget widget;
 	private ArrayList<MenuItem> children;
+	private boolean root;
 	
 //	public MenuItem(Widget item, ArrayList<MenuItem> children)
 //	{
@@ -46,67 +47,44 @@ class MenuItem
 	
 	public boolean isRoot()
 	{
-		return hashCode == 0;
+		return root;
 	}
 	
-	public MenuItem(OrderedList ul) 
+	public MenuItem(OrderedList ul, Widget widget) 
 	{
 		ul.setStyleName("faces-ULItem");
 		Element li = (Element) ul.getElement().getFirstChild();
-		Element item = (Element) li.getFirstChild();
-		this.hashCode = item.hashCode();		
-		this.element = li;
+		this.liElement = li;
+		this.widget = widget;
 	}
 	
-	public MenuItem(ListItem li) 
+	public MenuItem(ListItem li, Widget widget) 
 	{
 		li.setStyleName("faces-LIItem");
-		this.hashCode = element.hashCode();		
-		this.element = li.getElement();
+		this.liElement = li.getElement();
+		this.widget = widget;
 	}
 	
 	public MenuItem(Widget widget)
 	{
-		this(widget.getElement(), false);
+		this(widget, false);
 	}
 	
-	public MenuItem(Element item)
-	{
-		this(item, false);
-	}
-	
-	public MenuItem(Element item, boolean isRoot)
+	public MenuItem(Widget widget, boolean isRoot)
 	{
 		if(isRoot)
 		{
-			this.element = item;
-			this.hashCode = 0;
+			this.liElement = widget.getElement();
+			this.widget = widget;
+			this.root = true;
 			return;
 		}
 		
 		ListItem li = new ListItem();
 		li.setStyleName("faces-LIItem");
-		li.getElement().appendChild(item);
-		this.hashCode = item.hashCode();		
-		this.element = li.getElement();
-	}
-	
-	@Override
-	public String toString() 
-	{
-		return element.toString();
-	}
-	
-	@Override
-	public int hashCode() 
-	{
-		return hashCode;
-	}
-	
-	@Override
-	public boolean equals(Object obj) 
-	{
-		return element.equals(obj);
+		li.getElement().appendChild(widget.getElement());
+		this.liElement = li.getElement();
+		this.widget = widget;
 	}
 
 	public Integer add(MenuItem w) 
@@ -116,9 +94,27 @@ class MenuItem
 			children = new ArrayList<MenuItem>();
 		}
 		children.add(w);
+		liElement.addClassName("faces-hasChildren");
 		return w.hashCode();
 	}
 
+	@Override
+	public int hashCode() 
+	{
+		if(root)
+		{
+			return 0;
+		}
+		
+		return liElement.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) 
+	{
+		return liElement.equals(obj);
+	}
+	
 	public void clear() 
 	{
 		children.clear();
@@ -126,7 +122,14 @@ class MenuItem
 
 	public MenuItem remove(MenuItem w) 
 	{
-		return children.remove(w.hashCode());
+		MenuItem menuItem = children.remove(w.hashCode());
+		
+		if(children.isEmpty())
+		{
+			liElement.removeClassName("faces-hasChildren");
+		}
+		
+		return menuItem;
 	}
 
 	public ArrayList<MenuItem> getChildren() 
@@ -134,8 +137,13 @@ class MenuItem
 		return children;
 	}
 
-	public Element getElement() 
+	public Element getLIElement() 
 	{
-		return element;
+		return liElement;
+	}
+
+	public Widget getWidget() 
+	{
+		return widget;
 	}
 }
