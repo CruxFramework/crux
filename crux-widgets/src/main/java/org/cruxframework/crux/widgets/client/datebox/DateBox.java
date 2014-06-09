@@ -39,6 +39,11 @@ public class DateBox extends Composite implements IDateBox
 	//Exposing GWT DefaultFormat class
 	public static class CruxDefaultFormat extends DefaultFormat
 	{
+		public CruxDefaultFormat()
+		{
+			super();
+		}
+		
 		public CruxDefaultFormat(DateTimeFormat dateTimeFormat) 
 		{
 			super(dateTimeFormat);
