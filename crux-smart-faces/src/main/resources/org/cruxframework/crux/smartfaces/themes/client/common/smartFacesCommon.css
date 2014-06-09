@@ -1,0 +1,123 @@
+@external *;
+
+HTML
+{
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+}
+
+
+/* -------------------- menu -----------------------*/
+
+.faces-Menu * {
+    -webkit-transition:all 0.3s ease-in-out;
+    -moz-transition:all 0.3s ease-in-out;
+    -ms-transition:all 0.3s ease-in-out;
+    transition:all 0.3s ease-in-out;
+}
+
+.faces-Menu *, .faces-Menu *:before, .faces-Menu *:after {
+    box-sizing:border-box;
+}
+
+.faces-Menu .faces-LIItem {
+    list-style:none;
+}
+
+.faces-Menu {
+    list-style:none;
+    padding:0;
+}
+
+.faces-Menu:after {
+    content:'.';
+    clear:both;
+    color:rgba(0, 0, 0, 0);
+}
+
+.faces-Menu .faces-LIItem {
+    background:#ccc;
+    padding:10px;
+    font-size:13px;
+    margin-bottom:1px;
+    cursor:pointer;
+}
+
+.faces-Menu .faces-LIItem:hover {
+    background:#b5b5b5;
+}
+
+.faces-Menu .faces-Menu-vertical .faces-LIItem {
+    width:200px;
+}
+
+.faces-Menu .faces-Menu-horizontal {
+    width:100%;
+}
+
+.faces-Menu .faces-Menu-horizontal .faces-LIItem {
+    float:left;
+    background:#77a400;
+    color:#fff;
+    margin-left:1px;
+    padding:10px 4%;
+}
+
+.faces-Menu .faces-Menu.horizontal .faces-LIItem:hover {
+    background:#5c751b;
+}
+
+/* for submenus */
+
+.faces-Menu {
+    position:relative;
+}
+
+.faces-Menu .faces-LIItem {
+    position:relative;
+}
+
+.faces-Menu .faces-ULItem {
+    position:absolute;
+}
+
+.faces-Menu .faces-Menu-vertical .faces-ULItem {
+    margin-left:190px;
+    top:0;
+    display:none;
+    padding-left:1px;
+}
+
+.faces-Menu .faces-Menu-vertical .faces-LIItem:hover > .faces-ULItem {
+    display:block;
+}
+
+.faces-Menu .faces-Menu-horizontal .faces-ULItem {
+    left:0;
+    top:0;
+    display:none;
+    padding-top:1px;
+}
+
+.faces-Menu .faces-Menu-horizontal > .faces-LIItem > .faces-ULItem {
+    margin-top:36px;
+    padding-top:1px;
+}
+
+.faces-Menu .faces-Menu-horizontal .faces-ULItem .faces-LIItem {
+    width:200px;
+}
+
+.faces-Menu .faces-Menu-horizontal > .faces-LIItem > .faces-ULItem .faces-LIItem .faces-ULItem {
+    margin-left:160px;
+    top:0;
+    margin-top:0;
+    padding-top:0;
+}
+
+.faces-Menu .faces-Menu-horizontal .faces-LIItem:hover > .faces-ULItem {
+    display:block;
+}
+
+/* -------------------------------------------------*/

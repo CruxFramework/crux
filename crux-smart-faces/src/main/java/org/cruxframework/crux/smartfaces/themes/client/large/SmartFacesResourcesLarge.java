@@ -27,6 +27,6 @@ import com.google.gwt.resources.client.CssResource;
 @Resource(value="smartFacesResources", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch})
 public interface SmartFacesResourcesLarge extends ClientBundle
 {
-	@Source("smartFacesLarge.css")
+	@Source({"../common/smartFacesCommon.css","smartFacesLarge.css"})
 	CssResource css();
 }

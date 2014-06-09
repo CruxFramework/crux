@@ -1,9 +1,5 @@
-HTML
-{
-	margin: 0px;
-	padding: 0px;
-	height: 100%;
-}
+@external *;
+
 BODY
 {
 	margin: 0px;
@@ -36,8 +32,6 @@ DIV, INPUT, BUTTON
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 }
-
-@external *;
 
 /* --------------------   common for all dialogs  -----------------------*/
 .dragging, .unselectable *{

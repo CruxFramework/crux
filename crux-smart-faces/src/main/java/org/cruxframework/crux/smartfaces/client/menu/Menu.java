@@ -47,7 +47,7 @@ public class Menu extends Composite implements MenuWidget
 	public Menu(Orientation orientation, Type type)
 	{
 		menu = new NavPanel();
-		menu.asWidget().setStyleName("crux-Menu");
+		menu.asWidget().setStyleName("faces-Menu");
 		initWidget((Widget) menu);
 
 		setType(type);
@@ -199,12 +199,12 @@ public class Menu extends Composite implements MenuWidget
 		switch(orientation)
 		{
 		case HORIZONTAL:
-			removeStyleDependentName("vertical");
-			addStyleDependentName("horizontal");
+			removeStyleName("vertical");
+			addStyleName("horizontal");
 			break;
 		case VERTICAL:
-			removeStyleDependentName("horizontal");
-			addStyleDependentName("vertical");
+			removeStyleName("horizontal");
+			addStyleName("vertical");
 			break;
 		default:
 			break;
@@ -224,21 +224,21 @@ public class Menu extends Composite implements MenuWidget
 		String deviceName = Screen.getCurrentDevice().toString();
 		if(!getStyleName().contains(deviceName))
 		{
-			addStyleDependentName(deviceName);
+			addStyleName(deviceName);
 		}
 
 		switch(type)
 		{
 		case FLIP:
-			addStyleDependentName("flip");
+			addStyleName("flip");
 			Roles.getSliderRole().set(getElement());
 			break;
 		case STACK:
-			addStyleDependentName("stack");
+			addStyleName("stack");
 			Roles.getListRole().set(getElement());
 			break;
 		case TREE:
-			addStyleDependentName("tree");
+			addStyleName("tree");
 			Roles.getTreeRole().set(getElement());
 			break;
 		default:
@@ -282,6 +282,7 @@ public class Menu extends Composite implements MenuWidget
 		{
 			OrderedList ul = new OrderedList();
 			ListItem li = new ListItem();
+			li.setStyleName("faces-LIItem");
 			li.getElement().appendChild(item.getElement());
 			ul.add(li);
 			
