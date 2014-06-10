@@ -75,16 +75,14 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 		{
 			srcWriter.println("keyProperties.push(nativeKey);");
 			srcWriter.println("keyProperties.push(nativeKey);");
-			srcWriter.println("keyProperties.push(true);");
-			srcWriter.println("keyProperties.push(true);");
 		}
 		else
 		{
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(nativeKey, keyProperties);");
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(nativeKey, keyProperties);");
-			srcWriter.println("keyProperties.push(true);");
-			srcWriter.println("keyProperties.push(true);");
 		}
+		srcWriter.println("keyProperties.push(false);");
+		srcWriter.println("keyProperties.push(false);");
 		srcWriter.println("return new WSQLKeyRange<"+keyTypeName+">(keyProperties);");
 				
 		srcWriter.println("}");
@@ -102,16 +100,14 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 		{
 			srcWriter.println("keyProperties.push(nativeKey);");
 			srcWriter.println("keyProperties.push((String)null);");
-			srcWriter.println("keyProperties.push(open);");
-			srcWriter.println("keyProperties.push(true);");
 		}
 		else
 		{
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(nativeKey, keyProperties);");
 			srcWriter.println("keyProperties.push((String)null);");
-			srcWriter.println("keyProperties.push(open);");
-			srcWriter.println("keyProperties.push(true);");
 		}
+		srcWriter.println("keyProperties.push(open);");
+		srcWriter.println("keyProperties.push(false);");
 		srcWriter.println("return new WSQLKeyRange<"+keyTypeName+">(keyProperties);");
 
 		srcWriter.println("}");
@@ -129,16 +125,14 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 		{
 			srcWriter.println("keyProperties.push(nativeKey);");
 			srcWriter.println("keyProperties.push((String)null);");
-			srcWriter.println("keyProperties.push(true);");
-			srcWriter.println("keyProperties.push(true);");
 		}
 		else
 		{
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(nativeKey, keyProperties);");
 			srcWriter.println("keyProperties.push((String)null);");
-			srcWriter.println("keyProperties.push(true);");
-			srcWriter.println("keyProperties.push(true);");
 		}
+		srcWriter.println("keyProperties.push(false);");
+		srcWriter.println("keyProperties.push(false);");
 		srcWriter.println("return new WSQLKeyRange<"+keyTypeName+">(keyProperties);");
 
 		srcWriter.println("}");
@@ -156,16 +150,14 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 		{
 			srcWriter.println("keyProperties.push((String)null);");
 			srcWriter.println("keyProperties.push(nativeKey);");
-			srcWriter.println("keyProperties.push(true);");
-			srcWriter.println("keyProperties.push(open);");
 		}
 		else
 		{
 			srcWriter.println("keyProperties.push((String)null);");
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(nativeKey, keyProperties);");
-			srcWriter.println("keyProperties.push(true);");
-			srcWriter.println("keyProperties.push(open);");
 		}
+		srcWriter.println("keyProperties.push(false);");
+		srcWriter.println("keyProperties.push(open);");
 		srcWriter.println("return new WSQLKeyRange<"+keyTypeName+">(keyProperties);");
 				
 		srcWriter.println("}");
@@ -183,16 +175,14 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 		{
 			srcWriter.println("keyProperties.push((String)null);");
 			srcWriter.println("keyProperties.push(nativeKey);");
-			srcWriter.println("keyProperties.push(true);");
-			srcWriter.println("keyProperties.push(true);");
 		}
 		else
 		{
 			srcWriter.println("keyProperties.push((String)null);");
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(nativeKey, keyProperties);");
-			srcWriter.println("keyProperties.push(true);");
-			srcWriter.println("keyProperties.push(true);");
 		}
+		srcWriter.println("keyProperties.push(false);");
+		srcWriter.println("keyProperties.push(false);");
 		srcWriter.println("return new WSQLKeyRange<"+keyTypeName+">(keyProperties);");
 				
 		srcWriter.println("}");
@@ -211,16 +201,14 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 		{
 			srcWriter.println("keyProperties.push(nativeStartKey);");
 			srcWriter.println("keyProperties.push(nativeEndKey);");
-			srcWriter.println("keyProperties.push(startOpen);");
-			srcWriter.println("keyProperties.push(endOpen);");
 		}
 		else
 		{
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(nativeStartKey, keyProperties);");
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(nativeEndKey, keyProperties);");
-			srcWriter.println("keyProperties.push(startOpen);");
-			srcWriter.println("keyProperties.push(endOpen);");
 		}
+		srcWriter.println("keyProperties.push(startOpen);");
+		srcWriter.println("keyProperties.push(endOpen);");
 		srcWriter.println("return new WSQLKeyRange<"+keyTypeName+">(keyProperties);");
 				
 		srcWriter.println("}");
@@ -239,16 +227,14 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 		{
 			srcWriter.println("keyProperties.push(nativeStartKey);");
 			srcWriter.println("keyProperties.push(nativeEndKey);");
-			srcWriter.println("keyProperties.push(true);");
-			srcWriter.println("keyProperties.push(true);");
 		}
 		else
 		{
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(nativeStartKey, keyProperties);");
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(nativeEndKey, keyProperties);");
-			srcWriter.println("keyProperties.push(true);");
-			srcWriter.println("keyProperties.push(true);");
 		}
+		srcWriter.println("keyProperties.push(false);");
+		srcWriter.println("keyProperties.push(false);");
 		srcWriter.println("return new WSQLKeyRange<"+keyTypeName+">(keyProperties);");
 				
 		srcWriter.println("}");
