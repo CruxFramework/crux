@@ -106,6 +106,13 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public void clear() 
 	{
+		if(this.root == null)
+		{
+			return;
+		}
+		
+		this.root.getLIElement().removeFromParent();
+		this.root = new MenuItem(menu, true);
 	}
 
 	@Override
@@ -157,12 +164,12 @@ public class Menu extends Composite implements MenuWidget
 		switch(orientation)
 		{
 		case HORIZONTAL:
-			removeStyleDependentName("vertical");
-			addStyleDependentName("horizontal");
+			removeStyleName("vertical");
+			addStyleName("horizontal");
 			break;
 		case VERTICAL:
-			removeStyleDependentName("horizontal");
-			addStyleDependentName("vertical");
+			removeStyleName("horizontal");
+			addStyleName("vertical");
 			break;
 		default:
 			break;
@@ -182,27 +189,27 @@ public class Menu extends Composite implements MenuWidget
 		String deviceName = Screen.getCurrentDevice().toString();
 		if(!getStyleName().contains(deviceName))
 		{
-			addStyleDependentName(deviceName);
+			addStyleName(deviceName);
 		}
 
 		switch(type)
 		{
 		case FLIP:
-			addStyleDependentName("flip");
-			removeStyleDependentName("stack");
-			removeStyleDependentName("tree");
+			addStyleName("slide");
+			removeStyleName("stack");
+			removeStyleName("tree");
 			Roles.getSliderRole().set(getElement());
 			break;
 		case STACK:
-			removeStyleDependentName("flip");
-			addStyleDependentName("stack");
-			removeStyleDependentName("tree");
+			removeStyleName("slide");
+			addStyleName("stack");
+			removeStyleName("tree");
 			Roles.getListRole().set(getElement());
 			break;
 		case TREE:
-			removeStyleDependentName("flip");
-			removeStyleDependentName("stack");
-			addStyleDependentName("tree");
+			removeStyleName("slide");
+			removeStyleName("stack");
+			addStyleName("tree");
 			Roles.getTreeRole().set(getElement());
 			break;
 		default:
@@ -221,11 +228,11 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public int addItem(int key, Widget item) 
 	{
-		if(root == null)
+		if(this.root == null)
 		{
-			root = new MenuItem(menu, true);
+			this.root = new MenuItem(this.menu, true);
 		}
-		MenuItem placeToInsert = MenuUtils.findInMenuByKey(root, key);
+		MenuItem placeToInsert = MenuUtils.findInMenu(this.root, key);
 		
 		//insert LI as the next child
 		if(placeToInsert.getChildren() != null && !placeToInsert.getChildren().isEmpty())
@@ -260,13 +267,27 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public boolean removeItem(Widget root) 
 	{
-		return false;
+		MenuItem removed = MenuUtils.removeItem(this.root, root);
+		
+		if(removed == null)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
-	public boolean removeItem(int key) 
+	public Widget removeItem(int key) 
 	{
-		return false;
+		MenuItem removed = MenuUtils.removeItem(this.root, key);
+		
+		if(removed == null)
+		{
+			return null;
+		}
+		
+		return removed.getWidget();
 	}
 
 	//OK
@@ -280,7 +301,7 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public void collapse(Widget root) 
 	{
-		MenuUtils.applyRemoveClass("faces-colapsed", true, MenuUtils.findInMenuByWidget(this.root, root));
+		MenuUtils.applyRemoveClass("faces-colapsed", true, MenuUtils.findInMenu(this.root, root));
 	}
 
 	//OK
@@ -294,7 +315,7 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public void expand(Widget root) 
 	{
-		MenuUtils.applyRemoveClass("faces-colapsed", false, MenuUtils.findInMenuByWidget(this.root, root));
+		MenuUtils.applyRemoveClass("faces-colapsed", false, MenuUtils.findInMenu(this.root, root));
 	}
 
 	public Orientation getCurrentOrientation() 

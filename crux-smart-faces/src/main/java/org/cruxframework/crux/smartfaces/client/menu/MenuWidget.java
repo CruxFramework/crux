@@ -55,7 +55,7 @@ public interface MenuWidget extends HasAnimation, HasEnabled,
 //	public int addItem(Widget root, String label, ViewContainer viewContainer, String viewName);
 	
 	public boolean removeItem(Widget root);
-	public boolean removeItem(int key);
+	public Widget removeItem(int key);
 	
 	public void collapseAll();
 	public void collapse(Widget root);

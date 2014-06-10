@@ -14,6 +14,35 @@ import com.google.gwt.user.client.ui.Widget;
  */
 class MenuUtils 
 {
+	
+	public static MenuItem removeItem(MenuItem menuItem, Widget widget)
+	{
+		MenuItem found = findInMenu(menuItem, widget);
+		
+		if(found == null)
+		{
+			return null;
+		}
+		
+		found.getLIElement().removeFromParent();
+		
+		return found;
+	}
+	
+	public static MenuItem removeItem(MenuItem menuItem, int key)
+	{
+		MenuItem found = findInMenu(menuItem, key);
+		
+		if(found == null)
+		{
+			return null;
+		}
+		
+		found.getLIElement().removeFromParent();
+		
+		return found;
+	}
+	
 	public static ArrayList<MenuItem> getAllMenuItems(MenuItem menuItem)
 	{
 		Set<MenuItem> ans = new HashSet<MenuItem>();
@@ -96,7 +125,7 @@ class MenuUtils
 		return found;
 	}
 	
-	public static MenuItem findInMenuByWidget(MenuItem menuItem, Widget widget) 
+	public static MenuItem findInMenu(MenuItem menuItem, Widget widget) 
 	{
 		if(menuItem == null)
 		{
@@ -115,17 +144,17 @@ class MenuUtils
 		
 		for(MenuItem childrenMenuItem : menuItem.getChildren())
 		{
-			MenuItem findKeyInMenu = findInMenuByWidget(childrenMenuItem, widget);
-			if(findKeyInMenu != null)
+			MenuItem found = findInMenu(childrenMenuItem, widget);
+			if(found != null)
 			{
-				return findKeyInMenu;
+				return found;
 			}
 		}
 		
 		return null;
 	}
 	
-	public static MenuItem findInMenuByKey(MenuItem menuItem, int key) 
+	public static MenuItem findInMenu(MenuItem menuItem, int key) 
 	{
 		if(menuItem == null)
 		{
@@ -144,10 +173,10 @@ class MenuUtils
 		
 		for(MenuItem childrenMenuItem : menuItem.getChildren())
 		{
-			MenuItem findKeyInMenu = findInMenuByKey(childrenMenuItem, key);
-			if(findKeyInMenu != null)
+			MenuItem found = findInMenu(childrenMenuItem, key);
+			if(found != null)
 			{
-				return findKeyInMenu;
+				return found;
 			}
 		}
 		
