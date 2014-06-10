@@ -1,6 +1,58 @@
+/*! normalize.css v3.0.0 | MIT License | git.io/normalize */
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background:0 0}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:700}dfn{font-style:italic}h1{font-size:2em;margin:.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-.5em}sub{bottom:-.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type=button],input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type=checkbox],input[type=radio]{box-sizing:border-box;padding:0}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{height:auto}input[type=search]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:700}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}
+
 @external *;
 
-HTML
+*:focus, *:active, *:hover
+{
+	/**
+	* Prevent that blue (or black, if in iOS) overlay on an element
+	* if you tap it. Or yellow border if in desktop.
+	*/
+	outline:none;
+	-webkit-tap-hightlight-color:rgba(0,0,0,0);
+}
+
+*, *:before, *:after
+{
+  /**
+  * Prevent elements from outgrowing when padding is added
+  * (keeps the same width no matter what)
+  */
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+*[disabled]{
+	cursor:not-allowed !important;
+}
+
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+hr{
+	background:#e3e3e3;
+	height:1px;
+	margin:10px 0;
+	border:none;
+}
+
+ul
+{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+
+html
 {
     margin: 0px;
     padding: 0px;
@@ -8,116 +60,132 @@ HTML
 }
 
 
-/* -------------------- menu -----------------------*/
+
+/* -------------------- facesMenu -----------------------*/
 
 .faces-Menu * {
-    -webkit-transition:all 0.3s ease-in-out;
-    -moz-transition:all 0.3s ease-in-out;
-    -ms-transition:all 0.3s ease-in-out;
-    transition:all 0.3s ease-in-out;
+    -webkit-transition:all 0.3s linear;
+    -moz-transition:all 0.3s linear;
+    -ms-transition:all 0.3s linear;
+    transition:all 0.3s linear;
 }
 
-.faces-Menu *, .faces-Menu *:before, .faces-Menu *:after {
-    box-sizing:border-box;
-}
-
-.faces-Menu .faces-LIItem {
-    list-style:none;
-}
-
-.faces-Menu {
-    list-style:none;
-    padding:0;
-}
-
-.faces-Menu:after {
-    content:'.';
-    clear:both;
-    color:rgba(0, 0, 0, 0);
-}
-
-.faces-Menu .faces-LIItem {
-    background:#ccc;
+.faces-Menu .faces-li
+{
+    background:#fff;
     padding:10px;
     font-size:13px;
-    margin-bottom:1px;
     cursor:pointer;
+    border:1px solid #ccc;
+    position:relative;
 }
 
-.faces-Menu .faces-LIItem:hover {
-    background:#b5b5b5;
+.faces-Menu .faces-li:hover
+{
+	background:#f1f1f1;
 }
 
-.faces-Menu .faces-Menu-vertical .faces-LIItem {
-    width:200px;
+.faces-Menu .faces-li .faces-ul
+{
+	display:none;
+	position:absolute;
+	z-index:2;
 }
 
-.faces-Menu .faces-Menu-horizontal {
+/*
+    horizontal
+*/
+
+.faces-Menu.faces-horizontal
+{
     width:100%;
 }
 
-.faces-Menu .faces-Menu-horizontal .faces-LIItem {
+
+.faces-Menu.faces-horizontal > .faces-ul > .faces-li
+{
     float:left;
-    background:#77a400;
-    color:#fff;
-    margin-left:1px;
+    border-left:none;
     padding:10px 4%;
 }
 
-.faces-Menu .faces-Menu.horizontal .faces-LIItem:hover {
-    background:#5c751b;
+.faces-Menu.faces-horizontal > .faces-ul > .faces-li:first-child
+{
+	border-left:1px solid #ccc;
 }
 
-/* for submenus */
-
-.faces-Menu {
-    position:relative;
+.faces-Menu.faces-horizontal .faces-li > .faces-ul
+{
+	bottom:0;
+	left:0;
+	margin-left:-1px;
+	-webkit-transform:translateY(100%);
 }
 
-.faces-Menu .faces-LIItem {
-    position:relative;
+.faces-Menu.faces-horizontal .faces-li:hover > .faces-ul
+{
+	display:block;
+	width:literal("calc(100% + 2px)");
 }
 
-.faces-Menu .faces-ULItem {
-    position:absolute;
+.faces-Menu.faces-horizontal .faces-li .faces-ul .faces-li
+{
+	float:none;
 }
 
-.faces-Menu .faces-Menu-vertical .faces-ULItem {
-    margin-left:190px;
-    top:0;
-    display:none;
-    padding-left:1px;
+.faces-Menu.faces-horizontal .faces-li > .faces-ul .faces-li .faces-ul
+{
+	top:0;
+	right:0;
+	-webkit-transform:translateX(100%);
+	margin-left:-2px;
+	margin-top:-1px;
 }
 
-.faces-Menu .faces-Menu-vertical .faces-LIItem:hover > .faces-ULItem {
-    display:block;
+.faces-Menu.faces-horizontal .faces-li > .faces-ul .faces-li .faces-ul .faces-li
+{
+	border-bottom:none;
 }
 
-.faces-Menu .faces-Menu-horizontal .faces-ULItem {
-    left:0;
-    top:0;
-    display:none;
-    padding-top:1px;
+.faces-Menu.faces-horizontal .faces-li > .faces-ul .faces-li .faces-ul .faces-li:last-child
+{
+	border-bottom:1px solid #ccc;
 }
 
-.faces-Menu .faces-Menu-horizontal > .faces-LIItem > .faces-ULItem {
-    margin-top:36px;
-    padding-top:1px;
+/*
+    vertical
+*/
+
+.faces-Menu.faces-vertical
+{
+	width:200px;
 }
 
-.faces-Menu .faces-Menu-horizontal .faces-ULItem .faces-LIItem {
-    width:200px;
+.faces-Menu.faces-vertical .faces-li{
+	border-bottom:none;
 }
 
-.faces-Menu .faces-Menu-horizontal > .faces-LIItem > .faces-ULItem .faces-LIItem .faces-ULItem {
-    margin-left:160px;
-    top:0;
-    margin-top:0;
-    padding-top:0;
+.faces-Menu.faces-vertical .faces-li:last-child
+{
+	border-bottom:1px solid #ccc;
 }
 
-.faces-Menu .faces-Menu-horizontal .faces-LIItem:hover > .faces-ULItem {
-    display:block;
+.faces-Menu.faces-vertical .faces-li .faces-ul
+{
+	top:0;
+	right:0;
+	-webkit-transform:translateX(100%);
+	margin-top:-1px;
+	width:literal("calc(100% + 2px)");
 }
 
-/* -------------------------------------------------*/
+.faces-Menu.faces-vertical .faces-li:hover > .faces-ul
+{
+	display:block;
+}
+
+button + ul{
+	border:1px solid red !important;
+}
+
+
