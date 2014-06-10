@@ -15,9 +15,16 @@
  */
 package org.cruxframework.crux.core.client.datasource.pager;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
 
+/** 
+ * @deprecated Use DataProvider instead.
+ */
+@Deprecated
+@Legacy
 public interface HasPageHandlers extends HasHandlers 
 {
 	HandlerRegistration addPageHandler(PageHandler handler);

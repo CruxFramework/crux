@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.client.datasource;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.datasource.DataSourceRecord.DataSourceRecordState;
 
 import com.google.gwt.user.client.ui.HasValue;
@@ -24,8 +25,10 @@ import com.google.gwt.user.client.ui.HasValue;
  * like Crux <code>Grid</code>.
  * 
  * @author Thiago da Rosa de Bustamante
- *
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public interface DataSource<E>
 {
 	/**

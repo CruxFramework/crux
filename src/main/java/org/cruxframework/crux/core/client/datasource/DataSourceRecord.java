@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.datasource;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 
 
 /**
@@ -22,7 +24,10 @@ package org.cruxframework.crux.core.client.datasource;
  * 
  * @author Thiago da Rosa de Bustamante
  *
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public class DataSourceRecord<T>
 {
 	protected Object identifier;

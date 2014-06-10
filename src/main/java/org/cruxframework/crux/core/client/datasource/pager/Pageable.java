@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.client.datasource.pager;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.datasource.HasDataSource;
 import org.cruxframework.crux.core.client.datasource.PagedDataSource;
 
@@ -24,7 +25,10 @@ import com.google.gwt.user.client.ui.IsWidget;
  * Define a base interface for classes that are capable to be paged by a {@link Pager}.  
  * @author Thiago da Rosa de Bustamante
  *
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public interface Pageable<T extends PagedDataSource<?>> extends HasDataSource<T>, IsWidget
 {
 	/**

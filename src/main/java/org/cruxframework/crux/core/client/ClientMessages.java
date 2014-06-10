@@ -76,7 +76,6 @@ public interface ClientMessages extends Messages
 	@DefaultMessage("To use this feature you must enabled compatibility with Crux 2 old interfaces.")
 	String screenFactoryCrux2OldInterfacesCompatibilityDisabled();
 	
-	
 	@DefaultMessage("Type ''{0}'' can not be shared between modules. Only primitives (and its wrappers), Strings, Dates, Arrays (not multidimesional) and classes implementing CruxSerializable can be used.")
 	String moduleComunicationInvalidParamType(String name);
 

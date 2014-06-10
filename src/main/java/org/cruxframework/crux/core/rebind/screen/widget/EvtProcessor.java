@@ -99,6 +99,13 @@ public abstract class EvtProcessor extends AbstractProcessor
     			creator.getDevice(), true);
     }
 
+    public static void printEvtCall(SourcePrinter out, String eventValue, String eventName, String eventClassName,
+			String cruxEvent, WidgetCreator<?> creator, boolean allowNoParameterCall)
+	{
+		printEvtCall(out, eventValue, eventName, eventClassName, cruxEvent, creator.getContext(), creator.getView(), creator.getControllerAccessorHandler(), 
+		creator.getDevice(), allowNoParameterCall);
+	}
+    
     /**
      * 
      * @param out

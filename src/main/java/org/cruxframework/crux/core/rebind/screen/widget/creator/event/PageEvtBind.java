@@ -15,8 +15,8 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget.creator.event;
 
-import org.cruxframework.crux.core.client.datasource.pager.PageEvent;
-import org.cruxframework.crux.core.client.datasource.pager.PageHandler;
+import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
+import org.cruxframework.crux.core.client.dataprovider.pager.PageHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 

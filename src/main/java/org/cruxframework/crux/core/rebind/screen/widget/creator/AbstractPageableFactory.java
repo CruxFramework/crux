@@ -15,21 +15,15 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget.creator;
 
-import org.cruxframework.crux.core.client.datasource.DataSource;
-import org.cruxframework.crux.core.client.datasource.PagedDataSource;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.datasource.DataSources;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.EventFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ControllerAccessHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
@@ -41,7 +35,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
-import org.cruxframework.crux.core.utils.JClassUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,28 +47,9 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 @TagAttributes({
 	@TagAttribute(value="pageSize", type=Integer.class, description="The number of widgets that is loaded from the datasource on each data request."),
-	@TagAttribute(value="dataSource", processor=AbstractPageableFactory.DataSourceAttributeParser.class, required=true, description="The datasource that provides data for this widget.")
 })
-@TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, description="If true, ask bound datasource for data when widget is created.")
-})
-public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> extends WidgetCreator<C>
+public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> extends HasDataProviderFactory<C>
 {
-	/**
-	 * @param context
-	 * @return
-	 */
-	protected JClassType getDataObject(WidgetCreatorContext context)
-    {
-		JClassType dtoType;
-		
-		JClassType dataSourceClass = getContext().getTypeOracle().findType(DataSources.getDataSource(context.readWidgetProperty("dataSource"), getDevice()));
-		JClassType dataSourceInterface = getContext().getTypeOracle().findType(DataSource.class.getCanonicalName());
-		dtoType = JClassUtils.getActualParameterTypes(dataSourceClass, dataSourceInterface)[0];
-		
-		return dtoType;
-    }
-
 	protected void generateWidgetCreationForCell(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
     {
 		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
@@ -172,29 +146,4 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 		@TagAttributeDeclaration(value="onCreateWidget", required=true, description="")
 	})
 	public static class WidgetFactoryControllerChildCreator extends WidgetChildProcessor<WidgetCreatorContext>{}
-	
-	public static class DataSourceAttributeParser extends AttributeProcessor<WidgetCreatorContext>
-	{
-		public DataSourceAttributeParser(WidgetCreator<?> widgetCreator)
-        {
-	        super(widgetCreator);
-        }
-
-		public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String propertyValue)
-		{
-			JClassType dataSourceClass = getWidgetCreator().getContext().getTypeOracle().findType(DataSources.getDataSource(propertyValue, getWidgetCreator().getDevice()));
-			JClassType dataSourceInterface = getWidgetCreator().getContext().getTypeOracle().findType(DataSource.class.getCanonicalName());
-			JClassType dtoType = JClassUtils.getActualParameterTypes(dataSourceClass, dataSourceInterface)[0];
-
-			String dtoClassName = dtoType.getParameterizedQualifiedSourceName();
-			String className = PagedDataSource.class.getCanonicalName()+"<"+dtoClassName+">";
-			String dataSource = getWidgetCreator().createVariableName("dataSource");
-			out.println(className+" "+dataSource+" = ("+className+") "+getViewVariable()+".createDataSource("+EscapeUtils.quote(propertyValue)+");");
-
-			boolean autoLoadData = context.readBooleanWidgetProperty("autoLoadData", false);
-			
-			String widget = context.getWidget();			
-			out.println(widget+".setDataSource("+dataSource+", "+autoLoadData+");");
-		}
-	}	
 }

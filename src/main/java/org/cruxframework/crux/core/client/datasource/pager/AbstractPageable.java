@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.client.datasource.pager;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.datasource.LocalDataSource;
 import org.cruxframework.crux.core.client.datasource.LocalDataSourceCallback;
 import org.cruxframework.crux.core.client.datasource.MeasurableDataSource;
@@ -30,7 +31,10 @@ import com.google.gwt.user.client.ui.Composite;
  * Base implementation for Pageable widgets
  * @author Thiago da Rosa de Bustamante
  *
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public abstract class AbstractPageable<T> extends Composite implements Pageable<PagedDataSource<T>>
 {
 	protected Pager pager;

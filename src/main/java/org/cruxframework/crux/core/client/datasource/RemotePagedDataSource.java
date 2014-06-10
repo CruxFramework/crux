@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.client.datasource;
 
 import java.util.List;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.datasource.DataSourceRecord.DataSourceRecordState;
 
 import com.google.gwt.user.client.ui.HasValue;
@@ -25,7 +26,10 @@ import com.google.gwt.user.client.ui.HasValue;
 /**
  * @author Thiago da Rosa de Bustamante
  *
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public abstract class RemotePagedDataSource<T> extends AbstractPagedDataSource<T> 
 implements MeasurableRemoteDataSource<T>
 {

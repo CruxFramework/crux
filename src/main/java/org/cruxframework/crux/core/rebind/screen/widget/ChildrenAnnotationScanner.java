@@ -461,9 +461,11 @@ class ChildrenAnnotationScanner
 			{
 				throw new CruxGeneratorException("Error generating widget factory. An element can not contains text and other children.");
 			}
-			
-			AllowedOccurences allowedForChild = getAllowedOccurrencesForChild(child);
-			mergeAllowedOccurrences(allowed, allowedForChild);
+			if (child.autoProcess())
+			{
+				AllowedOccurences allowedForChild = getAllowedOccurrencesForChild(child);
+				mergeAllowedOccurrences(allowed, allowedForChild);
+			}
 		}
 		return allowed;
 	}

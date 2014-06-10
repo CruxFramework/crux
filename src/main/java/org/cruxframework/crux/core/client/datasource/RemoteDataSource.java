@@ -17,12 +17,17 @@ package org.cruxframework.crux.core.client.datasource;
 
 import java.util.List;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public interface RemoteDataSource<E> extends PagedDataSource<E>
 {
 	void fetch(int startRecord, int endRecord);
