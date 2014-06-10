@@ -164,12 +164,12 @@ public class Menu extends Composite implements MenuWidget
 		switch(orientation)
 		{
 		case HORIZONTAL:
-			removeStyleName("vertical");
-			addStyleName("horizontal");
+			removeStyleName("faces-vertical");
+			addStyleName("faces-horizontal");
 			break;
 		case VERTICAL:
-			removeStyleName("horizontal");
-			addStyleName("vertical");
+			removeStyleName("faces-horizontal");
+			addStyleName("faces-vertical");
 			break;
 		default:
 			break;
@@ -195,21 +195,21 @@ public class Menu extends Composite implements MenuWidget
 		switch(type)
 		{
 		case FLIP:
-			addStyleName("slide");
-			removeStyleName("stack");
-			removeStyleName("tree");
+			addStyleName("faces-slide");
+			removeStyleName("faces-stack");
+			removeStyleName("faces-tree");
 			Roles.getSliderRole().set(getElement());
 			break;
 		case STACK:
-			removeStyleName("slide");
-			addStyleName("stack");
-			removeStyleName("tree");
+			removeStyleName("faces-slide");
+			addStyleName("faces-stack");
+			removeStyleName("faces-tree");
 			Roles.getListRole().set(getElement());
 			break;
 		case TREE:
-			removeStyleName("slide");
-			removeStyleName("stack");
-			addStyleName("tree");
+			removeStyleName("faces-slide");
+			removeStyleName("faces-stack");
+			addStyleName("faces-tree");
 			Roles.getTreeRole().set(getElement());
 			break;
 		default:
@@ -253,7 +253,7 @@ public class Menu extends Composite implements MenuWidget
 		{
 			OrderedList ul = new OrderedList();
 			ListItem li = new ListItem();
-			li.setStyleName("faces-LIItem");
+			li.setStyleName("faces-li");
 			li.getElement().appendChild(item.getElement());
 			ul.add(li);
 			

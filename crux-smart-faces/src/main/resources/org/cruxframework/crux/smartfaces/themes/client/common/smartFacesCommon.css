@@ -183,9 +183,3 @@ html
 {
 	display:block;
 }
-
-button + ul{
-	border:1px solid red !important;
-}
-
-

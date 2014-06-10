@@ -52,7 +52,7 @@ class MenuItem
 	
 	public MenuItem(OrderedList ul, Widget widget) 
 	{
-		ul.setStyleName("faces-ULItem");
+		ul.setStyleName("faces-ul");
 		Element li = (Element) ul.getElement().getFirstChild();
 		this.liElement = li;
 		this.widget = widget;
@@ -60,7 +60,7 @@ class MenuItem
 	
 	public MenuItem(ListItem li, Widget widget) 
 	{
-		li.setStyleName("faces-LIItem");
+		li.setStyleName("faces-li");
 		this.liElement = li.getElement();
 		this.widget = widget;
 	}
@@ -81,7 +81,7 @@ class MenuItem
 		}
 		
 		ListItem li = new ListItem();
-		li.setStyleName("faces-LIItem");
+		li.setStyleName("faces-li");
 		li.getElement().appendChild(widget.getElement());
 		this.liElement = li.getElement();
 		this.widget = widget;
