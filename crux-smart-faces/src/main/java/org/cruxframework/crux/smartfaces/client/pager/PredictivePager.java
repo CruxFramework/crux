@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.pager;
 
-import org.cruxframework.crux.core.client.datasource.pager.PageEvent;
+import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.event.dom.client.ChangeEvent;

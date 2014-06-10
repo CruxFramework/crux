@@ -15,9 +15,9 @@
  */
 package org.cruxframework.crux.smartfaces.client.pager;
 
-import org.cruxframework.crux.core.client.datasource.pager.AbstractPager;
-import org.cruxframework.crux.core.client.datasource.pager.PageEvent;
-import org.cruxframework.crux.core.client.datasource.pager.Pager;
+import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
+import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
+import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.label.Label;

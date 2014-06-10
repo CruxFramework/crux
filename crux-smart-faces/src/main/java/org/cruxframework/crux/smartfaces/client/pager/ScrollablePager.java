@@ -15,10 +15,10 @@
  */
 package org.cruxframework.crux.smartfaces.client.pager;
 
-import org.cruxframework.crux.core.client.datasource.pager.AbstractPager;
-import org.cruxframework.crux.core.client.datasource.pager.PageEvent;
-import org.cruxframework.crux.core.client.datasource.pager.Pageable;
-import org.cruxframework.crux.core.client.datasource.pager.Pager;
+import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
+import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
+import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
+import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
@@ -64,7 +64,7 @@ public class ScrollablePager extends AbstractPager
 				int maxScrollTop = scrollable.getWidget().getOffsetHeight() - scrollable.getOffsetHeight();
 				if (lastScrollPos >= maxScrollTop)
 				{
-					if (getPageable().getDataSource().hasNextPage())
+					if (getPageable().getDataProvider().hasNextPage())
 					{
 						PageEvent pageEvent = PageEvent.fire(ScrollablePager.this, getCurrentPage() + 1);
 						if(!pageEvent.isCanceled())
