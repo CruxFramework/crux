@@ -19,7 +19,7 @@ public interface MenuWidget extends HasAnimation, HasEnabled,
 	public static enum Type
 	{
 		TREE,
-		FLIP,
+		SLIDE,
 		STACK,
 		//...
 		;

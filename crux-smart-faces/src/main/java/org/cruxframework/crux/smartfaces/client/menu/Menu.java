@@ -194,7 +194,7 @@ public class Menu extends Composite implements MenuWidget
 
 		switch(type)
 		{
-		case FLIP:
+		case SLIDE:
 			addStyleName("faces-slide");
 			removeStyleName("faces-stack");
 			removeStyleName("faces-tree");
