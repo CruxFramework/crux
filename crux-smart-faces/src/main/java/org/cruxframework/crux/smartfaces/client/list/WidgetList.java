@@ -1,6 +1,6 @@
 package org.cruxframework.crux.smartfaces.client.list;
 
-import org.cruxframework.crux.core.client.datasource.pager.AbstractPageable;
+import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -44,7 +44,7 @@ public class WidgetList<T> extends AbstractPageable<T>
 			@Override
             public void render(T value)
             {
-				IsWidget widget = widgetFactory.createWidget(dataSource.getBoundObject());
+				IsWidget widget = widgetFactory.createWidget(dataProvider.getBoundObject());
 				contentPanel.add(widget);
             }
 	    };
