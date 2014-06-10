@@ -47,7 +47,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  *
  */
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="dataObject", required=true),
+	@TagAttributeDeclaration(value="dataObject", required=true, description="Identify the object type provided by the DataProvider. Use the annotation @DataObject to create an identifier to your types."),
 	@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, description="If true, ask bound DataProvider for data when widget is created.", defaultValue="false")
 })
 @TagChildren({
@@ -76,7 +76,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		return dtoType;
     }
 	
-	@TagConstraints(tagName="dataProvider")
+	@TagConstraints(tagName="dataProvider", description="Specify a data provider for this widget")
 	@TagChildren({
 		@TagChild(DataProviderChildren.class)
 	})
@@ -92,28 +92,28 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 	public static class DataProviderChildren extends ChoiceChildProcessor<WidgetCreatorContext> {}
 
 	/////////////////////////////////////////////////////////////////////////
-	@TagConstraints(tagName="sync")
+	@TagConstraints(tagName="sync", description="Define a synchronous non paged data provider. It is like a database result set, with a scrollable interface")
 	@TagChildren({
 //		@TagChild(SynchronousScrollableProcessorChildren.class)
 		@TagChild(EventsSynchronousScrollableProcessor.class)
 	})
 	public static class SynchronousScrollableProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
 
-	@TagConstraints(tagName="syncPaged")
+	@TagConstraints(tagName="syncPaged", description="Define a synchronous paged data provider.")
 	@TagChildren({
 //		@TagChild(SynchronousPagedProcessorChildren.class)
 		@TagChild(EventsSynchronousPagedProcessor.class)
 	})
 	public static class SynchronousPagedProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
 
-	@TagConstraints(tagName="async")
+	@TagConstraints(tagName="async", description="Define an asynchronous paged data provider. That dataProvider must be measurable.")
 	@TagChildren({
 //		@TagChild(AsynchronousMeasurableProcessorChildren.class)
 		@TagChild(EventsAsynchronousPagedProcessor.class)
 	})
 	public static class AsynchronousMeasurableProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
 
-	@TagConstraints(tagName="asyncStreaming")
+	@TagConstraints(tagName="asyncStreaming", description="Define an asynchronous paged data provider that is not measurable. This kind of data provider will only know the size of the data set when it has requested for more data and no data is available.")
 	@TagChildren({
 //		@TagChild(AsynchronousStreamingProcessorChildren.class)
 		@TagChild(EventsAsynchronousStreamingProcessor.class)
@@ -142,9 +142,9 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 	public static class AsynchronousStreamingProcessorChildren extends ChoiceChildProcessor<WidgetCreatorContext> {}
 
 	/////////////////////////////////////////////////////////////////////////
-	@TagConstraints(tagName="event")
+	@TagConstraints(tagName="event", description="Inform the events on controller that will be used to provide informations for this data provider.")
 	@TagEventsDeclaration({
-		@TagEventDeclaration(value="onLoad", required=true)
+		@TagEventDeclaration(value="onLoad", required=true, description="Event called to load the data set into this dataprovider.")
 	})
 	public static abstract class EventsSynchronousProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
 	{
@@ -182,9 +182,9 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		}
 	}
 	
-	@TagConstraints(tagName="event")
+	@TagConstraints(tagName="event", description="Inform the events on controller that will be used to provide informations for this data provider.")
 	@TagEventsDeclaration({
-		@TagEventDeclaration(value="onPageFetch", required=true)
+		@TagEventDeclaration(value="onPageFetch", required=true, description="Event called every time a new page with data must be fetched by the data provider.")
 	})
 	public static class EventsAsynchronousStreamingProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
 	{
@@ -206,10 +206,10 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		}
 	}
 
-	@TagConstraints(tagName="event")
+	@TagConstraints(tagName="event", description="Inform the events on controller that will be used to provide informations for this data provider.")
 	@TagEventsDeclaration({
-		@TagEventDeclaration(value="onPageFetch", required=true),
-		@TagEventDeclaration(value="onInitialize", required=true)
+		@TagEventDeclaration(value="onPageFetch", required=true, description="Event called every time a new page with data must be fetched by the data provider."),
+		@TagEventDeclaration(value="onInitialize", required=true, description="Event called when the data provider is initialized. Use this to set the data set size.")
 	})
 	public static class EventsAsynchronousPagedProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
 	{
