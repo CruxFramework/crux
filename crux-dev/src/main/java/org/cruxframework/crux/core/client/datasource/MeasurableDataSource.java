@@ -15,11 +15,16 @@
  */
 package org.cruxframework.crux.core.client.datasource;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 /**
  * 
  * @author Thiago da Rosa de Bustamante
  *
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public interface MeasurableDataSource<E> extends DataSource<E>
 {
 	int getRecordCount();

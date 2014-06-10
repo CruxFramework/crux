@@ -15,11 +15,16 @@
  */
 package org.cruxframework.crux.core.client.datasource.pager;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * @author Gesse S. F. Dafe
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public class PageEvent extends GwtEvent<PageHandler>{
 
 	private static Type<PageHandler> TYPE = new Type<PageHandler>();

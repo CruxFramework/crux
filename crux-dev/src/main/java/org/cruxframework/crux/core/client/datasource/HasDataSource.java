@@ -15,10 +15,15 @@
  */
 package org.cruxframework.crux.core.client.datasource;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 /**
  * Interface to be implemented by classes that are capable of using data sources.  
  * @author Gesse S. F. Dafe
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public interface HasDataSource<T extends DataSource<?>>
 {
 	void setDataSource(T datasource, boolean autoLoadData);

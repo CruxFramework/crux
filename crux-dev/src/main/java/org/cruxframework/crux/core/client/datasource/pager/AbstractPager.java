@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.client.datasource.pager;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.datasource.PagedDataSource;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -24,7 +25,10 @@ import com.google.gwt.user.client.ui.Composite;
  * Base implementation for a Pager
  * @author Gesse S. F. Dafe
  * @author Thiago da Rosa de Bustamante
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public abstract class AbstractPager extends Composite implements Pager
 {
 	private Pageable<?> pageable;

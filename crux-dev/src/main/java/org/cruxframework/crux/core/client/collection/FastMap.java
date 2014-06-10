@@ -181,7 +181,6 @@ public class FastMap<V>
 	 * @param keys
 	 * @param value
 	 */
-	@SuppressWarnings("unused")
 	private final void addKey(FastList<String> keys, String value)
 	{
 		keys.add(value);

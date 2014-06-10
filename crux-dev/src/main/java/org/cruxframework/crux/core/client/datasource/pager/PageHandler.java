@@ -15,12 +15,17 @@
  */
 package org.cruxframework.crux.core.client.datasource.pager;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 import com.google.gwt.event.shared.EventHandler;
 
 /**
  * TODO - Gesse - Comment this
  * @author Gesse S. F. Dafe
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public interface PageHandler extends EventHandler
 {
 	void onPage(PageEvent event);

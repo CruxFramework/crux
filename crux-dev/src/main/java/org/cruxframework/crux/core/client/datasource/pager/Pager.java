@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.client.datasource.pager;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.datasource.PagedDataSource;
 
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -24,7 +25,10 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * A pager is a component to navigate on pages of a {@link Pageable} widget.
  * @author Thiago da Rosa de Bustamante
+ * @deprecated Use DataProvider instead.
  */
+@Deprecated
+@Legacy
 public interface Pager extends IsWidget, HasPageHandlers, HasVisibility, HasEnabled
 {
 	/**

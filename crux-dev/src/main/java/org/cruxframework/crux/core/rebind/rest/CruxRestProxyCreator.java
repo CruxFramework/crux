@@ -358,7 +358,7 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 	protected void setLocaleInfo(SourcePrinter srcWriter, String builderVariable)
 	{
 		srcWriter.println("String _locale = "+Screen.class.getCanonicalName()+".getLocale();");
-		srcWriter.println("if (_locale != null){");
+		srcWriter.println("if (_locale != null && !"+StringUtils.class.getCanonicalName()+".unsafeEquals(_locale, \"default\")){");
 		srcWriter.println(builderVariable+".setHeader(\""+HttpHeaderNames.ACCEPT_LANGUAGE+"\", _locale.replace('_', '-'));");//	pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3
 		srcWriter.println("}");
 	}
