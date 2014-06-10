@@ -183,7 +183,7 @@ class MenuUtils
 		return null;
 	}
 
-	public static void applyRemoveClass(String className, boolean apply, MenuItem menuItem) 
+	public static void addOrRemoveClass(String className, boolean apply, MenuItem menuItem) 
 	{
 		if(menuItem == null)
 		{
@@ -192,10 +192,10 @@ class MenuUtils
 		ArrayList<MenuItem> items = new ArrayList<MenuItem>();
 		items.add(menuItem);
 		
-		applyRemoveClass(className, apply, items);
+		addOrRemoveClass(className, apply, items);
 	}
 	
-	public static void applyRemoveClass(String className, boolean apply, ArrayList<MenuItem> menuItems) 
+	public static void addOrRemoveClass(String className, boolean apply, ArrayList<MenuItem> menuItems) 
 	{
 		if(menuItems == null)
 		{

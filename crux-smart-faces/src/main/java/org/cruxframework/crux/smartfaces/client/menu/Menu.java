@@ -294,28 +294,28 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public void collapseAll() 
 	{
-		MenuUtils.applyRemoveClass("faces-colapsed", true, MenuUtils.getAllMenuItems(this.root));
+		MenuUtils.addOrRemoveClass("faces-colapsed", true, MenuUtils.getAllMenuItems(this.root));
 	}
 
 	//OK
 	@Override
 	public void collapse(Widget root) 
 	{
-		MenuUtils.applyRemoveClass("faces-colapsed", true, MenuUtils.findInMenu(this.root, root));
+		MenuUtils.addOrRemoveClass("faces-colapsed", true, MenuUtils.findInMenu(this.root, root));
 	}
 
 	//OK
 	@Override
 	public void expandAll() 
 	{
-		MenuUtils.applyRemoveClass("faces-colapsed", false, MenuUtils.getAllMenuItems(this.root));
+		MenuUtils.addOrRemoveClass("faces-colapsed", false, MenuUtils.getAllMenuItems(this.root));
 	}
 
 	//OK
 	@Override
 	public void expand(Widget root) 
 	{
-		MenuUtils.applyRemoveClass("faces-colapsed", false, MenuUtils.findInMenu(this.root, root));
+		MenuUtils.addOrRemoveClass("faces-colapsed", false, MenuUtils.findInMenu(this.root, root));
 	}
 
 	public Orientation getCurrentOrientation() 
