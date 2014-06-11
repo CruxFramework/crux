@@ -19,9 +19,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
+import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
+import org.cruxframework.crux.smartfaces.client.select.SelectableWidget;
 
 import com.google.gwt.aria.client.Roles;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,9 +34,16 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Claudio Holanda (claudio.junior@cruxframework.org)
  *
  */
-public class Menu extends Composite implements MenuWidget 
+public class Menu extends SelectableWidget implements MenuWidget 
 {
-	private static final String STYLE_FACES_COLAPSED = "faces-colapsed";
+	private static final String STYLE_FACES_SLIDE = "faces-slide";
+	private static final String STYLE_FACES_DROPDOWN = "faces-dropdown";
+	private static final String STYLE_FACES_TREE = "faces-tree";
+	private static final String STYLE_FACES_ACCORDION = "faces-accordion";
+	private static final String STYLE_FACES_HORIZONTAL = "faces-horizontal";
+	private static final String STYLE_FACES_VERTICAL = "faces-vertical";
+	private static final String STYLE_FACES_MENU = "faces-Menu";
+	private static final String STYLE_FACES_COLLAPSED = "faces-collapsed";
 	private Type currentType;
 	private Orientation currentOrientation;
 	private boolean enabled = true;
@@ -42,7 +52,7 @@ public class Menu extends Composite implements MenuWidget
 	
 	public Menu(Orientation orientation, Type type)
 	{
-		root.getWidget().asWidget().setStyleName("faces-Menu");
+		root.getWidget().asWidget().setStyleName(getBaseStyleName());
 		initWidget(root.getWidget());
 
 		setType(type);
@@ -51,7 +61,7 @@ public class Menu extends Composite implements MenuWidget
 
 	public String getBaseStyleName()
 	{
-		return "faces-Menu";
+		return STYLE_FACES_MENU;
 	}
 
 	@Override
@@ -144,12 +154,12 @@ public class Menu extends Composite implements MenuWidget
 		switch(orientation)
 		{
 		case HORIZONTAL:
-			removeStyleName("faces-vertical");
-			addStyleName("faces-horizontal");
+			removeStyleName(STYLE_FACES_VERTICAL);
+			addStyleName(STYLE_FACES_HORIZONTAL);
 			break;
 		case VERTICAL:
-			removeStyleName("faces-horizontal");
-			addStyleName("faces-vertical");
+			removeStyleName(STYLE_FACES_HORIZONTAL);
+			addStyleName(STYLE_FACES_VERTICAL);
 			break;
 		default:
 			break;
@@ -175,38 +185,38 @@ public class Menu extends Composite implements MenuWidget
 		switch(type)
 		{
 		case SLIDE:
-			addStyleName("faces-slide");
+			addStyleName(STYLE_FACES_SLIDE);
 			
-			removeStyleName("faces-accordion");
-			removeStyleName("faces-tree");
-			removeStyleName("faces-dropdown");
+			removeStyleName(STYLE_FACES_ACCORDION);
+			removeStyleName(STYLE_FACES_TREE);
+			removeStyleName(STYLE_FACES_DROPDOWN);
 			
 			Roles.getSliderRole().set(getElement());
 			break;
 		case ACCORDION:
-			addStyleName("faces-accordion");
+			addStyleName(STYLE_FACES_ACCORDION);
 			
-			removeStyleName("faces-slide");
-			removeStyleName("faces-tree");
-			removeStyleName("faces-dropdown");
+			removeStyleName(STYLE_FACES_SLIDE);
+			removeStyleName(STYLE_FACES_TREE);
+			removeStyleName(STYLE_FACES_DROPDOWN);
 			
 			Roles.getListRole().set(getElement());
 			break;
 		case TREE:
-			addStyleName("faces-tree");
+			addStyleName(STYLE_FACES_TREE);
 			
-			removeStyleName("faces-slide");
-			removeStyleName("faces-accordion");
-			removeStyleName("faces-dropdown");
+			removeStyleName(STYLE_FACES_SLIDE);
+			removeStyleName(STYLE_FACES_ACCORDION);
+			removeStyleName(STYLE_FACES_DROPDOWN);
 			
 			Roles.getTreeRole().set(getElement());
 			break;
 		case DROPDOWN:
-			addStyleName("faces-dropdown");
+			addStyleName(STYLE_FACES_DROPDOWN);
 			
-			removeStyleName("faces-slide");
-			removeStyleName("faces-accordion");
-			removeStyleName("faces-tree");
+			removeStyleName(STYLE_FACES_SLIDE);
+			removeStyleName(STYLE_FACES_ACCORDION);
+			removeStyleName(STYLE_FACES_TREE);
 			
 			Roles.getTreeRole().set(getElement());
 			break;
@@ -232,6 +242,16 @@ public class Menu extends Composite implements MenuWidget
 		}
 		
 		MenuItem w = new MenuItem(item);
+		
+		w.addSelectHandler(new SelectHandler() 
+		{
+			@Override
+			public void onSelect(SelectEvent event) 
+			{
+				Window.alert(event.getSource().toString());
+			}
+		});
+		
 		placeToInsert.add(w);
 		return w;
 	}
@@ -269,25 +289,25 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public void collapseAll() 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_COLAPSED, true, MenuUtils.getAllMenuItems(this.root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, true, MenuUtils.getAllMenuItems(this.root));
 	}
 
 	@Override
 	public void collapse(Widget root) 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_COLAPSED, true, MenuUtils.findInMenu(this.root, root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, true, MenuUtils.findInMenu(this.root, root));
 	}
 
 	@Override
 	public void expandAll() 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_COLAPSED, false, MenuUtils.getAllMenuItems(this.root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, false, MenuUtils.getAllMenuItems(this.root));
 	}
 
 	@Override
 	public void expand(Widget root) 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_COLAPSED, false, MenuUtils.findInMenu(this.root, root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, false, MenuUtils.findInMenu(this.root, root));
 	}
 
 	public Orientation getCurrentOrientation() 

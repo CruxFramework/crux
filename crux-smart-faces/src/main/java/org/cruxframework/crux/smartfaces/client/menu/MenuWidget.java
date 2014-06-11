@@ -21,8 +21,7 @@ import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
-public interface MenuWidget extends HasAnimation, HasEnabled, 
-	HasVisibility, HasWidgets
+public interface MenuWidget extends HasAnimation, HasEnabled, HasVisibility, HasWidgets
 {
 	public static enum Orientation
 	{

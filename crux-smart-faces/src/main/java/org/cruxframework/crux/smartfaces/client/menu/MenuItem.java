@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import org.cruxframework.crux.smartfaces.client.list.ListItem;
 import org.cruxframework.crux.smartfaces.client.list.UnorderedList;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
+import org.cruxframework.crux.smartfaces.client.select.SelectableWidget;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
@@ -28,10 +29,11 @@ import com.google.gwt.user.client.ui.Widget;
  * A cross device menu item
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
-public class MenuItem
+public class MenuItem extends SelectableWidget
 {
 	private Element item;
 	private Widget widget;
+	private Widget parentWidget;
 	private ArrayList<MenuItem> children;
 	private boolean root;
 	
@@ -59,7 +61,7 @@ public class MenuItem
 		this.widget = widget;
 		ListItem li = new ListItem();
 		li.add(widget);
-		item = li.getElement();
+		this.item = li.getElement();
 	}
 
 	public void add(MenuItem w) 
@@ -78,7 +80,7 @@ public class MenuItem
 		{
 			item.getFirstChild().appendChild(w.item);
 		}
-		
+		w.parentWidget = widget; 
 		children.add(w);
 	}
 
@@ -112,5 +114,10 @@ public class MenuItem
 	public void removeClass(String className)
 	{
 		item.removeClassName(className);
+	}
+
+	public Widget getParentWidget() 
+	{
+		return parentWidget;
 	}
 }
