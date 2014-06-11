@@ -248,6 +248,12 @@ public class Slider extends Composite implements SliderWidget
 		{
 			return true;
 		}
+
+		@Override
+		public void changeControlsVisibility(boolean visible) 
+		{
+			//DONOTHING
+		}
 	}
 	
 	public static class InnerNoTouchSlider extends Composite implements GeneratedSlider
@@ -528,6 +534,12 @@ public class Slider extends Composite implements SliderWidget
 		{
 			return true;
 		}
+
+		@Override
+		public void changeControlsVisibility(boolean visible) 
+		{
+			buttonWrapper.setVisible(visible);
+		}
 	}
 
 	//note1: fixing height 'bug' that makes the object's height relative to parent. If parent is created
@@ -718,5 +730,11 @@ public class Slider extends Composite implements SliderWidget
 	public boolean isDataLoaded() 
 	{
 		return slider.isDataLoaded();
+	}
+
+	@Override
+	public void changeControlsVisibility(boolean visible) 
+	{
+		slider.changeControlsVisibility(visible);
 	}
 }

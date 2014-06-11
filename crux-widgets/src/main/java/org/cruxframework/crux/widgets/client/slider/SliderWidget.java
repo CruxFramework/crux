@@ -26,6 +26,8 @@ interface SliderWidget extends IsWidget, HasSwapHandlers, OrientationChangeHandl
 	public boolean isCircularShowing();
 	public void setCircularShowing(boolean circularShowing);
 
+	public void changeControlsVisibility(boolean visible);
+	
 	public int getWidgetCount();
 	public Widget getWidget(int index);
 	public int getWidgetIndex(Widget widget);
