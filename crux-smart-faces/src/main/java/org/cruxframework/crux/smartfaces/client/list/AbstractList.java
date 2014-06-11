@@ -15,34 +15,45 @@
  */
 package org.cruxframework.crux.smartfaces.client.list;
 
-import com.google.gwt.user.client.DOM;
+import org.cruxframework.crux.core.client.utils.StringUtils;
+
+import com.google.gwt.user.client.ui.ComplexPanel;
 
 /**
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-public class ListItem extends AbstractListItem 
+abstract class AbstractList extends ComplexPanel 
 {
-	public ListItem() 
+	protected String className;
+
+	public AbstractList(String className) 
 	{
-		super();
-	}
-	
-	public ListItem(String className) 
-	{
-		super();
+		this();
 		this.className = className;
 	}
 	
-	@Override
-	protected void setElement() 
+	protected abstract void setElement();
+	
+	protected abstract String getDefaultClassName();
+	
+	public AbstractList() 
 	{
-		setElement(DOM.createElement("li"));
+		setElement();
+		
+		if(!StringUtils.isEmpty(className) || !StringUtils.isEmpty(getDefaultClassName()))
+		{
+			getElement().setClassName(StringUtils.isEmpty(className) ? getDefaultClassName() : className);
+		}
 	}
 
-	@Override
-	protected String getDefaultClassName() 
+	public void add(ListItem w) 
 	{
-		return "faces-li";
+		super.add(w, getElement());
+	}
+
+	public void insert(ListItem w, int beforeIndex) 
+	{
+		super.insert(w, getElement(), beforeIndex, true);
 	}
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014 cruxframework.org.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.cruxframework.crux.smartfaces.client.menu;
 
 import java.util.ArrayList;
@@ -15,34 +30,10 @@ import com.google.gwt.user.client.ui.Widget;
 class MenuUtils 
 {
 	
-	public static MenuItem removeItem(MenuItem menuItem, Widget widget)
-	{
-		MenuItem found = findInMenu(menuItem, widget);
-		
-		if(found == null)
-		{
-			return null;
-		}
-		
-		found.getLIElement().removeFromParent();
-		
-		return found;
-	}
-	
-	public static MenuItem removeItem(MenuItem menuItem, int key)
-	{
-		MenuItem found = findInMenu(menuItem, key);
-		
-		if(found == null)
-		{
-			return null;
-		}
-		
-		found.getLIElement().removeFromParent();
-		
-		return found;
-	}
-	
+	/**
+	 * @param menuItem
+	 * @return
+	 */
 	public static ArrayList<MenuItem> getAllMenuItems(MenuItem menuItem)
 	{
 		Set<MenuItem> ans = new HashSet<MenuItem>();
@@ -57,7 +48,8 @@ class MenuUtils
 		return new ArrayList<MenuItem>(ansFound);
 	}
 	
-	private static Set<MenuItem> getAllMenuItems(MenuItem menuItem, Set<MenuItem> found) {
+	private static Set<MenuItem> getAllMenuItems(MenuItem menuItem, Set<MenuItem> found) 
+	{
 		if(menuItem == null)
 		{
 			return found;
@@ -82,6 +74,10 @@ class MenuUtils
 		return found;
 	}
 
+	/**
+	 * @param menuItem
+	 * @return
+	 */
 	public static ArrayList<MenuItem> findHasEnabledInMenu(MenuItem menuItem)
 	{
 		Set<MenuItem> ans = new HashSet<MenuItem>();
@@ -125,6 +121,11 @@ class MenuUtils
 		return found;
 	}
 	
+	/**
+	 * @param menuItem
+	 * @param widget
+	 * @return
+	 */
 	public static MenuItem findInMenu(MenuItem menuItem, Widget widget) 
 	{
 		if(menuItem == null)
@@ -154,6 +155,11 @@ class MenuUtils
 		return null;
 	}
 	
+	/**
+	 * @param menuItem
+	 * @param key
+	 * @return
+	 */
 	public static MenuItem findInMenu(MenuItem menuItem, int key) 
 	{
 		if(menuItem == null)
@@ -183,6 +189,11 @@ class MenuUtils
 		return null;
 	}
 
+	/**
+	 * @param className
+	 * @param apply
+	 * @param menuItem
+	 */
 	public static void addOrRemoveClass(String className, boolean apply, MenuItem menuItem) 
 	{
 		if(menuItem == null)
@@ -195,6 +206,11 @@ class MenuUtils
 		addOrRemoveClass(className, apply, items);
 	}
 	
+	/**
+	 * @param className
+	 * @param apply
+	 * @param menuItems
+	 */
 	public static void addOrRemoveClass(String className, boolean apply, ArrayList<MenuItem> menuItems) 
 	{
 		if(menuItems == null)
@@ -205,10 +221,10 @@ class MenuUtils
 		{
 			if(apply)
 			{
-				menuItem.getLIElement().addClassName(className);
+				menuItem.addClass(className);
 			} else
 			{
-				menuItem.getLIElement().removeClassName(className);
+				menuItem.removeClass(className);
 			}
 		}
 	}

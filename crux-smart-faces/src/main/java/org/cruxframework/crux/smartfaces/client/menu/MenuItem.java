@@ -18,7 +18,8 @@ package org.cruxframework.crux.smartfaces.client.menu;
 import java.util.ArrayList;
 
 import org.cruxframework.crux.smartfaces.client.list.ListItem;
-import org.cruxframework.crux.smartfaces.client.list.OrderedList;
+import org.cruxframework.crux.smartfaces.client.list.UnorderedList;
+import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Widget;
@@ -26,110 +27,71 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A cross device menu item
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
- *
  */
-class MenuItem
+public class MenuItem
 {
-	private Element liElement;
+	private Element item;
 	private Widget widget;
 	private ArrayList<MenuItem> children;
 	private boolean root;
-	
-//	public MenuItem(Widget item, ArrayList<MenuItem> children)
-//	{
-//		this.item = item;
-//		this.children = children;
-//		initWidget(item);
-//		setStyleName("crux-Item");
-//		//this has to be here otherwise hashcode will change
-//		this.hashCode = item.hashCode();
-//	}
 	
 	public boolean isRoot()
 	{
 		return root;
 	}
 	
-	public MenuItem(OrderedList ul, Widget widget) 
+	public MenuItem()
 	{
-		ul.setStyleName("faces-ul");
-		Element li = (Element) ul.getElement().getFirstChild();
-		this.liElement = li;
-		this.widget = widget;
-	}
-	
-	public MenuItem(ListItem li, Widget widget) 
-	{
-		li.setStyleName("faces-li");
-		this.liElement = li.getElement();
-		this.widget = widget;
+		this(null);
 	}
 	
 	public MenuItem(Widget widget)
 	{
-		this(widget, false);
-	}
-	
-	public MenuItem(Widget widget, boolean isRoot)
-	{
-		if(isRoot)
+		if(widget == null)
 		{
-			this.liElement = widget.getElement();
-			this.widget = widget;
+			NavPanel navPanel = new NavPanel();
 			this.root = true;
+			this.widget = navPanel;
+			this.item = navPanel.getElement();
 			return;
 		}
 		
-		ListItem li = new ListItem();
-		li.setStyleName("faces-li");
-		li.getElement().appendChild(widget.getElement());
-		this.liElement = li.getElement();
 		this.widget = widget;
+		ListItem li = new ListItem();
+		li.add(widget);
+		item = li.getElement();
 	}
 
-	public Integer add(MenuItem w) 
+	public void add(MenuItem w) 
 	{
 		if(children == null)
 		{
 			children = new ArrayList<MenuItem>();
 		}
-		children.add(w);
-		liElement.addClassName("faces-hasChildren");
-		return w.hashCode();
-	}
-
-	@Override
-	public int hashCode() 
-	{
-		if(root)
-		{
-			return 0;
-		}
-		
-		return liElement.hashCode();
-	}
-	
-	@Override
-	public boolean equals(Object obj) 
-	{
-		return liElement.equals(obj);
-	}
-	
-	public void clear() 
-	{
-		children.clear();
-	}
-
-	public MenuItem remove(MenuItem w) 
-	{
-		MenuItem menuItem = children.remove(w.hashCode());
 		
 		if(children.isEmpty())
 		{
-			liElement.removeClassName("faces-hasChildren");
+			UnorderedList ul = new UnorderedList();
+			ul.getElement().appendChild(w.item);
+			item.appendChild(ul.getElement()); 
+		} else
+		{
+			item.getFirstChild().appendChild(w.item);
 		}
 		
-		return menuItem;
+		children.add(w);
+	}
+
+	public void clear() 
+	{
+		item.removeFromParent();
+		children.clear();
+	}
+
+	public void remove(MenuItem w) 
+	{
+		w.item.removeFromParent();
+		children.remove(w);
 	}
 
 	public ArrayList<MenuItem> getChildren() 
@@ -137,13 +99,18 @@ class MenuItem
 		return children;
 	}
 
-	public Element getLIElement() 
-	{
-		return liElement;
-	}
-
 	public Widget getWidget() 
 	{
 		return widget;
+	}
+	
+	public void addClass(String className)
+	{
+		item.addClassName(className);
+	}
+	
+	public void removeClass(String className)
+	{
+		item.removeClassName(className);
 	}
 }

@@ -21,14 +21,14 @@ import com.google.gwt.user.client.DOM;
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-public class ListItem extends AbstractListItem 
+public class UnorderedList extends AbstractList 
 {
-	public ListItem() 
+	public UnorderedList() 
 	{
 		super();
 	}
 	
-	public ListItem(String className) 
+	public UnorderedList(String className) 
 	{
 		super();
 		this.className = className;
@@ -37,12 +37,12 @@ public class ListItem extends AbstractListItem
 	@Override
 	protected void setElement() 
 	{
-		setElement(DOM.createElement("li"));
+		setElement(DOM.createElement("ul"));	
 	}
 
 	@Override
 	protected String getDefaultClassName() 
 	{
-		return "faces-li";
+		return "faces-ul";
 	}
 }

@@ -19,9 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.cruxframework.crux.core.client.screen.Screen;
-import org.cruxframework.crux.smartfaces.client.list.ListItem;
-import org.cruxframework.crux.smartfaces.client.list.OrderedList;
-import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.user.client.ui.Composite;
@@ -31,23 +28,22 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * A cross device menu
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
- * @autor Claudio Holanda (claudio.junior@cruxframework.org)
+ * @author Claudio Holanda (claudio.junior@cruxframework.org)
  *
  */
 public class Menu extends Composite implements MenuWidget 
 {
+	private static final String STYLE_FACES_COLAPSED = "faces-colapsed";
 	private Type currentType;
 	private Orientation currentOrientation;
 	private boolean enabled = true;
 
-	private NavPanel menu;
-	private MenuItem root;
+	private MenuItem root = new MenuItem();
 	
 	public Menu(Orientation orientation, Type type)
 	{
-		menu = new NavPanel();
-		menu.asWidget().setStyleName("faces-Menu");
-		initWidget(menu);
+		root.getWidget().asWidget().setStyleName("faces-Menu");
+		initWidget(root.getWidget());
 
 		setType(type);
 		setOrientation(orientation);
@@ -64,20 +60,17 @@ public class Menu extends Composite implements MenuWidget
 		return false;
 	}
 
-	//OK
 	@Override
 	public void setAnimationEnabled(boolean enable) 
 	{
 	}
 
-	//OK
 	@Override
 	public boolean isEnabled() 
 	{
 		return enabled;
 	}
 
-	//OK
 	@Override
 	public void setEnabled(boolean enabled) 
 	{
@@ -96,7 +89,6 @@ public class Menu extends Composite implements MenuWidget
 		}
 	}
 
-	//OK
 	@Override
 	public void add(Widget w) 
 	{
@@ -108,11 +100,11 @@ public class Menu extends Composite implements MenuWidget
 	{
 		if(this.root == null)
 		{
+			this.root = new MenuItem();
 			return;
 		}
-		
-		this.root.getLIElement().removeFromParent();
-		this.root = new MenuItem(menu, true);
+		this.root.clear();
+		this.root = new MenuItem();
 	}
 
 	@Override
@@ -135,22 +127,10 @@ public class Menu extends Composite implements MenuWidget
 		return widgets.iterator();
 	}
 
-	//OK
 	@Override
 	public boolean remove(Widget w) 
 	{
 		return removeItem(w);
-	}
-
-	@Override
-	public boolean getWordWrap() 
-	{
-		return false;
-	}
-
-	@Override
-	public void setWordWrap(boolean wrap) 
-	{
 	}
 
 	@Override
@@ -196,20 +176,38 @@ public class Menu extends Composite implements MenuWidget
 		{
 		case SLIDE:
 			addStyleName("faces-slide");
-			removeStyleName("faces-stack");
+			
+			removeStyleName("faces-accordion");
 			removeStyleName("faces-tree");
+			removeStyleName("faces-dropdown");
+			
 			Roles.getSliderRole().set(getElement());
 			break;
-		case STACK:
+		case ACCORDION:
+			addStyleName("faces-accordion");
+			
 			removeStyleName("faces-slide");
-			addStyleName("faces-stack");
 			removeStyleName("faces-tree");
+			removeStyleName("faces-dropdown");
+			
 			Roles.getListRole().set(getElement());
 			break;
 		case TREE:
-			removeStyleName("faces-slide");
-			removeStyleName("faces-stack");
 			addStyleName("faces-tree");
+			
+			removeStyleName("faces-slide");
+			removeStyleName("faces-accordion");
+			removeStyleName("faces-dropdown");
+			
+			Roles.getTreeRole().set(getElement());
+			break;
+		case DROPDOWN:
+			addStyleName("faces-dropdown");
+			
+			removeStyleName("faces-slide");
+			removeStyleName("faces-accordion");
+			removeStyleName("faces-tree");
+			
 			Roles.getTreeRole().set(getElement());
 			break;
 		default:
@@ -220,102 +218,76 @@ public class Menu extends Composite implements MenuWidget
 	}
 
 	@Override
-	public int addItem(Widget widget) 
+	public MenuItem addItem(Widget widget) 
 	{
-		return addItem(0, widget);
+		return addItem(null, widget);
 	}
 
 	@Override
-	public int addItem(int key, Widget item) 
+	public MenuItem addItem(MenuItem placeToInsert, Widget item) 
 	{
-		if(this.root == null)
+		if(placeToInsert == null)
 		{
-			this.root = new MenuItem(this.menu, true);
+			placeToInsert = this.root;
 		}
-		MenuItem placeToInsert = MenuUtils.findInMenu(this.root, key);
 		
-		//insert LI as the next child
-		if(placeToInsert.getChildren() != null && !placeToInsert.getChildren().isEmpty())
-		{
-			MenuItem myItem = new MenuItem(item);
-			if(placeToInsert.isRoot())
-			{
-				placeToInsert.getLIElement().getFirstChild().appendChild(myItem.getLIElement());	
-			} else
-			{
-				placeToInsert.getLIElement().getLastChild().appendChild(myItem.getLIElement());
-			}
-			placeToInsert.add(myItem);
-			return myItem.hashCode();
-		} 
-		//insert UL as the next child
-		else 
-		{
-			OrderedList ul = new OrderedList();
-			ListItem li = new ListItem();
-			li.setStyleName("faces-li");
-			li.getElement().appendChild(item.getElement());
-			ul.add(li);
-			
-			MenuItem myItem = new MenuItem(ul, item);
-			placeToInsert.add(myItem);
-			placeToInsert.getLIElement().appendChild(ul.getElement());	
-			return myItem.hashCode();
-		}
+		MenuItem w = new MenuItem(item);
+		placeToInsert.add(w);
+		return w;
 	}
 
 	@Override
 	public boolean removeItem(Widget root) 
 	{
-		MenuItem removed = MenuUtils.removeItem(this.root, root);
+		MenuItem found = MenuUtils.findInMenu(this.root, root);
 		
-		if(removed == null)
+		if(found == null)
 		{
 			return false;
 		}
+		
+		found.clear();
 		
 		return true;
 	}
 
 	@Override
-	public Widget removeItem(int key) 
+	public MenuItem removeItem(int key) 
 	{
-		MenuItem removed = MenuUtils.removeItem(this.root, key);
+		MenuItem found = MenuUtils.findInMenu(this.root, key);
 		
-		if(removed == null)
+		if(found == null)
 		{
 			return null;
 		}
 		
-		return removed.getWidget();
+		found.clear();
+		
+		return found;
 	}
 
-	//OK
 	@Override
 	public void collapseAll() 
 	{
-		MenuUtils.addOrRemoveClass("faces-colapsed", true, MenuUtils.getAllMenuItems(this.root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_COLAPSED, true, MenuUtils.getAllMenuItems(this.root));
 	}
 
-	//OK
 	@Override
 	public void collapse(Widget root) 
 	{
-		MenuUtils.addOrRemoveClass("faces-colapsed", true, MenuUtils.findInMenu(this.root, root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_COLAPSED, true, MenuUtils.findInMenu(this.root, root));
 	}
 
-	//OK
 	@Override
 	public void expandAll() 
 	{
-		MenuUtils.addOrRemoveClass("faces-colapsed", false, MenuUtils.getAllMenuItems(this.root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_COLAPSED, false, MenuUtils.getAllMenuItems(this.root));
 	}
 
-	//OK
 	@Override
 	public void expand(Widget root) 
 	{
-		MenuUtils.addOrRemoveClass("faces-colapsed", false, MenuUtils.findInMenu(this.root, root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_COLAPSED, false, MenuUtils.findInMenu(this.root, root));
 	}
 
 	public Orientation getCurrentOrientation() 
