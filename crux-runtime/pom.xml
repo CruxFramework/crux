@@ -6,11 +6,11 @@
 	<version>5.1.0-SNAPSHOT</version>
 	<description>Runtime components of Crux Core</description>
 
-    <parent>
-        <groupId>org.cruxframework</groupId>
-        <artifactId>crux-core</artifactId>
-        <version>1.0.0</version>
-    </parent>
+	<parent>
+		<groupId>org.cruxframework</groupId>
+		<artifactId>crux-core</artifactId>
+		<version>5.1.0</version>
+	</parent>
 	
 	<dependencies>
 		<dependency>

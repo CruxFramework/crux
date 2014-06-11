@@ -7,10 +7,10 @@
 	<description>Crux Core - Development components</description>
 
 	<parent>
-        <groupId>org.cruxframework</groupId>
-        <artifactId>crux-core</artifactId>
-        <version>1.0.0</version>
-    </parent>
+		<groupId>org.cruxframework</groupId>
+		<artifactId>crux-core</artifactId>
+		<version>5.1.0</version>
+	</parent>
 
 	<dependencies>
 		<dependency>
@@ -34,10 +34,10 @@
 			<version>2.5.1</version>
 		</dependency>
 		<dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-servlet</artifactId>
-            <version>2.5.1</version>
-        </dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<version>2.5.1</version>
+		</dependency>
 	</dependencies>
 
 </project>
