@@ -27,6 +27,6 @@ import com.google.gwt.resources.client.CssResource;
 @Resource(value="smartFacesResources", supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch})
 public interface SmartFacesResourcesSmall extends ClientBundle
 {
-	@Source({"../common/smartFacesCommon.css","smartFacesSmall.css"})
+	@Source({"org/cruxframework/crux/smartfaces/themes/client/common/smartFacesCommon.css","smartFacesSmall.css"})
 	CssResource css();
 }
