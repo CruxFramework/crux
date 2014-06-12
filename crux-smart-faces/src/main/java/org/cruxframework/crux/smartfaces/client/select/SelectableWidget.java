@@ -30,13 +30,12 @@ import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class SelectableWidget extends Composite implements HasSelectHandlers, IsWidget
+public abstract class SelectableWidget extends Composite implements HasSelectHandlers
 {
 	protected SelectEventsHandler selectEventsHandler;
 	
