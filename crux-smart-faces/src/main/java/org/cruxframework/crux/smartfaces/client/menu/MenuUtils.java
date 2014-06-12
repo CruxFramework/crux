@@ -15,9 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.menu;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import org.cruxframework.crux.core.client.collection.FastList;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Widget;
@@ -34,21 +32,16 @@ class MenuUtils
 	 * @param menuItem
 	 * @return
 	 */
-	public static ArrayList<MenuItem> getAllMenuItems(MenuItem menuItem)
+	public static FastList<MenuItem> getAllMenuItems(MenuItem menuItem)
 	{
-		Set<MenuItem> ans = new HashSet<MenuItem>();
+		FastList<MenuItem> ans = new FastList<MenuItem>();
 		
-		Set<MenuItem> ansFound = getAllMenuItems(menuItem, ans);
+		FastList<MenuItem> ansFound = getAllMenuItems(menuItem, ans);
 		
-		if(ansFound == null)
-		{
-			return null;
-		}
-		
-		return new ArrayList<MenuItem>(ansFound);
+		return ansFound;
 	}
 	
-	private static Set<MenuItem> getAllMenuItems(MenuItem menuItem, Set<MenuItem> found) 
+	private static FastList<MenuItem> getAllMenuItems(MenuItem menuItem, FastList<MenuItem> found) 
 	{
 		if(menuItem == null)
 		{
@@ -62,12 +55,15 @@ class MenuUtils
 			return found;
 		}
 		
-		for(MenuItem childrenMenuItem : menuItem.getChildren())
+		for(int i=0;i<menuItem.getChildren().size();i++)
 		{
-			Set<MenuItem> foundTypesInMenu = findHasEnabledInMenu(childrenMenuItem, found);
+			FastList<MenuItem> foundTypesInMenu = findHasEnabledInMenu(menuItem.getChildren().get(i), found);
 			if(foundTypesInMenu != null)
 			{
-				found.addAll(foundTypesInMenu);
+				for(int j=0;i<foundTypesInMenu.size();j++)
+				{
+					found.add(foundTypesInMenu.get(j));	
+				}
 			}
 		}
 		
@@ -78,28 +74,23 @@ class MenuUtils
 	 * @param menuItem
 	 * @return
 	 */
-	public static ArrayList<MenuItem> findHasEnabledInMenu(MenuItem menuItem)
+	public static FastList<MenuItem> findHasEnabledInMenu(MenuItem menuItem)
 	{
-		Set<MenuItem> ans = new HashSet<MenuItem>();
+		FastList<MenuItem> ans = new FastList<MenuItem>();
 		
-		Set<MenuItem> ansFound = findHasEnabledInMenu(menuItem, ans);
+		FastList<MenuItem> ansFound = findHasEnabledInMenu(menuItem, ans);
 		
-		if(ansFound == null)
-		{
-			return null;
-		}
-		
-		return new ArrayList<MenuItem>(ansFound);
+		return ansFound;
 	}
 	
-	private static Set<MenuItem> findHasEnabledInMenu(MenuItem menuItem, Set<MenuItem> found) 
+	private static FastList<MenuItem> findHasEnabledInMenu(MenuItem menuItem, FastList<MenuItem> found) 
 	{
 		if(menuItem == null)
 		{
 			return found;
 		}
 		
-		if(menuItem.getWidget() instanceof HasEnabled)
+		if(menuItem.getItemWidget() instanceof HasEnabled)
 		{
 			found.add(menuItem);
 		}
@@ -109,12 +100,15 @@ class MenuUtils
 			return found;
 		}
 		
-		for(MenuItem childrenMenuItem : menuItem.getChildren())
+		for(int i=0;i<menuItem.getChildren().size();i++)
 		{
-			Set<MenuItem> foundTypesInMenu = findHasEnabledInMenu(childrenMenuItem, found);
+			FastList<MenuItem> foundTypesInMenu = findHasEnabledInMenu(menuItem.getChildren().get(i), found);
 			if(foundTypesInMenu != null)
 			{
-				found.addAll(foundTypesInMenu);
+				for(int j=0; j<foundTypesInMenu.size(); j++)
+				{
+					found.add(foundTypesInMenu.get(j));	
+				}
 			}
 		}
 		
@@ -133,7 +127,7 @@ class MenuUtils
 			return null;
 		}
 		
-		if(menuItem.getWidget() != null && menuItem.getWidget().equals(widget))
+		if(menuItem.getItemWidget() != null && menuItem.getItemWidget().equals(widget))
 		{
 			return menuItem;
 		}
@@ -143,9 +137,9 @@ class MenuUtils
 			return null;
 		}
 		
-		for(MenuItem childrenMenuItem : menuItem.getChildren())
+		for(int i=0; i<menuItem.getChildren().size();i++)
 		{
-			MenuItem found = findInMenu(childrenMenuItem, widget);
+			MenuItem found = findInMenu(menuItem.getChildren().get(i), widget);
 			if(found != null)
 			{
 				return found;
@@ -177,9 +171,9 @@ class MenuUtils
 			return null;
 		}
 		
-		for(MenuItem childrenMenuItem : menuItem.getChildren())
+		for(int i=0; i<menuItem.getChildren().size();i++)
 		{
-			MenuItem found = findInMenu(childrenMenuItem, key);
+			MenuItem found = findInMenu(menuItem.getChildren().get(i), key);
 			if(found != null)
 			{
 				return found;
@@ -200,7 +194,7 @@ class MenuUtils
 		{
 			return;
 		}
-		ArrayList<MenuItem> items = new ArrayList<MenuItem>();
+		FastList<MenuItem> items = new FastList<MenuItem>();
 		items.add(menuItem);
 		
 		addOrRemoveClass(className, apply, items);
@@ -211,20 +205,21 @@ class MenuUtils
 	 * @param apply
 	 * @param menuItems
 	 */
-	public static void addOrRemoveClass(String className, boolean apply, ArrayList<MenuItem> menuItems) 
+	public static void addOrRemoveClass(String className, boolean apply, FastList<MenuItem> menuItems) 
 	{
 		if(menuItems == null)
 		{
 			return;
 		}
-		for(MenuItem menuItem : menuItems)
+		
+		for(int i=0; i<menuItems.size(); i++)
 		{
 			if(apply)
 			{
-				menuItem.addClass(className);
+				menuItems.get(i).addClass(className);
 			} else
 			{
-				menuItem.removeClass(className);
+				menuItems.get(i).removeClass(className);
 			}
 		}
 	}

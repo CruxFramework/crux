@@ -15,26 +15,26 @@
  */
 package org.cruxframework.crux.smartfaces.client.menu;
 
-import java.util.ArrayList;
-
-import org.cruxframework.crux.smartfaces.client.list.ListItem;
+import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.smartfaces.client.list.UnorderedList;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
-import org.cruxframework.crux.smartfaces.client.select.SelectableWidget;
 
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A cross device menu item
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  */
-public class MenuItem extends SelectableWidget
+public class MenuItem extends UIObject
 {
 	private Element item;
-	private Widget widget;
-	private MenuItem parentItem;
-	private ArrayList<MenuItem> children;
+	private Widget itemWidget;
+	private MenuItem itemParent;
+	private FastList<MenuItem> children;
 	private boolean root;
 	
 	public boolean isRoot()
@@ -47,32 +47,37 @@ public class MenuItem extends SelectableWidget
 		this(null);
 	}
 	
-	public MenuItem(Widget widget)
+	public MenuItem(Widget itemWidget)
 	{
-		if(widget == null)
+		if(itemWidget == null)
 		{
+			FlowPanel fp = new FlowPanel();
 			NavPanel navPanel = new NavPanel();
+			fp.add(navPanel);
 			this.root = true;
-			this.widget = navPanel;
+			this.itemWidget = navPanel;
 			this.item = navPanel.getElement();
 			
 			return;
 		}
 		
-		this.widget = widget;
-		ListItem li = new ListItem();
-		li.add(widget);
-		this.item = li.getElement();
+		this.itemWidget = itemWidget;
+
+		//This is only here because Thiago doesn't allow me to expose ListItem class !!!!!!!!!!!!!! 
+		Element li = DOM.createElement("li");
+		li.setClassName("faces-li");
+		li.appendChild(itemWidget.getElement());
+		this.item = li;
 	}
 
 	public void add(MenuItem menuItem) 
 	{
 		if(children == null)
 		{
-			children = new ArrayList<MenuItem>();
+			children = new FastList<MenuItem>();
 		}
 		
-		if(children.isEmpty())
+		if(children.size() <= 0)
 		{
 			UnorderedList ul = new UnorderedList();
 			ul.getElement().appendChild(menuItem.item);
@@ -81,7 +86,7 @@ public class MenuItem extends SelectableWidget
 		{
 			item.getFirstChild().appendChild(menuItem.item);
 		}
-		menuItem.parentItem = menuItem; 
+		menuItem.itemParent = menuItem; 
 		children.add(menuItem);
 	}
 
@@ -97,14 +102,14 @@ public class MenuItem extends SelectableWidget
 		children.remove(w);
 	}
 
-	public ArrayList<MenuItem> getChildren() 
+	public FastList<MenuItem> getChildren() 
 	{
 		return children;
 	}
 
-	public Widget getWidget() 
+	public Widget getItemWidget() 
 	{
-		return widget;
+		return itemWidget;
 	}
 	
 	public void addClass(String className)
@@ -119,6 +124,6 @@ public class MenuItem extends SelectableWidget
 
 	public MenuItem getParentItem() 
 	{
-		return parentItem;
+		return itemParent;
 	}
 }

@@ -21,7 +21,7 @@ import com.google.gwt.user.client.DOM;
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-public class ListItem extends AbstractListItem 
+class ListItem extends AbstractListItem 
 {
 	public ListItem() 
 	{

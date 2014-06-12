@@ -18,11 +18,15 @@ package org.cruxframework.crux.smartfaces.client.menu;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.screen.Screen;
 
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.HasVisibility;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -31,16 +35,32 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Claudio Holanda (claudio.junior@cruxframework.org)
  *
  */
-public class Menu extends Composite implements MenuWidget 
+public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisibility, HasWidgets 
 {
-	private static final String STYLE_FACES_SLIDE = "faces-slide";
-	private static final String STYLE_FACES_DROPDOWN = "faces-dropdown";
-	private static final String STYLE_FACES_TREE = "faces-tree";
-	private static final String STYLE_FACES_ACCORDION = "faces-accordion";
-	private static final String STYLE_FACES_HORIZONTAL = "faces-horizontal";
-	private static final String STYLE_FACES_VERTICAL = "faces-vertical";
+	public static enum Orientation
+	{
+		VERTICAL,
+		HORIZONTAL;
+	}
+	
+	public static enum Type
+	{
+		TREE,
+		SLIDE,
+		ACCORDION,
+		DROPDOWN,
+		//...
+		;
+	}
+	
+	private static final String STYLE_FACES_SLIDE = "facesMenu-slide";
+	private static final String STYLE_FACES_DROPDOWN = "facesMenu-dropdown";
+	private static final String STYLE_FACES_TREE = "facesMenu-tree";
+	private static final String STYLE_FACES_ACCORDION = "facesMenu-accordion";
+	private static final String STYLE_FACES_HORIZONTAL = "facesMenu-horizontal";
+	private static final String STYLE_FACES_VERTICAL = "facesMenu-vertical";
 	private static final String STYLE_FACES_MENU = "faces-Menu";
-	private static final String STYLE_FACES_COLLAPSED = "faces-collapsed";
+	private static final String STYLE_FACES_COLLAPSED = "facesMenu-collapsed";
 	
 	private Type currentType;
 	private Orientation currentOrientation;
@@ -50,8 +70,8 @@ public class Menu extends Composite implements MenuWidget
 	
 	public Menu(Orientation orientation, Type type)
 	{
-		root.getWidget().asWidget().setStyleName(getBaseStyleName());
-		initWidget(root.getWidget());
+		root.getItemWidget().asWidget().setStyleName(getBaseStyleName());
+		initWidget(root.getItemWidget());
 
 		setType(type);
 		setOrientation(orientation);
@@ -84,16 +104,16 @@ public class Menu extends Composite implements MenuWidget
 	{
 		this.enabled = enabled;
 		
-		ArrayList<MenuItem> itemsWithEnabledProperty = MenuUtils.findHasEnabledInMenu(root);
+		FastList<MenuItem> itemsWithEnabledProperty = MenuUtils.findHasEnabledInMenu(root);
 		
 		if(itemsWithEnabledProperty == null)
 		{
 			return;
 		}
 		
-		for(MenuItem menuItem : itemsWithEnabledProperty)
+		for(int i=0; i<itemsWithEnabledProperty.size();i++)
 		{
-			((HasEnabled) menuItem.getWidget()).setEnabled(enabled);
+			((HasEnabled) itemsWithEnabledProperty.get(i).getItemWidget()).setEnabled(enabled);
 		}
 	}
 
@@ -118,7 +138,7 @@ public class Menu extends Composite implements MenuWidget
 	@Override
 	public Iterator<Widget> iterator() 
 	{
-		ArrayList<MenuItem> allMenuItems = MenuUtils.getAllMenuItems(this.root);
+		FastList<MenuItem> allMenuItems = MenuUtils.getAllMenuItems(this.root);
 		
 		if(allMenuItems == null)
 		{
@@ -127,9 +147,9 @@ public class Menu extends Composite implements MenuWidget
 		
 		ArrayList<Widget> widgets = new ArrayList<Widget>();
 		
-		for(MenuItem menuItem : allMenuItems)
+		for(int i=0; i<allMenuItems.size();i++)
 		{
-			widgets.add(menuItem.getWidget());
+			widgets.add(allMenuItems.get(i).getItemWidget());
 		}
 		
 		return widgets.iterator();
@@ -141,7 +161,9 @@ public class Menu extends Composite implements MenuWidget
 		return removeItem(w);
 	}
 
-	@Override
+	/**
+	 * Define the menu orientation.
+	 */
 	public void setOrientation(Orientation orientation) 
 	{
 		if(orientation == null)
@@ -166,7 +188,9 @@ public class Menu extends Composite implements MenuWidget
 		this.currentOrientation = orientation;
 	}
 
-	@Override
+	/**
+	 * Define how menu will be rendered inside page.
+	 */
 	public void setType(Type type) 
 	{
 		if(type == null)
@@ -225,13 +249,15 @@ public class Menu extends Composite implements MenuWidget
 		this.currentType = type;
 	}
 
-	@Override
+	/**
+	 * Adds a root item.
+	 * @return the inserted item key. 
+	 */
 	public MenuItem addItem(Widget widget) 
 	{
 		return addItem(null, widget);
 	}
 
-	@Override
 	public MenuItem addItem(MenuItem placeToInsert, Widget item) 
 	{
 		if(placeToInsert == null)
@@ -244,7 +270,6 @@ public class Menu extends Composite implements MenuWidget
 		return w;
 	}
 
-	@Override
 	public boolean removeItem(Widget root) 
 	{
 		MenuItem found = MenuUtils.findInMenu(this.root, root);
@@ -259,7 +284,6 @@ public class Menu extends Composite implements MenuWidget
 		return true;
 	}
 
-	@Override
 	public MenuItem removeItem(int key) 
 	{
 		MenuItem found = MenuUtils.findInMenu(this.root, key);
@@ -274,25 +298,21 @@ public class Menu extends Composite implements MenuWidget
 		return found;
 	}
 
-	@Override
 	public void collapseAll() 
 	{
 		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, true, MenuUtils.getAllMenuItems(this.root));
 	}
 
-	@Override
 	public void collapse(Widget root) 
 	{
 		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, true, MenuUtils.findInMenu(this.root, root));
 	}
 
-	@Override
 	public void expandAll() 
 	{
 		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, false, MenuUtils.getAllMenuItems(this.root));
 	}
 
-	@Override
 	public void expand(Widget root) 
 	{
 		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, false, MenuUtils.findInMenu(this.root, root));
