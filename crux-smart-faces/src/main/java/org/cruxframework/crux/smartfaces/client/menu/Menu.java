@@ -53,14 +53,18 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 		;
 	}
 	
-	private static final String STYLE_FACES_SLIDE = "facesMenu-slide";
-	private static final String STYLE_FACES_DROPDOWN = "facesMenu-dropdown";
-	private static final String STYLE_FACES_TREE = "facesMenu-tree";
-	private static final String STYLE_FACES_ACCORDION = "facesMenu-accordion";
-	private static final String STYLE_FACES_HORIZONTAL = "facesMenu-horizontal";
-	private static final String STYLE_FACES_VERTICAL = "facesMenu-vertical";
-	private static final String STYLE_FACES_MENU = "faces-Menu";
-	private static final String STYLE_FACES_COLLAPSED = "facesMenu-collapsed";
+	protected static final String STYLE_FACES_MENU = "faces-Menu";
+	protected static final String STYLE_FACES_SLIDE = "facesMenu-slide";
+	protected static final String STYLE_FACES_DROPDOWN = "facesMenu-dropdown";
+	protected static final String STYLE_FACES_TREE = "facesMenu-tree";
+	protected static final String STYLE_FACES_ACCORDION = "facesMenu-accordion";
+	protected static final String STYLE_FACES_HORIZONTAL = "facesMenu-horizontal";
+	protected static final String STYLE_FACES_VERTICAL = "facesMenu-vertical";
+	protected static final String STYLE_FACES_COLLAPSED = "facesMenu-collapsed";
+	protected static final String STYLE_FACES_HAS_CHILDREN = "facesMenu-hasChildren";
+	protected static final String STYLE_FACES_EMPTY = "facesMenu-empty";
+	protected static final String STYLE_FACES_LI = "facesMenu-li";
+	protected static final String STYLE_FACES_UL = "facesMenu-ul";
 	
 	private Type currentType;
 	private Orientation currentOrientation;
@@ -303,9 +307,9 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, true, MenuUtils.getAllMenuItems(this.root));
 	}
 
-	public void collapse(Widget root) 
+	public void collapse(MenuItem menuItem) 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, true, MenuUtils.findInMenu(this.root, root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, true, menuItem);
 	}
 
 	public void expandAll() 
@@ -313,9 +317,9 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, false, MenuUtils.getAllMenuItems(this.root));
 	}
 
-	public void expand(Widget root) 
+	public void expand(MenuItem menuItem) 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, false, MenuUtils.findInMenu(this.root, root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, false, menuItem);
 	}
 
 	public Orientation getCurrentOrientation() 

@@ -67,7 +67,7 @@ public class MenuItem extends UIObject
 
 		//This is only here because Thiago doesn't allow me to expose ListItem class !!!!!!!!!!!!!! 
 		Element li = DOM.createElement("li");
-		li.setClassName("faces-li");
+		li.setClassName(Menu.STYLE_FACES_LI);
 		li.appendChild(itemWidget.getElement());
 		this.item = li;
 	}
@@ -81,7 +81,7 @@ public class MenuItem extends UIObject
 		
 		if(children.size() <= 0)
 		{
-			UnorderedList ul = new UnorderedList();
+			UnorderedList ul = new UnorderedList(Menu.STYLE_FACES_UL);
 			ul.getElement().appendChild(menuItem.item);
 			item.appendChild(ul.getElement());
 		} else
@@ -90,6 +90,14 @@ public class MenuItem extends UIObject
 		}
 		menuItem.itemParent = menuItem; 
 		children.add(menuItem);
+		
+		if(!root)
+		{
+			item.addClassName(Menu.STYLE_FACES_HAS_CHILDREN);
+		} else
+		{
+			item.removeClassName(Menu.STYLE_FACES_EMPTY);
+		}
 	}
 
 	public void clear() 
@@ -102,6 +110,16 @@ public class MenuItem extends UIObject
 	{
 		w.item.removeFromParent();
 		children.remove(w);
+		if(children.size() <= 0)
+		{
+			if(!root)
+			{
+				item.removeClassName(Menu.STYLE_FACES_HAS_CHILDREN);
+			} else
+			{
+				item.addClassName(Menu.STYLE_FACES_EMPTY);
+			}
+		}
 	}
 
 	public FastList<MenuItem> getChildren() 

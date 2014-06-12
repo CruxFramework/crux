@@ -57,14 +57,7 @@ class MenuUtils
 		
 		for(int i=0;i<menuItem.getChildren().size();i++)
 		{
-			FastList<MenuItem> foundTypesInMenu = findHasEnabledInMenu(menuItem.getChildren().get(i), found);
-			if(foundTypesInMenu != null)
-			{
-				for(int j=0;i<foundTypesInMenu.size();j++)
-				{
-					found.add(foundTypesInMenu.get(j));	
-				}
-			}
+			findHasEnabledInMenu(menuItem.getChildren().get(i), found);
 		}
 		
 		return found;
@@ -102,14 +95,7 @@ class MenuUtils
 		
 		for(int i=0;i<menuItem.getChildren().size();i++)
 		{
-			FastList<MenuItem> foundTypesInMenu = findHasEnabledInMenu(menuItem.getChildren().get(i), found);
-			if(foundTypesInMenu != null)
-			{
-				for(int j=0; j<foundTypesInMenu.size(); j++)
-				{
-					found.add(foundTypesInMenu.get(j));	
-				}
-			}
+			findHasEnabledInMenu(menuItem.getChildren().get(i), found);
 		}
 		
 		return found;
