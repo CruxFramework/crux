@@ -33,7 +33,7 @@ public class MenuItem extends SelectableWidget
 {
 	private Element item;
 	private Widget widget;
-	private MenuItem parent;
+	private MenuItem parentItem;
 	private ArrayList<MenuItem> children;
 	private boolean root;
 	
@@ -55,6 +55,7 @@ public class MenuItem extends SelectableWidget
 			this.root = true;
 			this.widget = navPanel;
 			this.item = navPanel.getElement();
+			
 			return;
 		}
 		
@@ -75,12 +76,12 @@ public class MenuItem extends SelectableWidget
 		{
 			UnorderedList ul = new UnorderedList();
 			ul.getElement().appendChild(menuItem.item);
-			item.appendChild(ul.getElement()); 
+			item.appendChild(ul.getElement());
 		} else
 		{
 			item.getFirstChild().appendChild(menuItem.item);
 		}
-		menuItem.parent = menuItem; 
+		menuItem.parentItem = menuItem; 
 		children.add(menuItem);
 	}
 
@@ -116,8 +117,8 @@ public class MenuItem extends SelectableWidget
 		item.removeClassName(className);
 	}
 
-	public Widget getParent() 
+	public MenuItem getParentItem() 
 	{
-		return parent;
+		return parentItem;
 	}
 }

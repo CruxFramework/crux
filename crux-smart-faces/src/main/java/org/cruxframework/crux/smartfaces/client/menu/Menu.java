@@ -19,12 +19,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.cruxframework.crux.core.client.screen.Screen;
-import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
-import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
-import org.cruxframework.crux.smartfaces.client.select.SelectableWidget;
 
 import com.google.gwt.aria.client.Roles;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -34,7 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Claudio Holanda (claudio.junior@cruxframework.org)
  *
  */
-public class Menu extends SelectableWidget implements MenuWidget 
+public class Menu extends Composite implements MenuWidget 
 {
 	private static final String STYLE_FACES_SLIDE = "faces-slide";
 	private static final String STYLE_FACES_DROPDOWN = "faces-dropdown";
@@ -243,16 +240,6 @@ public class Menu extends SelectableWidget implements MenuWidget
 		}
 		
 		MenuItem w = new MenuItem(item);
-		
-		w.addSelectHandler(new SelectHandler() 
-		{
-			@Override
-			public void onSelect(SelectEvent event) 
-			{
-				Window.alert(event.getSource().toString());
-			}
-		});
-		
 		placeToInsert.add(w);
 		return w;
 	}
