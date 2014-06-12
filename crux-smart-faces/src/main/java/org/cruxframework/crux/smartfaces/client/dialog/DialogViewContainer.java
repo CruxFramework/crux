@@ -35,7 +35,6 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 {
 	private DialogBox dialog;
 	private FlowPanel contentPanel; 
-	private View innerView;
 	private boolean unloadViewOnClose;
 	
 	/**
@@ -429,7 +428,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public void center()
 	{
-		assert(innerView != null):"There is no View loaded into this container.";
+		assert(activeView != null):"There is no View loaded into this container.";
 		dialog.center();
 	}
 	
@@ -439,7 +438,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public View getView()
 	{
-		return innerView;
+		return activeView;
 	}
 	
 	/**
@@ -447,7 +446,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 */
 	public void show()
 	{
-		assert(innerView != null):"There is no View loaded into this container.";
+		assert(activeView != null):"There is no View loaded into this container.";
 		dialog.show();
 	}
 	
@@ -471,7 +470,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	{
 		if (unloadView)
 		{
-			if (!remove(innerView))
+			if (!remove(activeView))
 			{
 				return false;
 			}
@@ -484,12 +483,12 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	protected boolean doAdd(View view, boolean lazy, Object parameter)
 	{
 	    assert(views.isEmpty()):"DialogViewContainer can not contain more then one view";
-	    innerView = view;
+	    activeView = view;
 	    boolean added = super.doAdd(view, lazy, parameter);
 	    if (!added)
 	    {//During view creation, a widget can make a reference to Screen static methods... So, it is better to 
 	     // set rootView reference before widgets creation...	
-	    	innerView = null;
+	    	activeView = null;
 	    }
 		return added;
 	}
@@ -500,7 +499,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	    boolean removed = super.doRemove(view, skipEvents);
 	    if (removed)
 	    {
-	    	innerView = null;
+	    	activeView = null;
 	    }
 		return removed;
 	}
