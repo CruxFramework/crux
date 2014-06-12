@@ -22,6 +22,7 @@ import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -60,7 +61,8 @@ public class MenuItem extends UIObject
 			
 			return;
 		}
-		
+
+		RootPanel.get().add(itemWidget);
 		this.itemWidget = itemWidget;
 
 		//This is only here because Thiago doesn't allow me to expose ListItem class !!!!!!!!!!!!!! 

@@ -96,25 +96,25 @@ html
     horizontal
 */
 
-.faces-Menu.faces-tree.faces-horizontal
+.faces-Menu.facesMenu-tree.facesMenu-horizontal
 {
     width:100%;
 }
 
 
-.faces-Menu.faces-tree.faces-horizontal > .faces-ul > .faces-li
+.faces-Menu.facesMenu-tree.facesMenu-horizontal > .faces-ul > .faces-li
 {
     float:left;
     border-left:none;
     padding:10px 4%;
 }
 
-.faces-Menu.faces-tree.faces-horizontal > .faces-ul > .faces-li:first-child
+.faces-Menu.facesMenu-tree.facesMenu-horizontal > .faces-ul > .faces-li:first-child
 {
 	border-left:1px solid #ccc;
 }
 
-.faces-Menu.faces-tree.faces-horizontal .faces-li > .faces-ul
+.faces-Menu.facesMenu-tree.facesMenu-horizontal .faces-li > .faces-ul
 {
 	bottom:0;
 	left:0;
@@ -124,18 +124,18 @@ html
 	transform:translateY(100%);
 }
 
-.faces-Menu.faces-tree.faces-horizontal .faces-li:hover > .faces-ul
+.faces-Menu.facesMenu-tree.facesMenu-horizontal .faces-li:hover > .faces-ul
 {
 	display:block;
 	width:literal("calc(100% + 2px)");
 }
 
-.faces-Menu.faces-tree.faces-horizontal .faces-li .faces-ul .faces-li
+.faces-Menu.facesMenu-tree.facesMenu-horizontal .faces-li .faces-ul .faces-li
 {
 	float:none;
 }
 
-.faces-Menu.faces-tree.faces-horizontal .faces-li > .faces-ul .faces-li .faces-ul
+.faces-Menu.facesMenu-tree.facesMenu-horizontal .faces-li > .faces-ul .faces-li .faces-ul
 {
 	top:0;
 	right:0;
@@ -146,17 +146,17 @@ html
 	margin-top:-1px;
 }
 
-.faces-Menu.faces-tree.faces-horizontal .faces-li > .faces-ul .faces-li .faces-ul .faces-li
+.faces-Menu.facesMenu-tree.facesMenu-horizontal .faces-li > .faces-ul .faces-li .faces-ul .faces-li
 {
 	border-bottom:none;
 }
 
-.faces-Menu.faces-tree.faces-horizontal .faces-li > .faces-ul .faces-li .faces-ul .faces-li:last-child
+.faces-Menu.facesMenu-tree.facesMenu-horizontal .faces-li > .faces-ul .faces-li .faces-ul .faces-li:last-child
 {
 	border-bottom:1px solid #ccc;
 }
 
-.faces-Menu.faces-tree.faces-horizontal > .faces-ul > .faces-li.faces-hasChildren:after
+.faces-Menu.facesMenu-tree.facesMenu-horizontal > .faces-ul > .faces-li.faces-hasChildren:after
 {
 	content:'';
 	position: absolute;
@@ -170,7 +170,7 @@ html
 	border-bottom: 2px solid #808080;
 }
 
-.faces-Menu.faces-tree.faces-horizontal > .faces-ul > .faces-li .faces-li.faces-hasChildren:after
+.faces-Menu.facesMenu-tree.facesMenu-horizontal > .faces-ul > .faces-li .faces-li.faces-hasChildren:after
 {
 	content:'';
 	position: absolute;
@@ -188,21 +188,21 @@ html
     vertical
 */
 
-.faces-Menu.faces-tree.faces-vertical
+.faces-Menu.facesMenu-tree.facesMenu-vertical
 {
 	width:200px;
 }
 
-.faces-Menu.faces-tree.faces-vertical .faces-li{
+.faces-Menu.facesMenu-tree.facesMenu-vertical .faces-li{
 	border-bottom:none;
 }
 
-.faces-Menu.faces-tree.faces-vertical .faces-li:last-child
+.faces-Menu.facesMenu-tree.facesMenu-vertical .faces-li:last-child
 {
 	border-bottom:1px solid #ccc;
 }
 
-.faces-Menu.faces-tree.faces-vertical .faces-li .faces-ul
+.faces-Menu.facesMenu-tree.facesMenu-vertical .faces-li .faces-ul
 {
 	top:0;
 	right:0;
@@ -213,12 +213,12 @@ html
 	width:literal("calc(100% + 2px)");
 }
 
-.faces-Menu.faces-tree.faces-vertical .faces-li:hover > .faces-ul
+.faces-Menu.facesMenu-tree.facesMenu-vertical .faces-li:hover > .faces-ul
 {
 	display:block;
 }
 
-.faces-Menu.faces-tree.faces-vertical .faces-li.faces-hasChildren:after
+.faces-Menu.facesMenu-tree.facesMenu-vertical .faces-li.faces-hasChildren:after
 {
 	content:'';
 	position: absolute;
