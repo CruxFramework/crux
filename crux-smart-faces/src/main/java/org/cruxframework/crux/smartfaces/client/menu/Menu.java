@@ -44,6 +44,7 @@ public class Menu extends SelectableWidget implements MenuWidget
 	private static final String STYLE_FACES_VERTICAL = "faces-vertical";
 	private static final String STYLE_FACES_MENU = "faces-Menu";
 	private static final String STYLE_FACES_COLLAPSED = "faces-collapsed";
+	
 	private Type currentType;
 	private Orientation currentOrientation;
 	private boolean enabled = true;

@@ -33,7 +33,7 @@ public class MenuItem extends SelectableWidget
 {
 	private Element item;
 	private Widget widget;
-	private Widget parentWidget;
+	private MenuItem parent;
 	private ArrayList<MenuItem> children;
 	private boolean root;
 	
@@ -64,7 +64,7 @@ public class MenuItem extends SelectableWidget
 		this.item = li.getElement();
 	}
 
-	public void add(MenuItem w) 
+	public void add(MenuItem menuItem) 
 	{
 		if(children == null)
 		{
@@ -74,14 +74,14 @@ public class MenuItem extends SelectableWidget
 		if(children.isEmpty())
 		{
 			UnorderedList ul = new UnorderedList();
-			ul.getElement().appendChild(w.item);
+			ul.getElement().appendChild(menuItem.item);
 			item.appendChild(ul.getElement()); 
 		} else
 		{
-			item.getFirstChild().appendChild(w.item);
+			item.getFirstChild().appendChild(menuItem.item);
 		}
-		w.parentWidget = widget; 
-		children.add(w);
+		menuItem.parent = menuItem; 
+		children.add(menuItem);
 	}
 
 	public void clear() 
@@ -116,8 +116,8 @@ public class MenuItem extends SelectableWidget
 		item.removeClassName(className);
 	}
 
-	public Widget getParentWidget() 
+	public Widget getParent() 
 	{
-		return parentWidget;
+		return parent;
 	}
 }
