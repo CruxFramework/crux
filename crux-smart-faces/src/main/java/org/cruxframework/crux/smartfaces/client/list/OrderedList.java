@@ -25,13 +25,12 @@ public class OrderedList extends AbstractListItem
 {
 	public OrderedList() 
 	{
-		super();
+		super(null);
 	}
 	
 	public OrderedList(String className) 
 	{
-		super();
-		this.className = className;
+		super(className);
 	}
 	
 	@Override

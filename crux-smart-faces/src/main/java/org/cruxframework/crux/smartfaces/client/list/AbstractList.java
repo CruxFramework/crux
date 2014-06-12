@@ -29,24 +29,18 @@ abstract class AbstractList extends ComplexPanel
 
 	public AbstractList(String className) 
 	{
-		this();
+		setElement();
 		this.className = className;
+		if(!StringUtils.isEmpty(className) || !StringUtils.isEmpty(getDefaultClassName()))
+		{
+			getElement().setClassName(StringUtils.isEmpty(className) ? getDefaultClassName() : className);
+		}
 	}
 	
 	protected abstract void setElement();
 	
 	protected abstract String getDefaultClassName();
 	
-	public AbstractList() 
-	{
-		setElement();
-		
-		if(!StringUtils.isEmpty(className) || !StringUtils.isEmpty(getDefaultClassName()))
-		{
-			getElement().setClassName(StringUtils.isEmpty(className) ? getDefaultClassName() : className);
-		}
-	}
-
 	public void add(ListItem w) 
 	{
 		super.add(w, getElement());

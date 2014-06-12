@@ -30,24 +30,18 @@ abstract class AbstractListItem extends ComplexPanel
 
 	public AbstractListItem(String className) 
 	{
-		this();
+		setElement();
 		this.className = className;
+		if(!StringUtils.isEmpty(className) || !StringUtils.isEmpty(getDefaultClassName()))
+		{
+			getElement().setClassName(StringUtils.isEmpty(className) ? getDefaultClassName() : className);
+		}
 	}
 	
 	protected abstract void setElement();
 	
 	protected abstract String getDefaultClassName();
 	
-	public AbstractListItem() 
-	{
-		setElement();
-		
-		if(!StringUtils.isEmpty(className) || !StringUtils.isEmpty(getDefaultClassName()))
-		{
-			getElement().setClassName(StringUtils.isEmpty(className) ? getDefaultClassName() : className);
-		}
-	}
-
 	@Override
 	public void add(Widget w) 
 	{

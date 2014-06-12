@@ -25,13 +25,12 @@ public class UnorderedList extends AbstractList
 {
 	public UnorderedList() 
 	{
-		super();
+		super(null);
 	}
 	
 	public UnorderedList(String className) 
 	{
-		super();
-		this.className = className;
+		super(className);
 	}
 	
 	@Override

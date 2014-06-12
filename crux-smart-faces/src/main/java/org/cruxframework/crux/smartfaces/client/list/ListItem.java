@@ -25,13 +25,12 @@ class ListItem extends AbstractListItem
 {
 	public ListItem() 
 	{
-		super();
+		super(null);
 	}
 	
 	public ListItem(String className) 
 	{
-		super();
-		this.className = className;
+		super(className);
 	}
 	
 	@Override
