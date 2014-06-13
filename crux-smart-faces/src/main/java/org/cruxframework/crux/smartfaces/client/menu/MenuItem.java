@@ -95,6 +95,16 @@ public class MenuItem extends UIObject
 			item.removeClassName(Menu.STYLE_FACES_EMPTY);
 		}
 	}
+	
+	public void open()
+	{
+		MenuUtils.addOrRemoveClass(Menu.STYLE_FACES_open, true, this);
+	}
+	
+	public void close()
+	{
+		MenuUtils.addOrRemoveClass(Menu.STYLE_FACES_open, false, this);
+	}
 
 	public void clear() 
 	{

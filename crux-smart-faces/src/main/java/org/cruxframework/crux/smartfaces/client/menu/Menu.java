@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.smartfaces.client.label.Label;
 
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.user.client.ui.Composite;
@@ -262,23 +263,23 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 		return addItem(null, widget);
 	}
 
-//	/**
-//	 * Adds a view root item.
-//	 * @return the inserted item. 
-//	 */
-//	public MenuItem addViewItem(String label, ViewContainer viewContainer) 
-//	{
-//		return addItem(null, widget);
-//	}
-//	
-//	/**
-//	 * Adds a view item.
-//	 * @return the inserted item. 
-//	 */
-//	public MenuItem addViewItem(MenuItem placeToInsert, Widget item) 
-//	{
-//		return addItem(null, widget);
-//	}
+	/**
+	 * Adds a label root item.
+	 * @return the inserted item. 
+	 */
+	public MenuItem addItem(String labelText) 
+	{
+		return addItem(null, new Label(labelText));
+	}
+	
+	/**
+	 * Adds a label item.
+	 * @return the inserted item. 
+	 */
+	public MenuItem addItem(MenuItem placeToInsert, String labelText) 
+	{
+		return addItem(placeToInsert, new Label(labelText));
+	}
 	
 	public MenuItem addItem(MenuItem placeToInsert, Widget item) 
 	{
@@ -313,7 +314,12 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 
 	public void open(MenuItem menuItem) 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_open, true, menuItem);
+		if(menuItem == null)
+		{
+			return;
+		}
+		
+		menuItem.open();
 	}
 
 	public void closeAll() 
@@ -323,7 +329,12 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 
 	public void close(MenuItem menuItem) 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_open, false, menuItem);
+		if(menuItem == null)
+		{
+			return;
+		}
+		
+		menuItem.close();
 	}
 
 	public Orientation getCurrentOrientation() 
