@@ -43,6 +43,9 @@ public interface Crux
 	@DefaultServerMessage("org.cruxframework.crux.core.server.classpath.ClassPathResolverImpl")
 	String classPathResolver();
 	
+	@DefaultServerMessage("false")
+	String sendCruxViewNameOnClientRequests();
+
 	//TODO: Vintage Crux: Remove it!
 	@DefaultServerMessage("true")
 	String enableChildrenWindowsDebug();
@@ -97,7 +100,7 @@ public interface Crux
 	void setScanIgnoredPackages(String value);
 	void setScanAllowedLibs(String value);
 	void setScanIgnoredLibs(String value);
-	
+	void setSendCruxViewNameOnClientRequests(Boolean value);
 	
 	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.state.ClusteredResourceStateHandler")
 	String restServiceResourceStateHandler();
