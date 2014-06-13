@@ -30,9 +30,14 @@ import org.cruxframework.crux.core.client.rest.Callback;
 import org.cruxframework.crux.core.client.rest.RestError;
 import org.cruxframework.crux.core.client.rest.RestProxy;
 import org.cruxframework.crux.core.client.rest.RestProxy.UseJsonP;
+import org.cruxframework.crux.core.client.rpc.CruxRpcRequestBuilder;
 import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.core.client.screen.views.View;
+import org.cruxframework.crux.core.client.screen.views.ViewAware;
+import org.cruxframework.crux.core.client.screen.views.ViewBindable;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.server.rest.util.Encode;
@@ -88,6 +93,8 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 	protected String jsonPCallbackParam;
 	protected String jsonPFailureCallbackParam;
 	protected JsonPRestCreatorHelper jsonPRestCreatorHelper;
+	private JClassType viewBindableType;
+	private JClassType viewAwareType;
 
 	public CruxRestProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
 	{
@@ -95,6 +102,8 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		callbackType = context.getTypeOracle().findType(Callback.class.getCanonicalName());
 		restProxyType = context.getTypeOracle().findType(RestProxy.class.getCanonicalName());
 		javascriptObjectType = context.getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
+		viewBindableType = context.getTypeOracle().findType(ViewBindable.class.getCanonicalName());
+		viewAwareType = context.getTypeOracle().findType(ViewAware.class.getCanonicalName());
 		UseJsonP jsonP = baseIntf.getAnnotation(UseJsonP.class);
 		useJsonP = jsonP != null;
 		if (useJsonP)
@@ -130,6 +139,7 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		}
 		srcWriter.println("private String __hostPath;");
 		srcWriter.println("private static Logger __log = Logger.getLogger("+getProxyQualifiedName()+".class.getName());");
+		srcWriter.println("private String __view;");
 	}
 
 	@Override
@@ -144,8 +154,25 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 			generateWrapperMethod(methodInfo, srcWriter);
 		}
 		generateSetEndpointMethod(srcWriter);
+		generateViewBindableMethods(srcWriter);
 	}
 
+	protected void generateViewBindableMethods(SourcePrinter sourceWriter)
+    {
+		sourceWriter.println("public String getBoundCruxViewId(){");
+		sourceWriter.println("return this.__view;");
+		sourceWriter.println("}");
+		sourceWriter.println();
+		sourceWriter.println("public "+View.class.getCanonicalName()+" getBoundCruxView(){");
+		sourceWriter.println("return (this.__view!=null?"+View.class.getCanonicalName()+".getView(this.__view):null);");
+		sourceWriter.println("}");
+		sourceWriter.println();
+		sourceWriter.println("public void bindCruxView(String view){");
+		sourceWriter.println("this.__view = view;");
+		sourceWriter.println("}");
+		sourceWriter.println();
+    }
+	
 	protected void generateSetEndpointMethod(SourcePrinter srcWriter) 
 	{
 		srcWriter.println("public void setEndpoint(String address){");
@@ -181,7 +208,9 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		{
 			try
 			{
-				if (!restProxyType.equals(method.getEnclosingType()))
+				if ((!restProxyType.equals(method.getEnclosingType())) && 
+					(!viewAwareType.equals(method.getEnclosingType())) &&
+					(!viewBindableType.equals(method.getEnclosingType())))
 				{
 					validateProxyMethod(method);
 					RestMethodInfo methodInfo = getRestMethodInfo(method);
@@ -248,6 +277,12 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
     {
 	    srcWriter.println("RequestBuilder builder = new RequestBuilder(RequestBuilder."+methodInfo.httpMethod+", "+restURIParam+");");
 		setLocaleInfo(srcWriter, "builder");
+		
+		if (ConfigurationFactory.getConfigurations().sendCruxViewNameOnClientRequests().equals("true"))
+		{
+			srcWriter.println("builder.setHeader("+EscapeUtils.quote(CruxRpcRequestBuilder.VIEW_INFO_HEADER)+", __view);");
+		}
+		
 		srcWriter.println("builder.setCallback(new RequestCallback(){");
 
 		String responseVariable = getNonConflictedVarName("response", callbackParameter.getName());
@@ -494,7 +529,7 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 				AsyncCallback.class.getCanonicalName()
 		};
 	}
-
+	
 	protected void validateProxyMethod(JMethod method)
 	{
 		if (method.getReturnType() != JPrimitiveType.VOID) 
