@@ -21,7 +21,6 @@ import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
@@ -52,9 +51,7 @@ public class MenuItem extends UIObject
 	{
 		if(itemWidget == null)
 		{
-			FlowPanel fp = new FlowPanel();
 			NavPanel navPanel = new NavPanel();
-			fp.add(navPanel);
 			this.root = true;
 			this.itemWidget = navPanel;
 			this.item = navPanel.getElement();
