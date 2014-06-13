@@ -27,9 +27,11 @@ import org.cruxframework.crux.core.client.ioc.Inject;
 import org.cruxframework.crux.core.client.ioc.IoCResource.Scope;
 import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.ioc.IocProvider;
+import org.cruxframework.crux.core.client.rpc.CruxRpcRequestBuilder;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.views.ViewBindable;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.ioc.IoCException;
 import org.cruxframework.crux.core.ioc.IocConfig;
 import org.cruxframework.crux.core.ioc.IocConfigImpl;
@@ -49,6 +51,7 @@ import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 
 /**
@@ -126,7 +129,23 @@ public class IocContainerRebind extends AbstractProxyCreator
 			{
 				srcWriter.println(className+" result = _getScope(scope).getValue(new "+IocProvider.class.getCanonicalName()+"<"+className+">(){");
 				srcWriter.println("public "+className+" get(){");
-				srcWriter.println("return GWT.create("+getInstantiationClass(className)+".class);");
+				String instantiationClass = getInstantiationClass(className);
+				JClassType instantiationType = context.getTypeOracle().findType(instantiationClass);
+				if (instantiationType == null)
+				{
+					throw new CruxGeneratorException("Can not found type: "+instantiationClass);
+				}
+				if (instantiationType.isAssignableTo(remoteServiceType) && ConfigurationFactory.getConfigurations().sendCruxViewNameOnClientRequests().equals("true"))
+				{
+					srcWriter.println(className + " ret = GWT.create("+instantiationClass+".class);");
+					srcWriter.println("(("+ServiceDefTarget.class.getCanonicalName() + ")ret).setRpcRequestBuilder(new "
+							+ CruxRpcRequestBuilder.class.getCanonicalName() + "(getBoundCruxViewId()));");
+					srcWriter.println("return ret;");
+				}
+				else
+				{
+					srcWriter.println("return GWT.create("+instantiationClass+".class);");
+				}
 				srcWriter.println("}");
 				srcWriter.println("}, "+EscapeUtils.quote(className)+", subscope, ");
 				generateFieldsPopulationCallback(srcWriter, type);

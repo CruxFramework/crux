@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.cruxframework.crux.core.client.screen.views.ViewBindable;
 import org.cruxframework.crux.core.shared.rest.annotation.GET;
 import org.cruxframework.crux.core.shared.rest.annotation.PathParam;
 
@@ -86,7 +87,7 @@ import com.google.gwt.editor.client.Editor.Path;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface RestProxy
+public interface RestProxy extends ViewBindable
 {
 	/**
 	 * Set base endpoint address for rest services calls made by this proxy
