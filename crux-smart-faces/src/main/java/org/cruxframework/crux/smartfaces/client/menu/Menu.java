@@ -60,7 +60,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 	protected static final String STYLE_FACES_ACCORDION = "facesMenu-accordion";
 	protected static final String STYLE_FACES_HORIZONTAL = "facesMenu-horizontal";
 	protected static final String STYLE_FACES_VERTICAL = "facesMenu-vertical";
-	protected static final String STYLE_FACES_COLLAPSED = "facesMenu-collapsed";
+	protected static final String STYLE_FACES_open = "facesMenu-open";
 	protected static final String STYLE_FACES_HAS_CHILDREN = "facesMenu-hasChildren";
 	protected static final String STYLE_FACES_EMPTY = "facesMenu-empty";
 	protected static final String STYLE_FACES_LI = "facesMenu-li";
@@ -255,13 +255,31 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 
 	/**
 	 * Adds a root item.
-	 * @return the inserted item key. 
+	 * @return the inserted item. 
 	 */
 	public MenuItem addItem(Widget widget) 
 	{
 		return addItem(null, widget);
 	}
 
+//	/**
+//	 * Adds a view root item.
+//	 * @return the inserted item. 
+//	 */
+//	public MenuItem addViewItem(String label, ViewContainer viewContainer) 
+//	{
+//		return addItem(null, widget);
+//	}
+//	
+//	/**
+//	 * Adds a view item.
+//	 * @return the inserted item. 
+//	 */
+//	public MenuItem addViewItem(MenuItem placeToInsert, Widget item) 
+//	{
+//		return addItem(null, widget);
+//	}
+	
 	public MenuItem addItem(MenuItem placeToInsert, Widget item) 
 	{
 		if(placeToInsert == null)
@@ -288,38 +306,24 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 		return true;
 	}
 
-	public MenuItem removeItem(int key) 
+	public void openAll() 
 	{
-		MenuItem found = MenuUtils.findInMenu(this.root, key);
-		
-		if(found == null)
-		{
-			return null;
-		}
-		
-		found.clear();
-		
-		return found;
+		MenuUtils.addOrRemoveClass(STYLE_FACES_open, true, MenuUtils.getAllMenuItems(this.root));
 	}
 
-	public void collapseAll() 
+	public void open(MenuItem menuItem) 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, true, MenuUtils.getAllMenuItems(this.root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_open, true, menuItem);
 	}
 
-	public void collapse(MenuItem menuItem) 
+	public void closeAll() 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, true, menuItem);
+		MenuUtils.addOrRemoveClass(STYLE_FACES_open, false, MenuUtils.getAllMenuItems(this.root));
 	}
 
-	public void expandAll() 
+	public void close(MenuItem menuItem) 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, false, MenuUtils.getAllMenuItems(this.root));
-	}
-
-	public void expand(MenuItem menuItem) 
-	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_COLLAPSED, false, menuItem);
+		MenuUtils.addOrRemoveClass(STYLE_FACES_open, false, menuItem);
 	}
 
 	public Orientation getCurrentOrientation() 

@@ -65,7 +65,6 @@ public class MenuItem extends UIObject
 		RootPanel.get().add(itemWidget);
 		this.itemWidget = itemWidget;
 
-		//This is only here because Thiago doesn't allow me to expose ListItem class !!!!!!!!!!!!!! 
 		Element li = DOM.createElement("li");
 		li.setClassName(Menu.STYLE_FACES_LI);
 		li.appendChild(itemWidget.getElement());
