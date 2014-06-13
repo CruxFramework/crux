@@ -202,10 +202,10 @@ class MenuUtils
 		{
 			if(apply)
 			{
-				menuItems.get(i).addClass(className);
+				menuItems.get(i).addClassName(className);
 			} else
 			{
-				menuItems.get(i).removeClass(className);
+				menuItems.get(i).removeClassName(className);
 			}
 		}
 	}

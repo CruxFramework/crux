@@ -128,12 +128,12 @@ public class MenuItem extends UIObject
 		return itemWidget;
 	}
 	
-	public void addClass(String className)
+	public void addClassName(String className)
 	{
 		item.addClassName(className);
 	}
 	
-	public void removeClass(String className)
+	public void removeClassName(String className)
 	{
 		item.removeClassName(className);
 	}
