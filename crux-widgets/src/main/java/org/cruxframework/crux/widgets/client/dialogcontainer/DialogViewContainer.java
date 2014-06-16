@@ -37,7 +37,6 @@ public class DialogViewContainer extends SingleViewContainer
 	public static final String DEFAULT_STYLE_NAME = "crux-DialogViewContainer";
 	private DialogBox dialog;
 	private FlowPanel contentPanel; 
-	private View innerView;
 	private boolean unloadViewOnClose;
 	
 	/**
@@ -291,7 +290,7 @@ public class DialogViewContainer extends SingleViewContainer
 	 */
 	public void center()
 	{
-		assert(innerView != null):"There is no View loaded into this container.";
+		assert(getActiveView() != null):"There is no View loaded into this container.";
 		bindToDOM();
 		dialog.center();
 	}
@@ -302,7 +301,7 @@ public class DialogViewContainer extends SingleViewContainer
 	 */
 	public View getView()
 	{
-		return innerView;
+		return getActiveView();
 	}
 	
 	/**
@@ -310,7 +309,7 @@ public class DialogViewContainer extends SingleViewContainer
 	 */
 	public void openDialog()
 	{
-		assert(innerView != null):"There is no View loaded into this container.";
+		assert(getActiveView() != null):"There is no View loaded into this container.";
 		bindToDOM();
 		dialog.show();
 	}
@@ -335,7 +334,7 @@ public class DialogViewContainer extends SingleViewContainer
 	{
 		if (unloadView)
 		{
-			if (!remove(innerView))
+			if (!remove(getActiveView()))
 			{
 				return false;
 			}
@@ -349,12 +348,12 @@ public class DialogViewContainer extends SingleViewContainer
 	protected boolean doAdd(View view, boolean lazy, Object parameter)
 	{
 	    assert(views.isEmpty()):"DialogViewContainer can not contain more then one view";
-	    innerView = view;
+	    activeView = view;
 	    boolean added = super.doAdd(view, lazy, parameter);
 	    if (!added)
 	    {//During view creation, a widget can make a reference to Screen static methods... So, it is better to 
 	     // set rootView reference before widgets creation...	
-	    	innerView = null;
+	    	activeView = null;
 	    }
 		return added;
 	}
@@ -365,7 +364,7 @@ public class DialogViewContainer extends SingleViewContainer
 	    boolean removed = super.doRemove(view, skipEvents);
 	    if (removed)
 	    {
-	    	innerView = null;
+	    	activeView = null;
 	    }
 		return removed;
 	}
