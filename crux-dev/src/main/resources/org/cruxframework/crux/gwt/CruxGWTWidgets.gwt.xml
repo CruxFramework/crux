@@ -1,0 +1,3 @@
+<module>
+    <inherits name="org.cruxframework.crux.core.Crux"/>
+</module>
