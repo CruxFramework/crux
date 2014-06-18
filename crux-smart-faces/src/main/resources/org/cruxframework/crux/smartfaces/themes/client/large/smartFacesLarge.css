@@ -1,38 +1,5 @@
 @external *;
 
-BODY
-{
-	margin: 0px;
-	padding: 0px;
-	height: 100%;
-}
-DIV, TD, LABEL, SPAN, INPUT, BUTTON
-{
-	font-size: 16px;
-	font-family:OpenSans,Verdana,Helvetica,Arial,sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	outline: 0;
-}
-INPUT, BUTTON
-{
-	transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-	vertical-align: top;
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
-INPUT:focus, BUTTON:focus
-{
-	outline: 0;
-	border: solid 1px #66AFE9;
-	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
-}
-DIV, INPUT, BUTTON
-{
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-}
-
 /* --------------------   common for all dialogs  -----------------------*/
 .dragging, .unselectable *{
 	-moz-user-select: none;

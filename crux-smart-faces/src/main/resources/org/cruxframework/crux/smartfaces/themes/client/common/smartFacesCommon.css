@@ -52,11 +52,26 @@ ul
 	list-style:none;
 }
 
+html,body
+{
+	height:100%;
+}
+
 html
 {
     margin: 0px;
     padding: 0px;
-    height: 100%;
+}
+
+body
+{
+	margin: 0px;
+	padding: 0px;
+	font-family:Arial, Helvetica Neue, Helvetica, sans-serif;
+	font-size:13px;
+	color:#111;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 
