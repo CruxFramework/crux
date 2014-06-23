@@ -529,6 +529,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		if(lastEditingRow != null)
 		{
 			confirmLastEditedRowValues(lastEditingRow, getEditableColumns());
+			lastEditingRow.setEditMode(false);
 			fireRowEditEvent(lastEditingRow);
 		}
 	}
