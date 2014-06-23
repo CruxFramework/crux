@@ -111,8 +111,8 @@ public class Cell extends Composite
 				if(fireEvents && row.isEnabled())
 				{
 					grid.fireBeforeRowEditEvent(row);
+					((Grid)grid).makeEditable((DataRow) row, this);
 				}
-				((Grid)grid).makeEditable((DataRow) row, this);
 			}
 			
 			if(fireEvents && row.isEnabled())
