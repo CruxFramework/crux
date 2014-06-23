@@ -108,6 +108,26 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	 * @param movable if true, the window can be dragged
 	 * @param resizable if true, the window can be resized
 	 * @param closable if true, a close button will be present at to top of dialog box
+	 * @param width dialog box width
+	 * @param height dialog box height
+	 * @param left left position of the dialog box
+	 * @param top top position of the dialog box
+	 * @param modal if true, a modal dialog will be created
+	 * @param baseStyleName the dialog base CSS class name
+	 */
+	public static void show(String viewName, String viewId, boolean movable, boolean resizable, boolean closable, boolean modal, String width, String height, int left, int top, String baseStyleName, DialogAnimation animation)
+	{
+		DialogViewContainer container = createDialog(viewName, viewId, movable, resizable, closable, modal, baseStyleName, width, height, left, top, animation);
+		container.center();
+	}
+	
+	/**
+	 * Create a dialog container, load the given view into the container and open the dialog box. 
+	 * @param viewName name of the view to be opened
+	 * @param viewId ID to be used to identify the opened view
+	 * @param movable if true, the window can be dragged
+	 * @param resizable if true, the window can be resized
+	 * @param closable if true, a close button will be present at to top of dialog box
 	 * @param modal if true, a modal dialog will be created
 	 * @param baseStyleName the dialog base CSS class name
 	 * @param animation animates the dialog while showing or hiding
