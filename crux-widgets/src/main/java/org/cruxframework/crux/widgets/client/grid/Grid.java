@@ -651,6 +651,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			String key = editableColumns.get(i);
 			Widget widget = row.getWidget(key);
 			Object value = getEditorValue(widget);
+			
+			if(widget instanceof Label || value == null)
+			{
+				continue;
+			}
+			
 			if(!validate(key,value))
 			{
 				rollbackRowEdition(row);
@@ -663,6 +669,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			String key = editableColumns.get(i);
 			Widget widget = row.getWidget(key);
 			Object value = getEditorValue(widget);
+			
+			if(widget instanceof Label || value == null)
+			{
+				continue;
+			}
 
 			dataSource.setValue(value, key, row.getDataSourceRecord());
 		}
