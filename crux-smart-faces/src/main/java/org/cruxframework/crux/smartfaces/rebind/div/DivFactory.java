@@ -22,16 +22,15 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.gwt.rebind.ComplexPanelFactory;
+import org.cruxframework.crux.smartfaces.client.div.Div;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
-
-import com.google.gwt.user.client.ui.FlowPanel;
 
 /**
  * 
- * @author Thiago Bustamante
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="div", targetWidget=FlowPanel.class)
+@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="div", targetWidget=Div.class)
 @TagChildren({
 	@TagChild(DivFactory.WidgetContentProcessor.class)
 })

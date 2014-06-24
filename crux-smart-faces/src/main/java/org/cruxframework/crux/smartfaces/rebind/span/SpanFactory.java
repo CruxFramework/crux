@@ -27,7 +27,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 
 /**
  * 
- * @author Thiago Bustamante
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
 @DeclarativeFactory(library=Constants.LIBRARY_NAME, id="span", targetWidget=Span.class)
