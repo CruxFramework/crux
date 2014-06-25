@@ -18,6 +18,8 @@ package org.cruxframework.crux.core.client.dataprovider;
 import java.util.Comparator;
 import java.util.List;
 
+import org.cruxframework.crux.core.client.collection.Array;
+
 
 /**
  * A DataProvider is used to provide information to widgets that implements <code>HasDataProvider</code> interface, 
@@ -152,4 +154,10 @@ public interface DataProvider<E>
 	 * @param data
 	 */
 	void updateData(List<E> data);
+
+	/**
+	 * Method called to bind some data to the DataProvider
+	 * @param data
+	 */
+	void updateData(Array<E> data);
 }

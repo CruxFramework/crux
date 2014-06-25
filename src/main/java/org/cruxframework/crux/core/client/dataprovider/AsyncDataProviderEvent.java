@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.client.dataprovider;
 
 import java.util.List;
 
+import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.event.BaseEvent;
 
 /**
@@ -51,6 +52,11 @@ public class AsyncDataProviderEvent<T> extends BaseEvent<AsyncDataProvider<T>>
 	}
 
 	public void updateData(T[] data)
+	{
+		getSource().updateData(data);
+	}
+
+	public void updateData(Array<T> data)
 	{
 		getSource().updateData(data);
 	}

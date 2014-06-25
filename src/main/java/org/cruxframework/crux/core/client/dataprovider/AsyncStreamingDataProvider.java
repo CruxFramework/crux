@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataProviderRecordState;
 
 /**
@@ -301,6 +302,26 @@ public abstract class AsyncStreamingDataProvider<T> implements StreamingDataProv
 	@SuppressWarnings("unchecked")
     @Override
 	public void updateData(List<T> data)
+	{
+		if (data == null)
+		{
+			update(new DataProviderRecord[0]);
+		} 
+		else 
+		{
+			DataProviderRecord<T>[] ret = new DataProviderRecord[data.size()];
+			for (int i=0; i<data.size(); i++)
+			{
+				ret[i] = new DataProviderRecord<T>(this);
+				ret[i].setRecordObject(data.get(i));
+			}
+			update(ret);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+    @Override
+	public void updateData(Array<T> data)
 	{
 		if (data == null)
 		{
