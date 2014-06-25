@@ -87,7 +87,9 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 	@TagAttributeDeclaration(value="defaultSortingType", type=SortingType.class, defaultValue="ascending"),
 	@TagAttributeDeclaration(value="showRowDetailsIcon", type=Boolean.class, defaultValue="true"),
 	@TagAttributeDeclaration(value="freezeHeaders", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="caseSensitive", type=Boolean.class, defaultValue="false")
+	@TagAttributeDeclaration(value="caseSensitive", type=Boolean.class, defaultValue="false"),
+	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false")
+	
 })
 @TagAttributes({
 	@TagAttribute(value="dataSource", processor=GridFactory.DataSourceAttributeParser.class)
@@ -123,7 +125,7 @@ public class GridFactory extends WidgetCreator<WidgetCreatorContext>
             getStretchColumns(widgetElement)+", "+getHighlightRowOnMouseOver(widgetElement)+", "+
             getEmptyDataFilling(widgetElement)+", "+isFixedCellSize(widgetElement)+", "+getSortingColumn(widgetElement)+", "+
             getSortingType(widgetElement) + ", "+ rowDetailsCreator + ", "+ 
-            getShowRowDetailsIcon(widgetElement) + ", " + getFreezeHeaders(widgetElement) +", "+getCaseSensitive(widgetElement) + ");");
+            getShowRowDetailsIcon(widgetElement) + ", " + getFreezeHeaders(widgetElement) +", "+getCaseSensitive(widgetElement) + "," + getKeepEditorOnClickDisabledRows(widgetElement) + ");");
 	}
 	
 	private boolean getShowRowDetailsIcon(JSONObject gridElem) 
@@ -255,6 +257,22 @@ public class GridFactory extends WidgetCreator<WidgetCreatorContext>
 		if(autoLoad != null && autoLoad.trim().length() > 0)
 		{
 			return Boolean.parseBoolean(autoLoad);
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * @param gridElem
+	 * @return
+	 */
+	private boolean getKeepEditorOnClickDisabledRows(JSONObject gridElem)
+	{
+		String keepEditor = gridElem.optString("keepEditorOnClickDisabledRows");
+		
+		if(keepEditor != null && keepEditor.trim().length() > 0)
+		{
+			return Boolean.parseBoolean(keepEditor);
 		}
 		
 		return false;
@@ -590,8 +608,8 @@ public class GridFactory extends WidgetCreator<WidgetCreatorContext>
 	})
 	public static class WidgetColumnProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
 	
-	public static class WidgetProcessor extends AnyWidgetChildProcessor<WidgetCreatorContext>{}
 	
+	public static class WidgetProcessor extends AnyWidgetChildProcessor<WidgetCreatorContext>{}
 	@TagConstraints(tagName="rowDetails", maxOccurs="1", minOccurs="0")
 	@TagChildren({
 		@TagChild(value=WidgetProcessor.class, autoProcess=false)

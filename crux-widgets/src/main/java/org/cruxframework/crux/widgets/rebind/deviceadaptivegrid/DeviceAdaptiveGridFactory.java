@@ -61,7 +61,8 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 	@TagAttributeDeclaration(value="fixedCellSize", type=Boolean.class, defaultValue="false"),
 	@TagAttributeDeclaration(value="emptyDataFilling", type=String.class, defaultValue=" "),
 	@TagAttributeDeclaration(value="defaultSortingColumn", type=String.class),
-	@TagAttributeDeclaration(value="defaultSortingType", type=SortingType.class, defaultValue="ascending")
+	@TagAttributeDeclaration(value="defaultSortingType", type=SortingType.class, defaultValue="ascending"),
+	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false")
 })
 @TagAttributes({
 	@TagAttribute(value="dataSource", processor=DeviceAdaptiveGridFactory.DataSourceAttributeParser.class)
@@ -88,7 +89,7 @@ public class DeviceAdaptiveGridFactory extends WidgetCreator<WidgetCreatorContex
             getRowSelectionModel(widgetElement)+", "+getCellSpacing(widgetElement)+", "+getAutoLoad(widgetElement)+", "+
             getStretchColumns(widgetElement)+", "+getHighlightRowOnMouseOver(widgetElement)+", "+
             getEmptyDataFilling(widgetElement)+", "+isFixedCellSize(widgetElement)+", "+getSortingColumn(widgetElement)+", "+
-            getSortingType(widgetElement) + ");");
+            getSortingType(widgetElement) + ","+ getKeepEditorOnClickDisabledRows(widgetElement) + ");");
 	}
 
 	@TagChildren({
@@ -256,6 +257,22 @@ public class DeviceAdaptiveGridFactory extends WidgetCreator<WidgetCreatorContex
 				return Boolean.parseBoolean(autoLoad);
 			}
 
+			return false;
+		}
+		
+		/**
+		 * @param gridElem
+		 * @return
+		 */
+		private boolean getKeepEditorOnClickDisabledRows(JSONObject gridElem)
+		{
+			String keepEditor = gridElem.optString("keepEditorOnClickDisabledRows");
+			
+			if(keepEditor != null && keepEditor.trim().length() > 0)
+			{
+				return Boolean.parseBoolean(keepEditor);
+			}
+			
 			return false;
 		}
 
