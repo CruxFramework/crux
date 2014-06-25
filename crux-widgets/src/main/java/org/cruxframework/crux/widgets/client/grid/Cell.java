@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Cell extends Composite
 {
-
 	private SimplePanel basePanel;
 	private Row row;
 	private boolean fireEvents;
@@ -147,5 +146,10 @@ public class Cell extends Composite
 		}
 
 		super.onBrowserEvent(event);
+	}
+
+	public Row getRow() 
+	{
+		return row;
 	}
 }
