@@ -41,6 +41,7 @@ import org.cruxframework.crux.widgets.client.event.row.BeforeShowRowDetailsEvent
 import org.cruxframework.crux.widgets.client.event.row.HasBeforeRowSelectHandlers;
 import org.cruxframework.crux.widgets.client.event.row.LoadRowDetailsEvent;
 import org.cruxframework.crux.widgets.client.event.row.RowClickEvent;
+import org.cruxframework.crux.widgets.client.event.row.RowClickHandler;
 import org.cruxframework.crux.widgets.client.event.row.RowDoubleClickEvent;
 import org.cruxframework.crux.widgets.client.event.row.RowEditEvent;
 import org.cruxframework.crux.widgets.client.event.row.RowRenderEvent;
@@ -56,6 +57,8 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllKeyHandlers;
 import com.google.gwt.event.dom.client.HasBlurHandlers;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -78,9 +81,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A paged sortable data grid
+ * 
  * @author Gesse S. F. Dafe
  */
-//TODO refatorar isso. Criar uma grid programaticamente eh muito complexo como esta
+// TODO refatorar isso. Criar uma grid programaticamente eh muito complexo como
+// esta
 public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<PagedDataSource<?>>, HasBeforeRowSelectHandlers
 {
 	private int pageSize;
@@ -97,51 +102,127 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private SortingType defaultSortingType = SortingType.ascending;
 	private RowDetailsManager rowDetailsManager;
 	private DataRow currentEditingRow;
-	private DataRow lastEditingRow; 
+	private DataRow lastEditingRow;
 	private boolean editorFocused = false;
+	private boolean keepEditorOnClickDisabledRows = false;
 
 	/**
-	 * @param columnDefinitions the columns to be rendered
-	 * @param pageSize the number of rows per page
-	 * @param rowSelection the behavior of the grid about line selection
-	 * @param cellSpacing the space between the cells
-	 * @param autoLoadData if <code>true</code>, when a data source is set, its first page records are fetched and rendered.
-	 * @param stretchColumns if <code>true</code>, the width of the columns are auto adjusted to fit the grid width. Prevents horizontal scrolling.
-	 * @param highlightRowOnMouseOver if <code>true</code>, rows change their styles when mouse passed over them
-	 * @param emptyDataFilling an alternative text to be shown when there is no data for some data cell
-	 * @param fixedCellSize equivalent of setting CSS attribute <code>table-layout</code> to <code>fixed</code>
-	 * @param defaultSortingColumn the column to be used to automatically sort the grid's data when it is rendered for the first time
-	 * @param defaultSortingType tells the grid if <code>defaultSortingColumn</code> should be used ascending or descending
+	 * @param columnDefinitions
+	 *            the columns to be rendered
+	 * @param pageSize
+	 *            the number of rows per page
+	 * @param rowSelection
+	 *            the behavior of the grid about line selection
+	 * @param cellSpacing
+	 *            the space between the cells
+	 * @param autoLoadData
+	 *            if <code>true</code>, when a data source is set, its first
+	 *            page records are fetched and rendered.
+	 * @param stretchColumns
+	 *            if <code>true</code>, the width of the columns are auto
+	 *            adjusted to fit the grid width. Prevents horizontal scrolling.
+	 * @param highlightRowOnMouseOver
+	 *            if <code>true</code>, rows change their styles when mouse
+	 *            passed over them
+	 * @param emptyDataFilling
+	 *            an alternative text to be shown when there is no data for some
+	 *            data cell
+	 * @param fixedCellSize
+	 *            equivalent of setting CSS attribute <code>table-layout</code>
+	 *            to <code>fixed</code>
+	 * @param defaultSortingColumn
+	 *            the column to be used to automatically sort the grid's data
+	 *            when it is rendered for the first time
+	 * @param defaultSortingType
+	 *            tells the grid if <code>defaultSortingColumn</code> should be
+	 *            used ascending or descending
 	 */
-	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing,
-			boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
-			boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType)
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize,
+			String defaultSortingColumn, SortingType defaultSortingType)
 	{
-		this(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling,
-				fixedCellSize, defaultSortingColumn, defaultSortingType, null, false, false, false);
+		this(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType, null, false, false, false);
+	}
+	
+	/**
+	 * @param columnDefinitions
+	 *            the columns to be rendered
+	 * @param pageSize
+	 *            the number of rows per page
+	 * @param rowSelection
+	 *            the behavior of the grid about line selection
+	 * @param cellSpacing
+	 *            the space between the cells
+	 * @param autoLoadData
+	 *            if <code>true</code>, when a data source is set, its first
+	 *            page records are fetched and rendered.
+	 * @param stretchColumns
+	 *            if <code>true</code>, the width of the columns are auto
+	 *            adjusted to fit the grid width. Prevents horizontal scrolling.
+	 * @param highlightRowOnMouseOver
+	 *            if <code>true</code>, rows change their styles when mouse
+	 *            passed over them
+	 * @param emptyDataFilling
+	 *            an alternative text to be shown when there is no data for some
+	 *            data cell
+	 * @param fixedCellSize
+	 *            equivalent of setting CSS attribute <code>table-layout</code>
+	 *            to <code>fixed</code>
+	 * @param defaultSortingColumn
+	 *            the column to be used to automatically sort the grid's data
+	 *            when it is rendered for the first time
+	 * @param defaultSortingType
+	 *            tells the grid if <code>defaultSortingColumn</code> should be
+	 *            used ascending or descending
+	 * @param keepEditorOnClickDisabledRows Keep row's editor opened even when clicking on a disabled datarow
+	 */
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize,
+			String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows)
+	{
+		this(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType, null, false, false, false,keepEditorOnClickDisabledRows);
 	}
 
 	/**
 	 * Full constructor
-	 * @param columnDefinitions the columns to be rendered
-	 * @param pageSize the number of rows per page
-	 * @param rowSelection the behavior of the grid about line selection
-	 * @param cellSpacing the space between the cells
-	 * @param autoLoadData if <code>true</code>, when a data source is set, its first page records are fetched and rendered.
-	 * @param stretchColumns if <code>true</code>, the width of the columns are auto adjusted to fit the grid width. Prevents horizontal scrolling.
-	 * @param highlightRowOnMouseOver if <code>true</code>, rows change their styles when mouse passed over them
-	 * @param emptyDataFilling an alternative text to be shown when there is no data for some data cell
-	 * @param fixedCellSize equivalent of setting CSS attribute <code>table-layout</code> to <code>fixed</code>
-	 * @param defaultSortingColumn the column to be used to automatically sort the grid's data when it is rendered for the first time
-	 * @param defaultSortingType tells the grid if <code>defaultSortingColumn</code> should be used ascending or descending
-	 * @param rowDetailsWidgetCreator used to create on-demand row details
-	 * @param showRowDetailsIcon if <code>true</code>, the second column of the grid will contain icons for expanding or collapsing the row's details
-	 * @param caseSensitive indicate if the columns sort are or not key sensitive
+	 * 
+	 * @param columnDefinitions
+	 *            the columns to be rendered
+	 * @param pageSize
+	 *            the number of rows per page
+	 * @param rowSelection
+	 *            the behavior of the grid about line selection
+	 * @param cellSpacing
+	 *            the space between the cells
+	 * @param autoLoadData
+	 *            if <code>true</code>, when a data source is set, its first
+	 *            page records are fetched and rendered.
+	 * @param stretchColumns
+	 *            if <code>true</code>, the width of the columns are auto
+	 *            adjusted to fit the grid width. Prevents horizontal scrolling.
+	 * @param highlightRowOnMouseOver
+	 *            if <code>true</code>, rows change their styles when mouse
+	 *            passed over them
+	 * @param emptyDataFilling
+	 *            an alternative text to be shown when there is no data for some
+	 *            data cell
+	 * @param fixedCellSize
+	 *            equivalent of setting CSS attribute <code>table-layout</code>
+	 *            to <code>fixed</code>
+	 * @param defaultSortingColumn
+	 *            the column to be used to automatically sort the grid's data
+	 *            when it is rendered for the first time
+	 * @param defaultSortingType
+	 *            tells the grid if <code>defaultSortingColumn</code> should be
+	 *            used ascending or descending
+	 * @param rowDetailsWidgetCreator
+	 *            used to create on-demand row details
+	 * @param showRowDetailsIcon
+	 *            if <code>true</code>, the second column of the grid will
+	 *            contain icons for expanding or collapsing the row's details
+	 * @param caseSensitive
+	 *            indicate if the columns sort are or not key sensitive
 	 */
-	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing,
-			boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
-			boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,
-			RowDetailWidgetCreator rowDetailsWidgetCreator, boolean showRowDetailsIcon, boolean freezeHeaders, boolean caseSensitive)
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize,
+			String defaultSortingColumn, SortingType defaultSortingType, RowDetailWidgetCreator rowDetailsWidgetCreator, boolean showRowDetailsIcon, boolean freezeHeaders, boolean caseSensitive)
 	{
 		super(columnDefinitions, rowSelection, cellSpacing, stretchColumns, highlightRowOnMouseOver, fixedCellSize, rowDetailsWidgetCreator, showRowDetailsIcon, freezeHeaders);
 		getColumnDefinitions().setGrid(this);
@@ -151,44 +232,112 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		this.defaultSortingColumn = defaultSortingColumn;
 		this.defaultSortingType = defaultSortingType;
 		this.caseSensitive = caseSensitive;
-		if(hasRowDetails())
+		
+		if (hasRowDetails())
 		{
 			this.rowDetailsManager = new RowDetailsManager(rowDetailsWidgetCreator);
-			
 		}
 		super.render();
 	}
+	
+	
+	/**
+	 * @param columnDefinitions
+	 * @param pageSize
+	 * @param rowSelection
+	 * @param cellSpacing
+	 * @param autoLoadData
+	 * @param stretchColumns
+	 * @param highlightRowOnMouseOver
+	 * @param emptyDataFilling
+	 * @param fixedCellSize
+	 * @param defaultSortingColumn
+	 * @param defaultSortingType
+	 * @param rowDetailsWidgetCreator
+	 * @param showRowDetailsIcon
+	 * @param freezeHeaders
+	 * @param caseSensitive
+	 * @param keepEditorOnClickDisabledRows Keep row's editor opened even when clicking on a disabled datarow
+	 */
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize,
+			String defaultSortingColumn, SortingType defaultSortingType, RowDetailWidgetCreator rowDetailsWidgetCreator, boolean showRowDetailsIcon, boolean freezeHeaders, boolean caseSensitive, boolean keepEditorOnClickDisabledRows)
+	{
+		super(columnDefinitions, rowSelection, cellSpacing, stretchColumns, highlightRowOnMouseOver, fixedCellSize, rowDetailsWidgetCreator, showRowDetailsIcon, freezeHeaders);
+		getColumnDefinitions().setGrid(this);
+		this.emptyDataFilling = emptyDataFilling != null ? emptyDataFilling : " ";
+		this.pageSize = pageSize;
+		this.autoLoadData = autoLoadData;
+		this.defaultSortingColumn = defaultSortingColumn;
+		this.defaultSortingType = defaultSortingType;
+		this.caseSensitive = caseSensitive;
+		this.keepEditorOnClickDisabledRows = keepEditorOnClickDisabledRows;
+		
+		if (hasRowDetails())
+		{
+			this.rowDetailsManager = new RowDetailsManager(rowDetailsWidgetCreator);
+		}
+		super.render();
+		
+		if(this.keepEditorOnClickDisabledRows)
+		{
+			this.addRowClickHandler(new RowClickHandler(){
+				@Override
+				public void onRowClick(RowClickEvent event)
+				{
+					if(event.getRow() != null && !event.getRow().isEnabled() && isEditing())
+					{
+						ensureEditorFocused();
+						FastList<String> editableColumns = getEditableColumns();
+						String firstColumn = "";
+						
+						if(editableColumns != null && editableColumns.size() > 0)
+						{
+							firstColumn = editableColumns.get(0);
+						}
+						
+						Widget w = currentEditingRow.getWidget(firstColumn);
+						
+						if(w != null && w instanceof Focusable)
+						{
+							((Focusable)w).setFocus(true);
+						}
+					}
+				}
+			});
+		}
+	}
+	
 
 	/**
 	 * Sets the data source and re-renders the grid
+	 * 
 	 * @param dataSource
 	 */
 	public void setDataSource(PagedDataSource<?> dataSource)
 	{
 		setDataSource(dataSource, autoLoadData);
 	}
-	
+
 	@Override
 	public void setDataSource(PagedDataSource<?> dataSource, boolean autoLoadData)
 	{
 		this.dataSource = dataSource;
 		this.dataSource.setPageSize(this.pageSize);
 
-		if(hasRowDetails())
+		if (hasRowDetails())
 		{
 			this.rowDetailsManager.reset();
 		}
 
-		if(this.dataSource instanceof RemoteDataSource<?>)
+		if (this.dataSource instanceof RemoteDataSource<?>)
 		{
 			RemoteDataSource<?> remote = (RemoteDataSource<?>) this.dataSource;
 
-			remote.setCallback(new RemoteDataSourceCallback()
-			{
+			remote.setCallback(new RemoteDataSourceCallback(){
 				public void execute(int startRecord, int endRecord)
 				{
 					loaded = true;
-					if(!autoSort())
+					if (!autoSort())
 					{
 						render();
 					}
@@ -200,33 +349,31 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				}
 			});
 
-			if(autoLoadData)
+			if (autoLoadData)
 			{
 				loadData();
 			}
-		}
-		else if(this.dataSource instanceof LocalDataSource<?>)
+		} else if (this.dataSource instanceof LocalDataSource<?>)
 		{
 			LocalDataSource<?> local = (LocalDataSource<?>) this.dataSource;
 
-			local.setCallback(new LocalDataSourceCallback()
-			{
+			local.setCallback(new LocalDataSourceCallback(){
 				public void execute()
 				{
 					loaded = true;
 				}
 
 				@Override
-                public void pageChanged(int startRecord, int endRecord)
-                {
-					if(!autoSort())
+				public void pageChanged(int startRecord, int endRecord)
+				{
+					if (!autoSort())
 					{
 						render();
 					}
-                }
+				}
 			});
 
-			if(autoLoadData)
+			if (autoLoadData)
 			{
 				loadData();
 			}
@@ -235,41 +382,38 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public void loadData()
 	{
-		if(!this.loaded)
+		if (!this.loaded)
 		{
-			if(this.dataSource instanceof RemoteDataSource)
+			if (this.dataSource instanceof RemoteDataSource)
 			{
-				if(this.dataSource instanceof MeasurableDataSource)
+				if (this.dataSource instanceof MeasurableDataSource)
 				{
 					((MeasurableRemoteDataSource<?>) this.dataSource).load();
-				}
-				else
+				} else
 				{
 					this.dataSource.nextPage();
 				}
-			}
-			else if(this.dataSource instanceof LocalDataSource)
+			} else if (this.dataSource instanceof LocalDataSource)
 			{
 				LocalDataSource<?> local = (LocalDataSource<?>) this.dataSource;
 				local.load();
 			}
 		}
 	}
-	
-	
 
 	@Override
 	protected DataRow createRow(int index, Element element)
 	{
-		return new DataRow(index, element, this, hasSelectionColumn(), hasRowDetails(), hasRowDetailsIconColumn());
+		DataRow row = new DataRow(index, element, this, hasSelectionColumn(), hasRowDetails(), hasRowDetailsIconColumn());
+		return row;
 	}
 
 	@Override
 	protected int getRowsToBeRendered()
 	{
-		if(isDataLoaded())
+		if (isDataLoaded())
 		{
-			if(this.dataSource.getCurrentPage() == 0)
+			if (this.dataSource.getCurrentPage() == 0)
 			{
 				this.dataSource.nextPage();
 			}
@@ -282,6 +426,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	/**
 	 * Gets the current page row count
+	 * 
 	 * @return
 	 */
 	public int getCurrentPageSize()
@@ -292,7 +437,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	@Override
 	protected void onClear()
 	{
-		if(this.dataSource != null)
+		if (this.dataSource != null)
 		{
 			this.dataSource.reset();
 		}
@@ -301,19 +446,20 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		this.ascendingSort = false;
 		this.loaded = false;
 
-		if(this.pager != null)
+		if (this.pager != null)
 		{
 			this.pager.update(0, false);
 		}
 
-		if(hasRowDetails())
+		if (hasRowDetails())
 		{
 			this.rowDetailsManager.reset();
 		}
 	}
 
 	/**
-	 * @see br.com.sysmap.crux.widgets.client.grid.AbstractGrid#onShowDetails(boolean, br.com.sysmap.crux.widgets.client.grid.Row, boolean)
+	 * @see br.com.sysmap.crux.widgets.client.grid.AbstractGrid#onShowDetails(boolean,
+	 *      br.com.sysmap.crux.widgets.client.grid.Row, boolean)
 	 */
 	protected boolean onShowDetails(boolean show, Row row, boolean fireEvents)
 	{
@@ -323,44 +469,42 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			DataRow dataRow = (DataRow) row;
 
-			if(show)
+			if (show)
 			{
-				if(fireEvents)
+				if (fireEvents)
 				{
 					BeforeShowRowDetailsEvent event = BeforeShowRowDetailsEvent.fire(this, dataRow);
 					proceed = !event.isCanceled();
 				}
 			}
 
-			if(proceed)
+			if (proceed)
 			{
 				dataRow.showDetailsArea(show);
 
-				if(show)
+				if (show)
 				{
 					boolean detailsPanelCreated = dataRow.getDetailsPanel() != null;
 
-					if(!detailsPanelCreated)
+					if (!detailsPanelCreated)
 					{
 						DataSourceRecord<?> record = dataRow.getDataSourceRecord();
 						boolean detailLoaded = this.rowDetailsManager.isDetailLoaded(record);
 						createAndAttachDetails(dataRow, record);
 
-						if(fireEvents)
+						if (fireEvents)
 						{
-							if(detailLoaded)
+							if (detailLoaded)
 							{
 								ShowRowDetailsEvent.fire(this, dataRow);
-							}
-							else
+							} else
 							{
 								LoadRowDetailsEvent.fire(this, dataRow);
 							}
 						}
-					}
-					else
+					} else
 					{
-						if(fireEvents)
+						if (fireEvents)
 						{
 							ShowRowDetailsEvent.fire(this, dataRow);
 						}
@@ -375,6 +519,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	/**
 	 * Creates and attaches the details widget to the row
+	 * 
 	 * @param dataRow
 	 * @param record
 	 */
@@ -393,18 +538,18 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		boolean proceed = true;
 
-		if(fireEvents)
+		if (fireEvents)
 		{
 			BeforeRowSelectEvent event = BeforeRowSelectEvent.fire(this, row);
 			proceed = !event.isCanceled();
 		}
 
-		if(proceed)
+		if (proceed)
 		{
-			if(select && (RowSelectionModel.single.equals(getRowSelectionModel()) || RowSelectionModel.singleRadioButton.equals(getRowSelectionModel())))
+			if (select && (RowSelectionModel.single.equals(getRowSelectionModel()) || RowSelectionModel.singleRadioButton.equals(getRowSelectionModel())))
 			{
 				DataSourceRecord<?>[] records = dataSource.getSelectedRecords();
-				if(records != null)
+				if (records != null)
 				{
 					for (int i = 0; i < records.length; i++)
 					{
@@ -415,7 +560,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 				Iterator<DataRow> it = getRowIterator();
 
-				while(it.hasNext())
+				while (it.hasNext())
 				{
 					DataRow dataRow = it.next();
 					dataRow.setSelected(false);
@@ -434,7 +579,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		renderRow(row, dataSource.getRecord(), false, null);
 	}
 
-	protected void renderRow(final DataRow row,  DataSourceRecord<?> record, boolean editMode,String focusCellKey)
+	protected void renderRow(final DataRow row, DataSourceRecord<?> record, boolean editMode, String focusCellKey)
 	{
 		row.setDataSourceRecord(record);
 		ColumnDefinitions defs = getColumnDefinitions();
@@ -446,17 +591,19 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			ColumnDefinition column = it.next();
 
-			if(column.isVisible())
+			if (column.isVisible())
 			{
 				Widget widget = null;
 				String key = column.getKey();
 				boolean wrapLine = true;
 				boolean truncate = true;
 
-				// Access a field is much more efficient than call the instanceof operator.
-				// As this decision is executed for every column of every row when rendering the
+				// Access a field is much more efficient than call the
+				// instanceof operator.
+				// As this decision is executed for every column of every row
+				// when rendering the
 				// grid, we decided to avoid the instanceof operator.
-				if(column.isDataColumn)
+				if (column.isDataColumn)
 				{
 					DataColumnDefinition dataColumnDefinition = (DataColumnDefinition) column;
 
@@ -465,32 +612,29 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 					DataColumnEditorCreator<?> editorCreator = dataColumnDefinition.getEditorCreator();
 
-					if(!editMode || editorCreator == null)
+					if (!editMode || editorCreator == null)
 					{
 						widget = createDataLabel(dataColumnDefinition, key, row.getDataSourceRecord());
-					}
-					else
+					} else
 					{
 						Object editorWidget = editorCreator.createEditorWidget((DataColumnDefinition) column);
 
-						if(editorWidget != null)
+						if (editorWidget != null)
 						{
 							widget = setValueToEditorWidget(row, key, editorWidget);
 						}
 
-						if(widget == null)
+						if (widget == null)
 						{
 							widget = createDataLabel(dataColumnDefinition, key, row.getDataSourceRecord());
-						}
-						else
+						} else
 						{
 							widget = setEditorEventHandlers(widget, row);
 							editors.add(widget);
 							editableColumns.add(key);
 						}
 					}
-				}
-				else
+				} else
 				{
 					wrapLine = false;
 					truncate = true;
@@ -501,7 +645,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			}
 		}
 
-		if(editMode)
+		if (editMode)
 		{
 			chooseFocusedEditor(editors, editableColumns, focusCellKey);
 		}
@@ -509,7 +653,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		row.setSelected(row.getDataSourceRecord().isSelected());
 		row.setEnabled(!row.getDataSourceRecord().isReadOnly());
 
-		if(dataSource.hasNextRecord())
+		if (dataSource.hasNextRecord())
 		{
 			dataSource.nextRecord();
 		}
@@ -517,6 +661,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	/**
 	 * Makes sure that only one row is in edit mode at a time
+	 * 
 	 * @param row
 	 * @param editors
 	 * @param editableColumns
@@ -526,7 +671,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		lastEditingRow = currentEditingRow;
 		currentEditingRow = row;
 
-		if(lastEditingRow != null)
+		if (lastEditingRow != null)
 		{
 			confirmLastEditedRowValues(lastEditingRow, getEditableColumns());
 			lastEditingRow.setEditMode(false);
@@ -534,53 +679,55 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		}
 	}
 
-	/** Rollback the edition of the last column changed
+	/**
+	 * Rollback the edition of the last column changed
+	 * 
 	 * @param row
 	 */
 	public void rollbackRowEdition(DataRow row)
 	{
-		if(row != null)
+		if (row != null)
 		{
 			row.setEditMode(false);
-			renderRow(row,row.getDataSourceRecord(),false,null);
+			renderRow(row, row.getDataSourceRecord(), false, null);
 			this.currentEditingRow = null;
 		}
 	}
-	
+
 	private FastList<String> getEditableColumns()
 	{
 		FastList<ColumnDefinition> defs = getColumnDefinitions().getDefinitions();
 
 		FastList<String> editableColumns = new FastList<String>();
-		for(int i = 0; i < defs.size(); i++)
+		for (int i = 0; i < defs.size(); i++)
 		{
 			ColumnDefinition def = defs.get(i);
-			if(def instanceof DataColumnDefinition)
+			if (def instanceof DataColumnDefinition)
 			{
 				DataColumnEditorCreator<?> editorCreator = ((DataColumnDefinition) def).getEditorCreator();
-				if(def.isVisible() && editorCreator != null)
+				if (def.isVisible() && editorCreator != null)
 				{
 					editableColumns.add(def.getKey());
 				}
 			}
 		}
-		
+
 		return editableColumns;
 	}
-	
-	private Widget setEditorEventHandlers(Widget widget, final DataRow row)
+
+	private Widget setEditorEventHandlers(final Widget widget, final DataRow row)
 	{
-		if(widget instanceof HasAllKeyHandlers)
+		if (widget instanceof HasAllKeyHandlers)
 		{
-			widget.addDomHandler(new KeyPressHandler() {
-				
+			widget.addDomHandler(new KeyPressHandler(){
+
 				@Override
 				public void onKeyPress(KeyPressEvent event)
 				{
 					int keycode = event.getNativeEvent().getKeyCode();
-					
-					switch(keycode)
-					{
+
+					switch (keycode)
+						{
 						case KeyCodes.KEY_ENTER:
 							confirmLastEditedRowValues(row);
 							break;
@@ -589,44 +736,41 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 							break;
 						default:
 							return;
-					
-					}
+
+						}
 				}
 			}, KeyPressEvent.getType());
 		}
-		
-		widget.addDomHandler(new ClickHandler() {
-			
+
+		widget.addDomHandler(new FocusHandler(){
+
+			@Override
+			public void onFocus(FocusEvent event)
+			{
+				ensureEditorFocused();
+			}
+		}, FocusEvent.getType());
+
+		widget.addDomHandler(new ClickHandler(){
+
 			@Override
 			public void onClick(ClickEvent event)
 			{
-				editorFocused = true;
-				
-				final Timer timer = new Timer() {
-					
-					@Override
-					public void run()
-					{
-						editorFocused = false;
-						this.cancel();
-					}
-				};
-				
-				timer.schedule(101);
+				ensureEditorFocused();
 			}
 		}, ClickEvent.getType());
-		
-		widget.addDomHandler(new BlurHandler() {
-			
+
+		widget.addDomHandler(new BlurHandler(){
+
 			@Override
 			public void onBlur(BlurEvent event)
 			{
-				final Timer timer = new Timer() {
-					
+				final Timer timer = new Timer(){
+
 					@Override
 					public void run()
 					{
-						if(!editorFocused)
+						if (!editorFocused)
 						{
 							confirmLastEditedRowValues(row);
 							this.cancel();
@@ -636,12 +780,14 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				timer.schedule(100);
 			}
 		}, BlurEvent.getType());
-		
+
 		return widget;
 	}
-	
+
 	/**
-	 * If there is any row in edit mode, applies its editors' values to the underlying data row.
+	 * If there is any row in edit mode, applies its editors' values to the
+	 * underlying data row.
+	 * 
 	 * @param row
 	 */
 	private void confirmLastEditedRowValues(DataRow row, FastList<String> editableColumns)
@@ -651,26 +797,26 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			String key = editableColumns.get(i);
 			Widget widget = row.getWidget(key);
 			Object value = getEditorValue(widget);
-			
-			if(widget instanceof Label || value == null)
+
+			if (widget instanceof Label || value == null)
 			{
 				continue;
 			}
-			
-			if(!validate(key,value))
+
+			if (!validate(key, value))
 			{
 				rollbackRowEdition(row);
 				return;
 			}
 		}
-		
+
 		for (int i = 0; i < editableColumns.size(); i++)
 		{
 			String key = editableColumns.get(i);
 			Widget widget = row.getWidget(key);
 			Object value = getEditorValue(widget);
-			
-			if(widget instanceof Label || value == null)
+
+			if (widget instanceof Label || value == null)
 			{
 				continue;
 			}
@@ -680,57 +826,55 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 		renderRow(row, row.getDataSourceRecord(), false, null);
 	}
-	
+
 	private Object getEditorValue(Widget widget)
 	{
 		Object value = null;
-		if(widget instanceof HasFormatter)
+		if (widget instanceof HasFormatter)
 		{
 			value = ((HasFormatter) widget).getUnformattedValue();
-		}
-		else if(widget instanceof HasValue)
+		} else if (widget instanceof HasValue)
 		{
 			value = ((HasValue<?>) widget).getValue();
-		} 
-		else if(widget instanceof ListBox)
+		} else if (widget instanceof ListBox)
 		{
 			value = ((ListBox) widget).getValue(((ListBox) widget).getSelectedIndex());
 		}
-		
+
 		return value;
 	}
-	
+
 	private void confirmLastEditedRowValues(DataRow row)
 	{
 		confirmLastEditedRowValues(row, getEditableColumns());
 		row.setEditMode(false);
 		currentEditingRow = null;
 	}
-	
 
 	/**
-	 * Sets the focus to the editor at the clicked cell or to the first focusable one at the row.
+	 * Sets the focus to the editor at the clicked cell or to the first
+	 * focusable one at the row.
+	 * 
 	 * @param editors
 	 * @param editableColumns
 	 * @param focusCellKey
 	 */
 	private void chooseFocusedEditor(FastList<Widget> editors, FastList<String> editableColumns, String focusCellKey)
 	{
-		if(editors != null && editors.size() > 0)
+		if (editors != null && editors.size() > 0)
 		{
-			for(int i = 0; i < editors.size(); i++)
+			for (int i = 0; i < editors.size(); i++)
 			{
 				Widget editorWidget = editors.get(i);
 				String key = editableColumns.get(i);
 
-				if(editorWidget instanceof Focusable)
+				if (editorWidget instanceof Focusable)
 				{
-					if(focusCellKey == null || focusCellKey.equals(key))
+					if (focusCellKey == null || focusCellKey.equals(key))
 					{
 						final Focusable focusable = (Focusable) editorWidget;
 
-						Scheduler.get().scheduleDeferred(new ScheduledCommand()
-						{
+						Scheduler.get().scheduleDeferred(new ScheduledCommand(){
 							public void execute()
 							{
 								focusable.setFocus(true);
@@ -746,6 +890,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	/**
 	 * Applies the value present in the data cell to the related editor widget
+	 * 
 	 * @param row
 	 * @param key
 	 * @param editorWidget
@@ -755,19 +900,17 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		Widget widget = null;
 
-		if(editorWidget instanceof Widget)
+		if (editorWidget instanceof Widget)
 		{
 			widget = (Widget) editorWidget;
-		}
-		else if(editorWidget instanceof IsWidget)
+		} else if (editorWidget instanceof IsWidget)
 		{
 			widget = ((IsWidget) editorWidget).asWidget();
 		}
 
-		if(widget instanceof HasClickHandlers)
+		if (widget instanceof HasClickHandlers)
 		{
-			((HasClickHandlers) widget).addClickHandler(new ClickHandler()
-			{
+			((HasClickHandlers) widget).addClickHandler(new ClickHandler(){
 				public void onClick(ClickEvent event)
 				{
 					event.stopPropagation();
@@ -775,20 +918,18 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			});
 		}
 
-		if((widget instanceof HasValue) && (widget instanceof HasValueChangeHandlers) && !(widget instanceof HasFormatter))
+		if ((widget instanceof HasValue) && (widget instanceof HasValueChangeHandlers) && !(widget instanceof HasFormatter))
 		{
 			dataSource.copyValueToWidget((HasValue<?>) widget, key, row.getDataSourceRecord());
-		}
-		else if(widget instanceof HasFormatter)
+		} else if (widget instanceof HasFormatter)
 		{
 			Object value = dataSource.getValue(key, row.getDataSourceRecord());
 			final HasFormatter hasFormatter = (HasFormatter) widget;
 			hasFormatter.setUnformattedValue(value);
 
-			if(widget instanceof HasBlurHandlers)
+			if (widget instanceof HasBlurHandlers)
 			{
-				((HasBlurHandlers) widget).addBlurHandler(new BlurHandler()
-				{
+				((HasBlurHandlers) widget).addBlurHandler(new BlurHandler(){
 					public void onBlur(BlurEvent event)
 					{
 						dataSource.setValue(hasFormatter.getUnformattedValue(), key, row.getDataSourceRecord());
@@ -802,6 +943,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	/**
 	 * Creates a widget
+	 * 
 	 * @param column
 	 * @return
 	 */
@@ -810,10 +952,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		try
 		{
 			return column.getWidgetColumnCreator().createWidgetForColumn();
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
-			throw new RuntimeException(WidgetMsgFactory.getMessages().errorCreatingWidgetForColumn(column.getKey()),e);
+			throw new RuntimeException(WidgetMsgFactory.getMessages().errorCreatingWidgetForColumn(column.getKey()), e);
 		}
 	}
 
@@ -824,17 +965,16 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		String str = emptyDataFilling;
 		boolean useEmptyDataStyle = true;
 
-		if(value != null)
+		if (value != null)
 		{
-			if(formatter != null )
+			if (formatter != null)
 			{
 				str = formatter.format(value);
 				useEmptyDataStyle = false;
-			}
-			else
+			} else
 			{
 				String strValue = value.toString();
-				if(strValue.length() > 0)
+				if (strValue.length() > 0)
 				{
 					str = strValue;
 					useEmptyDataStyle = false;
@@ -844,16 +984,15 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 		Label label = new Label(str);
 
-		if(useEmptyDataStyle)
+		if (useEmptyDataStyle)
 		{
 			label.addStyleName("emptyData");
 		}
 
-		if(!dataColumn.isWrapLine())
+		if (!dataColumn.isWrapLine())
 		{
 			label.getElement().getStyle().setProperty("whiteSpace", "nowrap");
-		}
-		else
+		} else
 		{
 			label.getElement().getStyle().setProperty("whiteSpace", "normal");
 		}
@@ -875,9 +1014,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		this.currentEditingRow = null;
 
-		if(isDataLoaded())
+		if (isDataLoaded())
 		{
-			if(this.dataSource.getCurrentPage() > 0 && this.dataSource.getCurrentPageSize() == 0)
+			if (this.dataSource.getCurrentPage() > 0 && this.dataSource.getCurrentPageSize() == 0)
 			{
 				this.previousPage();
 				return;
@@ -885,7 +1024,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 			updatePager();
 
-			for (int i=0; i<headers.size(); i++)
+			for (int i = 0; i < headers.size(); i++)
 			{
 				ColumnHeader header = headers.get(i);
 				header.applySortingLayout();
@@ -897,23 +1036,22 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	private void updatePager()
 	{
-		if(isDataLoaded() && this.pager != null)
+		if (isDataLoaded() && this.pager != null)
 		{
-			if(this.pager != null)
+			if (this.pager != null)
 			{
-				this.pager.update(this.dataSource.getCurrentPage(),  !this.dataSource.hasNextPage());
+				this.pager.update(this.dataSource.getCurrentPage(), !this.dataSource.hasNextPage());
 			}
 		}
 	}
 
 	public int getPageCount()
 	{
-		if(isDataLoaded() && this.dataSource instanceof MeasurablePagedDataSource<?>)
+		if (isDataLoaded() && this.dataSource instanceof MeasurablePagedDataSource<?>)
 		{
 			MeasurablePagedDataSource<?> ds = (MeasurablePagedDataSource<?>) this.dataSource;
 			return ds.getPageCount();
-		}
-		else
+		} else
 		{
 			return -1;
 		}
@@ -921,7 +1059,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public void nextPage()
 	{
-		if(isDataLoaded())
+		if (isDataLoaded())
 		{
 			this.dataSource.nextPage();
 		}
@@ -929,7 +1067,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public void previousPage()
 	{
-		if(isDataLoaded())
+		if (isDataLoaded())
 		{
 			this.dataSource.previousPage();
 		}
@@ -960,17 +1098,18 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	/**
 	 * Sorts the grid's data by the given column
+	 * 
 	 * @param columnKey
 	 */
 	public void sort(String columnKey, boolean ascending, boolean caseSensitive)
 	{
-		if(this.isDataLoaded())
+		if (this.isDataLoaded())
 		{
 			this.dataSource.sort(columnKey, ascending, caseSensitive);
 			this.ascendingSort = ascending;
 			this.currentSortingColumn = columnKey;
 
-			if(hasRowDetails())
+			if (hasRowDetails())
 			{
 				this.rowDetailsManager.reset();
 			}
@@ -986,11 +1125,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 		Iterator<DataRow> rows = getRowIterator();
 
-		while(rows.hasNext())
+		while (rows.hasNext())
 		{
 			DataRow row = rows.next();
 
-			if(row.getDataSourceRecord().isSelected())
+			if (row.getDataSourceRecord().isSelected())
 			{
 				result.add(row);
 			}
@@ -1006,7 +1145,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 		Iterator<DataRow> rows = getRowIterator();
 
-		while(rows.hasNext())
+		while (rows.hasNext())
 		{
 			DataRow row = rows.next();
 			result.add(row);
@@ -1017,6 +1156,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	/**
 	 * Gets all selected data objects contained by the grid.
+	 * 
 	 * @deprecated Use <code>getSelectedDataObjects()</code> instead
 	 */
 	@Deprecated
@@ -1027,16 +1167,17 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	/**
 	 * Gets all selected data objects contained by the grid.
+	 * 
 	 * @return an array of data objects
 	 */
-	@SuppressWarnings({"unchecked","rawtypes"})
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Object[] getSelectedDataObjects()
 	{
-		if(this.dataSource != null)
+		if (this.dataSource != null)
 		{
 			DataSourceRecord[] selectedRecords = this.dataSource.getSelectedRecords();
 
-			if(selectedRecords != null)
+			if (selectedRecords != null)
 			{
 				Object[] selectedObjs = new Object[selectedRecords.length];
 
@@ -1072,7 +1213,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		RowClickEvent.fire(this, row);
 	}
-	
+
 	@Override
 	protected void fireRowEditEvent(DataRow row)
 	{
@@ -1084,7 +1225,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		BeforeRowEditEvent.fire(this, row);
 	}
-	
+
 	@Override
 	protected void fireRowDoubleClickEvent(DataRow row)
 	{
@@ -1101,13 +1242,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	 */
 	public void goToPage(int page)
 	{
-		if(isDataLoaded())
+		if (isDataLoaded())
 		{
-			if(this.dataSource instanceof MeasurablePagedDataSource<?>)
+			if (this.dataSource instanceof MeasurablePagedDataSource<?>)
 			{
 				((MeasurablePagedDataSource<?>) this.dataSource).setCurrentPage(page);
-			}
-			else
+			} else
 			{
 				throw new UnsupportedOperationException(WidgetMsgFactory.getMessages().gridRandomPagingNotSupported());
 			}
@@ -1130,7 +1270,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		boolean sort = isAutoSortEnabled();
 
-		if(sort)
+		if (sort)
 		{
 			sort(this.defaultSortingColumn, !this.defaultSortingType.equals(SortingType.descending), this.caseSensitive);
 		}
@@ -1145,12 +1285,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 		if (row == null && hasRowDetails())
 		{
-			while(!(w instanceof RowDetailsPanel))
+			while (!(w instanceof RowDetailsPanel))
 			{
 				w = w.getParent();
 			}
 
-			if(w instanceof RowDetailsPanel)
+			if (w instanceof RowDetailsPanel)
 			{
 				row = (DataRow) ((RowDetailsPanel) w).getRow();
 			}
@@ -1161,19 +1301,19 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	/**
 	 * Checks if auto sorting is enabled
+	 * 
 	 * @return
 	 */
 	private boolean isAutoSortEnabled()
 	{
-		if(!StringUtils.isEmpty(this.defaultSortingColumn))
+		if (!StringUtils.isEmpty(this.defaultSortingColumn))
 		{
 			ColumnDefinition column = getColumnDefinition(this.defaultSortingColumn);
 
-			if(column != null && column instanceof DataColumnDefinition)
+			if (column != null && column instanceof DataColumnDefinition)
 			{
 				return true;
-			}
-			else
+			} else
 			{
 				throw new IllegalArgumentException(WidgetMsgFactory.getMessages().errorGridNoDataColumnFound(this.defaultSortingColumn));
 			}
@@ -1184,12 +1324,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	/**
 	 * Grid default sorting type
+	 * 
 	 * @author Gesse S. F. Dafe
 	 */
 	public enum SortingType
 	{
-		ascending,
-		descending
+		ascending, descending
 	}
 
 	/**
@@ -1239,11 +1379,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		 */
 		private boolean isDataColumnSortable(ColumnDefinition columnDefinition)
 		{
-			if(columnDefinition instanceof DataColumnDefinition)
+			if (columnDefinition instanceof DataColumnDefinition)
 			{
-				return grid.isDataLoaded()
-				&& ((DataColumnDefinition) columnDefinition).isSortable()
-				&& this.grid.getDataSource().getColumnDefinitions().getColumn(columnDefinition.getKey()).isSortable();
+				return grid.isDataLoaded() && ((DataColumnDefinition) columnDefinition).isSortable() && this.grid.getDataSource().getColumnDefinitions().getColumn(columnDefinition.getKey()).isSortable();
 			}
 			return false;
 		}
@@ -1253,8 +1391,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		 */
 		private ClickHandler createClickHandler()
 		{
-			return new ClickHandler()
-			{
+			return new ClickHandler(){
 				public void onClick(ClickEvent event)
 				{
 					String columnKey = columnDefinition.getKey();
@@ -1271,18 +1408,16 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 		void applySortingLayout()
 		{
-			if(this.columnDefinition.getKey().equals(grid.currentSortingColumn))
+			if (this.columnDefinition.getKey().equals(grid.currentSortingColumn))
 			{
-				if(grid.ascendingSort)
+				if (grid.ascendingSort)
 				{
 					addStyleDependentName("asc");
-				}
-				else
+				} else
 				{
 					addStyleDependentName("desc");
 				}
-			}
-			else
+			} else
 			{
 				removeStyleDependentName("asc");
 				removeStyleDependentName("desc");
@@ -1294,13 +1429,13 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		FastList<ColumnDefinition> columnDefinitions = getColumnDefinitions().getDefinitions();
 
-		for(int i = 0; i < columnDefinitions.size(); i++)
+		for (int i = 0; i < columnDefinitions.size(); i++)
 		{
 			ColumnDefinition col = columnDefinitions.get(i);
-			if(col instanceof DataColumnDefinition)
+			if (col instanceof DataColumnDefinition)
 			{
 				DataColumnDefinition dataCol = (DataColumnDefinition) col;
-				if(dataCol.getEditorCreator() != null)
+				if (dataCol.getEditorCreator() != null)
 				{
 					return true;
 				}
@@ -1312,18 +1447,18 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public void makeEditable(DataRow row, Cell focusCell)
 	{
-		if(!row.isEditMode())
+		if (!row.isEditMode())
 		{
-			if(currentEditingRow != null)
+			if (currentEditingRow != null)
 			{
 				currentEditingRow.setEditMode(false);
 			}
-			
+
 			swapCurrentEditingRow(row);
 
 			String focusCellKey = null;
 
-			if(focusCell != null)
+			if (focusCell != null)
 			{
 				FastList<ColumnDefinition> defs = getColumnDefinitions().getDefinitions();
 				for (int i = 0; i < defs.size(); i++)
@@ -1331,7 +1466,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 					ColumnDefinition def = defs.get(i);
 					String key = def.getKey();
 					Cell cell = row.getCell(key);
-					if(focusCell.equals(cell))
+					if (focusCell.equals(cell))
 					{
 						focusCellKey = key;
 						break;
@@ -1344,26 +1479,25 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			row.setEditMode(true);
 		}
 	}
-	
+
 	/**
 	 * @return True if there is any row being edited
 	 */
 	public boolean isEditing()
 	{
-		if(currentEditingRow != null)
+		if (currentEditingRow != null)
 		{
 			return true;
-		}
-		else
+		} else
 		{
 			return false;
 		}
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public <T> void addRow(T dataObject)
 	{
-		if(isDataLoaded())
+		if (isDataLoaded())
 		{
 			DataSourceRecord<T> newRec = (DataSourceRecord<T>) dataSource.insertRecord(0);
 			newRec.setRecordObject(dataObject);
@@ -1380,18 +1514,17 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	@SuppressWarnings("unchecked")
 	public <T> void removeSelectedRows(boolean fromCurrentPageOnly)
 	{
-		if(isDataLoaded())
+		if (isDataLoaded())
 		{
 			Object[] selectedDataObjects = null;
 
-			if(!fromCurrentPageOnly)
+			if (!fromCurrentPageOnly)
 			{
 				selectedDataObjects = getSelectedDataObjects();
-			}
-			else
+			} else
 			{
 				List<DataRow> selectedRows = getSelectedRows();
-				if(selectedRows != null)
+				if (selectedRows != null)
 				{
 					selectedDataObjects = new Object[selectedRows.size()];
 					for (int i = 0; i < selectedRows.size(); i++)
@@ -1402,12 +1535,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				}
 			}
 
-			if(selectedDataObjects != null)
+			if (selectedDataObjects != null)
 			{
 				for (int i = 0; i < selectedDataObjects.length; i++)
 				{
 					Object object = selectedDataObjects[i];
-					int index = ((PagedDataSource<T>)dataSource).getRecordIndex((T)object);
+					int index = ((PagedDataSource<T>) dataSource).getRecordIndex((T) object);
 					dataSource.selectRecord(index, false);
 					dataSource.removeRecord(index);
 				}
@@ -1419,7 +1552,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public Object[] getRemovedDataObjects()
 	{
-		if(isDataLoaded())
+		if (isDataLoaded())
 		{
 			return toDataObjectArray(dataSource.getRemovedRecords());
 		}
@@ -1429,7 +1562,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public Object[] getCreatedDataObjects()
 	{
-		if(isDataLoaded())
+		if (isDataLoaded())
 		{
 			return toDataObjectArray(dataSource.getNewRecords());
 		}
@@ -1439,7 +1572,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	public Object[] getEditedDataObjects()
 	{
-		if(isDataLoaded())
+		if (isDataLoaded())
 		{
 			return toDataObjectArray(dataSource.getUpdatedRecords());
 		}
@@ -1451,12 +1584,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		Object[] dataObjects = new Object[0];
 
-		if(records != null)
+		if (records != null)
 		{
 			dataObjects = new Object[records.length];
 		}
 
-		for(int i = 0; i < records.length; i++)
+		for (int i = 0; i < records.length; i++)
 		{
 			DataSourceRecord<?> record = records[i];
 			Object dataObject = record.getRecordObject();
@@ -1467,47 +1600,67 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	}
 
 	@Override
-    protected void onBeforeRender()
-    {
-	    assert (getDataSource() == null || getDataSource().getColumnDefinitions() != null):"DataSource dos not declare any ColumnDefinition";
-    }
-	
-	/** Run column validator after editing a row
+	protected void onBeforeRender()
+	{
+		assert (getDataSource() == null || getDataSource().getColumnDefinitions() != null) : "DataSource dos not declare any ColumnDefinition";
+	}
+
+	/**
+	 * Run column validator after editing a row
+	 * 
 	 * @param key
 	 * @param value
 	 * @return true = ok, false = failure
 	 */
 	private boolean validate(String key, Object value)
 	{
-		ColumnDefinition colDef =  getColumnDefinitions().getDefinition(key);
-		
-		if(colDef != null)
+		ColumnDefinition colDef = getColumnDefinitions().getDefinition(key);
+
+		if (colDef != null)
 		{
 			ColumnEditorValidator columnValidator = colDef.getColumnEditorValidator();
-			if(columnValidator != null && !columnValidator.validate(value))
+			if (columnValidator != null && !columnValidator.validate(value))
 			{
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
-	/** Add a validator to a editable column
+
+	/**
+	 * Add a validator to a editable column
+	 * 
 	 * @param key
 	 * @param columnEditorValidator
 	 */
 	public void addColumnEditorValidator(String key, ColumnEditorValidator columnEditorValidator)
 	{
 		ColumnDefinition colDef = getColumnDefinition(key);
-		if(colDef != null)
+		if (colDef != null)
 		{
 			colDef.setColumnEditorValidator(columnEditorValidator);
-		}
-		else
+		} else
 		{
 			throw new RuntimeException("Given column key not found in the ColumnDefinitions");
 		}
 	}
+
+	private void ensureEditorFocused()
+	{
+		editorFocused = true;
+		final Timer timer = new Timer(){
+
+			@Override
+			public void run()
+			{
+				editorFocused = false;
+				this.cancel();
+			}
+		};
+
+		timer.schedule(101);
+	}
+
 	
 }

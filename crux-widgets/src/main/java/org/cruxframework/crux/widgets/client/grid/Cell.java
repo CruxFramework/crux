@@ -96,9 +96,10 @@ public class Cell extends Composite
 			{
 				boolean status = row.isSelected();
 				grid.onSelectRow(!status, row, true);
+				
 			}
-
-			if(fireEvents && row.isEnabled())
+			
+			if(fireEvents)
 			{
 				grid.fireRowClickEvent(row);
 			}
