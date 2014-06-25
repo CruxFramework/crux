@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.server.rest.core.dispatch;
 
+import java.lang.reflect.Method;
+
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
 import org.cruxframework.crux.core.server.rest.spi.RestFailure;
 
@@ -25,11 +27,24 @@ import org.cruxframework.crux.core.server.rest.spi.RestFailure;
 public abstract class RequestPreprocessor
 {
 	/**
-	 * 
+	 * To be overriden.
 	 * @param context
 	 * @return
 	 */
-	protected abstract boolean appliesTo(RequestProcessorContext context);
+	protected boolean appliesTo(RequestProcessorContext context)
+	{
+		return true;
+	}
+	
+	/**
+	 * To be overriden.
+	 * @param context
+	 * @return
+	 */
+	protected boolean appliesTo(Method targetMethod)
+	{
+		return true;
+	}
 	
 	/**
 	 * 
@@ -50,7 +65,7 @@ public abstract class RequestPreprocessor
         {
 	        RequestPreprocessor preprocessor = getClass().newInstance();
 	        
-	        if(preprocessor.appliesTo(context))
+	        if(preprocessor.appliesTo(context) && preprocessor.appliesTo(context.getTargetMethod()))
 	        {
 	        	return preprocessor;
 	        }
