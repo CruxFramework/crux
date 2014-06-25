@@ -15,8 +15,6 @@
  */
 package org.cruxframework.crux.core.server.rest.core.dispatch;
 
-import java.lang.reflect.Method;
-
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
 import org.cruxframework.crux.core.server.rest.spi.RestFailure;
 
@@ -28,10 +26,10 @@ public abstract class RequestPreprocessor
 {
 	/**
 	 * 
-	 * @param restOperation
+	 * @param context
 	 * @return
 	 */
-	protected abstract boolean appliesTo(Method restOperation);
+	protected abstract boolean appliesTo(RequestProcessorContext context);
 	
 	/**
 	 * 
@@ -42,16 +40,17 @@ public abstract class RequestPreprocessor
 
 	/**
 	 * 
-	 * @param restOperation
+	 * @param context
 	 * @return
 	 * @throws RequestProcessorException 
 	 */
-	public RequestPreprocessor createProcessor(Method restOperation) throws RequestProcessorException
+	public RequestPreprocessor createProcessor(RequestProcessorContext context) throws RequestProcessorException
 	{
 		try
         {
 	        RequestPreprocessor preprocessor = getClass().newInstance();
-	        if (preprocessor.appliesTo(restOperation))
+	        
+	        if(preprocessor.appliesTo(context))
 	        {
 	        	return preprocessor;
 	        }
@@ -60,6 +59,7 @@ public abstract class RequestPreprocessor
         {
         	throw new RequestProcessorException("Error creating processor", e); 
         }
+		
         return null;
 	}
 }

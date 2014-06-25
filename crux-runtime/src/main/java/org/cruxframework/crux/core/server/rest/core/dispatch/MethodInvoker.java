@@ -158,12 +158,15 @@ public class MethodInvoker
 
 	protected void initializePreprocessors() throws RequestProcessorException
     {
+		RequestProcessorContext context = new RequestProcessorContext();
+		context.setTargetMethod(method);
+		context.setTargetClass(rootClass);
+		
 	    preprocessors = new ArrayList<RequestPreprocessor>();
-
 	    Iterator<RequestPreprocessor> iterator = RequestPreprocessors.iteratePreprocessors();
 	    while (iterator.hasNext())
         {
-	    	RequestPreprocessor processor = iterator.next().createProcessor(method);
+	    	RequestPreprocessor processor = iterator.next().createProcessor(context);
 	    	if (processor != null)
 	    	{
 	    		preprocessors.add(processor);
