@@ -220,18 +220,11 @@
       		<when-property-is name="user.agent" value="safari" />
     	</any>
     </replace-with>
-    <replace-with
-    	class="org.cruxframework.crux.core.client.css.animation.Animation.MozilaBrowserImpl">
-    	<when-type-is class="org.cruxframework.crux.core.client.css.animation.Animation.BrowserImpl" />
-    	<any>
-      		<when-property-is name="user.agent" value="gecko1_8" />
-    	</any>
-    </replace-with>
-    <replace-with
-    	class="org.cruxframework.crux.core.client.css.animation.Animation.MSBrowserImpl">
-    	<when-type-is class="org.cruxframework.crux.core.client.css.animation.Animation.BrowserImpl" />
-    	<any>
-      		<when-property-is name="user.agent" value="ie9" />
-    	</any>
-    </replace-with>
+<!--     <replace-with -->
+<!--     	class="org.cruxframework.crux.core.client.css.animation.Animation.MSBrowserImpl"> -->
+<!--     	<when-type-is class="org.cruxframework.crux.core.client.css.animation.Animation.BrowserImpl" /> -->
+<!--     	<any> -->
+<!--       		<when-property-is name="user.agent" value="ie9" /> -->
+<!--     	</any> -->
+<!--     </replace-with> -->
 </module>
