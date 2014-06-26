@@ -170,7 +170,7 @@ abstract class AbstractPagedDataSource<E> extends AbstractScrollableDataSource<E
 	protected int getPageEndRecord()
 	{
 		int pageEndRecord = (currentPage * pageSize) - 1;
-		if (pageEndRecord >= this.data.length)
+		if (this.data != null && pageEndRecord >= this.data.length)
 		{
 			pageEndRecord = this.data.length-1;
 		}
