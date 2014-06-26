@@ -93,8 +93,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	private boolean showRowDetailsIcon;
 	private boolean freezeHeaders;
 	private Boolean hasFrozenColumns;
-	private VerticalPanel verticalPanel;
-	private Label labelInfo;
 	
 	/**
 	 * Handles the event fired when the details of some row becomes visible.
@@ -207,12 +205,9 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		this.freezeHeaders = freezeHeaders;
 		this.showRowDetailsIcon = this.rowDetailWidgetCreator != null && showRowDetailsIcon;
 		
-		verticalPanel = new VerticalPanel();
-		
 		scrollingArea = new ScrollPanel();
 		scrollingArea.setStyleName(DEFAULT_STYLE_NAME);
-		verticalPanel.add(scrollingArea);
-		initWidget(verticalPanel);
+		initWidget(scrollingArea);
 		
 		if(hasFrozenCells())
 		{
@@ -250,9 +245,6 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		}
 		
 		scrollingArea.add(table.asWidget());
-		labelInfo = new Label();
-		labelInfo.setVisible(false);
-		verticalPanel.add(labelInfo);
 	}
 	
 	/**
@@ -948,56 +940,4 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		}
 	}
 	
-	/**
-	 * Displays a message bellow the grid component
-	 * @param message
-	 */
-	public void setInfoMessage(String message)
-	{
-		setMessage(message, "msg-info-grid");
-	}
-
-	private void setMessage(String message, String cssClass)
-	{
-		Timer timer = new Timer() {
-			@Override
-			public void run()
-			{
-				labelInfo.setVisible(false);
-			}
-		};
-		
-		labelInfo.setStyleName(cssClass);
-		labelInfo.setText(message);
-		labelInfo.setVisible(true);
-		
-		timer.schedule(5000);
-	}
-	
-	/**
-	 * Displays a message bellow the grid component
-	 * @param message
-	 */
-	public void setErrorMessage(String message)
-	{
-		setMessage(message, "msg-error-grid");
-	}
-	
-	/**
-	 * Displays a message bellow the grid component
-	 * @param message
-	 */
-	public void setWarningMessage(String message)
-	{
-		setMessage(message, "msg-warning-grid");
-	}
-	
-	/**
-	 * Displays a message bellow the grid component
-	 * @param message
-	 */
-	public void setSuccessMessage(String message)
-	{
-		setMessage(message, "msg-success-grid");
-	}
 }

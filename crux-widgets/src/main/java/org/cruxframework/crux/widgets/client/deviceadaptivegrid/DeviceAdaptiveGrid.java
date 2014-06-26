@@ -388,42 +388,6 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		}
 
 		/**
-		 * Displays a message bellow the grid component
-		 * @param message
-		 */
-		public void setInfoMessage(String message)
-		{
-			grid.setInfoMessage(message);
-		}
-
-		/**
-		 * Displays a message bellow the grid component
-		 * @param message
-		 */
-		public void setErrorMessage(String message)
-		{
-			grid.setErrorMessage(message);
-		}
-		
-		/**
-		 * Displays a message bellow the grid component
-		 * @param message
-		 */
-		public void setWarningMessage(String message)
-		{
-			grid.setWarningMessage(message);
-		}
-		
-		/**
-		 * Displays a message bellow the grid component
-		 * @param message
-		 */
-		public void setSuccessMessage(String message)
-		{
-			grid.setSuccessMessage(message);
-		}
-		
-		/**
 		 *
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#loadData()
 		 */
@@ -975,41 +939,4 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	    setHTML( html.asString() );
 	  }
 	}
-	
-	/**
-	 * Displays a message bellow the grid component
-	 * @param message
-	 */
-	public void setInfoMessage(String message)
-	{
-		gridImpl.setInfoMessage(message);
-	}
-
-	/**
-	 * Displays a message bellow the grid component
-	 * @param message
-	 */
-	public void setErrorMessage(String message)
-	{
-		gridImpl.setErrorMessage(message);
-	}
-	
-	/**
-	 * Displays a message bellow the grid component
-	 * @param message
-	 */
-	public void setWarningMessage(String message)
-	{
-		gridImpl.setWarningMessage(message);
-	}
-	
-	/**
-	 * Displays a message bellow the grid component
-	 * @param message
-	 */
-	public void setSuccessMessage(String message)
-	{
-		gridImpl.setSuccessMessage(message);
-	}
-	
 }
