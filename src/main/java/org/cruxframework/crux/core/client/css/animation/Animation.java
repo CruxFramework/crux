@@ -158,21 +158,12 @@ public abstract class Animation <T extends CssResource>
         }
 	}
 	
-	static class MozilaBrowserImpl extends BrowserImpl
-	{
-		@Override
-        public String getAnimationEndFunctioName()
-        {
-	        return "mozAnimationEnd";
-        }
-	}
-	
-	static class MSBrowserImpl extends BrowserImpl
-	{
-		@Override
-        public String getAnimationEndFunctioName()
-        {
-	        return "MSAnimationEnd";
-        }
-	}
+//	static class MSBrowserImpl extends BrowserImpl
+//	{
+//		@Override
+//        public String getAnimationEndFunctioName()
+//        {
+//	        return "MSAnimationEnd";
+//        }
+//	}
 }
