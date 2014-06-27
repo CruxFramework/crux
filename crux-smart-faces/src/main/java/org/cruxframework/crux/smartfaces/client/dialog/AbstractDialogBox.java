@@ -295,9 +295,4 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 			openDialogs.get(0).hide();
         }
 	}
-
-	public Button getCloseBtn() 
-	{
-		return closeBtn;
-	}
 }
