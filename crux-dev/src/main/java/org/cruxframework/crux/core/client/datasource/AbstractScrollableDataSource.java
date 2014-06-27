@@ -86,6 +86,20 @@ abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E
 		loaded = false;
 	}
 	
+	@Deprecated
+	public DataSourceRecord<E> getRecord(int index)
+	{
+		ensureLoaded();
+		if (currentRecord > -1)
+		{
+			return data != null ? data[index] : null;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	public DataSourceRecord<E> getRecord()
 	{
 		ensureLoaded();
