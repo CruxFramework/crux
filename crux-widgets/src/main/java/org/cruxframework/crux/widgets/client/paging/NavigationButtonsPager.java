@@ -5,7 +5,7 @@ import org.cruxframework.crux.widgets.client.event.paging.PageEvent;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -86,8 +86,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	protected Widget createPreviousButton()
 	{
 		final NavigationButtonsPager pager = this;
-		
-		Widget panel = createNavigationButton("previousButton", 
+		Widget button = createNavigationButton("previousButton", 
 			new ClickHandler() 
 			{
 				public void onClick(ClickEvent event)
@@ -107,9 +106,9 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 			}
 		);
 		
-		this.previousButton = panel;
+		this.previousButton = button;
 		
-		return panel;
+		return button;
 	}
 	
 	/**
@@ -119,8 +118,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	protected Widget createNextButton()
 	{
 		final NavigationButtonsPager pager = this;
-		
-		Widget panel = createNavigationButton("nextButton", 
+		Widget button = createNavigationButton("nextButton", 
 			new ClickHandler()
 			{			
 				public void onClick(ClickEvent event)
@@ -140,9 +138,9 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 			}
 		);
 		
-		this.nextButton = panel;
+		this.nextButton = button;
 		
-		return panel;
+		return button;
 	}
 	
 	/**
@@ -213,13 +211,12 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 */
 	private Widget createNavigationButton(String styleName, ClickHandler clickHandler)
 	{
-		Widget panel = panelCreator.createPanel();
-		panel.setStyleName(styleName);
-		panel.addStyleDependentName("disabled");
-		((HasClickHandlers)panel).addClickHandler(clickHandler);
-		return panel;
+		Button navButton = new Button();
+		navButton.setStyleName(styleName);
+		navButton.addStyleDependentName("disabled");
+		navButton.addClickHandler(clickHandler);
+		return navButton;
 	}
-	
 	
 	protected static class ButtonPanelCreator
 	{
