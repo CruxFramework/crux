@@ -28,7 +28,7 @@ public class WaitBox extends AbstractDialogBox
 	public WaitBox(boolean movable)
 	{
 		super(movable, false, false, true, DEFAULT_STYLE_NAME);
-		setWidget(createInfiniteProgressBar());
+		setWidget(createProgressBar());
 	}
 
 	/**
@@ -70,10 +70,10 @@ public class WaitBox extends AbstractDialogBox
 	 * Creates a progress bar animation to be inserted in progress box
 	 * @return
 	 */
-	private Widget createInfiniteProgressBar() 
+	private Widget createProgressBar() 
 	{
-		HTML bar = new HTML("<div class='progressBarSlot'></div><div class='progressBarFill'></div>");
-		bar.setStyleName("faces-InfinityProgressBar");
+		HTML bar = new HTML("<div class='faces-fill'></div>"); //progressBarFill
+		bar.setStyleName("faces-progressBar");
 		return bar;
 	}	
 }
