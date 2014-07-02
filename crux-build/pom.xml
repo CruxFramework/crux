@@ -25,9 +25,9 @@
    -->
      
 	<modules>
-		<module>../crux-parent</module>
 		<module>../crux-runtime</module>
 		<module>../crux-dev</module>
+		<module>../crux-widgets</module>
 	</modules>
 
 	<build>
