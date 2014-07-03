@@ -156,7 +156,7 @@ class DataSourceOperations<E>
 	 */
 	protected void checkRange(int index)
 	{
-		if (index < 0 || index >= this.dataSource.data.length)
+		if (index < 0 || index > this.dataSource.data.length)
 		{
 			throw new IndexOutOfBoundsException();
 		}
