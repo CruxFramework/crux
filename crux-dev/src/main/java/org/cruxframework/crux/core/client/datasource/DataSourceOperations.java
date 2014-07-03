@@ -25,7 +25,9 @@ import org.cruxframework.crux.core.client.datasource.DataSourceRecord.DataSource
 /**
  * @author Thiago da Rosa de Bustamante
  *
+ * 
  */
+
 class DataSourceOperations<E>
 {
 	protected List<DataSourceRecord<E>> newRecords = new ArrayList<DataSourceRecord<E>>();
@@ -152,7 +154,7 @@ class DataSourceOperations<E>
 	 */
 	protected void checkRange(int index)
 	{
-		if (index < 0 || index >= this.dataSource.data.length)
+		if (index < 0 || index > this.dataSource.data.length)
 		{
 			throw new IndexOutOfBoundsException();
 		}
