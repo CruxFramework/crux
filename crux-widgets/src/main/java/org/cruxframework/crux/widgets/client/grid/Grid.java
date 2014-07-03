@@ -86,9 +86,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 // TODO refatorar isso. Criar uma grid programaticamente eh muito complexo como
 // esta
+@SuppressWarnings("deprecation")
 public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<PagedDataSource<?>>, HasBeforeRowSelectHandlers
 {
 	private int pageSize;
+	
 	private PagedDataSource<?> dataSource;
 	private FastList<ColumnHeader> headers = new FastList<ColumnHeader>();
 	private boolean autoLoadData;
@@ -648,6 +650,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		if (editMode)
 		{
 			chooseFocusedEditor(editors, editableColumns, focusCellKey);
+			fireBeforeRowEditEvent(row);
 		}
 
 		row.setSelected(row.getDataSourceRecord().isSelected());
@@ -675,7 +678,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			confirmLastEditedRowValues(lastEditingRow, getEditableColumns());
 			lastEditingRow.setEditMode(false);
-			fireRowEditEvent(lastEditingRow);
 		}
 	}
 
@@ -847,6 +849,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private void confirmLastEditedRowValues(DataRow row)
 	{
 		confirmLastEditedRowValues(row, getEditableColumns());
+		fireRowEditEvent(row);
 		row.setEditMode(false);
 		currentEditingRow = null;
 	}
