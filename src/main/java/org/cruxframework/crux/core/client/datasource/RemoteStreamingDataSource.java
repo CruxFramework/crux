@@ -31,10 +31,7 @@ import com.google.gwt.user.client.ui.HasValue;
 /**
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 public abstract class RemoteStreamingDataSource<T> implements StreamingDataSource<T>
 {
 	protected StreamingDataSourceOperations<T> editableOperations = new StreamingDataSourceOperations<T>(this);
@@ -192,7 +189,11 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 			int count = Math.min(endRecord - startRecord + 1, records.length);
 			for (ret = 0; ret < count ; ret++)
 			{
-				this.data.set(ret+startRecord, records[ret]);
+				int index = ret+startRecord;
+				if(records.length > ret && this.data.size() > index)
+				{
+					this.data.set(index, records[ret]);
+				}
 			}
 		}
 		return ret;
@@ -413,8 +414,8 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 	 */
 	public int getCurrentPageSize()
 	{
-		int pageEndRecord = getPageEndRecord();
-		return pageEndRecord - getPageStartRecord() + 1;
+		int pageEndRecord = getPageEndRecord() == this.data.size() ? getPageEndRecord() -1 : getPageEndRecord();
+		return pageEndRecord - getPageStartRecord()+1;
 	}
 
 	/**
@@ -535,7 +536,10 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 			int pageSize = endPageRecord - startPageRecord + 1;
 			for (int i = 0; i<pageSize; i++)
 			{
-				pageData[i] = data.get(i+startPageRecord);
+				if(this.data.size() > i && pageData.length > i)
+				{
+					pageData[i] = data.get(i+startPageRecord);
+				}
 			}
 			sortArray(pageData,columnName, ascending, caseSensitive);
 			updatePageRecords(startPageRecord, endPageRecord, pageData);
@@ -681,5 +685,5 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 	public T getBoundObject(DataSourceRecord<T> record)
 	{
 		return null;
-	}
+	}	
 }
