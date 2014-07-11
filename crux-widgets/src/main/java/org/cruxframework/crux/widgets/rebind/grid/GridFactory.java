@@ -88,7 +88,8 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 	@TagAttributeDeclaration(value="showRowDetailsIcon", type=Boolean.class, defaultValue="true"),
 	@TagAttributeDeclaration(value="freezeHeaders", type=Boolean.class, defaultValue="false"),
 	@TagAttributeDeclaration(value="caseSensitive", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false")
+	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false"),
+	@TagAttributeDeclaration(value="showEditorButtons", type=Boolean.class,defaultValue="false")
 	
 })
 @TagAttributes({
@@ -125,7 +126,8 @@ public class GridFactory extends WidgetCreator<WidgetCreatorContext>
             getStretchColumns(widgetElement)+", "+getHighlightRowOnMouseOver(widgetElement)+", "+
             getEmptyDataFilling(widgetElement)+", "+isFixedCellSize(widgetElement)+", "+getSortingColumn(widgetElement)+", "+
             getSortingType(widgetElement) + ", "+ rowDetailsCreator + ", "+ 
-            getShowRowDetailsIcon(widgetElement) + ", " + getFreezeHeaders(widgetElement) +", "+getCaseSensitive(widgetElement) + "," + getKeepEditorOnClickDisabledRows(widgetElement) + ");");
+            getShowRowDetailsIcon(widgetElement) + ", " + getFreezeHeaders(widgetElement) +", "+getCaseSensitive(widgetElement) + "," + getKeepEditorOnClickDisabledRows(widgetElement) + "," + 
+            getShowEditorButtons(widgetElement) + ");");
 	}
 	
 	private boolean getShowRowDetailsIcon(JSONObject gridElem) 
@@ -245,6 +247,19 @@ public class GridFactory extends WidgetCreator<WidgetCreatorContext>
 		
 		return false;
 	}
+	
+	private boolean getShowEditorButtons(JSONObject gridElem)
+	{
+		String highlight = gridElem.optString("showEditorButtons");
+		
+		if(highlight != null && highlight.trim().length() > 0)
+		{
+			return Boolean.parseBoolean(highlight);
+		}
+		
+		return false;
+	}
+
 
 	/**
 	 * @param gridElem

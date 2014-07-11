@@ -110,7 +110,10 @@ public class Cell extends Composite
 			{
 				if(fireEvents && row.isEnabled())
 				{
-					((Grid)grid).makeEditable((DataRow) row, this);
+					if(!((Grid)grid).isShowEditorButtons())
+					{
+						((Grid)grid).makeEditable((DataRow) row, this);
+					}
 				}
 			}
 			

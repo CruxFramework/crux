@@ -15,10 +15,12 @@
  */
 package org.cruxframework.crux.widgets.client.grid;
 
+import org.cruxframework.crux.core.client.bean.BeanCopier;
 import org.cruxframework.crux.core.client.datasource.DataSource;
 import org.cruxframework.crux.core.client.datasource.DataSourceRecord;
 import org.cruxframework.crux.core.client.datasource.PagedDataSource;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 
 public class DataRow extends Row
@@ -41,6 +43,13 @@ public class DataRow extends Row
 	{
 		return dataSourceRecord;
 	}
+	
+	public DataRow(DataRow row)
+	{
+		super(row.getIndex(),row.getElem(),row.getGrid(),row.isHasSelectionCell());
+		//this.setDataSourceRecord(row.getDataSourceRecord().getRecordObject());
+	}
+	
 
 	/**
 	 * @param dataSourceRowId the dataSourceRowId to set

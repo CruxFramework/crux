@@ -686,4 +686,9 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 	{
 		return null;
 	}	
+	
+	public T cloneDTO(DataSourceRecord<?> record)
+	{
+		return null;
+	}
 }

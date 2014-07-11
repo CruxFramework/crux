@@ -20,6 +20,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.themes.widgets.xstandard.client.resource.common.XStandardResourcesCommon;
 
 import com.google.gwt.resources.client.DataResource;
+import com.google.gwt.resources.client.ClientBundle.Source;
 
 /**
  * @author Gesse Dafe
@@ -27,8 +28,6 @@ import com.google.gwt.resources.client.DataResource;
 @Resource(value="xStandardResources", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch})
 public interface XStandardResourcesLarge extends XStandardResourcesCommon
 {
-	
-	
 	@Source({"org/cruxframework/crux/themes/widgets/xstandard/client/resource/common/cssXStandardCommon.css","cssXStandardLarge.css"})
 	CssXStandardLarge css();
 	
@@ -40,4 +39,13 @@ public interface XStandardResourcesLarge extends XStandardResourcesCommon
 	
 	@Source("svg-icon-pause.svg")
 	DataResource svgIconPause();
+	
+	@Source("edit-small.png")
+	DataResource gridEditIcon();
+	
+	@Source("ok-small.png")
+	DataResource gridSaveIcon();
+	
+	@Source("cancel-small.png")
+	DataResource gridCancelIcon();
 }

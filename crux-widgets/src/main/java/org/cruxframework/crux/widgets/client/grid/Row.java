@@ -308,4 +308,31 @@ public class Row
 			grid.getTable().setWidget(index + 1, 0, details);
 		}
 	}
+
+	public int getIndex()
+	{
+		return index;
+	}
+
+	public Element getElem()
+	{
+		return elem;
+	}
+
+	public boolean isHasSelectionCell()
+	{
+		return hasSelectionCell;
+	}
+
+	public boolean isHasRowDetails()
+	{
+		return hasRowDetails;
+	}
+
+	public boolean isShowRowDetailsIcon()
+	{
+		return showRowDetailsIcon;
+	}
+	
+	
 }

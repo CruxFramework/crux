@@ -3,6 +3,9 @@
 @url svgIconArrow svgIconArrow;
 @url svgIconPlay svgIconPlay;
 @url svgIconPause svgIconPause;
+@url gridSaveIcon gridSaveIcon;
+@url gridCancelIcon gridCancelIcon;
+@url gridEditIcon gridEditIcon;
 
 /****************
  Non-Selectables
@@ -1348,4 +1351,41 @@
 .crux-StyledPanelOuter
 {
 	width:auto;
+}
+
+
+.edit-column-button
+{
+	width: 20px;
+	height:20px;
+	border:none;
+	background: gridEditIcon no-repeat;
+}
+
+.button-disabled
+{
+	opacity:0.20;
+}
+
+.save-column-button
+{
+	width: 20px;
+	height:20px;
+	border:none;
+	background: gridSaveIcon no-repeat;
+}
+
+.cancel-column-button
+{
+	width: 20px;
+	height:20px;
+	border:none;
+	background: gridCancelIcon no-repeat;
+}
+
+.panel-editor-column
+{
+	border: none;
+	padding: 0px;
+	width:60px;
 }

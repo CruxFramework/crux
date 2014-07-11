@@ -62,7 +62,8 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 	@TagAttributeDeclaration(value="emptyDataFilling", type=String.class, defaultValue=" "),
 	@TagAttributeDeclaration(value="defaultSortingColumn", type=String.class),
 	@TagAttributeDeclaration(value="defaultSortingType", type=SortingType.class, defaultValue="ascending"),
-	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false")
+	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false"),
+	@TagAttributeDeclaration(value="showEditorButtons", type=Boolean.class, defaultValue="false")
 })
 @TagAttributes({
 	@TagAttribute(value="dataSource", processor=DeviceAdaptiveGridFactory.DataSourceAttributeParser.class)
@@ -89,7 +90,7 @@ public class DeviceAdaptiveGridFactory extends WidgetCreator<WidgetCreatorContex
             getRowSelectionModel(widgetElement)+", "+getCellSpacing(widgetElement)+", "+getAutoLoad(widgetElement)+", "+
             getStretchColumns(widgetElement)+", "+getHighlightRowOnMouseOver(widgetElement)+", "+
             getEmptyDataFilling(widgetElement)+", "+isFixedCellSize(widgetElement)+", "+getSortingColumn(widgetElement)+", "+
-            getSortingType(widgetElement) + ","+ getKeepEditorOnClickDisabledRows(widgetElement) + ");");
+            getSortingType(widgetElement) + ","+ getKeepEditorOnClickDisabledRows(widgetElement) +  "," + getShowEditorButtons(widgetElement) + ");");
 	}
 
 	@TagChildren({
@@ -271,6 +272,22 @@ public class DeviceAdaptiveGridFactory extends WidgetCreator<WidgetCreatorContex
 			if(keepEditor != null && keepEditor.trim().length() > 0)
 			{
 				return Boolean.parseBoolean(keepEditor);
+			}
+			
+			return false;
+		}
+		
+		/**
+		 * @param gridElem
+		 * @return
+		 */
+		private boolean getShowEditorButtons(JSONObject gridElem)
+		{
+			String highlight = gridElem.optString("showEditorButtons");
+			
+			if(highlight != null && highlight.trim().length() > 0)
+			{
+				return Boolean.parseBoolean(highlight);
 			}
 			
 			return false;

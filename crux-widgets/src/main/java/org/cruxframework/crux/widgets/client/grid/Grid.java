@@ -34,6 +34,7 @@ import org.cruxframework.crux.core.client.formatter.Formatter;
 import org.cruxframework.crux.core.client.formatter.HasFormatter;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.widgets.client.WidgetMsgFactory;
+import org.cruxframework.crux.widgets.client.button.Button;
 import org.cruxframework.crux.widgets.client.event.row.BeforeRowEditEvent;
 import org.cruxframework.crux.widgets.client.event.row.BeforeRowSelectEvent;
 import org.cruxframework.crux.widgets.client.event.row.BeforeRowSelectHandler;
@@ -47,6 +48,7 @@ import org.cruxframework.crux.widgets.client.event.row.RowEditEvent;
 import org.cruxframework.crux.widgets.client.event.row.RowRenderEvent;
 import org.cruxframework.crux.widgets.client.event.row.ShowRowDetailsEvent;
 import org.cruxframework.crux.widgets.client.grid.DataColumnEditorCreators.DataColumnEditorCreator;
+import org.cruxframework.crux.widgets.client.grid.WidgetColumnDefinition.WidgetColumnCreator;
 import org.cruxframework.crux.widgets.client.paging.Pageable;
 import org.cruxframework.crux.widgets.client.paging.Pager;
 
@@ -69,6 +71,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasValue;
@@ -77,6 +80,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -107,6 +111,9 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private DataRow lastEditingRow;
 	private boolean editorFocused = false;
 	private boolean keepEditorOnClickDisabledRows = false;
+	private boolean showEditorButtons = false;
+	private DataRow originalRow;
+	private Object originalRecord;
 
 	/**
 	 * @param columnDefinitions
@@ -184,6 +191,45 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	}
 
 	/**
+	 * @param columnDefinitions
+	 *            the columns to be rendered
+	 * @param pageSize
+	 *            the number of rows per page
+	 * @param rowSelection
+	 *            the behavior of the grid about line selection
+	 * @param cellSpacing
+	 *            the space between the cells
+	 * @param autoLoadData
+	 *            if <code>true</code>, when a data source is set, its first
+	 *            page records are fetched and rendered.
+	 * @param stretchColumns
+	 *            if <code>true</code>, the width of the columns are auto
+	 *            adjusted to fit the grid width. Prevents horizontal scrolling.
+	 * @param highlightRowOnMouseOver
+	 *            if <code>true</code>, rows change their styles when mouse
+	 *            passed over them
+	 * @param emptyDataFilling
+	 *            an alternative text to be shown when there is no data for some
+	 *            data cell
+	 * @param fixedCellSize
+	 *            equivalent of setting CSS attribute <code>table-layout</code>
+	 *            to <code>fixed</code>
+	 * @param defaultSortingColumn
+	 *            the column to be used to automatically sort the grid's data
+	 *            when it is rendered for the first time
+	 * @param defaultSortingType
+	 *            tells the grid if <code>defaultSortingColumn</code> should be
+	 *            used ascending or descending
+	 * @param keepEditorOnClickDisabledRows Keep row's editor opened even when clicking on a disabled datarow
+	 * @param showEditorButtons Displays a column with three buttons: edit, save and cancel
+	 */
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize,
+			String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons)
+	{
+		this(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType, null, false, false, false,keepEditorOnClickDisabledRows,showEditorButtons);
+	}
+	
+	/**
 	 * Full constructor
 	 * 
 	 * @param columnDefinitions
@@ -228,6 +274,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		super(columnDefinitions, rowSelection, cellSpacing, stretchColumns, highlightRowOnMouseOver, fixedCellSize, rowDetailsWidgetCreator, showRowDetailsIcon, freezeHeaders);
 		getColumnDefinitions().setGrid(this);
+		setEditorColumns();
+
 		this.emptyDataFilling = emptyDataFilling != null ? emptyDataFilling : " ";
 		this.pageSize = pageSize;
 		this.autoLoadData = autoLoadData;
@@ -241,7 +289,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		}
 		super.render();
 	}
-	
 	
 	/**
 	 * @param columnDefinitions
@@ -266,6 +313,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		super(columnDefinitions, rowSelection, cellSpacing, stretchColumns, highlightRowOnMouseOver, fixedCellSize, rowDetailsWidgetCreator, showRowDetailsIcon, freezeHeaders);
 		getColumnDefinitions().setGrid(this);
+		
 		this.emptyDataFilling = emptyDataFilling != null ? emptyDataFilling : " ";
 		this.pageSize = pageSize;
 		this.autoLoadData = autoLoadData;
@@ -280,6 +328,170 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		}
 		super.render();
 		
+		setEditorColumns();
+		keepEditorOpen();
+	}
+	
+	/**
+	 * @param columnDefinitions
+	 * @param pageSize
+	 * @param rowSelection
+	 * @param cellSpacing
+	 * @param autoLoadData
+	 * @param stretchColumns
+	 * @param highlightRowOnMouseOver
+	 * @param emptyDataFilling
+	 * @param fixedCellSize
+	 * @param defaultSortingColumn
+	 * @param defaultSortingType
+	 * @param rowDetailsWidgetCreator
+	 * @param showRowDetailsIcon
+	 * @param freezeHeaders
+	 * @param caseSensitive
+	 * @param keepEditorOnClickDisabledRows
+	 * @param showEditorButtons
+	 */
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize,
+			String defaultSortingColumn, SortingType defaultSortingType, RowDetailWidgetCreator rowDetailsWidgetCreator, boolean showRowDetailsIcon, boolean freezeHeaders, boolean caseSensitive, boolean keepEditorOnClickDisabledRows,boolean showEditorButtons)
+	{
+		super(columnDefinitions, rowSelection, cellSpacing, stretchColumns, highlightRowOnMouseOver, fixedCellSize, rowDetailsWidgetCreator, showRowDetailsIcon, freezeHeaders);
+		getColumnDefinitions().setGrid(this);
+		
+		this.showEditorButtons = showEditorButtons;
+		this.emptyDataFilling = emptyDataFilling != null ? emptyDataFilling : " ";
+		this.pageSize = pageSize;
+		this.autoLoadData = autoLoadData;
+		this.defaultSortingColumn = defaultSortingColumn;
+		this.defaultSortingType = defaultSortingType;
+		this.caseSensitive = caseSensitive;
+		this.keepEditorOnClickDisabledRows = keepEditorOnClickDisabledRows;
+		
+		if (hasRowDetails())
+		{
+			this.rowDetailsManager = new RowDetailsManager(rowDetailsWidgetCreator);
+		}
+		super.render();
+		
+		setEditorColumns();
+		keepEditorOpen();
+	}
+	
+	private void setEditorColumns()
+	{
+		if(showEditorButtons)
+		{
+			getColumnDefinitions().add("edit", new WidgetColumnDefinition("", "100%", new EditColumn(this) ,true, null, null));
+		}
+	}
+	
+	private class EditColumn implements WidgetColumnCreator{
+		private Grid grid;
+		
+		public EditColumn(Grid grid)
+		{
+			this.grid = grid;
+		}
+		
+		@Override
+		public Widget createWidgetForColumn()
+		{
+			final Panel panel = new FlowPanel();
+			final Button btnEdit = new Button();
+			final Button btnSave = new Button();
+			final Button btnCancel = new Button();
+			
+			btnSave.getElement().getStyle().setProperty("paddingTop", "5px");
+			btnEdit.setEnabled(true);
+			btnSave.setEnabled(false);
+			btnCancel.setEnabled(false);
+			
+			btnEdit.setStyleName("edit-column-button");
+			btnEdit.addStyleName("button-disabled");
+			btnSave.setStyleName("save-column-button");
+			btnCancel.setStyleName("cancel-column-button");
+			
+			btnEdit.removeStyleName("button-disabled");
+			btnSave.addStyleName("button-disabled");
+			btnCancel.addStyleName("button-disabled");
+			
+			panel.setStyleName("panel-editor-column");
+			btnEdit.addHandler(new ClickHandler(){
+				
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					DataRow r = grid.getRow(panel);
+					grid.makeEditable(r, null);
+					
+					Cell cell = r.getCell("edit");
+					FlowPanel panel = (FlowPanel)cell.getCellWidget();
+					((Button)panel.getWidget(0)).setEnabled(false);
+					((Button)panel.getWidget(1)).setEnabled(true);
+					((Button)panel.getWidget(2)).setEnabled(true);
+					
+					((Button)panel.getWidget(0)).addStyleName("button-disabled");
+					((Button)panel.getWidget(1)).removeStyleName("button-disabled");
+					((Button)panel.getWidget(2)).removeStyleName("button-disabled");
+					
+				}
+			}, ClickEvent.getType());
+			
+			btnSave.addHandler(new ClickHandler(){
+				
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					//DataRow r = grid.getSelectedRows().get(0);
+					DataRow r = grid.getRow(panel);
+					grid.confirmLastEditedRowValues(r);
+					
+					Cell cell = r.getCell("edit");
+					FlowPanel panel = (FlowPanel)cell.getCellWidget();
+					((Button)panel.getWidget(0)).setEnabled(true);
+					((Button)panel.getWidget(1)).setEnabled(false);
+					((Button)panel.getWidget(2)).setEnabled(false);
+					
+					((Button)panel.getWidget(0)).removeStyleName("button-disabled");
+					((Button)panel.getWidget(1)).addStyleName("button-disabled");
+					((Button)panel.getWidget(2)).addStyleName("button-disabled");
+					
+				}
+			}, ClickEvent.getType());
+			
+			btnCancel.addHandler(new ClickHandler(){
+				
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					DataRow r = grid.getRow(panel);
+					
+					Cell cell = r.getCell("edit");
+					
+					grid.rollbackRowEdition(r);
+					
+					FlowPanel panel = (FlowPanel)cell.getCellWidget();
+					((Button)panel.getWidget(0)).setEnabled(true);
+					((Button)panel.getWidget(1)).setEnabled(false);
+					((Button)panel.getWidget(2)).setEnabled(false);
+					
+					((Button)panel.getWidget(0)).removeStyleName("button-disabled");
+					((Button)panel.getWidget(1)).addStyleName("button-disabled");
+					((Button)panel.getWidget(2)).addStyleName("button-disabled");
+				}
+			}, ClickEvent.getType());
+			
+			panel.add(btnEdit);
+			panel.add(btnSave);
+			panel.add(btnCancel);
+			
+
+			return panel;
+		}
+	}
+	
+	
+	private void keepEditorOpen()
+	{
 		if(this.keepEditorOnClickDisabledRows)
 		{
 			this.addRowClickHandler(new RowClickHandler(){
@@ -309,7 +521,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		}
 	}
 	
-
+	
 	/**
 	 * Sets the data source and re-renders the grid
 	 * 
@@ -689,7 +901,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	public void rollbackRowEdition(DataRow row)
 	{
 		if (row != null)
-		{
+		{	
+			if(originalRecord != null)
+			{
+				row.getDataSourceRecord().setRecordDto(originalRecord);
+			}
 			row.setEditMode(false);
 			renderRow(row, row.getDataSourceRecord(), false, null);
 			this.currentEditingRow = null;
@@ -762,26 +978,30 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			}
 		}, ClickEvent.getType());
 
-		widget.addDomHandler(new BlurHandler(){
-
-			@Override
-			public void onBlur(BlurEvent event)
-			{
-				final Timer timer = new Timer(){
-
-					@Override
-					public void run()
-					{
-						if (!editorFocused)
+		
+		if(!showEditorButtons)
+		{
+			widget.addDomHandler(new BlurHandler(){
+				
+				@Override
+				public void onBlur(BlurEvent event)
+				{
+					final Timer timer = new Timer(){
+						
+						@Override
+						public void run()
 						{
-							confirmLastEditedRowValues(row);
-							this.cancel();
+							if (!editorFocused)
+							{
+								confirmLastEditedRowValues(row);
+								this.cancel();
+							}
 						}
-					}
-				};
-				timer.schedule(100);
-			}
-		}, BlurEvent.getType());
+					};
+					timer.schedule(100);
+				}
+			}, BlurEvent.getType());
+		}
 
 		return widget;
 	}
@@ -1255,7 +1475,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				throw new UnsupportedOperationException(WidgetMsgFactory.getMessages().gridRandomPagingNotSupported());
 			}
 		}
-
 	}
 
 	/**
@@ -1456,9 +1675,10 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			{
 				currentEditingRow.setEditMode(false);
 			}
-
+			
+			originalRecord = getDataSource().cloneDTO(row.getDataSourceRecord());
 			swapCurrentEditingRow(row);
-
+			
 			String focusCellKey = null;
 
 			if (focusCell != null)
@@ -1478,7 +1698,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			}
 
 			renderRow(row, row.getDataSourceRecord(), true, focusCellKey);
-
 			row.setEditMode(true);
 		}
 	}
@@ -1665,5 +1884,27 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		timer.schedule(101);
 	}
 
+	public boolean isShowEditorButtons()
+	{
+		return showEditorButtons;
+	}
+
+	public boolean isKeepEditorOnClickDisabledRows()
+	{
+		return keepEditorOnClickDisabledRows;
+	}
+
+	public void setKeepEditorOnClickDisabledRows(boolean keepEditorOnClickDisabledRows)
+	{
+		this.keepEditorOnClickDisabledRows = keepEditorOnClickDisabledRows;
+		keepEditorOpen();
+	}
+
+	public void setShowEditorButtons(boolean showEditorButtons)
+	{
+		this.showEditorButtons = showEditorButtons;
+		setEditorColumns();
+	}
+	
 	
 }

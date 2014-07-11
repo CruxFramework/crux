@@ -122,6 +122,11 @@ public class DataSourceRecord<T>
     {
     	this.recordObject = recordObject;
     }
+	
+	public void setRecordDto(Object obj)
+	{
+		this.recordObject = (T)obj;
+	}
 
 	public void setSelected(boolean selected)
 	{
