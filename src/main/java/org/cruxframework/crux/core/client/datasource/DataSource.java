@@ -189,4 +189,10 @@ public interface DataSource<E>
 	 * @param dataSourceRecord
 	 */
 	void setValue(Object value, String columnKey, DataSourceRecord<?> dataSourceRecord);
+	
+	/** Clones the recordObject of a given DataSourceRecord
+	 * @param record
+	 * @return
+	 */
+	E cloneDTO(DataSourceRecord<?> record);
 }

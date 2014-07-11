@@ -18,6 +18,7 @@ package org.cruxframework.crux.core.rebind.datasource;
 import java.io.PrintWriter;
 
 import org.cruxframework.crux.core.client.Crux;
+import org.cruxframework.crux.core.client.bean.BeanCopier;
 import org.cruxframework.crux.core.client.datasource.ColumnDefinition;
 import org.cruxframework.crux.core.client.datasource.ColumnDefinitions;
 import org.cruxframework.crux.core.client.datasource.DataSourceRecord;
@@ -167,6 +168,7 @@ public class DataSourceProxyCreator extends AbstractProxyCreator
 		generateCopyValueToWidgetMethod(srcWriter);
 		generateBindToWidgetMethod(srcWriter);
 		generateSetValueMethod(srcWriter);
+		generateCloneMethod(srcWriter);
 	}	
 	
 	/**
@@ -448,6 +450,21 @@ public class DataSourceProxyCreator extends AbstractProxyCreator
 		srcWriter.println("}");
 		
 	}
+	
+	/**
+	 * Generates a recordObject clone method
+	 * @param s
+	 */
+	protected void generateCloneMethod(SourcePrinter s)
+	{
+		s.println("public interface DtoCopier extends " + BeanCopier.class.getCanonicalName() + "<"+dtoType.getParameterizedQualifiedSourceName()+","+ dtoType.getParameterizedQualifiedSourceName()+">{}");
+		s.println("public " + dtoType.getParameterizedQualifiedSourceName() + " cloneDTO("+DataSourceRecord.class.getCanonicalName()+"<?> dsr){" );
+		s.println("DtoCopier copier = GWT.create(DtoCopier.class);");
+		s.println(dtoType.getParameterizedQualifiedSourceName() + " newDto = new "+dtoType.getParameterizedQualifiedSourceName()+"();");
+		s.println("copier.copyFrom(("+dtoType.getParameterizedQualifiedSourceName()+")dsr.getRecordObject(),newDto);");
+		s.println("return newDto;}");
+	}
+	
 	
 	/**
 	 * Generates the copyValueToWidget method

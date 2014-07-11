@@ -164,5 +164,13 @@ public abstract class LocalScrollableDataSource<T> extends AbstractScrollableDat
 	public T getBoundObject(DataSourceRecord<T> record)
 	{
 		return super.getBoundObject(record);
-	}		
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.core.client.datasource.DataSource#cloneDTO(org.cruxframework.crux.core.client.datasource.DataSourceRecord)
+	 */
+	public T cloneDTO(DataSourceRecord<?> record)
+	{
+		return null;
+	}
 }

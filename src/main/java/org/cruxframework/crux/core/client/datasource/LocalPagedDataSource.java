@@ -189,4 +189,12 @@ public abstract class LocalPagedDataSource<T> extends AbstractPagedDataSource<T>
 	{
 		operations.updateState(record, previousState);
 	}
+
+	/**
+	 * @see org.cruxframework.crux.core.client.datasource.DataSource#cloneDTO(org.cruxframework.crux.core.client.datasource.DataSourceRecord)
+	 */
+	public T cloneDTO(DataSourceRecord<?> record)
+	{
+		return null;
+	}
 }
