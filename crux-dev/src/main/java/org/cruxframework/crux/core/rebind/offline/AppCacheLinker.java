@@ -326,7 +326,8 @@ public class AppCacheLinker extends AbstractLinker
 		{
 			if (!fn.endsWith("hosted.html"))
 			{
-				builder.append("/{context}/" + moduleName + "/" + fn + "\n");
+				String path = fn.contains("\\") ? fn.replaceAll("\\\\", "/") : fn;
+				builder.append("/{context}/" + moduleName + "/" + path + "\n");
 			}
 		}
 		builder.append("\nNETWORK:\n");
