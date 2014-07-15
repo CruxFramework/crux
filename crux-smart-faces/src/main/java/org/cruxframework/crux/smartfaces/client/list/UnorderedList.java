@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.list;
 
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 
 /**
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
@@ -23,20 +24,19 @@ import com.google.gwt.user.client.DOM;
  */
 public class UnorderedList extends AbstractList 
 {
-	public UnorderedList() 
+	public UnorderedList()
+    {
+    }
+
+	public UnorderedList(String styleName)
 	{
-		super(null);
-	}
-	
-	public UnorderedList(String className) 
-	{
-		super(className);
+		super(styleName);
 	}
 	
 	@Override
-	protected void setElement() 
+	protected Element createElement() 
 	{
-		setElement(DOM.createElement("ul"));	
+		return DOM.createElement("ul");	
 	}
 
 	@Override

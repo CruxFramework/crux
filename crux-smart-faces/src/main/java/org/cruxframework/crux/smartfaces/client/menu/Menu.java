@@ -15,19 +15,17 @@
  */
 package org.cruxframework.crux.smartfaces.client.menu;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.screen.Screen;
-import org.cruxframework.crux.smartfaces.client.label.Label;
+import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
+import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
 import com.google.gwt.aria.client.Roles;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.HasVisibility;
-import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -36,32 +34,19 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Claudio Holanda (claudio.junior@cruxframework.org)
  *
  */
-public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisibility, HasWidgets 
+public class Menu extends Composite implements HasAnimation, HasEnabled 
 {
-	public static enum Orientation
-	{
-		VERTICAL,
-		HORIZONTAL;
-	}
+	public static enum Orientation {VERTICAL, HORIZONTAL}
+	public static enum Type {TREE, SLIDE, ACCORDION, DROPDOWN}
 	
-	public static enum Type
-	{
-		TREE,
-		SLIDE,
-		ACCORDION,
-		DROPDOWN,
-		//...
-		;
-	}
-	
-	protected static final String STYLE_FACES_MENU = "faces-Menu";
+	public static final String STYLE_FACES_MENU = "faces-Menu";
 	protected static final String STYLE_FACES_SLIDE = "facesMenu-slide";
 	protected static final String STYLE_FACES_DROPDOWN = "facesMenu-dropdown";
 	protected static final String STYLE_FACES_TREE = "facesMenu-tree";
 	protected static final String STYLE_FACES_ACCORDION = "facesMenu-accordion";
 	protected static final String STYLE_FACES_HORIZONTAL = "facesMenu-horizontal";
 	protected static final String STYLE_FACES_VERTICAL = "facesMenu-vertical";
-	protected static final String STYLE_FACES_open = "facesMenu-open";
+	protected static final String STYLE_FACES_OPEN = "facesMenu-open";
 	protected static final String STYLE_FACES_HAS_CHILDREN = "facesMenu-hasChildren";
 	protected static final String STYLE_FACES_EMPTY = "facesMenu-empty";
 	protected static final String STYLE_FACES_LI = "facesMenu-li";
@@ -70,13 +55,21 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 	private Type currentType;
 	private Orientation currentOrientation;
 	private boolean enabled = true;
-
-	private MenuItem root = new MenuItem();
+	private MenuItem root;
+	private MenuPanel menuPanel = new MenuPanel();
+	
+	public Menu()
+    {
+		this(Orientation.VERTICAL, Type.ACCORDION);
+    }
 	
 	public Menu(Orientation orientation, Type type)
 	{
-		root.getItemWidget().asWidget().setStyleName(getBaseStyleName());
-		initWidget(root.getItemWidget());
+		initWidget(menuPanel);
+		root = new MenuItem(null);
+		menuPanel.add(root);
+		root.setMenu(this);
+		setStyleName(getBaseStyleName());
 
 		setType(type);
 		setOrientation(orientation);
@@ -111,59 +104,21 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 		
 		FastList<MenuItem> itemsWithEnabledProperty = MenuUtils.findHasEnabledInMenu(root);
 		
-		if(itemsWithEnabledProperty == null)
+		if(itemsWithEnabledProperty != null)
 		{
-			return;
-		}
-		
-		for(int i=0; i<itemsWithEnabledProperty.size();i++)
-		{
-			((HasEnabled) itemsWithEnabledProperty.get(i).getItemWidget()).setEnabled(enabled);
+			for(int i=0; i<itemsWithEnabledProperty.size();i++)
+			{
+				((HasEnabled) itemsWithEnabledProperty.get(i).getItemWidget()).setEnabled(enabled);
+			}
 		}
 	}
 
-	@Override
-	public void add(Widget w) 
-	{
-		addItem(w);
-	}
-
-	@Override
 	public void clear() 
 	{
-		if(this.root == null)
+		if(this.root != null)
 		{
-			this.root = new MenuItem();
-			return;
+			this.root.clear();
 		}
-		this.root.clear();
-		this.root = new MenuItem();
-	}
-
-	@Override
-	public Iterator<Widget> iterator() 
-	{
-		FastList<MenuItem> allMenuItems = MenuUtils.getAllMenuItems(this.root);
-		
-		if(allMenuItems == null)
-		{
-			return null;
-		}
-		
-		ArrayList<Widget> widgets = new ArrayList<Widget>();
-		
-		for(int i=0; i<allMenuItems.size();i++)
-		{
-			widgets.add(allMenuItems.get(i).getItemWidget());
-		}
-		
-		return widgets.iterator();
-	}
-
-	@Override
-	public boolean remove(Widget w) 
-	{
-		return removeItem(w);
 	}
 
 	/**
@@ -171,26 +126,24 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 	 */
 	public void setOrientation(Orientation orientation) 
 	{
-		if(orientation == null)
+		if(orientation != null)
 		{
-			return;
-		}
+			switch(orientation)
+			{
+				case HORIZONTAL:
+					removeStyleName(STYLE_FACES_VERTICAL);
+					addStyleName(STYLE_FACES_HORIZONTAL);
+				break;
+				case VERTICAL:
+					removeStyleName(STYLE_FACES_HORIZONTAL);
+					addStyleName(STYLE_FACES_VERTICAL);
+				break;
+				default:
+				break;
+			}
 
-		switch(orientation)
-		{
-		case HORIZONTAL:
-			removeStyleName(STYLE_FACES_VERTICAL);
-			addStyleName(STYLE_FACES_HORIZONTAL);
-			break;
-		case VERTICAL:
-			removeStyleName(STYLE_FACES_HORIZONTAL);
-			addStyleName(STYLE_FACES_VERTICAL);
-			break;
-		default:
-			break;
+			this.currentOrientation = orientation;
 		}
-
-		this.currentOrientation = orientation;
 	}
 
 	/**
@@ -198,60 +151,58 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 	 */
 	public void setType(Type type) 
 	{
-		if(type == null)
+		if(type != null)
 		{
-			return;
-		}
+			String deviceName = Screen.getCurrentDevice().toString();
+			if(!getStyleName().contains(deviceName))
+			{
+				addStyleName(deviceName);
+			}
 
-		String deviceName = Screen.getCurrentDevice().toString();
-		if(!getStyleName().contains(deviceName))
-		{
-			addStyleName(deviceName);
-		}
+			switch(type)
+			{
+				case SLIDE:
+					addStyleName(STYLE_FACES_SLIDE);
+	
+					removeStyleName(STYLE_FACES_ACCORDION);
+					removeStyleName(STYLE_FACES_TREE);
+					removeStyleName(STYLE_FACES_DROPDOWN);
+	
+					Roles.getSliderRole().set(getElement());
+				break;
+				case ACCORDION:
+					addStyleName(STYLE_FACES_ACCORDION);
+	
+					removeStyleName(STYLE_FACES_SLIDE);
+					removeStyleName(STYLE_FACES_TREE);
+					removeStyleName(STYLE_FACES_DROPDOWN);
+	
+					Roles.getListRole().set(getElement());
+				break;
+				case TREE:
+					addStyleName(STYLE_FACES_TREE);
+	
+					removeStyleName(STYLE_FACES_SLIDE);
+					removeStyleName(STYLE_FACES_ACCORDION);
+					removeStyleName(STYLE_FACES_DROPDOWN);
+	
+					Roles.getTreeRole().set(getElement());
+				break;
+				case DROPDOWN:
+					addStyleName(STYLE_FACES_DROPDOWN);
+	
+					removeStyleName(STYLE_FACES_SLIDE);
+					removeStyleName(STYLE_FACES_ACCORDION);
+					removeStyleName(STYLE_FACES_TREE);
+	
+					Roles.getTreeRole().set(getElement());
+				break;
+				default:
+				break;
+			}
 
-		switch(type)
-		{
-		case SLIDE:
-			addStyleName(STYLE_FACES_SLIDE);
-			
-			removeStyleName(STYLE_FACES_ACCORDION);
-			removeStyleName(STYLE_FACES_TREE);
-			removeStyleName(STYLE_FACES_DROPDOWN);
-			
-			Roles.getSliderRole().set(getElement());
-			break;
-		case ACCORDION:
-			addStyleName(STYLE_FACES_ACCORDION);
-			
-			removeStyleName(STYLE_FACES_SLIDE);
-			removeStyleName(STYLE_FACES_TREE);
-			removeStyleName(STYLE_FACES_DROPDOWN);
-			
-			Roles.getListRole().set(getElement());
-			break;
-		case TREE:
-			addStyleName(STYLE_FACES_TREE);
-			
-			removeStyleName(STYLE_FACES_SLIDE);
-			removeStyleName(STYLE_FACES_ACCORDION);
-			removeStyleName(STYLE_FACES_DROPDOWN);
-			
-			Roles.getTreeRole().set(getElement());
-			break;
-		case DROPDOWN:
-			addStyleName(STYLE_FACES_DROPDOWN);
-			
-			removeStyleName(STYLE_FACES_SLIDE);
-			removeStyleName(STYLE_FACES_ACCORDION);
-			removeStyleName(STYLE_FACES_TREE);
-			
-			Roles.getTreeRole().set(getElement());
-			break;
-		default:
-			break;
+			this.currentType = type;
 		}
-
-		this.currentType = type;
 	}
 
 	/**
@@ -260,7 +211,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 	 */
 	public MenuItem addItem(Widget widget) 
 	{
-		return addItem(null, widget);
+		return root.addItem(widget);
 	}
 
 	/**
@@ -269,47 +220,81 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 	 */
 	public MenuItem addItem(String labelText) 
 	{
-		return addItem(null, new Label(labelText));
+		return root.addItem(labelText);
 	}
 	
+	/**
+	 * Adds a label root item.
+	 * @return the inserted item. 
+	 */
+	public MenuItem addItem(SafeHtml html) 
+	{
+		return root.addItem(html);
+	}
+
 	/**
 	 * Adds a label item.
 	 * @return the inserted item. 
 	 */
 	public MenuItem addItem(MenuItem placeToInsert, String labelText) 
 	{
-		return addItem(placeToInsert, new Label(labelText));
+		if(placeToInsert == null)
+		{
+			placeToInsert = this.root;
+		}
+		return placeToInsert.addItem(labelText);
 	}
 	
-	public MenuItem addItem(MenuItem placeToInsert, Widget item) 
+	/**
+	 * Adds a label item.
+	 * @return the inserted item. 
+	 */
+	public MenuItem addItem(MenuItem placeToInsert, SafeHtml html) 
 	{
 		if(placeToInsert == null)
 		{
 			placeToInsert = this.root;
 		}
-		
-		MenuItem w = new MenuItem(item);
-		placeToInsert.add(w);
-		return w;
+		return placeToInsert.addItem(html);
 	}
 
-	public boolean removeItem(Widget root) 
+	public MenuItem addItem(MenuItem placeToInsert, Widget w) 
 	{
-		MenuItem found = MenuUtils.findInMenu(this.root, root);
-		
-		if(found == null)
+		if(placeToInsert == null)
 		{
-			return false;
+			placeToInsert = this.root;
 		}
-		
-		found.clear();
-		
-		return true;
+		return placeToInsert.addItem(w);
 	}
 
+	public MenuItem getItem(int index)
+	{
+		return root.getItem(index);
+	}
+	
+	public MenuItem getItem(String path)
+	{
+		return root.getItem(path);
+	}
+	
+	public int getItemCount()
+	{
+		return root.getItemCount();
+	}
+	
+	public int indexOf(MenuItem item)
+	{
+		return root.indexOf(item);
+	}
+	
+	public boolean removeItem(int index)
+	{
+		return root.removeItem(index);
+	}
+	
 	public void openAll() 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_open, true, MenuUtils.getAllMenuItems(this.root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_OPEN, true, MenuUtils.getAllMenuItems(this.root));
 	}
 
 	public void open(MenuItem menuItem) 
@@ -324,7 +309,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 
 	public void closeAll() 
 	{
-		MenuUtils.addOrRemoveClass(STYLE_FACES_open, false, MenuUtils.getAllMenuItems(this.root));
+		MenuUtils.addOrRemoveClass(STYLE_FACES_OPEN, false, MenuUtils.getAllMenuItems(this.root));
 	}
 
 	public void close(MenuItem menuItem) 
@@ -347,4 +332,48 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasVisi
 		return currentType;
 	}
 
+	protected void adopt(MenuItem item)
+	{
+		menuPanel.adopt(item);
+	}
+	
+	protected void orphan(MenuItem item)
+	{
+		menuPanel.orphan(item);
+	}
+	
+	protected static class MenuPanel extends BasePanel
+	{
+
+		protected MenuPanel()
+        {
+	        super("nav");
+        }
+		
+		protected void add(MenuItem item)
+		{
+		    DOM.appendChild(getElement(), item.getElement());
+		}	
+
+		protected void adopt(MenuItem item)
+		{
+			SelectablePanel itemPanel = item.getItemPanel();
+			if (itemPanel != null)
+			{
+			    getChildren().add(itemPanel);
+				adopt(itemPanel);
+			}
+		}
+		
+		protected void orphan(MenuItem item)
+		{
+			SelectablePanel itemPanel = item.getItemPanel();
+			if (itemPanel != null)
+			{
+				DOM.removeChild(getElement(), item.getElement());
+			    getChildren().remove(itemPanel);
+				orphan(itemPanel);
+			}
+		}
+	}
 }

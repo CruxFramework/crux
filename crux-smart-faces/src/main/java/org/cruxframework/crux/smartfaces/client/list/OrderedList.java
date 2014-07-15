@@ -16,27 +16,27 @@
 package org.cruxframework.crux.smartfaces.client.list;
 
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 
 /**
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-public class OrderedList extends AbstractListItem 
-{
-	public OrderedList() 
+public class OrderedList extends AbstractList 
+{	
+	public OrderedList()
+    {
+    }
+
+	public OrderedList(String styleName)
 	{
-		super(null);
+		super(styleName);
 	}
-	
-	public OrderedList(String className) 
-	{
-		super(className);
-	}
-	
+
 	@Override
-	protected void setElement() 
+	protected Element createElement() 
 	{
-		setElement(DOM.createElement("ol"));	
+		return DOM.createElement("ol");	
 	}
 
 	@Override

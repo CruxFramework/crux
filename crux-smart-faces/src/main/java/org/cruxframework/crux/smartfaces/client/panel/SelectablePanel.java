@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.impl.FocusImpl;
 
 /**
@@ -56,12 +57,12 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 	public SelectablePanel(Element element)
 	{
 		this(new InternalPanel(element));
-		makeFocusable(element);
 	}
 	
 	protected SelectablePanel(SimplePanel panel)
 	{
 		this.panel = panel;
+		makeFocusable(panel.getElement());
 		initWidget(this.panel);
 	}
 
@@ -71,6 +72,16 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 		panel.setWidget(w);
     }
 
+	public Widget getChildWidget()
+	{
+	    return panel.getWidget();
+	}
+	
+	public void add(IsWidget w)
+	{
+		panel.add(w);
+	}
+	
 	public void select()
 	{
 		getSelectEventsHandler().select();

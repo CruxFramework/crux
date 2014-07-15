@@ -21,19 +21,21 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.event.SelectionEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventDeclaration;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
+import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
+import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.Menu.Orientation;
 import org.cruxframework.crux.smartfaces.client.menu.Menu.Type;
@@ -47,8 +49,6 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 class MenuContext extends WidgetCreatorContext
 {
 	LinkedList<String> itemStack = new LinkedList<String>();
-	Orientation orientation;
-	Type type;
 }
 
 /**
@@ -58,14 +58,11 @@ class MenuContext extends WidgetCreatorContext
 @DeclarativeFactory(id="menu", library=Constants.LIBRARY_NAME, targetWidget=Menu.class, 
 	description="A menu class based in nav, ul and li html tags.")
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration("orientation"),
-	@TagAttributeDeclaration("type")
+	@TagAttributeDeclaration(value="orientation", type=Orientation.class),
+	@TagAttributeDeclaration(value="type", type=Type.class)
 })
 @TagChildren({
 	@TagChild(MenuFactory.MenuItemProcessor.class)
-})
-@TagEvents({
-	@TagEvent(SelectionEvtBind.class)
 })
 public class MenuFactory extends WidgetCreator<MenuContext>
 {
@@ -80,20 +77,22 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 	{
 		String className = getWidgetClassName();
 		
-		String orientation = context.readWidgetProperty("orientation");
-		if (orientation != null && orientation.length() > 0)
+		Orientation orientation = Orientation.VERTICAL;
+		String orientationProp = context.readWidgetProperty("orientation");
+		if (orientationProp != null && orientationProp.length() > 0)
 		{
-			context.orientation = Orientation.valueOf(orientation);
+			orientation = Orientation.valueOf(orientationProp);
 		}
-		
-		String type = context.readWidgetProperty("type");
-		if (type != null && type.length() > 0)
+
+		Type type = Type.ACCORDION;
+		String typeProp = context.readWidgetProperty("type");
+		if (typeProp != null && typeProp.length() > 0)
 		{
-			context.type = Type.valueOf(type);
+			type = Type.valueOf(typeProp);
 		}
 		
 		out.println("final "+className + " " + context.getWidget()+" = new "+ className +
-				"("+Orientation.class.getCanonicalName()+"."+context.orientation+","+Type.class.getCanonicalName()+"."+context.type+");");
+				"("+Orientation.class.getCanonicalName()+"."+orientation+","+Type.class.getCanonicalName()+"."+type+");");
 	}
 	
 	@Override
@@ -107,7 +106,10 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		@TagAttributeDeclaration(value="label", supportsI18N=true, required=true),
 		@TagAttributeDeclaration(value="open", type=Boolean.class),
 		@TagAttributeDeclaration(value="style"),
-		@TagAttributeDeclaration(value="styleName")
+		@TagAttributeDeclaration(value="styleName", supportsResources=true)
+	})
+	@TagEventsDeclaration({
+		@TagEventDeclaration("onSelect")
 	})
 	@TagChildren({
 		@TagChild(MenuItemProcessor.class)
@@ -122,7 +124,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		{
 			String item = getWidgetCreator().createVariableName("item");
 			
-			String label = context.getChildElement().optString("label");
+			String label = context.readChildProperty("label");
 			label = getWidgetCreator().getDeclaredMessage(label);
 			
 			String itemClassName = MenuItem.class.getCanonicalName();
@@ -130,11 +132,25 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			if(context.itemStack.size() == 1)
 			{
 				out.println(itemClassName + " " + item+" = "+context.getWidget()+".addItem("+ label +");");
-			} else
+			} 
+			else
 			{
-				String parentWidget = context.itemStack.getFirst();
-				out.println(itemClassName + " " + item+" = "+context.getWidget()+".addItem(" +parentWidget +","+ label +");");
+				String parentItem = context.itemStack.getFirst();
+				out.println(itemClassName + " " + item+" = "+context.getWidget()+".addItem(" +parentItem +","+ label +");");
 			}
+
+			String onSelectEvent = context.readChildProperty("onSelect");
+			if (onSelectEvent != null && onSelectEvent.length() > 0)
+			{
+				out.println(item+".addSelectHandler(new "+SelectHandler.class.getCanonicalName()+"(){");
+				out.println("public void onSelect("+SelectEvent.class.getCanonicalName()+" event){");
+
+				EvtProcessor.printEvtCall(out, onSelectEvent, "onSelect", SelectEvent.class, "event", getWidgetCreator());
+
+				out.println("}");
+				out.println("});");
+			}
+			
 			setItemAttributes(out, context, item);
 			context.itemStack.addFirst(item);
 		}
@@ -152,16 +168,9 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		 */
 		private void setItemAttributes(SourcePrinter out, MenuContext context, String item)
 		{
-			String open = context.readChildProperty("open");
-			if (!StringUtils.isEmpty(open))
+			if(context.readBooleanChildProperty("open", false))
 			{
-				if(Boolean.parseBoolean(open))
-				{
-					out.println(item + ".open(" + Boolean.parseBoolean(open) + ");");					
-				} else
-				{
-					out.println(item + ".close(" + Boolean.parseBoolean(open) + ");");
-				}
+				out.println(item + ".open();");					
 			}
 			
 			String style = context.readChildProperty("style");
@@ -177,6 +186,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			String styleName = context.readChildProperty("styleName");
 			if (!StringUtils.isEmpty(styleName))
 			{
+				styleName = getWidgetCreator().getResourceAccessExpression(styleName);
 				out.println(item + ".addClassName(" + EscapeUtils.quote(styleName) + ");");
 			}
 		}				

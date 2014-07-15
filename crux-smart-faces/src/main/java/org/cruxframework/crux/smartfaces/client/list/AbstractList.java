@@ -15,9 +15,11 @@
  */
 package org.cruxframework.crux.smartfaces.client.list;
 
-import org.cruxframework.crux.core.client.utils.StringUtils;
-
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
@@ -25,29 +27,75 @@ import com.google.gwt.user.client.ui.ComplexPanel;
  */
 abstract class AbstractList extends ComplexPanel 
 {
-	protected String className;
-
-	public AbstractList(String className) 
+	public AbstractList() 
 	{
-		setElement();
-		this.className = className;
-		if(!StringUtils.isEmpty(className) || !StringUtils.isEmpty(getDefaultClassName()))
-		{
-			getElement().setClassName(StringUtils.isEmpty(className) ? getDefaultClassName() : className);
-		}
+		setElement(createElement());
+		setStyleName(getDefaultClassName());
+	}	
+	
+	public AbstractList(String styleName) 
+	{
+		setElement(createElement());
+		setStyleName(styleName);
+	}	
+
+	@Override
+	public void add(Widget w)
+	{
+		Element container = DOM.createElement("li");
+	    DOM.appendChild(getElement(), container);
+		add(w, container);
+	}	
+	
+	public void insert(IsWidget w, int beforeIndex)
+	{
+		insert(asWidgetOrNull(w), beforeIndex);
 	}
 	
-	protected abstract void setElement();
-	
+	public void insert(Widget w, int beforeIndex)
+	{
+		insert(w, getElement(), beforeIndex, true);
+	}
+
+	@Override
+	protected void insert(Widget child, Element container, int beforeIndex, boolean domInsert)
+	{
+		// Validate index; adjust if the widget is already a child of this
+		// panel.
+		beforeIndex = adjustIndex(child, beforeIndex);
+
+		// Detach new child.
+		child.removeFromParent();
+
+		// Logical attach.
+		getChildren().insert(child, beforeIndex);
+
+		// Physical attach.
+		Element li = DOM.createElement("li");
+		DOM.appendChild(li, child.getElement());
+		if (domInsert)
+		{
+			DOM.insertChild(container, li, beforeIndex);
+		}
+		else
+		{
+			DOM.appendChild(container, li);
+		}
+
+		// Adopt.
+		adopt(child);
+	}
+	  
+	protected abstract Element createElement();
 	protected abstract String getDefaultClassName();
 	
-	public void add(ListItem w) 
-	{
-		super.add(w, getElement());
-	}
-
-	public void insert(ListItem w, int beforeIndex) 
-	{
-		super.insert(w, getElement(), beforeIndex, true);
-	}
+//	public void add(ListItem w) 
+//	{
+//		super.add(w, getElement());
+//	}
+//
+//	public void insert(ListItem w, int beforeIndex) 
+//	{
+//		super.insert(w, getElement(), beforeIndex, true);
+//	}
 }
