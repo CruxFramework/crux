@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A cross device menu
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  * @author Claudio Holanda (claudio.junior@cruxframework.org)
+ * @author Thiago da Rosa de Bustamante
  *
  */
 public class Menu extends Composite implements HasAnimation, HasEnabled 

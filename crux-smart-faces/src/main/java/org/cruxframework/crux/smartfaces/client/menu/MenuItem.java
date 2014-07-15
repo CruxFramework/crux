@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A cross device menu item
  * 
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
+ * @author Thiago da Rosa de Bustamante
  */
 public class MenuItem extends UIObject implements HasSelectHandlers
 {
