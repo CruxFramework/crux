@@ -172,10 +172,18 @@ public class Templates
 	
 	static void setInitialized()
     {
-		if (!hotDeploymentScannerStarted && Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()) && !Environment.isProduction())
+		if (!hotDeploymentScannerStarted)
 		{
 			hotDeploymentScannerStarted = true;
-			HotDeploymentScanner.scanWebDirs();
+			if(Boolean.parseBoolean(ConfigurationFactory.getConfigurations().isSuperDevModeOn()))
+			{
+				HotDeploymentScanner.scanFilesToCodeServer();				
+			} else if(!Environment.isProduction()
+						&&
+					  Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()))
+			{
+				HotDeploymentScanner.scanWebDirs();
+			}
 		}
 		
 		starting = false;

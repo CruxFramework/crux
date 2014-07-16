@@ -15,9 +15,14 @@
  */
 package org.cruxframework.crux.core.server.rest.spi;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -31,6 +36,7 @@ import java.util.zip.GZIPOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.cruxframework.crux.core.server.rest.core.Cookie;
 import org.cruxframework.crux.core.server.rest.core.EntityTag;
 import org.cruxframework.crux.core.server.rest.core.Headers;
@@ -123,6 +129,62 @@ public class HttpUtil
 		headers.setCookies(cookies);
 		return headers;
 
+	}
+
+	public static String wGet(String targetURL, String urlParameters, String method, String locale)
+	{
+		URL url;
+		HttpURLConnection connection = null;  
+		try {
+			//Create connection
+			if(method != null && method.equals("GET") && !StringUtils.isEmpty(urlParameters))
+			{
+				targetURL += "?" + urlParameters;
+			}
+			
+			url = new URL(targetURL);
+			connection = (HttpURLConnection)url.openConnection();
+			
+			connection.setRequestMethod(method);
+			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
+			connection.setRequestProperty("Content-Language", locale);  
+			connection.setUseCaches(false);
+			connection.setDoInput(true);
+			
+			//Send request
+			if(method != null && method.equals("POST"))
+			{
+				DataOutputStream wr = new DataOutputStream (
+						connection.getOutputStream ());
+				connection.setDoOutput(true);
+				wr.writeBytes (urlParameters);
+				wr.flush ();
+				wr.close ();	
+			}
+
+			//Get Response	
+			InputStream is = connection.getInputStream();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+			String line;
+			StringBuffer response = new StringBuffer(); 
+			while((line = rd.readLine()) != null) {
+				response.append(line);
+				response.append('\r');
+			}
+			rd.close();
+			return response.toString();
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+			return null;
+		} finally 
+		{
+			if(connection != null) 
+			{
+				connection.disconnect(); 
+			}
+		}
 	}
 
 	static Map<String, Cookie> extractCookies(HttpServletRequest request)
@@ -219,7 +281,7 @@ public class HttpUtil
 	{
 		return acceptsGzipEncoding(request) && exceedsUncompressedContentLengthLimit(responseContent);
 	}
-	  
+
 	public static void writeResponse(HttpRequest request, HttpResponse response, MethodReturn methodReturn) throws IOException
 	{
 		HttpServletResponseHeaders outputHeaders = response.getOutputHeaders();
@@ -258,34 +320,34 @@ public class HttpUtil
 	}
 
 	private static void writeConditionalResponse(HttpResponse response, MethodReturn methodReturn, HttpServletResponseHeaders outputHeaders)
-    {
-	    ConditionalResponse conditionalResponse = methodReturn.getConditionalResponse();
-	    response.setStatus(conditionalResponse.getStatus());
-	    
-	    EntityTag etag = conditionalResponse.getEtag();
-	    long dateModified = conditionalResponse.getLastModified();
-	    CacheInfo cacheInfo = methodReturn.getCacheInfo();
-	    
-	    if (cacheInfo != null)
-	    {
-	    	writeCacheHeaders(response, cacheInfo, etag, dateModified, methodReturn.isEtagGenerationEnabled());
-	    }
-	    else
-	    {
-	    	//Confirmar se devo mandar etag e last modified em 412 ou 304 para escritas
-	    	if (etag != null)
-	    	{
-	    		outputHeaders.putSingle(HttpHeaderNames.ETAG, etag);
-	    	}
-	    	if (dateModified > 0)
-	    	{
-	    		outputHeaders.addDateHeader(HttpHeaderNames.LAST_MODIFIED, dateModified);
-	    	}
-	    }
-    }
+	{
+		ConditionalResponse conditionalResponse = methodReturn.getConditionalResponse();
+		response.setStatus(conditionalResponse.getStatus());
+
+		EntityTag etag = conditionalResponse.getEtag();
+		long dateModified = conditionalResponse.getLastModified();
+		CacheInfo cacheInfo = methodReturn.getCacheInfo();
+
+		if (cacheInfo != null)
+		{
+			writeCacheHeaders(response, cacheInfo, etag, dateModified, methodReturn.isEtagGenerationEnabled());
+		}
+		else
+		{
+			//Confirmar se devo mandar etag e last modified em 412 ou 304 para escritas
+			if (etag != null)
+			{
+				outputHeaders.putSingle(HttpHeaderNames.ETAG, etag);
+			}
+			if (dateModified > 0)
+			{
+				outputHeaders.addDateHeader(HttpHeaderNames.LAST_MODIFIED, dateModified);
+			}
+		}
+	}
 
 	private static void writeCacheHeaders(HttpResponse response, CacheInfo cacheInfo, EntityTag etag, long dateModified, boolean forceEtagGeneration)
-    {
+	{
 		org.cruxframework.crux.core.server.rest.core.CacheControl cacheControl = new org.cruxframework.crux.core.server.rest.core.CacheControl();
 		HttpServletResponseHeaders outputHeaders = response.getOutputHeaders();
 		if (!cacheInfo.isCacheEnabled())
@@ -311,63 +373,63 @@ public class HttpUtil
 				outputHeaders.addDateHeader(HttpHeaderNames.LAST_MODIFIED, dateModified);
 			}
 			switch (cacheInfo.getCacheControl())
-            {
-            	case PUBLIC:
-            		cacheControl.setPublic(true);
-        			cacheControl.setMaxAge(cacheInfo.getCacheTime());
-	            break;
-            	case PRIVATE:
-            		cacheControl.setPrivate(true);
-        			cacheControl.setMaxAge(cacheInfo.getCacheTime());
-   	            break;
-            	case NO_CACHE:
-            		cacheControl.setNoCache(true);
-   	            break;
-            }
+			{
+			case PUBLIC:
+				cacheControl.setPublic(true);
+				cacheControl.setMaxAge(cacheInfo.getCacheTime());
+				break;
+			case PRIVATE:
+				cacheControl.setPrivate(true);
+				cacheControl.setMaxAge(cacheInfo.getCacheTime());
+				break;
+			case NO_CACHE:
+				cacheControl.setNoCache(true);
+				break;
+			}
 			cacheControl.setNoTransform(cacheInfo.isNoTransform());
 			cacheControl.setMustRevalidate(cacheInfo.isMustRevalidate());
 			cacheControl.setProxyRevalidate(cacheInfo.isProxyRevalidate());
 		}
 		outputHeaders.putSingle(HttpHeaderNames.CACHE_CONTROL, cacheControl);
-    }
+	}
 
 	private static byte[] getResponseBytes(HttpRequest request, HttpResponse response, String responseContent) throws UnsupportedEncodingException, IOException
-    {
-	    boolean gzipResponse = shouldGzipResponseContent(request, responseContent);
-	    byte[] responseBytes = (responseContent!=null?responseContent.getBytes("UTF-8"):new byte[0]);
-	    if (gzipResponse)
-	    {
-	    	ByteArrayOutputStream output = null;
-	    	GZIPOutputStream gzipOutputStream = null;
-	    	try
-	    	{
-	    		output = new ByteArrayOutputStream(responseBytes.length);
-	    		gzipOutputStream = new GZIPOutputStream(output);
-	    		gzipOutputStream.write(responseBytes);
-	    		gzipOutputStream.finish();
-	    		gzipOutputStream.flush();
-	    		response.getOutputHeaders().putSingle(HttpHeaderNames.CONTENT_ENCODING, "gzip");
-	    		responseBytes = output.toByteArray();
-	    	}
-	    	catch (IOException e)
-	    	{
-	    		throw new InternalServerErrorException("Unable to compress response", "Error processing requested service", e);
-	    	}
-	    	finally
-	    	{
-	    		if (null != gzipOutputStream)
-	    		{
-	    			gzipOutputStream.close();
-	    		}
-	    		if (null != output)
-	    		{
-	    			output.close();
-	    		}
-	    	}
-	    }
-	    return responseBytes;
-    }
-	
+	{
+		boolean gzipResponse = shouldGzipResponseContent(request, responseContent);
+		byte[] responseBytes = (responseContent!=null?responseContent.getBytes("UTF-8"):new byte[0]);
+		if (gzipResponse)
+		{
+			ByteArrayOutputStream output = null;
+			GZIPOutputStream gzipOutputStream = null;
+			try
+			{
+				output = new ByteArrayOutputStream(responseBytes.length);
+				gzipOutputStream = new GZIPOutputStream(output);
+				gzipOutputStream.write(responseBytes);
+				gzipOutputStream.finish();
+				gzipOutputStream.flush();
+				response.getOutputHeaders().putSingle(HttpHeaderNames.CONTENT_ENCODING, "gzip");
+				responseBytes = output.toByteArray();
+			}
+			catch (IOException e)
+			{
+				throw new InternalServerErrorException("Unable to compress response", "Error processing requested service", e);
+			}
+			finally
+			{
+				if (null != gzipOutputStream)
+				{
+					gzipOutputStream.close();
+				}
+				if (null != output)
+				{
+					output.close();
+				}
+			}
+		}
+		return responseBytes;
+	}
+
 	public static void sendError(HttpServletResponse response, int status, String message) throws IOException
 	{
 		response.setStatus(status);

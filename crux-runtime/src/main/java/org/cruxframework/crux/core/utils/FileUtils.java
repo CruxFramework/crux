@@ -108,8 +108,19 @@ public class FileUtils
 
 	/**
 	 * @param file
+	 * @return
 	 */
 	public static boolean recursiveDelete(File file)
+	{
+		return recursiveDelete(file, null);
+	}
+	
+	/**
+	 * @param file
+	 * @param strPattern if the filename starts with strPattern, then it will be removed 
+	 * @return
+	 */
+	public static boolean recursiveDelete(File file, String strPattern)
 	{
 		boolean success = true;
 
@@ -128,7 +139,10 @@ public class FileUtils
 				}
 			}
 
-			success = file.delete();
+			if((strPattern == null || strPattern == "") || file.getName().startsWith(strPattern))
+			{
+				success = file.delete();
+			}
 		}
 
 		return success;
