@@ -1007,7 +1007,6 @@
 .grid td
 {
 	border: 1px solid #D4D4D4;
-	min-width: 100px;
 	background: #FFF !important;
 }
 
@@ -1388,4 +1387,9 @@
 	border: none;
 	padding: 0px;
 	width:60px;
+}
+.crux-ViewContainer
+{
+	height:100%;
+	width:100%;
 }

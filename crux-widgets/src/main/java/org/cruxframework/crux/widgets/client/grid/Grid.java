@@ -380,7 +380,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		if(showEditorButtons)
 		{
-			getColumnDefinitions().add("edit", new WidgetColumnDefinition("", "100%", new EditColumn(this) ,true, null, null));
+			getColumnDefinitions().add("edit", new WidgetColumnDefinition("", "", new EditColumn(this) ,true, null, null));
 		}
 	}
 	
