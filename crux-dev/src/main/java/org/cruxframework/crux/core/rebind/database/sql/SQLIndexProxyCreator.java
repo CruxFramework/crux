@@ -77,7 +77,7 @@ public class SQLIndexProxyCreator extends SQLAbstractKeyValueProxyCreator
 		generateGetNameMethod(srcWriter);
 		generateIsUniqueMethod(srcWriter);
 		generateIsMultiEntryMethod(srcWriter);
-		generateGetKeyRangeFactoryMethod(srcWriter, indexName);
+		generateGetKeyRangeFactoryMethod(srcWriter, getIndexClassName());
 		if (hasCompositeKey())
 		{
 			generateGetNativeKeyMethod(srcWriter);
@@ -112,7 +112,7 @@ public class SQLIndexProxyCreator extends SQLAbstractKeyValueProxyCreator
 	protected void generateOpenCursorMethod(SourcePrinter srcWriter)
 	{
 		srcWriter.println("public void openCursor(KeyRange<"+getKeyTypeName()+"> keyRange, CursorDirection direction, final DatabaseCursorCallback<"+getKeyTypeName()+", "+getTargetObjectClassName()+"> callback){");
-		String cursorClassName = new SQLCursorProxyCreator(context, logger, targetObjectType, objectStoreName, autoIncrement, objectStoreIndexColumns, keyPath, objectStoreKeyPath, indexName).create();
+		String cursorClassName = new SQLCursorProxyCreator(context, logger, targetObjectType, objectStoreName, autoIncrement, objectStoreIndexColumns, keyPath, objectStoreKeyPath, getIndexClassName()).create();
 		srcWriter.println("new "+cursorClassName+"("+dbVariable+", (WSQLKeyRange<"+getKeyTypeName()+">)keyRange, direction, transaction).start(callback);");
 		srcWriter.println("}");
 		srcWriter.println();
@@ -121,7 +121,7 @@ public class SQLIndexProxyCreator extends SQLAbstractKeyValueProxyCreator
 	protected void generateOpenKeyCursorMethod(SourcePrinter srcWriter)
     {
 		srcWriter.println("public void openKeyCursor(KeyRange<"+getKeyTypeName()+"> keyRange, CursorDirection direction, final DatabaseCursorCallback<"+getKeyTypeName()+", "+getKeyTypeName(objectStoreKeyPath)+"> callback){");
-		String cursorClassName = new SQLKeyCursorProxyCreator(context, logger, targetObjectType, objectStoreName, autoIncrement, keyPath, objectStoreKeyPath, indexName).create();
+		String cursorClassName = new SQLKeyCursorProxyCreator(context, logger, targetObjectType, objectStoreName, autoIncrement, keyPath, objectStoreKeyPath, getIndexClassName()).create();
 		srcWriter.println("new "+cursorClassName+"("+dbVariable+", (WSQLKeyRange<"+getKeyTypeName()+">)keyRange, direction, transaction).start(callback);");
 		srcWriter.println("}");
 		srcWriter.println();
@@ -136,10 +136,15 @@ public class SQLIndexProxyCreator extends SQLAbstractKeyValueProxyCreator
 	@Override
 	public String getProxySimpleName()
 	{
-		String typeName = indexName.replaceAll("\\W", "_");
-		return objectStoreName + "_" + typeName+"SQL__Index";
+		return getIndexClassName()+"SQL__Index";
 	}
 
+	protected String getIndexClassName()
+	{
+		String typeName = indexName.replaceAll("\\W", "_");
+		return objectStoreName + "_" + typeName;
+	}
+	
 	@Override
 	protected SourcePrinter getSourcePrinter()
 	{
