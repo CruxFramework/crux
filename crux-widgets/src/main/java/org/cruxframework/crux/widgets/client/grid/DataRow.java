@@ -29,6 +29,8 @@ public class DataRow extends Row
 	
 	private boolean editMode = false;
 	
+	private boolean isNew = false;
+	
 	protected DataRow(int index, Element elem, AbstractGrid<?> grid, boolean hasSelectionCell, boolean hasRowDetails, boolean showRowDetailsIcon)
 	{
 		super(index, elem, grid, hasSelectionCell, hasRowDetails, showRowDetailsIcon);
@@ -50,6 +52,16 @@ public class DataRow extends Row
 		//this.setDataSourceRecord(row.getDataSourceRecord().getRecordObject());
 	}
 	
+
+	public boolean isNew()
+	{
+		return isNew;
+	}
+
+	public void setNew(boolean isNew)
+	{
+		this.isNew = isNew;
+	}
 
 	/**
 	 * @param dataSourceRowId the dataSourceRowId to set
