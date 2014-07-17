@@ -51,7 +51,7 @@ public class TopToolBarTouchSmallController extends TopToolBarArrowsSmallControl
 		gripHandler.prepare(grip, this);
 	}
 	
-	static class GripHandler 
+	public static class GripHandler 
 	{
 		public void prepare(FocusPanel grip, final TopToolBarTouchSmallController controller)
 		{

@@ -325,7 +325,7 @@ public class TopToolBarArrowsSmallController extends DeviceAdaptiveController im
 		}
 	}
 	
-	static interface PanelAnimation
+	public static interface PanelAnimation
 	{
 		void changePosition(Element elem, int pos, int canvasHeight);
 		void setDefaultPosition(Element element, int canvasHeight);
