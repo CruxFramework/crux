@@ -62,7 +62,7 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 	private String bodyStyleName;
 
 	protected CellPanel itemsPanel;
-    protected DockPanel layoutPanel;
+	protected DockPanel layoutPanel;
 	
 	private Button nextButton = null;
 	private Button previousButton = null;
@@ -152,33 +152,33 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 	 * @return
 	 */
 	public Widget getWidget(int i)
-    {
-	    return itemsPanel.getWidget(i);
-    }
+	{
+		return itemsPanel.getWidget(i);
+	}
 
 	/**
 	 * @return
 	 */
 	public int getWidgetCount()
-    {
-	    return itemsPanel.getWidgetCount();
-    }
+	{
+		return itemsPanel.getWidgetCount();
+	}
 
 	/**
 	 * @see com.google.gwt.user.client.ui.IndexedPanel#getWidgetIndex(com.google.gwt.user.client.ui.Widget)
 	 */
 	public int getWidgetIndex(Widget child)
-    {
-	    return ((InsertPanel)itemsPanel).getWidgetIndex(child);
-    }
+	{
+		return ((InsertPanel) itemsPanel).getWidgetIndex(child);
+	}
 
 	/**
 	 * @param widget
 	 * @param i
 	 */
 	public void insert(final Widget widget, int i)
-    {
-	    ((InsertPanel)itemsPanel).insert(widget, i);
+	{
+		((InsertPanel) itemsPanel).insert(widget, i);
 		maybeShowNavigationButtons();
 		if (scrollToAddedWidgets)
 		{
@@ -190,34 +190,34 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 				}
 			});
 		}
-    }
+	}
 	
 	/**
 	 * @return
 	 */
 	public boolean isScrollToAddedWidgets()
-    {
-    	return scrollToAddedWidgets;
-    }
+	{
+		return scrollToAddedWidgets;
+	}
 
 	/**
 	 * @see com.google.gwt.user.client.ui.IndexedPanel#remove(int)
 	 */
 	public boolean remove(int index)
-    {
-	    boolean ret = ((InsertPanel)itemsPanel).remove(index);
+	{
+		boolean ret = ((InsertPanel) itemsPanel).remove(index);
 		maybeShowNavigationButtons();
 		return ret;
-    }
+	}
 	
 	/**
 	 * @param toRemove
 	 */
 	public void remove(Widget toRemove)
-    {
+	{
 		itemsPanel.remove(toRemove);
 		maybeShowNavigationButtons();
-    }
+	}
 	
 	/**
 	 * @param widget
@@ -260,9 +260,9 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 	 * @param cellHeight
 	 */
 	public void setCellHeight(Widget child, String cellHeight)
-    {
+	{
 		this.itemsPanel.setCellHeight(child, cellHeight);
-    }
+	}
 	
 	/**
 	 * @param w
@@ -277,56 +277,56 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 	 * @param verticalAlign
 	 */
 	public void setCellVerticalAlignment(Widget w, VerticalAlignmentConstant verticalAlign)
-    {
+	{
 		this.itemsPanel.setCellVerticalAlignment(w, verticalAlign);
-    }	
+	}
 
 	/**
 	 * @param child
 	 * @param cellWidth
 	 */
 	public void setCellWidth(Widget child, String cellWidth)
-    {
+	{
 		this.itemsPanel.setCellWidth(child, cellWidth);
-    }
+	}
 	
 	/**
 	 * @param align
 	 */
 	public void setHorizontalAlignment(HorizontalAlignmentConstant align)
-    {
+	{
 		this.horizontalAlign = align;
 		this.layoutPanel.setCellHorizontalAlignment(this.itemsScrollPanel, align);
-    }
+	}
 	
 	/**
 	 * @param position
 	 */
 	public void setScrollPosition(int position)
 	{
-		if (position <0)
+		if (position < 0)
 		{
 			position = 0;
+		} 
+		else
+		{
+			int offsetWidth = itemsPanel.getOffsetWidth();
+			if (position > offsetWidth)
+			{
+				position = offsetWidth;
+			}
 		}
-        else
-        {
-	        int offsetWidth = itemsPanel.getOffsetWidth();
-	        if (position > offsetWidth)
-	        {
-	        	position = offsetWidth;
-	        }
-        }
-	    DOM.setElementPropertyInt(itemsScrollPanel.getElement(), "scrollLeft", position);
-//		itemsScrollPanel.getElement().setScrollLeft(position);
+		DOM.setElementPropertyInt(itemsScrollPanel.getElement(), "scrollLeft", position);
+		// itemsScrollPanel.getElement().setScrollLeft(position);
 	}
 
 	/**
 	 * @param scrollToAddedWidgets
 	 */
 	public void setScrollToAddedWidgets(boolean scrollToAddedWidgets)
-    {
-    	this.scrollToAddedWidgets = scrollToAddedWidgets;
-    }
+	{
+		this.scrollToAddedWidgets = scrollToAddedWidgets;
+	}
 	
 	/**
 	 * @param spacing
@@ -340,14 +340,11 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 	 * @param verticalAlign
 	 */
 	public void setVerticalAlignment(VerticalAlignmentConstant verticalAlign)
-    {
+	{
 		this.verticalAlign = verticalAlign;
 		this.layoutPanel.setCellVerticalAlignment(this.itemsScrollPanel, verticalAlign);
-    }
+	}
 	
-	/**
-	 * 
-	 */
 	protected void createNavigationButtons()
 	{
 		previousButton = new Button();
@@ -384,21 +381,14 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 		});
 	}
 
-	/**
-	 * @return
-	 */
 	private Element getWrapperElement(Button button)
 	{
 		return button.getElement().getParentElement();
 	}
 	
-	
-	/**
-	 * 
-	 */
 	protected void checkNavigationButtons()
 	{
-		if (itemsPanel.getOffsetWidth() > layoutPanel.getOffsetWidth())
+		if (itemsPanel.getOffsetWidth() > layoutPanel.getOffsetWidth() - (nextButton.getOffsetWidth() + previousButton.getOffsetWidth()))
 		{
 			enableNavigationButtons();
 		}
@@ -409,11 +399,8 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 		}
 	}
 
-	/**
-	 * 
-	 */
 	protected void maybeShowNavigationButtons()
-    {
+	{
 		new Timer()
 		{
 			@Override
@@ -422,34 +409,26 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 				checkNavigationButtons();
 			}
 		}.schedule(30);
-    }
+	}
 
-	/**
-	 * 
-	 */
 	protected void disableNavigationButtons()
 	{
 		StyleUtils.addStyleDependentName(getWrapperElement(previousButton), "disabled");
 		StyleUtils.addStyleDependentName(getWrapperElement(nextButton), "disabled");
 	}
 	
-	/**
-	 * 
-	 */
 	protected void enableNavigationButtons()
 	{
 		StyleUtils.removeStyleDependentName(getWrapperElement(previousButton), "disabled");
 		StyleUtils.removeStyleDependentName(getWrapperElement(nextButton), "disabled");
 	}
 	
-	/**
-	 * 
-	 */
 	protected void handleWindowResize()
-    {
-	    addAttachHandler(new Handler()
+	{
+		addAttachHandler(new Handler()
 		{
 			HandlerRegistration registration;
+
 			@Override
 			public void onAttachOrDetach(AttachEvent event)
 			{
@@ -462,8 +441,7 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 							checkNavigationButtons();
 						}
 					});
-
-				}
+				} 
 				else if (registration != null)
 				{
 					registration.removeHandler();
@@ -471,8 +449,7 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 				}
 			}
 		});
-    }
-	
+	}
 	
 	/**
 	 * @author Thiago da Rosa de Bustamante -
@@ -521,58 +498,57 @@ public class CustomRollingPanel extends Composite implements InsertPanel, HasHor
 		 * @param adjust
 		 */
 		protected void adjustScrollPosition(int adjust)
-	    {
+		{
 			int position = getScrollPosition() + adjust;
 			setScrollPosition(position);
-	    }
+		}
 	}
 
 	public VerticalAlignmentConstant getVerticalAlignment()
-    {
-	    return this.verticalAlign;
-    }
+	{
+		return this.verticalAlign;
+	}
 
 	public HorizontalAlignmentConstant getHorizontalAlignment()
-    {
-	    return this.horizontalAlign;
-    }
+	{
+		return this.horizontalAlign;
+	}
 
 	/**
 	 * @param nextButtonStyleName
 	 */
 	public void setNextButtonStyleName(String nextButtonStyleName)
-    {
-    	this.nextButtonStyleName = nextButtonStyleName;
-    	
-    	this.nextButton.setStyleName(this.nextButtonStyleName);
-    	
-    	Scheduler.get().scheduleDeferred(new ScheduledCommand()
+	{
+		this.nextButtonStyleName = nextButtonStyleName;
+		this.nextButton.setStyleName(this.nextButtonStyleName);
+		Scheduler.get().scheduleDeferred(new ScheduledCommand()
 		{
-    		public void execute()
+			public void execute()
 			{
-    			Button btn = nextButton;
-				getWrapperElement(btn).setClassName(CustomRollingPanel.this.nextButtonStyleName + "Wrapper");
+				Button btn = nextButton;
+				getWrapperElement(btn).setClassName(
+					CustomRollingPanel.this.nextButtonStyleName + "Wrapper");
 			}
 		});
-    }
+	}
 
 	/**
 	 * @param previousButtonStyleName
 	 */
 	public void setPreviousButtonStyleName(String previousButtonStyleName)
-    {
-    	this.previousButtonStyleName = previousButtonStyleName;
-    	
-    	this.previousButton.setStyleName(this.nextButtonStyleName);
-    	Scheduler.get().scheduleDeferred(new ScheduledCommand()
+	{
+		this.previousButtonStyleName = previousButtonStyleName;
+		this.previousButton.setStyleName(this.nextButtonStyleName);
+		Scheduler.get().scheduleDeferred(new ScheduledCommand()
 		{
-    		public void execute()
+			public void execute()
 			{
-    			Button btn = previousButton;
-				getWrapperElement(btn).setClassName(CustomRollingPanel.this.previousButtonStyleName + "Wrapper");
+				Button btn = previousButton;
+				getWrapperElement(btn).setClassName(
+					CustomRollingPanel.this.previousButtonStyleName + "Wrapper");
 			}
 		});
-    }
+	}
 
 	/**
 	 * @param bodyStyleName the bodyStyleName to set
