@@ -150,6 +150,8 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 				fetchCallback.execute(-1, -1);
 			}
 		}
+		
+		
 	}
 	
 	/**
@@ -417,10 +419,12 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 	 */
 	public int getCurrentPageSize()
 	{
-		int pageEndRecord = getPageEndRecord() == this.data.size() ? getPageEndRecord() -1 : getPageEndRecord();
-		return pageEndRecord - getPageStartRecord()+1;
+		//int pageEndRecord = (getPageEndRecord() == this.data.size()) || (getPageEndRecord()-1 == this.data.size())? getPageEndRecord() -1 : getPageEndRecord();
+		int pageEndRecord = (getPageEndRecord() == this.data.size()) ? getPageEndRecord() -1 : getPageEndRecord();
+		//int pageEndRecord = getPageEndRecord();
+		return pageEndRecord - getPageStartRecord() + 1;
 	}
-
+	
 	/**
 	 * @see org.cruxframework.crux.core.client.datasource.PagedDataSource#getPageSize()
 	 */
