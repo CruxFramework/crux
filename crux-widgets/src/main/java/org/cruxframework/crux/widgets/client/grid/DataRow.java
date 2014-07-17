@@ -45,13 +45,6 @@ public class DataRow extends Row
 	{
 		return dataSourceRecord;
 	}
-	
-	public DataRow(DataRow row)
-	{
-		super(row.getIndex(),row.getElem(),row.getGrid(),row.isHasSelectionCell());
-		//this.setDataSourceRecord(row.getDataSourceRecord().getRecordObject());
-	}
-	
 
 	public boolean isNew()
 	{
