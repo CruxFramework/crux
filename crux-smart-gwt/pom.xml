@@ -10,7 +10,7 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cruxVersion>5.2.0-SNAPSHOT</cruxVersion>
+        <cruxVersion>5.1.2-SNAPSHOT</cruxVersion>
         <webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory>
 		<webinf.lib.folder>${webappDirectory}/WEB-INF/lib/</webinf.lib.folder>
 		<webinf.classes.folder>${webappDirectory}/WEB-INF/classes/</webinf.classes.folder>
