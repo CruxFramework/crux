@@ -420,6 +420,10 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 		{
 			result.add(Date.class);
 		}
+		else if (jType.getQualifiedSourceName().equals(java.sql.Date.class.getCanonicalName()))
+		{
+			result.add(java.sql.Date.class);
+		}
 		else if (jType.getQualifiedSourceName().equals(BigInteger.class.getCanonicalName()))
 		{
 			result.add(BigInteger.class);
