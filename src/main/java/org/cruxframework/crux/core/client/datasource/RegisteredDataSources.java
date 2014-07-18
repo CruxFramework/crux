@@ -15,17 +15,13 @@
  */
 package org.cruxframework.crux.core.client.datasource;
 
-import org.cruxframework.crux.core.client.Legacy;
 
 /**
  * Contains all DataSources declared. It is used internally by Crux to 
  * create DataSource objects based on its declared names.
  * 
  * @author Thiago da Rosa de Bustamante
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 public interface RegisteredDataSources 
 {
 	DataSource<?> getDataSource(String id);

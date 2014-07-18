@@ -18,7 +18,6 @@ package org.cruxframework.crux.core.client.datasource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.collection.FastMap;
 
 
@@ -26,10 +25,7 @@ import org.cruxframework.crux.core.client.collection.FastMap;
  * 
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 public class ColumnDefinitions<E>
 {
 	private List<String> columnNames = new ArrayList<String>();;

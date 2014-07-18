@@ -20,16 +20,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface DataSource {

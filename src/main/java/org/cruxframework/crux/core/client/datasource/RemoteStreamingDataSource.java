@@ -31,10 +31,7 @@ import com.google.gwt.user.client.ui.HasValue;
 /**
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 public abstract class RemoteStreamingDataSource<T> implements StreamingDataSource<T>
 {
 	protected StreamingDataSourceOperations<T> editableOperations = new StreamingDataSourceOperations<T>(this);

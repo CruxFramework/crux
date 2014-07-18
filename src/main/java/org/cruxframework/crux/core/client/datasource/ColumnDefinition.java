@@ -15,16 +15,12 @@
  */
 package org.cruxframework.crux.core.client.datasource;
 
-import org.cruxframework.crux.core.client.Legacy;
 
 /**
  * Metadata information about a DataSource column
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 public abstract class ColumnDefinition<V, R>
 {
 	private String name;

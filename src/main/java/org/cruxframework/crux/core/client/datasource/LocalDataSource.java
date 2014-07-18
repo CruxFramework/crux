@@ -17,17 +17,12 @@ package org.cruxframework.crux.core.client.datasource;
 
 import java.util.List;
 
-import org.cruxframework.crux.core.client.Legacy;
-
 
 /**
  * A DataSource that loads all data and store it locally on client browser
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 public interface LocalDataSource<E> extends DataSource<E>
 {
 	void load();

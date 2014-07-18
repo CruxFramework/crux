@@ -18,7 +18,6 @@ package org.cruxframework.crux.core.client.datasource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.datasource.DataSourceRecord.DataSourceRecordState;
 
 
@@ -26,10 +25,7 @@ import org.cruxframework.crux.core.client.datasource.DataSourceRecord.DataSource
 /**
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 class DataSourceOperations<E>
 {
 	protected List<DataSourceRecord<E>> newRecords = new ArrayList<DataSourceRecord<E>>();

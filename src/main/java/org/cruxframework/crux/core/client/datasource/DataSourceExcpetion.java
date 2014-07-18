@@ -15,15 +15,11 @@
  */
 package org.cruxframework.crux.core.client.datasource;
 
-import org.cruxframework.crux.core.client.Legacy;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 public class DataSourceExcpetion extends RuntimeException
 {
 	private static final long serialVersionUID = 2211949587527545296L;

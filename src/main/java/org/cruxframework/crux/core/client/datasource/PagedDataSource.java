@@ -15,17 +15,11 @@
  */
 package org.cruxframework.crux.core.client.datasource;
 
-import org.cruxframework.crux.core.client.Legacy;
 
 /**
  * A DataSource that supports pagination
  * 
- * @author Thiago da Rosa de Bustamante
- *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 public interface PagedDataSource<E> extends DataSource<E>
 {
 	boolean hasNextPage();
