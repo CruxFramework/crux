@@ -62,6 +62,7 @@ public class ClassUtils
 		simpleTypes.add(Character.TYPE.getCanonicalName());
 		simpleTypes.add(String.class.getCanonicalName());
 		simpleTypes.add(Date.class.getCanonicalName());
+		simpleTypes.add(java.sql.Date.class.getCanonicalName());
 		simpleTypes.add(BigInteger.class.getCanonicalName());
 		simpleTypes.add(BigDecimal.class.getCanonicalName());
 	}

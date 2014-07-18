@@ -590,21 +590,23 @@ public class JClassUtils
 
 	            JClassType charSequenceType = classType.getOracle().getType(CharSequence.class.getCanonicalName());
 	            JClassType dateType = classType.getOracle().getType(Date.class.getCanonicalName());
+	            JClassType sqlDateType = classType.getOracle().getType(java.sql.Date.class.getCanonicalName());
 	            JClassType numberType = classType.getOracle().getType(Number.class.getCanonicalName());
 	            JClassType booleanType = classType.getOracle().getType(Boolean.class.getCanonicalName());
 	            JClassType characterType = classType.getOracle().getType(Character.class.getCanonicalName());
 	            JClassType bigIntegerType = classType.getOracle().getType(BigInteger.class.getCanonicalName());
 	            JClassType bigDecimalType = classType.getOracle().getType(BigDecimal.class.getCanonicalName());
 
-	            return (classType.isPrimitive() != null) ||
-	            (numberType.isAssignableFrom(classType)) ||
-	            (booleanType.isAssignableFrom(classType)) ||
-	            (characterType.isAssignableFrom(classType)) ||
+	            return (classType.isPrimitive() != null)       ||
+	            (numberType.isAssignableFrom(classType))       ||
+	            (booleanType.isAssignableFrom(classType))      ||
+	            (characterType.isAssignableFrom(classType))    ||
 	            (charSequenceType.isAssignableFrom(classType)) ||
 	            (charSequenceType.isAssignableFrom(classType)) ||
-	            (dateType.isAssignableFrom(classType)) ||
-	            (bigIntegerType.isAssignableFrom(classType)) ||
-	            (bigDecimalType.isAssignableFrom(classType)) ||
+	            (dateType.isAssignableFrom(classType)) 		   ||
+	            (sqlDateType.isAssignableFrom(classType))      ||
+	            (bigIntegerType.isAssignableFrom(classType))   ||
+	            (bigDecimalType.isAssignableFrom(classType))   ||
 	            (classType.isEnum() != null);
             }
             catch (NotFoundException e)

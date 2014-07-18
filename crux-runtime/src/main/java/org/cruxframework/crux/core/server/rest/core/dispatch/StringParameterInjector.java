@@ -37,6 +37,7 @@ public class StringParameterInjector
 	protected String defaultValue;
 	protected String paramName;
 	private boolean isDate;
+	private boolean isSQLDate;
 
 	protected StringParameterInjector()
     {
@@ -53,6 +54,7 @@ public class StringParameterInjector
 		this.paramName = paramName;
 		this.defaultValue = defaultValue;
 		this.isDate = Date.class.isAssignableFrom(type);
+		this.isSQLDate = java.sql.Date.class.isAssignableFrom(type);
 
 		if (ClassUtils.isSimpleType(rawType))
 		{
@@ -138,11 +140,13 @@ public class StringParameterInjector
 				strVal = defaultValue;
 			}
 		}
-		if (isDate && isNumeric(strVal))  
+		if (isSQLDate && isNumeric(strVal))
+		{
+			return new java.sql.Date(Long.parseLong(strVal));
+		} else if (isDate && isNumeric(strVal))  
 		{
 			return new Date(Long.parseLong(strVal));
-		}
-		else if (rawType.isPrimitive())
+		}  else if (rawType.isPrimitive())
 		{
 			return ClassUtils.stringToPrimitiveBoxType(rawType, strVal);
 		}
