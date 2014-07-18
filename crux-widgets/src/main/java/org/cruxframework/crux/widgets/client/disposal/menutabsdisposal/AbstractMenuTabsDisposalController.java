@@ -98,8 +98,6 @@ abstract class AbstractMenuTabsDisposalController extends DeviceAdaptiveControll
 				};
 				
 				Scheduler.get().scheduleDeferred(cmd );
-
-				return;
 			}
 		}
 		
