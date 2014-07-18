@@ -35,6 +35,10 @@ public class RestErrorHandlerImpl extends RestErrorHandler
 			cause.setStackTrace(new StackTraceElement[]{});
 			return cause;
 		}
+		else if (cause instanceof RestFailure)
+		{
+			throw (RestFailure)cause;
+		}
 		else
 		{
 			throw new InternalServerErrorException("Can not execute requested service. Unchecked Exception occurred on method: "+method.toString(), 

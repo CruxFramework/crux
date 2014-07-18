@@ -78,15 +78,6 @@ public class CruxBridge
 				"] could not be deleted. Check if your SO is not blocking this operation.", new IOException());
 	}
 
-	public static void removeOldGWTCodeServerCompilationFiles()
-	{
-		File tempDirFile = FileUtils.getTempDirFile();
-		if(!FileUtils.recursiveDelete(tempDirFile, "gwt-codeserver"))
-		{
-			handleRemoveFolderError(tempDirFile);
-		}
-	}
-	
 	/**
 	 * Singleton method
 	 * 
