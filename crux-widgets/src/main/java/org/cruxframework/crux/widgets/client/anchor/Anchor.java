@@ -75,7 +75,7 @@ public class Anchor extends Composite implements HasSelectHandlers, HasHTML, Has
 			{
 				if (!StringUtils.isEmpty(getTarget()))
 				{
-					Window.open(getHref(), getTarget(), null);
+					Window.open(getHref(), getTarget(), "");
 				}
 				else
 				{
