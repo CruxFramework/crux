@@ -35,10 +35,15 @@ import org.cruxframework.crux.core.client.formatter.HasFormatter;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.widgets.client.WidgetMsgFactory;
 import org.cruxframework.crux.widgets.client.button.Button;
+import org.cruxframework.crux.widgets.client.event.row.BeforeCancelRowEditionEvent;
+import org.cruxframework.crux.widgets.client.event.row.BeforeCancelRowEditionHandler;
 import org.cruxframework.crux.widgets.client.event.row.BeforeRowEditEvent;
 import org.cruxframework.crux.widgets.client.event.row.BeforeRowSelectEvent;
 import org.cruxframework.crux.widgets.client.event.row.BeforeRowSelectHandler;
+import org.cruxframework.crux.widgets.client.event.row.BeforeSaveRowEditionEvent;
+import org.cruxframework.crux.widgets.client.event.row.BeforeSaveRowEditionHandler;
 import org.cruxframework.crux.widgets.client.event.row.BeforeShowRowDetailsEvent;
+import org.cruxframework.crux.widgets.client.event.row.CancelRowEditionEvent;
 import org.cruxframework.crux.widgets.client.event.row.HasBeforeRowSelectHandlers;
 import org.cruxframework.crux.widgets.client.event.row.LoadRowDetailsEvent;
 import org.cruxframework.crux.widgets.client.event.row.RowClickEvent;
@@ -90,7 +95,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 // TODO refatorar isso. Criar uma grid programaticamente eh muito complexo como
 // esta
-@SuppressWarnings("deprecation")
 public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<PagedDataSource<?>>, HasBeforeRowSelectHandlers
 {
 	private int pageSize;
@@ -113,7 +117,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private boolean keepEditorOnClickDisabledRows = false;
 	private boolean showEditorButtons = false;
 	private Object originalRecord;
-
+	private String editButtonTooltip = "Edit";
+	private String saveButtonTooltip = "Save";
+	private String cancelButtonTooltip = "Cancel";
+	
+	
 	/**
 	 * @param columnDefinitions
 	 *            the columns to be rendered
@@ -226,6 +234,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons)
 	{
 		this(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType, null, false, false, false,keepEditorOnClickDisabledRows,showEditorButtons);
+	}
+	
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize,
+			String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons,String editButtonTooltip,String saveButtonTooltip,String cancelButtonTooltip)
+	{
+		this(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType, null, false, false, false,keepEditorOnClickDisabledRows,showEditorButtons,editButtonTooltip,saveButtonTooltip,cancelButtonTooltip);
 	}
 	
 	/**
@@ -375,6 +389,47 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		keepEditorOpen();
 	}
 	
+	public Grid(ColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection, int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling, boolean fixedCellSize,
+			String defaultSortingColumn, SortingType defaultSortingType, RowDetailWidgetCreator rowDetailsWidgetCreator, boolean showRowDetailsIcon, boolean freezeHeaders, boolean caseSensitive, boolean keepEditorOnClickDisabledRows,boolean showEditorButtons,String editButtonTooltip,String saveButtonTooltip,String cancelButtonTooltip)
+	{
+		super(columnDefinitions, rowSelection, cellSpacing, stretchColumns, highlightRowOnMouseOver, fixedCellSize, rowDetailsWidgetCreator, showRowDetailsIcon, freezeHeaders);
+		getColumnDefinitions().setGrid(this);
+		
+		this.showEditorButtons = showEditorButtons;
+		this.emptyDataFilling = emptyDataFilling != null ? emptyDataFilling : " ";
+		this.pageSize = pageSize;
+		this.autoLoadData = autoLoadData;
+		this.defaultSortingColumn = defaultSortingColumn;
+		this.defaultSortingType = defaultSortingType;
+		this.caseSensitive = caseSensitive;
+		this.keepEditorOnClickDisabledRows = keepEditorOnClickDisabledRows;
+		
+		if(editButtonTooltip != null)
+		{
+			this.editButtonTooltip = editButtonTooltip;
+		}
+		
+		if(saveButtonTooltip != null)
+		{
+			this.saveButtonTooltip = saveButtonTooltip;
+		}
+		
+		if(cancelButtonTooltip != null)
+		{
+			this.cancelButtonTooltip = cancelButtonTooltip;
+		}
+		
+		if (hasRowDetails())
+		{
+			this.rowDetailsManager = new RowDetailsManager(rowDetailsWidgetCreator);
+		}
+		super.render();
+		
+		setEditorColumns();
+		keepEditorOpen();
+	}
+	
+	
 	private void setEditorColumns()
 	{
 		if(showEditorButtons)
@@ -432,6 +487,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		edit.removeStyleName("button-disabled");
 		save.addStyleName("button-disabled");
 		cancel.addStyleName("button-disabled");
+		
 	}
 	
 	private class EditColumn implements WidgetColumnCreator{
@@ -464,6 +520,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			btnSave.addStyleName("button-disabled");
 			btnCancel.addStyleName("button-disabled");
 			
+			btnEdit.getElement().setAttribute("title", grid.editButtonTooltip);
+			btnSave.getElement().setAttribute("title", grid.saveButtonTooltip);
+			btnCancel.getElement().setAttribute("title", grid.cancelButtonTooltip);
+			
+			
 			panel.setStyleName("panel-editor-column");
 			btnEdit.addHandler(new ClickHandler(){
 				
@@ -483,8 +544,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				{
 					DataRow r = grid.getRow(panel);
 					grid.confirmLastEditedRowValues(r);
-					finishEditingButtons(r);
-					enableRows();
 					
 				}
 			}, ClickEvent.getType());
@@ -503,8 +562,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 					}
 					
 					grid.rollbackRowEdition(r);
-					finishEditingButtons(r);
-					enableRows();
 				}
 			}, ClickEvent.getType());
 			
@@ -962,7 +1019,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	 */
 	public void rollbackRowEdition(DataRow row)
 	{
-		if (row != null)
+		if (row != null && fireBeforeCancelRowEditionEvent(row))
 		{	
 			if(originalRecord != null)
 			{
@@ -971,6 +1028,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			row.setEditMode(false);
 			renderRow(row, row.getDataSourceRecord(), false, null);
 			this.currentEditingRow = null;
+			enableRows();
+			fireCancelRowEditionEvent(row);
 		}
 	}
 
@@ -1131,10 +1190,14 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 	private void confirmLastEditedRowValues(DataRow row)
 	{
-		confirmLastEditedRowValues(row, getEditableColumns());
-		fireRowEditEvent(row);
-		row.setEditMode(false);
-		currentEditingRow = null;
+		if(fireBeforeSaveRowEditionEvent(row))
+		{
+			confirmLastEditedRowValues(row, getEditableColumns());
+			row.setEditMode(false);
+			currentEditingRow = null;
+			fireRowEditEvent(row);
+			enableRows();
+		}
 	}
 
 	/**
@@ -1487,6 +1550,48 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		return addHandler(handler, BeforeRowSelectEvent.getType());
 	}
+	
+	protected void fireCancelRowEditionEvent(DataRow row)
+	{
+		CancelRowEditionEvent.fire(this, row);
+	}
+	
+	protected boolean fireBeforeSaveRowEditionEvent(DataRow row)
+	{
+		boolean canceled = false;
+		BeforeSaveRowEditionEvent event = new BeforeSaveRowEditionEvent(this,row);
+		
+		for (int i = 0; i < beforeSaveRowEditionHandlers.size(); i++)
+        {
+			BeforeSaveRowEditionHandler handler = beforeSaveRowEditionHandlers.get(i);
+			handler.onBeforeSaveRowEdition(event);
+			if (event.isCanceled())
+			{
+				canceled = true;
+			}
+        }
+		
+		return !canceled;
+	}
+	
+	protected boolean fireBeforeCancelRowEditionEvent(DataRow row)
+	{
+		boolean canceled = false;
+		BeforeCancelRowEditionEvent event = new BeforeCancelRowEditionEvent(this,row);
+		
+		for (int i = 0; i < beforeCancelRowEditionHandlers.size(); i++)
+        {
+			BeforeCancelRowEditionHandler handler = beforeCancelRowEditionHandlers.get(i);
+			handler.onBeforeCancelRowEdition(event);
+			if (event.isCanceled())
+			{
+				canceled = true;
+			}
+        }
+		
+		return !canceled;
+	}
+	
 
 	@Override
 	protected void fireRowRenderEvent(DataRow row)

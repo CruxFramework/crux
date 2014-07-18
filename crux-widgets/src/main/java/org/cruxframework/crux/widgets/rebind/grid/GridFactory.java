@@ -89,8 +89,10 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 	@TagAttributeDeclaration(value="freezeHeaders", type=Boolean.class, defaultValue="false"),
 	@TagAttributeDeclaration(value="caseSensitive", type=Boolean.class, defaultValue="false"),
 	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="showEditorButtons", type=Boolean.class,defaultValue="false")
-	
+	@TagAttributeDeclaration(value="showEditorButtons", type=Boolean.class),
+	@TagAttributeDeclaration(value="editButtonTooltip", type=String.class,defaultValue="false",supportsI18N=true,supportsResources=true),
+	@TagAttributeDeclaration(value="saveButtonTooltip", type=String.class,defaultValue="false",supportsI18N=true,supportsResources=true),
+	@TagAttributeDeclaration(value="cancelButtonTooltip", type=String.class,defaultValue="false",supportsI18N=true,supportsResources=true)
 })
 @TagAttributes({
 	@TagAttribute(value="dataSource", processor=GridFactory.DataSourceAttributeParser.class)
@@ -127,7 +129,7 @@ public class GridFactory extends WidgetCreator<WidgetCreatorContext>
             getEmptyDataFilling(widgetElement)+", "+isFixedCellSize(widgetElement)+", "+getSortingColumn(widgetElement)+", "+
             getSortingType(widgetElement) + ", "+ rowDetailsCreator + ", "+ 
             getShowRowDetailsIcon(widgetElement) + ", " + getFreezeHeaders(widgetElement) +", "+getCaseSensitive(widgetElement) + "," + getKeepEditorOnClickDisabledRows(widgetElement) + "," + 
-            getShowEditorButtons(widgetElement) + ");");
+            getShowEditorButtons(widgetElement) + ", " + getEditButtonTooltip(widgetElement) + ", " + getSaveButtonTooltip(widgetElement)+ ", " + getCancelButtonTooltip(widgetElement) + ");");
 	}
 	
 	private boolean getShowRowDetailsIcon(JSONObject gridElem) 
@@ -259,6 +261,44 @@ public class GridFactory extends WidgetCreator<WidgetCreatorContext>
 		
 		return false;
 	}
+	
+	private String getEditButtonTooltip(JSONObject gridElem)
+	{
+		String emptyDataFilling = gridElem.optString("editButtonTooltip");
+		
+		if(emptyDataFilling != null && emptyDataFilling.trim().length() > 0)
+		{
+			return EscapeUtils.quote(emptyDataFilling);
+		}
+		
+		return null;
+	}
+	
+	private String getSaveButtonTooltip(JSONObject gridElem)
+	{
+		String emptyDataFilling = gridElem.optString("saveButtonTooltip");
+		
+		if(emptyDataFilling != null && emptyDataFilling.trim().length() > 0)
+		{
+			return EscapeUtils.quote(emptyDataFilling);
+		}
+		
+		return null;
+	}
+
+	
+	private String getCancelButtonTooltip(JSONObject gridElem)
+	{
+		String emptyDataFilling = gridElem.optString("cancelButtonTooltip");
+		
+		if(emptyDataFilling != null && emptyDataFilling.trim().length() > 0)
+		{
+			return EscapeUtils.quote(emptyDataFilling);
+		}
+		
+		return null;
+	}
+
 
 
 	/**

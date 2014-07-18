@@ -27,12 +27,21 @@ import org.cruxframework.crux.widgets.client.WidgetMsgFactory;
 import org.cruxframework.crux.widgets.client.button.Button;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
+import org.cruxframework.crux.widgets.client.event.row.BeforeCancelRowEditionEvent;
+import org.cruxframework.crux.widgets.client.event.row.BeforeCancelRowEditionHandler;
 import org.cruxframework.crux.widgets.client.event.row.BeforeRowEditEvent;
 import org.cruxframework.crux.widgets.client.event.row.BeforeRowEditHandler;
+import org.cruxframework.crux.widgets.client.event.row.BeforeSaveRowEditionEvent;
+import org.cruxframework.crux.widgets.client.event.row.BeforeSaveRowEditionHandler;
 import org.cruxframework.crux.widgets.client.event.row.BeforeShowRowDetailsEvent;
 import org.cruxframework.crux.widgets.client.event.row.BeforeShowRowDetailsHandler;
+import org.cruxframework.crux.widgets.client.event.row.CancelRowEditionEvent;
+import org.cruxframework.crux.widgets.client.event.row.CancelRowEditionHandler;
+import org.cruxframework.crux.widgets.client.event.row.HasBeforeCancelRowEditionHandler;
 import org.cruxframework.crux.widgets.client.event.row.HasBeforeRowEditHandlers;
+import org.cruxframework.crux.widgets.client.event.row.HasBeforeSaveRowEditionHandler;
 import org.cruxframework.crux.widgets.client.event.row.HasBeforeShowDetailsHandlers;
+import org.cruxframework.crux.widgets.client.event.row.HasCancelRowEditionHandler;
 import org.cruxframework.crux.widgets.client.event.row.HasLoadRowDetailsHandlers;
 import org.cruxframework.crux.widgets.client.event.row.HasRowClickHandlers;
 import org.cruxframework.crux.widgets.client.event.row.HasRowDoubleClickHandlers;
@@ -58,17 +67,13 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.UIObject;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -76,7 +81,7 @@ import com.google.gwt.user.client.ui.Widget;
  * All subclasses must invoke the method <code>render()</code> in their constructors.
  * @author Gesse Dafe
  */
-public abstract class AbstractGrid<R extends Row> extends Composite implements HasRowClickHandlers, HasRowDoubleClickHandlers, HasRowRenderHandlers, HasBeforeShowDetailsHandlers, HasShowRowDetailsHandlers, HasLoadRowDetailsHandlers, HasBeforeRowEditHandlers, HasRowEditHandlers  {	
+public abstract class AbstractGrid<R extends Row> extends Composite implements HasRowClickHandlers, HasRowDoubleClickHandlers, HasRowRenderHandlers, HasBeforeShowDetailsHandlers, HasShowRowDetailsHandlers, HasLoadRowDetailsHandlers, HasBeforeRowEditHandlers, HasRowEditHandlers,HasBeforeSaveRowEditionHandler,HasBeforeCancelRowEditionHandler,HasCancelRowEditionHandler  {	
 	
 	private static final String DEFAULT_STYLE_NAME = "crux-Grid";
 	
@@ -93,6 +98,9 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	private boolean showRowDetailsIcon;
 	private boolean freezeHeaders;
 	private Boolean hasFrozenColumns;
+	protected FastList<BeforeSaveRowEditionHandler> beforeSaveRowEditionHandlers = new FastList<BeforeSaveRowEditionHandler>();
+	protected FastList<BeforeCancelRowEditionHandler> beforeCancelRowEditionHandlers = new FastList<BeforeCancelRowEditionHandler>();
+	
 	
 	/**
 	 * Handles the event fired when the details of some row becomes visible.
@@ -296,6 +304,23 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	}
 	
 	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasCancelRowEditionHandler#addCancelRowEditionHandler(org.cruxframework.crux.widgets.client.event.row.CancelRowEditionHandler)
+	 */
+	public HandlerRegistration addCancelRowEditionHandler(CancelRowEditionHandler handler) 
+	{
+		return addHandler(handler, CancelRowEditionEvent.getType());
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasBeforeCancelRowEditionHandler#addBeforeCancelRowEditionHandler(org.cruxframework.crux.widgets.client.event.row.BeforeCancelRowEditionHandler)
+	 */
+	public HandlerRegistration addBeforeCancelRowEditionHandler(BeforeCancelRowEditionHandler handler) 
+	{
+		beforeCancelRowEditionHandlers.add(handler);
+		return addHandler(handler, BeforeCancelRowEditionEvent.getType());
+	}
+	
+	/**
 	 * @see org.cruxframework.crux.widgets.client.event.row.HasRowEditHandlers#addRowEditHandler(org.cruxframework.crux.widgets.client.event.row.RowEditHandler)
 	 */
 	public HandlerRegistration addRowEditHandler(RowEditHandler handler) 
@@ -309,6 +334,16 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	public HandlerRegistration addLoadRowDetailsHandler(LoadRowDetailsHandler handler) 
 	{
 		return addHandler(handler, LoadRowDetailsEvent.getType());
+	}
+	
+	
+	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasBeforeSaveRowEditionHandler#addBeforeSaveRowEditionHandler(org.cruxframework.crux.widgets.client.event.row.BeforeSaveRowEditionHandler)
+	 */
+	public HandlerRegistration addBeforeSaveRowEditionHandler(BeforeSaveRowEditionHandler handler)
+	{
+		this.beforeSaveRowEditionHandlers.add(handler);
+		return addHandler(handler, BeforeSaveRowEditionEvent.getType());
 	}
 	
 	/**
@@ -608,6 +643,25 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 * @param row
 	 */
 	protected abstract void fireRowRenderEvent(R row);
+	
+	
+	/**
+	 * Fires a row saving event
+	 * @param row
+	 */
+	protected abstract boolean fireBeforeSaveRowEditionEvent(R row);
+	
+	/**
+	 * @param row
+	 * @return
+	 */
+	protected abstract boolean fireBeforeCancelRowEditionEvent(R row);
+	
+	/**
+	 * @param row
+	 * @return
+	 */
+	protected abstract void fireCancelRowEditionEvent(R row);
 		
 	/**
 	 * Access for the grid table element
