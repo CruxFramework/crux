@@ -30,10 +30,7 @@ import com.google.gwt.core.client.GWT;
 /**
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E>
 {
 	protected ColumnDefinitions<E> definitions = new ColumnDefinitions<E>();

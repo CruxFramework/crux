@@ -15,16 +15,12 @@
  */
 package org.cruxframework.crux.core.client.datasource;
 
-import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.rpc.AsyncCallbackAdapter;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 public class DataSourceAsyncCallbackAdapter<T> extends AsyncCallbackAdapter<T[]>
 {
 	private final Object ds;

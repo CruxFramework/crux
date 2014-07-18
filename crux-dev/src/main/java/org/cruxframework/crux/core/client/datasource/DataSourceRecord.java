@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.core.client.datasource;
 
-import org.cruxframework.crux.core.client.Legacy;
 
 
 
@@ -24,10 +23,7 @@ import org.cruxframework.crux.core.client.Legacy;
  * 
  * @author Thiago da Rosa de Bustamante
  *
- * @deprecated Use DataProvider instead.
  */
-@Deprecated
-@Legacy
 public class DataSourceRecord<T>
 {
 	protected Object identifier;
@@ -123,6 +119,7 @@ public class DataSourceRecord<T>
     	this.recordObject = recordObject;
     }
 	
+	@SuppressWarnings("unchecked")
 	public void setRecordDto(Object obj)
 	{
 		this.recordObject = (T)obj;
