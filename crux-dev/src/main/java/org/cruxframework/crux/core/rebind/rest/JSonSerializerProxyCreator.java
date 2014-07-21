@@ -328,8 +328,8 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 				srcWriter.println(resultObjectVar + " = " + JClassUtils.getParsingExpressionForSimpleType(jsonValueVar+".isString().stringValue()", objectType) + ";");
 			} else if (objectType.getQualifiedSourceName().equals("java.sql.Date"))
 			{
-				logger.log(TreeLogger.Type.WARN, "Type ["+objectType.getParameterizedQualifiedSourceName()+"] is a <java.sql.Date>. "
-						+ "We recommend to avoid this type: there are some known issues with respect to timezone handling, partly due to design of this class.");
+				logger.log(TreeLogger.Type.WARN, "We recommend to avoid type ["+objectType.getParameterizedQualifiedSourceName()+"]: "
+						+ "there are some known issues with respect to Jackson timezone handling, partly due to design of this class.");
 				srcWriter.println(resultObjectVar + " = " + JClassUtils.getParsingExpressionForSimpleType(jsonValueVar+".isString().stringValue().replace(\"/\",\"-\")", objectType) + ";");
 			} else
 			{
