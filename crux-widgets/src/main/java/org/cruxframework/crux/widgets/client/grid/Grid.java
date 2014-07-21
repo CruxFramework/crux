@@ -761,11 +761,23 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				if(!row.isEditMode())
 				{
 					finishEditingButtons(row);
-					row.setEnabled(true);
 				}
+				row.setEnabled(true);
 			}
 		}
 	}
+	
+	private void deselectAllRows()
+	{
+		Iterator<DataRow> iterator = getRowIterator();
+		
+		while(iterator.hasNext())
+		{
+			DataRow row = iterator.next();
+			row.setSelected(false);
+		}
+	}
+	
 	
 	@Override
 	protected void onClear()
@@ -1853,6 +1865,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				currentEditingRow.setEditMode(false);
 			}
 			
+			deselectAllRows();
+			row.setSelected(true);
 			originalRecord = getDataSource().cloneDTO(row.getDataSourceRecord());
 			swapCurrentEditingRow(row);
 			
@@ -1876,7 +1890,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 			renderRow(row, row.getDataSourceRecord(), true, focusCellKey);
 			row.setEditMode(true);
-			startEditingButtons(row);
+
+			if(showEditorButtons)
+			{
+				startEditingButtons(row);
+			}
 			disableRows();
 		}
 	}
@@ -1910,9 +1928,16 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			dataSource.clearChanges();
 			refresh();
 			
-			DataRow row = getRowIterator().next();
-			row.setNew(true);
-			makeEditable(row, null);
+			if(getRowIterator() != null)
+			{
+				DataRow row = getRowIterator().next();
+				
+				if(row != null)
+				{
+					row.setNew(true);
+					makeEditable(row, null);	
+				}
+			}
 		}
 	}
 
