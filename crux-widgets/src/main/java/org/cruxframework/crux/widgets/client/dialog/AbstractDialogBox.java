@@ -19,7 +19,9 @@ import com.google.gwt.event.logical.shared.HasOpenHandlers;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -36,7 +38,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	private static final int MIN_HEIGHT = 50;
 	
 	private SimplePanel body = new SimplePanel();
-	private Label title = new Label();
+	private HTML title = new HTML();
 	private Button closeBtn = new Button();
 	private Label moveHandle;
 	private Label resizeHandle;
@@ -172,6 +174,11 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	public void setClosable(boolean closable)
 	{
 		closeBtn.setVisible(closable);
+	}
+	
+	public void setTitle(SafeHtml text)
+	{
+		title.setHTML(text);
 	}
 	
 	@Override

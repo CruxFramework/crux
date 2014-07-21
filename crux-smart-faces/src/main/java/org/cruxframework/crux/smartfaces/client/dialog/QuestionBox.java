@@ -23,9 +23,10 @@ import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
-import org.cruxframework.crux.smartfaces.client.label.Label;
+import org.cruxframework.crux.smartfaces.client.label.HTML;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -38,7 +39,7 @@ public class QuestionBox extends AbstractDialogBox
 {
 	public static final String DEFAULT_STYLE_NAME = "faces-QuestionBox";
 
-	private Label msgLabel;
+	private HTML msgLabel;
 	private NavPanel buttonsPanel;
 
 	/**
@@ -188,6 +189,16 @@ public class QuestionBox extends AbstractDialogBox
 	 * @param message the text to be displayed
 	 * @param type the message type, used to apply a particular style
 	 */
+	public void setMessage(SafeHtml message)
+	{
+		this.msgLabel.setHTML(message);
+	}
+	
+	/**
+	 * Sets the message to be shown
+	 * @param message the text to be displayed
+	 * @param type the message type, used to apply a particular style
+	 */
 	public void setMessage(String message)
 	{
 		this.msgLabel.setText(message);
@@ -248,7 +259,7 @@ public class QuestionBox extends AbstractDialogBox
 		FlowPanel contents = new FlowPanel();
 		contents.setStyleName("questionContents");
 		
-		msgLabel = new Label();
+		msgLabel = new HTML();
 		contents.add(msgLabel);
 		
 		buttonsPanel = new NavPanel();

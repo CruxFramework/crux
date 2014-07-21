@@ -21,12 +21,13 @@ import org.cruxframework.crux.core.client.screen.Screen;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -39,7 +40,7 @@ public class Progress implements HasAnimation, IsWidget
 
 	private boolean isProgressShowing;
 	private DialogBox dialog = null;
-	private Label messageLabel = null;
+	private HTML messageLabel = null;
 
 	public Progress()
     {
@@ -82,6 +83,15 @@ public class Progress implements HasAnimation, IsWidget
 		return messageLabel.getText();
 	}
 
+	/**
+	 * Sets the message to be displayed to the user
+	 * @param message
+	 */
+	public void setMessage(SafeHtml message)
+	{
+		messageLabel.setHTML(message);
+	}
+	
 	/**
 	 * Sets the message to be displayed to the user
 	 * @param message
@@ -194,6 +204,15 @@ public class Progress implements HasAnimation, IsWidget
 	 * 
 	 * @param title
 	 */
+	public void setTitle(SafeHtml title)
+	{
+		dialog.setHTML(title);
+	}
+	
+	/**
+	 * 
+	 * @param title
+	 */
 	public void setTitle(String title)
 	{
 		dialog.setTitle(title);
@@ -224,9 +243,9 @@ public class Progress implements HasAnimation, IsWidget
 	 * @param data
 	 * @return a label
 	 */
-	private Label createMessageLabel()
+	private HTML createMessageLabel()
 	{
-		Label label = new Label();
+		HTML label = new HTML();
 		label.setStyleName("message");
 		return label;
 	}

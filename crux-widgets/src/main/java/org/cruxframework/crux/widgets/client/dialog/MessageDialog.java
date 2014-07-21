@@ -44,13 +44,14 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -63,7 +64,7 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	private static final String DEFAULT_STYLE_NAME = "crux-MessageDialog";
 	private DialogBox dialogBox;
 	private DockPanel messagePanel;
-	private Label messageLabel;
+	private HTML messageLabel;
 	private Button okButton;
 	protected WidgetMessages messages = WidgetMsgFactory.getMessages();
 	private FastList<DialogBox> openedDialogBoxes = new FastList<DialogBox>(); 
@@ -155,7 +156,7 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	 */
 	public void setDialogTitle(String title)
 	{
-		dialogBox.setText(title);
+		dialogBox.setHTML(title);
 	}
 	
 	/**
@@ -175,6 +176,15 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 		return messageLabel.getText();
 	}
 
+	/**
+	 * Sets the message to be displayed to the user
+	 * @param message
+	 */
+	public void setMessage(SafeHtml message)
+	{
+		messageLabel.setHTML(message);
+	}
+	
 	/**
 	 * Sets the message to be displayed to the user
 	 * @param message
@@ -216,6 +226,15 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	public void setHeight(String height)
 	{
 		dialogBox.setHeight(height);
+	}
+	
+	/**
+	 * 
+	 * @param title
+	 */
+	public void setTitle(SafeHtml title)
+	{
+		dialogBox.setHTML(title);
 	}
 	
 	/**
@@ -378,9 +397,9 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	 * @param data
 	 * @return
 	 */
-	private Label createMessageLabel()
+	private HTML createMessageLabel()
 	{
-		Label label = new Label();
+		HTML label = new HTML();
 		label.setStyleName("message");
 		return label;
 	}

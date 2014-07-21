@@ -23,6 +23,7 @@ import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
+import org.cruxframework.crux.smartfaces.client.label.HTML;
 import org.cruxframework.crux.smartfaces.client.util.dragdrop.GenericDragEventHandler.DragAndDropFeature;
 import org.cruxframework.crux.smartfaces.client.util.dragdrop.MoveCapability;
 import org.cruxframework.crux.smartfaces.client.util.dragdrop.MoveCapability.Movable;
@@ -32,6 +33,7 @@ import org.cruxframework.crux.smartfaces.client.util.dragdrop.ResizeCapability.R
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -52,7 +54,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	private static List<AbstractDialogBox> openDialogs = new ArrayList<AbstractDialogBox>();
 	private static HandlerRegistration closeHandler;
 	private SimplePanel body = new SimplePanel();
-	private Label title = new Label();
+	private HTML title = new HTML();
 	private Button closeBtn = new Button();
 	private Label moveHandle;
 	private Label resizeHandle;
@@ -188,6 +190,11 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	public void setClosable(boolean closable)
 	{
 		closeBtn.setVisible(closable);
+	}
+	
+	public void setDialogTitle(SafeHtml text)
+	{
+		title.setHTML(text);
 	}
 	
 	public void setDialogTitle(String text)
