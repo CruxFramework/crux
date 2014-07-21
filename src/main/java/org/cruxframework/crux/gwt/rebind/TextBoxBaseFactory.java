@@ -26,7 +26,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
  */
 @TagAttributes({
 	@TagAttribute("value"),
-	@TagAttribute(value="textAlignment", type=TextBoxBaseFactory.TextAlign.class, processor=TextBoxBaseFactory.TextAlignmentProcessor.class)
+	@TagAttribute(value="textAlignment", type=TextBoxBaseFactory.TextAlign.class, processor=TextBoxBaseFactory.TextAlignmentProcessor.class),
+	@TagAttribute(value="placeHolder", type=String.class, processor=TextBoxBaseFactory.PlaceHolderProcessor.class)
 })
 public abstract class TextBoxBaseFactory extends ValueBoxBaseFactory
 {	
