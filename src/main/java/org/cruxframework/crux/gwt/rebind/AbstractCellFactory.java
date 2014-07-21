@@ -62,6 +62,7 @@ import com.google.gwt.cell.client.TextInputCell;
  *
  */
 
+@SuppressWarnings("deprecation")
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="dataObject", required=true)
 })
@@ -153,7 +154,7 @@ public abstract class AbstractCellFactory<C extends WidgetCreatorContext> extend
 		}
 		else if (childName.equals("numberCell"))
 		{
-			getNumberCell(out, metaElem);
+			getNumberCell(out, child);
 		}
 		else if (childName.equals("safeHtmlCell"))
 		{
