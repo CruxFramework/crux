@@ -389,7 +389,9 @@ Inputs / Textarea
 {
     background-color: #000000;
     opacity: .45;
-
+    /* IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=25)";
+    
     display: block;
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0.45);
     height: 200%;
