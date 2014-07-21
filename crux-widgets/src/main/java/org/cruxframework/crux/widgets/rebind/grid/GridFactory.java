@@ -400,6 +400,10 @@ public class GridFactory extends WidgetCreator<WidgetCreatorContext>
 			{
 				ret = RowSelectionModel.multipleCheckBoxSelectAll;
 			}
+			else if("singleCheckBox".equals(rowSelection))
+			{
+				ret = RowSelectionModel.singleCheckBox;
+			}
 		}
 		
 		return RowSelectionModel.class.getCanonicalName()+"."+ret.toString();

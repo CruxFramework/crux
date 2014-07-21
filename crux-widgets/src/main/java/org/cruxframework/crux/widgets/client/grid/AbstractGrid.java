@@ -536,7 +536,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	protected boolean hasSelectionColumn()
 	{
-		return RowSelectionModel.multipleCheckBox.equals(rowSelection) || RowSelectionModel.multipleCheckBoxSelectAll.equals(rowSelection) || RowSelectionModel.singleRadioButton.equals(rowSelection);
+		return RowSelectionModel.singleCheckBox.equals(rowSelection) || RowSelectionModel.multipleCheckBox.equals(rowSelection) || RowSelectionModel.multipleCheckBoxSelectAll.equals(rowSelection) || RowSelectionModel.singleRadioButton.equals(rowSelection);
 	}
 	
 	/**
@@ -704,12 +704,40 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 			CheckBox checkBox = new CheckBox();
 			checkBox.addClickHandler(new RowSelectionHandler<R>(this, row));
 			w = checkBox;
+		
 		}
 		else if(RowSelectionModel.singleRadioButton.equals(rowSelection))
 		{
 			RadioButton radio = new RadioButton(generatedId + "_selector");
 			radio.addClickHandler(new RowSelectionHandler<R>(this, row));
 			w = radio;
+		}else if(RowSelectionModel.singleCheckBox.equals(rowSelection))
+		{
+			
+			CheckBox checkBox = new CheckBox();
+			checkBox.addClickHandler(new RowSelectionHandler<R>(this, row));
+			w = checkBox;
+			
+			final int indexRowSelected = row.getIndex();
+			checkBox.addClickHandler(new ClickHandler(){
+				
+				@Override
+				public void onClick(ClickEvent event)
+				{
+					Iterator<R> iterator = getRowIterator();
+					
+					while(iterator.hasNext())
+					{
+						R r = iterator.next();
+						
+						if(indexRowSelected != r.getIndex())
+						{
+							r.setSelected(false);
+						}
+						
+					}
+				}
+			});
 		}
 		
 		Cell cell = createCell(w, false, false);

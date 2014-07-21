@@ -22,5 +22,6 @@ public enum RowSelectionModel
 	singleRadioButton,
 	multiple,	
 	multipleCheckBox,
-	multipleCheckBoxSelectAll
+	multipleCheckBoxSelectAll,
+	singleCheckBox
 }
