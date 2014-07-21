@@ -75,6 +75,24 @@ public abstract class ValueBoxBaseFactory extends FocusWidgetFactory<WidgetCreat
 		}
 	}
 	
+	/**
+	 * @author Bruno M. Rafael (bruno@triggolabs.com)
+	 *
+	 */
+	public static class PlaceHolderProcessor extends AttributeProcessor<WidgetCreatorContext>
+	{
+
+		public PlaceHolderProcessor(WidgetCreator<?> widgetCreator) {
+			super(widgetCreator);
+		}
+
+		@Override
+		public void processAttribute(SourcePrinter out,
+				WidgetCreatorContext context, String attributeValue) {
+			out.println(context.getWidget() + ".getElement().setPropertyString(\"placeholder\", \"" + attributeValue + "\");");
+		}
+	}
+	
 	@Override
 	public WidgetCreatorContext instantiateContext()
 	{
