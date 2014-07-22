@@ -91,12 +91,13 @@ class QueryParameterHandler extends AbstractParameterHelper
 					if (JClassUtils.isSimpleType(parameterType))
 					{
 						generateMethodParamToCodeForSimpleType(srcWriter, parameterStringVariable, parameterType, parameterName, 
-								parameterExpression, (parameterType.isPrimitive() != null?"true":parameterExpression+"!=null"));
+								parameterExpression, (parameterType.isPrimitive() != null?"true":parameterExpression+"!=null"), 
+								annotation);
 					}
 					else
 					{
 						generateMethodParamToCodeForComplexType(srcWriter, parameterStringVariable, parameterType, 
-								parameterName, parameterExpression, parameterExpression+"!=null"); 
+								parameterName, parameterExpression, parameterExpression+"!=null", annotation); 
 					}
 				}
 			}

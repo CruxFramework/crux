@@ -15,10 +15,13 @@
  */
 package org.cruxframework.crux.core.rebind.rest;
 
+import java.lang.annotation.Annotation;
 import java.util.Date;
 
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
+import org.cruxframework.crux.core.server.rest.core.dispatch.StringParameterInjector;
+import org.cruxframework.crux.core.shared.rest.annotation.PathParam;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils.PropertyInfo;
 
@@ -42,7 +45,7 @@ abstract class AbstractParameterHelper
     }
 	
 	protected void generateMethodParamToCodeForComplexType(SourcePrinter srcWriter, String parameterStringVariable, JType parameterType, 
-			String parameterName, String parameterExpression, String parameterCheckExpression)
+			String parameterName, String parameterExpression, String parameterCheckExpression, Annotation annotation)
     {
 		PropertyInfo[] propertiesInfo = JClassUtils.extractBeanPropertiesInfo(parameterType.isClassOrInterface());
 		for (PropertyInfo propertyInfo : propertiesInfo)
@@ -54,43 +57,51 @@ abstract class AbstractParameterHelper
 	        			newParameterName, parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()", 
 	        			(propertyInfo.getType().isPrimitive()!=null?
 	        					parameterCheckExpression:
-	        					parameterCheckExpression + " && " + parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()!=null"));
+	        					parameterCheckExpression + " && " + parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()!=null"), annotation);
 	        }
 	        else
 	        {
 	        	generateMethodParamToCodeForComplexType(srcWriter, parameterStringVariable, propertyInfo.getType(), 
 	        			newParameterName, parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()", 
-	        			parameterCheckExpression + " && " + parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()!=null");
+	        			parameterCheckExpression + " && " + parameterExpression+"."+propertyInfo.getReadMethod().getName()+"()!=null", annotation);
 	        }
         }
     }
 
 	protected void generateMethodParamToCodeForSimpleType(SourcePrinter srcWriter, String parameterStringVariable, JType parameterType, 
-			String parameterName, String parameterexpression, String parameterCheckExpression)
+			String parameterName, String parameterexpression, String parameterCheckExpression, Annotation annotation)
     {
 		JClassType jClassType = parameterType.isClassOrInterface();
+		
+		String nullParam = "\"\"";
+		if(annotation instanceof PathParam)
+		{
+			nullParam = "\""+StringParameterInjector.CRUX_NULL+"\"";
+			parameterCheckExpression += "&&!"+parameterName+".equals(\"\")";
+		}
+		
 		if (jClassType != null)
 		{
 			if (jClassType.isAssignableTo(stringType))
 			{
 				srcWriter.println(parameterStringVariable+"="+parameterStringVariable+".replace(\"{"+parameterName+"}\", URL.encodePathSegment("+
-						"("+parameterCheckExpression+"?"+parameterexpression+":\"\")));");
+						"("+parameterCheckExpression+"?"+parameterexpression + ":" + nullParam + ")));");
 			}
 			else if (jClassType.isAssignableTo(dateType))
 			{
 				srcWriter.println(parameterStringVariable+"="+parameterStringVariable+".replace(\"{"+parameterName+"}\", URL.encodePathSegment("+
-						"("+parameterCheckExpression+"?Long.toString("+parameterexpression+".getTime()):\"\")));");
+						"("+parameterCheckExpression+"?Long.toString("+parameterexpression+".getTime())" + ":" + nullParam + ")));");
 			}
 		    else
 		    {
 				srcWriter.println(parameterStringVariable+"="+parameterStringVariable+".replace(\"{"+parameterName+"}\", URL.encodePathSegment("+
-						"("+parameterCheckExpression+"?(\"\"+"+parameterexpression+"):\"\")));");
+						"("+parameterCheckExpression+"?(\"\"+"+parameterexpression+")" + ":" + nullParam + ")));");
 		    }
 		}
 	    else
 	    {
 			srcWriter.println(parameterStringVariable+"="+parameterStringVariable+".replace(\"{"+parameterName+"}\", URL.encodePathSegment("+
-					"("+parameterCheckExpression+"?(\"\"+"+parameterexpression+"):\"\")));");
+					"("+parameterCheckExpression+"?(\"\"+"+parameterexpression+")" + ":" + nullParam + ")));");
 	    }
     }
 
