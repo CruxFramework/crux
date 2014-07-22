@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.CaptionPanel;
  */
 @DeclarativeFactory(id="captionPanel", library="gwt", targetWidget=CaptionPanel.class)
 @TagAttributes({
-	@TagAttribute("captionText")
+	@TagAttribute(value = "captionText", supportsI18N = true)
 })
 @TagChildren({
 	@TagChild(CaptionPanelFactory.CaptionProcessor.class),
