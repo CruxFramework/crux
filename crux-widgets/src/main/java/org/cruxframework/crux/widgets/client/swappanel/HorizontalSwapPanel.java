@@ -251,7 +251,14 @@ public class HorizontalSwapPanel extends Composite implements HasSwapHandlers
 	
 	private void prepareNextPanelToSlideIn(Widget w, Direction direction) 
 	{
-		nextPanel.clear();
+		try
+		{
+			nextPanel.clear();	
+		} catch (Exception e)
+		{
+			nextPanel = new SimplePanel();
+		}
+		
 		nextPanel.add(w);
 		int left;
 		
