@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@SuppressWarnings("deprecation")
 public class HorizontalSwapContainer extends SingleViewContainer implements HasChangeViewHandlers
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-HorizontalSwapContainer";
@@ -46,6 +47,7 @@ public class HorizontalSwapContainer extends SingleViewContainer implements HasC
 	private boolean autoRemoveInactiveViews = false;
 	private boolean animationEnabled = true;
 	private boolean inheritHeightForPanels = false;
+	private boolean isAnimationRunning = false;
 	
 	public HorizontalSwapContainer()
 	{
@@ -169,12 +171,14 @@ public class HorizontalSwapContainer extends SingleViewContainer implements HasC
 				}
 				else
 				{
+					isAnimationRunning = true;
 					swapPanel.transitTo(active, direction, new Callback()
 					{
 						@Override
 						public void onTransitionCompleted()
 						{
 							concludeViewsSwapping(previous, next);
+							isAnimationRunning = false;
 						}
 					});
 				}
@@ -310,5 +314,10 @@ public class HorizontalSwapContainer extends SingleViewContainer implements HasC
 	public HandlerRegistration addChangeViewHandler(ChangeViewHandler handler)
 	{
 		return addHandler(handler, ChangeViewEvent.getType());
+	}
+
+	public boolean isAnimationRunning() 
+	{
+		return isAnimationRunning;
 	}
 }
