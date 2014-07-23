@@ -53,6 +53,7 @@ class RollingTabPanelContext extends WidgetCreatorContext
 
 	public JSONObject tabElement;
 	public boolean isHTMLTitle;
+	public boolean isWidgetTitle;
 	public String title;
 	public String titleWidget;
 	public boolean titleWidgetPartialSupport;
@@ -60,6 +61,7 @@ class RollingTabPanelContext extends WidgetCreatorContext
 	public void clearAttributes()
     {
 	    isHTMLTitle = false;
+	    isWidgetTitle = false;
 	    title = null;
 	    titleWidget = null;
 	    tabElement = null;
@@ -168,6 +170,7 @@ public class RollingTabPanelFactory extends CompositeFactory<RollingTabPanelCont
 		@Override
 		public void processChildren(SourcePrinter out, RollingTabPanelContext context) throws CruxGeneratorException
 		{
+			context.isWidgetTitle = true;
 			context.titleWidget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
 			context.titleWidgetPartialSupport = getWidgetCreator().hasChildPartialSupport(context.getChildElement());
 			if (context.titleWidgetPartialSupport)
@@ -203,7 +206,13 @@ public class RollingTabPanelFactory extends CompositeFactory<RollingTabPanelCont
 				{
 					out.println("if ("+context.titleWidgetClassType+".isSupported()){");
 				}
-				out.println(rootWidget+".add("+widget+", "+EscapeUtils.quote(context.titleWidget)+");");
+				if(context.isWidgetTitle)
+				{
+					out.println(rootWidget+".add("+widget+", "+context.titleWidget+");");
+				} else
+				{
+					out.println(rootWidget+".add("+widget+", "+EscapeUtils.quote(context.titleWidget)+");");
+				}
 				if (context.titleWidgetPartialSupport)
 				{
 					out.println("}");
@@ -222,7 +231,7 @@ public class RollingTabPanelFactory extends CompositeFactory<RollingTabPanelCont
 		
 		private void updateTabState(SourcePrinter out, RollingTabPanelContext context)
 		{
-			String enabled = context.tabElement.optString("enabled");
+			String enabled = context.tabElement.optString("tabEnabled");
 			String rootWidget = context.getWidget();
 			if (enabled != null && enabled.length() >0)
 			{
