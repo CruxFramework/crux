@@ -220,7 +220,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 */
 	public boolean isShowing()
 	{
-		return showing;
+		return isAttached() && showing;
 	}
 
 	/**
@@ -283,7 +283,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 			else
 			{
 				centralizeMe();
-				if (!showing)
+				if (!isShowing())
 				{
 					show();
 				}
@@ -602,7 +602,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	
 	private void doHide(boolean fireEvent, final boolean autoClosed, boolean animated)
     {
-	    if (!showing)
+	    if (!isShowing())
 		{
 			return;
 		}
@@ -666,7 +666,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 
 	private void doShow(final boolean animated)
 	{
-		if (showing)
+		if (isShowing())
 		{
 			return;
 		}
@@ -747,7 +747,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		updateHandlers();
 
 		maybeShowGlass();
-		if (showing)
+		if (isShowing())
 		{
 			if (animated)
 			{
@@ -820,7 +820,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	private void maybeShowGlass()
 	{
 		BodyElement body = Document.get().getBody();
-		if (showing)
+		if (isShowing())
 		{
 			if (modal)
 			{
@@ -901,7 +901,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		}
 
 		// Create handlers if showing.
-		if (showing)
+		if (isShowing())
 		{
 			if (!modal)
 			{

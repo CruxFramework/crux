@@ -374,8 +374,9 @@ class GWTOverriddenDateBox extends Composite implements HasEnabled, HasValue<Dat
 	/**
 	 * Returns true if date picker is currently showing, false if not.
 	 */
-	public boolean isDatePickerShowing() {
-		return popup.isShowing();
+	public boolean isDatePickerShowing() 
+	{
+		return popup != null && popup.isAttached() && popup.isShowing();
 	}
 
 	/**

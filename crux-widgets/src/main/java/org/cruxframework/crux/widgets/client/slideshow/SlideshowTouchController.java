@@ -40,7 +40,7 @@ public class SlideshowTouchController extends SlideshowBaseController
 	@Expose
 	public void onTouchEndDialog(TouchEndEvent event)
 	{
-		if (dialog.isShowing())
+		if (dialog != null && dialog.isAttached() && dialog.isShowing())
 		{
 			dialog.hide();
 		}
