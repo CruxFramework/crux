@@ -36,6 +36,7 @@ import java.util.Set;
 
 /**
  * @author Thiago da Rosa de Bustamante
+ * @author Samuel Almeida Cardoso
  * 
  */
 public class ClassUtils
@@ -61,6 +62,7 @@ public class ClassUtils
 		simpleTypes.add(Character.TYPE.getCanonicalName());
 		simpleTypes.add(String.class.getCanonicalName());
 		simpleTypes.add(Date.class.getCanonicalName());
+		simpleTypes.add(java.sql.Date.class.getCanonicalName());
 		simpleTypes.add(BigInteger.class.getCanonicalName());
 		simpleTypes.add(BigDecimal.class.getCanonicalName());
 	}
@@ -71,16 +73,51 @@ public class ClassUtils
 	}
 
 	/**
+	 * @param rawType
+	 * @return
+	 */
+	public static boolean hasCharacterConstructor(Class<?> rawType)
+	{
+		return rawType.getCanonicalName().equals(Character.class.getCanonicalName());
+	}
+	
+	/**
+	 * @param type
+	 * @return
+	 */
+	public static boolean hasCharacterConstructor(Type type)
+	{
+		Class<?> rawType = getRawType(type);
+		return hasCharacterConstructor(rawType);
+	}
+	
+	/**
+	 * @param rawType
+	 * @return
+	 */
+	public static boolean hasStringConstructor(Class<?> rawType)
+	{
+		return !hasCharacterConstructor(rawType);
+	}
+	
+	/**
+	 * @param type
+	 * @return
+	 */
+	public static boolean hasStringConstructor(Type type)
+	{
+		Class<?> rawType = getRawType(type);
+		return hasStringConstructor(rawType);
+	}
+	
+	/**
 	 * 
 	 * @param type
 	 * @return
 	 */
-	public static boolean isSimpleTypeAndHasStringConstructor(Type type)
+	public static boolean isSimpleType(Class<?> rawType)
 	{
-		Class<?> rawType = getRawType(type);
-		return isSimpleType(rawType.getCanonicalName()) 
-				&&
-				!rawType.getCanonicalName().equals(Character.TYPE.getCanonicalName());
+		return rawType.isEnum() || isSimpleType(rawType.getCanonicalName());
 	}
 	
 	/**
@@ -91,7 +128,7 @@ public class ClassUtils
 	public static boolean isSimpleType(Type type)
 	{
 		Class<?> rawType = getRawType(type);
-		return rawType.isEnum() || isSimpleType(rawType.getCanonicalName());
+		return isSimpleType(rawType);
 	}
 
 	public static Type getGenericReturnTypeOfGenericInterfaceMethod(Class<?> clazz, Method method)

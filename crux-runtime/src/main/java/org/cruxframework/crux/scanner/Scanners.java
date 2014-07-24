@@ -321,7 +321,9 @@ public final class Scanners
 					catch (Exception e)
 					{
 						throw new ScannerException("Error scanning resources. Check if Scanners engine was properly initialized. "
-								+ "Verify if your application configures DevModeInitializerListener on web.xml properly.", e);
+								+ "Verify if your application configures DevModeInitializerListener on web.xml properly. "
+								+ "Also, check if the resources from project source folder were correctly copied to the target folder. "
+								, e);
 					}
 				}
 			}

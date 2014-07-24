@@ -16,6 +16,8 @@
 package org.cruxframework.crux.gwt.rebind;
 
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
+import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
@@ -66,7 +68,7 @@ public class SuggestBoxFactory extends CompositeFactory<WidgetCreatorContext>
 		String oracle = ViewFactoryCreator.createVariableName("oracle");
 
 		String eventLoadOracle = context.readWidgetProperty("onLoadOracle");
-		if (eventLoadOracle != null)
+		if (!StringUtils.isEmpty(eventLoadOracle))
 		{
 			out.println(SuggestOracle.class.getCanonicalName()+" "+oracle+" = ("+SuggestOracle.class.getCanonicalName()+")");
 			EvtProcessor.printEvtCall(out, eventLoadOracle, "onLoadOracle", LoadOracleEvent.class.getCanonicalName()+"<"+className+">", 
@@ -75,7 +77,7 @@ public class SuggestBoxFactory extends CompositeFactory<WidgetCreatorContext>
 		}
 		else
 		{
-			out.println(className + " " + context.getWidget()+" = new "+className+"();");
+			throw new CruxGeneratorException("The attribute onLoadOracle is required for widget id: ["+context.getWidgetId()+"].");
 		}
 	}	
 	

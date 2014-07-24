@@ -167,7 +167,7 @@ public class Transition
 	{
 		if (transitionHandler == null)
 		{
-			if (isIE11eIE10())
+			if (isIE11andIE10())
 			{
 				transitionHandler = new MSTransitionHandler();
 			} else
@@ -187,7 +187,7 @@ public class Transition
 	 * @return boolean
 	 */
 	@Deprecated
-	private static native boolean isIE11eIE10() /*-{
+	private static native boolean isIE11andIE10() /*-{
 	try
 	{
 	  	var rv = false;

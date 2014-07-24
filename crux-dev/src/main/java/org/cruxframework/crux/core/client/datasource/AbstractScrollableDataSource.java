@@ -83,12 +83,26 @@ abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E
 		loaded = false;
 	}
 	
+	@Deprecated
+	public DataSourceRecord<E> getRecord(int index)
+	{
+		ensureLoaded();
+		if (currentRecord > -1)
+		{
+			return data != null ? data[index] : null;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	public DataSourceRecord<E> getRecord()
 	{
 		ensureLoaded();
 		if (currentRecord > -1)
 		{
-			return data[currentRecord];
+			return data != null ? data[currentRecord] : null;
 		}
 		else
 		{
@@ -232,7 +246,7 @@ abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E
 		ColumnDefinition<?, E> column = definitions.getColumn(columnName);
 		if (column != null)
 		{
-			return column.getValue((E) dataSourceRecord.getRecordObject());
+			return dataSourceRecord != null ? column.getValue((E) dataSourceRecord.getRecordObject()) : null;
 		}
 		return null;
 	}

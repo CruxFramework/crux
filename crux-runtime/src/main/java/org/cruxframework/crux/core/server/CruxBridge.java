@@ -67,10 +67,15 @@ public class CruxBridge
 		File tempDirFile = FileUtils.getTempDirFile();
 		if(!FileUtils.recursiveDelete(tempDirFile))
 		{
-			handleCriticalError("Temp files inside crux compilation folder [" +
-					tempDirFile.getPath() +
-					"] could not be deleted. Check if your SO is not blocking this operation.", new IOException());
+			handleRemoveFolderError(tempDirFile);
 		}
+	}
+
+	private static void handleRemoveFolderError(File tempDirFile) 
+	{
+		handleCriticalError("Temp files inside crux compilation folder [" +
+				tempDirFile.getPath() +
+				"] could not be deleted. Check if your SO is not blocking this operation.", new IOException());
 	}
 
 	/**

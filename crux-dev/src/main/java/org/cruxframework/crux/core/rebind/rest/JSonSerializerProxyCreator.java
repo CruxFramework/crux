@@ -326,8 +326,12 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 			if (objectType.getQualifiedSourceName().equals("java.lang.String") || objectType.isEnum() != null)
 			{
 				srcWriter.println(resultObjectVar + " = " + JClassUtils.getParsingExpressionForSimpleType(jsonValueVar+".isString().stringValue()", objectType) + ";");
-			}
-			else
+			} else if (objectType.getQualifiedSourceName().equals("java.sql.Date"))
+			{
+				logger.log(TreeLogger.Type.WARN, "We recommend to avoid type ["+objectType.getParameterizedQualifiedSourceName()+"]: "
+						+ "there are some known issues with respect to Jackson timezone handling, partly due to design of this class.");
+				srcWriter.println(resultObjectVar + " = " + JClassUtils.getParsingExpressionForSimpleType(jsonValueVar+".isString().stringValue().replace(\"/\",\"-\")", objectType) + ";");
+			} else
 			{
 				srcWriter.println(resultObjectVar + " = " + JClassUtils.getParsingExpressionForSimpleType(jsonValueVar+".toString()", objectType) + ";");
 			}
@@ -355,6 +359,10 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 			srcWriter.println(resultJSONValueVar + " = new JSONNumber(" + objectVar + ");");
 		}
 		else if (objectType.getQualifiedSourceName().equals(Date.class.getCanonicalName()))
+		{
+			srcWriter.println(resultJSONValueVar + " = new JSONNumber(" + objectVar + ".getTime());");
+		}
+		else if (objectType.getQualifiedSourceName().equals(java.sql.Date.class.getCanonicalName()))
 		{
 			srcWriter.println(resultJSONValueVar + " = new JSONNumber(" + objectVar + ".getTime());");
 		}

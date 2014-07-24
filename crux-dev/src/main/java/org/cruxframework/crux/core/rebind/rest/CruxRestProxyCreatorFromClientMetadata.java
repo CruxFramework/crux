@@ -57,6 +57,7 @@ public class CruxRestProxyCreatorFromClientMetadata extends CruxRestProxyCreator
 		{
 			value = "/"+value;
 		}
+		
 		return value;
     }
 

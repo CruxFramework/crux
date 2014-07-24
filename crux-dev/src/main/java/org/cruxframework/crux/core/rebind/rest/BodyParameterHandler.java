@@ -164,7 +164,7 @@ class BodyParameterHandler extends AbstractParameterHelper
 			if (annotation instanceof FormParam)
 			{
 				generateMethodParamToCodeForSimpleType(srcWriter, "requestData", parameterType, ((FormParam) annotation).value(), 
-						parameterName, (parameterType.isPrimitive() != null?"true":parameterName+"!=null"));
+						parameterName, (parameterType.isPrimitive() != null?"true":parameterName+"!=null"), annotation);
 			}
 			if (annotation instanceof HeaderParam)
 			{
@@ -182,7 +182,7 @@ class BodyParameterHandler extends AbstractParameterHelper
 			if (annotation instanceof FormParam)
 			{
 				generateMethodParamToCodeForComplexType(srcWriter, "requestData", parameterType, 
-						((FormParam) annotation).value(), parameterName, parameterName+"!=null"); 
+						((FormParam) annotation).value(), parameterName, parameterName+"!=null", annotation); 
 			}
 			if (annotation instanceof HeaderParam)
 			{

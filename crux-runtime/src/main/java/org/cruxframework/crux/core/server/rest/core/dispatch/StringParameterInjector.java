@@ -30,12 +30,15 @@ import org.cruxframework.crux.core.utils.ClassUtils;
  */
 public class StringParameterInjector
 {
+	public static final String CRUX_NULL = "__CRUX_NULL__";
+	private static final String CAN_NOT_INVOKE_USING_ARGUMENTS_MSG = "Can not invoke requested service with given arguments";
 	protected Class<?> rawType;
 	protected Constructor<?> constructor;
 	protected Method valueOf;
 	protected String defaultValue;
 	protected String paramName;
 	private boolean isDate;
+	private boolean isSQLDate;
 
 	protected StringParameterInjector()
     {
@@ -52,12 +55,20 @@ public class StringParameterInjector
 		this.paramName = paramName;
 		this.defaultValue = defaultValue;
 		this.isDate = Date.class.isAssignableFrom(type);
+		this.isSQLDate = java.sql.Date.class.isAssignableFrom(type);
 
-		if (ClassUtils.isSimpleTypeAndHasStringConstructor(type))
+		if (ClassUtils.isSimpleType(rawType))
 		{
 			try
 			{
-				constructor = type.getConstructor(String.class);
+				if(ClassUtils.hasStringConstructor(type))
+				{
+					constructor = type.getConstructor(String.class);
+				} else if(ClassUtils.hasCharacterConstructor(rawType))
+				{
+					constructor = type.getConstructor(Character.TYPE);	
+				}
+				
 				if (constructor != null && !Modifier.isPublic(constructor.getModifiers()))
 				{
 					constructor = null;
@@ -116,7 +127,7 @@ public class StringParameterInjector
 
 	public Object extractValue(String strVal)
 	{
-		if (strVal == null || strVal.length()==0)
+		if (strVal == null || strVal.length() == 0 || strVal.equals(CRUX_NULL))
 		{
 			if (defaultValue == null)
 			{
@@ -129,12 +140,13 @@ public class StringParameterInjector
 			{
 				strVal = defaultValue;
 			}
-		}
-		if (isDate && isNumeric(strVal))  
+		} else if (isSQLDate && isNumeric(strVal))
+		{
+			return new java.sql.Date(Long.parseLong(strVal));
+		} else if (isDate && isNumeric(strVal))  
 		{
 			return new Date(Long.parseLong(strVal));
-		}
-		else if (rawType.isPrimitive())
+		}  else if (rawType.isPrimitive())
 		{
 			return ClassUtils.stringToPrimitiveBoxType(rawType, strVal);
 		}
@@ -146,7 +158,20 @@ public class StringParameterInjector
 			}
 			catch (Exception e)
 			{
-				throw new BadRequestException("Unable to extract parameter from http request for " + getParamSignature(), "Can not invoke requested service with given arguments", e);
+				String errorMsg = "Unable to extract parameter from http request for " + getParamSignature();
+				
+				if(constructor.getName().equals(Character.class.getCanonicalName()))
+				{
+					try
+					{
+						return constructor.newInstance(strVal.toCharArray()[0]);
+					} catch (Exception f)
+					{
+						throw new BadRequestException(errorMsg, CAN_NOT_INVOKE_USING_ARGUMENTS_MSG, e);		
+					}
+				}
+				
+				throw new BadRequestException(errorMsg, CAN_NOT_INVOKE_USING_ARGUMENTS_MSG, e);
 			}
 		}
 		else if (valueOf != null)
@@ -157,7 +182,7 @@ public class StringParameterInjector
 			}
 			catch (Exception e)
 			{
-				throw new BadRequestException("Unable to extract parameter from http request: " + getParamSignature(), "Can not invoke requested service with given arguments", e);
+				throw new BadRequestException("Unable to extract parameter from http request: " + getParamSignature(), CAN_NOT_INVOKE_USING_ARGUMENTS_MSG, e);
 			}
 		}
 		return null;

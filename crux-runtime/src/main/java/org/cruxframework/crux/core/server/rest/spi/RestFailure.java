@@ -41,9 +41,9 @@ public class RestFailure extends RuntimeException
 
     }
 
-	public RestFailure(String s, String resp, Throwable throwable, int responseCode)
+	public RestFailure(String message, String resp, Throwable throwable, int responseCode)
 	{
-		super(s, throwable);
+		super(message, throwable);
 		this.responseCode = responseCode;
 		responseMessage = resp;
 	}
