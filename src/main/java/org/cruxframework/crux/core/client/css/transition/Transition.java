@@ -163,14 +163,48 @@ public class Transition
 		void onTransitionCompleted();
 	}
 
-	private static TransitionHandler getTransitionHandler()
+	public static TransitionHandler getTransitionHandler()
 	{
 		if (transitionHandler == null)
 		{
-			transitionHandler = GWT.create(TransitionHandler.class);
+			if (isIE11())
+			{
+				transitionHandler = new MSTransitionHandler();
+			} else
+			{
+				transitionHandler = GWT.create(TransitionHandler.class);
+			}
 		}
 		return transitionHandler;
 	}
+	
+	//TODO - remove after upgrading GWT to identify IE11
+	/**This method has the function to check if the browser that is being used is IE11. 
+	 * As the GWT classify IE11 as a mozilla firefox the effects of 
+	 * transition does not work correctly.
+	 * 
+	 * @author Bruno Medeiros (bruno@triggolabs.com)
+	 * @return boolean
+	 */
+	@Deprecated
+	private static native boolean isIE11() /*-{
+	try
+	{
+	  var rv = false;
+	  if (navigator.appName == 'Netscape')
+	  {
+	    var ua = navigator.userAgent;
+	    var re  = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+	    if (re.exec(ua) != null)
+	      rv = true;
+	  }
+	  return rv;
+	 } catch (err)
+	 {
+	 	return false;
+	 }
+	  }-*/;
+	
 	
 	static interface TransitionHandler
 	{
