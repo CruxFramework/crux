@@ -63,7 +63,8 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 	@TagAttributeDeclaration(value="defaultSortingColumn", type=String.class),
 	@TagAttributeDeclaration(value="defaultSortingType", type=SortingType.class, defaultValue="ascending"),
 	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="showEditorButtons", type=Boolean.class, defaultValue="false")
+	@TagAttributeDeclaration(value="showEditorButtons", type=Boolean.class, defaultValue="false"),
+	@TagAttributeDeclaration(value="freezeHeaders", type=Boolean.class, defaultValue="false")
 })
 @TagAttributes({
 	@TagAttribute(value="dataSource", processor=DeviceAdaptiveGridFactory.DataSourceAttributeParser.class)
@@ -82,7 +83,9 @@ public class DeviceAdaptiveGridFactory extends WidgetCreator<WidgetCreatorContex
 	{
 		String className = getWidgetClassName();
 		String columnsDefinitions = getColumnDefinitions(out, context);
-
+		String height = context.readChildProperty("height");
+		String width = context.readChildProperty("width");
+		
 		JSONObject widgetElement = context.getWidgetElement();
 
 		out.println(className + " " + context.getWidget()+" = new "+className+"();");
@@ -90,7 +93,10 @@ public class DeviceAdaptiveGridFactory extends WidgetCreator<WidgetCreatorContex
             getRowSelectionModel(widgetElement)+", "+getCellSpacing(widgetElement)+", "+getAutoLoad(widgetElement)+", "+
             getStretchColumns(widgetElement)+", "+getHighlightRowOnMouseOver(widgetElement)+", "+
             getEmptyDataFilling(widgetElement)+", "+isFixedCellSize(widgetElement)+", "+getSortingColumn(widgetElement)+", "+
-            getSortingType(widgetElement) + ","+ getKeepEditorOnClickDisabledRows(widgetElement) +  "," + getShowEditorButtons(widgetElement) + ");");
+            getSortingType(widgetElement) + ","+ getKeepEditorOnClickDisabledRows(widgetElement) +  "," + getShowEditorButtons(widgetElement) + "," + getFreezeHeaders(widgetElement)+ ");");
+		
+		out.println(context.getWidget()+".setHeight(\""+ height +"\");");
+		out.println(context.getWidget()+".setWidth(\""+ width + "\");");
 	}
 
 	@TagChildren({
@@ -126,6 +132,9 @@ public class DeviceAdaptiveGridFactory extends WidgetCreator<WidgetCreatorContex
 	})
 	public static class SmallColumnProcessorChildren  extends ChoiceChildProcessor<WidgetCreatorContext> {}
 
+	
+	
+	
 	protected boolean getShowRowDetailsIcon(JSONObject gridElem)
 		{
 			String showRowDetailsIcon = gridElem.optString("showRowDetailsIcon");

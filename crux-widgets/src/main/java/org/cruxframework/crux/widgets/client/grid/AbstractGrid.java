@@ -66,6 +66,8 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -215,6 +217,7 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 		
 		scrollingArea = new ScrollPanel();
 		scrollingArea.setStyleName(DEFAULT_STYLE_NAME);
+		
 		initWidget(scrollingArea);
 		
 		if(hasFrozenCells())
@@ -344,6 +347,11 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	{
 		this.beforeSaveRowEditionHandlers.add(handler);
 		return addHandler(handler, BeforeSaveRowEditionEvent.getType());
+	}
+	
+	public void addScrollHandler(ScrollHandler handler)
+	{
+		this.scrollingArea.addScrollHandler(handler);
 	}
 	
 	/**

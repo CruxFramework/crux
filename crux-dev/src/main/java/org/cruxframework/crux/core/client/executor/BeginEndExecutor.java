@@ -20,12 +20,10 @@ import java.util.Date;
 import com.google.gwt.user.client.Timer;
 
 /**
- * An executor that only executes the first and the last
- *  call to a given action. 
- * "Last call" means "the last call in N milliseconds",
- * where N can be parameterized at the constructor.
- * If there was only one call (begin call), a second one (end call) 
- * is emulated.
+ * An executor that only executes the first and the last call to a given action.
+ * "Last call" means "the last call in N milliseconds", where N can be
+ * parameterized at the constructor. If there was only one call (begin call), a
+ * second one (end call) is emulated.
  * 
  * @author Gesse Dafe
  */
@@ -35,86 +33,49 @@ public abstract class BeginEndExecutor
 	private long lastExec = new Date().getTime();
 	boolean isRunning = false;
 	private boolean doEndActionExecuted = false;
-	
+
 	/**
-	 * Creates an executor that only executes the first and the last
-	 *  call to a given action. 
-	 *  
-	 * @param end if more than <code>maxIntervalBetweenStartAndEnd</code> 
-	 *  milliseconds has passed since the previous call, considers that 
-	 *  the current call is a begin call. 
+	 * Creates an executor that only executes the first and the last call to a
+	 * given action.
+	 * 
+	 * @param end
+	 *            if more than <code>maxIntervalBetweenStartAndEnd</code>
+	 *            milliseconds has passed since the previous call, considers
+	 *            that the current call is a begin call.
 	 */
-	public BeginEndExecutor(int maxIntervalBetweenStartAndEnd) 
+	public BeginEndExecutor(int maxIntervalBetweenStartAndEnd)
 	{
 		this.maxIntervalBetweenStartAndEnd = maxIntervalBetweenStartAndEnd;
 	}
-	
+
 	/**
 	 * Used for scheduling the end call
 	 */
-	private Timer timer = new Timer()
-	{
-		public void run() 
+	private Timer timer = new Timer(){
+		public void run()
 		{
 			execute();
 		}
 	};
-	
+
 	/**
 	 * Throttles the invocations on the executor
 	 */
-	public void execute() 
-	{	
-		long now = new Date().getTime();
-		
-		if(timer != null)
+	public void execute()
+	{
+		if (!isRunning)
 		{
-			timer.cancel();
+			isRunning = true;
+			doBeginAction();
+		} else
+		{
+			doEndAction();
+			isRunning = false;
+			doEndActionExecuted = true;
 		}
 
-		if(!isRunning)
-		{
-			if (doEndActionExecuted)
-			{
-				long delta = now - lastExec;
-				if(delta > maxIntervalBetweenStartAndEnd)
-				{
-					isRunning = true;
-					doBeginAction();
-					timer.schedule(maxIntervalBetweenStartAndEnd);
-				}
-			}
-			else
-			{
-				isRunning = true;
-				doBeginAction();
-				timer.schedule(maxIntervalBetweenStartAndEnd);
-			}
-		}
-		else
-		{
-			if(timer != null)
-			{
-				timer.cancel();
-			}
-			
-			long delta = now - lastExec;
-			
-			if(delta < maxIntervalBetweenStartAndEnd)
-			{
-				timer.schedule(maxIntervalBetweenStartAndEnd);
-			}
-			else
-			{
-				doEndAction();
-				isRunning = false;
-				doEndActionExecuted = true;
-			}
-		}
-		
-		lastExec = now;
 	}
-	
+
 	/**
 	 * Called when the first call is made for the executor
 	 */

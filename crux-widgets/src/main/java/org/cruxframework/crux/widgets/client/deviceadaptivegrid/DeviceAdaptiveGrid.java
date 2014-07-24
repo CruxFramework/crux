@@ -38,6 +38,7 @@ import org.cruxframework.crux.widgets.client.paging.Pageable;
 import org.cruxframework.crux.widgets.client.paging.Pager;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownHandler;
@@ -46,9 +47,9 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox.Caption;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -69,6 +70,15 @@ import com.google.gwt.user.client.ui.Widget;
 public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSource<PagedDataSource<?>>
 {
 	private GridImpl gridImpl;
+	
+	private String height;
+	
+	
+
+	public String getHeight()
+	{
+		return height;
+	}
 
 	/**
 	 *
@@ -134,6 +144,11 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	public HandlerRegistration addRowRenderHandler(RowRenderHandler handler)
 	{
 		return gridImpl.addRowRenderHandler(handler);
+	}
+	
+	public void addScrollHandler(ScrollHandler handler)
+	{
+		gridImpl.addScrollHandler(handler);
 	}
 
 	/**
@@ -314,6 +329,13 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	{
 		this.gridImpl.initGrid(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons);
 	}
+	
+	public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+			int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+			boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons,boolean freezeHeaders)
+	{	
+		this.gridImpl.initGrid(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons,freezeHeaders);
+	}
 
 
 	static abstract class GridImpl extends SimplePanel
@@ -383,6 +405,17 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 			setWidget(this.grid);
 		}
+		
+		public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+				int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+				boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons,boolean freezeHeaders)
+		{
+			this.columnDefinitions = columnDefinitions;
+			this.grid = new Grid(getGridColumnDefinitionsByDevice(), pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns,
+					highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons,freezeHeaders);
+
+			setWidget(this.grid);
+		}
 
 		/** Add a validator to a editable column
 		 * @param key
@@ -391,6 +424,18 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		public void addColumnEditorValidator(String key, ColumnEditorValidator columnEditorValidator)
 		{
 			grid.addColumnEditorValidator(key,columnEditorValidator);
+		}
+		
+		@Override
+		public void setHeight(String height)
+		{
+			grid.setHeight(height);
+		}
+		
+		@Override
+		public void setWidth(String width)
+		{
+			grid.setWidth(width);
 		}
 		
 		/**
@@ -407,6 +452,15 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 			grid.setDataSource(dataSource, autoLoadData);
 		}
 
+		/**
+		 * On scroll event handler
+		 * @param handler
+		 */
+		public void addScrollHandler(ScrollHandler handler)
+		{
+			grid.addScrollHandler(handler);
+		}
+		
 		/**
 		 *
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#loadData()
@@ -958,5 +1012,15 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	  {
 	    setHTML( html.asString() );
 	  }
+	}
+	
+	public void setHeight(String height)
+	{
+		gridImpl.setHeight(height);
+	}
+	
+	public void setWidth(String width)
+	{
+		gridImpl.setWidth(width);
 	}
 }

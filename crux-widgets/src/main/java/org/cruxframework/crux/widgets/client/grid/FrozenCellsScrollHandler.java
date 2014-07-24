@@ -140,7 +140,7 @@ class FrozenCellsScrollHandler extends BeginEndExecutor implements ScrollHandler
 			style.setOpacity(1);
 			
 			VerticalMotionAnimation headerAnimation = new VerticalMotionAnimation(headerLineElement);
-			headerAnimation.move(headerLineElement.getOffsetTop(), newVerticalScrollPosition, 200);
+			headerAnimation.move(headerLineElement.getOffsetTop(), newVerticalScrollPosition, -1);
 		}
 	}
 
