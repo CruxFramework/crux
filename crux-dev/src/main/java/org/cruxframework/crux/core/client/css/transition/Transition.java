@@ -167,7 +167,7 @@ public class Transition
 	{
 		if (transitionHandler == null)
 		{
-			if (isIE11())
+			if (isIE11eIE10())
 			{
 				transitionHandler = new MSTransitionHandler();
 			} else
@@ -187,17 +187,24 @@ public class Transition
 	 * @return boolean
 	 */
 	@Deprecated
-	private static native boolean isIE11() /*-{
+	private static native boolean isIE11eIE10() /*-{
 	try
 	{
-	  var rv = false;
-	  if (navigator.appName == 'Netscape')
-	  {
-	    var ua = navigator.userAgent;
-	    var re  = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
-	    if (re.exec(ua) != null)
-	    rv = true;
-	  }
+	  	var rv = false;
+		  if (navigator.appName == 'Microsoft Internet Explorer')
+		  {
+		    var ua = navigator.userAgent;
+		    var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+		    if (re.exec(ua) != null)
+		     rv = true;
+		  }
+		  else if (navigator.appName == 'Netscape')
+		  {
+		    var ua = navigator.userAgent;
+		    var re  = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+		    if (re.exec(ua) != null)
+		    rv = true;
+		  }
 	  return rv;
 	 } catch (err)
 	 {

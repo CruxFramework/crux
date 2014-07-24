@@ -202,7 +202,6 @@
     	<when-type-is class="org.cruxframework.crux.core.client.css.transition.Transition.TransitionHandler" />
     	<any>
       		<when-property-is name="user.agent" value="ie9" />
-      		<when-property-is name="user.agent" value="ie10" />
     	</any>
     </replace-with>
     <replace-with
