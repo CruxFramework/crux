@@ -5,7 +5,7 @@
 
 body
 {
-	background-color:#f2f2f2;
+    background-color:#f2f2f2;
 }
 
 /****************
@@ -20,20 +20,24 @@ body
 .crux-MenuTabsDisposal .menuSection:after,
 .crux-MenuTabsDisposal .menuSection-closed:after
 {
-	-webkit-user-select:none;
-	-moz-user-select:none;
-	-ms-user-select:none;
-	user-select:none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
 }
 
 /***************/
 
-.crux-StyledPanel, .crux-ScrollBanner
+.crux-StyledPanel
 {
-	background:#fff;
-	box-shadow:0 0 0 1px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
-	padding:10px;
-	margin-top:10px;
+    background:#fff;
+    padding:10px;
+    margin-top:10px;
+}
+
+.crux-ScrollBanner
+{
+    padding:0;
 }
 
 .crux-styledPanel h1,
@@ -43,190 +47,192 @@ body
 .crux-styledPanel h5,
 .crux-styledPanel h6
 {
-	margin-top:10px;
+    margin-top:10px;
 }
 
-.gwt-TextBox, .gwt-TextArea
+.gwt-TextBox,
+.gwt-TextArea,
+.crux-SingleSelect
 {
-	font-size:115%;
-	padding:12px 8px;
-	display:block;
-	width:100%;
-	background-size:auto 50% !important;
+    font-size:115%;
+    padding:12px 8px;
+    display:block;
+    width:100%;
+    background-size:auto 50% !important;
 }
 
 .gwt-Label
 {
-	font-weight:bold;
-	display:block;
-	margin-bottom:5px;
+    font-weight:bold;
+    display:block;
+    margin-bottom:5px;
 }
 
 .crux-Button, .fileInputButton, .previousMessageButton, .nextMessageButton
 {
     padding:14px 14px;
     display:block;
-	width:100%;
-	margin-bottom:3px;
+    width:100%;
+    margin-bottom:3px;
 }
 
 .crux-FormDisplay
 {
-	width: 100%;
-	padding: 8px;
+    width: 100%;
+    padding: 8px;
 }
 .crux-FormDisplay .formEntryLabel
 {
-	padding-top: 5px;
+    padding-top: 5px;
 }
 .crux-FormDisplay .formEntryData
 {
-	padding-bottom: 15px;
-	padding-top: 5px;
-	box-shadow: 0px 1px 0px rgba(0,0,0,0.2), 0px 2px 0px rgba(255,255,255,0.6);
+    padding-bottom: 15px;
+    padding-top: 5px;
+    box-shadow: 0px 1px 0px rgba(0,0,0,0.2), 0px 2px 0px rgba(255,255,255,0.6);
 }
 .crux-FormDisplay > tbody > tr:last-child > td
 {
-	box-shadow: none;
+    box-shadow: none;
 }
 
 /* Styling the TD that wraps the top bar  */
 TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 {
-	height: 60px;
+    height: 60px;
 }
 .crux-MenuTabsDisposal .menuTabsHeader
 {
-	background-color: #444949;
-	height: 60px;
-	text-align: right;
-	width: 100%;
-	border: solid 0px;
-	border-bottom: solid 1px #FFFFFF;
+    background-color: #444949;
+    height: 60px;
+    text-align: right;
+    width: 100%;
+    border: solid 0px;
+    border-bottom: solid 1px #FFFFFF;
 }
 .crux-MenuTabsDisposal .showMenuButton
 {
-	background-image: urlTopMenuDisposalShowMenuButton;
-	background-repeat: no-repeat;
-	height: 40px;
-	width: 40px;
-	background-size: 25%;
-	margin-top: 10px;
-	margin-left: 0px;
-	background-position: center;
-	background-color: transparent;
-	border: none;
-	float: left;
-	outline: none;
+    background-image: urlTopMenuDisposalShowMenuButton;
+    background-repeat: no-repeat;
+    height: 40px;
+    width: 40px;
+    background-size: 25%;
+    margin-top: 10px;
+    margin-left: 0px;
+    background-position: center;
+    background-color: transparent;
+    border: none;
+    float: left;
+    outline: none;
 }
 .crux-MenuTabsDisposal .menuEntry
 {
-	margin: 0px;
-	border: solid 0px;
-	height: 40px;
-	background: white;
-	width: 85%;
-	margin-left: 15%;
-	box-shadow: 0px -20px 10px 0px rgba(0,0,0,0.02) inset;
-	color: #4c6879;
-	font-size: 16px;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-shadow: none;
-	position: relative;
-	border-radius: 0px;
-	cursor: pointer;
+    margin: 0px;
+    border: solid 0px;
+    height: 40px;
+    background: white;
+    width: 85%;
+    margin-left: 15%;
+    box-shadow: 0px -20px 10px 0px rgba(0,0,0,0.02) inset;
+    color: #4c6879;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-shadow: none;
+    position: relative;
+    border-radius: 0px;
+    cursor: pointer;
 }
 .crux-MenuTabsDisposal .menuEntry:after
 {
-	content: "";
-	height: 40px;
-	width: 30px;
-	border: none;
-	position: absolute;
-	top: 0px;
-	background: #81aa32;
-	right: 0px;
-	box-shadow: 0px -10px 15px -1px rgba(0,80,0,0.1) inset;
-	color: white;
-	padding: 0px;
-	overflow: auto;
-	background-image: url(right-arrow.png);
-	background-position: center;
-	background-repeat: no-repeat;
-	cursor: pointer;
+    content: "";
+    height: 40px;
+    width: 30px;
+    border: none;
+    position: absolute;
+    top: 0px;
+    background: #81aa32;
+    right: 0px;
+    box-shadow: 0px -10px 15px -1px rgba(0,80,0,0.1) inset;
+    color: white;
+    padding: 0px;
+    overflow: auto;
+    background-image: url(right-arrow.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
 }
 .crux-MenuTabsDisposal .menuSection
 {
-	height: 50px;
-	color: #fff;
-	background-color: #4496c6;
-	box-shadow: inset 0px -10px 30px #3d8dbd;
-	font-size: 16px;
-	padding: 0px;
-	text-align: left;
-	line-height: 50px;
-	padding-left: 50px;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	cursor: pointer;
-	border: solid 0px;
-	width: 100%;
-	position: relative;
+    height: 50px;
+    color: #fff;
+    background-color: #4496c6;
+    box-shadow: inset 0px -10px 30px #3d8dbd;
+    font-size: 16px;
+    padding: 0px;
+    text-align: left;
+    line-height: 50px;
+    padding-left: 50px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    cursor: pointer;
+    border: solid 0px;
+    width: 100%;
+    position: relative;
 }
 .crux-MenuTabsDisposal .menuSection:after, .crux-MenuTabsDisposal .menuSection-closed:after 
 {
-	content: "...";
-	position: absolute;
-	right: 10px;
-	opacity: 0;
-	transition: opacity ease-in-out 0.5s;
+    content: "...";
+    position: absolute;
+    right: 10px;
+    opacity: 0;
+    transition: opacity ease-in-out 0.5s;
 }
 .crux-MenuTabsDisposal .menuSection-closed:after 
 {
-	opacity: 0.4 !important;
+    opacity: 0.4 !important;
 }
 
 .crux-MenuTabsDisposal .menuSectionEntries
 {
-	transition: height 0.2s ease-in-out;
-	overflow: hidden;
+    transition: height 0.2s ease-in-out;
+    overflow: hidden;
 }
 .crux-MenuTabsDisposal .menuSectionEntries-closed
 { 
-	height:0;
+    height:0;
 }
 
 .crux-TopMenuDisposal .showMenuButton
 {
-	background-image: urlTopMenuDisposalShowMenuButton;
-	background-repeat: no-repeat;
-	height: 40px;
-	width: 40px;
-	background-size: 25%;
-	margin-top: 10px;
-	margin-left: 0px;
-	background-position: center;
-	background-color: transparent;
-	border: none;
-	float: left;
-	outline: none;
+    background-image: urlTopMenuDisposalShowMenuButton;
+    background-repeat: no-repeat;
+    height: 40px;
+    width: 40px;
+    background-size: 25%;
+    margin-top: 10px;
+    margin-left: 0px;
+    background-position: center;
+    background-color: transparent;
+    border: none;
+    float: left;
+    outline: none;
 }
 .crux-TopMenuDisposal .headerPanel
 {
-	height: 60px;
-	color: #FFFFFF;
-	background-color: #606060;
-	text-shadow: 0 1px 0 #000000;
-	text-align: center;
+    height: 60px;
+    color: #FFFFFF;
+    background-color: #606060;
+    text-shadow: 0 1px 0 #000000;
+    text-align: center;
 }
 .crux-TopMenuDisposal .menuPanel .menuEntry
 {
-	width: 100%;
-	margin-bottom: 0px;
-	margin-top: 0px;
-	border-radius: 0px !important;
-	border-top: 0px;
+    width: 100%;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    border-radius: 0px !important;
+    border-top: 0px;
 }
 
 /******************************************************************************
@@ -342,29 +348,29 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     transform:translateX(32px);
 }
 .gwt-CheckBox input[type="checkbox"]:disabled{
-	background:#e5e5e5;
-	border:1px solid #a5a5a5;
+    background:#e5e5e5;
+    border:1px solid #a5a5a5;
 }
 .gwt-CheckBox input[type="checkbox"]:disabled:before{
-	background:#989898;
+    background:#989898;
 }
 .gwt-CheckBox input[type="checkbox"]:disabled:after{
-	background:#adadad;
+    background:#adadad;
 }
 .gwt-CheckBox label{
-	display:inline-table;
-	margin-top:-6px;
-	margin-left:5px;
+    display:inline-table;
+    margin-top:-6px;
+    margin-left:5px;
 }
 
 
 /******************************************************************************
-	ListShuffle
+    ListShuffle
 *******************************************************************************/
 
 .crux-ListShuttle
 {
-	margin:10px;
+    margin:10px;
 }
 
 .crux-ListShuttle .buttonsColumn
@@ -459,83 +465,99 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 
 .crux-ListShuttle fieldset > div
 {
-	height:180px;
-	overflow-y:auto;
-	-webkit-overflow-scrolling: touch;
+    height:180px;
+    overflow-y:auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .crux-ListShuttle fieldset > div *
 {
-	-webkit-transform: translateZ(0px);
+    -webkit-transform: translateZ(0px);
 }
 
 /****************************************************************************/
 /* DIALOG */
-.crux-DialogViewContainer, .crux-Dialog, .popupContent, .crux-ColorPickerDialog{
-	width:90%;
-	height:auto;
-	overflow:auto;
-	
-	border-radius:3px;
-	box-shadow:0 0 0 1px rgba(0, 0, 0, 0.2), 0 0 7px 1px rgba(0, 0, 0, 0.4);
-	background:#fff;
+.crux-DialogViewContainer,
+.crux-Dialog,
+.popupContent,
+.crux-ColorPickerDialog,
+.grid-detail-dialog
+{
+    width:90%;
+    height:auto;
+    overflow:auto;
+    
+    border-radius:3px;
+    box-shadow:0 0 0 1px rgba(0, 0, 0, 0.2), 0 0 7px 1px rgba(0, 0, 0, 0.4);
+    background:#fff;
+    
+    z-index:10;
+    
+    left:5% !important;
+    top:10% !important;
+    position:absolute;
 }
 
-.crux-DialogViewContainer .dialogTop > td, .popupContent .dialogTopBar{
-	background:#f7f7f7;
-	color:#4496c6;
-	box-shadow:0 -2px #EAEAEA inset, 0 1px 0 #D1D1D1;
-	padding:11px 2px;
+.crux-DialogViewContainer .dialogTop > td,
+.popupContent .dialogTopBar,
+.crux-ColorPickerDialog .dialogTop > td
+{
+    background:#f7f7f7;
+    color:#4496c6;
+    box-shadow:0 -2px #EAEAEA inset, 0 1px 0 #D1D1D1;
+    padding:11px 2px;
 }
 .crux-ProgressBox .dialogTopBar{
-	background:transparent;
-	box-shadow:none;
+    background:transparent;
+    box-shadow:none;
 }
-.crux-DialogViewContainer .dialogTop .dialogTopCenter .dialogTopCenterInner, .popupContent .dialogTopBar{
-	text-align:center;
+.crux-DialogViewContainer .dialogTop .dialogTopCenter .dialogTopCenterInner,
+.popupContent .dialogTopBar{
+    text-align:center;
 }
 .crux-DialogViewContainer .dialogTop .dialogTopLeft{
-	border-radius:3px 0 0 0;
+    border-radius:3px 0 0 0;
 }
 .crux-DialogViewContainer .dialogTop .dialogTopRight{
-	border-radius:0 3px 0 0;
+    border-radius:0 3px 0 0;
 }
 
 .crux-DialogViewContainer .dialogMiddle .dialogMiddleCenter, .popupContent .dialogBody{
-	padding:10px;
-	text-align:center;
+    padding:10px;
+    text-align:center;
 }
 .crux-DialogViewContainer .dialogMiddle .dialogContent .crux-Button{
-	margin-top:10px;
+    margin-top:10px;
 }
 .crux-DialogViewContainer .closeButton{
-	position: absolute;
-	border-radius:0 3px 0 0;
-	top:0;
-	right:0;
-	width:40px;
-	height:41px;
-	border:none;
-	background:svgIconClose no-repeat center center #EAEAEB;
+    position: absolute;
+    border-radius:0 3px 0 0;
+    top:0;
+    right:0;
+    width:40px;
+    height:41px;
+    border:none;
+    background:svgIconClose no-repeat center center #EAEAEB;
 }
 
 .dialogGlass{
-	background:rgba(0,0,0,0.5);
+    background:rgba(0,0,0,0.5);
 }
 .crux-ProgressBox{
-	max-width:70%;
-	height: 60px;
+    max-width:70%;
+    height: 60px;
+    z-index:10px;
 }
 .crux-ProgressBox .dialogTopBar
 {
-	box-shadow: none;
-	padding-top: 6px;
+    box-shadow: none;
+    padding-top: 6px;
 }
 .crux-ProgressBox .dialogBody
 {
-	padding-left:20px;
-	padding-right:20px;
-	padding-top: 0px;
+    padding-left:20px;
+    padding-right:20px;
+    padding-top: 0px;
 }
 
 
@@ -544,167 +566,199 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 .crux-FileUploader .dropArea
 {
     border-style: dashed;
-	min-height: 160px;
-	background-image: url(upload-icon.png);
-	background-position: center;
-	background-repeat: no-repeat;
+    min-height: 160px;
+    background-image: url(upload-icon.png);
+    background-position: center;
+    background-repeat: no-repeat;
 }
 .crux-FileUploader .filesArea
 {
-	background-color: #FFFFFF;
+    background-color: #FFFFFF;
 }
 .crux-FileUploader .filePanel
 {
-	border: solid #eaeaea 1px;
-	border-radius: 2px;
-	box-shadow: 0 0 10px rgba(90,90,90,0.1);
-	background-image: -webkit-linear-gradient(top,rgba(255,255,255,1)80%,rgba(240,240,240,0.3));
-	padding: 10px;
-	width:calc(100% - 20px);
-	position: relative;
-	width: 100%;
-	height: 60px;
+    border: solid #eaeaea 1px;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(90,90,90,0.1);
+    background-image: -webkit-linear-gradient(top,rgba(255,255,255,1)80%,rgba(240,240,240,0.3));
+    padding: 10px;
+    width:calc(100% - 20px);
+    position: relative;
+    width: 100%;
+    height: 60px;
 }
 
 .crux-FileUploader .filePanel .cancelUploadButton
 {
-	width: 30px;
-	height: 40px;
-	position: absolute;
-	right: 0;
-	top: 9px;
-	border: none;
-	background:svgIconClose no-repeat center center rgba(0,0,0,0.05);
-	background-size:50% auto;
-	margin: 0px;
-	border-radius: 4px 0 0 4px;
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	border-right: none;
+    width: 30px;
+    height: 40px;
+    position: absolute;
+    right: 0;
+    top: 9px;
+    border: none;
+    background:svgIconClose no-repeat center center rgba(0,0,0,0.05);
+    background-size:50% auto;
+    margin: 0px;
+    border-radius: 4px 0 0 4px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-right: none;
 }
 
 .crux-FileUploader .filePanel .gwt-Label
 {
-	width: 220px;
-	text-overflow:ellipsis;
-	margin-left: 10px;
-	color: #4C6879;
-	position: absolute;
-	left: 55px;
-	top: 6px;
-	text-align: left;
-	padding: 0px;
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	margin: 0px;
-	white-space: nowrap;
+    width: 220px;
+    text-overflow:ellipsis;
+    margin-left: 10px;
+    color: #4C6879;
+    position: absolute;
+    left: 55px;
+    top: 6px;
+    text-align: left;
+    padding: 0px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    margin: 0px;
+    white-space: nowrap;
 }
 .crux-FileUploader .fileInputButton{
-	padding:22px 18px;
-	line-height:44px;
-	margin-top:10px;
+    padding:22px 18px;
+    line-height:44px;
+    margin-top:10px;
+}
+
+.crux-FlatMessageBox
+{
+    z-index:10;
+    width:100%;
+    left:0 !important;
 }
 
 .crux-FlatMessageBox .dialogTopBar
 {
-	opacity:0;
+    opacity:0;
 }
 .crux-FlatMessageBox .dialogBody
 {
-	font-weight:normal;
+    font-weight:normal;
 }
 .detail-icon{
-	background: svgIconDetail no-repeat center #4496C6;
-	background-size:16px auto;
-	border-radius:3px;
-	margin:2px;
-	border:none;
+    background: svgIconDetail no-repeat center #4496C6;
+    background-size:16px auto;
+    border-radius:3px;
+    margin:2px;
+    border:none;
 }
 
-.grid-detail-dialogbox {
-	font-size: 14px;
-	background-color: rgba(255,255,255,1.0);
-	border: 1px solid #aaa;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-	padding: 1.25em;
-	border-radius: 6px;
-	z-index: 98;
-	color: #000;
-	
+.grid-detail-dialogbox
+{
+    font-size: 14px;
+    background-color: rgba(255,255,255,1.0);
+    border: 1px solid #aaa;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    padding:0;
+    border-radius: 6px;
+    z-index: 98;
+    color: #000;
+    overflow:hidden;
+}
+
+.grid-detail-dialogbox .detail-key
+{
+    font-weight:bold;
+    width:90px;
+    padding-right:8px;
+}
+
+.grid-detail-dialogbox .dialogContent > table
+{
+    margin-bottom:2px;
+}
+
+.grid-detail-dialogbox .dialogContent > table > tbody > tr > td
+{
+    border: 1px solid #CCC;
+    border-collapse: collapse;
+    padding: 5px;
+}
+
+.grid-detail-dialogbox .dialogContent > table > tbody > tr:first-child
+{
+    display:none;
 }
 
 .grid{
-	margin:20px 0;
+    margin:20px 0;
 }
 
 .grid tr
 {
-	height: 31px;
+    height: 31px;
 }
 
 .grid td
 {
-	border: 1px solid #D4D4D4;
-	min-width: 100px;
-	background: #FFF !important;
+    border: 1px solid #D4D4D4;
+    min-width: 100px;
+    background: #FFF !important;
 }
 
 .grid th
 {
-	background: #E4F6F1 !important;
+    background: #E4F6F1 !important;
 }
 
 .grid .columnHeadersRow .columnHeader table td
 {
-	border:none;
-	background:none !important;
-	color:#1c5994;
-	font-weight:bold;
+    border:none;
+    background:none !important;
+    color:#1c5994;
+    font-weight:bold;
 }
 .grid .columnHeadersRow .columnHeader table td .label
 {
-	padding:0 10px;
+    padding:0 10px;
 }
 .grid .gwt-Label, .grid .crux-MaskedLabel
 {
-	color:#222;
-	text-align:left;
-	padding:0 10px;
+    color:#222;
+    text-align:left;
+    padding:0 10px;
 }
 .grid .columnHeader
 {
-	background:#f7f7f7;
-	box-shadow:0 -2px 0 #eaeaea inset;
+    background:#f7f7f7;
+    box-shadow:0 -2px 0 #eaeaea inset;
 }
 .grid .columnSorter
 {
-	text-align:left;
+    text-align:left;
 }
 .grid .columnSorter table{
-	width:100%;
+    width:100%;
 }
 .grid .columnSorter.columnSorter-asc .arrow
 {
-	width:0;
-	height:0;
-	float:right;
-	margin-right:10px;
-	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;	
-	border-bottom: 5px solid #111;
+    width:0;
+    height:0;
+    float:right;
+    margin-right:10px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;    
+    border-bottom: 5px solid #111;
 }
 .grid .columnSorter.columnSorter-desc .arrow
 {
-	width:0;
-	height:0;
-	float:right;
-	margin-right:10px;
-	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;	
-	border-top: 5px solid #111;
+    width:0;
+    height:0;
+    float:right;
+    margin-right:10px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;    
+    border-top: 5px solid #111;
 }
 .grid .crux-Cell .columnHeader .columnSorter
 {
-	cursor:pointer;
+    cursor:pointer;
 }
 
 /****************
@@ -713,18 +767,18 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 
 .crux-Storyboard .item .storeItem, .crux-Storyboard .item .storeItem .crux-StyledPanel
 {
-	display:block !important;
+    display:block !important;
 }
 
 .crux-Storyboard .item
 {
-	padding:0 10px;
-	height:auto !important;
+    padding:0 10px;
+    height:auto !important;
 }
 
 .crux-Storyboard .item .crux-StyledPanelOuter
 {
-	padding:0;
+    padding:0;
 }
 
 /****************
@@ -733,64 +787,64 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 
 .promoBannerImage
 {
-	background-repeat:no-repeat;
-	background-position:center center;
-	background-color:#acdf53;
-	color:white;
+    background-repeat:no-repeat;
+    background-position:center center;
+    background-color:#acdf53;
+    color:white;
 }
 
 .messagePanel
 {
-	width:100%;
-	height:100%;
+    width:100%;
+    height:100%;
 }
 
 .messagePanel td
 {
-	vertical-align:middle !important;
+    vertical-align:middle !important;
 }
 
 .messagePanel .title
 {
-	text-align:center;
-	font-size:30px;
-	text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1), 0 3px 2px rgba(0,0,0,0.1);
-	color:#fff;
+    text-align:center;
+    font-size:30px;
+    text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1), 0 3px 2px rgba(0,0,0,0.1);
+    color:#fff;
 }
 
 .messagePanel .text
 {
-	text-align:center;
-	color:#fff;
-	font-size:17px;
-	text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1);
-	
+    text-align:center;
+    color:#fff;
+    font-size:17px;
+    text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1);
+    
 }
 
 .bannersArea
 {
-	margin:10px;
-	border-radius:5px;
-	overflow:hidden;
+    margin:10px;
+    border-radius:5px;
+    overflow:hidden;
 }
 
 .bullets
 {
-	margin:10px 0 10px 10px;
+    margin:10px 0 10px 10px;
 }
 
 .bullets .bullet
 {
-	width:8px;
-	height:8px;
-	background:rgba(0,0,0,0.4);
-	border-radius:10px;
-	margin-right:10px;
+    width:8px;
+    height:8px;
+    background:rgba(0,0,0,0.4);
+    border-radius:10px;
+    margin-right:10px;
 }
 
 .bullets .bullet.bullet-active
 {
-	background:rgba(0,0,0,0.7);
+    background:rgba(0,0,0,0.7);
 }
 
 
@@ -800,57 +854,107 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 
 .crux-ScrollBanner
 {
-	padding:10px;
-	background:#fff;
+    padding:10px;
+    background:#fff;
 }
 
 .crux-ScrollBanner > tbody > tr > td:first-child
 {
-	width:100% !important;
+    width:100% !important;
 }
 
 .crux-ScrollBanner > tbody > tr > td:last-child
 {
-	width:50px !important;
+    width:50px !important;
 }
 
 
 .crux-ScrollBanner .message
 {
-	padding:10px;
-	letter-spacing: -1px;
+    padding:10px;
+    letter-spacing: -1px;
 }
 
 .crux-ScrollBanner .messageCount
 {
-	border-left:1px solid #ccc;
-	font-size:15px;
-	padding:6px 0 6px 1px;
-	margin-left:1px;
+    border-left:1px solid #ccc;
+    font-size:15px;
+    padding:6px 0 6px 1px;
+    margin-left:1px;
 }
 
 .crux-ScrollBanner .previousMessageButton, .crux-ScrollBanner .nextMessageButton
 {
-	margin-bottom:0;
-	margin-left:1px;
-	padding:8px 14px;
+    margin-bottom:0;
+    margin-left:1px;
+    padding:8px 14px;
 }
 
 .crux-ScrollBanner .previousMessageButton .gwt-Label
 {
-	width:0;
-	height:0;
-	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;	
-	border-bottom: 5px solid #fff;
+    width:0;
+    height:0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;    
+    border-bottom: 5px solid #fff;
 }
 
 .crux-ScrollBanner .nextMessageButton .gwt-Label
 {
-	width:0;
-	height:0;
-	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;	
-	border-top: 5px solid #fff;
-	margin-top:1px;
+    width:0;
+    height:0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;    
+    border-top: 5px solid #fff;
+    margin-top:1px;
+}
+
+
+/****************
+    StackMenu
+****************/
+
+.crux-StackMenu
+{
+    width:100%;
+}
+
+
+/****************
+    StackMenu
+****************/
+
+.crux-ColorPickerDialog > div > table
+{
+    width:100%;
+}
+
+.crux-ColorPickerDialog table
+{
+    margin:0 auto;
+    text-align:center;
+}
+
+.crux-ColorPickerDialog .PickerButtons .crux-Button
+{
+    background:transparent;
+    color:#222;
+    text-shadow:none;
+    border:1px solid #CCC;
+    float:left;
+    width:50%;
+    margin-left:-1px;
+    margin-top:10px;
+}
+
+
+/****************
+   SingleSelect
+****************/
+
+.crux-SingleSelect
+{
+    width:100% !important;
+    display:block;
+    margin-bottom:10px;
 }
