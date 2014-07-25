@@ -37,8 +37,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDec
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
-import org.cruxframework.crux.smartfaces.client.menu.Menu.Orientation;
-import org.cruxframework.crux.smartfaces.client.menu.Menu.Type;
+import org.cruxframework.crux.smartfaces.client.menu.Menu.LargeType;
+import org.cruxframework.crux.smartfaces.client.menu.Menu.SmallType;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
@@ -58,8 +58,8 @@ class MenuContext extends WidgetCreatorContext
 @DeclarativeFactory(id="menu", library=Constants.LIBRARY_NAME, targetWidget=Menu.class, 
 	description="A menu class based in nav, ul and li html tags.")
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="orientation", type=Orientation.class),
-	@TagAttributeDeclaration(value="type", type=Type.class)
+	@TagAttributeDeclaration(value="largeType", type=LargeType.class),
+	@TagAttributeDeclaration(value="smallType", type=SmallType.class)
 })
 @TagChildren({
 	@TagChild(MenuFactory.MenuItemProcessor.class)
@@ -77,22 +77,22 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 	{
 		String className = getWidgetClassName();
 		
-		Orientation orientation = Orientation.VERTICAL;
-		String orientationProp = context.readWidgetProperty("orientation");
-		if (orientationProp != null && orientationProp.length() > 0)
+		LargeType largeType = LargeType.VERTICAL_ACCORDION;
+		String largeTypeProp = context.readWidgetProperty("largeType");
+		if (largeTypeProp != null && largeTypeProp.length() > 0)
 		{
-			orientation = Orientation.valueOf(orientationProp);
+			largeType = LargeType.valueOf(largeTypeProp);
 		}
 
-		Type type = Type.ACCORDION;
-		String typeProp = context.readWidgetProperty("type");
-		if (typeProp != null && typeProp.length() > 0)
+		SmallType smallType = SmallType.VERTICAL_ACCORDION;
+		String smallTypeProp = context.readWidgetProperty("smallType");
+		if (smallTypeProp != null && smallTypeProp.length() > 0)
 		{
-			type = Type.valueOf(typeProp);
+			smallType = SmallType.valueOf(smallTypeProp);
 		}
 		
 		out.println("final "+className + " " + context.getWidget()+" = new "+ className +
-				"("+Orientation.class.getCanonicalName()+"."+orientation+","+Type.class.getCanonicalName()+"."+type+");");
+				"("+LargeType.class.getCanonicalName()+"."+largeType+","+SmallType.class.getCanonicalName()+"."+smallType+");");
 	}
 	
 	@Override

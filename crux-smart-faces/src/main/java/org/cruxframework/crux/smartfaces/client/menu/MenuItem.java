@@ -50,7 +50,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 	private HandlerManager handlerManager;
 	private Menu menu;
 
-	protected MenuItem(Widget itemWidget)
+	public MenuItem(Widget itemWidget)
 	{
 		if (itemWidget == null)
 		{

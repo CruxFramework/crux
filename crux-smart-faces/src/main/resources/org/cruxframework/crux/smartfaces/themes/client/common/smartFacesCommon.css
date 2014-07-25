@@ -78,14 +78,14 @@ body
 
 /* -------------------- facesMenu -----------------------*/
 
-.faces-Menu * {
+.facesMenu * {
     -webkit-transition:all 0.3s linear;
     -moz-transition:all 0.3s linear;
     -ms-transition:all 0.3s linear;
     transition:all 0.3s linear;
 }
 
-.faces-Menu .facesMenu-li
+.facesMenu .facesMenu-li
 {
     background:#fff;
     padding:10px;
@@ -95,12 +95,12 @@ body
     position:relative;
 }
 
-.faces-Menu .facesMenu-li:hover
+.facesMenu .facesMenu-li:hover
 {
 	background:#f1f1f1;
 }
 
-.faces-Menu .facesMenu-li .facesMenu-ul
+.facesMenu .facesMenu-li .facesMenu-ul
 {
 	display:none;
 	position:absolute;
@@ -111,25 +111,25 @@ body
     horizontal
 */
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal
 {
     width:100%;
 }
 
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li
 {
     float:left;
     border-left:none;
     padding:10px 4%;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li:first-child
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li:first-child
 {
 	border-left:1px solid #ccc;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul
 {
 	bottom:0;
 	left:0;
@@ -139,18 +139,18 @@ body
 	transform:translateY(100%);
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li:hover > .facesMenu-ul
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li:hover > .facesMenu-ul
 {
 	display:block;
 	width:literal("calc(100% + 2px)");
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li .facesMenu-ul .facesMenu-li
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li .facesMenu-ul .facesMenu-li
 {
 	float:none;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul
 {
 	top:0;
 	right:0;
@@ -161,17 +161,17 @@ body
 	margin-top:-1px;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li
 {
 	border-bottom:none;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li:last-child
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li:last-child
 {
 	border-bottom:1px solid #ccc;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren:after
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren:after
 {
 	content:'';
 	position: absolute;
@@ -185,7 +185,7 @@ body
 	border-bottom: 2px solid #808080;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren:after
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren:after
 {
 	content:'';
 	position: absolute;
@@ -203,21 +203,21 @@ body
     vertical
 */
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical
+.facesMenu.facesMenu-dropdown.facesMenu-vertical
 {
 	width:200px;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li{
+.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li{
 	border-bottom:none;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li:last-child
+.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li:last-child
 {
 	border-bottom:1px solid #ccc;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li .facesMenu-ul
+.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li .facesMenu-ul
 {
 	top:0;
 	right:0;
@@ -228,12 +228,12 @@ body
 	width:literal("calc(100% + 2px)");
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li:hover > .facesMenu-ul
+.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li:hover > .facesMenu-ul
 {
 	display:block;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren:after
+.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren:after
 {
 	content:'';
 	position: absolute;
