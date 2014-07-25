@@ -188,23 +188,23 @@ public class Transition
 	 */
 	@Deprecated
 	private static native boolean isIE11() /*-{
-	try
-	{
-	  var rv = false;
-	  if (navigator.appName == 'Netscape')
-	  {
-	    var ua = navigator.userAgent;
-	    var re  = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
-	    if (re.exec(ua) != null)
-	      rv = true;
-	  }
-	  return rv;
-	 } catch (err)
-	 {
-	 	return false;
-	 }
-	  }-*/;
-	
+		try
+		{
+		  if (navigator.appName == 'Netscape')
+		  {
+		    var ua = navigator.userAgent;
+		    var re  = new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})");
+		    if (re.exec(ua) != null)
+		    {
+		      return true;
+		    }
+		  }
+		  return false;
+		 } catch (err)
+		 {
+		 	return false;
+		 }
+	}-*/;
 	
 	static interface TransitionHandler
 	{
