@@ -37,4 +37,16 @@ public interface XStandardResourcesCommon extends ClientBundle
 	
 	@Source("svg-icon-success.svg")
 	DataResource svgIconSuccess();
+	
+	@Source("svg-icon-paginator-first.svg")
+	DataResource svgIconPaginatorFirst();
+	
+	@Source("svg-icon-paginator-last.svg")
+	DataResource svgIconPaginatorLast();
+	
+	@Source("svg-icon-paginator-next.svg")
+	DataResource svgIconPaginatorNext();
+	
+	@Source("svg-icon-paginator-prev.svg")
+	DataResource svgIconPaginatorPrev();
 }
