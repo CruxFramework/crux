@@ -77,13 +77,13 @@ abstract class AbstractParameterHelper
 		if(annotation instanceof PathParam)
 		{
 			nullParam = "\""+StringParameterInjector.CRUX_NULL+"\"";
-			parameterCheckExpression += "&&!"+parameterName+".equals(\"\")";
 		}
 		
 		if (jClassType != null)
 		{
 			if (jClassType.isAssignableTo(stringType))
 			{
+				parameterCheckExpression += "&&!"+parameterexpression+".trim().equals(\"\")";
 				srcWriter.println(parameterStringVariable+"="+parameterStringVariable+".replace(\"{"+parameterName+"}\", URL.encodePathSegment("+
 						"("+parameterCheckExpression+"?"+parameterexpression + ":" + nullParam + ")));");
 			}
