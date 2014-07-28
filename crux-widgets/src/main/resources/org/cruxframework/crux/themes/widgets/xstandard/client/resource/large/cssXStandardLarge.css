@@ -1015,7 +1015,6 @@
 .grid td
 {
     border: 1px solid #D4D4D4;
-    min-width: 100px;
     background: #FFF !important;
 }
 
@@ -1422,6 +1421,14 @@
     display:inline-block;
 }
 
+.edit-column-button
+{
+	width: 20px;
+	height:20px;
+	border:none;
+	background: gridEditIcon no-repeat;
+}
+
 .save-column-button
 {
 	width: 20px;
@@ -1449,3 +1456,8 @@
 	height:100%;
 	width:100%;
 } 
+
+.button-disabled
+{
+	opacity:0.20;
+}
