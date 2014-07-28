@@ -958,3 +958,20 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     display:block;
     margin-bottom:10px;
 }
+
+
+/****************
+  Tableless Grid
+****************/
+
+.crux-AbstractTablelessGridStructure .cellWrapper
+{
+	display:inline-table !important;
+	margin-left:-1px !important;
+	margin-top:-5px !important;
+}
+
+.crux-AbstractTablelessGridStructure .detail-icon
+{
+	margin:0;
+}
