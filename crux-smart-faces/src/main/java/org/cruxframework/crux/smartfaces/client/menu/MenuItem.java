@@ -17,6 +17,7 @@ package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.event.HasSelectHandlers;
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
@@ -31,6 +32,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -50,6 +52,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 	private HandlerManager handlerManager;
 	private Menu menu;
 
+	@SuppressWarnings("deprecation")
 	MenuItem(Widget itemWidget)
 	{
 		if (itemWidget == null)
@@ -127,6 +130,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 		return addHandler(handler, SelectEvent.getType());
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void addItem(final MenuItem menuItem)
 	{
 		if (childrenContainer == null)
@@ -150,10 +154,25 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 		});
 		
 		//Adding CSS helper div important to render icons 
-		//like open/close in accordion and tree menu types 
-		Element auxDiv = DOM.createElement("div");
-		auxDiv.setAttribute("style", Menu.STYLE_AUX_DIV);
-		menuItem.getElement().appendChild(auxDiv);
+		//like open/close in accordion and tree menu types
+		final Button trigger = new Button();
+		trigger.setStyleName(Menu.STYLE_AUX_DIV);
+		trigger.addSelectHandler(new SelectHandler() 
+		{
+			@Override
+			public void onSelect(SelectEvent event) 
+			{
+				if(trigger.getStyleName().contains(Menu.STYLE_FACES_OPEN))
+				{
+					trigger.removeStyleName(Menu.STYLE_FACES_OPEN);
+				} else
+				{
+					trigger.addStyleName(Menu.STYLE_FACES_OPEN);
+				}
+			}
+		});
+		RootPanel.get().add(trigger);
+		menuItem.getElement().appendChild(trigger.getElement());
 		
 		if (!root)
 		{

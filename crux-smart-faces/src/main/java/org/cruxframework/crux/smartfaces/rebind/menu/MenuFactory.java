@@ -26,6 +26,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.children.TextChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.HTMLTag;
@@ -226,8 +227,16 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		}
 	}
 	
-	@TagConstraints(tagName="itemHtml", type=HTMLTag.class)
-	public static class ItemHTMLProcessor extends WidgetChildProcessor<MenuContext>
+	@TagConstraints(tagName="itemHtml")
+	@TagChildren({
+		@TagChild(HTMLProcessor.class)
+	})
+	public static class ItemHTMLProcessor extends WidgetChildProcessor<MenuContext> 
+	{
+	}
+	
+	@TagConstraints(type=HTMLTag.class)
+	public static class HTMLProcessor extends TextChildProcessor<MenuContext>
 	{
 		@Override
 		public void processChildren(SourcePrinter out, MenuContext context) throws CruxGeneratorException 

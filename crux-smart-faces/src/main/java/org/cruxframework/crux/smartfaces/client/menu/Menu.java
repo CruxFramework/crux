@@ -45,7 +45,6 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		VERTICAL_SLIDE("VerticalSlider", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_SLIDE),
 		VERTICAL_ACCORDION("VerticalAccordion", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_ACCORDION),
 		VERTICAL_DROPDOWN("VerticalDropdown", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_DROPDOWN),
-		HORIZONTAL_TREE("HorizontalTree", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_TREE),
 		HORIZONTAL_ACCORDION("HorizontalAccordion", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_ACCORDION),
 		HORIZONTAL_DROPDOWN("HorizontalDropdown", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_DROPDOWN);
 		
@@ -122,7 +121,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	protected static final String STYLE_FACES_EMPTY = "facesMenu-empty";
 	protected static final String STYLE_FACES_LI = "facesMenu-li";
 	protected static final String STYLE_FACES_UL = "facesMenu-ul";
-	protected static final String STYLE_AUX_DIV = "facesMenu-auxDiv";
+	protected static final String STYLE_AUX_DIV = "facesMenu-trigger";
 	
 	private boolean enabled = true;
 	private MenuItem root;
@@ -384,6 +383,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	        super("nav");
         }
 		
+		@SuppressWarnings("deprecation")
 		protected void add(MenuItem item)
 		{
 		    DOM.appendChild(getElement(), item.getElement());
@@ -399,6 +399,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 			}
 		}
 		
+		@SuppressWarnings("deprecation")
 		protected void orphan(MenuItem item)
 		{
 			SelectablePanel itemPanel = item.getItemPanel();
