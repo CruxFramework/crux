@@ -1837,7 +1837,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 					
 					return null;
 				}
-				
 			};
 		}
 
