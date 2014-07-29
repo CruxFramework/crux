@@ -120,6 +120,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private String editButtonTooltip = "Edit";
 	private String saveButtonTooltip = "Save";
 	private String cancelButtonTooltip = "Cancel";
+	private ColumnsToSort columnsToSort;
 	
 	
 	/**
@@ -1796,24 +1797,47 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			}
 			return false;
 		}
-
-		/**
-		 * @return
-		 */
+		
+		
 		private ClickHandler createClickHandler()
 		{
 			return new ClickHandler(){
 				public void onClick(ClickEvent event)
 				{
+					
 					String columnKey = columnDefinition.getKey();
 					String previousSorting = grid.currentSortingColumn;
+					
+					String[] columns = new String[2];
+					if(previousSorting != null && previousSorting.contains("#"))
+					{
+						columns = splitColumns(previousSorting);
+						previousSorting = columns[0];
+					}
+					
 					grid.currentSortingColumn = columnKey;
 
 					boolean resorting = columnKey.equals(previousSorting);
 					boolean descending = resorting && grid.ascendingSort;
 
+					if(previousSorting != null && !previousSorting.equals(columnKey) && (grid.dataSource instanceof MeasurableDataSource)) 
+					{
+						columnKey = columnKey+"#"+previousSorting;
+					}
+					
 					grid.sort(columnKey, !descending, grid.caseSensitive);
 				}
+				
+				private String[] splitColumns(String columns)
+				{
+					if(columns != null && columns.contains("#"))
+					{
+						return columns.split("#");
+					}
+					
+					return null;
+				}
+				
 			};
 		}
 
@@ -2133,6 +2157,37 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		this.showEditorButtons = showEditorButtons;
 		setEditorColumns();
+	}
+	
+	static class ColumnsToSort
+	{
+		private String firstColumn;
+		private String secondColumn;
+		public String getFirstColumn()
+		{
+			return firstColumn;
+		}
+		public void setFirstColumn(String firstColumn)
+		{
+			this.firstColumn = firstColumn;
+		}
+		public String getSecondColumn()
+		{
+			return secondColumn;
+		}
+		public void setSecondColumn(String secondColumn)
+		{
+			this.secondColumn = secondColumn;
+		}
+		
+		public boolean isReady()
+		{
+			if(firstColumn != null && secondColumn != null && !firstColumn.equals(secondColumn))
+			{
+				return true;
+			}
+			return false;
+		}
 	}
 	
 	
