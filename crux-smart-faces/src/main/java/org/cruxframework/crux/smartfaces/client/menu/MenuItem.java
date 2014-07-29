@@ -50,7 +50,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 	private HandlerManager handlerManager;
 	private Menu menu;
 
-	public MenuItem(Widget itemWidget)
+	MenuItem(Widget itemWidget)
 	{
 		if (itemWidget == null)
 		{
@@ -132,7 +132,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 		if (childrenContainer == null)
 		{
 			childrenContainer = DOM.createElement("ul");
-			DOM.appendChild(getElement(), childrenContainer);
+			DOM.appendChild(getElement(), (com.google.gwt.user.client.Element) childrenContainer);
 			setStyleName(childrenContainer, Menu.STYLE_FACES_UL);
 		}
 		childrenContainer.appendChild(menuItem.getElement());

@@ -27,6 +27,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.HTMLTag;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
@@ -228,65 +229,69 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 	@TagConstraints(tagName="itemHtml", type=HTMLTag.class)
 	public static class ItemHTMLProcessor extends WidgetChildProcessor<MenuContext>
 	{
-//		@Override
-//		public void processChildren(SourcePrinter out, MenuContext context) throws CruxGeneratorException 
-//		{
-//			context.title = getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId());
-//			context.isHTMLTitle = true;
-//		}
+		@Override
+		public void processChildren(SourcePrinter out, MenuContext context) throws CruxGeneratorException 
+		{
+			String itemClassName = MenuItem.class.getCanonicalName();
+			
+			String safeHtmlStr = "(new com.google.gwt.safehtml.shared.SafeHtmlBuilder().appendEscaped("
+					+getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId())+")).toSafeHtml()";
+			
+			if(context.itemStack.size() == 1)
+			{
+				out.println(itemClassName + " " + context.currentItem+" = "+context.getWidget()+".addItem("+ safeHtmlStr +");");
+			}
+			else
+			{
+				String parentItem = context.itemStack.getFirst();
+				out.println(itemClassName + " " + context.currentItem+" = "+context.getWidget()+".addItem(" +parentItem +","+ safeHtmlStr +");");
+			}
+			context.itemStack.addFirst(context.currentItem);
+		}
 	}
 	
 	@TagConstraints(tagName="itemWidget")
+	@TagChildren({
+		@TagChild(WidgetProcessor.class)
+	})
 	public static class ItemWidgetProcessor extends WidgetChildProcessor<MenuContext> 
 	{
-		
-		
-		
 	}
 	
-//	@TagConstraints(type=AnyWidget.class)
-//	public static class WidgetContentProcessor extends WidgetChildProcessor<MenuContext> 
-//	{
-//		@Override
-//		public void processChildren(SourcePrinter out, MenuContext context) throws CruxGeneratorException
-//		{
-//			String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
-//			String rootWidget = context.getWidget();
-//			
-//			boolean childPartialSupport = getWidgetCreator().hasChildPartialSupport(context.getChildElement());
-//			if (childPartialSupport)
-//			{
-//				out.println("if ("+getWidgetCreator().getChildWidgetClassName(context.getChildElement())+".isSupported()){");
-//			}
-////			if (context.titleWidget != null)
-////			{
-////				if (context.titleWidgetPartialSupport)
-////				{
-////					out.println("if ("+context.titleWidgetClassType+".isSupported()){");
-////				}
-////				if(context.isWidgetTitle)
-////				{
-////					out.println(rootWidget+".add("+widget+", "+context.titleWidget+");");
-////				} else
-////				{
-////					out.println(rootWidget+".add("+widget+", "+EscapeUtils.quote(context.titleWidget)+");");
-////				}
-////				if (context.titleWidgetPartialSupport)
-////				{
-////					out.println("}");
-////				}
-////			}
-////			else
-////			{
-////				out.println(rootWidget+".add("+widget+", "+context.title+", "+context.isHTMLTitle+");");
-////			}
-//			if (childPartialSupport)
-//			{
-//				out.println("}");
-//			}
-//		}
-//	}
-	
+	@TagConstraints(type=AnyWidget.class)
+	public static class WidgetProcessor extends WidgetChildProcessor<MenuContext>
+	{
+		@Override
+		public void processChildren(SourcePrinter out, MenuContext context) throws CruxGeneratorException 
+		{
+			String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
+			
+			boolean childPartialSupport = getWidgetCreator().hasChildPartialSupport(context.getChildElement());
+			if (childPartialSupport)
+			{
+				out.println("if ("+getWidgetCreator().getChildWidgetClassName(context.getChildElement())+".isSupported()){");
+			}
+			
+			String itemClassName = MenuItem.class.getCanonicalName();
+			
+			if(context.itemStack.size() == 1)
+			{
+				out.println(itemClassName + " " + context.currentItem+" = "+context.getWidget()+".addItem("+ widget +");");
+			}
+			else
+			{
+				String parentItem = context.itemStack.getFirst();
+				out.println(itemClassName + " " + context.currentItem+" = "+context.getWidget()+".addItem(" +parentItem +","+ widget +");");
+			}
+			
+			context.itemStack.addFirst(context.currentItem);
+			
+			if (childPartialSupport)
+			{
+				out.println("}");
+			}
+		}
+	}
 	
 	@Override
     public MenuContext instantiateContext()
