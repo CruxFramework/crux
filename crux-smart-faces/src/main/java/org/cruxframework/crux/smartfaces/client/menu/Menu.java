@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
+import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
@@ -40,32 +41,72 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	
 	public static enum LargeType
 	{
-		VERTICAL_TREE(STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_TREE),
-		VERTICAL_SLIDE(STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_SLIDE),
-		VERTICAL_ACCORDION(STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_ACCORDION),
-		VERTICAL_DROPDOWN(STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_DROPDOWN),
-		HORIZONTAL_TREE(STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_TREE),
-		HORIZONTAL_ACCORDION(STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_ACCORDION),
-		HORIZONTAL_DROPDOWN(STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_DROPDOWN);
+		VERTICAL_TREE("VerticalTree", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_TREE),
+		VERTICAL_SLIDE("VerticalSlider", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_SLIDE),
+		VERTICAL_ACCORDION("VerticalAccordion", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_ACCORDION),
+		VERTICAL_DROPDOWN("VerticalDropdown", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_DROPDOWN),
+		HORIZONTAL_TREE("HorizontalTree", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_TREE),
+		HORIZONTAL_ACCORDION("HorizontalAccordion", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_ACCORDION),
+		HORIZONTAL_DROPDOWN("HorizontalDropdown", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_DROPDOWN);
 		
+		String friendlyName;
 		String styleName;
-		LargeType(String styleName)
+		LargeType(String friendlyName, String styleName)
 		{
+			this.friendlyName = friendlyName;
 			this.styleName = styleName;	
+		}
+		
+		@Override
+		public String toString() 
+		{
+			return friendlyName;
+		}
+		
+		public static LargeType getByName(String friendlyName)
+		{
+			for(LargeType type : LargeType.values())
+			{
+				if(type.friendlyName != null && type.friendlyName.equals(friendlyName))
+				{
+					return type;
+				}
+			}
+			return null;
 		}
 	}
 	
 	public static enum SmallType
 	{
-		VERTICAL_TREE(STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_TREE),
-		VERTICAL_SLIDE(STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_SLIDE),
-		VERTICAL_ACCORDION(STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_ACCORDION),
-		HORIZONTAL_ACCORDION(STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_ACCORDION);
+		VERTICAL_TREE("VerticalTree", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_TREE),
+		VERTICAL_SLIDE("VerticalSlider", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_SLIDE),
+		VERTICAL_ACCORDION("VerticalAccordion", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_ACCORDION),
+		HORIZONTAL_ACCORDION("HorizontalAccordion", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_ACCORDION);
 		
+		String friendlyName;
 		String styleName;
-		SmallType(String styleName)
+		SmallType(String friendlyName, String styleName)
 		{
-			this.styleName = styleName;	
+			this.friendlyName = friendlyName;
+			this.styleName = styleName;
+		}
+		
+		@Override
+		public String toString() 
+		{
+			return friendlyName;
+		}
+		
+		public static SmallType getByName(String friendlyName)
+		{
+			for(SmallType type : SmallType.values())
+			{
+				if(type.friendlyName != null && type.friendlyName.equals(friendlyName))
+				{
+					return type;
+				}
+			}
+			return null;
 		}
 	}
 	
@@ -81,74 +122,11 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	protected static final String STYLE_FACES_EMPTY = "facesMenu-empty";
 	protected static final String STYLE_FACES_LI = "facesMenu-li";
 	protected static final String STYLE_FACES_UL = "facesMenu-ul";
+	protected static final String STYLE_AUX_DIV = "facesMenu-auxDiv";
 	
 	private boolean enabled = true;
 	private MenuItem root;
 	private MenuPanel menuPanel = new MenuPanel();
-	private SmallType currentSmallType = null;
-	private LargeType currentLargeType = null;
-	
-	public Menu()
-	{
-		this(LargeType.VERTICAL_ACCORDION, SmallType.VERTICAL_ACCORDION);
-	}
-	
-	public Menu(LargeType largeType)
-	{
-		this(null, null);
-		setLargeType(largeType);
-		
-		switch (largeType) 
-		{
-			case HORIZONTAL_ACCORDION:
-				setSmallType(SmallType.HORIZONTAL_ACCORDION);
-				break;
-			case HORIZONTAL_DROPDOWN:
-				setSmallType(SmallType.HORIZONTAL_ACCORDION);
-				break;
-			case HORIZONTAL_TREE:
-				setSmallType(SmallType.HORIZONTAL_ACCORDION);
-				break;
-			case VERTICAL_ACCORDION:
-				setSmallType(SmallType.VERTICAL_ACCORDION);
-				break;
-			case VERTICAL_DROPDOWN:
-				setSmallType(SmallType.VERTICAL_ACCORDION);
-				break;
-			case VERTICAL_SLIDE:
-				setSmallType(SmallType.VERTICAL_SLIDE);
-				break;
-			case VERTICAL_TREE:
-				setSmallType(SmallType.VERTICAL_TREE);
-				break;
-			default:
-				break;
-		}
-	}
-	
-	public Menu(SmallType smallType)
-	{
-		this(null, null);
-		setSmallType(smallType);
-		
-		switch (smallType) 
-		{
-			case HORIZONTAL_ACCORDION:
-				setLargeType(LargeType.HORIZONTAL_ACCORDION);
-				break;
-			case VERTICAL_ACCORDION:
-				setLargeType(LargeType.VERTICAL_ACCORDION);
-				break;
-			case VERTICAL_SLIDE:
-				setLargeType(LargeType.VERTICAL_SLIDE);
-				break;
-			case VERTICAL_TREE:
-				setLargeType(LargeType.VERTICAL_TREE);
-				break;
-			default:
-				break;
-		}
-	}
 	
 	public Menu(LargeType largeType, SmallType smallType)
 	{
@@ -157,9 +135,38 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		menuPanel.add(root);
 		root.setMenu(this);
 		setStyleName(getBaseStyleName());
+		
+		if(largeType != null &&
+			(Screen.getCurrentDevice().equals(Device.largeDisplayArrows)
+			 || 
+			 Screen.getCurrentDevice().equals(Device.largeDisplayMouse)
+			 ||
+			 Screen.getCurrentDevice().equals(Device.largeDisplayTouch))
+		  )
+		{
+			renderLargeType(largeType);
+		} else if(smallType != null &&
+				(Screen.getCurrentDevice().equals(Device.smallDisplayArrows)
+				 ||
+				 Screen.getCurrentDevice().equals(Device.smallDisplayTouch))
+				)
+		{
+			renderSmallType(smallType);
+		} else
+		{
+			throw new RuntimeException(
+					"Cannot instantiate type :<" + this.getClass().getName() + ">. Menu not switable to this device.");
+		}
+	}
 
-		setLargeType(largeType);
-		setSmallType(smallType);
+	public Menu(LargeType largeType)
+	{
+		this(largeType, null);
+	}
+	
+	public Menu(SmallType smallType)
+	{
+		this(null, smallType);
 	}
 
 	public String getBaseStyleName()
@@ -209,41 +216,21 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	}
 
 	/**
-	 * Define the menu orientation.
+	 * Renders the large menu.
 	 */
-	public void setLargeType(LargeType largeType) 
+	public void renderLargeType(LargeType largeType) 
 	{
-		if(largeType != null)
-		{
-			String deviceName = Screen.getCurrentDevice().toString();
-			if(!getStyleName().contains(deviceName))
-			{
-				addStyleName(deviceName);
-			}
-			
-			removeAllLargeTypes();
-			addStyleName(largeType.styleName);
-			this.currentLargeType = largeType;
-		}
+		removeAllLargeTypes();
+		addStyleName(largeType.styleName);
 	}
 	
 	/**
-	 * Define how menu will be rendered inside page.
+	 * Renders the small menu.
 	 */
-	public void setSmallType(SmallType smallType) 
+	public void renderSmallType(SmallType smallType) 
 	{
-		if(smallType != null)
-		{
-			String deviceName = Screen.getCurrentDevice().toString();
-			if(!getStyleName().contains(deviceName))
-			{
-				addStyleName(deviceName);
-			}
-
-			removeAllSmallTypes();
-			addStyleName(smallType.styleName);
-			this.currentSmallType = smallType ;
-		}
+		removeAllSmallTypes();
+		addStyleName(smallType.styleName);
 	}
 	
 	private void removeAllLargeTypes()
@@ -266,9 +253,9 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	 * Adds a root item.
 	 * @return the inserted item. 
 	 */
-	public MenuItem addItem(Widget widget) 
+	public MenuItem addItem(Widget w) 
 	{
-		return root.addItem(widget);
+		return root.addItem(w);
 	}
 
 	/**
@@ -281,7 +268,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	}
 	
 	/**
-	 * Adds a label root item.
+	 * Adds a html root item.
 	 * @return the inserted item. 
 	 */
 	public MenuItem addItem(SafeHtml html) 
@@ -422,15 +409,5 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 				orphan(itemPanel);
 			}
 		}
-	}
-
-	public SmallType getCurrentSmallType() 
-	{
-		return currentSmallType;
-	}
-
-	public LargeType getCurrentLargeType() 
-	{
-		return currentLargeType;
 	}
 }

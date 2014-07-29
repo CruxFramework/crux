@@ -78,31 +78,31 @@ body
 
 /* -------------------- facesMenu -----------------------*/
 
-.faces-Menu
+.facesMenu
 {
 	background:#f5f5f5;
 	border:1px solid #d1d1d1;
 	box-shadow:0 -2px 0 rgba(0,0,0,0.03) inset, 0 2px 2px rgba(0,0,0,0.07);
 }
 
-.faces-Menu > .facesMenu-ul > .facesMenu-li
+.facesMenu > .facesMenu-ul > .facesMenu-li
 {
 	color:#222;
 }
 
-.faces-Menu * {
+.facesMenu * {
     -webkit-transition:all 0.1s linear;
     -moz-transition:all 0.1s linear;
     -ms-transition:all 0.1s linear;
     transition:all 0.1s linear;
 }
 
-.faces-Menu .facesMenu-ul .facesMenu-ul
+.facesMenu .facesMenu-ul .facesMenu-ul
 {
 	z-index:3;
 }
 
-.faces-Menu .facesMenu-li
+.facesMenu .facesMenu-li
 {
 	position:relative;
 	cursor:pointer;
@@ -110,23 +110,23 @@ body
 
 /* === Dropdown General === */
 
-.faces-Menu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul
+.facesMenu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul
 {
 	background:#fff;
 	box-shadow:0 5px 25px rgba(0,0,0,0.3);
 }
 
-.faces-Menu.facesMenu-dropdown > .facesMenu-ul > .facesMenu-li:hover
+.facesMenu.facesMenu-dropdown > .facesMenu-ul > .facesMenu-li:hover
 {
 	background:rgba(0,0,0,0.03);
 }
 
-.faces-Menu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul
+.facesMenu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul
 {
 	border:1px solid #aaa;
 }
 
-.faces-Menu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul .facesMenu-li
+.facesMenu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul .facesMenu-li
 {
     padding:10px;
     font-size:13px;
@@ -134,12 +134,12 @@ body
     border-bottom:1px solid #aaa;
 }
 
-.faces-Menu.facesMenu-dropdown > .facesMenu-ul > .facesMenu-li:hover
+.facesMenu.facesMenu-dropdown > .facesMenu-ul > .facesMenu-li:hover
 {
 	/*box-shadow:0 -2px 0 rgba(0,0,0,0.15) inset;*/
 }
 
-.faces-Menu.facesMenu-dropdown .facesMenu-li .facesMenu-ul
+.facesMenu.facesMenu-dropdown .facesMenu-li .facesMenu-ul
 {
 	display:none;
 	position:absolute;
@@ -148,19 +148,19 @@ body
 
 /* === Dropdown Horizontal === */
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal
 {
     width:100%;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li
 {
     float:left;
     padding:10px 4%;
     border-right:1px solid #d7d7d7;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul
 {
 	bottom:0;
 	left:0;
@@ -171,12 +171,12 @@ body
 	width:literal("calc(100% + 2px)");
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li:hover > .facesMenu-ul
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li:hover > .facesMenu-ul
 {
 	display:block;	
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul
 {
 	top:0;
 	right:0;
@@ -186,17 +186,17 @@ body
 	margin-left:-2px;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li
 {
 	border-bottom:none;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li:last-child
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li:last-child
 {
 	border-bottom:1px solid #ccc;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren:after
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren:after
 {
 	content:'';
 	position: absolute;
@@ -210,7 +210,7 @@ body
 	border-bottom: 2px solid #444;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren:after
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren:after
 {
 	content:'';
 	position: absolute;
@@ -226,25 +226,25 @@ body
 
 /*  === Vertical Dropdown ===  */
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical,
-.faces-Menu.facesMenu-tree.facesMenu-vertical,
-.faces-Menu.facesMenu-accordion.facesMenu-vertical
+.facesMenu.facesMenu-dropdown.facesMenu-vertical,
+.facesMenu.facesMenu-tree.facesMenu-vertical,
+.facesMenu.facesMenu-accordion.facesMenu-vertical
 {
 	width:200px;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical > .facesMenu-ul > .facesMenu-li
+.facesMenu.facesMenu-dropdown.facesMenu-vertical > .facesMenu-ul > .facesMenu-li
 {
 	border-bottom:1px solid #ccc;
 	padding:10px;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical > .facesMenu-ul > .facesMenu-li:last-child
+.facesMenu.facesMenu-dropdown.facesMenu-vertical > .facesMenu-ul > .facesMenu-li:last-child
 {
 	border-bottom:none;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li .facesMenu-ul
+.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li .facesMenu-ul
 {
 	top:0;
 	right:0;
@@ -255,12 +255,12 @@ body
 	width:literal("calc(100% + 2px)");
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li:hover > .facesMenu-ul
+.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li:hover > .facesMenu-ul
 {
 	display:block;
 }
 
-.faces-Menu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren:after
+.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren:after
 {
 	content:'';
 	position: absolute;
@@ -276,18 +276,18 @@ body
 
 /*  === Tree ===  */
 
-.faces-Menu.facesMenu-tree.facesMenu-vertical > .facesMenu-ul
+.facesMenu.facesMenu-tree.facesMenu-vertical > .facesMenu-ul
 {
 	position:relative;
 	padding:10px;
 }
 
-.faces-Menu.facesMenu-tree.facesMenu-vertical .facesMenu-li
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li
 {
 	padding:5px 10px;
 }
 
-.faces-Menu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren:before
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren:before
 {
 	content:'';
 	border-left:1px dotted #ccc;
@@ -298,7 +298,7 @@ body
 	left:0;
 }
 
-.faces-Menu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-ul > .facesMenu-li:after
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-ul > .facesMenu-li:after
 {
 	content:'';
 	border-top:1px dotted #ccc;
@@ -309,14 +309,14 @@ body
 	left:-10px;
 }
 
-.faces-Menu.facesMenu-tree.facesMenu-vertical > .facesMenu-ul > .facesMenu-li > .facesMenu-ul
+.facesMenu.facesMenu-tree.facesMenu-vertical > .facesMenu-ul > .facesMenu-li > .facesMenu-ul
 {
 	display:block;
 }
 
 /*  === Vertical Accordion ===  */
 
-.faces-Menu.facesMenu-accordion > .facesMenu-ul > .facesMenu-li > .faces-Label
+.facesMenu.facesMenu-accordion > .facesMenu-ul > .facesMenu-li > .faces-Label
 {
 	border-bottom:1px solid #ccc;
 	padding:10px;
@@ -324,31 +324,31 @@ body
 	font-weight:bold;
 }
 
-.faces-Menu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li .facesMenu-ul .faces-Label
+.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li .facesMenu-ul .faces-Label
 {
 	border-bottom:1px solid #eee;
 	padding:5px;
 }
 
-.faces-Menu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li:last-child .faces-Label
+.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li:last-child .faces-Label
 {
 	border-bottom:none;
 }
 
-.faces-Menu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul
+.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul
 {
 	background:white;
 }
 
-.faces-Menu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:before,
-.faces-Menu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:after
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:before,
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:after
 {
 	content:'';
 	position:absolute;
 	background:#aaa;
 }
 
-.faces-Menu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:before
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:before
 {
 	top:13px;
 	right:5px;
@@ -357,7 +357,7 @@ body
 	
 }
 
-.faces-Menu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:after
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:after
 {
 	top:9px;
 	right:9px;

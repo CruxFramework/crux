@@ -148,7 +148,13 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 				SelectEvent.fire(menuItem);
 			}
 		});
-
+		
+		//Adding CSS helper div important to render icons 
+		//like open/close in accordion and tree menu types 
+		Element auxDiv = DOM.createElement("div");
+		auxDiv.setAttribute("style", Menu.STYLE_AUX_DIV);
+		menuItem.getElement().appendChild(auxDiv);
+		
 		if (!root)
 		{
 			getElement().addClassName(Menu.STYLE_FACES_HAS_CHILDREN);
