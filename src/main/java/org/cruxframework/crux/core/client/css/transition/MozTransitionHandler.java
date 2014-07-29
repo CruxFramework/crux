@@ -25,89 +25,89 @@ import com.google.gwt.dom.client.Element;
 class MozTransitionHandler extends BaseTransitionHandler
 {
 	protected native void fadeOut(Element el, double duration)/*-{
-		el.style.MozTransitionProperty = 'opacity';
-		el.style.MozTransitionDelay = '0';
+		el.style.transitionProperty = 'opacity';
+		el.style.transitionDelay = '0';
 		if (duration == 0)
 		{
-			el.style.MozTransitionDuration = '';
-			el.style.MozTransitionTimingFunction = '';
+			el.style.transitionDuration = '';
+			el.style.transitionTimingFunction = '';
 		}
 		else
 		{
-			el.style.MozTransitionDuration = duration+'ms';
-			el.style.MozTransitionTimingFunction = 'ease-out';
+			el.style.transitionDuration = duration+'ms';
+			el.style.transitionTimingFunction = 'ease-out';
 		}
 	
 		el.style.opacity = 0;
 	}-*/;
 
 	protected native void fadeIn(Element el, double duration, double delay)/*-{
-		el.style.MozTransitionProperty = 'opacity';
+		el.style.transitionProperty = 'opacity';
 		if (duration == 0)
 		{
-			el.style.MozTransitionDelay = '0';
-			el.style.MozTransitionDuration = '';
-			el.style.MozTransitionTimingFunction = '';
+			el.style.transitionDelay = '0';
+			el.style.transitionDuration = '';
+			el.style.transitionTimingFunction = '';
 		}
 		else
 		{
-			el.style.MozTransitionDelay = ''+delay;
-			el.style.MozTransitionDuration = duration+'ms';
-			el.style.MozTransitionTimingFunction = 'ease-out';
+			el.style.transitionDelay = ''+delay;
+			el.style.transitionDuration = duration+'ms';
+			el.style.transitionTimingFunction = 'ease-out';
 		}
 	
 		el.style.opacity = 1;
 	}-*/;
 
 	protected native void setHeight(Element el, String height, int duration)/*-{
-		el.style.MozTransitionProperty = 'height';
-		el.style.MozTransitionDelay = '0';
+		el.style.transitionProperty = 'height';
+		el.style.transitionDelay = '0';
 		if (duration == 0)
 		{
-			el.style.MozTransitionDuration = '';
-			el.style.MozTransitionTimingFunction = '';
+			el.style.transitionDuration = '';
+			el.style.transitionTimingFunction = '';
 		}
 		else
 		{
-			el.style.MozTransitionDuration = duration+'ms';
-			el.style.MozTransitionTimingFunction = 'ease-out';
+			el.style.transitionDuration = duration+'ms';
+			el.style.transitionTimingFunction = 'ease-out';
 		}
 
 		el.style.height = height;
 	}-*/;
 
 	protected native void clearTransitionProperties(Element el)/*-{
-		el.style.MozTransitionProperty = 'all';
-		el.style.MozTransitionDuration = '';
-		el.style.MozTransitionTimingFunction = '';
+		el.style.transitionProperty = 'all';
+		el.style.transitionDuration = '';
+		el.style.transitionTimingFunction = '';
 	}-*/;
 
 	protected native void translateX(Element el, int diff)/*-{
-		el.style.MozTransitionProperty = 'all';
-		el.style.MozTransitionDuration = '';
-		el.style.MozTransitionTimingFunction = '';
-		el.style.MozTransitionDelay = '0';
-		el.style.MozTransform = 'translate(' + diff + 'px,0px)';
+		el.style.transitionProperty = 'all';
+		el.style.transitionDuration = '';
+		el.style.transitionTimingFunction = '';
+		el.style.transitionDelay = '0';
+		el.style.transform = 'translate(' + diff + 'px,0px)';
 	}-*/;
 
 	protected native void translateX(Element el, int diff, int duration)/*-{
-		el.style.MozTransitionProperty = 'all';
-		el.style.MozTransitionDelay = '0';
+		el.style.transitionProperty = 'all';
+		el.style.transitionDelay = '0';
 		if (duration == 0)
 		{
-			el.style.MozTransitionDuration = '';
-			el.style.MozTransitionTimingFunction = '';
+			el.style.transitionDuration = '';
+			el.style.transitionTimingFunction = '';
 		}
 		else
 		{
-			el.style.MozTransitionDuration = duration+'ms';
-			el.style.MozTransitionTimingFunction = 'ease-out';
+			el.style.transitionDuration = duration+'ms';
+			el.style.transitionTimingFunction = 'ease-out';
 		}
 
-		el.style.MozTransform = 'translate(' + diff + 'px,0px)';
+		el.style.transform = 'translate(' + diff + 'px,0px)';
 	}-*/;
 
 	protected native void resetTransition(Element el)/*-{
-		el.style.MozTransform = 'translate(0px,0px)';
+		el.style.transform = 'translate(0px,0px)';
 	}-*/;
 }
