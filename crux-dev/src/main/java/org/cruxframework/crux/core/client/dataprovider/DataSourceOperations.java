@@ -200,7 +200,7 @@ class DataProviderOperations<E>
 	{
 		for(int i = 0; i < this.dataProvider.data.length; i++)
 		{
-			if(this.dataProvider.data[i].recordObject.equals(boundObject))
+			if(this.dataProvider.data[i] != null && this.dataProvider.data[i].recordObject.equals(boundObject))
 			{
 				return i;
 			}

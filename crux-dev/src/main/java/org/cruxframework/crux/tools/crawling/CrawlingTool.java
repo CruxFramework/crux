@@ -74,9 +74,9 @@ public class CrawlingTool
 		this.outputDir = outputDir;
 		this.applicationBaseURL = applicationBaseURL;
 		this.javascriptTime = javascriptTime;
-		webClient = new WebClient(BrowserVersion.FIREFOX_3_6);
-		webClient.setCssEnabled(true);
-		webClient.setThrowExceptionOnScriptError(false);
+		webClient = new WebClient(BrowserVersion.FIREFOX_17);
+		webClient.getOptions().setCssEnabled(true);
+		webClient.getOptions().setThrowExceptionOnScriptError(false);
 		webClient.setAjaxController(new NicelyResynchronizingAjaxController());
     }
 
@@ -136,7 +136,7 @@ public class CrawlingTool
 	        }
 	        catch (Exception e) 
 	        {
-	        	logger.error("Error creating snaphot for page ["+pageInfo.page+"], escapedFragment ["+pageInfo.escapedFragment+"]", e);
+	        	logger.error("Error creating snapshot for page ["+pageInfo.page+"], escapedFragment ["+pageInfo.escapedFragment+"]", e);
 	        	if (stopOnErrors)
 	        	{
 	        		break;
