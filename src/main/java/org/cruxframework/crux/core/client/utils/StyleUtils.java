@@ -18,7 +18,6 @@ package org.cruxframework.crux.core.client.utils;
 import org.cruxframework.crux.core.client.Crux;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.UIObject;
 
 /**
@@ -203,7 +202,7 @@ public class StyleUtils
 				{
 					oldStyle += " ";
 				}
-				DOM.setElementProperty(elem.<com.google.gwt.user.client.Element> cast(), "className", oldStyle + style);
+				elem.setPropertyString("className", oldStyle + style);
 			}
 		}
 		else
@@ -230,7 +229,7 @@ public class StyleUtils
 					newClassName = begin + " " + end;
 				}
 
-				DOM.setElementProperty(elem.<com.google.gwt.user.client.Element> cast(), "className", newClassName);
+				elem.setPropertyString("className", newClassName);
 			}
 		}
 	}
@@ -262,7 +261,7 @@ public class StyleUtils
 	 */
 	private static String getStyleName(Element elem)
 	{
-		return DOM.getElementProperty(elem.<com.google.gwt.user.client.Element> cast(), "className");
+		return elem.getPropertyString("className");
 	}
 
 	public static void addStyleProperty(Element element, String camelizedName, String value)

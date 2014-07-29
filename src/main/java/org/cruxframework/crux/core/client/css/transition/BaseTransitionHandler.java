@@ -18,7 +18,7 @@ package org.cruxframework.crux.core.client.css.transition;
 import org.cruxframework.crux.core.client.css.transition.Transition.Callback;
 import org.cruxframework.crux.core.client.css.transition.Transition.TransitionHandler;
 
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 

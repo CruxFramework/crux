@@ -25,7 +25,7 @@ import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataPr
  */
 public abstract class AsyncPagedDataProvider<T> extends AbstractPagedDataProvider<T> implements MeasurableAsyncDataProvider<T>
 {
-	protected DataProviderOperations<T> editableOperations = new DataProviderOperations<T>(this);
+	protected DataProviderOperations<T> operations = new DataProviderOperations<T>(this);
 	protected AsyncDataProviderCallback asynchronousCallback = null;
 	protected PagedDataProviderCallback pagedCallback;
 	protected int recordCount;
@@ -48,7 +48,7 @@ public abstract class AsyncPagedDataProvider<T> extends AbstractPagedDataProvide
 	@Override
 	public void clearChanges()
 	{
-		this.editableOperations.reset();
+		this.operations.reset();
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public abstract class AsyncPagedDataProvider<T> extends AbstractPagedDataProvide
 	@Override
 	public DataProviderRecord<T>[] getNewRecords()
 	{
-		return editableOperations.getNewRecords();
+		return operations.getNewRecords();
 	}
 
 	@Override
@@ -78,25 +78,25 @@ public abstract class AsyncPagedDataProvider<T> extends AbstractPagedDataProvide
 	@Override
 	public DataProviderRecord<T>[] getRemovedRecords()
 	{
-		return editableOperations.getRemovedRecords();
+		return operations.getRemovedRecords();
 	}	
 	
 	@Override
 	public DataProviderRecord<T>[] getSelectedRecords()
 	{
-		return editableOperations.getSelectedRecords();
+		return operations.getSelectedRecords();
 	}	
 	
 	@Override
 	public DataProviderRecord<T>[] getUpdatedRecords()
 	{
-		return editableOperations.getUpdatedRecords();
+		return operations.getUpdatedRecords();
 	}
 
 	@Override
 	public DataProviderRecord<T> insertRecord(int index)
 	{
-		return editableOperations.insertRecord(index);
+		return operations.insertRecord(index);
 	}
 	
 	@Override
@@ -137,7 +137,7 @@ public abstract class AsyncPagedDataProvider<T> extends AbstractPagedDataProvide
 	@Override
 	public DataProviderRecord<T> removeRecord(int index)
 	{
-		return editableOperations.removeRecord(index);
+		return operations.removeRecord(index);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -152,7 +152,7 @@ public abstract class AsyncPagedDataProvider<T> extends AbstractPagedDataProvide
 		currentPage = 0;
 		loaded = false;
 		recordCount = -1;
-		editableOperations.reset();
+		operations.reset();
 	}
 	
 	@Override
@@ -228,19 +228,19 @@ public abstract class AsyncPagedDataProvider<T> extends AbstractPagedDataProvide
 	@Override
 	public int getIndex(T boundObject)
 	{
-		return editableOperations.getRecordIndex(boundObject);
+		return operations.getRecordIndex(boundObject);
 	}
 	
 	@Override
 	public void selectRecord(int index, boolean selected)
 	{
-		editableOperations.selectRecord(index, selected);
+		operations.selectRecord(index, selected);
 	}
 	
 	@Override
 	public void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
 	{
-		editableOperations.updateState(record, previousState);
+		operations.updateState(record, previousState);
 	}
 		
 	@Override
@@ -291,7 +291,7 @@ public abstract class AsyncPagedDataProvider<T> extends AbstractPagedDataProvide
 	protected int getPageEndRecord()
 	{
 		int endPageRecord = super.getPageEndRecord();
-		return endPageRecord + editableOperations.getNewRecordsCount() - editableOperations.getRemovedRecordsCount();
+		return endPageRecord + operations.getNewRecordsCount() - operations.getRemovedRecordsCount();
 	}
 	
 	protected int getPageForRecord(int recordNumber)
@@ -329,7 +329,7 @@ public abstract class AsyncPagedDataProvider<T> extends AbstractPagedDataProvide
 
 	protected void checkChanges()
 	{
-		if (editableOperations.isDirty())
+		if (operations.isDirty())
 		{
 			throw new DataProviderExcpetion("DataProvider has changes on page. You must save or discard them before perform this operation.");
 		}

@@ -15,7 +15,8 @@
  */
 package org.cruxframework.crux.core.client.css.transition;
 
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
+
 
 /**
  * @author Thiago da Rosa de Bustamante
