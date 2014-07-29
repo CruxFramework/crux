@@ -30,7 +30,6 @@ import org.cruxframework.crux.core.utils.ClassUtils;
  */
 public class StringParameterInjector
 {
-	public static final String CRUX_NULL = "__CRUX_NULL__";
 	private static final String CAN_NOT_INVOKE_USING_ARGUMENTS_MSG = "Can not invoke requested service with given arguments";
 	protected Class<?> rawType;
 	protected Constructor<?> constructor;
@@ -127,7 +126,7 @@ public class StringParameterInjector
 
 	public Object extractValue(String strVal)
 	{
-		if (strVal == null || strVal.length() == 0 || strVal.equals(CRUX_NULL))
+		if (strVal == null || strVal.length() == 0)
 		{
 			if (defaultValue == null)
 			{

@@ -20,8 +20,6 @@ import java.util.Date;
 
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.server.rest.core.dispatch.StringParameterInjector;
-import org.cruxframework.crux.core.shared.rest.annotation.PathParam;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.JClassUtils.PropertyInfo;
 
@@ -74,10 +72,6 @@ abstract class AbstractParameterHelper
 		JClassType jClassType = parameterType.isClassOrInterface();
 		
 		String nullParam = "\"\"";
-		if(annotation instanceof PathParam)
-		{
-			nullParam = "\""+StringParameterInjector.CRUX_NULL+"\"";
-		}
 		
 		if (jClassType != null)
 		{
