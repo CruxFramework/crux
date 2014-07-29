@@ -139,10 +139,22 @@ abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E
 			sortArray(data,columnName, ascending, caseSensitive);
 		}
 	}
-
+	
 	protected void sortArray(DataSourceRecord<E>[] array, final String columnName, final boolean ascending, final boolean caseSensitive)
 	{
-		if (!definitions.getColumn(columnName).isSortable())
+		final String columnName1;
+		String columnName2 = null;
+		if(columnName.indexOf('#') > -1)
+		{
+			String[] columnsName = columnName.split("#");
+			columnName1 = columnsName[0];
+			columnName2 = columnsName[1];
+		}else
+		{
+			columnName1 = columnName;
+		}
+		
+		if (!definitions.getColumn(columnName1).isSortable())
 		{
 			throw new DataSourceExcpetion(messages.dataSourceErrorColumnNotComparable(columnName));
 		}
@@ -152,8 +164,10 @@ abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E
 		{
 			return;
 		}
-		final boolean isStringColumn = getValue(columnName, array[0]) instanceof String;
+		final boolean isStringColumn = getValue(columnName1, array[0]) instanceof String;
+		final String finalColumnName2 = columnName2;
 		
+		final boolean isStringColumn2 = getValue(columnName2,array[0]) instanceof String;
 		Arrays.sort(array, new Comparator<DataSourceRecord<E>>(){
 			public int compare(DataSourceRecord<E> o1, DataSourceRecord<E> o2)
 			{
@@ -168,8 +182,8 @@ abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E
 					if (o2==null) return -1;
 				}
 				
-				Object value1 = getValue(columnName, o1);
-				Object value2 = getValue(columnName, o2);
+				Object value1 = getValue(columnName1, o1);
+				Object value2 = getValue(columnName1, o2);
 
 				if (ascending)
 				{
@@ -182,7 +196,33 @@ abstract class AbstractScrollableDataSource<E> implements MeasurableDataSource<E
 					if (value2==null) return -1;
 				}
 
-				return compareNonNullValuesByType(value1,value2,ascending,caseSensitive, isStringColumn);
+				int ret1 = compareNonNullValuesByType(value1,value2,ascending,caseSensitive, isStringColumn);
+				
+				if(ret1 != 0)
+				{
+					return ret1;
+				}else if(finalColumnName2 != null)
+				{
+					
+					Object value1col2 = getValue(finalColumnName2, o1);
+					Object value2col2 = getValue(finalColumnName2, o2);
+
+					if (ascending)
+					{
+						if (value1col2==null) return (value2col2==null?0:-1);
+						if (value2col2==null) return 1;
+					}
+					else
+					{
+						if (value1col2==null) return (value2col2==null?0:1);
+						if (value2col2==null) return -1;
+					}
+					
+					return compareNonNullValuesByType(value1col2,value2col2,ascending,caseSensitive, value1col2 instanceof String);
+				}else
+				{
+					return ret1;
+				}
 			}
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
