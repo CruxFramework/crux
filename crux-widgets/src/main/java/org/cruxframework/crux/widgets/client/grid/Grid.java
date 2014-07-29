@@ -120,8 +120,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	private String editButtonTooltip = "Edit";
 	private String saveButtonTooltip = "Save";
 	private String cancelButtonTooltip = "Cancel";
-	private ColumnsToSort columnsToSort;
-	
 	
 	/**
 	 * @param columnDefinitions
@@ -2157,37 +2155,5 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		this.showEditorButtons = showEditorButtons;
 		setEditorColumns();
 	}
-	
-	static class ColumnsToSort
-	{
-		private String firstColumn;
-		private String secondColumn;
-		public String getFirstColumn()
-		{
-			return firstColumn;
-		}
-		public void setFirstColumn(String firstColumn)
-		{
-			this.firstColumn = firstColumn;
-		}
-		public String getSecondColumn()
-		{
-			return secondColumn;
-		}
-		public void setSecondColumn(String secondColumn)
-		{
-			this.secondColumn = secondColumn;
-		}
-		
-		public boolean isReady()
-		{
-			if(firstColumn != null && secondColumn != null && !firstColumn.equals(secondColumn))
-			{
-				return true;
-			}
-			return false;
-		}
-	}
-	
 	
 }
