@@ -15,8 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.list;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
 
 /**
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)

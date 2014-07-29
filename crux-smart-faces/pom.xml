@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cruxframework</groupId>
 	<artifactId>crux-smart-faces</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1-gwt26</version>
 	<name>Crux Smart Faces</name>
 	<description>Crux widgets library</description>
 

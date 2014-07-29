@@ -81,7 +81,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	private String glassStyleName = DEFAULT_GLASS_STYLE_NAME;
 	private boolean glassShowing;
 	private boolean centered;
-	private com.google.gwt.user.client.Element containerElement;
+	private Element containerElement;
 	private DialogAnimation animation;
 	private boolean animating;
 	private int left = -1;
@@ -417,9 +417,10 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	protected com.google.gwt.user.client.Element getContainerElement()
 	{
-	    return containerElement;
+	    return containerElement.cast();
 	}
 	
 	/**
