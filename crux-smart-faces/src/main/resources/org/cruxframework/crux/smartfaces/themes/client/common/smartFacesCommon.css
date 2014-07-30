@@ -196,12 +196,13 @@ body
 	border-bottom:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren:after
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger
 {
 	content:'';
 	position: absolute;
 	right: 13px;
-	top: 14px;
+	top: 50%;
+	margin-top:-4px;
 	background: rgba(0, 0, 0, 0);
 	width: 6px;
 	height: 6px;
@@ -210,7 +211,7 @@ body
 	border-bottom: 2px solid #444;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren:after
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger
 {
 	content:'';
 	position: absolute;
@@ -260,9 +261,8 @@ body
 	display:block;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren:after
+.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger
 {
-	content:'';
 	position: absolute;
 	right: 13px;
 	top: 16px;
@@ -285,6 +285,34 @@ body
 .facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li
 {
 	padding:5px 10px;
+}
+
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger
+{
+	width:13px;
+	height:13px;
+	border:1px solid #ccc;
+	background:#eee;
+	position:absolute;
+	left:-6px;
+	top:8px;
+	border-radius:2px;
+}
+
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger:hover
+{
+	background:#fff;
+}
+
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger:before
+{
+	content:'+';
+	font-size:10px;
+	margin-top:-1px;
+	margin-left:1px;
+	position:absolute;
+	font-weight:bold;
+	color:#666;
 }
 
 .facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren:before
@@ -316,7 +344,7 @@ body
 
 /*  === Vertical Accordion ===  */
 
-.facesMenu.facesMenu-accordion > .facesMenu-ul > .facesMenu-li > .faces-Label
+.facesMenu.facesMenu-accordion > .facesMenu-ul > .facesMenu-li > .faces-SelectablePanel > .faces-Label
 {
 	border-bottom:1px solid #ccc;
 	padding:10px;
@@ -340,15 +368,22 @@ body
 	background:white;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:before,
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:after
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-trigger
+{
+	position:absolute;
+	right:0;
+	top:5px;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-trigger:before,
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-trigger:after
 {
 	content:'';
 	position:absolute;
 	background:#aaa;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:before
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-trigger:before
 {
 	top:13px;
 	right:5px;
@@ -357,7 +392,7 @@ body
 	
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren:after
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-trigger:after
 {
 	top:9px;
 	right:9px;
