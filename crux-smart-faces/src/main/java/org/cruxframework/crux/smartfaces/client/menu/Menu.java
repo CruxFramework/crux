@@ -122,7 +122,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	protected static final String STYLE_FACES_EMPTY = "facesMenu-empty";
 	protected static final String STYLE_FACES_LI = "facesMenu-li";
 	protected static final String STYLE_FACES_UL = "facesMenu-ul";
-	protected static final String STYLE_AUX_DIV = "facesMenu-trigger";
+	protected static final String STYLE_AUX_DIV = "facesMenu-openCloseTriggerHelper";
 	
 	private boolean enabled = true;
 	private MenuItem root;

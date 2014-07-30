@@ -51,6 +51,8 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 	private Element childrenContainer;
 	private HandlerManager handlerManager;
 	private Menu menu;
+	private Button openCloseTriggerHelper = null;
+	private boolean isOpened = false;
 
 	@SuppressWarnings("deprecation")
 	MenuItem(Widget itemWidget)
@@ -103,11 +105,18 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 
 	public void open()
 	{
+		isOpened = true;
+		if(!getOpenCloseTriggerHelper().getStyleName().contains(Menu.STYLE_FACES_OPEN))
+		{
+			getOpenCloseTriggerHelper().addStyleName(Menu.STYLE_FACES_OPEN);
+		}
 		MenuUtils.addOrRemoveClass(Menu.STYLE_FACES_OPEN, true, this);
 	}
 
 	public void close()
 	{
+		isOpened = false;
+		getOpenCloseTriggerHelper().removeStyleName(Menu.STYLE_FACES_OPEN);
 		MenuUtils.addOrRemoveClass(Menu.STYLE_FACES_OPEN, false, this);
 	}
 
@@ -149,30 +158,16 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 			@Override
 			public void onSelect(SelectEvent event)
 			{
+				if(menuItem.isOpened)
+				{
+					menuItem.close();
+				} else
+				{
+					menuItem.open();
+				}
 				SelectEvent.fire(menuItem);
 			}
 		});
-		
-		//Adding CSS helper div important to render icons 
-		//like open/close in accordion and tree menu types
-		final Button trigger = new Button();
-		trigger.setStyleName(Menu.STYLE_AUX_DIV);
-		trigger.addSelectHandler(new SelectHandler() 
-		{
-			@Override
-			public void onSelect(SelectEvent event) 
-			{
-				if(trigger.getStyleName().contains(Menu.STYLE_FACES_OPEN))
-				{
-					trigger.removeStyleName(Menu.STYLE_FACES_OPEN);
-				} else
-				{
-					trigger.addStyleName(Menu.STYLE_FACES_OPEN);
-				}
-			}
-		});
-		RootPanel.get().add(trigger);
-		menuItem.getElement().appendChild(trigger.getElement());
 		
 		if (!root)
 		{
@@ -180,8 +175,40 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 		}
 		else
 		{
+			//TODO: find a better way to physical attach event!!!
+			RootPanel.get().add(menuItem.getOpenCloseTriggerHelper());
+			menuItem.getElement().appendChild(menuItem.getOpenCloseTriggerHelper().getElement());
 			getElement().removeClassName(Menu.STYLE_FACES_EMPTY);
 		}
+	}
+
+	//Adding CSS helper div/button important to render icons 
+	//like open/close in accordion and tree menu types
+	protected Button getOpenCloseTriggerHelper() 
+	{
+		if(openCloseTriggerHelper != null)
+		{
+			return openCloseTriggerHelper;
+		}
+		
+		openCloseTriggerHelper = new Button();
+		openCloseTriggerHelper.setStyleName(Menu.STYLE_AUX_DIV);
+		openCloseTriggerHelper.addSelectHandler(new SelectHandler() 
+		{
+			@Override
+			public void onSelect(SelectEvent event) 
+			{
+				if(isOpened)
+				{
+					close();
+				} else
+				{
+					open();
+				}
+			}
+		});
+		
+		return openCloseTriggerHelper;
 	}
 
 	public MenuItem addItem(Widget widget)
