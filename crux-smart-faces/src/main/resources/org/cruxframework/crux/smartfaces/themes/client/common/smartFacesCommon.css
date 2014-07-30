@@ -108,6 +108,13 @@ body
 	cursor:pointer;
 }
 
+.facesMenu-openCloseTriggerHelper
+{
+	border:none;
+	padding:0;
+	z-index:2;
+}
+
 /* === Dropdown General === */
 
 .facesMenu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul
@@ -168,12 +175,24 @@ body
 	-moz-transform:translateY(100%);
 	transform:translateY(100%);
 	margin-left:-1px;
-	width:literal("calc(100% + 2px)");
+	width:literal("calc(100% + 3px)");
+	border-radius:0 0 3px 3px;
 }
 
 .facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li:hover > .facesMenu-ul
 {
 	display:block;	
+}
+
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li:hover
+{
+	background:#eee;
+}
+
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li:last-child
+{
+	border-bottom:none;
+	border-radius:0 0 3px 3px;
 }
 
 .facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul
@@ -196,7 +215,7 @@ body
 	border-bottom:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
 {
 	content:'';
 	position: absolute;
@@ -211,7 +230,7 @@ body
 	border-bottom: 2px solid #444;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
 {
 	content:'';
 	position: absolute;
@@ -261,7 +280,7 @@ body
 	display:block;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger
+.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
 {
 	position: absolute;
 	right: 13px;
@@ -287,7 +306,7 @@ body
 	padding:5px 10px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
 {
 	width:13px;
 	height:13px;
@@ -299,23 +318,41 @@ body
 	border-radius:2px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger:hover
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:hover
 {
 	background:#fff;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-trigger:before
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
 {
-	content:'+';
-	font-size:10px;
-	margin-top:-1px;
-	margin-left:1px;
+	content:'';
+	width:1px;
+	height:7px;
 	position:absolute;
 	font-weight:bold;
-	color:#666;
+	background:#666;
+	top:2px;
+	left:5px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren:before
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+{
+	content:'';
+	width:7px;
+	height:1px;
+	position:absolute;
+	font-weight:bold;
+	background:#666;
+	top:5px;
+	left:2px;
+}
+
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren.facesMenu-open > .facesMenu-openCloseTriggerHelper:before
+{
+	display:none;
+}
+
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren.facesMenu-open:before
 {
 	content:'';
 	border-left:1px dotted #ccc;
@@ -324,6 +361,17 @@ body
 	position:absolute;
 	top:16px;
 	left:0;
+	
+}
+
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li .facesMenu-ul
+{
+	display:none;
+}
+
+.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren.facesMenu-open > .facesMenu-ul
+{
+	display:block;
 }
 
 .facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-ul > .facesMenu-li:after
@@ -337,11 +385,6 @@ body
 	left:-10px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical > .facesMenu-ul > .facesMenu-li > .facesMenu-ul
-{
-	display:block;
-}
-
 /*  === Vertical Accordion ===  */
 
 .facesMenu.facesMenu-accordion > .facesMenu-ul > .facesMenu-li > .faces-SelectablePanel > .faces-Label
@@ -350,6 +393,16 @@ body
 	padding:10px;
 	margin-top:-1px;
 	font-weight:bold;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li .facesMenu-ul
+{
+	display:none;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li.facesMenu-open > .facesMenu-ul
+{
+	display:block;
 }
 
 .facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li .facesMenu-ul .faces-Label
@@ -368,22 +421,22 @@ body
 	background:white;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-trigger
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
 {
 	position:absolute;
 	right:0;
 	top:5px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-trigger:before,
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-trigger:after
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before,
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
 {
 	content:'';
 	position:absolute;
 	background:#aaa;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-trigger:before
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
 {
 	top:13px;
 	right:5px;
@@ -392,7 +445,7 @@ body
 	
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-trigger:after
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
 {
 	top:9px;
 	right:9px;
