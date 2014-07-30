@@ -171,13 +171,17 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 		
 		if (!root)
 		{
-			getElement().addClassName(Menu.STYLE_FACES_HAS_CHILDREN);
+			if(!getElement().getClassName().contains(Menu.STYLE_FACES_HAS_CHILDREN))
+			{
+				//TODO: find a better way to physical attach event!!!
+				RootPanel.get().add(getOpenCloseTriggerHelper());
+				getElement().appendChild(getOpenCloseTriggerHelper().getElement());
+				
+				getElement().addClassName(Menu.STYLE_FACES_HAS_CHILDREN);
+			}
 		}
 		else
 		{
-			//TODO: find a better way to physical attach event!!!
-			RootPanel.get().add(menuItem.getOpenCloseTriggerHelper());
-			menuItem.getElement().appendChild(menuItem.getOpenCloseTriggerHelper().getElement());
 			getElement().removeClassName(Menu.STYLE_FACES_EMPTY);
 		}
 	}

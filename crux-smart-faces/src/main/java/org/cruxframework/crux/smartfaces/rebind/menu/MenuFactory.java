@@ -16,6 +16,8 @@
 package org.cruxframework.crux.smartfaces.rebind.menu;
 
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
@@ -73,6 +75,9 @@ class MenuContext extends WidgetCreatorContext
 })
 public class MenuFactory extends WidgetCreator<MenuContext>
 {
+	
+	protected static Logger logger = Logger.getLogger(MenuFactory.class.getName());
+	
 	@Override
 	public void processAttributes(SourcePrinter out, MenuContext context) throws CruxGeneratorException
 	{
@@ -208,7 +213,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 				label = EscapeUtils.quote(jsonLabel.getString("_text"));
 			} catch (JSONException e) 
 			{
-				e.printStackTrace();
+				logger.log(Level.SEVERE, e.getMessage());
 			}
 			
 			String itemClassName = MenuItem.class.getCanonicalName();
