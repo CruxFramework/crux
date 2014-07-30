@@ -117,6 +117,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="open", type=Boolean.class),
 		@TagAttributeDeclaration(value="style"),
+		@TagAttributeDeclaration(value="disabled", type=Boolean.class, defaultValue = "false"),
 		@TagAttributeDeclaration(value="styleName", supportsResources=true)
 	})
 	@TagEventsDeclaration({
@@ -149,14 +150,6 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 				out.println("}");
 				out.println("});");
 			}
-			
-			setItemAttributes(out, context, item);
-		}
-		
-		@Override
-		public void postProcessChildren(SourcePrinter out, MenuContext context) throws CruxGeneratorException
-		{
-			context.itemStack.removeFirst();			
 		}
 		
 		/**
@@ -170,6 +163,11 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			if(context.readBooleanChildProperty("open", false))
 			{
 				out.println(item + ".open();");					
+			}
+			
+			if(context.readBooleanChildProperty("disabled", false))
+			{
+				out.println(item + ".setEnabled(false);");	
 			}
 			
 			String style = context.readChildProperty("style");
@@ -188,7 +186,14 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 				styleName = getWidgetCreator().getResourceAccessExpression(styleName);
 				out.println(item + ".addClassName(" + EscapeUtils.quote(styleName) + ");");
 			}
-		}				
+		}			
+		
+		@Override
+		public void postProcessChildren(SourcePrinter out, MenuContext context) throws CruxGeneratorException
+		{
+			String item = context.itemStack.removeFirst();			
+			setItemAttributes(out, context, item);
+		}
 	}
 	
 	@TagChildren({
@@ -260,6 +265,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 				String parentItem = context.itemStack.getFirst();
 				out.println(itemClassName + " " + context.currentItem+" = "+context.getWidget()+".addItem(" +parentItem +","+ safeHtmlStr +");");
 			}
+			
 			context.itemStack.addFirst(context.currentItem);
 		}
 	}

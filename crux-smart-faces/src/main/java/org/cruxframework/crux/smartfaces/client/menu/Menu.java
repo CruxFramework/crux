@@ -129,6 +129,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	protected static final String STYLE_FACES_VERTICAL = "facesMenu-vertical";
 	protected static final String STYLE_FACES_OPEN = "facesMenu-open";
 	protected static final String STYLE_FACES_HAS_CHILDREN = "facesMenu-hasChildren";
+	protected static final String STYLE_FACES_DISABLED = "facesMenu-disabled";
 	protected static final String STYLE_FACES_EMPTY = "facesMenu-empty";
 	protected static final String STYLE_FACES_LI = "facesMenu-li";
 	protected static final String STYLE_FACES_UL = "facesMenu-ul";
@@ -392,7 +393,6 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	
 	protected static class MenuPanel extends BasePanel
 	{
-
 		protected MenuPanel()
         {
 	        super("nav");

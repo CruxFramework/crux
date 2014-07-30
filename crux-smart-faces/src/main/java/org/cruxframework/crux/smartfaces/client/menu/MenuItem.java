@@ -32,6 +32,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  * @author Thiago da Rosa de Bustamante
  */
-public class MenuItem extends UIObject implements HasSelectHandlers
+public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 {
 	private SelectablePanel itemPanel;
 	private MenuItem parentItem;
@@ -52,7 +53,8 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 	private HandlerManager handlerManager;
 	private Menu menu;
 	private Button openCloseTriggerHelper = null;
-	private boolean isOpened = false;
+	private boolean opened = false;
+	private boolean enabled = true;
 
 	@SuppressWarnings("deprecation")
 	MenuItem(Widget itemWidget)
@@ -105,7 +107,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 
 	public void open()
 	{
-		isOpened = true;
+		opened = true;
 		if(!getOpenCloseTriggerHelper().getStyleName().contains(Menu.STYLE_FACES_OPEN))
 		{
 			getOpenCloseTriggerHelper().addStyleName(Menu.STYLE_FACES_OPEN);
@@ -115,7 +117,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 
 	public void close()
 	{
-		isOpened = false;
+		opened = false;
 		getOpenCloseTriggerHelper().removeStyleName(Menu.STYLE_FACES_OPEN);
 		MenuUtils.addOrRemoveClass(Menu.STYLE_FACES_OPEN, false, this);
 	}
@@ -158,12 +160,19 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 			@Override
 			public void onSelect(SelectEvent event)
 			{
+				if(!menuItem.enabled)
+				{
+					event.setCanceled(true);
+					event.stopPropagation();
+					return;
+				}
+				
 				if( (menu.currentSmallType != null && !menu.currentSmallType.isTree())
 					||
 					(menu.currentLargeType != null && !menu.currentLargeType.isTree())
 				)
 				{
-					if(menuItem.isOpened)
+					if(menuItem.opened)
 					{
 						menuItem.close();
 					} else
@@ -208,7 +217,14 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 			@Override
 			public void onSelect(SelectEvent event) 
 			{
-				if(isOpened)
+				if(!enabled)
+				{
+					event.setCanceled(true);
+					event.stopPropagation();
+					return;
+				}
+				
+				if(opened)
 				{
 					close();
 				} else
@@ -360,5 +376,27 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 	SelectablePanel getItemPanel()
 	{
 		return itemPanel;
+	}
+
+	@Override
+	public boolean isEnabled() 
+	{
+		return enabled;
+	}
+
+	@Override
+	public void setEnabled(boolean enabled) 
+	{
+		this.enabled = enabled;
+		if(!enabled)
+		{
+			if(!getElement().getClassName().contains(Menu.STYLE_FACES_DISABLED))
+			{
+				getElement().addClassName(Menu.STYLE_FACES_DISABLED);
+			}
+		} else
+		{
+			getElement().removeClassName(Menu.STYLE_FACES_DISABLED);
+		}
 	}
 }
