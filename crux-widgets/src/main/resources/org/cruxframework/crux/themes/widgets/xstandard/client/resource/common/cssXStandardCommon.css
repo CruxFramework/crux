@@ -876,9 +876,13 @@ Inputs / Textarea
 
 .crux-DatePicker .datePickerMonthSelector td
 {
+	box-shadow:0 -2px rgba(0,0,0,0.04) inset;
+}
+
+.crux-DatePicker .datePickerMonthSelector td > div
+{
 	padding:5px;
 	cursor:pointer;
-	box-shadow:0 -2px rgba(0,0,0,0.04) inset;
 }
 
 .crux-DatePicker .datePickerMonthSelector td:hover
