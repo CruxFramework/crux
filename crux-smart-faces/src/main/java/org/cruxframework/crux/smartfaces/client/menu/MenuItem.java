@@ -158,12 +158,18 @@ public class MenuItem extends UIObject implements HasSelectHandlers
 			@Override
 			public void onSelect(SelectEvent event)
 			{
-				if(menuItem.isOpened)
+				if( (menu.currentSmallType != null && !menu.currentSmallType.isTree())
+					||
+					(menu.currentLargeType != null && !menu.currentLargeType.isTree())
+				)
 				{
-					menuItem.close();
-				} else
-				{
-					menuItem.open();
+					if(menuItem.isOpened)
+					{
+						menuItem.close();
+					} else
+					{
+						menuItem.open();
+					}
 				}
 				SelectEvent.fire(menuItem);
 			}

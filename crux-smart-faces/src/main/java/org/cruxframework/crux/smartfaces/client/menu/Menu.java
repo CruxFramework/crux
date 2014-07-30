@@ -74,6 +74,11 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 			}
 			return null;
 		}
+		
+		public boolean isTree()
+		{
+			return this.equals(LargeType.VERTICAL_TREE);	
+		}
 	}
 	
 	public static enum SmallType
@@ -108,6 +113,11 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 			}
 			return null;
 		}
+		
+		public boolean isTree()
+		{
+			return this.equals(SmallType.VERTICAL_TREE);	
+		}
 	}
 	
 	public    static final String STYLE_FACES_MENU = "facesMenu";
@@ -127,6 +137,8 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	private boolean enabled = true;
 	private MenuItem root;
 	private MenuPanel menuPanel = new MenuPanel();
+	protected SmallType currentSmallType = null;
+	protected LargeType currentLargeType = null;
 	
 	public Menu(LargeType largeType, SmallType smallType)
 	{
@@ -144,6 +156,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 			 Screen.getCurrentDevice().equals(Device.largeDisplayTouch))
 		  )
 		{
+			this.currentLargeType = largeType;
 			renderLargeType(largeType);
 		} else if(smallType != null &&
 				(Screen.getCurrentDevice().equals(Device.smallDisplayArrows)
@@ -151,6 +164,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 				 Screen.getCurrentDevice().equals(Device.smallDisplayTouch))
 				)
 		{
+			this.currentSmallType = smallType;
 			renderSmallType(smallType);
 		} else
 		{
