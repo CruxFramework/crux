@@ -400,25 +400,35 @@ body
 	display:none;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li.facesMenu-open > .facesMenu-ul
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-li.facesMenu-open > .facesMenu-ul
 {
 	display:block;
 }
 
 .facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li .facesMenu-ul .faces-Label
 {
-	border-bottom:1px solid #eee;
+	border-bottom:1px solid rgba(0, 0, 0, 0.13);
 	padding:5px;
 }
 
 .facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li:last-child .faces-Label
 {
-	border-bottom:none;
+	/*border-bottom:none;*/
 }
 
 .facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul
 {
-	background:white;
+	background:#fff;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul .facesMenu-ul
+{
+	background:#eee;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul .facesMenu-ul .facesMenu-ul
+{
+	background:#aaa;
 }
 
 .facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
@@ -452,6 +462,30 @@ body
 	width:2px;
 	height:10px;
 }
+
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+{
+	top:8px;
+	right:5px;
+	width:10px;
+	height:2px;
+	
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+{
+	top:4px;
+	right:9px;
+	width:2px;
+	height:10px;
+}
+
+
+.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren.facesMenu-open > .facesMenu-openCloseTriggerHelper:after
+{
+	display:none;
+}
+
 
 .dialogGlass
 {
