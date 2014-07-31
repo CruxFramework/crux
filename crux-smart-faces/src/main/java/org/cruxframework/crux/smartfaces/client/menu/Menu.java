@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
+import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
@@ -326,6 +327,11 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		menuItem.close();
 	}
 
+	protected void adopt(MenuItem item, Button button)
+	{
+		menuPanel.adopt(item, button);
+	}
+	
 	protected void adopt(MenuItem item)
 	{
 		menuPanel.adopt(item);
@@ -348,6 +354,16 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		    getElement().appendChild(item.getElement());
 		}	
 
+		protected void adopt(MenuItem item, Button button)
+		{
+			SelectablePanel itemPanel = item.getItemPanel();
+			if (itemPanel != null)
+			{
+			    getChildren().add(button);
+				adopt(button);
+			}
+		}
+		
 		protected void adopt(MenuItem item)
 		{
 			SelectablePanel itemPanel = item.getItemPanel();

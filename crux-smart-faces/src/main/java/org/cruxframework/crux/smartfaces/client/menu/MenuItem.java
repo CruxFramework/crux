@@ -34,7 +34,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -187,10 +186,8 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 		{
 			if(!getElement().getClassName().contains(Menu.STYLE_FACES_HAS_CHILDREN))
 			{
-				//TODO: find a better way to physically attach this event!!!
-				RootPanel.get().add(getOpenCloseTriggerHelper());
 				getElement().appendChild(getOpenCloseTriggerHelper().getElement());
-				
+				menu.adopt(this, getOpenCloseTriggerHelper());
 				getElement().addClassName(Menu.STYLE_FACES_HAS_CHILDREN);
 			}
 		}
