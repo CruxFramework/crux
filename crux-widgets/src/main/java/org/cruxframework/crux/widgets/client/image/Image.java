@@ -180,7 +180,6 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 				touchEndHandler = null;
 			}
 		}
-
 	}
 
 	private ImageImpl impl;
@@ -286,6 +285,21 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 		impl.setUrl(url);
 	}
 
+	public void setTitle(String title)
+	{
+		impl.setTitle(title);
+	}
+
+	public void setVisible(boolean visible)
+	{
+		impl.setVisible(visible);
+	}
+	
+	public void setStyleName(String style)
+	{
+		impl.setStyleName(style);
+	}
+	
 	public void setUrlAndVisibleRect(final SafeUri url, final int left, final int top, final int width, final int height)
 	{
 		new GWTFixImage() {

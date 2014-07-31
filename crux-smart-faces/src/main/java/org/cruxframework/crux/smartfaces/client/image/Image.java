@@ -122,6 +122,21 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 		image.setUrl(url);
 	}
 
+	public void setTitle(String title)
+	{
+		image.setTitle(title);
+	}
+
+	public void setVisible(boolean visible)
+	{
+		image.setVisible(visible);
+	}
+	
+	public void setStyleName(String style)
+	{
+		image.setStyleName(style);
+	}
+	
 	public void setUrlAndVisibleRect(final SafeUri url, final int left, final int top, final int width, final int height)
 	{
 		new GWTFixImage() {
