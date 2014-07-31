@@ -17,7 +17,6 @@ package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.event.HasSelectHandlers;
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
@@ -25,6 +24,7 @@ import org.cruxframework.crux.smartfaces.client.label.HTML;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -33,7 +33,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -52,11 +51,10 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 	private Element childrenContainer;
 	private HandlerManager handlerManager;
 	private Menu menu;
-	private Button openCloseTriggerHelper = null;
+	private Element openCloseTriggerElement = null;
 	private boolean opened = false;
 	private boolean enabled = true;
 
-	@SuppressWarnings("deprecation")
 	MenuItem(Widget itemWidget)
 	{
 		if (itemWidget == null)
@@ -70,9 +68,9 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 		{
 			this.itemPanel = new SelectablePanel();
 			this.itemPanel.add(itemWidget);
-			setElement(DOM.createElement("li"));
+			setElement(Document.get().createElement("li"));
 			setStyleName(Menu.STYLE_FACES_LI);
-			DOM.appendChild(getElement(), itemPanel.getElement());
+			getElement().appendChild(itemPanel.getElement());
 		}
 	}
 
@@ -108,9 +106,9 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 	public void open()
 	{
 		opened = true;
-		if(!getOpenCloseTriggerHelper().getStyleName().contains(Menu.STYLE_FACES_OPEN))
+		if(!getOpenCloseTriggerHelper().getClassName().contains(Menu.STYLE_FACES_OPEN))
 		{
-			getOpenCloseTriggerHelper().addStyleName(Menu.STYLE_FACES_OPEN);
+			getOpenCloseTriggerHelper().addClassName(Menu.STYLE_FACES_OPEN);
 		}
 		MenuUtils.addOrRemoveClass(Menu.STYLE_FACES_OPEN, true, this);
 	}
@@ -118,7 +116,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 	public void close()
 	{
 		opened = false;
-		getOpenCloseTriggerHelper().removeStyleName(Menu.STYLE_FACES_OPEN);
+		getOpenCloseTriggerHelper().removeClassName(Menu.STYLE_FACES_OPEN);
 		MenuUtils.addOrRemoveClass(Menu.STYLE_FACES_OPEN, false, this);
 	}
 
@@ -141,13 +139,12 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 		return addHandler(handler, SelectEvent.getType());
 	}
 	
-	@SuppressWarnings("deprecation")
-	public void addItem(final MenuItem menuItem)
+	protected void addItem(final MenuItem menuItem)
 	{
 		if (childrenContainer == null)
 		{
-			childrenContainer = DOM.createElement("ul");
-			DOM.appendChild(getElement(), (com.google.gwt.user.client.Element) childrenContainer);
+			childrenContainer = Document.get().createElement("ul");
+			getElement().appendChild(childrenContainer);
 			setStyleName(childrenContainer, Menu.STYLE_FACES_UL);
 		}
 		childrenContainer.appendChild(menuItem.getElement());
@@ -188,10 +185,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 		{
 			if(!getElement().getClassName().contains(Menu.STYLE_FACES_HAS_CHILDREN))
 			{
-				//TODO: find a better way to physically attach this event!!!
-				RootPanel.get().add(getOpenCloseTriggerHelper());
-				getElement().appendChild(getOpenCloseTriggerHelper().getElement());
-				
+				getItemPanel().getElement().appendChild(openCloseTriggerElement);
 				getElement().addClassName(Menu.STYLE_FACES_HAS_CHILDREN);
 			}
 		}
@@ -203,38 +197,16 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 
 	//Adding CSS helper div/button important to render icons 
 	//like open/close in accordion and tree menu types
-	protected Button getOpenCloseTriggerHelper() 
+	protected Element getOpenCloseTriggerHelper() 
 	{
-		if(openCloseTriggerHelper != null)
+		if(openCloseTriggerElement != null)
 		{
-			return openCloseTriggerHelper;
+			return openCloseTriggerElement;
 		}
 		
-		openCloseTriggerHelper = new Button();
-		openCloseTriggerHelper.setStyleName(Menu.STYLE_AUX_DIV);
-		openCloseTriggerHelper.addSelectHandler(new SelectHandler() 
-		{
-			@Override
-			public void onSelect(SelectEvent event) 
-			{
-				if(!enabled)
-				{
-					event.setCanceled(true);
-					event.stopPropagation();
-					return;
-				}
-				
-				if(opened)
-				{
-					close();
-				} else
-				{
-					open();
-				}
-			}
-		});
-		
-		return openCloseTriggerHelper;
+		openCloseTriggerElement = Document.get().createDivElement();
+		openCloseTriggerElement.setClassName(Menu.STYLE_AUX_DIV);		
+		return openCloseTriggerElement;
 	}
 
 	public MenuItem addItem(Widget widget)

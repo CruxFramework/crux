@@ -16,13 +16,11 @@
 package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
-import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -140,6 +138,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	private MenuPanel menuPanel = new MenuPanel();
 	protected SmallType currentSmallType = null;
 	protected LargeType currentLargeType = null;
+	protected MenuRenderer menuRenderer = GWT.create(MenuRenderer.class);
 	
 	public Menu(LargeType largeType, SmallType smallType)
 	{
@@ -149,29 +148,9 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		root.setMenu(this);
 		setStyleName(getBaseStyleName());
 		
-		if(largeType != null &&
-			(Screen.getCurrentDevice().equals(Device.largeDisplayArrows)
-			 || 
-			 Screen.getCurrentDevice().equals(Device.largeDisplayMouse)
-			 ||
-			 Screen.getCurrentDevice().equals(Device.largeDisplayTouch))
-		  )
-		{
-			this.currentLargeType = largeType;
-			renderLargeType(largeType);
-		} else if(smallType != null &&
-				(Screen.getCurrentDevice().equals(Device.smallDisplayArrows)
-				 ||
-				 Screen.getCurrentDevice().equals(Device.smallDisplayTouch))
-				)
-		{
-			this.currentSmallType = smallType;
-			renderSmallType(smallType);
-		} else
-		{
-			throw new RuntimeException(
-					"Cannot instantiate type :<" + this.getClass().getName() + ">. Menu not switable to this device.");
-		}
+		this.currentLargeType = largeType;
+		this.currentSmallType = smallType;
+		menuRenderer.render(this, largeType, smallType);
 	}
 
 	public Menu(LargeType largeType)
@@ -227,40 +206,6 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		if(this.root != null)
 		{
 			this.root.clear();
-		}
-	}
-
-	/**
-	 * Renders the large menu.
-	 */
-	public void renderLargeType(LargeType largeType) 
-	{
-		removeAllLargeTypes();
-		addStyleName(largeType.styleName);
-	}
-	
-	/**
-	 * Renders the small menu.
-	 */
-	public void renderSmallType(SmallType smallType) 
-	{
-		removeAllSmallTypes();
-		addStyleName(smallType.styleName);
-	}
-	
-	private void removeAllLargeTypes()
-	{
-		for(LargeType type : LargeType.values())
-		{
-			removeStyleName(type.styleName);
-		}
-	}
-	
-	private void removeAllSmallTypes()
-	{
-		for(SmallType type : SmallType.values())
-		{
-			removeStyleName(type.styleName);
 		}
 	}
 
@@ -398,10 +343,9 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	        super("nav");
         }
 		
-		@SuppressWarnings("deprecation")
 		protected void add(MenuItem item)
 		{
-		    DOM.appendChild(getElement(), item.getElement());
+		    getElement().appendChild(item.getElement());
 		}	
 
 		protected void adopt(MenuItem item)
@@ -414,13 +358,12 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 			}
 		}
 		
-		@SuppressWarnings("deprecation")
 		protected void orphan(MenuItem item)
 		{
 			SelectablePanel itemPanel = item.getItemPanel();
 			if (itemPanel != null)
 			{
-				DOM.removeChild(getElement(), item.getElement());
+				getElement().removeChild(item.getElement());
 			    getChildren().remove(itemPanel);
 				orphan(itemPanel);
 			}

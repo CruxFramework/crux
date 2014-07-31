@@ -1,7 +1,7 @@
 <module>
     <inherits name="org.cruxframework.crux.core.Crux"/>
 
-	<!-- Label  -->
+	<!-- SelectHandler  -->
 	<replace-with class="org.cruxframework.crux.smartfaces.client.select.SelectEventsHandlerNoTouchImpl">
 		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.select.SelectEventsHandler" />
 		<none>
@@ -16,6 +16,7 @@
 			<when-property-is name="device.features" value="largeDisplayTouch" />
 		</any>
 	</replace-with>
+	<!-- NavigationButtonsPager -->
 	<replace-with class="org.cruxframework.crux.smartfaces.client.pager.NavigationButtonsPager.TouchButtonCreator">
 		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.pager.NavigationButtonsPager.ButtonCreator" />
 		<any>
@@ -23,4 +24,21 @@
 			<when-property-is name="device.features" value="largeDisplayTouch" />
 		</any>
 	</replace-with>
+	<!-- Menu -->
+	<replace-with class="org.cruxframework.crux.smartfaces.client.menu.MenuRenderer.LargeMenuRenderer">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.menu.MenuRenderer" />
+		<any>
+			<when-property-is name="device.features" value="largeDisplayArrows" />
+			<when-property-is name="device.features" value="largeDisplayTouch" />
+			<when-property-is name="device.features" value="largeDisplayMouse" />
+		</any>
+	</replace-with>
+	<replace-with class="org.cruxframework.crux.smartfaces.client.menu.MenuRenderer.SmallMenuRenderer">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.menu.MenuRenderer" />
+		<any>
+			<when-property-is name="device.features" value="smallDisplayArrows" />
+			<when-property-is name="device.features" value="smallDisplayTouch" />
+		</any>
+	</replace-with>
+	
 </module>
