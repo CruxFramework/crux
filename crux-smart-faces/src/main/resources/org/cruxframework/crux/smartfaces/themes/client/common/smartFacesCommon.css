@@ -215,7 +215,7 @@ body
 	border-bottom:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren > .faces-SelectablePanel > .facesMenu-openCloseTriggerHelper
 {
 	content:'';
 	position: absolute;
@@ -230,7 +230,7 @@ body
 	border-bottom: 2px solid #444;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren > .faces-SelectablePanel > .facesMenu-openCloseTriggerHelper
 {
 	content:'';
 	position: absolute;
