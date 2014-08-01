@@ -102,7 +102,8 @@ public class IDBKeyCursorProxyCreator extends IDBAbstractKeyValueProxyCreator
 		{
 			srcWriter.println("return "+idbCursorVariable+".getDoubleKey();");
 		}
-		else if (keyTypeName.equals(Date.class.getCanonicalName()))
+		else if ((keyTypeName.equals(Date.class.getCanonicalName())) || 
+				 (keyTypeName.equals(java.util.Date.class.getCanonicalName())))
 		{
 			srcWriter.println("return "+idbCursorVariable+".getDateKey();");
 		}
