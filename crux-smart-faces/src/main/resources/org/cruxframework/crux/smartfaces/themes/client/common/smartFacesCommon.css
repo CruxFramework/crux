@@ -480,11 +480,169 @@ body
 	height:10px;
 }
 
-
 .facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren.facesMenu-open > .facesMenu-openCloseTriggerHelper:after
 {
 	display:none;
 }
+
+/*  === Horizontal Accordion ===  */
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal
+{
+	height:200px;
+	display:inline-block;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li
+{
+	float:left;
+	min-width:38px;
+	height:200px;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .faces-SelectablePanel > .faces-Label
+{
+	-webkit-transform:rotate(-90deg);
+	width:199px;
+	margin-left:-81px;
+	margin-top:80px;
+	position:absolute;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li .facesMenu-ul
+{
+	width:300px;
+	background:#fff;
+	font-size:12px;
+	display:none;
+	overflow-y:auto;
+	border-right:1px solid #ccc;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-ul
+{
+	border-right:none;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul
+{
+	height:198px;	
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-ul
+{
+	background:#fafafa;
+	font-size:11px;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul
+{
+	margin-left:37px;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li.facesMenu-open > .facesMenu-ul
+{
+	display:block;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul .facesMenu-li .faces-Label
+{
+	padding:10px;
+	border-bottom:1px solid #ccc;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul .facesMenu-li .faces-Label
+{
+	padding:10px;
+	border-bottom:1px solid #ccc;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren.facesMenu-open > .facesMenu-openCloseTriggerHelper:after
+{
+	display:none;
+}
+
+.facesMenu-openCloseTriggerHelper
+{
+	
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before,
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+{
+	content:'';
+	position:absolute;
+	background:#aaa;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+{
+	top:13px;
+	left:13px;
+	width:10px;
+	height:2px;
+	
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+{
+	top:9px;
+	left:17px;
+	width:2px;
+	height:10px;
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+{
+	top:8px;
+	right:5px;
+	left:initial;
+	width:10px;
+	height:2px;
+	
+}
+
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+{
+	top:4px;
+	right:9px;
+	left:initial;
+	width:2px;
+	height:10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 .dialogGlass
