@@ -74,7 +74,22 @@ body
 	-moz-osx-font-smoothing: grayscale;
 }
 
+/* -------------------- dialogs z-indexes -----------------------*/
 
+.dialogGlass
+{
+	z-index:5;
+}
+
+.faces-DialogBox, .faces-MessageBox, .faces-Confirm
+{
+	z-index:6;
+}
+
+.faces-WaitBox
+{
+	z-index:7;
+}
 
 /* -------------------- facesMenu -----------------------*/
 
@@ -562,9 +577,13 @@ body
 	display:none;
 }
 
-.facesMenu-openCloseTriggerHelper
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-ul .facesMenu-openCloseTriggerHelper
 {
-	
+	position:absolute;
+	right:14px;
+	top:17px;
+	width:2px;
+	height:2px;
 }
 
 .facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before,
@@ -594,9 +613,8 @@ body
 
 .facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
 {
-	top:8px;
-	right:5px;
-	left:initial;
+	top:0;
+	left:-2px;
 	width:10px;
 	height:2px;
 	
@@ -604,58 +622,20 @@ body
 
 .facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
 {
-	top:4px;
-	right:9px;
+	top:-4px;
+	right:-2px;
 	left:initial;
 	width:2px;
 	height:10px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.dialogGlass
+.facesMenu.facesMenu-accordion > .facesMenu-ul > .facesMenu-li:last-child > .faces-SelectablePanel > .faces-Label
 {
-	z-index:5;
+	border-bottom:none;
 }
 
-.faces-DialogBox, .faces-MessageBox, .faces-Confirm
+.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li.facesMenu-open:last-child > .facesMenu-ul
 {
-	z-index:6;
-}
-
-.faces-WaitBox
-{
-	z-index:7;
+	border-left:1px solid #ccc;
+	border-right:0;
 }
