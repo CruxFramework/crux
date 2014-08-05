@@ -56,9 +56,12 @@ public class DeviceAdaptiveDataColumnEditorCreatorFactory
 		 */
 		public void createEditorCreator() 
 		{	
-			generateFields();
-			generateCreateEditorMethod();
-			printer.commit();
+			if(printer != null)
+			{
+				generateFields();
+				generateCreateEditorMethod();
+				printer.commit();
+			}
 		}
 		
 		/**

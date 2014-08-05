@@ -73,7 +73,18 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	
 	private String height;
 	
+	private String detailDialogTitle = "";
 	
+	
+	public String getDetailDialogTitle()
+	{
+		return detailDialogTitle;
+	}
+
+	public void setDetailDialogTitle(String detailDialogTitle)
+	{
+		this.detailDialogTitle = detailDialogTitle;
+	}
 
 	public String getHeight()
 	{
@@ -336,12 +347,20 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	{	
 		this.gridImpl.initGrid(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons,freezeHeaders);
 	}
+	
+	public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+			int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+			boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons,boolean freezeHeaders, String detailDialogTitle)
+	{	
+		this.gridImpl.initGrid(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons,freezeHeaders,detailDialogTitle);
+	}
 
 
 	static abstract class GridImpl extends SimplePanel
 	{
 		protected Grid grid;
 		protected DeviceAdaptiveGridColumnDefinitions columnDefinitions;
+		protected String detailDialogTitle = "";
 
 		/**
 		 * Initialize grid component
@@ -416,6 +435,18 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 
 			setWidget(this.grid);
 		}
+		
+		public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+				int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+				boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons,boolean freezeHeaders,String detailDialogTitle)
+		{
+			this.columnDefinitions = columnDefinitions;
+			this.grid = new Grid(getGridColumnDefinitionsByDevice(), pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns,
+					highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons,freezeHeaders);
+
+			setWidget(this.grid);
+			setDetailDialogTitle(detailDialogTitle);
+		}
 
 		/** Add a validator to a editable column
 		 * @param key
@@ -438,6 +469,16 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 			grid.setWidth(width);
 		}
 		
+		public void setDetailDialogTitle(String title)
+		{
+			this.detailDialogTitle = title;
+		}
+		
+		public String getDetailDialogTitle()
+		{
+			return this.detailDialogTitle;
+		}
+
 		/**
 		 * @param dataSource
 		 * @see org.cruxframework.crux.widgets.client.grid.Grid#setDataSource(org.cruxframework.crux.core.client.datasource.PagedDataSource)
@@ -676,6 +717,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 				public Widget createWidgetForColumn()
 				{
 					final Button detailButton =  new Button();
+					final String title = getDetailDialogTitle();
 					detailButton.setHeight("24px");
 					detailButton.setWidth("24px");
 					detailButton.setStylePrimaryName("detail-icon");
@@ -688,7 +730,7 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 						{
 							DataRow row = getRow(detailButton);
 
-							new DetailDialogBox(actionsWidgets, columnDefinitions, row).show();
+							new DetailDialogBox(actionsWidgets, columnDefinitions, row,title).show();
 
 						}
 					});
@@ -744,14 +786,13 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		 * @param columnDefinitions ColumnDefinitions
 		 * @param row DataRow
 		 */
-		public DetailDialogBox(HashMap<String, Button> actionWidgets, DeviceAdaptiveGridColumnDefinitions columnDefinitions, DataRow row)
+		public DetailDialogBox(HashMap<String, Button> actionWidgets, DeviceAdaptiveGridColumnDefinitions columnDefinitions, DataRow row,String title)
 		{
 
-			super(false, true, new CloseButtonCaption(""));
+			super(false, true, new CloseButtonCaption(title));
 			this.row = row;
 
 			setStyleName("grid-detail-dialogbox");
-
 		    CloseButtonCaption ref = (CloseButtonCaption) this.getCaption();
 		    PushButton closeButton = ref.getCloseButton();
 		    closeButton.setHeight("24px");

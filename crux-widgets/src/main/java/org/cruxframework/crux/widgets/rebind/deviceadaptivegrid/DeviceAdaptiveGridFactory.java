@@ -64,7 +64,8 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 	@TagAttributeDeclaration(value="defaultSortingType", type=SortingType.class, defaultValue="ascending"),
 	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false"),
 	@TagAttributeDeclaration(value="showEditorButtons", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="freezeHeaders", type=Boolean.class, defaultValue="false")
+	@TagAttributeDeclaration(value="freezeHeaders", type=Boolean.class, defaultValue="false"),
+	@TagAttributeDeclaration(value="detailDialogTitle", type=String.class, defaultValue=" ")
 })
 @TagAttributes({
 	@TagAttribute(value="dataSource", processor=DeviceAdaptiveGridFactory.DataSourceAttributeParser.class)
@@ -93,7 +94,7 @@ public class DeviceAdaptiveGridFactory extends WidgetCreator<WidgetCreatorContex
             getRowSelectionModel(widgetElement)+", "+getCellSpacing(widgetElement)+", "+getAutoLoad(widgetElement)+", "+
             getStretchColumns(widgetElement)+", "+getHighlightRowOnMouseOver(widgetElement)+", "+
             getEmptyDataFilling(widgetElement)+", "+isFixedCellSize(widgetElement)+", "+getSortingColumn(widgetElement)+", "+
-            getSortingType(widgetElement) + ","+ getKeepEditorOnClickDisabledRows(widgetElement) +  "," + getShowEditorButtons(widgetElement) + "," + getFreezeHeaders(widgetElement)+ ");");
+            getSortingType(widgetElement) + ","+ getKeepEditorOnClickDisabledRows(widgetElement) +  "," + getShowEditorButtons(widgetElement) + "," + getFreezeHeaders(widgetElement)+","+getDetailDialogTitle(widgetElement) + ");");
 		
 		out.println(context.getWidget()+".setHeight(\""+ height +"\");");
 		out.println(context.getWidget()+".setWidth(\""+ width + "\");");
@@ -222,6 +223,22 @@ public class DeviceAdaptiveGridFactory extends WidgetCreator<WidgetCreatorContex
 			return null;
 		}
 
+		protected String getDetailDialogTitle(JSONObject gridElem)
+		{
+			String emptyDataFilling = gridElem.optString("detailDialogTitle");
+
+			if(emptyDataFilling != null && emptyDataFilling.trim().length() > 0)
+			{
+				return EscapeUtils.quote(emptyDataFilling);
+			}
+
+			return null;
+		}
+
+		
+		
+		
+		
 		/**
 		 * @param gridElem
 		 * @return
