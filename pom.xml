@@ -9,11 +9,11 @@
 	<description>Crux Framework build POM</description>
        
 	<modules>
-		<module>../crux-runtime</module>
-		<module>../crux-dev</module>
+		<module>crux-runtime</module>
+		<module>crux-dev</module>
 		<!--
-		<module>../crux-widgets</module>
-		<module>../crux-smart-faces</module>
+		<module>crux-widgets</module>
+		<module>crux-smart-faces</module>
 		-->
 	</modules>
 
