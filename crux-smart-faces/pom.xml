@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.cruxframework</groupId>
 	<artifactId>crux-smart-faces</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 	<name>Crux Smart Faces</name>
 	<description>Crux widgets library</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<cruxVersion>5.3-SNAPSHOT</cruxVersion>
+		<cruxVersion>5.2.0-SNAPSHOT</cruxVersion>
 	</properties>
 
 	<parent>
