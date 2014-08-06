@@ -1,0 +1,12 @@
+<html 
+	xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:c="http://www.cruxframework.org/crux" 
+>
+	<head>
+		<title></title>
+	</head>
+	<body>
+		<script type="text/javascript" src="/{moduleName}/{moduleName}.nocache.js"></script>
+		<c:screen useView="*" />
+	</body>
+</html>
