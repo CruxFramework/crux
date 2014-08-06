@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>crux-dev</artifactId>
 	<name>Crux Core - Development</name>
-	<version>5.2-SNAPSHOT</version>
+	<version>5.3-SNAPSHOT</version>
 	<description>Crux Core - Development components</description>
 
 	<parent>
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>org.cruxframework</groupId>
 			<artifactId>crux-runtime</artifactId>
-			<version>5.2-SNAPSHOT</version>
+			<version>5.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
