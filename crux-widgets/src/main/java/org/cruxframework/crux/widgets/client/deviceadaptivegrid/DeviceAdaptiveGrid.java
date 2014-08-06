@@ -38,7 +38,6 @@ import org.cruxframework.crux.widgets.client.paging.Pageable;
 import org.cruxframework.crux.widgets.client.paging.Pager;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownHandler;
@@ -298,13 +297,144 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		this.gridImpl.initGrid(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons,freezeHeaders,detailDialogTitle);
 	}
 
-
+	
+	/**
+	 * Initialize grid component
+	 * @param columnDefinitions The definition of grid`s columns
+	 * @param pageSize The maximum size of a page
+	 * @param rowSelection Row selection mode
+	 * @param cellSpacing Space between cells
+	 * @param autoLoadData Load data automatically
+	 * @param stretchColumns Stretch columns to content, if needed
+	 * @param highlightRowOnMouseOver Highlight row when the mouse cursor is over it
+	 * @param emptyDataFilling
+	 * @param fixedCellSize Fix the size of all cells
+	 * @param defaultSortingColumn The default column used to sort data
+	 * @param defaultSortingType Sorting type
+	 */
+	public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+			int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+			boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType)
+	{
+		this.gridImpl.initGrid(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType);
+	}
+	
+	/**
+	 * Initialize grid component
+	 * @param columnDefinitions The definition of grid`s columns
+	 * @param pageSize The maximum size of a page
+	 * @param rowSelection Row selection mode
+	 * @param cellSpacing Space between cells
+	 * @param autoLoadData Load data automatically
+	 * @param stretchColumns Stretch columns to content, if needed
+	 * @param highlightRowOnMouseOver Highlight row when the mouse cursor is over it
+	 * @param emptyDataFilling
+	 * @param fixedCellSize Fix the size of all cells
+	 * @param defaultSortingColumn The default column used to sort data
+	 * @param defaultSortingType Sorting type
+	 * @param keepEditorOnClickDisabledRows Keep row's editor opened even when clicking on a disabled datarow
+	 */
+	public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+			int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+			boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows)
+	{
+		this.gridImpl.initGrid(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows);
+	}
+	
+	public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+			int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+			boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons)
+	{
+		this.gridImpl.initGrid(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons);
+	}
+	
+	public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+			int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+			boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons,boolean freezeHeaders)
+	{	
+		this.gridImpl.initGrid(columnDefinitions, pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns, highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons,freezeHeaders);
+	}
+	
 	static abstract class GridImpl extends SimplePanel
 	{
 		protected Grid grid;
 		protected DeviceAdaptiveGridColumnDefinitions columnDefinitions;
 		protected String detailDialogTitle = "";
 
+		
+		/**
+		 * Initialize grid component
+		 * @param columnDefinitions The definition of grid`s columns
+		 * @param pageSize The maximum size of a page
+		 * @param rowSelection Row selection mode
+		 * @param cellSpacing Space between cells
+		 * @param autoLoadData Load data automatically
+		 * @param stretchColumns Stretch columns to content, if needed
+		 * @param highlightRowOnMouseOver Highlight row when the mouse cursor is over it
+		 * @param emptyDataFilling
+		 * @param fixedCellSize Fix the size of all cells
+		 * @param defaultSortingColumn The default column used to sort data
+		 * @param defaultSortingType Sorting type
+		 */
+		public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+				int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+				boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType)
+		{
+			this.columnDefinitions = columnDefinitions;
+			this.grid = new Grid(getGridColumnDefinitionsByDevice(), pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns,
+					highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType);
+
+			setWidget(this.grid);
+		}
+		
+		/**
+		 * Initialize grid component
+		 * @param columnDefinitions The definition of grid`s columns
+		 * @param pageSize The maximum size of a page
+		 * @param rowSelection Row selection mode
+		 * @param cellSpacing Space between cells
+		 * @param autoLoadData Load data automatically
+		 * @param stretchColumns Stretch columns to content, if needed
+		 * @param highlightRowOnMouseOver Highlight row when the mouse cursor is over it
+		 * @param emptyDataFilling
+		 * @param fixedCellSize Fix the size of all cells
+		 * @param defaultSortingColumn The default column used to sort data
+		 * @param defaultSortingType Sorting type
+		 * @param keepEditorOnClickDisabledRows Keep row's editor opened even when clicking on a disabled datarow
+		 */
+		public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+				int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+				boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows)
+		{
+			this.columnDefinitions = columnDefinitions;
+			this.grid = new Grid(getGridColumnDefinitionsByDevice(), pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns,
+					highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows);
+
+			setWidget(this.grid);
+		}
+		
+		
+		public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+				int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+				boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons)
+		{
+			this.columnDefinitions = columnDefinitions;
+			this.grid = new Grid(getGridColumnDefinitionsByDevice(), pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns,
+					highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons);
+
+			setWidget(this.grid);
+		}
+		
+		public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
+				int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
+				boolean fixedCellSize, String defaultSortingColumn, SortingType defaultSortingType,boolean keepEditorOnClickDisabledRows,boolean showEditorButtons,boolean freezeHeaders)
+		{
+			this.columnDefinitions = columnDefinitions;
+			this.grid = new Grid(getGridColumnDefinitionsByDevice(), pageSize, rowSelection, cellSpacing, autoLoadData, stretchColumns,
+					highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType,keepEditorOnClickDisabledRows,showEditorButtons,freezeHeaders);
+
+			setWidget(this.grid);
+		}
 		
 		public void initGrid(DeviceAdaptiveGridColumnDefinitions columnDefinitions, int pageSize, RowSelectionModel rowSelection,
 				int cellSpacing, boolean autoLoadData, boolean stretchColumns, boolean highlightRowOnMouseOver, String emptyDataFilling,
