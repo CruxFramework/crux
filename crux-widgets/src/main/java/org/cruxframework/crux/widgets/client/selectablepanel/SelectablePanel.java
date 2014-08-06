@@ -56,7 +56,6 @@ public class SelectablePanel extends SimplePanel implements HasSelectHandlers, H
 		protected void setPanel(SelectablePanel selectablePanel)
 		{
 			this.selectablePanel = selectablePanel;
-			
 		}
 		
 		protected void select()
@@ -81,6 +80,11 @@ public class SelectablePanel extends SimplePanel implements HasSelectHandlers, H
 	{
 		public void handlePanel()
 		{
+			addClickHandler();
+		}
+
+		protected void addClickHandler() 
+		{
 			selectablePanel.addClickHandler(new ClickHandler()
 			{
 				@Override
@@ -97,7 +101,7 @@ public class SelectablePanel extends SimplePanel implements HasSelectHandlers, H
 	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
-	static class PanelEventsHandlerTouchImpl extends PanelEventsHandler implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
+	static class PanelEventsHandlerTouchImpl extends PanelEventsHandlerNoTouchImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
 	{
 		private static final int TAP_EVENT_THRESHOLD = 5;
 		private int startX;
@@ -107,6 +111,10 @@ public class SelectablePanel extends SimplePanel implements HasSelectHandlers, H
 
 		public void handlePanel()
 		{
+			if(!GWT.isProdMode())
+			{
+				addClickHandler();
+			}
 			selectablePanel.addTouchStartHandler(this);
 		}
 

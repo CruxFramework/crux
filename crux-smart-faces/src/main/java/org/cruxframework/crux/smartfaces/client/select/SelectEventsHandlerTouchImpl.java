@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.select;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Touch;
@@ -31,7 +32,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
+public class SelectEventsHandlerTouchImpl extends SelectEventsHandlerNoTouchImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
 {
 	private static final int TAP_EVENT_THRESHOLD = 5;
 	private int startX;
@@ -39,8 +40,13 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 	private HandlerRegistration touchMoveHandler;
 	private HandlerRegistration touchEndHandler;
 
+	@Override
 	public void handleWidget()
 	{
+		if(!GWT.isProdMode())
+		{
+			super.handleWidget();
+		}
 		selectableWidget.addTouchStartHandler(this);
 	}
 

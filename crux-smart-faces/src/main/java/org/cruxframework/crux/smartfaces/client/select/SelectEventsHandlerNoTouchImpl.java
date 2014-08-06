@@ -27,6 +27,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
  */
 public class SelectEventsHandlerNoTouchImpl extends SelectEventsHandler
 {
+	@Override
 	public void handleWidget()
 	{
 		selectableWidget.addClickHandler(new ClickHandler()
