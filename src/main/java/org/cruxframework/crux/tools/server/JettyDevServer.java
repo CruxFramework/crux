@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.declarativeui.filter.DeclarativeUIFilter;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.DevModeInitializerListener;
+import org.cruxframework.crux.core.server.InitializerListener;
 import org.cruxframework.crux.core.server.development.ViewTester;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
@@ -49,17 +50,9 @@ public class JettyDevServer
 	private String bindAddress = "localhost";
 	private int port = getDefaultPort();
 
-	protected static String[] __dftConfigurationClasses = 
-	{
-		"org.eclipse.jetty.webapp.WebInfConfiguration", //
-//		"org.eclipse.jetty.plus.webapp.EnvConfiguration",// jetty-env
-//		"org.eclipse.jetty.plus.webapp.Configuration", // web.xml
-		"org.eclipse.jetty.webapp.JettyWebXmlConfiguration",// jettyWeb
-	};
-
 	private File appRootDir;
 	private String pageOutputCharset = "UTF-8";
-	private boolean addDevelopmentComponentes = false;
+	private boolean addDevelopmentComponents = false;
 
 	public JettyDevServer() 
 	{
@@ -82,11 +75,8 @@ public class JettyDevServer
 		webContext.setParentLoaderPriority(true);
 		webContext.setContextPath("/");
 		webContext.setClassLoader(Thread.currentThread().getContextClassLoader());
-//		webContext.setConfigurationClasses(__dftConfigurationClasses);
-//		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.naming");
-//		System.setProperty("java.naming.factory.initial", "org.eclipse.naming.InitialContextFactory");
-//		handler.addFilter(GzipFilter.class, "/*", EnumSet.allOf(DispatcherType.class));
-		if (addDevelopmentComponentes)
+		server.setHandler(webContext);
+		if (addDevelopmentComponents)
 		{
 			webContext.addFilter(DeclarativeUIFilter.class, "*.html", EnumSet.allOf(DispatcherType.class));
 			webContext.addServlet(ViewTester.class, "/viewTester/*");
@@ -94,9 +84,9 @@ public class JettyDevServer
 			{
 				webContext.setInitParameter(DevModeInitializerListener.OUTPUT_CHARSET, pageOutputCharset);
 			}
+			webContext.addEventListener(new InitializerListener());
 			webContext.addEventListener(new DevModeInitializerListener());
 		}
-		server.setHandler(webContext);
 		try 
 		{
 			server.start();
@@ -122,9 +112,9 @@ public class JettyDevServer
 	        {
 	        	appRootDir = new File(parameter.getValue());
 	        }
-	        else if (parameter.getName().equals("-addDevelopmentComponentes"))
+	        else if (parameter.getName().equals("-addDevelopmentComponents"))
 	        {
-	        	this.addDevelopmentComponentes = true;
+	        	this.addDevelopmentComponents = true;
 	        }
 	        else if (parameter.getName().equals("-pageOutputCharset"))
 	        {
@@ -162,7 +152,7 @@ public class JettyDevServer
 		parameter.addParameterOption(new ConsoleParameterOption("dir", "Work dir"));
 		parametersProcessor.addSupportedParameter(parameter);
 
-		parameter = new ConsoleParameter("-addDevelopmentComponentes", "If informed, Server will add all components required for development on application context.", false, false);
+		parameter = new ConsoleParameter("-addDevelopmentComponents", "If informed, Server will add all components required for development on application context.", false, false);
 		parametersProcessor.addSupportedParameter(parameter);
 
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));
