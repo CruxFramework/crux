@@ -395,4 +395,11 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 			getElement().removeClassName(Menu.STYLE_FACES_DISABLED);
 		}
 	}
+	
+	public boolean hasChildren()
+	{
+		return children.size() > 0 ? true : false;
+	}
+
+	
 }
