@@ -1,0 +1,14 @@
+<x:xdevice xmlns="http://www.w3.org/1999/xhtml" xmlns:x="http://www.cruxframework.org/xdevice" xmlns:gwt="http://www.cruxframework.org/crux/gwt" xmlns:crux="http://www.cruxframework.org/crux/widgets" xmlns:xdev="http://www.cruxframework.org/crux/crossDevice"
+	useController="topDisposalLayoutLargeController" height="100%" >
+
+	<gwt:flowPanel id="splitPanel" height="100%" width="100%" styleName="disposalWrapper">
+		<gwt:simplePanel id="headerPanel"></gwt:simplePanel>
+
+		<gwt:simplePanel id="menuPanel"></gwt:simplePanel>
+
+		<gwt:simplePanel id="contentPanel"></gwt:simplePanel>
+
+		<gwt:simplePanel id="footerPanel"></gwt:simplePanel>
+	</gwt:flowPanel>
+
+</x:xdevice>

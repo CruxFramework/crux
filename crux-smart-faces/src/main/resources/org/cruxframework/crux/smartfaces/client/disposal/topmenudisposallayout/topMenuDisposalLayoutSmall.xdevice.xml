@@ -1,0 +1,22 @@
+<x:xdevice xmlns="http://www.w3.org/1999/xhtml"
+		   xmlns:x="http://www.cruxframework.org/xdevice"
+           xmlns:gwt="http://www.cruxframework.org/crux/gwt"
+		   xmlns:crux="http://www.cruxframework.org/crux/widgets"
+		   xmlns:xdev="http://www.cruxframework.org/crux/crossDevice"
+           useController="topMenuDisposalSmallController"
+           xmlns:faces="http://www.cruxframework.org/crux/smart-faces"
+           >
+	
+	<div class="top-menu-disposal-menubutton-container">
+		<faces:button id="showMenuButton" styleName="top-menu-disposal-menubutton" text="" onSelect="topMenuDisposalSmallController.onShowMenu" style="top-menu-disposal-menubutton"/>
+	</div>
+	<gwt:flowPanel id="headerPanel"></gwt:flowPanel>	
+		
+	<gwt:flowPanel id="menuPanel" styleName="menuPanel"/>
+	
+	<gwt:flowPanel id="contentPanel"></gwt:flowPanel>
+	
+	
+	<gwt:simplePanel id="footerPanel"></gwt:simplePanel>
+	
+</x:xdevice>
