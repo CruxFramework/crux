@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 cruxframework.org.
+ * Copyright 2014 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,21 +15,15 @@
  */
 package org.cruxframework.crux.tools.codeserver;
 
+import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +33,7 @@ import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializ
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
+import org.cruxframework.crux.core.utils.FileUtils;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
 import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
@@ -47,30 +42,28 @@ import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 
+import com.google.gwt.dev.codeserver.CompileDir;
 import com.google.gwt.dev.codeserver.Options;
-import com.google.gwt.dev.codeserver.WebServer;
+import com.google.gwt.dev.codeserver.RecompileListener;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class CodeServer
+public class CodeServer 
 {
-	private static final String STOP_CODE_SERVER_PATH = "/stopcodeserver";
 	private static final Log logger = LogFactory.getLog(CodeServer.class);
 
 	private String moduleName;
 	private String sourceDir;
-	private String bindAddress;
 	private boolean noPrecompile = false;
-	private String port = "9876";
 	private String workDir;
-	private WebServer webServer;
-	
+	private String bindAddress = "localhost";
+	private int port = getDefaultPort();
+
+	private String webDir;
+
 	public String getModuleName()
     {
     	return moduleName;
@@ -91,26 +84,6 @@ public class CodeServer
     	this.sourceDir = sourceDir;
     }
 
-	public String getBindAddress()
-    {
-    	return bindAddress;
-    }
-
-	public void setBindAddress(String bindAddress)
-    {
-    	this.bindAddress = bindAddress;
-    }
-
-	public String getPort()
-    {
-    	return port;
-    }
-
-	public void setPort(String port)
-    {
-    	this.port = port;
-    }
-
 	public String getWorkDir()
     {
     	return workDir;
@@ -120,11 +93,14 @@ public class CodeServer
     {
     	this.workDir = workDir;
     }
+	
+	protected int getDefaultPort()
+	{
+		return 9876;
+	}
 
 	protected void execute() throws Exception
     {
-		killOldServer();
-		
 		URL[] urls = ClasspathUrlFinder.findClassPaths();
 		Scanners.setSearchURLs(urls);
 		ModuleUtils.initializeScannerURLs(urls);
@@ -159,117 +135,44 @@ public class CodeServer
 		{
 			System.exit(1);
 		}
+		if (webDir != null && webDir.length() > 0)
+		{
+			options.setRecompileListener(new RecompileListener() 
+			{
+				private Map<String, CompileDir> compileDir = new HashMap<String, CompileDir>();
+
+				@Override
+				public void startedCompile(String moduleName, int compileId, CompileDir compileDir) 
+				{
+					this.compileDir.put(moduleName, compileDir);
+				}
+				
+				@Override
+				public void finishedCompile(String moduleName, int compileId, boolean success) 
+				{
+					if (success)
+					{
+						CompileDir dir = compileDir.get(moduleName);
+						File destDir = new File(webDir);
+						try 
+						{
+							FileUtils.copyFilesFromDir(dir.getWarDir(), destDir);
+						} 
+						catch (IOException e) 
+						{
+							logger.error("Error updating webDir", e);
+						}
+					}
+				}
+			});
+		}
 		try 
 		{
-			webServer = com.google.gwt.dev.codeserver.CodeServer.start(options);
-			addStopCapabilitiesToJettyServer();
-			String url = "http://localhost:" + port + "/";
-			logger.info("The code server is ready.");
-			logger.info("Next, visit: " + url);
+			com.google.gwt.dev.codeserver.CodeServer.main(options);
 		} 
 		catch (Throwable t) 
 		{
 			logger.error("Error running code server", t);;
-			System.exit(1);
-		}
-	}
-
-	/**
-	 * It is an workaround for a bug o eclipse IDE. When stopping a debug on Eclipse, 
-	 * it kills the JVM not gracefully and the Jetty server does not die on Windows.
-	 * So, we need to create a strategy to kill those "zombie" jetty servers that stays
-	 * running after a JVM kill. If we does not kill, another jetty can not start a code
-	 * server session, because the port is being listened by the old jetty process.
-	 */
-	private void killOldServer() 
-	{
-        URLConnection connection;
-        String uri = "http://localhost:" + port + STOP_CODE_SERVER_PATH;
-        try 
-        {
-			connection = new URL(uri).openConnection();
-			connection.connect();
-			connection.getContent();
-			logger.info("Shutting down Old Code server instance...");
-			Thread.sleep(2500);
-		}
-        catch (Exception e) 
-        {
-        	//IGNORE. We don't have any old server
-		}
-    }
-
-	/**
-	 * It is an workaround for a bug o eclipse IDE. When stopping a debug on Eclipse, 
-	 * it kills the JVM not gracefully and the Jetty server does not die on Windows.
-	 * So, we need to create a strategy to kill those "zombie" jetty servers that stays
-	 * running after a JVM kill. If we does not kill, another jetty can not start a code
-	 * server session, because the port is being listened by the old jetty process.
-	 */
-	private void addStopCapabilitiesToJettyServer() 
-	{
-		try 
-		{
-			Field serverField = WebServer.class.getDeclaredField("server");
-			serverField.setAccessible(true);
-			Server server = (Server) serverField.get(webServer);
-			
-		    ServletContextHandler handler = (ServletContextHandler) server.getHandler();
-		    handler.addServlet(new ServletHolder(new HttpServlet() 
-		    {
-				private static final long serialVersionUID = -2492061626388189841L;
-
-				@Override
-				protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-				{
-					stopServer(request, response);
-				}
-		    }), STOP_CODE_SERVER_PATH);
-		} 
-		catch (Exception e) 
-		{
-			logger.error("Error registering stop servlet", e);
-		}
-	}
-
-	private void stopServer(HttpServletRequest request, HttpServletResponse response) 
-	{
-		response.setContentType("text/html");
-		response.setStatus(HttpServletResponse.SC_OK); //200
-		setRequestHandled(request);
-
-		logger.info("Stopping jetty server...");
-		new Thread()
-		{
-			public void run() 
-			{
-				try 
-				{
-					Thread.sleep(1000);
-					webServer.stop();
-					Thread.sleep(1000);
-					logger.info("Terminating code server");
-					System.exit(0);
-				} 
-				catch (Exception e) 
-				{
-					logger.error(e.getMessage(), e);
-				}
-			};
-		}.start();
-	}
-
-	private void setRequestHandled(HttpServletRequest request) 
-	{
-		try
-		{
-			Method setHandledMethod = WebServer.class.getDeclaredMethod("setHandled", new Class<?>[]{HttpServletRequest.class});
-			setHandledMethod.setAccessible(true);
-			setHandledMethod.invoke(null, request);
-		}
-		catch(Exception e)
-		{
-			logger.error("Error handling request to stopJetty servlet", e);
 		}
 	}
 
@@ -286,10 +189,10 @@ public class CodeServer
 			args.add("-bindAddress");
 			args.add(bindAddress);
 		}
-		if (port != null && port.length() > 0)
+		if (port  > 0)
 		{
 			args.add("-port");
-			args.add(port);
+			args.add(Integer.toString(port));
 		}
 		if (workDir != null && workDir.length() > 0)
 		{
@@ -331,11 +234,15 @@ public class CodeServer
 	        }
 	        else if (parameter.getName().equals("-port"))
 	        {
-	        	port = parameter.getValue();
+	        	port =Integer.parseInt(parameter.getValue());
 	        }
 	        else if (parameter.getName().equals("-workDir"))
 	        {
 	        	workDir = parameter.getValue();
+	        }
+	        else if (parameter.getName().equals("-webDir"))
+	        {
+	        	webDir = parameter.getValue();
 	        }
         }
     }
@@ -363,8 +270,12 @@ public class CodeServer
 		parameter.addParameterOption(new ConsoleParameterOption("port", "Port"));
 		parametersProcessor.addSupportedParameter(parameter);
 
-		parameter = new ConsoleParameter("-workDir", " The root of the directory tree where the code server will write compiler output. If not supplied, a temporary directory will be used.", false, true);
+		parameter = new ConsoleParameter("-workDir", "The root of the directory tree where the code server will write compiler output. If not supplied, a temporary directory will be used.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("dir", "Work dir"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-webDir", "The directory to be updated by code server compiler. If provided, after each code server compilation, this folder will be updated.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("dir", "Web dir"));
 		parametersProcessor.addSupportedParameter(parameter);
 
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-help", "Display the usage screen.", false, true));

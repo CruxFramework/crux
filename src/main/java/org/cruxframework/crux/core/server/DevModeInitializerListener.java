@@ -32,6 +32,7 @@ import org.cruxframework.crux.scanner.Scanners.ScannerRegistrations;
  */
 public class DevModeInitializerListener implements ServletContextListener
 {
+	public static final String OUTPUT_CHARSET = "outputCharset";
 	private static final Log logger = LogFactory.getLog(InitializerListener.class);
 
 	/**
@@ -39,7 +40,7 @@ public class DevModeInitializerListener implements ServletContextListener
 	 */
 	public void contextInitialized(ServletContextEvent contextEvent)
     {
-		String charset = contextEvent.getServletContext().getInitParameter("outputCharset");
+		String charset = contextEvent.getServletContext().getInitParameter(OUTPUT_CHARSET);
 		//TODO remover isso aqui... fixar o uso em UTF-8
 		if(charset != null)
 		{
