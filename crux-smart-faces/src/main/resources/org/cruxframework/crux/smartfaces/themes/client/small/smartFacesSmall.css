@@ -418,3 +418,64 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     color:white;
     font-size:12px;
 }
+
+.top-disposal-header-panel-small
+{
+	margin-top:-20px;
+	margin-bottom: -20px;
+	height: 100%;
+	width: 100%;
+	min-height: 40px;
+	max-height: 40px;
+	overflow: hidden;
+}
+
+.top-disposal-menu-panel-small
+{
+	
+}
+
+.top-disposal-footer-panel-small
+{
+	margin-top:-20px;
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	margin-bottom: -20px;
+	z-index: 10;
+}
+
+.top-disposal-content-panel-small
+{
+	position:relative;
+}
+
+.menu-disposal-small
+{
+	top: 0px;
+	left: 0px;
+	z-index: 2;
+	position: absolute;
+	width:100% !important;
+	height:100%: !important;
+}
+
+.top-menu-disposal-menubutton-container
+{
+	width:40px;
+	height:40px;
+	float:left;
+	position:relative;
+}
+
+.top-menu-disposal-menubutton
+{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:40px;
+	height:40px;
+}
+.
+
+
