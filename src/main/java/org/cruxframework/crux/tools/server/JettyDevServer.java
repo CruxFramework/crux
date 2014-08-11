@@ -16,6 +16,7 @@
 package org.cruxframework.crux.tools.server;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Map;
@@ -122,7 +123,22 @@ public class JettyDevServer
 	        }
 	        else if (parameter.getName().equals("-bindAddress"))
 	        {
-	        	bindAddress = parameter.getValue();
+	        	try
+	        	{
+	        		InetAddress bindAddress = InetAddress.getByName(parameter.getValue());
+	        		if (bindAddress.isAnyLocalAddress()) 
+	        		{
+	        			this.bindAddress = InetAddress.getLocalHost().getHostName();
+	        		}
+	        		else 
+	        		{
+	        			this.bindAddress = parameter.getValue();
+	        		}
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		//Use default
+	        	}
 	        }
 	        else if (parameter.getName().equals("-port"))
 	        {
