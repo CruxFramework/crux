@@ -70,7 +70,6 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandlerNoTouchImpl
 					return false;
 				}
 			}, 500);
-//			select();
 		}
 		resetHandlers();
 	}
