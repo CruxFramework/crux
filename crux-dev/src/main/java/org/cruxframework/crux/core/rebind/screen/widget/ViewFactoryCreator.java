@@ -265,17 +265,22 @@ public class ViewFactoryCreator extends AbstractProxyCreator
      */
     protected void generateProxyMethods(SourcePrinter printer)
     {
-    	generateGetRegisteredControllersMethod(printer);
-    	generateCreateDataSourceMethod(printer);
-    	generateCreateWidgetsMethod(printer);
-    	generateRenderMethod(printer);
-    	generateUpdateDimensionsMethods(printer);
-    	generateInitializeLazyDependenciesMethod(printer);
-    	generateGetIocContainerMethod(printer);
-		if (isDataBindEnabled())
-		{
-	    	generateCreateDataObjectMethod(printer);
-		}
+    	
+    	if(printer != null)
+    	{
+	    	generateGetRegisteredControllersMethod(printer);
+	    	generateCreateDataSourceMethod(printer);
+	    	generateCreateWidgetsMethod(printer);
+	    	generateRenderMethod(printer);
+	    	generateUpdateDimensionsMethods(printer);
+	    	generateInitializeLazyDependenciesMethod(printer);
+	    	generateGetIocContainerMethod(printer);
+
+	    	if (isDataBindEnabled())
+	    	{
+	    		generateCreateDataObjectMethod(printer);
+	    	}
+    	}
 
     }
 
