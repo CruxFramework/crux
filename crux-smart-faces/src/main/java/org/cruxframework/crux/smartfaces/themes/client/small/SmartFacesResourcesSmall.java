@@ -20,6 +20,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.DataResource;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -29,4 +30,7 @@ public interface SmartFacesResourcesSmall extends ClientBundle
 {
 	@Source({"org/cruxframework/crux/smartfaces/themes/client/common/smartFacesCommon.css","smartFacesSmall.css"})
 	CssResource css();
+	
+	@Source("org/cruxframework/crux/smartfaces/themes/client/small/svg-icon-menu.svg")
+	DataResource svgIconMenu();
 }

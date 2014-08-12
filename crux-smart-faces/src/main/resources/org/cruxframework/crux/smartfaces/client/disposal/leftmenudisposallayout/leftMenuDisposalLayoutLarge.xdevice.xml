@@ -3,15 +3,11 @@
 
 	<gwt:flowPanel id="mainPanel" height="100%" width="100%" styleName="disposalWrapper">
 		<gwt:simplePanel id="headerPanel" styleName="headerPanel"></gwt:simplePanel>
-		<gwt:flowPanel id="splitPanel">
-			<gwt:flowPanel id="menuLeftPanel" style="float:left;position:relative;">
-				<gwt:flowPanel id="menuPanel"  ></gwt:flowPanel>	
-			</gwt:flowPanel>
-			<gwt:flowPanel id="contentRightPanel" style="float:left;position:relative;">
-				<gwt:flowPanel id="contentPanel" style="float:left;" width="100%" height="100%"></gwt:flowPanel>	
-			</gwt:flowPanel>
+		<gwt:flowPanel id="splitPanel" style="height:100%" styleName="cf">
+			<gwt:flowPanel id="menuPanel"></gwt:flowPanel>	
+			<gwt:flowPanel id="contentPanel"></gwt:flowPanel>	
 		</gwt:flowPanel>
-		<gwt:simplePanel id="footerPanel" styleName="" width="100%"></gwt:simplePanel>
+		<gwt:simplePanel id="footerPanel"></gwt:simplePanel>
 	</gwt:flowPanel>
 
 </x:xdevice>

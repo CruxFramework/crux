@@ -386,9 +386,15 @@
 
 .left-disposal-menu-panel-large
 {
+	width:200px;
 	height: 100%;
 	float:left;
 	position:relative;
+}
+
+.left-disposal-menu-panel-large .facesMenu
+{
+	height:100%;
 }
 
 .left-disposal-footer-panel-large
@@ -403,13 +409,15 @@
 
 .left-disposal-header-panel-large
 {
-	margin-top:-20px;
-	margin-bottom: -20px;
+	overflow:auto;
 	height: auto;
 	width: 100%;
 }
 
 .left-disposal-content-panel-large
 {
+	width:literal("calc(100% - 210px)");
 	padding-left: 10px;
+	height:100%;
+	float:left;
 }

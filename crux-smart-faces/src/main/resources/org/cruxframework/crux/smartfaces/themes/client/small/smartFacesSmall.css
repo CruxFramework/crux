@@ -1,3 +1,5 @@
+@url svgIconMenu svgIconMenu;
+
 BODY
 {
 	background-color: #CAD0D3;
@@ -421,18 +423,21 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 
 .top-disposal-header-panel-small
 {
-	margin-top:-20px;
-	margin-bottom: -20px;
 	height: 100%;
 	width: 100%;
 	min-height: 40px;
 	max-height: 40px;
 	overflow: hidden;
+	position:fixed;
+	top:0;
+	left:0;
+	z-index:4;
+	padding-left:40px;
 }
 
 .top-disposal-menu-panel-small
 {
-	
+	padding-top: 40px; 
 }
 
 .top-disposal-footer-panel-small
@@ -464,8 +469,10 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 {
 	width:40px;
 	height:40px;
-	float:left;
-	position:relative;
+	position:fixed;
+	top:0;
+	left:0;
+	z-index:4;
 }
 
 .top-menu-disposal-menubutton
@@ -475,7 +482,9 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	left:0px;
 	width:40px;
 	height:40px;
+	background:svgIconMenu no-repeat center center rgba(0,0,0,0.3);
+	background-size:80% auto;
 }
-.
+
 
 

@@ -14,7 +14,7 @@ import org.cruxframework.crux.smartfaces.client.disposal.DisposalLayout;
 })
 public interface TopMenuDisposalLayout extends DisposalLayout, DeviceAdaptive
 {
-	
+
 }
 
 
