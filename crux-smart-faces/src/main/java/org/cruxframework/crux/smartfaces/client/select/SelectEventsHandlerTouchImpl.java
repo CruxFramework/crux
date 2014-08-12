@@ -61,6 +61,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 						if (parent instanceof SelectableWidget)
 						{
 							childOfSelectableWidget = true;
+							break;
 						}
 						parent = parent.getParent();
 					}
