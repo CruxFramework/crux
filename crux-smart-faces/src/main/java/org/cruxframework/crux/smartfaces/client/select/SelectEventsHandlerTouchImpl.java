@@ -15,39 +15,58 @@
  */
 package org.cruxframework.crux.smartfaces.client.select;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Touch;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEndHandler;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchMoveHandler;
 import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * SelectEventsHanler Implementation for touch devices
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class SelectEventsHandlerTouchImpl extends SelectEventsHandlerNoTouchImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
+public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
 {
 	private static final int TAP_EVENT_THRESHOLD = 5;
 	private int startX;
 	private int startY;
 	private HandlerRegistration touchMoveHandler;
 	private HandlerRegistration touchEndHandler;
-
-	@Override
+	private boolean childOfSelectableWidget = false;
+	
 	public void handleWidget()
 	{
-		if(!GWT.isProdMode())
-		{
-			super.handleWidget();
-		}
 		selectableWidget.addTouchStartHandler(this);
+		selectableWidget.addAttachHandler(new Handler() 
+		{
+			@Override
+			public void onAttachOrDetach(AttachEvent event) 
+			{
+				childOfSelectableWidget = false;
+				if (event.isAttached())
+				{
+					Widget parent = selectableWidget.getParent();
+					while (parent != null)
+					{
+						if (parent instanceof SelectableWidget)
+						{
+							childOfSelectableWidget = true;
+						}
+						parent = parent.getParent();
+					}
+				}
+			}
+		});
 	}
 
 	@Override
@@ -57,7 +76,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandlerNoTouchImpl
 		{
 			event.preventDefault();
 		}
-		event.stopPropagation();
+		maybeStopPropagation(event);
 		if (isEnabled())
 		{
 			//TODO: check this! Giving some time to onTouchEnd finalize.
@@ -70,6 +89,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandlerNoTouchImpl
 					return false;
 				}
 			}, 500);
+//			select();
 		}
 		resetHandlers();
 	}
@@ -91,7 +111,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandlerNoTouchImpl
 	@Override
 	public void onTouchStart(TouchStartEvent event)
 	{
-		event.stopPropagation();
+		maybeStopPropagation(event);
 		if (preventDefaultTouchEvents)
 		{
 			event.preventDefault();
@@ -101,6 +121,14 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandlerNoTouchImpl
 		startY = touch.getClientY();
 		touchMoveHandler = selectableWidget.addTouchMoveHandler(this);
 		touchEndHandler = selectableWidget.addTouchEndHandler(this);
+	}
+	
+	private void maybeStopPropagation(DomEvent<?> event) 
+	{
+		if (!childOfSelectableWidget)
+		{
+			event.stopPropagation();
+		}
 	}
 
 	private void resetHandlers()
