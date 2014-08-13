@@ -175,12 +175,7 @@ public class Templates
 		if (!hotDeploymentScannerStarted)
 		{
 			hotDeploymentScannerStarted = true;
-			if(Boolean.parseBoolean(ConfigurationFactory.getConfigurations().isSuperDevModeOn()))
-			{
-				HotDeploymentScanner.scanFilesToCodeServer();				
-			} else if(!Environment.isProduction()
-						&&
-					  Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()))
+			if(!Environment.isProduction() && Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()))
 			{
 				HotDeploymentScanner.scanWebDirs();
 			}
