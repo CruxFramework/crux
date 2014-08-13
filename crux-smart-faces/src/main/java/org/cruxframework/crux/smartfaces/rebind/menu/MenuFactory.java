@@ -58,6 +58,7 @@ class MenuContext extends WidgetCreatorContext
 {
 	LinkedList<String> itemStack = new LinkedList<String>();
 	String currentItem;
+	String selectHandler;
 }
 
 /**
@@ -139,17 +140,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 
 			context.currentItem = item;
 			
-			String onSelectEvent = context.readChildProperty("onSelect");
-			if (onSelectEvent != null && onSelectEvent.length() > 0)
-			{
-				out.println(item+".addSelectHandler(new "+SelectHandler.class.getCanonicalName()+"(){");
-				out.println("public void onSelect("+SelectEvent.class.getCanonicalName()+" event){");
-
-				EvtProcessor.printEvtCall(out, onSelectEvent, "onSelect", SelectEvent.class, "event", getWidgetCreator());
-
-				out.println("}");
-				out.println("});");
-			}
+			context.selectHandler = context.readChildProperty("onSelect");
 		}
 		
 		/**
@@ -191,6 +182,19 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		@Override
 		public void postProcessChildren(SourcePrinter out, MenuContext context) throws CruxGeneratorException
 		{
+			String onSelectEvent = context.selectHandler;
+			if (onSelectEvent != null && onSelectEvent.length() > 0)
+			{
+				out.println(context.currentItem+".addSelectHandler(new "+SelectHandler.class.getCanonicalName()+"(){");
+				out.println("public void onSelect("+SelectEvent.class.getCanonicalName()+" event){");
+
+				EvtProcessor.printEvtCall(out, onSelectEvent, "onSelect", SelectEvent.class, "event", getWidgetCreator());
+
+				out.println("}");
+				out.println("});");
+			}
+			
+			
 			String item = context.itemStack.removeFirst();			
 			setItemAttributes(out, context, item);
 		}
