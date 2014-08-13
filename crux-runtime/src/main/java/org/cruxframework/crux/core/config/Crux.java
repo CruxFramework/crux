@@ -113,22 +113,4 @@ public interface Crux
 	@DefaultServerMessage("false")
 	String disableRefreshByDefault();
 	void setDisableRefreshByDefault(String value);
-
-	@DefaultServerMessage("false")
-	String isSuperDevModeOn();
-	
-	@DefaultServerMessage("9876")
-	String superDevModePort();
-	
-	@DefaultServerMessage("localhost")
-	String superDevModeHost();
-	
-	@DefaultServerMessage("")
-	String superDevModeModuleToCompile();
-	
-	@DefaultServerMessage("")
-	String superDevModeBrowserUsed();
-
-	@DefaultServerMessage("en-US")
-	String superDevModeLocale();
 }
