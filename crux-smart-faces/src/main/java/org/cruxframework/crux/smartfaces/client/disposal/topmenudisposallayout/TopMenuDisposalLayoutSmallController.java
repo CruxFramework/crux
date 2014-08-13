@@ -33,6 +33,8 @@ public class TopMenuDisposalLayoutSmallController extends BaseDisposalLayoutCont
 	private final String HEADER_PANEL_STYLE = "top-disposal-header-panel-small";
 	private final String FOOTER_PANEL_STYLE = "top-disposal-footer-panel-small";
 	private final String CONTENT_MENU_STYLE = "top-disposal-content-panel-small";
+	
+	private boolean hasSmallHeader = false;
 
 	@Override
 	protected void initContentPanel()
@@ -131,14 +133,18 @@ public class TopMenuDisposalLayoutSmallController extends BaseDisposalLayoutCont
 	@Override
 	public void addSmallHeaderContent(Widget w)
 	{
-		this.headerPanel.clear();
-		this.headerPanel.add(w);
+		if(w != null)
+		{
+			hasSmallHeader = true;
+			this.headerPanel.clear();
+			this.headerPanel.add(w);
+		}
 	}
 	
 	@Override
 	public void addHeaderContent(Widget header)
 	{
-		if(headerPanel.getElement().getChildCount() == 1)
+		if(!hasSmallHeader)
 		{
 			super.addHeaderContent(header);
 		}
