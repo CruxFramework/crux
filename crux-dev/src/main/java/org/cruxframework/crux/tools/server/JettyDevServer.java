@@ -76,6 +76,8 @@ public class JettyDevServer
 		webContext.setParentLoaderPriority(true);
 		webContext.setContextPath("/");
 		webContext.setClassLoader(Thread.currentThread().getContextClassLoader());
+		webContext.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
+		
 		server.setHandler(webContext);
 		if (addDevelopmentComponents)
 		{
