@@ -130,7 +130,7 @@ public class JettyDevServer
 	        		InetAddress bindAddress = InetAddress.getByName(parameter.getValue());
 	        		if (bindAddress.isAnyLocalAddress()) 
 	        		{
-	        			this.bindAddress = InetAddress.getLocalHost().getHostName();
+	        			this.bindAddress = InetAddress.getLocalHost().getHostAddress();
 	        		}
 	        		else 
 	        		{

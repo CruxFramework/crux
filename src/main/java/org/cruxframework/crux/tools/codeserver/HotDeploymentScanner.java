@@ -13,9 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.declarativeui.hotdeploy;
+package org.cruxframework.crux.tools.codeserver;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -30,9 +31,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.declarativeui.template.Templates;
-import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
-import org.cruxframework.crux.core.rebind.screen.ViewFactory;
+import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.server.rest.spi.HttpUtil;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 
 /**
@@ -46,13 +46,30 @@ public class HotDeploymentScanner
 	private final ScheduledExecutorService threadPool;
 	private final Map<String, Long> lastModified = new HashMap<String, Long>();
 	private final Set<File> files = new HashSet<File>();
-	
+
+	private final String hostName;
+	private final int port;
+	private final String moduleToCompile;
+	private final String userAgent;
+	private final String locale;
+	private boolean compilationFired = false; 
+
 	/**
 	 * 
+	 * @param hostName
+	 * @param port
+	 * @param moduleToCompile
+	 * @param userAgent
+	 * @param locale
 	 * @param poolSize
 	 */
-	private HotDeploymentScanner(int poolSize)
+	private HotDeploymentScanner(String hostName, int port, String moduleToCompile, String userAgent, String locale, int poolSize)
 	{
+		this.hostName = hostName;
+		this.port = port;
+		this.moduleToCompile = moduleToCompile;
+		this.userAgent = userAgent;
+		this.locale = locale;
 		threadPool = Executors.newScheduledThreadPool(poolSize);
 	}
 	
@@ -87,6 +104,7 @@ public class HotDeploymentScanner
 							logger.info("Error scanning dir: ["+file.getName()+"].", e);
 						}
 					}
+					compilationFired = false;
 				}
 			}, 0, 5, TimeUnit.SECONDS);
 		}
@@ -95,100 +113,93 @@ public class HotDeploymentScanner
 	/**
 	 * 
 	 * @param file
+	 * @throws IOException 
 	 */
-	protected void scan(File file)
+	protected void scan(File file) throws IOException
 	{
-		if (!Templates.isStarting())
+		if (file.isDirectory())
 		{
-			if (file.isDirectory())
+			for (File child : file.listFiles())
 			{
-				for (File child : file.listFiles())
+				scan(child);
+			}
+		}
+		else
+		{
+			String fileName = file.getCanonicalPath();
+			boolean fileChanged = checkFile(file, fileName);
+
+			if(fileChanged)
+			{
+				try 
 				{
-					scan(child);
+					recompileCodeServer();
+				} 
+				catch (IOException e) 
+				{
+					e.printStackTrace();
 				}
 			}
-			else
-			{
-				String fileName = file.getName();
-				if (fileName.endsWith("template.xml"))
-				{
-					checkTemplateFile(file, fileName);
-				}
-				else if (fileName.endsWith("view.xml") || fileName.endsWith("crux.xml"))
-				{
-					checkViewFile(file, fileName);
-				}
-			}
+		}
+	}
+	
+	/**
+	 * @param file
+	 * @param fileName
+	 */
+	private boolean checkFile(File file, String fileName) 
+	{
+		long modified = file.lastModified();
+	    Long viewLastModified = lastModified.get(fileName);
+	    if (viewLastModified == null)
+	    {
+	    	lastModified.put(fileName, modified);
+	    }
+	    else if (viewLastModified < modified)
+	    {
+	    	lastModified.put(fileName, modified);
+	    	logger.info("File modified: ["+fileName+"].");
+	    	return true;
+	    }	
+	    return false;
+	}
+
+	/**
+	 * @throws IOException
+	 */
+	private void recompileCodeServer() throws IOException 
+	{
+		if (!compilationFired)
+		{
+			compilationFired = true;
+			HttpUtil.wGet(
+					"http://" + hostName + ":" + port + "/recompile/" + moduleToCompile, 
+					StringUtils.isEmpty(userAgent) ? "" : ("user.agent=" + userAgent)+"&_callback=x", 
+					"GET", 
+					locale);
 		}
 	}
 
 	/**
 	 * 
-	 * @param file
-	 * @param fileName
+	 * @param hostName
+	 * @param port
+	 * @param moduleToCompile
+	 * @param userAgent
+	 * @param locale
 	 */
-	protected boolean checkViewFile(File file, String fileName)
-    {
-	    long modified = file.lastModified();
-	    Long viewLastModified = lastModified.get("view_"+fileName);
-	    if (viewLastModified == null)
-	    {
-	    	lastModified.put("view_"+fileName, modified);
-	    }
-	    else if (viewLastModified < modified)
-	    {
-	    	lastModified.put("view_"+fileName, modified);
-	    	logger.info("View file modified: ["+fileName+"].");
-	    	ScreenFactory.getInstance().clearScreenCache();
-	    	ViewFactory.getInstance().clearViewCache();
-	    	return true;
-	    }
-	    return false;
-    }
-
-	/**
-	 * 
-	 * @param file
-	 * @param fileName
-	 */
-	protected boolean checkTemplateFile(File file, String fileName)
-    {
-	    long modified = file.lastModified();
-	    Long templateLastModified = lastModified.get("template_"+fileName);
-	    if (templateLastModified == null)
-	    {
-	    	lastModified.put("template_"+fileName, modified);
-	    }
-	    else if (templateLastModified < modified)
-	    {
-	    	lastModified.put("template_"+fileName, modified);
-	    	logger.info("Template file modified: ["+fileName+"].");
-	    	Templates.restart();
-	    	ScreenFactory.getInstance().clearScreenCache();
-	    	return true;
-	    }
-	    return false;
-    }
-	
-	/**
-	 * 
-	 */
-	public static void scanWebDirs()
+	public static void scanProjectDirs(String hostName, int port, String moduleToCompile, String userAgent, String locale)
 	{
-		List<URL> srcDir = getNonJarFiles();
+		List<URL> srcDir = getSearchableFiles();
 		
-		HotDeploymentScanner scanner = new HotDeploymentScanner(srcDir.size());
+		HotDeploymentScanner scanner = new HotDeploymentScanner(hostName, port, moduleToCompile, userAgent, locale, srcDir.size());
 		
 		for (URL url : srcDir)
 		{
 			try
 			{
 				final File file = new File(url.toURI());
-				
-				if (isCruxXMLFile(file))
-				{
-					scanner.addFile(file);
-				}
+				scanner.addFile(file);
 			}
 			catch (URISyntaxException e)
 			{
@@ -198,16 +209,7 @@ public class HotDeploymentScanner
 		scanner.startScanner();
 	}
 
-	private static boolean isCruxXMLFile(final File file) 
-	{
-		return file.isDirectory() || 
-				file.getName().endsWith("template.xml") || 
-				file.getName().endsWith("view.xml") || 
-				file.getName().endsWith("crux.xml") || 
-				file.getName().endsWith("xdevice.xml");
-	}
-
-	private static List<URL> getNonJarFiles() 
+	private static List<URL> getSearchableFiles() 
 	{
 		URL[] dirs = ClasspathUrlFinder.findClassPaths();
 		List<URL> srcDir = new ArrayList<URL>(0);
@@ -215,7 +217,7 @@ public class HotDeploymentScanner
 		/* avoid scanning jar files */
 		for (URL url : dirs)
 		{
-			if (!url.toString().endsWith(".jar"))
+			if (!url.toString().endsWith(".jar") && !url.toString().endsWith(".java"))
 			{
 				srcDir.add(url);
 			}

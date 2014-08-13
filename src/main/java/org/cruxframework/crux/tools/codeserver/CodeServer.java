@@ -15,15 +15,15 @@
  */
 package org.cruxframework.crux.tools.codeserver;
 
-import java.io.File;
-import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,19 +33,23 @@ import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializ
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
-import org.cruxframework.crux.core.utils.FileUtils;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.tools.codeserver.CodeServerRecompileListener.CompilationCallback;
 import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
 import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.websocket.WebSocket;
+import org.eclipse.jetty.websocket.WebSocket.Connection;
+import org.eclipse.jetty.websocket.WebSocketHandler;
+import org.json.JSONObject;
 
-import com.google.gwt.dev.codeserver.CompileDir;
 import com.google.gwt.dev.codeserver.Options;
-import com.google.gwt.dev.codeserver.RecompileListener;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -61,8 +65,13 @@ public class CodeServer
 	private String workDir;
 	private String bindAddress = "localhost";
 	private int port = getDefaultPort();
-
+	private int notificationServerPort = getDefaultNotificationPort();
 	private String webDir;
+	private boolean startHotDeploymentScanner;
+	private String userAgent;
+	private String locale;
+	private CodeServerRecompileListener recompileListener;
+	private Connection compilerNotificationConnection;
 
 	public String getModuleName()
     {
@@ -98,6 +107,11 @@ public class CodeServer
 	{
 		return 9876;
 	}
+	
+	protected int getDefaultNotificationPort()
+	{
+		return 9877;
+	}
 
 	protected void execute() throws Exception
     {
@@ -124,9 +138,110 @@ public class CodeServer
 			logger.info("Starting code server for module ["+moduleName+"]");
 			CruxBridge.getInstance().registerLastPageRequested(screenIDs.iterator().next());
 			String[] args = getServerParameters();
+			initializeRecompileListener();
 			runGWTCodeServer(args);
 		}
     }
+
+	protected void initializeRecompileListener() 
+	{
+		recompileListener = new CodeServerRecompileListener(webDir);
+		if (startHotDeploymentScanner)
+		{
+			HotDeploymentScanner.scanProjectDirs(bindAddress, port, moduleName, userAgent, locale);
+			runCompileNotificationServer();
+			registerCompileNotificationCallback();
+		}
+	}
+
+	protected void registerCompileNotificationCallback() 
+	{
+		recompileListener.setCompilationCallback(new CompilationCallback() 
+		{
+			@Override
+			public void onCompilationStart(String moduleName) 
+			{
+				if (compilerNotificationConnection != null)
+				{
+					try 
+					{
+						JSONObject data = new JSONObject();
+						data.put("op", "START");
+						data.put("module", moduleName);
+
+						compilerNotificationConnection.sendMessage(data.toString());
+					}
+					catch (Exception e) 
+					{
+						logger.error("Error notifying client about module compilation", e);
+					}
+				}
+			}
+			
+			@Override
+			public void onCompilationEnd(String moduleName, boolean success) 
+			{
+				if (compilerNotificationConnection != null)
+				{
+					try 
+					{
+						JSONObject data = new JSONObject();
+						data.put("op", "END");
+						data.put("module", moduleName);
+						data.put("status", success);
+
+						compilerNotificationConnection.sendMessage(data.toString());
+					}
+					catch (Exception e) 
+					{
+						logger.error("Error notifying client about module compilation", e);
+					}
+				}
+			}
+		});
+	}
+
+	protected void runCompileNotificationServer() 
+	{
+		try 
+		{
+			SelectChannelConnector connector = new SelectChannelConnector();
+			connector.setHost(bindAddress);
+			connector.setPort(notificationServerPort);
+			connector.setReuseAddress(false);
+			connector.setSoLingerTime(0);
+	
+			Server server = new Server();
+			server.addConnector(connector);
+			server.setHandler(new WebSocketHandler() 
+			{
+				@Override
+				public WebSocket doWebSocketConnect(HttpServletRequest arg0, String arg1) 
+				{
+					return new WebSocket()  
+					{
+						@Override
+						public void onOpen(Connection connection) 
+						{
+							compilerNotificationConnection = connection;
+						}
+						
+						@Override
+						public void onClose(int closeCode, String message) 
+						{
+							compilerNotificationConnection = null;							
+						}
+					};
+				}
+			});
+
+			server.start();
+		} 
+		catch (Exception e) 
+		{
+			logger.error("Error starting the compilation notifier service.", e);
+		}
+	}
 
 	protected void runGWTCodeServer(String[] args) throws Exception 
 	{
@@ -135,37 +250,7 @@ public class CodeServer
 		{
 			System.exit(1);
 		}
-		if (webDir != null && webDir.length() > 0)
-		{
-			options.setRecompileListener(new RecompileListener() 
-			{
-				private Map<String, CompileDir> compileDir = new HashMap<String, CompileDir>();
-
-				@Override
-				public void startedCompile(String moduleName, int compileId, CompileDir compileDir) 
-				{
-					this.compileDir.put(moduleName, compileDir);
-				}
-				
-				@Override
-				public void finishedCompile(String moduleName, int compileId, boolean success) 
-				{
-					if (success)
-					{
-						CompileDir dir = compileDir.get(moduleName);
-						File destDir = new File(webDir);
-						try 
-						{
-							FileUtils.copyFilesFromDir(dir.getWarDir(), destDir);
-						} 
-						catch (IOException e) 
-						{
-							logger.error("Error updating webDir", e);
-						}
-					}
-				}
-			});
-		}
+		options.setRecompileListener(recompileListener);
 		try 
 		{
 			com.google.gwt.dev.codeserver.CodeServer.main(options);
@@ -224,17 +309,48 @@ public class CodeServer
 	        {
 	        	this.noPrecompile = true;
 	        }
+	        else if (parameter.getName().equals("-startHotDeploymentScanner"))
+	        {
+	        	this.startHotDeploymentScanner = true;
+	        }
+	        else if (parameter.getName().equals("-userAgent"))
+	        {
+	        	userAgent = parameter.getValue();
+	        }
+	        else if (parameter.getName().equals("-locale"))
+	        {
+	        	locale = parameter.getValue();
+	        }
 	        else if (parameter.getName().equals("-sourceDir"))
 	        {
 	        	sourceDir = parameter.getValue();
 	        }
 	        else if (parameter.getName().equals("-bindAddress"))
 	        {
-	        	bindAddress = parameter.getValue();
+	        	try
+	        	{
+	        		InetAddress bindAddress = InetAddress.getByName(parameter.getValue());
+	        		if (bindAddress.isAnyLocalAddress()) 
+	        		{
+	        			this.bindAddress = InetAddress.getLocalHost().getHostAddress();
+	        		}
+	        		else 
+	        		{
+	        			this.bindAddress = parameter.getValue();
+	        		}
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		//Use default
+	        	}
 	        }
 	        else if (parameter.getName().equals("-port"))
 	        {
 	        	port =Integer.parseInt(parameter.getValue());
+	        }
+	        else if (parameter.getName().equals("-notificationServerPort"))
+	        {
+	        	notificationServerPort =Integer.parseInt(parameter.getValue());
 	        }
 	        else if (parameter.getName().equals("-workDir"))
 	        {
@@ -265,8 +381,22 @@ public class CodeServer
 		parametersProcessor.addSupportedParameter(parameter);
 
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-noprecompile", "If informed, code server will not pre compile the source.", false, true));
+
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-startHotDeploymentScanner", "If informed, a hotdeployment scanner will be started to automatically recompile the module when changes are made on the project.", false, true));
 		
+		parameter = new ConsoleParameter("-userAgent", "The userAgent used by hotdeployment scanner to recompile the project.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("agent", "user agent"));
+		parametersProcessor.addSupportedParameter(parameter);
+		
+		parameter = new ConsoleParameter("-locale", "The locale used by hotdeployment scanner to recompile the project.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("locale", "locale"));
+		parametersProcessor.addSupportedParameter(parameter);
+
 		parameter = new ConsoleParameter("-port", "The port where the code server will run.", false, true);
+		parameter.addParameterOption(new ConsoleParameterOption("port", "Port"));
+		parametersProcessor.addSupportedParameter(parameter);
+
+		parameter = new ConsoleParameter("-notificationServerPort", "The port where the compile notification server will run.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("port", "Port"));
 		parametersProcessor.addSupportedParameter(parameter);
 
