@@ -117,13 +117,19 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 				@Override
 				public void onSelect(SelectEvent event) 
 				{
-					MenuItem.this.childrenContainer.removeChild(closeButton.getElement());
+					if(MenuItem.this.childrenContainer != null)
+					{
+						MenuItem.this.childrenContainer.removeChild(closeButton.getElement());
+					}
 					close();	
 				}
 			});
 			
-			menu.adopt(this, closeButton); 
-			this.childrenContainer.insertFirst(closeButton.getElement());			
+			menu.adopt(this, closeButton);
+			if(this.childrenContainer != null)
+			{
+				this.childrenContainer.insertFirst(closeButton.getElement());			
+			}
 		}
 
 		opened = true;
