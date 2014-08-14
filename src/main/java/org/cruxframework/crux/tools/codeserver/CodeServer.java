@@ -36,6 +36,7 @@ import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryI
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
 import org.cruxframework.crux.tools.codeserver.CodeServerRecompileListener.CompilationCallback;
+import org.cruxframework.crux.tools.codeserver.client.CodeServerNotifier;
 import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
 import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
@@ -110,7 +111,7 @@ public class CodeServer
 	
 	protected int getDefaultNotificationPort()
 	{
-		return 9877;
+		return CodeServerNotifier.DEFAULT_COMPILER_NOTIFIER_PORT;
 	}
 
 	protected void execute() throws Exception
