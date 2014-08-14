@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class CodeServerNotifier implements EntryPoint 
 {
-	private static final int DEFAULT_COMPILER_NOTIFIER_PORT = 9877;
+	public static final int DEFAULT_COMPILER_NOTIFIER_PORT = 9877;
 	private static Logger logger = Logger.getLogger(CodeServerNotifier.class.getName());
 
 	private DialogBox dialogBox;
@@ -59,6 +59,12 @@ public class CodeServerNotifier implements EntryPoint
 		//TODO take the URL from user, as a parameter... if not provided, use the expression below as default
 		String url = "ws://" + Window.Location.getHostName() + ":" + DEFAULT_COMPILER_NOTIFIER_PORT;
 		WebSocket socket = WebSocket.createIfSupported(url);
+		
+		if(socket == null)
+		{
+			logger.info("Browser do not support Websocket.");
+			return;
+		}
 		
 		socket.addCloseHandler(new SocketCloseHandler() 
 		{
