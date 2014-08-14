@@ -32,6 +32,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.utils.StringUtils;
+import org.cruxframework.crux.core.declarativeui.template.Templates;
+import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.server.rest.spi.HttpUtil;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 
@@ -133,13 +135,27 @@ public class HotDeploymentScanner
 			{
 				try 
 				{
+					maybeClearViewFilesCache(fileName);
 					recompileCodeServer();
 				} 
 				catch (IOException e) 
 				{
-					e.printStackTrace();
+					logger.error("Error recompiling module.", e);
 				}
 			}
+		}
+	}
+
+	private void maybeClearViewFilesCache(String fileName) 
+	{
+		if (fileName.endsWith("template.xml"))
+		{
+			Templates.restart();
+			ScreenFactory.getInstance().clearScreenCache();
+		}
+		else if (fileName.endsWith("view.xml") || fileName.endsWith("crux.xml"))
+		{
+			ScreenFactory.getInstance().clearScreenCache();
 		}
 	}
 	
