@@ -867,7 +867,7 @@ public class JClassUtils
 	public static List<JMethod> getSetterMethods(JClassType objectType)
     {
 		List<JMethod> result = new ArrayList<JMethod>();
-	    JMethod[] methods = objectType.getOverridableMethods();
+	    JMethod[] methods = objectType.getInheritableMethods();
 	    
 	    for (JMethod jMethod : methods)
         {
@@ -883,7 +883,7 @@ public class JClassUtils
 	public static List<JMethod> getGetterMethods(JClassType objectType)
     {
 		List<JMethod> result = new ArrayList<JMethod>();
-	    JMethod[] methods = objectType.getOverridableMethods();
+	    JMethod[] methods = objectType.getInheritableMethods();
 	    
 	    for (JMethod jMethod : methods)
         {
