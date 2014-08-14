@@ -15,8 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.menu;
 
-import org.cruxframework.crux.smartfaces.client.menu.Menu.LargeType;
-import org.cruxframework.crux.smartfaces.client.menu.Menu.SmallType;
+import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
+import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 
 /**
  * @author Thiago da Rosa de Bustamante

@@ -43,9 +43,9 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDec
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
-import org.cruxframework.crux.smartfaces.client.menu.Menu.LargeType;
-import org.cruxframework.crux.smartfaces.client.menu.Menu.SmallType;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
+import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
+import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -119,7 +119,8 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		@TagAttributeDeclaration(value="open", type=Boolean.class),
 		@TagAttributeDeclaration(value="style"),
 		@TagAttributeDeclaration(value="disabled", type=Boolean.class, defaultValue = "false"),
-		@TagAttributeDeclaration(value="styleName", supportsResources=true)
+		@TagAttributeDeclaration(value="styleName", supportsResources=true),
+		@TagAttributeDeclaration(value="id", description="The component id.")
 	})
 	@TagEventsDeclaration({
 		@TagEventDeclaration("onSelect")
@@ -154,6 +155,12 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			if(context.readBooleanChildProperty("open", false))
 			{
 				out.println(item + ".open();");					
+			}
+			
+			String id = context.readChildProperty("id");
+			if(!StringUtils.isEmpty(id))
+			{
+				out.println(item + ".setId("+ EscapeUtils.quote(id) +");");					
 			}
 			
 			if(context.readBooleanChildProperty("disabled", false))

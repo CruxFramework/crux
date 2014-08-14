@@ -17,6 +17,8 @@ package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.smartfaces.client.button.Button;
+import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
+import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
@@ -36,90 +38,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Menu extends Composite implements HasAnimation, HasEnabled 
 {
-	private static final String SPACE = " ";
-	private static final String CLEARFIX = "cf";
-	
-	public static enum LargeType
-	{
-		VERTICAL_TREE("VerticalTree", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_TREE + SPACE + CLEARFIX),
-//		VERTICAL_SLIDE("VerticalSlider", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_SLIDE + SPACE + CLEARFIX),
-		VERTICAL_ACCORDION("VerticalAccordion", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_ACCORDION + SPACE + CLEARFIX),
-		VERTICAL_DROPDOWN("VerticalDropdown", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_DROPDOWN + SPACE + CLEARFIX),
-		HORIZONTAL_ACCORDION("HorizontalAccordion", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_ACCORDION + SPACE + CLEARFIX),
-		HORIZONTAL_DROPDOWN("HorizontalDropdown", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_DROPDOWN + SPACE + CLEARFIX);
-		
-		String friendlyName;
-		String styleName;
-		LargeType(String friendlyName, String styleName)
-		{
-			this.friendlyName = friendlyName;
-			this.styleName = styleName;	
-		}
-		
-		@Override
-		public String toString() 
-		{
-			return friendlyName;
-		}
-		
-		public static LargeType getByName(String friendlyName)
-		{
-			for(LargeType type : LargeType.values())
-			{
-				if(type.friendlyName != null && type.friendlyName.equals(friendlyName))
-				{
-					return type;
-				}
-			}
-			return null;
-		}
-		
-		public boolean isTree()
-		{
-			return this.equals(LargeType.VERTICAL_TREE);	
-		}
-	}
-	
-	public static enum SmallType
-	{
-		VERTICAL_TREE("VerticalTree", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_TREE),
-//		VERTICAL_SLIDE("VerticalSlider", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_SLIDE),
-		VERTICAL_ACCORDION("VerticalAccordion", STYLE_FACES_VERTICAL + SPACE + STYLE_FACES_ACCORDION),
-		HORIZONTAL_ACCORDION("HorizontalAccordion", STYLE_FACES_HORIZONTAL + SPACE + STYLE_FACES_ACCORDION);
-		
-		String friendlyName;
-		String styleName;
-		SmallType(String friendlyName, String styleName)
-		{
-			this.friendlyName = friendlyName;
-			this.styleName = styleName;
-		}
-		
-		@Override
-		public String toString() 
-		{
-			return friendlyName;
-		}
-		
-		public static SmallType getByName(String friendlyName)
-		{
-			for(SmallType type : SmallType.values())
-			{
-				if(type.friendlyName != null && type.friendlyName.equals(friendlyName))
-				{
-					return type;
-				}
-			}
-			return null;
-		}
-		
-		public boolean isTree()
-		{
-			return this.equals(SmallType.VERTICAL_TREE);	
-		}
-	}
-	
 	public    static final String STYLE_FACES_MENU = "facesMenu";
+	protected static final String SPACE = " ";
+	protected static final String CLEARFIX = "cf";
 	protected static final String STYLE_FACES_SLIDE = "facesMenu-slide";
 	protected static final String STYLE_FACES_DROPDOWN = "facesMenu-dropdown";
 	protected static final String STYLE_FACES_TREE = "facesMenu-tree";
@@ -132,7 +53,8 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	protected static final String STYLE_FACES_EMPTY = "facesMenu-empty";
 	protected static final String STYLE_FACES_LI = "facesMenu-li";
 	protected static final String STYLE_FACES_UL = "facesMenu-ul";
-	protected static final String STYLE_AUX_DIV = "facesMenu-openCloseTriggerHelper";
+	protected static final String STYLE_AUX_OPEN_CLOSE_TRIGGER_HELPER = "facesMenu-openCloseTriggerHelper";
+	protected static final String STYLE_AUX_CLOSE_TRIGGER_SLIDER_HELPER = "facesMenu-closeTriggerSliderHelper";
 	
 	private boolean enabled = true;
 	private MenuItem root;
@@ -140,6 +62,21 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	protected SmallType currentSmallType = null;
 	protected LargeType currentLargeType = null;
 	protected MenuRenderer menuRenderer = GWT.create(MenuRenderer.class);
+	
+	
+	protected boolean isSlider()
+	{
+		return (currentSmallType != null && currentSmallType.isSlider())
+				||
+				(currentLargeType != null && currentLargeType.isSlider());
+	}
+	
+	protected boolean isTree()
+	{
+		return (currentSmallType != null && currentSmallType.isTree())
+				||
+				(currentLargeType != null && currentLargeType.isTree());
+	}
 	
 	public Menu(LargeType largeType, SmallType smallType)
 	{
