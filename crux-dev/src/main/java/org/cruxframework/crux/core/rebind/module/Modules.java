@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.classpath.URLResourceHandler;
@@ -333,6 +334,7 @@ public class Modules
 			module.setPublicPaths(getModulePublicPaths(element));
 			module.setRootPath(getModuleRootPath(moduleFullName));
 			module.setInherits(getModuleInherits(element));
+			module.setUserAgent(getModuleUserAgent(element));
 			module.setDescriptorURL(moduleDescriptor);
 			
 			URL location = module.getDescriptorURL();
@@ -343,6 +345,24 @@ public class Modules
 			moduleAliases.put(moduleFullName, module.getName());
 		}
 		return module;
+	}
+
+	private String getModuleUserAgent(Element element) 
+	{
+		NodeList setPropertyTags = element.getElementsByTagName("set-property");
+		if (setPropertyTags != null)
+		{
+			for (int i=0; i<setPropertyTags.getLength(); i++)
+			{
+				Element setProperty = (Element)setPropertyTags.item(i);
+				String name = setProperty.getAttribute("name");
+				if(!StringUtils.isEmpty(name) && "user.agent".equals(name))
+				{
+					return setProperty.getAttribute("value");	
+				}
+			}
+		}
+		return null;
 	}
 
 	void setInitialized()

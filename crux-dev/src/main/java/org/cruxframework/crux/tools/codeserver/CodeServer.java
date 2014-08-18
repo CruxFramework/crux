@@ -25,9 +25,11 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
+import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.CruxBridge;
@@ -258,7 +260,7 @@ public class CodeServer
 		} 
 		catch (Throwable t) 
 		{
-			logger.error("Error running code server", t);;
+			logger.error("Error running code server", t);
 		}
 	}
 
@@ -295,8 +297,42 @@ public class CodeServer
 			String moduleFullName = Modules.getInstance().getModule(moduleName).getFullName();
 			args.add(moduleFullName);
 		}
+		if(StringUtils.isEmpty(userAgent))
+		{
+			String foundUserAgent = findUserAgentInModules(moduleName);
+			
+			if(foundUserAgent == null)
+			{
+				logger.error("Please inform an user agent property in the "+moduleName+" (.gwt.xml) config file.");
+				System.exit(1);
+			}
+			
+			userAgent = foundUserAgent;
+		}
+		
 	    return args.toArray(new String[args.size()]);
     }
+
+	private String findUserAgentInModules(String currentModuleName) 
+	{
+		Module module = Modules.getInstance().getModule(currentModuleName);
+		
+		if(module.getUserAgent() != null)
+		{
+			return module.getUserAgent();
+		}
+		
+		for(String inherits : module.getInherits())
+		{
+			String foundUserAgent = findUserAgentInModules(inherits);
+			if(StringUtils.isEmpty(foundUserAgent))
+			{
+				return foundUserAgent;
+			}
+		}
+		
+		return null;
+	}
 
 	protected void processParameters(Collection<ConsoleParameter> parameters)
     {
