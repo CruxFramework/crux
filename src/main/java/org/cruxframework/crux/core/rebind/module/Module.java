@@ -29,6 +29,7 @@ public class Module
 	private String[] sources;
 	private String[] publicPaths;
 	private Set<String> inherits;
+	private String userAgent;
 	private URL descriptorURL;
 	private URL location;
 	private String rootPath;
@@ -96,5 +97,13 @@ public class Module
 	public void setRootPath(String rootPath)
 	{
 		this.rootPath = rootPath;
+	}
+	public String getUserAgent() 
+	{
+		return userAgent;
+	}
+	public void setUserAgent(String userAgent) 
+	{
+		this.userAgent = userAgent;
 	}
 }
