@@ -264,6 +264,8 @@ body
 	width: 6px;
 	height: 6px;
 	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
 	border-right: 2px solid #444;
 	border-bottom: 2px solid #444;
 }
@@ -278,6 +280,8 @@ body
 	width: 6px;
 	height: 6px;
 	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
 	border-right: 2px solid #bbb;
 	border-top: 2px solid #bbb;
 }
@@ -541,6 +545,8 @@ body
 .facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .faces-SelectablePanel > .faces-Label
 {
 	-webkit-transform:rotate(-90deg);
+	-moz-transform:rotate(-90deg);
+	transform:rotate(-90deg);
 	width:199px;
 	margin-left:-81px;
 	margin-top:80px;
@@ -707,6 +713,7 @@ body
 .facesMenu.facesMenu-slide .facesMenu-li.facesMenu-open > .facesMenu-ul
 {
 	-webkit-transform:translateX(0px);
+	-moz-transform:translateX(0px);
 	transform:translateX(0px);
     box-shadow:-1px 0 0 rgba(0,0,0,0.2);   
 }
@@ -720,6 +727,8 @@ body
 	width: 6px;
 	height: 6px;
 	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
 	border-right: 2px solid #808080;
 	border-top: 2px solid #808080;
 	z-index:1;
@@ -751,6 +760,8 @@ body
 	width: 6px;
 	height: 6px;
 	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
 	border-left: 2px solid #808080;
 	border-bottom: 2px solid #808080;
 	z-index:1;
