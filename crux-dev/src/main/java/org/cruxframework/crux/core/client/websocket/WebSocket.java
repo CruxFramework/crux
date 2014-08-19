@@ -37,6 +37,9 @@ public class WebSocket
 	private FastList<SocketCloseHandler> closeHandlers = new FastList<SocketCloseHandler>();
 	private FastList<SocketErrorHandler> errorHandlers = new FastList<SocketErrorHandler>();
 	private final WebSocketJS socketJS;
+	private String url;
+	private String protocol;
+	private JsArrayString protocols;
 
 	protected WebSocket(WebSocketJS socketJS)
 	{
@@ -225,6 +228,7 @@ public class WebSocket
 		{
 			WebSocketJS webSocketJS = WebSocketJS.createSocket(url);
 			WebSocket socket = new WebSocket(webSocketJS);
+			socket.url = url;
 			initializeSocketHandlers(socket, webSocketJS);
 			return socket;
 		}
@@ -237,6 +241,8 @@ public class WebSocket
 		{
 			WebSocketJS webSocketJS = WebSocketJS.createSocket(url, protocol);
 			WebSocket socket = new WebSocket(webSocketJS);
+			socket.url = url;
+			socket.protocol = protocol;
 			initializeSocketHandlers(socket, webSocketJS);
 			return socket;
 		}
@@ -249,6 +255,8 @@ public class WebSocket
 		{
 			WebSocketJS webSocketJS = WebSocketJS.createSocket(url, protocols);
 			WebSocket socket = new WebSocket(webSocketJS);
+			socket.url = url;
+			socket.protocols = protocols;
 			initializeSocketHandlers(socket, webSocketJS);
 			return socket;
 		}
@@ -269,4 +277,54 @@ public class WebSocket
 			socket.@org.cruxframework.crux.core.client.websocket.WebSocket::fireCloseEvent(ZSLjava/lang/String;)(event.wasClean, event.code, event.reason);
 		};
 	}-*/;
+	
+	public WebSocket reconnect() 
+	{
+		WebSocket clonedWebSocket = null;
+		if(this.protocols != null)
+		{
+			clonedWebSocket = createIfSupported(url, protocols);	
+		}
+		else if(this.protocol != null)
+		{
+			clonedWebSocket = createIfSupported(url, protocol);
+		} else
+		{
+			clonedWebSocket = createIfSupported(url);
+		}
+		
+		if(clonedWebSocket != null)
+		{
+			if(messageHandlers != null)
+			{
+				for(int i=0; i<messageHandlers.size();i++)
+				{
+					clonedWebSocket.addMessageHandler(messageHandlers.get(i));
+				}
+			}
+			if(openHandlers != null)
+			{
+				for(int i=0; i<openHandlers.size();i++)
+				{
+					clonedWebSocket.addOpenHandler(openHandlers.get(i));
+				}
+			}
+			if(closeHandlers != null)
+			{
+				for(int i=0; i<closeHandlers.size();i++)
+				{
+					clonedWebSocket.addCloseHandler(closeHandlers.get(i));
+				}
+			}
+			if(errorHandlers != null)
+			{
+				for(int i=0; i<errorHandlers.size();i++)
+				{
+					clonedWebSocket.addErrorHandler(errorHandlers.get(i));
+				}
+			}
+		}
+		
+		return clonedWebSocket;
+	}
 }
