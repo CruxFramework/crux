@@ -57,8 +57,8 @@ public class CodeServerNotifier implements EntryPoint
 		label = new Label();
 		dialogBox.add(label);
 		//TODO take the URL from user, as a parameter... if not provided, use the expression below as default
-		String url = "ws://" + Window.Location.getHostName() + ":" + DEFAULT_COMPILER_NOTIFIER_PORT;
-		WebSocket socket = WebSocket.createIfSupported(url);
+		final String url = "ws://" + Window.Location.getHostName() + ":" + DEFAULT_COMPILER_NOTIFIER_PORT;
+		final WebSocket socket = WebSocket.createIfSupported(url);
 		
 		if(socket == null)
 		{
@@ -71,8 +71,8 @@ public class CodeServerNotifier implements EntryPoint
 			@Override
 			public void onClose(SocketCloseEvent event) 
 			{
-				String message = "Compilation Notifier Socket was closed. You will not be notified about compilations on server until you reload your page";
-				Crux.getErrorHandler().handleError(message);
+				logger.info("Compilation Notifier Socket was closed. Trying to reconnect...");
+				socket.reconnect();
 			}
 		});
 		

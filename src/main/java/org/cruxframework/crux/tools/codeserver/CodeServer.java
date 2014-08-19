@@ -45,6 +45,7 @@ import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
+import org.cruxframework.crux.tools.server.JettyDevServer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.websocket.WebSocket;
@@ -71,6 +72,8 @@ public class CodeServer
 	private int notificationServerPort = getDefaultNotificationPort();
 	private String webDir;
 	private boolean startHotDeploymentScanner;
+	@SuppressWarnings("unused")
+	private boolean startJetty = false;
 	private String userAgent;
 	private String locale;
 	private CodeServerRecompileListener recompileListener;
@@ -317,6 +320,11 @@ public class CodeServer
 	{
 		Module module = Modules.getInstance().getModule(currentModuleName);
 		
+		if(module == null)
+		{
+			return null;
+		}
+		
 		if(module.getUserAgent() != null)
 		{
 			return module.getUserAgent();
@@ -349,6 +357,10 @@ public class CodeServer
 	        else if (parameter.getName().equals("-startHotDeploymentScanner"))
 	        {
 	        	this.startHotDeploymentScanner = true;
+	        }
+	        else if (parameter.getName().equals("-startJetty"))
+	        {
+	        	this.startJetty = true;
 	        }
 	        else if (parameter.getName().equals("-userAgent"))
 	        {
@@ -421,6 +433,8 @@ public class CodeServer
 
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-startHotDeploymentScanner", "If informed, a hotdeployment scanner will be started to automatically recompile the module when changes are made on the project.", false, true));
 		
+		parametersProcessor.addSupportedParameter(new ConsoleParameter("-startJetty", "If informed, starts the default application server (Jetty).", false, true));
+		
 		parameter = new ConsoleParameter("-userAgent", "The userAgent used by hotdeployment scanner to recompile the project.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("agent", "user agent"));
 		parametersProcessor.addSupportedParameter(parameter);
@@ -466,6 +480,11 @@ public class CodeServer
 			{
 				codeServer.processParameters(parameters.values());
 				codeServer.execute();
+				
+				if(parameters.containsKey("-startJetty"))
+				{
+					JettyDevServer.main(args);
+				}
 			}
 		}
 		catch (ConsoleParametersProcessingException e)
