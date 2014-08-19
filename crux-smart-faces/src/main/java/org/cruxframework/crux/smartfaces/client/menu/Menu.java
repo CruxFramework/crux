@@ -17,6 +17,7 @@ package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.smartfaces.client.button.Button;
+import org.cruxframework.crux.smartfaces.client.menu.MenuRenderer.LargeMenuRenderer;
 import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
 import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
@@ -59,23 +60,17 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	private boolean enabled = true;
 	private MenuItem root;
 	private MenuPanel menuPanel = new MenuPanel();
-	protected SmallType currentSmallType = null;
-	protected LargeType currentLargeType = null;
+	protected Type currentType = null;
 	protected MenuRenderer menuRenderer = GWT.create(MenuRenderer.class);
-	
 	
 	protected boolean isSlider()
 	{
-		return (currentSmallType != null && currentSmallType.isSlider())
-				||
-				(currentLargeType != null && currentLargeType.isSlider());
+		return currentType.isSlider();
 	}
 	
 	protected boolean isTree()
 	{
-		return (currentSmallType != null && currentSmallType.isTree())
-				||
-				(currentLargeType != null && currentLargeType.isTree());
+		return currentType.isTree();
 	}
 	
 	public Menu(LargeType largeType, SmallType smallType)
@@ -86,8 +81,14 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		root.setMenu(this);
 		setStyleName(getBaseStyleName());
 		
-		this.currentLargeType = largeType;
-		this.currentSmallType = smallType;
+		if(menuRenderer instanceof LargeMenuRenderer)
+		{
+			this.currentType = largeType;	
+		} else
+		{
+			this.currentType = smallType;	
+		}
+		
 		menuRenderer.render(this, largeType, smallType);
 	}
 
