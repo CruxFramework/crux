@@ -458,90 +458,18 @@ public class ClassUtils
 		return result.toArray(new PropertyInfo[result.size()]);
 	}
 
-	public static Class<?> getTypeVariableTarget(TypeVariable<?> typeVariable, Class<?> baseClass, Class<?> declaringClass)
+	public static Type resolveGenericTypeOnMethod(Type genericParameterType, Class<?> baseClass, Method method)
 	{
+		Class<?> declaringClass = method.getDeclaringClass();
 		Type baseType = getGenericDeclaringType(baseClass, declaringClass);
 		if (baseType != null)
 		{
-			Type result = getPropertyType(typeVariable, baseType, getRawType(baseType));
-			if (result instanceof Class)
-			{
-				return (Class<?>) result;
-			}
+			Type result = getPropertyType(genericParameterType, baseType, getRawType(baseType));
+			return result;
 		}
-		return getRawType(typeVariable);
+		return getRawType(genericParameterType);
 	}
-	
-	private static Type getGenericDeclaringType(Class<?> baseClass, Class<?> declaringClass)
-    {
-		if (baseClass.equals(declaringClass))
-		{
-			return baseClass;
-		}
-		
-		if (declaringClass.isInterface())
-		{
-			Type[] interfaces = baseClass.getGenericInterfaces();
-			for (Type type : interfaces)
-            {
-	            if (type instanceof ParameterizedType)
-	            {
-	            	if (((ParameterizedType)type).getRawType().equals(declaringClass))
-	            	{
-	            		return type;
-	            	}
-	            }
-            }
-		}
-		else
-		{
-			Class<?> superclass = baseClass.getSuperclass();
-			if (superclass != null && superclass.equals(declaringClass))
-			{
-				return baseClass.getGenericSuperclass();
-			}
-		}
-	    return null;
-    }
 
-	private static Type getPropertyType(Type propertyType, Type baseClass, Class<?> baseRawType)
-    {
-		Type result = null;
-		if (propertyType instanceof Class || propertyType instanceof ParameterizedType)
-		{
-			result = propertyType;
-		}
-		else if (propertyType instanceof TypeVariable)
-		{
-			Type[] typeArguments = ((ParameterizedType)baseClass).getActualTypeArguments();
-			TypeVariable<?>[] typeParameters = baseRawType.getTypeParameters();
-			String parameterName = ((TypeVariable<?>)propertyType).getName();
-			
-			int i=0;
-			for (TypeVariable<?> typeVariable : typeParameters)
-            {
-	            if (parameterName.equals(typeVariable.getName()))
-	            {
-	            	result = typeArguments[i]; 
-	            	break;
-	            }
-	            i++;
-            }
-			if (result == null)
-			{
-	        	throw new RuntimeException("Unable to determine property types for bean: " + baseRawType.getCanonicalName());
-			}
-		}
-		else 
-		{
-        	throw new RuntimeException("Unable to determine property types for bean: " + baseRawType.getCanonicalName() + ". Type is not supported: " + propertyType);
-		}
-		
-	    return result;
-    }
-
-	
-	
 	/**
 	 * @param primitiveType
 	 * @return
@@ -583,46 +511,6 @@ public class ClassUtils
 		return null;
 	}
 
-	/**
-	 * @param attrType
-	 * @return
-	 */
-	private static Class<?> getPrimitiveFromWrapper(Class<?> attrType)
-	{
-		if (attrType.equals(Integer.class))
-		{
-			return Integer.TYPE;
-		}
-		else if (attrType.equals(Short.class))
-		{
-			return Short.TYPE;
-		}
-		else if (attrType.equals(Long.class))
-		{
-			return Long.TYPE;
-		}
-		else if (attrType.equals(Byte.class))
-		{
-			return Byte.TYPE;
-		}
-		else if (attrType.equals(Float.class))
-		{
-			return Float.TYPE;
-		}
-		else if (attrType.equals(Double.class))
-		{
-			return Double.TYPE;
-		}
-		else if (attrType.equals(Boolean.class))
-		{
-			return Boolean.TYPE;
-		}
-		else if (attrType.equals(Character.class))
-		{
-			return Character.TYPE;
-		}
-		return null;
-	}
 
 	/**
 	 * @param method
@@ -821,6 +709,152 @@ public class ClassUtils
 		}
 
 		throw new RuntimeException("Unable to determine value of type parameter " + typeVariable);
+	}
+	
+	private static Type getGenericDeclaringType(Class<?> baseClass, Class<?> declaringClass)
+    {
+		if (baseClass.equals(declaringClass))
+		{
+			return baseClass;
+		}
+		
+		if (declaringClass.isInterface())
+		{
+			Type[] interfaces = baseClass.getGenericInterfaces();
+			for (Type type : interfaces)
+            {
+	            if (type instanceof ParameterizedType)
+	            {
+	            	if (((ParameterizedType)type).getRawType().equals(declaringClass))
+	            	{
+	            		return type;
+	            	}
+	            }
+            }
+		}
+		else
+		{
+			Class<?> superclass = baseClass.getSuperclass();
+			if (superclass != null && superclass.equals(declaringClass))
+			{
+				return baseClass.getGenericSuperclass();
+			}
+		}
+	    return null;
+    }
+
+	private static Type getPropertyType(final Type propertyType, final Type baseClass, final Class<?> baseRawType)
+    {
+		Type result = null;
+		if (propertyType instanceof Class)
+		{
+			result = propertyType;
+		}
+		else if  (propertyType instanceof ParameterizedType)
+		{
+			return new ParameterizedType() 
+			{
+				@Override
+				public Type getRawType() 
+				{
+					return ((ParameterizedType)propertyType).getRawType();
+				}
+				
+				@Override
+				public Type getOwnerType() 
+				{
+					return ((ParameterizedType)propertyType).getOwnerType();
+				}
+				
+				@Override
+				public Type[] getActualTypeArguments() 
+				{
+					Type[] origActualTypeArguments = ((ParameterizedType)propertyType).getActualTypeArguments();
+					Type[] actualTypeArguments = new Type[origActualTypeArguments.length];
+					int i=0;
+					for (Type type : origActualTypeArguments) 
+					{
+						actualTypeArguments[i++] = getPropertyType(type, baseClass, baseRawType);
+					}
+					
+					return actualTypeArguments;
+				}
+			};
+		}
+		else if (propertyType instanceof GenericArrayType)
+		{
+			final GenericArrayType genericArrayType = (GenericArrayType) propertyType;
+			final Class<?> componentRawType = getRawType(getPropertyType(genericArrayType.getGenericComponentType(), baseClass, baseRawType));
+			result = Array.newInstance(componentRawType, 0).getClass();
+		}
+		else if (propertyType instanceof TypeVariable)
+		{
+			Type[] typeArguments = ((ParameterizedType)baseClass).getActualTypeArguments();
+			TypeVariable<?>[] typeParameters = baseRawType.getTypeParameters();
+			String parameterName = ((TypeVariable<?>)propertyType).getName();
+			
+			int i=0;
+			for (TypeVariable<?> typeVariable : typeParameters)
+            {
+	            if (parameterName.equals(typeVariable.getName()))
+	            {
+	            	result = typeArguments[i]; 
+	            	break;
+	            }
+	            i++;
+            }
+			if (result == null)
+			{
+	        	throw new RuntimeException("Unable to determine property types for bean: " + baseRawType.getCanonicalName());
+			}
+		}
+		else 
+		{
+        	throw new RuntimeException("Unable to determine property types for bean: " + baseRawType.getCanonicalName() + ". Type is not supported: " + propertyType);
+		}
+		
+	    return result;
+    }
+
+	/**
+	 * @param attrType
+	 * @return
+	 */
+	private static Class<?> getPrimitiveFromWrapper(Class<?> attrType)
+	{
+		if (attrType.equals(Integer.class))
+		{
+			return Integer.TYPE;
+		}
+		else if (attrType.equals(Short.class))
+		{
+			return Short.TYPE;
+		}
+		else if (attrType.equals(Long.class))
+		{
+			return Long.TYPE;
+		}
+		else if (attrType.equals(Byte.class))
+		{
+			return Byte.TYPE;
+		}
+		else if (attrType.equals(Float.class))
+		{
+			return Float.TYPE;
+		}
+		else if (attrType.equals(Double.class))
+		{
+			return Double.TYPE;
+		}
+		else if (attrType.equals(Boolean.class))
+		{
+			return Boolean.TYPE;
+		}
+		else if (attrType.equals(Character.class))
+		{
+			return Character.TYPE;
+		}
+		return null;
 	}
 
 	private static Type getTypeVariableViaGenericInterface(Class<?> clazz, Class<?> classDeclaringTypeVariable, TypeVariable<?> typeVariable)

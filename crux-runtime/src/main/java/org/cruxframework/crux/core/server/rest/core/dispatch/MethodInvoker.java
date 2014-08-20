@@ -19,7 +19,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -62,15 +61,8 @@ public class MethodInvoker
 		for (int i = 0; i < genericParameterTypes.length; i++)
 		{
 			Annotation[] annotations = method.getParameterAnnotations()[i];
-			if (genericParameterTypes[i] instanceof TypeVariable)
-			{
-				Class<?> paramType = ClassUtils.getTypeVariableTarget((TypeVariable<?>) genericParameterTypes[i], rootClass, method.getDeclaringClass());
-				params[i] = createParameterExtractor(root, paramType, annotations);
-			}
-			else
-			{
-				params[i] = createParameterExtractor(root, genericParameterTypes[i], annotations);
-			}
+			Type paramType = ClassUtils.resolveGenericTypeOnMethod(genericParameterTypes[i], rootClass, method);
+			params[i] = createParameterExtractor(root, paramType, annotations);
 		}
 		validateParamExtractors(httpMethod);
 		initializePreprocessors();

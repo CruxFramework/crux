@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -360,15 +359,8 @@ public class ResourceMethod
 			{
 				if (writer == null)
 				{
-					if (genericReturnType instanceof TypeVariable)
-					{
-						Class<?> returnType = ClassUtils.getTypeVariableTarget((TypeVariable<?>) genericReturnType, resourceClass, method.getDeclaringClass());
-						writer = JsonUtil.createWriter(returnType);
-					}
-					else
-					{
-						writer = JsonUtil.createWriter(genericReturnType);
-					}
+					Type returnType = ClassUtils.resolveGenericTypeOnMethod(genericReturnType, resourceClass, method);
+					writer = JsonUtil.createWriter(returnType);
 				}
 			}
 			finally

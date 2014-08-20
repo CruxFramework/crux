@@ -134,6 +134,10 @@ public class StringParameterInjector
 				{
 					return null;
 				}
+				else
+				{
+					return ClassUtils.stringToPrimitiveBoxType(rawType, strVal);
+				}
 			}
 			else
 			{
