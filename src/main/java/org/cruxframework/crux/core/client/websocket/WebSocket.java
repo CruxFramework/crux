@@ -36,14 +36,14 @@ public class WebSocket
 	private FastList<SocketOpenHandler> openHandlers = new FastList<SocketOpenHandler>();
 	private FastList<SocketCloseHandler> closeHandlers = new FastList<SocketCloseHandler>();
 	private FastList<SocketErrorHandler> errorHandlers = new FastList<SocketErrorHandler>();
-	private final WebSocketJS socketJS;
+	private WebSocketJS socketJS;
 	private String url;
 	private String protocol;
 	private JsArrayString protocols;
 
 	protected WebSocket(WebSocketJS socketJS)
 	{
-		this.socketJS = socketJS;
+		defineSocketJS(socketJS);
 	}
 
 	public static final short CONNECTING = 0;
@@ -174,6 +174,25 @@ public class WebSocket
 		};
 	}
 
+	public void reconnect() 
+	{
+		WebSocketJS webSocketJS;
+		if(this.protocols != null)
+		{
+			webSocketJS = WebSocketJS.createSocket(url, protocols);
+		}
+		else if(this.protocol != null)
+		{
+			webSocketJS = WebSocketJS.createSocket(url, protocol);
+		} 
+		else
+		{
+			webSocketJS = WebSocketJS.createSocket(url);
+		}
+		
+		defineSocketJS(webSocketJS);
+	}
+	
 	void fireMessageEvent(String message)
 	{
 		SocketMessageEvent event = new SocketMessageEvent(this, message);
@@ -229,7 +248,6 @@ public class WebSocket
 			WebSocketJS webSocketJS = WebSocketJS.createSocket(url);
 			WebSocket socket = new WebSocket(webSocketJS);
 			socket.url = url;
-			initializeSocketHandlers(socket, webSocketJS);
 			return socket;
 		}
 		return null;
@@ -243,7 +261,6 @@ public class WebSocket
 			WebSocket socket = new WebSocket(webSocketJS);
 			socket.url = url;
 			socket.protocol = protocol;
-			initializeSocketHandlers(socket, webSocketJS);
 			return socket;
 		}
 		return null;
@@ -257,13 +274,22 @@ public class WebSocket
 			WebSocket socket = new WebSocket(webSocketJS);
 			socket.url = url;
 			socket.protocols = protocols;
-			initializeSocketHandlers(socket, webSocketJS);
 			return socket;
 		}
 		return null;
 	}
 
-	private static native void initializeSocketHandlers(WebSocket socket, WebSocketJS socketJS)/*-{
+	private void defineSocketJS(WebSocketJS socketJS) 
+	{
+		if (this.socketJS != null)
+		{
+			removeOldHandlers(this.socketJS);
+		}
+		this.socketJS = socketJS;
+		initializeSocketHandlers(this, socketJS);
+	}
+
+	private native void initializeSocketHandlers(WebSocket socket, WebSocketJS socketJS)/*-{
 		socketJS.onerror = function() {
 			socket.@org.cruxframework.crux.core.client.websocket.WebSocket::fireErrorEvent()();
 		};
@@ -278,53 +304,10 @@ public class WebSocket
 		};
 	}-*/;
 	
-	public WebSocket reconnect() 
-	{
-		WebSocket clonedWebSocket = null;
-		if(this.protocols != null)
-		{
-			clonedWebSocket = createIfSupported(url, protocols);	
-		}
-		else if(this.protocol != null)
-		{
-			clonedWebSocket = createIfSupported(url, protocol);
-		} else
-		{
-			clonedWebSocket = createIfSupported(url);
-		}
-		
-		if(clonedWebSocket != null)
-		{
-			if(messageHandlers != null)
-			{
-				for(int i=0; i<messageHandlers.size();i++)
-				{
-					clonedWebSocket.addMessageHandler(messageHandlers.get(i));
-				}
-			}
-			if(openHandlers != null)
-			{
-				for(int i=0; i<openHandlers.size();i++)
-				{
-					clonedWebSocket.addOpenHandler(openHandlers.get(i));
-				}
-			}
-			if(closeHandlers != null)
-			{
-				for(int i=0; i<closeHandlers.size();i++)
-				{
-					clonedWebSocket.addCloseHandler(closeHandlers.get(i));
-				}
-			}
-			if(errorHandlers != null)
-			{
-				for(int i=0; i<errorHandlers.size();i++)
-				{
-					clonedWebSocket.addErrorHandler(errorHandlers.get(i));
-				}
-			}
-		}
-		
-		return clonedWebSocket;
-	}
+	private native void removeOldHandlers(WebSocketJS socketJS)/*-{
+		socketJS.onerror = null;
+		socketJS.onopen = null;
+		socketJS.onmessage = null;
+		socketJS.onclose = null;
+	}-*/;
 }
