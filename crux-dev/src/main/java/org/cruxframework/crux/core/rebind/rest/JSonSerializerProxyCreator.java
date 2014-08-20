@@ -563,7 +563,7 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 			srcWriter.println("if ("+StringUtils.class.getCanonicalName()+".unsafeEquals("+jsonValueVar+".isObject().get("+
 					EscapeUtils.quote(JsonSubTypes.SUB_TYPE_SELECTOR)+").isString().stringValue(),"+
 					EscapeUtils.quote(objectType.getQualifiedSourceName())+")){");
-			srcWriter.println(resultObjectVar+" = GWT.create("+objectType.getParameterizedQualifiedSourceName()+".class);");
+			srcWriter.println(resultObjectVar+" = GWT.create("+objectType.getQualifiedSourceName()+".class);");
 		}
 
 		String jsonObjectVar = nameFactory.createName("jsonObject");
@@ -573,14 +573,14 @@ public class JSonSerializerProxyCreator extends AbstractProxyCreator
 			srcWriter.println("if ("+jsonObjectVar+".containsKey(\"message\")){");
 			srcWriter.println(resultObjectVar+" = new "+resultSourceName+"(("+jsonObjectVar+".get(\"message\") != null && "+jsonObjectVar+".get(\"message\").isString() != null) ? "+jsonObjectVar+".get(\"message\").isString().stringValue() : \"\");");
 			srcWriter.println("} else {");
-			srcWriter.println(resultObjectVar+" = GWT.create("+resultSourceName+".class);");
+			srcWriter.println(resultObjectVar+" = GWT.create("+objectType.getQualifiedSourceName()+".class);");
 			srcWriter.println("}");
 		}
 		else
 		{
 			if(!hasJsonSubTypes)
 			{
-				srcWriter.println(resultObjectVar+" = GWT.create("+resultSourceName+".class);");
+				srcWriter.println(resultObjectVar+" = GWT.create("+objectType.getQualifiedSourceName()+".class);");
 			}
 		}
 
