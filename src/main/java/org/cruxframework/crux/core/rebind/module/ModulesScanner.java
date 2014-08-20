@@ -181,7 +181,7 @@ public class ModulesScanner extends AbstractScanner
 		if (handler instanceof PackageFileURLResourceHandler)
 		{
 			PackageFileURLResourceHandler packagehandler = (PackageFileURLResourceHandler)handler;
-			fileName = packagehandler.getPackaegResourceName(resource);
+			fileName = packagehandler.getPackageResourceName(resource);
 			
 		}
 		else
