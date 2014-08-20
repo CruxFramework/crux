@@ -31,6 +31,7 @@ public class URLResourceHandlersRegistry
 		registerURLResourceHandler(new FileURLResourceHandler());
 		registerURLResourceHandler(new JARURLResourceHandler());
 		registerURLResourceHandler(new ZIPURLResourceHandler());
+		registerURLResourceHandler(new JNDIURLResourceHandler());
 	}
 	
 	public static URLResourceHandler getURLResourceHandler(String protocol)

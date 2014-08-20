@@ -24,5 +24,5 @@ import java.net.URL;
 public interface PackageFileURLResourceHandler extends URLResourceHandler
 {
 	URL getPackageFile(URL url);
-	String getPackaegResourceName(URL url);
+	String getPackageResourceName(URL url);
 }

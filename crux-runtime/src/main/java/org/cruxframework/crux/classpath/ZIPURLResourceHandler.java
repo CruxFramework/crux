@@ -105,9 +105,9 @@ public class ZIPURLResourceHandler extends AbstractURLResourceHandler implements
 	}
 
 	/**
-	 * @see org.cruxframework.crux.classpath.PackageFileURLResourceHandler#getPackaegResourceName(java.net.URL)
+	 * @see org.cruxframework.crux.classpath.PackageFileURLResourceHandler#getPackageResourceName(java.net.URL)
 	 */
-	public String getPackaegResourceName(URL url)
+	public String getPackageResourceName(URL url)
 	{
 		try
 		{

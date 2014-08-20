@@ -55,6 +55,11 @@ public class ClassPathResolverImpl implements ClassPathResolver
 				URL url = findWebInfClassesPath();
 				URLResourceHandler resourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol());
 
+				if(resourceHandler == null)
+				{
+					throw new ClassPathResolverException("Cannot find resource based in the given URL protocol: " + url.getProtocol());
+				}
+				
 				url = resourceHandler.getParentDir(url);
 				url = resourceHandler.getParentDir(url);
 				webBaseDir = url; 
