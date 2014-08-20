@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.apache.commons.lang.StringUtils;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.server.http.GZIPResponseWrapper;
 import org.cruxframework.crux.core.server.rest.core.CacheControl;
@@ -125,9 +126,18 @@ public class AppcacheFilter implements Filter
 		{
 			String file = request.getRequestURI();
 			result = lastModifiedDates.get(file);
+
 			if (result == null)
 			{
+				String contextPath = filterConfig.getServletContext().getContextPath();
+				
+				if (StringUtils.isNotBlank(contextPath) && file.startsWith(contextPath))
+				{
+					file = StringUtils.removeStart(file, contextPath);
+				}
+			
 				InputStream stream = filterConfig.getServletContext().getResourceAsStream(file);
+				
 				if (stream != null)
 				{
 					String content = StreamUtils.readAsUTF8(stream);
