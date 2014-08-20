@@ -16,6 +16,7 @@
 package org.cruxframework.crux.core.rebind.database;
 
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -187,11 +188,21 @@ public class DatabaseProxyCreator extends AbstractInterfaceWrapperProxyCreator
 		srcWriter.println("impl.put(objects, objectStoreName, callback);");
 		srcWriter.println("}");
 		srcWriter.println();
-    }
+
+		srcWriter.println("	public <V> void put(List<V> objects, String objectStoreName, "+DatabaseCallback.class.getCanonicalName()+" callback){");
+		srcWriter.println("impl.put(objects, objectStoreName, callback);");
+		srcWriter.println("}");
+		srcWriter.println();
+}
 
 	private void generateAddMethod(SourcePrinter srcWriter)
     {
 		srcWriter.println("public <V> void add(V[] objects, String objectStoreName, "+DatabaseCallback.class.getCanonicalName()+" callback){");
+		srcWriter.println("impl.add(objects, objectStoreName, callback);");
+		srcWriter.println("}");
+		srcWriter.println();
+
+		srcWriter.println("public <V> void add(List<V> objects, String objectStoreName, "+DatabaseCallback.class.getCanonicalName()+" callback){");
 		srcWriter.println("impl.add(objects, objectStoreName, callback);");
 		srcWriter.println("}");
 		srcWriter.println();
@@ -306,6 +317,7 @@ public class DatabaseProxyCreator extends AbstractInterfaceWrapperProxyCreator
 	{
 		return new String[]{
 			Logger.class.getCanonicalName(),
+			List.class.getCanonicalName(),
 			LogConfiguration.class.getCanonicalName(),
 			Level.class.getCanonicalName(),
 			StringUtils.class.getCanonicalName(),
