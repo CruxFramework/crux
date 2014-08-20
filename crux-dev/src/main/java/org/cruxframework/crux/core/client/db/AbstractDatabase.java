@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.client.db;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.cruxframework.crux.core.client.db.Transaction.TransactionCallback;
@@ -91,7 +92,6 @@ public abstract class AbstractDatabase implements Database
 		return transaction;
 	}
 
-
     @Override
 	public <V> void add(V[] objects, String objectStoreName, final DatabaseCallback callback)
 	{
@@ -104,7 +104,29 @@ public abstract class AbstractDatabase implements Database
 	}
 
     @Override
+	public <V> void add(List<V> objects, String objectStoreName, final DatabaseCallback callback)
+	{
+    	Transaction transaction = getTransaction(new String[]{objectStoreName}, Transaction.Mode.readWrite, getCallbackForWriteTransaction(callback));
+    	ObjectStore<?, V> objectStore = transaction.getObjectStore(objectStoreName);
+    	for (V object : objects)
+        {
+    		objectStore.add(object);
+        }
+	}
+
+    @Override
 	public <V> void put(V[] objects, String objectStoreName, final DatabaseCallback callback)
+	{
+    	Transaction transaction = getTransaction(new String[]{objectStoreName}, Transaction.Mode.readWrite, getCallbackForWriteTransaction(callback));
+    	ObjectStore<?, V> objectStore = transaction.getObjectStore(objectStoreName);
+    	for (V object : objects)
+        {
+    		objectStore.put(object);
+        }
+	}
+
+    @Override
+	public <V> void put(List<V> objects, String objectStoreName, final DatabaseCallback callback)
 	{
     	Transaction transaction = getTransaction(new String[]{objectStoreName}, Transaction.Mode.readWrite, getCallbackForWriteTransaction(callback));
     	ObjectStore<?, V> objectStore = transaction.getObjectStore(objectStoreName);

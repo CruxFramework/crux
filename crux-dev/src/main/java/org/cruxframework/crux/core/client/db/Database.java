@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.db;
 
+import java.util.List;
+
 import org.cruxframework.crux.core.client.db.Transaction.TransactionCallback;
 import org.cruxframework.crux.core.client.db.annotation.DatabaseDef;
 import org.cruxframework.crux.core.client.db.annotation.DatabaseDef.ObjectStoreDef;
@@ -146,6 +148,17 @@ public interface Database
 	 */
 	<V> void add(V[] objects, String objectStore, DatabaseCallback callback);
 
+
+	/**
+	 * Insert all objects into its associated objectStore. If no objectStore is associated with object informed, a {@link DatabaseException} is threw
+	 * @param <V> object type
+	 * @param objectStore object store name, where objects will be inserted
+	 * @param objects objects to be inserted
+	 * @param callback called when operation is completed
+	 * @throws DatabaseException if no objectStore is associated with object informed
+	 */
+	<V> void add(List<V> objects, String objectStore, DatabaseCallback callback);
+
 	/**
 	 * Update all received objects into its associated objectStore. If one object does not exists, create a new one.
 	 * If no objectStore is associated with object store, a {@link DatabaseException} is threw  
@@ -157,7 +170,18 @@ public interface Database
 	 */
 	<V> void put(V[] objects, String objectStore, DatabaseCallback callback);
 
-    /**
+	/**
+	 * Update all received objects into its associated objectStore. If one object does not exists, create a new one.
+	 * If no objectStore is associated with object store, a {@link DatabaseException} is threw  
+	 * @param <V> object type
+	 * @param objectStore object store name, where objects will be saved
+	 * @param objects objects to be saved
+	 * @param callback called when operation is completed
+	 * @throws DatabaseException if no objectStore is associated with object informed
+	 */
+	<V> void put(List<V> objects, String objectStore, DatabaseCallback callback);
+
+	/**
      * Retrieve the object associated with the given key from its associated objectStore. 
 	 * If no objectStore is associated with object store, a {@link DatabaseException} is threw  
 	 * @param <K> key type
