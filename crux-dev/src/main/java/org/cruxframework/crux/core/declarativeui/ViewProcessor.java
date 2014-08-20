@@ -65,6 +65,11 @@ public class ViewProcessor
 	 */
 	public static Document getView(InputStream file, String filename, String device)
 	{
+		if (file == null)
+		{
+			return null;
+		}
+		
 		init();
 		return loadCruxPage(file, filename, device);
 	}
