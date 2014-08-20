@@ -134,18 +134,25 @@ public class StringParameterInjector
 				{
 					return null;
 				}
+				else
+				{
+					return ClassUtils.stringToPrimitiveBoxType(rawType, strVal);
+				}
 			}
 			else
 			{
 				strVal = defaultValue;
 			}
-		} else if (isSQLDate && isNumeric(strVal))
+		} 
+		else if (isSQLDate && isNumeric(strVal))
 		{
 			return new java.sql.Date(Long.parseLong(strVal));
-		} else if (isDate && isNumeric(strVal))  
+		} 
+		else if (isDate && isNumeric(strVal))  
 		{
 			return new Date(Long.parseLong(strVal));
-		}  else if (rawType.isPrimitive())
+		}  
+		else if (rawType.isPrimitive())
 		{
 			return ClassUtils.stringToPrimitiveBoxType(rawType, strVal);
 		}
@@ -164,7 +171,8 @@ public class StringParameterInjector
 					try
 					{
 						return constructor.newInstance(strVal.toCharArray()[0]);
-					} catch (Exception f)
+					} 
+					catch (Exception f)
 					{
 						throw new BadRequestException(errorMsg, CAN_NOT_INVOKE_USING_ARGUMENTS_MSG, e);		
 					}
