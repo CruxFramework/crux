@@ -220,7 +220,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 */
 	public boolean isShowing()
 	{
-		return isAttached() && showing;
+		return showing;
 	}
 
 	/**
