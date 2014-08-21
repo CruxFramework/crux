@@ -129,7 +129,8 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 							inputStream = manager.open();
 						}
 					}
-				}				
+				}
+				return ViewProcessor.getView(inputStream, screenURL.getPath(), device);
 			} finally
 			{
 				if(manager != null)
@@ -137,8 +138,6 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 					manager.close();
 				}					
 			}
-			
-			return ViewProcessor.getView(inputStream, screenURL.getPath(), device);			
 		}
 		catch (Exception e)
 		{
