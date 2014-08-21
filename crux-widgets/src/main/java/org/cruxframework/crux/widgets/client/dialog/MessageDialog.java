@@ -67,8 +67,8 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	private HTML messageLabel;
 	private Button okButton;
 	protected WidgetMessages messages = WidgetMsgFactory.getMessages();
-	private FastList<DialogBox> openedDialogBoxes = new FastList<DialogBox>(); 
-
+	
+	private static FastList<DialogBox> openedDialogBoxes = new FastList<DialogBox>(); 
 	private static List<CloseHandler<MessageDialog>> defaultCloseHandlers = new ArrayList<CloseHandler<MessageDialog>>();
 	private static List<OpenHandler<MessageDialog>> defaultOpenHandlers = new ArrayList<OpenHandler<MessageDialog>>();
 	
@@ -87,18 +87,18 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 		horizontalPanel.setSpacing(10);
 		okButton = createOkButton();
 		horizontalPanel.add(okButton);
-		
-		if(defaultCloseHandlers != null)
+
+		if (defaultCloseHandlers != null)
 		{
-			for(CloseHandler<MessageDialog> closeHandler : defaultCloseHandlers)
+			for (CloseHandler<MessageDialog> closeHandler : defaultCloseHandlers)
 			{
 				this.addCloseHandler(closeHandler);
 			}
 		}
-		
-		if(defaultOpenHandlers != null)
+
+		if (defaultOpenHandlers != null)
 		{
-			for(OpenHandler<MessageDialog> openHandler : defaultOpenHandlers)
+			for (OpenHandler<MessageDialog> openHandler : defaultOpenHandlers)
 			{
 				this.addOpenHandler(openHandler);
 			}
@@ -112,9 +112,10 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 
 		setStyleName(DEFAULT_STYLE_NAME);
 		handleOrientationChangeHandlers();
-    }
+	}
 
-	private void handleOrientationChangeHandlers() {
+	private void handleOrientationChangeHandlers()
+	{
 		dialogBox.addAttachHandler(new Handler()
 		{
 			private HandlerRegistration orientationHandlerRegistration;
@@ -126,8 +127,9 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 				{
 					try
 					{
-						orientationHandlerRegistration = Screen.addOrientationChangeHandler(MessageDialog.this);	
-					} catch (Exception e)
+						orientationHandlerRegistration = Screen.addOrientationChangeHandler(MessageDialog.this);
+					}
+					catch (Exception e)
 					{
 						orientationHandlerRegistration = null;
 					}
@@ -194,12 +196,11 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 		messageLabel.setText(message);
 	}
 
-	
 	@Override
-    public Widget asWidget()
-    {
-	    return dialogBox;
-    }
+	public Widget asWidget()
+	{
+		return dialogBox;
+	}
 
 	/**
 	 * 
@@ -328,7 +329,6 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 		CloseEvent.fire(MessageDialog.this, MessageDialog.this);
 	}
 	
-	
 	/**
 	 * Shows a message dialog
 	 * @param title the text to be displayed as the caption of the message box 
@@ -350,7 +350,7 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	 */
 	public static MessageDialog show(String title, String message, OkHandler okHandler, String styleName, boolean animationEnabled)
 	{
-		MessageDialog messageBox = new MessageDialog(); 
+		MessageDialog messageBox = new MessageDialog();
 		messageBox.setDialogTitle(title);
 		messageBox.setMessage(message);
 		messageBox.setStyleName(styleName);
@@ -370,7 +370,7 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	private Button createOkButton()
 	{
 		Button okButton = new Button();
-		
+
 		okButton.setText(messages.okLabel());
 		okButton.addStyleName("button");
 		okButton.addStyleName("okButton");
@@ -405,27 +405,36 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	}
 
 	@Override
-    public void fireEvent(GwtEvent<?> event)
-    {
+	public void fireEvent(GwtEvent<?> event)
+	{
 		dialogBox.fireEvent(event);
-    }
+	}
 
 	@Override
 	public void onOrientationChange() 
 	{
-		if(openedDialogBoxes == null)
+		if (openedDialogBoxes == null)
 		{
 			return;
 		}
-		
-		for(int i=0; i<openedDialogBoxes.size(); i++)
+
+		for (int i = 0; i < openedDialogBoxes.size(); i++)
 		{
 			final int index = i;
-			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() 
+			Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
 			{
 				@Override
-				public boolean execute() {
-					openedDialogBoxes.get(index).center();
+				public boolean execute()
+				{
+					try
+					{
+						openedDialogBoxes.get(index).center();
+					}
+					catch (IndexOutOfBoundsException e)
+					{
+						// the dialog may have been hidden
+					}
+
 					return false;
 				}
 			}, 1000);
@@ -448,9 +457,9 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	 * Add a default open handler that will be appended to each created object
 	 * @param defaultOpenHandler
 	 */
-	public static void addDefaultOpenHandler(OpenHandler<MessageDialog> defaultOpenHandler) 
+	public static void addDefaultOpenHandler(OpenHandler<MessageDialog> defaultOpenHandler)
 	{
-		if(defaultOpenHandlers == null)
+		if (defaultOpenHandlers == null)
 		{
 			defaultOpenHandlers = new ArrayList<OpenHandler<MessageDialog>>();
 		}
@@ -461,9 +470,9 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	 * Add a default close handler that will be appended to each created object
 	 * @param defaultCloseHandler
 	 */
-	public static void addDefaultCloseHandler(CloseHandler<MessageDialog> defaultCloseHandler) 
+	public static void addDefaultCloseHandler(CloseHandler<MessageDialog> defaultCloseHandler)
 	{
-		if(defaultCloseHandlers == null)
+		if (defaultCloseHandlers == null)
 		{
 			defaultCloseHandlers = new ArrayList<CloseHandler<MessageDialog>>();
 		}
