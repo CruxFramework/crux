@@ -15,7 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.panel;
 
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.InsertPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -33,7 +34,7 @@ public abstract class BasePanel extends ComplexPanel implements InsertPanel.ForI
 	 */
 	protected BasePanel(String tagName)
 	{
-		setElement(DOM.createElement(tagName));
+		setElement(Document.get().createElement(tagName));
 	}
 
 	/**
@@ -45,7 +46,7 @@ public abstract class BasePanel extends ComplexPanel implements InsertPanel.ForI
 	@Override
 	public void add(Widget w)
 	{
-		add(w, getElement());
+		add(w, (Element)getElement());
 	}
 
 	public void insert(IsWidget w, int beforeIndex)
@@ -65,6 +66,6 @@ public abstract class BasePanel extends ComplexPanel implements InsertPanel.ForI
 	 */
 	public void insert(Widget w, int beforeIndex)
 	{
-		insert(w, getElement(), beforeIndex, true);
+		insert(w, (Element)getElement(), beforeIndex, true);
 	}
 }

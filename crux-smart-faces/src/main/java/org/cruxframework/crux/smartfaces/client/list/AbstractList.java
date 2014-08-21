@@ -54,7 +54,7 @@ abstract class AbstractList extends ComplexPanel
 	
 	public void insert(Widget w, int beforeIndex)
 	{
-		insert(w, getElement(), beforeIndex, true);
+		insert(w, (Element)getElement(), beforeIndex, true);
 	}
 
 	@Override
