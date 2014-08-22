@@ -819,8 +819,15 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 				{
 					for (int i = 0; i < handlers.size(); i++)
 					{
-						ViewActivateHandler handler = handlers.get(i);
-						handler.onActivate(event);
+						try
+						{
+							ViewActivateHandler handler = handlers.get(i);
+							handler.onActivate(event);
+						}
+						catch (IndexOutOfBoundsException e)
+						{
+							// not to do - handlers may have been removed
+						}
 					}
 				}
 			});
