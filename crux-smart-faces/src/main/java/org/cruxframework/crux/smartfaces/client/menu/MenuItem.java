@@ -106,9 +106,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 
 	public void open()
 	{
-		if( 
-			this.parentItem != null && menu.isSlider() 
-		  )
+		if(this.parentItem != null && menu.isSlider())
 		{
 			final Button closeButton = new Button();
 			closeButton.setStyleName(Menu.STYLE_AUX_CLOSE_TRIGGER_SLIDER_HELPER);
@@ -246,7 +244,8 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 				if(opened)
 				{
 					close();
-				} else
+				} 
+				else
 				{
 					open();
 				}
@@ -428,5 +427,4 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 	{
 		this.getElement().setId(id);
 	}
-	
 }

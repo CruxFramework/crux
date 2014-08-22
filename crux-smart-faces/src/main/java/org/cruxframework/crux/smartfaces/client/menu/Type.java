@@ -1,5 +1,7 @@
 package org.cruxframework.crux.smartfaces.client.menu;
 
+import org.cruxframework.crux.core.client.utils.StringUtils;
+
 public interface Type 
 {
 	boolean isTree();
@@ -32,7 +34,7 @@ public interface Type
 		{
 			for(LargeType type : LargeType.values())
 			{
-				if(type.friendlyName != null && type.friendlyName.equals(friendlyName))
+				if(StringUtils.unsafeEquals(type.friendlyName, friendlyName))
 				{
 					return type;
 				}
@@ -78,7 +80,7 @@ public interface Type
 		{
 			for(SmallType type : SmallType.values())
 			{
-				if(type.friendlyName != null && type.friendlyName.equals(friendlyName))
+				if(StringUtils.unsafeEquals(type.friendlyName, friendlyName))
 				{
 					return type;
 				}
@@ -98,5 +100,4 @@ public interface Type
 			return this.equals(SmallType.VERTICAL_SLIDE);	
 		}
 	}
-	
 }

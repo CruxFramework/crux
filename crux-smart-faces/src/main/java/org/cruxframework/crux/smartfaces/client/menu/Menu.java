@@ -63,16 +63,6 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	protected Type currentType = null;
 	protected MenuRenderer menuRenderer = GWT.create(MenuRenderer.class);
 	
-	protected boolean isSlider()
-	{
-		return currentType.isSlider();
-	}
-	
-	protected boolean isTree()
-	{
-		return currentType.isTree();
-	}
-	
 	public Menu(LargeType largeType, SmallType smallType)
 	{
 		initWidget(menuPanel);
@@ -84,7 +74,8 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		if(menuRenderer instanceof LargeMenuRenderer)
 		{
 			this.currentType = largeType;	
-		} else
+		} 
+		else
 		{
 			this.currentType = smallType;	
 		}
@@ -140,6 +131,9 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		}
 	}
 
+	/**
+	 * Remove all menuItems contained into this menu
+	 */
 	public void clear() 
 	{
 		if(this.root != null)
@@ -265,6 +259,16 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		menuItem.close();
 	}
 
+	protected boolean isSlider()
+	{
+		return currentType.isSlider();
+	}
+	
+	protected boolean isTree()
+	{
+		return currentType.isTree();
+	}
+	
 	protected void adopt(MenuItem item, Button button)
 	{
 		menuPanel.adopt(item, button);
@@ -280,6 +284,11 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		menuPanel.orphan(item);
 	}
 	
+	/**
+	 * Internal Panel mapped to a nav element around the menu
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
 	protected static class MenuPanel extends BasePanel
 	{
 		protected MenuPanel()
