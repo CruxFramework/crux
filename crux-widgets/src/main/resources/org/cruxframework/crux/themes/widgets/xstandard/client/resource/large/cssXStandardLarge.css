@@ -779,19 +779,19 @@
     margin-top: 25px;
     padding:8px 34px;
 }
-.crux-FlatMessageBox-success .gwt-Label
+.crux-FlatMessageBox-success .gwt-HTML
 {
     color: #517A02; 
 }
-.crux-FlatMessageBox-info .gwt-Label
+.crux-FlatMessageBox-info .gwt-HTML
 {
     color: #4c6879; 
 }
-.crux-FlatMessageBox-warn .gwt-Label
+.crux-FlatMessageBox-warn .gwt-HTML
 {
     color: #C28C00; 
 }
-.crux-FlatMessageBox-error .gwt-Label
+.crux-FlatMessageBox-error .gwt-HTML
 {
     color: #B01010;
 }
