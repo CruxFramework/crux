@@ -115,7 +115,7 @@ body
 	box-shadow:0 -2px 0 rgba(0,0,0,0.03) inset, 0 2px 2px rgba(0,0,0,0.07);
 }
 
-.facesMenu > .facesMenu-ul > .facesMenu-li
+.facesMenu > .faces-Menu-ul > .faces-Menu-li
 {
 	color:#222;
 }
@@ -127,25 +127,25 @@ body
     transition:all 0.1s linear;
 }
 
-.facesMenu .facesMenu-ul .facesMenu-ul
+.facesMenu .faces-Menu-ul .faces-Menu-ul
 {
 	z-index:3;
 }
 
-.facesMenu .facesMenu-li
+.facesMenu .faces-Menu-li
 {
 	position:relative;
 	cursor:pointer;
 }
 
-.facesMenu-openCloseTriggerHelper
+.faces-Menu-openCloseTriggerHelper
 {
 	border:none;
 	padding:0;
 	z-index:2;
 }
 
-.facesMenu.facesMenu-horizontal.facesMenu-fixed
+.facesMenu.faces-Menu-horizontal.faces-Menu-fixed
 {
 	position:fixed;
 	top:0;
@@ -155,23 +155,23 @@ body
 
 /* === Dropdown General === */
 
-.facesMenu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul
+.facesMenu.faces-Menu-dropdown .faces-Menu-ul .faces-Menu-ul
 {
 	background:#fff;
 	box-shadow:0 5px 25px rgba(0,0,0,0.3);
 }
 
-.facesMenu.facesMenu-dropdown > .facesMenu-ul > .facesMenu-li:hover
+.facesMenu.faces-Menu-dropdown > .faces-Menu-ul > .faces-Menu-li:hover
 {
 	background:rgba(0,0,0,0.03);
 }
 
-.facesMenu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul
+.facesMenu.faces-Menu-dropdown .faces-Menu-ul .faces-Menu-ul
 {
 	border:1px solid #aaa;
 }
 
-.facesMenu.facesMenu-dropdown .facesMenu-ul .facesMenu-ul .facesMenu-li
+.facesMenu.faces-Menu-dropdown .faces-Menu-ul .faces-Menu-ul .faces-Menu-li
 {
     padding:10px;
     font-size:13px;
@@ -179,12 +179,12 @@ body
     border-bottom:1px solid #aaa;
 }
 
-.facesMenu.facesMenu-dropdown > .facesMenu-ul > .facesMenu-li:hover
+.facesMenu.faces-Menu-dropdown > .faces-Menu-ul > .faces-Menu-li:hover
 {
 	/*box-shadow:0 -2px 0 rgba(0,0,0,0.15) inset;*/
 }
 
-.facesMenu.facesMenu-dropdown .facesMenu-li .facesMenu-ul
+.facesMenu.faces-Menu-dropdown .faces-Menu-li .faces-Menu-ul
 {
 	display:none;
 	position:absolute;
@@ -193,19 +193,19 @@ body
 
 /* === Dropdown Horizontal === */
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal
 {
     width:100%;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li
 {
     float:left;
     padding:10px 4%;
     border-right:1px solid #d7d7d7;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul
 {
 	bottom:0;
 	left:0;
@@ -217,23 +217,23 @@ body
 	border-radius:0 0 3px 3px;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li:hover > .facesMenu-ul
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li:hover > .faces-Menu-ul
 {
 	display:block;	
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li:hover
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul .faces-Menu-li:hover
 {
 	background:#eee;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li:last-child
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul .faces-Menu-li:last-child
 {
 	border-bottom:none;
 	border-radius:0 0 3px 3px;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul .faces-Menu-li .faces-Menu-ul
 {
 	top:0;
 	right:0;
@@ -243,17 +243,17 @@ body
 	margin-left:-2px;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul .faces-Menu-li .faces-Menu-ul .faces-Menu-li
 {
 	border-bottom:none;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal .facesMenu-li > .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-li:last-child
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul .faces-Menu-li .faces-Menu-ul .faces-Menu-li:last-child
 {
 	border-bottom:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	content:'';
 	position: absolute;
@@ -270,7 +270,7 @@ body
 	border-bottom: 2px solid #444;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	content:'';
 	position: absolute;
@@ -288,25 +288,25 @@ body
 
 /*  === Vertical Dropdown ===  */
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical,
-.facesMenu.facesMenu-tree.facesMenu-vertical,
-.facesMenu.facesMenu-accordion.facesMenu-vertical
+.facesMenu.faces-Menu-dropdown.faces-Menu-vertical,
+.facesMenu.faces-Menu-tree.faces-Menu-vertical,
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical
 {
 	width:200px;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical > .facesMenu-ul > .facesMenu-li
+.facesMenu.faces-Menu-dropdown.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li
 {
 	border-bottom:1px solid #ccc;
 	padding:10px;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical > .facesMenu-ul > .facesMenu-li:last-child
+.facesMenu.faces-Menu-dropdown.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li:last-child
 {
 	border-bottom:none;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li .facesMenu-ul
+.facesMenu.faces-Menu-dropdown.faces-Menu-vertical .faces-Menu-li .faces-Menu-ul
 {
 	top:0;
 	right:0;
@@ -317,12 +317,12 @@ body
 	width:literal("calc(100% + 2px)");
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li:hover > .facesMenu-ul
+.facesMenu.faces-Menu-dropdown.faces-Menu-vertical .faces-Menu-li:hover > .faces-Menu-ul
 {
 	display:block;
 }
 
-.facesMenu.facesMenu-dropdown.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.facesMenu.faces-Menu-dropdown.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	position: absolute;
 	right: 13px;
@@ -337,18 +337,18 @@ body
 
 /*  === Tree ===  */
 
-.facesMenu.facesMenu-tree.facesMenu-vertical > .facesMenu-ul
+.facesMenu.faces-Menu-tree.faces-Menu-vertical > .faces-Menu-ul
 {
 	position:relative;
 	padding:10px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li
+.facesMenu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li
 {
 	padding:5px 10px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.facesMenu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	width:13px;
 	height:13px;
@@ -360,12 +360,12 @@ body
 	border-radius:2px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:hover
+.facesMenu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:hover
 {
 	background:#fff;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+.facesMenu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before
 {
 	content:'';
 	width:1px;
@@ -377,7 +377,7 @@ body
 	left:5px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.facesMenu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	content:'';
 	width:7px;
@@ -389,12 +389,12 @@ body
 	left:2px;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren.facesMenu-open > .facesMenu-openCloseTriggerHelper:before
+.facesMenu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-openCloseTriggerHelper:before
 {
 	display:none;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren.facesMenu-open:before
+.facesMenu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren.faces-Menu-open:before
 {
 	content:'';
 	border-left:1px dotted #ccc;
@@ -406,17 +406,17 @@ body
 	
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li .facesMenu-ul
+.facesMenu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li .faces-Menu-ul
 {
 	display:none;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren.facesMenu-open > .facesMenu-ul
+.facesMenu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-ul
 {
 	display:block;
 }
 
-.facesMenu.facesMenu-tree.facesMenu-vertical .facesMenu-li.facesMenu-hasChildren > .facesMenu-ul > .facesMenu-li:after
+.facesMenu.faces-Menu-tree.faces-Menu-vertical .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-ul > .faces-Menu-li:after
 {
 	content:'';
 	border-top:1px dotted #ccc;
@@ -429,7 +429,7 @@ body
 
 /*  === Vertical Accordion ===  */
 
-.facesMenu.facesMenu-accordion > .facesMenu-ul > .facesMenu-li > .faces-SelectablePanel > .faces-Label
+.facesMenu.faces-Menu-accordion > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel > .faces-Label
 {
 	border-bottom:1px solid #ccc;
 	padding:10px;
@@ -437,58 +437,58 @@ body
 	font-weight:bold;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li .faces-Menu-ul
 {
 	display:none;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-li.facesMenu-open > .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
 {
 	display:block;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li .facesMenu-ul .faces-Label
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li .faces-Menu-ul .faces-Label
 {
 	border-bottom:1px solid rgba(0, 0, 0, 0.13);
 	padding:5px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul > .facesMenu-li:last-child .faces-Label
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul > .faces-Menu-li:last-child .faces-Label
 {
 	/*border-bottom:none;*/
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul .faces-Menu-ul
 {
 	background:#fff;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul .faces-Menu-ul .faces-Menu-ul
 {
 	background:#eee;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical > .facesMenu-ul .facesMenu-ul .facesMenu-ul .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical > .faces-Menu-ul .faces-Menu-ul .faces-Menu-ul .faces-Menu-ul
 {
 	background:#aaa;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	position:absolute;
 	right:0;
 	top:5px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before,
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before,
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	content:'';
 	position:absolute;
 	background:#aaa;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before
 {
 	top:13px;
 	right:5px;
@@ -497,7 +497,7 @@ body
 	
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	top:9px;
 	right:9px;
@@ -505,7 +505,7 @@ body
 	height:10px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before
 {
 	top:8px;
 	right:5px;
@@ -514,7 +514,7 @@ body
 	
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	top:4px;
 	right:9px;
@@ -522,27 +522,27 @@ body
 	height:10px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-vertical .facesMenu-hasChildren.facesMenu-open > .facesMenu-openCloseTriggerHelper:after
+.facesMenu.faces-Menu-accordion.faces-Menu-vertical .faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-openCloseTriggerHelper:after
 {
 	display:none;
 }
 
 /*  === Horizontal Accordion ===  */
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal
 {
 	height:200px;
 	display:inline-block;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li
 {
 	float:left;
 	min-width:38px;
 	height:200px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .faces-SelectablePanel > .faces-Label
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel > .faces-Label
 {
 	-webkit-transform:rotate(-90deg);
 	-moz-transform:rotate(-90deg);
@@ -553,7 +553,7 @@ body
 	position:absolute;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-li .faces-Menu-ul
 {
 	width:300px;
 	background:#fff;
@@ -563,50 +563,50 @@ body
 	border-right:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-li .faces-Menu-ul .faces-Menu-ul
 {
 	border-right:none;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-Menu-ul
 {
 	height:198px;	
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li .facesMenu-ul .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-li .faces-Menu-ul .faces-Menu-ul
 {
 	background:#fafafa;
 	font-size:11px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-Menu-ul
 {
 	margin-left:37px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li.facesMenu-open > .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
 {
 	display:block;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul .facesMenu-li .faces-Label
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-Menu-ul .faces-Menu-li .faces-Label
 {
 	padding:10px;
 	border-bottom:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal > .facesMenu-ul > .facesMenu-li > .facesMenu-ul .facesMenu-li .faces-Label
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-Menu-ul .faces-Menu-li .faces-Label
 {
 	padding:10px;
 	border-bottom:1px solid #ccc;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren.facesMenu-open > .facesMenu-openCloseTriggerHelper:after
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren.faces-Menu-open > .faces-Menu-openCloseTriggerHelper:after
 {
 	display:none;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-ul .facesMenu-openCloseTriggerHelper
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-ul .faces-Menu-openCloseTriggerHelper
 {
 	position:absolute;
 	right:14px;
@@ -615,15 +615,15 @@ body
 	height:2px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before,
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before,
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	content:'';
 	position:absolute;
 	background:#aaa;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before
 {
 	top:13px;
 	left:13px;
@@ -631,7 +631,7 @@ body
 	height:2px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	top:9px;
 	left:17px;
@@ -639,7 +639,7 @@ body
 	height:10px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:before
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:before
 {
 	top:0;
 	left:-2px;
@@ -647,7 +647,7 @@ body
 	height:2px;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-hasChildren .facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper:after
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-hasChildren .faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper:after
 {
 	top:-4px;
 	right:-2px;
@@ -656,12 +656,12 @@ body
 	height:10px;
 }
 
-.facesMenu.facesMenu-accordion > .facesMenu-ul > .facesMenu-li:last-child > .faces-SelectablePanel > .faces-Label
+.facesMenu.faces-Menu-accordion > .faces-Menu-ul > .faces-Menu-li:last-child > .faces-SelectablePanel > .faces-Label
 {
 	border-bottom:none;
 }
 
-.facesMenu.facesMenu-accordion.facesMenu-horizontal .facesMenu-ul .facesMenu-li.facesMenu-open:last-child > .facesMenu-ul
+.facesMenu.faces-Menu-accordion.faces-Menu-horizontal .faces-Menu-ul .faces-Menu-li.faces-Menu-open:last-child > .faces-Menu-ul
 {
 	border-left:1px solid #ccc;
 	border-right:0;
@@ -669,7 +669,7 @@ body
 
 /*  === Vertical Slider ===  */
 
-.facesMenu.facesMenu-slide
+.facesMenu.faces-Menu-slide
 {
 	width:200px;
 	height:100%;
@@ -677,7 +677,7 @@ body
     overflow:hidden;
 }
 
-.facesMenu.facesMenu-slide ul ul
+.facesMenu.faces-Menu-slide ul ul
 {
 	-webkit-transition:all 0.5s cubic-bezier(.14,.97,.46,1);
 	transition:all 0.5s cubic-bezier(.14,.97,.46,1);
@@ -693,24 +693,24 @@ body
     z-index:2;
 }
 
-.facesMenu.facesMenu-slide ul li
+.facesMenu.faces-Menu-slide ul li
 {
 	height:40px;
     border-bottom:1px solid #ccc;
     position:initial;
 }
 
-.facesMenu.facesMenu-slide ul li:hover
+.facesMenu.faces-Menu-slide ul li:hover
 {
 	background:rgba(0,0,0,0.03);
 }
 
-.facesMenu.facesMenu-slide ul li .faces-SelectablePanel
+.facesMenu.faces-Menu-slide ul li .faces-SelectablePanel
 {	
     padding:10px;
 }
 
-.facesMenu.facesMenu-slide .facesMenu-li.facesMenu-open > .facesMenu-ul
+.facesMenu.faces-Menu-slide .faces-Menu-li.faces-Menu-open > .faces-Menu-ul
 {
 	-webkit-transform:translateX(0px);
 	-moz-transform:translateX(0px);
@@ -718,7 +718,7 @@ body
     box-shadow:-1px 0 0 rgba(0,0,0,0.2);   
 }
 
-.facesMenu.facesMenu-slide .facesMenu-li.facesMenu-hasChildren > .facesMenu-openCloseTriggerHelper
+.facesMenu.faces-Menu-slide .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
 {
 	float:right;
 	margin-top:-20px;
@@ -734,7 +734,7 @@ body
 	z-index:1;
 }
 
-.facesMenu.facesMenu-slide .facesMenu-closeTriggerSliderHelper
+.facesMenu.faces-Menu-slide .faces-Menu-closeTriggerSliderHelper
 {
 	width:100%;
 	height:22px;
@@ -745,12 +745,12 @@ body
 	position:relative;
 }
 
-.facesMenu.facesMenu-slide .facesMenu-closeTriggerSliderHelper:hover
+.facesMenu.faces-Menu-slide .faces-Menu-closeTriggerSliderHelper:hover
 {
 	background:rgba(0,0,0,0.1);
 }
 
-.facesMenu.facesMenu-slide .facesMenu-closeTriggerSliderHelper:before
+.facesMenu.faces-Menu-slide .faces-Menu-closeTriggerSliderHelper:before
 {
 	content:'';
 	position:absolute;
