@@ -114,12 +114,12 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		context.itemStack.add(context.getWidget());
 	}
 	
-	@TagConstraints(tagName="item", minOccurs="0", maxOccurs="unbounded")
+	@TagConstraints(tagName="item", minOccurs="0", maxOccurs="unbounded", description="The menu item.")
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="open", type=Boolean.class),
-		@TagAttributeDeclaration(value="style"),
-		@TagAttributeDeclaration(value="disabled", type=Boolean.class, defaultValue = "false"),
-		@TagAttributeDeclaration(value="styleName", supportsResources=true),
+		@TagAttributeDeclaration(value="open", type=Boolean.class, description="open or close an item."),
+		@TagAttributeDeclaration(value="style", description="the item style."),
+		@TagAttributeDeclaration(value="disabled", type=Boolean.class, defaultValue = "false", description="indicate if the item should be disabled or not."),
+		@TagAttributeDeclaration(value="styleName", supportsResources=true, description="the item style name."),
 		@TagAttributeDeclaration(value="id", description="The component id.")
 	})
 	@TagEventsDeclaration({
@@ -217,7 +217,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 	{
 	}
 	
-	@TagConstraints(tagName="itemLabel", type=String.class)
+	@TagConstraints(tagName="itemLabel", type=String.class, description="Create an item with a simple Label.")
 	public static class ItemLabelProcessor extends WidgetChildProcessor<MenuContext>
 	{
 		@Override
@@ -248,7 +248,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		}
 	}
 	
-	@TagConstraints(tagName="itemHtml")
+	@TagConstraints(tagName="itemHtml", description="Create an item with a HTML body.")
 	@TagChildren({
 		@TagChild(HTMLProcessor.class)
 	})
@@ -289,7 +289,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 	{
 	}
 	
-	@TagConstraints(type=AnyWidget.class)
+	@TagConstraints(type=AnyWidget.class, description="The widget inserted into the item.")
 	public static class WidgetProcessor extends WidgetChildProcessor<MenuContext>
 	{
 		@Override
