@@ -534,17 +534,17 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 	{
 		if (method.getReturnType() != JPrimitiveType.VOID) 
 		{
-			throw new CruxGeneratorException("Invalid signature for rest proxy method. Any method must be void");
+			throw new CruxGeneratorException("Invalid signature for rest proxy method <"+method.getName()+">. Any method must be void");
 		}
 		JType[] parameterTypes = method.getParameterTypes();
 		if (parameterTypes == null || parameterTypes.length < 1)
 		{
-			throw new CruxGeneratorException("Invalid signature for rest proxy method. Any method must have a last parameter of type Callback");
+			throw new CruxGeneratorException("Invalid signature for rest proxy method <"+method.getName()+">. Any method must have a last parameter of type Callback");
 		}
 		JClassType lastParameterType = parameterTypes[parameterTypes.length - 1].isClassOrInterface();
 		if (lastParameterType == null || !callbackType.isAssignableFrom(lastParameterType))
 		{
-			throw new CruxGeneratorException("Invalid signature for rest proxy method. Any method must have a last parameter of type Callback");
+			throw new CruxGeneratorException("Invalid signature for rest proxy method <"+method.getName()+">. Any method must have a last parameter of type Callback");
 		}
 	}
 }
