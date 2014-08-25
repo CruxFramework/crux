@@ -1376,7 +1376,7 @@
 ****************/
 .crux-TopMenuDisposal .headerPanel .menuPanel
 {
-    border:1px solid #ccc;
+    border:1px solid #1a6299;
     border-radius:2px;
     overflow:hidden;
 }
@@ -1390,15 +1390,16 @@
 {
     width:auto;
     padding:10px;
-    color:#222;
+    color:#fff;
     text-align:center !important;
-    border-right:1px solid #ccc;
+    border-right:1px solid #1a6299;
     box-shadow:none !important;
+    background:#4496c6;
 }
 
 .crux-TopMenuDisposal .headerPanel .menuPanel .menuEntry:hover
 {
-    background:#f1f1f1;
+    background:#3185b6;
 }
 
 .crux-TopMenuDisposal .headerPanel .menuPanel .menuEntry:last-child
