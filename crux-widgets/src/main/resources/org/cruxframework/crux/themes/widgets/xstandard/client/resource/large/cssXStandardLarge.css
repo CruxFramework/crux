@@ -23,7 +23,7 @@
 .flapCloseButton,
 .crux-TabBarItem,
 .crux-Button,
-.crux-MenuTabsDisposal *,
+.crux-MenuTabsDisposal .menuEntriesContainer *,
 .previousMessageButton,
 .nextMessageButton
 {
