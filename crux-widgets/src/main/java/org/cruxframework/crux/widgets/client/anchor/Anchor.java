@@ -95,11 +95,6 @@ public class Anchor extends Composite implements HasSelectHandlers, HasHTML, Has
 	{
 		public AnchorNoTouchImpl()
 		{
-			addClickHandler();
-		}
-
-		protected void addClickHandler() 
-		{
 			addClickHandler(new ClickHandler()
 			{
 				@Override
@@ -120,7 +115,7 @@ public class Anchor extends Composite implements HasSelectHandlers, HasHTML, Has
 	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
-	static class AnchorTouchImpl extends AnchorNoTouchImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
+	static class AnchorTouchImpl extends AnchorImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
 	{
 		private static final int TAP_EVENT_THRESHOLD = 5;
 		private int startX;
@@ -130,11 +125,6 @@ public class Anchor extends Composite implements HasSelectHandlers, HasHTML, Has
 
 		public AnchorTouchImpl()
 		{
-			if(!GWT.isProdMode())
-			{
-				addClickHandler();
-			}
-			
 			addTouchStartHandler(this);
 		}
 

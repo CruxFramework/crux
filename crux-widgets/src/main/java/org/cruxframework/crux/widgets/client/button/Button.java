@@ -76,11 +76,6 @@ public class Button extends Composite implements HasSelectHandlers, HasHTML, Has
 	{
 		public ButtonNoTouchImpl()
 		{
-			addClickHandler();
-		}
-
-		protected void addClickHandler() 
-		{
 			addClickHandler(new ClickHandler()
 			{
 				@Override
@@ -111,7 +106,7 @@ public class Button extends Composite implements HasSelectHandlers, HasHTML, Has
 	 * @author Thiago da Rosa de Bustamante
 	 *
 	 */
-	static class ButtonTouchImpl extends ButtonNoTouchImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
+	static class ButtonTouchImpl extends ButtonImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
 	{
 		private static final int TAP_EVENT_THRESHOLD = 5;
 		private int startX;
@@ -121,10 +116,6 @@ public class Button extends Composite implements HasSelectHandlers, HasHTML, Has
 
 		public ButtonTouchImpl()
 		{
-			if(!GWT.isProdMode())
-			{
-				addClickHandler();
-			}
 			addTouchStartHandler(this);
 		}
 

@@ -81,11 +81,6 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 	{
 		public NoTouchImpl()
 		{
-			addClickHandler();
-		}
-
-		protected void addClickHandler() 
-		{
 			addClickHandler(new ClickHandler()
 			{
 				@Override
@@ -110,7 +105,7 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 		}
 	}
 
-	static class TouchImpl extends NoTouchImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
+	static class TouchImpl extends ImageImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
 	{
 		private static final int TAP_EVENT_THRESHOLD = 5;
 		private int startX;
@@ -120,10 +115,6 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 
 		public TouchImpl()
 		{
-			if(!GWT.isProdMode())
-			{
-				addClickHandler();
-			}
 			addTouchStartHandler(this);
 		}
 

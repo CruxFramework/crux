@@ -105,11 +105,6 @@ class StackMenuItemCaption extends Composite
 			addMouseOverHandler(createMouseOverHandler());
 			addMouseOutHandler(createMouseOutHandler());
 			addKeyUpHandler(createKeyUpHandler());
-			addClickHandler();
-		}
-
-		protected void addClickHandler() 
-		{
 			addClickHandler(new ClickHandler()
 			{
 				public void onClick(ClickEvent event)
@@ -192,7 +187,7 @@ class StackMenuItemCaption extends Composite
 	 * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
 	 * Implementation for touch devices.
 	 */
-	static class TouchImpl extends NoTouchImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
+	static class TouchImpl extends FocusAreaStackImpl implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
 	{
 		private static final int TAP_EVENT_THRESHOLD = 5;
 		private int startX;
@@ -202,10 +197,6 @@ class StackMenuItemCaption extends Composite
 
 		public TouchImpl()
 		{
-			if(!GWT.isProdMode())
-			{
-				addClickHandler();
-			}
 			addTouchStartHandler(this);
 		}
 
