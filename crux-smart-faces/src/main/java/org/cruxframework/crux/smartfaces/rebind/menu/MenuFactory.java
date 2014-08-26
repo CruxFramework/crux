@@ -234,6 +234,11 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			
 			String itemClassName = MenuItem.class.getCanonicalName();
 			
+			if(label != null && label.length() > 0)
+			{
+				label = getWidgetCreator().getDeclaredMessage(label);
+			}
+			
 			if(context.itemStack.size() == 1)
 			{
 				out.println(itemClassName + " " + context.currentItem+" = "+context.getWidget()+".addItem("+ label +");");
