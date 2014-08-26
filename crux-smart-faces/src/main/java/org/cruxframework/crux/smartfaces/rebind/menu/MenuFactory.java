@@ -226,7 +226,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			JSONObject jsonLabel = context.getChildElement();
 			String label = "";
 			try {
-				label = jsonLabel.getString("_text");
+				label = EscapeUtils.quote(jsonLabel.getString("_text"));
 			} catch (JSONException e) 
 			{
 				logger.log(Level.SEVERE, e.getMessage());
@@ -236,7 +236,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			
 			if(label != null && label.length() > 0)
 			{
-				label = EscapeUtils.quote(getWidgetCreator().getDeclaredMessage(label));
+				label = getWidgetCreator().getDeclaredMessage(label);
 			}
 			
 			if(context.itemStack.size() == 1)
