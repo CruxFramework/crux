@@ -236,7 +236,7 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			
 			if(label != null && label.length() > 0)
 			{
-				label = EscapeUtils.quote(getWidgetCreator().getDeclaredMessage(label));
+				label = getWidgetCreator().getDeclaredMessage(label);
 			}
 			
 			if(context.itemStack.size() == 1)
