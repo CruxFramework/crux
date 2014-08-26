@@ -15,7 +15,11 @@
  */
 package org.cruxframework.crux.classpath;
 
+import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.jar.JarFile;
 
 import org.cruxframework.crux.scanner.archiveiterator.DirectoryIteratorFactory;
 import org.cruxframework.crux.scanner.archiveiterator.JARProtocolIteratorFactory;
@@ -23,18 +27,53 @@ import org.cruxframework.crux.scanner.archiveiterator.JARProtocolIteratorFactory
 
 public class JARURLResourceHandler extends ZIPURLResourceHandler
 {
-	/**
-	 * 
-	 */
+	@Override
+	public boolean exists(URL url)
+	{
+		InputStream inputStream = null;
+		JarFile jarFile = null;
+		try
+		{
+			URLConnection con = url.openConnection();
+			if(con instanceof JarURLConnection)
+			{
+				JarURLConnection jarCon = (JarURLConnection) con;
+				jarCon.setUseCaches(false);
+				jarFile = jarCon.getJarFile();
+			}
+			inputStream = con.getInputStream();
+			return inputStream != null;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+		finally
+		{
+			try
+			{
+				if (inputStream != null)
+				{
+					inputStream.close();
+				}
+				if(jarFile != null)
+				{
+					jarFile.close();
+				}
+			}
+			catch(Exception e)
+			{
+				//IGNORE
+			}
+		}
+	}
+	
 	@Override
 	public String getProtocol()
 	{
 		return "jar";
 	}
 
-	/**
-	 * 
-	 */
 	@Override
 	public URL getParentDir(URL url)
 	{

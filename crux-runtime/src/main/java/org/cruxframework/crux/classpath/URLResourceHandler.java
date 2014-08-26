@@ -30,4 +30,5 @@ public interface URLResourceHandler
 	URL getParentDir(URL url);
 	URL getChildResource(URL url, String path);
 	DirectoryIteratorFactory getDirectoryIteratorFactory();
+	boolean exists(URL url);
 }

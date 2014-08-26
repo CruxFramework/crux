@@ -17,7 +17,6 @@ package org.cruxframework.crux.scanner;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -510,29 +509,11 @@ public final class Scanners
 	 */
 	private static boolean resourceExists(URL url)
 	{
-		boolean exists = false;
-
-		URLStreamManager manager = new URLStreamManager(url);
-
-		try
+		if (url == null)
 		{
-			InputStream stream = manager.open();
-			if (stream != null)
-			{
-				exists = true;
-				stream.close();
-			}
+			return false;
 		}
-		catch (IOException e)
-		{
-			// nothing to do
-		}
-		finally
-		{
-			manager.close();
-		}
-
-		return exists;
+		return URLResourceHandlersRegistry.getURLResourceHandler(url.getProtocol()).exists(url);
 	}
 
 	private static URL[] getSearchURLs()

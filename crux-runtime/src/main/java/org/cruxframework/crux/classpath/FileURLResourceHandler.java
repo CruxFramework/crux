@@ -16,6 +16,7 @@
 package org.cruxframework.crux.classpath;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.cruxframework.crux.scanner.archiveiterator.DirectoryIteratorFactory;
@@ -28,17 +29,26 @@ import org.cruxframework.crux.scanner.archiveiterator.FileProtocolIteratorFactor
  */
 public class FileURLResourceHandler extends AbstractURLResourceHandler
 {
-	/**
-	 * 
-	 */
+	@Override
+	public boolean exists(URL url)
+	{
+		try
+        {
+	        return (new File(url.toURI()).exists());
+        }
+        catch (URISyntaxException e)
+        {
+        	return false;
+        }
+	}
+	
+	@Override
 	public String getProtocol()
 	{
 		return "file";
 	}
 
-	/**
-	 * 
-	 */
+	@Override
 	public URL getParentDir(URL url)
 	{
 		checkProtocol(url);
@@ -54,9 +64,7 @@ public class FileURLResourceHandler extends AbstractURLResourceHandler
 		}
 	}
 
-	/**
-	 * 
-	 */
+	@Override
 	public URL getChildResource(URL url, String path)
 	{
 		checkProtocol(url);
@@ -83,9 +91,7 @@ public class FileURLResourceHandler extends AbstractURLResourceHandler
 		}
 	}
 
-	/**
-	 * 
-	 */
+	@Override
 	public DirectoryIteratorFactory getDirectoryIteratorFactory()
 	{
 		return new FileProtocolIteratorFactory();

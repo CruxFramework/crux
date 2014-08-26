@@ -15,7 +15,9 @@
  */
 package org.cruxframework.crux.classpath;
 
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.cruxframework.crux.scanner.archiveiterator.DirectoryIteratorFactory;
 import org.cruxframework.crux.scanner.archiveiterator.ZIPProtocolIteratorFactory;
@@ -28,17 +30,44 @@ import org.cruxframework.crux.scanner.archiveiterator.ZIPProtocolIteratorFactory
  */
 public class ZIPURLResourceHandler extends AbstractURLResourceHandler implements PackageFileURLResourceHandler
 {
-	/**
-	 * 
-	 */
+
+	@Override
+	public boolean exists(URL url)
+	{
+		InputStream inputStream = null;
+		try
+		{
+			URLConnection con = url.openConnection();
+			inputStream = con.getInputStream();
+			return inputStream != null;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
+		finally
+		{
+			if (inputStream != null)
+			{
+				try
+				{
+					inputStream.close();
+				}
+				catch(Exception e)
+				{
+					//IGNORE
+				}
+			}
+		}
+	}
+	
+	@Override
 	public String getProtocol()
 	{
 		return "zip";
 	}
-	
-	/**
-	 * 
-	 */
+
+	@Override
 	public URL getParentDir(URL url)
 	{
 		try
@@ -72,17 +101,13 @@ public class ZIPURLResourceHandler extends AbstractURLResourceHandler implements
 		}
 	}
 
-	/**
-	 * 
-	 */
+	@Override
 	public DirectoryIteratorFactory getDirectoryIteratorFactory()
 	{
 		return new ZIPProtocolIteratorFactory();
 	}
 
-	/**
-	 * @see org.cruxframework.crux.classpath.PackageFileURLResourceHandler#getPackageFile(java.net.URL)
-	 */
+	@Override
 	public URL getPackageFile(URL url)
 	{
 		try
@@ -104,9 +129,7 @@ public class ZIPURLResourceHandler extends AbstractURLResourceHandler implements
 		}
 	}
 
-	/**
-	 * @see org.cruxframework.crux.classpath.PackageFileURLResourceHandler#getPackageResourceName(java.net.URL)
-	 */
+	@Override
 	public String getPackageResourceName(URL url)
 	{
 		try
