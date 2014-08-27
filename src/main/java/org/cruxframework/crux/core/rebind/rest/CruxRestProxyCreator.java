@@ -479,12 +479,12 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 						continue;
 					}
 				}
-				segment = Encode.encodePath(segment);
+				segment = Encode.encodePath(PathUtils.getSegmentParameter(segment));
 				path += segment;
 			}
 			else
 			{
-				segment = Encode.encodePath(segment);
+				segment = Encode.encodePath(PathUtils.getSegmentParameter(segment));
 				if ("".equals(path))
 				{
 					path = segment;

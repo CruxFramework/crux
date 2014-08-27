@@ -118,6 +118,7 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 		{
 			value = value.substring(1);
 		}
+		value = PathUtils.getSegmentParameter(value);
 		return basePath+"/"+value;
     }
 
