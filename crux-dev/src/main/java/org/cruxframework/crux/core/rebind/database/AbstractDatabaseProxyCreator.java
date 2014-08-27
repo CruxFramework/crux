@@ -155,6 +155,10 @@ public abstract class AbstractDatabaseProxyCreator extends AbstractInterfaceWrap
 	        	if (indexed != null)
 	        	{
 	        		String property = JClassUtils.getPropertyForGetterOrSetterMethod(method);
+		        	if (!isValidTypeForKey(method.getReturnType()))
+		        	{
+		        		throw new CruxGeneratorException("Invalid index type for index on method ["+method.getReadableDeclaration()+"]. Crux databases only support Strings, integers, double or dates as part of a key or index");
+		        	}
 	        		result.add(new IndexData(new String[]{prefix+property}, indexed.unique(), false, prefix+property));
 	        	}
 	        }
@@ -247,7 +251,7 @@ public abstract class AbstractDatabaseProxyCreator extends AbstractInterfaceWrap
 	        {
 	        	if (!isValidTypeForKey(method.getReturnType()))
 	        	{
-	        		throw new CruxGeneratorException("Crux databases only support Strings or int as key components");
+	        		throw new CruxGeneratorException("Invalid key type for key on method ["+method.getReadableDeclaration()+"]. Crux databases only support Strings, integers, double or dates as part of a key or index");
 	        	}
 	        	keys.add(key);
         		keyPath.add(JClassUtils.getPropertyForGetterOrSetterMethod(method));

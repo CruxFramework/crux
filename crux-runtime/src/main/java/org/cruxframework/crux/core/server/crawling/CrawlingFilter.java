@@ -154,6 +154,12 @@ public final class CrawlingFilter implements Filter
 
 				String contextPath = config.getServletContext().getContextPath();
 				result = removeStringPrefix(result, contextPath);
+				
+				while(result.contains("/"))
+				{
+					int i = result.indexOf("/");
+					result = result.substring(i+1);
+				}
 			}
 			else
 			{
