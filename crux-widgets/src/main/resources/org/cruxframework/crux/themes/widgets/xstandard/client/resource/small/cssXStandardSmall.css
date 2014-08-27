@@ -975,3 +975,35 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 {
 	margin:0;
 }
+
+
+/****************
+     DateBox
+****************/
+
+.crux-popupPanel,
+.crux-DatePicker
+{
+	width:100%;
+}
+
+.crux-DatePicker .datePickerMonthSelector,
+.crux-DatePicker .datePickerDays
+{
+	width:100% !important;
+}
+
+.crux-DatePicker .datePickerDays
+{
+	height:auto !important;
+}
+
+.crux-DatePicker .datePickerDays .datePickerDay
+{
+	padding:13px;
+}
+
+.crux-DatePicker .datePickerMonthSelector td
+{
+	text-align:center;
+}
