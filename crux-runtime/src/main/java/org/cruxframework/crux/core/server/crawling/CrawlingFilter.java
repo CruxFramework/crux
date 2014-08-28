@@ -28,6 +28,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.server.Environment;
@@ -153,12 +154,10 @@ public final class CrawlingFilter implements Filter
 				}
 
 				String contextPath = config.getServletContext().getContextPath();
-				result = removeStringPrefix(result, contextPath);
 				
-				while(result.contains("/"))
+				if (StringUtils.isNotBlank(contextPath) && result.startsWith(contextPath))
 				{
-					int i = result.indexOf("/");
-					result = result.substring(i+1);
+					result = StringUtils.removeStart(result, contextPath);
 				}
 			}
 			else
