@@ -18,6 +18,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.smartfaces.client.disposal.leftmenudisposallayout.LeftMenuDisposalLayout;
+import org.cruxframework.crux.smartfaces.client.disposal.leftmenudisposallayout.LeftMenuDisposalLayoutLargeController.LeftDisposalMenuType;
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
@@ -74,6 +75,9 @@ public class LeftMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutC
 	}
 	
 	@TagConstraints(maxOccurs="1",minOccurs="0",tagName="mainMenu")
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="menuType", type=LeftDisposalMenuType.class, defaultValue="VERTICAL_DROPDOWN")
+	})
 	@TagChildren({
 		@TagChild(LeftMenuDisposalLayoutFactory.MenuItemProcessor.class)
 	})
@@ -83,9 +87,9 @@ public class LeftMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutC
 		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
 		{
 			String menu = getWidgetCreator().createVariableName("menuWidget");
-			out.println(Menu.class.getCanonicalName() + " " + menu + " = new "+Menu.class.getCanonicalName()+"("+LargeType.class.getCanonicalName()+".VERTICAL_DROPDOWN,"+ SmallType.class.getCanonicalName()+".VERTICAL_ACCORDION);");
+			String menuType = context.readChildProperty("menuType");
+			out.println(Menu.class.getCanonicalName() + " " + menu + " = new "+Menu.class.getCanonicalName()+"("+LargeType.class.getCanonicalName()+"."+menuType+"," + SmallType.class.getCanonicalName()+".VERTICAL_ACCORDION);");
 			context.menu = menu;
-			out.println(context.getWidget()+".setMenu("+menu+");");
 			context.itemStack.addFirst(menu);
 			
 		}

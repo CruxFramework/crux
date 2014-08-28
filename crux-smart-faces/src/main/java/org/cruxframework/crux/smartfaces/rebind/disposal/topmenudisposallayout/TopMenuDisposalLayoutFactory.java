@@ -18,6 +18,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.smartfaces.client.disposal.topmenudisposallayout.TopMenuDisposalLayout;
+import org.cruxframework.crux.smartfaces.client.disposal.topmenudisposallayout.TopMenuDisposalLayoutLargeController.TopDisposalMenuType;
 import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
 import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
@@ -30,7 +31,7 @@ import org.cruxframework.crux.smartfaces.rebind.disposal.topmenudisposallayout.T
 import com.google.gwt.core.client.GWT;
 
 
-@DeclarativeFactory(library=Constants.LIBRARY_NAME,id="topMenuDisposalLayout",targetWidget=TopMenuDisposalLayout.class)
+@DeclarativeFactory(library=Constants.LIBRARY_NAME,id="topMenuDisposalLayout",targetWidget=TopMenuDisposalLayout.class, description="A component to define the page's layout. It contains a header, a interactive menu, a content panel and a footer.")
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration("defaultView")
 })
@@ -75,6 +76,9 @@ public class TopMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutCo
 	}
 	
 	@TagConstraints(maxOccurs="1",minOccurs="0",tagName="mainMenu")
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="menuType", type=TopDisposalMenuType.class, defaultValue="HORIZONTAL_DROPDOWN")
+	})
 	@TagChildren({
 		@TagChild(TopMenuDisposalLayoutFactory.MenuItemProcessor.class)
 	})
@@ -84,7 +88,14 @@ public class TopMenuDisposalLayoutFactory extends WidgetCreator<DisposalLayoutCo
 		public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
 		{
 			String menu = getWidgetCreator().createVariableName("menuWidget");
-			out.println(Menu.class.getCanonicalName() + " " + menu + " = new "+Menu.class.getCanonicalName()+"("+LargeType.class.getCanonicalName()+".HORIZONTAL_DROPDOWN,"+ SmallType.class.getCanonicalName()+".VERTICAL_ACCORDION);");
+			String menuType = context.readChildProperty("menuType");
+			
+			if(menuType.isEmpty())
+			{
+				menuType = "HORIZONTAL_DROPDOWN";
+			}
+			
+			out.println(Menu.class.getCanonicalName() + " " + menu + " = new "+Menu.class.getCanonicalName()+"("+LargeType.class.getCanonicalName()+"."+menuType+"," + SmallType.class.getCanonicalName()+".VERTICAL_ACCORDION);");
 			context.menu = menu;
 			context.itemStack.addFirst(menu);
 			
