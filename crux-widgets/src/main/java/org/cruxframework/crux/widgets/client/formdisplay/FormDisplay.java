@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.widgets.client.formdisplay;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Gesse S. F. Dafe
@@ -130,5 +133,22 @@ public class FormDisplay extends Composite
 			cellFormatter.getElement(numRows, 0).getStyle().setProperty("display", "table-cell");
 			cellFormatter.getElement(numRows, 0).getStyle().setProperty("textAlign", align.getTextAlignString());
 		}
+	}
+
+	public ArrayList<Widget> listWidgets() 
+	{
+		if(panel == null)
+		{
+			return null;
+		}
+		
+		ArrayList<Widget> widgets = new ArrayList<Widget>();
+		
+		for(Widget widget : panel)
+		{
+			widgets.add(widget);
+		}
+		
+		return widgets;
 	}
 }
