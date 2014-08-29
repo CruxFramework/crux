@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 cruxframework.org.
+ * Copyright 2014 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,10 +27,10 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
@@ -54,6 +54,7 @@ public abstract class ViewContainer extends Composite
 
 	/**
 	 * Constructor
+	 * @param mainWidget main widget on this container
 	 */
 	public ViewContainer(Widget mainWidget)
     {
@@ -62,6 +63,7 @@ public abstract class ViewContainer extends Composite
 
 	/**
 	 * Constructor
+	 * @param mainWidget Main widget on this container
 	 * @param clearPanelsForDeactivatedViews If true, makes the container clear the container panel for a view, when the view is deactivated.
 	 */
 	public ViewContainer(Widget mainWidget, boolean clearPanelsForDeactivatedViews)
@@ -151,25 +153,6 @@ public abstract class ViewContainer extends Composite
 		return false;
 	}
 
-	/**
-	 * Loads a new view into the container
-	 * @param view View to be added
-	 * @param render If true, call the render method
-	 * @return
-	 */
-    public boolean add(View view, boolean render, Object parameter)
-    {
-		if (addView(view, false, parameter))
-		{
-			if (render)
-			{
-				renderView(view, parameter);
-			}
-			return true;
-		}
-		return false;
-    }
-
     /**
      * Render the requested view into the container.
      * @param viewName View name
@@ -189,28 +172,6 @@ public abstract class ViewContainer extends Composite
 		showView(viewName, viewId, null);
 	}
 	
-	/**
-     * Render the requested view into the container.
-     * @param viewId View identifier
-	 * @param viewId View name
-	 * @param parameter to be passed to activate event
-	 */
-	public void showView(String viewName, String viewId, Object parameter)
-	{
-		View view = getView(viewId);
-		if (view != null)
-		{
-			if (!view.isActive())
-			{
-				renderView(view, parameter);
-			}
-		}
-		else
-		{
-			loadAndRenderView(viewName, viewId, parameter);
-		}
-	}
-
 	/**
 	 * Retrieve the view associated to viewId
 	 * @param viewId View identifier
@@ -269,9 +230,9 @@ public abstract class ViewContainer extends Composite
 	 */
 	public void loadView(String viewName, final boolean render)
 	{
-		loadView(viewName, viewName, render, null);
+		loadView(viewName, viewName, render);
 	}
-	
+
 	/**
 	 * Loads a view into the current container
 	 * 
@@ -279,7 +240,20 @@ public abstract class ViewContainer extends Composite
 	 * @param viewId View identifier
 	 * @param render If true also render the view
 	 */
-	public void loadView(final String viewName, final String viewId, final boolean render, final Object parameter)
+	public void loadView(final String viewName, final String viewId, final boolean render)
+	{
+		loadView(viewName, viewId, render, null);
+	}
+	
+	/**
+	 * Loads a view into the current container
+	 * 
+	 * @param viewName View name
+	 * @param viewId View identifier
+	 * @param parameter A parameter passed that will be bound to the view load and activate events
+	 * @param render If true also render the view
+	 */
+	protected void loadView(final String viewName, final String viewId, final boolean render, final Object parameter)
 	{
 		try
 		{
@@ -305,6 +279,48 @@ public abstract class ViewContainer extends Composite
 		}
 	}
 	
+	/**
+	 * Loads a new view into the container
+	 * @param view View to be added
+	 * @param render If true, call the render method
+	 * @param parameter A parameter passed that will be bound to the view load and activate events
+	 * @return true if the view is loaded into the container
+	 */
+    protected boolean add(View view, boolean render, Object parameter)
+    {
+		if (addView(view, false, parameter))
+		{
+			if (render)
+			{
+				renderView(view, parameter);
+			}
+			return true;
+		}
+		return false;
+    }
+
+	/**
+     * Render the requested view into the container.
+     * @param viewId View identifier
+	 * @param viewId View name
+	 * @param parameter to be passed to activate event
+	 */
+	protected void showView(String viewName, String viewId, Object parameter)
+	{
+		View view = getView(viewId);
+		if (view != null)
+		{
+			if (!view.isActive())
+			{
+				renderView(view, parameter);
+			}
+		}
+		else
+		{
+			loadAndRenderView(viewName, viewId, parameter);
+		}
+	}
+
 	protected void loadAndRenderView(final String viewName, final String viewId, final Object parameter)
 	{
 		try

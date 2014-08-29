@@ -20,7 +20,7 @@ import org.cruxframework.crux.core.client.controller.crossdevice.DeviceAdaptiveC
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
-import org.cruxframework.crux.smartfaces.client.viewcontainer.LayoutViewContainer;
+import org.cruxframework.crux.smartfaces.client.viewcontainer.SimpleViewContainer;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -46,7 +46,7 @@ public abstract class BaseDisposalLayoutController extends DeviceAdaptiveControl
 	protected Panel footerPanel;
 	protected Panel contentPanel;
 	protected Menu menu;
-	protected LayoutViewContainer viewContainer;
+	protected SimpleViewContainer viewContainer;
 	
 	/** 
 	 * Must be overridden to create an object instance that will be set as the contentPanel (FlowPanel, SimplePanel etc.)
@@ -118,7 +118,7 @@ public abstract class BaseDisposalLayoutController extends DeviceAdaptiveControl
 			throw new RuntimeException("MenuPanel and ContentPanel cannot be null.");
 		}
 		
-		viewContainer = new LayoutViewContainer();
+		viewContainer = new SimpleViewContainer();
 		contentPanel.add(viewContainer);
 		setStyles();
 		addHistoryHandlers();

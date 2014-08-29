@@ -30,11 +30,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class MultipleViewsContainer extends ParameterizedViewContainer
+public abstract class MultipleCrawlableViewsContainer extends CrawlableViewContainer
 {
 	protected FastMap<View> activeViews = new FastMap<View>();;
 
-	public MultipleViewsContainer(Widget mainWidget, boolean clearPanelsForDeactivatedViews)
+	public MultipleCrawlableViewsContainer(Widget mainWidget, boolean clearPanelsForDeactivatedViews)
     {
 	    super(mainWidget, clearPanelsForDeactivatedViews);
     }
