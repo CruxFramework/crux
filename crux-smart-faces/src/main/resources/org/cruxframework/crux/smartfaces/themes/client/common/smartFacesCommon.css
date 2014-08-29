@@ -209,8 +209,12 @@ body
 .facesMenu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li
 {
     float:left;
-    padding:10px 4%;
     border-right:1px solid #d7d7d7;
+}
+
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel .faces-Label
+{	
+    padding:10px 4%;
 }
 
 .facesMenu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul
@@ -840,6 +844,7 @@ body
 	background:rgba(0,0,0,0.3);
 	-webkit-transition:opacity 1.3 linear;
 }
+
 	
 	
 	
