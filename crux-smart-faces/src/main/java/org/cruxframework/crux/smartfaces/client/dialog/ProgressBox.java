@@ -35,7 +35,7 @@ public class ProgressBox extends AbstractDialogBox implements HasValue<Integer>
 	private Progress progress;
 
 	/**
-	 * Creates a wait box
+	 * Creates a progress box
 	 */
 	public ProgressBox()
 	{
@@ -43,7 +43,7 @@ public class ProgressBox extends AbstractDialogBox implements HasValue<Integer>
 	}
 	
 	/**
-	 * Creates a wait box
+	 * Creates a progress box
 	 * @param movable
 	 */
 	public ProgressBox(boolean movable)
@@ -80,11 +80,19 @@ public class ProgressBox extends AbstractDialogBox implements HasValue<Integer>
 		progress.setValue(value);
 	}
 	
+	/**
+	 * Define the max value for the progress element
+	 * @param max maxValue
+	 */
 	public void setMax(int max)
 	{
 		progress.setMax(max);
 	}
 	
+	/**
+	 * Retrieve the maximum value for the progress element
+	 * @return maxValue
+	 */
 	public int getMax()
 	{
 		return progress.getMax();
@@ -126,11 +134,19 @@ public class ProgressBox extends AbstractDialogBox implements HasValue<Integer>
 		return progressBox;
 	}
 	
+	/**
+	 * Verify if this widget is supported on the user browser
+	 * @return true if supported
+	 */
 	public static boolean isSupported()
 	{
 		return Progress.isSupported();
 	}
 	
+	/**
+	 * If the user browser supports this widget, create a new instance
+	 * @return a progressBox or null if not supported
+	 */
 	public static ProgressBox createIfSupported()
 	{
 		if (isSupported())
@@ -140,6 +156,11 @@ public class ProgressBox extends AbstractDialogBox implements HasValue<Integer>
 		return null;
 	}
 
+	/**
+	 * If the user browser supports this widget, create a new instance
+	 * @param movable if true, makes the dialog movable through the screen
+	 * @return a progressBox or null if not supported
+	 */
 	public static ProgressBox createIfSupported(boolean movable)
 	{
 		if (isSupported())
