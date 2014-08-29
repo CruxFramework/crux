@@ -3,7 +3,15 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 
 @external *;
 
-*:focus, *:active, *:hover
+@def COLOR_BORDER_GRAY 		    #b9b9b9;
+@def COLOR_BORDER_GRAY_HOVER    #919191;
+@def COLOR_BORDER_BLUE 		    #2e73ba;
+@def COLOR_BORDER_BLUE_HOVER    #1c5d9f;
+@def COLOR_BORDER_DISABLED 	    #a4a4a4;
+
+@def BOX_SHADOW_FOCUS 0px 0px 0px 1px rgba(35, 143, 255, 0.71), 0 0 0 2px rgba(199, 221, 255, 0.75) inset;
+
+*:focus, *:active, *:hover	
 {
 	/**
 	* Prevent that blue (or black, if in iOS) overlay on an element
@@ -766,3 +774,59 @@ body
 	border-bottom: 2px solid #808080;
 	z-index:1;
 }
+
+
+/* -------------------- facesButton -----------------------*/
+
+.faces-Button
+{
+	border:1px solid COLOR_BORDER_GRAY;
+	border-radius: 3px;
+	background-image: -moz-linear-gradient( 90deg, rgb(239,239,239) 1%, rgb(255,255,255) 100%);
+	background-image: -webkit-linear-gradient( 90deg, rgb(239,239,239) 1%, rgb(255,255,255) 100%);
+	background-image: -ms-linear-gradient( 90deg, rgb(239,239,239) 1%, rgb(255,255,255) 100%);
+	color:#555;
+	font-size:12px;
+	padding:9px 13px;
+}
+
+.faces-Button:hover
+{
+	border:1px solid COLOR_BORDER_GRAY_HOVER;
+}
+
+.faces-Button:active
+{
+	background:#efefef;
+}
+
+.faces-Button:focus
+{
+	box-shadow:BOX_SHADOW_FOCUS;
+}
+
+.faces--group .faces-Button
+{
+	border-radius:0;
+	margin-left:-1px;
+	position:relative;
+}
+
+.faces--group .faces-Button:hover
+{
+	z-index:2;
+}
+
+.faces--group .faces-Button:first-child
+{
+	border-radius:3px 0 0 3px;
+}
+
+.faces--group .faces-Button:last-child
+{
+	border-radius:0 3px 3px 0;
+}
+
+	
+	
+	
