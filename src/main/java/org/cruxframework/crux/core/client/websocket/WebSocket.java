@@ -19,7 +19,6 @@ import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.file.Blob;
 
 import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
@@ -31,7 +30,6 @@ import com.google.gwt.typedarrays.shared.ArrayBufferView;
  */
 public class WebSocket
 {
-	private HandlerManager handlerManager;
 	private FastList<SocketMessageHandler> messageHandlers = new FastList<SocketMessageHandler>();
 	private FastList<SocketOpenHandler> openHandlers = new FastList<SocketOpenHandler>();
 	private FastList<SocketCloseHandler> closeHandlers = new FastList<SocketCloseHandler>();
