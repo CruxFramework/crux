@@ -27,11 +27,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class SingleViewContainer extends ParameterizedViewContainer
+public abstract class SingleCrawlableViewContainer extends CrawlableViewContainer
 {
 	protected View activeView = null;;
 
-	public SingleViewContainer(Widget mainWidget, boolean clearPanelsForDeactivatedViews)
+	public SingleCrawlableViewContainer(Widget mainWidget, boolean clearPanelsForDeactivatedViews)
     {
 	    super(mainWidget, clearPanelsForDeactivatedViews);
     }
@@ -43,6 +43,13 @@ public abstract class SingleViewContainer extends ParameterizedViewContainer
 	public View getActiveView()
 	{
 		return activeView;
+	}
+	
+	@Override
+	protected boolean isViewDisplayed(String viewId)
+	{
+		View view = getView(viewId);
+		return (view != null && view.isActive());
 	}
 	
 	@Override

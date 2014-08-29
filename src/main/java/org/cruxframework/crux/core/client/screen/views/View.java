@@ -857,6 +857,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	/**
 	 * Called by the {@link ViewContainer} when the view is added to the container. 
 	 * This method creates the view widgets
+	 * @param parameter parameter sent to view and accessible through ViewLoadEvent event
 	 */
 	protected void load(Object paramenter)
 	{
@@ -869,7 +870,6 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 			fireLoadEvent(paramenter);
 		}
 	}
-	
 	/**
 	 * Called by the {@link ViewContainer} when the view is removed from the container. 
 	 * @return true if the view is not loaded
@@ -1166,7 +1166,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-    public static <T extends View> T  of(Object viewAware)
+    public static <T extends View> T of(Object viewAware)
 	{
 		assert (viewAware instanceof ViewAware): Crux.getMessages().viewOjectIsNotAwareOfView();
 		return (T) ((ViewAware)viewAware).getBoundCruxView();
