@@ -133,13 +133,6 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		{
 			glass = Document.get().createDivElement();
 			glass.setClassName(glassStyleName);
-
-			Style style = glass.getStyle();
-			style.setPosition(Position.FIXED);
-			style.setLeft(0, Unit.PX);
-			style.setTop(0, Unit.PX);
-			style.setBottom(0, Unit.PX);
-			style.setRight(0, Unit.PX);
 		}
 
 		addCloseHandler(new CloseHandler<PopupPanel>()

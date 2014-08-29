@@ -90,7 +90,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	{
 		super(false, modal);
 		setStyleName(baseStyleName);
-		setGlassStyleName("dialogGlass");
+		setGlassStyleName("faces-overlay");
 
 		FlowPanel topBar = prepareTopBar(movable, closable);
 		

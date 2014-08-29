@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCancelHandlers
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-Confirm";
+	public static final String DEFAULT_STYLE_NAME = "faces-Confirm faces-popup";
 
 	private HTML msgLabel;
 	private Button okButton;
