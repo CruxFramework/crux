@@ -57,7 +57,7 @@ public class DialogViewContainerFactory extends WidgetCreator<WidgetCreatorConte
 		boolean closable = context.readBooleanWidgetProperty("closable", true);
 		boolean resizable = context.readBooleanWidgetProperty("resizable", false);
 		boolean modal = context.readBooleanWidgetProperty("modal", true);
-		String styleName = context.readWidgetProperty("styleName", DialogBox.DEFAULT_STYLE_NAME);
+		String styleName = context.readWidgetProperty("styleName", DialogBox.DEFAULT_STYLE_NAMES);
 		
 		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+movable+", "+resizable+", "+
 											closable+", "+modal+", "+EscapeUtils.quote(styleName)+");");

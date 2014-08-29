@@ -116,7 +116,7 @@ public class QuestionBoxFactory extends PanelFactory<WidgetCreatorContext>
 		boolean movable = context.readBooleanWidgetProperty("movable", true);
 		boolean resizable = context.readBooleanWidgetProperty("resizable", false);
 		boolean closable = context.readBooleanWidgetProperty("closable", false);
-		String styleName = context.readWidgetProperty("styleName", QuestionBox.DEFAULT_STYLE_NAME);
+		String styleName = context.readWidgetProperty("styleName", QuestionBox.DEFAULT_STYLE_NAMES);
 		
 		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+movable+", "+resizable+", "+closable+", "+EscapeUtils.quote(styleName)+");");
 	}

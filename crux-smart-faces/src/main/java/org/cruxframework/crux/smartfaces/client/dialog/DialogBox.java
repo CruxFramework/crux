@@ -31,7 +31,7 @@ public class DialogBox extends AbstractDialogBox
 	 */
 	public DialogBox()
 	{
-		super(true, true, true, false, DEFAULT_STYLE_NAME);
+		super(true, true, true, false, DEFAULT_STYLE_NAMES);
 	}
 	
 	/**
@@ -42,7 +42,7 @@ public class DialogBox extends AbstractDialogBox
 	 */
 	public DialogBox(boolean movable, boolean resizable, boolean closable, boolean modal) 
 	{
-		super(movable, resizable, closable, modal, DEFAULT_STYLE_NAME);
+		super(movable, resizable, closable, modal, DEFAULT_STYLE_NAMES);
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class DialogBox extends AbstractDialogBox
 	 */
 	public static DialogBox show(IsWidget widget)
 	{
-		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAME, null);
+		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAMES, null);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class DialogBox extends AbstractDialogBox
 	 */
 	public static DialogBox show(IsWidget widget, DialogAnimation animation)
 	{
-		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAME, animation);
+		return show(null, widget, true, true, true, false, DEFAULT_STYLE_NAMES, animation);
 	}
 
 	/**

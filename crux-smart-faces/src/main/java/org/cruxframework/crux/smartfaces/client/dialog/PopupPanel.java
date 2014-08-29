@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.UIObject;
  */
 public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCloseHandlers<PopupPanel>, HasOpenHandlers<PopupPanel>, NativePreviewHandler
 {
-	public static final String DEFAULT_GLASS_STYLE_NAME = "faces-PopupPanelGlass";
+	public static final String DEFAULT_GLASS_STYLE_NAME = "faces-overlay";
 	
 	private HandlerRegistration nativePreviewHandlerRegistration;
 	private HandlerRegistration historyHandlerRegistration;

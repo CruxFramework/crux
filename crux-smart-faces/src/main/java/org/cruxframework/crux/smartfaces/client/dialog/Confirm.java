@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCancelHandlers
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-Confirm faces-popup";
+	public static final String DEFAULT_STYLE_NAMES = "faces-Confirm faces-popup";
 
 	private HTML msgLabel;
 	private Button okButton;
@@ -54,7 +54,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	 */
 	public Confirm()
 	{
-		this(true, false, DEFAULT_STYLE_NAME);
+		this(true, false, DEFAULT_STYLE_NAMES);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler)
 	{
 		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
-				okHandler, cancelHandler, DEFAULT_STYLE_NAME, null);
+				okHandler, cancelHandler, DEFAULT_STYLE_NAMES, null);
 	}
 	
 	/**
@@ -97,7 +97,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, boolean movable, boolean resizable)
 	{
 		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
-				okHandler, cancelHandler, movable, resizable, DEFAULT_STYLE_NAME, null);
+				okHandler, cancelHandler, movable, resizable, DEFAULT_STYLE_NAMES, null);
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, DialogAnimation animation)
 	{
 		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
-				okHandler, cancelHandler, DEFAULT_STYLE_NAME, animation);
+				okHandler, cancelHandler, DEFAULT_STYLE_NAMES, animation);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	public static Confirm show(String title, String message, OkHandler okHandler, CancelHandler cancelHandler, boolean movable, boolean resizable, DialogAnimation animation)
 	{
 		return show(title, message, WidgetMsgFactory.getMessages().okLabel(), WidgetMsgFactory.getMessages().cancelLabel(), 
-				okHandler, cancelHandler, movable, resizable, DEFAULT_STYLE_NAME, animation);
+				okHandler, cancelHandler, movable, resizable, DEFAULT_STYLE_NAMES, animation);
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	 */
 	public static Confirm show(String title, String message, String okLabel, String cancelLabel, OkHandler okHandler, CancelHandler cancelHandler)
 	{
-		return show(title, message, okLabel, cancelLabel, okHandler, cancelHandler, DEFAULT_STYLE_NAME, null);
+		return show(title, message, okLabel, cancelLabel, okHandler, cancelHandler, DEFAULT_STYLE_NAMES, null);
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	public static Confirm show(String title, String message, String okLabel, String cancelLabel, OkHandler okHandler, CancelHandler cancelHandler, 
 			boolean movable, boolean resizable)
 	{
-		return show(title, message, okLabel, cancelLabel, okHandler, cancelHandler, movable, resizable, DEFAULT_STYLE_NAME, null);
+		return show(title, message, okLabel, cancelLabel, okHandler, cancelHandler, movable, resizable, DEFAULT_STYLE_NAMES, null);
 	}
 
 	/**

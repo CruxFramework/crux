@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WaitBox extends AbstractDialogBox
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-WaitBox";
+	public static final String DEFAULT_STYLE_NAMES = "faces-WaitBox faces-popup";
 
 	/**
 	 * Creates a wait box
@@ -42,7 +42,7 @@ public class WaitBox extends AbstractDialogBox
 	 */
 	public WaitBox(boolean movable)
 	{
-		super(movable, false, false, true, DEFAULT_STYLE_NAME);
+		super(movable, false, false, true, DEFAULT_STYLE_NAMES);
 		setWidget(createProgressBar());
 	}
 

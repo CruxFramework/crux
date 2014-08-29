@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class AbstractDialogBox extends PopupPanel implements Movable<Label>, Resizable<Label>
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-DialogBox";
+	public static final String DEFAULT_STYLE_NAMES = "faces-DialogBox faces-popup";
 	private static final int MIN_WIDTH = 100;
 	private static final int MIN_HEIGHT = 50;
 	private static List<AbstractDialogBox> openDialogs = new ArrayList<AbstractDialogBox>();
@@ -64,7 +64,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	 */
 	public AbstractDialogBox()
 	{
-		this(true, true, true, false, DEFAULT_STYLE_NAME);
+		this(true, true, true, false, DEFAULT_STYLE_NAMES);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	 */
 	public AbstractDialogBox(boolean movable, boolean resizable, boolean closable, boolean modal) 
 	{
-		this(movable, resizable, closable, modal, DEFAULT_STYLE_NAME);
+		this(movable, resizable, closable, modal, DEFAULT_STYLE_NAMES);
 	}
 	
 	/**

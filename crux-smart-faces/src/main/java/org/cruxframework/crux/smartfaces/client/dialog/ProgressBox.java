@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.HasValue;
 @PartialSupport
 public class ProgressBox extends AbstractDialogBox implements HasValue<Integer>
 {
-	public static final String DEFAULT_STYLE_NAME = "faces-ProgressBox";
+	public static final String DEFAULT_STYLE_NAMES = "faces-ProgressBox faces-popup";
 	private Progress progress;
 
 	/**
@@ -48,7 +48,7 @@ public class ProgressBox extends AbstractDialogBox implements HasValue<Integer>
 	 */
 	public ProgressBox(boolean movable)
 	{
-		super(movable, false, false, true, DEFAULT_STYLE_NAME);
+		super(movable, false, false, true, DEFAULT_STYLE_NAMES);
 		progress = Progress.createIfSupported();
 		setWidget(progress);
 	}

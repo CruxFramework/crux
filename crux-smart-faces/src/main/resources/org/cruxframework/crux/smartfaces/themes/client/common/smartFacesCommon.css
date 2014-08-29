@@ -104,7 +104,7 @@ body
 	z-index:5;
 }
 
-.faces-DialogBox, .faces-MessageBox, .faces-Confirm
+.faces-popup
 {
 	z-index:6;
 }

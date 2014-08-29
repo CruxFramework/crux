@@ -63,7 +63,7 @@ public class ConfirmFactory extends PanelFactory<WidgetCreatorContext>
 		String className = getWidgetClassName();
 		boolean movable = context.readBooleanWidgetProperty("movable", true);
 		boolean resizable = context.readBooleanWidgetProperty("resizable", false);
-		String styleName = context.readWidgetProperty("styleName", Confirm.DEFAULT_STYLE_NAME);
+		String styleName = context.readWidgetProperty("styleName", Confirm.DEFAULT_STYLE_NAMES);
 		
 		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+movable+", "+resizable+", "+EscapeUtils.quote(styleName)+");");
 	}
