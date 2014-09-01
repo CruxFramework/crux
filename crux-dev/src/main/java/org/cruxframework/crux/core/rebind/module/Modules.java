@@ -113,13 +113,23 @@ public class Modules
 	}
 	
 	/**
-	 * @param controller
+	 * @param targetClass
 	 * @param moduleId
 	 * @return
 	 */
-	public boolean isClassOnModulePath(String controller, String moduleId)
+	public boolean isClassOnModulePath(String targetClass, String moduleId)
 	{
-		return isClassOnModulePath(controller.replace('.', '/'), moduleId, new HashSet<String>());
+		return isClassOnModulePath(targetClass.replace('.', '/'), moduleId, new HashSet<String>());
+	}
+
+	/**
+	 * @param targetClassFile
+	 * @param moduleId
+	 * @return
+	 */
+	public boolean isClassOnModulePath(URL targetClassFile, String moduleId)
+	{
+		return isClassOnModulePath(targetClassFile, moduleId, new HashSet<String>());
 	}
 
 	/**
@@ -205,7 +215,7 @@ public class Modules
 	    URL moduleRoot = module.getDescriptorURL();
 		URLResourceHandler urlResourceHandler = URLResourceHandlersRegistry.getURLResourceHandler(moduleRoot.getProtocol());
 		moduleRoot = urlResourceHandler.getParentDir(moduleRoot);
-		urlResourceHandler.getChildResource(moduleRoot, path);
+		moduleRoot = urlResourceHandler.getChildResource(moduleRoot, path);
 	    return moduleRoot;
     }
 
@@ -228,11 +238,11 @@ public class Modules
 
 	/**
 	 * 
-	 * @param controller
+	 * @param targetClass
 	 * @param module
 	 * @return
 	 */
-	protected boolean isClassOnModulePath(String controller, String moduleId, Set<String> alreadySearched)
+	protected boolean isClassOnModulePath(String targetClass, String moduleId, Set<String> alreadySearched)
 	{
 		if (alreadySearched.contains(moduleId))
 		{
@@ -244,14 +254,45 @@ public class Modules
 		{
 			for(String source: module.getSources())
 			{
-				if (controller.startsWith(module.getRootPath()+source))
+				if (targetClass.startsWith(module.getRootPath()+source))
 				{
 					return true;
 				}
 			}
 			for (String inheritModule : module.getInherits())
 			{
-				if (isClassOnModulePath(controller, inheritModule, alreadySearched))
+				if (isClassOnModulePath(targetClass, inheritModule, alreadySearched))
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}	
+
+	protected boolean isClassOnModulePath(URL resource, String moduleId, Set<String> alreadySearched)
+	{
+		if (alreadySearched.contains(moduleId))
+		{
+			return false;
+		}
+		alreadySearched.add(moduleId);
+		Module module = getModule(moduleId);
+		if (module != null)
+		{
+			
+			for(String path: module.getSources())
+			{
+				URL relativeURL = getModuleRelativeURL(module, path);
+				if (resource.toString().startsWith(relativeURL.toString()))
+				{
+					return true;
+				}
+			}
+			for (String inheritModule : module.getInherits())
+			{
+				if (isClassOnModulePath(resource, inheritModule, alreadySearched))
 				{
 					return true;
 				}
@@ -264,7 +305,8 @@ public class Modules
 	/**
 	 * 
 	 * @param resource
-	 * @param module
+	 * @param moduleId
+	 * @param alreadySearched
 	 * @return
 	 */
 	protected boolean isResourceOnModulePath(URL resource, String moduleId, Set<String> alreadySearched)

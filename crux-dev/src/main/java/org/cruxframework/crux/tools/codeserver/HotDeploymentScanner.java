@@ -33,6 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.template.Templates;
+import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.server.rest.spi.HttpUtil;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
@@ -163,7 +164,7 @@ public class HotDeploymentScanner
 	 * @param file
 	 * @param fileName
 	 */
-	private boolean checkFile(File file, String fileName) 
+	private boolean checkFile(File file, String fileName) throws IOException
 	{
 		long modified = file.lastModified();
 	    Long viewLastModified = lastModified.get(fileName);
@@ -174,7 +175,19 @@ public class HotDeploymentScanner
 	    else if (viewLastModified < modified)
 	    {
 	    	lastModified.put(fileName, modified);
-	    	logger.info("File modified: ["+fileName+"].");
+			if (fileName.endsWith(".class")) 
+			{
+				if (!Modules.getInstance().isClassOnModulePath(file.toURI().toURL(), moduleToCompile))
+				{
+					return false;
+				}
+			}
+			else if (fileName.endsWith(".jar") || fileName.endsWith(".java") || 
+					!Modules.getInstance().isResourceOnModulePathOrContext(file.toURI().toURL(), moduleToCompile))
+			{
+				return false;
+			}
+			logger.info("File modified: ["+fileName+"].");
 	    	return true;
 	    }	
 	    return false;
@@ -206,38 +219,47 @@ public class HotDeploymentScanner
 	 */
 	public static void scanProjectDirs(String hostName, int port, String moduleToCompile, String userAgent, String locale)
 	{
-		List<URL> srcDir = getSearchableFiles();
+		List<File> srcDir = getSearchableFiles(moduleToCompile);
 		
 		HotDeploymentScanner scanner = new HotDeploymentScanner(hostName, port, moduleToCompile, userAgent, locale, srcDir.size());
 		
-		for (URL url : srcDir)
+		for (File file : srcDir)
 		{
-			try
-			{
-				final File file = new File(url.toURI());
-				scanner.addFile(file);
+			scanner.addFile(file);
+		}
+		scanner.startScanner();
+	}
+
+	private static List<File> getSearchableFiles(String moduleToCompile) 
+	{
+		URL[] dirs = ClasspathUrlFinder.findClassPaths();
+		List<File> srcDir = new ArrayList<File>();
+
+		for (URL url : dirs)
+		{
+			try{
+				File file = new File(url.toURI());
+				if (file.isDirectory())
+				{
+					srcDir.add(file);
+				}
+				else if (!url.toString().endsWith(".class") && Modules.getInstance().isClassOnModulePath(url, moduleToCompile))
+				{
+					srcDir.add(file);
+				}
+				/* avoid scanning jar files */
+				else if (!url.toString().endsWith(".jar") && !url.toString().endsWith(".java") && 
+						Modules.getInstance().isResourceOnModulePathOrContext(url, moduleToCompile))
+				{
+					srcDir.add(file);
+				}
 			}
 			catch (URISyntaxException e)
 			{
 				logger.info("Error scanning dir: ["+url.toString()+"].", e);
 			}
 		}
-		scanner.startScanner();
-	}
 
-	private static List<URL> getSearchableFiles() 
-	{
-		URL[] dirs = ClasspathUrlFinder.findClassPaths();
-		List<URL> srcDir = new ArrayList<URL>(0);
-		
-		/* avoid scanning jar files */
-		for (URL url : dirs)
-		{
-			if (!url.toString().endsWith(".jar") && !url.toString().endsWith(".java"))
-			{
-				srcDir.add(url);
-			}
-		}
 		return srcDir;
 	}
 }
