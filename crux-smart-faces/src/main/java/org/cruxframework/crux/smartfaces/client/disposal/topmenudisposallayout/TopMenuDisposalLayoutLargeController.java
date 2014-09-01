@@ -81,4 +81,10 @@ public class TopMenuDisposalLayoutLargeController extends BaseDisposalLayoutCont
 
 	@Override
 	public void addSmallHeaderContent(Widget param){}
+	
+	public enum TopDisposalMenuType
+	{
+		HORIZONTAL_ACCORDION,
+		HORIZONTAL_DROPDOWN;
+	}
 }

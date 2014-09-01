@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author wesley.diniz
- *
+ * 
  */
 @Controller("leftMenuDisposalLayoutLargeController")
 public class LeftMenuDisposalLayoutLargeController extends BaseDisposalLayoutController
@@ -32,8 +32,7 @@ public class LeftMenuDisposalLayoutLargeController extends BaseDisposalLayoutCon
 	private final String HEADER_PANEL_STYLE = "left-disposal-header-panel-large";
 	private final String FOOTER_PANEL_STYLE = "left-disposal-footer-panel-large";
 	private final String CONTENT_MENU_STYLE = "left-disposal-content-panel-large";
-	
-	
+
 	@Override
 	protected void initContentPanel()
 	{
@@ -86,7 +85,12 @@ public class LeftMenuDisposalLayoutLargeController extends BaseDisposalLayoutCon
 	public void addSmallHeaderContent(Widget param)
 	{
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	public enum LeftDisposalMenuType
+	{
+		VERTICAL_TREE, VERTICAL_SLIDE, VERTICAL_ACCORDION, VERTICAL_DROPDOWN;
 	}
 
 }

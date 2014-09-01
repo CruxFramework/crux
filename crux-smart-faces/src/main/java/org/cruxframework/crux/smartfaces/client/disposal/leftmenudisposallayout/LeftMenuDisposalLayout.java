@@ -23,6 +23,9 @@ import org.cruxframework.crux.smartfaces.client.disposal.DisposalLayout;
 
 
 /**
+ * <p>
+ * A page layout that has a header, footer,  view container and a navigation menu at top of the screen.
+ *
  * @author wesley.diniz
  *
  */
