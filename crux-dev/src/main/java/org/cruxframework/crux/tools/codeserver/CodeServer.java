@@ -25,11 +25,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
-import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.CruxBridge;
@@ -53,7 +51,14 @@ import org.eclipse.jetty.websocket.WebSocket.Connection;
 import org.eclipse.jetty.websocket.WebSocketHandler;
 import org.json.JSONObject;
 
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.dev.CompilerContext;
+import com.google.gwt.dev.cfg.BindingProperty;
+import com.google.gwt.dev.cfg.ModuleDef;
+import com.google.gwt.dev.cfg.ModuleDefLoader;
 import com.google.gwt.dev.codeserver.Options;
+import com.google.gwt.dev.util.log.PrintWriterTreeLogger;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -143,6 +148,7 @@ public class CodeServer
 		{
 			logger.info("Starting code server for module ["+moduleName+"]");
 			CruxBridge.getInstance().registerLastPageRequested(screenIDs.iterator().next());
+			processUserAgent();
 			String[] args = getServerParameters();
 			initializeRecompileListener();
 			runGWTCodeServer(args);
@@ -300,47 +306,9 @@ public class CodeServer
 			String moduleFullName = Modules.getInstance().getModule(moduleName).getFullName();
 			args.add(moduleFullName);
 		}
-		if(StringUtils.isEmpty(userAgent))
-		{
-			String foundUserAgent = findUserAgentInModules(moduleName);
-			
-			if(foundUserAgent == null)
-			{
-				logger.error("Please inform an user agent property in the "+moduleName+" (.gwt.xml) config file.");
-				System.exit(1);
-			}
-			
-			userAgent = foundUserAgent;
-		}
 		
 	    return args.toArray(new String[args.size()]);
     }
-
-	private String findUserAgentInModules(String currentModuleName) 
-	{
-		Module module = Modules.getInstance().getModule(currentModuleName);
-		
-		if(module == null)
-		{
-			return null;
-		}
-		
-		if(module.getUserAgent() != null)
-		{
-			return module.getUserAgent();
-		}
-		
-		for(String inherits : module.getInherits())
-		{
-			String foundUserAgent = findUserAgentInModules(inherits);
-			if(StringUtils.isEmpty(foundUserAgent))
-			{
-				return foundUserAgent;
-			}
-		}
-		
-		return null;
-	}
 
 	protected void processParameters(Collection<ConsoleParameter> parameters)
     {
@@ -410,6 +378,35 @@ public class CodeServer
 	        	webDir = parameter.getValue();
 	        }
         }
+    }
+
+	protected void processUserAgent()
+    {
+	    if (userAgent == null)
+		{
+		    PrintWriterTreeLogger logger = new PrintWriterTreeLogger();
+		    logger.setMaxDetail(TreeLogger.Type.INFO);
+		    CompilerContext emptyCompilerContext = new CompilerContext.Builder().build();
+		    try
+            {
+		    	String moduleFullName = Modules.getInstance().getModule(moduleName).getFullName();
+	            ModuleDef moduleDef = ModuleDefLoader.loadFromClassPath(logger, emptyCompilerContext, moduleFullName, false, true);
+	            BindingProperty userAgentProperty = (BindingProperty) moduleDef.getProperties().find("user.agent");
+	            userAgent =  userAgentProperty.getFirstLegalValue();
+	            if (userAgent == null)
+	            {
+	            	throw new ConsoleParametersProcessingException("Can not determine the userAgent that must be used by code server. Configure your .gwt.xml file or inform it using -userAgent to CodeServer tool.");
+	            }
+	            else
+	            {
+	            	CodeServer.logger.info("User Agent not provided. Using first valid value found on module "+moduleFullName+".gwt.xml.");
+	            }
+            }
+            catch (UnableToCompleteException e)
+            {
+            	throw new ConsoleParametersProcessingException("Can not determine the userAgent that must be used by code server. Configure your .gwt.xml file or inform it using -userAgent to CodeServer tool.");
+            }
+		}
     }
 
 	protected ConsoleParametersProcessor createParametersProcessor()
