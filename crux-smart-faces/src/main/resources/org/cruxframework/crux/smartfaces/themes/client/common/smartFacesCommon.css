@@ -3,14 +3,6 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 
 @external *;
 
-@def COLOR_BORDER_GRAY 		    #b9b9b9;
-@def COLOR_BORDER_GRAY_HOVER    #919191;
-@def COLOR_BORDER_BLUE 		    #2e73ba;
-@def COLOR_BORDER_BLUE_HOVER    #1c5d9f;
-@def COLOR_BORDER_DISABLED 	    #a4a4a4;
-
-@def BOX_SHADOW_FOCUS 0px 0px 0px 1px rgba(35, 143, 255, 0.71), 0 0 0 2px rgba(199, 221, 255, 0.75) inset;
-
 *:focus, *:active, *:hover	
 {
 	/**
@@ -118,15 +110,16 @@ body
 
 .facesMenu
 {
-	background:#f5f5f5;
-	border:1px solid #d1d1d1;
+	background:#4496c6;
+	border:1px solid #1a6299;
 	box-shadow:0 -2px 0 rgba(0,0,0,0.03) inset, 0 2px 2px rgba(0,0,0,0.07);
+	position:relative;
 }
 
-.facesMenu > .faces-Menu-ul > .faces-Menu-li,
+.facesMenu > .faces-Menu-ul > .faces-Menu-li .faces-Label,
 .facesMenu a
 {
-	color:#222;
+	color:#fff;
 }
 
 .facesMenu a
@@ -177,7 +170,7 @@ body
 
 .facesMenu.faces-Menu-dropdown > .faces-Menu-ul > .faces-Menu-li:hover
 {
-	background:rgba(0,0,0,0.03);
+	background:rgba(0,0,0,0.15);
 }
 
 .facesMenu.faces-Menu-dropdown .faces-Menu-ul .faces-Menu-ul
@@ -215,12 +208,12 @@ body
 .facesMenu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li
 {
     float:left;
-    border-right:1px solid #d7d7d7;
+    border-right:1px solid #1a6299;
 }
 
 .facesMenu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel .faces-Label
 {	
-    padding:10px 4%;
+    padding:10px;
 }
 
 .facesMenu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul
@@ -788,31 +781,48 @@ body
 
 /* -------------------- facesButton -----------------------*/
 
+a.faces-Button
+{
+	white-space:nowrap;
+}
+
+a.faces-Button:hover
+{
+	text-decoration:none;
+	color:#fff;
+}
+
 .faces-Button
 {
-	border:1px solid COLOR_BORDER_GRAY;
-	border-radius: 3px;
-	background-image: -moz-linear-gradient( 90deg, rgb(239,239,239) 1%, rgb(255,255,255) 100%);
-	background-image: -webkit-linear-gradient( 90deg, rgb(239,239,239) 1%, rgb(255,255,255) 100%);
-	background-image: -ms-linear-gradient( 90deg, rgb(239,239,239) 1%, rgb(255,255,255) 100%);
-	color:#555;
-	font-size:12px;
-	padding:9px 13px;
+    background:#4496c6; 
+    border:1px solid #1a6299;
+    padding:8px 14px;
+    border-radius:1px;
+    font-size:100%;
+    color:#fff;
+    text-shadow:0 1px 0 rgba(0,0,0,0.15);
 }
 
 .faces-Button:hover
 {
-	border:1px solid COLOR_BORDER_GRAY_HOVER;
-}
-
-.faces-Button:active
-{
-	background:#efefef;
+	border-color:#084471;
 }
 
 .faces-Button:focus
 {
-	box-shadow:BOX_SHADOW_FOCUS;
+	box-shadow:0 0 0 3px rgba(0,0,0,0.22);
+}
+
+.faces-Button:focus:active
+{
+	box-shadow:0 2px 2px rgba(0,0,0,0.2) inset, 0 0 0 3px rgba(0,0,0,0.12);
+}
+
+.faces-Button.faces--small,
+.faces--small .faces-Button
+{
+	font-size:0.85em;
+	padding:5px 8px;
 }
 
 .faces--group .faces-Button
@@ -822,19 +832,26 @@ body
 	position:relative;
 }
 
-.faces--group .faces-Button:hover
+.faces--group .faces-Button:hover,
+.faces--group .faces-Button:focus
 {
 	z-index:2;
 }
 
 .faces--group .faces-Button:first-child
 {
-	border-radius:3px 0 0 3px;
+	border-radius:2px 0 0 2px;
 }
 
 .faces--group .faces-Button:last-child
 {
-	border-radius:0 3px 3px 0;
+	border-radius:0 2px 2px 0;
+}
+
+td .faces--group,
+td > div > .faces--group
+{
+	margin:5px;
 }
 
 
@@ -851,6 +868,155 @@ body
 	-webkit-transition:opacity 1.3 linear;
 }
 
+
+/* -------------------- facesPopup -----------------------*/
+
+.faces-popup
+{
+	background-color: #fff;
+	border-radius: 3px;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 5px 20px rgba(0, 0, 0, 0.4) !important;
+	position: fixed;
+	overflow:hidden;
+}
+
+.faces-popup .faces-header
+{
+	background: #f7f7f7;
+	color: #5491b4;
+	box-shadow: 0 -2px #eaeaea inset, 0 1px 0 #d1d1d1;
+	padding: 11px 2px;
+	position:relative;
+}
+
+.faces-popup .faces-header .faces-title
+{
+	text-align:center;
+	color:#5491b4;
+}
+
+.faces-popup .faces-header .faces-dragger
+{
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	cursor:move;
+}
+
+.faces-popup .faces-header .faces-close
+{
+	position:absolute;
+	right:10px;
+	top:5px;
+	z-index:2;
+}
+
+.faces-popup .faces-body
+{
+	padding:10px;
+}
+
+.faces-popup .faces-resizer
+{
+	position: absolute;
+	height: 12px;
+	width: 12px;
+	bottom: 0;
+	right: 0;
+	border-top: rgba(0, 0, 0, 0);
+	border-left: rgba(0, 0, 0, 0);
+	cursor: nwse-resize;
+	border-bottom-right-radius: 3px;
+	background: linear-gradient(-45deg, rgba(0,0,0,0) 50%, #aaa 50.1%, #eee 60%);
+	background: -webkit-linear-gradient(-45deg, rgba(0,0,0,0) 50%, #aaa 50.1%, #eee 60%);
+	padding: 10px;
+}
+
+.faces-popup .faces-resizer:before,
+.faces-popup .faces-resizer:after
+{
+	content:"";
+	position:absolute;
+	height:7px;
+	right:3px;
+	border-top:solid 1px #aaa;
+	cursor:nwse-resize;
+	border-bottom-right-radius:2px;
+	-webkit-transform:rotate(135deg);
+	-moz-transform:rotate(135deg);
+	-ms-transform:rotate(135deg);
+	transform:rotate(135deg);
+}
+
+.faces-popup .faces-resizer:before
+{
+	width:11px;
+	bottom:5px;
+}
+
+.faces-popup .faces-resizer:after
+{
+	width:8px;
+	bottom:3px;
+}
+
+.faces-popup .faces-actionPanel
+{
+	padding:10px;
+	margin:10px -10px -10px;
+	display:flex;
+	justify-content:space-around;
+}
+
+.faces-popup .faces-actionPanel .faces-Button
+{
+	min-width:80px;
+}
+
+.faces-popup.faces-MessageBox .faces-header
+{
+	background:none;
+	box-shadow:none;
+}
+
+
+/* -------------------- facesLabel -----------------------*/
+
+.faces-Label
+{
+	color: #1c5994;
+}
+
+
+/* -------------------- facesLabel -----------------------*/
+
+.faces-Progress
+{
+	-webkit-appearance:none;
+	-moz-appearance:none;
+	-ms-appearance:none;
+	appearance:none;
+	height:10px;
+}
+
+.faces-Progress::-webkit-progress-bar
+{
+	background:#eee;
+	border:1px solid #ccc;
+	border-radius:2px;
 	
+}
+
+.faces-Progress::-webkit-progress-value
+{
+	background:#eee;
+	border:1px solid #ccc;
+	border-radius:2px;
 	
+}
+
+
+
 	
