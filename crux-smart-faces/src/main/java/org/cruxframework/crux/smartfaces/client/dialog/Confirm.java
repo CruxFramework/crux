@@ -295,11 +295,15 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 		okButton = createOkButton();
 		cancelButton = createCancelButton();
 		
-		NavPanel buttons = new NavPanel();
-		buttons.setStyleName("confirmButtons");
+		okButton.addStyleName("faces--secondary");
 		
-		buttons.add(okButton);
+		
+		
+		NavPanel buttons = new NavPanel();
+		buttons.setStyleName("faces-actionPanel");
+		
 		buttons.add(cancelButton);
+		buttons.add(okButton);
 		
 		contents.add(buttons);
 
