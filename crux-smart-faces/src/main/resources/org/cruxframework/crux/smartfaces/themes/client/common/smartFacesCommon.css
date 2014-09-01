@@ -122,12 +122,18 @@ body
 	color:#fff;
 }
 
+.facesMenu > .faces-Menu-ul > .faces-Menu-li .faces-Menu-li .faces-Label
+{
+	color:#343434;
+} 
+
 .facesMenu a
 {
 	text-decoration:none;
 }
 
-.facesMenu * {
+.facesMenu *
+{
     -webkit-transition:all 0.1s linear;
     -moz-transition:all 0.1s linear;
     -ms-transition:all 0.1s linear;
@@ -205,6 +211,11 @@ body
     width:100%;
 }
 
+.facesMenu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-hasChildren
+{
+	padding-right:20px
+}
+
 .facesMenu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li
 {
     float:left;
@@ -277,8 +288,8 @@ body
 	-webkit-transform: rotate(45deg);
 	-moz-transform: rotate(45deg);
 	transform: rotate(45deg);
-	border-right: 2px solid #444;
-	border-bottom: 2px solid #444;
+	border-right: 2px solid #fff;
+	border-bottom: 2px solid #fff;
 }
 
 .facesMenu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li .faces-Menu-li.faces-Menu-hasChildren > .faces-Menu-openCloseTriggerHelper
@@ -981,6 +992,11 @@ td > div > .faces--group
 	box-shadow:none;
 }
 
+.faces-popup.faces-MessageBox .faces-body
+{
+	
+}
+
 
 /* -------------------- facesLabel -----------------------*/
 
@@ -990,31 +1006,47 @@ td > div > .faces--group
 }
 
 
-/* -------------------- facesLabel -----------------------*/
+/* -------------------- facesProgress -----------------------*/
 
-.faces-Progress
+.faces-Progress:not\(\[value\]\)
 {
 	-webkit-appearance:none;
 	-moz-appearance:none;
 	-ms-appearance:none;
 	appearance:none;
-	height:10px;
+	height:3px;
 }
 
-.faces-Progress::-webkit-progress-bar
+.faces-Progress:not\(\[value\]\)::-webkit-progress-bar
 {
 	background:#eee;
-	border:1px solid #ccc;
-	border-radius:2px;
-	
+	border-radius:3px;
+	position:relative;
+	overflow:hidden;
 }
 
-.faces-Progress::-webkit-progress-value
+.faces-Progress:not\(\[value\]\)::-webkit-progress-value
 {
-	background:#eee;
-	border:1px solid #ccc;
-	border-radius:2px;
-	
+	background:linear-gradient(-90deg, rgba(68,150,198,1), rgba(68,150,198,0));
+	width:50% !important;
+	-webkit-animation: faces-ProgressUndefined 0.8s linear infinite;
+	-moz-animation: faces-ProgressUndefined 0.8s linear infinite;
+	position:absolute;
+	border-radius:3px;
+}
+
+
+
+
+@-webkit-keyframes faces-ProgressUndefined
+{
+	0%   {left:-50%;}
+	100%  {left:101%;}
+}
+@-moz-keyframes faces-ProgressUndefined
+{
+	0%   {left:-50%;}
+	100%  {left:101%;}
 }
 
 
