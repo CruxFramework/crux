@@ -1,0 +1,40 @@
+<module>
+	<inherits name='org.cruxframework.crux.core.Crux'/>
+	
+	<define-linker name="offlineLinker" class="org.cruxframework.crux.core.rebind.offline.OfflineLinker"/>
+	<add-linker name="offlineLinker"/>
+	<define-linker name="manifestLinker" class="org.cruxframework.crux.core.rebind.offline.AppCacheLinker"/>
+	<add-linker name="manifestLinker"/>
+	
+	<!-- Specify the app entry point class.                   -->
+	<entry-point class='org.cruxframework.crux.core.clientoffline.ApplicationCacheHandler'/>
+
+    <!-- This is commented because we are going to check if the server is 
+         online/offline, instead of looking the browser connection. -->
+    <!--  
+    <replace-with
+        class="org.cruxframework.crux.core.clientoffline.Network.SafariImpl">
+        <when-type-is class="org.cruxframework.crux.core.clientoffline.Network.Impl" />
+        <when-property-is name="user.agent" value="safari"/>
+    </replace-with>   
+    -->
+    <replace-with
+        class="org.cruxframework.crux.core.clientoffline.Network.CacheManifestImpl">
+        <when-type-is class="org.cruxframework.crux.core.clientoffline.Network.Impl" />
+        <none>
+	        <when-property-is name="user.agent" value="ie6"/>
+        </none>
+    </replace-with>   
+    <replace-with
+        class="org.cruxframework.crux.core.clientoffline.Network.UnsupportedImpl">
+        <when-type-is class="org.cruxframework.crux.core.clientoffline.Network.Impl" />
+        <when-property-is name="user.agent" value="ie6"/>
+    </replace-with>   
+	
+    <replace-with
+        class="org.cruxframework.crux.core.clientoffline.ApplicationCacheDefaultUIHandlerImpl">
+        <when-type-is class="org.cruxframework.crux.core.clientoffline.ApplicationCacheUIHandler" />
+    </replace-with>   
+
+	<source path="clientoffline" /> 	
+</module>
