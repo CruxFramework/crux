@@ -876,7 +876,6 @@ td > div > .faces--group
 	width:100%;
 	height:100%;
 	background:rgba(0,0,0,0.3);
-	-webkit-transition:opacity 1.3 linear;
 }
 
 
@@ -994,7 +993,7 @@ td > div > .faces--group
 
 .faces-popup.faces-MessageBox .faces-body
 {
-	
+	text-align:center;
 }
 
 
