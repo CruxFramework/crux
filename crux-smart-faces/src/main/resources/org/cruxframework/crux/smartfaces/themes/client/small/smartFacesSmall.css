@@ -104,5 +104,17 @@ body
 	transform:translateY(-50%);
 }
 
+.faces-popup-header
+{
+	padding:20px 2px;
+}
+
+.faces-popup-close
+{
+	width:20px;
+	height:20px;
+	top:10px;
+}
+
 
 

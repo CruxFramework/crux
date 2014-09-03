@@ -118,3 +118,22 @@
 	height:100%;
 	float:left;
 }
+
+
+/* -------------------- facesPopup-----------------------*/
+
+.faces-popup-header
+{
+	min-height:26px;
+}
+
+.faces-popup-body
+{
+	min-height: 30px;
+	min-width: 200px;
+}
+
+.faces-popup-close
+{
+	right:5px;
+}

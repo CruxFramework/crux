@@ -17,15 +17,15 @@ package org.cruxframework.crux.smartfaces.themes.client.large;
 
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
+import org.cruxframework.crux.smartfaces.themes.client.common.SmartFacesResourcesCommon;
 
-import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 
 /**
  * @author Thiago da Rosa de Bustamante
  */
 @Resource(value="smartFacesResources", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch})
-public interface SmartFacesResourcesLarge extends ClientBundle
+public interface SmartFacesResourcesLarge extends SmartFacesResourcesCommon
 {
 	@Source({"org/cruxframework/crux/smartfaces/themes/client/common/smartFacesCommon.css","smartFacesLarge.css"})
 	CssResource css();

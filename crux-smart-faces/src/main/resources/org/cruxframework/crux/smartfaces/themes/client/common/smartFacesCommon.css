@@ -3,6 +3,8 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 
 @external *;
 
+@url svgIconClose svgIconClose;
+
 *:focus, *:active, *:hover	
 {
 	/**
@@ -917,6 +919,11 @@ td > div > .faces--group
 
 .faces-popup-close
 {
+	width:16px;
+	height:16px;
+	background:svgIconClose no-repeat center;
+	background-size:100% auto;
+	border:none;
 	position:absolute;
 	right:10px;
 	top:5px;
