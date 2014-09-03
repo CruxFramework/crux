@@ -97,12 +97,12 @@ body
 
 .faces-popup
 {
-	margin:10%;
 	width:80%;
-	top:50%;
-	left:0;
+	margin:0;
 	-webkit-transform:translateY(-50%);
 	-moz-transform:translateY(-50%);
 	transform:translateY(-50%);
 }
+
+
 
