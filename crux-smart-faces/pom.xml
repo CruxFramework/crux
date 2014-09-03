@@ -13,9 +13,9 @@
 	</properties>
 
 	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
+		<groupId>org.cruxframework</groupId>
+		<artifactId>crux-parent</artifactId>
+		<version>1.0.0</version>
 	</parent>
 
 	<scm>
