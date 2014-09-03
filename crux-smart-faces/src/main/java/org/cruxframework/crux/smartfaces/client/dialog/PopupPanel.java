@@ -169,7 +169,7 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		super.getContainerElement().appendChild(containerElement);
 		getElement().getStyle().setPosition(Position.ABSOLUTE);
 	    setPosition(0, 0);
-	    setStyleName(getContainerElement(), "popupContent");
+	    setStyleName(getContainerElement(), "faces-popup-content");
 	}
 	
 	/**

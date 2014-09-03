@@ -502,7 +502,7 @@ public class DialogViewContainer extends SingleViewContainer implements HasDialo
 	@Override
 	protected boolean doAdd(View view, boolean lazy, Object parameter)
 	{
-	    assert(views.isEmpty()):"DialogViewContainer can not contain more then one view";
+	    assert(views.isEmpty()):"DialogViewContainer can not contain more than one view";
 	    activeView = view;
 	    boolean added = super.doAdd(view, lazy, parameter);
 	    if (!added)

@@ -161,7 +161,7 @@ public class QuestionBox extends AbstractDialogBox
 		questionBox.setMessage(message);
 		questionBox.setAnimation(animation);
 		
-		assert(labels!= null && handlers!= null && labels.length == handlers.length):"You must informe one label for each selectHandler provided";
+		assert(labels!= null && handlers!= null && labels.length == handlers.length):"You must inform one label for each selectHandler provided";
 		
 		for(int i=0; i < labels.length; i++)
 		{

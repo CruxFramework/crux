@@ -238,7 +238,7 @@ public class MessageBox extends AbstractDialogBox implements HasOkHandlers
 	private Widget createMessagePanel() 
 	{
 		FlowPanel contents = new FlowPanel();
-		contents.setStyleName("messageBoxContents");
+		contents.setStyleName("faces-popup-content");
 		
 		msgLabel = new HTML();
 		contents.add(msgLabel);

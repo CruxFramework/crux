@@ -87,7 +87,7 @@ public class WaitBox extends AbstractDialogBox
 	 */
 	private Widget createProgressBar() 
 	{
-		HTML bar = new HTML("<div class='faces-fill'></div>"); //progressBarFill
+		HTML bar = new HTML("<div class='faces-progressBar-fill'></div>"); //progressBarFill
 		bar.setStyleName("faces-progressBar");
 		return bar;
 	}	

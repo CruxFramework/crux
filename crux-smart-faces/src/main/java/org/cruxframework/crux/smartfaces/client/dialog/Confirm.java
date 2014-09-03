@@ -287,7 +287,7 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 	private Widget createMessagePanel() 
 	{
 		FlowPanel contents = new FlowPanel();
-		contents.setStyleName("confirmContents");
+		contents.setStyleName("faces-Confirm-content");
 		
 		msgLabel = new HTML();
 		contents.add(msgLabel);
@@ -297,10 +297,8 @@ public class Confirm extends AbstractDialogBox implements HasOkHandlers, HasCanc
 		
 		okButton.addStyleName("faces--secondary");
 		
-		
-		
 		NavPanel buttons = new NavPanel();
-		buttons.setStyleName("faces-actionPanel");
+		buttons.setStyleName("faces-popup-actionPanel");
 		
 		buttons.add(cancelButton);
 		buttons.add(okButton);

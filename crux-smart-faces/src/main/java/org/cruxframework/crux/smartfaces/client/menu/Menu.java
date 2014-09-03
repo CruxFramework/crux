@@ -39,9 +39,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class Menu extends Composite implements HasAnimation, HasEnabled 
 {
-	public    static final String STYLE_FACES_MENU = "facesMenu";
+	public    static final String STYLE_FACES_MENU = "faces-Menu";
 	protected static final String SPACE = " ";
-	protected static final String CLEARFIX = "cf";
+	protected static final String CLEARFIX = "faces--clearfix";
 	protected static final String STYLE_FACES_SLIDE = "faces-Menu-slide";
 	protected static final String STYLE_FACES_DROPDOWN = "faces-Menu-dropdown";
 	protected static final String STYLE_FACES_TREE = "faces-Menu-tree";

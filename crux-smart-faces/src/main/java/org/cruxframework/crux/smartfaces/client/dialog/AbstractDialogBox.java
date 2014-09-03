@@ -94,10 +94,10 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 
 		FlowPanel topBar = prepareTopBar(movable, closable);
 		
-		body.setStyleName("faces-body");
+		body.setStyleName("faces-popup-body");
 
 		FlowPanel split = new FlowPanel();
-		split.setStyleName("dialogTitleBodySplit");
+		split.setStyleName("faces-popup-split");
 		split.add(topBar);
 		split.add(body);
 		
@@ -138,7 +138,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	private Label prepareResizer() 
 	{
 		Label resizer = new Label();
-		resizer.setStyleName("faces-resizer");
+		resizer.setStyleName("faces-popup-resizer");
 		return resizer;
 	}
 
@@ -151,15 +151,15 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 	private FlowPanel prepareTopBar(boolean movable, boolean closable) 
 	{
 		FlowPanel topBar = new FlowPanel();
-		topBar.setStyleName("faces-header");
+		topBar.setStyleName("faces-popup-header");
 		
-		title.setStyleName("faces-title");
+		title.setStyleName("faces-popup-title");
 		topBar.add(title);
 		
 		if(movable)
 		{
 			moveHandle = new Label();
-			moveHandle.setStyleName("faces-dragger");
+			moveHandle.setStyleName("faces-popup-dragger");
 			topBar.add(moveHandle);
 		}		
 		
@@ -167,7 +167,7 @@ public abstract class AbstractDialogBox extends PopupPanel implements Movable<La
 		{
 			if(closable)
 			{
-				closeBtn.setStyleName("faces-close");
+				closeBtn.setStyleName("faces-popup-close");
 				closeBtn.addSelectHandler(new SelectHandler() 
 				{
 					@Override
