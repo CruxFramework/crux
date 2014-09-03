@@ -54,6 +54,7 @@ public class CodeServerNotifier implements EntryPoint
 	public void onModuleLoad() 
 	{
 		dialogBox = new DialogBox();
+		dialogBox.setStyleName("crux-CodeServerNotifier");
 		label = new Label();
 		dialogBox.add(label);
 		//TODO take the URL from user, as a parameter... if not provided, use the expression below as default
