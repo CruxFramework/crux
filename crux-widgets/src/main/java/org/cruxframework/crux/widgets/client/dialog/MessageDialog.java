@@ -45,6 +45,7 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -411,34 +412,24 @@ public class MessageDialog implements HasOkHandlers, HasAnimation, IsWidget, Ori
 	}
 
 	@Override
-	public void onOrientationChange() 
+	public void onOrientationChange()
 	{
 		if (openedDialogBoxes == null)
 		{
 			return;
 		}
 
-		for (int i = 0; i < openedDialogBoxes.size(); i++)
+		new Timer()
 		{
-			final int index = i;
-			Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
+			@Override
+			public void run()
 			{
-				@Override
-				public boolean execute()
+				for (int i = 0; i < openedDialogBoxes.size(); i++)
 				{
-					try
-					{
-						openedDialogBoxes.get(index).center();
-					}
-					catch (IndexOutOfBoundsException e)
-					{
-						// the dialog may have been hidden
-					}
-
-					return false;
+					openedDialogBoxes.get(i).center();
 				}
-			}, 1000);
-		}
+			}
+		}.schedule(1000);
 	}
 	
 	@Override
