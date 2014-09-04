@@ -13,25 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.themes.client.small;
+package org.cruxframework.crux.smartfaces.themes.client.common;
 
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.smartfaces.themes.client.common.SmartFacesResourcesCommon;
 
-import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.DataResource;
 
 /**
  * @author Thiago da Rosa de Bustamante
  * @author Claudio Holanda Junior
  */
-@Resource(value="smartFacesResources", supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch})
-public interface SmartFacesResourcesSmall extends SmartFacesResourcesCommon
+@Resource(value="smartFacesResources", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch})
+public interface SmartFacesResourcesCommon extends ClientBundle
 {
-	@Source({"org/cruxframework/crux/smartfaces/themes/client/common/smartFacesCommon.css","smartFacesSmall.css"})
-	CssResource css();
-	
-	@Source("org/cruxframework/crux/smartfaces/themes/client/small/svg-icon-menu.svg")
-	DataResource svgIconMenu();
+	@Source("org/cruxframework/crux/smartfaces/themes/client/common/svg-icon-close.svg")
+	DataResource svgIconClose();
 }
