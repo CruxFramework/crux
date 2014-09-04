@@ -27,4 +27,6 @@ public interface FacesCSS extends CssResource
 	String flexBoxFirstChild();
 	String flexBoxSecondChild();
 	String flexBoxThirdChild();
+	
+	String facesMenu();
 }

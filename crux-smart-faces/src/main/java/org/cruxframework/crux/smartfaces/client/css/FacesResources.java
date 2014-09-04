@@ -25,6 +25,9 @@ public interface FacesResources extends ClientBundle
 {
 	static FacesResources INSTANCE = GWT.create(FacesResources.class);
 	
-	@Source("facesCSS.css")
+	@Source({
+		"facesBackboneBase.css",
+		"facesBackboneMenu.css"
+		})
 	FacesCSS css();
 }

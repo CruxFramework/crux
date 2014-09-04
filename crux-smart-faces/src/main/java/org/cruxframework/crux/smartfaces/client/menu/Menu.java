@@ -17,6 +17,7 @@ package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.smartfaces.client.button.Button;
+import org.cruxframework.crux.smartfaces.client.css.FacesResources;
 import org.cruxframework.crux.smartfaces.client.menu.MenuRenderer.LargeMenuRenderer;
 import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
 import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
@@ -65,11 +66,14 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 	
 	public Menu(LargeType largeType, SmallType smallType)
 	{
+		FacesResources.INSTANCE.css().ensureInjected();
 		initWidget(menuPanel);
 		root = new MenuItem(null);
 		menuPanel.add(root);
 		root.setMenu(this);
+		
 		setStyleName(getBaseStyleName());
+		injectBackboneCss();
 		
 		if(menuRenderer instanceof LargeMenuRenderer)
 		{
@@ -81,6 +85,11 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		}
 		
 		menuRenderer.render(this, largeType, smallType);
+	}
+	
+	private void injectBackboneCss()
+	{
+		menuPanel.addStyleName(FacesResources.INSTANCE.css().facesMenu());
 	}
 
 	public Menu(LargeType largeType)
