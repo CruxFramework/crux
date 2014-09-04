@@ -25,7 +25,7 @@ import com.google.gwt.resources.client.DataResource;
  * @author Thiago da Rosa de Bustamante
  * @author Claudio Holanda Junior
  */
-@Resource(value="smartFacesResources", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch})
+@Resource(value="smartFacesCommon", supportedDevices={Device.all})
 public interface SmartFacesResourcesCommon extends ClientBundle
 {
 	@Source("org/cruxframework/crux/smartfaces/themes/client/common/svg-icon-close.svg")
