@@ -17,16 +17,20 @@ package org.cruxframework.crux.smartfaces.themes.client.large;
 
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.smartfaces.themes.client.common.SmartFacesResourcesCommon;
 
+import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.resources.client.DataResource;
 
 /**
  * @author Thiago da Rosa de Bustamante
  */
 @Resource(value="smartFacesResources", supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch})
-public interface SmartFacesResourcesLarge extends SmartFacesResourcesCommon
+public interface SmartFacesResourcesLarge extends ClientBundle
 {
 	@Source({"org/cruxframework/crux/smartfaces/themes/client/common/smartFacesCommon.css","smartFacesLarge.css"})
 	CssResource css();
+	
+	@Source("org/cruxframework/crux/smartfaces/themes/client/common/svg-icon-close.svg")
+	DataResource svgIconClose();
 }

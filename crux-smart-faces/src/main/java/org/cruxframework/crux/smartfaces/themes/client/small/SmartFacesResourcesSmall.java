@@ -17,8 +17,8 @@ package org.cruxframework.crux.smartfaces.themes.client.small;
 
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.smartfaces.themes.client.common.SmartFacesResourcesCommon;
 
+import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.DataResource;
 
@@ -26,11 +26,14 @@ import com.google.gwt.resources.client.DataResource;
  * @author Thiago da Rosa de Bustamante
  */
 @Resource(value="smartFacesResources", supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch})
-public interface SmartFacesResourcesSmall extends SmartFacesResourcesCommon
+public interface SmartFacesResourcesSmall extends ClientBundle
 {
 	@Source({"org/cruxframework/crux/smartfaces/themes/client/common/smartFacesCommon.css","smartFacesSmall.css"})
 	CssResource css();
 	
 	@Source("org/cruxframework/crux/smartfaces/themes/client/small/svg-icon-menu.svg")
 	DataResource svgIconMenu();
+	
+	@Source("org/cruxframework/crux/smartfaces/themes/client/common/svg-icon-close.svg")
+	DataResource svgIconClose();
 }
