@@ -29,6 +29,7 @@ import org.cruxframework.crux.core.client.websocket.SocketMessageHandler;
 import org.cruxframework.crux.core.client.websocket.SocketOpenEvent;
 import org.cruxframework.crux.core.client.websocket.SocketOpenHandler;
 import org.cruxframework.crux.core.client.websocket.WebSocket;
+import org.cruxframework.crux.tools.codeserver.client.common.CodeServerResources;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.JsonUtils;
@@ -44,6 +45,7 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class CodeServerNotifier implements EntryPoint 
 {
+	private static final String DEFAULT_MESSAGE_COMPILING = "Compiling module...";
 	public static final int DEFAULT_COMPILER_NOTIFIER_PORT = 9877;
 	private static Logger logger = Logger.getLogger(CodeServerNotifier.class.getName());
 
@@ -52,10 +54,14 @@ public class CodeServerNotifier implements EntryPoint
 	
 	@Override
 	public void onModuleLoad() 
-	{
+	{	
 		dialogBox = new DialogBox();
-		dialogBox.setStyleName("crux-CodeServerNotifier");
+		dialogBox.setStyleName(CodeServerResources.INSTANCE.css().cruxCodeServerNotifier());
+		CodeServerResources.INSTANCE.css().ensureInjected();
+		
 		label = new Label();
+		label.setText(DEFAULT_MESSAGE_COMPILING);
+		
 		dialogBox.add(label);
 		//TODO take the URL from user, as a parameter... if not provided, use the expression below as default
 		final String url = "ws://" + Window.Location.getHostName() + ":" + DEFAULT_COMPILER_NOTIFIER_PORT;
@@ -114,14 +120,13 @@ public class CodeServerNotifier implements EntryPoint
 					{
 						case START:
 							Screen.blockToUser();
-							label.setText("Compiling module "+compilationMessage.getModule()+"...");
-							dialogBox.center();
+							logger.log(Level.INFO, "Module: " + compilationMessage.getModule());
+							dialogBox.show();
 						break;
 						
 						case END:
 							Screen.unblockToUser();
 							dialogBox.hide();
-							label.setText(null);
 							if (compilationMessage.getStatus())
 							{
 								Window.Location.reload();

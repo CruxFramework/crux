@@ -1,0 +1,179 @@
+/*
+ *
+ * This CSS is intended to stylize the CodeServer dialog. If changed
+ * it can break visuals of dialog in all projects using SuperDevMode,
+ * be careful.
+ *
+ */
+ 
+@external dialogContent, gwt-Label, dialogTop;
+
+.cruxCodeServerNotifier .dialogTop td
+{
+	background:none;
+	box-shadow:none;
+	border:none;
+}
+
+.cruxCodeServerNotifier .dialogContent
+{
+	background: rgba(40,40,40,0.98);
+    padding:30px 50px;
+    border-radius:5px;
+    box-shadow:0 5px 10px rgba(0,0,0,0.2), 0 0 0 1000px rgba(0,0,0,0.5);
+    position:fixed;
+    left:50%;
+    top:50%;
+    margin-left:-136px;
+    margin-top:-40px;
+    z-index:999999;
+    -webkit-animation:crux-CodeServerPopup 0.5s cubic-bezier(0,.79,.58,1);
+	animation:crux-CodeServerPopup 0.5s cubic-bezier(0,.79,.58,1);
+}
+
+.cruxCodeServerNotifier .dialogContent .gwt-Label
+{
+    color:#fff;
+    text-shadow:none;
+    padding-left:30px;
+    position:relative;
+}
+
+.cruxCodeServerNotifier .dialogContent .gwt-Label:before
+{
+    content:'';
+    position:absolute;
+    left:-20px;
+    width:30px;
+    height:30px;
+    margin:-5px 0 0 -5px;
+    border:5px solid #fff;
+    display:block;
+    border-radius:50px;
+    -webkit-animation: crux-CodeServerPopup-loading 1.3s ease-out infinite;
+    animation: crux-CodeServerPopup-loading 1.3s ease-out infinite;
+}
+
+.cruxCodeServerNotifier .dialogContent .gwt-Label:after
+{
+    content:'';
+    position:absolute;
+    left:-20px;
+    width:30px;
+    height:30px;
+    border:2px solid #fff;
+    display:block;
+    border-radius:50px;
+    -webkit-animation: crux-CodeServerPopup-loading 1.3s ease-out infinite;
+    -webkit-animation-delay:650ms;
+    animation: crux-CodeServerPopup-loading 1.3s ease-out infinite;
+    animation-delay:650ms;
+    margin:-22px 0 0 -5px;
+}
+
+@-webkit-keyframes crux-CodeServerPopup
+{
+	0%
+	{
+		-webkit-transform:translateY(60px);
+		-ms-transform:translateY(60px);
+		transform:translateY(60px);
+		opacity:0;
+	}
+	100%
+	{
+		-webkit-transform:translateY(0px);
+		-ms-transform:translateY(0px);
+		transform:translateY(0px);
+		opacity:1;
+	}
+}
+@-moz-keyframes crux-CodeServerPopup
+{
+	0%
+	{
+		-webkit-transform:translateY(60px);
+		-ms-transform:translateY(60px);
+		transform:translateY(60px);
+		opacity:0;
+	}
+	100%
+	{
+		-webkit-transform:translateY(0px);
+		-ms-transform:translateY(0px);
+		transform:translateY(0px);
+		opacity:1;
+	}
+}
+@keyframes crux-CodeServerPopup
+{
+	0%
+	{
+		-webkit-transform:translateY(60px);
+		-ms-transform:translateY(60px);
+		transform:translateY(60px);
+		opacity:0;
+	}
+	100%
+	{
+		-webkit-transform:translateY(0px);
+		-ms-transform:translateY(0px);
+		transform:translateY(0px);
+		opacity:1;
+	}
+}
+
+@-webkit-keyframes crux-CodeServerPopup-loading
+{
+    0% {
+      -webkit-transform:scale(.1);
+      -ms-transform:scale(.1);
+      transform:scale(.1);
+      opacity: 0;
+    }
+    50% {
+      opacity:1;
+    }
+    100% {
+      -webkit-transform:scale(1.2);
+      -ms-transform:scale(1.2);
+      transform:scale(1.2);
+      opacity:0;
+    }
+}
+@-moz-keyframes crux-CodeServerPopup-loading
+{
+    0% {
+      -webkit-transform:scale(.1);
+      -ms-transform:scale(.1);
+      transform:scale(.1);
+      opacity: 0;
+    }
+    50% {
+      opacity:1;
+    }
+    100% {
+      -webkit-transform:scale(1.2);
+      -ms-transform:scale(1.2);
+      transform:scale(1.2);
+      opacity:0;
+    }
+}
+@keyframes crux-CodeServerPopup-loading
+{
+    0% {
+      -webkit-transform:scale(.1);
+      -ms-transform:scale(.1);
+      transform:scale(.1);
+      opacity: 0;
+    }
+    50% {
+      opacity:1;
+    }
+    100% {
+      -webkit-transform:scale(1.2);
+      -ms-transform:scale(1.2);
+      transform:scale(1.2);
+      opacity:0;
+    }
+}
