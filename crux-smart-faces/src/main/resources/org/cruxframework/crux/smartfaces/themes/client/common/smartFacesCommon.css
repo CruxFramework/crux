@@ -1016,21 +1016,27 @@ td > div > .faces--group
 
 /* -------------------- facesProgress -----------------------*/
 
-.faces-Progress:not\(\[value\]\)
+.faces-Progress
 {
 	-webkit-appearance:none;
 	-moz-appearance:none;
 	-ms-appearance:none;
 	appearance:none;
 	height:3px;
+	width:100%;
 }
 
-.faces-Progress:not\(\[value\]\)::-webkit-progress-bar
+.faces-Progress::-webkit-progress-bar
 {
 	background:#eee;
 	border-radius:3px;
 	position:relative;
 	overflow:hidden;
+}
+
+.faces-Progress::-webkit-progress-value
+{
+	background:rgb(68,150,198);
 }
 
 .faces-Progress:not\(\[value\]\)::-webkit-progress-value
@@ -1043,9 +1049,6 @@ td > div > .faces--group
 	border-radius:3px;
 }
 
-
-
-
 @-webkit-keyframes faces-ProgressUndefined
 {
 	0%   {left:-50%;}
@@ -1056,7 +1059,3 @@ td > div > .faces--group
 	0%   {left:-50%;}
 	100%  {left:101%;}
 }
-
-
-
-	

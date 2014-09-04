@@ -116,5 +116,18 @@ body
 	top:10px;
 }
 
+.crux-CodeServerNotifier .dialogContent
+{
+	width:90%;
+	margin:5%;
+	left:0;
+	overflow:hidden;
+}
+
+.crux-CodeServerNotifier .dialogContent .gwt-Label:after
+{
+	margin:-37px 0 0 -5px;
+}
+
 
 
