@@ -235,7 +235,7 @@ body
     border-right:1px solid #1a6299;
 }
 
-.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel div
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel > *
 {
     padding:10px;
 }
