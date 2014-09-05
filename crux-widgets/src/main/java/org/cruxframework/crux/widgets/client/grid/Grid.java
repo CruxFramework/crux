@@ -89,12 +89,10 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A paged sortable data grid
+ * A Data grid component that allows pagination, edition, sort, frozen headers & columns and 
  * 
  * @author Gesse S. F. Dafe
  */
-// TODO refatorar isso. Criar uma grid programaticamente eh muito complexo como
-// esta
 public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSource<PagedDataSource<?>>, HasBeforeRowSelectHandlers
 {
 	private int pageSize;

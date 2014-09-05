@@ -75,27 +75,27 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 //TODO: documentation - don't forget @CellName
 @DeclarativeFactory(id="grid", library="widgets", targetWidget=Grid.class)
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="pageSize", type=Integer.class, defaultValue="8"),
-	@TagAttributeDeclaration(value="rowSelection", type=RowSelectionModel.class, defaultValue="unselectable"),
-	@TagAttributeDeclaration(value="cellSpacing", type=Integer.class, defaultValue="1"),
-	@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="stretchColumns", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="highlightRowOnMouseOver", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="fixedCellSize", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="emptyDataFilling", type=String.class, defaultValue=" "),
-	@TagAttributeDeclaration(value="defaultSortingColumn", type=String.class),
-	@TagAttributeDeclaration(value="defaultSortingType", type=SortingType.class, defaultValue="ascending"),
-	@TagAttributeDeclaration(value="showRowDetailsIcon", type=Boolean.class, defaultValue="true"),
-	@TagAttributeDeclaration(value="freezeHeaders", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="caseSensitive", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false"),
-	@TagAttributeDeclaration(value="showEditorButtons", type=Boolean.class),
-	@TagAttributeDeclaration(value="editButtonTooltip", type=String.class,defaultValue="false",supportsI18N=true,supportsResources=true),
-	@TagAttributeDeclaration(value="saveButtonTooltip", type=String.class,defaultValue="false",supportsI18N=true,supportsResources=true),
-	@TagAttributeDeclaration(value="cancelButtonTooltip", type=String.class,defaultValue="false",supportsI18N=true,supportsResources=true)
+	@TagAttributeDeclaration(value="pageSize", type=Integer.class, defaultValue="8",description="the number of rows per page"),
+	@TagAttributeDeclaration(value="rowSelection", type=RowSelectionModel.class, defaultValue="unselectable",description="the behavior of the grid about line selection"),
+	@TagAttributeDeclaration(value="cellSpacing", type=Integer.class, defaultValue="1",description="the space between the cells"),
+	@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, defaultValue="false",description="if true, when a data source is set, its first page records are fetched and rendered"),
+	@TagAttributeDeclaration(value="stretchColumns", type=Boolean.class, defaultValue="false",description=" if true, the width of the columns are auto adjusted to fit the grid width. Prevents horizontal scrolling."),
+	@TagAttributeDeclaration(value="highlightRowOnMouseOver", type=Boolean.class, defaultValue="false",description="If true,rows change their styles when mouse passed over them"),
+	@TagAttributeDeclaration(value="fixedCellSize", type=Boolean.class, defaultValue="false",description=" equivalent of setting CSS attribute table-layout to fixed"),
+	@TagAttributeDeclaration(value="emptyDataFilling", type=String.class, defaultValue=" ",description="Text shown when there's no data"),
+	@TagAttributeDeclaration(value="defaultSortingColumn", type=String.class,description="the column to be used to automatically sort the grid's data when it is rendered for the first time"),
+	@TagAttributeDeclaration(value="defaultSortingType", type=SortingType.class, defaultValue="ascending",description="tells the grid if defaultSortingColumn should be used ascending or descending"),
+	@TagAttributeDeclaration(value="showRowDetailsIcon", type=Boolean.class, defaultValue="true",description="if true, the second column of the grid will contain icons for expanding or collapsing the row's details"),
+	@TagAttributeDeclaration(value="freezeHeaders", type=Boolean.class, defaultValue="false",description="Freezes grid's headers"),
+	@TagAttributeDeclaration(value="caseSensitive", type=Boolean.class, defaultValue="false",description="indicate if the columns sort are or not key sensitive"),
+	@TagAttributeDeclaration(value="keepEditorOnClickDisabledRows", type=Boolean.class, defaultValue="false",description="Keep row's editor opened even when clicking on a disabled datarow"),
+	@TagAttributeDeclaration(value="showEditorButtons", type=Boolean.class,description="Displays a column with three buttons: edit, save and cancel"),
+	@TagAttributeDeclaration(value="editButtonTooltip", type=String.class,defaultValue="false",supportsI18N=true,supportsResources=true,description="Tooltip message that will be showed on EDIT button"),
+	@TagAttributeDeclaration(value="saveButtonTooltip", type=String.class,defaultValue="false",supportsI18N=true,supportsResources=true,description="Tooltip message that will be showed on SAVE button"),
+	@TagAttributeDeclaration(value="cancelButtonTooltip", type=String.class,defaultValue="false",supportsI18N=true,supportsResources=true,description="Tooltip message that will be showed on CANCEL button")
 })
 @TagAttributes({
-	@TagAttribute(value="dataSource", processor=GridFactory.DataSourceAttributeParser.class)
+	@TagAttribute(value="dataSource", processor=GridFactory.DataSourceAttributeParser.class, description="A data grid component that allows pagination, edition, sort, frozen headers and datasource integration")
 })
 @TagEvents({
 	@TagEvent(RowClickEvtBind.class),
