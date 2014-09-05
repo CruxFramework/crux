@@ -108,6 +108,14 @@ body
 	z-index:7;
 }
 
+
+/* -------------------- facesLabel -----------------------*/
+
+.faces-Label
+{
+	color: #1c5994;
+}
+
 /* -------------------- facesMenu -----------------------*/
 
 .faces-Menu
@@ -118,10 +126,11 @@ body
 	position:relative;
 }
 
-.faces-Menu > .faces-Menu-ul > .faces-Menu-li .faces-Label,
-.faces-Menu a
+.faces-Menu .faces-Label,
+.faces-Menu .gwt-Label
 {
 	color:#fff;
+	text-shadow:none;
 }
 
 .faces-Menu > .faces-Menu-ul > .faces-Menu-li .faces-Menu-li .faces-Label
@@ -224,8 +233,8 @@ body
     border-right:1px solid #1a6299;
 }
 
-.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel .faces-Label
-{	
+.faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel div
+{
     padding:10px;
 }
 
@@ -1003,14 +1012,6 @@ td > div > .faces--group
 .faces-MessageBox .faces-popup-body
 {
 	text-align:center;
-}
-
-
-/* -------------------- facesLabel -----------------------*/
-
-.faces-Label
-{
-	color: #1c5994;
 }
 
 
