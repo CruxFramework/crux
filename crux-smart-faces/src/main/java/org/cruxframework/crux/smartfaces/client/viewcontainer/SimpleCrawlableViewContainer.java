@@ -20,6 +20,7 @@ import org.cruxframework.crux.core.client.screen.views.View;
 
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A single view container that supports hashbang schemas for history control
@@ -35,11 +36,16 @@ public class SimpleCrawlableViewContainer extends SingleCrawlableViewContainer
 	
 	public SimpleCrawlableViewContainer()
 	{
-		super(new SimplePanel(), true);
+		this(new SimplePanel());
+	}
+
+	protected SimpleCrawlableViewContainer(Widget mainWidget)
+	{
+		super(mainWidget, true);
 		containerPanel = getMainWidget();
 		containerPanel.setStyleName(DEFAULT_STYLE_NAME);
 	}
-
+	
 	public View getView()
 	{
 		return innerView;
