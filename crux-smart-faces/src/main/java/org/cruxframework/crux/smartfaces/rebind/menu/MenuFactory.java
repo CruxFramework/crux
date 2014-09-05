@@ -26,6 +26,7 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasSelectionHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.TextChildProcessor;
@@ -74,7 +75,7 @@ class MenuContext extends WidgetCreatorContext
 @TagChildren({
 	@TagChild(MenuFactory.MenuItemProcessor.class)
 })
-public class MenuFactory extends WidgetCreator<MenuContext>
+public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelectionHandlersFactory<WidgetCreatorContext>
 {
 	
 	protected static Logger logger = Logger.getLogger(MenuFactory.class.getName());
@@ -120,7 +121,8 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 		@TagAttributeDeclaration(value="style", description="the item style."),
 		@TagAttributeDeclaration(value="disabled", type=Boolean.class, defaultValue = "false", description="indicate if the item should be disabled or not."),
 		@TagAttributeDeclaration(value="styleName", supportsResources=true, description="the item style name."),
-		@TagAttributeDeclaration(value="id", description="The component id.")
+		@TagAttributeDeclaration(value="id", description="The component id."),
+		@TagAttributeDeclaration(value="value", description="Any value that will be associated with this menu item.")
 	})
 	@TagEventsDeclaration({
 		@TagEventDeclaration("onSelect")
@@ -183,6 +185,11 @@ public class MenuFactory extends WidgetCreator<MenuContext>
 			{
 				styleName = getWidgetCreator().getResourceAccessExpression(styleName);
 				out.println(item + ".addClassName(" + EscapeUtils.quote(styleName) + ");");
+			}
+			String itemValue = context.readChildProperty("value");
+			if (!StringUtils.isEmpty(itemValue))
+			{
+				out.println(item + ".setValue(" + EscapeUtils.quote(itemValue) + ");");
 			}
 		}			
 		
