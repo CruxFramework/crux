@@ -127,7 +127,9 @@ body
 }
 
 .faces-Menu .faces-Label,
-.faces-Menu .gwt-Label
+.faces-Menu .gwt-Label,
+.faces-Menu .gwt-Anchor,
+.faces-Menu .crux-Anchor
 {
 	color:#fff;
 	text-shadow:none;
@@ -136,7 +138,7 @@ body
 .faces-Menu > .faces-Menu-ul > .faces-Menu-li .faces-Menu-li .faces-Label
 {
 	color:#343434;
-} 
+}
 
 .faces-Menu a
 {
