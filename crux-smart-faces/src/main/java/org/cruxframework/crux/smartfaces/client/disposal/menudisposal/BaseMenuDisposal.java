@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * This is a base class to create components that defines a page layout (example: TopMenuDisposalLayout, LeftMenuDisposalLayout)
+ * This is a base class to create components that defines a page layout (example: TopMenuDisposalLayout, SideMenuDisposalLayout)
  * @author wesley.diniz
  *
  */

@@ -24,8 +24,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
  
 /**
+ * A component that defines a page layout. It is a view container and has panel to render a header, a footer and an automatically view-binded menu
  * @author wesley.diniz
- *
  */
 public class TopMenuDisposal extends BaseMenuDisposal
 {
