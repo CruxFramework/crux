@@ -1,0 +1,161 @@
+/*
+ * Copyright 2011 cruxframework.org.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
+
+
+import org.cruxframework.crux.smartfaces.client.button.Button;
+import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
+import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.FlowPanel;
+ 
+/**
+ * @author wesley.diniz
+ *
+ */
+public class TopMenuDisposal extends BaseMenuDisposal
+{
+
+	private final String MENU_PANEL_STYLE = "faces-TopMenuDisposal-MenuPanel";
+	private final String HEADER_PANEL_STYLE = "faces-TopMenuDisposal-HeaderPanel";
+	private final String FOOTER_PANEL_STYLE = "faces-TopMenuDisposal-FooterPanel";
+	private final String CONTENT_PANEL_STYLE = "faces-TopMenuDisposal-ContentPanel";
+	private final String TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-TopMenuDisposal-SmallHeaderPanel";
+	
+	public final String DEFAULT_STYLE_NAME = "faces-TopMenuDisposal";
+
+	@Override
+	protected void buildLayout()
+	{
+		LayoutBuilder builder = GWT.create(LayoutBuilder.class);
+		builder.buildLayout(this);
+		setSizeDisposal(builder.getDeviceSize());
+		setStyleName(DEFAULT_STYLE_NAME);
+	}
+	;
+
+	@Override
+	protected String getFooterStyleName()
+	{
+		return FOOTER_PANEL_STYLE;
+	}
+
+	@Override
+	protected String getHeaderStyleName()
+	{
+		return HEADER_PANEL_STYLE;
+	}
+
+	@Override
+	protected String getMenuPanelStyleName()
+	{
+		return MENU_PANEL_STYLE;
+	}
+
+	@Override
+	protected String getContentStyleName()
+	{
+		return CONTENT_PANEL_STYLE;
+	}
+	
+	@Override
+	protected String getSmallHeaderStyleName()
+	{
+		return TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL;
+	}
+
+	public enum TopDisposalMenuType
+	{
+		HORIZONTAL_ACCORDION,
+		HORIZONTAL_DROPDOWN;
+	}
+	
+	static class SmallLayoutBuilder implements LayoutBuilder
+	{
+		private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "faces-TopMenuDisposal-SmallHeaderWrapper";
+		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON = "faces-TopMenuDisposal-MenuButton";
+		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON_CONTAINER = "faces-TopMenuDisposal-MenuButtonContainer";
+
+
+		@Override
+		public void buildLayout(final BaseMenuDisposal disposal)
+		{
+			FlowPanel menuButtonPanel = new FlowPanel();
+			menuButtonPanel.setStyleName(TOP_MENU_DISPOSAL_MENU_BUTTON_CONTAINER);
+			Button menuButton = new Button();
+			menuButton.setStyleName(TOP_MENU_DISPOSAL_MENU_BUTTON);
+			menuButtonPanel.add(menuButton);
+			menuButton.addSelectHandler(new SelectHandler(){
+				
+				@Override
+				public void onSelect(SelectEvent event)
+				{
+					disposal.showSmallMenu();
+				}
+			});
+			
+			FlowPanel headerWrapper = new FlowPanel();
+			headerWrapper.setStyleName(TOP_MENU_DISPOSAL_SMALL_HEADER_WRAPPER);
+			
+			headerWrapper.add(menuButtonPanel);
+			headerWrapper.add(disposal.smallHeaderPanel);
+			
+			disposal.bodyPanel.add(headerWrapper);
+			disposal.bodyPanel.add(disposal.menuPanel);
+			disposal.bodyPanel.add(disposal.viewContentPanel);
+			disposal.bodyPanel.add(disposal.footerPanel);
+		}
+		
+
+		@Override
+		public SizeDisposal getDeviceSize()
+		{
+			return SizeDisposal.SMALL;
+		}
+	}
+	
+	static class LargeLayoutBuilder implements LayoutBuilder
+	{
+		@Override
+		public void buildLayout(BaseMenuDisposal disposal)
+		{
+			FlowPanel splitPanel = new FlowPanel();
+			
+			splitPanel.add(disposal.headerPanel);
+			splitPanel.add(disposal.menuPanel);
+			splitPanel.add(disposal.viewContentPanel);
+			splitPanel.add(disposal.footerPanel);
+			
+			disposal.bodyPanel.add(splitPanel);
+		}
+
+		@Override
+		public SizeDisposal getDeviceSize()
+		{
+			return SizeDisposal.LARGE;
+		}
+	}
+	
+	static interface LayoutBuilder
+	{
+		void buildLayout(BaseMenuDisposal disposal);
+		SizeDisposal getDeviceSize();
+	}
+	
+	
+
+}
