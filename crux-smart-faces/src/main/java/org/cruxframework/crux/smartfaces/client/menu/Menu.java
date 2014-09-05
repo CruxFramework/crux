@@ -25,6 +25,10 @@ import org.cruxframework.crux.smartfaces.client.panel.BasePanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasAnimation;
@@ -38,7 +42,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class Menu extends Composite implements HasAnimation, HasEnabled 
+public class Menu extends Composite implements HasAnimation, HasEnabled, HasSelectionHandlers<MenuItem>
 {
 	public    static final String STYLE_FACES_MENU = "faces-Menu";
 	protected static final String SPACE = " ";
@@ -107,6 +111,12 @@ public class Menu extends Composite implements HasAnimation, HasEnabled
 		return STYLE_FACES_MENU;
 	}
 
+	@Override
+	public HandlerRegistration addSelectionHandler(SelectionHandler<MenuItem> handler)
+	{
+		return addHandler(handler, SelectionEvent.getType());
+	}
+	
 	@Override
 	public boolean isAnimationEnabled() 
 	{

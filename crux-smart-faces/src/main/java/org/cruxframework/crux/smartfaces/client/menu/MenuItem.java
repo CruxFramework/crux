@@ -27,6 +27,7 @@ import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
@@ -55,7 +56,8 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 	private Button openCloseTriggerHelper = null;
 	private boolean opened = false;
 	private boolean enabled = true;
-
+	private String value = null;
+	
 	MenuItem(Widget itemWidget)
 	{
 		if (itemWidget == null)
@@ -200,6 +202,7 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 					}
 				}
 				SelectEvent.fire(menuItem);
+				SelectionEvent.fire(menu, menuItem);
 			}
 		});
 		
@@ -253,6 +256,16 @@ public class MenuItem extends UIObject implements HasSelectHandlers, HasEnabled
 		});
 		
 		return openCloseTriggerHelper;
+	}
+
+	public String getValue()
+	{
+		return value;
+	}
+
+	public void setValue(String value)
+	{
+		this.value = value;
 	}
 
 	public MenuItem addItem(Widget widget)
