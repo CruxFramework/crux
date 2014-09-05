@@ -238,6 +238,7 @@ body
 .faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel > *
 {
     padding:10px;
+    display:inline-block;
 }
 
 .faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal .faces-Menu-li > .faces-Menu-ul
