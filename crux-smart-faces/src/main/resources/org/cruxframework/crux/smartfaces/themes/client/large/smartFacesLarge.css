@@ -53,7 +53,11 @@
 	background-color: #4496C6;	
 }
 
-.top-disposal-header-panel-large
+
+
+/* -------------------- Large - TopMenuDisposal -----------------------*/
+
+.faces-TopMenuDisposal-HeaderPanel
 {
 	margin-top:-20px;
 	margin-bottom: -20px;
@@ -61,12 +65,12 @@
 	width: 100%;
 }
 
-.top-disposal-menu-panel-large
+.faces-TopMenuDisposal-MenuPanel
 {
 	
 }
 
-.top-disposal-footer-panel-large
+.faces-TopMenuDisposal-FooterPanel
 {
 	margin-top:-20px;
 	width: 100%;
@@ -76,12 +80,14 @@
 	z-index: 10;
 }
 
-.top-disposal-content-panel-large
+.faces-TopMenuDisposal-ContentPanel
 {
 	
 }
 
-.left-disposal-menu-panel-large
+/* -------------------- SideMenuDisposal -----------------------*/
+
+.faces-SideMenuDisposal-MenuPanel
 {
 	width:200px;
 	height: 100%;
@@ -89,12 +95,12 @@
 	position:relative;
 }
 
-.left-disposal-menu-panel-large .facesMenu
+.faces-SideMenuDisposal-MenuPanel .facesMenu
 {
 	height:100%;
 }
 
-.left-disposal-footer-panel-large
+.faces-SideMenuDisposal-FooterPanel
 {
 	margin-top:-20px;
 	width: 100%;
@@ -104,21 +110,21 @@
 	z-index: 10;
 }
 
-.left-disposal-header-panel-large
+.faces-SideMenuDisposal-HeaderPanel
 {
 	overflow:auto;
 	height: auto;
 	width: 100%;
+	margin-top:-20px;
 }
 
-.left-disposal-content-panel-large
+.faces-SideMenuDisposal-ContentPanel
 {
 	width:literal("calc(100% - 210px)");
 	padding-left: 10px;
 	height:100%;
 	float:left;
 }
-
 
 /* -------------------- facesPopup-----------------------*/
 

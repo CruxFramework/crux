@@ -14,7 +14,24 @@ body
 	display:block;
 }
 
-.top-disposal-header-panel-small
+/* -------------------- Small - TopMenuDisposal -----------------------*/
+
+.faces-TopMenuDisposal
+{
+	padding-top:40px;
+}
+
+.faces-TopMenuDisposal-SmallHeaderWrapper
+{
+	
+}
+
+.faces-TopMenuDisposal-SmallHeaderPanel
+{
+	
+}
+
+.faces-TopMenuDisposal-HeaderPanel
 {
 	height: 100%;
 	width: 100%;
@@ -25,15 +42,25 @@ body
 	left:0;
 	z-index:4;
 	padding-left:40px;
-	
+	 
 }
 
-.top-disposal-menu-panel-small
+.faces-TopMenuDisposal-MenuPanel
 {
-	padding-top: 40px; 
+	position: absolute;
+	height: 100%;
+	z-index: 2;
+	width: 100%;
+	height: 100%;
 }
 
-.top-disposal-footer-panel-small
+.faces-TopMenuDisposal-MenuPanel .facesMenu.faces-Menu-accordion.faces-Menu-vertical
+{
+	width: 100%;
+	height: 100%;
+}
+
+.faces-TopMenuDisposal-FooterPanel
 {
 	margin-top:-20px;
 	width: 100%;
@@ -43,32 +70,22 @@ body
 	z-index: 10;
 }
 
-.top-disposal-content-panel-small
+.faces-TopMenuDisposal-ContentPanel
 {
 	position:relative;
 }
 
-.menu-disposal-small
-{
-	top: 0px;
-	left: 0px;
-	z-index: 2;
-	position: absolute;
-	width:100% !important;
-	height:100%: !important;
-}
-
-.top-menu-disposal-menubutton-container
+.faces-TopMenuDisposal-MenuButtonContainer
 {
 	width:40px;
 	height:40px;
-	position:fixed;
 	top:0;
 	left:0;
 	z-index:4;
+	position:absolute;
 }
 
-.top-menu-disposal-menubutton
+.faces-TopMenuDisposal-MenuButton
 {
 	position:absolute;
 	top:0px;
@@ -78,6 +95,130 @@ body
 	background:svgIconMenu no-repeat center center rgba(0,0,0,0.3);
 	background-size:80% auto;
 }
+
+.faces-TopMenuDisposal-SmallHeaderWrapper
+{
+	width:100%;
+	position:fixed;
+	top:0;
+	left:0;
+	z-index:3;
+	padding-left:40px;
+}
+
+.faces-TopMenuDisposal-SmallHeaderPanel div
+{
+	overflow:hidden;
+}
+
+/* -------------------- SideMenuDisposal -----------------------*/
+
+.faces-SideMenuDisposal
+{
+	padding-top:40px;
+}
+
+.faces-SideMenuDisposal-SmallHeaderWrapper
+{
+	
+}
+
+.faces-SideMenuDisposal-SmallHeaderPanel
+{
+	
+}
+
+.faces-SideMenuDisposal-HeaderPanel
+{
+	height: 100%;
+	width: 100%;
+	min-height: 40px;
+	max-height: 40px;
+	position:fixed;
+	top:-20px;
+	left:0;
+	z-index:4;
+	padding-left:40px;
+	 
+}
+
+.faces-SideMenuDisposal-MenuPanel
+{
+	position: absolute;
+	height: 100%;
+	z-index: 2;
+	width: 100%;
+	height: 100%;
+}
+
+.faces-SideMenuDisposal-MenuPanel .facesMenu.faces-Menu-accordion.faces-Menu-vertical
+{
+	width: 100%;
+	height: 100%;
+}
+
+.faces-SideMenuDisposal-FooterPanel
+{
+	margin-top:-20px;
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	margin-bottom: -20px;
+	z-index: 10;
+}
+
+.faces-SideMenuDisposal-ContentPanel
+{
+	position:relative;
+}
+
+.faces-SideMenuDisposal-MenuButtonContainer
+{
+	width:40px;
+	height:40px;
+	top:0;
+	left:0;
+	z-index:4;
+	position:absolute;
+}
+
+.faces-SideMenuDisposal-MenuButton
+{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:40px;
+	height:40px;
+	background:svgIconMenu no-repeat center center rgba(0,0,0,0.3);
+	background-size:80% auto;
+}
+
+.faces-SideMenuDisposal-SmallHeaderWrapper
+{
+	width:100%;
+	position:fixed;
+	top:0;
+	left:0;
+	z-index:3;
+	padding-left:40px;
+}
+
+.faces-SideMenuDisposal-SmallHeaderPanel div
+{
+	overflow:hidden;
+}
+
+.faces-BaseMenuDisposal-Menu
+{
+	top: 0px;
+	left: 0px;
+	z-index: 2;
+	position: absolute;
+	width:100% !important;
+	height:100%: !important;
+}
+
+
 
 
 /* -------------------- facesMenu -----------------------*/
