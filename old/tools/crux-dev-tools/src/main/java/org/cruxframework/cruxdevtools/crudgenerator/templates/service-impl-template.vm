@@ -1,9 +1,0 @@
-package $packageName;
-
-#foreach ($importItem in $imports)
-import $importItem;
-#end
-
-public class $className extends BaseServiceImpl<$entity, $key> implements $remoteInterface
-{
-}
