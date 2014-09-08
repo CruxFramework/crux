@@ -48,7 +48,7 @@ public class OfflineScreenFactory
 	}
 	
 	public OfflineScreen getOfflineScreen(String id, Document screen) throws ScreenConfigException
-  {
+	{
 		Element screenElement = screen.getDocumentElement();
 		String moduleName = screenElement.getAttribute("moduleName");
 		String screenId = screenElement.getAttribute("screenId");
