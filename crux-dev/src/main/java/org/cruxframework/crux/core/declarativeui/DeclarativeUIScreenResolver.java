@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
@@ -42,6 +44,8 @@ import org.w3c.dom.Document;
  */
 public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 {
+	private static final Log log = LogFactory.getLog(DeclarativeUIScreenResolver.class);
+	
 	public Set<String> getAllAppModules()
 	{
 		return DeclarativeUIScreenResourceScanner.getInstance().getAppModules();
@@ -127,6 +131,12 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 						{
 							manager = new URLStreamManager(screenURL);
 							inputStream = manager.open();
+						}
+						
+						if(inputStream == null)
+						{
+							log.warn("Cannot find resource based in the Screen URL: ["+screenURL+"].");
+							return null;				
 						}
 					}
 				}

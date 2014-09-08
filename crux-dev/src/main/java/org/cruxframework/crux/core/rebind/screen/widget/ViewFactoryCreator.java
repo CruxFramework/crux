@@ -351,7 +351,10 @@ public class ViewFactoryCreator extends AbstractProxyCreator
         }
         catch (Exception e)
         {
-        	throw new CruxGeneratorException("Error retrieveing widgetFactory for type ["+widgetType+"].",e);
+        	throw new CruxGeneratorException("Error retrieveing widgetFactory for type ["+widgetType+"]."
+					+ "\n Possible cause:"
+					+ "\n\t 1. Check if your resource file (View, Template, Screen ...) is validated according to the Crux Catalog."
+        			,e);
         }
 		return creators.get(widgetType);
 	}

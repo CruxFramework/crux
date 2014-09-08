@@ -97,7 +97,7 @@ public class DeclarativeUIFilter extends CruxAbstractFilter
 					}
 					else
 					{
-						log.info("The page ["+requestedScreen+"] is not transformed... Accessing directly.");
+						log.info("The page ["+requestedScreen+"] is not declarative... accessing directly.");
 					}
 				}
 				catch (Exception e)
