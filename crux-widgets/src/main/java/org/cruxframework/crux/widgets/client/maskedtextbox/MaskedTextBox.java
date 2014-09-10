@@ -56,6 +56,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasName;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
@@ -66,7 +67,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class MaskedTextBox extends Composite implements HasFormatter, HasDirection, HasChangeHandlers, HasValueChangeHandlers<String>,
 														HasClickHandlers, HasAllFocusHandlers, HasAllKeyHandlers,
 														HasAllMouseHandlers, HasName, HasPasteHandlers, HasDoubleClickHandlers, 
-														HasEnabled, Focusable
+														HasEnabled, Focusable, HasText
 {
 	public static final String DEFAULT_STYLE_NAME = "crux-MaskedTextBox" ;
 
@@ -501,5 +502,10 @@ public class MaskedTextBox extends Composite implements HasFormatter, HasDirecti
 			masked.applyMask(this, clearIfNotValid);
 		}
 	}
-	
+
+	@Override
+	public void setText(String text) 
+	{
+		textBox.setText(text);	
+	}
 }
