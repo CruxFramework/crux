@@ -24,9 +24,12 @@ import com.google.gwt.resources.client.CssResource;
 public interface FacesCSS extends CssResource
 {
 	String flexBoxContainer();
+	String flexBoxHorizontalContainer();
+	String flexBoxVertivalContainer();
 	String flexBoxFirstChild();
 	String flexBoxSecondChild();
 	String flexBoxThirdChild();
-	
-	String facesMenu();
+	String flexBoxInlineContainer();
+	String rollingPanelBody();
+	String facesMenu();	
 }

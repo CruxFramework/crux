@@ -1,0 +1,15 @@
+/****************     RollingPanel     *************************/
+.rollingPanelBody {
+	-webkit-box-flex: 1;      		/* OLD - iOS 6-, Safari 3.1-6 */
+	-moz-box-flex: 1;         		/* OLD - Firefox 19- */
+	-ms-flex: 1;              		/* TWEENER - IE 10 */
+	-webkit-flex: 1;          		/* NEW - Chrome */
+	flex: 1;						/* NEW, Spec - Opera 12.1, Firefox 20+ */
+
+	-webkit-box-ordinal-group: 2;   /* OLD - iOS 6-, Safari 3.1-6 */
+	-moz-box-ordinal-group: 2;      /* OLD - Firefox 19- */
+	-ms-flex-order: 2;              /* TWEENER - IE 10 */
+	-webkit-order: 2;               /* NEW - Chrome */
+	order: 2;                       /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
