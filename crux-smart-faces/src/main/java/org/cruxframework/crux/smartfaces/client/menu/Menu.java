@@ -77,7 +77,6 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 		root.setMenu(this);
 		
 		setStyleName(getBaseStyleName());
-		injectBackboneCss();
 		
 		if(menuRenderer instanceof LargeMenuRenderer)
 		{
@@ -91,11 +90,23 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 		menuRenderer.render(this, largeType, smallType);
 	}
 	
-	private void injectBackboneCss()
+	@Override
+	public void setStyleName(String style, boolean add)
 	{
-		menuPanel.addStyleName(FacesResources.INSTANCE.css().facesMenu());
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    addStyleName(FacesResources.INSTANCE.css().facesMenu());
+		}
 	}
-
+	
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    addStyleName(FacesResources.INSTANCE.css().facesMenu());
+	}
+	
 	public Menu(LargeType largeType)
 	{
 		this(largeType, null);
