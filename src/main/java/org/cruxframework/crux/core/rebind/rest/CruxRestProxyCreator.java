@@ -307,9 +307,17 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		generateXSRFHeaderProtectionForWrites(methodInfo.httpMethod, "builder", srcWriter);
 		srcWriter.println("builder.send();");
 		srcWriter.println("}catch (Exception e){");
+		generateLogHandlingCode(srcWriter, "Level.SEVERE");
 		srcWriter.println(callbackParameterName+".onError(new RestError(-1, Crux.getMessages().restServiceUnexpectedError(e.getMessage())));");
 		srcWriter.println("}");
     }
+
+	private static void generateLogHandlingCode(SourcePrinter srcWriter, String logLevel) 
+	{
+		srcWriter.println("if (LogConfiguration.loggingIsEnabled()){");
+		srcWriter.println("__log.log("+logLevel+", e.getMessage(), e);");
+		srcWriter.println("}");
+	}
 
 	protected void generateExceptionCallHandlingCode(RestMethodInfo methodInfo, SourcePrinter srcWriter, String callbackParameterName, String responseVariable)
 	{
@@ -373,10 +381,8 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, responseVariable, restURIParam, methodInfo.methodURI);
 			srcWriter.println(callbackParameterName+".onSuccess("+resultVariable+");");
 			srcWriter.println("}catch (Exception e){");
-			srcWriter.println("if (LogConfiguration.loggingIsEnabled()){");
-			srcWriter.println("__log.log(Level.SEVERE, e.getMessage(), e);");
+			generateLogHandlingCode(srcWriter, "Level.SEVERE");
 			//srcWriter.println(callbackParameterName+".onError(new RestError(-1, Crux.getMessages().restServiceUnexpectedError(e.getMessage())));");
-			srcWriter.println("}");
 			srcWriter.println("}");
 			srcWriter.println("}else {");
 			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, responseVariable, restURIParam, methodInfo.methodURI);
