@@ -129,6 +129,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 		if (!childOfSelectableWidget)
 		{
 			event.stopPropagation();
+			event.preventDefault();
 		}
 	}
 
