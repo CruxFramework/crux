@@ -193,7 +193,7 @@ public class Views
 	    		{
 	    			for(URL url: urls)
 	    			{
-	    				if (Modules.getInstance().isResourceOnModulePath(url, moduleId))
+	    				if (Modules.getInstance().isResourceOnModulePath(url, moduleId, true))
 	    				{
 	    					result.add(viewsLocator);
 	    				}

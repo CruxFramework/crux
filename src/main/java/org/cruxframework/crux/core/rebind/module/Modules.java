@@ -138,7 +138,7 @@ public class Modules
 	 * @param moduleId
 	 * @return
 	 */
-	public boolean isResourceOnModulePathOrContext(URL url, String moduleId)
+	public boolean isResourceOnModulePathOrContext(URL url, String moduleId, boolean searchOnlyPublicFolders)
 	{
 		URL webBaseURL = ClassPathResolverInitializer.getClassPathResolver().findWebBaseDir();
 		if (url.toString().startsWith(webBaseURL.toString()))
@@ -146,7 +146,7 @@ public class Modules
 			return true;
 		}
 		
-		return isResourceOnModulePath(url, moduleId, new HashSet<String>());
+		return isResourceOnModulePath(url, moduleId, new HashSet<String>(), searchOnlyPublicFolders);
 	}
 	
 	/**
@@ -155,9 +155,9 @@ public class Modules
 	 * @param moduleId
 	 * @return
 	 */
-	public boolean isResourceOnModulePath(URL url, String moduleId)
+	public boolean isResourceOnModulePath(URL url, String moduleId, boolean searchOnlyPublicFolders)
 	{
-		return isResourceOnModulePath(url, moduleId, new HashSet<String>());
+		return isResourceOnModulePath(url, moduleId, new HashSet<String>(), searchOnlyPublicFolders);
 	}
 
 	/**
@@ -309,7 +309,7 @@ public class Modules
 	 * @param alreadySearched
 	 * @return
 	 */
-	protected boolean isResourceOnModulePath(URL resource, String moduleId, Set<String> alreadySearched)
+	protected boolean isResourceOnModulePath(URL resource, String moduleId, Set<String> alreadySearched, boolean searchOnlyPublicFolders)
 	{
 		if (alreadySearched.contains(moduleId))
 		{
@@ -319,10 +319,19 @@ public class Modules
 		Module module = getModule(moduleId);
 		if (module != null)
 		{
-			
-			for(String path: module.getPublicPaths())
+			if(searchOnlyPublicFolders)
 			{
-				URL relativeURL = getModuleRelativeURL(module, path);
+				for(String path: module.getPublicPaths())
+				{
+					URL relativeURL = getModuleRelativeURL(module, path);
+					if (resource.toString().startsWith(relativeURL.toString()))
+					{
+						return true;
+					}
+				}
+			} else
+			{
+				URL relativeURL = getModuleRelativeURL(module, "");
 				if (resource.toString().startsWith(relativeURL.toString()))
 				{
 					return true;
@@ -330,7 +339,7 @@ public class Modules
 			}
 			for (String inheritModule : module.getInherits())
 			{
-				if (isResourceOnModulePath(resource, inheritModule, alreadySearched))
+				if (isResourceOnModulePath(resource, inheritModule, alreadySearched, searchOnlyPublicFolders))
 				{
 					return true;
 				}
