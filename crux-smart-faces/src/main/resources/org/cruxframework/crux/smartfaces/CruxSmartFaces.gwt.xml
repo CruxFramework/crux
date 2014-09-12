@@ -1,21 +1,6 @@
 <module>
     <inherits name="org.cruxframework.crux.core.Crux"/>
 
-	<!-- SelectHandler  -->
-	<replace-with class="org.cruxframework.crux.smartfaces.client.select.SelectEventsHandlerNoTouchImpl">
-		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.select.SelectEventsHandler" />
-		<none>
-			<when-property-is name="device.features" value="smallDisplayTouch" />
-			<when-property-is name="device.features" value="largeDisplayTouch" />
-		</none>
-	</replace-with>
-	<replace-with class="org.cruxframework.crux.smartfaces.client.select.SelectEventsHandlerTouchImpl">
-		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.select.SelectEventsHandler" />
-		<any>
-			<when-property-is name="device.features" value="smallDisplayTouch" />
-			<when-property-is name="device.features" value="largeDisplayTouch" />
-		</any>
-	</replace-with>
 	<!-- NavigationButtonsPager -->
 	<replace-with class="org.cruxframework.crux.smartfaces.client.pager.NavigationButtonsPager.TouchButtonCreator">
 		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.pager.NavigationButtonsPager.ButtonCreator" />
