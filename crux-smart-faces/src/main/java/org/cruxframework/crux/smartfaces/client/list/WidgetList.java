@@ -30,8 +30,8 @@ public class WidgetList<T> extends AbstractPageable<T>
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-WidgetList";
 	
-	private FlowPanel contentPanel = new FlowPanel();
-	private final WidgetFactory<T> widgetFactory;
+	protected FlowPanel contentPanel = new FlowPanel();
+	protected final WidgetFactory<T> widgetFactory;
 
 	/**
 	 * Constructor
