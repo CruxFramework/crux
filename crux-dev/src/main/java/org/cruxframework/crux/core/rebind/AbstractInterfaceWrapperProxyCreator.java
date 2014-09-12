@@ -198,7 +198,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 				for (String viewName : viewList)
 				{
 					URL url = Views.getView(viewName);
-					if (Modules.getInstance().isResourceOnModulePathOrContext(url, moduleId))
+					if (Modules.getInstance().isResourceOnModulePathOrContext(url, moduleId, true))
 					{
 						View innerView = ViewFactory.getInstance().getView(viewName, getDeviceFeatures());
 						views.add(innerView);
@@ -299,7 +299,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 					for (String viewName : viewList)
                     {
 						URL url = Views.getView(viewName);
-						if (Modules.getInstance().isResourceOnModulePathOrContext(url, moduleId))
+						if (Modules.getInstance().isResourceOnModulePathOrContext(url, moduleId, true))
 						{
 							View innerView = ViewFactory.getInstance().getView(viewName, getDeviceFeatures());
 							views.add(innerView);
