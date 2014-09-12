@@ -25,11 +25,12 @@ public interface FacesCSS extends CssResource
 {
 	String flexBoxContainer();
 	String flexBoxHorizontalContainer();
-	String flexBoxVertivalContainer();
+	String flexBoxVerticalContainer();
 	String flexBoxFirstChild();
 	String flexBoxSecondChild();
 	String flexBoxThirdChild();
 	String flexBoxInlineContainer();
 	String rollingPanelBody();
-	String facesMenu();	
+	String facesMenu();
+	String tabPanelDeck();	
 }

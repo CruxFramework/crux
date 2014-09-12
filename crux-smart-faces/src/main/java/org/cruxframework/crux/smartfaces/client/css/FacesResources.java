@@ -28,7 +28,8 @@ public interface FacesResources extends ClientBundle
 	@Source({
 		"facesBackboneBase.css",
 		"facesBackboneMenu.css", 
-		"facesBackboneRollingPanel.css"
+		"facesBackboneRollingPanel.css",
+		"facesBackboneTabPanel.css"
 		})
 	FacesCSS css();
 }

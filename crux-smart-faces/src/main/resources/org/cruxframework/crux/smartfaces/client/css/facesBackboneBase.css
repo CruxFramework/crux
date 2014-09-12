@@ -1,5 +1,5 @@
 /* General CSS to work with FlexBox containers */
-.flexBoxContainer, .flexBoxVertivalContainer, .flexBoxHorizontalContainer {
+.flexBoxContainer, .flexBoxVerticalContainer, .flexBoxHorizontalContainer {
 	display: -webkit-box;      		/* OLD - iOS 6-, Safari 3.1-6 */
 	display: -moz-box;         		/* OLD - Firefox 19- (buggy but mostly works) */
 	display: -ms-flexbox;      		/* TWEENER - IE 10 */
@@ -23,7 +23,7 @@
 	flex-direction: row; 			/* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
-.flexBoxVertivalContainer {
+.flexBoxVerticalContainer {
 	-webkit-box-orient: vertical; 	/* OLD - iOS 6-, Safari 3.1-6 */
 	-moz-box-orient: vertical; 		/* OLD - Firefox 19- */
 	-ms-flex-direction: column; 	/* TWEENER - IE 10 */
