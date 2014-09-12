@@ -200,7 +200,7 @@
 		
 		<!-- requires file header -->
 		<module name="Regexp">
-			<property name="format"	value="\A/\*(\n|\r\n)\s\*\s(Copyright \d{4} cruxframework\.org\.|DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER\.)(\n|\r\n)" />
+			<property name="format"	value="(\A/\*(\n|\r\n)\s\*\sDO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER\.(\n|\r\n))|(^\s\*\sLicensed under the Apache License, Version 2.0)" />
 			<property name="message" value="Header file out of the standards of Triggolabs" />
 			<property name="severity" value="error" />
 		</module>
