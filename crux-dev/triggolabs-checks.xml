@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.0//EN" "http://www.puppycrawl.com/dtds/configuration_1_0.dtd">
+<!--
+ * Copyright 2013 cruxframework.org.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ -->
+<module name="Checker">
+	
+	<module name="SuppressionFilter">
+		<property name="file" value="${basedir}/triggolabs-checks-suppressions.xml" />
+	</module>
+
+	<!-- default severity -->
+	<property name="severity" value="warning" />
+	
+	<!-- enable CHECKSTYLE:OFF and CHECKSTYLE:ON comments. FileContentsHolder module must be present. -->
+	<module name="SuppressionCommentFilter" />
+
+	<!-- maximum number of lines (default 2000) -->
+	<module name="FileLength" />
+ 
+	<module name="TreeWalker">
+	    
+		<module name="FileContentsHolder" />
+
+		<!-- tab size (4) -->
+		<property name="tabWidth" value="4" />
+
+		<module name="PackageName">
+			<property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$" />
+		</module>
+		
+		<module name="ConstantName" />
+		
+		<module name="LocalFinalVariableName">
+			<property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$" />
+		</module>
+		
+		<module name="MemberName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="ParameterName" />                                                              
+		<module name="StaticVariableName" />
+		<module name="TypeName" />
+		<module name="MethodName" />
+
+		<!-- JavaDoc -->
+		<module name="JavadocMethod">
+			<property name="scope" value="public" />
+		</module>
+		
+		<module name="JavadocType">
+			<property name="scope" value="public" />
+			<property name="authorFormat" value="\S" />
+		</module>
+    
+		<module name="JavadocVariable">
+			<property name="scope" value="public" />
+		</module>
+	    
+		<module name="JavadocStyle">
+			<property name="checkHtml" value="false"/>
+			<property name="scope" value="public" />
+		</module>
+
+		<!-- curly conventions -->
+		<module name="LeftCurly">
+			<property name="option" value="nl" />
+		</module>
+	    
+		<module name="RightCurly">
+			<property name="option" value="alone" />
+			<property name="tokens" value="LITERAL_ELSE" />
+		</module>
+		
+		<module name="RightCurly">
+			<property name="option" value="alone" />
+			<property name="tokens" value="LITERAL_CATCH, LITERAL_TRY" />
+		</module>
+		
+		<!-- indentation -->
+		<module name="Indentation">
+			<property name="basicOffset" value="4" />
+			<property name="caseIndent" value="4" />
+		</module>
+
+		<!-- avoid inner assignment -->
+		<module name="InnerAssignment" />
+	
+		<!-- avoid multiple variables declarations in same line -->
+		<module name="MultipleVariableDeclarations" />
+
+		<!-- avoid public class members -->
+		<module name="VisibilityModifier" />
+	
+		<!-- declaration order in classes. -->
+		<module name="DeclarationOrder" />
+		<module name="ModifierOrder" />
+	
+		<!-- line length configurations  -->
+		<module name="LineLength">
+			<property name="ignorePattern" value="(^import)|(^package)" />
+			<property name="max" value="140" />
+		</module>
+	
+		<module name="MethodLength">
+			<property name="max" value="80" />
+		</module>
+	
+		<!-- avoid empty blocks and statements. -->
+		<module name="EmptyBlock" />
+		<module name="EmptyStatement" />
+	
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="BooleanExpressionComplexity" />
+	
+		<!-- avoid '==' operator to compare two strings. -->
+		<module name="StringLiteralEquality" />
+	
+		<module name="MagicNumber" />
+	
+		<module name="ExplicitInitialization" />
+	
+		<module name="ParameterNumber">
+			<property name="max" value="9" />
+		</module>
+	
+		<module name="MultipleStringLiterals"/>
+	
+		<module name="NestedIfDepth">
+			<property name="max" value="3" />
+		</module>
+	    
+		<!-- requires {} -->
+		<module name="NeedBraces">
+			<property name="severity" value="warning" />
+		</module>
+		
+		<module name="NoWhitespaceAfter" />
+		<module name="NoWhitespaceBefore" />
+		<module name="WhitespaceAfter" />
+		<module name="GenericWhitespace" />
+		<module name="ParenPad" />
+		<module name="WhitespaceAround" />
+		<module name="EmptyForInitializerPad" />
+		<module name="EmptyForIteratorPad" />
+		<module name="MethodParamPad" />
+		<module name="TypecastParenPad" />
+		
+		<!-- avoids empty tags comments  -->
+		<module name="Regexp">
+			<property name="format"	value="^\s*\*\s*(@param|@throws)\s+\w+\s*.{0,3}$" />
+			<property name="message" value="Possibly meaningless comment" />
+			<property name="illegalPattern" value="true" />
+		</module>
+		
+		<module name="Regexp">
+			<property name="format"	value="^\s*\*\s*(@return|@deprecated)\s*.{0,3}$" />
+			<property name="message" value="Possibly meaningless comment" />
+			<property name="illegalPattern" value="true" />
+		</module>
+		
+		<!-- avoids empty single line comments (/** */)  -->
+		<module name="Regexp">
+			<property name="format"	value="^\s*/\*\*\s*.{0,3}\s*\*/" />
+			<property name="message" value="Possibly meaningless comment" />
+			<property name="illegalPattern" value="true" />
+		</module>
+		
+		<!-- avoids empty comments  -->
+		<module name="Regexp">
+			<property name="format"	value="(?m)(?s)^\s*/\*\*\s*\*\s*.{0,3}\s*$.*\*/" />
+			<property name="message" value="Possibly meaningless comment" />
+			<property name="illegalPattern" value="true" />
+		</module>
+		
+		<!-- avoids empty class comments -->
+		<!--  
+		<module name="Regexp">
+			<property name="format"	value="(?m)(?s)^\s*/\*\*\s+\*\s*Class description:\s*.{0,3}\s*\n" />
+			<property name="message" value="Possibly meaningless comment" />
+			<property name="illegalPattern" value="true" />
+		</module>
+		-->
+		
+		<!-- requires file header -->
+		<module name="Regexp">
+			<property name="format"	value="\A/\*(\n|\r\n)\s\*\s(Copyright \d{4} cruxframework\.org\.|DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER\.)(\n|\r\n)" />
+			<property name="message" value="Header file out of the standards of Triggolabs" />
+			<property name="severity" value="error" />
+		</module>
+	</module>
+</module>
