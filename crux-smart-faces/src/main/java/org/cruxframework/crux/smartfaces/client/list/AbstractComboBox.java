@@ -19,11 +19,11 @@ import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
+import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.dialog.PopupPanel;
-import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
-import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
