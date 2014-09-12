@@ -21,7 +21,6 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.converter.Converters;
-import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
@@ -35,9 +34,9 @@ import com.google.gwt.user.client.ui.HasValue;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
+public class DataWidgetConsumer
 {
-	protected JClassType getConverterType(SourcePrinter out, GeneratorContext context, String bindPath, String bindConverter, JClassType dataObjectType, JClassType widgetClassType)
+	public static JClassType getConverterType(SourcePrinter out, GeneratorContext context, String bindPath, String bindConverter, JClassType dataObjectType, JClassType widgetClassType)
     {
 		JClassType converterType = null;
 	    if (!StringUtils.isEmpty(bindConverter))
@@ -51,7 +50,7 @@ public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
 	    return converterType;
     }
 
-	protected void generateCopyFromCode(SourcePrinter srcWriter, GeneratorContext context, String dataObjectVariable, 
+	public static void generateCopyFromCode(SourcePrinter srcWriter, GeneratorContext context, String dataObjectVariable, 
 			String widgetVariable, JClassType dataObjectType, JClassType widgetClass, String bindPath, String converterVariable, 
 			JClassType converterType, boolean skipCheckings) throws NoSuchFieldException
     {
@@ -87,7 +86,7 @@ public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
 		}
     }
 
-	protected String getNullSafeExpression(String expression, JType propertyType, String bindPath, String dataObjectClassName, String converterVariable)
+	public static String getNullSafeExpression(String expression, JType propertyType, String bindPath, String dataObjectClassName, String converterVariable)
 	{
 		if (converterVariable != null)
 		{
@@ -114,7 +113,7 @@ public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
 		return getExpression;
 	}
 	
-	protected String getEmptyValueExpression(JType propertyType, String bindPath, String dataObjectClassName)
+	public static String getEmptyValueExpression(JType propertyType, String bindPath, String dataObjectClassName)
 	{
 		String getExpression;
 		JPrimitiveType primitiveType = propertyType.isPrimitive();
@@ -137,7 +136,27 @@ public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
 		return getExpression;
 	}
 
-	protected void generateCopyToCode(SourcePrinter srcWriter, GeneratorContext context, String dataObjectVariable, 
+	public static String getPropertyReadExpression(JClassType dataObjectType, String dataObjectVariable, 
+												   String converterVariable,  String bindPath) throws NoSuchFieldException
+	{
+		if (dataObjectType != null)
+		{
+			StringBuilder propertyGetExpression = new StringBuilder();
+			JClassUtils.buildGetValueExpression(propertyGetExpression, dataObjectType, bindPath, dataObjectVariable, false);
+			
+			if (converterVariable != null)
+			{
+				propertyGetExpression.insert(0, converterVariable+".to(").append(")");
+			}
+			
+			return propertyGetExpression.toString();
+		}
+		
+		return null;
+	}
+	
+	
+	public static void generateCopyToCode(SourcePrinter srcWriter, GeneratorContext context, String dataObjectVariable, 
 			String widgetVariable, JClassType dataObjectType, JClassType widgetClass, String bindPath, String converterVariable, 
 			JClassType converterType, boolean skipCheckings) throws NoSuchFieldException
 	{
@@ -165,17 +184,17 @@ public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
 			if (!skipCheckings)
 			{
 				srcWriter.println("if ("+widgetVariable+" != null){");
-				generateWidgetValueSetWithCheckings(srcWriter, widgetVariable, widgetClass, hasValueType, hasFormatterType, hasTextType, propertyGetExpression, propertyType, propertyClassName); 
+				generateWidgetValueSetWithCheckings(srcWriter, widgetVariable, widgetClass, hasValueType, hasFormatterType, hasTextType, propertyGetExpression.toString(), propertyType, propertyClassName); 
 				srcWriter.println("}");
 			}
 			else
 			{
-				generateWidgetValueSetWithNoCheckings(srcWriter, widgetVariable, widgetClass, hasValueType, hasFormatterType, hasTextType, propertyGetExpression, propertyType, propertyClassName); 
+				generateWidgetValueSetWithNoCheckings(srcWriter, widgetVariable, widgetClass, hasValueType, hasFormatterType, hasTextType, propertyGetExpression.toString(), propertyType, propertyClassName); 
 			}
 		}
 	}
 
-	protected void validateConverter(JClassType converterType, GeneratorContext context, JClassType widgetClass, JClassType propertyType)
+	public static void validateConverter(JClassType converterType, GeneratorContext context, JClassType widgetClass, JClassType propertyType)
 	{
 		JClassType hasValueType = context.getTypeOracle().findType(HasValue.class.getCanonicalName());
 		JClassType hasTextType = context.getTypeOracle().findType(HasText.class.getCanonicalName());
@@ -211,7 +230,7 @@ public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
 		}
 	}
 
-	private String getPropertyClassName(JType propertyType)
+	private static String getPropertyClassName(JType propertyType)
     {
 	    String propertyClassName;
 	    if (propertyType.isPrimitive() != null)
@@ -225,7 +244,7 @@ public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
 	    return propertyClassName;
     }
 	
-	private void generateWidgetValueSetWithNoCheckings(SourcePrinter srcWriter, String widgetVariable, JClassType widgetClass, JClassType hasValueType, JClassType hasFormatterType, JClassType hasTextType, StringBuilder propertyGetExpression, JType propertyType,
+	private static void generateWidgetValueSetWithNoCheckings(SourcePrinter srcWriter, String widgetVariable, JClassType widgetClass, JClassType hasValueType, JClassType hasFormatterType, JClassType hasTextType, String propertyGetExpression, JType propertyType,
             String propertyClassName)
     {
 	    if (widgetClass.isAssignableTo(hasValueType))
@@ -249,7 +268,7 @@ public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
 	    }
     }
 
-	private void generateWidgetValueSetWithCheckings(SourcePrinter srcWriter, String widgetVariable, JClassType widgetClass, JClassType hasValueType, JClassType hasFormatterType, JClassType hasTextType, StringBuilder propertyGetExpression, JType propertyType,
+	private static void generateWidgetValueSetWithCheckings(SourcePrinter srcWriter, String widgetVariable, JClassType widgetClass, JClassType hasValueType, JClassType hasFormatterType, JClassType hasTextType, String propertyGetExpression, JType propertyType,
             String propertyClassName)
     {
 	    if (widgetClass.isAssignableTo(hasValueType))
@@ -273,7 +292,7 @@ public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
 	    }
     }
 	
-	private void generateDataobjectValueSetWithNoCheckings(SourcePrinter srcWriter, String dataObjectVariable, String widgetVariable, JClassType dataObjectType, JClassType widgetClass, String bindPath, String converterVariable, JClassType hasValueType, JClassType hasFormatterType,
+	private static void generateDataobjectValueSetWithNoCheckings(SourcePrinter srcWriter, String dataObjectVariable, String widgetVariable, JClassType dataObjectType, JClassType widgetClass, String bindPath, String converterVariable, JClassType hasValueType, JClassType hasFormatterType,
             JClassType hasTextType, JType propertyType, String dataObjectClassName, String propertyClassName) throws NoSuchFieldException
     {
 	    String getExpression;
@@ -300,7 +319,7 @@ public abstract class AbstractDataWidgetConsumer implements WidgetConsumer
 	    JClassUtils.buildSetValueExpression(srcWriter, dataObjectType, bindPath, dataObjectVariable, getExpression);
     }
 
-	private void generateDataobjectValueSetWithCheckings(SourcePrinter srcWriter, String dataObjectVariable, String widgetVariable, JClassType dataObjectType, JClassType widgetClass, String bindPath, String converterVariable, JClassType hasValueType, JClassType hasFormatterType,
+	private static void generateDataobjectValueSetWithCheckings(SourcePrinter srcWriter, String dataObjectVariable, String widgetVariable, JClassType dataObjectType, JClassType widgetClass, String bindPath, String converterVariable, JClassType hasValueType, JClassType hasFormatterType,
             JClassType hasTextType, JType propertyType, String dataObjectClassName, String propertyClassName) throws NoSuchFieldException
     {
 	    String getExpression;

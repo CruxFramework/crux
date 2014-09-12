@@ -34,7 +34,7 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ViewWidgetConsumer extends AbstractDataWidgetConsumer implements LazyCompatibleWidgetConsumer
+public class ViewWidgetConsumer extends DataWidgetConsumer implements LazyCompatibleWidgetConsumer
 {
 	private final ViewFactoryCreator viewFactoryCreator;
 

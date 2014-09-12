@@ -59,4 +59,16 @@ public interface Pageable<T extends PagedDataProvider<?>> extends HasDataProvide
 	 * @param page
 	 */
 	boolean isDataLoaded();	
+
+	/**
+	 * Retrieve the page size of this pageable widget
+	 * @return page size
+	 */
+	int getPageSize();
+
+	/**
+	 * Set the page size of this pageable widget
+	 * @param pageSize page size
+	 */
+	void setPageSize(int pageSize);
 }
