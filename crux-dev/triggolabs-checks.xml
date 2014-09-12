@@ -90,10 +90,13 @@
 		</module>
 		
 		<!-- indentation -->
+		<!-- disabled due a checkstyle bug (switch in inner class) -->
+		<!--  
 		<module name="Indentation">
 			<property name="basicOffset" value="4" />
 			<property name="caseIndent" value="4" />
 		</module>
+		-->
 
 		<!-- avoid inner assignment -->
 		<module name="InnerAssignment" />
