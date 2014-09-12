@@ -15,8 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.button;
 
-import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
-import org.cruxframework.crux.smartfaces.client.select.SelectableWidget;
+import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.core.client.screen.widgets.SelectableWidget;
 
 import com.google.gwt.dom.client.ButtonElement;
 import com.google.gwt.event.dom.client.BlurHandler;

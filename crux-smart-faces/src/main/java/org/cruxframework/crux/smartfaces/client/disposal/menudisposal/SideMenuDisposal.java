@@ -15,9 +15,9 @@
  */
 package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 
+import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.button.Button;
-import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
-import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;

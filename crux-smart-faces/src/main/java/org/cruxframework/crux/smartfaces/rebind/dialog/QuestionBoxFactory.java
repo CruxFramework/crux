@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.dialog;
 
+import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
@@ -35,8 +37,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventDecl
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
 import org.cruxframework.crux.gwt.rebind.PanelFactory;
 import org.cruxframework.crux.smartfaces.client.dialog.QuestionBox;
-import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
-import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
 /**

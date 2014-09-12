@@ -18,6 +18,8 @@ package org.cruxframework.crux.smartfaces.rebind.dialog;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.event.CancelEvtBind;
+import org.cruxframework.crux.core.rebind.event.OkEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasCloseHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -30,8 +32,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.gwt.rebind.PanelFactory;
 import org.cruxframework.crux.smartfaces.client.dialog.Confirm;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
-import org.cruxframework.crux.smartfaces.rebind.event.CancelEvtBind;
-import org.cruxframework.crux.smartfaces.rebind.event.OkEvtBind;
 
 /**
  * A factory for Confirm widgets

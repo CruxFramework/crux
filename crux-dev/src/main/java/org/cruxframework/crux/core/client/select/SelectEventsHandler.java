@@ -13,9 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.select;
+package org.cruxframework.crux.core.client.select;
 
-import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.screen.widgets.SelectableWidget;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 

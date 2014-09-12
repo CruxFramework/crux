@@ -13,17 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.event;
+package org.cruxframework.crux.core.client.event;
 
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.event.shared.HasHandlers;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
  * 
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface HasSelectHandlers extends HasHandlers 
+public interface OkHandler extends EventHandler
 {
-	HandlerRegistration addSelectHandler(SelectHandler handler);
+	void onOk(OkEvent event);
 }

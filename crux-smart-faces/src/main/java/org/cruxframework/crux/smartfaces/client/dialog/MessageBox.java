@@ -17,14 +17,14 @@ package org.cruxframework.crux.smartfaces.client.dialog;
 
 
 import org.cruxframework.crux.core.client.Crux;
+import org.cruxframework.crux.core.client.event.HasOkHandlers;
+import org.cruxframework.crux.core.client.event.OkEvent;
+import org.cruxframework.crux.core.client.event.OkHandler;
+import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.WidgetMsgFactory;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
-import org.cruxframework.crux.smartfaces.client.event.HasOkHandlers;
-import org.cruxframework.crux.smartfaces.client.event.OkEvent;
-import org.cruxframework.crux.smartfaces.client.event.OkHandler;
-import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
-import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.label.HTML;
 
 import com.google.gwt.event.shared.HandlerRegistration;

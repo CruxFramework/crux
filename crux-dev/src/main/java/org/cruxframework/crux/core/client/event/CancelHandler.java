@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.event;
+package org.cruxframework.crux.core.client.event;
 
 import com.google.gwt.event.shared.EventHandler;
 

@@ -13,22 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.rebind.event;
+package org.cruxframework.crux.core.rebind.event;
 
+import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
-import org.cruxframework.crux.smartfaces.client.event.CancelEvent;
-import org.cruxframework.crux.smartfaces.client.event.CancelHandler;
 
-
-public class CancelEvtBind extends EvtProcessor
+/**
+ * Helper Class for focus events binding
+ * @author Thiago Bustamante
+ *
+ */
+public class SelectEvtBind extends EvtProcessor
 {
-	public CancelEvtBind(WidgetCreator<?> widgetCreator)
+	public SelectEvtBind(WidgetCreator<?> widgetCreator)
     {
 	    super(widgetCreator);
     }
 
-	private static final String EVENT_NAME = "onCancel";
+	private static final String EVENT_NAME = "onSelect";
 
 	/**
 	 * @see org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor#getEventName()
@@ -37,16 +41,16 @@ public class CancelEvtBind extends EvtProcessor
 	{
 		return EVENT_NAME;
 	}
-	
+
 	@Override
     public Class<?> getEventClass()
     {
-	    return CancelEvent.class;
+	    return SelectEvent.class;
     }
 
 	@Override
     public Class<?> getEventHandlerClass()
     {
-	    return CancelHandler.class;
-    }		
+	    return SelectHandler.class;
+    }
 }

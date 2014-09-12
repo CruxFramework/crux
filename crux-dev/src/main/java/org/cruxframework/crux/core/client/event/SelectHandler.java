@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.event;
+package org.cruxframework.crux.core.client.event;
 
 import com.google.gwt.event.shared.EventHandler;
 
@@ -22,7 +22,7 @@ import com.google.gwt.event.shared.EventHandler;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface OkHandler extends EventHandler
+public interface SelectHandler extends EventHandler
 {
-	void onOk(OkEvent event);
+	void onSelect(SelectEvent event);
 }

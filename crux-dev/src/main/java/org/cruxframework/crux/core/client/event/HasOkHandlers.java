@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 cruxframework.org.
+ * Copyright 2014 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -13,16 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.event;
+package org.cruxframework.crux.core.client.event;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HasHandlers;
 
-/**
- * 
- * @author Thiago da Rosa de Bustamante
- *
- */
-public interface SelectHandler extends EventHandler
+public interface HasOkHandlers extends HasHandlers 
 {
-	void onSelect(SelectEvent event);
+	HandlerRegistration addOkHandler(OkHandler handler);
 }
+

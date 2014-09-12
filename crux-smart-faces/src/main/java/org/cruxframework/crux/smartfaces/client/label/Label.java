@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.label;
 
-import org.cruxframework.crux.smartfaces.client.select.SelectableWidget;
+import org.cruxframework.crux.core.client.screen.widgets.SelectableWidget;
 
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;

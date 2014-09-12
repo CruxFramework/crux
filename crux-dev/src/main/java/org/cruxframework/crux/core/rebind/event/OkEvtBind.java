@@ -13,12 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.rebind.event;
+package org.cruxframework.crux.core.rebind.event;
 
+import org.cruxframework.crux.core.client.event.OkEvent;
+import org.cruxframework.crux.core.client.event.OkHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
-import org.cruxframework.crux.smartfaces.client.event.OkEvent;
-import org.cruxframework.crux.smartfaces.client.event.OkHandler;
 
 
 public class OkEvtBind extends EvtProcessor

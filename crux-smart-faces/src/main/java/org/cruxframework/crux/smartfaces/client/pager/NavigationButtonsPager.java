@@ -18,8 +18,8 @@ package org.cruxframework.crux.smartfaces.client.pager;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
 import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
-import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
-import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
+import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 
 import com.google.gwt.core.client.GWT;

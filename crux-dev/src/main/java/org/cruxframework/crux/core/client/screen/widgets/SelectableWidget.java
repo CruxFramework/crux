@@ -13,11 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.select;
+package org.cruxframework.crux.core.client.screen.widgets;
 
-import org.cruxframework.crux.smartfaces.client.event.HasSelectHandlers;
-import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
-import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
+import org.cruxframework.crux.core.client.event.HasSelectHandlers;
+import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.core.client.select.SelectEventsHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -62,27 +63,27 @@ public abstract class SelectableWidget extends Composite implements HasSelectHan
 		selectEventsHandler.setPreventDefaultTouchEvents(preventDefaultTouchEvents);
 	}
 
-	protected SelectEventsHandler getSelectEventsHandler()
+	public SelectEventsHandler getSelectEventsHandler()
 	{
 		return selectEventsHandler;
 	}
 	
-	protected HandlerRegistration addTouchEndHandler(TouchEndHandler handler)
+	public HandlerRegistration addTouchEndHandler(TouchEndHandler handler)
 	{
 		return addDomHandler(handler, TouchEndEvent.getType());
 	}
 
-	protected HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler)
+	public HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler)
 	{
 		return addDomHandler(handler, TouchMoveEvent.getType());
 	}
 
-	protected HandlerRegistration addTouchStartHandler(TouchStartHandler handler)
+	public HandlerRegistration addTouchStartHandler(TouchStartHandler handler)
 	{
 		return addDomHandler(handler, TouchStartEvent.getType());
 	}
 	
-	protected HandlerRegistration addClickHandler(ClickHandler handler)
+	public HandlerRegistration addClickHandler(ClickHandler handler)
 	{
 		return addDomHandler(handler, ClickEvent.getType());
 	}
