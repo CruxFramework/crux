@@ -232,4 +232,19 @@
 <!-- 			<when-property-is name="user.agent" value="ie10" /> -->
 <!--     	</any> -->
 <!--     </replace-with> -->
+    <!-- SelectHandler  -->
+    <replace-with class="org.cruxframework.crux.core.client.select.SelectEventsHandlerNoTouchImpl">
+        <when-type-assignable class="org.cruxframework.crux.core.client.select.SelectEventsHandler" />
+        <none>
+            <when-property-is name="device.features" value="smallDisplayTouch" />
+            <when-property-is name="device.features" value="largeDisplayTouch" />
+        </none>
+    </replace-with>
+    <replace-with class="org.cruxframework.crux.core.client.select.SelectEventsHandlerTouchImpl">
+        <when-type-assignable class="org.cruxframework.crux.core.client.select.SelectEventsHandler" />
+        <any>
+            <when-property-is name="device.features" value="smallDisplayTouch" />
+            <when-property-is name="device.features" value="largeDisplayTouch" />
+        </any>
+    </replace-with>
 </module>
