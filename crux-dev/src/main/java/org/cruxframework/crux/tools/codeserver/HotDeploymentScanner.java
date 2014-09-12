@@ -183,7 +183,7 @@ public class HotDeploymentScanner
 				}
 			}
 			else if (fileName.endsWith(".jar") || fileName.endsWith(".java") || 
-					!Modules.getInstance().isResourceOnModulePathOrContext(file.toURI().toURL(), moduleToCompile))
+					!Modules.getInstance().isResourceOnModulePathOrContext(file.toURI().toURL(), moduleToCompile, false))
 			{
 				return false;
 			}
@@ -249,7 +249,7 @@ public class HotDeploymentScanner
 				}
 				/* avoid scanning jar files */
 				else if (!url.toString().endsWith(".jar") && !url.toString().endsWith(".java") && 
-						Modules.getInstance().isResourceOnModulePathOrContext(url, moduleToCompile))
+						Modules.getInstance().isResourceOnModulePathOrContext(url, moduleToCompile, false))
 				{
 					srcDir.add(file);
 				}
