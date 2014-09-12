@@ -207,3 +207,21 @@
 {
 	right:5px;
 }
+
+/* -------------------- facesCombobox-----------------------*/
+
+.faces-ComboBox-Button
+{
+	height: 23px;
+	width: 23px;
+}
+
+.faces-comboBoxOptionPanel
+{
+	
+}
+
+.faces-comboBoxOptionPanel:hover * 
+{
+	background-color: #4496c6;
+}

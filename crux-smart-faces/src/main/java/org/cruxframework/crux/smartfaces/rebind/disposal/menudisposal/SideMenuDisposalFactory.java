@@ -2,8 +2,6 @@ package org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal;
 
 import java.util.LinkedList;
 
-import org.cruxframework.crux.core.client.event.SelectEvent;
-import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
@@ -21,6 +19,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstrain
 import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal;
 import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal.MenuPosition;
 import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal.SideDisposalMenuType;
+import org.cruxframework.crux.smartfaces.client.event.SelectEvent;
+import org.cruxframework.crux.smartfaces.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
@@ -31,7 +31,7 @@ import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.SideMenuDi
 import com.google.gwt.core.client.GWT;
 
 
-@DeclarativeFactory(library=Constants.LIBRARY_NAME,id="sideMenuDisposal",targetWidget=SideMenuDisposal.class)
+@DeclarativeFactory(library=Constants.LIBRARY_NAME,id="sideMenuDisposal",targetWidget=SideMenuDisposal.class,description="A component to define the page's layout. It contains a header, a interactive menu, a content panel and a footer.")
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="menuPositioning",type=MenuPosition.class,defaultValue="LEFT"),
 	@TagAttributeDeclaration(value="historyControlPrefix",defaultValue="view")
