@@ -65,7 +65,7 @@ public abstract class SingleCrawlableViewContainer extends CrawlableViewContaine
 	    	return false;
 	    }
 	    else
-	    {
+	    { 
 	    	activeView = view;
     		return super.activate(view, containerPanel, parameter);
 	    }
