@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.smartfaces.client.tab;
 
+import org.cruxframework.crux.core.client.event.SelectEvent;
+import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.label.HTML;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
@@ -46,10 +48,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, HasSelectionHandlers<Integer>
 {
-	private static final String TAB_BAR_ITEM_SELECTED_STYLE_NAME = "faces-TabBar-item--selected";
-	private static final String FLAP_LABEL_STYLE_NAME = "faces-TabBar-flapLabel";
 	private static final String DEFAULT_STYLE_NAME = "faces-TabBar";
 	private static final String ITEM_STYLE_NAME = "faces-TabBar-item";
+	private static final String TAB_BAR_ITEM_SELECTED_STYLE_NAME = "faces-TabBar-item--selected";
+	private static final String FLAP_LABEL_STYLE_NAME = "faces-TabBar-flapLabel";
 
 	private RollingPanel panel;
 	private Widget selectedTab;
@@ -336,6 +338,14 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 			focusablePanel = new SelectablePanel();
 			focusablePanel.getElement().setTabIndex(0);
 			focusablePanel.setWidget(child);
+			focusablePanel.addSelectHandler(new SelectHandler()
+			{
+				@Override
+				public void onSelect(SelectEvent event)
+				{
+					TabBar.this.selectTabByTabWidget(ClickDelegatePanel.this);
+				}
+			});
 			initWidget(focusablePanel);
 			
 			sinkEvents(Event.ONKEYDOWN);

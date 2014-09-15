@@ -39,9 +39,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class TabPanel extends Composite implements HasAnimation, HasBeforeSelectionHandlers<Integer>
 {
-	private static final String TAB_PANEL_DECK_STYLE_NAME = "faces-TabPanel-deck";
-
 	public static final String DEFAULT_STYLE_NAME = "faces-TabPanel";
+	private static final String TAB_PANEL_DECK_STYLE_NAME = "faces-TabPanel-deck";
 	
 	private TabbedDeckPanel deck = null;
 	private TabBar tabBar = null;
