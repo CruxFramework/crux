@@ -962,6 +962,7 @@ Inputs / Textarea
 
 .gwt-ListBox
 {
+	margin-bottom:10px;
 	color:#444;
 	padding:8px 8px;
 	border-radius:1px;
