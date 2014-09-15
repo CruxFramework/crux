@@ -132,7 +132,7 @@ a.crux-Button:hover
 .crux-FileUploader .fileInputButton,
 .previousMessageButton,
 .nextMessageButton,
-.crux-DownloadButton,
+.crux-DownloadButton
 {
     background:#4496c6; 
     border:1px solid #1a6299;
