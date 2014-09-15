@@ -955,6 +955,39 @@ Inputs / Textarea
 	display:none;
 }
 
+
+/****************
+     ListBox
+****************/
+
+.gwt-ListBox
+{
+	color:#444;
+	padding:8px 8px;
+	border-radius:1px;
+	background:#f8f8f8;
+	border:1px solid #92aec8;
+	box-shadow:0 1px 3px rgba(0,0,0,0.1);
+}
+
+.gwt-ListBox:hover
+{
+	border:1px solid #5c87b0;
+}
+
+.gwt-ListBox:active
+{
+	box-shadow:0 1px 3px rgba(0,0,0,0.1) inset;
+}
+
+.gwt-ListBox:disabled
+{
+	background:#e5e5e5;
+	border:1px solid #a5a5a5;
+	box-shadow:0 1px 0 #eaeaea inset, 0 1px 3px rgba(0,0,0,0.1);
+}
+
+
 /****************
    RandomPager
 ****************/
