@@ -83,7 +83,7 @@ public class ComboBoxFactory extends AbstractPageableFactory<ComboBoxContext> im
 
 		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
 		out.println("new " + comboBoxRendererClassName + "(){");
-		out.println("@Override public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObjectName+" value){");
+		out.println("@Override public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObjectName+" "+context.dataObjectVariable+"){");
 		
 		JSONObject displayWidgetElement = ensureFirstChild(optionRendererElement, true, context.getWidgetId());
 		if (displayWidgetElement != null)
@@ -111,11 +111,11 @@ public class ComboBoxFactory extends AbstractPageableFactory<ComboBoxContext> im
 		}
 		out.println("}");
 		
-		out.println("@Override public String getValueField("+context.dataObject.getParameterizedQualifiedSourceName()+" value){");
+		out.println("@Override public String getValueField("+context.dataObject.getParameterizedQualifiedSourceName()+" " + context.dataObjectVariable+"){");
 		out.println("return "+ valueExpression +";");
-		out.println("}");
+		out.println("}"); 
 
-		out.println("@Override public String getDisplayField("+context.dataObject.getParameterizedQualifiedSourceName()+" value){");
+		out.println("@Override public String getDisplayField("+context.dataObject.getParameterizedQualifiedSourceName()+" " + context.dataObjectVariable+"){");
 		out.println("return "+ labelExpression +";");
 		out.println("}");
 		
@@ -134,7 +134,9 @@ public class ComboBoxFactory extends AbstractPageableFactory<ComboBoxContext> im
 			
 			ComboBoxWidgetConsumer consumer = new ComboBoxWidgetConsumer(getContext(), context, context.dataObject, 
 											context.dataObjectVariable, widgetClassType, getView().getId(), context.getWidgetId());
-			createChildWidget(out, widgetElement,  consumer, true, context);
+			
+			String widgetId = createChildWidget(out, widgetElement,  consumer, true, context);
+			out.println("return " +  widgetId + ";");
 		}
 		else
 		{
@@ -211,7 +213,6 @@ public class ComboBoxFactory extends AbstractPageableFactory<ComboBoxContext> im
 		@Override
 		public void consume(SourcePrinter out, String widgetId, String widgetVariableName, String widgetType, JSONObject metaElem)
 		{
-			out.println("return " + widgetVariableName + ";");
 			
 			String bindPath = metaElem.optString("bindPath");
 			String bindConverter = metaElem.optString("bindConverter");
