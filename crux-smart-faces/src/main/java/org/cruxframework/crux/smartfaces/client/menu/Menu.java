@@ -96,7 +96,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 		super.setStyleName(style, add);
 		if (!add)
 		{
-		    addStyleName(FacesResources.INSTANCE.css().facesMenu());
+		    addStyleName(FacesResources.INSTANCE.css().facesBackboneMenu());
 		}
 	}
 	
@@ -104,7 +104,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
-	    addStyleName(FacesResources.INSTANCE.css().facesMenu());
+	    addStyleName(FacesResources.INSTANCE.css().facesBackboneMenu());
 	}
 	
 	public Menu(LargeType largeType)

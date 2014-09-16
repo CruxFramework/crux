@@ -31,6 +31,8 @@ public interface FacesCSS extends CssResource
 	String flexBoxThirdChild();
 	String flexBoxInlineContainer();
 	String rollingPanelBody();
-	String facesMenu();
 	String tabPanelDeck();	
+	
+	// Menu
+	String facesBackboneMenu();
 }
