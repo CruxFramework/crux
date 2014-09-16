@@ -221,7 +221,7 @@ public class NumberTextBox extends Composite implements HasValue<Integer>, HasEn
 
 			private static native InputElement createInputElement() /*-{
 			    var e = $doc.createElement("INPUT");
-			    e.type = "number";
+			    e.type = "tel";
 			    return e;
 			}-*/;
 
