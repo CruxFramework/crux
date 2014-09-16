@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
-import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
@@ -82,15 +81,16 @@ public abstract class ValueBoxBaseFactory extends FocusWidgetFactory<WidgetCreat
 	 */
 	public static class PlaceHolderProcessor extends AttributeProcessor<WidgetCreatorContext>
 	{
-
-		public PlaceHolderProcessor(WidgetCreator<?> widgetCreator) {
+		public PlaceHolderProcessor(WidgetCreator<?> widgetCreator) 
+		{
 			super(widgetCreator);
 		}
 
 		@Override
 		public void processAttribute(SourcePrinter out,
-				WidgetCreatorContext context, String attributeValue) {
-			out.println(context.getWidget() + ".getElement().setPropertyString(\"placeholder\", " + EscapeUtils.quote(attributeValue) + ");");
+				WidgetCreatorContext context, String attributeValue) 
+		{
+			out.println(context.getWidget() + ".getElement().setPropertyString(\"placeholder\", " + getWidgetCreator().getDeclaredMessage(attributeValue) + ");");
 		}
 	}
 	
