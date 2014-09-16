@@ -22,4 +22,5 @@
 	<suppress checks="MultipleStringLiterals" files="[/\\]src[/\\]test[/\\]java[/\\]" />
 	<suppress checks="." files=".*\.xml"/>
 	<suppress checks="." files=".*\.txt"/>
+	<suppress checks="." files="[/\\]src[/\\]main[/\\]java[/\\]org[/\\]json"/>
 </suppressions>
