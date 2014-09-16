@@ -49,7 +49,7 @@ abstract class AbstractMenuTabsDisposalController extends DeviceAdaptiveControll
 	private FlowPanel headerPanel;
 	private Map<String, FlowPanel> sections = new HashMap<String, FlowPanel>();
 	private FlowPanel lastSectionAdded = null;
-	private String lastVisitedView = null;
+	protected String lastVisitedView = null;
 
 	public void init(FlowPanel headerPanel, FlowPanel menuPanel)
 	{
