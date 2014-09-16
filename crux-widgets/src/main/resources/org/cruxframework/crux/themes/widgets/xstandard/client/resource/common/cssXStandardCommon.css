@@ -984,6 +984,7 @@ Inputs / Textarea
 .gwt-ListBox:disabled
 {
 	background:#e5e5e5;
+	color:#887;
 	border:1px solid #a5a5a5;
 	box-shadow:0 1px 0 #eaeaea inset, 0 1px 3px rgba(0,0,0,0.1);
 }
