@@ -547,6 +547,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     max-width:70%;
     height: 60px;
     z-index:10px;
+    position: static !important;
 }
 .crux-ProgressBox .dialogTopBar
 {
