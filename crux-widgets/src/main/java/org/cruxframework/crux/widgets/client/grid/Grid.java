@@ -2154,4 +2154,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		setEditorColumns();
 	}
 	
+	@Override
+	public void setWidth(String width)
+	{
+		super.setWidth(width);
+		getTable().setWidth(width);
+	}
+	
 }
