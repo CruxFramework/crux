@@ -859,7 +859,7 @@ td > div > .faces--group
 	margin:5px;
 }
 
-.crux-Faces:disabled
+.faces-Button:disabled
 {
 	background: #e5e5e5;
 	border: 1px solid #a5a5a5;

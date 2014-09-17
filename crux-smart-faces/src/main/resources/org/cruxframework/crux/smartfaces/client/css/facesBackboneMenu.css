@@ -4,6 +4,10 @@
 @def DEFAULT_BORDER 1px solid BORDER_COLOR;
 @def DEFAULT_PADDING 10px 20px;
 
+.faces-Menu
+{
+	box-shadow:0 0 0 10px red;
+}
 
 /*************************
  Helpers
