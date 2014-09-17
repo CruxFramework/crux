@@ -153,30 +153,11 @@ body
     transition:all 0.1s linear;
 }
 
-.faces-Menu .faces-Menu-ul .faces-Menu-ul
-{
-	z-index:3;
-}
-
-.faces-Menu .faces-Menu-li
-{
-	position:relative;
-	cursor:pointer;
-}
-
 .faces-Menu-openCloseTriggerHelper
 {
 	border:none;
 	padding:0;
 	z-index:2;
-}
-
-.faces-Menu.faces-Menu-horizontal.faces-Menu-fixed
-{
-	position:fixed;
-	top:0;
-	left:0;
-	z-index:3;
 }
 
 /* === Dropdown General === */
@@ -231,7 +212,6 @@ body
 
 .faces-Menu.faces-Menu-dropdown.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li
 {
-    float:left;
     border-right:1px solid #1a6299;
 }
 
@@ -879,6 +859,13 @@ td > div > .faces--group
 	margin:5px;
 }
 
+.crux-Faces:disabled
+{
+	background: #e5e5e5;
+	border: 1px solid #a5a5a5;
+	color: #9c9c9c;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
 
 /* -------------------- facesOverlay -----------------------*/
 
