@@ -22,11 +22,13 @@ import org.cruxframework.crux.core.client.screen.views.SingleCrawlableViewContai
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
+import org.cruxframework.crux.smartfaces.client.panel.FooterPanel;
+import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
+import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -54,10 +56,10 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		setHistoryControlPrefix("views");
 		bodyPanel = getMainWidget();
 		viewContentPanel = new FlowPanel();
-		menuPanel = new SimplePanel();
-		headerPanel = new FlowPanel();
-		footerPanel = new FlowPanel();
-		smallHeaderPanel = new FlowPanel();
+		menuPanel = new NavPanel();
+		headerPanel = new HeaderPanel();
+		footerPanel = new FooterPanel();
+		smallHeaderPanel = new HeaderPanel();
 		buildLayout();
 		
 		setStyles();
