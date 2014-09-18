@@ -31,7 +31,7 @@ public class TopMenuDisposal extends BaseMenuDisposal
 {
 
 	private final String MENU_PANEL_STYLE = "faces-TopMenuDisposal-menuPanel";
-	private final String HEADER_PANEL_STYLE = "faces-TopMenuDisposal-meaderPanel";
+	private final String HEADER_PANEL_STYLE = "faces-TopMenuDisposal-headerPanel";
 	private final String FOOTER_PANEL_STYLE = "faces-TopMenuDisposal-footerPanel";
 	private final String CONTENT_PANEL_STYLE = "faces-TopMenuDisposal-contentPanel";
 	private final String TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-TopMenuDisposal-smallHeaderPanel";
