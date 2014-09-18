@@ -171,6 +171,16 @@
 	position:relative;
 }
 
+.facesBackboneMenu.faces-Menu-horizontal.faces-Menu-accordion > .faces-Menu-ul .faces-Menu-li
+{
+	position:relative;
+}
+
+.facesBackboneMenu.faces-Menu-accordion.faces-Menu-horizontal > .faces-Menu-ul > .faces-Menu-li > .faces-Menu-ul
+{
+	height:198px;	
+}
+
 .facesBackboneMenu.faces-Menu-horizontal.faces-Menu-accordion > .faces-Menu-ul > .faces-Menu-li > .faces-SelectablePanel
 {
 	-webkit-transform:rotate(-90deg);
