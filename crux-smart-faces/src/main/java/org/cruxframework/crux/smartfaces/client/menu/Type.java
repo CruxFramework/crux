@@ -66,7 +66,7 @@ public interface Type
 		@Override
 		public boolean isSlider()
 		{
-			return this.equals(SmallType.VERTICAL_SLIDE);	
+			return this.equals(LargeType.VERTICAL_SLIDE);	
 		}
 	}
 	

@@ -32,17 +32,8 @@ public interface MenuRenderer
 		public void render(Menu menu, LargeType largeType, SmallType smallType) 
 		{
 			assert (largeType != null):"Cannot instantiate type :<" + this.getClass().getName() + ">. Menu not switable to this device.";
-//			removeAllLargeTypes(menu);
 			menu.addStyleName(largeType.styleName);
 		}
-
-//		private void removeAllLargeTypes(Menu menu)
-//		{
-//			for(LargeType type : LargeType.values())
-//			{
-//				menu.removeStyleName(type.styleName);
-//			}
-//		}
 	}
 
 	class SmallMenuRenderer implements MenuRenderer
@@ -51,16 +42,7 @@ public interface MenuRenderer
 		public void render(Menu menu, LargeType largeType, SmallType smallType) 
 		{
 			assert (smallType != null):"Cannot instantiate type :<" + this.getClass().getName() + ">. Menu not switable to this device.";
-//			removeAllSmallTypes(menu);
 			menu.addStyleName(smallType.styleName);
 		}
-
-//		private void removeAllSmallTypes(Menu menu)
-//		{
-//			for(SmallType type : SmallType.values())
-//			{
-//				menu.removeStyleName(type.styleName);
-//			}
-//		}
 	}
 }
