@@ -29,12 +29,12 @@ import com.google.gwt.user.client.ui.SimplePanel;
  */
 public class SideMenuDisposal extends BaseMenuDisposal
 {
-	private final String MENU_PANEL_STYLE = "faces-SideMenuDisposal-MenuPanel";
-	private final String HEADER_PANEL_STYLE = "faces-SideMenuDisposal-HeaderPanel";
-	private final String FOOTER_PANEL_STYLE = "faces-SideMenuDisposal-FooterPanel";
-	private final String CONTENT_MENU_STYLE = "faces-SideMenuDisposal-ContentPanel";
-	private final String SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-SideMenuDisposal-SmallHeaderPanel";
-	private final String RIGHT_MENU_POSITION = "faces-SideMenuDisposal-RightMenuPosition";
+	private final String MENU_PANEL_STYLE = "faces-SideMenuDisposal-menuPanel";
+	private final String HEADER_PANEL_STYLE = "faces-SideMenuDisposal-headerPanel";
+	private final String FOOTER_PANEL_STYLE = "faces-SideMenuDisposal-footerPanel";
+	private final String CONTENT_MENU_STYLE = "faces-SideMenuDisposal-contentPanel";
+	private final String SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-SideMenuDisposal-smallHeaderPanel";
+	private final String RIGHT_MENU_POSITION = "faces-SideMenuDisposal-rightMenuPosition";
 	
 	private final String DEFAULT_STYLE_NAME = "faces-SideMenuDisposal";
 	
@@ -77,9 +77,9 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	
 	static class SmallLayoutBuilder implements LayoutBuilder
 	{
-		private static final String SIDE_MENU_DISPOSAL_MENU_BUTTON = "faces-SideMenuDisposal-MenuButton";
-		private static final String SIDE_MENU_DISPOSAL_MENU_BUTTON_CONTAINER = "faces-SideMenuDisposal-MenuButtonContainer";
-		private static final String SIDE_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "faces-SideMenuDisposal-SmallHeaderWrapper";
+		private static final String SIDE_MENU_DISPOSAL_MENU_BUTTON = "faces-SideMenuDisposal-menuButton";
+		private static final String SIDE_MENU_DISPOSAL_MENU_BUTTON_CONTAINER = "faces-SideMenuDisposal-menuButtonContainer";
+		private static final String SIDE_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "faces-SideMenuDisposal-smallHeaderWrapper";
 
 		@Override
 		public void buildLayout(final BaseMenuDisposal disposal)
@@ -121,8 +121,8 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	static class LargeLayoutBuilder implements LayoutBuilder
 	{
 		private static final String CF = "cf";
-		private static final String FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL = "faces-SideMenuDisposal-SplitPanel";
-		private static final String FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL = "faces-SideMenuDisposal-LayoutWrapperPanel";
+		private static final String FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL = "faces-SideMenuDisposal-splitPanel";
+		private static final String FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL = "faces-SideMenuDisposal-layoutWrapperPanel";
 
 		@Override
 		public void buildLayout(final BaseMenuDisposal disposal)

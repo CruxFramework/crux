@@ -30,11 +30,11 @@ import com.google.gwt.user.client.ui.FlowPanel;
 public class TopMenuDisposal extends BaseMenuDisposal
 {
 
-	private final String MENU_PANEL_STYLE = "faces-TopMenuDisposal-MenuPanel";
-	private final String HEADER_PANEL_STYLE = "faces-TopMenuDisposal-HeaderPanel";
-	private final String FOOTER_PANEL_STYLE = "faces-TopMenuDisposal-FooterPanel";
-	private final String CONTENT_PANEL_STYLE = "faces-TopMenuDisposal-ContentPanel";
-	private final String TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-TopMenuDisposal-SmallHeaderPanel";
+	private final String MENU_PANEL_STYLE = "faces-TopMenuDisposal-menuPanel";
+	private final String HEADER_PANEL_STYLE = "faces-TopMenuDisposal-meaderPanel";
+	private final String FOOTER_PANEL_STYLE = "faces-TopMenuDisposal-footerPanel";
+	private final String CONTENT_PANEL_STYLE = "faces-TopMenuDisposal-contentPanel";
+	private final String TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-TopMenuDisposal-smallHeaderPanel";
 	
 	public final String DEFAULT_STYLE_NAME = "faces-TopMenuDisposal";
 
@@ -86,9 +86,9 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	
 	static class SmallLayoutBuilder implements LayoutBuilder
 	{
-		private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "faces-TopMenuDisposal-SmallHeaderWrapper";
-		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON = "faces-TopMenuDisposal-MenuButton";
-		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON_CONTAINER = "faces-TopMenuDisposal-MenuButtonContainer";
+		private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_WRAPPER = "faces-TopMenuDisposal-smallHeaderWrapper";
+		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON = "faces-TopMenuDisposal-menuButton";
+		private static final String TOP_MENU_DISPOSAL_MENU_BUTTON_CONTAINER = "faces-TopMenuDisposal-menuButtonContainer";
 
 
 		@Override
