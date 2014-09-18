@@ -31,6 +31,7 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
@@ -155,30 +156,32 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 	 * Inserts a new tab at the specified index.
 	 * 
 	 * @param text the new tab's text
-	 * @param asHTML <code>true</code> to treat the specified text as HTML
 	 * @param beforeIndex the index before which this tab will be inserted
 	 */
-	public void insertTab(String text, boolean asHTML, int beforeIndex)
+	public void insertTab(String text, int beforeIndex)
 	{
 		checkInsertBeforeTabIndex(beforeIndex);
 
-		Widget item;
-		if (asHTML)
-		{
-			HTML label = new HTML(text);
-			label.setWordWrap(false);
-			item = label;
-		}
-		else
-		{
-			Label label = new Label(text);
-			label.setWordWrap(false);
-			item = label;
-		}
-		item.setStyleName(FLAP_LABEL_STYLE_NAME);
-		insertTabWidget(item, beforeIndex);
+		Label label = new Label(text);
+		label.setWordWrap(false);
+		label.setStyleName(FLAP_LABEL_STYLE_NAME);
+		insertTabWidget(label, beforeIndex);
 	}
 
+	/**
+	 * 
+	 * @param html
+	 * @param berforeIndex
+	 */
+	public void insertTab(SafeHtml html, int beforeIndex)
+	{
+		HTML label = new HTML(html);
+		label.setWordWrap(false);
+		label.setStyleName(FLAP_LABEL_STYLE_NAME);
+		insertTabWidget(label, beforeIndex);
+	}
+	
+	
 	/**
 	 * Programmatically selects the specified tab. Use index -1 to specify that no tab should be selected.
 	 * 

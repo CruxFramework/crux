@@ -24,6 +24,7 @@ import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -120,7 +121,7 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 	 */
 	public void add(Widget w, String tabText) 
 	{
-		add(w, tabText, false);
+		insert(w, tabText, getWidgetCount());
 	}
 
 	/**
@@ -129,11 +130,10 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 	 * 
 	 * @param w the widget to be added
 	 * @param tabText the text to be shown on its tab
-	 * @param asHTML <code>true</code> to treat the specified text as HTML
 	 */
-	public void add(Widget w, String tabText, boolean asHTML) 
+	public void add(Widget w, SafeHtml tabText) 
 	{
-		insert(w, tabText, asHTML, getWidgetCount());
+		insert(w, tabText, getWidgetCount());
 	}
 
 	/**
@@ -222,13 +222,26 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 	 * 
 	 * @param widget the widget to be inserted
 	 * @param tabText the text to be shown on its tab
-	 * @param asHTML <code>true</code> to treat the specified text as HTML
 	 * @param beforeIndex the index before which it will be inserted
 	 */
-	public void insert(Widget widget, String tabText, boolean asHTML, int beforeIndex) 
+	public void insert(Widget widget, String tabText, int beforeIndex) 
 	{
 		// Delegate updates to the TabBar to our DeckPanel implementation
-		deck.insertProtected(widget, tabText, asHTML, beforeIndex);
+		deck.insertProtected(widget, tabText, beforeIndex);
+	}	
+
+	/**
+	 * Inserts a widget into the tab panel. If the Widget is already attached to
+	 * the TabPanel, it will be moved to the requested index.
+	 * 
+	 * @param widget the widget to be inserted
+	 * @param tabText the text to be shown on its tab
+	 * @param beforeIndex the index before which it will be inserted
+	 */
+	public void insert(Widget widget, SafeHtml tabText, int beforeIndex) 
+	{
+		// Delegate updates to the TabBar to our DeckPanel implementation
+		deck.insertProtected(widget, tabText, beforeIndex);
 	}	
 
 	public boolean isAnimationEnabled()
@@ -348,7 +361,7 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 			super.insert(w, beforeIndex);
 		}
 		
-		protected void insertProtected(Widget w, String tabText, boolean asHTML, int beforeIndex) 
+		protected void insertProtected(Widget w, String tabText, int beforeIndex) 
 		{
 			// Check to see if the TabPanel already contains the Widget. If so,
 			// remove it and see if we need to shift the position to the left.
@@ -361,8 +374,25 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 				}
 			}
 
-			tabBar.insertTab(tabText, asHTML, beforeIndex);
+			tabBar.insertTab(tabText, beforeIndex);
 			super.insert(w, beforeIndex);
 		}
-	}
+
+		protected void insertProtected(Widget w, SafeHtml tabText, int beforeIndex) 
+		{
+			// Check to see if the TabPanel already contains the Widget. If so,
+			// remove it and see if we need to shift the position to the left.
+			int idx = getWidgetIndex(w);
+			if (idx != -1) {
+				remove(w);
+				if (idx < beforeIndex) 
+				{
+					beforeIndex--;
+				}
+			}
+
+			tabBar.insertTab(tabText, beforeIndex);
+			super.insert(w, beforeIndex);
+		}
+}
 }

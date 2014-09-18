@@ -40,6 +40,8 @@ import org.cruxframework.crux.smartfaces.client.tab.TabPanel;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.json.JSONObject;
 
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
 
 class TabPanelContext extends WidgetCreatorContext
 {
@@ -205,9 +207,14 @@ public class TabPanelFactory extends CompositeFactory<TabPanelContext>
 					out.println("}");
 				}
 			}
+			else if (context.isHTMLTitle)
+			{
+				String safeHtmlStr = "new "+SafeHtmlBuilder.class.getCanonicalName()+".appendHtmlConstant("+context.title+")).toSafeHtml()";
+				out.println(rootWidget+".add("+widget+", "+safeHtmlStr+");");
+			}
 			else
 			{
-				out.println(rootWidget+".add("+widget+", "+context.title+", "+context.isHTMLTitle+");");
+				out.println(rootWidget+".add("+widget+", "+context.title+");");
 			}
 			updateTabState(out, context);
 			if (childPartialSupport)
