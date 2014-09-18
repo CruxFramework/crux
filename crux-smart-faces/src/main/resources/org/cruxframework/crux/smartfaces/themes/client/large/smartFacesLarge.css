@@ -121,7 +121,7 @@
 
 /* -------------------- Large - TopMenuDisposal -----------------------*/
 
-.faces-TopMenuDisposal-HeaderPanel
+.faces-TopMenuDisposal-headerPanel
 {
 	margin-top:-20px;
 	margin-bottom: -20px;
@@ -129,12 +129,12 @@
 	width: 100%;
 }
 
-.faces-TopMenuDisposal-MenuPanel
+.faces-TopMenuDisposal-menuPanel
 {
 	
 }
 
-.faces-TopMenuDisposal-FooterPanel
+.faces-TopMenuDisposal-footerPanel
 {
 	margin-top:-20px;
 	width: 100%;
@@ -144,14 +144,14 @@
 	z-index: 10;
 }
 
-.faces-TopMenuDisposal-ContentPanel
+.faces-TopMenuDisposal-contentPanel
 {
 	
 }
 
 /* -------------------- SideMenuDisposal -----------------------*/
 
-.faces-SideMenuDisposal-MenuPanel
+.faces-SideMenuDisposal-menuPanel
 {
 	width:200px;
 	height: 100%;
@@ -159,12 +159,12 @@
 	position:relative;
 }
 
-.faces-SideMenuDisposal-MenuPanel .facesMenu
+.faces-SideMenuDisposal-menuPanel .facesMenu
 {
 	height:100%;
 }
 
-.faces-SideMenuDisposal-FooterPanel
+.faces-SideMenuDisposal-footerPanel
 {
 	margin-top:-20px;
 	width: 100%;
@@ -174,7 +174,7 @@
 	z-index: 10;
 }
 
-.faces-SideMenuDisposal-HeaderPanel
+.faces-SideMenuDisposal-headerPanel
 {
 	overflow:auto;
 	height: auto;
@@ -182,7 +182,7 @@
 	margin-top:-20px;
 }
 
-.faces-SideMenuDisposal-ContentPanel
+.faces-SideMenuDisposal-contentPanel
 {
 	width:literal("calc(100% - 210px)");
 	padding-left: 10px;

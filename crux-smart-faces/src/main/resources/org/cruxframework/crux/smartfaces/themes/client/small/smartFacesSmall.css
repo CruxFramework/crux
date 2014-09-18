@@ -21,17 +21,17 @@ body
 	padding-top:40px;
 }
 
-.faces-TopMenuDisposal-SmallHeaderWrapper
+.faces-TopMenuDisposal-smallHeaderWrapper
 {
 	
 }
 
-.faces-TopMenuDisposal-SmallHeaderPanel
+.faces-TopMenuDisposal-smallHeaderPanel
 {
 	
 }
 
-.faces-TopMenuDisposal-HeaderPanel
+.faces-TopMenuDisposal-headerPanel
 {
 	height: 100%;
 	width: 100%;
@@ -45,7 +45,7 @@ body
 	 
 }
 
-.faces-TopMenuDisposal-MenuPanel
+.faces-TopMenuDisposal-menuPanel
 {
 	position: absolute;
 	height: 100%;
@@ -54,13 +54,13 @@ body
 	height: 100%;
 }
 
-.faces-TopMenuDisposal-MenuPanel .facesMenu.faces-Menu-accordion.faces-Menu-vertical
+.faces-TopMenuDisposal-menuPanel .facesMenu.faces-Menu-accordion.faces-Menu-vertical
 {
 	width: 100%;
 	height: 100%;
 }
 
-.faces-TopMenuDisposal-FooterPanel
+.faces-TopMenuDisposal-footerPanel
 {
 	margin-top:-20px;
 	width: 100%;
@@ -70,12 +70,12 @@ body
 	z-index: 10;
 }
 
-.faces-TopMenuDisposal-ContentPanel
+.faces-TopMenuDisposal-contentPanel
 {
 	position:relative;
 }
 
-.faces-TopMenuDisposal-MenuButtonContainer
+.faces-TopMenuDisposal-menuButtonContainer
 {
 	width:40px;
 	height:40px;
@@ -85,7 +85,7 @@ body
 	position:absolute;
 }
 
-.faces-TopMenuDisposal-MenuButton
+.faces-TopMenuDisposal-menuButton
 {
 	position:absolute;
 	top:0px;
@@ -96,7 +96,7 @@ body
 	background-size:80% auto;
 }
 
-.faces-TopMenuDisposal-SmallHeaderWrapper
+.faces-TopMenuDisposal-smallHeaderWrapper
 {
 	width:100%;
 	position:fixed;
@@ -106,7 +106,7 @@ body
 	padding-left:40px;
 }
 
-.faces-TopMenuDisposal-SmallHeaderPanel div
+.faces-TopMenuDisposal-mallHeaderPanel div
 {
 	overflow:hidden;
 }
@@ -118,17 +118,17 @@ body
 	padding-top:40px;
 }
 
-.faces-SideMenuDisposal-SmallHeaderWrapper
+.faces-SideMenuDisposal-smallHeaderWrapper
 {
 	
 }
 
-.faces-SideMenuDisposal-SmallHeaderPanel
+.faces-SideMenuDisposal-smallHeaderPanel
 {
 	
 }
 
-.faces-SideMenuDisposal-HeaderPanel
+.faces-SideMenuDisposal-headerPanel
 {
 	height: 100%;
 	width: 100%;
@@ -142,7 +142,7 @@ body
 	 
 }
 
-.faces-SideMenuDisposal-MenuPanel
+.faces-SideMenuDisposal-menuPanel
 {
 	position: absolute;
 	height: 100%;
@@ -151,13 +151,13 @@ body
 	height: 100%;
 }
 
-.faces-SideMenuDisposal-MenuPanel .facesMenu.faces-Menu-accordion.faces-Menu-vertical
+.faces-SideMenuDisposal-menuPanel .facesMenu.faces-Menu-accordion.faces-Menu-vertical
 {
 	width: 100%;
 	height: 100%;
 }
 
-.faces-SideMenuDisposal-FooterPanel
+.faces-SideMenuDisposal-footerPanel
 {
 	margin-top:-20px;
 	width: 100%;
@@ -167,12 +167,12 @@ body
 	z-index: 10;
 }
 
-.faces-SideMenuDisposal-ContentPanel
+.faces-SideMenuDisposal-contentPanel
 {
 	position:relative;
 }
 
-.faces-SideMenuDisposal-MenuButtonContainer
+.faces-SideMenuDisposal-menuButtonContainer
 {
 	width:40px;
 	height:40px;
@@ -182,7 +182,7 @@ body
 	position:absolute;
 }
 
-.faces-SideMenuDisposal-MenuButton
+.faces-SideMenuDisposal-menuButton
 {
 	position:absolute;
 	top:0px;
@@ -193,7 +193,7 @@ body
 	background-size:80% auto;
 }
 
-.faces-SideMenuDisposal-SmallHeaderWrapper
+.faces-SideMenuDisposal-smallHeaderWrapper
 {
 	width:100%;
 	position:fixed;
@@ -203,12 +203,12 @@ body
 	padding-left:40px;
 }
 
-.faces-SideMenuDisposal-SmallHeaderPanel div
+.faces-SideMenuDisposal-smallHeaderPanel div
 {
 	overflow:hidden;
 }
 
-.faces-BaseMenuDisposal-Menu
+.faces-BaseMenuDisposal-menu
 {
 	top: 0px;
 	left: 0px;
@@ -234,7 +234,7 @@ body
 }
 
 
-/* -------------------- facesPopup-----------------------*/
+/* -------------------- facesPopup -----------------------*/
 
 .faces-popup
 {
