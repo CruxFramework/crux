@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.gwt.rebind;
 
+import org.apache.commons.lang.StringUtils;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
@@ -22,6 +23,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyTag;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
@@ -38,15 +41,26 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 @TagChildren({
 	@TagChild(value=HTMLPanelFactory.ContentProcessor.class, autoProcess=false)
 })
+@TagAttributesDeclaration({
+	@TagAttributeDeclaration(value="tag", description="the tag of the root element"),
+})
 public class HTMLPanelFactory extends AbstractHTMLPanelFactory
 {
 	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 	{
 		String className = HTMLPanel.class.getCanonicalName();
-		
+		String tag = context.readChildProperty("tag");
 		String html = ensureHtmlChild(context.getWidgetElement(), true, context.getWidgetId());
-		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+((html==null)?EscapeUtils.quote(""):html)+");");
+		
+		if(!StringUtils.isEmpty(tag))
+		{
+			out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+EscapeUtils.quote(tag)+", "+((html==null)?EscapeUtils.quote(""):html)+");");
+		} else
+		{
+			out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+((html==null)?EscapeUtils.quote(""):html)+");");
+		}
+		
 		createChildren(out, context);
 	}
 
