@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.ObjectMapper.DefaultTypeResolverBuilder;
@@ -42,6 +44,7 @@ import org.cruxframework.crux.core.shared.json.annotations.JsonIgnore;
 import org.cruxframework.crux.core.shared.json.annotations.JsonSubTypes;
 import org.cruxframework.crux.core.utils.ClassUtils;
 import org.cruxframework.crux.core.utils.ClassUtils.PropertyInfo;
+import org.cruxframework.crux.scanner.archiveiterator.ZIPProtocolIterator;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -52,8 +55,13 @@ public class JsonUtil
 	private static ObjectMapper defaultMapper;
 	private static ObjectMapper subTypeAwareMapper;
 	
-	private static final Lock lock = new ReentrantLock();
+	private static final Lock LOCK = new ReentrantLock();
+	private static final Log LOG = LogFactory.getLog(ZIPProtocolIterator.class);
 
+	/**
+	 * @param type the class type. 
+	 * @return the Jackson ObjectWriter.
+	 */
 	public static ObjectReader createReader(Type type)
 	{
 		ObjectMapper mapper = getObjectMapper(type);
@@ -63,6 +71,10 @@ public class JsonUtil
 		return reader;
 	}
 
+	/**
+	 * @param type the class type. 
+	 * @return the Jackson ObjectWriter.
+	 */
 	public static ObjectWriter createWriter(Type type)
 	{
 		ObjectMapper mapper = getObjectMapper(type);
@@ -80,12 +92,12 @@ public class JsonUtil
 
 	private static ObjectMapper getObjectMapper(Type type)
     {
-		if(defaultMapper == null)
+		if (defaultMapper == null)
 		{
-			lock.lock();
+			LOCK.lock();
 			try
 			{
-				if(defaultMapper == null)
+				if (defaultMapper == null)
 				{
 					defaultMapper = new ObjectMapper();
 					defaultMapper.setSerializerFactory(new CruxSerializerFactory());
@@ -100,7 +112,7 @@ public class JsonUtil
 			}
 			finally
 			{
-				lock.unlock();
+				LOCK.unlock();
 			}
 		}
 		Class<?> clazz = ClassUtils.getRawType(type);
@@ -121,6 +133,11 @@ public class JsonUtil
 		while (ClassUtils.isCollection(clazz))
 		{
 			type = ClassUtils.getCollectionBaseType(clazz, type);
+			if (type == null)
+			{
+				//If we have something like a plain rawtype (like 'java.util.ArrayList<>')
+				return false;
+			}
 			clazz = ClassUtils.getRawType(type);
 		}
 		if (!searched.contains(clazz))
@@ -202,7 +219,7 @@ public class JsonUtil
                 }
 	        	catch (Exception e)
 	        	{
-	        		//ignore property
+	        		LOG.warn("Property ignored in serialization: " + getterMethodName, e);
 	        	}
 	        }
 
