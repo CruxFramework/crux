@@ -209,7 +209,7 @@ public class TabPanelFactory extends CompositeFactory<TabPanelContext>
 			}
 			else if (context.isHTMLTitle)
 			{
-				String safeHtmlStr = "new "+SafeHtmlBuilder.class.getCanonicalName()+".appendHtmlConstant("+context.title+")).toSafeHtml()";
+				String safeHtmlStr = "new "+SafeHtmlBuilder.class.getCanonicalName()+"().appendHtmlConstant("+context.title+").toSafeHtml()";
 				out.println(rootWidget+".add("+widget+", "+safeHtmlStr+");");
 			}
 			else
