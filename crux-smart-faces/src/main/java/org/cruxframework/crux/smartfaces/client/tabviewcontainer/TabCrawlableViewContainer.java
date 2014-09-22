@@ -218,8 +218,12 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	@Override
 	protected boolean isViewDisplayed(String viewId)
 	{
-		View view = getView(viewId);
-		return (view != null && view.isActive());
+		int index = getIndex(viewId);
+		if (index >= 0)
+		{
+			return index == getFocusedViewIndex();
+		}
+		return false;
 	}
 
 	@Override
