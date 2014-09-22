@@ -81,17 +81,51 @@ class Flap extends Composite implements HasBeforeFocusAndBeforeBlurHandlers
 				}
 			});
 
-//			closeButton.addKeyDownHandler(new KeyDownHandler()
-//			{
-//				public void onKeyDown(KeyDownEvent event)
-//				{
-//					if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER)
-//					{
-//						event.stopPropagation();
-//						tabs.closeView(tabId, false);
-//					}
-//				}
-//			});
+			closeButton.setVisible(closeable);
+
+			Screen.ensureDebugId(closeButton, tabs.getElement().getId() + "_" + tabId + "_close_btn");
+			
+			flap.add(closeButton);
+		}
+	}
+	
+	/**
+	 * @param tabs
+	 * @param view 
+	 * @param closeable
+	 */
+	Flap(final TabCrawlableViewContainer tabs, View view, boolean closeable)
+	{
+		String tabLabel = view.getTitle();
+		final String tabId = view.getId();
+		
+		this.closeable = closeable;
+		FlowPanel flap = new FlowPanel();
+		
+		//TODO - Criar o recurso Css para esse componente
+		flap.setStyleName(FacesResources.INSTANCE.css().flexBoxHorizontalContainer());
+		
+		initWidget(flap);
+		
+		title = new Label(tabLabel);
+		
+		title.setStyleName("flapLabel");
+		flap.add(title);
+
+		if (closeable)
+		{
+			closeButton = new Button();
+			closeButton.setStyleName("faces-FlapCloseButton");
+			closeButton.addSelectHandler(new SelectHandler()
+			{
+				
+				@Override
+				public void onSelect(SelectEvent event)
+				{
+					event.stopPropagation();
+					tabs.closeView(tabId, false);
+				}
+			});
 
 			closeButton.setVisible(closeable);
 
@@ -99,12 +133,6 @@ class Flap extends Composite implements HasBeforeFocusAndBeforeBlurHandlers
 			
 			flap.add(closeButton);
 		}
-		
-		
-//		panel = new SimpleDecoratedPanel();
-//		flapController = new FlapController(tabs, view.getId(), view.getTitle(), false, closeable);
-//		panel.setContentWidget(flapController);
-//		initWidget(panel);
 	}
 
 	@Override
