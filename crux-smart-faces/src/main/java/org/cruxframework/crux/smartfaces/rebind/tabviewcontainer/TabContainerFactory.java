@@ -99,7 +99,7 @@ public class TabContainerFactory extends WidgetCreator<WidgetCreatorContext>
 			{
 				out.print("if (");
 			}
-			out.print(rootWidget+".add(view, "+lazy+", "+closeable+", true)");
+			out.print(rootWidget + ".add(view, " + lazy + ", " + closeable + ", true)");
 			if (hasEvents)
 			{
 				out.print("){");

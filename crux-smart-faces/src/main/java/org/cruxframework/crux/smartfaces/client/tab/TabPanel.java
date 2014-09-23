@@ -68,7 +68,8 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 		{
 			public void onSelection(SelectionEvent<Integer> event)
 			{
-				deck.showWidget(event.getSelectedItem());
+				showTabContent(event.getSelectedItem());
+				
 			}
 		});
 		
@@ -93,6 +94,11 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 		// Add a11y role "TabPanel"
 		Roles.getTabpanelRole().set(deck.getElement());
 	}
+
+	protected void showTabContent(int selectedItem)
+    {
+		deck.showWidget(selectedItem);
+    }
 
 	@Override
 	public void setStyleName(String style, boolean add)

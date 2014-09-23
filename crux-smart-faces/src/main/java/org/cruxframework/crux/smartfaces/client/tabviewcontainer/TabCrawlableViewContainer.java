@@ -40,7 +40,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	 */
 	public static final String DEFAULT_STYLE_NAME = "faces-TabCrawlableViewContainer";
 
-	private TabPanel tabPanel;
+	private CrawlableTabPanel tabPanel;
 	private LinkedHashMap<String, Tab> tabs = new LinkedHashMap<String, Tab>();
 
 	/**
@@ -48,8 +48,9 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	 */
 	public TabCrawlableViewContainer()
 	{
-		super(new TabPanel(), true);
+		super(new CrawlableTabPanel(), true);
 		tabPanel = getMainWidget();
+		tabPanel.setContainer(this);
 		tabPanel.addBeforeSelectionHandler(createBeforeSelectionHandler());
 		tabPanel.setStyleName(DEFAULT_STYLE_NAME);
 	}
@@ -216,6 +217,25 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	 ***********************************/
 
 	@Override
+	protected void showView(String viewName, String viewId, Object parameter)
+	{
+		View view = getView(viewName);
+		if (view != null)
+		{
+			if (!view.isActive())
+			{
+				renderView(view, null);
+			} else {
+				focusView(viewId);
+			}
+		}
+		else
+		{
+			loadAndRenderView(viewName, viewId, parameter);
+		}
+	}
+	
+	@Override
 	protected boolean isViewDisplayed(String viewId)
 	{
 		int index = getIndex(viewId);
@@ -252,6 +272,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	protected boolean doAdd(View view, boolean lazy, boolean closeable, Object parameter)
     {
 	    String tabId = view.getId();
+	    
 	    if (!views.containsKey(view.getId()))
 	    {
 	    	boolean doAdd = super.doAdd(view, lazy, parameter);
@@ -262,6 +283,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	    		this.tabs.put(tabId, tab);			
 	    		tabPanel.add(tab, flap);
 	    		focusView(tabId);
+	    		
 	    	}
 	    	return doAdd;
 	    }
@@ -299,4 +321,24 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 		}
 	}	
 	
+	static class CrawlableTabPanel extends TabPanel{
+		
+		private TabCrawlableViewContainer container;
+		
+		public TabCrawlableViewContainer getContainer()
+		{
+			return container;
+		}
+
+		public void setContainer(TabCrawlableViewContainer container)
+		{
+			this.container = container;
+		}
+
+		@Override
+		protected void showTabContent(int selectedItem)
+		{
+		    container.showView(container.getViewId(selectedItem));
+		}
+	}
 }
