@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.client.screen.views;
 
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.collection.FastMap;
+import org.cruxframework.crux.core.client.screen.Screen;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -39,6 +40,35 @@ public abstract class MultipleCrawlableViewsContainer extends CrawlableViewConta
 	    super(mainWidget, clearPanelsForDeactivatedViews);
     }
 
+	@Override
+	protected void showView(String viewName, String viewId, Object parameter)
+	{
+		View view = getView(viewName);
+		if (view != null)
+		{
+			if (!view.isActive())
+			{
+				renderView(view, null);
+			} 
+			else 
+			{
+				updateHistory(viewId);
+			}
+		}
+		else
+		{
+			loadAndRenderView(viewName, viewId, parameter);
+		}
+	}
+	
+	protected void updateHistory(String viewId)
+	{
+	    if (isHistoryControlEnabled())
+	    {
+    		Screen.addToHistory(getHistoryControlPrefix()+viewId);
+	    }
+	}
+	
 	@Override
 	protected boolean activate(View view, Panel containerPanel, Object parameter)
 	{
