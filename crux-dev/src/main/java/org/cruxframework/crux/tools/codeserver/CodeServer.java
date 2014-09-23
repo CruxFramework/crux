@@ -152,6 +152,9 @@ public class CodeServer
 			String[] args = getServerParameters();
 			initializeRecompileListener();
 			runGWTCodeServer(args);
+		} else
+		{
+			logger.error("Unable to find any screens in module ["+moduleName+"]");
 		}
     }
 
