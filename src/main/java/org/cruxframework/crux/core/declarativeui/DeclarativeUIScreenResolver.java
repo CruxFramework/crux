@@ -56,7 +56,12 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 	 */
 	public Set<String> getAllScreenIDs(String module) throws ScreenConfigException
 	{
-		return DeclarativeUIScreenResourceScanner.getInstance().getPages(module);
+		Set<String> screenIDs = DeclarativeUIScreenResourceScanner.getInstance().getPages(module);
+		if(screenIDs == null || screenIDs.isEmpty())
+		{
+			log.warn("Cannot find Screens in module: ["+module+"].");
+		}
+		return screenIDs;
 	}
 
 	/**
