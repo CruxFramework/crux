@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.cruxframework.crux.core.server.rest.core.EntityTag;
 import org.cruxframework.crux.core.server.rest.core.dispatch.ResourceMethod.MethodReturn;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
@@ -299,6 +300,10 @@ public class StateHandler
 	
 	private String generateEtag(String content)
     {
+		if (StringUtils.isEmpty(content))
+		{
+			return null;
+		} 
 		return Long.toHexString(System.currentTimeMillis()) + Integer.toHexString(content.hashCode());
     }
 }
