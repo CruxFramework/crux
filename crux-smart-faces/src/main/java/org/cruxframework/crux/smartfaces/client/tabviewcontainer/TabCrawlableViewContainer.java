@@ -149,7 +149,12 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	 */
 	public void focusView(String viewId)
 	{
-		this.tabPanel.selectTab(getIndex(viewId));
+		int index = getIndex(viewId);
+		if (index >= 0)
+		{
+			updateHistory(viewId);
+			this.tabPanel.selectTab(index);
+		}
 	}
 
 	/**
@@ -216,25 +221,6 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	 * Override Methods
 	 ***********************************/
 
-	@Override
-	protected void showView(String viewName, String viewId, Object parameter)
-	{
-		View view = getView(viewName);
-		if (view != null)
-		{
-			if (!view.isActive())
-			{
-				renderView(view, null);
-			} else {
-				focusView(viewId);
-			}
-		}
-		else
-		{
-			loadAndRenderView(viewName, viewId, parameter);
-		}
-	}
-	
 	@Override
 	protected boolean isViewDisplayed(String viewId)
 	{
@@ -321,8 +307,8 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 		}
 	}	
 	
-	static class CrawlableTabPanel extends TabPanel{
-		
+	static class CrawlableTabPanel extends TabPanel
+	{
 		private TabCrawlableViewContainer container;
 		
 		public TabCrawlableViewContainer getContainer()
@@ -338,7 +324,8 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 		@Override
 		protected void showTabContent(int selectedItem)
 		{
-		    container.showView(container.getViewId(selectedItem));
+			super.showTabContent(selectedItem);
+			container.updateHistory(container.getViewId(selectedItem));
 		}
 	}
 }
