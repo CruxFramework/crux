@@ -33,8 +33,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class MultipleCrawlableViewsContainer extends CrawlableViewContainer
 {
-	protected FastMap<View> activeViews = new FastMap<View>();;
+	protected FastMap<View> activeViews = new FastMap<View>();
 
+	/**
+	 * @param mainWidget
+	 * @param clearPanelsForDeactivatedViews
+	 */
 	public MultipleCrawlableViewsContainer(Widget mainWidget, boolean clearPanelsForDeactivatedViews)
     {
 	    super(mainWidget, clearPanelsForDeactivatedViews);
@@ -65,14 +69,14 @@ public abstract class MultipleCrawlableViewsContainer extends CrawlableViewConta
 	{
 	    if (isHistoryControlEnabled())
 	    {
-    		Screen.addToHistory(getHistoryControlPrefix()+viewId);
+    		Screen.addToHistory(getHistoryControlPrefix() + viewId);
 	    }
 	}
 	
 	@Override
 	protected boolean activate(View view, Panel containerPanel, Object parameter)
 	{
-		assert(view != null):"Can not active a null view";
+		assert (view != null) : "Can not active a null view";
 		boolean activated = super.activate(view, containerPanel, parameter);
 	    if (activated && !activeViews.containsKey(view.getId()))
 	    {
@@ -84,7 +88,7 @@ public abstract class MultipleCrawlableViewsContainer extends CrawlableViewConta
 	@Override
 	protected boolean deactivate(View view, Panel containerPanel, boolean skipEvent)
 	{
-		assert(view != null):"Can not deactive a null view";
+		assert (view != null) : "Can not deactive a null view";
 		boolean deactivated = true;
 		if (activeViews.containsKey(view.getId()))
 		{
