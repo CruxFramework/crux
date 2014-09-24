@@ -69,7 +69,6 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 			public void onSelection(SelectionEvent<Integer> event)
 			{
 				showTabContent(event.getSelectedItem());
-				
 			}
 		});
 		
