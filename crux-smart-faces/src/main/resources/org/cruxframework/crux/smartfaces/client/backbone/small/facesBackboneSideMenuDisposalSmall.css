@@ -1,0 +1,38 @@
+@external faces-*;
+
+@def HEADER_HEIGHT 45px;
+
+.facesBackboneSideMenuDisposal
+{
+	display:flex;
+	min-height:100vh;
+	flex-direction:column;
+}
+
+.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-contentPanel
+{
+	flex:1;
+	padding-top:HEADER_HEIGHT;
+}
+
+.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-smallHeaderWrapper
+{
+	position: fixed;
+	z-index:3;
+	width: 100%;
+	height:HEADER_HEIGHT;
+	display:flex;
+	flex-direction:row;
+}
+
+.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-menuButtonContainer
+{
+	order:1;
+	flex:HEADER_HEIGHT 0;
+}
+
+.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-smallHeaderPanel
+{
+	order:2;
+	flex:1;
+}

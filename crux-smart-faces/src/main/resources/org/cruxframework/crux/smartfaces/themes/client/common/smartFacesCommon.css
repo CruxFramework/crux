@@ -982,10 +982,11 @@ td > div > .faces--group
 .faces-RollingPanel-previous,
 .faces-RollingPanel-next
 {
-	background: svgIconArrow no-repeat center center #4496c6;
-	background-size:80% auto;
-	border: 1px solid #1a6299;
+	background:linear-gradient(rgba(0,0,0,0) 66%, rgba(0,0,0,0.1) 100%), svgIconArrow #4496c6 no-repeat center center;
+	border:none;
+	background-size:100% 100%, 70% auto;
 	color:rgba(0,0,0,0);
+	padding:5px;
 }
 
 .faces-RollingPanel-next
@@ -1001,6 +1002,12 @@ td > div > .faces--group
 	display: -ms-flexbox;
 	display: -webkit-flex;
 	display: flex;
+}
+
+.faces-RollingPanel-previousPanel--disabled .faces-RollingPanel-previous,
+.faces-RollingPanel-nextPanel--disabled .faces-RollingPanel-next
+{
+	display:none;
 }
 
 

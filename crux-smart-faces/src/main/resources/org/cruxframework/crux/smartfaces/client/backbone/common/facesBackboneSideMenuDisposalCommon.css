@@ -2,36 +2,5 @@
 
 .facesBackboneSideMenuDisposal
 {
-	height:100%;
-}
-
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-layoutWrapperPanel
-{
-	display:flex;
-	min-height:100vh;
-	flex-direction:column;
-}
-
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-splitPanel
-{
-	flex:1;
-	display:flex;
-	flex-direction:row;
-}
-
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-menuPanel
-{
-	flex:200px 0;
-	order:1;
-}
-
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-contentPanel
-{
-	order:2;
-	flex:1;
-}
-
-.facesBackboneSideMenuDisposal.faces-SideMenuDisposal--right .faces-SideMenuDisposal-contentPanel
-{
-	order:-1;
+	
 }

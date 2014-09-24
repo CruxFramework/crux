@@ -18,6 +18,8 @@ package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
+import org.cruxframework.crux.smartfaces.client.backbone.large.FacesBackboneResourcesLarge;
+import org.cruxframework.crux.smartfaces.client.backbone.small.FacesBackboneResourcesSmall;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 
 import com.google.gwt.core.client.GWT;
@@ -43,6 +45,8 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	protected void buildLayout()
 	{
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
+		FacesBackboneResourcesLarge.INSTANCE.css().ensureInjected();
+		FacesBackboneResourcesSmall.INSTANCE.css().ensureInjected();
 		LayoutBuilder builder = GWT.create(LayoutBuilder.class);
 		builder.buildLayout(this);
 		setSizeDisposal(builder.getDeviceSize());
@@ -80,8 +84,19 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	public void setStyleName(String style, boolean add)
 	{
 		super.setStyleName(style, add);
+		
 		if (!add)
 		{
+			if(getSizeDisposal().equals(sizeDisposal.LARGE))
+			{
+				addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneSideMenuDisposal());
+			}
+			
+			if(getSizeDisposal().equals(sizeDisposal.SMALL))
+			{
+				addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneSideMenuDisposal());
+			}
+			
 		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
 		}
 	}
@@ -90,6 +105,17 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
+	    
+	    if(getSizeDisposal().equals(sizeDisposal.LARGE))
+		{
+			addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneSideMenuDisposal());
+		}
+		
+		if(getSizeDisposal().equals(sizeDisposal.SMALL))
+		{
+			addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneSideMenuDisposal());
+		}
+		
 	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
 	}
 	

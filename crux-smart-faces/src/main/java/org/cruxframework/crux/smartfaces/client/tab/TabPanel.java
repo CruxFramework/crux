@@ -60,8 +60,6 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 		panel.add(tabBar);
 		panel.add(deck);
 
-		tabBar.setWidth("100%");
-
 		initWidget(panel);
 
 		tabBar.addSelectionHandler(new SelectionHandler<Integer>()

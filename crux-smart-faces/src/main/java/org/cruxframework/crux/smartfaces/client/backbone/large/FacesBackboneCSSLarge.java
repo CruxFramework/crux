@@ -23,5 +23,6 @@ import com.google.gwt.resources.client.CssResource;
  */
 public interface FacesBackboneCSSLarge extends CssResource
 {
-
+	//SideMenuDisposal
+	String facesBackboneSideMenuDisposal();
 }

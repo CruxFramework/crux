@@ -17,6 +17,7 @@ package org.cruxframework.crux.smartfaces.client.tab;
 
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.label.HTML;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
@@ -62,10 +63,12 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 	 */
 	TabBar()
 	{
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		panel = new RollingPanel();
 
 		initWidget(panel);
 		setStyleName(DEFAULT_STYLE_NAME);
+		addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
 		panel.setScrollToAddedWidgets(true);
 
 		// Add a11y role "tablist"

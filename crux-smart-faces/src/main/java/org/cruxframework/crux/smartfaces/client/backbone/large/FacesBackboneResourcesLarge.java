@@ -15,25 +15,18 @@
  */
 package org.cruxframework.crux.smartfaces.client.backbone.large;
 
-import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneCSSCommon;
-
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.resources.client.ClientBundle.Source;
+import com.google.gwt.resources.client.ClientBundle;
 
 /**
  * @author Thiago da Rosa de Bustamante
  */
-public interface FacesBackboneResourcesLarge extends FacesBackboneCSSCommon
+public interface FacesBackboneResourcesLarge extends ClientBundle
 {
 	static FacesBackboneResourcesLarge INSTANCE = GWT.create(FacesBackboneResourcesLarge.class);
 	
 	@Source({
-		"facesBackboneBase.css",
-		"facesBackboneMenu.css", 
-		"facesBackboneRollingPanel.css",
-		"facesBackboneTabPanel.css",
-		"facesBackboneSideMenuDisposal.css",
-		"facesBackboneTopMenuDisposal.css"
+		"facesBackboneSideMenuDisposalLarge.css"
 		})
-	FacesBackboneCSSCommon css();
+	FacesBackboneCSSLarge css();
 }

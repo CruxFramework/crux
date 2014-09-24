@@ -19,10 +19,6 @@ import org.cruxframework.crux.core.client.event.focusblur.BeforeBlurHandler;
 import org.cruxframework.crux.core.client.event.focusblur.BeforeFocusHandler;
 import org.cruxframework.crux.core.client.event.focusblur.HasBeforeFocusAndBeforeBlurHandlers;
 
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasBlurHandlers;
-import com.google.gwt.event.dom.client.HasFocusHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;

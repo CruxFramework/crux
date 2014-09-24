@@ -325,14 +325,14 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 
 	protected void disableNavigationButtons()
 	{
-		previousButtonPanel.addStyleDependentName("disabled");
-		nextButtonPanel.addStyleDependentName("disabled");
+		previousButtonPanel.addStyleDependentName("-disabled");
+		nextButtonPanel.addStyleDependentName("-disabled");
 	}
 	
 	protected void enableNavigationButtons()
 	{
-		previousButtonPanel.removeStyleDependentName("disabled");
-		nextButtonPanel.removeStyleDependentName("disabled");
+		previousButtonPanel.removeStyleDependentName("-disabled");
+		nextButtonPanel.removeStyleDependentName("-disabled");
 	}
 	
 	protected void handleWindowResize()
