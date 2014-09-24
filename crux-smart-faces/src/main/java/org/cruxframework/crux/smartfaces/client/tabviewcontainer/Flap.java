@@ -103,7 +103,7 @@ class Flap extends Composite implements HasBeforeFocusAndBeforeBlurHandlers
 		FlowPanel flap = new FlowPanel();
 		
 		//TODO - Criar o recurso Css para esse componente
-		flap.setStyleName(FacesResources.INSTANCE.css().flexBoxHorizontalContainer());
+		flap.setStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
 		
 		initWidget(flap);
 		
