@@ -55,8 +55,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 		tabPanel.setStyleName(DEFAULT_STYLE_NAME);
 	}
 
-	/**
-	 * Add a view in TabCrawlableViewContainer
+	/** Add a view in TabCrawlableViewContainer.
 	 * 
 	 * @param view - View that will be assigned to the container
 	 * @param lazy - Attaches the view in the container, but only renders when the view is accessed
@@ -183,7 +182,7 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 
 	/**
 	 * @param viewId view id
-	 * @return Tab
+	 * @return Tab - tab containing view
 	 */
 	public Tab getTab(String viewId)
 	{
@@ -191,8 +190,8 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	}
 
 	
-	/**
-	 * @return int
+	/** Return the index of view focused.
+	 * @return int - view focused index
 	 */
 	public int getFocusedViewIndex()
 	{
@@ -200,8 +199,8 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	}
 
 	/**
-	 * @param viewId
-	 * @return int
+	 * @param viewId view id
+	 * @return int - index
 	 */
 	public int getIndex(String viewId)
 	{
@@ -209,14 +208,30 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 	}
 
 	/**
-	 * @param tab
-	 * @return
+	 * @param view - view
+	 * @return int 
 	 */
 	public int getIndex(View view)
 	{
 		return getIndex(view.getId());
 	}
 
+	/**
+	 * @param tabId - id of the tab will be closed
+	 */
+	private void doCloseTab(String tabId)
+	{
+		int index = getIndex(tabId);
+		this.tabPanel.remove(index);
+		this.tabs.remove(tabId);
+		
+		if (this.tabPanel.getWidgetCount() > 0)
+		{
+			int indexToFocus = index == 0 ? 0 : index - 1;
+			this.tabPanel.selectTab(indexToFocus);
+		}
+	}	
+	
 	/***********************************
 	 * Override Methods
 	 ***********************************/
@@ -291,22 +306,27 @@ public class TabCrawlableViewContainer extends MultipleCrawlableViewsContainer
 		return doRemove;
 	}
 	
-	/**
-	 * @param tabId
-	 */
-	private void doCloseTab(String tabId)
+	@Override
+	protected void showView(String viewName, String viewId, Object parameter)
 	{
-		int index = getIndex(tabId);
-		this.tabPanel.remove(index);
-		this.tabs.remove(tabId);
-		
-		if (this.tabPanel.getWidgetCount() > 0)
+		View view = getView(viewName);
+		if (view != null)
 		{
-			int indexToFocus = index == 0 ? 0 : index - 1;
-			this.tabPanel.selectTab(indexToFocus);
+			if (!view.isActive())
+			{
+				renderView(view, null);
+			} 
+			else 
+			{
+				focusView(viewId);
+			}
 		}
-	}	
-	
+		else
+		{
+			loadAndRenderView(viewName, viewId, parameter);
+		}
+	}
+		
 	static class CrawlableTabPanel extends TabPanel
 	{
 		private TabCrawlableViewContainer container;
