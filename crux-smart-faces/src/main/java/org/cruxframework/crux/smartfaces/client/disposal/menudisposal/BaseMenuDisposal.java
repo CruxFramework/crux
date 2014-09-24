@@ -20,6 +20,7 @@ import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.screen.views.SingleCrawlableViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.panel.FooterPanel;
@@ -52,6 +53,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	protected BaseMenuDisposal()
 	{
 		super(new FlowPanel(), true);
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		setHistoryControlEnabled(true);
 		setHistoryControlPrefix("views");
 		bodyPanel = getMainWidget();

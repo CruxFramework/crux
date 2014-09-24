@@ -1,0 +1,14 @@
+@external faces-*;
+
+.facesBackboneTopMenuDisposal
+{
+	display:flex;
+	min-height:100vh;
+	flex-direction:column;
+}
+
+.faces-TopMenuDisposal-contentPanel
+{
+	flex:1;
+}
+

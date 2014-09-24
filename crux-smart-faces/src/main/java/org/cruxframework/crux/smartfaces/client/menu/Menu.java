@@ -16,8 +16,8 @@
 package org.cruxframework.crux.smartfaces.client.menu;
 
 import org.cruxframework.crux.core.client.collection.FastList;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.button.Button;
-import org.cruxframework.crux.smartfaces.client.css.FacesResources;
 import org.cruxframework.crux.smartfaces.client.menu.MenuRenderer.LargeMenuRenderer;
 import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
 import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
@@ -70,7 +70,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 	
 	public Menu(LargeType largeType, SmallType smallType)
 	{
-		FacesResources.INSTANCE.css().ensureInjected();
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		initWidget(menuPanel);
 		root = new MenuItem(null);
 		menuPanel.add(root);
@@ -96,7 +96,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 		super.setStyleName(style, add);
 		if (!add)
 		{
-		    addStyleName(FacesResources.INSTANCE.css().facesBackboneMenu());
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneMenu());
 		}
 	}
 	
@@ -104,7 +104,7 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
-	    addStyleName(FacesResources.INSTANCE.css().facesBackboneMenu());
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneMenu());
 	}
 	
 	public Menu(LargeType largeType)

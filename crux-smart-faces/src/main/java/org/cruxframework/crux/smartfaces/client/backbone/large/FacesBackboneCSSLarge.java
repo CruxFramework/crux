@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.css;
+package org.cruxframework.crux.smartfaces.client.backbone.large;
 
 import com.google.gwt.resources.client.CssResource;
 
@@ -21,18 +21,7 @@ import com.google.gwt.resources.client.CssResource;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface FacesCSS extends CssResource
+public interface FacesBackboneCSSLarge extends CssResource
 {
-	String flexBoxContainer();
-	String flexBoxHorizontalContainer();
-	String flexBoxVerticalContainer();
-	String flexBoxFirstChild();
-	String flexBoxSecondChild();
-	String flexBoxThirdChild();
-	String flexBoxInlineContainer();
-	String rollingPanelBody();
-	String tabPanelDeck();	
-	
-	// Menu
-	String facesBackboneMenu();
+
 }

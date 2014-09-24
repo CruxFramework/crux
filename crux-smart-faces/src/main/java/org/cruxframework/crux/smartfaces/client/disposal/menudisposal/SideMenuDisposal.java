@@ -17,6 +17,7 @@ package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 
 import com.google.gwt.core.client.GWT;
@@ -34,13 +35,14 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	private final String FOOTER_PANEL_STYLE = "faces-SideMenuDisposal-footerPanel";
 	private final String CONTENT_MENU_STYLE = "faces-SideMenuDisposal-contentPanel";
 	private final String SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-SideMenuDisposal-smallHeaderPanel";
-	private final String RIGHT_MENU_POSITION = "faces-SideMenuDisposal-rightMenuPosition";
+	private final String RIGHT_MENU_POSITION = "faces-SideMenuDisposal--right";
 	
 	private final String DEFAULT_STYLE_NAME = "faces-SideMenuDisposal";
 	
 	@Override
 	protected void buildLayout()
 	{
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		LayoutBuilder builder = GWT.create(LayoutBuilder.class);
 		builder.buildLayout(this);
 		setSizeDisposal(builder.getDeviceSize());
@@ -72,6 +74,23 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	protected String getSmallHeaderStyleName()
 	{
 		return SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL;
+	}
+	
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
+		}
+	}
+	
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
 	}
 	
 	
@@ -120,7 +139,6 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	
 	static class LargeLayoutBuilder implements LayoutBuilder
 	{
-		private static final String CF = "cf";
 		private static final String FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL = "faces-SideMenuDisposal-splitPanel";
 		private static final String FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL = "faces-SideMenuDisposal-layoutWrapperPanel";
 
@@ -131,7 +149,6 @@ public class SideMenuDisposal extends BaseMenuDisposal
 			mainPanel.setStyleName(FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL);
 			disposal.headerPanel = new SimplePanel();
 			FlowPanel splitPanel = new FlowPanel();
-			splitPanel.addStyleName(CF);
 			splitPanel.addStyleName(FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL);
 			splitPanel.add(disposal.menuPanel);
 			splitPanel.add(disposal.viewContentPanel);

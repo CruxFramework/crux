@@ -16,7 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.rollingpanel;
 
 import org.cruxframework.crux.core.client.screen.Screen;
-import org.cruxframework.crux.smartfaces.client.css.FacesResources;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -85,7 +85,7 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 		super.setStyleName(style, add);
 		if (!add)
 		{
-		    addStyleName(FacesResources.INSTANCE.css().flexBoxHorizontalContainer());
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
 		}
 	}
 	
@@ -93,7 +93,7 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
-	    addStyleName(FacesResources.INSTANCE.css().flexBoxHorizontalContainer());
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
 	}
 	
 	/**
@@ -267,7 +267,7 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 		previousButton.addMouseUpHandler(handler);
 		previousButtonPanel = new SimplePanel();
 		previousButtonPanel.setStyleName(PREVIOUS_PANEL_STYLE_NAME);
-		previousButtonPanel.addStyleName(FacesResources.INSTANCE.css().flexBoxFirstChild());
+		previousButtonPanel.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxFirstChild());
 		previousButtonPanel.add(previousButton);
 		layoutPanel.add(previousButtonPanel);
     }
@@ -282,7 +282,7 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 		nextButton.addMouseUpHandler(handler);
 		nextButtonPanel = new SimplePanel();
 		nextButtonPanel.setStyleName(NEXT_PANEL_STYLE_NAME);
-		nextButtonPanel.addStyleName(FacesResources.INSTANCE.css().flexBoxThirdChild());
+		nextButtonPanel.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxThirdChild());
 		nextButtonPanel.add(nextButton);
 		layoutPanel.add(nextButtonPanel);
     }
@@ -291,9 +291,9 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
     {
 	    itemsScrollPanel = new ScrollPanel();
 		itemsScrollPanel.setStyleName(BODY_STYLE_NAME);
-		itemsScrollPanel.addStyleName(FacesResources.INSTANCE.css().rollingPanelBody());
+		itemsScrollPanel.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().rollingPanelBody());
 		itemsPanel = new FlowPanel();
-		itemsPanel.setStyleName(FacesResources.INSTANCE.css().flexBoxInlineContainer());
+		itemsPanel.setStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxInlineContainer());
 		itemsScrollPanel.add(itemsPanel);
 		layoutPanel.add(itemsScrollPanel); 
     }

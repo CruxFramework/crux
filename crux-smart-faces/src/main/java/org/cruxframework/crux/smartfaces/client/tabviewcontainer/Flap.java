@@ -24,8 +24,8 @@ import org.cruxframework.crux.core.client.event.focusblur.BeforeFocusHandler;
 import org.cruxframework.crux.core.client.event.focusblur.HasBeforeFocusAndBeforeBlurHandlers;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.views.View;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.button.Button;
-import org.cruxframework.crux.smartfaces.client.css.FacesResources;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -57,7 +57,7 @@ class Flap extends Composite implements HasBeforeFocusAndBeforeBlurHandlers
 		FlowPanel flap = new FlowPanel();
 		
 		//TODO - Criar o recurso Css para esse componente
-		flap.setStyleName(FacesResources.INSTANCE.css().flexBoxHorizontalContainer());
+		flap.setStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
 		
 		initWidget(flap);
 		

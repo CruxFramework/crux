@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 
 import com.google.gwt.core.client.GWT;
@@ -41,6 +42,7 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	@Override
 	protected void buildLayout()
 	{
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		LayoutBuilder builder = GWT.create(LayoutBuilder.class);
 		builder.buildLayout(this);
 		setSizeDisposal(builder.getDeviceSize());
@@ -76,6 +78,23 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	protected String getSmallHeaderStyleName()
 	{
 		return TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL;
+	}
+	
+	@Override
+	public void setStyleName(String style, boolean add)
+	{
+		super.setStyleName(style, add);
+		if (!add)
+		{
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneTopMenuDisposal());
+		}
+	}
+	
+	@Override
+	public void setStyleName(String style)
+	{
+	    super.setStyleName(style);
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneTopMenuDisposal());
 	}
 
 	public enum TopDisposalMenuType
@@ -133,14 +152,10 @@ public class TopMenuDisposal extends BaseMenuDisposal
 		@Override
 		public void buildLayout(BaseMenuDisposal disposal)
 		{
-			FlowPanel splitPanel = new FlowPanel();
-			
-			splitPanel.add(disposal.headerPanel);
-			splitPanel.add(disposal.menuPanel);
-			splitPanel.add(disposal.viewContentPanel);
-			splitPanel.add(disposal.footerPanel);
-			
-			disposal.bodyPanel.add(splitPanel);
+			disposal.bodyPanel.add(disposal.headerPanel);
+			disposal.bodyPanel.add(disposal.menuPanel);
+			disposal.bodyPanel.add(disposal.viewContentPanel);
+			disposal.bodyPanel.add(disposal.footerPanel);
 		}
 
 		@Override

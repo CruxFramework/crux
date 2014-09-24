@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.tab;
 
-import org.cruxframework.crux.smartfaces.client.css.FacesResources;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
@@ -51,7 +51,7 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 	 */
 	public TabPanel()
 	{
-		FacesResources.INSTANCE.css().ensureInjected();
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		
 		tabBar = new TabBar();
 		deck = new TabbedDeckPanel(tabBar);
@@ -89,7 +89,7 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 
 		setStyleName(DEFAULT_STYLE_NAME);
 		deck.setStyleName(TAB_PANEL_DECK_STYLE_NAME);
-		deck.addStyleName(FacesResources.INSTANCE.css().tabPanelDeck());
+		deck.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().tabPanelDeck());
 		// Add a11y role "TabPanel"
 		Roles.getTabpanelRole().set(deck.getElement());
 	}
@@ -105,7 +105,7 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 		super.setStyleName(style, add);
 		if (!add)
 		{
-		    addStyleName(FacesResources.INSTANCE.css().flexBoxVerticalContainer());
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxVerticalContainer());
 		}
 	}
 	
@@ -113,7 +113,7 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
-	    addStyleName(FacesResources.INSTANCE.css().flexBoxVerticalContainer());
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxVerticalContainer());
 	}
 		
 	

@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.rollingpanel;
 
-import org.cruxframework.crux.smartfaces.client.css.FacesResources;
+import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
@@ -59,7 +59,7 @@ public class RollingPanel extends Composite implements InsertPanel
 	
 	public RollingPanel()
     {
-		FacesResources.INSTANCE.css().ensureInjected();
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 	    initWidget(impl.asWidget());
 	    setStyleName(DEFAULT_STYLE_NAME);
     }

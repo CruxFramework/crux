@@ -4,6 +4,7 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 @external *;
 
 @url svgIconClose svgIconClose;
+@url svgIconArrow svgIconArrow;
 
 *:focus, *:active, *:hover	
 {
@@ -974,6 +975,65 @@ td > div > .faces--group
 	position:absolute;
 	border-radius:3px;
 }
+
+
+/* -------------------- facesProgress -----------------------*/
+
+.faces-RollingPanel-previous,
+.faces-RollingPanel-next
+{
+	background: svgIconArrow no-repeat center center #4496c6;
+	background-size:80% auto;
+	border: 1px solid #1a6299;
+	color:rgba(0,0,0,0);
+}
+
+.faces-RollingPanel-next
+{
+	-webkit-transform:rotate(180deg);
+}
+
+.faces-RollingPanel-nextPanel,
+.faces-RollingPanel-previousPanel
+{
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+}
+
+
+/* -------------------- MenuDisposal (side, top) -----------------------*/
+
+.faces-SideMenuDisposal-headerPanel,
+.faces-TopMenuDisposal-headerPanel
+{
+	background:#eee;
+	padding:10px;
+}
+
+.faces-SideMenuDisposal-menuPanel
+{
+	background:#ddd;
+}
+
+.faces-SideMenuDisposal-footerPanel,
+.faces-TopMenuDisposal-footerPanel
+{
+	background:#eee;
+	padding:10px;
+}
+
+.faces-SideMenuDisposal-contentPanel,
+.faces-TopMenuDisposal-contentPanel
+{
+	padding:10px;
+}
+
+
+
+
 
 @-webkit-keyframes faces-ProgressUndefined
 {

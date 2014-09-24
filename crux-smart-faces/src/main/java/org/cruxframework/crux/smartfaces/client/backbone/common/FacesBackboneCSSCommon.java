@@ -13,23 +13,32 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.smartfaces.client.css;
+package org.cruxframework.crux.smartfaces.client.backbone.common;
 
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.CssResource;
 
 /**
  * @author Thiago da Rosa de Bustamante
+ *
  */
-public interface FacesResources extends ClientBundle
+public interface FacesBackboneCSSCommon extends CssResource
 {
-	static FacesResources INSTANCE = GWT.create(FacesResources.class);
+	String flexBoxContainer();
+	String flexBoxHorizontalContainer();
+	String flexBoxVerticalContainer();
+	String flexBoxFirstChild();
+	String flexBoxSecondChild();
+	String flexBoxThirdChild();
+	String flexBoxInlineContainer();
+	String rollingPanelBody();
+	String tabPanelDeck();	
 	
-	@Source({
-		"facesBackboneBase.css",
-		"facesBackboneMenu.css", 
-		"facesBackboneRollingPanel.css",
-		"facesBackboneTabPanel.css"
-		})
-	FacesCSS css();
+	// Menu
+	String facesBackboneMenu();
+	
+	//SideMenuDisposal
+	String facesBackboneSideMenuDisposal();
+	
+	//TopMenuDisposal
+	String facesBackboneTopMenuDisposal();
 }
