@@ -2,20 +2,20 @@
 
 @def HEADER_HEIGHT 45px;
 
-.facesBackboneSideMenuDisposal
+.facesBackboneTopMenuDisposal
 {
 	display:flex;
 	min-height:100vh;
 	flex-direction:column;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-contentPanel
+.facesBackboneTopMenuDisposal .faces-TopMenuDisposal-contentPanel
 {
 	flex:1;
 	padding-top:HEADER_HEIGHT;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-smallHeaderWrapper
+.facesBackboneTopMenuDisposal .faces-TopMenuDisposal-smallHeaderWrapper
 {
 	position: fixed;
 	z-index:3;
@@ -25,7 +25,7 @@
 	flex-direction:row;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-menuButtonContainer
+.facesBackboneTopMenuDisposal .faces-TopMenuDisposal-menuButtonContainer
 {
 	order:1;
 	flex:HEADER_HEIGHT 0;
@@ -33,7 +33,7 @@
 	flex-direction:column;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-menuPanel
+.facesBackboneTopMenuDisposal .faces-TopMenuDisposal-menuPanel
 {
 	position:absolute;
 	z-index:2;
@@ -41,7 +41,7 @@
 	height:100vh;
 }
 
-.facesBackboneSideMenuDisposal .faces-SideMenuDisposal-smallHeaderPanel
+.facesBackboneTopMenuDisposal .faces-TopMenuDisposal-smallHeaderPanel
 {
 	order:2;
 	flex:1;

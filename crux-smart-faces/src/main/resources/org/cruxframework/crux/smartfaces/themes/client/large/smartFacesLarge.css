@@ -89,20 +89,3 @@
 {
 	background-color: #4496c6;
 }
-
-
-/* -------------------- facesTabBar -----------------------*/
-
-.faces-TabBar-item
-{
-    box-shadow:0 4px 0 rgba(0, 0, 0, 0.12) inset, -1px 0 0 rgba(0, 0, 0, 0.1) inset;
-    background:#999 linear-gradient(rgba(0,0,0,0) 66%, rgba(0,0,0,0.1) 100%);
-    cursor:pointer;
-    padding:10px;
-    color:#fff;
-}
-
-.faces-TabBar-item--selected
-{
-    background:#4496c6 linear-gradient(rgba(0,0,0,0) 66%, rgba(0,0,0,0.1) 100%);
-}

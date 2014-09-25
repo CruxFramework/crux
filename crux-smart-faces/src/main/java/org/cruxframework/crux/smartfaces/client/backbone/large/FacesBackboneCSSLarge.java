@@ -25,4 +25,7 @@ public interface FacesBackboneCSSLarge extends CssResource
 {
 	//SideMenuDisposal
 	String facesBackboneSideMenuDisposal();
+	
+	//TopMenuDisposal
+	String facesBackboneTopMenuDisposal();
 }

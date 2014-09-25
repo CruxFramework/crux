@@ -26,7 +26,8 @@ public interface FacesBackboneResourcesSmall extends ClientBundle
 	static FacesBackboneResourcesSmall INSTANCE = GWT.create(FacesBackboneResourcesSmall.class);
 	
 	@Source({
-		"facesBackboneSideMenuDisposalSmall.css"
+		"facesBackboneSideMenuDisposalSmall.css",
+		"facesBackboneTopMenuDisposalSmall.css"
 		})
 	FacesBackboneCSSSmall css();
 }

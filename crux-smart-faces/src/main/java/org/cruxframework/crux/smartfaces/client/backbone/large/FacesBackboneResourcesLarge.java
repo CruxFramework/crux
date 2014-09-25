@@ -26,7 +26,8 @@ public interface FacesBackboneResourcesLarge extends ClientBundle
 	static FacesBackboneResourcesLarge INSTANCE = GWT.create(FacesBackboneResourcesLarge.class);
 	
 	@Source({
-		"facesBackboneSideMenuDisposalLarge.css"
+		"facesBackboneSideMenuDisposalLarge.css",
+		"facesBackboneTopMenuDisposalLarge.css"
 		})
 	FacesBackboneCSSLarge css();
 }
