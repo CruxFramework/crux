@@ -1,5 +1,5 @@
 function __MODULE_FUNC__() {
-  var $wnd = parent;
+  var $wnd = window;
 
   var metaProps = {} ,values = [] ,providers = [] ,answers = [] ,softPermutationId = 0 ,onLoadErrorFunc, propertyErrorFunc; // end of global vars
 
@@ -63,7 +63,8 @@ function __MODULE_FUNC__() {
       initialHtml = groupId + ".cache.html";
     } catch (e) {
       // intentionally silent on property failure
-      return;
+      var groupId = 'default_default';
+      initialHtml = groupId + ".cache.html";
     }
 
 //	window.__Crux_Frame = true; // Mark this page as a valid crux frame
