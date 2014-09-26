@@ -1,5 +1,11 @@
 function __MODULE_FUNC__() {
+  var $wnd = parent;
+
   var metaProps = {} ,values = [] ,providers = [] ,answers = [] ,softPermutationId = 0 ,onLoadErrorFunc, propertyErrorFunc; // end of global vars
+
+
+
+  
 
   function unflattenKeylistIntoAnswers(propValArray, value) {
     var answer = answers;
@@ -29,11 +35,20 @@ function __MODULE_FUNC__() {
     throw null;
   }
   
+  // __PROCESS_METAS__
+  
+  
+  
+  function __gwt_getMetaProperty(name) {
+    var value = metaProps[name];
+    return (value == null) ? null : value;
+  }
+  
+  
   // --------------- PROPERTY PROVIDERS --------------- 
 
 // __PROPERTIES_BEGIN__
 // __PROPERTIES_END__
-
 
   // --------------- STRAIGHT-LINE CODE ---------------
   var strongName;
@@ -44,12 +59,8 @@ function __MODULE_FUNC__() {
 // __PERMUTATIONS_BEGIN__
       // Permutation logic
 // __PERMUTATIONS_END__
-      var idx = strongName.indexOf(':');
-      if (idx != -1) {
-        softPermutationId = Number(strongName.substring(idx + 1));
-        strongName = strongName.substring(0, idx);
-      }
-      initialHtml = strongName + ".cache.html";
+      var groupId = computePropValue('user.agent')+'_'+computePropValue('device.features');
+      initialHtml = groupId + ".cache.html";
     } catch (e) {
       // intentionally silent on property failure
       return;
