@@ -23,7 +23,7 @@ public class OfflineLinker extends IFrameLinker
 	{
 		if (onePermutation)
 		{
-			appcacheManifest = AppCacheLinker.getManifestName(AppCacheLinker.getPermutationName(artifacts));
+			appcacheManifest = AppCacheLinker.getManifestName(artifacts);
 		}
 		else
 		{
@@ -50,5 +50,7 @@ public class OfflineLinker extends IFrameLinker
 	{
 		return prefix.replaceFirst("<html>", "<html manifest=\""+appcacheManifest+"\">");
 	}
+	
+	
 	
 }
