@@ -74,7 +74,6 @@ public class AppCacheLinker extends AbstractLinker
 
 	private static final List<String> acceptedFileExtensions = Arrays.asList(".html", ".js", ".css", ".png", ".jpg", ".gif", ".ico");
 
-	private PermutationsUtil permutationsUtil;
 	private static AtomicBoolean analyzed = new AtomicBoolean(false);
 
 	@Override
@@ -282,8 +281,6 @@ public class AppCacheLinker extends AbstractLinker
 	private void emitOfflinePage(TreeLogger logger, LinkerContext context, ArtifactSet artifacts, String offlineScreenId)
 	    throws UnableToCompleteException
 	{
-		permutationsUtil = new PermutationsUtil();
-		permutationsUtil.setupPermutationsMap(artifacts);
 		StringBuffer buffer = readFileToStringBuffer(getOfflinePageTemplate(logger, context), logger);
 		
 		int startPos = buffer.indexOf("// __OFFLINE_SELECTION_END__");
@@ -358,7 +355,6 @@ public class AppCacheLinker extends AbstractLinker
 	private String fillSelectionScriptTemplate(StringBuffer selectionScript, TreeLogger logger, LinkerContext context, ArtifactSet artifacts)
 	    throws UnableToCompleteException
 	{
-		permutationsUtil.addPermutationsJs(selectionScript, logger, context);
 		replaceAll(selectionScript, "__MODULE_FUNC__", context.getModuleFunctionName());
 		replaceAll(selectionScript, "__MODULE_NAME__", context.getModuleName());
 		return selectionScript.toString();
