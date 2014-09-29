@@ -23,7 +23,17 @@ import org.cruxframework.crux.core.client.datasource.PagedDataSource;
 import org.cruxframework.crux.widgets.client.button.Button;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
+import org.cruxframework.crux.widgets.client.event.row.BeforeCancelRowEditionHandler;
+import org.cruxframework.crux.widgets.client.event.row.BeforeRowEditHandler;
+import org.cruxframework.crux.widgets.client.event.row.BeforeSaveRowEditionHandler;
+import org.cruxframework.crux.widgets.client.event.row.BeforeShowRowDetailsHandler;
+import org.cruxframework.crux.widgets.client.event.row.CancelRowEditionHandler;
+import org.cruxframework.crux.widgets.client.event.row.LoadRowDetailsHandler;
+import org.cruxframework.crux.widgets.client.event.row.RowClickHandler;
+import org.cruxframework.crux.widgets.client.event.row.RowDoubleClickHandler;
+import org.cruxframework.crux.widgets.client.event.row.RowEditHandler;
 import org.cruxframework.crux.widgets.client.event.row.RowRenderHandler;
+import org.cruxframework.crux.widgets.client.event.row.ShowRowDetailsHandler;
 import org.cruxframework.crux.widgets.client.grid.ColumnDefinition;
 import org.cruxframework.crux.widgets.client.grid.ColumnDefinitions;
 import org.cruxframework.crux.widgets.client.grid.ColumnEditorValidator;
@@ -36,7 +46,6 @@ import org.cruxframework.crux.widgets.client.grid.WidgetColumnDefinition;
 import org.cruxframework.crux.widgets.client.grid.WidgetColumnDefinition.WidgetColumnCreator;
 import org.cruxframework.crux.widgets.client.paging.Pageable;
 import org.cruxframework.crux.widgets.client.paging.Pager;
-
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -60,7 +69,6 @@ import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 
 /**
  * @author wesley.diniz
@@ -146,21 +154,100 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 		return gridImpl.getGridColumnDefinitionsByDevice();
 	}
 
+
+	public void addScrollHandler(ScrollHandler handler)
+	{
+		this.gridImpl.addScrollHandler(handler);
+	}
+	
 	/**
-	 * @param handler Event handler
-	 * @return HandlerRegistration
-	 * @see Add a rowrender event handler
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasRowClickHandlers#addRowClickHandler(org.cruxframework.crux.widgets.client.event.row.RowClickHandler)
+	 */
+	public HandlerRegistration addRowClickHandler(RowClickHandler handler)
+	{
+		return this.gridImpl.addRowClickHandler(handler);
+	}
+
+	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasRowDoubleClickHandlers#addRowDoubleClickHandler(org.cruxframework.crux.widgets.client.event.row.RowDoubleClickHandler)
+	 */
+	public HandlerRegistration addRowDoubleClickHandler(RowDoubleClickHandler handler)
+	{
+		return this.gridImpl.addRowDoubleClickHandler(handler);
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasRowRenderHandlers#addRowRenderHandler(org.cruxframework.crux.widgets.client.event.row.RowRenderHandler)
 	 */
 	public HandlerRegistration addRowRenderHandler(RowRenderHandler handler)
 	{
-		return gridImpl.addRowRenderHandler(handler);
+		return this.gridImpl.addRowRenderHandler(handler);
 	}
 	
-	public void addScrollHandler(ScrollHandler handler)
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.event.row.HasBeforeShowDetailsHandlers#addBeforeShowRowDetailsHandler(br.com.sysmap.crux.widgets.client.event.row.BeforeShowDetailsHandler)
+	 */
+	public HandlerRegistration addBeforeShowRowDetailsHandler(BeforeShowRowDetailsHandler handler) 
 	{
-		gridImpl.addScrollHandler(handler);
+		return this.gridImpl.addBeforeShowRowDetailsHandler(handler);
 	}
-
+	
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.event.row.HasShowRowDetailsHandlers#addShowRowDetailsHandler(br.com.sysmap.crux.widgets.client.event.row.ShowRowDetailsHandler)
+	 */
+	public HandlerRegistration addShowRowDetailsHandler(ShowRowDetailsHandler handler) 
+	{
+		return this.gridImpl.addShowRowDetailsHandler(handler);
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasBeforeRowEditHandlers#addBeforeRowEditHandler(org.cruxframework.crux.widgets.client.event.row.BeforeRowEditHandler)
+	 */
+	public HandlerRegistration addBeforeRowEditHandler(BeforeRowEditHandler handler) 
+	{
+		return this.gridImpl.addBeforeRowEditHandler(handler);
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasCancelRowEditionHandler#addCancelRowEditionHandler(org.cruxframework.crux.widgets.client.event.row.CancelRowEditionHandler)
+	 */
+	public HandlerRegistration addCancelRowEditionHandler(CancelRowEditionHandler handler) 
+	{
+		return this.gridImpl.addCancelRowEditionHandler(handler);
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasBeforeCancelRowEditionHandler#addBeforeCancelRowEditionHandler(org.cruxframework.crux.widgets.client.event.row.BeforeCancelRowEditionHandler)
+	 */
+	public HandlerRegistration addBeforeCancelRowEditionHandler(BeforeCancelRowEditionHandler handler) 
+	{
+		return this.gridImpl.addBeforeCancelRowEditionHandler(handler);
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasRowEditHandlers#addRowEditHandler(org.cruxframework.crux.widgets.client.event.row.RowEditHandler)
+	 */
+	public HandlerRegistration addRowEditHandler(RowEditHandler handler) 
+	{
+		return this.gridImpl.addRowEditHandler(handler);
+	}
+	
+	/**
+	 * @see br.com.sysmap.crux.widgets.client.event.row.HasLoadRowDetailsHandlers#addLoadRowDetailsHandler(br.com.sysmap.crux.widgets.client.event.row.LoadRowDetailsHandler)
+	 */
+	public HandlerRegistration addLoadRowDetailsHandler(LoadRowDetailsHandler handler) 
+	{
+		return this.gridImpl.addLoadRowDetailsHandler(handler);
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasBeforeSaveRowEditionHandler#addBeforeSaveRowEditionHandler(org.cruxframework.crux.widgets.client.event.row.BeforeSaveRowEditionHandler)
+	 */
+	public HandlerRegistration addBeforeSaveRowEditionHandler(BeforeSaveRowEditionHandler handler)
+	{
+		return this.gridImpl.addBeforeSaveRowEditionHandler(handler);
+	}
+	
 	/**
 	 * @return page number
 	 * @see org.cruxframework.crux.widgets.client.grid.Grid#getCurrentPageSize()
@@ -385,6 +472,64 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 					highlightRowOnMouseOver, emptyDataFilling, fixedCellSize, defaultSortingColumn, defaultSortingType);
 
 			setWidget(this.grid);
+		}
+		
+		public HandlerRegistration addBeforeSaveRowEditionHandler(
+				BeforeSaveRowEditionHandler handler) 
+		{
+			return this.grid.addBeforeSaveRowEditionHandler(handler);
+		}
+
+		public HandlerRegistration addLoadRowDetailsHandler(
+				LoadRowDetailsHandler handler) 
+		{
+			return this.grid.addLoadRowDetailsHandler(handler);
+		}
+
+		public HandlerRegistration addRowEditHandler(RowEditHandler handler) 
+		{
+			return this.grid.addRowEditHandler(handler);
+		}
+
+		public HandlerRegistration addBeforeCancelRowEditionHandler(
+				BeforeCancelRowEditionHandler handler) 
+		{
+			return this.grid.addBeforeCancelRowEditionHandler(handler);
+		}
+
+		public HandlerRegistration addCancelRowEditionHandler(
+				CancelRowEditionHandler handler) 
+		{
+			return this.grid.addCancelRowEditionHandler(handler);
+		}
+
+		public HandlerRegistration addBeforeRowEditHandler(
+				BeforeRowEditHandler handler) 
+		{
+			return this.grid.addBeforeRowEditHandler(handler);
+		}
+
+		public HandlerRegistration addShowRowDetailsHandler(
+				ShowRowDetailsHandler handler) 
+		{
+			return this.grid.addShowRowDetailsHandler(handler);
+		}
+
+		public HandlerRegistration addBeforeShowRowDetailsHandler(
+				BeforeShowRowDetailsHandler handler) 
+		{
+			return this.grid.addBeforeShowRowDetailsHandler(handler);
+		}
+
+		public HandlerRegistration addRowDoubleClickHandler(
+				RowDoubleClickHandler handler) 
+		{
+			return this.grid.addRowDoubleClickHandler(handler);
+		}
+
+		public HandlerRegistration addRowClickHandler(RowClickHandler handler) 
+		{
+			return this.grid.addRowClickHandler(handler);
 		}
 		
 		/**
