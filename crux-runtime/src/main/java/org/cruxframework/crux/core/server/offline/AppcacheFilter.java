@@ -38,7 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.apache.commons.lang.StringUtils;
-import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.server.http.GZIPResponseWrapper;
 import org.cruxframework.crux.core.server.rest.core.CacheControl;
 import org.cruxframework.crux.core.server.rest.util.DateUtil;
@@ -64,38 +63,17 @@ public class AppcacheFilter implements Filter
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
 
-		if (Environment.isProduction())
+		String ifModifiedHeader = request.getHeader(HttpHeaderNames.IF_MODIFIED_SINCE);
+		long dateModified = getDateModified(request);
+		if ((ifModifiedHeader == null) || isFileModified(ifModifiedHeader, dateModified))
 		{
-			String ifModifiedHeader = request.getHeader(HttpHeaderNames.IF_MODIFIED_SINCE);
-			long dateModified = getDateModified(request);
-			if ((ifModifiedHeader == null) || isFileModified(ifModifiedHeader, dateModified))
-			{
-				sendRequestedFile(chain, request, response, dateModified);
-			}
-			else
-			{
-				response.setStatus(HttpResponseCodes.SC_NOT_MODIFIED);
-			}
+			sendRequestedFile(chain, request, response, dateModified);
 		}
 		else
 		{
-			sendDebugManifest(req, resp, chain, request, response);
+			response.setStatus(HttpResponseCodes.SC_NOT_MODIFIED);
 		}
 	}
-
-	private void sendDebugManifest(ServletRequest req, ServletResponse resp, FilterChain chain, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
-    {
-	    response.setContentType("text/cache-manifest");
-	    response.setCharacterEncoding("UTF-8");
-	    PrintWriter writer = response.getWriter();
-	    writer.println("CACHE MANIFEST\n");
-	    writer.println("# Build Time [" + startTime + "]\n");
-	    writer.println("\nCACHE:\n");
-	    writer.println("clear.cache.gif\n");
-	    writer.println("\nNETWORK:\n");
-	    writer.println("*\n");
-	    writer.close();
-    }
 
 	private boolean isFileModified(String ifModifiedHeader, long dateModified)
 	{
@@ -145,7 +123,7 @@ public class AppcacheFilter implements Filter
 					int indexEnd = content.indexOf("]", indexStart);
 					if (indexStart > 0 && indexEnd > 0)
 					{
-						String dateStr = content.substring(indexStart+14, indexEnd);
+						String dateStr = content.substring(indexStart + 14, indexEnd);
 						result = Long.parseLong(dateStr);
 						lastModifiedDates.put(file, result);
 					}
@@ -169,7 +147,7 @@ public class AppcacheFilter implements Filter
 	}
 
 	private void sendRequestedFile(FilterChain chain, HttpServletRequest request, HttpServletResponse response, long dateModified) 
-	throws IOException, ServletException
+		throws IOException, ServletException
 	{
 		String ae = request.getHeader(HttpHeaderNames.ACCEPT_ENCODING);
 		if (ae != null && ae.indexOf("gzip") != -1) 
@@ -190,6 +168,11 @@ public class AppcacheFilter implements Filter
 		}
 		chain.doFilter(request, response);
 		((ResponseWrapper)response).finishResponse();
+	}
+	
+	protected long getStartTime()
+	{
+		return startTime;
 	}
 
 	@Override
@@ -227,7 +210,7 @@ public class AppcacheFilter implements Filter
 		
 		public final ServletOutputStream getOutputStream() 
 		{
-			if ( fWriterReturned ) 
+			if (fWriterReturned)
 			{
 				throw new IllegalStateException();
 			}
@@ -237,7 +220,7 @@ public class AppcacheFilter implements Filter
 		
 		public final PrintWriter getWriter() 
 		{
-			if ( fOutputStreamReturned ) 
+			if (fOutputStreamReturned)
 			{
 				throw new IllegalStateException();
 			}
@@ -289,7 +272,7 @@ public class AppcacheFilter implements Filter
 		{
 			private ServletOutputStream fServletOutputStream;
 			private ByteArrayOutputStream fBuffer;
-			private boolean fIsClosed = false;
+			private boolean fIsClosed;
 
 			public ModifiedOutputStream(ServletOutputStream aOutputStream) 
 			{
@@ -299,29 +282,29 @@ public class AppcacheFilter implements Filter
 			
 			public void write(int aByte) throws IOException
 			{
-				fBuffer.write(aByte) ;
+				fBuffer.write(aByte);
 				if (aByte == '\n')
 				{
 					processStream();
 					fBuffer.reset();
 				}
 			}
-			
-			public void close() throws IOException 
+
+			public void close() throws IOException
 			{
-				if ( !fIsClosed )
+				if (!fIsClosed)
 				{
 					processStream();
 					fServletOutputStream.close();
 					fIsClosed = true;
 				}
 			}
-			
-			public void flush() throws IOException 
+
+			public void flush() throws IOException
 			{
-				if ( fBuffer.size() != 0 )
+				if (fBuffer.size() != 0)
 				{
-					if ( !fIsClosed ) 
+					if (!fIsClosed)
 					{
 						processStream();
 						fBuffer.reset();
