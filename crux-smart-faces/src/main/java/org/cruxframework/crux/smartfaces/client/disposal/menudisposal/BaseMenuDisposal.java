@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.views.SingleCrawlableViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
@@ -55,7 +56,6 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		super(new FlowPanel(), true);
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		setHistoryControlEnabled(true);
-		setHistoryControlPrefix("views");
 		bodyPanel = getMainWidget();
 		viewContentPanel = new FlowPanel();
 		menuPanel = new NavPanel();
@@ -266,6 +266,11 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		{
 			this.menuPanel.remove(menu);
 		}
+	}
+	
+	public String getCurrentHistoryItem()
+	{
+		return Screen.getCurrentHistoryItem();
 	}
 	
 	

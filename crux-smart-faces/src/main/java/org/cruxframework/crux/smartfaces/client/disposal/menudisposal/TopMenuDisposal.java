@@ -91,12 +91,12 @@ public class TopMenuDisposal extends BaseMenuDisposal
 		
 		if (!add)
 		{
-			if(getSizeDisposal().equals(sizeDisposal.LARGE))
+			if(getSizeDisposal().equals(SizeDisposal.LARGE))
 			{
 				addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneTopMenuDisposal());
 			}
 			
-			if(getSizeDisposal().equals(sizeDisposal.SMALL))
+			if(getSizeDisposal().equals(SizeDisposal.SMALL))
 			{
 				addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneTopMenuDisposal());
 			}
@@ -110,12 +110,12 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	{
 	    super.setStyleName(style);
 	    
-	    if(getSizeDisposal().equals(sizeDisposal.LARGE))
+	    if(getSizeDisposal().equals(SizeDisposal.LARGE))
 		{
 			addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneTopMenuDisposal());
 		}
 		
-		if(getSizeDisposal().equals(sizeDisposal.SMALL))
+		if(getSizeDisposal().equals(SizeDisposal.SMALL))
 		{
 			addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneTopMenuDisposal());
 		}
@@ -197,6 +197,11 @@ public class TopMenuDisposal extends BaseMenuDisposal
 		SizeDisposal getDeviceSize();
 	}
 	
+	@Override
+	public void setHistoryControlPrefix(String historyControlPrefix)
+	{
+		super.setHistoryControlPrefix(historyControlPrefix);
+	}
 	
 
 }

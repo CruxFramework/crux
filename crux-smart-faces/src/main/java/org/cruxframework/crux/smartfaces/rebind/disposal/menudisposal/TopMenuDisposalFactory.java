@@ -73,6 +73,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
     	@Override
     	public void processChildren(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
     	{
+    		out.println("if(!"+context.getWidget()+".getCurrentHistoryItem().contains(\"!\"))");
     		out.println(context.getWidget()+".showView("+EscapeUtils.quote(context.readChildProperty("name"))+");");
     	}
     }
