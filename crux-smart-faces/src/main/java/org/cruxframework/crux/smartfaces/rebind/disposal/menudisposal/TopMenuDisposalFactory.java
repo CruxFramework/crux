@@ -17,8 +17,6 @@ package org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal;
 
 import java.util.LinkedList;
 
-import org.cruxframework.crux.core.client.event.SelectEvent;
-import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
@@ -184,11 +182,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 			
 			if(!StringUtils.isEmpty(view))
 			{
-				out.println(menuItem+".addSelectHandler(new " + SelectHandler.class.getCanonicalName() + "(){");
-				out.println("public void onSelect("+SelectEvent.class.getCanonicalName()+" event){");
-				out.println(context.getWidget()+".showView("+EscapeUtils.quote(view)+");");
-				out.println("}");
-				out.println("});");
+				out.println(menuItem+".setValue("+EscapeUtils.quote(view) +");");
 			}
 		}
 		

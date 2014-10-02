@@ -16,17 +16,18 @@
 package org.cruxframework.crux.smartfaces.client.disposal.menudisposal;
 
 
-import org.cruxframework.crux.core.client.event.SelectEvent;
-import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.views.SingleCrawlableViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.panel.FooterPanel;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -76,42 +77,32 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	public void setMenu(final Menu menu)
 	{
 		this.menu = menu;
-	
-		if(getSizeDisposal() == SizeDisposal.LARGE)
+		
+		if(getSizeDisposal().equals(SizeDisposal.LARGE))
 		{
 			this.menuPanel.add(menu);
 		}
 		else
 		{
 			menu.addStyleName(BASE_MENU_DISPOSAL_MENU);
-			int count = menu.getItemCount();
-
-			SelectHandler handler = new SelectHandler(){
-
-				@Override
-				public void onSelect(SelectEvent event)
+		}
+		menu.addSelectionHandler(new SelectionHandler<MenuItem>(){
+			
+			@Override
+			public void onSelection(SelectionEvent<MenuItem> event)
+			{
+				String viewName = event.getSelectedItem().getValue();
+				if(!StringUtils.isEmpty(viewName))
+				{
+					showView(viewName);
+				}
+				
+				if(getSizeDisposal().equals(SizeDisposal.SMALL) && !event.getSelectedItem().hasChildren())
 				{
 					menuPanel.remove(menu);
 				}
-			};
-
-			for (int i = 0; i <= count - 1; i++)
-			{
-				MenuItem item = menu.getItem(i);
-
-				if (!item.hasChildren())
-				{
-					item.addSelectHandler(handler);
-				} else
-				{
-					for (int j = 0; j < item.getItemCount(); j++)
-					{
-						MenuItem childItem = item.getItem(j);
-						childItem.addSelectHandler(handler);
-					}
-				}
 			}
-		}
+		});
 	}
 	
 	public Menu getMenu()

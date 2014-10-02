@@ -17,14 +17,12 @@ package org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal;
 
 import java.util.LinkedList;
 
-import org.cruxframework.crux.core.client.event.SelectEvent;
-import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator; 
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
@@ -192,11 +190,7 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 			
 			if(!StringUtils.isEmpty(view))
 			{
-				out.println(menuItem+".addSelectHandler(new " + SelectHandler.class.getCanonicalName() + "(){");
-				out.println("public void onSelect("+SelectEvent.class.getCanonicalName()+" event){");
-				out.println(context.getWidget()+".showView("+EscapeUtils.quote(view)+");");
-				out.println("}");
-				out.println("});");
+				out.println(menuItem+".setValue("+EscapeUtils.quote(view) +");");
 			}
 		}
 		
