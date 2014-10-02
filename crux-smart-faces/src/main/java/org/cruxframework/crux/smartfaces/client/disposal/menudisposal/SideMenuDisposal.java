@@ -176,7 +176,10 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		{ 
 			FlowPanel mainPanel = new FlowPanel();
 			mainPanel.setStyleName(FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL);
+			
 			disposal.largeHeaderPanel = new HeaderPanel();
+			disposal.largeHeaderPanel.setStyleName(disposal.getHeaderStyleName());
+			
 			FlowPanel splitPanel = new FlowPanel();
 			splitPanel.addStyleName(FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL);
 			splitPanel.add(disposal.menuPanel);

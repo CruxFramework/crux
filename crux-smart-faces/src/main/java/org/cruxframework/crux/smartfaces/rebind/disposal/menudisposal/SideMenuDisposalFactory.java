@@ -24,7 +24,7 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
+import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator; 
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
@@ -39,7 +39,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventDecl
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
 import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal;
 import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal.MenuPosition;
-import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.TopMenuDisposal.TopDisposalMenuType;
+import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal.SideDisposalMenuType;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
@@ -119,10 +119,10 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 
 	@TagConstraints(maxOccurs="1",minOccurs="0",tagName="mainMenu")
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="menuType", type=TopDisposalMenuType.class, defaultValue="HORIZONTAL_DROPDOWN")
+		@TagAttributeDeclaration(value="menuType", type=SideDisposalMenuType.class, defaultValue="VERTICAL_DROPDOWN")
 	})
 	@TagChildren({
-		@TagChild(TopMenuDisposalFactory.MenuItemProcessor.class)
+		@TagChild(SideMenuDisposalFactory.MenuItemProcessor.class)
 	})
 	public static class MenuProcessor extends WidgetChildProcessor<DisposalLayoutContext> implements HasPostProcessor<DisposalLayoutContext>
 	{
@@ -134,7 +134,7 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 			
 			if(menuType.isEmpty())
 			{
-				menuType = "HORIZONTAL_DROPDOWN";
+				menuType = "VERTICAL_DROPDOWN";
 			}
 			
 			out.println(Menu.class.getCanonicalName() + " " + menu + " = new "+Menu.class.getCanonicalName()+"("+LargeType.class.getCanonicalName()+"."+menuType+"," + SmallType.class.getCanonicalName()+".VERTICAL_ACCORDION);");
@@ -159,7 +159,7 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 		@TagEventDeclaration(value="onSelect", description="Event fired when user select this menu entry")
 	})
 	@TagChildren({
-		@TagChild(TopMenuDisposalFactory.MenuItemProcessor.class)
+		@TagChild(SideMenuDisposalFactory.MenuItemProcessor.class)
 	})
 	public static class MenuItemProcessor extends WidgetChildProcessor<DisposalLayoutContext> implements HasPostProcessor<DisposalLayoutContext>
 	{
