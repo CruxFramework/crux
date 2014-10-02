@@ -15,12 +15,23 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
+
 /**
- * 
+ * A {@link MeasurableLazyProvider} and {@link PagedDataProvider}
  * @author Thiago da Rosa de Bustamante
  */
-public interface MeasurableDataProvider<E> extends DataProvider<E>
+public interface MeasurablePagedProvider<T> extends PagedDataProvider<T>, MeasurableProvider<T>
 {
-	int getRecordCount();
-	void lastRecord();
+	/**
+	 * Retrieve the number of pages available
+	 * @return number of pages
+	 */
+	int getPageCount();
+	
+	/**
+	 * Points the {@link DataProvider} to the given page
+	 * @param pageNumber
+	 * @return
+	 */
+	boolean setCurrentPage(int pageNumber);
 }

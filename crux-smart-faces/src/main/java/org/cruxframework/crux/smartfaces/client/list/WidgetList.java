@@ -48,8 +48,14 @@ public class WidgetList<T> extends AbstractPageable<T>
 	@Override
 	public void reset(boolean reloadData)
 	{
-		contentPanel.clear();
+		clear();
 		super.reset(reloadData);
+	}
+	
+	@Override
+	protected void clear()
+	{
+		contentPanel.clear();
 	}
 	
 	@Override
@@ -59,7 +65,7 @@ public class WidgetList<T> extends AbstractPageable<T>
 			@Override
             public void render(T value)
             {
-				IsWidget widget = widgetFactory.createWidget(dataProvider.getBoundObject());
+				IsWidget widget = widgetFactory.createWidget(dataProvider.get());
 				contentPanel.add(widget);
             }
 	    };

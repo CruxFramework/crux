@@ -15,31 +15,16 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
+import org.cruxframework.crux.core.client.event.BaseEvent;
+
 /**
- * Exception to describe a {@link DataProvider} oepration error
+ * Provides access to the source {@link EagerProvider} that is being loaded
  * @author Thiago da Rosa de Bustamante
  */
-public class DataProviderExcpetion extends RuntimeException
+public class EagerLoadEvent<T> extends BaseEvent<EagerProvider<T>>
 {
-    private static final long serialVersionUID = -579649646989882710L;
-
-	public DataProviderExcpetion()
+	protected EagerLoadEvent(EagerProvider<T> source)
     {
-	    super();
-    }
-
-	public DataProviderExcpetion(String message, Throwable t)
-    {
-	    super(message, t);
-    }
-
-	public DataProviderExcpetion(String message)
-    {
-	    super(message);
-    }
-
-	public DataProviderExcpetion(Throwable t)
-    {
-	    super(t);
+	    super(source);
     }
 }

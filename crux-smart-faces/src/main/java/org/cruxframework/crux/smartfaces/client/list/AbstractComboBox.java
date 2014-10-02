@@ -297,10 +297,10 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 				@Override
 				public void render(T value)
 				{
-					IsWidget widget = widgetFactory.createWidget(dataProvider.getBoundObject());
+					IsWidget widget = widgetFactory.createWidget(dataProvider.get());
 					ComboBoxOptionPanel<V> panel = new ComboBoxOptionPanel<V>(comboBoxParent);
-					panel.setValue(((OptionsRenderer<V,T>)widgetFactory).getValueField(dataProvider.getBoundObject()));
-					panel.setDisplayField(((OptionsRenderer<V,T>)widgetFactory).getDisplayField(dataProvider.getBoundObject()));
+					panel.setValue(((OptionsRenderer<V,T>)widgetFactory).getValueField(dataProvider.get()));
+					panel.setDisplayField(((OptionsRenderer<V,T>)widgetFactory).getDisplayField(dataProvider.get()));
 					panel.add(widget);
 					
 					contentPanel.add(panel);

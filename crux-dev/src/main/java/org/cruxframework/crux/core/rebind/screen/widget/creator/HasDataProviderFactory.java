@@ -15,13 +15,16 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget.creator;
 
-import org.cruxframework.crux.core.client.dataprovider.AsyncDataProviderEvent;
-import org.cruxframework.crux.core.client.dataprovider.AsyncPagedDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.AsyncStreamingDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.MeasurableAsyncDataProviderEvent;
-import org.cruxframework.crux.core.client.dataprovider.SynchronousDataProviderEvent;
-import org.cruxframework.crux.core.client.dataprovider.SyncPagedDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.SyncScrollableDataProvider;
+import org.cruxframework.crux.core.client.dataprovider.EagerDataLoader;
+import org.cruxframework.crux.core.client.dataprovider.EagerDataProvider;
+import org.cruxframework.crux.core.client.dataprovider.EagerLoadEvent;
+import org.cruxframework.crux.core.client.dataprovider.EagerPagedDataProvider;
+import org.cruxframework.crux.core.client.dataprovider.FetchDataEvent;
+import org.cruxframework.crux.core.client.dataprovider.LazyDataLoader;
+import org.cruxframework.crux.core.client.dataprovider.LazyDataProvider;
+import org.cruxframework.crux.core.client.dataprovider.MeasureDataEvent;
+import org.cruxframework.crux.core.client.dataprovider.StreamingDataLoader;
+import org.cruxframework.crux.core.client.dataprovider.StreamingDataProvider;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
@@ -38,6 +41,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
+import org.json.JSONObject;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
@@ -46,12 +50,8 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="dataObject", required=true, description="Identify the object type provided by the DataProvider. Use the annotation @DataObject to create an identifier to your types."),
-	@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, description="If true, ask bound DataProvider for data when widget is created.", defaultValue="false")
-})
 @TagChildren({
-	@TagChild(HasDataProviderFactory.DataProviderChildProcessor.class)
+	@TagChild(HasDataProviderFactory.DataProviderChildren.class)
 })
 public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> extends WidgetCreator<C>
 {
@@ -59,224 +59,189 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 	 * @param context
 	 * @return
 	 */
-	protected JClassType getDataObject(WidgetCreatorContext context)
+	protected JClassType getDataObject(String widgetId, JSONObject elem)
     {
-		String dataObject = context.readWidgetProperty("dataObject");
-		if (StringUtils.isEmpty(dataObject))
-		{
-			throw new CruxGeneratorException("Widget ["+context.getWidgetId()+"] on view ["+getView().getId()+"] must inform the dataObject to bind into the declared DataProvider");
-		}
+		String childName = getChildName(elem);
 		
-		String dataObjectClass = DataObjects.getDataObject(dataObject);
-		if (StringUtils.isEmpty(dataObjectClass))
+		if (childName.equals("data"))
 		{
-			throw new CruxGeneratorException("Widget ["+context.getWidgetId()+"] on view ["+getView().getId()+"] informed an invalid dataObject. Can not found the informed value");
+			return getDataObjectFromCollection(widgetId, elem);
+			
 		}
-		JClassType dtoType = getContext().getTypeOracle().findType(dataObjectClass);
-		return dtoType;
+		else
+		{
+			return getDataObjectFromProvider(widgetId, elem);
+		}
+    }
+
+	protected JClassType getDataObjectFromCollection(String widgetId, JSONObject elem)
+    {
+	    // TODO Auto-generated method stub
+	    return null;
+    }
+
+	protected JClassType getDataObjectFromProvider(String widgetId, JSONObject elem)
+    {
+	    String dataObject = elem.optString("dataObject");
+	    
+	    if (StringUtils.isEmpty(dataObject))
+	    {
+	    	throw new CruxGeneratorException("Widget ["+widgetId+"] on view ["+getView().getId()+"] must inform the dataObject to bind into the declared DataProvider");
+	    }
+	    
+	    String dataObjectClass = DataObjects.getDataObject(dataObject);
+	    if (StringUtils.isEmpty(dataObjectClass))
+	    {
+	    	throw new CruxGeneratorException("Widget ["+widgetId+"] on view ["+getView().getId()+"] informed an invalid dataObject. Can not found the informed value");
+	    }
+	    JClassType dtoType = getContext().getTypeOracle().findType(dataObjectClass);
+	    return dtoType;
     }
 	
-	@TagConstraints(tagName="dataProvider", description="Specify a data provider for this widget")
 	@TagChildren({
-		@TagChild(DataProviderChildren.class)
-	})
-	public static class DataProviderChildProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
-	/////////////////////////////////////////////////////////////////////////
-
-	@TagChildren({
-		@TagChild(SynchronousScrollableProcessor.class),
-		@TagChild(SynchronousPagedProcessor.class),
-		@TagChild(AsynchronousMeasurableProcessor.class),
-		@TagChild(AsynchronousStreamingProcessor.class)
+		@TagChild(DataProcessor.class),
+		@TagChild(ScrollableDataProviderProcessor.class),
+		@TagChild(DataProviderProcessor.class),
+		@TagChild(LazyDataProviderProcessor.class),
+		@TagChild(StreamingDataProviderProcessor.class)
 	})
 	public static class DataProviderChildren extends ChoiceChildProcessor<WidgetCreatorContext> {}
 
-	/////////////////////////////////////////////////////////////////////////
-	@TagConstraints(tagName="sync", description="Define a synchronous non paged data provider. It is like a database result set, with a scrollable interface")
-	@TagChildren({
-//		@TagChild(SynchronousScrollableProcessorChildren.class)
-		@TagChild(EventsSynchronousScrollableProcessor.class)
+	@TagConstraints(tagName="data", description="Inform the collection of data directly")
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="collection", required=true, description="the collection of data")
 	})
-	public static class SynchronousScrollableProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
-
-	@TagConstraints(tagName="syncPaged", description="Define a synchronous paged data provider.")
-	@TagChildren({
-//		@TagChild(SynchronousPagedProcessorChildren.class)
-		@TagChild(EventsSynchronousPagedProcessor.class)
-	})
-	public static class SynchronousPagedProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
-
-	@TagConstraints(tagName="async", description="Define an asynchronous paged data provider. That dataProvider must be measurable.")
-	@TagChildren({
-//		@TagChild(AsynchronousMeasurableProcessorChildren.class)
-		@TagChild(EventsAsynchronousPagedProcessor.class)
-	})
-	public static class AsynchronousMeasurableProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
-
-	@TagConstraints(tagName="asyncStreaming", description="Define an asynchronous paged data provider that is not measurable. This kind of data provider will only know the size of the data set when it has requested for more data and no data is available.")
-	@TagChildren({
-//		@TagChild(AsynchronousStreamingProcessorChildren.class)
-		@TagChild(EventsAsynchronousStreamingProcessor.class)
-	})
-	public static class AsynchronousStreamingProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
+	public static class DataProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
+	//TODO implementar o acesso direto via data
 	
-	/////////////////////////////////////////////////////////////////////////
-	@TagChildren({
-		@TagChild(EventsSynchronousScrollableProcessor.class)
+	@TagAttributesDeclaration({
+		@TagAttributeDeclaration(value="dataObject", required=true, description="Identify the object type provided by the DataProvider. "
+																	+ "Use the annotation @DataObject to create an identifier to your types."),
+		@TagAttributeDeclaration(value="autoLoadData", type=Boolean.class, defaultValue="false", 
+								description="If true, ask bound DataProvider for data when widget is created.")
 	})
-	public static class SynchronousScrollableProcessorChildren extends ChoiceChildProcessor<WidgetCreatorContext> {}
+	public static abstract class AbstractDataProviderProcessor extends WidgetChildProcessor<WidgetCreatorContext> {}
 
-	@TagChildren({
-		@TagChild(EventsSynchronousPagedProcessor.class)
-	})
-	public static class SynchronousPagedProcessorChildren extends ChoiceChildProcessor<WidgetCreatorContext> {}
-	
-	@TagChildren({
-		@TagChild(EventsAsynchronousPagedProcessor.class)
-	})
-	public static class AsynchronousMeasurableProcessorChildren extends ChoiceChildProcessor<WidgetCreatorContext> {}
-	
-	@TagChildren({
-		@TagChild(EventsAsynchronousStreamingProcessor.class)
-	})
-	public static class AsynchronousStreamingProcessorChildren extends ChoiceChildProcessor<WidgetCreatorContext> {}
-
-	/////////////////////////////////////////////////////////////////////////
-	@TagConstraints(tagName="event", description="Inform the events on controller that will be used to provide informations for this data provider.")
 	@TagEventsDeclaration({
-		@TagEventDeclaration(value="onLoad", required=true, description="Event called to load the data set into this dataprovider.")
+		@TagEventDeclaration(value="onLoadData", required=true, description="Event called to load the data set into this dataprovider.")
 	})
-	public static abstract class EventsSynchronousProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
+	public static abstract class AbstractEagerDataProviderProcessor extends AbstractDataProviderProcessor 
 	{
 		public void processChildren(SourcePrinter out, WidgetCreatorContext context, String dataProviderClassName) throws CruxGeneratorException
 		{
-			String dataObject = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(context).getParameterizedQualifiedSourceName();
-			out.println(context.getWidget()+".setDataProvider(new "+dataProviderClassName+"<"+dataObject+">(){");
-			out.println("public void load(){");
+			String onLoadData = context.readChildProperty("onLoadData");
+
+			String dataObject = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(
+																context.getWidgetId(), 
+																context.getChildElement()).getParameterizedQualifiedSourceName();
+			String dataProviderVariable = getWidgetCreator().createVariableName("dataProvider");
+			String dataLoaderClassName = EagerDataLoader.class.getCanonicalName();
+			String dataEventClassName =  EagerLoadEvent.class.getCanonicalName();
 			
-			String eventClassName = SynchronousDataProviderEvent.class.getCanonicalName();
-			out.println(eventClassName+"<"+dataObject+"> event = createSynchronousDataProviderEvent();");
-			String onLoad = context.readChildProperty("onLoad");
-	    	EvtProcessor.printEvtCall(out, onLoad, "onLoad", eventClassName, "event", getWidgetCreator(), false);
+			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">();");
+			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
+			out.println("public void onLoadData("+dataEventClassName+"<"+dataObject+"> event){");
+
+			EvtProcessor.printEvtCall(out, onLoadData, "onLoadData", dataEventClassName, "event", getWidgetCreator(), true);
 			
 			out.println("}");
-			out.println("}, "+context.readBooleanWidgetProperty("autoLoadData", false)+");");
+			out.println("});");
+			out.println(context.getWidget()+".setDataProvider("+dataProviderVariable+", "+
+						context.readBooleanChildProperty("autoLoadData", false)+");");
 		}
 	}
 
-	public static class EventsSynchronousScrollableProcessor extends EventsSynchronousProcessor 
+	@TagConstraints(tagName="scrollableDataProvider", description="Define an eager data provider. You must provide a dataLader "
+																+ "function for this provider")
+	public static class ScrollableDataProviderProcessor extends AbstractEagerDataProviderProcessor 
 	{
-		@Override
 		public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 		{
-			processChildren(out, context, SyncScrollableDataProvider.class.getCanonicalName());
+			String dataProviderClassName = EagerDataProvider.class.getCanonicalName();
+			processChildren(out, context, dataProviderClassName);
 		}
 	}
 
-	public static class EventsSynchronousPagedProcessor extends EventsSynchronousProcessor 
+	@TagConstraints(tagName="dataProvider", description="Define an eager paged data provider. You must provide a dataLader "
+													  + "function for this provider")
+	public static class DataProviderProcessor extends AbstractEagerDataProviderProcessor 
 	{
-		@Override
 		public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 		{
-			processChildren(out, context, SyncPagedDataProvider.class.getCanonicalName());
+			String dataProviderClassName = EagerPagedDataProvider.class.getCanonicalName();
+			processChildren(out, context, dataProviderClassName);
 		}
 	}
-	
-	@TagConstraints(tagName="event", description="Inform the events on controller that will be used to provide informations for this data provider.")
+
+	@TagConstraints(tagName="lazyDataProvider", description="Define a lazy paged data provider. You must provide a lazyDataLader functions for this provider")
 	@TagEventsDeclaration({
-		@TagEventDeclaration(value="onPageFetch", required=true, description="Event called every time a new page with data must be fetched by the data provider.")
+		@TagEventDeclaration(value="onMeasureData", required=true, description="Event called when the data provider is initialized. Use this to set the data set size."),
+		@TagEventDeclaration(value="onFetchData", required=true, description="Event called to load a page of data into this dataprovider.")
 	})
-	public static class EventsAsynchronousStreamingProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
+	public static class LazyDataProviderProcessor extends AbstractDataProviderProcessor 
 	{
-		@Override
 		public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 		{
-			String dataObject = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(context).getParameterizedQualifiedSourceName();
-			String dataProviderClassName = AsyncStreamingDataProvider.class.getCanonicalName();
-			out.println(context.getWidget()+".setDataProvider(new "+dataProviderClassName+"<"+dataObject+">(){");
-			out.println("public void fetch(int startRecord, int endRecord){");
+			String onMeasureData = context.readChildProperty("onMeasureData");
+			String onFetchData = context.readChildProperty("onFetchData");
+
+			String dataObject = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(
+					context.getWidgetId(), 
+					context.getChildElement()).getParameterizedQualifiedSourceName();
+			String dataProviderVariable = getWidgetCreator().createVariableName("dataProvider");
+			String dataProviderClassName = LazyDataProvider.class.getCanonicalName();
+			String dataLoaderClassName = LazyDataLoader.class.getCanonicalName();
+			String dataEventClassName =  FetchDataEvent.class.getCanonicalName();
+			String dataMeasureEventClassName = MeasureDataEvent.class.getCanonicalName();
 			
-			String eventClassName = AsyncDataProviderEvent.class.getCanonicalName();
-			out.println(eventClassName+"<"+dataObject+"> event = createAsynchronousDataProviderEvent(startRecord, endRecord);");
-			String onPageFetch = context.readChildProperty("onPageFetch");
-	    	EvtProcessor.printEvtCall(out, onPageFetch, "onPageFetch", eventClassName, "event", getWidgetCreator(), false);
+			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">();");
+			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
+			out.println("public void onMeasureData("+dataMeasureEventClassName+"<"+dataObject+"> event){");
+
+			EvtProcessor.printEvtCall(out, onMeasureData, "onMeasureData", dataMeasureEventClassName, "event", getWidgetCreator(), true);
 			
 			out.println("}");
-			out.println("}, "+context.readBooleanWidgetProperty("autoLoadData", false)+");");
+
+			out.println("public void onFetchData("+dataEventClassName+"<"+dataObject+"> event){");
+
+			EvtProcessor.printEvtCall(out, onFetchData, "onFetchData", dataEventClassName, "event", getWidgetCreator(), true);
+			
+			out.println("}");
+			out.println("});");
+			out.println(context.getWidget()+".setDataProvider("+dataProviderVariable+", "+
+						context.readBooleanChildProperty("autoLoadData", false)+");");
 		}
 	}
 
-	@TagConstraints(tagName="event", description="Inform the events on controller that will be used to provide informations for this data provider.")
+	@TagConstraints(tagName="streamingDataProvider", description="Define a streaming paged data provider. This kind of data provider will only know the size of the data set when it has requested for more data and no data is available. You must provide a streamingDataLader functions for this provider")
 	@TagEventsDeclaration({
-		@TagEventDeclaration(value="onPageFetch", required=true, description="Event called every time a new page with data must be fetched by the data provider."),
-		@TagEventDeclaration(value="onInitialize", required=true, description="Event called when the data provider is initialized. Use this to set the data set size.")
+		@TagEventDeclaration(value="onFetchData", required=true, description="Event called to load a page of data into this dataprovider.")
 	})
-	public static class EventsAsynchronousPagedProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
+	public static class StreamingDataProviderProcessor extends AbstractDataProviderProcessor 
 	{
-		@Override
 		public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 		{
-			String dataProviderClassName = AsyncPagedDataProvider.class.getCanonicalName();
-			String dataObject = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(context).getParameterizedQualifiedSourceName();
-			
-			out.println(context.getWidget()+".setDataProvider(new "+dataProviderClassName+"<"+dataObject+">(){");
-			out.println("public void fetch(int startRecord, int endRecord){");
-			
-			String eventClassName = AsyncDataProviderEvent.class.getCanonicalName();
-			out.println(eventClassName+"<"+dataObject+"> event = createAsynchronousDataProviderEvent(startRecord, endRecord);");
-			String onPageFetch = context.readChildProperty("onPageFetch");
-	    	EvtProcessor.printEvtCall(out, onPageFetch, "onPageFetch", eventClassName, "event", getWidgetCreator(), false);
-			
-			out.println("}");
+			String onFetchData = context.readChildProperty("onFetchData");
 
-			out.println("public void initialize(){");
+			String dataObject = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(
+					context.getWidgetId(), 
+					context.getChildElement()).getParameterizedQualifiedSourceName();
+			String dataProviderVariable = getWidgetCreator().createVariableName("dataProvider");
+			String dataProviderClassName = StreamingDataProvider.class.getCanonicalName();
+			String dataLoaderClassName = StreamingDataLoader.class.getCanonicalName();
+			String dataEventClassName =  FetchDataEvent.class.getCanonicalName();
 			
-			eventClassName = MeasurableAsyncDataProviderEvent.class.getCanonicalName();
-			out.println(eventClassName+"<"+dataObject+"> event = createMeasurableDataProviderEvent();");
-			String onInitialize = context.readChildProperty("onInitialize");
-	    	EvtProcessor.printEvtCall(out, onInitialize, "onInitialize", eventClassName, "event", getWidgetCreator(), false);
+			out.println(dataProviderClassName+"<"+dataObject+"> " + dataProviderVariable+" = new "+dataProviderClassName+"<"+dataObject+">();");
+			out.println(dataProviderVariable+".setDataLoader(new "+dataLoaderClassName+"<"+dataObject+">(){");
+			out.println("public void onFetchData("+dataEventClassName+"<"+dataObject+"> event){");
+
+			EvtProcessor.printEvtCall(out, onFetchData, "onFetchData", dataEventClassName, "event", getWidgetCreator(), true);
 			
 			out.println("}");
-			out.println("}, "+context.readBooleanWidgetProperty("autoLoadData", false)+");");
+			out.println("});");
+			out.println(context.getWidget()+".setDataProvider("+dataProviderVariable+", "+
+						context.readBooleanChildProperty("autoLoadData", false)+");");
 		}
 	}
-
-//////////////////////////////////////////////////////////////////////////////
-//	
-//	@TagConstraints(tagName="rest")
-//	@TagEventsDeclaration({
-//		@TagEventDeclaration(value="onPageFetch", required=true),
-//		@TagEventDeclaration(value="onInitialize", required=true)
-//	})
-//	public static class RestAsynchronousPagedProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
-//	{
-//		@Override
-//		public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
-//		{
-//			String dataProviderClassName = AsyncStreamingDataProvider.class.getCanonicalName();
-//			String dataObject = ((HasDataProviderFactory<?>)getWidgetCreator()).getDataObject(context).getParameterizedQualifiedSourceName();
-//			
-//			out.println(context.getWidget()+".setDataProvider(new "+dataProviderClassName+"<"+dataObject+">(){");
-//			out.println("public void fetch(int startRecord, int endRecord){");
-//			
-//			String eventClassName = AsyncDataProviderEvent.class.getCanonicalName()+"<"+dataObject+">";
-//			out.println(eventClassName+" event = createAsynchronousDataProviderEvent(startRecord, endRecord);");
-//			String onPageFetch = context.readChildProperty("onPageFetch");
-//	    	EvtProcessor.printEvtCall(out, onPageFetch, "onPageFetch", eventClassName, "event", getWidgetCreator(), false);
-//			
-//			out.println("}");
-//
-//			out.println("public void initialize(){");
-//			
-//			eventClassName = MeasurableAsyncDataProviderEvent.class.getCanonicalName()+"<"+dataObject+">";
-//			out.println(eventClassName+" event = createMeasurableDataProviderEvent();");
-//			String onInitialize = context.readChildProperty("onInitialize");
-//	    	EvtProcessor.printEvtCall(out, onInitialize, "onInitialize", eventClassName, "event", getWidgetCreator(), false);
-//			
-//			out.println("}");
-//			out.println("}, "+context.readBooleanWidgetProperty("autoLoadData", false)+");");
-//		}
-//	}
-	
 }
 

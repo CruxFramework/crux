@@ -15,29 +15,17 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
-import com.google.gwt.event.shared.HandlerRegistration;
+import org.cruxframework.crux.core.client.event.BaseEvent;
 
 
 /**
- * A {@link DataProvider} that supports pagination
- * 
+ * Event fired when {@link DataProvider} is filtered
  * @author Thiago da Rosa de Bustamante
  */
-public interface PagedDataProvider<E> extends DataProvider<E>
+public class DataFilterEvent<T> extends BaseEvent<FilterableProvider<T>>
 {
-	void firstOnPage();
-
-	boolean hasNextPage();
-	boolean nextPage();
-	
-	boolean hasPreviousPage();
-	boolean previousPage();
-
-	int getPageSize();
-	void setPageSize(int pageSize);
-
-	int getCurrentPageSize();
-	int getCurrentPage();
-	
-	HandlerRegistration addPageLoadedHandler(PageLoadedHandler handler);
+	protected DataFilterEvent(FilterableProvider<T> source)
+    {
+	    super(source);
+    }
 }

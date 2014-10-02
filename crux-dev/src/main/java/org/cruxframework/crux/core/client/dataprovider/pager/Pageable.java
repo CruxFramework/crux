@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.core.client.dataprovider.pager;
 
-import org.cruxframework.crux.core.client.dataprovider.HasDataProvider;
+import org.cruxframework.crux.core.client.dataprovider.HasPagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -24,7 +24,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  * Define a base interface for classes that are capable to be paged by a {@link Pager}.  
  * @author Thiago da Rosa de Bustamante
  */
-public interface Pageable<T extends PagedDataProvider<?>> extends HasDataProvider<T>, IsWidget
+public interface Pageable<T extends PagedDataProvider<?>> extends HasPagedDataProvider<T>, IsWidget
 {
 	/**
 	 * Moves the pageable's cursor to the next page 

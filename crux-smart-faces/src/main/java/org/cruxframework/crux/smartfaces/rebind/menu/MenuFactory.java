@@ -51,6 +51,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
 /**
  * Context for Menu
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
@@ -276,7 +278,7 @@ public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelect
 		{
 			String itemClassName = MenuItem.class.getCanonicalName();
 			
-			String safeHtmlStr = "(new com.google.gwt.safehtml.shared.SafeHtmlBuilder().appendEscaped("
+			String safeHtmlStr = "(new "+SafeHtmlBuilder.class.getCanonicalName()+".appendHtmlConstant("
 					+getWidgetCreator().ensureHtmlChild(context.getChildElement(), true, context.getWidgetId())+")).toSafeHtml()";
 			
 			if(context.itemStack.size() == 1)

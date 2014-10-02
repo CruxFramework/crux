@@ -15,28 +15,15 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
-import java.util.List;
-
-import org.cruxframework.crux.core.client.event.BaseEvent;
-
 /**
+ * Defines a data loader for {@link EagerProvider}
  * @author Thiago da Rosa de Bustamante
- *
  */
-public class SynchronousDataProviderEvent<T> extends BaseEvent<SyncDataProvider<T>>
+public interface EagerDataLoader<T>
 {
-	protected SynchronousDataProviderEvent(SyncDataProvider<T> source)
-    {
-	    super(source);
-    }
-	
-	public void updateData(List<T> data)
-	{
-		getSource().updateData(data);
-	}
-
-	public void updateData(T[] data)
-	{
-		getSource().updateData(data);
-	}
+	/**
+	 * Loader method. Called when the {@link EagerProvider} needs to be loaded.
+	 * @param event provides access to the source {@link EagerProvider} that is being loaded
+	 */
+	void onLoadData(EagerLoadEvent<T> event);
 }

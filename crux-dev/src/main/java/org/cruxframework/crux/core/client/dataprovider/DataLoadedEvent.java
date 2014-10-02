@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 cruxframework.org.
+ * Copyright 2014 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,11 +15,17 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
+import org.cruxframework.crux.core.client.event.BaseEvent;
+
 
 /**
+ * Event fired when {@link DataProvider} is loaded
  * @author Thiago da Rosa de Bustamante
  */
-public interface PagedDataProviderCallback
+public class DataLoadedEvent extends BaseEvent<DataProvider<?>>
 {
-	void onPageFetched(int startRecord, int endRecord);
+	protected DataLoadedEvent(DataProvider<?> source)
+    {
+	    super(source);
+    }
 }

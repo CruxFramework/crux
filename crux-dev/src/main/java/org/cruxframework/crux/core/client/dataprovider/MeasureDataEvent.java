@@ -15,49 +15,16 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
-import java.util.List;
-
-import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.event.BaseEvent;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class AsyncDataProviderEvent<T> extends BaseEvent<AsyncDataProvider<T>>
+public class MeasureDataEvent<T> extends BaseEvent<MeasurableLazyProvider<T>>
 {
-	private final int startRecord;
-	private final int endRecord;
-
-	protected AsyncDataProviderEvent(AsyncDataProvider<T> source, int startRecord, int endRecord)
+	protected MeasureDataEvent(MeasurableLazyProvider<T> source)
     {
 	    super(source);
-		this.startRecord = startRecord;
-		this.endRecord = endRecord;
     }
-	
-	public int getEndRecord()
-	{
-		return endRecord;
-	}
-
-	public int getStartRecord()
-	{
-		return startRecord;
-	}
-
-	public void updateData(List<T> data)
-	{
-		getSource().updateData(data);
-	}
-
-	public void updateData(T[] data)
-	{
-		getSource().updateData(data);
-	}
-
-	public void updateData(Array<T> data)
-	{
-		getSource().updateData(data);
-	}
 }

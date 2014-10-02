@@ -23,7 +23,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.Widge
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPageableFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasBindPathFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.HasDataProviderFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasPagedDataProviderFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @DeclarativeFactory(targetWidget = ComboBox.class, id = "comboBox", library = Constants.LIBRARY_NAME, description = "Combobox component based on a data provider approach")
 @TagChildren({ 
-	@TagChild(HasDataProviderFactory.DataProviderChildProcessor.class),
+	@TagChild(HasPagedDataProviderFactory.PagedDataProviderChildren.class),
 	@TagChild(value = ComboBoxFactory.OptionsProcessor.class, autoProcess=false) 
 })
 public class ComboBoxFactory extends AbstractPageableFactory<ComboBoxContext> implements HasBindPathFactory<ComboBoxContext>
@@ -69,7 +69,24 @@ public class ComboBoxFactory extends AbstractPageableFactory<ComboBoxContext> im
 	@Override
 	public void instantiateWidget(SourcePrinter out, ComboBoxContext context) throws CruxGeneratorException
 	{
-		context.dataObject = getDataObject(context);
+		JSONObject optionsRendererChild = null;
+		JSONObject dataChild = null;
+		JSONArray children = ensureChildren(context.getWidgetElement(), false, context.getWidgetId());
+
+		for (int i=0; i< children.length(); i++)
+		{
+			JSONObject child = children.optJSONObject(i);
+			if (getChildName(child).equals("optionsRenderer"))
+			{
+				optionsRendererChild = child;
+			}
+			else
+			{
+				dataChild = child;
+			}
+		}
+		
+		context.dataObject = getDataObject(context.getWidgetId(), dataChild);
 		String dataObjectName = context.dataObject.getParameterizedQualifiedSourceName();
 		String className = getWidgetClassName()+"<"+dataObjectName+">";
 
@@ -77,16 +94,8 @@ public class ComboBoxFactory extends AbstractPageableFactory<ComboBoxContext> im
 		String comboBoxRendererClassName = OptionsRenderer.class.getCanonicalName() + "<String,"+context.dataObject.getParameterizedQualifiedSourceName()+">";
 		out.print("final " + comboBoxRendererClassName + " " + comboBoxRenderer + " = ");
 
-		JSONArray children = ensureChildren(context.getWidgetElement(), false, context.getWidgetId());
-		for (int i=0; i< children.length(); i++)
-		{
-			JSONObject child = children.optJSONObject(i);
-			if (getChildName(child).equals("optionsRenderer"))
-			{
-				generateOptionRendererCreation(out, context, child, context.dataObject, comboBoxRendererClassName);
-				break;
-			}//TODO por uma validacao pra ver se achou um optionsRenderer
-		}
+		generateOptionRendererCreation(out, context, optionsRendererChild, context.dataObject, comboBoxRendererClassName);
+		//TODO por uma validacao pra ver se achou um optionsRenderer
 		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+comboBoxRenderer+");");
 	}
 	

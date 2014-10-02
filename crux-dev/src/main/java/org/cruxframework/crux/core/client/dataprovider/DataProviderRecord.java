@@ -23,17 +23,12 @@ package org.cruxframework.crux.core.client.dataprovider;
 public class DataProviderRecord<T>
 {
 	T recordObject;
-	DataProvider<T> dataProvider;
+	AbstractDataProvider<T> dataProvider;
 	DataProviderRecordState state = new DataProviderRecordState();
 	
-	public DataProviderRecord(DataProvider<T> dataSource)
+	DataProviderRecord(AbstractDataProvider<T> dataSource)
 	{
 		this.dataProvider = dataSource; 
-	}
-
-	public DataProviderRecordState getCurrentState()
-	{
-		return new DataProviderRecordState(state.isSelected(), state.isDirty(), state.isCreated(), state.isRemoved(), state.isReadOnly());
 	}
 
 	public T getRecordObject()
@@ -66,7 +61,12 @@ public class DataProviderRecord<T>
 		return state.isSelected();
 	}
 
-	public void set(T value)
+	DataProviderRecordState getCurrentState()
+	{
+		return new DataProviderRecordState(state.isSelected(), state.isDirty(), state.isCreated(), state.isRemoved(), state.isReadOnly());
+	}
+
+	void set(T value)
 	{
 		T previousValue = recordObject;
 		if ((previousValue != null && (value==null || !previousValue.equals(value))) ||
@@ -82,7 +82,7 @@ public class DataProviderRecord<T>
 		}
 	}
 	
-	public void setDirty()
+	void setDirty()
 	{
 		DataProviderRecordState previousState = getCurrentState();
 		this.state.setDirty(true);
@@ -92,7 +92,7 @@ public class DataProviderRecord<T>
 		}
 	}
 	
-	public void setReadOnly(boolean readOnly)
+	void setReadOnly(boolean readOnly)
 	{
 		if (this.state.isReadOnly() != readOnly)
 		{
@@ -102,7 +102,7 @@ public class DataProviderRecord<T>
 		}
 	}
 
-	public void setSelected(boolean selected)
+	void setSelected(boolean selected)
 	{
 		if (this.state.isSelected() != selected)
 		{
@@ -127,7 +127,12 @@ public class DataProviderRecord<T>
     	this.recordObject = recordObject;
     }
 	
-	public static class DataProviderRecordState 
+	/**
+	 * Represents the state of a {@link DataProvider} record
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	static class DataProviderRecordState 
 	{
 		private boolean created;
 		private boolean dirty;
@@ -195,7 +200,6 @@ public class DataProviderRecord<T>
 		{
 			return readOnly;
 		}
-		
 		protected void setReadOnly(boolean readOnly)
 		{
 			this.readOnly = readOnly;

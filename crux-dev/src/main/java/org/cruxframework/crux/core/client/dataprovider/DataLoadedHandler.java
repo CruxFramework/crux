@@ -16,30 +16,14 @@
 package org.cruxframework.crux.core.client.dataprovider;
 
 /**
- * Exception to describe a {@link DataProvider} oepration error
+ * Handler for {@link DataProvider} load events
  * @author Thiago da Rosa de Bustamante
+ *
  */
-public class DataProviderExcpetion extends RuntimeException
+public interface DataLoadedHandler
 {
-    private static final long serialVersionUID = -579649646989882710L;
-
-	public DataProviderExcpetion()
-    {
-	    super();
-    }
-
-	public DataProviderExcpetion(String message, Throwable t)
-    {
-	    super(message, t);
-    }
-
-	public DataProviderExcpetion(String message)
-    {
-	    super(message);
-    }
-
-	public DataProviderExcpetion(Throwable t)
-    {
-	    super(t);
-    }
+	/**
+	 * Callback method called when {@link DataProvider} is loaded
+	 */
+	void onLoaded(DataLoadedEvent event);
 }

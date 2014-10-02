@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 cruxframework.org.
+ * Copyright 2011 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,13 +15,17 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
+import org.cruxframework.crux.core.client.event.BaseEvent;
+
 
 /**
- * 
+ * Event fired when {@link DataProvider} loading is aborted
  * @author Thiago da Rosa de Bustamante
  */
-public interface MeasurablePagedDataProvider<E> extends PagedDataProvider<E>
+public class DataLoadStoppedEvent extends BaseEvent<DataProvider<?>>
 {
-	int getPageCount();
-	boolean setCurrentPage(int pageNumber);
+	protected DataLoadStoppedEvent(DataProvider<?> source)
+    {
+	    super(source);
+    }
 }

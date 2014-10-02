@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Modified version of GWT TabPanel that uses a CustomRollingPanel wrapping its TabBar.
+ * A panel that open its children in tabs.
  * 
  * @author Thiago da Rosa de Bustamante -
  *
@@ -314,7 +314,7 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
     }
 
 	/**
-	 * We ensure that the DeckPanel cannot become of of sync with its associated
+	 * We ensure that the DeckPanel cannot become of sync with its associated
 	 * TabBar by delegating all mutations to the TabBar to this implementation
 	 * of DeckPanel.
 	 * </p>

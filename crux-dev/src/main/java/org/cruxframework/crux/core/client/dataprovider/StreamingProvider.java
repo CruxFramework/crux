@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 cruxframework.org.
+ * Copyright 2014 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,9 +17,22 @@ package org.cruxframework.crux.core.client.dataprovider;
 
 
 /**
+ * A {@link LazyProvider} that can not be measured. As long as it is not possible 
+ * to realize the size of the set of data, StreamingDataProviders will fetch pages
+ * until no more data is available
  * @author Thiago da Rosa de Bustamante
  */
-public interface SyncDataProviderCallback
+public interface StreamingProvider<T> extends LazyProvider<T>
 {
-	void onLoaded();
+	/**
+	 * Inform an {@link LazyDataLoader} to be used to load data 
+	 * @param dataLoader loader
+	 */
+	void setDataLoader(StreamingDataLoader<T> dataLoader);
+	
+	/**
+	 * Retrieve the {@link LazyDataLoader} used to load data
+	 * @return loader
+	 */
+	StreamingDataLoader<T> getDataLoader();
 }

@@ -15,11 +15,29 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
+import org.cruxframework.crux.core.client.collection.Array;
 
 /**
+ * A {@link DataProvider} that loads all the data eagerly and store it locally on client browser
  * @author Thiago da Rosa de Bustamante
  */
-public interface AsyncDataProviderCallback
+public interface EagerProvider<T> extends DataProvider<T>
 {
-	void onCancelFetching();
+	/**
+	 * Inform an {@link EagerDataLoader} to be used to load data 
+	 * @param dataLoader loader
+	 */
+	void setDataLoader(EagerDataLoader<T> dataLoader);
+	
+	/**
+	 * Retrieve the {@link EagerDataLoader} used to load data
+	 * @return loader
+	 */
+	EagerDataLoader<T> getDataLoader();
+	
+	/**
+	 * Retrieve all data loaded into this {@link DataProvider}
+	 * @return
+	 */
+	Array<T> getData();
 }

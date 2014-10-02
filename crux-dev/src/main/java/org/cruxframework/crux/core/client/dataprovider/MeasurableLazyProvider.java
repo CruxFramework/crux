@@ -15,13 +15,27 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
-
 /**
+ * A {@link MeasurablePagedProvider} and {@link LazyProvider}
  * @author Thiago da Rosa de Bustamante
  */
-public interface AsyncDataProvider<E> extends PagedDataProvider<E>
+public interface MeasurableLazyProvider<T> extends MeasurablePagedProvider<T>, LazyProvider<T> 																
 {
-	void fetch(int startRecord, int endRecord);
-	void cancelFetching();
-	void setCallback(AsyncDataProviderCallback callback);
+	/**
+	 * Inform an {@link LazyDataLoader} to be used to load data 
+	 * @param dataLoader loader
+	 */
+	void setDataLoader(LazyDataLoader<T> dataLoader);
+	
+	/**
+	 * Retrieve the {@link LazyDataLoader} used to load data
+	 * @return loader
+	 */
+	LazyDataLoader<T> getDataLoader();
+	
+	/**
+	 * Inform the size of the {@link DataProvider}
+	 * @param recordCount
+	 */
+	void setSize(int recordCount);
 }
