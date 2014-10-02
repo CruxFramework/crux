@@ -21,7 +21,6 @@ import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneRes
 import org.cruxframework.crux.smartfaces.client.backbone.large.FacesBackboneResourcesLarge;
 import org.cruxframework.crux.smartfaces.client.backbone.small.FacesBackboneResourcesSmall;
 import org.cruxframework.crux.smartfaces.client.button.Button;
-import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -32,24 +31,21 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class SideMenuDisposal extends BaseMenuDisposal
 {
-	private final String MENU_PANEL_STYLE = "faces-SideMenuDisposal-menuPanel";
-	private final String HEADER_PANEL_STYLE = "faces-SideMenuDisposal-headerPanel";
-	private final String FOOTER_PANEL_STYLE = "faces-SideMenuDisposal-footerPanel";
-	private final String CONTENT_MENU_STYLE = "faces-SideMenuDisposal-contentPanel";
-	private final String SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-SideMenuDisposal-smallHeaderPanel";
-	private final String RIGHT_MENU_POSITION = "faces-SideMenuDisposal--right";
+	public static final String DEFAULT_STYLE_NAME = "faces-SideMenuDisposal";
 	
-	private final String DEFAULT_STYLE_NAME = "faces-SideMenuDisposal";
+	private static final String MENU_PANEL_STYLE = "faces-SideMenuDisposal-menuPanel";
+	private static final String HEADER_PANEL_STYLE = "faces-SideMenuDisposal-headerPanel";
+	private static final String FOOTER_PANEL_STYLE = "faces-SideMenuDisposal-footerPanel";
+	private static final String CONTENT_MENU_STYLE = "faces-SideMenuDisposal-contentPanel";
+	private static final String SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-SideMenuDisposal-smallHeaderPanel";
+	private static final String RIGHT_MENU_POSITION = "faces-SideMenuDisposal--right";
+	
+	private LayoutBuilder layoutBuilder = GWT.create(LayoutBuilder.class);;
 	
 	@Override
 	protected void buildLayout()
 	{
-		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
-		FacesBackboneResourcesLarge.INSTANCE.css().ensureInjected();
-		FacesBackboneResourcesSmall.INSTANCE.css().ensureInjected();
-		LayoutBuilder builder = GWT.create(LayoutBuilder.class);
-		builder.buildLayout(this);
-		setSizeDisposal(builder.getDeviceSize());
+		layoutBuilder.buildLayout(this);
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
 	
@@ -87,16 +83,7 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		
 		if (!add)
 		{
-			if(getSizeDisposal().equals(SizeDisposal.LARGE))
-			{
-				addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneSideMenuDisposal());
-			}
-			
-			if(getSizeDisposal().equals(SizeDisposal.SMALL))
-			{
-				addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneSideMenuDisposal());
-			}
-			
+			layoutBuilder.setStyleName(this);
 		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
 		}
 	}
@@ -105,20 +92,17 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
-	    
-	    if(getSizeDisposal().equals(SizeDisposal.LARGE))
-		{
-			addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneSideMenuDisposal());
-		}
-		
-		if(getSizeDisposal().equals(SizeDisposal.SMALL))
-		{
-			addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneSideMenuDisposal());
-		}
-		
+		layoutBuilder.setStyleName(this);
 	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
 	}
 	
+	public void setMenuPositioning(MenuPosition position)
+	{
+		if(MenuPosition.RIGHT.equals(position))
+		{
+			addStyleName(RIGHT_MENU_POSITION);
+		}
+	}
 	
 	static class SmallLayoutBuilder implements LayoutBuilder
 	{
@@ -129,13 +113,14 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		@Override
 		public void buildLayout(final BaseMenuDisposal disposal)
 		{
+			FacesBackboneResourcesSmall.INSTANCE.css().ensureInjected();
+
 			FlowPanel menuButtonPanel = new FlowPanel();
 			menuButtonPanel.setStyleName(SIDE_MENU_DISPOSAL_MENU_BUTTON_CONTAINER);
 			Button menuButton = new Button();
 			menuButton.setStyleName(SIDE_MENU_DISPOSAL_MENU_BUTTON);
 			menuButtonPanel.add(menuButton);
-			disposal.smallHeaderPanel = new HeaderPanel();
-			disposal.smallHeaderPanel.setStyleName(disposal.getSmallHeaderStyleName());
+			disposal.headerPanel.setStyleName(disposal.getSmallHeaderStyleName());
 			
 			menuButton.addSelectHandler(new SelectHandler(){
 				
@@ -150,7 +135,7 @@ public class SideMenuDisposal extends BaseMenuDisposal
 			headerWrapper.setStyleName(SIDE_MENU_DISPOSAL_SMALL_HEADER_WRAPPER);
 			
 			headerWrapper.add(menuButtonPanel);
-			headerWrapper.add(disposal.smallHeaderPanel);
+			headerWrapper.add(disposal.headerPanel);
 			
 			disposal.bodyPanel.add(headerWrapper);
 			disposal.bodyPanel.add(disposal.menuPanel);
@@ -158,12 +143,11 @@ public class SideMenuDisposal extends BaseMenuDisposal
 			disposal.bodyPanel.add(disposal.footerPanel);
 		}
 		
-
 		@Override
-		public SizeDisposal getDeviceSize()
-		{
-			return SizeDisposal.SMALL;
-		}
+        public void setStyleName(BaseMenuDisposal disposal)
+        {
+			disposal.addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneSideMenuDisposal());
+        }
 	}
 	
 	static class LargeLayoutBuilder implements LayoutBuilder
@@ -174,36 +158,32 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		@Override
 		public void buildLayout(final BaseMenuDisposal disposal)
 		{ 
+			FacesBackboneResourcesLarge.INSTANCE.css().ensureInjected();
+
 			FlowPanel mainPanel = new FlowPanel();
 			mainPanel.setStyleName(FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL);
 			
-			disposal.largeHeaderPanel = new HeaderPanel();
-			disposal.largeHeaderPanel.setStyleName(disposal.getHeaderStyleName());
+			disposal.headerPanel.setStyleName(disposal.getHeaderStyleName());
 			
 			FlowPanel splitPanel = new FlowPanel();
 			splitPanel.addStyleName(FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL);
 			splitPanel.add(disposal.menuPanel);
 			splitPanel.add(disposal.viewContentPanel);
 			
-			mainPanel.add(disposal.largeHeaderPanel);
+			mainPanel.add(disposal.headerPanel);
 			mainPanel.add(splitPanel);
 			mainPanel.add(disposal.footerPanel);
 			disposal.bodyPanel.add(mainPanel);
 		}
-		
+
 		@Override
-		public SizeDisposal getDeviceSize()
-		{
-			return SizeDisposal.LARGE;
-		}
+        public void setStyleName(BaseMenuDisposal disposal)
+        {
+			disposal.addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneSideMenuDisposal());
+        }
 	}
 	
-	public enum SideDisposalMenuType
-	{
-		VERTICAL_TREE, VERTICAL_SLIDE, VERTICAL_ACCORDION, VERTICAL_DROPDOWN;
-	}
-	
-	public enum MenuPosition
+	public static enum MenuPosition
 	{
 		LEFT,RIGHT;
 	}
@@ -211,14 +191,6 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	static interface LayoutBuilder
 	{
 		void buildLayout(BaseMenuDisposal disposal);
-		SizeDisposal getDeviceSize();
-	}
-	
-	public void setMenuPositioning(MenuPosition position)
-	{
-		if(MenuPosition.RIGHT.equals(position))
-		{
-			addStyleName(RIGHT_MENU_POSITION);
-		}
+		void setStyleName(BaseMenuDisposal disposal);
 	}
 }

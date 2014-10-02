@@ -37,7 +37,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventDecl
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
 import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal;
 import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal.MenuPosition;
-import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal.SideDisposalMenuType;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
@@ -115,6 +114,11 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
     	out.print(context.getWidget()+".setHistoryControlPrefix("+EscapeUtils.quote(context.readChildProperty("historyControlPrefix"))+");");
 	}
 
+	static enum SideDisposalMenuType
+	{
+		VERTICAL_TREE, VERTICAL_SLIDE, VERTICAL_ACCORDION, VERTICAL_DROPDOWN;
+	}
+
 	@TagConstraints(maxOccurs="1",minOccurs="0",tagName="mainMenu")
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="menuType", type=SideDisposalMenuType.class, defaultValue="VERTICAL_DROPDOWN")
@@ -132,7 +136,7 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 			
 			if(menuType.isEmpty())
 			{
-				menuType = "VERTICAL_DROPDOWN";
+				menuType = SideDisposalMenuType.VERTICAL_DROPDOWN.name();
 			}
 			
 			out.println(Menu.class.getCanonicalName() + " " + menu + " = new "+Menu.class.getCanonicalName()+"("+LargeType.class.getCanonicalName()+"."+menuType+"," + SmallType.class.getCanonicalName()+".VERTICAL_ACCORDION);");

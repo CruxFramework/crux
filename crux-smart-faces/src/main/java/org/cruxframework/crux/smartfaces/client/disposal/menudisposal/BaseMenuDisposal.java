@@ -24,8 +24,10 @@ import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneRes
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.panel.FooterPanel;
+import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
@@ -40,24 +42,25 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 {
-	protected Panel menuPanel;
-	protected Panel largeHeaderPanel;
-	protected Panel smallHeaderPanel;
-	protected Panel footerPanel;
+	private static final String BASE_MENU_DISPOSAL_MENU = "faces-BaseMenuDisposal-Menu";
+
+	protected NavPanel menuPanel;
+	protected HeaderPanel headerPanel;
+	protected FooterPanel footerPanel;
 	protected Panel bodyPanel;
 	protected Panel viewContentPanel;
 	protected Menu menu;
 	private View innerView;	
-	protected SizeDisposal sizeDisposal;
-	private final String BASE_MENU_DISPOSAL_MENU = "faces-BaseMenuDisposal-Menu";
+	private BaseMenuHandler handler = GWT.create(BaseMenuHandler.class);
 	
 	protected BaseMenuDisposal()
 	{
 		super(new FlowPanel(), true);
-		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();//TODO remover isso e usar heranca nos css
 		setHistoryControlEnabled(true);
 		bodyPanel = getMainWidget();
 		viewContentPanel = new FlowPanel();
+		headerPanel = new HeaderPanel();
 		menuPanel = new NavPanel();
 		footerPanel = new FooterPanel();
 		buildLayout();
@@ -74,35 +77,20 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		this.footerPanel.add(footer);
 	}
 	
+	public void addSmallHeaderContent(Widget header)
+	{
+		handler.addSmallHeaderContent(this, header);
+	}
+
+	public void addLargeHeaderContent(Widget header)
+	{
+		handler.addLargeHeaderContent(this, header);
+	}
+	
 	public void setMenu(final Menu menu)
 	{
 		this.menu = menu;
-		
-		if(getSizeDisposal().equals(SizeDisposal.LARGE))
-		{
-			this.menuPanel.add(menu);
-		}
-		else
-		{
-			menu.addStyleName(BASE_MENU_DISPOSAL_MENU);
-		}
-		menu.addSelectionHandler(new SelectionHandler<MenuItem>(){
-			
-			@Override
-			public void onSelection(SelectionEvent<MenuItem> event)
-			{
-				String viewName = event.getSelectedItem().getValue();
-				if(!StringUtils.isEmpty(viewName))
-				{
-					showView(viewName);
-				}
-				
-				if(getSizeDisposal().equals(SizeDisposal.SMALL) && !event.getSelectedItem().hasChildren())
-				{
-					menuPanel.remove(menu);
-				}
-			}
-		});
+		handler.setMenu(this, menu);
 	}
 	
 	public Menu getMenu()
@@ -110,10 +98,15 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		return this.menu;
 	}
 	
+	public String getCurrentHistoryItem()
+	{
+		return Screen.getCurrentHistoryItem();
+	}
+	
 	@Override
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
 	{
-		
+		Window.setTitle(title);
 	}
 	
 	@Override
@@ -151,8 +144,7 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	
 	protected abstract String getSmallHeaderStyleName();
 	
-
-	private void setStyles()
+	protected void setStyles()
 	{
 		footerPanel.setStyleName(getFooterStyleName());
 		menuPanel.setStyleName(getMenuPanelStyleName());
@@ -211,50 +203,100 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 	    }
 	}
 	
-	public void addSmallHeaderContent(Widget widget)
+	protected void showSmallMenu()
 	{
-		if(widget != null && smallHeaderPanel != null)
-		{
-			smallHeaderPanel.add(widget);
-		}
+		handler.showSmallMenu(this);
 	}
+	
+	static interface BaseMenuHandler
+	{
+		void addLargeHeaderContent(BaseMenuDisposal disposal, Widget header);
+		void addSmallHeaderContent(BaseMenuDisposal disposal, Widget header);
+		void setMenu(BaseMenuDisposal disposal, Menu menu);
+		void showSmallMenu(BaseMenuDisposal disposal);
+	}
+	
+	static class LargeBaseMenuHandler implements BaseMenuHandler
+	{
+		@Override
+        public void addLargeHeaderContent(BaseMenuDisposal disposal, Widget header)
+        {
+			disposal.headerPanel.add(header);
+        }
 
-	static enum SizeDisposal
-	{
-		LARGE,SMALL;
-	}
-	
-	public SizeDisposal getSizeDisposal()
-	{
-		return sizeDisposal;
-	}
+		@Override
+        public void addSmallHeaderContent(BaseMenuDisposal disposal, Widget header) {}
 
-	public void setSizeDisposal(SizeDisposal sizeDisposal)
-	{
-		this.sizeDisposal = sizeDisposal;
+		@Override
+        public void setMenu(final BaseMenuDisposal disposal, Menu menu)
+        {
+			disposal.menuPanel.add(menu);
+			menu.addSelectionHandler(new SelectionHandler<MenuItem>(){
+				
+				@Override
+				public void onSelection(SelectionEvent<MenuItem> event)
+				{
+					String viewName = event.getSelectedItem().getValue();
+					if(!StringUtils.isEmpty(viewName))
+					{
+						disposal.showView(viewName);
+					}
+				}
+			});
+        }
+
+		@Override
+        public void showSmallMenu(BaseMenuDisposal disposal) {}
 	}
 	
-	public void showSmallMenu()
+	static class SmallBaseMenuHandler implements BaseMenuHandler
 	{
-		if (this.menu.getParent() == null)
-		{
-			this.menuPanel.add(menu);
-		} else
-		{
-			this.menuPanel.remove(menu);
-		}
-	}
-	
-	public String getCurrentHistoryItem()
-	{
-		return Screen.getCurrentHistoryItem();
-	}
-	
-	public void addLargeHeaderContent(Widget header)
-	{
-		if(largeHeaderPanel != null)
-		{
-			largeHeaderPanel.add(header);
-		}
+		@Override
+        public void addLargeHeaderContent(BaseMenuDisposal disposal, Widget header) {}
+
+		@Override
+        public void addSmallHeaderContent(BaseMenuDisposal disposal, Widget header)
+        {
+			disposal.headerPanel.add(header);
+        }
+
+		@Override
+        public void setMenu(final BaseMenuDisposal disposal, final Menu menu)
+        {
+			menu.addStyleName(BaseMenuDisposal.BASE_MENU_DISPOSAL_MENU);
+			menu.addSelectionHandler(new SelectionHandler<MenuItem>(){
+				
+				@Override
+				public void onSelection(SelectionEvent<MenuItem> event)
+				{
+					String viewName = event.getSelectedItem().getValue();
+					if(!StringUtils.isEmpty(viewName))
+					{
+						disposal.showView(viewName);
+					}
+					
+					if(!event.getSelectedItem().hasChildren())
+					{
+						disposal.menuPanel.remove(menu);
+					}
+				}
+			});
+        }
+
+		@Override
+        public void showSmallMenu(BaseMenuDisposal disposal)
+        {
+			if (disposal.menu != null)
+			{
+				if (disposal.menu.getParent() == null)
+				{
+					disposal.menuPanel.add(disposal.menu);
+				} 
+				else
+				{
+					disposal.menuPanel.remove(disposal.menu);
+				}
+			}
+        }
 	}
 }

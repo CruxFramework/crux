@@ -36,7 +36,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstrain
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
 import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.TopMenuDisposal;
-import org.cruxframework.crux.smartfaces.client.disposal.menudisposal.TopMenuDisposal.TopDisposalMenuType;
 import org.cruxframework.crux.smartfaces.client.menu.Menu;
 import org.cruxframework.crux.smartfaces.client.menu.MenuItem;
 import org.cruxframework.crux.smartfaces.client.menu.Type.LargeType;
@@ -106,6 +105,8 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
     	out.print(context.getWidget()+".setHistoryControlPrefix("+EscapeUtils.quote(context.readChildProperty("historyControlPrefix"))+");");
 	}
 	
+	static enum TopDisposalMenuType { HORIZONTAL_ACCORDION, HORIZONTAL_DROPDOWN }
+
 	@TagConstraints(maxOccurs="1",minOccurs="0",tagName="mainMenu")
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="menuType", type=TopDisposalMenuType.class, defaultValue="HORIZONTAL_DROPDOWN")
@@ -123,7 +124,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 			
 			if(menuType.isEmpty())
 			{
-				menuType = "HORIZONTAL_DROPDOWN";
+				menuType = TopDisposalMenuType.HORIZONTAL_DROPDOWN.name();
 			}
 			
 			out.println(Menu.class.getCanonicalName() + " " + menu + " = new "+Menu.class.getCanonicalName()+"("+LargeType.class.getCanonicalName()+"."+menuType+"," + SmallType.class.getCanonicalName()+".VERTICAL_ACCORDION);");
