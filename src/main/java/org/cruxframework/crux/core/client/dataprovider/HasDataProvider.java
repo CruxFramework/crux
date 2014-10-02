@@ -22,6 +22,16 @@ package org.cruxframework.crux.core.client.dataprovider;
  */
 public interface HasDataProvider<T extends DataProvider<?>>
 {
-	void setDataProvider(T datasource, boolean autoLoadData);
+	/**
+	 * Bind a dataProvider to this component
+	 * @param dataProvider dataProvider to use
+	 * @param autoLoadData if true fire the dataProvider load event.
+	 */
+	void setDataProvider(T dataProvider, boolean autoLoadData);
+	
+	/**
+	 * Retrieve the dataProvider bound to this component
+	 * @return the dataProvider
+	 */
 	T getDataProvider();
 }

@@ -15,15 +15,16 @@
  */
 package org.cruxframework.crux.core.client.dataprovider.pager;
 
-import org.cruxframework.crux.core.client.dataprovider.AsyncDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.AsyncDataProviderCallback;
-import org.cruxframework.crux.core.client.dataprovider.MeasurableAsyncDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.MeasurableDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.MeasurablePagedDataProvider;
+import org.cruxframework.crux.core.client.dataprovider.DataFilterEvent;
+import org.cruxframework.crux.core.client.dataprovider.DataFilterHandler;
+import org.cruxframework.crux.core.client.dataprovider.DataProviderExcpetion;
+import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
+import org.cruxframework.crux.core.client.dataprovider.MeasurablePagedProvider;
+import org.cruxframework.crux.core.client.dataprovider.PageLoadedEvent;
+import org.cruxframework.crux.core.client.dataprovider.PageLoadedHandler;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.PagedDataProviderCallback;
-import org.cruxframework.crux.core.client.dataprovider.SyncDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.SyncDataProviderCallback;
+import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedEvent;
+import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedHandler;
 
 import com.google.gwt.user.client.ui.Composite;
 
@@ -36,7 +37,6 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	protected Pager pager;
 	protected PagedDataProvider<T> dataProvider;
 	protected int pageSize = 25;
-	protected boolean loaded;
 	protected Renderer<T> renderer = getRenderer();
 	
 	public int getPageSize()
@@ -74,9 +74,9 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	@Override
     public int getPageCount()
     {
-		if(isDataLoaded() && dataProvider instanceof MeasurablePagedDataProvider<?>)
+		if(isDataLoaded() && dataProvider instanceof MeasurablePagedProvider<?>)
 		{
-			MeasurablePagedDataProvider<?> ds = (MeasurablePagedDataProvider<?>) dataProvider;
+			MeasurablePagedProvider<?> ds = (MeasurablePagedProvider<?>) dataProvider;
 			return ds.getPageCount();
 		}
 		else
@@ -105,9 +105,9 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
     {
 		if(isDataLoaded())
 		{
-			if(dataProvider instanceof MeasurablePagedDataProvider<?>)
+			if(dataProvider instanceof MeasurablePagedProvider<?>)
 			{
-				((MeasurablePagedDataProvider<?>) dataProvider).setCurrentPage(page);
+				((MeasurablePagedProvider<?>) dataProvider).setCurrentPage(page);
 			}
 			else
 			{
@@ -122,42 +122,42 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	    return dataProvider;
     }
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     public void setDataProvider(PagedDataProvider<T> dataProvider, boolean autoLoadData)
     {
 		this.dataProvider = dataProvider;
 		this.dataProvider.setPageSize(pageSize);
-		this.dataProvider.setCallback(new PagedDataProviderCallback()
+		this.dataProvider.addPageLoadedHandler(new PageLoadedHandler()
 		{
-			public void onPageFetched(int startRecord, int endRecord)
+			@Override
+			public void onPageLoaded(PageLoadedEvent event)
 			{
-				loaded = true;
-				render();
+				render(false);
 			}
 		});
+		this.dataProvider.addLoadStoppedHandler(new DataLoadStoppedHandler()
+		{
+			@Override
+			public void onLoadStopped(DataLoadStoppedEvent event)
+			{
+				render(true);
+			}
+		});
+		
+		if (this.dataProvider instanceof FilterableProvider<?>)
+		{
+			FilterableProvider<T> filterable = (FilterableProvider<T>) this.dataProvider;
+			filterable.addDataFilterHandler(new DataFilterHandler<T>()
+			{
+				@Override
+				public void onFiltered(DataFilterEvent<T> event)
+				{
+					render(true);
+				}
+			});
+		}
 
-		if(this.dataProvider instanceof AsyncDataProvider<?>)
-		{
-			AsyncDataProvider<?> async = (AsyncDataProvider<?>) this.dataProvider;
-			async.setCallback(new AsyncDataProviderCallback()
-			{
-				public void onCancelFetching()
-				{
-					render();
-				}
-			});
-		}
-		else if(this.dataProvider instanceof SyncDataProvider<?>)
-		{
-			SyncDataProvider<?> sync = (SyncDataProvider<?>) this.dataProvider;
-			sync.setCallback(new SyncDataProviderCallback()
-			{
-				public void onLoaded()
-				{
-					loaded = true;
-				}
-			});
-		}
 		if(autoLoadData)
 		{
 			loadData();
@@ -166,30 +166,15 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	
 	public void loadData()
 	{
-		if(!loaded)
+		if (dataProvider != null)
 		{
-			if(dataProvider instanceof AsyncDataProvider)
-			{
-				if(dataProvider instanceof MeasurableDataProvider)
-				{
-					((MeasurableAsyncDataProvider<?>) this.dataProvider).initialize();
-				}
-				else
-				{
-					dataProvider.nextPage();
-				}
-			}
-			else if(dataProvider instanceof SyncDataProvider)
-			{
-				SyncDataProvider<?> sync = (SyncDataProvider<?>) dataProvider;
-				sync.load();
-			}
+			dataProvider.load();
 		}
 	}
 	
 	public boolean isDataLoaded()
 	{
-		return dataProvider != null && loaded;
+		return dataProvider != null && dataProvider.isLoaded();
 	}
 
 	public void reset()
@@ -215,16 +200,27 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		}
 	}
 	
-	protected void render()
+	protected abstract void clear(); 
+	
+	protected void render(boolean refresh)
     {
+		if (refresh)
+		{
+			clear();
+		}
 		int rowCount = getRowsToBeRendered();
 
 		for (int i=0; i<rowCount; i++)
 		{
-			renderer.render(dataProvider.getBoundObject());
-			if (dataProvider.hasNextRecord())
+			T value = dataProvider.get();
+			if (value == null)
 			{
-				dataProvider.nextRecord();
+				throw new DataProviderExcpetion("Erro indice="+i);
+			}
+			renderer.render(value);
+			if (dataProvider.hasNext())
+			{
+				dataProvider.next();
 			}
 			else
 			{
@@ -259,7 +255,7 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	protected abstract Renderer<T> getRenderer();
 	
 	/**
-	 * Define a rederer, called when a record from DataProvider needs to be renderer by this widget 
+	 * Define a renderer, called when a record from DataProvider needs to be rendered by this widget 
 	 * @author Thiago da Rosa de Bustamante
 	 */
 	public static interface Renderer<T>

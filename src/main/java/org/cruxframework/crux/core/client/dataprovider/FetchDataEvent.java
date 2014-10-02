@@ -15,31 +15,31 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
+import org.cruxframework.crux.core.client.event.BaseEvent;
+
 /**
- * Exception to describe a {@link DataProvider} oepration error
  * @author Thiago da Rosa de Bustamante
+ *
  */
-public class DataProviderExcpetion extends RuntimeException
+public class FetchDataEvent<T> extends BaseEvent<LazyProvider<T>>
 {
-    private static final long serialVersionUID = -579649646989882710L;
+	private final int startRecord;
+	private final int endRecord;
 
-	public DataProviderExcpetion()
+	protected FetchDataEvent(LazyProvider<T> source, int startRecord, int endRecord)
     {
-	    super();
+	    super(source);
+		this.startRecord = startRecord;
+		this.endRecord = endRecord;
     }
+	
+	public int getEndRecord()
+	{
+		return endRecord;
+	}
 
-	public DataProviderExcpetion(String message, Throwable t)
-    {
-	    super(message, t);
-    }
-
-	public DataProviderExcpetion(String message)
-    {
-	    super(message);
-    }
-
-	public DataProviderExcpetion(Throwable t)
-    {
-	    super(t);
-    }
+	public int getStartRecord()
+	{
+		return startRecord;
+	}
 }

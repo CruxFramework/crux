@@ -16,10 +16,19 @@
 package org.cruxframework.crux.core.client.dataprovider;
 
 /**
+ * A {@link DataProvider} that can be measured.
  * @author Thiago da Rosa de Bustamante
  */
-public interface MeasurableAsyncDataProvider<E> extends MeasurablePagedDataProvider<E>, AsyncDataProvider<E> 																
+public interface MeasurableProvider<E> extends DataProvider<E>
 {
-	void initialize();
-	void setRecordCount(int recordCount);
+	/**
+	 * Retrieve the size of the {@link DataProvider} set of data 
+	 * @return
+	 */
+	int size();
+	
+	/**
+	 * Points DataProvider to the last record 
+	 */
+	void last();
 }

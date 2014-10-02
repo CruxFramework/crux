@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 cruxframework.org.
+ * Copyright 2014 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,13 +16,10 @@
 package org.cruxframework.crux.core.client.dataprovider;
 
 
-
 /**
- * A DataSource that loads all data and store it locally on client browser
+ * Interface to be implemented by classes that are capable of using PagedDataProviders.  
  * @author Thiago da Rosa de Bustamante
  */
-public interface SyncDataProvider<E> extends DataProvider<E>
+public interface HasPagedDataProvider<T extends PagedDataProvider<?>> extends HasDataProvider<T>
 {
-	void load();
-	void setCallback(SyncDataProviderCallback callback);
 }

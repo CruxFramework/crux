@@ -15,12 +15,18 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
+import org.cruxframework.crux.core.client.collection.Array;
+import org.cruxframework.crux.core.client.collection.CollectionFactory;
+
+import com.google.gwt.event.shared.HandlerRegistration;
+
 /**
  * @author Thiago da Rosa de Bustamante
  */
 abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvider<E> 
-                                              implements MeasurablePagedDataProvider<E>
+                                              implements MeasurablePagedProvider<E>
 {
+	protected Array<PageLoadedHandler> pageLoadedHandlers;
 	protected int pageSize = 10;
 	protected int currentPage = 0;
 	
@@ -33,7 +39,7 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	@Override
 	public int getPageCount()
 	{
-		int numRecords = getRecordCount();
+		int numRecords = size();
 		int pageSize = getPageSize();
 		
 		return (numRecords / pageSize) + (numRecords%pageSize==0?0:1);
@@ -97,16 +103,9 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	@Override
 	public boolean setCurrentPage(int pageNumber)
 	{
-		ensureLoaded();
-		if (pageNumber > 0 && pageNumber <= getPageCount())
-		{
-			currentPage = pageNumber;
-			updateCurrentRecord();
-			return true;
-		}
-		return false;
+		return setCurrentPage(pageNumber, true);
 	}
-
+	
 	@Override
 	public void setPageSize(int pageSize)
 	{
@@ -122,13 +121,13 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	}
 	
 	@Override
-	public boolean hasNextRecord()
+	public boolean hasNext()
 	{
 		return isRecordOnPage(currentRecord+1);
 	}
 	
 	@Override
-	public boolean hasPreviousRecord()
+	public boolean hasPrevious()
 	{
 		return isRecordOnPage(currentRecord-1);
 	}
@@ -141,17 +140,58 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	}	
 
 	@Override
-	public void firstRecord()
+	protected void setFirstPosition(boolean fireEvents)
+	{
+		setCurrentPage(1, fireEvents);
+	}
+	
+	@Override
+	public void firstOnPage()
 	{
 		ensureLoaded();
 		currentRecord = getPageStartRecord();
 	}
 
 	@Override
-	public void lastRecord()
+	public void last()
 	{
 		ensureLoaded();
 		currentRecord = getPageEndRecord();
+	}
+
+	@Override
+	public HandlerRegistration addPageLoadedHandler(final PageLoadedHandler handler)
+	{
+		if (pageLoadedHandlers == null)
+		{
+			pageLoadedHandlers = CollectionFactory.createArray();
+		}
+		
+		pageLoadedHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = pageLoadedHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					pageLoadedHandlers.remove(index);
+				}
+			}
+		};
+	}
+
+	protected boolean setCurrentPage(int pageNumber, boolean fireEvents)
+	{
+		ensureLoaded();
+		if (pageNumber > 0 && pageNumber <= getPageCount())
+		{
+			currentPage = pageNumber;
+			updateCurrentRecord();
+			return true;
+		}
+		return false;
 	}
 
 	protected boolean isRecordOnPage(int record)
@@ -169,9 +209,9 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	protected int getPageEndRecord()
 	{
 		int pageEndRecord = (currentPage * pageSize) - 1;
-		if (pageEndRecord >= this.data.length)
+		if (pageEndRecord >= this.data.size())
 		{
-			pageEndRecord = this.data.length-1;
+			pageEndRecord = this.data.size()-1;
 		}
 		return pageEndRecord;
 	}
@@ -181,8 +221,26 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		return (currentPage - 1) * pageSize;
 	}
 	
+	protected void firePageLoadedEvent(int start, int end)
+    {
+		if (pageLoadedHandlers != null)
+		{
+			PageLoadedEvent event = new PageLoadedEvent(this, start, end);
+			for (int i = 0; i< pageLoadedHandlers.size(); i++)
+			{
+				pageLoadedHandlers.get(i).onPageLoaded(event);
+			}
+		}
+    }
+	
 	protected void updateCurrentRecord()
 	{
 		currentRecord = getPageStartRecord(); 
+	}
+	
+	@Override
+	protected void changePositionAfterSorting()
+	{
+	    firstOnPage();
 	}
 }

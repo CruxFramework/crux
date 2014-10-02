@@ -202,7 +202,7 @@ public abstract class RemoteStreamingDataSource<T> implements StreamingDataSourc
 	}
 	
 	/**
-	 * @see org.cruxframework.crux.core.client.datasource.RemoteDataSource#updateData(E[])
+	 * @see org.cruxframework.crux.core.client.datasource.RemoteDataSource#setData(E[])
 	 */
 	public void updateData(T[] data)
 	{

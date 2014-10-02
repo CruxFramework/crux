@@ -15,21 +15,15 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
-import org.cruxframework.crux.core.client.event.BaseEvent;
-
 /**
+ * Handler for DataProvider {@link DataLoadStoppedEvent} events
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class MeasurableAsyncDataProviderEvent<T> extends BaseEvent<MeasurableAsyncDataProvider<T>>
+public interface DataLoadStoppedHandler
 {
-	protected MeasurableAsyncDataProviderEvent(MeasurableAsyncDataProvider<T> source)
-    {
-	    super(source);
-    }
-	
-	public void setRecordCount(int recordCount)
-	{
-		getSource().setRecordCount(recordCount);
-	}
+	/**
+	 * Callback method called when {@link DataProvider} loading is aborted
+	 */
+	void onLoadStopped(DataLoadStoppedEvent event);
 }

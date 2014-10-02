@@ -398,6 +398,11 @@ public class StringUtils
 		return p[n];
 	}
 
+	/**
+	 * Check if the given string represents a number
+	 * @param str
+	 * @return
+	 */
 	public static boolean isNumeric(String str) 
 	{
 		if (str == null || str.length() == 0) 
@@ -485,5 +490,56 @@ public class StringUtils
 			output.append(hexTab.charAt(x & 0x0F));
 		}
 		return output.toString();
+	}
+
+	/**
+	 * Join all string parts into one string, using the join parameter between each string part
+	 * @param parts
+	 * @param join
+	 * @return
+	 */
+	public static String join(String[] parts, String join)
+    {
+		return join(parts, join, null);
+    }
+	
+	/**
+	 * 
+	 * @param parts
+	 * @param join
+	 * @param filter
+	 * @return
+	 */
+	public static String join(String[] parts, String join, StringFilter filter)
+    {
+		StringBuilder str = new StringBuilder();
+		boolean first = true;
+		for (String part : parts)
+        {
+			if (!first)
+			{
+				str.append(join);            	
+			}
+			first = false;
+			if (filter!= null)
+			{
+				str.append(filter.filter(part));
+			}
+			else
+			{
+				str.append(part);
+			}
+        }
+	    return str.toString();
+    }
+	
+	/**
+	 * A String Filter that can be applied on join operations
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public static interface StringFilter 
+	{
+		String filter(String input);
 	}
 }

@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.collection;
 
+import java.util.Comparator;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -114,8 +116,23 @@ public class Array<E> extends JavaScriptObject
 		jsniSetSize(newSize, fillValue);
 	}
 
+	/**
+	 * Retrieve the array size
+	 * @return array size
+	 */
 	public final native int size() /*-{
 		return this ? this.length : 0;
+	}-*/;
+	
+	/**
+	 * Clone the current array
+	 */
+	public final native Array<E> clone()/*-{
+		return this.slice(0);
+	}-*/;
+
+	public final native void sort(Comparator<E> comparator)/*-{
+		this.sort(function(a,b){return comparator.@java.util.Comparator::compare(Ljava/lang/Object;Ljava/lang/Object;)(a,b)});
 	}-*/;
 
 	private native void jsniAdd(E elem) /*-{

@@ -16,30 +16,14 @@
 package org.cruxframework.crux.core.client.dataprovider;
 
 /**
- * Exception to describe a {@link DataProvider} oepration error
+ * Defines a data loader for {@link StreamingProvider}
  * @author Thiago da Rosa de Bustamante
  */
-public class DataProviderExcpetion extends RuntimeException
+public interface StreamingDataLoader<T>
 {
-    private static final long serialVersionUID = -579649646989882710L;
-
-	public DataProviderExcpetion()
-    {
-	    super();
-    }
-
-	public DataProviderExcpetion(String message, Throwable t)
-    {
-	    super(message, t);
-    }
-
-	public DataProviderExcpetion(String message)
-    {
-	    super(message);
-    }
-
-	public DataProviderExcpetion(Throwable t)
-    {
-	    super(t);
-    }
+	/**
+	 * Called to load a fragment of data
+	 * @param event 
+	 */
+	void onFetchData(FetchDataEvent<T> event);
 }

@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 @TagAttributes({
 	@TagAttribute(value="pageSize", type=Integer.class, description="The number of widgets that is loaded from the datasource on each data request."),
 })
-public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> extends HasDataProviderFactory<C>
+public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> extends HasPagedDataProviderFactory<C>
 {
 	protected void generateWidgetCreationForCell(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
     {
@@ -60,11 +60,11 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 		
 		if (childName.equals("widgetFactory"))
 		{
-			generateWidgetCreationForCellByTemplate(out, context, child, dataObjectName);
+			generateWidgetCreationForCellByTemplate(out, context, child, dataObject);
 		}
 		else if (childName.equals("widgetFactoryOnController"))
 		{
-			generateWidgetCreationForCellOnController(out, context, child, dataObject, dataObjectName);
+			generateWidgetCreationForCellOnController(out, context, child, dataObject);
 		}
 		else
 		{
@@ -74,20 +74,22 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 		out.println("};");
     }
 
-	private void generateWidgetCreationForCellByTemplate(SourcePrinter out, C context, JSONObject child, String dataObjectName)
+	private void generateWidgetCreationForCellByTemplate(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
     {
 		child = ensureFirstChild(child, false, context.getWidgetId());
 		String widgetClassName =  getChildWidgetClassName(child);
 		JClassType widgetClassType =  getContext().getTypeOracle().findType(widgetClassName);
-		WidgetConsumer widgetConsumer = new PageableWidgetConsumer(getContext(), widgetClassType, getDataObject(context), "value", getView().getId(), context.getWidgetId());
+		WidgetConsumer widgetConsumer = new PageableWidgetConsumer(getContext(), widgetClassType, 
+											dataObject, 
+											"value", getView().getId(), context.getWidgetId());
 		
-		out.println("public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObjectName+" value){");
+		out.println("public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObject.getParameterizedQualifiedSourceName()+" value){");
 	    String childWidget = createChildWidget(out, child, widgetConsumer, true, context);
 	    out.println("return "+childWidget+";");
 	    out.println("}");
     }
 
-	private void generateWidgetCreationForCellOnController(SourcePrinter out, C context, JSONObject child, JClassType dataObject, String dataObjectName)
+	private void generateWidgetCreationForCellOnController(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
     {
 	    try
 	    {
@@ -113,10 +115,11 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 	    		}
 	    	};
 	    	
-	    	out.println("public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObjectName+" value){");
+	    	String dataObjectClassName = dataObject.getParameterizedQualifiedSourceName();
+			out.println("public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObjectClassName+" value){");
 
 	    	out.print("return ");
-	    	EvtProcessor.printEvtCall(out, onCreateWidget, "onCreateWidget", dataObject.getParameterizedQualifiedSourceName(), "value", 
+	    	EvtProcessor.printEvtCall(out, onCreateWidget, "onCreateWidget", dataObjectClassName, "value", 
 	    			getContext(), getView(), controllerAccessHandler, getDevice(), false);
 	    	
 	    	out.println("}");

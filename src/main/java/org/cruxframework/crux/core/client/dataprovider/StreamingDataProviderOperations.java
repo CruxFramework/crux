@@ -23,44 +23,60 @@ import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataPr
 /**
  * @author Thiago da Rosa de Bustamante
  */
-class StreamingDataProviderOperations<E>
+class StreamingDataProviderOperations<T>
 {
-	protected List<DataProviderRecord<E>> newRecords = new ArrayList<DataProviderRecord<E>>();
-	protected List<DataProviderRecord<E>> removedRecords = new ArrayList<DataProviderRecord<E>>();
-	protected List<DataProviderRecord<E>> changedRecords = new ArrayList<DataProviderRecord<E>>();
-	protected List<DataProviderRecord<E>> selectedRecords = new ArrayList<DataProviderRecord<E>>();	
+	protected List<DataProviderRecord<T>> newRecords = new ArrayList<DataProviderRecord<T>>();
+	protected List<DataProviderRecord<T>> removedRecords = new ArrayList<DataProviderRecord<T>>();
+	protected List<DataProviderRecord<T>> changedRecords = new ArrayList<DataProviderRecord<T>>();
+	protected List<DataProviderRecord<T>> selectedRecords = new ArrayList<DataProviderRecord<T>>();	
 
-	protected AsyncStreamingDataProvider<E> dataProvider;
+	protected StreamingDataProvider<T> dataProvider;
 	
-	public StreamingDataProviderOperations(AsyncStreamingDataProvider<E> DataSource)
+	StreamingDataProviderOperations(StreamingDataProvider<T> dataProvider)
 	{
-		this.dataProvider = DataSource;
+		this.dataProvider = dataProvider;
 	}
-
-    public DataProviderRecord<E> insertRecord(int index)
+    
+    DataProviderRecord<T> insertRecord(int index, T object)
 	{
 		this.dataProvider.ensureCurrentPageLoaded();
 		checkRange(index);
-		DataProviderRecord<E> record = new DataProviderRecord<E>(this.dataProvider);
+		DataProviderRecord<T> record = new DataProviderRecord<T>(this.dataProvider);
 		record.setCreated(true);
-		this.dataProvider.data.add(index, record);
+		record.set(object);
+		this.dataProvider.data.insert(index, record);
 		newRecords.add(record);
 		return record;
 	}
 	
-	public DataProviderRecord<E> removeRecord(int index)
+    DataProviderRecord<T> insertRecord(T object)
+	{
+
+    	int index = this.dataProvider.data.size()-1;
+    	if (index < 0)
+    	{
+    		index = 0;
+    	}
+    	return insertRecord(index, object);
+	}
+    
+	DataProviderRecord<T> removeRecord(int index)
 	{
 		this.dataProvider.ensureCurrentPageLoaded();
 		checkRange(index);
-		DataProviderRecord<E> record = this.dataProvider.data.get(index);
+		DataProviderRecord<T> record = this.dataProvider.data.get(index);
 		DataProviderRecordState previousState = record.getCurrentState();
+		if (previousState.isReadOnly())
+		{
+			throw new DataProviderExcpetion("Can not update a read only information");//TODO i18n
+		}
 		record.setRemoved(true);
 		this.dataProvider.data.remove(index);
 		updateState(record, previousState);
 		return record;
 	}
 
-	public void updateState(DataProviderRecord<E> record, DataProviderRecordState previousState)
+	void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
 	{
 		this.dataProvider.ensureCurrentPageLoaded();
 		if (record.isCreated())
@@ -96,57 +112,53 @@ class StreamingDataProviderOperations<E>
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-    protected DataProviderRecord<E>[] copyOf(DataProviderRecord<E>[] original, int newLength)
-	{
-		DataProviderRecord<E>[] copy = new DataProviderRecord[newLength];
-		System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
-		return copy;
-	}
+	void undoChanges()
+    {
+	    // TODO Auto-generated method stub
+	    
+    }
 	
-	protected void checkRange(int index)
-	{
-		if (index < 0 || index >= this.dataProvider.data.size())
-		{
-			throw new IndexOutOfBoundsException();
-		}
-	}
+	void commit()
+    {
+	    // TODO Auto-generated method stub
+	    
+    }
 	
 	@SuppressWarnings("unchecked")
-    public DataProviderRecord<E>[] getNewRecords()
+    DataProviderRecord<T>[] getNewRecords()
 	{
 		return newRecords.toArray(new DataProviderRecord[0]);
 	}
 
 	@SuppressWarnings("unchecked")
-    public DataProviderRecord<E>[] getRemovedRecords()
+    DataProviderRecord<T>[] getRemovedRecords()
 	{
 		return removedRecords.toArray(new DataProviderRecord[0]);
 	}
 	
-	public int getNewRecordsCount()
+	int getNewRecordsCount()
 	{
 		return newRecords.size();
 	}
 
-	public int getRemovedRecordsCount()
+	int getRemovedRecordsCount()
 	{
 		return removedRecords.size();
 	}
 
 	@SuppressWarnings("unchecked")
-    public DataProviderRecord<E>[] getUpdatedRecords()
+    DataProviderRecord<T>[] getUpdatedRecords()
 	{
 		return changedRecords.toArray(new DataProviderRecord[0]);
 	}
 	
 	@SuppressWarnings("unchecked")
-    public DataProviderRecord<E>[] getSelectedRecords()
+    DataProviderRecord<T>[] getSelectedRecords()
 	{
 		return selectedRecords.toArray(new DataProviderRecord[0]);
 	}
 	
-	public int getRecordIndex(E boundObject)
+	int getRecordIndex(T boundObject)
 	{
 		for(int i = 0; i < this.dataProvider.data.size(); i++)
 		{
@@ -159,13 +171,23 @@ class StreamingDataProviderOperations<E>
 		return -1;
 	}
 	
-	public void selectRecord(int index, boolean selected)
+	DataProviderRecord<T> selectRecord(int index, boolean selected)
 	{
 		checkRange(index);
-		this.dataProvider.data.get(index).setSelected(selected);
+		DataProviderRecord<T> record = this.dataProvider.data.get(index);
+		record.setSelected(selected);
+		return record;
 	}
 	
-	public void reset()
+	DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
+    {
+		checkRange(index);
+		DataProviderRecord<T> record = this.dataProvider.data.get(index);
+		record.setReadOnly(readOnly);
+		return record;
+    }
+	
+	void reset()
 	{
 		newRecords.clear();
 		removedRecords.clear();
@@ -173,8 +195,16 @@ class StreamingDataProviderOperations<E>
 		selectedRecords.clear();
 	}
 	
-	public boolean isDirty()
+	boolean isDirty()
 	{
 		return (newRecords.size() > 0) || (removedRecords.size() > 0) || (changedRecords.size() > 0); 
+	}
+	
+	private void checkRange(int index)
+	{
+		if (index < 0 || index >= this.dataProvider.data.size())
+		{
+			throw new IndexOutOfBoundsException();
+		}
 	}
 }

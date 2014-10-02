@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.cruxframework.crux.core.client.collection.Array;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
  * A DataProvider is used to provide information to widgets that implements <code>HasDataProvider</code> interface, 
@@ -27,137 +28,205 @@ import org.cruxframework.crux.core.client.collection.Array;
  * 
  * @author Thiago da Rosa de Bustamante
  */
-public interface DataProvider<E>
+public interface DataProvider<T>
 {
 	/**
 	 * Points DataProvider to first record 
 	 */
-	void firstRecord();
+	void first();
 	
 	/**
 	 * Verify if DataProvider has more records.
 	 * @return true if more records exist.
 	 */
-	boolean hasNextRecord();
+	boolean hasNext();
 	
 	/**
 	 * Points DataProvider to next record 
 	 */
-	void nextRecord();
+	void next();
 
 	/**
 	 * Verify if DataProvider has previous records.
 	 * @return true if previous records exist.
 	 */
-	boolean hasPreviousRecord();
+	boolean hasPrevious();
 
 	/**
 	 * Points DataProvider to previous record 
 	 */
-	void previousRecord();
+	void previous();
 	
 	/**
 	 * Sort DataProvider records, based on column informed
 	 * @param comparator Comparator used for sorting.
 	 */
-	void sort(Comparator<E> comparator);
+	void sort(Comparator<T> comparator);
 
 	/**
 	 * Reset DataProvider, as if it was never loaded before.
 	 */
 	void reset();
 
-
 	/** Return the DataProviderRecord object, representing the current record
 	 * @return current DataProviderRecord object.
 	 */
-	DataProviderRecord<E> getRecord();
+	DataProviderRecord<T> getRecord();
 	
 	/**
-	 * Return a copy of the current record object. 
-	 * @return
+	 * Return the current record object. 
+	 * @return record object
 	 */
-	E getBoundObject();
+	T get();
 		
 	/**
-	 * Insert a new record on DataProvider
-	 * @param beforeRecord
+	 * Update the DataProvider object at the given index 
+	 * @param index object position
+	 * @param object new object to set
 	 * @return
 	 */
-	DataProviderRecord<E> insertRecord(int beforeRecord);
-
-	/**
-	 * Remove a record from DataProvider
-	 * @param record
-	 * @return
-	 */
-	DataProviderRecord<E> removeRecord(int record);
-
-	/**
-	 * Update a record on DataProvider
-	 * @param record
-	 * @param previousState
-	 */
-	void updateState(DataProviderRecord<E> record, DataProviderRecord.DataProviderRecordState previousState);
+	DataProviderRecord<T> set(int index, T object);
 	
+	/**
+	 * Insert a new object on DataProvider
+	 * @param object element to be insert
+	 * @return
+	 */
+	DataProviderRecord<T> add(T object);
+
+	/**
+	 * Insert a new object on DataProvider
+	 * @param beforeIndex position to insert
+	 * @param object element to be insert
+	 * @return
+	 */
+	DataProviderRecord<T> add(int beforeIndex, T object);
+
+	/**
+	 * Remove an object from DataProvider
+	 * @param record
+	 * @return
+	 */
+	DataProviderRecord<T> remove(int record);
+
+	/**
+	 * Mark the given object as selected
+	 * @param index object position
+	 * @param selected true if selected
+	 * @return
+	 */
+	DataProviderRecord<T> select(int index, boolean selected);
+
+	/**
+	 * Mark the given record as selected
+	 * @param object object to select
+	 * @param selected true if selected
+	 * @return
+	 */
+	DataProviderRecord<T> select(T object, boolean selected);
+	
+	/**
+	 * Mark the given object as readOnly
+	 * @param index object position
+	 * @param readOnly true if readOnly
+	 * @return
+	 */
+	DataProviderRecord<T> setReadOnly(int index, boolean readOnly);
+
+	/**
+	 * Mark the given record as readOnly
+	 * @param object object to select
+	 * @param readOnly true if selected
+	 * @return
+	 */
+	DataProviderRecord<T> setReadOnly(T object, boolean readOnly);
+
 	/**
 	 * Return all records inserted on DataProvider
 	 * @return all new records
 	 */
-	DataProviderRecord<E>[] getNewRecords();
+	DataProviderRecord<T>[] getNewRecords();
 
 	/**
 	 * Return all records removed from DataProvider
 	 * @return all removed records
 	 */
-	DataProviderRecord<E>[] getRemovedRecords();
+	DataProviderRecord<T>[] getRemovedRecords();
 
 	/**
 	 * Return all records modified on DataProvider
 	 * @return all modified records
 	 */
-	DataProviderRecord<E>[] getUpdatedRecords();
+	DataProviderRecord<T>[] getUpdatedRecords();
 
 	/**
 	 * Return all records selected on DataProvider
 	 * @return all selected records
 	 */
-	DataProviderRecord<E>[] getSelectedRecords();
+	DataProviderRecord<T>[] getSelectedRecords();
 	
 	/**
 	 * Undo all changes 
 	 */
-	void clearChanges();
+	void rollback();
+
+	/**
+	 * Confirm all changes 
+	 */
+	void commit();
 
 	/**
 	 * Retrieve the index of the given object
 	 * @param boundObject
 	 * @return
 	 */
-	int getIndex(E boundObject);
+	int indexOf(T boundObject);
 	
 	/**
-	 * Mark the given record as selected
-	 * @param index
-	 * @param selected
+	 * Method called to bind some data to the DataProvider
+	 * @param data
 	 */
-	void selectRecord(int index, boolean selected);
+	void setData(T[] data);
 
 	/**
 	 * Method called to bind some data to the DataProvider
 	 * @param data
 	 */
-	void updateData(E[] data);
+	void setData(List<T> data);
 
 	/**
 	 * Method called to bind some data to the DataProvider
 	 * @param data
 	 */
-	void updateData(List<E> data);
+	void setData(Array<T> data);
+	
+	/**
+	 * Load the DataProvider data.
+	 */
+	void load();
+	
+	/**
+	 * Cancel the loading process, that is asynchronous.
+	 */
+	void stopLoading();
+	
+	/**
+	 * Check if the DataProvider is loaded
+	 * @return
+	 */
+	boolean isLoaded();
+	
+	/**
+	 * Add a callback to be notified about DataProvider load events
+	 * @param callback to be called when DataProvider is loaded
+	 * @return a registration that allow handler to be removed 
+	 */
+	HandlerRegistration addDataLoadedHandler(DataLoadedHandler callback);
 
 	/**
-	 * Method called to bind some data to the DataProvider
-	 * @param data
+	 * Add a callback to be notified about DataProvider loading stop events
+	 * @param callback to be called when DataProvider loading is aborted
+	 * @return a registration that allow handler to be removed 
 	 */
-	void updateData(Array<E> data);
+	HandlerRegistration addLoadStoppedHandler(DataLoadStoppedHandler callback);
 }
