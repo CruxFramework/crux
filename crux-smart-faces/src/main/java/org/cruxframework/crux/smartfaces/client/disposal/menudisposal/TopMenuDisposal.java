@@ -22,6 +22,7 @@ import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneRes
 import org.cruxframework.crux.smartfaces.client.backbone.large.FacesBackboneResourcesLarge;
 import org.cruxframework.crux.smartfaces.client.backbone.small.FacesBackboneResourcesSmall;
 import org.cruxframework.crux.smartfaces.client.button.Button;
+import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -144,11 +145,13 @@ public class TopMenuDisposal extends BaseMenuDisposal
 			Button menuButton = new Button();
 			menuButton.setStyleName(TOP_MENU_DISPOSAL_MENU_BUTTON);
 			menuButtonPanel.add(menuButton);
+			disposal.smallHeaderPanel = new HeaderPanel();
+			disposal.smallHeaderPanel.setStyleName(disposal.getSmallHeaderStyleName());
 			menuButton.addSelectHandler(new SelectHandler(){
 				
 				@Override
 				public void onSelect(SelectEvent event)
-				{
+				{ 
 					disposal.showSmallMenu();
 				}
 			});
@@ -178,7 +181,9 @@ public class TopMenuDisposal extends BaseMenuDisposal
 		@Override
 		public void buildLayout(BaseMenuDisposal disposal)
 		{
-			disposal.bodyPanel.add(disposal.headerPanel);
+			disposal.largeHeaderPanel = new HeaderPanel();
+			disposal.largeHeaderPanel.setStyleName(disposal.getHeaderStyleName());
+			disposal.bodyPanel.add(disposal.largeHeaderPanel);
 			disposal.bodyPanel.add(disposal.menuPanel);
 			disposal.bodyPanel.add(disposal.viewContentPanel);
 			disposal.bodyPanel.add(disposal.footerPanel);
@@ -202,6 +207,4 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	{
 		super.setHistoryControlPrefix(historyControlPrefix);
 	}
-	
-
 }

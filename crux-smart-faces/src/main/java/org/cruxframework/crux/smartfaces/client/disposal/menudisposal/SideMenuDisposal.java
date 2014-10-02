@@ -21,10 +21,10 @@ import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneRes
 import org.cruxframework.crux.smartfaces.client.backbone.large.FacesBackboneResourcesLarge;
 import org.cruxframework.crux.smartfaces.client.backbone.small.FacesBackboneResourcesSmall;
 import org.cruxframework.crux.smartfaces.client.button.Button;
+import org.cruxframework.crux.smartfaces.client.panel.HeaderPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * @author wesley.diniz
@@ -87,12 +87,12 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		
 		if (!add)
 		{
-			if(getSizeDisposal().equals(sizeDisposal.LARGE))
+			if(getSizeDisposal().equals(SizeDisposal.LARGE))
 			{
 				addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneSideMenuDisposal());
 			}
 			
-			if(getSizeDisposal().equals(sizeDisposal.SMALL))
+			if(getSizeDisposal().equals(SizeDisposal.SMALL))
 			{
 				addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneSideMenuDisposal());
 			}
@@ -106,12 +106,12 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	{
 	    super.setStyleName(style);
 	    
-	    if(getSizeDisposal().equals(sizeDisposal.LARGE))
+	    if(getSizeDisposal().equals(SizeDisposal.LARGE))
 		{
 			addStyleName(FacesBackboneResourcesLarge.INSTANCE.css().facesBackboneSideMenuDisposal());
 		}
 		
-		if(getSizeDisposal().equals(sizeDisposal.SMALL))
+		if(getSizeDisposal().equals(SizeDisposal.SMALL))
 		{
 			addStyleName(FacesBackboneResourcesSmall.INSTANCE.css().facesBackboneSideMenuDisposal());
 		}
@@ -134,6 +134,9 @@ public class SideMenuDisposal extends BaseMenuDisposal
 			Button menuButton = new Button();
 			menuButton.setStyleName(SIDE_MENU_DISPOSAL_MENU_BUTTON);
 			menuButtonPanel.add(menuButton);
+			disposal.smallHeaderPanel = new HeaderPanel();
+			disposal.smallHeaderPanel.setStyleName(disposal.getSmallHeaderStyleName());
+			
 			menuButton.addSelectHandler(new SelectHandler(){
 				
 				@Override
@@ -173,13 +176,13 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		{ 
 			FlowPanel mainPanel = new FlowPanel();
 			mainPanel.setStyleName(FACES_SIDE_MENU_DISPOSAL_LAYOUT_WRAPPER_PANEL);
-			disposal.headerPanel = new SimplePanel();
+			disposal.largeHeaderPanel = new HeaderPanel();
 			FlowPanel splitPanel = new FlowPanel();
 			splitPanel.addStyleName(FACES_SIDE_MENU_DISPOSAL_SPLIT_PANEL);
 			splitPanel.add(disposal.menuPanel);
 			splitPanel.add(disposal.viewContentPanel);
 			
-			mainPanel.add(disposal.headerPanel);
+			mainPanel.add(disposal.largeHeaderPanel);
 			mainPanel.add(splitPanel);
 			mainPanel.add(disposal.footerPanel);
 			disposal.bodyPanel.add(mainPanel);
