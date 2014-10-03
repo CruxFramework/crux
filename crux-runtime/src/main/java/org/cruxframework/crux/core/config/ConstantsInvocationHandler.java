@@ -210,7 +210,7 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 		PropertyResourceBundle properties = null;
 		try
 		{
-			properties = (PropertyResourceBundle) PropertyResourceBundle.getBundle(targetInterface.getSimpleName(), locale);
+			properties = (PropertyResourceBundle) PropertyResourceBundle.getBundle(targetInterface.getCanonicalName(), locale);
 		}
 		catch (Throwable e) 
 		{
