@@ -359,12 +359,12 @@ public abstract class EvtProcessor extends AbstractProcessor
     /**
      * @param out
      * @param eventValue
-     * @param widget
+     * @param parentVariable
      * @param widgetId
      */
-    public void processEvent(SourcePrinter out, String eventValue, String widget, String widgetId)
+    public void processEvent(SourcePrinter out, String eventValue, String parentVariable, String widgetId)
     {
-		out.println(widget+".add"+getEventHandlerClass().getSimpleName()+"(new "+getEventHandlerClass().getCanonicalName()+"(){");
+		out.println(parentVariable+".add"+getEventHandlerClass().getSimpleName()+"(new "+getEventHandlerClass().getCanonicalName()+"(){");
 		out.println("public void "+getEventName()+"("+getEventClass().getCanonicalName()+" event){");
 		printEvtCall(out, eventValue, "event");
 		out.println("}");
