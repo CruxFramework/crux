@@ -44,6 +44,38 @@ function __MODULE_FUNC__() {
     return (value == null) ? null : value;
   }
   
+  function getCalculatedUserAgent()
+  {
+  	var calculatedUserAgent = 'default';
+  	try 
+  	{
+  		if (typeof(computePropValue('user.agent')) != 'undefined')
+      {
+      	calculatedUserAgent = computePropValue('user.agent'); 
+      }
+  	} catch (e) 
+  	{
+  	}
+  	return calculatedUserAgent;
+  }
+  
+  function getCalculatedDeviceFeatures()
+  {
+  	var calculatedDeviceFeatures = 'default';
+  	
+  	try
+  	{
+			if (typeof(computePropValue('device.features')) != 'undefined')
+	    {
+	    	calculatedDeviceFeatures = computePropValue('device.features'); 
+	    }
+		} catch (e) 
+  	{
+  	}
+  	return calculatedDeviceFeatures;;
+  }
+  
+  
   
   // --------------- PROPERTY PROVIDERS --------------- 
 
@@ -59,12 +91,12 @@ function __MODULE_FUNC__() {
 // __PERMUTATIONS_BEGIN__
       // Permutation logic
 // __PERMUTATIONS_END__
-      var groupId = computePropValue('user.agent')+'_'+computePropValue('device.features');
+      
+      var groupId = getCalculatedUserAgent() + '_' + getCalculatedDeviceFeatures();
       initialHtml = groupId + ".cache.html";
     } catch (e) {
-      // intentionally silent on property failure
-      var groupId = 'default_default';
-      initialHtml = groupId + ".cache.html";
+     // intentionally silent on property failure
+      return;
     }
 
 //	window.__Crux_Frame = true; // Mark this page as a valid crux frame
