@@ -116,12 +116,10 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 	 * Creates an empty popup panel, specifying its "auto-hide" and "modal"
 	 * properties.
 	 * 
-	 * @param autoHide
-	 *            <code>true</code> if the popup should be automatically hidden
+	 * @param autoHide - <code>true</code> if the popup should be automatically hidden
 	 *            when the user clicks outside of it or the history token
 	 *            changes.
-	 * @param modal
-	 *            <code>true</code> if keyboard or mouse events that do not
+	 * @param modal -  <code>true</code> if keyboard or mouse events that do not
 	 *            target the PopupPanel or its children should be ignored
 	 */
 	public PopupPanel(boolean autoHide, boolean modal)
@@ -138,16 +136,16 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 		addCloseHandler(new CloseHandler<PopupPanel>()
 		{
 			@Override
-            public void onClose(CloseEvent<PopupPanel> event)
-            {
-				if(defaultCloseHandlers != null)
+			public void onClose(CloseEvent<PopupPanel> event)
+			{
+				if (defaultCloseHandlers != null)
 				{
-					for(CloseHandler<PopupPanel> closeHandler : defaultCloseHandlers)
+					for (CloseHandler<PopupPanel> closeHandler : defaultCloseHandlers)
 					{
 						closeHandler.onClose(event);
 					}
 				}
-            }
+			}
 		});
 
 		addOpenHandler(new OpenHandler<PopupPanel>()
@@ -155,11 +153,11 @@ public class PopupPanel extends SimplePanel implements HasDialogAnimation, HasCl
 			@Override
             public void onOpen(OpenEvent<PopupPanel> event)
             {
-				if(defaultOpenHandlers != null)
+				if (defaultOpenHandlers != null)
 				{
-					for(OpenHandler<PopupPanel> openHandler : defaultOpenHandlers)
+					for (OpenHandler<PopupPanel> openHandler : defaultOpenHandlers)
 					{
-						openHandler.onOpen(event);;
+						openHandler.onOpen(event);
 					}
 				}
             }
