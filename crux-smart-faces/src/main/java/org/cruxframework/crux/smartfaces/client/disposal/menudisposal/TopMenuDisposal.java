@@ -86,6 +86,11 @@ public class TopMenuDisposal extends BaseMenuDisposal
 		
 		if (!add)
 		{
+			//TODO check why this is getting NULL sometimes
+			if(layoutBuilder == null)
+			{
+				layoutBuilder = GWT.create(LayoutBuilder.class);
+			}
 			layoutBuilder.setStyleName(this);
 		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneTopMenuDisposal());
 		}
@@ -95,6 +100,11 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
+	    //TODO check why this is getting NULL sometimes
+	    if(layoutBuilder == null)
+		{
+			layoutBuilder = GWT.create(LayoutBuilder.class);
+		}
 		layoutBuilder.setStyleName(this);
 	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneTopMenuDisposal());
 	}
