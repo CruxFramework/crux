@@ -42,6 +42,23 @@
 		</any>
 	</replace-with>
 	
+	<!-- BaseMenuDisposal -->
+	<replace-with class="org.cruxframework.crux.smartfaces.client.disposal.menudisposal.BaseMenuDisposal.LargeBaseMenuHandler">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.disposal.menudisposal.BaseMenuDisposal.BaseMenuHandler" />
+		<any>
+			<when-property-is name="device.features" value="largeDisplayArrows" />
+			<when-property-is name="device.features" value="largeDisplayTouch" />
+			<when-property-is name="device.features" value="largeDisplayMouse" />
+		</any>
+	</replace-with>
+	<replace-with class="org.cruxframework.crux.smartfaces.client.disposal.menudisposal.BaseMenuDisposal.SmallBaseMenuHandler">
+		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.disposal.menudisposal.BaseMenuDisposal.BaseMenuHandler" />
+		<any>
+			<when-property-is name="device.features" value="smallDisplayArrows" />
+			<when-property-is name="device.features" value="smallDisplayTouch" />
+		</any>
+	</replace-with>	
+
 	<!-- SideMenuDisposal -->
 	<replace-with class="org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal.LargeLayoutBuilder">
 		<when-type-assignable class="org.cruxframework.crux.smartfaces.client.disposal.menudisposal.SideMenuDisposal.LayoutBuilder" />
@@ -58,7 +75,6 @@
 			<when-property-is name="device.features" value="smallDisplayTouch" />
 		</any>
 	</replace-with>	
-	
 	
 	<!-- TopMenuDisposal -->
 	<replace-with class="org.cruxframework.crux.smartfaces.client.disposal.menudisposal.TopMenuDisposal.LargeLayoutBuilder">
