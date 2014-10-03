@@ -16,15 +16,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 @external *;
 
 .animated {
-  -webkit-animation-duration: 0.3s;
-  animation-duration: 0.3s;
+  -webkit-animation-duration: 1.2s;
+  animation-duration: 1.2s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
 
 .animated.hinge {
-  -webkit-animation-duration: 0.8s;
-  animation-duration: 0.8s;
+  -webkit-animation-duration: 1.2s;
+  animation-duration: 1.2s;
 }
 
 @-webkit-keyframes bounce {
