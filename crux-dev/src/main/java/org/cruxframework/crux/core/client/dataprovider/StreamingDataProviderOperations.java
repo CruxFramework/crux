@@ -112,7 +112,7 @@ class StreamingDataProviderOperations<T>
 		}
 	}
 
-	void undoChanges()
+	void rollback()
     {
 	    // TODO Auto-generated method stub
 	    

@@ -108,7 +108,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	@Override
 	public void rollback()
 	{
-		this.operations.undoChanges();
+		this.operations.rollback();
 	}
 
 	@Override
