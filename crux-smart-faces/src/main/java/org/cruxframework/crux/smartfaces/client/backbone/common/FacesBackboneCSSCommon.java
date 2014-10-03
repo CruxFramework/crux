@@ -41,4 +41,7 @@ public interface FacesBackboneCSSCommon extends CssResource
 	
 	//TopMenuDisposal
 	String facesBackboneTopMenuDisposal();
+	
+	//TopMenuDisposal
+	String facesBackboneSwapPanel();
 }

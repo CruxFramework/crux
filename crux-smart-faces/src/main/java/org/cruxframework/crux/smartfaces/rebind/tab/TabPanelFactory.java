@@ -36,6 +36,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.gwt.rebind.CompositeFactory;
+import org.cruxframework.crux.gwt.rebind.PanelFactory;
 import org.cruxframework.crux.smartfaces.client.tab.TabPanel;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.json.JSONObject;
@@ -74,7 +75,7 @@ class TabPanelContext extends WidgetCreatorContext
 @TagChildren({
 	@TagChild(TabPanelFactory.TabProcessor.class)
 })	
-public class TabPanelFactory extends CompositeFactory<TabPanelContext> 
+public class TabPanelFactory extends PanelFactory<TabPanelContext> 
 									implements HasAnimationFactory<TabPanelContext>, 
 									HasBeforeSelectionHandlersFactory<TabPanelContext>
 {

@@ -31,7 +31,8 @@ public interface FacesBackboneResourcesCommon extends ClientBundle
 		"facesBackboneRollingPanelCommon.css",
 		"facesBackboneTabPanelCommon.css",
 		"facesBackboneSideMenuDisposalCommon.css",
-		"facesBackboneTopMenuDisposalCommon.css"
+		"facesBackboneTopMenuDisposalCommon.css",
+		"facesBackboneSwapPanelCommon.css"
 		})
 	FacesBackboneCSSCommon css();
 }
