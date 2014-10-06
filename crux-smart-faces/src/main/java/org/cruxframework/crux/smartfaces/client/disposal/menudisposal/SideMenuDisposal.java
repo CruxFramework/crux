@@ -40,12 +40,12 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	private static final String SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-SideMenuDisposal-smallHeaderPanel";
 	private static final String RIGHT_MENU_POSITION = "faces-SideMenuDisposal--right";
 	
-	private LayoutBuilder layoutBuilder = GWT.create(LayoutBuilder.class);;
+	private LayoutBuilder layoutBuilder;
 	
 	@Override
 	protected void buildLayout()
 	{
-		layoutBuilder.buildLayout(this);
+		getLayoutBuilder().buildLayout(this);
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
 	
@@ -83,7 +83,7 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		
 		if (!add)
 		{
-			layoutBuilder.setStyleName(this);
+			getLayoutBuilder().setStyleName(this);
 		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
 		}
 	}
@@ -92,7 +92,7 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
-		layoutBuilder.setStyleName(this);
+	    getLayoutBuilder().setStyleName(this);
 	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneSideMenuDisposal());
 	}
 	
@@ -193,4 +193,15 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		void buildLayout(BaseMenuDisposal disposal);
 		void setStyleName(BaseMenuDisposal disposal);
 	}
+	
+	private LayoutBuilder getLayoutBuilder()
+	{
+		if(layoutBuilder == null)
+		{
+			layoutBuilder = GWT.create(LayoutBuilder.class);
+		}
+		
+		return layoutBuilder;
+	}
+			
 }
