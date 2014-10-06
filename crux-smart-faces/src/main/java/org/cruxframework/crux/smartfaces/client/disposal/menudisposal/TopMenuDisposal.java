@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 cruxframework.org.
+2 * Copyright 2011 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -45,7 +45,7 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	@Override
 	protected void buildLayout()
 	{
-		layoutBuilder.buildLayout(this);
+		getLayoutBuilder().buildLayout(this);
 		setStyleName(DEFAULT_STYLE_NAME);
 	}
 
@@ -86,12 +86,7 @@ public class TopMenuDisposal extends BaseMenuDisposal
 		
 		if (!add)
 		{
-			//TODO check why this is getting NULL sometimes
-			if(layoutBuilder == null)
-			{
-				layoutBuilder = GWT.create(LayoutBuilder.class);
-			}
-			layoutBuilder.setStyleName(this);
+			getLayoutBuilder().setStyleName(this);
 		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneTopMenuDisposal());
 		}
 	}
@@ -100,12 +95,8 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
-	    //TODO check why this is getting NULL sometimes
-	    if(layoutBuilder == null)
-		{
-			layoutBuilder = GWT.create(LayoutBuilder.class);
-		}
-		layoutBuilder.setStyleName(this);
+
+	    getLayoutBuilder().setStyleName(this);
 	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneTopMenuDisposal());
 	}
 	
@@ -180,5 +171,15 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	{
 		void buildLayout(BaseMenuDisposal disposal);
 		void setStyleName(BaseMenuDisposal disposal);
+	}
+	
+	private LayoutBuilder getLayoutBuilder()
+	{
+		if(layoutBuilder == null)
+		{
+			layoutBuilder = GWT.create(LayoutBuilder.class);
+		}
+		
+		return layoutBuilder;
 	}
 }
