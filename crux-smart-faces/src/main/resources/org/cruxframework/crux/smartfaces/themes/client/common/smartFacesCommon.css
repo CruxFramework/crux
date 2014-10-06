@@ -1055,6 +1055,16 @@ td > div > .faces--group
     background:#4496c6 linear-gradient(rgba(0,0,0,0) 66%, rgba(0,0,0,0.1) 100%);
 }
 
+.faces-TabBar-item .faces-FlapCloseButton
+{
+	width:16px;
+	height:16px;
+	background:svgIconClose no-repeat;
+	background-size:100% auto;
+	border:none;
+}
+
+
 
 
 
