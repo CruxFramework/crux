@@ -359,14 +359,4 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 			throw new DataProviderExcpetion("DataProvider has changes on page. You must save or discard them before perform this operation.");
 		}
 	}
-	
-	protected FetchDataEvent<T> createAsynchronousDataProviderEvent(int startRecord, int endRecord)
-	{
-		return new FetchDataEvent<T>(this, startRecord, endRecord);
-	}
-	
-	protected MeasureDataEvent<T> createMeasurableDataProviderEvent()
-	{
-		return new MeasureDataEvent<T>(this);
-	}
 }

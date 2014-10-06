@@ -558,11 +558,11 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		}
 		else
 		{
-			firePageFetchEvent(getPageStartRecord(), getPageEndRecord());
+			firePageLoadedEvent(getPageStartRecord(), getPageEndRecord());
 		}
 	}
 	
-	protected void firePageFetchEvent(int start, int end)
+	protected void firePageLoadedEvent(int start, int end)
     {
 		if (pageFetchHandlers != null)
 		{
@@ -605,11 +605,11 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		int updateRecordsCount = updateRecords(startRecord, endRecord, records);
 		if (updateRecordsCount > 0)
 		{
-			firePageFetchEvent(startRecord, startRecord+updateRecordsCount-1);
+			firePageLoadedEvent(startRecord, startRecord+updateRecordsCount-1);
 		}
 		else
 		{
-			firePageFetchEvent(-1, -1);
+			firePageLoadedEvent(-1, -1);
 		}
 	}
 
