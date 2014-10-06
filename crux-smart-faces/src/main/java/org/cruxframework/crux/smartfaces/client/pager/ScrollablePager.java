@@ -51,6 +51,8 @@ public class ScrollablePager extends AbstractPager
 		// Handle scroll events.
 		scrollable.addScrollHandler(new ScrollHandler()
 		{
+			private int lastRequestedPage;
+
 			public void onScroll(ScrollEvent event)
 			{
 				// If scrolling up, ignore the event.
@@ -64,12 +66,17 @@ public class ScrollablePager extends AbstractPager
 				int maxScrollTop = scrollable.getWidget().getOffsetHeight() - scrollable.getOffsetHeight();
 				if (lastScrollPos >= maxScrollTop)
 				{
-					if (getPageable().getDataProvider().hasNextPage())
+					if (!isLastPage())
 					{
-						PageEvent pageEvent = PageEvent.fire(ScrollablePager.this, getCurrentPage() + 1);
-						if(!pageEvent.isCanceled())
+						int nextRequestedPage = getCurrentPage() + 1;
+						if (lastRequestedPage != nextRequestedPage)
 						{
-							nextPage();
+							lastRequestedPage = nextRequestedPage;
+							PageEvent pageEvent = PageEvent.fire(ScrollablePager.this, nextRequestedPage);
+							if(!pageEvent.isCanceled())
+							{
+								nextPage();
+							}
 						}
 					}
 				}
@@ -96,7 +103,7 @@ public class ScrollablePager extends AbstractPager
 		if (loadingElement == null)
 		{
 			loadingElement = Document.get().createDivElement();
-			loadingElement.setClassName("pagerLoading");
+			loadingElement.setClassName("faces-ScollablePager--pagerLoading");
 			Document.get().getBody().appendChild(loadingElement);
 		}
     }

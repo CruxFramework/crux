@@ -227,6 +227,7 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 				break;
 			}
 		}
+		updatePager();
     }
 
 	protected void updatePager()
