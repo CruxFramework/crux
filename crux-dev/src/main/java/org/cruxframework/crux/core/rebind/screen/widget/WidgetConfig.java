@@ -24,6 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.screen.RequiresResizeFactory;
 import org.cruxframework.crux.scanner.ClassScanner;
 
@@ -193,6 +194,8 @@ public class WidgetConfig
 	 * @param type
 	 * @return
 	 */
+	@Deprecated
+	@Legacy
 	public static boolean isWidgetContainer(String type)
 	{
 		if (widgetContainers == null)
