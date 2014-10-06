@@ -31,6 +31,9 @@ public interface SmartFacesResourcesCommon extends ClientBundle
 	@Source("org/cruxframework/crux/smartfaces/themes/client/common/svg-icon-close.svg")
 	DataResource svgIconClose();
 	
+	@Source("org/cruxframework/crux/smartfaces/themes/client/common/svg-icon-close-white.svg")
+	DataResource svgIconCloseWhite();
+	
 	@Source("org/cruxframework/crux/smartfaces/themes/client/common/svg-icon-arrow.svg")
 	DataResource svgIconArrow();
 }

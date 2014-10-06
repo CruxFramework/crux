@@ -4,6 +4,7 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 @external *;
 
 @url svgIconClose svgIconClose;
+@url svgIconCloseWhite svgIconCloseWhite;
 @url svgIconArrow svgIconArrow;
 
 *:focus, *:active, *:hover	
@@ -1059,9 +1060,10 @@ td > div > .faces--group
 {
 	width:16px;
 	height:16px;
-	background:svgIconClose no-repeat;
+	background:svgIconCloseWhite no-repeat;
 	background-size:100% auto;
 	border:none;
+	margin-left:8px;
 }
 
 
