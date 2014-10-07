@@ -1632,7 +1632,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	@Override
 	protected void fireBeforeRowEditEvent(DataRow row)
 	{
-		BeforeRowEditEvent.fire(this, row);
+		BeforeRowEditEvent event = BeforeRowEditEvent.fire(this, row);
+		if (event.isCanceled())
+		{
+			rollbackRowEdition(row);
+		}
 	}
 
 	@Override
