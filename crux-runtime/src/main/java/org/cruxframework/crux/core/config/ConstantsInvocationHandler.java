@@ -210,22 +210,29 @@ public abstract class ConstantsInvocationHandler implements InvocationHandler
 		PropertyResourceBundle properties = null;
 		try
 		{
-			properties = (PropertyResourceBundle) PropertyResourceBundle.getBundle(targetInterface.getCanonicalName(), locale);
+			properties = (PropertyResourceBundle) PropertyResourceBundle.getBundle(targetInterface.getSimpleName(), locale);
 		}
-		catch (Throwable e) 
+		catch (Exception e) 
 		{
-			try 
+			try
 			{
-				String resourceName = "/"+targetInterface.getName().replaceAll("\\.", "/") + ".properties";
-				InputStream input = targetInterface.getClassLoader().getResourceAsStream(resourceName);
-				if (input != null)
+				properties = (PropertyResourceBundle) PropertyResourceBundle.getBundle(targetInterface.getCanonicalName(), locale);
+			}
+			catch (Exception f) 
+			{
+				try 
 				{
-					properties = new PropertyResourceBundle(input);
-				}
-			} 
-			catch (IOException e1) 
-			{
-				throw new MessageException(e.getMessage(), e);
+					String resourceName = "/"+targetInterface.getName().replaceAll("\\.", "/") + ".properties";
+					InputStream input = targetInterface.getClassLoader().getResourceAsStream(resourceName);
+					if (input != null)
+					{
+						properties = new PropertyResourceBundle(input);
+					}
+				} 
+				catch (IOException e1) 
+				{
+					throw new MessageException(e.getMessage(), e);
+				}				
 			}
 		}
 		return properties;
