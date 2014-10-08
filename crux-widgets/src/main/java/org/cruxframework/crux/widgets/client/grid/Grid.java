@@ -1037,17 +1037,21 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	 */
 	public void rollbackRowEdition(DataRow row)
 	{
-		if (row != null && fireBeforeCancelRowEditionEvent(row))
+		if (row != null)
 		{	
-			if(originalRecord != null)
+			if(fireBeforeCancelRowEditionEvent(row))
 			{
-				row.getDataSourceRecord().setRecordDto(originalRecord);
+				if(originalRecord != null)
+				{
+					row.getDataSourceRecord().setRecordDto(originalRecord);
+				}
+				fireCancelRowEditionEvent(row);
 			}
+			
 			row.setEditMode(false);
 			renderRow(row, row.getDataSourceRecord(), false, null);
 			this.currentEditingRow = null;
 			enableRows();
-			fireCancelRowEditionEvent(row);
 		}
 	}
 
