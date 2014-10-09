@@ -16,6 +16,7 @@
 package org.cruxframework.crux.core.client.screen.views;
 
 import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.core.client.screen.history.History;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.Scheduler;
@@ -38,7 +39,8 @@ public abstract class CrawlableViewContainer extends ViewContainer
 	private String historyControlPrefix = null;
 	private HandlerRegistration historyControlHandler;
 	private boolean createNewHistoryToken = true;
-
+	private int historyStackSize = 0;
+	
 	/**
 	 * Constructor
 	 * @param mainWidget main widget on this container
@@ -198,16 +200,29 @@ public abstract class CrawlableViewContainer extends ViewContainer
 	{
 		if (isHistoryControlEnabled())
 		{
+			int historyLength = History.length();
+			boolean backButtonPressed =  (historyLength < historyStackSize);
+			historyStackSize = historyLength;
 			if (token != null && token.startsWith(historyControlPrefix))
 			{
 				String viewId = token.substring(historyControlPrefix.length());
 				if (!isViewDisplayed(viewId))
 				{
 					createNewHistoryToken = false; 
-					showView(viewId);
+					showView(viewId, backButtonPressed);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Show the given view, considering that the last navigation was derived from an user back command.
+	 * @param viewName view name
+	 * @param backButtonPressed true if it is possible to detect that the last navigation was derived from an user back command
+	 */
+	protected void showView(String viewName, boolean backButtonPressed)
+	{
+		showView(viewName);
 	}
 	
 	protected abstract boolean isViewDisplayed(String viewId);
