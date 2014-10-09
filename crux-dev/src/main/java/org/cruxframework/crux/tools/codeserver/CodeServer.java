@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
@@ -133,6 +134,7 @@ public class CodeServer
 		DevelopmentScanners.initializeScanners();
 		ServiceFactoryInitializer.initialize(null);
 		RestServiceFactoryInitializer.initialize(null);
+		ViewProcessor.setOutputCharset("UTF-8");
 		
 		Set<String> screenIDs = null;
 		try
