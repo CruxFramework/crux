@@ -59,7 +59,7 @@ public class History
 	 * @return history length
 	 */
 	public static native int length()/*-{
-       ($wnd.history.length?$wnd.history.length:0); 
+       return ($wnd.history.length?$wnd.history.length:0); 
     }-*/;
 
 	/**

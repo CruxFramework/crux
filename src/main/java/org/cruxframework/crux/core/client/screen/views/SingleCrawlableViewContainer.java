@@ -52,6 +52,7 @@ public abstract class SingleCrawlableViewContainer extends CrawlableViewContaine
 		return (view != null && view.isActive());
 	}
 	
+	
 	@Override
 	protected boolean activate(View view, Panel containerPanel, Object parameter)
 	{
