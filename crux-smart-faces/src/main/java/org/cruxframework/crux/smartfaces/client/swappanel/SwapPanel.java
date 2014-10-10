@@ -133,7 +133,7 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	 */
 	public void transitTo(final Widget widget, SwapAnimation animation) 
 	{
-		transitTo(widget, animation, this.animationEnabled);
+		transitTo(widget, animation, this.animationEnabled, null);
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	 * @param animation - type of animation
 	 * @param animationEnabled - type of animation
 	 */
-	public void transitTo(final Widget widget, SwapAnimation animation, boolean animationEnabled)
+	public void transitTo(final Widget widget, SwapAnimation animation, boolean animationEnabled, final SwapAnimationCallback callback)
 	{
 		if (!animating)
 		{
@@ -187,6 +187,10 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 					public void onAnimationCompleted()
 					{
 						completedAnimation();
+						if (callback != null)
+						{
+							callback.onAnimationCompleted();
+						}
 					}
 				});
 			}

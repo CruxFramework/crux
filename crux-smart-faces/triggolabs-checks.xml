@@ -131,7 +131,7 @@
 	
 		<module name="MagicNumber" />
 	
-		<module name="ExplicitInitialization" />
+<!-- 		<module name="ExplicitInitialization" /> -->
 	
 		<module name="ParameterNumber">
 			<property name="max" value="9" />
