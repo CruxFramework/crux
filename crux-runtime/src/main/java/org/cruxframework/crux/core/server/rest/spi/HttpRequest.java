@@ -106,7 +106,6 @@ public class HttpRequest
 		request.removeAttribute(name);
 	}
 
-	
 	/**
 	 * @see javax.servlet.http.HttpServletRequest.getUserPrincipal() 
 	 */
@@ -296,6 +295,18 @@ public class HttpRequest
 	public int getRemotePort() 
 	{
 		return request.getRemotePort();
+	}
+	
+	/**
+	 * @see request.isUserInRole(String);
+	 * @return a <code>boolean</code> indicating whether
+     *			the user making this request belongs to a given role;
+     *			<code>false</code> if the user has not been 
+     *			authenticated
+	 */
+	public boolean isUserInRole(String role) 
+	{
+		return request.isUserInRole(role);
 	}
 	
 	/**
