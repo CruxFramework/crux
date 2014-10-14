@@ -246,6 +246,12 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 		}
 	}
 
+	@Override
+	public Array<T> filter(DataFilter<T> filter)
+	{
+	    return operations.filter(filter);
+	}
+    
 	protected void setFirstPosition(boolean fireEvents)
 	{
 		currentRecord = -1;

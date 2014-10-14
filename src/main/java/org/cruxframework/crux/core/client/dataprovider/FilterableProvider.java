@@ -15,8 +15,6 @@
  */
 package org.cruxframework.crux.core.client.dataprovider;
 
-import org.cruxframework.crux.core.client.collection.Array;
-
 import com.google.gwt.event.shared.HandlerRegistration;
 
 /**
@@ -40,32 +38,10 @@ public interface FilterableProvider<T> extends DataProvider<T>
  	void removeFilters();
 
  	/**
- 	 * Return a filtered set of data, applying the given filter to the whole set of data.
- 	 * This operation does not affect the internal set of data. For this purpose, use addFilter instead.
- 	 * @param filter filter to apply
- 	 * @return data filtered
- 	 */
-	Array<T> filter(DataFilter<T> filter);
-	  	
- 	/**
 	 * Add an handler to be called when filter operations are applied
 	 * @param handler called when filter perform some operation on data
 	 */
 	HandlerRegistration addDataFilterHandler(DataFilterHandler<T> handler);
-	
-	/**
-	 * A Filter used to filter data on {@link DataProvider}
-	 * @author Thiago da Rosa de Bustamante
-	 */
-	public interface DataFilter<T>
-	{
-		/**
-		 * Check if the given dataObject should be accepted by the current filter
-		 * @param dataObject record object on {@link DataProvider}
-		 * @return true if accepted.
-		 */
-		boolean accept(T dataObject);
-	}
 	
 	/**
 	 * A registration handler for this filter. Created when a filter is bound to a {@link DataProvider}

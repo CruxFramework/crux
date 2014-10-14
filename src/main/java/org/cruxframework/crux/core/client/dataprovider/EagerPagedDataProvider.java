@@ -51,12 +51,6 @@ public class EagerPagedDataProvider<T> extends AbstractPagedDataProvider<T>
     }
 	
 	@Override
-	public Array<T> filter(DataFilter<T> filter)
-	{
-	    return operations.filter(filter);
-	}
-	
-	@Override
 	public void load()
 	{
 		if (!isLoaded() && dataLoader != null)
