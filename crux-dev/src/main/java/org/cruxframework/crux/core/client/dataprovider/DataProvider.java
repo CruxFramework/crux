@@ -216,6 +216,14 @@ public interface DataProvider<T>
 	 */
 	boolean isLoaded();
 	
+ 	/**
+ 	 * Return a filtered set of data, applying the given filter to the whole set of data.
+ 	 * This operation does not affect the internal set of data. For this purpose, use addFilter instead.
+ 	 * @param filter filter to apply
+ 	 * @return data filtered
+ 	 */
+	Array<T> filter(DataFilter<T> filter);
+	  	
 	/**
 	 * Add a callback to be notified about DataProvider load events
 	 * @param callback to be called when DataProvider is loaded

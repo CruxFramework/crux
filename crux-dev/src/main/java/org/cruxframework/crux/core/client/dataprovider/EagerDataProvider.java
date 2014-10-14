@@ -48,13 +48,7 @@ public class EagerDataProvider<T> extends AbstractScrollableDataProvider<T>
     {
 	    return dataLoader;
     }
-		
-	@Override
-	public Array<T> filter(DataFilter<T> filter)
-	{
-	    return operations.filter(filter);
-	}
-	
+			
 	@Override
 	public void load()
 	{

@@ -21,7 +21,6 @@ import java.util.List;
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataProviderRecordState;
-import org.cruxframework.crux.core.client.dataprovider.FilterableProvider.DataFilter;
 import org.cruxframework.crux.core.client.dataprovider.FilterableProvider.FilterRegistration;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -237,10 +236,14 @@ class DataProviderOperations<T>
 			int size = toSearch.size();
 			for (int i = 0; i < size; i++)
 			{
-				T object = toSearch.get(i).getRecordObject();
-				if (filter.accept(object))
+				DataProviderRecord<T> dataProviderRecord = toSearch.get(i);
+				if (dataProviderRecord != null)
 				{
-					result.add(object);
+					T object = dataProviderRecord.getRecordObject();
+					if (filter.accept(object))
+					{
+						result.add(object);
+					}
 				}
 			}
 		}
@@ -330,6 +333,22 @@ class DataProviderOperations<T>
 		};
 	}
 		
+	Array<T> getData()
+	{
+	    if (dataProvider.data != null)
+	    {
+	    	int size = dataProvider.data.size();
+			Array<T> allData = CollectionFactory.createArray(size);
+	    	for (int i = 0; i < size; i++)
+	    	{
+	    		allData.add(dataProvider.data.get(i).getRecordObject());
+	    	}
+	    	
+	    	return allData;
+	    }
+	    return null;
+	}
+	
 	private void applyFilter(final DataFilter<T> filter)
     {
 		Array<DataProviderRecord<T>> array = CollectionFactory.createArray();
@@ -419,21 +438,5 @@ class DataProviderOperations<T>
 		{
 			throw new IndexOutOfBoundsException();
 		}
-	}
-
-	public Array<T> getData()
-	{
-	    if (dataProvider.data != null)
-	    {
-	    	int size = dataProvider.data.size();
-			Array<T> allData = CollectionFactory.createArray(size);
-	    	for (int i = 0; i < size; i++)
-	    	{
-	    		allData.add(dataProvider.data.get(i).getRecordObject());
-	    	}
-	    	
-	    	return allData;
-	    }
-	    return null;
 	}
 }

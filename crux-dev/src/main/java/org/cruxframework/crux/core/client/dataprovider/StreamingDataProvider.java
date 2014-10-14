@@ -479,6 +479,31 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		}
     }
 
+	@Override
+	public Array<T> filter(DataFilter<T> filter)
+	{
+		Array<T> result = CollectionFactory.createArray();
+
+		if (data != null)
+		{
+			int size = data.size();
+			for (int i = 0; i < size; i++)
+			{
+				DataProviderRecord<T> dataProviderRecord = data.get(i);
+				if (dataProviderRecord != null)
+				{
+					T object = dataProviderRecord.getRecordObject();
+					if (filter.accept(object))
+					{
+						result.add(object);
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+	
 	protected void ensureCurrentPageLoaded()
 	{
 		boolean loaded = isCurrentPageLoaded();
