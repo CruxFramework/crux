@@ -1,10 +1,4 @@
 <module>
-	<inherits name='org.cruxframework.crux.core.Crux'/>
-	
-	<entry-point class='org.cruxframework.crux.tools.codeserver.client.CodeServerNotifier'/>
-
+    <inherits name='org.cruxframework.crux.tools.codeserver.CruxCodeServerNoLinker' />
 	<add-linker name="xsiframe"/>
-	<set-property name="compiler.useSourceMaps" value="true" />
-
-	<source path="client" /> 	
 </module>
