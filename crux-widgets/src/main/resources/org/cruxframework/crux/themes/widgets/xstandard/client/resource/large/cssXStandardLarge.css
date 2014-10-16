@@ -1018,6 +1018,11 @@
     background: #FFF !important;
 }
 
+.row-highlighted td
+{
+    background: #FFFFE1 !important;
+}
+
 .grid th
 {
     background: #E4F6F1 !important;

@@ -1774,7 +1774,6 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 			columnLabelArrow = new Label(" ");
 			columnLabelArrow.setStyleName("arrow");
-
 			panel.add(columnLabel);
 			panel.add(columnLabelArrow);
 
@@ -1846,7 +1845,17 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 
 		void applySortingLayout()
 		{
-			if (this.columnDefinition.getKey().equals(grid.currentSortingColumn))
+			String column = this.columnDefinition.getKey();
+			String previousSorting = grid.currentSortingColumn;
+			
+			String[] columns = new String[2];
+			if(previousSorting != null && previousSorting.contains("#"))
+			{
+				columns = splitColumns(previousSorting);
+				previousSorting = columns[0];
+			}
+			
+			if (column.equals(previousSorting))
 			{
 				if (grid.ascendingSort)
 				{
@@ -1860,6 +1869,16 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				removeStyleDependentName("asc");
 				removeStyleDependentName("desc");
 			}
+		}
+		
+		private String[] splitColumns(String columns)
+		{
+			if(columns != null && columns.contains("#"))
+			{
+				return columns.split("#");
+			}
+			
+			return null;
 		}
 	}
 
