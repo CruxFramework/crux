@@ -1066,7 +1066,39 @@ td > div > .faces--group
 	margin-left:8px;
 }
 
+/* ------------ Combobox ---------------- */
 
+.faces-comboBoxOptionPanel
+{
+	background-color: #FFFFFF;
+}
+
+.faces-comboBoxOptionPanel:hover * 
+{
+	background-color: #4496c6;
+	color: #fff;
+	cursor: pointer;
+}
+
+.faces-comboBox-LabelItem
+{
+	
+}
+
+.faces-comboBox-comboItemList
+{
+	
+}
+
+.faces-ComboBox-Text
+{
+	width: 200px;
+}
+
+.faces-comboBox-scrollPanel
+{
+	height: 200px;
+}
 
 
 

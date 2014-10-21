@@ -1,0 +1,8 @@
+@external faces-*;
+.facesBackboneCombobox{}
+
+.facesBackboneCombobox .faces-ComboBox-Button
+{
+	height: 23px;
+	width: 23px;
+}

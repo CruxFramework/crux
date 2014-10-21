@@ -15,6 +15,10 @@
  */
 package org.cruxframework.crux.smartfaces.client.list;
 
+import org.cruxframework.crux.core.client.collection.Array;
+import org.cruxframework.crux.core.client.dataprovider.DataFilter;
+import org.cruxframework.crux.core.client.dataprovider.DataProvider;
+
 
 /**
  * @author wesley.diniz
@@ -29,14 +33,46 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 	}
 
 	@Override
-	public void setValue(String value)
+	public void setValue(final String value)
 	{
+		DataProvider<T> dataProvider = getDataProvider();
+		Array<T> filterResult = dataProvider.filter(new DataFilter<T>(){
+
+			@Override
+			public boolean accept(T dataObject)
+			{
+				return optionsRenderer.getValue(dataObject).equals(value);
+			}
+		});
 		
+		if(filterResult.size() > 0)
+		{
+			T obj = filterResult.get(0);
+			selectItem(optionsRenderer.getLabel(obj), optionsRenderer.getValue(obj));
+		}
 	}
 
 	@Override
 	public void setValue(String value, boolean fireEvents)
 	{
-		
+		setValue(value);
+	}
+
+	@Override
+	protected void setValueByObject(T obj)
+	{
+		setValue(optionsRenderer.getValue(obj));
+	}
+	
+	@Override
+	public boolean isFilterable()
+	{
+		return super.isFilterable();
+	}
+	
+	@Override
+	public void setFilterable(boolean isFilterable)
+	{
+		super.setFilterable(isFilterable);
 	}
 }
