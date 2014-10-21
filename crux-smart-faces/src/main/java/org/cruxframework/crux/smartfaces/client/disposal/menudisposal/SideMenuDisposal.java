@@ -40,7 +40,7 @@ public class SideMenuDisposal extends BaseMenuDisposal
 	private static final String SIDE_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-SideMenuDisposal-smallHeaderPanel";
 	private static final String RIGHT_MENU_POSITION = "faces-SideMenuDisposal--right";
 	
-	private LayoutBuilder layoutBuilder;
+	private LayoutBuilder layoutBuilder = null;
 	
 	@Override
 	protected void buildLayout()

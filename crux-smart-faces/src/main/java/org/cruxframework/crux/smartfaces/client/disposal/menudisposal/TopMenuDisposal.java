@@ -40,7 +40,7 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	private static final String CONTENT_PANEL_STYLE = "faces-TopMenuDisposal-contentPanel";
 	private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-TopMenuDisposal-smallHeaderPanel";
 
-	private LayoutBuilder layoutBuilder = GWT.create(LayoutBuilder.class);
+	private LayoutBuilder layoutBuilder = null;
 
 	@Override
 	protected void buildLayout()
