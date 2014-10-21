@@ -87,7 +87,6 @@ public abstract class ViewContainer extends Composite
 				}
 			});
 			initWidget(this.mainWidget);
-			setStyleName("crux-ViewContainer");
 		}
 		
 		this.clearPanelsForDeactivatedViews = clearPanelsForDeactivatedViews;
