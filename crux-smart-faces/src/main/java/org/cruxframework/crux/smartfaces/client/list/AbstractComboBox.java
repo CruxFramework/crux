@@ -185,7 +185,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		popup = new PopupPanel();
 		popup.addStyleName(COMBO_BOX_POPUP);
 		popup.setAutoHideEnabled(true);
-		//scrollPanel.setWidth(textBox.getElement().getStyle().getWidth());
 		popup.add(scrollPanel);
 		popup.showRelativeTo(textBox);
 	}
