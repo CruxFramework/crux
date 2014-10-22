@@ -57,7 +57,8 @@ class ComboBoxContext extends WidgetCreatorContext
 //TODO Create another factory to separate the two combo types
 @DeclarativeFactory(targetWidget = ComboBox.class, id = "comboBox", library = Constants.LIBRARY_NAME, description = "Combobox component that uses a data provider to display a list of item or widgets")
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="isFilterable",defaultValue="false", type=Boolean.class,required=false,description="If true, the user can type on textbox to apply a filter")	
+	@TagAttributeDeclaration(value="isFilterable",defaultValue="false", type=Boolean.class,required=false,description="If true, the user can type on textbox to apply a filter"),
+	@TagAttributeDeclaration(value="width", type=String.class)
 })
 @TagChildren({ 
 	@TagChild(HasPagedDataProviderFactory.PagedDataProviderChildren.class), 
@@ -101,6 +102,18 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<ComboBoxCon
 		generateOptionRendererCreation(out, context, optionsRendererChild, context.dataObject, comboBoxRendererClassName);
 		// TODO por uma validacao pra ver se achou um optionsRenderer
 		out.println("final " + className + " " + context.getWidget() + " = new " + className + "(" + comboBoxRenderer + ");");
+		
+		String width = context.readChildProperty("width");
+		
+		if(!width.isEmpty())
+		{
+			out.println(context.getWidget() +".setWidth("+EscapeUtils.quote(width)+");");
+		}
+		else
+		{
+			out.println(context.getWidget() +".setWidth(\"150px\");");
+		}
+		
 	}
 
 	protected void generateOptionRendererCreation(SourcePrinter out, ComboBoxContext context, JSONObject optionRendererElement, JClassType dataObject, String comboBoxRendererClassName)
