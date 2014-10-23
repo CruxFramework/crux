@@ -75,6 +75,7 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -1000,10 +1001,13 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			chooseFocusedEditor(editors, editableColumns, focusCellKey);
 			fireBeforeRowEditEvent(row);
+		}else{
+			row.setEnabled(!row.getDataSourceRecord().isReadOnly());
 		}
 
 		row.setSelected(row.getDataSourceRecord().isSelected());
-		row.setEnabled(!row.getDataSourceRecord().isReadOnly());
+		
+			
 
 		if (dataSource.hasNextRecord())
 		{
@@ -1924,6 +1928,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			row.setSelected(true);
 			originalRecord = getDataSource().cloneDTO(row.getDataSourceRecord());
 			swapCurrentEditingRow(row);
+			CheckBox selector = (CheckBox) row.getCell(0).getCellWidget();
+			selector.setEnabled(false);
 			
 			String focusCellKey = null;
 
