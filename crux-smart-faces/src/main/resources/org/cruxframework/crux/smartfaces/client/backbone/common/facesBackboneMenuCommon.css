@@ -19,6 +19,10 @@
 .facesBackboneMenu.faces-Menu--grow > .faces-Menu-ul > .faces-Menu-li
 {
 	flex-grow:1;
+	-webkit-flex-grow:1;
+	-moz-flex-grow:1;
+	-webkit-box-flex:1;
+	-ms-flex-positive: 1;
 }
 
 
@@ -47,8 +51,12 @@
 
 .facesBackboneMenu.faces-Menu-horizontal.faces-Menu-dropdown > .faces-Menu-ul
 {
-	/* Menu backbone styles */
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
 	display: flex;
+	
 	flex-flow: row wrap;
 }
 
