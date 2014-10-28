@@ -25,6 +25,9 @@ public interface Crux
 	@DefaultServerMessage("crux_comp")
 	String cruxCompilationTempFolder();
 	
+	@DefaultServerMessage("9877")
+	String notifierCompilerPort();
+	
 	@DefaultServerMessage("true")
 	String isRelativeCruxCompilationTempFolder();
 	
