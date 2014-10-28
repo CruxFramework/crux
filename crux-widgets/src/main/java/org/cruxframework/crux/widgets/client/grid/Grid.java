@@ -1001,11 +1001,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			chooseFocusedEditor(editors, editableColumns, focusCellKey);
 			fireBeforeRowEditEvent(row);
-		}else{
-			row.setEnabled(!row.getDataSourceRecord().isReadOnly());
+			row.setEnabled(false);
 		}
 
 		row.setSelected(row.getDataSourceRecord().isSelected());
+		row.setEnabled(!row.getDataSourceRecord().isReadOnly());
 		
 			
 
@@ -1949,8 +1949,8 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 				}
 			}
 
-			renderRow(row, row.getDataSourceRecord(), true, focusCellKey);
 			row.setEditMode(true);
+			renderRow(row, row.getDataSourceRecord(), true, focusCellKey);
 
 			if(showEditorButtons)
 			{
