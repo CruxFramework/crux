@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.rebind.module.Modules;
@@ -122,7 +123,7 @@ public class CodeServer
 	
 	protected int getDefaultNotificationPort()
 	{
-		return CodeServerNotifier.DEFAULT_COMPILER_NOTIFIER_PORT;
+		return Integer.valueOf(ConfigurationFactory.getConfigurations().notifierCompilerPort());
 	}
 
 	protected void execute() throws Exception

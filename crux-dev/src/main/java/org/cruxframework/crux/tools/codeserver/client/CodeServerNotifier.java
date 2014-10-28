@@ -39,14 +39,12 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
 
 /**
- * 
  * @author Thiago da Rosa de Bustamante
  *
  */
 public class CodeServerNotifier implements EntryPoint 
 {
 	private static final String DEFAULT_MESSAGE_COMPILING = "Compiling module...";
-	public static final int DEFAULT_COMPILER_NOTIFIER_PORT = 9877;
 	private static Logger logger = Logger.getLogger(CodeServerNotifier.class.getName());
 
 	private DialogBox dialogBox;
@@ -64,15 +62,22 @@ public class CodeServerNotifier implements EntryPoint
 		
 		dialogBox.add(label);
 		//TODO take the URL from user, as a parameter... if not provided, use the expression below as default
-		final String url = "ws://" + Window.Location.getHostName() + ":" + DEFAULT_COMPILER_NOTIFIER_PORT;
-		final WebSocket socket = WebSocket.createIfSupported(url);
+		//CHECKSTYLE:OFF
+		final String url = "ws://" + Window.Location.getHostName() + ":" + Crux.getConfig().notifierCompilerPort();
+		//CHECKSTYLE:ON
+		final WebSocket SOCKET = WebSocket.createIfSupported(url);
 		
-		if(socket == null)
+		if (SOCKET == null)
 		{
 			logger.info("Browser do not support Websocket.");
 			return;
 		}
 		
+		addHandlers(SOCKET);
+	}
+
+	private void addHandlers(final WebSocket socket) 
+	{
 		socket.addCloseHandler(new SocketCloseHandler() 
 		{
 			@Override
@@ -133,12 +138,12 @@ public class CodeServerNotifier implements EntryPoint
 							}
 							else
 							{
-								Crux.getErrorHandler().handleError("Error compiling module "+compilationMessage.getModule()+".");
+								Crux.getErrorHandler().handleError("Error compiling module " + compilationMessage.getModule() + ".");
 							}
 						break;
 					}
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					Crux.getErrorHandler().handleError("Error parsing message from Compilation Notifier service", e);
 				}
