@@ -997,17 +997,15 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			}
 		}
 
+		row.setSelected(row.getDataSourceRecord().isSelected());
+		row.setEnabled(!row.getDataSourceRecord().isReadOnly());
+		
 		if (editMode)
 		{
 			chooseFocusedEditor(editors, editableColumns, focusCellKey);
 			fireBeforeRowEditEvent(row);
-			row.setEnabled(false);
-		}
-
-		row.setSelected(row.getDataSourceRecord().isSelected());
-		row.setEnabled(!row.getDataSourceRecord().isReadOnly());
-		
-			
+			row.disableRowSelector();
+		}	
 
 		if (dataSource.hasNextRecord())
 		{

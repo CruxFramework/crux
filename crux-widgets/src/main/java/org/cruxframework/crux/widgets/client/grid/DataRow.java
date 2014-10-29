@@ -15,12 +15,10 @@
  */
 package org.cruxframework.crux.widgets.client.grid;
 
-import org.cruxframework.crux.core.client.bean.BeanCopier;
 import org.cruxframework.crux.core.client.datasource.DataSource;
 import org.cruxframework.crux.core.client.datasource.DataSourceRecord;
 import org.cruxframework.crux.core.client.datasource.PagedDataSource;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 
 public class DataRow extends Row
