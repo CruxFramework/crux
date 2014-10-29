@@ -564,6 +564,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 						if(fireBeforeCancelRowEditionEvent(r))
 						{
 							grid.removeRow(r);
+							enableRows();
 							return;
 						}
 					}
@@ -1004,8 +1005,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		{
 			chooseFocusedEditor(editors, editableColumns, focusCellKey);
 			fireBeforeRowEditEvent(row);
-			row.disableRowSelector();
-		}	
+			row.setRowSelectorEnabled(false);
+		}
+		else
+		{
+			row.setRowSelectorEnabled(true);
+		}
 
 		if (dataSource.hasNextRecord())
 		{
