@@ -15,13 +15,13 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.tabviewcontainer;
 
-import org.cruxframework.crux.core.client.event.BeforeBlurEvtBind;
-import org.cruxframework.crux.core.client.event.BeforeFocusEvtBind;
 import org.cruxframework.crux.core.client.screen.views.ViewFactory.CreateCallback;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.event.BeforeBlurEvtBind;
+import org.cruxframework.crux.core.rebind.event.BeforeFocusEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
