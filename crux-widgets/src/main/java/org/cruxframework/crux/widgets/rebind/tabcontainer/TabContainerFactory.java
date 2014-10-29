@@ -20,6 +20,8 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.event.BeforeBlurEvtBind;
+import org.cruxframework.crux.core.rebind.event.BeforeFocusEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
@@ -34,8 +36,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventDecl
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEventsDeclaration;
 import org.cruxframework.crux.widgets.client.tabcontainer.Tab;
 import org.cruxframework.crux.widgets.client.tabcontainer.TabContainer;
-import org.cruxframework.crux.widgets.rebind.event.BeforeBlurEvtBind;
-import org.cruxframework.crux.widgets.rebind.event.BeforeFocusEvtBind;
 
 /**
  * 
