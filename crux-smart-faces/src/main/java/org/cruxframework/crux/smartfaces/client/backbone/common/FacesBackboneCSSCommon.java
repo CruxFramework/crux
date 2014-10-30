@@ -47,4 +47,7 @@ public interface FacesBackboneCSSCommon extends CssResource
 	
 	//Combobox
 	String facesBackboneCombobox();
+	
+	//ListBox
+	String facesBackboneListbox();
 }

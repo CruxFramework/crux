@@ -1100,8 +1100,27 @@ td > div > .faces--group
 	height: 150px;
 }
 
+/* ------------ Listbox ---------------- */
+.faces-ListBox
+{
+	min-width: 150px;
+	height: 150px;	
+	border: thin;
+	border-color: blue;
+}
 
+.faces-ListBox-optionPanel:hover *
+{
+	background-color: #4496c6;
+	color: #fff;
+	cursor: pointer;
+}
 
+.faces-ListBox-optionPanel-selected
+{
+	background-color: #4496c6;
+	color: #ff0000 !important;
+}
 
 @-webkit-keyframes faces-ProgressUndefined
 {
