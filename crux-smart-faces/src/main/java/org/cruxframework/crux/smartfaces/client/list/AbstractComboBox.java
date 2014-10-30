@@ -54,6 +54,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -101,7 +102,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	private final FlowPanel bodyPanel = new FlowPanel();
 	private final Button button = new Button();
 	private Array<FilterRegistration<T>> filters = CollectionFactory.createArray();
-	private boolean isFilterable = false;
+	private boolean isFilterable = true;
 	private ComboBoxOptionList<V, T> optionsList;
 	protected OptionsRenderer<V, T> optionsRenderer = null;
 	private PopupPanel popup;
@@ -179,7 +180,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		return addValueChangeHandler(handler);
 	}
-
+	
 	private void createPopup()
 	{
 		popup = new PopupPanel();
@@ -316,6 +317,11 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		optionsList.previousPage();
 	}
+	
+	public void refresh()
+	{
+		optionsList.reset();
+	}
 
 	protected void selectItem(String label, V value)
 	{
@@ -408,6 +414,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 				@Override
 				public void onKeyPress(KeyPressEvent event)
 				{
+					Window.alert("aaa");
 					char keyCode = event.getCharCode();
 					final String text = textBox.getText();
 					
@@ -418,7 +425,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 						{
 							return String.valueOf(optionsRenderer.getValue(dataObject)).startsWith(text);
 						}
-						
 					};
 					
 					if(keyCode == KeyCodes.KEY_BACKSPACE || keyCode == KeyCodes.KEY_DELETE)
