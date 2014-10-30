@@ -28,6 +28,7 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 {
 	protected Array<DataLoadedHandler> dataLoadedHandlers;
 	protected Array<DataLoadStoppedHandler> dataStopLoadHandlers;
+	protected Array<DataChangedHandler> dataChangedHandlers;
 	protected Array<DataProviderRecord<T>> data = CollectionFactory.createArray();
 	protected int currentRecord = -1;
 	protected boolean loaded = false;
@@ -95,6 +96,30 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			}
 		};
 	}
+	
+	@Override
+	public HandlerRegistration addDataChangedHandler(final DataChangedHandler handler)
+	{
+		if (dataChangedHandlers == null)
+		{
+			dataChangedHandlers = CollectionFactory.createArray();
+		}
+		
+		dataChangedHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = dataChangedHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					dataChangedHandlers.remove(index);
+				}
+			}
+		};
+	}
+	
 	
 	@Override
 	public T get()
@@ -167,6 +192,17 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 			for (int i = 0; i< dataStopLoadHandlers.size(); i++)
 			{
 				dataStopLoadHandlers.get(i).onLoadStopped(event);
+			}
+		}
+    }
+	
+	protected void fireDataChangedEvent(DataChangedEvent event)
+    {
+		if (dataChangedHandlers != null)
+		{
+			for (int i = 0; i< dataChangedHandlers.size(); i++)
+			{
+				dataChangedHandlers.get(i).onDataChanged(event);
 			}
 		}
     }

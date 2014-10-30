@@ -16,7 +16,9 @@
 package org.cruxframework.crux.core.client.dataprovider;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
@@ -35,11 +37,14 @@ class DataProviderOperations<T>
 	protected List<DataProviderRecord<T>> removedRecords = new ArrayList<DataProviderRecord<T>>();
 	protected List<DataProviderRecord<T>> changedRecords = new ArrayList<DataProviderRecord<T>>();
 	protected List<DataProviderRecord<T>> selectedRecords = new ArrayList<DataProviderRecord<T>>();	
+	protected Set<DataProviderRecord<T>> readOnlyRecords = new HashSet<DataProviderRecord<T>>();
 
-	protected AbstractScrollableDataProvider<T> dataProvider;
 	protected Array<DataFilter<T>> filters;
 	protected Array<DataProviderRecord<T>> initialData;
+	protected AbstractScrollableDataProvider<T> dataProvider;
 	protected Array<DataFilterHandler<T>> dataFilterHandlers;
+	
+	protected Array<DataProviderRecord<T>> originalData = null;
 	
 	DataProviderOperations(AbstractScrollableDataProvider<T> dataProvider)
 	{
@@ -48,6 +53,7 @@ class DataProviderOperations<T>
 
     DataProviderRecord<T> insertRecord(int index, T object)
 	{
+    	beginTransaction();
 		this.dataProvider.ensureLoaded();
 		checkRange(index);
 		DataProviderRecord<T> record = new DataProviderRecord<T>(this.dataProvider);
@@ -60,7 +66,8 @@ class DataProviderOperations<T>
 	    	index = initialData.indexOf(this.dataProvider.data.get(index+1));
 	    	initialData.insert(index, record);
 	    }
-		
+
+	    this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record));
 		return record;
 	}
 	
@@ -77,6 +84,7 @@ class DataProviderOperations<T>
     
 	DataProviderRecord<T> removeRecord(int index)
 	{
+		beginTransaction();
 		this.dataProvider.ensureLoaded();
 		checkRange(index);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
@@ -93,6 +101,7 @@ class DataProviderOperations<T>
 	    	initialData.remove(index);
 	    }
 		updateState(record, previousState);
+		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record));
 		return record;
 	}
 
@@ -143,6 +152,13 @@ class DataProviderOperations<T>
 	{
 		return removedRecords.toArray(new DataProviderRecord[0]);
 	}
+	
+	@SuppressWarnings("unchecked")
+    DataProviderRecord<T>[] getReadOnlyRecords()
+	{
+		return readOnlyRecords.toArray(new DataProviderRecord[0]);
+	}
+	
 	
 	/**
 	 * @return
@@ -198,6 +214,7 @@ class DataProviderOperations<T>
 		checkRange(index);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
 		record.setReadOnly(readOnly);
+		readOnlyRecords.add(record);
 		return record;
 	}
 	
@@ -207,18 +224,38 @@ class DataProviderOperations<T>
 		removedRecords.clear();
 		changedRecords.clear();
 		selectedRecords.clear();
+		readOnlyRecords.clear();
 	}
 	
 	void rollback()
     {
-	    // TODO Auto-generated method stub
-	    
+	    if(originalData != null)
+	    {
+	    	this.dataProvider.data = this.originalData;
+	    }
     }
 	
 	void commit()
     {
-	    // TODO Auto-generated method stub
-	    
+		if(this.dataProvider instanceof AbstractPagedDataProvider)
+		{
+			getCurrentPageRecords(true);
+		}
+		else
+		{
+			int size = dataProvider.data.size();
+			for (int i = 0; i < size; i++)
+			{
+				DataProviderRecord<T> record = dataProvider.data.get(i);
+				record.setCreated(false);
+				record.setDirty(false);
+			}		
+		}
+    	
+		newRecords.clear();
+		removedRecords.clear();
+		changedRecords.clear(); 
+		endTransaction();
     }
 	
 	boolean isDirty()
@@ -332,7 +369,7 @@ class DataProviderOperations<T>
 			}
 		};
 	}
-		
+	
 	Array<T> getData()
 	{
 	    if (dataProvider.data != null)
@@ -371,7 +408,7 @@ class DataProviderOperations<T>
     }
 	
 	@SuppressWarnings("unchecked")
-    private void fireDataFilterEvent()
+	private void fireDataFilterEvent()
     {
 		if (dataFilterHandlers != null)
 		{
@@ -439,4 +476,48 @@ class DataProviderOperations<T>
 			throw new IndexOutOfBoundsException();
 		}
 	}
+	
+	void beginTransaction()
+	{
+		if(this.dataProvider instanceof AbstractPagedDataProvider)
+		{
+			this.originalData = getCurrentPageRecords(false).clone();
+		}
+		else
+		{
+			this.originalData = this.dataProvider.data.clone();
+		}
+	}
+	
+	void endTransaction()
+	{
+		this.originalData = null;
+	}
+	
+	Array<DataProviderRecord<T>> getCurrentPageRecords(boolean cleanRecordsChanges)
+	{
+		if (this.dataProvider instanceof AbstractPagedDataProvider)
+		{
+			AbstractPagedDataProvider<T> abstractPagedDataProvider = (AbstractPagedDataProvider<T>) this.dataProvider;
+			Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();
+			int start = abstractPagedDataProvider.getPageStartRecord();
+			int end = abstractPagedDataProvider.getPageEndRecord();
+			for (int i = start; i <= end; i++)
+			{
+				DataProviderRecord<T> record = dataProvider.data.get(i);
+				currentPageRecordsArray.add(record);
+
+				if (cleanRecordsChanges)
+				{
+					record.setCreated(false);
+					record.setDirty(false);
+				}
+			}
+
+			return currentPageRecordsArray;
+		}
+
+		return null;
+	}
+
 }

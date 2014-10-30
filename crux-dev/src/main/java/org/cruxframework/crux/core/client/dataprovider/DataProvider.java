@@ -237,4 +237,11 @@ public interface DataProvider<T>
 	 * @return a registration that allow handler to be removed 
 	 */
 	HandlerRegistration addLoadStoppedHandler(DataLoadStoppedHandler callback);
+	
+	
+	/**Add a callback to be notified about any changes on data provider
+	 * @param callback to be called when data provider is changed
+	 * @return a registration that allow handler do be removed
+	 */
+	HandlerRegistration addDataChangedHandler(DataChangedHandler callback);
 }
