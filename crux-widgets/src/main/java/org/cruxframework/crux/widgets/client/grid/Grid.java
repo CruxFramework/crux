@@ -999,12 +999,11 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		}
 
 		row.setSelected(row.getDataSourceRecord().isSelected());
-		row.setEnabled(!row.getDataSourceRecord().isReadOnly());
+	//	row.setEnabled(!row.getDataSourceRecord().isReadOnly());
 		
 		if (editMode)
 		{
 			chooseFocusedEditor(editors, editableColumns, focusCellKey);
-			fireBeforeRowEditEvent(row);
 			row.setRowSelectorEnabled(false);
 		}
 		else
@@ -1953,13 +1952,14 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			}
 
 			row.setEditMode(true);
-			renderRow(row, row.getDataSourceRecord(), true, focusCellKey);
+			fireBeforeRowEditEvent(row);
+			disableRows();
+			renderRow(row, row.getDataSourceRecord(), row.isEditMode(), focusCellKey);
 
-			if(showEditorButtons)
+			if(showEditorButtons && row.isEditMode())
 			{
 				startEditingButtons(row);
 			}
-			disableRows();
 		}
 	}
 
