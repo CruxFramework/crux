@@ -18,6 +18,8 @@ package org.cruxframework.crux.core.client.dataprovider;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.cruxframework.crux.core.client.collection.Array;
+import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.dataprovider.DataProviderRecord.DataProviderRecordState;
 
 /**
@@ -32,6 +34,8 @@ class StreamingDataProviderOperations<T>
 
 	protected StreamingDataProvider<T> dataProvider;
 	
+	protected Array<DataProviderRecord<T>> originalData = null;
+	
 	StreamingDataProviderOperations(StreamingDataProvider<T> dataProvider)
 	{
 		this.dataProvider = dataProvider;
@@ -39,6 +43,7 @@ class StreamingDataProviderOperations<T>
     
     DataProviderRecord<T> insertRecord(int index, T object)
 	{
+    	beginTransaction();
 		this.dataProvider.ensureCurrentPageLoaded();
 		checkRange(index);
 		DataProviderRecord<T> record = new DataProviderRecord<T>(this.dataProvider);
@@ -46,6 +51,7 @@ class StreamingDataProviderOperations<T>
 		record.set(object);
 		this.dataProvider.data.insert(index, record);
 		newRecords.add(record);
+		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record));
 		return record;
 	}
 	
@@ -62,6 +68,7 @@ class StreamingDataProviderOperations<T>
     
 	DataProviderRecord<T> removeRecord(int index)
 	{
+		beginTransaction();
 		this.dataProvider.ensureCurrentPageLoaded();
 		checkRange(index);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
@@ -73,6 +80,7 @@ class StreamingDataProviderOperations<T>
 		record.setRemoved(true);
 		this.dataProvider.data.remove(index);
 		updateState(record, previousState);
+		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record));
 		return record;
 	}
 
@@ -114,15 +122,57 @@ class StreamingDataProviderOperations<T>
 
 	void rollback()
     {
-	    // TODO Auto-generated method stub
-	    
+		if(originalData != null)
+	    {
+	    	this.dataProvider.data = this.originalData;
+	    }
     }
 	
 	void commit()
     {
-	    // TODO Auto-generated method stub
-	    
+		int size = dataProvider.data.size();
+		for (int i = 0; i < size; i++)
+		{
+			DataProviderRecord<T> record = dataProvider.data.get(i);
+			record.setCreated(false);
+			record.setDirty(false);
+		}		
+	
+		newRecords.clear();
+		removedRecords.clear();
+		changedRecords.clear(); 
+		endTransaction();	    
     }
+	
+	void beginTransaction()
+	{
+		originalData = this.dataProvider.data.clone();
+	}
+	
+	void endTransaction()
+	{
+		originalData = null;
+	}
+	
+	Array<DataProviderRecord<T>> getCurrentPageRecords(boolean cleanRecordsChanges)
+	{
+		Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();
+		int start = this.dataProvider.getPageStartRecord();
+		int end = this.dataProvider.getPageEndRecord(); 
+		for (int i = start; i <= end; i++)
+    	{
+    		DataProviderRecord<T> record = dataProvider.data.get(i);
+    		currentPageRecordsArray.add(record);
+    		
+    		if(cleanRecordsChanges)
+    		{
+    			record.setCreated(false);
+				record.setDirty(false);
+    		}
+    	}	
+		
+		return currentPageRecordsArray;
+	}
 	
 	@SuppressWarnings("unchecked")
     DataProviderRecord<T>[] getNewRecords()

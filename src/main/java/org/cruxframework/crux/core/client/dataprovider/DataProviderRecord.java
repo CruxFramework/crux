@@ -72,23 +72,25 @@ public class DataProviderRecord<T>
 		if ((previousValue != null && (value==null || !previousValue.equals(value))) ||
 			(previousValue == null && value != null))
 		{
-			DataProviderRecordState previousState = getCurrentState();
 			setRecordObject(value);
+			setDirty(true);
+		}
+	}
+	
+	void setDirty(boolean dirty)
+	{
+		if (dirty)
+		{
+			DataProviderRecordState previousState = getCurrentState();
 			this.state.setDirty(true);
 			if (!previousState.equals(state));
 			{
 				dataProvider.updateState(this, previousState);
 			}
 		}
-	}
-	
-	void setDirty()
-	{
-		DataProviderRecordState previousState = getCurrentState();
-		this.state.setDirty(true);
-		if (!previousState.equals(state));
+		else
 		{
-			dataProvider.updateState(this, previousState);
+			this.state.setDirty(false);
 		}
 	}
 	
