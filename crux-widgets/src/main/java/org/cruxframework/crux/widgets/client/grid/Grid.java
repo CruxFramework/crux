@@ -1955,8 +1955,13 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			fireBeforeRowEditEvent(row);
 			disableRows();
 			renderRow(row, row.getDataSourceRecord(), row.isEditMode(), focusCellKey);
-
-			if(showEditorButtons && row.isEditMode())
+			
+			//If event was cancelled
+			if(!row.isEditMode())
+			{
+				enableRows();
+			}
+			else if(showEditorButtons)
 			{
 				startEditingButtons(row);
 			}
