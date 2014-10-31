@@ -280,6 +280,8 @@ public class Row
 			CheckBox selector = (CheckBox) getCell(0).getCellWidget();
 			selector.setEnabled(enabled);
 		}
+		
+		removeStyleDependentName("disabled");
 	}
 	
 	
