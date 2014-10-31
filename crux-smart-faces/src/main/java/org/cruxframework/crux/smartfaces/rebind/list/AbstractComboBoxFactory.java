@@ -57,7 +57,6 @@ class ComboBoxContext extends WidgetCreatorContext
 //TODO Create another factory to separate the two combo types
 @DeclarativeFactory(targetWidget = ComboBox.class, id = "comboBox", library = Constants.LIBRARY_NAME, description = "Combobox component that uses a data provider to display a list of item or widgets")
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="isFilterable",defaultValue="false", type=Boolean.class,required=false,description="If true, the user can type on textbox to apply a filter"),
 	@TagAttributeDeclaration(value="width", type=String.class)
 })
 @TagChildren({ 

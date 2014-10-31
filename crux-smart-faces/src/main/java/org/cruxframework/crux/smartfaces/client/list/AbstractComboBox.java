@@ -15,11 +15,6 @@
  */
 package org.cruxframework.crux.smartfaces.client.list;
 
-import org.cruxframework.crux.core.client.collection.Array;
-import org.cruxframework.crux.core.client.collection.CollectionFactory;
-import org.cruxframework.crux.core.client.dataprovider.DataFilter;
-import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
-import org.cruxframework.crux.core.client.dataprovider.FilterableProvider.FilterRegistration;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
@@ -33,7 +28,6 @@ import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.dialog.PopupPanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
-import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -41,7 +35,6 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.MouseDownHandler;
@@ -101,8 +94,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 
 	private final FlowPanel bodyPanel = new FlowPanel();
 	private final Button button = new Button();
-	private Array<FilterRegistration<T>> filters = CollectionFactory.createArray();
-	private boolean isFilterable = true;
 	private ComboBoxOptionList<V, T> optionsList;
 	protected OptionsRenderer<V, T> optionsRenderer = null;
 	private PopupPanel popup;
@@ -209,19 +200,16 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			}
 		});
 		
-		textBox.addBlurHandler(new BlurHandler(){
+		textBox.addKeyPressHandler(new KeyPressHandler(){
 			
 			@Override
-			public void onBlur(BlurEvent event)
+			public void onKeyPress(KeyPressEvent event)
 			{
-				if(isFilterable)
-				{
-					filters.clear();
-				}
+				Window.alert("sdd");
 			}
 		});
 		
-		textBox.setReadOnly(!isFilterable);
+		textBox.setReadOnly(true);
 		
 		optionsList = new ComboBoxOptionList<V, T>(optionsRenderer, this);
 		optionsList.setStyleName(COMBO_BOX_COMBO_ITEM_LIST);
@@ -248,10 +236,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		}, SelectComboItemEvent.getType());
 		setStyleName(DEFAULT_STYLE_NAME);
 		
-		if(isFilterable)
-		{
-			addFilterEvents();
-		}
+		
 	}
 
 	@Override
@@ -301,11 +286,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		return button.isEnabled();
 	}
 
-	public boolean isFilterable()
-	{
-		return isFilterable;
-	}
-
 	@Override
 	public void nextPage()
 	{
@@ -344,11 +324,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		button.setEnabled(enabled);
 		textBox.setEnabled(enabled);
-	}
-
-	public void setFilterable(boolean isFilterable)
-	{
-		this.isFilterable = isFilterable;
 	}
 
 	@Override
@@ -399,51 +374,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		int widthInt = Integer.parseInt(width);
 		int widthTextBox = widthInt-23;
 		textBox.setWidth(widthTextBox+"px");
-	}
-	
-	//TODO Finish filter functions
-	private void addFilterEvents()
-	{
-		@SuppressWarnings("unchecked")
-		final FilterableProvider<T> provider = (FilterableProvider<T>) getDataProvider();
-		
-		if(provider != null)
-		{
-			textBox.addKeyPressHandler(new KeyPressHandler(){
-
-				@Override
-				public void onKeyPress(KeyPressEvent event)
-				{
-					Window.alert("aaa");
-					char keyCode = event.getCharCode();
-					final String text = textBox.getText();
-					
-					final DataFilter<T> newFilter = new DataFilter<T>(){
-						
-						@Override
-						public boolean accept(T dataObject)
-						{
-							return String.valueOf(optionsRenderer.getValue(dataObject)).startsWith(text);
-						}
-					};
-					
-					if(keyCode == KeyCodes.KEY_BACKSPACE || keyCode == KeyCodes.KEY_DELETE)
-					{
-						FilterRegistration<T> registration = null;
-						
-						if(filters.size() > 0)
-						{
-							registration = filters.get(filters.size()-1);
-						}
-	
-						registration.replace(newFilter,false);
-					}else
-					{
-						filters.add(provider.addFilter(newFilter));
-					}
-				}
-			});
-		}
 	}
 	
 	/**

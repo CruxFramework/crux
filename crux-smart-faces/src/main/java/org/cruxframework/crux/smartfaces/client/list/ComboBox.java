@@ -64,15 +64,4 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 		setValue(optionsRenderer.getValue(obj));
 	}
 	
-	@Override
-	public boolean isFilterable()
-	{
-		return super.isFilterable();
-	}
-	
-	@Override
-	public void setFilterable(boolean isFilterable)
-	{
-		super.setFilterable(isFilterable);
-	}
 }
