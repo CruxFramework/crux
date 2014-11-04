@@ -55,7 +55,7 @@ public class CruxClientConfigProxyCreator extends AbstractInterfaceWrapperProxyC
 		generateEnableChildrenWindowsDebugMethod(sourceWriter);
 		generateEnableCrux2OldInterfacesCompatibility(sourceWriter);
 		generatePreferWebSQLForNativeDB(sourceWriter);
-		notifierCompilerPort(sourceWriter);
+		generateNotifierCompilerPort(sourceWriter);
     }
 
 	protected void generatePreferWebSQLForNativeDB(SourcePrinter sourceWriter)
@@ -65,7 +65,7 @@ public class CruxClientConfigProxyCreator extends AbstractInterfaceWrapperProxyC
 		sourceWriter.println("}");
     }
 
-	protected void notifierCompilerPort(SourcePrinter sourceWriter)
+	protected void generateNotifierCompilerPort(SourcePrinter sourceWriter)
 	{
 		sourceWriter.println("public String notifierCompilerPort(){");
 		sourceWriter.println("return \"" + ConfigurationFactory.getConfigurations().notifierCompilerPort() + "\";");

@@ -30,4 +30,5 @@ public class RegexpPatterns {
     public static final Pattern REGEXP_CRUX_MESSAGE = Pattern.compile("\\$\\{\\w+\\.\\w+\\}");
     public static final Pattern REGEXP_CRUX_RESOURCE = Pattern.compile("\\$\\{\\w[\\.\\w]+\\}");
     public static final Pattern REGEXP_CONTEXT = Pattern.compile("/\\{context\\}");
+    public static final Pattern REGEXP_CRUX_OBJECT_DATA_BINDING = Pattern.compile("\\@\\{\\w[\\.\\w]+(\\:\\w+(\\(\\'.*\\'\\))?)?\\}");
 }

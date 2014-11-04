@@ -33,6 +33,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
 import org.cruxframework.crux.core.client.screen.views.BindableView;
+import org.cruxframework.crux.core.client.screen.views.DataObjectBinder;
 import org.cruxframework.crux.core.client.screen.views.View.RenderCallback;
 import org.cruxframework.crux.core.client.screen.views.ViewActivateEvent;
 import org.cruxframework.crux.core.client.screen.views.ViewActivateHandler;
@@ -61,6 +62,7 @@ import org.cruxframework.crux.core.rebind.resources.Resources;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.resources.ResourcesHandlerProxyCreator;
+import org.cruxframework.crux.core.rebind.screen.widget.ObjectDataBinding.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
@@ -123,6 +125,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	protected ControllerAccessHandler controllerAccessHandler;
 	protected WidgetConsumer widgetConsumer;
 	protected String iocContainerClassName;
+	protected ViewBindHandler bindHandler;
 
 	/**
 	 *
@@ -181,6 +184,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		this.widgetConsumer = new ViewWidgetConsumer(this);
 		this.rootPanelChildren = new HashSet<String>();
 		this.controllerAccessHandler = new DefaultControllerAccessor(viewVariable);
+		this.bindHandler = new ViewBindHandler(context, view);
 
     }
 
@@ -275,15 +279,32 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    	generateUpdateDimensionsMethods(printer);
 	    	generateInitializeLazyDependenciesMethod(printer);
 	    	generateGetIocContainerMethod(printer);
-
-	    	if (isDataBindEnabled())
+	    	generateRegisterDataObjectBindersMethod(printer);
+	    	if (isBindableView())
 	    	{
 	    		generateCreateDataObjectMethod(printer);
 	    	}
     	}
-
     }
 
+    protected void generateRegisterDataObjectBindersMethod(SourcePrinter printer)
+    {
+    	printer.println("protected void registerDataObjectBinders(){");
+
+    	Iterator<String> dataObjects = bindHandler.iterateDataObjects();
+    	while (dataObjects.hasNext())
+    	{
+    		String dataObjectAlias = dataObjects.next();
+        	String dataObjectClass = DataObjects.getDataObject(dataObjectAlias);
+    		printer.println("addDataObjectBinder(new "+DataObjectBinder.class.getCanonicalName()+"<"+dataObjectClass+">(this){");
+    		printer.println("protected "+dataObjectClass+" createDataObject() {");
+        	printer.println("return GWT.create("+dataObjectClass+".class);");
+    		printer.println("}");
+    		printer.println("}, "+EscapeUtils.quote(dataObjectAlias)+");");
+    	}
+		printer.println("}");
+    }
+    
     protected void generateCreateDataObjectMethod(SourcePrinter printer)
     {
     	String dataObjectClass = DataObjects.getDataObject(view.getDataObject());
@@ -302,7 +323,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	printer.println("return iocContainer;");
     	printer.println("}");
     }
-
 
     @Override
     protected void generateSubTypes(SourcePrinter srcWriter) throws CruxGeneratorException
@@ -491,7 +511,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
      */
 	public String getViewSuperClassName()
     {
-	    if (isDataBindEnabled())
+	    if (isBindableView())
 	    {
 	    	return BindableView.class.getCanonicalName()+"<"+DataObjects.getDataObject(view.getDataObject())+">";
 	    }
@@ -607,6 +627,17 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    	return property==null?null:EscapeUtils.quote(property);
 	    }
 	}
+
+	/**
+	 * 
+	 * @param propertyValue
+	 * @param widgetPropertyPath
+	 * @return
+	 */
+	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
+    {
+	    return bindHandler.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath);
+    }
 	
 	/**
 	 * Checks if declared message is valid
@@ -1329,7 +1360,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param text
 	 * @return
 	 */
-	protected  String[] getKeyMessageParts(String text)
+	protected static String[] getKeyMessageParts(String text)
 	{
 		text = text.substring(2, text.length()-1);
 		return text.split("\\.");
@@ -1341,13 +1372,51 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param text
 	 * @return
 	 */
-	protected  String[] getResourceParts(String text)
+	protected static String[] getResourceParts(String text)
 	{
 		text = text.substring(2, text.length()-1);
 		int index = text.indexOf('.');
 		String[] result = new String[2];
 		result[0] = text.substring(0, index);
 		result[1] = text.substring(index+1, text.length());
+		return result;
+	}
+	
+	/**
+	 * Split the dataBindReference and separate the DataObject Class alias from the requested property and converters
+	 *
+	 * @param text
+	 * @return
+	 */
+	protected static String[] getDataObjectParts(String text)
+	{
+		boolean hasConverter = text.indexOf(":") > 0;
+		boolean hasConverterParams = hasConverter && text.indexOf("(", text.indexOf(":")) > 0;
+		text = text.substring(2, text.length()-1);
+		int index = text.indexOf('.');
+		String[] result = new String[hasConverterParams?4:hasConverter?3:2];
+		result[0] = text.substring(0, index);
+		String path = text.substring(index+1);
+		if (hasConverter)
+		{
+			int endPathIndex = path.indexOf(':');
+			result[1] = path.substring(0, endPathIndex);
+			if (hasConverterParams)
+			{
+				int paramStartPath = path.indexOf('(', endPathIndex);
+				result[2] = path.substring(endPathIndex+1, paramStartPath);
+				result[3] = EscapeUtils.quote(path.substring(paramStartPath+2, path.length()-2)); 
+			}
+			else
+			{
+				result[2] = path.substring(endPathIndex+1);
+			}
+		}
+		else
+		{
+			result[1] = path;
+		}
+		
 		return result;
 	}
 
@@ -1387,14 +1456,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(packageName, getProxySimpleName());
 
-		if (isDataBindEnabled())
-		{
-			composerFactory.setSuperclass(getViewSuperClassName());
-		}
-		else
-		{
-			composerFactory.setSuperclass(org.cruxframework.crux.core.client.screen.views.View.class.getCanonicalName());
-		}
+		composerFactory.setSuperclass(getViewSuperClassName());
 
 		String[] imports = getImports();
 		for (String imp : imports)
@@ -1445,7 +1507,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * 
 	 * @return
 	 */
-	protected boolean isDataBindEnabled()
+	protected boolean isBindableView()
 	{
 		return !StringUtils.isEmpty(view.getDataObject());
 	}

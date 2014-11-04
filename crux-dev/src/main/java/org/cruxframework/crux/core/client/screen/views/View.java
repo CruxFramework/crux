@@ -62,28 +62,30 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	private static Logger logger = Logger.getLogger(View.class.getName());
 	private static FastMap<View> loadedViews = new FastMap<View>();
 	private static FastMap<ClientBundle> resources = new FastMap<ClientBundle>();
+	private static int prefixCounter = 0;
 	
 	private String id;
 	private String title;
 	protected Map<String> lazyWidgets = null;
-	protected FastMap<Widget> widgets = new FastMap<Widget>();
+	protected FastMap<Widget> widgets = null;
+	protected FastList<ResizeHandler> resizeHandlers = null;
+	protected FastList<CloseHandler<Window>> windowCloseHandlers = null;
+	protected FastList<ClosingHandler> windowClosingHandlers = null;
+	protected FastList<ViewActivateHandler> attachHandlers = null;
+	protected FastList<ViewDeactivateHandler> detachHandlers = null;
+	protected FastList<ValueChangeHandler<String>> historyHandlers = null;
+	protected FastList<OrientationChangeHandler> orientationHandlers = null;
+	protected FastList<ViewLoadHandler> loadHandlers = null;
+	protected FastList<ViewUnloadHandler> unloadHandlers = null;
+	protected DataBindingHandler dataBindingHandler = null;
 	protected boolean active = false;
-	protected FastList<ResizeHandler> resizeHandlers = new FastList<ResizeHandler>();
-	protected FastList<CloseHandler<Window>> windowCloseHandlers = new FastList<CloseHandler<Window>>();
-	protected FastList<ClosingHandler> windowClosingHandlers = new FastList<ClosingHandler>();
-	protected FastList<ViewActivateHandler> attachHandlers = new FastList<ViewActivateHandler>();
-	protected FastList<ViewDeactivateHandler> detachHandlers = new FastList<ViewDeactivateHandler>();
-	protected FastList<ValueChangeHandler<String>> historyHandlers = new FastList<ValueChangeHandler<String>>();
-	protected FastList<OrientationChangeHandler> orientationHandlers = new FastList<OrientationChangeHandler>();
-	protected FastList<ViewLoadHandler> loadHandlers = new FastList<ViewLoadHandler>();
-	protected FastList<ViewUnloadHandler> unloadHandlers = new FastList<ViewUnloadHandler>();
 	protected boolean loaded = false;
 	protected String width;
 	protected String height;
 	
+	
 	private ViewContainer viewContainer;
 	private String prefix;
-	private static int prefixCounter = 0;
 	
 	/**
 	 * Constructor
@@ -222,7 +224,6 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	public static void addToHistory(String token)
 	{
 		History.newItem(token, false);
-
 	}
 	
 	/**
@@ -233,7 +234,6 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	public static void addToHistory(String token, boolean issueEvent)
 	{
 		History.newItem(token, issueEvent);
-
 	}
 
 	/**
@@ -353,6 +353,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 		{
 			widget.removeFromParent();
 		}
+		dataBindingHandler.remove(id);
 	}
 
 	/**
@@ -864,12 +865,14 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 		if (!loaded)
 		{
 			prepareViewObjects();
+			registerDataObjectBinders();
 			registerLoadedView();
 			createWidgets();
 			loaded = true;
 			fireLoadEvent(paramenter);
 		}
 	}
+	
 	/**
 	 * Called by the {@link ViewContainer} when the view is removed from the container. 
 	 * @return true if the view is not loaded
@@ -919,6 +922,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	    orientationHandlers = new FastList<OrientationChangeHandler>();
 	    loadHandlers = new FastList<ViewLoadHandler>();
 	    unloadHandlers = new FastList<ViewUnloadHandler>();
+	    dataBindingHandler = new DataBindingHandler(this);
 	}
 	
 	/**
@@ -937,6 +941,7 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	    orientationHandlers = null;
 	    loadHandlers = null;
 	    unloadHandlers = null;
+	    dataBindingHandler = null;
     }
 	
 	/**
@@ -1132,6 +1137,11 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	protected abstract Map<String> initializeLazyDependencies();
 
 	/**
+	 * Called when the view are loaded to initialize the dataObjectBinders
+	 */
+	protected abstract void registerDataObjectBinders();
+
+	/**
 	 * Retrieve the view prefix. It is used to isolate all elements from this view on DOM
 	 * @return
 	 */
@@ -1207,4 +1217,73 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	{
 		void onRendered();
 	}
+	
+	/**
+	 * Write the given dataObject into this view. Any UI element bound to any property of this object 
+	 * will be updated.
+	 *   
+	 * @param dataObject the data object to write
+	 */
+	public void write(Object dataObject)
+	{
+		dataBindingHandler.write(dataObject);
+	}
+	
+	/**
+	 * Write the given dataObjects into this view. Any UI element bound to any property of these objects 
+	 * will be updated.
+	 *   
+	 * @param dataObjects the data objects to write
+	 */
+	public void writeAll(Object... dataObjects)
+    {
+		dataBindingHandler.writeAll(dataObjects);
+    }
+	
+	/**
+	 * Update the given dataObject with the values contained on UI elements of this View. 
+	 * @param dataObject the object that will be updated
+	 */
+    public void copyTo(Object dataObject)
+    {
+		dataBindingHandler.copyTo(dataObject);
+    }
+    
+    /**
+     * Read the dataObject bound to the given class from this View. Its state is updated according to any 
+     * value binding declaration to this dataObject   
+     * @param dataObjectClass dataObject class
+     * @return an updated dataObject
+     */
+    public <T> T read(Class<T> dataObjectClass)
+    {
+    	return dataBindingHandler.read(dataObjectClass);
+    }
+
+    /**
+     * Read the dataObject bound to the given alias from this View. Its state is updated according to any 
+     * value binding declaration to this dataObject   
+     * @param dataObjectAlias dataObject alias
+     * @return an updated dataObject
+     */
+    public <T> T read(String dataObjectAlias)
+    {
+    	return dataBindingHandler.read(dataObjectAlias);
+    }
+    
+    protected void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder, String dataObjectAlias)
+    {
+    	dataBindingHandler.addDataObjectBinder(dataObjectBinder, dataObjectAlias);
+    }
+
+    protected <T> DataObjectBinder<T> getDataObjectBinder(String dataObjectAlias)
+    {
+    	return dataBindingHandler.getDataObjectBinder(dataObjectAlias);
+    }
+    
+    protected <T> DataObjectBinder<T> getDataObjectBinder(Class<T> dataObjectClass)
+    {
+    	return dataBindingHandler.getDataObjectBinder(dataObjectClass);
+    }
+
 }
