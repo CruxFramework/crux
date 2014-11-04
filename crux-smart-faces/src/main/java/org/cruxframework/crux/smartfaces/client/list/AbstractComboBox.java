@@ -35,8 +35,6 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -47,7 +45,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -200,15 +197,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			}
 		});
 		
-		textBox.addKeyPressHandler(new KeyPressHandler(){
-			
-			@Override
-			public void onKeyPress(KeyPressEvent event)
-			{
-				Window.alert("sdd");
-			}
-		});
-		
 		textBox.setReadOnly(true);
 		
 		optionsList = new ComboBoxOptionList<V, T>(optionsRenderer, this);
@@ -235,8 +223,6 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			}
 		}, SelectComboItemEvent.getType());
 		setStyleName(DEFAULT_STYLE_NAME);
-		
-		
 	}
 
 	@Override
