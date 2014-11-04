@@ -19,6 +19,7 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.DataWidgetConsumer;
+import org.cruxframework.crux.core.rebind.screen.widget.ViewBindHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
@@ -187,7 +188,7 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<ComboBoxCon
 
 	private String getExpression(SourcePrinter out, ComboBoxContext context, JClassType widgetClassType, String bindPath, String bindConverter, String dataObjectVariable)
 	{
-		JClassType converterType = DataWidgetConsumer.getConverterType(out, getContext(), bindPath, bindConverter, context.dataObject, widgetClassType);
+		JClassType converterType = ViewBindHandler.getConverterType(getContext(), bindPath, bindConverter, context.dataObject, widgetClassType);
 		String converterVariable = null;
 		if (converterType != null)
 		{
@@ -252,7 +253,7 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<ComboBoxCon
 			String bindPath = metaElem.optString("bindPath");
 			String bindConverter = metaElem.optString("bindConverter");
 
-			JClassType converterType = getConverterType(out, context, bindPath, bindConverter, dataObjectType, widgetClassType);
+			JClassType converterType = ViewBindHandler.getConverterType(context, bindPath, bindConverter, dataObjectType, widgetClassType);
 			String converterVariable = null;
 			if (converterType != null)
 			{

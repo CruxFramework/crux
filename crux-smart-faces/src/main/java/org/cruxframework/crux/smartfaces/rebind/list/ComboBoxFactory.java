@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.rebind.list;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.DataWidgetConsumer;
+import org.cruxframework.crux.core.rebind.screen.widget.ViewBindHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
@@ -171,13 +172,13 @@ public class ComboBoxFactory extends AbstractPageableFactory<ComboBoxContext> im
 	private String getExpression(SourcePrinter out, ComboBoxContext context, JClassType widgetClassType, 
 			String bindPath, String bindConverter, String dataObjectVariable)
 	{
-		JClassType converterType = DataWidgetConsumer.getConverterType(out, getContext(), bindPath, bindConverter, 
-				context.dataObject, widgetClassType);
+		JClassType converterType = ViewBindHandler.getConverterType(getContext(), bindPath, bindConverter, context.dataObject, widgetClassType);
     	String converterVariable = null;
     	if (converterType != null)
     	{
     		converterVariable = createVariableName("__converter");
-    		out.println(converterType.getParameterizedQualifiedSourceName()+" "+converterVariable+" = new "+converterType.getParameterizedQualifiedSourceName()+"();");
+    		out.println(converterType.getParameterizedQualifiedSourceName()+" "+converterVariable+" = new "+
+    													converterType.getParameterizedQualifiedSourceName()+"();");
     	}
 
     	try
@@ -241,7 +242,7 @@ public class ComboBoxFactory extends AbstractPageableFactory<ComboBoxContext> im
 			String bindPath = metaElem.optString("bindPath");
 			String bindConverter = metaElem.optString("bindConverter");
 					
-			JClassType converterType = getConverterType(out, context, bindPath, bindConverter, dataObjectType, widgetClassType);
+			JClassType converterType = ViewBindHandler.getConverterType(context, bindPath, bindConverter, dataObjectType, widgetClassType);
 	    	String converterVariable = null;
 	    	if (converterType != null)
 	    	{
