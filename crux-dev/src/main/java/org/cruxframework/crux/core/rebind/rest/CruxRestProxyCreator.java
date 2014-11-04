@@ -275,7 +275,7 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 	protected void generateAJAXInvocation(RestMethodInfo methodInfo, SourcePrinter srcWriter, JParameter callbackParameter, 
 			String callbackResultTypeName, String callbackParameterName, String restURIParam)
     {
-	    srcWriter.println("RequestBuilder builder = new RequestBuilder(RequestBuilder."+methodInfo.httpMethod+", "+restURIParam+");");
+	    srcWriter.println("RequestBuilder builder = " + getRequestBuilderInitialization(methodInfo, restURIParam) + ";");
 		setLocaleInfo(srcWriter, "builder");
 		
 		if (ConfigurationFactory.getConfigurations().sendCruxViewNameOnClientRequests().equals("true"))
@@ -312,7 +312,12 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		srcWriter.println("}");
     }
 
-	private static void generateLogHandlingCode(SourcePrinter srcWriter, String logLevel, String e) 
+	protected String getRequestBuilderInitialization(RestMethodInfo methodInfo, String restURIParam)
+    {
+	    return "new RequestBuilder(RequestBuilder."+methodInfo.httpMethod+", "+restURIParam+")";
+    }
+
+	protected static void generateLogHandlingCode(SourcePrinter srcWriter, String logLevel, String e) 
 	{
 		srcWriter.println("if (LogConfiguration.loggingIsEnabled()){");
 		srcWriter.println("__log.log("+logLevel+", "+e+".getMessage(), e);");
@@ -345,7 +350,7 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 	}
 	
 	//TODO: put this in a DeferredBindingUtils class
-	private static String getNonConflictedVarName(String originalVar, String possibleConflictedVar)
+	protected static String getNonConflictedVarName(String originalVar, String possibleConflictedVar)
 	{
 		if (possibleConflictedVar.equals(originalVar))
 		{

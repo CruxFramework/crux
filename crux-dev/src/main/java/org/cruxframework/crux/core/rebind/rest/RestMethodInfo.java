@@ -25,12 +25,12 @@ import com.google.gwt.core.ext.typeinfo.JMethod;
  * @author Thiago da Rosa de Bustamante
  *
  */
-class RestMethodInfo
+public class RestMethodInfo
 {
 	protected JMethod method;
 	protected Annotation[][] parameterAnnotations;
 	protected String methodURI;
-	protected String httpMethod;
+	public String httpMethod;
 	protected StateValidationModel validationModel;
 	public boolean isReadMethod;
 	
