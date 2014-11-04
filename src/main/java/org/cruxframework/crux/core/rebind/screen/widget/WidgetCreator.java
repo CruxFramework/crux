@@ -15,10 +15,15 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.cruxframework.crux.core.client.permission.Permissions;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
+import org.cruxframework.crux.core.client.screen.views.DataObjectBinder;
+import org.cruxframework.crux.core.client.screen.views.ExpressionBinder;
+import org.cruxframework.crux.core.client.screen.views.ExpressionBinder.BindingContext;
+import org.cruxframework.crux.core.client.screen.views.PropertyBinder;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.client.utils.StyleUtils;
@@ -26,6 +31,7 @@ import org.cruxframework.crux.core.declarativeui.ViewParser;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.View;
+import org.cruxframework.crux.core.rebind.screen.widget.ObjectDataBinding.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.AttachEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.DettachEvtBind;
@@ -325,6 +331,8 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			processChildren(out, context);
 			annotationProcessor.processChildren(out, context);
 			context.setChildElement(context.getWidgetElement());
+			processDataObjectBindings(out, context);
+			processDataExpressionBindings(out, context);
 			postProcess(out, context);
 			if (partialSupport)
 			{
@@ -451,6 +459,26 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 		return viewFactory.getResourceAccessExpression(property);
 	}
 	
+	/**
+	 * 
+	 * @param property
+	 * @return
+	 */
+	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetPropertyPath)
+	{
+		return getObjectDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath);
+	}
+
+	/**
+	 * 
+	 * @param property
+	 * @return
+	 */
+	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
+	{
+		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath);
+	}
+
 	/**
 	 * 
 	 * @param property
@@ -590,6 +618,87 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	public void postProcess(SourcePrinter out, C context) throws CruxGeneratorException
 	{
 	}
+	
+	/**
+	 * Process any dataObject binding on this widget
+	 * @param out
+	 * @param context
+	 */
+	protected void processDataObjectBindings(SourcePrinter out, C context)
+    {
+		Iterator<String> dataObjects = context.iterateDataObjects();
+		
+		while (dataObjects.hasNext())
+		{
+			String dataObjectAlias = dataObjects.next();
+			ObjectDataBinding dataBindingInfo = context.getObjectDataBinding(dataObjectAlias);
+			
+			String dataObjectClassName = dataBindingInfo.getDataObjectClassName();
+			String dataObjectBinder = createVariableName("dataObjectBinder");
+			
+			out.println(DataObjectBinder.class.getCanonicalName() + "<" + dataObjectClassName + "> " + dataObjectBinder + "=" + 
+					getViewVariable() + ".getDataObjectBinder("+EscapeUtils.quote(dataObjectAlias)+");");
+
+			Iterator<PropertyBindInfo> propertyBindings = dataBindingInfo.iterateBindings();
+			
+			while (propertyBindings.hasNext())
+			{
+				PropertyBindInfo bind = propertyBindings.next(); 
+				out.println(dataObjectBinder + ".addPropertyBinder(" + EscapeUtils.quote(context.getWidgetId()) + 
+						", new " + PropertyBinder.class.getCanonicalName() + "<" + dataObjectClassName + ", "+ bind.getWidgetClassName() +">(){");
+				String converterDeclaration = bind.getConverterDeclaration();
+				if (converterDeclaration != null)
+				{
+					out.println(converterDeclaration);
+				}
+
+				out.println("public void copyTo(" + dataObjectClassName + " dataObject){");
+				out.println(bind.getWriteExpression("dataObject"));
+				out.println("}");
+				
+				out.println("public void copyFrom(" + dataObjectClassName + " dataObject){");
+				out.println(bind.getReadExpression("dataObject"));
+				out.println("}");
+				out.println("});");
+			}
+		}
+    }
+	
+	/**
+	 * Process any dataObject binding expression on this widget
+	 * @param out
+	 * @param context
+	 */
+	protected void processDataExpressionBindings(SourcePrinter out, C context)
+    {
+		Iterator<ExpressionDataBinding> expressionBindings = context.iterateExpressionBindings();
+		
+		while (expressionBindings.hasNext())
+		{
+			ExpressionDataBinding expressionBinding = expressionBindings.next();
+			
+			String expressionBinder = createVariableName("expressionBinder");
+			out.println(ExpressionBinder.class.getCanonicalName() + " " + expressionBinder + " = "
+					+ "new " + ExpressionBinder.class.getCanonicalName() + "(){");
+			
+			out.println("public void updateExpression(" + BindingContext.class.getCanonicalName() +" context, Widget w);{");
+			out.print(expressionBinding.getWriteExpression("context", "w"));
+			out.println("}");
+
+			out.println("});");
+			
+			
+			Iterator<String> dataObjects = expressionBinding.iterateDataObjects();
+			
+			while (dataObjects.hasNext())
+			{
+				String dataObjectAlias = dataObjects.next();
+				out.println(getViewVariable() + ".getDataObjectBinder("+EscapeUtils.quote(dataObjectAlias)+")"
+						+ ".addExpressionBinder(" + EscapeUtils.quote(context.getWidgetId()) + ", " + expressionBinder + ");");
+			}
+			
+		}
+    }
 	
 	/**
 	 * Process widget attributes

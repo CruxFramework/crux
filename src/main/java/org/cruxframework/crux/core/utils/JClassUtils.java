@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
@@ -152,6 +153,15 @@ public class JClassUtils
 	}
 	
 	public static JType buildSetValueExpression(SourcePrinter out, JClassType dtoType, String propertyPath, String objectVariable, String value) 
+			throws NoSuchFieldException
+	{
+		StringBuilder str = new StringBuilder();
+		JType ret = buildSetValueExpression(str, dtoType, propertyPath, objectVariable, value);
+		out.print(str.toString());
+		return ret;
+	}
+	
+	public static JType buildSetValueExpression(StringBuilder out, JClassType dtoType, String propertyPath, String objectVariable, String value) 
 					throws NoSuchFieldException
     {
         if (StringUtils.isEmpty(propertyPath))
@@ -186,9 +196,9 @@ public class JClassUtils
         		String getterMethod = getGetterMethod(prop, baseClassType);
         		String setterMethod = getSetterMethod(prop, baseClassType, propertyType);
 
-        		out.println("if ("+getExpression.toString()+"."+getterMethod+"()==null){");
-        		out.println(getExpression+"."+setterMethod+"(("+propertyType.getParameterizedQualifiedSourceName()+")"+GWT.class.getCanonicalName()+".create("+propertyType.getQualifiedSourceName()+".class));");
-        		out.println("}");
+        		out.append("if ("+getExpression.toString()+"."+getterMethod+"()==null){\n");
+        		out.append("\t"+getExpression+"."+setterMethod+"(("+propertyType.getParameterizedQualifiedSourceName()+")"+GWT.class.getCanonicalName()+".create("+propertyType.getQualifiedSourceName()+".class));\n");
+        		out.append("}\n");
         		getExpression.append("."+getterMethod+"()");
         		
         		baseClassType = propertyType;
@@ -196,7 +206,7 @@ public class JClassUtils
     		String prop = props[props.length-1];
     		JType propertyType = getTypeForProperty(prop, baseClassType);
 			String setterMethod = getSetterMethod(prop, baseClassType, propertyType);
-			out.println(getExpression+"."+setterMethod+"("+value+");");
+			out.append(getExpression+"."+setterMethod+"("+value+");");
         	
         	return propertyType;
         }
@@ -826,8 +836,10 @@ public class JClassUtils
 	 * @param field
 	 * @param parentVariable
 	 * @param allowProtected
+	 * @deprecated Use getFieldValueGet(JClassType, String, String boolean) instead.
 	 */
 	@Deprecated
+	@Legacy
 	public static String getFieldValueGet(JClassType voClass, JField field, String parentVariable, boolean allowProtected)
 	{
 		return getFieldValueGet(voClass, field.getName(), parentVariable, allowProtected);

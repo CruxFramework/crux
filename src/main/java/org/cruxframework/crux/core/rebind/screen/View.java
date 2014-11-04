@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
@@ -50,8 +51,12 @@ public class View
 	protected Set<String> widgetTypes = new HashSet<String>();
 	protected Map<String, Event> events = new HashMap<String, Event>();
 	protected List<String> controllers = new ArrayList<String>();
+	@Deprecated
+	@Legacy
 	protected List<String> serializers = new ArrayList<String>();
 	protected List<String> formatters = new ArrayList<String>();
+	@Deprecated
+	@Legacy
 	protected List<String> dataSources = new ArrayList<String>();
 	protected List<String> views = new ArrayList<String>();
 	protected List<String> resources = new ArrayList<String>();
@@ -508,7 +513,7 @@ public class View
 	{
 		return views.iterator();
 	}
-	
+
 	/**
 	 * 
 	 * @return

@@ -26,6 +26,7 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.screen.widget.ObjectDataBinding.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorAnnotationsProcessor.AttributeCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
@@ -226,11 +227,13 @@ class AttributesAnnotationScanner
 		}
 		final boolean isStringExpression = String.class.isAssignableFrom(type);
 		final boolean supportsI18N = isStringExpression && attr.supportsI18N();
+		final boolean supportsDataBinding = attr.supportsDataBinding();
 		final boolean isEnumExpression = type.isEnum();
 		final boolean isPrimitiveExpression = type.isPrimitive();
 		final boolean supportsResources = attr.supportsResources();
 		return doCreateAutomaticAttributeProcessor(attrName, setterMethod, type.getCanonicalName(), 
-												   isStringExpression, supportsI18N, supportsResources, isEnumExpression, 
+												   isStringExpression, supportsI18N, supportsResources, 
+												   supportsDataBinding, isEnumExpression, 
 												   isPrimitiveExpression, attr.supportedDevices());
     }
 
@@ -246,7 +249,8 @@ class AttributesAnnotationScanner
 	 */
 	private AttributeCreator doCreateAutomaticAttributeProcessor(final String attrName, final String setterMethod, 
 																 final String typeName, final boolean isStringExpression, 
-																 final boolean supportsI18N, final boolean supportsResources, final boolean isEnumExpression, 
+																 final boolean supportsI18N, final boolean supportsResources, 
+																 final boolean supportsDataBinding, final boolean isEnumExpression, 
 																 final boolean isPrimitiveExpression, final Device[] supportedDevices)
     {
 	    return new AttributeCreator()
@@ -256,7 +260,17 @@ class AttributesAnnotationScanner
 				if (widgetCreator.isCurrentDeviceSupported(supportedDevices))
 				{
 					String attrValue = context.readWidgetProperty(attrName);
-					String expression = getExpression(typeName, isStringExpression, isEnumExpression, isPrimitiveExpression, attrValue);
+					
+					if (supportsDataBinding)
+					{
+						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, attrName);
+						if (binding != null)
+						{
+							context.registerObjectDataBinding(binding);
+							return;
+						}
+					}
+					String expression = getExpression(context, typeName, isStringExpression, isEnumExpression, isPrimitiveExpression, attrValue);
 					if (expression != null)
 					{
 						out.println(context.getWidget()+"."+setterMethod+"("+expression+");");
@@ -264,12 +278,13 @@ class AttributesAnnotationScanner
 				}
 			}
 
-			private String getExpression(String typeName, 
+			private String getExpression(WidgetCreatorContext context, 
+										 String typeName, 
 										 boolean isStringExpression, 
 										 boolean isEnumExpression, boolean isPrimitiveExpression, 
 										 String attrValue)
             {
-				String expression;
+				String expression = null;
 
 				if (StringUtils.isEmpty(attrValue))
 				{

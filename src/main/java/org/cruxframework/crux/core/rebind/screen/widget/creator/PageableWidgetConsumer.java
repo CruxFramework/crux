@@ -18,6 +18,7 @@ package org.cruxframework.crux.core.rebind.screen.widget.creator;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.DataWidgetConsumer;
+import org.cruxframework.crux.core.rebind.screen.widget.ViewBindHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.json.JSONObject;
 
@@ -53,7 +54,7 @@ public class PageableWidgetConsumer extends DataWidgetConsumer implements Widget
 		String bindPath = metaElem.optString("bindPath");
 		String bindConverter = metaElem.optString("bindConverter");
 				
-		JClassType converterType = getConverterType(out, context, bindPath, bindConverter, dataObjectType, widgetClassType);
+		JClassType converterType = ViewBindHandler.getConverterType(context, bindPath, bindConverter, dataObjectType, widgetClassType);
     	String converterVariable = null;
     	if (converterType != null)
     	{

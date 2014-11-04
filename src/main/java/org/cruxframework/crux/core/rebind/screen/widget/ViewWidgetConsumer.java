@@ -47,7 +47,7 @@ public class ViewWidgetConsumer extends DataWidgetConsumer implements LazyCompat
 	{
 		String bindPath = metaElem.optString("bindPath");
 		String bindConverter = metaElem.optString("bindConverter");
-		if (viewFactoryCreator.isDataBindEnabled() && !StringUtils.isEmpty(bindPath))
+		if (viewFactoryCreator.isBindableView() && !StringUtils.isEmpty(bindPath))
 		{
 			Class<?> widgetClass = viewFactoryCreator.getWidgetCreatorHelper(widgetType).getWidgetType();
 			String dataObjectClassName = DataObjects.getDataObject(viewFactoryCreator.view.getDataObject());
@@ -59,7 +59,7 @@ public class ViewWidgetConsumer extends DataWidgetConsumer implements LazyCompat
 				out.println(ViewFactoryCreator.getViewVariable()+".addWidget("+EscapeUtils.quote(widgetId)+", "+ widgetVariableName +
 						", new "+BindableView.class.getCanonicalName()+".PropertyBinder<"+dataObjectClassName+">(){");
 				
-				JClassType converterType = getConverterType(out, viewFactoryCreator.getContext(), bindPath, bindConverter, dataObjectType, widgetClassType);
+				JClassType converterType = ViewBindHandler.getConverterType(viewFactoryCreator.getContext(), bindPath, bindConverter, dataObjectType, widgetClassType);
 		    	String converterVariable = null;
 		    	if (converterType != null)
 		    	{

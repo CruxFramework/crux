@@ -17,15 +17,11 @@ package org.cruxframework.crux.core.rebind.screen.widget;
 
 import org.cruxframework.crux.core.client.converter.TypeConverter;
 import org.cruxframework.crux.core.client.formatter.HasFormatter;
-import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.converter.Converters;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
@@ -36,20 +32,6 @@ import com.google.gwt.user.client.ui.HasValue;
  */
 public class DataWidgetConsumer
 {
-	public static JClassType getConverterType(SourcePrinter out, GeneratorContext context, String bindPath, String bindConverter, JClassType dataObjectType, JClassType widgetClassType)
-    {
-		JClassType converterType = null;
-	    if (!StringUtils.isEmpty(bindConverter))
-	    {
-	    	String converterClassName = Converters.getConverter(bindConverter);
-	    	converterType = context.getTypeOracle().findType(converterClassName);
-	    	JType propertyType = JClassUtils.getTypeForProperty(bindPath, dataObjectType);
-	    	String propertyClassName = getPropertyClassName(propertyType);
-	    	validateConverter(converterType, context, widgetClassType, context.getTypeOracle().findType(propertyClassName));
-	    }
-	    return converterType;
-    }
-
 	public static void generateCopyFromCode(SourcePrinter srcWriter, GeneratorContext context, String dataObjectVariable, 
 			String widgetVariable, JClassType dataObjectType, JClassType widgetClass, String bindPath, String converterVariable, 
 			JClassType converterType, boolean skipCheckings) throws NoSuchFieldException
@@ -69,7 +51,7 @@ public class DataWidgetConsumer
 		}
 		else
 		{
-			propertyClassName = getPropertyClassName(propertyType);
+			propertyClassName = JClassUtils.getGenericDeclForType(propertyType);
 		}
 		if (dataObjectType != null && widgetClass != null)
 		{
@@ -85,57 +67,7 @@ public class DataWidgetConsumer
 			}
 		}
     }
-
-	public static String getNullSafeExpression(String expression, JType propertyType, String bindPath, String dataObjectClassName, String converterVariable)
-	{
-		if (converterVariable != null)
-		{
-			expression = converterVariable+".from(" + expression + ")";
-		}
-		String getExpression;
-		JPrimitiveType primitiveType = propertyType.isPrimitive();
-		if (primitiveType == null)
-		{
-			getExpression = "(w==null?null:"+expression+")";
-		}
-		else if (primitiveType.equals(JPrimitiveType.BOOLEAN))
-		{
-			getExpression = "(w==null?false:"+expression+"==null?false:"+expression+")";
-		}
-		else if (!primitiveType.equals(JPrimitiveType.VOID))
-		{
-			getExpression = "(w==null?0:"+expression+"==null?0:"+expression+")";
-		}
-		else
-		{
-			throw new CruxGeneratorException("Invalid binding path ["+bindPath+"] on target dataObject ["+dataObjectClassName+"]. Property can not be void.");
-		}
-		return getExpression;
-	}
 	
-	public static String getEmptyValueExpression(JType propertyType, String bindPath, String dataObjectClassName)
-	{
-		String getExpression;
-		JPrimitiveType primitiveType = propertyType.isPrimitive();
-		if (primitiveType == null)
-		{
-			getExpression = "null";
-		}
-		else if (primitiveType.equals(JPrimitiveType.BOOLEAN))
-		{
-			getExpression = "false";
-		}
-		else if (!primitiveType.equals(JPrimitiveType.VOID))
-		{
-			getExpression = "0";
-		}
-		else
-		{
-			throw new CruxGeneratorException("Invalid binding path ["+bindPath+"] on target dataObject ["+dataObjectClassName+"]. Property can not be void.");
-		}
-		return getExpression;
-	}
-
 	public static String getPropertyReadExpression(JClassType dataObjectType, String dataObjectVariable, 
 												   String converterVariable,  String bindPath) throws NoSuchFieldException
 	{
@@ -179,7 +111,7 @@ public class DataWidgetConsumer
 			}
 			else
 			{
-				propertyClassName = getPropertyClassName(propertyType);
+				propertyClassName = JClassUtils.getGenericDeclForType(propertyType);
 			}
 			if (!skipCheckings)
 			{
@@ -194,56 +126,6 @@ public class DataWidgetConsumer
 		}
 	}
 
-	public static void validateConverter(JClassType converterType, GeneratorContext context, JClassType widgetClass, JClassType propertyType)
-	{
-		JClassType hasValueType = context.getTypeOracle().findType(HasValue.class.getCanonicalName());
-		JClassType hasTextType = context.getTypeOracle().findType(HasText.class.getCanonicalName());
-		JClassType typeConverterType = context.getTypeOracle().findType(TypeConverter.class.getCanonicalName());
-		JClassType stringType = context.getTypeOracle().findType(String.class.getCanonicalName());
-
-		JClassType[] types = JClassUtils.getActualParameterTypes(converterType, typeConverterType);
-		JClassType widgetType = null;
-
-		if (widgetClass.isAssignableTo(hasValueType))
-		{
-			JClassType[] widgetValueType = JClassUtils.getActualParameterTypes(widgetClass, hasValueType);
-			widgetType = widgetValueType[0];
-		}
-		else if (widgetClass.isAssignableTo(hasTextType))
-		{
-			widgetType = stringType;
-		}
-		else
-		{
-			throw new CruxGeneratorException("converter ["+converterType.getQualifiedSourceName()+
-					"] can not be used to convert values to widget of type ["+widgetClass.getQualifiedSourceName()+"]. Incompatible types.");
-		}
-		if (!propertyType.isAssignableTo(types[0]))
-		{
-			throw new CruxGeneratorException("converter ["+converterType.getQualifiedSourceName()+
-					"] can not be used to convert values to widget of type ["+widgetClass.getQualifiedSourceName()+"]. Incompatible types.");
-		}
-		if (!widgetType.isAssignableTo(types[1]))
-		{
-			throw new CruxGeneratorException("converter ["+converterType.getQualifiedSourceName()+
-					"] can not be used to convert values to property of type ["+propertyType.getQualifiedSourceName()+"]. Incompatible types.");
-		}
-	}
-
-	private static String getPropertyClassName(JType propertyType)
-    {
-	    String propertyClassName;
-	    if (propertyType.isPrimitive() != null)
-	    {
-	    	propertyClassName = propertyType.isPrimitive().getQualifiedBoxedSourceName();
-	    }
-	    else
-	    {
-	    	propertyClassName = propertyType.getParameterizedQualifiedSourceName();
-	    }
-	    return propertyClassName;
-    }
-	
 	private static void generateWidgetValueSetWithNoCheckings(SourcePrinter srcWriter, String widgetVariable, JClassType widgetClass, JClassType hasValueType, JClassType hasFormatterType, JClassType hasTextType, String propertyGetExpression, JType propertyType,
             String propertyClassName)
     {
@@ -298,22 +180,22 @@ public class DataWidgetConsumer
 	    String getExpression;
 	    if (widgetClass.isAssignableTo(hasValueType))
 	    {
-	    	getExpression = getNullSafeExpression(widgetVariable+".getValue()", 
-	    									propertyType, bindPath, dataObjectClassName, converterVariable);
+	    	getExpression = ViewBindHandler.getNullSafeExpression(widgetVariable+".getValue()", 
+	    									propertyType, bindPath, dataObjectClassName, converterVariable, widgetVariable);
 	    }
 	    else if (widgetClass.isAssignableTo(hasFormatterType))
 	    {
-	    	getExpression = getNullSafeExpression("("+propertyClassName+")"+widgetVariable+".getUnformattedValue()", 
-	    									propertyType, bindPath, dataObjectClassName, converterVariable);
+	    	getExpression = ViewBindHandler.getNullSafeExpression("("+propertyClassName+")"+widgetVariable+".getUnformattedValue()", 
+	    									propertyType, bindPath, dataObjectClassName, converterVariable, widgetVariable);
 	    } 
 	    else if (widgetClass.isAssignableTo(hasTextType))
 	    {
-	    	getExpression = getNullSafeExpression(widgetVariable+".getText()", propertyType, bindPath, dataObjectClassName, 
-	    									converterVariable);
+	    	getExpression = ViewBindHandler.getNullSafeExpression(widgetVariable+".getText()", propertyType, bindPath, dataObjectClassName, 
+	    									converterVariable, widgetVariable);
 	    }
 	    else
 	    {
-	    	getExpression = getEmptyValueExpression(propertyType, bindPath, dataObjectClassName);
+	    	getExpression = ViewBindHandler.getEmptyValueExpression(propertyType, bindPath, dataObjectClassName);
 	    }
 	    
 	    JClassUtils.buildSetValueExpression(srcWriter, dataObjectType, bindPath, dataObjectVariable, getExpression);
@@ -325,22 +207,22 @@ public class DataWidgetConsumer
 	    String getExpression;
 	    if (widgetClass.isAssignableTo(hasValueType))
 	    {
-	    	getExpression = getNullSafeExpression("(("+HasValue.class.getCanonicalName()+"<"+propertyClassName+">)"+widgetVariable+").getValue()", 
-	    									propertyType, bindPath, dataObjectClassName, converterVariable);
+	    	getExpression = ViewBindHandler.getNullSafeExpression("(("+HasValue.class.getCanonicalName()+"<"+propertyClassName+">)"+widgetVariable+").getValue()", 
+	    									propertyType, bindPath, dataObjectClassName, converterVariable, widgetVariable);
 	    }
 	    else if (widgetClass.isAssignableTo(hasFormatterType))
 	    {
-	    	getExpression = getNullSafeExpression("("+propertyClassName+")(("+HasFormatter.class.getCanonicalName()+")"+widgetVariable+").getUnformattedValue()", 
-	    									propertyType, bindPath, dataObjectClassName, converterVariable);
+	    	getExpression = ViewBindHandler.getNullSafeExpression("("+propertyClassName+")(("+HasFormatter.class.getCanonicalName()+")"+widgetVariable+").getUnformattedValue()", 
+	    									propertyType, bindPath, dataObjectClassName, converterVariable, widgetVariable);
 	    } 
 	    else if (widgetClass.isAssignableTo(hasTextType))
 	    {
-	    	getExpression = getNullSafeExpression("(("+HasText.class.getCanonicalName()+")"+widgetVariable+").getText()", propertyType, bindPath, dataObjectClassName, 
-	    									converterVariable);
+	    	getExpression = ViewBindHandler.getNullSafeExpression("(("+HasText.class.getCanonicalName()+")"+widgetVariable+").getText()", propertyType, bindPath, dataObjectClassName, 
+	    									converterVariable, widgetVariable);
 	    }
 	    else
 	    {
-	    	getExpression = getEmptyValueExpression(propertyType, bindPath, dataObjectClassName);
+	    	getExpression = ViewBindHandler.getEmptyValueExpression(propertyType, bindPath, dataObjectClassName);
 	    }
 	    
 	    JClassUtils.buildSetValueExpression(srcWriter, dataObjectType, bindPath, dataObjectVariable, getExpression);
