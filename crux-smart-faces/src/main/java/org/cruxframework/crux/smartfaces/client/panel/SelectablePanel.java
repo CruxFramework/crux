@@ -82,6 +82,11 @@ public class SelectablePanel extends SelectableWidget implements HasAllFocusHand
 		panel.add(w);
 	}
 	
+	public boolean remove(IsWidget w)
+	{
+		return panel.remove(w);
+	}
+	
 	public void select()
 	{
 		getSelectEventsHandler().select();
