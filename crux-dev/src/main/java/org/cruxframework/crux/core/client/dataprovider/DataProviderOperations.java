@@ -237,21 +237,18 @@ class DataProviderOperations<T>
 	
 	void commit()
     {
-		if(this.dataProvider instanceof AbstractPagedDataProvider)
+		for(DataProviderRecord<T> newRecord : newRecords)
 		{
-			getCurrentPageRecords(true);
+			newRecord.setCreated(false);
+			newRecord.setDirty(false);
 		}
-		else
+		
+		for(DataProviderRecord<T> changedRecord : changedRecords)
 		{
-			int size = dataProvider.data.size();
-			for (int i = 0; i < size; i++)
-			{
-				DataProviderRecord<T> record = dataProvider.data.get(i);
-				record.setCreated(false);
-				record.setDirty(false);
-			}		
+			changedRecord.setCreated(false);
+			changedRecord.setDirty(false);
 		}
-    	
+		
 		newRecords.clear();
 		removedRecords.clear();
 		changedRecords.clear(); 

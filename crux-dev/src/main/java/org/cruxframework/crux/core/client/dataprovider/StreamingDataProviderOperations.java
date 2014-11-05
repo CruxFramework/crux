@@ -130,13 +130,17 @@ class StreamingDataProviderOperations<T>
 	
 	void commit()
     {
-		int size = dataProvider.data.size();
-		for (int i = 0; i < size; i++)
+		for(DataProviderRecord<T> newRecord : newRecords)
 		{
-			DataProviderRecord<T> record = dataProvider.data.get(i);
-			record.setCreated(false);
-			record.setDirty(false);
-		}		
+			newRecord.setCreated(false);
+			newRecord.setDirty(false);
+		}
+		
+		for(DataProviderRecord<T> changedRecord : changedRecords)
+		{
+			changedRecord.setCreated(false);
+			changedRecord.setDirty(false);
+		}
 	
 		newRecords.clear();
 		removedRecords.clear();
