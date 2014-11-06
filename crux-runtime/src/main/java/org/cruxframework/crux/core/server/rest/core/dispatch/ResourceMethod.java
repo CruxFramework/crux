@@ -169,7 +169,7 @@ public class ResourceMethod
 					ret = invoke(request, target);
 					if (ret.getCheckedExceptionData() == null)
 					{
-						stateHandler.updateState(ret);
+						stateHandler.updateState(request.getUri(), ret);
 					}
 				}
 				return ret;

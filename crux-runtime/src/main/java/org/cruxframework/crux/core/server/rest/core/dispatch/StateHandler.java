@@ -18,11 +18,17 @@ package org.cruxframework.crux.core.server.rest.core.dispatch;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.server.rest.core.EntityTag;
 import org.cruxframework.crux.core.server.rest.core.dispatch.ResourceMethod.MethodReturn;
 import org.cruxframework.crux.core.server.rest.spi.HttpRequest;
+import org.cruxframework.crux.core.server.rest.spi.UriInfo;
+import org.cruxframework.crux.core.server.rest.state.ETagHandler;
 import org.cruxframework.crux.core.server.rest.state.ResourceStateConfig;
 import org.cruxframework.crux.core.server.rest.state.ResourceStateHandler;
 import org.cruxframework.crux.core.server.rest.state.ResourceStateHandler.ResourceState;
@@ -37,6 +43,9 @@ import org.cruxframework.crux.core.shared.rest.annotation.GET;
  */
 public class StateHandler
 {
+	private static final Log logger = LogFactory.getLog(StateHandler.class);
+	private static final Lock eTagLock = new ReentrantLock();
+	private static ETagHandler eTagHandler = null;
 	private final HttpRequest request;
 	private final ResourceMethod resourceMethod;
 	private String httpMethod;
@@ -59,7 +68,7 @@ public class StateHandler
 		return handleUncacheableOperation();
 	}
 
-	public void updateState(MethodReturn ret)
+	public void updateState(UriInfo uriInfo, MethodReturn ret)
 	{
 		ResourceStateHandler resourceStateHandler = ResourceStateConfig.getResourceStateHandler();
 		if (ret.getCacheInfo() != null && (ret.getCacheInfo().isCacheEnabled() || ret.isEtagGenerationEnabled())) // only GET can declare cache
@@ -83,7 +92,7 @@ public class StateHandler
 			}
 			else
 			{
-				etag = generateEtag(ret.getReturn());
+				etag = getETagHandler().generateEtag(uriInfo, ret.getReturn());
 				dateModified = System.currentTimeMillis();
 				if (ret.getCacheInfo().isCacheEnabled())
 				{
@@ -298,12 +307,24 @@ public class StateHandler
 		return result;
 	}
 	
-	private String generateEtag(String content)
-    {
-		if (StringUtils.isEmpty(content))
+	public static ETagHandler getETagHandler()
+	{
+		if (eTagHandler != null) return eTagHandler;
+		
+		try
 		{
-			return null;
-		} 
-		return Long.toHexString(System.currentTimeMillis()) + Integer.toHexString(content.hashCode());
-    }
+			eTagLock.lock();
+			if (eTagHandler != null) return eTagHandler;
+			eTagHandler = (ETagHandler) Class.forName(ConfigurationFactory.getConfigurations().eTagHandler()).newInstance(); 
+		}
+		catch (Exception e)
+		{
+			logger.error("Error initializing eTagHandler.", e);
+		}
+		finally
+		{
+			eTagLock.unlock();
+		}
+		return eTagHandler;
+	}
 }
