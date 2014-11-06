@@ -93,6 +93,10 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 						{
 							event.preventDefault();
 						}
+						if (selectEvent.isStopped())
+						{
+							event.stopPropagation();
+						}
 					}
 				}
 			});
