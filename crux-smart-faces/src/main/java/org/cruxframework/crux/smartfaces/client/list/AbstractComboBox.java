@@ -28,6 +28,7 @@ import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.dialog.PopupPanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
+import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -35,11 +36,17 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
 import com.google.gwt.event.dom.client.HasAllMouseHandlers;
+import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
@@ -112,9 +119,9 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	@Override
 	public HandlerRegistration addBlurHandler(BlurHandler handler)
 	{
-		return addBlurHandler(handler);
+		return addHandler(handler,BlurEvent.getType());
 	}
-	
+
 	@Override
 	public HandlerRegistration addFocusHandler(FocusHandler handler)
 	{
@@ -124,49 +131,43 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	@Override
 	public HandlerRegistration addMouseDownHandler(MouseDownHandler handler)
 	{
-		return addMouseDownHandler(handler);
+		return addHandler(handler,MouseDownEvent.getType());
 	}
 
 	@Override
 	public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler)
 	{
-		return addMouseMoveHandler(handler);
+		return addHandler(handler, MouseMoveEvent.getType());
 	}
 
 	@Override
 	public HandlerRegistration addMouseOutHandler(MouseOutHandler handler)
 	{
-		return addMouseOutHandler(handler);
+		return addHandler(handler,MouseOutEvent.getType());
 	}
 
 	@Override
 	public HandlerRegistration addMouseOverHandler(MouseOverHandler handler)
 	{
-		return addMouseOverHandler(handler);
+		return addHandler(handler, MouseOverEvent.getType());
 	}
 
 	@Override
 	public HandlerRegistration addMouseUpHandler(MouseUpHandler handler)
 	{
-		return addMouseUpHandler(handler);
+		return addHandler(handler,MouseUpEvent.getType());
 	}
 
 	@Override
 	public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler)
 	{
-		return addMouseWheelHandler(handler);
+		return addHandler(handler,MouseWheelEvent.getType());
 	}
 
 	@Override
 	public HandlerRegistration addSelectHandler(SelectHandler handler)
 	{
-		return addSelectHandler(handler);
-	}
-
-	@Override
-	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<V> handler)
-	{
-		return addValueChangeHandler(handler);
+		return addHandler(handler,SelectEvent.getType());
 	}
 	
 	private void createPopup()

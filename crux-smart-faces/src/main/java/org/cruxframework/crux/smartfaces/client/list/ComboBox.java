@@ -19,6 +19,9 @@ import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.DataFilter;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+
 
 /**
  * @author wesley.diniz
@@ -62,6 +65,12 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 	protected void setValueByObject(T obj)
 	{
 		setValue(optionsRenderer.getValue(obj));
+	}
+
+	@Override
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler)
+	{
+		return null;
 	}
 	
 }

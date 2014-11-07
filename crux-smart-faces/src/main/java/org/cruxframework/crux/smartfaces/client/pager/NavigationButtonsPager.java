@@ -20,7 +20,7 @@ import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
-import org.cruxframework.crux.smartfaces.client.label.Label;
+import org.cruxframework.crux.smartfaces.client.button.Button;
 
 import com.google.gwt.core.client.GWT;
 
@@ -31,10 +31,10 @@ import com.google.gwt.core.client.GWT;
  */
 public abstract class NavigationButtonsPager extends AbstractPager implements Pager
 {
-	private Label previousButton;
-	private Label nextButton;
-	private Label firstButton;
-	private Label lastButton;
+	private Button previousButton;
+	private Button nextButton;
+	private Button firstButton;
+	private Button lastButton;
 	private ButtonCreator buttonCreator = GWT.create(ButtonCreator.class);
 	
 	@Override
@@ -95,11 +95,11 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 * Creates the "previous page" navigation button
 	 * @return
 	 */
-	protected Label createPreviousButton()
+	protected Button createPreviousButton()
 	{
 		final NavigationButtonsPager pager = this;
 		
-		Label panel = createNavigationButton("previousButton", 
+		Button panel = createNavigationButton("previousButton", 
 			new SelectHandler() 
 			{
 				public void onSelect(SelectEvent event)
@@ -128,11 +128,11 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 * Creates the "next page" navigation button
 	 * @return
 	 */
-	protected Label createNextButton()
+	protected Button createNextButton()
 	{
 		final NavigationButtonsPager pager = this;
 		
-		Label panel = createNavigationButton("nextButton", 
+		Button panel = createNavigationButton("nextButton", 
 			new SelectHandler()
 			{			
 				public void onSelect(SelectEvent event)
@@ -153,6 +153,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		);
 		
 		this.nextButton = panel;
+		nextButton.setText(" ");
 		
 		return panel;
 	}
@@ -161,11 +162,11 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 * Creates the "first page" navigation button
 	 * @return
 	 */
-	protected Label createFirstPageButton()
+	protected Button createFirstPageButton()
 	{
 		final NavigationButtonsPager pager = this;
 		
-		Label panel = createNavigationButton("firstButton", 
+		Button panel = createNavigationButton("firstButton", 
 			new SelectHandler()
 			{			
 				public void onSelect(SelectEvent event)
@@ -191,11 +192,11 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 * Creates the "last page" navigation button
 	 * @return
 	 */
-	protected Label createLastPageButton()
+	protected Button createLastPageButton()
 	{
 		final NavigationButtonsPager pager = this;
 		
-		Label label = createNavigationButton("lastButton", 
+		Button label = createNavigationButton("lastButton", 
 			new SelectHandler()
 			{			
 				public void onSelect(SelectEvent event)
@@ -223,9 +224,9 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	 * @param selectHandler
 	 * @return
 	 */
-	private Label createNavigationButton(String styleName, SelectHandler selectHandler)
+	private Button createNavigationButton(String styleName, SelectHandler selectHandler)
 	{
-		Label button = buttonCreator.createButton();
+		Button button = buttonCreator.createButton();
 		button.setStyleName(styleName);
 		button.addStyleDependentName("disabled");
 		button.addSelectHandler(selectHandler);
@@ -235,9 +236,9 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	
 	protected static class ButtonCreator
 	{
-		protected Label createButton()
+		protected Button createButton()
 		{
-			Label label = new Label();
+			Button label = new Button();
 			label.getElement().setTabIndex(0);//make it focusable
 			return label;
 		}
@@ -246,9 +247,9 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	protected static class TouchButtonCreator extends ButtonCreator
 	{
 		@Override
-		protected Label createButton()
+		protected Button createButton()
 		{
-			return new Label();
+			return new Button();
 		}
 	}
 }
