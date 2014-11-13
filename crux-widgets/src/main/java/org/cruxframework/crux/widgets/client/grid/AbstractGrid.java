@@ -46,6 +46,7 @@ import org.cruxframework.crux.widgets.client.event.row.HasLoadRowDetailsHandlers
 import org.cruxframework.crux.widgets.client.event.row.HasRowClickHandlers;
 import org.cruxframework.crux.widgets.client.event.row.HasRowDoubleClickHandlers;
 import org.cruxframework.crux.widgets.client.event.row.HasRowEditHandlers;
+import org.cruxframework.crux.widgets.client.event.row.HasRowEditingHandlers;
 import org.cruxframework.crux.widgets.client.event.row.HasRowRenderHandlers;
 import org.cruxframework.crux.widgets.client.event.row.HasShowRowDetailsHandlers;
 import org.cruxframework.crux.widgets.client.event.row.LoadRowDetailsEvent;
@@ -56,6 +57,8 @@ import org.cruxframework.crux.widgets.client.event.row.RowDoubleClickEvent;
 import org.cruxframework.crux.widgets.client.event.row.RowDoubleClickHandler;
 import org.cruxframework.crux.widgets.client.event.row.RowEditEvent;
 import org.cruxframework.crux.widgets.client.event.row.RowEditHandler;
+import org.cruxframework.crux.widgets.client.event.row.RowEditingEvent;
+import org.cruxframework.crux.widgets.client.event.row.RowEditingHandler;
 import org.cruxframework.crux.widgets.client.event.row.RowRenderEvent;
 import org.cruxframework.crux.widgets.client.event.row.RowRenderHandler;
 import org.cruxframework.crux.widgets.client.event.row.ShowRowDetailsEvent;
@@ -82,7 +85,10 @@ import com.google.gwt.user.client.ui.Widget;
  * All subclasses must invoke the method <code>render()</code> in their constructors.
  * @author Gesse Dafe
  */
-public abstract class AbstractGrid<R extends Row> extends Composite implements HasRowClickHandlers, HasRowDoubleClickHandlers, HasRowRenderHandlers, HasBeforeShowDetailsHandlers, HasShowRowDetailsHandlers, HasLoadRowDetailsHandlers, HasBeforeRowEditHandlers, HasRowEditHandlers,HasBeforeSaveRowEditionHandler,HasBeforeCancelRowEditionHandler,HasCancelRowEditionHandler  {	
+public abstract class AbstractGrid<R extends Row> extends Composite implements HasRowClickHandlers, HasRowDoubleClickHandlers, HasRowRenderHandlers, HasBeforeShowDetailsHandlers,
+	HasShowRowDetailsHandlers, HasLoadRowDetailsHandlers, HasBeforeRowEditHandlers, HasRowEditHandlers, HasBeforeSaveRowEditionHandler, HasBeforeCancelRowEditionHandler,
+	HasCancelRowEditionHandler, HasRowEditingHandlers
+{	
 	
 	private static final String DEFAULT_STYLE_NAME = "crux-Grid";
 	
@@ -328,6 +334,14 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	public HandlerRegistration addRowEditHandler(RowEditHandler handler) 
 	{
 		return addHandler(handler, RowEditEvent.getType());
+	}
+	
+	/**
+	 * @see org.cruxframework.crux.widgets.client.event.row.HasRowEditHandlers#addRowEditHandler(org.cruxframework.crux.widgets.client.event.row.RowEditHandler)
+	 */
+	public HandlerRegistration addRowEditingHandler(RowEditingHandler handler) 
+	{
+		return addHandler(handler, RowEditingEvent.getType());
 	}
 	
 	/**
@@ -638,7 +652,11 @@ public abstract class AbstractGrid<R extends Row> extends Composite implements H
 	 */
 	protected abstract void fireBeforeRowEditEvent(R row);
 	
-		
+	/** Fires a row editing event
+	 * @param row
+	 */
+	protected abstract void fireRowEditingEvent(R row);
+	
 	/**
 	 * Fires a row double click event
 	 * @param row

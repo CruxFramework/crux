@@ -50,6 +50,8 @@ import org.cruxframework.crux.widgets.client.event.row.RowClickEvent;
 import org.cruxframework.crux.widgets.client.event.row.RowClickHandler;
 import org.cruxframework.crux.widgets.client.event.row.RowDoubleClickEvent;
 import org.cruxframework.crux.widgets.client.event.row.RowEditEvent;
+import org.cruxframework.crux.widgets.client.event.row.RowEditingEvent;
+import org.cruxframework.crux.widgets.client.event.row.RowEditingHandler;
 import org.cruxframework.crux.widgets.client.event.row.RowRenderEvent;
 import org.cruxframework.crux.widgets.client.event.row.ShowRowDetailsEvent;
 import org.cruxframework.crux.widgets.client.grid.DataColumnEditorCreators.DataColumnEditorCreator;
@@ -1638,6 +1640,12 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 	{
 		RowEditEvent.fire(this, row);
 	}
+	
+	@Override
+	protected void fireRowEditingEvent(DataRow row)
+	{
+		RowEditingEvent.fire(this, row);
+	}
 
 	@Override
 	protected void fireBeforeRowEditEvent(DataRow row)
@@ -1957,13 +1965,14 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			renderRow(row, row.getDataSourceRecord(), row.isEditMode(), focusCellKey);
 			
 			//If event was cancelled
-			if(!row.isEditMode())
+			if (!row.isEditMode())
 			{
 				enableRows();
 			}
-			else if(showEditorButtons)
+			else if (showEditorButtons)
 			{
 				startEditingButtons(row);
+				fireRowEditingEvent(row);
 			}
 		}
 	}
@@ -2201,5 +2210,10 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 		super.setWidth(width);
 		getTable().setWidth(width);
 	}
-	
+
+	@Override
+	public HandlerRegistration addRowEditingHandler(RowEditingHandler handler)
+	{
+		return addHandler(handler, RowEditingEvent.getType());
+	}
 }
