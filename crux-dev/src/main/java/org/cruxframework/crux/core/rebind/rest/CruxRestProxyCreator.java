@@ -29,7 +29,6 @@ import org.cruxframework.crux.core.client.collection.FastMap;
 import org.cruxframework.crux.core.client.rest.Callback;
 import org.cruxframework.crux.core.client.rest.RestError;
 import org.cruxframework.crux.core.client.rest.RestProxy;
-import org.cruxframework.crux.core.client.rest.RestProxy.TargetEndPoint;
 import org.cruxframework.crux.core.client.rest.RestProxy.UseJsonP;
 import org.cruxframework.crux.core.client.rpc.CruxRpcRequestBuilder;
 import org.cruxframework.crux.core.client.screen.Screen;
@@ -306,7 +305,6 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		bodyParameterHandler.generateMethodParamToBodyCode(srcWriter, methodInfo, "builder", methodInfo.httpMethod);
 		generateValidateStateBlock(srcWriter, methodInfo.validationModel, "builder", restURIParam, methodInfo.methodURI, callbackParameterName);
 		generateXSRFHeaderProtectionForWrites(methodInfo.httpMethod, "builder", srcWriter);
-		generateAccessControlAllowOrigin("builder", srcWriter);
 		srcWriter.println("builder.send();");
 		srcWriter.println("}catch (Exception e){");
 		generateLogHandlingCode(srcWriter, "Level.SEVERE", "e");
@@ -418,20 +416,6 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 		}
 	}
 	
-	protected void generateAccessControlAllowOrigin(String builderVar, SourcePrinter srcWriter)
-	{
-		TargetEndPoint targetEndPoint = baseIntf.getAnnotation(TargetEndPoint.class);
-		if (targetEndPoint != null)
-		{
-			String basePath = targetEndPoint != null? targetEndPoint.value() : "";
-			if (basePath.endsWith("/"))
-			{
-				basePath = basePath.substring(0, basePath.length()-1);
-			}
-			srcWriter.println(builderVar+".setHeader("+EscapeUtils.quote(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN)+", "+basePath+");");
-		}
-	}
-
 	protected void generateSaveStateBlock(SourcePrinter srcWriter, boolean isReadMethod, String responseVar, String uriVar, String uri)
 	{
 		if (mustGenerateStateControlMethods && readMethods.contains(uri) && updateMethods.contains(uri))
