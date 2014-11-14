@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.tools.codeserver;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,22 +26,20 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
-import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
-import org.cruxframework.crux.scanner.ClasspathUrlFinder;
-import org.cruxframework.crux.scanner.Scanners;
 import org.cruxframework.crux.tools.codeserver.CodeServerRecompileListener.CompilationCallback;
-import org.cruxframework.crux.tools.codeserver.client.CodeServerNotifier;
+import org.cruxframework.crux.tools.compile.AbstractCruxCompiler;
+import org.cruxframework.crux.tools.compile.CruxCompilerFactory;
 import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
-import org.cruxframework.crux.tools.compile.utils.ModuleUtils;
 import org.cruxframework.crux.tools.parameters.ConsoleParameter;
 import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
@@ -68,6 +67,8 @@ import com.google.gwt.dev.util.log.PrintWriterTreeLogger;
  */
 public class CodeServer 
 {
+	private static final String MSG_CAN_NOT_DETERMINE_THE_USER_AGENT = "Can not determine the userAgent that must be used by code server. Configure your .gwt.xml file or inform it using -userAgent to CodeServer tool.";
+
 	private static final Log logger = LogFactory.getLog(CodeServer.class);
 
 	private String moduleName;
@@ -128,14 +129,14 @@ public class CodeServer
 
 	protected void execute() throws Exception
     {
-		URL[] urls = ClasspathUrlFinder.findClassPaths();
-		Scanners.setSearchURLs(urls);
-		ModuleUtils.initializeScannerURLs(urls);
+		AbstractCruxCompiler compiler = CruxCompilerFactory.createCompiler();
+		compiler.setOutputCharset("UTF-8");
+		
 		CruxRegisterUtil.registerFilesCruxBridge(null);
-		DevelopmentScanners.initializeScanners();
 		ServiceFactoryInitializer.initialize(null);
 		RestServiceFactoryInitializer.initialize(null);
-		ViewProcessor.setOutputCharset("UTF-8");
+		
+		compiler.initializeCompiler();
 		
 		Set<String> screenIDs = null;
 		try
@@ -155,6 +156,18 @@ public class CodeServer
 			String[] args = getServerParameters();
 			initializeRecompileListener();
 			runGWTCodeServer(args);
+			
+			if (Boolean.valueOf(ConfigurationFactory.getConfigurations().generateIndexInDevMode()))
+			{
+				for (String screenID : screenIDs)
+				{
+					URL preProcessCruxPage = compiler.preProcessCruxPage(new URL(screenID), Modules.getInstance().getModule(moduleName));
+					File index = new File(webDir + File.separator + moduleName + File.separator + screenID.substring(
+						screenID.lastIndexOf("/") + 1, screenID.lastIndexOf(".crux.xml")) + ".html");
+					index.delete();	
+					FileUtils.moveFile(new File(preProcessCruxPage.getFile()), index);
+				}	
+			}
 		} else
 		{
 			logger.error("Unable to find any screens in module ["+moduleName+"]");
@@ -401,7 +414,7 @@ public class CodeServer
 	            userAgent =  userAgentProperty.getFirstLegalValue();
 	            if (userAgent == null)
 	            {
-	            	throw new ConsoleParametersProcessingException("Can not determine the userAgent that must be used by code server. Configure your .gwt.xml file or inform it using -userAgent to CodeServer tool.");
+	            	throw new ConsoleParametersProcessingException(MSG_CAN_NOT_DETERMINE_THE_USER_AGENT);
 	            }
 	            else
 	            {
@@ -410,7 +423,7 @@ public class CodeServer
             }
             catch (UnableToCompleteException e)
             {
-            	throw new ConsoleParametersProcessingException("Can not determine the userAgent that must be used by code server. Configure your .gwt.xml file or inform it using -userAgent to CodeServer tool.");
+            	throw new ConsoleParametersProcessingException(MSG_CAN_NOT_DETERMINE_THE_USER_AGENT);
             }
 		}
     }

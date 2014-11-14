@@ -650,7 +650,7 @@ public abstract class AbstractCruxCompiler
 	 * @return
 	 * @throws Exception 
 	 */
-	protected URL preProcessCruxPage(URL url, Module module) throws Exception
+	public URL preProcessCruxPage(URL url, Module module) throws Exception
 	{
 		for (CruxPreProcessor preprocess : this.preProcessors)
 		{
