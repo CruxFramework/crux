@@ -94,6 +94,8 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 
 	protected SchemaMessages schemaMessages;
 
+	private String XHTML_XSD = "xhtml.xsd";
+	
 	/**
 	 * 
 	 * @param destDir
@@ -109,6 +111,11 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		this.templateParser = new TemplateParser();
 		this.schemaMessages = MessagesFactory.getMessages(SchemaMessages.class);
 
+		if (Boolean.valueOf(ConfigurationFactory.getConfigurations().useHTML5XSD()))
+		{
+			XHTML_XSD = "xhtml5.xsd";
+		}
+		
 		initializeSchemaGenerator(projectBaseDir, webDir);
 	}
 
@@ -220,7 +227,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 					if (fileName.endsWith("core.xsd") || fileName.endsWith("module.xsd") || 
 						fileName.endsWith("offline.xsd")  || fileName.endsWith("template.xsd")  || 
 						fileName.endsWith("view.xsd")  || fileName.endsWith("xdevice.xsd")  || 
-						fileName.endsWith("xhtml.xsd"))
+						fileName.endsWith(XHTML_XSD))
 					{
 						transformer.setParameter("globalDeclarationsTitle", schemaMessages.globalDeclarationsTitle());
 					}
@@ -284,7 +291,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	{
 		try
 		{
-			File xhtmlFile = new File(destDir, "xhtml.xsd");
+			File xhtmlFile = new File(destDir, XHTML_XSD);
 			if (xhtmlFile.exists())
 			{
 				xhtmlFile.delete();
@@ -295,7 +302,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			String targetNS = "http://www.w3.org/1999/xhtml";
 			registerNamespaceForCatalog(targetNS, xhtmlFile);
 
-			StreamUtils.write(getClass().getResourceAsStream("/META-INF/xhtml.xsd"), out, true);
+			StreamUtils.write(getClass().getResourceAsStream("/META-INF/" + XHTML_XSD), out, true);
 		}
 		catch (Exception e)
 		{
