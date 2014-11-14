@@ -116,9 +116,17 @@ public interface Crux
 	@DefaultServerMessage("false")
 	String disableRefreshByDefault();
 	void setDisableRefreshByDefault(String value);
-	
+
+	//Add in documentation!
 	@DefaultServerMessage("org.cruxframework.crux.core.server.rest.state.ETagHandlerImpl")
 	String eTagHandler();
 	void setETagHandler(String value);	
 	
+	//Add in documentation!
+	@DefaultServerMessage("false")
+	String useHTML5XSD();
+	
+	//Add in documentation!
+	@DefaultServerMessage("false")
+	String generateIndexInDevMode();
 }
