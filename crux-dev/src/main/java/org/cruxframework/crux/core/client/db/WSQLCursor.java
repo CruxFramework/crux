@@ -412,7 +412,7 @@ public abstract class WSQLCursor<K, P, V> extends DBObject implements Cursor<K, 
 	
 	private void callCallbackSuccess()
 	{
-		callback.onSuccess((offset < length)?this:null);		
+		callback.onSuccess((offset <= length)?this:null);		
 	}
 
 	protected abstract void setObjectKey(V object, P key);
