@@ -274,7 +274,7 @@ public abstract class SQLAbstractKeyValueProxyCreator extends AbstractKeyValuePr
 			{
 				srcWriter.print("sql.append(\" AND \");");
 			}
-			srcWriter.println("sql.append(\""+path+" = ?\");");
+			srcWriter.println("sql.append("+EscapeUtils.quote("\""+path+"\" = ?")+");");
 			first = false;
 		}
 		srcWriter.println("getNativeKey(key, args);");
