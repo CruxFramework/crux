@@ -130,7 +130,13 @@ public abstract class SQLAbstractKeyValueProxyCreator extends AbstractKeyValuePr
 		srcWriter.println("Array<String> indexColumnNames = "+CollectionFactory.class.getCanonicalName()+".createArray();");
 		for (String col : indexColumns)
 		{
-			srcWriter.println("indexColumnNames.add("+EscapeUtils.quote(col)+");");
+			for(String path: keyPath)
+			{
+				if (!path.equals(col))
+				{					
+					srcWriter.println("indexColumnNames.add("+EscapeUtils.quote(col)+");");
+				}
+			}
 		}
 		srcWriter.println("return indexColumnNames;");
 		srcWriter.println("}");
