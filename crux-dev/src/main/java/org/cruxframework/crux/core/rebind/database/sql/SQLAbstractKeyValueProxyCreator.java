@@ -214,10 +214,13 @@ public abstract class SQLAbstractKeyValueProxyCreator extends AbstractKeyValuePr
 				if (!first)
 				{
 					srcWriter.println("sql.append(\" AND \");");
+					srcWriter.println("sql.append("+EscapeUtils.quote("\""+keyPath[i]+"\"")+" +(range.isLowerOpen()?\">\":\">=\")+\" ?\");");
 				}
 				srcWriter.println("sql.append("+EscapeUtils.quote(keyPath[i])+" +(range.isLowerOpen()?\">\":\">=\")+\" ?\");");
 				first = false;
 			}
+			srcWriter.println(JsArrayMixed.class.getCanonicalName()+" lowerArrayColumn = lower.getObject(0).cast();");
+			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(lowerArrayColumn, args);");
 		}
 		srcWriter.println("}");
 
@@ -246,9 +249,12 @@ public abstract class SQLAbstractKeyValueProxyCreator extends AbstractKeyValuePr
 					srcWriter.println("sql.append(\" AND \");");
 					srcWriter.println("}");
 				}
-				srcWriter.println("sql.append("+EscapeUtils.quote(keyPath[i])+" +(range.isUpperOpen()?\"<\":\"<=\")+\" ?\");");
+				srcWriter.println("sql.append("+EscapeUtils.quote("\""+keyPath[i]+"\"")+" +(range.isUpperOpen()?\"<\":\"<=\")+\" ?\");");
 				first = false;
 			}
+			
+			srcWriter.println(JsArrayMixed.class.getCanonicalName()+" upperArrayColumn = upper.getObject(0).cast();");
+			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(upperArrayColumn, args);");
 		}
 		srcWriter.println("}");
 
