@@ -1216,6 +1216,29 @@
     ================== The Anchor Element ================================
     </xs:documentation>
   </xs:annotation>
+  
+    <xs:simpleType name="browsingContextNameOrKeyword">
+    <xs:union>
+      <xs:simpleType>
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="_blank"/>
+      <xs:enumeration value="_self"/>
+      <xs:enumeration value="_parent"/>
+      <xs:enumeration value="_top"/>
+    </xs:restriction>
+      </xs:simpleType>
+
+      <xs:simpleType>
+    <xs:restriction base="browsingContextName"/>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <xs:simpleType name="browsingContextName">
+    <xs:restriction base="xs:token">
+      <xs:pattern value="[^_].*"/>
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:element name="a">
     <xs:annotation>
@@ -1232,7 +1255,7 @@
           <xs:attribute name="charset" type="Charset"/>
           <xs:attribute name="type" type="ContentType"/>
           <xs:attribute name="name" type="xs:NMTOKEN"/>
-
+          <xs:attribute name="target" type="browsingContextNameOrKeyword"/>
           <xs:attribute name="href" type="URI"/>
           <xs:attribute name="hreflang" type="LanguageCode"/>
           <xs:attribute name="rel" type="LinkTypes"/>
