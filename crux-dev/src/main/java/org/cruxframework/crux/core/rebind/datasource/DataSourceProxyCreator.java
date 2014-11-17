@@ -560,7 +560,7 @@ public class DataSourceProxyCreator extends AbstractProxyCreator
 					srcWriter.println(fieldTypeName + " field = ((" + dtoTypeName + ") dataSourceRecord.getRecordObject())." + getterName + "();");
 				}
 				
-				srcWriter.println("boolean changed = (value == null && field != null) || (value != null && field == null) || !field.equals(value);");
+				srcWriter.println("boolean changed = (value != null && field == null) || (field != null && !field.equals(value));");
 				srcWriter.println("if(changed){");
 				
 				if(isPublic)

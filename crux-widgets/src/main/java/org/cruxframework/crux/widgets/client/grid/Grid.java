@@ -1171,7 +1171,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			Widget widget = row.getWidget(key);
 			Object value = getEditorValue(widget);
 
-			if (widget instanceof Label || value == null)
+			if (widget instanceof Label)
 			{
 				continue;
 			}
@@ -1189,7 +1189,7 @@ public class Grid extends AbstractGrid<DataRow> implements Pageable, HasDataSour
 			Widget widget = row.getWidget(key);
 			Object value = getEditorValue(widget);
 
-			if (widget instanceof Label || value == null)
+			if (widget instanceof Label)
 			{
 				continue;
 			}
