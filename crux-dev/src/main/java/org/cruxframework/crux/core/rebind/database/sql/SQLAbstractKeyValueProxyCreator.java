@@ -203,7 +203,7 @@ public abstract class SQLAbstractKeyValueProxyCreator extends AbstractKeyValuePr
 
 		if (keyPath.length == 1)
 		{
-			srcWriter.println("sql.append("+EscapeUtils.quote(keyPath[0])+" +(range.isLowerOpen()?\">\":\">=\")+\" ?\");");
+			srcWriter.println("sql.append("+EscapeUtils.quote("\""+keyPath[0]+"\"")+" +(range.isLowerOpen()?\">\":\">=\")+\" ?\");");
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(lower, args);");
 		}
 		else
@@ -216,7 +216,7 @@ public abstract class SQLAbstractKeyValueProxyCreator extends AbstractKeyValuePr
 					srcWriter.println("sql.append(\" AND \");");
 					srcWriter.println("sql.append("+EscapeUtils.quote("\""+keyPath[i]+"\"")+" +(range.isLowerOpen()?\">\":\">=\")+\" ?\");");
 				}
-				srcWriter.println("sql.append("+EscapeUtils.quote(keyPath[i])+" +(range.isLowerOpen()?\">\":\">=\")+\" ?\");");
+				srcWriter.println("sql.append("+EscapeUtils.quote("\""+keyPath[i]+"\"")+" +(range.isLowerOpen()?\">\":\">=\")+\" ?\");");
 				first = false;
 			}
 			srcWriter.println(JsArrayMixed.class.getCanonicalName()+" lowerArrayColumn = lower.getObject(0).cast();");
@@ -231,7 +231,7 @@ public abstract class SQLAbstractKeyValueProxyCreator extends AbstractKeyValuePr
 			srcWriter.println("if (hasLower){");
 			srcWriter.println("sql.append(\" AND \");");
 			srcWriter.println("}");
-			srcWriter.println("sql.append("+EscapeUtils.quote(keyPath[0])+" +(range.isUpperOpen()?\"<\":\"<=\")+\" ?\");");
+			srcWriter.println("sql.append("+EscapeUtils.quote("\""+keyPath[0]+"\"")+" +(range.isUpperOpen()?\"<\":\"<=\")+\" ?\");");
 			srcWriter.println(JsUtils.class.getCanonicalName()+".copyValues(upper, args);");
 		}
 		else
