@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<antlib>
+	<!-- Tasks -->
+	<taskdef name="cruxcompiler" classname="org.cruxframework.crux.tools.compile.CruxCompilerTask" />
+	<taskdef name="blockremove" classname="org.cruxframework.crux.tools.compile.utils.BlockRemoveTask" />
+	<taskdef name="generateSchemas" classname="org.cruxframework.crux.tools.schema.SchemaGeneratorTask" />
+	<taskdef name="serviceMapper" classname="org.cruxframework.crux.tools.servicemap.ServiceMapperTask" />
+</antlib>
