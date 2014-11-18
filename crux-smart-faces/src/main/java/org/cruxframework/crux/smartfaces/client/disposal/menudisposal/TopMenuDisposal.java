@@ -41,7 +41,13 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	private static final String TOP_MENU_DISPOSAL_SMALL_HEADER_PANEL = "faces-TopMenuDisposal-smallHeaderPanel";
 
 	private LayoutBuilder layoutBuilder = null;
-
+	
+	@Override
+	public void showView(String viewName, String viewId, Object parameter)
+	{
+		super.showView(viewName, viewId, parameter);
+	}
+	
 	@Override
 	protected void buildLayout()
 	{
