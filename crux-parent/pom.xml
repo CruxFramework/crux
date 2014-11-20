@@ -71,8 +71,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -145,6 +145,19 @@
                     <id>crux</id>
                     <name>Crux Internal Repository</name>
                     <url>${internal.repository}</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+        
+        <!-- GWT Snapshot repository -->
+        <profile>
+            <id>profile-add-gwt-snapshot-repo</id>
+            <activation><activeByDefault>true</activeByDefault></activation>
+            <distributionManagement>
+                <repository>
+                    <id>gwtsnapshot</id>
+                    <name>GWT Snapshot Repository</name>
+                    <url>https://oss.sonatype.org/content/repositories/google-snapshots/</url>
                 </repository>
             </distributionManagement>
         </profile>
