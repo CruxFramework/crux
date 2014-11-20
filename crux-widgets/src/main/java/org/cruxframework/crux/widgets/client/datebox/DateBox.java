@@ -193,4 +193,10 @@ public class DateBox extends Composite implements IDateBox
 	{
 		return impl.getPopup();
 	}
+
+	@Override
+	public void setFireNullValues(boolean fires)
+	{
+		impl.setFireNullValues(fires);
+	}
 }

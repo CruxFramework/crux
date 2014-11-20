@@ -156,4 +156,11 @@ class DefaultDateBox extends CommonDateBox
 	{
 		return impl.getPopup();
 	}
+
+	@Override
+	public void setFireNullValues(boolean fires)
+	{
+		impl.setFireNullValues(fires);
+		
+	}
 }

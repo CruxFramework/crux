@@ -49,4 +49,5 @@ interface IDateBox extends CruxWidget, HasValue<Date>, Focusable, HasValueChange
 	public void setFormat(CruxFormat format);
 	public void setValue(Date date);
 	public void showDatePicker();
+	public void setFireNullValues(boolean fires);
 }

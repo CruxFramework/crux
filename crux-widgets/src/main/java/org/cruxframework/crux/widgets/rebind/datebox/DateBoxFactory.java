@@ -55,7 +55,8 @@ import org.json.JSONObject;
 	@TagAttribute(value="enabled", type=Boolean.class),
 	@TagAttribute(value="accessKey", type=Character.class),
 	@TagAttribute(value="focus", type=Boolean.class),
-	@TagAttribute(value="readOnly", type=Boolean.class, defaultValue="false")
+	@TagAttribute(value="readOnly", type=Boolean.class, defaultValue="false"),
+	@TagAttribute(value="fireNullValues", type=Boolean.class, defaultValue="false")
 })
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration("value"),
