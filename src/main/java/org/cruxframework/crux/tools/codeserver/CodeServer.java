@@ -409,9 +409,9 @@ public class CodeServer
 		    try
             {
 		    	String moduleFullName = Modules.getInstance().getModule(moduleName).getFullName();
-	            ModuleDef moduleDef = ModuleDefLoader.loadFromClassPath(logger, emptyCompilerContext, moduleFullName, false, true);
+	            ModuleDef moduleDef = ModuleDefLoader.loadFromClassPath(logger, emptyCompilerContext, moduleFullName, true);
 	            BindingProperty userAgentProperty = (BindingProperty) moduleDef.getProperties().find("user.agent");
-	            userAgent =  userAgentProperty.getFirstLegalValue();
+	            userAgent =  userAgentProperty.getFirstAllowedValue();
 	            if (userAgent == null)
 	            {
 	            	throw new ConsoleParametersProcessingException(MSG_CAN_NOT_DETERMINE_THE_USER_AGENT);
