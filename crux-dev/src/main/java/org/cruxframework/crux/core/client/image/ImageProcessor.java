@@ -115,11 +115,7 @@ public class ImageProcessor
 	 */
 	public void loadImage(final Blob image, final ImageLoadHandler handler)
 	{
-		if (URL.isSupported())
-		{
-			loadImage(URL.createObjectURL(image), handler);
-		}
-		else
+		if(FileReader.isSupported())
 		{
 			FileReader.createIfSupported().readAsDataURL(image, new ReaderStringCallback()
 			{
@@ -129,6 +125,14 @@ public class ImageProcessor
 					loadImage(result, handler);
 				}
 			});
+		} 
+		else if (URL.isSupported())
+		{
+			loadImage(URL.createObjectURL(image), handler);
+		} 
+		else
+		{
+			handler.onError();
 		}
 	}
 	
