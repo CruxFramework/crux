@@ -382,13 +382,13 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		@Override
 		protected AbstractPageable.Renderer<T> getRenderer()
 		{
-			return new Renderer<T>(){
-
+			return new Renderer<T>()
+			{
 				@SuppressWarnings("unchecked")
 				@Override
 				public void render(T value)
 				{
-					IsWidget widget = widgetFactory.createWidget(dataProvider.get());
+					IsWidget widget = widgetFactory.createData(dataProvider.get());
 					ComboBoxOptionPanel<V> panel = new ComboBoxOptionPanel<V>(comboBoxParent);
 					panel.setValue(((OptionsRenderer<V, T>) widgetFactory).getValue(dataProvider.get()));
 					panel.setLabel(((OptionsRenderer<V, T>) widgetFactory).getLabel(dataProvider.get()));

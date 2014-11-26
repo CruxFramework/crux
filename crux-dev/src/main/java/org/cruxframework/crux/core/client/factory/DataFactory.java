@@ -15,12 +15,12 @@
  */
 package org.cruxframework.crux.core.client.factory;
 
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * @author Thiago da Rosa de Bustamante
+ * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-public interface WidgetFactory<T> extends DataFactory<IsWidget, T>
+public interface DataFactory<V, T>
 {
+	V createData(T value);
 }

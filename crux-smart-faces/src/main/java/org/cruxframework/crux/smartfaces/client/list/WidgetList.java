@@ -61,11 +61,12 @@ public class WidgetList<T> extends AbstractPageable<T>
 	@Override
 	protected AbstractPageable.Renderer<T> getRenderer()
 	{
-	    return new AbstractPageable.Renderer<T>(){
+	    return new AbstractPageable.Renderer<T>()
+	    {
 			@Override
             public void render(T value)
             {
-				IsWidget widget = widgetFactory.createWidget(value);
+				IsWidget widget = widgetFactory.createData(value);
 				contentPanel.add(widget);
             }
 	    };
