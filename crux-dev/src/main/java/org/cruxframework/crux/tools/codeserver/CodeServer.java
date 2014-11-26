@@ -409,7 +409,7 @@ public class CodeServer
 		    try
             {
 		    	String moduleFullName = Modules.getInstance().getModule(moduleName).getFullName();
-	            ModuleDef moduleDef = ModuleDefLoader.loadFromClassPath(logger, emptyCompilerContext, moduleFullName, true);
+	            ModuleDef moduleDef = ModuleDefLoader.loadFromClassPath(logger, emptyCompilerContext, moduleFullName);
 	            BindingProperty userAgentProperty = (BindingProperty) moduleDef.getProperties().find("user.agent");
 	            userAgent =  userAgentProperty.getFirstAllowedValue();
 	            if (userAgent == null)
@@ -423,7 +423,7 @@ public class CodeServer
             }
             catch (UnableToCompleteException e)
             {
-            	throw new ConsoleParametersProcessingException(MSG_CAN_NOT_DETERMINE_THE_USER_AGENT);
+            	throw new ConsoleParametersProcessingException(e.getCause());
             }
 		}
     }
