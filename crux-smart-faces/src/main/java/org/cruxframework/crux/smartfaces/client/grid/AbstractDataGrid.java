@@ -91,6 +91,11 @@ public abstract class AbstractDataGrid<T> extends AbstractPageable<T> implements
 		Comparator<T> comparator;
 		DataFactory<V, T> dataFactory;
 
+		public Column(DataFactory<V, T> dataFactory)
+        {
+	        this.dataFactory = dataFactory;
+        }
+		
 		public void renderCell(int i, T value)
 		{
 			Cell cell = new Cell();
@@ -103,7 +108,7 @@ public abstract class AbstractDataGrid<T> extends AbstractPageable<T> implements
 			}
 			
 			
-			table.setWidget(i, cells.size(), cell.getWidget());
+			table.setWidget(cells.size(), i, cell.getWidget());
 			cells.add(cell);
 		}
 		

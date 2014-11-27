@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.client.grid;
 
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.core.client.factory.DataFactory;
 
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -38,7 +39,7 @@ public class DataGrid<T> extends AbstractDataGrid<T>
 	@Override
     public HandlerRegistration addFocusHandler(FocusHandler handler)
     {
-	    // TODO Auto-generated method stub
+	    // TODO Auto-generated  method stub
 	    return null;
     }
 
@@ -119,15 +120,10 @@ public class DataGrid<T> extends AbstractDataGrid<T>
 	    
     }
 
-	@Override
-    protected org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable.Renderer<T> getRenderer()
+	public <V> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory)
     {
-	    // TODO Auto-generated method stub
-	    return null;
-    }
-
-	public <V> DataGrid<T>.Column<V> newColumn()
-    {
-	    return new Column<V>();
+	    AbstractDataGrid<T>.Column<V> column = new Column<V>(dataFactory);
+	    addColumn(column);
+		return column;
     }
 }
