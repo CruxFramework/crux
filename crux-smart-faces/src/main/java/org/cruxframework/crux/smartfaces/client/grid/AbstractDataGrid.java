@@ -22,6 +22,7 @@ import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
+import org.cruxframework.crux.core.client.factory.DataFactory;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 
@@ -71,14 +72,7 @@ public abstract class AbstractDataGrid<T> extends AbstractPageable<T> implements
 				for(int i=0; i<columns.size();i++)
 				{
 					AbstractDataGrid<T>.Column<?> dataGridColumn = columns.get(i);
-					
-					for(int j=0;j<dataGridColumn.cells.size();j++)
-					{
-						AbstractDataGrid<T>.Column<?>.Cell cell = dataGridColumn.cells.get(j);
-						//Thiago! HELP!
-//						dataGridColumn.getRenderer().onCellRender(cell, value);
-						table.setWidget(i, j, cell.getWidget());
-					}
+					dataGridColumn.renderCell(i, value);
 				}
 			}
 		};
@@ -95,11 +89,22 @@ public abstract class AbstractDataGrid<T> extends AbstractPageable<T> implements
 		String header;
 		FastList<Cell> cells;
 		Comparator<T> comparator;
-		AbstractDataGrid<T>.Column<V>.Renderer renderer;
+		DataFactory<V, T> dataFactory;
 
-		public abstract class Renderer
+		public void renderCell(int i, T value)
 		{
-			public abstract void onCellRender(Cell cell, T value);
+			Cell cell = new Cell();
+			V data = getDataFactory().createData(value);
+			cell.setValue(data);
+			
+			if(cells == null)
+			{
+				cells = new FastList<AbstractDataGrid<T>.Column<V>.Cell>();
+			}
+			
+			
+			table.setWidget(i, cells.size(), cell.getWidget());
+			cells.add(cell);
 		}
 		
 		public class Cell implements HasValue<V>
@@ -174,15 +179,15 @@ public abstract class AbstractDataGrid<T> extends AbstractPageable<T> implements
 		    return this;
 	    }
 
-		public Column<V> setRenderer(Renderer renderer)
+		public Column<V> setDataFactory(DataFactory<V, T> dataFactory)
         {
-	        this.renderer = renderer;
+	        this.dataFactory = dataFactory;
 	        return this;
         }
 
-		public AbstractDataGrid<T>.Column<V>.Renderer getRenderer()
+		public DataFactory<V, T> getDataFactory()
 		{
-			return renderer;
+			return dataFactory;
 		}
 	}	
 	
