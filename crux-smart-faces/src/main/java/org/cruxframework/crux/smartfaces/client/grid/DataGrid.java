@@ -15,11 +15,14 @@
  */
 package org.cruxframework.crux.smartfaces.client.grid;
 
+import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.factory.DataFactory;
 
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.HasAllFocusHandlers;
+import com.google.gwt.event.dom.client.HasAllMouseHandlers;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveHandler;
 import com.google.gwt.event.dom.client.MouseOutHandler;
@@ -27,6 +30,7 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.HasEnabled;
 
 //CHECKSTYLE:OFF
 /**
@@ -34,7 +38,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
  *
  * @param <T>
  */
-public class DataGrid<T> extends AbstractDataGrid<T>
+public class DataGrid<T> extends PageableDataGrid<T> implements HasAllFocusHandlers, HasEnabled, HasSelectHandlers, HasAllMouseHandlers
 {
 	@Override
     public HandlerRegistration addFocusHandler(FocusHandler handler)
@@ -113,16 +117,9 @@ public class DataGrid<T> extends AbstractDataGrid<T>
 	    return null;
     }
 
-	@Override
-    protected void clear()
-    {
-	    // TODO Auto-generated method stub
-	    
-    }
-
 	public <V> DataGrid<T>.Column<V> newColumn(DataFactory<V,T> dataFactory)
     {
-	    AbstractDataGrid<T>.Column<V> column = new Column<V>(dataFactory);
+	    PageableDataGrid<T>.Column<V> column = new Column<V>(dataFactory);
 	    addColumn(column);
 		return column;
     }
