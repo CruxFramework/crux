@@ -215,7 +215,7 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 			T value = dataProvider.get();
 			if (value == null)
 			{
-				throw new DataProviderExcpetion("Erro indice="+i);
+				throw new DataProviderExcpetion("Index error = "+i);
 			}
 			renderer.render(value);
 			if (dataProvider.hasNext())
