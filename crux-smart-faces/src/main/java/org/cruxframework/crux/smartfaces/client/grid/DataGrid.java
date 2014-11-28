@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.grid;
 
+import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectHandler;
 import org.cruxframework.crux.core.client.factory.DataFactory;
@@ -40,6 +41,11 @@ import com.google.gwt.user.client.ui.HasEnabled;
  */
 public class DataGrid<T> extends PageableDataGrid<T> implements HasAllFocusHandlers, HasEnabled, HasSelectHandlers, HasAllMouseHandlers
 {
+	public DataGrid(PagedDataProvider<T> dataProvider, boolean autoLoadData)
+    {
+	    super(dataProvider, autoLoadData);
+    }
+
 	@Override
     public HandlerRegistration addFocusHandler(FocusHandler handler)
     {
