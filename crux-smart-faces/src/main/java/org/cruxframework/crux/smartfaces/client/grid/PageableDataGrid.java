@@ -30,8 +30,6 @@ import org.cruxframework.crux.smartfaces.client.label.Label;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -252,8 +250,12 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 				{
 					PageableDataGrid<T>.Column<?> dataGridColumn = columns.get(columnIndex);
 					
-					dataGridColumn.renderCell(columnIndex, dataGridColumn.getCells().size(), value,
-						dataGridColumn.getCellEditor() != null ? dataGridColumn.getCellEditor().isEditable(value) : false);
+					dataGridColumn.renderCell(
+						columnIndex, 
+						dataGridColumn.getCells().size(), 
+						value,
+						dataGridColumn.getCellEditor() != null ? dataGridColumn.getCellEditor().isEditable(value) : false,
+						true);
 				}
 			}
 		};
@@ -272,11 +274,16 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 		
 		public abstract void onValueChange(T value, K newValue);
 		
-		public void setEditableWidget(FlexTable table, final PageableDataGrid<T> grid, final PageableDataGrid<T>.Column<?>.Cell cell, final int rowIndex, final int columnIndex, final T value, final PagedDataProvider<T> dataProvider)
+		public void setEditableWidget(
+			final PageableDataGrid<T> grid, 
+			final int rowIndex, 
+			final int columnIndex, 
+			final T value 
+		)
 		{
 			HasValue<K> widget = getWidget(value);
 			assert(widget != null): "widget cannot be null";
-			table.setWidget(rowIndex, columnIndex, (Widget) widget);
+			grid.getTable().setWidget(rowIndex, columnIndex, (Widget) widget);
 			
 			widget.addValueChangeHandler(new ValueChangeHandler<K>()
 			{
@@ -284,7 +291,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
                 public void onValueChange(ValueChangeEvent<K> event)
                 {
 					CellEditor.this.onValueChange(value, event.getValue());
-					dataProvider.set(columnIndex, value);
+					grid.getDataProvider().set(columnIndex, value);
 					
 					if(autoRefreshRows)
 					{
@@ -292,8 +299,12 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 						{
 							PageableDataGrid<T>.Column<?> dataGridColumn = grid.getColumns().get(columnIndex);
 							
-							dataGridColumn.renderCell(columnIndex, rowIndex, value,
-								dataGridColumn.getCellEditor() != null ? dataGridColumn.getCellEditor().isEditable(value) : false);
+							dataGridColumn.renderCell(
+								columnIndex, 
+								rowIndex, 
+								value,
+								dataGridColumn.getCellEditor() != null ? dataGridColumn.getCellEditor().isEditable(value) : false,
+								false);
 						}
 					}
 					
@@ -321,14 +332,13 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 		DataFactory<V, T> dataFactory;
 		CellEditor<T, ?> cellEditor;
 		
-		boolean editable = false;
-		boolean freezeHeader = false;
-		boolean selected = false;
 		ArrayList<Device> visibleDevices = new ArrayList<Device>();
 		ArrayList<Device> notVisibleDevices = new ArrayList<Device>();
 
-		public Column()
+		public Column(DataFactory<V, T> dataFactory)
         {
+			assert(dataFactory != null): "dataFactory must not be null";
+	        this.dataFactory = dataFactory;
         }
 		
 		public void addCell(Cell cell)
@@ -341,18 +351,12 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 			cells.add(cell);
 		}
 		
-		public Column(DataFactory<V, T> dataFactory)
-        {
-			assert(dataFactory != null): "dataFactory must not be null";
-	        this.dataFactory = dataFactory;
-        }
-		
 		public Column<V> getColumn()
 		{
 			return this; 
 		}
 		
-		private void renderCell(int columnIndex, int rowIndex, T value, boolean isEditable)
+		private void renderCell(int columnIndex, int rowIndex, T value, boolean isEditable, boolean addCell)
 		{
 			Cell cell = new Cell(); 
 			V data = getDataFactory().createData(value);
@@ -360,15 +364,18 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 			
 			if (isEditable)
 			{
-				cellEditor.setEditableWidget(table, PageableDataGrid.this, cell, rowIndex, columnIndex, value, getDataProvider());
+				cellEditor.setEditableWidget(PageableDataGrid.this, rowIndex, columnIndex, value);
 			} else
 			{
 				table.setWidget(rowIndex, columnIndex, cell.getWidget());	
 			}
-			addCell(cell);
+			if(addCell)
+			{
+				addCell(cell);
+			}
 		}
 		
-		public class Cell implements HasValue<V>
+		public class Cell
 		{
 			String tooltip;
 			V value;
@@ -380,20 +387,6 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 			    this.tooltip = tooltip;
 		    }
 			
-			@Override
-	        public HandlerRegistration addValueChangeHandler(ValueChangeHandler<V> handler)
-	        {
-		        // TODO Auto-generated method stub
-		        return null;
-	        }
-
-			@Override
-	        public void fireEvent(GwtEvent<?> event)
-	        {
-		        // TODO Auto-generated method stub
-	        }
-
-			@Override
 	        public V getValue()
 	        {
 				return value;
@@ -404,7 +397,6 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 				return widget;
 	        }
 
-			@Override
 	        public void setValue(V value)
 	        {
 				this.value = value;
@@ -420,16 +412,6 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 				} else
 				{
 					widget = new Label(value.toString());
-				}
-	        }
-
-			@Override
-	        public void setValue(V value, boolean fireEvents)
-	        {
-				setValue(value);
-				if(fireEvents)
-				{
-					
 				}
 	        }
 
@@ -512,5 +494,10 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 	public FastList<Column<?>> getColumns()
 	{
 		return columns;
+	}
+
+	public FlexTable getTable()
+	{
+		return table;
 	}
 }
