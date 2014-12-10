@@ -38,11 +38,11 @@ public class DownloadWindow
 		
 		public native final void openSaveAsWindow(Blob blob, String name)
 		/*-{
-			if(!navigator.saveBlob)
+			if(!$wnd.navigator.saveBlob)
 			{
-				navigator.saveBlob = navigator.saveBlob || navigator.msSaveBlob || navigator.mozSaveBlob || navigator.webkitSaveBlob;
+				$wnd.navigator.saveBlob = $wnd.navigator.saveBlob || $wnd.navigator.msSaveBlob || $wnd.navigator.mozSaveBlob || $wnd.navigator.webkitSaveBlob;
 			}
-		 	navigator.saveBlob(blob, name);
+		 	$wnd.navigator.saveBlob(blob, name);
 		}-*/;
 	}
 	
@@ -86,7 +86,7 @@ public class DownloadWindow
 	
 	public void openSaveAsWindow(Blob blob, String name)
 	{
-		instance.openSaveAsWindow(blob,name);
+		instance.openSaveAsWindow(blob, name);
 	}
 }
 
