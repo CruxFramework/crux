@@ -96,23 +96,37 @@ public class DownloadButton extends Composite implements HasText, HasEnabled, Ha
 			}
 		}
 		
+		private static Anchor createDownloadAnchor(String base64Data, String filename)
+		{
+			Anchor anchor = new Anchor();
+			anchor.setHref(base64Data);
+			anchor.setTarget("_blank");
+			anchor.getElement().setAttribute("download", filename);
+			return anchor;
+		}
+		
 		private void fireWindowDownload(String base64Data, String filename, String mimeTypeFromBase64Data) 
 		{
 			String newFilename = StringUtils.isEmpty(filename) ? "download.bin" : filename;
 			String newMimeType = StringUtils.isEmpty(mimeTypeFromBase64Data) ? "application/octet-stream" : mimeTypeFromBase64Data;
 			
-			if(Blob.isSupported() && DownloadWindow.isSupported())
+			if (Blob.isSupported() && DownloadWindow.isSupported())
 			{
 				Blob blob = FileUtils.fromDataURI(base64Data);
 				DownloadWindow.createIfSupported().openSaveAsWindow(blob, newFilename);
-			} else if(hasHTML5DownloadAttributeSupport())
+			}
+			else if (org.cruxframework.crux.core.client.file.URL.isSupported())
 			{
-				Anchor a = new Anchor();
-				a.setHref(base64Data);
-				a.setTarget("_blank");
-				a.getElement().setAttribute("download", newFilename);
-				clickElement(a.getElement());
-			} else
+				Blob blob = FileUtils.fromDataURI(base64Data);
+				Anchor anchor = createDownloadAnchor(org.cruxframework.crux.core.client.file.URL.createObjectURL(blob), newFilename);
+				clickElement(anchor.getElement());
+			}
+			else if(hasHTML5DownloadAttributeSupport())
+			{
+				Anchor anchor = createDownloadAnchor(base64Data, newFilename);
+				clickElement(anchor.getElement());
+			} 
+			else
 			{
 				// Note that encodeURIComponent produces UTF-8 encoded text. The mime type should contain
 				// the charset=UTF-8 parameter. In case you don't want the data to be encoded as UTF-8
