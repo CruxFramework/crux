@@ -72,7 +72,7 @@ public class ResourcesHandlerProxyCreator extends AbstractProxyCreator
     	String resourceClass = Resources.getResource(resourceId, device);
     	if (resourceClass == null)
     	{
-    		throw new CruxGeneratorException("Resource ["+resourceId+"], declared on View ["+view.getId()+"] could not be found.");
+    		throw new CruxGeneratorException("Resource ["+resourceId+"], declared on View ["+view.getId()+"] could not be found for device ["+device.name()+"].");
     	}
     	String resourceVariable = ViewFactoryCreator.createVariableName("resource");
 
