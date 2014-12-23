@@ -196,7 +196,7 @@ public class HotDeploymentScanner
 	/**
 	 * @throws IOException
 	 */
-	private void recompileCodeServer() throws IOException 
+	public void recompileCodeServer() throws IOException 
 	{
 		if (!compilationFired)
 		{
@@ -216,8 +216,9 @@ public class HotDeploymentScanner
 	 * @param moduleToCompile
 	 * @param userAgent
 	 * @param locale
+	 * @return 
 	 */
-	public static void scanProjectDirs(String hostName, int port, String moduleToCompile, String userAgent, String locale)
+	public static HotDeploymentScanner scanProjectDirs(String hostName, int port, String moduleToCompile, String userAgent, String locale)
 	{
 		List<File> srcDir = getSearchableFiles(moduleToCompile);
 		
@@ -228,6 +229,8 @@ public class HotDeploymentScanner
 			scanner.addFile(file);
 		}
 		scanner.startScanner();
+		
+		return scanner;
 	}
 
 	private static List<File> getSearchableFiles(String moduleToCompile) 
