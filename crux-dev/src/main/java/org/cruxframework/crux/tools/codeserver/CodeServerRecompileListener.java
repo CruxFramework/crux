@@ -25,14 +25,16 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.utils.FileUtils;
 
 import com.google.gwt.dev.codeserver.CompileDir;
-import com.google.gwt.dev.codeserver.RecompileListener;
+import com.google.gwt.dev.codeserver.JobChangeListener;
+import com.google.gwt.dev.codeserver.JobEvent;
 
 /**
  * 
  * @author Thiago da Rosa de Bustamante
+ * @author Samuel Almeida Cardoso
  *
  */
-public class CodeServerRecompileListener implements RecompileListener 
+public class CodeServerRecompileListener implements JobChangeListener 
 {
 	private static final Log logger = LogFactory.getLog(CodeServerRecompileListener.class);
 
@@ -48,46 +50,23 @@ public class CodeServerRecompileListener implements RecompileListener
 		}
 	}
 	
-	@Override
-	public void startedCompile(String moduleName, int compileId, CompileDir compileDir) 
-	{
-		this.compileDir.put(moduleName, compileDir);
-		if (compilationCallback != null)
-		{
-			compilationCallback.onCompilationStart(moduleName);
-		}
-	}
-	
-	@Override
-	public void finishedCompile(String moduleName, int compileId, boolean success) 
-	{
-		updateWebDir(moduleName, success);
-		if (compilationCallback != null)
-		{
-			compilationCallback.onCompilationEnd(moduleName, success);
-		}
-	}
-
 	public void setCompilationCallback(CompilationCallback compilationCallback)
 	{
 		this.compilationCallback = compilationCallback;
 	}
 	
-	private void updateWebDir(String moduleName, boolean success) 
+	private void updateWebDir(String moduleName) 
 	{
 		if (webDir != null)
 		{
-			if (success)
+			CompileDir dir = compileDir.get(moduleName);
+			try 
 			{
-				CompileDir dir = compileDir.get(moduleName);
-				try 
-				{
-					FileUtils.copyFilesFromDir(dir.getWarDir(), webDir);
-				} 
-				catch (IOException e) 
-				{
-					logger.error("Error updating webDir", e);
-				}
+				FileUtils.copyFilesFromDir(dir.getWarDir(), webDir);
+			} 
+			catch (IOException e) 
+			{
+				logger.error("Error updating webDir", e);
 			}
 		}
 	}
@@ -97,4 +76,40 @@ public class CodeServerRecompileListener implements RecompileListener
 		void onCompilationStart(String moduleName);
 		void onCompilationEnd(String moduleName, boolean success);
 	}
+
+	@Override
+    public void onJobChange(JobEvent event)
+    {
+		String moduleName = event.getInputModuleName();
+		switch (event.getStatus())
+        {
+		case COMPILING:
+			this.compileDir.put(moduleName, event.getCompileDir());
+			if (compilationCallback != null)
+			{
+				compilationCallback.onCompilationStart(moduleName);
+			}
+			break;
+		case ERROR:
+			if (compilationCallback != null)
+			{
+				compilationCallback.onCompilationEnd(moduleName, false);
+			}		
+			break;
+		case GONE:
+			break;
+		case SERVING:
+			updateWebDir(moduleName);
+			if (compilationCallback != null)
+			{
+				compilationCallback.onCompilationEnd(moduleName, true);
+			}
+			break;
+		case WAITING:
+			break;
+
+		default:
+			break;
+		}
+    }
 }

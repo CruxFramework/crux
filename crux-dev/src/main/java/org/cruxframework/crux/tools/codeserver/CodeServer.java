@@ -30,7 +30,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
-import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.CruxBridge;
@@ -154,7 +153,7 @@ public class CodeServer
 			CruxBridge.getInstance().registerLastPageRequested(screenIDs.iterator().next());
 			processUserAgent();
 			String[] args = getServerParameters();
-			initializeRecompileListener();
+			HotDeploymentScanner hotDeploymentScanner = initializeRecompileListener();
 			runGWTCodeServer(args);
 			
 			if (Boolean.valueOf(ConfigurationFactory.getConfigurations().generateIndexInDevMode()))
@@ -168,21 +167,29 @@ public class CodeServer
 					FileUtils.moveFile(new File(preProcessCruxPage.getFile()), index);
 				}	
 			}
+			
+			if (startHotDeploymentScanner)
+			{
+				hotDeploymentScanner.recompileCodeServer();
+			}
+			
 		} else
 		{
 			logger.error("Unable to find any screens in module ["+moduleName+"]");
 		}
     }
 
-	protected void initializeRecompileListener() 
+	protected HotDeploymentScanner initializeRecompileListener() 
 	{
 		recompileListener = new CodeServerRecompileListener(webDir);
 		if (startHotDeploymentScanner)
 		{
-			HotDeploymentScanner.scanProjectDirs(bindAddress, port, moduleName, userAgent, locale);
+			HotDeploymentScanner hotDeploymentScanner = HotDeploymentScanner.scanProjectDirs(bindAddress, port, moduleName, userAgent, locale);
 			runCompileNotificationServer();
 			registerCompileNotificationCallback();
+			return hotDeploymentScanner;
 		}
+		return null;
 	}
 
 	protected void registerCompileNotificationCallback() 
@@ -281,7 +288,8 @@ public class CodeServer
 		{
 			System.exit(1);
 		}
-		options.setRecompileListener(recompileListener);
+		
+		options.setJobChangeListener(recompileListener);
 		try 
 		{
 			com.google.gwt.dev.codeserver.CodeServer.main(options);
