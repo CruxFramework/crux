@@ -70,21 +70,21 @@ public abstract class SelectableWidget extends Composite implements HasSelectHan
 	
 	public HandlerRegistration addTouchEndHandler(TouchEndHandler handler)
 	{
-		return addBitlessDomHandler(handler, TouchEndEvent.getType());
+		return addDomHandler(handler, TouchEndEvent.getType());
 	}
 
 	public HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler)
 	{
-		return addBitlessDomHandler(handler, TouchMoveEvent.getType());
+		return addDomHandler(handler, TouchMoveEvent.getType());
 	}
 
 	public HandlerRegistration addTouchStartHandler(TouchStartHandler handler)
 	{
-		return addBitlessDomHandler(handler, TouchStartEvent.getType());
+		return addDomHandler(handler, TouchStartEvent.getType());
 	}
 	
 	public HandlerRegistration addClickHandler(ClickHandler handler)
 	{
-		return addBitlessDomHandler(handler, ClickEvent.getType());
+		return addDomHandler(handler, ClickEvent.getType());
 	}
 }
