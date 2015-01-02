@@ -12,7 +12,7 @@ html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:1
 @url svgIconPaginatorLast svgIconPaginatorLast;
 @url svgIconPaginatorNext svgIconPaginatorNext;
 @url svgIconPaginatorPrev svgIconPaginatorPrev;
-
+@url uploadIcon uploadIcon;
 
 *:focus, *:active, *:hover
 {
@@ -630,7 +630,7 @@ Inputs / Textarea
 {
     border-style: dashed;
 	min-height: 160px;
-	background: url(upload-icon.png) no-repeat center #f5f5f5;
+	background: uploadIcon no-repeat center #f5f5f5;
 	box-shadow:none;
 }
 

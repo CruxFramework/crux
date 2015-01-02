@@ -6,9 +6,9 @@
 @url gridSaveIcon gridSaveIcon;
 @url gridCancelIcon gridCancelIcon;
 @url gridEditIcon gridEditIcon;
-
-
-	
+@url rightArrow rightArrow;
+@url leftArrow leftArrow;
+@url noise noise;
 
 /****************
  Non-Selectables
@@ -94,7 +94,7 @@
 }
 .menuTabsSplitPanel
 {
-    background-image: url(noise.png);
+    background-image: noise;
     background-color: #EAEAEA;
     border: none;
     border-right: solid 1px #EEEEEE;
@@ -132,7 +132,7 @@
     color: white;
     padding: 0px;
     overflow: auto;
-    background-image: url(right-arrow.png);
+    background-image: rightArrow;
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
@@ -306,14 +306,14 @@
     left: 0px;
     box-shadow: 10px -3px 10px -5px rgba(0, 0, 0, 0.2);
     border-right: solid 1px rgba(255,255,255,0.3);
-    background-image: url(left-arrow.png);
+    background-image: leftArrow;
 }
 .crux-RollingPanelNext:after
 {
     right: 0px;
     box-shadow: -10px -3px 10px -5px rgba(0, 0, 0, 0.2);
     border-left: solid 1px rgba(255,255,255,0.3);
-    background-image: url(right-arrow.png); 
+    background-image: rightArrow; 
 }
 .crux-RollingPanelPrevious:hover, .crux-RollingPanelNext:hover 
 {

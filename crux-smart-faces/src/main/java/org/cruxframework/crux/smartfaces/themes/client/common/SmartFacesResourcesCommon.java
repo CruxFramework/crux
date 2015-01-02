@@ -15,9 +15,6 @@
  */
 package org.cruxframework.crux.smartfaces.themes.client.common;
 
-import org.cruxframework.crux.core.client.resources.Resource;
-import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.DataResource;
 
@@ -25,7 +22,6 @@ import com.google.gwt.resources.client.DataResource;
  * @author Thiago da Rosa de Bustamante
  * @author Claudio Holanda Junior
  */
-@Resource(value="smartFacesCommon", supportedDevices={Device.all})
 public interface SmartFacesResourcesCommon extends ClientBundle
 {
 	@Source("org/cruxframework/crux/smartfaces/themes/client/common/svg-icon-close.svg")

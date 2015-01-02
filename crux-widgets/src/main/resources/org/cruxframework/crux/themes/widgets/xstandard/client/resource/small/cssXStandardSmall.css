@@ -2,6 +2,9 @@
 
 @url svgIconDetail svgIconDetail;
 @url urlTopMenuDisposalShowMenuButton topMenuDisposalShowMenuButton; 
+@url rightArrow rightArrow;
+@url leftArrow leftArrow;
+@url uploadIcon uploadIcon;
 
 body
 {
@@ -157,7 +160,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     color: white;
     padding: 0px;
     overflow: auto;
-    background-image: url(right-arrow.png);
+    background-image: rightArrow;
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
@@ -568,7 +571,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 {
     border-style: dashed;
     min-height: 160px;
-    background-image: url(upload-icon.png);
+    background-image: uploadIcon;
     background-position: center;
     background-repeat: no-repeat;
 }

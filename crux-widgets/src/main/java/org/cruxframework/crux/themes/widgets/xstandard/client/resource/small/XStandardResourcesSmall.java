@@ -20,6 +20,7 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.themes.widgets.xstandard.client.resource.common.XStandardResourcesCommon;
 
 import com.google.gwt.resources.client.DataResource;
+import com.google.gwt.resources.client.ImageResource;
 
 /**
  * @author Gesse Dafe
@@ -30,6 +31,15 @@ public interface XStandardResourcesSmall extends XStandardResourcesCommon
 {
 	@Source({"org/cruxframework/crux/themes/widgets/xstandard/client/resource/common/cssXStandardCommon.css","cssXStandardSmall.css"})
 	CssXStandardSmall css();
+	
+	@Source("upload-icon.png")
+	ImageResource uploadIcon();
+	
+	@Source("right-arrow.png")
+	ImageResource rightArrow();
+	
+	@Source("left-arrow.png")
+	ImageResource leftArrow();
 	
 	@Source("top-menu-disposal-menu-btn.png")
 	DataResource topMenuDisposalShowMenuButton();
