@@ -30,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
+import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.CruxBridge;
@@ -153,7 +154,7 @@ public class CodeServer
 			CruxBridge.getInstance().registerLastPageRequested(screenIDs.iterator().next());
 			processUserAgent();
 			String[] args = getServerParameters();
-			HotDeploymentScanner hotDeploymentScanner = initializeRecompileListener();
+			initializeRecompileListener();
 			runGWTCodeServer(args);
 			
 			if (Boolean.valueOf(ConfigurationFactory.getConfigurations().generateIndexInDevMode()))
@@ -167,29 +168,21 @@ public class CodeServer
 					FileUtils.moveFile(new File(preProcessCruxPage.getFile()), index);
 				}	
 			}
-			
-			if (startHotDeploymentScanner)
-			{
-				hotDeploymentScanner.recompileCodeServer();
-			}
-			
 		} else
 		{
 			logger.error("Unable to find any screens in module ["+moduleName+"]");
 		}
     }
 
-	protected HotDeploymentScanner initializeRecompileListener() 
+	protected void initializeRecompileListener() 
 	{
 		recompileListener = new CodeServerRecompileListener(webDir);
 		if (startHotDeploymentScanner)
 		{
-			HotDeploymentScanner hotDeploymentScanner = HotDeploymentScanner.scanProjectDirs(bindAddress, port, moduleName, userAgent, locale);
+			HotDeploymentScanner.scanProjectDirs(bindAddress, port, moduleName, userAgent, locale);
 			runCompileNotificationServer();
 			registerCompileNotificationCallback();
-			return hotDeploymentScanner;
 		}
-		return null;
 	}
 
 	protected void registerCompileNotificationCallback() 
@@ -288,8 +281,7 @@ public class CodeServer
 		{
 			System.exit(1);
 		}
-		
-		options.setJobChangeListener(recompileListener);
+		options.setRecompileListener(recompileListener);
 		try 
 		{
 			com.google.gwt.dev.codeserver.CodeServer.main(options);
@@ -417,9 +409,9 @@ public class CodeServer
 		    try
             {
 		    	String moduleFullName = Modules.getInstance().getModule(moduleName).getFullName();
-	            ModuleDef moduleDef = ModuleDefLoader.loadFromClassPath(logger, emptyCompilerContext, moduleFullName);
+	            ModuleDef moduleDef = ModuleDefLoader.loadFromClassPath(logger, emptyCompilerContext, moduleFullName, false, true);
 	            BindingProperty userAgentProperty = (BindingProperty) moduleDef.getProperties().find("user.agent");
-	            userAgent =  userAgentProperty.getFirstAllowedValue();
+	            userAgent =  userAgentProperty.getFirstLegalValue();
 	            if (userAgent == null)
 	            {
 	            	throw new ConsoleParametersProcessingException(MSG_CAN_NOT_DETERMINE_THE_USER_AGENT);
@@ -431,7 +423,7 @@ public class CodeServer
             }
             catch (UnableToCompleteException e)
             {
-            	throw new ConsoleParametersProcessingException(e.getCause());
+            	throw new ConsoleParametersProcessingException(MSG_CAN_NOT_DETERMINE_THE_USER_AGENT);
             }
 		}
     }
