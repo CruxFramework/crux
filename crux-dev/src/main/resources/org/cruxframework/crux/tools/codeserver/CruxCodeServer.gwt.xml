@@ -1,0 +1,4 @@
+<module>
+    <inherits name='org.cruxframework.crux.tools.codeserver.CruxCodeServerNoLinker' />
+	<add-linker name="xsiframe"/>
+</module>
