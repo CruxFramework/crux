@@ -17,7 +17,7 @@ package org.cruxframework.crux.core.client.bean;
 
 /**
  * An utility interface to allow comparation between two objects.
- * <p> You can define comparators by extending this interface.</p>
+ * <p> You can define comparators  by extending this interface.</p>
  * <p>
  * Imagine you have the following java bean class defined as:
  * <pre>
