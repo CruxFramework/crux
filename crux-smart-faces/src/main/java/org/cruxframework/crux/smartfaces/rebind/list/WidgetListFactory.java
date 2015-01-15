@@ -54,7 +54,7 @@ public class WidgetListFactory extends AbstractPageableFactory<WidgetCreatorCont
 		for (int i=0; i< children.length(); i++)
 		{
 			JSONObject child = children.optJSONObject(i);
-			if (getChildName(child).startsWith("widgetFactory"))
+			if (getChildName(child).startsWith("widget"))
 			{
 				widgetCreatorChild = child;
 			}

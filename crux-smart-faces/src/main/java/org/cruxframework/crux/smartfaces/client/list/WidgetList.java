@@ -66,7 +66,7 @@ public class WidgetList<T> extends AbstractPageable<T>
 			@Override
             public void render(T value)
             {
-				IsWidget widget = widgetFactory.createData(value);
+				IsWidget widget = widgetFactory.createWidget(value);
 				contentPanel.add(widget);
             }
 	    };

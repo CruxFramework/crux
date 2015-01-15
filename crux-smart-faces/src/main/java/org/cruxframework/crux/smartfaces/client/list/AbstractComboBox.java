@@ -48,7 +48,6 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -388,7 +387,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 				@Override
 				public void render(T value)
 				{
-					IsWidget widget = widgetFactory.createData(value);
+					IsWidget widget = widgetFactory.createWidget(value);
 					ComboBoxOptionPanel<V> panel = new ComboBoxOptionPanel<V>(comboBoxParent);
 					panel.setValue(((OptionsRenderer<V, T>) widgetFactory).getValue(value));
 					panel.setLabel(((OptionsRenderer<V, T>) widgetFactory).getLabel(value));

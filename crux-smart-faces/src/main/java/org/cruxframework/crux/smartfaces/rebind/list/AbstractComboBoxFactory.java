@@ -56,7 +56,8 @@ class ComboBoxContext extends WidgetCreatorContext
 	String valueType  = "String";
 }
 //TODO Create another factory to separate the two combo types
-@DeclarativeFactory(targetWidget = ComboBox.class, id = "comboBox", library = Constants.LIBRARY_NAME, description = "Combobox component that uses a data provider to display a list of item or widgets")
+@DeclarativeFactory(targetWidget = ComboBox.class, id = "comboBox", library = Constants.LIBRARY_NAME, 
+					description = "Combobox component that uses a data provider to display a list of item or widgets")
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="width", type=String.class)
 })
@@ -85,7 +86,8 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<ComboBoxCon
 			if (getChildName(child).equals("optionsRenderer"))
 			{
 				optionsRendererChild = child;
-			} else
+			} 
+			else
 			{
 				dataChild = child;
 			}
@@ -96,7 +98,7 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<ComboBoxCon
 		String className = getWidgetClassName() + "<" + dataObjectName + ">";
 
 		String comboBoxRenderer = createVariableName("comboBoxRenderer");
-		String comboBoxRendererClassName = OptionsRenderer.class.getCanonicalName() + "<" + context.valueType + "," + context.dataObject.getParameterizedQualifiedSourceName() + ">";
+		String comboBoxRendererClassName = OptionsRenderer.class.getCanonicalName() + "<" + context.valueType + "," + dataObjectName + ">";
 		out.print("final " + comboBoxRendererClassName + " " + comboBoxRenderer + " = ");
 
 		generateOptionRendererCreation(out, context, optionsRendererChild, context.dataObject, comboBoxRendererClassName);
@@ -188,7 +190,7 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<ComboBoxCon
 
 	private String getExpression(SourcePrinter out, ComboBoxContext context, JClassType widgetClassType, String bindPath, String bindConverter, String dataObjectVariable)
 	{
-		JClassType converterType = ViewBindHandler.getConverterType(getContext(), bindPath, bindConverter, context.dataObject, widgetClassType);
+		JClassType converterType = ViewBindHandler.getConverterType(getContext(), bindConverter);
 		String converterVariable = null;
 		if (converterType != null)
 		{
@@ -207,15 +209,22 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<ComboBoxCon
 	}
 
 	@TagConstraints(tagName = "optionsRenderer", minOccurs = "1", maxOccurs = "1")
-	@TagAttributesDeclaration({ @TagAttributeDeclaration(required = true, value = "valuePath", type = String.class), @TagAttributeDeclaration(required = true, value = "labelPath", type = String.class), @TagAttributeDeclaration("labelConverter"),
-			@TagAttributeDeclaration("valueConverter") })
-	@TagChildren({ @TagChild(value = AbstractComboBoxFactory.DisplayWidgetProcessor.class) })
+	@TagAttributesDeclaration({ 
+		@TagAttributeDeclaration(required = true, value = "valuePath", type = String.class), 
+		@TagAttributeDeclaration(required = true, value = "labelPath", type = String.class), 
+		@TagAttributeDeclaration("labelConverter"),
+		@TagAttributeDeclaration("valueConverter") })
+	@TagChildren({
+		@TagChild(value = AbstractComboBoxFactory.DisplayWidgetProcessor.class) 
+	})
 	public static class OptionsProcessor extends WidgetChildProcessor<ComboBoxContext>
 	{
 	}
 
 	@TagConstraints(tagName = "displayWidget", minOccurs = "0", maxOccurs = "1")
-	@TagChildren({ @TagChild(value = AbstractComboBoxFactory.WidgetProcessor.class) })
+	@TagChildren({ 
+		@TagChild(value = AbstractComboBoxFactory.WidgetProcessor.class) 
+	})
 	public static class DisplayWidgetProcessor extends WidgetChildProcessor<ComboBoxContext>
 	{
 	}
@@ -253,7 +262,7 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<ComboBoxCon
 			String bindPath = metaElem.optString("bindPath");
 			String bindConverter = metaElem.optString("bindConverter");
 
-			JClassType converterType = ViewBindHandler.getConverterType(context, bindPath, bindConverter, dataObjectType, widgetClassType);
+			JClassType converterType = ViewBindHandler.getConverterType(context, bindConverter);
 			String converterVariable = null;
 			if (converterType != null)
 			{
