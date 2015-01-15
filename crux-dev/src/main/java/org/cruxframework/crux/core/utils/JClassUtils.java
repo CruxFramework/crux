@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.cruxframework.crux.core.client.Legacy;
@@ -358,23 +359,18 @@ public class JClassUtils
 	public static JMethod[] findMethods(JClassType clazz, String methodName)
 	{
 		List<JMethod> result = new ArrayList<JMethod>();
-		JMethod[] methods = null;
-	    JClassType superClass = clazz;
-	    while (superClass.getSuperclass() != null)
-	    {
-	    	methods = superClass.getMethods();
-	    	if (methods != null)
-	    	{
-	    		for (JMethod method : methods)
-                {
-	                if (method.getName().equals(methodName))
-	                {
-	                	result.add(method);
-	                }
-                }
-	    	}
-	    	superClass = superClass.getSuperclass();
-	    }
+		JMethod[] methods = clazz.getInheritableMethods();
+		if (methods != null)
+		{
+			for (JMethod method : methods)
+			{
+				if (method.getName().equals(methodName))
+				{
+					result.add(method);
+				}
+			}
+		}
+		
 	    return result.toArray(new JMethod[result.size()]);
 	}
 	
@@ -783,24 +779,60 @@ public class JClassUtils
 	/**
 	 * Retrieve the property type on the given class
 	 * @param clazz base class
-	 * @param propertyName property name
+	 * @param propertyPath property path
 	 * @return property type or null, if property is not present
 	 */
-	public static JType getPropertyType(JClassType clazz, String propertyName)
+	public static JType getPropertyType(JClassType clazz, String propertyPath)
     {
 	    JType propertyType = null;
-	    JMethod method = JClassUtils.getMethod(clazz, JClassUtils.getGetterMethod(propertyName, clazz), new JType[]{});
-	    if (method != null)
+	    JClassType baseClass = clazz;
+        String[] props;
+	    if (propertyPath.contains("."))
+        {
+        	props = propertyPath.split("\\.");
+        }
+        else
+        {
+        	props = new String[]{propertyPath};
+        }
+	    int i;
+	    for (i = 0; baseClass != null && i < props.length; i++)
 	    {
-	    	propertyType = method.getReturnType();
-	    }
-	    else
-	    {
-	    	JField field = JClassUtils.getField(clazz, propertyName);
-	    	if (field != null)
+	    	String propertyName = props[i];
+	    	JMethod method = getMethod(baseClass, getGetterMethod(propertyName, baseClass), new JType[]{});
+	    	if (method != null)
 	    	{
-	    		propertyType = field.getType();
+	    		propertyType = method.getReturnType();
+	    		baseClass = propertyType.isClassOrInterface();
 	    	}
+	    	else 
+	    	{
+	    		if (i == props.length - 1)
+	    		{
+	    			JMethod[] setterMethods = findSetterMethods(clazz, propertyName);
+	    			if (setterMethods != null && setterMethods.length > 0)
+	    			{
+	    				propertyType = setterMethods[0].getParameters()[0].getType();
+	    				return propertyType;
+	    			}
+	    		}
+	    		
+	    		JField field = getField(baseClass, propertyName);
+	    		if (field != null)
+	    		{
+	    			propertyType = field.getType();
+	    			baseClass = propertyType.isClassOrInterface();
+	    		}
+	    		else
+	    		{
+	    			return null;
+	    		}
+	    	}
+	    	
+	    }
+	    if (i < props.length)
+	    {
+	    	return null;
 	    }
 	    return propertyType;
     }	
@@ -991,7 +1023,29 @@ public class JClassUtils
 		return getTypeForProperty(property.substring(index+1), JClassUtils.getReturnTypeFromMethodClass(objectType, getterMethod, new JType[]{}).isClassOrInterface());
 	}
 	
-	
+	public static String getNullSafeExpression(String widgetExpression, JType propertyType, String widgetVariable)
+	{
+		String getExpression = null;
+		JPrimitiveType primitiveType = propertyType.isPrimitive();
+		if (primitiveType == null)
+		{
+			getExpression = "(" + widgetVariable + "==null?null:" + widgetExpression + ")";
+		}
+		else if (primitiveType.equals(JPrimitiveType.BOOLEAN))
+		{
+			getExpression = "(" + widgetVariable + "==null?false:" + widgetExpression + "==null?false:" + widgetExpression + ")";
+		}
+		else if (primitiveType.equals(JPrimitiveType.CHAR))
+		{
+			getExpression = "(" + widgetVariable + "==null?' ':" + widgetExpression + "==null?' ':" + widgetExpression + ")";
+		}
+		else if (!primitiveType.equals(JPrimitiveType.VOID))
+		{
+			getExpression = "(" + widgetVariable + "==null?0:" + widgetExpression + "==null?0:" + widgetExpression + ")";
+		}
+		return getExpression;
+	}
+
 	public static String getEmptyValueForType(JType objectType)
     {
 		JPrimitiveType primitiveType = objectType.isPrimitive();
@@ -1013,6 +1067,10 @@ public class JClassUtils
 			else if (primitiveType == JPrimitiveType.CHAR)
 			{
 				return "' '";
+			}
+			else if (primitiveType ==JPrimitiveType.VOID)
+			{
+				return null;
 			}
 		}
 		
@@ -1046,4 +1104,73 @@ public class JClassUtils
 		}
 		throw new RuntimeException("Desired interface ["+desiredInterfaceType.getQualifiedSourceName()+"] is nor parameterized or baseIntef does not extends that interface.");
 	}
+
+	/**
+	 * Check if a type can be assigned to another
+	 * @param from
+	 * @param to
+	 * @return
+	 */
+	public static boolean isCompatibleTypes(JType from, JType to)
+    {
+		if (from == to)
+		{
+			return true;
+		}
+		
+		JPrimitiveType primitiveFrom = from.isPrimitive();
+		if (primitiveFrom != null)
+		{
+			return primitiveFrom.getQualifiedBoxedSourceName().equals(to.getQualifiedSourceName());
+		}
+		JPrimitiveType primitiveTo = to.isPrimitive();
+		if (primitiveTo != null)
+		{
+			return primitiveTo.getQualifiedBoxedSourceName().equals(from.getQualifiedSourceName());
+		}
+		
+		JClassType classOrInterfaceFrom = from.isClassOrInterface();
+		JClassType classOrInterfaceTo = to.isClassOrInterface();
+		if (classOrInterfaceFrom != null && classOrInterfaceTo != null)
+		{
+			return classOrInterfaceFrom.isAssignableTo(classOrInterfaceTo);
+		}
+	    return false;
+    }
+
+	public static boolean isCollection(JType type)
+    {
+		JClassType classOrInterface = type.isClassOrInterface();
+		if (classOrInterface != null)
+		{
+			if (classOrInterface.isAssignableTo(classOrInterface.getOracle().findType(List.class.getCanonicalName())) || 
+				classOrInterface.isAssignableTo(classOrInterface.getOracle().findType(Set.class.getCanonicalName())) ||
+				classOrInterface.isAssignableTo(classOrInterface.getOracle().findType(Map.class.getCanonicalName())))
+			{
+				return true;
+			}
+		}
+		
+	    return false;
+    }
+
+	public static boolean isNumeric(JType widgetPropertyType)
+    {
+		JPrimitiveType primitiveType = widgetPropertyType.isPrimitive();
+		if (primitiveType != null)
+		{
+			return ((primitiveType == JPrimitiveType.INT)
+					||(primitiveType == JPrimitiveType.SHORT)
+					||(primitiveType == JPrimitiveType.LONG)
+					||(primitiveType == JPrimitiveType.BYTE)
+					||(primitiveType == JPrimitiveType.FLOAT)
+					||(primitiveType == JPrimitiveType.DOUBLE));
+		}
+		return (widgetPropertyType.getQualifiedSourceName().equals(JPrimitiveType.INT.getQualifiedBoxedSourceName()))||
+				(widgetPropertyType.getQualifiedSourceName().equals(JPrimitiveType.SHORT.getQualifiedBoxedSourceName()))||
+				(widgetPropertyType.getQualifiedSourceName().equals(JPrimitiveType.LONG.getQualifiedBoxedSourceName()))||
+				(widgetPropertyType.getQualifiedSourceName().equals(JPrimitiveType.BYTE.getQualifiedBoxedSourceName()))||
+				(widgetPropertyType.getQualifiedSourceName().equals(JPrimitiveType.FLOAT.getQualifiedBoxedSourceName()))||
+				(widgetPropertyType.getQualifiedSourceName().equals(JPrimitiveType.DOUBLE.getQualifiedBoxedSourceName()));
+    }
 }

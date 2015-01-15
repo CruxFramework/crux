@@ -58,11 +58,11 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 		
 		String childName = getChildName(child);
 		
-		if (childName.equals("widgetFactory"))
+		if (childName.equals("widget"))
 		{
 			generateWidgetCreationForCellByTemplate(out, context, child, dataObject);
 		}
-		else if (childName.equals("widgetFactoryOnController"))
+		else if (childName.equals("widgetFactory"))
 		{
 			generateWidgetCreationForCellOnController(out, context, child, dataObject);
 		}
@@ -136,7 +136,7 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 	})
 	public static class WidgetListChildCreator extends ChoiceChildProcessor<WidgetCreatorContext>{}
 	
-	@TagConstraints(tagName="widgetFactory", description="Describes the widget factory used by the widgetList. This factory is called to create a widget for each object provided by the datasource.")
+	@TagConstraints(tagName="widget", description="Describes the widget used by the widgetList. An Widget like this will be created for each object provided by the dataprovider.")
 	@TagChildren({
 		@TagChild(value=WidgetFactoryWidgetProcessor.class, autoProcess=false)
 	})
@@ -144,7 +144,7 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 	
 	public static class WidgetFactoryWidgetProcessor extends AnyWidgetChildProcessor<WidgetCreatorContext> {}
 	
-	@TagConstraints(tagName="widgetFactoryOnController", description="Describes the widget factory method to be called on a controller to create widgets for this list. This factory is called to create a widget for each object provided by the datasource.")
+	@TagConstraints(tagName="widgetFactory", description="Describes the widget factory method to be called on a controller to create widgets for this list. This factory is called to create a widget for each object provided by the dataprovider.")
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="onCreateWidget", required=true, description="")
 	})

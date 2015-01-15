@@ -26,7 +26,6 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.screen.widget.ObjectDataBinding.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorAnnotationsProcessor.AttributeCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
@@ -197,28 +196,22 @@ class AttributesAnnotationScanner
 		final String attrName = attr.value();
 		final String setterMethod;
 		boolean nestedProperty = false;
-		if (!StringUtils.isEmpty(attr.property()))
+		String widgetPropertyPath = (!StringUtils.isEmpty(attr.property()))?attr.property():attrName;
+		nestedProperty = widgetPropertyPath.contains(".");
+		if (nestedProperty)
 		{
-			nestedProperty = attr.property().contains(".");
-			if (nestedProperty)
+			String[] properties = RegexpPatterns.REGEXP_DOT.split(widgetPropertyPath);
+			StringBuilder expression = new StringBuilder();
+			for(int i=0; i< properties.length-1;i++)
 			{
-				String[] properties = RegexpPatterns.REGEXP_DOT.split(attr.property());
-				StringBuilder expression = new StringBuilder();
-				for(int i=0; i< properties.length-1;i++)
-				{
-					expression.append(ClassUtils.getGetterMethod(properties[i])+"().");
-				}
-				expression.append(ClassUtils.getSetterMethod(properties[properties.length-1]));
-				setterMethod = expression.toString();
+				expression.append(ClassUtils.getGetterMethod(properties[i])+"().");
 			}
-			else
-			{
-				setterMethod = ClassUtils.getSetterMethod(attr.property());
-			}
+			expression.append(ClassUtils.getSetterMethod(properties[properties.length-1]));
+			setterMethod = expression.toString();
 		}
 		else
 		{
-			setterMethod = ClassUtils.getSetterMethod(attrName);
+			setterMethod = ClassUtils.getSetterMethod(widgetPropertyPath);
 		}
 		Class<?> type = attr.type();
 		if (type == null ||  !(nestedProperty || ClassUtils.hasValidSetter(factoryHelper.getWidgetType(), setterMethod, type)))
@@ -234,7 +227,8 @@ class AttributesAnnotationScanner
 		return doCreateAutomaticAttributeProcessor(attrName, setterMethod, type.getCanonicalName(), 
 												   isStringExpression, supportsI18N, supportsResources, 
 												   supportsDataBinding, isEnumExpression, 
-												   isPrimitiveExpression, attr.supportedDevices());
+												   isPrimitiveExpression, attr.supportedDevices(), 
+												   widgetPropertyPath);
     }
 
 	/**
@@ -245,13 +239,15 @@ class AttributesAnnotationScanner
 	 * @param supportsI18N
 	 * @param isEnumExpression
 	 * @param isPrimitiveExpression
+	 * @param widgetPropertyPath 
 	 * @return
 	 */
 	private AttributeCreator doCreateAutomaticAttributeProcessor(final String attrName, final String setterMethod, 
 																 final String typeName, final boolean isStringExpression, 
 																 final boolean supportsI18N, final boolean supportsResources, 
 																 final boolean supportsDataBinding, final boolean isEnumExpression, 
-																 final boolean isPrimitiveExpression, final Device[] supportedDevices)
+																 final boolean isPrimitiveExpression, final Device[] supportedDevices, 
+																 final String widgetPropertyPath)
     {
 	    return new AttributeCreator()
 		{
@@ -263,12 +259,21 @@ class AttributesAnnotationScanner
 					
 					if (supportsDataBinding)
 					{
-						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, attrName);
+						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, widgetPropertyPath);
 						if (binding != null)
 						{
 							context.registerObjectDataBinding(binding);
 							return;
 						}
+						else
+						{
+							ExpressionDataBinding expressionBinding = widgetCreator.getExpressionDataBinding(attrValue, widgetPropertyPath);
+							if (expressionBinding != null)
+							{
+								context.registerExpressionDataBinding(expressionBinding);
+								return;
+							}
+						}	
 					}
 					String expression = getExpression(context, typeName, isStringExpression, isEnumExpression, isPrimitiveExpression, attrValue);
 					if (expression != null)

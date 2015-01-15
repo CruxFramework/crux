@@ -62,7 +62,6 @@ import org.cruxframework.crux.core.rebind.resources.Resources;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.resources.ResourcesHandlerProxyCreator;
-import org.cruxframework.crux.core.rebind.screen.widget.ObjectDataBinding.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
@@ -631,6 +630,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	/**
 	 * 
 	 * @param propertyValue
+	 * @param widgetClassName
 	 * @param widgetPropertyPath
 	 * @return
 	 */
@@ -638,6 +638,34 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     {
 	    return bindHandler.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath);
     }
+	
+	/**
+	 * 
+	 * @param propertyValue
+	 * @param widgetClassName
+	 * @param widgetPropertyPath
+	 * @return
+	 */
+	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
+    {
+		JType widgetPropertyType = JClassUtils.getPropertyType(getContext().getTypeOracle().findType(widgetClassName), widgetPropertyPath);
+		if (widgetPropertyType == null)
+		{
+			throw new CruxGeneratorException("Can not find out the widget property type, for property ["+widgetPropertyPath+"], on widget ["+widgetClassName+"]");
+		}
+		return bindHandler.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath, widgetPropertyType);
+    }
+	
+	/**
+	 * Retrieve the variable name for the dataObjectBinder associated with the given alias.
+	 * @param dataObjectAlias
+	 * @param out
+	 * @return
+	 */
+	public String getDataObjectBinderVariable(String dataObjectAlias, SourcePrinter out)
+	{
+		return bindHandler.getDataObjectBinderVariable(dataObjectAlias, out);
+	}
 	
 	/**
 	 * Checks if declared message is valid
@@ -1382,44 +1410,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		return result;
 	}
 	
-	/**
-	 * Split the dataBindReference and separate the DataObject Class alias from the requested property and converters
-	 *
-	 * @param text
-	 * @return
-	 */
-	protected static String[] getDataObjectParts(String text)
-	{
-		boolean hasConverter = text.indexOf(":") > 0;
-		boolean hasConverterParams = hasConverter && text.indexOf("(", text.indexOf(":")) > 0;
-		text = text.substring(2, text.length()-1);
-		int index = text.indexOf('.');
-		String[] result = new String[hasConverterParams?4:hasConverter?3:2];
-		result[0] = text.substring(0, index);
-		String path = text.substring(index+1);
-		if (hasConverter)
-		{
-			int endPathIndex = path.indexOf(':');
-			result[1] = path.substring(0, endPathIndex);
-			if (hasConverterParams)
-			{
-				int paramStartPath = path.indexOf('(', endPathIndex);
-				result[2] = path.substring(endPathIndex+1, paramStartPath);
-				result[3] = EscapeUtils.quote(path.substring(paramStartPath+2, path.length()-2)); 
-			}
-			else
-			{
-				result[2] = path.substring(endPathIndex+1);
-			}
-		}
-		else
-		{
-			result[1] = path;
-		}
-		
-		return result;
-	}
-
 	/**
 	 * Return the qualified name of the ViewFactory class created for the associated screen
 	 * @return

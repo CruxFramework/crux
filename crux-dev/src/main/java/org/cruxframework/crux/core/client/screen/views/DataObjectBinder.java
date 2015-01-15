@@ -97,15 +97,18 @@ public abstract class DataObjectBinder<T>
 
 	T read()
 	{
-		if (dataObject == null)
-		{
-			dataObject = createDataObject();
-		}
-
+		initialize();
 		readGeneric(dataObject);
-
 		return dataObject;
 	}
+
+	void initialize()
+    {
+	    if (dataObject == null)
+		{
+	    	dataObject = createDataObject();
+		}
+    }
 
 	void write(Object object)
 	{

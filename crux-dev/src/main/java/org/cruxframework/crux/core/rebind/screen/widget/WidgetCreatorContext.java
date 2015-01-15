@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.core.rebind.screen.widget.ObjectDataBinding.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.json.JSONObject;
 
@@ -119,7 +118,7 @@ public class WidgetCreatorContext
 		return objectDataBindings.get(dataObject);
 	}
 	
-	public Iterator<String> iterateDataObjects()
+	public Iterator<String> iterateObjectDataBindingObjects()
 	{
 		return objectDataBindings.keySet().iterator();
 	}
@@ -145,6 +144,11 @@ public class WidgetCreatorContext
 		objectDataBinding.addPropertyBinding(propertyBindInfo);
 	}
 	
+	void registerExpressionDataBinding(ExpressionDataBinding expressionDataBinding)
+	{
+		expressionDataBindings.add(expressionDataBinding);
+	}
+
 	void setChildElement(JSONObject childElement)
 	{
 		this.childElement = childElement;

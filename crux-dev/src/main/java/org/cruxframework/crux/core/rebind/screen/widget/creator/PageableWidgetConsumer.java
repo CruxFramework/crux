@@ -20,10 +20,13 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.DataWidgetConsumer;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewBindHandler;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
+import org.cruxframework.crux.core.rebind.screen.widget.ViewWidgetConsumer;
+import org.cruxframework.crux.core.utils.JClassUtils;
 import org.json.JSONObject;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JType;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -54,10 +57,14 @@ public class PageableWidgetConsumer extends DataWidgetConsumer implements Widget
 		String bindPath = metaElem.optString("bindPath");
 		String bindConverter = metaElem.optString("bindConverter");
 				
-		JClassType converterType = ViewBindHandler.getConverterType(context, bindPath, bindConverter, dataObjectType, widgetClassType);
+		JClassType converterType = ViewBindHandler.getConverterType(context, bindConverter);
     	String converterVariable = null;
     	if (converterType != null)
     	{
+	    	JType propertyType = JClassUtils.getTypeForProperty(bindPath, dataObjectType);
+	    	String propertyClassName = JClassUtils.getGenericDeclForType(propertyType);
+	    	ViewWidgetConsumer.validateConverter(converterType, context, widgetClassType, context.getTypeOracle().findType(propertyClassName));
+
     		converterVariable = "__converter";
     		out.println(converterType.getParameterizedQualifiedSourceName()+" "+converterVariable+" = new "+converterType.getParameterizedQualifiedSourceName()+"();");
     	}

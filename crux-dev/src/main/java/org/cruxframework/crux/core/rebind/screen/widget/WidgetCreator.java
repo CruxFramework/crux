@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.cruxframework.crux.core.client.permission.Permissions;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.client.screen.views.DataObjectBinder;
 import org.cruxframework.crux.core.client.screen.views.ExpressionBinder;
 import org.cruxframework.crux.core.client.screen.views.ExpressionBinder.BindingContext;
 import org.cruxframework.crux.core.client.screen.views.PropertyBinder;
@@ -31,7 +30,6 @@ import org.cruxframework.crux.core.declarativeui.ViewParser;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.View;
-import org.cruxframework.crux.core.rebind.screen.widget.ObjectDataBinding.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.AttachEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.DettachEvtBind;
@@ -52,6 +50,7 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.PartialSupport;
+import com.google.gwt.user.client.Window;
 
 /**
  * Generate code for gwt widgets creation. Generates code based on a JSON meta data array
@@ -60,7 +59,8 @@ import com.google.gwt.dom.client.PartialSupport;
  * @author Thiago da Rosa de Bustamante
  */
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="id", required=true, description="Sets the identifier used to reference this widget on the crux view. ")
+	@TagAttributeDeclaration(value="id", required=true, supportsDataBinding=false,
+							description="Sets the identifier used to reference this widget on the crux view. ")
 })
 @TagAttributes({
 	@TagAttribute(value="width", description="Sets the object's width, in CSS units (e.g. \"10px\", \"1em\"). This width does not include decorations such as border, margin, and padding."),
@@ -481,6 +481,29 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 
 	/**
 	 * 
+	 * @param propertyValue
+	 * @param widgetPropertyPath
+	 * @return
+	 */
+	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetPropertyPath)
+	{
+		return getExpressionDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath);
+	}
+
+	/**
+	 * 
+	 * @param propertyValue
+	 * @param widgetClassName
+	 * @param widgetPropertyPath
+	 * @return
+	 */
+	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
+	{
+		return viewFactory.getExpressionDataBinding(propertyValue, widgetClassName, widgetPropertyPath);
+	}
+
+	/**
+	 * 
 	 * @param property
 	 * @return
 	 */
@@ -569,9 +592,18 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 */
 	public boolean hasPartialSupport()
     {
-	    JClassType widgetClassType = getViewFactory().getContext().getTypeOracle().findType(getWidgetClassName());
+	    JClassType widgetClassType = getWidgetClassType();
 		return widgetClassType != null && widgetClassType.getAnnotation(PartialSupport.class) != null 
 	    	   && ClassUtils.hasMethod(getWidgetClass(), "isSupported");
+    }
+
+	/**
+	 * 
+	 * @return
+	 */
+	public JClassType getWidgetClassType()
+    {
+	    return getViewFactory().getContext().getTypeOracle().findType(getWidgetClassName());
     }
 	
 	/**
@@ -623,10 +655,11 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * Process any dataObject binding on this widget
 	 * @param out
 	 * @param context
+	 * @return 
 	 */
 	protected void processDataObjectBindings(SourcePrinter out, C context)
     {
-		Iterator<String> dataObjects = context.iterateDataObjects();
+		Iterator<String> dataObjects = context.iterateObjectDataBindingObjects();
 		
 		while (dataObjects.hasNext())
 		{
@@ -634,11 +667,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			ObjectDataBinding dataBindingInfo = context.getObjectDataBinding(dataObjectAlias);
 			
 			String dataObjectClassName = dataBindingInfo.getDataObjectClassName();
-			String dataObjectBinder = createVariableName("dataObjectBinder");
-			
-			out.println(DataObjectBinder.class.getCanonicalName() + "<" + dataObjectClassName + "> " + dataObjectBinder + "=" + 
-					getViewVariable() + ".getDataObjectBinder("+EscapeUtils.quote(dataObjectAlias)+");");
-
+			String dataObjectBinder = getDataObjectBinderVariable(dataObjectAlias, out);
 			Iterator<PropertyBindInfo> propertyBindings = dataBindingInfo.iterateBindings();
 			
 			while (propertyBindings.hasNext())
@@ -668,35 +697,44 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * Process any dataObject binding expression on this widget
 	 * @param out
 	 * @param context
+	 * @param dataObjectBinderVariables 
 	 */
 	protected void processDataExpressionBindings(SourcePrinter out, C context)
     {
 		Iterator<ExpressionDataBinding> expressionBindings = context.iterateExpressionBindings();
 		
-		while (expressionBindings.hasNext())
+		try
 		{
-			ExpressionDataBinding expressionBinding = expressionBindings.next();
-			
-			String expressionBinder = createVariableName("expressionBinder");
-			out.println(ExpressionBinder.class.getCanonicalName() + " " + expressionBinder + " = "
-					+ "new " + ExpressionBinder.class.getCanonicalName() + "(){");
-			
-			out.println("public void updateExpression(" + BindingContext.class.getCanonicalName() +" context, Widget w);{");
-			out.print(expressionBinding.getWriteExpression("context", "w"));
-			out.println("}");
-
-			out.println("});");
-			
-			
-			Iterator<String> dataObjects = expressionBinding.iterateDataObjects();
-			
-			while (dataObjects.hasNext())
+			while (expressionBindings.hasNext())
 			{
-				String dataObjectAlias = dataObjects.next();
-				out.println(getViewVariable() + ".getDataObjectBinder("+EscapeUtils.quote(dataObjectAlias)+")"
-						+ ".addExpressionBinder(" + EscapeUtils.quote(context.getWidgetId()) + ", " + expressionBinder + ");");
+				ExpressionDataBinding expressionBinding = expressionBindings.next();
+
+				String expressionBinder = createVariableName("expressionBinder");
+				out.println(ExpressionBinder.class.getCanonicalName() + " " + expressionBinder + " = "
+						+ "new " + ExpressionBinder.class.getCanonicalName() + "<"+expressionBinding.getWidgetClassName()+">(){");
+
+				out.println("public void updateExpression(" + BindingContext.class.getCanonicalName() +" context){");
+//				out.println(Window.class.getCanonicalName()+".alert(\"chamou.\");");
+				out.println(expressionBinding.getWriteExpression("context"));
+				out.println("}");
+
+				out.println("};");
+
+				Iterator<String> dataObjects = expressionBinding.iterateDataObjects();
+
+				while (dataObjects.hasNext())
+				{
+					String dataObjectAlias = dataObjects.next();
+					String dataObjectBinder = getDataObjectBinderVariable(dataObjectAlias, out);
+
+					out.println(dataObjectBinder + ".addExpressionBinder(" + EscapeUtils.quote(context.getWidgetId()) 
+							+ ", " + expressionBinder + ");");
+				}
 			}
-			
+		}
+		catch(NoSuchFieldException e)
+		{
+			throw new CruxGeneratorException("Error processing data binding expression.", e);
 		}
     }
 	
@@ -775,6 +813,17 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			}
         }
 		return false;
+	}
+	
+	/**
+	 * Retrieve the variable name for the dataObjectBinder associated with the given alias.
+	 * @param dataObjectAlias
+	 * @param out
+	 * @return
+	 */
+	protected String getDataObjectBinderVariable(String dataObjectAlias, SourcePrinter out)
+	{
+		return viewFactory.getDataObjectBinderVariable(dataObjectAlias, out);
 	}
 	
 	/**

@@ -366,7 +366,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			{
 				if (!added.contains(attr.value()))
 				{
-					out.print("<xs:attribute name=\""+attr.value()+"\" type=\""+getSchemaType(attr.type(), library)+"\" ");
+					out.print("<xs:attribute name=\""+attr.value()+"\" type=\""+getSchemaType(attr.type(), library, attr.supportsDataBinding())+"\" ");
 					if (attr.required())
 					{
 						out.print("use=\"required\" ");
@@ -399,7 +399,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			{
 				if (!added.contains(attr.value()) && !attr.xsdIgnore())
 				{
-					out.print("<xs:attribute name=\""+attr.value()+"\" type=\""+getSchemaType(attr.type(), library)+"\" ");
+					out.print("<xs:attribute name=\""+attr.value()+"\" type=\""+getSchemaType(attr.type(), library, attr.supportsDataBinding())+"\" ");
 					if (attr.required())
 					{
 						out.print("use=\"required\" ");
@@ -687,7 +687,8 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			generateCoreCrossDeviceElement(out);
 			generateCoreWidgetsType(out, libraries, templateLibraries);	
 			generateCoreCrossDevWidgetsType(out, libraries, templateLibraries);
-
+			generateCoreTypesSupportingBinding(out);
+			
 			out.println("</xs:schema>");
 			out.close();
 		}
@@ -966,7 +967,6 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	{
 		generateCoreWidgetsType(out, libraries, templateLibraries, "widgetsCrossDev", false, true);
 	}
-
 	/**
 	 * 
 	 * @param out
@@ -1018,6 +1018,31 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	/**
 	 * 
 	 * @param out
+	 */
+	private void generateCoreTypesSupportingBinding(PrintStream out)
+    {
+		out.println("<xs:simpleType name=\"_bindableInt\">");
+		out.println("<xs:restriction base=\"xs:string\">");
+		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("-?[0-9]+|@\\{.+\\}")+"\"/>");
+		out.println("</xs:restriction>");
+		out.println("</xs:simpleType>");
+    
+		out.println("<xs:simpleType name=\"_bindableBoolean\">");
+		out.println("<xs:restriction base=\"xs:string\">");
+		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("false|true|@\\{.+\\}")+"\"/>");
+		out.println("</xs:restriction>");
+		out.println("</xs:simpleType>");
+		
+		out.println("<xs:simpleType name=\"_bindableFloat\">");
+		out.println("<xs:restriction base=\"xs:string\">");
+		out.println("<xs:pattern value=\""+StringEscapeUtils.escapeXml("-?[0-9]+(\\.[0-9]+)?|@\\{.+\\}")+"\"/>");
+		out.println("</xs:restriction>");
+		out.println("</xs:simpleType>");
+    }
+	
+	/**
+	 * 
+	 * @param out
 	 * @param added
 	 * @param processorClass
 	 */
@@ -1034,7 +1059,13 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 					String eventName = evtBinder.getConstructor(WidgetCreator.class).newInstance((WidgetCreator<?>)null).getEventName();
 					if (!added.contains(eventName))
 					{
-						out.println("<xs:attribute name=\""+eventName+"\" >");
+						out.print("<xs:attribute name=\""+eventName+"\" ");
+						if (evt.required())
+						{
+							out.print("use=\"required\" ");
+						}
+						out.println(" >");
+						
 						String attrDescription = evt.description();
 						if (attrDescription != null && attrDescription.length() > 0)
 						{
@@ -1057,7 +1088,12 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		{
 			for (TagEventDeclaration evt : evtsDecl.value())
 			{
-				out.println("<xs:attribute name=\""+evt.value()+"\" >");
+				out.println("<xs:attribute name=\""+evt.value()+"\" ");
+				if (evt.required())
+				{
+					out.print("use=\"required\" ");
+				}
+				out.println(" >");
 				String attrDescription = evt.description();
 				if (attrDescription != null && attrDescription.length() > 0)
 				{
@@ -1144,7 +1180,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			{
 				out.println("<xs:element name=\""+tagName+"\" minOccurs=\""+attributes.minOccurs()+
 						"\" maxOccurs=\""+attributes.maxOccurs()+
-						"\" type=\""+getSchemaType(processorClass, library)+"\">");
+						"\" type=\""+getSchemaType(processorClass, library, false)+"\">");
 				if (tagDescription != null && tagDescription.length() > 0)
 				{
 					out.println("<xs:annotation>");
@@ -1182,7 +1218,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 			}
 			out.println("<xs:element name=\""+tagName+"\" minOccurs=\""+attributes.minOccurs()+
 					"\" maxOccurs=\""+attributes.maxOccurs()+
-					"\" type=\""+getSchemaType(type, library)+"\">");
+					"\" type=\""+getSchemaType(type, library, false)+"\">");
 			if (tagDescription != null && tagDescription.length() > 0)
 			{
 				out.println("<xs:annotation>");
@@ -1730,7 +1766,7 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private String getSchemaType(Class<?> type, String library)
+	private String getSchemaType(Class<?> type, String library, boolean supportsBinding)
 	{
 		if (String.class.isAssignableFrom(type))
 		{
@@ -1738,27 +1774,27 @@ public class DefaultSchemaGenerator implements CruxSchemaGenerator
 		}
 		else if (Boolean.class.isAssignableFrom(type))
 		{
-			return "xs:boolean";
+			return supportsBinding?"c:_bindableBoolean":"xs:boolean";
 		}
 		else if (Integer.class.isAssignableFrom(type))
 		{
-			return "xs:int";
+			return supportsBinding?"c:_bindableInt":"xs:int";
 		}
 		else if (Short.class.isAssignableFrom(type))
 		{
-			return "xs:short";
+			return supportsBinding?"c:_bindableInt":"xs:short";
 		}
 		else if (Long.class.isAssignableFrom(type))
 		{
-			return "xs:long";
+			return supportsBinding?"c:_bindableInt":"xs:long";
 		}
 		else if (Double.class.isAssignableFrom(type))
 		{
-			return "xs:double";
+			return supportsBinding?"c:_bindableFloat":"xs:double";
 		}
 		else if (Float.class.isAssignableFrom(type))
 		{
-			return "xs:float";
+			return supportsBinding?"c:_bindableFloat":"xs:float";
 		}
 		else if (Character.class.isAssignableFrom(type))
 		{

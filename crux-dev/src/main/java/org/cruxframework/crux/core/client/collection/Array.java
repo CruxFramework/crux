@@ -80,6 +80,18 @@ public class Array<E> extends JavaScriptObject
 	}
 
 	/**
+	 * Removes the element.
+	 */
+	public final void remove(E elem)
+	{
+		int index = indexOf(elem);
+		if (index >= 0)
+		{
+			remove(index);
+		}
+	}
+	
+	/**
 	 * Removes the element at the specified index.
 	 */
 	public final void remove(int index)

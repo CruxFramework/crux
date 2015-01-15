@@ -18,6 +18,7 @@ package org.cruxframework.crux.core.rebind.screen.widget;
 import org.cruxframework.crux.core.client.converter.TypeConverter;
 import org.cruxframework.crux.core.client.formatter.HasFormatter;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
+import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.ext.GeneratorContext;
@@ -180,22 +181,26 @@ public class DataWidgetConsumer
 	    String getExpression;
 	    if (widgetClass.isAssignableTo(hasValueType))
 	    {
-	    	getExpression = ViewBindHandler.getNullSafeExpression(widgetVariable+".getValue()", 
+	    	getExpression = getNullSafeExpression(widgetVariable+".getValue()", 
 	    									propertyType, bindPath, dataObjectClassName, converterVariable, widgetVariable);
 	    }
 	    else if (widgetClass.isAssignableTo(hasFormatterType))
 	    {
-	    	getExpression = ViewBindHandler.getNullSafeExpression("("+propertyClassName+")"+widgetVariable+".getUnformattedValue()", 
+	    	getExpression = getNullSafeExpression("("+propertyClassName+")"+widgetVariable+".getUnformattedValue()", 
 	    									propertyType, bindPath, dataObjectClassName, converterVariable, widgetVariable);
 	    } 
 	    else if (widgetClass.isAssignableTo(hasTextType))
 	    {
-	    	getExpression = ViewBindHandler.getNullSafeExpression(widgetVariable+".getText()", propertyType, bindPath, dataObjectClassName, 
+	    	getExpression = getNullSafeExpression(widgetVariable+".getText()", propertyType, bindPath, dataObjectClassName, 
 	    									converterVariable, widgetVariable);
 	    }
 	    else
 	    {
-	    	getExpression = ViewBindHandler.getEmptyValueExpression(propertyType, bindPath, dataObjectClassName);
+	    	getExpression = JClassUtils.getEmptyValueForType(propertyType);
+	    }
+	    if (getExpression == null)
+	    {
+	    	throw new CruxGeneratorException("Invalid binding path ["+bindPath+"] on target dataObject ["+dataObjectClassName+"]. Property can not be void.");
 	    }
 	    
 	    JClassUtils.buildSetValueExpression(srcWriter, dataObjectType, bindPath, dataObjectVariable, getExpression);
@@ -207,24 +212,44 @@ public class DataWidgetConsumer
 	    String getExpression;
 	    if (widgetClass.isAssignableTo(hasValueType))
 	    {
-	    	getExpression = ViewBindHandler.getNullSafeExpression("(("+HasValue.class.getCanonicalName()+"<"+propertyClassName+">)"+widgetVariable+").getValue()", 
+	    	getExpression = getNullSafeExpression("(("+HasValue.class.getCanonicalName()+"<"+propertyClassName+">)"+widgetVariable+").getValue()", 
 	    									propertyType, bindPath, dataObjectClassName, converterVariable, widgetVariable);
 	    }
 	    else if (widgetClass.isAssignableTo(hasFormatterType))
 	    {
-	    	getExpression = ViewBindHandler.getNullSafeExpression("("+propertyClassName+")(("+HasFormatter.class.getCanonicalName()+")"+widgetVariable+").getUnformattedValue()", 
+	    	getExpression = getNullSafeExpression("("+propertyClassName+")(("+HasFormatter.class.getCanonicalName()+")"+widgetVariable+").getUnformattedValue()", 
 	    									propertyType, bindPath, dataObjectClassName, converterVariable, widgetVariable);
 	    } 
 	    else if (widgetClass.isAssignableTo(hasTextType))
 	    {
-	    	getExpression = ViewBindHandler.getNullSafeExpression("(("+HasText.class.getCanonicalName()+")"+widgetVariable+").getText()", propertyType, bindPath, dataObjectClassName, 
+	    	getExpression = getNullSafeExpression("(("+HasText.class.getCanonicalName()+")"+widgetVariable+").getText()", propertyType, bindPath, dataObjectClassName, 
 	    									converterVariable, widgetVariable);
 	    }
 	    else
 	    {
-	    	getExpression = ViewBindHandler.getEmptyValueExpression(propertyType, bindPath, dataObjectClassName);
+	    	getExpression = JClassUtils.getEmptyValueForType(propertyType);
+	    }
+	    if (getExpression == null)
+	    {
+	    	throw new CruxGeneratorException("Invalid binding path ["+bindPath+"] on target dataObject ["+dataObjectClassName+"]. Property can not be void.");
 	    }
 	    
 	    JClassUtils.buildSetValueExpression(srcWriter, dataObjectType, bindPath, dataObjectVariable, getExpression);
     }
+	
+	private static String getNullSafeExpression(String widgetExpression, JType propertyType, String bindPath, 
+						String dataObjectClassName, String converterVariable, String widgetVariable)
+	{
+		if (converterVariable != null)
+		{
+			widgetExpression = converterVariable+".from(" + widgetExpression + ")";
+		}
+		String getExpression = JClassUtils.getNullSafeExpression(widgetExpression, propertyType, widgetVariable);
+		if (getExpression == null)
+		{
+			throw new CruxGeneratorException("Invalid binding path ["+bindPath+"] on target dataObject ["+dataObjectClassName+"]. Property can not be void.");
+		}
+		return getExpression;
+	}
+	
 }

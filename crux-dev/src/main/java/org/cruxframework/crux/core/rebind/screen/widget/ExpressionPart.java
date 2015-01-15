@@ -15,36 +15,34 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ObjectDataBinding
+public class ExpressionPart extends BindInfo
 {
-	private String dataObjectClassName;
-	private List<PropertyBindInfo> bindings = new ArrayList<PropertyBindInfo>();
-	
-	public ObjectDataBinding(String dataObjectClassName)
-    {
-		this.dataObjectClassName = dataObjectClassName;
-    }
+	private String converterVariableName = null;
 
-	public String getDataObjectClassName()
+	public ExpressionPart(String bindPath, JClassType dataObjectType, JClassType converterType, 
+			String dataObject, String converterParams) throws NoSuchFieldException
     {
-	    return dataObjectClassName;
+	    super(bindPath, dataObjectType, converterType, dataObject, converterParams);
     }
 	
-	public Iterator<PropertyBindInfo> iterateBindings()
+	@Override
+	public String getConverterVariable()
 	{
-		return bindings.iterator();
-	}
-	
-	void addPropertyBinding(PropertyBindInfo propertyBindInfo)
-	{
-		bindings.add(propertyBindInfo);
+		if (converterClassName == null)
+		{
+			return null;
+		}
+		if (converterVariableName == null)
+		{
+			converterVariableName = ViewFactoryCreator.createVariableName(super.getConverterVariable());
+		}
+			
+		return converterVariableName;
 	}
 }
