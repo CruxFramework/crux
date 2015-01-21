@@ -100,7 +100,7 @@ public class DeviceAdaptiveDataColumnEditorCreatorFactory
 			printer.println("@Override");
 			printer.println("public Object createEditorWidget(DataColumnDefinition column) {");
 			JSONObject childWidgetElem = gridFactory.ensureFirstChild(editorMetadata, false, context.getWidgetId());
-			String childWidgetVarName = gridFactory.createChildWidget(printer, childWidgetElem, WidgetConsumer.EMPTY_WIDGET_CONSUMER, true, context);
+			String childWidgetVarName = gridFactory.createChildWidget(printer, childWidgetElem, WidgetConsumer.EMPTY_WIDGET_CONSUMER, null, context);
 			printer.println("return " + childWidgetVarName + ";");    
 			printer.println("}");
 		}

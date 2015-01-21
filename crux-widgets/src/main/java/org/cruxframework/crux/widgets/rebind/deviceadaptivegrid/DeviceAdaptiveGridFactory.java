@@ -654,7 +654,7 @@ public class DeviceAdaptiveGridFactory extends WidgetCreator<WidgetCreatorContex
 		    out.println("public Widget createWidgetForColumn(){");
 
 		    JSONObject child = ensureFirstChild(colElem, false, context.getWidgetId());
-			String childWidget = createChildWidget(out, child, null, true, context);
+			String childWidget = createChildWidget(out, child, null, null, context);
 	        out.println("return "+childWidget+";");
 
 		    out.println("};");
