@@ -180,7 +180,7 @@ public class AbstractComboBoxFactory extends AbstractPageableFactory<ComboBoxCon
 
 			ComboBoxWidgetConsumer consumer = new ComboBoxWidgetConsumer(getContext(), context, context.dataObject, context.dataObjectVariable, widgetClassType, getView().getId(), context.getWidgetId());
 
-			String widgetId = createChildWidget(out, widgetElement, consumer, true, context);
+			String widgetId = "null";// TODO createChildWidget(out, widgetElement, consumer, true, context);
 			out.println("return " + widgetId + ";");
 		} else
 		{

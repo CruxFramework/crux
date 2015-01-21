@@ -73,7 +73,10 @@ public class WidgetListFactory extends AbstractPageableFactory<WidgetCreatorCont
 		
 		out.print("final " + widgetFactoryClassName + " " + widgetListFactory + " = ");
 		
-		generateWidgetCreationForCell(out, context, widgetCreatorChild, dataObject);
+		if (!generateWidgetCreationForCell(out, context, widgetCreatorChild, dataObject))
+		{
+        	throw new CruxGeneratorException("Invalid child tag on widget ["+context.getWidgetId()+"]. View ["+getView().getId()+"]");
+		}
 
 		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+widgetListFactory+");");
 	}
