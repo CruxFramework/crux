@@ -15,8 +15,12 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget.creator;
 
+import java.util.Iterator;
+
+import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
+import org.cruxframework.crux.core.client.screen.views.DataObjectBinder.UpdatedStateBindingContext;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.Event;
@@ -50,43 +54,60 @@ import com.google.gwt.user.client.ui.IsWidget;
 })
 public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> extends HasPagedDataProviderFactory<C>
 {
-	protected void generateWidgetCreationForCell(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
+	protected boolean generateWidgetCreationForCell(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
     {
 		String dataObjectName = dataObject.getParameterizedQualifiedSourceName();
 		String widgetFactoryClassName = WidgetFactory.class.getCanonicalName()+"<"+dataObjectName+">";
-		out.println("new " + widgetFactoryClassName + "(){");
 		
 		String childName = getChildName(child);
 		
 		if (childName.equals("widget"))
 		{
+			out.println("new " + widgetFactoryClassName + "(){");
 			generateWidgetCreationForCellByTemplate(out, context, child, dataObject);
+			out.println("};");
 		}
 		else if (childName.equals("widgetFactory"))
 		{
+			out.println("new " + widgetFactoryClassName + "(){");
 			generateWidgetCreationForCellOnController(out, context, child, dataObject);
+			out.println("};");
 		}
 		else
 		{
-        	throw new CruxGeneratorException("Invalid child tag on widget ["+context.getWidgetId()+"]. View ["+getView().getId()+"]");
+        	return false;
 		}
-		
-		out.println("};");
+		return true;
     }
 
 	private void generateWidgetCreationForCellByTemplate(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
     {
 		child = ensureFirstChild(child, false, context.getWidgetId());
-		String widgetClassName =  getChildWidgetClassName(child);
-		JClassType widgetClassType =  getContext().getTypeOracle().findType(widgetClassName);
-		WidgetConsumer widgetConsumer = new PageableWidgetConsumer(getContext(), widgetClassType, 
-											dataObject, 
-											"value", getView().getId(), context.getWidgetId());
-		
-		out.println("public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObject.getParameterizedQualifiedSourceName()+" value){");
-	    String childWidget = createChildWidget(out, child, widgetConsumer, true, context);
+		String bindingContextVariable = "_context";
+		String collectionObjectReference = "_value";
+		DataObject dataObjectAnnotation = dataObject.getAnnotation(DataObject.class);
+		String dataObjectAlias = dataObjectAnnotation.value();
+		if (dataObjectAlias == null)
+		{
+			throw new CruxGeneratorException("Invaid dataObject: "+dataObject.getQualifiedSourceName());
+		}
+		HasDataProviderDataBindingProcessor bindingProcessor = new HasDataProviderDataBindingProcessor(
+															bindingContextVariable, collectionObjectReference, dataObjectAlias);
+		out.println("public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObject.getParameterizedQualifiedSourceName()
+				    +" "+collectionObjectReference+"){");
+	    String childWidget = createChildWidget(out, child, WidgetConsumer.EMPTY_WIDGET_CONSUMER, bindingProcessor, context);
 	    out.println("return "+childWidget+";");
 	    out.println("}");
+	    
+	    String bindingContextClassName = UpdatedStateBindingContext.class.getCanonicalName();
+		out.println(bindingContextClassName + " " + bindingContextVariable + " = new " + bindingContextClassName + "("+
+					getViewVariable() + ", 0);");
+	    
+	    Iterator<String> converterDeclarations = bindingProcessor.iterateConverterDeclarations();
+	    while(converterDeclarations.hasNext())
+	    {
+	    	out.println(converterDeclarations.next());
+	    }
     }
 
 	private void generateWidgetCreationForCellOnController(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
@@ -98,7 +119,8 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 	    	if (event != null)
 	    	{
 	    		String controllerClass = getControllerAccessorHandler().getControllerImplClassName(event.getController(), getDevice());
-	    		out.println("private "+controllerClass+" controller = " + getControllerAccessorHandler().getControllerExpression(event.getController(), getDevice())+";");
+	    		out.println("private "+controllerClass+" controller = " + getControllerAccessorHandler().getControllerExpression(
+	    																	event.getController(), getDevice())+";");
 	    	}
 	    	ControllerAccessHandler controllerAccessHandler = new ControllerAccessHandler()
 	    	{

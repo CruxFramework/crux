@@ -36,7 +36,6 @@ public class ExpressionDataBinding
 	protected static String WIDGET_VAR_REF = "widget";
 
 	private Set<String> dataObjects = new HashSet<String>();
-//	private Set<ExpressionPart> expressionParts = new HashSet<ExpressionPart>();
 	private StringBuilder expression = new StringBuilder();
 	private String widgetClassName;
 	private JClassType widgetType;
@@ -54,19 +53,25 @@ public class ExpressionDataBinding
 	
 	public String getWriteExpression(String contextVariable) throws NoSuchFieldException
 	{
+		return getWriteExpression(contextVariable, WIDGET_VAR_REF, null, null);
+	}
+	
+	public String getWriteExpression(String contextVariable, String widgetVar, String collectionDataObjectRef, String collectionDataObject) throws NoSuchFieldException
+	{
 		StringBuilder writeExpression = new StringBuilder();
 
-		JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, WIDGET_VAR_REF, expression.toString());
+		JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, widgetVar, expression.toString());
 
 		for (String dataObject : dataObjects)
         {
 	        String dataObjectReference = "${"+dataObject+"}";
 	        int index;
-	        String dataObjectVar = ViewFactoryCreator.createVariableName(dataObject);
+	        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionDataObject.equals(dataObject);
+	        String dataObjectVar = isCollectionObjectReference?collectionDataObjectRef:ViewFactoryCreator.createVariableName(dataObject);
 	        boolean isReferenced = false;
 	        while ((index = writeExpression.indexOf(dataObjectReference)) >= 0)
 	        {
-	        	isReferenced = true;
+	        	isReferenced = !isCollectionObjectReference;
 	        	writeExpression.replace(index, index+dataObjectReference.length(), dataObjectVar);
 	        }
 	        if (isReferenced)

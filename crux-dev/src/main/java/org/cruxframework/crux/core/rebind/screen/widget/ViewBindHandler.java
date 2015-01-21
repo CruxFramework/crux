@@ -145,7 +145,9 @@ public class ViewBindHandler
 	    	}
 	    	pos = matcher.end();
 	    	
-	    	ExpressionPart expressionPart = getExpressionPart(matcher.group());
+	    	String group = matcher.group();
+		    group = group.substring(2, group.length()-1);
+			ExpressionPart expressionPart = getExpressionPart(group);
 	    	result.addReadBinding(expressionPart);
 	    }
 	    if (!hasExpression)

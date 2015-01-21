@@ -15,14 +15,10 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.cruxframework.crux.core.client.permission.Permissions;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.client.screen.views.ExpressionBinder;
-import org.cruxframework.crux.core.client.screen.views.ExpressionBinder.BindingContext;
-import org.cruxframework.crux.core.client.screen.views.PropertyBinder;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.client.utils.StyleUtils;
@@ -30,6 +26,7 @@ import org.cruxframework.crux.core.declarativeui.ViewParser;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.View;
+import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.DataBindingProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.AttachEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.event.DettachEvtBind;
@@ -50,7 +47,6 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.PartialSupport;
-import com.google.gwt.user.client.Window;
 
 /**
  * Generate code for gwt widgets creation. Generates code based on a JSON meta data array
@@ -250,7 +246,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 */
 	public String createChildWidget(SourcePrinter out, JSONObject metaElem, WidgetCreatorContext context) throws CruxGeneratorException
 	{
-		return createChildWidget(out, metaElem, null, true, context);
+		return createChildWidget(out, metaElem, null, null, context);
 	}
 
 	/**
@@ -259,12 +255,13 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param out
 	 * @param metaElem
 	 * @param consumer
-	 * @param allowWrapperForCreatedWidget
+	 * @param dataBindingProcessor
 	 * @param context
 	 * @return
 	 * @throws CruxGeneratorException
 	 */
-	public String createChildWidget(SourcePrinter out, JSONObject metaElem, WidgetConsumer consumer, boolean allowWrapperForCreatedWidget, WidgetCreatorContext context) throws CruxGeneratorException
+	public String createChildWidget(SourcePrinter out, JSONObject metaElem, WidgetConsumer consumer, 
+			DataBindingProcessor dataBindingProcessor, WidgetCreatorContext context) throws CruxGeneratorException
 	{
 		if (!metaElem.has("id"))
 		{
@@ -272,7 +269,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 					"On page ["+getView().getId()+"], there is an widget of type ["+viewFactory.getMetaElementType(metaElem)+"] without id.");
 		}
 		String widgetId = metaElem.optString("id");
-		return createChildWidget(out, metaElem, widgetId, viewFactory.getMetaElementType(metaElem), consumer, allowWrapperForCreatedWidget, context);
+		return createChildWidget(out, metaElem, widgetId, viewFactory.getMetaElementType(metaElem), consumer, dataBindingProcessor, context);
 	}		
 	
 	/**
@@ -283,16 +280,16 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param widgetId
 	 * @param widgetType
 	 * @param consumer
-	 * @param allowWrapperForCreatedWidget
+	 * @param dataBindingProcessor
 	 * @param context
 	 * @return
 	 * @throws CruxGeneratorException
 	 */
 	public String createChildWidget(SourcePrinter out, JSONObject metaElem, String widgetId, 
-			String widgetType, WidgetConsumer consumer, boolean allowWrapperForCreatedWidget, WidgetCreatorContext context) throws CruxGeneratorException
+			String widgetType, WidgetConsumer consumer, DataBindingProcessor dataBindingProcessor, WidgetCreatorContext context) throws CruxGeneratorException
 	{
 		WidgetConsumer widgetConsumer = consumer != null ? consumer : context.getWidgetConsumer();
-		return viewFactory.newWidget(out, metaElem, widgetId, widgetType, widgetConsumer, allowWrapperForCreatedWidget);
+		return viewFactory.newWidget(out, metaElem, widgetId, widgetType, widgetConsumer, dataBindingProcessor);
 	}
 	
 	/**
@@ -311,10 +308,12 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 * @param metaElem
 	 * @param widgetId
 	 * @param consumer
+	 * @param dataBindingProcessor
 	 * @return
 	 * @throws CruxGeneratorException
 	 */
-	public String createWidget(SourcePrinter out, JSONObject metaElem, String widgetId, WidgetConsumer consumer) throws CruxGeneratorException
+	public String createWidget(SourcePrinter out, JSONObject metaElem, String widgetId, 
+			WidgetConsumer consumer, DataBindingProcessor dataBindingProcessor) throws CruxGeneratorException
 	{
 		boolean partialSupport = hasPartialSupport();
 		C context = createContext(out, metaElem, widgetId, consumer);
@@ -331,8 +330,10 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			processChildren(out, context);
 			annotationProcessor.processChildren(out, context);
 			context.setChildElement(context.getWidgetElement());
-			processDataObjectBindings(out, context);
-			processDataExpressionBindings(out, context);
+			if (dataBindingProcessor != null)
+			{
+				dataBindingProcessor.processBindings(out, context);
+			}
 			postProcess(out, context);
 			if (partialSupport)
 			{
@@ -652,93 +653,6 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	}
 	
 	/**
-	 * Process any dataObject binding on this widget
-	 * @param out
-	 * @param context
-	 * @return 
-	 */
-	protected void processDataObjectBindings(SourcePrinter out, C context)
-    {
-		Iterator<String> dataObjects = context.iterateObjectDataBindingObjects();
-		
-		while (dataObjects.hasNext())
-		{
-			String dataObjectAlias = dataObjects.next();
-			ObjectDataBinding dataBindingInfo = context.getObjectDataBinding(dataObjectAlias);
-			
-			String dataObjectClassName = dataBindingInfo.getDataObjectClassName();
-			String dataObjectBinder = getDataObjectBinderVariable(dataObjectAlias, out);
-			Iterator<PropertyBindInfo> propertyBindings = dataBindingInfo.iterateBindings();
-			
-			while (propertyBindings.hasNext())
-			{
-				PropertyBindInfo bind = propertyBindings.next(); 
-				out.println(dataObjectBinder + ".addPropertyBinder(" + EscapeUtils.quote(context.getWidgetId()) + 
-						", new " + PropertyBinder.class.getCanonicalName() + "<" + dataObjectClassName + ", "+ bind.getWidgetClassName() +">(){");
-				String converterDeclaration = bind.getConverterDeclaration();
-				if (converterDeclaration != null)
-				{
-					out.println(converterDeclaration);
-				}
-
-				out.println("public void copyTo(" + dataObjectClassName + " dataObject){");
-				out.println(bind.getWriteExpression("dataObject"));
-				out.println("}");
-				
-				out.println("public void copyFrom(" + dataObjectClassName + " dataObject){");
-				out.println(bind.getReadExpression("dataObject"));
-				out.println("}");
-				out.println("});");
-			}
-		}
-    }
-	
-	/**
-	 * Process any dataObject binding expression on this widget
-	 * @param out
-	 * @param context
-	 * @param dataObjectBinderVariables 
-	 */
-	protected void processDataExpressionBindings(SourcePrinter out, C context)
-    {
-		Iterator<ExpressionDataBinding> expressionBindings = context.iterateExpressionBindings();
-		
-		try
-		{
-			while (expressionBindings.hasNext())
-			{
-				ExpressionDataBinding expressionBinding = expressionBindings.next();
-
-				String expressionBinder = createVariableName("expressionBinder");
-				out.println(ExpressionBinder.class.getCanonicalName() + " " + expressionBinder + " = "
-						+ "new " + ExpressionBinder.class.getCanonicalName() + "<"+expressionBinding.getWidgetClassName()+">(){");
-
-				out.println("public void updateExpression(" + BindingContext.class.getCanonicalName() +" context){");
-//				out.println(Window.class.getCanonicalName()+".alert(\"chamou.\");");
-				out.println(expressionBinding.getWriteExpression("context"));
-				out.println("}");
-
-				out.println("};");
-
-				Iterator<String> dataObjects = expressionBinding.iterateDataObjects();
-
-				while (dataObjects.hasNext())
-				{
-					String dataObjectAlias = dataObjects.next();
-					String dataObjectBinder = getDataObjectBinderVariable(dataObjectAlias, out);
-
-					out.println(dataObjectBinder + ".addExpressionBinder(" + EscapeUtils.quote(context.getWidgetId()) 
-							+ ", " + expressionBinder + ");");
-				}
-			}
-		}
-		catch(NoSuchFieldException e)
-		{
-			throw new CruxGeneratorException("Error processing data binding expression.", e);
-		}
-    }
-	
-	/**
 	 * Process widget attributes
 	 * @param out 
 	 * @param element page DOM element representing the widget (Its &lt;span&gt; tag)
@@ -813,17 +727,6 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 			}
         }
 		return false;
-	}
-	
-	/**
-	 * Retrieve the variable name for the dataObjectBinder associated with the given alias.
-	 * @param dataObjectAlias
-	 * @param out
-	 * @return
-	 */
-	protected String getDataObjectBinderVariable(String dataObjectAlias, SourcePrinter out)
-	{
-		return viewFactory.getDataObjectBinderVariable(dataObjectAlias, out);
 	}
 	
 	/**

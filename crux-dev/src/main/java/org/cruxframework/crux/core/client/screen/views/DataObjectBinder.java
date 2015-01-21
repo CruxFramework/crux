@@ -201,7 +201,7 @@ public abstract class DataObjectBinder<T>
 	 *  
 	 * @author Thiago da Rosa de Bustamante
 	 */
-	static class UpdatedStateBindingContext implements ExpressionBinder.BindingContext
+	public static class UpdatedStateBindingContext implements ExpressionBinder.BindingContext
 	{
 		private View view;
 		private long executionTimestamp;

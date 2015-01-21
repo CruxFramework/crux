@@ -15,7 +15,6 @@
  */
 package org.cruxframework.crux.core.client.screen.views;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -50,7 +49,6 @@ public abstract class ExpressionBinder<W extends IsWidget>
 		if (timestamp < executionTimestamp)
 		{
 			timestamp = executionTimestamp;
-//	    	Window.alert("ExpressionBinder.execute");
 			updateExpression(context);
 		}
 	}

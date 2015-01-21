@@ -125,6 +125,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	protected WidgetConsumer widgetConsumer;
 	protected String iocContainerClassName;
 	protected ViewBindHandler bindHandler;
+	private ViewDataBindingsProcessor dataBindingProcessor;
 
 	/**
 	 *
@@ -161,6 +162,15 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		}
 	}
 
+	/**
+	 * 
+	 * @author Thiago da Rosa de Bustamante
+	 *
+	 */
+	public interface DataBindingProcessor
+	{
+		void processBindings(SourcePrinter out, WidgetCreatorContext context);
+	}
 
 	/**
 	 * Constructor
@@ -181,6 +191,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		this.loggerVariable = createVariableName("logger");
 		this.viewPanelVariable = createVariableName("viewPanel");
 		this.widgetConsumer = new ViewWidgetConsumer(this);
+		this.dataBindingProcessor = new ViewDataBindingsProcessor(this);
 		this.rootPanelChildren = new HashSet<String>();
 		this.controllerAccessHandler = new DefaultControllerAccessor(viewVariable);
 		this.bindHandler = new ViewBindHandler(context, view);
@@ -406,7 +417,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 */
 	protected String newWidget(SourcePrinter printer, JSONObject metaElem, String widgetId, String widgetType) throws CruxGeneratorException
 	{
-		return newWidget(printer, metaElem, widgetId, widgetType, this.widgetConsumer, true);
+		return newWidget(printer, metaElem, widgetId, widgetType, this.widgetConsumer, this.dataBindingProcessor);
 	}
 
 	/**
@@ -416,12 +427,12 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param metaElem
 	 * @param widgetId
 	 * @param consumer
-	 * @param allowWrapperForCreatedWidget
+	 * @param dataBindingProcessor
 	 * @return
 	 * @throws CruxGeneratorException
 	 */
 	protected String newWidget(SourcePrinter printer, JSONObject metaElem, String widgetId, String widgetType,
-			WidgetConsumer consumer, boolean allowWrapperForCreatedWidget)
+			WidgetConsumer consumer, DataBindingProcessor dataBindingProcessor)
 				throws CruxGeneratorException
 	{
 		WidgetCreator<?> widgetFactory = getWidgetCreator(widgetType);
@@ -441,16 +452,15 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		}
 		else
 		{
-			widget = widgetFactory.createWidget(printer, metaElem, widgetId, consumer);
+			if (dataBindingProcessor == null)
+			{
+				dataBindingProcessor = this.dataBindingProcessor;
+			}
+			widget = widgetFactory.createWidget(printer, metaElem, widgetId, consumer, dataBindingProcessor);
 		}
 		if (widget == null)
 		{
 			throw new CruxGeneratorException("Can not create widget ["+widgetId+"]. Verify the widget type.");
-		}
-
-		if (allowWrapperForCreatedWidget)
-		{
-			// No wrappers 
 		}
 
 		return widget;

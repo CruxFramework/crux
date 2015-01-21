@@ -109,7 +109,7 @@ public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext>
 				{
 					if (isWidget(childElement))
 					{
-						picker = createChildWidget(out, childElement, null, false, context);
+						picker = createChildWidget(out, childElement, null, null, context);
 					}
 				}
 			}			

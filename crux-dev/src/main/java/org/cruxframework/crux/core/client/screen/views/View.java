@@ -305,9 +305,9 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 	 */
 	public Widget getWidget(String id, boolean checkLazyDependencies)
 	{
-		assert(loaded):Crux.getMessages().viewNotInitialized(getId(), id);
 		if (checkLazyDependencies)
 		{
+			assert(loaded):Crux.getMessages().viewNotInitialized(getId(), id);
 			return getWidget(id);
 		}
 		else
