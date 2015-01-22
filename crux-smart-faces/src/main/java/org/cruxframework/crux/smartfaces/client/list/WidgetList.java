@@ -20,6 +20,7 @@ import org.cruxframework.crux.core.client.factory.WidgetFactory;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A list of widgets
@@ -50,6 +51,31 @@ public class WidgetList<T> extends AbstractPageable<T>
 	{
 		clear();
 		super.reset(reloadData);
+	}
+	
+	/**
+	 * Retrieve the dataObject that is bound to the given widget
+	 * @param w
+	 * @return
+	 */
+	public T getDataObject(Widget w)
+	{
+		int widgetIndex = contentPanel.getWidgetIndex(w);
+		if (widgetIndex >= 0)
+		{
+			return getDataProvider().get(widgetIndex);
+		}
+		return null;
+	}
+
+	/**
+	 * Retrieve the widget index
+	 * @param w
+	 * @return
+	 */
+	public int getWidgetIndex(Widget w)
+	{
+		return contentPanel.getWidgetIndex(w);
 	}
 	
 	@Override
