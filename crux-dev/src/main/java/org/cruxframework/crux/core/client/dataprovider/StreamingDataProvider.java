@@ -57,6 +57,12 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
     }
 
 	@Override
+	public boolean isDirty()
+	{
+	    return operations.isDirty();
+	}
+	
+	@Override
 	public DataProviderRecord<T> add(int beforeIndex, T object)
 	{
 		return operations.insertRecord(beforeIndex, object);

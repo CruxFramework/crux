@@ -151,7 +151,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		}
 	}
 
-	@TagConstraints(tagName="scrollableDataProvider", description="Define an eager data provider. You must provide a dataLader "
+	@TagConstraints(tagName="scrollableDataProvider", description="Define an eager data provider. You must provide a dataLoader "
 																+ "function for this provider")
 	public static class ScrollableDataProviderProcessor extends AbstractEagerDataProviderProcessor 
 	{
@@ -162,7 +162,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		}
 	}
 
-	@TagConstraints(tagName="dataProvider", description="Define an eager paged data provider. You must provide a dataLader "
+	@TagConstraints(tagName="dataProvider", description="Define an eager paged data provider. You must provide a dataLoader "
 													  + "function for this provider")
 	public static class DataProviderProcessor extends AbstractEagerDataProviderProcessor 
 	{
@@ -173,7 +173,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		}
 	}
 
-	@TagConstraints(tagName="lazyDataProvider", description="Define a lazy paged data provider. You must provide a lazyDataLader functions for this provider")
+	@TagConstraints(tagName="lazyDataProvider", description="Define a lazy paged data provider. You must provide a lazydataLoader functions for this provider")
 	@TagEventsDeclaration({
 		@TagEventDeclaration(value="onMeasureData", required=true, description="Event called when the data provider is initialized. Use this to set the data set size."),
 		@TagEventDeclaration(value="onFetchData", required=true, description="Event called to load a page of data into this dataprovider.")
@@ -213,7 +213,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 		}
 	}
 
-	@TagConstraints(tagName="streamingDataProvider", description="Define a streaming paged data provider. This kind of data provider will only know the size of the data set when it has requested for more data and no data is available. You must provide a streamingDataLader functions for this provider")
+	@TagConstraints(tagName="streamingDataProvider", description="Define a streaming paged data provider. This kind of data provider will only know the size of the data set when it has requested for more data and no data is available. You must provide a streamingdataLoader functions for this provider")
 	@TagEventsDeclaration({
 		@TagEventDeclaration(value="onFetchData", required=true, description="Event called to load a page of data into this dataprovider.")
 	})

@@ -200,6 +200,12 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		}
 	}
 	
+	public void refresh()
+	{
+		dataProvider.firstOnPage();
+		render(true);
+	}
+	
 	protected abstract void clear(); 
 	
 	protected void render(boolean refresh)

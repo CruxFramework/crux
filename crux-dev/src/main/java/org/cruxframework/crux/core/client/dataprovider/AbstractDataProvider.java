@@ -129,6 +129,17 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	}
 	
 	@Override
+	public T get(int index)
+	{
+	    DataProviderRecord<T> record = data.get(index);
+		if (record != null)
+		{
+			return record.getRecordObject();
+		}
+	    return null;
+	}
+	
+	@Override
 	public DataProviderRecord<T> set(int index, T object)
 	{
 	    DataProviderRecord<T> record = data.get(index);
