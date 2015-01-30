@@ -120,6 +120,12 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	}
 
 	@Override
+	public DataProviderRecord<T> set(int index, T object)
+	{
+		return operations.updateRecord(index, object);
+	}
+	
+	@Override
 	public void reset()
 	{
 		super.reset();
@@ -287,6 +293,24 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
     {
 	    first();
     }
+	
+	protected Array<DataProviderRecord<T>> getTransactionRecords()
+	{
+		int size = data.size();
+		Array<DataProviderRecord<T>> transactionRecords = CollectionFactory.createArray(size);
+		
+		for(int i=0; i< size; i++)
+		{
+			transactionRecords.add(data.get(i).clone());
+		}
+		
+		return transactionRecords;
+	}
+	
+	protected void replaceTransactionData(Array<DataProviderRecord<T>> transactionRecords)
+	{
+		this.data = transactionRecords;
+	}
 	
 	protected abstract void update(Array<DataProviderRecord<T>> records);
 }

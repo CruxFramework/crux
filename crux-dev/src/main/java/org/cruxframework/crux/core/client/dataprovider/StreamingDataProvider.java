@@ -74,11 +74,16 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		return operations.insertRecord(object);
 	}
 
-
 	@Override
 	public DataProviderRecord<T> remove(int index)
 	{
 		return operations.removeRecord(index);
+	}
+
+	@Override
+	public DataProviderRecord<T> set(int index, T object)
+	{
+		return operations.updateRecord(index, object);
 	}
 
 	@Override
@@ -684,8 +689,29 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		}
 	}
 	
-	protected FetchDataEvent<T> createAsynchronousDataProviderEvent(int startRecord, int endRecord)
+	protected Array<DataProviderRecord<T>> getTransactionRecords()
 	{
-		return new FetchDataEvent<T>(this, startRecord, endRecord);
+		Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();
+		int start = getPageStartRecord();
+		int end = getPageEndRecord();
+		for (int i = start; i <= end; i++)
+		{
+			DataProviderRecord<T> record = data.get(i);
+			currentPageRecordsArray.add(record.clone());
+		}
+
+		return currentPageRecordsArray;
+	}	
+	
+	protected void replaceTransactionData(Array<DataProviderRecord<T>> transactionRecords)
+	{
+		int start = getPageStartRecord();
+		int end = getPageEndRecord();
+		data.remove(start, end-start+1);
+		
+		for (int i=0; i<transactionRecords.size(); i++)
+		{
+			data.insert(start+i, transactionRecords.get(i));
+		}
 	}
 }

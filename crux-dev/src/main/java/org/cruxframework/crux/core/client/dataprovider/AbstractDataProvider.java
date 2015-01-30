@@ -140,21 +140,6 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	}
 	
 	@Override
-	public DataProviderRecord<T> set(int index, T object)
-	{
-	    DataProviderRecord<T> record = data.get(index);
-		if (record != null)
-		{
-			if (record.isReadOnly())
-			{
-				throw new DataProviderExcpetion("Can not update a read only information");//TODO i18n
-			}
-			record.set(object);
-		}
-		return record;
-	}
-	
-	@Override
 	public void reset()
 	{
 		if(data != null)
