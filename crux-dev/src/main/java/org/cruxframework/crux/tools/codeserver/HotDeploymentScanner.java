@@ -33,10 +33,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.template.Templates;
+import org.cruxframework.crux.core.declarativeui.template.TemplatesScanner;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.server.rest.spi.HttpUtil;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
+import org.cruxframework.crux.scanner.Scanners;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -151,6 +153,7 @@ public class HotDeploymentScanner
 	{
 		if (fileName.endsWith("template.xml"))
 		{
+			Scanners.resetScanner(TemplatesScanner.class);
 			Templates.restart();
 			ScreenFactory.getInstance().clearScreenCache();
 		}
