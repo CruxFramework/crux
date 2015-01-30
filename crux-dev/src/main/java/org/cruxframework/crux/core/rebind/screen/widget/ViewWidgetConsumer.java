@@ -16,6 +16,7 @@
 package org.cruxframework.crux.core.rebind.screen.widget;
 
 import org.cruxframework.crux.core.client.converter.TypeConverter;
+import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
 import org.cruxframework.crux.core.client.screen.views.BindableView;
 import org.cruxframework.crux.core.client.screen.views.ViewFactoryUtils;
@@ -70,6 +71,12 @@ public class ViewWidgetConsumer extends DataWidgetConsumer implements LazyCompat
 		    	if (converterType != null)
 		    	{
 			    	JType propertyType = JClassUtils.getTypeForProperty(bindPath, dataObjectType);
+			    	if (propertyType == null)
+			    	{
+			    		throw new CruxGeneratorException("No Data Object type declared for binding path [" + bindPath + "] "
+			    				+ "for type " + widgetClassType.getName()
+			    				+ ". Have you used the annotation " + DataObject.class.getCanonicalName() + "?");
+			    	}
 			    	String propertyClassName = JClassUtils.getGenericDeclForType(propertyType);
 			    	validateConverter(converterType, viewFactoryCreator.getContext(), widgetClassType, 
 			    			viewFactoryCreator.getContext().getTypeOracle().findType(propertyClassName));
