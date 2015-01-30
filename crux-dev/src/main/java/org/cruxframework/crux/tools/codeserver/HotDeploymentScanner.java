@@ -153,7 +153,6 @@ public class HotDeploymentScanner
 	{
 		if (fileName.endsWith("template.xml"))
 		{
-			Scanners.resetScanner(TemplatesScanner.class);
 			Templates.restart();
 			ScreenFactory.getInstance().clearScreenCache();
 		}

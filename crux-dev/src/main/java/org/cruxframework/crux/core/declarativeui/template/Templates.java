@@ -30,6 +30,7 @@ import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.hotdeploy.HotDeploymentScanner;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.utils.URLUtils;
+import org.cruxframework.crux.scanner.Scanners;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -143,6 +144,7 @@ public class Templates
 		widgetTemplates.clear();
 		registeredLibraries.clear();
 		foundTemplates.clear();
+		Scanners.resetScanner(TemplatesScanner.class);
 		logger.info("Searching for template files.");
 		TemplatesScanner.getInstance().scanArchives();
 		initializeWidgetTemplates();
