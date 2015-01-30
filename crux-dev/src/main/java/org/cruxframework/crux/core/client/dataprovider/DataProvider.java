@@ -78,7 +78,20 @@ public interface DataProvider<T>
 	 * @return record object
 	 */
 	T get();
-		
+	
+	/**
+	 * Return the object referred by the given index
+	 * @param index the object position
+	 * @return object referred by the given index, or null if there is no object already loaded into this position
+	 */
+	T get(int index);
+	
+	/**
+	 * Check if this dataProvider has uncommitted modifications.
+	 * @return true if dirty
+	 */
+	boolean isDirty();
+	
 	/**
 	 * Update the DataProvider object at the given index 
 	 * @param index object position

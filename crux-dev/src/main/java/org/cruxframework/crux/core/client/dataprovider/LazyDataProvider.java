@@ -312,13 +312,6 @@ public class LazyDataProvider<T> extends AbstractPagedDataProvider<T> implements
 		}
 	}
 	
-	@Override
-	protected int getPageEndRecord()
-	{
-		int endPageRecord = super.getPageEndRecord();
-		return endPageRecord + operations.getNewRecordsCount() - operations.getRemovedRecordsCount();
-	}
-	
 	protected int getPageForRecord(int recordNumber)
 	{
 		int pageSize = getPageSize();

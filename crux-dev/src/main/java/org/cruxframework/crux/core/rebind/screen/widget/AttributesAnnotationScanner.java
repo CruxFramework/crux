@@ -26,7 +26,6 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.screen.widget.ObjectDataBinding.PropertyBindInfo;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorAnnotationsProcessor.AttributeCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
@@ -261,15 +260,6 @@ class AttributesAnnotationScanner
 				{
 					String attrValue = context.readWidgetProperty(attrName);
 					
-					if (supportsDataBinding)
-					{
-						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, attrName);
-						if (binding != null)
-						{
-							context.registerObjectDataBinding(binding);
-							return;
-						}
-					}
 					String expression = getExpression(context, typeName, isStringExpression, isEnumExpression, isPrimitiveExpression, attrValue);
 					if (expression != null)
 					{

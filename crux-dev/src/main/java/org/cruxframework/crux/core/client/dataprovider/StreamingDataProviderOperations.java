@@ -34,7 +34,7 @@ class StreamingDataProviderOperations<T>
 
 	protected StreamingDataProvider<T> dataProvider;
 	
-	protected Array<DataProviderRecord<T>> originalData = null;
+	protected Array<DataProviderRecord<T>> transactionOriginalData = null;
 	
 	StreamingDataProviderOperations(StreamingDataProvider<T> dataProvider)
 	{
@@ -45,7 +45,7 @@ class StreamingDataProviderOperations<T>
 	{
     	beginTransaction();
 		this.dataProvider.ensureCurrentPageLoaded();
-		checkRange(index);
+		checkRange(index, true);
 		DataProviderRecord<T> record = new DataProviderRecord<T>(this.dataProvider);
 		record.setCreated(true);
 		record.set(object);
@@ -70,7 +70,7 @@ class StreamingDataProviderOperations<T>
 	{
 		beginTransaction();
 		this.dataProvider.ensureCurrentPageLoaded();
-		checkRange(index);
+		checkRange(index, false);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
 		DataProviderRecordState previousState = record.getCurrentState();
 		if (previousState.isReadOnly())
@@ -83,6 +83,24 @@ class StreamingDataProviderOperations<T>
 		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record));
 		return record;
 	}
+	
+	DataProviderRecord<T> updateRecord(int index, T object)
+	{
+		beginTransaction();
+		this.dataProvider.ensureCurrentPageLoaded();
+		checkRange(index, false);
+		DataProviderRecord<T> record = this.dataProvider.data.get(index);
+		if (record != null)
+		{
+			if (record.isReadOnly())
+			{
+				throw new DataProviderExcpetion("Can not update a read only information");//TODO i18n
+			}
+			record.set(object);
+		}
+		return record;
+	}
+	
 
 	void updateState(DataProviderRecord<T> record, DataProviderRecordState previousState)
 	{
@@ -120,44 +138,6 @@ class StreamingDataProviderOperations<T>
 		}
 	}
 
-	void rollback()
-    {
-		if(originalData != null)
-	    {
-	    	this.dataProvider.data = this.originalData;
-	    }
-    }
-	
-	void commit()
-    {
-		for(DataProviderRecord<T> newRecord : newRecords)
-		{
-			newRecord.setCreated(false);
-			newRecord.setDirty(false);
-		}
-		
-		for(DataProviderRecord<T> changedRecord : changedRecords)
-		{
-			changedRecord.setCreated(false);
-			changedRecord.setDirty(false);
-		}
-	
-		newRecords.clear();
-		removedRecords.clear();
-		changedRecords.clear(); 
-		endTransaction();	    
-    }
-	
-	void beginTransaction()
-	{
-		originalData = this.dataProvider.data.clone();
-	}
-	
-	void endTransaction()
-	{
-		originalData = null;
-	}
-	
 	Array<DataProviderRecord<T>> getCurrentPageRecords(boolean cleanRecordsChanges)
 	{
 		Array<DataProviderRecord<T>> currentPageRecordsArray = CollectionFactory.createArray();
@@ -227,7 +207,7 @@ class StreamingDataProviderOperations<T>
 	
 	DataProviderRecord<T> selectRecord(int index, boolean selected)
 	{
-		checkRange(index);
+		checkRange(index, false);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
 		record.setSelected(selected);
 		return record;
@@ -235,7 +215,7 @@ class StreamingDataProviderOperations<T>
 	
 	DataProviderRecord<T> setReadOnly(int index, boolean readOnly)
     {
-		checkRange(index);
+		checkRange(index, false);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
 		record.setReadOnly(readOnly);
 		return record;
@@ -254,9 +234,56 @@ class StreamingDataProviderOperations<T>
 		return (newRecords.size() > 0) || (removedRecords.size() > 0) || (changedRecords.size() > 0); 
 	}
 	
-	private void checkRange(int index)
+	void beginTransaction()
 	{
-		if (index < 0 || index >= this.dataProvider.data.size())
+		if(transactionOriginalData == null)
+		{
+			this.transactionOriginalData = dataProvider.getTransactionRecords();
+		}
+	}
+	
+	void endTransaction()
+	{
+		newRecords.clear();
+		removedRecords.clear();
+		changedRecords.clear(); 
+
+		this.transactionOriginalData = null;
+	}
+
+	void rollback()
+    {
+	    if(transactionOriginalData != null)
+	    {
+	    	this.dataProvider.replaceTransactionData(this.transactionOriginalData);
+	    	endTransaction();
+	    }
+    }
+	
+	void commit()
+    {
+		for(DataProviderRecord<T> newRecord : newRecords)
+		{
+			newRecord.setCreated(false);
+			newRecord.setDirty(false);
+		}
+		
+		for(DataProviderRecord<T> changedRecord : changedRecords)
+		{
+			changedRecord.setCreated(false);
+			changedRecord.setDirty(false);
+		}
+		
+		endTransaction();
+    }
+	
+	private void checkRange(int index, boolean mayExpand)
+	{
+		if (index < 0 || index > this.dataProvider.data.size())
+		{
+			throw new IndexOutOfBoundsException();
+		}
+		if (!mayExpand && index == this.dataProvider.data.size())
 		{
 			throw new IndexOutOfBoundsException();
 		}

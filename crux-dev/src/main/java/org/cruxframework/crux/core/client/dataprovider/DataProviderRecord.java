@@ -20,15 +20,15 @@ package org.cruxframework.crux.core.client.dataprovider;
  * 
  * @author Thiago da Rosa de Bustamante
  */
-public class DataProviderRecord<T>
+public class DataProviderRecord<T> implements Cloneable
 {
 	T recordObject;
 	AbstractDataProvider<T> dataProvider;
 	DataProviderRecordState state = new DataProviderRecordState();
 	
-	DataProviderRecord(AbstractDataProvider<T> dataSource)
+	DataProviderRecord(AbstractDataProvider<T> dataProvider)
 	{
-		this.dataProvider = dataSource; 
+		this.dataProvider = dataProvider; 
 	}
 
 	public T getRecordObject()
@@ -61,6 +61,15 @@ public class DataProviderRecord<T>
 		return state.isSelected();
 	}
 
+	public DataProviderRecord<T> clone()
+	{
+		DataProviderRecord<T> record = new DataProviderRecord<T>(dataProvider);
+		
+		record.recordObject = this.recordObject;
+		record.state = getCurrentState();
+		return record;
+	}
+	
 	DataProviderRecordState getCurrentState()
 	{
 		return new DataProviderRecordState(state.isSelected(), state.isDirty(), state.isCreated(), state.isRemoved(), state.isReadOnly());

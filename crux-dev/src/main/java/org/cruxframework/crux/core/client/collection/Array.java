@@ -80,13 +80,38 @@ public class Array<E> extends JavaScriptObject
 	}
 
 	/**
+	 * Removes the element.
+	 */
+	public final void remove(E elem)
+	{
+		int index = indexOf(elem);
+		if (index >= 0)
+		{
+			remove(index);
+		}
+	}
+	
+	/**
 	 * Removes the element at the specified index.
+	 * @param index position to be removed
 	 */
 	public final void remove(int index)
 	{
 	    assert 0 < size() : "Attempt to access an element in an empty array";
 	    assert (index >= 0 && index < size()) : "Index " + index + " was not in the acceptable range [" + 0 + ", " + size() + ")";
 		jsniRemove(index);
+	}
+
+	/**
+	 * Removes count elements starting at the specified index.
+	 * @param index the first element to be removed
+	 * @param count number of elements to be removed
+	 */
+	public final void remove(int index, int count)
+	{
+	    assert 0 < size() : "Attempt to access an element in an empty array";
+	    assert (index >= 0 && index < size()) : "Index " + index + " was not in the acceptable range [" + 0 + ", " + size() + ")";
+		jsniRemove(index, count);
 	}
 
 	/**
@@ -175,6 +200,13 @@ public class Array<E> extends JavaScriptObject
 	 */
 	private native void jsniRemove(int index) /*-{
 		this.splice(index, 1);
+	}-*/;
+
+	/**
+	 * Removes the element at the specified index.
+	 */
+	private native void jsniRemove(int index, int count) /*-{
+		this.splice(index, count);
 	}-*/;
 
 	/**

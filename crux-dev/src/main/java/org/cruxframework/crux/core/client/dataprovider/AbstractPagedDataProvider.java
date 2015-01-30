@@ -243,4 +243,32 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	{
 	    firstOnPage();
 	}
+	
+	@Override
+	protected Array<DataProviderRecord<E>> getTransactionRecords()
+	{
+		Array<DataProviderRecord<E>> currentPageRecordsArray = CollectionFactory.createArray();
+		int start = getPageStartRecord();
+		int end = getPageEndRecord();
+		for (int i = start; i <= end; i++)
+		{
+			DataProviderRecord<E> record = data.get(i);
+			currentPageRecordsArray.add(record.clone());
+		}
+
+		return currentPageRecordsArray;
+	}	
+	
+	@Override
+	protected void replaceTransactionData(Array<DataProviderRecord<E>> transactionRecords)
+	{
+		int start = getPageStartRecord();
+		int end = getPageEndRecord();
+		data.remove(start, end-start+1);
+		
+		for (int i=0; i<transactionRecords.size(); i++)
+		{
+			data.insert(start+i, transactionRecords.get(i));
+		}
+	}
 }
