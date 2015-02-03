@@ -18,9 +18,8 @@ package org.cruxframework.crux.core.client.select;
 import org.cruxframework.crux.core.client.screen.widgets.SelectableWidget;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Touch;
-import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEndHandler;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
@@ -35,6 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * SelectEventsHanler Implementation for touch devices
  * @author Thiago da Rosa de Bustamante
+ * @author Samuel Almeida Cardoso
  *
  */
 public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements TouchStartHandler, TouchMoveHandler, TouchEndHandler
@@ -45,7 +45,7 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 	private HandlerRegistration touchMoveHandler;
 	private HandlerRegistration touchEndHandler;
 	private boolean childOfSelectableWidget = false;
-	
+
 	public void handleWidget()
 	{
 		selectableWidget.addTouchStartHandler(this);
@@ -75,37 +75,44 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 	@Override
 	public void onTouchEnd(TouchEndEvent event)
 	{
+		if(!allowPropagationToNonSelectableWidgets && !childOfSelectableWidget)
+		{
+			event.stopPropagation();
+		}
+		
+		if (stopPropagationTouchEvents)
+		{
+			event.stopPropagation();
+		} 
+
 		if (preventDefaultTouchEvents)
 		{
 			event.preventDefault();
 		}
-		maybeStopPropagation(event);
+		
 		if (isEnabled())
 		{
 			//TODO: check this! Giving some time to onTouchEnd finalize.
 			//If we don't do it, focus events that runs inside any selectHandler
 			//will be overridden by (some crazy?) focus events onTouchEnd.
-			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+			{
 				@Override
-				public boolean execute() {
+				public void execute() 
+				{
 					select();
-					return false;
 				}
-			}, 500);
-//			select();
+			});
 		}
 		resetHandlers();
 	}
 
 	@Override
 	public void onTouchMove(TouchMoveEvent event)
-	{
-		if (preventDefaultTouchEvents)
-		{
-			event.preventDefault();
-		}
+	{	
 		Touch touch = event.getTouches().get(0);
-		if (Math.abs(touch.getClientX() - this.startX) > TAP_EVENT_THRESHOLD || Math.abs(touch.getClientY() - this.startY) > TAP_EVENT_THRESHOLD) 
+		if (Math.abs(touch.getClientX() - this.startX) > TAP_EVENT_THRESHOLD || Math.abs
+				(touch.getClientY() - this.startY) > TAP_EVENT_THRESHOLD) 
 		{
 			this.resetHandlers();
 		}
@@ -114,25 +121,11 @@ public class SelectEventsHandlerTouchImpl extends SelectEventsHandler implements
 	@Override
 	public void onTouchStart(TouchStartEvent event)
 	{
-		maybeStopPropagation(event);
-		if (preventDefaultTouchEvents)
-		{
-			event.preventDefault();
-		}
 		Touch touch = event.getTouches().get(0);
 		startX = touch.getClientX();
 		startY = touch.getClientY();
 		touchMoveHandler = selectableWidget.addTouchMoveHandler(this);
 		touchEndHandler = selectableWidget.addTouchEndHandler(this);
-	}
-	
-	private void maybeStopPropagation(DomEvent<?> event) 
-	{
-		if (!childOfSelectableWidget)
-		{
-			event.stopPropagation();
-			event.preventDefault();
-		}
 	}
 
 	private void resetHandlers()

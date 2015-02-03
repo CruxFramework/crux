@@ -58,11 +58,21 @@ public abstract class SelectableWidget extends Composite implements HasSelectHan
 		selectEventsHandler.select();
 	}
 	
+	public void setStopPropagationTouchEvents(boolean stopPropagationTouchEvents)
+	{
+		selectEventsHandler.setStopPropagationTouchEvents(stopPropagationTouchEvents);
+	}
+
 	public void setPreventDefaultTouchEvents(boolean preventDefaultTouchEvents)
 	{
 		selectEventsHandler.setPreventDefaultTouchEvents(preventDefaultTouchEvents);
 	}
-
+	
+	public void setAllowPropagationToNonSelectableWidgets(boolean allowPropagationToNonSelectableWidgets) 
+	{
+		selectEventsHandler.setAllowPropagationToNonSelectableWidgets(allowPropagationToNonSelectableWidgets);
+	}
+	
 	public SelectEventsHandler getSelectEventsHandler()
 	{
 		return selectEventsHandler;
