@@ -298,6 +298,16 @@ public abstract class ViewContainer extends Composite
 		return false;
     }
 
+    /**
+     * Render the requested view into the container.
+	 * @param viewName View name
+	 * @param parameter to be passed to activate event
+     */
+    protected void showView(String viewName, Object parameter)
+	{
+    	showView(viewName, viewName, parameter);
+	}
+    
 	/**
      * Render the requested view into the container.
      * @param viewId View identifier
@@ -306,6 +316,7 @@ public abstract class ViewContainer extends Composite
 	 */
 	protected void showView(String viewName, String viewId, Object parameter)
 	{
+		assert (!StringUtils.isEmpty(viewId)) : "View [" + viewName + "] must have an id.";
 		View view = getView(viewId);
 		if (view != null)
 		{

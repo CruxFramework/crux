@@ -86,6 +86,12 @@ public class SimpleViewContainer extends SingleViewContainer
 	}
 	
 	@Override
+	public void showView(String viewName, Object parameter)
+	{
+		showView(viewName, viewName, parameter);
+	}
+	
+	@Override
 	public void showView(String viewName, String viewId, Object parameter)
 	{
 	    if (getView() != null)
