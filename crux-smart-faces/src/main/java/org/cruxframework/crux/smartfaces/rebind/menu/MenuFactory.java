@@ -136,6 +136,7 @@ public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelect
 	public static class MenuItemProcessor extends WidgetChildProcessor<MenuContext> implements HasPostProcessor<MenuContext>
 	{
 		StyleProcessor styleProcessor;
+		StyleNameProcessor styleNameProcessor;
 		boolean rootProcessed;
 		
 		@Override
@@ -171,7 +172,7 @@ public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelect
 			{
 				out.println(item + ".setEnabled(false);");	
 			}
-			
+
 			String style = context.readChildProperty("style");
 			if (!StringUtils.isEmpty(style))
 			{
@@ -179,15 +180,19 @@ public class MenuFactory extends WidgetCreator<MenuContext> implements HasSelect
 				{
 			        styleProcessor = new StyleProcessor(getWidgetCreator());
 				}
-				styleProcessor.processAttribute(out, context, style);
+				styleProcessor.processAttribute(out, item, style);
 			}
 			
 			String styleName = context.readChildProperty("styleName");
 			if (!StringUtils.isEmpty(styleName))
 			{
-				styleName = getWidgetCreator().getResourceAccessExpression(styleName);
-				out.println(item + ".addClassName(" + EscapeUtils.quote(styleName) + ");");
+				if (styleNameProcessor == null)
+				{
+			        styleNameProcessor = new StyleNameProcessor(getWidgetCreator());
+				}
+				styleNameProcessor.processAttribute(out, item, styleName);
 			}
+			
 			String itemValue = context.readChildProperty("value");
 			if (!StringUtils.isEmpty(itemValue))
 			{

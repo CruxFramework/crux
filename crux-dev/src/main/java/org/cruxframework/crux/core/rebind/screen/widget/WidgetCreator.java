@@ -809,11 +809,16 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 
 		public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String style)
 		{
+			processAttribute(out, context.getWidget(), style);
+		}
+		
+		public void processAttribute(SourcePrinter out, String widget, String style)
+		{
 			String[] styleAttributes = style.split(";");
 			if (styleAttributes.length > 0)
 			{
 				String element = ViewFactoryCreator.createVariableName("elem");
-				out.println(Element.class.getCanonicalName() +" "+element+" = "+context.getWidget()+".getElement();");
+				out.println(Element.class.getCanonicalName() +" "+element+" = "+widget+".getElement();");
 				for (int i=0; i<styleAttributes.length; i++)
 				{
 					String[] attr = styleAttributes[i].split(":");
@@ -849,6 +854,11 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 
 		public void processAttribute(SourcePrinter out, WidgetCreatorContext context, String styleName)
 		{
+			processAttribute(out, context.getWidget(), styleName);	
+		}
+		
+		public void processAttribute(SourcePrinter out, String widget, String styleName)
+		{
 			if(!StringUtils.isEmpty(styleName))
 			{
 				String[] classAttributes = styleName.split(" ");
@@ -860,11 +870,11 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 						if (getWidgetCreator().isResourceReference(styleName))
 				        {
 				        	styleName = widgetCreator.getResourceAccessExpression(styleName);
-				        	addStyleName(out, context.getWidget(), styleName, i > 0);
+				        	addStyleName(out, widget, styleName, i > 0);
 				        }
 				        else
 				        {
-				        	addStyleName(out, context.getWidget(), EscapeUtils.quote(styleName), i > 0);
+				        	addStyleName(out, widget, EscapeUtils.quote(styleName), i > 0);
 				        }
 					}
 				} 
@@ -873,11 +883,11 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 					if (getWidgetCreator().isResourceReference(styleName))
 			        {
 			        	styleName = widgetCreator.getResourceAccessExpression(styleName);
-			        	addStyleName(out, context.getWidget(), styleName, false);
+			        	addStyleName(out, widget, styleName, false);
 			        }
 			        else
 			        {
-			        	addStyleName(out, context.getWidget(), EscapeUtils.quote(styleName), false);
+			        	addStyleName(out, widget, EscapeUtils.quote(styleName), false);
 			        }
 				}
 			}
