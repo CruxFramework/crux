@@ -28,6 +28,9 @@ public abstract class SelectEventsHandler implements HasEnabled
 {
 	protected SelectableWidget selectableWidget;
 	protected boolean preventDefaultTouchEvents = false;
+	protected boolean stopPropagationTouchEvents = false;
+	protected boolean allowPropagationToNonSelectableWidgets = false;
+
 	private boolean enabled = true;
 
 	@Override
@@ -57,5 +60,15 @@ public abstract class SelectEventsHandler implements HasEnabled
 		this.preventDefaultTouchEvents = preventDefaultTouchEvents;
 	}
 
+	public void setStopPropagationTouchEvents(boolean stopPropagationTouchEvents) 
+	{
+		this.stopPropagationTouchEvents = stopPropagationTouchEvents;
+	}
+
+	public void setAllowPropagationToNonSelectableWidgets(boolean allowPropagationToNonSelectableWidgets) 
+	{
+		this.allowPropagationToNonSelectableWidgets = allowPropagationToNonSelectableWidgets;
+	}
+	
 	public abstract void handleWidget();
 }
