@@ -43,7 +43,7 @@ class StreamingDataProviderOperations<T>
     
     DataProviderRecord<T> insertRecord(int index, T object)
 	{
-    	beginTransaction();
+    	beginTransaction(index);
 		this.dataProvider.ensureCurrentPageLoaded();
 		checkRange(index, true);
 		DataProviderRecord<T> record = new DataProviderRecord<T>(this.dataProvider);
@@ -51,7 +51,7 @@ class StreamingDataProviderOperations<T>
 		record.set(object);
 		this.dataProvider.data.insert(index, record);
 		newRecords.add(record);
-		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record));
+		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record, index));
 		return record;
 	}
 	
@@ -68,7 +68,7 @@ class StreamingDataProviderOperations<T>
     
 	DataProviderRecord<T> removeRecord(int index)
 	{
-		beginTransaction();
+		beginTransaction(index);
 		this.dataProvider.ensureCurrentPageLoaded();
 		checkRange(index, false);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
@@ -80,13 +80,13 @@ class StreamingDataProviderOperations<T>
 		record.setRemoved(true);
 		this.dataProvider.data.remove(index);
 		updateState(record, previousState);
-		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record));
+		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record, index));
 		return record;
 	}
 	
 	DataProviderRecord<T> updateRecord(int index, T object)
 	{
-		beginTransaction();
+		beginTransaction(index);
 		this.dataProvider.ensureCurrentPageLoaded();
 		checkRange(index, false);
 		DataProviderRecord<T> record = this.dataProvider.data.get(index);
@@ -98,6 +98,7 @@ class StreamingDataProviderOperations<T>
 			}
 			record.set(object);
 		}
+		this.dataProvider.fireDataChangedEvent(new DataChangedEvent(this.dataProvider, record, index));
 		return record;
 	}
 	
@@ -234,11 +235,13 @@ class StreamingDataProviderOperations<T>
 		return (newRecords.size() > 0) || (removedRecords.size() > 0) || (changedRecords.size() > 0); 
 	}
 	
-	void beginTransaction()
+	void beginTransaction(int recordIndex)
 	{
 		if(transactionOriginalData == null)
 		{
+			int recordForEdition = dataProvider.lockRecordForEdition(recordIndex);
 			this.transactionOriginalData = dataProvider.getTransactionRecords();
+			dataProvider.fireTransactionStartEvent(recordForEdition);
 		}
 	}
 	
@@ -255,6 +258,7 @@ class StreamingDataProviderOperations<T>
     {
 	    if(transactionOriginalData != null)
 	    {
+			dataProvider.fireTransactionEndEvent(false);
 	    	this.dataProvider.replaceTransactionData(this.transactionOriginalData);
 	    	endTransaction();
 	    }
@@ -274,6 +278,7 @@ class StreamingDataProviderOperations<T>
 			changedRecord.setDirty(false);
 		}
 		
+		dataProvider.fireTransactionEndEvent(true);
 		endTransaction();
     }
 	

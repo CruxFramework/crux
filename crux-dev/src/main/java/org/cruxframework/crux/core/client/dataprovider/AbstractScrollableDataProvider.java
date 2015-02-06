@@ -313,4 +313,9 @@ abstract class AbstractScrollableDataProvider<T> extends AbstractDataProvider<T>
 	}
 	
 	protected abstract void update(Array<DataProviderRecord<T>> records);
+
+	protected int lockRecordForEdition(int recordIndex)
+    {
+		return 0;
+    }
 }

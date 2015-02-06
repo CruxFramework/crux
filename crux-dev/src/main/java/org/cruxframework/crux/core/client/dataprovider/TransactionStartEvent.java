@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 cruxframework.org.
+ * Copyright 2011 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,25 +17,27 @@ package org.cruxframework.crux.core.client.dataprovider;
 
 import org.cruxframework.crux.core.client.event.BaseEvent;
 
-public class DataChangedEvent extends BaseEvent<DataProvider<?>>
+
+/**
+ * Event fired when a page on {@link PagedDataProvider} starts a new transaction
+ * @author Thiago da Rosa de Bustamante
+ */
+public class TransactionStartEvent extends BaseEvent<DataProvider<?>>
 {
-	private DataProviderRecord<?> currentRecord;
-	private int recordPosition;
-	
-	protected DataChangedEvent(DataProvider<?> source,  DataProviderRecord<?> currentRecord, int recordPosition)
+	private int startRecord;
+
+	protected TransactionStartEvent(DataProvider<?> source, int startRecord)
     {
 	    super(source);
-	    this.currentRecord = currentRecord;
-		this.recordPosition = recordPosition;
+		this.startRecord = startRecord;
     }
 
-	public DataProviderRecord<?> getCurrentRecord()
+	/**
+	 * Retrieve the position ot the first record that belongs to this transaction 
+	 * @return
+	 */
+	public int getStartRecord()
 	{
-		return currentRecord;
-	}
-
-	public int getRecordPosition()
-	{
-		return recordPosition;
+		return startRecord;
 	}
 }

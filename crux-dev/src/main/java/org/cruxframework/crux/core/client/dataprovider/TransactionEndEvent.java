@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 cruxframework.org.
+ * Copyright 2011 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,25 +17,27 @@ package org.cruxframework.crux.core.client.dataprovider;
 
 import org.cruxframework.crux.core.client.event.BaseEvent;
 
-public class DataChangedEvent extends BaseEvent<DataProvider<?>>
+
+/**
+ * Event fired when a page on {@link PagedDataProvider} is commited or rolled back
+ * @author Thiago da Rosa de Bustamante
+ */
+public class TransactionEndEvent extends BaseEvent<DataProvider<?>>
 {
-	private DataProviderRecord<?> currentRecord;
-	private int recordPosition;
-	
-	protected DataChangedEvent(DataProvider<?> source,  DataProviderRecord<?> currentRecord, int recordPosition)
+	private final boolean commited;
+
+	protected TransactionEndEvent(DataProvider<?> source, boolean commited)
     {
 	    super(source);
-	    this.currentRecord = currentRecord;
-		this.recordPosition = recordPosition;
+		this.commited = commited;
     }
 
-	public DataProviderRecord<?> getCurrentRecord()
+	/**
+	 * Retrieve true if the transaction ends with a commit
+	 * @return true if commited, false if rolled back
+	 */
+	public boolean isCommited()
 	{
-		return currentRecord;
-	}
-
-	public int getRecordPosition()
-	{
-		return recordPosition;
+		return commited;
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 cruxframework.org.
+ * Copyright 2011 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,25 +17,28 @@ package org.cruxframework.crux.core.client.dataprovider;
 
 import org.cruxframework.crux.core.client.event.BaseEvent;
 
-public class DataChangedEvent extends BaseEvent<DataProvider<?>>
+
+/**
+ * Event fired when a page on {@link PagedDataProvider} becomes active
+ * @author Thiago da Rosa de Bustamante
+ */
+public class PageChangeEvent extends BaseEvent<DataProvider<?>>
 {
-	private DataProviderRecord<?> currentRecord;
-	private int recordPosition;
-	
-	protected DataChangedEvent(DataProvider<?> source,  DataProviderRecord<?> currentRecord, int recordPosition)
+	private final int pageNumber;
+
+	protected PageChangeEvent(DataProvider<?> source, int pageNumber)
     {
 	    super(source);
-	    this.currentRecord = currentRecord;
-		this.recordPosition = recordPosition;
+		this.pageNumber = pageNumber;
     }
 
-	public DataProviderRecord<?> getCurrentRecord()
+	/**
+	 * Retrieve the number of the page
+	 * @return page number
+	 */
+	public int getPageNumber()
 	{
-		return currentRecord;
+		return pageNumber;
 	}
 
-	public int getRecordPosition()
-	{
-		return recordPosition;
-	}
 }

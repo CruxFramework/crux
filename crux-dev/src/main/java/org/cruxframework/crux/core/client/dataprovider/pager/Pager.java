@@ -45,4 +45,19 @@ public interface Pager extends IsWidget, HasPageHandlers, HasVisibility, HasEnab
 	 * @return the pageable bound to this pager
 	 */
 	<T extends PagedDataProvider<?>> Pageable<T> getPageable();
+	
+	/**
+	 * Inform if the pager supports that multiple pages are rendered into
+	 * the pageable widget. If this method returns false, the pageable widget
+	 * will first clear its content panel before render any new page data. If 
+	 * it return true, this panel will not be cleared, allowing infinit scrolling.
+	 * @return true if infinite scroll is supported
+	 */
+	boolean supportsInfiniteScroll();
+
+	/**
+	 * Allow the pager to prepare itself for a new transaction, starting on the given record
+	 * @param startRecord first record on the transaction 
+	 */
+	void prepareTransaction(int startRecord);
 }
