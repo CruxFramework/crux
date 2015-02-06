@@ -46,11 +46,11 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		{
 			if(this.getCurrentPage() <= 1 || !isEnabled())
 			{
-				this.previousButton.addStyleDependentName("disabled");
+				this.previousButton.addStyleDependentName(DISABLED);
 			}
 			else
 			{
-				this.previousButton.removeStyleDependentName("disabled");
+				this.previousButton.removeStyleDependentName(DISABLED);
 			}
 		}
 		
@@ -58,11 +58,11 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		{
 			if(isLastPage() || !isEnabled())
 			{
-				this.nextButton.addStyleDependentName("disabled");
+				this.nextButton.addStyleDependentName(DISABLED);
 			}
 			else
 			{
-				this.nextButton.removeStyleDependentName("disabled");
+				this.nextButton.removeStyleDependentName(DISABLED);
 			}
 		}
 		
@@ -70,11 +70,11 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		{
 			if(this.getCurrentPage() <= 1 || !isEnabled())
 			{
-				this.firstButton.addStyleDependentName("disabled");
+				this.firstButton.addStyleDependentName(DISABLED);
 			}
 			else
 			{
-				this.firstButton.removeStyleDependentName("disabled");
+				this.firstButton.removeStyleDependentName(DISABLED);
 			}
 		}
 		
@@ -82,11 +82,11 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 		{
 			if(isLastPage() || !isEnabled())
 			{
-				this.lastButton.addStyleDependentName("disabled");
+				this.lastButton.addStyleDependentName(DISABLED);
 			}
 			else
 			{
-				this.lastButton.removeStyleDependentName("disabled");
+				this.lastButton.removeStyleDependentName(DISABLED);
 			}
 		}
 	}
@@ -228,7 +228,7 @@ public abstract class NavigationButtonsPager extends AbstractPager implements Pa
 	{
 		Button button = buttonCreator.createButton();
 		button.setStyleName(styleName);
-		button.addStyleDependentName("disabled");
+		button.addStyleDependentName(DISABLED);
 		button.addSelectHandler(selectHandler);
 		return button;
 	}

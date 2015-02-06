@@ -237,6 +237,15 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
 	    table.clear();
     }
 	
+	@Override
+	protected void clearRange(int pageStart)
+	{
+		while (table.getRowCount() > pageStart)
+		{
+			table.removeRow(pageStart);
+		}
+	}
+	
 	/**
 	 * @param column the column to be added.
 	 */

@@ -36,6 +36,7 @@ public class ScrollablePager extends AbstractPager
 	private static final String DEFAULT_STYLE_NAME = "faces-ScollablePager";
 
 	private DivElement loadingElement;
+	private int lastRequestedPage = 0;
 	private int lastScrollPos = 0;
 	private ScrollPanel scrollable;
 	
@@ -51,7 +52,6 @@ public class ScrollablePager extends AbstractPager
 		// Handle scroll events.
 		scrollable.addScrollHandler(new ScrollHandler()
 		{
-			private int lastRequestedPage;
 
 			public void onScroll(ScrollEvent event)
 			{
@@ -66,7 +66,7 @@ public class ScrollablePager extends AbstractPager
 				int maxScrollTop = scrollable.getWidget().getOffsetHeight() - scrollable.getOffsetHeight();
 				if (lastScrollPos >= maxScrollTop)
 				{
-					if (!isLastPage())
+					if (!isLastPage() && isEnabled())
 					{
 						int nextRequestedPage = getCurrentPage() + 1;
 						if (lastRequestedPage != nextRequestedPage)
@@ -92,11 +92,25 @@ public class ScrollablePager extends AbstractPager
 	}
 	
 	@Override
+	public boolean supportsInfiniteScroll()
+	{
+	    return true;
+	}
+	
+	@Override
     protected void onUpdate()
     {
 	    // Do nothing
     }
 
+	@Override
+	public void prepareTransaction(int startRecord)
+	{
+		int pageSize = getPageable().getPageSize();
+		int index = startRecord + 1;
+		lastRequestedPage = (index / pageSize) + (index%pageSize==0?0:1);
+	}
+	
 	@Override
     protected void showLoading()
     {

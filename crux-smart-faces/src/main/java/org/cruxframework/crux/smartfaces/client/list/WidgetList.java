@@ -85,6 +85,15 @@ public class WidgetList<T> extends AbstractPageable<T>
 	}
 	
 	@Override
+	protected void clearRange(int start)
+	{
+		while (contentPanel.getWidgetCount() > start)
+		{
+			contentPanel.remove(start);
+		}
+	}
+	
+	@Override
 	protected AbstractPageable.Renderer<T> getRenderer()
 	{
 	    return new AbstractPageable.Renderer<T>()
