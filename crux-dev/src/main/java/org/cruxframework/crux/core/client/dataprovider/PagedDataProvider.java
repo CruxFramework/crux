@@ -38,6 +38,9 @@ public interface PagedDataProvider<E> extends DataProvider<E>
 
 	int getCurrentPageSize();
 	int getCurrentPage();
+	int getCurrentPageStartRecord();
 	
 	HandlerRegistration addPageLoadedHandler(PageLoadedHandler handler);
+	HandlerRegistration addPageChangeHandler(PageChangeHandler handler);
+
 }

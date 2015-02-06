@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public abstract class AbstractPager extends Composite implements Pager
 {
+	protected static final String DISABLED = "disabled";
 	private Pageable<?> pageable;
 	private int currentPage = 0;
 	private boolean isLastPage = true;
@@ -42,6 +43,18 @@ public abstract class AbstractPager extends Composite implements Pager
 		this.isLastPage = isLastPage;
 		hideLoading();		
 		onUpdate();
+	}
+	
+	@Override
+	public boolean supportsInfiniteScroll()
+	{
+	    return false;
+	}
+	
+	@Override
+	public void prepareTransaction(int startRecord)
+	{
+		// Override this if necessary
 	}
 	
 	/**
@@ -67,6 +80,14 @@ public abstract class AbstractPager extends Composite implements Pager
 	public final void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
+		if (enabled)
+		{
+			removeStyleDependentName(DISABLED);
+		}
+		else
+		{
+			addStyleDependentName(DISABLED);
+		}
 		update(this.currentPage, this.isLastPage);
 	}
 

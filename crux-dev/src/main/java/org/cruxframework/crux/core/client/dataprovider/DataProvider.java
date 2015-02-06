@@ -257,4 +257,16 @@ public interface DataProvider<T>
 	 * @return a registration that allow handler do be removed
 	 */
 	HandlerRegistration addDataChangedHandler(DataChangedHandler callback);
+	
+	/**Add a callback to be notified about any transaction executions on data provider
+	 * @param callback to be called when data provider transaction is concluded
+	 * @return a registration that allow handler do be removed
+	 */
+	HandlerRegistration addTransactionEndHandler(final TransactionEndHandler handler);
+	
+	/**Add a callback to be notified about any transaction start on data provider
+	 * @param callback to be called when data provider transaction is started
+	 * @return a registration that allow handler do be removed
+	 */
+	HandlerRegistration addTransactionStartHandler(final TransactionStartHandler handler);
 }

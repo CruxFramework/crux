@@ -33,6 +33,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	protected int pageSize = 10;
 	protected int currentPage = 0;
 	protected Array<PageLoadedHandler> pageFetchHandlers;
+	protected Array<PageChangeHandler> pageChangeHandlers;
 	protected StreamingDataLoader<T> dataLoader;
 
     public StreamingDataProvider()
@@ -179,6 +180,29 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	}
 
 	@Override
+	public HandlerRegistration addPageChangeHandler(final PageChangeHandler handler)
+	{
+		if (pageChangeHandlers == null)
+		{
+			pageChangeHandlers = CollectionFactory.createArray();
+		}
+		
+		pageChangeHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = pageChangeHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					pageChangeHandlers.remove(index);
+				}
+			}
+		};
+	}
+	
+	@Override
 	public int indexOf(T boundObject)
 	{
 		return operations.getRecordIndex(boundObject);
@@ -272,6 +296,12 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	}
 
 	@Override
+	public int getCurrentPageStartRecord()
+	{
+	    return getPageStartRecord();
+	}
+	
+	@Override
 	public int getPageSize()
 	{
 		return pageSize;
@@ -339,6 +369,17 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 		return false;
 	}
 
+	protected boolean setCurrentPage(int pageNumber)
+	{
+		if (pageNumber < currentPage)
+		{
+			currentPage = pageNumber;
+			updateCurrentRecord();
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public void setPageSize(int pageSize)
 	{
@@ -564,9 +605,14 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 
 	protected int getPageStartRecord()
 	{
-		return (currentPage - 1) * pageSize;
+		return getPageStartRecord(currentPage);
 	}
-
+	
+	protected int getPageStartRecord(int page)
+	{
+		return (page - 1) * pageSize;
+	}
+	
 	protected void sortArray(Array<DataProviderRecord<T>> array, final Comparator<T> comparator)
 	{
 		array.sort(new Comparator<DataProviderRecord<T>>(){
@@ -581,6 +627,7 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 	protected void updateCurrentRecord()
 	{
 		currentRecord = getPageStartRecord(); 
+		firePageChangeEvent(currentPage);
 	}
 	
 	protected void fetchCurrentPage()
@@ -609,7 +656,19 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			}
 		}
     }
-		
+	
+	protected void firePageChangeEvent(int pageNumber)
+    {
+		if (pageChangeHandlers != null)
+		{
+			PageChangeEvent event = new PageChangeEvent(this, pageNumber);
+			for (int i = 0; i< pageChangeHandlers.size(); i++)
+			{
+				pageChangeHandlers.get(i).onPageChanged(event);
+			}
+		}
+    }
+	
 	protected void update(Array<DataProviderRecord<T>> records)
 	{
 		int recordCount = records!= null?records.size():0;
@@ -714,4 +773,20 @@ public class StreamingDataProvider<T> extends AbstractDataProvider<T> implements
 			data.insert(start+i, transactionRecords.get(i));
 		}
 	}
+
+	protected int lockRecordForEdition(int recordIndex)
+    {
+		int pageForRecord = getPageForRecord(recordIndex);
+		setCurrentPage(pageForRecord);
+		return getPageStartRecord(pageForRecord);
+    }
+	
+	protected int getPageForRecord(int recordNumber)
+	{
+		int pageSize = getPageSize();
+		int index = recordNumber + 1;
+		int result = (index / pageSize) + (index%pageSize==0?0:1);
+		return result;
+	}
+	
 }

@@ -108,6 +108,10 @@ public class EagerPagedDataProvider<T> extends AbstractPagedDataProvider<T>
 	@Override
 	protected boolean setCurrentPage(int pageNumber, boolean fireEvents)
 	{
+		if (currentPage == pageNumber)
+		{
+			return true;
+		}
 		if (super.setCurrentPage(pageNumber, fireEvents))
 		{
 			if (fireEvents)

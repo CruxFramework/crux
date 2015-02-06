@@ -29,6 +29,8 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	protected Array<DataLoadedHandler> dataLoadedHandlers;
 	protected Array<DataLoadStoppedHandler> dataStopLoadHandlers;
 	protected Array<DataChangedHandler> dataChangedHandlers;
+	protected Array<TransactionEndHandler> transactionEndHandlers;
+	protected Array<TransactionStartHandler> transactionStartHandlers;
 	protected Array<DataProviderRecord<T>> data = CollectionFactory.createArray();
 	protected int currentRecord = -1;
 	protected boolean loaded = false;
@@ -49,6 +51,52 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 		{
 			currentRecord--;
 		}
+	}
+
+	@Override
+	public HandlerRegistration addTransactionEndHandler(final TransactionEndHandler handler)
+	{
+		if (transactionEndHandlers == null)
+		{
+			transactionEndHandlers = CollectionFactory.createArray();
+		}
+		
+		transactionEndHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = transactionEndHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					transactionEndHandlers.remove(index);
+				}
+			}
+		};
+	}
+
+	@Override
+	public HandlerRegistration addTransactionStartHandler(final TransactionStartHandler handler)
+	{
+		if (transactionStartHandlers == null)
+		{
+			transactionStartHandlers = CollectionFactory.createArray();
+		}
+		
+		transactionStartHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = transactionStartHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					transactionStartHandlers.remove(index);
+				}
+			}
+		};
 	}
 
 	@Override
@@ -168,6 +216,35 @@ public abstract class AbstractDataProvider<T> implements DataProvider<T>
 	    return loaded;
     }
 	
+	protected void concludeEdition(boolean commited)
+    {
+		fireTransactionEndEvent(commited);
+	}
+	
+	protected void fireTransactionEndEvent(boolean commited)
+    {
+		if (transactionEndHandlers != null)
+		{
+			TransactionEndEvent event = new TransactionEndEvent(this, commited);
+			for (int i = 0; i< transactionEndHandlers.size(); i++)
+			{
+				transactionEndHandlers.get(i).onTransactionEnd(event);
+			}
+		}
+    }
+	
+	protected void fireTransactionStartEvent(int firstRecordToLock)
+    {
+		if (transactionStartHandlers != null)
+		{
+			TransactionStartEvent event = new TransactionStartEvent(this, firstRecordToLock);
+			for (int i = 0; i< transactionStartHandlers.size(); i++)
+			{
+				transactionStartHandlers.get(i).onTransactionStart(event);
+			}
+		}
+    }
+
 	protected void fireLoadedEvent()
     {
 		if (dataLoadedHandlers != null)

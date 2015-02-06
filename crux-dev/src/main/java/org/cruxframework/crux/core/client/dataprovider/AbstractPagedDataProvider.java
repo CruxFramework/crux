@@ -27,8 +27,17 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
                                               implements MeasurablePagedProvider<E>
 {
 	protected Array<PageLoadedHandler> pageLoadedHandlers;
+	protected Array<PageChangeHandler> pageChangeHandlers;
+	
 	protected int pageSize = 10;
 	protected int currentPage = 0;
+	
+	@Override
+	public DataProviderRecord<E> add(E object)
+	{
+		int index = getPageEndRecord()+1;
+		return operations.insertRecord(index, object);
+	}
 	
 	@Override
 	public int getCurrentPage()
@@ -60,6 +69,12 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 			return 0;
 		}
 		return pageEndRecord - getPageStartRecord() + 1;
+	}
+	
+	@Override
+	public int getCurrentPageStartRecord()
+	{
+	    return getPageStartRecord();
 	}
 	
 	@Override
@@ -181,7 +196,30 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 			}
 		};
 	}
-
+	
+	@Override
+	public HandlerRegistration addPageChangeHandler(final PageChangeHandler handler)
+	{
+		if (pageChangeHandlers == null)
+		{
+			pageChangeHandlers = CollectionFactory.createArray();
+		}
+		
+		pageChangeHandlers.add(handler);
+		return new HandlerRegistration()
+		{
+			@Override
+			public void removeHandler()
+			{
+				int index = pageChangeHandlers.indexOf(handler);
+				if (index >= 0)
+				{
+					pageChangeHandlers.remove(index);
+				}
+			}
+		};
+	}
+	
 	protected boolean setCurrentPage(int pageNumber, boolean fireEvents)
 	{
 		ensureLoaded();
@@ -208,7 +246,16 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 
 	protected int getPageEndRecord()
 	{
-		int pageEndRecord = (currentPage * pageSize) - 1;
+		return getPageEndRecord(currentPage);
+	}
+
+	protected int getPageEndRecord(int page)
+	{
+		int pageEndRecord = (page * pageSize) - 1;
+		if (page == currentPage)
+		{
+			pageEndRecord += operations.getNewRecordsCount() - operations.getRemovedRecordsCount();
+		}
 		if (pageEndRecord >= this.data.size())
 		{
 			pageEndRecord = this.data.size()-1;
@@ -218,7 +265,12 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 
 	protected int getPageStartRecord()
 	{
-		return (currentPage - 1) * pageSize;
+		return getPageStartRecord(currentPage);
+	}
+	
+	protected int getPageStartRecord(int page)
+	{
+		return (page - 1) * pageSize;
 	}
 	
 	protected void firePageLoadedEvent(int start, int end)
@@ -233,9 +285,22 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 		}
     }
 	
+	protected void firePageChangeEvent(int pageNumber)
+    {
+		if (pageChangeHandlers != null)
+		{
+			PageChangeEvent event = new PageChangeEvent(this, pageNumber);
+			for (int i = 0; i< pageChangeHandlers.size(); i++)
+			{
+				pageChangeHandlers.get(i).onPageChanged(event);
+			}
+		}
+    }
+	
 	protected void updateCurrentRecord()
 	{
 		currentRecord = getPageStartRecord(); 
+//		firePageChangeEvent(currentPage);
 	}
 	
 	@Override
@@ -243,6 +308,27 @@ abstract class AbstractPagedDataProvider<E> extends AbstractScrollableDataProvid
 	{
 	    firstOnPage();
 	}
+	
+	protected int getPageForRecord(int recordNumber, boolean mayExpand)
+	{
+		int pageSize = getPageSize();
+		int index = recordNumber + 1;
+		int result = (index / pageSize) + (index%pageSize==0?0:1);
+		if (!mayExpand && result > getPageCount())
+		{
+			throw new DataProviderExcpetion("Invalid record. Out of bounds");
+		}
+		
+		return result;
+	}
+	
+	@Override
+	protected int lockRecordForEdition(int recordIndex)
+    {
+		int pageForRecord = getPageForRecord(recordIndex, true);
+		setCurrentPage(pageForRecord, false);
+		return getPageStartRecord(pageForRecord);
+    }
 	
 	@Override
 	protected Array<DataProviderRecord<E>> getTransactionRecords()

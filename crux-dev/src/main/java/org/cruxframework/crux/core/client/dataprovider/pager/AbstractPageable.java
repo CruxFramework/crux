@@ -15,17 +15,25 @@
  */
 package org.cruxframework.crux.core.client.dataprovider.pager;
 
+import org.cruxframework.crux.core.client.dataprovider.DataChangedEvent;
+import org.cruxframework.crux.core.client.dataprovider.DataChangedHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataFilterEvent;
 import org.cruxframework.crux.core.client.dataprovider.DataFilterHandler;
+import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedEvent;
+import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedHandler;
 import org.cruxframework.crux.core.client.dataprovider.DataProviderExcpetion;
 import org.cruxframework.crux.core.client.dataprovider.FilterableProvider;
 import org.cruxframework.crux.core.client.dataprovider.MeasurablePagedProvider;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedEvent;
 import org.cruxframework.crux.core.client.dataprovider.PageLoadedHandler;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
-import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedEvent;
-import org.cruxframework.crux.core.client.dataprovider.DataLoadStoppedHandler;
+import org.cruxframework.crux.core.client.dataprovider.TransactionEndEvent;
+import org.cruxframework.crux.core.client.dataprovider.TransactionEndHandler;
+import org.cruxframework.crux.core.client.dataprovider.TransactionStartEvent;
+import org.cruxframework.crux.core.client.dataprovider.TransactionStartHandler;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -38,6 +46,7 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	protected PagedDataProvider<T> dataProvider;
 	protected int pageSize = 25;
 	protected Renderer<T> renderer = getRenderer();
+	private boolean transactionRunning = false;
 	
 	public int getPageSize()
 	{
@@ -97,6 +106,7 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		{
 			this.pager = pager;
 			updatePager();
+			updatePagerState();		
 		}
     }
 
@@ -128,12 +138,14 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
     {
 		this.dataProvider = dataProvider;
 		this.dataProvider.setPageSize(pageSize);
+		
 		this.dataProvider.addPageLoadedHandler(new PageLoadedHandler()
 		{
 			@Override
 			public void onPageLoaded(PageLoadedEvent event)
 			{
-				render(false);
+				boolean refresh = pager == null || !pager.supportsInfiniteScroll();
+				render(refresh);
 			}
 		});
 		this.dataProvider.addLoadStoppedHandler(new DataLoadStoppedHandler()
@@ -142,6 +154,34 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 			public void onLoadStopped(DataLoadStoppedEvent event)
 			{
 				render(true);
+			}
+		});
+		
+		this.dataProvider.addTransactionEndHandler(new TransactionEndHandler()
+		{
+			@Override
+			public void onTransactionEnd(TransactionEndEvent event)
+			{
+				onTransactionCompleted(event.isCommited());
+			}
+		});
+		
+		this.dataProvider.addTransactionStartHandler(new TransactionStartHandler()
+		{
+			@Override
+			public void onTransactionStart(TransactionStartEvent event)
+			{
+				onTransactionStarted(event.getStartRecord());				
+			}
+		});
+		
+		this.dataProvider.addDataChangedHandler(new DataChangedHandler()
+		{
+			@Override
+			public void onDataChanged(DataChangedEvent event)
+			{
+				final int pageStartRecordOnTransactionEnd = AbstractPageable.this.dataProvider.getCurrentPageStartRecord();
+				refreshPage(pageStartRecordOnTransactionEnd);
 			}
 		});
 		
@@ -169,6 +209,60 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		if (dataProvider != null)
 		{
 			dataProvider.load();
+		}
+	}
+	
+	public boolean isDirty()
+	{
+		return dataProvider != null && dataProvider.isDirty();
+	}
+
+	public void add(T object)
+	{
+		if (dataProvider != null)
+		{
+			dataProvider.add(object);
+		}
+	}
+	
+	public void remove(int index)
+	{
+		if (dataProvider != null)
+		{
+			dataProvider.remove(index);
+		}
+	}
+	
+	public void set(int index, T object)
+	{
+		if (dataProvider != null)
+		{
+			dataProvider.set(index, object);
+		}
+	}
+	
+	public int indexOf(T object)
+	{
+		if (dataProvider != null)
+		{
+			return dataProvider.indexOf(object);
+		}
+		return -1;
+	}
+	
+	public void commit()
+	{
+		if (dataProvider != null)
+		{
+			dataProvider.commit();
+		}
+	}
+	
+	public void rollback()
+	{
+		if (dataProvider != null)
+		{
+			dataProvider.rollback();
 		}
 	}
 	
@@ -202,12 +296,58 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	
 	public void refresh()
 	{
-		dataProvider.firstOnPage();
-		render(true);
+		refresh(true);
 	}
 	
+	protected void refresh(boolean clearPreviousData)
+	{
+		dataProvider.firstOnPage();
+		render(clearPreviousData);
+	}
+
+	protected void refreshPage(int startRecord)
+    {
+		boolean refreshAll = pager == null || !pager.supportsInfiniteScroll();
+	    if (refreshAll)
+	    {
+	    	clear();
+	    }
+	    else
+	    {
+	    	clearRange(startRecord);
+	    }
+	    refresh(false);
+    }
+
+	protected abstract void clearRange(int startRecord);
 	protected abstract void clear(); 
 	
+	protected void onTransactionCompleted(boolean commited)
+    {
+		final int pageStartRecordOnTransactionEnd = dataProvider.getCurrentPageStartRecord();
+		transactionRunning = false;
+		updatePagerState();
+		
+		Scheduler.get().scheduleDeferred(new ScheduledCommand()
+		{
+			@Override
+			public void execute()
+			{
+				refreshPage(pageStartRecordOnTransactionEnd);
+			}
+		});
+    }
+
+	protected void onTransactionStarted(int startRecord)
+    {
+		transactionRunning = true;
+		updatePagerState();
+		if(isDataLoaded() && pager != null)
+		{
+			pager.prepareTransaction(startRecord);
+		}
+    }
+
 	protected void render(boolean refresh)
     {
 		if (refresh)
@@ -244,6 +384,14 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		}
 	}
 	
+	protected void updatePagerState()
+	{
+		if(isDataLoaded() && pager != null)
+		{
+			pager.setEnabled(!transactionRunning);
+		}
+	}
+
 	private int getRowsToBeRendered()
 	{
 		if(isDataLoaded())
