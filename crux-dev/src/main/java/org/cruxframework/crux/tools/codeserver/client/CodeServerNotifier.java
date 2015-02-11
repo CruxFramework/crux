@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.screen.Screen;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.client.websocket.SocketCloseEvent;
 import org.cruxframework.crux.core.client.websocket.SocketCloseHandler;
 import org.cruxframework.crux.core.client.websocket.SocketErrorEvent;
@@ -61,10 +62,16 @@ public class CodeServerNotifier implements EntryPoint
 		label.setText(DEFAULT_MESSAGE_COMPILING);
 		
 		dialogBox.add(label);
-		//TODO take the URL from user, as a parameter... if not provided, use the expression below as default
+		//The application can be running as a gadget so the server is not necessarily the url address itself.
+		String notifierAddress = Window.Location.getHostName();
+		if (!StringUtils.isEmpty(Crux.getConfig().notifierCompilerAddress()))
+		{
+			notifierAddress = Crux.getConfig().notifierCompilerAddress();
+		}
 		//CHECKSTYLE:OFF
-		final String url = "ws://" + Window.Location.getHostName() + ":" + Crux.getConfig().notifierCompilerPort();
+		final String url = "ws://" + notifierAddress + ":" + Crux.getConfig().notifierCompilerPort();
 		//CHECKSTYLE:ON
+		
 		final WebSocket SOCKET = WebSocket.createIfSupported(url);
 		
 		if (SOCKET == null)
