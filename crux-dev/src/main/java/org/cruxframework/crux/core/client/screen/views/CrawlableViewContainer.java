@@ -58,6 +58,7 @@ public abstract class CrawlableViewContainer extends ViewContainer
 	public CrawlableViewContainer(Widget mainWidget, boolean clearPanelsForDeactivatedViews)
     {
 		super(mainWidget, clearPanelsForDeactivatedViews);
+		historyControlPrefix = getDefaultHistoryPrefix();
     }
 	
 	/**
