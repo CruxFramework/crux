@@ -118,8 +118,8 @@ public class TopMenuDisposal extends BaseMenuDisposal
 			menuButton.setStyleName(TOP_MENU_DISPOSAL_MENU_BUTTON);
 			menuButtonPanel.add(menuButton);
 			disposal.headerPanel.setStyleName(disposal.getSmallHeaderStyleName());
-			menuButton.addSelectHandler(new SelectHandler(){
-				
+			menuButton.addSelectHandler(new SelectHandler()
+			{
 				@Override
 				public void onSelect(SelectEvent event)
 				{ 

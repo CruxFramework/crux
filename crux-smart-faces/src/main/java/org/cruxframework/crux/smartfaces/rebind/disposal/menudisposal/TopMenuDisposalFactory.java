@@ -24,11 +24,14 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
@@ -43,19 +46,14 @@ import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.TopMenuDisposalFactory.DisposalLayoutContext;
 
-import com.google.gwt.core.client.GWT;
 
-
-@DeclarativeFactory(library=Constants.LIBRARY_NAME,id="topMenuDisposal",targetWidget=TopMenuDisposal.class, description="A component to define the page's layout. It contains a header, a interactive menu, a content panel and a footer.")
-@TagAttributesDeclaration(
-		@TagAttributeDeclaration(value="historyControlPrefix",defaultValue="view")
+@DeclarativeFactory(library=Constants.LIBRARY_NAME,id="topMenuDisposal",targetWidget=TopMenuDisposal.class, 
+					description="A component to define the page's layout. It contains a header, a interactive menu, a content panel and a footer.")
+@TagAttributes(
+		@TagAttribute(value="historyControlPrefix",defaultValue="view")
 		)
 @TagChildren({
-	@TagChild(TopMenuDisposalFactory.ViewProcessor.class),
-	@TagChild(TopMenuDisposalFactory.LayoutSmallHeaderProcessor.class),
-	@TagChild(TopMenuDisposalFactory.LayoutLargeHeaderProcessor.class),
-	@TagChild(TopMenuDisposalFactory.LayoutFooterProcessor.class),
-	@TagChild(TopMenuDisposalFactory.MenuProcessor.class)
+	@TagChild(TopMenuDisposalFactory.DisposalChildrenProcessor.class)
 })
 public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext> 
 {
@@ -65,7 +63,17 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		return new DisposalLayoutContext();
 	}
 	
-	@TagConstraints(minOccurs="0", maxOccurs="1", tagName="view")
+	@TagConstraints(minOccurs="5", maxOccurs="5")
+	@TagChildren({
+		@TagChild(ViewProcessor.class),
+		@TagChild(LayoutSmallHeaderProcessor.class),
+		@TagChild(LayoutLargeHeaderProcessor.class),
+		@TagChild(LayoutFooterProcessor.class),
+		@TagChild(MenuProcessor.class)
+	})
+	public static class DisposalChildrenProcessor extends ChoiceChildProcessor<WidgetCreatorContext>{}
+	
+	@TagConstraints(minOccurs="1", maxOccurs="1", tagName="view")
     @TagAttributesDeclaration({
     	@TagAttributeDeclaration(value="name", required=true)
     })
@@ -79,8 +87,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
     	}
     }
 		
-	
-	@TagConstraints(minOccurs="0",maxOccurs="1", tagName="largeHeader",description="Header panel used on large devices")
+	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="largeHeader",description="Header panel used on large devices")
 	@TagChildren({
 		@TagChild(value=TopMenuDisposalFactory.LargeHeaderProcessor.class)
 	})
@@ -88,7 +95,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 	{
 	}
 	
-	@TagConstraints(minOccurs="0",maxOccurs="1", tagName="smallHeader",description="Header panel used on small devices")
+	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="smallHeader",description="Header panel used on small devices")
 	@TagChildren({
 		@TagChild(value=TopMenuDisposalFactory.SmallHeaderProcessor.class)
 	})
@@ -96,18 +103,9 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 	{
 	}
 	
-	
-    @Override
-	public void instantiateWidget(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
-	{
-    	String className = getWidgetClassName();
-    	out.println("final "+className + " " + context.getWidget()+" = "+GWT.class.getCanonicalName()+".create("+className+".class);");
-    	out.print(context.getWidget()+".setHistoryControlPrefix("+EscapeUtils.quote(context.readChildProperty("historyControlPrefix"))+");");
-	}
-	
 	static enum TopDisposalMenuType { HORIZONTAL_ACCORDION, HORIZONTAL_DROPDOWN }
 
-	@TagConstraints(maxOccurs="1",minOccurs="0",tagName="mainMenu")
+	@TagConstraints(maxOccurs="1",minOccurs="1",tagName="mainMenu")
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="menuType", type=TopDisposalMenuType.class, defaultValue="HORIZONTAL_DROPDOWN")
 	})
@@ -139,7 +137,6 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 			out.println(context.getWidget()+".setMenu("+context.menu +");");			
 		}
 	}
-	
 	
 	@TagConstraints(maxOccurs="unbounded", minOccurs="0",tagName="menuItem")
 	@TagAttributesDeclaration({
@@ -194,7 +191,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		}
 	}
 	
-	@TagConstraints(minOccurs="0",maxOccurs="1", tagName="footer")
+	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="footer")
 	@TagChildren({
 		@TagChild(value=TopMenuDisposalFactory.FooterProcessor.class)
 	})
