@@ -362,4 +362,18 @@ public class Menu extends Composite implements HasAnimation, HasEnabled, HasSele
 			}
 		}
 	}
+	
+	public void setMenuType(LargeType largeType, SmallType smallType) 
+	{
+		if(menuRenderer instanceof LargeMenuRenderer)
+		{
+			this.currentType = largeType;	
+		} 
+		else
+		{
+			this.currentType = smallType;	
+		}
+		setStyleName(getBaseStyleName());
+		menuRenderer.render(this, largeType, smallType);
+	}
 }
