@@ -24,6 +24,9 @@ import com.google.gwt.core.client.GWT;
  */
 public class StringUtils
 {
+	public static final String EMPTY = "";
+	public static final String SPACE = " ";
+	
 	private static Collator collator = null;
 	
 	public static int localeCompare(String source, String target)
