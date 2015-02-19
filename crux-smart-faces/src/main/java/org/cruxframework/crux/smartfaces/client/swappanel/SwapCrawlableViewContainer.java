@@ -342,4 +342,16 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	{
 		this.animationBackward = animationBackward;
 	}
+	
+	/**
+	 * Set an animation to this component.
+	 * @param animation the animation itself.
+	 */
+	public void setAnimation(SwapAnimation animation)
+	{
+		if (swapPanel != null)
+		{
+			swapPanel.setAnimation(animation);
+		}
+	}
 }

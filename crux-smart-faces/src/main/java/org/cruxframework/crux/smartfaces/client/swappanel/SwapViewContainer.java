@@ -313,4 +313,16 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		return addHandler(handler, ChangeViewEvent.getType());
 	}
+	
+	/**
+	 * Set an animation to this component.
+	 * @param animation the animation itself.
+	 */
+	public void setAnimation(SwapAnimation animation)
+	{
+		if (swapPanel != null)
+		{
+			swapPanel.setAnimation(animation);
+		}
+	}
 }
