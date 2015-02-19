@@ -40,7 +40,7 @@ public class NetworkEvent extends BaseEvent<Network>
 	 * 
 	 * @param onLine true if the application is online
 	 */
-	protected NetworkEvent(boolean onLine)
+	public NetworkEvent(boolean onLine)
 	{
 		super (Network.get());
 		this.onLine = onLine;
