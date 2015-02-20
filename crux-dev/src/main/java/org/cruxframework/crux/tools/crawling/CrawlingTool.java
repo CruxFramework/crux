@@ -115,6 +115,11 @@ public class CrawlingTool
 				HtmlPage htmlPage = webClient.getPage(CrawlingUtils.rewriteUrl(applicationBaseURL, page, escapedFragment));
 				webClient.waitForBackgroundJavaScript(javascriptTime);
 				File outputFile = new File(outputDir, pagePath);
+				File parentDir = outputFile.getParentFile();
+				if (!parentDir.exists())
+				{
+					parentDir.mkdirs();
+				}
 				//htmlPage.save(outputFile) creates the whole site structure, with images and CSS files locally. So use asXML instead
 				StreamUtils.write(new ByteArrayInputStream(htmlPage.asXml().getBytes("UTF-8")), new FileOutputStream(outputFile), true);
 				webClient.closeAllWindows();
