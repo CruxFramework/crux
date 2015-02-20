@@ -230,36 +230,28 @@ public class JClassUtils
 			return null;
 		}
 		String result = ""+Character.toUpperCase(propertyName.charAt(0)); 
-		result += propertyName.substring(1);
 		if (propertyName.length() > 1)
 		{
-			try
-            {
-	            baseClass.getMethod("get"+result, new JType[]{});
-                result = "get"+result;
-            }
-            catch (Exception e)
-            {
-	            try
-                {
-	                baseClass.getMethod("is"+result, new JType[]{});
-	                result = "is"+result;
-                }
-                catch (Exception e1)
-                {
-                	if (baseClass.getSuperclass() == null)
-                	{
-                		result = null;
-                	}
-                	else
-                	{
-                		result = getGetterMethod(propertyName, baseClass.getSuperclass());
-                	}
-                }
-            }
-			
+			result += propertyName.substring(1);
 		}
-		return result;
+		
+		JMethod[] methods = findMethods(baseClass, "get"+result);
+		if (methods.length == 0)
+		{
+			methods = findMethods(baseClass, "is"+result);
+		}
+		if (methods.length > 0)
+		{
+			for (int i = 0; i < methods.length; i++)
+			{
+				if (methods[i].getParameters().length == 0)
+				{
+					return methods[i].getName();
+				}
+			}
+		}
+		
+		return null;
 	}
 
 	/**
