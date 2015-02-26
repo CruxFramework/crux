@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.image;
 
+import org.cruxframework.crux.core.client.image.GWTFixImage;
 import org.cruxframework.crux.core.client.screen.widgets.SelectableWidget;
 
 import com.google.gwt.dom.client.ImageElement;
@@ -139,9 +140,11 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 	
 	public void setUrlAndVisibleRect(final SafeUri url, final int left, final int top, final int width, final int height)
 	{
-		new GWTFixImage() {
+		new GWTFixImage(image) 
+		{
 			@Override
-			public void callHowToImplementInnerSetVisibleRect() {
+			public void callHowToImplementInnerSetVisibleRect() 
+			{
 				image.setUrlAndVisibleRect(url, left, top, width, height);		
 			}
 		};
@@ -149,9 +152,11 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 
 	public void setUrlAndVisibleRect(final String url, final int left, final int top, final int width, final int height)
 	{
-		new GWTFixImage() {
+		new GWTFixImage(image) 
+		{
 			@Override
-			public void callHowToImplementInnerSetVisibleRect() {
+			public void callHowToImplementInnerSetVisibleRect() 
+			{
 				image.setUrlAndVisibleRect(url, left, top, width, height);		
 			}
 		};
@@ -159,48 +164,16 @@ public class Image extends SelectableWidget implements HasLoadHandlers, HasError
 
 	public void setVisibleRect(final int left, final int top, final int width, final int height)
 	{
-		new GWTFixImage() {
+		new GWTFixImage(image) 
+		{
 			@Override
-			public void callHowToImplementInnerSetVisibleRect() {
+			public void callHowToImplementInnerSetVisibleRect() 
+			{
 				image.setVisibleRect(left, top, width, height);		
 			}
 		};
 	}
 
-	/*
-	   note1: Issue submitted to GWT:
-	   Issue 8325: 	GWT Image: using 'VisibleRect' method erases previous stylesheets declared
-	   
-	   Until version 2.5.1 GWT doesn't copy any old 
-	   properties to the new element created inside a Clipped 
-	   or NotClipped constructor. So they are lost at some point.
-	   
-	   In order to copy the properties I had to use something like: 
-	   impl.setProperty(...);
-	   for each one of them because the following method 
-	   (intended to copy all properties) doesn't work here:
-	   getElement().setAttribute("style", currentStyle + oldStyle);
-	 */
-	private abstract class GWTFixImage
-	{
-		public GWTFixImage() {
-			setVisibleRect();
-		}
-		
-		public abstract void callHowToImplementInnerSetVisibleRect();
-		
-		public void setVisibleRect()
-		{
-			boolean oldStyleHasDisplayNone = image.getElement().getAttribute("style").contains("display: none");
-			String title = image.getElement().getTitle();
-			String styleName = image.getStyleName();
-			callHowToImplementInnerSetVisibleRect();
-			image.setVisible(!oldStyleHasDisplayNone);
-			image.setTitle(title);
-			image.setStyleName(styleName);
-		}
-	}
-	
 	@Override
 	public boolean isEnabled()
 	{
