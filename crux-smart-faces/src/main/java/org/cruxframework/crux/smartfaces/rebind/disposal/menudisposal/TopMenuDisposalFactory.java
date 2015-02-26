@@ -71,7 +71,7 @@ public class TopMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext>
 		@TagChild(LayoutFooterProcessor.class),
 		@TagChild(MenuProcessor.class)
 	})
-	public static class DisposalChildrenProcessor extends ChoiceChildProcessor<WidgetCreatorContext>{}
+	public static class DisposalChildrenProcessor extends ChoiceChildProcessor<DisposalLayoutContext>{}
 	
 	@TagConstraints(minOccurs="1", maxOccurs="1", tagName="view")
     @TagAttributesDeclaration({
