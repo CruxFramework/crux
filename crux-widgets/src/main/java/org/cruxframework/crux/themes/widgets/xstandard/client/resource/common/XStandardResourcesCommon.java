@@ -17,7 +17,6 @@ package org.cruxframework.crux.themes.widgets.xstandard.client.resource.common;
 
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.DataResource;
-import com.google.gwt.resources.client.ImageResource;
 
 /**
  * @author Gesse Dafe
@@ -28,7 +27,7 @@ public interface XStandardResourcesCommon extends ClientBundle
 	DataResource svgIconFile();
 
 	@Source("upload-icon.png")
-	ImageResource uploadIcon();
+	DataResource uploadIcon();
 	
 	@Source("svg-icon-close.svg")
 	DataResource svgIconClose();
