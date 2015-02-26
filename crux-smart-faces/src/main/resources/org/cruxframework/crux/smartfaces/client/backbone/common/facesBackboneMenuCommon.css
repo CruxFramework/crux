@@ -69,6 +69,10 @@
 {
 	position:relative;
 	cursor:pointer;
+}
+
+.facesBackboneMenu.faces-Menu-horizontal.faces-Menu-dropdown .faces-Menu-ul .faces-Menu-li .faces-SelectablePanel
+{
 	padding:DEFAULT_PADDING;
 }
 
@@ -89,7 +93,6 @@
 
 .facesBackboneMenu.faces-Menu-horizontal.faces-Menu-dropdown > .faces-Menu-ul > .faces-Menu-li > .faces-Menu-ul .faces-Menu-li
 {
-	padding:DEFAULT_PADDING;
 	position:relative;
 }
 
