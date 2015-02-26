@@ -90,7 +90,6 @@
     position:absolute;
     top:0;
     left:0;
-    background:url(img/logo-large.png) no-repeat 0 10px #ECECEC;
 }
 .menuTabsSplitPanel
 {
@@ -677,12 +676,21 @@
     margin-top:40px;
     padding:10px 15px 0;
 }
+
+@if !user.agent ie8 ie9 {
+	.crux-Dialog .popupContent, .crux-ProgressBox .popupContent, .crux-FlatMessageBox .popupContent
+	{
+	    /* issue 585 */
+		width: 100%;
+	}
+}
+
 .crux-Dialog .popupContent, .crux-ProgressBox .popupContent, .crux-FlatMessageBox .popupContent
 {
-    height: 100%;
+	height: 100%;
     min-height: inherit;
-    width: 100%;
 }
+	
 .crux-Dialog .dialogResizer, .crux-FlatMessageBox .dialogResizer
 {
     position: absolute;
@@ -1176,23 +1184,69 @@
 {
     width:50px;
     height:90px;
-    background:svgIconArrow no-repeat center rgba(0,0,0,0.2);
     background-size:22px auto;
     border-radius:4px 0 0 4px;
 }
 
-.bannersArea .leftArrow:hover, .bannersArea .rightArrow:hover
-{
-    background:svgIconArrow no-repeat center rgba(0,0,0,0.35);
-    background-size:22px auto;
+@if user.agent ie8 ie9 {
+	.bannersArea .rightArrow:hover
+	{
+		background:rightArrow no-repeat center rgba(0,0,0,0.35);
+	    background-size:22px auto;
+	}
+	
+	.bannersArea .leftArrow:hover
+	{
+	    background:leftArrow no-repeat center rgba(0,0,0,0.35);
+	    background-size:22px auto;
+	}
+	
+	.bannersArea .leftArrow, .bannersArea .rightArrow
+	{
+		width:50px;
+	    height:90px;
+	    background-size:22px auto;
+	    border-radius:4px 0 0 4px;
+	}
+	
+	.bannersArea .leftArrow
+	{
+	    background:leftArrow no-repeat center rgba(0,0,0,0.2);
+	}
+	
+	.bannersArea .rightArrow
+	{
+	    background:rightArrow no-repeat center rgba(0,0,0,0.2);
+	}
+	
+	.bannersArea .messagePanel tbody tr:first-child td:first-child
+	{
+		height:140px;
+	}
 }
 
-.bannersArea .leftArrow
-{
-    -webkit-transform:rotate(-180deg);
-    -moz-transform:rotate(-180deg);
-    -ms-transform:rotate(-180deg);
-    transform:rotate(-180deg);
+@if !user.agent ie8 ie9 {
+	.bannersArea .leftArrow:hover, .bannersArea .rightArrow:hover
+	{
+	    background:svgIconArrow no-repeat center rgba(0,0,0,0.35);
+	    background-size:22px auto;
+	}
+
+	.bannersArea .leftArrow, .bannersArea .rightArrow
+	{
+    	width:50px;
+	    height:90px;
+	    background:svgIconArrow no-repeat center rgba(0,0,0,0.2);
+	    background-size:22px auto;
+	    border-radius:4px 0 0 4px;
+	}
+
+	.bannersArea .leftArrow
+	{
+	    -webkit-transform:rotate(-180deg);
+	    -moz-transform:rotate(-180deg);
+	    transform:rotate(-180deg);
+	}	
 }
 
 .bullets
@@ -1379,11 +1433,19 @@
 /****************
  TopMenuDisposal
 ****************/
+
 .crux-TopMenuDisposal .headerPanel .menuPanel
 {
     border:1px solid #1a6299;
     border-radius:2px;
-    overflow:hidden;
+}
+
+@if !user.agent ie8 ie9 {
+	.crux-TopMenuDisposal .headerPanel .menuPanel
+	{
+	    /* issue 582 */
+		overflow: hidden;
+	}	
 }
 
 .crux-TopMenuDisposal .headerPanel .menuPanel table
