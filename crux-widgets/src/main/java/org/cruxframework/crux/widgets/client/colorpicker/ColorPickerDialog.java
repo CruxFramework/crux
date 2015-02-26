@@ -22,6 +22,7 @@ import java.util.List;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.views.OrientationChangeHandler;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.widgets.client.WidgetMessages;
 import org.cruxframework.crux.widgets.client.WidgetMsgFactory;
 import org.cruxframework.crux.widgets.client.button.Button;
@@ -33,6 +34,8 @@ import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.PartialSupport;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -48,6 +51,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -67,6 +71,7 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 	private Button cancelButton;
 	private SimplePanel previewPanel;
 	private VerticalPanel panel;
+	private TextBox manualPicker;
 	
 	private SelectHandler buttonSelectHandler = new SelectHandler()
 	{
@@ -76,6 +81,17 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 			if (button != null && okButton != null && okButton.toString().equals(button.toString()))
 			{
 				color = slPicker.getColor();
+				
+				if(!StringUtils.isEmpty(color))
+				{
+					if(!color.startsWith("#"))
+					{
+						manualPicker.setText("#" + color);
+					} else
+					{
+						manualPicker.setText(color);
+					}
+				}
 			}
 
 			close(button != null && cancelButton != null && cancelButton.toString().equals(button.toString()));
@@ -87,6 +103,7 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 		panel = new VerticalPanel();
 		dialogArea = createDialogArea();
 		panel.add(dialogArea);
+		panel.add(getManualTextBoxColorPicker());
 		panel.add(createControlBar());
 		setStyleName("crux-ColorPickerDialog");
 		setWidget(panel);
@@ -144,6 +161,25 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 		panel.setCellVerticalAlignment(buttonBar, HasVerticalAlignment.ALIGN_BOTTOM);
 		panel.setWidth("100%");
 		return panel;
+	}
+	
+	protected TextBox getManualTextBoxColorPicker()
+	{
+		final TextBox innerManualPicker = new TextBox();
+		innerManualPicker.addStyleName("manualPicker");
+		innerManualPicker.addBlurHandler(new BlurHandler() 
+		{
+			@Override
+			public void onBlur(BlurEvent event) 
+			{
+				if(!StringUtils.isEmpty(innerManualPicker.getText()))
+				{
+					slPicker.setColor(innerManualPicker.getText().replace("#", ""));	
+				}
+			}
+		});
+		this.manualPicker = innerManualPicker;
+		return manualPicker;
 	}
 	
 	protected FlowPanel createButtonBar()
@@ -212,6 +248,7 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
             public void onValueChange(ValueChangeEvent<String> event)
             {
 				previewPanel.getElement().getStyle().setBackgroundColor("#"+event.getValue());
+				manualPicker.setText("#"+event.getValue());
             }
 		});
 		panel.add(slPicker);
@@ -259,7 +296,7 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 		}
 		return null;
 	}
-
+	
 	@Override
 	public void onOrientationChange() 
 	{
