@@ -179,7 +179,10 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 					}
 					else
 					{
-						swapPanel.transitTo(active, SwapAnimation.bounce, animationEnabled, new SwapAnimationCallback()
+						swapPanel.transitTo(active, swapPanel.getAnimation() != null ? 
+								swapPanel.getAnimation() : 
+									SwapAnimation.bounce, animationEnabled, 
+									new SwapAnimationCallback()
 						{
 							@Override
 							public void onAnimationCompleted()
