@@ -52,6 +52,7 @@ public final class CrawlingFilter implements Filter
 	private static final Log logger = LogFactory.getLog(CrawlingFilter.class);
 	private FilterConfig config;
 	private String defaultSnaphot;
+	private String baseFolder;
 
 	/**
 	 * 
@@ -94,6 +95,10 @@ public final class CrawlingFilter implements Filter
 				String pagePath = CrawlingUtils.getStaticPageFor(page, escapedFragment);
 				if (pagePath != null && pagePath.length() >0)
 				{
+					if (StringUtils.isNotBlank(baseFolder))
+					{
+						pagePath = baseFolder + "/" + pagePath;
+					}
 					InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(pagePath);
 					if (in == null)
 					{
@@ -154,10 +159,18 @@ public final class CrawlingFilter implements Filter
 				}
 
 				String contextPath = config.getServletContext().getContextPath();
+				if (contextPath != null && contextPath.startsWith("/"))
+				{
+					contextPath = contextPath.substring(1);
+				}
 				
 				if (StringUtils.isNotBlank(contextPath) && result.startsWith(contextPath))
 				{
 					result = StringUtils.removeStart(result, contextPath);
+				}
+				if (result.startsWith("/"))
+				{
+					result = result.substring(1);
 				}
 			}
 			else
@@ -199,6 +212,11 @@ public final class CrawlingFilter implements Filter
 	{
 		this.config = config;
 		this.defaultSnaphot = config.getInitParameter("defaultSnaphot");
+		this.baseFolder = config.getInitParameter("baseFolder");
+		if (baseFolder != null && baseFolder.startsWith("/"))
+		{
+			baseFolder = baseFolder.substring(1);
+		}
 	}
 
 	@Override
