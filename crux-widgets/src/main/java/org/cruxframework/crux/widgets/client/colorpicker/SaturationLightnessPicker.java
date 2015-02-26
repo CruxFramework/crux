@@ -146,7 +146,7 @@ public class SaturationLightnessPicker extends Composite implements HasValueChan
 		return addHandler(handler, ValueChangeEvent.getType());
 	}
 
-	private void fireColorChanged(String color)
+	void fireColorChanged(String color)
 	{
 		ValueChangeEvent.fire(this, color);
 	}

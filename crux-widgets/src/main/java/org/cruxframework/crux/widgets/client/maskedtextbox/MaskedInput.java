@@ -41,20 +41,14 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, BlurHandler, PasteHandler
 {
-	private static FastMap<String> definitions = new FastMap<String>();
-	static
-	{
-		definitions.put("9", "[0-9]");
-		definitions.put("a", "[A-Za-z]");
-		definitions.put("*", "[A-Za-z0-9]");
-	}
-
+	private FastMap<String> definitions;
+	
 	private TextBox textBox;
 	private int firstNonMaskPos = -1;
 	private boolean ignore = false;
 	private final FastList<String> tests = new FastList<String>();
-	private final char placeHolder;
-	private final char[] buffer;
+	private char placeHolder;
+	private char[] buffer;
 	private String focusText;
 	private int partialPosition = -1;
 	private int length;
@@ -67,6 +61,12 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 	private MaskedTextBox maskedTextBox;
 	private boolean clearIfNotValid = true;
 
+	public MaskedInput(MaskedTextBox maskedTextBox, String mask, char placeHolder, boolean clearIfNotValid, FastMap<String> definitions)
+	{
+		this.definitions = definitions;
+		initialize(maskedTextBox, mask, placeHolder, clearIfNotValid);
+	}
+	
 	/**
 	 * Constructor
 	 * @param textBox
@@ -76,6 +76,17 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 	public MaskedInput(MaskedTextBox maskedTextBox, String mask, char placeHolder,
 		boolean clearIfNotValid)
 	{
+		initialize(maskedTextBox, mask, placeHolder, clearIfNotValid);
+	}
+
+	private void initialize(MaskedTextBox maskedTextBox, String mask,
+			char placeHolder, boolean clearIfNotValid) 
+	{
+		if(definitions == null || definitions.isEmpty())
+		{
+			initializeDefinitions();
+		}
+		
 		this.maskedTextBox = maskedTextBox;
 		this.placeHolder = placeHolder;
 		char[] internalBuffer = new char[mask.length()];
@@ -168,6 +179,14 @@ class MaskedInput implements KeyDownHandler, KeyPressHandler, FocusHandler, Blur
 		blurHandlerRegistration = this.textBox.addBlurHandler(this);
 		pasteHandlerRegistration = this.maskedTextBox.addPasteHandler(this);
 		this.checkVal(false);
+	}
+
+	private void initializeDefinitions() 
+	{
+		definitions = new FastMap<String>();
+		definitions.put("9", "[0-9]");
+		definitions.put("a", "[A-Za-z]");
+		definitions.put("*", "[A-Za-z0-9]");
 	}
 
 	TextBox getTextBox()

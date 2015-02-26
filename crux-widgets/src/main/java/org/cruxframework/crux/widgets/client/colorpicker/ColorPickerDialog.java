@@ -28,11 +28,13 @@ import org.cruxframework.crux.widgets.client.WidgetMsgFactory;
 import org.cruxframework.crux.widgets.client.button.Button;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
+import org.cruxframework.crux.widgets.client.maskedtextbox.MaskedTextBox;
 import org.cruxframework.crux.widgets.client.util.ColorUtils;
 
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.PartialSupport;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -51,7 +53,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -71,7 +72,8 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 	private Button cancelButton;
 	private SimplePanel previewPanel;
 	private VerticalPanel panel;
-	private TextBox manualPicker;
+	private MaskedTextBox manualPicker;
+	private static final String EMPTY_VALUE = "#______";  
 	
 	private SelectHandler buttonSelectHandler = new SelectHandler()
 	{
@@ -80,17 +82,12 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 			Object button = event.getSource();
 			if (button != null && okButton != null && okButton.toString().equals(button.toString()))
 			{
-				color = slPicker.getColor();
+				color = manualPicker.getValue();
 				
+				//remove '#'
 				if(!StringUtils.isEmpty(color))
 				{
-					if(!color.startsWith("#"))
-					{
-						manualPicker.setText("#" + color);
-					} else
-					{
-						manualPicker.setText(color);
-					}
+					color = color.substring(1, color.length());
 				}
 			}
 
@@ -163,19 +160,33 @@ public class ColorPickerDialog extends DialogBox implements HasCloseHandlers<Pop
 		return panel;
 	}
 	
-	protected TextBox getManualTextBoxColorPicker()
+	protected MaskedTextBox getManualTextBoxColorPicker()
 	{
-		final TextBox innerManualPicker = new TextBox();
+		final MaskedTextBox innerManualPicker = new MaskedTextBox(new HexaColorFormatter());
+		innerManualPicker.setMaxLength(7);
 		innerManualPicker.addStyleName("manualPicker");
 		innerManualPicker.addBlurHandler(new BlurHandler() 
 		{
 			@Override
 			public void onBlur(BlurEvent event) 
 			{
-				if(!StringUtils.isEmpty(innerManualPicker.getText()))
+				//Let the blur event finish in order to allow maskedTextbox process the value.
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() 
 				{
-					slPicker.setColor(innerManualPicker.getText().replace("#", ""));	
-				}
+					@Override
+					public void execute() 
+					{
+						String newColor = innerManualPicker.getValue();
+						
+						if(!EMPTY_VALUE.equals(newColor))
+						{
+							setColor(newColor.substring(1, newColor.length()));	
+						} else
+						{
+							setColor("");		
+						}
+					}
+				});
 			}
 		});
 		this.manualPicker = innerManualPicker;

@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.widgets.client.maskedtextbox;
 
+import org.cruxframework.crux.core.client.collection.FastMap;
 import org.cruxframework.crux.core.client.formatter.MaskedFormatter;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -25,11 +26,22 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class MaskedTextBoxBaseFormatter implements MaskedFormatter
 {
+	private FastMap<String> definitions;
+	
+	public MaskedTextBoxBaseFormatter()
+	{
+	}
+	
+	public MaskedTextBoxBaseFormatter(FastMap<String> definitions)
+	{
+		this.definitions = definitions;
+	}
+	
 	public void applyMask(Widget widget)
 	{
 		if (widget instanceof MaskedTextBox)
 		{
-			((MaskedTextBox) widget).setMaskedInput(new MaskedInput((MaskedTextBox) widget, getMask(), getPlaceHolder(), true));
+			((MaskedTextBox) widget).setMaskedInput(new MaskedInput((MaskedTextBox) widget, getMask(), getPlaceHolder(), true, definitions));
 		}		
 	}
 	
@@ -44,7 +56,7 @@ public abstract class MaskedTextBoxBaseFormatter implements MaskedFormatter
 				masked.getMaskedInput().removeMask();
 			}
 			
-			masked.setMaskedInput(new MaskedInput(masked, getMask(), getPlaceHolder(), clearIfNotValid));
+			masked.setMaskedInput(new MaskedInput(masked, getMask(), getPlaceHolder(), clearIfNotValid, definitions));
 		}		
 	}
 
