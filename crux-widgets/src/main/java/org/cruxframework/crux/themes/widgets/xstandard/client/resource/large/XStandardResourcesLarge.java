@@ -20,7 +20,6 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.themes.widgets.xstandard.client.resource.common.XStandardResourcesCommon;
 
 import com.google.gwt.resources.client.DataResource;
-import com.google.gwt.resources.client.ImageResource;
 
 /**
  * @author Gesse Dafe
@@ -32,13 +31,13 @@ public interface XStandardResourcesLarge extends XStandardResourcesCommon
 	CssXStandardLarge css();
 	
 	@Source("noise.png")
-	ImageResource noise();
+	DataResource noise();
 	
 	@Source("right-arrow.png")
-	ImageResource rightArrow();
+	DataResource rightArrow();
 	
 	@Source("left-arrow.png")
-	ImageResource leftArrow();
+	DataResource leftArrow();
 	
 	@Source("svg-icon-arrow.svg")
 	DataResource svgIconArrow();
