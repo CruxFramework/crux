@@ -102,6 +102,10 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		{
 			addStyleName(RIGHT_MENU_POSITION);
 		}
+		else
+		{
+			removeStyleName(RIGHT_MENU_POSITION);
+		}
 	}
 	
 	static class SmallLayoutBuilder implements LayoutBuilder
@@ -203,5 +207,4 @@ public class SideMenuDisposal extends BaseMenuDisposal
 		
 		return layoutBuilder;
 	}
-			
 }
