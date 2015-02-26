@@ -35,7 +35,6 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  * @param <Widget> the SortableList type object.
  */
-//TODO refactor this! This way of rendering this widget is not a good practice.
 public class SortableList extends Composite implements ISortableList<Widget>
 {
 	private boolean enabled;
@@ -292,5 +291,19 @@ public class SortableList extends Composite implements ISortableList<Widget>
 	public void setHeader(String headerFieldset) 
 	{
 		this.listColumnFieldset.setCaptionText(headerFieldset);
+	}
+
+	@Override
+	public boolean removeSelectedItem() 
+	{
+		@SuppressWarnings("unchecked")
+		SingleSelectionModel<Widget> availableSelectionModel = (SingleSelectionModel<Widget>) this.cellList.getSelectionModel();
+		
+		Widget selectedObject = availableSelectionModel.getSelectedObject();
+		if (selectedObject == null)
+		{
+			return false;
+		}
+		return removeItem(selectedObject);
 	}
 }

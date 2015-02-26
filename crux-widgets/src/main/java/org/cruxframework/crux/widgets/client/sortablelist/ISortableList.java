@@ -36,6 +36,11 @@ public interface ISortableList<T extends Widget> extends HasEnabled
 	 */
 	public boolean removeItem(T widget);
 	/**
+	 * Remove the selected item.
+	 * @return true if the item was removed.
+	 */
+	public boolean removeSelectedItem();
+	/**
 	 * @param index the widget index to be removed from list 
 	 * @return true if it's removed and false otherwise
 	 */

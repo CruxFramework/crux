@@ -15,9 +15,12 @@
  */
 package org.cruxframework.crux.widgets.rebind.sortablelist;
 
+import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
+import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
@@ -38,8 +41,22 @@ public class SortableListFactory extends WidgetCreator<WidgetCreatorContext>
 		return new WidgetCreatorContext();
 	}
 
-	@TagConstraints(minOccurs = "0", maxOccurs = "1")
-	public static class ContentProcessor extends AnyWidgetChildProcessor<WidgetCreatorContext>
+	@TagConstraints(tagName="itemWidget", minOccurs="1", maxOccurs="unbounded", description="The item.")
+	@TagChildren({
+		@TagChild(WidgetProcessor.class)
+	})
+	public static class ContentProcessor extends WidgetChildProcessor<WidgetCreatorContext>
 	{
+	}
+	
+	@TagConstraints(type=AnyWidget.class, description="The widget inserted into the item.")
+	public static class WidgetProcessor extends WidgetChildProcessor<WidgetCreatorContext>
+	{
+		@Override
+		public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException 
+		{
+			String widget = getWidgetCreator().createChildWidget(out, context.getChildElement(), context);
+			out.println(context.getWidget()+".addItem("+ widget +");");
+		}
 	}
 }
