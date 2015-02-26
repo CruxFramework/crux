@@ -24,11 +24,14 @@ import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.event.SelectEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.children.ChoiceChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.HasPostProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor.AnyWidget;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
+import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
@@ -44,20 +47,14 @@ import org.cruxframework.crux.smartfaces.client.menu.Type.SmallType;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 import org.cruxframework.crux.smartfaces.rebind.disposal.menudisposal.SideMenuDisposalFactory.DisposalLayoutContext;
 
-import com.google.gwt.core.client.GWT;
-
 
 @DeclarativeFactory(library=Constants.LIBRARY_NAME,id="sideMenuDisposal",targetWidget=SideMenuDisposal.class,description="A component to define the page's layout. It contains a header, a interactive menu, a content panel and a footer.")
-@TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="menuPositioning",type=MenuPosition.class,defaultValue="LEFT"),
-	@TagAttributeDeclaration(value="historyControlPrefix",defaultValue="view")
+@TagAttributes({
+	@TagAttribute(value="menuPositioning", type=MenuPosition.class, defaultValue="LEFT"),
+	@TagAttribute(value="historyControlPrefix",defaultValue="view")
 })
 @TagChildren({
-	@TagChild(SideMenuDisposalFactory.ViewProcessor.class),
-	@TagChild(SideMenuDisposalFactory.LayoutSmallHeaderProcessor.class),
-	@TagChild(SideMenuDisposalFactory.LayoutLargeHeaderProcessor.class),
-	@TagChild(SideMenuDisposalFactory.LayoutFooterProcessor.class),
-	@TagChild(SideMenuDisposalFactory.MenuProcessor.class)
+	@TagChild(SideMenuDisposalFactory.DisposalChildrenProcessor.class)
 })
 public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext> 
 {
@@ -66,8 +63,18 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 	{
 		return new DisposalLayoutContext();
 	}
+
+	@TagConstraints(minOccurs="5", maxOccurs="5")
+	@TagChildren({
+		@TagChild(SideMenuDisposalFactory.ViewProcessor.class),
+		@TagChild(SideMenuDisposalFactory.LayoutSmallHeaderProcessor.class),
+		@TagChild(SideMenuDisposalFactory.LayoutLargeHeaderProcessor.class),
+		@TagChild(SideMenuDisposalFactory.LayoutFooterProcessor.class),
+		@TagChild(SideMenuDisposalFactory.MenuProcessor.class)
+	})
+	public static class DisposalChildrenProcessor extends ChoiceChildProcessor<DisposalLayoutContext>{}
 	
-    @TagConstraints(minOccurs="0", maxOccurs="1", tagName="view")
+    @TagConstraints(minOccurs="1", maxOccurs="1", tagName="view")
     @TagAttributesDeclaration({
     	@TagAttributeDeclaration(value="name", required=true)
     })
@@ -82,7 +89,7 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
     }
 	
 	
-	@TagConstraints(minOccurs="0",maxOccurs="1", tagName="smallHeader")
+	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="smallHeader")
 	@TagChildren({
 		@TagChild(value=SideMenuDisposalFactory.SmallHeaderProcessor.class)
 	})
@@ -90,7 +97,7 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 	{
 	}
 	
-	@TagConstraints(minOccurs="0",maxOccurs="1", tagName="largeHeader")
+	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="largeHeader")
 	@TagChildren({
 		@TagChild(value=SideMenuDisposalFactory.LargeHeaderProcessor.class)
 	})
@@ -98,28 +105,12 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 	{
 	}
 	
-    @Override
-	public void instantiateWidget(SourcePrinter out, DisposalLayoutContext context) throws CruxGeneratorException
-	{
-    	String className = getWidgetClassName();
-    	out.println("final "+className + " " + context.getWidget()+" = "+GWT.class.getCanonicalName()+".create("+className+".class);");
-    	String menuPositioning = context.readChildProperty("menuPositioning");
-    	
-    	if(menuPositioning.isEmpty())
-    	{
-    		menuPositioning = "LEFT";
-    	}
-    	
-    	out.println(context.getWidget()+".setMenuPositioning("+MenuPosition.class.getCanonicalName()+"."+menuPositioning+");");
-    	out.print(context.getWidget()+".setHistoryControlPrefix("+EscapeUtils.quote(context.readChildProperty("historyControlPrefix"))+");");
-	}
-
 	static enum SideDisposalMenuType
 	{
 		VERTICAL_TREE, VERTICAL_SLIDE, VERTICAL_ACCORDION, VERTICAL_DROPDOWN;
 	}
 
-	@TagConstraints(maxOccurs="1",minOccurs="0",tagName="mainMenu")
+	@TagConstraints(maxOccurs="1",minOccurs="1",tagName="mainMenu")
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="menuType", type=SideDisposalMenuType.class, defaultValue="VERTICAL_DROPDOWN")
 	})
@@ -205,7 +196,7 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
 		}
 	}
 	
-	@TagConstraints(minOccurs="0",maxOccurs="1", tagName="footer")
+	@TagConstraints(minOccurs="1",maxOccurs="1", tagName="footer")
 	@TagChildren({
 		@TagChild(value=SideMenuDisposalFactory.FooterProcessor.class)
 	})
@@ -253,6 +244,4 @@ public class SideMenuDisposalFactory extends WidgetCreator<DisposalLayoutContext
     	String currentItem;
     	LinkedList<String> itemStack = new LinkedList<String>();
     }
-
-
 }
