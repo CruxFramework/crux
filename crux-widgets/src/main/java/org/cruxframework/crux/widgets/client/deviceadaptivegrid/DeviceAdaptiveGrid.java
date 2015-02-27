@@ -532,6 +532,11 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 			return this.grid.addRowClickHandler(handler);
 		}
 		
+		public RowSelectionModel getRowSelectionModel()
+		{
+			return this.grid.getRowSelectionModel(); 
+		}
+		
 		/**
 		 * Initialize grid component
 		 * @param columnDefinitions The definition of grid`s columns
@@ -1208,5 +1213,10 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	public void setWidth(String width)
 	{
 		gridImpl.setWidth(width);
+	}
+	
+	public RowSelectionModel getRowSelectionModel()
+	{
+		return gridImpl.getRowSelectionModel(); 
 	}
 }
