@@ -15,6 +15,8 @@
  */
 package org.cruxframework.crux.core.client.image;
 
+import org.cruxframework.crux.core.client.utils.StringUtils;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Image;
@@ -58,7 +60,7 @@ public abstract class GWTFixImage
 	 */
 	public void setVisibleRect()
 	{
-		boolean oldStyleHasDisplayNone = image.getElement().getAttribute("style").contains("display: none");
+		boolean oldStyleHasDisplayNone = StringUtils.unsafeEquals(image.getElement().getStyle().getDisplay(), "none");
 		String title = image.getElement().getTitle();
 		String styleName = image.getStyleName();
 		callHowToImplementInnerSetVisibleRect();
