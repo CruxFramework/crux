@@ -105,7 +105,7 @@ public class Anchor extends Composite implements HasSelectHandlers, HasHTML, Has
 					{
 						event.preventDefault();
 					}
-					if (selectEvent.isStopped())
+					if (selectEvent == null || selectEvent.isStopped())
 					{
 						event.stopPropagation();
 					}
