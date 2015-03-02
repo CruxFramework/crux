@@ -100,7 +100,12 @@ public class JClassUtils
         			JMethod method = getMethod(baseClassType, prop, new JType[]{});
         			if (method == null)
         			{
-        				throw new NoSuchFieldException(propertyPath);
+        				method = getMethodOverInterfaces(baseClassType, prop, new JType[]{});	
+        			
+        				if (method == null)
+            			{
+        					throw new NoSuchFieldException(propertyPath);
+            			}
         			}
         			else
         			{
@@ -321,6 +326,27 @@ public class JClassUtils
 	    	method = superClass.findMethod(methodName, params);
 	    	superClass = superClass.getSuperclass();
 	    }
+	    return method;
+    }
+	
+	/**
+	 * Look for methods over the interfaces.
+	 * @param clazz
+	 * @param methodName
+	 * @param params
+	 * @return
+	 */
+	public static JMethod getMethodOverInterfaces(JClassType clazz, String methodName, JType[] params)
+    {
+		JMethod method = null;
+    	for (JClassType superInterface : clazz.getImplementedInterfaces())
+    	{
+    		method = getMethod(superInterface, methodName, params);
+    		if (method != null)
+    		{
+    			return method;
+    		}
+    	}
 	    return method;
     }
 
