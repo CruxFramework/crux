@@ -980,6 +980,14 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	margin:0;
 }
 
+/****************
+     Slider
+****************/
+
+.crux-Slider
+{
+    height:100%;
+}
 
 /****************
      DateBox
