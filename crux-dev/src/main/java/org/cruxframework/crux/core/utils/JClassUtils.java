@@ -105,6 +105,9 @@ public class JClassUtils
         				if (method == null)
             			{
         					throw new NoSuchFieldException(propertyPath);
+            			} else
+            			{
+            				getterMethod = method.getName();
             			}
         			}
         			else
