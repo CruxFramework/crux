@@ -141,6 +141,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 				}
 			};
 			itemWrapper.setStyleName("touchSliderItem");
+			itemWrapper.setVisible(false);
 			Style style = itemWrapper.getElement().getStyle();
 			style.setPosition(Position.ABSOLUTE);
 			style.setTop(0, Unit.PX);
@@ -167,6 +168,7 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 		SimplePanel itemWrapper = new SimplePanel();
 		itemWrapper.add(widget);
 		itemWrapper.setStyleName("touchSliderItem");
+		itemWrapper.setVisible(false);
 		Style style = itemWrapper.getElement().getStyle();
 		style.setPosition(Position.ABSOLUTE);
 		style.setTop(0, Unit.PX);
@@ -300,7 +302,6 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 		{
 			touchEndHandler.removeHandler();
 		}
-		event.preventDefault();
 	}
 
 	@Override
@@ -335,14 +336,12 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 		{
 			didMove = true;
 		}
-		event.preventDefault();
 	}
 
 	@Override
 	public void onTouchStart(TouchStartEvent event)
 	{
 		didMove = false;
-		event.preventDefault();
 		SlidingEvent.fire(this, true);
 		startTouchPosition = event.getTouches().get(0).getClientX();
 		currentTouchPosition = startTouchPosition;
@@ -621,16 +620,13 @@ public class TouchSlider extends Composite implements HasSwapHandlers, HasSlidin
 		Widget currentPanel = getCurrentPanel();
 		Transition.resetTransition(currentPanel);
 		currentPanel.setVisible(true);
-		//-webkit-backface-visibility: hidden;
-
 	}
 
 	private void configureHiddenPanel(Widget panel, boolean forward) 
 	{
-		panel.setVisible(true);
+		panel.setVisible(false);
 		int width = panel.getOffsetWidth();
 		Transition.translateX(panel, forward?width:-width, null);
-		//-webkit-backface-visibility: hidden;
 	}
 
 	private void configureNextPanel() 
