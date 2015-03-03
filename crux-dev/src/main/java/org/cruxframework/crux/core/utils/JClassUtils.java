@@ -108,6 +108,7 @@ public class JClassUtils
             			} else
             			{
             				getterMethod = method.getName();
+            				baseClassType = method.getEnclosingType();
             			}
         			}
         			else
