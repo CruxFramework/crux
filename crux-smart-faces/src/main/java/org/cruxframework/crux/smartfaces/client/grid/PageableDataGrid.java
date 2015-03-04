@@ -23,6 +23,7 @@ import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.factory.DataFactory;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.grid.Type.SelectStrategy;
 import org.cruxframework.crux.smartfaces.client.label.Label;
@@ -207,8 +208,10 @@ public class SimpleGridController
 /**
  * @author samuel.cardoso
  *
- * @param <T>
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable<PagedDataProvider<T>>
 {
 	/**

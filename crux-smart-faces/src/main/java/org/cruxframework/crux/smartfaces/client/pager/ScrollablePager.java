@@ -19,6 +19,7 @@ import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPager;
 import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
+import org.cruxframework.crux.core.shared.Experimental;
 
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
@@ -30,7 +31,10 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * A {@link Pager} that change pages from a {@link Pageable} when user scrolls down the pager.
  * 
  * @author Thiago da Rosa de Bustamante
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class ScrollablePager extends AbstractPager
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-ScollablePager";

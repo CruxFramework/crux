@@ -17,13 +17,17 @@ package org.cruxframework.crux.smartfaces.rebind.pager;
 
 import org.cruxframework.crux.core.rebind.screen.widget.creator.AbstractPagerFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.pager.SequentialPager;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 @DeclarativeFactory(id="sequentialPager", library=Constants.LIBRARY_NAME, targetWidget=SequentialPager.class,
 					description="A pager widget that can not predict the datasource size at the load instant. The pager only knows the datasource size after scan all next pages, until no more pages are available.")
 public class SequentialPagerFactory extends AbstractPagerFactory {}

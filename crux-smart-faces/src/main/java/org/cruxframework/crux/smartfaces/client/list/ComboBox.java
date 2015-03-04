@@ -18,6 +18,7 @@ package org.cruxframework.crux.smartfaces.client.list;
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.DataFilter;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
+import org.cruxframework.crux.core.shared.Experimental;
 
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -27,7 +28,10 @@ import com.google.gwt.event.shared.HandlerRegistration;
  * @author wesley.diniz
  *
  * @param <T>
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class ComboBox<T> extends AbstractComboBox<String, T>
 {
 	public ComboBox(OptionsRenderer<String, T> optionsRenderer)

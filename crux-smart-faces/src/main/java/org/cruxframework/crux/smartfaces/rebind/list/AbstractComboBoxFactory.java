@@ -34,6 +34,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.label.Label;
 import org.cruxframework.crux.smartfaces.client.list.AbstractComboBox;
 import org.cruxframework.crux.smartfaces.client.list.AbstractComboBox.OptionsRenderer;
@@ -55,6 +56,14 @@ class ComboBoxContext extends WidgetCreatorContext
 	String dataObjectVariable;
 	String valueType  = "String";
 }
+/**
+ * 
+ * @author Thiago da Rosa de Bustamante
+ *
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
+ */
+@Experimental
 //TODO Create another factory to separate the two combo types
 @DeclarativeFactory(targetWidget = ComboBox.class, id = "comboBox", library = Constants.LIBRARY_NAME, 
 					description = "Combobox component that uses a data provider to display a list of item or widgets")

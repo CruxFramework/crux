@@ -20,6 +20,7 @@ import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pager;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 
 import com.google.gwt.core.client.GWT;
@@ -28,7 +29,10 @@ import com.google.gwt.core.client.GWT;
  * Base implementation for navigation-buttons-based pager
  * @author Thiago da Rosa de Bustamante
  * @author Gesse S. F. Dafe
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public abstract class NavigationButtonsPager extends AbstractPager implements Pager
 {
 	private Button previousButton;

@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.pager;
 
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.user.client.ui.Label;
@@ -23,7 +24,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * A pager which does not know the total number of pages. So, it can only move the cursor to next or to previous page.  
  * @author Gesse S. F. Dafe
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class SequentialPager extends NavigationButtonsPager
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-SequentialPager";
