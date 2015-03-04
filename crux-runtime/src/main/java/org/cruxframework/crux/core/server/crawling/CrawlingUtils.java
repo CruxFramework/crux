@@ -23,7 +23,7 @@ public class CrawlingUtils
 {
 	public static String getStaticPageFor(String page, String escapedFragment)
 	{
-		if (escapedFragment != null && escapedFragment.length() > 0)
+		if (page != null && escapedFragment != null && escapedFragment.length() > 0)
 		{
 			return page.replaceAll(".html", "")+"_"+escapedFragment.replaceAll("\\W", "_")+".html";
 		}
