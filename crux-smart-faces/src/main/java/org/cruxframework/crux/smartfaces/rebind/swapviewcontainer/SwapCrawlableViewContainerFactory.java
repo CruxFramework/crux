@@ -25,14 +25,17 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
-import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation;
 import org.cruxframework.crux.smartfaces.client.swappanel.SwapCrawlableViewContainer;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
 /**
  * @author Bruno M. Rafael bruno.rafael@triggolabs.com
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 @DeclarativeFactory(id="swapCrawlableViewContainer", library=Constants.LIBRARY_NAME, targetWidget=SwapCrawlableViewContainer.class)
 @TagAttributes({
 	@TagAttribute(value="animationForward", type=SwapCrawlableViewContainerFactory.Animations.class, required=true, 

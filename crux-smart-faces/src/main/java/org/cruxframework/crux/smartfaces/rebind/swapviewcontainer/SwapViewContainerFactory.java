@@ -33,6 +33,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.swappanel.SwapViewContainer;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
@@ -43,7 +44,10 @@ class SwapContainerContext extends WidgetCreatorContext
 
 /**
  * @author Bruno M. Rafael bruno.rafael@triggolabs.com
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 @DeclarativeFactory(id="swapViewContainer", library=Constants.LIBRARY_NAME, targetWidget=SwapViewContainer.class)
 @TagChildren({
 	@TagChild(SwapViewContainerFactory.ViewProcessor.class)
