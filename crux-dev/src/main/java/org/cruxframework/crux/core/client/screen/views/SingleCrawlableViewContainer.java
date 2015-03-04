@@ -36,6 +36,22 @@ public abstract class SingleCrawlableViewContainer extends CrawlableViewContaine
 	    super(mainWidget, clearPanelsForDeactivatedViews);
     }
 
+	@Override
+	protected void showView(String viewName, String viewId, Object parameter)
+	{
+		if (activeView != null)
+		{
+			if (activeView.removeFromContainer())
+			{
+				super.showView(viewName, viewId, parameter);
+			}
+		}
+		else
+		{
+			super.showView(viewName, viewId, parameter);
+		}
+	}
+	
 	/**
 	 * 
 	 * @return
