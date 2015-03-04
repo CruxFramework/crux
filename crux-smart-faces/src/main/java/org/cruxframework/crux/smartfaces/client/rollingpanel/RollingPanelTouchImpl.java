@@ -39,7 +39,6 @@ class RollingPanelTouchImpl extends Composite implements RollingPanel.PanelImple
     {
 		itemsScrollPanel = new ScrollPanel();
 		itemsPanel = new FlowPanel();
-		itemsPanel.setStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
 		itemsScrollPanel.add(this.itemsPanel);
 		
 		initWidget(itemsScrollPanel);
