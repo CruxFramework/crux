@@ -25,6 +25,7 @@ import org.cruxframework.crux.core.client.screen.views.HasChangeViewHandlers;
 import org.cruxframework.crux.core.client.screen.views.SingleCrawlableViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.screen.views.ViewFactory.CreateCallback;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation.SwapAnimationCallback;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -34,7 +35,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * @author bruno.rafael
  *
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer implements HasChangeViewHandlers
 {
 	/**
@@ -50,18 +54,27 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	private boolean autoRemoveInactiveViews = false;
 	private SwapAnimation animationForward;
 	private SwapAnimation animationBackward;
-
+	private SwapAnimation defaultAnimation;
 
 	/**
 	 *  Default constructor.
+	 *  @param clearPanelsForDeactivatedViews if true will clean panels if a view is deactivated. 
 	 */
-	public SwapCrawlableViewContainer()
+	public SwapCrawlableViewContainer(boolean clearPanelsForDeactivatedViews)
 	{
-		super(new SwapPanel(), false);
+		super(new SwapPanel(), clearPanelsForDeactivatedViews);
 		swapPanel = getMainWidget();
 		swapPanel.setStyleName(DEFAULT_STYLE_NAME);
 		active = new SimplePanel();
 		swap = new SimplePanel();
+	}
+	
+	/**
+	 * Simple constructor.
+	 */
+	public SwapCrawlableViewContainer()
+	{
+		this(false);
 	}
 
 	/**
@@ -85,10 +98,10 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	{
 	    if (backButtonPressed)
 	    {
-	    	showView(viewName, viewName, this.animationBackward, null, null);
-	    }else
+	    	showView(viewName, viewName, this.animationBackward != null ? this.animationBackward : this.defaultAnimation, null, null);
+	    } else
 	    {
-	    	showView(viewName, viewName, this.animationForward, null, null);
+	    	showView(viewName, viewName, this.animationForward != null ? this.animationForward : this.defaultAnimation, null, null);
 	    }
 	}
 	
@@ -101,16 +114,6 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 		showView(viewName, false);
 	}
 	
-	/**
-	 * 
-	 * @param viewName - The name of view will be show
-	 * @param viewId - The id of view will be show
-	 * @param direction
-	 */
-	public void showView(String viewName, final String viewId)
-	{
-		showView(viewName, viewId, null);
-	}
 
 	/**
 	 * @param viewName - The name of view will be show
@@ -119,7 +122,7 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	 */
 	public void showView(String viewName, final String viewId, final Object parameter)
 	{
-		showView(viewName, viewId, null, null, parameter);
+		showView(viewName, viewId, defaultAnimation, null, parameter);
 	}
 
 	/**
@@ -159,7 +162,7 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	@Override
 	protected boolean renderView(View view, Object parameter)
 	{
-		return renderView(view, null, null, parameter);
+		return renderView(view, defaultAnimation, null, parameter);
 	}
 
 	protected boolean renderView(View view, SwapAnimation animation, final SwapAnimationCallback animationCallback, Object parameter)
@@ -344,14 +347,18 @@ public class SwapCrawlableViewContainer extends SingleCrawlableViewContainer imp
 	}
 	
 	/**
-	 * Set an animation to this component.
-	 * @param animation the animation itself.
+	 * @return the default animation.
 	 */
-	public void setAnimation(SwapAnimation animation)
+	public SwapAnimation getDefaultAnimation() 
 	{
-		if (swapPanel != null)
-		{
-			swapPanel.setAnimation(animation);
-		}
+		return defaultAnimation;
+	}
+
+	/**
+	 * @param defaultAnimation the default animation.
+	 */
+	public void setDefaultAnimation(SwapAnimation defaultAnimation) 
+	{
+		this.defaultAnimation = defaultAnimation;
 	}
 }

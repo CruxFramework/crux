@@ -25,6 +25,7 @@ import org.cruxframework.crux.core.client.screen.views.HasChangeViewHandlers;
 import org.cruxframework.crux.core.client.screen.views.SingleViewContainer;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.screen.views.ViewFactory.CreateCallback;
+import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation.SwapAnimationCallback;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -34,7 +35,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * @author bruno.rafael
  *
+ * - EXPERIMENTAL - 
+ * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
+@Experimental
 public class SwapViewContainer extends SingleViewContainer implements HasChangeViewHandlers
 {
 
@@ -54,6 +58,8 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	private boolean animationEnabled = true;
 	private boolean isAnimationRunning = false;
 	private boolean autoRemoveInactiveViews = false;
+	private SwapAnimation animationForward;
+	private SwapAnimation animationBackward;
 
 	/**
 	 *  Default constructor.
@@ -179,10 +185,8 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 					}
 					else
 					{
-						swapPanel.transitTo(active, swapPanel.getAnimation() != null ? 
-								swapPanel.getAnimation() : 
-									SwapAnimation.bounce, animationEnabled, 
-									new SwapAnimationCallback()
+						SwapAnimation animation = (direction == Direction.FORWARD?animationForward:animationBackward);
+						swapPanel.transitTo(active, animation, isAnimationEnabled(), new SwapAnimationCallback()
 						{
 							@Override
 							public void onAnimationCompleted()
@@ -307,7 +311,6 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	@Override
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
@@ -318,14 +321,34 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	}
 	
 	/**
-	 * Set an animation to this component.
-	 * @param animation the animation itself.
+	 * @return the animationForward
 	 */
-	public void setAnimation(SwapAnimation animation)
+	public SwapAnimation getAnimationForward()
 	{
-		if (swapPanel != null)
-		{
-			swapPanel.setAnimation(animation);
-		}
+		return animationForward;
+	}
+
+	/**
+	 * @param animationForward the animationForward to set
+	 */
+	public void setAnimationForward(SwapAnimation animationForward)
+	{
+		this.animationForward = animationForward;
+	}
+
+	/**
+	 * @return the animationBackward
+	 */
+	public SwapAnimation getAnimationBackward()
+	{
+		return animationBackward;
+	}
+
+	/**
+	 * @param animationBackward the animationBackward to set
+	 */
+	public void setAnimationBackward(SwapAnimation animationBackward)
+	{
+		this.animationBackward = animationBackward;
 	}
 }

@@ -25,8 +25,9 @@ import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation.SwapAnim
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasAnimation;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author bruno.rafael
  *
  */
-public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimation
+public class SwapPanel extends FlowPanel implements HasSwapHandlers, HasAnimation
 {
 	/**
 	 * Default css style of the component.
@@ -59,7 +60,6 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	 */
 	public static final String NEXT_STYLE_NAME = "faces-SwapPanel-nextPanel";
 	
-	private FlowPanel contentPanel;
 	private SimplePanel currentPanel = new SimplePanel();
 	private SimplePanel nextPanel = new SimplePanel();
 	
@@ -74,15 +74,12 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
     {	
 		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
 		
-		contentPanel = new FlowPanel();
-		initWidget(contentPanel);
-		
 		setStyleName(DEFAULT_STYLE_NAME);
 		currentPanel.setStyleName(CURRENT_STYLE_NAME);
 		nextPanel.setStyleName(NEXT_STYLE_NAME);
 		
-		contentPanel.add(currentPanel);
-		contentPanel.add(nextPanel);
+		add(currentPanel);
+		add(nextPanel);
     }
 	
 	/**
@@ -129,6 +126,15 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 	/**
 	 * Changes the widget being shown on this widget.
 	 * @param widget - the widget will be insert in the swapPanel
+	 */
+	public void transitTo(final Widget widget) 
+	{
+		transitTo(widget, animation, this.animationEnabled, null);
+	}
+
+	/**
+	 * Changes the widget being shown on this widget.
+	 * @param widget - the widget will be insert in the swapPanel
 	 * @param animation - type of animation
 	 */
 	public void transitTo(final Widget widget, SwapAnimation animation) 
@@ -149,6 +155,19 @@ public class SwapPanel extends Composite implements HasSwapHandlers, HasAnimatio
 			animating = true;
 			nextPanel.clear();
 			nextPanel.add(widget);
+
+			widget.addAttachHandler(new Handler() 
+			{
+				@Override
+				public void onAttachOrDetach(AttachEvent event) 
+				{
+					if (event.isAttached())
+					{
+						SwapPanel.this.setHeight(widget.getOffsetHeight() + "px");	
+					}
+				}
+			});
+			
 			if (animationEnabled && animation != null)
 			{
 				animation.animate(nextPanel, currentPanel, new SwapAnimationHandler()

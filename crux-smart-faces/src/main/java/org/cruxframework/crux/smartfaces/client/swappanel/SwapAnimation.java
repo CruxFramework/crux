@@ -28,9 +28,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class SwapAnimation
 {
-	private Animation<?> entrance = getEntranceAnimation();
-	private Animation<?> exit = getExitAnimation();
-	
 	protected abstract Animation<?> getEntranceAnimation();
 	protected abstract Animation<?> getExitAnimation();
 	
