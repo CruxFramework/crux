@@ -83,6 +83,16 @@ public class WidgetCreatorContext
 		return Boolean.parseBoolean(property);
 	}
 	
+	public int readIntWidgetProperty(String propertyName, int defaultValue)
+	{
+		String property = readWidgetProperty(propertyName);
+		if (StringUtils.isEmpty(property))
+		{
+			return defaultValue;
+		}
+		return Integer.parseInt(property);
+	}
+	
 	public String readChildProperty(String propertyName)
 	{
 		return childElement.optString(propertyName);
