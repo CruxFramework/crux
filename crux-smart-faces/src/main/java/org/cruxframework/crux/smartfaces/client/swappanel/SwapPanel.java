@@ -108,7 +108,9 @@ public class SwapPanel extends FlowPanel implements HasSwapHandlers, HasAnimatio
 	 */
 	public void setCurrentWidget(final Widget widget) 
 	{
-		if (widget != null) {
+		if (widget != null) 
+		{
+			setPanelHeightOnWidgetAttached(widget);
 			this.currentPanel.clear();
 			this.currentPanel.add(widget);
 		}
@@ -142,6 +144,21 @@ public class SwapPanel extends FlowPanel implements HasSwapHandlers, HasAnimatio
 		transitTo(widget, animation, this.animationEnabled, null);
 	}
 	
+	private void setPanelHeightOnWidgetAttached(final Widget widget)
+	{
+		widget.addAttachHandler(new Handler() 
+		{
+			@Override
+			public void onAttachOrDetach(AttachEvent event) 
+			{
+				if (event.isAttached())
+				{
+					SwapPanel.this.setHeight(widget.getOffsetHeight() + "px");	
+				}
+			}
+		});
+	}
+	
 	/**
 	 * Changes the widget being shown on this widget.
 	 * @param widget - the widget will be insert in the swapPanel
@@ -152,22 +169,12 @@ public class SwapPanel extends FlowPanel implements HasSwapHandlers, HasAnimatio
 	{
 		if (!animating)
 		{
+			setPanelHeightOnWidgetAttached(widget);
+			
 			animating = true;
 			nextPanel.clear();
 			nextPanel.add(widget);
 
-			widget.addAttachHandler(new Handler() 
-			{
-				@Override
-				public void onAttachOrDetach(AttachEvent event) 
-				{
-					if (event.isAttached())
-					{
-						SwapPanel.this.setHeight(widget.getOffsetHeight() + "px");	
-					}
-				}
-			});
-			
 			if (animationEnabled && animation != null)
 			{
 				animation.animate(nextPanel, currentPanel, new SwapAnimationHandler()
