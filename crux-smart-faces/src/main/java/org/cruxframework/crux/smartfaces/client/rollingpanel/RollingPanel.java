@@ -43,7 +43,7 @@ public class RollingPanel extends Composite implements InsertPanel
 		void clear();
 		int getScrollPosition();
 		boolean isScrollToAddedWidgets();
-		void remove(Widget toRemove);
+		boolean remove(Widget toRemove);
 		void scrollToWidget(Widget widget);
 		void setScrollPosition(int position);
 		void setScrollToAddedWidgets(boolean scrollToAddedWidgets);

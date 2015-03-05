@@ -14,6 +14,23 @@ body
 	display:block;
 }
 
+/* -------------------- RollingPanel -----------------------*/
+
+.faces-itemWrapperRollingPanel 
+{
+  display: table;
+}
+
+.faces-itemWrapperRollingPanel row 
+{
+  display: table-row;
+}
+
+.faces-itemRollingPanel
+{
+	display: table-cell;
+}
+
 /* -------------------- SideMenuDisposal -----------------------*/
 
 .faces-SideMenuDisposal-smallHeaderWrapper

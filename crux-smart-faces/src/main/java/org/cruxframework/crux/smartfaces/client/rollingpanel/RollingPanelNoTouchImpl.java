@@ -186,10 +186,11 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 	/**
 	 * @param toRemove
 	 */
-	public void remove(Widget toRemove)
+	public boolean remove(Widget toRemove)
 	{
-		itemsPanel.remove(toRemove);
+		boolean removed = itemsPanel.remove(toRemove);
 		maybeShowNavigationButtons();
+		return removed;
 	}
 	
 	/**
