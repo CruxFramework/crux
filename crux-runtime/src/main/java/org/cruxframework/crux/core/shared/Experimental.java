@@ -17,7 +17,7 @@ package org.cruxframework.crux.core.shared;
 
 /**
  * A marker interface to indicate experimental code. Experimental code should not be used
- * in any production environment. We do not guarantee backward compability. Any experimental 
+ * in any production environment. We do not guarantee backward compatibility. Any experimental 
  * class or interface can be removed from code any time.  
  * @author Thiago da Rosa de Bustamante
  *

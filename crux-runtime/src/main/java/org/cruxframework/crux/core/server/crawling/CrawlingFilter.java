@@ -85,6 +85,10 @@ public final class CrawlingFilter implements Filter
 			String escapedFragmentEncoded = request.getParameter("_escaped_fragment_");
 			if (escapedFragmentEncoded != null)
 			{
+				if (logger.isInfoEnabled())
+				{
+					logger.info("A Snapshot for an application page was requested.");
+				}
 				if (escapedFragmentEncoded.length() == 0 && defaultSnaphot != null && defaultSnaphot.length() > 0)
 				{
 					escapedFragmentEncoded=defaultSnaphot;
@@ -109,6 +113,10 @@ public final class CrawlingFilter implements Filter
 						try
 						{
 							StreamUtils.write(in, response.getOutputStream(), true);
+							if (logger.isInfoEnabled())
+							{
+								logger.info("Snapshot for page ["+pagePath+"] was sent.");
+							}
 							return;
 						}
 						catch (IOException e) 
@@ -116,6 +124,10 @@ public final class CrawlingFilter implements Filter
 							logger.error("Error reading requested page ["+pagePath+"].", e);
 						}
 					}
+				}
+				else
+				{
+					logger.error("A snapshot was requested, but it is not possible to realize the target page.");
 				}
 			}
 			long current = System.currentTimeMillis();
