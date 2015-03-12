@@ -107,9 +107,14 @@ class WidgetCreatorAnnotationsProcessor
 	static abstract class ChildrenProcessor
 	{
 		private Map<String, ChildProcessor> childrenProcessors = new HashMap<String, ChildProcessor>();
+		private String viewName;
 		
 		abstract void processChildren(SourcePrinter out, WidgetCreatorContext context);
 
+		public ChildrenProcessor(String viewName)
+        {
+			this.viewName = viewName;
+        }
 		
 		/**
 		 * @param out
@@ -120,7 +125,10 @@ class WidgetCreatorAnnotationsProcessor
 		{
 			if (!childrenProcessors.containsKey(childName))
 			{
-				throw new CruxGeneratorException("Can not find ChildProcessor for ["+childName+"].");
+				String message = "Invalid tag name. The current view ["+viewName+"] is not valid. "
+						+ "An error was found processing widget ["+context.getWidgetId()+"]. "
+						+ "Please, verify your file with Crux generated XSDs.";
+				throw new CruxGeneratorException(message);
 			}
 			childrenProcessors.get(childName).processChild(out, context);
 		}
