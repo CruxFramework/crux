@@ -13,12 +13,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.client.screen.widgets;
+package org.cruxframework.crux.core.client.select;
 
 import org.cruxframework.crux.core.client.event.HasSelectHandlers;
 import org.cruxframework.crux.core.client.event.SelectEvent;
 import org.cruxframework.crux.core.client.event.SelectHandler;
-import org.cruxframework.crux.core.client.select.SelectEventsHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,6 +30,7 @@ import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.dom.client.TouchStartHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -40,7 +40,14 @@ public abstract class SelectableWidget extends Composite implements HasSelectHan
 {
 	protected SelectEventsHandler selectEventsHandler;
 	
-	protected SelectableWidget()
+	@Override
+	protected void initWidget(Widget widget)
+	{
+	    super.initWidget(widget);
+	    initializeEventsHandler();
+	}
+	
+	protected void initializeEventsHandler()
 	{
 		selectEventsHandler = GWT.create(SelectEventsHandler.class);
 		selectEventsHandler.setSelectableWidget(this);
@@ -78,23 +85,23 @@ public abstract class SelectableWidget extends Composite implements HasSelectHan
 		return selectEventsHandler;
 	}
 	
-	public HandlerRegistration addTouchEndHandler(TouchEndHandler handler)
+	protected HandlerRegistration addTouchEndHandler(TouchEndHandler handler)
 	{
-		return addDomHandler(handler, TouchEndEvent.getType());
+		return addHandler(handler, TouchEndEvent.getType());
 	}
 
-	public HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler)
+	protected HandlerRegistration addTouchMoveHandler(TouchMoveHandler handler)
 	{
-		return addDomHandler(handler, TouchMoveEvent.getType());
+		return addHandler(handler, TouchMoveEvent.getType());
 	}
 
-	public HandlerRegistration addTouchStartHandler(TouchStartHandler handler)
+	protected HandlerRegistration addTouchStartHandler(TouchStartHandler handler)
 	{
-		return addDomHandler(handler, TouchStartEvent.getType());
+		return addHandler(handler, TouchStartEvent.getType());
 	}
 	
-	public HandlerRegistration addClickHandler(ClickHandler handler)
+	protected HandlerRegistration addClickHandler(ClickHandler handler)
 	{
-		return addDomHandler(handler, ClickEvent.getType());
+		return addHandler(handler, ClickEvent.getType());
 	}
 }

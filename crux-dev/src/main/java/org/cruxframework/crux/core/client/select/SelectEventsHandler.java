@@ -16,7 +16,6 @@
 package org.cruxframework.crux.core.client.select;
 
 import org.cruxframework.crux.core.client.event.SelectEvent;
-import org.cruxframework.crux.core.client.screen.widgets.SelectableWidget;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 
