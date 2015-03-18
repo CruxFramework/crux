@@ -645,6 +645,14 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     left:0 !important;
 }
 
+@if user.agent ie8
+{
+	.crux-FlatMessageBox
+	{
+	    border:1px solid #aaa;
+	}
+}
+
 .crux-FlatMessageBox .dialogTopBar
 {
     opacity:0;
