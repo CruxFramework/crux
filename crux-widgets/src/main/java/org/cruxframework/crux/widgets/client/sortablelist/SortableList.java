@@ -102,13 +102,14 @@ public class SortableList extends Composite implements ISortableList<Widget>
 		@Override
 		public void render(Context context, Widget data, SafeHtmlBuilder sb) 
 		{
-			if (data != null) {
+			if (data != null) 
+			{
 				if (beanRenderer == null) 
 				{
 					setBeanRenderer(new ToStringBeanRenderer<Widget>());
 				}
 
-				sb.appendHtmlConstant(data.getElement().toString());
+				sb.appendHtmlConstant(beanRenderer.render(data));
 			}
 		}
 	}
@@ -204,6 +205,7 @@ public class SortableList extends Composite implements ISortableList<Widget>
 	public void setBeanRenderer(BeanRenderer<Widget> beanRenderer) 
 	{
 		this.beanRenderer = beanRenderer;
+		this.cellList.redraw();
 	}
 
 	@Override
