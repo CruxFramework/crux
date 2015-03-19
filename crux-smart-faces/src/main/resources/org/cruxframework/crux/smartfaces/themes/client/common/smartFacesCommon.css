@@ -924,7 +924,17 @@ td > div > .faces--group
 	padding:10px;
 	margin:10px -10px -10px;
 	display:flex;
+	display: -ms-flexbox;
+	-ms-flex-pack: justify;
 	justify-content:space-around;
+}
+
+@if user.agent ie10
+{
+	.faces-popup-actionPanel
+	{
+		padding:10px 50px;
+	}
 }
 
 .faces-popup-actionPanel .faces-Button
