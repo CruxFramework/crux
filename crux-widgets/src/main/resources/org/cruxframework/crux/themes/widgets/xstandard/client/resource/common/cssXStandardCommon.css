@@ -963,7 +963,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 
 
 /****************
-    StackMenu
+    ColorPicker
 ****************/
 
 .crux-ColorPickerDialog > div > table
@@ -1058,4 +1058,68 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 .crux-DatePicker .datePickerMonthSelector td
 {
 	text-align:center;
+}
+
+
+/****************
+ SequentialPager
+****************/
+
+@if user.agent ie8
+{
+.crux-SequentialPager .firstButton:before
+{
+	content:'<<';
+}
+
+.crux-SequentialPager .previousButton:before
+{
+	content:'<';
+}
+
+.crux-SequentialPager .nextButton:before
+{
+	content:'>';
+}
+
+.crux-SequentialPager .lastButton:before
+{
+	content:'>>';
+}
+}
+
+/****************
+ RandomPager
+****************/
+
+@if user.agent ie8
+{
+	
+.crux-RandomPager .nextButton:before,
+.crux-RandomPager .lastButton:before
+{
+	content:'>';
+}
+
+.crux-RandomPager .nextButton:before
+{
+	content:'>';
+}
+
+
+.crux-RandomPager .lastButton:before
+{
+	content:'>>';
+}
+
+.crux-RandomPager .previousButton:before
+{
+	content:'<';
+}
+
+.crux-RandomPager .firstButton:before
+{
+	content:'<<';
+}
+	
 }
