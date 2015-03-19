@@ -1169,7 +1169,43 @@
     border-radius:4px 0 0 4px;
 }
 
-@if user.agent ie8 ie9 {
+@if user.agent ie8
+{
+	.bannersArea .leftArrow, .bannersArea .rightArrow
+	{
+		background:#333;
+    	width:50px;
+    	height:90px;
+    	border-radius:4px 0 0 4px;
+	}
+	
+	.bannersArea .leftArrow:before, .bannersArea .rightArrow:before
+	{
+		content:'';
+		position:absolute;
+		top:50%;
+		left:50%;
+		margin-top:-9px;
+		margin-left:-7px;
+	}
+	
+	.bannersArea .leftArrow:before
+	{
+		border-right:9px solid #fff;
+		border-top:9px solid transparent;
+		border-bottom:9px solid transparent;
+	}
+	
+	.bannersArea .rightArrow:before
+	{
+		margin-left:-5px;
+		border-left:9px solid #fff;
+		border-top:9px solid transparent;
+		border-bottom:9px solid transparent;
+	}
+}
+
+@if user.agent ie9 {
 	.bannersArea .rightArrow:hover
 	{
 		background:rightArrow no-repeat center rgba(0,0,0,0.35);
