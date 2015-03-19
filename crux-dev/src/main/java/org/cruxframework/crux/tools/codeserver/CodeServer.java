@@ -30,7 +30,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
-import org.cruxframework.crux.core.declarativeui.ViewProcessor;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.CruxBridge;
@@ -132,6 +131,7 @@ public class CodeServer
 		AbstractCruxCompiler compiler = CruxCompilerFactory.createCompiler();
 		compiler.setOutputCharset("UTF-8");
 		
+		CruxBridge.getInstance().setSingleVM(true);
 		CruxRegisterUtil.registerFilesCruxBridge(null);
 		ServiceFactoryInitializer.initialize(null);
 		RestServiceFactoryInitializer.initialize(null);
