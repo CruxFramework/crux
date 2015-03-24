@@ -1,10 +1,5 @@
 @external faces-*;
 
-.facesBackboneTopMenuDisposal
-{
-	box-shadow:0 0 0 10px red;
-}
-
 .facesBackboneTopMenuDisposal .faces-TopMenuDisposal-layoutWrapperPanel
 {
 	display: -webkit-box;    /* OLD - iOS 6-, Safari 3.1-6 */
@@ -12,7 +7,7 @@
 	display: -ms-flexbox !important;   	/* TWEENER - IE 10 */
 	display: flexbox !important;		/* TWEENER - IE 10 */
 	display: -webkit-flex;	/* NEW - Chrome */
-	display: inline-flex; 	/* NEW, Spec - Opera 12.1, Firefox 20+ */
+	display: flex; 	/* NEW, Spec - Opera 12.1, Firefox 20+ */
 /*	display:flex; */
 	min-height:100vh;
 	flex-direction:column;
