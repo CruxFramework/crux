@@ -20,6 +20,15 @@
 	flex-pack: distribute;
 }
 
+@if user.agent ie10
+{
+	.facesBackboneTopMenuDisposal
+	{
+		display:block !important;
+	}
+}
+
+
 .facesBackboneTopMenuDisposal .faces-TopMenuDisposal-contentPanel
 {
 	flex:0 1 auto;
