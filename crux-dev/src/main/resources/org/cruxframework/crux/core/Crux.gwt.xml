@@ -216,6 +216,23 @@
       		<when-property-is name="user.agent" value="ie8" />
     	</any>
     </replace-with>
+    <!-- Image -->
+    <replace-with
+		class="org.cruxframework.crux.core.client.image.GWTFixImage.IE8ConditionalImageRenderer">
+		<when-type-assignable
+			class="org.cruxframework.crux.core.client.image.GWTFixImage.ConditionalImageRenderer" />
+		<any>
+			<when-property-is name="user.agent" value="ie8" />
+		</any>
+	</replace-with>
+	<replace-with
+		class="org.cruxframework.crux.core.client.image.GWTFixImage.DefaultConditionalImageRenderer">
+		<when-type-assignable
+			class="org.cruxframework.crux.core.client.image.GWTFixImage.ConditionalImageRenderer" />
+		<none>
+			<when-property-is name="user.agent" value="ie8" />
+		</none>
+	</replace-with>
     <!-- Animation -->
     <replace-with
     	class="org.cruxframework.crux.core.client.css.animation.Animation.WebkitBrowserImpl">
