@@ -603,7 +603,7 @@
     position: absolute;
     padding-top: 10px;
     height: 40px;
-    width: inherit;
+    width: 100%;
     top: 0px;
     left: 0px;
     z-index:1;
