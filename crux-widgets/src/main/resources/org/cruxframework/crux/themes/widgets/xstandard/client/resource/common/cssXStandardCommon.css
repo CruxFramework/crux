@@ -961,6 +961,50 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	display:none;
 }
 
+/****************
+   SuggestPopup
+****************/
+.crux-SuggestPopup
+{
+	background: #fff;
+	border-radius: 0 0 2px 2px;
+	box-shadow: 0 0 0 1px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.3);
+	clip: auto !important;
+}
+
+.crux-SuggestPopup .suggestPopupContent table
+{
+	width:100%;
+}
+
+.crux-SuggestPopup .suggestPopupContent table td
+{
+	padding:6px;
+	border-bottom:1px solid #ccc;
+	font-size:12px;
+	cursor:pointer;
+}
+
+.crux-SuggestPopup .suggestPopupContent table td:hover,
+.crux-SuggestPopup .suggestPopupContent table td.item-selected
+{
+	background:#eee;
+}
+
+.crux-SuggestPopup .suggestPopupContent table tr:last-child td
+{
+	border-bottom:none;	
+	border-radius:0 0 2px 2px;
+}
+
+.suggestPopupMiddleLeft,
+.suggestPopupMiddleRight,
+.suggestPopupBottom,
+.suggestPopupTop
+{
+	display:none;
+}
+
 
 /****************
     ColorPicker
