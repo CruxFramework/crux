@@ -610,7 +610,8 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 
 .crux-FileUploader .filePanel .gwt-Label
 {
-    width: 220px;
+    width: 190px;
+	overflow: hidden;
     text-overflow:ellipsis;
     margin-left: 10px;
     color: #4C6879;
