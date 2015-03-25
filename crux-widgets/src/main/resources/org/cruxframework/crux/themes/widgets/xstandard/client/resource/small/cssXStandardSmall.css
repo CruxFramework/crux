@@ -624,6 +624,12 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     margin: 0px;
     white-space: nowrap;
 }
+
+.crux-FileUploader .filePanel .crux-ProgressBar
+{
+	width: 190px;
+}
+
 .crux-FileUploader .fileInputButton{
     padding:22px 18px;
     line-height:44px;
