@@ -13,3 +13,8 @@
 	order: 2;                       /* NEW, Spec - Opera 12.1, Firefox 20+ */
 }
 
+.rollingPanelBody.faces-RollingPanel-body 
+{
+	overflow-y: hidden;
+	overflow-x: auto;
+}
