@@ -124,11 +124,6 @@
  VerticalDropdown
 *************************/
 
-.facesBackboneMenu.faces-Menu-vertical.faces-Menu-dropdown
-{
-	width:100%;
-}
-
 .facesBackboneMenu.faces-Menu-vertical.faces-Menu-dropdown > .faces-Menu-ul .faces-Menu-ul
 {
 	width:100%;
