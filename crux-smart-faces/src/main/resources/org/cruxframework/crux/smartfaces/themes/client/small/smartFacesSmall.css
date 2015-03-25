@@ -11,7 +11,10 @@ body
 
 .faces-Button
 {
+	width: 100%;
 	display:block;
+	margin: 0 auto;
+	padding: 14px 14px; 
 }
 
 /* -------------------- RollingPanel -----------------------*/
