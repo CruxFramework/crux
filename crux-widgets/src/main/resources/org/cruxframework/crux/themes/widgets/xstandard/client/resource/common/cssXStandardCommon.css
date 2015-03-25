@@ -1167,3 +1167,14 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 }
 	
 }
+
+/****************
+  SortableList
+****************/
+
+.crux-sortableList .buttonsColumn button:first-child + button:before
+{
+	border-top:8px solid white;
+	border-left:7px solid transparent;
+	border-right:7px solid transparent;
+}
