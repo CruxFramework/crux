@@ -238,6 +238,7 @@ body
 	height: 6px;
 	-webkit-transform: rotate(45deg);
 	-moz-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
 	transform: rotate(45deg);
 	border-right: 2px solid #fff;
 	border-bottom: 2px solid #fff;
@@ -254,6 +255,7 @@ body
 	height: 6px;
 	-webkit-transform: rotate(45deg);
 	-moz-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
 	transform: rotate(45deg);
 	border-right: 2px solid #bbb;
 	border-top: 2px solid #bbb;
@@ -287,6 +289,9 @@ body
 	width: 6px;
 	height: 6px;
 	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
 	border-right: 2px solid #fff;
 	border-top: 2px solid #fff;
 }
