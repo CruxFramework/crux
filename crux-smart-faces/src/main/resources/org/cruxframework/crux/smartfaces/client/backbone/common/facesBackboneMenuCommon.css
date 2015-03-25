@@ -298,7 +298,7 @@
     -webkit-transform:translateX(100%);
     -moz-transform:translateX(100%);
 	transform:translateX(100%);
-	
+	overflow-y: auto;
 	position:absolute;
     top:0;
     left:0;
