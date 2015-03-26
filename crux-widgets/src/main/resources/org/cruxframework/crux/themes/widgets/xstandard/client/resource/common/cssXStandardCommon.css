@@ -1,1035 +1,880 @@
+/*! normalize.css v3.0.0 | MIT License | git.io/normalize */
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}[hidden],template{display:none}a{background:0 0}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:700}dfn{font-style:italic}h1{font-size:2em;margin:.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-.5em}sub{bottom:-.25em}img{border:0}figure{margin:1em 40px}hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type=button],input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type=checkbox],input[type=radio]{box-sizing:border-box;padding:0}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{height:auto}input[type=search]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}input[type=search]::-webkit-search-cancel-button,input[type=search]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:700}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}
+
 @external *;
 
-@url svgIconDetail svgIconDetail;
-@url urlTopMenuDisposalShowMenuButton topMenuDisposalShowMenuButton; 
-@url rightArrow rightArrow;
-@url leftArrow leftArrow;
+@url svgIconDanger svgIconDanger;
+@url svgIconWarning svgIconWarning;
+@url svgIconSuccess svgIconSuccess;
+@url svgIconClose svgIconClose;
+@url svgIconFile svgIconFile;
+@url svgIconPaginatorFirst svgIconPaginatorFirst;
+@url svgIconPaginatorLast svgIconPaginatorLast;
+@url svgIconPaginatorNext svgIconPaginatorNext;
+@url svgIconPaginatorPrev svgIconPaginatorPrev;
 @url uploadIcon uploadIcon;
+
+*:focus, *:active, *:hover
+{
+	/**
+	* Prevent that blue (or black, if in iOS) overlay on an element
+	* if you tap it. Or yellow border if in desktop.
+	*/
+	outline:none;
+	-webkit-tap-hightlight-color:rgba(0,0,0,0);
+}
+
+*, *:before, *:after
+{
+  /**
+  * Prevent elements from outgrowing when padding is added
+  * (keeps the same width no matter what)
+  */
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+/**
+ * Enables .cf functionality in IE 6/7 too
+ */
+ 
+@if user.agent ie6 ie7 {
+  .cf {
+      zoom: 1;
+  }
+}
+
+
+*[disabled]{
+	cursor:not-allowed !important;
+}
+
+hr{
+	background:#e3e3e3;
+	height:1px;
+	margin:10px 0;
+	border:none;
+}
+
+pre, code{
+	background: #F3F7F8;
+	color: #6377CB;
+	font-weight: bold;
+	font-size: 13px;
+	padding: 2px 4px;
+	border-radius: 2px;
+	box-shadow:0 0 0 1px rgba(0,0,0,0.1);
+}
+
+html
+{
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
 
 body
 {
-    background-color:#f2f2f2;
+	background:#fff;
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+	font-size: 14px;
+	font-family:OpenSans,Verdana,Helvetica,Arial,sans-serif;
+}
+
+input, button
+{
+	vertical-align: top;
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 
 /****************
- Non-Selectables
+     Anchor
 ****************/
 
-.crux-TopMenuDisposal .showMenuButton,
-.crux-TopMenuDisposal .headerPanel,
-.crux-MenuTabsDisposal .showMenuButton,
-.crux-MenuTabsDisposal .menuEntry,
-.crux-MenuTabsDisposal .menuSection,
-.crux-MenuTabsDisposal .menuSection:after,
-.crux-MenuTabsDisposal .menuSection-closed:after
+.crux-Anchor
 {
-    -webkit-user-select:none;
-    -moz-user-select:none;
-    -ms-user-select:none;
-    user-select:none;
+	color:#4192e3;
+	text-decoration:none;
+}
+
+.crux-Anchor:hover
+{
+	color:#0055aa;
+}
+
+/****************
+     Buttons
+****************/
+
+a.crux-Button
+{
+	white-space:nowrap;
+}
+
+a.crux-Button:hover
+{
+	text-decoration:none;
+	color:#fff;
+}
+
+.crux-Button,
+.crux-FileUploader .fileInputButton,
+.previousMessageButton,
+.nextMessageButton,
+.crux-DownloadButton
+{
+    background:#4496c6; 
+    border:1px solid #1a6299;
+    padding:8px 14px;
+    border-radius:1px;
+    font-size:100%;
+    color:#fff;
+    text-shadow:0 1px 0 rgba(0,0,0,0.15);
+}
+
+.crux-Button:hover,
+.previousMessageButton:hover,
+.nextMessageButton:hover,
+.crux-DownloadButton:hover
+{
+	border-color:#084471;
+}
+
+.crux-Button:focus,
+.fileInputButton:focus,
+.previousMessageButton:focus,
+.nextMessageButton:focus,
+.crux-DownloadButton:focus
+{
+	box-shadow:0 0 0 3px rgba(0,0,0,0.22);
+}
+
+.crux-Button:focus:active,
+.fileInputButton:focus:active,
+.previousMessageButton:active,
+.nextMessageButton:active,
+.crux-DownloadButton:active
+{
+	box-shadow:0 2px 2px rgba(0,0,0,0.2) inset, 0 0 0 3px rgba(0,0,0,0.12);
+}
+
+/*BUTTON SUCCESS*/
+.crux-Button.success,
+.crux-FlatMessageBox-success .crux-Button,
+.crux-DownloadButton.success
+{
+	background:#81aa33;
+	border:1px solid #6d991a;
+}
+.crux-Button.success:hover,
+.crux-FlatMessageBox-success .crux-Button:hover,
+.crux-DownloadButton.success:hover
+{
+	border-color:#527808;
+}
+
+/*BUTTON WARNING*/
+.crux-Button.warn,
+.crux-FlatMessageBox-warn .crux-Button,
+.crux-DownloadButton.warn
+{
+	background:#ed9c28;
+	border:1px solid #d58512;
+}
+.crux-Button.warn:hover,
+.crux-FlatMessageBox-warn .crux-Button:hover,
+.crux-DownloadButton.warn:hover
+{
+	border-color:#b76f09;
+}
+
+/*BUTTON DANGER*/
+.crux-Button.error,
+.crux-FlatMessageBox-error .crux-Button,
+.crux-DownloadButton.error
+{
+	background:#d2322d;
+	border:1px solid #ac2925;
+}
+.crux-Button.error:hover,
+.crux-FlatMessageBox-error .crux-Button:hover,
+.crux-DownloadButton.error:hover
+{
+	border-color:#96130f;
+}
+
+/*BUTTON DISABLED*/
+.crux-Button:disabled,
+.crux-DownloadButton:disabled
+{
+	background:#e5e5e5;
+	border:1px solid #a5a5a5;
+	color:#9c9c9c;
+	text-shadow:0 1px 0 rgba(255,255,255,0.6);
+}
+
+/*BUTTON STYLES*/
+.crux-Button.bullet,
+.crux-DownloadButton.bullet
+{
+	border-radius:500px;
+}
+.crux-Button.round,
+.crux-DownloadButton.round
+{
+	border-radius:3px;
+}
+
+/*BUTTON SIZES*/
+.crux-Button.mini,
+.crux-DownloadButton.mini
+{
+	font-size:70%;
+	padding:4px 7px;
+}
+.crux-Button.xsmall,
+.crux-DownloadButton.xsmall
+{
+	font-size:70%;
+}
+.crux-Button.small,
+.crux-DownloadButton.small
+{
+	font-size:85%;
+}
+.crux-Button.large,
+.crux-DownloadButton.large
+{
+	font-size:110%;
+}
+.crux-Button.xlarge,
+.crux-DownloadButton.xlarge
+{
+	font-size:130%;
 }
 
 /***************/
 
-.crux-StyledPanel
-{
-    background:#fff;
-    padding:10px;
-    margin-top:10px;
-}
-
-.crux-ScrollBanner
-{
-    padding:0;
-}
-
-.crux-styledPanel h1,
-.crux-styledPanel h2,
-.crux-styledPanel h3,
-.crux-styledPanel h4,
-.crux-styledPanel h5,
-.crux-styledPanel h6
-{
-    margin-top:10px;
-}
+/****************
+Inputs / Textarea
+****************/
 
 .gwt-TextBox,
 .gwt-TextArea,
+.crux-DateBox,
+.crux-Filter,
+.crux-NumberTextBox,
 .crux-SingleSelect,
-.crux-NumberTextBox
+.crux-MaskedTextBox
 {
-    font-size:115%;
-    padding:12px 8px;
-    display:block;
-    width:100%;
-    background-size:auto 50% !important;
+	background:#fff;
+	color:#444;
+	padding:8px 8px;
+	border-radius:1px;
+	border:1px solid #92aec8;
+	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset;
+	margin-bottom:10px;
 }
 
-.gwt-Label
+.gwt-TextBox:hover,
+.gwt-TextArea:hover,
+.crux-DateBox:hover,
+.crux-Filter:hover,
+.crux-NumberTextBox:hover,
+.crux-SingleSelect:hover,
+.crux-MaskedTextBox:hover
 {
-    font-weight:bold;
-    display:block;
-    margin-bottom:5px;
+	border:1px solid #5c87b0;
 }
 
-.crux-Button, .fileInputButton, .previousMessageButton, .nextMessageButton
+.gwt-TextBox:focus,
+.gwt-TextArea:focus,
+.crux-DateBox:focus,
+.crux-Filter:focus,
+.crux-NumberTextBox:focus,
+.crux-SingleSelect:focus,
+.crux-MaskedTextBox:focus
 {
-    padding:14px 14px;
-    display:block;
-    width:100%;
-    margin-bottom:3px;
+	border:1px solid #66afe9;
+	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(102,175,233,0.75);
 }
 
-.crux-FormDisplay
+/* SUCCESS */
+.gwt-TextBox.success,
+.gwt-TextArea.success,
+.crux-DateBox.success,
+.crux-Filter.success,
+.crux-NumberTextBox.success,
+.crux-MaskedTextBox.success
 {
-    width: 100%;
-    padding: 8px;
+	border:1px solid #6d991a;
+	background:svgIconSuccess no-repeat 96% center #fff;
+	background-position:right 6px center;
+	padding-right:30px;
+	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset, -30px 0 0 rgba(70, 180, 0, 0.18) inset;
 }
-.crux-FormDisplay .formEntryLabel
+
+@if user.agent ie8
 {
-    padding-top: 5px;
-}
-.crux-FormDisplay .formEntryData
+.gwt-TextBox.success,
+.gwt-TextArea.success,
+.crux-DateBox.success,
+.crux-Filter.success,
+.crux-NumberTextBox.success,
+.crux-MaskedTextBox.success
 {
-    padding-bottom: 15px;
-    padding-top: 5px;
-    box-shadow: 0px 1px 0px rgba(0,0,0,0.2), 0px 2px 0px rgba(255,255,255,0.6);
+	padding-right:0;
 }
-.crux-FormDisplay > tbody > tr:last-child > td
+}
+
+.gwt-TextBox.success:hover,
+.gwt-TextArea.success:hover,
+.crux-DateBox.success:hover,
+.crux-Filter.success:hover,
+.crux-MaskedTextBox.success:hover
 {
-    box-shadow: none;
+	border-color:#527808;
 }
+.gwt-TextBox.success:focus,
+.gwt-TextArea.success:focus,
+.crux-DateBox.success:focus,
+.crux-Filter.success:focus,
+.crux-NumberTextBox.success:focus
+{
+	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(0,255,0,0.4), -30px 0 0 rgba(70, 180, 0, 0.18) inset;
+}
+
+/* WARNING */
+.gwt-TextBox.warn,
+.gwt-TextArea.warn,
+.crux-DateBox.warn,
+.crux-Filter.warn,
+.crux-NumberTextBox.warn,
+.crux-MaskedTextBox.warn
+{
+	border:1px solid #d58512;
+	background:svgIconWarning no-repeat 96% center #fff;
+	background-position:right 6px center;
+	padding-right:30px;
+	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset, -30px 0 0 rgba(190, 180, 0, 0.18) inset;
+}
+
+@if user.agent ie8
+{
+.gwt-TextBox.warn,
+.gwt-TextArea.warn,
+.crux-DateBox.warn,
+.crux-Filter.warn,
+.crux-NumberTextBox.warn,
+.crux-MaskedTextBox.warn
+{
+	padding-right:0;
+}
+}
+
+.gwt-TextBox.warn:hover,
+.gwt-TextArea.warn:hover,
+.crux-DateBox.warn:hover,
+.crux-Filter.warn:hover,
+.crux-NumberTextBox.warn:hover,
+.crux-MaskedTextBox.warn:hover
+{
+	border-color:#b76f09;
+}
+
+.gwt-TextBox.warn:focus,
+.gwt-TextArea.warn:focus,
+.crux-DateBox.warn:focus,
+.crux-Filter.warn:focus,
+.crux-NumberTextBox.warn:focus,
+.crux-MaskedTextBox.warn:focus
+{
+	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(255,168,0,0.6), -30px 0 0 rgba(190, 180, 0, 0.18) inset;
+}
+
+/* ERROR */
+.gwt-TextBox.error,
+.gwt-TextArea.error,
+.crux-DateBox.error,
+.crux-Filter.error,
+.crux-NumberTextBox.error
+{
+	border:1px solid #ac2925;
+	background:svgIconDanger no-repeat 96% center #fff;
+	background-position:right 6px center;
+	padding-right:30px;
+	box-shadow:0 1px 2px rgba(0, 0, 0, 0.14) inset, -30px 0 0 rgba(190, 80, 30, 0.18) inset;
+}
+
+@if user.agent ie8
+{
+.gwt-TextBox.error,
+.gwt-TextArea.error,
+.crux-DateBox.error,
+.crux-Filter.error,
+.crux-NumberTextBox.error
+{
+	padding-right:0;
+}
+}
+
+.gwt-TextBox.error:hover,
+.gwt-TextArea.error:hover,
+.crux-DateBox.error:hover,
+.crux-Filter.error:hover,
+.crux-NumberTextBox.error:hover,
+.crux-MaskedTextBox.error:hover
+{
+	border-color:#96130f;
+}
+
+.gwt-TextBox.error:focus,
+.gwt-TextArea.error:focus,
+.crux-DateBox.error:focus,
+.crux-Filter.error:focus,
+.crux-NumberTextBox.error:focus
+.crux-MaskedTextBox.error:focus
+{
+	box-shadow:0 1px 2px rgba(0,0,0,0.2) inset, 0 0 5px rgba(255,0,0,0.4), -30px 0 0 rgba(190, 80, 30, 0.18) inset;
+}
+
+/* SIZES */
+.gwt-TextBox.mini,
+.gwt-TextArea.mini,
+.crux-DateBox.mini,
+.crux-Filter.mini,
+.crux-NumberTextBox.mini,
+.crux-MaskedTextBox.mini
+{
+	font-size:70%;
+	padding:4px 7px;
+}
+
+.gwt-TextBox.xsmall,
+.gwt-TextArea.xsmall,
+.crux-DateBox.xsmall,
+.crux-Filter.xsmall,
+.crux-NumberTextBox.xsmall
+.crux-MaskedTextBox.xsmall
+{
+	font-size:70%;
+	padding:6px 10px;
+}
+
+.gwt-TextBox.small,
+.gwt-TextArea.small,
+.crux-DateBox.small,
+.crux-Filter.small,
+.crux-NumberTextBox.small,
+.crux-MaskedTextBox.small
+{
+	font-size:80%;
+	padding:8px 12px;
+}
+
+.gwt-TextBox.large,
+.gwt-TextArea.large,
+.crux-DateBox.large,
+.crux-Filter.large,
+.crux-NumberTextBox.large,
+.crux-MaskedTextBox.large
+{
+	font-size:115%;
+}
+
+.gwt-TextBox.xlarge,
+.gwt-TextArea.xlarge,
+.crux-DateBox.xlarge,
+.crux-Filter.xlarge,
+.crux-NumberTextBox.xlarge,
+.crux-MaskedTextBox.xlarge
+{
+	font-size:130%;
+}
+
+/* STYLES */
+.gwt-TextBox.bullet,
+.gwt-TextArea.bullet,
+.crux-DateBox.bullet,
+.crux-Filter.bullet,
+.crux-NumberTextBox.bullet,
+.crux-MaskedTextBox.bullet
+{
+	border-radius:500px;
+}
+.gwt-TextBox.round,
+.gwt-TextArea.round,
+.crux-DateBox.round,
+.crux-Filter.round,
+.crux-NumberTextBox.round,
+.crux-MaskedTextBox.round
+{
+	border-radius:3px;
+}
+
+/* DISABLED */
+.gwt-TextBox:disabled,
+.gwt-TextArea:disabled,
+.crux-DateBox:disabled,
+.crux-Filter:disabled,
+.crux-NumberTextBox:disabled,
+.crux-MaskedTextBox:disabled
+{
+	background:#e5e5e5;
+	border:1px solid #a5a5a5;
+	color:#9c9c9c;
+	text-shadow:0 1px 0 rgba(255,255,255,0.6);
+}
+
+/**********/
+
+/****************
+   StyledPanel
+****************/
+.crux-StyledPanelOuter
+{
+	padding: 8px;
+	width: 100%;
+}
+
+.crux-StyledPanel,
+.crux-FileUploader .dropArea,
+.crux-FileUploader .filePanel,
+.crux-ScrollBanner
+{
+	background:#fff;
+	display:block;
+	border:solid #C7C7C7 1px;
+	box-shadow:0 1px 3px rgba(90, 90, 90, 0.2);
+	padding:15px;
+}
+
+/**********/
 
 .crux-FormDisplay .formEntryData:first-child,
 .crux-FormDisplay .formEntryLabel
 {
-	padding-right:0;
-}
-
-/* Styling the TD that wraps the top bar  */
-TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
-{
-    height: 60px;
-}
-.crux-MenuTabsDisposal .menuTabsHeader
-{
-    background-color: #444949;
-    height: 60px;
-    text-align: right;
-    width: 100%;
-    border: solid 0px;
-    border-bottom: solid 1px #FFFFFF;
-}
-.crux-MenuTabsDisposal .showMenuButton
-{
-    background-image: urlTopMenuDisposalShowMenuButton;
-    background-repeat: no-repeat;
-    height: 40px;
-    width: 40px;
-    background-size: 25%;
-    margin-top: 10px;
-    margin-left: 0px;
-    background-position: center;
-    background-color: transparent;
-    border: none;
-    float: left;
-    outline: none;
-}
-.crux-MenuTabsDisposal .menuEntry
-{
-    margin: 0px;
-    border: solid 0px;
-    height: 40px;
-    background: white;
-    width: 85%;
-    margin-left: 15%;
-    box-shadow: 0px -20px 10px 0px rgba(0,0,0,0.02) inset;
-    color: #4c6879;
-    font-size: 16px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-shadow: none;
-    position: relative;
-    border-radius: 0px;
-    cursor: pointer;
-}
-.crux-MenuTabsDisposal .menuEntry:after
-{
-    content: "";
-    height: 40px;
-    width: 30px;
-    border: none;
-    position: absolute;
-    top: 0px;
-    background: #81aa32;
-    right: 0px;
-    box-shadow: 0px -10px 15px -1px rgba(0,80,0,0.1) inset;
-    color: white;
-    padding: 0px;
-    overflow: auto;
-    background-image: rightArrow;
-    background-position: center;
-    background-repeat: no-repeat;
-    cursor: pointer;
-}
-.crux-MenuTabsDisposal .menuSection
-{
-    height: 50px;
-    color: #fff;
-    background-color: #4496c6;
-    box-shadow: inset 0px -10px 30px #3d8dbd;
-    font-size: 16px;
-    padding: 0px;
-    text-align: left;
-    line-height: 50px;
-    padding-left: 50px;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    cursor: pointer;
-    border: solid 0px;
-    width: 100%;
-    position: relative;
-}
-.crux-MenuTabsDisposal .menuSection:after, .crux-MenuTabsDisposal .menuSection-closed:after 
-{
-    content: "...";
-    position: absolute;
-    right: 10px;
-    opacity: 0;
-    transition: opacity ease-in-out 0.5s;
-}
-.crux-MenuTabsDisposal .menuSection-closed:after 
-{
-    opacity: 0.4 !important;
-}
-
-.crux-MenuTabsDisposal .menuSectionEntries
-{
-    transition: height 0.2s ease-in-out;
-    overflow: hidden;
-}
-.crux-MenuTabsDisposal .menuSectionEntries-closed
-{ 
-    height:0;
-}
-
-.crux-TopMenuDisposal .showMenuButton
-{
-    background-image: urlTopMenuDisposalShowMenuButton;
-    background-repeat: no-repeat;
-    height: 40px;
-    width: 40px;
-    background-size: 25%;
-    margin-top: 10px;
-    margin-left: 0px;
-    background-position: center;
-    background-color: transparent;
-    border: none;
-    float: left;
-    outline: none;
-}
-.crux-TopMenuDisposal .headerPanel
-{
-    height: 60px;
-    color: #FFFFFF;
-    background-color: #606060;
-    text-shadow: 0 1px 0 #000000;
-    text-align: center;
-}
-.crux-TopMenuDisposal .menuPanel .menuEntry
-{
-    width: 100%;
-    margin-bottom: 0px;
-    margin-top: 0px;
-    border-radius: 0px !important;
-    border-top: 0px;
+	padding-bottom: 10px;
+	padding-right: 20px;
 }
 
 /******************************************************************************
-    RSS Panel
+    Crux Image
 *******************************************************************************/
-.crux-RssPanel
+.crux-Image
 {
-    width: 285px;
+	background-size : 100% 100% !important;
+}
+
+/******************************************************************************
+    Screen Blocker
+*******************************************************************************/
+.crux-ProgressDialogScreenBlocker, .crux-MessageDialogScreenBlocker
+{
+    background-color: #000000;
+    opacity: .45;
+    /* IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=25)";
+    
+    display: block;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.45);
+    height: 200%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 200%;
+    z-index: 98;
+}
+
+.crux-MessageDialog
+{
+    z-index: 99;
+}
+
+.crux-DefaultScreenBlocker
+{
+    background-color: #FFFFFF;
+    opacity: .01;
+    filter:"alpha(opacity=1)";
+    cursor: wait;
 }
 
 .crux-RssPanel .rssPanelTitle
 {
-    height: 50px;
-    margin-left: 12px;
-    font-size:22px;
-    text-shadow:0 2px 0 rgba(255,255,255,0.5);
-}
-.crux-RssPanel .rssPanelBody{
-    margin:12px;
-    border-radius:6px;
-    background:rgba(0,0,0,0.2);
-    -webkit-box-shadow:0 1px 4px rgba(0,0,0,0.5) inset, 0 2px 0 rgba(255,255,255,0.5);
-    overflow:hidden;
-}
-.crux-RssPanel .rssPanelBody TD{
-    background:-webkit-gradient(linear,left top,left bottom,color-stop(0, rgba(0,0,0,0.2)),color-stop(1, rgba(0,0,0,0)));
-    border-bottom:1px solid #777;
-}
-.crux-RssPanel .rssPanelBody TD:last-child{
-    border-bottom:none;
+    margin-top: 0;
+    font-weight:bold;
 }
 
-.crux-RssPanel .crux-entryTitle{
-    margin:0;
-    color:#fff;
-    text-shadow:0 2px 2px rgba(0,0,0,0.4);
-    font-size:13px;
-    padding-top:10px;
-    padding-left:10px;
-    width:100%;
-}
-.crux-RssPanel .crux-entryDate{
-    color:#fff;
-    text-shadow:0 2px 2px rgba(0,0,0,0.4);
-    padding-left:10px;
-    font-size:9px;
-}
-/******************************************************************************/
-/* CHECKBOX */
-.gwt-CheckBox input[type="checkbox"]{
-    -webkit-appearance:none;
-    width:45px;
-    height:23px;
-    border:1px solid #92aec8;
-    border-radius:2px;
-    background:#fff;
-    box-shadow:0 1px 2px rgba(0, 0, 0, 0.2) inset;
-    position:relative;
-    display:inline-block;
-    margin-top:5px;
-    margin-left:5px;
-}
-.gwt-CheckBox input[type="checkbox"]:before {
-    content:'';
-    width:17px;
-    height:27px;
-    background:#4496c6;
-    position:absolute;
-    top:-3px;
-    left:-3px;
-    border-radius:2px;
-    -webkit-transition:all 0.2s ease-in-out;
-    -moz-transition:all 0.2s ease-in-out;
-    -ms-transition:all 0.2s ease-in-out;
-    transition:all 0.2s ease-in-out;
-}
-.gwt-CheckBox input[type="checkbox"]:after {
-    content:'';
-    width:7px;
-    height:7px;
-    background:#fff;
-    position:absolute;
-    top:7px;
-    left:2px;
-    border-radius:8px;
-    -webkit-transition:all 0.2s ease-in-out;
-    -moz-transition:all 0.2s ease-in-out;
-    -ms-transition:all 0.2s ease-in-out;
-    transition:all 0.2s ease-in-out;
-}
-.gwt-CheckBox input[type="checkbox"]:hover {
-    border-color:#5c87b0;
-}
-.gwt-CheckBox input[type="checkbox"]:focus {
-    border-color:#66afe9;
-    box-shadow:0 1px 2px rgba(0, 0, 0, 0.2) inset, 0 0 5px rgba(102, 175, 233, 0.75);
-}
-.gwt-CheckBox input[type="checkbox"]:checked {
-    background:#d1ffaf;
-}
-.gwt-CheckBox input[type="checkbox"]:checked:before{
-    -webkit-transform:translateX(32px);
-    -moz-transform:translateX(32px);
-    -ms-transform:translateX(32px);
-    transform:translateX(32px);
-}
-.gwt-CheckBox input[type="checkbox"]:checked:after {
-    background:#c2ff4d;
-    box-shadow:0 0 5px 1px #4fff12;
-    -webkit-transform:translateX(32px);
-    -moz-transform:translateX(32px);
-    -ms-transform:translateX(32px);
-    transform:translateX(32px);
-}
-.gwt-CheckBox input[type="checkbox"]:disabled{
-    background:#e5e5e5;
-    border:1px solid #a5a5a5;
-}
-.gwt-CheckBox input[type="checkbox"]:disabled:before{
-    background:#989898;
-}
-.gwt-CheckBox input[type="checkbox"]:disabled:after{
-    background:#adadad;
-}
-.gwt-CheckBox label{
-    display:inline-table;
-    margin-top:-6px;
-    margin-left:5px;
+.crux-RssPanel .rssPanelBody
+{
+    width: 100%;
 }
 
-
-/******************************************************************************
-    ListShuffle
-*******************************************************************************/
-
-.crux-ListShuttle
+.crux-RssPanel .rssPanelBody TD
 {
-    margin:10px;
+    height: 40px;
+    box-shadow: 0 1px rgba(255,255,255,0.3);
 }
 
-.crux-ListShuttle .buttonsColumn
+.dialogGlass
 {
-    margin:10px;
-    text-align:center
-}
-.crux-ListShuttle .buttonsColumn button
-{
-    border-radius:0;
-    margin-left:-2px;
-    display:inline-block;
-    position:relative;
-    width:25%;
-    margin:3px 0 0 0;
-}
-.crux-ListShuttle .buttonsColumn button
-{
-    text-shadow:none;
-    color:rgba(0,0,0,0); 
-}
-.crux-ListShuttle .buttonsColumn button:first-child
-{
-    border-radius:3px 0 0 3px;    
-}
-.crux-ListShuttle .buttonsColumn button:before
-{
-    position:absolute;
-    color:white;
-    text-shadow:0 1px 1px rgba(0,0,0,0.2);
-    z-index:4;
-    font-size:17px;
+	background-color: rgba(0, 0, 0, 0.2);
+	position: fixed !important;
+	z-index:8;
 }
 
-.crux-ListShuttle .buttonsColumn button:nth-child\(1\):before
+.crux-InfinityProgressBar
 {
-    content:'\25bc';
-}
-.crux-ListShuttle .buttonsColumn button:nth-child\(2\):before
-{
-    content:'\25bc \ \25bc';
-    width:1px;
-    line-height:6px;
-    margin-top:5px;
-    left:50%;
-    margin-left:-7px
-}
-.crux-ListShuttle .buttonsColumn button:nth-child\(3\):before
-{
-    content:'\25b2';
-}
-.crux-ListShuttle .buttonsColumn button:nth-child\(4\):before
-{
-    content:'\25b2 \ \25b2';
-    width:1px;
-    line-height:6px;
-    margin-top:3px;
-    left:50%;
-    margin-left:-7px
-}
-.crux-ListShuttle .buttonsColumn button:last-child
-{
-    border-radius:0 3px 3px 0;
+	width: 100%;
+	height: 1px;
+	position: relative;
 }
 
-.crux-ListShuttle fieldset
+.crux-InfinityProgressBar .progressBarSlot
 {
-    border:1px solid #aaa;
-    border-radius:3px;
-    padding:0;
-    box-shadow:0 2px 2px rgba(0,0,0,0.1) inset;
-    background:#fff;
-}
-.crux-ListShuttle fieldset div div div
-{
-    padding:10px;
-    border-bottom:1px solid #ccc;
-}
-.crux-ListShuttle fieldset div div div:last-child
-{
-    border-bottom:none
-}
-.crux-ListShuttle fieldset legend
-{
-    background:#aaa;
-    padding:2px 11px;
-    border-radius:25px;
-    margin-left:2%;
-    font-weight:normal;
-    color:white;
-    font-size:17px;
+	width: 100%;
+	height: 1px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	border-top: solid 2px #EEE;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
-.crux-ListShuttle fieldset > div
+.crux-InfinityProgressBar .progressBarFill
 {
-    height:180px;
-    overflow-y:auto;
-    -webkit-overflow-scrolling: touch;
+	height: 1px;
+	border-top: solid 2px #B1DA62;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	box-shadow: 0px 0px 20px rgba(161,202,82,0.7);
+	-webkit-animation: crux-InfinityProgressBarAnimation 2s linear infinite;
+	animation: crux-InfinityProgressBarAnimation 2s linear infinite;
 }
 
-.crux-ListShuttle fieldset > div *
+.crux-FileUploader .chooseButton
 {
-    -webkit-transform: translateZ(0px);
+	cursor: pointer;
 }
 
-/****************************************************************************/
-/* DIALOG */
-.crux-DialogViewContainer,
-.crux-Dialog,
-.popupContent,
-.crux-ColorPickerDialog,
-.grid-detail-dialog
-{
-    width:90%;
-    height:auto;
-    overflow:auto;
-    
-    border-radius:3px;
-    box-shadow:0 0 0 1px rgba(0, 0, 0, 0.2), 0 0 7px 1px rgba(0, 0, 0, 0.4);
-    background:#fff;
-    
-    z-index:10;
-    
-    left:5% !important;
-    top:10% !important;
-    position:absolute;
-}
-
-.crux-DialogViewContainer .dialogTop > td,
-.popupContent .dialogTopBar,
-.crux-ColorPickerDialog .dialogTop > td
-{
-    background:#f7f7f7;
-    color:#4496c6;
-    box-shadow:0 -2px #EAEAEA inset, 0 1px 0 #D1D1D1;
-    padding:11px 2px;
-}
-.crux-ProgressBox .dialogTopBar{
-    background:transparent;
-    box-shadow:none;
-}
-.crux-DialogViewContainer .dialogTop .dialogTopCenter .dialogTopCenterInner,
-.popupContent .dialogTopBar{
-    text-align:center;
-}
-.crux-DialogViewContainer .dialogTop .dialogTopLeft{
-    border-radius:3px 0 0 0;
-}
-.crux-DialogViewContainer .dialogTop .dialogTopRight{
-    border-radius:0 3px 0 0;
-}
-
-.crux-DialogViewContainer .dialogMiddle .dialogMiddleCenter, .popupContent .dialogBody{
-    padding:10px;
-    text-align:center;
-}
-.crux-DialogViewContainer .dialogMiddle .dialogContent .crux-Button{
-    margin-top:10px;
-}
-.crux-DialogViewContainer .closeButton{
-    position: absolute;
-    border-radius:0 3px 0 0;
-    top:0;
-    right:0;
-    width:40px;
-    height:41px;
-    border:none;
-    background:svgIconClose no-repeat center center #EAEAEB;
-}
-
-.dialogGlass{
-    background:rgba(0,0,0,0.5);
-}
-.crux-ProgressBox{
-    max-width:70%;
-    height: 60px;
-    z-index:10px;
-    position: static !important;
-}
-.crux-ProgressBox .dialogTopBar
-{
-    box-shadow: none;
-    padding-top: 6px;
-}
-.crux-ProgressBox .dialogBody
-{
-    padding-left:20px;
-    padding-right:20px;
-    padding-top: 0px;
-}
-
-
-/***********************************************/
-/*---------------------------------------------*/
 .crux-FileUploader .dropArea
 {
     border-style: dashed;
-    min-height: 160px;
-    background-image: uploadIcon;
-    background-position: center;
-    background-repeat: no-repeat;
+	min-height: 160px;
+	background: uploadIcon no-repeat center #f5f5f5;
+	box-shadow:none;
 }
+
 .crux-FileUploader .filesArea
 {
-    background-color: #FFFFFF;
-}
-.crux-FileUploader .filePanel
-{
-    border: solid #eaeaea 1px;
-    border-radius: 2px;
-    box-shadow: 0 0 10px rgba(90,90,90,0.1);
-    background-image: -webkit-linear-gradient(top,rgba(255,255,255,1)80%,rgba(240,240,240,0.3));
-    padding: 10px;
-    width:calc(100% - 20px);
-    position: relative;
-    width: 100%;
-    height: 60px;
+	background-color:#f5f5f5;
 }
 
-.crux-FileUploader .filePanel .cancelUploadButton
+.crux-FileUploader .filePanel .thumbnailImage
 {
-    width: 30px;
-    height: 40px;
-    position: absolute;
-    right: 0;
-    top: 9px;
-    border: none;
-    background:svgIconClose no-repeat center center rgba(0,0,0,0.05);
-    background-size:50% auto;
-    margin: 0px;
-    border-radius: 4px 0 0 4px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-right: none;
+	border: solid 1px #c0c0c0;
+	height: 40px;
+	width: 40px;
+	display: inline;
+	position: absolute;
+	top: 8px;
+	left: 8px;
 }
 
-.crux-FileUploader .filePanel .gwt-Label
+.crux-FileUploader .filePanel .thumbnailImage.noPreview
 {
-    width: 220px;
-    text-overflow:ellipsis;
-    margin-left: 10px;
-    color: #4C6879;
-    position: absolute;
-    left: 55px;
-    top: 6px;
-    text-align: left;
-    padding: 0px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    margin: 0px;
-    white-space: nowrap;
-}
-.crux-FileUploader .fileInputButton{
-    padding:22px 18px;
-    line-height:44px;
-    margin-top:10px;
+	background:svgIconFile no-repeat center 6px #eee;
+	color:#777;
+	font-size:10px;
+	text-align:center;
+	line-height:56px;
+	letter-spacing:-1px;
+	padding-right:3px;
 }
 
-.crux-FlatMessageBox
+.crux-FileUploader .filePanel .crux-ProgressBar
 {
-    z-index:10;
-    width:100%;
-    left:0 !important;
+	width: 280px;
+	border-radius: 1px;
+	height: 18px;
+	position: absolute;
+	top: 30px;
+	left: 55px;
+	margin: 0px;
+	padding: 0px;
+	border-top: solid 2px #EEE;;
 }
 
-@if user.agent ie8
+.crux-FileUploader .filePanel .crux-ProgressBar .percentBar
 {
-	.crux-FlatMessageBox
-	{
-	    border:1px solid #aaa;
-	}
-}
-
-.crux-FlatMessageBox .dialogTopBar
-{
-    opacity:0;
-}
-.crux-FlatMessageBox .dialogBody
-{
-    font-weight:normal;
-}
-.detail-icon{
-    background: svgIconDetail no-repeat center #4496C6;
-    background-size:16px auto;
-    border-radius:3px;
-    margin:2px;
-    border:none;
-}
-
-.grid-detail-dialogbox
-{
-    font-size: 14px;
-    background-color: rgba(255,255,255,1.0);
-    border: 1px solid #aaa;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    padding:0;
-    border-radius: 6px;
-    z-index: 98;
-    color: #000;
-    overflow:hidden;
-}
-
-.grid-detail-dialogbox .detail-key
-{
-    font-weight:bold;
-    width:90px;
-    padding-right:8px;
-}
-
-.grid-detail-dialogbox .dialogContent > table
-{
-    margin-bottom:2px;
-}
-
-.grid-detail-dialogbox .dialogContent > table > tbody > tr > td
-{
-    border: 1px solid #CCC;
-    border-collapse: collapse;
-    padding: 5px;
-}
-
-.grid-detail-dialogbox .dialogContent > table > tbody > tr:first-child
-{
-    display:none;
-}
-
-.grid{
-    margin:20px 0;
-}
-
-.grid tr
-{
-    height: 31px;
-}
-
-.grid td
-{
-    border: 1px solid #D4D4D4;
-    min-width: 100px;
-    background: #FFF !important;
-}
-
-.grid th
-{
-    background: #E4F6F1 !important;
-}
-
-.grid .columnHeadersRow .columnHeader table td
-{
-    border:none;
-    background:none !important;
-    color:#1c5994;
-    font-weight:bold;
-}
-.grid .columnHeadersRow .columnHeader table td .label
-{
-    padding:0 10px;
-}
-.grid .gwt-Label, .grid .crux-MaskedLabel
-{
-    color:#222;
-    text-align:left;
-    padding:0 10px;
-}
-.grid .columnHeader
-{
-    background:#f7f7f7;
-    box-shadow:0 -2px 0 #eaeaea inset;
-}
-.grid .columnSorter
-{
-    text-align:left;
-}
-.grid .columnSorter table{
-    width:100%;
-}
-.grid .columnSorter.columnSorter-asc .arrow
-{
-    width:0;
-    height:0;
-    float:right;
-    margin-right:10px;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;    
-    border-bottom: 5px solid #111;
-}
-.grid .columnSorter.columnSorter-desc .arrow
-{
-    width:0;
-    height:0;
-    float:right;
-    margin-right:10px;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;    
-    border-top: 5px solid #111;
-}
-.grid .crux-Cell .columnHeader .columnSorter
-{
-    cursor:pointer;
+	height: 18px !important;
+	border-radius: 1px;
+	border-top: solid 2px #A1CA52;
+	color: #618A12;
+	font-size: 11px;
+	line-height: 18px;
+	padding-left: 1px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	position: absolute;
+	top: -2px;
 }
 
 /****************
-    StoryBoard
+   ColorPicker
 ****************/
-
-.crux-Storyboard .item .storeItem, .crux-Storyboard .item .storeItem .crux-StyledPanel
+.crux-ColorPickerDialog .manualPicker
 {
-    display:block !important;
+	width: 90px;
+  	margin-top: 5px;
 }
 
-.crux-Storyboard .item
+.crux-ColorPickerDialog .previewPanel
 {
-    padding:0 10px;
-    height:auto !important;
+	width:20px;
+	height:20px;
+	float:right;
+	border-radius:2px;
+	margin-right:3px;
+	margin-top:-44px;
 }
 
-.crux-Storyboard .item .crux-StyledPanelOuter
+.crux-ColorPickerDialog .crux-SaturationLightnessPicker
 {
-    padding:0;
+	box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.07), 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
-/****************
-    PromoBanner
-****************/
-
-.promoBannerImage
+.crux-ColorPickerDialog .crux-HuePicker
 {
-    background-repeat:no-repeat;
-    background-position:center center;
-    background-color:#acdf53;
-    color:white;
+	margin-left:10px;
 }
 
-.messagePanel
+.crux-ColorPickerDialog .dialogMiddleCenter
 {
-    width:100%;
-    height:100%;
+	padding:10px 0 10px 3px;
 }
-
-.messagePanel td
-{
-    vertical-align:middle !important;
-}
-
-.messagePanel .title
-{
-    text-align:center;
-    font-size:30px;
-    text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1), 0 3px 2px rgba(0,0,0,0.1);
-    color:#fff;
-}
-
-.messagePanel .text
-{
-    text-align:center;
-    color:#fff;
-    font-size:17px;
-    text-shadow:0 1px 0 rgba(0,0,0,0.1), 0 2px 1px rgba(0,0,0,0.1);
-    
-}
-
-.bannersArea
-{
-    margin:10px;
-    border-radius:5px;
-    overflow:hidden;
-}
-
-.bullets
-{
-    margin:10px 0 10px 10px;
-}
-
-.bullets .bullet
-{
-    width:8px;
-    height:8px;
-    background:rgba(0,0,0,0.4);
-    border-radius:10px;
-    margin-right:10px;
-}
-
-.bullets .bullet.bullet-active
-{
-    background:rgba(0,0,0,0.7);
-}
-
-@if user.agent ie8
-{
-	.bannersArea .leftArrow, .bannersArea .rightArrow
-	{
-		background:#333;
-    	width:50px;
-    	height:90px;
-    	border-radius:4px 0 0 4px;
-	}
-	
-	.bannersArea .leftArrow:before, .bannersArea .rightArrow:before
-	{
-		content:'';
-		position:absolute;
-		top:50%;
-		left:50%;
-		margin-top:-9px;
-		margin-left:-7px;
-	}
-	
-	.bannersArea .leftArrow:before
-	{
-		border-right:9px solid #fff;
-		border-top:9px solid transparent;
-		border-bottom:9px solid transparent;
-	}
-	
-	.bannersArea .rightArrow:before
-	{
-		margin-left:-5px;
-		border-left:9px solid #fff;
-		border-top:9px solid transparent;
-		border-bottom:9px solid transparent;
-	}
-}
-
-@if user.agent ie9 {
-	.bannersArea .rightArrow:hover
-	{
-		background:rightArrow no-repeat center rgba(0,0,0,0.35);
-	    background-size:22px auto;
-	}
-	
-	.bannersArea .leftArrow:hover
-	{
-	    background:leftArrow no-repeat center rgba(0,0,0,0.35);
-	    background-size:22px auto;
-	}
-	
-	.bannersArea .leftArrow, .bannersArea .rightArrow
-	{
-		width:50px;
-	    height:90px;
-	    background-size:22px auto;
-	    border-radius:4px 0 0 4px;
-	}
-	
-	.bannersArea .leftArrow
-	{
-	    background:leftArrow no-repeat center rgba(0,0,0,0.2);
-	}
-	
-	.bannersArea .rightArrow
-	{
-	    background:rightArrow no-repeat center rgba(0,0,0,0.2);
-	}
-	
-	.bannersArea .messagePanel tbody tr:first-child td:first-child
-	{
-		height:140px;
-	}
-}
-
-@if !user.agent ie8 ie9 {
-	.bannersArea .leftArrow
-	{
-	    background:leftArrow no-repeat center rgba(0,0,0,0.2);
-	    border-radius:0 4px 4px 0;
-	}
-	
-	.bannersArea .rightArrow
-	{
-	    background:rightArrow no-repeat center rgba(0,0,0,0.2);
-	    border-radius:4px 0 0 4px;
-	}
-
-	.bannersArea .leftArrow, .bannersArea .rightArrow
-	{
-    	width:50px;
-	    height:90px;
-	}
-}
-
-
-/****************
-   ScrollBanner
-****************/
-
-.crux-ScrollBanner
-{
-    padding:10px;
-    background:#fff;
-}
-
-.crux-ScrollBanner > tbody > tr > td:first-child
-{
-    width:100% !important;
-}
-
-.crux-ScrollBanner > tbody > tr > td:last-child
-{
-    width:50px !important;
-}
-
-
-.crux-ScrollBanner .message
-{
-    padding:10px;
-    letter-spacing: -1px;
-}
-
-.crux-ScrollBanner .messageCount
-{
-    border-left:1px solid #ccc;
-    font-size:15px;
-    padding:6px 0 6px 1px;
-    margin-left:1px;
-}
-
-.crux-ScrollBanner .previousMessageButton, .crux-ScrollBanner .nextMessageButton
-{
-    margin-bottom:0;
-    margin-left:1px;
-    padding:8px 14px;
-}
-
-.crux-ScrollBanner .previousMessageButton .gwt-Label
-{
-    width:0;
-    height:0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;    
-    border-bottom: 5px solid #fff;
-}
-
-.crux-ScrollBanner .nextMessageButton .gwt-Label
-{
-    width:0;
-    height:0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;    
-    border-top: 5px solid #fff;
-    margin-top:1px;
-}
-
 
 /****************
     StackMenu
 ****************/
 
-.crux-StackMenu
+.crux-StackMenu .crux-StackMenuItem .item
 {
-    width:100%;
+    background:#4496c6;
+    border:1px solid #1a6299;
+    color:#fff;
+    font-weight:bold;
+    font-size:13px;
+    margin-top:-1px;
+    position:relative;
+    z-index:3;
+}
+
+.crux-StackMenu .crux-StackMenuItem .item .hasSubItems div
+{
+    content:'';
+    position:absolute;
+    top:15px;
+    right:10px;
+    width:0;
+    height:0;
+    border-left: 5px solid #fff;
+    border-top: 5px solid transparent;  
+    border-bottom: 5px solid transparent;
+}
+
+.crux-StackMenu .crux-StackMenuItem .item.item-open .hasSubItems div
+{
+    content:'';
+    position:absolute;
+    top:17px;
+    right:10px;
+    width:0;
+    height:0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;    
+    border-top: 5px solid #fff;
+}
+
+.crux-StackMenu .crux-StackMenuItem .item tbody tr:first-child, .crux-StackMenuItem .item tbody tr:last-child
+{
+    display:none;
+}
+
+.crux-StackMenu .crux-StackMenuItem .item-border-w, .crux-StackMenuItem .item-border-e
+{
+    width:1px;
+}
+
+.crux-StackMenu .crux-StackMenuItem .itemLabel
+{
+    padding:10px;
+}
+
+.crux-StackMenu .crux-StackMenuItem .crux-StackMenuItem .item
+{
+    background:#fff;
+    border:1px solid #ccc;
+    color:#555;
+    font-weight:normal;
+    z-index:1;
+}
+
+.crux-StackMenu .crux-StackMenuItem .crux-StackMenuItem .crux-StackMenuItem .item
+{
+    background:#eee;
+    border:1px solid #ccc;
+    color:#555;
+    z-index:2;
+}
+
+.crux-StackMenu .crux-StackMenuItem .crux-StackMenuItem .item .hasSubItems div
+{
+    content:'';
+    position:absolute;
+    top:15px;
+    right:10px;
+    width:0;
+    height:0;
+    border-left: 5px solid #333;
+    border-top: 5px solid transparent;  
+    border-bottom: 5px solid transparent;
+}
+
+.crux-StackMenu .crux-StackMenuItem .crux-StackMenuItem .item.item-open .hasSubItems div
+{
+    content:'';
+    position:absolute;
+    top:17px;
+    right:10px;
+    width:0;
+    height:0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;    
+    border-top: 5px solid #333;
+}
+
+.crux-StackMenu .itemLabel
+{
+    cursor:pointer;
+    font-size:13px;
 }
 
 .crux-StackMenu .item-border-nw,
@@ -1042,16 +887,106 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	line-height:0;
 	padding:0;
 }
-
+	
 .item-border-w
 {
 	display:none !important;
 	background:red;
 }
-
+	
 .crux-StackMenu colgroup
 {
 	display:none;
+}
+
+/****************
+    DatePicker
+****************/
+.crux-DatePicker
+{
+	background:#eee;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.17), 0 3px 10px rgba(0, 0, 0, 0.1);
+	border-radius:2px;
+	overflow:hidden;
+}
+
+.crux-DatePicker .datePickerDays
+{
+	border-collapse:collapse;
+	background:#fff;
+}
+
+.crux-DatePicker .datePickerDays tbody tr td
+{
+	border:1px solid #ccc;
+}
+
+.crux-DatePicker .datePickerDays tbody tr td:first-child
+{
+	border-left:none;
+}
+
+.crux-DatePicker .datePickerDays tbody tr td:last-child
+{
+	border-right:none;
+}
+
+.crux-DatePicker .datePickerDays tbody tr:last-child td
+{
+	border-bottom:none;
+}
+
+.crux-DatePicker .datePickerDays .datePickerDay
+{
+	padding:6px;
+	font-size:11px;
+	cursor:default;
+}
+
+.crux-DatePicker .datePickerDays .datePickerDay:hover
+{
+	background:#f5f5f5;
+}
+
+.crux-DatePicker .datePickerDays .datePickerWeekdayLabel,
+.crux-DatePicker .datePickerDays .datePickerWeekendLabel
+{
+	background:rgba(51, 51, 51, 0.55);
+	color:#fff;
+	border:1px solid #5C5C5C;
+	font-size:11px;
+	text-align:center;
+}
+
+.crux-DatePicker .datePickerMonthSelector
+{
+	width:100%;
+}
+
+.crux-DatePicker .datePickerMonthSelector td[width="100%"]
+{
+	text-align:center;
+}
+
+.crux-DatePicker .datePickerMonthSelector td
+{
+	box-shadow:0 -2px rgba(0,0,0,0.04) inset;
+}
+
+.crux-DatePicker .datePickerMonthSelector td > div
+{
+	padding:5px;
+	cursor:pointer;
+}
+
+.crux-DatePicker .datePickerMonthSelector td:hover
+{
+	background:#e0e0e0;
+}
+
+.crux-DatePicker .datePickerMonthSelector td[width="100%"]:hover
+{
+	background:none;
 }
 
 /****************
@@ -1100,134 +1035,100 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 
 
 /****************
-    ColorPicker
+     ListBox
 ****************/
 
-.crux-ColorPickerDialog > div > table
+.gwt-ListBox
 {
-    width:100%;
+	margin-bottom:10px;
+	color:#444;
+	padding:8px 8px;
+	border-radius:1px;
+	background:#f8f8f8;
+	border:1px solid #92aec8;
+	box-shadow:0 1px 3px rgba(0,0,0,0.1);
 }
 
-.crux-ColorPickerDialog table
+.gwt-ListBox:hover
 {
-    margin:0 auto;
-    text-align:center;
+	border:1px solid #5c87b0;
 }
 
-.crux-ColorPickerDialog .PickerButtons .crux-Button
+.gwt-ListBox:active
 {
-    background:transparent;
-    color:#222;
-    text-shadow:none;
-    border:1px solid #CCC;
-    float:left;
-    width:50%;
-    margin-left:-1px;
-    margin-top:10px;
+	box-shadow:0 1px 3px rgba(0,0,0,0.1) inset;
+}
+
+.gwt-ListBox:disabled
+{
+	background:#e5e5e5;
+	color:#887;
+	border:1px solid #a5a5a5;
+	box-shadow:0 1px 0 #eaeaea inset, 0 1px 3px rgba(0,0,0,0.1);
 }
 
 
 /****************
-   SingleSelect
+   RandomPager
 ****************/
 
-.crux-SingleSelect
+.crux-RandomPager
 {
-    width:100% !important;
-    display:block;
-    margin-bottom:10px;
+	border-radius:3px;
+	border:1px solid #ccc;
+	background:#fff;
+	overflow:hidden;
+	box-shadow:0 1px 3px rgba(0,0,0,0.05);
 }
 
-
-/****************
-  Tableless Grid
-****************/
-
-.crux-AbstractTablelessGridStructure .cellWrapper
+.crux-RandomPager .gwt-ListBox
 {
-	display:inline-table !important;
-	margin-left:-1px !important;
-	margin-top:-5px !important;
+	margin:5px 10px;
 }
 
-.crux-AbstractTablelessGridStructure .detail-icon
+.crux-RandomPager td
 {
-	margin:0;
+	border-right:1px solid #ccc;
 }
 
-
-/****************
-     DateBox
-****************/
-
-.crux-Slider > div
+.crux-RandomPager td:hover
 {
-	height:100%;
+	background:#efefef;
 }
 
-
-/****************
-     DateBox
-****************/
-
-.crux-popupPanel,
-.crux-DatePicker
+.crux-RandomPager td:first-child
 {
-	width:100%;
+	border-radius:3px 0 0 3px;
 }
 
-.crux-DatePicker .datePickerMonthSelector,
-.crux-DatePicker .datePickerDays
+.crux-RandomPager td:last-child
 {
-	width:100% !important;
+	border-radius:0 3px 3px 0;
 }
 
-.crux-DatePicker .datePickerDays
+.crux-RandomPager .firstButton
 {
-	height:auto !important;
+	background:svgIconPaginatorFirst no-repeat center;
+	background-size:10px auto;
 }
 
-.crux-DatePicker .datePickerDays .datePickerDay
+.crux-RandomPager .previousButton
 {
-	padding:13px;
+	background:svgIconPaginatorPrev no-repeat center;
+	background-size:10px auto;
 }
 
-.crux-DatePicker .datePickerMonthSelector td
+.crux-RandomPager .nextButton
 {
-	text-align:center;
+	background:svgIconPaginatorNext no-repeat center;
+	background-size:10px auto;
 }
 
-
-/****************
- SequentialPager
-****************/
-
-@if user.agent ie8
+.crux-RandomPager .lastButton
 {
-.crux-SequentialPager .firstButton:before
-{
-	content:'<<';
+	background:svgIconPaginatorLast no-repeat center;
+	background-size:10px auto;
 }
-
-.crux-SequentialPager .previousButton:before
-{
-	content:'<';
-}
-
-.crux-SequentialPager .nextButton:before
-{
-	content:'>';
-}
-
-.crux-SequentialPager .lastButton:before
-{
-	content:'>>';
-}
-}
-
-/****************
- RandomPager
-****************/
 
 @if user.agent ie8
 {
@@ -1261,9 +1162,194 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	
 }
 
+.crux-RandomPager td button
+{
+	display:block;
+	border:0;
+	padding:12px;
+}
+
+.crux-RandomPager .nextButton-disabled,
+.crux-RandomPager .previousButton-disabled
+{
+	opacity:0.4;
+	cursor:not-allowed;
+}
+
+
 /****************
-  SortableList
+ SequentialPager
 ****************/
+
+.crux-SequentialPager
+{
+	border-radius:3px;
+	border:1px solid #ccc;
+	background:#fff;
+	overflow:hidden;
+	box-shadow:0 1px 3px rgba(0,0,0,0.05);
+}
+
+.crux-SequentialPager .gwt-ListBox
+{
+	margin:5px 10px;
+}
+
+.crux-SequentialPager td
+{
+	border-right:1px solid #ccc;
+}
+
+.crux-SequentialPager td:hover
+{
+	background:#efefef;
+}
+
+.crux-SequentialPager td:first-child
+{
+	border-radius:3px 0 0 3px;
+}
+
+.crux-SequentialPager td:last-child
+{
+	border-radius:0 3px 3px 0;
+}
+
+.crux-SequentialPager td:nth-child\(2\):hover
+{
+	background:inherit;
+}
+
+.crux-SequentialPager .firstButton
+{
+	background:svgIconPaginatorFirst no-repeat center;
+	background-size:10px auto;
+}
+
+.crux-SequentialPager .previousButton
+{
+	background:svgIconPaginatorPrev no-repeat center;
+	background-size:10px auto;
+}
+
+.crux-SequentialPager .nextButton
+{
+	background:svgIconPaginatorNext no-repeat center;
+	background-size:10px auto;
+}
+
+.crux-SequentialPager .lastButton
+{
+	background:svgIconPaginatorLast no-repeat center;
+	background-size:10px auto;
+}
+
+@if user.agent ie8
+{
+.crux-SequentialPager .firstButton:before
+{
+	content:'<<';
+}
+
+.crux-SequentialPager .previousButton:before
+{
+	content:'<';
+}
+
+.crux-SequentialPager .nextButton:before
+{
+	content:'>';
+}
+
+.crux-SequentialPager .lastButton:before
+{
+	content:'>>';
+}
+}
+
+.crux-SequentialPager td button
+{
+	display:block;
+	border:0;
+	padding:12px;
+}
+
+.crux-SequentialPager .currentPageLabel
+{
+	padding:5px 10px;
+}
+
+.crux-SequentialPager .nextButton-disabled,
+.crux-SequentialPager .previousButton-disabled
+{
+	opacity:0.4;
+	cursor:not-allowed;
+}
+
+
+/****************
+  TablelessGrid
+****************/
+
+.crux-AbstractTablelessGridStructure .cellWrapper
+{
+	display:inline-table !important;
+	margin-left:-1px !important;
+	margin-top:-1px !important;
+	vertical-align:top;
+}
+
+.crux-AbstractTablelessGridStructure .cellWrapper.cellWrapper-rowSelectionColumn td
+{
+	background:#f3f3f3 !important;
+}
+
+.crux-AbstractTablelessGridStructure .cellWrapper input
+{
+	margin-bottom:0 !important;
+}
+
+.crux-AbstractTablelessGridStructure .cellWrapper .crux-Cell .gwt-Label
+{
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap !important;
+}
+
+.crux-AbstractTablelessGridStructure td
+{
+	min-width:initial !important;
+}
+
+
+/******************************************************************************
+    SortableList
+*******************************************************************************/
+
+.crux-sortableList .buttonsColumn button
+{
+	position:relative;
+	text-indent:-9999px;
+}
+
+.crux-sortableList .buttonsColumn button:before
+{
+	content:'';
+	width:0;
+	height:0;
+	position:absolute;
+	top:50%;
+	left:50%;
+	margin:-4px 0 0 -4px;
+}
+
+.crux-sortableList .buttonsColumn button:first-child:before
+{
+	border-bottom:8px solid white;
+	border-left:7px solid transparent;
+	border-right:7px solid transparent;
+}
+
 
 .crux-sortableList .buttonsColumn button:first-child + button:before
 {
@@ -1271,3 +1357,70 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 	border-left:7px solid transparent;
 	border-right:7px solid transparent;
 }
+
+
+
+
+
+
+
+
+
+
+@if user.agent ie8
+{
+	.crux-FlatMessageBox
+	{
+	    border:1px solid #ccc;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@-webkit-keyframes crux-InfinityProgressBarAnimation
+{
+	0%   {width:0%;left:0%}
+	14%  {width:40%;left:0%;}
+	28%  {width:0%;left:50%;}
+	42%  {width:40%;left:50%;}
+	56%  {width:0%;left:100%;}
+	85%  {width:100%;left:0%}
+    100% {width:0%;left:0%}
+}
+@keyframes crux-InfinityProgressBarAnimation
+{
+	0%   {width:0%;left:0%}
+	14%  {width:40%;left:0%;}
+	28%  {width:0%;left:50%;}
+	42%  {width:40%;left:50%;}
+	56%  {width:0%;left:100%;}
+	85%  {width:100%;left:0%}
+    100% {width:0%;left:0%}
+}	
