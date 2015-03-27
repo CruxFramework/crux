@@ -3,6 +3,7 @@
 @url svgIconArrow svgIconArrow;
 @url svgIconPlay svgIconPlay;
 @url svgIconPause svgIconPause;
+@url svgIconClose svgIconClose;
 @url gridSaveIcon gridSaveIcon;
 @url gridCancelIcon gridCancelIcon;
 @url gridEditIcon gridEditIcon;
@@ -253,7 +254,7 @@
 }
 .flapCloseButton:before 
 {
-    content: "X" !important;
+    content: "";
     color: rgb(255, 255, 255);
     padding-right: 1px;
     font-family: arial;
@@ -263,6 +264,15 @@
     right: 8px;
     transition: all ease-in-out 0.1s;
 }
+
+@if user.agent ie8
+{
+	.flapCloseButton:before 
+	{
+		content: "X" !important;
+	}
+}
+
 .flapCloseButton:hover 
 {
     font-size: 14px;
@@ -629,25 +639,33 @@
     text-align: center;
     font-size: 18px;
 }
+
 .crux-ProgressBox .dialogTitle{
     font-size:12px;
     margin-top:6px;
 }
+
 .crux-Dialog .dialogCloseButton
 {
-    position: absolute;
-    right: 2px;
-    top: 2px;
-    background: rgba(0, 0, 0, 0);
-    border: none;
     cursor: pointer;
+    position:absolute;
+    top:12px;
+    right:12px;
+    width:16px;
+    height:16px;
+    border:none;
+    background:svgIconClose;
+    background-size:100% auto;
 }
-.crux-Dialog .dialogCloseButton:after 
+
+@if user.agent ie8
 {
-    content: "X";
-    color: #4496C6;
-    font-size: 18px;
+	.crux-Dialog .dialogCloseButton:before
+	{
+		content:"X";
+	}
 }
+
 .crux-Dialog .dialogBody, .crux-ProgressBox .dialogBody, .crux-FlatMessageBox .dialogBody
 {
     overflow:auto;
@@ -755,7 +773,6 @@
     opacity:0;
 }
 .crux-FlatMessageBox .dialogBody{
-    margin-top:0;
     padding:20px 5px 0;
     height:100%;
 }
