@@ -23,7 +23,7 @@ public class CrawlingUtils
 {
 	public static String getStaticPageFor(String page, String escapedFragment)
 	{
-		if (page != null && escapedFragment != null && escapedFragment.length() > 0)
+		if (page != null && escapedFragment != null && escapedFragment.trim().length() > 0)
 		{
 			return page.replaceAll(".html", "")+"_"+escapedFragment.replaceAll("\\W", "_")+".html";
 		}
@@ -36,6 +36,10 @@ public class CrawlingUtils
 		if (!applicationBaseURL.endsWith("/"))
 		{
 			applicationBaseURL = applicationBaseURL+"/";
+		}
+		if (escapedFragment == null || escapedFragment.trim().length() == 0)
+		{
+			return applicationBaseURL + page;
 		}
 		return applicationBaseURL + page+"#!"+escapedFragment;
 	}
