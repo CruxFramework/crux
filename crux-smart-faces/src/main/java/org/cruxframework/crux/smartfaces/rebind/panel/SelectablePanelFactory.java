@@ -37,10 +37,12 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="selectablePanel", targetWidget=SelectablePanel.class)
+@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="selectablePanel", targetWidget=SelectablePanel.class, 
+					description="A Panel that support select events.")
 
 @TagAttributes({
-	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false")
+	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
+						description="If true, the html will call preventDefault on all touch events.")
 })
 @TagEvents({
 	@TagEvent(SelectEvtBind.class)
