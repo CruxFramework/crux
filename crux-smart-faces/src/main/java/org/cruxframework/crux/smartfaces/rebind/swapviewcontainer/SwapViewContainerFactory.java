@@ -23,7 +23,6 @@ import org.cruxframework.crux.core.rebind.screen.views.ChangeViewEvtBind;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributes;
@@ -34,8 +33,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstrain
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.core.shared.Experimental;
-import org.cruxframework.crux.smartfaces.client.swappanel.SwapViewContainer;
-import org.cruxframework.crux.smartfaces.rebind.Constants;
 
 class SwapContainerContext extends WidgetCreatorContext
 {
@@ -48,7 +45,7 @@ class SwapContainerContext extends WidgetCreatorContext
  * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
 @Experimental
-@DeclarativeFactory(id="swapViewContainer", library=Constants.LIBRARY_NAME, targetWidget=SwapViewContainer.class)
+//@DeclarativeFactory(id="swapViewContainer", library=Constants.LIBRARY_NAME, targetWidget=SwapViewContainer.class)
 @TagChildren({
 	@TagChild(SwapViewContainerFactory.ViewProcessor.class)
 })
@@ -62,9 +59,11 @@ class SwapContainerContext extends WidgetCreatorContext
 })
 public class SwapViewContainerFactory extends WidgetCreator<SwapContainerContext>
 {
-    @TagConstraints(minOccurs="0", maxOccurs="unbounded", tagName="view")
+    @TagConstraints(minOccurs="0", maxOccurs="unbounded", tagName="view", 
+    		description="A view to be rendered into this view container.")
     @TagAttributesDeclaration({
-    	@TagAttributeDeclaration(value="name", required=true),
+		@TagAttributeDeclaration(value="id", description="The view identifier."),
+		@TagAttributeDeclaration(value="name", required=true, description="The name of the view."),
     	@TagAttributeDeclaration(value="active", type=Boolean.class, defaultValue="false")
     })
     public static class ViewProcessor extends WidgetChildProcessor<SwapContainerContext> 
@@ -78,6 +77,13 @@ public class SwapViewContainerFactory extends WidgetCreator<SwapContainerContext
     		{
     			active = Boolean.parseBoolean(activeProperty);
     		}
+    		String viewId = context.readChildProperty("id");
+    		String viewName = context.readChildProperty("name");
+    		
+    		if (StringUtils.isEmpty(viewId))
+    		{
+    			viewId = viewName;
+    		}
     		if (active)
     		{
     			if (context.hasActiveView)
@@ -86,7 +92,7 @@ public class SwapViewContainerFactory extends WidgetCreator<SwapContainerContext
     			}
     			context.hasActiveView = true;
     		}
-    		out.println(context.getWidget()+".loadView("+EscapeUtils.quote(context.readChildProperty("name"))+", "+active+");");
+    		out.println(context.getWidget()+".loadView("+EscapeUtils.quote(viewName)+", "+EscapeUtils.quote(viewId)+", "+active+");");
     	}
     }
     
