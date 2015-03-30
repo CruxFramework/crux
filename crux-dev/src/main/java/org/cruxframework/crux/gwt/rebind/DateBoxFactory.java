@@ -43,7 +43,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DateBox.Format;
 
 /**
- * Factory for TabPanel widgets
+ * Factory for DateBox widgets
  * @author Thiago da Rosa de Bustamante
  */
 @DeclarativeFactory(id="dateBox", library="gwt", targetWidget=DateBox.class)
