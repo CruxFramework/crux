@@ -119,6 +119,30 @@ public abstract class CrawlableViewContainer extends ViewContainer
 		}
 		this.historyControlPrefix = historyControlPrefix;
 	}
+	
+	/**
+	 * Return the current history token.
+	 * @return
+	 */
+	public String getCurrentHistoryItem()
+	{
+		return Screen.getCurrentHistoryItem();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isHistoryTarget()
+	{
+		String token = getCurrentHistoryItem();
+		if (token != null && token.startsWith(historyControlPrefix))
+		{
+			return true;
+		}
+		return false;
+	}
+	
 
 	/**
 	 * Return the default historyPrefix
