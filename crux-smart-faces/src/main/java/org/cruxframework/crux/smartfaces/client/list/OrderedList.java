@@ -19,8 +19,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 
 /**
+ * A panel that shows its items as an ordered list (using {@code <ol> and <li>} tags)
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
- *
  */
 public class OrderedList extends AbstractList 
 {	
