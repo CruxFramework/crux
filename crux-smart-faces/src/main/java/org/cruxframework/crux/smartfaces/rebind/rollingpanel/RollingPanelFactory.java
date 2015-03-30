@@ -32,9 +32,11 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(id="rollingPanel", library=Constants.LIBRARY_NAME, targetWidget=RollingPanel.class)
+@DeclarativeFactory(id="rollingPanel", library=Constants.LIBRARY_NAME, targetWidget=RollingPanel.class, 
+					description="A panel to display multiple children inside a scrollable area, adapting to the device used.")
 @TagAttributes({
-	@TagAttribute(value="scrollToAddedWidgets", type=Boolean.class)
+	@TagAttribute(value="scrollToAddedWidgets", type=Boolean.class, 
+			description="If true, when a new widget is added to this panel, the panel scrolls to ensure that the new widget is visible")
 })
 @TagChildren({
 	@TagChild(RollingPanelFactory.WidgetContentProcessor.class)
