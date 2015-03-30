@@ -70,6 +70,7 @@ public class TopMenuDisposal extends BaseMenuDisposal
 	@Override
 	protected String getContentStyleName()
 	{
+		
 		return CONTENT_PANEL_STYLE;
 	}
 	
