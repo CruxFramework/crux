@@ -98,11 +98,6 @@ public abstract class BaseMenuDisposal extends SingleCrawlableViewContainer
 		return this.menu;
 	}
 	
-	public String getCurrentHistoryItem()
-	{
-		return Screen.getCurrentHistoryItem();
-	}
-	
 	@Override
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
 	{
