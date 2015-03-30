@@ -52,6 +52,15 @@
 }
 
 /*************************
+ Dropdown for all
+*************************/
+
+.facesBackboneMenu.faces-Menu-dropdown .faces-Menu-ul .faces-Menu-ul
+{
+	z-index:5;
+}
+
+/*************************
  HorizontalDropdown
 *************************/
 
@@ -64,11 +73,12 @@
 
 .facesBackboneMenu.faces-Menu-horizontal.faces-Menu-dropdown > .faces-Menu-ul
 {
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
+	display: -webkit-inline-box;    /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-inline-box;       /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-inline-flexbox;   	/* TWEENER - IE 10 */
+	display: -webkit-inline-flex;	/* NEW - Chrome */
+	display: inline-flex;      		/* NEW, Spec - Opera 12.1, Firefox 20+ */
+/*	display:flex; */
 	
 	flex-flow: row wrap;
 }
