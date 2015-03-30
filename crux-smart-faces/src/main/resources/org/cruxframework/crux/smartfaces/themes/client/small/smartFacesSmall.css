@@ -14,24 +14,8 @@ body
 	width: 100%;
 	display:block;
 	margin: 0 auto;
+	text-align: center;
 	padding: 14px 14px; 
-}
-
-/* -------------------- RollingPanel -----------------------*/
-
-.faces-itemWrapperRollingPanel 
-{
-  display: table;
-}
-
-.faces-itemWrapperRollingPanel row 
-{
-  display: table-row;
-}
-
-.faces-itemRollingPanel
-{
-	display: table-cell;
 }
 
 /* -------------------- SideMenuDisposal -----------------------*/
