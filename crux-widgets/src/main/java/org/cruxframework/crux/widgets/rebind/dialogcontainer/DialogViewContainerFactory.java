@@ -34,7 +34,8 @@ import org.cruxframework.crux.widgets.client.dialogcontainer.DialogViewContainer
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="dialogViewContainer", library="widgets", targetWidget=DialogViewContainer.class, attachToDOM=false)
+@DeclarativeFactory(id="dialogViewContainer", library="widgets", targetWidget=DialogViewContainer.class, attachToDOM=false, 
+				description="A view container that display its views inside a dialog box")
 @TagChildren({
 	@TagChild(DialogViewContainerFactory.ViewProcessor.class)
 })

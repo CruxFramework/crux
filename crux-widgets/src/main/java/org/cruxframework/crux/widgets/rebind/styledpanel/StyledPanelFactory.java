@@ -30,7 +30,8 @@ import org.cruxframework.crux.widgets.client.styledpanel.StyledPanel;
 /**
  * @author Gesse Dafe
  */
-@DeclarativeFactory(id="styledPanel", library="widgets", targetWidget=StyledPanel.class)
+@DeclarativeFactory(id="styledPanel", library="widgets", targetWidget=StyledPanel.class, 
+	description="A simple panel wrapped by a div, to allow advanced styling techniques.")
 @TagChildren({
 	@TagChild(FlowPanelFactory.WidgetContentProcessor.class)
 })

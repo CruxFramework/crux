@@ -36,7 +36,8 @@ import org.cruxframework.crux.widgets.client.disposal.menutabsdisposal.MenuTabsD
  * @author Gesse Dafe
  *
  */
-@DeclarativeFactory(library="widgets", id="menuTabsDisposal", targetWidget=MenuTabsDisposal.class)
+@DeclarativeFactory(library="widgets", id="menuTabsDisposal", targetWidget=MenuTabsDisposal.class, 
+description="A component to dispose elements on the screen using a menu and a tabPanel.")
 
 @TagChildren({
 	@TagChild(MenuTabsDisposalFactory.MenuChildTagProcessor.class)

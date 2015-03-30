@@ -67,7 +67,7 @@ public class Slider extends Composite implements SliderWidget
 			
 			wrapper = new FlowPanel();
 			slider = new TouchSlider();
-			//fixWidthHeight(slider);
+			fixWidthHeight(slider);
 
 			wrapper.add(slider);
 			initWidget(wrapper);

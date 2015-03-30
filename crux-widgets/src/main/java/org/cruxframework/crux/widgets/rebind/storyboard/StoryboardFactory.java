@@ -54,7 +54,8 @@ class StoryboardContext extends WidgetCreatorContext
 }
 
 
-@DeclarativeFactory(library="widgets", id="storyboard", targetWidget=Storyboard.class)
+@DeclarativeFactory(library="widgets", id="storyboard", targetWidget=Storyboard.class, 
+	description="An element distribution panel that adapts to the type of device.")
 @TagChildren({
 	@TagChild(StoryboardFactory.StoryboardContentProcessor.class)
 })

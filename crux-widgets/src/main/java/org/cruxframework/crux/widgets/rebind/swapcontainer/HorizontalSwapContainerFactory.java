@@ -45,7 +45,8 @@ class HorizontalSwapContainerContext extends WidgetCreatorContext
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="horizontalSwapViewContainer", library="widgets", targetWidget=HorizontalSwapContainer.class)
+@DeclarativeFactory(id="horizontalSwapViewContainer", library="widgets", targetWidget=HorizontalSwapContainer.class, 
+		description="A view container that changes its view using an horizontal swap animation.")
 @TagChildren({
 	@TagChild(HorizontalSwapContainerFactory.ViewProcessor.class)
 })

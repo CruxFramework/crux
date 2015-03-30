@@ -31,7 +31,8 @@ import org.cruxframework.crux.widgets.client.rss.RssPanel;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(id="rssPanel", library="widgets", targetWidget=RssPanel.class)
+@DeclarativeFactory(id="rssPanel", library="widgets", targetWidget=RssPanel.class, 
+	description="a panel to display RSS content.")
 @TagAttributes({
 	@TagAttribute(value="title", required=true, supportsI18N=true),
 	@TagAttribute(value="titleStyleName", supportsResources=true)

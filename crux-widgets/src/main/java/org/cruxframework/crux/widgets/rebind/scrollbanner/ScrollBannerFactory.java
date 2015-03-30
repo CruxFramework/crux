@@ -33,7 +33,8 @@ import org.cruxframework.crux.widgets.client.scrollbanner.ScrollBanner;
  * Factory for Scroll Banner widget
  * @author Gesse S. F. Dafe
  */
-@DeclarativeFactory(id="scrollBanner", library="widgets", targetWidget=ScrollBanner.class)
+@DeclarativeFactory(id="scrollBanner", library="widgets", targetWidget=ScrollBanner.class, 
+	description="A scroller for messages.")
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration("messageScrollingPeriod")
 })

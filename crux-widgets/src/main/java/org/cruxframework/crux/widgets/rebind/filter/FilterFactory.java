@@ -38,7 +38,8 @@ import org.cruxframework.crux.widgets.client.filter.Filterable;
  * Factory for Filter widget
  * @author Gesse S. F. Dafe
  */
-@DeclarativeFactory(id="filter", library="widgets", targetWidget=Filter.class)
+@DeclarativeFactory(id="filter", library="widgets", targetWidget=Filter.class, 
+	description="A filter to suggest values based no the Filterable interface.")
 @TagAttributes({
 	@TagAttribute(value="accessKey", type=Character.class),
 	@TagAttribute(value="autoSelectEnabled", type=Boolean.class),

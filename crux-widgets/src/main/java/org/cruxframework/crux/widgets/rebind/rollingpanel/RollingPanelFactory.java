@@ -55,7 +55,8 @@ class RollingPanelContext extends WidgetCreatorContext
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(id="rollingPanel", library="widgets", targetWidget=CustomRollingPanel.class)
+@DeclarativeFactory(id="rollingPanel", library="widgets", targetWidget=CustomRollingPanel.class, 
+		description="A panel tha display a lot of items on a customized scroll area.")
 @TagAttributes({
 	@TagAttribute(value="nextButtonStyleName", supportsResources=true),
 	@TagAttribute(value="previousButtonStyleName", supportsResources=true),

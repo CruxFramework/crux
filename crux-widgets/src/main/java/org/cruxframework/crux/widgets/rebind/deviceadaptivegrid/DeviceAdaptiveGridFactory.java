@@ -65,7 +65,8 @@ import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
-@DeclarativeFactory(id="adaptiveGrid", library="widgets", targetWidget=DeviceAdaptiveGrid.class)
+@DeclarativeFactory(id="adaptiveGrid", library="widgets", targetWidget=DeviceAdaptiveGrid.class, 
+					description="A pageable data grid that display different things for small devices.")
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="pageSize", type=Integer.class, defaultValue="8"),
 	@TagAttributeDeclaration(value="rowSelection", type=RowSelectionModel.class, defaultValue="unselectable"),

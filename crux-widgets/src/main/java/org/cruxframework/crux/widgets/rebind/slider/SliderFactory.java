@@ -30,7 +30,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.widgets.client.slider.Slider;
 
-@DeclarativeFactory(library="widgets", id="slider", targetWidget=Slider.class)
+@DeclarativeFactory(library="widgets", id="slider", targetWidget=Slider.class, 
+	description="a slider that shows various widgets, allowing touch slides between them.")
 
 @TagAttributes({
 	@TagAttribute(value="circularShowing", type=Boolean.class, defaultValue="false"),

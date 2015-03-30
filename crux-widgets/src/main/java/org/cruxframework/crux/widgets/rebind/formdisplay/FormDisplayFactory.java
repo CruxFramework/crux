@@ -38,7 +38,8 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 /**
  * @author Gesse Dafe
  */
-@DeclarativeFactory(id="formDisplay", library="widgets", targetWidget=FormDisplay.class)
+@DeclarativeFactory(id="formDisplay", library="widgets", targetWidget=FormDisplay.class, 
+		description="A data form that distribute fields according to the device size.")
 @TagChildren({
 	@TagChild(FormDisplayFactory.EntryProcessor.class)
 })		

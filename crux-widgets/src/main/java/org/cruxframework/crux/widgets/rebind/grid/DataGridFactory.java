@@ -29,7 +29,8 @@ import org.cruxframework.crux.widgets.client.grid.Grid;
  *  
  * @author Gesse Dafe
  */
-@DeclarativeFactory(id="dataGrid", library="widgets", targetWidget=Grid.class)
+@DeclarativeFactory(id="dataGrid", library="widgets", targetWidget=Grid.class, 
+		description="A paged data grid component that can use a dataSource to provide data.")
 @TagChildren({
 	@TagChild(value=GridFactory.ColumnProcessor.class, autoProcess=false),
 	@TagChild(value=GridFactory.RowDetailsProcessor.class, autoProcess=false)

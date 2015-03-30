@@ -34,7 +34,8 @@ import org.cruxframework.crux.widgets.rebind.event.SwapEvtBind;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="horizontalSwapPanel", library="widgets", targetWidget=HorizontalSwapPanel.class)
+@DeclarativeFactory(id="horizontalSwapPanel", library="widgets", targetWidget=HorizontalSwapPanel.class, 
+	description="A simple panel that changes its content using an horizontal swap animation.")
 @TagChildren({
 	@TagChild(HorizontalSwapPanelFactory.WidgetContentProcessor.class)
 })

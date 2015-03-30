@@ -40,7 +40,8 @@ import org.cruxframework.crux.widgets.client.maskedlabel.MaskedLabel;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(id="maskedLabel", library="widgets", targetWidget=MaskedLabel.class)
+@DeclarativeFactory(id="maskedLabel", library="widgets", targetWidget=MaskedLabel.class, 
+	description="An information input component that can be associated with a Formatter to guide the user during the filling-out process and ensure the conversion of this information into typed data to be consumed by application")
 @TagAttributes({
 	@TagAttribute(value="text", processor=MaskedLabelFactory.TextAttributeParser.class)
 })

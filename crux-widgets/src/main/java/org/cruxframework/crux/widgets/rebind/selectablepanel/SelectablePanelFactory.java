@@ -38,7 +38,8 @@ import org.cruxframework.crux.widgets.rebind.event.SelectEvtBind;
  * @author    Daniel Martins - <code>daniel@cruxframework.org</code>
  *
  */
-@DeclarativeFactory(library="widgets", id="selectablePanel", targetWidget=SelectablePanel.class)
+@DeclarativeFactory(library="widgets", id="selectablePanel", targetWidget=SelectablePanel.class, 
+		description="A panel that support select events.")
 
 @TagAttributes({
 	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false")

@@ -800,6 +800,10 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 			return columnDefinitions.getLargeColumnDefinitions();
 		}
 
+		public void setRowSelectionModel(RowSelectionModel rowSelectionModel)
+		{
+			grid.setRowSelectionModel(rowSelectionModel); 
+		}
 
 		/**
 		 * Retrieve the widget associated to the grid component
@@ -1218,5 +1222,10 @@ public class DeviceAdaptiveGrid extends Composite implements Pageable, HasDataSo
 	public RowSelectionModel getRowSelectionModel()
 	{
 		return gridImpl.getRowSelectionModel(); 
+	}
+	
+	public void setRowSelectionModel(RowSelectionModel rowSelectionModel)
+	{
+		gridImpl.setRowSelectionModel(rowSelectionModel); 
 	}
 }

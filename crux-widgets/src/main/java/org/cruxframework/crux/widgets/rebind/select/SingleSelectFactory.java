@@ -28,7 +28,8 @@ import org.cruxframework.crux.widgets.client.select.SingleSelect;
  * Represents a List Box component
  * @author Thiago Bustamante
  */
-@DeclarativeFactory(id="singleSelect", library="widgets", targetWidget=SingleSelect.class)
+@DeclarativeFactory(id="singleSelect", library="widgets", targetWidget=SingleSelect.class, 
+		description="A dropDown widget tha only accept one value at a time an implements HasValue")
 @TagChildren({
 	@TagChild(SingleSelectFactory.SelectItemsProcessor.class)
 })

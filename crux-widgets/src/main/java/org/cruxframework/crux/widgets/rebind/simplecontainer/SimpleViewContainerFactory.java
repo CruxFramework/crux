@@ -34,7 +34,8 @@ import org.cruxframework.crux.widgets.client.simplecontainer.SimpleViewContainer
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="simpleViewContainer", library="widgets", targetWidget=SimpleViewContainer.class)
+@DeclarativeFactory(id="simpleViewContainer", library="widgets", targetWidget=SimpleViewContainer.class, 
+		description="A view container that display its views on a simple panel.")
 @TagChildren({
 	@TagChild(SimpleViewContainerFactory.ViewProcessor.class)
 })

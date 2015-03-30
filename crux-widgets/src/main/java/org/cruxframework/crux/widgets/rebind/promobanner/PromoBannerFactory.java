@@ -44,7 +44,8 @@ import org.cruxframework.crux.widgets.client.promobanner.PromoBanner;
  * Factory for PromoBanner widgets
  * @author Gesse Dafe
  */
-@DeclarativeFactory(id="promoBanner", library="widgets", targetWidget=PromoBanner.class)
+@DeclarativeFactory(id="promoBanner", library="widgets", targetWidget=PromoBanner.class, 
+		description="A panel that display items (like images) in a corroussel that changes periodically.")
 @TagAttributes({
 	@TagAttribute(value="largeBannersHeight", required=true, supportedDevices={Device.largeDisplayArrows, Device.largeDisplayMouse, Device.largeDisplayTouch}),
 	@TagAttribute(value="smallBannersHeight", required=true, supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch}),

@@ -56,7 +56,8 @@ class SlideshowContext extends WidgetCreatorContext
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(id="slideshow", library="widgets", targetWidget=Slideshow.class)
+@DeclarativeFactory(id="slideshow", library="widgets", targetWidget=Slideshow.class, 
+	description="A slideshow panel, to present a collection of images.")
 @TagAttributes({
 	@TagAttribute(value="layout", processor=SlideshowFactory.LayoutAttributeProcessor.class),
 	@TagAttribute(value="preloadNextImages", type=Boolean.class, defaultValue="true"),

@@ -35,7 +35,8 @@ import org.cruxframework.crux.widgets.rebind.event.TimeoutEvtBind;
  * Factory for Timer widget
  * @author Gesse S. F. Dafe
  */
-@DeclarativeFactory(id="timer", library="widgets", targetWidget=Timer.class)
+@DeclarativeFactory(id="timer", library="widgets", targetWidget=Timer.class, 
+		description="A label that count the time, in a direct or reverse way.")
 @TagAttributesDeclaration({
 	@TagAttributeDeclaration(value="start", type=Boolean.class, defaultValue="false"),
 	@TagAttributeDeclaration(value="initial", type=Integer.class, defaultValue="0"),

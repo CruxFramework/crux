@@ -39,12 +39,15 @@ import org.cruxframework.crux.widgets.rebind.event.SelectEvtBind;
  * @authorThiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(library="widgets", id="anchor", targetWidget=Anchor.class)
+@DeclarativeFactory(library="widgets", id="anchor", targetWidget=Anchor.class, description="A simple anchor widget")
 
 @TagAttributes({
-	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false"),
-	@TagAttribute(value="href", supportsResources=true), 
-	@TagAttribute("target") 
+	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
+			description="If true, the component will call preventDefault on all touch events."),
+	@TagAttribute(value="href", supportsResources=true, 
+			description="The URL to which it links."), 
+	@TagAttribute(value="target", 
+			description="The anchor's target frame (the frame in which navigation will occur when the link is selected).") 
 })
 @TagEvents({
 	@TagEvent(SelectEvtBind.class)

@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.widgets.client.image;
 
-import org.cruxframework.crux.core.client.image.GWTFixImage;
+import org.cruxframework.crux.core.client.image.GWTFixImage.ConditionalImageRenderer;
 import org.cruxframework.crux.widgets.client.event.HasSelectHandlers;
 import org.cruxframework.crux.widgets.client.event.SelectEvent;
 import org.cruxframework.crux.widgets.client.event.SelectHandler;
@@ -49,7 +49,9 @@ import com.google.gwt.user.client.ui.HasEnabled;
  */
 public class Image extends Composite implements HasSelectHandlers, HasLoadHandlers, HasErrorHandlers, HasEnabled
 {
-	static abstract class ImageImpl extends com.google.gwt.user.client.ui.Image implements HasSelectHandlers, HasEnabled
+	private static final ConditionalImageRenderer conditionalImageRenderer = GWT.create(ConditionalImageRenderer.class);
+	
+	public static abstract class ImageImpl extends com.google.gwt.user.client.ui.Image implements HasSelectHandlers, HasEnabled
 	{
 		protected boolean preventDefaultTouchEvents = false;
 		private boolean enabled = true;
@@ -309,37 +311,17 @@ public class Image extends Composite implements HasSelectHandlers, HasLoadHandle
 	
 	public void setUrlAndVisibleRect(final SafeUri url, final int left, final int top, final int width, final int height)
 	{
-		new GWTFixImage(impl) 
-		{
-			@Override
-			public void callHowToImplementInnerSetVisibleRect() 
-			{
-				impl.setUrlAndVisibleRect(url, left, top, width, height);		
-			}
-		};
+		conditionalImageRenderer.renderImage(impl, url, left, top, width, height);
 	}
 
 	public void setUrlAndVisibleRect(final String url, final int left, final int top, final int width, final int height)
 	{
-		new GWTFixImage(impl) 
-		{
-			@Override
-			public void callHowToImplementInnerSetVisibleRect() 
-			{
-				impl.setUrlAndVisibleRect(url, left, top, width, height);		
-			}
-		};
+		conditionalImageRenderer.renderImage(impl, url, left, top, width, height);
 	}
 
 	public void setVisibleRect(final int left, final int top, final int width, final int height)
 	{
-		new GWTFixImage(impl) {
-			@Override
-			public void callHowToImplementInnerSetVisibleRect() 
-			{
-				impl.setVisibleRect(left, top, width, height);		
-			}
-		};
+		conditionalImageRenderer.renderImage(impl, left, top, width, height);
 	}
 
 	@Override

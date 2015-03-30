@@ -23,6 +23,8 @@ import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.FocusableFactory;
+import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasValueChangeHandlersFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.WidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
@@ -49,12 +51,8 @@ import org.json.JSONObject;
  * @author Samuel Almeida Cardoso (samuel@cruxframework.org)
  *
  */
-@DeclarativeFactory(id="dateBox", library="widgets", targetWidget=DateBox.class)
+@DeclarativeFactory(id="dateBox", library="widgets", targetWidget=DateBox.class, description="A date box")
 @TagAttributes({
-	@TagAttribute(value="tabIndex", type=Integer.class),
-	@TagAttribute(value="enabled", type=Boolean.class),
-	@TagAttribute(value="accessKey", type=Character.class),
-	@TagAttribute(value="focus", type=Boolean.class),
 	@TagAttribute(value="readOnly", type=Boolean.class, defaultValue="false"),
 	@TagAttribute(value="fireNullValues", type=Boolean.class, defaultValue="false")
 })
@@ -70,7 +68,8 @@ import org.json.JSONObject;
 	@TagChild(value=DateBoxFactory.DateSelectorProcessor.class,autoProcess=false)
 })
 public class DateBoxFactory extends CompositeFactory<WidgetCreatorContext>
-       implements HasValueChangeHandlersFactory<WidgetCreatorContext>
+       implements HasValueChangeHandlersFactory<WidgetCreatorContext>, FocusableFactory<WidgetCreatorContext>, 
+       			  HasEnabledFactory<WidgetCreatorContext>
 {
 	@Override
 	public void processAttributes(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException

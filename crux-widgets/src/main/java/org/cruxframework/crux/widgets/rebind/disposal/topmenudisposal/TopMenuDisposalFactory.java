@@ -37,7 +37,8 @@ import org.cruxframework.crux.widgets.rebind.disposal.topmenudisposal.TopMenuDis
  * @author Gesse Dafe
  *
  */
-@DeclarativeFactory(library="widgets", id="topMenuDisposal", targetWidget=TopMenuDisposal.class)
+@DeclarativeFactory(library="widgets", id="topMenuDisposal", targetWidget=TopMenuDisposal.class, 
+			description="A component to dispose elements on the screen using a menu on the top and a panel above it to render views.")
 
 @TagChildren({
 	@TagChild(MenuItemProcessor.class)

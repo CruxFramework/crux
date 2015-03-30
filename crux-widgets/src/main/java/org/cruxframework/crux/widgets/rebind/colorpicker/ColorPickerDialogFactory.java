@@ -26,7 +26,8 @@ import org.cruxframework.crux.widgets.client.colorpicker.ColorPickerDialog;
 /**
  * @author Thiago da Rosa de Bustamante
  */
-@DeclarativeFactory(id="colorPickerDialog", library="widgets", attachToDOM=false, targetWidget= ColorPickerDialog.class)
+@DeclarativeFactory(id="colorPickerDialog", library="widgets", attachToDOM=false, targetWidget= ColorPickerDialog.class, 
+					description="A simple dialog to choose a color.")
 public class ColorPickerDialogFactory extends PanelFactory<WidgetCreatorContext>
        implements HasAnimationFactory<WidgetCreatorContext>, 
                   HasCloseHandlersFactory<WidgetCreatorContext>, 

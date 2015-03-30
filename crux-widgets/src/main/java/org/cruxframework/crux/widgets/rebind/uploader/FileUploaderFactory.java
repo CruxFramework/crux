@@ -35,7 +35,8 @@ import org.cruxframework.crux.widgets.rebind.event.UploadStartEvtBind;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(library="widgets", id="fileUploader", targetWidget=FileUploader.class)
+@DeclarativeFactory(library="widgets", id="fileUploader", targetWidget=FileUploader.class, 
+		description="a file upload component.")
 @TagAttributes({
 	@TagAttribute(value="multiple", type=Boolean.class, defaultValue="false"),
 	@TagAttribute(value="autoUploadFiles", type=Boolean.class, defaultValue="false"),

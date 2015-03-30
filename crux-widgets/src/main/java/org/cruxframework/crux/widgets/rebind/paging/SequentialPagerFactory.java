@@ -22,7 +22,8 @@ import org.cruxframework.crux.widgets.client.paging.SequentialPager;
 /**
  * @author Gesse S. F. Dafe
  */
-@DeclarativeFactory(id="sequentialPager", library="widgets", targetWidget=SequentialPager.class)
+@DeclarativeFactory(id="sequentialPager", library="widgets", targetWidget=SequentialPager.class, 
+		description="A dataSource pager that do not know the size of the set of data. So it allows page changes only in a sequential way.")
 public class SequentialPagerFactory extends AbstractPagerFactory
 {
 }

@@ -26,7 +26,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.widgets.client.listshuttle.ListShuttle;
 
-@DeclarativeFactory(id = "listShuttle", library = "widgets", targetWidget = ListShuttle.class)
+@DeclarativeFactory(id = "listShuttle", library = "widgets", targetWidget = ListShuttle.class,
+		description="Enables item transferring from one list to another. You can transfer one, several or all elements at once.")
 @TagChildren({ @TagChild(value = ListShuttleFactory.ContentProcessor.class) })
 @TagAttributes({
 	@TagAttribute(value = "availableHeader", required = true, supportsI18N = true),

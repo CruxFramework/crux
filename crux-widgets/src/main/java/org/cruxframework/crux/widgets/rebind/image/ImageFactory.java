@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.widgets.rebind.image;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.screen.widget.AttributeProcessor;
@@ -40,11 +41,14 @@ import com.google.gwt.resources.client.ImageResource;
  * @authorThiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(library="widgets", id="image", targetWidget=Image.class)
+@DeclarativeFactory(library="widgets", id="image", targetWidget=Image.class, 
+	description="An image widget that handle select events properly on touch devices.")
 
 @TagAttributes({
 	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false"),
 	@TagAttribute(value="url", processor=ImageFactory.URLAttributeParser.class, supportsResources=true),
+	@TagAttribute(value="width", description="Sets the object's width, in CSS units (e.g. \"10px\", \"1em\"). This width does not include decorations such as border, margin, and padding."),
+	@TagAttribute(value="height", description="Sets the object's height, in CSS units (e.g. \"10px\", \"1em\"). This height does not include decorations such as border, margin, and padding."),
 	@TagAttribute(value="altText"),
 	@TagAttribute(value="visibleRect", processor=ImageFactory.VisibleRectAttributeParser.class)
 })	
@@ -70,10 +74,31 @@ public class ImageFactory extends WidgetCreator<WidgetCreatorContext>
 	        if (getWidgetCreator().isResourceReference(property))
 	        {
 	        	String resource = ViewFactoryCreator.createVariableName("resource");
+	        	
+	        	String height = context.readWidgetProperty("height");
+				if(StringUtils.isEmpty(height))
+				{
+					height = resource+".getHeight()";
+				} else
+				{
+					height = height.replaceAll("[^\\d.]", "");
+				}
+				
+				String width = context.readWidgetProperty("width");
+				if(StringUtils.isEmpty(width))
+				{
+					width = resource+".getWidth()";
+				} else
+				{
+					width = width.replaceAll("[^\\d.]", "");
+				}
+	        	
 	        	out.println("final " + ImageResource.class.getCanonicalName()+" "+resource+" = "+getWidgetCreator().getResourceAccessExpression(property)+";");
-	        	out.println("com.google.gwt.core.client.Scheduler.get().scheduleDeferred(new com.google.gwt.core.client.Scheduler.ScheduledCommand() { @Override public void execute() {" 
-	        	+ context.getWidget() + ".setUrlAndVisibleRect(Screen.rewriteUrl("+
-	        			resource + ".getSafeUri().asString()), "+resource+".getLeft(), "+resource+".getTop(), "+resource+".getWidth(), "+resource+".getHeight()); } });");
+	        	
+	        	out.println("com.google.gwt.core.client.Scheduler.get().scheduleDeferred(new com.google.gwt.core.client.Scheduler.ScheduledCommand() { @Override public void execute() {");
+	        	out.println(context.getWidget() + ".setUrlAndVisibleRect(Screen.rewriteUrl("+
+	        			resource + ".getSafeUri().asString()), "+resource+".getLeft(), "+resource+".getTop(), "+height+", "+width+");");
+	        	out.println(" } });");
 	        }
 	        else
 	        {

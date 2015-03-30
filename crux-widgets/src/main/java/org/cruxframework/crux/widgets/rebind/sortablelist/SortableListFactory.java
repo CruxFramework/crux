@@ -29,7 +29,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.widgets.client.sortablelist.SortableList;
 
-@DeclarativeFactory(id = "sortableList", library = "widgets", targetWidget = SortableList.class)
+@DeclarativeFactory(id = "sortableList", library = "widgets", targetWidget = SortableList.class, 
+		description="A list of widgets that allow items reordering throug up and down buttons.")
 @TagChildren({ @TagChild(value = SortableListFactory.ContentProcessor.class) })
 @TagAttributes({
 	@TagAttribute(value = "header", required = false, supportsI18N = true)})

@@ -42,7 +42,8 @@ import org.cruxframework.crux.widgets.client.tabcontainer.TabContainer;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="tabViewContainer", library="widgets", targetWidget=TabContainer.class)
+@DeclarativeFactory(id="tabViewContainer", library="widgets", targetWidget=TabContainer.class, 
+		description="A view container that displays its views on a tab panel.")
 @TagChildren({
 	@TagChild(TabContainerFactory.TabsProcessor.class)
 })

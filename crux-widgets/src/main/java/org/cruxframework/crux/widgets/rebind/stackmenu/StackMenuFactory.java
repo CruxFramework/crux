@@ -42,7 +42,8 @@ import org.cruxframework.crux.widgets.client.stackmenu.StackMenuItem;
  * Factory for Stack Menu
  * @author Gesse S. F. Dafe
  */
-@DeclarativeFactory(id="stackMenu", library="widgets", targetWidget=StackMenu.class)
+@DeclarativeFactory(id="stackMenu", library="widgets", targetWidget=StackMenu.class, 
+		description="A simple stack menu.")
 @TagChildren({
 	@TagChild(StackMenuFactory.StackMenuItemProcessor.class)
 })

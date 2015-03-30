@@ -74,7 +74,8 @@ class RollingTabPanelContext extends WidgetCreatorContext
  * Factory for TabPanel widgets
  * @author Thiago da Rosa de Bustamante
  */
-@DeclarativeFactory(id="rollingTabPanel", library="widgets", targetWidget=RollingTabPanel.class)
+@DeclarativeFactory(id="rollingTabPanel", library="widgets", targetWidget=RollingTabPanel.class, 
+		description="A tab panel that uses a rolling area for tabs, when a lot of tabs are opened.")
 @TagAttributes({
 	@TagAttribute(value="visibleTab", type=Integer.class, processor=RollingTabPanelFactory.VisibleTabAttributeParser.class)
 })

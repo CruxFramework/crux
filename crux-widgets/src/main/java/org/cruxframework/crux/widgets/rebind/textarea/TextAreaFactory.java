@@ -31,7 +31,8 @@ import org.cruxframework.crux.widgets.client.textarea.TextArea;
  * Factory for TextArea widget
  * @author Gesse S. F. Dafe
  */
-@DeclarativeFactory(id="textArea", library="widgets", targetWidget=TextArea.class)
+@DeclarativeFactory(id="textArea", library="widgets", targetWidget=TextArea.class, 
+		description="A text area component that supports maxLenght, visibleLines and characterWidth properties.")
 @TagAttributes({
 	@TagAttribute(value="characterWidth", type=Integer.class),
 	@TagAttribute(value="visibleLines", type=Integer.class),

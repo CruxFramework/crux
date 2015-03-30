@@ -31,7 +31,8 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstrain
 import org.cruxframework.crux.gwt.rebind.ComplexPanelFactory;
 import org.cruxframework.crux.widgets.client.toptoolbar.TopToolBar;
 
-@DeclarativeFactory(library="widgets", id="topToolBar", targetWidget=TopToolBar.class, attachToDOM=false)
+@DeclarativeFactory(library="widgets", id="topToolBar", targetWidget=TopToolBar.class, attachToDOM=false, 
+		description="A tool bar located on the top of the screen.")
 @TagChildren({
 	@TagChild(value=TopToolBarFactory.GripProcessor.class, supportedDevices={Device.smallDisplayArrows, Device.smallDisplayTouch}),
 	@TagChild(TopToolBarFactory.CanvasProcessor.class)

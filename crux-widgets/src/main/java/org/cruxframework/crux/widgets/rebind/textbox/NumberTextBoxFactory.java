@@ -30,7 +30,8 @@ import org.cruxframework.crux.widgets.client.textbox.NumberTextBox;
  * A Factory for NumberTextBox widgets
  * @author Thiago da Rosa de Bustamante
  */
-@DeclarativeFactory(id="numberTextBox", library="widgets", targetWidget=NumberTextBox.class)
+@DeclarativeFactory(id="numberTextBox", library="widgets", targetWidget=NumberTextBox.class, 
+	description="A standard numeric box.")
 @TagAttributes({
 	@TagAttribute(value="value", type=Integer.class),
 	@TagAttribute(value="maxLength", type=Integer.class)

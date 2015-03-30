@@ -26,7 +26,8 @@ import org.cruxframework.crux.widgets.client.progressbar.ProgressBar;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(library="widgets", id="progressBar", targetWidget=ProgressBar.class)
+@DeclarativeFactory(library="widgets", id="progressBar", targetWidget=ProgressBar.class, 
+		description="A progress bar component.")
 @TagAttributes({
 	@TagAttribute(value="hideOnComplete", type=Boolean.class, defaultValue="false")
 })

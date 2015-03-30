@@ -22,7 +22,8 @@ import org.cruxframework.crux.widgets.client.paging.RandomPager;
 /**
  * @author Gesse S. F. Dafe
  */
-@DeclarativeFactory(id="randomPager", library="widgets", targetWidget=RandomPager.class)
+@DeclarativeFactory(id="randomPager", library="widgets", targetWidget=RandomPager.class, 
+		description="A dataSource pager that knows the size of the set of data. So it allows page changes directly to any page of the set.")
 public class RandomPagerFactory extends AbstractPagerFactory
 {
 }
