@@ -68,6 +68,8 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 
 	public RollingPanelNoTouchImpl()
 	{
+		FacesBackboneResourcesCommon.INSTANCE.css().ensureInjected();
+		
 		this.layoutPanel = new FlowPanel();
 
         createPreviousButton();
@@ -75,8 +77,22 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
 		createNextButton();
 	
 		initWidget(layoutPanel);
+		
+		dynamicFixHeight();
 		handleWindowResize();
 		maybeShowNavigationButtons();
+	}
+
+	private void dynamicFixHeight() 
+	{
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+		{
+			@Override
+			public void execute() 
+			{
+				layoutPanel.setHeight("100%");
+			}
+		});
 	}
 	
 	@Override
@@ -292,7 +308,7 @@ class RollingPanelNoTouchImpl extends Composite implements RollingPanel.PanelImp
     {
 	    itemsScrollPanel = new ScrollPanel();
 		itemsScrollPanel.setStyleName(BODY_STYLE_NAME);
-		itemsScrollPanel.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().rollingPanelBody());
+		itemsScrollPanel.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneRollingPanelBody());
 		itemsPanel = new FlowPanel();
 		itemsPanel.setStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxInlineContainer());
 		itemsScrollPanel.add(itemsPanel);
