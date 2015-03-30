@@ -30,7 +30,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="unorderedList", library=Constants.LIBRARY_NAME, targetWidget=UnorderedList.class)
+@DeclarativeFactory(id="unorderedList", library=Constants.LIBRARY_NAME, targetWidget=UnorderedList.class, 
+					description="A panel that shows its items as an unordered list (using <ul> and <li> tags)")
 @TagChildren({
 	@TagChild(UnorderedListFactory.WidgetContentProcessor.class)
 })

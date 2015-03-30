@@ -30,7 +30,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * @author Thiago Bustamante
  *
  */
-@DeclarativeFactory(id="orderedList", library=Constants.LIBRARY_NAME, targetWidget=OrderedList.class)
+@DeclarativeFactory(id="orderedList", library=Constants.LIBRARY_NAME, targetWidget=OrderedList.class, 
+					description="A panel that shows its items as an ordered list (using <ol> and <li> tags)")
 @TagChildren({
 	@TagChild(OrderedListFactory.WidgetContentProcessor.class)
 })
