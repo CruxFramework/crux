@@ -71,8 +71,10 @@ class MenuContext extends WidgetCreatorContext
 @DeclarativeFactory(id="menu", library=Constants.LIBRARY_NAME, targetWidget=Menu.class, 
 	description="A menu class based in nav, ul and li html tags.")
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="largeType", type=LargeType.class, defaultValue="VerticalAccordion"),
-	@TagAttributeDeclaration(value="smallType", type=SmallType.class, defaultValue="VerticalAccordion")
+	@TagAttributeDeclaration(value="largeType", type=LargeType.class, defaultValue="VerticalAccordion", 
+							description="The type of menu to be used for large devices"),
+	@TagAttributeDeclaration(value="smallType", type=SmallType.class, defaultValue="VerticalAccordion", 
+							description="The type of menu to be used for small devices")
 })
 @TagChildren({
 	@TagChild(MenuFactory.MenuItemProcessor.class)
