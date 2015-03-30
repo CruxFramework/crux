@@ -131,6 +131,7 @@ public class CodeServer
 		AbstractCruxCompiler compiler = CruxCompilerFactory.createCompiler();
 		compiler.setOutputCharset("UTF-8");
 		
+		CruxBridge.getInstance().setSingleVM(true);
 		CruxRegisterUtil.registerFilesCruxBridge(null);
 		ServiceFactoryInitializer.initialize(null);
 		RestServiceFactoryInitializer.initialize(null);
