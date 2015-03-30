@@ -28,7 +28,11 @@ import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation;
  * @author bruno.rafael
  *
  */
-@TagAttributes({ @TagAttribute(value = "animation", processor = HasSwapAnimationFactory.AnimationProcessor.class, type = HasSwapAnimationFactory.SwapAnimations.class) })
+@TagAttributes({ 
+	@TagAttribute(value = "animation", processor = HasSwapAnimationFactory.AnimationProcessor.class, 
+			      type = HasSwapAnimationFactory.SwapAnimations.class, 
+			      description="The animation to be aplied when the panel swaps the content widget.") 
+})
 public interface HasSwapAnimationFactory<C extends WidgetCreatorContext> extends HasAnimationFactory<C>
 {
 	public static enum SwapAnimations

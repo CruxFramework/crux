@@ -15,24 +15,17 @@
  */
 package org.cruxframework.crux.smartfaces.rebind.swappanel;
 
-import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
-import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.event.SwapEvtBind;
-import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.HasAnimationFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.creator.HasEnabledFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.creator.children.AnyWidgetChildProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.DeclarativeFactory;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributeDeclaration;
-import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttributesDeclaration;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvent;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagEvents;
 import org.cruxframework.crux.gwt.rebind.PanelFactory;
-import org.cruxframework.crux.smartfaces.client.swappanel.SwapAnimation;
 import org.cruxframework.crux.smartfaces.client.swappanel.SwapPanel;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
 
@@ -40,7 +33,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * @author bruno.rafael
  *
  */
-@DeclarativeFactory(id="swapPanel", library=Constants.LIBRARY_NAME, targetWidget=SwapPanel.class)
+@DeclarativeFactory(id="swapPanel", library=Constants.LIBRARY_NAME, targetWidget=SwapPanel.class, 
+					description="A panel that displays one widget at a time and can be used to handle widgets swapping.")
 @TagChildren({
 	@TagChild(SwapPanelFactory.WidgetContentProcessor.class)
 })
@@ -57,7 +51,8 @@ public class SwapPanelFactory extends PanelFactory<WidgetCreatorContext>
 	    return new WidgetCreatorContext();
     }
 	
-	@TagConstraints(minOccurs="0", maxOccurs="1", widgetProperty="currentWidget")
+	@TagConstraints(minOccurs="0", maxOccurs="1", widgetProperty="currentWidget", 
+					description="The initial widget that will be presented into this panel.")
 	public static class WidgetContentProcessor extends AnyWidgetChildProcessor<WidgetCreatorContext> {}
 		
 }
