@@ -35,7 +35,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChild;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagChildren;
 import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagConstraints;
-import org.cruxframework.crux.gwt.rebind.CompositeFactory;
 import org.cruxframework.crux.gwt.rebind.PanelFactory;
 import org.cruxframework.crux.smartfaces.client.tab.TabPanel;
 import org.cruxframework.crux.smartfaces.rebind.Constants;
@@ -68,9 +67,11 @@ class TabPanelContext extends WidgetCreatorContext
  * Factory for TabPanel widgets
  * @author Thiago da Rosa de Bustamante
  */
-@DeclarativeFactory(id="tabPanel", library=Constants.LIBRARY_NAME, targetWidget=TabPanel.class)
+@DeclarativeFactory(id="tabPanel", library=Constants.LIBRARY_NAME, targetWidget=TabPanel.class, 
+					description="A panel that open its children in tabs.")
 @TagAttributes({
-	@TagAttribute(value="visibleTab", type=Integer.class, processor=TabPanelFactory.VisibleTabAttributeParser.class)
+	@TagAttribute(value="visibleTab", type=Integer.class, processor=TabPanelFactory.VisibleTabAttributeParser.class, 
+				  description="The index of the tab that initialy must be visible")
 })
 @TagChildren({
 	@TagChild(TabPanelFactory.TabProcessor.class)
@@ -101,8 +102,10 @@ public class TabPanelFactory extends PanelFactory<TabPanelContext>
 	
 	@TagConstraints(minOccurs="0", maxOccurs="unbounded", tagName="tab" )
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="tabEnabled", type=Boolean.class, defaultValue="true"),
-		@TagAttributeDeclaration(value="tabWordWrap", type=Boolean.class, defaultValue="true")
+		@TagAttributeDeclaration(value="tabEnabled", type=Boolean.class, defaultValue="true", 
+								 description="If false, disable the tab, making it be unaccessible."),
+		@TagAttributeDeclaration(value="tabWordWrap", type=Boolean.class, defaultValue="true", 
+								 description="If true, allow long tab titles to be able to break and wrap onto the next line.")
 	})
 	@TagChildren({
 		@TagChild(TabTitleProcessor.class), 
@@ -124,7 +127,8 @@ public class TabPanelFactory extends PanelFactory<TabPanelContext>
 	})		
 	public static class TabTitleProcessor extends ChoiceChildProcessor<TabPanelContext> {}
 	
-	@TagConstraints(tagName="tabText", type=String.class)
+	@TagConstraints(tagName="tabText", type=String.class, 
+					description="A text content to be displayed inside a tab.")
 	public static class TextTabProcessor extends WidgetChildProcessor<TabPanelContext> 
 	{
 		@Override
@@ -136,7 +140,8 @@ public class TabPanelFactory extends PanelFactory<TabPanelContext>
 		}
 	}
 	
-	@TagConstraints(tagName="tabHtml", type=HTMLTag.class)
+	@TagConstraints(tagName="tabHtml", type=HTMLTag.class, 
+					description="An HTML content to be displayed inside a tab.")
 	public static class HTMLTabProcessor extends WidgetChildProcessor<TabPanelContext>
 	{
 		@Override
@@ -147,7 +152,8 @@ public class TabPanelFactory extends PanelFactory<TabPanelContext>
 		}
 	}
 	
-	@TagConstraints(tagName="tabWidget")
+	@TagConstraints(tagName="tabWidget", 
+					description="Used to display an widget inside a tab.")
 	@TagChildren({
 		@TagChild(WidgetTitleProcessor.class)
 	})	
@@ -169,7 +175,8 @@ public class TabPanelFactory extends PanelFactory<TabPanelContext>
 		}
 	}
 	
-	@TagConstraints(tagName="panelContent")
+	@TagConstraints(tagName="panelContent", 
+					description="The content of the tab.")
 	@TagChildren({
 		@TagChild(WidgetContentProcessor.class)
 	})	
