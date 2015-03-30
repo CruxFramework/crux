@@ -772,10 +772,21 @@
 .crux-FlatMessageBox .dialogTopBar{
     opacity:0;
 }
-.crux-FlatMessageBox .dialogBody{
-    padding:20px 5px 0;
-    height:100%;
+
+.crux-FlatMessageBox .dialogBody
+{
+	padding:20px 5px 0;
+	height:100%;
 }
+
+@if !user.agent ie8
+{
+	.crux-FlatMessageBox .dialogBody
+	{
+		margin-top:0;
+	}
+}
+
 .crux-FlatMessageBox .messageBoxContents
 {
     text-align: center;
