@@ -42,22 +42,26 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * @author Bruno Medeiros Rafael (bruno@triggolabs.com)
  *
  */
-@DeclarativeFactory(id="tabViewContainer", library=Constants.LIBRARY_NAME, targetWidget=TabContainer.class)
+@DeclarativeFactory(id="tabViewContainer", library=Constants.LIBRARY_NAME, targetWidget=TabContainer.class, 
+					description="A view container that displays its views inside a tab on a tabPanel")
 @TagChildren({
 	@TagChild(TabContainerFactory.TabsProcessor.class)
 })
 public class TabContainerFactory extends WidgetCreator<WidgetCreatorContext>
 {
-	@TagConstraints(tagName="view", minOccurs="0", maxOccurs="unbounded")
+	@TagConstraints(tagName="view", minOccurs="0", maxOccurs="unbounded", 
+					description="A view to be rendered into this view container.")
 	@TagAttributesDeclaration({
-		@TagAttributeDeclaration(value="id"),
-		@TagAttributeDeclaration(value="name", required=true),
-		@TagAttributeDeclaration(value="closeable", type=Boolean.class, defaultValue="true"),
-		@TagAttributeDeclaration(value="lazy", type=Boolean.class, defaultValue="true")
+		@TagAttributeDeclaration(value="id", description="The view identifier."),
+		@TagAttributeDeclaration(value="name", required=true, description="The name of the view."),
+		@TagAttributeDeclaration(value="closeable", type=Boolean.class, defaultValue="true", 
+								description="If true, the tab will display a close button"),
+		@TagAttributeDeclaration(value="lazy", type=Boolean.class, defaultValue="true", 
+								description="If true the view will only be loaded when its tab become visible.")
 	})
 	@TagEventsDeclaration({
-		@TagEventDeclaration("onBeforeFocus"),
-		@TagEventDeclaration("onBeforeBlur")
+		@TagEventDeclaration(value="onBeforeFocus", description="Event handler for Before focus event"),
+		@TagEventDeclaration(value="onBeforeBlur", description="Event handler for Before blur event")
 	})
 	public static class TabsProcessor extends WidgetChildProcessor<WidgetCreatorContext>
 	{

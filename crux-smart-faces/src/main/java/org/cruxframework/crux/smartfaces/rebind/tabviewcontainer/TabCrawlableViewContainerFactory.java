@@ -27,7 +27,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * @author Bruno Medeiros Rafael (bruno@triggolabs.com)
  *
  */
-@DeclarativeFactory(id="tabCrawlableViewContainer", library=Constants.LIBRARY_NAME, targetWidget=TabCrawlableViewContainer.class)
+@DeclarativeFactory(id="tabCrawlableViewContainer", library=Constants.LIBRARY_NAME, targetWidget=TabCrawlableViewContainer.class, 
+					description="A view container that displays its views inside a tab on a tabPanel and supports ajax crawling.")
 @TagChildren({
 	@TagChild(TabCrawlableViewContainerFactory.TabsProcessor.class)
 })
