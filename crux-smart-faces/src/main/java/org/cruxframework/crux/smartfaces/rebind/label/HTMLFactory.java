@@ -42,7 +42,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(id="html", library=Constants.LIBRARY_NAME, targetWidget=HTML.class, description="A html class that support google fast buttons to simulate clicks on touch devices.")
+@DeclarativeFactory(id="html", library=Constants.LIBRARY_NAME, targetWidget=HTML.class, 
+				   description="An html componentl that support google fast buttons to simulate clicks on touch devices.")
 @TagAttributes({
 	@TagAttribute(value="preventDefaultTouchEvents", type=Boolean.class, defaultValue="false", 
 				  description="If true, the html will call preventDefault on all touch events.")
