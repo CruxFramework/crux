@@ -68,7 +68,7 @@ class TabBar extends Composite implements HasBeforeSelectionHandlers<Integer>, H
 
 		initWidget(panel);
 		setStyleName(DEFAULT_STYLE_NAME);
-		addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
+		addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalInlineContainer());
 		panel.setScrollToAddedWidgets(true);
 
 		// Add a11y role "tablist"

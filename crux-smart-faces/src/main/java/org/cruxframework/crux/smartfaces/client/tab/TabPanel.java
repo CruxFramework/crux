@@ -87,7 +87,7 @@ public class TabPanel extends Composite implements HasAnimation, HasBeforeSelect
 
 		setStyleName(DEFAULT_STYLE_NAME);
 		deck.setStyleName(TAB_PANEL_DECK_STYLE_NAME);
-		deck.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().tabPanelDeck());
+		deck.addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneTabPanelDeck());
 		// Add a11y role "TabPanel"
 		Roles.getTabpanelRole().set(deck.getElement());
 	}
