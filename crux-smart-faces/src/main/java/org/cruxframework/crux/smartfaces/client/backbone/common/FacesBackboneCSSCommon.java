@@ -26,12 +26,14 @@ public interface FacesBackboneCSSCommon extends CssResource
 	String flexBoxContainer();
 	String flexBoxHorizontalContainer();
 	String flexBoxVerticalContainer();
+	String flexBoxHorizontalInlineContainer();
+	String flexBoxVerticalInlineContainer();
 	String flexBoxFirstChild();
 	String flexBoxSecondChild();
 	String flexBoxThirdChild();
 	String flexBoxInlineContainer();
-	String rollingPanelBody();
-	String tabPanelDeck();	
+	String facesBackboneRollingPanelBody();
+	String facesBackboneTabPanelDeck();	
 	
 	// Menu
 	String facesBackboneMenu();
