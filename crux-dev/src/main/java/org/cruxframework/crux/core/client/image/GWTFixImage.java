@@ -15,10 +15,14 @@
  */
 package org.cruxframework.crux.core.client.image;
 
+import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -39,37 +43,209 @@ import com.google.gwt.user.client.ui.Image;
  */
 public abstract class GWTFixImage 
 {
-	private Image image;
+	/**
+	 * @author samuel.cardoso
+	 * This implementation is to avoid ...
+	 */
+	public interface ConditionalImageRenderer
+	{
+		/**
+		 * @param image the image itself.
+		 * @param url the url to set.
+		 * @param left position.
+		 * @param top position.
+		 * @param width width.
+		 * @param height height.
+		 */
+		public void renderImage(com.google.gwt.user.client.ui.Image image, 
+				String url, int left, int top, int width, int height);
+		
+		/**
+		 * @param image the image itself.
+		 * @param left position.
+		 * @param top position.
+		 * @param width width.
+		 * @param height height.
+		 */
+		public void renderImage(com.google.gwt.user.client.ui.Image image, 
+				int left, int top, int width, int height);
+		
+		/**
+		 * @param image the image itself.
+		 * @param url the url to set.
+		 * @param left position.
+		 * @param top position.
+		 * @param width width.
+		 * @param height height.
+		 */
+		public void renderImage(com.google.gwt.user.client.ui.Image image, 
+				SafeUri url, int left, int top, int width, int height);
+	}
 
 	/**
-	 * @param image the image itself.
+	 * @author samuel.cardoso
+	 * For IE8.
 	 */
-	public GWTFixImage(Image image) 
+	public static class IE8ConditionalImageRenderer implements ConditionalImageRenderer
 	{
-		this.image = image;
-		setVisibleRect();
+		@Override
+		public void renderImage(final com.google.gwt.user.client.ui.Image image, final 
+				String url, int left, int top, int width, int height) 
+		{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+			{
+				@Override
+				public void execute() 
+				{
+					new CopyImageProperties(image) 
+					{
+						@Override
+						public void callHowToImplementInnerSetVisibleRect() 
+						{
+							image.setUrl(Screen.rewriteUrl(url));		
+						}
+					};
+				}
+			});
+		}
+
+		@Override
+		public void renderImage(final Image image, final SafeUri url, int left, int top,
+				int width, int height) 
+		{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+			{
+				@Override
+				public void execute() 
+				{
+					new CopyImageProperties(image) 
+					{
+						@Override
+						public void callHowToImplementInnerSetVisibleRect() 
+						{
+							image.setUrl(url);		
+						}
+					};
+				}
+			});
+		}
+
+		@Override
+		public void renderImage(final Image image, final int left, final int top, final int width,
+				final int height) 
+		{
+			new CopyImageProperties(image) 
+			{
+				@Override
+				public void callHowToImplementInnerSetVisibleRect() 
+				{
+					image.setVisibleRect(left, top, width, height);		
+				}
+			};
+		}
+	}
+
+	/**
+	 * @author samuel.cardoso
+	 * For all other browsers.
+	 */
+	public static class DefaultConditionalImageRenderer implements ConditionalImageRenderer
+	{
+		@Override
+		public void renderImage(final com.google.gwt.user.client.ui.Image image, 
+				final String url, final int left, final int top, final int width, final int height)
+		{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+			{
+				@Override
+				public void execute() 
+				{
+					new CopyImageProperties(image) 
+					{
+						@Override
+						public void callHowToImplementInnerSetVisibleRect() 
+						{
+							image.setUrlAndVisibleRect(url, left, top, width, height);		
+						}
+					};
+				}
+			});
+		}
+
+		@Override
+		public void renderImage(final Image image, final SafeUri url, final int left, final int top,
+				final int width, final int height) 
+		{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() 
+			{
+				@Override
+				public void execute() 
+				{
+					new CopyImageProperties(image) 
+					{
+						@Override
+						public void callHowToImplementInnerSetVisibleRect() 
+						{
+							image.setUrlAndVisibleRect(url, left, top, width, height);
+						}
+					};
+				}
+			});
+		}
+		
+		@Override
+		public void renderImage(final Image image, final int left, final int top, final int width,
+				final int height) 
+		{
+			new CopyImageProperties(image) 
+			{
+				@Override
+				public void callHowToImplementInnerSetVisibleRect() 
+				{
+					image.setVisibleRect(left, top, width, height);		
+				}
+			};
+		}
 	}
 	
-	/**
-	 * Indicate how to implement your type of setVisibleRect.
-	 */
-	public abstract void callHowToImplementInnerSetVisibleRect();
-	
-	/**
-	 * Define how to set the visibleRect.
-	 */
-	public void setVisibleRect()
+	private abstract static class CopyImageProperties
 	{
-		boolean oldStyleHasDisplayNone = StringUtils.unsafeEquals(image.getElement().getStyle().getDisplay(), "none");
-		String title = image.getElement().getTitle();
-		String styleName = image.getStyleName();
-		callHowToImplementInnerSetVisibleRect();
-		image.setVisible(!oldStyleHasDisplayNone);
-		image.setTitle(title);
-		image.setStyleName(styleName);
+		private Image image;
+
+		/**
+		 * @param image the image itself.
+		 * This fix is to avoid a GWT Image limitation described as:
+		 * If an image transitions between clipped mode and unclipped mode, any 
+		 * Element-specific attributes added by the user (including style attributes, 
+		 * style names, and style modifiers), except for event listeners, will be lost. 
+		 */
+		public CopyImageProperties(Image image) 
+		{
+			this.image = image;
+			setVisibleRect();
+		}
+
+		/**
+		 * Indicate how to implement your type of setVisibleRect.
+		 */
+		public abstract void callHowToImplementInnerSetVisibleRect();
+
+		/**
+		 * Define how to set the visibleRect.
+		 */
+		public void setVisibleRect()
+		{
+			boolean oldStyleHasDisplayNone = StringUtils.unsafeEquals(image.getElement().getStyle().getDisplay(), "none");
+			String title = image.getElement().getTitle();
+			String styleName = image.getStyleName();
+			callHowToImplementInnerSetVisibleRect();
+			image.setVisible(!oldStyleHasDisplayNone);
+			image.setTitle(title);
+			image.setStyleName(styleName);
+		}
+
+		private native void setStyle(Element element, Style style) /*-{
+			element.style = style;
+		}-*/;		
 	}
-	
-	private native void setStyle(Element element, Style style) /*-{
-		element.style = style;
-	}-*/;
 }
