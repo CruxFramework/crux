@@ -38,7 +38,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 @DeclarativeFactory(id="popupPanel", library=Constants.LIBRARY_NAME, targetWidget=PopupPanel.class, attachToDOM=false,
 					description="A Popup panel that can display one widget inside a dialog window.")
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="modal", type=Boolean.class)
+	@TagAttributeDeclaration(value="modal", type=Boolean.class, description="If true, this dialog will not accept interactions with elements above it.")
 })
 @TagChildren({
 	@TagChild(PopupPanelFactory.WidgetContentProcessor.class)

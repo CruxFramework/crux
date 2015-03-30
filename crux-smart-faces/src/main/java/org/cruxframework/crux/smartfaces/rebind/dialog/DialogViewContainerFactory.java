@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.rebind.dialog;
 
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
@@ -42,10 +43,14 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 	@TagChild(DialogViewContainerFactory.ViewProcessor.class)
 })
 @TagAttributesDeclaration({
-	@TagAttributeDeclaration(value="movable", type=Boolean.class, defaultValue="true", description="If true, the window can be dragged on the screen"),
-	@TagAttributeDeclaration(value="resizable", type=Boolean.class, defaultValue="false", description="If true, the window can be resized"),
-	@TagAttributeDeclaration(value="closable", type=Boolean.class, defaultValue="true", description="If true, a close button will be available at the dialog's top bar to close the window"),
-	@TagAttributeDeclaration(value="modal", type=Boolean.class, defaultValue="true", description="If true, the content behind the dialog can not be changed when dialog is showing")
+	@TagAttributeDeclaration(value="movable", type=Boolean.class, defaultValue="true", 
+							description="If true, the window can be dragged on the screen"),
+	@TagAttributeDeclaration(value="resizable", type=Boolean.class, defaultValue="false", 
+							description="If true, the window can be resized"),
+	@TagAttributeDeclaration(value="closable", type=Boolean.class, defaultValue="true", 
+							description="If true, a close button will be available at the dialog's top bar to close the window"),
+	@TagAttributeDeclaration(value="modal", type=Boolean.class, defaultValue="true", 
+							description="If true, the content behind the dialog can not be changed when dialog is showing")
 })
 public class DialogViewContainerFactory extends WidgetCreator<WidgetCreatorContext> implements DialogFactory<WidgetCreatorContext>
 {
@@ -63,16 +68,25 @@ public class DialogViewContainerFactory extends WidgetCreator<WidgetCreatorConte
 											closable+", "+modal+", "+EscapeUtils.quote(styleName)+");");
 	}
 	
-    @TagConstraints(minOccurs="0", maxOccurs="1", tagName="view")
+    @TagConstraints(minOccurs="0", maxOccurs="1", tagName="view", 
+    				description="A view to be rendered into this view container.")
     @TagAttributesDeclaration({
-    	@TagAttributeDeclaration(value="name", required=true)
+		@TagAttributeDeclaration(value="id", description="The view identifier."),
+		@TagAttributeDeclaration(value="name", required=true, description="The name of the view.")
     })
     public static class ViewProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
     {
     	@Override
     	public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
     	{
-    		out.println(context.getWidget()+".loadView("+EscapeUtils.quote(context.readChildProperty("name"))+", true);");
+    		String viewId = context.readChildProperty("id");
+    		String viewName = context.readChildProperty("name");
+    		
+    		if (StringUtils.isEmpty(viewId))
+    		{
+    			viewId = viewName;
+    		}
+    		out.println(context.getWidget()+".loadView("+EscapeUtils.quote(viewName)+","+EscapeUtils.quote(viewId)+", true);");
     	}
     }
     

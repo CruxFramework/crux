@@ -30,7 +30,9 @@ import org.cruxframework.crux.smartfaces.client.dialog.animation.DialogAnimation
  *
  */
 @TagAttributes({
-	@TagAttribute(value="animation", processor=HasDialogAnimationFactory.AnimationProcessor.class, type=HasDialogAnimationFactory.DialogAnimations.class)
+	@TagAttribute(value="animation", processor=HasDialogAnimationFactory.AnimationProcessor.class, 
+				  type=HasDialogAnimationFactory.DialogAnimations.class, 
+				  description="The animation to be aplied when the dialog is opened or closed.")
 })
 public interface HasDialogAnimationFactory<C extends WidgetCreatorContext> extends HasAnimationFactory<C>
 {

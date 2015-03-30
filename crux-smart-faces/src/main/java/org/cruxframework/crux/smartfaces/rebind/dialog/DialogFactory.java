@@ -25,9 +25,13 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
  *
  */
 @TagAttributes({
-	@TagAttribute(value="autoHide", type=Boolean.class, property="autoHideEnabled", defaultValue="false"),
-	@TagAttribute(value="autoHideOnHistoryEventsEnabled", type=Boolean.class),
-	@TagAttribute(value="glassStyleName", supportsResources=true)
+	@TagAttribute(value="autoHide", type=Boolean.class, 
+				  property="autoHideEnabled", defaultValue="false",
+				  description="If true, the dialog will be closed when user select anything out of the dialog area"),
+	@TagAttribute(value="autoHideOnHistoryEventsEnabled", type=Boolean.class, 
+	  			  description="If true, the dialog will be closed when any history event is fired, like when user press back on browser"),
+	@TagAttribute(value="glassStyleName", supportsResources=true, 
+				  description="the class name for the element placed above the dialog element")
 })
 public interface DialogFactory<C extends WidgetCreatorContext> extends HasDialogAnimationFactory<C>
 {
