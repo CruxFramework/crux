@@ -29,7 +29,8 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  * @author Thiago da Rosa de Bustamante
  *
  */
-@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="progress", targetWidget=Progress.class)
+@DeclarativeFactory(library=Constants.LIBRARY_NAME, id="progress", targetWidget=Progress.class, 
+					description="A progress bar component.")
 @TagAttributes({
 	@TagAttribute(value="value", type=Integer.class, description="The progress value"),
 	@TagAttribute(value="max", type=Integer.class, description="The progress maximum possible value")
