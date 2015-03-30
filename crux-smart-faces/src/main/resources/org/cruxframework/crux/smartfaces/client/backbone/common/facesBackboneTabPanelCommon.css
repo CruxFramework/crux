@@ -1,7 +1,7 @@
 @external faces-*;
 
 /****************     TabPanel     *************************/
-.tabPanelDeck {
+.facesBackboneTabPanelDeck {
 	-webkit-box-flex: 1;      		/* OLD - iOS 6-, Safari 3.1-6 */
 	-moz-box-flex: 1;         		/* OLD - Firefox 19- */
 	-ms-flex: 1;              		/* TWEENER - IE 10 */
@@ -17,11 +17,12 @@
 	overflow: hidden;
 }
 
-.tabPanelDeck .faces-TabBar
+.facesBackboneTabPanelDeck .faces-TabBar
 {
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
-	display: flex;
+	display: -webkit-inline-box;    /* OLD - iOS 6-, Safari 3.1-6 */
+	display: -moz-inline-box;       /* OLD - Firefox 19- (buggy but mostly works) */
+	display: -ms-inline-flexbox;   	/* TWEENER - IE 10 */
+	display: -webkit-inline-flex;	/* NEW - Chrome */
+	display: inline-flex;      		/* NEW, Spec - Opera 12.1, Firefox 20+ */
+/*	display:flex; */
 }
