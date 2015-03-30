@@ -16,6 +16,7 @@
 package org.cruxframework.crux.smartfaces.rebind.viewcontainer;
 
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
@@ -42,16 +43,25 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
 })
 public class SimpleViewContainerFactory extends WidgetCreator<WidgetCreatorContext>
 {
-    @TagConstraints(minOccurs="0", maxOccurs="1", tagName="view")
+    @TagConstraints(minOccurs="0", maxOccurs="1", tagName="view",
+    		description="A view to be rendered into this view container.")
     @TagAttributesDeclaration({
-    	@TagAttributeDeclaration(value="name", required=true)
+		@TagAttributeDeclaration(value="id", description="The view identifier."),
+		@TagAttributeDeclaration(value="name", required=true, description="The name of the view.")
     })
     public static class ViewProcessor extends WidgetChildProcessor<WidgetCreatorContext> 
     {
     	@Override
     	public void processChildren(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
     	{
-    		out.println(context.getWidget()+".loadView("+EscapeUtils.quote(context.readChildProperty("name"))+", true);");
+    		String viewId = context.readChildProperty("id");
+    		String viewName = context.readChildProperty("name");
+    		
+    		if (StringUtils.isEmpty(viewId))
+    		{
+    			viewId = viewName;
+    		}
+    		out.println(context.getWidget()+".loadView("+EscapeUtils.quote(viewName)+","+EscapeUtils.quote(viewId)+", true);");
     	}
     }
     
