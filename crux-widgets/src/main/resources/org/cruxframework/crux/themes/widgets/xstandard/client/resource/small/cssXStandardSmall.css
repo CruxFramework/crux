@@ -55,7 +55,8 @@ body
 
 .gwt-TextBox,
 .gwt-TextArea,
-.crux-SingleSelect
+.crux-SingleSelect,
+.crux-NumberTextBox
 {
     font-size:115%;
     padding:12px 8px;
@@ -97,6 +98,12 @@ body
 .crux-FormDisplay > tbody > tr:last-child > td
 {
     box-shadow: none;
+}
+
+.crux-FormDisplay .formEntryData:first-child,
+.crux-FormDisplay .formEntryLabel
+{
+	padding-right:0;
 }
 
 /* Styling the TD that wraps the top bar  */
@@ -407,6 +414,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     z-index:4;
     font-size:17px;
 }
+
 .crux-ListShuttle .buttonsColumn button:nth-child\(1\):before
 {
     content:'\25bc';
@@ -564,6 +572,18 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     padding-top: 0px;
 }
 
+.crux-Dialog .dialogCloseButton
+{
+    cursor: pointer;
+    position:absolute;
+    top:12px;
+    right:12px;
+    width:16px;
+    height:16px;
+    border:none;
+    background:svgIconClose;
+    background-size:100% auto;
+}
 
 /***********************************************/
 /*---------------------------------------------*/
@@ -586,7 +606,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
     box-shadow: 0 0 10px rgba(90,90,90,0.1);
     background-image: -webkit-linear-gradient(top,rgba(255,255,255,1)80%,rgba(240,240,240,0.3));
     padding: 10px;
-    width:calc(100% - 20px);
+    width:literal("calc(100% - 20px)");
     position: relative;
     width: 100%;
     height: 60px;
@@ -889,6 +909,7 @@ TABLE.menuTabsHeaderSplitPanel>TBODY>TR:first-child>TD
 .crux-ScrollBanner .messageCount
 {
     border-left:1px solid #ccc;
+    border-right:1px solid #ccc;
     font-size:15px;
     padding:6px 0 6px 1px;
     margin-left:1px;
