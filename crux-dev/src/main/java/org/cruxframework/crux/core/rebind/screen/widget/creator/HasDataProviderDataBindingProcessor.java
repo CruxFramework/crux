@@ -34,10 +34,10 @@ import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
 public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 {
 	private String bindingContextVariable;
-	private String collectionObjectReference; 
+	private String collectionDataObject; 
+	private String collectionObjectReference;
 	private Set<String> converterClasses = new HashSet<String>();
 	private Set<String> converterDeclarations = new HashSet<String>();
-	private String collectionDataObject;
 	
 	public HasDataProviderDataBindingProcessor(String bindingContextVariable, String collectionObjectReference, String collectionDataObject)
     {
@@ -53,11 +53,32 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 		processBindingExpressions(out, context);
     }
 
-	protected Iterator<String> iterateConverterDeclarations()
+	protected Set<String> getConverterDeclarations()
 	{
-		return converterDeclarations.iterator();
+		Set<String> result = new HashSet<String>();
+		result.addAll(converterDeclarations);
+		return result;
 	}
 	
+	private void processBindingExpressions(SourcePrinter out, WidgetCreatorContext context)
+    {
+	    Iterator<ExpressionDataBinding> expressionBindings = context.iterateExpressionBindings();
+		
+		try
+		{
+			while (expressionBindings.hasNext())
+			{
+				ExpressionDataBinding expressionBinding = expressionBindings.next();
+				out.println(expressionBinding.getWriteExpression(bindingContextVariable, context.getWidget(), 
+							collectionObjectReference, collectionDataObject));
+			}
+		}
+		catch(NoSuchFieldException e)
+		{
+			throw new CruxGeneratorException("Error processing data binding expression.", e);
+		}
+    }
+
 	private void processDataObjectBindings(SourcePrinter out, WidgetCreatorContext context)
     {
 		Iterator<String> dataObjects = context.iterateObjectDataBindingObjects();
@@ -84,25 +105,6 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 				}
 				out.println(bind.getWriteExpression(collectionObjectReference));
 			}
-		}
-    }
-
-	private void processBindingExpressions(SourcePrinter out, WidgetCreatorContext context)
-    {
-	    Iterator<ExpressionDataBinding> expressionBindings = context.iterateExpressionBindings();
-		
-		try
-		{
-			while (expressionBindings.hasNext())
-			{
-				ExpressionDataBinding expressionBinding = expressionBindings.next();
-				out.println(expressionBinding.getWriteExpression(bindingContextVariable, context.getWidget(), 
-							collectionObjectReference, collectionDataObject));
-			}
-		}
-		catch(NoSuchFieldException e)
-		{
-			throw new CruxGeneratorException("Error processing data binding expression.", e);
 		}
     }		
 }

@@ -27,17 +27,17 @@ import com.google.gwt.core.ext.typeinfo.JType;
  */
 class BindInfo
 {
-	protected static String DATA_OBJECT_VAR_REF = "{0}";
 	protected static String CONVERTER_VARIABLE = "__converter";
+	protected static String DATA_OBJECT_VAR_REF = "{0}";
 
-	protected String dataObjectClassName;
-	protected String dataObject;
+	protected JType bindInfoType;
+	protected JType bindPathType;
 	protected String converterClassName;
 	protected String converterParams;
-	protected String dataObjectReadExpression;
 	protected JClassType converterType;
-	protected JType bindPathType;
-	protected JType bindInfoType;
+	protected String dataObject;
+	protected String dataObjectClassName;
+	protected String dataObjectReadExpression;
 
 	public BindInfo(String bindPath, JClassType dataObjectType, 
 			JClassType converterType, String dataObject, String converterParams) throws NoSuchFieldException
@@ -50,15 +50,19 @@ class BindInfo
 		this.dataObjectReadExpression = getDataObjectReadExpression(dataObjectType, bindPath);
 	}
 	
-	public String getDataObjectClassName()
-    {
-	    return dataObjectClassName;
-    }
-	
 	public String getConverterClassName()
 	{
 		return converterClassName;
 	}
+	
+	public String getConverterDeclaration()
+    {
+		if (getConverterVariable() != null)
+		{
+			return getConverterClassName() + " " + getConverterVariable() +	" = new " + getConverterClassName() + "("+converterParams+");";
+		}
+        return null;
+    }
 	
 	public String getConverterVariable()
 	{
@@ -70,13 +74,9 @@ class BindInfo
 		return dataObject;
 	}
 	
-	public String getConverterDeclaration()
+	public String getDataObjectClassName()
     {
-		if (getConverterVariable() != null)
-		{
-			return getConverterClassName() + " " + getConverterVariable() +	" = new " + getConverterClassName() + "("+converterParams+");";
-		}
-        return null;
+	    return dataObjectClassName;
     }
 
 	public String getExpression(String expression, String dataObjectVariable)

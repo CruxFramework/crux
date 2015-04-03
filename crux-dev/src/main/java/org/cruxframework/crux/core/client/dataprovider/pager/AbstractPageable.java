@@ -319,9 +319,6 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 	    refresh(false);
     }
 
-	protected abstract void clearRange(int startRecord);
-	protected abstract void clear(); 
-	
 	protected void onTransactionCompleted(boolean commited)
     {
 		final int pageStartRecordOnTransactionEnd = dataProvider.getCurrentPageStartRecord();
@@ -392,6 +389,10 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 		}
 	}
 
+	protected abstract Renderer<T> getRenderer();
+	protected abstract void clearRange(int startRecord);
+	protected abstract void clear(); 
+	
 	private int getRowsToBeRendered()
 	{
 		if(isDataLoaded())
@@ -406,9 +407,7 @@ public abstract class AbstractPageable<T> extends Composite implements Pageable<
 
 		return 0;
 	}
-	
-	protected abstract Renderer<T> getRenderer();
-	
+
 	/**
 	 * Define a renderer, called when a record from DataProvider needs to be rendered by this widget 
 	 * @author Thiago da Rosa de Bustamante

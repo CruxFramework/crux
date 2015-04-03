@@ -182,9 +182,10 @@ public class CrawlingTool
 	protected void loadURL(String line)
     {
 	   String[] parts = line.split(":");
-	   if (parts != null && parts.length == 2)
+	   if (parts != null && parts.length > 0)
 	   {
-		   addSnaphot(parts[0], parts[1]);
+		   String escapedFragment = parts.length > 1 ? parts[1].trim() : null; 
+		   addSnaphot(parts[0], escapedFragment);
 	   }
     }
 

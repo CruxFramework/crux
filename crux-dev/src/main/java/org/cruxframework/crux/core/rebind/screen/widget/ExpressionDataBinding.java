@@ -84,6 +84,33 @@ public class ExpressionDataBinding
 		return writeExpression.toString();
 	}
 	
+	public String getExpression(String contextVariable, String collectionDataObjectRef, String collectionDataObject)
+	{
+		StringBuilder result = new StringBuilder();
+		
+		result.append(expression);
+		for (String dataObject : dataObjects)
+        {
+	        String dataObjectReference = "${"+dataObject+"}";
+	        int index;
+	        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionDataObject.equals(dataObject);
+	        String dataObjectVar = isCollectionObjectReference?collectionDataObjectRef:ViewFactoryCreator.createVariableName(dataObject);
+	        boolean isReferenced = false;
+	        while ((index = result.indexOf(dataObjectReference)) >= 0)
+	        {
+	        	isReferenced = !isCollectionObjectReference;
+	        	result.replace(index, index+dataObjectReference.length(), dataObjectVar);
+	        }
+	        if (isReferenced)
+	        {
+	        	String dataObjectClassName = DataObjects.getDataObject(dataObject);
+	        	result.insert(0, dataObjectClassName+" "+dataObjectVar+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n");
+	        }
+        }
+
+		return result.toString();
+	}
+	
 	public Iterator<String> iterateDataObjects()
 	{
 		return dataObjects.iterator();

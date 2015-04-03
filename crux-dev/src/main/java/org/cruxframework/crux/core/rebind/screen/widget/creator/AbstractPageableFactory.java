@@ -15,7 +15,7 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget.creator;
 
-import java.util.Iterator;
+import java.util.Set;
 
 import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
@@ -64,7 +64,13 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 		if (childName.equals("widget"))
 		{
 			out.println("new " + widgetFactoryClassName + "(){");
-			generateWidgetCreationForCellByTemplate(out, context, child, dataObject);
+			String bindingContextVariable = "_context";
+		    generateBindingContextDeclaration(out, bindingContextVariable);
+			Set<String> converterDeclarations = generateWidgetCreationForCellByTemplate(out, context, child, dataObject, bindingContextVariable);
+		    for (String converterDeclaration : converterDeclarations)
+	        {
+		    	out.println(converterDeclaration);
+		    }
 			out.println("};");
 		}
 		else if (childName.equals("widgetFactory"))
@@ -80,17 +86,26 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 		return true;
     }
 
-	private void generateWidgetCreationForCellByTemplate(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
+	/**
+	 * Generate the createWidget method and return the set of converter declarations used by the generated method
+	 * @param out
+	 * @param context
+	 * @param child
+	 * @param dataObject
+	 * @param bindingContextVariable
+	 * @return
+	 */
+	protected Set<String> generateWidgetCreationForCellByTemplate(SourcePrinter out, C context, JSONObject child, 
+						JClassType dataObject, String bindingContextVariable)
     {
 		child = ensureFirstChild(child, false, context.getWidgetId());
-		String bindingContextVariable = "_context";
 		String collectionObjectReference = "_value";
 		DataObject dataObjectAnnotation = dataObject.getAnnotation(DataObject.class);
-		String dataObjectAlias = dataObjectAnnotation.value();
-		if (dataObjectAlias == null)
+		if (dataObjectAnnotation == null)
 		{
 			throw new CruxGeneratorException("Invaid dataObject: "+dataObject.getQualifiedSourceName());
 		}
+		String dataObjectAlias = dataObjectAnnotation.value();
 		HasDataProviderDataBindingProcessor bindingProcessor = new HasDataProviderDataBindingProcessor(
 															bindingContextVariable, collectionObjectReference, dataObjectAlias);
 		out.println("public "+IsWidget.class.getCanonicalName()+" createWidget("+dataObject.getParameterizedQualifiedSourceName()
@@ -99,18 +114,17 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 	    out.println("return "+childWidget+";");
 	    out.println("}");
 	    
+	    return bindingProcessor.getConverterDeclarations();
+    }
+
+	protected void generateBindingContextDeclaration(SourcePrinter out, String bindingContextVariable)
+    {
 	    String bindingContextClassName = UpdatedStateBindingContext.class.getCanonicalName();
 		out.println(bindingContextClassName + " " + bindingContextVariable + " = new " + bindingContextClassName + "("+
 					getViewVariable() + ", 0);");
-	    
-	    Iterator<String> converterDeclarations = bindingProcessor.iterateConverterDeclarations();
-	    while(converterDeclarations.hasNext())
-	    {
-	    	out.println(converterDeclarations.next());
-	    }
     }
 
-	private void generateWidgetCreationForCellOnController(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
+	protected void generateWidgetCreationForCellOnController(SourcePrinter out, C context, JSONObject child, JClassType dataObject)
     {
 	    try
 	    {
@@ -125,15 +139,15 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 	    	ControllerAccessHandler controllerAccessHandler = new ControllerAccessHandler()
 	    	{
 	    		@Override
-	    		public String getControllerImplClassName(String controller, Device device)
-	    		{
-	    			return getControllerAccessorHandler().getControllerImplClassName(controller, device);
-	    		}
-	    		
-	    		@Override
 	    		public String getControllerExpression(String controller, Device device)
 	    		{
 	    			return "this.controller";
+	    		}
+	    		
+	    		@Override
+	    		public String getControllerImplClassName(String controller, Device device)
+	    		{
+	    			return getControllerAccessorHandler().getControllerImplClassName(controller, device);
 	    		}
 	    	};
 	    	
@@ -152,23 +166,23 @@ public abstract class AbstractPageableFactory<C extends WidgetCreatorContext> ex
 	    }
     }
 	
-	@TagChildren({
-		@TagChild(WidgetFactoryChildCreator.class),
-		@TagChild(WidgetFactoryControllerChildCreator.class)
-	})
-	public static class WidgetListChildCreator extends ChoiceChildProcessor<WidgetCreatorContext>{}
-	
 	@TagConstraints(tagName="widget", description="Describes the widget used by the widgetList. An Widget like this will be created for each object provided by the dataprovider.")
 	@TagChildren({
 		@TagChild(value=WidgetFactoryWidgetProcessor.class, autoProcess=false)
 	})
 	public static class WidgetFactoryChildCreator extends WidgetChildProcessor<WidgetCreatorContext>{}
 	
-	public static class WidgetFactoryWidgetProcessor extends AnyWidgetChildProcessor<WidgetCreatorContext> {}
-	
 	@TagConstraints(tagName="widgetFactory", description="Describes the widget factory method to be called on a controller to create widgets for this list. This factory is called to create a widget for each object provided by the dataprovider.")
 	@TagAttributesDeclaration({
 		@TagAttributeDeclaration(value="onCreateWidget", required=true, description="")
 	})
 	public static class WidgetFactoryControllerChildCreator extends WidgetChildProcessor<WidgetCreatorContext>{}
+	
+	public static class WidgetFactoryWidgetProcessor extends AnyWidgetChildProcessor<WidgetCreatorContext> {}
+	
+	@TagChildren({
+		@TagChild(WidgetFactoryChildCreator.class),
+		@TagChild(WidgetFactoryControllerChildCreator.class)
+	})
+	public static class WidgetListChildCreator extends ChoiceChildProcessor<WidgetCreatorContext>{}
 }

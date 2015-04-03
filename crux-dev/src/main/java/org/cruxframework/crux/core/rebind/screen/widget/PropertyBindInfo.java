@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -36,8 +37,11 @@ public class PropertyBindInfo extends BindInfo
     {
 		super(bindPath, dataObjectType, converterType, dataObject, converterParams);
 		this.widgetClassName = widgetType.getQualifiedSourceName();
-		this.readExpression = getReadExpression(widgetPropertyPath, widgetType, dataObjectType, bindPath);
-		this.writeExpression = getWriteExpression(widgetPropertyPath, widgetType);
+		if (!StringUtils.isEmpty(widgetPropertyPath))
+		{
+			this.readExpression = getReadExpression(widgetPropertyPath, widgetType, dataObjectType, bindPath);
+			this.writeExpression = getWriteExpression(widgetPropertyPath, widgetType);
+		}
     }
 
 	public String getWriteExpression(String dataObjectVariable)
@@ -48,6 +52,11 @@ public class PropertyBindInfo extends BindInfo
 	public String getReadExpression(String dataObjectVariable)
 	{
 		return getExpression(readExpression, dataObjectVariable);
+	}
+	
+	public String getDataObjectReadExpression(String dataObjectVariable)
+	{
+		return getExpression(getDataObjectReadExpression(), dataObjectVariable);
 	}
 
 	public String getWidgetClassName()
@@ -68,10 +77,8 @@ public class PropertyBindInfo extends BindInfo
 				String bindPath) throws NoSuchFieldException
     {
 		StringBuilder getExpression = new StringBuilder();
-		
 		JClassUtils.buildGetValueExpression(getExpression, widgetType, widgetPropertyPath, WIDGET_VAR_REF, false);
-		
-        return getDataObjectWriteExpression(dataObjectType, bindPath, getExpression.toString());
+		return getDataObjectWriteExpression(dataObjectType, bindPath, getExpression.toString());
     }
 
 	/**
@@ -85,9 +92,7 @@ public class PropertyBindInfo extends BindInfo
 	protected String getWriteExpression(String widgetPropertyPath, JClassType widgetType) throws NoSuchFieldException
 	{
 		StringBuilder writeExpression = new StringBuilder();
-
 		JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, WIDGET_VAR_REF, getDataObjectReadExpression());
-		
 		return writeExpression.toString();
 	}
 }
