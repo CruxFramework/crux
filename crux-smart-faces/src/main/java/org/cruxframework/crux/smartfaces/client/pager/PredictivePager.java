@@ -16,7 +16,6 @@
 package org.cruxframework.crux.smartfaces.client.pager;
 
 import org.cruxframework.crux.core.client.dataprovider.pager.PageEvent;
-import org.cruxframework.crux.core.shared.Experimental;
 import org.cruxframework.crux.smartfaces.client.panel.NavPanel;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -26,10 +25,7 @@ import com.google.gwt.user.client.ui.ListBox;
 /**
  * A pager which knows the total number of pages.  
  * @author Gesse S. F. Dafe
- * - EXPERIMENTAL - 
- * THIS CLASS IS NOT READY TO BE USED IN PRODUCTION. IT CAN CHANGE FOR NEXT RELEASES
  */
-@Experimental
 public class PredictivePager extends NavigationButtonsPager
 {
 	private static final String DEFAULT_STYLE_NAME = "faces-PredictivePager";

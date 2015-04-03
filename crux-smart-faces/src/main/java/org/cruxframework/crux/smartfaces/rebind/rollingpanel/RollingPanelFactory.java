@@ -33,7 +33,7 @@ import org.cruxframework.crux.smartfaces.rebind.Constants;
  *
  */
 @DeclarativeFactory(id="rollingPanel", library=Constants.LIBRARY_NAME, targetWidget=RollingPanel.class, 
-					description="A panel to display multiple children inside a scrollable area, adapting to the device used.")
+					description="A panel that can be used to display multiples widgets with an adaptive scroll that changes, according with the device used by the client")
 @TagAttributes({
 	@TagAttribute(value="scrollToAddedWidgets", type=Boolean.class, 
 			description="If true, when a new widget is added to this panel, the panel scrolls to ensure that the new widget is visible")

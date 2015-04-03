@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.smartfaces.client.list;
 
+import org.cruxframework.crux.core.client.dataprovider.DataProvider;
 import org.cruxframework.crux.core.client.dataprovider.PagedDataProvider;
 import org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable;
 import org.cruxframework.crux.core.client.dataprovider.pager.Pageable;
@@ -26,6 +27,7 @@ import org.cruxframework.crux.core.client.factory.WidgetFactory;
 import org.cruxframework.crux.smartfaces.client.backbone.common.FacesBackboneResourcesCommon;
 import org.cruxframework.crux.smartfaces.client.button.Button;
 import org.cruxframework.crux.smartfaces.client.dialog.PopupPanel;
+import org.cruxframework.crux.smartfaces.client.panel.SelectableFlowPanel;
 import org.cruxframework.crux.smartfaces.client.panel.SelectablePanel;
 
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -35,24 +37,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasAllFocusHandlers;
-import com.google.gwt.event.dom.client.HasAllMouseHandlers;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -84,23 +73,26 @@ import com.google.gwt.user.client.ui.Widget;
  *            &lt;/faces:comboBox&gt;
  *            </p>
  */
-public abstract class AbstractComboBox<V, T> extends Composite implements HasValue<V>, Pageable<PagedDataProvider<T>>, HasAllFocusHandlers, HasEnabled, HasSelectHandlers, HasAllMouseHandlers
+public abstract class AbstractComboBox<V, T> extends Composite implements HasValue<V>, Pageable<PagedDataProvider<T>>, 
+												HasAllFocusHandlers, HasEnabled, HasSelectHandlers
 {
-	private static final String BODY_PANEL = "faces-ComboBox-bodyPanel";
+	public static final String DEFAULT_STYLE_NAME = "faces-ComboBox";
+	public static final String LABEL_ITEM = "faces-comboBox-LabelItem";
+
 	private static final String COMBO_BOX_BUTTON = "faces-ComboBox-Button";
 	private static final String COMBO_BOX_COMBO_ITEM_LIST = "faces-comboBox-comboItemList";
 	private static final String COMBO_BOX_POPUP = "faces-ComboBox-Popup";
 	private static final String COMBO_BOX_SCROLL_PANEL = "faces-comboBox-scrollPanel";
 	private static final String COMBO_BOX_TEXT = "faces-ComboBox-Text";
-	public static final String DEFAULT_STYLE_NAME = "faces-ComboBox";
-	public static final String LABEL_ITEM = "faces-comboBox-LabelItem";
 
-	private final FlowPanel bodyPanel = new FlowPanel();
+	protected OptionsRenderer<V, T> optionsRenderer = null;
+
+	private final SelectableFlowPanel bodyPanel = new SelectableFlowPanel();
 	private final Button button = new Button();
 	private ComboBoxOptionList<V, T> optionsList;
-	protected OptionsRenderer<V, T> optionsRenderer = null;
 	private PopupPanel popup;
 	private ScrollPanel scrollPanel;
+	private int selectedIndex;
 	private final TextBox textBox = new TextBox();
 	private V value;
 
@@ -128,109 +120,17 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	}
 
 	@Override
-	public HandlerRegistration addMouseDownHandler(MouseDownHandler handler)
-	{
-		return addHandler(handler,MouseDownEvent.getType());
-	}
-
-	@Override
-	public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler)
-	{
-		return addHandler(handler, MouseMoveEvent.getType());
-	}
-
-	@Override
-	public HandlerRegistration addMouseOutHandler(MouseOutHandler handler)
-	{
-		return addHandler(handler,MouseOutEvent.getType());
-	}
-
-	@Override
-	public HandlerRegistration addMouseOverHandler(MouseOverHandler handler)
-	{
-		return addHandler(handler, MouseOverEvent.getType());
-	}
-
-	@Override
-	public HandlerRegistration addMouseUpHandler(MouseUpHandler handler)
-	{
-		return addHandler(handler,MouseUpEvent.getType());
-	}
-
-	@Override
-	public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler)
-	{
-		return addHandler(handler,MouseWheelEvent.getType());
-	}
-
-	@Override
 	public HandlerRegistration addSelectHandler(SelectHandler handler)
 	{
-		return addHandler(handler,SelectEvent.getType());
+		return addHandler(handler, SelectEvent.getType());
 	}
 	
-	private void createPopup()
-	{
-		popup = new PopupPanel();
-		popup.addStyleName(COMBO_BOX_POPUP);
-		popup.setAutoHideEnabled(true);
-		popup.add(scrollPanel);
-		popup.showRelativeTo(textBox);
-	}
-	
-	
-	private void createVisualComponents(OptionsRenderer<V, T> optionsRenderer)
-	{
-		this.optionsRenderer = optionsRenderer;
-		bodyPanel.add(textBox);
-		bodyPanel.setWidth("100%");
-		bodyPanel.setStyleName(BODY_PANEL);
-		bodyPanel.add(button);
-
-		textBox.setStyleName(COMBO_BOX_TEXT);
-		textBox.addClickHandler(new ClickHandler(){
-
-			@Override	
-			public void onClick(ClickEvent event)
-			{
-				createPopup();
-			}
-		});
-		
-		textBox.setReadOnly(true);
-		
-		optionsList = new ComboBoxOptionList<V, T>(optionsRenderer, this);
-		optionsList.setStyleName(COMBO_BOX_COMBO_ITEM_LIST);
-		
-		scrollPanel = new ScrollPanel();
-		scrollPanel.setStyleName(COMBO_BOX_SCROLL_PANEL);
-		scrollPanel.add(optionsList);
-		
-		button.setStyleName(COMBO_BOX_BUTTON);
-		button.addSelectHandler(new SelectHandler(){
-			@Override
-			public void onSelect(SelectEvent event)
-			{
-				createPopup();
-			}
-		});
-
-		addHandler(new SelectComboItemHandler<V>(){
-			@Override
-			public void onSelectItem(SelectComboItemEvent<V> event)
-			{
-				selectItem(event.label,event.value);
-			}
-		}, SelectComboItemEvent.getType());
-		setStyleName(DEFAULT_STYLE_NAME);
-	}
-
 	@Override
 	public PagedDataProvider<T> getDataProvider()
 	{
 		return optionsList.getDataProvider();
 	}
-
+	
 	@Override
 	public int getPageCount()
 	{
@@ -245,8 +145,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 
 	public int getSelectedIndex()
 	{
-		//TODO
-		return -1;
+		return this.selectedIndex;
 	}
 
 	public V getValue()
@@ -283,20 +182,10 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		optionsList.previousPage();
 	}
-	
+
 	public void refresh()
 	{
 		optionsList.reset();
-	}
-
-	protected void selectItem(String label, V value)
-	{
-		textBox.setText(label);
-		this.value = value;
-		if(popup != null)
-		{
-			popup.hide();
-		}
 	}
 
 	@Override
@@ -304,7 +193,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		optionsList.setDataProvider(dataProvider, autoLoadData);
 	}
-
+	
 	@Override
 	public void setEnabled(boolean enabled)
 	{
@@ -327,41 +216,138 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 
 	public void setSelectedIndex(int index)
 	{
-		//TODO
+		DataProvider<T> dataProvider = getDataProvider();
+		T obj = dataProvider.get(index);
+		selectItem(optionsRenderer.getLabel(obj), optionsRenderer.getValue(obj), index);
 	}
 
 	@Override
 	public void setStyleName(String style)
 	{
 	    super.setStyleName(style);
-	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneCombobox());
+	    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
 	}
-	
+
 	@Override
 	public void setStyleName(String style, boolean add)
 	{
 		super.setStyleName(style, add);
 		if (!add)
 		{
-		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().facesBackboneCombobox());
+		    addStyleName(FacesBackboneResourcesCommon.INSTANCE.css().flexBoxHorizontalContainer());
 		}
 	}
-	
-	protected abstract void setValueByObject(T obj);
 
-	
 	@Override
 	public void setWidth(String width)
 	{
- 		super.setWidth(width);
+		super.setWidth(width);
 		scrollPanel.setWidth(width);
-
+		//TODO tudo isso pra baixo nao funciona... remover tudo isso e usar css flex box nos filhos do bodypanel
 		width = width.substring(0,width.indexOf("px"));
 		int widthInt = Integer.parseInt(width);
 		int widthTextBox = widthInt-23;
 		textBox.setWidth(widthTextBox+"px");
 	}
+
+	protected void selectItem(String label, V value, int selectedIndex)
+	{
+		this.selectedIndex = selectedIndex;
+		textBox.setText(label);
+		this.value = value;
+		if(popup != null)
+		{
+			popup.hide();
+		}
+		ValueChangeEvent.fire(this, value);
+	}
 	
+	protected abstract void setValueByObject(T obj);
+	
+	private void createPopup()
+	{
+		popup = new PopupPanel();
+		popup.addStyleName(COMBO_BOX_POPUP);
+		popup.setAutoHideEnabled(true);
+		popup.add(scrollPanel);
+		popup.showRelativeTo(textBox);
+	}
+	
+	private void createVisualComponents(OptionsRenderer<V, T> optionsRenderer)
+	{
+		this.optionsRenderer = optionsRenderer;
+		bodyPanel.add(textBox);
+		bodyPanel.setWidth("100%");
+		bodyPanel.add(button);
+		bodyPanel.addSelectHandler(new SelectHandler()
+		{
+			@Override
+			public void onSelect(SelectEvent event)
+			{
+				SelectEvent selectEvent = SelectEvent.fire(AbstractComboBox.this);
+				if (selectEvent.isCanceled())
+				{
+					event.setCanceled(true);
+				}
+				if (selectEvent.isStopped())
+				{
+					event.stopPropagation();
+				}
+			}
+		});
+		
+		textBox.setStyleName(COMBO_BOX_TEXT);
+		textBox.addClickHandler(new ClickHandler(){
+
+			@Override	
+			public void onClick(ClickEvent event)
+			{
+				createPopup();
+			}
+		});//TODO trocar pra select handler
+		
+		textBox.setReadOnly(true);
+		
+		optionsList = new ComboBoxOptionList<V, T>(optionsRenderer, this);
+		optionsList.setStyleName(COMBO_BOX_COMBO_ITEM_LIST);
+		
+		scrollPanel = new ScrollPanel();
+		scrollPanel.setStyleName(COMBO_BOX_SCROLL_PANEL);
+		scrollPanel.add(optionsList);
+		
+		button.setStyleName(COMBO_BOX_BUTTON);
+		button.addSelectHandler(new SelectHandler(){
+			@Override
+			public void onSelect(SelectEvent event)
+			{
+				createPopup();
+			}
+		});
+
+		addHandler(new SelectComboItemHandler<V>(){
+			@Override
+			public void onSelectItem(SelectComboItemEvent<V> event)
+			{
+				selectItem(event.label,event.value, event.index);
+			}
+		}, SelectComboItemEvent.getType());
+		setStyleName(DEFAULT_STYLE_NAME);
+	}
+
+	
+	/**
+	 * @author wesley.diniz
+	 * 
+	 * @param <V>
+	 * @param <T>
+	 */
+	public static interface OptionsRenderer<V, T> extends WidgetFactory<T>
+	{
+		String getLabel(T record);
+
+		V getValue(T record);
+	}
+
 	/**
 	 * @author wesley.diniz
 	 * 
@@ -391,6 +377,13 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 					ComboBoxOptionPanel<V> panel = new ComboBoxOptionPanel<V>(comboBoxParent);
 					panel.setValue(((OptionsRenderer<V, T>) widgetFactory).getValue(value));
 					panel.setLabel(((OptionsRenderer<V, T>) widgetFactory).getLabel(value));
+					int widgetIndex = contentPanel.getWidgetCount();
+					if (pager != null && !pager.supportsInfiniteScroll())
+					{
+						int numPreviousPage = getDataProvider().getCurrentPage() - 1;
+						widgetIndex += (numPreviousPage*pageSize);
+					}
+					panel.setIndex(widgetIndex);
 					panel.add(widget);
 					
 					contentPanel.add(panel);
@@ -408,6 +401,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	{
 		private static final String COMBO_BOX_OPTION_PANEL = "faces-comboBoxOptionPanel";
 		private SelectablePanel bodyPanel = new SelectablePanel();
+		private int index;
 		private String label;
 		private V value;
 
@@ -422,6 +416,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 					SelectComboItemEvent<V> ev = new SelectComboItemEvent<V>();
 					ev.value = getValue();
 					ev.label = getLabel();
+					ev.index = getIndex();
 					parent.fireEvent(ev);
 				}
 			});
@@ -430,6 +425,11 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		void add(IsWidget w)
 		{
 			bodyPanel.add(w);
+		}
+
+		int getIndex()
+		{
+			return index;
 		}
 
 		String getLabel()
@@ -442,6 +442,11 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			return value;
 		}
 
+		void setIndex(int index)
+		{
+			this.index = index;
+		}
+
 		void setLabel(String label)
 		{
 			this.label = label;
@@ -451,19 +456,7 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 		{
 			this.value = value;
 		}
-	}
-
-	/**
-	 * @author wesley.diniz
-	 * 
-	 * @param <V>
-	 * @param <T>
-	 */
-	public static interface OptionsRenderer<V, T> extends WidgetFactory<T>
-	{
-		String getLabel(T record);
-
-		V getValue(T record);
+		
 	}
 
 	/**
@@ -475,10 +468,12 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 	private static class SelectComboItemEvent<V> extends GwtEvent<SelectComboItemHandler>
 	{
 		private static final Type<SelectComboItemHandler> TYPE = new Type<SelectComboItemHandler>();
+		private int index;
 		private String label;
 		private V value;
 
-		static Type<SelectComboItemHandler> getType()
+		@Override
+		public Type<SelectComboItemHandler> getAssociatedType()
 		{
 			return TYPE;
 		}
@@ -490,15 +485,14 @@ public abstract class AbstractComboBox<V, T> extends Composite implements HasVal
 			handler.onSelectItem(this);
 		}
 
-		@Override
-		public Type<SelectComboItemHandler> getAssociatedType()
-		{
-			return TYPE;
-		}
-
 		V getValue()
 		{
 			return value;
+		}
+
+		static Type<SelectComboItemHandler> getType()
+		{
+			return TYPE;
 		}
 	}
 	

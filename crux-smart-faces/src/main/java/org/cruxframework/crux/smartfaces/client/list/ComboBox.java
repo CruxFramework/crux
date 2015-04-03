@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 cruxframework.org.
+ * Copyright 2015 cruxframework.org.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,8 +18,10 @@ package org.cruxframework.crux.smartfaces.client.list;
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.dataprovider.DataFilter;
 import org.cruxframework.crux.core.client.dataprovider.DataProvider;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.shared.Experimental;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -40,29 +42,29 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 	}
 
 	@Override
-	public void setValue(final String value)
+	public void setValue(String value)
+	{
+		setValue(value, false);
+	}
+
+	@Override
+	public void setValue(final String value, boolean fireEvents)
 	{
 		DataProvider<T> dataProvider = getDataProvider();
 		Array<T> filterResult = dataProvider.filter(new DataFilter<T>(){
-
+			
 			@Override
 			public boolean accept(T dataObject)
 			{
-				return optionsRenderer.getValue(dataObject).equals(value);
+				return StringUtils.unsafeEquals(optionsRenderer.getValue(dataObject), value);
 			}
 		});
 		
 		if(filterResult.size() > 0)
 		{
 			T obj = filterResult.get(0);
-			selectItem(optionsRenderer.getLabel(obj), optionsRenderer.getValue(obj));
+			selectItem(optionsRenderer.getLabel(obj), optionsRenderer.getValue(obj), dataProvider.indexOf(obj));
 		}
-	}
-
-	@Override
-	public void setValue(String value, boolean fireEvents)
-	{
-		setValue(value);
 	}
 
 	@Override
@@ -74,7 +76,7 @@ public class ComboBox<T> extends AbstractComboBox<String, T>
 	@Override
 	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> handler)
 	{
-		return null;
+		return addHandler(handler, ValueChangeEvent.getType());
+
 	}
-	
 }

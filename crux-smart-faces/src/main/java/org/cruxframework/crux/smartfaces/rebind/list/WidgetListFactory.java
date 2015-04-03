@@ -50,6 +50,12 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 public class WidgetListFactory extends AbstractPageableFactory<WidgetCreatorContext>
 {
 	@Override
+    public WidgetCreatorContext instantiateContext()
+    {
+	    return new WidgetCreatorContext();
+    }
+	
+	@Override
 	public void instantiateWidget(SourcePrinter out, WidgetCreatorContext context) throws CruxGeneratorException
 	{
 		JSONObject widgetCreatorChild = null;
@@ -84,10 +90,4 @@ public class WidgetListFactory extends AbstractPageableFactory<WidgetCreatorCont
 
 		out.println("final "+className + " " + context.getWidget()+" = new "+className+"("+widgetListFactory+");");
 	}
-	
-	@Override
-    public WidgetCreatorContext instantiateContext()
-    {
-	    return new WidgetCreatorContext();
-    }
 }

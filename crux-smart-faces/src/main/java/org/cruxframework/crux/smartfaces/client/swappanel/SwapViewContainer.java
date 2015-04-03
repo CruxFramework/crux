@@ -311,7 +311,6 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	@Override
 	protected void handleViewTitle(String title, Panel containerPanel, String viewId)
 	{
-
 	}
 
 	@Override
@@ -351,4 +350,5 @@ public class SwapViewContainer extends SingleViewContainer implements HasChangeV
 	{
 		this.animationBackward = animationBackward;
 	}
+	
 }

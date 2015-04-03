@@ -258,7 +258,7 @@ public class PageableDataGrid<T> extends AbstractPageable<T> implements Pageable
     }
 	
 	@Override
-	protected org.cruxframework.crux.core.client.dataprovider.pager.AbstractPageable.Renderer<T> getRenderer()
+	protected AbstractPageable.Renderer<T> getRenderer()
 	{
 	    return new Renderer<T>()
 		{

@@ -59,9 +59,10 @@ public class GenericDragEventHandler implements MouseDownHandler, MouseUpHandler
 	 */
 	public void applyTo(Draggable<?> draggable)
 	{
-		draggable.getHandle(action.getFeature()).addMouseDownHandler(this);
-		draggable.getHandle(action.getFeature()).addMouseMoveHandler(this);
-		draggable.getHandle(action.getFeature()).addMouseUpHandler(this);			
+		HasAllMouseHandlers handle = draggable.getHandle(action.getFeature());
+		handle.addMouseDownHandler(this);
+		handle.addMouseMoveHandler(this);
+		handle.addMouseUpHandler(this);			
 	}
 
 	@Override
