@@ -42,6 +42,7 @@ public abstract class DataObjectBinder<T>
 
 	public void addPropertyBinder(String widgetId, PropertyBinder<T, ?> propertyBinder, boolean boundToAttribute)
 	{
+		initialize();
 		Array<PropertyBinder<T, ?>> properties = binders.get(widgetId);
 		if (properties == null)
 		{
@@ -52,14 +53,12 @@ public abstract class DataObjectBinder<T>
 		propertyBinder.setBoundToAttribute(boundToAttribute);
 		properties.add(propertyBinder);
 		tryToBindWidget(widgetId, propertyBinder);
-		if (dataObject != null)
-		{
-			propertyBinder.copyTo(dataObject);
-		}
+		propertyBinder.copyTo(dataObject);
 	}
 
 	public void addExpressionBinder(String widgetId, ExpressionBinder<?> expressionBinder)
 	{
+		initialize();
 		Array<ExpressionBinder<?>> properties = expressionBinders.get(widgetId);
 		if (properties == null)
 		{
@@ -68,10 +67,7 @@ public abstract class DataObjectBinder<T>
 		}
 		properties.add(expressionBinder);
 		tryToBindWidget(widgetId, expressionBinder);
-		if (dataObject != null)
-		{
-			expressionBinder.execute(new UpdatedStateBindingContext(view, new Date().getTime()));
-		}
+		expressionBinder.execute(new UpdatedStateBindingContext(view, new Date().getTime()));
 	}
 
 	protected abstract T createDataObject();
@@ -91,7 +87,6 @@ public abstract class DataObjectBinder<T>
 
 	T read()
 	{
-		initialize();
 		readGeneric(dataObject);
 		return dataObject;
 	}
