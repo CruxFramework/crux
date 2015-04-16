@@ -40,28 +40,25 @@ public abstract class DataObjectBinder<T>
 		this.view = view;
 	}
 
-	public void addPropertyBinder(String widgetId, PropertyBinder<T, ?> propertyBinder)
+	public void addPropertyBinder(String widgetId, PropertyBinder<T, ?> propertyBinder, boolean boundToAttribute)
 	{
+		initialize();
 		Array<PropertyBinder<T, ?>> properties = binders.get(widgetId);
 		if (properties == null)
 		{
 			properties = CollectionFactory.createArray();
 			binders.put(widgetId, properties);
 		}
+		propertyBinder.setDataObjectBinder(this);
+		propertyBinder.setBoundToAttribute(boundToAttribute);
 		properties.add(propertyBinder);
-		if (dataObject != null)
-		{
-			Widget widget = view.getWidget(widgetId, false);
-			if (widget != null)
-			{
-				propertyBinder.bind(widget);
-			}
-			propertyBinder.copyTo(dataObject);
-		}
+		tryToBindWidget(widgetId, propertyBinder);
+		propertyBinder.copyTo(dataObject);
 	}
 
 	public void addExpressionBinder(String widgetId, ExpressionBinder<?> expressionBinder)
 	{
+		initialize();
 		Array<ExpressionBinder<?>> properties = expressionBinders.get(widgetId);
 		if (properties == null)
 		{
@@ -69,15 +66,8 @@ public abstract class DataObjectBinder<T>
 			expressionBinders.put(widgetId, properties);
 		}
 		properties.add(expressionBinder);
-		if (dataObject != null)
-		{
-			Widget widget = view.getWidget(widgetId, false);
-			if (widget != null)
-			{
-				expressionBinder.bind(widget);
-			}
-			expressionBinder.execute(new UpdatedStateBindingContext(view, new Date().getTime()));
-		}
+		tryToBindWidget(widgetId, expressionBinder);
+		expressionBinder.execute(new UpdatedStateBindingContext(view, new Date().getTime()));
 	}
 
 	protected abstract T createDataObject();
@@ -97,7 +87,6 @@ public abstract class DataObjectBinder<T>
 
 	T read()
 	{
-		initialize();
 		readGeneric(dataObject);
 		return dataObject;
 	}
@@ -124,10 +113,21 @@ public abstract class DataObjectBinder<T>
 		this.dataObject = dataObject;
 		if (updateExpressions)
 		{
-			updateExpressions(new UpdatedStateBindingContext(view, new Date().getTime()));
+			updateExpressions();
 		}
 	}
 
+	void updateObjectAndNotifyChanges(PropertyBinder<T, ?> propertyBinder)
+	{
+		propertyBinder.copyFrom(dataObject);
+		updateExpressions();
+	}
+	
+	void updateExpressions()
+	{
+		updateExpressions(new UpdatedStateBindingContext(view, new Date().getTime()));
+	}
+	
 	void updateExpressions(ExpressionBinder.BindingContext context)
 	{
 		Array<String> keys = expressionBinders.keys();
@@ -142,14 +142,13 @@ public abstract class DataObjectBinder<T>
 				ExpressionBinder<?> expressionBinder = binders.get(j);
 				if (!expressionBinder.isBound())
 				{
-					Widget widget = view.getWidget(id, false);
-					expressionBinder.bind(widget);
+					tryToBindWidget(id, expressionBinder);
 				}
 				expressionBinder.execute(context);
 			}
 		}
 	}
-	
+
 	private void readGeneric(T dataObject)
 	{
 		Array<String> keys = binders.keys();
@@ -164,11 +163,12 @@ public abstract class DataObjectBinder<T>
 				PropertyBinder<T, ?> propertyBinder = propertyBinders.get(j);
 				if (!propertyBinder.isBound())
 				{
-					Widget widget = view.getWidget(id, false);
-					propertyBinder.bind(widget);
+					tryToBindWidget(id, propertyBinder);
 				}
-				
-				propertyBinder.copyFrom(dataObject);
+				if (propertyBinder.isBound())
+				{
+					propertyBinder.copyFrom(dataObject);
+				}
 			}
 		}
 	}
@@ -187,14 +187,35 @@ public abstract class DataObjectBinder<T>
 				PropertyBinder<T, ?> propertyBinder = propertyBinders.get(j);
 				if (!propertyBinder.isBound())
 				{
-					Widget widget = view.getWidget(id, false);
-					propertyBinder.bind(widget);
+					tryToBindWidget(id, propertyBinder);
 				}
-				propertyBinder.copyTo(dataObject);
+				if (propertyBinder.isBound())
+				{
+					propertyBinder.copyTo(dataObject);
+				}
 			}
 		}
 	}
 
+	private void tryToBindWidget(String id, PropertyBinder<T, ?> propertyBinder)
+    {
+	    Widget widget = view.getWidget(id, false);
+	    if (widget != null)
+	    {
+	    	propertyBinder.bind(widget);
+	    }
+    }
+
+	private void tryToBindWidget(String id, ExpressionBinder<?> expressionBinder)
+    {
+	    Widget widget = view.getWidget(id, false);
+	    if (widget != null)
+	    {
+	    	expressionBinder.bind(widget);
+	    }
+    }
+	
+	
 	/**
 	 * This binding context can be used only when we know that there is no write operation waiting to be 
 	 * performed on the current view. It assume that the dataObjects are updated.

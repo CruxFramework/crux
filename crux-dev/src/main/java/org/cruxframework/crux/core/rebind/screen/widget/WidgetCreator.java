@@ -459,25 +459,30 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	{
 		return viewFactory.getResourceAccessExpression(property);
 	}
-	
+
 	/**
 	 * 
-	 * @param property
+	 * @param propertyValue
+	 * @param widgetPropertyPath
+	 * @param boundToAttribute
 	 * @return
 	 */
-	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetPropertyPath)
+	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetPropertyPath, boolean boundToAttribute)
 	{
-		return getObjectDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath);
+		return getObjectDataBinding(propertyValue, getWidgetClassName(), widgetPropertyPath, boundToAttribute);
 	}
 
 	/**
 	 * 
-	 * @param property
+	 * @param propertyValue
+	 * @param widgetClassName
+	 * @param widgetPropertyPath
+	 * @param boundToAttribute
 	 * @return
 	 */
-	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
+	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, boolean boundToAttribute)
 	{
-		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath);
+		return viewFactory.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute);
 	}
 
 	/**

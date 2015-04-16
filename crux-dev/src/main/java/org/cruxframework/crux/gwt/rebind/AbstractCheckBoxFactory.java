@@ -29,7 +29,7 @@ import org.cruxframework.crux.core.rebind.screen.widget.declarative.TagAttribute
  *
  */
 @TagAttributes({
-	@TagAttribute(value="checked", type=Boolean.class, property="value"),
+	@TagAttribute(value="checked", type=Boolean.class, property="value", dataBindingTargetsAttributes=false),
 	@TagAttribute("formValue")	
 })
 public abstract class AbstractCheckBoxFactory extends FocusWidgetFactory<WidgetCreatorContext> 

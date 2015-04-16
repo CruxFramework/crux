@@ -40,6 +40,7 @@ public @interface TagAttribute
 	boolean supportsI18N() default false;
 	boolean supportsResources() default false;
 	boolean supportsDataBinding() default true;
+	boolean dataBindingTargetsAttributes() default true;
 	Class<?> processor() default AttributeProcessor.NoParser.class;
 	boolean xsdIgnore() default false;
 	Device[] supportedDevices() default {Device.all};

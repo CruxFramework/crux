@@ -49,7 +49,7 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 	@TagAttribute(value="limit", type=Integer.class),
 	@TagAttribute(value="popupStyleName", supportsResources=true),
 	@TagAttribute(value="tabIndex", type=Integer.class),
-	@TagAttribute("value")
+	@TagAttribute(value="value", dataBindingTargetsAttributes=false)
 })
 @TagEventsDeclaration({
 	@TagEventDeclaration("onLoadOracle")

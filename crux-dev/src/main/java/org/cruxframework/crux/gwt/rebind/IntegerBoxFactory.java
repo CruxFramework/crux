@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.IntegerBox;
  */
 @DeclarativeFactory(id="integerBox", library="gwt", targetWidget=IntegerBox.class)
 @TagAttributes({
-	@TagAttribute(value="value", type=Integer.class),
+	@TagAttribute(value="value", type=Integer.class, dataBindingTargetsAttributes=false),
 	@TagAttribute(value="maxLength", type=Integer.class),
 	@TagAttribute(value="visibleLength", type=Integer.class)
 })

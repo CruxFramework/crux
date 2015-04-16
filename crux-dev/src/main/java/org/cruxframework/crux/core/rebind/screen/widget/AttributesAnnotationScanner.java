@@ -221,6 +221,7 @@ class AttributesAnnotationScanner
 		final boolean isStringExpression = String.class.isAssignableFrom(type);
 		final boolean supportsI18N = isStringExpression && attr.supportsI18N();
 		final boolean supportsDataBinding = attr.supportsDataBinding();
+		final boolean dataBindingTargetsAttributes = attr.dataBindingTargetsAttributes();
 		final boolean isEnumExpression = type.isEnum();
 		final boolean isPrimitiveExpression = type.isPrimitive();
 		final boolean supportsResources = attr.supportsResources();
@@ -228,7 +229,7 @@ class AttributesAnnotationScanner
 												   isStringExpression, supportsI18N, supportsResources, 
 												   supportsDataBinding, isEnumExpression, 
 												   isPrimitiveExpression, attr.supportedDevices(), 
-												   widgetPropertyPath);
+												   widgetPropertyPath, dataBindingTargetsAttributes);
     }
 
 	/**
@@ -247,7 +248,8 @@ class AttributesAnnotationScanner
 																 final boolean supportsI18N, final boolean supportsResources, 
 																 final boolean supportsDataBinding, final boolean isEnumExpression, 
 																 final boolean isPrimitiveExpression, final Device[] supportedDevices, 
-																 final String widgetPropertyPath)
+																 final String widgetPropertyPath, 
+																 final boolean dataBindingTargetsAttributes)
     {
 	    return new AttributeCreator()
 		{
@@ -259,7 +261,7 @@ class AttributesAnnotationScanner
 					
 					if (supportsDataBinding)
 					{
-						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, widgetPropertyPath);
+						PropertyBindInfo binding = widgetCreator.getObjectDataBinding(attrValue, widgetPropertyPath, dataBindingTargetsAttributes);
 						if (binding != null)
 						{
 							context.registerObjectDataBinding(binding);
