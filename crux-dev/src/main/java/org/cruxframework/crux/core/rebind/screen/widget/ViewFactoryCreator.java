@@ -107,7 +107,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	private static NameFactory nameFactory = new NameFactory();
 	private static String viewVariable = "__view";
 
-	private Map<String, Boolean> attachToDOMfactories = new HashMap<String, Boolean>();
+	private Map<String, Boolean> attachToDOMFactories = new HashMap<String, Boolean>();
 	private Map<String, String> declaredMessages = new HashMap<String, String>();
 	private Map<String, WidgetCreator<?>> creators = new HashMap<String, WidgetCreator<?>>();
 	private Map<String, WidgetCreatorHelper> creatorHelpers = new HashMap<String, WidgetCreatorHelper>();
@@ -642,11 +642,13 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param propertyValue
 	 * @param widgetClassName
 	 * @param widgetPropertyPath
+	 * @param boundToAttribute
 	 * @return
 	 */
-	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
+	public PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath, 
+			boolean boundToAttribute)
     {
-	    return bindHandler.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath);
+	    return bindHandler.getObjectDataBinding(propertyValue, widgetClassName, widgetPropertyPath, boundToAttribute);
     }
 	
 	/**
@@ -1474,12 +1476,12 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 */
 	private boolean isAttachToDOM(String widgetType)
 	{
-		if (!attachToDOMfactories.containsKey(widgetType))
+		if (!attachToDOMFactories.containsKey(widgetType))
 		{
 			DeclarativeFactory declarativeFactory = getWidgetCreator(widgetType).getClass().getAnnotation(DeclarativeFactory.class);
-			attachToDOMfactories.put(widgetType, declarativeFactory.attachToDOM());
+			attachToDOMFactories.put(widgetType, declarativeFactory.attachToDOM());
 		}
-		return attachToDOMfactories.get(widgetType);
+		return attachToDOMFactories.get(widgetType);
 	}
 
 	/**

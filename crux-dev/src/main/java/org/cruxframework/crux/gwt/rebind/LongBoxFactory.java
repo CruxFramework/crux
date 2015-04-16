@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.LongBox;
  */
 @DeclarativeFactory(id="longBox", library="gwt", targetWidget=LongBox.class)
 @TagAttributes({
-	@TagAttribute(value="value", type=Long.class),
+	@TagAttribute(value="value", type=Long.class, dataBindingTargetsAttributes=false),
 	@TagAttribute(value="maxLength", type=Integer.class),
 	@TagAttribute(value="visibleLength", type=Integer.class)
 })

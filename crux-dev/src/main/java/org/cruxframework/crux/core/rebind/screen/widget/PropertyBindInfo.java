@@ -31,11 +31,13 @@ public class PropertyBindInfo extends BindInfo
 	protected String widgetClassName;
 	protected String writeExpression;
 	protected String readExpression;
+	protected boolean boundToAttribute;
 
-	public PropertyBindInfo(String widgetPropertyPath, String bindPath, JClassType widgetType, JClassType dataObjectType, 
+	public PropertyBindInfo(String widgetPropertyPath, boolean boundToAttribute, String bindPath, JClassType widgetType, JClassType dataObjectType, 
 							JClassType converterType, String dataObject, String converterParams) throws NoSuchFieldException
     {
 		super(bindPath, dataObjectType, converterType, dataObject, converterParams);
+		this.boundToAttribute = boundToAttribute;
 		this.widgetClassName = widgetType.getQualifiedSourceName();
 		if (!StringUtils.isEmpty(widgetPropertyPath))
 		{
@@ -64,6 +66,11 @@ public class PropertyBindInfo extends BindInfo
 		return widgetClassName;
 	}
 
+	public boolean isBoundToAttribute()
+    {
+	    return boundToAttribute;
+    }
+	
 	/**
 	 * Expression to read FROM widget and write TO dataObject
 	 * @param widgetPropertyPath

@@ -15,13 +15,9 @@
  */
 package org.cruxframework.crux.core.client.screen.views;
 
-import java.util.Date;
-
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.collection.Map;
-import org.cruxframework.crux.core.client.screen.views.DataObjectBinder.UpdatedStateBindingContext;
-import org.cruxframework.crux.core.client.screen.views.ExpressionBinder.BindingContext;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
 /**
@@ -102,13 +98,12 @@ class DataBindingHandler
 				objectBinder.write(dataObject, false);
 			}
         }
-		BindingContext context = new UpdatedStateBindingContext(view, new Date().getTime());
 		for (Object dataObject : dataObjects)
         {
 			DataObjectBinder<?> objectBinder = getDataObjectBinder(dataObject.getClass());
 			if (objectBinder != null)
 			{
-				objectBinder.updateExpressions(context);
+				objectBinder.updateExpressions();
 			}
         }
     }
@@ -175,6 +170,4 @@ class DataBindingHandler
 	    }
 	    return false;
     }
-
-	
 }

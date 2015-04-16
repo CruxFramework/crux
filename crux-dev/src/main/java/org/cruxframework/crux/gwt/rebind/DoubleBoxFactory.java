@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.DoubleBox;
  */
 @DeclarativeFactory(id="doubleBox", library="gwt", targetWidget=DoubleBox.class)
 @TagAttributes({
-	@TagAttribute(value="value", type=Double.class),
+	@TagAttribute(value="value", type=Double.class, dataBindingTargetsAttributes=false),
 	@TagAttribute(value="maxLength", type=Integer.class),
 	@TagAttribute(value="visibleLength", type=Integer.class)
 })

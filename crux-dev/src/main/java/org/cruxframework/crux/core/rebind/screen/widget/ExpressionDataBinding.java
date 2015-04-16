@@ -17,9 +17,11 @@ package org.cruxframework.crux.core.rebind.screen.widget;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
+import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.dto.DataObjects;
 import org.cruxframework.crux.core.utils.JClassUtils;
@@ -41,7 +43,7 @@ public class ExpressionDataBinding
 	private JClassType widgetType;
 	private String widgetPropertyPath;
 
-	public static enum LogicalOperations{IS, EMPTY, NULL, POSITIVE, NEGATIVE, ZERO}
+	public static enum LogicalOperations{IS, EMPTY, NULL, FILLED, POSITIVE, NEGATIVE, ZERO}
 	
 	
 	public ExpressionDataBinding(JClassType widgetType, String widgetPropertyPath)
@@ -141,7 +143,7 @@ public class ExpressionDataBinding
 		expression.append(expressionPart.getExpression(expressionPart.getDataObjectReadExpression(), "${"+expressionPart.getDataObject()+"}"));
     }
 	
-	public void addLogicalBinding(ExpressionPart expressionPart, LogicalOperations logicalOperations, boolean negate)
+	public void addLogicalBinding(List<ExpressionPart> expressionParts, LogicalOperations logicalOperations, boolean negate)
 	{
 		assert (expression.length() == 0):"Invalid Expression. Can not add logical binnding on a multi expression binding";
 		
@@ -150,32 +152,51 @@ public class ExpressionDataBinding
 			expression.append("!(");
 		}
 		
-		String readExpression = expressionPart.getExpression(expressionPart.getDataObjectReadExpression(), "${"+expressionPart.getDataObject()+"}");
-		expression.append("("+readExpression+")");
-		
-		if (logicalOperations == LogicalOperations.NULL)
+		boolean first = true;
+		for (ExpressionPart expressionPart : expressionParts)
         {
-			addLogicalBindingForNullOperation(expressionPart);
+			if (!first)
+			{
+				expression.append(" && ");
+			}
+			first = false;
+			
+			String readExpression = expressionPart.getExpression(expressionPart.getDataObjectReadExpression(), "${"+expressionPart.getDataObject()+"}");
+			
+			if (logicalOperations == LogicalOperations.NULL)
+			{
+				addLogicalBindingForNullOperation(expressionPart, readExpression);
+			}
+			else if (logicalOperations == LogicalOperations.FILLED)
+			{
+				addLogicalBindingForFilledOperation(expressionPart, readExpression);
+			}
+			else if (logicalOperations == LogicalOperations.EMPTY)
+			{
+				addLogicalBindingForEmptyOperation(expressionPart, readExpression);
+			}
+			else if (logicalOperations == LogicalOperations.IS)
+			{
+				expression.append(readExpression);
+			}
+			else
+			{
+				addLogicalBindingForNumericOperations(expressionPart, logicalOperations, readExpression);
+			}
+	        
+			dataObjects.add(expressionPart.getDataObject());
         }
-		else if (logicalOperations == LogicalOperations.EMPTY)
-		{
-			addLogicalBindingForEmptyOperation(expressionPart, readExpression);
-		}
-		else if (logicalOperations != LogicalOperations.IS)
-		{
-			addLogicalBindingForNumericOperations(expressionPart, logicalOperations);
-		}
 		
 		if (negate)
 		{
 			expression.append(")");
 		}
 
-		dataObjects.add(expressionPart.getDataObject());
 	}
 
-	private void addLogicalBindingForNumericOperations(ExpressionPart expressionPart, LogicalOperations logicalOperations)
+	private void addLogicalBindingForNumericOperations(ExpressionPart expressionPart, LogicalOperations logicalOperations, String readExpression)
     {
+		expression.append(readExpression);
 	    if (!JClassUtils.isNumeric(expressionPart.getType()))
 	    {
 	    	throw new CruxGeneratorException("Invalid expression. property ["+widgetPropertyPath+"] "
@@ -214,14 +235,41 @@ public class ExpressionDataBinding
 	    }
     }
 
-	private void addLogicalBindingForNullOperation(ExpressionPart expressionPart)
+	private void addLogicalBindingForNullOperation(ExpressionPart expressionPart, String readExpression)
     {
-	    String emptyValueForType = JClassUtils.getEmptyValueForType(expressionPart.getType());
-	    if(emptyValueForType == null)
-	    {
-	    	throw new CruxGeneratorException("Invalid expression. property ["+widgetPropertyPath+"] "
-	    			+ "of widget ["+widgetType.getQualifiedSourceName()+"] is void.");
-	    }
-	    expression.append(" == "+emptyValueForType);
+		JType expressionType = expressionPart.getType();
+		if (expressionType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
+		{
+			expression.append(StringUtils.class.getCanonicalName()+".isEmpty("+readExpression+")");
+		}
+		else
+		{
+			String emptyValueForType = JClassUtils.getEmptyValueForType(expressionType);
+			if(emptyValueForType == null)
+			{
+				throw new CruxGeneratorException("Invalid expression. property ["+widgetPropertyPath+"] "
+						+ "of widget ["+widgetType.getQualifiedSourceName()+"] is void.");
+			}
+			expression.append(readExpression+" == "+emptyValueForType);
+		}
+    }
+
+	private void addLogicalBindingForFilledOperation(ExpressionPart expressionPart, String readExpression)
+    {
+		JType expressionType = expressionPart.getType();
+		if (expressionType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
+		{
+			expression.append("!"+StringUtils.class.getCanonicalName()+".isEmpty("+readExpression+")");
+		}
+		else
+		{
+			String emptyValueForType = JClassUtils.getEmptyValueForType(expressionType);
+			if(emptyValueForType == null)
+			{
+				throw new CruxGeneratorException("Invalid expression. property ["+widgetPropertyPath+"] "
+						+ "of widget ["+widgetType.getQualifiedSourceName()+"] is void.");
+			}
+			expression.append(readExpression+" != "+emptyValueForType);
+		}
     }
 }

@@ -91,4 +91,69 @@ public abstract class TypeConverters
         }
 	}
 	
+	@TypeConverter.Converter("doubleNumber")
+	public static class DoubleNumberConverter implements TypeConverter<Double, Number>
+	{
+
+		@Override
+        public Number to(Double a)
+        {
+	        return a;
+        }
+
+		@Override
+        public Double from(Number b)
+        {
+	        return (b==null?null:b.doubleValue());
+        }
+	}
+
+	@TypeConverter.Converter("numberDouble")
+	public static class NumberDoubleConverter implements TypeConverter<Number, Double>
+	{
+		@Override
+        public Double to(Number a)
+        {
+	        return (a==null?null:a.doubleValue());
+        }
+
+		@Override
+        public Number from(Double b)
+        {
+	        return b;
+        }
+	}
+
+	@TypeConverter.Converter("integerNumber")
+	public static class IntegerNumberConverter implements TypeConverter<Integer, Number>
+	{
+
+		@Override
+        public Number to(Integer a)
+        {
+	        return a;
+        }
+
+		@Override
+        public Integer from(Number b)
+        {
+	        return (b==null?null:b.intValue());
+        }
+	}
+
+	@TypeConverter.Converter("numberInteger")
+	public static class IntegerDoubleConverter implements TypeConverter<Number, Integer>
+	{
+		@Override
+        public Integer to(Number a)
+        {
+	        return (a==null?null:a.intValue());
+        }
+
+		@Override
+        public Number from(Integer b)
+        {
+	        return b;
+        }
+	}
 }

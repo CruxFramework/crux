@@ -93,7 +93,7 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 				out.println("public void copyFrom(" + dataObjectClassName + " dataObject){");
 				out.println(bind.getReadExpression("dataObject"));
 				out.println("}");
-				out.println("});");
+				out.println("}, "+bind.isBoundToAttribute()+");");
 			}
 		}
     }

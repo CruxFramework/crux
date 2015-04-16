@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.Hidden;
  */
 @DeclarativeFactory(id="hidden", library="gwt", targetWidget=Hidden.class)
 @TagAttributes({
-	@TagAttribute(value="value", supportsI18N=true),
+	@TagAttribute(value="value", supportsI18N=true, dataBindingTargetsAttributes=false),
 	@TagAttribute(value="defaultValue", supportsI18N=true)
 })
 public class HiddenFactory extends WidgetCreator<WidgetCreatorContext> implements HasNameFactory<WidgetCreatorContext> 

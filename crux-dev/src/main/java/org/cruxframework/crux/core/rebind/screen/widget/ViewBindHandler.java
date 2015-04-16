@@ -15,8 +15,10 @@
  */
 package org.cruxframework.crux.core.rebind.screen.widget;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -86,12 +88,13 @@ public class ViewBindHandler
 		return dataObjects.iterator();
     }
 	
-	protected PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
+	protected PropertyBindInfo getObjectDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath,
+													boolean boundToAttribute)
 	{
 		String trimPropertyValue = propertyValue.trim();
 	    if (isObjectDataBinding(trimPropertyValue))
 	    {
-	    	return getPropertyBindInfo(widgetClassName, widgetPropertyPath, trimPropertyValue);
+	    	return getPropertyBindInfo(widgetClassName, boundToAttribute, widgetPropertyPath, trimPropertyValue);
 	    }
 	    else
 	    {
@@ -169,7 +172,14 @@ public class ViewBindHandler
 	    int index = trimPropertyValue.indexOf('(');
 	    String operator = trimPropertyValue.substring(0, index);
 	    trimPropertyValue = trimPropertyValue.substring(index+1);
-	    ExpressionPart expressionPart = getExpressionPart(trimPropertyValue);
+	    
+	    String[] parts = trimPropertyValue.split("\\s");
+	    List<ExpressionPart> expressionParts = new ArrayList<ExpressionPart>();
+	    for (String part : parts)
+        {
+	    	ExpressionPart expressionPart = getExpressionPart(part);
+	    	expressionParts.add(expressionPart);
+        }
 	    
 	    result = new ExpressionDataBinding(widgetType, widgetPropertyPath);
 	    boolean negate = operator.startsWith("NOT ");
@@ -178,7 +188,7 @@ public class ViewBindHandler
 	    	operator = operator.substring(4);
 	    }
 	    ExpressionDataBinding.LogicalOperations logicalOperations = ExpressionDataBinding.LogicalOperations.valueOf(operator.trim());
-	    result.addLogicalBinding(expressionPart, logicalOperations, negate);
+	    result.addLogicalBinding(expressionParts, logicalOperations, negate);
 	    return result;
     }
 
@@ -199,7 +209,7 @@ public class ViewBindHandler
 	    return result;
     }
 	
-	private PropertyBindInfo getPropertyBindInfo(String widgetClassName, String widgetPropertyPath, String propertyValue)
+	private PropertyBindInfo getPropertyBindInfo(String widgetClassName, boolean boundToAttribute, String widgetPropertyPath, String propertyValue)
     {
 	    String[] bindParts = getBindingParts(propertyValue, true);
 	    String dataObject = bindParts[0];
@@ -222,7 +232,8 @@ public class ViewBindHandler
 	    checkDataObjectType(dataObject, dataObjectType);
 	    try
 	    {   
-	    	return new PropertyBindInfo(widgetPropertyPath, bindPath, widgetType, dataObjectType, converterType, dataObject, converterParams);
+	    	return new PropertyBindInfo(widgetPropertyPath, boundToAttribute, bindPath, widgetType, dataObjectType, 
+	    								converterType, dataObject, converterParams);
 	    }
 	    catch (NoSuchFieldException e)
 	    {

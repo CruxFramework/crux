@@ -33,5 +33,5 @@ public class RegexpPatterns {
     public static final Pattern REGEXP_CRUX_OBJECT_DATA_BINDING = Pattern.compile("\\@\\{\\w[\\.\\w]+(\\:\\w+(\\(\\'.*\\'\\))?)?\\}");
     public static final Pattern REGEXP_CRUX_READ_ONLY_OBJECT_DATA_BINDING = Pattern.compile("\\@\\@\\{\\w[\\.\\w]+(\\:\\w+(\\(\\'.*\\'\\))?)?\\}");
     public static final Pattern REGEXP_CRUX_EXPRESSION_DATA_BINDING = Pattern.compile(
-    		"\\@\\{(NOT\\s)?(EMPTY|NULL|POSITIVE|NEGATIVE|ZERO|IS)\\s*\\(\\w[\\.\\w]+(\\:\\w+(\\(\\'.*\\'\\))?)?\\)\\}");
+    "\\@\\{(NOT\\s)?(EMPTY|NULL|FILLED|POSITIVE|NEGATIVE|ZERO|IS)\\s*\\(\\w[\\.\\w]+(\\:\\w+(\\(\\'.*\\'\\))?)?(\\s+\\w[\\.\\w]+(\\:\\w+(\\(\\'.*\\'\\))?)?)*\\)\\}");
 }
