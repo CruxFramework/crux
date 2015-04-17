@@ -37,110 +37,18 @@ public class ExpressionDataBinding
 {
 	protected static String WIDGET_VAR_REF = "widget";
 
+	private Set<String> convertersDeclarations = new HashSet<String>();
 	private Set<String> dataObjects = new HashSet<String>();
 	private StringBuilder expression = new StringBuilder();
 	private String widgetClassName;
-	private JClassType widgetType;
 	private String widgetPropertyPath;
+	private JClassType widgetType;
 
-	public static enum LogicalOperations{IS, EMPTY, NULL, FILLED, POSITIVE, NEGATIVE, ZERO}
-	
-	
 	public ExpressionDataBinding(JClassType widgetType, String widgetPropertyPath)
     {
 		this.widgetType = widgetType;
 		this.widgetPropertyPath = widgetPropertyPath;
 		this.widgetClassName = widgetType.getQualifiedSourceName();
-    }
-	
-	public String getWriteExpression(String contextVariable) throws NoSuchFieldException
-	{
-		return getWriteExpression(contextVariable, WIDGET_VAR_REF, null, null);
-	}
-	
-	public String getWriteExpression(String contextVariable, String widgetVar, String collectionDataObjectRef, String collectionDataObject) throws NoSuchFieldException
-	{
-		StringBuilder writeExpression = new StringBuilder();
-
-		JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, widgetVar, expression.toString());
-
-		for (String dataObject : dataObjects)
-        {
-	        String dataObjectReference = "${"+dataObject+"}";
-	        int index;
-	        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionDataObject.equals(dataObject);
-	        String dataObjectVar = isCollectionObjectReference?collectionDataObjectRef:ViewFactoryCreator.createVariableName(dataObject);
-	        boolean isReferenced = false;
-	        while ((index = writeExpression.indexOf(dataObjectReference)) >= 0)
-	        {
-	        	isReferenced = !isCollectionObjectReference;
-	        	writeExpression.replace(index, index+dataObjectReference.length(), dataObjectVar);
-	        }
-	        if (isReferenced)
-	        {
-	        	String dataObjectClassName = DataObjects.getDataObject(dataObject);
-	        	writeExpression.insert(0, dataObjectClassName+" "+dataObjectVar+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n");
-	        }
-        }
-
-		return writeExpression.toString();
-	}
-	
-	public String getExpression(String contextVariable, String collectionDataObjectRef, String collectionDataObject)
-	{
-		StringBuilder result = new StringBuilder();
-		
-		result.append(expression);
-		for (String dataObject : dataObjects)
-        {
-	        String dataObjectReference = "${"+dataObject+"}";
-	        int index;
-	        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionDataObject.equals(dataObject);
-	        String dataObjectVar = isCollectionObjectReference?collectionDataObjectRef:ViewFactoryCreator.createVariableName(dataObject);
-	        boolean isReferenced = false;
-	        while ((index = result.indexOf(dataObjectReference)) >= 0)
-	        {
-	        	isReferenced = !isCollectionObjectReference;
-	        	result.replace(index, index+dataObjectReference.length(), dataObjectVar);
-	        }
-	        if (isReferenced)
-	        {
-	        	String dataObjectClassName = DataObjects.getDataObject(dataObject);
-	        	result.insert(0, dataObjectClassName+" "+dataObjectVar+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n");
-	        }
-        }
-
-		return result.toString();
-	}
-	
-	public Iterator<String> iterateDataObjects()
-	{
-		return dataObjects.iterator();
-	}
-
-	public String getWidgetClassName()
-	{
-		return widgetClassName;
-	}
-
-	public void addStringConstant(String constant)
-	{
-		if (expression.length() > 0)
-		{
-			expression.append(" + ");
-		}
-		expression.append(EscapeUtils.quote(constant));
-	}
-	
-	public void addReadBinding(ExpressionPart expressionPart)
-    {
-		if (expression.length() > 0)
-		{
-			expression.append(" + ");
-		}
-		dataObjects.add(expressionPart.getDataObject());
-		//expressionParts.add(expressionPart);
-		expression.append(expressionPart.getExpression(expressionPart.getDataObjectReadExpression(), "${"+expressionPart.getDataObject()+"}"));
     }
 	
 	public void addLogicalBinding(List<ExpressionPart> expressionParts, LogicalOperations logicalOperations, boolean negate)
@@ -185,6 +93,7 @@ public class ExpressionDataBinding
 			}
 	        
 			dataObjects.add(expressionPart.getDataObject());
+			appendConverterDeclaration(expressionPart);
         }
 		
 		if (negate)
@@ -193,6 +102,161 @@ public class ExpressionDataBinding
 		}
 
 	}
+	
+	public void addReadBinding(ExpressionPart expressionPart)
+    {
+		if (expression.length() > 0)
+		{
+			expression.append(" + ");
+		}
+		dataObjects.add(expressionPart.getDataObject());
+		//expressionParts.add(expressionPart);
+		expression.append(expressionPart.getExpression(expressionPart.getDataObjectReadExpression(), "${"+expressionPart.getDataObject()+"}"));
+		appendConverterDeclaration(expressionPart);
+    }
+	
+	public void addStringConstant(String constant)
+	{
+		if (expression.length() > 0)
+		{
+			expression.append(" + ");
+		}
+		expression.append(EscapeUtils.quote(constant));
+	}
+	
+	public Set<String> getConverterDeclarations()
+    {
+	    return convertersDeclarations;
+    }
+	
+	public String getExpression(String contextVariable, String collectionDataObjectRef, String collectionDataObject)
+	{
+		StringBuilder result = new StringBuilder();
+		
+		result.append(expression);
+		for (String dataObject : dataObjects)
+        {
+	        String dataObjectReference = "${"+dataObject+"}";
+	        int index;
+	        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionDataObject.equals(dataObject);
+	        String dataObjectVar = isCollectionObjectReference?collectionDataObjectRef:ViewFactoryCreator.createVariableName(dataObject);
+	        boolean isReferenced = false;
+	        while ((index = result.indexOf(dataObjectReference)) >= 0)
+	        {
+	        	isReferenced = !isCollectionObjectReference;
+	        	result.replace(index, index+dataObjectReference.length(), dataObjectVar);
+	        }
+	        if (isReferenced)
+	        {
+	        	String dataObjectClassName = DataObjects.getDataObject(dataObject);
+	        	result.insert(0, dataObjectClassName+" "+dataObjectVar+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n");
+	        }
+        }
+
+		return result.toString();
+	}
+	
+	public String getWidgetClassName()
+	{
+		return widgetClassName;
+	}
+
+	public String getWriteExpression(String contextVariable) throws NoSuchFieldException
+	{
+		return getWriteExpression(contextVariable, WIDGET_VAR_REF, null, null);
+	}
+
+	public String getWriteExpression(String contextVariable, String widgetVar, String collectionDataObjectRef, String collectionDataObject) throws NoSuchFieldException
+	{
+		StringBuilder writeExpression = new StringBuilder();
+
+		JClassUtils.buildSetValueExpression(writeExpression, widgetType, widgetPropertyPath, widgetVar, expression.toString());
+
+		for (String dataObject : dataObjects)
+        {
+	        String dataObjectReference = "${"+dataObject+"}";
+	        int index;
+	        boolean isCollectionObjectReference = collectionDataObjectRef != null && collectionDataObject.equals(dataObject);
+	        String dataObjectVar = isCollectionObjectReference?collectionDataObjectRef:ViewFactoryCreator.createVariableName(dataObject);
+	        boolean isReferenced = false;
+	        while ((index = writeExpression.indexOf(dataObjectReference)) >= 0)
+	        {
+	        	isReferenced = !isCollectionObjectReference;
+	        	writeExpression.replace(index, index+dataObjectReference.length(), dataObjectVar);
+	        }
+	        if (isReferenced)
+	        {
+	        	String dataObjectClassName = DataObjects.getDataObject(dataObject);
+	        	writeExpression.insert(0, dataObjectClassName+" "+dataObjectVar+" = "+contextVariable+".getDataObject("+EscapeUtils.quote(dataObject)+");\n");
+	        }
+        }
+
+		return writeExpression.toString();
+	}
+	
+	public Iterator<String> iterateDataObjects()
+	{
+		return dataObjects.iterator();
+	}
+
+	private void addLogicalBindingForEmptyOperation(ExpressionPart expressionPart, String readExpression)
+    {
+	    JType type = expressionPart.getType();
+		if (type.isArray() != null)
+	    {
+	    	expression.append(readExpression + " != null ? "+readExpression + ".length == 0 : true");
+	    }
+	    else if (JClassUtils.isCollection(type))
+	    {
+	    	expression.append(readExpression + " != null ? "+readExpression + ".size() == 0 : true");
+	    }
+	    else
+	    {
+	    	throw new CruxGeneratorException("Invalid expression. property ["+widgetPropertyPath+"] "
+	    			+ "of widget ["+widgetType.getQualifiedSourceName()+"] is not a valid collection or array.");
+	    }
+		appendConverterDeclaration(expressionPart);
+    }
+	
+	private void addLogicalBindingForFilledOperation(ExpressionPart expressionPart, String readExpression)
+    {
+		JType expressionType = expressionPart.getType();
+		if (expressionType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
+		{
+			expression.append("!"+StringUtils.class.getCanonicalName()+".isEmpty("+readExpression+")");
+		}
+		else
+		{
+			String emptyValueForType = JClassUtils.getEmptyValueForType(expressionType);
+			if(emptyValueForType == null)
+			{
+				throw new CruxGeneratorException("Invalid expression. property ["+widgetPropertyPath+"] "
+						+ "of widget ["+widgetType.getQualifiedSourceName()+"] is void.");
+			}
+			expression.append(readExpression+" != "+emptyValueForType);
+		}
+		appendConverterDeclaration(expressionPart);
+    }
+
+	private void addLogicalBindingForNullOperation(ExpressionPart expressionPart, String readExpression)
+    {
+		JType expressionType = expressionPart.getType();
+		if (expressionType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
+		{
+			expression.append(StringUtils.class.getCanonicalName()+".isEmpty("+readExpression+")");
+		}
+		else
+		{
+			String emptyValueForType = JClassUtils.getEmptyValueForType(expressionType);
+			if(emptyValueForType == null)
+			{
+				throw new CruxGeneratorException("Invalid expression. property ["+widgetPropertyPath+"] "
+						+ "of widget ["+widgetType.getQualifiedSourceName()+"] is void.");
+			}
+			expression.append(readExpression+" == "+emptyValueForType);
+		}
+		appendConverterDeclaration(expressionPart);
+    }
 
 	private void addLogicalBindingForNumericOperations(ExpressionPart expressionPart, LogicalOperations logicalOperations, String readExpression)
     {
@@ -215,61 +279,17 @@ public class ExpressionDataBinding
 	    {
 	    	expression.append(" == 0");
 	    }
+		appendConverterDeclaration(expressionPart);
     }
 
-	private void addLogicalBindingForEmptyOperation(ExpressionPart expressionPart, String readExpression)
+	private void appendConverterDeclaration(ExpressionPart expressionPart)
     {
-	    JType type = expressionPart.getType();
-		if (type.isArray() != null)
-	    {
-	    	expression.append(readExpression + " != null ? "+readExpression + ".length == 0 : true");
-	    }
-	    else if (JClassUtils.isCollection(type))
-	    {
-	    	expression.append(readExpression + " != null ? "+readExpression + ".size() == 0 : true");
-	    }
-	    else
-	    {
-	    	throw new CruxGeneratorException("Invalid expression. property ["+widgetPropertyPath+"] "
-	    			+ "of widget ["+widgetType.getQualifiedSourceName()+"] is not a valid collection or array.");
-	    }
-    }
-
-	private void addLogicalBindingForNullOperation(ExpressionPart expressionPart, String readExpression)
-    {
-		JType expressionType = expressionPart.getType();
-		if (expressionType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
+	    String converterDeclaration = expressionPart.getConverterDeclaration();
+		if (converterDeclaration != null)
 		{
-			expression.append(StringUtils.class.getCanonicalName()+".isEmpty("+readExpression+")");
-		}
-		else
-		{
-			String emptyValueForType = JClassUtils.getEmptyValueForType(expressionType);
-			if(emptyValueForType == null)
-			{
-				throw new CruxGeneratorException("Invalid expression. property ["+widgetPropertyPath+"] "
-						+ "of widget ["+widgetType.getQualifiedSourceName()+"] is void.");
-			}
-			expression.append(readExpression+" == "+emptyValueForType);
+			convertersDeclarations.add(converterDeclaration);
 		}
     }
 
-	private void addLogicalBindingForFilledOperation(ExpressionPart expressionPart, String readExpression)
-    {
-		JType expressionType = expressionPart.getType();
-		if (expressionType.getQualifiedSourceName().equals(String.class.getCanonicalName()))
-		{
-			expression.append("!"+StringUtils.class.getCanonicalName()+".isEmpty("+readExpression+")");
-		}
-		else
-		{
-			String emptyValueForType = JClassUtils.getEmptyValueForType(expressionType);
-			if(emptyValueForType == null)
-			{
-				throw new CruxGeneratorException("Invalid expression. property ["+widgetPropertyPath+"] "
-						+ "of widget ["+widgetType.getQualifiedSourceName()+"] is void.");
-			}
-			expression.append(readExpression+" != "+emptyValueForType);
-		}
-    }
+	public static enum LogicalOperations{EMPTY, FILLED, IS, NEGATIVE, NULL, POSITIVE, ZERO}
 }
