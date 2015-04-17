@@ -27,14 +27,15 @@ import com.google.gwt.core.ext.typeinfo.JType;
  */
 class BindInfo
 {
-	protected static String CONVERTER_VARIABLE = "__converter";
 	protected static String DATA_OBJECT_VAR_REF = "{0}";
+	private static String CONVERTER_VARIABLE = "__converter";
 
 	protected JType bindInfoType;
 	protected JType bindPathType;
 	protected String converterClassName;
 	protected String converterParams;
 	protected JClassType converterType;
+	protected String converterVariableName;
 	protected String dataObject;
 	protected String dataObjectClassName;
 	protected String dataObjectReadExpression;
@@ -66,7 +67,16 @@ class BindInfo
 	
 	public String getConverterVariable()
 	{
-		return (converterClassName != null ? CONVERTER_VARIABLE : null); 
+		if (converterClassName == null)
+		{
+			return null;
+		}
+		if (converterVariableName == null)
+		{
+			converterVariableName = ViewFactoryCreator.createVariableName(CONVERTER_VARIABLE);
+		}
+			
+		return converterVariableName;
 	}
 	
 	public String getDataObject()

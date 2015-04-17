@@ -118,6 +118,11 @@ public class ViewDataBindingsProcessor implements DataBindingProcessor
 				out.println(ExpressionBinder.class.getCanonicalName() + " " + expressionBinder + " = "
 						+ "new " + ExpressionBinder.class.getCanonicalName() + "<"+expressionBinding.getWidgetClassName()+">(){");
 
+				for (String converterDeclaration: expressionBinding.getConverterDeclarations())
+				{
+					out.println(converterDeclaration);
+				}
+
 				out.println("public void updateExpression(" + BindingContext.class.getCanonicalName() +" context){");
 				out.println(expressionBinding.getWriteExpression("context"));
 				out.println("}");

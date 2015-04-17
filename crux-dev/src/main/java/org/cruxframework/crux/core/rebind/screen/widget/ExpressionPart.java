@@ -23,26 +23,9 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  */
 public class ExpressionPart extends BindInfo
 {
-	private String converterVariableName = null;
-
 	public ExpressionPart(String bindPath, JClassType dataObjectType, JClassType converterType, 
 			String dataObject, String converterParams) throws NoSuchFieldException
     {
 	    super(bindPath, dataObjectType, converterType, dataObject, converterParams);
     }
-	
-	@Override
-	public String getConverterVariable()
-	{
-		if (converterClassName == null)
-		{
-			return null;
-		}
-		if (converterVariableName == null)
-		{
-			converterVariableName = ViewFactoryCreator.createVariableName(super.getConverterVariable());
-		}
-			
-		return converterVariableName;
-	}
 }

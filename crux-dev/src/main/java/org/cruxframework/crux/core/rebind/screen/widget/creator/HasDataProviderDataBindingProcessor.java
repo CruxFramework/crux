@@ -71,6 +71,7 @@ public class HasDataProviderDataBindingProcessor implements DataBindingProcessor
 				ExpressionDataBinding expressionBinding = expressionBindings.next();
 				out.println(expressionBinding.getWriteExpression(bindingContextVariable, context.getWidget(), 
 							collectionObjectReference, collectionDataObject));
+				converterDeclarations.addAll(expressionBinding.getConverterDeclarations());
 			}
 		}
 		catch(NoSuchFieldException e)
