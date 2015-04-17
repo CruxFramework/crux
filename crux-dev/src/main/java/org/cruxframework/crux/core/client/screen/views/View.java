@@ -1268,4 +1268,10 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
     {
     	return dataBindingHandler.getDataObjectBinder(dataObjectClass);
     }
+    
+	@Override
+	public Widget getLoadedWidget(String id)
+	{
+	    return getWidget(id, false);
+	}
 }

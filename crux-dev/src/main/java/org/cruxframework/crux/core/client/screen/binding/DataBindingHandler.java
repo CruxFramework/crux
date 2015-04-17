@@ -30,9 +30,9 @@ public class DataBindingHandler
 	protected Map<String> binderAlias = CollectionFactory.createMap();
 	protected BindableContainer bindableContainer;
 	
-	public DataBindingHandler(BindableContainer view)
+	public DataBindingHandler(BindableContainer bindableContainer)
     {
-		this.bindableContainer = view;
+		this.bindableContainer = bindableContainer;
     }
 	
 	public void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder)
@@ -43,8 +43,8 @@ public class DataBindingHandler
 	public void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder, String dataObjectAlias)
 	{
 		String className = dataObjectBinder.createDataObject().getClass().getName();
-		assert(!binders.containsKey(className)) : "This view already contains a dataBinding for this type of object";
-		assert(dataObjectAlias == null || !binderAlias.containsKey(dataObjectAlias)) : "This view already contains "
+		assert(!binders.containsKey(className)) : "This container already contains a dataBinding for this type of object";
+		assert(dataObjectAlias == null || !binderAlias.containsKey(dataObjectAlias)) : "This container already contains "
 																					 + "a dataBinding for this dataObject alias";
 		
 		binders.put(className, dataObjectBinder);
@@ -57,7 +57,7 @@ public class DataBindingHandler
 	public void addExpressionBinder(ExpressionBinder<?> expressionBinder, String widgetId, Array<String> referedDataObjects)
 	{
 		assert(checkDataObjectsExist(referedDataObjects)):"Can not add the given binding expression. It refers to "
-														+ "DataObjects that are not registerid on this view.";
+														+ "DataObjects that are not registerid on this container.";
 		
 		int size = referedDataObjects.size();
 		for (int i = 0; i < size; i++)

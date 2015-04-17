@@ -20,7 +20,6 @@ import java.util.Date;
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.collection.Map;
-import org.cruxframework.crux.core.client.screen.views.View;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -34,13 +33,22 @@ public abstract class DataObjectBinder<T>
 	private Map<Array<PropertyBinder<T, ?>>> binders = CollectionFactory.createMap();
 	private Map<Array<ExpressionBinder<?>>> expressionBinders = CollectionFactory.createMap();
 	private T dataObject;
-	private View view;
+	private BindableContainer bindableContainer;
 
-	public DataObjectBinder(View view)
+	public DataObjectBinder(BindableContainer bindableContainer)
 	{
-		this.view = view;
+		this.bindableContainer = bindableContainer;
 	}
 
+	/**
+	 * Add a new binding between a property of a DataObject and a widget property.
+	 * 
+	 * @param widgetId the bound widget identifier. 
+	 * @param propertyBinder the {@link PropertyBinder} that maps how this property is bound to the DataObject
+	 * @param boundToAttribute Inform if this property binding references an HTML attribute or property.
+	 * It is important for considerable performance improvements, as it allow us to avoid
+	 * dirty checking to implement data binding. 
+	 */
 	public void addPropertyBinder(String widgetId, PropertyBinder<T, ?> propertyBinder, boolean boundToAttribute)
 	{
 		initialize();
@@ -68,7 +76,7 @@ public abstract class DataObjectBinder<T>
 		}
 		properties.add(expressionBinder);
 		tryToBindWidget(widgetId, expressionBinder);
-		expressionBinder.execute(new UpdatedStateBindingContext(view, new Date().getTime()));
+		expressionBinder.execute(new UpdatedStateBindingContext(bindableContainer, new Date().getTime()));
 	}
 
 	protected abstract T createDataObject();
@@ -126,7 +134,7 @@ public abstract class DataObjectBinder<T>
 	
 	void updateExpressions()
 	{
-		updateExpressions(new UpdatedStateBindingContext(view, new Date().getTime()));
+		updateExpressions(new UpdatedStateBindingContext(bindableContainer, new Date().getTime()));
 	}
 	
 	void updateExpressions(ExpressionBinder.BindingContext context)
@@ -200,7 +208,7 @@ public abstract class DataObjectBinder<T>
 
 	private void tryToBindWidget(String id, PropertyBinder<T, ?> propertyBinder)
     {
-	    Widget widget = view.getWidget(id, false);
+	    Widget widget = bindableContainer.getLoadedWidget(id);
 	    if (widget != null)
 	    {
 	    	propertyBinder.bind(widget);
@@ -209,7 +217,7 @@ public abstract class DataObjectBinder<T>
 
 	private void tryToBindWidget(String id, ExpressionBinder<?> expressionBinder)
     {
-	    Widget widget = view.getWidget(id, false);
+	    Widget widget = bindableContainer.getLoadedWidget(id);
 	    if (widget != null)
 	    {
 	    	expressionBinder.bind(widget);
@@ -219,25 +227,25 @@ public abstract class DataObjectBinder<T>
 	
 	/**
 	 * This binding context can be used only when we know that there is no write operation waiting to be 
-	 * performed on the current view. It assume that the dataObjects are updated.
+	 * performed on the current bindable container. It assume that the dataObjects are updated.
 	 *  
 	 * @author Thiago da Rosa de Bustamante
 	 */
 	public static class UpdatedStateBindingContext implements ExpressionBinder.BindingContext
 	{
-		private View view;
+		private BindableContainer bindableContainer;
 		private long executionTimestamp;
 
-		public UpdatedStateBindingContext(View view, long executionTimestamp)
+		public UpdatedStateBindingContext(BindableContainer bindableContainer, long executionTimestamp)
         {
-			this.view = view;
+			this.bindableContainer = bindableContainer;
 			this.executionTimestamp = executionTimestamp;
         }
 		
 		@Override
         public <T> T getDataObject(String dataObject)
         {
-			DataObjectBinder<T> dataObjectBinder = view.getDataObjectBinder(dataObject);
+			DataObjectBinder<T> dataObjectBinder = bindableContainer.getDataObjectBinder(dataObject);
 			if (dataObjectBinder.dataObject != null)
 			{
 				return dataObjectBinder.dataObject;

@@ -17,6 +17,8 @@ package org.cruxframework.crux.core.client.screen.binding;
 
 import org.cruxframework.crux.core.client.dto.DataObject;
 
+import com.google.gwt.user.client.ui.Widget;
+
 /**
  * Any class that implements this interface will support data binding between classes annotated with
  * {@code @}{@link DataObject} annotation and widgets  inserted into this container. 
@@ -25,26 +27,39 @@ import org.cruxframework.crux.core.client.dto.DataObject;
 public interface BindableContainer
 {
 	/**
-	 * Write the given dataObject into this bindable container. Any UI element bound to any property of this object 
-	 * will be updated.
-	 *   
-	 * @param dataObject the data object to write
-	 */
-	void write(Object dataObject);
-	
-	/**
-	 * Write the given dataObjects into this bindable container. Any UI element bound to any property of these objects 
-	 * will be updated.
-	 *   
-	 * @param dataObjects the data objects to write
-	 */
-	void writeAll(Object... dataObjects);
+     * Add a new binding configuration for a DataValue object
+     * @param dataObjectBinder the binder class
+     * @param dataObjectAlias the binder alias
+     */
+    void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder, String dataObjectAlias);
 	
 	/**
 	 * Update the given dataObject with the values contained on UI elements of this bindable container. 
 	 * @param dataObject the object that will be updated
 	 */
     void copyTo(Object dataObject);
+	
+	/**
+     * Retrieve the configuration object for a DataValue object
+     * @param dataObjectClass the DataValue class.
+     * @return the configuration object for a DataValue object
+     */
+    <T> DataObjectBinder<T> getDataObjectBinder(Class<T> dataObjectClass);
+    
+    /**
+     * Retrieve the configuration object for a DataValue object
+     * @param dataObjectAlias the binder alias.
+     * @return the configuration object for a DataValue object
+     */
+    <T> DataObjectBinder<T> getDataObjectBinder(String dataObjectAlias);
+
+    /**
+     * Retrieve a widget from the container if it is already loaded into it. If the widget is no yet
+     * loaded, this method does not initialize it and just return null. 
+     * @param id the widget identifier.
+     * @return the widget or null.
+     */
+    Widget getLoadedWidget(String id);
     
     /**
      * Read the dataObject bound to the given class from this bindable container. Its state is updated according to any 
@@ -63,23 +78,18 @@ public interface BindableContainer
     <T> T read(String dataObjectAlias);
     
     /**
-     * Add a new binding configuration for a DataValue object
-     * @param dataObjectBinder the binder class
-     * @param dataObjectAlias the binder alias
-     */
-    void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder, String dataObjectAlias);
-
-    /**
-     * Retrieve the configuration object for a DataValue object
-     * @param dataObjectAlias the binder alias.
-     * @return the configuration object for a DataValue object
-     */
-    <T> DataObjectBinder<T> getDataObjectBinder(String dataObjectAlias);
+	 * Write the given dataObject into this bindable container. Any UI element bound to any property of this object 
+	 * will be updated.
+	 *   
+	 * @param dataObject the data object to write
+	 */
+	void write(Object dataObject);
     
     /**
-     * Retrieve the configuration object for a DataValue object
-     * @param dataObjectClass the DataValue class.
-     * @return the configuration object for a DataValue object
-     */
-    <T> DataObjectBinder<T> getDataObjectBinder(Class<T> dataObjectClass);
+	 * Write the given dataObjects into this bindable container. Any UI element bound to any property of these objects 
+	 * will be updated.
+	 *   
+	 * @param dataObjects the data objects to write
+	 */
+	void writeAll(Object... dataObjects);
 }
