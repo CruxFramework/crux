@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.client.screen.views;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.collection.FastList;
 import org.cruxframework.crux.core.client.collection.FastMap;
 import org.cruxframework.crux.core.client.dto.DataObject;
@@ -51,6 +52,8 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public abstract class BindableView<T> extends View
 {
 	protected FastMap<PropertyBinder<T>> binders = new FastMap<BindableView.PropertyBinder<T>>();

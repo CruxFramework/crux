@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.client.screen.views;
+package org.cruxframework.crux.core.client.screen.binding;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -57,7 +57,7 @@ public abstract class ExpressionBinder<W extends IsWidget>
 	 * Update the widget expression binding 
 	 * @param w widget
 	 */
-	abstract void updateExpression(BindingContext context);
+	protected abstract void updateExpression(BindingContext context);
 	
 	public static interface BindingContext
 	{
