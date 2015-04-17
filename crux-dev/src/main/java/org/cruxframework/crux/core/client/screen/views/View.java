@@ -29,6 +29,9 @@ import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
 import org.cruxframework.crux.core.client.screen.LazyPanelWrappingType;
+import org.cruxframework.crux.core.client.screen.binding.DataBindingHandler;
+import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder;
+import org.cruxframework.crux.core.client.screen.binding.BindableContainer;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 
 import com.google.gwt.core.client.Scheduler;
@@ -57,7 +60,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandlers, 
 									  HasViewActivateHandlers, HasOrientationChangeHandler, 
-									  HasViewLoadHandlers
+									  HasViewLoadHandlers, BindableContainer
 {
 	private static Logger logger = Logger.getLogger(View.class.getName());
 	private static FastMap<View> loadedViews = new FastMap<View>();
@@ -1218,72 +1221,51 @@ public abstract class View implements HasViewResizeHandlers, HasWindowCloseHandl
 		void onRendered();
 	}
 	
-	/**
-	 * Write the given dataObject into this view. Any UI element bound to any property of this object 
-	 * will be updated.
-	 *   
-	 * @param dataObject the data object to write
-	 */
+    @Override
 	public void write(Object dataObject)
 	{
 		dataBindingHandler.write(dataObject);
 	}
 	
-	/**
-	 * Write the given dataObjects into this view. Any UI element bound to any property of these objects 
-	 * will be updated.
-	 *   
-	 * @param dataObjects the data objects to write
-	 */
+    @Override
 	public void writeAll(Object... dataObjects)
     {
 		dataBindingHandler.writeAll(dataObjects);
     }
 	
-	/**
-	 * Update the given dataObject with the values contained on UI elements of this View. 
-	 * @param dataObject the object that will be updated
-	 */
+    @Override
     public void copyTo(Object dataObject)
     {
 		dataBindingHandler.copyTo(dataObject);
     }
     
-    /**
-     * Read the dataObject bound to the given class from this View. Its state is updated according to any 
-     * value binding declaration to this dataObject   
-     * @param dataObjectClass dataObject class
-     * @return an updated dataObject
-     */
+    @Override
     public <T> T read(Class<T> dataObjectClass)
     {
     	return dataBindingHandler.read(dataObjectClass);
     }
 
-    /**
-     * Read the dataObject bound to the given alias from this View. Its state is updated according to any 
-     * value binding declaration to this dataObject   
-     * @param dataObjectAlias dataObject alias
-     * @return an updated dataObject
-     */
+    @Override
     public <T> T read(String dataObjectAlias)
     {
     	return dataBindingHandler.read(dataObjectAlias);
     }
     
-    protected void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder, String dataObjectAlias)
+    @Override
+    public void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder, String dataObjectAlias)
     {
     	dataBindingHandler.addDataObjectBinder(dataObjectBinder, dataObjectAlias);
     }
 
-    protected <T> DataObjectBinder<T> getDataObjectBinder(String dataObjectAlias)
+    @Override
+    public <T> DataObjectBinder<T> getDataObjectBinder(String dataObjectAlias)
     {
     	return dataBindingHandler.getDataObjectBinder(dataObjectAlias);
     }
     
-    protected <T> DataObjectBinder<T> getDataObjectBinder(Class<T> dataObjectClass)
+    @Override
+    public <T> DataObjectBinder<T> getDataObjectBinder(Class<T> dataObjectClass)
     {
     	return dataBindingHandler.getDataObjectBinder(dataObjectClass);
     }
-
 }

@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import org.cruxframework.crux.core.client.screen.views.DataObjectBinder;
+import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;

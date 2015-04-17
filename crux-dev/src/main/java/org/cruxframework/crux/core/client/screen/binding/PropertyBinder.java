@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.client.screen.views;
+package org.cruxframework.crux.core.client.screen.binding;
 
 import org.cruxframework.crux.core.client.html5.api.MutationObserver;
 import org.cruxframework.crux.core.client.html5.api.MutationObserver.MutationRecord;
@@ -87,7 +87,7 @@ public abstract class PropertyBinder<T, W extends IsWidget>
 
 	protected native void observeChangeEvents(Element el, PropertyBinder<T, W> binder)/*-{
 		el.addEventListener('change', function(e){
-			binder.@org.cruxframework.crux.core.client.screen.views.PropertyBinder::notifyChanges()();
+			binder.@org.cruxframework.crux.core.client.screen.binding.PropertyBinder::notifyChanges()();
 		});
 	}-*/;
 	

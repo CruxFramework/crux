@@ -20,7 +20,7 @@ import java.util.Set;
 import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.factory.WidgetFactory;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.client.screen.views.DataObjectBinder.UpdatedStateBindingContext;
+import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder.UpdatedStateBindingContext;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.screen.Event;

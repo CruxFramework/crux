@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.client.screen.views;
+package org.cruxframework.crux.core.client.screen.binding;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
@@ -24,23 +24,23 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
  * @author Thiago da Rosa de Bustamante
  *
  */
-class DataBindingHandler
+public class DataBindingHandler
 {
 	protected Map<DataObjectBinder<?>> binders = CollectionFactory.createMap();
 	protected Map<String> binderAlias = CollectionFactory.createMap();
-	protected View view;
+	protected BindableContainer bindableContainer;
 	
-	DataBindingHandler(View view)
+	public DataBindingHandler(BindableContainer view)
     {
-		this.view = view;
+		this.bindableContainer = view;
     }
 	
-	void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder)
+	public void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder)
 	{
 		addDataObjectBinder(dataObjectBinder, null);
 	}
 	
-	void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder, String dataObjectAlias)
+	public void addDataObjectBinder(DataObjectBinder<?> dataObjectBinder, String dataObjectAlias)
 	{
 		String className = dataObjectBinder.createDataObject().getClass().getName();
 		assert(!binders.containsKey(className)) : "This view already contains a dataBinding for this type of object";
@@ -54,7 +54,7 @@ class DataBindingHandler
 		}
 	}
 	
-	void addExpressionBinder(ExpressionBinder<?> expressionBinder, String widgetId, Array<String> referedDataObjects)
+	public void addExpressionBinder(ExpressionBinder<?> expressionBinder, String widgetId, Array<String> referedDataObjects)
 	{
 		assert(checkDataObjectsExist(referedDataObjects)):"Can not add the given binding expression. It refers to "
 														+ "DataObjects that are not registerid on this view.";
@@ -67,7 +67,7 @@ class DataBindingHandler
 		}
 	}
 	
-	void remove(String widgetId)
+	public void remove(String widgetId)
     {
 	    Array<String> keys = binders.keys();
 		int size = keys.size();
@@ -79,7 +79,7 @@ class DataBindingHandler
 	    }
     }
 	
-	void write(Object dataObject)
+	public void write(Object dataObject)
     {
 		DataObjectBinder<?> objectBinder = getDataObjectBinder(dataObject.getClass());
 		if (objectBinder != null)
@@ -88,7 +88,7 @@ class DataBindingHandler
 		}
     }
 
-	void writeAll(Object... dataObjects)
+	public void writeAll(Object... dataObjects)
     {
 		for (Object dataObject : dataObjects)
         {
@@ -108,7 +108,7 @@ class DataBindingHandler
         }
     }
 	
-	void copyTo(Object dataObject)
+	public void copyTo(Object dataObject)
     {
 		DataObjectBinder<?> objectBinder = getDataObjectBinder(dataObject.getClass());
 		if (objectBinder != null)
@@ -117,7 +117,7 @@ class DataBindingHandler
 		}
     } 
 	
-	<T> T read(Class<T> dataObjectClass)
+	public <T> T read(Class<T> dataObjectClass)
     {
 		DataObjectBinder<T> objectBinder = getDataObjectBinder(dataObjectClass);
 		if (objectBinder != null)
@@ -127,7 +127,7 @@ class DataBindingHandler
 		return null;
     }
 
-    <T> T read(String dataObjectAlias)
+	public <T> T read(String dataObjectAlias)
     {
 		DataObjectBinder<T> objectBinder = getDataObjectBinder(dataObjectAlias);
 		if (objectBinder != null)
@@ -138,7 +138,7 @@ class DataBindingHandler
     }
     
     @SuppressWarnings("unchecked")
-    <T> DataObjectBinder<T> getDataObjectBinder(String dataObjectAlias)
+    public <T> DataObjectBinder<T> getDataObjectBinder(String dataObjectAlias)
 	{
 		String dataObjectClass = binderAlias.get(dataObjectAlias);
 		if (!StringUtils.isEmpty(dataObjectClass))
@@ -149,7 +149,7 @@ class DataBindingHandler
 	}
 
 	@SuppressWarnings("unchecked")
-    <T> DataObjectBinder<T> getDataObjectBinder(Class<T> dataObjectClass)
+	public <T> DataObjectBinder<T> getDataObjectBinder(Class<T> dataObjectClass)
     {
 	    return (DataObjectBinder<T>) binders.get(dataObjectClass.getName());
     }

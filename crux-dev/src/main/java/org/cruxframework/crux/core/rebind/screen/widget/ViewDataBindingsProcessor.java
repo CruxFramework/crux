@@ -17,9 +17,9 @@ package org.cruxframework.crux.core.rebind.screen.widget;
 
 import java.util.Iterator;
 
-import org.cruxframework.crux.core.client.screen.views.ExpressionBinder;
-import org.cruxframework.crux.core.client.screen.views.PropertyBinder;
-import org.cruxframework.crux.core.client.screen.views.ExpressionBinder.BindingContext;
+import org.cruxframework.crux.core.client.screen.binding.ExpressionBinder;
+import org.cruxframework.crux.core.client.screen.binding.PropertyBinder;
+import org.cruxframework.crux.core.client.screen.binding.ExpressionBinder.BindingContext;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;

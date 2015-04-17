@@ -13,13 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.client.screen.views;
+package org.cruxframework.crux.core.client.screen.binding;
 
 import java.util.Date;
 
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.collection.CollectionFactory;
 import org.cruxframework.crux.core.client.collection.Map;
+import org.cruxframework.crux.core.client.screen.views.View;
 
 import com.google.gwt.user.client.ui.Widget;
 
