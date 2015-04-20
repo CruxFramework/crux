@@ -194,7 +194,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		this.dataBindingProcessor = new ViewDataBindingsProcessor(this);
 		this.rootPanelChildren = new HashSet<String>();
 		this.controllerAccessHandler = new DefaultControllerAccessor(viewVariable);
-		this.bindHandler = new ViewBindHandler(context, view);
+		this.bindHandler = new ViewBindHandler(context, view, this);
 
     }
 
