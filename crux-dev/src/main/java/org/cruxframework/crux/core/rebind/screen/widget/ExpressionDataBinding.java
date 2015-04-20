@@ -51,7 +51,7 @@ public class ExpressionDataBinding
 		this.widgetClassName = widgetType.getQualifiedSourceName();
     }
 	
-	public void addLogicalBinding(List<ExpressionPart> expressionParts, LogicalOperations logicalOperations, boolean negate)
+	public void addLogicalBinding(List<ExpressionPart> expressionParts, LogicalOperation logicalOperation, boolean negate)
 	{
 		assert (expression.length() == 0):"Invalid Expression. Can not add logical binnding on a multi expression binding";
 		
@@ -71,25 +71,25 @@ public class ExpressionDataBinding
 			
 			String readExpression = expressionPart.getExpression(expressionPart.getDataObjectReadExpression(), "${"+expressionPart.getDataObject()+"}");
 			
-			if (logicalOperations == LogicalOperations.NULL)
+			if (logicalOperation == LogicalOperation.NULL)
 			{
 				addLogicalBindingForNullOperation(expressionPart, readExpression);
 			}
-			else if (logicalOperations == LogicalOperations.FILLED)
+			else if (logicalOperation == LogicalOperation.FILLED)
 			{
 				addLogicalBindingForFilledOperation(expressionPart, readExpression);
 			}
-			else if (logicalOperations == LogicalOperations.EMPTY)
+			else if (logicalOperation == LogicalOperation.EMPTY)
 			{
 				addLogicalBindingForEmptyOperation(expressionPart, readExpression);
 			}
-			else if (logicalOperations == LogicalOperations.IS)
+			else if (logicalOperation == LogicalOperation.IS)
 			{
 				expression.append(readExpression);
 			}
 			else
 			{
-				addLogicalBindingForNumericOperations(expressionPart, logicalOperations, readExpression);
+				addLogicalBindingForNumericOperations(expressionPart, logicalOperation, readExpression);
 			}
 	        
 			dataObjects.add(expressionPart.getDataObject());
@@ -115,13 +115,24 @@ public class ExpressionDataBinding
 		appendConverterDeclaration(expressionPart);
     }
 	
-	public void addStringConstant(String constant)
+	public void addStringConstant(String constant, boolean needsQuote)
 	{
+		if (constant == null || constant.length() == 0)
+		{
+			return;
+		}
 		if (expression.length() > 0)
 		{
 			expression.append(" + ");
 		}
-		expression.append(EscapeUtils.quote(constant));
+		if (needsQuote)
+		{
+			expression.append(EscapeUtils.quote(constant));
+		}
+		else
+		{
+			expression.append(constant);
+		}
 	}
 	
 	public Set<String> getConverterDeclarations()
@@ -258,7 +269,7 @@ public class ExpressionDataBinding
 		appendConverterDeclaration(expressionPart);
     }
 
-	private void addLogicalBindingForNumericOperations(ExpressionPart expressionPart, LogicalOperations logicalOperations, String readExpression)
+	private void addLogicalBindingForNumericOperations(ExpressionPart expressionPart, LogicalOperation logicalOperation, String readExpression)
     {
 		expression.append(readExpression);
 	    if (!JClassUtils.isNumeric(expressionPart.getType()))
@@ -267,15 +278,15 @@ public class ExpressionDataBinding
 	    			+ "of widget ["+widgetType.getQualifiedSourceName()+"] is not a numeric type.");
 	    }
 	    
-	    if (logicalOperations == LogicalOperations.POSITIVE)
+	    if (logicalOperation == LogicalOperation.POSITIVE)
 	    {
 	    	expression.append(" > 0");
 	    }
-	    else if (logicalOperations == LogicalOperations.NEGATIVE)
+	    else if (logicalOperation == LogicalOperation.NEGATIVE)
 	    {
 	    	expression.append(" < 0");
 	    }
-	    else if (logicalOperations == LogicalOperations.ZERO)
+	    else if (logicalOperation == LogicalOperation.ZERO)
 	    {
 	    	expression.append(" == 0");
 	    }
@@ -291,5 +302,5 @@ public class ExpressionDataBinding
 		}
     }
 
-	public static enum LogicalOperations{EMPTY, FILLED, IS, NEGATIVE, NULL, POSITIVE, ZERO}
+	public static enum LogicalOperation{EMPTY, FILLED, IS, NEGATIVE, NULL, POSITIVE, ZERO}
 }
