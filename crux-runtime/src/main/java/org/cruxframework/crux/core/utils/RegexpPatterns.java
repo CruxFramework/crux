@@ -16,8 +16,12 @@
 package org.cruxframework.crux.core.utils;
 
 import java.util.regex.Pattern;
-
-public class RegexpPatterns {
+/**
+ * Some Regular expressions used by Crux. 
+ * @author Thiago da Rosa de Bustamante
+ */
+public class RegexpPatterns 
+{
     public static final Pattern REGEXP_DOT = Pattern.compile("\\.");
     public static final Pattern REGEXP_SPACE = Pattern.compile(" ");
     public static final Pattern REGEXP_PIPE = Pattern.compile("\\|");

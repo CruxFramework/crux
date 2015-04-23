@@ -81,7 +81,7 @@ public class JettyDevServer
 		server.setHandler(webContext);
 		if (addDevelopmentComponents)
 		{
-			webContext.addFilter(DeclarativeUIFilter.class, "*.html", EnumSet.allOf(DispatcherType.class));
+//			webContext.addFilter(DeclarativeUIFilter.class, "*.html", EnumSet.allOf(DispatcherType.class));
 			webContext.addServlet(ViewTester.class, "/viewTester/*");
 			if (!webContext.getInitParams().containsKey(DevModeInitializerListener.OUTPUT_CHARSET))
 			{

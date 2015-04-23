@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +33,6 @@ import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializ
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.dispatch.ServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
-import org.cruxframework.crux.tools.codeserver.CodeServerRecompileListener.CompilationCallback;
 import org.cruxframework.crux.tools.compile.AbstractCruxCompiler;
 import org.cruxframework.crux.tools.compile.CruxCompilerFactory;
 import org.cruxframework.crux.tools.compile.CruxRegisterUtil;
@@ -44,21 +41,8 @@ import org.cruxframework.crux.tools.parameters.ConsoleParameterOption;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessingException;
 import org.cruxframework.crux.tools.parameters.ConsoleParametersProcessor;
 import org.cruxframework.crux.tools.server.JettyDevServer;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.websocket.WebSocket;
-import org.eclipse.jetty.websocket.WebSocket.Connection;
-import org.eclipse.jetty.websocket.WebSocketHandler;
-import org.json.JSONObject;
 
-import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.dev.CompilerContext;
-import com.google.gwt.dev.cfg.BindingProperty;
-import com.google.gwt.dev.cfg.ModuleDef;
-import com.google.gwt.dev.cfg.ModuleDefLoader;
 import com.google.gwt.dev.codeserver.Options;
-import com.google.gwt.dev.util.log.PrintWriterTreeLogger;
 
 /**
  * @author Thiago da Rosa de Bustamante
@@ -66,8 +50,6 @@ import com.google.gwt.dev.util.log.PrintWriterTreeLogger;
  */
 public class CodeServer 
 {
-	private static final String MSG_CAN_NOT_DETERMINE_THE_USER_AGENT = "Can not determine the userAgent that must be used by code server. Configure your .gwt.xml file or inform it using -userAgent to CodeServer tool.";
-
 	private static final Log logger = LogFactory.getLog(CodeServer.class);
 
 	private String moduleName;
@@ -75,16 +57,12 @@ public class CodeServer
 	private boolean noPrecompile = false;
 	private String workDir;
 	private String bindAddress = "localhost";
+	private String launcherDir;
 	private int port = getDefaultPort();
-	private int notificationServerPort = getDefaultNotificationPort();
 	private String webDir;
-	private boolean startHotDeploymentScanner;
 	@SuppressWarnings("unused")
 	private boolean startJetty = false;
-	private String userAgent;
-	private String locale;
 	private CodeServerRecompileListener recompileListener;
-	private Connection compilerNotificationConnection;
 
 	public String getModuleName()
     {
@@ -152,134 +130,29 @@ public class CodeServer
 		{
 			logger.info("Starting code server for module ["+moduleName+"]");
 			CruxBridge.getInstance().registerLastPageRequested(screenIDs.iterator().next());
-			processUserAgent();
 			String[] args = getServerParameters();
-			HotDeploymentScanner hotDeploymentScanner = initializeRecompileListener();
+			initializeRecompileListener();
 			runGWTCodeServer(args);
 			
-			if (Boolean.valueOf(ConfigurationFactory.getConfigurations().generateIndexInDevMode()))
+			for (String screenID : screenIDs)
 			{
-				for (String screenID : screenIDs)
-				{
-					URL preProcessCruxPage = compiler.preProcessCruxPage(new URL(screenID), Modules.getInstance().getModule(moduleName));
-					File index = new File(webDir + File.separator + moduleName + File.separator + screenID.substring(
-						screenID.lastIndexOf("/") + 1, screenID.lastIndexOf(".crux.xml")) + ".html");
-					index.delete();	
-					FileUtils.moveFile(new File(preProcessCruxPage.getFile()), index);
-				}	
-			}
+				URL preProcessCruxPage = compiler.preProcessCruxPage(new URL(screenID), Modules.getInstance().getModule(moduleName));
+				File index = new File(webDir + File.separator + moduleName + File.separator + screenID.substring(
+					screenID.lastIndexOf("/") + 1, screenID.lastIndexOf(".crux.xml")) + ".html");
+				index.delete();	
+				FileUtils.moveFile(new File(preProcessCruxPage.getFile()), index);
+			}	
 			
-			if (startHotDeploymentScanner)
-			{
-				hotDeploymentScanner.recompileCodeServer();
-			}
-			
-		} else
+		} 
+		else
 		{
 			logger.error("Unable to find any screens in module ["+moduleName+"]");
 		}
     }
 
-	protected HotDeploymentScanner initializeRecompileListener() 
+	protected void initializeRecompileListener() 
 	{
 		recompileListener = new CodeServerRecompileListener(webDir);
-		if (startHotDeploymentScanner)
-		{
-			HotDeploymentScanner hotDeploymentScanner = HotDeploymentScanner.scanProjectDirs(bindAddress, port, moduleName, userAgent, locale);
-			runCompileNotificationServer();
-			registerCompileNotificationCallback();
-			return hotDeploymentScanner;
-		}
-		return null;
-	}
-
-	protected void registerCompileNotificationCallback() 
-	{
-		recompileListener.setCompilationCallback(new CompilationCallback() 
-		{
-			@Override
-			public void onCompilationStart(String moduleName) 
-			{
-				if (compilerNotificationConnection != null)
-				{
-					try 
-					{
-						JSONObject data = new JSONObject();
-						data.put("op", "START");
-						data.put("module", moduleName);
-
-						compilerNotificationConnection.sendMessage(data.toString());
-					}
-					catch (Exception e) 
-					{
-						logger.error("Error notifying client about module compilation", e);
-					}
-				}
-			}
-			
-			@Override
-			public void onCompilationEnd(String moduleName, boolean success) 
-			{
-				if (compilerNotificationConnection != null)
-				{
-					try 
-					{
-						JSONObject data = new JSONObject();
-						data.put("op", "END");
-						data.put("module", moduleName);
-						data.put("status", success);
-
-						compilerNotificationConnection.sendMessage(data.toString());
-					}
-					catch (Exception e) 
-					{
-						logger.error("Error notifying client about module compilation", e);
-					}
-				}
-			}
-		});
-	}
-
-	protected void runCompileNotificationServer() 
-	{
-		try 
-		{
-			SelectChannelConnector connector = new SelectChannelConnector();
-			connector.setHost(bindAddress);
-			connector.setPort(notificationServerPort);
-			connector.setReuseAddress(false);
-			connector.setSoLingerTime(0);
-	
-			Server server = new Server();
-			server.addConnector(connector);
-			server.setHandler(new WebSocketHandler() 
-			{
-				@Override
-				public WebSocket doWebSocketConnect(HttpServletRequest arg0, String arg1) 
-				{
-					return new WebSocket()  
-					{
-						@Override
-						public void onOpen(Connection connection) 
-						{
-							compilerNotificationConnection = connection;
-						}
-						
-						@Override
-						public void onClose(int closeCode, String message) 
-						{
-							compilerNotificationConnection = null;							
-						}
-					};
-				}
-			});
-
-			server.start();
-		} 
-		catch (Exception e) 
-		{
-			logger.error("Error starting the compilation notifier service.", e);
-		}
 	}
 
 	protected void runGWTCodeServer(String[] args) throws Exception 
@@ -289,8 +162,8 @@ public class CodeServer
 		{
 			System.exit(1);
 		}
-		
 		options.setJobChangeListener(recompileListener);
+//		options.addTags("-XnoenforceStrictResources");
 		try 
 		{
 			com.google.gwt.dev.codeserver.CodeServer.main(options);
@@ -308,6 +181,11 @@ public class CodeServer
 		if (noPrecompile)
 		{
 			args.add("-noprecompile");
+		}
+		if (launcherDir != null && launcherDir.length() > 0)
+		{
+			args.add("-launcherDir");
+			args.add(launcherDir);
 		}
 		if (bindAddress != null && bindAddress.length() > 0)
 		{
@@ -350,21 +228,9 @@ public class CodeServer
 	        {
 	        	this.noPrecompile = true;
 	        }
-	        else if (parameter.getName().equals("-startHotDeploymentScanner"))
-	        {
-	        	this.startHotDeploymentScanner = true;
-	        }
 	        else if (parameter.getName().equals("-startJetty"))
 	        {
 	        	this.startJetty = true;
-	        }
-	        else if (parameter.getName().equals("-userAgent"))
-	        {
-	        	userAgent = parameter.getValue();
-	        }
-	        else if (parameter.getName().equals("-locale"))
-	        {
-	        	locale = parameter.getValue();
 	        }
 	        else if (parameter.getName().equals("-sourceDir"))
 	        {
@@ -393,10 +259,6 @@ public class CodeServer
 	        {
 	        	port =Integer.parseInt(parameter.getValue());
 	        }
-	        else if (parameter.getName().equals("-notificationServerPort"))
-	        {
-	        	notificationServerPort =Integer.parseInt(parameter.getValue());
-	        }
 	        else if (parameter.getName().equals("-workDir"))
 	        {
 	        	workDir = parameter.getValue();
@@ -404,37 +266,9 @@ public class CodeServer
 	        else if (parameter.getName().equals("-webDir"))
 	        {
 	        	webDir = parameter.getValue();
+	        	launcherDir = parameter.getValue();
 	        }
         }
-    }
-
-	protected void processUserAgent()
-    {
-	    if (userAgent == null)
-		{
-		    PrintWriterTreeLogger logger = new PrintWriterTreeLogger();
-		    logger.setMaxDetail(TreeLogger.Type.INFO);
-		    CompilerContext emptyCompilerContext = new CompilerContext.Builder().build();
-		    try
-            {
-		    	String moduleFullName = Modules.getInstance().getModule(moduleName).getFullName();
-	            ModuleDef moduleDef = ModuleDefLoader.loadFromClassPath(logger, emptyCompilerContext, moduleFullName);
-	            BindingProperty userAgentProperty = (BindingProperty) moduleDef.getProperties().find("user.agent");
-	            userAgent =  userAgentProperty.getFirstAllowedValue();
-	            if (userAgent == null)
-	            {
-	            	throw new ConsoleParametersProcessingException(MSG_CAN_NOT_DETERMINE_THE_USER_AGENT);
-	            }
-	            else
-	            {
-	            	CodeServer.logger.info("User Agent not provided. Using first valid value found on module "+moduleFullName+".gwt.xml.");
-	            }
-            }
-            catch (UnableToCompleteException e)
-            {
-            	throw new ConsoleParametersProcessingException(e.getCause());
-            }
-		}
     }
 
 	protected ConsoleParametersProcessor createParametersProcessor()
@@ -456,23 +290,13 @@ public class CodeServer
 
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-noprecompile", "If informed, code server will not pre compile the source.", false, true));
 
-		parametersProcessor.addSupportedParameter(new ConsoleParameter("-startHotDeploymentScanner", "If informed, a hotdeployment scanner will be started to automatically recompile the module when changes are made on the project.", false, true));
-		
 		parametersProcessor.addSupportedParameter(new ConsoleParameter("-startJetty", "If informed, starts the default application server (Jetty).", false, true));
-		
-		parameter = new ConsoleParameter("-userAgent", "The userAgent used by hotdeployment scanner to recompile the project.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("agent", "user agent"));
-		parametersProcessor.addSupportedParameter(parameter);
 		
 		parameter = new ConsoleParameter("-locale", "The locale used by hotdeployment scanner to recompile the project.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("locale", "locale"));
 		parametersProcessor.addSupportedParameter(parameter);
 
 		parameter = new ConsoleParameter("-port", "The port where the code server will run.", false, true);
-		parameter.addParameterOption(new ConsoleParameterOption("port", "Port"));
-		parametersProcessor.addSupportedParameter(parameter);
-
-		parameter = new ConsoleParameter("-notificationServerPort", "The port where the compile notification server will run.", false, true);
 		parameter.addParameterOption(new ConsoleParameterOption("port", "Port"));
 		parametersProcessor.addSupportedParameter(parameter);
 

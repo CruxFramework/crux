@@ -38,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.declarativeui.template.TemplateParser;
-import org.cruxframework.crux.core.declarativeui.template.Templates;
 import org.cruxframework.crux.core.i18n.MessagesFactory;
 import org.cruxframework.crux.core.rebind.DevelopmentScanners;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
@@ -71,6 +70,7 @@ import org.cruxframework.crux.core.utils.StreamUtils;
 import org.cruxframework.crux.core.utils.ViewUtils;
 import org.cruxframework.crux.scanner.ClasspathUrlFinder;
 import org.cruxframework.crux.scanner.Scanners;
+import org.cruxframework.crux.tools.scanner.template.Templates;
 import org.w3c.dom.Document;
 
 import com.google.gwt.resources.client.ResourcePrototype;

@@ -118,6 +118,26 @@ public class StreamUtils
 	 * @param out
 	 * @param in
 	 */
+	public static void safeCloseStream(InputStream in)
+	{
+		if(in != null)
+		{
+			try
+			{
+				in.close();
+			}
+			catch (Exception e) 
+			{
+				log.error(e.getMessage(), e);
+			}
+		}
+	}
+	
+	/**
+	 * Close streams without pain
+	 * @param out
+	 * @param in
+	 */
 	public static void safeCloseStreams(InputStream in, OutputStream out)
 	{
 		if(in != null)

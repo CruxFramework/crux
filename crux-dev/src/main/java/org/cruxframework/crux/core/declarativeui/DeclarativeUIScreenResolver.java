@@ -25,12 +25,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.classpath.URLResourceHandler;
 import org.cruxframework.crux.classpath.URLResourceHandlersRegistry;
+import org.cruxframework.crux.core.declarativeui.view.ViewProvider;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.module.Module;
 import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolver;
-import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.classpath.ClassPathResolverInitializer;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.core.utils.URLUtils;
@@ -45,6 +45,13 @@ import org.w3c.dom.Document;
 public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 {
 	private static final Log log = LogFactory.getLog(DeclarativeUIScreenResolver.class);
+	private ViewProcessor viewProcessor;
+	
+	
+	public DeclarativeUIScreenResolver(ViewProvider viewProvider)
+    {
+		this.viewProcessor = new ViewProcessor(viewProvider);
+    }
 	
 	public Set<String> getAllAppModules()
 	{
@@ -71,7 +78,7 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
     {
 		try
         {
-        	Set<String> screenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(moduleId);
+        	Set<String> screenIDs = getAllScreenIDs(moduleId);
         	Module module = Modules.getInstance().getModule(moduleId);
         	
         	if (screenIDs == null || module == null)
@@ -145,8 +152,9 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 						}
 					}
 				}
-				return ViewProcessor.getView(inputStream, screenURL.getPath(), device);
-			} finally
+				return viewProcessor.getView(inputStream, screenURL.getPath(), device);
+			} 
+			finally
 			{
 				if(manager != null)
 				{
@@ -171,7 +179,7 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 			return null;
 		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ViewProcessor.generateHTML(screenId, screen, out);			
+		viewProcessor.generateHTML(screenId, screen, out);			
 		return new ByteArrayInputStream(out.toByteArray());
     }
 
@@ -183,7 +191,7 @@ public class DeclarativeUIScreenResolver implements ScreenResourceResolver
 			return null;
 		}
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ViewProcessor.generateHTML(screenId, screen, out);			
+		viewProcessor.generateHTML(screenId, screen, out);			
 		return new ByteArrayInputStream(out.toByteArray());
     }
 }

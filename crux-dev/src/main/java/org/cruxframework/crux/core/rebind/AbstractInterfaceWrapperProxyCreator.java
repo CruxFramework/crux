@@ -16,21 +16,17 @@
 package org.cruxframework.crux.core.rebind;
 
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.cruxframework.crux.core.declarativeui.view.Views;
-import org.cruxframework.crux.core.rebind.module.Modules;
+import org.cruxframework.crux.core.rebind.provider.ScreenContextProvider;
 import org.cruxframework.crux.core.rebind.screen.Screen;
 import org.cruxframework.crux.core.rebind.screen.ScreenConfigException;
 import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
-import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.rebind.screen.View;
-import org.cruxframework.crux.core.rebind.screen.ViewFactory;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.development.ViewTesterScreen;
 
@@ -52,12 +48,14 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 {
 	private static final String PROXY_SUFFIX = "_Impl";
 	protected JClassType baseIntf;
+	private ScreenFactory screenFactory;
 
 	public AbstractInterfaceWrapperProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf, boolean cacheable)
     {
 	    super(logger, context, cacheable);
 		this.baseIntf = baseIntf;
-		DevelopmentScanners.initializeScanners();
+		ScreenContextProvider screenProvider = new ScreenContextProvider(context);
+		this.screenFactory = new ScreenFactory(screenProvider);
     }
 
 	/**
@@ -126,7 +124,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 			else
 			{
 				String screenID = CruxBridge.getInstance().getLastPageRequested();
-				Screen requestedScreen = ScreenFactory.getInstance().getScreen(screenID, getDeviceFeatures());
+				Screen requestedScreen = screenFactory.getScreen(screenID, getDeviceFeatures());
 				if(requestedScreen != null)
 				{
 					return requestedScreen.getModule();
@@ -157,7 +155,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 	        
 	        if(module != null)
 	        {
-	        	Set<String> screenIDs = ScreenResourceResolverInitializer.getScreenResourceResolver().getAllScreenIDs(module);
+	        	Set<String> screenIDs = screenFactory.getScreens(module);
 	        	
 	        	if (screenIDs == null)
 	        	{
@@ -165,7 +163,7 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 	        	}
 	        	for (String screenID : screenIDs)
 	        	{
-	        		Screen screen = ScreenFactory.getInstance().getScreen(screenID, getDeviceFeatures());
+	        		Screen screen = screenFactory.getScreen(screenID, getDeviceFeatures());
 	        		if(screen != null)
 	        		{
 	        			screens.add(screen);
@@ -194,13 +192,12 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 			try
 			{
 				String moduleId = getModule();
-				List<String> viewList = Views.getViews("*", moduleId);
+				List<String> viewList = screenFactory.getViewFactory().getViews("*", moduleId);
 				for (String viewName : viewList)
 				{
-					URL url = Views.getView(viewName);
-					if (Modules.getInstance().isResourceOnModulePathOrContext(url, moduleId, true))
+					View innerView = screenFactory.getViewFactory().getView(viewName, getDeviceFeatures());
+					if (innerView != null)
 					{
-						View innerView = ViewFactory.getInstance().getView(viewName, getDeviceFeatures());
 						views.add(innerView);
 					}
 				}
@@ -295,13 +292,12 @@ public abstract class AbstractInterfaceWrapperProxyCreator extends AbstractProxy
 				{
 					added.add(viewLocator);
 					
-					List<String> viewList = Views.getViews(viewLocator, moduleId);
+					List<String> viewList = screenFactory.getViewFactory().getViews(viewLocator, moduleId);
 					for (String viewName : viewList)
                     {
-						URL url = Views.getView(viewName);
-						if (Modules.getInstance().isResourceOnModulePathOrContext(url, moduleId, true))
+						View innerView = screenFactory.getViewFactory().getView(viewName, getDeviceFeatures());
+						if (innerView != null)
 						{
-							View innerView = ViewFactory.getInstance().getView(viewName, getDeviceFeatures());
 							views.add(innerView);
 							findViews(innerView, views, added, moduleId);
 						}

@@ -13,32 +13,32 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.rebind.screen;
+package org.cruxframework.crux.core.declarativeui.screen;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ScreenResourcesScannerException extends RuntimeException
+public class ScreenException extends RuntimeException
 {
-	private static final long serialVersionUID = -1599986004331398551L;
+    private static final long serialVersionUID = 8147880193909225773L;
 
-	public ScreenResourcesScannerException()
+	public ScreenException()
 	{
 		super();
 	}
 
-	public ScreenResourcesScannerException(String message, Throwable cause)
+	public ScreenException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}
 
-	public ScreenResourcesScannerException(String message)
+	public ScreenException(String message)
 	{
 		super(message);
 	}
 
-	public ScreenResourcesScannerException(Throwable cause)
+	public ScreenException(Throwable cause)
 	{
 		super(cause);
 	}

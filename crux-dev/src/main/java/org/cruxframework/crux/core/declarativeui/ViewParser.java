@@ -696,11 +696,10 @@ public class ViewParser
 	 */
 	private void generateCruxMetaDataElement(Element htmlHeadElement) throws ViewParserException
     {
-		ScreenFactory factory = ScreenFactory.getInstance();
 		String screenModule = null;
 		try
 		{
-			screenModule = factory.getScreenModule(cruxPageDocument);
+			screenModule = ScreenFactory.getScreenModule(cruxPageDocument);
 			
 		}
 		catch (Exception e)
@@ -714,12 +713,12 @@ public class ViewParser
 		}
 		try
 		{
-			String screenId = factory.getRelativeScreenId(this.viewId, screenModule);
+			String screenId = ScreenFactory.getRelativeScreenId(this.viewId, screenModule);
 
 			Element cruxMetaData = htmlDocument.createElement("script");
 			cruxMetaData.setAttribute("id", "__CruxMetaDataTag_");		
 			htmlHeadElement.appendChild(cruxMetaData);
-			Text textNode = htmlDocument.createTextNode("var __CruxScreen_ = \""+screenModule+"/"+HTMLUtils.escapeJavascriptString(screenId, escapeXML)+"\"");
+			Text textNode = htmlDocument.createTextNode("var __CruxScreen_ = \""+HTMLUtils.escapeJavascriptString(screenId, escapeXML)+"\"");
 			cruxMetaData.appendChild(textNode);
 		}
 		catch (Exception e)

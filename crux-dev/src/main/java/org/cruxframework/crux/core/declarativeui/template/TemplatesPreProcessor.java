@@ -52,13 +52,15 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 	private XPathExpression findCrossBrowserExpression;
 	private XPathExpression templateAttributesExpression;
 	
+	private TemplateProvider templateProvider;
 	private TemplateParser templateParser;
 	
 	/**
 	 * 
 	 */
-	public TemplatesPreProcessor()
+	public TemplatesPreProcessor(TemplateProvider templateProvider)
 	{
+		this.templateProvider = templateProvider;
 		this.templateParser = new TemplateParser();
 		XPath findPath = XPathUtils.getCruxPagesXPath();
 		XPath htmlPath = XPathUtils.getHtmlXPath();
@@ -282,7 +284,7 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 		Document doc = element.getOwnerDocument();
 		String library = element.getNamespaceURI();
 		library = library.substring(library.lastIndexOf('/')+1);
-		Document template = Templates.getTemplate(library, element.getLocalName(), true);
+		Document template = templateProvider.getTemplate(library, element.getLocalName());
 		if (template == null)
 		{
 			throw new TemplateException("Template not found. Library: ["+library+"]. Template: ["+element.getLocalName()+"].");

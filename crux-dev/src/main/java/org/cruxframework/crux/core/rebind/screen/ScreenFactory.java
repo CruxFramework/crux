@@ -15,16 +15,15 @@
  */
 package org.cruxframework.crux.core.rebind.screen;
  
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Set;
 
-import org.cruxframework.crux.core.rebind.module.Module;
-import org.cruxframework.crux.core.rebind.module.Modules;
+import org.cruxframework.crux.core.declarativeui.ViewProcessor;
+import org.cruxframework.crux.core.declarativeui.screen.ScreenProvider;
+import org.cruxframework.crux.core.utils.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -38,38 +37,19 @@ import org.w3c.dom.NodeList;
  */
 public class ScreenFactory 
 {
-	private static ScreenFactory instance = new ScreenFactory();
-	
-	private static final Lock screenLock = new ReentrantLock();
-	private static final long UNCHANGED_RESOURCE = -1;
-	private static final long REPROCESS_RESOURCE = -2;	
-
 	private Map<String, Screen> screenCache = new HashMap<String, Screen>();
-	private Map<String, Long> screenLastModified = new HashMap<String, Long>();		
+	private ScreenProvider screenProvider;
+	private ViewFactory viewFactory;
+	private ViewProcessor viewProcessor;
 
 	/**
 	 * Singleton Constructor
 	 */
-	private ScreenFactory() 
+	public ScreenFactory(ScreenProvider screenProvider) 
 	{
-	}
-	
-	/**
-	 * Singleton method
-	 * @return
-	 */
-	public static ScreenFactory getInstance()
-	{
-		return instance;
-	}
-	
-	/**
-	 * Clear the screen cache
-	 */
-	public void clearScreenCache()
-	{
-		screenCache.clear();
-		ViewFactory.getInstance().clearViewCache();
+		this.screenProvider = screenProvider;
+		this.viewProcessor = new ViewProcessor(screenProvider.getViewProvider());
+		this.viewFactory = new ViewFactory(screenProvider.getViewProvider());
 	}
 	
 	/**
@@ -83,80 +63,94 @@ public class ScreenFactory
 	{
 		try 
 		{
-			long lastModified = getScreenLastModified(id);
-			String cacheId = device==null?id:id+"_"+device;
+			String cacheKey = device==null?id:id+"_"+device;
 			
-			Screen screen = getFromCache(id, cacheId, lastModified);
+			Screen screen = screenCache.get(cacheKey);
 			if (screen != null)
 			{
 				return screen;
 			}
 
-			
-			screenLock.lock();
-			try
+			InputStream inputStream = screenProvider.getScreen(id);
+			Document screenView = viewProcessor.getView(inputStream, id, device);
+			StreamUtils.safeCloseStream(inputStream);
+			if (screenView == null)
 			{
-				if (getFromCache(id, cacheId, lastModified) == null)
-				{
-					Document screenView;
-					String relativeScreenId = Modules.getInstance().removeModuleIfPresent(id);
-			    	if (!relativeScreenId.equals(id))
-			    	{
-			    		String module = id.substring(0, id.indexOf("/"));
-			    		screenView = ScreenResourceResolverInitializer.getScreenResourceResolver().getRootView(relativeScreenId, module, device);
-			    	}
-			    	else
-			    	{
-			    		screenView = ScreenResourceResolverInitializer.getScreenResourceResolver().getRootView(id, device);
-			    	}
-			    	
-					if (screenView == null)
-					{
-						throw new ScreenConfigException("Screen ["+id+"] not found!");
-					}
-					screen = parseScreen(id, device, screenView);
-					if(screen != null)
-					{
-						screenCache.put(cacheId, screen);
-						saveScreenLastModified(cacheId, lastModified);
-					}
-				}
+				throw new ScreenConfigException("Screen ["+id+"] not found!");
 			}
-			finally
+			screen = parseScreen(id, device, screenView);
+			if(screen != null)
 			{
-				screenLock.unlock();
+				screenCache.put(cacheKey, screen);
 			}
-			return getFromCache(id, cacheId, lastModified);
+			return screen;
 			
 		} 
-		catch (Throwable e) 
+		catch (Exception e) 
 		{
 			throw new ScreenConfigException("Error retrieving screen ["+id+"].", e);
 		}
 	}
+	
+	public Set<String> getScreens(String module)
+    {
+	    return screenProvider.getScreens(module);
+    }
 
+	/**
+	 * Retrieve the viewFactory.
+	 * @return
+	 */
+	public ViewFactory getViewFactory()
+	{
+		return viewFactory;
+	}
+	
+	/**
+	 * Parse the HTML page and build the Crux Screen. 
+	 * @param id
+	 * @param device
+	 * @param screenView
+	 * @return
+	 * @throws IOException
+	 * @throws ScreenConfigException 
+	 */
+	private Screen parseScreen(String id, String device, Document screenView) throws IOException, ScreenConfigException
+	{
+		Screen screen = null;
+		String screenModule = getScreenModule(screenView);
+
+		if(screenModule != null)
+		{
+			String relativeScreenId = getRelativeScreenId(id, screenModule);
+			View rootView = viewFactory.getView(relativeScreenId, device, screenView, true);
+			
+			screen = new Screen(id, relativeScreenId, screenModule, rootView);
+		}
+		else
+		{
+			throw new ScreenConfigException("No module declared on screen ["+id+"].");
+		}
+		
+		return screen;
+	}
+	
 	/**
 	 * @param id
 	 * @param module
 	 * @return
-	 * @throws ScreenConfigException 
 	 */
-	public String getRelativeScreenId(String id, String module) throws ScreenConfigException
+	public static String getRelativeScreenId(String id, String module)
 	{
-		Module mod = Modules.getInstance().getModule(module);
-		if (mod == null)
-		{
-			throw new ScreenConfigException("No module declared on screen ["+id+"].");
-		}
-		return Modules.getInstance().getRelativeScreenId(mod, id);
+		return module+"/"+id;
 	}
-	
+
 	/**
 	 * @param nodeList
 	 * @return
 	 * @throws ScreenConfigException
 	 */
-	public String getScreenModule(Document source) throws ScreenConfigException
+	public static String getScreenModule(Document source) throws ScreenConfigException
 	{
 		String result = null;
 		
@@ -190,112 +184,5 @@ public class ScreenFactory
 			}
 		}
 		return result;
-	}
-	
-	/**
-	 * 
-	 * @param id
-	 * @param cacheId
-	 * @param lastModified
-	 * @return
-	 */
-	private Screen getFromCache(String id,String cacheId, long lastModified)
-	{
-		Screen screen = screenCache.get(cacheId);
-		if (screen != null)
-		{
-			if (mustReprocessScreen(cacheId, lastModified))
-			{
-				screenCache.remove(cacheId);
-				screen = null;
-			}
-		}
-		return screen;
-	}
-
-	/**
-	 * @param id
-	 * @param lastModified
-	 * @return
-	 */
-	private boolean mustReprocessScreen(String id, long lastModified)
-	{
-		if (lastModified == REPROCESS_RESOURCE)
-		{
-			return true;
-		}
-		if (lastModified == UNCHANGED_RESOURCE)
-		{
-			return false;
-		}
-		
-		return (!screenLastModified.containsKey(id) || !screenLastModified.get(id).equals(lastModified));
-	}
-
-	/**
-	 * @param id
-	 * @param lastModified
-	 */
-	private void saveScreenLastModified(String id, long lastModified)
-	{
-	    if (id.toLowerCase().startsWith("file:"))
-	    {
-	    	screenLastModified.put(id, lastModified);
-	    }
-	    else
-	    {
-	    	screenLastModified.put(id, UNCHANGED_RESOURCE);
-	    }
-	}
-	
-	/**
-	 * @param id
-	 * @return
-	 */
-	private long getScreenLastModified(String id)
-    {
-	    if (id.toLowerCase().startsWith("file:"))
-	    {
-	    	try
-            {
-	            File screenFile = new File(new URL(id).toURI());
-	            return screenFile.lastModified();
-            }
-            catch (Exception e)
-            {
-            	return REPROCESS_RESOURCE;
-            }
-	    }
-	    
-	    return UNCHANGED_RESOURCE;
-    }
-
-	/**
-	 * Parse the HTML page and build the Crux Screen. 
-	 * @param id
-	 * @param device
-	 * @param screenView
-	 * @return
-	 * @throws IOException
-	 * @throws ScreenConfigException 
-	 */
-	private Screen parseScreen(String id, String device, Document screenView) throws IOException, ScreenConfigException
-	{
-		Screen screen = null;
-		String screenModule = getScreenModule(screenView);
-
-		if(screenModule != null)
-		{
-			String relativeScreenId = getRelativeScreenId(id, screenModule);
-			View rootView = ViewFactory.getInstance().getView(screenModule+"/"+relativeScreenId, device, screenView, true);
-			
-			screen = new Screen(id, relativeScreenId, screenModule, rootView);
-		}
-		else
-		{
-			throw new ScreenConfigException("No module declared on screen ["+id+"].");
-		}
-		
-		return screen;
 	}
 }

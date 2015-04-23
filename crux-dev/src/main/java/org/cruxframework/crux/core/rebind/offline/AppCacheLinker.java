@@ -38,6 +38,7 @@ import org.cruxframework.crux.core.rebind.screen.ScreenFactory;
 import org.cruxframework.crux.core.rebind.screen.ScreenResourceResolverInitializer;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.utils.FilePatternHandler;
+import org.cruxframework.crux.tools.scanner.offline.OfflineScreens;
 import org.w3c.dom.Document;
 
 import com.google.gwt.core.ext.LinkerContext;

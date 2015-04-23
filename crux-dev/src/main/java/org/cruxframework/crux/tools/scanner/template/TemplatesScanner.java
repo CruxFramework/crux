@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.declarativeui.template;
+package org.cruxframework.crux.tools.scanner.template;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -23,6 +23,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.cruxframework.crux.core.declarativeui.template.TemplateException;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.scanner.AbstractScanner;
 import org.cruxframework.crux.scanner.ScannerRegistration.ScannerMatch;

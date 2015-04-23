@@ -289,7 +289,6 @@ public class LazyWidgets
 	{
 		if (widget.has("_children"))
 		{
-			ViewFactory factory = ViewFactory.getInstance();
 			JSONArray children = widget.getJSONArray("_children");
 			int size = children.length();
 			for (int i=0; i<size; i++)
@@ -298,7 +297,7 @@ public class LazyWidgets
 				if (child != null)
 				{
 					String lazyId = parentId;
-					if (factory.isValidWidget(child))
+					if (ViewFactory.isValidWidget(child))
 					{
 						String childId = child.getString("id");
 					    addDependency(dependencies, childId, parentId);
@@ -325,7 +324,7 @@ public class LazyWidgets
 	 */
 	private void generateScreenLazyDeps(JSONObject dependencies, JSONObject widget) throws JSONException, ClassNotFoundException
     {
-		if (ViewFactory.getInstance().isValidWidget(widget))
+		if (ViewFactory.isValidWidget(widget))
 		{
 			boolean wholeWidgetLazy = checkLazy(widget);
 			boolean widgetChildrenLazy = checkChildrenLazy(widget);

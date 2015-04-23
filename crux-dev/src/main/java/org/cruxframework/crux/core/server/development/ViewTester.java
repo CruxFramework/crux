@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
+import org.cruxframework.crux.core.declarativeui.view.ViewProvider;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.server.rest.util.HttpResponseCodes;
 import org.cruxframework.crux.core.utils.StreamUtils;
@@ -70,7 +71,9 @@ public class ViewTester extends HttpServlet
 	    screenContent = screenContent.replace("{moduleName}", moduleName);
 	    ByteArrayInputStream inputStream = new ByteArrayInputStream(screenContent.getBytes("UTF-8"));
 
-	    Document screen = ViewProcessor.getView(inputStream, ViewTesterScreen.getTestViewScreenSuffix(), null);
-	    ViewProcessor.generateHTML(ViewTesterScreen.getTestViewScreenSuffix(), screen, resp.getOutputStream());
+	    
+	    ViewProcessor viewProcessor = new ViewProcessor(new ViewProvider.SimpleViewProvider());
+	    Document screen = viewProcessor.getView(inputStream, ViewTesterScreen.getTestViewScreenSuffix(), null);
+	    viewProcessor.generateHTML(ViewTesterScreen.getTestViewScreenSuffix(), screen, resp.getOutputStream());
     }
 }

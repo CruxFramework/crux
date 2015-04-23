@@ -17,25 +17,22 @@ package org.cruxframework.crux.core.rebind.screen;
  
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
-import org.cruxframework.crux.core.declarativeui.template.Templates;
-import org.cruxframework.crux.core.declarativeui.view.Views;
+import org.cruxframework.crux.core.declarativeui.view.ViewProvider;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.controller.ClientControllers;
 import org.cruxframework.crux.core.rebind.datasource.DataSources;
 import org.cruxframework.crux.core.rebind.formatter.Formatters;
 import org.cruxframework.crux.core.rebind.resources.Resources;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
-import org.cruxframework.crux.scanner.URLStreamManager;
+import org.cruxframework.crux.core.utils.StreamUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,37 +47,20 @@ import org.w3c.dom.Document;
  */
 public class ViewFactory 
 {
-	private static ViewFactory instance = new ViewFactory();
 	private static final Log logger = LogFactory.getLog(ViewFactory.class);
-	
-	private static final Lock viewLock = new ReentrantLock();
-	private Map<String, View> viewCache = new HashMap<String, View>();
-
-	/**
-	 * Singleton Constructor
-	 */
-	private ViewFactory() 
-	{
-		Templates.initialize();
-	}
+	private Map<String, View> cache = new HashMap<String, View>();
+	private ViewProcessor viewProcessor;
+	private ViewProvider viewProvider;
 	
 	/**
-	 * Singleton method
-	 * @return
+	 * Default Constructor
 	 */
-	public static ViewFactory getInstance()
+	public ViewFactory(ViewProvider viewProvider) 
 	{
-		return instance;
+		this.viewProvider = viewProvider;
+		this.viewProcessor = new ViewProcessor(viewProvider);
 	}
 	
-	/**
-	 * Clear the screen cache
-	 */
-	public void clearViewCache()
-	{
-		viewCache.clear();
-	}
-
 	/**
 	 * Factory method for views.
 	 * @param id viewId
@@ -90,23 +70,23 @@ public class ViewFactory
 	 */
 	public View getView(String id, String device) throws ScreenConfigException
 	{
-		String cacheKey = getCacheKey(id, device);
-		if (viewCache.containsKey(cacheKey))
+		String cacheKey = id + "_" + device; 
+		if (cache.containsKey(cacheKey))
 		{
-			return viewCache.get(cacheKey);
+			return cache.get(cacheKey);
 		}
-		URL view = Views.getView(id);
 		
-		URLStreamManager manager = new URLStreamManager(view);
-		InputStream inputStream = manager.open();
-		Document viewDoc = ViewProcessor.getView(inputStream, id, device);
-		manager.close();
-		
-		if (viewDoc == null)
+		InputStream inputStream = viewProvider.getView(id);
+		if (inputStream == null)
 		{
 			throw new ScreenConfigException("View ["+id+"] not found!");
 		}
-		return getView(id, device, viewDoc, false);
+		Document viewDoc = viewProcessor.getView(inputStream, id, device);
+		StreamUtils.safeCloseStream(inputStream);
+		
+		View view = getView(id, device, viewDoc, false);
+		cache.put(cacheKey, view);
+		return view;
 	}
 	
 	/**
@@ -119,59 +99,21 @@ public class ViewFactory
 	 */
 	public View getView(String id, String device, Document view, boolean rootView) throws ScreenConfigException
 	{
-		String cacheKey = getCacheKey(id, device);
-		if (viewCache.containsKey(cacheKey))
-		{
-			return viewCache.get(cacheKey);
-		}
-		viewLock.lock();
 		try 
 		{
-			if (viewCache.containsKey(cacheKey))
-			{
-				return viewCache.get(cacheKey);
-			}
-			JSONObject metadata = ViewProcessor.extractWidgetsMetadata(id, view, rootView);
-			View result = parseView(id, metadata, rootView);
-			viewCache.put(cacheKey, result);
-			return result;
+			JSONObject metadata = viewProcessor.extractWidgetsMetadata(id, view, rootView);
+			return parseView(id, metadata, rootView);
 		} 
-		catch (Throwable e) 
+		catch (Exception e) 
 		{
 			throw new ScreenConfigException("Error retrieving view ["+id+"].", e);
 		}
-		finally
-		{
-			viewLock.unlock();
-		}
 	}
 	
-	/**
-	 * Test if a target json object represents a widget definition for Crux.
-	 * @param cruxObject
-	 * @return
-	 * @throws JSONException
-	 */
-	public boolean isValidWidget(JSONObject cruxObject) throws JSONException
-	{
-		if (cruxObject.has("_type"))
-		{
-			String type = cruxObject.getString("_type");
-			return (type != null && !"screen".equals(type));
-		}
-		return false;
-	}
-
-	/**
-	 * Builds the cache key
-	 * @param id
-	 * @param device
-	 * @return
-	 */
-	private String getCacheKey(String id, String device)
-	{
-		return id+"_"+device;
-	}
+	public List<String> getViews(String viewLocator, String moduleId)
+    {
+	    return viewProvider.getViews(viewLocator, moduleId);
+    }
 	
 	/**
 	 * Creates a widget based in its metadata information.
@@ -448,6 +390,45 @@ public class ViewFactory
 	 * @param elem
 	 * @throws ScreenConfigException 
 	 */
+	/**
+	 * @param view
+	 * @param elem
+	 * @throws ScreenConfigException 
+	 */
+	private void parseViewUseControllerAttribute(View view, JSONObject elem) throws ScreenConfigException
+    {
+	    String handlerStr;
+        try
+        {
+	        handlerStr = elem.getString("useController");
+        }
+        catch (JSONException e)
+        {
+        	throw new ScreenConfigException(e);
+        }
+	    if (handlerStr != null)
+	    {
+	    	String[] handlers = RegexpPatterns.REGEXP_COMMA.split(handlerStr);
+	    	for (String handler : handlers)
+	    	{
+	    		handler = handler.trim();
+	    		if (!StringUtils.isEmpty(handler))
+	    		{
+	    			if (!ClientControllers.hasController(handler))
+	    			{
+	    				throw new ScreenConfigException("Controller ["+handler+"], declared on view ["+view.getId()+"], not found!");
+	    			}
+	    			view.addController(handler);
+	    		}
+	    	}
+	    }
+    }
+
+	/**
+	 * @param view
+	 * @param elem
+	 * @throws ScreenConfigException 
+	 */
 	private void parseViewUseDatasourceAttribute(View view, JSONObject elem) throws ScreenConfigException
     {
 	    String datasourceStr;
@@ -506,45 +487,6 @@ public class ViewFactory
 	    				throw new ScreenConfigException("Formatter ["+formatter+"], declared on view ["+view.getId()+"], not found!");
 	    			}
 	    			view.addFormatter(formatter);
-	    		}
-	    	}
-	    }
-    }
-
-	/**
-	 * @param view
-	 * @param elem
-	 * @throws ScreenConfigException 
-	 */
-	/**
-	 * @param view
-	 * @param elem
-	 * @throws ScreenConfigException 
-	 */
-	private void parseViewUseControllerAttribute(View view, JSONObject elem) throws ScreenConfigException
-    {
-	    String handlerStr;
-        try
-        {
-	        handlerStr = elem.getString("useController");
-        }
-        catch (JSONException e)
-        {
-        	throw new ScreenConfigException(e);
-        }
-	    if (handlerStr != null)
-	    {
-	    	String[] handlers = RegexpPatterns.REGEXP_COMMA.split(handlerStr);
-	    	for (String handler : handlers)
-	    	{
-	    		handler = handler.trim();
-	    		if (!StringUtils.isEmpty(handler))
-	    		{
-	    			if (!ClientControllers.hasController(handler))
-	    			{
-	    				throw new ScreenConfigException("Controller ["+handler+"], declared on view ["+view.getId()+"], not found!");
-	    			}
-	    			view.addController(handler);
 	    		}
 	    	}
 	    }
@@ -609,7 +551,7 @@ public class ViewFactory
 	    		useView = useView.trim();
 	    		if (!StringUtils.isEmpty(useView))
 	    		{
-	    			if (Views.isViewName(useView) && Views.getView(useView) == null)
+	    			if (!viewProvider.isValidViewLocator(useView))
 	    			{
 	    				throw new ScreenConfigException("View ["+useView+"], declared on view ["+view.getId()+"], not found!");
 	    			}
@@ -618,4 +560,20 @@ public class ViewFactory
 	    	}
 	    }
     }
+
+	/**
+	 * Test if a target json object represents a widget definition for Crux.
+	 * @param cruxObject
+	 * @return
+	 * @throws JSONException
+	 */
+	public static boolean isValidWidget(JSONObject cruxObject) throws JSONException
+	{
+		if (cruxObject.has("_type"))
+		{
+			String type = cruxObject.getString("_type");
+			return (type != null && !"screen".equals(type));
+		}
+		return false;
+	}
 }

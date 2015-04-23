@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.declarativeui.template;
+package org.cruxframework.crux.tools.scanner.template;
  
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,9 +26,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.config.ConfigurationFactory;
-import org.cruxframework.crux.core.declarativeui.hotdeploy.HotDeploymentScanner;
-import org.cruxframework.crux.core.server.Environment;
+import org.cruxframework.crux.core.declarativeui.template.TemplateException;
 import org.cruxframework.crux.core.utils.URLUtils;
 import org.cruxframework.crux.scanner.Scanners;
 import org.w3c.dom.Document;
@@ -45,7 +43,6 @@ import org.w3c.dom.Text;
  */
 public class Templates 
 {
-	private static boolean hotDeploymentScannerStarted = false;
 	private static final Log logger = LogFactory.getLog(Templates.class);
 	private static Map<String, Set<String>> registeredLibraries = new HashMap<String, Set<String>>();
 	private static boolean starting = false;
@@ -174,15 +171,6 @@ public class Templates
 	
 	static void setInitialized()
     {
-		if (!hotDeploymentScannerStarted)
-		{
-			hotDeploymentScannerStarted = true;
-			if(!Environment.isProduction() && Boolean.parseBoolean(ConfigurationFactory.getConfigurations().enableHotDeploymentForWebDirs()))
-			{
-				HotDeploymentScanner.scanWebDirs();
-			}
-		}
-		
 		starting = false;
 	    initialized = true;
     }

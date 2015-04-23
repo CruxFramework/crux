@@ -31,6 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.declarativeui.template.TemplatesPreProcessor;
+import org.cruxframework.crux.core.declarativeui.view.ViewProvider;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.utils.StreamUtils;
@@ -48,30 +49,46 @@ import org.xml.sax.SAXException;
  */
 public class ViewProcessor
 {
+	private static DocumentBuilder documentBuilder = null;
 	// Makes it easier to read the output files
 	private static boolean forceIndent = false;
-	private static String outputCharset;
 
-	private static final Log log = LogFactory.getLog(ViewProcessor.class);
-	private static DocumentBuilder documentBuilder = null;
-	private static List<CruxXmlPreProcessor> preProcessors;
 	private static final Lock lock = new ReentrantLock();
+	private static final Log log = LogFactory.getLog(ViewProcessor.class);
+	private static String outputCharset;
+	private List<CruxXmlPreProcessor> preProcessors;
 
+	public ViewProcessor(ViewProvider viewProvider)
+    {
+		init();
+		preProcessors = new ArrayList<CruxXmlPreProcessor>();
+		if (viewProvider != null)
+		{
+			preProcessors.add(new TemplatesPreProcessor(viewProvider.getTemplateProvider()));
+		}
+    }
+	
 	/**
-	 * 
-	 * @param file
-	 * @param device
+	 * Extract the widgets metadata from the view page.
+     *
+	 * @param viewId
+	 * @param viewSource
+	 * @param xhmltInput
 	 * @return
 	 */
-	public static Document getView(InputStream file, String filename, String device)
+	public JSONObject extractWidgetsMetadata(String viewId, Document viewSource, boolean xhmltInput)
 	{
-		if (file == null)
+		try
 		{
-			return null;
+			ViewParser viewParser = new ViewParser(viewId, true, mustIndent(), xhmltInput);
+			String metadata = viewParser.extractCruxMetaData(viewSource);
+			return new JSONObject(metadata);
 		}
-		
-		init();
-		return loadCruxPage(file, filename, device);
+		catch (Exception e)
+		{
+			log.error(e.getMessage(), e);
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
@@ -81,7 +98,7 @@ public class ViewProcessor
 	 * @param view
 	 * @param out
 	 */
-	public static void generateHTML(String viewId, Document view, OutputStream out)
+	public void generateHTML(String viewId, Document view, OutputStream out)
 	{
 		try
 		{
@@ -104,56 +121,92 @@ public class ViewProcessor
 	}
 
 	/**
-	 * Extract the widgets metadata from the view page.
-     *
-	 * @param viewId
-	 * @param viewSource
-	 * @param xhmltInput
 	 * @return
 	 */
-	public static JSONObject extractWidgetsMetadata(String viewId, Document viewSource, boolean xhmltInput)
-	{
-		try
-		{
-			ViewParser viewParser = new ViewParser(viewId, true, mustIndent(), xhmltInput);
-			String metadata = viewParser.extractCruxMetaData(viewSource);
-			return new JSONObject(metadata);
-		}
-		catch (Exception e)
-		{
-			log.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
-	}	
-	
-	/**
-	 * Makes it easier to read the output files
-	 * @param force
-	 */
-	public static void setForceIndent(boolean force)
-	{
-		forceIndent = force;
-	}
-
-	/**
-	 * @param outputCharset
-	 */
-	public static void setOutputCharset(String charset)
-	{
-		outputCharset = charset;
-		CruxBridge.getInstance().registerPageOutputCharset(charset);
-	}	
-
-	/**
-	 * @return
-	 */
-	public static String getOutputCharset()
+	public String getOutputCharset()
 	{
 		if (outputCharset == null)
 		{
 			outputCharset = CruxBridge.getInstance().getOutputCharset();
 		}
 		return outputCharset;
+	}	
+	
+	/**
+	 * 
+	 * @param file
+	 * @param device
+	 * @return
+	 */
+	public Document getView(InputStream file, String filename, String device)
+	{
+		if (file == null)
+		{
+			return null;
+		}
+		
+		return loadCruxPage(file, filename, device);
+	}
+
+	/**
+	 * Makes it easier to read the output files
+	 * @param force
+	 */
+	public void setForceIndent(boolean force)
+	{
+		forceIndent = force;
+	}	
+
+	/**
+	 * @param outputCharset
+	 */
+	public void setOutputCharset(String charset)
+	{
+		outputCharset = charset;
+		CruxBridge.getInstance().registerPageOutputCharset(charset);
+	}
+	
+	/**
+	 * Loads Crux view page
+	 * @param fileName
+	 * @return
+	 * @throws ViewParserException
+	 */
+	private Document loadCruxPage(InputStream file, String filename, String device)
+	{
+		try
+		{
+			Document document = documentBuilder.parse(file);
+			return preprocess(document, device);
+		}
+		catch (Exception e)
+		{
+			log.error("Error parsing file: ["+filename+"] for DeviceAdaptive interface ["+device+"]: " + e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	private boolean mustIndent()
+	{
+		return !Environment.isProduction() || forceIndent;
+	}
+
+	/**
+	 * 
+	 * @param doc
+	 * @return
+	 */
+	private Document preprocess(Document doc, String device)
+	{
+		for (CruxXmlPreProcessor preProcessor : preProcessors)
+		{
+			doc = preProcessor.preprocess(doc, device);
+		}
+		
+		return doc;
 	}
 	
 	/**
@@ -200,8 +253,6 @@ public class ViewProcessor
 							return sb.toString();
 						}
 					});
-					
-					initializePreProcessors();
 				}
 				catch (Throwable e)
 				{
@@ -213,57 +264,5 @@ public class ViewProcessor
 				}
 			}
 		}
-	}
-
-	/**
-	 * 
-	 */
-	private static void initializePreProcessors()
-	{
-		preProcessors = new ArrayList<CruxXmlPreProcessor>();
-		preProcessors.add(new TemplatesPreProcessor());
-	}
-
-	/**
-	 * @return
-	 */
-	private static boolean mustIndent()
-	{
-		return !Environment.isProduction() || forceIndent;
-	}
-
-	/**
-	 * Loads Crux view page
-	 * @param fileName
-	 * @return
-	 * @throws ViewParserException
-	 */
-	private static Document loadCruxPage(InputStream file, String filename, String device)
-	{
-		try
-		{
-			Document document = documentBuilder.parse(file);
-			return preprocess(document, device);
-		}
-		catch (Exception e)
-		{
-			log.error("Error parsing file: ["+filename+"] for DeviceAdaptive interface ["+device+"]: " + e.getMessage(), e);
-			throw new RuntimeException(e.getMessage(), e);
-		}
-	}
-	
-	/**
-	 * 
-	 * @param doc
-	 * @return
-	 */
-	private static Document preprocess(Document doc, String device)
-	{
-		for (CruxXmlPreProcessor preProcessor : preProcessors)
-		{
-			doc = preProcessor.preprocess(doc, device);
-		}
-		
-		return doc;
 	}
 }

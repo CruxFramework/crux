@@ -56,9 +56,6 @@ public interface Crux
 	@DefaultServerMessage("true")
 	String enableChildrenWindowsDebug();
 
-	@DefaultServerMessage("true")
-	String enableHotDeploymentForWebDirs();
-	
 	@DefaultServerMessage("false")
 	String enableRestHostPageBaseURL();
 
@@ -128,8 +125,4 @@ public interface Crux
 	//Add in documentation!
 	@DefaultServerMessage("false")
 	String useHTML5XSD();
-	
-	//Add in documentation!
-	@DefaultServerMessage("false")
-	String generateIndexInDevMode();
 }

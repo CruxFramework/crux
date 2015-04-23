@@ -26,8 +26,6 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.Screen;
 import org.cruxframework.crux.core.client.screen.ScreenFactory;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
-import org.cruxframework.crux.core.declarativeui.crossdevice.CrossDevices;
-import org.cruxframework.crux.core.declarativeui.crossdevice.CrossDevicesTemplateParser;
 import org.cruxframework.crux.core.rebind.AbstractWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.controller.ClientControllers;
@@ -96,15 +94,14 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	    Device[] devices = Devices.getDevicesForDevice(getDeviceFeatures());
 	    for (Device device : devices)
         {
-	    	template = CrossDevices.getDeviceAdaptiveTemplate(baseIntf.getQualifiedSourceName(), device, true);
-	    	if (template != null)
+	    	this.device = device;
+	    	templateParser = new CrossDevicesTemplateParser(context, baseIntf, device);
+	    	template = templateParser.getDeviceAdaptiveTemplate();
+	    	if (template == null)
 	    	{
-	    		this.device = device;
-	    		this.templateParser = CrossDevicesTemplateParser.getInstance();
-	    		return;
+	    		throw new CruxGeneratorException("DeviceAdaptive widget does not declare any valid template for device ["+getDeviceFeatures()+"].");
 	    	}
         }
-	    throw new CruxGeneratorException("DeviceAdaptive widget does not declare any valid template for device ["+getDeviceFeatures()+"].");
     }
 	
 	/**
