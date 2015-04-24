@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.rebind.provider;
+package org.cruxframework.crux.core.rebind.context.loader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.cruxframework.crux.core.declarativeui.template.TemplateException;
-import org.cruxframework.crux.core.declarativeui.template.TemplateProvider;
+import org.cruxframework.crux.core.declarativeui.template.TemplateLoader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -37,30 +37,40 @@ import com.google.gwt.core.ext.GeneratorContext;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class TemplateContextProvider implements TemplateProvider
+public class TemplateRebindLoader implements TemplateLoader
 {
 	private Map<String, Document> cache = new HashMap<String, Document>();
 	private GeneratorContext context;
 	private DocumentBuilder documentBuilder;
+	private boolean initialized = false;
 	
-	public TemplateContextProvider(GeneratorContext context)
+	public TemplateRebindLoader(GeneratorContext context)
 	{
 		this.context = context;
-		try
-		{
-			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-			documentBuilderFactory.setNamespaceAware(true);
-			this.documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		}
-		catch (ParserConfigurationException e)
-		{
-			throw new TemplateException("Error creating XML Parser.", e);
-		}
 	}
+
+	private void initialize()
+    {
+		if (!initialized)
+		{
+			try
+			{
+				DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+				documentBuilderFactory.setNamespaceAware(true);
+				this.documentBuilder = documentBuilderFactory.newDocumentBuilder();
+			}
+			catch (ParserConfigurationException e)
+			{
+				throw new TemplateException("Error creating XML Parser.", e);
+			}
+			initialized = true;
+		}
+    }
 
 	@Override
 	public Document getTemplate(String library, String id)
 	{
+		initialize();
 		String cacheKey = library + "_" + id;
 		if (cache.containsKey(cacheKey))
 		{

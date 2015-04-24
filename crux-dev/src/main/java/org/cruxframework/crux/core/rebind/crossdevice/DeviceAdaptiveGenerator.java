@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.crossdevice;
 
 import org.cruxframework.crux.core.rebind.AbstractGenerator;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -39,6 +40,6 @@ public class DeviceAdaptiveGenerator extends AbstractGenerator
 			logger.log(TreeLogger.ERROR, "["+baseIntf.getQualifiedSourceName()+"] is not an interface.", null); 
 			throw new UnableToCompleteException();
 		}
-	    return new DeviceAdaptiveProxyCreator(logger, ctx, baseIntf);
+	    return new DeviceAdaptiveProxyCreator(new RebindContext(ctx, logger), baseIntf);
     }
 }

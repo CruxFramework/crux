@@ -13,21 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.rebind.resources;
+package org.cruxframework.crux.core.rebind.context;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.scanner.ClassScanner;
+import org.cruxframework.crux.core.rebind.JClassScanner;
+
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.typeinfo.JClassType;
 
 
 /**
@@ -35,76 +35,61 @@ import org.cruxframework.crux.scanner.ClassScanner;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class Resources 
+public class ResourceScanner 
 {
-	private static final Log logger = LogFactory.getLog(Resources.class);
-	private static final Lock lock = new ReentrantLock();
-	private static Map<String, Map<String, String>> resourcesCanonicalNames;
-	private static Map<String, Map<String, String>> resourcesClassNames;
+	private static final Log logger = LogFactory.getLog(ResourceScanner.class);
+	private Map<String, Map<String, String>> resourcesCanonicalNames;
+	private Map<String, Map<String, String>> resourcesClassNames;
+	private JClassScanner jClassScanner;
+	private boolean initialized = false;
+	
+	public ResourceScanner(GeneratorContext context)
+    {
+		jClassScanner = new JClassScanner(context);
+    }
+	
 	
 	/**
 	 * 
 	 */
-	public static void initialize()
+	protected void initializeResources()
 	{
-		if (resourcesCanonicalNames != null)
+		if (!initialized)
 		{
-			return;
-		}
-		try
-		{
-			lock.lock();
-			if (resourcesCanonicalNames != null)
+			resourcesCanonicalNames = new HashMap<String, Map<String, String>>();
+			resourcesClassNames = new HashMap<String, Map<String, String>>();
+			JClassType[] resources =  jClassScanner.searchClassesByAnnotation(Resource.class);
+			if (resources != null)
 			{
-				return;
-			}
-			
-			initializeResources();
-		}
-		finally
-		{
-			lock.unlock();
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	protected static void initializeResources()
-	{
-		resourcesCanonicalNames = new HashMap<String, Map<String, String>>();
-		resourcesClassNames = new HashMap<String, Map<String, String>>();
-		Set<String> resourceNames =  ClassScanner.searchClassesByAnnotation(Resource.class);
-		if (resourceNames != null)
-		{
-			for (String resource : resourceNames) 
-			{
-				try 
+				for (JClassType resourceClass : resources) 
 				{
-					Class<?> resourceClass = Class.forName(resource);
-					Resource annot = resourceClass.getAnnotation(Resource.class);
-					if (annot != null)
+					try 
 					{
-						Device[] devices = annot.supportedDevices();
-						String resourceKey = annot.value();
-						if (devices == null || devices.length ==0)
+						Resource annot = resourceClass.getAnnotation(Resource.class);
+						if (annot != null)
 						{
-							addResource(resourceClass, resourceKey, Device.all);
+							Device[] devices = annot.supportedDevices();
+							String resourceKey = annot.value();
+							if (devices == null || devices.length ==0)
+							{
+								addResource(resourceClass, resourceKey, Device.all);
+							}
+							else
+							{
+								for (Device device : devices)
+								{
+									addResource(resourceClass, resourceKey, device);
+								}
+							}
 						}
-						else
-						{
-							for (Device device : devices)
-                            {
-								addResource(resourceClass, resourceKey, device);
-                            }
-						}
+					} 
+					catch (Exception e) 
+					{
+						logger.error("Error initializing resource.",e);
 					}
-				} 
-				catch (Throwable e) 
-				{
-					logger.error("Error initializing resource.",e);
 				}
 			}
+			initialized = true;
 		}
 	}
 
@@ -114,7 +99,7 @@ public class Resources
 	 * @param resourceKey
 	 * @param device
 	 */
-	private static void addResource(Class<?> resourceClass, String resourceKey, Device device)
+	private void addResource(JClassType resourceClass, String resourceKey, Device device)
     {
 	    if (!resourcesCanonicalNames.containsKey(resourceKey))
 	    {
@@ -129,7 +114,7 @@ public class Resources
 	    {
 	    	throw new CruxGeneratorException("Duplicated resource: ["+resourceKey+"].");
 	    }
-		canonicallCassNamesByDevice.put(deviceKey, resourceClass.getCanonicalName());
+		canonicallCassNamesByDevice.put(deviceKey, resourceClass.getQualifiedSourceName());
 		classNamesByDevice.put(deviceKey, resourceClass.getName());
     }
 
@@ -139,12 +124,9 @@ public class Resources
 	 * @param device
 	 * @return
 	 */
-	public static String getResource(String name, Device device)
+	public String getResource(String name, Device device)
 	{
-		if (resourcesCanonicalNames == null)
-		{
-			initialize();
-		}
+		initializeResources();
 		Map<String, String> map = resourcesCanonicalNames.get(name);
 		String result = map.get(device.toString());
 		if (result == null && !device.equals(Device.all))
@@ -159,12 +141,9 @@ public class Resources
 	 * @param name
 	 * @return
 	 */
-	public static boolean hasResource(String name)
+	public boolean hasResource(String name)
 	{
-		if (resourcesCanonicalNames == null)
-		{
-			initialize();
-		}
+		initializeResources();
 		return (name != null && resourcesCanonicalNames.containsKey(name));
 	}
 	
@@ -174,14 +153,11 @@ public class Resources
 	 * @param device
 	 * @return
 	 */
-	public static Class<?> getResourceClass(String name, Device device)
+	public Class<?> getResourceClass(String name, Device device)
 	{
 		try
         {
-			if (resourcesClassNames == null)
-			{
-				initialize();
-			}
+			initializeResources();
 			Map<String, String> map = resourcesClassNames.get(name);
 			String result = map.get(device.toString());
 			if (result == null && !device.equals(Device.all))
@@ -199,14 +175,9 @@ public class Resources
 	/**
 	 * @return
 	 */
-	public static Iterator<String> iterateResources()
+	public Iterator<String> iterateResources()
 	{
-		if (resourcesCanonicalNames == null)
-		{
-			initialize();
-		}
-		
+		initializeResources();
 		return resourcesCanonicalNames.keySet().iterator();
 	}
-
 }

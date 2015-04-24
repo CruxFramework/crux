@@ -26,15 +26,15 @@ import java.util.regex.Matcher;
 import org.cruxframework.crux.core.client.screen.binding.DataObjectBinder;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
+import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.converter.Converters;
 import org.cruxframework.crux.core.rebind.dto.DataObjects;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -46,13 +46,13 @@ import com.google.gwt.dev.util.collect.HashSet;
  */
 public class ViewBindHandler
 {
-	private GeneratorContext context;
+	private RebindContext context;
 	private Map<String, String> dataObjectBinderVariables = new HashMap<String, String>();
 	private Set<String> dataObjects = new HashSet<String>();
 	private View view;
 	private ViewFactoryCreator viewFactoryCreator;
 
-	public ViewBindHandler(GeneratorContext context, View view, ViewFactoryCreator viewFactoryCreator)
+	public ViewBindHandler(RebindContext context, View view, ViewFactoryCreator viewFactoryCreator)
     {
 		this.context = context;
 		this.view = view;
@@ -92,7 +92,7 @@ public class ViewBindHandler
 		{
 			return null;
 		}
-	    JClassType widgetType = context.getTypeOracle().findType(widgetClassName);
+	    JClassType widgetType = context.getGeneratorContext().getTypeOracle().findType(widgetClassName);
 		String trimPropertyValue = propertyValue.trim();
 		if (RegexpPatterns.REGEXP_CRUX_READ_ONLY_OBJECT_DATA_BINDING.matcher(trimPropertyValue).matches())
 		{
@@ -199,12 +199,12 @@ public class ViewBindHandler
  
 	    addDataObject(dataObject);
 	    
-	    JClassType dataObjectType = context.getTypeOracle().findType(dataObjectClassName);
+	    JClassType dataObjectType = context.getGeneratorContext().getTypeOracle().findType(dataObjectClassName);
 	    JClassType converterType = getConverterType(context, converter);
 	    
 	    String converterParams = null;
 	    if (bindParts.length > 3 && converterType != null && 
-	    		converterType.findConstructor(new JType[]{context.getTypeOracle().findType(String.class.getCanonicalName())}) != null)
+	    		converterType.findConstructor(new JType[]{context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName())}) != null)
 	    {
 	    	converterParams = bindParts[3];
 	    }
@@ -293,12 +293,12 @@ public class ViewBindHandler
  
 	    addDataObject(dataObject);
 	    
-	    JClassType widgetType = context.getTypeOracle().findType(widgetClassName);
-	    JClassType dataObjectType = context.getTypeOracle().findType(dataObjectClassName);
+	    JClassType widgetType = context.getGeneratorContext().getTypeOracle().findType(widgetClassName);
+	    JClassType dataObjectType = context.getGeneratorContext().getTypeOracle().findType(dataObjectClassName);
 	    JClassType converterType = getConverterType(context, converter);
 	    String converterParams = null;
 	    if (bindParts.length > 3 && converterType != null && 
-	    		converterType.findConstructor(new JType[]{context.getTypeOracle().findType(String.class.getCanonicalName())}) != null)
+	    		converterType.findConstructor(new JType[]{context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName())}) != null)
 	    {
 	    	converterParams = bindParts[3];
 	    }
@@ -381,13 +381,13 @@ public class ViewBindHandler
 	    return result.toString();
 	}
 
-	public static JClassType getConverterType(GeneratorContext context, String bindConverter)
+	public static JClassType getConverterType(RebindContext context, String bindConverter)
     {
 		JClassType converterType = null;
 	    if (!StringUtils.isEmpty(bindConverter))
 	    {
 	    	String converterClassName = Converters.getConverter(bindConverter);
-	    	converterType = context.getTypeOracle().findType(converterClassName);
+	    	converterType = context.getGeneratorContext().getTypeOracle().findType(converterClassName);
 	    }
 	    return converterType;
     }

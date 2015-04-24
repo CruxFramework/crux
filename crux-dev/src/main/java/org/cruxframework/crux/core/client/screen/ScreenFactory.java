@@ -17,17 +17,13 @@ package org.cruxframework.crux.core.client.screen;
 
 import java.util.logging.Logger;
 
-import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.controller.RegisteredControllers;
 import org.cruxframework.crux.core.client.datasource.DataSource;
 import org.cruxframework.crux.core.client.formatter.Formatter;
-import org.cruxframework.crux.core.client.formatter.RegisteredClientFormatters;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.screen.views.ViewContainer;
-
-import com.google.gwt.core.client.GWT;
 
 /**
  * Factory for CRUX screen. 
@@ -40,7 +36,6 @@ public class ScreenFactory
 
 	private static Logger logger = Logger.getLogger(ScreenFactory.class.getName());
 	 
-	private RegisteredClientFormatters registeredClientFormatters = null;
 	private Screen screen = null;
 	
 	/**
@@ -110,14 +105,8 @@ public class ScreenFactory
 	@Deprecated
 	public Formatter getClientFormatter(String formatter)
 	{
-		assert(Crux.getConfig().enableCrux2OldInterfacesCompatibility()):Crux.getMessages().screenFactoryCrux2OldInterfacesCompatibilityDisabled();
-		if (this.registeredClientFormatters == null)
-		{
-			this.registeredClientFormatters = (RegisteredClientFormatters) GWT.create(RegisteredClientFormatters.class);
-		}
-
-		return this.registeredClientFormatters.getClientFormatter(formatter);
-	}//TODO mover os formatters pra dentro da view, assim como controllers e datasource ja estao.
+		return screen.getRegisteredFormatters().getClientFormatter(formatter);
+	}
 	
 	/**
 	 * Create a new DataSource instance

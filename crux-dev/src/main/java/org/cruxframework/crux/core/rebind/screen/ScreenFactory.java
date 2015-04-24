@@ -22,7 +22,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
-import org.cruxframework.crux.core.declarativeui.screen.ScreenProvider;
+import org.cruxframework.crux.core.declarativeui.screen.ScreenLoader;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.StreamUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -38,18 +39,18 @@ import org.w3c.dom.NodeList;
 public class ScreenFactory 
 {
 	private Map<String, Screen> screenCache = new HashMap<String, Screen>();
-	private ScreenProvider screenProvider;
+	private ScreenLoader screenLoader;
 	private ViewFactory viewFactory;
 	private ViewProcessor viewProcessor;
 
 	/**
 	 * Singleton Constructor
 	 */
-	public ScreenFactory(ScreenProvider screenProvider) 
+	public ScreenFactory(RebindContext context) 
 	{
-		this.screenProvider = screenProvider;
-		this.viewProcessor = new ViewProcessor(screenProvider.getViewProvider());
-		this.viewFactory = new ViewFactory(screenProvider.getViewProvider());
+		this.screenLoader = context.getScreenLoader();
+		this.viewProcessor = new ViewProcessor(screenLoader.getViewLoader());
+		this.viewFactory = new ViewFactory(context);
 	}
 	
 	/**
@@ -71,7 +72,7 @@ public class ScreenFactory
 				return screen;
 			}
 
-			InputStream inputStream = screenProvider.getScreen(id);
+			InputStream inputStream = screenLoader.getScreen(id);
 			Document screenView = viewProcessor.getView(inputStream, id, device);
 			StreamUtils.safeCloseStream(inputStream);
 			if (screenView == null)
@@ -94,7 +95,7 @@ public class ScreenFactory
 	
 	public Set<String> getScreens(String module)
     {
-	    return screenProvider.getScreens(module);
+	    return screenLoader.getScreens(module);
     }
 
 	/**

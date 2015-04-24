@@ -18,14 +18,14 @@ package org.cruxframework.crux.core.declarativeui.view;
 import java.io.InputStream;
 import java.util.List;
 
-import org.cruxframework.crux.core.declarativeui.template.TemplateProvider;
+import org.cruxframework.crux.core.declarativeui.template.TemplateLoader;
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface ViewProvider
+public interface ViewLoader
 {
-	TemplateProvider getTemplateProvider();
+	TemplateLoader getTemplateLoader();
 	
 	InputStream getView(String id) throws ViewException;
 	
@@ -39,10 +39,10 @@ public interface ViewProvider
 	
 	boolean isValidViewLocator(String useView);
 
-	class SimpleViewProvider implements ViewProvider
+	class SimpleViewLoader implements ViewLoader
 	{
 		@Override
-        public TemplateProvider getTemplateProvider()
+        public TemplateLoader getTemplateLoader()
         {
 	        return null;
         }

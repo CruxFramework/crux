@@ -21,10 +21,9 @@ import java.util.HashSet;
 import org.cruxframework.crux.core.client.collection.Array;
 import org.cruxframework.crux.core.client.db.WSQLAbstractObjectStore.EncodeCallback;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -35,10 +34,10 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
  */
 public class SQLKeyCursorProxyCreator extends SQLCursorProxyCreator
 {
-	public SQLKeyCursorProxyCreator(GeneratorContext context, TreeLogger logger, JClassType targetObjectType, 
+	public SQLKeyCursorProxyCreator(RebindContext context, JClassType targetObjectType, 
 								String objectStoreName, boolean autoIncrement, String[] keyPath, String[] objectStoreKeyPath, String indexName)
 	{
-		super(context, logger, targetObjectType, objectStoreName, autoIncrement, new HashSet<String>(), keyPath, objectStoreKeyPath, indexName);
+		super(context, targetObjectType, objectStoreName, autoIncrement, new HashSet<String>(), keyPath, objectStoreKeyPath, indexName);
 	}
 
 	@Override
@@ -107,7 +106,7 @@ public class SQLKeyCursorProxyCreator extends SQLCursorProxyCreator
 	protected SourcePrinter getSourcePrinter()
 	{
 		String packageName = cursorType.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -123,7 +122,7 @@ public class SQLKeyCursorProxyCreator extends SQLCursorProxyCreator
 		}
 		composerFactory.setSuperclass("WSQLCursor<"+getKeyTypeName()+","+getKeyTypeName(objectStoreKeyPath)+","+getKeyTypeName(objectStoreKeyPath)+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	protected String[] getImports()

@@ -30,6 +30,7 @@ import org.cruxframework.crux.core.client.rest.RestProxy.TargetRestService;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.server.rest.core.registry.RestServiceFactoryInitializer;
 import org.cruxframework.crux.core.server.rest.util.HttpMethodHelper;
 import org.cruxframework.crux.core.server.rest.util.InvalidRestMethod;
@@ -41,8 +42,6 @@ import org.cruxframework.crux.core.utils.EncryptUtils;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JEnumConstant;
 import com.google.gwt.core.ext.typeinfo.JEnumType;
@@ -60,9 +59,9 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 {
 	private Class<?> restImplementationClass;
 
-	public CruxRestProxyCreatorFromServerMetadata(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public CruxRestProxyCreatorFromServerMetadata(RebindContext context, JClassType baseIntf)
 	{
-		super(logger, context, baseIntf);
+		super(context, baseIntf);
 	}
 
 	@Override
@@ -93,13 +92,13 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
     }
 	
 	@Override
-	protected String getServiceBasePath(GeneratorContext context)
+	protected String getServiceBasePath(RebindContext context)
     {
 		restImplementationClass = getRestImplementationClass(baseIntf);
 	    String basePath;
 		try
 		{
-			basePath = context.getPropertyOracle().getConfigurationProperty("crux.rest.base.path").getValues().get(0);
+			basePath = context.getGeneratorContext().getPropertyOracle().getConfigurationProperty("crux.rest.base.path").getValues().get(0);
 			if (basePath.endsWith("/"))
 			{
 				basePath = basePath.substring(0, basePath.length()-1);
@@ -166,7 +165,7 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 				boolean first = true;
 				for (Class<?> restException : restExceptionTypes)
 				{
-					JClassType exceptionType = context.getTypeOracle().findType(restException.getCanonicalName());
+					JClassType exceptionType = context.getGeneratorContext().getTypeOracle().findType(restException.getCanonicalName());
 					if (exceptionType == null)
 					{
 						throw new CruxGeneratorException("Exception type ["+restException.getCanonicalName()+"] can not be used on client code. Add this exeption to a GWT client package.");
@@ -177,7 +176,7 @@ public class CruxRestProxyCreatorFromServerMetadata extends CruxRestProxyCreator
 					}
 					first = false;
 					srcWriter.println("if (StringUtils.unsafeEquals(hash,"+EscapeUtils.quote(EncryptUtils.hash(exceptionType.getParameterizedQualifiedSourceName()))+")){");
-					String serializerName = new JSonSerializerProxyCreator(context, logger, exceptionType).create();
+					String serializerName = new JSonSerializerProxyCreator(context, exceptionType).create();
 					srcWriter.println("Exception ex = new "+serializerName+"().decode(jsonObject.get(\"exData\"));");
 					srcWriter.println(callbackParameterName+".onError(ex);");
 					srcWriter.println("}");

@@ -22,9 +22,8 @@ import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.screen.views.ViewAware;
 import org.cruxframework.crux.core.client.screen.views.ViewBindable;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 
@@ -37,16 +36,16 @@ public abstract class AbstractViewBindableProxyCreator extends AbstractWrapperPr
 	private JClassType viewBindableType;
 	private JClassType viewAwareType;
 
-	public AbstractViewBindableProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public AbstractViewBindableProxyCreator(RebindContext context, JClassType baseIntf)
     {
-	    this(logger, context, baseIntf, true);
+	    this(context, baseIntf, true);
     }
 
-	public AbstractViewBindableProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf, boolean cacheable)
+	public AbstractViewBindableProxyCreator(RebindContext context, JClassType baseIntf, boolean cacheable)
     {
-	    super(logger, context, baseIntf, cacheable);
-	    viewBindableType = context.getTypeOracle().findType(ViewBindable.class.getCanonicalName());
-	    viewAwareType = context.getTypeOracle().findType(ViewAware.class.getCanonicalName());
+	    super(context, baseIntf, cacheable);
+	    viewBindableType = context.getGeneratorContext().getTypeOracle().findType(ViewBindable.class.getCanonicalName());
+	    viewAwareType = context.getGeneratorContext().getTypeOracle().findType(ViewAware.class.getCanonicalName());
     }
 
 	@Override

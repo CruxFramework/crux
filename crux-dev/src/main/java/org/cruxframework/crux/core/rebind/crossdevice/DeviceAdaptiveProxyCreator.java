@@ -28,7 +28,9 @@ import org.cruxframework.crux.core.client.screen.ScreenFactory;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.controller.ClientControllers;
+import org.cruxframework.crux.core.rebind.context.ControllerScanner;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.ResourceScanner;
 import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
 import org.cruxframework.crux.core.rebind.screen.View;
@@ -36,8 +38,6 @@ import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator;
 import org.w3c.dom.Document;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
@@ -72,20 +72,20 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	 * @param context
 	 * @param baseIntf
 	 */
-	public DeviceAdaptiveProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public DeviceAdaptiveProxyCreator(RebindContext context, JClassType baseIntf)
     {
-	    super(logger, context, baseIntf, false);
+	    super(context, baseIntf, true);//TODO verificar esse cache
 
-	    deviceAdaptiveControllerClass = context.getTypeOracle().findType(DeviceAdaptiveController.class.getCanonicalName());
-	    deviceAdaptiveClass = context.getTypeOracle().findType(DeviceAdaptive.class.getCanonicalName());
-	    hasHandlersClass = context.getTypeOracle().findType(HasHandlers.class.getCanonicalName());
+	    deviceAdaptiveControllerClass = context.getGeneratorContext().getTypeOracle().findType(DeviceAdaptiveController.class.getCanonicalName());
+	    deviceAdaptiveClass = context.getGeneratorContext().getTypeOracle().findType(DeviceAdaptive.class.getCanonicalName());
+	    hasHandlersClass = context.getGeneratorContext().getTypeOracle().findType(HasHandlers.class.getCanonicalName());
 	    
 	    initializeTemplateParser();
 		view = templateParser.getTemplateView(template,  baseIntf.getQualifiedSourceName(), device);
 		initializeController(view);
-		viewFactoryCreator = new DeviceAdaptiveViewFactoryCreator(context, logger, view, getDeviceFeatures(), controllerName, getModule());
+		viewFactoryCreator = new DeviceAdaptiveViewFactoryCreator(context, view, getDeviceFeatures(), controllerName);
 		viewClassName = viewFactoryCreator.create();
-		iocContainerRebind = new IocContainerRebind(logger, context, view, device.toString());
+		iocContainerRebind = new IocContainerRebind(context, view, device.toString());
     }
 
 	@Override
@@ -107,7 +107,7 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	 */
 	protected void createController(SourcePrinter srcWriter, String viewVariable)
 	{
-		String genClass = new ControllerProxyCreator(logger, context, controllerClass).create();
+		String genClass = new ControllerProxyCreator(context, controllerClass).create();
 		srcWriter.println("this._controller = new "+genClass+"("+viewVariable+");");
 		srcWriter.println("(("+DeviceAdaptiveController.class.getCanonicalName()+")this._controller).setBoundWidget(this);");
 		iocContainerRebind.injectFieldsAndMethods(srcWriter, controllerClass, "this._controller", viewVariable+".getTypedIocContainer()", view, device);
@@ -193,7 +193,7 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	protected SourcePrinter getSourcePrinter()
 	{
 		String packageName = DeviceAdaptiveController.class.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -211,7 +211,7 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
 		composerFactory.setSuperclass(Composite.class.getCanonicalName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 
 	/**
@@ -221,13 +221,13 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	protected void initializeController(View view)
 	{
 		controllerName = templateParser.getTemplateController(view, baseIntf.getQualifiedSourceName(), device);
-		String controllerClassName = ClientControllers.getController(controllerName, device);
+		String controllerClassName = context.getControllers().getController(controllerName, device);
 		if (controllerClassName == null)
 		{
 			throw new CruxGeneratorException("Error generating invoker. Controller ["+controllerName+"] not found.");
 		}
 		
-		controllerClass = context.getTypeOracle().findType(controllerClassName);
+		controllerClass = context.getGeneratorContext().getTypeOracle().findType(controllerClassName);
 		if (controllerClass == null)
 		{
     		String message = "Controller class ["+controllerName+"] , declared on view ["+view.getId()+"], could not be loaded. "

@@ -33,13 +33,11 @@ import org.cruxframework.crux.core.client.ioc.IoCResource;
 import org.cruxframework.crux.core.client.ioc.IoCResource.NoClass;
 import org.cruxframework.crux.core.client.ioc.IoCResource.NoProvider;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
-import org.cruxframework.crux.core.rebind.JClassScanner;
-import org.cruxframework.crux.core.rebind.controller.ClientControllers;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.datasource.DataSources;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.utils.ClassUtils;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 
 /**
@@ -49,12 +47,12 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 public class IocContainerManager
 {
 	private static final Log logger = LogFactory.getLog(IocContainerManager.class);
-	private JClassScanner jClassScanner; 
+	private RebindContext context;
 	
-	public IocContainerManager(GeneratorContext context)
+	public IocContainerManager(RebindContext context)
     {
-		jClassScanner = new JClassScanner(context);
-		initialize(context);
+		this.context = context;
+		initialize();
     }
 	
 	/**
@@ -106,7 +104,7 @@ public class IocContainerManager
 		Iterator<String> controllers = view.iterateControllers();
 		while (controllers.hasNext())
 		{
-			Class<?> controllerClass = ClientControllers.getControllerClass(controllers.next(), device);
+			Class<?> controllerClass = context.getControllers().getControllerClass(controllers.next(), device);
 			bindImplicityInjectcions(controllerClass, new HashSet<String>(), new HashSet<String>(), true, viewConfigurations);
 		}
 	}
@@ -221,7 +219,7 @@ public class IocContainerManager
     private void configureAnnotatedClasses() throws ClassNotFoundException
     {
 		Map<String, IocConfig<?>> globalConfigurations = IocContainerConfigurations.getConfigurations();
-		JClassType[] configurations =  jClassScanner.searchClassesByAnnotation(IoCResource.class);
+		JClassType[] configurations =  context.getClassScanner().searchClassesByAnnotation(IoCResource.class);
 		if (configurations != null)
 		{
 			for (JClassType resourceClassType : configurations)
@@ -248,11 +246,11 @@ public class IocContainerManager
 		}
     }
 
-	private void initialize(GeneratorContext context)
+	private void initialize()
 	{
 		try
 		{
-			JClassType[] configurations =  jClassScanner.searchClassesByInterface(IocConfiguration.class.getCanonicalName());
+			JClassType[] configurations =  context.getClassScanner().searchClassesByInterface(IocConfiguration.class.getCanonicalName());
 			if (configurations != null)
 			{
 				for (JClassType configurationClassType : configurations)

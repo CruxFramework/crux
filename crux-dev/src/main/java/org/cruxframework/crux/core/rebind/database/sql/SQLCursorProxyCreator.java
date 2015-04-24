@@ -28,12 +28,11 @@ import org.cruxframework.crux.core.client.db.WSQLTransaction;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.JsUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.json.client.JSONObject;
@@ -51,16 +50,16 @@ public class SQLCursorProxyCreator extends SQLAbstractKeyValueProxyCreator
 	protected final Set<String> objectStoreIndexColumns;
 	protected final boolean autoIncrement;
 
-	public SQLCursorProxyCreator(GeneratorContext context, TreeLogger logger, JClassType targetObjectType, String objectStoreName,
+	public SQLCursorProxyCreator(RebindContext context, JClassType targetObjectType, String objectStoreName,
 								boolean autoIncrement, Set<String> objectStoreIndexColumns, String[] keyPath, String[] objectStoreKeyPath, 
 								String cursorName)
 	{
-		super(context, logger, targetObjectType, objectStoreName, keyPath);
+		super(context, targetObjectType, objectStoreName, keyPath);
 		this.autoIncrement = autoIncrement;
 		this.objectStoreIndexColumns = objectStoreIndexColumns;
 		this.objectStoreKeyPath = objectStoreKeyPath;
 		this.cursorName = cursorName;
-		this.cursorType = context.getTypeOracle().findType(WSQLCursor.class.getCanonicalName());
+		this.cursorType = context.getGeneratorContext().getTypeOracle().findType(WSQLCursor.class.getCanonicalName());
 	}
 
 	@Override
@@ -231,7 +230,7 @@ public class SQLCursorProxyCreator extends SQLAbstractKeyValueProxyCreator
 	protected SourcePrinter getSourcePrinter()
 	{
 		String packageName = cursorType.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -247,7 +246,7 @@ public class SQLCursorProxyCreator extends SQLAbstractKeyValueProxyCreator
 		}
 		composerFactory.setSuperclass("WSQLCursor<"+getKeyTypeName()+","+getKeyTypeName(objectStoreKeyPath)+","+getTargetObjectClassName()+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	protected String[] getImports()

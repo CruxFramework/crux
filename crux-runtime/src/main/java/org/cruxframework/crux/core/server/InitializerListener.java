@@ -46,7 +46,7 @@ public class InitializerListener implements ServletContextListener
 	public static ServletContext getContext()
 	{
 		return context;
-	}
+	}//TODO remover isso tbm
 	
 	/**
 	 * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
@@ -63,24 +63,6 @@ public class InitializerListener implements ServletContextListener
 		try
 		{
 			context = contextEvent.getServletContext();
-			if (Environment.isProduction())
-			{
-				CruxBridge.getInstance().setSingleVM(true);
-				Scanners.registerScanners(new ScannerRegistrations()
-				{
-					@Override
-					public boolean initializeEagerly()
-					{
-						return false;
-					}
-					
-					@Override
-					public void doRegistrations()
-					{
-						ClassScanner.initializeScanner();
-					}
-				});
-			}
 			ServiceFactoryInitializer.initialize(context);
 			RestServiceFactoryInitializer.initialize(context);
 			

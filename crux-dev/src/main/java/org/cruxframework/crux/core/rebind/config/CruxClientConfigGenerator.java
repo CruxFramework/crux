@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.config;
 
 import org.cruxframework.crux.core.rebind.AbstractGenerator;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -31,6 +32,6 @@ public class CruxClientConfigGenerator extends AbstractGenerator
 	@Override
     protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf)
     {
-	    return new CruxClientConfigProxyCreator(logger, ctx);
+	    return new CruxClientConfigProxyCreator(new RebindContext(ctx, logger));
     }
 }

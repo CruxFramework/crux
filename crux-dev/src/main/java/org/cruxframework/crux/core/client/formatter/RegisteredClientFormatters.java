@@ -15,10 +15,14 @@
  */
 package org.cruxframework.crux.core.client.formatter;
 
+import org.cruxframework.crux.core.client.Legacy;
+
 /**
  * 
  * @author Thiago Bustamante
  */
+@Deprecated
+@Legacy
 public interface RegisteredClientFormatters 
 {
 	Formatter getClientFormatter(String id);

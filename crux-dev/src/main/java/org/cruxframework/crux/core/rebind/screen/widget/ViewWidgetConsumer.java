@@ -25,12 +25,12 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.dto.DataObjects;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.LazyCompatibleWidgetConsumer;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.json.JSONObject;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.user.client.ui.HasText;
@@ -58,8 +58,8 @@ public class ViewWidgetConsumer extends DataWidgetConsumer implements LazyCompat
 		{
 			Class<?> widgetClass = viewFactoryCreator.getWidgetCreatorHelper(widgetType).getWidgetType();
 			String dataObjectClassName = DataObjects.getDataObject(viewFactoryCreator.view.getDataObject());
-			JClassType dataObjectType = viewFactoryCreator.getContext().getTypeOracle().findType(dataObjectClassName);
-			JClassType widgetClassType = viewFactoryCreator.getContext().getTypeOracle().findType(widgetClass.getCanonicalName());
+			JClassType dataObjectType = viewFactoryCreator.getContext().getGeneratorContext().getTypeOracle().findType(dataObjectClassName);
+			JClassType widgetClassType = viewFactoryCreator.getContext().getGeneratorContext().getTypeOracle().findType(widgetClass.getCanonicalName());
 			
 			try
 			{
@@ -79,7 +79,7 @@ public class ViewWidgetConsumer extends DataWidgetConsumer implements LazyCompat
 			    	}
 			    	String propertyClassName = JClassUtils.getGenericDeclForType(propertyType);
 			    	validateConverter(converterType, viewFactoryCreator.getContext(), widgetClassType, 
-			    			viewFactoryCreator.getContext().getTypeOracle().findType(propertyClassName));
+			    			viewFactoryCreator.getContext().getGeneratorContext().getTypeOracle().findType(propertyClassName));
 		    		
 		    		converterVariable = "__converter";
 		    		out.println(converterType.getParameterizedQualifiedSourceName()+" "+converterVariable+" = new "+converterType.getParameterizedQualifiedSourceName()+"();");
@@ -123,12 +123,12 @@ public class ViewWidgetConsumer extends DataWidgetConsumer implements LazyCompat
 				EscapeUtils.quote(ViewFactoryUtils.getLazyPanelId(widgetId, LazyPanelWrappingType.wrapChildren)) +");");
 	}
 	
-	public static void validateConverter(JClassType converterType, GeneratorContext context, JClassType widgetClass, JClassType propertyType)
+	public static void validateConverter(JClassType converterType, RebindContext context, JClassType widgetClass, JClassType propertyType)
 	{
-		JClassType hasValueType = context.getTypeOracle().findType(HasValue.class.getCanonicalName());
-		JClassType hasTextType = context.getTypeOracle().findType(HasText.class.getCanonicalName());
-		JClassType typeConverterType = context.getTypeOracle().findType(TypeConverter.class.getCanonicalName());
-		JClassType stringType = context.getTypeOracle().findType(String.class.getCanonicalName());
+		JClassType hasValueType = context.getGeneratorContext().getTypeOracle().findType(HasValue.class.getCanonicalName());
+		JClassType hasTextType = context.getGeneratorContext().getTypeOracle().findType(HasText.class.getCanonicalName());
+		JClassType typeConverterType = context.getGeneratorContext().getTypeOracle().findType(TypeConverter.class.getCanonicalName());
+		JClassType stringType = context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName());
 
 		JClassType[] types = JClassUtils.getActualParameterTypes(converterType, typeConverterType);
 		JClassType widgetType = null;

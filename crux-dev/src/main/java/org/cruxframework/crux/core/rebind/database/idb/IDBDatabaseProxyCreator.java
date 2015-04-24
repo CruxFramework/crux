@@ -33,11 +33,10 @@ import org.cruxframework.crux.core.client.db.indexeddb.IDBOpenDBRequest;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.database.AbstractDatabaseProxyCreator;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -50,9 +49,9 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
  */
 public class IDBDatabaseProxyCreator extends AbstractDatabaseProxyCreator
 {
-	public IDBDatabaseProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public IDBDatabaseProxyCreator(RebindContext context, JClassType baseIntf)
 	{
-		super(logger, context, baseIntf);
+		super(context, baseIntf);
 	}
 
 	@Override
@@ -91,7 +90,7 @@ public class IDBDatabaseProxyCreator extends AbstractDatabaseProxyCreator
 			Set<IndexData> indexes = getIndexes(objectStoreMetadata.indexes(), objectStoreTarget, objectStoreName);
 			srcWriter.println("if (StringUtils.unsafeEquals(storeName, "+EscapeUtils.quote(objectStoreName)+")){");
 			String[] keyPath = getKeyPath(objectStoreMetadata, objectStoreTarget);
-			String objectStore = new IDBObjectStoreProxyCreator(context, logger, objectStoreTarget, objectStoreName, keyPath, indexes).create();
+			String objectStore = new IDBObjectStoreProxyCreator(context, objectStoreTarget, objectStoreName, keyPath, indexes).create();
 			srcWriter.println("return (ObjectStore<K, V>) new "+objectStore+"(this, idbObjectStore);");
 			srcWriter.println("}");
         }
@@ -261,7 +260,7 @@ public class IDBDatabaseProxyCreator extends AbstractDatabaseProxyCreator
 	{
 		JPackage pkg = baseIntf.getPackage();
 		String packageName = pkg == null ? "" : pkg.getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -278,6 +277,6 @@ public class IDBDatabaseProxyCreator extends AbstractDatabaseProxyCreator
 		composerFactory.setSuperclass(IDXAbstractDatabase.class.getCanonicalName());
 		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 }

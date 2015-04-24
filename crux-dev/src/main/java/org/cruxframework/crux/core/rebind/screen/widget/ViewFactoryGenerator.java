@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.screen.widget;
 
 import org.cruxframework.crux.core.rebind.AbstractGenerator;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -33,6 +34,6 @@ public class ViewFactoryGenerator extends AbstractGenerator
 	@Override
     protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf)
     {
-	    return new ViewFactoriesProxyCreator(logger, ctx);
+	    return new ViewFactoriesProxyCreator(new RebindContext(ctx, logger));
     }
 }

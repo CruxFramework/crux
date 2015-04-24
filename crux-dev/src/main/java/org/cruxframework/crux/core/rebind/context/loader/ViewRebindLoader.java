@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.rebind.provider;
+package org.cruxframework.crux.core.rebind.context.loader;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.cruxframework.crux.core.declarativeui.template.TemplateProvider;
+import org.cruxframework.crux.core.declarativeui.template.TemplateLoader;
 import org.cruxframework.crux.core.declarativeui.view.ViewException;
-import org.cruxframework.crux.core.declarativeui.view.ViewProvider;
+import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 
 import com.google.gwt.core.ext.GeneratorContext;
 
@@ -32,28 +32,29 @@ import com.google.gwt.core.ext.GeneratorContext;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ViewContextProvider implements ViewProvider
+public class ViewRebindLoader implements ViewLoader
 {
 	private GeneratorContext context;
-	private TemplateContextProvider templateContextProvider;
+	private boolean initialized = false;
+	private TemplateRebindLoader templateContextLoader;
 	private Map<String, String> views = new HashMap<String, String>();
 	
-	public ViewContextProvider(GeneratorContext context)
+	public ViewRebindLoader(GeneratorContext context)
     {
 		this.context = context;
-		templateContextProvider = new TemplateContextProvider(context);
-		buildViewsMap();
+		templateContextLoader = new TemplateRebindLoader(context);
     }	
 	
 	@Override
-    public TemplateProvider getTemplateProvider()
+    public TemplateLoader getTemplateLoader()
     {
-		return templateContextProvider;
+		return templateContextLoader;
     }
 	
 	@Override
     public InputStream getView(String id) throws ViewException
     {
+		initialize();
 		if (views.containsKey(id))
 		{
 			return context.getResourcesOracle().getResourceAsStream(views.get(id));
@@ -64,6 +65,7 @@ public class ViewContextProvider implements ViewProvider
 	@Override
     public List<String> getViews(String viewsLocator, String moduleId)
     {
+		initialize();
 		List<String> result = new ArrayList<String>();
 		if (viewsLocator.equals("*"))
 		{
@@ -84,32 +86,9 @@ public class ViewContextProvider implements ViewProvider
 	@Override
     public boolean isValidViewLocator(String viewsLocator)
     {
+		initialize();
 	    return !isViewName(viewsLocator) || !views.containsKey(viewsLocator);
     }
-
-	private void buildViewsMap()
-	{
-		Set<String> pathNames = context.getResourcesOracle().getPathNames();
-
-		for (String pathName : pathNames)
-		{
-			int index = pathName.lastIndexOf('/');
-			String fileName;
-			if (index > 0)
-			{
-				fileName = pathName.substring(index+1);
-			}
-			else
-			{
-				fileName = pathName;
-			}
-
-			if (fileName.endsWith(".view.xml"))
-			{
-				views.put(fileName.substring(0, fileName.length()-9), pathName);
-			}
-		}
-	}
 
 	private void extractModuleViews(String viewsLocator, List<String> result)
     {
@@ -125,6 +104,34 @@ public class ViewContextProvider implements ViewProvider
 	        }
         }
     }
+
+	private void initialize()
+	{
+		if (!initialized)
+		{
+			Set<String> pathNames = context.getResourcesOracle().getPathNames();
+			
+			for (String pathName : pathNames)
+			{
+				int index = pathName.lastIndexOf('/');
+				String fileName;
+				if (index > 0)
+				{
+					fileName = pathName.substring(index+1);
+				}
+				else
+				{
+					fileName = pathName;
+				}
+				
+				if (fileName.endsWith(".view.xml"))
+				{
+					views.put(fileName.substring(0, fileName.length()-9), pathName);
+				}
+			}
+			initialized = true;
+		}
+	}
 	
 	private boolean isModuleLocator(String viewsLocator)
 	{

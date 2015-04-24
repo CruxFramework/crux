@@ -31,7 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.declarativeui.template.TemplatesPreProcessor;
-import org.cruxframework.crux.core.declarativeui.view.ViewProvider;
+import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 import org.cruxframework.crux.core.server.CruxBridge;
 import org.cruxframework.crux.core.server.Environment;
 import org.cruxframework.crux.core.utils.StreamUtils;
@@ -58,13 +58,13 @@ public class ViewProcessor
 	private static String outputCharset = "UTF-8";
 	private List<CruxXmlPreProcessor> preProcessors;
 
-	public ViewProcessor(ViewProvider viewProvider)
+	public ViewProcessor(ViewLoader viewProvider)
     {
 		init();
 		preProcessors = new ArrayList<CruxXmlPreProcessor>();
 		if (viewProvider != null)
 		{
-			preProcessors.add(new TemplatesPreProcessor(viewProvider.getTemplateProvider()));
+			preProcessors.add(new TemplatesPreProcessor(viewProvider.getTemplateLoader()));
 		}
     }
 	

@@ -21,7 +21,6 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.controller.ClientControllers;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.EventFactory;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
@@ -108,7 +107,7 @@ public class CellTableFactory extends AbstractHasDataFactory<CellTableContext>
 	{
 	    super.processAttributes(out, context);
 	    context.rowDataObject = getDataObject(context.getChildElement());
-	    context.rowDataObjectType = getContext().getTypeOracle().findType(context.rowDataObject);
+	    context.rowDataObjectType = getContext().getGeneratorContext().getTypeOracle().findType(context.rowDataObject);
 	    
 	    String dataProviderFactoryMethod = context.readChildProperty("dataProviderFactoryMethod");
 		if (!StringUtils.isEmpty(dataProviderFactoryMethod))
@@ -126,8 +125,8 @@ public class CellTableFactory extends AbstractHasDataFactory<CellTableContext>
 	    out.println(context.dataProvider+".addDataDisplay("+context.getWidget()+");");
 
     	Event event = EventFactory.getEvent("loadDataProvider", dataProviderFactoryMethod);
-    	String controller = ClientControllers.getController(event.getController(), getDevice());
-    	JClassType controllerClass = getContext().getTypeOracle().findType(controller);
+    	String controller = getContext().getControllers().getController(event.getController(), getDevice());
+    	JClassType controllerClass = getContext().getGeneratorContext().getTypeOracle().findType(controller);
 	    JMethod loadDataProviderMethod = JClassUtils.getMethod(controllerClass, event.getMethod(), new JType[]{});
 	    if (loadDataProviderMethod == null)
 	    {
@@ -137,7 +136,7 @@ public class CellTableFactory extends AbstractHasDataFactory<CellTableContext>
 	    if (returnType instanceof JClassType)
 	    {
 	    	context.asyncDataProvider = 
-	    		((JClassType)returnType).isAssignableTo(getContext().getTypeOracle().findType(AsyncDataProvider.class.getCanonicalName()));
+	    		((JClassType)returnType).isAssignableTo(getContext().getGeneratorContext().getTypeOracle().findType(AsyncDataProvider.class.getCanonicalName()));
 	    }
 	    else
 	    {
@@ -297,7 +296,7 @@ public class CellTableFactory extends AbstractHasDataFactory<CellTableContext>
 				String property = context.readChildProperty("property");
 				try
 				{
-					if (colType != null && colType.isAssignableTo(getWidgetCreator().getContext().getTypeOracle().findType(Comparable.class.getCanonicalName())))
+					if (colType != null && colType.isAssignableTo(getWidgetCreator().getContext().getGeneratorContext().getTypeOracle().findType(Comparable.class.getCanonicalName())))
 					{
 						StringBuilder getValueExpression = new StringBuilder();			
 						JClassUtils.buildGetValueExpression(getValueExpression, context.rowDataObjectType, property, "o1", true);

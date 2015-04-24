@@ -40,6 +40,7 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.server.rest.util.Encode;
 import org.cruxframework.crux.core.server.rest.util.HttpHeaderNames;
 import org.cruxframework.crux.core.server.rest.util.InvalidRestMethod;
@@ -49,8 +50,6 @@ import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
@@ -96,29 +95,29 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 	private JClassType viewBindableType;
 	private JClassType viewAwareType;
 
-	public CruxRestProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public CruxRestProxyCreator(RebindContext context, JClassType baseIntf)
 	{
-		super(logger, context, baseIntf, false);
-		callbackType = context.getTypeOracle().findType(Callback.class.getCanonicalName());
-		restProxyType = context.getTypeOracle().findType(RestProxy.class.getCanonicalName());
-		javascriptObjectType = context.getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
-		viewBindableType = context.getTypeOracle().findType(ViewBindable.class.getCanonicalName());
-		viewAwareType = context.getTypeOracle().findType(ViewAware.class.getCanonicalName());
+		super(context, baseIntf, false);
+		callbackType = context.getGeneratorContext().getTypeOracle().findType(Callback.class.getCanonicalName());
+		restProxyType = context.getGeneratorContext().getTypeOracle().findType(RestProxy.class.getCanonicalName());
+		javascriptObjectType = context.getGeneratorContext().getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
+		viewBindableType = context.getGeneratorContext().getTypeOracle().findType(ViewBindable.class.getCanonicalName());
+		viewAwareType = context.getGeneratorContext().getTypeOracle().findType(ViewAware.class.getCanonicalName());
 		UseJsonP jsonP = baseIntf.getAnnotation(UseJsonP.class);
 		useJsonP = jsonP != null;
 		if (useJsonP)
 		{
-			jsonPRestCreatorHelper = new JsonPRestCreatorHelper(context, logger);
+			jsonPRestCreatorHelper = new JsonPRestCreatorHelper(context);
 			jsonPCallbackParam = jsonP.callbackParam();
 			jsonPFailureCallbackParam = jsonP.failureCallbackParam();
 		}
 		queryParameterHandler = new QueryParameterHandler(context);
-		bodyParameterHandler = new BodyParameterHandler(logger, context);
+		bodyParameterHandler = new BodyParameterHandler(context);
 		serviceBasePath = getServiceBasePath(context);
 		initializeRestMethods();
 	}
 
-	protected abstract String getServiceBasePath(GeneratorContext context);
+	protected abstract String getServiceBasePath(RebindContext context);
 	protected abstract void generateHostPathInitialization(SourcePrinter srcWriter);
 	protected abstract RestMethodInfo getRestMethodInfo(JMethod method) throws InvalidRestMethod;
 
@@ -380,7 +379,7 @@ public abstract class CruxRestProxyCreator extends AbstractInterfaceWrapperProxy
 			else
 			{
 				srcWriter.println("JSONValue jsonValue = JSONParser.parseStrict(jsonText);");
-				String serializerName = new JSonSerializerProxyCreator(context, logger, callbackResultType).create();
+				String serializerName = new JSonSerializerProxyCreator(context, callbackResultType).create();
 				srcWriter.println(callbackResultTypeName+" "+resultVariable+" = new "+serializerName+"().decode(jsonValue);");
 			}
 			generateSaveStateBlock(srcWriter, methodInfo.isReadMethod, responseVariable, restURIParam, methodInfo.methodURI);

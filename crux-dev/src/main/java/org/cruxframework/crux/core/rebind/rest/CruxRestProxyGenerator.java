@@ -18,6 +18,7 @@ package org.cruxframework.crux.core.rebind.rest;
 import org.cruxframework.crux.core.client.rest.RestProxy.TargetRestService;
 import org.cruxframework.crux.core.rebind.AbstractGenerator;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -39,8 +40,8 @@ public class CruxRestProxyGenerator extends AbstractGenerator
 		TargetRestService restService = baseIntf.getAnnotation(TargetRestService.class);
 		if (restService != null)
 		{
-			return new CruxRestProxyCreatorFromServerMetadata(logger, ctx, baseIntf);
+			return new CruxRestProxyCreatorFromServerMetadata(new RebindContext(ctx, logger), baseIntf);
 		}
-		return new CruxRestProxyCreatorFromClientMetadata(logger, ctx, baseIntf);
+		return new CruxRestProxyCreatorFromClientMetadata(new RebindContext(ctx, logger), baseIntf);
     }
 }

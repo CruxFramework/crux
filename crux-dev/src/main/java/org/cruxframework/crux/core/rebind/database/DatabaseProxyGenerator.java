@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.database;
 
 import org.cruxframework.crux.core.rebind.AbstractGenerator;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -35,6 +36,6 @@ public class DatabaseProxyGenerator extends AbstractGenerator
 	@Override
     protected AbstractProxyCreator createProxy(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf) throws UnableToCompleteException
     {
-	    return new DatabaseProxyCreator(logger, ctx, baseIntf);
+	    return new DatabaseProxyCreator(new RebindContext(ctx, logger), baseIntf);
     }
 }

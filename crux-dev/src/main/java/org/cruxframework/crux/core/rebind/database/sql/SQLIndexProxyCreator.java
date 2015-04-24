@@ -27,9 +27,8 @@ import org.cruxframework.crux.core.client.db.WSQLIndex;
 import org.cruxframework.crux.core.client.db.WSQLTransaction;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -48,15 +47,15 @@ public class SQLIndexProxyCreator extends SQLAbstractKeyValueProxyCreator
 	private final boolean unique;
 	private final boolean autoIncrement;
 
-	public SQLIndexProxyCreator(GeneratorContext context, TreeLogger logger, JClassType targetObjectType, String objectStoreName, 
+	public SQLIndexProxyCreator(RebindContext context, JClassType targetObjectType, String objectStoreName, 
 			boolean autoIncrement, String[] keyPath, String indexName, String[] objectStoreKeyPath, Set<String> objectStoreIndexColumns, boolean unique)
 	{
-		super(context, logger, targetObjectType, objectStoreName, keyPath);
+		super(context, targetObjectType, objectStoreName, keyPath);
 		this.autoIncrement = autoIncrement;
 		this.objectStoreKeyPath = objectStoreKeyPath;
 		this.objectStoreIndexColumns = objectStoreIndexColumns;
 		this.unique = unique;
-		this.indexType = context.getTypeOracle().findType(WSQLIndex.class.getCanonicalName());
+		this.indexType = context.getGeneratorContext().getTypeOracle().findType(WSQLIndex.class.getCanonicalName());
 		this.dbVariable = "db";
 		this.indexName = indexName;
 	}
@@ -112,7 +111,7 @@ public class SQLIndexProxyCreator extends SQLAbstractKeyValueProxyCreator
 	protected void generateOpenCursorMethod(SourcePrinter srcWriter)
 	{
 		srcWriter.println("public void openCursor(KeyRange<"+getKeyTypeName()+"> keyRange, CursorDirection direction, final DatabaseCursorCallback<"+getKeyTypeName()+", "+getTargetObjectClassName()+"> callback){");
-		String cursorClassName = new SQLCursorProxyCreator(context, logger, targetObjectType, objectStoreName, autoIncrement, objectStoreIndexColumns, keyPath, objectStoreKeyPath, getIndexClassName()).create();
+		String cursorClassName = new SQLCursorProxyCreator(context, targetObjectType, objectStoreName, autoIncrement, objectStoreIndexColumns, keyPath, objectStoreKeyPath, getIndexClassName()).create();
 		srcWriter.println("new "+cursorClassName+"("+dbVariable+", (WSQLKeyRange<"+getKeyTypeName()+">)keyRange, direction, transaction).start(callback);");
 		srcWriter.println("}");
 		srcWriter.println();
@@ -121,7 +120,7 @@ public class SQLIndexProxyCreator extends SQLAbstractKeyValueProxyCreator
 	protected void generateOpenKeyCursorMethod(SourcePrinter srcWriter)
     {
 		srcWriter.println("public void openKeyCursor(KeyRange<"+getKeyTypeName()+"> keyRange, CursorDirection direction, final DatabaseCursorCallback<"+getKeyTypeName()+", "+getKeyTypeName(objectStoreKeyPath)+"> callback){");
-		String cursorClassName = new SQLKeyCursorProxyCreator(context, logger, targetObjectType, objectStoreName, autoIncrement, keyPath, objectStoreKeyPath, getIndexClassName()).create();
+		String cursorClassName = new SQLKeyCursorProxyCreator(context, targetObjectType, objectStoreName, autoIncrement, keyPath, objectStoreKeyPath, getIndexClassName()).create();
 		srcWriter.println("new "+cursorClassName+"("+dbVariable+", (WSQLKeyRange<"+getKeyTypeName()+">)keyRange, direction, transaction).start(callback);");
 		srcWriter.println("}");
 		srcWriter.println();
@@ -149,7 +148,7 @@ public class SQLIndexProxyCreator extends SQLAbstractKeyValueProxyCreator
 	protected SourcePrinter getSourcePrinter()
 	{
 		String packageName = indexType.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -165,7 +164,7 @@ public class SQLIndexProxyCreator extends SQLAbstractKeyValueProxyCreator
 		}
 		composerFactory.setSuperclass("WSQLIndex<"+getKeyTypeName(objectStoreKeyPath)+","+getKeyTypeName()+","+getTargetObjectClassName()+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	protected String[] getImports()

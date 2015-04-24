@@ -41,10 +41,9 @@ import org.cruxframework.crux.core.client.db.indexeddb.events.IDBObjectStoreEven
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.database.AbstractDatabaseProxyCreator.IndexData;
 
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -60,13 +59,13 @@ public class IDBObjectStoreProxyCreator extends IDBAbstractKeyValueProxyCreator
 	private String dbVariable;
 	private final Set<IndexData> indexes;
 
-	public IDBObjectStoreProxyCreator(GeneratorContext context, TreeLogger logger, JClassType targetObjectType, String objectStoreName, String[] keyPath, Set<IndexData> indexes)
+	public IDBObjectStoreProxyCreator(RebindContext context, JClassType targetObjectType, String objectStoreName, String[] keyPath, Set<IndexData> indexes)
 	{
-		super(context, logger, targetObjectType, objectStoreName, keyPath);
+		super(context, targetObjectType, objectStoreName, keyPath);
 		validatePrimaryKeyPath(targetObjectType, objectStoreName, keyPath);
 
 		this.indexes = indexes;
-		this.abstractObjectStoreType = context.getTypeOracle().findType(IDXAbstractObjectStore.class.getCanonicalName());
+		this.abstractObjectStoreType = context.getGeneratorContext().getTypeOracle().findType(IDXAbstractObjectStore.class.getCanonicalName());
 		this.idbObjectStoreVariable = "idbObjectStore";
 		this.dbVariable = "db";
 	}
@@ -230,7 +229,7 @@ public class IDBObjectStoreProxyCreator extends IDBAbstractKeyValueProxyCreator
 		for(IndexData index: indexes)
 		{
 			srcWriter.println("if (StringUtils.unsafeEquals(name, "+EscapeUtils.quote(index.indexName)+")){");
-			String indexClassName = new IDBIndexProxyCreator(context, logger, targetObjectType, objectStoreName, index.keyPath, index.indexName, keyPath).create();
+			String indexClassName = new IDBIndexProxyCreator(context, targetObjectType, objectStoreName, index.keyPath, index.indexName, keyPath).create();
 			srcWriter.println("return (Index<"+getKeyTypeName()+", I, "+getTargetObjectClassName()+">) new " + indexClassName + "("+dbVariable+", "+idbObjectStoreVariable+".getIndex(name));");
 			srcWriter.println("}");
 		}
@@ -257,7 +256,7 @@ public class IDBObjectStoreProxyCreator extends IDBAbstractKeyValueProxyCreator
 	protected SourcePrinter getSourcePrinter()
 	{
 		String packageName = abstractObjectStoreType.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -273,7 +272,7 @@ public class IDBObjectStoreProxyCreator extends IDBAbstractKeyValueProxyCreator
 		}
 		composerFactory.setSuperclass("IDXAbstractObjectStore<"+getKeyTypeName()+","+getTargetObjectClassName()+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 
 	/**

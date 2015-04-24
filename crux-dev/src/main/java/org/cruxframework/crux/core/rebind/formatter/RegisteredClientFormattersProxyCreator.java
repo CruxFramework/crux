@@ -17,49 +17,46 @@ package org.cruxframework.crux.core.rebind.formatter;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.collection.FastMap;
 import org.cruxframework.crux.core.client.formatter.Formatter;
 import org.cruxframework.crux.core.client.formatter.RegisteredClientFormatters;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.screen.View;
-
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
+@Deprecated
+@Legacy
 public class RegisteredClientFormattersProxyCreator extends AbstractInterfaceWrapperProxyCreator
 {
 	private Map<String, Boolean> formattersAdded = new HashMap<String, Boolean>();
-//TODO isso deve ser movido para o escopo da view
-	/**
-	 * Constructor
-	 * @param logger
-	 * @param context
-	 */
-	public RegisteredClientFormattersProxyCreator(TreeLogger logger, GeneratorContext context)
-    {
-	    super(logger, context, context.getTypeOracle().findType(RegisteredClientFormatters.class.getCanonicalName()), false);
-    }	
+	private final View view;
 
 	/**
-	 * @see org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator#getImports()
+	 * Constructor
+	 * @param context
+	 * @param view
 	 */
-	@Override
-    protected String[] getImports()
+	public RegisteredClientFormattersProxyCreator(RebindContext context, View view)
     {
-	    String[] imports = new String[] {
-	    		Formatter.class.getCanonicalName(), 
-	    		FastMap.class.getCanonicalName()
-			};
-	    return imports;
-    }
+	    super(context, context.getGeneratorContext().getTypeOracle().findType(RegisteredClientFormatters.class.getCanonicalName()), false);
+		this.view = view;
+    }	
+
+	@Override
+	public String getProxySimpleName()
+	{
+		String className = view.getId(); 
+		className = className.replaceAll("[\\W]", "_");
+		return "RegisteredFormatters_"+className;
+	}
 
 	/**
 	 * @see org.cruxframework.crux.core.rebind.AbstractProxyCreator#generateProxyContructor(com.google.gwt.user.rebind.SourcePrinter)
@@ -69,15 +66,11 @@ public class RegisteredClientFormattersProxyCreator extends AbstractInterfaceWra
     {
 		srcWriter.println("public "+getProxySimpleName()+"(){ ");
 
-		List<View> views = getViews();
-		for (View view : views)
+		Iterator<String> iterator = view.iterateFormatters();
+		while (iterator.hasNext())
 		{
-			Iterator<String> iterator = view.iterateFormatters();
-			while (iterator.hasNext())
-			{
-				String formatter = iterator.next();
-				generateFormatterBlock(srcWriter, formatter);
-			}
+			String formatter = iterator.next();
+			generateFormatterBlock(srcWriter, formatter);
 		}
 		srcWriter.println("}");
     }
@@ -100,6 +93,19 @@ public class RegisteredClientFormattersProxyCreator extends AbstractInterfaceWra
 		srcWriter.println("public Formatter getClientFormatter(String id){");
 		srcWriter.println("return clientFormatters.get(id);");
 		srcWriter.println("}");
+    }
+
+	/**
+	 * @see org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator#getImports()
+	 */
+	@Override
+    protected String[] getImports()
+    {
+	    String[] imports = new String[] {
+	    		Formatter.class.getCanonicalName(), 
+	    		FastMap.class.getCanonicalName()
+			};
+	    return imports;
     }
 	
 	private void generateFormatterBlock(SourcePrinter sourceWriter, String formatter)

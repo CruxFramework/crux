@@ -30,14 +30,12 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
-import org.cruxframework.crux.core.rebind.module.Modules;
 import org.cruxframework.crux.core.rebind.screen.View;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.generator.NameFactory;
@@ -55,7 +53,6 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 	private Device device;
 	private String iocContainerClassName;
 	private IocContainerRebind iocContainerRebind;
-	private final String module;
 	private NameFactory nameFactory;
 	private final View view;
 
@@ -64,15 +61,14 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 	 * @param logger
 	 * @param context
 	 */
-	public RegisteredControllersProxyCreator(TreeLogger logger, GeneratorContext context, View view, String module, String iocContainerClassName, String device)
+	public RegisteredControllersProxyCreator(RebindContext context, View view, String iocContainerClassName, String device)
     {
-	    super(logger, context, context.getTypeOracle().findType(RegisteredControllers.class.getCanonicalName()), false);
+	    super(context, context.getGeneratorContext().getTypeOracle().findType(RegisteredControllers.class.getCanonicalName()), false);
 		this.view = view;
-		this.module = module;
 		this.iocContainerClassName = iocContainerClassName;
 		this.device = Device.valueOf(device);
 		this.nameFactory = new NameFactory();
-		this.iocContainerRebind = new IocContainerRebind(logger, context, view, device);
+		this.iocContainerRebind = new IocContainerRebind(context, view, device);
     }
 
 	@Override
@@ -141,10 +137,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 			String widgetType = screenWidgets.next().getType();
 			usedWidgets.add(widgetType);
 		}
-		if (module != null)
-		{
-			generateControllersForWidgets(usedWidgets, module);
-		}
+		generateControllersForWidgets(usedWidgets);
 	}	
 	
 	/**
@@ -189,19 +182,15 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 	 * @param controller
 	 * @param module
 	 */
-	private void generateControllerBlock(String controller, String module)
+	private void generateControllerBlock(String controller)
 	{
 		try
 		{
 			JClassType controllerClass = getControllerClass(controller);
 			if (!controllerClassNames.containsKey(controller) && controllerClass!= null)
 			{
-				String controllerClassName = controllerClass.getQualifiedSourceName();
-				if (Modules.getInstance().isClassOnModulePath(controllerClassName, module))
-				{
-					String genClass = new ControllerProxyCreator(logger, context, controllerClass).create();
-					controllerClassNames.put(controller, genClass);
-				}
+				String genClass = new ControllerProxyCreator(context, controllerClass).create();
+				controllerClassNames.put(controller, genClass);
 			}
 		}
 		catch (Throwable e) 
@@ -221,10 +210,10 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 		while (controllers.hasNext())
 		{
 			String controller = controllers.next();
-			generateControllerBlock(controller, module);
+			generateControllerBlock(controller);
 		}		
 
-		controllers = ClientControllers.iterateGlobalControllers();
+		controllers = context.getControllers().iterateGlobalControllers();
 		
 		while (controllers.hasNext())
 		{
@@ -232,22 +221,21 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 			JClassType controllerClass = getControllerClass(controller);
 			if (controllerClass != null)
 			{
-				generateControllerBlock(controller, module);
+				generateControllerBlock(controller);
 			}
 		}		
 	}
 	
 	/**
 	 * @param usedWidgets
-	 * @param module
 	 */
-	private void generateControllersForWidgets(Set<String> usedWidgets, String module)
+	private void generateControllersForWidgets(Set<String> usedWidgets)
 	{
 		
 		Iterator<String> widgets = usedWidgets.iterator();
 		while (widgets.hasNext())
 		{
-			Iterator<String> controllers = ClientControllers.iterateWidgetControllers(widgets.next());
+			Iterator<String> controllers = context.getControllers().iterateWidgetControllers(widgets.next());
 			if (controllers != null)
 			{
 				while (controllers.hasNext())
@@ -256,7 +244,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 					JClassType controllerClass = getControllerClass(controller);
 					if (controllerClass != null)
 					{
-						generateControllerBlock(controller, module);
+						generateControllerBlock(controller);
 					}
 				}
 			}		
@@ -316,10 +304,10 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 	 */
 	private JClassType getControllerClass(String controller) 
 	{
-		TypeOracle typeOracle = context.getTypeOracle();
+		TypeOracle typeOracle = context.getGeneratorContext().getTypeOracle();
 		assert (typeOracle != null);
 
-		return typeOracle.findType(ClientControllers.getController(controller, device));
+		return typeOracle.findType(context.getControllers().getController(controller, device));
 	}
 	
 	/**

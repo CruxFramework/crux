@@ -28,12 +28,11 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
 import org.cruxframework.crux.core.rebind.screen.View;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.dev.generator.NameFactory;
@@ -56,14 +55,14 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 	private NameFactory nameFactory;
 	private final View view;
 
-	public RegisteredDataSourcesProxyCreator(TreeLogger logger, GeneratorContext context, View view, String iocContainerClassName, String device)
+	public RegisteredDataSourcesProxyCreator(RebindContext context, View view, String iocContainerClassName, String device)
     {
-	    super(logger, context, context.getTypeOracle().findType(RegisteredDataSources.class.getCanonicalName()), false);
+	    super(context, context.getGeneratorContext().getTypeOracle().findType(RegisteredDataSources.class.getCanonicalName()), false);
 		this.view = view;
 		this.iocContainerClassName = iocContainerClassName;
 		this.device = Device.valueOf(device);
 		this.nameFactory = new NameFactory();
-		this.iocContainerRebind = new IocContainerRebind(logger, context, view, device);
+		this.iocContainerRebind = new IocContainerRebind(context, view, device);
     }
 
 	@Override
@@ -134,7 +133,7 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 		String datasourceClassName = dataSourcesClassNames.get(dataSource);
 		String dsVar = nameFactory.createName("__dat");
 		sourceWriter.println(datasourceClassName+" "+dsVar+"  = new "+datasourceClassName+"(this.view);");
-		JClassType datasourceClass = context.getTypeOracle().findType(DataSources.getDataSource(dataSource, device));
+		JClassType datasourceClass = context.getGeneratorContext().getTypeOracle().findType(DataSources.getDataSource(dataSource, device));
 		if (datasourceClass == null)
 		{
 			throw new CruxGeneratorException("Can not found the datasource ["+datasourceClassName+"]. Check your classpath and the inherit modules");
@@ -156,7 +155,7 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 			try
             {
 	            JClassType dataSourceClass = baseIntf.getOracle().getType(DataSources.getDataSource(dataSource, device));
-	            String genClass = new DataSourceProxyCreator(logger, context, dataSourceClass).create(); 
+	            String genClass = new DataSourceProxyCreator(context, dataSourceClass).create(); 
 	            dataSourcesClassNames.put(dataSource, genClass);
             }
             catch (NotFoundException e)

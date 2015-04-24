@@ -25,6 +25,7 @@ import org.cruxframework.crux.core.client.utils.StyleUtils;
 import org.cruxframework.crux.core.declarativeui.ViewParser;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.DataBindingProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.WidgetConsumer;
@@ -42,7 +43,6 @@ import org.cruxframework.crux.core.utils.ClassUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.dom.client.Element;
@@ -390,7 +390,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	/**
 	 * @return
 	 */
-	public GeneratorContext getContext()
+	public RebindContext getContext()
 	{
 		return viewFactory.getContext();
 	}
@@ -609,7 +609,7 @@ public abstract class WidgetCreator <C extends WidgetCreatorContext>
 	 */
 	public JClassType getWidgetClassType()
     {
-	    return getViewFactory().getContext().getTypeOracle().findType(getWidgetClassName());
+	    return getViewFactory().getContext().getGeneratorContext().getTypeOracle().findType(getWidgetClassName());
     }
 	
 	/**

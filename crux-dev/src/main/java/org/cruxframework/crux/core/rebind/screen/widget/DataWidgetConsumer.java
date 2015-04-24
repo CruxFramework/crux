@@ -19,9 +19,9 @@ import org.cruxframework.crux.core.client.converter.TypeConverter;
 import org.cruxframework.crux.core.client.formatter.HasFormatter;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.user.client.ui.HasText;
@@ -33,14 +33,14 @@ import com.google.gwt.user.client.ui.HasValue;
  */
 public class DataWidgetConsumer
 {
-	public static void generateCopyFromCode(SourcePrinter srcWriter, GeneratorContext context, String dataObjectVariable, 
+	public static void generateCopyFromCode(SourcePrinter srcWriter, RebindContext context, String dataObjectVariable, 
 			String widgetVariable, JClassType dataObjectType, JClassType widgetClass, String bindPath, String converterVariable, 
 			JClassType converterType, boolean skipCheckings) throws NoSuchFieldException
     {
-		JClassType hasValueType = context.getTypeOracle().findType(HasValue.class.getCanonicalName());
-		JClassType hasFormatterType = context.getTypeOracle().findType(HasFormatter.class.getCanonicalName());
-		JClassType hasTextType = context.getTypeOracle().findType(HasText.class.getCanonicalName());
-		JClassType typeConverterType = context.getTypeOracle().findType(TypeConverter.class.getCanonicalName());
+		JClassType hasValueType = context.getGeneratorContext().getTypeOracle().findType(HasValue.class.getCanonicalName());
+		JClassType hasFormatterType = context.getGeneratorContext().getTypeOracle().findType(HasFormatter.class.getCanonicalName());
+		JClassType hasTextType = context.getGeneratorContext().getTypeOracle().findType(HasText.class.getCanonicalName());
+		JClassType typeConverterType = context.getGeneratorContext().getTypeOracle().findType(TypeConverter.class.getCanonicalName());
 
 		JType propertyType = JClassUtils.getTypeForProperty(bindPath, dataObjectType);
 		String dataObjectClassName = dataObjectType.getParameterizedQualifiedSourceName();
@@ -89,14 +89,14 @@ public class DataWidgetConsumer
 	}
 	
 	
-	public static void generateCopyToCode(SourcePrinter srcWriter, GeneratorContext context, String dataObjectVariable, 
+	public static void generateCopyToCode(SourcePrinter srcWriter, RebindContext context, String dataObjectVariable, 
 			String widgetVariable, JClassType dataObjectType, JClassType widgetClass, String bindPath, String converterVariable, 
 			JClassType converterType, boolean skipCheckings) throws NoSuchFieldException
 	{
-		JClassType hasValueType = context.getTypeOracle().findType(HasValue.class.getCanonicalName());
-		JClassType hasFormatterType = context.getTypeOracle().findType(HasFormatter.class.getCanonicalName());
-		JClassType hasTextType = context.getTypeOracle().findType(HasText.class.getCanonicalName());
-		JClassType typeConverterType = context.getTypeOracle().findType(TypeConverter.class.getCanonicalName());
+		JClassType hasValueType = context.getGeneratorContext().getTypeOracle().findType(HasValue.class.getCanonicalName());
+		JClassType hasFormatterType = context.getGeneratorContext().getTypeOracle().findType(HasFormatter.class.getCanonicalName());
+		JClassType hasTextType = context.getGeneratorContext().getTypeOracle().findType(HasText.class.getCanonicalName());
+		JClassType typeConverterType = context.getGeneratorContext().getTypeOracle().findType(TypeConverter.class.getCanonicalName());
 
 		if (dataObjectType != null && widgetClass != null)
 		{

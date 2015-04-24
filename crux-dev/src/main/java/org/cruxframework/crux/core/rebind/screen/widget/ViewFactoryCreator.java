@@ -28,6 +28,7 @@ import org.cruxframework.crux.core.client.Crux;
 import org.cruxframework.crux.core.client.controller.RegisteredControllers;
 import org.cruxframework.crux.core.client.datasource.DataSource;
 import org.cruxframework.crux.core.client.datasource.RegisteredDataSources;
+import org.cruxframework.crux.core.client.formatter.RegisteredClientFormatters;
 import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.InterfaceConfigException;
@@ -51,14 +52,15 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewParser;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.controller.ClientControllers;
+import org.cruxframework.crux.core.rebind.context.ControllerScanner;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.controller.RegisteredControllersProxyCreator;
 import org.cruxframework.crux.core.rebind.datasource.RegisteredDataSourcesProxyCreator;
 import org.cruxframework.crux.core.rebind.dto.DataObjects;
+import org.cruxframework.crux.core.rebind.formatter.RegisteredClientFormattersProxyCreator;
 import org.cruxframework.crux.core.rebind.i18n.MessageClasses;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
-import org.cruxframework.crux.core.rebind.resources.Resources;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.resources.ResourcesHandlerProxyCreator;
@@ -71,7 +73,6 @@ import org.json.JSONObject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
@@ -119,7 +120,6 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	private String device;
 	private Set<String> rootPanelChildren;
 	private Set<String> resources;
-	protected final String module;
 	protected final View view;
 	protected ControllerAccessHandler controllerAccessHandler;
 	protected WidgetConsumer widgetConsumer;
@@ -181,19 +181,18 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 * @param device
 	 * @param module
 	 */
-	public ViewFactoryCreator(GeneratorContext context, TreeLogger logger, View view, String device, String module)
+	public ViewFactoryCreator(RebindContext context, View view, String device)
     {
-		super(logger, context, false);
+		super(context, false);
 		this.view = view;
 		this.device = device;
-		this.module = module;
 		this.lazyFactory = new LazyPanelFactory(this);
 		this.loggerVariable = createVariableName("logger");
 		this.viewPanelVariable = createVariableName("viewPanel");
 		this.widgetConsumer = new ViewWidgetConsumer(this);
 		this.dataBindingProcessor = new ViewDataBindingsProcessor(this);
 		this.rootPanelChildren = new HashSet<String>();
-		this.controllerAccessHandler = new DefaultControllerAccessor(viewVariable);
+		this.controllerAccessHandler = new DefaultControllerAccessor(viewVariable, context.getControllers());
 		this.bindHandler = new ViewBindHandler(context, view, this);
 
     }
@@ -229,6 +228,8 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		printer.println("private "+RegisteredControllers.class.getCanonicalName()+" registeredControllers;");
 		printer.println("private "+RegisteredDataSources.class.getCanonicalName()+" registeredDataSources;");
+		printer.println("private "+RegisteredClientFormatters.class.getCanonicalName()+" registeredFormatters;");
+		
 		printer.println("protected "+ iocContainerClassName +" iocContainer;");
 
 		for (String messageClass: declaredMessages.keySet())
@@ -247,14 +248,16 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	@Override
 	protected void generateProxyContructor(SourcePrinter printer) throws CruxGeneratorException
 	{
-		String regsiteredControllersClass = new RegisteredControllersProxyCreator(logger, context, view, module, iocContainerClassName, device).create();
-		String regsiteredDataSourcesClass = new RegisteredDataSourcesProxyCreator(logger, context, view, iocContainerClassName, device).create();
+		String regsiteredControllersClass = new RegisteredControllersProxyCreator(context, view, iocContainerClassName, device).create();
+		String regsiteredDataSourcesClass = new RegisteredDataSourcesProxyCreator(context, view, iocContainerClassName, device).create();
+		String regsiteredFormattersClass = new RegisteredClientFormattersProxyCreator(context, view).create();
 
 		printer.println("protected "+getProxySimpleName()+"(String id){");
 		printer.println("super(id);");
 		printer.println("setTitle("+getDeclaredMessage(view.getTitle())+");");
 		printer.println("this.iocContainer = new "+iocContainerClassName+"(this);");
 		printer.println("this.registeredControllers = new "+regsiteredControllersClass+"(this, iocContainer);");
+		printer.println("this.registeredFormatters = new "+regsiteredFormattersClass+"();");
 		printer.println("this.registeredDataSources = new "+regsiteredDataSourcesClass+"(this, iocContainer);");
 		generateResources(printer);
 		printer.println("}");
@@ -283,6 +286,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	if(printer != null)
     	{
 	    	generateGetRegisteredControllersMethod(printer);
+	    	generateGetRegisteredFormattersMethod(printer);
 	    	generateCreateDataSourceMethod(printer);
 	    	generateCreateWidgetsMethod(printer);
 	    	generateRenderMethod(printer);
@@ -337,13 +341,13 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     @Override
     protected void generateSubTypes(SourcePrinter srcWriter) throws CruxGeneratorException
     {
-	    iocContainerClassName = new IocContainerRebind(logger, context, view, device).create();
+	    iocContainerClassName = new IocContainerRebind(context, view, device).create();
 	    resources = new HashSet<String>();
 	    Iterator<String> resources = view.iterateResources();
 	    while (resources.hasNext())
 	    {
 	    	String resourceKey = resources.next();
-	    	this.resources.add(new ResourcesHandlerProxyCreator(logger, context, resourceKey, view, device).create());
+	    	this.resources.add(new ResourcesHandlerProxyCreator(context, resourceKey, view, device).create());
 	    }
     }
 
@@ -502,7 +506,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 */
 	protected TreeLogger getLogger()
 	{
-		return this.logger;
+		return context.getLogger();
 	}
 
 	/**
@@ -601,7 +605,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    	String[] resourceParts = getResourceParts(property);
 	    	String resourceKey = resourceParts[0];
 	    	String resourceProperty = resourceParts[1];
-	    	String resourceClassName = Resources.getResource(resourceKey, Device.valueOf(device));
+	    	String resourceClassName = context.getResources().getResource(resourceKey, Device.valueOf(device));
 	    	
 	    	if (!view.useResource(resourceKey))
 	    	{
@@ -610,7 +614,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	    	String resourceObject = "(("+resourceClassName+")getResource("+EscapeUtils.quote(resourceKey)+"))";
 	    	
 	    	StringBuilder out = new StringBuilder();
-			JClassType resourceType = context.getTypeOracle().findType(resourceClassName);
+			JClassType resourceType = context.getGeneratorContext().getTypeOracle().findType(resourceClassName);
 			if (resourceType == null)
 			{
 				String message = "Resource ["+resourceKey+"] , declared on view ["+view.getId()+"], could not be loaded. "
@@ -660,7 +664,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	 */
 	public ExpressionDataBinding getExpressionDataBinding(String propertyValue, String widgetClassName, String widgetPropertyPath)
     {
-		JType widgetPropertyType = JClassUtils.getPropertyType(getContext().getTypeOracle().findType(widgetClassName), widgetPropertyPath);
+		JType widgetPropertyType = JClassUtils.getPropertyType(context.getGeneratorContext().getTypeOracle().findType(widgetClassName), widgetPropertyPath);
 		if (widgetPropertyType == null)
 		{
 			throw new CruxGeneratorException("Can not find out the widget property type, for property ["+widgetPropertyPath+"], on widget ["+widgetClassName+"]");
@@ -694,7 +698,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 		}
 		else
 		{
-			JClassType messageClass = context.getTypeOracle().findType(messageClassName);
+			JClassType messageClass = context.getGeneratorContext().getTypeOracle().findType(messageClassName);
 			if (messageClass == null)
 			{
 				String message = "Message class ["+messageKey+"] , declared on view ["+view.getId()+"], could not be loaded. "
@@ -785,7 +789,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	/**
 	 * @return
 	 */
-	protected GeneratorContext getContext()
+	protected RebindContext getContext()
 	{
 		return context;
 	}
@@ -884,7 +888,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	{
     		packageName = ViewFactory.class.getPackage().getName();
     	}
-		PrintWriter printWriter = context.tryCreate(logger, packageName, subType);
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, subType);
 
 		if (printWriter == null)
 		{
@@ -918,7 +922,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 			}
 		}
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 
 	/**
@@ -939,13 +943,11 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 	/**
 	 * @param context
-	 * @param logger
 	 * @param device
 	 */
-    protected void prepare(GeneratorContext context, TreeLogger logger, String device)
+    protected void prepare(RebindContext context, String device)
 	{
 		this.context = context;
-		this.logger = logger;
 		this.lazyPanels.clear();
 		this.declaredMessages.clear();
 		this.postProcessingCode.clear();
@@ -1387,6 +1389,17 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 	/**
 	 * @param printer
 	 */
+	@Deprecated
+	private void generateGetRegisteredFormattersMethod(SourcePrinter printer)
+    {
+    	printer.println("public "+RegisteredClientFormatters.class.getCanonicalName()+"<?> getRegisteredFormatters(){");
+    	printer.println("return this.registeredFormatters;");
+    	printer.println("}");
+    }
+	
+	/**
+	 * @param printer
+	 */
 	private void generateCreateDataSourceMethod(SourcePrinter printer)
     {
     	printer.println("public "+DataSource.class.getCanonicalName()+"<?> createDataSource(String dataSource){");
@@ -1449,7 +1462,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     protected SourcePrinter getSourcePrinter()
     {
 		String packageName = ViewFactory.class.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -1466,7 +1479,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 			composerFactory.addImport(imp);
 		}
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 
     /**
@@ -1578,10 +1591,12 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     private static class DefaultControllerAccessor implements ControllerAccessHandler
     {
 		private final String viewVariable;
+		private ControllerScanner controllersManager;
 
-		public DefaultControllerAccessor(String viewVariable)
+		public DefaultControllerAccessor(String viewVariable, ControllerScanner controllersManager)
         {
 			this.viewVariable = viewVariable;
+			this.controllersManager = controllersManager;
         }
 
 		public String getControllerExpression(String controller, Device device)
@@ -1593,7 +1608,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		public String getControllerImplClassName(String controller, Device device)
         {
-			String controllerClass = ClientControllers.getController(controller, device);
+			String controllerClass = controllersManager.getController(controller, device);
 	        return controllerClass + ControllerProxyCreator.CONTROLLER_PROXY_SUFFIX;
         }
     }

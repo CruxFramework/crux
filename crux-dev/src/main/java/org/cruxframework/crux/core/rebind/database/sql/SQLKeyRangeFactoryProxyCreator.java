@@ -22,10 +22,9 @@ import org.cruxframework.crux.core.client.db.KeyRangeFactory;
 import org.cruxframework.crux.core.client.db.WSQLKeyRange;
 import org.cruxframework.crux.core.client.utils.JsUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 
@@ -38,11 +37,11 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 	private JClassType keyRangeType;
  	private String parentName;
 
-	public SQLKeyRangeFactoryProxyCreator(GeneratorContext context, TreeLogger logger, JClassType targetObjectType, String objectStoreName, 
+	public SQLKeyRangeFactoryProxyCreator(RebindContext context, JClassType targetObjectType, String objectStoreName, 
 			String[] keyPath, String parentName)
 	{
-		super(context, logger, targetObjectType, objectStoreName, keyPath);
-		this.keyRangeType = context.getTypeOracle().findType(KeyRange.class.getCanonicalName());
+		super(context, targetObjectType, objectStoreName, keyPath);
+		this.keyRangeType = context.getGeneratorContext().getTypeOracle().findType(KeyRange.class.getCanonicalName());
 		this.parentName = parentName;
 	}
 
@@ -258,7 +257,7 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 	protected SourcePrinter getSourcePrinter()
 	{
 		String packageName = keyRangeType.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -274,7 +273,7 @@ public class SQLKeyRangeFactoryProxyCreator extends SQLAbstractKeyValueProxyCrea
 		}
 		composerFactory.addImplementedInterface("KeyRangeFactory<"+getKeyTypeName()+">");
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	protected String[] getImports()

@@ -18,6 +18,7 @@ package org.cruxframework.crux.core.rebind.rest;
 import java.lang.annotation.Annotation;
 
 import org.cruxframework.crux.core.client.rest.RestProxy.TargetEndPoint;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.server.rest.util.HttpMethodHelper;
 import org.cruxframework.crux.core.server.rest.util.InvalidRestMethod;
 import org.cruxframework.crux.core.shared.rest.annotation.GET;
@@ -26,8 +27,6 @@ import org.cruxframework.crux.core.shared.rest.annotation.PUT;
 import org.cruxframework.crux.core.shared.rest.annotation.Path;
 import org.cruxframework.crux.core.shared.rest.annotation.StateValidationModel;
 
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JParameter;
@@ -40,13 +39,13 @@ import com.google.gwt.core.ext.typeinfo.JParameter;
  */
 public class CruxRestProxyCreatorFromClientMetadata extends CruxRestProxyCreator
 {
-	public CruxRestProxyCreatorFromClientMetadata(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public CruxRestProxyCreatorFromClientMetadata(RebindContext context, JClassType baseIntf)
     {
-	    super(logger, context, baseIntf);
+	    super(context, baseIntf);
     }
 
 	@Override
-    protected String getServiceBasePath(GeneratorContext context)
+    protected String getServiceBasePath(RebindContext context)
     {
 		String value = baseIntf.getAnnotation(Path.class).value();
 		if (value == null)

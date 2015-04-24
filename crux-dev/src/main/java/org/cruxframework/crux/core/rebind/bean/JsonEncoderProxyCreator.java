@@ -22,13 +22,12 @@ import org.cruxframework.crux.core.client.bean.JsonEncoder;
 import org.cruxframework.crux.core.client.utils.JsUtils;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.rest.JSonSerializerProxyCreator;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -47,20 +46,20 @@ public class JsonEncoderProxyCreator extends AbstractInterfaceWrapperProxyCreato
 	private String serializerVariable;
 	private JClassType stringType;
 
-	public JsonEncoderProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public JsonEncoderProxyCreator(RebindContext context, JClassType baseIntf)
 	{
-		super(logger, context, baseIntf, true);
-		JClassType jsonEncoderType = context.getTypeOracle().findType(JsonEncoder.class.getCanonicalName());
+		super(context, baseIntf, true);
+		JClassType jsonEncoderType = context.getGeneratorContext().getTypeOracle().findType(JsonEncoder.class.getCanonicalName());
 		targetObjectType = JClassUtils.getActualParameterTypes(baseIntf, jsonEncoderType)[0];
-		javascriptObjectType = context.getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
-		stringType = context.getTypeOracle().findType(String.class.getCanonicalName());
+		javascriptObjectType = context.getGeneratorContext().getTypeOracle().findType(JavaScriptObject.class.getCanonicalName());
+		stringType = context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName());
 		serializerVariable = "serializer";
 	}
 
 	@Override
 	protected void generateProxyFields(SourcePrinter srcWriter) throws CruxGeneratorException
 	{
-		String serializerName = new JSonSerializerProxyCreator(context, logger, targetObjectType).create();;
+		String serializerName = new JSonSerializerProxyCreator(context, targetObjectType).create();;
 		srcWriter.println("private "+serializerName+" "+serializerVariable+" = new "+serializerName+"();");
 	}
 	

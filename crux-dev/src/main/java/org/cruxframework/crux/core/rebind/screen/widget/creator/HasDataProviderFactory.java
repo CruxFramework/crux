@@ -94,7 +94,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 	    {
 	    	throw new CruxGeneratorException("Widget ["+widgetId+"] on view ["+getView().getId()+"] informed an invalid dataObject. Can not found the informed value");
 	    }
-	    JClassType dtoType = getContext().getTypeOracle().findType(dataObjectClass);
+	    JClassType dtoType = getContext().getGeneratorContext().getTypeOracle().findType(dataObjectClass);
 	    return dtoType;
     }
 	

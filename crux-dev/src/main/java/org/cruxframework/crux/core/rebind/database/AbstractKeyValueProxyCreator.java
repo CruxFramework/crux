@@ -21,13 +21,12 @@ import org.cruxframework.crux.core.client.db.annotation.DatabaseDef.Empty;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.rest.JSonSerializerProxyCreator;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -48,9 +47,9 @@ public abstract class AbstractKeyValueProxyCreator extends AbstractProxyCreator
 	protected final String[] keyPath;
 	protected final String serializerVariable;
 
-	public AbstractKeyValueProxyCreator(GeneratorContext context, TreeLogger logger, JClassType targetObjectType, String objectStoreName, String[] keyPath)
+	public AbstractKeyValueProxyCreator(RebindContext context, JClassType targetObjectType, String objectStoreName, String[] keyPath)
 	{
-		super(logger, context, false);
+		super(context, false);
 		this.objectStoreName = objectStoreName;
 		this.keyPath = keyPath;
 		this.targetObjectType = targetObjectType;
@@ -58,11 +57,11 @@ public abstract class AbstractKeyValueProxyCreator extends AbstractProxyCreator
 		{
 			throw new CruxGeneratorException("Simple types are not allowed as row in Crux Database. Create an wrapper Object to your value. ObjectStoreName["+objectStoreName+"]");
 		}
-		this.stringType = context.getTypeOracle().findType(String.class.getCanonicalName());
-		this.integerType = context.getTypeOracle().findType(Integer.class.getCanonicalName());
-		this.doubleType = context.getTypeOracle().findType(Double.class.getCanonicalName());
-		this.dateType = context.getTypeOracle().findType(Date.class.getCanonicalName());
-		this.emptyType = context.getTypeOracle().findType(Empty.class.getCanonicalName());
+		this.stringType = context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName());
+		this.integerType = context.getGeneratorContext().getTypeOracle().findType(Integer.class.getCanonicalName());
+		this.doubleType = context.getGeneratorContext().getTypeOracle().findType(Double.class.getCanonicalName());
+		this.dateType = context.getGeneratorContext().getTypeOracle().findType(Date.class.getCanonicalName());
+		this.emptyType = context.getGeneratorContext().getTypeOracle().findType(Empty.class.getCanonicalName());
 		this.serializerVariable = "serializer";
 	}
 	
@@ -71,7 +70,7 @@ public abstract class AbstractKeyValueProxyCreator extends AbstractProxyCreator
 	{
 		if (!isEmptyType())
 		{
-			String serializerName = new JSonSerializerProxyCreator(context, logger, targetObjectType).create();;
+			String serializerName = new JSonSerializerProxyCreator(context, targetObjectType).create();;
 			srcWriter.println("private "+serializerName+" "+serializerVariable+" = new "+serializerName+"();");
 		}
 	}

@@ -30,11 +30,10 @@ import org.cruxframework.crux.core.client.db.websql.SQLTransaction;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.database.AbstractDatabaseProxyCreator;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -47,9 +46,9 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
  */
 public class SQLDatabaseProxyCreator extends AbstractDatabaseProxyCreator
 {
-	public SQLDatabaseProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public SQLDatabaseProxyCreator(RebindContext context, JClassType baseIntf)
 	{
-		super(logger, context, baseIntf);
+		super(context, baseIntf);
 	}
 
 	@Override
@@ -121,7 +120,7 @@ public class SQLDatabaseProxyCreator extends AbstractDatabaseProxyCreator
 			Set<IndexData> indexes = getIndexes(objectStoreMetadata.indexes(), objectStoreTarget, objectStoreName);
 			srcWriter.println("if (StringUtils.unsafeEquals(storeName, "+EscapeUtils.quote(objectStoreName)+")){");
 			String[] keyPath = getKeyPath(objectStoreMetadata, objectStoreTarget);
-			String objectStore = new SQLObjectStoreProxyCreator(context, logger, objectStoreTarget, objectStoreName, keyPath, isAutoIncrement(objectStoreTarget), indexes).create();
+			String objectStore = new SQLObjectStoreProxyCreator(context, objectStoreTarget, objectStoreName, keyPath, isAutoIncrement(objectStoreTarget), indexes).create();
 			srcWriter.println("return (WSQLAbstractObjectStore<K, V>) new "+objectStore+"(this, storeName, transaction);");
 			srcWriter.println("}");
         }
@@ -164,7 +163,7 @@ public class SQLDatabaseProxyCreator extends AbstractDatabaseProxyCreator
 	{
 		JPackage pkg = baseIntf.getPackage();
 		String packageName = pkg == null ? "" : pkg.getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -181,6 +180,6 @@ public class SQLDatabaseProxyCreator extends AbstractDatabaseProxyCreator
 		composerFactory.setSuperclass(WSQLAbstractDatabase.class.getCanonicalName());
 		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
 
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 }

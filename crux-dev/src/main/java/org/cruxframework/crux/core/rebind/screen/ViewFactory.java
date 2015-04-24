@@ -25,12 +25,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
-import org.cruxframework.crux.core.declarativeui.view.ViewProvider;
+import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.controller.ClientControllers;
+import org.cruxframework.crux.core.rebind.context.ControllerScanner;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.ResourceScanner;
 import org.cruxframework.crux.core.rebind.datasource.DataSources;
 import org.cruxframework.crux.core.rebind.formatter.Formatters;
-import org.cruxframework.crux.core.rebind.resources.Resources;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.core.utils.StreamUtils;
 import org.json.JSONArray;
@@ -49,16 +50,20 @@ public class ViewFactory
 {
 	private static final Log logger = LogFactory.getLog(ViewFactory.class);
 	private Map<String, View> cache = new HashMap<String, View>();
+	private ControllerScanner controllerScanner;
+	private ResourceScanner resourceScanner;
 	private ViewProcessor viewProcessor;
-	private ViewProvider viewProvider;
+	private ViewLoader viewLoader;
 	
 	/**
 	 * Default Constructor
 	 */
-	public ViewFactory(ViewProvider viewProvider) 
+	public ViewFactory(RebindContext context) 
 	{
-		this.viewProvider = viewProvider;
-		this.viewProcessor = new ViewProcessor(viewProvider);
+		this.viewLoader = context.getScreenLoader().getViewLoader();
+		this.controllerScanner = context.getControllers();
+		this.resourceScanner = context.getResources();
+		this.viewProcessor = new ViewProcessor(viewLoader);
 	}
 	
 	/**
@@ -76,7 +81,7 @@ public class ViewFactory
 			return cache.get(cacheKey);
 		}
 		
-		InputStream inputStream = viewProvider.getView(id);
+		InputStream inputStream = viewLoader.getView(id);
 		if (inputStream == null)
 		{
 			throw new ScreenConfigException("View ["+id+"] not found!");
@@ -112,7 +117,7 @@ public class ViewFactory
 	
 	public List<String> getViews(String viewLocator, String moduleId)
     {
-	    return viewProvider.getViews(viewLocator, moduleId);
+	    return viewLoader.getViews(viewLocator, moduleId);
     }
 	
 	/**
@@ -414,7 +419,7 @@ public class ViewFactory
 	    		handler = handler.trim();
 	    		if (!StringUtils.isEmpty(handler))
 	    		{
-	    			if (!ClientControllers.hasController(handler))
+	    			if (!controllerScanner.hasController(handler))
 	    			{
 	    				throw new ScreenConfigException("Controller ["+handler+"], declared on view ["+view.getId()+"], not found!");
 	    			}
@@ -516,7 +521,7 @@ public class ViewFactory
 	    		res = res.trim();
 	    		if (!StringUtils.isEmpty(res))
 	    		{
-	    			if (!Resources.hasResource(res))
+	    			if (!resourceScanner.hasResource(res))
 	    			{
 	    				throw new ScreenConfigException("Resource ["+res+"], declared on view ["+view.getId()+"], not found!");
 	    			}
@@ -551,7 +556,7 @@ public class ViewFactory
 	    		useView = useView.trim();
 	    		if (!StringUtils.isEmpty(useView))
 	    		{
-	    			if (!viewProvider.isValidViewLocator(useView))
+	    			if (!viewLoader.isValidViewLocator(useView))
 	    			{
 	    				throw new ScreenConfigException("View ["+useView+"], declared on view ["+view.getId()+"], not found!");
 	    			}

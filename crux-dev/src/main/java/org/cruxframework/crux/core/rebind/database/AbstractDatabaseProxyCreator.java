@@ -32,10 +32,9 @@ import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractInterfaceWrapperProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.utils.JClassUtils;
 
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
@@ -56,15 +55,15 @@ public abstract class AbstractDatabaseProxyCreator extends AbstractInterfaceWrap
 	protected JClassType emptyType;
 	protected JClassType dateType;
 
-	public AbstractDatabaseProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public AbstractDatabaseProxyCreator(RebindContext context, JClassType baseIntf)
 	{
-		super(logger, context, baseIntf, false);
+		super(context, baseIntf, false);
 		databaseMetadata = baseIntf.getAnnotation(DatabaseDef.class);
-		integerType = context.getTypeOracle().findType(Integer.class.getCanonicalName());
-		doubleType = context.getTypeOracle().findType(Double.class.getCanonicalName());
-		dateType = context.getTypeOracle().findType(Date.class.getCanonicalName());
-		stringType = context.getTypeOracle().findType(String.class.getCanonicalName());
-		emptyType = context.getTypeOracle().findType(Empty.class.getCanonicalName());
+		integerType = context.getGeneratorContext().getTypeOracle().findType(Integer.class.getCanonicalName());
+		doubleType = context.getGeneratorContext().getTypeOracle().findType(Double.class.getCanonicalName());
+		dateType = context.getGeneratorContext().getTypeOracle().findType(Date.class.getCanonicalName());
+		stringType = context.getGeneratorContext().getTypeOracle().findType(String.class.getCanonicalName());
+		emptyType = context.getGeneratorContext().getTypeOracle().findType(Empty.class.getCanonicalName());
 	}
 
 	@Override
@@ -298,7 +297,7 @@ public abstract class AbstractDatabaseProxyCreator extends AbstractInterfaceWrap
 	
 	protected JClassType getObjectStoreTarget(ObjectStoreDef objectStoreMetadata)
 	{
-		return context.getTypeOracle().findType(objectStoreMetadata.targetClass().getCanonicalName());
+		return context.getGeneratorContext().getTypeOracle().findType(objectStoreMetadata.targetClass().getCanonicalName());
 	}
 	
 	protected String getObjectStoreName(ObjectStoreDef objectStoreMetadata, JClassType objectStoreTarget)

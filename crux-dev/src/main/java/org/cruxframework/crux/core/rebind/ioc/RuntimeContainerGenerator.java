@@ -17,6 +17,7 @@ package org.cruxframework.crux.core.rebind.ioc;
 
 import org.cruxframework.crux.core.rebind.AbstractGenerator;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -39,6 +40,6 @@ public class RuntimeContainerGenerator extends AbstractGenerator
 			logger.log(TreeLogger.ERROR, "["+baseIntf.getQualifiedSourceName()+"] is not an interface.", null); 
 			throw new UnableToCompleteException();
 		}
-	    return new RuntimeContainerProxyCreator(logger, ctx, baseIntf);
+	    return new RuntimeContainerProxyCreator(new RebindContext(ctx, logger), baseIntf);
     }
 }

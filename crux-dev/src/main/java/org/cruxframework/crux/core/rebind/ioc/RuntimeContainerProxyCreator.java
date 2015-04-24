@@ -19,22 +19,21 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.cruxframework.crux.core.client.ioc.IoCResource.Scope;
-import org.cruxframework.crux.core.client.ioc.RuntimeIoCContainer;
 import org.cruxframework.crux.core.client.ioc.IoCContainerException;
+import org.cruxframework.crux.core.client.ioc.IoCResource.Scope;
 import org.cruxframework.crux.core.client.ioc.IocContainer;
 import org.cruxframework.crux.core.client.ioc.IocProvider;
+import org.cruxframework.crux.core.client.ioc.RuntimeIoCContainer;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.ioc.IocConfig;
 import org.cruxframework.crux.core.ioc.IocConfigImpl;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.BadPropertyValueException;
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.SelectionProperty;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 
@@ -45,9 +44,9 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 public class RuntimeContainerProxyCreator extends IocContainerRebind
 {
 
-	public RuntimeContainerProxyCreator(TreeLogger logger, GeneratorContext ctx, JClassType baseIntf)
+	public RuntimeContainerProxyCreator(RebindContext ctx, JClassType baseIntf)
     {
-		super(logger, ctx, null, getDeviceFeatures(logger, ctx));
+		super(ctx, null, getDeviceFeatures(ctx));
     }
 
 	@Override
@@ -166,7 +165,7 @@ public class RuntimeContainerProxyCreator extends IocContainerRebind
 	protected SourcePrinter getSourcePrinter()
 	{
 		String packageName = IocProvider.class.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+		PrintWriter printWriter = context.getGeneratorContext().tryCreate(context.getLogger(), packageName, getProxySimpleName());
 
 		if (printWriter == null)
 		{
@@ -183,18 +182,18 @@ public class RuntimeContainerProxyCreator extends IocContainerRebind
 		
 		composerFactory.addImplementedInterface(RuntimeIoCContainer.class.getCanonicalName());
 		
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+		return new SourcePrinter(composerFactory.createSourceWriter(context.getGeneratorContext(), printWriter), context.getLogger());
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	private static String getDeviceFeatures(TreeLogger logger, GeneratorContext context)
+	private static String getDeviceFeatures(RebindContext context)
 	{
 		try
 		{
-			SelectionProperty device = context.getPropertyOracle().getSelectionProperty(logger, "device.features");
+			SelectionProperty device = context.getGeneratorContext().getPropertyOracle().getSelectionProperty(context.getLogger(), "device.features");
 			return device==null?null:device.getCurrentValue();
 		}
 		catch (BadPropertyValueException e)

@@ -23,11 +23,9 @@ import org.cruxframework.crux.core.client.screen.views.View;
 import org.cruxframework.crux.core.client.utils.EscapeUtils;
 import org.cruxframework.crux.core.rebind.AbstractViewBindableProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.controller.ClientControllers;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.ext.GeneratorContext;
-import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JType;
@@ -38,19 +36,9 @@ import com.google.gwt.core.ext.typeinfo.JType;
  */
 public class ControllerAccessorProxyCreator extends AbstractViewBindableProxyCreator
 {
-	public ControllerAccessorProxyCreator(TreeLogger logger, GeneratorContext context, JClassType baseIntf)
+	public ControllerAccessorProxyCreator(RebindContext context, JClassType baseIntf)
     {
-	    super(logger, context, baseIntf);
-    }
-
-	@Override
-    protected String[] getImports()
-    {
-		String[] imports = new String[] {
-				GWT.class.getCanonicalName(),
-				Crux.class.getCanonicalName()
-		};
-		return imports;       
+	    super(context, baseIntf);
     }
 
 	/**
@@ -71,8 +59,8 @@ public class ControllerAccessorProxyCreator extends AbstractViewBindableProxyCre
 			if (target != null) 
 			{
 				controllerName = target.value();
-				String controller = ClientControllers.getController(controllerName, Device.valueOf(getDeviceFeatures()));
-				JClassType controllerType = context.getTypeOracle().findType(controller);
+				String controller = context.getControllers().getController(controllerName, Device.valueOf(getDeviceFeatures()));
+				JClassType controllerType = context.getGeneratorContext().getTypeOracle().findType(controller);
 				if (controllerType == null)
 				{
 					throw new CruxGeneratorException("Error generating method ["+method.getName()+"] from ControllerAccessor ["+method.getEnclosingType().getQualifiedSourceName()+"]. Can not identify the controller type.");
@@ -108,6 +96,16 @@ public class ControllerAccessorProxyCreator extends AbstractViewBindableProxyCre
 			throw new CruxGeneratorException("The method ["+method.getName()+"] from ControllerAccessor ["+method.getEnclosingType().getQualifiedSourceName()+"] must return a class annotated with @Controller.");
 		}
 	}
+
+	@Override
+    protected String[] getImports()
+    {
+		String[] imports = new String[] {
+				GWT.class.getCanonicalName(),
+				Crux.class.getCanonicalName()
+		};
+		return imports;       
+    }
 
 	/**
 	 * @param sourceWriter

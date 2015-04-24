@@ -13,22 +13,15 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.declarativeui.screen;
+package org.cruxframework.crux.core.declarativeui.template;
 
-import java.io.InputStream;
-import java.util.Set;
-
-import org.cruxframework.crux.core.declarativeui.view.ViewProvider;
+import org.w3c.dom.Document;
 
 /**
  * @author Thiago da Rosa de Bustamante
  *
  */
-public interface ScreenProvider
+public interface TemplateLoader
 {
-	ViewProvider getViewProvider();
-	
-	InputStream getScreen(String id) throws ScreenException;
-
-	Set<String> getScreens(String module);
+	Document getTemplate(String library, String id);
 }

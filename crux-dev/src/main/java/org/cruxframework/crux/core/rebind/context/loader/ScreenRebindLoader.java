@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.rebind.provider;
+package org.cruxframework.crux.core.rebind.context.loader;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.cruxframework.crux.core.declarativeui.screen.ScreenException;
-import org.cruxframework.crux.core.declarativeui.screen.ScreenProvider;
-import org.cruxframework.crux.core.declarativeui.view.ViewProvider;
+import org.cruxframework.crux.core.declarativeui.screen.ScreenLoader;
+import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 
 import com.google.gwt.core.ext.GeneratorContext;
 
@@ -31,62 +31,34 @@ import com.google.gwt.core.ext.GeneratorContext;
  * @author Thiago da Rosa de Bustamante
  *
  */
-public class ScreenContextProvider implements ScreenProvider
+public class ScreenRebindLoader implements ScreenLoader
 {
 	private GeneratorContext context;
-	private ViewContextProvider viewContextProvider;
 	private Map<String, String> screens = new HashMap<String, String>();
+	private ViewRebindLoader viewContextLoader;
+	private boolean initialized = false;
 
-	public ScreenContextProvider(GeneratorContext context)
+	public ScreenRebindLoader(GeneratorContext context)
     {
 		this.context = context;
-		viewContextProvider = new ViewContextProvider(context);
-		buildScreensMap();
-    }
-
-	private void buildScreensMap()
-	{
-		Set<String> pathNames = context.getResourcesOracle().getPathNames();
-
-		for (String pathName : pathNames)
-		{
-			int index = pathName.lastIndexOf('/');
-			String fileName;
-			if (index > 0)
-			{
-				fileName = pathName.substring(index+1);
-			}
-			else
-			{
-				fileName = pathName;
-			}
-
-			if (fileName.endsWith(".crux.xml"))
-			{
-				screens.put(fileName.substring(0, fileName.length()-9), pathName);
-			}
-		}
-	}
-	
-	@Override
-    public ViewProvider getViewProvider()
-    {
-	    return viewContextProvider;
+		viewContextLoader = new ViewRebindLoader(context);
     }
 
 	@Override
     public InputStream getScreen(String id) throws ScreenException
     {
+		initialize();
 		if (screens.containsKey(id))
 		{
 			return context.getResourcesOracle().getResourceAsStream(screens.get(id));
 		}
 		return null;
     }
-
+	
 	@Override
     public Set<String> getScreens(String module)
     {
+		initialize();
 		Set<String> result = new HashSet<String>();
 	    for (String viewPath : screens.values())
         {
@@ -97,4 +69,38 @@ public class ScreenContextProvider implements ScreenProvider
         }
 	    return result;
     }
+
+	@Override
+    public ViewLoader getViewLoader()
+    {
+	    return viewContextLoader;
+    }
+
+	private void initialize()
+	{
+		if (!initialized)
+		{
+			Set<String> pathNames = context.getResourcesOracle().getPathNames();
+
+			for (String pathName : pathNames)
+			{
+				int index = pathName.lastIndexOf('/');
+				String fileName;
+				if (index > 0)
+				{
+					fileName = pathName.substring(index+1);
+				}
+				else
+				{
+					fileName = pathName;
+				}
+
+				if (fileName.endsWith(".crux.xml"))
+				{
+					screens.put(fileName.substring(0, fileName.length()-9), pathName);
+				}
+			}
+			initialized = true;
+		}
+	}
 }

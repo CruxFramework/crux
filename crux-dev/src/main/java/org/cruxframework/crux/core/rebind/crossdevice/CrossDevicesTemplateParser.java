@@ -29,12 +29,11 @@ import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Template;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Templates;
 import org.cruxframework.crux.core.client.utils.StringUtils;
-import org.cruxframework.crux.core.declarativeui.view.ViewProvider;
+import org.cruxframework.crux.core.rebind.context.RebindContext;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.rebind.screen.ViewFactory;
 import org.w3c.dom.Document;
 
-import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.dev.resource.Resource;
@@ -48,17 +47,17 @@ public class CrossDevicesTemplateParser
 {
 	private ViewFactory viewFactory;
 	private JClassType baseIntf;
-	private GeneratorContext context;
+	private RebindContext context;
 	private Device device;
 	private static DocumentBuilder documentBuilder;
 	private static Lock builderLock = new ReentrantLock();
 	
-	public CrossDevicesTemplateParser(GeneratorContext context, JClassType baseIntf, Device device)
+	public CrossDevicesTemplateParser(RebindContext context, JClassType baseIntf, Device device)
     {
 		this.context = context;
 		this.baseIntf = baseIntf;
 		this.device = device;
-		this.viewFactory = new ViewFactory(new ViewProvider.SimpleViewProvider());
+		this.viewFactory = new ViewFactory(context);
 		
 		initializeDocumentBuilder();
     }
@@ -138,7 +137,7 @@ public class CrossDevicesTemplateParser
 		JPackage adaptiveDevicePackage = baseIntf.getPackage();
 		
 		String templateResource = "/"+(adaptiveDevicePackage!=null?adaptiveDevicePackage.getName().replaceAll("\\.", "/"):"")+"/"+template.name()+".xdevice.xml";
-		Resource resource = context.getResourcesOracle().getResource(templateResource);
+		Resource resource = context.getGeneratorContext().getResourcesOracle().getResource(templateResource);
 		if (resource != null)
 		{
             try

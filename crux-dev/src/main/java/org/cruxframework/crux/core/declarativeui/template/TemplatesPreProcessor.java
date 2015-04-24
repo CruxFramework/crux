@@ -52,13 +52,13 @@ public class TemplatesPreProcessor implements CruxXmlPreProcessor
 	private XPathExpression findCrossBrowserExpression;
 	private XPathExpression templateAttributesExpression;
 	
-	private TemplateProvider templateProvider;
+	private TemplateLoader templateProvider;
 	private TemplateParser templateParser;
 	
 	/**
 	 * 
 	 */
-	public TemplatesPreProcessor(TemplateProvider templateProvider)
+	public TemplatesPreProcessor(TemplateLoader templateProvider)
 	{
 		this.templateProvider = templateProvider;
 		this.templateParser = new TemplateParser();
