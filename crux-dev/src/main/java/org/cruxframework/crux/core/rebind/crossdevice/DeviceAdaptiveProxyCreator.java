@@ -54,16 +54,17 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 {
 	private JClassType controllerClass;
-	private Document template;
-	private Device device;
-	private CrossDevicesTemplateParser templateParser;
-	private DeviceAdaptiveViewFactoryCreator viewFactoryCreator;
-	private JClassType deviceAdaptiveControllerClass;
-	private JClassType deviceAdaptiveClass;
-	private JClassType hasHandlersClass;
 	private String controllerName;
-	private String viewClassName;
+	private Device device;
+	private JClassType deviceAdaptiveClass;
+	private JClassType deviceAdaptiveControllerClass;
+	private JClassType hasHandlersClass;
+	private IocContainerRebind iocContainerRebind;
+	private Document template;
+	private CrossDevicesTemplateParser templateParser;
 	private View view;
+	private String viewClassName;
+	private DeviceAdaptiveViewFactoryCreator viewFactoryCreator;
 
 	/**
 	 * 
@@ -84,26 +85,135 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 		initializeController(view);
 		viewFactoryCreator = new DeviceAdaptiveViewFactoryCreator(context, logger, view, getDeviceFeatures(), controllerName, getModule());
 		viewClassName = viewFactoryCreator.create();
+		iocContainerRebind = new IocContainerRebind(logger, context, view, device.toString());
+    }
+
+	@Override
+	public String getProxyQualifiedName()
+	{
+		return DeviceAdaptiveController.class.getPackage().getName() + "." + getProxySimpleName();
+	}
+	
+	@Override
+	public String getProxySimpleName()
+	{
+		String name = super.getProxySimpleName();
+		return name+"_"+getDeviceFeatures();
+	}
+	
+	/**
+	 * 
+	 * @param srcWriter
+	 */
+	protected void createController(SourcePrinter srcWriter, String viewVariable)
+	{
+		String genClass = new ControllerProxyCreator(logger, context, controllerClass).create();
+		srcWriter.println("this._controller = new "+genClass+"("+viewVariable+");");
+		srcWriter.println("(("+DeviceAdaptiveController.class.getCanonicalName()+")this._controller).setBoundWidget(this);");
+		iocContainerRebind.injectFieldsAndMethods(srcWriter, controllerClass, "this._controller", viewVariable+".getTypedIocContainer()", view, device);
+	}
+
+	@Override
+    protected void generateProxyContructor(SourcePrinter srcWriter) throws CruxGeneratorException
+    {
+		srcWriter.println("public " + getProxySimpleName() + "(){");
+
+		String viewVariable = ViewFactoryCreator.createVariableName("view");
+		srcWriter.println(viewClassName + " " + 
+				viewVariable + " = new "+viewClassName+"("+EscapeUtils.quote(baseIntf.getSimpleSourceName())+"+(_idGen++));");
+		createController(srcWriter, viewVariable);
+		srcWriter.println(viewVariable+".setController(this._controller);");
+		
+		srcWriter.println("initWidget(viewContainer.asWidget());");
+		srcWriter.println("viewContainer.add("+viewVariable+", true, null);");
+		srcWriter.println("(("+DeviceAdaptiveController.class.getCanonicalName()+")this._controller).init();");
+		srcWriter.println("}");
+    }
+
+	@Override
+    protected void generateProxyFields(SourcePrinter srcWriter) throws CruxGeneratorException
+    {
+		srcWriter.println("private "+controllerClass.getQualifiedSourceName()+ControllerProxyCreator.CONTROLLER_PROXY_SUFFIX+" _controller;");
+		srcWriter.println("private "+DeviceAdaptiveViewContainer.class.getCanonicalName()+ " viewContainer = new "+DeviceAdaptiveViewContainer.class.getCanonicalName()+"();");
+	    for (String messageClass: viewFactoryCreator.getDeclaredMessages().keySet())
+	    {
+	    	srcWriter.println("private "+messageClass+" "+viewFactoryCreator.getDeclaredMessages().get(messageClass) + " = GWT.create("+messageClass+".class);");
+	    }
+	    srcWriter.println("private static "+Logger.class.getCanonicalName()+" "+viewFactoryCreator.getLoggerVariable()+" = "+
+	    		Logger.class.getCanonicalName()+".getLogger("+getProxySimpleName()+".class.getName());");
+		srcWriter.println("private static int _idGen = 0;");
     }
 
 	/**
 	 * 
 	 */
-	protected void initializeTemplateParser()
+	@Override
+    protected void generateWrapperMethod(JMethod method, SourcePrinter srcWriter)
     {
-	    Device[] devices = Devices.getDevicesForDevice(getDeviceFeatures());
-	    for (Device device : devices)
-        {
-	    	this.device = device;
-	    	templateParser = new CrossDevicesTemplateParser(context, baseIntf, device);
-	    	template = templateParser.getDeviceAdaptiveTemplate();
-	    	if (template == null)
-	    	{
-	    		throw new CruxGeneratorException("DeviceAdaptive widget does not declare any valid template for device ["+getDeviceFeatures()+"].");
-	    	}
-        }
+		if (mustDelegateToController(method))
+		{
+			JType returnType = method.getReturnType().getErasedType();
+
+			srcWriter.println(method.getReadableDeclaration(false, false, false, false, true)+"{");
+			if (returnType != JPrimitiveType.VOID)
+			{
+				srcWriter.print("return ");
+			}
+			srcWriter.print("this._controller."+method.getName()+"(");
+			boolean needsComma = false;
+			for (JParameter parameter : method.getParameters())
+			{
+				if (needsComma)
+				{
+					srcWriter.print(", ");
+				}
+				needsComma = true;
+				srcWriter.print(parameter.getName());
+			}
+			srcWriter.println(");");
+
+			srcWriter.println("}");
+		}
+    }
+
+    @Override
+    protected String[] getImports()
+    {
+	    return new String[]{
+	    		ScreenFactory.class.getCanonicalName(),
+	    		Screen.class.getCanonicalName(), 
+	    		GWT.class.getCanonicalName()
+	    };
     }
 	
+	/**
+	 * @return a sourceWriter for the proxy class
+	 */
+	@Override
+	protected SourcePrinter getSourcePrinter()
+	{
+		String packageName = DeviceAdaptiveController.class.getPackage().getName();
+		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
+
+		if (printWriter == null)
+		{
+			return null;
+		}
+
+		ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(packageName, getProxySimpleName());
+
+		String[] imports = getImports();
+		for (String imp : imports)
+		{
+			composerFactory.addImport(imp);
+		}
+
+		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
+		composerFactory.setSuperclass(Composite.class.getCanonicalName());
+
+		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
+	}
+
 	/**
 	 * 
 	 * @return
@@ -143,132 +253,24 @@ public class DeviceAdaptiveProxyCreator extends AbstractWrapperProxyCreator
 	/**
 	 * 
 	 */
-	@Override
-    protected void generateWrapperMethod(JMethod method, SourcePrinter srcWriter)
+	protected void initializeTemplateParser()
     {
-		if (mustDelegateToController(method))
-		{
-			JType returnType = method.getReturnType().getErasedType();
-
-			srcWriter.println(method.getReadableDeclaration(false, false, false, false, true)+"{");
-			if (returnType != JPrimitiveType.VOID)
-			{
-				srcWriter.print("return ");
-			}
-			srcWriter.print("this._controller."+method.getName()+"(");
-			boolean needsComma = false;
-			for (JParameter parameter : method.getParameters())
-			{
-				if (needsComma)
-				{
-					srcWriter.print(", ");
-				}
-				needsComma = true;
-				srcWriter.print(parameter.getName());
-			}
-			srcWriter.println(");");
-
-			srcWriter.println("}");
-		}
+	    Device[] devices = Devices.getDevicesForDevice(getDeviceFeatures());
+	    for (Device device : devices)
+        {
+	    	this.device = device;
+	    	templateParser = new CrossDevicesTemplateParser(context, baseIntf, device);
+	    	template = templateParser.getDeviceAdaptiveTemplate();
+	    	if (template == null)
+	    	{
+	    		throw new CruxGeneratorException("DeviceAdaptive widget does not declare any valid template for device ["+getDeviceFeatures()+"].");
+	    	}
+        }
     }
 
 	protected boolean mustDelegateToController(JMethod method)
     {
 	    JClassType enclosingType = method.getEnclosingType();
 		return (!enclosingType.equals(deviceAdaptiveClass) && !enclosingType.equals(hasHandlersClass));
-    }
-
-	@Override
-    protected String[] getImports()
-    {
-	    return new String[]{
-	    		ScreenFactory.class.getCanonicalName(),
-	    		Screen.class.getCanonicalName(), 
-	    		GWT.class.getCanonicalName()
-	    };
-    }
-
-	@Override
-    protected void generateProxyContructor(SourcePrinter srcWriter) throws CruxGeneratorException
-    {
-		srcWriter.println("public " + getProxySimpleName() + "(){");
-
-		String viewVariable = ViewFactoryCreator.createVariableName("view");
-		srcWriter.println(viewClassName + " " + 
-				viewVariable + " = new "+viewClassName+"("+EscapeUtils.quote(baseIntf.getSimpleSourceName())+"+(_idGen++));");
-		createController(srcWriter, viewVariable);
-		srcWriter.println(viewVariable+".setController(this._controller);");
-		
-		srcWriter.println("initWidget(viewContainer.asWidget());");
-		srcWriter.println("viewContainer.add("+viewVariable+", true, null);");
-		srcWriter.println("(("+DeviceAdaptiveController.class.getCanonicalName()+")this._controller).init();");
-		srcWriter.println("}");
-    }
-
-    /**
-	 * 
-	 * @param srcWriter
-	 */
-	protected void createController(SourcePrinter srcWriter, String viewVariable)
-	{
-		String genClass = new ControllerProxyCreator(logger, context, controllerClass).create();
-		srcWriter.println("this._controller = new "+genClass+"("+viewVariable+");");
-		srcWriter.println("(("+DeviceAdaptiveController.class.getCanonicalName()+")this._controller).setBoundWidget(this);");
-		IocContainerRebind.injectFieldsAndMethods(srcWriter, controllerClass, "this._controller", viewVariable+".getTypedIocContainer()", view, device);
-	}
-	
-	@Override
-    protected void generateProxyFields(SourcePrinter srcWriter) throws CruxGeneratorException
-    {
-		srcWriter.println("private "+controllerClass.getQualifiedSourceName()+ControllerProxyCreator.CONTROLLER_PROXY_SUFFIX+" _controller;");
-		srcWriter.println("private "+DeviceAdaptiveViewContainer.class.getCanonicalName()+ " viewContainer = new "+DeviceAdaptiveViewContainer.class.getCanonicalName()+"();");
-	    for (String messageClass: viewFactoryCreator.getDeclaredMessages().keySet())
-	    {
-	    	srcWriter.println("private "+messageClass+" "+viewFactoryCreator.getDeclaredMessages().get(messageClass) + " = GWT.create("+messageClass+".class);");
-	    }
-	    srcWriter.println("private static "+Logger.class.getCanonicalName()+" "+viewFactoryCreator.getLoggerVariable()+" = "+
-	    		Logger.class.getCanonicalName()+".getLogger("+getProxySimpleName()+".class.getName());");
-		srcWriter.println("private static int _idGen = 0;");
-    }
-
-	@Override
-	public String getProxySimpleName()
-	{
-		String name = super.getProxySimpleName();
-		return name+"_"+getDeviceFeatures();
-	}
-	
-	@Override
-	public String getProxyQualifiedName()
-	{
-		return DeviceAdaptiveController.class.getPackage().getName() + "." + getProxySimpleName();
-	}
-
-	/**
-	 * @return a sourceWriter for the proxy class
-	 */
-	@Override
-	protected SourcePrinter getSourcePrinter()
-	{
-		String packageName = DeviceAdaptiveController.class.getPackage().getName();
-		PrintWriter printWriter = context.tryCreate(logger, packageName, getProxySimpleName());
-
-		if (printWriter == null)
-		{
-			return null;
-		}
-
-		ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(packageName, getProxySimpleName());
-
-		String[] imports = getImports();
-		for (String imp : imports)
-		{
-			composerFactory.addImport(imp);
-		}
-
-		composerFactory.addImplementedInterface(baseIntf.getQualifiedSourceName());
-		composerFactory.setSuperclass(Composite.class.getCanonicalName());
-
-		return new SourcePrinter(composerFactory.createSourceWriter(context, printWriter), logger);
-	}	
+    }	
 }

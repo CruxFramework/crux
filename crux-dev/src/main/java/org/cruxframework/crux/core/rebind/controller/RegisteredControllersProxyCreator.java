@@ -52,11 +52,12 @@ import com.google.gwt.dev.generator.NameFactory;
 public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperProxyCreator
 {
 	private Map<String, String> controllerClassNames = new HashMap<String, String>();
-	private final View view;
-	private final String module;
-	private String iocContainerClassName;
 	private Device device;
+	private String iocContainerClassName;
+	private IocContainerRebind iocContainerRebind;
+	private final String module;
 	private NameFactory nameFactory;
+	private final View view;
 
 	/**
 	 * Constructor
@@ -71,7 +72,16 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 		this.iocContainerClassName = iocContainerClassName;
 		this.device = Device.valueOf(device);
 		this.nameFactory = new NameFactory();
+		this.iocContainerRebind = new IocContainerRebind(logger, context, view, device);
     }
+
+	@Override
+	public String getProxySimpleName()
+	{
+		String className = view.getId() + "_" + device.toString(); 
+		className = className.replaceAll("[\\W]", "_");
+		return "RegisteredControllers_"+className;
+	}
 
 	/**
 	 * 
@@ -95,7 +105,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 			}
 		}
 		sourceWriter.println("}");
-    }
+    }	
 
 	/**
 	 * @see org.cruxframework.crux.core.rebind.AbstractProxyCreator#generateProxyFields(com.google.gwt.user.rebind.SourceWriter)
@@ -106,7 +116,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 		srcWriter.println("private FastMap<Object> controllers = new FastMap<Object>();");
 		srcWriter.println("private "+org.cruxframework.crux.core.client.screen.views.View.class.getCanonicalName()+" view;");
 		srcWriter.println("private "+iocContainerClassName+" iocContainer;");
-    }	
+    }
 
 	/**
 	 * @see org.cruxframework.crux.core.rebind.AbstractProxyCreator#generateProxyMethods(com.google.gwt.user.rebind.SourceWriter)
@@ -135,8 +145,8 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 		{
 			generateControllersForWidgets(usedWidgets, module);
 		}
-	}
-
+	}	
+	
 	/**
 	 * @return
 	 */
@@ -154,6 +164,26 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 	    return imports;
     }	
 	
+	/**
+	 * 
+	 * @param sourceWriter
+	 * @param controller
+	 * @return
+	 */
+	private String createController(SourcePrinter sourceWriter, String controller)
+	{
+		String controllerClassName = controllerClassNames.get(controller);
+		String controllerVar = nameFactory.createName("__cont");
+		sourceWriter.println(controllerClassName+" "+controllerVar+"  = new "+controllerClassName+"(this.view);");
+		JClassType controllerClass = getControllerClass(controller);
+		if (controllerClass == null)
+		{
+			throw new CruxGeneratorException("Can not found the controller ["+controllerClassName+"]. Check your classpath and the inherit modules");
+		}
+		iocContainerRebind.injectFieldsAndMethods(sourceWriter, controllerClass, controllerVar, "iocContainer", view, device);
+		return controllerVar;
+	}
+
 	/**
 	 * Generate the block to include controller object.
 	 * @param controller
@@ -178,8 +208,8 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 		{
 			throw new CruxGeneratorException("Error for register client event handler. Controller: ["+controller+"].", e);
 		}
-	}	
-	
+	}
+
 	/**
 	 * Generate wrapper classes for event handling.
 	 * @param view
@@ -206,7 +236,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 			}
 		}		
 	}
-
+	
 	/**
 	 * @param usedWidgets
 	 * @param module
@@ -279,26 +309,6 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 
 		sourceWriter.println("}");
 	}
-	
-	/**
-	 * 
-	 * @param sourceWriter
-	 * @param controller
-	 * @return
-	 */
-	private String createController(SourcePrinter sourceWriter, String controller)
-	{
-		String controllerClassName = controllerClassNames.get(controller);
-		String controllerVar = nameFactory.createName("__cont");
-		sourceWriter.println(controllerClassName+" "+controllerVar+"  = new "+controllerClassName+"(this.view);");
-		JClassType controllerClass = getControllerClass(controller);
-		if (controllerClass == null)
-		{
-			throw new CruxGeneratorException("Can not found the controller ["+controllerClassName+"]. Check your classpath and the inherit modules");
-		}
-		IocContainerRebind.injectFieldsAndMethods(sourceWriter, controllerClass, controllerVar, "iocContainer", view, device);
-		return controllerVar;
-	}
 
 	/**
 	 * @param controller
@@ -311,7 +321,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 
 		return typeOracle.findType(ClientControllers.getController(controller, device));
 	}
-
+	
 	/**
 	 * @param controllerClass
 	 * @return true if this controller can be loaded in lazy mode
@@ -322,7 +332,7 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
 		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
         return (controllerAnnot == null || controllerAnnot.lazy());
     }
-	
+
 	/**
 	 * @param controllerClass
 	 * @return true if this controller can be loaded in lazy mode
@@ -332,13 +342,5 @@ public class RegisteredControllersProxyCreator extends AbstractInterfaceWrapperP
     {
 		Controller controllerAnnot = controllerClass.getAnnotation(Controller.class);
         return (controllerAnnot == null || controllerAnnot.stateful());
-    }
-
-	@Override
-	public String getProxySimpleName()
-	{
-		String className = view.getId() + "_" + device.toString(); 
-		className = className.replaceAll("[\\W]", "_");
-		return "RegisteredControllers_"+className;
-	}	
+    }	
 }

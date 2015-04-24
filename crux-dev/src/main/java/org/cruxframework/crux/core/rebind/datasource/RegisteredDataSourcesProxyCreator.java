@@ -50,10 +50,11 @@ import com.google.gwt.user.client.ui.Widget;
 public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperProxyCreator
 {
 	private Map<String, String> dataSourcesClassNames = new HashMap<String, String>();
-	private final View view;
-	private String iocContainerClassName;
 	private Device device;
+	private String iocContainerClassName;
+	private IocContainerRebind iocContainerRebind;
 	private NameFactory nameFactory;
+	private final View view;
 
 	public RegisteredDataSourcesProxyCreator(TreeLogger logger, GeneratorContext context, View view, String iocContainerClassName, String device)
     {
@@ -62,13 +63,16 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 		this.iocContainerClassName = iocContainerClassName;
 		this.device = Device.valueOf(device);
 		this.nameFactory = new NameFactory();
+		this.iocContainerRebind = new IocContainerRebind(logger, context, view, device);
     }
 
 	@Override
-    protected void generateProxyMethods(SourcePrinter sourceWriter) throws CruxGeneratorException
-    {
-		generateGetDataSourceMethod(sourceWriter);
-    }
+	public String getProxySimpleName()
+	{
+		String className = view.getId()+"_"+device.toString(); 
+		className = className.replaceAll("[\\W]", "_");
+		return "RegisteredDataSources_"+className;
+	}
 
 	@Override
 	protected void generateProxyContructor(SourcePrinter sourceWriter) throws CruxGeneratorException
@@ -81,17 +85,23 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
     }
 
 	@Override
-    protected void generateSubTypes(SourcePrinter srcWriter) throws CruxGeneratorException
-    {
-		generateDataSourcesForView(srcWriter, view);
-    }
-	
-	@Override
 	protected void generateProxyFields(SourcePrinter srcWriter) throws CruxGeneratorException
 	{
 		srcWriter.println("private "+org.cruxframework.crux.core.client.screen.views.View.class.getCanonicalName()+" view;");
 		srcWriter.println("private "+iocContainerClassName+" iocContainer;");
 	}
+	
+	@Override
+    protected void generateProxyMethods(SourcePrinter sourceWriter) throws CruxGeneratorException
+    {
+		generateGetDataSourceMethod(sourceWriter);
+    }
+	
+	@Override
+    protected void generateSubTypes(SourcePrinter srcWriter) throws CruxGeneratorException
+    {
+		generateDataSourcesForView(srcWriter, view);
+    }		
 	
 	/**
 	 * @return
@@ -111,7 +121,66 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
     		StringUtils.class.getCanonicalName()
 		};
 	    return imports;
-    }		
+    }
+	
+	/**
+	 * 
+	 * @param sourceWriter
+	 * @param datasource
+	 * @return
+	 */
+	private String createDataSource(SourcePrinter sourceWriter, String dataSource)
+	{
+		String datasourceClassName = dataSourcesClassNames.get(dataSource);
+		String dsVar = nameFactory.createName("__dat");
+		sourceWriter.println(datasourceClassName+" "+dsVar+"  = new "+datasourceClassName+"(this.view);");
+		JClassType datasourceClass = context.getTypeOracle().findType(DataSources.getDataSource(dataSource, device));
+		if (datasourceClass == null)
+		{
+			throw new CruxGeneratorException("Can not found the datasource ["+datasourceClassName+"]. Check your classpath and the inherit modules");
+		}
+		iocContainerRebind.injectFieldsAndMethods(sourceWriter, datasourceClass, dsVar, "iocContainer", view, device);
+		return dsVar;
+	}
+	
+	
+	/**
+	 * 
+	 * @param sourceWriter
+	 * @param dataSource
+	 */
+	private void generateDataSourceClassBlock(SourcePrinter sourceWriter, String dataSource)
+	{
+		if (!dataSourcesClassNames.containsKey(dataSource) && DataSources.hasDataSource(dataSource))
+		{
+			try
+            {
+	            JClassType dataSourceClass = baseIntf.getOracle().getType(DataSources.getDataSource(dataSource, device));
+	            String genClass = new DataSourceProxyCreator(logger, context, dataSourceClass).create(); 
+	            dataSourcesClassNames.put(dataSource, genClass);
+            }
+            catch (NotFoundException e)
+            {
+            	throw new CruxGeneratorException(e.getMessage(), e);
+            }
+		}
+	}
+	
+	/**
+	 * 
+	 * @param sourceWriter
+	 * @param view
+	 */
+	private void generateDataSourcesForView(SourcePrinter sourceWriter, View view)
+	{
+		Iterator<String> dataSources = view.iterateDataSources();
+		
+		while (dataSources.hasNext())
+		{
+			String dataSource = dataSources.next();
+			generateDataSourceClassBlock(sourceWriter, dataSource);
+		}		
+	}
 	
 	/**
 	 * 
@@ -144,72 +213,5 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 		}
 		sourceWriter.println("throw new DataSourceExcpetion("+EscapeUtils.quote("DataSource not found: ")+"+id);");
 		sourceWriter.println("}");
-	}
-	
-	/**
-	 * 
-	 * @param sourceWriter
-	 * @param datasource
-	 * @return
-	 */
-	private String createDataSource(SourcePrinter sourceWriter, String dataSource)
-	{
-		String datasourceClassName = dataSourcesClassNames.get(dataSource);
-		String dsVar = nameFactory.createName("__dat");
-		sourceWriter.println(datasourceClassName+" "+dsVar+"  = new "+datasourceClassName+"(this.view);");
-		JClassType datasourceClass = context.getTypeOracle().findType(DataSources.getDataSource(dataSource, device));
-		if (datasourceClass == null)
-		{
-			throw new CruxGeneratorException("Can not found the datasource ["+datasourceClassName+"]. Check your classpath and the inherit modules");
-		}
-		IocContainerRebind.injectFieldsAndMethods(sourceWriter, datasourceClass, dsVar, "iocContainer", view, device);
-		return dsVar;
-	}
-	
-	
-	/**
-	 * 
-	 * @param sourceWriter
-	 * @param view
-	 */
-	private void generateDataSourcesForView(SourcePrinter sourceWriter, View view)
-	{
-		Iterator<String> dataSources = view.iterateDataSources();
-		
-		while (dataSources.hasNext())
-		{
-			String dataSource = dataSources.next();
-			generateDataSourceClassBlock(sourceWriter, dataSource);
-		}		
-	}
-	
-	/**
-	 * 
-	 * @param sourceWriter
-	 * @param dataSource
-	 */
-	private void generateDataSourceClassBlock(SourcePrinter sourceWriter, String dataSource)
-	{
-		if (!dataSourcesClassNames.containsKey(dataSource) && DataSources.hasDataSource(dataSource))
-		{
-			try
-            {
-	            JClassType dataSourceClass = baseIntf.getOracle().getType(DataSources.getDataSource(dataSource, device));
-	            String genClass = new DataSourceProxyCreator(logger, context, dataSourceClass).create(); 
-	            dataSourcesClassNames.put(dataSource, genClass);
-            }
-            catch (NotFoundException e)
-            {
-            	throw new CruxGeneratorException(e.getMessage(), e);
-            }
-		}
-	}
-	
-	@Override
-	public String getProxySimpleName()
-	{
-		String className = view.getId()+"_"+device.toString(); 
-		className = className.replaceAll("[\\W]", "_");
-		return "RegisteredDataSources_"+className;
 	}
 }

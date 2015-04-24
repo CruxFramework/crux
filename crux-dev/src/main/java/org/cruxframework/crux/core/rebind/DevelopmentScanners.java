@@ -17,7 +17,6 @@ package org.cruxframework.crux.core.rebind;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.declarativeui.DeclarativeUIScreenResourceScanner;
 import org.cruxframework.crux.core.rebind.module.ModulesScanner;
 import org.cruxframework.crux.scanner.ClassScanner;
 import org.cruxframework.crux.tools.scanner.offline.OfflineScreensScanner;
@@ -41,7 +40,7 @@ public class DevelopmentScanners
 			}
 			ModulesScanner.initializeScanner();
 			ClassScanner.initializeScanner();
-			DeclarativeUIScreenResourceScanner.initializeScanner();
+//			DeclarativeUIScreenResourceScanner.initializeScanner();
 //			TemplatesScanner.initializeScanner();
 //			ViewsScanner.initializeScanner();
 			OfflineScreensScanner.initializeScanner();

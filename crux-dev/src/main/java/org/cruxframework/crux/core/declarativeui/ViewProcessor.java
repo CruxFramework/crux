@@ -55,7 +55,7 @@ public class ViewProcessor
 
 	private static final Lock lock = new ReentrantLock();
 	private static final Log log = LogFactory.getLog(ViewProcessor.class);
-	private static String outputCharset;
+	private static String outputCharset = "UTF-8";
 	private List<CruxXmlPreProcessor> preProcessors;
 
 	public ViewProcessor(ViewProvider viewProvider)

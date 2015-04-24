@@ -65,6 +65,7 @@ public class IocContainerRebind extends AbstractProxyCreator
 	protected JClassType viewBindableType;
 	protected JClassType remoteServiceType;
 	protected Device device;
+	protected IocContainerManager iocContainerManager;
 
 	public IocContainerRebind(TreeLogger logger, GeneratorContext context, View view, String device)
     {
@@ -73,7 +74,8 @@ public class IocContainerRebind extends AbstractProxyCreator
 		viewBindableType = context.getTypeOracle().findType(ViewBindable.class.getCanonicalName());
 		remoteServiceType = context.getTypeOracle().findType(RemoteService.class.getCanonicalName());
 		this.device = Device.valueOf(device);
-		configurations = IocContainerManager.getConfigurationsForView(view, this.device);
+		iocContainerManager = new IocContainerManager(context);
+		configurations = iocContainerManager.getConfigurationsForView(view, this.device);
     }
 
 	@Override
@@ -212,10 +214,10 @@ public class IocContainerRebind extends AbstractProxyCreator
 	 * @param view
 	 * @param device
 	 */
-	public static void injectFieldsAndMethods(SourcePrinter srcWriter, JClassType type, String parentVariable, String iocContainerVariable, 
+	public void injectFieldsAndMethods(SourcePrinter srcWriter, JClassType type, String parentVariable, String iocContainerVariable, 
 			View view, Device device)
 	{
-		Map<String, IocConfig<?>> configurations = IocContainerManager.getConfigurationsForView(view, device);
+		Map<String, IocConfig<?>> configurations = iocContainerManager.getConfigurationsForView(view, device);
 		injectFieldsAndMethods(srcWriter, type, parentVariable, new HashSet<String>(), iocContainerVariable, configurations);
 	}
 	

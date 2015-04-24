@@ -64,7 +64,7 @@ public class TemplateContextProvider implements TemplateProvider
 		String cacheKey = library + "_" + id;
 		if (cache.containsKey(cacheKey))
 		{
-			return cache.get(cacheKey);
+			return (Document) cache.get(cacheKey).cloneNode(true);
 		}
 		
 		Set<String> pathNames = context.getResourcesOracle().getPathNames();
@@ -95,7 +95,7 @@ public class TemplateContextProvider implements TemplateProvider
 	                if (templateLibrary.equals(library))
 	                {
 	                	cache.put(cacheKey, template);
-	                	return template;
+	                	return (Document) template.cloneNode(true);
 	                }
 	                else if (!cache.containsKey(templateCacheKey))
 	                {

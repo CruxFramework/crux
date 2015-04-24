@@ -18,55 +18,23 @@ package org.cruxframework.crux.core.server;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cruxframework.crux.core.declarativeui.ViewProcessor;
-import org.cruxframework.crux.core.rebind.DevelopmentScanners;
-import org.cruxframework.crux.scanner.Scanners;
-import org.cruxframework.crux.scanner.Scanners.ScannerRegistrations;
+import org.cruxframework.crux.core.client.Legacy;
 
 
 /**
  * @author Thiago da Rosa de Bustamante
- *
+ * @deprecated
  */
+@Deprecated
+@Legacy
 public class DevModeInitializerListener implements ServletContextListener
 {
-	public static final String OUTPUT_CHARSET = "outputCharset";
-	private static final Log logger = LogFactory.getLog(InitializerListener.class);
-
 	/**
 	 * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
 	 */
 	public void contextInitialized(ServletContextEvent contextEvent)
     {
-		String charset = contextEvent.getServletContext().getInitParameter(OUTPUT_CHARSET);
-		//TODO remover isso aqui... fixar o uso em UTF-8
-		if(charset != null)
-		{
-			ViewProcessor.setOutputCharset(charset);
-		}
-		else
-		{
-			logger.error("Missing required parameter for [DevModeInitializerListener] in web.xml: [outputCharset].");
-		}
-		if (!Environment.isProduction())
-		{
-			Scanners.registerScanners(new ScannerRegistrations()
-			{
-				@Override
-				public boolean initializeEagerly()
-				{
-					return true; //We need to ensure scanners are initialized before any attempt to use any feature that requires scanning. 
-				}
-				
-				@Override
-				public void doRegistrations()
-				{
-					DevelopmentScanners.initializeScanners();
-				}
-			});
-		}
+
     }
 
 	/**

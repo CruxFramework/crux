@@ -38,7 +38,6 @@ public class ViewContextProvider implements ViewProvider
 	private TemplateContextProvider templateContextProvider;
 	private Map<String, String> views = new HashMap<String, String>();
 	
-	
 	public ViewContextProvider(GeneratorContext context)
     {
 		this.context = context;
