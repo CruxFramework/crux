@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.resources.Resource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
@@ -37,7 +35,6 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  */
 public class ResourceScanner 
 {
-	private static final Log logger = LogFactory.getLog(ResourceScanner.class);
 	private boolean initialized = false;
 	private JClassScanner jClassScanner;
 	private Map<String, Map<String, String>> resourcesCanonicalNames;
@@ -118,14 +115,14 @@ public class ResourceScanner
 	{
 		if (!initialized)
 		{
-			resourcesCanonicalNames = new HashMap<String, Map<String, String>>();
-			resourcesClassNames = new HashMap<String, Map<String, String>>();
-			JClassType[] resources =  jClassScanner.searchClassesByAnnotation(Resource.class);
-			if (resources != null)
+			try 
 			{
-				for (JClassType resourceClass : resources) 
+				resourcesCanonicalNames = new HashMap<String, Map<String, String>>();
+				resourcesClassNames = new HashMap<String, Map<String, String>>();
+				JClassType[] resources =  jClassScanner.searchClassesByAnnotation(Resource.class);
+				if (resources != null)
 				{
-					try 
+					for (JClassType resourceClass : resources) 
 					{
 						Resource annot = resourceClass.getAnnotation(Resource.class);
 						if (annot != null)
@@ -144,14 +141,14 @@ public class ResourceScanner
 								}
 							}
 						}
-					} 
-					catch (Exception e) 
-					{
-						logger.error("Error initializing resource.",e);
 					}
 				}
+				initialized = true;
+			} 
+			catch (Exception e) 
+			{
+				throw new CruxGeneratorException("Error initializing resources scanner.",e);
 			}
-			initialized = true;
 		}
 	}
 	

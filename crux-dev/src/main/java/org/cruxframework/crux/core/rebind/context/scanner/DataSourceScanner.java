@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.datasource.DataSource;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
@@ -40,7 +38,6 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 @Legacy
 public class DataSourceScanner 
 {
-	private static final Log logger = LogFactory.getLog(DataSourceScanner.class);
 	private Map<String, Map<String, String>> dataSourcesCanonicalNames;
 	private Map<String, Map<String, String>> dataSourcesClassNames;
 	private boolean initialized = false;
@@ -128,43 +125,36 @@ public class DataSourceScanner
 				{
 					for (JClassType dataSourceClass : dataSourceTypes) 
 					{
-						try 
+						org.cruxframework.crux.core.client.datasource.annotation.DataSource annot = 
+								dataSourceClass.getAnnotation(org.cruxframework.crux.core.client.datasource.annotation.DataSource.class);
+						if (annot != null)
 						{
-							org.cruxframework.crux.core.client.datasource.annotation.DataSource annot = 
-									dataSourceClass.getAnnotation(org.cruxframework.crux.core.client.datasource.annotation.DataSource.class);
-							if (annot != null)
+							Device[] devices = annot.supportedDevices();
+							String resourceKey = annot.value();
+							if (devices == null || devices.length ==0)
 							{
-								Device[] devices = annot.supportedDevices();
-								String resourceKey = annot.value();
-								if (devices == null || devices.length ==0)
-								{
-									addResource(dataSourceClass, resourceKey, Device.all);
-								}
-								else
-								{
-									for (Device device : devices)
-									{
-										addResource(dataSourceClass, resourceKey, device);
-									}
-								}
+								addResource(dataSourceClass, resourceKey, Device.all);
 							}
 							else
 							{
-								String simpleName = dataSourceClass.getSimpleSourceName();
-								if (simpleName.length() >1)
+								for (Device device : devices)
 								{
-									simpleName = Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
+									addResource(dataSourceClass, resourceKey, device);
 								}
-								else
-								{
-									simpleName = simpleName.toLowerCase();
-								}
-								addResource(dataSourceClass, simpleName, Device.all);
 							}
-						} 
-						catch (Throwable e) 
+						}
+						else
 						{
-							logger.error("Error initializing datasource.",e);
+							String simpleName = dataSourceClass.getSimpleSourceName();
+							if (simpleName.length() >1)
+							{
+								simpleName = Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
+							}
+							else
+							{
+								simpleName = simpleName.toLowerCase();
+							}
+							addResource(dataSourceClass, simpleName, Device.all);
 						}
 					}
 				}
@@ -172,7 +162,7 @@ public class DataSourceScanner
 			}
 			catch (Exception e)
 			{
-		    	throw new CruxGeneratorException("Error initializing DataSource scaner.", e);
+		    	throw new CruxGeneratorException("Error initializing DataSource scanner.", e);
 			}
 		}
 	}

@@ -22,8 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.dto.DataObject;
 import org.cruxframework.crux.core.client.dto.DataObjectIdentifier;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
@@ -42,7 +40,6 @@ import com.google.gwt.core.ext.typeinfo.JField;
  */
 public class DataObjectScanner 
 {
-	private static final Log logger = LogFactory.getLog(DataObjectScanner.class);
 	private Map<String, String[]> dataObjectIdentifiers;
 	private Map<String, String> dataObjects;
 	private boolean initialized = false;
@@ -111,7 +108,7 @@ public class DataObjectScanner
 			} 
 			catch (Exception e) 
 			{
-				logger.error("Error initializing DataObjects.",e);
+				throw new CruxGeneratorException("Error initializing DataObjects scanner.",e);
 			}
 		}
 	}

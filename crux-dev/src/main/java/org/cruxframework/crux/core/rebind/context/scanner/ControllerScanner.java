@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.controller.Controller;
 import org.cruxframework.crux.core.client.controller.Global;
 import org.cruxframework.crux.core.client.controller.WidgetController;
@@ -46,7 +44,6 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public class ControllerScanner 
 {
-	private static final Log logger = LogFactory.getLog(ControllerScanner.class);
 	private Map<String, Map<String, String>> controllersCanonicalNames;
 	private Map<String, Map<String, String>> controllersNames;
 	private List<String> globalControllers;
@@ -150,17 +147,17 @@ public class ControllerScanner
 	{
 		if (!initialized)
 		{
-			controllersCanonicalNames = new HashMap<String, Map<String, String>>();
-			controllersNames = new HashMap<String, Map<String, String>>();
-			globalControllers = new ArrayList<String>();
-			widgetControllers = new HashMap<String, Set<String>>();
-			
-			JClassType[] controllerTypes =  jClassScanner.searchClassesByAnnotation(Controller.class);
-			if (controllerTypes != null)
+			try 
 			{
-				for (JClassType controllerClass : controllerTypes) 
+				controllersCanonicalNames = new HashMap<String, Map<String, String>>();
+				controllersNames = new HashMap<String, Map<String, String>>();
+				globalControllers = new ArrayList<String>();
+				widgetControllers = new HashMap<String, Set<String>>();
+
+				JClassType[] controllerTypes =  jClassScanner.searchClassesByAnnotation(Controller.class);
+				if (controllerTypes != null)
 				{
-					try 
+					for (JClassType controllerClass : controllerTypes) 
 					{
 						Controller annot = controllerClass.getAnnotation(Controller.class);
 						Device[] devices = annot.supportedDevices();
@@ -182,13 +179,13 @@ public class ControllerScanner
 						}
 						initWidgetControllers(controllerClass, annot);
 					}
-					catch (Exception e) 
-					{
-						logger.error("Error initializing client controller ["+controllerClass.getQualifiedSourceName()+"].",e);
-					}
-				}
-			}	
-			initialized = true;
+				}	
+				initialized = true;
+			}
+			catch (Exception e) 
+			{
+				throw new CruxGeneratorException("Error initializing controllers scanner.", e);
+			}
 		}
 	}
 	

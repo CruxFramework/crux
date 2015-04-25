@@ -58,7 +58,6 @@ import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.controller.RegisteredControllersProxyCreator;
 import org.cruxframework.crux.core.rebind.datasource.RegisteredDataSourcesProxyCreator;
 import org.cruxframework.crux.core.rebind.formatter.RegisteredClientFormattersProxyCreator;
-import org.cruxframework.crux.core.rebind.i18n.MessageClasses;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
 import org.cruxframework.crux.core.rebind.screen.Event;
 import org.cruxframework.crux.core.rebind.screen.View;
@@ -565,7 +564,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 			else
 			{
 				String[] messageParts = getKeyMessageParts(property);
-				String messageClassName = MessageClasses.getMessageClass(messageParts[0]);
+				String messageClassName = context.getMessages().getMessageClass(messageParts[0]);
 
 				// Checks if declared message is valid
 				this.checkDeclaredMessage(messageClassName, messageParts[0], messageParts[1]);

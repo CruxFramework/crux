@@ -13,62 +13,62 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.rebind.i18n;
+package org.cruxframework.crux.core.rebind.context.scanner;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.cruxframework.crux.core.client.i18n.MessageName;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.scanner.ClassScanner;
+import org.cruxframework.crux.core.rebind.JClassScanner;
 
+import com.google.gwt.core.ext.GeneratorContext;
+import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.i18n.client.LocalizableResource;
 
 /**
  * Class for retrieve the messages interface, based on the annotation MessageName.
  * @author Thiago da Rosa de Bustamante
  */
-public class MessageClasses 
+public class MessageScanner 
 {
-	private static final Lock lock = new ReentrantLock();
-	private static Map<String, String> messagesClasses = null;	
+	private boolean initialized = false;	
+	private JClassScanner jClassScanner;
+	private Map<String, String> messagesClasses = null;
+	
+	public MessageScanner(GeneratorContext context)
+    {
+		jClassScanner = new JClassScanner(context);
+    }
 	
 	/**
 	 * Return the className associated with the name informed
 	 * @param interfaceName
 	 * @return
 	 */
-	public static String getMessageClass(String message)
+	public String getMessageClass(String message)
 	{
-		if (messagesClasses == null)
-		{
-			initialize();
-		}
+		initializeMessages();
 		return messagesClasses.get(message);
 	}
 	
 	/**
 	 * @param urls
 	 */
-	public static void initialize()
+	protected void initializeMessages()
 	{
-		if (messagesClasses == null)
+		if (!initialized)
 		{
-			lock.lock();
 			try 
 			{
 				if (messagesClasses == null)
 				{
 					messagesClasses = new HashMap<String, String>();
-					Set<String> messagesNames =  ClassScanner.searchClassesByInterface(LocalizableResource.class);
-					if (messagesNames != null)
+					JClassType[] messagesTypes =  jClassScanner.searchClassesByInterface(LocalizableResource.class.getCanonicalName());
+					if (messagesTypes != null)
 					{
-						for (String message : messagesNames) 
+						for (JClassType messageClass : messagesTypes) 
 						{
-							Class<?> messageClass = Class.forName(message);
 							MessageName messageNameAnnot = messageClass.getAnnotation(MessageName.class);
 							if (messageNameAnnot != null)
 							{
@@ -77,20 +77,17 @@ public class MessageClasses
 								{
 									throw new CruxGeneratorException("Duplicated Message Key: ["+messageKey+"].");
 								}
-								messagesClasses.put(messageKey, messageClass.getCanonicalName());
+								messagesClasses.put(messageKey, messageClass.getQualifiedSourceName());
 							}
 						}
 					}
 				}
 			} 
-			catch (ClassNotFoundException e) 
+			catch (Exception e) 
 			{
-				throw new CruxGeneratorException("Error initializing messagesClasses.",e);
+				throw new CruxGeneratorException("Error initializing messages scanner.",e);
 			}
-			finally
-			{
-				lock.unlock();
-			}
+			initialized = true;
 		}
 	}
 }

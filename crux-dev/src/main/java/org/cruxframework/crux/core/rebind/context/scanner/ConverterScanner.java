@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.cruxframework.crux.core.client.converter.TypeConverter.Converter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.JClassScanner;
@@ -35,7 +33,6 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
  */
 public class ConverterScanner 
 {
-	private static final Log logger = LogFactory.getLog(ConverterScanner.class);
 	private Map<String, String> converters;
 	private boolean initialized = false;
 	private JClassScanner jClassScanner;
@@ -71,14 +68,14 @@ public class ConverterScanner
 	{
 		if (!initialized)
 		{
-			converters = new HashMap<String, String>();
-
-			JClassType[] converterTypes =  jClassScanner.searchClassesByAnnotation(Converter.class);
-			if (converterTypes != null)
+			try 
 			{
-				for (JClassType converterClass : converterTypes) 
+				converters = new HashMap<String, String>();
+
+				JClassType[] converterTypes =  jClassScanner.searchClassesByAnnotation(Converter.class);
+				if (converterTypes != null)
 				{
-					try 
+					for (JClassType converterClass : converterTypes) 
 					{
 						Converter annot = converterClass.getAnnotation(Converter.class);
 						if (converters.containsKey(annot.value()))
@@ -87,14 +84,14 @@ public class ConverterScanner
 						}
 
 						converters.put(annot.value(), converterClass.getQualifiedSourceName());
-					} 
-					catch (Exception e) 
-					{
-						logger.error("Error initializing Converters ["+converterClass.getQualifiedSourceName()+"].",e);
 					}
 				}
+				initialized = true;
+			} 
+			catch (Exception e) 
+			{
+				throw new CruxGeneratorException("Error initializing Converters scanner.",e);
 			}
-			initialized = true;
 		}
 	}
 }

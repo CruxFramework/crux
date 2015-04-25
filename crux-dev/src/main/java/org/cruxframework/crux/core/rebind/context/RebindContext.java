@@ -23,6 +23,7 @@ import org.cruxframework.crux.core.rebind.context.scanner.ControllerScanner;
 import org.cruxframework.crux.core.rebind.context.scanner.ConverterScanner;
 import org.cruxframework.crux.core.rebind.context.scanner.DataObjectScanner;
 import org.cruxframework.crux.core.rebind.context.scanner.DataSourceScanner;
+import org.cruxframework.crux.core.rebind.context.scanner.MessageScanner;
 import org.cruxframework.crux.core.rebind.context.scanner.ResourceScanner;
 
 import com.google.gwt.core.ext.GeneratorContext;
@@ -38,6 +39,7 @@ public class RebindContext
 	private ConverterScanner converterScanner;
 	private DataObjectScanner dataObjectScanner;
 	private DataSourceScanner dataSourceScanner;
+	private MessageScanner messageScanner;
 	private GeneratorContext generatorContext;
 	private JClassScanner jClassScanner;
 	private TreeLogger logger;
@@ -58,6 +60,15 @@ public class RebindContext
 		}
 		return jClassScanner;
 		
+	}
+	
+	public MessageScanner getMessages()
+	{
+		if (messageScanner == null)
+		{
+			messageScanner = new MessageScanner(generatorContext);
+		}
+		return messageScanner;
 	}
 	
 	public ControllerScanner getControllers()
