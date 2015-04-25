@@ -28,7 +28,6 @@ import org.cruxframework.crux.core.client.dataprovider.StreamingDataProvider;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.dto.DataObjects;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
@@ -89,7 +88,7 @@ public abstract class HasDataProviderFactory<C extends WidgetCreatorContext> ext
 	    	throw new CruxGeneratorException("Widget ["+widgetId+"] on view ["+getView().getId()+"] must inform the dataObject to bind into the declared DataProvider");
 	    }
 	    
-	    String dataObjectClass = DataObjects.getDataObject(dataObject);
+	    String dataObjectClass = getContext().getDataObjects().getDataObject(dataObject);
 	    if (StringUtils.isEmpty(dataObjectClass))
 	    {
 	    	throw new CruxGeneratorException("Widget ["+widgetId+"] on view ["+getView().getId()+"] informed an invalid dataObject. Can not found the informed value");

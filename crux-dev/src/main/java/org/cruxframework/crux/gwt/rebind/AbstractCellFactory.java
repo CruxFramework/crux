@@ -22,7 +22,6 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.cell.CustomCells;
-import org.cruxframework.crux.core.rebind.dto.DataObjects;
 import org.cruxframework.crux.core.rebind.screen.widget.EvtProcessor;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreator;
 import org.cruxframework.crux.core.rebind.screen.widget.WidgetCreatorContext;
@@ -75,7 +74,7 @@ public abstract class AbstractCellFactory<C extends WidgetCreatorContext> extend
 	protected String getDataObject(JSONObject metaElem)
     {
 		String dataObject = metaElem.optString("dataObject");
-		String dataObjectClass = DataObjects.getDataObject(dataObject);
+		String dataObjectClass = getContext().getDataObjects().getDataObject(dataObject);
 		if (StringUtils.isEmpty(dataObjectClass))
 		{
 			throw new CruxGeneratorException("DataObject ["+dataObject+"], referenced by widget ["+metaElem.optString("id")+"] not found.");

@@ -26,7 +26,6 @@ import org.cruxframework.crux.core.config.ConfigurationFactory;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
-import org.cruxframework.crux.core.rebind.dto.DataObjects;
 import org.cruxframework.crux.core.rebind.screen.widget.ViewFactoryCreator.LazyCompatibleWidgetConsumer;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.json.JSONObject;
@@ -57,7 +56,7 @@ public class ViewWidgetConsumer extends DataWidgetConsumer implements LazyCompat
 		if (viewFactoryCreator.isBindableView() && !StringUtils.isEmpty(bindPath))
 		{
 			Class<?> widgetClass = viewFactoryCreator.getWidgetCreatorHelper(widgetType).getWidgetType();
-			String dataObjectClassName = DataObjects.getDataObject(viewFactoryCreator.view.getDataObject());
+			String dataObjectClassName = viewFactoryCreator.getContext().getDataObjects().getDataObject(viewFactoryCreator.view.getDataObject());
 			JClassType dataObjectType = viewFactoryCreator.getContext().getGeneratorContext().getTypeOracle().findType(dataObjectClassName);
 			JClassType widgetClassType = viewFactoryCreator.getContext().getGeneratorContext().getTypeOracle().findType(widgetClass.getCanonicalName());
 			

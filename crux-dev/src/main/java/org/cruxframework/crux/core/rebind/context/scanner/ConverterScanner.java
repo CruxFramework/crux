@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.cruxframework.crux.core.rebind.context;
+package org.cruxframework.crux.core.rebind.context.scanner;
  
 import java.util.HashMap;
 import java.util.Iterator;

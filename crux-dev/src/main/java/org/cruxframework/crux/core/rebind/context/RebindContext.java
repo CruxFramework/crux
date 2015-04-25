@@ -19,6 +19,11 @@ import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.declarativeui.screen.ScreenLoader;
 import org.cruxframework.crux.core.rebind.JClassScanner;
 import org.cruxframework.crux.core.rebind.context.loader.ScreenRebindLoader;
+import org.cruxframework.crux.core.rebind.context.scanner.ControllerScanner;
+import org.cruxframework.crux.core.rebind.context.scanner.ConverterScanner;
+import org.cruxframework.crux.core.rebind.context.scanner.DataObjectScanner;
+import org.cruxframework.crux.core.rebind.context.scanner.DataSourceScanner;
+import org.cruxframework.crux.core.rebind.context.scanner.ResourceScanner;
 
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -31,6 +36,7 @@ public class RebindContext
 {
 	private ControllerScanner controllersScanner;
 	private ConverterScanner converterScanner;
+	private DataObjectScanner dataObjectScanner;
 	private DataSourceScanner dataSourceScanner;
 	private GeneratorContext generatorContext;
 	private JClassScanner jClassScanner;
@@ -83,6 +89,15 @@ public class RebindContext
 		return dataSourceScanner;
 	}
 
+	public DataObjectScanner getDataObjects()
+	{
+		if (dataObjectScanner == null)
+		{
+			dataObjectScanner = new DataObjectScanner(generatorContext);
+		}
+		return dataObjectScanner;
+	}
+	
 	public GeneratorContext getGeneratorContext()
 	{
 		return generatorContext;

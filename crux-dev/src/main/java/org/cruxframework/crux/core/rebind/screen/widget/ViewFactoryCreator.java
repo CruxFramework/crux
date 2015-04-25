@@ -52,12 +52,11 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewParser;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.context.ControllerScanner;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
+import org.cruxframework.crux.core.rebind.context.scanner.ControllerScanner;
 import org.cruxframework.crux.core.rebind.controller.ControllerProxyCreator;
 import org.cruxframework.crux.core.rebind.controller.RegisteredControllersProxyCreator;
 import org.cruxframework.crux.core.rebind.datasource.RegisteredDataSourcesProxyCreator;
-import org.cruxframework.crux.core.rebind.dto.DataObjects;
 import org.cruxframework.crux.core.rebind.formatter.RegisteredClientFormattersProxyCreator;
 import org.cruxframework.crux.core.rebind.i18n.MessageClasses;
 import org.cruxframework.crux.core.rebind.ioc.IocContainerRebind;
@@ -309,7 +308,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     	while (dataObjects.hasNext())
     	{
     		String dataObjectAlias = dataObjects.next();
-        	String dataObjectClass = DataObjects.getDataObject(dataObjectAlias);
+        	String dataObjectClass = context.getDataObjects().getDataObject(dataObjectAlias);
     		printer.println("addDataObjectBinder(new "+DataObjectBinder.class.getCanonicalName()+"<"+dataObjectClass+">(this){");
     		printer.println("protected "+dataObjectClass+" createDataObject() {");
         	printer.println("return GWT.create("+dataObjectClass+".class);");
@@ -321,7 +320,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     
     protected void generateCreateDataObjectMethod(SourcePrinter printer)
     {
-    	String dataObjectClass = DataObjects.getDataObject(view.getDataObject());
+    	String dataObjectClass = context.getDataObjects().getDataObject(view.getDataObject());
 		printer.println("protected "+ dataObjectClass +" createDataObject(){");
     	printer.println("return GWT.create("+dataObjectClass+".class);");
     	printer.println("}");
@@ -526,7 +525,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     {
 	    if (isBindableView())
 	    {
-	    	return BindableView.class.getCanonicalName()+"<"+DataObjects.getDataObject(view.getDataObject())+">";
+	    	return BindableView.class.getCanonicalName()+"<"+context.getDataObjects().getDataObject(view.getDataObject())+">";
 	    }
 	    return "View";
     }
@@ -1591,12 +1590,12 @@ public class ViewFactoryCreator extends AbstractProxyCreator
     private static class DefaultControllerAccessor implements ControllerAccessHandler
     {
 		private final String viewVariable;
-		private ControllerScanner controllersManager;
+		private ControllerScanner controllersScanner;
 
 		public DefaultControllerAccessor(String viewVariable, ControllerScanner controllersManager)
         {
 			this.viewVariable = viewVariable;
-			this.controllersManager = controllersManager;
+			this.controllersScanner = controllersManager;
         }
 
 		public String getControllerExpression(String controller, Device device)
@@ -1608,7 +1607,7 @@ public class ViewFactoryCreator extends AbstractProxyCreator
 
 		public String getControllerImplClassName(String controller, Device device)
         {
-			String controllerClass = controllersManager.getController(controller, device);
+			String controllerClass = controllersScanner.getController(controller, device);
 	        return controllerClass + ControllerProxyCreator.CONTROLLER_PROXY_SUFFIX;
         }
     }

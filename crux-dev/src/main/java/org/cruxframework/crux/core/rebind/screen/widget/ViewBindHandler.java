@@ -29,7 +29,6 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
-import org.cruxframework.crux.core.rebind.dto.DataObjects;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.utils.JClassUtils;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
@@ -76,7 +75,7 @@ public class ViewBindHandler
 		{
 			dataObjectBinder = ViewFactoryCreator.createVariableName("dataObjectBinder");
 			dataObjectBinderVariables.put(dataObjectAlias, dataObjectBinder);
-			String dataObjectClassName = DataObjects.getDataObject(dataObjectAlias);//getObjectDataBinding(dataObjectAlias).getDataObjectClassName();
+			String dataObjectClassName = context.getDataObjects().getDataObject(dataObjectAlias);//getObjectDataBinding(dataObjectAlias).getDataObjectClassName();
 			
 			out.println("final " + DataObjectBinder.class.getCanonicalName() + "<" + dataObjectClassName + "> " + dataObjectBinder + "=" + 
 					ViewFactoryCreator.getViewVariable() + ".getDataObjectBinder("+EscapeUtils.quote(dataObjectAlias)+");");
@@ -194,7 +193,7 @@ public class ViewBindHandler
 	    String dataObject = bindParts[0];
 	    String bindPath = bindParts[1];
 	    String converter = bindParts.length > 2 ? bindParts[2] : null;
-	    String dataObjectClassName = DataObjects.getDataObject(dataObject);
+	    String dataObjectClassName = context.getDataObjects().getDataObject(dataObject);
  
 	    addDataObject(dataObject);
 	    
@@ -288,7 +287,7 @@ public class ViewBindHandler
 	    String dataObject = bindParts[0];
 	    String bindPath = bindParts[1];
 	    String converter = bindParts.length > 2 ? bindParts[2] : null;
-	    String dataObjectClassName = DataObjects.getDataObject(dataObject);
+	    String dataObjectClassName = context.getDataObjects().getDataObject(dataObject);
  
 	    addDataObject(dataObject);
 	    
@@ -341,7 +340,7 @@ public class ViewBindHandler
 		if (text!= null &&  RegexpPatterns.REGEXP_CRUX_OBJECT_DATA_BINDING.matcher(text).matches())
 		{
 			String[] parts = getBindingParts(text, true);
-			return (DataObjects.getDataObject(parts[0]) != null);
+			return (context.getDataObjects().getDataObject(parts[0]) != null);
 		}
 		return false;
 	}
