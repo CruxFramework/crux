@@ -23,14 +23,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.declarativeui.ViewProcessor;
-import org.cruxframework.crux.core.declarativeui.view.ViewLoader;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
-import org.cruxframework.crux.core.rebind.context.ControllerScanner;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
-import org.cruxframework.crux.core.rebind.context.ResourceScanner;
-import org.cruxframework.crux.core.rebind.datasource.DataSources;
 import org.cruxframework.crux.core.rebind.formatter.Formatters;
 import org.cruxframework.crux.core.utils.RegexpPatterns;
 import org.cruxframework.crux.core.utils.StreamUtils;
@@ -50,20 +47,16 @@ public class ViewFactory
 {
 	private static final Log logger = LogFactory.getLog(ViewFactory.class);
 	private Map<String, View> cache = new HashMap<String, View>();
-	private ControllerScanner controllerScanner;
-	private ResourceScanner resourceScanner;
 	private ViewProcessor viewProcessor;
-	private ViewLoader viewLoader;
+	private RebindContext context;
 	
 	/**
 	 * Default Constructor
 	 */
 	public ViewFactory(RebindContext context) 
 	{
-		this.viewLoader = context.getScreenLoader().getViewLoader();
-		this.controllerScanner = context.getControllers();
-		this.resourceScanner = context.getResources();
-		this.viewProcessor = new ViewProcessor(viewLoader);
+		this.context = context;
+		this.viewProcessor = new ViewProcessor(context.getScreenLoader().getViewLoader());
 	}
 	
 	/**
@@ -81,7 +74,7 @@ public class ViewFactory
 			return cache.get(cacheKey);
 		}
 		
-		InputStream inputStream = viewLoader.getView(id);
+		InputStream inputStream = context.getScreenLoader().getViewLoader().getView(id);
 		if (inputStream == null)
 		{
 			throw new ScreenConfigException("View ["+id+"] not found!");
@@ -117,7 +110,7 @@ public class ViewFactory
 	
 	public List<String> getViews(String viewLocator, String moduleId)
     {
-	    return viewLoader.getViews(viewLocator, moduleId);
+	    return context.getScreenLoader().getViewLoader().getViews(viewLocator, moduleId);
     }
 	
 	/**
@@ -419,7 +412,7 @@ public class ViewFactory
 	    		handler = handler.trim();
 	    		if (!StringUtils.isEmpty(handler))
 	    		{
-	    			if (!controllerScanner.hasController(handler))
+	    			if (!context.getControllers().hasController(handler))
 	    			{
 	    				throw new ScreenConfigException("Controller ["+handler+"], declared on view ["+view.getId()+"], not found!");
 	    			}
@@ -434,6 +427,8 @@ public class ViewFactory
 	 * @param elem
 	 * @throws ScreenConfigException 
 	 */
+	@Deprecated
+	@Legacy
 	private void parseViewUseDatasourceAttribute(View view, JSONObject elem) throws ScreenConfigException
     {
 	    String datasourceStr;
@@ -453,7 +448,7 @@ public class ViewFactory
 	    		datasource = datasource.trim();
 	    		if (!StringUtils.isEmpty(datasource))
 	    		{
-	    			if (!DataSources.hasDataSource(datasource))
+	    			if (!context.getDataSources().hasDataSource(datasource))
 	    			{
 	    				throw new ScreenConfigException("Datasource ["+datasource+"], declared on view ["+view.getId()+"], not found!");
 	    			}
@@ -521,7 +516,7 @@ public class ViewFactory
 	    		res = res.trim();
 	    		if (!StringUtils.isEmpty(res))
 	    		{
-	    			if (!resourceScanner.hasResource(res))
+	    			if (!context.getResources().hasResource(res))
 	    			{
 	    				throw new ScreenConfigException("Resource ["+res+"], declared on view ["+view.getId()+"], not found!");
 	    			}
@@ -556,7 +551,7 @@ public class ViewFactory
 	    		useView = useView.trim();
 	    		if (!StringUtils.isEmpty(useView))
 	    		{
-	    			if (!viewLoader.isValidViewLocator(useView))
+	    			if (!context.getScreenLoader().getViewLoader().isValidViewLocator(useView))
 	    			{
 	    				throw new ScreenConfigException("View ["+useView+"], declared on view ["+view.getId()+"], not found!");
 	    			}

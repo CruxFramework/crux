@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.datasource.DataSourceExcpetion;
 import org.cruxframework.crux.core.client.datasource.DataSourceRecord;
 import org.cruxframework.crux.core.client.datasource.RegisteredDataSources;
@@ -128,12 +129,14 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 	 * @param datasource
 	 * @return
 	 */
+	@Deprecated
+	@Legacy
 	private String createDataSource(SourcePrinter sourceWriter, String dataSource)
 	{
 		String datasourceClassName = dataSourcesClassNames.get(dataSource);
 		String dsVar = nameFactory.createName("__dat");
 		sourceWriter.println(datasourceClassName+" "+dsVar+"  = new "+datasourceClassName+"(this.view);");
-		JClassType datasourceClass = context.getGeneratorContext().getTypeOracle().findType(DataSources.getDataSource(dataSource, device));
+		JClassType datasourceClass = context.getGeneratorContext().getTypeOracle().findType(context.getDataSources().getDataSource(dataSource, device));
 		if (datasourceClass == null)
 		{
 			throw new CruxGeneratorException("Can not found the datasource ["+datasourceClassName+"]. Check your classpath and the inherit modules");
@@ -148,13 +151,15 @@ public class RegisteredDataSourcesProxyCreator extends AbstractInterfaceWrapperP
 	 * @param sourceWriter
 	 * @param dataSource
 	 */
+	@Deprecated
+	@Legacy
 	private void generateDataSourceClassBlock(SourcePrinter sourceWriter, String dataSource)
 	{
-		if (!dataSourcesClassNames.containsKey(dataSource) && DataSources.hasDataSource(dataSource))
+		if (!dataSourcesClassNames.containsKey(dataSource) && context.getDataSources().hasDataSource(dataSource))
 		{
 			try
             {
-	            JClassType dataSourceClass = baseIntf.getOracle().getType(DataSources.getDataSource(dataSource, device));
+	            JClassType dataSourceClass = baseIntf.getOracle().getType(context.getDataSources().getDataSource(dataSource, device));
 	            String genClass = new DataSourceProxyCreator(context, dataSourceClass).create(); 
 	            dataSourcesClassNames.put(dataSource, genClass);
             }

@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.client.controller.Controller;
 import org.cruxframework.crux.core.client.datasource.annotation.DataSource;
 import org.cruxframework.crux.core.client.ioc.Inject;
@@ -34,7 +35,6 @@ import org.cruxframework.crux.core.client.ioc.IoCResource.NoClass;
 import org.cruxframework.crux.core.client.ioc.IoCResource.NoProvider;
 import org.cruxframework.crux.core.client.screen.DeviceAdaptive.Device;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
-import org.cruxframework.crux.core.rebind.datasource.DataSources;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.utils.ClassUtils;
 
@@ -114,13 +114,15 @@ public class IocContainerManager
 	 * @param view 
 	 * 
 	 */
+	@Deprecated
+	@Legacy
 	private void bindImplicityInjectcionsForDatasources(View view, Map<String, IocConfig<?>> viewConfigurations, Device device)
 	{
 		Iterator<String> datasources = view.iterateDataSources();
 		while (datasources.hasNext())
 		{
-			Class<?> controllerClass = DataSources.getDataSourceClass(datasources.next(), device);
-			bindImplicityInjectcions(controllerClass, new HashSet<String>(), new HashSet<String>(), true, viewConfigurations);
+			Class<?> datasourceClass = context.getDataSources().getDataSourceClass(datasources.next(), device);
+			bindImplicityInjectcions(datasourceClass, new HashSet<String>(), new HashSet<String>(), true, viewConfigurations);
 		}
 	}
 	

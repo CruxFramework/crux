@@ -38,16 +38,78 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 public class ResourceScanner 
 {
 	private static final Log logger = LogFactory.getLog(ResourceScanner.class);
+	private boolean initialized = false;
+	private JClassScanner jClassScanner;
 	private Map<String, Map<String, String>> resourcesCanonicalNames;
 	private Map<String, Map<String, String>> resourcesClassNames;
-	private JClassScanner jClassScanner;
-	private boolean initialized = false;
 	
 	public ResourceScanner(GeneratorContext context)
     {
 		jClassScanner = new JClassScanner(context);
     }
 	
+	/**
+	 * 
+	 * @param name
+	 * @param device
+	 * @return
+	 */
+	public String getResource(String name, Device device)
+	{
+		initializeResources();
+		Map<String, String> map = resourcesCanonicalNames.get(name);
+		String result = map.get(device.toString());
+		if (result == null && !device.equals(Device.all))
+		{
+			result = map.get(Device.all.toString());
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @param device
+	 * @return
+	 */
+	public Class<?> getResourceClass(String name, Device device)
+	{
+		try
+        {
+			initializeResources();
+			Map<String, String> map = resourcesClassNames.get(name);
+			String result = map.get(device.toString());
+			if (result == null && !device.equals(Device.all))
+			{
+				result = map.get(Device.all.toString());
+			}
+	        return Class.forName(result);
+        }
+        catch (Exception e)
+        {
+        	return null;
+        }
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public boolean hasResource(String name)
+	{
+		initializeResources();
+		return (name != null && resourcesCanonicalNames.containsKey(name));
+	}
+	
+	/**
+	 * @return
+	 */
+	public Iterator<String> iterateResources()
+	{
+		initializeResources();
+		return resourcesCanonicalNames.keySet().iterator();
+	}
 	
 	/**
 	 * 
@@ -92,7 +154,7 @@ public class ResourceScanner
 			initialized = true;
 		}
 	}
-
+	
 	/**
 	 * 
 	 * @param resourceClass
@@ -117,67 +179,4 @@ public class ResourceScanner
 		canonicallCassNamesByDevice.put(deviceKey, resourceClass.getQualifiedSourceName());
 		classNamesByDevice.put(deviceKey, resourceClass.getName());
     }
-
-	/**
-	 * 
-	 * @param name
-	 * @param device
-	 * @return
-	 */
-	public String getResource(String name, Device device)
-	{
-		initializeResources();
-		Map<String, String> map = resourcesCanonicalNames.get(name);
-		String result = map.get(device.toString());
-		if (result == null && !device.equals(Device.all))
-		{
-			result = map.get(Device.all.toString());
-		}
-		return result;
-	}
-	
-	/**
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public boolean hasResource(String name)
-	{
-		initializeResources();
-		return (name != null && resourcesCanonicalNames.containsKey(name));
-	}
-	
-	/**
-	 * 
-	 * @param name
-	 * @param device
-	 * @return
-	 */
-	public Class<?> getResourceClass(String name, Device device)
-	{
-		try
-        {
-			initializeResources();
-			Map<String, String> map = resourcesClassNames.get(name);
-			String result = map.get(device.toString());
-			if (result == null && !device.equals(Device.all))
-			{
-				result = map.get(Device.all.toString());
-			}
-	        return Class.forName(result);
-        }
-        catch (Exception e)
-        {
-        	return null;
-        }
-	}
-	
-	/**
-	 * @return
-	 */
-	public Iterator<String> iterateResources()
-	{
-		initializeResources();
-		return resourcesCanonicalNames.keySet().iterator();
-	}
 }

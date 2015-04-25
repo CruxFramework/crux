@@ -15,6 +15,7 @@
  */
 package org.cruxframework.crux.core.rebind.context;
 
+import org.cruxframework.crux.core.client.Legacy;
 import org.cruxframework.crux.core.declarativeui.screen.ScreenLoader;
 import org.cruxframework.crux.core.rebind.JClassScanner;
 import org.cruxframework.crux.core.rebind.context.loader.ScreenRebindLoader;
@@ -28,11 +29,13 @@ import com.google.gwt.core.ext.TreeLogger;
  */
 public class RebindContext
 {
+	private ControllerScanner controllersScanner;
+	private ConverterScanner converterScanner;
+	private DataSourceScanner dataSourceScanner;
 	private GeneratorContext generatorContext;
-	private ControllerScanner controllersManager;
-	private ResourceScanner resourcesManager;
-	private TreeLogger logger;
 	private JClassScanner jClassScanner;
+	private TreeLogger logger;
+	private ResourceScanner resourcesScanner;
 	private ScreenLoader screenLoader;
 	
 	public RebindContext(GeneratorContext generatorContext, TreeLogger logger)
@@ -40,29 +43,6 @@ public class RebindContext
 		this.generatorContext = generatorContext;
 		this.logger = logger;
     }
-
-	public ControllerScanner getControllers()
-	{
-		if (controllersManager == null)
-		{
-			controllersManager = new ControllerScanner(generatorContext);
-		}
-		return controllersManager;
-	}
-	
-	public ResourceScanner getResources()
-	{
-		if (resourcesManager == null)
-		{
-			resourcesManager = new ResourceScanner(generatorContext);
-		}
-		return resourcesManager;
-	}
-	
-	public GeneratorContext getGeneratorContext()
-	{
-		return generatorContext;
-	}
 
 	public JClassScanner getClassScanner()
 	{
@@ -74,6 +54,54 @@ public class RebindContext
 		
 	}
 	
+	public ControllerScanner getControllers()
+	{
+		if (controllersScanner == null)
+		{
+			controllersScanner = new ControllerScanner(generatorContext);
+		}
+		return controllersScanner;
+	}
+	
+	public ConverterScanner getConverters()
+	{
+		if (converterScanner == null)
+		{
+			converterScanner = new ConverterScanner(generatorContext);
+		}
+		return converterScanner;
+	}
+	
+	@Deprecated
+	@Legacy
+	public DataSourceScanner getDataSources()
+	{
+		if (dataSourceScanner == null)
+		{
+			dataSourceScanner = new DataSourceScanner(generatorContext);
+		}
+		return dataSourceScanner;
+	}
+
+	public GeneratorContext getGeneratorContext()
+	{
+		return generatorContext;
+	}
+
+	public TreeLogger getLogger()
+	{
+		return logger;
+	}
+	
+	public ResourceScanner getResources()
+	{
+		if (resourcesScanner == null)
+		{
+			resourcesScanner = new ResourceScanner(generatorContext);
+		}
+		return resourcesScanner;
+	}
+
 	public ScreenLoader getScreenLoader()
 	{
 		if (screenLoader == null)
@@ -81,10 +109,5 @@ public class RebindContext
 			screenLoader = new ScreenRebindLoader(generatorContext);
 		}
 		return screenLoader;
-	}
-
-	public TreeLogger getLogger()
-	{
-		return logger;
 	}
 }

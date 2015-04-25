@@ -29,7 +29,6 @@ import org.cruxframework.crux.core.client.utils.StringUtils;
 import org.cruxframework.crux.core.rebind.AbstractProxyCreator.SourcePrinter;
 import org.cruxframework.crux.core.rebind.CruxGeneratorException;
 import org.cruxframework.crux.core.rebind.context.RebindContext;
-import org.cruxframework.crux.core.rebind.converter.Converters;
 import org.cruxframework.crux.core.rebind.dto.DataObjects;
 import org.cruxframework.crux.core.rebind.screen.View;
 import org.cruxframework.crux.core.utils.JClassUtils;
@@ -386,7 +385,7 @@ public class ViewBindHandler
 		JClassType converterType = null;
 	    if (!StringUtils.isEmpty(bindConverter))
 	    {
-	    	String converterClassName = Converters.getConverter(bindConverter);
+	    	String converterClassName = context.getConverters().getConverter(bindConverter);
 	    	converterType = context.getGeneratorContext().getTypeOracle().findType(converterClassName);
 	    }
 	    return converterType;
